@@ -1,0 +1,18 @@
+Artwork provenance
+==================
+
+Icons — Material Symbols (Google), built with the Figma plugin at the design
+system settings: Rounded shape, weight 400, fill off, grade normal, optical
+size 24dp.
+https://fonts.google.com/icons — Apache License 2.0
+https://www.apache.org/licenses/LICENSE-2.0
+
+Brand marks — IO, SPID, CIE ID, CIE, pagoPA, SEND and the social platform
+logos are property of their respective owners and are reproduced in their
+source colours.
+
+Pictograms — designed by SeyfDesigner, from the Flaticon "Blue" collection.
+https://www.flaticon.com/authors/seyfdesigner/blue
+
+Source of record: src/catalog/figma/registry.json (bulk-rule provenance) and
+the two asset manifests under src/assets.

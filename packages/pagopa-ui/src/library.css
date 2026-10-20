@@ -1,0 +1,13 @@
+/* The published stylesheet: src/index.css with the scan narrowed to what the
+   library ships. Storybook keeps the dev-only surfaces through src/index.css;
+   the tarball must not carry the utilities only those surfaces reference,
+   because no shipped component can use them. Measured at ~16% of the artifact
+   (scripts/check-css-budget.mjs records the ceiling). The file is a build
+   entry (src/library-entry.ts) and serves no other consumer. */
+@import "./index.css";
+
+/* Not part of the artifact: the demo screens and the Figma catalogue. The
+   stories live in apps/storybook and the Storybook preview module with them, so
+   they never enter this scan surface. */
+@source not "../src/catalog";
+@source not "../src/components/templates";

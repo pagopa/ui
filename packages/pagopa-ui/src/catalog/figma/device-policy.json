@@ -1,0 +1,37 @@
+{
+  "axes": ["Device", "Breakpoint"],
+  "any": ["Any", "Default"],
+  "devices": {
+    "mobile": {
+      "canonicalWidth": 320,
+      "defaultLayoutScope": "viewport",
+      "aliases": ["Mobile", "XS Mobile", "XSMobile"]
+    },
+    "tablet": {
+      "canonicalWidth": 600,
+      "defaultLayoutScope": "viewport",
+      "aliases": ["Tablet", "SM Tablet", "SMTablet", "SM Table", "MD Tablet", "MDTablet"],
+      "notes": {
+        "SM Table": "the source's own spelling of SM Tablet"
+      }
+    },
+    "desktop": {
+      "canonicalWidth": 1200,
+      "defaultLayoutScope": "viewport",
+      "aliases": [
+        "Desktop",
+        "Descktop",
+        "LG Desktop",
+        "MD Desktop",
+        "MDDesktop",
+        "XL Desktop",
+        "XXL Desktop",
+        "Device5"
+      ],
+      "notes": {
+        "Descktop": "the source's own spelling of Desktop",
+        "Device5": "the fifth width the source's own enumeration declares, i.e. the XL desktop frame"
+      }
+    }
+  }
+}

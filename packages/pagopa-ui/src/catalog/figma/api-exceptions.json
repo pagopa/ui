@@ -1,0 +1,18 @@
+{
+  "modulePatterns": {
+    "src/components/primitives/*": "shadcn/Base UI primitives exported for composition; Figma mapping attaches to the composed family components, not to the primitives",
+    "src/components/icons/*": "icon and pictogram runtime plus generated name lists, covered by the • Icon and • Pictograms bulk rules",
+    "pagopa-ui-artwork*": "the generated artwork package: the icon and pictogram name lists and the variant types are covered by the • Icon and • Pictograms bulk rules"
+  },
+  "exports": {
+    "ErrorSummary": "Form-level error announcement: the single live region of the field family's error strategy (flusso D). It lists the caller-owned messages with links back to their controls; no independent Figma source node, retained as a deliberate accessibility extension, not a source-alignment claim.",
+    "DatePickerField": "The custom date chooser: a labelled trigger that opens the source DatePicker panel (8049:39452) and carries the native field contract (local ISO `YYYY-MM-DD` value, named form control, reset and required validation). No independent 1:1 source node; retained as the documented field composition around the source calendar, not a source-alignment claim.",
+    "SafeArea": "Responsive maximum-width and gutter composition helper used inside WhiteTemplate. No independent 1:1 source node; not a source-aligned component claim.",
+    "DownloadCard": "Production native download-link/action composition with installed-consumer keyboard evidence. No independent 1:1 source node; retained as a deliberate accessibility-oriented extension, not a source-alignment claim.",
+    "OrganizationModule": "Read-only organization summary with caller-owned optional content, no inferred payment-system membership and rendered public evidence. Deliberate composition extension without a dedicated source node; not a source-alignment claim.",
+    "SwitchGroup": "Caller-owned SwitchField collection with native fieldset/legend semantics and an associated description. Deliberate collection extension, not the similarly named Figma component set at 349:4683: that source is one rich choice and is mapped to SwitchField.",
+    "CheckboxGroup": "Caller-owned CheckboxField collection with native fieldset/legend semantics and group messages. Deliberate collection extension, not the rich single option at node 194:3763, which is mapped to CheckboxField.",
+    "TableHeaderField": "The Figma helper `.TableHeaderSingleItem` (1337:73971) was removed from the design file in the 2026-10-14 export. The implementation keeps the reviewed 48px header cell with [12,16] padding, grey-100 fill and label metrics; retained as a reviewed extension without a dedicated source node.",
+    "TableListField": "The Figma helper `.TableListItemField` (9520:2555) was removed from the design file in the 2026-10-14 export. The implementation keeps the reviewed 14/20 grey-700 label and the 4px mobile gap; retained as a reviewed extension without a dedicated source node."
+  }
+}

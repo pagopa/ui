@@ -1,0 +1,406 @@
+/* Scan surface. Tailwind's automatic scan starts at the working directory and
+   reads every file it finds, so the utilities of the stories, the demo
+   templates, the catalogue and the tooling entered the published stylesheet
+   even though no shipped component references them. `source(none)` cancels
+   that default; these declarations are every surface the published artifact
+   serves. The Storybook application adds the stories and its own configuration
+   in src/preview.css.
+   The data packages stay in the surface on purpose: the generated token
+   module is the complete typography scale, so scanning it emits every
+   `text-*` token class in the published stylesheet — including the ones no
+   shipped component happens to use yet — and the artwork module does the same
+   for its catalogue. The artifact is byte-identical to the pre-split one; the
+   published scan narrows the demo surfaces in src/library.css. */
+@import "tailwindcss" source(none);
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "pagopa-ui-tokens/figma.generated.css";
+
+@source "../src";
+@source "../../artwork/src";
+@source "../../tokens/src";
+
+/* The source Titillio family is bundled directly (src/assets/fonts/titillio).
+   The faces are declared at the canonical CSS weights — Semibold 600 and Bold
+   700 — so every existing weight reference and the generated type scale keep
+   their faces; the files' OS/2 classes are 500 and 600, and the Figma styles
+   name the same faces Semibold and Bold. */
+@font-face {
+  font-family: "Titillio";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("./assets/fonts/titillio/Titillio-Regular.woff2?no-inline") format("woff2");
+}
+
+@font-face {
+  font-family: "Titillio";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url("./assets/fonts/titillio/Titillio-Semibold.woff2?no-inline") format("woff2");
+}
+
+@font-face {
+  font-family: "Titillio";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url("./assets/fonts/titillio/Titillio-Bold.woff2?no-inline") format("woff2");
+}
+
+:root {
+  color-scheme: light;
+  font-family: "Titillio", Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--figma-color-neutrals-black);
+  background: var(--figma-color-neutrals-white);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Semantic aliases. Bound tokens reference the generated Figma foundations
+     (packages/tokens/src/figma.generated.css); locals without a published variable are
+     marked and tracked in packages/tokens/src/manifest.json. */
+  --background: var(--figma-color-neutrals-white);
+  --foreground: var(--figma-color-neutrals-black);
+  --card: var(--figma-color-neutrals-white);
+  --card-foreground: var(--figma-color-neutrals-black);
+  --popover: var(--figma-color-neutrals-white);
+  --popover-foreground: var(--figma-color-neutrals-black);
+  --primary: var(--figma-color-blue-500);
+  --primary-foreground: var(--figma-color-neutrals-white);
+  --secondary: var(--figma-color-neutrals-grey-100);
+  --secondary-foreground: var(--figma-color-neutrals-black);
+  --muted: var(--figma-color-neutrals-grey-50);
+  --muted-foreground: var(--figma-color-neutrals-grey-700);
+  /* The Figma blue tint steps (Blue 500 8%/20%) composited over white: opaque
+     surfaces, so avatar initials and the contrast button stay legible on dark
+     caller surfaces instead of compositing with them. */
+  --accent: color-mix(in srgb, var(--figma-color-blue-500) 8%, var(--figma-color-neutrals-white));
+  --accent-foreground: var(--figma-color-blue-500);
+  --destructive: var(--figma-color-status-error-600);
+  --destructive-foreground: var(--figma-color-neutrals-white);
+  --contrast: var(--figma-color-neutrals-white);
+  --contrast-foreground: var(--figma-color-blue-500);
+  --destructive-hover: #aa2828; /* local extension: destructive pointer step between Error 600 and Error 850 */
+  --primary-hover: var(--figma-color-blue-600);
+  --primary-active: #072582; /* local extension: pressed step between Blue 600 and Blue 850; no reachable Figma pressed variable */
+  --accent-active: color-mix(
+    in srgb,
+    var(--figma-color-blue-500) 20%,
+    var(--figma-color-neutrals-white)
+  );
+  --secondary-hover: var(--figma-color-neutrals-grey-200);
+  --navy: #061b49; /* local, brand surface outside the Figma collections */
+  --navy-deep: #17213c; /* local, brand surface outside the Figma collections */
+  --brand-cyan: #00a7e1; /* local, brand accent outside the Figma collections */
+  --border: var(
+    --figma-color-border-fill
+  ); /* Color/Border/Border fill — source stroke of cards, tiles, dividers */
+  --border-strong: var(
+    --figma-color-neutrals-grey-200
+  ); /* grey-200 step for the source strokes that use it (Stepper default) */
+  --input: var(--figma-color-neutrals-grey-650);
+  --ring: var(--figma-color-blue-500);
+  --otp-frame: var(--figma-color-neutrals-grey-650);
+  --avatar-frame: rgb(14 15 19 / 6%); /* local extension: avatar contrast ring, no Figma source */
+  --avatar-placeholder: var(--figma-color-neutrals-grey-300);
+  --avatar-icon-surface: rgb(
+    255 255 255 / 20%
+  ); /* local extension: icon surface on inverse artwork */
+  --avatar-inverse-foreground: var(--figma-color-neutrals-white);
+  --switch-unchecked: var(--figma-color-neutrals-grey-700);
+  --switch-knob: var(--figma-color-neutrals-white);
+  --choice-icon: var(--figma-color-icon-decorative-secondary);
+  --overlay: var(
+    --figma-color-surface-overlay
+  ); /* Color/Surface/Surface overlay — shared dim layer */
+  --tooltip: var(--figma-color-neutrals-grey-850); /* source Tooltip surface */
+  --success: var(--figma-color-icon-success-icon);
+  --success-soft: var(--figma-color-status-success-100);
+  --success-border: var(--figma-color-status-success-400);
+  --success-foreground: var(--figma-color-status-success-850);
+  --warning: var(--figma-color-icon-warning-icon);
+  --warning-soft: var(--figma-color-status-warning-100);
+  --warning-border: var(--figma-color-status-warning-400);
+  --warning-foreground: var(--figma-color-status-warning-850);
+  --info: var(--figma-color-icon-info-icon);
+  --info-soft: var(--figma-color-status-info-100);
+  --info-border: var(--figma-color-status-info-400);
+  --info-foreground: var(--figma-color-status-info-850);
+  --error-soft: var(--figma-color-status-error-100);
+  --error-border: var(--figma-color-status-error-400);
+  --error-foreground: var(--figma-color-status-error-850);
+  --chip-primary-soft: var(--figma-color-chip-default-filled);
+  --chip-primary-foreground: var(--figma-color-chip-default-filled-text);
+  --chip-default-outline: var(--figma-color-chip-default-outline);
+  --chip-highlight-soft: var(--figma-color-chip-highlighted-filled);
+  --chip-highlight-foreground: var(--figma-color-chip-highlighted-filled-text);
+  --selection-soft: var(--figma-color-blue-50);
+  --selection-border: var(--figma-color-blue-100);
+  --muted-soft: var(--figma-color-neutrals-grey-650);
+  --skeleton-strong: var(--figma-color-neutrals-grey-450);
+  --decorative-secondary: var(--figma-color-neutrals-grey-300);
+  --han-purple: var(--figma-color-han-purple-han-purple-500);
+  --han-purple-soft: var(--figma-color-han-purple-han-purple-100);
+  --drop-target: var(--figma-color-blue-300);
+  --dragging-surface: var(--figma-color-opacity-blue-500-40);
+  --inverse-foreground: var(--figma-color-neutrals-white);
+  --radius: var(--figma-radius-8);
+
+  /* Component and page geometry read from the source frames and artboards.
+     The generated layer carries the shared foundation; these component-scoped
+     extensions stay local and are recorded in the design request. */
+  --artboard-height: 650px; /* White Template, Dialog, Informative Drawer */
+  --artboard-height-tall: 800px; /* Feedback Page, Informative Drawer (right) */
+  --dialog-width: 600px; /* Dialog desktop, 37.5rem */
+  --dialog-width-compact: 272px; /* Dialog mobile and LogIn, 17rem */
+  --login-width: 520px; /* LogIn, 32.5rem */
+  --state-width: 368px; /* Waiting, Ok and Ko states, 23rem */
+  --drawer-width: 416px; /* demo drawer, 26rem */
+  --drawer-width-wide: 417px; /* Informative Drawer, 26.0625rem */
+  --camera-size: 376px; /* camera viewfinder, 23.5rem */
+  --menu-width: 274px; /* MenuDropDown minimum, 17.125rem */
+  --menu-skeleton-width: 106px; /* MenuDropDown skeleton, 6.625rem */
+  --overlay-width: 512px; /* Snackbar and demo hero, 32rem */
+  --header-height: 102px; /* Header desktop, 6.375rem */
+  --preheader-height: 55px; /* Preheader, 3.4375rem */
+  --page-gutter: 2rem; /* Snackbar viewport fallback */
+  --page-gutter-lg: 3rem; /* Dialog viewport fallback */
+  --hairline: 2px; /* tooltip arrow offset, spinner mask inset */
+  --otp-clip-margin: 4px; /* OTP field overflow clip */
+  --grid-aside: 20rem; /* demo grid aside column */
+  --grid-fields: 10rem; /* demo grid field column */
+  --grid-actions: 3rem; /* demo grid action column */
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--figma-color-neutrals-white);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+@theme inline {
+  --shadow-switch-knob:
+    0 1px 3px rgba(0, 43, 85, 0.1), 0 1px 1px rgba(0, 43, 85, 0.05),
+    0 2px 1px -1px rgba(0, 43, 85, 0.1);
+  --shadow-32: var(--figma-shadow-32); /* Figma "Shadow 32": overlays, cards, tooltips */
+  /* Elevation/1 and Elevation/6 are published variables with no mapped utility
+     until now. Surfaces use the box-shadow form; the PinPoint marker glyph is an
+     SVG path and needs the same three Elevation/6 layers as a drop-shadow filter. */
+  --shadow-1: var(--figma-elevation-1);
+  --shadow-6: var(--figma-elevation-6);
+  --drop-shadow-elevation-6: 0 1px 18px #002b551a, 0 6px 10px #002b550d, 0 3px 5px -1px #002b551a;
+  /* "Shadow 16": menu/dropdown elevation, a published effect style recorded in
+     packages/tokens/src/foundations.json (Shadow 16). */
+  --shadow-16: var(--figma-shadow-16);
+  --font-heading: var(--font-sans);
+  --font-sans: "Titillio", Arial, sans-serif;
+  --color-ring: var(--ring);
+  --color-otp-frame: var(--otp-frame);
+  --color-avatar-frame: var(--avatar-frame);
+  --color-avatar-placeholder: var(--avatar-placeholder);
+  --color-avatar-icon-surface: var(--avatar-icon-surface);
+  --color-avatar-inverse-foreground: var(--avatar-inverse-foreground);
+  --color-input: var(--input);
+  --color-overlay: var(--overlay);
+  --color-tooltip: var(--tooltip);
+  --color-border-strong: var(--border-strong);
+  --color-switch-unchecked: var(--switch-unchecked);
+  --color-switch-knob: var(--switch-knob);
+  --color-choice-icon: var(--choice-icon);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-contrast: var(--contrast);
+  --color-contrast-foreground: var(--contrast-foreground);
+  --color-destructive-hover: var(--destructive-hover);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-active: var(--primary-active);
+  --color-accent-active: var(--accent-active);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-navy: var(--navy);
+  --color-navy-deep: var(--navy-deep);
+  --color-brand-cyan: var(--brand-cyan);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-success-border: var(--success-border);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-border: var(--warning-border);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-info-border: var(--info-border);
+  --color-info-foreground: var(--info-foreground);
+  --color-error-soft: var(--error-soft);
+  --color-error-border: var(--error-border);
+  --color-error-foreground: var(--error-foreground);
+  --color-chip-primary-soft: var(--chip-primary-soft);
+  --color-chip-default-outline: var(--chip-default-outline);
+  --color-chip-highlight-soft: var(--chip-highlight-soft);
+  --color-chip-highlight-foreground: var(--chip-highlight-foreground);
+  --color-selection-soft: var(--selection-soft);
+  --color-selection-border: var(--selection-border);
+  --color-muted-soft: var(--muted-soft);
+  --color-skeleton-strong: var(--skeleton-strong);
+  --color-decorative-secondary: var(--decorative-secondary);
+  --color-han-purple: var(--han-purple);
+  --color-han-purple-soft: var(--han-purple-soft);
+  --color-drop-target: var(--drop-target);
+  --color-dragging-surface: var(--dragging-surface);
+  --color-inverse-foreground: var(--inverse-foreground);
+  --color-chip-primary-foreground: var(--chip-primary-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  /* Radius steps alias the Figma foundations (0/8/16/24), which the generated
+     layer exposes as --radius-0/8/16/24; no interpolated values remain. */
+  --radius-sm: var(--figma-radius-8);
+  --radius-md: var(--figma-radius-8);
+  --radius-lg: var(--figma-radius-8);
+  --radius-xl: var(--figma-radius-16);
+  --radius-2xl: var(--figma-radius-16);
+  --radius-3xl: var(--figma-radius-24);
+  --radius-4xl: var(--figma-radius-24);
+}
+
+/* WebKit keeps native calendar-editor focus inside its user-agent shadow DOM. */
+input[data-slot="input"]:is(
+    [type="date"],
+    [type="datetime-local"],
+    [type="time"],
+    [type="month"],
+    [type="week"]
+  ):focus-within {
+  border-color: var(--ring);
+  outline: 2px solid var(--ring);
+  outline-offset: 1px;
+
+  &[aria-invalid="true"] {
+    border-color: var(--destructive);
+    outline-color: var(--destructive);
+  }
+
+  @media (forced-colors: active) {
+    &,
+    &[aria-invalid="true"] {
+      outline-color: CanvasText;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+  }
+
+  .loading-spinner-motion {
+    animation-duration: 1s !important;
+    animation-iteration-count: infinite !important;
+  }
+}
+
+@media (forced-colors: active) {
+  [data-slot="avatar"][data-avatar-state="selected"] {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+
+    .pagopa-icon-mask {
+      color: HighlightText;
+    }
+  }
+
+  [data-slot="avatar-status"] {
+    forced-color-adjust: none;
+    border-color: Canvas;
+    background-color: CanvasText;
+
+    &[data-status="offline"] {
+      background-color: Canvas;
+
+      &::after {
+        border-color: CanvasText;
+      }
+    }
+  }
+
+  :focus-visible {
+    outline: 2px solid CanvasText;
+    outline-offset: 2px;
+  }
+
+  .pagopa-icon-mask {
+    color: inherit;
+  }
+
+  @supports not (forced-color-adjust: preserve-parent-color) {
+    .pagopa-icon-mask {
+      forced-color-adjust: none;
+      color: CanvasText;
+    }
+
+    button .pagopa-icon-mask {
+      color: ButtonText;
+    }
+
+    a:any-link .pagopa-icon-mask {
+      color: LinkText;
+    }
+
+    a:visited .pagopa-icon-mask {
+      color: VisitedText;
+    }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}

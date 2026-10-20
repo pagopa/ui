@@ -1,0 +1,2570 @@
+[
+  {
+    "id": "50-1700-lg-desktop-desktop",
+    "nodeId": "50:1700",
+    "export": "WhiteTemplate",
+    "storyId": "components-content-whitetemplate--fidelity",
+    "state": "LG Desktop",
+    "device": "desktop",
+    "width": 1200,
+    "viewport": 1200,
+    "height": 650,
+    "depth": 3,
+    "root": "[data-slot=\"white-template\"]",
+    "subjects": {},
+    "note": "The declared desktop device (Breakpoint=LG Desktop, 1200x650): the same empty white canvas (minHeight 650); no layoutScope, one composition at every device (both scope probes report the composition unchanged). The capture verifies 1200x650, white #ffffff, responsive clean. The set's XL 1536 and XXL 1920 frames are the same canvas; the LG 1200 frame is the corpus's representative desktop capture (the wave-4 dialogs and TableList capture 1200)."
+  },
+  {
+    "id": "50-1700-md-tablet-tablet",
+    "nodeId": "50:1700",
+    "export": "WhiteTemplate",
+    "storyId": "components-content-whitetemplate--fidelity",
+    "state": "MD Tablet",
+    "device": "tablet",
+    "width": 900,
+    "viewport": 900,
+    "height": 650,
+    "depth": 3,
+    "root": "[data-slot=\"white-template\"]",
+    "subjects": {},
+    "note": "The declared tablet device — the set draws two tablet frames (SM 600 and MD 900) and this case captures the MD 900: nearest to the midpoint (760) of the captured pair 320/1200 (140 against the 600 frame's 160), and the frame above the library's sm breakpoint, while the 600 frame exercises the same branch as the 320 capture. The canvas is the same empty white surface (minHeight 650); no layoutScope, nothing switches per device (both scope probes report the composition unchanged). Verified at 900: the canvas 900x650, white #ffffff, responsive clean."
+  },
+  {
+    "id": "50-1700-xs-mobile-mobile",
+    "nodeId": "50:1700",
+    "export": "WhiteTemplate",
+    "storyId": "components-content-whitetemplate--fidelity",
+    "state": "XS Mobile",
+    "device": "mobile",
+    "width": 320,
+    "viewport": 320,
+    "height": 650,
+    "depth": 3,
+    "root": "[data-slot=\"white-template\"]",
+    "subjects": {},
+    "note": "The declared mobile device (Breakpoint=XS Mobile, 320x650): the set draws one composition — an empty white canvas whose source root declares the component's own minHeight 650 — so no layoutScope is declared (both scope probes report the composition unchanged, a scope declaration would be vacuous: the InformativeDrawer caller-driven reading). The `Fidelity` story renders the source-exact empty surface; the `Playground` SafeArea paragraph stays under the 650 floor at every captured width, so the height is not content-driven here. The capture verifies the canvas at 320 (white #ffffff, no padding or gap) and is responsive clean."
+  },
+  {
+    "id": "123-4498-3-true-desktop",
+    "nodeId": "123:4498",
+    "export": "ButtonGroup",
+    "storyId": "components-inputs-buttongroup--figma-state-matrix",
+    "state": "3|True",
+    "device": "desktop",
+    "width": 560,
+    "viewport": 1200,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"2939-34214\"]",
+    "subjects": {
+      "Button": "[data-fidelity-action=\"2939-34215\"] [data-fidelity-label]",
+      ".UnstyledButton": "[data-fidelity-action=\"2939-34215\"]",
+      "2 Button group": "[data-fidelity-subgroup=\"2939-34216\"]"
+    },
+    "residues": [
+      {
+        "path": ".UnstyledButton.box.height",
+        "reason": "the shared Button keeps its 48px minimum native target where the source text action is a content-sized 22px row (guides/actions.md: an accessibility adaptation)"
+      },
+      {
+        "path": ".UnstyledButton.box.width",
+        "reason": "follows the ghost action inset: 16px padding on both sides of the 58px label (guides/actions.md)"
+      },
+      {
+        "path": ".UnstyledButton.padding.left",
+        "reason": "the ghost action keeps its 16px inset; the source text row has none (guides/actions.md)"
+      },
+      {
+        "path": ".UnstyledButton.padding.right",
+        "reason": "the ghost action keeps its 16px inset; the source text row has none (guides/actions.md)"
+      },
+      {
+        "path": "2 Button group.box.width",
+        "reason": "follows the wider text action: the flex-1 subgroup absorbs the 33px the ghost inset adds"
+      }
+    ]
+  },
+  {
+    "id": "123-4498-mobile-mobile",
+    "nodeId": "123:4498",
+    "export": "ButtonGroup",
+    "storyId": "components-inputs-buttongroup--figma-state-matrix",
+    "state": "Mobile",
+    "device": "mobile",
+    "width": 312,
+    "viewport": 320,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"123-4504\"]",
+    "subjects": {
+      "Button": "[data-fidelity-action=\"123-4507\"] [data-fidelity-label]",
+      ".UnstyledButton": "[data-fidelity-action=\"123-4507\"]",
+      "2 Button group": "[data-fidelity-subgroup=\"123-4504\"]"
+    },
+    "residues": [
+      {
+        "path": ".UnstyledButton.box.height",
+        "reason": "the shared Button keeps its 48px minimum native target where the source text action is a content-sized 22px row (guides/actions.md: an accessibility adaptation)"
+      },
+      {
+        "path": ".UnstyledButton.box.width",
+        "reason": "follows the ghost action inset: 16px padding on both sides of the 58px label (guides/actions.md)"
+      },
+      {
+        "path": ".UnstyledButton.padding.left",
+        "reason": "the ghost action keeps its 16px inset; the source text row has none (guides/actions.md)"
+      },
+      {
+        "path": ".UnstyledButton.padding.right",
+        "reason": "the ghost action keeps its 16px inset; the source text row has none (guides/actions.md)"
+      },
+      {
+        "path": "field.box.height",
+        "reason": "follows the 26px text-action target above: the stacked mobile composition is otherwise exact"
+      }
+    ]
+  },
+  {
+    "id": "261-6501-desktop-desktop",
+    "nodeId": "261:6501",
+    "export": "Banner",
+    "storyId": "components-feedback-banner--source-case",
+    "state": "Desktop",
+    "device": "desktop",
+    "layoutScope": "viewport",
+    "width": 852,
+    "viewport": 1200,
+    "depth": 5,
+    "root": "[role=\"status\"]",
+    "subjects": {
+      "Title": "[data-slot=\"banner-title\"]",
+      "Description": "[data-slot=\"banner-description\"]",
+      "Chip": "[data-slot=\"banner-chip\"] > *",
+      "Push": "[data-slot=\"banner-pictogram\"]",
+      "Button": "[data-slot=\"banner-actions\"] > *",
+      "Close": "[data-slot=\"banner-dismiss\"]"
+    },
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the shared 24px action row (+3 on the source 21px text row) plus the retained 1px border on both edges (guides/banners.md)"
+      },
+      {
+        "path": "Button.box.width",
+        "reason": "the shared Button keeps its 8px insets on both sides of the label; the source text action is content-sized (guides/banners.md)"
+      },
+      {
+        "path": "Button.box.height",
+        "reason": "the shared sm action is 24px; the source text action is a content-sized 21px row (guides/banners.md: text-label-mini 14/20)"
+      },
+      {
+        "path": "Close.box.width",
+        "reason": "the 44px native close target; the source close frame is 24px with the glyph below it (guides/banners.md)"
+      },
+      {
+        "path": "Close.box.height",
+        "reason": "the 44px native close target; the source close frame is 24px with the glyph below it (guides/banners.md)"
+      }
+    ],
+    "ignores": ["Chip.radius"]
+  },
+  {
+    "id": "261-6501-mobile-mobile",
+    "nodeId": "261:6501",
+    "export": "Banner",
+    "storyId": "components-feedback-banner--source-case-vertical",
+    "state": "Mobile",
+    "device": "mobile",
+    "width": 852,
+    "viewport": 1200,
+    "depth": 5,
+    "root": "[role=\"status\"]",
+    "subjects": {
+      "Chip": "[data-slot=\"banner-chip\"] > *",
+      "Title": "[data-slot=\"banner-title\"]",
+      "Description": "[data-slot=\"banner-description\"]",
+      "Pictogram": "[data-slot=\"banner-pictogram\"]",
+      "Button": "[data-slot=\"banner-actions\"] > *",
+      "Close": "[data-slot=\"banner-dismiss\"]"
+    },
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the shared 24px action row (+3 on the source 21px text row) plus the retained 1px border on both edges (guides/banners.md)"
+      },
+      {
+        "path": "Button.box.width",
+        "reason": "the shared Button keeps its 8px insets on both sides of the label; the source text action is content-sized (guides/banners.md)"
+      },
+      {
+        "path": "Button.box.height",
+        "reason": "the shared sm action is 24px; the source text action is a content-sized 21px row (guides/banners.md: text-label-mini 14/20)"
+      },
+      {
+        "path": "Close.box.width",
+        "reason": "the 44px native close target; the source close frame is 24px with the glyph below it (guides/banners.md)"
+      },
+      {
+        "path": "Close.box.height",
+        "reason": "the 44px native close target; the source close frame is 24px with the glyph below it (guides/banners.md)"
+      }
+    ],
+    "ignores": ["Chip.radius", "Pictogram.gap"]
+  },
+  {
+    "id": "382-7813-desktop-desktop",
+    "nodeId": "382:7813",
+    "export": "CheckoutModule",
+    "storyId": "components-composites-checkoutmodule--playground",
+    "state": "Desktop",
+    "device": "desktop",
+    "layoutScope": "container",
+    "width": 560,
+    "viewport": 1200,
+    "depth": 3,
+    "root": "[data-slot=\"checkout-module\"]",
+    "subjects": {
+      "Loghi PSP": "[data-slot=\"checkout-brand\"]",
+      "Content": "[data-slot=\"checkout-body\"]",
+      "Title+description": "[data-slot=\"checkout-body\"] > div:first-child",
+      "Algoritmo": "[data-slot=\"checkout-recommendation\"]",
+      ".UnstyledButton": "[data-slot=\"checkout-action\"] > *",
+      "Button": "[data-slot=\"checkout-action\"] > *"
+    },
+    "residues": [
+      {
+        "path": "Content.box.width",
+        "reason": "the retained 1px border stays inside the 16px p-4 inset: the text tracks measure 407.73 against the source 411 (guides/actions.md: border inside the padding)"
+      },
+      {
+        "path": "Title+description.box.width",
+        "reason": "follows the border-inside-the-padding inset above (407.73 against the source 411)"
+      },
+      {
+        "path": "Algoritmo.box.width",
+        "reason": "follows the border-inside-the-padding inset above (407.73 against the source 411)"
+      }
+    ]
+  },
+  {
+    "id": "382-7813-mobile-mobile",
+    "nodeId": "382:7813",
+    "export": "CheckoutModule",
+    "storyId": "components-composites-checkoutmodule--playground",
+    "state": "Mobile",
+    "device": "mobile",
+    "layoutScope": "container",
+    "width": 272,
+    "viewport": 1200,
+    "depth": 4,
+    "root": "[data-slot=\"checkout-module\"]",
+    "subjects": {
+      "Loghi PSP": "[data-slot=\"checkout-brand\"]",
+      "Content": "[data-slot=\"checkout-main\"]",
+      "Title+description": "[data-slot=\"checkout-body\"] > div:first-child",
+      "Algoritmo": "[data-slot=\"checkout-recommendation\"]",
+      ".UnstyledButton": "[data-slot=\"checkout-action\"] > *",
+      "Button": "[data-slot=\"checkout-action\"] > *"
+    },
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the shared sm action row (+2 on the source 22px text row) plus the retained 1px border on both edges"
+      }
+    ],
+    "ignores": ["Button.box.width"]
+  },
+  {
+    "id": "403-4116-desktop-action-desktop",
+    "nodeId": "403:4116",
+    "export": "ProductModule",
+    "storyId": "components-composites-productmodule--with-action",
+    "state": "Desktop|Action",
+    "device": "desktop",
+    "layoutScope": "container",
+    "width": 560,
+    "viewport": 1200,
+    "depth": 5,
+    "root": "[data-slot=\"product-module\"]",
+    "subjects": {
+      "Content group": "[data-slot=\"product-module-content\"]",
+      "Avatar small": "[data-slot=\"product-module-avatar\"]",
+      "Content": "[data-slot=\"product-module-copy\"]",
+      "Title": "[data-slot=\"product-module-title\"]",
+      "Chip": "[data-slot=\"product-module-status\"] > *",
+      "Description": "[data-slot=\"product-module-description\"]",
+      "Button": "[data-product-module-action]",
+      "cached": "[data-product-module-action-icon]"
+    },
+    "residues": [
+      {
+        "path": "Content group.box.width",
+        "reason": "the retained 1px --border stroke stays inside the 16px p-4 inset (narrowing the inner track by 2) and the ghost action measures 182.34 against the source 181 (its transparent border on both edges +2 against the bundled-font label -0.66): the content block measures 327.66 against the source 331, the reviewed 382:7813 border-inside-the-padding reading"
+      },
+      {
+        "path": "Content.box.width",
+        "reason": "follows the Content group.box.width residue above (271.66 against the source 275)"
+      }
+    ],
+    "ignores": ["Chip.radius"]
+  },
+  {
+    "id": "403-4116-desktop-radio-button-desktop",
+    "nodeId": "403:4116",
+    "export": "ProductModule",
+    "storyId": "components-composites-productmodule--playground",
+    "state": "Desktop|Radio button",
+    "device": "desktop",
+    "layoutScope": "container",
+    "width": 560,
+    "viewport": 1200,
+    "depth": 5,
+    "root": "[data-slot=\"product-module\"]",
+    "subjects": {
+      "Content group": "[data-slot=\"product-module-content\"]",
+      "Avatar small": "[data-slot=\"product-module-avatar\"]",
+      "Content": "[data-slot=\"product-module-copy\"]",
+      "Title": "[data-slot=\"product-module-title\"]",
+      "Chip": "[data-slot=\"product-module-status\"] > *",
+      "Description": "[data-slot=\"product-module-description\"]",
+      "radio_button": "[data-slot=\"radio-group-item\"]"
+    },
+    "ignores": ["Chip.radius"]
+  },
+  {
+    "id": "403-4116-mobile-action-mobile",
+    "nodeId": "403:4116",
+    "export": "ProductModule",
+    "storyId": "components-composites-productmodule--action-mobile",
+    "state": "Mobile|Action",
+    "device": "mobile",
+    "layoutScope": "container",
+    "width": 272,
+    "viewport": 1200,
+    "depth": 5,
+    "root": "[data-slot=\"product-module\"]",
+    "subjects": {
+      "Content group": "[data-slot=\"product-module-content\"]",
+      "Avatar small": "[data-slot=\"product-module-avatar\"]",
+      "Content": "[data-slot=\"product-module-copy\"]",
+      "Title": "[data-slot=\"product-module-title\"]",
+      "Chip": "[data-slot=\"product-module-status\"] > *",
+      "Description": "[data-slot=\"product-module-description\"]",
+      "Button": "[data-product-module-action]",
+      "cached": "[data-product-module-action-icon]"
+    },
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the retained 1px --border stroke on both edges adds 2 (the label border-box track) and the stacked ghost action measures 26 against the source 24 (the shared transparent border +2): the card measures 150 against the source 146, the sibling 382:7813 reads the same retained border"
+      }
+    ],
+    "ignores": ["Chip.radius"]
+  },
+  {
+    "id": "403-4116-mobile-radio-button-mobile",
+    "nodeId": "403:4116",
+    "export": "ProductModule",
+    "storyId": "components-composites-productmodule--radio-mobile",
+    "state": "Mobile|Radio button",
+    "device": "mobile",
+    "layoutScope": "container",
+    "width": 272,
+    "viewport": 1200,
+    "depth": 5,
+    "root": "[data-slot=\"product-module\"]",
+    "subjects": {
+      "Content group": "[data-slot=\"product-module-content\"]",
+      "Avatar small": "[data-slot=\"product-module-avatar\"]",
+      "Content": "[data-slot=\"product-module-copy\"]",
+      "Title": "[data-slot=\"product-module-title\"]",
+      "Chip": "[data-slot=\"product-module-status\"] > *",
+      "Description": "[data-slot=\"product-module-description\"]",
+      "radio_button": "[data-slot=\"radio-group-item\"]"
+    },
+    "ignores": ["Chip.radius"]
+  },
+  {
+    "id": "529-6111-enabled",
+    "nodeId": "529:6111",
+    "export": "TextField",
+    "storyId": "components-inputs-textfield--playground",
+    "state": "Enabled",
+    "width": 274,
+    "depth": 3,
+    "root": "input",
+    "subjectRoot": "Input",
+    "subjects": {
+      "Label text": "label"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "Label text.box.height",
+        "reason": "the label element is the source HUG container (26px: the 16/22 text with the 18/26 required marker); the mapped source TEXT layer is its 22px child"
+      }
+    ]
+  },
+  {
+    "id": "529-6111-filled",
+    "nodeId": "529:6111",
+    "export": "TextField",
+    "storyId": "components-inputs-textfield--playground",
+    "state": "filled",
+    "width": 274,
+    "root": "input",
+    "subjectRoot": "Content",
+    "subjects": {
+      "Label text": "label"
+    },
+    "fill": [["input", "Input text"]],
+    "blur": true,
+    "compareOffset": true,
+    "ignores": ["field.box.width", "field.padding.right", "field.padding.left"]
+  },
+  {
+    "id": "602-9417-enabled",
+    "nodeId": "602:9417",
+    "export": "SelectField",
+    "storyId": "components-inputs-selectfield--source-frame",
+    "state": "Enabled",
+    "width": 274,
+    "depth": 3,
+    "root": "#source-select",
+    "subjectRoot": "Input",
+    "subjects": {
+      "Label text": "label[for=\"source-select\"]"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "Label text.box.height",
+        "reason": "the label element is the source HUG container (26px: the 16/22 text with the 18/26 required marker); the mapped source TEXT layer is its 22px child"
+      }
+    ]
+  },
+  {
+    "id": "602-9417-filled",
+    "nodeId": "602:9417",
+    "export": "SelectField",
+    "storyId": "components-inputs-selectfield--source-frame",
+    "state": "filled",
+    "width": 274,
+    "root": "#source-select",
+    "subjectRoot": "Active",
+    "subjects": {
+      "Label text": "label[for=\"source-select\"]"
+    },
+    "click": ["#source-select", "[role=\"option\"]"],
+    "compareOffset": true,
+    "ignores": ["field.box.width", "field.padding.right", "field.padding.left"]
+  },
+  {
+    "id": "731-20386-desktop-desktop",
+    "nodeId": "731:20386",
+    "export": "IDModule",
+    "storyId": "components-composites-idmodule--desktop",
+    "state": "desktop",
+    "device": "desktop",
+    "width": 410,
+    "viewport": 410,
+    "depth": 4,
+    "root": "[data-id-module]",
+    "subjects": {
+      "Header drawer": "[data-id-module-header]",
+      "🟣✅ [ID: \"pages.initiativeUserDetails.operationTypes.paidRefund\"] Cosa devi pagare?": "[data-id-module-title]",
+      "close": "[data-id-module-close] > span",
+      "IDP modules": "[data-id-module-providers]",
+      ".IDPSingleModule": "[data-id-module-provider=\"poste-id\"]",
+      "Nome servizio": "[data-id-module-provider-label]",
+      "Identity Provider": "[data-id-module-provider-logo]"
+    },
+    "compareOffset": true,
+    "note": "no layoutScope: the composition is the caller device prop (the source Device axis is the caller choice, not a width that flips it) — the two exports render one device each and the tool declared-axis probe has nothing to move (the 123:4498 ButtonGroup precedent)"
+  },
+  {
+    "id": "731-20386-mobile-mobile",
+    "nodeId": "731:20386",
+    "export": "IDModule",
+    "storyId": "components-composites-idmodule--playground",
+    "state": "mobile",
+    "device": "mobile",
+    "width": 320,
+    "viewport": 320,
+    "depth": 4,
+    "root": "[data-id-module]",
+    "subjects": {
+      "Header drawer": "[data-id-module-header]",
+      "🟣✅ [ID: \"pages.initiativeUserDetails.operationTypes.paidRefund\"] Cosa devi pagare?": "[data-id-module-title]",
+      "close": "[data-id-module-close] > span",
+      "IDP modules": "[data-id-module-providers]",
+      ".IDPSingleModule": "[data-id-module-provider=\"poste-id\"]",
+      "Nome servizio": "[data-id-module-provider-label]",
+      "Identity Provider": "[data-id-module-provider-logo]"
+    },
+    "compareOffset": true,
+    "note": "no layoutScope: the composition is the caller device prop (the source Device axis is the caller choice, not a width that flips it) — the two exports render one device each and the tool declared-axis probe has nothing to move (the 123:4498 ButtonGroup precedent)"
+  },
+  {
+    "id": "733-22841-desktop-desktop",
+    "nodeId": "733:22841",
+    "export": "OKState",
+    "storyId": "components-feedback-okstate--playground",
+    "state": "desktop",
+    "device": "desktop",
+    "layoutScope": "viewport",
+    "width": 900,
+    "viewport": 900,
+    "depth": 4,
+    "root": "section",
+    "subjects": {
+      "Content": "section > div:first-child",
+      "pictograms/deco/payment completed": "section > div:first-child > div:first-child",
+      "Message": "section > div:first-child > div:last-child",
+      "Title": "section h2",
+      "Description": "section p"
+    },
+    "compareOffset": true
+  },
+  {
+    "id": "733-22841-mobile-mobile",
+    "nodeId": "733:22841",
+    "export": "OKState",
+    "storyId": "components-feedback-okstate--playground",
+    "state": "mobile",
+    "device": "mobile",
+    "layoutScope": "viewport",
+    "width": 320,
+    "viewport": 320,
+    "depth": 4,
+    "root": "section",
+    "subjects": {
+      "Content": "section > div:first-child",
+      "pictograms/deco/payment completed": "section > div:first-child > div:first-child",
+      "Message": "section > div:first-child > div:last-child",
+      "Title": "section h2",
+      "Description": "section p"
+    },
+    "compareOffset": true
+  },
+  {
+    "id": "749-5695-desktop-desktop",
+    "nodeId": "749:5695",
+    "export": "KOState",
+    "storyId": "components-feedback-kostate--source-desktop",
+    "state": "desktop",
+    "device": "desktop",
+    "layoutScope": "viewport",
+    "width": 900,
+    "viewport": 900,
+    "depth": 3,
+    "root": "section",
+    "subjects": {
+      "Content": "section > div:first-child",
+      "pictograms/deco/payment completed": "section > div:first-child > div:first-child",
+      "Message": "section > div:first-child > div:last-child",
+      "Title": "section h2",
+      "Description": "section p",
+      "Code error input": "[data-slot=\"ko-error-code-field\"]"
+    },
+    "compareOffset": true,
+    "ignores": ["Content.box.height"]
+  },
+  {
+    "id": "749-5695-mobile-mobile",
+    "nodeId": "749:5695",
+    "export": "KOState",
+    "storyId": "components-feedback-kostate--source-mobile",
+    "state": "mobile",
+    "device": "mobile",
+    "layoutScope": "viewport",
+    "width": 320,
+    "viewport": 320,
+    "depth": 3,
+    "root": "section",
+    "subjects": {
+      "Content": "section > div:first-child",
+      "pictograms/deco/payment completed": "section > div:first-child > div:first-child",
+      "Message": "section > div:first-child > div:last-child",
+      "Title": "section h2",
+      "Description": "section p",
+      "Code error input": "[data-slot=\"ko-error-code-field\"]"
+    },
+    "compareOffset": true,
+    "ignores": ["Content.box.height"]
+  },
+  {
+    "id": "749-5867-desktop",
+    "nodeId": "749:5867",
+    "export": "WaitingState",
+    "storyId": "components-feedback-waitingstate--source-frame",
+    "state": "desktop",
+    "device": "desktop",
+    "layoutScope": "viewport",
+    "width": 900,
+    "depth": 3,
+    "root": "section",
+    "subjects": {
+      "Title": "section h2",
+      "Description": "section p"
+    },
+    "compareOffset": true
+  },
+  {
+    "id": "749-5867-mobile",
+    "nodeId": "749:5867",
+    "export": "WaitingState",
+    "storyId": "components-feedback-waitingstate--source-frame",
+    "state": "mobile",
+    "device": "mobile",
+    "layoutScope": "viewport",
+    "width": 320,
+    "depth": 3,
+    "root": "section",
+    "subjects": {
+      "Title": "section h2",
+      "Description": "section p"
+    },
+    "compareOffset": true
+  },
+  {
+    "id": "757-6288-desktop",
+    "nodeId": "757:6288",
+    "export": "ProductCard",
+    "storyId": "components-data-display-productcard--source-image",
+    "state": "desktop",
+    "device": "desktop",
+    "layoutScope": "viewport",
+    "width": 272,
+    "viewport": 1440,
+    "depth": 3,
+    "root": "[data-testid=\"image-product\"]",
+    "subjects": {
+      "Head": "[data-testid=\"image-product\"] h3",
+      "Description": "[data-slot=\"card-description\"]",
+      "Button": "[data-testid=\"image-product\"] button"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "Description.font.color",
+        "reason": "source card fill #17324d is a raw unpublished colour; the library keeps the semantic grey-700 (guides/product-cards.md)"
+      },
+      {
+        "path": "Button.box.width",
+        "reason": "bundled-font metrics: the label measures 111.67px against the source 108px (+3.67px), no padding chasing"
+      }
+    ],
+    "ignores": ["field.padding.top", "field.padding.bottom", "field.gap"]
+  },
+  {
+    "id": "757-6288-mobile",
+    "nodeId": "757:6288",
+    "export": "ProductCard",
+    "storyId": "components-data-display-productcard--source-image",
+    "state": "mobile",
+    "device": "mobile",
+    "layoutScope": "viewport",
+    "width": 272,
+    "viewport": 390,
+    "depth": 3,
+    "root": "[data-testid=\"image-product\"]",
+    "subjects": {
+      "Head": "[data-testid=\"image-product\"] h3",
+      "Description": "[data-slot=\"card-description\"]",
+      "Button": "[data-testid=\"image-product\"] button"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "Description.font.color",
+        "reason": "source card fill #17324d is a raw unpublished colour; the library keeps the semantic grey-700 (guides/product-cards.md)"
+      },
+      {
+        "path": "Button.box.width",
+        "reason": "bundled-font metrics: the label measures 111.67px against the source 108px (+3.67px), no padding chasing"
+      }
+    ],
+    "ignores": ["field.padding.top", "field.padding.bottom", "field.gap"]
+  },
+  {
+    "id": "1042-18133-desktop-default-desktop",
+    "nodeId": "1042:18133",
+    "export": "Dialog",
+    "storyId": "components-overlays-dialog--source-case",
+    "state": "Desktop|Default",
+    "device": "desktop",
+    "layoutScope": "viewport",
+    "width": 600,
+    "viewport": 1200,
+    "depth": 5,
+    "root": "[role=\"dialog\"]",
+    "subjects": {
+      "Dialog Title": "[role=\"dialog\"] h2",
+      "Description": "[role=\"dialog\"] p",
+      "Checkbox with label": "[data-slot=\"checkbox-field\"]",
+      "Block buttons": "[data-slot=\"dialog-footer\"]"
+    },
+    "click": ["#storybook-root button"],
+    "compareOffset": true,
+    "expectState": "open",
+    "stateEvidence": "[role=\"dialog\"]",
+    "residues": [
+      {
+        "path": "Checkbox with label.gap",
+        "reason": "the source 8px option-row gap lives on the inner label row in the DOM; the 2px field gap belongs to the message stack (the 1909:98992 reading)"
+      }
+    ]
+  },
+  {
+    "id": "1042-18133-mobile-default-mobile",
+    "nodeId": "1042:18133",
+    "export": "Dialog",
+    "storyId": "components-overlays-dialog--source-case",
+    "state": "Mobile|Default",
+    "device": "mobile",
+    "layoutScope": "viewport",
+    "width": 272,
+    "viewport": 320,
+    "depth": 5,
+    "root": "[role=\"dialog\"]",
+    "subjects": {
+      "Dialog Title": "[role=\"dialog\"] h2",
+      "Description": "[role=\"dialog\"] p",
+      "Checkbox with label": "[data-slot=\"checkbox-field\"]",
+      "Block buttons": "[data-slot=\"dialog-footer\"]"
+    },
+    "click": ["#storybook-root button"],
+    "compareOffset": true,
+    "expectState": "open",
+    "stateEvidence": "[role=\"dialog\"]",
+    "residues": [
+      {
+        "path": "Checkbox with label.gap",
+        "reason": "the source 8px option-row gap lives on the inner label row in the DOM; the 2px field gap belongs to the message stack (the 1909:98992 reading)"
+      },
+      {
+        "path": "Block buttons.box.height",
+        "reason": "the shared ghost action keeps its 48px minimum native target where the source mobile secondary is a 22px content-sized row (48+16+48 against the source 48+16+22, guides/actions.md)"
+      },
+      {
+        "path": "field.box.height",
+        "reason": "follows the Block buttons.box.height residue (+26)"
+      }
+    ]
+  },
+  {
+    "id": "1120-7458-back-office-io-desktop",
+    "nodeId": "1120:7458",
+    "export": "SideNav",
+    "storyId": "components-navigation-sidenav--nested-and-profile",
+    "state": "Back Office IO",
+    "device": "desktop",
+    "layoutScope": "viewport",
+    "width": 300,
+    "viewport": 1200,
+    "depth": 6,
+    "root": "nav > div > div.mt-6",
+    "subjectRoot": ".Profile item",
+    "subjects": {
+      "Description": "nav > div > div.mt-6 span.text-label-mini",
+      "Value": "nav > div > div.mt-6 span.text-body-big-sb",
+      "Container": "nav > div > div.mt-6 > div.flex.items-center",
+      "Gravatar": "nav > div > div.mt-6 [data-slot=\"avatar\"]",
+      "Content": "nav > div > ul > li:first-child > a"
+    },
+    "residues": [
+      {
+        "path": "Gravatar.radius",
+        "reason": "the shared Avatar keeps its documented proportional compact radius (5.82 at 32px); the source Gravatar placeholder draws a circle (the Avatar guide: other sizes/radii are proportional adaptations)"
+      }
+    ],
+    "ignores": ["Gravatar.gap", "Gravatar.border.color", "Content.box.width"],
+    "note": "Composition check off: the story composes the profile block below the items where the source mockup places it first (the item offset reads -312 against the source 103), so the mapped offsets are clean in the block (Description 0, Value 22, Gravatar left 24/top 19) and the item rhythm is verified as its own subject."
+  },
+  {
+    "id": "1120-7458-side-nav-condensed-mobile",
+    "nodeId": "1120:7458",
+    "export": "SideNav",
+    "storyId": "components-navigation-sidenav--playground",
+    "state": "Side nav Condensed",
+    "device": "mobile",
+    "layoutScope": "viewport",
+    "width": 320,
+    "viewport": 320,
+    "depth": 5,
+    "root": "details > summary",
+    "subjectRoot": "Head",
+    "subjects": {
+      "Menu": "details > summary > span.min-w-0",
+      "Bounding box": "details > summary > [data-figma-node-id]"
+    },
+    "ignores": ["Bounding box.background"],
+    "note": "The declared condensed head (device mobile): the source draws a 320x48 Head with the menu icon and a placeholder label plus a 320x1 Divider; the DOM summary carries the divider as its own 1px border-b (49 against the source 48+1), shows the section name where the source's 'Menu' is placeholder copy (the fixture owns its copy) and adds the disclosure chevron."
+  },
+  {
+    "id": "1278-6527-1278-6526-mobile",
+    "nodeId": "1278:6527",
+    "export": "Drawer",
+    "storyId": "components-overlays-drawer--source-mobile",
+    "device": "mobile",
+    "variant": "1278:6526",
+    "width": 320,
+    "viewport": 320,
+    "height": 646,
+    "depth": 3,
+    "root": "[data-slot=\"drawer-content\"]",
+    "subjects": {},
+    "compareText": true,
+    "compareBox": "full",
+    "compareOffset": true,
+    "note": "Editorial mobile bottom sheet: full source height, source-flow description and action spacing; no decorative handle."
+  },
+  {
+    "id": "1278-6527-1278-6528-desktop",
+    "nodeId": "1278:6527",
+    "export": "Drawer",
+    "storyId": "components-overlays-drawer--source-desktop",
+    "device": "desktop",
+    "variant": "1278:6528",
+    "width": 417,
+    "viewport": 1200,
+    "height": 800,
+    "depth": 3,
+    "root": "[data-slot=\"drawer-content\"]",
+    "subjects": {},
+    "compareText": true,
+    "compareBox": "full",
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.box.width",
+        "reason": "Nearest width token w-104 is 416px against the fixed 417px source (1px residue)."
+      }
+    ],
+    "note": "Editorial desktop: source-flow content and 417px panel; the nearest width token is 416px."
+  },
+  {
+    "id": "1298-5209-logo-false-mobile",
+    "nodeId": "1298:5209",
+    "export": "Header",
+    "storyId": "components-navigation-header--playground",
+    "state": "Logo=False",
+    "device": "mobile",
+    "layoutScope": "viewport",
+    "variant": "1298:5148",
+    "width": 320,
+    "viewport": 320,
+    "depth": 5,
+    "root": "header",
+    "subjects": {
+      "Links group": "header > div",
+      "Nome del prodotto": "header > div a span.truncate",
+      "chevron": "header > div a [data-figma-node-id]",
+      "keyboard_arrow_down": "header > div a [data-figma-node-id]",
+      "Avatar small": "header > div [data-slot=\"avatar-identity\"]"
+    },
+    "residues": [
+      {
+        "path": "responsive.clipped.span.truncate.text-title-sm-mobile",
+        "reason": "the story real product name is longer than the 320 band identity slot: the label is the growing slot last flexible item and truncates last with the full name still announced, the adaptation the 2026-10-15 mobile review recorded (the source Logo=True mobile variant drops the label; the library keeps it painted)"
+      },
+      {
+        "path": "responsive.truncated.span.truncate.text-title-sm-mobile",
+        "reason": "the story real product name is longer than the 320 band identity slot: the label is the growing slot last flexible item and truncates last with the full name still announced, the adaptation the 2026-10-15 mobile review recorded (the source Logo=True mobile variant drops the label; the library keeps it painted)"
+      }
+    ],
+    "ignores": ["keyboard_arrow_down.box.width", "keyboard_arrow_down.box.height"],
+    "note": "The source's `Device=Mobile, Logo=False` identity (1298:5148): the label 20/32 Bold and the `Icon/Neutral` chevron, the 44px avatar on the 76px row. The two responsive residues are the story's real product name exceeding the 320 identity slot - the label truncates last with the full name announced. The logo identity lives in `WithActions`."
+  },
+  {
+    "id": "1298-5209-logo-false-desktop",
+    "nodeId": "1298:5209",
+    "export": "Header",
+    "storyId": "components-navigation-header--playground",
+    "state": "Logo=False",
+    "device": "desktop",
+    "layoutScope": "viewport",
+    "variant": "1298:5227",
+    "width": 1200,
+    "viewport": 1200,
+    "depth": 5,
+    "root": "header",
+    "subjects": {
+      "Links group": "header > div",
+      "Nome del prodotto": "header > div a span.truncate",
+      "chevron": "header > div a [data-figma-node-id]",
+      "keyboard_arrow_down": "header > div a [data-figma-node-id]",
+      "Avatar small": "header > div [data-slot=\"avatar-identity\"]",
+      "Profile": "header > div > div > a",
+      "User name": "header > div > div > a span.sr-only",
+      "Nome ente padre": "header > div > div > a span.text-label-mini-sb",
+      "Nome ente figlio davvero molto lungo": "header > div > div > a span.text-body-big-sb",
+      "Lorem Ipsum dolor si": "header > div > div > a span.text-label-mini"
+    },
+    "residues": [
+      {
+        "path": "Links group.gap",
+        "reason": "the source lays two fixed 576px halves side by side with a 0 gap; the DOM grows the product block (flex-1) and reserves 24px before the shrink-0 user block (the trailing slot never gives way)"
+      },
+      {
+        "path": "Profile.box.width",
+        "reason": "the source profile half is a fixed 576px frame; the DOM sizes the block by content and justify-between places it at the right edge (ADR-0004 R4: never encode a source frame width as a component dimension)"
+      },
+      {
+        "path": "User name.box.width",
+        "reason": "the source text column is a fixed 306px frame width; the DOM lets the stack hug its text (ADR-0004 R4: never encode a source frame width as a component dimension)"
+      }
+    ],
+    "ignores": ["keyboard_arrow_down.box.width", "keyboard_arrow_down.box.height"],
+    "note": "Composition check off: the source lays two fixed 576px halves and a fixed 306px text column (the profile at absolute x 600, the avatar at 786, the texts at 838), while the DOM distributes fluidly (product flex-1, user block content-sized, justify-between), so only the mapped values and the user stack's sibling order are comparable - the order (parent 14/20, name 18/26, role 14/20) matches the source. Enable `--compare-offset` together with the `offset.*` residues when the fixed halves are reviewed."
+  },
+  {
+    "id": "1298-5299-generic-desktop",
+    "nodeId": "1298:5299",
+    "export": "Preheader",
+    "storyId": "components-navigation-preheader--with-actions",
+    "state": "generic",
+    "device": "desktop",
+    "layoutScope": "viewport",
+    "width": 1200,
+    "viewport": 1200,
+    "depth": 4,
+    "root": "#storybook-root > div",
+    "subjects": {
+      "Privacy Policy Socie": "#storybook-root > div > div > a",
+      "Actions block": "#storybook-root > div > div > div",
+      "menu_book": "#storybook-root > div > div > div nav li:first-child a > span:first-child",
+      "support": "#storybook-root > div > div > div nav li:nth-child(2) a > span:first-child",
+      "Button": "#storybook-root > div > div > div > button"
+    },
+    "residues": [
+      {
+        "path": "Actions block.box.width",
+        "reason": "the source layout draws the Actions block as a fixed 576px half of the 1200 band with the items right-aligned; the DOM block hugs them (418.14) at the same right edge 1176 (ADR-0004 R4: never encode a source frame width as a component dimension; the 1298:5209 reading)"
+      }
+    ],
+    "note": "the composition check stays off: Privacy Policy Socie.offset.top measures 8 against the source 17 (the min-h-10 link row centres the 14/20 glyph at 18, 1px from the source) and Actions block.offset.left 757.86 against the source 600 (the fixed 576px half, the Actions block.box.width residue)"
+  },
+  {
+    "id": "1298-5299-generic-mobile",
+    "nodeId": "1298:5299",
+    "export": "Preheader",
+    "storyId": "components-navigation-preheader--with-actions",
+    "state": "generic",
+    "device": "mobile",
+    "layoutScope": "viewport",
+    "width": 320,
+    "viewport": 320,
+    "depth": 4,
+    "root": "#storybook-root > div",
+    "subjects": {
+      "Privacy Policy Socie": "#storybook-root > div > div > a",
+      "Actions block": "#storybook-root > div > div > div",
+      "support": "#storybook-root > div > div > div nav li:nth-child(2) a > span:first-child",
+      "Button": "#storybook-root > div > div > div > button"
+    },
+    "residues": [
+      {
+        "path": "Actions block.box.width",
+        "reason": "the mobile mockup drops the Manuale operativo link to fit at 320; the library keeps both source links (a device composition hides text, never information), so the block measures 179.5 against 138 (the 40px icon link + the button 1.5px bundled-font metrics)"
+      }
+    ],
+    "note": "the composition check stays off: Privacy Policy Socie.offset.top measures 8 against the source 18 (the min-h-10 link row centres the 14/20 glyph) and Actions block.offset.left 116.5 against the source 158 (the extra link, the Actions block.box.width residue)"
+  },
+  {
+    "id": "1314-10512-desktop-desktop",
+    "nodeId": "1314:10512",
+    "export": "Stepper",
+    "storyId": "components-navigation-stepper--with-descriptions",
+    "state": "desktop",
+    "device": "desktop",
+    "layoutScope": "viewport",
+    "width": 1200,
+    "viewport": 1200,
+    "depth": 5,
+    "root": "#storybook-root > div > ol",
+    "subjects": {
+      "Base Step Elements": "#storybook-root > div > ol > li:first-child > div > div:first-child > span",
+      "Number": "#storybook-root > div > ol > li:nth-child(2) > div > div:first-child > span",
+      "Step title": "#storybook-root > div > ol > li:first-child > div > div:nth-child(2) > p:first-child",
+      "Description": "#storybook-root > div > ol > li:first-child > div > div:nth-child(2) > p:nth-child(2)"
+    },
+    "ignores": ["Number.gap"],
+    "note": "the composition check stays off: the fixture draws 3 steps whose copy hugs (135.3px) where the mockup draws 7 placeholder steps 71px wide, so the mapped marker offsets follow the step width and the grid pitch (Base Step Elements.offset.left 52.94 against the source 23.5; Number 455.64 against 211.67)"
+  },
+  {
+    "id": "1314-10512-mobile-mobile",
+    "nodeId": "1314:10512",
+    "export": "Stepper",
+    "storyId": "components-navigation-stepper--with-descriptions",
+    "state": "mobile",
+    "device": "mobile",
+    "layoutScope": "viewport",
+    "width": 1200,
+    "viewport": 320,
+    "depth": 5,
+    "root": "#storybook-root > div > div",
+    "subjects": {
+      "Content": "#storybook-root > div > div > div",
+      "Frame 2286": "#storybook-root > div > div > ol",
+      "Base Step Elements": "#storybook-root > div > div > ol > li:first-child > span:last-child",
+      ".Numbered placeholder": "#storybook-root > div > div > ol > li:nth-of-type(2) > span:last-child",
+      "Step title": "#storybook-root > div > div > div > p:first-child",
+      "Description": "#storybook-root > div > div > div > p:nth-child(2)"
+    },
+    "residues": [
+      {
+        "path": "Content.box.width",
+        "reason": "the mockup draws its placeholder copy (Step title/Description, 71px); the fixture copy measures 135.3 in the bundled source font (the fixture-copy reading, no padding chasing)"
+      }
+    ],
+    "ignores": [".Numbered placeholder.gap"],
+    "note": "the composition check stays off: the fixture draws 3 steps and a longer current-step copy (135.3 against the mockup 71), so the mapped numbered slot sits at 588 where the mockup 7-marker row sits at 196 (.Numbered placeholder.offset.left); the copy-to-row gap (16) and the row geometry match"
+  },
+  {
+    "id": "1317-10404-default-desktop",
+    "nodeId": "1317:10404",
+    "export": "HeaderAlert",
+    "storyId": "components-feedback-headeralert--source-case",
+    "state": "default",
+    "device": "desktop",
+    "width": 1200,
+    "viewport": 1200,
+    "depth": 4,
+    "root": "#storybook-root > div",
+    "subjects": {
+      "Content": "[data-slot=\"header-alert-content\"]",
+      "kid_star": "[data-slot=\"header-alert-content\"] > [data-figma-node-id=\"98:1250\"]",
+      "Lorem ipsum": "[data-slot=\"header-alert-content\"] > div",
+      ".UnstyledButton": "[data-slot=\"header-alert-action\"] button",
+      "cached": "[data-slot=\"header-alert-action\"] button [data-figma-node-id=\"98:994\"]",
+      "Button": "[data-slot=\"header-alert-action\"] button > span:last-child"
+    },
+    "compareOffset": true,
+    "ignores": ["field.gap"]
+  },
+  {
+    "id": "1317-10404-default-mobile",
+    "nodeId": "1317:10404",
+    "export": "HeaderAlert",
+    "storyId": "components-feedback-headeralert--source-case",
+    "state": "default",
+    "device": "mobile",
+    "width": 320,
+    "viewport": 320,
+    "depth": 4,
+    "root": "#storybook-root > div",
+    "subjects": {
+      "Content": "[data-slot=\"header-alert-content\"]",
+      "kid_star": "[data-slot=\"header-alert-content\"] > [data-figma-node-id=\"98:1250\"]",
+      "Lorem ipsum": "[data-slot=\"header-alert-content\"] > div",
+      ".UnstyledButton": "[data-slot=\"header-alert-action\"] button",
+      "cached": "[data-slot=\"header-alert-action\"] button [data-figma-node-id=\"98:994\"]",
+      "Button": "[data-slot=\"header-alert-action\"] button > span:last-child"
+    },
+    "compareOffset": true,
+    "ignores": ["field.gap", "field.padding.left", "field.padding.right"]
+  },
+  {
+    "id": "1317-10404-warning-desktop",
+    "nodeId": "1317:10404",
+    "export": "HeaderAlert",
+    "storyId": "components-feedback-headeralert--source-tone",
+    "state": "warning",
+    "device": "desktop",
+    "width": 1200,
+    "viewport": 1200,
+    "depth": 4,
+    "root": "#storybook-root > div",
+    "subjects": {
+      "warning": "[data-slot=\"header-alert-content\"] > span",
+      "Ambiente di collaudo: attenzione i dati non devono essere reali": "[data-slot=\"header-alert-content\"] > div"
+    },
+    "compareOffset": true,
+    "ignores": ["field.gap"]
+  },
+  {
+    "id": "1317-10404-warning-mobile",
+    "nodeId": "1317:10404",
+    "export": "HeaderAlert",
+    "storyId": "components-feedback-headeralert--source-tone",
+    "state": "warning",
+    "device": "mobile",
+    "width": 320,
+    "viewport": 320,
+    "depth": 4,
+    "root": "#storybook-root > div",
+    "subjects": {
+      "warning": "[data-slot=\"header-alert-content\"] > span",
+      "Ambiente di collaudo: attenzione i dati non devono essere reali": "[data-slot=\"header-alert-content\"] > div"
+    },
+    "compareOffset": true,
+    "ignores": ["field.gap"]
+  },
+  {
+    "id": "1344-40672-default-desktop",
+    "nodeId": "1344:40672",
+    "export": "TableCellRow",
+    "storyId": "components-data-display-table--cell-composition",
+    "state": "default",
+    "device": "desktop",
+    "width": 645,
+    "viewport": 1200,
+    "depth": 5,
+    "root": "#storybook-root tbody tr:first-child",
+    "subjects": {
+      ".Table cell": "#storybook-root tbody tr:first-child > th",
+      "Cell": "#storybook-root tbody tr:first-child > th > a"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": ".Table cell.box.width",
+        "reason": "the story draws two columns; the source sample draws its seven cells fixed (114/153/59/59/59/89/112), so the growing first column takes the remaining track (380.45 against 114)"
+      }
+    ],
+    "ignores": [".Table cell.gap"]
+  },
+  {
+    "id": "1349-22020-default-desktop",
+    "nodeId": "1349:22020",
+    "export": "Table",
+    "storyId": "components-data-display-table--source-desktop",
+    "state": "default",
+    "device": "desktop",
+    "layoutScope": "container",
+    "width": 852,
+    "viewport": 1200,
+    "depth": 4,
+    "root": "#storybook-root section",
+    "subjects": {
+      "Content": "#storybook-root [data-slot=\"table-container\"]",
+      "Table header": "#storybook-root thead",
+      ".TableHeaderSingleItem": "#storybook-root thead th:first-child",
+      ".Table cell": "#storybook-root tbody tr:first-child > td:first-child",
+      "Pagination group": "#storybook-root section > div:last-child"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": ".TableHeaderSingleItem.box.width",
+        "reason": "the source mockup draws its seven columns from its own placeholder layers (124.2/124.2/126/124.2/124.2/89/124.2); the DOM auto-layouts the columns from the fixture content, so the first column measures 98.08 against 128 (the 1344:40672 reading)"
+      },
+      {
+        "path": ".Table cell.box.width",
+        "reason": "follows the auto table layout above: the first cell measures 98.08 against the source 124.2"
+      }
+    ],
+    "ignores": [".TableHeaderSingleItem.gap", ".Table cell.gap", "Pagination group.gap"]
+  },
+  {
+    "id": "1349-22020-default-mobile",
+    "nodeId": "1349:22020",
+    "export": "Table",
+    "storyId": "components-data-display-table--source-mobile",
+    "state": "default",
+    "device": "mobile",
+    "layoutScope": "container",
+    "width": 272,
+    "viewport": 1200,
+    "depth": 4,
+    "root": "#storybook-root section",
+    "subjects": {
+      "Cell group": "#storybook-root tbody",
+      "Table cell row": "#storybook-root tbody tr:first-child",
+      ".Table cell": "#storybook-root tbody tr:first-child > td:first-child",
+      "Pagination group": "#storybook-root section > div:last-child"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "follows the 15-vs-8 card stack and the caller pager 44 against the source 46"
+      },
+      {
+        "path": "Cell group.box.height",
+        "reason": "the fixture draws 15 cards where the mobile mockup draws 8, so the stack measures 7469 against 3943; each card follows its own +6 residue"
+      },
+      {
+        "path": "Table cell row.box.height",
+        "reason": "the card measures 498 against the source 492: the six fields measure 70/70/70/70/73/72 against the mockup 67/67/78/68/68/72 — the guide 4px label gap above every value plus the 22px body line where the mockup draws 21 add +3 to each text field, and the mockup draws its 78px tag field third where the story column order draws it fifth"
+      },
+      {
+        "path": ".Table cell.box.height",
+        "reason": "the first field measures 70 against the source 67: the guide 4px label gap and the bounded 22px line against the mockup 2px gap and 21px line (guides/tables.md)"
+      },
+      {
+        "path": "Cell group.offset.top",
+        "reason": "the library retains the visible mobile sorting row (guides/tables.md: 44px targets and visible mobile sorting) where the source mobile mockup drops the header entirely, so the card stack starts 105 below the root against the source 8"
+      },
+      {
+        "path": "Table cell row.offset.top",
+        "reason": "follows the retained visible sorting row above (105 against 8)"
+      },
+      {
+        "path": ".Table cell.offset.top",
+        "reason": "follows the retained visible sorting row: the first field starts 113 below the root against the source 16 (8 + the source card inset)"
+      },
+      {
+        "path": "Pagination group.offset.top",
+        "reason": "follows the 15-vs-8 card stack above (7582 against 3959)"
+      }
+    ],
+    "ignores": ["Table cell row.gap", ".Table cell.gap", "Pagination group.gap"]
+  },
+  {
+    "id": "1360-20138-true-desktop",
+    "nodeId": "1360:20138",
+    "export": "Footer",
+    "storyId": "components-navigation-footer--playground",
+    "state": "True",
+    "device": "desktop",
+    "layoutScope": "viewport",
+    "width": 1200,
+    "viewport": 1200,
+    "depth": 4,
+    "root": "#storybook-root footer",
+    "subjects": {
+      "Footer content": "#storybook-root footer > div:first-child",
+      "Logo": "#storybook-root footer > div:first-child > a",
+      "Links": "#storybook-root footer > div:first-child > ul",
+      "Privacy Policy Socie": "#storybook-root footer > div:first-child > ul > li:first-child > a",
+      ".CompanyInformation": "#storybook-root footer > div:last-child",
+      "Content": "#storybook-root footer > div:last-child > div"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "Logo.box.width",
+        "reason": "the source draws the pagoPA logo artwork (114x32); the library brand is the caller-owned slot and the fixture uses the default wordmark, 88.55 in the bundled font against the artwork (no logo asset in the package)"
+      },
+      {
+        "path": "Links.box.width",
+        "reason": "the source frame takes the band remainder with the items right-aligned inside (1014 from 162.48); the DOM row hugs its items (762.72) at the same right edge 1176 (ADR-0004 R4: a source frame width is never a component dimension)"
+      },
+      {
+        "path": "Links.offset.left",
+        "reason": "follows the hugging row above (413.28 against the source frame 162.48; both right edges sit at 1176)"
+      }
+    ],
+    "ignores": ["Content.gap"]
+  },
+  {
+    "id": "1360-20138-true-mobile",
+    "nodeId": "1360:20138",
+    "export": "Footer",
+    "storyId": "components-navigation-footer--playground",
+    "state": "True",
+    "device": "mobile",
+    "layoutScope": "viewport",
+    "width": 320,
+    "viewport": 320,
+    "depth": 4,
+    "root": "#storybook-root footer",
+    "subjects": {
+      "Links": "#storybook-root footer > div:first-child",
+      "Logo": "#storybook-root footer > div:first-child > a",
+      "Privacy Policy Socie": "#storybook-root footer > div:first-child > ul > li:first-child > a",
+      ".CompanyInformation": "#storybook-root footer > div:last-child",
+      "Content": "#storybook-root footer > div:last-child > div"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "Logo.box.width",
+        "reason": "the source draws the pagoPA logo artwork (114x32); the library brand is the caller-owned slot and the fixture uses the default wordmark, 88.55 in the bundled font against the artwork (no logo asset in the package)"
+      },
+      {
+        "path": "Logo.offset.left",
+        "reason": "follows the wordmark width: centred 115.72 against the artwork 102.76"
+      }
+    ],
+    "ignores": ["Links.gap", "Content.gap"]
+  },
+  {
+    "id": "1360-20138-true-tablet",
+    "nodeId": "1360:20138",
+    "export": "Footer",
+    "storyId": "components-navigation-footer--playground",
+    "state": "True",
+    "device": "tablet",
+    "layoutScope": "viewport",
+    "width": 900,
+    "viewport": 900,
+    "depth": 4,
+    "root": "#storybook-root footer",
+    "subjects": {
+      "Footer content": "#storybook-root footer > div:first-child",
+      "Logo": "#storybook-root footer > div:first-child > a",
+      "Links": "#storybook-root footer > div:first-child > ul",
+      "Privacy Policy Socie": "#storybook-root footer > div:first-child > ul > li:first-child > a",
+      ".CompanyInformation": "#storybook-root footer > div:last-child",
+      "Content": "#storybook-root footer > div:last-child > div"
+    },
+    "residues": [
+      {
+        "path": "Footer content.box.height",
+        "reason": "the tablet mockup draws its link text nodes 24 tall (the desktop variant draws 20), so its wrapped item is 44 and the band 92; the DOM keeps the real 14/20 line boxes (two lines 40, the band 88)"
+      },
+      {
+        "path": "Links.box.height",
+        "reason": "follows the mockup 24px text boxes above: the DOM row measures the two 20px lines (40 against 44)"
+      },
+      {
+        "path": "field.box.height",
+        "reason": "follows the band and company offsets: the company band 89 is exact, so the page is 178 against 182"
+      },
+      {
+        "path": "Footer content.gap",
+        "reason": "the mockup narrows the band gap to its own 900-frame leftover (16 = 852 minus the 114px artwork and the 722px link row); the library keeps the single sm step of 24 (the tablet frame has no exact breakpoint: do not chase it), so the remainder is 24 with the 88.55 wordmark"
+      },
+      {
+        "path": "Logo.box.width",
+        "reason": "the source draws the pagoPA logo artwork (114x32); the library brand is the caller-owned slot and the fixture uses the default wordmark, 88.55 in the bundled font (no logo asset in the package)"
+      },
+      {
+        "path": "Logo.box.height",
+        "reason": "the tablet mockup Logo frame is 24 tall (its artwork child is 32, the desktop variant draws 32); the DOM brand keeps its 32px line box"
+      },
+      {
+        "path": "Links.box.width",
+        "reason": "the source frame takes the band remainder with the items right-aligned inside (722 from 154.48, ending 876.48); the DOM row takes the remainder after the wordmark and the 24px gap (739.45), both ending at the 876 right edge (ADR-0004 R4)"
+      }
+    ],
+    "ignores": ["Content.gap"],
+    "note": "Composition check off: the tablet mockup draws its link text nodes 24 tall (the desktop variant draws 20) and its Logo instance frame 24 tall, so every vertical offset in the band follows that mockup quirk (Logo.offset.top 25 against 29, the company rows 93/94 against 89/90); the horizontal reading is the Links.box.width residue."
+  },
+  {
+    "id": "1360-23904-desktop-desktop",
+    "nodeId": "1360:23904",
+    "export": "Cookies",
+    "storyId": "components-navigation-cookies--with-close",
+    "state": "Desktop",
+    "device": "desktop",
+    "layoutScope": "viewport",
+    "width": 1200,
+    "viewport": 1200,
+    "depth": 4,
+    "root": "section[aria-label=\"Preferenze cookie\"]",
+    "subjects": {
+      "PagoPA S.p.A. - soci": "section[aria-label=\"Preferenze cookie\"] > div:first-child > p",
+      "Button block": "section[aria-label=\"Preferenze cookie\"] > div:last-child",
+      ".UnstyledButton": "section[aria-label=\"Preferenze cookie\"] > div:last-child > button:first-child",
+      "close": "section[aria-label=\"Preferenze cookie\"] > div:last-child > span > button"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.box.width",
+        "reason": "the library floats the banner with the max-w-4xl cap and the source own 12px viewport inset: 896 against the source frame 1200"
+      },
+      {
+        "path": "field.box.height",
+        "reason": "the fixture copy is the story sentence; the mockup draws its 663-character legal paragraph (the fixture owns its copy) and the copy wraps into the 401px flex-1 slot, so the row measures 96 against 188"
+      },
+      {
+        "path": "Button block.box.width",
+        "reason": "follows the 44px close target (+20) and the bundled-font button labels (+5.48): 482.48 against 457"
+      },
+      {
+        "path": "Button block.offset.left",
+        "reason": "follows the floating cap and the fixture copy: 389.52 against 719 (both blocks end at the banner right edge)"
+      },
+      {
+        "path": "Button block.offset.top",
+        "reason": "follows the fixture copy above (24 against 70)"
+      },
+      {
+        "path": "PagoPA S.p.A. - soci.offset.top",
+        "reason": "follows the fixture copy above (28 against 24; the single 48px row centres it)"
+      },
+      {
+        "path": ".UnstyledButton.offset.left",
+        "reason": "follows the action block left edge above (389.52 against 719)"
+      },
+      {
+        "path": ".UnstyledButton.offset.top",
+        "reason": "follows the fixture copy above (36 against 83)"
+      },
+      {
+        "path": "close.box.width",
+        "reason": "the 44px native close target; the source close frame is 24px with the glyph below it (the 261:6501 reading, guides/banners.md)"
+      },
+      {
+        "path": "close.box.height",
+        "reason": "follows the 44px close target above"
+      },
+      {
+        "path": "close.offset.left",
+        "reason": "follows the floating cap: 828 against 1152 (both at the action-cluster right edge)"
+      },
+      {
+        "path": "close.offset.top",
+        "reason": "follows the fixture copy above (26 against 82)"
+      }
+    ]
+  },
+  {
+    "id": "1360-23904-mobile-mobile",
+    "nodeId": "1360:23904",
+    "export": "Cookies",
+    "storyId": "components-navigation-cookies--with-close",
+    "state": "Mobile",
+    "device": "mobile",
+    "layoutScope": "viewport",
+    "width": 320,
+    "viewport": 320,
+    "depth": 4,
+    "root": "section[aria-label=\"Preferenze cookie\"]",
+    "subjects": {
+      "Content": "section[aria-label=\"Preferenze cookie\"] > div:first-child",
+      "Button block": "section[aria-label=\"Preferenze cookie\"] > div:last-child",
+      ".UnstyledButton": "section[aria-label=\"Preferenze cookie\"] > div:last-child > button:first-child",
+      "close": "section[aria-label=\"Preferenze cookie\"] > div:first-child > span > button"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.box.width",
+        "reason": "the library floats the banner with the source own fixed inset (12px on each side): 296 against the source frame 320"
+      },
+      {
+        "path": "field.box.height",
+        "reason": "the fixture copy is the story sentence; the mockup draws its 663-character legal paragraph (the fixture owns its copy), so the banner measures 328 against 646"
+      },
+      {
+        "path": "Content.box.width",
+        "reason": "follows the 12px viewport insets (248 = 296 minus the two 24px paddings)"
+      },
+      {
+        "path": "Content.box.height",
+        "reason": "follows the fixture copy: the mockup copy is 400 (20 lines of 20) against the story two lines (80)"
+      },
+      {
+        "path": "Button block.box.width",
+        "reason": "follows the 12px viewport insets (248)"
+      },
+      {
+        "path": "Button block.offset.top",
+        "reason": "follows the fixture copy above (136 against 456)"
+      },
+      {
+        "path": ".UnstyledButton.offset.left",
+        "reason": "follows the insets: the ghost is centred in the 248 block (78.6 + 24 = 102.59) where the source centres it in its 272 (91.5 + 24 = 115.5)"
+      },
+      {
+        "path": ".UnstyledButton.offset.top",
+        "reason": "follows the fixture copy above (136 against 456)"
+      },
+      {
+        "path": "close.box.width",
+        "reason": "the 44px native close target; the source close frame is 24px with the glyph below it (the 261:6501 reading, guides/banners.md)"
+      },
+      {
+        "path": "close.box.height",
+        "reason": "follows the 44px close target above"
+      },
+      {
+        "path": "close.offset.left",
+        "reason": "follows the 12px viewport insets and the 44px close target (228 = 296 minus the 24 inset minus 44; the source 272 = 320 minus 24 minus 24)"
+      }
+    ]
+  },
+  {
+    "id": "1360-23904-tablet-tablet",
+    "nodeId": "1360:23904",
+    "export": "Cookies",
+    "storyId": "components-navigation-cookies--with-close",
+    "state": "Tablet",
+    "device": "tablet",
+    "layoutScope": "viewport",
+    "width": 900,
+    "viewport": 900,
+    "depth": 4,
+    "root": "section[aria-label=\"Preferenze cookie\"]",
+    "subjects": {
+      "Content": "section[aria-label=\"Preferenze cookie\"] > div:first-child",
+      "Button block": "section[aria-label=\"Preferenze cookie\"] > div:last-child",
+      ".UnstyledButton": "section[aria-label=\"Preferenze cookie\"] > div:last-child > button:first-child",
+      "close": "section[aria-label=\"Preferenze cookie\"] > div:first-child > span > button"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.box.width",
+        "reason": "the library floats the banner with the source own fixed inset (12px on each side): 876 against the source frame 900"
+      },
+      {
+        "path": "field.box.height",
+        "reason": "the fixture copy is the story sentence; the mockup draws its 663-character legal paragraph (the fixture owns its copy), so the banner measures 172 against 228"
+      },
+      {
+        "path": "Content.box.width",
+        "reason": "follows the 12px viewport insets (828 = 876 minus the two 24px paddings)"
+      },
+      {
+        "path": "Content.box.height",
+        "reason": "follows the fixture copy: the mockup copy is 100 (5 lines of 20) against the story two lines (40; the row is the 44px close)"
+      },
+      {
+        "path": "Button block.box.width",
+        "reason": "follows the 12px viewport insets (828)"
+      },
+      {
+        "path": "Button block.offset.top",
+        "reason": "follows the fixture copy above (100 against 156)"
+      },
+      {
+        "path": ".UnstyledButton.offset.top",
+        "reason": "follows the fixture copy above (112 against 169)"
+      },
+      {
+        "path": "close.box.width",
+        "reason": "the 44px native close target; the source close frame is 24px with the glyph below it (the 261:6501 reading, guides/banners.md)"
+      },
+      {
+        "path": "close.box.height",
+        "reason": "follows the 44px close target above"
+      },
+      {
+        "path": "close.offset.left",
+        "reason": "follows the 12px viewport insets and the 44px close target (808 = 876 minus the 24 inset minus 44; the source 852 = 900 minus 24 minus 24)"
+      }
+    ]
+  },
+  {
+    "id": "1566-29849-level-1-default-desktop",
+    "nodeId": "1566:29849",
+    "export": "SectionHeader",
+    "storyId": "components-navigation-sectionheader--playground",
+    "state": "Level 1|Default",
+    "device": "desktop",
+    "layoutScope": "viewport",
+    "width": 348,
+    "viewport": 1200,
+    "depth": 5,
+    "root": "#storybook-root > div",
+    "subjectRoot": "Section-Header",
+    "subjects": {
+      "Left-Content": "#storybook-root > div > div:first-child",
+      "Decorative icon": "#storybook-root > div > div:first-child > span:first-child",
+      "Text-Group": "#storybook-root > div > div:first-child > div",
+      "Title": "#storybook-root > div > div:first-child > div > h1",
+      "Chip": "#storybook-root > div > div:first-child > div > span > span",
+      "Right-Content": "#storybook-root > div > div:last-child",
+      "IconButton": "#storybook-root > div > div:last-child > button"
+    },
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the fixture owns its copy: the story title (29 chars) wraps to three 32px lines in the 256px Text-Group where the mockup 12-char \"Section title\" placeholder measures 135 one line, so the header measures 96 against the source 44 (the fixture-copy reading, no copy chasing)"
+      },
+      {
+        "path": "Left-Content.box.height",
+        "reason": "follows the fixture-title wrap above (96 against 32)"
+      },
+      {
+        "path": "Text-Group.box.height",
+        "reason": "follows the fixture-title wrap above (96 against 32)"
+      }
+    ],
+    "ignores": ["Decorative icon.gap", "Chip.radius"],
+    "note": "the composition check stays off: the fixture title wraps to three 32px lines, so the header measures 96 against the source 44 and every vertical offset follows the taller box (the icon is still centred at 36 = (96-24)/2 against the source 10 = (44-24)/2, and Chip.offset.left 236.23 against 177 follows the wrapped 194.23px title line)"
+  },
+  {
+    "id": "1566-29849-level-1-default-mobile",
+    "nodeId": "1566:29849",
+    "export": "SectionHeader",
+    "storyId": "components-navigation-sectionheader--playground",
+    "state": "Level 1|Default",
+    "device": "mobile",
+    "layoutScope": "viewport",
+    "width": 348,
+    "viewport": 360,
+    "depth": 5,
+    "root": "#storybook-root > div",
+    "subjectRoot": "Section-Header",
+    "subjects": {
+      "Left-Content": "#storybook-root > div > div:first-child",
+      "Decorative icon": "#storybook-root > div > div:first-child > span:first-child",
+      "Text-Group": "#storybook-root > div > div:first-child > div",
+      "Title": "#storybook-root > div > div:first-child > div > h1",
+      "Chip": "#storybook-root > div > div:first-child > div > span > span",
+      "IconButton": "#storybook-root > div > div:last-child > button"
+    },
+    "residues": [
+      {
+        "path": "field.box.width",
+        "reason": "the mobile Default mockup draws its 44px IconButton as a root sibling immediately after a 304px Section-Header, with no band gap (the desktop Default and the mobile CTA both draw the Section-Header gap 16); the DOM keeps that gap, so the header fills the 348 root and the button lands at the same 304 left edge"
+      },
+      {
+        "path": "Left-Content.box.width",
+        "reason": "follows the mockup button placement above: 288 against 304, the reserved 16px band gap the mockup does not draw"
+      },
+      {
+        "path": "Text-Group.box.width",
+        "reason": "follows the Left-Content reading above: 256 against 272; the mockup FILLs its 304-32 frame, the DOM FILLs the remaining track (ADR-0004 R4: a source frame width is never a component dimension)"
+      }
+    ],
+    "ignores": ["Decorative icon.gap", "Chip.radius"],
+    "note": "the composition check stays off: the mockup moves the 44px IconButton out of the Section-Header (the width residues above), so the offsets after the text group describe that mockup reading while the DOM button lands at the same 304 left edge, y 26 = (96-44)/2 centred in the rendered band; the vertical reading is within the 2px tolerance (header 57 against 56)"
+  },
+  {
+    "id": "1904-9589-md-desktop-ko",
+    "nodeId": "1904:9589",
+    "export": "FeedbackPage",
+    "storyId": "components-templates-feedback-page--ko",
+    "state": "MD Desktop|KO",
+    "device": "desktop",
+    "layoutScope": "viewport",
+    "width": 900,
+    "viewport": 900,
+    "height": 902,
+    "depth": 4,
+    "root": "[data-slot=\"feedback-page\"]",
+    "subjects": {
+      "KO State": "[data-slot=\"feedback-page\"] section"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the page aggregates the reviewed chrome: the 900px link band is 88px against the source 92 because the longest 14/20 label wraps to a 40px row where the source text node measures 44 (bundled-font metrics); the 55/103/466 bands match"
+      }
+    ]
+  },
+  {
+    "id": "1904-9589-md-desktop-thank-you",
+    "nodeId": "1904:9589",
+    "export": "FeedbackPage",
+    "storyId": "components-templates-feedback-page--thank-you",
+    "state": "MD Desktop|Thank you",
+    "device": "desktop",
+    "layoutScope": "viewport",
+    "width": 900,
+    "viewport": 900,
+    "height": 806,
+    "depth": 4,
+    "root": "[data-slot=\"feedback-page\"]",
+    "subjects": {
+      "OKState": "[data-slot=\"feedback-page\"] section"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the page aggregates the reviewed chrome: the 900px link band is 88px against the source 92 because the longest 14/20 label wraps to a 40px row where the source text node measures 44 (bundled-font metrics); the 55/103/466 bands match"
+      }
+    ]
+  },
+  {
+    "id": "1904-9589-md-desktop-waiting",
+    "nodeId": "1904:9589",
+    "export": "FeedbackPage",
+    "storyId": "components-templates-feedback-page--waiting",
+    "state": "MD Desktop|Waiting",
+    "device": "desktop",
+    "layoutScope": "viewport",
+    "width": 900,
+    "viewport": 900,
+    "height": 834,
+    "depth": 4,
+    "root": "[data-slot=\"feedback-page\"]",
+    "subjects": {
+      "Waiting State": "[data-slot=\"feedback-page\"] section"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the page aggregates the reviewed chrome: the 900px link band is 88px against the source 92 because the longest 14/20 label wraps to a 40px row where the source text node measures 44 (bundled-font metrics); the 55/103/466 bands match; the state block follows its own residue"
+      },
+      {
+        "path": "Waiting State.box.height",
+        "reason": "the page's state instance uses 55px vertical paddings where the state set's own frames use 64 (the page author matched the chrome band): the library keeps the verified 64, so the block is 16px taller"
+      }
+    ]
+  },
+  {
+    "id": "1904-9589-sm-tablet-ko-tablet",
+    "nodeId": "1904:9589",
+    "export": "FeedbackPage",
+    "storyId": "components-templates-feedback-page--ko",
+    "state": "SM Tablet|KO",
+    "device": "tablet",
+    "layoutScope": "viewport",
+    "width": 600,
+    "viewport": 600,
+    "height": 1009,
+    "depth": 4,
+    "root": "[data-slot=\"feedback-page\"]",
+    "subjects": {
+      "KO State": "[data-slot=\"feedback-page\"] section"
+    },
+    "compareOffset": true
+  },
+  {
+    "id": "1904-9589-sm-tablet-thank-you-tablet",
+    "nodeId": "1904:9589",
+    "export": "FeedbackPage",
+    "storyId": "components-templates-feedback-page--thank-you",
+    "state": "SM Tablet|Thank you",
+    "device": "tablet",
+    "layoutScope": "viewport",
+    "width": 600,
+    "viewport": 600,
+    "height": 913,
+    "depth": 4,
+    "root": "[data-slot=\"feedback-page\"]",
+    "subjects": {
+      "OK State": "[data-slot=\"feedback-page\"] section"
+    },
+    "compareOffset": true
+  },
+  {
+    "id": "1904-9589-sm-tablet-waiting-tablet",
+    "nodeId": "1904:9589",
+    "export": "FeedbackPage",
+    "storyId": "components-templates-feedback-page--waiting",
+    "state": "SM Tablet|Waiting",
+    "device": "tablet",
+    "layoutScope": "viewport",
+    "width": 600,
+    "viewport": 600,
+    "height": 915,
+    "depth": 4,
+    "root": "[data-slot=\"feedback-page\"]",
+    "subjects": {
+      "Waiting State": "[data-slot=\"feedback-page\"] section"
+    },
+    "compareOffset": true
+  },
+  {
+    "id": "1904-9589-xs-mobile-ko",
+    "nodeId": "1904:9589",
+    "export": "FeedbackPage",
+    "storyId": "components-templates-feedback-page--ko",
+    "state": "XS Mobile|KO",
+    "device": "mobile",
+    "layoutScope": "viewport",
+    "width": 320,
+    "viewport": 320,
+    "height": 1127,
+    "depth": 4,
+    "root": "[data-slot=\"feedback-page\"]",
+    "subjects": {
+      "KO State": "[data-slot=\"feedback-page\"] section"
+    },
+    "compareOffset": true
+  },
+  {
+    "id": "1904-9589-xs-mobile-thank-you",
+    "nodeId": "1904:9589",
+    "export": "FeedbackPage",
+    "storyId": "components-templates-feedback-page--thank-you",
+    "state": "XS Mobile|Thank you",
+    "device": "mobile",
+    "layoutScope": "viewport",
+    "width": 320,
+    "viewport": 320,
+    "height": 1031,
+    "depth": 4,
+    "root": "[data-slot=\"feedback-page\"]",
+    "subjects": {
+      "OK State": "[data-slot=\"feedback-page\"] section"
+    },
+    "compareOffset": true
+  },
+  {
+    "id": "1904-9589-xs-mobile-waiting",
+    "nodeId": "1904:9589",
+    "export": "FeedbackPage",
+    "storyId": "components-templates-feedback-page--waiting",
+    "state": "XS Mobile|Waiting",
+    "device": "mobile",
+    "layoutScope": "viewport",
+    "width": 320,
+    "viewport": 320,
+    "height": 1069,
+    "depth": 4,
+    "root": "[data-slot=\"feedback-page\"]",
+    "subjects": {
+      "Waiting State": "[data-slot=\"feedback-page\"] section"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "Waiting State.box.height",
+        "reason": "the page's state instance uses 55px vertical paddings where the state set's own frames use 64 (the page author matched the chrome band): the library keeps the verified 64, so the block is 16px taller"
+      }
+    ]
+  },
+  {
+    "id": "1909-98992-lg-desktop",
+    "nodeId": "1909:98992",
+    "export": "DialogTemplate",
+    "storyId": "components-templates-dialog--wide-frame",
+    "state": "LG",
+    "device": "desktop",
+    "layoutScope": "container",
+    "variant": "1909:98987",
+    "width": 1200,
+    "viewport": 1200,
+    "depth": 3,
+    "root": "[role=\"dialog\"]",
+    "subjectRoot": "Dialog",
+    "subjects": {
+      "Checkbox with label": "[data-slot=\"checkbox-field\"]",
+      "Block buttons": "[data-slot=\"dialog-template-actions\"]"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "Checkbox with label.gap",
+        "reason": "the source 8px option-row gap lives on the inner label row in the DOM; the 2px field gap belongs to the message stack"
+      }
+    ]
+  },
+  {
+    "id": "1909-98992-md",
+    "nodeId": "1909:98992",
+    "export": "DialogTemplate",
+    "storyId": "components-templates-dialog--wide-frame",
+    "state": "MD",
+    "device": "tablet",
+    "layoutScope": "container",
+    "width": 900,
+    "viewport": 900,
+    "depth": 3,
+    "root": "[role=\"dialog\"]",
+    "subjectRoot": "Dialog",
+    "subjects": {
+      "Checkbox with label": "[data-slot=\"checkbox-field\"]",
+      "Block buttons": "[data-slot=\"dialog-template-actions\"]"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "Checkbox with label.gap",
+        "reason": "the source 8px option-row gap lives on the inner label row in the DOM; the 2px field gap belongs to the message stack"
+      }
+    ]
+  },
+  {
+    "id": "1909-98992-xs",
+    "nodeId": "1909:98992",
+    "export": "DialogTemplate",
+    "storyId": "components-templates-dialog--narrow-frame",
+    "state": "XS",
+    "device": "mobile",
+    "layoutScope": "container",
+    "width": 320,
+    "viewport": 320,
+    "depth": 3,
+    "root": "[role=\"dialog\"]",
+    "subjectRoot": "Dialog",
+    "subjects": {
+      "Checkbox with label": "[data-slot=\"checkbox-field\"]",
+      "Block buttons": "[data-slot=\"dialog-template-actions\"]"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "Checkbox with label.gap",
+        "reason": "the source 8px option-row gap lives on the inner label row in the DOM; the 2px field gap belongs to the message stack"
+      }
+    ]
+  },
+  {
+    "id": "1909-99033-lg-desktop",
+    "nodeId": "1909:99033",
+    "export": "SecurityCodeDialog",
+    "storyId": "components-templates-security-code-dialog--wide-frame",
+    "state": "LG",
+    "device": "desktop",
+    "layoutScope": "container",
+    "variant": "1909:99045",
+    "width": 1200,
+    "viewport": 1200,
+    "depth": 3,
+    "root": "[role=\"dialog\"]",
+    "subjectRoot": "Dialog",
+    "subjects": {
+      "Authentication code": "[data-slot=\"security-code-block\"]",
+      "Authentication code input": "[data-slot=\"otp-field\"]",
+      "Block buttons": "[data-slot=\"dialog-template-actions\"]"
+    },
+    "residues": [
+      {
+        "path": "Authentication code.box.height",
+        "reason": "the code field owns its label (6px gap) where the source mockup keeps an external 16px label row: the block is 8px shorter"
+      },
+      {
+        "path": "field.box.height",
+        "reason": "follows the 8px code-block residue above"
+      }
+    ],
+    "ignores": ["Authentication code.gap", "Authentication code input.gap"],
+    "note": "Composition check off: the code field and the action row sit 10px and 8px higher than the source frame — the shift the `Authentication code.box.height` residue already records (the field owns its label instead of an external 16px label row). Enable `--compare-offset` together with the matching `offset.*` residues when that label layout is reviewed."
+  },
+  {
+    "id": "1909-99033-md",
+    "nodeId": "1909:99033",
+    "export": "SecurityCodeDialog",
+    "storyId": "components-templates-security-code-dialog--wide-frame",
+    "state": "MD",
+    "device": "tablet",
+    "layoutScope": "container",
+    "width": 900,
+    "viewport": 900,
+    "depth": 3,
+    "root": "[role=\"dialog\"]",
+    "subjectRoot": "Dialog",
+    "subjects": {
+      "Authentication code": "[data-slot=\"security-code-block\"]",
+      "Authentication code input": "[data-slot=\"otp-field\"]",
+      "Block buttons": "[data-slot=\"dialog-template-actions\"]"
+    },
+    "residues": [
+      {
+        "path": "Authentication code.box.height",
+        "reason": "the code field owns its label (6px gap) where the source mockup keeps an external 16px label row: the block is 8px shorter"
+      },
+      {
+        "path": "field.box.height",
+        "reason": "follows the 8px code-block residue above"
+      }
+    ],
+    "ignores": ["Authentication code.gap", "Authentication code input.gap"],
+    "note": "Composition check off: the code field and the action row sit 10px and 8px higher than the source frame — the shift the `Authentication code.box.height` residue already records (the field owns its label instead of an external 16px label row). Enable `--compare-offset` together with the matching `offset.*` residues when that label layout is reviewed."
+  },
+  {
+    "id": "1909-99033-xs",
+    "nodeId": "1909:99033",
+    "export": "SecurityCodeDialog",
+    "storyId": "components-templates-security-code-dialog--narrow-frame",
+    "state": "XS",
+    "device": "mobile",
+    "layoutScope": "container",
+    "width": 320,
+    "viewport": 320,
+    "depth": 3,
+    "root": "[role=\"dialog\"]",
+    "subjectRoot": "Dialog",
+    "subjects": {
+      "Authentication code": "[data-slot=\"security-code-block\"]",
+      "Authentication code input": "[data-slot=\"otp-field\"]",
+      "Block buttons": "[data-slot=\"dialog-template-actions\"]"
+    },
+    "residues": [
+      {
+        "path": "Authentication code.box.height",
+        "reason": "the code field owns its label (6px gap) where the source mockup keeps an external 16px label row: the block is 8px shorter"
+      },
+      {
+        "path": "field.box.height",
+        "reason": "follows the 8px code-block residue above"
+      }
+    ],
+    "ignores": ["Authentication code.gap", "Authentication code input.gap"],
+    "note": "Composition check off: the code field and the action row sit 10px and 8px higher than the source frame — the shift the `Authentication code.box.height` residue already records (the field owns its label instead of an external 16px label row). Enable `--compare-offset` together with the matching `offset.*` residues when that label layout is reviewed."
+  },
+  {
+    "id": "1992-127582-lg-desktop",
+    "nodeId": "1992:127582",
+    "export": "InformativeDrawer",
+    "storyId": "components-templates-informative-drawer--wide-frame",
+    "state": "LG",
+    "device": "desktop",
+    "variant": "1992:127591",
+    "width": 1200,
+    "viewport": 1200,
+    "height": 800,
+    "depth": 5,
+    "root": "[data-slot=\"drawer-template-body\"]",
+    "subjectRoot": "Drawer",
+    "subjects": {
+      "Head": "[data-slot=\"drawer-template-head\"]",
+      "Drawer title": "[data-slot=\"drawer-title\"]",
+      "Description": "[data-slot=\"drawer-description\"]",
+      "Button": "[data-slot=\"drawer-template-actions\"] > *"
+    },
+    "note": "Composition check off: the head block is 4px taller than the source (the `field.box.height` residue: the copy as six HTML paragraphs), which shifts the drawer title by 4px and the action row by 9px. Enable `--compare-offset` with the matching `offset.*` residues. No `layoutScope`: the edge and the panel geometry follow the caller's `direction` prop (this story passes `right`), not an axis of the frame."
+  },
+  {
+    "id": "1992-127582-md",
+    "nodeId": "1992:127582",
+    "export": "InformativeDrawer",
+    "storyId": "components-templates-informative-drawer--wide-frame",
+    "state": "MD",
+    "device": "tablet",
+    "width": 900,
+    "viewport": 900,
+    "height": 800,
+    "depth": 5,
+    "root": "[data-slot=\"drawer-template-body\"]",
+    "subjectRoot": "Drawer",
+    "subjects": {
+      "Head": "[data-slot=\"drawer-template-head\"]",
+      "Drawer title": "[data-slot=\"drawer-title\"]",
+      "Description": "[data-slot=\"drawer-description\"]",
+      "Button": "[data-slot=\"drawer-template-actions\"] > *"
+    },
+    "note": "Composition check off: the head block is 4px taller than the source (the `field.box.height` residue: the copy as six HTML paragraphs), which shifts the drawer title by 4px and the action row by 9px. Enable `--compare-offset` with the matching `offset.*` residues. No `layoutScope`: the edge and the panel geometry follow the caller's `direction` prop (this story passes `right`), not an axis of the frame."
+  },
+  {
+    "id": "1992-127582-xs",
+    "nodeId": "1992:127582",
+    "export": "InformativeDrawer",
+    "storyId": "components-templates-informative-drawer--narrow-frame",
+    "state": "XS",
+    "device": "mobile",
+    "width": 320,
+    "viewport": 320,
+    "height": 650,
+    "depth": 5,
+    "root": "[data-slot=\"drawer-template-body\"]",
+    "subjectRoot": "Drawer",
+    "subjects": {
+      "Head": "[data-slot=\"drawer-template-head\"]",
+      "Drawer title": "[data-slot=\"drawer-title\"]",
+      "Description": "[data-slot=\"drawer-description\"]",
+      "Button": "[data-slot=\"drawer-template-actions\"] > *"
+    },
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the source text node separates its lines with paragraph breaks carrying the 12px spacing; the same copy as six HTML paragraphs measures 4px taller"
+      }
+    ],
+    "note": "Composition check off: the head block is 6px taller than the source (the `field.box.height` residue: the copy as six HTML paragraphs), which shifts the drawer title by 6px and the action row by 9px. Enable `--compare-offset` with the matching `offset.*` residues. No `layoutScope`: the edge and the panel geometry follow the caller's `direction` prop (this story passes `bottom`), not an axis of the frame."
+  },
+  {
+    "id": "2339-80916-md-desktop",
+    "nodeId": "2339:80916",
+    "export": "LogIn",
+    "storyId": "components-templates-log-in--page",
+    "state": "MD Desktop",
+    "device": "desktop",
+    "layoutScope": "viewport",
+    "width": 900,
+    "viewport": 900,
+    "height": 1466,
+    "depth": 3,
+    "root": "[data-slot=\"login-page\"]",
+    "subjects": {
+      "Text": "[data-slot=\"login-module\"] > div:first-child",
+      "Alert": "[data-slot=\"alert\"]",
+      "Actions": "[data-slot=\"login-module-actions\"]",
+      "TOS": "[data-slot=\"login-module-terms\"] p"
+    },
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the page aggregates the reviewed chrome: the module is exact (689) and the footer columns block is shorter than this mockup, which is the footer node still in the pending queue"
+      }
+    ],
+    "ignores": ["Alert.gap"],
+    "note": "Composition check off: the source mockup draws its 56px Breadcrumb inside the header band (the module starts at the 55+103 chrome), so every module block sits 44px higher than the page flow, where the Breadcrumb is its own 44px row. The module's internal offsets are exact and the shift is uniform — Text 238→282, Alert 362→406, Actions 500→546, TOS 723→769 — the last two carrying the shared +2 alert tolerance (the alert renders 100 against the source 98). Enable --compare-offset to re-measure."
+  },
+  {
+    "id": "2339-80916-sm-tablet-tablet",
+    "nodeId": "2339:80916",
+    "export": "LogIn",
+    "storyId": "components-templates-log-in--page",
+    "state": "SM Tablet",
+    "device": "tablet",
+    "layoutScope": "viewport",
+    "width": 600,
+    "viewport": 600,
+    "height": 2035,
+    "depth": 3,
+    "root": "[data-slot=\"login-page\"]",
+    "subjects": {
+      "Text": "[data-slot=\"login-module\"] > div:first-child",
+      "Alert": "[data-slot=\"alert\"]",
+      "Actions": "[data-slot=\"login-module-actions\"]",
+      "TOS": "[data-slot=\"login-module-terms\"] p"
+    },
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the page aggregates the reviewed chrome: the module is exact (647) and the footer columns block is 1120 against this mockup 1257, which is the footer node still in the pending queue"
+      }
+    ],
+    "ignores": ["Alert.gap"],
+    "note": "Composition check off: the mockup draws its 56px Breadcrumb inside the header band (the module starts at the 54+77 chrome), so every module block sits 45px higher than the page flow, where the Breadcrumb is its own 44px row. The module's internal offsets are exact and the shift is uniform — Text 195→240, Alert 309→354, Actions 447→494, TOS 670→717 — the last two carrying the shared +2 alert tolerance (the alert renders 100 against the source 98). Enable --compare-offset to re-measure."
+  },
+  {
+    "id": "2339-80916-xs-mobile",
+    "nodeId": "2339:80916",
+    "export": "LogIn",
+    "storyId": "components-templates-log-in--page",
+    "state": "XS Mobile",
+    "device": "mobile",
+    "layoutScope": "viewport",
+    "width": 320,
+    "viewport": 320,
+    "height": 2205,
+    "depth": 3,
+    "root": "[data-slot=\"login-page\"]",
+    "subjects": {
+      "Text": "[data-slot=\"login-module\"] > div:first-child",
+      "Alert": "[data-slot=\"alert\"]",
+      "Actions": "[data-slot=\"login-module-actions\"]",
+      "TOS": "[data-slot=\"login-module-terms\"] p"
+    },
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the page aggregates the reviewed chrome: the module is exact and the footer columns block is shorter than this mockup, which is the footer node still in the pending queue"
+      }
+    ],
+    "ignores": ["Alert.gap"],
+    "note": "Composition check off: the mockup draws its 56px Breadcrumb inside the header band (the module starts at the 54+77 chrome), so every module block sits 45px higher than the page flow, where the Breadcrumb is its own 44px row. The module's internal offsets are exact and the shift is uniform — Text 195→240, Alert 375→420, Actions 513→560, TOS 736→783 — the last two carrying the shared +2 alert tolerance (the alert renders 100 against the source 98). Enable --compare-offset to re-measure."
+  },
+  {
+    "id": "9520-2537-layout-desktop-desktop",
+    "nodeId": "9520:2537",
+    "export": "TableListItem",
+    "storyId": "components-data-display-tablelistitem--playground",
+    "state": "Layout=Desktop",
+    "device": "desktop",
+    "layoutScope": "container",
+    "variant": "9520:2535",
+    "width": 852,
+    "viewport": 1200,
+    "depth": 6,
+    "root": "#storybook-root li",
+    "subjects": {
+      "Container": "#storybook-root li > div > div",
+      ".TableListItemField": "#storybook-root li > div > div > div:first-child",
+      "Description": "#storybook-root li > div > div > div:first-child > span.grid > span:first-child",
+      "Value": "#storybook-root li > div > div > div:first-child > span.grid > span:nth-child(2)",
+      "Chip": "#storybook-root li [data-size=\"compact\"]",
+      "Button": "#storybook-root li > div > a",
+      "arrow": "#storybook-root li > div > a [data-figma-node-id]"
+    },
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the card measures 98 against the source 93: the shared 48px ghost action instead of the source 24px text row and the 1px --border stroke on both edges (guides/tables.md)"
+      },
+      {
+        "path": "Container.box.height",
+        "reason": "the guide records the 4px gap above every value; the source status field stacks its Chip with no gap, so the fields row measures 48 against the source 45"
+      },
+      {
+        "path": "Container.box.width",
+        "reason": "bundled-font metrics: the ghost action measures 66.41 against the source 63 (the label 33.41 against 31) and the fields row follows"
+      },
+      {
+        "path": ".TableListItemField.box.width",
+        "reason": "the first field is the growing one like the source flex-1 field; the story other fields omit the source placeholders decorative icons, so it absorbs 146.05 (the source measures 118 at 852)"
+      }
+    ],
+    "ignores": [
+      "field.padding.top",
+      "field.padding.right",
+      "field.padding.bottom",
+      "field.padding.left",
+      "field.gap",
+      "Chip.radius"
+    ],
+    "note": "Composition check off: the source's root frame carries the 24px insets and the 80px gap while the DOM carries them on the inner row (the card is the bordered surface), so the mapped offsets move with that split; the first field grows like the source flex-1 field and the story's other fields omit the source placeholders' decorative icons."
+  },
+  {
+    "id": "9520-2537-layout-mobile-mobile",
+    "nodeId": "9520:2537",
+    "export": "TableListItem",
+    "storyId": "components-data-display-tablelistitem--mobile",
+    "state": "Layout=Mobile",
+    "device": "mobile",
+    "layoutScope": "container",
+    "variant": "9520:2641",
+    "width": 272,
+    "viewport": 1200,
+    "depth": 6,
+    "root": "#storybook-root li",
+    "subjects": {
+      ".TableListItemField": "#storybook-root li > div > div:first-child > div:first-child",
+      "Description": "#storybook-root li > div > div:first-child > div:first-child > span.grid > span:first-child",
+      "Value": "#storybook-root li > div > div:first-child > div:first-child > span.grid > span:nth-child(2)",
+      "Chip": "#storybook-root li [data-size=\"compact\"]",
+      "Button": "#storybook-root li > div > a",
+      "arrow": "#storybook-root li > div > a [data-figma-node-id]"
+    },
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the card measures 346 against the source 314: the shared 48px ghost action instead of the source 24px row (+24), the 1px --border stroke on both edges (+2), the guides/tables.md 4px gap above the Chip value (+4) and the first field 46 against the source 44 (+2, bundled-font metrics)"
+      }
+    ],
+    "ignores": [
+      "field.padding.top",
+      "field.padding.right",
+      "field.padding.bottom",
+      "field.padding.left",
+      "field.gap",
+      "Chip.radius"
+    ],
+    "note": "The container scope: the `Mobile` story frames the card at the source's own 272px column and the container query stacks the fields at the source's 16px with the action at the end; the root's padding/gap mapping and the pill-radius marker are the recorded ignores."
+  },
+  {
+    "id": "9624-10625-layout-desktop-desktop",
+    "nodeId": "9624:10625",
+    "export": "TableList",
+    "storyId": "components-data-display-tablelist--paginated",
+    "state": "Layout=Desktop",
+    "device": "desktop",
+    "layoutScope": "container",
+    "width": 852,
+    "viewport": 1200,
+    "depth": 5,
+    "root": "section[aria-label=\"Campagne\"]",
+    "subjects": {
+      "children": "section[aria-label=\"Campagne\"] > ul",
+      "Pagination": "section[aria-label=\"Campagne\"] > div"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "children.box.height",
+        "reason": "the list is 480 against the source 490: the fixture third title wraps to two lines where the source mockup placeholder wraps to three (-22), the reviewed card adaptations add +2 each (the 1px --border stroke, guides/tables.md) and +2 more on the two single-line cards (the shared 48px action grows the 46px row) - net -10"
+      },
+      {
+        "path": "field.box.height",
+        "reason": "follows the children.box.height residue (-10) and the caller footer 44 against the source 46"
+      },
+      {
+        "path": "Pagination.offset.top",
+        "reason": "the footer stays 32px below the list as the source draws it; its absolute top follows the children.box.height residue (512 against 522)"
+      }
+    ],
+    "ignores": ["Pagination.gap"]
+  },
+  {
+    "id": "9624-10625-layout-mobile-mobile",
+    "nodeId": "9624:10625",
+    "export": "TableList",
+    "storyId": "components-data-display-tablelist--paginated",
+    "state": "Layout=Mobile",
+    "device": "mobile",
+    "layoutScope": "container",
+    "width": 272,
+    "viewport": 1200,
+    "depth": 5,
+    "root": "section[aria-label=\"Campagne\"]",
+    "subjects": {
+      "children": "section[aria-label=\"Campagne\"] > ul",
+      "Pagination": "section[aria-label=\"Campagne\"] > div"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "children.box.height",
+        "reason": "the list is 1264 against the source 1160: the fixture four cards measure 304 each against the mockup 256/278/322/256 — the mockup stacks a fourth Stato row level with the action and lets it overflow its own fixed 184px field block, the fixture draws three fields whose titles all wrap to two lines, and the per-card adaptations (the shared 48px action for the 24px text row and the 1px --border stroke) are the reviewed residues of 9520:2537 (guides/tables.md)"
+      },
+      {
+        "path": "field.box.height",
+        "reason": "follows the children.box.height residue (+104) and the caller footer 44 against the source 46"
+      },
+      {
+        "path": "Pagination.offset.top",
+        "reason": "the footer stays 32px below the list as the source draws it; its absolute top follows the children.box.height residue (1296 against 1192)"
+      }
+    ],
+    "ignores": ["Pagination.gap"]
+  },
+  {
+    "id": "9927-36954-9927-36955",
+    "nodeId": "9927:36954",
+    "export": "Popover",
+    "storyId": "components-overlays-popover--source-top",
+    "variant": "9927:36955",
+    "width": 312,
+    "viewport": 600,
+    "height": 400,
+    "depth": 3,
+    "root": "[data-slot=\"popover-frame\"]",
+    "subjects": {
+      "Indicator": "[data-slot=\"popover-indicator\"]",
+      "Content": "[data-slot=\"popover-card\"]"
+    },
+    "compareText": true,
+    "compareBox": "full",
+    "compareOffset": true,
+    "expectState": "open",
+    "stateEvidence": "[data-slot=\"popover-card\"]",
+    "note": "Popover source Top: 312x76 card and centered 24x20 indicator; close action is keyboard- and pointer-accessible."
+  },
+  {
+    "id": "9927-36954-9927-36961",
+    "nodeId": "9927:36954",
+    "export": "Popover",
+    "storyId": "components-overlays-popover--source-bottom",
+    "variant": "9927:36961",
+    "width": 312,
+    "viewport": 600,
+    "height": 400,
+    "depth": 3,
+    "root": "[data-slot=\"popover-frame\"]",
+    "subjects": {
+      "Content": "[data-slot=\"popover-card\"]",
+      "Indicator": "[data-slot=\"popover-indicator\"]"
+    },
+    "compareText": true,
+    "compareBox": "full",
+    "compareOffset": true,
+    "expectState": "open",
+    "stateEvidence": "[data-slot=\"popover-card\"]",
+    "note": "Popover source Bottom: 312x76 card and 24x20 indicator; close action is keyboard- and pointer-accessible."
+  },
+  {
+    "id": "11133-16142-desktop-action-desktop",
+    "nodeId": "11133:16142",
+    "export": "PaymentModule",
+    "storyId": "components-composites-paymentmodule--playground",
+    "state": "Desktop|Action",
+    "device": "desktop",
+    "layoutScope": "container",
+    "width": 560,
+    "viewport": 1200,
+    "depth": 5,
+    "root": "[data-slot=\"payment-module\"]",
+    "subjects": {
+      "Value": "[data-slot=\"payment-module-code\"]",
+      "Description": "[data-slot=\"payment-module-metadata\"] > span:first-child",
+      "Algoritmo": "[data-slot=\"payment-module-suggestion\"]",
+      "BlockButtons": "[data-slot=\"payment-module-actions\"]",
+      "Button": "[data-slot=\"payment-module-actions\"] button:first-of-type"
+    },
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the source Main-Content frame is 104px tall and does not contain the 20px suggestion it draws at 126 (which overlaps the BlockButtons row at 144); the DOM stacks code+rows+suggestion (130) and the buttons below the root 24px gap: 236 against the source 208"
+      }
+    ],
+    "note": "Composition check off: the source frame's Main-Content (104px) excludes the 20px suggestion it draws at 126 and its BlockButtons (144) overlaps it, so the source's offsets are not a flow: the DOM's suggestion sits at 127 (the source 126) and the buttons follow the stacked content (171 against 144) — the recorded field.box.height residue."
+  },
+  {
+    "id": "11133-16142-desktop-default-desktop",
+    "nodeId": "11133:16142",
+    "export": "PaymentModule",
+    "storyId": "components-composites-paymentmodule--summary",
+    "state": "Desktop|Default",
+    "device": "desktop",
+    "layoutScope": "container",
+    "width": 560,
+    "viewport": 1200,
+    "depth": 5,
+    "root": "[data-slot=\"payment-module\"]",
+    "subjects": {
+      "Value": "[data-slot=\"payment-module-code\"]",
+      "Description": "[data-slot=\"payment-module-metadata\"] > span:first-child",
+      "Action-Group": "[data-slot=\"payment-module-tail\"]"
+    },
+    "residues": [
+      {
+        "path": "Action-Group.box.width",
+        "reason": "the source 124px detail overflows its 68px amount frame (the group measures 108 = the 68 amount + 16 + the 24px icon); the DOM sizes the price column by its widest line (the detail 123.38 in the bundled source font)"
+      },
+      {
+        "path": "Action-Group.box.height",
+        "reason": "the source label frame is 22px tall with the detail overflowing it (the group measures 24 = the 2px-centred 22px amount); the DOM stacks the detail in-flow (40 = 22 + 18)"
+      }
+    ],
+    "ignores": ["Chip.radius"],
+    "note": "Composition check off: the tail is the recorded 163.38x40 against the source Action-Group 108x24 (the in-flow detail), so its left/top shift (379.63 against 436, 49 against 56) belongs to that residue chain, not to a stack defect. The status chip is caller-owned and the fixture carries the to-pay tone where the Default mockup draws the paid green chip (label #224021 against #0e0f13); the chip's own alignment is the Chip set's."
+  },
+  {
+    "id": "11133-16142-desktop-multi-payment-desktop",
+    "nodeId": "11133:16142",
+    "export": "PaymentModule",
+    "storyId": "components-composites-paymentmodule--multi-payment",
+    "state": "Desktop|Multi-payment",
+    "device": "desktop",
+    "layoutScope": "container",
+    "width": 560,
+    "viewport": 1200,
+    "depth": 5,
+    "root": "[data-slot=\"payment-module\"]",
+    "subjects": {
+      "Value": "[data-slot=\"payment-module-code\"]",
+      "Description": "[data-slot=\"payment-module-metadata\"] > span:first-child",
+      "Algoritmo": "[data-slot=\"payment-module-suggestion\"]",
+      "Radio group": "[data-slot=\"payment-module-tail\"]",
+      "Radio button single element": "[data-slot=\"payment-module-tail\"] [role=\"radio\"]"
+    },
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the source Main-Content frame is 104px tall and does not contain the 20px suggestion it draws at 126 (the Action desktop mockup overflow); the DOM stacks it (130 against 104) and the retained 1px --border sits inside the p-4 inset (+2): 164 against the source 136"
+      },
+      {
+        "path": "Algoritmo.box.width",
+        "reason": "follows the Radio group.box.width residue (the info column is the remaining track)"
+      },
+      {
+        "path": "Radio group.box.width",
+        "reason": "the source 124px detail overflows its 68px amount frame (the group measures 100 = the 68 amount + 8 + the 24px radio); the DOM sizes the price column by its widest line (the detail 123.38 in the bundled source font)"
+      },
+      {
+        "path": "Radio group.box.height",
+        "reason": "the source label frame is 22px tall with the detail overflowing it (the group measures 24); the DOM stacks the detail in-flow (40 = 22 + 18)"
+      }
+    ],
+    "note": "Composition check off: the tail is the recorded 155.38x40 against the source Radio group 100x24 (the in-flow detail), so its left/top shift belongs to that chain. No mobile case is committed: the mobile Multi-payment frame moves the radio into the code row and overlaps its own suggestion (the wave finding)."
+  },
+  {
+    "id": "11133-16142-mobile-action-mobile",
+    "nodeId": "11133:16142",
+    "export": "PaymentModule",
+    "storyId": "components-composites-paymentmodule--action-mobile",
+    "state": "Mobile|Action",
+    "device": "mobile",
+    "layoutScope": "container",
+    "width": 270,
+    "viewport": 1200,
+    "depth": 5,
+    "root": "[data-slot=\"payment-module\"]",
+    "subjects": {
+      "Value": "[data-slot=\"payment-module-code\"]",
+      "Description": "[data-slot=\"payment-module-metadata\"] > span:first-child",
+      "Algoritmo": "[data-slot=\"payment-module-suggestion\"]",
+      "Block buttons": "[data-slot=\"payment-module-actions\"]",
+      "Button": "[data-slot=\"payment-module-actions\"] button:first-of-type"
+    },
+    "residues": [
+      {
+        "path": "Block buttons.box.height",
+        "reason": "the shared ghost action keeps its 48px minimum native target where the source mobile secondary is a 24px row (the primary 48 + the source 24px gap + the secondary; 120 against the source 96, guides/actions.md)"
+      },
+      {
+        "path": "field.box.height",
+        "reason": "the fixture full object description wraps to two lines in the 236px mobile track (the row 64 against the source 20, +44) and the second action row is 48 against the source 24 (+24): the module measures 376 against the source 274"
+      }
+    ],
+    "note": "Composition check off: the wrapped object row (+44) and the ghost's 48px target (+24) are the recorded field.box.height chain; the mobile Action stacks the primary above the secondary, the group orientation the mobile export carries, and the suggestion sits at the source offsets otherwise."
+  },
+  {
+    "id": "11133-16142-mobile-default-mobile",
+    "nodeId": "11133:16142",
+    "export": "PaymentModule",
+    "storyId": "components-composites-paymentmodule--summary",
+    "state": "Mobile|Default",
+    "device": "mobile",
+    "layoutScope": "container",
+    "width": 270,
+    "viewport": 1200,
+    "depth": 5,
+    "root": "[data-slot=\"payment-module\"]",
+    "subjects": {
+      "Value": "[data-slot=\"payment-module-code\"]",
+      "Description": "[data-slot=\"payment-module-metadata\"] > span:first-child",
+      "Action-Group": "[data-slot=\"payment-module-tail\"]"
+    },
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the fixture full object description wraps to two lines in the 236px mobile track where the mockup truncated placeholder keeps one (the row 64 against the source 20) and the in-flow price detail adds 16 (the Action-Group residue): the module measures 256 against the source 194"
+      },
+      {
+        "path": "field.gap",
+        "reason": "the source mobile Default frame nests the price tail on the root 16px gap; the DOM keeps the tail inside the content row on that same 16px mobile gap, so the root one-child gap number paints nothing (the root 24 is the Action frame reading)"
+      },
+      {
+        "path": "Action-Group.box.height",
+        "reason": "the source label frame is 22px tall with the detail overflowing it (the group measures 24); the DOM stacks the detail in-flow (40 = 22 + 18)"
+      }
+    ],
+    "note": "Composition check off: the fixture's full object description wraps to two lines (the row 64 against the source's 20) and the in-flow detail adds 18 to the tail, so both the module height and the tail's offset follow the recorded residue chain. The chip is caller-owned (the fixture's to-pay tone; the Default mockup's paid green chip is recorded on the desktop sibling)."
+  },
+  {
+    "id": "12812-16248-desktop-desktop",
+    "nodeId": "12812:16248",
+    "export": "Timeline",
+    "storyId": "components-data-display-timeline--source-case",
+    "state": "desktop",
+    "device": "desktop",
+    "layoutScope": "container",
+    "width": 848,
+    "viewport": 1200,
+    "depth": 6,
+    "root": "#storybook-root li",
+    "subjects": {
+      "Content": "#storybook-root li > div",
+      "gavel": "#storybook-root li > div > span",
+      "Message": "#storybook-root li > div > div",
+      "Header": "#storybook-root li > div > div > div:first-child"
+    },
+    "residues": [
+      {
+        "path": "Content.box.height",
+        "reason": "the retained 1px --border adds 2 outside the source inset and the shared tag measures 32 against the source 30 (the 261:6501/1909:98992 reading): the card measures 110 against the source 106"
+      },
+      {
+        "path": "field.box.height",
+        "reason": "the source item instance insets the card 6px top/bottom inside its 118 row (the cursor column sets the row height); the DOM row hugs the card (110) and the dot stays centred on the card either way; the +4 follows the card border/tag reading"
+      },
+      {
+        "path": "Message.box.width",
+        "reason": "follows the card drawn width: the DOM card tracks the root (816 against the source 818, which overflows its own 848 frame by 2) and the retained 1px border narrows the inner track by 2 (746 against 750)"
+      },
+      {
+        "path": "Header.box.width",
+        "reason": "follows the Message.box.width reading (746 against 750)"
+      }
+    ],
+    "note": "the composition check stays off: Content.offset.top measures 0 against the source 6 (the item instance 6/6 card inset inside its 118 row, the field.box.height residue) and the inner subjects 17 against 22 (the same inset less the runtime 1px border); the horizontal offsets are clean (Content.offset.left 32 = the cursor 24 + the 8px root gap)"
+  },
+  {
+    "id": "12812-16248-mobile-mobile",
+    "nodeId": "12812:16248",
+    "export": "Timeline",
+    "storyId": "components-data-display-timeline--source-case",
+    "state": "mobile",
+    "device": "mobile",
+    "layoutScope": "container",
+    "width": 417,
+    "viewport": 1200,
+    "depth": 6,
+    "root": "#storybook-root li",
+    "subjects": {
+      "Content": "#storybook-root li > div",
+      "gavel": "#storybook-root li > div > span",
+      "Message": "#storybook-root li > div > div",
+      "Header": "#storybook-root li > div > div > div:first-child"
+    },
+    "residues": [
+      {
+        "path": "field.box.width",
+        "reason": "the source draws the drawer composition inside the set 848 frame; the render captures the element at the source drawer-panel width 417 (the 2026-10-15 mobile review: the 8px inset belongs to the 417px drawer panels; ADR-0004 R4: a source frame width is never a component dimension)"
+      },
+      {
+        "path": "Content.box.width",
+        "reason": "follows the 417 drawer-panel capture: the card measures 385 against the drawn 816"
+      },
+      {
+        "path": "Message.box.width",
+        "reason": "follows the 417 drawer-panel capture: the message measures 335 against the drawn 768"
+      },
+      {
+        "path": "Header.box.width",
+        "reason": "follows the Message.box.width reading (335 against 768)"
+      },
+      {
+        "path": "field.box.height",
+        "reason": "the source copy runs two lines in the drawn 816 column; at the 417 panel the same copy wraps to four lines, so the row measures 160 against the source 128 (the card border/tag +4 included)"
+      },
+      {
+        "path": "Content.box.height",
+        "reason": "follows the copy-wrap reading above (160 against 116)"
+      },
+      {
+        "path": "Message.box.height",
+        "reason": "follows the copy-wrap reading above (142 against 100)"
+      }
+    ],
+    "note": "the composition check stays off: Content.offset.top measures 0 against the source 6 (the same item-instance inset) and the inner subjects 9 against 14 (the inset less the runtime 1px border)"
+  }
+]

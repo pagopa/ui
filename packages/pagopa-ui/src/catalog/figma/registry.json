@@ -1,0 +1,3326 @@
+{
+  "bulkRules": [
+    {
+      "pageId": "1:24",
+      "page": "• Icon",
+      "status": "implemented",
+      "evidence": "src/components/icons/figma-inventory.ts",
+      "namesExport": "figmaIconNames",
+      "assetManifest": "src/assets/figma-icons/manifest.json",
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "provenanceOverrides": {
+        "232:1673": {
+          "provider": "PagoPA brand (IO)",
+          "origin": "brand",
+          "license": "Brand asset — reproduce in the source colours"
+        },
+        "256:8579": {
+          "provider": "AgID (SPID)",
+          "origin": "brand",
+          "license": "Identity-provider brand guide"
+        },
+        "256:8580": {
+          "provider": "AgID (CIE ID)",
+          "origin": "brand",
+          "license": "Identity-provider brand guide"
+        },
+        "256:8581": {
+          "provider": "AgID (CIE)",
+          "origin": "brand",
+          "license": "Identity-provider brand guide"
+        },
+        "256:8582": {
+          "provider": "PagoPA S.p.A. (pagoPA)",
+          "origin": "brand",
+          "license": "Brand asset — reproduce in the source colours"
+        },
+        "8717:781": {
+          "provider": "PagoPA S.p.A. (SEND)",
+          "origin": "brand",
+          "license": "Brand asset — reproduce in the source colours"
+        },
+        "99:781": {
+          "provider": "Social platforms (LinkedIn, Instagram, Threads, YouTube)",
+          "origin": "brand",
+          "license": "Platform brand guidelines",
+          "note": "The variant selects the platform mark; the source labels are inverted relative to the geometry, and the aliases follow the geometry."
+        },
+        "8854:39311": {
+          "provider": "PagoPA custom glyph (first letter)",
+          "origin": "custom",
+          "license": "In-house artwork"
+        },
+        "8854:39312": {
+          "provider": "PagoPA custom glyph (second letter)",
+          "origin": "custom",
+          "license": "In-house artwork"
+        },
+        "13906:25597": {
+          "provider": "PagoPA custom glyph (third letter)",
+          "origin": "custom",
+          "license": "In-house artwork"
+        },
+        "9876:42679": {
+          "provider": "PagoPA custom glyph (online address)",
+          "origin": "custom",
+          "license": "In-house artwork"
+        },
+        "14241:48931": {
+          "provider": "PagoPA custom glyph (PEC mail)",
+          "origin": "custom",
+          "license": "In-house artwork"
+        }
+      },
+      "note": "Public names are stable aliases of manifest nodeIds, independent of source renames. Explicit localAsset entries retain reviewed rounded source geometry/defaults/variants; monochrome artwork intentionally inherits semantic currentColor, while brand images preserve source colors. icons:check validates complete identities, pinned SVG evidence and provenance."
+    },
+    {
+      "pageId": "157:614",
+      "page": "• Pictograms 🟢",
+      "status": "implemented",
+      "evidence": "src/components/icons/figma-inventory.ts",
+      "namesExport": "figmaPictogramNames",
+      "assetManifest": "src/assets/figma-pictograms/manifest.json",
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      },
+      "note": "Public names are stable aliases of manifest nodeIds, independent of source renames. pictograms:check validates identities, checksums and provenance."
+    },
+    {
+      "pageId": "1:16",
+      "page": "• Componenti nativi",
+      "status": "excluded",
+      "reason": "native OS chrome (status bar, webview, scrollbar) — not shipped by the library"
+    },
+    {
+      "pageId": "50:1017",
+      "page": "• Componenti file",
+      "status": "excluded",
+      "reason": "Figma file documentation/process components — not shipped by the library"
+    }
+  ],
+  "entries": {
+    "10169:11964": {
+      "status": "pending",
+      "target": {
+        "module": "src/components/navigation/carousel-stepper.tsx",
+        "export": "CarouselStepper",
+        "story": "apps/storybook/src/CarouselStepper.stories.tsx"
+      },
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+    },
+    "10192:41460": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/composites/attachment-module.tsx",
+        "export": "AttachmentModule",
+        "story": "apps/storybook/src/AttachmentModule.stories.tsx"
+      },
+      "note": "Reviewed: AttachmentModule renders the source tile — 16/22 semibold title (blue link with onOpen in State=Available), 14/20 grey-700 description, the Status=Default tag slot of State=Unavailable and the download action with the source icon; the 44px action target is the documented accessibility adaptation."
+    },
+    "10297:6918": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "1042:18133": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/overlays/dialog.tsx",
+        "export": "Dialog",
+        "story": "apps/storybook/src/Dialog.stories.tsx",
+        "storyExports": ["SourceCase"]
+      },
+      "note": "Reviewed 2026-10-16 (device burn-down wave 6, closing the 2026-10-14 delta): the modal panel — 600×290 on the Desktop device, 272×412 on the Mobile one (the 320 viewport minus the 24px pair), 16px radius, 24px padding, the source 24px panel gap, the 8px message stack (title on the 24/32 → 18/28 type tokens, the 16/22 description, the option row) and the 16px footer gap. Two cases, one per declared device, both viewport-scoped (verified: the width and both type/stack switches are media-query driven) and responsive-clean: desktop 1042:18132 (case 1042-18133-desktop-default-desktop, 600×290, every mapped offset exact) and mobile 1042:18134 (case 1042-18133-mobile-default-mobile, 272×412 at the 320 viewport, exact except the footer). The render exposed three token-ladder drifts, fixed in overlays/dialog.tsx: the popup was a block whose children carried the spacing (computed root gap 0 against the source 24) and is now the source's own model — a flex column on `gap-6` with the message stack as one 8px group; the description inherited 16/24 and is on the `text-body` token (16/22); the footer gap was 24 and is `gap-4` (16, the source 15/16). The `Type=Default` composition is the captured one (the set’s base type; the other Type variants are caller-owned bodies whose components carry their own alignment). Recorded adaptations: the option row’s source 8px gap lives on the inner label row in the DOM while the 2px field gap belongs to the message stack (the 1909:98992 reading, both cases) and the shared ghost action keeps its 48px native target and full-width mobile stack where the source’s mobile secondary is a 22px row (+26 on the footer and the panel, guides/actions.md). The story’s SourceCase carries the source sample and renders in the fullscreen layout (the centered body would shrink the forced root below a narrow viewport); the capture opens the panel with its own click on the trigger. The title is Bold (CSS 700) 24/32 on desktop and 18/28 on mobile. The modal backdrop is Color/Surface/Surface overlay #0e0f13 at 35% with no blur. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`."
+    },
+    "10444:14812": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "10444:15263": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "105:2043": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/content/tag.tsx",
+        "export": "Tag",
+        "story": "apps/storybook/src/Tag.stories.tsx",
+        "storyExports": ["AllStatuses", "Playground"]
+      },
+      "note": "Fresh Path C review at pinned version 2409404974909792292 covers variants 105:2044/2047/2050/2053/2056/2059. Source: 30px height, 6px radius, 1px Color/Border/Border fill stroke, 16px status artwork, 6px icon-label gap, 8px insets and Caption SB 12/18px uppercase; Info uses the Filled icon and Counter is iconless. Token-first rendering uses min-h-8 (32px, +2px), rounded-md (radius-8 foundation, +2px), gap-1.5 (6px) and px-2 (8px); the 1px border makes rendered insets 9px (+1px), and the taller centered content shifts down 1px. Semantic status and Gray-700 text tokens are retained. Titillio 12/18px weight 500 maps to Titillium Web 12/18px weight 600; label runs measure 1.5-5.6px narrower. Source→render tag widths are Info 68→65.64px, Warning 96→92.36px, Success 90→87.02px, Error 78→76.77px, Default 89→86.30px and Counter 31→31.45px; no per-variant width compensation is added. The former removable Badge pill moved to InputChip, the source's removable-chip equivalent. (2026-10-14: the source Titillio family is now bundled directly; earlier substitute-font statements and figures in this note are historical and pending re-measurement.)"
+    },
+    "10585:80643": {
+      "status": "pending",
+      "target": {
+        "module": "src/components/inputs/text-fields.tsx",
+        "export": "TextAreaField",
+        "story": "apps/storybook/src/TextAreaField.stories.tsx"
+      },
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Field border: grey-650 #636b82 1px when enabled, disabled or success; primary 2px when active/focused; #d13333 on error; never grey-450 (it is not a source field stroke)."
+    },
+    "108:1402": {
+      "status": "pending",
+      "target": {
+        "module": "src/components/primitives/button.tsx",
+        "export": "Button",
+        "story": "apps/storybook/src/Button.stories.tsx",
+        "storyExports": [
+          "FigmaStateMatrix",
+          "WithIcons",
+          "Skeleton",
+          "Loading",
+          "ClickInteraction",
+          "FontPreferenceReflow"
+        ]
+      },
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Adaptation `minimum-text-action-target`: Figma Text bounds only its 16-24px content; the library keeps a 48px native action target and its existing horizontal hit area. Adaptation `visible-error-spinner`: the pinned source paints a white Contrast spinner on the transparent red variant, which is invisible; the error variant's spinner uses the destructive currentColor so loading stays visible."
+    },
+    "109:2455": {
+      "status": "implemented",
+      "note": "Path C reviewed pinned Brand=Primary 109:2456 and Brand=Contrast 109:2458 against SpinnerBrandVariants at 320×240/1×. Both source and render are 24×24px; the 2px annulus/20px opening and rounded terminal match, with source/render terminal bounds 2.09×3.41px at 21.91×9.59px (under 0.001px difference). Default size-6 is 24px (0px delta); text-primary (#0B3EE3) and text-contrast (white) match source. size-5/size-12 remain 20px/48px API extensions. The 2px mask is source ring geometry, not a spacing/radius compensation. Contrast artwork is white on transparency and needs a caller-owned primary surface outside source bounds. A labeled Spinner exposes one status; unlabeled siblings stay decorative and the caller owns aria-busy. The documented 1s functional animation remains under reduced motion; the fidelity capture is static.",
+      "target": {
+        "module": "src/components/feedback/spinner.tsx",
+        "export": "Spinner",
+        "story": "apps/storybook/src/Spinner.stories.tsx",
+        "storyExports": ["SpinnerBrandVariants"]
+      }
+    },
+    "1101:3862": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "1101:4296": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "1101:4422": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "11133:16142": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/composites/payment-module.tsx",
+        "export": "PaymentModule",
+        "story": "apps/storybook/src/PaymentModule.stories.tsx",
+        "storyExports": ["Playground", "ActionMobile", "Summary", "MultiPayment", "Loading"]
+      },
+      "note": "Reviewed 2026-10-16 (device burn-down wave 6, closing the 2026-10-14 delta): the boxed payment module — 8px radius, the 1px --border stroke, white card, 16px padding, the source root gap 24 (mobile 16), the code 16/22 semibold, the 14/20 label + semibold value rows 6px apart on the desktop / 12 on the mobile, the 12/18 Han Purple suggestion and either the price column with its 16px tail gap (8 with the radio) or the Action buttons. The module now answers its own width through @container/payment-module (the source Layout axis is the module box: 560/270) instead of the max-sm viewport media queries — the wave's scope finding; the container scope is verified on every case. Five cases: desktop Default (11133-16142-desktop-default-desktop, the source 560x136), mobile Default (11133-16142-mobile-default-mobile, 270x194), desktop Action (11133-16142-desktop-action-desktop, 560x208), mobile Action (11133-16142-mobile-action-mobile, 270x274, the ActionMobile export) and desktop Multi-payment (11133-16142-desktop-multi-payment-desktop, 560x136); all responsive-clean. Component fixes: the root is the source model (a flex column on the 24px gap; the content row on 16px mobile / 24 desktop with @md:items-center), the suggestion icon slot is a 20px flex box (it added a phantom 5px line box: the row was 25 against the source 20), and the download action is the source 24px icon frame with the invisible 44px ::after target (the sibling ProductModule reading) instead of an inflated 44px box. Recorded adaptations: the source label frames are 22px tall with the 124px price detail overflowing them, so every tail is the in-flow detail (40 tall, the width following the widest line, 123.38 in the bundled font, against the source 24/108); the fixture's full object description wraps in the 236px mobile track where the mockups truncate their placeholder (the row 64 against 20); the shared ghost action keeps its 48px native target where the source mobile secondary is a 24px row; the source's desktop Action and Multi-payment frames exclude the 20px suggestion they draw (and overlap their button row), so those module heights follow the stacked content. Finding: the mobile Multi-payment frame (11134:16286) moves the radio into the code row (a 238x24 row, gap 16, the radio at x=230) and overlaps its own suggestion with the 68x22 price-only tail at 156 against the suggestion ending at 172 — a composition the library does not reproduce at any width (the radio stays with the price at every width, the desktop composition), so no mobile case is committed for that type."
+    },
+    "11149:7765": {
+      "status": "pending",
+      "target": {
+        "module": "src/components/feedback/empty-state.tsx",
+        "export": "EmptyState",
+        "story": "apps/storybook/src/EmptyState.stories.tsx"
+      },
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+    },
+    "1120:7458": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/navigation/side-nav.tsx",
+        "export": "SideNav",
+        "story": "apps/storybook/src/SideNav.stories.tsx",
+        "storyExports": ["Playground", "NestedAndProfile"]
+      },
+      "note": "Reviewed 2026-10-15 against the current source: a square full-bleed column (300px desktop, 72px condensed) with no radius or border, 16/24 item padding, grey-50 hover and the blue-50 selected row with the 4px blue-500 indicator. The previous rounded, bordered 288px card was an implementation extension and is removed; the mobile details disclosure and the profile block remain the reviewed adaptations. Mobile review 2026-10-15: the disclosure head is the source 48px bar (1519:2721 — menu icon, section name, bottom divider) plus the disclosure chevron, and the items under it are full-bleed like the source 320px panel. Device review 2026-10-15 (device burn-down wave 3): one case per declared device, both viewport-scoped and responsive-clean — mobile 1519:2721 (case 1120-7458-side-nav-condensed-mobile, 320: head 49 against the source 48 head + 1 divider, icon 24, label 16/22 semibold) and desktop 1120:7649 (case 1120-7458-back-office-io-desktop, 300: the 300x103 profile block with its 300x70 row, 208 text column and 32px avatar slot, plus the first item 56/16-20-16-24/8). Fixes from the captured renders: the item icon slot is a flex box (the inline-block leading made every icon item 62px against the source 56 and the item band read two lines), the item right inset is pr-5 (the source's 20 + the 4px indicator = 24; the DOM border carries the indicator), the profile column is flex-1 (208 like the source) and the profile divider no longer adds an 8px margin over the block's own pb-2 (103 against 111). Recorded: the Avatar's proportional compact radius (the source Gravatar placeholder is a circle), the source Gravatar's placeholder gap/stroke and the icon bounding-box fill as mapping artifacts, and the story's profile-below-items order (the source mockup places it first)."
+    },
+    "1120:7621": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "1120:7638": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "1120:7821": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "1134:6812": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/overlays/camera-view-element.tsx",
+        "export": "CameraViewElement",
+        "story": "apps/storybook/src/CameraViewElement.stories.tsx"
+      }
+    },
+    "1137:8910": {
+      "status": "pending",
+      "target": {
+        "module": "src/components/primitives/tabs.tsx",
+        "export": "Tabs",
+        "story": "apps/storybook/src/Tabs.stories.tsx"
+      },
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+    },
+    "1154:4493": {
+      "status": "mocked",
+      "note": "rendered by TemplateShell demo content; real implementation pending",
+      "target": {
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
+        "export": "FormWizardTemplate"
+      }
+    },
+    "1174:9780": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "12133:82475": {
+      "status": "pending",
+      "target": {
+        "module": "src/components/data-display/progress-kpi.tsx",
+        "export": "ProgressKpi",
+        "story": "apps/storybook/src/ProgressKpi.stories.tsx"
+      },
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+    },
+    "123:4498": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/inputs/actions.tsx",
+        "export": "ButtonGroup",
+        "story": "apps/storybook/src/ButtonGroup.stories.tsx",
+        "storyExports": ["Playground", "DestructivePair", "FigmaStateMatrix", "InteractionChecks"]
+      },
+      "note": "Reviewed per device 2026-10-15 (device burn-down wave 2): `123-4498-mobile-mobile` (Buttons=3, Inline=False at 312) and `123-4498-3-true-desktop` (Buttons=3, Inline=True at 560) verify against the source variants. The source text action is a content-sized 22px row where the shared Button keeps its 48px native target and 16px insets: recorded as residues (guides/actions.md). No layoutScope: the composition is the caller `orientation` prop, not a breakpoint, and the fidelity matrix story renders both devices. Adaptation `native-group-name`: the source is visual-only; the native group carries a meaningful accessible name without changing the action layout. Adaptation `text-action-target`: the 22px source text action keeps the shared Button's 48px native target, and the resulting stack height is reported, not waived."
+    },
+    "123:7768": {
+      "status": "pending",
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented",
+      "target": {
+        "module": "src/components/navigation/breadcrumb.tsx",
+        "export": "Breadcrumb",
+        "story": "apps/storybook/src/Breadcrumb.stories.tsx",
+        "storyExports": [
+          "BreadcrumbExtended",
+          "BreadcrumbCompact",
+          "BreadcrumbReflow",
+          "BreadcrumbFidelity",
+          "BreadcrumbFidelityHoverLink",
+          "BreadcrumbFidelityHoverBack"
+        ]
+      }
+    },
+    "127:1510": {
+      "status": "pending",
+      "target": {
+        "module": "src/components/navigation/pagination.tsx",
+        "export": "Pagination",
+        "story": "apps/storybook/src/Pagination.stories.tsx"
+      },
+      "note": "Pending from the 2026-10-14 Figma delta. The source `Order` axis is intentionally mixed: `First page`, `Second page and more`, and `Last page` are pagination states, while `Mobile` selects a compact layout. It is not a device axis; the checker warning remains informational so the shared device vocabulary does not weaken its mixed-axis signal."
+    },
+    "1278:6527": {
+      "status": "pending",
+      "target": {
+        "module": "src/components/overlays/drawer.tsx",
+        "export": "Drawer",
+        "story": "apps/storybook/src/Drawer.stories.tsx",
+        "storyExports": ["SourceDesktop", "SourceMobile"]
+      },
+      "note": "Editorial source flow is reviewed on both declared devices: Desktop `1278:6528` (417x800) and Mobile `1278:6526` (320x646). The composition uses a body description, a 40px action gap, and a bottom sheet without a handle; Mobile matches the source box, while the nearest width token is 416px (`w-104`), a 1px Desktop residue. The title uses the source Bold face (CSS 700), head-to-description spacing is 8px, and elevation uses `shadow-32`. The set remains pending because Service detail, Search, Filters and Sort have unreviewed dependencies: Alert `212:1899`, DragAndDrop `760:7432`, and ListItem `908:2234`."
+    },
+    "12785:14427": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "12812:16248": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/data-display/timeline.tsx",
+        "export": "Timeline",
+        "story": "apps/storybook/src/Timeline.stories.tsx",
+        "storyExports": ["SourceCase"]
+      },
+      "note": "Reviewed 2026-10-16 (device burn-down wave 7, closing the 2026-10-14 delta): the timeline element — the item row (24px cursor, the 8px root gap), the status card (16px radius, the 1px --border stroke, the 24px status glyph, the message stack on its 4px gap with the header and the 14/20 description), the touchpoints accordion and the timestamp column. Two cases, one per declared device, both container-scoped (the source pairs the composition with the device but draws both variants 848 wide: the 8px inset, 8px icon gap and stacked title/tag header belong to the drawer-width frames, so the container is the query — verified) and responsive-clean: desktop 9694:13224 (case 12812-16248-desktop-desktop, the 848 page column: 16px inset, 12px icon gap, title row) and mobile 12812:16249 (case 12812-16248-mobile-mobile, the 417 drawer panel: 8px inset, 8px icon gap, stacked header). Fixes from the captures (data-display/timeline.tsx): the row gap was 12 and is gap-2 (the source root 8); the icon slot was a line box (24x29) and is a 24px flex box; the compact composition gained @max-[27rem]/timeline:gap-2 and the stacked header (flex-col items-start gap-1); the card children are items-start as the source MIN counter axis. The story gains SourceCase (the source sample: one Default item with its correction tag). Recorded adaptations: the card measures 110 against the source 106 (the retained 1px border and the shared 32px tag against the source 30) and the row hugs the card where the source instance insets it 6px inside its 118 row (the dot stays centred on the card either way); the mobile capture reads the drawer composition at the source drawer-panel width 417 where the mockup draws it in the set 848 frame (a source frame width is never a component dimension), so the card/message widths follow the panel and the source copy wraps to four lines against the mockup two. The composition check is off with the recorded 6px item-inset reading. Responsive contract: the compact drawer-width composition (8px inset) is driven by the container query `@max-[27rem]/timeline:p-2`, not by the viewport."
+    },
+    "1293:8394": {
+      "status": "pending",
+      "target": {
+        "module": "src/components/inputs/actions.tsx",
+        "export": "SegmentedControl",
+        "story": "apps/storybook/src/SegmentedControl.stories.tsx"
+      },
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Responsive contract: at 320px the control keeps a 16px inset and its items are `min-w-0 truncate`, so long labels truncate instead of overflowing."
+    },
+    "1298:5209": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/navigation/header.tsx",
+        "export": "Header",
+        "story": "apps/storybook/src/Header.stories.tsx",
+        "storyExports": ["Playground", "WithActions"]
+      },
+      "note": "Rebuilt to the pinned composition: product identity (logo slot or 20/32→28/40 Semibold label; the chevron only without a logo, as both Logo=True variants hide it) and the user block (44px avatar, ente 18/26, parent 14/20, role 14/20 grey-700, chevron) on a white bar with the Color/Border/Border fill divider. Mobile review 2026-10-15: the Device=Mobile variant (320x77) keeps the single 76px row with the avatar only — the identity text stays announced (sr-only, it is not painted) and the caller's actions stay on that row instead of wrapping under it. Both blocks become real links when given a destination; the story documents the light surface. Device review 2026-10-15 (device burn-down wave 3): one case per declared device, both viewport-scoped and responsive-clean — mobile 1298:5148 (case 1298-5209-logo-false-mobile, 320: the 77px band = the source's 76 + the 1px divider, label 20/32 Bold, chevron 24 painted Icon/Neutral) and desktop 1298:5227 (case 1298-5209-logo-false-desktop, 1200: the 103px band, label 28/40 Bold, chevron primary, avatar 44, the profile row 70 with its 8px gaps and the 306x70 text stack 14/20 + 18/26 + 14/20). Fixes from the captured renders: the product label is `font-bold` (the source's Titillio-Bold is our 700, `font-semibold` was the wrong face), the product chevron is `text-foreground sm:text-primary` (Icon/Neutral on mobile, primary on desktop in the Logo=False variants) and the user stack draws the parent line above the entity name as the source's `User name` does (the composition check flagged the previous order). The story's `Playground` now renders the source's default Logo=False identity and `WithActions` keeps the logo. Recorded: the source's fixed 576px halves and 306px text column as frame widths (a source frame width is never a component dimension), the DOM's 24px gap before the shrink-0 user block, the story's long product name truncating the label in the 320 identity slot (the 2026-10-15 mobile review's adaptation), and the glyph-vs-icon box mapping artifacts. The earlier ad-hoc 77→81 (+4) report did not reproduce: the band is 77 = 76 + the 1px divider. Adaptation `accessible-targets`: the real 44px avatar and native links stay; compare the row composition and report the actual height instead of waiving a height delta. Responsive contract: one row at every width; below `sm` the identity text is announced (sr-only) but not painted, a logo plus a long product label truncates the label, the chevron renders only without a logo, and the product block is `min-w-0 flex-1` so the caller's actions never clip. The Header renders the light source surface; the dark navy variant is retired and must not return."
+    },
+    "1298:5299": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/navigation/preheader.tsx",
+        "export": "Preheader",
+        "story": "apps/storybook/src/Preheader.stories.tsx",
+        "storyExports": ["WithActions"]
+      },
+      "note": "Reviewed 2026-10-16 (device burn-down wave 7, closing the 2026-10-14 delta): the institutional band — one flex row (the institution link is shrink-0, the action cluster right-aligned), the source gaps (16 mobile / 32 desktop, the 8px icon-to-label gap) and the source band (54px content + the 1px divider; 55/57 with the caller 48px action). Two cases, one per declared device, both rendering the Status=Not logged in, User type=Generic sample, both viewport-scoped (verified: the collapse and the gaps are media-query driven) and responsive-clean: desktop 1298:5300 (case 1298-5299-generic-desktop) and mobile 1298:5159 (case 1298-5299-generic-mobile). Fix from the capture (navigation/preheader.tsx): the icon slot was a line box (24x29) and is a flex box (24x24) as every other navigation icon slot. Recorded adaptations: the source draws the actions as a fixed 576px half with the items right-aligned while the DOM block hugs them at the same right edge (a source frame width is never a component dimension); the mobile mockup drops the second link to fit at 320 while the library keeps both (a device composition hides text, never information), so its actions block measures 179.5 against 138; the desktop band measures 57 against the source 55 (the shared 48px action with the 4px py). The composition check is off with the recorded offset readings (the min-h-10 link row and the extra link). Responsive contract: one flex row at every width, the institution link is `shrink-0` and below `sm` the user block collapses to its avatar slot. The Preheader renders the light source surface; the dark navy variant is retired and must not return."
+    },
+    "1311:12896": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "1314:10512": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/navigation/stepper.tsx",
+        "export": "Stepper",
+        "story": "apps/storybook/src/Stepper.stories.tsx",
+        "storyExports": ["WithDescriptions"]
+      },
+      "note": "Reviewed 2026-10-16 (device burn-down wave 7, closing the 2026-10-14 delta): the sequential progress — the desktop row of numbered columns (the 24px marker slot with the 20px visual centred, the copy 8px below on its 2px title/description gap, the 4px connector centred on the marker) and the mobile current-step copy above the full-width marker row (the source root 16px gap, the 4px row gap). Two cases, one per declared device, both viewport-scoped (verified: the branches are sm:hidden / hidden sm:grid) and responsive-clean: desktop 1152:5357 (case 1314-10512-desktop-desktop, 1200x76) and mobile 1137:26294 (case 1314-10512-mobile-mobile, 1200x84 at the 320 viewport — the mobile variant is drawn 1200 wide: the device is the axis, not the width). Fixes from the captures (navigation/stepper.tsx): the marker is the source 24px slot with the 20px visual centred (was a bare 20px box); the desktop connector is mt-2.5 (centred on the slot); the desktop copy gained the source 2px title/description gap; the mobile row uses the source 4px gap (was connector margins). The story gains the fullscreen layout and the Design panel mapping. Recorded: the fixture draws 3 steps with real copy where the mockup draws 7 placeholder steps, so the copy hugs 135.3 against the mockup 71; the two phantom 10px gaps inside single-child marker frames are mapping ignores. The composition check is off with the recorded pitch readings. Stroke: the source draws this node's stroke in grey-200 #d2d6e3, so its connectors and pending markers use `border-strong` (grey-200); everywhere else `--border` is Figma Color/Border/Border fill #e8ebf1 (grey-100), and grey-200 is reserved for nodes whose source stroke is grey-200."
+    },
+    "1315:8596": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "1317:10404": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/feedback/header-alert.tsx",
+        "export": "HeaderAlert",
+        "story": "apps/storybook/src/HeaderAlert.stories.tsx",
+        "storyExports": ["SourceCase", "SourceTone"]
+      },
+      "note": "Reviewed 2026-10-16 (device burn-down wave 8, closing the 2026-10-14 delta): the full-width band under the header, four cases, two tones per declared device, all responsive-clean. The Default tone carries the source's own sample: mobile `1317-10404-default-mobile` (`11014:7010`, 320x80 — the `Content` row keeps the star beside the copy, the trailing unit action stacks under it on the root 16px gap, left) and desktop `1317-10404-default-desktop` (`11014:7007`, 1200x40 — one row, the action at the end); the tinted tone carries the source's warning copy: `1317-10404-warning-mobile` and `-desktop` (`1317:10412`, `1322:6534` — the copy wraps beside the icon at 320 and the icon+copy pair is centred at 1200, the source's `align=CENTER`). Fixes from the captures (`header-alert.tsx`): the mobile Default keeps the source `Content` row (the previous `max-sm:flex-col` stacked the star above the copy); the tinted tones were pinned left and now centre the pair (the pair hugs from `sm`, fills below); the tone glyphs are the published PagoPA icons the source instances point at (`98:1153` warning, `98:1115` info filled, `98:1065` check_circle, `98:1154` report) instead of lucide stand-ins. Recorded: the shared ghost action's retained 1px transparent border (+2 on the source 130x24 action and the band: 42/82 against 40/80) and the trailing 44px close target; the source band's 24px insets and the Default root 16px gap live on the inner row in the DOM (case ignores). The story declares the meta Design panel mapping."
+    },
+    "1333:16408": {
+      "status": "pending",
+      "target": {
+        "module": "src/components/overlays/timeline-drawer.tsx",
+        "export": "TimelineDrawer",
+        "story": "apps/storybook/src/TimelineDrawer.stories.tsx"
+      },
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Wave 8 2026-10-16: stays pending with its measurements. The shell's own device contract verifies after one fix (the pictogram slot from a 40x45 line box to a flex box in `overlays/drawer.tsx`): `Frame 5206` measures 369/272x40, the pictogram 40x40 at (24,24) and the title 24/32 desktop / 18/28 mobile on the Bold face at +4. The node cannot close per device: the source panel (`1333:16406`/`1333:16407`) is 417 wide against the Drawer width, OPEN decision OV4 — Drawer width: the source desktop panel is 417px (24 + 369 content + 24); the code uses `w-3/4 sm:max-w-sm` (384px). Decide source 417 vs tokenized 384 (every inner track follows); the source head-to-description gap is 24 where the composed header carries 8 (the description top 88 against 72); and the mobile device is a 320-wide bottom sheet (top radii 16) while the component renders a 240-wide right edge panel (`w-3/4`; the `direction` prop is caller-owned and the component does not expose it) with the `max-h-[80vh]` cap still open; the fixture also draws two items without the source's chips, per-item actions and the right-aligned footer action. Decided: stays `pending`; no device case is committed. Unblock: the same OV4 width decision and the 24px head-to-description step (or a description-in-body fixture keeping the source rhythm), plus a bottom-sheet export with the sheet cap decided; then one case per device. The title is Bold (CSS 700) 24/32 on desktop and 18/28 on mobile. The `direction` is caller-owned (the TimelineDrawer does not expose it), so the source bottom sheet is the caller's edge choice. The modal backdrop is Color/Surface/Surface overlay #0e0f13 at 35% with no blur. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`."
+    },
+    "1344:40672": {
+      "status": "pending",
+      "target": {
+        "module": "src/components/data-display/table-cell-row.tsx",
+        "export": "TableCellRow",
+        "story": "apps/storybook/src/Table.stories.tsx",
+        "storyExports": ["CellComposition"]
+      },
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Wave 9 2026-10-16: stays pending with its measurements. The desktop device stays committed (`1344-40672-default-desktop`, `1344:40652`, 645x48: the cell 48 tall with `px-4` and the centred content, the first cell's link 16/22 600 primary; residues: the fixture draws two columns against the source sample's seven fixed cells 114/153/59/59/59/89/112, so the growing first column takes 380.45, and the single-child cell gap is a mapping ignore). The mobile device (`1337:75105`, 272x492) is the row as a card and that card composition is the Table's (`@container/table`): mapped against the Table's mobile render the case verifies (row 498 against 492, the standalone 272 against the table's inset 256, responsive clean), but `figma:check` refuses the mapping because the component has no card surface of its own and no honest `storyExports` entry can be declared for it - `SourceMobile` does not render `TableCellRow`, and the node's own export (`CellComposition`) renders the desktop cell row. Decided: the mobile case stays open; the card is covered by the Table's mobile case (`1349-22020-default-mobile`). Unblock: a dedicated story export that renders the row helper inside the card/`@container/table` context; then one mobile case."
+    },
+    "1349:22020": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/data-display/table.tsx",
+        "export": "Table",
+        "story": "apps/storybook/src/Table.stories.tsx",
+        "storyExports": [
+          "SourceDesktop",
+          "SourceMobile",
+          "EmptyWithAction",
+          "EmptyOptions",
+          "Sorting"
+        ]
+      },
+      "note": "Device review 2026-10-16 (wave 9): desktop `1349-22020-default-desktop` (1344:42521, 852) and mobile `1349-22020-default-mobile` (1359:30426, 272), both container-scoped (the column grid and the card list switch on the 40rem container query: verified) and responsive-clean. Fixes: the fixture tag icon became the mobile-card affordance the source draws only in the card (`hidden @max-[40rem]/table:block`; the desktop cell draws text only, which removed the +1-per-row inline-flex line box) and the card stacks its fields on the source's own rhythm - no row gap, each field's own 12px padding, the 8px row gap before the trailing action cell (`@max-[40rem]/table:gap-0` plus `@max-[40rem]/table:mt-2`; the previous `gap-2` added 8px per field, +46 on the 492 card). Recorded: the desktop columns auto-lay from the fixture content against the mockup's fixed 124.2/... columns, the standalone row insets/gap map onto the inner row (ignores), the 15-vs-8 card stack (the fixture uses the desktop page of 15 against the mockup's 8) and the caller pager 44 against the source 46. The visible mobile sorting row stays (guides/tables.md: an accessibility adaptation) where the mockup drops the header."
+    },
+    "1360:20138": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/navigation/footer.tsx",
+        "export": "Footer",
+        "story": "apps/storybook/src/Footer.stories.tsx",
+        "storyExports": ["Playground", "LoggedUserFalseDesktop"]
+      },
+      "note": "Device review 2026-10-16 (wave 9): the compact band (`Logged user=True`) per declared device - mobile `1360-20138-true-mobile` (1360:12618, 320), tablet `1360-20138-true-tablet` (1360:21016, 900) and desktop `1360-20138-true-desktop` (1360:12599, 1200), all viewport-scoped (verified) and responsive-clean. Fixes: the fixture Italiano row now carries the source `Translation` chevron (`Footer.stories.tsx`, so the mobile stack is the source 168/280/450 bands) and the desktop link row uses the single 24px step (`footer.tsx`: `sm:gap-6`, from `sm:gap-x-6` whose two-valued gap reported the 16px row gap). Recorded: the source logo artwork (114x32) against the caller-owned default wordmark (88.55), the source frame widths (the desktop `Links` 1014 and the tablet 722) against the hugging row at the same 1176/876 right edge (a source frame width is never a component dimension), the tablet mockup's own 24px text boxes and 16px leftover band gap (a mockup frame's own leftover boxes are not a contract: do not chase the tablet frame), and the inert single-child gaps (ignores). The full `Logged user=False` columns composition is exercised by `LoggedUserFalseDesktop` and its per-device cases remain to be added. The Footer renders the light source surface; the dark navy variant is retired and must not return. Below `sm` the compact band stacks and centres its rows on 20px lines, each link keeping its 44px `::after` target. Residue: the columns block (`Logged user=False`) measures shorter than the Log In mockup; it is owned by this node's review, not by the page templates."
+    },
+    "1360:23904": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/navigation/cookies.tsx",
+        "export": "Cookies",
+        "story": "apps/storybook/src/Cookies.stories.tsx",
+        "storyExports": ["Playground", "WithClose"]
+      },
+      "note": "Device review 2026-10-16 (wave 9): the banner per declared device - mobile `1360-23904-mobile-mobile` (1360:12856, 320), tablet `1360-23904-tablet-tablet` (1360:12844, 900) and desktop `1360-23904-desktop-desktop` (1360:23903, 1200), all viewport-scoped (verified) and responsive-clean. Fixes: the root row starts at the desktop breakpoint (`cookies.tsx`: `lg:flex-row lg:flex-nowrap lg:items-center`, from `sm:`), because the source tablet stacks the copy row above the action row; the close joins the action cluster on the same breakpoint (`lg:hidden`/`hidden lg:block`); the copy row keeps the source per-device gap (`sm:gap-6`: the tablet draws 24 against the mobile 16); the mobile ghost action is the source content-sized centred text action (`max-sm:self-center`, from `max-sm:w-full`). The story renders in `fullscreen` with a page-surface decorator: a fixed-only root has no box and the centered layout makes it a shrinkable flex item, so the capture could not force the width. Recorded: the fixed 12px viewport insets and the `max-w-4xl` cap (296/896 against the source 320/1200), the fixture copy (the mockup draws a 663-character legal paragraph), the 44px close target against the source 24px frame (the 261:6501 reading, guides/banners.md) and the inert single-child gaps (ignores). The cases map `WithClose` because the source draws the close. Mobile composition: a column with the close beside the copy and the actions stacked full width; the row layout starts at `lg`. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`."
+    },
+    "13906:25597": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "LocalDefaults"]
+      }
+    },
+    "1501:5288": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "1501:5860": {
+      "status": "excluded",
+      "reason": "Initials-only content is composed through Avatar(initials), not a separate email-derived avatar or external Gravatar service. The misleading, unused email-inference alias was removed; richer Avatar source variants are reviewed through the shared Avatar composition."
+    },
+    "1509:25567": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "1566:29849": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/navigation/section-header.tsx",
+        "export": "SectionHeader",
+        "story": "apps/storybook/src/SectionHeader.stories.tsx",
+        "storyExports": ["Playground", "WithAction", "Levels"]
+      },
+      "note": "Device review 2026-10-16 (device burn-down wave 10): the Level 1 Default composition per declared device — desktop `1566-29849-level-1-default-desktop` (10356:14463, 348x44) and mobile `1566-29849-level-1-default-mobile` (10356:14445, 348x56), both viewport-scoped (the sm grid switch, verified by the tool) and responsive-clean, against the Playground fixture. Fixes (src/components/navigation/section-header.tsx): the L1 title face is the source Titillio-Bold (cssWeight 700) — the explicit font-semibold was the wrong face, dropped so the type-scale token carries its own 700; the decorative icon span gained the repo flex shrink-0 items-center pattern (the inline line box measured 24x31 against the source 24x24); the title+chip group is flex-1 like the source FILL grow=1 Text-Group. Recorded: the fixture title (29 chars) wraps to three lines where the mockup Section title placeholder measures one (the 96-against-44 header and its offsets, the fixture-copy reading), the mobile Default mockup draws its 44px IconButton outside the Section-Header with no band gap (the DOM keeps the source own 16px gap and the button lands at the same 304 left edge), the inert single-child source gaps and the pill radius encoding (ignores)."
+    },
+    "160:1344": {
+      "status": "implemented",
+      "note": "Fresh Path C review against pinned version 2409404974909792292: all eight source variants under root 160:1344 are source-bound, inspected and pass in Chromium. The 44px frame, 8px corners, and 32px contained logo at a 6px inset match. Source 22px placeholder/check glyphs use size-6 at 24px (+2px). The double faces match 28px at 0/16px; the proportional rear radius is 5.09px versus source 5.9px (-0.81px). SourceLogos uses the bundled product mark for caller-owned municipality/institution/service image examples, so those cases inspect container/contain geometry, not category brand-art parity. Nearby logo bounds use existing compact size-6 24px instead of 23.27px (+0.73px), and medium size-9 36px instead of 35px (+1px). Targeted Avatar story tests, typecheck and formatting pass; manual zoom and screen-reader tests remain unverified.",
+      "target": {
+        "module": "src/components/content/avatar.tsx",
+        "export": "Avatar",
+        "story": "apps/storybook/src/Avatar.stories.tsx",
+        "storyExports": [
+          "SourceSizes",
+          "SourcePlaceholder",
+          "SourceLogos",
+          "NativeImageRecovery",
+          "SourceSelection",
+          "SourceSkeleton",
+          "SourceDoubleAvatar",
+          "PairedImageRecovery",
+          "PairedReadableInitials",
+          "NonColorStatuses"
+        ]
+      }
+    },
+    "160:1403": {
+      "status": "implemented",
+      "note": "Fresh Path C review against pinned version 2409404974909792292: all eight source variants under root 160:1403 are source-bound, inspected and pass in Chromium. The 66px source frame uses size-16 at 64px (-2px), with 8px corners. The 48px contained logo remains 48px with an 8px inset instead of the source 9px (-1px); 33px placeholder/icon glyphs use size-8 at 32px (-1px). SourceLogos uses the bundled product mark for caller-owned municipality/institution/service examples, so those cases inspect container/contain geometry, not category brand-art parity. The actual black/white theater icon artwork is preserved; inverse artwork remains on a caller-owned contrasting surface. Targeted Avatar story tests, typecheck and formatting pass; manual zoom and screen-reader tests remain unverified.",
+      "target": {
+        "module": "src/components/content/avatar.tsx",
+        "export": "Avatar",
+        "story": "apps/storybook/src/Avatar.stories.tsx",
+        "storyExports": [
+          "SourceSizes",
+          "SourcePlaceholder",
+          "SourceLogos",
+          "NativeImageRecovery",
+          "SourceIcons",
+          "DecorativeIconSlot",
+          "ImageIconRecovery",
+          "SourceSkeleton",
+          "NonColorStatuses"
+        ]
+      }
+    },
+    "180:3931": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/feedback/scroll-to-bottom.tsx",
+        "export": "ScrollToBottom",
+        "story": "apps/storybook/src/ScrollToBottom.stories.tsx",
+        "storyExports": ["Playground", "ReducedMotionScroll"]
+      },
+      "note": "Verified against the pinned source: 56px primary circle, Shadow 32 and the mapped 24px arrow/down variant 98:917."
+    },
+    "1904:9589": {
+      "status": "implemented",
+      "note": "Implemented 2026-10-15 from the pinned source set: the four-slot page (preheader, header, the state block, footer) whose content-driven height reproduces the 806/902/834 desktop frames and the 320 frames. The story composes the reviewed chrome and the OK/KO/Waiting states with the source copy. Device review 2026-10-16 (device burn-down, the Feedback Page tablet wave): nine cases, one per declared device and message, all viewport-scoped and responsive-clean — mobile 320 (`1904-9589-xs-mobile-ko/-thank-you/-waiting`), tablet 600 (`1904-9589-sm-tablet-ko-tablet/-thank-you-tablet/-waiting-tablet`, the source frames 600x1009/913/915) and desktop 900 (`1904-9589-md-desktop-ko/-thank-you/-waiting`). The tablet review closed the wave-1 finding: the state block's content capped at the desktop 368 at every width, so the 600 device rendered the 368 measure against the source's 552 and the blocks measured 508/450/486 against 488/392/394; the cap now applies from `md` only (`max-w-none md:max-w-[23rem]` in `ok-state.tsx`, `ko-state.tsx`, `waiting-state.tsx`) and the waiting title cap became `max-w-none md:max-w-xs` (the source tablet title is the full 552 on one line). The tablet now renders 486/392/392 blocks (pages 1008/914/914 against 1009/913/915); the −2 is the shared 48px action against the source's 50px KO/Waiting frames (guides/actions.md). The page's tablet KO instance fixes its code row at 272 inside the 552 content, which the state's own main components contradict (both variants mark the row `FILL`: it follows the content at 272/368), so the library keeps the reviewed `23rem` row measure (368x48 at the tablet) — the measured constraint is in the wave report. The KO description fixture no longer carries a literal `\\n` (a JSX attribute escapes nothing), so the render shows the copy and not the escape. Residues unchanged: the chrome bands aggregate to −3px (the header is 1px taller, the footer 4px shorter than the 55/103/182 source bands) and the page waiting instance uses 55px vertical paddings where the state set uses 64, so the block is 16px taller (the library keeps the verified 64).",
+      "target": {
+        "module": "src/components/templates/figma/FeedbackPage.tsx",
+        "export": "FeedbackPage",
+        "story": "apps/storybook/src/FeedbackPage.stories.tsx",
+        "storyExports": ["ThankYou", "KO", "Waiting"]
+      }
+    },
+    "1908:98740": {
+      "status": "mocked",
+      "note": "rendered by TemplateShell demo content; real implementation pending",
+      "target": {
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
+        "export": "TermsOfUse"
+      }
+    },
+    "1909:98992": {
+      "status": "implemented",
+      "note": "Implemented 2026-10-15 from the pinned source set: the 650px artboard, the shared 35% overlay backdrop and the 16px panel (272x446 narrow / 600x290 wide) with 24px padding and the 24px body-to-actions gap; the body stacks title (18/28 narrow, 24/32 wide), description (16/22 grey-700) and the 56px option row on an 8px gap; the footer is a 16px-gap column narrow and a right-aligned 16px-gap row wide. The composition answers its own frame through container queries and the panel is not portaled (a page fragment, measurable by the parity tool). Device review 2026-10-16 (device burn-down wave 4): one case per declared device, all container-scoped and responsive-clean — mobile 1909:98989 (case 1909-98992-xs, the source 320: panel 272x446, the 18/28 narrow title and the stacked actions), tablet 1909:98990 (case 1909-98992-md, the source 900: panel 600x290, the 552px blocks, the option row 552x56 at 24/138 and the action row 552x48 at 24/218) and desktop 1909:98987 (case 1909-98992-lg-desktop, the source 1200: the same 600x290 panel — the desktop frames only widen the page). The container declaration is verified: the composition moves with the frame width and not with the viewport (the viewport probe reports `responsive.scope.viewport`). The `Checkbox with label.gap` residue (the source 8px option-row gap lives on the inner label row in the DOM) is carried by all three cases; the wide story now renders the page itself (`WideFrame` dropped its 900px wrapper) so the desktop device is captured in its own 1200 frame, while the narrow story keeps the 320 frame. The set's SM Tablet 600 frame draws the same 272x446 narrow panel as the mobile one; the tablet case captures the MD 900 wide frame.",
+      "target": {
+        "module": "src/components/templates/figma/DialogTemplate.tsx",
+        "export": "DialogTemplate",
+        "story": "apps/storybook/src/DialogTemplate.stories.tsx",
+        "storyExports": ["NarrowFrame", "WideFrame"]
+      }
+    },
+    "1909:99033": {
+      "status": "implemented",
+      "note": "Implemented 2026-10-15 from the pinned source set: the shared dialog panel (272x570 narrow / 600x374 wide, 16px radius, 24px padding and gap) with the code block on the source 16px gap — the 167x50 code control and the 14/20 helper (three lines narrow, one wide). The source alert row is a hidden instance in every variant. Residues: the code field owns its label (6px gap) where the mockup keeps an external 16px row, so the block and the panel are 8px shorter; the reviewed field keeps 24px slots on an 8px gap against the source 11px slots on 16px (the outer frame matches, 169 vs 167). Device review 2026-10-16 (device burn-down wave 4): one case per declared device, all container-scoped and responsive-clean — mobile 1909:99034 (case 1909-99033-xs, the source 320: panel 272x570, the code block 224x164 with the three-line 14/20 helper), tablet 1909:99040 (case 1909-99033-md, the source 900: panel 600x374 and the code block 552x124 with the one-line helper) and desktop 1909:99045 (case 1909-99033-lg-desktop, the source 1200: the same 600x374 panel). All three carry the `Authentication code.box.height` and `field.box.height` residues (the field owns its label, so the block and the panel are 8px shorter) and keep the composition check off with the recorded note: a `--compare-offset` run confirms the same shift at 1200 (`Authentication code input.offset.top` 182 against 192, `Block buttons.offset.top` 294 against 302). The wide story now renders the page itself (`WideFrame` dropped its 900px wrapper) so the desktop device is captured in its own 1200 frame, and the container declaration is verified at every device.",
+      "target": {
+        "module": "src/components/templates/figma/SecurityCodeDialog.tsx",
+        "export": "SecurityCodeDialog",
+        "story": "apps/storybook/src/SecurityCodeDialog.stories.tsx",
+        "storyExports": ["NarrowFrame", "WideFrame"]
+      }
+    },
+    "192:1208": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/primitives/button.tsx",
+        "export": "Button",
+        "story": "apps/storybook/src/Button.stories.tsx",
+        "storyExports": ["FigmaIconButton"]
+      },
+      "note": "Reviewed against the pinned source: the 44×44 IconButton frame contains a 24px menu icon (18×12 glyph). FigmaIconButton renders the native Button with that 24px icon and an accessible name; the transparent interaction surface, visible focus perimeter and 8px hover radius are accessibility adaptations."
+    },
+    "1931:112838": {
+      "status": "mocked",
+      "note": "rendered by TemplateShell demo content; real implementation pending",
+      "target": {
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
+        "export": "RecapDefault"
+      }
+    },
+    "194:3654": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/primitives/checkbox.tsx",
+        "export": "Checkbox",
+        "story": "apps/storybook/src/Checkbox.stories.tsx",
+        "storyExports": ["SourceDefault", "SourceSelected", "SourceFocused"]
+      },
+      "note": "Adaptation `native-target-minimum`: the 24px source visual stays while the invisible native target expands to 44px (`after:-inset-2.5`). Adaptation `keyboard-focus-perimeter`: the source focused glyph is kept and the library's visible keyboard focus perimeter is drawn outside it."
+    },
+    "194:3661": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/inputs/checkbox-field.tsx",
+        "export": "CheckboxField",
+        "story": "apps/storybook/src/CheckboxField.stories.tsx"
+      },
+      "note": "Adaptation `native-target-minimum`: the 24px checkbox artwork stays and only the native target expands to 44px. Adaptation `native-unavailable-state`: disabled uses the native disabled control and muted-foreground copy instead of the source 50% opacity over the whole field; only the shared checkbox artwork keeps its 50% disabled fade. Adaptation `keyboard-focus-perimeter`: visible keyboard focus is retained without replacing the source feedback state."
+    },
+    "194:3677": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/primitives/radio-group.tsx",
+        "export": "RadioGroupItem",
+        "story": "apps/storybook/src/RadioField.stories.tsx",
+        "storyExports": ["RadioIndicatorStates"]
+      },
+      "note": "Fresh Path C review at pinned source version 2409404974909792292: Default (194:3678), Active (194:3680), and Feedback error (194:3682) use the real 20px glyphs centered in 24px frames (2px inset per side); size-6 keeps the frame exact (0px delta). The 10px after:-inset-2.5 extension creates the accessible 44px hit target, with a solid external keyboard focus perimeter. Source #0E0F13/#0B3EE3/#D13333 map to foreground/primary/destructive tokens. The 64x152px sample artboard and 20px example spacing are not runtime sizing. Nearby 179px/243px RadioField skeleton widths remain content placeholders outside this indicator contract; no one-off sizing compensation was added. Fresh 1280x900 source/render cases pass for all required variants; targeted RadioField interaction/a11y and type checks pass. Manual zoom and screen-reader testing remain unverified."
+    },
+    "194:3700": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/inputs/radio-field.tsx",
+        "export": "RadioField",
+        "story": "apps/storybook/src/RadioField.stories.tsx",
+        "storyExports": ["RichRadioOptions", "RadioLoadingStates", "RadioSourceStateMatrix"],
+        "additionalTargets": [
+          {
+            "module": "src/components/inputs/radio-group.tsx",
+            "export": "RadioGroup"
+          }
+        ]
+      },
+      "note": "The source node is a rich option, not the whole collection: RadioField with an end indicator supplies its decorative icon, description, feedback and four metadata-dependent skeleton layouts; RadioGroup supplies the named native collection. Reviewed all source states and the rendered matrix. Loading announces busy/unavailable and retains the real checked state instead of faking the source skeleton's unchecked indicator; disabled controls follow native submission exclusion. Re-reviewed the corrected notifications_active default-master edge 99:2117: the rich, loading and state-matrix stories already use its actual 24px source artwork and retain native keyboard/selection behavior."
+    },
+    "194:3763": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/inputs/checkbox-field.tsx",
+        "export": "CheckboxField",
+        "story": "apps/storybook/src/CheckboxField.stories.tsx"
+      },
+      "note": "The node is one rich option, not a group: reviewed and mapped to CheckboxField with the decorative 24px icon and the end indicator placement. The public CheckboxGroup fieldset remains a documented collection extension (api-exceptions.json), mirroring the 349:4683 → SwitchField decision. Adaptation `native-unavailable-state`: native checked/disabled semantics are preserved, only the icon and checkbox artwork fade, and the label and description stay legible on muted-foreground tokens instead of the source-wide 50% opacity. Adaptations `native-target-minimum` and `source-error-state` (44px native target around the 24px art; the error exposed through the native invalid state and an associated alert without replacing the red outline art) are stated in guides/checkbox-choices.md."
+    },
+    "194:3841": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/inputs/radio-field.tsx",
+        "export": "RadioField",
+        "story": "apps/storybook/src/RadioField.stories.tsx",
+        "storyExports": ["RadioIndicatorStates", "RadioFieldFeedback", "RadioSourceStateMatrix"]
+      },
+      "note": "Reviewed Default/Selected/Feedback and both disabled source states. The enclosing native label has the source 24px indicator, 8px gap and 56px minimum row. Description/error/required state is associated with the actual control; feedback uses the source report glyph. Shared 20px feedback lines avoid the source's clipped 18px frame, and semantic disabled text retains stronger contrast than the source fade."
+    },
+    "197:1985": {
+      "status": "implemented",
+      "note": "Path C reviewed against pinned Figma v2409404974909792292. All 14 Type/Style variants have source-bound cases; the render preserves visible centered labels and 12/18 typography, while the matrix play verifies solid/outline paints, border state and 24px source height. Keep token-driven compact sizing (h-6, px-2, nearest py-0.5, rounded-full) and the existing Titillio to bundled Titillium Web Semibold mapping. Measured frame height/label inset are 24/3px; glyphs are 2.05–5.12px narrower, yielding -5.12–-0.05px content-driven frame-width deltas; no fixed-width or tracking correction. Default 44px sizing and the 44×44 removal action remain accessibility adaptations; removal interaction verifies its name, keyboard use and non-submission. Manual zoom and screen-reader testing remain unverified. (2026-10-14: the source Titillio family is now bundled directly; earlier substitute-font statements and figures in this note are historical and pending re-measurement.)",
+      "target": {
+        "module": "src/components/inputs/chips.tsx",
+        "export": "Chip",
+        "story": "apps/storybook/src/Chip.stories.tsx",
+        "storyExports": ["ChipSourceVariantMatrix", "ChipRemovalAction"]
+      }
+    },
+    "198:828": {
+      "status": "pending",
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Adaptation `accessible-error-feedback`: the visible native label and report icon supplement the source helper copy, and the error text stays a `role=alert` with the source 14/20 metrics. Adaptations `token-frame-inset` and `native-password-mask` (px-6/py-2 insets, 169x52 frame against 168x50 with the exact 27px slot step; native `type=password` with a font-independent rounded marker) are stated in guides/authentication-codes.md.",
+      "target": {
+        "module": "src/components/inputs/text-fields.tsx",
+        "export": "AuthenticationCodeInput",
+        "story": "apps/storybook/src/AuthenticationCode.stories.tsx",
+        "storyExports": [
+          "SourceFrame",
+          "MaskedNativeCode",
+          "KeyboardSourceCursor",
+          "SourceErrorDescription",
+          "NarrowSourceCode",
+          "MaskedNativePaste",
+          "SlotLabelsAndFramePress",
+          "SourceVariant",
+          "SourceErrorVariant",
+          "SourceErrorEncryptedVariant"
+        ]
+      }
+    },
+    "1983:116988": {
+      "status": "mocked",
+      "note": "rendered by TemplateShell demo content; real implementation pending",
+      "target": {
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
+        "export": "HistoryDrawer"
+      }
+    },
+    "1983:116998": {
+      "status": "mocked",
+      "note": "rendered by TemplateShell demo content; real implementation pending",
+      "target": {
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
+        "export": "ServiceDetailDrawer"
+      }
+    },
+    "1992:127582": {
+      "status": "implemented",
+      "note": "Implemented 2026-10-15 from the pinned source set: the 320x650 bottom sheet (16px top corners, no drag handle in this composition) and the 417x800 square side panel from 600 up, both with the 35% surface overlay, 24px padding, the 40px Error pictogram row on a 16px gap, the 8px gap to the multi-paragraph description and the 40px gap before the action (full width on the sheet, intrinsic and right-aligned on the panel). Verified both frames; the sheet records one residue: the source text node carries 12px paragraph spacing on six paragraph breaks, and the same copy as six HTML paragraphs measures 4px taller. Device review 2026-10-16 (device burn-down wave 4): one case per declared device — mobile 1992:127583 (case 1992-127582-xs, the source 320: the 320x504 bottom sheet hugging the bottom edge with the 272px blocks, carrying the 4px copy residue), tablet 1992:127589 (case 1992-127582-md, the source 900: the 417x800 right panel with the 369px blocks, the 40px head, the 8px spacing and the 112x48 action, verified clean) and desktop 1992:127591 (case 1992-127582-lg-desktop, the source 1200: the same 417x800 panel at the 1200 edge, verified clean — the desktop frames only widen the page). The three cases declare no `layoutScope`: the edge and the panel geometry follow the caller's `direction` prop (the wide story passes `right`, the narrow one `bottom`), not an axis of the frame — the same reading the ButtonGroup orientation recorded — and the reason is recorded on every case. The wide story now renders the page itself (`WideFrame` dropped its 900px wrapper) so the desktop device is captured in its own 1200 frame.",
+      "target": {
+        "module": "src/components/templates/figma/InformativeDrawer.tsx",
+        "export": "InformativeDrawer",
+        "story": "apps/storybook/src/InformativeDrawer.stories.tsx",
+        "storyExports": ["NarrowFrame", "WideFrame"]
+      }
+    },
+    "1992:130380": {
+      "status": "mocked",
+      "note": "rendered by TemplateShell demo content; real implementation pending",
+      "target": {
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
+        "export": "SearchDrawer"
+      }
+    },
+    "1992:147363": {
+      "status": "mocked",
+      "note": "rendered by TemplateShell demo content; real implementation pending",
+      "target": {
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
+        "export": "IdentityProviderSelector"
+      }
+    },
+    "2080:3319": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "2080:3320": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "212:1899": {
+      "status": "pending",
+      "target": {
+        "module": "src/components/primitives/alert.tsx",
+        "export": "Alert",
+        "story": "apps/storybook/src/Alert.stories.tsx",
+        "storyExports": ["AllStatuses", "Playground", "WithAction"]
+      },
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+    },
+    "230:1317": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/overlays/tooltip.tsx",
+        "export": "Tooltip",
+        "story": "apps/storybook/src/Tooltip.stories.tsx",
+        "storyExports": ["Playground", "Sides", "SourceArrowTop", "SourceArrowBottom"]
+      },
+      "note": "Adaptation `decorative-close-mark`: the pinned source records no Close interaction, so the 10px close mark stays decorative and the Tooltip noninteractive; Escape, blur and pointer exit dismiss it. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`."
+    },
+    "232:1673": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "image",
+        "defaultVariantNodeId": "232:1672",
+        "aliases": {
+          "light": "232:1672",
+          "dark": "232:1674"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "LocalDefaults", "LocalVariants"]
+      },
+      "note": "The source default 232:1672 is white IO Light and needs a contrasting dark surface; 232:1674 is blue IO Dark. Preserve brand colors and the source default rather than substituting a more convenient variant."
+    },
+    "2339:80916": {
+      "status": "implemented",
+      "note": "Implemented 2026-10-15 from the pinned source set: the application chrome around the centred login module. The module is exact on both frames (900x689 and the 320x757 mobile: pad 80/40 and 64/24, the 40px gap, the 520px text block at 84px, the warning alert at 98px, the 272px action column at 166px and the 520px terms block at 61px). The story renders the source copy, including the hidden title and action layers of the alert and the source 18/26 Regular description, which the file does not publish as a variable: the block takes the Body Big SB metrics and states the regular weight. Device review 2026-10-16 (device burn-down wave 5): one case per declared device, all viewport-scoped and responsive-clean — mobile 2339:80911 (2339-80916-xs-mobile, 320), tablet 2339:80912 (2339-80916-sm-tablet-tablet, 600) and desktop 2339:80913 (2339-80916-md-desktop, 900). The scope is viewport: the page always spans the page width and the chrome bands and the module padding/type switch on media queries (the container probe moves too, because any page reflows in a narrower box — recorded so the reading is not re-litigated). The tablet review fixed the module: the source tablet frame is the mobile composition at 600 (pad 64/24, the 28/40 title) and draws the text and terms blocks at the full 552, so the 520px caps now apply from md (LogIn.tsx: md:max-w-[32.5rem]); mobile (272) and desktop (520) are unchanged. All three cases carry the field.box.height page-aggregation residue (the module is exact; the shorter footer columns block is the Footer node still in the pending queue) and the Alert.gap mapping ignore.",
+      "target": {
+        "module": "src/components/templates/figma/LogIn.tsx",
+        "export": "LogIn",
+        "story": "apps/storybook/src/LogIn.stories.tsx",
+        "storyExports": ["Page", "Module"]
+      }
+    },
+    "236:1311": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/feedback/progress-loader.tsx",
+        "export": "ProgressLoader",
+        "story": "apps/storybook/src/ProgressLoader.stories.tsx",
+        "storyExports": ["FigmaDefault", "Indeterminate", "Matrix", "Playground"]
+      }
+    },
+    "237:1307": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/content/spacing.tsx",
+        "export": "Spacing",
+        "story": "apps/storybook/src/Spacing.stories.tsx"
+      }
+    },
+    "256:8579": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "image"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "LocalDefaults"]
+      }
+    },
+    "256:8580": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "image"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "LocalDefaults"]
+      }
+    },
+    "256:8581": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "image"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "LocalDefaults"]
+      }
+    },
+    "256:8582": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "image"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "LocalDefaults"]
+      }
+    },
+    "261:6501": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/feedback/banner.tsx",
+        "export": "Banner",
+        "story": "apps/storybook/src/Banner.stories.tsx",
+        "storyExports": [
+          "Dismissable",
+          "Playground",
+          "SourceCase",
+          "SourceCaseVertical",
+          "SourceHierarchies"
+        ]
+      },
+      "note": "Reviewed per device 2026-10-15 (device burn-down wave 2): `261-6501-desktop-desktop` (261:6548, 852 wide, viewport scope verified) and `261-6501-mobile-mobile` (374:12526 through the new SourceCaseVertical story: the source pairs the mobile device with Direction=Vertical). Residues: the shared 24px action row (the source text action is 14/21), the 44px native close target and the retained 1px border (guides/banners.md)."
+    },
+    "2776:74243": {
+      "status": "mocked",
+      "note": "rendered by TemplateShell demo content; real implementation pending",
+      "target": {
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
+        "export": "RecapDefault"
+      }
+    },
+    "2786:78783": {
+      "status": "mocked",
+      "note": "rendered by TemplateShell demo content; real implementation pending",
+      "target": {
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
+        "export": "FormTemplate"
+      }
+    },
+    "2801:85126": {
+      "status": "mocked",
+      "note": "rendered by TemplateShell demo content; real implementation pending",
+      "target": {
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
+        "export": "ObjectDetail"
+      }
+    },
+    "2801:90017": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "2809:77828": {
+      "status": "mocked",
+      "note": "rendered by TemplateShell demo content; real implementation pending",
+      "target": {
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
+        "export": "FilterDrawer"
+      }
+    },
+    "2822:80432": {
+      "status": "mocked",
+      "note": "rendered by TemplateShell demo content; real implementation pending",
+      "target": {
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
+        "export": "Homepage"
+      }
+    },
+    "2822:83244": {
+      "status": "mocked",
+      "note": "rendered by TemplateShell demo content; real implementation pending",
+      "target": {
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
+        "export": "EditDrawer"
+      }
+    },
+    "2827:30226": {
+      "status": "mocked",
+      "note": "rendered by TemplateShell demo content; real implementation pending",
+      "target": {
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
+        "export": "InformativaPrivacy"
+      }
+    },
+    "2846:37569": {
+      "status": "mocked",
+      "note": "rendered by TemplateShell demo content; real implementation pending",
+      "target": {
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
+        "export": "Dashboard"
+      }
+    },
+    "2846:40095": {
+      "status": "mocked",
+      "note": "rendered by TemplateShell demo content; real implementation pending",
+      "target": {
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
+        "export": "MultipleCtaDashboard"
+      }
+    },
+    "295:1360": {
+      "status": "pending",
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented",
+      "target": {
+        "module": "src/components/inputs/switch-field.tsx",
+        "export": "SwitchField",
+        "story": "apps/storybook/src/Switch.stories.tsx",
+        "storyExports": [
+          "SourceStartPlacement",
+          "KeyboardFocusStates",
+          "NarrowRichSource",
+          "FidelityStartStates"
+        ]
+      }
+    },
+    "3228:36387": {
+      "status": "mocked",
+      "note": "rendered by TemplateShell demo content; real implementation pending",
+      "target": {
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
+        "export": "ListView"
+      }
+    },
+    "3262:40787": {
+      "status": "pending",
+      "target": {
+        "module": "src/components/inputs/menus.tsx",
+        "export": "MenuDropDown",
+        "story": "apps/storybook/src/MenuDropDown.stories.tsx"
+      },
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Elevation comes only from the Figma shadow scale: `shadow-16` for menus and dropdowns, never Tailwind `shadow-md/lg/xl`."
+    },
+    "3424:12354": {
+      "status": "pending",
+      "target": {
+        "module": "src/components/inputs/actions.tsx",
+        "export": "StickyButtonBar",
+        "story": "apps/storybook/src/StickyButtonBar.stories.tsx"
+      },
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+    },
+    "349:4683": {
+      "status": "pending",
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented",
+      "target": {
+        "module": "src/components/inputs/switch-field.tsx",
+        "export": "SwitchField",
+        "story": "apps/storybook/src/Switch.stories.tsx",
+        "storyExports": [
+          "SourceSwitches",
+          "RichSourceOptions",
+          "NarrowRichSource",
+          "FidelityRichStates"
+        ]
+      }
+    },
+    "357:4970": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/feedback/snackbar.tsx",
+        "export": "Snackbar",
+        "story": "apps/storybook/src/Snackbar.stories.tsx",
+        "storyExports": ["Dismissable", "Playground", "SourceCase", "WithAction"]
+      },
+      "note": "The Snackbar renders the light source surface; the dark navy variant is retired and must not return. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`."
+    },
+    "360:797": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/primitives/badge.tsx",
+        "export": "Badge",
+        "story": "apps/storybook/src/Badge.stories.tsx",
+        "storyExports": ["Fidelity", "Playground"]
+      }
+    },
+    "382:7640": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/content/loghi-psp.tsx",
+        "export": "LoghiPSP",
+        "story": "apps/storybook/src/LoghiPSP.stories.tsx",
+        "storyExports": ["Fidelity", "Playground"]
+      }
+    },
+    "382:7813": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/composites/checkout-module.tsx",
+        "export": "CheckoutModule",
+        "story": "apps/storybook/src/CheckoutModule.stories.tsx",
+        "storyExports": [
+          "Playground",
+          "ReadOnly",
+          "WithContinue",
+          "SkeletonState",
+          "NativeBehavior",
+          "Branded",
+          "CallerOwnedReadOnly",
+          "Loading"
+        ]
+      },
+      "note": "Reviewed per device 2026-10-15 (device burn-down wave 2): `382-7813-desktop-desktop` (382:7775 at 560) and `382-7813-mobile-mobile` (403:4160 at 272), both with the container scope verified. The mobile review found the stack gap at 12 where the source draws 8: `checkout-main` now uses `gap-2` for the mobile composition (the desktop branch keeps `@lg:gap-4`); the remaining deltas are the shared sm action row (+2) and the border. Adaptations `desktop-accessible-action-and-token-geometry` and `mobile-accessible-action-and-token-geometry`: the 22px source text action keeps the shared ghost Button's 16px inline inset and 48px minimum height (+26px); the card uses the token ladder (p-4, rounded-lg, gap-3, gap-2, gap-4 on desktop) and the 12px suggestion uses leading-5 (20px against the source 18px). Adaptation `token-first-skeleton-geometry`: skeleton widths are the 240/356/168px tokens against the source 241/357/170px with 24/16px heights and the 6px inset on existing tokens; the repeated 4px bar radius stays local because radius tokens start at 8px. Adaptation `mobile-runtime-viewport`: the 272px Figma frame is not a device width; the preview enforces a 320px minimum body width, so the mobile case uses the real 320px viewport without a width wrapper."
+    },
+    "3823:36774": {
+      "status": "mocked",
+      "note": "rendered by TemplateShell demo content; real implementation pending",
+      "target": {
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
+        "export": "TemplateEmail"
+      }
+    },
+    "392:4667": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/feedback/snackbar-error-code.tsx",
+        "export": "SnackbarErrorCode",
+        "story": "apps/storybook/src/SnackbarErrorCode.stories.tsx",
+        "storyExports": [
+          "Playground",
+          "SourceCase",
+          "DismissAction",
+          "ClipboardUnavailable",
+          "ClipboardSuccess",
+          "ClipboardRejected"
+        ]
+      },
+      "note": "The SnackbarErrorCode renders the light source surface; the dark navy variant is retired and must not return. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`."
+    },
+    "392:5291": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "403:4116": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/composites/product-module.tsx",
+        "export": "ProductModule",
+        "story": "apps/storybook/src/ProductModule.stories.tsx",
+        "storyExports": [
+          "Playground",
+          "RadioMobile",
+          "WithAction",
+          "ActionMobile",
+          "RadioFormBehavior",
+          "Radio",
+          "CallerOwnedAction",
+          "ReadOnly",
+          "StandaloneFormBehavior"
+        ]
+      },
+      "note": "Reviewed 2026-10-16 (device burn-down wave 5, closing the 2026-10-14 delta): the boxed product module — 8px radius, the 1px --border stroke, white card, 16px padding, the 44px Avatar small on the 12px avatar-to-copy gap, the 16/22 semibold title with its 24px Chip (8px apart on the desktop title row, 4px apart stacked on mobile), the 14/20 grey-700 description and either the 24px radio glyph or the 16/22 semibold ghost action (cached, 8px gap); mobile stacks title/chip/description (4px gaps) with the action below, the desktop row stays one band. Four cases, one per device and Type, all container-scoped (the composition follows the module's own width through @container/product-module, verified) and responsive-clean: desktop 560 radio (403-4116-desktop-radio-button-desktop, the source 78 card) and action (403-4116-desktop-action-desktop), mobile 272 radio (403-4116-mobile-radio-button-mobile, the source 106) and action (403-4116-mobile-action-mobile, the source 146). Recorded adaptations: the Chip pill radius (source 100 against rounded-full) and the ghost action's retained transparent 1px border with the label --border stroke inside the p-4 inset — the sibling 382:7813 border-in-padding and action-border readings; the radio keeps the source 24px glyph with the invisible 44px native target (the archived radio-hit-target/action-hit-target adaptations), and the action's visible box stays 24px with its own ::after expansion."
+    },
+    "422:16012": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/inputs/chips.tsx",
+        "export": "InputChip",
+        "story": "apps/storybook/src/InputChip.stories.tsx",
+        "storyExports": ["NeutralSolid"]
+      },
+      "note": "Fresh Path C review against pinned Figma v2409404974909792292: Neutral/Solid is 24px high with a 24px close cell and 9.15px small glyph. The native remove button retains a 44px hit target; decorativeRemove stays inert inside one-button containers. Titillio-Semibold maps to Titillium Web Semibold; for “Input chip” the label measures 50.875px vs 57px source and remains content-driven. (2026-10-14: the source Titillio family is now bundled directly; earlier substitute-font statements and figures in this note are historical and pending re-measurement.)"
+    },
+    "50:1700": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/content/white-template.tsx",
+        "export": "WhiteTemplate",
+        "story": "apps/storybook/src/WhiteTemplate.stories.tsx",
+        "storyExports": ["Playground", "Fidelity"]
+      },
+      "note": "Reviewed 2026-10-16 (device burn-down wave 5): the white page canvas — a section with the source root's own minHeight 650 over the white surface, growing with caller content; `SafeArea` owns the max width and gutters. One case per declared device, all responsive-clean and each with no layoutScope (the set draws one composition — an empty white canvas — at every device, so both scope probes report the composition unchanged and a scope declaration would be vacuous): mobile 50:1701 (case 50-1700-xs-mobile-mobile, 320x650), tablet 50:1707 (case 50-1700-md-tablet-tablet, 900x650 — of the set's two tablet frames the MD 900 is the frame nearest the midpoint of the captured pair 320/1200 and above the library's sm breakpoint) and desktop 50:1710 (case 50-1700-lg-desktop-desktop, 1200x650; the XL 1536 and XXL 1920 frames are the same canvas). The cases capture the `Fidelity` story, the source-exact empty surface (the `Playground` SafeArea paragraph stays under the 650 floor at every captured width, so the height is the source floor, not content-driven)."
+    },
+    "529:6111": {
+      "status": "pending",
+      "target": {
+        "module": "src/components/inputs/text-fields.tsx",
+        "export": "TextField",
+        "story": "apps/storybook/src/TextField.stories.tsx",
+        "storyExports": ["Playground", "ReadOnly", "Validation", "WithIcons", "WithTrailingIcon"]
+      },
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Field border: grey-650 #636b82 1px when enabled, disabled or success; primary 2px when active/focused; #d13333 on error; never grey-450 (it is not a source field stroke)."
+    },
+    "602:9417": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/inputs/select-field.tsx",
+        "export": "SelectField",
+        "story": "apps/storybook/src/SelectField.stories.tsx",
+        "storyExports": ["SourceFrame"],
+        "additionalTargets": [
+          {
+            "module": "src/components/inputs/multi-select-field.tsx",
+            "export": "MultiSelectField"
+          }
+        ]
+      },
+      "note": "Reviewed 2026-10-15 at the pinned export: the 2026-10-14 delta unpublished the `.HelperText • Select` helper (its instances stay inside the variants) and moved the default icon swap to an external asset; the design fingerprint is unchanged. `SourceFrame` renders both implementations at the 274px source width: 272x48 (`w-68` token, -2px), radius 8, #636b82 stroke, 12px insets, 16/22 semibold label text at 44px, 24px decorative leading art #bbc2d6 and the 24px chevron; the error helper keeps the legible 20px line box against the source 21px. Adaptation `native-selection`: verify the open state by opening the real SelectField through its trigger and waiting for its scoped listbox; the popup is runtime state, not part of the pinned field raster. Adaptation `disabled-required-marker` (disabled keeps required semantics but omits the visible marker) is stated in guides/select-choices.md. Field border: grey-650 #636b82 1px when enabled, disabled or success; primary 2px when active/focused; #d13333 on error; never grey-450 (it is not a source field stroke). Elevation comes only from the Figma shadow scale: `shadow-16` for the listbox popup, never Tailwind `shadow-md/lg/xl`."
+    },
+    "61:2786": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/primitives/separator.tsx",
+        "export": "Separator",
+        "story": "apps/storybook/src/Separator.stories.tsx",
+        "storyExports": ["Playground", "Padded", "WithText", "Fidelity"]
+      },
+      "note": "Source variants verified: Color/Border/Border fill 1px lines with 0/16/24/32px horizontal insets and a With text divider with 8px gaps and the 14/20px grey-700 text token. `--border` is Figma Color/Border/Border fill #e8ebf1 (grey-100); do not swap in grey-200 #d2d6e3, which is reserved for nodes whose source stroke is grey-200 (Stepper 1314:10512)."
+    },
+    "616:3864": {
+      "status": "pending",
+      "target": {
+        "module": "src/components/inputs/menus.tsx",
+        "export": "DropDown",
+        "story": "apps/storybook/src/DropDown.stories.tsx",
+        "storyExports": [
+          "Playground",
+          "SingleSelect",
+          "Multiselect",
+          "MultiSelect",
+          "MixedMultiselect"
+        ]
+      },
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Elevation comes only from the Figma shadow scale: `shadow-16` for menus and dropdowns, never Tailwind `shadow-md/lg/xl`. The loading skeleton is hidden from assistive technology and the menu keeps one disabled sr-only item so it remains a valid ARIA menu shape (at least one menuitem) that names the busy state. Item rows (610:33732, not registered) carry the adaptations `location-icon-currentcolor`, `selected-soft-token` and `cta-menuitem-action`, stated in code in inputs/menus.tsx."
+    },
+    "67:3964": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/overlays/overlay.tsx",
+        "export": "Overlay",
+        "story": "apps/storybook/src/Overlay.stories.tsx",
+        "storyExports": ["Playground", "Fidelity"]
+      },
+      "note": "Source-matched scrim uses Color/Surface/Surface overlay at 35% opacity and clips to its container. The default loading spinner is a documented runtime extension and is disabled in Fidelity. Adaptation `accessible-status-region`: a polite, visually hidden loading status is kept while the source scrim has no visible content. The scrim is #0e0f13 at 35% with no blur, the same modal backdrop as Dialog and Drawer."
+    },
+    "731:20386": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/composites/id-module.tsx",
+        "export": "IDModule",
+        "story": "apps/storybook/src/IDModule.stories.tsx",
+        "storyExports": ["Playground", "Desktop"]
+      },
+      "note": "Device review 2026-10-16 (device burn-down wave 10): both declared devices verified — desktop `731-20386-desktop-desktop` (731:20387, 410x912) on the Desktop export and mobile `731-20386-mobile-mobile` (731:20385, 320x908) on the Playground export, both `compareOffset` clean and responsive-clean. The whole composition verifies without a component change: header 80/76 (min-h-20/min-h-19), title 24/32 vs 18/28 on the source Titillio-Bold (font-bold), close glyph 24x24, IDP modules pad 0/24/24 with gap 8, rows 362/272x60 with the 16px inset, 12px gap and 8px radius, the 14/16 label against the source 14/16.8 and the 116px caller logo against the source artwork 115 (both inside the 2px tolerance). No layoutScope: the composition is the caller's `device` prop, not a width that flips it (the 123:4498 ButtonGroup precedent); the reason is in both cases' note. The story exports SingleProvider (a standalone Provider row) is caller documentation, not a module composition."
+    },
+    "733:22841": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/feedback/ok-state.tsx",
+        "export": "OKState",
+        "story": "apps/storybook/src/OKState.stories.tsx",
+        "storyExports": ["Playground", "WithAction"]
+      },
+      "note": "Device review 2026-10-16 (device burn-down wave 10): both declared devices verified against the Playground fixture — mobile `733-22841-mobile-mobile` (733:22842, 320x450) and desktop `733-22841-desktop-desktop` (733:22856, 900x466), both viewport-scoped (verified) with `compareOffset` on and responsive-clean. No component change: the responsive title tokens (text-title-md-mobile 24/36, md:text-title-md 32/44) and the 64/24 padding already follow the source; the desktop 64/0 reading is inert behind the 23rem content cap and the tool excuses it as centred content. Content 272/368x204/220, pictogram 56x56, Message 272/368x124/140 with gap 8, title and description typography exact (Titillio-Bold 700, 16/22 Regular), the section 452/468 against the source 450/466 (inside the 2px tolerance). The x1 tablet fix (max-w-none md:max-w-[23rem]) is untouched and the state's own cases stay green. Adaptation `accessible-secondary-action-target`: the source 154x22 secondary text action is a native link with the shared 48px minimum target and a visible keyboard focus perimeter; its label stays horizontally unpadded and centred within the larger target."
+    },
+    "749:5695": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/feedback/ko-state.tsx",
+        "export": "KOState",
+        "story": "apps/storybook/src/KOState.stories.tsx",
+        "storyExports": ["SourceMobile", "SourceDesktop"]
+      },
+      "note": "Device review 2026-10-16 (device burn-down wave 11): both declared devices verified against the source fixtures - mobile `749-5695-mobile-mobile` (`749:5693`, 320x546) and desktop `749-5695-desktop-desktop` (`749:5694`, 900x562), both viewport-scoped (verified) with `compareOffset` on, `--strict` clean and responsive-clean. No component change: the section measures 320x546 / 900x562 exactly (the shared 48px action against the source 50px is absorbed in the band), Content 272/368 at (24/266,64) with gap 24, the Maintenance pictogram 56x56 at (132/422,64), Message 272/368x146/162 with gap 8, the title 24/36 mobile -> 32/44 desktop on the Bold face (the source style is Titillio-Bold), the description 16/22 grey-700, and the Code error input row exact (272/368x48, radius 8, gap 12, padding 12, the 1px #e8ebf1 border, white fill) at the source offsets (24/266,314/330). Ignored: the source's Content frame nests the code row while the DOM keeps it as a section sibling, so Content.box.height compares 226/242 against 298/314 - exactly the code row 48 + the 24px gap - while the row's own box and offset are exact (the x1 tablet reading). The x1 tablet fix (`max-w-none md:max-w-[23rem]`) is untouched and the states' other cases stay green. Adaptations (mobile and desktop): `ko-state-*-mono-font` — DM Mono is not bundled, so `text-mono` keeps the source 16/21 metrics on the platform monospace stack; `ko-state-*-copy-target` — the 24px copy glyph sits in a native `size-11` (44px) target and `min-h-12` keeps the source 48px code row; `ko-state-*-action-targets` — the 50px source action uses the shared 48px Button (-2px) and the secondary text action keeps its visible label in a native 44px target with no horizontal padding."
+    },
+    "749:5867": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/feedback/waiting-state.tsx",
+        "export": "WaitingState",
+        "story": "apps/storybook/src/WaitingState.stories.tsx",
+        "storyExports": ["SourceFrame"]
+      },
+      "note": "Reviewed 2026-10-15: queued only as an affected dependent of Button 108:1402, whose 2026-10-14 delta unpublished the `.UnstyledButton` helper without changing the rendered button; design fingerprints unchanged. `SourceFrame` at the 320x488 and 900x512 source frames: 64px vertical insets with the source 272/368px content, 56px pictogram at the source offset, title 24/36 mobile and 32/44 desktop on the Bold face (source style `Titillio/600`), description 16/22 grey-700 at the source 260/284 offsets; the 48px contained action against the source 50px and the 22px text link with its invisible expanded target stay as the documented adaptations. Adaptation `source-primary-action-target`: the source 79x50 primary button renders on the shared 48px Button (-2px height), keeping 24px horizontal padding, 22px line height, 8px radius and semantic primary colors instead of a one-off 50px height. Adaptation `source-secondary-action-target`: the source 154x22 support link keeps a 48px native target with a solid visible focus perimeter and no horizontal padding; `gap-3` plus 13px vertical centring keeps its label within 1px of the source and a 24px visible gap from the primary action, so the content-driven panel is 500/524px against the 488/512px source artboards."
+    },
+    "757:6288": {
+      "status": "implemented",
+      "note": "Reviewed 2026-10-15: affected by the same Button 108:1402 helper delta; design fingerprints unchanged. The cover set renders 272x441 desktop and 272x437 mobile exactly, with the 272x191 cover, the 64x64 plate at the 24px inset (8px corners, 4px nested tile) and the source 24/32 and 18/28 Bold headings via `text-title-xs`/`text-title-xs-mobile`; the action measures 111.67x48 against the source 108x48 (bundled-font metrics) and the description keeps the semantic grey-700 against the source's raw, unpublished #17324d. The text-only set 757:10713 was unpublished in the 2026-10-14 export, so its story is a caller composition.",
+      "target": {
+        "module": "src/components/data-display/product-card.tsx",
+        "export": "ProductCard",
+        "story": "apps/storybook/src/ProductCard.stories.tsx",
+        "storyExports": ["SourceImage"]
+      }
+    },
+    "759:6399": {
+      "status": "pending",
+      "target": {
+        "module": "src/components/navigation/accordion.tsx",
+        "export": "Accordion",
+        "story": "apps/storybook/src/Accordion.stories.tsx"
+      },
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+    },
+    "760:7432": {
+      "status": "pending",
+      "target": {
+        "module": "src/components/inputs/drag-and-drop.tsx",
+        "export": "DragAndDrop",
+        "story": "apps/storybook/src/DragAndDrop.stories.tsx"
+      },
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+    },
+    "8049:39452": {
+      "status": "pending",
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`.",
+      "target": {
+        "module": "src/components/inputs/date-picker.tsx",
+        "export": "DatePicker",
+        "story": "apps/storybook/src/DatePicker.stories.tsx",
+        "storyExports": [
+          "SingleDateConfirmation",
+          "RangeDateConfirmation",
+          "ControlledDateLifecycle",
+          "RangeValidation",
+          "KeyboardNavigation",
+          "NarrowGrid"
+        ]
+      }
+    },
+    "808:6302": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/data-display/catalogue-card.tsx",
+        "export": "CatalogueCard",
+        "story": "apps/storybook/src/ProductCard.stories.tsx",
+        "storyExports": ["SourceCatalogueCard"]
+      },
+      "note": "Reviewed: CatalogueCard renders the source catalogue card itself (360x236, r8, the INSIDE-aligned 1px #e8ebf1 stroke as the card family's ring-1 ring-border so the 24px insets stay exact, pad 24, gap 24): header gap 12 = 44px Avatar small + 256px column (16/22 semibold title over the 16/22 grey-700 Ente, gap 2), 14/20 grey-700 description, action row 24 high with gap 24 = two 16/22 semibold blue text actions (source 22px line kept, >=44px pointer target through the invisible ::after expansion) and the 24px person/check feedback glyphs. eyebrow/tags/children/titleAs/className remain documented extensions. Residue: the Avatar placeholder glyph is our 24px optical size where the source instance is 18px (shared Avatar dependency)."
+    },
+    "8090:46352": {
+      "status": "pending",
+      "target": {
+        "module": "src/components/navigation/skip-to-main-content.tsx",
+        "export": "SkipToMainContent",
+        "story": "apps/storybook/src/SkipToMainContent.stories.tsx"
+      },
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+    },
+    "824:8838": {
+      "status": "pending",
+      "target": {
+        "module": "src/components/inputs/autocomplete.tsx",
+        "export": "Autocomplete",
+        "story": "apps/storybook/src/Autocomplete.stories.tsx"
+      },
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Field border: grey-650 #636b82 1px when enabled, disabled or success; primary 2px when active/focused; #d13333 on error; never grey-450 (it is not a source field stroke). Elevation comes only from the Figma shadow scale: `shadow-16` for the results popup, never Tailwind `shadow-md/lg/xl`."
+    },
+    "8702:266": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "8704:37763": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "8704:37815": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "8717:781": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "image"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "LocalDefaults"]
+      }
+    },
+    "8818:39878": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/content/image.tsx",
+        "export": "Image",
+        "story": "apps/storybook/src/ProductCard.stories.tsx"
+      }
+    },
+    "8854:39311": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "LocalDefaults"]
+      }
+    },
+    "8854:39312": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "LocalDefaults"]
+      }
+    },
+    "8854:39315": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "908:2234": {
+      "status": "pending",
+      "target": {
+        "module": "src/components/content/list-item.tsx",
+        "export": "ListItem",
+        "story": "apps/storybook/src/ListItem.stories.tsx"
+      },
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+    },
+    "9082:974": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "920:4502": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/content/feature-list.tsx",
+        "export": "FeatureList",
+        "story": "apps/storybook/src/FeatureList.stories.tsx"
+      },
+      "note": "Reviewed: FeatureList items render the source title/description 16/22–14/20 grey-700, the 24px icon indicator, the 40px pictogram framed by the 2×28 connectors, the numeric variant and the optional primary link."
+    },
+    "920:7219": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/overlays/pin-point.tsx",
+        "export": "PinPoint",
+        "story": "apps/storybook/src/PinPoint.stories.tsx"
+      }
+    },
+    "94:1982": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "94:1980",
+        "aliases": {
+          "unselected": "94:1980",
+          "selected": "94:1981"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      }
+    },
+    "94:1997": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "94:1996",
+        "aliases": {
+          "unselected": "94:1996",
+          "selected": "94:1995"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      }
+    },
+    "94:2021": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "94:2016",
+        "aliases": {
+          "unselected": "94:2016",
+          "selected": "94:2020"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      }
+    },
+    "94:2036": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "94:2034",
+        "aliases": {
+          "unselected": "94:2034",
+          "selected": "94:2035"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      }
+    },
+    "94:2057": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "94:2055",
+        "aliases": {
+          "unselected": "94:2055",
+          "selected": "94:2056"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      }
+    },
+    "94:2072": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "94:2071",
+        "aliases": {
+          "unselected": "94:2071",
+          "selected": "94:2070"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      }
+    },
+    "94:2093": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "94:2091",
+        "aliases": {
+          "unselected": "94:2091",
+          "selected": "94:2092"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      }
+    },
+    "94:2106": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "95:1620": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "95:1691": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "95:1689",
+        "aliases": {
+          "closed": "95:1689",
+          "open": "95:1690"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      }
+    },
+    "95:680": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "9520:2537": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/data-display/table-list-item.tsx",
+        "export": "TableListItem",
+        "story": "apps/storybook/src/TableListItem.stories.tsx",
+        "storyExports": ["Playground", "WrappingTitle", "OpenAction", "StaticRow", "Mobile"]
+      },
+      "note": "Reviewed against the pinned Desktop 9520:2535 and Mobile 9520:2641 variants: white r8 card with 24px padding and 80px field/action gaps, 14/20 grey-700 labels over 16/22 semibold values (Body/Mono 16/21 with 0.5px tracking for `mono`), 24px decorative-secondary artwork, the Stato Chip and the Apri text action. The first field takes the remaining space and the others stay content-sized, like the source flex-1 field (the source itself measures 118px for that field at 852px with all four fields). Documented adaptations: the 48px ghost action target instead of the source's 24px, the 1px `--border` stroke on the white card for the light application surface, and container-based stacking below 640px, the same breakpoint as Table. The action is the control (native link with href, native button with onPress); the card itself is not a row-wide control, because the source models the action as the Button instance and a wrapping control would carry the concatenated field text as its name. Device review 2026-10-15 (device burn-down wave 3): one case per declared device, both container-scoped and responsive-clean — desktop 9520:2535 (case 9520-2537-layout-desktop-desktop, the card at the source 852: 8px radius, the 24px insets and 80px gaps on the inner row, the 14/20 grey-700 label, the 16/22 semibold value, the Chip 57x24 #e7ecfc, the 16/22 primary action with its 24px arrow) and mobile 9520:2641 (case 9520-2537-layout-mobile-mobile, the card at the source 272: the container stack at the source 16px, the first field 224 wide, the action self-aligned at the end). The story fixtures now frame the card at the source widths (`53.25rem` for the desktop wrappers, 272 for the `Mobile` story) so the capture is not capped 20/48px short. Recorded: the 48px action + the 2px stroke (the guide's 98 against 93), the guide's 4px gap above the Chip value where the source's status field has none, the bundled-font field-row width, the growing first field, and the root-frame-insets mapping."
+    },
+    "9520:55438": {
+      "status": "mocked",
+      "note": "rendered by TemplateShell demo content; real implementation pending",
+      "target": {
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
+        "export": "TableListView"
+      }
+    },
+    "9584:66412": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "9584:66408",
+        "aliases": {
+          "outlined": "9584:66411",
+          "filled": "9584:66408"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants", "SourceFilled"]
+      }
+    },
+    "96:621": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "95:1676",
+        "aliases": {
+          "filter-alt": "95:1676",
+          "tune": "95:1675"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      }
+    },
+    "96:628": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "96:668": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "96:666",
+        "aliases": {
+          "unchecked": "96:666",
+          "checked": "96:667",
+          "indeterminate": "96:665"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      }
+    },
+    "96:671": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "96:670",
+        "aliases": {
+          "unchecked": "96:670",
+          "checked": "96:669"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "DirectionalVariants"]
+      }
+    },
+    "96:686": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "96:685",
+        "aliases": {
+          "visible": "96:685",
+          "hidden": "96:684"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      }
+    },
+    "96:708": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "96:699",
+        "aliases": {
+          "pinned": "96:699",
+          "unpinned": "96:715"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      }
+    },
+    "96:722": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "9624:10625": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/data-display/table-list.tsx",
+        "export": "TableList",
+        "story": "apps/storybook/src/TableList.stories.tsx",
+        "storyExports": ["Playground", "Paginated", "Empty", "StaticRows", "EmptyCustomPictogram"]
+      },
+      "note": "Reviewed against the pinned Desktop 9624:10266, Mobile 9624:10626 and Any/Empty 9779:18729 variants: a container of TableListItem cards 16px apart with the pagination footer 32px below (caller node, hidden with the empty state, like Table), and the empty fallback with the genuine 56px Message pictogram, 16/22 semibold title, 14/20 subtitle and optional action inside a role=status region. The empty title uses the shared muted foreground (source grey-650) and the empty card measures 228px (226px of content plus the card stroke) against the source's 200px with its 22px action; both cards keep the 1px `--border` stroke for the light application surface. Row-count changes are supplied by the caller through the pagination slot. Device review 2026-10-16 (device burn-down wave 4): one case per declared device, both container-scoped and responsive-clean — desktop 9624:10266 (case 9624-10625-layout-desktop-desktop, the list at the source 852: cards 16px apart, the caller footer 32px below) and mobile 9624:10626 (case 9624-10625-layout-mobile-mobile, the list at the source 272 with the same stack and footer placement); the `Paginated` fixture now frames the list at 53.25rem with max-w-full (53rem capped the forced width 4px short). The composition check is on with the `Pagination.offset.top` residue. Recorded: the fixture copy's wrap (the desktop third title wraps to two lines where the mockup's placeholder wraps to three; the mobile fixture draws three fields where the mockup adds a Stato row level with the action) against the reviewed 9520:2537 per-card adaptations (the shared 48px action and the 1px `--border` stroke: a single-line desktop card measures 98 against the source 94), the caller footer's 44 against the source 46, and `Pagination.gap` as a mapping artifact (the source instance's 8/16 row gap lives on the caller's inner row)."
+    },
+    "9640:793": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "9642:949": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "9643:953": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "9643:960": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "9643:961": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "9676:5408": {
+      "status": "excluded",
+      "reason": "Internal first-event Timeline cursor layout, not shipped independently. Timeline owns list ordering and connector placement; the generic relative-div alias provided no source implementation."
+    },
+    "9676:5410": {
+      "status": "excluded",
+      "reason": "Internal middle-event Timeline cursor layout, not shipped independently. Timeline owns list ordering and connector placement; the generic relative-div alias provided no source implementation."
+    },
+    "9676:5420": {
+      "status": "excluded",
+      "reason": "Internal final-event Timeline cursor layout, not shipped independently. Timeline owns list ordering and connector placement; the generic relative-div alias provided no source implementation."
+    },
+    "9676:5453": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/content/correction-valid.tsx",
+        "export": "CorrectionValid",
+        "story": "apps/storybook/src/CorrectionValid.stories.tsx"
+      },
+      "note": "Reviewed: Correction/Valid is the source Success tag — 30px, 6px radius, check_circle 16 and the 12/18 grey-700 label — rendered through the shared Tag."
+    },
+    "9676:5455": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/content/correction-not-valid.tsx",
+        "export": "CorrectionNotValid",
+        "story": "apps/storybook/src/CorrectionNotValid.stories.tsx"
+      },
+      "note": "Reviewed: Correction/NotValid is the source Warning tag with the warning glyph and the 12/18 label, rendered through the shared Tag."
+    },
+    "9676:5633": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/data-display/microevento.tsx",
+        "export": "Microevento",
+        "story": "apps/storybook/src/Microevento.stories.tsx"
+      },
+      "note": "Reviewed: Microevento renders the source row — 28px left inset, the correction tag and the 14/20 description, with the optional time in the leading slot."
+    },
+    "9698:58826": {
+      "status": "excluded",
+      "reason": "presentational grid wrapper — compose with CSS grid in app code"
+    },
+    "9790:9527": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:1001": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:1016": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "98:1014",
+        "aliases": {
+          "less": "98:1014",
+          "more": "98:1015"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "DirectionalVariants"]
+      }
+    },
+    "98:1065": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:1152": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "98:1114",
+        "aliases": {
+          "outlined": "98:1114",
+          "filled": "98:1115"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants", "SourceFilled"]
+      }
+    },
+    "98:1153": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:1154": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:1155": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:1158": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "98:1156",
+        "aliases": {
+          "big": "98:1156",
+          "small": "98:1157"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      }
+    },
+    "98:1162": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "98:1159",
+        "aliases": {
+          "outlined": "98:1159",
+          "filled": "98:1160",
+          "stroke": "98:1161"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants", "SourceFilled"]
+      }
+    },
+    "98:1252": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:1253": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:1254": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:1257": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "98:1256",
+        "aliases": {
+          "unselected": "98:1256",
+          "selected": "98:1255"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      }
+    },
+    "98:1258": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "98:1250",
+        "aliases": {
+          "unselected": "98:1250",
+          "selected": "98:1251"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      }
+    },
+    "98:1271": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:1290": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:1297": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "LocalDefaults"]
+      }
+    },
+    "98:1300": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "98:1298",
+        "aliases": {
+          "outlined": "98:1298",
+          "filled": "98:1299"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants", "SourceFilled"]
+      }
+    },
+    "98:1351": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:668": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "98:666",
+        "aliases": {
+          "big": "98:666",
+          "small": "98:667"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      }
+    },
+    "98:675": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:697": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "98:689",
+        "aliases": {
+          "big": "98:689",
+          "small": "98:688"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      }
+    },
+    "98:704": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:711": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:718": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:737": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:738": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:871": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "98:868",
+        "aliases": {
+          "right": "98:868",
+          "left": "98:867",
+          "down": "98:870",
+          "up": "98:869"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "DirectionalVariants"]
+      }
+    },
+    "98:878": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:919": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "98:915",
+        "aliases": {
+          "right": "98:915",
+          "left": "98:916",
+          "down": "98:917",
+          "up": "98:918"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "DirectionalVariants"]
+      }
+    },
+    "98:932": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:933": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:952": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:965": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:966": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:973": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:980": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:987": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "98:994": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "9833:26066": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "9833:27244": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "9866:4494": {
+      "status": "implemented",
+      "note": "Reviewed: success cursor — 12px #427940 dot with the halo.",
+      "target": {
+        "module": "src/components/data-display/timeline.tsx",
+        "export": "Timeline",
+        "story": "apps/storybook/src/Timeline.stories.tsx"
+      }
+    },
+    "9866:4497": {
+      "status": "implemented",
+      "note": "Reviewed: error cursor — 12px #d13333 dot with the halo.",
+      "target": {
+        "module": "src/components/data-display/timeline.tsx",
+        "export": "Timeline",
+        "story": "apps/storybook/src/Timeline.stories.tsx"
+      }
+    },
+    "9866:4500": {
+      "status": "implemented",
+      "note": "Reviewed: warning cursor — 12px #a5822a dot with the halo.",
+      "target": {
+        "module": "src/components/data-display/timeline.tsx",
+        "export": "Timeline",
+        "story": "apps/storybook/src/Timeline.stories.tsx"
+      }
+    },
+    "9866:4503": {
+      "status": "implemented",
+      "note": "Reviewed: info cursor — 12px #418daf dot with the halo.",
+      "target": {
+        "module": "src/components/data-display/timeline.tsx",
+        "export": "Timeline",
+        "story": "apps/storybook/src/Timeline.stories.tsx"
+      }
+    },
+    "9876:42679": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "LocalDefaults"]
+      }
+    },
+    "99:2068": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2075": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2082": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2089": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2096": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2110": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2117": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2124": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2131": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2138": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2145": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2152": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2159": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2166": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2173": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2180": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2187": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2194": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2201": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2208": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2215": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2222": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2229": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2248": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2249": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2250": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2257": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2264": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2271": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2278": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2285": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2292": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2299": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2331": {
+      "status": "implemented",
+      "note": "The source Filled labels are inverted: 99:2329 (On, source default) is outlined; 99:2330 (Off) is filled. API aliases follow the actual reviewed geometry, not the inverted labels. Monochrome artwork intentionally inherits currentColor.",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "99:2329",
+        "aliases": {
+          "filled": "99:2330",
+          "outlined": "99:2329"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants", "SourceFilled"]
+      }
+    },
+    "99:2338": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2345": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "LocalDefaults"]
+      }
+    },
+    "99:2381": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2388": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2395": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2408": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2415": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:2422": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:616": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask",
+        "defaultVariantNodeId": "99:614",
+        "aliases": {
+          "active": "99:614",
+          "inactive": "99:615"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      }
+    },
+    "99:623": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:630": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:637": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:644": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:666": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:673": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "99:781": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "image",
+        "defaultVariantNodeId": "99:777",
+        "aliases": {
+          "instagram": "99:778",
+          "linkedin": "99:777",
+          "threads": "99:779",
+          "youtube": "99:780"
+        }
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "LocalDefaults", "LocalVariants"]
+      }
+    },
+    "9924:27038": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "9924:27054": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/content/status-tile.tsx",
+        "export": "StatusTile",
+        "story": "apps/storybook/src/StatusTile.stories.tsx"
+      },
+      "note": "Reviewed: StatusTile is the source 8px surface with the 24px channel, 16/22 title, Tag slot, 14/20 body and the horizontal/vertical orientations."
+    },
+    "9927:36954": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/overlays/popover.tsx",
+        "export": "Popover",
+        "story": "apps/storybook/src/Popover.stories.tsx",
+        "storyExports": ["SourceTop", "SourceBottom"]
+      },
+      "note": "Both source variants are reviewed: Arrow-Position Top and Bottom render their indicators, the 312x76 card, and a keyboard/pointer close action; elevation uses `shadow-32`. Popper `13211:26152` is a separate set absent from the pinned Figma export and inventory, so it remains unregistered until a fresh local export is supplied; its severity API is a separate implementation decision."
+    },
+    "9977:21200": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "9977:23980": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      }
+    },
+    "14164:11363": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      },
+      "note": "New Material Symbols glyph (license medallion) from the 2026-10-14 export; reviewed against the Figma source before marking implemented."
+    },
+    "14241:48931": {
+      "status": "implemented",
+      "localAsset": {
+        "rendering": "mask"
+      },
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      },
+      "note": "New in-house PEC envelope glyph from the 2026-10-14 export; reviewed against the Figma source before marking implemented. Provenance override: custom."
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "pagopa-ui",
+  "projectType": "library",
+  "sourceRoot": "packages/pagopa-ui/src",
+  "tags": ["type:lib", "scope:design-system"],
+  "targets": {
+    "build": { "dependsOn": ["^build"] },
+    "typecheck": { "dependsOn": ["pagopa-ui-artwork:build", "pagopa-ui-tokens:build"] },
+    "lint": { "configurations": { "ci": { "script": "lint:check" } } },
+    "fmt": {
+      "executor": "nx:run-script",
+      "options": { "script": "format" },
+      "cache": true,
+      "configurations": { "ci": { "script": "format:check" } }
+    },
+    "test": {
+      "dependsOn": [
+        "figma:check",
+        "pagopa-ui-artwork:test",
+        "layers:check",
+        "foundation:check",
+        "pagopa-ui-cli:test",
+        "pagopa-ui-tokens:test"
+      ],
+      "configurations": { "ci": { "script": "test:unit" } }
+    },
+    "docs": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node src/cli.ts check docs",
+        "cwd": "{workspaceRoot}/packages/ui-cli",
+        "env": { "PAGOPA_UI_ROOT": "../pagopa-ui" }
+      },
+      "inputs": [
+        "default",
+        "tooling",
+        "{workspaceRoot}/AGENTS.md",
+        "{workspaceRoot}/CONTRIBUTING.md",
+        "{workspaceRoot}/README.md",
+        "{workspaceRoot}/docs/**",
+        "{workspaceRoot}/.agents/**",
+        "{workspaceRoot}/.github/workflows/**"
+      ],
+      "outputs": [],
+      "cache": true
+    },
+    "figma:check": { "options": { "command": "node src/cli.ts check figma" } },
+    "layers:check": { "options": { "command": "node src/cli.ts check layers" } },
+    "foundation:check": { "options": { "command": "node src/cli.ts check foundation" } },
+    "library:check": {
+      "dependsOn": ["build"],
+      "options": { "command": "node src/cli.ts check library" }
+    }
+  }
+}

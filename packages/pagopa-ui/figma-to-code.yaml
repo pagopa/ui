@@ -1,0 +1,36 @@
+# Paths read by the figma-to-code skill (.agents/skills/figma-to-code) and by
+# the package scripts. The design-system keys are relative to this package; the
+# artwork keys carry the workspace prefix because the artwork lives in its own
+# package. `pnpm docs:check` fails when a committed path below is missing; the
+# `.figma/` paths are local, git-ignored exports of this package.
+figma:
+  fileModule: src/catalog/figma/file.ts
+  snapshot: .figma/live-rest.json
+  mcpInventory: .figma/live-mcp.json
+  variables: .figma/variables.json
+  parityOut: .figma/parity
+catalog:
+  inventory: src/catalog/figma/inventory.json
+  registry: src/catalog/figma/registry.json
+  parityCases: src/catalog/figma/parity-cases.json
+  devicePolicy: src/catalog/figma/device-policy.json
+  deviceExceptions: src/catalog/figma/device-exceptions.json
+  apiExceptions: src/catalog/figma/api-exceptions.json
+  evidenceExceptions: src/catalog/figma/evidence-exceptions.json
+  inventoryStory: apps/storybook/src/FigmaInventory.stories.tsx
+tokens:
+  manifest: packages/tokens/src/manifest.json
+  generatedCss: packages/tokens/src/figma.generated.css
+  stylesheet: src/index.css
+artwork:
+  iconManifest: packages/artwork/src/assets/figma-icons/manifest.json
+  iconModule: packages/artwork/src/components/icons/icon-assets.ts
+  pictogramManifest: packages/artwork/src/assets/figma-pictograms/manifest.json
+  pictogramModule: packages/artwork/src/components/icons/pictogram-assets.ts
+code:
+  components: src/components
+  publicEntry: src/pagopa-ui.ts
+  stories: apps/storybook/src
+  guides: apps/storybook/src/guides
+storybook:
+  url: http://localhost:6006
