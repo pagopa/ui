@@ -10,11 +10,19 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   retries: 1,
-  timeout: 180_000,
+  // The native flow runs for two to three minutes on a cold engine, so the
+  // budget sits above the slowest browser: a slow runner must fail an
+  // assertion, not the clock.
+  timeout: 300_000,
   reporter: [["list"]],
   use: { baseURL: process.env.CONSUMER_URL },
   projects: [
-    { name: "chromium", use: { browserName: "chromium" } },
+    // The headless shell never reports the tab a modifier or middle click
+    // opens: the tab exists and navigates, the context `page` event never
+    // arrives, and a test that waits for it hangs until its deadline. The full
+    // Chromium build (the `chromium` channel, installed with `playwright
+    // install chromium`) reports it, so the chromium project runs on that.
+    { name: "chromium", use: { browserName: "chromium", channel: "chromium" } },
     { name: "firefox", use: { browserName: "firefox" } },
     { name: "webkit", use: { browserName: "webkit" } },
   ],

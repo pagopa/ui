@@ -27,8 +27,12 @@ async function assertFocusPerimeter(control, painted = control) {
 
 // WebKit opens a link in a new tab on the platform modifier (Cmd) on macOS, and
 // on nothing at all on Linux: WebKitGTK implements no new-tab gesture, so the
-// assertion that follows is skipped there instead of waiting three minutes for
-// a page event that the engine will never emit.
+// assertion that follows is skipped there instead of waiting for a page event
+// that the engine will never emit. Where the engine does open the tab, the wait
+// stays bounded: a tab the browser opens but never reports is a browser fault,
+// and the spec has to name it in seconds instead of spending its whole budget.
+const NEW_TAB_TIMEOUT = 15_000
+
 function opensNewTabInBrowser(browserName) {
   return browserName !== "webkit" || process.platform === "darwin"
 }
@@ -510,7 +514,7 @@ test("the packed artifact behaves as documented", async ({ browserName, context,
   await page.keyboard.press("Enter")
   await page.waitForURL((location) => location.hash === "#consumer-product-destination")
   if (opensNewTabInBrowser(browserName)) {
-    const newProductPage = page.context().waitForEvent("page")
+    const newProductPage = page.context().waitForEvent("page", { timeout: NEW_TAB_TIMEOUT })
     await productLink.click(newTabClickOptions(browserName))
     const productTab = await newProductPage
     await productTab.waitForURL((location) => location.hash === "#consumer-product-destination")
@@ -950,7 +954,7 @@ test("the packed artifact behaves as documented", async ({ browserName, context,
     await informationPage.keyboard.press("Enter")
     await informationPage.waitForURL((location) => location.hash === destination)
     if (opensNewTabInBrowser(browserName)) {
-      const newPage = informationPage.context().waitForEvent("page")
+      const newPage = informationPage.context().waitForEvent("page", { timeout: NEW_TAB_TIMEOUT })
       await link.click(newTabClickOptions(browserName))
       const informationTab = await newPage
       await informationTab.waitForURL((location) => location.hash === destination)
