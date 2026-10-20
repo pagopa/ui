@@ -3,9 +3,10 @@ module "github_repository" {
   version = "~> 1.0"
 
   repository = {
-    name            = "pagopa-ui"
+    name            = "ui"
     description     = "PagoPA Web Design System"
     topics          = []
     reviewers_teams = []
+    environments    = ["dev", "prod"]
   }
 }
