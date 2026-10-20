@@ -1,0 +1,58 @@
+{
+  "name": "pagopa-ui-cli",
+  "private": true,
+  "description": "The UI CLI, checks and Figma tooling of the PagoPA design system",
+  "license": "UNLICENSED",
+  "version": "0.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "figma:check": "node src/cli.ts check figma",
+    "figma:devices": "node src/cli.ts figma devices",
+    "figma:export": "node src/cli.ts figma export",
+    "figma:update": "node src/cli.ts figma sync --write",
+    "figma:triage": "node src/cli.ts figma sync --triage",
+    "figma:parity:check": "node src/cli.ts parity check",
+    "figma:parity:queue": "node src/cli.ts parity queue",
+    "figma:parity:cases": "node src/cli.ts parity cases",
+    "figma:parity:capture": "node src/cli.ts parity capture",
+    "figma:parity:report": "node src/cli.ts parity report",
+    "tokens:check": "node src/cli.ts tokens check",
+    "icons:check": "node src/cli.ts assets icons check",
+    "pictograms:check": "node src/cli.ts assets pictograms check",
+    "assets:check": "node src/cli.ts check assets",
+    "layers:check": "node src/cli.ts check layers",
+    "foundation:check": "node src/cli.ts check foundation",
+    "docs:check": "node src/cli.ts check docs",
+    "css:check": "node src/cli.ts check css",
+    "library:check": "node src/cli.ts check library",
+    "test:changed": "node src/cli.ts test changed",
+    "test:coverage:changed": "node src/cli.ts test changed --coverage",
+    "test": "node --test \"tests/**/*.test.mjs\"",
+    "lint": "oxlint --fix",
+    "lint:check": "oxlint",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "cli": "node src/cli.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/node": "^26.6.5",
+    "oxc-parser": "^0.127.0",
+    "oxfmt": "^0.73.0",
+    "oxlint": "^1.81.0",
+    "playwright": "1.63.0",
+    "sharp": "^0.35.5"
+  },
+  "dependencies": {
+    "citty": "^0.2.2",
+    "zod": "^4.6.7"
+  },
+  "bin": {
+    "pagopa-ui-cli": "./src/cli.ts",
+    "ui-cli": "./src/cli.ts"
+  }
+}

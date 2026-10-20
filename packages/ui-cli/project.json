@@ -1,0 +1,23 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "pagopa-ui-cli",
+  "projectType": "library",
+  "sourceRoot": "packages/ui-cli",
+  "tags": ["type:tooling", "scope:design-system"],
+  "targets": {
+    "lint": { "configurations": { "ci": { "script": "lint:check" } } },
+    "fmt": {
+      "executor": "nx:run-script",
+      "options": { "script": "format" },
+      "cache": true,
+      "configurations": { "ci": { "script": "format:check" } }
+    },
+    "test": {
+      "inputs": [
+        "default",
+        "{workspaceRoot}/packages/pagopa-ui/src/**",
+        "{workspaceRoot}/packages/pagopa-ui/figma-to-code.yaml"
+      ]
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "storyId": "components-inputs-textfield--playground",
+  "rootWidth": 274,
+  "subjects": {
+    "field": {
+      "box": {
+        "width": 272,
+        "height": 48
+      },
+      "at": {
+        "x": 0,
+        "y": 0
+      },
+      "padding": [12, 12, 12, 12],
+      "gap": 0,
+      "radius": 8,
+      "border": {
+        "width": 1,
+        "color": "rgb(99, 107, 130)"
+      },
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(14, 15, 19)",
+      "font": {
+        "size": 16,
+        "lineHeight": 22,
+        "weight": 600
+      },
+      "text": "",
+      "childCount": 0
+    },
+    "Label text": {
+      "box": {
+        "width": 117.2,
+        "height": 22
+      },
+      "at": {
+        "x": 12,
+        "y": 13
+      },
+      "padding": [0, 4, 0, 4],
+      "gap": 0,
+      "radius": 0,
+      "border": {
+        "width": 0,
+        "color": "rgb(232, 235, 241)"
+      },
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(85, 92, 112)",
+      "font": {
+        "size": 16,
+        "lineHeight": 22,
+        "weight": 600
+      },
+      "text": "Indirizzo email",
+      "childCount": 0
+    }
+  }
+}
