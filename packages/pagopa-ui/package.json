@@ -1,10 +1,14 @@
 {
-  "name": "pagopa-ui",
-  "private": true,
+  "name": "@pagopa/ui",
   "description": "PagoPA Web Design System",
   "license": "UNLICENSED",
   "version": "0.0.0",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pagopa/ui.git",
+    "directory": "packages/pagopa-ui"
+  },
   "exports": {
     ".": {
       "types": "./dist/types/pagopa-ui.d.ts",
@@ -13,7 +17,8 @@
     "./styles.css": "./dist/styles.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "sideEffects": [
     "**/*.css"

@@ -4,11 +4,8 @@ React design system that implements the **MUI Italia Next** Figma library, built
 with TypeScript 7, Tailwind CSS v4, Base UI primitives (shadcn wrappers) and
 Storybook.
 
-> **Status**: porting in progress, the package is **not published**
-> (`private: true`); the repository is being reshaped into an Nx monorepo.
-> [ADR-0005](./docs/decisions/0005-nx-monorepo.md) records the workspace
-> decision, and [the execution-plan index](./docs/plans/README.md) lists the
-> follow-up flows.
+> **Status**: porting in progress; the package is **not published yet**. It is
+> configured as `@pagopa/ui` for GitHub Packages.
 
 ## How it is built
 
@@ -143,10 +140,15 @@ Merging it opens (or updates) a `Version Packages` pull request with the bump an
 the changelog entry; merging that one tags the release. Only the projects named
 in a version plan are bumped.
 
-The package is `private: true`, so nothing is published yet and the publish step
-is a no-op: the publication is enabled when the repository moves into the PagoPA
-organization and the name becomes `@pagopa/ui`
-([ADR-0005](./docs/decisions/0005-nx-monorepo.md)).
+The package is named `@pagopa/ui` and
+`packages/pagopa-ui/project.json` pins its Nx `nx-release-publish` target to
+`https://npm.pkg.github.com`; it is not published to npmjs. Nx infers the
+target from the non-private manifest.
+`release.yaml` publishes versioned projects with `GITHUB_TOKEN` and
+`packages: write`. The normal first publication requires a version plan and a
+merged `Version Packages` pull request; `workflow_dispatch` is an explicit
+recovery path that publishes all projects with a publish target. Package
+visibility and consumer access are managed in GitHub Packages.
 
 ### `infra/repository`
 
@@ -163,12 +165,22 @@ terraform apply
 
 ## Consuming the library
 
-Pack the private package, install the tarball next to React and ReactDOM in the
-declared peer range, and import the built stylesheet once:
+After the first release, configure the `@pagopa` scope to use GitHub Packages
+(not npmjs) and provide a GitHub classic personal access token with
+`read:packages`. Keep the token in an environment variable, not in a committed
+file:
+
+```ini
+@pagopa:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+```
+
+Then install `@pagopa/ui` next to React and ReactDOM in the declared peer range,
+and import the built stylesheet once:
 
 ```tsx
-import "pagopa-ui/styles.css"
-import {} from /* components */ "pagopa-ui"
+import "@pagopa/ui/styles.css"
+import { Button } from "@pagopa/ui"
 ```
 
 Consumers need no Tailwind, shadcn, repository aliases or font packages: the

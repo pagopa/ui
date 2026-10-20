@@ -51,6 +51,9 @@
     "library:check": {
       "dependsOn": ["build"],
       "options": { "command": "node src/cli.ts check library" }
+    },
+    "nx-release-publish": {
+      "options": { "registry": "https://npm.pkg.github.com" }
     }
   }
 }

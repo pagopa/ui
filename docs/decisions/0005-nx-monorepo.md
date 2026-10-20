@@ -70,9 +70,10 @@ later, independent step with its own trigger. Concretely:
    API so that `@nx/js/typescript` and every API-consuming tool keeps working.
 5. **Release through Nx.** Version plans (`pnpm nx release plan`) describe the
    change; the DX release manager opens the "Version Packages" pull request and
-   tags the release. The package stays `private: true` for now, so the publish
-   step is a no-op: the publication is deferred to the move into the PagoPA
-   organization, where the name becomes `@pagopa/ui` and the registry is chosen.
+   tags the release. At the time of this decision, publication was deferred
+   until the repository moved into the PagoPA organization. **Follow-up
+   (2026-10-20):** the package is now configured as `@pagopa/ui` for GitHub
+   Packages, and the first publication remains gated by a version plan.
 6. **One linter.** Oxlint stays, with the rules of `@pagopa/eslint-config` that
    Oxlint implements ported rule by rule (`perfectionist` has no equivalent); the
    two structural rules are warnings with a declared burn-down.
@@ -96,14 +97,14 @@ later, independent step with its own trigger. Concretely:
 
 ## 5. Deferred decisions with triggers
 
-| Deferred                                                                                                                                                                              | Trigger                                                                                                                                                 |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Deferred                                                                                                                                                                       | Trigger                                                                                                                                                 |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | The extraction of the stories into `apps/storybook`, which today builds the deployable documentation; `packages/artwork`, `packages/tokens` and `packages/ui-cli` landed in F4 | The evidence chain (`figma:check` proves what each story renders) can be split across two projects without losing that proof                            |
-| Publication and the `@pagopa/ui` rename                                                                                                                                               | The move of the repository into the PagoPA organization                                                                                                 |
-| A remote cache (Nx Cloud or self-hosted)                                                                                                                                              | CI wall-clock time or a second repository sharing the graph                                                                                             |
-| Promoting `complexity` and `max-lines-per-function` back to `error`                                                                                                                   | The burn-down reaching zero (48 functions today)                                                                                                        |
-| The browser suites inside the reusable DX job                                                                                                                                         | A `mise` dependency that installs the Playwright browsers in that job                                                                                   |
-| The documentation deployment                                                                                                                                                          | Decided 2026-10-19: Azure Static Web App; its infrastructure project and the DX static-application release workflow are the implementation that follows |
+| First publication of `@pagopa/ui`                                                                                                                                              | A version plan is merged after the GitHub Packages publisher configuration lands                                                                        |
+| A remote cache (Nx Cloud or self-hosted)                                                                                                                                       | CI wall-clock time or a second repository sharing the graph                                                                                             |
+| Promoting `complexity` and `max-lines-per-function` back to `error`                                                                                                            | The burn-down reaching zero (48 functions today)                                                                                                        |
+| The browser suites inside the reusable DX job                                                                                                                                  | A `mise` dependency that installs the Playwright browsers in that job                                                                                   |
+| The documentation deployment                                                                                                                                                   | Decided 2026-10-19: Azure Static Web App; its infrastructure project and the DX static-application release workflow are the implementation that follows |
 
 ## 6. Related
 

@@ -2,9 +2,9 @@ name: Release
 
 # Nx Release through the DX release manager: a merged pull request that carries
 # a version plan opens (or updates) the "Version Packages" pull request, and
-# merging that one tags the release. The package is not published to a registry
-# yet: with `private: true` and no `nx-release-publish` target the publish step
-# is a no-op (docs/decisions/0005-nx-monorepo.md, decision B).
+# merging that one tags and publishes the release. Removing `private: true`
+# lets Nx infer the @pagopa/ui `nx-release-publish` target; project.json pins
+# that target to GitHub Packages.
 #
 # The job is written here instead of calling `pagopa/dx/.github/workflows/
 # release-v2.yaml` because that reusable workflow installs dependencies before
@@ -59,10 +59,10 @@ jobs:
 
       - name: Setup npm registry
         uses: pagopa/dx/actions/setup-npm-registry@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install dependencies
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm install --frozen-lockfile
 
       - name: Nx Release

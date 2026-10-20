@@ -51,7 +51,7 @@ name another package.
 Every task is an Nx target: `pnpm nx show project pagopa-ui` lists the design
 system's, `pnpm nx show project pagopa-ui-cli` the tooling's. The
 underlying command is the package script of the same name
-(`pnpm --filter pagopa-ui run <script>` or
+(`pnpm --filter @pagopa/ui run <script>` or
 `pnpm --filter pagopa-ui-cli run <script>`).
 
 - `pnpm nx run storybook:storybook` — Storybook on `:6006`, also the parity
@@ -175,10 +175,13 @@ code review leaves the same warning as a pull request comment. Merging the pull
 request opens (or updates) the **Version Packages** pull request with the bump
 and the changelog entry; merging that one tags the release.
 
-The package is `private: true`: nothing is published to a registry yet, and the
-publish step is a no-op. The publication is enabled when the repository moves
-into the PagoPA organization and the name becomes `@pagopa/ui`
-([ADR-0005](./docs/decisions/0005-nx-monorepo.md), decision B).
+The design-system package is `@pagopa/ui` and publishes to GitHub Packages
+(`https://npm.pkg.github.com`), not npmjs. Nx infers its
+`nx-release-publish` target from the non-private package manifest, while
+`project.json` pins that target to GitHub Packages. `release.yaml` supplies the
+GitHub token with `packages: write`. The normal release flow publishes only
+after a version plan is merged; `workflow_dispatch` is an explicit recovery
+path that publishes all projects with a publish target.
 
 ## CI
 

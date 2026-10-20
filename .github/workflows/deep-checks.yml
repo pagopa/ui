@@ -53,14 +53,14 @@ jobs:
             ${{ runner.os }}-nx-cache-${{ github.workflow }}-
 
       # DX packages come from GitHub Packages through pnpm's built-in `gh:`
-      # alias. The action stores the registry credential as a placeholder in the
-      # user-level npmrc; pnpm expands it from NODE_AUTH_TOKEN at install time.
+      # alias. Pass the token explicitly; the action writes authentication to a
+      # temporary npm config for this job.
       - name: Setup npm registry
         uses: pagopa/dx/actions/setup-npm-registry@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install dependencies
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers

@@ -83,6 +83,7 @@ export async function runLibraryCheck(): Promise<number> {
 
   const installedVersion = (name: string): string =>
     JSON.parse(fs.readFileSync(audited.resolve(`${name}/package.json`), "utf8")).version
+  const packageSpecifier = JSON.stringify(manifest.name)
   const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-library-"))
   const consumer = path.join(temporary, "consumer")
   // The preview server comes from the audited package's own Vite: the consumer is
@@ -157,13 +158,13 @@ export async function runLibraryCheck(): Promise<number> {
             "--input-type=module",
             "-e",
             `
-    import * as mod from "pagopa-ui"
+    import * as mod from ${packageSpecifier}
     import * as React from "react"
     import { createRequire } from "node:module"
     import assert from "node:assert/strict"
     import { renderToString } from "react-dom/server"
     const app = createRequire(import.meta.url)
-    const library = createRequire(import.meta.resolve("pagopa-ui"))
+    const library = createRequire(import.meta.resolve(${packageSpecifier}))
     assert.throws(
       () => renderToString(React.createElement(mod.PagoPAIcon, { name: "info", variant: "instagram" })),
       /Icon "info" has no source asset for variant "instagram"/,

@@ -44,14 +44,14 @@ jobs:
           cache: pnpm
 
       # DX packages come from GitHub Packages through pnpm's built-in `gh:`
-      # alias; the placeholder in the user-level npmrc is expanded from
-      # NODE_AUTH_TOKEN at install time.
+      # alias. Pass the token explicitly; the action writes authentication to a
+      # temporary npm config for this job.
       - name: Setup npm registry
         uses: pagopa/dx/actions/setup-npm-registry@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install dependencies
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm install --frozen-lockfile
 
       - name: Detect drift and refresh the review payload
@@ -65,7 +65,7 @@ jobs:
       - name: Format the refreshed payload
         if: hashFiles('packages/pagopa-ui/.figma/pr-body.md') != ''
         run: >-
-          pnpm --filter pagopa-ui exec oxfmt
+          pnpm --filter @pagopa/ui exec oxfmt
           src/catalog/figma/inventory.json
           src/catalog/figma/registry.json
           src/catalog/figma/evidence-exceptions.json
