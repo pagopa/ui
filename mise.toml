@@ -1,8 +1,16 @@
 [tools]
+aws-cli = { version = "2", symlink_bins = "true" }
+azure-cli = { version = "2", dependency_prereleases = "allow", with = [
+  "pip",
+], depends = [
+  '["uv"]',
+] }
 github-cli = { version = "latest" }
+python = "3.14"
 terraform-docs = "0.24"
 tflint = "0.63"
 trivy = "0.74"
+uv = "latest"
 
 [env]
 TFLINT_PLUGIN_DIR = "{{config_root}}/.tflint.d/plugins"

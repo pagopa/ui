@@ -7,16 +7,16 @@ plan**, and nothing else is mandatory.
 
 ## Flows and dependencies
 
-| Flow | Plan or outcome                                                                                 | Depends on  | Can run with         |
-| ---- | ------------------------------------------------------------------------------------------------ | ----------- | -------------------- |
-| F0   | closed: the `figma-to-code` skill and the essential documents                                    | —           | —                    |
-| F1   | [mcp-to-rest.md](./mcp-to-rest.md) (future, conditional)                                          | F0 (closed) | — (outside the wave) |
-| B    | outcome: [prop conventions](../../.agents/skills/pagopa-ui-standards/references/prop-conventions.md) | F0          | C, D, A1             |
-| C    | outcome: `packages/tokens`; follow-up: [foundation variables](../design-requests/2026-10-16-foundation-variables.md) | F0 | B, D, A1 |
-| D    | outcome: Storybook accessibility contract; follow-up: [reflow conditions](../design-requests/2026-10-16-a11y-reflow-conditions.md) | F0 | B, C, A1 |
-| A1   | [a1-fidelity-tooling.md](./a1-fidelity-tooling.md)                                               | F0          | B, C, D              |
-| A2   | [a2-main-components.md](./a2-main-components.md)                                                 | C, D, A1    | E                    |
-| E    | [e-ci-pipeline.md](./e-ci-pipeline.md) — deterministic drift PR, local implementation            | A1, B       | A2                   |
+| Flow | Plan or outcome                                                                                                                    | Depends on  | Can run with         |
+| ---- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------- | -------------------- |
+| F0   | closed: the `figma-to-code` skill and the essential documents                                                                      | —           | —                    |
+| F1   | [mcp-to-rest.md](./mcp-to-rest.md) (future, conditional)                                                                           | F0 (closed) | — (outside the wave) |
+| B    | outcome: [prop conventions](../../.agents/skills/pagopa-ui-standards/references/prop-conventions.md)                               | F0          | C, D, A1             |
+| C    | outcome: `packages/tokens`; follow-up: [foundation variables](../design-requests/2026-10-16-foundation-variables.md)               | F0          | B, D, A1             |
+| D    | outcome: Storybook accessibility contract; follow-up: [reflow conditions](../design-requests/2026-10-16-a11y-reflow-conditions.md) | F0          | B, C, A1             |
+| A1   | [a1-fidelity-tooling.md](./a1-fidelity-tooling.md)                                                                                 | F0          | B, C, D              |
+| A2   | [a2-main-components.md](./a2-main-components.md)                                                                                   | C, D, A1    | E                    |
+| E    | [e-ci-pipeline.md](./e-ci-pipeline.md) — deterministic drift PR, local implementation                                              | A1, B       | A2                   |
 
 ```
 F0 ─┬─ B ──────────────┬─ E

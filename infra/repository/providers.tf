@@ -9,5 +9,5 @@ terraform {
 
 # GitHub provider configuration
 provider "github" {
-  owner = "gunzip"
+  owner = "pagopa"
 }
