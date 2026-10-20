@@ -1,0 +1,4 @@
+{
+  "extends": ["../../packages/pagopa-ui/.oxlintrc.json"],
+  "ignorePatterns": ["dist/**"]
+}

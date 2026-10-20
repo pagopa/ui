@@ -1,0 +1,8 @@
+/* The Storybook surface of the documentation: the design-system stylesheet
+   plus the stories, the guides and this application's Storybook configuration.
+   The package stylesheet scans the design system and the data packages; the
+   published artifact narrows that surface in packages/pagopa-ui/src/library.css. */
+@import "../../../packages/pagopa-ui/src/index.css";
+
+@source "../src";
+@source "../.storybook";

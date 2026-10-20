@@ -1,0 +1,62 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "storybook",
+  "projectType": "application",
+  "sourceRoot": "apps/storybook/src",
+  "tags": ["type:app", "scope:docs"],
+  "targets": {
+    "lint": { "configurations": { "ci": { "script": "lint:check" } } },
+    "fmt": {
+      "executor": "nx:run-script",
+      "options": { "script": "format" },
+      "cache": true,
+      "configurations": { "ci": { "script": "format:check" } }
+    },
+    "build": {
+      "inputs": [
+        "default",
+        "{workspaceRoot}/packages/pagopa-ui/src/**",
+        "{workspaceRoot}/packages/pagopa-ui/figma-to-code.yaml",
+        "{workspaceRoot}/packages/artwork/src/**",
+        "{workspaceRoot}/packages/tokens/src/**"
+      ]
+    },
+    "test:stories": {
+      "dependsOn": ["pagopa-ui:figma:check", "pagopa-ui-artwork:test", "pagopa-ui-tokens:test"],
+      "inputs": [
+        "default",
+        "{workspaceRoot}/packages/pagopa-ui/src/**",
+        "{workspaceRoot}/packages/artwork/src/**",
+        "{workspaceRoot}/packages/tokens/src/**"
+      ]
+    },
+    "test:coverage": {
+      "inputs": [
+        "default",
+        "{workspaceRoot}/packages/pagopa-ui/src/**",
+        "{workspaceRoot}/packages/artwork/src/**",
+        "{workspaceRoot}/packages/tokens/src/**"
+      ]
+    },
+    "typecheck": {
+      "dependsOn": ["pagopa-ui-artwork:build", "pagopa-ui-tokens:build"],
+      "inputs": ["default", "{workspaceRoot}/packages/pagopa-ui/src/**"]
+    },
+    "test:changed": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node ../../packages/ui-cli/src/cli.ts test changed",
+        "cwd": "{projectRoot}"
+      },
+      "cache": false
+    },
+    "test:coverage:changed": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node ../../packages/ui-cli/src/cli.ts test changed --coverage",
+        "cwd": "{projectRoot}"
+      },
+      "cache": false
+    }
+  }
+}
