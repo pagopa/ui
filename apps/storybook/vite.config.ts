@@ -90,7 +90,10 @@ export default defineConfig(({ mode }) => ({
           testTimeout: 60000,
           // The shared accessibility contract (src/support/a11y-contract.ts)
           // runs from this setup file's afterEach.
-          setupFiles: [path.join(dirname, "src/support/a11y-setup.ts")],
+          setupFiles: [
+            path.join(dirname, "src/support/queries-setup.ts"),
+            path.join(dirname, "src/support/a11y-setup.ts"),
+          ],
           browser: {
             enabled: true,
             headless: true,
@@ -122,7 +125,10 @@ export default defineConfig(({ mode }) => ({
         test: {
           name: "storybook-conditions",
           testTimeout: 60000,
-          setupFiles: [path.join(dirname, "src/support/a11y-setup.ts")],
+          setupFiles: [
+            path.join(dirname, "src/support/queries-setup.ts"),
+            path.join(dirname, "src/support/a11y-setup.ts"),
+          ],
           browser: {
             enabled: true,
             headless: true,

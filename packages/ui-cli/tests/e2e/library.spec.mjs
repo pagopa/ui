@@ -25,6 +25,14 @@ async function assertFocusPerimeter(control, painted = control) {
   assert.notEqual(outline.color, "rgba(0, 0, 0, 0)", `focus perimeter is transparent: ${control}`)
 }
 
+// WebKit opens a link in a new tab on the platform modifier (Cmd) on macOS, and
+// on nothing at all on Linux: WebKitGTK implements no new-tab gesture, so the
+// assertion that follows is skipped there instead of waiting three minutes for
+// a page event that the engine will never emit.
+function opensNewTabInBrowser(browserName) {
+  return browserName !== "webkit" || process.platform === "darwin"
+}
+
 function newTabClickOptions(browserName) {
   return browserName === "webkit" || (browserName === "chromium" && process.platform === "darwin")
     ? { modifiers: ["Meta"] }
@@ -501,11 +509,22 @@ test("the packed artifact behaves as documented", async ({ browserName, context,
   assert.equal(page.url(), beforeProductNavigation, "Space must not activate a native link")
   await page.keyboard.press("Enter")
   await page.waitForURL((location) => location.hash === "#consumer-product-destination")
-  const newProductPage = page.context().waitForEvent("page")
-  await productLink.click(newTabClickOptions(browserName))
-  const productTab = await newProductPage
-  await productTab.waitForURL((location) => location.hash === "#consumer-product-destination")
-  await productTab.close()
+  if (opensNewTabInBrowser(browserName)) {
+    const newProductPage = page.context().waitForEvent("page")
+    await productLink.click(newTabClickOptions(browserName))
+    const productTab = await newProductPage
+    await productTab.waitForURL((location) => location.hash === "#consumer-product-destination")
+    await productTab.close()
+  } else {
+    // Keep the portable half of the contract on WebKit/Linux: the action is a
+    // native link to the destination, not a scripted navigation.
+    assert.equal(await productLink.getAttribute("href"), "#consumer-product-destination")
+    assert.equal(
+      await productLink.evaluate((element) => element.tagName),
+      "A",
+      "the product action must stay a native anchor",
+    )
+  }
 
   const imageProduct = page.getByTestId("consumer-image-product")
   const productImage = imageProduct.getByRole("img", { name: "Anteprima del prodotto digitale" })

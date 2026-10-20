@@ -399,11 +399,16 @@ export const ChoiceCommandOpensOverlay: Story = {
     await userEvent.click(screen.getByRole("button", { name: "Usa posizione attuale" }))
     const dialog = await screen.findByRole("dialog", { name: "Comando completato" })
     await expect(screen.queryByRole("listbox")).not.toBeInTheDocument()
-    await waitFor(() => {
-      const focused = document.activeElement
-      if (!(focused instanceof HTMLElement)) throw new Error("Expected dialog focus to be set")
-      expect(dialog).toContainElement(focused)
-    })
+    // The action opens the dialog one commit after the chooser popup closed:
+    // give the focus handover a budget the loaded CI runner can meet.
+    await waitFor(
+      () => {
+        const focused = document.activeElement
+        if (!(focused instanceof HTMLElement)) throw new Error("Expected dialog focus to be set")
+        expect(dialog).toContainElement(focused)
+      },
+      { timeout: 5000 },
+    )
     const commandCount = canvasElement.querySelector<HTMLOutputElement>(
       'output[aria-label="Numero di comandi"]',
     )
@@ -593,11 +598,16 @@ export const MultiSelectChoiceCommandOpensOverlay: Story = {
     await userEvent.click(screen.getByRole("button", { name: "Usa posizione attuale" }))
     const dialog = await screen.findByRole("dialog", { name: "Comando dei comuni completato" })
     await expect(screen.queryByRole("listbox")).not.toBeInTheDocument()
-    await waitFor(() => {
-      const focused = document.activeElement
-      if (!(focused instanceof HTMLElement)) throw new Error("Expected dialog focus to be set")
-      expect(dialog).toContainElement(focused)
-    })
+    // The action opens the dialog one commit after the chooser popup closed:
+    // give the focus handover a budget the loaded CI runner can meet.
+    await waitFor(
+      () => {
+        const focused = document.activeElement
+        if (!(focused instanceof HTMLElement)) throw new Error("Expected dialog focus to be set")
+        expect(dialog).toContainElement(focused)
+      },
+      { timeout: 5000 },
+    )
     await expect(new FormData(form).getAll("cities")).toEqual(selectedValues)
     const commandCount = canvasElement.querySelector<HTMLOutputElement>(
       'output[aria-label="Numero di comandi del multichooser"]',

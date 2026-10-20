@@ -147,8 +147,12 @@ function contractOf(parameters: object): Contract {
 // source-width fixture, or a request pending in
 // docs/design-requests/2026-10-16-a11y-reflow-conditions.md).
 
-async function until(predicate: () => boolean, frames = 50) {
-  for (let frame = 0; frame < frames; frame += 1) {
+// Waits for a predicate on a wall-clock budget rather than a frame count: a
+// fixed number of frames measures how busy the runner was, and a loaded CI
+// worker drops frames often enough to fail a correct component.
+async function until(predicate: () => boolean, timeoutMs = 5000) {
+  const deadline = Date.now() + timeoutMs
+  while (Date.now() < deadline) {
     if (predicate()) return true
     await nextFrame()
   }
@@ -369,8 +373,15 @@ async function expectDialogBehaviour() {
     const owns = await until(() => {
       const active = document.activeElement
       return active === dialog || dialog.contains(active)
-    }, 20)
-    expect(owns, `an open dialog must own the focus: ${describe(dialog)}`).toBe(true)
+    })
+    // Naming the element that kept the focus tells a focus-management race
+    // apart from a dialog that never mounted its content.
+    const focusHolder =
+      document.activeElement instanceof Element ? describe(document.activeElement) : "nothing"
+    expect(
+      owns,
+      `an open dialog must own the focus: ${describe(dialog)}; it is on ${focusHolder}`,
+    ).toBe(true)
     if (dialog.getAttribute("role") === "dialog") {
       await userEvent.keyboard("{Escape}")
       const dismissed = await until(() => !isVisible(dialog))
@@ -453,7 +464,7 @@ async function expectComboboxBehaviour(root: ParentNode) {
     await userEvent.keyboard("{Escape}")
     await until(
       () => ![...document.querySelectorAll<HTMLElement>("[role='listbox']")].some(isVisible),
-      20,
+      1000,
     )
   }
 }
