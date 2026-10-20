@@ -1,0 +1,5 @@
+# Reviewers requested automatically on every pull request.
+# The owners below must have write access to the repository.
+# https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+* @pagopa/engineering-team-devex
