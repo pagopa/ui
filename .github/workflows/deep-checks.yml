@@ -64,7 +64,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium firefox webkit
+        run: pnpm --filter @pagopa/ui exec playwright install --with-deps chromium firefox webkit
 
       - name: Stories, coverage gates and the packed artifact (affected)
         if: github.event_name == 'pull_request' || github.event_name == 'push'
