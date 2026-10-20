@@ -1,0 +1,75 @@
+name: Release
+
+# Nx Release through the DX release manager: a merged pull request that carries
+# a version plan opens (or updates) the "Version Packages" pull request, and
+# merging that one tags the release. The package is not published to a registry
+# yet: with `private: true` and no `nx-release-publish` target the publish step
+# is a no-op (docs/decisions/0005-nx-monorepo.md, decision B).
+#
+# The job is written here instead of calling `pagopa/dx/.github/workflows/
+# release-v2.yaml` because that reusable workflow installs dependencies before
+# authenticating to GitHub Packages, and this workspace resolves the DX Nx
+# plugins (`@pagopa/nx-docker`, `@pagopa/nx-terraform`) from that registry
+# through pnpm's `gh:` alias. The steps below repeat the reusable contract with
+# the registry setup in place; `actions/nx-release` is still the DX manager.
+#
+# Prerequisites owned by the person: the `GH_APP_RELEASE_CLIENT_ID` and
+# `GH_APP_RELEASE_APP_KEY` secrets of a GitHub App installed on this repository
+# (contents and pull requests: write), and the `app-prod-cd` environment.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-24.04
+    environment: app-prod-cd
+    permissions:
+      actions: read
+      contents: write
+      id-token: write
+      packages: write
+      pull-requests: write
+    steps:
+      - name: Generate GitHub App token
+        id: generate-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ secrets.GH_APP_RELEASE_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_RELEASE_APP_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-tags: "true"
+          fetch-depth: 0
+          token: ${{ steps.generate-token.outputs.token }}
+
+      - name: Setup Node.js and pnpm
+        id: node-setup
+        uses: pagopa/dx/.github/actions/node-setup@main
+
+      - name: Setup npm registry
+        uses: pagopa/dx/actions/setup-npm-registry@main
+
+      - name: Install dependencies
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pnpm install --frozen-lockfile
+
+      - name: Nx Release
+        uses: pagopa/dx/actions/nx-release@main
+        env:
+          GH_APP_CLIENT_ID: ${{ secrets.GH_APP_RELEASE_CLIENT_ID }}
+          GH_APP_KEY: ${{ secrets.GH_APP_RELEASE_APP_KEY }}
+        with:
+          app-slug: ${{ steps.generate-token.outputs.app-slug }}
+          github-token: ${{ steps.generate-token.outputs.token }}

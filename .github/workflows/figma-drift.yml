@@ -1,0 +1,93 @@
+name: Figma drift
+
+# Scheduled drift detection: refresh the pinned inventory and open one review
+# pull request when the live library changed. The merge is the review record
+# (docs/decisions/0001-rework.md); the pending queue is the visible signal.
+# The refreshed payload is formatted before the commit so the review diff
+# carries only the drift.
+# Missing read-only credentials fail explicitly: a skipped check cannot certify
+# alignment.
+#
+# DRIFT_PR_TOKEN is a fine-grained token (contents + pull requests) so the PR
+# can trigger CI; the default GITHUB_TOKEN cannot start workflow runs on its
+# own pull request. The GITHUB_TOKEN fallback still opens the PR, but its
+# checks stay empty until a human re-runs them.
+on:
+  schedule:
+    # Every Monday at 04:00 UTC
+    - cron: "0 4 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  packages: read
+  pull-requests: write
+
+jobs:
+  drift:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      # DX packages come from GitHub Packages through pnpm's built-in `gh:`
+      # alias; the placeholder in the user-level npmrc is expanded from
+      # NODE_AUTH_TOKEN at install time.
+      - name: Setup npm registry
+        uses: pagopa/dx/actions/setup-npm-registry@main
+
+      - name: Install dependencies
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pnpm install --frozen-lockfile
+
+      - name: Detect drift and refresh the review payload
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+          PAGOPA_UI_ROOT: ../pagopa-ui
+        run: >-
+          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma sync
+          --rest --pr-body .figma/pr-body.md
+
+      - name: Format the refreshed payload
+        if: hashFiles('packages/pagopa-ui/.figma/pr-body.md') != ''
+        run: >-
+          pnpm --filter pagopa-ui exec oxfmt
+          src/catalog/figma/inventory.json
+          src/catalog/figma/registry.json
+          src/catalog/figma/evidence-exceptions.json
+
+      - name: Open the review pull request
+        if: hashFiles('packages/pagopa-ui/.figma/pr-body.md') != ''
+        env:
+          GH_TOKEN: ${{ secrets.DRIFT_PR_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          branch="figma-drift/$(date -u +%Y-%m-%d)"
+          git config user.name "figma-drift[bot]"
+          git config user.email "figma-drift[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add \
+            packages/pagopa-ui/src/catalog/figma/inventory.json \
+            packages/pagopa-ui/src/catalog/figma/registry.json \
+            packages/pagopa-ui/src/catalog/figma/evidence-exceptions.json
+          git commit -m "chore(figma): refresh the drift inventory and queue the review"
+          git push --force origin "$branch"
+          gh pr create \
+            --title "Figma drift — $(date -u +%Y-%m-%d)" \
+            --body-file packages/pagopa-ui/.figma/pr-body.md \
+            --base "${{ github.event.repository.default_branch }}" \
+            --head "$branch" ||
+            gh pr edit "$branch" --body-file packages/pagopa-ui/.figma/pr-body.md

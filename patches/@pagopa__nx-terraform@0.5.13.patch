@@ -1,0 +1,18 @@
+diff --git a/package.json b/package.json
+index d7aa3f191328808f5c8197f520c9c991b4470316..8adf1e6a04c557a166c223b7ae53a18300c76414 100644
+--- a/package.json
++++ b/package.json
+@@ -15,13 +15,11 @@
+     ".": {
+       "types": "./dist/index.d.ts",
+       "import": "./dist/index.js",
+-      "require": "./src/index.ts",
+       "default": "./dist/index.js"
+     },
+     "./release/version-actions": {
+       "types": "./dist/release/version-actions.d.ts",
+       "import": "./dist/release/version-actions.js",
+-      "require": "./src/release/version-actions.ts",
+       "default": "./dist/release/version-actions.js"
+     }
+   },

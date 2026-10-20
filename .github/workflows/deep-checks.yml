@@ -1,0 +1,75 @@
+name: Deep checks
+
+# The reusable DX code review (validate.yaml) runs the static checks and the
+# unit project. The suites that need a browser - the story projects in three
+# engines with the v8 coverage gates, and the packed artifact consumer - run
+# here: on every pull request, on main, and nightly to catch what a diff cannot
+# see.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    # Every day at 03:00 UTC, an hour before the Figma drift check
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deep:
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: read
+      contents: read
+      packages: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Set the base and head SHAs for `nx affected`
+        uses: nrwl/nx-set-shas@v5
+
+      - name: Cache Nx
+        uses: actions/cache@v4
+        with:
+          path: .nx/cache
+          key: ${{ runner.os }}-nx-cache-${{ github.workflow }}-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-nx-cache-${{ github.workflow }}-${{ github.ref_name }}-
+            ${{ runner.os }}-nx-cache-${{ github.workflow }}-
+
+      # DX packages come from GitHub Packages through pnpm's built-in `gh:`
+      # alias. The action stores the registry credential as a placeholder in the
+      # user-level npmrc; pnpm expands it from NODE_AUTH_TOKEN at install time.
+      - name: Setup npm registry
+        uses: pagopa/dx/actions/setup-npm-registry@main
+
+      - name: Install dependencies
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium firefox webkit
+
+      - name: Stories, coverage gates and the packed artifact (affected)
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        run: pnpm nx affected -t test:coverage,library:check
+
+      - name: Stories, coverage gates and the packed artifact (everything)
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: pnpm nx run-many -p pagopa-ui,storybook -t test:coverage,library:check

@@ -1,0 +1,72 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "parallel": 10,
+  "targetDefaults": {
+    "build": { "outputs": ["{projectRoot}/dist"], "cache": true },
+    "typecheck": { "cache": true },
+    "test": { "cache": true },
+    "test:unit": { "cache": true },
+    "test:coverage": { "cache": true },
+    "lint": { "dependsOn": ["^build"], "cache": true },
+    "*:check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{workspaceRoot}/packages/ui-cli",
+        "env": { "PAGOPA_UI_ROOT": "../pagopa-ui" }
+      },
+      "inputs": ["default", "tooling"],
+      "outputs": [],
+      "cache": true
+    }
+  },
+  "namedInputs": {
+    "tooling": ["{workspaceRoot}/packages/ui-cli/**/*"]
+  },
+  "release": {
+    "versionPlans": true,
+    "projectsRelationship": "independent",
+    "projects": ["pagopa-ui"],
+    "version": {},
+    "changelog": {
+      "projectChangelogs": {
+        "createRelease": false,
+        "file": "{projectRoot}/CHANGELOG.md",
+        "renderOptions": {
+          "authors": true,
+          "applyUsernameToAuthors": true,
+          "commitReferences": true,
+          "versionTitleDate": true
+        }
+      }
+    },
+    "git": { "commit": false, "tag": true, "stageChanges": false },
+    "releaseTag": { "pattern": "{projectName}@{version}" }
+  },
+  "plugins": [
+    {
+      "plugin": "@nx/js/typescript",
+      "options": {
+        "typecheck": { "targetName": "typecheck" },
+        "build": {
+          "targetName": "build",
+          "buildDepsName": "build-deps",
+          "watchDepsName": "watch-deps"
+        }
+      }
+    },
+    {
+      "plugin": "@pagopa/nx-terraform",
+      "include": ["infra/**"],
+      "options": {
+        "additionalEnvironments": [],
+        "initTarget": { "platforms": ["linux_amd64"] }
+      }
+    },
+    { "plugin": "@pagopa/nx-docker" }
+  ],
+  "pluginsConfig": {
+    "@nx/js": { "projectsAffectedByDependencyUpdates": "auto" }
+  },
+  "analytics": false,
+  "neverConnectToCloud": true
+}

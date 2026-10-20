@@ -1,0 +1,22 @@
+{
+  "name": "pagopa-ui-monorepo",
+  "private": true,
+  "description": "PagoPA Web Design System (monorepo)",
+  "license": "UNLICENSED",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@11.28.6+sha512.55d90390c3b39042f1505a2697789f0256c6d95bb28bdd7cb731af1887c9f2629ef581acb9f4e4ec772024c8203c2aed22a03299b97103fdcf32668e905d0024",
+  "devDependencies": {
+    "@nx/eslint": "^23.3.0",
+    "@nx/js": "^23.3.0",
+    "@nx/vitest": "^23.3.0",
+    "@pagopa/nx-docker": "gh:^0.1.8",
+    "@pagopa/nx-terraform": "gh:^0.5.13",
+    "nx": "23.3.0",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "oxfmt": "^0.73.0",
+    "typescript": "npm:@typescript/typescript6@^6.0.2"
+  }
+}

@@ -1,0 +1,18 @@
+packages:
+  - packages/*
+  - apps/*
+
+linkWorkspacePackages: true
+packageImportMethod: "clone-or-copy"
+cleanupUnusedCatalogs: true
+
+onlyBuiltDependencies:
+  - nx
+  - esbuild
+  - sharp
+allowBuilds:
+  nx: true
+  esbuild: true
+  sharp: true
+patchedDependencies:
+  '@pagopa/nx-terraform@0.5.13': patches/@pagopa__nx-terraform@0.5.13.patch
