@@ -1,0 +1,7 @@
+{
+  "extends": ["../pagopa-ui/.oxlintrc.json"],
+  "ignorePatterns": [
+    "src/components/icons/icon-assets.ts",
+    "src/components/icons/pictogram-assets.ts"
+  ]
+}

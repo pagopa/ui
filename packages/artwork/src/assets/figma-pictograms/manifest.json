@@ -1,0 +1,1754 @@
+{
+  "fileKey": "pvhsJpPGQbEwNLiyP7BOIw",
+  "version": "2408287063103738230",
+  "entries": {
+    "329:1629": {
+      "name": "SavingMoney",
+      "designFingerprint": "c95772d6926c087428bdaa292c580f0fdb60b367151616b67fcd0d176bedd09a",
+      "light": {
+        "nodeId": "329:1628",
+        "file": "329-1628.svg",
+        "sha256": "98dd8213ab8eda1341e9443527d739d94d1636b32fa08988e4334ac05ade232b"
+      },
+      "dark": {
+        "nodeId": "329:1630",
+        "file": "329-1630.svg",
+        "sha256": "be111e39bc932e70d067ff4becb9d067532dcf2008f9bfa2dafb3181edb0cd51"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1642": {
+      "name": "Simplify",
+      "designFingerprint": "a2efc60a6f37099dde22c72842c7a279438a0523aa56d2cb91a13f58b3282a94",
+      "light": {
+        "nodeId": "329:1636",
+        "file": "329-1636.svg",
+        "sha256": "e6107094da8eb4c3ee5b84bfd5792a130d5ab1561dae2e17d69d6d7559a14821"
+      },
+      "dark": {
+        "nodeId": "329:1643",
+        "file": "329-1643.svg",
+        "sha256": "bd0a5b1238861bee2ed9565943869d5120f6beb6f9f001ff138e7d0f319f2b1e"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1648": {
+      "name": "AlarmClock",
+      "designFingerprint": "5a40e3a3a55e7a96efb515994419389e3f125419e5d8fb8a16f55a8c255827e5",
+      "light": {
+        "nodeId": "329:1647",
+        "file": "329-1647.svg",
+        "sha256": "76ff30bd4d0265e5f686dfc6ea8726be4d836e8459122985ddafed29e53cf3c6"
+      },
+      "dark": {
+        "nodeId": "329:1657",
+        "file": "329-1657.svg",
+        "sha256": "4402fda9dbf7be17aeed8979a7a7336a3810865f823d8684b73c5f42f02601a3"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1650": {
+      "name": "Completed",
+      "designFingerprint": "fc41d0722a6080323f2d151b7d6663049011accd3754e1403d05ba1c628466ab",
+      "light": {
+        "nodeId": "329:1649",
+        "file": "329-1649.svg",
+        "sha256": "8593228e319f54f4bd2cf0cdb64628c9687364306f724f62031b530d2e4a7477"
+      },
+      "dark": {
+        "nodeId": "329:1651",
+        "file": "329-1651.svg",
+        "sha256": "dda1a20c1f0e4476a67c1b66d62309b2c4149d868f924bc0d77e03cd3de4ebeb"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1656": {
+      "name": "UploadFile",
+      "designFingerprint": "8674aa9887733b2f323ae1c81e89bc7a8a9432b35afea5b79cbd6b9917288333",
+      "light": {
+        "nodeId": "329:1655",
+        "file": "329-1655.svg",
+        "sha256": "70464209d65a2fa2397f7158a24e639eeca2f50d5c5480833a6e64961fee8408"
+      },
+      "dark": {
+        "nodeId": "329:1662",
+        "file": "329-1662.svg",
+        "sha256": "5a83ca4932a196db0e1c0b48a271490fb7bf793460c64f2779b73e7a1405fc30"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1668": {
+      "name": "Email Validation",
+      "designFingerprint": "fb156a2ad23e64fc4ca043b6606445fcfcdb055db07ac27cb8e7ec7de2277741",
+      "light": {
+        "nodeId": "329:1667",
+        "file": "329-1667.svg",
+        "sha256": "fa6e235c937423ce13f157b1f4b51f207bc40b9c4728b2c778e895995de35c34"
+      },
+      "dark": {
+        "nodeId": "329:1669",
+        "file": "329-1669.svg",
+        "sha256": "00e7ce221dba2eda9f978c0ad8a65bfb68ddce61f1335b5a51874a3ce423f130"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1675": {
+      "name": "Leggi",
+      "designFingerprint": "2eac93845bd4f7cce3229d30c09b1864427f85ef8a169405881b25e870f3fd64",
+      "light": {
+        "nodeId": "329:1674",
+        "file": "329-1674.svg",
+        "sha256": "09741fde2aab8a31c863149391c6319de6a1704acefaca48111c3b5b1a510aa3"
+      },
+      "dark": {
+        "nodeId": "329:1676",
+        "file": "329-1676.svg",
+        "sha256": "8f69e3c0ecf1b96ffdddeb8fd3cb01d07376f3430b23b3ec9039095e82bb1371"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1683": {
+      "name": "Push",
+      "designFingerprint": "c8ab659db4d54d9311e8c20a08eff4cc9219440f7e1452409a8d2afae3e03324",
+      "light": {
+        "nodeId": "329:1682",
+        "file": "329-1682.svg",
+        "sha256": "02cd72eb37eff0312064b0bbd20e86c0012539b3b9ed9ab2b4f70296d20e4642"
+      },
+      "dark": {
+        "nodeId": "329:1684",
+        "file": "329-1684.svg",
+        "sha256": "a751b4aabba53ee6b7e67ca9372774bc092c82e3b7a3027c63f93a661bb9adb5"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1690": {
+      "name": "FileCheck",
+      "designFingerprint": "8a131f8d1f42f7fe0d7d0e5a0d6e4cde39cf82f32be864938f950b9f3fceae1c",
+      "light": {
+        "nodeId": "329:1689",
+        "file": "329-1689.svg",
+        "sha256": "2bc33d7eacbeb5be403fd701830f60d45dd5412a18d0d813a6bb550c8852166a"
+      },
+      "dark": {
+        "nodeId": "329:1691",
+        "file": "329-1691.svg",
+        "sha256": "f2ff826c356b03ec5ff1b5f71d515f89e50503e9b4b011eba126b651bbe99756"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1701": {
+      "name": "Flag",
+      "designFingerprint": "e89a292faf3f328d1a87eabbd4a6da24f818a8134e60e839e01cf285ff793c74",
+      "light": {
+        "nodeId": "329:1696",
+        "file": "329-1696.svg",
+        "sha256": "adaf43b133860eb1bb5b4cf25fd31eb666c5098b2b40cd5fcebf1f13ade5135c"
+      },
+      "dark": {
+        "nodeId": "329:1702",
+        "file": "329-1702.svg",
+        "sha256": "438bba19bcf58f25717a6d2c722e6c2c1353967749c765e6c532304901eae341"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1712": {
+      "name": "Code",
+      "designFingerprint": "2c05f03f8847ac560f6ceb90482c7c7142ac79496286053bbbcd60771437d3d6",
+      "light": {
+        "nodeId": "329:1697",
+        "file": "329-1697.svg",
+        "sha256": "b09de5dd89542ba4fbf055f1a543c97d80785abd5099c9df29ee0f9d24901f3a"
+      },
+      "dark": {
+        "nodeId": "329:1713",
+        "file": "329-1713.svg",
+        "sha256": "e5b6d8c323fca1a3cd3bfb74126716662037086f4f61b374939baf13f416f83a"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1718": {
+      "name": "Assistance",
+      "designFingerprint": "c939687089169f1650952fc9d61dae6fc51a669fc6d6db2cce45801e86ccde81",
+      "light": {
+        "nodeId": "329:1698",
+        "file": "329-1698.svg",
+        "sha256": "208362e642eb88dc851adce3aaa1c0327bd8814b987d2999f2962b49b3feacf1"
+      },
+      "dark": {
+        "nodeId": "329:1719",
+        "file": "329-1719.svg",
+        "sha256": "e71d6571beb7eb9d98ae38046a36328df34b59acd360bc72cca19f2309b11905"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1726": {
+      "name": "Bell",
+      "designFingerprint": "e74aeb3dec407051fb825dba11402b901cce932d8eafb566627a46ed2807f6f6",
+      "light": {
+        "nodeId": "329:1699",
+        "file": "329-1699.svg",
+        "sha256": "379c1669019a123529743f905d71804145a000d3bb30fdfe42e944c6d7e5cc7d"
+      },
+      "dark": {
+        "nodeId": "329:1727",
+        "file": "329-1727.svg",
+        "sha256": "45b9d4e6807d984d465318afb9fdd3e1468348688361fa8090b46574c4c435b4"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1733": {
+      "name": "Envelope",
+      "designFingerprint": "9b5f03b817c2586ea29efcaa81a73dacc506c51d910d9eabbe9cc26c3f023de8",
+      "light": {
+        "nodeId": "329:1700",
+        "file": "329-1700.svg",
+        "sha256": "5b926006376b5c7c8e874b36683cb95901949476128dd8eeeca773cb1246df29"
+      },
+      "dark": {
+        "nodeId": "329:1734",
+        "file": "329-1734.svg",
+        "sha256": "c143a8f5226f5a5e17d2e51b1a2645d80f75d6a55039bfca82213123883b5b8b"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1739": {
+      "name": "Institution",
+      "designFingerprint": "42b212a283a687f6b13b8f51104850c16d7ffdb8bc83f94362773f6802ceabf2",
+      "light": {
+        "nodeId": "329:1738",
+        "file": "329-1738.svg",
+        "sha256": "a4323dd14c654c3f08f7761354457c8fd49a7f104e8d8b6499295742957f0fbe"
+      },
+      "dark": {
+        "nodeId": "329:1740",
+        "file": "329-1740.svg",
+        "sha256": "970b2c5bde073396999bc45900ac7f325d9a7cbb1b8d67caac7c4d17a4cfcdba"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1750": {
+      "name": "User manual",
+      "designFingerprint": "4db99307863747fec1d049bc009a3e0e4acfdeae044db7137d6fd5b96e47e286",
+      "light": {
+        "nodeId": "329:1749",
+        "file": "329-1749.svg",
+        "sha256": "12d380427c4cfbba57b6e480b878a9e1ffad120a82c5977eacfec96b4ae623d0"
+      },
+      "dark": {
+        "nodeId": "329:1751",
+        "file": "329-1751.svg",
+        "sha256": "244648f5594e756811cc9d668a5746552d89279a47566113992856dc8af40dea"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1757": {
+      "name": "Safe Deposit",
+      "designFingerprint": "f3afcd8a5b9b999e1dbde59bbb464035b7f548a3d4fc34ca87053f8f25c9caa1",
+      "light": {
+        "nodeId": "329:1756",
+        "file": "329-1756.svg",
+        "sha256": "d647e4b1a832d131346c0a6f50105c9a0627138921f58a40a87266235524ba39"
+      },
+      "dark": {
+        "nodeId": "329:1758",
+        "file": "329-1758.svg",
+        "sha256": "2aaaa2660391f9777681316c0b2f8347f0f67cd1f22dc8b536d4c7e204eff9a7"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1764": {
+      "name": "Idea",
+      "designFingerprint": "4767cd7b9602f6f07b578f57ca57952831996396f73cb3320c8a3f1d8615a1aa",
+      "light": {
+        "nodeId": "329:1763",
+        "file": "329-1763.svg",
+        "sha256": "be9d502ba376d68e31e795ed5c8f23d33c9a37c057e306cbfadff91011c7b9c4"
+      },
+      "dark": {
+        "nodeId": "329:1765",
+        "file": "329-1765.svg",
+        "sha256": "89feee75f7571b78746779945d8bb91e0e6312eed6191a2e850a78cffbe25884"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1770": {
+      "name": "MultipleFiles",
+      "designFingerprint": "04d51392da586f0fe77cf9c67897ad699777653021fbb4ad79c20559d0a45d9e",
+      "light": {
+        "nodeId": "329:1769",
+        "file": "329-1769.svg",
+        "sha256": "03fb8d2de86160450cda909aa99a96cba1b84324fe6f31069de8daf06fb2ae2a"
+      },
+      "dark": {
+        "nodeId": "329:1771",
+        "file": "329-1771.svg",
+        "sha256": "15054a6ff3d281b27757133ba779650b3b426e45e2f26370c3895c12b378fc84"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1777": {
+      "name": "News",
+      "designFingerprint": "0fc27217b3b87f22439450dc83c3abd68ded93c32b2c2c532b4db8a449580107",
+      "light": {
+        "nodeId": "329:1776",
+        "file": "329-1776.svg",
+        "sha256": "a0bedc1702e3b287c9ea16ae4c92df7ba892e5de8db63d18c8356fdb38b5154b"
+      },
+      "dark": {
+        "nodeId": "329:1778",
+        "file": "329-1778.svg",
+        "sha256": "17e8dc2b8c37f56bd6ef7c910b30744b074b69f74475aba3803171a53a65221a"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1786": {
+      "name": "Sms",
+      "designFingerprint": "84321117da36a0ce9680872abe64ff94acbbf1be81ba72e58c6e7b3daeec9d5e",
+      "light": {
+        "nodeId": "329:1785",
+        "file": "329-1785.svg",
+        "sha256": "6b3718dcc0942d95d131e4aff20f2d8a62c85a44b36f31a3818a33058a2f05a6"
+      },
+      "dark": {
+        "nodeId": "329:1787",
+        "file": "329-1787.svg",
+        "sha256": "a91a2b3e41cbf54f1dfcc8e61e543bf110a3adb69491088870b56fbb7bc7b95c"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1792": {
+      "name": "Documentation",
+      "designFingerprint": "fa6d6ebc113a5b4366084ea57d9b93ab4182ca22155d81cf8cebb18edc234b07",
+      "light": {
+        "nodeId": "329:1791",
+        "file": "329-1791.svg",
+        "sha256": "e941eea062a3975c85f9955c275c64d5a5817b23743b80fdee3aa16ccee185ed"
+      },
+      "dark": {
+        "nodeId": "329:1793",
+        "file": "329-1793.svg",
+        "sha256": "42da99bf123615a5d800dc287d4bdb6a8f463f3e75f3dd2a356a6e148af782a5"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1799": {
+      "name": "Business",
+      "designFingerprint": "d411aaf2bd2af4b218e3d2d00139751eced1c153e98cfadb1f071a0bd01e75a6",
+      "light": {
+        "nodeId": "329:1798",
+        "file": "329-1798.svg",
+        "sha256": "78ec71ea65727a13bf7bba345ec55a694a2cbc203cde80bc2a5a17c6b8cc7498"
+      },
+      "dark": {
+        "nodeId": "329:1800",
+        "file": "329-1800.svg",
+        "sha256": "f91f6fe2252fd9108f7756466d89726f46031ebfa9c91103ce00c0f1ce8e1da4"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1807": {
+      "name": "ID Card",
+      "designFingerprint": "0412623ea652c242539cd5f7a0759df2c46475b55141acc92dcbb0357c84a4f5",
+      "light": {
+        "nodeId": "329:1806",
+        "file": "329-1806.svg",
+        "sha256": "85dc4c5ad23b29c0e5b34baf9827481393412516f4f6225ec0f535d63ee5147e"
+      },
+      "dark": {
+        "nodeId": "329:1808",
+        "file": "329-1808.svg",
+        "sha256": "314c6bea25b52e04ecc2c251dd474a7bc391b6267dee76162aa3f823dc7a3d46"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1815": {
+      "name": "Fingerprint",
+      "designFingerprint": "a0e7ef2ea21da8a67f5bef7ba1ccdd8ad556562147383c3161fc8f99f2c92560",
+      "light": {
+        "nodeId": "329:1814",
+        "file": "329-1814.svg",
+        "sha256": "0107b509f033fe4a5714e779f4ba692417d405ca82be3de12113ec77dccf447e"
+      },
+      "dark": {
+        "nodeId": "329:1816",
+        "file": "329-1816.svg",
+        "sha256": "455658173f6e4a73a32ba467966f1c10be9ad16061e85c75750f4bbcdcc3a1f3"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1823": {
+      "name": "Keypad",
+      "designFingerprint": "299c7ed25406d1c8e1ddb8ff85d63d78f6ed8caf80c01f512cada2e00ea64ce3",
+      "light": {
+        "nodeId": "329:1822",
+        "file": "329-1822.svg",
+        "sha256": "0c0e239b544437386358338f86cdcbd06d654df030dca4a095fc35cdd5bcf6af"
+      },
+      "dark": {
+        "nodeId": "329:1824",
+        "file": "329-1824.svg",
+        "sha256": "aa38f9c1845a0c01c31712f0179e779ac70cbed829fa7a031e897a0f12c209ba"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1837": {
+      "name": "Messages",
+      "designFingerprint": "0b005c12d4b307d8fa408d4964d3e7f6f723e9c358453ce7c01fd6c534877e5f",
+      "light": {
+        "nodeId": "329:1836",
+        "file": "329-1836.svg",
+        "sha256": "ba70d0ee4cac7feff0ad570f96a6dc2e1342014d88bacd5b05219ca2aea6cf9c"
+      },
+      "dark": {
+        "nodeId": "329:1838",
+        "file": "329-1838.svg",
+        "sha256": "6a29fe381495819d391789e6af444267994e38ec84cc090a1553182a6c7465d5"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1844": {
+      "name": "Direction",
+      "designFingerprint": "1d78277d4f5fc6fc73539834dce036810a20d05f6f5aca5098ba7858570de2b7",
+      "light": {
+        "nodeId": "329:1843",
+        "file": "329-1843.svg",
+        "sha256": "5c8732cf8ec7b5ef917d81a5f3958f1d5ff80916472093746f1e6652f7533694"
+      },
+      "dark": {
+        "nodeId": "329:1845",
+        "file": "329-1845.svg",
+        "sha256": "2515d4579b4ac55418981bce52980d025ea12b88684bab93524a1cd478bc0c0d"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1850": {
+      "name": "Repository",
+      "designFingerprint": "5d6047d565ae430014fe311977b37a53154cbbca1b7ce4849f47d6b26e1401e0",
+      "light": {
+        "nodeId": "329:1849",
+        "file": "329-1849.svg",
+        "sha256": "705a626a609b0c4c5a2d887ef8f017516f4157231e063734f5d2438bd0f50669"
+      },
+      "dark": {
+        "nodeId": "329:1851",
+        "file": "329-1851.svg",
+        "sha256": "473be7e00fd5888b5306d91aaa97128a3fd9918ccd751276b1614bd46fae9cf0"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1856": {
+      "name": "Security",
+      "designFingerprint": "6e84fe8deeca77eac35beeb257fa9499a0debbca55a8f3754e3893ddfc6ca3c0",
+      "light": {
+        "nodeId": "329:1855",
+        "file": "329-1855.svg",
+        "sha256": "178c067061883bf40ff56169c87c85fcbae59528e49fcd8490f77f96914f506f"
+      },
+      "dark": {
+        "nodeId": "329:1857",
+        "file": "329-1857.svg",
+        "sha256": "62c59d7b0e739d3dcd9c65fec709ad9040e2bf14b70e38026d7b451e9f53edde"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1862": {
+      "name": "Sync",
+      "designFingerprint": "63f70e9f02d1a444dffb22e04ef6977629468df0402e645c2a59bad43c3a8873",
+      "light": {
+        "nodeId": "329:1861",
+        "file": "329-1861.svg",
+        "sha256": "79569e5ab09c8549c10ceb5f6d49c72f66bbc8e8f5f7c96a243fa6e579c0779c"
+      },
+      "dark": {
+        "nodeId": "329:1863",
+        "file": "329-1863.svg",
+        "sha256": "d6d2d621279ef098a2ef5d31528e37fa906981b02b44f0b570fb8d5e8ac8ba16"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1868": {
+      "name": "Options",
+      "designFingerprint": "71b91506342093440cab570c577c4ddd2ac7403e18b65cbea9e23e5afc2860ef",
+      "light": {
+        "nodeId": "329:1867",
+        "file": "329-1867.svg",
+        "sha256": "c4c2d2be62d727d8bcb31599cac2d4071404d21754713e4d34eb2de8f464570a"
+      },
+      "dark": {
+        "nodeId": "329:1869",
+        "file": "329-1869.svg",
+        "sha256": "52138978895e5dc1848122303b22b2d443bc087d585d22a1ac0c25a8e0d95271"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1881": {
+      "name": "PersonalFile",
+      "designFingerprint": "d412abeea89f04776044ade5059c76b94947fe0b4b108cbfbfccc62c963b48c2",
+      "light": {
+        "nodeId": "329:1880",
+        "file": "329-1880.svg",
+        "sha256": "8e1d576af7de3d3b76ba7f714629140772fbcd1fbae1426d6f022729bbb50e9f"
+      },
+      "dark": {
+        "nodeId": "329:1882",
+        "file": "329-1882.svg",
+        "sha256": "f9dd2d78d06f29c965effa2755ef10b8eb061525f7048faa7514cd24db492ccf"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1888": {
+      "name": "MapPin",
+      "designFingerprint": "7e57790e21db4f048f9b68d30b8fe4d6aca111ec18ffd388cdd6ac95b7cf0d1b",
+      "light": {
+        "nodeId": "329:1887",
+        "file": "329-1887.svg",
+        "sha256": "2a9b9cfbf348be6dff17b6e3ff24b54cdfe32c9cc297c1810d5d83b590b77c58"
+      },
+      "dark": {
+        "nodeId": "329:1889",
+        "file": "329-1889.svg",
+        "sha256": "683fa39089aa455422e3ab261c6fe03b135d52c36aaefe00ec6adffd369df2c2"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1894": {
+      "name": "Award",
+      "designFingerprint": "7d2ac8974dbb02dc663c52c44eb3f7f2f368ac33a596bb0eebc9b3cfe4764d7b",
+      "light": {
+        "nodeId": "329:1893",
+        "file": "329-1893.svg",
+        "sha256": "24cfa0558151181c57e2a9c790ead05df706802ac583ef962ec6a96c7437fa7c"
+      },
+      "dark": {
+        "nodeId": "329:1895",
+        "file": "329-1895.svg",
+        "sha256": "7d96fd34b0a8a5d7172bf0565d75793f00c0e281afeab9d37a9def05f8bc0ffd"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1901": {
+      "name": "School",
+      "designFingerprint": "f605574bedece804092b704f4818689a63840a3a51eb4de8b97d6a13228508ca",
+      "light": {
+        "nodeId": "329:1900",
+        "file": "329-1900.svg",
+        "sha256": "f45936fb14b16a9104df2be04b3d4caf555a2da80b3b6c61c0f8ab4511b17890"
+      },
+      "dark": {
+        "nodeId": "329:1902",
+        "file": "329-1902.svg",
+        "sha256": "330341ea145533f6101e52e3289a432c2555af96056e4f6becefb787ed346ee4"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1910": {
+      "name": "Badge",
+      "designFingerprint": "2f16b6bbb8498ddf6f34733a874979c6bcb1ae104c794357cc8e87368b25e1ea",
+      "light": {
+        "nodeId": "329:1909",
+        "file": "329-1909.svg",
+        "sha256": "80bd7b994d62816da15f6af44dff7c6c9ad7215544469f2eb2ea3ef364efc936"
+      },
+      "dark": {
+        "nodeId": "329:1911",
+        "file": "329-1911.svg",
+        "sha256": "a681a8cacea57297fee71dd5802d549ee542a2a5bca9064efeac3cff0d888c66"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1917": {
+      "name": "OpenFolder",
+      "designFingerprint": "9e05b52a2cbce9e8bfb9fd323aadb7e46993a55c749eb18782f931255143b101",
+      "light": {
+        "nodeId": "329:1916",
+        "file": "329-1916.svg",
+        "sha256": "31e573f874cbf6e0d1af0cd18f2bcfbbc4184997bad1d8886ea699da127657e3"
+      },
+      "dark": {
+        "nodeId": "329:1918",
+        "file": "329-1918.svg",
+        "sha256": "24b98a8bcc120471d700f4ec7f990f3dc3b2bccf91c17ba7e350b0afa9cfbd2c"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1923": {
+      "name": "LineChart",
+      "designFingerprint": "251090c047372b952ed8cc58b101102a40431e9b1a22c9c6fefb00c1cae9d6e8",
+      "light": {
+        "nodeId": "329:1922",
+        "file": "329-1922.svg",
+        "sha256": "d05637fdc971fb7f70a2d7e6f2b16a7c794759e1ea439b34744152f431cb4b10"
+      },
+      "dark": {
+        "nodeId": "329:1924",
+        "file": "329-1924.svg",
+        "sha256": "6cb6bc5d143557c4c365998bd70f49dc2f00340a8495b4cfbbb9313daf495a09"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1929": {
+      "name": "History Doc",
+      "designFingerprint": "a31d737bbeb10b072e67129392bba4cbbeedda49e10f5e66292b3ad9621cc4fb",
+      "light": {
+        "nodeId": "329:1928",
+        "file": "329-1928.svg",
+        "sha256": "634a6b58bce6b1bd97908a187b5e0e176cb0264ac7c6294a72b7afda220abefe"
+      },
+      "dark": {
+        "nodeId": "329:1930",
+        "file": "329-1930.svg",
+        "sha256": "4fd179cec9329ad7dd67c9ffd9981005e6edcdcba3cc49662b05a03a4ad5ce51"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1935": {
+      "name": "Calendar",
+      "designFingerprint": "0be30f52a8c3df810785e704c06fae3a47fa6c7d4766689b2e2266813fa10e7e",
+      "light": {
+        "nodeId": "329:1934",
+        "file": "329-1934.svg",
+        "sha256": "58f0a61c6b4a9a1dfbc3434f1ddac40b337e716420112553e37935195b24affc"
+      },
+      "dark": {
+        "nodeId": "329:1936",
+        "file": "329-1936.svg",
+        "sha256": "f4eb1f2959fdea4932c48196627d745ff53855ab669a0404fa5835f570c9fc37"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1942": {
+      "name": "Upload",
+      "designFingerprint": "4c6d3ce3af4da26533316d57c60c984cd758f4ed70af6b5938e088ceaa112bdd",
+      "light": {
+        "nodeId": "329:1941",
+        "file": "329-1941.svg",
+        "sha256": "0379c2fc357974288e6465d093977f5308e32e3ca63de416a2297d7170f6d4dc"
+      },
+      "dark": {
+        "nodeId": "329:1943",
+        "file": "329-1943.svg",
+        "sha256": "61051c0e7f2600beb9763673c84eb9a346d8d11fd823a69ea3dc64ba6226c11e"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1949": {
+      "name": "Citizen",
+      "designFingerprint": "d038d65bf2a8240ec51e78508a8c5fe8a5aede2aa67c1e9b129876a167daa22f",
+      "light": {
+        "nodeId": "329:1948",
+        "file": "329-1948.svg",
+        "sha256": "946c075a94480e51936f1c9700600e4e888ea972480abb184d013b69da6a05dc"
+      },
+      "dark": {
+        "nodeId": "329:1950",
+        "file": "329-1950.svg",
+        "sha256": "1188c5f46197d7354c213e026f410376c4fb3990b1a486bc05b084ad149e3909"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1959": {
+      "name": "Desktop",
+      "designFingerprint": "fdccc54775f142b490f9dfbdfbc60ce5f5611c8be4ccdfa075c76be34763c78e",
+      "light": {
+        "nodeId": "329:1958",
+        "file": "329-1958.svg",
+        "sha256": "e6c2daee00dee86de4e870e3eaf9e317320276c87fb48fd9f4390de4008203bb"
+      },
+      "dark": {
+        "nodeId": "329:1960",
+        "file": "329-1960.svg",
+        "sha256": "eed8ab981899d6336894c7478accdbd8a0ac3f951e73f058d68f343e7f547979"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1965": {
+      "name": "Cloud",
+      "designFingerprint": "6260f89d1f39d4253802d5994289e0e5e34dbb17b266aebc1f2e95a220af94b4",
+      "light": {
+        "nodeId": "329:1964",
+        "file": "329-1964.svg",
+        "sha256": "147124f92b9f2bea512f150e0ea85014b711f4ea03d0e29109838e34e1053eed"
+      },
+      "dark": {
+        "nodeId": "329:1966",
+        "file": "329-1966.svg",
+        "sha256": "a4b96011c28df512f2109a710b424079791b22763cd3fabcfed0da6e5ab092d2"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1971": {
+      "name": "Graduation",
+      "designFingerprint": "1f82fe423e27cb98f91f38a06175ebe2575aee183af40b5bf51ad3e7f22ed1c0",
+      "light": {
+        "nodeId": "329:1970",
+        "file": "329-1970.svg",
+        "sha256": "c19a8c95c0fe36b2b5bb87672ba2ab773e11bd45df399230cd5c9d16d862b583"
+      },
+      "dark": {
+        "nodeId": "329:1972",
+        "file": "329-1972.svg",
+        "sha256": "53fec7a54920ed7374cdbd6d217c7c0e967594904223fca5b7716b2621cc61cc"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1977": {
+      "name": "CalendarCheck",
+      "designFingerprint": "3121413e6c91ccfe8797e73796d36bfab1b22e7b75dd8c6405468c3736760b42",
+      "light": {
+        "nodeId": "329:1976",
+        "file": "329-1976.svg",
+        "sha256": "b925b16ce63f45f32ef8313e80ad5421aae9c279b3d709a6557d8186d7346ea4"
+      },
+      "dark": {
+        "nodeId": "329:1978",
+        "file": "329-1978.svg",
+        "sha256": "e1d504dbdbb47542f83f1e569365019dcc831a291e23dc6158a36c0f46976f0e"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1984": {
+      "name": "Trash",
+      "designFingerprint": "17f1a5fae14fa197567b612c219a1bf5a13147a6c38ad3e6a461e90952ab912c",
+      "light": {
+        "nodeId": "329:1983",
+        "file": "329-1983.svg",
+        "sha256": "734bd80c6864a1c519572d53b4b80f1ab938cf8975e965eac7d39855bceaca35"
+      },
+      "dark": {
+        "nodeId": "329:1985",
+        "file": "329-1985.svg",
+        "sha256": "d5af29bb60e36d224313198d6857ea550571dd2debf13d7e9710ded868673f5e"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:1992": {
+      "name": "Delega",
+      "designFingerprint": "4cbe700ac70dbba8ce2823762c8d56ee995d4664f971ccf55c4ea1124175c3f8",
+      "light": {
+        "nodeId": "329:1991",
+        "file": "329-1991.svg",
+        "sha256": "1d61704264e78e85ae0ac22549563f036746946e23d7862b359af5b39b1440cc"
+      },
+      "dark": {
+        "nodeId": "329:1993",
+        "file": "329-1993.svg",
+        "sha256": "43dbd6d1504b900c1c7ffe50f0aebdf2274ea0f6172f16da1e033548b762ab59"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:2000": {
+      "name": "Access",
+      "designFingerprint": "64917408741866e2f8e14f5a816ede95b594ea0801e79e47ec711050eefa92bd",
+      "light": {
+        "nodeId": "329:1999",
+        "file": "329-1999.svg",
+        "sha256": "22345672b763ea1479dde28044400a2206b6fb0e9fe631eb514b1be3720c53e5"
+      },
+      "dark": {
+        "nodeId": "329:2001",
+        "file": "329-2001.svg",
+        "sha256": "c537a5def6713405d0540067d2b77188b38789c36aeaacf1238784257590b523"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:2006": {
+      "name": "Inbox",
+      "designFingerprint": "956bbaaf8221e4e7af6dd84d80c4c9be6f5bdb3c2880936b10e2051db06fc0c2",
+      "light": {
+        "nodeId": "329:2005",
+        "file": "329-2005.svg",
+        "sha256": "cb3d5d0e5284c99ad4d9d3e2851cdd88b8953032347a40e67f44ccef2383324c"
+      },
+      "dark": {
+        "nodeId": "329:2007",
+        "file": "329-2007.svg",
+        "sha256": "e748411e645c477011d22f55c240dc7f642390fe867d5bdf3073e12c35606a4a"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:2012": {
+      "name": "Wallet",
+      "designFingerprint": "3d81ff4a480bd4a8136935f30d4ed9c33971e725ae620f8904770be6e52654b0",
+      "light": {
+        "nodeId": "329:2011",
+        "file": "329-2011.svg",
+        "sha256": "7ff75dcf07ec931b613fbf38991188234d4c32d66e6321e999be115a1ab4fed1"
+      },
+      "dark": {
+        "nodeId": "329:2013",
+        "file": "329-2013.svg",
+        "sha256": "1bc92388bc75683c4500e59ab88c7b5505481e72eb9cf1667c8f9200b605fb28"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:2019": {
+      "name": "Quick",
+      "designFingerprint": "749502861bd4044b3e759f8b922f8ca4ac60442e7fb76d388c388de0e32d8c48",
+      "light": {
+        "nodeId": "329:2018",
+        "file": "329-2018.svg",
+        "sha256": "04144bda1682716881325c9d9730d32eca40a9fc5d84e486be34fac11b182680"
+      },
+      "dark": {
+        "nodeId": "329:2020",
+        "file": "329-2020.svg",
+        "sha256": "10444ec885df097bf9c5242d0b2bd7f322ef2f845094e9c840c6d0429c1fe0ea"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:2028": {
+      "name": "SingleFile",
+      "designFingerprint": "5a8f1d36df7a672df473b813eb28e87abd4d10457ba3ad8fa06bc4e43237430d",
+      "light": {
+        "nodeId": "329:2027",
+        "file": "329-2027.svg",
+        "sha256": "72362932c61c30ca645e20c9753c9a34b52cbace897d07675044d0b31ebf2efe"
+      },
+      "dark": {
+        "nodeId": "329:2029",
+        "file": "329-2029.svg",
+        "sha256": "0c15d684f688558e6fffcbcd2184fb50868c06a1f8a9efd743b86208f2aa16d6"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:2035": {
+      "name": "UserCheck",
+      "designFingerprint": "07c13a89595437a014d0fdbe6f92842894f2f64ebeb7049390f4d71cbfe96bf1",
+      "light": {
+        "nodeId": "329:2034",
+        "file": "329-2034.svg",
+        "sha256": "04ac2e2b96dbdef649c3fbce7bb9a32fc4f6f9f46445592711a834239f606440"
+      },
+      "dark": {
+        "nodeId": "329:2036",
+        "file": "329-2036.svg",
+        "sha256": "1c29cffb27f0ae0cf5db2637a3a6b2fcb610779c528b213716033a4c27b900ef"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:2042": {
+      "name": "Firma",
+      "designFingerprint": "fe046710b9e6a16a8ff58000770d5d2595a8a49151ffbd3f8228d4089d68508d",
+      "light": {
+        "nodeId": "329:2041",
+        "file": "329-2041.svg",
+        "sha256": "ad533b32054aad772bbf0f990117d55669719a84f8eb84b8efdb79f03639d65a"
+      },
+      "dark": {
+        "nodeId": "329:2043",
+        "file": "329-2043.svg",
+        "sha256": "07b2d666d173b63f358687e8378332479f839788e79b66c4bdf9b58b91c5af23"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:2049": {
+      "name": "Building",
+      "designFingerprint": "8c14af06b355ddbb6c79a92f416ab6a03b4e2b7a10e9208c78cc60e046da6345",
+      "light": {
+        "nodeId": "329:2048",
+        "file": "329-2048.svg",
+        "sha256": "ffba0ebe65c5690d8324eb7da17880babe31b1a25030f8615e5a5da9da261922"
+      },
+      "dark": {
+        "nodeId": "329:2050",
+        "file": "329-2050.svg",
+        "sha256": "19763a636f6906e469609e0c2f8358555dd743d00172712c144051ce7fcdfe81"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:2058": {
+      "name": "Euro",
+      "designFingerprint": "94cb2c0263ac46944d8a7c831ec675fac02c9fdcacbb785cafef84890b28bdef",
+      "light": {
+        "nodeId": "329:2057",
+        "file": "329-2057.svg",
+        "sha256": "b6112ffb6ce1c341c5852705ead5eda42a51dea9c66928d9d13dbe1ccecb9674"
+      },
+      "dark": {
+        "nodeId": "329:2059",
+        "file": "329-2059.svg",
+        "sha256": "f0e2b9f8eea4dc247dc7dacedf96d79b6aa91d4158c4274af0135156e379c6ef"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:2064": {
+      "name": "Storage",
+      "designFingerprint": "889486b361632f61f8d59ac28f8a4d8f7ff17d0935b8c3947d67cc9354252c3a",
+      "light": {
+        "nodeId": "329:2063",
+        "file": "329-2063.svg",
+        "sha256": "711bc468c92a006e6c1377623e687d949f6f1780cb519e4750ea8c938e23e258"
+      },
+      "dark": {
+        "nodeId": "329:2065",
+        "file": "329-2065.svg",
+        "sha256": "5e77e9f4312275d373f77812d2461437fe9671956000b585db9cc4e0a7fe6e2d"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:2071": {
+      "name": "PieChart",
+      "designFingerprint": "0acba22a5a577659aa91b6013fdefd81c335aea98bd337ff9678323d848a0202",
+      "light": {
+        "nodeId": "329:2070",
+        "file": "329-2070.svg",
+        "sha256": "dfc278a19374d6a41033d7a40b821ab4f3d6104e3a35374a1e6e5488424ab20a"
+      },
+      "dark": {
+        "nodeId": "329:2072",
+        "file": "329-2072.svg",
+        "sha256": "bd3e5212cf2cf131d921e67edc7aed87e4c0d281aa1e07762bcaf892f10f13d6"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:2077": {
+      "name": "Home",
+      "designFingerprint": "1bf949b1aba2ee0291a929e84b18d2b03ad0d8211d4c9e675521e56b6c9a8517",
+      "light": {
+        "nodeId": "329:2076",
+        "file": "329-2076.svg",
+        "sha256": "3886062c995ec786ab984c9136033bbfcec12ced54d8bcfedc011505ae72ba72"
+      },
+      "dark": {
+        "nodeId": "329:2078",
+        "file": "329-2078.svg",
+        "sha256": "58a6a521915cd41aa82e8fac6ef3bcfe4314a4d3a44daa3f72026999bbe22787"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:2083": {
+      "name": "CreditCard",
+      "designFingerprint": "932cefad5f3c36ebeab77b525bb833db22223b3aa2e4530ea43e6e1cf1fd2b37",
+      "light": {
+        "nodeId": "329:2082",
+        "file": "329-2082.svg",
+        "sha256": "3068c34890f61d242ba5ae05d1a32ad61b01e2df2dd812522e1568d3c3772fa7"
+      },
+      "dark": {
+        "nodeId": "329:2084",
+        "file": "329-2084.svg",
+        "sha256": "199d7ac3afe43398eabf8ea0eb73cdf5e51d9ff0ae2295d0c5bc61ab7ee21162"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:2090": {
+      "name": "Download",
+      "designFingerprint": "1563be083680b87e74405179a6ec87d8232f1d83edc44ea95d857faf1075786c",
+      "light": {
+        "nodeId": "329:2089",
+        "file": "329-2089.svg",
+        "sha256": "392bc5d5f4c72110bca766486b92d69d365803b3ada6abe2ef99292d9161044a"
+      },
+      "dark": {
+        "nodeId": "329:2091",
+        "file": "329-2091.svg",
+        "sha256": "28965862da4e2bbdd51602d0868ef7a221b9a024074ffbddf96999606c250131"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:2097": {
+      "name": "Enterprise",
+      "designFingerprint": "821546d8897cc3827d7f27fff04f701d68e8d62c0e5fbe7bf21a27715183f4ca",
+      "light": {
+        "nodeId": "329:2096",
+        "file": "329-2096.svg",
+        "sha256": "b02089f92e6a107dcc011bb25f44a0f81f0e46c5da19c91883ca5e304f7152d3"
+      },
+      "dark": {
+        "nodeId": "329:2098",
+        "file": "329-2098.svg",
+        "sha256": "8b79ef2c2a1b4b5519ca9a1dd9d7ec4315901bd1fc0ec7f47cf5078951f98c1c"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:2105": {
+      "name": "Bug",
+      "designFingerprint": "2038fb318458af8d2a0e54549c718600c9d15b7e3ff890b61742658da9598c72",
+      "light": {
+        "nodeId": "329:2104",
+        "file": "329-2104.svg",
+        "sha256": "32289b56c240e6bdcff70bcf33446ecf551fbb69e59351020f1bdb5cce9d95d8"
+      },
+      "dark": {
+        "nodeId": "329:2106",
+        "file": "329-2106.svg",
+        "sha256": "8668f93d1721b5cf8a7a970402ae18af724b56058ddd803e827e4a52b3005126"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:2113": {
+      "name": "Earth",
+      "designFingerprint": "a63849df65a9da9004723e2ac6773ba944b47cda23b62e58b80febc3de239089",
+      "light": {
+        "nodeId": "329:2112",
+        "file": "329-2112.svg",
+        "sha256": "5cfd6113de4c7cc03571f3d451859d3d4b29d06688d2308ce504ec84db3c4c4c"
+      },
+      "dark": {
+        "nodeId": "329:2114",
+        "file": "329-2114.svg",
+        "sha256": "312b3f06a4417bd54b4426807228c5352468eaf19a1b4ca544734a46a2bf43f9"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:2120": {
+      "name": "Message",
+      "designFingerprint": "1c03662deb9a2eafefddf8275995025701e7dd88e4870abc4df336dc1dd02fee",
+      "light": {
+        "nodeId": "329:2119",
+        "file": "329-2119.svg",
+        "sha256": "b314a0e42bea39c2b777b6cf1ba500eead12ffdd61bf84435bcf0727349d1c90"
+      },
+      "dark": {
+        "nodeId": "329:2121",
+        "file": "329-2121.svg",
+        "sha256": "de4a0254ff6ffb7ba025c0d8853ea178d6a7d1213bb3c0e3b13d6660b75edb2c"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:2127": {
+      "name": "Image",
+      "designFingerprint": "f54fdc113ff34fec5805b58cd1982d9dfee1815c402e21e37603254193a5e7be",
+      "light": {
+        "nodeId": "329:2126",
+        "file": "329-2126.svg",
+        "sha256": "519b1bdfc0c4ef40f14b779ae1894590a2ed4b30fa6c3cade5cf14ea8f05c019"
+      },
+      "dark": {
+        "nodeId": "329:2128",
+        "file": "329-2128.svg",
+        "sha256": "261ba92977ac4329f894b69a85ebad05dacfb59e16fb241ed4351d58023675bc"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "329:2134": {
+      "name": "Data Security",
+      "designFingerprint": "b2da44911e314ef7156e2a2ab961ef53e05a99f2a5a9a91a95da85fa6c3b1cc5",
+      "light": {
+        "nodeId": "329:2133",
+        "file": "329-2133.svg",
+        "sha256": "478213e853e4bfabed6bbb6f92816a612c3a60a36b40c8c699aa2c312457675b"
+      },
+      "dark": {
+        "nodeId": "329:2135",
+        "file": "329-2135.svg",
+        "sha256": "f9beef7327af3bc757f6cce159127008744ecf11b051ccd1a27340de3765ee2e"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "873:1241": {
+      "name": "Maintenance",
+      "designFingerprint": "52cfba89b0557fb368592e0c28a9bc5b5a9aafe5ecbcf114f18340a302238426",
+      "light": {
+        "nodeId": "873:1242",
+        "file": "873-1242.svg",
+        "sha256": "eb254d81478ce70b57365dc8d493dda2e2c551cf8918c7274fe8f096236dffe6"
+      },
+      "dark": {
+        "nodeId": "873:1261",
+        "file": "873-1261.svg",
+        "sha256": "ad07d91aa5a2019de8cfd546833bfab9cf27db1bfc4d983cf967e0d915c57696"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "1992:128990": {
+      "name": "Error",
+      "designFingerprint": "b782229f960aa784a287df8cbb655d16bcf2bc009d359120b7e7b011d4592782",
+      "light": {
+        "nodeId": "1992:128991",
+        "file": "1992-128991.svg",
+        "sha256": "6c241c260dceb26a0540da43fec38c27a9978abbff6207c52c60b9c8e3ec79cb"
+      },
+      "dark": {
+        "nodeId": "1992:128995",
+        "file": "1992-128995.svg",
+        "sha256": "e57d3035a2751dbabb3aa3c1245c3ae3f5877703c4f5f3dacba90a8cdd9db725"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "7459:51329": {
+      "name": "Smartphone validation",
+      "designFingerprint": "62bac7a10e68e8b157edee474cb5489fd7bd04edd48fb624756c4fd9e14ff1a0",
+      "light": {
+        "nodeId": "7459:51330",
+        "file": "7459-51330.svg",
+        "sha256": "8971c950be898b6df0449417d3dee5e1f08449e9f182208194dd3cd394253deb"
+      },
+      "dark": {
+        "nodeId": "7501:42414",
+        "file": "7501-42414.svg",
+        "sha256": "04a663a2867bdb67c7b6fdfbb220d35d304faec30d0e726eb82457f3f6c5d2a5"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "8712:443": {
+      "name": "Mouse",
+      "designFingerprint": "2ac791f93fadda7e4aa6831f490be654c5a2528c85e611290d736ffb6c625c71",
+      "light": {
+        "nodeId": "8712:442",
+        "file": "8712-442.svg",
+        "sha256": "4e8c04df8eb5d1bdfc48a0579806b722cc25019ee36b87c8dae5333675e2f7f9"
+      },
+      "dark": {
+        "nodeId": "8712:444",
+        "file": "8712-444.svg",
+        "sha256": "c595b1288f7cfdbc0a74f167e1e02b49d4c7856ec9cc4b003b58d4f0075cd728"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "11719:39455": {
+      "name": "Hourglass",
+      "designFingerprint": "9a12fa00ea6c938e9605ea39f619822841470019081750867fa9db112b0ccd02",
+      "light": {
+        "nodeId": "11719:39454",
+        "file": "11719-39454.svg",
+        "sha256": "b64437ec5320a0da1dcd264106bb384068bacf605cbdc6ffcaf2f102ec2e2c71"
+      },
+      "dark": {
+        "nodeId": "11719:39456",
+        "file": "11719-39456.svg",
+        "sha256": "6be7f6c41f5740fd53a7717a6cabe2e83998c2d40ebbb4cee49c0a5fa18af157"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "11719:39465": {
+      "name": "Question",
+      "designFingerprint": "2d7559c0157b76c7fbb4f7e5082c330f1134cb006bb882e8739293e656653601",
+      "light": {
+        "nodeId": "11719:39464",
+        "file": "11719-39464.svg",
+        "sha256": "6dfea9bc926685a26fc770448211e15c4eacb22d976fa5520ef5aa3fab0dc712"
+      },
+      "dark": {
+        "nodeId": "11719:39466",
+        "file": "11719-39466.svg",
+        "sha256": "d743949d011a49481af977034ac2ba3ed45d55b26b456b40b5a292eb5afbce4a"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    },
+    "11731:39515": {
+      "name": "In progress",
+      "designFingerprint": "eb2c1aa569783541e0de2d7a83bed0e582825b46884278f2d1c48ada6ccdb96e",
+      "light": {
+        "nodeId": "11731:39514",
+        "file": "11731-39514.svg",
+        "sha256": "493dbf64e0d2c15f1cca991d824d2d91af8d21ce0953e32102ff38e23fa63d97"
+      },
+      "dark": {
+        "nodeId": "11731:39536",
+        "file": "11731-39536.svg",
+        "sha256": "988b2fa855bfebd91162f654765621c2bee5d368368318e88974697dd4f16ce6"
+      },
+      "provenance": {
+        "provider": "Flaticon (SeyfDesigner, Blue collection)",
+        "origin": "flaticon",
+        "license": "Flaticon standard — attribution to verify",
+        "licenseUrl": "https://www.flaticon.com/legal",
+        "sourceUrl": "https://www.flaticon.com/authors/seyfdesigner/blue?author_id=1649&type=standard",
+        "attribution": "SeyfDesigner — Flaticon",
+        "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
+      }
+    }
+  }
+}

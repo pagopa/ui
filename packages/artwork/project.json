@@ -1,0 +1,21 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "pagopa-ui-artwork",
+  "projectType": "library",
+  "sourceRoot": "packages/artwork/src",
+  "tags": ["type:data", "scope:design-system"],
+  "targets": {
+    "lint": { "configurations": { "ci": { "script": "lint:check" } } },
+    "fmt": {
+      "executor": "nx:run-script",
+      "options": { "script": "format" },
+      "cache": true,
+      "configurations": { "ci": { "script": "format:check" } }
+    },
+    "assets:check": {
+      "options": { "command": "node src/cli.ts check assets" },
+      "inputs": ["default", "tooling", "{workspaceRoot}/packages/pagopa-ui/src/catalog/figma/**"]
+    },
+    "test": { "dependsOn": ["assets:check"] }
+  }
+}

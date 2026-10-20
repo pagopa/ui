@@ -1,0 +1,3971 @@
+{
+  "fileKey": "pvhsJpPGQbEwNLiyP7BOIw",
+  "version": "2410226648852620157",
+  "entries": {
+    "94:1982": {
+      "name": "category",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "52770f7e38aaad61799ed2ac297da797ea3b99816fc39dd5efa01c568f584030",
+      "contractFingerprint": "5167b973bb796d1a4d2b34cd6858f16b817e1a3139c1aa25bc34423833a16c3c",
+      "defaultVariantNodeId": "94:1980",
+      "aliases": {
+        "unselected": "94:1980",
+        "selected": "94:1981"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "94:1980": {
+          "nodeId": "94:1980",
+          "file": "94-1980.svg",
+          "sha256": "4bb3705cbda7776fd3d7f875ec37deb6d9f9dc43bb4a74e66ca4a028936a622e"
+        },
+        "94:1981": {
+          "nodeId": "94:1981",
+          "file": "94-1981.svg",
+          "sha256": "4c39bc9da2a395ba4ae7065d568729a5735e3aff79c48a775af13d0e433da73d"
+        }
+      }
+    },
+    "94:1997": {
+      "name": "supervised_user_circle",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "33993cff117dea3003f224120c61db73ff12ce54c475c91e0c3caa64ee3980bf",
+      "contractFingerprint": "5167b973bb796d1a4d2b34cd6858f16b817e1a3139c1aa25bc34423833a16c3c",
+      "defaultVariantNodeId": "94:1996",
+      "aliases": {
+        "unselected": "94:1996",
+        "selected": "94:1995"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "94:1995": {
+          "nodeId": "94:1995",
+          "file": "94-1995.svg",
+          "sha256": "0a7455a7d122112acbcc3e479c758f7beef5947608f1ab9618a1bbdcdd345516"
+        },
+        "94:1996": {
+          "nodeId": "94:1996",
+          "file": "94-1996.svg",
+          "sha256": "5852eee866ddd5ada08c467297ccb58ebfeefd2317868344e818bc8436f3b165"
+        }
+      }
+    },
+    "94:2021": {
+      "name": "person",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "3dc3ba69a35ea175555be3d6e739e1daca27de04660623e8ee3e233fdec1311f",
+      "contractFingerprint": "5167b973bb796d1a4d2b34cd6858f16b817e1a3139c1aa25bc34423833a16c3c",
+      "defaultVariantNodeId": "94:2016",
+      "aliases": {
+        "unselected": "94:2016",
+        "selected": "94:2020"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "94:2016": {
+          "nodeId": "94:2016",
+          "file": "94-2016.svg",
+          "sha256": "09cc987a228422f02dadef2f8cf9c58164a7e1763d006864976fe2803e9b40e1"
+        },
+        "94:2020": {
+          "nodeId": "94:2020",
+          "file": "94-2020.svg",
+          "sha256": "56c74ac1c5214194acf6acf1df87524dd27a56cd81431dcc721a8c3cfff4819c"
+        }
+      }
+    },
+    "94:2036": {
+      "name": "mail",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "3e107719683f1351ca16ad15e44e31f82dad007fdaaaf6a39e2c3a7ccbfbc65d",
+      "contractFingerprint": "5167b973bb796d1a4d2b34cd6858f16b817e1a3139c1aa25bc34423833a16c3c",
+      "defaultVariantNodeId": "94:2034",
+      "aliases": {
+        "unselected": "94:2034",
+        "selected": "94:2035"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "94:2034": {
+          "nodeId": "94:2034",
+          "file": "94-2034.svg",
+          "sha256": "34680b6a4ce520da2150c3509e5292ebc3cbf3212ffdd97315c2033124637b8d"
+        },
+        "94:2035": {
+          "nodeId": "94:2035",
+          "file": "94-2035.svg",
+          "sha256": "7cff6a8b8070d2457655b33c8aac572d273a597024784f785406408134891e59"
+        }
+      }
+    },
+    "94:2057": {
+      "name": "settings",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "81ed6f7a5ef87cc4e2123a46c9382e1332fe81e7eba31bbc17eb6e4324bf05b5",
+      "contractFingerprint": "5167b973bb796d1a4d2b34cd6858f16b817e1a3139c1aa25bc34423833a16c3c",
+      "defaultVariantNodeId": "94:2055",
+      "aliases": {
+        "unselected": "94:2055",
+        "selected": "94:2056"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "94:2055": {
+          "nodeId": "94:2055",
+          "file": "94-2055.svg",
+          "sha256": "a1dc7f7dac311131901dcd38a69fd0a4f7c013d093d550ac2cda853a11181b62"
+        },
+        "94:2056": {
+          "nodeId": "94:2056",
+          "file": "94-2056.svg",
+          "sha256": "c6a9e0424cbcca067350b3a1f9903dd5f9bf39b94f8149bb4af056e4cc34cbd5"
+        }
+      }
+    },
+    "94:2072": {
+      "name": "vpn_key",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "3a3d74dad5e2127da82734c2e6058dd52e9cd67e359391e38ed2e9153f7859a5",
+      "contractFingerprint": "5167b973bb796d1a4d2b34cd6858f16b817e1a3139c1aa25bc34423833a16c3c",
+      "defaultVariantNodeId": "94:2071",
+      "aliases": {
+        "unselected": "94:2071",
+        "selected": "94:2070"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "94:2070": {
+          "nodeId": "94:2070",
+          "file": "94-2070.svg",
+          "sha256": "aa3e512519199fcdfed00ee581e35946225da5903f597ccc21be8ef40894a79a"
+        },
+        "94:2071": {
+          "nodeId": "94:2071",
+          "file": "94-2071.svg",
+          "sha256": "4b9799eb92aed5f7cceb5503e2581cad0379dadbc519d8abf5a3061f7c5ff957"
+        }
+      }
+    },
+    "94:2093": {
+      "name": "view_sidebar",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "903d5463d57b7ac9066aa987ad5e7160708cce52aed6f27a6a107160bbcc99a7",
+      "contractFingerprint": "5167b973bb796d1a4d2b34cd6858f16b817e1a3139c1aa25bc34423833a16c3c",
+      "defaultVariantNodeId": "94:2091",
+      "aliases": {
+        "unselected": "94:2091",
+        "selected": "94:2092"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "94:2091": {
+          "nodeId": "94:2091",
+          "file": "94-2091.svg",
+          "sha256": "ef594827dc2301981c9b0be9b77d9bdc36386208af7a44e09dd0583f53766eaf"
+        },
+        "94:2092": {
+          "nodeId": "94:2092",
+          "file": "94-2092.svg",
+          "sha256": "b8d7a5ec42e33117bb3e7058bb28a56c6034014f4624506b1855b125e89bc6e0"
+        }
+      }
+    },
+    "94:2106": {
+      "name": "menu_book",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "13b3f620e548033bcbd19ce326c024ad30b7c2a046e3f5696c6b7c145ea7b00e",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "94:2106",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "94:2106": {
+          "nodeId": "94:2106",
+          "file": "94-2106.svg",
+          "sha256": "252e0ec512c2a37ade9e84a09793b1032b2e858ed6446f646eccdee98281faef"
+        }
+      }
+    },
+    "95:680": {
+      "name": "content_copy",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "768379f04bf4ad7357132f233d72980e68ff550a69b1108a71035425e4c3b931",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "95:680",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "95:680": {
+          "nodeId": "95:680",
+          "file": "95-680.svg",
+          "sha256": "c6c3d603de738d13604e7afa5a0033b24b935f21738bf351bd3ff292b3f12ab1"
+        }
+      }
+    },
+    "95:1620": {
+      "name": "edit",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "5b9310eac4535c843b05898d7a6e9a5264232e24622814827bc1a0f0a0905720",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "95:1620",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "95:1620": {
+          "nodeId": "95:1620",
+          "file": "95-1620.svg",
+          "sha256": "0c63080249d56b3d982914a5558fe2d22483b890ee5ac88febc0f868c81cbfe1"
+        }
+      }
+    },
+    "95:1691": {
+      "name": "lock",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "4eb674ce3f24681ea17a7cb65102a6b02cda4be0a3e6b420598183aa6ff1c8b9",
+      "contractFingerprint": "43fa9d62ff0ba0d7d2af4050a7dc700ff0c6ada479cbb0e4d54861cbc442dd39",
+      "defaultVariantNodeId": "95:1689",
+      "aliases": {
+        "closed": "95:1689",
+        "open": "95:1690"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "95:1689": {
+          "nodeId": "95:1689",
+          "file": "95-1689.svg",
+          "sha256": "c96af4a7998f313d930fcaee028da3a301592efc7d9a9e3f4f3f548dc906fc1a"
+        },
+        "95:1690": {
+          "nodeId": "95:1690",
+          "file": "95-1690.svg",
+          "sha256": "797e9ebed668f8c5b885fa6f8cd95588e53c9cb25c0b9dd91e66c2d5201bc662"
+        }
+      }
+    },
+    "96:621": {
+      "name": "filter",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "dea55ca0d9c30d837913c30a7abc0092937864e0ed4812ddbc1a39c6d6ccfff8",
+      "contractFingerprint": "7e88c78e6434e52f10f5d0d977a9d2edc33fd6c86a25e831f354802531fdf8c2",
+      "defaultVariantNodeId": "95:1676",
+      "aliases": {
+        "filter-alt": "95:1676",
+        "tune": "95:1675"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "95:1675": {
+          "nodeId": "95:1675",
+          "file": "95-1675.svg",
+          "sha256": "eee7c0f2ea36c8c90d4c252c1a99de91af4ea1ea2b51e8ef378c62a019f334eb"
+        },
+        "95:1676": {
+          "nodeId": "95:1676",
+          "file": "95-1676.svg",
+          "sha256": "5ba69872228d1e8bba6c4c8e2fff0f0c1d4930056a287c12e97cdd1aa6639385"
+        }
+      }
+    },
+    "96:628": {
+      "name": "adf_scanner",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "b330f8bbeaa33de17867a8ebdadd1051088a54d707458249d7df7f40bdf877e6",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "96:628",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "96:628": {
+          "nodeId": "96:628",
+          "file": "96-628.svg",
+          "sha256": "92cde3fe8816ea82be1eb6361ba5566df369be812ad931d3977f7ac1de246b5f"
+        }
+      }
+    },
+    "96:668": {
+      "name": "check_box",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "4c5b79bb5af423ff7e0c4b979f73508e472bce328302232d8012b49cd9fcefa6",
+      "contractFingerprint": "a34e7a314da2a84aa64f80ab9a726811ccb7b0aca9abbd4cddb8be493d687079",
+      "defaultVariantNodeId": "96:666",
+      "aliases": {
+        "unchecked": "96:666",
+        "checked": "96:667",
+        "indeterminate": "96:665"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "96:665": {
+          "nodeId": "96:665",
+          "file": "96-665.svg",
+          "sha256": "81310fdb7771de423edc793cb4d2a14c09d72ce5c1db76fccaf1f180b21026a8"
+        },
+        "96:666": {
+          "nodeId": "96:666",
+          "file": "96-666.svg",
+          "sha256": "6537cdcbdf22398e1b6669eb1abed589957c4a8eff097a7f95b5491fb93e12e5"
+        },
+        "96:667": {
+          "nodeId": "96:667",
+          "file": "96-667.svg",
+          "sha256": "bed0759e56bdf348a1cb937f4a0beb2aaf8c1c6bb2056d6505acf3f3cfcb7f25"
+        }
+      }
+    },
+    "96:671": {
+      "name": "radio_button",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "722ccc2367a0a0f1461b17fc1d408f7157df6bf84c07ee96661c62502bb633f3",
+      "contractFingerprint": "9ae5346edbb597eebfe338a038cf339975a107bd20bdacd1b9abf8af77548e68",
+      "defaultVariantNodeId": "96:670",
+      "aliases": {
+        "unchecked": "96:670",
+        "checked": "96:669"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "96:669": {
+          "nodeId": "96:669",
+          "file": "96-669.svg",
+          "sha256": "6d0dc5fb14e99810c318ce9a5a1afae1aa035d6a0f0e7b258ad32db0842d5ab4"
+        },
+        "96:670": {
+          "nodeId": "96:670",
+          "file": "96-670.svg",
+          "sha256": "93afbcdf638a02ac7154f98b832eac00bcebf1f140b4f9a66dbb39a37ef0d184"
+        }
+      }
+    },
+    "96:686": {
+      "name": "visibility",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "335568203a592154fdd5ade2403af26d7d12b77bc7714a79725c93b2c948f3eb",
+      "contractFingerprint": "e48e89a0c5c178ba919c3a9863f01c645430fca369e507ef7eebdc6e5fe5ecae",
+      "defaultVariantNodeId": "96:685",
+      "aliases": {
+        "visible": "96:685",
+        "hidden": "96:684"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "96:684": {
+          "nodeId": "96:684",
+          "file": "96-684.svg",
+          "sha256": "b37770c03142dfad19e3777be267b9192f39530647d689315376c124fde368a1"
+        },
+        "96:685": {
+          "nodeId": "96:685",
+          "file": "96-685.svg",
+          "sha256": "6a93fdbec389455a2f7b02a754afce0b4deb262d41b264967ab56fac8af4def3"
+        }
+      }
+    },
+    "96:708": {
+      "name": "keep",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "91adebe73ac127ad671fd63c12ff07a49d1b47951700b4a4b01e3d7e16b4c0bf",
+      "contractFingerprint": "f40fdf00eef079d447f95ba883d64b5b6795d3facfc5f587c4ae2b02ee371e2a",
+      "defaultVariantNodeId": "96:699",
+      "aliases": {
+        "pinned": "96:699",
+        "unpinned": "96:715"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "96:699": {
+          "nodeId": "96:699",
+          "file": "96-699.svg",
+          "sha256": "a6d63e0fedbb98a6bb2aa3c71a66463d2ece8ea3ae6f72eee62879a97b5534b3"
+        },
+        "96:715": {
+          "nodeId": "96:715",
+          "file": "96-715.svg",
+          "sha256": "536b8b8f86e662431023488aad52668a730cf697eb86328c57e17ef6c08526e0"
+        }
+      }
+    },
+    "96:722": {
+      "name": "backspace",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "c7cec6cffdf7c9c328be49fbdfa32d8be59c063b29ff97e603714c929ffe93d9",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "96:722",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "96:722": {
+          "nodeId": "96:722",
+          "file": "96-722.svg",
+          "sha256": "4c0f7cdb77a0e24145ba8c3a27fc63e22dd1dcb003c4214aaaab8bd2c3a66aef"
+        }
+      }
+    },
+    "98:668": {
+      "name": "close",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "0364421f96d0311153d0958002c34768090a0d937fd7f4aefb24add7df7c5c15",
+      "contractFingerprint": "268c97ed68e780d9d16737fc82decb01fab127efbab38759927c2b98cd39939e",
+      "defaultVariantNodeId": "98:666",
+      "aliases": {
+        "big": "98:666",
+        "small": "98:667"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:666": {
+          "nodeId": "98:666",
+          "file": "98-666.svg",
+          "sha256": "7f9dcabb0b25de58db0c0ec53c75d01bdd239313864129f5a6befc99a8f21099"
+        },
+        "98:667": {
+          "nodeId": "98:667",
+          "file": "98-667.svg",
+          "sha256": "2d92a962b435f9e85255b7b5b42446146b8fa650443c618d810bfa827c05469b"
+        }
+      }
+    },
+    "98:675": {
+      "name": "help",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "770e59bfe28ff577ae0874452ff7493a45dad5de73b887b805bc9b40eaa8175a",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:675",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:675": {
+          "nodeId": "98:675",
+          "file": "98-675.svg",
+          "sha256": "7a7fa9443d7f572a31396eb2298dc838b9c59f77b3f1efa581b2edc9daf8fa4c"
+        }
+      }
+    },
+    "98:697": {
+      "name": "add",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "b912ffb63b00fa56c8b9bd6f6d8c89d959e9fd3fb41fe6356730b31e378689c2",
+      "contractFingerprint": "268c97ed68e780d9d16737fc82decb01fab127efbab38759927c2b98cd39939e",
+      "defaultVariantNodeId": "98:689",
+      "aliases": {
+        "big": "98:689",
+        "small": "98:688"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:688": {
+          "nodeId": "98:688",
+          "file": "98-688.svg",
+          "sha256": "d8f8f7ea7446f9e41e3cd8bfdbcf8d803a5d434677f7437519531fdf5ced763c"
+        },
+        "98:689": {
+          "nodeId": "98:689",
+          "file": "98-689.svg",
+          "sha256": "31f55e7622af67cc5952554952e3c78296607a9ae3865ef238579546ed9c5fe8"
+        }
+      }
+    },
+    "98:704": {
+      "name": "search",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "d4640d2d97edff7607fb4f9d2166d017ccf2d8007649a84d9536dd1904a37863",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:704",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:704": {
+          "nodeId": "98:704",
+          "file": "98-704.svg",
+          "sha256": "721ee0a01215f6983dc23ff4ac58e2f51285a18490ea78bc810e046a9e52b8aa"
+        }
+      }
+    },
+    "98:711": {
+      "name": "mode_off_on",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "1aa76517545682c1d516b634a1e5e63362ef0d45d109b5091d18531ffd9bbabc",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:711",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:711": {
+          "nodeId": "98:711",
+          "file": "98-711.svg",
+          "sha256": "e568238619c8eb7437be5035e3cf7b1aafe3fa93665bb02563ddb0ec6e04c7fb"
+        }
+      }
+    },
+    "98:718": {
+      "name": "block",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "6717902865d49ca8fdd54acf709c0ca6a810039ac7ab35ba79091379e77acfa6",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:718",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:718": {
+          "nodeId": "98:718",
+          "file": "98-718.svg",
+          "sha256": "df487b0b4398706c5100c5cef0d3846e6ada189590f8224fea9e354a01c6d815"
+        }
+      }
+    },
+    "98:737": {
+      "name": "more_vert",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "808c599926e6ac04eee6c722f7272d5f3e8222f4d7cf6ef8a48e0a35770523ad",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:737",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:737": {
+          "nodeId": "98:737",
+          "file": "98-737.svg",
+          "sha256": "bd14def8537e209e40a5bbc48bb296b9de27af66b3e3fa80c641b68a3a04c9df"
+        }
+      }
+    },
+    "98:738": {
+      "name": "menu",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "651259e2f214f37c7d7d496e17ed11c1d64ba6c1c26c501218f2369b0a8aaddf",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:738",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:738": {
+          "nodeId": "98:738",
+          "file": "98-738.svg",
+          "sha256": "dbc29345b8e481132e750daccf15a31f967dfa51eb32caa8c01967ce93aa857a"
+        }
+      }
+    },
+    "98:871": {
+      "name": "chevron",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "6673fff4890d4f131f9c92b156905a37d3df71278ad501403ae6881fcf7bd382",
+      "contractFingerprint": "312c4e4eb88daf5ea6e3efe0c097798876a1e9531b9218ede6ba6ae5cde4c2cf",
+      "defaultVariantNodeId": "98:868",
+      "aliases": {
+        "right": "98:868",
+        "left": "98:867",
+        "down": "98:870",
+        "up": "98:869"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:867": {
+          "nodeId": "98:867",
+          "file": "98-867.svg",
+          "sha256": "0971eaefd5827351f008d8fbfa6acf3beee78f2f952e520b80b5cb3ed9d09c8a"
+        },
+        "98:868": {
+          "nodeId": "98:868",
+          "file": "98-868.svg",
+          "sha256": "d089ea968650af7f729b03e0d5483b2d985a59c520a192dfd94e940bf0718086"
+        },
+        "98:869": {
+          "nodeId": "98:869",
+          "file": "98-869.svg",
+          "sha256": "6924168406a99243450868c0462c1845ce790ef26b3deab9a9eb5d55c1a2fdd7"
+        },
+        "98:870": {
+          "nodeId": "98:870",
+          "file": "98-870.svg",
+          "sha256": "f4f22e14f771e2b72b92dbc22633afd963714393d2c795a8d94d9e1f15271396"
+        }
+      }
+    },
+    "98:878": {
+      "name": "history",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "11c06f3e29ef53dc5fdd61db9d5e7473179053c86ee4cf428ef618a6cecc4d55",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:878",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:878": {
+          "nodeId": "98:878",
+          "file": "98-878.svg",
+          "sha256": "5c6a01a64dcdb032ecaf1b8a0210798d75edb25355eb3bb23a1da35423e94af5"
+        }
+      }
+    },
+    "98:919": {
+      "name": "arrow",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "8409044c7faf0ae342ca33612a86584e605b6b3ecaef3cd5cb8070aa056dbdcb",
+      "contractFingerprint": "3fceabe337c20780a705b5066aab1dbb55d6182a4739a1f65188ecfafe9078c8",
+      "defaultVariantNodeId": "98:915",
+      "aliases": {
+        "right": "98:915",
+        "left": "98:916",
+        "down": "98:917",
+        "up": "98:918"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:915": {
+          "nodeId": "98:915",
+          "file": "98-915.svg",
+          "sha256": "80941c744970c98c6bf6ae37fffab661f0497550e62a9bb7a1f5ab9a34ffee4c"
+        },
+        "98:916": {
+          "nodeId": "98:916",
+          "file": "98-916.svg",
+          "sha256": "9916b608e1519aad5b0b0c6f3e926ff87480ffe12577115d476e486689c680db"
+        },
+        "98:917": {
+          "nodeId": "98:917",
+          "file": "98-917.svg",
+          "sha256": "546831d2f214da943be901126f9247b2fb7f3b5d54a77db0d1fd138aa5867853"
+        },
+        "98:918": {
+          "nodeId": "98:918",
+          "file": "98-918.svg",
+          "sha256": "bbd0c7f160790c91e97276ffdf89f6c38159611f88a0aab1203a61dc0e44ed57"
+        }
+      }
+    },
+    "98:932": {
+      "name": "logout",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "2354b84f93684f8425003f9dc8820fc4b95c45b9b979e69ace53b2d4f0379236",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:932",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:932": {
+          "nodeId": "98:932",
+          "file": "98-932.svg",
+          "sha256": "2beafcde8f15af6154aef76b6cf1c3a8151483cd1f59ecb161ead29d89a34e78"
+        }
+      }
+    },
+    "98:933": {
+      "name": "login",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "405da99de52237c8e3365f15f282178c31a3d4d4842ec7da5e59c0e440f69418",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:933",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:933": {
+          "nodeId": "98:933",
+          "file": "98-933.svg",
+          "sha256": "74cbf50235d418eec3301eb597a2843f87dc176f593feb8a823d45c5096fe3ee"
+        }
+      }
+    },
+    "98:952": {
+      "name": "exit_to_app",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "e8f241d9fa6779f83e891fd67dbd5daeef987ec8cc1a7c7a5c4fd5f6723b25ae",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:952",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:952": {
+          "nodeId": "98:952",
+          "file": "98-952.svg",
+          "sha256": "06b7071e665aa3f0b5f42c9830e4cbc26ebc6f2097b9771b9c8cbd25c9261bae"
+        }
+      }
+    },
+    "98:965": {
+      "name": "download",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "f791a2e132422d5fcc622ef80d526fc75ea7363ff1ab46830538efb0af7edb36",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:965",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:965": {
+          "nodeId": "98:965",
+          "file": "98-965.svg",
+          "sha256": "c3db45027fc43d972facc5026a754c44b3d5f8072d7c5c007c6528b43790fa2e"
+        }
+      }
+    },
+    "98:966": {
+      "name": "upload",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "b9bfa560ad0d199677b6850cfdb8a98b497cabfce5b0900b74cf26289b801078",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:966",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:966": {
+          "nodeId": "98:966",
+          "file": "98-966.svg",
+          "sha256": "26d277d726e740d63c6d6c0e93ef7d145a23baff0d45a7a13215a90cc444e303"
+        }
+      }
+    },
+    "98:973": {
+      "name": "ios_share",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "8417bcfd1b73b438e8ca1b2b8317807c75c242a3864f514113da0bb688e8e0f8",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:973",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:973": {
+          "nodeId": "98:973",
+          "file": "98-973.svg",
+          "sha256": "16b930e4accfcd860730aa4c35be56815e40725c582716a262bb22ba3a447e2a"
+        }
+      }
+    },
+    "98:980": {
+      "name": "share",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "1595ca4c43877888ba5e2a3b822982b0cbc27f2ba86696c4c53d2dc3cb025561",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:980",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:980": {
+          "nodeId": "98:980",
+          "file": "98-980.svg",
+          "sha256": "23bb284d7ddc331d4bf519d4abdca1c0563bd61dad90b9efe8afd2f5f9b9906a"
+        }
+      }
+    },
+    "98:987": {
+      "name": "open_in_new",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "d90b8e289c63ba354db48ba872e5afae1b6bb5beba32fd589c3c3558a60d6268",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:987",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:987": {
+          "nodeId": "98:987",
+          "file": "98-987.svg",
+          "sha256": "79c915f10ff5d91813e4cb0e032c4a3b9b3bb985606a15cb646c673d9245813c"
+        }
+      }
+    },
+    "98:994": {
+      "name": "cached",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "97693900e9c02d54575fd00083790caf17ee95e36d5005a36c9f124708cbf241",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:994",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:994": {
+          "nodeId": "98:994",
+          "file": "98-994.svg",
+          "sha256": "5e558a725843a921673c00cf7fc07cc4d47fc65578f25028b3c872ca20d36db9"
+        }
+      }
+    },
+    "98:1001": {
+      "name": "call_split",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "b2566ed3cf4ed6df00bec9e70c60f1d932c4e9dfea319aee21e98e57e6004ac5",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:1001",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:1001": {
+          "nodeId": "98:1001",
+          "file": "98-1001.svg",
+          "sha256": "9b7609f885c594e97f3a3b966b0888ac0a238f2e886b25e89426c43f6fd30388"
+        }
+      }
+    },
+    "98:1016": {
+      "name": "unfold",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "1ea4bb9ca84de9fefbb0aa5cab4dbc6b73261b7c6078731845058aea915ad06d",
+      "contractFingerprint": "32c7aa7c40d4a4534d6cdb30607f8664d71cdac23272efd9f4469789529457ea",
+      "defaultVariantNodeId": "98:1014",
+      "aliases": {
+        "less": "98:1014",
+        "more": "98:1015"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:1014": {
+          "nodeId": "98:1014",
+          "file": "98-1014.svg",
+          "sha256": "cee6455ae14802c7ec5b6199003bea3c82fa3aa5e089edcb8dfbc5f95c937283"
+        },
+        "98:1015": {
+          "nodeId": "98:1015",
+          "file": "98-1015.svg",
+          "sha256": "869119ec35e11f4035b22fb303a388adf3811b8a3ccf19dddbb58ade664b42d8"
+        }
+      }
+    },
+    "98:1065": {
+      "name": "check_circle",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "10c224ed91ab9c1adbee3d1853718c0f0e101eef6d0bf0da2a42bb5735a267f8",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:1065",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:1065": {
+          "nodeId": "98:1065",
+          "file": "98-1065.svg",
+          "sha256": "22a51ed0dce7421f6eeb984f4c9e39eb385f57d42e71dc849c1860ef5c0ad568"
+        }
+      }
+    },
+    "98:1152": {
+      "name": "info",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "4b671b5cfa362095b41feb894aea6bc3d8171fe7d4cfae314b6a964757e9c47e",
+      "contractFingerprint": "4b11a673e67c323cbd23bece202e3a5d105b71f9eba37c5f44b69ae1562bbf22",
+      "defaultVariantNodeId": "98:1114",
+      "aliases": {
+        "outlined": "98:1114",
+        "filled": "98:1115"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:1114": {
+          "nodeId": "98:1114",
+          "file": "98-1114.svg",
+          "sha256": "41f090f8851db6a7a30dd4e433e511e39df7790e4741885e6f7a789a2bf792c3"
+        },
+        "98:1115": {
+          "nodeId": "98:1115",
+          "file": "98-1115.svg",
+          "sha256": "294cb2eafd2cea206eda0f9e1debf4a111f3218796e97ee33fc10bc8f415a5f5"
+        }
+      }
+    },
+    "98:1153": {
+      "name": "warning",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "8e07cce2f895eab53f1d5593b3530d20a769a582532c538fa3801a8771d7c65a",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:1153",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:1153": {
+          "nodeId": "98:1153",
+          "file": "98-1153.svg",
+          "sha256": "88b71d8e3ae104457e6f9cf60dd20f0f836a5397a6b0776043639fe93e0ec4e5"
+        }
+      }
+    },
+    "98:1154": {
+      "name": "report",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "dbc6b6710188db2ebc56d67492a846befe6c6aa7081fdd1a66b859dd70fbeba1",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:1154",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:1154": {
+          "nodeId": "98:1154",
+          "file": "98-1154.svg",
+          "sha256": "0112f4f3ae5dc528ebfefc8a61a1d68c497143ace5b83c1aef5e1871918030d3"
+        }
+      }
+    },
+    "98:1155": {
+      "name": "cancel",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "5c9713253bdc73f264b8182b6e0373deeabd9d2398aebd6563bfbfc59a85c11b",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:1155",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:1155": {
+          "nodeId": "98:1155",
+          "file": "98-1155.svg",
+          "sha256": "1c841613f7fa1b1813c085c5af04adb8a5b7c00670c8da380bc6333b8f573361"
+        }
+      }
+    },
+    "98:1158": {
+      "name": "check",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "bf42cd204e0959660fd8e02dea0142aa9bb08023889beab41e5ed7ab97600f13",
+      "contractFingerprint": "268c97ed68e780d9d16737fc82decb01fab127efbab38759927c2b98cd39939e",
+      "defaultVariantNodeId": "98:1156",
+      "aliases": {
+        "big": "98:1156",
+        "small": "98:1157"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:1156": {
+          "nodeId": "98:1156",
+          "file": "98-1156.svg",
+          "sha256": "a10b6fdf595e123deee59c757b83ee27a5ccefe7b6ed2f3f786b19e12b5fb5c8"
+        },
+        "98:1157": {
+          "nodeId": "98:1157",
+          "file": "98-1157.svg",
+          "sha256": "ae4f2cb94ee8b559d4e5ba4eacd0f3d8b08683e862fee4db50aa294e5c5940a2"
+        }
+      }
+    },
+    "98:1162": {
+      "name": "error",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "4a50723867779945857e27988605707f504ceb06c08645b4892ea9849ca00c4c",
+      "contractFingerprint": "490041cb0a8e9fe3f6a1a31f3d38f324888ac75254a879e93d382a91c4629054",
+      "defaultVariantNodeId": "98:1159",
+      "aliases": {
+        "outlined": "98:1159",
+        "filled": "98:1160",
+        "stroke": "98:1161"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:1159": {
+          "nodeId": "98:1159",
+          "file": "98-1159.svg",
+          "sha256": "ac869a916b09a1d9476069f5f7773957ca13fe4b597117154bd6ae4279a33ed3"
+        },
+        "98:1160": {
+          "nodeId": "98:1160",
+          "file": "98-1160.svg",
+          "sha256": "1c6163a2025d49d6a94812fa48efd860d738db50f2d3ab8eb97efd59e9ec9c9b"
+        },
+        "98:1161": {
+          "nodeId": "98:1161",
+          "file": "98-1161.svg",
+          "sha256": "046f0521e118b3139fd8d96c8c68f9c88ab82697e510a459d67f5e49968f2fa6"
+        }
+      }
+    },
+    "98:1252": {
+      "name": "forum",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "249c5972fba00c56f65ec8570e8dc8518244a50bc1777ea74e150635e3c51be4",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:1252",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:1252": {
+          "nodeId": "98:1252",
+          "file": "98-1252.svg",
+          "sha256": "302e5b27d9f6a27dfd9c364ceb98c1e46ddf7fce4f2ac4bb779eb65c9954829c"
+        }
+      }
+    },
+    "98:1253": {
+      "name": "chat",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "871e4964503294b300cc50dc4cdda1bbf2b2e3fbdfe1b81cc2e8af170e93e68d",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:1253",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:1253": {
+          "nodeId": "98:1253",
+          "file": "98-1253.svg",
+          "sha256": "3e8b5c4efa431d32e5a70371f87a792c46b4a92f23cf7ee03f8898437bcceb90"
+        }
+      }
+    },
+    "98:1254": {
+      "name": "mark_email_unread",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "9741e47c38d8de8ddccc953ba22cae49f021dccfe037650b23678879859c07cd",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:1254",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:1254": {
+          "nodeId": "98:1254",
+          "file": "98-1254.svg",
+          "sha256": "b63119122fa65db529ae7790adbd06bbac2e0571645c02a47353c311f4de0d5a"
+        }
+      }
+    },
+    "98:1257": {
+      "name": "favorite",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "519273423aee8c83e3830253a90223705b494306ae48ac27812ac1c31aa0398e",
+      "contractFingerprint": "a1c3457400205b692faebbdd7859937d64c826880d8639e5d2cf420c24221079",
+      "defaultVariantNodeId": "98:1256",
+      "aliases": {
+        "unselected": "98:1256",
+        "selected": "98:1255"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:1255": {
+          "nodeId": "98:1255",
+          "file": "98-1255.svg",
+          "sha256": "567f7bde8ebea31ba7993ee2f7e735f7c53c83c17f3f93ffa7f84d608304976c"
+        },
+        "98:1256": {
+          "nodeId": "98:1256",
+          "file": "98-1256.svg",
+          "sha256": "2c0f739321afe1b7425c9b19167472729d8b29996f5e05fe9168b14cc5f09723"
+        }
+      }
+    },
+    "98:1258": {
+      "name": "kid_star",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "222c354af5ef68213b1e737b6d7aa60f5a46ae3c31de8f157eaaa17d30c760ec",
+      "contractFingerprint": "a1c3457400205b692faebbdd7859937d64c826880d8639e5d2cf420c24221079",
+      "defaultVariantNodeId": "98:1250",
+      "aliases": {
+        "unselected": "98:1250",
+        "selected": "98:1251"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:1250": {
+          "nodeId": "98:1250",
+          "file": "98-1250.svg",
+          "sha256": "9049751604ae959b5c4c128e315a9755d8a84ae9c48d956a10e8c23f2764999e"
+        },
+        "98:1251": {
+          "nodeId": "98:1251",
+          "file": "98-1251.svg",
+          "sha256": "5083df25d43a10ee03ccf4d65b7a80709352b8ff7cfa25d2e4e528fd34c47939"
+        }
+      }
+    },
+    "98:1271": {
+      "name": "inbox",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "4b0e5066eace2b0af6bddbbb2e7436725ffdb694589581ddcfbd7cd09fa87f60",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:1271",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:1271": {
+          "nodeId": "98:1271",
+          "file": "98-1271.svg",
+          "sha256": "60bc3cb07dbfded3365d0afac114741d8347c28267c85fd688b5685e0e11fab7"
+        }
+      }
+    },
+    "98:1290": {
+      "name": "attach_email",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "184403d1635201f7f03340a49dab579deac42068911cb55a568daaeeef89a385",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:1290",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:1290": {
+          "nodeId": "98:1290",
+          "file": "98-1290.svg",
+          "sha256": "e57b04934ca20df93c1d6a3928d4970b3be4227e57b1651f4b354bb0c6cb80b8"
+        }
+      }
+    },
+    "98:1297": {
+      "name": "feedback",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "58c45c17215fdd27dcd326ff150ca4cda982e718855827d548d711ebcc6d7b92",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:1297",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:1297": {
+          "nodeId": "98:1297",
+          "file": "98-1297.svg",
+          "sha256": "85c0374880402e6e7e8de76aa296e3e4e515138ba2727f5078907e420b0f7261"
+        }
+      }
+    },
+    "98:1300": {
+      "name": "inventory_2",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "700f9ede3d58aaf1e921d46e363e413595fa3e58b85fe72b8195e8c019ba3bd3",
+      "contractFingerprint": "4b11a673e67c323cbd23bece202e3a5d105b71f9eba37c5f44b69ae1562bbf22",
+      "defaultVariantNodeId": "98:1298",
+      "aliases": {
+        "outlined": "98:1298",
+        "filled": "98:1299"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:1298": {
+          "nodeId": "98:1298",
+          "file": "98-1298.svg",
+          "sha256": "703a3fda4918d5ccc3882d2ae7f4db42b7a1c42fb5b6c19b0a11b362f0d99824"
+        },
+        "98:1299": {
+          "nodeId": "98:1299",
+          "file": "98-1299.svg",
+          "sha256": "c486ff81754703f975f27d71c044bd7e935c4f044ffaa8a2fd26f8c6933c4b31"
+        }
+      }
+    },
+    "98:1351": {
+      "name": "photo",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "d763d4ba3c31bfdb6efd168a5f9e01f99885912f1994e59a761d6096c42de0d6",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "98:1351",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "98:1351": {
+          "nodeId": "98:1351",
+          "file": "98-1351.svg",
+          "sha256": "aaa4460eb2ebc1a7cd5f34fe536825c368754ca2548b4a17bcfea1f08b966eb6"
+        }
+      }
+    },
+    "99:616": {
+      "name": "receipt_long",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "e4b1924eb52dcf380b13349bf5a8e33e2fa7ebc13424094fdedd5c32675efe8f",
+      "contractFingerprint": "30156ec5baad981d9ba69e307b8896f8d2e6c0eab46895dbd838bd96b9c54f33",
+      "defaultVariantNodeId": "99:614",
+      "aliases": {
+        "active": "99:614",
+        "inactive": "99:615"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:614": {
+          "nodeId": "99:614",
+          "file": "99-614.svg",
+          "sha256": "ab0d3579b9450e044e5e40d4db83add633c3180158c52045e1868ae4ba56f324"
+        },
+        "99:615": {
+          "nodeId": "99:615",
+          "file": "99-615.svg",
+          "sha256": "13ece6dde3855bdd4015030205889bb285b39b343ea15e986f63bfb041371990"
+        }
+      }
+    },
+    "99:623": {
+      "name": "folder",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "f224f1a686452bb484f19bb4a28a832caac8beb5f4192e2a3489107ad1b38124",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:623",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:623": {
+          "nodeId": "99:623",
+          "file": "99-623.svg",
+          "sha256": "447360db4c91051dd21a04e5041cbfb3fb7db5508200f94fbe0b8cac887289c3"
+        }
+      }
+    },
+    "99:630": {
+      "name": "news",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "85e96f1ac01cefdd488b1d69b5a4b7c613cd7aafcaa57261af4e66b68593ed99",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:630",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:630": {
+          "nodeId": "99:630",
+          "file": "99-630.svg",
+          "sha256": "29ba51faa429130d54cd95ce5a660096e9bd122184ff39774575fd9e73478e0d"
+        }
+      }
+    },
+    "99:637": {
+      "name": "verified",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "70a1ad0f2db3bfb97bb34a87a87ac928484db1a46e2da2bf264680bcbf08f709",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:637",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:637": {
+          "nodeId": "99:637",
+          "file": "99-637.svg",
+          "sha256": "1374ce06bcf4c4a33d7102107076575671d03a89bb29ad4edb6b048a70ab4d2f"
+        }
+      }
+    },
+    "99:644": {
+      "name": "picture_as_pdf",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "519cf653b59cdb0689b07e625f5acabd34c52c33106ae7da68a65b2365a0567c",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:644",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:644": {
+          "nodeId": "99:644",
+          "file": "99-644.svg",
+          "sha256": "25babe25e51a6daf9d17d36f90a2e98f54fe952aed15506dd1c97ee0b45a0c7f"
+        }
+      }
+    },
+    "99:666": {
+      "name": "account_balance",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "0a4c4038204b8a895973caffd32a92de4850dc4dd2a8da66df7343c4efbd452d",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:666",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:666": {
+          "nodeId": "99:666",
+          "file": "99-666.svg",
+          "sha256": "0ddb9827a661a2773d373e713ce2b62916380e02cdf839eeb2b8f50dd36adffe"
+        }
+      }
+    },
+    "99:673": {
+      "name": "id_card",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "1d718f541fbda736f8eb4197995b21a6ebde109aa0a665c1a6170aa307394903",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:673",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:673": {
+          "nodeId": "99:673",
+          "file": "99-673.svg",
+          "sha256": "6fe0d2c4662fa7b30f0c132b9628db3245cf24b83050ba0d29bae849b802d3c1"
+        }
+      }
+    },
+    "99:781": {
+      "name": "Media logos",
+      "rendering": "image",
+      "kind": "logo",
+      "designFingerprint": "3314e64567617b188e1a73537dadf8757672a5c4c36dcbd29b98ee79f5d99a7e",
+      "contractFingerprint": "8bb0a78ade8f48919078607819b70150ed2b2638c372aef123f4d862a212db23",
+      "defaultVariantNodeId": "99:777",
+      "aliases": {
+        "instagram": "99:778",
+        "linkedin": "99:777",
+        "threads": "99:779",
+        "youtube": "99:780"
+      },
+      "provenance": {
+        "provider": "Social platforms (LinkedIn, Instagram, Threads, YouTube)",
+        "origin": "brand",
+        "license": "Platform brand guidelines",
+        "note": "The variant selects the platform mark; the source labels are inverted relative to the geometry, and the aliases follow the geometry."
+      },
+      "variants": {
+        "99:777": {
+          "nodeId": "99:777",
+          "file": "99-777.svg",
+          "sha256": "f3ab295062f45b5af9b95ec9f14e41922d85d9faa35023c087c45fe5f7519143"
+        },
+        "99:778": {
+          "nodeId": "99:778",
+          "file": "99-778.svg",
+          "sha256": "6329cc23615d668351f5a9b330e1697b0f6109804c7fca7ce866ff7870fdffa3"
+        },
+        "99:779": {
+          "nodeId": "99:779",
+          "file": "99-779.svg",
+          "sha256": "a9cc10318fdbc35b55f1812f299fc7eb971334db38fa946ec0ec315898d03cfb"
+        },
+        "99:780": {
+          "nodeId": "99:780",
+          "file": "99-780.svg",
+          "sha256": "c656517552729773518931edbbb57c874eee5eac5c86e79f0c5be08d223f79aa"
+        }
+      }
+    },
+    "99:2068": {
+      "name": "hourglass_top",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "cd7c14700b4116e5a196efd7b00e6ef7d8ed2ed7b606bb506dbd76a3c66acdd9",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2068",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2068": {
+          "nodeId": "99:2068",
+          "file": "99-2068.svg",
+          "sha256": "5bb33d3f641d2d0c41e7827ddab272dbce7fcc59d583a613ecbc38b628e7cfe1"
+        }
+      }
+    },
+    "99:2075": {
+      "name": "schedule",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "db84bba4441a9c3f15aaeb27b56b65de89cbbee3b8fe3d9cb064e4359015917f",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2075",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2075": {
+          "nodeId": "99:2075",
+          "file": "99-2075.svg",
+          "sha256": "7a2fa6a49d2377056cf69a1c3d736e940bdbcfb2bd82eca9532b50db2cb6752e"
+        }
+      }
+    },
+    "99:2082": {
+      "name": "event",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "cd7308054c4207b52b9e58dd14ee20482bef46415f100e3849c5a56356836297",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2082",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2082": {
+          "nodeId": "99:2082",
+          "file": "99-2082.svg",
+          "sha256": "6583f53b90d7849413f27bd20cb58a31ad3ab6f05e49bfc646d87a65beb3b5dd"
+        }
+      }
+    },
+    "99:2089": {
+      "name": "gpp_bad",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "2f528da91fa36c09d2082f1b758527f6f454a7203a114371caedb8cb77b86c09",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2089",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2089": {
+          "nodeId": "99:2089",
+          "file": "99-2089.svg",
+          "sha256": "8d1416e0561d19c921444d57686649437626ad554bd1d6cd005d1e3bd5448708"
+        }
+      }
+    },
+    "99:2096": {
+      "name": "verified_user",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "8c9ac1555198957178a013e09a9e3bff21a25644e75aa8df3a6ffadf8f47f733",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2096",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2096": {
+          "nodeId": "99:2096",
+          "file": "99-2096.svg",
+          "sha256": "d377a8f668a6f72c16c6f4709e76180ddc6bb01decee934576423cf68b971a97"
+        }
+      }
+    },
+    "99:2110": {
+      "name": "privacy_tip",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "fddac56961d0a9bd8b2437774278e5768b69e56b6f8ff9bc94e72a878d30ec0d",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2110",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2110": {
+          "nodeId": "99:2110",
+          "file": "99-2110.svg",
+          "sha256": "96a26363d393fc49b5d38aaa7bf309b998a6d03d0cfd857373ed0844bc344575"
+        }
+      }
+    },
+    "99:2117": {
+      "name": "notifications_active",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "4c5d7a2167cee7459221ae3a6d3c9c69ccb7950b62fbc291692c6b2f230be32c",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2117",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2117": {
+          "nodeId": "99:2117",
+          "file": "99-2117.svg",
+          "sha256": "d44d097c13e86fe72120545a29a07618da724eecc74ea1103fee5db3d52d92cd"
+        }
+      }
+    },
+    "99:2124": {
+      "name": "keyboard_hide",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "1f62572d03f4ee9c4a480d4cd4ae98cf69b5ff212679982d9d8a9bbde621fbcd",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2124",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2124": {
+          "nodeId": "99:2124",
+          "file": "99-2124.svg",
+          "sha256": "6189355c5772a4cadc4ceffdd9a3d7dbc4e47e1e70bd7461ae6aeb5f8c508609"
+        }
+      }
+    },
+    "99:2131": {
+      "name": "call",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "29e0b65e56687d0a8750056127fee015fe524eafa0a71997668a7200fd93926f",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2131",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2131": {
+          "nodeId": "99:2131",
+          "file": "99-2131.svg",
+          "sha256": "b34c225f67ea45c0dad0eb6650aa88ab72a2efaa7dfa68f583e3b5ee5aff5b6b"
+        }
+      }
+    },
+    "99:2138": {
+      "name": "qr_code",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "010e1114dd0f569eb249f990085863e84c4d452e1559257cd321b43837c2810d",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2138",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2138": {
+          "nodeId": "99:2138",
+          "file": "99-2138.svg",
+          "sha256": "695c4fce31fdfbf43edc76243663fbc4e49c7145d9d9f27bf406f1cd22d0db33"
+        }
+      }
+    },
+    "99:2145": {
+      "name": "bug_report",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "cf82c904157de0500c126126e4118affe93a35af7df1c7527e8a1476e9493a00",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2145",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2145": {
+          "nodeId": "99:2145",
+          "file": "99-2145.svg",
+          "sha256": "44b3692405c9c4cf7dc698a054bf89b2fa916eeb7e86099827e4c2f75bb4f51e"
+        }
+      }
+    },
+    "99:2152": {
+      "name": "delete",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "1ab8f7c4ceb3d566ba962e6e9662e960138c6c85519e01cd145fca3f2bba3d3f",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2152",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2152": {
+          "nodeId": "99:2152",
+          "file": "99-2152.svg",
+          "sha256": "2ccea13de325f027ea8997a769af0798cddcc30f317a03e52c04d51b09198cbd"
+        }
+      }
+    },
+    "99:2159": {
+      "name": "sell",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "f73ae661638e9616336ab3475b39485a5f1b257363fc8883525aed9444dca362",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2159",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2159": {
+          "nodeId": "99:2159",
+          "file": "99-2159.svg",
+          "sha256": "6f5d06a3b9ba878b795b76aedf5481b84a15c91b0e8a9f065b43003fb16b4141"
+        }
+      }
+    },
+    "99:2166": {
+      "name": "leaderboard",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "f555898dd3fbfd2330911e50d8938f923eea7ce43d384d6ce5227186773bd4d5",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2166",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2166": {
+          "nodeId": "99:2166",
+          "file": "99-2166.svg",
+          "sha256": "68bb6aac47c439d45c86f53654b2ed3df4d1de672b173d4366142a70e28550ee"
+        }
+      }
+    },
+    "99:2173": {
+      "name": "wand_shine",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "1a125b5cebec7bd655da5778d324b5eb45c94a09956deb7e8738302e732b1fd8",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2173",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2173": {
+          "nodeId": "99:2173",
+          "file": "99-2173.svg",
+          "sha256": "9695a8d80e9bf46ea93d316f4a09ce74e59552982b040646753a1c3ab0c8e37c"
+        }
+      }
+    },
+    "99:2180": {
+      "name": "auto_awesome_mosaic",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "d8865386485b043b503bc99f7c4c5000ed002bdad0addd70f8f4584e3cea0b8f",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2180",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2180": {
+          "nodeId": "99:2180",
+          "file": "99-2180.svg",
+          "sha256": "7d78baf1417ecd15fa49a47f5cbe263b0391229b01b3602f5f79b17c88383508"
+        }
+      }
+    },
+    "99:2187": {
+      "name": "bolt",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "43619c164e7d3cbe2e7a4506b6100c5385316322f64939d1737d65b18243a2bb",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2187",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2187": {
+          "nodeId": "99:2187",
+          "file": "99-2187.svg",
+          "sha256": "c2192743562adafaee9879d79d2a70df802af299501d3f205fd80b192028484b"
+        }
+      }
+    },
+    "99:2194": {
+      "name": "language",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "31fa21c4d23775ceb5e7e893a04d33f6adb2f1cc4b618bf74e3bb0a0dde42bd8",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2194",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2194": {
+          "nodeId": "99:2194",
+          "file": "99-2194.svg",
+          "sha256": "bc67d0ce27283e3527aeadece555bc4307d29bc16a4f0f590ba7d8330d0ae6ff"
+        }
+      }
+    },
+    "99:2201": {
+      "name": "fingerprint",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "60b7de27db783e5961d8a9d053f2f4d4b3a8e4caf2309fd4b08f9c4a04887470",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2201",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2201": {
+          "nodeId": "99:2201",
+          "file": "99-2201.svg",
+          "sha256": "273eb0558537599c7b9267dffb8a923202936c11f69af82450a2c7c686a4425e"
+        }
+      }
+    },
+    "99:2208": {
+      "name": "attach_file",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "e726aed3be511121fa088ce6c9e8c9a4247d3ce8a085d0d8e5ab8700726f0e25",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2208",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2208": {
+          "nodeId": "99:2208",
+          "file": "99-2208.svg",
+          "sha256": "f6492e90dec03132d526ea5ce5037d45c9924da9d1e51bf677978b1eaf7d7a53"
+        }
+      }
+    },
+    "99:2215": {
+      "name": "shopping_cart",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "e77462ce1f2e654990ebcdce29cfe50742f5951752fa7aef7f46b6fb6e8ae4a5",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2215",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2215": {
+          "nodeId": "99:2215",
+          "file": "99-2215.svg",
+          "sha256": "0e2326a8fbfc658b9a513e4c8ee63d141d62510fe2cf3885f4831b838430858a"
+        }
+      }
+    },
+    "99:2222": {
+      "name": "mobile_2",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "20bfaddc103583e1847d278117b4ca259c418fa0e443dcbb022c7dba9f11dece",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2222",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2222": {
+          "nodeId": "99:2222",
+          "file": "99-2222.svg",
+          "sha256": "c8c223d3f0ef580303fd808e95b2ef571978ce5d4806b08e4fcad3664ac17e63"
+        }
+      }
+    },
+    "99:2229": {
+      "name": "emoji_objects",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "d4d4f87c566c767301fb5db48eca6473a236a3bec1141026feec5ad49cedb52b",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2229",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2229": {
+          "nodeId": "99:2229",
+          "file": "99-2229.svg",
+          "sha256": "144cbc84882ed6eefa51ffd6fee59a73ab3638b0437728b29de27e288e1b93cf"
+        }
+      }
+    },
+    "99:2248": {
+      "name": "touch_app",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "47b401b4591b51ab105641e75171777934f7fa5b6b8bb7fab55a37b9763b2c15",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2248",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2248": {
+          "nodeId": "99:2248",
+          "file": "99-2248.svg",
+          "sha256": "0cc4298364e8aaad7f4c13a7adfd5c3ee603463b5810c21e92c55b647dcc2d6c"
+        }
+      }
+    },
+    "99:2249": {
+      "name": "swipe",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "d5ebfb7a213e113a1376e47914558d42f775a5564c0abc7a1eba7b595b39b1e5",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2249",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2249": {
+          "nodeId": "99:2249",
+          "file": "99-2249.svg",
+          "sha256": "a6ab9e97dbaea8cfa627d77e96e562ab571abb7684cb24a3e2263af89c3fb83c"
+        }
+      }
+    },
+    "99:2250": {
+      "name": "swipe_down",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "152f4a459628742b56d129c76ff9fc7c87b4278915049d701c0687889bf1a879",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2250",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2250": {
+          "nodeId": "99:2250",
+          "file": "99-2250.svg",
+          "sha256": "6cacd0052fdd15248d4c2fd4c5d065c9260b6b322847f02164b48f8cf66ade05"
+        }
+      }
+    },
+    "99:2257": {
+      "name": "dialpad",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "707c021f8bfa9cd110ed5d02cfb8f264f22e28d00050a14f7edf16ae1a680922",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2257",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2257": {
+          "nodeId": "99:2257",
+          "file": "99-2257.svg",
+          "sha256": "fd0db55787b2642e03b398476ab4e7b1806b8e3af6e6bc8c9987725e60f531ac"
+        }
+      }
+    },
+    "99:2264": {
+      "name": "code",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "8bb73d63eaf091d7751b778aa4247b87649b510c382b5dd446c7109cd0217d27",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2264",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2264": {
+          "nodeId": "99:2264",
+          "file": "99-2264.svg",
+          "sha256": "e3491c2f5355b2f21f2772a8c1d3ea71968d3ebe2bf027ebfede01107971573f"
+        }
+      }
+    },
+    "99:2271": {
+      "name": "business_center",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "2da931d0adc5401327291269bc8b6226af270ae82475944d74130de59480b57d",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2271",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2271": {
+          "nodeId": "99:2271",
+          "file": "99-2271.svg",
+          "sha256": "eda04699ffbc5e34f45f0232ec977643304bb7ef512277b6dff1cd7ce98ccb57"
+        }
+      }
+    },
+    "99:2278": {
+      "name": "theater_comedy",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "5d1cdd9019e7bbf2a999ff7942e5de7fd83a0dfe49bd781ec4914463dc4aec06",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2278",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2278": {
+          "nodeId": "99:2278",
+          "file": "99-2278.svg",
+          "sha256": "18762d9eaad4a339e25d82a0a59606502486a1809cfc6103e5d67caf10e17c43"
+        }
+      }
+    },
+    "99:2285": {
+      "name": "flight_takeoff",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "b1a960577f3cb70b18fb6e42c1f9c3fbe59e260633470186f5ff789705ea01f1",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2285",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2285": {
+          "nodeId": "99:2285",
+          "file": "99-2285.svg",
+          "sha256": "9b4856948113afa25d595f04a6d9bb1c2da3d5e0b2c789738a93bd79ff3d2eba"
+        }
+      }
+    },
+    "99:2292": {
+      "name": "pedal_bike",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "752f92287de4e079c6eb11df4d8e6bb3930c2761afcffd5396ed9bf6b27fa023",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2292",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2292": {
+          "nodeId": "99:2292",
+          "file": "99-2292.svg",
+          "sha256": "197566a50a7e1534e0014b78b2787f89c467f41068e6fce3bfe13839138e4673"
+        }
+      }
+    },
+    "99:2299": {
+      "name": "volunteer_activism",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "93b6f0fab001c73fa4711914a17f93223cc02ed0825ae703817e351674faac45",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2299",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2299": {
+          "nodeId": "99:2299",
+          "file": "99-2299.svg",
+          "sha256": "dbd03ccf6df1ca33b3c529debf64b6790dddfa65352c62b20e0664a3261b9d59"
+        }
+      }
+    },
+    "99:2331": {
+      "name": "near_me",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "0fe81beb773a9a02becc838225b328cfa2bb687803e57abb6275d4efe93a71a4",
+      "contractFingerprint": "cb8262218a2de19ebf463ae6fe9b1b7b223b62a5c4109f668fa8a8075208c1c9",
+      "defaultVariantNodeId": "99:2329",
+      "aliases": {
+        "filled": "99:2330",
+        "outlined": "99:2329"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2329": {
+          "nodeId": "99:2329",
+          "file": "99-2329.svg",
+          "sha256": "8de23025388a6882db5a2af093344283b3560831b7ae340c0abb0d43ef6089a7"
+        },
+        "99:2330": {
+          "nodeId": "99:2330",
+          "file": "99-2330.svg",
+          "sha256": "e7d9a797e4a50ebab7fb1f2fefc2b1c9c001f1732dd9af9ff9f85472aaa1fcd6"
+        }
+      }
+    },
+    "99:2338": {
+      "name": "my_location",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "6fd29241c0f1016b67d04b8bc728af74b4577ab024e6af2605da189f7cfe33e6",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2338",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2338": {
+          "nodeId": "99:2338",
+          "file": "99-2338.svg",
+          "sha256": "e79473fbb5f628c00aab32842df1a23c527cd746410b489fdc537c7fb2bc136f"
+        }
+      }
+    },
+    "99:2345": {
+      "name": "location_on",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "e66d6c7204cfbb4b00d10e2e0af1be9343a84d9ea16629e069e27337d04fd825",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2345",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2345": {
+          "nodeId": "99:2345",
+          "file": "99-2345.svg",
+          "sha256": "bd6961ab4f7508970a6d66f640026c203f5f922a6e875302216fa3de5d2d4f21"
+        }
+      }
+    },
+    "99:2381": {
+      "name": "credit_card",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "a903dc1688a4b404eb5476057296406d930c8c742c45ca5809bba4a548372069",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2381",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2381": {
+          "nodeId": "99:2381",
+          "file": "99-2381.svg",
+          "sha256": "a0bbfb3ca2ee43c2fb58ced77de6d888df9c09b23cb85c224715bad20cb7a1e4"
+        }
+      }
+    },
+    "99:2388": {
+      "name": "euro",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "33bd69e2100624e8d914b431348f0ec0c65228aad9d7ba67550326e5d9be74ee",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2388",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2388": {
+          "nodeId": "99:2388",
+          "file": "99-2388.svg",
+          "sha256": "bfdac0b05aa49b5d0896ecb134be9cefe104d1567e42e300ccde02199be9ce72"
+        }
+      }
+    },
+    "99:2395": {
+      "name": "storefront",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "d6c70ac21005ff7fe617d8bd47090606acfaf22fa81b49501d10695c201d5f07",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2395",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2395": {
+          "nodeId": "99:2395",
+          "file": "99-2395.svg",
+          "sha256": "d0a1383ecf8bc35397ba6f187ac316dc7df6e67890c114eaea95b7c17179b006"
+        }
+      }
+    },
+    "99:2408": {
+      "name": "account_balance_wallet",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "8ad2786e7101348ebcfc516818da2b42fe24196293853d0c75a2cd69e53fdb63",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2408",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2408": {
+          "nodeId": "99:2408",
+          "file": "99-2408.svg",
+          "sha256": "36f9e5289695ef02a6b0c25c5eaade567f74031291d5d6eebba9af3e22bf65a5"
+        }
+      }
+    },
+    "99:2415": {
+      "name": "payments",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "21a92b20c2c35e65c5304c4f8e1e320feed5e6f6c53b194c9adc9072a02312aa",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2415",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2415": {
+          "nodeId": "99:2415",
+          "file": "99-2415.svg",
+          "sha256": "8c89ae091f3593bfac27b9c9c459d1434032aba0c229b63d3f9392e7848b8fd4"
+        }
+      }
+    },
+    "99:2422": {
+      "name": "savings",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "2e4318e34e17b6f7592ddce1e85f7fe4c4d5de95a5637fd98c16878fb1a4ac50",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "99:2422",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "99:2422": {
+          "nodeId": "99:2422",
+          "file": "99-2422.svg",
+          "sha256": "50429fb1f36c2968db274755919b834e00330ea9850da7430df7efef7b1fa2b6"
+        }
+      }
+    },
+    "232:1673": {
+      "name": "IO logo",
+      "rendering": "image",
+      "kind": "logo",
+      "designFingerprint": "4d34e0b75252b9c6587ccf3f68fd27f92e5c3d4b5b540705876b3e4ac6ab7705",
+      "contractFingerprint": "d1091e4d5055a0a244cd54a24940bafd61919fcdf5808dfe1bfba601f80ef9e4",
+      "defaultVariantNodeId": "232:1672",
+      "aliases": {
+        "light": "232:1672",
+        "dark": "232:1674"
+      },
+      "provenance": {
+        "provider": "PagoPA brand (IO)",
+        "origin": "brand",
+        "license": "Brand asset — reproduce in the source colours"
+      },
+      "variants": {
+        "232:1672": {
+          "nodeId": "232:1672",
+          "file": "232-1672.svg",
+          "sha256": "dc02c299a0f4b8b56d1e9829436141abdb0e3d28b16c0002838cdc514306f92f"
+        },
+        "232:1674": {
+          "nodeId": "232:1674",
+          "file": "232-1674.svg",
+          "sha256": "30e4062c6d7bf3269c1ec4a40d74fc93b2c33d268167a67de6af8eb25b4b9268"
+        }
+      }
+    },
+    "256:8579": {
+      "name": "SPID",
+      "rendering": "image",
+      "kind": "logo",
+      "designFingerprint": "166d42ad385f7171f89b6891410c9e53cb7d8ab9033490cb748a5681a06c90f6",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "256:8579",
+      "aliases": {},
+      "provenance": {
+        "provider": "AgID (SPID)",
+        "origin": "brand",
+        "license": "Identity-provider brand guide"
+      },
+      "variants": {
+        "256:8579": {
+          "nodeId": "256:8579",
+          "file": "256-8579.svg",
+          "sha256": "4808d0ed7849b8b0d3815399e517a3fe80a4a0dc1f3c71093ff96d2846094b40"
+        }
+      }
+    },
+    "256:8580": {
+      "name": "CIEID",
+      "rendering": "image",
+      "kind": "logo",
+      "designFingerprint": "1cb978cba88f8448329d9b44ffa342133e64cd220d98f17dc5f194ed55344435",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "256:8580",
+      "aliases": {},
+      "provenance": {
+        "provider": "AgID (CIE ID)",
+        "origin": "brand",
+        "license": "Identity-provider brand guide"
+      },
+      "variants": {
+        "256:8580": {
+          "nodeId": "256:8580",
+          "file": "256-8580.svg",
+          "sha256": "37c26cf682782890c2a23faa65842661c5fd56a98fdaf666b2345a62ea2f6b82"
+        }
+      }
+    },
+    "256:8581": {
+      "name": "CIE",
+      "rendering": "image",
+      "kind": "logo",
+      "designFingerprint": "0959e1fe1e707fb2407bc20b21b26e1c771be5060cb9f2d9d14aa14e5b3b7a5a",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "256:8581",
+      "aliases": {},
+      "provenance": {
+        "provider": "AgID (CIE)",
+        "origin": "brand",
+        "license": "Identity-provider brand guide"
+      },
+      "variants": {
+        "256:8581": {
+          "nodeId": "256:8581",
+          "file": "256-8581.svg",
+          "sha256": "6c57f5f822c0c91e6c10636c62fcbfc34705e49231c1a5afedf7eac27797f22e"
+        }
+      }
+    },
+    "256:8582": {
+      "name": "pagoPA",
+      "rendering": "image",
+      "kind": "logo",
+      "designFingerprint": "653d30d9dba41dd5918b5e7935ba3ad32f4b9be8107c0114ab4066eb44b61d5f",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "256:8582",
+      "aliases": {},
+      "provenance": {
+        "provider": "PagoPA S.p.A. (pagoPA)",
+        "origin": "brand",
+        "license": "Brand asset — reproduce in the source colours"
+      },
+      "variants": {
+        "256:8582": {
+          "nodeId": "256:8582",
+          "file": "256-8582.svg",
+          "sha256": "1ee8b1f67b2d63adbc1420d625715dcb89e453b32c75e5c35d3f441a72f11adb"
+        }
+      }
+    },
+    "392:5291": {
+      "name": "how_to_reg",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "29045943a75249e95b1f9ba96cb4e05cc5b26f74631235fb023b513826c545c0",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "392:5291",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "392:5291": {
+          "nodeId": "392:5291",
+          "file": "392-5291.svg",
+          "sha256": "5723376eaf97f75414745e6b8aea82c8cd46c2640ebcb018dfd07eaac8235b9a"
+        }
+      }
+    },
+    "1101:3862": {
+      "name": "contacts",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "62aea935b13db3ad78178adde8914054f9f92e972385f89e116b7125f76c7b94",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "1101:3862",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "1101:3862": {
+          "nodeId": "1101:3862",
+          "file": "1101-3862.svg",
+          "sha256": "52999783738b5833828b2245e29cf5d73f048ab8c18b72fb928097da54f1686f"
+        }
+      }
+    },
+    "1101:4296": {
+      "name": "approval_delegation",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "c56a4e7b567ce7672fa2ee8d1a28b511757990b25fb6d97f9984c398788e3a69",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "1101:4296",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "1101:4296": {
+          "nodeId": "1101:4296",
+          "file": "1101-4296.svg",
+          "sha256": "5effab55ac95e6226ede81a0ca9cf003c7311abc698da7d9e18819685a60cd6c"
+        }
+      }
+    },
+    "1101:4422": {
+      "name": "integration_instructions",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "0561c1ec69e3de8abeeb3d739f1181afd6704130eea9b5919cb3ba6ab5384873",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "1101:4422",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "1101:4422": {
+          "nodeId": "1101:4422",
+          "file": "1101-4422.svg",
+          "sha256": "44e8b0c37089c69f9376c2a7a10127441f84657d355704bbf65fa76b5ec52018"
+        }
+      }
+    },
+    "1120:7621": {
+      "name": "construction",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "152913b80ba1b2b1d3adb79a3d21a166fa70b32c7a1a6548a6e86c9145a57034",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "1120:7621",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "1120:7621": {
+          "nodeId": "1120:7621",
+          "file": "1120-7621.svg",
+          "sha256": "7b08c1ba50f4ce76fa82e06f0aa5b3ef2eef2ea36279f3278c47f48f215fffd5"
+        }
+      }
+    },
+    "1120:7638": {
+      "name": "dns",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "e27359ecc29c9e3f2e107903672d91003b2c34307ae3448397c6a1f497e50ef8",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "1120:7638",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "1120:7638": {
+          "nodeId": "1120:7638",
+          "file": "1120-7638.svg",
+          "sha256": "98dbdc7c4a10c866f1a2b260a15957d1a553714a1817fe52d5281057ac50146c"
+        }
+      }
+    },
+    "1120:7821": {
+      "name": "dashboard",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "b8a16aac9fd22ce463d86a04f930c049aa46ddcc810396bb0f0423a2c230afa6",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "1120:7821",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "1120:7821": {
+          "nodeId": "1120:7821",
+          "file": "1120-7821.svg",
+          "sha256": "1b084cbf4ec8b7b4681e475d1ff3b59a932a45b5380d527a6fc809f4883301ea"
+        }
+      }
+    },
+    "1174:9780": {
+      "name": "save",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "82ee96600c605d86755ddc35f92030a529bdc477cbe641b7d554cbcb7e74879b",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "1174:9780",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "1174:9780": {
+          "nodeId": "1174:9780",
+          "file": "1174-9780.svg",
+          "sha256": "a15b31bcad420de3c7d3c0d28d4936ec51564dd5289ecf545f6d6f8b80a0b96c"
+        }
+      }
+    },
+    "1311:12896": {
+      "name": "table_chart",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "fa1d3f030eef46a22c01736bf2e408f2312a4ca46feadcb214809d8489b8aab5",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "1311:12896",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "1311:12896": {
+          "nodeId": "1311:12896",
+          "file": "1311-12896.svg",
+          "sha256": "6033d763e55a6f953273ce83438a058b1cf3f66d7a658f952b8d131f9c1a393e"
+        }
+      }
+    },
+    "1315:8596": {
+      "name": "account_circle",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "faa0ee90174dc1e68d18bd4249da2e35565820f5a6eb25f2f5df253084ad08c8",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "1315:8596",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "1315:8596": {
+          "nodeId": "1315:8596",
+          "file": "1315-8596.svg",
+          "sha256": "c8b868e2affbca0cd825489c953595b443cd0a28ee076fbbf6fb41ac29019822"
+        }
+      }
+    },
+    "1501:5288": {
+      "name": "support",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "4dfcce3350adeb3eb59b30d8c4cc3f2e11eaceec54f4f978093a1418ee6ae39e",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "1501:5288",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "1501:5288": {
+          "nodeId": "1501:5288",
+          "file": "1501-5288.svg",
+          "sha256": "3f5f967bf943e87e45dc7315fbbfec658659c100a0ed9375483947717775b339"
+        }
+      }
+    },
+    "1509:25567": {
+      "name": "confirmation_number",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "a768c237f69c40fb2617d54ae497e8d7c3f487ed390107f5a5ca8b9ab303919c",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "1509:25567",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "1509:25567": {
+          "nodeId": "1509:25567",
+          "file": "1509-25567.svg",
+          "sha256": "af2194bb576fdcab0bf8bedcf28fa5826837761cfb4d07d2493dd03cbec89682"
+        }
+      }
+    },
+    "2080:3319": {
+      "name": "arrow_menu_close",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "dd8c601a962f8c61dbb024d2e776393d7367dc8b7b227df4ca76a2e7f7d8337b",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "2080:3319",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "2080:3319": {
+          "nodeId": "2080:3319",
+          "file": "2080-3319.svg",
+          "sha256": "c1494cce66819f97fe01d6a0e567f251ca0220dafc1f80cf864f1307711472bc"
+        }
+      }
+    },
+    "2080:3320": {
+      "name": "left_panel_close",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "1b16e236a82022113e53ded88e689bc183438d18b25704a461841aec20eb0118",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "2080:3320",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "2080:3320": {
+          "nodeId": "2080:3320",
+          "file": "2080-3320.svg",
+          "sha256": "c380eb02b491bbc80cd7ddf7f88d1d56b23f59e2b5b8402749a04dc6c5215ff7"
+        }
+      }
+    },
+    "2801:90017": {
+      "name": "sort",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "9e1d3eabd0a480b641d31668b1c6cdedde4439a50f017858207fb24b61ca969b",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "2801:90017",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "2801:90017": {
+          "nodeId": "2801:90017",
+          "file": "2801-90017.svg",
+          "sha256": "0024d377d0749d000126363ea508a7d87618ca4a8e6c48a15fb5be49cdd30703"
+        }
+      }
+    },
+    "8702:266": {
+      "name": "mark_email_read",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "d63bc1394427e1fe39c9c5d9e6dd022aa515d38f3c40e676bc3617abc04498be",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "8702:266",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "8702:266": {
+          "nodeId": "8702:266",
+          "file": "8702-266.svg",
+          "sha256": "9bcba88673ab979ed7128216ce7f35e6fb4aa45d0ee5201d251160b3cb2bd0e7"
+        }
+      }
+    },
+    "8704:37763": {
+      "name": "drafts",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "d78a5ce98bd20d46e47bb726c961345ec4641159a3f179f5044fca63f273e0b3",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "8704:37763",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "8704:37763": {
+          "nodeId": "8704:37763",
+          "file": "8704-37763.svg",
+          "sha256": "dddce4bdab267a4260cf5be196d48ebe4ad821de3fee9d572a61a93426446889"
+        }
+      }
+    },
+    "8704:37815": {
+      "name": "flag",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "cc592d634ee1324b00fc8708e7384699a9542d853a87ecfd9c1735a3f36648e4",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "8704:37815",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "8704:37815": {
+          "nodeId": "8704:37815",
+          "file": "8704-37815.svg",
+          "sha256": "02566407cdc23d3c0a37c987b471449d13277f31eab6bc0bad4452de713999b2"
+        }
+      }
+    },
+    "8717:781": {
+      "name": "SEND",
+      "rendering": "image",
+      "kind": "logo",
+      "designFingerprint": "7ae8d44de8f873f5d733b3a82af7a4103924800fb47c3bd049bfa72331748b63",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "8717:781",
+      "aliases": {},
+      "provenance": {
+        "provider": "PagoPA S.p.A. (SEND)",
+        "origin": "brand",
+        "license": "Brand asset — reproduce in the source colours"
+      },
+      "variants": {
+        "8717:781": {
+          "nodeId": "8717:781",
+          "file": "8717-781.svg",
+          "sha256": "b2db83d9b12f6abc84a876bc7b45502a3adfe3632ebf5bc193c61b5dbd21bd8a"
+        }
+      }
+    },
+    "8854:39311": {
+      "name": "first_letter",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "0df957b111046642a6736af8bc21e25aaf961bf50f3054a2b6cba7e3387f7688",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "8854:39311",
+      "aliases": {},
+      "provenance": {
+        "provider": "PagoPA custom glyph (first letter)",
+        "origin": "custom",
+        "license": "In-house artwork"
+      },
+      "variants": {
+        "8854:39311": {
+          "nodeId": "8854:39311",
+          "file": "8854-39311.svg",
+          "sha256": "6b62cd2a63dd88c1cf32270d7aaffc431d7b466f653c7ad526c9e9606b05f939"
+        }
+      }
+    },
+    "8854:39312": {
+      "name": "second_letter",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "2bece75f3f21d58a07b849d9031031175c4d5dc7a579469603c1ac49f5b1a130",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "8854:39312",
+      "aliases": {},
+      "provenance": {
+        "provider": "PagoPA custom glyph (second letter)",
+        "origin": "custom",
+        "license": "In-house artwork"
+      },
+      "variants": {
+        "8854:39312": {
+          "nodeId": "8854:39312",
+          "file": "8854-39312.svg",
+          "sha256": "bf000cb1f752097b764313dc301b2c7d0dc60f2332b9ae6d89e7a7c95cd40d6f"
+        }
+      }
+    },
+    "8854:39315": {
+      "name": "mobile_vibrate",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "26125d723edfb356c912a8b99fb95d1ec48649b2a61586d19556eb56fb5c1768",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "8854:39315",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "8854:39315": {
+          "nodeId": "8854:39315",
+          "file": "8854-39315.svg",
+          "sha256": "9141f85ee34a3a6e9d0c419a6f58908257f8d421836a95b9529797c6b0d22a1f"
+        }
+      }
+    },
+    "9082:974": {
+      "name": "open_in_browser",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "3847508446831389be19470773ea28a33a5d2e8475d7d0bea6143005579eac21",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "9082:974",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "9082:974": {
+          "nodeId": "9082:974",
+          "file": "9082-974.svg",
+          "sha256": "c8a445c9c717cdb67f794c8b45fb8337c158bf9e63b4d5a450aa0fb97cd2f1d4"
+        }
+      }
+    },
+    "9584:66412": {
+      "name": "send",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "2d649f433ba52c262d6758bcf8dd1916ba627021ec2ccd2c00439f287b3e8182",
+      "contractFingerprint": "96dd3c5df788cd37412c05c3175fd7e1951d82fa3a72fbebd3560d9be35d0881",
+      "defaultVariantNodeId": "9584:66408",
+      "aliases": {
+        "outlined": "9584:66411",
+        "filled": "9584:66408"
+      },
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "9584:66408": {
+          "nodeId": "9584:66408",
+          "file": "9584-66408.svg",
+          "sha256": "a1e04f278304543bd142fe0bc53c03ce6abedc657b1b9a91d25d7b213a1a5938"
+        },
+        "9584:66411": {
+          "nodeId": "9584:66411",
+          "file": "9584-66411.svg",
+          "sha256": "4f9fd43a6aa2d98212b5790fe8588a5f2207b9f93f99fcfa295bdb75037a2579"
+        }
+      }
+    },
+    "9640:793": {
+      "name": "gavel",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "130cc881ef30e42f0a1822933fcd545a4fed8b5d3f5257ccacb538f429d631bd",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "9640:793",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "9640:793": {
+          "nodeId": "9640:793",
+          "file": "9640-793.svg",
+          "sha256": "513a879d22834c77682fcd445756adb72c1665282a82e488471f8515034645d0"
+        }
+      }
+    },
+    "9642:949": {
+      "name": "no_accounts",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "0e94e613ae170e114194e1045c44bba863f44b2da7fc0e74d1e5acc9ea40f710",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "9642:949",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "9642:949": {
+          "nodeId": "9642:949",
+          "file": "9642-949.svg",
+          "sha256": "64ac1f4e9414cf215e7b0327882883f1b3ae2e73a9a01a0d5c3e435170a180d0"
+        }
+      }
+    },
+    "9643:953": {
+      "name": "grading",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "0d8562d6d58c4f2da14f68751b661d801b65b3e153c574cb6d240f43cf7a7101",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "9643:953",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "9643:953": {
+          "nodeId": "9643:953",
+          "file": "9643-953.svg",
+          "sha256": "52e77f99ea369aa3b953e9dc9cde03e3e620aa3dbbb495538d4f789385769252"
+        }
+      }
+    },
+    "9643:960": {
+      "name": "troubleshoot",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "c5ff7aa868a414134f6f5a080d6b31dcfcafa489bad8f82b2c375d5e0306ecf4",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "9643:960",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "9643:960": {
+          "nodeId": "9643:960",
+          "file": "9643-960.svg",
+          "sha256": "3e355d4aebcdc22ef0dd0174113408d5d4a135a45ef9fcebcb2e49534fcd865d"
+        }
+      }
+    },
+    "9643:961": {
+      "name": "search_check_2",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "d454a4c13157d118a62502137f0b0a8c2c3ffd964c77137f06190ca7fee572fe",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "9643:961",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "9643:961": {
+          "nodeId": "9643:961",
+          "file": "9643-961.svg",
+          "sha256": "606a60298913d038ab9e27a57f1f9c85ca3b89e23963a466ed5f64f3cf691e2b"
+        }
+      }
+    },
+    "9790:9527": {
+      "name": "mail_off",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "e26273218b13eac4bf90f050b650e73ab1c551cecff741641286326ac4b1fce1",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "9790:9527",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "9790:9527": {
+          "nodeId": "9790:9527",
+          "file": "9790-9527.svg",
+          "sha256": "c7a9a3034a26d058c42bf11a99db97a00df003cf2bad6ad8734d7445b1c2cfe3"
+        }
+      }
+    },
+    "9833:26066": {
+      "name": "local_post_office",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "64f4361e19a193271ab963fc16825c6c4b4a8e0d3e932ccd1d18991cb0cc71c0",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "9833:26066",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "9833:26066": {
+          "nodeId": "9833:26066",
+          "file": "9833-26066.svg",
+          "sha256": "0df21faee031fdd214e6a6b0a66f19a1845ade6a6cbcdb6769fbe046834c0286"
+        }
+      }
+    },
+    "9833:27244": {
+      "name": "mail_shield",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "4ee21ff943b0f999258a45fad0085ff9775169e1af844fb1b494ba3c284b732d",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "9833:27244",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "9833:27244": {
+          "nodeId": "9833:27244",
+          "file": "9833-27244.svg",
+          "sha256": "b98b63afa4e3496b2b19f1db514cd18c950e3e9efdc4ccc857657e508687f10a"
+        }
+      }
+    },
+    "9876:42679": {
+      "name": "online_address",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "2c65cec573a7596e363e44d6974cd3f4c98c7c004cc0a7d622d2e3f8c3b3a16c",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "9876:42679",
+      "aliases": {},
+      "provenance": {
+        "provider": "PagoPA custom glyph (online address)",
+        "origin": "custom",
+        "license": "In-house artwork"
+      },
+      "variants": {
+        "9876:42679": {
+          "nodeId": "9876:42679",
+          "file": "9876-42679.svg",
+          "sha256": "60e6017ac1db05143a4fbd11fd37d90b2541965e3a6a59d553b4e20be3dd6a48"
+        }
+      }
+    },
+    "9924:27038": {
+      "name": "unsubscribe",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "377f9cdb58852aa9be7f4ff50c9d52312698eb94286cb6eb3071a91d8373f37e",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "9924:27038",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "9924:27038": {
+          "nodeId": "9924:27038",
+          "file": "9924-27038.svg",
+          "sha256": "9d926ef12606e8511a55e6c399d6b8d208974eea4251b9b2a66285ba387314b5"
+        }
+      }
+    },
+    "9977:21200": {
+      "name": "check_indeterminate_small",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "f969725747c8e58dff9d259bf0fd08e89260c3aee3d9ff60ec8ee7349da693b4",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "9977:21200",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "9977:21200": {
+          "nodeId": "9977:21200",
+          "file": "9977-21200.svg",
+          "sha256": "91c2404d1be6a29bfb562c63cbae1700345a3d9197d2387269027ff0c82064b8"
+        }
+      }
+    },
+    "9977:23980": {
+      "name": "toggle_off",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "67833f67ad29a74c6e2d21c6b2d8fa92d7857c99fccbfffd1361af973b186337",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "9977:23980",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "9977:23980": {
+          "nodeId": "9977:23980",
+          "file": "9977-23980.svg",
+          "sha256": "9ae38d2dfc091d4847104c394c20aff979b278fb8b94004d2315fa9f646bd807"
+        }
+      }
+    },
+    "10297:6918": {
+      "name": "schedule_send",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "3422135744e6abc739e734964054c991c368c8956e69d43bac5b8a8ad51a0175",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "10297:6918",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "10297:6918": {
+          "nodeId": "10297:6918",
+          "file": "10297-6918.svg",
+          "sha256": "a65926eb77844ccca18fa92919f7b32fd6e80ca1535aa05d0e87530de846b655"
+        }
+      }
+    },
+    "10444:14812": {
+      "name": "local_laundry_service",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "8f3c42cee074819eaa848f77f25b2e7738f1de5d7da80a27a1c592d1ae01d99a",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "10444:14812",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "10444:14812": {
+          "nodeId": "10444:14812",
+          "file": "10444-14812.svg",
+          "sha256": "d155fcbf410aee51c9ec906014213f0a0a44fdcc28589c10cb530fbe934f4e4f"
+        }
+      }
+    },
+    "10444:15263": {
+      "name": "settings_remote",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "0db5d627732ef33c423b8856613f785e997aaf4bc9c759d942c54e5f7d029c7d",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "10444:15263",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "10444:15263": {
+          "nodeId": "10444:15263",
+          "file": "10444-15263.svg",
+          "sha256": "fe2f11b491e84309d57476c0d5afd04c2e5bd137d67869c35a19acc26b0061fd"
+        }
+      }
+    },
+    "12785:14427": {
+      "name": "forward_to_inbox",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "84db125f9f9f1037f549998ca5bd99ac3eecd15ea8c9589eaa91e409eead5de4",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "12785:14427",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "12785:14427": {
+          "nodeId": "12785:14427",
+          "file": "12785-14427.svg",
+          "sha256": "f0e60d28ab8bb691949378c44ae41a53bcad90630ad2f3b5beac8ebb7ee1c65c"
+        }
+      }
+    },
+    "13906:25597": {
+      "name": "third_letter",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "74abdb1a106834f5349be1bedbf274e95eaede330ef0bdf6fba7700b5f797f4a",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "13906:25597",
+      "aliases": {},
+      "provenance": {
+        "provider": "PagoPA custom glyph (third letter)",
+        "origin": "custom",
+        "license": "In-house artwork"
+      },
+      "variants": {
+        "13906:25597": {
+          "nodeId": "13906:25597",
+          "file": "13906-25597.svg",
+          "sha256": "9c03b3c65b81d129a0e0d7d86ec0b9880161033bff6b574197845d00c30cc60f"
+        }
+      }
+    },
+    "14164:11363": {
+      "name": "license",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "61e0c34cac238a863c838eefa4b63724de55421922825ff845bf54141f07b009",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "14164:11363",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "14164:11363": {
+          "nodeId": "14164:11363",
+          "file": "14164-11363.svg",
+          "sha256": "05294e9893cf89da7df3d4290ab1b80d4b7840d54b8047f7f82d590bd1d44497"
+        }
+      }
+    },
+    "14241:48931": {
+      "name": "mail_pec",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "ef5f425dbb497e19590adfa605642072b4fd73132039d48faa2ca323ea90d2b7",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "14241:48931",
+      "aliases": {},
+      "provenance": {
+        "provider": "PagoPA custom glyph (PEC mail)",
+        "origin": "custom",
+        "license": "In-house artwork"
+      },
+      "variants": {
+        "14241:48931": {
+          "nodeId": "14241:48931",
+          "file": "14241-48931.svg",
+          "sha256": "29bfb26053b3d19c7f865bdb2c3c8b5ac2014c61d6fb70f0a68708da75d4df1c"
+        }
+      }
+    }
+  }
+}
