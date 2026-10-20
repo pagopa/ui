@@ -1,11 +1,15 @@
 # PagoPA UI
 
+## Experimental project
+
+> **EXPERIMENTAL — NOT PRODUCTION-READY.** This project exists to validate the
+> hypothesis that AI agents can build and evolve a design system from a Figma
+> source, under human direction and automated repository checks. Its APIs,
+> architecture and workflows may change as that hypothesis is tested.
+
 React design system that implements the **MUI Italia Next** Figma library, built
 with TypeScript 7, Tailwind CSS v4, Base UI primitives (shadcn wrappers) and
 Storybook.
-
-> **Status**: porting in progress; the package is **not published yet**. It is
-> configured as `@pagopa/ui` for GitHub Packages.
 
 ## How it is built
 
