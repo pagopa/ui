@@ -1,0 +1,33 @@
+{
+  "name": "pagopa-ui-tokens",
+  "private": true,
+  "description": "The design foundations of the PagoPA design system",
+  "license": "UNLICENSED",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./src/index.ts"
+    },
+    "./figma.generated.css": "./src/figma.generated.css",
+    "./manifest.json": "./src/manifest.json"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "oxlint --fix",
+    "lint:check": "oxlint",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check"
+  },
+  "devDependencies": {
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "oxfmt": "^0.73.0",
+    "oxlint": "^1.81.0",
+    "typescript": "npm:@typescript/typescript6@^6.0.2"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "pagopa-ui-tokens",
+  "projectType": "library",
+  "sourceRoot": "packages/tokens/src",
+  "tags": ["type:data", "scope:design-system"],
+  "targets": {
+    "lint": { "configurations": { "ci": { "script": "lint:check" } } },
+    "fmt": {
+      "executor": "nx:run-script",
+      "options": { "script": "format" },
+      "cache": true,
+      "configurations": { "ci": { "script": "format:check" } }
+    },
+    "tokens:check": {
+      "options": {
+        "command": "node src/cli.ts tokens check",
+        "env": { "PAGOPA_UI_ROOT": "../pagopa-ui", "PAGOPA_UI_TOKENS_ROOT": "../tokens" }
+      },
+      "inputs": [
+        "default",
+        "{workspaceRoot}/packages/ui-cli/**",
+        "{workspaceRoot}/packages/pagopa-ui/src/index.css"
+      ]
+    },
+    "test": { "dependsOn": ["tokens:check"] }
+  }
+}

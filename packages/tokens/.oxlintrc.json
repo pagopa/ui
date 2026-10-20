@@ -1,0 +1,4 @@
+{
+  "extends": ["../pagopa-ui/.oxlintrc.json"],
+  "ignorePatterns": ["src/figma-tokens.generated.ts", "src/figma-text-classes.generated.ts"]
+}

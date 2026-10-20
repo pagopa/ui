@@ -1,0 +1,557 @@
+{
+  "schemaVersion": 1,
+  "note": "Foundation entries that no single published variable carries. Spacing comes from the 'Regole spaziatura' page and from values recurring in the component snapshot; sizes, breakpoints, containers, z-index, radius extensions and the Shadow 16 effect style are recorded with their source and, when they are not a Figma asset, with the reason. The request to the designers lists every local extension.",
+  "entries": {
+    "spacing-1": {
+      "name": "Foundations/spacing-1",
+      "type": "FLOAT",
+      "value": 1,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "padding: 1px appears 202 times in the component roots"
+      },
+      "reason": "hairline gap used by the components; no published variable — requested to design",
+      "theme": { "namespace": "spacing", "key": "px" }
+    },
+    "spacing-2": {
+      "name": "Foundations/spacing-2",
+      "type": "FLOAT",
+      "value": 2,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "itemSpacing: 2px appears 1425 times in the component roots"
+      },
+      "reason": "recurring value outside the published 4/8/16/24/32/40/48 scale; no published variable — requested to design",
+      "theme": { "namespace": "spacing", "key": "0.5" }
+    },
+    "spacing-3": {
+      "name": "Foundations/spacing-3",
+      "type": "FLOAT",
+      "value": 3,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "padding: 3px appears 3072 times in the component roots (borders and insets)"
+      },
+      "reason": "recurring inset value; no published variable — requested to design",
+      "theme": { "namespace": "spacing", "key": "0.75" }
+    },
+    "spacing-4": {
+      "name": "Foundations/spacing-4",
+      "type": "FLOAT",
+      "value": 4,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "node",
+        "ref": "123:4852",
+        "note": "Regole spaziatura, Dimensione=4"
+      },
+      "reason": "published scale value; the page is a component set, not a variable — requested to design",
+      "theme": { "namespace": "spacing", "key": "1" }
+    },
+    "spacing-6": {
+      "name": "Foundations/spacing-6",
+      "type": "FLOAT",
+      "value": 6,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "itemSpacing: 6px appears 860 times, padding: 6px 592 times in the component roots"
+      },
+      "reason": "recurring value outside the published scale; no published variable — requested to design",
+      "theme": { "namespace": "spacing", "key": "1.5" }
+    },
+    "spacing-8": {
+      "name": "Foundations/spacing-8",
+      "type": "FLOAT",
+      "value": 8,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "node",
+        "ref": "123:4852",
+        "note": "Regole spaziatura, Dimensione=8"
+      },
+      "reason": "published scale value; the page is a component set, not a variable — requested to design",
+      "theme": { "namespace": "spacing", "key": "2" }
+    },
+    "spacing-10": {
+      "name": "Foundations/spacing-10",
+      "type": "FLOAT",
+      "value": 10,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "itemSpacing: 10px appears 2511 times, padding: 10px 186 times in the component roots"
+      },
+      "reason": "recurring value outside the published scale; no published variable — requested to design",
+      "theme": { "namespace": "spacing", "key": "2.5" }
+    },
+    "spacing-12": {
+      "name": "Foundations/spacing-12",
+      "type": "FLOAT",
+      "value": 12,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "padding: 12px appears 7575 times, itemSpacing: 12px 1223 times in the component roots"
+      },
+      "reason": "the most recurring value outside the published scale; no published variable — requested to design",
+      "theme": { "namespace": "spacing", "key": "3" }
+    },
+    "spacing-14": {
+      "name": "Foundations/spacing-14",
+      "type": "FLOAT",
+      "value": 14,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "padding: 14px appears 480 times in the component roots"
+      },
+      "reason": "recurring value outside the published scale; no published variable — requested to design",
+      "theme": { "namespace": "spacing", "key": "3.5" }
+    },
+    "spacing-16": {
+      "name": "Foundations/spacing-16",
+      "type": "FLOAT",
+      "value": 16,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "node",
+        "ref": "123:4852",
+        "note": "Regole spaziatura, Dimensione=16"
+      },
+      "reason": "published scale value; the page is a component set, not a variable — requested to design",
+      "theme": { "namespace": "spacing", "key": "4" }
+    },
+    "spacing-20": {
+      "name": "Foundations/spacing-20",
+      "type": "FLOAT",
+      "value": 20,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "itemSpacing: 20px appears 63 times, padding: 20px 407 times in the component roots"
+      },
+      "reason": "recurring value outside the published scale; no published variable — requested to design",
+      "theme": { "namespace": "spacing", "key": "5" }
+    },
+    "spacing-24": {
+      "name": "Foundations/spacing-24",
+      "type": "FLOAT",
+      "value": 24,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "node",
+        "ref": "123:4852",
+        "note": "Regole spaziatura, Dimensione=24"
+      },
+      "reason": "published scale value; the page is a component set, not a variable — requested to design",
+      "theme": { "namespace": "spacing", "key": "6" }
+    },
+    "spacing-32": {
+      "name": "Foundations/spacing-32",
+      "type": "FLOAT",
+      "value": 32,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "node",
+        "ref": "123:4852",
+        "note": "Regole spaziatura, Dimensione=32"
+      },
+      "reason": "published scale value; the page is a component set, not a variable — requested to design",
+      "theme": { "namespace": "spacing", "key": "8" }
+    },
+    "spacing-40": {
+      "name": "Foundations/spacing-40",
+      "type": "FLOAT",
+      "value": 40,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "node",
+        "ref": "123:4852",
+        "note": "Regole spaziatura, Dimensione=40"
+      },
+      "reason": "published scale value; the page is a component set, not a variable — requested to design",
+      "theme": { "namespace": "spacing", "key": "10" }
+    },
+    "spacing-48": {
+      "name": "Foundations/spacing-48",
+      "type": "FLOAT",
+      "value": 48,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "node",
+        "ref": "123:4852",
+        "note": "Regole spaziatura, Dimensione=48"
+      },
+      "reason": "published scale value; the page is a component set, not a variable — requested to design",
+      "theme": { "namespace": "spacing", "key": "12" }
+    },
+    "spacing-56": {
+      "name": "Foundations/spacing-56",
+      "type": "FLOAT",
+      "value": 56,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "padding: 56px appears 16 times in the component roots"
+      },
+      "reason": "recurring value outside the published scale; no published variable — requested to design",
+      "theme": { "namespace": "spacing", "key": "14" }
+    },
+    "spacing-64": {
+      "name": "Foundations/spacing-64",
+      "type": "FLOAT",
+      "value": 64,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "itemSpacing: 64px appears 77 times, padding: 64px 72 times in the component roots"
+      },
+      "reason": "recurring value outside the published scale; no published variable — requested to design",
+      "theme": { "namespace": "spacing", "key": "16" }
+    },
+    "spacing-80": {
+      "name": "Foundations/spacing-80",
+      "type": "FLOAT",
+      "value": 80,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "itemSpacing: 80px appears 36 times, padding: 80px 6 times in the component roots"
+      },
+      "reason": "recurring value outside the published scale; no published variable — requested to design",
+      "theme": { "namespace": "spacing", "key": "20" }
+    },
+    "spacing-132": {
+      "name": "Foundations/spacing-132",
+      "type": "FLOAT",
+      "value": 132,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "padding: 132px appears 12 times in the component roots (footer side padding)"
+      },
+      "reason": "source footer padding; no published variable — requested to design",
+      "theme": { "namespace": "spacing", "key": "33" }
+    },
+    "size-icon-16": {
+      "name": "Foundations/size-icon-16",
+      "type": "FLOAT",
+      "value": 16,
+      "category": "size",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "icon boxes recur at 16px in the component roots"
+      },
+      "reason": "icon size; no published variable — requested to design"
+    },
+    "size-icon-20": {
+      "name": "Foundations/size-icon-20",
+      "type": "FLOAT",
+      "value": 20,
+      "category": "size",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "icon boxes recur at 20px in the component roots"
+      },
+      "reason": "icon size; no published variable — requested to design"
+    },
+    "size-icon-24": {
+      "name": "Foundations/size-icon-24",
+      "type": "FLOAT",
+      "value": 24,
+      "category": "size",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "24px is the most recurring icon box in the component roots (123 variants)"
+      },
+      "reason": "default icon size; no published variable — requested to design"
+    },
+    "size-icon-32": {
+      "name": "Foundations/size-icon-32",
+      "type": "FLOAT",
+      "value": 32,
+      "category": "size",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "icon boxes recur at 32px in the component roots"
+      },
+      "reason": "large icon size; no published variable — requested to design"
+    },
+    "size-control-40": {
+      "name": "Foundations/size-control-40",
+      "type": "FLOAT",
+      "value": 40,
+      "category": "size",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "compact control boxes recur at 40px in the component roots"
+      },
+      "reason": "compact control height; no published variable — requested to design"
+    },
+    "size-control-44": {
+      "name": "Foundations/size-control-44",
+      "type": "FLOAT",
+      "value": 44,
+      "category": "size",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "44px control boxes recur in the component roots (44 target rule)"
+      },
+      "reason": "minimum target control height; no published variable — requested to design"
+    },
+    "size-control-48": {
+      "name": "Foundations/size-control-48",
+      "type": "FLOAT",
+      "value": 48,
+      "category": "size",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "48px is the most recurring control box height in the component roots (88 variants)"
+      },
+      "reason": "default control height; no published variable — requested to design"
+    },
+    "size-control-56": {
+      "name": "Foundations/size-control-56",
+      "type": "FLOAT",
+      "value": 56,
+      "category": "size",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "56px control boxes recur in the component roots"
+      },
+      "reason": "large control height; no published variable — requested to design"
+    },
+    "breakpoint-sm": {
+      "name": "Foundations/breakpoint-sm",
+      "type": "FLOAT",
+      "value": 600,
+      "category": "breakpoint",
+      "origin": "figma-asset",
+      "source": {
+        "kind": "variable",
+        "ref": "c3692fb7a6bcf9c74baace4a40902f3e4479fbd5",
+        "note": "Device/SM Tablet 600"
+      },
+      "theme": { "namespace": "breakpoint", "key": "tablet" }
+    },
+    "breakpoint-md": {
+      "name": "Foundations/breakpoint-md",
+      "type": "FLOAT",
+      "value": 900,
+      "category": "breakpoint",
+      "origin": "figma-asset",
+      "source": {
+        "kind": "variable",
+        "ref": "1c15422297251dcb9b2857ea82eb63d5df994627",
+        "note": "Device/MD Tablet 900"
+      },
+      "theme": { "namespace": "breakpoint", "key": "tablet-md" }
+    },
+    "breakpoint-lg": {
+      "name": "Foundations/breakpoint-lg",
+      "type": "FLOAT",
+      "value": 1200,
+      "category": "breakpoint",
+      "origin": "figma-asset",
+      "source": {
+        "kind": "variable",
+        "ref": "240a5b7ed9812431e80b636185f2ad8344e955b8",
+        "note": "Device/LG Desktop 1200"
+      },
+      "theme": { "namespace": "breakpoint", "key": "desktop" }
+    },
+    "breakpoint-xl": {
+      "name": "Foundations/breakpoint-xl",
+      "type": "FLOAT",
+      "value": 1536,
+      "category": "breakpoint",
+      "origin": "figma-asset",
+      "source": {
+        "kind": "variable",
+        "ref": "99d6d731bc358ecacaa08acf46853be2f95d842b",
+        "note": "Device/XL Desltop 1536 (the source's own spelling)"
+      },
+      "theme": { "namespace": "breakpoint", "key": "desktop-xl" }
+    },
+    "breakpoint-2xl": {
+      "name": "Foundations/breakpoint-2xl",
+      "type": "FLOAT",
+      "value": 1920,
+      "category": "breakpoint",
+      "origin": "local-extension",
+      "source": {
+        "kind": "node",
+        "ref": "10088:8897",
+        "note": "White Template, Breakpoint=XXL Desktop (1920x650)"
+      },
+      "reason": "no published Device variable carries this width; requested to design",
+      "theme": { "namespace": "breakpoint", "key": "desktop-xxl" }
+    },
+    "container-narrow": {
+      "name": "Foundations/container-narrow",
+      "type": "FLOAT",
+      "value": 640,
+      "category": "container",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "container threshold used by Table, TableListItem and Pagination; not present in the source geometry"
+      },
+      "reason": "layout hand-off threshold, not a published variable — requested to design",
+      "theme": { "namespace": "container", "key": "narrow" }
+    },
+    "container-tight": {
+      "name": "Foundations/container-tight",
+      "type": "FLOAT",
+      "value": 432,
+      "category": "container",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "container threshold used by Timeline; not present in the source geometry"
+      },
+      "reason": "layout hand-off threshold, not a published variable — requested to design",
+      "theme": { "namespace": "container", "key": "tight" }
+    },
+    "z-0": {
+      "name": "Foundations/z-0",
+      "type": "FLOAT",
+      "value": 0,
+      "category": "z-index",
+      "origin": "local-extension",
+      "source": {
+        "kind": "code",
+        "note": "switch track stacking"
+      },
+      "reason": "runtime stacking order; the source file declares no z-index — recorded so the scale is explicit",
+      "theme": { "namespace": "z-index", "key": "0" }
+    },
+    "z-10": {
+      "name": "Foundations/z-10",
+      "type": "FLOAT",
+      "value": 10,
+      "category": "z-index",
+      "origin": "local-extension",
+      "source": {
+        "kind": "code",
+        "note": "in-component layering (stepper, timeline, select scroll buttons, banners)"
+      },
+      "reason": "runtime stacking order; the source file declares no z-index — recorded so the scale is explicit",
+      "theme": { "namespace": "z-index", "key": "10" }
+    },
+    "z-20": {
+      "name": "Foundations/z-20",
+      "type": "FLOAT",
+      "value": 20,
+      "category": "z-index",
+      "origin": "local-extension",
+      "source": {
+        "kind": "code",
+        "note": "overlay above a surface (avatar status, switch focus ring, loading overlay)"
+      },
+      "reason": "runtime stacking order; the source file declares no z-index — recorded so the scale is explicit",
+      "theme": { "namespace": "z-index", "key": "20" }
+    },
+    "z-30": {
+      "name": "Foundations/z-30",
+      "type": "FLOAT",
+      "value": 30,
+      "category": "z-index",
+      "origin": "local-extension",
+      "source": {
+        "kind": "code",
+        "note": "sticky actions row"
+      },
+      "reason": "runtime stacking order; the source file declares no z-index — recorded so the scale is explicit",
+      "theme": { "namespace": "z-index", "key": "30" }
+    },
+    "z-50": {
+      "name": "Foundations/z-50",
+      "type": "FLOAT",
+      "value": 50,
+      "category": "z-index",
+      "origin": "local-extension",
+      "source": {
+        "kind": "code",
+        "note": "floating layers (dialog, drawer, popover, select, dropdown, tooltip, cookies)"
+      },
+      "reason": "runtime stacking order; the source file declares no z-index — recorded so the scale is explicit",
+      "theme": { "namespace": "z-index", "key": "50" }
+    },
+    "radius-2": {
+      "name": "Foundations/radius-2",
+      "type": "FLOAT",
+      "value": 2,
+      "category": "radius",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "cornerRadius: 2px appears 19 times in the component roots"
+      },
+      "reason": "recurring value outside the published 0/8/16/24 scale; no published variable — requested to design"
+    },
+    "radius-4": {
+      "name": "Foundations/radius-4",
+      "type": "FLOAT",
+      "value": 4,
+      "category": "radius",
+      "origin": "local-extension",
+      "source": {
+        "kind": "snapshot",
+        "note": "cornerRadius: 4px appears 116 times in the component roots"
+      },
+      "reason": "recurring value outside the published 0/8/16/24 scale; no published variable — requested to design"
+    },
+    "shadow-16": {
+      "name": "Shadow 16",
+      "type": "EFFECT",
+      "value": [
+        {
+          "type": "DROP_SHADOW",
+          "color": "#0e0f131a",
+          "offset": { "x": 0, "y": 4 },
+          "radius": 16,
+          "spread": 0
+        }
+      ],
+      "category": "shadow",
+      "origin": "figma-asset",
+      "source": {
+        "kind": "style",
+        "ref": "49dc4d5e9d1b1f16c457adeedf4e5bbf6eac28dd",
+        "note": "Shadow 16 effect style (menu and dropdown elevation)"
+      }
+    }
+  }
+}

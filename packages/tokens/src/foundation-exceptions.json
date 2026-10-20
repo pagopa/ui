@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "note": "Values that may stay until the source or the design changes. Every entry names the token occurrence, the source node it belongs to and the reason. The list must shrink: an entry that stops matching fails the check. The design request lists these values.",
+  "exceptions": [
+    {
+      "rule": "off-scale-spacing",
+      "file": "src/components/inputs/text-fields.tsx",
+      "match": "pl-11",
+      "nodeId": "529:6102",
+      "reason": "Derived composite: the source insets the value 12px after a 24px leading icon frame with an 8px gap (12 + 24 + 8 = 44). No 44px spacing exists in the source; requested to design."
+    },
+    {
+      "rule": "off-scale-spacing",
+      "file": "src/components/primitives/select.tsx",
+      "match": "pr-9",
+      "nodeId": "602:9417",
+      "reason": "Menu item trailing space for the selection mark; no 36px spacing exists in the source; requested to design."
+    },
+    {
+      "rule": "off-scale-spacing",
+      "file": "src/components/primitives/dropdown-menu.tsx",
+      "match": "pl-7",
+      "nodeId": "3262:40787",
+      "reason": "Inset menu label alignment (28px); the source does not declare a 28px spacing; requested to design."
+    },
+    {
+      "rule": "off-scale-spacing",
+      "file": "src/components/data-display/timeline.tsx",
+      "match": "pl-7",
+      "nodeId": "12812:16248",
+      "reason": "Timeline content inset (28px); the source does not declare a 28px spacing; requested to design."
+    },
+    {
+      "rule": "off-scale-spacing",
+      "file": "src/components/data-display/microevento.tsx",
+      "match": "pl-7",
+      "nodeId": "9676:5633",
+      "reason": "Microevento content inset (28px); the source does not declare a 28px spacing; requested to design."
+    },
+    {
+      "rule": "off-scale-spacing",
+      "file": "src/components/primitives/calendar.tsx",
+      "match": "pr-22",
+      "nodeId": "8049:39452",
+      "reason": "Caption trailing space for the navigation buttons (88px); no 88px spacing exists in the source; requested to design."
+    },
+    {
+      "rule": "font-weight",
+      "file": "src/components/templates/figma/LogIn.tsx",
+      "match": "font-normal",
+      "nodeId": "2339:80916",
+      "reason": "The source description is 18px regular; the captured library exposes no regular 18px text style (Body Big is semibold only). Requested to design."
+    }
+  ]
+}
