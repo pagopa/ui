@@ -407,5 +407,9 @@ export const OverlayAnnouncements: Story = {
     const panel = await screen.findByRole("dialog", { name: /Storico/ })
     await expect(within(panel).getByText("Eventi dal più recente")).toBeVisible()
     await userEvent.keyboard("{Escape}")
+    // Leave the pass no closing overlay: the accessibility contract runs after
+    // the play function, and a panel still animating out no longer owns the
+    // focus it restored to its trigger.
+    await waitFor(() => expect(screen.queryByRole("dialog", { name: /Storico/ })).toBeNull())
   },
 }

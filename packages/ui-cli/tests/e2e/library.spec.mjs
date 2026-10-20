@@ -949,11 +949,22 @@ test("the packed artifact behaves as documented", async ({ browserName, context,
     )
     await informationPage.keyboard.press("Enter")
     await informationPage.waitForURL((location) => location.hash === destination)
-    const newPage = informationPage.context().waitForEvent("page")
-    await link.click(newTabClickOptions(browserName))
-    const informationTab = await newPage
-    await informationTab.waitForURL((location) => location.hash === destination)
-    await informationTab.close()
+    if (opensNewTabInBrowser(browserName)) {
+      const newPage = informationPage.context().waitForEvent("page")
+      await link.click(newTabClickOptions(browserName))
+      const informationTab = await newPage
+      await informationTab.waitForURL((location) => location.hash === destination)
+      await informationTab.close()
+    } else {
+      // Same portable half of the contract as the product link: WebKitGTK has
+      // no new-tab gesture, so the anchor and its destination are the proof.
+      assert.equal(await link.getAttribute("href"), destination)
+      assert.equal(
+        await link.evaluate((element) => element.tagName),
+        "A",
+        "the informational link must stay a native anchor",
+      )
+    }
     for (const preference of [pendingPreference, lockedPreference]) {
       assert.equal(await preference.isDisabled(), true)
       assert.equal(await preference.isChecked(), true)

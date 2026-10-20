@@ -18,14 +18,6 @@
         "{workspaceRoot}/packages/pagopa-ui/src/**",
         "{workspaceRoot}/packages/pagopa-ui/figma-to-code.yaml"
       ]
-    },
-    "library:check": {
-      "dependsOn": ["pagopa-ui:build"],
-      "inputs": [
-        "default",
-        "{workspaceRoot}/packages/pagopa-ui/src/**",
-        "{workspaceRoot}/packages/pagopa-ui/figma-to-code.yaml"
-      ]
     }
   }
 }

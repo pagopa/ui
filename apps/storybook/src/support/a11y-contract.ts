@@ -363,6 +363,11 @@ async function expectDialogBehaviour() {
     "[role='dialog'],[role='alertdialog'],dialog[open]",
   )) {
     if (!isVisible(dialog)) continue
+    // A dialog in its exit transition is closing: the focus is already back on
+    // its trigger by design, so the contract applies while it is open, not
+    // while it animates out. A slow runner keeps the ending style mounted long
+    // enough for the afterEach pass to see it.
+    if (dialog.matches("[data-ending-style],[data-closed]")) continue
     // A non-modal popover uses role=dialog without modality: the trigger keeps
     // the focus by design. Everything else follows the dialog contract.
     const modalLike = dialog.closest('[data-slot="popover-content"]') === null

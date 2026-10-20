@@ -188,6 +188,10 @@ The npm tasks below are thin aliases over that tree, kept because the Nx
 targets and the agent skills name them. A direct call is always
 `ui-cli <group> <command>` (or `node packages/ui-cli/src/cli.ts <group> <command>`).
 
+The packed-artifact check is not aliased here: it audits the built package, so
+it belongs to that package and runs as `pnpm nx run pagopa-ui:library:check`,
+which builds it first.
+
 ## npm tasks
 
 | Task                    | Command                             | Network | Notes                                                                                                                                                                                                                     |
@@ -207,7 +211,6 @@ targets and the agent skills name them. A direct call is always
 | `layers:check`          | `check layers`                      | No      | Reads `src`.                                                                                                                                                                                                              |
 | `foundation:check`      | `check foundation`                  | No      | Enforces the component class contract; `--measure` prints the current counts.                                                                                                                                             |
 | `docs:check`            | `check docs`                        | No      | Reads the repository; fails on a dead link or path and on a project identifier inside the skill.                                                                                                                          |
-| `library:check`         | `check library`                     | No      | Needs `pnpm nx run pagopa-ui:build` first. Playwright runner, one project per engine, one retry.                                                                                                                          |
 | `test`                  | `node --test "tests/**/*.test.mjs"` | No      | Runs the CLI regressions.                                                                                                                                                                                                 |
 | `test:changed`          | `test changed`                      | No      | The fast pass (Firefox and WebKit) on the affected test files only.                                                                                                                                                       |
 | `test:coverage:changed` | `test changed --coverage`           | No      | The Chromium/v8 coverage pass on the affected test files; the report covers the changed files.                                                                                                                            |

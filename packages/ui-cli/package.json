@@ -27,7 +27,6 @@
     "foundation:check": "node src/cli.ts check foundation",
     "docs:check": "node src/cli.ts check docs",
     "css:check": "node src/cli.ts check css",
-    "library:check": "node src/cli.ts check library",
     "test:changed": "node src/cli.ts test changed",
     "test:coverage:changed": "node src/cli.ts test changed --coverage",
     "test": "node --test \"tests/**/*.test.mjs\"",
