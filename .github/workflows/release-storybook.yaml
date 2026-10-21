@@ -4,6 +4,12 @@ name: Release Storybook
 # infra/resources/dev. Pull requests get a preview environment; main gets the
 # production deployment. The DX reusable builds the workspace, uploads the
 # artifact and deploys it with the Static Web Apps action.
+#
+# The release pull request is skipped: it only bumps the version and writes the
+# changelog, so its preview would deploy the site that is already live and then
+# delete it on close. Skipping the job also covers that cleanup, which is why
+# `closed` stays among the types: a closed hand-written pull request still tears
+# its preview down.
 on:
   workflow_dispatch:
   push:
@@ -37,6 +43,7 @@ permissions:
 jobs:
   deploy_to_static_web_app:
     name: Release Storybook
+    if: ${{ !startsWith(github.head_ref || '', 'nx-release/') }}
     permissions:
       contents: read
       id-token: write
