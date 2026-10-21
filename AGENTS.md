@@ -20,10 +20,10 @@ This file adds what holds only for agents.
    `packages/ui-cli`: run their targets with
    `pnpm nx run <project>:<target>`, never with a path that walks out of the
    project.
-4. **English whatever the session language.** Documentation and code comments are
-   written in English even when the session runs in Italian. Italian stays only
-   where the product renders it: component and story texts, and the UI examples
-   quoted in a guide.
+4. **English whatever the session language.** Documentation, code comments and
+   pull request titles and descriptions are written in English even when the
+   session runs in Italian. Italian stays only where the product renders it:
+   component and story texts, and the UI examples quoted in a guide.
 
 ## Skills
 
