@@ -122,6 +122,24 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`
 }
 
+function isMissingFile(error: unknown): boolean {
+  if (typeof error !== "object" || error === null) return false
+  const candidate: { code?: unknown } = error
+  return candidate.code === "ENOENT"
+}
+
+// Read without a check-then-use pair: a missing file is an expected state, any
+// other error is not. This is the same contract `existsSync` would express, but
+// it cannot race with a concurrent writer (CodeQL js/file-system-race).
+function loadIfExists<T>(load: () => T): { value?: T; error?: unknown; missing: boolean } {
+  try {
+    return { value: load(), missing: false }
+  } catch (error) {
+    if (isMissingFile(error)) return { missing: true }
+    return { error, missing: false }
+  }
+}
+
 // Every node id a slice document tree declares: the published node, its variants
 // and the nested instances.
 function collectIds(value: unknown, ids = new Set<string>()): Set<string> {
@@ -335,7 +353,11 @@ function readExistingPngs(
   for (const [caseId, entry] of Object.entries(manifest.cases)) {
     if (!wanted.has(caseId)) continue
     const file = path.join(root, EVIDENCE_DIR, entry.png)
-    if (fs.existsSync(file)) pngs.set(caseId, fs.readFileSync(file))
+    try {
+      pngs.set(caseId, fs.readFileSync(file))
+    } catch (error) {
+      if (!isMissingFile(error)) throw error
+    }
   }
   return pngs
 }
@@ -359,12 +381,19 @@ export async function writeEvidence({
   capturedAt?: string
 } = {}): Promise<number> {
   const snapshotFile = input ? path.resolve(dataRoot, input) : path.join(dataRoot, SNAPSHOT_PATH)
-  if (!fs.existsSync(snapshotFile)) {
+  const snapshotRead = loadIfExists(() => readSnapshot(snapshotFile))
+  if (snapshotRead.missing) {
     console.error(
       `error: ${snapshotFile} is missing: run the live export first ` +
         `(parity evidence --write --input .figma/live-rest.json).`,
     )
     return 2
+  }
+  if (snapshotRead.error || !snapshotRead.value) {
+    console.error(
+      `error: ${snapshotRead.error instanceof Error ? snapshotRead.error.message : String(snapshotRead.error)}`,
+    )
+    return 1
   }
   const paths = evidencePaths(root)
   const cases = loadCaseFile(path.join(dataRoot, CASES_PATH))
@@ -377,8 +406,15 @@ export async function writeEvidence({
     for (const error of validation.errors) console.error(`error: ${error}`)
     return 1
   }
-  const snapshot = readSnapshot(snapshotFile)
-  const existing = fs.existsSync(paths.manifest) ? loadManifest(paths.manifest) : undefined
+  const snapshot = snapshotRead.value
+  const existingRead = loadIfExists(() => loadManifest(paths.manifest))
+  if (existingRead.error) {
+    console.error(
+      `error: ${existingRead.error instanceof Error ? existingRead.error.message : String(existingRead.error)}`,
+    )
+    return 1
+  }
+  const existing = existingRead.value
   const existingPngs = readExistingPngs(root, existing, cases)
   const { result, errors } = await buildEvidence({
     snapshot,
@@ -398,8 +434,13 @@ export async function writeEvidence({
   let totalBytes = total
   for (const caseId of result.reused) {
     const file = path.join(paths.references, `${caseId}.png`)
-    if (!fs.existsSync(file)) continue
-    const size = fs.statSync(file).size
+    let size: number
+    try {
+      size = fs.statSync(file).size
+    } catch (error) {
+      if (isMissingFile(error)) continue
+      throw error
+    }
     totalBytes += size
     byCase.push({ caseId, bytes: size })
   }
@@ -470,23 +511,25 @@ function loadEvidenceForCheck(root: string): {
   const errors: string[] = []
   let slice: EvidenceSlice | undefined
   let manifest: EvidenceManifest | undefined
-  if (!fs.existsSync(paths.source)) {
+  const sourceRead = loadIfExists(() => loadSlice(paths.source))
+  if (sourceRead.missing) {
     errors.push(`${SOURCE_PATH} is missing — run \`parity evidence --write\` with FIGMA_TOKEN`)
+  } else if (sourceRead.error) {
+    errors.push(
+      sourceRead.error instanceof Error ? sourceRead.error.message : String(sourceRead.error),
+    )
   } else {
-    try {
-      slice = loadSlice(paths.source)
-    } catch (error) {
-      errors.push(error instanceof Error ? error.message : String(error))
-    }
+    slice = sourceRead.value
   }
-  if (!fs.existsSync(paths.manifest)) {
+  const manifestRead = loadIfExists(() => loadManifest(paths.manifest))
+  if (manifestRead.missing) {
     errors.push(`${MANIFEST_PATH} is missing — run \`parity evidence --write\` with FIGMA_TOKEN`)
+  } else if (manifestRead.error) {
+    errors.push(
+      manifestRead.error instanceof Error ? manifestRead.error.message : String(manifestRead.error),
+    )
   } else {
-    try {
-      manifest = loadManifest(paths.manifest)
-    } catch (error) {
-      errors.push(error instanceof Error ? error.message : String(error))
-    }
+    manifest = manifestRead.value
   }
   return { slice, manifest, errors }
 }
@@ -574,11 +617,14 @@ export function checkEvidence({
     }
     pngs.add(record.png)
     const file = path.join(root, EVIDENCE_DIR, record.png)
-    if (!fs.existsSync(file)) {
+    let onDisk: Buffer
+    try {
+      onDisk = fs.readFileSync(file)
+    } catch (error) {
+      if (!isMissingFile(error)) throw error
       errors.push(`${where}: ${record.png} is missing`)
       continue
     }
-    const onDisk = fs.readFileSync(file)
     bytes += onDisk.length
     byCase.push({ caseId: entry.id, bytes: onDisk.length })
     if (sha256(onDisk) !== record.sha256) {
@@ -590,12 +636,14 @@ export function checkEvidence({
       errors.push(`${caseId}: manifest entry with no case in the corpus — remove it`)
     }
   }
-  if (fs.existsSync(paths.references)) {
+  try {
     for (const file of fs.readdirSync(paths.references)) {
       if (!file.endsWith(".png")) continue
       const relative = `references/${file}`
       if (!pngs.has(relative)) errors.push(`${relative}: orphan reference with no manifest entry`)
     }
+  } catch (error) {
+    if (!isMissingFile(error)) throw error
   }
   if (bytes > maxBytes) {
     byCase.sort((a, b) => b.bytes - a.bytes)
