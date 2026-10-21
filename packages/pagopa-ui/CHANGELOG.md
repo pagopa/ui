@@ -1,3 +1,13 @@
+## 0.0.1 (2026-10-21)
+
+### 🚀 Features
+
+- Publish `@pagopa/ui` on GitHub Packages through the Nx Release pipeline. ([5460336](https://github.com/pagopa/ui/commit/5460336))
+
+### ❤️ Thank You
+
+- gunzip
+
 ## Unreleased
 
 ### Added
