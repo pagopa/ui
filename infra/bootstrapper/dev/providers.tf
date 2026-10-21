@@ -1,5 +1,6 @@
 terraform {
-  required_version = ">= 1.11.0"
+  # The removed blocks in secrets.tf require Terraform 1.7 or newer.
+  required_version = ">= 1.7.0"
 
   required_providers {
     azurerm = {

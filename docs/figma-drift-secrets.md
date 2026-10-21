@@ -1,14 +1,14 @@
 # Figma drift and Chromatic secrets
 
 The three tokens are **GitHub environment secrets of `app-dev-ci`**, the
-environment the drift and Chromatic jobs declare. Terraform manages their
-existence, never their value:
+environment the drift and Chromatic jobs declare. They are created and rotated
+out of band, not by Terraform:
 
-- `infra/bootstrapper/dev` creates the Key Vault secret with `value_wo`, so the
-  value is not stored in the Terraform state;
-- the same file creates the GitHub environment secret with the placeholder
-  `placeholder` and ignores changes to its `value`, so the real value can be
-  copied from Key Vault afterwards without a later apply overwriting it.
+- the value lives in the common Key Vault;
+- the GitHub environment secret is a copy of it;
+- `infra/bootstrapper/dev/secrets.tf` only contains `removed` blocks that forget
+  the resources created during an earlier Terraform attempt, without destroying
+  the existing secrets.
 
 No agent inserts, prints or reads a secret, and no Terraform `data` source reads
 a Key Vault secret value. The tools read the process environment only.
@@ -32,16 +32,9 @@ the drift and Chromatic jobs do not use them.
 
 ## Create and rotate
 
-The Key Vault secrets live in the common vault exported by the core-values
-module. Terraform creates them empty (`value_wo = ""`) on the first apply: set
-the value through the portal or a secure channel afterwards. If they already
-exist, import them before the first apply.
-
-The `app-dev-ci` environment is created by `infra/repository`: apply it before
-`infra/bootstrapper/dev`, which owns the environment secrets.
-
-After the first apply, copy each value from Key Vault into the environment
-secret once:
+The Key Vault secrets live in the common vault. Create them there through the
+portal or a secure channel, then copy each value into the environment secret
+once:
 
 ```sh
 az keyvault secret show --vault-name <common-vault> --name ui-figma-token \
@@ -51,6 +44,11 @@ az keyvault secret show --vault-name <common-vault> --name ui-figma-token \
 The same shape applies to `ui-drift-pr-token` → `DRIFT_PR_TOKEN` and
 `ui-chromatic-project-token` → `CHROMATIC_PROJECT_TOKEN`.
 
+The `app-dev-ci` environment is created by `infra/repository`.
+`infra/bootstrapper/dev/secrets.tf` no longer manages the secrets: its `removed`
+blocks use `destroy = false`, so a later bootstrapper apply forgets the
+resources without deleting the Key Vault or GitHub secrets.
+
 ### `FIGMA_TOKEN`
 
 1. In Figma, create a personal access token with `file_content:read` and
@@ -59,8 +57,7 @@ The same shape applies to `ui-drift-pr-token` → `DRIFT_PR_TOKEN` and
 2. Set it as the `ui-figma-token` Key Vault secret.
 3. Copy it into the `FIGMA_TOKEN` environment secret of `app-dev-ci`.
 4. To rotate it, create a new token, update the Key Vault secret and copy it
-   again. Terraform ignores the remote update, so it does not restore the
-   placeholder.
+   again.
 
 The drift job preflights it and fails with an explicit message when it is
 missing; a skipped check cannot certify alignment.
