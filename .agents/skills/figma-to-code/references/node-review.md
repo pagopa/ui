@@ -34,13 +34,15 @@ bulk re-approval.
      re-run the cases, then `implemented`;
    - out of scope → `excluded` with a reason;
    - cannot be closed now → stays `pending`, with the blocking condition in the
+     note; when the blocker is a question for the Figma design owner, write a
+     design request ([design-request.md](design-request.md)) and name it in the
      note.
 
    A `mocked` demo keeps its status and note: a review is not a renewal. A
    mapping to an existing implementation needs that implementation to cover the
    node's whole contract, every device included.
-   **Done when** the registry entry reflects the decision and its note states any
-   constraint or open point in itself, without pointing elsewhere.
+   **Done when** the registry entry reflects the decision; a constraint or
+   residue is in the note, and an open question names its design request.
 
 5. **Close** with `pnpm nx run pagopa-ui:figma:check`, the source-alignment checklist in
    [definition-of-done.md](definition-of-done.md) when code changed, and the

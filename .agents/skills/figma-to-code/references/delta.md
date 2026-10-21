@@ -7,8 +7,8 @@ request ([node-review.md](node-review.md)).
 ## Entry points
 
 - **A drift pull request** is a complete handoff: its body lists the delta nodes
-  with links, classes, targets and per-device variants. Start from its branch at
-  step 4.
+  with links, classes, targets and per-device variants. Start from its branch
+  after the setup in [handoff.md](handoff.md), then step 4.
 - **Figma changed, no drift pull request**, or `figma:check` warns that the
   inventory is older than 30 days: start at step 1.
 - **The design foundations changed** (Variables): the token step below.
@@ -61,12 +61,15 @@ request ([node-review.md](node-review.md)).
      [node-review.md](node-review.md);
    - map it to an existing implementation that actually covers its contract →
      [node-review.md](node-review.md);
-   - `excluded` with a reason.
+   - `excluded` with a reason;
+   - the source leaves a question only the design owner can answer → write a
+     design request ([design-request.md](design-request.md)) and keep the node
+     `pending`.
 
    "It matches the desktop frame" is not a decision for a node with a device
    axis. **Done when** every delta node has one decision and the per-device
-   compositions it covers are written down; nodes left `pending` are listed for
-   the person.
+   compositions it covers are written down; nodes left `pending` name their
+   design request or blocker.
 
 ## Tokens: the design foundations changed
 

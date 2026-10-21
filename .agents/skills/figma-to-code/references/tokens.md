@@ -28,8 +28,8 @@ contract is green, and every exception carries a node and a reason.
 - A value that belongs to one component or page only stays a local extension in
   the stylesheet the config names.
 - A value that has no source and no clear owner is a registered exception with
-  the node and the reason, and it enters the request to the designers. It is
-  never absorbed silently.
+  the node and the reason, and it enters a design request
+  ([design-request.md](design-request.md)). It is never absorbed silently.
 
 ## The component class contract
 
