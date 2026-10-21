@@ -113,10 +113,24 @@ before starting; the queue moves.
    `use_figma`; the token is used for GET requests only.
 7. **Chromatic is opt-in.** It is triggered by `workflow_dispatch` or by a
    `chromatic` pull-request label, never by default and never as a required
-   check. A missing token skips the opt-in run, not the PR.
+   check. A missing token skips the opt-in run, not the PR. The project and the
+   token are approved; the person creates them.
 8. **The old plans are removed.** `a1-fidelity-tooling.md`,
    `a2-main-components.md` and `e-ci-pipeline.md` are deleted; the README index
    points here.
+9. **Evidence images are committed under a 10 MB cap.** If the cap is exceeded,
+   the bundle is reduced to the main components; the cap is not raised.
+10. **M5 starts with the 26 pending nodes**, then the 37 implemented non-icon
+    components without a case. Icons remain out of the parity scope.
+11. **The Figma design owner decides the three blockers**: the TimelineDrawer
+    mobile edge and header rhythm (the 416 width is already the shared width,
+    with a 1px residue against 417), the TableCellRow card export and the
+    Pagination `Order` semantics. The nodes stay `pending` until those decisions
+    are recorded.
+12. **The drift schedule stays weekly, Monday 04:00 UTC.** It is re-evaluated
+    only after the two metrics have been measured.
+13. **The branch guard fails closed.** A branch with commits that are not the
+    bot's is not pushed and not updated; the job stops with a clear message.
 
 ## 4. Return on investment
 
@@ -133,9 +147,9 @@ so the cheapest protective work lands first.
 
 The highest return per day is **M4**: it protects work, makes the drift PR
 actionable and produces the two metrics the process needs. **M1** is a
-prerequisite and is cheap. **M3** is optional and additive. **M2** is an
-enabler for review and offline work; if the person rejects committed binaries,
-limit it to the source slice and keep the PNGs as run artifacts. **M5** is the
+prerequisite and is cheap. **M3** is additive and opt-in. **M2** is an enabler
+for review and offline work; the PNGs are committed under the 10 MB cap and the
+bundle is reduced to the main components if it grows past it. **M5** is the
 largest investment and should start only after M1, so every closed node uses the
 same loop.
 
@@ -257,8 +271,8 @@ pinned Figma image, without `.figma/live-rest.json` and without `FIGMA_TOKEN`.
    - Skip a case whose variant `designFingerprint` and PNG hash are unchanged;
      remove an orphan PNG/manifest entry when its case disappears.
    - Fail if the total exceeds `MAX_EVIDENCE_BYTES`; report the size and the
-     largest cases, and let the person decide the reduction (the default is the
-     current 34 mapped nodes, not every icon).
+     largest cases and reduce to the main components. The cap is not raised
+     (decision of 2026-10-21).
 4. **Command.**
    - `parity evidence --write` (needs `FIGMA_TOKEN` and a current snapshot) and
      `parity evidence --check` (hermetic).
@@ -343,6 +357,7 @@ machine-readable delta and a local procedure the person can follow.
 **Actions.**
 
 1. Extend `packages/ui-cli/src/figma/sync.ts`:
+   - keep the weekly Monday 04:00 UTC schedule (decision of 2026-10-21);
    - `--delta <file>`: write the delta as JSON next to the PR body;
    - the payload: `generatedAt`, `fileKey`, `liveVersion` (when available),
      `counts` per class, `nodes` per class (`nodeId`, `name`, `pageName`,
@@ -440,7 +455,9 @@ machine-readable delta and a local procedure the person can follow.
 
 **Goal.** Close the measured debt with the current definition of done.
 
-**Scope, in order.**
+**Scope, in order.** The accepted order is the 26 pending nodes first (the
+groups below), then the 37 implemented non-icon components of the second ring;
+icons are out of scope.
 
 1. **Unblock the dependencies.** `Alert 212:1899`, `ListItem 908:2234`,
    `DragAndDrop 760:7432`; the Drawer note says these block it.
@@ -483,14 +500,22 @@ machine-readable delta and a local procedure the person can follow.
 
 **Specific blockers.**
 
-- `TimelineDrawer 1333:16408`: blocked by the OV4 width decision (source 417 vs
-  the tokenized 384) and the bottom-sheet composition; write the design request
-  and keep the node `pending`.
-- `TableCellRow 1344:40672`: needs a story export that renders the row inside
-  the card/`@container/table` context; add the export, then the mobile case.
+- `TimelineDrawer 1333:16408`: blocked by the mobile bottom-sheet composition
+  and the 24px head-to-description gap. The 416 width is already the shared
+  width with a 1px residue against the 417 source (the same residue as the
+  Drawer); the request is
+  [2026-10-21-timeline-drawer-width-and-mobile.md](../design-requests/2026-10-21-timeline-drawer-width-and-mobile.md).
+  Keep the node `pending` until the design owner decides.
+- `TableCellRow 1344:40672`: the request decides whether the mobile card is a
+  story wrapper around the row helper, a new card contract, or the Table's own
+  composition (in which case the node is `excluded`):
+  [2026-10-21-table-cell-row-mobile-card.md](../design-requests/2026-10-21-table-cell-row-mobile-card.md).
+  Implement the chosen option, then the mobile case or the exclusion.
 - `Pagination 127:1510`: the `Order` axis is not a device axis; M1 records the
-  exception. Add a case for the desktop composition and the principal states;
-  the `Mobile` value is a compact layout, not a device case.
+  exception. The request is
+  [2026-10-21-pagination-order-axis.md](../design-requests/2026-10-21-pagination-order-axis.md).
+  Add a case for the desktop composition and the principal states; the `Mobile`
+  value is a compact layout, not a device case.
 
 **Rules.**
 
@@ -568,7 +593,7 @@ Do not touch:
 
 | Risk                                        | Impact                                | Mitigation                                                                                                                              |
 | ------------------------------------------- | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| The evidence bundle grows past 10 MB        | slow clones, binary churn             | `MAX_EVIDENCE_BYTES`, skip unchanged fingerprints, restrict to the mapped cases; the person may drop the PNGs and keep the slice        |
+| The evidence bundle grows past 10 MB        | slow clones, binary churn             | `MAX_EVIDENCE_BYTES`, skip unchanged fingerprints, reduce to the main components; the cap is not raised                                 |
 | The slice is stale against the inventory    | a case compares against an old source | the manifest records the version and the variant fingerprint; `parity evidence --check` fails on a mismatch; the drift job refreshes it |
 | M5 scope explodes (123 proposals)           | an endless wave                       | the queue is the scope; principal states per node, not every proposal; three passes per case                                            |
 | A design defect is absorbed into code       | a silent deviation                    | the node stays `pending`; a file under `docs/design-requests/`; the registry note carries the decision                                  |
@@ -578,23 +603,34 @@ Do not touch:
 | The local agent follows a stale instruction | a wrong implementation                | read the skill and the plan; the registry note is binding; the person reviews the diff                                                  |
 | Storybook cannot start                      | render evidence missing               | `parity verify` and the source slice still run; do not count the render as passed                                                       |
 
-## 10. Decisions for the person
+## 10. Decisions taken and remaining prerequisites
 
-1. **Evidence images.** Accept the 10 MB cap and commit the PNGs, or keep only
-   the compact source slice and treat the PNGs as run artifacts? Recommended:
-   commit the 34 mapped nodes under the cap; the icons stay out.
-2. **Chromatic.** Create the project and `CHROMATIC_PROJECT_TOKEN`, and accept
-   the `chromatic` label as the trigger? Recommended: yes, opt-in.
-3. **M5 priority.** Close the 26 pending nodes first, or re-verify the 37
-   implemented non-icon components first? Recommended: pending first, because
-   the gate already protects the implemented device sets.
-4. **Design blockers.** Who owns the TimelineDrawer OV4 width, the TableCellRow
-   card export and the Pagination `Order` semantics? These are decisions, not
-   implementation details.
-5. **Drift schedule.** Keep the weekly Monday run until the two metrics are
-   measured, then decide daily or manual. Recommended: keep weekly.
-6. **Branch guard behaviour.** Fail the job and leave the branch untouched, or
-   comment on the existing PR? Recommended: fail closed, with a clear message.
+Decided on 2026-10-21:
+
+| Decision        | Choice                                                                                                |
+| --------------- | ----------------------------------------------------------------------------------------------------- |
+| Evidence images | Commit the PNGs under the 10 MB cap; if exceeded, reduce to the main components, do not raise the cap |
+| Chromatic       | Enable it: project, `CHROMATIC_PROJECT_TOKEN`, `chromatic` label; opt-in only                         |
+| M5 order        | First the 26 pending nodes, then the 37 implemented non-icon components without a case                |
+| Design blockers | Owned by the Figma design owner; the nodes stay `pending` until the decision is recorded              |
+| Drift schedule  | Weekly, Monday 04:00 UTC; re-evaluate only after the metrics are measured                             |
+| Branch guard    | Fail closed: no push and no PR update on a branch that has non-bot commits                            |
+
+Remaining prerequisites, owned by the person:
+
+1. Create the Chromatic project and insert `CHROMATIC_PROJECT_TOKEN`; create the
+   `chromatic` label on the repository.
+2. Insert `FIGMA_TOKEN` and `DRIFT_PR_TOKEN` in the repository secrets.
+3. The Figma design owner records the decisions for TimelineDrawer (mobile edge
+   and header rhythm; the 416 width is already the shared width), TableCellRow
+   and Pagination `Order`; the requests are
+   [TimelineDrawer](../design-requests/2026-10-21-timeline-drawer-width-and-mobile.md),
+   [TableCellRow](../design-requests/2026-10-21-table-cell-row-mobile-card.md) and
+   [Pagination](../design-requests/2026-10-21-pagination-order-axis.md). Until
+   then those nodes stay `pending` with the blocker in their registry note.
+
+There are no open scope decisions: the milestones, the order and the guard
+behaviour above are the plan.
 
 ## 11. Prompt for the implementing agent
 
@@ -638,8 +674,9 @@ For each milestone:
 4. Commit one logical change with a conventional message.
 5. Stop at the milestone gate and report before continuing to the next one.
 
-Stop and ask only for the decisions listed in section 10. If a change outside
-the ownership is needed, write it in the report; do not make it.
+Stop only for the prerequisites in section 10 (secrets, Chromatic project,
+design-owner decisions); the scope decisions are already taken. If a change
+outside the ownership is needed, write it in the report; do not make it.
 
 Final report: what was done; every command and its outcome; before/after
 numbers (cases, pending, device coverage, bundle size, warnings); what is

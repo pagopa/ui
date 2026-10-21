@@ -79,8 +79,9 @@ the one on variables opens only with a Figma Enterprise plan and the
    without it; Storybook is still required for a render.
 4. For A/E: a GitHub repository created and the secrets ready. The drift job
    needs `FIGMA_TOKEN` and `DRIFT_PR_TOKEN`; the opt-in Chromatic baseline needs
-   `CHROMATIC_PROJECT_TOKEN`. The agent writes the workflow and the secrets
-   document; the person inserts the secrets.
+   `CHROMATIC_PROJECT_TOKEN` and the `chromatic` label. The agent writes the
+   workflow and the secrets document; the person inserts the secrets and
+   creates the Chromatic project.
 
 ## How to start a session
 
@@ -103,8 +104,9 @@ You are the implementing agent for docs/plans/figma-fidelity-and-drift.md.
 Read docs/plans/README.md (common rules) and the plan, then execute milestone
 M1..M4 autonomously: implement, verify with the acceptance commands and close
 with the required report. Do not start M5 (the component burn-down) in this
-session. Do not touch the files of another flow. Stop and ask only for the
-decisions listed in the plan as "to ask".
+session. Do not touch the files of another flow. Stop only for the
+prerequisites listed in the plan (secrets, Chromatic project, design-owner
+decisions); the scope decisions are already taken.
 ```
 
 Operating rules:
