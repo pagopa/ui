@@ -18,7 +18,7 @@ jobs:
       id-token: write
       packages: read
       pull-requests: write
-    uses: pagopa/dx/.github/workflows/validate-v2.yaml@main
+    uses: pagopa/dx/.github/workflows/validate-v2.yaml@static-nx-workflows
     secrets:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
