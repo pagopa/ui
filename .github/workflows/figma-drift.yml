@@ -1,12 +1,14 @@
 name: Figma drift
 
-# Scheduled drift detection: refresh the pinned inventory and open one review
-# pull request when the live library changed. The merge is the review record
-# (docs/decisions/0001-rework.md); the pending queue is the visible signal.
-# The refreshed payload is formatted before the commit so the review diff
-# carries only the drift.
-# Missing read-only credentials fail explicitly: a skipped check cannot certify
-# alignment.
+# Scheduled drift detection: refresh the pinned inventory, the offline evidence
+# and the review payload, then open one review pull request. The merge is the
+# review record (docs/decisions/0001-rework.md); the pending queue is the
+# visible signal. The refreshed JSON is formatted before the commit so the
+# review diff carries only the drift.
+#
+# The job produces a reproducible handoff: delta.json, run.json and the body are
+# uploaded as artifacts (never `.figma/`), and the branch guard refuses to
+# force-push a branch whose head is not the bot's commit.
 #
 # DRIFT_PR_TOKEN is a fine-grained token (contents + pull requests) so the PR
 # can trigger CI; the default GITHUB_TOKEN cannot start workflow runs on its
@@ -15,10 +17,10 @@ name: Figma drift
 #
 # Every third-party action is pinned to a full commit SHA: this job can push
 # and reaches FIGMA_TOKEN and DRIFT_PR_TOKEN, so a moved tag would be arbitrary
-# code running with those powers (as with tj-actions/changed-files). The first
-# party `pagopa/dx` actions stay on `main`, the branch renovate.json tracks
-# them on. Permissions are read-only at the workflow level; only the job that
-# pushes and opens the pull request gets write.
+# code running with those powers. The first party `pagopa/dx` actions stay on
+# `main`, the branch renovate.json tracks them on. Permissions are read-only at
+# the workflow level; only the job that pushes and opens the pull request gets
+# write.
 on:
   schedule:
     # Every Monday at 04:00 UTC
@@ -35,6 +37,9 @@ permissions:
 jobs:
   drift:
     runs-on: ubuntu-24.04
+    # The tokens are environment secrets of app-dev-ci; Terraform creates the
+    # placeholders and the Key Vault references, the person sets the values.
+    environment: app-dev-ci
     permissions:
       # The push of the drift branch and the pull request that carries it.
       contents: write
@@ -43,6 +48,19 @@ jobs:
       packages: read
       pull-requests: write
     steps:
+      - name: Record the run start
+        id: start
+        run: echo "at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
+      - name: Preflight the Figma token
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+        run: |
+          if [ -z "$FIGMA_TOKEN" ]; then
+            echo "::error::FIGMA_TOKEN is missing: the drift job cannot read the file. Add the read-only secret and re-run."
+            exit 1
+          fi
+
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
@@ -74,40 +92,103 @@ jobs:
         env:
           FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
           PAGOPA_UI_ROOT: ../pagopa-ui
-        run: >-
-          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma sync
-          --rest --pr-body .figma/pr-body.md
+        run: |
+          branch="figma-drift/$(date -u +%Y-%m-%d)"
+          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma sync \
+            --rest \
+            --save .figma/live-rest.json \
+            --pr-body .figma/pr-body.md \
+            --delta .figma/delta.json \
+            --evidence-base "https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${branch}"
+
+      - name: Refresh the evidence bundle
+        if: hashFiles('packages/pagopa-ui/.figma/pr-body.md') != ''
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+          PAGOPA_UI_ROOT: ../pagopa-ui
+        run: |
+          pnpm --filter pagopa-ui-cli exec node src/cli.ts parity evidence --write --input .figma/live-rest.json
+          pnpm --filter pagopa-ui-cli exec node src/cli.ts parity evidence --check
 
       - name: Format the refreshed payload
         if: hashFiles('packages/pagopa-ui/.figma/pr-body.md') != ''
-        run: >-
-          pnpm --filter @pagopa/ui exec oxfmt
-          src/catalog/figma/inventory.json
-          src/catalog/figma/registry.json
-          src/catalog/figma/evidence-exceptions.json
+        run: |
+          pnpm --filter @pagopa/ui exec oxfmt \
+            src/catalog/figma/inventory.json \
+            src/catalog/figma/registry.json \
+            src/catalog/figma/evidence-exceptions.json
+          pnpm exec oxfmt docs/figma-parity/manifest.json
 
       - name: Open the review pull request
         if: hashFiles('packages/pagopa-ui/.figma/pr-body.md') != ''
         env:
           GH_TOKEN: ${{ secrets.DRIFT_PR_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
           branch="figma-drift/$(date -u +%Y-%m-%d)"
+          remote="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git config user.name "figma-drift[bot]"
           git config user.email "figma-drift[bot]@users.noreply.github.com"
-          git checkout -b "$branch"
+          if git ls-remote --exit-code --heads "$remote" "$branch" >/dev/null; then
+            # Fetch with the same token the push uses: checkout persists no
+            # credentials, so a bare `origin` would not authenticate.
+            git fetch "$remote" "+refs/heads/$branch:refs/remotes/origin/$branch"
+            last_author="$(git log -1 --format='%an' "origin/$branch")"
+            last_subject="$(git log -1 --format='%s' "origin/$branch")"
+            if [ "$last_author" != "figma-drift[bot]" ] ||
+               [ "${last_subject#chore(figma):}" = "$last_subject" ]; then
+              echo "::error::branch $branch has commits that are not the bot's; refusing to force-push"
+              exit 1
+            fi
+            git checkout -B "$branch" "origin/$branch"
+          else
+            git checkout -b "$branch"
+          fi
           git add \
             packages/pagopa-ui/src/catalog/figma/inventory.json \
             packages/pagopa-ui/src/catalog/figma/registry.json \
-            packages/pagopa-ui/src/catalog/figma/evidence-exceptions.json
+            packages/pagopa-ui/src/catalog/figma/evidence-exceptions.json \
+            docs/figma-parity
+          if git diff --cached --quiet; then
+            echo "no change to commit"
+            exit 0
+          fi
           git commit -m "chore(figma): refresh the drift inventory and queue the review"
           # Checkout persists no credentials: the push carries the same token
           # `gh` uses, and only for this one command.
-          git push --force \
-            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
-            "$branch"
+          git push --force-with-lease "$remote" "$branch"
           gh pr create \
             --title "Figma drift — $(date -u +%Y-%m-%d)" \
             --body-file packages/pagopa-ui/.figma/pr-body.md \
             --base "${{ github.event.repository.default_branch }}" \
             --head "$branch" ||
             gh pr edit "$branch" --body-file packages/pagopa-ui/.figma/pr-body.md
+          pr_number="$(gh pr view "$branch" --json number --jq .number)"
+          pr_url="$(gh pr view "$branch" --json url --jq .url)"
+          handoff_at="$(gh pr view "$branch" --json createdAt --jq .createdAt)"
+          jq -n \
+            --arg runId "$GITHUB_RUN_ID" \
+            --arg branch "$branch" \
+            --argjson prNumber "$pr_number" \
+            --arg prUrl "$pr_url" \
+            --arg figmaChangeAt "${{ steps.start.outputs.at }}" \
+            --arg handoffPrAt "$handoff_at" \
+            --argjson counts "$(jq -c '.counts' packages/pagopa-ui/.figma/delta.json)" \
+            '{runId: $runId, branch: $branch, prNumber: $prNumber, prUrl: $prUrl,
+              figmaChangeAt: $figmaChangeAt, handoffPrAt: $handoffPrAt,
+              counts: $counts,
+              evidenceRefreshed: true,
+              missingSecrets: []}' \
+            > packages/pagopa-ui/.figma/run.json
+
+      - name: Upload the drift artifacts
+        if: hashFiles('packages/pagopa-ui/.figma/pr-body.md') != ''
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: figma-drift-${{ github.run_id }}
+          path: |
+            packages/pagopa-ui/.figma/delta.json
+            packages/pagopa-ui/.figma/run.json
+            packages/pagopa-ui/.figma/pr-body.md
+          retention-days: 14
+          if-no-files-found: error

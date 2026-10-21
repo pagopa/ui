@@ -195,6 +195,73 @@ test("a device-like value on a non-device axis warns without failing", () => {
   )
 })
 
+test("a reasoned ignored value suppresses the device-like warning", () => {
+  const nodes = [
+    deviceSet("1:1", ["First page", "Mobile", "Last page"], { axis: "Order" }),
+    deviceSet("1:2", ["Desktop", "Mobile"]),
+  ]
+  const ignored = {
+    ...policy,
+    axes: ["Device"],
+    ignoredValues: [
+      {
+        axis: "Order",
+        value: "Mobile",
+        reason: "the value names a page position, not a device",
+      },
+    ],
+  }
+  const { errors, warnings } = checkDevicePolicy(ignored, nodes)
+  assert.deepEqual(errors, [])
+  assert.deepEqual(
+    warnings.filter((warning) => warning.includes('declares "Mobile"')),
+    [],
+  )
+})
+
+test("an ignored value no non-device axis declares is a stale exception", () => {
+  const ignored = {
+    ...policy,
+    axes: ["Device"],
+    ignoredValues: [
+      {
+        axis: "Order",
+        value: "Mobile",
+        reason: "the value names a page position, not a device",
+      },
+    ],
+  }
+  const { errors } = checkDevicePolicy(ignored, [deviceSet("1:1", ["Desktop", "Mobile"])])
+  assert.ok(
+    errors.some((error) =>
+      /ignored value "Mobile" on the "Order" axis matches no non-device axis/.test(error),
+    ),
+    errors.join("\n"),
+  )
+})
+
+test("a duplicated ignored axis/value is an error", () => {
+  const ignored = {
+    ...policy,
+    axes: ["Device"],
+    ignoredValues: [
+      { axis: "Order", value: "Mobile", reason: "first" },
+      { axis: "order", value: "mobile", reason: "second" },
+    ],
+  }
+  const nodes = [
+    deviceSet("1:1", ["Desktop", "Mobile"]),
+    deviceSet("1:2", ["First page", "Mobile"], { axis: "Order" }),
+  ]
+  const { errors } = checkDevicePolicy(ignored, nodes)
+  assert.ok(
+    errors.some((error) =>
+      /the ignored value "mobile" on the "order" axis is listed twice/.test(error),
+    ),
+    errors.join("\n"),
+  )
+})
+
 test("the policy shape is validated, notes included", () => {
   assert.throws(
     () => validateDevicePolicy({ ...policy, axis: ["Device"] }, "fixture.json"),

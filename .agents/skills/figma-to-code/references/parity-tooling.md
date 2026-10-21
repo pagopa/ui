@@ -1,10 +1,11 @@
 # Parity tooling — the commands of the loop
 
 `pnpm --filter pagopa-ui-cli run cli -- parity` with no arguments prints every subcommand and flag; read it
-there. This file says what each command proves and how to read it. Every parity
-command needs `figma.snapshot`; `check` and `capture` also need Storybook on
-`storybook.url` (`STORYBOOK_URL=<url>` for another one). The default case corpus
-is `catalog.parityCases` (`--cases <file>` overrides it).
+there. This file says what each command proves and how to read it. `check` and
+`source` read `--input`, else `figma.snapshot`, else the committed evidence
+slice; `check` and `capture` also need Storybook on `storybook.url`
+(`STORYBOOK_URL=<url>` for another one). The default case corpus is
+`catalog.parityCases` (`--cases <file>` overrides it).
 
 Every row is a target of `pagopa-ui-cli`: run it as
 `pnpm nx run pagopa-ui-cli:<target> [flags]`.
@@ -19,6 +20,8 @@ Every row is a target of `pagopa-ui-cli`: run it as
 | `figma:parity:check --node <id> --devices`         | every declared device's committed case in one table; exit 1 when a device has no reviewed case or its case fails                                            |
 | `figma:parity:capture`                             | a whole wave: per case the report, probe and PNG under `figma.parityOut`, plus `summary.json`                                                                |
 | `figma:parity:cases --sync`                        | proposes the missing device cases and the variants no reviewed case points at, as drafts                                                                     |
+| `figma:parity:verify`                              | the case corpus, the device coverage and the evidence bundle, hermetically (no snapshot, no browser); exit 1 on errors, 0 with warnings                      |
+| `figma:parity:evidence --write` / `--check`        | the offline bundle: `--write` refreshes the slice, the pinned PNGs and the manifest (token + snapshot); `--check` proves they still match the corpus         |
 | `figma:parity:report --wave <name>`                | the wave record: counts, verdicts, advisories, residues, open deltas, the re-run command per case                                                            |
 | `source <nodeId>` (via `pnpm --filter pagopa-ui-cli run cli -- parity source <nodeId>`) | the source spec `check` diffs against (`--compact` anatomy, `--json`, `--depth N`)                                                                           |
 | `render --story <storyId>` (via `pnpm --filter pagopa-ui-cli run cli -- parity render --story <storyId>`) | a render probe alone                                                                                                                                         |
@@ -48,8 +51,8 @@ run in `pnpm nx run pagopa-ui-cli:test` with no snapshot and no browser.
 ## Exit codes and profiles
 
 `0` verified (residues allowed) · `1` deltas above tolerance · `2` invalid input,
-missing snapshot or Storybook, or a capture the preflight refused
-(`capture-mismatch`, `state-mismatch`). Missing evidence is never a pass.
+missing snapshot or Storybook, a stale evidence slice, or a capture the preflight
+refused (`capture-mismatch`, `state-mismatch`). Missing evidence is never a pass.
 
 The default profile is the reviewed one: mapped property deltas and residues
 decide; composition evidence (offsets, sibling order) is an `advisory`.
@@ -110,6 +113,11 @@ coverage until a reviewed render replaces its note (`--save-case --note
 per variant no reviewed case points at, from one sibling; a draft pins the
 variant, its device and its width.
 
+When the source is the committed evidence slice, `--case` checks the manifest's
+version and design fingerprint against the committed inventory before the
+capture: a slice that moved with the inventory is a rerun, a slice that did not
+is exit 2 (stale evidence) until it is refreshed.
+
 ## Case mapping
 
 `--node` finds the registry target (module, export, story, `storyExports`).
@@ -135,7 +143,7 @@ variant, its device and its width.
 
 No PNG pixel diff or percentage budget (the gate is 2px per property plus the
 structural deltas); no workbench, packets, approval files or visual-contract
-corpus; no `refs`, `verify` or pixel baselines — after a code change re-run
+corpus; no `refs` or pixel baselines — after a code change re-run
 `check`. The parity tools never write under `src/` except `--save-case`; renders
 and probes stay in `figma.parityOut`. Story tests run at one viewport, so device
 verification is `check --devices` and `library:check`, never a `play()` test that

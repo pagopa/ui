@@ -48,8 +48,11 @@ component with no node needs only its catalogue coverage
    has several implementations), a self-contained `note` for any constraint,
    open decision or recorded adaptation, then `status: "implemented"`. Export it
    publicly when it is a production component. Run `pnpm nx run pagopa-ui:figma:check`.
-   **Done when** `figma:check` is green, including the device coverage line for
-   this node.
+   An open point for the design owner is a design request
+   ([design-request.md](design-request.md)); the node stays `pending` and the
+   request is named in the note.
+   **Done when** the node is `implemented` with a green device coverage line, or
+   `pending` with its design request named.
 
 7. **Close** with the source-alignment checklist in
    [definition-of-done.md](definition-of-done.md) and the closing steps of the

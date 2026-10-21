@@ -18,6 +18,10 @@ catalog:
   apiExceptions: src/catalog/figma/api-exceptions.json
   evidenceExceptions: src/catalog/figma/evidence-exceptions.json
   inventoryStory: apps/storybook/src/FigmaInventory.stories.tsx
+# The folder the skill writes a design request to when a node has an open
+# question for the Figma design owner.
+design:
+  requests: docs/design-requests
 tokens:
   manifest: packages/tokens/src/manifest.json
   generatedCss: packages/tokens/src/figma.generated.css

@@ -118,6 +118,42 @@ export async function fetchFigmaImages(
   return assets
 }
 
+// The pinned PNG of each node, at scale 1: the review image of a parity case.
+// The version is explicit, so the picture belongs to the same source pin as the
+// numbers the case compares.
+export async function fetchFigmaImagesPng(
+  fileKey: string,
+  version: string,
+  ids: string[],
+): Promise<Map<string, Buffer>> {
+  const assets = new Map<string, Buffer>()
+  for (let start = 0; start < ids.length; start += 50) {
+    const batch = ids.slice(start, start + 50)
+    const query = new URLSearchParams({
+      ids: batch.join(","),
+      version,
+      format: "png",
+      scale: "1",
+    })
+    const data = await get(`images/${fileKey}?${query}`, ImagesResponseSchema)
+    await Promise.all(
+      batch.map(async (id) => {
+        const url = data.images?.[id]
+        if (typeof url !== "string" || new URL(url).protocol !== "https:") {
+          throw new Error(`Figma could not render node ${id} as PNG`)
+        }
+        const response = await fetch(url, {
+          method: "GET",
+          signal: AbortSignal.timeout(90_000),
+        })
+        if (!response.ok) throw new Error(`Figma asset ${id}: HTTP ${response.status}`)
+        assets.set(id, Buffer.from(await response.arrayBuffer()))
+      }),
+    )
+  }
+  return assets
+}
+
 export async function fetchFigmaNodeDocuments(
   fileKey: string,
   version: string,

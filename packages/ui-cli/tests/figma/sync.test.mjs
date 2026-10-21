@@ -122,6 +122,21 @@ function fixture(run, overrides = {}) {
   }
 }
 
+test("a malformed case fails the catalogue gate with its id", () => {
+  fixture(
+    ({ check }) => {
+      const result = check()
+      assert.equal(result.status, 1)
+      assert.match(result.stderr, /cases: bad-case: device "watch" is not a device key/)
+    },
+    {
+      "src/catalog/figma/parity-cases.json": JSON.stringify([
+        { id: "bad-case", nodeId: "1:1", export: "Control", device: "watch" },
+      ]),
+    },
+  )
+})
+
 test("adding a variant to an existing identity is reported as changed", () => {
   fixture(
     ({ check }) => {
@@ -1878,4 +1893,143 @@ test("the exception list is validated: empty reasons, stale and unknown entries 
       assert.match(result.stderr, pattern)
     }, deviceFixture())
   }
+})
+
+test("--delta writes the machine-readable delta next to the review body", () => {
+  fixture(
+    ({ check, read }) => {
+      const result = check("--input", "live.json", "--triage", "--delta", "delta.json", "--plan")
+      assert.equal(result.status, 0, result.stderr)
+      const delta = JSON.parse(read("delta.json"))
+      assert.match(delta.generatedAt, /^\d{4}-\d{2}-\d{2}T/)
+      assert.equal(delta.fileKey, "fixture")
+      assert.equal(delta.liveVersion, null)
+      assert.equal(delta.counts.changed, 1)
+      assert.deepEqual(delta.counts.added, 0)
+      assert.equal(delta.nodes.changed[0].nodeId, "1:1")
+      assert.equal(delta.nodes.changed[0].name, "Control")
+      assert.equal(delta.nodes.changed[0].status, "pending")
+      assert.equal(delta.nodes.changed[0].target.module, "src/components/primitives/control.tsx")
+      assert.equal(delta.nodes.changed[0].change, "properties or dependencies")
+      assert.deepEqual(delta.implementationOrder, ["1:1"])
+      assert.ok(delta.devices)
+      assert.ok(delta.coverage)
+    },
+    {
+      "src/catalog/figma/registry.json": JSON.stringify({
+        bulkRules: [],
+        entries: {
+          "1:1": {
+            status: "implemented",
+            target: {
+              module: "src/components/primitives/control.tsx",
+              export: "Control",
+              story: "src/stories/Fixture.stories.tsx",
+              storyExports: ["Example"],
+            },
+          },
+        },
+      }),
+      "src/components/primitives/control.tsx":
+        "export function Control() { return <button>Control</button> }",
+      "src/stories/Fixture.stories.tsx":
+        'import { Control } from "@/components/primitives/control"\nimport { figmaEmbedUrl } from "@/catalog/figma/file"\nexport default { title: "Fixture", component: Control, parameters: { design: { type: "figma", url: figmaEmbedUrl("1:1") } } }\nexport const Example = {}',
+      "live.json": JSON.stringify([
+        {
+          ...node,
+          properties: {
+            Size: { type: "VARIANT", defaultValue: "Large", variantOptions: ["Small", "Large"] },
+          },
+        },
+      ]),
+    },
+  )
+})
+
+test("--delta without a live source fails instead of writing an empty delta", () => {
+  fixture(({ check }) => {
+    const result = check("--delta", "delta.json")
+    assert.equal(result.status, 1)
+    assert.match(result.stderr, /--delta needs a live source/)
+  })
+})
+
+test("the review body lists the case evidence, the artifacts and the handoff", () => {
+  fixture(
+    ({ check, read }) => {
+      const result = check(
+        "--pr-body",
+        "pr-body.md",
+        "--input",
+        "live.json",
+        "--evidence-base",
+        "https://example.test/figma-drift/2026-10-21",
+      )
+      assert.equal(result.status, 0, result.stderr)
+      const body = read("pr-body.md")
+      assert.match(body, /- evidence: `case-one`/)
+      assert.match(
+        body,
+        /https:\/\/example\.test\/figma-drift\/2026-10-21\/docs\/figma-parity\/references\/case-one\.png/,
+      )
+      assert.match(
+        body,
+        /attach the local render after `parity check --case <id> --screenshot <file>`/,
+      )
+      assert.match(body, /## Artifacts/)
+      assert.match(body, /`delta\.json`/)
+      assert.match(body, /`run\.json`/)
+      assert.match(body, /## Handoff and metrics/)
+      assert.match(body, /docs\/figma-drift-handoff\.md/)
+      assert.doesNotMatch(body, /!\[/)
+    },
+    {
+      "src/catalog/figma/registry.json": JSON.stringify({
+        bulkRules: [],
+        entries: {
+          "1:1": {
+            status: "implemented",
+            target: {
+              module: "src/components/primitives/control.tsx",
+              export: "Control",
+              story: "src/stories/Fixture.stories.tsx",
+              storyExports: ["Example"],
+            },
+          },
+        },
+      }),
+      "src/components/primitives/control.tsx":
+        "export function Control() { return <button>Control</button> }",
+      "src/stories/Fixture.stories.tsx":
+        'import { Control } from "@/components/primitives/control"\nimport { figmaEmbedUrl } from "@/catalog/figma/file"\nexport default { title: "Fixture", component: Control, parameters: { design: { type: "figma", url: figmaEmbedUrl("1:1") } } }\nexport const Example = {}',
+      "src/catalog/figma/parity-cases.json": JSON.stringify([
+        { id: "case-one", nodeId: "1:1", export: "Control", storyId: "fixture--example" },
+      ]),
+      "docs/figma-parity/manifest.json": JSON.stringify({
+        schemaVersion: 1,
+        fileKey: "fixture",
+        version: "v1",
+        capturedAt: "2026-10-21",
+        cases: {
+          "case-one": {
+            png: "references/case-one.png",
+            sha256: "a".repeat(64),
+            nodeId: "1:1",
+            variant: "1:10",
+            designFingerprint: "b".repeat(64),
+            width: 100,
+            height: 40,
+          },
+        },
+      }),
+      "live.json": JSON.stringify([
+        {
+          ...node,
+          properties: {
+            Size: { type: "VARIANT", defaultValue: "Large", variantOptions: ["Small", "Large"] },
+          },
+        },
+      ]),
+    },
+  )
 })

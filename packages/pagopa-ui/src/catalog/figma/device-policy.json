@@ -1,6 +1,13 @@
 {
   "axes": ["Device", "Breakpoint"],
   "any": ["Any", "Default"],
+  "ignoredValues": [
+    {
+      "axis": "Order",
+      "value": "Mobile",
+      "reason": "the value names a page position, not a device"
+    }
+  ],
   "devices": {
     "mobile": {
       "canonicalWidth": 320,

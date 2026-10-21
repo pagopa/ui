@@ -20,7 +20,7 @@ name: Deep checks
 # There is no Nx cache step: Nx 23 keys its task cache to the machine that wrote
 # it, so a cache restored on another runner is reported as unrecognized and
 # ignored. Reusing work across runs needs a remote cache, which
-# docs/plans/f-ci-pipeline-evolution.md keeps as its own decision along with the
+# docs/plans/pipeline-proposal.md keeps as its own decision along with the
 # measured cost, the options not taken and the next steps (sharding, per-task
 # timings).
 on:
