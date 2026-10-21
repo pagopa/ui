@@ -6,7 +6,7 @@ module "github_repository" {
     name            = "ui"
     description     = "PagoPA Web Design System"
     topics          = []
-    reviewers_teams = []
+    reviewers_teams = ["engineering-team-devex"]
     environments    = ["dev", "prod"]
   }
 }
