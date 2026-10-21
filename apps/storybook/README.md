@@ -4,7 +4,7 @@ The deployable documentation of the design system: the stories, the guides and
 the Figma alignment surfaces, built into one static site.
 
 ```bash
-pnpm nx run storybook:build     # writes apps/storybook/dist
+pnpm nx run pagopa-ui-storybook:build     # writes apps/storybook/dist
 ```
 
 The stories live here, next to the Storybook configuration that renders them;

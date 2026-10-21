@@ -59,8 +59,8 @@ implement it, and the repository checks what they produce.
 4. Everyday commands:
 
    ```bash
-   pnpm nx run storybook:storybook  # Storybook on http://localhost:6006
-   pnpm nx run storybook:build      # the static documentation into apps/storybook/dist
+   pnpm nx run pagopa-ui-storybook:storybook  # Storybook on http://localhost:6006
+   pnpm nx run pagopa-ui-storybook:build      # the static documentation into apps/storybook/dist
    pnpm nx run pagopa-ui:typecheck  # TypeScript in strict mode
    pnpm nx run pagopa-ui:lint       # oxlint, with the fixes
    pnpm nx run pagopa-ui:test       # the unit tests

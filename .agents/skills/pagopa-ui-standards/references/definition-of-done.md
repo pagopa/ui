@@ -101,7 +101,7 @@ paths fail, type-only cycles pass.
       activation, sits outside the listbox, runs after the popup closes,
       preserves the value without submitting, and moves focus into any overlay it
       opens.
-- [ ] Coverage: `pnpm nx run storybook:test:coverage` is green and thresholds only ratchet up.
+- [ ] Coverage: `pnpm nx run pagopa-ui-storybook:test:coverage` is green and thresholds only ratchet up.
       The denominator is the production components, not catalogues or demos; the
       global gates and the stricter per-file gates are in `vite.config.ts`. Test
       required, disabled, reset and failure branches: render coverage is not
