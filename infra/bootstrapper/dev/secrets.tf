@@ -28,6 +28,10 @@ resource "azurerm_key_vault_secret" "github_actions" {
   value_wo_version = 1
   content_type     = "text/plain"
   tags             = local.bootstrapper_tags
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "github_actions_environment_secret" "this" {
