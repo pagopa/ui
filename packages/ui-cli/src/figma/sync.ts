@@ -68,6 +68,7 @@ import {
   loadDeviceExceptions,
 } from "../parity/cases.ts"
 import { fetchFigmaSnapshot } from "./rest.ts"
+import { staleStoryTitles } from "./stories.ts"
 import { requireFigmaToken } from "./token.ts"
 import { renderedStoryExports, runtimeExports, storyDesignNodes } from "../lib/source-modules.ts"
 import { readJson } from "../lib/json.ts"
@@ -898,6 +899,10 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
         unaccounted.map((n) => `  ${n.nodeId}  ${n.name}  (${n.pageName})`).join("\n"),
     )
   }
+
+  // The inventory story links each mapped node to its Storybook page from the
+  // committed titles: a renamed story is a dead link, not a silent blank.
+  for (const problem of staleStoryTitles(registry)) fail(problem)
 
   // Public catalogue names are stable aliases; source labels are metadata.
   function iconListConstant(name: string): string[] {

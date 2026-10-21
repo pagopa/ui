@@ -46,6 +46,16 @@
       "cache": true
     },
     "figma:check": { "options": { "command": "node src/cli.ts check figma" } },
+    "figma:stories": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node src/cli.ts figma stories --write",
+        "cwd": "{workspaceRoot}/packages/ui-cli",
+        "env": { "PAGOPA_UI_ROOT": "../pagopa-ui" }
+      },
+      "outputs": [],
+      "cache": false
+    },
     "layers:check": { "options": { "command": "node src/cli.ts check layers" } },
     "foundation:check": { "options": { "command": "node src/cli.ts check foundation" } },
     "library:check": {
