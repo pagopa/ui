@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   release:
-    uses: pagopa/dx/.github/workflows/release-terraform-bootstrapper-v1.yaml@static-nx-workflows
+    uses: pagopa/dx/.github/workflows/release-terraform-bootstrapper-v1.yaml@main
     name: Release Bootstrapper (dev)
     secrets: inherit
     with:
