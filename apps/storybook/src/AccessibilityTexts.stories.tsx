@@ -170,7 +170,13 @@ export const NoticeLabels: Story = {
 
 export const NavigationTexts: Story = {
   // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
-  parameters: { a11yContract: { reflow: false } },
+  parameters: {
+    a11yContract: { reflow: false },
+    // The play function reads the wide layout: the narrow container hides the
+    // page buttons it queries, so Chromatic captures and plays this fixture at
+    // the desktop width only.
+    chromatic: { viewports: [1200] },
+  },
   render: () => (
     <div className="grid max-w-3xl gap-6">
       <Pagination

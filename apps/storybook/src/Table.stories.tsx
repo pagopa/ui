@@ -192,6 +192,11 @@ function EmptyNotifications() {
 }
 
 export const EmptyWithAction: Story = {
+  parameters: {
+    // The play function asserts the source empty-state height, which depends on
+    // the desktop text wrap; Chromatic captures and plays it at that width only.
+    chromatic: { viewports: [1200] },
+  },
   render: () => <EmptyNotifications />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)

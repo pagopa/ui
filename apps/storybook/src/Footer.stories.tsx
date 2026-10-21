@@ -125,6 +125,9 @@ export const LoggedUserFalseDesktop: Story = {
           "Source variant `Logged user=False, Device=Desktop` (1360:12667): the links block with its columns and the company information. The fourth column's tail (EU badge, an external asset not published by the package) stays with the caller through `end`.",
       },
     },
+    // The story is the Desktop source variant and its play function asserts the
+    // four-column geometry; Chromatic captures and plays it at that width only.
+    chromatic: { viewports: [1200] },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)

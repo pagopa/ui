@@ -47,6 +47,9 @@ export const Playground: Story = {
 }
 
 export const NestedAndProfile: Story = {
+  // The play function reads the navigation links, which the narrow layout hides
+  // behind the drawer trigger: Chromatic captures and plays it at desktop only.
+  parameters: { chromatic: { viewports: [1200] } },
   args: {
     items: [
       {
