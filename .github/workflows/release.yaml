@@ -43,6 +43,9 @@ jobs:
         with:
           client-id: ${{ secrets.GH_APP_RELEASE_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_RELEASE_APP_KEY }}
+          # contents covers the push of the `nx-release/main` branch and the
+          # release tags; pull requests covers the Version Packages PR.
+          permission-contents: write
           permission-pull-requests: write
 
       - name: Checkout repository
