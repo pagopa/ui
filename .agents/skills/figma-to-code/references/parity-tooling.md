@@ -51,8 +51,8 @@ run in `pnpm nx run pagopa-ui-cli:test` with no snapshot and no browser.
 ## Exit codes and profiles
 
 `0` verified (residues allowed) · `1` deltas above tolerance · `2` invalid input,
-missing snapshot or Storybook, or a capture the preflight refused
-(`capture-mismatch`, `state-mismatch`). Missing evidence is never a pass.
+missing snapshot or Storybook, a stale evidence slice, or a capture the preflight
+refused (`capture-mismatch`, `state-mismatch`). Missing evidence is never a pass.
 
 The default profile is the reviewed one: mapped property deltas and residues
 decide; composition evidence (offsets, sibling order) is an `advisory`.
@@ -112,6 +112,11 @@ coverage until a reviewed render replaces its note (`--save-case --note
 "reviewed: …"`). `cases --sync` proposes one draft per missing device and one
 per variant no reviewed case points at, from one sibling; a draft pins the
 variant, its device and its width.
+
+When the source is the committed evidence slice, `--case` checks the manifest's
+version and design fingerprint against the committed inventory before the
+capture: a slice that moved with the inventory is a rerun, a slice that did not
+is exit 2 (stale evidence) until it is refreshed.
 
 ## Case mapping
 

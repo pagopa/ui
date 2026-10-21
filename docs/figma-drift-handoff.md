@@ -33,7 +33,10 @@ The token needs `file_content:read` and `library_content:read`. Never read,
 source or commit `.env`; the tools read the process environment only. When the
 token is missing, stop the live step and work from the committed evidence slice:
 `parity check --case <id>` still reads the source side without a token, and
-Storybook is still required for the render.
+Storybook is still required for the render. A parity run on a slice that no
+longer matches the committed inventory stops with exit 2 (stale evidence):
+refresh it with `parity evidence --write` or use the current snapshot, never
+bypass the check.
 
 ## 3. Read the handoff
 

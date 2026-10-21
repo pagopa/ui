@@ -10,6 +10,7 @@ import { fileURLToPath } from "node:url"
 import {
   MAX_EVIDENCE_BYTES,
   buildEvidence,
+  checkCaseEvidence,
   checkEvidence,
   loadManifest,
   loadSlice,
@@ -347,6 +348,96 @@ test("resolveExport falls back from the snapshot to the committed slice", () => 
   } finally {
     if (previous === undefined) delete process.env.PAGOPA_UI_ROOT
     else process.env.PAGOPA_UI_ROOT = previous
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test("the case evidence check accepts a bundle that matches the inventory", () => {
+  const root = temporaryRoot()
+  try {
+    writeEvidenceTree(root)
+    assert.deepEqual(checkCaseEvidence({ entry: cases[0], node, root }), [])
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test("a stale design fingerprint is missing evidence", () => {
+  const root = temporaryRoot()
+  try {
+    writeEvidenceTree(root)
+    const stale = structuredClone(node)
+    stale.variants[0].designFingerprint = "c".repeat(64)
+    const errors = checkCaseEvidence({ entry: cases[0], node: stale, root })
+    assert.ok(
+      errors.some((error) => /stale against the committed inventory/.test(error)),
+      errors.join("\n"),
+    )
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test("a case without a manifest entry is missing evidence", () => {
+  const root = temporaryRoot()
+  try {
+    writeEvidenceTree(root)
+    const errors = checkCaseEvidence({ entry: { ...cases[0], id: "missing" }, node, root })
+    assert.ok(
+      errors.some((error) => /no manifest entry/.test(error)),
+      errors.join("\n"),
+    )
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test("a slice without the captured variant is missing evidence", () => {
+  const root = temporaryRoot()
+  try {
+    const slice = sliceFor()
+    slice.nodes["1:1"].document.children = [
+      { id: "1:10", name: "Size=Small", type: "COMPONENT", children: [] },
+    ]
+    writeEvidenceTree(root, { slice })
+    const errors = checkCaseEvidence({ entry: cases[1], node, root })
+    assert.ok(
+      errors.some((error) => /the slice has no variant 1:11/.test(error)),
+      errors.join("\n"),
+    )
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test("parity check refuses a stale evidence slice before Storybook", () => {
+  const root = temporaryRoot()
+  try {
+    writeEvidenceTree(root)
+    fs.mkdirSync(path.join(root, "src/catalog/figma"), { recursive: true })
+    fs.writeFileSync(path.join(root, "src/catalog/figma/parity-cases.json"), JSON.stringify(cases))
+    const stale = structuredClone(node)
+    stale.variants[0].designFingerprint = "c".repeat(64)
+    fs.writeFileSync(
+      path.join(root, "src/catalog/figma/inventory.json"),
+      JSON.stringify({ fileKey: "fixture", syncedAt: "2026-10-21", components: [stale] }),
+    )
+    const result = spawnSync(process.execPath, [script, "parity", "check", "--case", "small"], {
+      cwd: root,
+      encoding: "utf8",
+      env: fixtureEnv(root, { FIGMA_TOKEN: "" }),
+    })
+    assert.equal(result.status, 2, result.stderr)
+    assert.match(result.stderr, /stale against the committed inventory/)
+    assert.match(result.stdout, /source: .*\(evidence\)/)
+    const explicit = spawnSync(
+      process.execPath,
+      [script, "parity", "check", "--case", "small", "--input", "docs/figma-parity/source.json"],
+      { cwd: root, encoding: "utf8", env: fixtureEnv(root, { FIGMA_TOKEN: "" }) },
+    )
+    assert.equal(explicit.status, 2, explicit.stderr)
+    assert.match(explicit.stderr, /stale against the committed inventory/)
+  } finally {
     fs.rmSync(root, { recursive: true, force: true })
   }
 })

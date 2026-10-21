@@ -45,7 +45,7 @@ import {
 import { enterRoot, rootPath } from "../lib/paths.ts"
 import { parseSchema } from "../lib/validate.ts"
 import { capture as captureStory, DEFAULT_ROOT, type CaptureOptions } from "./render.ts"
-import { checkEvidence, evidenceCommand } from "./evidence.ts"
+import { checkCaseEvidence, checkEvidence, evidenceCommand } from "./evidence.ts"
 import {
   loadExport,
   namedLeaves,
@@ -797,9 +797,10 @@ async function check(parsed: Parsed): Promise<number> {
   }
   const path_ = corpusPath(flags)
   let spec
+  let caseEntry: ParityCase | undefined
   if (caseId) {
-    const entry = findCase(loadCaseFile(path_), String(caseId))
-    spec = specFromCase(entry, flags, parsed)
+    caseEntry = findCase(loadCaseFile(path_), String(caseId))
+    spec = specFromCase(caseEntry, flags, parsed)
     if (!spec.storyId)
       throw new Error(`${caseId}: the case declares no storyId and none was passed`)
   } else {
@@ -807,6 +808,21 @@ async function check(parsed: Parsed): Promise<number> {
   }
   const project = loadExport(stringFlag(flags, "input"))
   if (!flags.has("json")) console.log(`source: ${project.file} (${project.origin})`)
+  // The slice is evidence, not a live read: before capturing, prove it still
+  // describes the case and the inventory it was pinned against. A stale slice
+  // is missing evidence, so the run stops before Storybook. An explicit
+  // `--input <slice>` is the same evidence and gets the same check.
+  if (project.raw.kind === "parity-source" && caseEntry) {
+    const evidenceErrors = checkCaseEvidence({
+      entry: spec,
+      node: inventoryNode(spec.nodeId),
+    })
+    if (evidenceErrors.length) {
+      for (const error of evidenceErrors) console.error(`error: ${error}`)
+      return 2
+    }
+    if (!flags.has("json")) console.log("evidence: bundle matches the committed inventory")
+  }
   const { report, probe } = await evaluateCase(spec, { project })
   if (flags.has("save-case")) {
     const saved = saveCase(
@@ -856,6 +872,21 @@ async function checkDevices({
   }
   const project = loadExport(stringFlag(flags, "input"))
   if (!flags.has("json")) console.log(`source: ${project.file} (${project.origin})`)
+  if (project.raw.kind === "parity-source") {
+    const evidenceErrors = [
+      ...new Set(
+        devices.flatMap((device) => {
+          const entry = corpus.find((item) => item.nodeId === nodeId && item.device === device)
+          return entry ? checkCaseEvidence({ entry, node: inventory }) : []
+        }),
+      ),
+    ]
+    if (evidenceErrors.length) {
+      for (const error of evidenceErrors) console.error(`error: ${error}`)
+      return 2
+    }
+    if (!flags.has("json")) console.log("evidence: bundle matches the committed inventory")
+  }
   type DeviceRow = {
     device: string
     variant: string

@@ -147,7 +147,7 @@ function sliceIds(slice: EvidenceSlice): Set<string> {
 // variants pins itself. The fingerprint is the one the skip rule compares.
 function pinnedVariant(
   node: InventoryNode | undefined,
-  entry: ParityCase,
+  entry: Pick<ParityCase, "variant" | "state" | "device">,
 ): { nodeId: string; designFingerprint: string } | undefined {
   const variant = variantOfCase(node, entry) ?? caseVariant(node, entry)
   if (variant) {
@@ -459,26 +459,15 @@ export type EvidenceReport = {
   bytes: number
 }
 
-// `parity evidence --check`: the corpus, the slice and the manifest must agree,
-// byte for byte, with no token and no network.
-export function checkEvidence({
-  root = resolveWorkspaceRoot(),
-  dataRoot = resolveRoot(),
-  cases,
-  nodes,
-  maxBytes = MAX_EVIDENCE_BYTES,
-}: {
-  root?: string
-  dataRoot?: string
-  cases?: ParityCase[]
-  nodes?: InventoryNode[]
-  maxBytes?: number
-} = {}): EvidenceReport {
-  const errors: string[] = []
-  const warnings: string[] = []
+// The two committed files, loaded once and with the guidance a missing bundle
+// deserves. Both `evidence --check` and a parity run on the slice use it.
+function loadEvidenceForCheck(root: string): {
+  slice?: EvidenceSlice
+  manifest?: EvidenceManifest
+  errors: string[]
+} {
   const paths = evidencePaths(root)
-  const corpus = cases ?? loadCaseFile(path.join(dataRoot, CASES_PATH))
-  const inventory = nodes ?? loadInventoryNodes(path.join(dataRoot, INVENTORY_PATH))
+  const errors: string[] = []
   let slice: EvidenceSlice | undefined
   let manifest: EvidenceManifest | undefined
   if (!fs.existsSync(paths.source)) {
@@ -499,6 +488,31 @@ export function checkEvidence({
       errors.push(error instanceof Error ? error.message : String(error))
     }
   }
+  return { slice, manifest, errors }
+}
+
+// `parity evidence --check`: the corpus, the slice and the manifest must agree,
+// byte for byte, with no token and no network.
+export function checkEvidence({
+  root = resolveWorkspaceRoot(),
+  dataRoot = resolveRoot(),
+  cases,
+  nodes,
+  maxBytes = MAX_EVIDENCE_BYTES,
+}: {
+  root?: string
+  dataRoot?: string
+  cases?: ParityCase[]
+  nodes?: InventoryNode[]
+  maxBytes?: number
+} = {}): EvidenceReport {
+  const paths = evidencePaths(root)
+  const corpus = cases ?? loadCaseFile(path.join(dataRoot, CASES_PATH))
+  const inventory = nodes ?? loadInventoryNodes(path.join(dataRoot, INVENTORY_PATH))
+  const bundle = loadEvidenceForCheck(root)
+  const errors = [...bundle.errors]
+  const warnings: string[] = []
+  const { slice, manifest } = bundle
   if (!slice || !manifest) {
     return { errors, warnings, cases: corpus.length, entries: 0, bytes: 0 }
   }
@@ -602,6 +616,76 @@ export function checkEvidence({
     entries: Object.keys(manifest.cases).length,
     bytes,
   }
+}
+
+// A parity run that reads the committed slice must prove the slice still
+// describes the case it is about to capture: the manifest entry exists, points
+// at the variant the inventory resolves, and carries the same fingerprint. A
+// stale bundle is missing evidence, never a pass.
+export function checkCaseEvidence({
+  entry,
+  node,
+  root = resolveWorkspaceRoot(),
+}: {
+  entry: Pick<ParityCase, "nodeId" | "variant" | "state" | "device"> & { id?: string }
+  node?: InventoryNode
+  root?: string
+}): string[] {
+  const where = entry.id ?? entry.nodeId
+  const bundle = loadEvidenceForCheck(root)
+  const errors = [...bundle.errors]
+  const { slice, manifest } = bundle
+  if (!slice || !manifest) return errors
+  if (manifest.version !== slice.version) {
+    errors.push(
+      `${where}: the manifest pins version ${manifest.version}, the slice pins ${slice.version} — refresh the bundle`,
+    )
+  }
+  if (manifest.fileKey !== slice.fileKey) {
+    errors.push(`${where}: the manifest and the slice name different files`)
+  }
+  const target = pinnedVariant(node, entry)
+  if (!target) {
+    errors.push(`${where}: no variant resolves for this case against the committed inventory`)
+  }
+  const record = entry.id
+    ? manifest.cases[entry.id]
+    : target
+      ? Object.values(manifest.cases).find(
+          (item) => item.nodeId === entry.nodeId && item.variant === target.nodeId,
+        )
+      : undefined
+  if (!record) {
+    errors.push(
+      `${where}: no manifest entry — the reviewed case is missing from the bundle; ` +
+        `run \`parity evidence --write\` with FIGMA_TOKEN`,
+    )
+  } else {
+    if (record.nodeId !== entry.nodeId) {
+      errors.push(
+        `${where}: the manifest entry names node ${record.nodeId}, the case ${entry.nodeId}`,
+      )
+    }
+    if (target && record.variant !== target.nodeId) {
+      errors.push(
+        `${where}: the manifest entry pins variant ${record.variant}, the inventory resolves ${target.nodeId}`,
+      )
+    }
+    if (target && record.designFingerprint !== target.designFingerprint) {
+      errors.push(
+        `${where}: the manifest designFingerprint is stale against the committed inventory — ` +
+          `refresh the evidence bundle with \`parity evidence --write\``,
+      )
+    }
+  }
+  const ids = sliceIds(slice)
+  if (!ids.has(entry.nodeId)) {
+    errors.push(`${where}: the slice has no document for ${entry.nodeId}`)
+  }
+  if (target && !ids.has(target.nodeId)) {
+    errors.push(`${where}: the slice has no variant ${target.nodeId}`)
+  }
+  return errors
 }
 
 // The CLI adapter: `parity evidence --write|--check`.

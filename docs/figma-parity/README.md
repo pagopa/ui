@@ -39,3 +39,12 @@ pnpm nx run pagopa-ui-cli:figma:parity:evidence -- --check
 entry or PNG, a missing file, a hash mismatch, a case node missing from the
 slice, or a manifest version that differs from the slice. `parity verify` runs
 the same check next to the corpus and the device coverage.
+
+## Staleness
+
+The bundle is a photograph of the reviewed source, not a live mirror: it is as
+fresh as the committed inventory, never fresher. `parity verify` and
+`parity check --case <id>` compare the manifest's version and design fingerprint
+with the committed inventory; when the inventory moved and the bundle did not,
+the run stops with exit 2 and asks for a refresh. Reproducing an old reviewed
+case on purpose means checking out the old commit, not bypassing the check.
