@@ -213,11 +213,12 @@ Terraform modules live in `_modules` directories, and a change there marks every
 project in the same area as affected. Projects with a `Dockerfile` are inferred
 by `@pagopa/nx-docker`.
 
-The checks the reusable workflow does not call — the story projects in three
-engines with the coverage gates, and the packed-artifact consumer — run in
-`.github/workflows/deep-checks.yml`, on pull requests and on `main` for the
-affected projects and nightly on everything. The Figma drift detection keeps its
-weekly schedule (`.github/workflows/figma-drift.yml`), and
+The checks the reusable workflow does not call — the story projects with the
+coverage gates on Chromium, the WebKit pass, and the packed-artifact consumer —
+run in `.github/workflows/deep-checks.yml` as three parallel jobs, on pull
+requests and on `main` for the affected projects and nightly on everything,
+where Firefox joins the engines. The Figma drift detection keeps its weekly
+schedule (`.github/workflows/figma-drift.yml`), and
 `.github/workflows/release.yaml` runs the DX release manager on `main`.
 
 ## GitHub Copilot plugins

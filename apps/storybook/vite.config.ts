@@ -12,6 +12,26 @@ const dirname = path.dirname(fileURLToPath(import.meta.url))
 // surface point at the package they document.
 const packageRoot = path.resolve(dirname, "../../packages/pagopa-ui")
 
+// The engine set belongs to the pass, not to the project: v8 coverage is
+// collected on Chromium only, a pull request proves WebKit, and the full pass -
+// the nightly one - runs Firefox and WebKit. Every story still runs in all
+// three engines, just not in the same pass.
+function storybookInstances(mode: string): { browser: "chromium" | "firefox" | "webkit" }[] {
+  if (mode === "coverage") return [{ browser: "chromium" }]
+  if (mode === "webkit") return [{ browser: "webkit" }]
+  return [{ browser: "firefox" }, { browser: "webkit" }]
+}
+
+// The accessibility conditions run on the engine of the pass; Chromium keeps
+// the coverage pass and Firefox keeps the full pass, as before.
+function conditionInstances(
+  mode: string,
+): { browser: "chromium" | "firefox" | "webkit"; provider: ReturnType<typeof playwright> }[] {
+  const contextOptions = { forcedColors: "active" as const, reducedMotion: "reduce" as const }
+  const browser = mode === "coverage" ? "chromium" : mode === "webkit" ? "webkit" : "firefox"
+  return [{ browser, provider: playwright({ contextOptions }) }]
+}
+
 // The browser projects run the stories; the package keeps the design system
 // build and its unit project.
 export default defineConfig(({ mode }) => ({
@@ -99,13 +119,9 @@ export default defineConfig(({ mode }) => ({
             headless: true,
             provider: playwright({}),
             // The coverage pass runs Chromium only (v8 coverage is not collected
-            // in Firefox and WebKit); the fast pass runs the other two engines,
-            // so every story still executes in the three browsers without a
-            // duplicated Chromium run.
-            instances:
-              mode === "coverage"
-                ? [{ browser: "chromium" }]
-                : [{ browser: "firefox" }, { browser: "webkit" }],
+            // in Firefox and WebKit); a pull request proves WebKit; the full
+            // pass runs the other two engines.
+            instances: storybookInstances(mode),
           },
         },
       },
@@ -133,24 +149,7 @@ export default defineConfig(({ mode }) => ({
             enabled: true,
             headless: true,
             provider: playwright({}),
-            instances:
-              mode === "coverage"
-                ? [
-                    {
-                      browser: "chromium",
-                      provider: playwright({
-                        contextOptions: { forcedColors: "active", reducedMotion: "reduce" },
-                      }),
-                    },
-                  ]
-                : [
-                    {
-                      browser: "firefox",
-                      provider: playwright({
-                        contextOptions: { forcedColors: "active", reducedMotion: "reduce" },
-                      }),
-                    },
-                  ],
+            instances: conditionInstances(mode),
           },
         },
       },

@@ -6,6 +6,8 @@
     "typecheck": { "cache": true },
     "test": { "cache": true },
     "test:unit": { "cache": true },
+    "test:stories": { "cache": true },
+    "test:webkit": { "cache": true },
     "test:coverage": { "cache": true },
     "lint": { "dependsOn": ["^build"], "cache": true },
     "*:check": {
