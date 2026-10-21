@@ -37,6 +37,9 @@ permissions:
 jobs:
   drift:
     runs-on: ubuntu-24.04
+    # The tokens are environment secrets of app-dev-ci; Terraform creates the
+    # placeholders and the Key Vault references, the person sets the values.
+    environment: app-dev-ci
     permissions:
       # The push of the drift branch and the pull request that carries it.
       contents: write
