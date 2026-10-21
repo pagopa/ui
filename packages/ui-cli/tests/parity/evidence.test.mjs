@@ -14,6 +14,8 @@ import {
   loadManifest,
   loadSlice,
 } from "../../src/parity/evidence.ts"
+import { loadExport, resolveExport, sourceNode } from "../../src/parity/source.ts"
+import { caseVariant, loadCaseFile, loadInventoryNodes } from "../../src/parity/cases.ts"
 import { fixtureEnv } from "../../src/lib/paths.ts"
 
 const script = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
@@ -287,6 +289,64 @@ test("the evidence command checks a fixture tree without a token", () => {
     assert.match(result.stdout, /evidence: ok/)
     assert.ok(MAX_EVIDENCE_BYTES > 0)
   } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test("loadExport reads the committed slice without normalizing the live export", () => {
+  const root = temporaryRoot()
+  const previous = process.env.PAGOPA_UI_ROOT
+  try {
+    writeEvidenceTree(root)
+    fs.mkdirSync(path.join(root, "src/catalog/figma"), { recursive: true })
+    fs.writeFileSync(
+      path.join(root, "src/catalog/figma/inventory.json"),
+      JSON.stringify({
+        fileKey: "fixture",
+        syncedAt: "2026-10-21",
+        components: [node],
+      }),
+    )
+    process.env.PAGOPA_UI_ROOT = root
+    const project = loadExport(path.join(root, "docs/figma-parity/source.json"))
+    assert.equal(project.catalogue.length, 1)
+    assert.equal(project.version, "v1")
+    assert.equal(sourceNode(project, "1:10").name, "Size=Small")
+  } finally {
+    if (previous === undefined) delete process.env.PAGOPA_UI_ROOT
+    else process.env.PAGOPA_UI_ROOT = previous
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test("every committed case resolves to a variant", () => {
+  const corpus = loadCaseFile()
+  const nodes = loadInventoryNodes()
+  const byNode = new Map(nodes.map((item) => [item.nodeId, item]))
+  const unresolved = corpus
+    .filter((entry) => {
+      const node = byNode.get(entry.nodeId)
+      if (!node) return true
+      return !caseVariant(node, entry) && (node.variants ?? []).length > 0
+    })
+    .map((entry) => entry.id)
+  assert.deepEqual(unresolved, [])
+})
+
+test("resolveExport falls back from the snapshot to the committed slice", () => {
+  const root = temporaryRoot()
+  const previous = process.env.PAGOPA_UI_ROOT
+  try {
+    process.env.PAGOPA_UI_ROOT = root
+    assert.throws(() => resolveExport(), /are both missing/)
+    writeEvidenceTree(root)
+    assert.equal(resolveExport().origin, "evidence")
+    fs.mkdirSync(path.join(root, ".figma"), { recursive: true })
+    fs.writeFileSync(path.join(root, ".figma/live-rest.json"), "{}")
+    assert.equal(resolveExport().origin, "snapshot")
+  } finally {
+    if (previous === undefined) delete process.env.PAGOPA_UI_ROOT
+    else process.env.PAGOPA_UI_ROOT = previous
     fs.rmSync(root, { recursive: true, force: true })
   }
 })

@@ -72,6 +72,7 @@ import {
 import { fetchFigmaSnapshot } from "./rest.ts"
 import { staleStoryTitles } from "./stories.ts"
 import { requireFigmaToken } from "./token.ts"
+import { EVIDENCE_DIR, evidencePaths, loadManifest } from "../parity/evidence.ts"
 import { renderedStoryExports, runtimeExports, storyDesignNodes } from "../lib/source-modules.ts"
 import { readJson } from "../lib/json.ts"
 import { parseSchema } from "../lib/validate.ts"
@@ -240,6 +241,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
   // ------------------------------------------------------------- drift handling
 
   let live: InventoryNode[] | null = null
+  let liveVersion: string | undefined
   let restSnapshot: Awaited<ReturnType<typeof fetchFigmaSnapshot>> | null = null
   let inputOption = option("input")
   if (!inputOption && (flag("write") || flag("triage") || flag("pr-body"))) {
@@ -252,9 +254,18 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
       keyFromFile ?? inventory.fileKey,
       committed.filter((node) => node.sources?.includes("mcp")),
     )
+    liveVersion = restSnapshot.version
     live = normalizeLive(restSnapshot)
   } else if (inputOption) {
     const input: unknown = JSON.parse(fs.readFileSync(path.resolve(inputOption), "utf8"))
+    if (
+      input &&
+      typeof input === "object" &&
+      "version" in input &&
+      typeof input.version === "string"
+    ) {
+      liveVersion = input.version
+    }
     if (
       input &&
       typeof input === "object" &&
@@ -289,6 +300,16 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     }
   } else if (option("save")) {
     fail("--save needs --rest: only a REST read produces the pinned snapshot")
+  }
+
+  const deltaPath = option("delta")
+  const rawEvidenceBase = option("evidence-base")
+  const evidenceBase = rawEvidenceBase?.replace(/\/+$/, "")
+  if (evidenceBase && !/^https:\/\//.test(evidenceBase)) {
+    fail("--evidence-base must be an https URL")
+  }
+  if (deltaPath && !live) {
+    fail("--delta needs a live source: pass --input <file> or --rest")
   }
 
   const delta: SnapshotDelta = live ? compareSnapshots(committed, live) : compareSnapshots([], [])
@@ -404,6 +425,43 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     return lines
   }
 
+  // The reviewed cases and the evidence manifest of one node: the PR names the
+  // case ids and, when the bundle is committed, the pinned reference image. The
+  // local agent still attaches the render; CI never embeds a component image.
+  let evidenceCasesCache: ReturnType<typeof loadCaseFile> | null = null
+  let evidenceManifestCache: ReturnType<typeof loadManifest> | null | undefined
+  function evidenceFor(nodeId: string): {
+    ids: string[]
+    links: Array<{ id: string; href: string }>
+  } {
+    if (!evidenceCasesCache) {
+      try {
+        evidenceCasesCache = loadCaseFile()
+      } catch {
+        evidenceCasesCache = []
+      }
+    }
+    const corpus = evidenceCasesCache.filter((entry) => entry.nodeId === nodeId)
+    if (!corpus.length) return { ids: [], links: [] }
+    if (evidenceManifestCache === undefined) {
+      try {
+        const manifestPath = evidencePaths().manifest
+        evidenceManifestCache = fs.existsSync(manifestPath) ? loadManifest(manifestPath) : null
+      } catch {
+        evidenceManifestCache = null
+      }
+    }
+    const links = evidenceBase
+      ? corpus.flatMap((entry) => {
+          const record = evidenceManifestCache?.cases?.[entry.id]
+          return record
+            ? [{ id: entry.id, href: `${evidenceBase}/${EVIDENCE_DIR}/${record.png}` }]
+            : []
+        })
+      : []
+    return { ids: corpus.map((entry) => entry.id), links }
+  }
+
   // Readable review instructions for the scheduled drift pull request: the
   // summary, the per-node context and the decisions the reviewer records in
   // registry.json. Merging the PR is the review record.
@@ -490,10 +548,94 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
         // A removed node has no live variants to inspect: the block is a review
         // reminder, and there is nothing left to review.
         if (key !== "removed") lines.push(...renderDevices(node, changedVariants))
+        const evidence = evidenceFor(node.nodeId)
+        if (evidence.ids.length) {
+          lines.push(`- evidence: ${evidence.ids.map((id) => `\`${id}\``).join(" · ")}`)
+          if (evidence.links.length) {
+            lines.push(
+              `  - references: ${evidence.links
+                .map((item) => `[${item.id}](${item.href})`)
+                .join(" · ")}`,
+            )
+          }
+          lines.push(
+            "  - attach the local render after `parity check --case <id> --screenshot <file>`; CI never embeds a component image.",
+          )
+        }
         lines.push("")
       }
     }
+    lines.push(
+      "## Artifacts",
+      "",
+      "- `delta.json`: the machine-readable delta of this run.",
+      "- `run.json`: the run metrics (`figmaChangeAt`, `handoffPrAt`, the counts).",
+      "- `pr-body.md`: this generated body.",
+      "",
+      "## Handoff and metrics",
+      "",
+      "- Local procedure: `docs/figma-drift-handoff.md`.",
+      "- `handoffPrAt − figmaChangeAt`: recorded in `run.json`.",
+      "- `mergedAt − handoffPrAt`: read after the merge with `gh pr view <number> --json mergedAt`.",
+      "",
+    )
     return lines.join("\n")
+  }
+
+  // The machine-readable delta the workflow uploads with the body: the same
+  // classes, the resolved statuses and targets, the work order and the two
+  // summaries, so a rerun and the local agent read the same facts.
+  function renderDelta() {
+    const classes: Array<[NodeDeltaKey, string]> = [
+      ["added", "New nodes"],
+      ["changed", "Changed nodes"],
+      ["renamed", "Renamed identities"],
+      ["moved", "Moved identities"],
+      ["removed", "Removed nodes"],
+      ["affected", "Affected implementations"],
+      ["baseline", "Missing design baseline"],
+    ]
+    const statusOf = (node: InventoryNode): string =>
+      entries[node.nodeId]?.status ??
+      bulkByNode.get(node.nodeId)?.status ??
+      bulkByPage.get(node.pageId)?.status ??
+      "unaccounted"
+    const selected = new Set([
+      ...Object.entries(entries)
+        .filter(([, entry]) => entry.status === "pending")
+        .map(([id]) => id),
+      ...[...delta.added, ...delta.changed, ...delta.affected].map((node) => node.nodeId),
+    ])
+    for (const id of [...selected]) {
+      if (entries[id]?.status === "mocked") selected.delete(id)
+    }
+    return {
+      generatedAt: new Date().toISOString(),
+      fileKey: inventory.fileKey,
+      liveVersion: liveVersion ?? null,
+      counts: Object.fromEntries(classes.map(([key]) => [key, delta[key].length])),
+      nodes: Object.fromEntries(
+        classes.map(([key]) => [
+          key,
+          delta[key].map((node) => ({
+            nodeId: node.nodeId,
+            name: node.name,
+            pageName: node.pageName,
+            change: node.change ?? null,
+            status: statusOf(node),
+            target: entries[node.nodeId]?.target ?? null,
+          })),
+        ]),
+      ),
+      changedVariants: delta.changedVariants.map((change) => ({
+        nodeId: change.nodeId,
+        device: change.device ?? null,
+        class: change.class,
+      })),
+      implementationOrder: implementationOrder(live ?? committed, selected),
+      devices: deviceStats,
+      coverage: deviceCoverageStats,
+    }
   }
 
   if (prBodyPath && !hasDrift && live && !flag("plan")) {
@@ -1114,6 +1256,12 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
       fs.mkdirSync(path.dirname(path.resolve(ROOT, prBodyPath)), { recursive: true })
       fs.writeFileSync(path.resolve(ROOT, prBodyPath), `${renderPrBody()}\n`)
       console.log(`pr body: ${prBodyPath}`)
+    }
+    if (deltaPath && live) {
+      const target = path.resolve(ROOT, deltaPath)
+      fs.mkdirSync(path.dirname(target), { recursive: true })
+      fs.writeFileSync(target, `${JSON.stringify(renderDelta(), null, 2)}\n`)
+      console.log(`delta: ${deltaPath}`)
     }
   }
   return errors.length ? 1 : 0

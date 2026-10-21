@@ -321,6 +321,34 @@ export function variantOfCase(
   return matches.length === 1 ? matches[0] : undefined
 }
 
+// The variant a case actually captures, with the same narrowing `check` applies:
+// an explicit `variant`, the case's device pool, then the state tokens (a state
+// that matches nothing keeps the pool's first variant, as `pickVariant` does).
+// `variantOfCase` stays the strict validator; this is the evidence writer's
+// reader, so a multi-match state still pins the PNG the render is compared to.
+export function caseVariant(
+  node: InventoryNode | undefined,
+  entry: Pick<ParityCase, "variant" | "state" | "device"> | undefined,
+): NonNullable<InventoryNode["variants"]>[number] | undefined {
+  const variants = node?.variants ?? []
+  if (!variants.length) return undefined
+  const pool = entry?.device
+    ? variants.filter((variant) => variant.device === entry.device)
+    : variants
+  if (entry?.variant) {
+    return (
+      pool.find((variant) => variant.nodeId === entry.variant) ??
+      variants.find((variant) => variant.nodeId === entry.variant)
+    )
+  }
+  if (!entry?.state) return pool[0]
+  const tokens = String(entry.state)
+    .split("|")
+    .map((token) => token.trim().toLowerCase())
+    .filter(Boolean)
+  return pool.find((variant) => stateMatches(variant.name, tokens)) ?? pool[0]
+}
+
 // Hermetic validation: no snapshot, no browser. The corpus may only reference
 // nodes the inventory knows and story exports the registry declares; when the
 // registry declares none (a node reviewed before the story exports were

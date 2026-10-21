@@ -99,6 +99,12 @@ const figmaCheck = defineCommand({
     triage: { type: "boolean", default: false, description: "Refresh and queue the delta" },
     "pr-body": { type: "string", valueHint: "file", description: "Write the drift PR body" },
     save: { type: "string", valueHint: "file", description: "Save the pinned REST snapshot" },
+    delta: { type: "string", valueHint: "file", description: "Write the machine-readable delta" },
+    "evidence-base": {
+      type: "string",
+      valueHint: "url",
+      description: "Prefix for the raw evidence links in the body",
+    },
   },
   run: ({ args }) => {
     const argv: string[] = []
@@ -109,6 +115,8 @@ const figmaCheck = defineCommand({
     if (args.input) argv.push("--input", String(args.input))
     if (args["pr-body"]) argv.push("--pr-body", String(args["pr-body"]))
     if (args.save) argv.push("--save", String(args.save))
+    if (args.delta) argv.push("--delta", String(args.delta))
+    if (args["evidence-base"]) argv.push("--evidence-base", String(args["evidence-base"]))
     return execute(() => runSync(argv))()
   },
 })
@@ -227,6 +235,12 @@ const figmaSync = defineCommand({
     plan: { type: "boolean", default: false, description: "Print the plan without writing" },
     "pr-body": { type: "string", valueHint: "file", description: "Write the drift PR body" },
     save: { type: "string", valueHint: "file", description: "Save the pinned REST snapshot" },
+    delta: { type: "string", valueHint: "file", description: "Write the machine-readable delta" },
+    "evidence-base": {
+      type: "string",
+      valueHint: "url",
+      description: "Prefix for the raw evidence links in the body",
+    },
   },
   run: ({ args }) => {
     const argv: string[] = []
@@ -237,6 +251,8 @@ const figmaSync = defineCommand({
     if (args.input) argv.push("--input", String(args.input))
     if (args["pr-body"]) argv.push("--pr-body", String(args["pr-body"]))
     if (args.save) argv.push("--save", String(args.save))
+    if (args.delta) argv.push("--delta", String(args.delta))
+    if (args["evidence-base"]) argv.push("--evidence-base", String(args["evidence-base"]))
     return execute(() => runSync(argv))()
   },
 })

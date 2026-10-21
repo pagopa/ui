@@ -15,7 +15,7 @@ import { z } from "zod"
 
 import { normalizeLive } from "../figma/snapshot.ts"
 import { loadInventoryNodes } from "../figma/devices.ts"
-import { SOURCE_PATH as EVIDENCE_SOURCE_PATH } from "./evidence.ts"
+import { evidencePaths } from "./evidence.ts"
 import { enterRoot, rootPath } from "../lib/paths.ts"
 import { readJson } from "../lib/json.ts"
 import { parseSchema } from "../lib/validate.ts"
@@ -198,11 +198,11 @@ export function resolveExport(input?: string): { file: string; origin: SourceOri
   if (input) return { file: path.resolve(input), origin: "input" }
   const snapshot = rootPath(SNAPSHOT_PATH)
   if (fs.existsSync(snapshot)) return { file: snapshot, origin: "snapshot" }
-  const evidence = rootPath(EVIDENCE_SOURCE_PATH)
+  const evidence = evidencePaths().source
   if (fs.existsSync(evidence)) return { file: evidence, origin: "evidence" }
   throw new Error(
-    `${SNAPSHOT_PATH} and ${EVIDENCE_SOURCE_PATH} are both missing: the parity source is the ` +
-      `pinned export the user produces with the live export, or the committed evidence slice.`,
+    `${SNAPSHOT_PATH} and the committed evidence slice are both missing: the parity source is ` +
+      `the pinned export the user produces with the live export, or the committed evidence slice.`,
   )
 }
 

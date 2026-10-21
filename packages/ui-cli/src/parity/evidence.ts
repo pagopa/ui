@@ -20,6 +20,7 @@ import {
   CASES_PATH,
   INVENTORY_PATH,
   REGISTRY_PATH,
+  caseVariant,
   loadCaseFile,
   loadInventoryNodes,
   loadRegistry,
@@ -27,7 +28,7 @@ import {
   variantOfCase,
 } from "./cases.ts"
 import { fetchFigmaImagesPng } from "../figma/rest.ts"
-import { resolveRoot, rootPath } from "../lib/paths.ts"
+import { resolveRoot, resolveWorkspaceRoot } from "../lib/paths.ts"
 import { readJson } from "../lib/json.ts"
 import { parseSchema } from "../lib/validate.ts"
 import type { InventoryNode } from "../schemas/catalogue.ts"
@@ -86,7 +87,10 @@ type Snapshot = z.infer<typeof SnapshotSchema>
 
 // ------------------------------------------------------------------ the files
 
-export function evidencePaths(root = resolveRoot()): {
+// The bundle lives at the workspace root (`docs/figma-parity`), not inside the
+// audited package; a fixture tree without a workspace manifest resolves to its
+// own root, so the tests keep the same shape.
+export function evidencePaths(root = resolveWorkspaceRoot()): {
   dir: string
   source: string
   manifest: string
@@ -138,20 +142,31 @@ function sliceIds(slice: EvidenceSlice): Set<string> {
   return ids
 }
 
-// The case's variant through the same resolver `check` uses; a case with no
-// single variant cannot be pinned to a PNG.
-function variantForCase(
+// The node whose PNG is pinned: the variant `check` captures when the case is
+// unambiguous, otherwise the same narrowing `check` applies; a component without
+// variants pins itself. The fingerprint is the one the skip rule compares.
+function pinnedVariant(
   node: InventoryNode | undefined,
   entry: ParityCase,
-): NonNullable<InventoryNode["variants"]>[number] | undefined {
-  return variantOfCase(node, entry)
+): { nodeId: string; designFingerprint: string } | undefined {
+  const variant = variantOfCase(node, entry) ?? caseVariant(node, entry)
+  if (variant) {
+    return { nodeId: variant.nodeId, designFingerprint: variant.designFingerprint }
+  }
+  if (node && !(node.variants ?? []).length) {
+    return {
+      nodeId: entry.variant ?? node.nodeId,
+      designFingerprint: node.designFingerprint ?? node.contractFingerprint ?? "unfingerprinted",
+    }
+  }
+  return undefined
 }
 
-export function loadSlice(file = rootPath(SOURCE_PATH)): EvidenceSlice {
+export function loadSlice(file = evidencePaths().source): EvidenceSlice {
   return parseSchema(SliceSchema, readJson(file), file)
 }
 
-export function loadManifest(file = rootPath(MANIFEST_PATH)): EvidenceManifest {
+export function loadManifest(file = evidencePaths().manifest): EvidenceManifest {
   return parseSchema(ManifestSchema, readJson(file), file)
 }
 
@@ -216,11 +231,9 @@ export async function buildEvidence({
   const pending: ParityCase[] = []
   for (const entry of cases) {
     const node = byNode.get(entry.nodeId)
-    const variant = variantForCase(node, entry)
+    const variant = pinnedVariant(node, entry)
     if (!variant) {
-      errors.push(
-        `${entry.id}: no single variant resolves for this case; pin one before writing evidence`,
-      )
+      errors.push(`${entry.id}: no variant resolves for this case; pin one before writing evidence`)
       continue
     }
     if (!inSlice.has(entry.nodeId)) {
@@ -253,13 +266,13 @@ export async function buildEvidence({
     const variantIds = [
       ...new Set(
         pending
-          .map((entry) => variantForCase(byNode.get(entry.nodeId), entry)?.nodeId)
+          .map((entry) => pinnedVariant(byNode.get(entry.nodeId), entry)?.nodeId)
           .filter((id): id is string => Boolean(id)),
       ),
     ]
     const images = await fetchFigmaImagesPng(snapshot.fileKey, snapshot.version, variantIds)
     for (const entry of pending) {
-      const variant = variantForCase(byNode.get(entry.nodeId), entry)
+      const variant = pinnedVariant(byNode.get(entry.nodeId), entry)
       if (!variant) continue
       const bytes = images.get(variant.nodeId)
       const size = bytes ? pngDimensions(bytes) : undefined
@@ -335,15 +348,17 @@ function readSnapshot(file: string): Snapshot {
 // manifest from the pinned snapshot, then remove the entries whose case left the
 // corpus. The whole write is refused when the bundle exceeds the cap.
 export async function writeEvidence({
-  root = resolveRoot(),
+  root = resolveWorkspaceRoot(),
+  dataRoot = resolveRoot(),
   input,
   capturedAt,
 }: {
   root?: string
+  dataRoot?: string
   input?: string
   capturedAt?: string
 } = {}): Promise<number> {
-  const snapshotFile = input ? path.resolve(input) : path.join(root, SNAPSHOT_PATH)
+  const snapshotFile = input ? path.resolve(dataRoot, input) : path.join(dataRoot, SNAPSHOT_PATH)
   if (!fs.existsSync(snapshotFile)) {
     console.error(
       `error: ${snapshotFile} is missing: run the live export first ` +
@@ -352,9 +367,9 @@ export async function writeEvidence({
     return 2
   }
   const paths = evidencePaths(root)
-  const cases = loadCaseFile(path.join(root, CASES_PATH))
-  const nodes = loadInventoryNodes(path.join(root, INVENTORY_PATH))
-  const registry = loadRegistry(path.join(root, REGISTRY_PATH))
+  const cases = loadCaseFile(path.join(dataRoot, CASES_PATH))
+  const nodes = loadInventoryNodes(path.join(dataRoot, INVENTORY_PATH))
+  const registry = loadRegistry(path.join(dataRoot, REGISTRY_PATH))
   // The corpus validator owns the schema: writing evidence for a broken corpus
   // would pin the wrong thing.
   const validation = validateCaseFile(cases, { registry, nodes })
@@ -378,9 +393,20 @@ export async function writeEvidence({
     return 1
   }
   const { total, byCase } = evidenceBytes(result)
-  if (total > MAX_EVIDENCE_BYTES) {
+  // The reused PNGs stay on disk: they count against the cap even though this
+  // run did not rewrite them.
+  let totalBytes = total
+  for (const caseId of result.reused) {
+    const file = path.join(paths.references, `${caseId}.png`)
+    if (!fs.existsSync(file)) continue
+    const size = fs.statSync(file).size
+    totalBytes += size
+    byCase.push({ caseId, bytes: size })
+  }
+  byCase.sort((a, b) => b.bytes - a.bytes)
+  if (totalBytes > MAX_EVIDENCE_BYTES) {
     console.error(
-      `error: the evidence bundle would be ${formatBytes(total)} ` +
+      `error: the evidence bundle would be ${formatBytes(totalBytes)} ` +
         `(cap ${formatBytes(MAX_EVIDENCE_BYTES)}). Largest cases: ` +
         byCase
           .slice(0, 5)
@@ -416,7 +442,7 @@ export async function writeEvidence({
 
   console.log(
     `evidence: ${cases.length} case(s) · written ${result.refreshed.length} · ` +
-      `skipped ${result.reused.length} · ${formatBytes(total)} (cap ${formatBytes(MAX_EVIDENCE_BYTES)})`,
+      `skipped ${result.reused.length} · ${formatBytes(totalBytes)} (cap ${formatBytes(MAX_EVIDENCE_BYTES)})`,
   )
   console.log(`source: ${SOURCE_PATH} · version ${result.slice.version}`)
   console.log(`manifest: ${MANIFEST_PATH} · references ${REFERENCES_DIR}/`)
@@ -436,12 +462,14 @@ export type EvidenceReport = {
 // `parity evidence --check`: the corpus, the slice and the manifest must agree,
 // byte for byte, with no token and no network.
 export function checkEvidence({
-  root = resolveRoot(),
+  root = resolveWorkspaceRoot(),
+  dataRoot = resolveRoot(),
   cases,
   nodes,
   maxBytes = MAX_EVIDENCE_BYTES,
 }: {
   root?: string
+  dataRoot?: string
   cases?: ParityCase[]
   nodes?: InventoryNode[]
   maxBytes?: number
@@ -449,8 +477,8 @@ export function checkEvidence({
   const errors: string[] = []
   const warnings: string[] = []
   const paths = evidencePaths(root)
-  const corpus = cases ?? loadCaseFile(path.join(root, CASES_PATH))
-  const inventory = nodes ?? loadInventoryNodes(path.join(root, INVENTORY_PATH))
+  const corpus = cases ?? loadCaseFile(path.join(dataRoot, CASES_PATH))
+  const inventory = nodes ?? loadInventoryNodes(path.join(dataRoot, INVENTORY_PATH))
   let slice: EvidenceSlice | undefined
   let manifest: EvidenceManifest | undefined
   if (!fs.existsSync(paths.source)) {
@@ -497,7 +525,7 @@ export function checkEvidence({
   const byCase: Array<{ caseId: string; bytes: number }> = []
   for (const entry of corpus) {
     const where = entry.id
-    const variant = variantForCase(byNode.get(entry.nodeId), entry)
+    const variant = pinnedVariant(byNode.get(entry.nodeId), entry)
     if (!inSlice.has(entry.nodeId))
       errors.push(`${where}: the slice has no document for ${entry.nodeId}`)
     if (variant && !inSlice.has(variant.nodeId)) {
