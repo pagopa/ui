@@ -17,6 +17,7 @@ plan**, and nothing else is mandatory.
 | A1   | [a1-fidelity-tooling.md](./a1-fidelity-tooling.md)                                                                                 | F0          | B, C, D              |
 | A2   | [a2-main-components.md](./a2-main-components.md)                                                                                   | C, D, A1    | E                    |
 | E    | [e-ci-pipeline.md](./e-ci-pipeline.md) — deterministic drift PR, local implementation                                              | A1, B       | A2                   |
+| F2   | [f-ci-pipeline-evolution.md](./f-ci-pipeline-evolution.md) — deep checks in parallel jobs; sharding and cache are future work      | —           | —                    |
 
 ```
 F0 ─┬─ B ──────────────┬─ E
@@ -25,7 +26,9 @@ F0 ─┬─ B ──────────────┬─ E
     └─ A1 ─┴───────────┘
 ```
 
-F1 is not part of the graph: it is a future, conditional plan. The phase on
+F1 is not part of the graph: it is a future, conditional plan. F2 landed its
+first milestone (the parallel jobs) and its remaining work is future and
+independent of the waves above. The phase on
 visual aids can start right away; the one on variables opens only with a Figma
 Enterprise plan and the `file_variables:read` scope.
 

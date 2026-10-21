@@ -269,8 +269,9 @@ run does not move it. Each command records its own baseline under
   affected projects: `fmt`, `lint`, `typecheck`, `docs`, `build` and the unit
   project, with the hermetic checks riding along as dependencies of `test`.
   `.github/workflows/deep-checks.yml` adds the suites that need a browser — the
-  story projects in three engines with the coverage gates, and the packed
-  artifact consumer — on pull requests, on `main` and nightly.
+  story projects with the coverage gates on Chromium, the WebKit pass, and the
+  packed artifact consumer — in parallel jobs, on pull requests, on `main` and
+  nightly, where Firefox joins the engines.
 - **Each Monday at 04:00 UTC.** `.github/workflows/figma-drift.yml` runs
   `node src/cli.ts figma sync --rest --pr-body .figma/pr-body.md`. The job
   needs the read-only `FIGMA_TOKEN` secret and fails when it is missing. With

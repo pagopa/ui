@@ -57,9 +57,9 @@ underlying command is the package script of the same name
 - `pnpm nx run pagopa-ui-storybook:storybook` — Storybook on `:6006`, also the parity
   capture surface.
 - `pnpm nx run pagopa-ui-storybook:test:stories` — the stories in Firefox and WebKit;
-  `pnpm nx run pagopa-ui-storybook:test:coverage` — the same fast pass, then Chromium with
-  v8 coverage and the gates.
-- `pnpm nx run pagopa-ui-storybook:test:changed` — only the tests affected since the last
+  `pnpm nx run pagopa-ui-storybook:test:webkit` — the stories in WebKit alone, the pass a
+  pull request runs; `pnpm nx run pagopa-ui-storybook:test:coverage` — the stories in
+  Chromium with v8 coverage and the gates.
   successful run of the same command; for iterating, the chain stays the gate
   ([baseline](./packages/ui-cli/README.md#the-changed-only-test-loop)).
 - `pnpm nx run pagopa-ui:test` — the package's unit project.
@@ -189,9 +189,11 @@ path that publishes all projects with a publish target.
   `docs`, `build` and the unit project on the affected projects, plus the version
   plan warning. The app's `build` runs here too, so the documentation is proven
   to build on every pull request that touches the package.
-- `deep-checks.yml` — the suites that need a browser: the story projects in three
-  engines with the coverage gates, and the packed artifact consumer. On pull
-  requests and on `main` for the affected projects; nightly on everything.
+- `deep-checks.yml` — the suites that need a browser, in three parallel jobs: the
+  coverage gates on Chromium, the WebKit pass and the packed artifact consumer. On
+  pull requests and on `main` for the affected projects, where WebKit is the extra
+  engine; nightly on everything, which adds Firefox. Draft pull requests are skipped
+  until they are ready for review.
 - `figma-drift.yml` — the weekly drift snapshot and its review pull request.
 - `release.yaml` — the DX release manager, on `main`.
 
@@ -203,11 +205,11 @@ Green before commit; CI runs the same:
 pnpm nx run-many -p pagopa-ui -c=ci -t typecheck,fmt,lint,docs,figma:check,foundation:check,layers:check,build,test && \
   pnpm nx run-many -p pagopa-ui-artwork,pagopa-ui-tokens,pagopa-ui-cli -c=ci -t typecheck,fmt,lint && \
   pnpm nx run pagopa-ui-artwork:test && pnpm nx run pagopa-ui-tokens:test && pnpm nx run pagopa-ui-cli:test && \
-  pnpm nx run pagopa-ui-storybook:test:coverage && pnpm nx run pagopa-ui-storybook:build && pnpm nx run pagopa-ui:library:check
+  pnpm nx run pagopa-ui-storybook:test:coverage && pnpm nx run pagopa-ui-storybook:test:stories && pnpm nx run pagopa-ui-storybook:build && pnpm nx run pagopa-ui:library:check
 ```
 
 The `ci` configuration is the gate: `lint` and `fmt` check instead of writing.
-`library:check` and the coverage pass need the Playwright browsers
+`library:check` and the story passes need the Playwright browsers
 (`pnpm exec playwright install chromium firefox webkit`) and the built artifact;
 they are the slow end of the chain and run last. The `infra/` projects validate
 in CI, where `mise deps` has initialized their toolchain.

@@ -1,12 +1,21 @@
 name: Deep checks
 
 # The reusable DX code review (validate.yaml) runs the static checks and the
-# unit project. The suites that need a browser - the story projects in three
-# engines with the v8 coverage gates, and the packed artifact consumer - run
-# here: on every pull request, on main, and nightly to catch what a diff cannot
-# see.
+# unit project. The suites that need a browser run here, in three parallel jobs:
+# the story project with the v8 coverage gates on Chromium, the WebKit pass, and
+# the packed artifact consumer. A pull request proves the coverage gates and
+# WebKit; the nightly run adds Firefox and is the only place where the three
+# engines meet. The story projects in three engines with the gates and the
+# packed artifact consumer stay the same checks, split by engine so the wait is
+# the longest job instead of their sum.
+#
+# See docs/plans/f-ci-pipeline-evolution.md for the measured cost, the options
+# not taken and the next steps (sharding, remote cache, per-task timings).
 on:
   pull_request:
+    # `ready_for_review` is what turns a skipped draft into a checked pull
+    # request; without it a draft that becomes ready would never run.
+    types: [opened, synchronize, reopened, ready_for_review]
   push:
     branches: [main]
   schedule:
@@ -19,7 +28,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deep:
+  coverage:
+    name: Coverage gates (Chromium)
+    # A draft may still change its diff: the suites wait for the review.
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-24.04
     permissions:
       actions: read
@@ -27,30 +39,33 @@ jobs:
       packages: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version-file: .node-version
           cache: pnpm
 
       - name: Set the base and head SHAs for `nx affected`
-        uses: nrwl/nx-set-shas@v5
+        uses: nrwl/nx-set-shas@e602fada7ad5987b0f7b1905e7a99ea1c661514c # v5.1.0
 
+      # Nx 23 keeps the task cache under the per-user shared root (`~/.nx`), not
+      # in `.nx/cache`: caching the latter restored nothing. The rolling key
+      # restores the newest entry of this job and saves a fresh one per run.
       - name: Cache Nx
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
-          path: .nx/cache
-          key: ${{ runner.os }}-nx-cache-${{ github.workflow }}-${{ github.ref_name }}-${{ github.sha }}
+          path: ~/.nx
+          key: ${{ runner.os }}-nx-${{ github.workflow }}-coverage-${{ github.run_id }}
           restore-keys: |
-            ${{ runner.os }}-nx-cache-${{ github.workflow }}-${{ github.ref_name }}-
-            ${{ runner.os }}-nx-cache-${{ github.workflow }}-
+            ${{ runner.os }}-nx-${{ github.workflow }}-coverage-
+            ${{ runner.os }}-nx-${{ github.workflow }}-
 
       # DX packages come from GitHub Packages through pnpm's built-in `gh:`
       # alias. Pass the token explicitly; the action writes authentication to a
@@ -63,13 +78,151 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Resolve the Playwright version
+        id: playwright
+        run: echo "version=$(pnpm --filter @pagopa/ui exec playwright --version | awk '{ print $2 }')" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}-chromium
+
+      - name: Install Playwright browsers
+        run: pnpm --filter @pagopa/ui exec playwright install --with-deps chromium
+
+      - name: Coverage gates (affected)
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        run: pnpm nx affected -t test:coverage
+
+      - name: Coverage gates (everything)
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: pnpm nx run pagopa-ui-storybook:test:coverage
+
+  webkit:
+    name: Stories (WebKit, Firefox nightly)
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: read
+      contents: read
+      packages: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Set the base and head SHAs for `nx affected`
+        uses: nrwl/nx-set-shas@e602fada7ad5987b0f7b1905e7a99ea1c661514c # v5.1.0
+
+      - name: Cache Nx
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/.nx
+          key: ${{ runner.os }}-nx-${{ github.workflow }}-webkit-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-nx-${{ github.workflow }}-webkit-
+            ${{ runner.os }}-nx-${{ github.workflow }}-
+
+      - name: Setup npm registry
+        uses: pagopa/dx/actions/setup-npm-registry@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Resolve the Playwright version
+        id: playwright
+        run: echo "version=$(pnpm --filter @pagopa/ui exec playwright --version | awk '{ print $2 }')" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}-firefox-webkit
+
+      - name: Install Playwright browsers
+        run: pnpm --filter @pagopa/ui exec playwright install --with-deps firefox webkit
+
+      - name: Stories in WebKit (affected)
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        run: pnpm nx affected -t test:webkit
+
+      - name: Stories in Firefox and WebKit (everything)
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: pnpm nx run pagopa-ui-storybook:test:stories
+
+  library:
+    name: Packed artifact (three engines)
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: read
+      contents: read
+      packages: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Set the base and head SHAs for `nx affected`
+        uses: nrwl/nx-set-shas@e602fada7ad5987b0f7b1905e7a99ea1c661514c # v5.1.0
+
+      - name: Cache Nx
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/.nx
+          key: ${{ runner.os }}-nx-${{ github.workflow }}-library-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-nx-${{ github.workflow }}-library-
+            ${{ runner.os }}-nx-${{ github.workflow }}-
+
+      - name: Setup npm registry
+        uses: pagopa/dx/actions/setup-npm-registry@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Resolve the Playwright version
+        id: playwright
+        run: echo "version=$(pnpm --filter @pagopa/ui exec playwright --version | awk '{ print $2 }')" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}-chromium-firefox-webkit
+
       - name: Install Playwright browsers
         run: pnpm --filter @pagopa/ui exec playwright install --with-deps chromium firefox webkit
 
-      - name: Stories, coverage gates and the packed artifact (affected)
+      - name: Packed artifact (affected)
         if: github.event_name == 'pull_request' || github.event_name == 'push'
-        run: pnpm nx affected -t test:coverage,library:check
+        run: pnpm nx affected -t library:check
 
-      - name: Stories, coverage gates and the packed artifact (everything)
+      - name: Packed artifact (everything)
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-        run: pnpm nx run-many -p pagopa-ui,pagopa-ui-storybook -t test:coverage,library:check
+        run: pnpm nx run pagopa-ui:library:check

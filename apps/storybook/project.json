@@ -30,6 +30,15 @@
         "{workspaceRoot}/packages/tokens/src/**"
       ]
     },
+    "test:webkit": {
+      "dependsOn": ["pagopa-ui:figma:check", "pagopa-ui-artwork:test", "pagopa-ui-tokens:test"],
+      "inputs": [
+        "default",
+        "{workspaceRoot}/packages/pagopa-ui/src/**",
+        "{workspaceRoot}/packages/artwork/src/**",
+        "{workspaceRoot}/packages/tokens/src/**"
+      ]
+    },
     "test:coverage": {
       "inputs": [
         "default",
