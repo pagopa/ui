@@ -318,6 +318,8 @@ terraform.rc
 .nx/workspace-data
 .nx/migrate-runs
 .nx/polygraph
+.dx-tasks
+.tflint.d
 .claude/worktrees
 .claude/settings.local.json
 ### pagopa-ui ###
