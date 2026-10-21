@@ -266,7 +266,10 @@ export const LocalDefaults: Story = {
       await expect(bounds.height).toBe(24)
     }
     const send = canvas.getByRole("img", { name: "SEND" })
-    await expect(send).toHaveAttribute("src", expect.stringContaining("8717-781.svg"))
+    // The production build rewrites the asset to `8717-781-<hash>.svg`, the dev
+    // server keeps the `?no-inline` query: match the pinned node id and accept
+    // both, so the assertion does not depend on the delivery transform.
+    await expect(send).toHaveAttribute("src", expect.stringMatching(/8717-781[-\w]*\.svg(?:\?|$)/))
     const feedback = canvas.getByRole("img", { name: "feedback" })
     await expect(getComputedStyle(feedback).maskImage).not.toBe("none")
     await expect(getComputedStyle(feedback).backgroundColor).toBe(getComputedStyle(feedback).color)

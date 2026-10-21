@@ -422,6 +422,13 @@ export const ChoiceCommandOpensOverlay: Story = {
 }
 
 export const ChoiceCommandSurfacesCallbackErrors: Story = {
+  parameters: {
+    // The story lets the callback error reach the window on purpose, proving
+    // the field does not swallow it. Chromatic's runner reports that as an
+    // unhandled error and fails the story, so the opt-in visual run skips it;
+    // the browser suite still asserts the surfacing behaviour.
+    chromatic: { disableSnapshot: true },
+  },
   render: () => (
     <SelectField
       label="Comune con callback fallibile"

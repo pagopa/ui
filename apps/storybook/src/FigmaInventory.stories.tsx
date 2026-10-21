@@ -211,7 +211,14 @@ type Story = StoryObj<typeof meta>
 
 export const PublishedComponents: Story = {
   // Reflow exemption: fixture pinned at the source width, not a product surface.
-  parameters: { a11yContract: { reflow: false } },
+  parameters: {
+    a11yContract: { reflow: false },
+    // The generated inventory (353 cards) exceeds Chromatic's 25,000,000px
+    // capture cap at every configured viewport (1168x31,472 on desktop).
+    // Chromatic skips the snapshot and its interaction run; the browser suite
+    // still runs the play function below.
+    chromatic: { disableSnapshot: true },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     function card(nodeId: string) {
