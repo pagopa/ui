@@ -49,7 +49,7 @@ jobs:
           permission-pull-requests: write
 
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-tags: "true"
           fetch-depth: 0
@@ -67,11 +67,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # No App private key here: the composite action authenticates only through
+      # `github-token`, and a step-level env would leak it to every inner step,
+      # including `nx run-many --target=build` and `nx release publish`.
       - name: Nx Release
         uses: pagopa/dx/actions/nx-release@main
-        env:
-          GH_APP_CLIENT_ID: ${{ secrets.GH_APP_RELEASE_CLIENT_ID }}
-          GH_APP_KEY: ${{ secrets.GH_APP_RELEASE_APP_KEY }}
         with:
           app-slug: ${{ steps.generate-token.outputs.app-slug }}
           github-token: ${{ steps.generate-token.outputs.token }}
