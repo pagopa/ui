@@ -1,0 +1,55 @@
+name: Release Storybook
+
+# Publishes the static Storybook to the Azure Static Web App created in
+# infra/resources/dev. Pull requests get a preview environment; main gets the
+# production deployment. The DX reusable builds the workspace, uploads the
+# artifact and deploys it with the Static Web Apps action.
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/storybook/**"
+      - "packages/pagopa-ui/**"
+      - "packages/artwork/**"
+      - "packages/tokens/**"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/release-storybook.yaml"
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+    paths:
+      - "apps/storybook/**"
+      - "packages/pagopa-ui/**"
+      - "packages/artwork/**"
+      - "packages/tokens/**"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/release-storybook.yaml"
+
+permissions:
+  contents: read
+  id-token: write
+  packages: read
+  pull-requests: write
+
+jobs:
+  deploy_to_static_web_app:
+    name: Release Storybook
+    permissions:
+      contents: read
+      id-token: write
+      # The build job installs the workspace, which resolves the DX Nx plugins
+      # from GitHub Packages through pnpm's `gh:` alias.
+      packages: read
+      pull-requests: write
+    uses: pagopa/dx/.github/workflows/release-azure-staticapp-v1.yaml@main
+    secrets: inherit
+    with:
+      # Matches both the package.json name and the Nx project name.
+      workspace_name: "pagopa-ui-storybook"
+      output_dir: "dist"
+      static_web_app_name: "dx-d-itn-ui-storybook-stapp-01"
+      resource_group_name: "dx-d-itn-ui-rg-01"
+      environment: "app-dev"

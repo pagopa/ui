@@ -444,7 +444,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
       "## Instructions — verify",
       "",
       "Run and report the green chain documented in `CONTRIBUTING.md`:",
-      "`pnpm nx run-many -p pagopa-ui -c=ci -t typecheck,fmt,lint,docs,figma:check,foundation:check,layers:check,build,test && pnpm nx run-many -p pagopa-ui-artwork,pagopa-ui-tokens,pagopa-ui-cli -c=ci -t typecheck,fmt,lint && pnpm nx run pagopa-ui-artwork:test && pnpm nx run pagopa-ui-tokens:test && pnpm nx run pagopa-ui-cli:test && pnpm nx run storybook:test:coverage && pnpm nx run storybook:build && pnpm nx run pagopa-ui:library:check`",
+      "`pnpm nx run-many -p pagopa-ui -c=ci -t typecheck,fmt,lint,docs,figma:check,foundation:check,layers:check,build,test && pnpm nx run-many -p pagopa-ui-artwork,pagopa-ui-tokens,pagopa-ui-cli -c=ci -t typecheck,fmt,lint && pnpm nx run pagopa-ui-artwork:test && pnpm nx run pagopa-ui-tokens:test && pnpm nx run pagopa-ui-cli:test && pnpm nx run pagopa-ui-storybook:test:coverage && pnpm nx run pagopa-ui-storybook:build && pnpm nx run pagopa-ui:library:check`",
       "",
     )
     for (const [key, label] of classes) {

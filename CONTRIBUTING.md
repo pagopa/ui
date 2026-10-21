@@ -11,7 +11,7 @@ work.
   `mise trust` once): Node 22.23.3 and pnpm 11.28.6, pinned in `.node-version`
   and `mise.lock`.
 - `pnpm install`
-- `pnpm nx run storybook:storybook` for the documentation and the visual checks
+- `pnpm nx run pagopa-ui-storybook:storybook` for the documentation and the visual checks
 
 ## Composition
 
@@ -54,12 +54,12 @@ underlying command is the package script of the same name
 (`pnpm --filter @pagopa/ui run <script>` or
 `pnpm --filter pagopa-ui-cli run <script>`).
 
-- `pnpm nx run storybook:storybook` — Storybook on `:6006`, also the parity
+- `pnpm nx run pagopa-ui-storybook:storybook` — Storybook on `:6006`, also the parity
   capture surface.
-- `pnpm nx run storybook:test:stories` — the stories in Firefox and WebKit;
-  `pnpm nx run storybook:test:coverage` — the same fast pass, then Chromium with
+- `pnpm nx run pagopa-ui-storybook:test:stories` — the stories in Firefox and WebKit;
+  `pnpm nx run pagopa-ui-storybook:test:coverage` — the same fast pass, then Chromium with
   v8 coverage and the gates.
-- `pnpm nx run storybook:test:changed` — only the tests affected since the last
+- `pnpm nx run pagopa-ui-storybook:test:changed` — only the tests affected since the last
   successful run of the same command; for iterating, the chain stays the gate
   ([baseline](./packages/ui-cli/README.md#the-changed-only-test-loop)).
 - `pnpm nx run pagopa-ui:test` — the package's unit project.
@@ -80,7 +80,7 @@ underlying command is the package script of the same name
 - `pnpm nx run pagopa-ui:library:check` — the packed artifact in a plain app,
   three engines. The stylesheet payload budget of the built artifact runs inside
   `pnpm nx run pagopa-ui:build`.
-- `pnpm nx run storybook:build` — the deployable documentation
+- `pnpm nx run pagopa-ui-storybook:build` — the deployable documentation
   (`dist/` inside `apps/storybook`) out of the stories the application carries.
 - `pnpm nx run pagopa-ui-cli:figma:parity:check`,
   `pnpm nx run pagopa-ui-cli:figma:devices`
@@ -203,7 +203,7 @@ Green before commit; CI runs the same:
 pnpm nx run-many -p pagopa-ui -c=ci -t typecheck,fmt,lint,docs,figma:check,foundation:check,layers:check,build,test && \
   pnpm nx run-many -p pagopa-ui-artwork,pagopa-ui-tokens,pagopa-ui-cli -c=ci -t typecheck,fmt,lint && \
   pnpm nx run pagopa-ui-artwork:test && pnpm nx run pagopa-ui-tokens:test && pnpm nx run pagopa-ui-cli:test && \
-  pnpm nx run storybook:test:coverage && pnpm nx run storybook:build && pnpm nx run pagopa-ui:library:check
+  pnpm nx run pagopa-ui-storybook:test:coverage && pnpm nx run pagopa-ui-storybook:build && pnpm nx run pagopa-ui:library:check
 ```
 
 The `ci` configuration is the gate: `lint` and `fmt` check instead of writing.

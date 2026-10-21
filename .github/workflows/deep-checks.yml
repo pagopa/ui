@@ -72,4 +72,4 @@ jobs:
 
       - name: Stories, coverage gates and the packed artifact (everything)
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-        run: pnpm nx run-many -p pagopa-ui,storybook -t test:coverage,library:check
+        run: pnpm nx run-many -p pagopa-ui,pagopa-ui-storybook -t test:coverage,library:check

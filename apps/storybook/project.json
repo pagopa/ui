@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "name": "storybook",
+  "name": "pagopa-ui-storybook",
   "projectType": "application",
   "sourceRoot": "apps/storybook/src",
   "tags": ["type:app", "scope:docs"],
