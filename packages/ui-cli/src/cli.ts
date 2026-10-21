@@ -365,6 +365,10 @@ const parity = defineCommand({
       "dry-run": parityBoolean,
       cases: parityString,
     }),
+    verify: parityCommand("verify", "Verify the case corpus and device coverage", {
+      cases: parityString,
+      json: parityBoolean,
+    }),
     source: defineCommand({
       meta: { name: "source", description: "Print the pinned source spec" },
       args: {

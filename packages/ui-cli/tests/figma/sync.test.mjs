@@ -122,6 +122,21 @@ function fixture(run, overrides = {}) {
   }
 }
 
+test("a malformed case fails the catalogue gate with its id", () => {
+  fixture(
+    ({ check }) => {
+      const result = check()
+      assert.equal(result.status, 1)
+      assert.match(result.stderr, /cases: bad-case: device "watch" is not a device key/)
+    },
+    {
+      "src/catalog/figma/parity-cases.json": JSON.stringify([
+        { id: "bad-case", nodeId: "1:1", export: "Control", device: "watch" },
+      ]),
+    },
+  )
+})
+
 test("adding a variant to an existing identity is reported as changed", () => {
   fixture(
     ({ check }) => {

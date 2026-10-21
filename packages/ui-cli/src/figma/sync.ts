@@ -64,8 +64,10 @@ import {
 import {
   DEVICE_EXCEPTIONS_PATH,
   deviceCoverage,
+  isDraftCase,
   loadCaseFile,
   loadDeviceExceptions,
+  validateCaseFile,
 } from "../parity/cases.ts"
 import { fetchFigmaSnapshot } from "./rest.ts"
 import { staleStoryTitles } from "./stories.ts"
@@ -589,6 +591,15 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     exceptions: number
   } | null = null
 
+  // The case corpus is validated by the catalogue gate, not only by its test
+  // project: a malformed case fails the push like a malformed registry entry.
+  let caseCorpusStats: {
+    cases: number
+    errors: number
+    warnings: number
+    drafts: number
+  } | null = null
+
   if (devicePolicy) {
     try {
       const cases = loadCaseFile()
@@ -645,6 +656,33 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
         missing: coverage.totals.missing,
         drafts: coverage.totals.drafts,
         exceptions: Object.keys(exceptions).length,
+      }
+    } catch (error) {
+      fail(error instanceof Error ? error.message : String(error))
+    }
+  }
+
+  // ------------------------------------------------------------ case corpus
+  //
+  // The reviewed cases are catalogue data too: every case must name a node in
+  // the inventory, a device the policy declares and an export the registry maps,
+  // with selectors and residue reasons that reproduce. `validateCaseFile` owns
+  // the schema; this gate only reports its verdict.
+  if (devicePolicy) {
+    try {
+      const cases = loadCaseFile()
+      const result = validateCaseFile(cases, {
+        registry,
+        nodes: committed,
+        policy: devicePolicy,
+      })
+      for (const error of result.errors) fail(`cases: ${error}`)
+      for (const warning of result.warnings) warnings.push(`cases: ${warning}`)
+      caseCorpusStats = {
+        cases: cases.length,
+        errors: result.errors.length,
+        warnings: result.warnings.length,
+        drafts: cases.filter(isDraftCase).length,
       }
     } catch (error) {
       fail(error instanceof Error ? error.message : String(error))
@@ -994,6 +1032,12 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     )
     if (deviceStats) console.log(formatDeviceLine(deviceStats))
     if (deviceCoverageStats) console.log(formatCoverageLine(deviceCoverageStats))
+    if (caseCorpusStats) {
+      console.log(
+        `cases: ${caseCorpusStats.cases} case(s) · errors ${caseCorpusStats.errors} · ` +
+          `warnings ${caseCorpusStats.warnings} · drafts ${caseCorpusStats.drafts}`,
+      )
+    }
   }
 
   if (flag("plan")) {

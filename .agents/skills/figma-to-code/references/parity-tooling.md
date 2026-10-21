@@ -19,6 +19,7 @@ Every row is a target of `pagopa-ui-cli`: run it as
 | `figma:parity:check --node <id> --devices`         | every declared device's committed case in one table; exit 1 when a device has no reviewed case or its case fails                                            |
 | `figma:parity:capture`                             | a whole wave: per case the report, probe and PNG under `figma.parityOut`, plus `summary.json`                                                                |
 | `figma:parity:cases --sync`                        | proposes the missing device cases and the variants no reviewed case points at, as drafts                                                                     |
+| `figma:parity:verify`                              | the case corpus and the device coverage, hermetically (no snapshot, no browser); exit 1 on errors, 0 with warnings                                           |
 | `figma:parity:report --wave <name>`                | the wave record: counts, verdicts, advisories, residues, open deltas, the re-run command per case                                                            |
 | `source <nodeId>` (via `pnpm --filter pagopa-ui-cli run cli -- parity source <nodeId>`) | the source spec `check` diffs against (`--compact` anatomy, `--json`, `--depth N`)                                                                           |
 | `render --story <storyId>` (via `pnpm --filter pagopa-ui-cli run cli -- parity render --story <storyId>`) | a render probe alone                                                                                                                                         |
@@ -135,7 +136,7 @@ variant, its device and its width.
 
 No PNG pixel diff or percentage budget (the gate is 2px per property plus the
 structural deltas); no workbench, packets, approval files or visual-contract
-corpus; no `refs`, `verify` or pixel baselines — after a code change re-run
+corpus; no `refs` or pixel baselines — after a code change re-run
 `check`. The parity tools never write under `src/` except `--save-case`; renders
 and probes stay in `figma.parityOut`. Story tests run at one viewport, so device
 verification is `check --devices` and `library:check`, never a `play()` test that

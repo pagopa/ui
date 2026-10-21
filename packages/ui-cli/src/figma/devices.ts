@@ -47,6 +47,7 @@ type DeviceAxis = {
 
 type SeenValue = { value: string; axes: Set<string>; nodes: string[] }
 type SeenOtherAxis = { axis: string; value: string; nodes: string[] }
+type IgnoredValue = { axis: string; value: string; reason: string }
 export type DeviceStats = {
   nodes: number
   sets: number
@@ -68,6 +69,12 @@ export function normalizeDeviceValue(value: unknown): string {
     .trim()
     .toLowerCase()
     .replace(/\s+/g, "")
+}
+
+// The identity of an ignored axis value: the axis token and the value, both
+// normalized the way the device aliases are, so one spelling is one entry.
+function ignoredKey(entry: { axis: string; value: string }): string {
+  return `${normalizeDeviceValue(axisToken(entry.axis))}|${normalizeDeviceValue(entry.value)}`
 }
 
 // The axis token of a property key: the source writes `Requirement=True` in the
@@ -310,6 +317,21 @@ export function checkDevicePolicy(
   const byDevice: Record<string, number> = {}
   const derivedAxes = new Set<string>()
   const deviceValuesOnOtherAxes = new Map<string, SeenOtherAxis>()
+  // Every value a non-device axis declares, including the ignored ones: the
+  // stale check needs the raw inventory, the warning loop needs the filter.
+  const otherAxisValues = new Map<string, SeenOtherAxis>()
+  const ignoredIndex = new Map<string, IgnoredValue>()
+  for (const entry of policy.ignoredValues ?? []) {
+    const key = ignoredKey(entry)
+    if (ignoredIndex.has(key)) {
+      errors.push(
+        `the ignored value "${entry.value}" on the "${entry.axis}" axis is listed twice — ` +
+          `one entry per axis and value`,
+      )
+    } else {
+      ignoredIndex.set(key, entry)
+    }
+  }
   let declared = 0
   for (const node of nodes) {
     const axes = deviceAxes(policy, node)
@@ -333,11 +355,20 @@ export function checkDevicePolicy(
       if (definition?.type !== "VARIANT") continue
       if (axes.some((axis) => axis.name === name)) continue
       for (const value of definition.variantOptions ?? []) {
+        const key = ignoredKey({ axis: axisToken(name), value })
+        let other = otherAxisValues.get(key)
+        if (!other) {
+          other = { axis: axisToken(name), value, nodes: [] }
+          otherAxisValues.set(key, other)
+        }
+        if (!other.nodes.includes(node.nodeId)) other.nodes.push(node.nodeId)
+        // A reasoned policy entry says this value is not a device, even though
+        // its spelling matches one: the axis is not split and no warning is due.
+        if (ignoredIndex.has(key)) continue
         // A non-device axis that names a device is worth a look; a generic
         // `Default`/`Any` value is not (every list axis declares one).
         const device = deviceOf(policy, value)
         if (device === UNKNOWN_DEVICE || device === ANY_DEVICE) continue
-        const key = `${axisToken(name)} ${value}`
         let seen = deviceValuesOnOtherAxes.get(key)
         if (!seen) {
           seen = { axis: axisToken(name), value, nodes: [] }
@@ -391,6 +422,17 @@ export function checkDevicePolicy(
         `declares "${value}", which names a device, but the axis is not a device axis ` +
         `(not every value resolves) — split the axis or add the missing values`,
     )
+  }
+  // An ignored value nobody declares is a stale exception, like a device
+  // exception whose node now covers every device: it only hides the next real
+  // warning.
+  for (const [key, entry] of ignoredIndex) {
+    if (!otherAxisValues.has(key)) {
+      errors.push(
+        `the ignored value "${entry.value}" on the "${entry.axis}" axis matches no non-device ` +
+          `axis value in the inventory — remove it from "ignoredValues"`,
+      )
+    }
   }
   const stats = {
     nodes: nodes.length,

@@ -28,10 +28,12 @@ import {
   type CaseRow,
   deviceCoverage,
   findCase,
+  isDraftCase,
   loadCaseFile,
   loadRegistry,
   saveCase,
   syncProposals,
+  validateCaseFile,
 } from "./cases.ts"
 import {
   compare,
@@ -136,6 +138,7 @@ const USAGE = `usage:
     [--device <key>] [--note <text>] [--limit <n>] [--include-catalogue] [--out <directory>]
     [--strict] [--dry-run]
   figma-parity cases --sync [--node <id>] [--dry-run] [--cases <file>]
+  figma-parity verify [--cases <file>] [--json]
   figma-parity report --wave <name> [--dir <directory>] [--out <markdown>]
 
 Profiles: the default verdict is the reviewed one (2px per property, residues with
@@ -1075,6 +1078,66 @@ function cases({ flags }: Parsed): number {
   return 0
 }
 
+// `verify`: the hermetic verdict of the corpus and its device coverage. No
+// snapshot, no Storybook, no network: a clone can prove the reviewed cases are
+// well formed and that every implemented device set is covered before a render
+// exists. A broken case is an error; a pending burn-down row is a warning.
+function verify({ flags }: Parsed): number {
+  const path_ = corpusPath(flags)
+  const cases = loadCaseFile(path_)
+  const registry = loadRegistry()
+  const nodes = inventoryNodes()
+  const policy = devicePolicy()
+  const corpus = validateCaseFile(cases, { registry, nodes, policy })
+  const errors = [...corpus.errors]
+  const warnings = [...corpus.warnings]
+  const coverage = deviceCoverage({
+    policy,
+    nodes,
+    registry,
+    cases,
+    statuses: ["implemented", "pending"],
+  })
+  for (const row of coverage.rows) {
+    if (!row.missing.length) continue
+    const message = `${row.nodeId} (${row.status}) misses device case(s): ${row.missing.join(", ")}`
+    if (row.status === "implemented") errors.push(message)
+    else warnings.push(message)
+  }
+  const drafts = cases.filter(isDraftCase).length
+  if (flags.has("json")) {
+    console.log(
+      JSON.stringify(
+        {
+          corpus: path_,
+          cases: cases.length,
+          drafts,
+          errors,
+          warnings,
+          coverage: coverage.totals,
+          rows: coverage.rows,
+        },
+        null,
+        2,
+      ),
+    )
+  } else {
+    for (const warning of warnings) console.warn(`warn: ${warning}`)
+    for (const error of errors) console.error(`error: ${error}`)
+    console.log(
+      `cases: ${cases.length} case(s) · errors ${errors.length} · ` +
+        `warnings ${warnings.length} · drafts ${drafts}`,
+    )
+    console.log(
+      `devices: ${coverage.totals.nodes} node(s) with an axis · declared ${coverage.totals.declared} · ` +
+        `covered ${coverage.totals.covered} · missing ${coverage.totals.missing} · ` +
+        `drafts ${coverage.totals.drafts}`,
+    )
+    console.log(errors.length ? "verify: failed" : "verify: ok")
+  }
+  return errors.length ? 1 : 0
+}
+
 function reRunCommand(entry: { nodeId: string; case?: CaseSpec; status: string }): string {
   const spec = entry.case
   // A reviewed case is addressed by its id: the corpus owns the mapping.
@@ -1273,6 +1336,7 @@ async function main(argv: string[]): Promise<number> {
   if (command === "check") return await check(parsed)
   if (command === "capture") return await captureWave(parsed)
   if (command === "cases") return cases(parsed)
+  if (command === "verify") return verify(parsed)
   if (command === "report") return report(parsed)
   console.error(`unknown command ${command}\n${USAGE}`)
   return 2

@@ -33,11 +33,21 @@ export const DeviceDefinitionSchema = z
     }
   })
 
+// A value on a non-device axis that happens to spell a device, with the reason it
+// is not one: the policy records the exception instead of every consumer
+// learning each component's axis. It never names a component, a file or a path.
+export const IgnoredDeviceValueSchema = z.strictObject({
+  axis: NonEmptyStringSchema,
+  value: NonEmptyStringSchema,
+  reason: NonEmptyStringSchema,
+})
+
 export const DevicePolicySchema = z
   .strictObject({
     axes: z.array(NonEmptyStringSchema),
     any: z.array(z.string()),
     devices: z.record(DeviceKeySchema, DeviceDefinitionSchema),
+    ignoredValues: z.array(IgnoredDeviceValueSchema).optional(),
   })
   .superRefine((policy, context) => {
     if (!Object.keys(policy.devices).length) {
