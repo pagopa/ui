@@ -169,7 +169,8 @@ pnpm nx release plan                                  # guided
 pnpm nx release plan patch -p pagopa-ui -m "fix: …"    # scriptable
 ```
 
-The plan file lands in `.nx/version-plans/` and is committed with the change.
+The plan file lands in the `version-plans` directory under `.nx` and is
+committed with the change.
 `pnpm nx release plan:check` reports a touched project without one, and the DX
 code review leaves the same warning as a pull request comment. Merging the pull
 request opens (or updates) the **Version Packages** pull request with the bump
@@ -196,6 +197,20 @@ path that publishes all projects with a publish target.
   until they are ready for review.
 - `figma-drift.yml` — the weekly drift snapshot and its review pull request.
 - `release.yaml` — the DX release manager, on `main`.
+
+### The release pull request
+
+The **Version Packages** pull request and the commit it lands on `main` are not
+changes: they carry the version, the changelog and the consumed version plan,
+and nothing else. The code being published was proven on the pull request that
+produced it, so the release skips the code review, the story preview and the
+deep checks, and the version-only push skips the deep checks. A skipped job
+reports `skipped`, which merges cleanly; a path-filtered workflow would leave a
+required check pending instead.
+
+Merging a release therefore starts the release and the production Storybook
+deploy, not seven runs at once. A hand-written pull request runs everything:
+only the `nx-release/` branch is exempt.
 
 ## The green chain
 

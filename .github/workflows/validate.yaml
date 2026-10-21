@@ -1,5 +1,9 @@
 name: Code Review
 
+# The static checks and the unit project. The release pull request is skipped:
+# it only carries the version, the changelog and the consumed version plan, so
+# there is nothing new to review, and the skipped job reports `skipped`, which
+# merges cleanly where a path-filtered workflow would leave the check pending.
 on:
   workflow_dispatch:
   pull_request:
@@ -7,6 +11,7 @@ on:
 
 jobs:
   validate:
+    if: ${{ !startsWith(github.head_ref || '', 'nx-release/') }}
     permissions:
       actions: read
       contents: read
