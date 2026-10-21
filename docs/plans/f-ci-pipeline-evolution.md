@@ -69,9 +69,14 @@ Three structural costs, in order of weight:
 - `.github/workflows/deep-checks.yml` — three parallel jobs (`coverage`,
   `webkit`, `library`), `nx affected` per job, nightly variants that add Firefox
   and every project, a Playwright browser cache keyed on the installed version,
-  and a rolling Nx cache key (`run_id`) with `restore-keys` per job. The Nx cache
-  path moved to `~/.nx`: Nx 23 keeps the task cache under the per-user shared
-  root, so the previous `.nx/cache` restored nothing.
+  and the pinned actions of the split. There is no Nx cache step: the local
+  cache cannot cross runners (see M4).
+
+A warm rerun of #7 is the evidence for M4: the jobs restored the Nx cache, the
+log reported `Unrecognized Cache Artifacts`, and `coverage` and `library` re-ran
+their tasks. Freezing the cache and its database together, inside the checkout,
+does not change it: the database records the machine that wrote it, and a
+restored entry is not metadata this runner may use.
 
 ## What is left
 
