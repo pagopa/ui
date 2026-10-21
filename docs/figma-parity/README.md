@@ -6,11 +6,11 @@ and without `FIGMA_TOKEN`.
 
 It is **generated, never hand-edited**:
 
-| File                     | Content                                                                 |
-| ------------------------ | ----------------------------------------------------------------------- |
-| `source.json`            | the compact document map a case points at (its node and variants)       |
-| `references/<caseId>.png`| the pinned Figma render of the case variant, scale 1, at the pinned version |
-| `manifest.json`          | the file key, the version, the per-case hash, variant and fingerprint   |
+| File                      | Content                                                                     |
+| ------------------------- | --------------------------------------------------------------------------- |
+| `source.json`             | the compact document map a case points at (its node and variants)           |
+| `references/<caseId>.png` | the pinned Figma render of the case variant, scale 1, at the pinned version |
+| `manifest.json`           | the file key, the version, the per-case hash, variant and fingerprint       |
 
 The PNGs are review evidence, not a pixel gate: the verdict stays the 2 px
 property comparison of `parity check`. The whole bundle is capped at **10 MB**;

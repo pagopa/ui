@@ -6,12 +6,12 @@ and never reads `.env` — the tools read the process environment only.
 
 ## Secrets
 
-| Secret                    | Used by                              | Scopes / permissions                                             | Failure mode                                                                 |
-| ------------------------- | ------------------------------------ | ---------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| `FIGMA_TOKEN`             | `figma-drift.yml`, live local steps  | `file_content:read`, `library_content:read` (read-only)          | The drift preflight fails explicitly; live local steps stop and use the evidence slice. |
-| `DRIFT_PR_TOKEN`          | `figma-drift.yml`                    | contents: write, pull requests: write (fine-grained token)       | The workflow falls back to `GITHUB_TOKEN`: the PR opens, its checks stay empty until a human re-runs them. |
-| `GITHUB_TOKEN`            | every workflow                       | provided by Actions                                             | `pnpm install` cannot resolve the DX packages from GitHub Packages.          |
-| `CHROMATIC_PROJECT_TOKEN` | `chromatic.yml`                      | the Chromatic project token for this repository                  | The opt-in job skips with a notice; no pull request is blocked.              |
+| Secret                    | Used by                             | Scopes / permissions                                       | Failure mode                                                                                               |
+| ------------------------- | ----------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `FIGMA_TOKEN`             | `figma-drift.yml`, live local steps | `file_content:read`, `library_content:read` (read-only)    | The drift preflight fails explicitly; live local steps stop and use the evidence slice.                    |
+| `DRIFT_PR_TOKEN`          | `figma-drift.yml`                   | contents: write, pull requests: write (fine-grained token) | The workflow falls back to `GITHUB_TOKEN`: the PR opens, its checks stay empty until a human re-runs them. |
+| `GITHUB_TOKEN`            | every workflow                      | provided by Actions                                        | `pnpm install` cannot resolve the DX packages from GitHub Packages.                                        |
+| `CHROMATIC_PROJECT_TOKEN` | `chromatic.yml`                     | the Chromatic project token for this repository            | The opt-in job skips with a notice; no pull request is blocked.                                            |
 
 The registry token is the `GITHUB_TOKEN` passed to
 `pagopa/dx/actions/setup-npm-registry`; add a dedicated `NODE_AUTH_TOKEN` only
