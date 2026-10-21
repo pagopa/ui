@@ -47,6 +47,9 @@ importers:
       '@chromatic-com/storybook':
         specifier: ^5.5.1
         version: 5.5.1(storybook@10.6.2(@types/react@19.3.0)(prettier@3.9.9)(react@19.3.0))
+      '@pagopa/ui':
+        specifier: workspace:*
+        version: link:../../packages/pagopa-ui
       '@storybook/addon-a11y':
         specifier: ^10.6.2
         version: 10.6.2(storybook@10.6.2(@types/react@19.3.0)(prettier@3.9.9)(react@19.3.0))
@@ -101,9 +104,6 @@ importers:
       oxlint:
         specifier: ^1.81.0
         version: 1.87.0
-      pagopa-ui:
-        specifier: workspace:*
-        version: link:../../packages/pagopa-ui
       pagopa-ui-artwork:
         specifier: workspace:*
         version: link:../../packages/artwork

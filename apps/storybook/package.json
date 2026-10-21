@@ -22,6 +22,7 @@
   "devDependencies": {
     "@base-ui/react": "^1.9.0",
     "@chromatic-com/storybook": "^5.5.1",
+    "@pagopa/ui": "workspace:*",
     "@storybook/addon-a11y": "^10.6.2",
     "@storybook/addon-designs": "^11.1.4",
     "@storybook/addon-docs": "^10.6.2",
@@ -40,7 +41,6 @@
     "lucide-react": "^1.52.0",
     "oxfmt": "^0.73.0",
     "oxlint": "^1.81.0",
-    "pagopa-ui": "workspace:*",
     "pagopa-ui-artwork": "workspace:*",
     "pagopa-ui-tokens": "workspace:*",
     "playwright": "1.63.0",
