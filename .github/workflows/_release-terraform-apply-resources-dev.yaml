@@ -22,6 +22,9 @@ permissions:
 
 jobs:
   release:
+    # The pipeline belongs to the source repository: a fork has no Azure
+    # subscription to apply to.
+    if: github.repository == 'pagopa/ui'
     permissions:
       actions: read
       contents: read

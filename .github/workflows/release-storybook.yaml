@@ -43,7 +43,11 @@ permissions:
 jobs:
   deploy_to_static_web_app:
     name: Release Storybook
-    if: ${{ !startsWith(github.head_ref || '', 'nx-release/') }}
+    # The pipeline belongs to the source repository: a fork has no Static Web
+    # App and no environment to deploy to.
+    if: >-
+      github.repository == 'pagopa/ui' &&
+      !startsWith(github.head_ref || '', 'nx-release/')
     permissions:
       contents: read
       id-token: write

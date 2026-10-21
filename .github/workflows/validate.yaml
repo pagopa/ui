@@ -11,7 +11,11 @@ on:
 
 jobs:
   validate:
-    if: ${{ !startsWith(github.head_ref || '', 'nx-release/') }}
+    # The pipeline belongs to the source repository: a fork runs its own copy,
+    # with none of the secrets this review needs.
+    if: >-
+      github.repository == 'pagopa/ui' &&
+      !startsWith(github.head_ref || '', 'nx-release/')
     permissions:
       actions: read
       contents: read

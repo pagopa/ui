@@ -200,6 +200,16 @@ path that publishes all projects with a publish target.
 - `figma-drift.yml` — the weekly drift snapshot and its review pull request.
 - `release.yaml` — the DX release manager, on `main`.
 
+Every job is guarded on `github.repository == 'pagopa/ui'`. A fork carries the
+same workflow files, so without the guard a clone would build, attempt the
+deploys and try to publish on its own schedule, against secrets and an Azure
+subscription it does not have. Pull requests from a fork into this repository
+still run: GitHub reads the workflow from the base branch, and the run happens
+here, where the check is the contribution. To keep those runs out as well, the
+same `if` would compare `github.event.pull_request.head.repo.full_name` with
+`github.repository`; the required checks would then stay pending on an external
+pull request.
+
 ### The release pull request
 
 The **Version Packages** pull request and the commit it lands on `main` are not

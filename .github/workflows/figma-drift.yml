@@ -29,6 +29,9 @@ permissions:
 
 jobs:
   drift:
+    # The pipeline belongs to the source repository: a fork's copy would open a
+    # pull request against itself on a schedule.
+    if: github.repository == 'pagopa/ui'
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout

@@ -50,6 +50,7 @@ jobs:
     name: Coverage gates (Chromium)
     # A draft may still change its diff: the suites wait for the review.
     if: >-
+      github.repository == 'pagopa/ui' &&
       (github.event_name != 'pull_request' || github.event.pull_request.draft == false) &&
       !startsWith(github.head_ref || '', 'nx-release/')
     runs-on: ubuntu-24.04
@@ -110,6 +111,7 @@ jobs:
   webkit:
     name: Stories (WebKit, Firefox nightly)
     if: >-
+      github.repository == 'pagopa/ui' &&
       (github.event_name != 'pull_request' || github.event.pull_request.draft == false) &&
       !startsWith(github.head_ref || '', 'nx-release/')
     runs-on: ubuntu-24.04
@@ -167,6 +169,7 @@ jobs:
   library:
     name: Packed artifact (three engines)
     if: >-
+      github.repository == 'pagopa/ui' &&
       (github.event_name != 'pull_request' || github.event.pull_request.draft == false) &&
       !startsWith(github.head_ref || '', 'nx-release/')
     runs-on: ubuntu-24.04

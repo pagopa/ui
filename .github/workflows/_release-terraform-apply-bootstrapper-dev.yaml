@@ -14,6 +14,9 @@ permissions:
 
 jobs:
   release:
+    # The pipeline belongs to the source repository: a fork has no Azure
+    # subscription to apply to.
+    if: github.repository == 'pagopa/ui'
     uses: pagopa/dx/.github/workflows/release-terraform-bootstrapper-v1.yaml@main
     name: Release Bootstrapper (dev)
     secrets: inherit

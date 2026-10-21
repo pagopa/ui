@@ -28,6 +28,9 @@ concurrency:
 jobs:
   release:
     name: Release
+    # The pipeline belongs to the source repository: a fork cannot tag or
+    # publish this package.
+    if: github.repository == 'pagopa/ui'
     runs-on: ubuntu-24.04
     environment: app-dev-cd
     permissions:
