@@ -30,7 +30,7 @@ name another package.
   — the families.
 - `src/components/templates` — private page modules and demos.
 - `src/pagopa-ui.ts` — the public entry point.
-- `src/catalog/figma` — inventory, registry, parity cases, device policy,
+- `src/catalog/figma` — inventory, registry, story titles, parity cases, device policy,
   exceptions.
 - `src/index.css` — the semantic aliases and the stylesheet entry; `src/library.css`
   — the published scan surface of the stylesheet, whose size
@@ -73,6 +73,8 @@ underlying command is the package script of the same name
 - `pnpm nx run pagopa-ui:figma:check` — hermetic catalogue check;
   `foundation:check` — the component class contract. The artwork and the tokens
   validate themselves: `pagopa-ui-artwork:test` and `pagopa-ui-tokens:test`.
+  `pagopa-ui:figma:stories` refreshes the committed Storybook titles the
+  inventory story links read; `figma:check` fails when they are stale.
 - `pnpm nx run pagopa-ui:layers:check` — the import layers of the
   [`pagopa-ui-standards`](./.agents/skills/pagopa-ui-standards/references/definition-of-done.md)
   definition of done; `pnpm nx run pagopa-ui:docs` — document links and the

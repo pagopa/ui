@@ -213,6 +213,55 @@ test("nested stories provide evidence only when they render the mapped implement
   )
 })
 
+test("the story titles map follows the stories the registry links", () => {
+  fixture(
+    ({ root, check, write }) => {
+      const stories = (...args) =>
+        spawnSync(process.execPath, [script, "figma", "stories", ...args], {
+          cwd: root,
+          encoding: "utf8",
+          env: fixtureEnv(root, { PAGOPA_UI_STORIES_ROOT: "src/stories" }),
+        })
+      const missing = stories()
+      assert.equal(missing.status, 1)
+      assert.match(missing.stderr, /missing src\/catalog\/figma\/story-titles\.json/)
+      const written = stories("--write")
+      assert.equal(written.status, 0, written.stderr)
+      assert.deepEqual(
+        JSON.parse(fs.readFileSync(path.join(root, "src/catalog/figma/story-titles.json"), "utf8")),
+        { "src/stories/Fixture.stories.tsx": "Fixture" },
+      )
+      assert.equal(stories().status, 0)
+      write(
+        "src/stories/Fixture.stories.tsx",
+        'import { Control } from "@/components/primitives/control"\nexport default { title: "Renamed" }\nexport const Example = { render: () => <Control /> }',
+      )
+      const stale = check()
+      assert.equal(stale.status, 1)
+      assert.match(stale.stderr, /stale title for src\/stories\/Fixture\.stories\.tsx/)
+    },
+    {
+      "src/catalog/figma/registry.json": JSON.stringify({
+        bulkRules: [],
+        entries: {
+          "1:1": {
+            status: "implemented",
+            target: {
+              module: "src/components/primitives/control.tsx",
+              export: "Control",
+              story: "src/stories/Fixture.stories.tsx",
+            },
+          },
+        },
+      }),
+      "src/components/primitives/control.tsx":
+        "export function Control() { return <button>Control</button> }",
+      "src/stories/Fixture.stories.tsx":
+        'import { Control } from "@/components/primitives/control"\nexport default { title: "Fixture" }\nexport const Example = { render: () => <Control /> }',
+    },
+  )
+})
+
 test("a package re-export resolves as an identity instead of failing the walk", () => {
   fixture(
     ({ check }) => {

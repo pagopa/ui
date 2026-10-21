@@ -14,6 +14,7 @@ import { cli as runDevices } from "./figma/devices.ts"
 import { runExport } from "./figma/export.ts"
 import { runIcons } from "./figma/icons.ts"
 import { runPictograms } from "./figma/pictograms.ts"
+import { runStories } from "./figma/stories.ts"
 import { runSync } from "./figma/sync.ts"
 import { runTokens } from "./figma/tokens.ts"
 import { main as runParity } from "./parity/cli.ts"
@@ -256,12 +257,24 @@ const figmaDevices = defineCommand({
   },
 })
 
+const figmaStories = defineCommand({
+  meta: {
+    name: "stories",
+    description: "Commit or check the Storybook titles of the mapped stories",
+  },
+  args: {
+    write: { type: "boolean", default: false, description: "Write the committed map" },
+  },
+  run: ({ args }) => execute(() => runStories(args.write ? ["--write"] : []))(),
+})
+
 const figma = defineCommand({
   meta: { name: "figma", description: "Figma catalogue and artwork commands" },
   subCommands: {
     sync: figmaSync,
     export: figmaExport,
     devices: figmaDevices,
+    stories: figmaStories,
     tokens,
     ...assets.subCommands,
   },

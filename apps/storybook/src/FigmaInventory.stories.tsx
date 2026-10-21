@@ -12,6 +12,7 @@ import {
 } from "@/catalog/figma/coverage"
 import { FIGMA_DESIGN_URL, figmaNodeUrl } from "@/catalog/figma/file"
 import { figmaInventoryMeta } from "@/catalog/figma/registry"
+import storyTitlesData from "@/catalog/figma/story-titles.json"
 import { Badge } from "@/components/primitives/badge"
 
 const statusStyles: Record<FigmaCoverageRow["status"], string> = {
@@ -27,6 +28,32 @@ function slugify(value: string) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
+}
+
+// Storybook derives both halves of a story id from words: the title
+// (`Components/Inputs/TextField`) and the export name (`SourceCase`) become
+// `components-inputs-textfield--source-case`, the identity the parity tooling
+// records in `parity-cases.json`.
+function exportSlug(name: string) {
+  return slugify(
+    name.replace(/([a-z0-9])([A-Z])/g, "$1 $2").replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2"),
+  )
+}
+
+const storyTitles: Record<string, string> = storyTitlesData
+
+// The Storybook page of a mapped node: its first declared story export, or the
+// story's docs page when the registry declares none. A node with no story
+// carries no link.
+function storyUrl(row: FigmaCoverageRow) {
+  const target = row.entry?.target
+  const title = target?.story ? storyTitles[target.story] : undefined
+  if (!title) return null
+  const story = target?.storyExports?.[0]
+  const path = story
+    ? `story/${slugify(title)}--${exportSlug(story)}`
+    : `docs/${slugify(title)}--docs`
+  return `${import.meta.env.BASE_URL}?path=/${path}`
 }
 
 function AccountLabel({ row }: { row: FigmaCoverageRow }) {
@@ -57,11 +84,11 @@ function DeviceLabel({ row }: { row: FigmaCoverageRow }) {
   if (!coverage || (row.status !== "implemented" && row.status !== "pending")) return null
   return (
     <span className="mt-2 block text-xs text-muted-foreground" data-slot="device-coverage">
-      dispositivi {coverage.declared.join(", ")} ·{" "}
+      devices {coverage.declared.join(", ")} ·{" "}
       {coverage.missing.length ? (
-        <span className="text-error-foreground">mancano {coverage.missing.join(", ")}</span>
+        <span className="text-error-foreground">missing {coverage.missing.join(", ")}</span>
       ) : (
-        <span className="text-success-foreground">coperti</span>
+        <span className="text-success-foreground">covered</span>
       )}
     </span>
   )
@@ -72,12 +99,11 @@ function FigmaInventory() {
     <main className="w-[min(76rem,calc(100vw-2rem))] space-y-10 p-6">
       <header className="max-w-3xl">
         <p className="font-semibold text-primary">Figma alignment registry</p>
-        <h1 className="mt-2 text-hero">Componenti pubblicati</h1>
+        <h1 className="mt-2 text-hero">Published components</h1>
         <p className="mt-2 text-muted-foreground">
-          {figmaInventoryMeta.total} nodi pubblicati rilevati dal file Figma; la mappatura nodo →
-          implementazione vive in <code>src/catalog/figma/registry.json</code>, insieme a{" "}
-          <code>inventory.json</code> (generato). Ultima sincronizzazione:{" "}
-          {figmaInventoryMeta.syncedAt}.
+          {figmaInventoryMeta.total} published nodes found in the Figma file; the node →
+          implementation mapping lives in <code>src/catalog/figma/registry.json</code>, together
+          with <code>inventory.json</code> (generated). Last sync: {figmaInventoryMeta.syncedAt}.
         </p>
         <p className="mt-2 text-sm text-muted-foreground">
           File:{" "}
@@ -90,6 +116,10 @@ function FigmaInventory() {
             {figmaInventoryMeta.fileKey}
           </a>
         </p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Every card opens the Figma node; where the registry maps one, it opens the component's
+          Storybook page too.
+        </p>
         <p className="mt-4 flex flex-wrap gap-2 text-sm">
           {figmaStatusOrder.map((status) => (
             <Badge key={status} className={statusStyles[status]}>
@@ -98,24 +128,24 @@ function FigmaInventory() {
           ))}
         </p>
         <p className="mt-4 text-sm text-muted-foreground">
-          Dispositivi (nodi <code>implemented</code>/<code>pending</code>):{" "}
+          Devices (<code>implemented</code>/<code>pending</code> nodes):{" "}
           <strong>
             {figmaDeviceCoverageCounts.covered}/{figmaDeviceCoverageCounts.declared}
           </strong>{" "}
-          casi coperti · {figmaDeviceCoverageCounts.missing} mancanti su{" "}
-          {figmaDeviceCoverageCounts.nodes} set con asse. La colonna unisce l'asse dichiarato
-          dall'inventario con i casi committed in <code>src/catalog/figma/parity-cases.json</code>:
-          una sorgente senza asse dispositivo non richiede alcun caso, un nodo <code>mocked</code>/
-          <code>excluded</code> nemmeno, e i dispositivi mancanti sono la work list di{" "}
-          <code>pnpm figma:parity:queue --uncovered</code>.
+          cases covered · {figmaDeviceCoverageCounts.missing} missing across{" "}
+          {figmaDeviceCoverageCounts.nodes} sets with an axis. The column joins the axis declared by
+          the inventory with the cases committed in <code>src/catalog/figma/parity-cases.json</code>
+          {". A source with no device axis needs no case, and neither does a "}
+          <code>mocked</code>/<code>excluded</code> node, while the missing devices are the work
+          list of <code>pnpm figma:parity:queue --uncovered</code>.
         </p>
         {unaccountedFigmaNodes.length ? (
           <p role="alert" className="mt-3 text-destructive">
-            {unaccountedFigmaNodes.length} nodi non hanno ancora una voce nel registry.
+            {unaccountedFigmaNodes.length} nodes do not have a registry entry yet.
           </p>
         ) : (
           <p role="status" className="mt-3 text-success-foreground">
-            Ogni nodo pubblicato è coperto da una voce del registry o da una regola di pagina.
+            Every published node is covered by a registry entry or a page rule.
           </p>
         )}
       </header>
@@ -131,19 +161,37 @@ function FigmaInventory() {
               <Badge variant="secondary">{rows.length}</Badge>
             </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {rows.map((row) => (
-                <a
-                  key={row.node.nodeId}
-                  className="rounded-lg border p-4 transition-colors hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-                  href={figmaNodeUrl(row.node.nodeId)}
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  <span className="block font-semibold">{row.node.name}</span>
-                  <AccountLabel row={row} />
-                  <DeviceLabel row={row} />
-                </a>
-              ))}
+              {rows.map((row) => {
+                const story = storyUrl(row)
+                return (
+                  <article key={row.node.nodeId} className="rounded-lg border p-4">
+                    <a
+                      className="rounded-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                      href={figmaNodeUrl(row.node.nodeId)}
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      {row.node.name}
+                    </a>
+                    <AccountLabel row={row} />
+                    <DeviceLabel row={row} />
+                    {story ? (
+                      <a
+                        className="mt-3 inline-flex items-center gap-1 rounded-sm text-sm font-semibold text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                        href={story}
+                        rel="noreferrer"
+                        target="_blank"
+                        aria-label={`${row.node.name} in Storybook`}
+                      >
+                        Storybook{" "}
+                        <span aria-hidden="true" className="text-xs">
+                          ↗
+                        </span>
+                      </a>
+                    ) : null}
+                  </article>
+                )
+              })}
             </div>
           </section>
         )
@@ -166,7 +214,12 @@ export const PublishedComponents: Story = {
   parameters: { a11yContract: { reflow: false } },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const demo = canvas.getByRole("link", { name: /1154:4493/ })
+    function card(nodeId: string) {
+      const target = canvas.getByText(new RegExp(nodeId)).closest("article")
+      if (!target) throw new Error(`The story must render a card for ${nodeId}`)
+      return target
+    }
+    const demo = card("1154:4493")
     await expect(within(demo).getByText("mocked")).toBeVisible()
     await expect(
       within(demo).getByText(/TemplateComponents\.tsx · FormWizardTemplate/),
@@ -175,7 +228,12 @@ export const PublishedComponents: Story = {
     // cases. A mocked node needs no case (the premise above), while an
     // implementation with a declared axis shows its devices.
     expect(demo.querySelector('[data-slot="device-coverage"]')).toBeNull()
-    const deviceNode = canvas.getByRole("link", { name: /123:4498/ })
-    await expect(within(deviceNode).getByText(/dispositivi mobile, desktop/)).toBeVisible()
+    // A mocked demo maps no story, so its card carries no Storybook link.
+    expect(within(demo).queryByRole("link", { name: /Storybook/ })).toBeNull()
+    const deviceNode = card("123:4498")
+    await expect(within(deviceNode).getByText(/devices mobile, desktop/)).toBeVisible()
+    const story = within(deviceNode).getByRole("link", { name: /Storybook/ })
+    await expect(story).toBeVisible()
+    expect(story.getAttribute("href")).toContain("?path=/story/components-inputs-buttongroup--")
   },
 }
