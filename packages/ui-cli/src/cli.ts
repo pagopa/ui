@@ -98,6 +98,7 @@ const figmaCheck = defineCommand({
     write: { type: "boolean", default: false, description: "Refresh the committed inventory" },
     triage: { type: "boolean", default: false, description: "Refresh and queue the delta" },
     "pr-body": { type: "string", valueHint: "file", description: "Write the drift PR body" },
+    save: { type: "string", valueHint: "file", description: "Save the pinned REST snapshot" },
   },
   run: ({ args }) => {
     const argv: string[] = []
@@ -107,6 +108,7 @@ const figmaCheck = defineCommand({
     if (args.rest) argv.push("--rest")
     if (args.input) argv.push("--input", String(args.input))
     if (args["pr-body"]) argv.push("--pr-body", String(args["pr-body"]))
+    if (args.save) argv.push("--save", String(args.save))
     return execute(() => runSync(argv))()
   },
 })
@@ -224,6 +226,7 @@ const figmaSync = defineCommand({
     triage: { type: "boolean", default: false, description: "Refresh and queue the delta" },
     plan: { type: "boolean", default: false, description: "Print the plan without writing" },
     "pr-body": { type: "string", valueHint: "file", description: "Write the drift PR body" },
+    save: { type: "string", valueHint: "file", description: "Save the pinned REST snapshot" },
   },
   run: ({ args }) => {
     const argv: string[] = []
@@ -233,6 +236,7 @@ const figmaSync = defineCommand({
     if (args.rest) argv.push("--rest")
     if (args.input) argv.push("--input", String(args.input))
     if (args["pr-body"]) argv.push("--pr-body", String(args["pr-body"]))
+    if (args.save) argv.push("--save", String(args.save))
     return execute(() => runSync(argv))()
   },
 })
@@ -308,6 +312,7 @@ const parity = defineCommand({
       node: parityString,
       case: parityString,
       cases: parityString,
+      input: parityString,
       state: parityString,
       variant: parityString,
       device: parityString,
@@ -369,10 +374,16 @@ const parity = defineCommand({
       cases: parityString,
       json: parityBoolean,
     }),
+    evidence: parityCommand("evidence", "Write or check the offline evidence bundle", {
+      write: parityBoolean,
+      check: parityBoolean,
+      input: parityString,
+    }),
     source: defineCommand({
       meta: { name: "source", description: "Print the pinned source spec" },
       args: {
         nodeId: { type: "positional", required: true },
+        input: parityString,
         depth: parityString,
         json: parityBoolean,
         compact: parityBoolean,

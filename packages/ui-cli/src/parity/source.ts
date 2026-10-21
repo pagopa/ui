@@ -10,9 +10,12 @@
 // Usage:
 //   node src/cli.ts parity source <nodeId> [--depth N] [--json]
 import fs from "node:fs"
+import path from "node:path"
 import { z } from "zod"
 
 import { normalizeLive } from "../figma/snapshot.ts"
+import { loadInventoryNodes } from "../figma/devices.ts"
+import { SOURCE_PATH as EVIDENCE_SOURCE_PATH } from "./evidence.ts"
 import { enterRoot, rootPath } from "../lib/paths.ts"
 import { readJson } from "../lib/json.ts"
 import { parseSchema } from "../lib/validate.ts"
@@ -20,6 +23,7 @@ import type { InventoryNode } from "../schemas/catalogue.ts"
 
 export const SNAPSHOT_PATH = ".figma/live-rest.json"
 export const SCHEMA_VERSION = 1
+export type SourceOrigin = "input" | "snapshot" | "evidence"
 
 type Paint = {
   type?: string
@@ -106,12 +110,15 @@ const RawNodeSchema: z.ZodType<RawNode> = z.lazy(() =>
 )
 
 const ExportSchema = z.looseObject({
+  kind: z.string().optional(),
+  fileKey: z.string().optional(),
   version: z.string().optional(),
   nodes: z.record(z.string(), z.looseObject({ document: RawNodeSchema.optional() })).optional(),
 })
 
 export type Project = {
   file: string
+  origin: SourceOrigin
   version: string | undefined
   raw: z.infer<typeof ExportSchema>
   catalogue: InventoryNode[]
@@ -184,20 +191,30 @@ export function hexOf(paint: Paint | undefined): string | undefined {
   return `#${channel(r)}${channel(g)}${channel(b)}`
 }
 
-export function loadExport(file: string = rootPath(SNAPSHOT_PATH)): Project {
-  if (!fs.existsSync(file)) {
-    throw new Error(
-      `${file} is missing: the parity source is the pinned export the user produces with ` +
-        `\`pnpm nx run pagopa-ui-cli:figma:export --input .figma/live-mcp.json\` (an agent never reads a credential).`,
-    )
-  }
+// The source a parity run reads, in order: an explicit `--input`, the local
+// pinned snapshot, the committed evidence slice. The slice makes the source side
+// reproducible in a clone without `.figma/` and without a token.
+export function resolveExport(input?: string): { file: string; origin: SourceOrigin } {
+  if (input) return { file: path.resolve(input), origin: "input" }
+  const snapshot = rootPath(SNAPSHOT_PATH)
+  if (fs.existsSync(snapshot)) return { file: snapshot, origin: "snapshot" }
+  const evidence = rootPath(EVIDENCE_SOURCE_PATH)
+  if (fs.existsSync(evidence)) return { file: evidence, origin: "evidence" }
+  throw new Error(
+    `${SNAPSHOT_PATH} and ${EVIDENCE_SOURCE_PATH} are both missing: the parity source is the ` +
+      `pinned export the user produces with the live export, or the committed evidence slice.`,
+  )
+}
+
+export function loadExport(input?: string): Project {
+  const { file, origin } = resolveExport(input)
   const raw = parseSchema(ExportSchema, readJson(file), file)
-  // `normalizeLive` owns the export contract: it validates every published
-  // identity, contract and dependency and throws on a partial snapshot. The
-  // document trees stay on the raw payload because the normalizer is the
-  // catalogue view (it drops `document` by design).
-  const catalogue = normalizeLive(raw)
-  return { file, version: raw.version, raw, catalogue }
+  // The committed slice carries only the documents a case points at, so it
+  // cannot satisfy `normalizeLive` (which needs every published node): the
+  // catalogue comes from the committed inventory instead. The full-snapshot
+  // path stays the normalizer's.
+  const catalogue = raw.kind === "parity-source" ? loadInventoryNodes() : normalizeLive(raw)
+  return { file, origin, version: raw.version, raw, catalogue }
 }
 
 const documentIndexes = new WeakMap<Project, Map<string, RawNode>>()
@@ -501,7 +518,10 @@ export function sourceCli(argv: string[] = process.argv.slice(2)): void {
   }
   const depthIndex = rest.indexOf("--depth")
   const depth = depthIndex >= 0 ? Number(rest[depthIndex + 1]) : 2
-  const project = loadExport()
+  const inputIndex = rest.indexOf("--input")
+  const input = inputIndex >= 0 ? rest[inputIndex + 1] : undefined
+  const project = loadExport(input)
+  console.error(`source: ${project.file} (${project.origin})`)
   const node = sourceNode(project, nodeId.replace("-", ":"))
   if (!node) {
     console.error(`${nodeId} is not in the pinned export`)

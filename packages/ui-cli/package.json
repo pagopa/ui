@@ -18,6 +18,7 @@
     "figma:parity:queue": "node src/cli.ts parity queue",
     "figma:parity:cases": "node src/cli.ts parity cases",
     "figma:parity:verify": "node src/cli.ts parity verify",
+    "figma:parity:evidence": "node src/cli.ts parity evidence",
     "figma:parity:capture": "node src/cli.ts parity capture",
     "figma:parity:report": "node src/cli.ts parity report",
     "tokens:check": "node src/cli.ts tokens check",

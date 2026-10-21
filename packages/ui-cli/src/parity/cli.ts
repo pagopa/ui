@@ -45,6 +45,7 @@ import {
 import { enterRoot, rootPath } from "../lib/paths.ts"
 import { parseSchema } from "../lib/validate.ts"
 import { capture as captureStory, DEFAULT_ROOT, type CaptureOptions } from "./render.ts"
+import { checkEvidence, evidenceCommand } from "./evidence.ts"
 import {
   loadExport,
   namedLeaves,
@@ -138,6 +139,7 @@ const USAGE = `usage:
     [--device <key>] [--note <text>] [--limit <n>] [--include-catalogue] [--out <directory>]
     [--strict] [--dry-run]
   figma-parity cases --sync [--node <id>] [--dry-run] [--cases <file>]
+  figma-parity evidence --write [--input <file>] | --check
   figma-parity verify [--cases <file>] [--json]
   figma-parity report --wave <name> [--dir <directory>] [--out <markdown>]
 
@@ -804,6 +806,7 @@ async function check(parsed: Parsed): Promise<number> {
     spec = caseFromFlags(registryCase(String(nodeId)), flags, parsed)
   }
   const project = loadExport(stringFlag(flags, "input"))
+  if (!flags.has("json")) console.log(`source: ${project.file} (${project.origin})`)
   const { report, probe } = await evaluateCase(spec, { project })
   if (flags.has("save-case")) {
     const saved = saveCase(
@@ -813,7 +816,19 @@ async function check(parsed: Parsed): Promise<number> {
     )
     console.log(`case saved: ${saved.entry.id} -> ${saved.file} (${saved.total} case(s))`)
   }
-  if (flags.has("json")) console.log(JSON.stringify({ report, probe, case: spec }, null, 2))
+  if (flags.has("json"))
+    console.log(
+      JSON.stringify(
+        {
+          report,
+          probe,
+          case: spec,
+          source: { file: project.file, origin: project.origin },
+        },
+        null,
+        2,
+      ),
+    )
   else printResult(report, { notes: flags.has("notes") })
   return report.deltas.length ? 1 : 0
 }
@@ -840,6 +855,7 @@ async function checkDevices({
     throw new Error(`${nodeId} declares no device axis: there is no device case to run`)
   }
   const project = loadExport(stringFlag(flags, "input"))
+  if (!flags.has("json")) console.log(`source: ${project.file} (${project.origin})`)
   type DeviceRow = {
     device: string
     variant: string
@@ -1105,6 +1121,9 @@ function verify({ flags }: Parsed): number {
     else warnings.push(message)
   }
   const drafts = cases.filter(isDraftCase).length
+  const evidence = checkEvidence({ cases, nodes })
+  for (const warning of evidence.warnings) warnings.push(`evidence: ${warning}`)
+  for (const error of evidence.errors) errors.push(`evidence: ${error}`)
   if (flags.has("json")) {
     console.log(
       JSON.stringify(
@@ -1114,6 +1133,10 @@ function verify({ flags }: Parsed): number {
           drafts,
           errors,
           warnings,
+          evidence: {
+            entries: evidence.entries,
+            bytes: evidence.bytes,
+          },
           coverage: coverage.totals,
           rows: coverage.rows,
         },
@@ -1132,6 +1155,9 @@ function verify({ flags }: Parsed): number {
       `devices: ${coverage.totals.nodes} node(s) with an axis · declared ${coverage.totals.declared} · ` +
         `covered ${coverage.totals.covered} · missing ${coverage.totals.missing} · ` +
         `drafts ${coverage.totals.drafts}`,
+    )
+    console.log(
+      `evidence: ${evidence.entries}/${evidence.cases} manifest entr(ies) · ${evidence.bytes} bytes`,
     )
     console.log(errors.length ? "verify: failed" : "verify: ok")
   }
@@ -1336,6 +1362,7 @@ async function main(argv: string[]): Promise<number> {
   if (command === "check") return await check(parsed)
   if (command === "capture") return await captureWave(parsed)
   if (command === "cases") return cases(parsed)
+  if (command === "evidence") return await evidenceCommand(argv.slice(1))
   if (command === "verify") return verify(parsed)
   if (command === "report") return report(parsed)
   console.error(`unknown command ${command}\n${USAGE}`)

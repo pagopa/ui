@@ -240,6 +240,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
   // ------------------------------------------------------------- drift handling
 
   let live: InventoryNode[] | null = null
+  let restSnapshot: Awaited<ReturnType<typeof fetchFigmaSnapshot>> | null = null
   let inputOption = option("input")
   if (!inputOption && (flag("write") || flag("triage") || flag("pr-body"))) {
     // Convenience: the agent workflow saves the Figma MCP export here.
@@ -247,12 +248,11 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
   }
   if (flag("rest")) {
     const keyFromFile = fileKeyFromSource()
-    live = normalizeLive(
-      await fetchFigmaSnapshot(
-        keyFromFile ?? inventory.fileKey,
-        committed.filter((node) => node.sources?.includes("mcp")),
-      ),
+    restSnapshot = await fetchFigmaSnapshot(
+      keyFromFile ?? inventory.fileKey,
+      committed.filter((node) => node.sources?.includes("mcp")),
     )
+    live = normalizeLive(restSnapshot)
   } else if (inputOption) {
     const input: unknown = JSON.parse(fs.readFileSync(path.resolve(inputOption), "utf8"))
     if (
@@ -270,6 +270,25 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
       "--write/--triage/--pr-body need a live source: pass --input <file> (Figma MCP export) or --rest.",
     )
     return 2
+  }
+
+  // The REST read is the pinned snapshot the evidence refresh reads next: keep
+  // it beside the PR body so the drift job does not spend a second API read.
+  if (restSnapshot) {
+    const saveOption = option("save") ?? ".figma/live-rest.json"
+    const savePath = path.resolve(ROOT, saveOption)
+    try {
+      fs.mkdirSync(path.dirname(savePath), { recursive: true })
+      fs.writeFileSync(savePath, `${JSON.stringify(restSnapshot, null, 2)}\n`)
+      console.log(`snapshot: ${saveOption} (version ${restSnapshot.version})`)
+    } catch (error) {
+      fail(
+        `cannot save the REST snapshot to ${saveOption}: ` +
+          (error instanceof Error ? error.message : String(error)),
+      )
+    }
+  } else if (option("save")) {
+    fail("--save needs --rest: only a REST read produces the pinned snapshot")
   }
 
   const delta: SnapshotDelta = live ? compareSnapshots(committed, live) : compareSnapshots([], [])
