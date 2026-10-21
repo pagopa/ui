@@ -22,6 +22,7 @@ locals {
 
 resource "azurerm_key_vault_secret" "github_actions" {
   for_each         = local.github_secrets
+  provider         = azurerm.DEV-DEVEX
   name             = each.value
   key_vault_id     = module.azure-DEV-DEVEX_core_values.common_key_vault.id
   value_wo         = ""
