@@ -1713,6 +1713,33 @@
     "note": "Editorial desktop: source-flow content and 417px panel; the nearest width token is 416px."
   },
   {
+    "id": "1293-8394-default-selected",
+    "nodeId": "1293:8394",
+    "export": "SegmentedControl",
+    "storyId": "components-inputs-segmentedcontrol--source-frame",
+    "state": "default-selected",
+    "variant": "1281:3856",
+    "width": 748,
+    "viewport": 748,
+    "depth": 3,
+    "root": "#storybook-root [role=\"group\"]",
+    "subjects": {
+      ".Button group single element": "#storybook-root [role=\"group\"] button",
+      "In scadenza": "#storybook-root [role=\"group\"] button"
+    },
+    "residues": [
+      {
+        "path": "field.radius",
+        "reason": "the source 54px radius exceeds half of the 64px pill, so it clips to the 32px shape rounded-full paints"
+      },
+      {
+        "path": ".Button group single element.radius",
+        "reason": "the source 100px radius exceeds half of the 48px segment, so it clips to the 24px pill rounded-full paints"
+      }
+    ],
+    "note": "reviewed: the Size=Default pill at the source 748 width — 64px pill, 8px padding, 8px gap, five 140x48 segments, the 16/22 Semibold label, 24px inline insets, the primary selected fill; the group and segment radii differ only numerically because the source values exceed half their boxes and clip to the same full-pill shape"
+  },
+  {
     "id": "1298-5209-logo-false-mobile",
     "nodeId": "1298:5209",
     "export": "Header",

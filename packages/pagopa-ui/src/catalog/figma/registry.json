@@ -443,9 +443,10 @@
       "target": {
         "module": "src/components/inputs/actions.tsx",
         "export": "SegmentedControl",
-        "story": "apps/storybook/src/SegmentedControl.stories.tsx"
+        "story": "apps/storybook/src/SegmentedControl.stories.tsx",
+        "storyExports": ["Playground", "SourceFrame"]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Responsive contract: at 320px the control keeps a 16px inset and its items are `min-w-0 truncate`, so long labels truncate instead of overflowing."
+      "note": "Reviewed 2026-10-22 (M5 wave): the `Size=Default` variant (1281:3856) has one committed case, `1293-8394-default-selected`, at the source 748 width and a 748 viewport, verdict `verified-with-residues`. Verified on the group and on the segment: the 64px pill with 8px padding and 8px gap, the five 140x48 segments with their 24px inline insets, the 16/22 Semibold label, the primary selected fill and the 8px unselected inset. Residues: the source's 54px group radius and 100px segment radius exceed half of their boxes, so both clip to the full-pill shape `rounded-full` paints. Responsive contract: at 320px the control keeps a 16px inset and its items are `min-w-0 truncate`, so long labels truncate instead of overflowing. Stays `pending`: the set's `Size=Minimum` variant (1293:8395) draws a compact composition — the selected label beside a 48x48 icon-only chevron segment — that needs an icon-only/compact API surface and an answer on what the chevron does; the open question is docs/design-requests/2026-10-22-segmented-control-minimum-size.md (owner: Figma design owner), and no case is committed for that variant until it is answered."
     },
     "1298:5209": {
       "status": "implemented",
