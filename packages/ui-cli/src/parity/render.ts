@@ -71,8 +71,39 @@ const WIDTH_TOLERANCE = 2
 // sweep reports mostly noise: the 2026-10-15 wave's first sweep reported 48
 // "problems", 2 of them real. Inlined on purpose: a function handed to
 // `page.evaluate` cannot close over module scope.
+export type ProbeTreeNode = {
+  depth: number
+  tag: string
+  className: string
+  box?: { width: number; height: number }
+  at?: { x: number; y: number }
+  padding?: number[]
+  gap?: number
+}
+
+// The DOM anatomy one line per element: the render-side counterpart of
+// `parity source --compact`, so a review can read padding and gap without
+// guessing selectors.
+export function formatProbeTree(nodes: ProbeTreeNode[]): string {
+  return nodes
+    .map((node) => {
+      const box = node.box ? `${node.box.width}x${node.box.height}` : "-"
+      const at = node.at ? `@${node.at.x},${node.at.y}` : ""
+      const pad = node.padding ? ` pad=${node.padding.join("/")}` : ""
+      const gap = typeof node.gap === "number" ? ` gap=${node.gap}` : ""
+      const name = node.className ? `.${node.className.split(" ").join(".")}` : ""
+      return `${"  ".repeat(node.depth)}${node.tag}${name} ${box} ${at}${pad}${gap}`.trimEnd()
+    })
+    .join("\n")
+}
+
 export function probeFunction(
-  input: { subjects?: Record<string, string>; origin?: string; bandRoot?: string } = {},
+  input: {
+    subjects?: Record<string, string>
+    origin?: string
+    bandRoot?: string
+    tree?: { selector?: string; depth: number }
+  } = {},
 ) {
   const subjects: Record<string, string> = input.subjects ?? {}
   const originSelector = input?.origin
@@ -175,7 +206,36 @@ export function probeFunction(
   for (const [key, selector] of Object.entries(subjects)) {
     output[key] = style(document.querySelector(selector))
   }
-  return { subjects: output, responsive: responsiveBlock(bandSelector) }
+  const tree: ProbeTreeNode[] = []
+  if (input.tree) {
+    const start = document.querySelector(input.tree.selector ?? bandSelector ?? "#storybook-root")
+    const walk = (element: Element, depth: number): void => {
+      if (!input.tree || depth > input.tree.depth) return
+      const measured = style(element)
+      if (measured) {
+        tree.push({
+          depth,
+          tag: element.tagName.toLowerCase(),
+          className: String(element.className ?? "")
+            .split(/\s+/)
+            .filter(Boolean)
+            .slice(0, 3)
+            .join(" "),
+          box: measured.box,
+          at: measured.at,
+          padding: measured.padding,
+          gap: measured.gap,
+        })
+      }
+      for (const child of element.children) walk(child, depth + 1)
+    }
+    if (start) walk(start, 0)
+  }
+  return {
+    subjects: output,
+    responsive: responsiveBlock(bandSelector),
+    ...(input.tree ? { tree } : {}),
+  }
 
   function responsiveBlock(bandRootSelector: string | undefined) {
     const round = (value: number): number => Math.round(value * 100) / 100
@@ -563,6 +623,7 @@ export type CaptureOptions = {
   expectState?: string
   stateEvidence?: string
   screenshot?: string
+  tree?: { selector?: string; depth: number }
   baseUrl?: string
 }
 
@@ -599,6 +660,7 @@ export async function capture({
   expectState,
   stateEvidence,
   screenshot,
+  tree,
   baseUrl = STORYBOOK_URL,
 }: CaptureOptions): Promise<Record<string, unknown>> {
   const { chromium } = await import("playwright")
@@ -674,6 +736,7 @@ export async function capture({
       subjects,
       origin,
       bandRoot: typeof bandRoot === "string" && bandRoot.trim() ? bandRoot : rootSelector,
+      ...(tree ? { tree } : {}),
     })
     return {
       schemaVersion: SCHEMA_VERSION,
@@ -694,6 +757,7 @@ export async function capture({
       },
       subjects: subjectsProbe.subjects,
       responsive: subjectsProbe.responsive,
+      ...(tree ? { tree: subjectsProbe.tree } : {}),
     }
   } finally {
     await browser.close()
@@ -733,15 +797,17 @@ export function renderCli(argv: string[] = process.argv.slice(2)): void {
   }
   const storyId = flags.get("story")
   if (typeof storyId !== "string" || !storyId) {
-    console.error("usage: node src/cli.ts parity render --story <storyId> [--width N]")
+    console.error("usage: node src/cli.ts parity render --story <storyId> [--width N] [--tree]")
     process.exit(2)
   }
+  const rootSelector = stringFlag(flags, "root") ?? DEFAULT_ROOT
+  const tree = flags.has("tree")
   capture({
     storyId,
     rootWidth: Number(flags.get("width") ?? 274),
     viewport: Number(flags.get("viewport") ?? flags.get("width") ?? 274),
     viewportHeight: Number(flags.get("height") ?? 1400),
-    rootSelector: stringFlag(flags, "root") ?? DEFAULT_ROOT,
+    rootSelector,
     subjects: subjects.length ? Object.fromEntries(parsePairs(subjects)) : { field: DEFAULT_ROOT },
     offsetOrigin: stringFlag(flags, "offset-origin"),
     fill: parsePairs(fill),
@@ -752,8 +818,12 @@ export function renderCli(argv: string[] = process.argv.slice(2)): void {
     expectState: stringFlag(flags, "expect-state"),
     stateEvidence: stringFlag(flags, "state-evidence"),
     screenshot: stringFlag(flags, "screenshot"),
+    tree: tree ? { selector: rootSelector, depth: Number(flags.get("depth") ?? 4) } : undefined,
   })
-    .then((probe) => console.log(JSON.stringify(probe, null, 2)))
+    .then((probe) => {
+      if (tree) console.log(formatProbeTree(Array.isArray(probe.tree) ? probe.tree : []))
+      else console.log(JSON.stringify(probe, null, 2))
+    })
     .catch((error) => {
       console.error(error.message)
       // A capture or state mismatch is missing evidence (exit 2), not a delta.

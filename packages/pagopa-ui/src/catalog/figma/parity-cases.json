@@ -123,6 +123,107 @@
     ]
   },
   {
+    "id": "198-828-empty",
+    "nodeId": "198:828",
+    "export": "AuthenticationCodeInput",
+    "storyId": "components-inputs-authenticationcodeinput--source-variant",
+    "state": "empty",
+    "variant": "198:829",
+    "width": 169,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"otp-field\"]",
+    "subjects": {},
+    "ignores": ["field.gap"],
+    "note": "reviewed: empty frame, 169x52 border box against the source 168x50, radius 8, the #636b82 stroke, the 8/24 insets and the 27px slot step match; field.gap is a mapping artifact (the source frame gaps its five slots directly, the DOM nests them in one group that carries the same 16px gap)"
+  },
+  {
+    "id": "198-828-filled",
+    "nodeId": "198:828",
+    "export": "AuthenticationCodeInput",
+    "storyId": "components-inputs-authenticationcodeinput--source-filled-variant",
+    "state": "filled",
+    "variant": "198:847",
+    "width": 169,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"otp-field\"]",
+    "subjects": {},
+    "expectState": "filled",
+    "ignores": ["field.gap"],
+    "note": "reviewed: five filled slots, the source Status=Filled composition; frame geometry and the 27px slot step match, the digits use the source Semibold face (Titillio 500 maps to CSS 600), field.gap ignored as the slot-group mapping artifact"
+  },
+  {
+    "id": "198-828-encrypted",
+    "nodeId": "198:828",
+    "export": "AuthenticationCodeInput",
+    "storyId": "components-inputs-authenticationcodeinput--source-encrypted-variant",
+    "state": "encrypted",
+    "variant": "198:856",
+    "width": 169,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"otp-field\"]",
+    "subjects": {},
+    "expectState": "filled",
+    "ignores": ["field.gap"],
+    "note": "reviewed: five masked slots, the source Status=Encrypted composition; the 8px mask marker replaces the source bullet glyph (documented native-mask adaptation), frame geometry and slot step match, field.gap ignored as the slot-group mapping artifact"
+  },
+  {
+    "id": "198-828-error",
+    "nodeId": "198:828",
+    "export": "AuthenticationCodeInput",
+    "storyId": "components-inputs-authenticationcodeinput--source-error-variant",
+    "state": "error",
+    "variant": "198:874",
+    "width": 169,
+    "depth": 3,
+    "root": "#storybook-root > div > div",
+    "subjects": {},
+    "expectState": "error",
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the 169x52 border box (+2 against the source 168x50) and the 14/20 message line (+2 against the source 18px helper) make the error block 74 against 70"
+      }
+    ],
+    "note": "reviewed: five filled slots with the #d13333 2px error frame and its associated 14/20 message, the source Status=Error composition; height residue is the recorded 169x52 border box plus the message line, gap and padding match"
+  },
+  {
+    "id": "198-828-selected",
+    "nodeId": "198:828",
+    "export": "AuthenticationCodeInput",
+    "storyId": "components-inputs-authenticationcodeinput--source-variant",
+    "state": "selected",
+    "variant": "266:25977",
+    "width": 169,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"otp-field\"]",
+    "subjects": {},
+    "click": ["#storybook-root [data-slot=\"otp-field\"] input"],
+    "keepFocus": true,
+    "expectState": "focused",
+    "ignores": ["field.gap"],
+    "note": "reviewed: focused empty frame with the 2x16px primary caret on the first slot, the source Status=Selected composition; same frame geometry as empty, field.gap ignored as the slot-group mapping artifact"
+  },
+  {
+    "id": "198-828-error-encrypted",
+    "nodeId": "198:828",
+    "export": "AuthenticationCodeInput",
+    "storyId": "components-inputs-authenticationcodeinput--source-error-encrypted-variant",
+    "state": "error-encrypted",
+    "variant": "274:1478",
+    "width": 169,
+    "depth": 3,
+    "root": "#storybook-root > div > div",
+    "subjects": {},
+    "expectState": "error",
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the 169x52 border box (+2 against the source 167x50) and the 14/20 message line (+2 against the source 18px helper) make the error block 74 against 70"
+      }
+    ],
+    "note": "reviewed: five masked slots with the #d13333 2px error frame and its associated 14/20 message, the source Status=Error encrypted composition; height residue is the recorded 169x52 border box plus the message line"
+  },
+  {
     "id": "212-1899-error-horizontal",
     "nodeId": "212:1899",
     "export": "Alert",
@@ -1612,6 +1713,33 @@
     "note": "Editorial desktop: source-flow content and 417px panel; the nearest width token is 416px."
   },
   {
+    "id": "1293-8394-default-selected",
+    "nodeId": "1293:8394",
+    "export": "SegmentedControl",
+    "storyId": "components-inputs-segmentedcontrol--source-frame",
+    "state": "default-selected",
+    "variant": "1281:3856",
+    "width": 748,
+    "viewport": 748,
+    "depth": 3,
+    "root": "#storybook-root [role=\"group\"]",
+    "subjects": {
+      ".Button group single element": "#storybook-root [role=\"group\"] button",
+      "In scadenza": "#storybook-root [role=\"group\"] button"
+    },
+    "residues": [
+      {
+        "path": "field.radius",
+        "reason": "the source 54px radius exceeds half of the 64px pill, so it clips to the 32px shape rounded-full paints"
+      },
+      {
+        "path": ".Button group single element.radius",
+        "reason": "the source 100px radius exceeds half of the 48px segment, so it clips to the 24px pill rounded-full paints"
+      }
+    ],
+    "note": "reviewed: the Size=Default pill at the source 748 width — 64px pill, 8px padding, 8px gap, five 140x48 segments, the 16/22 Semibold label, 24px inline insets, the primary selected fill; the group and segment radii differ only numerically because the source values exceed half their boxes and clip to the same full-pill shape"
+  },
+  {
     "id": "1298-5209-logo-false-mobile",
     "nodeId": "1298:5209",
     "export": "Header",
@@ -2890,6 +3018,24 @@
     ],
     "ignores": ["Alert.gap"],
     "note": "Composition check off: the mockup draws its 56px Breadcrumb inside the header band (the module starts at the 54+77 chrome), so every module block sits 45px higher than the page flow, where the Breadcrumb is its own 44px row. The module's internal offsets are exact and the shift is uniform — Text 195→240, Alert 375→420, Actions 513→560, TOS 736→783 — the last two carrying the shared +2 alert tolerance (the alert renders 100 against the source 98). Enable --compare-offset to re-measure."
+  },
+  {
+    "id": "8049-39452-single-date",
+    "nodeId": "8049:39452",
+    "export": "DatePicker",
+    "storyId": "components-inputs-datepicker--single-date-confirmation",
+    "state": "single-date",
+    "width": 310,
+    "depth": 3,
+    "root": "#storybook-root fieldset",
+    "subjects": {},
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the 44px day rows (the source 36px rows plus its Dates frame's 8px inner padding and 2px row gaps) keep the date block 22px taller than the source while the header, the 46px footer with its 22px text actions, the 8px stack gaps and the 8px grid inset match"
+      }
+    ],
+    "note": "reviewed: the source panel's four-block rhythm — 44px label row, 42px month row closed by its full-bleed divider, 24px chevrons 4px apart, an 8px inset date grid with 44px day targets (the source rows are 36), the source 8px stack gaps and a 46px footer with 22px text actions. Residue: the panel is 448 against the source 426 — the day targets. The story asserts the header rows, the divider, the grid inset, the nav chevrons and the footer."
   },
   {
     "id": "9520-2537-layout-desktop-desktop",

@@ -443,9 +443,10 @@
       "target": {
         "module": "src/components/inputs/actions.tsx",
         "export": "SegmentedControl",
-        "story": "apps/storybook/src/SegmentedControl.stories.tsx"
+        "story": "apps/storybook/src/SegmentedControl.stories.tsx",
+        "storyExports": ["Playground", "SourceFrame"]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Responsive contract: at 320px the control keeps a 16px inset and its items are `min-w-0 truncate`, so long labels truncate instead of overflowing."
+      "note": "Reviewed 2026-10-22 (M5 wave): the `Size=Default` variant (1281:3856) has one committed case, `1293-8394-default-selected`, at the source 748 width and a 748 viewport, verdict `verified-with-residues`. Verified on the group and on the segment: the 64px pill with 8px padding and 8px gap, the five 140x48 segments with their 24px inline insets, the 16/22 Semibold label, the primary selected fill and the 8px unselected inset. Residues: the source's 54px group radius and 100px segment radius exceed half of their boxes, so both clip to the full-pill shape `rounded-full` paints. Responsive contract: at 320px the control keeps a 16px inset and its items are `min-w-0 truncate`, so long labels truncate instead of overflowing. Stays `pending`: the set's `Size=Minimum` variant (1293:8395) draws a compact composition — the selected label beside a 48x48 icon-only chevron segment — that needs an icon-only/compact API surface and an answer on what the chevron does; the open question is docs/design-requests/2026-10-22-segmented-control-minimum-size.md (owner: Figma design owner), and no case is committed for that variant until it is answered."
     },
     "1298:5209": {
       "status": "implemented",
@@ -798,8 +799,8 @@
       }
     },
     "198:828": {
-      "status": "pending",
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Adaptation `accessible-error-feedback`: the visible native label and report icon supplement the source helper copy, and the error text stays a `role=alert` with the source 14/20 metrics. Adaptations `token-frame-inset` and `native-password-mask` (px-6/py-2 insets, 169x52 frame against 168x50 with the exact 27px slot step; native `type=password` with a font-independent rounded marker) are stated in guides/authentication-codes.md.",
+      "status": "implemented",
+      "note": "Reviewed 2026-10-22 (M5 wave): six committed cases, one per source variant — empty 198:829 (`198-828-empty`), selected 266:25977 (`198-828-selected`), filled 198:847 (`198-828-filled`), encrypted 198:856 (`198-828-encrypted`), error 198:874 (`198-828-error`) and error encrypted 274:1478 (`198-828-error-encrypted`) — all on the five-slot frame at the 169 capture width, verdict `verified-with-residues`. Verified: the 169x52 border box against the source 168x50, radius 8, the #636b82 / #d13333 strokes, the 8/24 frame insets, the 27px slot step (11px slot + 16px gap), the 11x34 slot with its underline, the 8px mask marker and the 2x16px primary cursor. Residues: `field.gap` is ignored on the four non-error cases because the source frame gaps its five slots directly while the DOM nests them in one group carrying the same 16px gap (a mapping artifact); `field.box.height` is 74 against 70 on the two error variants — the recorded 169x52 border box plus the 14/20 message line against the source's 18px helper. The adaptations `accessible-error-feedback` (the visible native label and report icon supplement the source helper copy, the error text stays a `role=alert` with the source 14/20 metrics), `token-frame-inset` and `native-password-mask` (px-6/py-2 insets; native `type=password` with a font-independent rounded marker) stay as stated in guides/authentication-codes.md. The remaining exports are behaviour and narrow-container states with no source variant.",
       "target": {
         "module": "src/components/inputs/text-fields.tsx",
         "export": "AuthenticationCodeInput",
@@ -813,6 +814,8 @@
           "MaskedNativePaste",
           "SlotLabelsAndFramePress",
           "SourceVariant",
+          "SourceFilledVariant",
+          "SourceEncryptedVariant",
           "SourceErrorVariant",
           "SourceErrorEncryptedVariant"
         ]
@@ -1423,8 +1426,8 @@
       "note": "Figma delta 2026-10-14: reviewed 2026-10-22 (M5 wave). The Default Vertical dropzone (760:7433, 272x260) is measured: a 24px inset, the 236px box, the 24px upload icon, the 24px content gap, the 132x48 primary action and the 14/20 required helper. The set also declares Horizontal dispositions for Default, Processing, Failed and Error (505-608 wide), an Error composition with its own icon, message and action, and static File success rows; the component renders the vertical composition only and the Error state keeps the idle content. The Default border is dashed in the pinned image, while the numeric spec records only the 1px stroke. Stays `pending`: the open decision is docs/design-requests/2026-10-22-drag-and-drop-dispositions.md (owner: Figma design owner). Until it is answered no Drag & Drop case is committed and the Drawer dependency stays open."
     },
     "8049:39452": {
-      "status": "pending",
-      "note": "Pending 2026-10-22 (M5 wave): the tooling blocker is fixed (a node without variants is its own single variant), so `parity check --node 8049:39452` runs and the panel is reviewable; the node stays `pending` until its cases are reviewed. Measured against `SingleDateConfirmation` at the 310 source width: the width, the 16px radius, the #ffffff surface, the padding and the offsets match, while the panel is 474 tall against the source 426 (`field.box.height`) and the source's 8px stack gap is 0 (`field.gap`): the source draws a two-row header (310x44 and 310x42) plus its divider before the calendar, the library draws the `legend` plus the `Calendar`'s own header. The remaining work is that header composition — a component fix, or a design decision if the two-row header is not the contract. The six declared stories render the panel inline. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`.",
+      "status": "implemented",
+      "note": "Reviewed 2026-10-22 (M5 wave): one committed case, `8049-39452-single-date`, against `SingleDateConfirmation` at the 310 source width and a 320 viewport, verdict `verified-with-residues`. The panel draws the source's four-block rhythm (root gap 8): the two-row header — label row 44 (16/8 insets, 14/20 #555c70) and month row 42 (8/16 insets, 18/26 semibold, the 24px chevrons) closed by its full-bleed divider — then the calendar, a divider and the footer. The date grid keeps the source's 8px inline inset, the caption no longer doubles its own 8px padding, and the footer actions use the source's 16px inset. Verified: width 310, radius 16, #ffffff surface, root padding 0, the header rows, the full-bleed divider and the grid inset, asserted by the story. Residue `field.box.height`: the panel is 448 against the source 426 — the 44px day rows (the source rows are 36, and the source Dates frame adds its own 8px inner padding and 2px row gaps). The footer is the source's 46px row with 22px text actions and the month navigation keeps the source's two 24px chevrons 4px apart. The other five exports are implementation states with no source variant: they render the same panel inline and are not separate cases. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`.",
       "target": {
         "module": "src/components/inputs/date-picker.tsx",
         "export": "DatePicker",

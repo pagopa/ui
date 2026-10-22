@@ -12,12 +12,13 @@ holds whatever produced the component. The detail lives in the references:
   component proves, placement and imports included. Read it before closing.
 - [prop-conventions.md](references/prop-conventions.md) — how a component is
   named and how a part, a state or a choice becomes a prop.
-- The Storybook agent CLI, offline: `pnpm exec storybook skills stories|write-story|setup`
+- The Storybook agent CLI, offline: `pnpm --filter pagopa-ui-storybook exec storybook skills stories|write-story|setup`
   prints the story workflow (stories, data, play functions);
-  `pnpm exec storybook tools <toolset> <tool>` reads this configuration
+  `pnpm --filter pagopa-ui-storybook exec storybook tools <toolset> <tool>` reads this configuration
   (`stories changed`, `stories find-by-component`, `docs list|show`, `test run`
-  locally; `stories preview` and `review create` need `pnpm storybook` running).
-  Use only story ids those tools return.
+  locally; `stories preview` and `review create` need
+  `pnpm nx run pagopa-ui-storybook:storybook` running). Use only story ids those
+  tools return.
 
 ## The text contract
 

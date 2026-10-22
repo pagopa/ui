@@ -115,3 +115,44 @@ test("the weight law and the paint reader stay in one place", () => {
   )
   assert.equal(hexOf({ type: "IMAGE" }), undefined)
 })
+
+test("the mapping gaps name the padded frames a root-only case does not compare", async () => {
+  const { mappingGaps } = await import("../../src/parity/cli.ts")
+  const tree = {
+    nodeId: "1:1",
+    name: "Root",
+    type: "COMPONENT",
+    layout: { mode: "VERTICAL", gap: 8, padding: [0, 0, 0, 0] },
+    children: [
+      {
+        nodeId: "1:2",
+        name: "Header",
+        type: "FRAME",
+        layout: { mode: "VERTICAL", gap: 0, padding: [0, 0, 0, 0] },
+        children: [
+          {
+            nodeId: "1:3",
+            name: "Row",
+            type: "FRAME",
+            layout: { mode: "HORIZONTAL", gap: 0, padding: [16, 16, 8, 16] },
+          },
+        ],
+      },
+      {
+        nodeId: "1:4",
+        name: "Dates",
+        type: "FRAME",
+        layout: { mode: "VERTICAL", gap: 2, padding: [8, 8, 8, 8] },
+      },
+      {
+        nodeId: "1:5",
+        name: "Calendar",
+        type: "FRAME",
+        layout: { mode: "VERTICAL", gap: 8, padding: [0, 0, 0, 0] },
+      },
+      { nodeId: "1:6", name: "Divider", type: "INSTANCE" },
+    ],
+  }
+  assert.deepEqual(mappingGaps(tree, []), ["Row (1:3)", "Dates (1:4)"])
+  assert.deepEqual(mappingGaps(tree, ["Dates"]), ["Row (1:3)"])
+})

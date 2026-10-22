@@ -99,6 +99,9 @@ jobs:
       - name: Install Playwright browsers
         run: pnpm --filter @pagopa/ui exec playwright install --with-deps chromium
 
+      - name: Parity evidence
+        run: pnpm nx run pagopa-ui-cli:figma:parity:verify
+
       - name: Coverage gates (affected)
         if: github.event_name == 'pull_request' || github.event_name == 'push'
         run: pnpm nx affected -t test:coverage

@@ -11,7 +11,7 @@ The commands are in [parity-tooling.md](parity-tooling.md); devices in
 - `figma.snapshot` current. When it is missing or older than the last Figma
   change, stop and ask the person to export it (the credentials are theirs);
   without it `check` exits 2.
-- Storybook on `storybook.url`; start `pnpm storybook` when nothing answers. A
+- Storybook on `storybook.url`; start `pnpm nx run pagopa-ui-storybook:storybook` when nothing answers. A
   file created while Storybook runs is not in the Tailwind scan until
   `touch src/index.css`.
 - The work list: `pnpm nx run pagopa-ui-cli:figma:parity:queue --status pending` (never-closed or
@@ -33,7 +33,8 @@ devices (one iteration each).
 
 1. **Source numbers.** `node packages/ui-cli/src/cli.ts parity source <nodeId> --compact
    --depth 3`, `--json` for the variant list. Anatomy questions:
-   `get_screenshot` (read-only). Read the face from `fontPostScriptName`: the
+   `get_screenshot` (read-only) for the source, `parity render --tree` for the
+   rendered boxes, padding and gaps. Read the face from `fontPostScriptName`: the
    REST `fontWeight` can say 500 for a Semibold face.
    **Done when** the variant's geometry and type are written down.
 2. **First capture.** `pnpm nx run pagopa-ui-cli:figma:parity:check` with `--state` (it names the
@@ -46,7 +47,9 @@ devices (one iteration each).
    borders, fills, font size, line height, weight, colour, icon box). Tolerance
    is 2px at the default font size; anything structural — a missing slot, a
    label on the wrong edge, an off-token colour, the wrong face, a swapped stack —
-   is a delta however small the pixels.
+   is a delta however small the pixels. The root is the variant's outer box: map
+   the inner frames whose padding or gap drives the rhythm (the header rows, the
+   grid, the footer) as subjects, or record why the case leaves them out.
 4. **Close every delta**, one of three ways: a token-ladder fix in the
    component; `--residue "path=reason"` for a deliberate adaptation;
    `--ignore <path>` for a mapping artifact. A subject off on every edge is a

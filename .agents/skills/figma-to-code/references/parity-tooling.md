@@ -24,7 +24,7 @@ Every row is a target of `pagopa-ui-cli`: run it as
 | `figma:parity:evidence --write` / `--check`        | the offline bundle: `--write` refreshes the slice, the pinned PNGs and the manifest (token + snapshot); `--check` proves they still match the corpus         |
 | `figma:parity:report --wave <name>`                | the wave record: counts, verdicts, advisories, residues, open deltas, the re-run command per case                                                            |
 | `source <nodeId>` (via `pnpm --filter pagopa-ui-cli run cli -- parity source <nodeId>`) | the source spec `check` diffs against (`--compact` anatomy, `--json`, `--depth N`)                                                                           |
-| `render --story <storyId>` (via `pnpm --filter pagopa-ui-cli run cli -- parity render --story <storyId>`) | a render probe alone                                                                                                                                         |
+| `render --story <storyId>` (via `pnpm --filter pagopa-ui-cli run cli -- parity render --story <storyId>`) | a render probe alone; `--tree [--depth N]` prints the DOM anatomy (box, position, padding, gap) of the root's descendants, the render-side counterpart of `source --compact` |
 
 `source.mjs` is the only reader of the source: never grow a second reader from a
 scratch file. A render to look at is `check` with `--screenshot <file>` (the same
@@ -129,6 +129,9 @@ variant: `--state` names the case, `--variant` takes the node id.
   `--subject "<layer>=<selector>"` adds a nested subject. Subjects are declared
   per device: a missing layer exits 2. Subject paths are written key first
   (`X.offset.top`).
+- A case that maps only the root proves the variant's outer box, not its inner
+  padding or gap: add a subject for the frames that drive the rhythm, or record
+  the adaptation in the note.
 - Selectors run over the whole document: scope them under `#storybook-root`.
   Use `:nth-of-type`, not `:nth-child`, when separators sit between items.
 - `namedLeaves` match exact layer names, emoji and `[ID: …]` included.

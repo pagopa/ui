@@ -127,12 +127,24 @@ function DatePicker(props: DatePickerProps) {
       ref={root}
       aria-invalid={Boolean(error) || undefined}
       aria-describedby={error ? ids.errorId : undefined}
-      className={cn("min-w-0 w-full max-w-85 rounded-2xl bg-card shadow-32", className)}
+      aria-labelledby={`${ids.controlId}-label`}
+      className={cn(
+        "flex min-w-0 w-full max-w-85 flex-col gap-2 rounded-2xl bg-card shadow-32",
+        className,
+      )}
     >
-      <legend className="float-left w-full px-4 pt-4 pb-2 text-label-mini text-muted-foreground">
+      {/* The source header stacks its label row and its month row directly (8049:39382,
+          8258:45660), then a full-bleed divider. The stack gap buys the label row's
+          8px bottom inset so the month row starts at the source's 44. The label is a
+          plain child, not the fieldset's rendered legend, so it stays inside the card
+          in every engine. */}
+      <div
+        id={`${ids.controlId}-label`}
+        className="px-4 pt-4 text-label-mini text-muted-foreground"
+      >
         {label}
-      </legend>
-      <div className="clear-both px-4 pb-4">
+      </div>
+      <div className="flex flex-col gap-2">
         {props.mode === "range" ? (
           <Calendar
             {...calendarProps}
@@ -151,13 +163,20 @@ function DatePicker(props: DatePickerProps) {
             onSelect={(date) => selectRange({ from: date, to: date })}
           />
         )}
-        <FieldMessages ids={ids} error={error} />
+        {error ? (
+          <div className="px-4">
+            <FieldMessages ids={ids} error={error} />
+          </div>
+        ) : null}
       </div>
       <Separator />
-      <div className="flex flex-wrap justify-end gap-2 px-2 pt-2 pb-4">
+      <div className="flex items-center justify-end gap-6 px-4 pt-2 pb-4">
         <Button
           type="button"
           variant="ghost"
+          // Source action: a 16/22 text action 22px tall, not a 48px control.
+          // The pointer target comes from the invisible ::after expansion.
+          className="relative min-h-0 border-0 px-0 py-0 after:absolute after:inset-x-0 after:-inset-y-3"
           onClick={() => {
             setSelection({
               key: valueKey,
@@ -173,6 +192,7 @@ function DatePicker(props: DatePickerProps) {
         <Button
           type="button"
           variant="ghost"
+          className="relative min-h-0 border-0 px-0 py-0 after:absolute after:inset-x-0 after:-inset-y-3"
           onClick={() => {
             if (!from) {
               reportError(missingDateError)

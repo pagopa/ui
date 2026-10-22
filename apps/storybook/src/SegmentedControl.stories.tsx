@@ -3,6 +3,9 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
 import { SegmentedControl } from "@/components/inputs"
+import { figmaEmbedUrl } from "@/catalog/figma/file"
+
+import segmentedControlsGuide from "./guides/segmented-controls.md?raw"
 
 const options = [
   { value: "attivi", label: "Attivi" },
@@ -30,10 +33,10 @@ const meta = {
     onValueChange: { control: false },
   },
   parameters: {
+    design: { type: "figma", url: figmaEmbedUrl("1293:8394") },
     docs: {
       description: {
-        component:
-          "Source segmented control: the selected segment carries `aria-pressed`; callers provide the segments and their labels.",
+        component: segmentedControlsGuide,
       },
     },
   },
@@ -54,4 +57,19 @@ export const Playground: Story = {
     )
     await expect(active).toHaveAttribute("aria-pressed", "false")
   },
+}
+
+const sourceItems = [
+  { value: "one", label: "Label button" },
+  { value: "two", label: "Label button" },
+  { value: "three", label: "Label button" },
+  { value: "four", label: "Label button" },
+  { value: "five", label: "Label button" },
+]
+
+export const SourceFrame: Story = {
+  // Reflow exemption: fixture pinned at the source width, not a product surface.
+  parameters: { a11yContract: { reflow: false } },
+  tags: ["color-pinned"],
+  args: { items: sourceItems, value: "one", "aria-label": "Filtro" },
 }

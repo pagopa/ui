@@ -115,7 +115,7 @@ Operating rules:
 - **Order.** A/E starts from `main` after F0, B, C and D are closed. M1–M4 are
   the tooling and drift wave; M5 is a separate, multi-session burn-down.
 - **Storybook in parallel.** Every session that starts Storybook uses a
-  different port (`pnpm exec storybook dev -p 6007`, and for the comparison
+  different port (`pnpm nx run pagopa-ui-storybook:storybook -- -p 6007`, and for the comparison
   tools `STORYBOOK_URL=http://localhost:6007`). Port 6006 belongs to the main
   worktree.
 - **Sessions are independent.** Parallel sessions do not talk to each other:

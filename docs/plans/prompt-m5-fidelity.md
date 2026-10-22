@@ -38,7 +38,7 @@ Environment:
   `pnpm nx run pagopa-ui-cli:figma:export`. The committed evidence slice only
   contains the nodes the 103 reviewed cases point at, so the new nodes need the
   snapshot.
-- Storybook: `pnpm exec storybook dev -p 6010` and
+- Storybook: `pnpm nx run pagopa-ui-storybook:storybook -- -p 6010` and
   `STORYBOOK_URL=http://localhost:6010`.
 - The committed evidence bundle is gzipped (`docs/figma-parity/source.json.gz`);
   `parity check` reads it transparently. `parity verify` is currently ok.

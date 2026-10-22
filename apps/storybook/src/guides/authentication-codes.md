@@ -32,6 +32,14 @@ field follows `value`/`defaultValue` plus `onValueChange`, and the public `ref`
 stays the first slot input, so `value`, `.focus()` and the owning form keep
 working.
 
+The source set draws six `Status` variants — `Empty`, `Selected`, `Filled`,
+`Encrypted`, `Error`, `Error encrypted` — as one five-slot frame (168x50,
+radius 8, 8/24 insets, 27px slot step): an empty slot carries its underline, a
+filled slot its glyph, `Selected` the 2x16px cursor, `Encrypted` the rounded
+mask marker, and the two `Error` variants add the 2px `#d13333` stroke with the
+associated message. `length` and `mask` pick the state; `error` adds the stroke
+and the message.
+
 The existing default length remains six; the source uses five slots. The
 implementation uses the shared frame and padding tokens rather than one-off
 values, so invalid state does not add another layout shift, and the helper text
