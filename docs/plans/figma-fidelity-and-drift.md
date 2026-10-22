@@ -689,6 +689,17 @@ missing and why; the decisions that need the person.
 You are implementing M5 of `docs/plans/figma-fidelity-and-drift.md`, one wave
 of at most three nodes.
 
+Work in a dedicated worktree on a branch, never on `main`. Do not push, do not
+merge and do not open a pull request: the person does that.
+
+Hard rules:
+- Figma is read-only. Use GET requests and the read-only MCP tools only.
+- Never read, source, print or commit `.env`. Use `FIGMA_TOKEN` from the process
+  environment only when a live step needs it. If it is missing, stop that step
+  and continue with the committed evidence.
+- Every command goes through Nx (`pnpm nx run <project>:<target>`), not through
+  a path that walks out of the project.
+
 Read `docs/plans/README.md`, the plan, the `figma-to-code` skill and the
 registry notes of the nodes you pick. Work in a worktree, do not push or merge.
 
