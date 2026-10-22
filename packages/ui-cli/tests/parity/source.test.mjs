@@ -85,6 +85,23 @@ test("the variant picker resolves by id and by declared state", () => {
   assert.throws(() => pickVariant(set, { variant: "1:1" }), /not a variant/)
 })
 
+// A published node without variants (a plain `COMPONENT`) is its own single
+// variant: the review compares the node against itself, so `--state` only names
+// the case and `--variant` has to be the node.
+test("the variant picker accepts a node without variants as its own variant", () => {
+  const project = loadExport(FIXTURE)
+  const component = sourceNode(project, "529:6123")
+  assert.equal(variantsOf(component).length, 0)
+  const picked = pickVariant(component, { state: "Panel" })
+  assert.equal(picked.nodeId, "529:6123")
+  assert.equal(picked.name, "Status=Enabled, Filled=False, * Required=True")
+  assert.deepEqual(picked.state, {})
+  assert.deepEqual(picked.box, { width: 274, height: 48 })
+  assert.equal(pickVariant(component, { variant: "529:6123" }).nodeId, "529:6123")
+  assert.equal(pickVariant(component, {}).nodeId, "529:6123")
+  assert.throws(() => pickVariant(component, { variant: "1:1" }), /no variants/)
+})
+
 test("the weight law and the paint reader stay in one place", () => {
   assert.equal(cssWeight(500), 600)
   assert.equal(cssWeight(600), 700)
