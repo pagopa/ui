@@ -418,3 +418,35 @@ test("the composition signature ignores width and follows the composition", () =
   const taller = { ...base, subjects: { field: subject({ box: { width: 272, height: 84 } }) } }
   assert.notEqual(compositionSignature(taller), compositionSignature(base))
 })
+
+// A container can carry two different gaps. The source layout mode names the
+// axis the diff compares: a row's gap is the CSS column gap, not the shorthand's
+// first value (the row gap).
+test("a container gap compares the axis the source layout uses", () => {
+  const source = {
+    type: "FRAME",
+    box: { width: 272, height: 166 },
+    padding: [16, 16, 16, 16],
+    childCount: 2,
+    layout: { mode: "HORIZONTAL", gap: 8, padding: [16, 16, 16, 16] },
+  }
+  const render = {
+    box: { width: 272, height: 168 },
+    padding: [16, 16, 16, 16],
+    childCount: 2,
+    gap: 4,
+    rowGap: 4,
+    columnGap: 8,
+  }
+  const deltasOf = (result) => result.filter((delta) => delta.severity === "delta")
+  assert.deepEqual(deltasOf(compareSubject({ key: "field", source, render })), [])
+  const wrong = compareSubject({ key: "field", source, render: { ...render, columnGap: 12 } })
+  assert.equal(wrong.find((delta) => delta.path === "field.gap")?.render, 12)
+
+  const vertical = { ...source, layout: { mode: "VERTICAL", gap: 16, padding: [16, 16, 16, 16] } }
+  const stacked = { ...render, rowGap: 16, columnGap: 0 }
+  assert.deepEqual(
+    deltasOf(compareSubject({ key: "field", source: vertical, render: stacked })),
+    [],
+  )
+})
