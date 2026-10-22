@@ -6,6 +6,7 @@ import { Breadcrumb } from "@/components/navigation/breadcrumb"
 import { Button } from "@/components/primitives/button"
 
 import breadcrumbGuide from "./guides/breadcrumb-navigation.md?raw"
+import { parkPointer } from "./support/pointer"
 
 const meta = {
   title: "Components/Navigation/Breadcrumb",
@@ -83,6 +84,9 @@ export const BreadcrumbExtended: Story = {
     ).not.toBeInTheDocument()
     await expect(getComputedStyle(home).fontSize).toBe("16px")
     await expect(getComputedStyle(home).fontWeight).toBe("600")
+    // The link paints the source hover blue under the pointer: park it first so
+    // the assertion reads the resting foreground token.
+    await parkPointer()
     await expect(getComputedStyle(home).color).toBe("rgb(14, 15, 19)")
     await expect(getComputedStyle(current).fontWeight).toBe("400")
     await expect(getComputedStyle(current).color).toBe("rgb(85, 92, 112)")
@@ -127,6 +131,7 @@ export const BreadcrumbCompact: Story = {
     await expect(hitTargetHeight(back)).toBeGreaterThanOrEqual(44)
     await expect(getComputedStyle(back).fontSize).toBe("16px")
     await expect(getComputedStyle(back).fontWeight).toBe("600")
+    await parkPointer()
     await expect(getComputedStyle(back).color).toBe("rgb(14, 15, 19)")
     const artwork = back.querySelector("[aria-hidden='true']")
     await expect(artwork).not.toBeNull()
@@ -230,6 +235,7 @@ export const BreadcrumbFidelity: Story = {
     await expect(getComputedStyle(link).fontSize).toBe("16px")
     await expect(getComputedStyle(link).lineHeight).toBe("22px")
     await expect(getComputedStyle(link).fontWeight).toBe("600")
+    await parkPointer()
     await expect(getComputedStyle(link).color).toBe("rgb(14, 15, 19)")
     await expect(getComputedStyle(current).fontWeight).toBe("400")
     await expect(getComputedStyle(current).color).toBe("rgb(85, 92, 112)")
