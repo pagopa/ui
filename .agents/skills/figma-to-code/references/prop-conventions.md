@@ -1,4 +1,4 @@
-# Prop conventions — a source property into the API
+# Prop conventions — a source name or property into the API
 
 The agent chooses the props; this page keeps the choice predictable across
 components. It applies to a new node and to a node being revised, never to an
@@ -8,6 +8,7 @@ props, attributes or content ([visual-parity.md](visual-parity.md)).
 
 | Property in the source | What to do | Example |
 | --- | --- | --- |
+| Node or set name | The export is one English PascalCase noun for the component's role; the node name stays its search key. The component's JSDoc ends with `Figma: <node name> (node <id>)`, the story sets `parameters.docs.subtitle` to `Figma: <node name>`. | the export renames a source abbreviation; the JSDoc keeps it findable |
 | Visibility flag (`Show …`, `Close`, `CTA`, `Title`) | An optional slot or callback: the part renders only when the caller passes it; no boolean mirror. | `actions?: ReactNode` |
 | Instance swap or slot (`INSTANCE_SWAP`, `SLOT`) | One optional `ReactNode` slot; the caller owns the instance. | `icon?: ReactNode` |
 | Text (`TEXT`, component copy) | `children` for the one main label; a named text prop for a fixed role. | `title: ReactNode` |

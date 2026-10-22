@@ -1,4 +1,4 @@
-# Prop conventions — a part, a state or a choice into the API
+# Prop conventions — a name, a part, a state or a choice into the API
 
 The agent chooses the props; this page keeps the choice predictable across
 components. It applies to a new component and to one being revised, never to an
@@ -8,6 +8,7 @@ attributes or content.
 
 | What the component has | What to do | Example |
 | --- | --- | --- |
+| The component itself | One English PascalCase noun for the role it plays for the user, cased like its family's exports. The name carries the role; a colour, a source label or an internal code stays out of it. | `EmptyState` |
 | An optional part (actions, a close control, a title) | An optional slot or callback: the part renders only when the caller passes it; no boolean mirror. | `actions?: ReactNode` |
 | Content the caller supplies (an icon, a media) | One optional `ReactNode` slot; the caller owns the element. | `icon?: ReactNode` |
 | Text | `children` for the one main label; a named text prop for a fixed role. | `title: ReactNode` |

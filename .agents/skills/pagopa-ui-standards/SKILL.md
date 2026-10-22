@@ -10,8 +10,8 @@ holds whatever produced the component. The detail lives in the references:
 
 - [definition-of-done.md](references/definition-of-done.md) — what a finished
   component proves, placement and imports included. Read it before closing.
-- [prop-conventions.md](references/prop-conventions.md) — how a part, a state
-  or a choice becomes a prop.
+- [prop-conventions.md](references/prop-conventions.md) — how a component is
+  named and how a part, a state or a choice becomes a prop.
 - The Storybook agent CLI, offline: `pnpm exec storybook skills stories|write-story|setup`
   prints the story workflow (stories, data, play functions);
   `pnpm exec storybook tools <toolset> <tool>` reads this configuration

@@ -62,7 +62,7 @@ Read `figma-to-code.yaml` at the repository root; when it is missing, run
 | Drift handoff: branch, artifacts, local alignment | [handoff.md](references/handoff.md)               |
 | New component from a Figma node              | [new-from-figma.md](references/new-from-figma.md)     |
 | Component without a Figma node: coverage     | [new-without-node.md](references/new-without-node.md) |
-| Props of a new or revised node               | [prop-conventions.md](references/prop-conventions.md) |
+| Name and props of a new or revised node      | [prop-conventions.md](references/prop-conventions.md) |
 | Visual comparison and fix, a parity wave     | [visual-parity.md](references/visual-parity.md)       |
 | Device and breakpoint variants               | [devices.md](references/devices.md)                   |
 | Foundation tokens: refresh, extensions        | [tokens.md](references/tokens.md)                     |
