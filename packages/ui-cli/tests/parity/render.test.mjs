@@ -1,7 +1,12 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
 
-import { captureChecks, DISABLE_MOTION_CSS, SCHEMA_VERSION } from "../../src/parity/render.ts"
+import {
+  captureChecks,
+  DISABLE_MOTION_CSS,
+  formatProbeTree,
+  SCHEMA_VERSION,
+} from "../../src/parity/render.ts"
 
 // The preflight is the A1 contract: a capture that is scaled, does not carry the
 // forced width or is not in the declared state is missing evidence (exit 2), not
@@ -75,4 +80,34 @@ test("the module keeps a single probe schema version and the motion guard", () =
   assert.match(DISABLE_MOTION_CSS, /animation: none !important/)
   assert.match(DISABLE_MOTION_CSS, /transition: none !important/)
   assert.match(DISABLE_MOTION_CSS, /caret-color: transparent !important/)
+})
+
+test("the tree formatter prints one readable line per element", () => {
+  const lines = formatProbeTree([
+    {
+      depth: 0,
+      tag: "fieldset",
+      className: "flex gap-2",
+      box: { width: 310, height: 448 },
+      at: { x: 0, y: 0 },
+      padding: [0, 0, 0, 0],
+      gap: 8,
+    },
+    {
+      depth: 1,
+      tag: "div",
+      className: "",
+      box: { width: 310, height: 43 },
+      at: { x: 0, y: 44 },
+      padding: [8, 88, 8, 16],
+      gap: 0,
+    },
+  ])
+  assert.equal(
+    lines,
+    [
+      "fieldset.flex.gap-2 310x448 @0,0 pad=0/0/0/0 gap=8",
+      "  div 310x43 @0,44 pad=8/88/8/16 gap=0",
+    ].join("\n"),
+  )
 })

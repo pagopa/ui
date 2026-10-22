@@ -427,6 +427,8 @@ const parity = defineCommand({
         "expect-state": parityString,
         "state-evidence": parityString,
         screenshot: parityString,
+        tree: parityBoolean,
+        depth: parityString,
         json: parityBoolean,
       },
       run: execute(() => {
