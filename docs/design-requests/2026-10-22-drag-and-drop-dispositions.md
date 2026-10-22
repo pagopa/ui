@@ -22,19 +22,19 @@ would change the public API.
 
 ## Evidence
 
-| Variant                                        | Node        | Box     |
-| ---------------------------------------------- | ----------- | ------- |
-| `Status=Default, Disposition=Vertical`         | `760:7433`  | 272x260 |
-| `Status=Default, Disposition=Horizontal`       | `821:30245` | 608x120 |
-| `Status=DragOver, Disposition=Horizontal`      | `821:30252` | 596x116 |
-| `Status=Processing, Disposition=Vertical`      | `821:30256` | 272x260 |
-| `Status=Processing, Disposition=Horizontal`    | `760:7446`  | 548x120 |
-| `Status=Failed, Disposition=Vertical`          | `821:30261` | 272x260 |
-| `Status=Failed, Disposition=Horizontal`        | `816:19023` | 505x120 |
+| Variant                                        | Node         | Box     |
+| ---------------------------------------------- | ------------ | ------- |
+| `Status=Default, Disposition=Vertical`         | `760:7433`   | 272x260 |
+| `Status=Default, Disposition=Horizontal`       | `821:30245`  | 608x120 |
+| `Status=DragOver, Disposition=Horizontal`      | `821:30252`  | 596x116 |
+| `Status=Processing, Disposition=Vertical`      | `821:30256`  | 272x260 |
+| `Status=Processing, Disposition=Horizontal`    | `760:7446`   | 548x120 |
+| `Status=Failed, Disposition=Vertical`          | `821:30261`  | 272x260 |
+| `Status=Failed, Disposition=Horizontal`        | `816:19023`  | 505x120 |
 | `Status=Error, Disposition=Vertical`           | `3437:35495` | 272x260 |
 | `Status=Error, Disposition=Horizontal`         | `3437:35488` | 596x120 |
 | `Status=Success, Disposition=Vertical, File`   | `10508:9105` | 272x118 |
-| `Status=Success, Disposition=Horizontal, File` | `760:7462`  | 548x94  |
+| `Status=Success, Disposition=Horizontal, File` | `760:7462`   | 548x94  |
 | `Status=Success, Disposition=Vertical, Avatar` | `1307:15355` | 272x284 |
 
 The vertical dropzone is 272 wide with a 24px inset and a 236px box; the
