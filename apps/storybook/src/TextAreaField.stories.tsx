@@ -43,7 +43,7 @@ export const Disabled: Story = {
 // The source state matrix: one field per source variant of `10585:80643`, each
 // framed at the source width (274) so a parity case maps exactly one row. The
 // copy is the fixture's; the state is what the case compares.
-const sourceAreaStates: ReadonlyArray<{
+const sourceAreaStates: readonly {
   id: string
   props: {
     disabled?: boolean
@@ -52,7 +52,7 @@ const sourceAreaStates: ReadonlyArray<{
     error?: string
     required?: boolean
   }
-}> = [
+}[] = [
   { id: "fidelity-area-enabled-empty", props: {} },
   { id: "fidelity-area-enabled-filled", props: { defaultValue: "Input text" } },
   { id: "fidelity-area-active-empty", props: {} },

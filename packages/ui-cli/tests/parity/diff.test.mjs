@@ -8,6 +8,7 @@ import {
   compare,
   compareSubject,
   compositionSignature,
+  renderStroke,
   responsiveDeltas,
   scopeDeltas,
   tokenIndex,
@@ -449,4 +450,38 @@ test("a container gap compares the axis the source layout uses", () => {
     deltasOf(compareSubject({ key: "field", source: vertical, render: stacked })),
     [],
   )
+})
+
+test("a borderless render compares its inset ring as the source's inside stroke", () => {
+  const source = {
+    type: "FRAME",
+    box: { width: 96, height: 48 },
+    strokes: [{ width: 2, color: "#0b3ee3" }],
+  }
+  const ring =
+    "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(11, 62, 227) 0px 0px 0px 2px inset, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+  const render = {
+    box: { width: 96, height: 48 },
+    border: { width: 0, color: "rgba(0, 0, 0, 0)" },
+    boxShadow: ring,
+  }
+  assert.deepEqual(renderStroke(render), { width: 2, color: "rgb(11, 62, 227)" })
+  const deltasOf = (result) => result.filter((delta) => delta.severity === "delta")
+  assert.deepEqual(deltasOf(compareSubject({ key: "field", source, render })), [])
+  const wrong = compareSubject({
+    key: "field",
+    source,
+    render: { ...render, boxShadow: ring.replace("rgb(11, 62, 227)", "rgb(209, 51, 51)") },
+  })
+  assert.deepEqual(
+    deltasOf(wrong).map((delta) => delta.path),
+    ["field.border.color"],
+  )
+  // A drop shadow or a real border is not an inside stroke.
+  assert.deepEqual(
+    renderStroke({ ...render, boxShadow: "rgb(0, 0, 0) 0px 2px 4px 0px" }),
+    render.border,
+  )
+  const bordered = { width: 1, color: "rgb(1, 2, 3)" }
+  assert.deepEqual(renderStroke({ ...render, border: bordered }), bordered)
 })

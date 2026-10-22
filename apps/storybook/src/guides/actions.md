@@ -15,7 +15,38 @@ than inflating the visible box.
 Figma-mapped buttons use the shared button geometry through existing tokens; the
 source skeleton takes the nearest existing width token, and the shared ghost
 hit-area padding is an accessibility adaptation rather than the source's
-content-sized frame.
+content-sized frame. Outlined buttons paint their 2px stroke as an inset ring
+inside the 24px inset, like the source's inside stroke, so a contained and an
+outlined action with the same content share the same box; under forced colors,
+which drop box shadows, every button falls back to a real border and the
+skeleton bar paints in the system text colour so it stays visible. A loading
+error action paints its spinner in the destructive colour, as the source does.
+
+The source `Button` set (`108:1402`) maps to the props as follows:
+
+- `Variant` folds style and colour into one axis, and so does `variant`:
+  `Contained` → `"default"`, `Outlined` → `"outline"`, `Text` → `"ghost"`,
+  `Contained contrast` → `"contrast"`, `Outlined contrast` →
+  `"outline-contrast"`, `Text contrast` → `"ghost-contrast"`,
+  `Contained error` → `"destructive"`, `Outlined error` →
+  `"outline-destructive"`, `Text error` → `"ghost-destructive"`. `secondary`
+  and `link` have no source variant.
+- `Icon` is content, not a prop: `None` is a label alone, `<- Left` puts the
+  icon child before the label and `Right ->` after it.
+- `Skeleton=True` → `skeleton`: the placeholder bar replaces the visible label,
+  which stays the accessible name; the button is busy and stays focusable.
+- `Spinner=True` → `loading`: the spinner replaces the visible label, which
+  stays the accessible name; the button is busy and stays focusable.
+
+```tsx
+<Button variant="outline-destructive">
+  <Star aria-hidden />
+  Elimina
+</Button>
+<Button variant="ghost-contrast" loading>
+  Invia
+</Button>
+```
 
 ## ButtonGroup
 

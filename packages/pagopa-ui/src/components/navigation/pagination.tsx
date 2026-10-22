@@ -5,6 +5,13 @@ import { Button } from "@/components/primitives/button"
 
 import { pageRange } from "./pagination-utils"
 
+// The source draws 40px page elements: previous and next are 40x40 with a 2px
+// stroke, a page hugs its number (padding 12, so 40x46, wider for three digits).
+// The ::after expansion keeps every control a 44px target without growing it.
+const stepControl = "relative size-10 border-2 border-border after:absolute after:-inset-0.5"
+const pageControl =
+  "relative min-w-10 border-0 p-3 after:absolute after:-inset-x-0.5 after:inset-y-0"
+
 function Pagination({
   currentPage,
   totalPages,
@@ -45,7 +52,7 @@ function Pagination({
             disabled={current === 1}
             onClick={() => onPageChange(current - 1)}
             aria-label={previousLabel}
-            className="border-2 border-border"
+            className={stepControl}
           >
             <ChevronLeft aria-hidden="true" />
           </Button>
@@ -54,7 +61,7 @@ function Pagination({
               <span
                 key={`ellipsis-${index}`}
                 aria-hidden="true"
-                className="grid size-11 shrink-0 place-items-center @max-narrow/pagination:hidden"
+                className="grid size-10 shrink-0 place-items-center @max-narrow/pagination:hidden"
               >
                 <span className="flex items-center gap-0.5">
                   {[0, 1, 2].map((dot) => (
@@ -66,11 +73,14 @@ function Pagination({
               <Button
                 key={page}
                 variant={page === current ? "default" : "ghost"}
-                size="icon"
+                size={null}
                 aria-current={page === current ? "page" : undefined}
                 aria-label={pageLabel(page)}
                 onClick={() => onPageChange(page)}
-                className={cn(page !== current && "text-foreground @max-narrow/pagination:hidden")}
+                className={cn(
+                  pageControl,
+                  page !== current && "text-foreground @max-narrow/pagination:hidden",
+                )}
               >
                 {page}
               </Button>
@@ -82,7 +92,7 @@ function Pagination({
             disabled={current >= totalPages}
             onClick={() => onPageChange(current + 1)}
             aria-label={nextLabel}
-            className="border-2 border-border"
+            className={stepControl}
           >
             <ChevronRight aria-hidden="true" />
           </Button>

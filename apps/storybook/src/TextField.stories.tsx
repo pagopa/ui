@@ -109,7 +109,7 @@ export const ReadOnly: Story = {
 // `Playground` case does not already cover, each framed at the source width
 // (274) so a parity case maps exactly one row. The copy is the fixture's; the
 // state is what the case compares.
-const sourceFieldStates: ReadonlyArray<{
+const sourceFieldStates: readonly {
   id: string
   props: {
     disabled?: boolean
@@ -118,7 +118,7 @@ const sourceFieldStates: ReadonlyArray<{
     error?: string
     required?: boolean
   }
-}> = [
+}[] = [
   { id: "fidelity-disabled-empty", props: { disabled: true } },
   { id: "fidelity-disabled-filled", props: { disabled: true, defaultValue: "Input text" } },
   { id: "fidelity-active-empty", props: {} },

@@ -42,6 +42,7 @@ import {
   type Delta,
   type SourceSubject,
 } from "./diff.ts"
+import { markdownTable } from "../lib/markdown.ts"
 import { enterRoot, rootPath } from "../lib/paths.ts"
 import { parseSchema } from "../lib/validate.ts"
 import { capture as captureStory, DEFAULT_ROOT, type CaptureOptions } from "./render.ts"
@@ -1269,6 +1270,18 @@ function reRunCommand(entry: { nodeId: string; case?: CaseSpec; status: string }
   return parts.join(" ")
 }
 
+const DELTA_HEADER = ["node", "path", "source", "render", "token"]
+
+function deltaRow(delta: Delta & { nodeId: string }): string[] {
+  return [
+    `\`${delta.nodeId}\``,
+    `\`${delta.path}\``,
+    String(delta.source),
+    String(delta.render),
+    delta.token ? `${delta.token.kind}${delta.token.name ? `: ${delta.token.name}` : ""}` : "",
+  ]
+}
+
 // The wave directory becomes one committed markdown: the counts, the per-case
 // verdicts with their numbers and the residues with their reasons. The JSON
 // stays in the wave directory (gitignored), the markdown is the record.
@@ -1310,27 +1323,41 @@ function report({ flags }: Parsed): number {
   lines.push("")
   lines.push("## Counts")
   lines.push("")
-  lines.push("| verdict | cases |")
-  lines.push("| --- | --- |")
-  for (const [status, count] of Object.entries(summary.counts ?? {})) {
-    lines.push(`| ${status} | ${count} |`)
-  }
+  lines.push(
+    ...markdownTable(
+      ["verdict", "cases"],
+      Object.entries(summary.counts ?? {}).map(([status, count]) => [status, String(count)]),
+    ),
+  )
   lines.push("")
   lines.push("## Cases")
   lines.push("")
   lines.push(
-    "| node | device | variant | story | verdict | deltas | advisories | residues | responsive |",
+    ...markdownTable(
+      [
+        "node",
+        "device",
+        "variant",
+        "story",
+        "verdict",
+        "deltas",
+        "advisories",
+        "residues",
+        "responsive",
+      ],
+      entries.map((entry) => [
+        `\`${entry.nodeId}\``,
+        entry.device ?? "-",
+        entry.variant ? `\`${entry.variant}\`` : "-",
+        entry.storyId ? `\`${entry.storyId}\`` : "-",
+        `${entry.status}${entry.message ? ` (${entry.message})` : ""}`,
+        String(entry.deltas ?? "-"),
+        String(entry.advisories ?? "-"),
+        String(entry.residues ?? "-"),
+        entry.responsive ?? "-",
+      ]),
+    ),
   )
-  lines.push("| --- | --- | --- | --- | --- | --- | --- | --- | --- |")
-  for (const entry of entries) {
-    lines.push(
-      `| \`${entry.nodeId}\` | ${entry.device ?? "-"} | ${entry.variant ? `\`${entry.variant}\`` : "-"} | ${
-        entry.storyId ? `\`${entry.storyId}\`` : "-"
-      } | ${entry.status}${entry.message ? ` (${entry.message})` : ""} | ${entry.deltas ?? "-"} | ${
-        entry.advisories ?? "-"
-      } | ${entry.residues ?? "-"} | ${entry.responsive ?? "-"} |`,
-    )
-  }
   lines.push("")
 
   const withDetail = entries.filter((entry) => entry.status !== "missing-story")
@@ -1367,15 +1394,7 @@ function report({ flags }: Parsed): number {
   lines.push("")
   if (!deltas.length) lines.push("None.")
   else {
-    lines.push("| node | path | source | render | token |")
-    lines.push("| --- | --- | --- | --- | --- |")
-    for (const delta of deltas) {
-      lines.push(
-        `| \`${delta.nodeId}\` | \`${delta.path}\` | ${delta.source} | ${delta.render} | ${
-          delta.token ? `${delta.token.kind}${delta.token.name ? `: ${delta.token.name}` : ""}` : ""
-        } |`,
-      )
-    }
+    lines.push(...markdownTable(DELTA_HEADER, deltas.map(deltaRow)))
   }
   lines.push("")
   lines.push("## Advisories (composition — not gating)")
@@ -1386,17 +1405,7 @@ function report({ flags }: Parsed): number {
       "Reported by the `--compare-offset` cases; `--strict` promotes them into the verdict.",
     )
     lines.push("")
-    lines.push("| node | path | source | render | token |")
-    lines.push("| --- | --- | --- | --- | --- |")
-    for (const advisory of advisories) {
-      lines.push(
-        `| \`${advisory.nodeId}\` | \`${advisory.path}\` | ${advisory.source} | ${advisory.render} | ${
-          advisory.token
-            ? `${advisory.token.kind}${advisory.token.name ? `: ${advisory.token.name}` : ""}`
-            : ""
-        } |`,
-      )
-    }
+    lines.push(...markdownTable(DELTA_HEADER, advisories.map(deltaRow)))
   }
   lines.push("")
   lines.push("## How to re-run")

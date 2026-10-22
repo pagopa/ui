@@ -78,6 +78,13 @@
   (label row and month row, its 24px chevrons 4px apart) closed by its
   full-bleed divider, then the calendar, a divider and the 46px footer, with the
   source's 8px stack gap, 8px grid inset and 22px text actions.
+- `Button`, `Breadcrumb` and `Pagination` draw the source geometry: outlined
+  buttons paint their 2px stroke as an inset ring inside the 24px inset, so a
+  contained and an outlined action with the same content share the same box, and
+  forced colors falls back to a real border; breadcrumb rows keep the source
+  22/24px height with the 44px pointer target on the invisible `::after`
+  expansion; pagination controls are 40px wide, with pages hugging their number
+  to 46px high and the 44px target on the invisible expansion.
 
 ### Removed
 

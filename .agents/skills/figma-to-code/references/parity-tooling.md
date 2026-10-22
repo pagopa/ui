@@ -41,6 +41,8 @@ run in `pnpm nx run pagopa-ui-cli:test` with no snapshot and no browser.
 - Tolerance 2px. Weight law: source `500` → CSS 600, `600` → 700, so a 400 face
   is always a delta.
 - A ≥44px target counts when it comes from the invisible `::after` expansion.
+- A borderless render's inset ring (an inset box-shadow with no offset and no
+  blur) is its stroke, the CSS form of a Figma inside stroke.
 - Token class against `tokens.generatedCss` and `tokens.manifest`; offsets
   against the 4px spacing scale.
 - Centered-layout trap: Storybook's centered layout adds 16px `border-box`

@@ -49,6 +49,60 @@
       "width": 312,
       "height": 94
     },
+    "198-828-empty": {
+      "png": "references/198-828-empty.png",
+      "sha256": "9ba0d0f105e2046e4db47edb07cf878dd082af772593c49671bd39adaf8ae1a2",
+      "nodeId": "198:828",
+      "variant": "198:829",
+      "designFingerprint": "77b007364703ff483719e3d12f67721d22dec17c3ae18d24a4d08b802bf71d28",
+      "width": 168,
+      "height": 50
+    },
+    "198-828-filled": {
+      "png": "references/198-828-filled.png",
+      "sha256": "1fc851b3c362d49e4a21ea22880722835645de6919ae5ad24a5fbfec19f849ea",
+      "nodeId": "198:828",
+      "variant": "198:847",
+      "designFingerprint": "3d778598c312c675f8bd8130735b2f3e5d4ec912e44140222102453d88b9a0e0",
+      "width": 167,
+      "height": 50
+    },
+    "198-828-encrypted": {
+      "png": "references/198-828-encrypted.png",
+      "sha256": "9c63d96e1540204c1c65aaf37b30264cd683b2ead968d1201aeb3f5c0762c688",
+      "nodeId": "198:828",
+      "variant": "198:856",
+      "designFingerprint": "3fda08283de538d3b6c773cc106e88e130de5ccc895b18cbb89975c48ead676b",
+      "width": 167,
+      "height": 50
+    },
+    "198-828-error": {
+      "png": "references/198-828-error.png",
+      "sha256": "e5b7ba14a107816001885f33f57e9c87b95d9160a466a1809a4128683c2df492",
+      "nodeId": "198:828",
+      "variant": "198:874",
+      "designFingerprint": "2db4ad73ca6c694d5f626c4bd66e2e6cfdd5aec2e0fde586c73bf6751610a26a",
+      "width": 167,
+      "height": 70
+    },
+    "198-828-selected": {
+      "png": "references/198-828-selected.png",
+      "sha256": "f72cf4f57ef8c928972589411b9a1d73436b5e9eecd3b889be04d7b7b7762ca2",
+      "nodeId": "198:828",
+      "variant": "266:25977",
+      "designFingerprint": "c67bcc3b49a71a177d568e2cc09921066328237a9ab152a854ff2716c04425cf",
+      "width": 168,
+      "height": 50
+    },
+    "198-828-error-encrypted": {
+      "png": "references/198-828-error-encrypted.png",
+      "sha256": "80b6dc4815dc94664139fad5c8425211091e829ba117288f38d8e3983014211a",
+      "nodeId": "198:828",
+      "variant": "274:1478",
+      "designFingerprint": "007cc8167014de7fb54f98914ac6b602f7dfc1291eb71b6b3a4620814e63a04f",
+      "width": 167,
+      "height": 70
+    },
     "212-1899-error-horizontal": {
       "png": "references/212-1899-error-horizontal.png",
       "sha256": "19166167cb6a42d5069460dd3bdf2c9fb3c5049638347279aabdcb84ddcf6ae1",
@@ -670,6 +724,15 @@
       "width": 481,
       "height": 864
     },
+    "1293-8394-default-selected": {
+      "png": "references/1293-8394-default-selected.png",
+      "sha256": "e6817c369f33c99331aae9fe89a74de7a489f521d7349c7c9194d39be72bbad3",
+      "nodeId": "1293:8394",
+      "variant": "1281:3856",
+      "designFingerprint": "20df01a79c0aab3182dba272172e2ecd30589eed1cbce1741b80b56d544641ff",
+      "width": 748,
+      "height": 64
+    },
     "1298-5209-logo-false-mobile": {
       "png": "references/1298-5209-logo-false-mobile.png",
       "sha256": "68582eeac1343550ac223718d26ce3006122f59595dcbf31994d33296596fa46",
@@ -1048,6 +1111,15 @@
       "width": 320,
       "height": 2205
     },
+    "8049-39452-single-date": {
+      "png": "references/8049-39452-single-date.png",
+      "sha256": "667fe7669f28a58f3b3c0abb3b4b56fc6a31ef9d31efa12f3225d3e2613cde5a",
+      "nodeId": "8049:39452",
+      "variant": "8049:39452",
+      "designFingerprint": "14d1ede14e2d2bf3015fff79a4d7200503dd6224bb917db75d5abb269428a163",
+      "width": 374,
+      "height": 490
+    },
     "9520-2537-layout-desktop-desktop": {
       "png": "references/9520-2537-layout-desktop-desktop.png",
       "sha256": "8c95d956fa1a37ef21af1008c78c5493754314c4c93b63e5f8ceb6bf3e91e2d5",
@@ -1237,77 +1309,104 @@
       "width": 848,
       "height": 128
     },
-    "198-828-empty": {
-      "png": "references/198-828-empty.png",
-      "sha256": "9ba0d0f105e2046e4db47edb07cf878dd082af772593c49671bd39adaf8ae1a2",
-      "nodeId": "198:828",
-      "variant": "198:829",
-      "designFingerprint": "77b007364703ff483719e3d12f67721d22dec17c3ae18d24a4d08b802bf71d28",
-      "width": 168,
-      "height": 50
+    "108-1402-contained-label": {
+      "png": "references/108-1402-contained-label.png",
+      "sha256": "288308c01d994b884e628c9418823b3a382c20f784f778277ce49100f07df55b",
+      "nodeId": "108:1402",
+      "variant": "108:1403",
+      "designFingerprint": "dafdd3bc51a8caa012410c9d9e531187aa01655578e3ebeed7ed7da624dc762e",
+      "width": 96,
+      "height": 48
     },
-    "198-828-filled": {
-      "png": "references/198-828-filled.png",
-      "sha256": "1fc851b3c362d49e4a21ea22880722835645de6919ae5ad24a5fbfec19f849ea",
-      "nodeId": "198:828",
-      "variant": "198:847",
-      "designFingerprint": "3d778598c312c675f8bd8130735b2f3e5d4ec912e44140222102453d88b9a0e0",
-      "width": 167,
-      "height": 50
+    "108-1402-contained-contrast-skeleton": {
+      "png": "references/108-1402-contained-contrast-skeleton.png",
+      "sha256": "6c038ce25521d5082037a11606c01867b18f7e0f972abd16e34d203ac0e371f6",
+      "nodeId": "108:1402",
+      "variant": "108:1409",
+      "designFingerprint": "7ca548ef9259b689c8edb6a3a575d16e2b0bb8016f17fb27bb6b98f37a77d928",
+      "width": 141,
+      "height": 48
     },
-    "198-828-encrypted": {
-      "png": "references/198-828-encrypted.png",
-      "sha256": "9c63d96e1540204c1c65aaf37b30264cd683b2ead968d1201aeb3f5c0762c688",
-      "nodeId": "198:828",
-      "variant": "198:856",
-      "designFingerprint": "3fda08283de538d3b6c773cc106e88e130de5ccc895b18cbb89975c48ead676b",
-      "width": 167,
-      "height": 50
+    "108-1402-contained-error-right": {
+      "png": "references/108-1402-contained-error-right.png",
+      "sha256": "6405b17c61f0db6c48b369d3f09eb09dfdf61b894b8bb5f12aa6c15b5fca7e25",
+      "nodeId": "108:1402",
+      "variant": "108:1457",
+      "designFingerprint": "9888cccd0ea4c1f779fdc455c76a067a3fb0c7e5dde304c408f6fdb37df1ee30",
+      "width": 128,
+      "height": 48
     },
-    "198-828-error": {
-      "png": "references/198-828-error.png",
-      "sha256": "e5b7ba14a107816001885f33f57e9c87b95d9160a466a1809a4128683c2df492",
-      "nodeId": "198:828",
-      "variant": "198:874",
-      "designFingerprint": "2db4ad73ca6c694d5f626c4bd66e2e6cfdd5aec2e0fde586c73bf6751610a26a",
-      "width": 167,
-      "height": 70
+    "108-1402-text-right": {
+      "png": "references/108-1402-text-right.png",
+      "sha256": "863133cf09880cb4b888a328c69266a4a3145d94797a06dc105a649f344a9ebb",
+      "nodeId": "108:1402",
+      "variant": "108:1465",
+      "designFingerprint": "c2edc9d90395109d7941aa6333528d735388b208cfe395dbf77dcae11e859f98",
+      "width": 80,
+      "height": 24
     },
-    "198-828-selected": {
-      "png": "references/198-828-selected.png",
-      "sha256": "f72cf4f57ef8c928972589411b9a1d73436b5e9eecd3b889be04d7b7b7762ca2",
-      "nodeId": "198:828",
-      "variant": "266:25977",
-      "designFingerprint": "c67bcc3b49a71a177d568e2cc09921066328237a9ab152a854ff2716c04425cf",
-      "width": 168,
-      "height": 50
+    "108-1402-outlined-left": {
+      "png": "references/108-1402-outlined-left.png",
+      "sha256": "7c0eaeb870290b86e0b85d1c302351c3ff5bef1b617aabe9ed08359dc8223f07",
+      "nodeId": "108:1402",
+      "variant": "108:1471",
+      "designFingerprint": "25ddc584f590954d5bc435ac5dbce8caeb1f76bb4a44923ebc051034f9c044db",
+      "width": 128,
+      "height": 48
     },
-    "198-828-error-encrypted": {
-      "png": "references/198-828-error-encrypted.png",
-      "sha256": "80b6dc4815dc94664139fad5c8425211091e829ba117288f38d8e3983014211a",
-      "nodeId": "198:828",
-      "variant": "274:1478",
-      "designFingerprint": "007cc8167014de7fb54f98914ac6b602f7dfc1291eb71b6b3a4620814e63a04f",
-      "width": 167,
-      "height": 70
+    "108-1402-outlined-contrast-spinner": {
+      "png": "references/108-1402-outlined-contrast-spinner.png",
+      "sha256": "956707750f17e7d10df14e3dc1125a10b28e6d68b9280eb0ae81b3aa48e085a6",
+      "nodeId": "108:1402",
+      "variant": "108:1487",
+      "designFingerprint": "07568f6758be5c2b33471003f8edbde817b7373092beb23e6b015eb3419c1f97",
+      "width": 72,
+      "height": 48
     },
-    "1293-8394-default-selected": {
-      "png": "references/1293-8394-default-selected.png",
-      "sha256": "e6817c369f33c99331aae9fe89a74de7a489f521d7349c7c9194d39be72bbad3",
-      "nodeId": "1293:8394",
-      "variant": "1281:3856",
-      "designFingerprint": "20df01a79c0aab3182dba272172e2ecd30589eed1cbce1741b80b56d544641ff",
-      "width": 748,
-      "height": 64
+    "108-1402-text-contrast-label": {
+      "png": "references/108-1402-text-contrast-label.png",
+      "sha256": "efd38a4bf91f992a0f9f3fb2b3723714e3903b5d550b3002c46a9416e71027a0",
+      "nodeId": "108:1402",
+      "variant": "108:1535",
+      "designFingerprint": "09d2148e92d0ce5c1faef568b93b791a2cffaff939e9dabc254253af50769daa",
+      "width": 48,
+      "height": 22
     },
-    "8049-39452-single-date": {
-      "png": "references/8049-39452-single-date.png",
-      "sha256": "667fe7669f28a58f3b3c0abb3b4b56fc6a31ef9d31efa12f3225d3e2613cde5a",
-      "nodeId": "8049:39452",
-      "variant": "8049:39452",
-      "designFingerprint": "14d1ede14e2d2bf3015fff79a4d7200503dd6224bb917db75d5abb269428a163",
-      "width": 374,
-      "height": 490
+    "108-1402-outlined-error-skeleton": {
+      "png": "references/108-1402-outlined-error-skeleton.png",
+      "sha256": "ff07cc6ca4ef31e3ffe8a60629de34373e9080328e61465cfbeead5a674dcbf6",
+      "nodeId": "108:1402",
+      "variant": "1527:26769",
+      "designFingerprint": "eec95407454000f8b51993b3f0098dc2581dc763b5c033da9106b3901d7bc339",
+      "width": 141,
+      "height": 48
+    },
+    "108-1402-text-error-spinner": {
+      "png": "references/108-1402-text-error-spinner.png",
+      "sha256": "c6a01b41d805f953feaafd4d70969145c5fa5a636e54eb11a3055c860f45c543",
+      "nodeId": "108:1402",
+      "variant": "1527:26775",
+      "designFingerprint": "97ac4d5bc3320f315ad647f19df3f54d11023adf228fe1fc08d8e881ddd49b88",
+      "width": 24,
+      "height": 24
+    },
+    "123-7768-extended": {
+      "png": "references/123-7768-extended.png",
+      "sha256": "d7701e84c1d15c9a4bb896993fc9a09ff5ec265a49ff134c85f31bcf49c033a2",
+      "nodeId": "123:7768",
+      "variant": "123:7769",
+      "designFingerprint": "7cacfa15433584bc3812dc0923dca37b0287a0f270fe9b764eba2fcd8e09063b",
+      "width": 113,
+      "height": 22
+    },
+    "123-7768-compact": {
+      "png": "references/123-7768-compact.png",
+      "sha256": "ab32e6568d9cf9c4f3a1cfec7cba89f647377dcb9b484f219e7bbe9d7db051f6",
+      "nodeId": "123:7768",
+      "variant": "123:7777",
+      "designFingerprint": "c964659f4a3cda16a57be143125d5b0c42de04a09b3800d027344747e9210087",
+      "width": 65,
+      "height": 24
     }
   }
 }

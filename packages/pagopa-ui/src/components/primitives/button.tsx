@@ -3,30 +3,33 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/cn"
 import { SpinnerIndicator } from "./spinner-indicator"
 
+// Outlined strokes are inset rings so they sit inside the padding like the
+// source's inside stroke. Forced colors drops box shadows, so a real border
+// keeps every button's edge visible there.
 const buttonVariants = cva(
-  "group/button inline-flex min-w-0 max-w-full shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-button whitespace-normal [overflow-wrap:anywhere] transition-[color,background-color,border-color] outline-none select-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5",
+  "group/button inline-flex min-w-0 max-w-full shrink-0 items-center justify-center rounded-lg border-transparent bg-clip-padding text-button whitespace-normal [overflow-wrap:anywhere] transition-[color,background-color,border-color] outline-none select-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:inset-ring-destructive forced-colors:border [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5",
   {
     variants: {
       variant: {
         default:
-          "bg-primary px-6 text-primary-foreground hover:bg-primary-hover active:bg-primary-active",
+          "bg-primary px-6 text-primary-foreground hover:bg-primary-hover active:bg-primary-active aria-invalid:inset-ring",
         outline:
-          "border-2 border-primary bg-transparent px-6 text-primary hover:bg-accent active:bg-accent-active",
-        secondary: "bg-secondary px-4 text-secondary-foreground hover:bg-secondary-hover",
-        ghost: "px-4 text-primary hover:bg-accent active:bg-accent-active",
+          "bg-transparent px-6 text-primary inset-ring-2 inset-ring-primary hover:bg-accent active:bg-accent-active forced-colors:border-2",
+        secondary: "border bg-secondary px-4 text-secondary-foreground hover:bg-secondary-hover",
+        ghost: "border px-4 text-primary hover:bg-accent active:bg-accent-active",
         destructive:
-          "bg-destructive px-6 text-destructive-foreground hover:bg-destructive-hover focus-visible:outline-destructive",
+          "bg-destructive px-6 text-destructive-foreground hover:bg-destructive-hover focus-visible:outline-destructive aria-invalid:inset-ring",
         "outline-destructive":
-          "border-2 border-destructive bg-transparent px-6 text-destructive hover:bg-error-soft focus-visible:outline-destructive",
+          "bg-transparent px-6 text-destructive inset-ring-2 inset-ring-destructive hover:bg-error-soft focus-visible:outline-destructive forced-colors:border-2",
         "ghost-destructive":
-          "bg-transparent px-4 text-destructive hover:bg-error-soft focus-visible:outline-destructive",
+          "border bg-transparent px-4 text-destructive hover:bg-error-soft focus-visible:outline-destructive",
         contrast:
-          "bg-contrast px-6 text-contrast-foreground hover:bg-accent active:bg-accent-active",
+          "bg-contrast px-6 text-contrast-foreground hover:bg-accent active:bg-accent-active aria-invalid:inset-ring",
         "outline-contrast":
-          "border-2 border-contrast bg-transparent px-6 text-contrast hover:bg-contrast/10 active:bg-contrast/20 focus-visible:outline-contrast",
+          "bg-transparent px-6 text-contrast inset-ring-2 inset-ring-contrast hover:bg-contrast/10 active:bg-contrast/20 focus-visible:outline-contrast forced-colors:border-2",
         "ghost-contrast":
-          "bg-transparent px-4 text-contrast hover:bg-contrast/10 active:bg-contrast/20 focus-visible:outline-contrast",
-        link: "px-4 text-primary underline-offset-4 hover:underline",
+          "border bg-transparent px-4 text-contrast hover:bg-contrast/10 active:bg-contrast/20 focus-visible:outline-contrast",
+        link: "border px-4 text-primary underline-offset-4 hover:underline",
       },
       size: {
         default: "min-h-12 gap-2 [&_svg:not([class*='size-'])]:size-6",
@@ -84,7 +87,7 @@ function Button({
           <span
             data-slot="button-skeleton"
             aria-hidden="true"
-            className="h-4 w-23 rounded-full bg-skeleton-strong opacity-30"
+            className="h-4 w-23 rounded-full bg-skeleton-strong opacity-30 forced-colors:forced-color-adjust-none forced-colors:bg-[CanvasText]"
           />
         </>
       ) : loading ? (

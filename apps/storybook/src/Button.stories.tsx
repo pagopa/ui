@@ -196,6 +196,18 @@ const figmaAppearances: {
   },
 ]
 
+// Contained and outlined source boxes per state; the Text family is content-sized.
+const sourceBoxWidths: {
+  state: keyof (typeof figmaAppearances)[number]["sourceVariants"]
+  width: number
+}[] = [
+  { state: "label", width: 96 },
+  { state: "leftIcon", width: 128 },
+  { state: "rightIcon", width: 128 },
+  { state: "skeleton", width: 141 },
+  { state: "spinner", width: 72 },
+]
+
 const fidelityVariant = (nodeId: string) => nodeId.replace(":", "-")
 const actionLabel = () => <span data-fidelity-label>Action</span>
 const kidStar = () => (
@@ -215,12 +227,14 @@ function fidelityButton(canvasElement: HTMLElement, nodeId: string) {
 export const FigmaStateMatrix: Story = {
   tags: ["color-pinned"],
   parameters: {
+    // The 660px matrix is wider than the centred root, which would shrink and clip it.
+    layout: "fullscreen",
     // Reflow exemption: fixture pinned at the source width, not a product surface.
     a11yContract: { reflow: false },
     design: { type: "figma", url: figmaEmbedUrl("108:1402") },
   },
   render: () => (
-    <div className="grid gap-4">
+    <div className="grid w-max gap-4">
       {figmaAppearances.map((appearance) => (
         <div
           key={appearance.id}
@@ -272,6 +286,13 @@ export const FigmaStateMatrix: Story = {
   play: async ({ canvasElement }) => {
     const fidelityButtons = canvasElement.querySelectorAll("[data-fidelity-variant]")
     await expect(fidelityButtons).toHaveLength(45)
+    // Each row is sized to its five buttons, so no button paints outside its panel.
+    for (const row of canvasElement.querySelectorAll<HTMLElement>("[data-fidelity-appearance]")) {
+      const panel = row.getBoundingClientRect()
+      for (const button of row.querySelectorAll("[data-fidelity-variant]")) {
+        await expect(button.getBoundingClientRect().right).toBeLessThanOrEqual(panel.right)
+      }
+    }
     for (const appearance of figmaAppearances) {
       for (const sourceId of Object.values(appearance.sourceVariants)) {
         const button = fidelityButton(canvasElement, sourceId)
@@ -283,15 +304,22 @@ export const FigmaStateMatrix: Story = {
         await expect(style.gap).toBe("8px")
         await expect(button.getBoundingClientRect().height).toBe(48)
         if (appearance.border) {
-          await expect(style.borderTopColor).toBe(appearance.border)
-          await expect(style.borderTopWidth).toBe("2px")
+          // The source's 2px inside stroke is an inset ring: it paints over the
+          // 24px inset instead of widening the box.
+          await expect(style.boxShadow).toContain(`${appearance.border} 0px 0px 0px 2px inset`)
         }
         if (appearance.sourceInset) {
-          const padding = Number.parseFloat(style.paddingLeft)
-          const border = Number.parseFloat(style.borderLeftWidth)
-          await expect(padding).toBe(appearance.sourceInset)
-          // Keep the spacing token instead of subtracting the 1-2px CSS border.
-          await expect(Math.abs(padding + border - appearance.sourceInset)).toBeLessThanOrEqual(2)
+          await expect(style.borderLeftWidth).toBe("0px")
+          await expect(Number.parseFloat(style.paddingLeft)).toBe(appearance.sourceInset)
+        }
+      }
+      if (appearance.sourceInset) {
+        for (const { state, width } of sourceBoxWidths) {
+          const box = fidelityButton(
+            canvasElement,
+            appearance.sourceVariants[state],
+          ).getBoundingClientRect()
+          await expect(Math.abs(box.width - width)).toBeLessThanOrEqual(2)
         }
       }
 
@@ -368,9 +396,6 @@ export const FigmaStateMatrix: Story = {
       if (!ring) throw new Error("Button source spinner ring is missing")
       await expect(getComputedStyle(ring).backgroundImage).toContain("conic-gradient")
       await expect(getComputedStyle(ring).maskImage).toContain("radial-gradient")
-      if (appearance.border) {
-        await expect(getComputedStyle(spinnerButton).borderTopWidth).toBe("2px")
-      }
     }
   },
 }

@@ -288,6 +288,7 @@ Hard rules for this run:
 - Never read, source or load \`.env\`; never print FIGMA_TOKEN.
 - Figma is read-only: use only get_design_context, get_screenshot, get_metadata, get_variable_defs and list_file_components_for_code_connect. Never use_figma or any tool that writes to Figma or publishes Code Connect.
 - Never commit, push, switch branches or open pull requests: the person delivers.
+- The working tree is shared with the person and other writers. Never revert, delete, stash, \`git checkout\` or \`git restore\` a change you did not make in this task, even if it looks unrelated or breaks a check: report it in openPoints instead.
 - Storybook already runs at ${config.storybook.url}. Never start, restart or kill it. A file created now enters the Tailwind scan only after \`touch packages/pagopa-ui/src/index.css\`.
 - Run project targets as \`pnpm nx run <project>:<target> [flags]\` (the ui-cli changes directory to packages/pagopa-ui, so pass absolute paths or package-relative ones); \`node packages/ui-cli/src/cli.ts parity source ...\` and \`... figma sync ...\` run from the root as the skill shows.
 - Code, comments and docs in English; Italian only for rendered component and story copy.
@@ -554,17 +555,32 @@ const figmaAlign = defineWorkflow({
       if (!storybook) {
         ctx.log(`Storybook does not answer on ${url}: starting it (log in ${outDir})`)
         const log = createWriteStream(join(outDir, "storybook.log"))
-        storybook = spawn("pnpm", ["nx", "run", "pagopa-ui-storybook:storybook"], {
-          cwd: ROOT,
-          env: { ...process.env, NX_TUI: "false", CI: "true" },
-          stdio: ["ignore", "pipe", "pipe"],
-          detached: true,
-        })
+        // Pin the configured port: without it Storybook falls back to a free one the probe never finds.
+        const port = new URL(url).port || "6006"
+        storybook = spawn(
+          "pnpm",
+          [
+            "nx",
+            "run",
+            "pagopa-ui-storybook:storybook",
+            `--port=${port}`,
+            "--exact-port",
+            "--ci",
+            "--no-open",
+          ],
+          {
+            cwd: ROOT,
+            env: { ...process.env, NX_TUI: "false", CI: "true" },
+            stdio: ["ignore", "pipe", "pipe"],
+            detached: true,
+          },
+        )
         storybook.stdout.pipe(log)
         storybook.stderr.pipe(log)
       }
       for (let i = 0; i < 90; i++) {
         if (signal.aborted) return false
+        if (storybook.exitCode !== null) return false
         if (await storybookAnswers(url)) return true
         await new Promise((r) => setTimeout(r, 2000))
       }
@@ -812,7 +828,7 @@ Return ok=true with the pinned version in message when ${snapshot} pins the curr
       ctx.phase("Align")
       if (work.length && !(await ensureStorybook(config.storybook.url))) {
         throw new Error(
-          `Storybook does not answer on ${config.storybook.url}: the parity loop needs it. Start it and resume run ${ctx.runId}.`,
+          `Storybook does not answer on ${config.storybook.url}: the parity loop needs it (see ${join(outDir, "storybook.log")}). Start it and resume run ${ctx.runId}.`,
         )
       }
       const exclusive = createLock()

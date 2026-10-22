@@ -19,7 +19,9 @@ const meta = {
   },
   parameters: {
     layout: "padded",
+    design: { type: "figma", url: figmaEmbedUrl("123:7768") },
     docs: {
+      subtitle: "Figma: Breadcrumbs",
       description: {
         component: `Extended navigation path or compact back link. Ancestors with a destination are real links; the last item is text and announces the current page.
 
@@ -31,6 +33,16 @@ ${breadcrumbGuide}`,
 
 export default meta
 type Story = StoryObj<typeof meta>
+
+// The pointer target is the link plus its invisible vertical ::after expansion.
+function hitTargetHeight(link: HTMLElement) {
+  const target = getComputedStyle(link, "::after")
+  return (
+    link.getBoundingClientRect().height -
+    Number.parseFloat(target.top) -
+    Number.parseFloat(target.bottom)
+  )
+}
 
 export const Playground: Story = { tags: ["color-pinned"] }
 
@@ -74,7 +86,9 @@ export const BreadcrumbExtended: Story = {
     await expect(getComputedStyle(home).color).toBe("rgb(14, 15, 19)")
     await expect(getComputedStyle(current).fontWeight).toBe("400")
     await expect(getComputedStyle(current).color).toBe("rgb(85, 92, 112)")
-    await expect(home.getBoundingClientRect().height).toBeGreaterThanOrEqual(44)
+    await expect(home.getBoundingClientRect().height).toBe(22)
+    await expect(current.getBoundingClientRect().height).toBe(22)
+    await expect(hitTargetHeight(home)).toBeGreaterThanOrEqual(44)
     await expect(navigation.queryByText("/")).not.toBeInTheDocument()
     home.focus()
     await userEvent.tab()
@@ -88,7 +102,7 @@ export const BreadcrumbCompact: Story = {
   tags: ["color-pinned"],
   name: "Ritorno compatto esplicito",
   parameters: {
-    design: { type: "figma", url: figmaEmbedUrl("123:7777") },
+    design: { type: "figma", url: figmaEmbedUrl("123:7768") },
   },
   render: () => (
     <div className="grid gap-4">
@@ -109,7 +123,8 @@ export const BreadcrumbCompact: Story = {
     await expect(navigation.getAllByRole("listitem")).toHaveLength(1)
     await expect(navigation.getAllByRole("link")).toHaveLength(1)
     await expect(navigation.queryByRole("button")).not.toBeInTheDocument()
-    await expect(back.getBoundingClientRect().height).toBeGreaterThanOrEqual(44)
+    await expect(back.getBoundingClientRect().height).toBe(24)
+    await expect(hitTargetHeight(back)).toBeGreaterThanOrEqual(44)
     await expect(getComputedStyle(back).fontSize).toBe("16px")
     await expect(getComputedStyle(back).fontWeight).toBe("600")
     await expect(getComputedStyle(back).color).toBe("rgb(14, 15, 19)")
@@ -162,7 +177,8 @@ export const BreadcrumbReflow: Story = {
         container.getBoundingClientRect().right + 0.5,
       )
       for (const link of within(navigation).getAllByRole("link")) {
-        await expect(link.getBoundingClientRect().height).toBeGreaterThanOrEqual(44)
+        await expect(link.getBoundingClientRect().height).toBeGreaterThanOrEqual(22)
+        await expect(hitTargetHeight(link)).toBeGreaterThanOrEqual(44)
         await expect(link.scrollWidth).toBeLessThanOrEqual(link.clientWidth)
       }
     }
@@ -208,7 +224,9 @@ export const BreadcrumbFidelity: Story = {
     await expect(link).toHaveAttribute("href", "#breadcrumb-source-parent")
     await expect(current).toHaveAttribute("aria-current", "page")
     await expect(extended.queryByRole("link", { name: "Current" })).not.toBeInTheDocument()
-    await expect(link.getBoundingClientRect().height).toBeGreaterThanOrEqual(44)
+    await expect(link.getBoundingClientRect().height).toBe(22)
+    await expect(current.getBoundingClientRect().height).toBe(22)
+    await expect(hitTargetHeight(link)).toBeGreaterThanOrEqual(44)
     await expect(getComputedStyle(link).fontSize).toBe("16px")
     await expect(getComputedStyle(link).lineHeight).toBe("22px")
     await expect(getComputedStyle(link).fontWeight).toBe("600")
@@ -228,7 +246,8 @@ export const BreadcrumbFidelity: Story = {
     const backIcon = back.querySelector(".breadcrumb-back-icon")
 
     await expect(back).toHaveAttribute("href", "#breadcrumb-source-parent")
-    await expect(back.getBoundingClientRect().height).toBeGreaterThanOrEqual(44)
+    await expect(back.getBoundingClientRect().height).toBe(24)
+    await expect(hitTargetHeight(back)).toBeGreaterThanOrEqual(44)
     await expect(backIcon).not.toBeNull()
     if (!backIcon) throw new Error("Missing source back arrow")
     await expect(backIcon).toHaveAttribute("aria-hidden", "true")
@@ -241,7 +260,7 @@ export const BreadcrumbFidelityHoverLink: Story = {
   name: "Source link hover",
   parameters: {
     layout: "padded",
-    design: { type: "figma", url: figmaEmbedUrl("123:7769") },
+    design: { type: "figma", url: figmaEmbedUrl("123:7768") },
   },
   render: () => (
     <div data-fidelity-variant="124-3604">
@@ -270,7 +289,7 @@ export const BreadcrumbFidelityHoverBack: Story = {
   name: "Source compact back hover",
   parameters: {
     layout: "padded",
-    design: { type: "figma", url: figmaEmbedUrl("123:7777") },
+    design: { type: "figma", url: figmaEmbedUrl("123:7768") },
   },
   render: () => (
     <div data-fidelity-variant="124-3608">

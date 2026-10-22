@@ -124,7 +124,6 @@ Operating rules:
 ## How to merge a session (the person)
 
 ```sh
-cd /Users/danilo.spinelli/Developer/pagopa-ui          # main directory, branch main
 git log --oneline main..plan/figma-fidelity       # review the commits
 git diff --stat main...plan/figma-fidelity
 git merge --no-ff plan/figma-fidelity

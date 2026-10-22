@@ -266,8 +266,13 @@ export const SourceImage: Story = {
     await expect(getComputedStyle(description).fontSize).toBe("16px")
     await expect(getComputedStyle(description).lineHeight).toBe("22px")
     await expect(action.getBoundingClientRect().height).toBeGreaterThanOrEqual(48)
+    // The source 2px inside stroke is an inset ring: it paints inside the box
+    // instead of widening it, so the border stays 0 and the ring is the stroke.
     await expect(getComputedStyle(action).backgroundColor).toBe("rgba(0, 0, 0, 0)")
-    await expect(getComputedStyle(action).borderColor).toBe("rgb(11, 62, 227)")
+    await expect(getComputedStyle(action).borderTopWidth).toBe("0px")
+    await expect(getComputedStyle(action).boxShadow).toContain(
+      "rgb(11, 62, 227) 0px 0px 0px 2px inset",
+    )
     await expect(canvas.getByRole("link", { name: "Scopri di più" })).toHaveAttribute(
       "href",
       "/prodotti/firma-con-io",
@@ -584,7 +589,12 @@ export const CatalogueCardSlots: Story = {
     await expect(actionsOnly.querySelector("[data-slot=catalogue-card-description]")).toBeNull()
     const inspect = within(actionsOnly).getByRole("link", { name: "Ispeziona" })
     const inspectBounds = inspect.getBoundingClientRect()
-    await expect(inspectBounds.height).toBe(22)
+    // Forced colors wraps the text action in a real 1px border; the text line
+    // itself keeps the source 22px.
+    const inspectBorder =
+      parseFloat(getComputedStyle(inspect).borderTopWidth) +
+      parseFloat(getComputedStyle(inspect).borderBottomWidth)
+    await expect(inspectBounds.height - inspectBorder).toBe(22)
     await expect(getComputedStyle(inspect).lineHeight).toBe("22px")
     await expect(
       inspectBounds.height - 2 * parseFloat(getComputedStyle(inspect, "::after").top),

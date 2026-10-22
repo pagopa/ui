@@ -67,6 +67,7 @@ export type RenderSubject = {
   font?: { size?: number; weight?: number; lineHeight?: number }
   expansion?: { top?: number; bottom?: number }
   border?: { width: number; color?: string }
+  boxShadow?: string
   background?: string
   radius?: number
   fill?: string
@@ -101,6 +102,23 @@ const TokenManifestSchema = z.looseObject({
     )
     .optional(),
 })
+
+// A borderless render that paints an inset ring (an inset box-shadow with no
+// offset and no blur) draws its stroke inside the box, like a Figma INSIDE
+// stroke: that ring is the stroke the diff compares.
+export function renderStroke(render: RenderSubject): { width: number; color?: string } | undefined {
+  if (!render.border || render.border.width > 0 || !render.boxShadow) return render.border
+  const layers = render.boxShadow.split(/,(?![^(]*\))/).map((layer) => layer.trim())
+  for (const layer of layers) {
+    if (!/\binset\b/.test(layer)) continue
+    const color = /([a-z-]+\([^)]*\)|#[0-9a-f]{3,8})/i.exec(layer)?.[1]
+    if (!color || /rgba\([^)]*,\s*0\)$/.test(color)) continue
+    const lengths = (layer.replace(color, "").match(/-?[\d.]+px/g) ?? []).map(parseFloat)
+    const [x = 0, y = 0, blur = 0, spread = 0] = lengths
+    if (x === 0 && y === 0 && blur === 0 && spread > 0) return { width: spread, color }
+  }
+  return render.border
+}
 
 function hexOfColor(value: unknown): string | undefined {
   return typeof value === "string" && value.startsWith("#")
@@ -537,14 +555,15 @@ export function compareSubject({
     }
   }
   const stroke = source.strokes?.[0]
-  if (stroke && render.border && !textSubject) {
-    if (Math.abs(render.border.width - stroke.width) > tolerance) {
-      push(deltas, key, "border.width", stroke.width, render.border.width)
+  const renderBorder = renderStroke(render)
+  if (stroke && renderBorder && !textSubject) {
+    if (Math.abs(renderBorder.width - stroke.width) > tolerance) {
+      push(deltas, key, "border.width", stroke.width, renderBorder.width)
     } else {
-      note("border.width", `${render.border.width}px`)
+      note("border.width", `${renderBorder.width}px`)
     }
-    if (stroke.color && hexOfColor(render.border.color) !== stroke.color.toLowerCase()) {
-      push(deltas, key, "border.color", stroke.color, hexOfColor(render.border.color))
+    if (stroke.color && hexOfColor(renderBorder.color) !== stroke.color.toLowerCase()) {
+      push(deltas, key, "border.color", stroke.color, hexOfColor(renderBorder.color))
     } else if (stroke.color) {
       note("border.color", stroke.color)
     }

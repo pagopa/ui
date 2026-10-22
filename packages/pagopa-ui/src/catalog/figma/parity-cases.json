@@ -45,6 +45,237 @@
     "note": "The declared mobile device (Breakpoint=XS Mobile, 320x650): the set draws one composition — an empty white canvas whose source root declares the component's own minHeight 650 — so no layoutScope is declared (both scope probes report the composition unchanged, a scope declaration would be vacuous: the InformativeDrawer caller-driven reading). The `Fidelity` story renders the source-exact empty surface; the `Playground` SafeArea paragraph stays under the 650 floor at every captured width, so the height is not content-driven here. The capture verifies the canvas at 320 (white #ffffff, no padding or gap) and is responsive clean."
   },
   {
+    "id": "108-1402-contained-label",
+    "nodeId": "108:1402",
+    "export": "Button",
+    "storyId": "components-button--figma-state-matrix",
+    "state": "contained|label",
+    "variant": "108:1403",
+    "width": 96,
+    "viewport": 1200,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"108-1403\"]",
+    "subjects": {
+      "Button": "#storybook-root [data-fidelity-variant=\"108-1403\"] [data-fidelity-label]"
+    },
+    "compareBox": "height",
+    "compareOffset": true,
+    "ignores": ["field.gap"],
+    "note": "reviewed: 2026-10-22 render of FigmaStateMatrix (fullscreen, each appearance row sized to its five buttons, no clipping) at 1200 against the pinned source 108:1403 (Variant=Contained, Icon=None): box 95.97x48 vs 96x48, padding 24, radius 8, #0b3ee3 fill, label Titillio-Semibold 16/22 #ffffff at top offset 13 like the source; composition (--compare-offset, --compare-box height, --strict) clean; field.gap is the phantom gap of the single-child root"
+  },
+  {
+    "id": "108-1402-contained-contrast-skeleton",
+    "nodeId": "108:1402",
+    "export": "Button",
+    "storyId": "components-button--figma-state-matrix",
+    "state": "contained-contrast|skeleton",
+    "variant": "108:1409",
+    "width": 141,
+    "viewport": 1200,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"108-1409\"]",
+    "subjects": {
+      "Rectangle 1": "#storybook-root [data-fidelity-variant=\"108-1409\"] [data-slot=\"button-skeleton\"]"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "Rectangle 1.radius",
+        "reason": "rounded-full paints the same full pill as the source radius 48 on the 16px bar"
+      }
+    ],
+    "ignores": ["field.gap"],
+    "note": "reviewed: 2026-10-22 render of FigmaStateMatrix (fullscreen, each appearance row sized to its five buttons, no clipping) at 1200 against the pinned source 108:1409 (Variant=Contained contrast, Skeleton=True): box 140x48 vs 141x48, #ffffff fill on the navy panel, skeleton bar 92x16 (w-23, nearest width token) vs 93x16, #99a3c1 at 30% opacity, centred; composition (--compare-offset, --strict) clean; field.gap is the phantom gap of the single-child root"
+  },
+  {
+    "id": "108-1402-contained-error-right",
+    "nodeId": "108:1402",
+    "export": "Button",
+    "storyId": "components-button--figma-state-matrix",
+    "state": "contained-error|right",
+    "variant": "108:1457",
+    "width": 128,
+    "viewport": 1200,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"108-1457\"]",
+    "subjects": {
+      "Button": "#storybook-root [data-fidelity-variant=\"108-1457\"] [data-fidelity-label]",
+      "kid_star": "#storybook-root [data-fidelity-variant=\"108-1457\"] [data-fidelity-icon]"
+    },
+    "compareBox": "height",
+    "compareOffset": true,
+    "ignores": ["field.gap"],
+    "note": "reviewed: 2026-10-22 render of FigmaStateMatrix (fullscreen, each appearance row sized to its five buttons, no clipping) at 1200 against the pinned source 108:1457 (Variant=Contained error, Icon=Right ->): box 127.97x48 vs 128x48, padding 24, radius 8, #d13333 fill, #ffffff Titillio-Semibold 16/22 label then the 24px kid_star; composition (--compare-offset, --compare-box height, --strict) clean, label before icon; field.gap is the phantom gap of the single-child root"
+  },
+  {
+    "id": "108-1402-text-right",
+    "nodeId": "108:1402",
+    "export": "Button",
+    "storyId": "components-button--figma-state-matrix",
+    "state": "text|right",
+    "variant": "108:1465",
+    "width": 80,
+    "viewport": 1200,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"108-1465\"]",
+    "subjects": {
+      "Button": "#storybook-root [data-fidelity-variant=\"108-1465\"] [data-fidelity-label]",
+      "kid_star": "#storybook-root [data-fidelity-variant=\"108-1465\"] [data-fidelity-icon]"
+    },
+    "residues": [
+      {
+        "path": "field.box.width",
+        "reason": "minimum-text-action-target adaptation: the library keeps the 48px native action target and the shared 16px ghost hit area, the source Text frame is content-sized (registry note, guides/actions.md)"
+      },
+      {
+        "path": "field.box.height",
+        "reason": "minimum-text-action-target adaptation: the library keeps the 48px native action target and the shared 16px ghost hit area, the source Text frame is content-sized (registry note, guides/actions.md)"
+      },
+      {
+        "path": "field.padding.left",
+        "reason": "minimum-text-action-target adaptation: the library keeps the 48px native action target and the shared 16px ghost hit area, the source Text frame is content-sized (registry note, guides/actions.md)"
+      },
+      {
+        "path": "field.padding.right",
+        "reason": "minimum-text-action-target adaptation: the library keeps the 48px native action target and the shared 16px ghost hit area, the source Text frame is content-sized (registry note, guides/actions.md)"
+      }
+    ],
+    "ignores": ["field.gap"],
+    "note": "reviewed: 2026-10-22 render of FigmaStateMatrix (fullscreen, each appearance row sized to its five buttons, no clipping) at 1200 against the pinned source 108:1465 (Variant=Text, Icon=Right ->): label Titillio-Semibold 16/22 #0b3ee3 then the 24px kid_star with the 8px gap, like the source. Composition check left off: the minimum-text-action-target adaptation moves every child by the same measured amounts (--compare-offset --strict, 2026-10-22): Button.offset.top 1 -> 13 (the 24px source frame centred in the 48px target, +12), kid_star.offset.left 56 -> 72.97 (1px transparent border + 16px ghost hit area added before the 47.97 label + 8 gap), kid_star.offset.top 0 -> 12 (+12 vertical centring). Order label then icon holds. Box 113.97x48 vs 80x24 and padding 16 vs 0 are the same adaptation (residues); field.gap is the phantom gap of the single-child root"
+  },
+  {
+    "id": "108-1402-outlined-left",
+    "nodeId": "108:1402",
+    "export": "Button",
+    "storyId": "components-button--figma-state-matrix",
+    "state": "outlined|left",
+    "variant": "108:1471",
+    "width": 128,
+    "viewport": 1200,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"108-1471\"]",
+    "subjects": {
+      "Button": "#storybook-root [data-fidelity-variant=\"108-1471\"] [data-fidelity-label]",
+      "kid_star": "#storybook-root [data-fidelity-variant=\"108-1471\"] [data-fidelity-icon]"
+    },
+    "compareBox": "height",
+    "compareOffset": true,
+    "ignores": ["field.gap"],
+    "note": "reviewed: 2026-10-22 render of FigmaStateMatrix (fullscreen, each appearance row sized to its five buttons, no clipping) at 1200 against the pinned source 108:1471 (Variant=Outlined, Icon=<- Left): box 127.97x48 vs 128x48, padding 24, radius 8, 2px #0b3ee3 inside stroke as an inset ring, 24px kid_star then the Titillio-Semibold 16/22 label; composition (--compare-offset, --compare-box height, --strict) clean, icon before label; field.gap is the phantom gap of the single-child root"
+  },
+  {
+    "id": "108-1402-outlined-contrast-spinner",
+    "nodeId": "108:1402",
+    "export": "Button",
+    "storyId": "components-button--figma-state-matrix",
+    "state": "outlined-contrast|spinner",
+    "variant": "108:1487",
+    "width": 72,
+    "viewport": 1200,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"108-1487\"]",
+    "subjects": {
+      "Spinner": "#storybook-root [data-fidelity-variant=\"108-1487\"] [data-slot=\"button-loading-spinner\"]"
+    },
+    "compareOffset": true,
+    "ignores": ["field.gap"],
+    "note": "reviewed: 2026-10-22 render of FigmaStateMatrix (fullscreen, each appearance row sized to its five buttons, no clipping) at 1200 against the pinned source 108:1487 (Variant=Outlined contrast, Spinner=True): box 72x48 vs 72x48 on the navy panel, 2px #ffffff inside stroke as an inset ring and the 24px #ffffff spinner both visible inside the panel (the earlier capture clipped the row), radius 8; composition (--compare-offset, --strict) clean; field.gap is the phantom gap of the single-child root"
+  },
+  {
+    "id": "108-1402-text-contrast-label",
+    "nodeId": "108:1402",
+    "export": "Button",
+    "storyId": "components-button--figma-state-matrix",
+    "state": "text-contrast|label",
+    "variant": "108:1535",
+    "width": 48,
+    "viewport": 1200,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"108-1535\"]",
+    "subjects": {
+      "Button": "#storybook-root [data-fidelity-variant=\"108-1535\"] [data-fidelity-label]"
+    },
+    "residues": [
+      {
+        "path": "field.box.width",
+        "reason": "minimum-text-action-target adaptation: the library keeps the 48px native action target and the shared 16px ghost hit area, the source Text frame is content-sized (registry note, guides/actions.md)"
+      },
+      {
+        "path": "field.box.height",
+        "reason": "minimum-text-action-target adaptation: the library keeps the 48px native action target and the shared 16px ghost hit area, the source Text frame is content-sized (registry note, guides/actions.md)"
+      },
+      {
+        "path": "field.padding.left",
+        "reason": "minimum-text-action-target adaptation: the library keeps the 48px native action target and the shared 16px ghost hit area, the source Text frame is content-sized (registry note, guides/actions.md)"
+      },
+      {
+        "path": "field.padding.right",
+        "reason": "minimum-text-action-target adaptation: the library keeps the 48px native action target and the shared 16px ghost hit area, the source Text frame is content-sized (registry note, guides/actions.md)"
+      }
+    ],
+    "ignores": ["field.gap"],
+    "note": "reviewed: 2026-10-22 render of FigmaStateMatrix (fullscreen, each appearance row sized to its five buttons, no clipping) at 1200 against the pinned source 108:1535 (Variant=Text contrast, Icon=None): #ffffff Titillio-Semibold 16/22 label on the navy panel, like the source. Composition check left off: the minimum-text-action-target adaptation moves the label by a measured amount (--compare-offset --strict, 2026-10-22): Button.offset.top 0 -> 13 (the 22px source frame centred in the 48px target); horizontally the label sits after the 1px transparent border + 16px ghost hit area, which the source frame does not have. Box 81.97x48 vs 48x22 and padding 16 vs 0 are the same adaptation (residues); field.gap is the phantom gap of the single-child root"
+  },
+  {
+    "id": "108-1402-outlined-error-skeleton",
+    "nodeId": "108:1402",
+    "export": "Button",
+    "storyId": "components-button--figma-state-matrix",
+    "state": "outlined-error|skeleton",
+    "variant": "1527:26769",
+    "width": 141,
+    "viewport": 1200,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"1527-26769\"]",
+    "subjects": {
+      "Rectangle 1": "#storybook-root [data-fidelity-variant=\"1527-26769\"] [data-slot=\"button-skeleton\"]"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "Rectangle 1.radius",
+        "reason": "rounded-full paints the same full pill as the source radius 48 on the 16px bar"
+      }
+    ],
+    "ignores": ["field.gap"],
+    "note": "reviewed: 2026-10-22 render of FigmaStateMatrix (fullscreen, each appearance row sized to its five buttons, no clipping) at 1200 against the pinned source 1527:26769 (Variant=Outlined error, Skeleton=True): box 140x48 vs 141x48, 2px #d13333 inside stroke as an inset ring, skeleton bar 92x16 (w-23, nearest width token) vs 93x16, #99a3c1 at 30% opacity, centred; composition (--compare-offset, --strict) clean; field.gap is the phantom gap of the single-child root"
+  },
+  {
+    "id": "108-1402-text-error-spinner",
+    "nodeId": "108:1402",
+    "export": "Button",
+    "storyId": "components-button--figma-state-matrix",
+    "state": "text-error|spinner",
+    "variant": "1527:26775",
+    "width": 24,
+    "viewport": 1200,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"1527-26775\"]",
+    "subjects": {
+      "Spinner": "#storybook-root [data-fidelity-variant=\"1527-26775\"] [data-slot=\"button-loading-spinner\"]"
+    },
+    "residues": [
+      {
+        "path": "field.box.width",
+        "reason": "minimum-text-action-target adaptation: the library keeps the 48px native action target and the shared 16px ghost hit area, the source Text frame is content-sized (registry note, guides/actions.md)"
+      },
+      {
+        "path": "field.box.height",
+        "reason": "minimum-text-action-target adaptation: the library keeps the 48px native action target and the shared 16px ghost hit area, the source Text frame is content-sized (registry note, guides/actions.md)"
+      },
+      {
+        "path": "field.padding.left",
+        "reason": "minimum-text-action-target adaptation: the library keeps the 48px native action target and the shared 16px ghost hit area, the source Text frame is content-sized (registry note, guides/actions.md)"
+      },
+      {
+        "path": "field.padding.right",
+        "reason": "minimum-text-action-target adaptation: the library keeps the 48px native action target and the shared 16px ghost hit area, the source Text frame is content-sized (registry note, guides/actions.md)"
+      }
+    ],
+    "ignores": ["field.gap"],
+    "note": "reviewed: 2026-10-22 render of FigmaStateMatrix (fullscreen, each appearance row sized to its five buttons, no clipping) at 1200 against the pinned source 1527:26775 (Variant=Text error, Spinner=True): 24px spinner in the destructive #d13333 like the source. Composition check left off: the minimum-text-action-target adaptation moves the spinner by measured amounts (--compare-offset --strict, 2026-10-22): Spinner.offset.left 0 -> 17 (1px transparent border + 16px ghost hit area), Spinner.offset.top 0 -> 12 (the 24px source frame centred in the 48px target). Box 58x48 vs 24x24 and padding 16 vs 0 are the same adaptation (residues); field.gap is the phantom gap of the single-child root"
+  },
+  {
     "id": "123-4498-3-true-desktop",
     "nodeId": "123:4498",
     "export": "ButtonGroup",
@@ -121,6 +352,41 @@
         "reason": "follows the 26px text-action target above: the stacked mobile composition is otherwise exact"
       }
     ]
+  },
+  {
+    "id": "123-7768-extended",
+    "nodeId": "123:7768",
+    "export": "Breadcrumb",
+    "storyId": "components-navigation-breadcrumb--breadcrumb-fidelity",
+    "state": "extended",
+    "variant": "123:7769",
+    "width": 113,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"123-7769\"] ol",
+    "subjects": {
+      "Level 1": "#storybook-root [data-fidelity-variant=\"123-7769\"] li:first-of-type",
+      "Current": "#storybook-root [data-fidelity-variant=\"123-7769\"] li:last-of-type"
+    },
+    "compareOffset": true,
+    "ignores": ["Level 1.gap"],
+    "note": "reviewed: Layout=Extended at its 113px source width, no device axis. Row 113x22 with the 6px gap; Level 1 (the semibold link) 31x22 and Current (16px chevron separator + the regular #555c70 label) 76x22 at offset 37, every offset exact. The 44px pointer target is the link's invisible vertical ::after expansion (22 + 2x12), so the visible row keeps the source 22px. Level 1.gap is the phantom gap of the single-child Level 1 frame. Hover 124:3604 verified on a real-pointer render (#0b3ee3, underline; source lh 21 vs 22 within tolerance). Re-run 2026-10-22 after the JSDoc tag, story subtitle and guide source mapping (no render change)."
+  },
+  {
+    "id": "123-7768-compact",
+    "nodeId": "123:7768",
+    "export": "Breadcrumb",
+    "storyId": "components-navigation-breadcrumb--breadcrumb-fidelity",
+    "state": "compact",
+    "variant": "123:7777",
+    "width": 65,
+    "depth": 2,
+    "root": "#storybook-root [data-fidelity-variant=\"123-7777\"] ol",
+    "subjects": {
+      ".Breadcrumb single element": "#storybook-root [data-fidelity-variant=\"123-7777\"] a",
+      "arrow": "#storybook-root [data-fidelity-variant=\"123-7777\"] .breadcrumb-back-icon"
+    },
+    "compareOffset": true,
+    "note": "reviewed: Layout=Compact at its 65px source width, no device axis. Row 65x24; the back link (.Breadcrumb single element) 65x24 with the 24px arrow-back artwork and the 4px gap to the semibold label, every offset exact. The 44px pointer target is the link's invisible vertical ::after expansion (24 + 2x10), so the visible row keeps the source 24px; the outer 8px gap is the single-child phantom gap and does not render. Hover 124:3608 verified on a real-pointer render (#0b3ee3 label and arrow, underline). Re-run 2026-10-22 after the JSDoc tag, story subtitle and guide source mapping (no render change)."
   },
   {
     "id": "198-828-empty",

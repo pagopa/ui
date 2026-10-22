@@ -7,6 +7,11 @@ export interface BreadcrumbItem {
   href?: string
 }
 
+/**
+ * Navigation path to the current page, or a single back link in the compact layout.
+ *
+ * Figma: Breadcrumbs (node 123:7768)
+ */
 function Breadcrumb({
   className,
   "aria-label": ariaLabel = "Percorso di navigazione",
@@ -55,7 +60,11 @@ function Breadcrumb({
               {!current && item.href ? (
                 <a
                   href={item.href}
-                  className="inline-flex min-h-11 min-w-0 items-center gap-1 rounded-sm text-body-sb text-foreground underline-offset-4 [overflow-wrap:anywhere] hover:text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                  className={cn(
+                    "relative inline-flex min-w-0 items-center gap-1 rounded-sm text-body-sb text-foreground underline-offset-4 [overflow-wrap:anywhere] after:absolute after:inset-x-0 hover:text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                    // Invisible 44px target over the source row: 22 + 2 × 12 (Extended), 24 + 2 × 10 (Compact).
+                    compact ? "after:-inset-y-2.5" : "after:-inset-y-3",
+                  )}
                 >
                   {compact ? (
                     <PagoPAIcon name="arrow" variant="left" className="breadcrumb-back-icon" />
@@ -63,13 +72,10 @@ function Breadcrumb({
                   {item.label}
                 </a>
               ) : (
-                // Adaptation `shared-row-height` (node 124:3575): the non-interactive
-                // current label shares the links' 44px row (the source rows are
-                // 22/24px) and keeps its current-page semantics.
                 <span
                   aria-current={current ? "page" : undefined}
                   className={cn(
-                    "inline-flex min-h-11 min-w-0 items-center [overflow-wrap:anywhere]",
+                    "inline-flex min-w-0 items-center [overflow-wrap:anywhere]",
                     current ? "text-muted-foreground" : "text-body-sb text-foreground",
                   )}
                 >

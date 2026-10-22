@@ -554,12 +554,19 @@ test("the packed artifact behaves as documented", async ({ browserName, context,
     const style = getComputedStyle(element)
     return {
       background: style.backgroundColor,
-      border: style.borderColor,
+      borderWidth: style.borderTopWidth,
+      shadow: style.boxShadow,
       height: element.getBoundingClientRect().height,
     }
   })
   assert.equal(joinStyle.background, "rgba(0, 0, 0, 0)")
-  assert.equal(joinStyle.border, "rgb(11, 62, 227)")
+  // The source 2px inside stroke is an inset ring that paints inside the box,
+  // not a border that widens it.
+  assert.equal(joinStyle.borderWidth, "0px")
+  assert.ok(
+    joinStyle.shadow.includes("rgb(11, 62, 227) 0px 0px 0px 2px inset"),
+    "packed outlined action must paint the source inside stroke as an inset ring",
+  )
   assert.ok(joinStyle.height >= 48)
   await joinProduct.focus()
   await page.keyboard.press("Enter")

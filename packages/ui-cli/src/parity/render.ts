@@ -187,6 +187,7 @@ export function probeFunction(
         width: round(parseFloat(computed.borderTopWidth)),
         color: computed.borderTopColor,
       },
+      boxShadow: computed.boxShadow === "none" ? undefined : computed.boxShadow,
       background: computed.backgroundColor,
       color: computed.color,
       font: {
