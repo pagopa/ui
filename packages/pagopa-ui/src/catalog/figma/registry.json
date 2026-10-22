@@ -1321,7 +1321,7 @@
       "note": "Source variants verified: Color/Border/Border fill 1px lines with 0/16/24/32px horizontal insets and a With text divider with 8px gaps and the 14/20px grey-700 text token. `--border` is Figma Color/Border/Border fill #e8ebf1 (grey-100); do not swap in grey-200 #d2d6e3, which is reserved for nodes whose source stroke is grey-200 (Stepper 1314:10512)."
     },
     "616:3864": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/inputs/menus.tsx",
         "export": "DropDown",
@@ -1331,10 +1331,17 @@
           "SingleSelect",
           "Multiselect",
           "MultiSelect",
-          "MixedMultiselect"
+          "MixedMultiselect",
+          "SourcePanelDefault",
+          "SourcePanelSelected",
+          "SourcePanelMultiselect",
+          "SourcePanelMultiselectSelected",
+          "SourcePanelMultiselectAll",
+          "SourcePanelEmpty",
+          "SourcePanelSkeleton"
         ]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Elevation comes only from the Figma shadow scale: `shadow-16` for menus and dropdowns, never Tailwind `shadow-md/lg/xl`. The loading skeleton is hidden from assistive technology and the menu keeps one disabled sr-only item so it remains a valid ARIA menu shape (at least one menuitem) that names the busy state. Item rows (610:33732, not registered) carry the adaptations `location-icon-currentcolor`, `selected-soft-token` and `cta-menuitem-action`, stated in code in inputs/menus.tsx."
+      "note": "Reviewed 2026-10-22 (M5 wave): seven committed cases, one per source variant, all 274 wide against the `SourcePanel*` stories, each captured with the trigger clicked open (`--expect-state open`, the `[role=menu]` popup as evidence): Default (610:36297, 274x392), Selected (617:18348), multiselect Default (616:3865, 274x532), Selected Checked=True (617:19035), Selected Checked=All (617:18688), the Empty state (756:6063, 274x166, mapped to `[data-slot=dropdown-empty]`) and the Skeleton (756:6159, 274x251, mapped to `[data-slot=dropdown-skeleton]`). The panel is the source composition: edge-to-edge rows, no panel padding or gap, the 48px location action row and the 68px single-select / 96px multiselect rich rows, which is what makes the panel height (the library draws a divider between all six rows against the source four: +1px). The source's 15px Figma scrollbar is a mockup overflow artifact: the library rows run the full 274 width. Elevation comes only from the Figma shadow scale: `shadow-16` for menus and dropdowns, never Tailwind `shadow-md/lg/xl`. The loading skeleton is hidden from assistive technology and the menu keeps one disabled sr-only item so it remains a valid ARIA menu shape (at least one menuitem) that names the busy state. Item rows (610:33732, not registered) carry the adaptations `location-icon-currentcolor`, `selected-soft-token` (the source highlight is Blue 500 at 8%, composite #EBF0FD; the selected row uses the accent token, the same 8% mix) and `cta-menuitem-action` (the location row is one native menuitem, never a nested button), stated in code in inputs/menus.tsx. The empty state renders as one disabled menuitem block and the popup keeps `p-0`, so the empty and skeleton cases map the block, not the popup. Automated a11y and render checks are not screen-reader or browser-zoom certification."
     },
     "67:3964": {
       "status": "implemented",
