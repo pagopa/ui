@@ -884,14 +884,14 @@
       }
     },
     "212:1899": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/primitives/alert.tsx",
         "export": "Alert",
         "story": "apps/storybook/src/Alert.stories.tsx",
         "storyExports": ["AllStatuses", "Playground", "WithAction"]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+      "note": "Figma delta 2026-10-14: reviewed 2026-10-22 (M5 wave). Five principal states are committed cases against the pinned source: Severity=Error Direction=Vertical (212:1900, 272x166), Error Horizontal (245:1505, 852x84), Warning (212:1910), Info (212:1922) and Success (212:1932) Vertical, all 272x166. The source anatomy holds: 16px padding, the 8px icon-to-content gap, the 16px copy-to-action gap (64px on the horizontal composition), the 1px status stroke and soft fill, title 18/26 Semibold, body 16/22 and the 16/22 text action. The story action keeps its 22px source line (border-0 removes the transparent control border) and its 44px target on the invisible ::after. The three remaining Horizontal severities share the reviewed horizontal composition; the four Vertical severities are each a case. Adaptations retained: `minimum-text-action-target` (the source Text bounds its 16-24px content; the library keeps the 48px native target and its existing horizontal hit area) and `visible-error-spinner` (the pinned source paints a white Contrast spinner on the transparent red variant, which is invisible; the error variant uses the destructive currentColor)."
     },
     "230:1317": {
       "status": "implemented",
@@ -1402,9 +1402,10 @@
       "target": {
         "module": "src/components/inputs/drag-and-drop.tsx",
         "export": "DragAndDrop",
-        "story": "apps/storybook/src/DragAndDrop.stories.tsx"
+        "story": "apps/storybook/src/DragAndDrop.stories.tsx",
+        "storyExports": ["Playground", "Multiple", "Processing", "Failed", "AvatarVariant"]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+      "note": "Figma delta 2026-10-14: reviewed 2026-10-22 (M5 wave). The Default Vertical dropzone (760:7433, 272x260) is measured: a 24px inset, the 236px box, the 24px upload icon, the 24px content gap, the 132x48 primary action and the 14/20 required helper. The set also declares Horizontal dispositions for Default, Processing, Failed and Error (505-608 wide), an Error composition with its own icon, message and action, and static File success rows; the component renders the vertical composition only and the Error state keeps the idle content. The Default border is dashed in the pinned image, while the numeric spec records only the 1px stroke. Stays `pending`: the open decision is docs/design-requests/2026-10-22-drag-and-drop-dispositions.md (owner: Figma design owner). Until it is answered no Drag & Drop case is committed and the Drawer dependency stays open."
     },
     "8049:39452": {
       "status": "pending",
@@ -1544,13 +1545,26 @@
       }
     },
     "908:2234": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/content/list-item.tsx",
         "export": "ListItem",
-        "story": "apps/storybook/src/ListItem.stories.tsx"
+        "story": "apps/storybook/src/ListItem.stories.tsx",
+        "storyExports": [
+          "Playground",
+          "WithAvatar",
+          "LinkWithAvatar",
+          "Link",
+          "Actionable",
+          "Transactional",
+          "WithSuggestion",
+          "Amount",
+          "ErrorState",
+          "WithAction",
+          "Loading"
+        ]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+      "note": "Figma delta 2026-10-14: reviewed 2026-10-22 (M5 wave). All ten Type variants are committed cases, each 320 wide: Informative 897:18749 320x96, Informative + CTA 908:2235 320x96, Actionable 908:2267 320x96, Transactional 913:2749 320x68, Error 916:2861 320x66, Skeleton 919:2084 320x68, Informative + Avatar 920:2104 320x96, Amount 1029:3195 320x82, Link 3793:40018 320x65 and Link + Avatar 8939:37715 320x96. The source row is edge-to-edge: 12px block padding and 0 inline padding (the component moved from p-3 to py-3), a 12px gap, content stacks of 6px on informative/link/actionable, 2px on amount/transactional and 0 on error. The CTA action is a 16/22 text button 22px tall with its 44px target on the invisible ::after, not a 48px control. The Transactional source hides its Suggestion layer, so the parity fixture does not render it; the WithSuggestion demo keeps the prop covered. Icons are 24, Avatar small 44, the chip 24, the chevron 24 and the amount 16/22 primary."
     },
     "9082:974": {
       "status": "implemented",

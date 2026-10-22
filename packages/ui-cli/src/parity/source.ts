@@ -65,10 +65,34 @@ export type RawNode = {
   style?: TextStyle
 }
 
+// Figma REST writes `null` for an optional style, layout or paint field it has
+// no value for (an unpinned `fontPostScriptName`, an unset alignment). The spec
+// types use `undefined`, so the reader normalizes the two here instead of
+// rejecting a legitimate export.
+const optionalString = z
+  .string()
+  .nullish()
+  .transform((value) => value ?? undefined)
+const optionalNumber = z
+  .number()
+  .nullish()
+  .transform((value) => value ?? undefined)
+const optionalBoolean = z
+  .boolean()
+  .nullish()
+  .transform((value) => value ?? undefined)
+const optionalBox = z
+  .looseObject({ x: z.number(), y: z.number(), width: z.number(), height: z.number() })
+  .nullish()
+  .transform((value) => value ?? undefined)
+
 const PaintSchema = z.looseObject({
-  type: z.string().optional(),
-  visible: z.boolean().optional(),
-  color: z.looseObject({ r: z.number(), g: z.number(), b: z.number() }).optional(),
+  type: optionalString,
+  visible: optionalBoolean,
+  color: z
+    .looseObject({ r: z.number(), g: z.number(), b: z.number() })
+    .nullish()
+    .transform((value) => value ?? undefined),
 })
 
 const RawNodeSchema: z.ZodType<RawNode> = z.lazy(() =>
@@ -77,33 +101,31 @@ const RawNodeSchema: z.ZodType<RawNode> = z.lazy(() =>
     name: z.string(),
     type: z.string(),
     children: z.array(RawNodeSchema).optional(),
-    visible: z.boolean().optional(),
-    absoluteBoundingBox: z
-      .looseObject({ x: z.number(), y: z.number(), width: z.number(), height: z.number() })
-      .optional(),
-    layoutMode: z.string().optional(),
-    itemSpacing: z.number().optional(),
-    paddingTop: z.number().optional(),
-    paddingRight: z.number().optional(),
-    paddingBottom: z.number().optional(),
-    paddingLeft: z.number().optional(),
-    primaryAxisAlignItems: z.string().optional(),
-    counterAxisAlignItems: z.string().optional(),
+    visible: optionalBoolean,
+    absoluteBoundingBox: optionalBox,
+    layoutMode: optionalString,
+    itemSpacing: optionalNumber,
+    paddingTop: optionalNumber,
+    paddingRight: optionalNumber,
+    paddingBottom: optionalNumber,
+    paddingLeft: optionalNumber,
+    primaryAxisAlignItems: optionalString,
+    counterAxisAlignItems: optionalString,
     strokes: z.array(PaintSchema).optional(),
-    strokeWeight: z.number().optional(),
+    strokeWeight: optionalNumber,
     fills: z.array(PaintSchema).optional(),
-    cornerRadius: z.number().optional(),
-    layoutSizingHorizontal: z.string().optional(),
-    layoutSizingVertical: z.string().optional(),
-    characters: z.string().optional(),
+    cornerRadius: optionalNumber,
+    layoutSizingHorizontal: optionalString,
+    layoutSizingVertical: optionalString,
+    characters: optionalString,
     style: z
       .looseObject({
-        fontSize: z.number().optional(),
-        lineHeightPx: z.number().optional(),
-        lineHeightPercentFontSize: z.number().optional(),
-        fontWeight: z.number().optional(),
-        fontPostScriptName: z.string().optional(),
-        fontStyle: z.string().optional(),
+        fontSize: optionalNumber,
+        lineHeightPx: optionalNumber,
+        lineHeightPercentFontSize: optionalNumber,
+        fontWeight: optionalNumber,
+        fontPostScriptName: optionalString,
+        fontStyle: optionalString,
       })
       .optional(),
   }),

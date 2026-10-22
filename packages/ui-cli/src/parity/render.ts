@@ -146,6 +146,11 @@ export function probeFunction(
         parseFloat(computed.paddingLeft),
       ].map(round),
       gap: computed.gap === "normal" ? 0 : round(parseFloat(computed.gap)),
+      // A container can carry two gaps (a grid or a flex row with a row gap
+      // too); the source `layout.mode` decides which axis the diff compares.
+      rowGap: computed.rowGap === "normal" ? undefined : round(parseFloat(computed.rowGap)),
+      columnGap:
+        computed.columnGap === "normal" ? undefined : round(parseFloat(computed.columnGap)),
       radius: round(parseFloat(computed.borderTopLeftRadius)),
       border: {
         width: round(parseFloat(computed.borderTopWidth)),

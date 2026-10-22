@@ -71,6 +71,9 @@
   the Figma catalogue or the tooling, so the payload drops from 149 kB
   (24 kB gzip) to 125 kB (21 kB gzip). The ceilings in
   `scripts/check-library/css-budget.json` keep it there.
+- `ListItem` is edge-to-edge like the source row: 12px block padding and no
+  inline padding, and the `Informative + CTA` action is a 22px text action with
+  its 44px pointer target on the invisible hit area instead of a 48px control.
 
 ### Removed
 

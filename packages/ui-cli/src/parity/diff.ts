@@ -61,6 +61,8 @@ export type RenderSubject = {
   layout?: string
   childCount?: number
   gap?: number
+  rowGap?: number
+  columnGap?: number
   visibleText?: string
   font?: { size?: number; weight?: number; lineHeight?: number }
   expansion?: { top?: number; bottom?: number }
@@ -505,18 +507,25 @@ export function compareSubject({
         note(`padding.${edge}`, `${actual}px`)
       }
     }
-    if (source.layout.gap != null && render.gap != null) {
-      if (Math.abs(render.gap - source.layout.gap) > tolerance) {
+    // A source HORIZONTAL layout spaces its children along the inline axis, a
+    // VERTICAL one along the block axis: compare the matching CSS gap, not the
+    // shorthand's first value (which is always the row gap).
+    const renderGap =
+      source.layout.mode === "HORIZONTAL"
+        ? (render.columnGap ?? render.gap)
+        : (render.rowGap ?? render.gap)
+    if (source.layout.gap != null && renderGap != null) {
+      if (Math.abs(renderGap - source.layout.gap) > tolerance) {
         if (render.childCount === 0) {
           note(
             "gap",
             `leaf element: the source ${source.layout.gap}px gap belongs to its container`,
           )
         } else {
-          push(deltas, key, "gap", source.layout.gap, render.gap)
+          push(deltas, key, "gap", source.layout.gap, renderGap)
         }
       } else {
-        note("gap", `${render.gap}px`)
+        note("gap", `${renderGap}px`)
       }
     }
   }
