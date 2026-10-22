@@ -5,6 +5,13 @@ only after **Salva** with a complete selection; **Annulla** discards the draft
 and calls the required `onCancel`. External value changes discard stale drafts
 and validation without stealing focus.
 
+The panel stacks its four blocks with the source's 8px gap: the `Header` — the
+label `Row` (14/20, 16/8 insets) over the month `Row` (18/26 Semibold with the
+24px chevrons, 8/16 insets) — closed by its full-bleed `Divider`, then the
+`Calendar`, a `Divider` and the footer `Row` whose actions keep the source's
+16px inline inset. The day cells and the footer buttons keep pointer-sized
+targets, so the panel is taller than the source's 426px sample.
+
 Single selection uses `value?: Date` and `onConfirm: (value: Date) => void`.
 `mode="range"` uses `value?: DatePickerRange` and
 `onConfirm: (value: DatePickerRange) => void`, where both `from` and `to` are

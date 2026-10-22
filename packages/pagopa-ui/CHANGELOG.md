@@ -74,6 +74,10 @@
 - `ListItem` is edge-to-edge like the source row: 12px block padding and no
   inline padding, and the `Informative + CTA` action is a 22px text action with
   its 44px pointer target on the invisible hit area instead of a 48px control.
+- `DatePicker` draws the source panel's four-block rhythm: the two-row header
+  (label row and month row) closed by its full-bleed divider, then the calendar,
+  a divider and the footer, with the source's 8px stack gap and 16px footer
+  inset.
 
 ### Removed
 

@@ -127,12 +127,18 @@ function DatePicker(props: DatePickerProps) {
       ref={root}
       aria-invalid={Boolean(error) || undefined}
       aria-describedby={error ? ids.errorId : undefined}
-      className={cn("min-w-0 w-full max-w-85 rounded-2xl bg-card shadow-32", className)}
+      className={cn(
+        "flex min-w-0 w-full max-w-85 flex-col gap-2 rounded-2xl bg-card shadow-32",
+        className,
+      )}
     >
-      <legend className="float-left w-full px-4 pt-4 pb-2 text-label-mini text-muted-foreground">
+      {/* The source header stacks its label row and its month row directly (8049:39382,
+          8258:45660), then a full-bleed divider. The stack gap buys the label row's
+          8px bottom inset so the month row starts at the source's 44. */}
+      <legend className="w-full px-4 pt-4 pb-2 text-label-mini text-muted-foreground">
         {label}
       </legend>
-      <div className="clear-both px-4 pb-4">
+      <div className="flex flex-col gap-2 px-4">
         {props.mode === "range" ? (
           <Calendar
             {...calendarProps}
@@ -154,7 +160,7 @@ function DatePicker(props: DatePickerProps) {
         <FieldMessages ids={ids} error={error} />
       </div>
       <Separator />
-      <div className="flex flex-wrap justify-end gap-2 px-2 pt-2 pb-4">
+      <div className="flex flex-wrap justify-end gap-2 px-4 pt-2 pb-4">
         <Button
           type="button"
           variant="ghost"

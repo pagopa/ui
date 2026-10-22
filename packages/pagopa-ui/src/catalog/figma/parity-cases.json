@@ -2892,6 +2892,24 @@
     "note": "Composition check off: the mockup draws its 56px Breadcrumb inside the header band (the module starts at the 54+77 chrome), so every module block sits 45px higher than the page flow, where the Breadcrumb is its own 44px row. The module's internal offsets are exact and the shift is uniform — Text 195→240, Alert 375→420, Actions 513→560, TOS 736→783 — the last two carrying the shared +2 alert tolerance (the alert renders 100 against the source 98). Enable --compare-offset to re-measure."
   },
   {
+    "id": "8049-39452-single-date",
+    "nodeId": "8049:39452",
+    "export": "DatePicker",
+    "storyId": "components-inputs-datepicker--single-date-confirmation",
+    "state": "single-date",
+    "width": 310,
+    "depth": 3,
+    "root": "#storybook-root fieldset",
+    "subjects": {},
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the 44px day targets (the source row is 36) and the real 48px footer buttons (the source footer is 22px text links) add 48px to the source 426 while the four-block rhythm matches"
+      }
+    ],
+    "note": "reviewed: two-row header (label 44 + month 42 + divider) restored, 8px block rhythm, footer inset 16; residue is the accessible day targets and real buttons"
+  },
+  {
     "id": "9520-2537-layout-desktop-desktop",
     "nodeId": "9520:2537",
     "export": "TableListItem",
