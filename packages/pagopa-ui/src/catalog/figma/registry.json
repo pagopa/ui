@@ -1408,13 +1408,22 @@
       }
     },
     "759:6399": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/navigation/accordion.tsx",
         "export": "Accordion",
-        "story": "apps/storybook/src/Accordion.stories.tsx"
+        "story": "apps/storybook/src/Accordion.stories.tsx",
+        "storyExports": [
+          "Playground",
+          "WithDisabledItem",
+          "Loading",
+          "FidelityClosed",
+          "FidelityOpen",
+          "FidelityDisabled",
+          "FidelitySkeleton"
+        ]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+      "note": "Reviewed 2026-10-23 (closing the 2026-10-14 delta): the set has no Device axis (its `State` values are states, not devices), so each of the four drawn states is verified once at the source 580 width. `759-6399-closed` (State=Close 759:6398): the item is 580x100 against the source 580x98 because Figma draws the 1px stroke inside the frame while CSS border-box adds it (+1px per edge); pad 24, radius 8, #e8ebf1 stroke, white fill; the header is 532x50 with the 24px photo, the 8px gap, the 16/22 Semibold title, the 24px Status chip at a 4px gap and the 24px chevron 12px after the title frame; the root gap is the single-child phantom gap. `759-6399-open` (State=Open 759:6537): the header is 50, the description sits at offset 82 (the 8px step) and the caller content starts at 136 (the 32px step); the item height follows the content slot, so the case records a height residue (the fixture carries one paragraph against the source three-section sample list) and leaves the content subtree unmapped as caller data. `759-6399-disabled` (State=Disabled 13027:5052): grey-100 item fill, the Status chip as a 1px #0e0f13 outline, the title at full #0e0f13 and only the chevron at #bbc2d6. `759-6399-skeleton` (State=Skeleton 13027:5623): the header plus the 32px step and six 68px placeholder rows (100x22 and 200x16 bars, 6px gap, #e8ebf1 fill) with five 1px dividers, so the content is 532x413 and the item 580x543, every offset exact. Component fixes in this wave: the loading item now renders the source skeleton composition instead of a generic two-bar card, the disabled item no longer fades its title (only the chevron changes colour), and the header title/chip stacks fill their row (496/464) like the source fill frames so the chevron keeps the 12px gap. The guide apps/storybook/src/guides/accordion.md records the source mapping. Prop conventions: the source `State` axis maps to the caller's `disabled`/`skeleton` data and `defaultValue`; `AccordionItemData` carries the caller copy (`title`, `description`, `chip`, `icon`, `content`); the announced strings are `aria-label` for the group (default `Approfondimenti`) and `loadingLabel` for the skeleton (default `Caricamento in corso`). No open design question."
     },
     "760:7432": {
       "status": "pending",

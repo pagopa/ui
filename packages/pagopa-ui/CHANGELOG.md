@@ -36,6 +36,11 @@
 
 ### Changed
 
+- `Accordion`: the loading item renders the source `State=Skeleton` composition
+  (the header, the 32px step and six placeholder rows with five dividers)
+  instead of a generic two-bar card; a disabled item keeps its full-colour
+  title and only the chevron takes the muted icon colour, and the header
+  title/chip stacks fill their row like the source frames.
 - A busy button (loading or skeleton) keeps its place in the tab order and
   announces its state (`aria-disabled` + `aria-busy` instead of `disabled`);
   the skeleton keeps the label announced while the skeleton bar stays

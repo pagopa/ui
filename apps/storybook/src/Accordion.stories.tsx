@@ -6,6 +6,8 @@ import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Chip } from "@/components/inputs/chips"
 import { Accordion } from "@/components/navigation"
 
+import accordionGuide from "./guides/accordion.md?raw"
+
 const items = [
   {
     id: "one",
@@ -52,8 +54,9 @@ const meta = {
     design: { type: "figma", url: figmaEmbedUrl("759:6399") },
     docs: {
       description: {
-        component:
-          "Expandable details with a native trigger and its associated panel: the title opens and closes, the state is announced by `aria-expanded`.",
+        component: `Expandable details with a native trigger and its associated panel: the title opens and closes, the state is announced by \`aria-expanded\`.
+
+${accordionGuide}`,
       },
     },
   },
@@ -109,7 +112,13 @@ export const Loading: Story = {
     items: [
       {
         id: "loading",
-        title: "",
+        icon: <PagoPAIcon name="photo" />,
+        title: "Come posso pagare?",
+        chip: (
+          <Chip variant="neutral" size="compact">
+            Novità
+          </Chip>
+        ),
         content: null,
         skeleton: true,
       },
@@ -120,5 +129,135 @@ export const Loading: Story = {
     const canvas = within(canvasElement)
     await expect(canvas.getByText("Caricamento in corso")).toBeInTheDocument()
     await expect(canvas.getByRole("button", { name: /Come posso pagare\?/ })).toBeVisible()
+  },
+}
+
+// The four source states of AccordionItem (759:6399), captured one per story so
+// the root is the single item the source draws at its 580 width.
+const sourceHeader = () => ({
+  icon: <PagoPAIcon name="photo" />,
+  title: "Accordion heading",
+  chip: (
+    <Chip variant="neutral" size="compact">
+      Status
+    </Chip>
+  ),
+})
+
+const sourceItemWidth = "w-[580px] max-w-full"
+
+export const FidelityClosed: Story = {
+  tags: ["color-pinned"],
+  parameters: {
+    // Reflow exemption: fixture pinned at the source width, not a product surface.
+    a11yContract: { reflow: false },
+    design: { type: "figma", url: figmaEmbedUrl("759:6399") },
+  },
+  render: () => (
+    <div data-fidelity-variant="759-6398" className={sourceItemWidth}>
+      <Accordion
+        items={[
+          {
+            id: "source-closed",
+            ...sourceHeader(),
+            content: null,
+          },
+        ]}
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const trigger = canvas.getByRole("button", { name: /Accordion heading/ })
+    await expect(trigger).toHaveAttribute("aria-expanded", "false")
+    await expect(canvas.getByText("Status")).toBeVisible()
+  },
+}
+
+export const FidelityOpen: Story = {
+  tags: ["color-pinned"],
+  parameters: {
+    a11yContract: { reflow: false },
+    design: { type: "figma", url: figmaEmbedUrl("759:6399") },
+  },
+  render: () => (
+    <div data-fidelity-variant="759-6537" className={sourceItemWidth}>
+      <Accordion
+        defaultValue="source-open"
+        items={[
+          {
+            id: "source-open",
+            ...sourceHeader(),
+            description: "Support paragraph",
+            content: "Il contenuto della sezione espansa.",
+          },
+        ]}
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const trigger = canvas.getByRole("button", { name: /Accordion heading/ })
+    await expect(trigger).toHaveAttribute("aria-expanded", "true")
+    await expect(canvas.getByText("Support paragraph")).toBeVisible()
+  },
+}
+
+export const FidelityDisabled: Story = {
+  tags: ["color-pinned"],
+  parameters: {
+    a11yContract: { reflow: false },
+    design: { type: "figma", url: figmaEmbedUrl("759:6399") },
+  },
+  render: () => (
+    <div data-fidelity-variant="13027-5052" className={sourceItemWidth}>
+      <Accordion
+        items={[
+          {
+            id: "source-disabled",
+            ...sourceHeader(),
+            chip: (
+              <Chip variant="neutral" appearance="outline" size="compact">
+                Status
+              </Chip>
+            ),
+            content: null,
+            disabled: true,
+          },
+        ]}
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const trigger = canvas.getByRole("button", { name: /Accordion heading/ })
+    await expect(trigger).toBeDisabled()
+  },
+}
+
+export const FidelitySkeleton: Story = {
+  tags: ["color-pinned"],
+  parameters: {
+    a11yContract: { reflow: false },
+    design: { type: "figma", url: figmaEmbedUrl("759:6399") },
+  },
+  render: () => (
+    <div data-fidelity-variant="13027-5623" className={sourceItemWidth}>
+      <Accordion
+        items={[
+          {
+            id: "source-skeleton",
+            ...sourceHeader(),
+            content: null,
+            skeleton: true,
+          },
+        ]}
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByText("Caricamento in corso")).toBeInTheDocument()
+    await expect(canvas.queryByRole("button")).not.toBeInTheDocument()
   },
 }
