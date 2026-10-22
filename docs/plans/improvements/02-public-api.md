@@ -24,18 +24,18 @@ Approval: APPROVED
 
 | #   | Current export(s)                                     | Proposed                                                  | Why                                                  | Decision |
 | --- | ----------------------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------- | -------- |
-| R1  | `IDModule`, `IDModuleProps`, `IDModuleProviderOption` | `IdentityProviderPicker`, `…Props`, `…Option`             | Says what it does; no acronym casing                 |          |
-| R2  | `KOState` (+ props type)                              | `ErrorState`                                              | `KO` is jargon; pairs with `EmptyState`              |          |
-| R3  | `OKState` (+ props type)                              | `SuccessState`                                            | Pairs with R2                                        |          |
-| R4  | `LoghiPSP` (+ props type)                             | `PaymentProviderLogos`                                    | Italian and acronym in an English API                |          |
-| R5  | `Microevento` (+ props type)                          | `MicroEvent`                                              | Italian in an English API                            |          |
-| R6  | `WhiteTemplate` (+ props type)                        | `PageSurface`                                             | Describes the role, not the colour                   |          |
-| R7  | `Spacing`, `SpacingSize`                              | `Spacer`, `SpacerSize`                                    | A component is a thing, not a property               |          |
-| R8  | `CorrectionValid`, `CorrectionNotValid`               | one `CorrectionTag` with `status: "valid" \| "not-valid"` | Two exports for one component with two states        |          |
-| R9  | `DropDown`, `MenuDropDown`, `DropDownItem`            | `Dropdown`, `MenuDropdown`, `DropdownItem`                | Matches `DropdownMenu*` casing already in the source |          |
-| R10 | `figmaIconNames`, `figmaPictogramNames`               | `iconNames`, `pictogramNames`                             | Consumers don't need to know the source tool         |          |
-| R11 | `TextAreaField` (+ props type)                        | `TextareaField`                                           | Matches `Textarea`                                   |          |
-| R12 | `CameraViewElement` (+ props type)                    | `CameraView`                                              | `Element` adds nothing                               |          |
+| R1  | `IDModule`, `IDModuleProps`, `IDModuleProviderOption` | `IdentityProviderPicker`, `…Props`, `…Option`             | Says what it does; no acronym casing                 | rename   |
+| R2  | `KOState` (+ props type)                              | `ErrorState`                                              | `KO` is jargon; pairs with `EmptyState`              | rename   |
+| R3  | `OKState` (+ props type)                              | `SuccessState`                                            | Pairs with R2                                        | rename   |
+| R4  | `LoghiPSP` (+ props type)                             | `PaymentProviderLogos`                                    | Italian and acronym in an English API                | rename   |
+| R5  | `Microevento` (+ props type)                          | `MicroEvent`                                              | Italian in an English API                            | rename   |
+| R6  | `WhiteTemplate` (+ props type)                        | `PageSurface`                                             | Describes the role, not the colour                   | rename   |
+| R7  | `Spacing`, `SpacingSize`                              | `Spacer`, `SpacerSize`                                    | A component is a thing, not a property               | rename   |
+| R8  | `CorrectionValid`, `CorrectionNotValid`               | one `CorrectionTag` with `status: "valid" \| "not-valid"` | Two exports for one component with two states        | rename   |
+| R9  | `DropDown`, `MenuDropDown`, `DropDownItem`            | `Dropdown`, `MenuDropdown`, `DropdownItem`                | Matches `DropdownMenu*` casing already in the source | rename   |
+| R10 | `figmaIconNames`, `figmaPictogramNames`               | `iconNames`, `pictogramNames`                             | Consumers don't need to know the source tool         | rename   |
+| R11 | `TextAreaField` (+ props type)                        | `TextareaField`                                           | Matches `Textarea`                                   | rename   |
+| R12 | `CameraViewElement` (+ props type)                    | `CameraView`                                              | `Element` adds nothing                               | rename   |
 
 Kept on purpose (no row): `PagoPAIcon`, `PagoPAPictogram`, `WaitingState`,
 `EmptyState`, `SafeArea`, `PinPoint`, `ProgressKpi`.
