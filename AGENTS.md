@@ -44,6 +44,23 @@ orchestration lives here.
 | A component with no node joining the public API            | both: `figma-to-code` adds the catalogue coverage                                               |
 | A Figma delta, tokens, icons, pictograms                   | `figma-to-code`; `pagopa-ui-standards` for each component it touches                            |
 
+## Workflows
+
+[`figma-align`](.github/extensions/figma-align/extension.mjs) is a Copilot CLI
+dynamic workflow that runs a wave of Figma alignment through both skills. It
+runs the deterministic commands itself: the delta plan, the pending queue and
+`implementationOrder`, the close-out checks and the green chain read from
+[CONTRIBUTING.md](./CONTRIBUTING.md#the-green-chain). It analyses each node in
+parallel and read-only, then pauses so the person can approve or edit
+`packages/pagopa-ui/.figma/align/<runId>/decisions.json`. After resume, one
+writer works at a time, while the previous node's independent verification runs
+alongside it. The workflow never commits.
+Start it only when the person asks:
+`run_dynamic_workflow { name: "figma-align", args: { waveSize: 3 } }`, or
+`{ nodes: ["<nodeId>"] }` for named nodes and `{ analyseOnly: true }` to get the
+decisions without changing files. The skills stay the source of every rule;
+the workflow only sequences them.
+
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->
 
