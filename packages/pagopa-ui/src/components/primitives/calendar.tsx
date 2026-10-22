@@ -24,17 +24,18 @@ function Calendar({
       showOutsideDays={showOutsideDays}
       weekStartsOn={weekStartsOn}
       navLayout={navLayout}
-      className={cn("relative min-w-0 text-body", className)}
+      className={cn("relative min-w-0 px-2 text-body", className)}
       classNames={{
         months: "flex flex-wrap gap-6",
-        month: "relative min-w-0 flex-1",
-        month_caption: "flex items-center border-b border-secondary py-2 pr-22 text-body-big-sb",
-        caption_label: "py-2",
-        nav: "absolute right-0 top-0 flex items-center",
+        month: "relative flex min-w-0 flex-1 flex-col gap-2",
+        month_caption:
+          "-mx-2 flex items-center border-b border-secondary px-4 py-2 pr-22 text-body-big-sb",
+        caption_label: "",
+        nav: "absolute right-2 top-0 flex items-center",
         button_previous: buttonVariants({ variant: "ghost", size: "icon" }),
         button_next: buttonVariants({ variant: "ghost", size: "icon" }),
         month_grid: "w-full table-fixed border-collapse",
-        weekday: "text-caption-sb text-muted-foreground",
+        weekday: "pb-2 text-caption-sb text-muted-foreground",
         day: "h-11 p-0 text-center",
         day_button:
           "relative flex h-11 w-full items-center justify-center rounded-full outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-1 focus-visible:outline-ring disabled:cursor-not-allowed",

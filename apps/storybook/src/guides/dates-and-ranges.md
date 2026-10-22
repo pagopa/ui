@@ -7,10 +7,13 @@ and validation without stealing focus.
 
 The panel stacks its four blocks with the source's 8px gap: the `Header` — the
 label `Row` (14/20, 16/8 insets) over the month `Row` (18/26 Semibold with the
-24px chevrons, 8/16 insets) — closed by its full-bleed `Divider`, then the
-`Calendar`, a `Divider` and the footer `Row` whose actions keep the source's
-16px inline inset. The day cells and the footer buttons keep pointer-sized
-targets, so the panel is taller than the source's 426px sample.
+24px chevrons, 8/16 insets, closed by its full-bleed `Divider`) — then the
+`Calendar` (its weekday row over the day rows, at the source's 8px inline
+inset), a `Divider` and the footer `Row` whose actions keep the source's 16px
+inline inset. The day rows keep the 44px pointer target the a11y contract
+requires (the source row is 36) and the footer uses real 48px buttons where the
+source draws 22px text links, so the panel is taller than the source's 426px
+sample.
 
 Single selection uses `value?: Date` and `onConfirm: (value: Date) => void`.
 `mode="range"` uses `value?: DatePickerRange` and
@@ -32,10 +35,10 @@ day, and `onValueChange` reports the committed local ISO date.
 
 The application owns any surrounding overlay beyond the field. The calendar
 does not create hidden form values or submit a form when selecting, saving or
-cancelling. The panel is wider than the source's to provide accessible date
-targets, opens without a mount transition (so it is laid out in its own frame and
-reduced motion is not invented), and it shrinks in nested grids while keeping at least a pointer-sized
-target; circles shrink proportionally when necessary, and text can wrap.
+cancelling. The panel opens without a mount transition (so it is laid out in
+its own frame and reduced motion is not invented), and it shrinks in nested
+grids while keeping at least a pointer-sized target; circles shrink
+proportionally when necessary, and text can wrap.
 Gregorian weekdays are calculated correctly rather than copying the source's
 misplaced illustrative May 2026 dates. Headers use Italian date order, and
 forced colors retain selected circles and range bands with the user's system

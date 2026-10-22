@@ -138,7 +138,7 @@ function DatePicker(props: DatePickerProps) {
       <legend className="w-full px-4 pt-4 pb-2 text-label-mini text-muted-foreground">
         {label}
       </legend>
-      <div className="flex flex-col gap-2 px-4">
+      <div className="flex flex-col gap-2">
         {props.mode === "range" ? (
           <Calendar
             {...calendarProps}
@@ -157,7 +157,11 @@ function DatePicker(props: DatePickerProps) {
             onSelect={(date) => selectRange({ from: date, to: date })}
           />
         )}
-        <FieldMessages ids={ids} error={error} />
+        {error ? (
+          <div className="px-4">
+            <FieldMessages ids={ids} error={error} />
+          </div>
+        ) : null}
       </div>
       <Separator />
       <div className="flex flex-wrap justify-end gap-2 px-4 pt-2 pb-4">

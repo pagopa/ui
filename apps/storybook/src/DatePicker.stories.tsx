@@ -31,7 +31,7 @@ type Story = StoryObj<typeof meta>
 function SingleDateExample() {
   const [value, setValue] = useState(new Date(2026, 4, 11))
   return (
-    <div className="grid gap-4">
+    <div className="grid w-[310px] max-w-full gap-4">
       <DatePicker value={value} onConfirm={setValue} onCancel={fn()} />
       <output aria-label="Data confermata">
         {value.toLocaleDateString("it-IT", {
@@ -59,6 +59,39 @@ export const SingleDateConfirmation: Story = {
     await expect(canvas.getByRole("status", { name: "Data confermata" })).toHaveTextContent(
       "12/05/2026",
     )
+    // The source panel's block rhythm (8049:39452): a 44px label row, the 42px
+    // month row with its full-bleed divider, an 8px inset date grid and 36px
+    // day rows whose 44px pointer target is the invisible expansion.
+    const panel = canvas.getByRole("group", { name: "Seleziona data" })
+    const panelBox = panel.getBoundingClientRect()
+    const grid = panel.querySelector("table")
+    const month = grid?.parentElement
+    const caption = month?.firstElementChild
+    if (!(grid instanceof HTMLTableElement) || !(caption instanceof HTMLElement)) {
+      throw new Error("Expected the source calendar panel")
+    }
+    const round = (value: number) => Math.round(value)
+    const legend = panel.querySelector("legend")
+    if (!(legend instanceof HTMLElement)) throw new Error("Expected the panel label row")
+    await expect(round(legend.getBoundingClientRect().height)).toBe(44)
+    await expect(round(caption.getBoundingClientRect().top - panelBox.top)).toBe(44)
+    await expect(round(caption.getBoundingClientRect().height)).toBe(43)
+    await expect(round(caption.getBoundingClientRect().width)).toBe(round(panelBox.width))
+    await expect(round(caption.getBoundingClientRect().left - panelBox.left)).toBe(0)
+    await expect(round(grid.getBoundingClientRect().left - panelBox.left)).toBe(8)
+    const firstWeekday = grid.querySelector("thead th")
+    const firstRow = grid.querySelector("tbody tr")
+    const firstDay = grid.querySelector("tbody td")
+    if (
+      !(firstWeekday instanceof HTMLElement) ||
+      !(firstRow instanceof HTMLTableRowElement) ||
+      !(firstDay instanceof HTMLTableCellElement)
+    ) {
+      throw new Error("Expected the parsed date grid")
+    }
+    await expect(round(firstWeekday.getBoundingClientRect().left - panelBox.left)).toBe(8)
+    await expect(round(firstRow.getBoundingClientRect().height)).toBe(44)
+    await expect(round(firstDay.getBoundingClientRect().height)).toBe(44)
   },
 }
 
@@ -71,7 +104,7 @@ function RangeDateExample() {
   })
 
   return (
-    <div className="grid gap-4">
+    <div className="grid w-[310px] max-w-full gap-4">
       <DatePicker
         mode="range"
         label="Seleziona intervallo"
@@ -113,7 +146,7 @@ function ControlledDateExample() {
   const [value, setValue] = useState<Date | undefined>(new Date(2026, 4, 11))
   const [action, setAction] = useState("")
   return (
-    <div className="grid gap-4">
+    <div className="grid w-[310px] max-w-full gap-4">
       <DatePicker
         value={value}
         today={new Date(2026, 4, 11)}
@@ -177,6 +210,7 @@ export const RangeValidation: Story = {
   render: () => (
     <DatePicker
       mode="range"
+      className="w-[310px] max-w-full"
       today={new Date(2026, 4, 11)}
       onConfirm={confirmRange}
       onCancel={cancelRange}

@@ -3032,10 +3032,10 @@
     "residues": [
       {
         "path": "field.box.height",
-        "reason": "the 44px day targets (the source row is 36) and the real 48px footer buttons (the source footer is 22px text links) add 48px to the source 426 while the four-block rhythm matches"
+        "reason": "the 44px day rows (the source 36px rows plus its Dates frame's 8px inner padding and 2px row gaps) and the real 48px footer buttons (the source 22px text links) keep the panel 48px taller than the source 426 while the header, the 8px stack gaps and the 8px grid inset match"
       }
     ],
-    "note": "reviewed: two-row header (label 44 + month 42 + divider) restored, 8px block rhythm, footer inset 16; residue is the accessible day targets and real buttons"
+    "note": "reviewed: the source panel's four-block rhythm — 44px label row, 42px month row closed by its full-bleed divider, an 8px inset date grid (the source's inline inset) with 44px day targets (the source rows are 36), the source 8px stack gaps and 16px footer inset. Residue: the panel is 474 against the source 426 — the day targets and the real footer buttons. The story asserts the header rows, the divider and the grid inset."
   },
   {
     "id": "9520-2537-layout-desktop-desktop",
