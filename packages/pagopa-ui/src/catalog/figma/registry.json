@@ -798,8 +798,8 @@
       }
     },
     "198:828": {
-      "status": "pending",
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Adaptation `accessible-error-feedback`: the visible native label and report icon supplement the source helper copy, and the error text stays a `role=alert` with the source 14/20 metrics. Adaptations `token-frame-inset` and `native-password-mask` (px-6/py-2 insets, 169x52 frame against 168x50 with the exact 27px slot step; native `type=password` with a font-independent rounded marker) are stated in guides/authentication-codes.md.",
+      "status": "implemented",
+      "note": "Reviewed 2026-10-22 (M5 wave): six committed cases, one per source variant — empty 198:829 (`198-828-empty`), selected 266:25977 (`198-828-selected`), filled 198:847 (`198-828-filled`), encrypted 198:856 (`198-828-encrypted`), error 198:874 (`198-828-error`) and error encrypted 274:1478 (`198-828-error-encrypted`) — all on the five-slot frame at the 169 capture width, verdict `verified-with-residues`. Verified: the 169x52 border box against the source 168x50, radius 8, the #636b82 / #d13333 strokes, the 8/24 frame insets, the 27px slot step (11px slot + 16px gap), the 11x34 slot with its underline, the 8px mask marker and the 2x16px primary cursor. Residues: `field.gap` is ignored on the four non-error cases because the source frame gaps its five slots directly while the DOM nests them in one group carrying the same 16px gap (a mapping artifact); `field.box.height` is 74 against 70 on the two error variants — the recorded 169x52 border box plus the 14/20 message line against the source's 18px helper. The adaptations `accessible-error-feedback` (the visible native label and report icon supplement the source helper copy, the error text stays a `role=alert` with the source 14/20 metrics), `token-frame-inset` and `native-password-mask` (px-6/py-2 insets; native `type=password` with a font-independent rounded marker) stay as stated in guides/authentication-codes.md. The remaining exports are behaviour and narrow-container states with no source variant.",
       "target": {
         "module": "src/components/inputs/text-fields.tsx",
         "export": "AuthenticationCodeInput",
@@ -813,6 +813,8 @@
           "MaskedNativePaste",
           "SlotLabelsAndFramePress",
           "SourceVariant",
+          "SourceFilledVariant",
+          "SourceEncryptedVariant",
           "SourceErrorVariant",
           "SourceErrorEncryptedVariant"
         ]

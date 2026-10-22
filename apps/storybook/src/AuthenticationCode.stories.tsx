@@ -11,6 +11,7 @@ const meta = {
   title: "Components/Inputs/AuthenticationCodeInput",
   component: AuthenticationCodeInput,
   parameters: {
+    design: { type: "figma", url: figmaEmbedUrl("198:828") },
     docs: {
       description: {
         component: authenticationCodesGuide,
@@ -355,6 +356,36 @@ export const SourceVariant: Story = {
     length: 5,
     defaultValue: "",
     mask: false,
+  },
+  render: (args) => <AuthenticationCodeInput {...args} />,
+}
+
+export const SourceFilledVariant: Story = {
+  parameters: {
+    // Reflow exemption: fixture pinned at the source width, not a product surface.
+    a11yContract: { reflow: false },
+    design: { type: "figma", url: figmaEmbedUrl("198:828") },
+  },
+  args: {
+    label: "Codice compilato",
+    length: 5,
+    defaultValue: "57391",
+    mask: false,
+  },
+  render: (args) => <AuthenticationCodeInput {...args} />,
+}
+
+export const SourceEncryptedVariant: Story = {
+  parameters: {
+    // Reflow exemption: fixture pinned at the source width, not a product surface.
+    a11yContract: { reflow: false },
+    design: { type: "figma", url: figmaEmbedUrl("198:828") },
+  },
+  args: {
+    label: "Codice riservato",
+    length: 5,
+    defaultValue: "88888",
+    mask: true,
   },
   render: (args) => <AuthenticationCodeInput {...args} />,
 }

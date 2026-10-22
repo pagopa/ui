@@ -123,6 +123,107 @@
     ]
   },
   {
+    "id": "198-828-empty",
+    "nodeId": "198:828",
+    "export": "AuthenticationCodeInput",
+    "storyId": "components-inputs-authenticationcodeinput--source-variant",
+    "state": "empty",
+    "variant": "198:829",
+    "width": 169,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"otp-field\"]",
+    "subjects": {},
+    "ignores": ["field.gap"],
+    "note": "reviewed: empty frame, 169x52 border box against the source 168x50, radius 8, the #636b82 stroke, the 8/24 insets and the 27px slot step match; field.gap is a mapping artifact (the source frame gaps its five slots directly, the DOM nests them in one group that carries the same 16px gap)"
+  },
+  {
+    "id": "198-828-filled",
+    "nodeId": "198:828",
+    "export": "AuthenticationCodeInput",
+    "storyId": "components-inputs-authenticationcodeinput--source-filled-variant",
+    "state": "filled",
+    "variant": "198:847",
+    "width": 169,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"otp-field\"]",
+    "subjects": {},
+    "expectState": "filled",
+    "ignores": ["field.gap"],
+    "note": "reviewed: five filled slots, the source Status=Filled composition; frame geometry and the 27px slot step match, the digits use the source Semibold face (Titillio 500 maps to CSS 600), field.gap ignored as the slot-group mapping artifact"
+  },
+  {
+    "id": "198-828-encrypted",
+    "nodeId": "198:828",
+    "export": "AuthenticationCodeInput",
+    "storyId": "components-inputs-authenticationcodeinput--source-encrypted-variant",
+    "state": "encrypted",
+    "variant": "198:856",
+    "width": 169,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"otp-field\"]",
+    "subjects": {},
+    "expectState": "filled",
+    "ignores": ["field.gap"],
+    "note": "reviewed: five masked slots, the source Status=Encrypted composition; the 8px mask marker replaces the source bullet glyph (documented native-mask adaptation), frame geometry and slot step match, field.gap ignored as the slot-group mapping artifact"
+  },
+  {
+    "id": "198-828-error",
+    "nodeId": "198:828",
+    "export": "AuthenticationCodeInput",
+    "storyId": "components-inputs-authenticationcodeinput--source-error-variant",
+    "state": "error",
+    "variant": "198:874",
+    "width": 169,
+    "depth": 3,
+    "root": "#storybook-root > div > div",
+    "subjects": {},
+    "expectState": "error",
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the 169x52 border box (+2 against the source 168x50) and the 14/20 message line (+2 against the source 18px helper) make the error block 74 against 70"
+      }
+    ],
+    "note": "reviewed: five filled slots with the #d13333 2px error frame and its associated 14/20 message, the source Status=Error composition; height residue is the recorded 169x52 border box plus the message line, gap and padding match"
+  },
+  {
+    "id": "198-828-selected",
+    "nodeId": "198:828",
+    "export": "AuthenticationCodeInput",
+    "storyId": "components-inputs-authenticationcodeinput--source-variant",
+    "state": "selected",
+    "variant": "266:25977",
+    "width": 169,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"otp-field\"]",
+    "subjects": {},
+    "click": ["#storybook-root [data-slot=\"otp-field\"] input"],
+    "keepFocus": true,
+    "expectState": "focused",
+    "ignores": ["field.gap"],
+    "note": "reviewed: focused empty frame with the 2x16px primary caret on the first slot, the source Status=Selected composition; same frame geometry as empty, field.gap ignored as the slot-group mapping artifact"
+  },
+  {
+    "id": "198-828-error-encrypted",
+    "nodeId": "198:828",
+    "export": "AuthenticationCodeInput",
+    "storyId": "components-inputs-authenticationcodeinput--source-error-encrypted-variant",
+    "state": "error-encrypted",
+    "variant": "274:1478",
+    "width": 169,
+    "depth": 3,
+    "root": "#storybook-root > div > div",
+    "subjects": {},
+    "expectState": "error",
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the 169x52 border box (+2 against the source 167x50) and the 14/20 message line (+2 against the source 18px helper) make the error block 74 against 70"
+      }
+    ],
+    "note": "reviewed: five masked slots with the #d13333 2px error frame and its associated 14/20 message, the source Status=Error encrypted composition; height residue is the recorded 169x52 border box plus the message line"
+  },
+  {
     "id": "212-1899-error-horizontal",
     "nodeId": "212:1899",
     "export": "Alert",
