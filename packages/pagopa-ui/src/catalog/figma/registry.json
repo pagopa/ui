@@ -1277,14 +1277,21 @@
       "note": "Reviewed 2026-10-16 (device burn-down wave 5): the white page canvas — a section with the source root's own minHeight 650 over the white surface, growing with caller content; `SafeArea` owns the max width and gutters. One case per declared device, all responsive-clean and each with no layoutScope (the set draws one composition — an empty white canvas — at every device, so both scope probes report the composition unchanged and a scope declaration would be vacuous): mobile 50:1701 (case 50-1700-xs-mobile-mobile, 320x650), tablet 50:1707 (case 50-1700-md-tablet-tablet, 900x650 — of the set's two tablet frames the MD 900 is the frame nearest the midpoint of the captured pair 320/1200 and above the library's sm breakpoint) and desktop 50:1710 (case 50-1700-lg-desktop-desktop, 1200x650; the XL 1536 and XXL 1920 frames are the same canvas). The cases capture the `Fidelity` story, the source-exact empty surface (the `Playground` SafeArea paragraph stays under the 650 floor at every captured width, so the height is the source floor, not content-driven)."
     },
     "529:6111": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/inputs/text-fields.tsx",
         "export": "TextField",
         "story": "apps/storybook/src/TextField.stories.tsx",
-        "storyExports": ["Playground", "ReadOnly", "Validation", "WithIcons", "WithTrailingIcon"]
+        "storyExports": [
+          "Playground",
+          "ReadOnly",
+          "Validation",
+          "WithIcons",
+          "WithTrailingIcon",
+          "FigmaStateMatrix"
+        ]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Field border: grey-650 #636b82 1px when enabled, disabled or success; primary 2px when active/focused; #d13333 on error; never grey-450 (it is not a source field stroke)."
+      "note": "Reviewed 2026-10-22 (M5 wave): ten committed cases, one per principal state of the set's `Status` × `Filled` axes plus one Required=False row. Enabled empty (529:6123) and Enabled filled (529:6110) capture `Playground`; the other eight capture `FigmaStateMatrix`, one row per source variant at the 274 source width: Disabled empty (529:6137), Disabled filled (529:6180), Active empty (529:6154, captured focused), Active filled (529:6169, focused), Success filled (529:6191), Error empty (529:6266, 274x70) and Error filled (529:6267, 274x70), plus Enabled empty Required=False (10274:50122, no required marker). All are 274 wide with radius 8; the input is 48 tall except the 50px error control. Field border: grey-650 #636b82 1px when enabled, disabled or success; primary #0b3ee3 when active/focused (the library paints the 1px border plus the 2px focus ring, inside the 2px tolerance); #d13333 on error; never grey-450 (it is not a source field stroke). Mapping artifacts ignored: the source `Input` frame nests its row inset in the `Content` child (12/0/13/0) while the library input owns its own padding, so the vertical padding is ignored; the trailing icon slot reserves its own right padding (success and error). The resting label sits 3px lower in the 50px error control (recorded residue: the source nests it in `Content`, the library centres the label box on the 48px control). The remaining `* Required=False` variants repeat these reviewed compositions with the marker removed; one case proves that axis. Automated a11y and render checks are not screen-reader or browser-zoom certification."
     },
     "602:9417": {
       "status": "implemented",

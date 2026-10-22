@@ -104,3 +104,69 @@ export const Validation: Story = {
 export const ReadOnly: Story = {
   args: { label: "Identificativo pratica", defaultValue: "PAGOPA-2026-0192", readOnly: true },
 }
+
+// The source state matrix: one field per source variant of `529:6111` that the
+// `Playground` case does not already cover, each framed at the source width
+// (274) so a parity case maps exactly one row. The copy is the fixture's; the
+// state is what the case compares.
+const sourceFieldStates: ReadonlyArray<{
+  id: string
+  props: {
+    disabled?: boolean
+    defaultValue?: string
+    success?: string
+    error?: string
+    required?: boolean
+  }
+}> = [
+  { id: "fidelity-disabled-empty", props: { disabled: true } },
+  { id: "fidelity-disabled-filled", props: { disabled: true, defaultValue: "Input text" } },
+  { id: "fidelity-active-empty", props: {} },
+  { id: "fidelity-active-filled", props: { defaultValue: "Input text" } },
+  {
+    id: "fidelity-success-filled",
+    props: { defaultValue: "Input text", success: "Codice riconosciuto." },
+  },
+  { id: "fidelity-error-empty", props: { error: "Some details error" } },
+  {
+    id: "fidelity-error-filled",
+    props: { defaultValue: "Input text", error: "Some details error" },
+  },
+  { id: "fidelity-optional-empty", props: { required: false } },
+]
+
+export const FigmaStateMatrix: Story = {
+  tags: ["color-pinned"],
+  parameters: {
+    // Reflow exemption: fixture pinned at the source width, not a product surface.
+    a11yContract: { reflow: false },
+    design: { type: "figma", url: figmaEmbedUrl("529:6111") },
+  },
+  render: () => (
+    <div className="grid gap-6">
+      {sourceFieldStates.map((state) => (
+        <div key={state.id} className="w-[274px] max-w-full">
+          <TextField
+            id={state.id}
+            data-fidelity-state={state.id}
+            label="Label text"
+            required
+            {...state.props}
+          />
+        </div>
+      ))}
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    for (const state of sourceFieldStates) {
+      const input = canvasElement.querySelector<HTMLInputElement>(`#${state.id}`)
+      if (!input) throw new Error(`Missing fidelity field ${state.id}`)
+      if (state.props.disabled) await expect(input).toBeDisabled()
+      if ("error" in state.props) await expect(input).toHaveAttribute("aria-invalid", "true")
+      else await expect(input).not.toHaveAttribute("aria-invalid")
+    }
+    const optional = canvas.getByRole("textbox", { name: "Label text", exact: true })
+    await expect(optional).not.toBeRequired()
+  },
+}
