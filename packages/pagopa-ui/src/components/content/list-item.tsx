@@ -99,7 +99,9 @@ function ListItem({
   const valueLine = value ? <span className={valueClassName}>{value}</span> : null
 
   const classes = cn(
-    "flex w-full items-center gap-3 p-3 text-left",
+    // Source row: 12px block padding, no inline padding — the row is
+    // edge-to-edge and the container owns the horizontal inset.
+    "flex w-full items-center gap-3 py-3 text-left",
     interactive &&
       "outline-none transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-solid focus-visible:-outline-offset-2 focus-visible:outline-ring",
     className,
@@ -156,7 +158,14 @@ function ListItem({
       </span>
       {amount ? <span className="shrink-0 text-body-sb text-primary">{amount}</span> : null}
       {action ? (
-        <Button type="button" variant="ghost" className="shrink-0" onClick={action.onPress}>
+        <Button
+          type="button"
+          variant="ghost"
+          // Source CTA: a 16/22 text action 22px tall, not a 48px control.
+          // The pointer target comes from the invisible ::after expansion.
+          className="relative min-h-0 shrink-0 border-0 px-0 py-0 text-primary after:absolute after:-inset-y-3"
+          onClick={action.onPress}
+        >
           {action.label}
         </Button>
       ) : null}

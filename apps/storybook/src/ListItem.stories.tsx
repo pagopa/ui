@@ -4,6 +4,8 @@ import { expect, userEvent, within } from "storybook/test"
 import { Avatar, ListItem } from "@/components/content"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Chip } from "@/components/inputs"
+import { figmaEmbedUrl } from "@/catalog/figma/file"
+import listItemGuide from "./guides/list-items.md?raw"
 
 const meta = {
   title: "Components/Content/ListItem",
@@ -34,10 +36,12 @@ const meta = {
     },
   },
   parameters: {
+    design: { type: "figma", url: figmaEmbedUrl("908:2234") },
     docs: {
       description: {
-        component:
-          "List row in the source composition: description, value, caller chip, suggestion line, primary amount, trailing icon and text action, plus a skeleton state. `href` makes the value a native link, `onPress` a native button.",
+        component: `List row in the source composition: description, value, caller chip, suggestion line, primary amount, trailing icon and text action, plus a skeleton state. \`href\` makes the value a native link, \`onPress\` a native button.
+
+${listItemGuide}`,
       },
     },
   },
@@ -72,6 +76,22 @@ export const WithAvatar: Story = {
   },
 }
 
+export const LinkWithAvatar: Story = {
+  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  parameters: { a11yContract: { reflow: false } },
+  args: {
+    variant: "link",
+    href: "#servizio",
+    leading: <Avatar size="small" alt="Comune di Milano" initials="CM" />,
+    chip: <Chip size="compact">Default</Chip>,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const link = canvas.getByRole("link", { name: /Accertamento 00016\/2025/ })
+    await expect(link).toHaveAttribute("href", "#servizio")
+  },
+}
+
 export const Link: Story = {
   // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
   parameters: { a11yContract: { reflow: false } },
@@ -95,6 +115,22 @@ export const Actionable: Story = {
 }
 
 export const Transactional: Story = {
+  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  parameters: { a11yContract: { reflow: false } },
+  args: {
+    variant: "transactional",
+    leading: (
+      <span className="grid size-11 place-items-center rounded-lg border">
+        <PagoPAIcon name="credit_card" />
+      </span>
+    ),
+    value: "Carta •••• 4532",
+    amount: "744,00 €",
+    onPress: () => undefined,
+  },
+}
+
+export const WithSuggestion: Story = {
   // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
   parameters: { a11yContract: { reflow: false } },
   args: {
@@ -136,6 +172,7 @@ export const WithAction: Story = {
   // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
   parameters: { a11yContract: { reflow: false } },
   args: {
+    chip: <Chip size="compact">Default</Chip>,
     action: { label: "Aggiungi", onPress: () => undefined },
   },
   play: async ({ canvasElement }) => {

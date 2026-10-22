@@ -1544,13 +1544,26 @@
       }
     },
     "908:2234": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/content/list-item.tsx",
         "export": "ListItem",
-        "story": "apps/storybook/src/ListItem.stories.tsx"
+        "story": "apps/storybook/src/ListItem.stories.tsx",
+        "storyExports": [
+          "Playground",
+          "WithAvatar",
+          "LinkWithAvatar",
+          "Link",
+          "Actionable",
+          "Transactional",
+          "WithSuggestion",
+          "Amount",
+          "ErrorState",
+          "WithAction",
+          "Loading"
+        ]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+      "note": "Figma delta 2026-10-14: reviewed 2026-10-22 (M5 wave). All ten Type variants are committed cases, each 320 wide: Informative 897:18749 320x96, Informative + CTA 908:2235 320x96, Actionable 908:2267 320x96, Transactional 913:2749 320x68, Error 916:2861 320x66, Skeleton 919:2084 320x68, Informative + Avatar 920:2104 320x96, Amount 1029:3195 320x82, Link 3793:40018 320x65 and Link + Avatar 8939:37715 320x96. The source row is edge-to-edge: 12px block padding and 0 inline padding (the component moved from p-3 to py-3), a 12px gap, content stacks of 6px on informative/link/actionable, 2px on amount/transactional and 0 on error. The CTA action is a 16/22 text button 22px tall with its 44px target on the invisible ::after, not a 48px control. The Transactional source hides its Suggestion layer, so the parity fixture does not render it; the WithSuggestion demo keeps the prop covered. Icons are 24, Avatar small 44, the chip 24, the chevron 24 and the amount 16/22 primary."
     },
     "9082:974": {
       "status": "implemented",
