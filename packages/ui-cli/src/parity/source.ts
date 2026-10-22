@@ -457,7 +457,15 @@ export function pickVariant(
   { variant, state }: { variant?: string; state?: string } = {},
 ): VariantInfo {
   const variants = variantsOf(node)
-  if (!variants.length) throw new Error(`${node.id} is not a component set`)
+  // A published node without variants (a plain `COMPONENT`) is its own single
+  // variant: there is no axis to select, so `--state` only names the case and
+  // `--variant`, when given, has to be the node itself.
+  if (!variants.length) {
+    if (variant && variant !== node.id) {
+      throw new Error(`${variant} is not a variant of ${node.id}: the node has no variants`)
+    }
+    return { nodeId: node.id, name: node.name, state: {}, box: boxOf(node) }
+  }
   if (variant) {
     const match = variants.find((item) => item.nodeId === variant)
     if (!match) throw new Error(`${variant} is not a variant of ${node.id}`)
