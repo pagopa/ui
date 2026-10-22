@@ -57,6 +57,7 @@ import {
   variantsWhere,
   type Project,
   type RawNode,
+  type SpecNode,
   type VariantInfo,
 } from "./source.ts"
 import type { ParityCase } from "../schemas/parity.ts"
@@ -270,6 +271,26 @@ function declaredDeviceOf(spec: CaseSpec, variant: VariantInfo): string | undefi
   return variantDevice(devicePolicy(), inventory, variant.name).device ?? undefined
 }
 
+// The source frames whose padding the case does not compare: the root box alone
+// does not prove the inner insets, so the per-node loop names the layers to
+// map. Padding only keeps the nudge to the visible insets (the root gap is
+// already compared); the reviewer decides which frame drives the composition.
+function mappingGaps(root: SpecNode, mapped: string[]): string[] {
+  const names = new Set(mapped)
+  const found: string[] = []
+  const walk = (node: SpecNode): void => {
+    for (const child of node.children ?? []) {
+      const padded = Boolean(child.layout?.padding.some((value) => value > 0))
+      if (child.type !== "TEXT" && padded && !names.has(child.name)) {
+        found.push(`${child.name} (${child.nodeId})`)
+      }
+      walk(child)
+    }
+  }
+  walk(root)
+  return [...new Set(found)]
+}
+
 // One case: the source variant, the story, the subject mapping and the stated
 // residues in, the classified report and the probe out.
 const CaptureInfoSchema = z.looseObject({
@@ -284,7 +305,7 @@ const CaptureInfoSchema = z.looseObject({
 async function evaluateCase(
   spec: CaseSpec,
   { project }: { project: Project },
-): Promise<{ report: CaseReport; probe: Record<string, unknown> }> {
+): Promise<{ report: CaseReport; probe: Record<string, unknown>; mapping: string[] }> {
   const node = sourceNode(project, spec.nodeId)
   if (!node) throw new Error(`${spec.nodeId} is not in the pinned export`)
   const variant = resolveVariant(spec, node)
@@ -425,6 +446,7 @@ async function evaluateCase(
       ...result,
     },
     probe,
+    mapping: mappingGaps(spec_, Object.keys(spec.subjects ?? {})),
   }
 }
 
@@ -823,7 +845,7 @@ async function check(parsed: Parsed): Promise<number> {
     }
     if (!flags.has("json")) console.log("evidence: bundle matches the committed inventory")
   }
-  const { report, probe } = await evaluateCase(spec, { project })
+  const { report, probe, mapping } = await evaluateCase(spec, { project })
   if (flags.has("save-case")) {
     const saved = saveCase(
       path_,
@@ -840,12 +862,25 @@ async function check(parsed: Parsed): Promise<number> {
           probe,
           case: spec,
           source: { file: project.file, origin: project.origin },
+          mapping,
         },
         null,
         2,
       ),
     )
-  else printResult(report, { notes: flags.has("notes") })
+  else {
+    printResult(report, { notes: flags.has("notes") })
+    // The mapping nudge belongs to the per-node loop, where the case is written:
+    // a reviewed `--case` run reproduces the stored mapping and stays quiet.
+    if (!caseId && mapping.length) {
+      const shown = mapping.slice(0, 6).join(", ")
+      const more = mapping.length > 6 ? `, +${mapping.length - 6} more` : ""
+      console.log(
+        `  mapping: ${mapping.length} source frame(s) with padding not mapped (${shown}${more}) ` +
+          "— map them as --subject or record the adaptation",
+      )
+    }
+  }
   return report.deltas.length ? 1 : 0
 }
 
@@ -1412,4 +1447,14 @@ if (invoked) {
     })
 }
 
-export { main, queue, check, captureWave, report, evaluateCase, caseFromFlags, specFromCase }
+export {
+  main,
+  queue,
+  check,
+  captureWave,
+  report,
+  evaluateCase,
+  caseFromFlags,
+  specFromCase,
+  mappingGaps,
+}
