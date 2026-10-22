@@ -9,7 +9,7 @@
     "node": ">=22"
   },
   "scripts": {
-    "storybook": "storybook dev -p 6006",
+    "storybook": "storybook dev",
     "build": "storybook build -o dist",
     "test:stories": "vitest --run",
     "test:webkit": "vitest --run --mode webkit",
