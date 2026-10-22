@@ -1424,7 +1424,7 @@
     },
     "8049:39452": {
       "status": "pending",
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`.",
+      "note": "Blocked 2026-10-22 (M5 wave, tooling): the node is a plain `COMPONENT`, not a component set, and the parity tool resolves the compared variant through the set's children (`pickVariant` requires a `COMPONENT_SET`), so `parity check --node 8049:39452` cannot run and no reviewed render exists. The panel itself is implemented (`src/components/inputs/date-picker.tsx`, rendered inline by the `SingleDateConfirmation`, `RangeDateConfirmation`, `ControlledDateLifecycle`, `RangeValidation`, `KeyboardNavigation` and `NarrowGrid` stories); the blocker is the tooling, not a design question, and seven pending nodes share it (this one plus CarouselStepper, EmptyState, Tabs, MenuDropDown, StickyButtonBar and SkipToMainContent). The fix belongs to the parity tools (a node without variants is its own single variant) and is outside the M5 ownership, so the node stays `pending` until that change lands. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`.",
       "target": {
         "module": "src/components/inputs/date-picker.tsx",
         "export": "DatePicker",
