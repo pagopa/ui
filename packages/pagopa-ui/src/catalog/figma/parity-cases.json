@@ -2682,6 +2682,162 @@
     "note": "Popover source Bottom: 312x76 card and 24x20 indicator; close action is keyboard- and pointer-accessible."
   },
   {
+    "id": "10585-80643-enabled-empty",
+    "nodeId": "10585:80643",
+    "export": "TextAreaField",
+    "storyId": "components-inputs-textareafield--figma-state-matrix",
+    "state": "Enabled|empty",
+    "variant": "10585:80644",
+    "width": 274,
+    "height": 114,
+    "depth": 4,
+    "root": "#fidelity-area-enabled-empty",
+    "subjectRoot": "Input",
+    "subjects": {
+      "Label text": "#storybook-root label[for=fidelity-area-enabled-empty]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: source Status=Enabled Filled=False Required=True (10585:80644, 274x114) against the FigmaStateMatrix enabled row. Verified the 274x92 control, radius 8, the 1px #636b82 stroke, the #ffffff surface, the 12px insets, the resting 16/22 Semibold #555c70 label inset 12px from the frame top and the hidden helper. Responsive clean."
+  },
+  {
+    "id": "10585-80643-enabled-filled",
+    "nodeId": "10585:80643",
+    "export": "TextAreaField",
+    "storyId": "components-inputs-textareafield--figma-state-matrix",
+    "state": "Enabled|filled",
+    "variant": "10585:80662",
+    "width": 274,
+    "height": 114,
+    "depth": 4,
+    "root": "#fidelity-area-enabled-filled",
+    "subjectRoot": "Input",
+    "subjects": {
+      "Label text": "#storybook-root label[for=fidelity-area-enabled-filled]"
+    },
+    "compareOffset": true,
+    "ignores": ["field.padding.top", "field.padding.bottom"],
+    "note": "reviewed: source Status=Enabled Filled=True Required=True (10585:80662, 274x114) against the FigmaStateMatrix enabled filled row. Verified the 274x92 control, radius 8, the 1px #636b82 stroke, the #ffffff surface, the floated 12/18 #555c70 notch label and the 16/22 value. The source Input frame nests the row inset in its Content child (12/0/13/0) while the library textarea owns its own padding: the vertical padding is a mapping artifact, ignored. Responsive clean."
+  },
+  {
+    "id": "10585-80643-active-empty",
+    "nodeId": "10585:80643",
+    "export": "TextAreaField",
+    "storyId": "components-inputs-textareafield--figma-state-matrix",
+    "state": "Active|empty",
+    "variant": "10585:80681",
+    "width": 274,
+    "height": 114,
+    "depth": 4,
+    "root": "#fidelity-area-active-empty",
+    "subjectRoot": "Input",
+    "subjects": {
+      "Label text": "#storybook-root label[for=fidelity-area-active-empty]"
+    },
+    "focus": ["#fidelity-area-active-empty"],
+    "keepFocus": true,
+    "compareOffset": true,
+    "expectState": "focused",
+    "ignores": ["field.padding.top", "field.padding.bottom"],
+    "note": "reviewed: source Status=Active Filled=False Required=True (10585:80681, 274x114) captured focused against the FigmaStateMatrix active row. Verified the 274x92 control, radius 8, the #0b3ee3 primary stroke (the library paints the 1px border plus the 2px focus ring, inside the 2px tolerance), the #ffffff surface, the floated 12/18 #0b3ee3 notch label and the caret row. The source Input frame nests the row inset in its Content child (12/0/13/0) while the library textarea owns its own padding: the vertical padding is a mapping artifact, ignored. Responsive clean."
+  },
+  {
+    "id": "10585-80643-active-filled",
+    "nodeId": "10585:80643",
+    "export": "TextAreaField",
+    "storyId": "components-inputs-textareafield--figma-state-matrix",
+    "state": "Active|filled",
+    "variant": "10585:80693",
+    "width": 274,
+    "height": 116,
+    "depth": 4,
+    "root": "#fidelity-area-active-filled",
+    "subjectRoot": "Input",
+    "subjects": {
+      "Label text": "#storybook-root label[for=fidelity-area-active-filled]"
+    },
+    "focus": ["#fidelity-area-active-filled"],
+    "keepFocus": true,
+    "compareOffset": true,
+    "expectState": "focused",
+    "ignores": ["field.padding.top", "field.padding.bottom"],
+    "note": "reviewed: source Status=Active Filled=True Required=True (10585:80693, 274x116) captured focused against the FigmaStateMatrix active filled row. Verified the 274x94 control, radius 8, the #0b3ee3 primary stroke, the #ffffff surface, the floated 12/18 #0b3ee3 notch label and the 16/22 value. The source Input frame nests the row inset in its Content child (12/0/13/0) while the library textarea owns its own padding: the vertical padding is a mapping artifact, ignored. Responsive clean."
+  },
+  {
+    "id": "10585-80643-success-filled",
+    "nodeId": "10585:80643",
+    "export": "TextAreaField",
+    "storyId": "components-inputs-textareafield--figma-state-matrix",
+    "state": "Success|filled",
+    "variant": "10585:80703",
+    "width": 274,
+    "height": 114,
+    "depth": 4,
+    "root": "#fidelity-area-success-filled",
+    "subjectRoot": "Input",
+    "subjects": {
+      "Label text": "#storybook-root label[for=fidelity-area-success-filled]"
+    },
+    "compareOffset": true,
+    "ignores": ["field.padding.top", "field.padding.bottom"],
+    "note": "reviewed: source Status=Success Filled=True Required=True (10585:80703, 274x114) against the FigmaStateMatrix success row. Verified the 274x92 control, radius 8, the 1px #636b82 stroke, the #ffffff surface, the floated 12/18 #555c70 notch label and the 16/22 value, with the 20px check_circle at the source 12px right inset. The source Input frame nests the row inset in its Content child (12/0/13/0) while the library textarea owns its own padding: the vertical padding is a mapping artifact, ignored. Responsive clean."
+  },
+  {
+    "id": "10585-80643-error-empty",
+    "nodeId": "10585:80643",
+    "export": "TextAreaField",
+    "storyId": "components-inputs-textareafield--figma-state-matrix",
+    "state": "Error|empty",
+    "variant": "10585:80713",
+    "width": 274,
+    "height": 114,
+    "depth": 6,
+    "root": "#fidelity-area-error-empty",
+    "subjectRoot": "Input",
+    "subjects": {
+      "Label text": "#storybook-root label[for=fidelity-area-error-empty]"
+    },
+    "compareOffset": true,
+    "ignores": ["field.padding.top", "field.padding.bottom"],
+    "note": "reviewed: source Status=Error Filled=False Required=True (10585:80713, 274x114) against the FigmaStateMatrix error row. Verified the 274x94 control, radius 8, the 1px #d13333 stroke, the #ffffff surface, the resting 16/22 Semibold #555c70 label, the 20px report glyph at the source right inset and the 14/20 #d13333 error line under the control. The source Input frame nests the row inset in its Content child (12/0/13/0) while the library textarea owns its own padding: the vertical padding is a mapping artifact, ignored. Responsive clean."
+  },
+  {
+    "id": "10585-80643-error-filled",
+    "nodeId": "10585:80643",
+    "export": "TextAreaField",
+    "storyId": "components-inputs-textareafield--figma-state-matrix",
+    "state": "Error|filled",
+    "variant": "10585:80722",
+    "width": 274,
+    "height": 114,
+    "depth": 6,
+    "root": "#fidelity-area-error-filled",
+    "subjectRoot": "Input",
+    "subjects": {
+      "Label text": "#storybook-root label[for=fidelity-area-error-filled]"
+    },
+    "compareOffset": true,
+    "ignores": ["field.padding.top", "field.padding.bottom"],
+    "note": "reviewed: source Status=Error Filled=True Required=True (10585:80722, 274x114) against the FigmaStateMatrix error filled row. Verified the 274x92 control, radius 8, the 1px #d13333 stroke, the #ffffff surface, the floated 12/18 #555c70 notch label and the 16/22 value, the 20px report glyph at the source right inset and the 14/20 #d13333 error line under the control. The source Input frame nests the row inset in its Content child (12/0/13/0) while the library textarea owns its own padding: the vertical padding is a mapping artifact, ignored. Responsive clean."
+  },
+  {
+    "id": "10585-80643-enabled-empty-optional",
+    "nodeId": "10585:80643",
+    "export": "TextAreaField",
+    "storyId": "components-inputs-textareafield--figma-state-matrix",
+    "state": "Enabled|empty|optional",
+    "variant": "12079:79635",
+    "width": 274,
+    "height": 114,
+    "depth": 4,
+    "root": "#fidelity-area-optional-empty",
+    "subjectRoot": "Input",
+    "subjects": {
+      "Label text": "#storybook-root label[for=fidelity-area-optional-empty]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: source Status=Enabled Filled=False Required=False (12079:79635, 274x114) against the FigmaStateMatrix optional row. Verified the 274x92 control, radius 8, the 1px #636b82 stroke, the #ffffff surface, the 12px insets, the resting 16/22 Semibold #555c70 label with no required marker and the hidden helper. Responsive clean."
+  },
+  {
     "id": "11133-16142-desktop-action-desktop",
     "nodeId": "11133:16142",
     "export": "PaymentModule",

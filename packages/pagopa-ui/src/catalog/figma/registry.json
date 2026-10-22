@@ -187,13 +187,14 @@
       "note": "Fresh Path C review at pinned version 2409404974909792292 covers variants 105:2044/2047/2050/2053/2056/2059. Source: 30px height, 6px radius, 1px Color/Border/Border fill stroke, 16px status artwork, 6px icon-label gap, 8px insets and Caption SB 12/18px uppercase; Info uses the Filled icon and Counter is iconless. Token-first rendering uses min-h-8 (32px, +2px), rounded-md (radius-8 foundation, +2px), gap-1.5 (6px) and px-2 (8px); the 1px border makes rendered insets 9px (+1px), and the taller centered content shifts down 1px. Semantic status and Gray-700 text tokens are retained. Titillio 12/18px weight 500 maps to Titillium Web 12/18px weight 600; label runs measure 1.5-5.6px narrower. Source→render tag widths are Info 68→65.64px, Warning 96→92.36px, Success 90→87.02px, Error 78→76.77px, Default 89→86.30px and Counter 31→31.45px; no per-variant width compensation is added. The former removable Badge pill moved to InputChip, the source's removable-chip equivalent. (2026-10-14: the source Titillio family is now bundled directly; earlier substitute-font statements and figures in this note are historical and pending re-measurement.)"
     },
     "10585:80643": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/inputs/text-fields.tsx",
         "export": "TextAreaField",
-        "story": "apps/storybook/src/TextAreaField.stories.tsx"
+        "story": "apps/storybook/src/TextAreaField.stories.tsx",
+        "storyExports": ["Playground", "Disabled", "FigmaStateMatrix"]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Field border: grey-650 #636b82 1px when enabled, disabled or success; primary 2px when active/focused; #d13333 on error; never grey-450 (it is not a source field stroke)."
+      "note": "Reviewed 2026-10-22 (M5 wave): eight committed cases, one per principal state of the set's `Status` × `Filled` axes plus one Required=False row, all capturing `FigmaStateMatrix` at the 274 source width (the story gained the Design-panel mapping and the matrix export; the node declared no story export before). Enabled empty (10585:80644, control 274x92) and Enabled empty Required=False (12079:79635, no required marker) are clean; Enabled filled (10585:80662), Active empty (10585:80681, captured focused), Active filled (10585:80693, 274x94), Success filled (10585:80703), Error empty (10585:80713, 274x94) and Error filled (10585:80722) each carry the two ignored vertical-padding mapping artifacts below. Field border: grey-650 #636b82 1px when enabled, disabled or success; primary #0b3ee3 when active/focused (the library paints the 1px border plus the 2px focus ring, inside the 2px tolerance); #d13333 on error; never grey-450 (it is not a source field stroke). Mapping artifact ignored: the source `Input` frame nests its row inset in the `Content` child (12/0/13/0) while the library textarea owns its own padding, so the vertical padding is ignored on the filled and active states. The source `Status` axis has no Disabled variant: the `Disabled` story is a library state outside the pinned set. The remaining `* Required=False` variants repeat these reviewed compositions with the marker removed; one case proves that axis. Automated a11y and render checks are not screen-reader or browser-zoom certification."
     },
     "108:1402": {
       "status": "pending",
