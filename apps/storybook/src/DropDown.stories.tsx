@@ -366,6 +366,114 @@ function StaticIndicatorExample() {
   )
 }
 
+// The source panel (`616:3864`): a location action row followed by five rich
+// option rows with their dividers. The mockup repeats one row; the fixture keeps
+// the count so the panel is the source's content-driven sample. `selected` and
+// the multiselect check states are the source `Status`/`Checked` axes.
+type SourcePanelMode = "single" | "single-selected" | "multi" | "multi-selected" | "multi-all"
+
+function SourcePanel({ mode }: { mode: SourcePanelMode }) {
+  const multiple = mode === "multi" || mode === "multi-selected" || mode === "multi-all"
+  const initial = mode === "multi-all" ? [1, 2, 3, 4, 5] : mode === "multi-selected" ? [1] : []
+  const [checked, setChecked] = React.useState<number[]>(initial)
+  const options: DropDownItem[] = [1, 2, 3, 4, 5].map((index) => {
+    const common = {
+      id: `option-${index}`,
+      label: "Value",
+      description: "Description",
+      leading: <PagoPAIcon name="location_on" size={16} />,
+      chip: (
+        <Chip variant="warning" size="compact" data-slot="chip">
+          <span data-slot="chip-label" className="font-medium">
+            Warning
+          </span>
+        </Chip>
+      ),
+      leadingAlignment: "label" as const,
+    }
+    return multiple
+      ? {
+          ...common,
+          multiple: true as const,
+          checked: checked.includes(index),
+          onCheckedChange: (next: boolean) =>
+            setChecked((previous) =>
+              next ? [...previous, index] : previous.filter((entry) => entry !== index),
+            ),
+        }
+      : {
+          ...common,
+          multiple: false as const,
+          selected: mode === "single-selected" && index === 1,
+          onSelect: () => undefined,
+        }
+  })
+  const items: DropDownItem[] = [
+    {
+      id: "location",
+      label: "Usa posizione attuale",
+      leading: <PagoPAIcon name="my_location" size={24} className="text-primary" />,
+      type: "cta",
+      onSelect: () => undefined,
+    },
+    ...options,
+  ]
+  return (
+    <div className="w-[274px] max-w-full">
+      <DropDown triggerLabel="Open options" className="w-full" items={items} />
+    </div>
+  )
+}
+
+export const SourcePanelDefault: Story = {
+  tags: ["color-pinned"],
+  render: () => <SourcePanel mode="single" />,
+}
+
+export const SourcePanelSelected: Story = {
+  tags: ["color-pinned"],
+  render: () => <SourcePanel mode="single-selected" />,
+}
+
+export const SourcePanelMultiselect: Story = {
+  tags: ["color-pinned"],
+  render: () => <SourcePanel mode="multi" />,
+}
+
+export const SourcePanelMultiselectSelected: Story = {
+  tags: ["color-pinned"],
+  render: () => <SourcePanel mode="multi-selected" />,
+}
+
+export const SourcePanelMultiselectAll: Story = {
+  tags: ["color-pinned"],
+  render: () => <SourcePanel mode="multi-all" />,
+}
+
+export const SourcePanelEmpty: Story = {
+  tags: ["color-pinned"],
+  render: () => (
+    <div className="w-[274px] max-w-full">
+      <DropDown
+        triggerLabel="Open options"
+        className="w-full"
+        items={[]}
+        emptyTitle="Non ci sono corrispondenze da mostrare"
+        emptyDescription="Controlla i dati inseriti oppure inserisci un altro indirizzo o città."
+      />
+    </div>
+  ),
+}
+
+export const SourcePanelSkeleton: Story = {
+  tags: ["color-pinned"],
+  render: () => (
+    <div className="w-[274px] max-w-full">
+      <DropDown triggerLabel="Open options" className="w-full" items={[]} loading />
+    </div>
+  ),
+}
+
 export const StaticIndicator: Story = {
   // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
   parameters: { a11yContract: { reflow: false } },

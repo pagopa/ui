@@ -1321,7 +1321,7 @@
       "note": "Source variants verified: Color/Border/Border fill 1px lines with 0/16/24/32px horizontal insets and a With text divider with 8px gaps and the 14/20px grey-700 text token. `--border` is Figma Color/Border/Border fill #e8ebf1 (grey-100); do not swap in grey-200 #d2d6e3, which is reserved for nodes whose source stroke is grey-200 (Stepper 1314:10512)."
     },
     "616:3864": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/inputs/menus.tsx",
         "export": "DropDown",
@@ -1331,10 +1331,17 @@
           "SingleSelect",
           "Multiselect",
           "MultiSelect",
-          "MixedMultiselect"
+          "MixedMultiselect",
+          "SourcePanelDefault",
+          "SourcePanelSelected",
+          "SourcePanelMultiselect",
+          "SourcePanelMultiselectSelected",
+          "SourcePanelMultiselectAll",
+          "SourcePanelEmpty",
+          "SourcePanelSkeleton"
         ]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Elevation comes only from the Figma shadow scale: `shadow-16` for menus and dropdowns, never Tailwind `shadow-md/lg/xl`. The loading skeleton is hidden from assistive technology and the menu keeps one disabled sr-only item so it remains a valid ARIA menu shape (at least one menuitem) that names the busy state. Item rows (610:33732, not registered) carry the adaptations `location-icon-currentcolor`, `selected-soft-token` and `cta-menuitem-action`, stated in code in inputs/menus.tsx."
+      "note": "Reviewed 2026-10-22 (M5 wave): seven committed cases, one per source variant, all 274 wide against the `SourcePanel*` stories, each captured with the trigger clicked open (`--expect-state open`, the `[role=menu]` popup as evidence): Default (610:36297, 274x392), Selected (617:18348), multiselect Default (616:3865, 274x532), Selected Checked=True (617:19035), Selected Checked=All (617:18688), the Empty state (756:6063, 274x166, mapped to `[data-slot=dropdown-empty]`) and the Skeleton (756:6159, 274x251, mapped to `[data-slot=dropdown-skeleton]`). The panel is the source composition: edge-to-edge rows, no panel padding or gap, the 48px location action row and the 68px single-select / 96px multiselect rich rows, which is what makes the panel height (the library draws a divider between all six rows against the source four: +1px). The source's 15px Figma scrollbar is a mockup overflow artifact: the library rows run the full 274 width. Elevation comes only from the Figma shadow scale: `shadow-16` for menus and dropdowns, never Tailwind `shadow-md/lg/xl`. The loading skeleton is hidden from assistive technology and the menu keeps one disabled sr-only item so it remains a valid ARIA menu shape (at least one menuitem) that names the busy state. Item rows (610:33732, not registered) carry the adaptations `location-icon-currentcolor`, `selected-soft-token` (the source highlight is Blue 500 at 8%, composite #EBF0FD; the selected row uses the accent token, the same 8% mix) and `cta-menuitem-action` (the location row is one native menuitem, never a nested button), stated in code in inputs/menus.tsx. The empty state renders as one disabled menuitem block and the popup keeps `p-0`, so the empty and skeleton cases map the block, not the popup. Automated a11y and render checks are not screen-reader or browser-zoom certification."
     },
     "67:3964": {
       "status": "implemented",
@@ -1417,7 +1424,7 @@
     },
     "8049:39452": {
       "status": "pending",
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`.",
+      "note": "Blocked 2026-10-22 (M5 wave, tooling): the node is a plain `COMPONENT`, not a component set, and the parity tool resolves the compared variant through the set's children (`pickVariant` requires a `COMPONENT_SET`), so `parity check --node 8049:39452` cannot run and no reviewed render exists. The panel itself is implemented (`src/components/inputs/date-picker.tsx`, rendered inline by the `SingleDateConfirmation`, `RangeDateConfirmation`, `ControlledDateLifecycle`, `RangeValidation`, `KeyboardNavigation` and `NarrowGrid` stories); the blocker is the tooling, not a design question, and seven pending nodes share it (this one plus CarouselStepper, EmptyState, Tabs, MenuDropDown, StickyButtonBar and SkipToMainContent). The fix belongs to the parity tools (a node without variants is its own single variant) and is outside the M5 ownership, so the node stays `pending` until that change lands. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`.",
       "target": {
         "module": "src/components/inputs/date-picker.tsx",
         "export": "DatePicker",
@@ -1458,7 +1465,7 @@
         "export": "Autocomplete",
         "story": "apps/storybook/src/Autocomplete.stories.tsx"
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Field border: grey-650 #636b82 1px when enabled, disabled or success; primary 2px when active/focused; #d13333 on error; never grey-450 (it is not a source field stroke). Elevation comes only from the Figma shadow scale: `shadow-16` for the results popup, never Tailwind `shadow-md/lg/xl`."
+      "note": "Blocked 2026-10-22 (M5 wave): the source set declares three `Type` values and the implementation covers one. `Type=Default` is the single-value `Autocomplete` — 272x48, radius 8, the 1px #636b82 stroke (primary when active, #d13333 on error), the 12px insets, the resting 16/22 #555c70 label inside the control, the floated 12/18 notch label, the 24px `account_balance` leading art and the 24px trailing glyph — and is reviewable on its own. `Type=Multiselect` (824:8872) and `Type=Multiselect counter` (11073:2336) draw a row of `Input chip` pills inside the same field frame with the same leading art and a `keyboard_arrow_down` chevron, and the component is single-value (`value?: string`, no `multiple`). The library matching composition is `MultiSelectField` (the trigger renders a removable chip per selection), already declared as an `additionalTarget` of `SelectField` 602:9417, so the mapping is a decision rather than an implementation gap: the open decision is docs/design-requests/2026-10-22-autocomplete-multiselect.md (owner: Figma design owner), and the node stays `pending` until it is answered. Field border: grey-650 #636b82 1px when enabled, disabled or success; primary 2px when active/focused; #d13333 on error; never grey-450 (it is not a source field stroke). Elevation comes only from the Figma shadow scale: `shadow-16` for the results popup, never Tailwind `shadow-md/lg/xl`."
     },
     "8702:266": {
       "status": "implemented",
