@@ -94,12 +94,13 @@ function SourceAlert({
             variant="ghost"
             size="default"
             className={
-              // Source action: a 16/22 text button (22px box). The 44px pointer
-              // target comes from the invisible ::after expansion, so the card
-              // keeps the source 166px rhythm instead of inflating by 22px.
+              // Source action: a 16/22 text button (22px box) with no control
+              // border. The 44px pointer target comes from the invisible
+              // ::after expansion, so the card keeps the source 166px rhythm
+              // instead of inflating by the transparent 1px button border.
               direction === "vertical"
-                ? "relative min-h-0 w-full justify-start px-0 py-0 text-current after:absolute after:inset-x-0 after:-inset-y-3"
-                : "relative min-h-0 px-0 py-0 text-current after:absolute after:inset-x-0 after:-inset-y-3"
+                ? "relative min-h-0 w-full justify-start border-0 px-0 py-0 text-current after:absolute after:inset-x-0 after:-inset-y-3"
+                : "relative min-h-0 border-0 px-0 py-0 text-current after:absolute after:inset-x-0 after:-inset-y-3"
             }
             onClick={onAction}
             data-testid={testId ? `${testId}-action` : undefined}

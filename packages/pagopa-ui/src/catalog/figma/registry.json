@@ -884,14 +884,14 @@
       }
     },
     "212:1899": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/primitives/alert.tsx",
         "export": "Alert",
         "story": "apps/storybook/src/Alert.stories.tsx",
         "storyExports": ["AllStatuses", "Playground", "WithAction"]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+      "note": "Figma delta 2026-10-14: reviewed 2026-10-22 (M5 wave). Five principal states are committed cases against the pinned source: Severity=Error Direction=Vertical (212:1900, 272x166), Error Horizontal (245:1505, 852x84), Warning (212:1910), Info (212:1922) and Success (212:1932) Vertical, all 272x166. The source anatomy holds: 16px padding, the 8px icon-to-content gap, the 16px copy-to-action gap (64px on the horizontal composition), the 1px status stroke and soft fill, title 18/26 Semibold, body 16/22 and the 16/22 text action. The story action keeps its 22px source line (border-0 removes the transparent control border) and its 44px target on the invisible ::after. The three remaining Horizontal severities share the reviewed horizontal composition; the four Vertical severities are each a case. Adaptations retained: `minimum-text-action-target` (the source Text bounds its 16-24px content; the library keeps the 48px native target and its existing horizontal hit area) and `visible-error-spinner` (the pinned source paints a white Contrast spinner on the transparent red variant, which is invisible; the error variant uses the destructive currentColor)."
     },
     "230:1317": {
       "status": "implemented",
