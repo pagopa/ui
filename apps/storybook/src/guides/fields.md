@@ -19,6 +19,16 @@ measures.
   while open and floats it only when a value is selected.
 - The autocomplete's empty live region adds no layout band above the results.
 
+## States
+
+The source `Status` axis drives the field states: `Enabled` is the resting
+control, `Active` is focus (the primary stroke and the floated label),
+`Disabled` is the disabled control (the muted surface), `Success` the decorative
+`check_circle` with the announced success line, and `Error` the `report` glyph
+with `aria-invalid` and the destructive stroke. `Filled` is the native value —
+the label floats into the notch — and `* Required` is the marker next to the
+label.
+
 ## Feedback and fixtures
 
 Errors are associated with the control and use the source `report` glyph;

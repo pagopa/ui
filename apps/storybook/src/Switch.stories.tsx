@@ -746,7 +746,11 @@ export const FidelityStartStates: Story = {
   render: () => (
     <form aria-label="SwitchField control-before-copy source states" className="grid w-80 gap-4">
       {sourceStartStates.map((state) => (
-        <SourceStartOption key={state.id} {...state} />
+        // Source frame: 150x44 per variant (`295:1406`). The row carries the
+        // source width so a parity case compares the field at its own width.
+        <div key={state.id} className="w-[150px] max-w-full">
+          <SourceStartOption {...state} />
+        </div>
       ))}
     </form>
   ),

@@ -187,13 +187,14 @@
       "note": "Fresh Path C review at pinned version 2409404974909792292 covers variants 105:2044/2047/2050/2053/2056/2059. Source: 30px height, 6px radius, 1px Color/Border/Border fill stroke, 16px status artwork, 6px icon-label gap, 8px insets and Caption SB 12/18px uppercase; Info uses the Filled icon and Counter is iconless. Token-first rendering uses min-h-8 (32px, +2px), rounded-md (radius-8 foundation, +2px), gap-1.5 (6px) and px-2 (8px); the 1px border makes rendered insets 9px (+1px), and the taller centered content shifts down 1px. Semantic status and Gray-700 text tokens are retained. Titillio 12/18px weight 500 maps to Titillium Web 12/18px weight 600; label runs measure 1.5-5.6px narrower. Source→render tag widths are Info 68→65.64px, Warning 96→92.36px, Success 90→87.02px, Error 78→76.77px, Default 89→86.30px and Counter 31→31.45px; no per-variant width compensation is added. The former removable Badge pill moved to InputChip, the source's removable-chip equivalent. (2026-10-14: the source Titillio family is now bundled directly; earlier substitute-font statements and figures in this note are historical and pending re-measurement.)"
     },
     "10585:80643": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/inputs/text-fields.tsx",
         "export": "TextAreaField",
-        "story": "apps/storybook/src/TextAreaField.stories.tsx"
+        "story": "apps/storybook/src/TextAreaField.stories.tsx",
+        "storyExports": ["Playground", "Disabled", "FigmaStateMatrix"]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Field border: grey-650 #636b82 1px when enabled, disabled or success; primary 2px when active/focused; #d13333 on error; never grey-450 (it is not a source field stroke)."
+      "note": "Reviewed 2026-10-22 (M5 wave): eight committed cases, one per principal state of the set's `Status` × `Filled` axes plus one Required=False row, all capturing `FigmaStateMatrix` at the 274 source width (the story gained the Design-panel mapping and the matrix export; the node declared no story export before). Enabled empty (10585:80644, control 274x92) and Enabled empty Required=False (12079:79635, no required marker) are clean; Enabled filled (10585:80662), Active empty (10585:80681, captured focused), Active filled (10585:80693, 274x94), Success filled (10585:80703), Error empty (10585:80713, 274x94) and Error filled (10585:80722) each carry the two ignored vertical-padding mapping artifacts below. Field border: grey-650 #636b82 1px when enabled, disabled or success; primary #0b3ee3 when active/focused (the library paints the 1px border plus the 2px focus ring, inside the 2px tolerance); #d13333 on error; never grey-450 (it is not a source field stroke). Mapping artifact ignored: the source `Input` frame nests its row inset in the `Content` child (12/0/13/0) while the library textarea owns its own padding, so the vertical padding is ignored on the filled and active states. The source `Status` axis has no Disabled variant: the `Disabled` story is a library state outside the pinned set. The remaining `* Required=False` variants repeat these reviewed compositions with the marker removed; one case proves that axis. Automated a11y and render checks are not screen-reader or browser-zoom certification."
     },
     "108:1402": {
       "status": "pending",
@@ -1097,8 +1098,8 @@
       }
     },
     "295:1360": {
-      "status": "pending",
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented",
+      "status": "implemented",
+      "note": "Reviewed 2026-10-22 (M5 wave): seven committed cases, one per principal state of the set, all 150 wide against `FidelityStartStates`' control-before-copy rows: Checked=False/True with Enable=True (295:1406, 295:1432), the two disabled variants (295:1424, 295:1440), the error variant (295:1411, 150x66) and the two focused variants (295:1466, 295:1482, captured focused). Verified: the 150x44 row, the 12px control-to-copy gap, the 16/22 Semibold #0e0f13 title, the 14/20 #555c70 description, the 50% `Element` artwork fade on disabled, the 10px focus dot with the library keyboard perimeter outside it and the 14/20 #d13333 helper with its 16px report glyph. The source `.Switch single element` frame (58x38) rounds to the 56x44 native target (primitive `native-target-token-rounding`), which the row follows. Residue: disabled copy uses the muted-foreground token (the family adaptation `native-unavailable-state`, recorded on CheckboxField 194:3661) while the pinned source leaves the `Label` text at #0e0f13 and fades only the artwork; the guide records `legible disabled copy` as a deliberate adaptation. The two `Status=Hover` variants (295:1461, 295:1477) stay uncovered: the pointer halo is a transient state the parity capture cannot hold (there is no `--hover`), and the reviewed composition is the default one plus the halo the primitive documents. Automated a11y and render checks are not screen-reader or browser-zoom certification.",
       "target": {
         "module": "src/components/inputs/switch-field.tsx",
         "export": "SwitchField",
@@ -1138,8 +1139,8 @@
       "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
     },
     "349:4683": {
-      "status": "pending",
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented",
+      "status": "implemented",
+      "note": "Reviewed 2026-10-22 (M5 wave): four committed cases, one per `Checked` × `Availability` variant (349:4684, 349:4703, 349:4717, 349:4727), all 320 wide against `FidelityRichStates`. The node is one rich option, not a group; source names never determine identity. Verified: the 24px decorative leading art, the 12px icon-to-copy gap, the 16/22 Semibold #0e0f13 title, the 14/20 #555c70 description, the #555c70/#0b3ee3 track, the 14/20 primary link and the hidden helper. Residues: the rich row follows the 44px native control target (the source `.Switch single element` frame is 58x38, rounded to 56x44 by `native-target-token-rounding`), so the row is 8px taller than the content-driven source sample and the copy offsets follow; the source root spaces its stack with a 4/8px gap while the library stacks the label, messages and link inside one grid. The two `Availability=No` roots carry a source-wide reduced opacity; the library deliberately fades only the decorative art and keeps copy, control and link opaque (documented adaptation, switch-choices guide). Automated a11y and render checks are not screen-reader or browser-zoom certification.",
       "target": {
         "module": "src/components/inputs/switch-field.tsx",
         "export": "SwitchField",
@@ -1277,14 +1278,21 @@
       "note": "Reviewed 2026-10-16 (device burn-down wave 5): the white page canvas — a section with the source root's own minHeight 650 over the white surface, growing with caller content; `SafeArea` owns the max width and gutters. One case per declared device, all responsive-clean and each with no layoutScope (the set draws one composition — an empty white canvas — at every device, so both scope probes report the composition unchanged and a scope declaration would be vacuous): mobile 50:1701 (case 50-1700-xs-mobile-mobile, 320x650), tablet 50:1707 (case 50-1700-md-tablet-tablet, 900x650 — of the set's two tablet frames the MD 900 is the frame nearest the midpoint of the captured pair 320/1200 and above the library's sm breakpoint) and desktop 50:1710 (case 50-1700-lg-desktop-desktop, 1200x650; the XL 1536 and XXL 1920 frames are the same canvas). The cases capture the `Fidelity` story, the source-exact empty surface (the `Playground` SafeArea paragraph stays under the 650 floor at every captured width, so the height is the source floor, not content-driven)."
     },
     "529:6111": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/inputs/text-fields.tsx",
         "export": "TextField",
         "story": "apps/storybook/src/TextField.stories.tsx",
-        "storyExports": ["Playground", "ReadOnly", "Validation", "WithIcons", "WithTrailingIcon"]
+        "storyExports": [
+          "Playground",
+          "ReadOnly",
+          "Validation",
+          "WithIcons",
+          "WithTrailingIcon",
+          "FigmaStateMatrix"
+        ]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Field border: grey-650 #636b82 1px when enabled, disabled or success; primary 2px when active/focused; #d13333 on error; never grey-450 (it is not a source field stroke)."
+      "note": "Reviewed 2026-10-22 (M5 wave): ten committed cases, one per principal state of the set's `Status` × `Filled` axes plus one Required=False row. Enabled empty (529:6123) and Enabled filled (529:6110) capture `Playground`; the other eight capture `FigmaStateMatrix`, one row per source variant at the 274 source width: Disabled empty (529:6137), Disabled filled (529:6180), Active empty (529:6154, captured focused), Active filled (529:6169, focused), Success filled (529:6191), Error empty (529:6266, 274x70) and Error filled (529:6267, 274x70), plus Enabled empty Required=False (10274:50122, no required marker). All are 274 wide with radius 8; the input is 48 tall except the 50px error control. Field border: grey-650 #636b82 1px when enabled, disabled or success; primary #0b3ee3 when active/focused (the library paints the 1px border plus the 2px focus ring, inside the 2px tolerance); #d13333 on error; never grey-450 (it is not a source field stroke). Mapping artifacts ignored: the source `Input` frame nests its row inset in the `Content` child (12/0/13/0) while the library input owns its own padding, so the vertical padding is ignored; the trailing icon slot reserves its own right padding (success and error). The resting label sits 3px lower in the 50px error control (recorded residue: the source nests it in `Content`, the library centres the label box on the 48px control). The remaining `* Required=False` variants repeat these reviewed compositions with the marker removed; one case proves that axis. Automated a11y and render checks are not screen-reader or browser-zoom certification."
     },
     "602:9417": {
       "status": "implemented",
