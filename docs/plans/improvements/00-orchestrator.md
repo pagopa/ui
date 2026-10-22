@@ -1,7 +1,7 @@
 # Improvement plan — orchestrator
 
-This folder turns the review in [../improvements.md](../improvements.md) into ten
-actions. One implementing agent executes each action, on its own branch and git
+This folder turns the review in [../improvements.md](../improvements.md) into
+eleven actions. One implementing agent executes each action, on its own branch and git
 worktree.
 
 Who reads what:
@@ -28,18 +28,19 @@ section 4.3 with the placeholders filled in.
 
 ## 1. The actions
 
-| #   | File                                                 | Goal (one line)                                                                           | Depends on (merged) | Person gate before start  |
-| --- | ---------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------- | ------------------------- |
-| 01  | [01-visual-regression.md](./01-visual-regression.md) | Gating screenshot regression of every story at 320/600/1200 (Playwright)                  | —                   | —                         |
-| 02  | [02-public-api.md](./02-public-api.md)               | Explicit exports, API report gate, approved renames, `UIProvider` with router links       | —                   | `G-API` (rename approval) |
-| 03  | [03-packaging-rsc.md](./03-packaging-rsc.md)         | Per-module build, `"use client"` check, Next.js App Router consumer                       | 02, 04              | —                         |
-| 04  | [04-locale-provider.md](./04-locale-provider.md)     | Messages in `UIProvider`: Italian default dictionary, English one, `text-defaults` gate   | 02                  | —                         |
-| 05  | [05-ci-fast-lane.md](./05-ci-fast-lane.md)           | `workspace:verify` target, Chromium-only packed check on PRs, less duplicate CI work      | —                   | —                         |
-| 06  | [06-parity-align.md](./06-parity-align.md)           | `parity align <nodeId>`, fan-in queue order, `parity verify` in the gate                  | 07                  | `G-EVD` for part C only   |
-| 07  | [07-agent-context.md](./07-agent-context.md)         | Fix stale references, turn known traps into checks, cap registry notes, prune skills      | —                   | —                         |
-| 08  | [08-responsive-tokens.md](./08-responsive-tokens.md) | Only Figma breakpoints in Tailwind; off-token responsive variants become foundation rules | 01, 02, 07          | `G-VIS` (baselines)       |
-| 09  | [09-a11y-traceability.md](./09-a11y-traceability.md) | Explicit WCAG axe tags, live-region contract, conformance matrix                          | 02                  | —                         |
-| 10  | [10-public-tokens.md](./10-public-tokens.md)         | Public token contract: `@pagopa/ui/tokens.css` and the typed `@pagopa/ui/tokens`          | 03, 08              | —                         |
+| #   | File                                                     | Goal (one line)                                                                           | Depends on (merged) | Person gate before start  |
+| --- | -------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------- | ------------------------- |
+| 01  | [01-visual-regression.md](./01-visual-regression.md)     | Gating screenshot regression of every story at 320/600/1200 (Playwright)                  | —                   | —                         |
+| 02  | [02-public-api.md](./02-public-api.md)                   | Explicit exports, API report gate, approved renames, `UIProvider` with router links       | —                   | `G-API` (rename approval) |
+| 03  | [03-packaging-rsc.md](./03-packaging-rsc.md)             | Per-module build, `"use client"` check, Next.js App Router consumer                       | 02, 04              | —                         |
+| 04  | [04-locale-provider.md](./04-locale-provider.md)         | Messages in `UIProvider`: Italian default dictionary, English one, `text-defaults` gate   | 02                  | —                         |
+| 05  | [05-ci-fast-lane.md](./05-ci-fast-lane.md)               | `workspace:verify` target, Chromium-only packed check on PRs, less duplicate CI work      | —                   | —                         |
+| 06  | [06-parity-align.md](./06-parity-align.md)               | `parity align <nodeId>`, fan-in queue order, `parity verify` in the gate                  | 07                  | `G-EVD` for part C only   |
+| 07  | [07-agent-context.md](./07-agent-context.md)             | Fix stale references, turn known traps into checks, cap registry notes, prune skills      | —                   | —                         |
+| 08  | [08-responsive-tokens.md](./08-responsive-tokens.md)     | Only Figma breakpoints in Tailwind; off-token responsive variants become foundation rules | 01, 02, 07          | `G-VIS` (baselines)       |
+| 09  | [09-a11y-traceability.md](./09-a11y-traceability.md)     | Explicit WCAG axe tags, live-region contract, conformance matrix                          | 02                  | —                         |
+| 10  | [10-public-tokens.md](./10-public-tokens.md)             | Public token contract: `@pagopa/ui/tokens.css` and the typed `@pagopa/ui/tokens`          | 03, 08              | —                         |
+| 11  | [11-storybook-templates.md](./11-storybook-templates.md) | Figma page templates move to `apps/storybook`; the `templates` layer is retired           | 01, 02, 07, 08      | —                         |
 
 Dependencies (each line lists what must already be merged into `main`):
 
@@ -50,6 +51,7 @@ Dependencies (each line lists what must already be merged into `main`):
 08              01, 02, 07      (and G-VIS)
 03              02, 04
 10              03, 08
+11              01, 02, 07, 08
 ```
 
 Expected waves when nothing fails:
@@ -58,7 +60,7 @@ Expected waves when nothing fails:
 | ---- | -------------- |
 | W1   | 01, 02, 05, 07 |
 | W2   | 04, 06, 08, 09 |
-| W3   | 03             |
+| W3   | 03, 11         |
 | W4   | 10             |
 
 ### Person gates
@@ -88,7 +90,6 @@ Person-only steps, which the action reports also remind about:
 
 - Nx remote cache for CI.
 - Splitting `packages/ui-cli/tests/library.spec.mjs` into per-family specs.
-- Moving the demos out of the package.
 - An oxlint rule ratchet.
 - Publishing to the public npm registry.
 - Responsive typography utilities that replace the `text-*-mobile` pairs, and

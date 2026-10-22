@@ -12,16 +12,16 @@ components in `packages/pagopa-ui`, stories in `apps/storybook`.
 
 ## Flows and dependencies
 
-| Flow | Plan or outcome                                                                                                                                           | Depends on         | Can run with                    |
-| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ | ------------------------------- |
-| F0   | closed: the `figma-to-code` skill and the essential documents                                                                                             | —                  | —                               |
-| F1   | [mcp-to-rest.md](./mcp-to-rest.md) (future, conditional)                                                                                                  | F0 (closed)        | — (outside the wave)            |
-| B    | closed outcome: [prop conventions](../../.agents/skills/pagopa-ui-standards/references/prop-conventions.md)                                               | F0                 | —                               |
-| C    | closed outcome: `packages/tokens`; follow-up: [foundation variables](../design-requests/2026-10-16-foundation-variables.md)                               | F0                 | —                               |
-| D    | closed outcome: Storybook accessibility contract; follow-up: [reflow conditions](../design-requests/2026-10-16-a11y-reflow-conditions.md)                 | F0                 | —                               |
-| A/E  | [figma-fidelity-and-drift.md](./figma-fidelity-and-drift.md) — corpus gate, evidence bundle, opt-in Chromatic, guarded drift handoff, component burn-down | F0; B, C, D closed | —                               |
-| F2   | [pipeline-proposal.md](./pipeline-proposal.md) — deep checks in parallel jobs; sharding and cache are future work                                         | —                  | —                               |
-| IMP  | [improvements/00-orchestrator.md](./improvements/00-orchestrator.md) — ten actions from [the review](./improvements.md), one worktree each; its own rules | —                  | A/E (pause M5 during 02 and 08) |
+| Flow | Plan or outcome                                                                                                                                              | Depends on         | Can run with                    |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------ | ------------------------------- |
+| F0   | closed: the `figma-to-code` skill and the essential documents                                                                                                | —                  | —                               |
+| F1   | [mcp-to-rest.md](./mcp-to-rest.md) (future, conditional)                                                                                                     | F0 (closed)        | — (outside the wave)            |
+| B    | closed outcome: [prop conventions](../../.agents/skills/pagopa-ui-standards/references/prop-conventions.md)                                                  | F0                 | —                               |
+| C    | closed outcome: `packages/tokens`; follow-up: [foundation variables](../design-requests/2026-10-16-foundation-variables.md)                                  | F0                 | —                               |
+| D    | closed outcome: Storybook accessibility contract; follow-up: [reflow conditions](../design-requests/2026-10-16-a11y-reflow-conditions.md)                    | F0                 | —                               |
+| A/E  | [figma-fidelity-and-drift.md](./figma-fidelity-and-drift.md) — corpus gate, evidence bundle, opt-in Chromatic, guarded drift handoff, component burn-down    | F0; B, C, D closed | —                               |
+| F2   | [pipeline-proposal.md](./pipeline-proposal.md) — deep checks in parallel jobs; sharding and cache are future work                                            | —                  | —                               |
+| IMP  | [improvements/00-orchestrator.md](./improvements/00-orchestrator.md) — eleven actions from [the review](./improvements.md), one worktree each; its own rules | —                  | A/E (pause M5 during 02 and 08) |
 
 ```
 F0 ─┬─ B ─┐

@@ -250,12 +250,17 @@ meta-layers:
 
 ### 3.3 Demo code inside the library — **Medium**
 
-`src/components/templates/figma` holds 19 `mocked` demo screens, among them
-`TemplateShell.tsx` (507 lines, the second-largest file). They live under
-`src/components`, are compiled by the library `tsc`, and count toward lint and
-layers. Move them to `apps/storybook/src/templates`: the library then contains
+`src/components/templates/figma` holds the Figma page templates: 5
+`implemented` compositions with parity cases and 19 `mocked` placeholders
+rendered by `TemplateShell.tsx` (507 lines), about 1,100 lines in total. They
+are not shipped: the build follows only the public entry, coverage excludes
+them and `library.css` skips them. But they sit inside the component tree, so
+every rule carries an exception for them: a `templates` layer with a
+third-party exemption, exclusions in the API and text plans, and a coverage
+exclude. Move them to `apps/storybook/src/templates`: the library then contains
 only shippable code, and the layer rule "nothing in components imports
-stories" becomes trivially true.
+stories" becomes trivially true. The registry and the foundation check must
+follow the files (action 11).
 
 ### 3.4 Code health signals — **Medium**
 
@@ -471,7 +476,7 @@ run the same thing, and the docs reference one name instead of fourteen.
     implemented nodes (§4.3).
 11. Responsive type tokens; retire `text-*-mobile` in components (§4.5).
 12. Per-component a11y conformance matrix plus a manual AT pass (§5.1).
-13. Move the demos out of the library (§3.3); oxlint warning ratchet (§3.4).
+13. Move the demos out of the library (§3.3, action 11); oxlint warning ratchet (§3.4).
 
 ## 7. Explicitly not recommended
 
