@@ -333,13 +333,14 @@
       }
     },
     "1137:8910": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/primitives/tabs.tsx",
         "export": "Tabs",
-        "story": "apps/storybook/src/Tabs.stories.tsx"
+        "story": "apps/storybook/src/Tabs.stories.tsx",
+        "storyExports": ["Default", "FidelityTabs"]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+      "note": "Reviewed 2026-10-23 (closing the 2026-10-14 delta): the node is a plain COMPONENT, not a set, so it has one variant and no Device axis; `1137-8910-default` verifies the whole 658x48 TabGroup at its source width. Seven 94x48 tabs, the first active: the 16px inline and 8px block padding, the 8px icon-to-label gap, the 24px kid_star artwork, the 18/26 Semibold label, the active tab in primary (label, artwork and the 2px bottom line) and the inactive ones at #555c70 over the #e8ebf1 line. The source nests Content and Frame 1049 inside each `.Tab item`; the DOM keeps one trigger row, so the item gap carries the inner 8px (ignored as a mapping artifact) and the nested Content padding is the trigger own padding. The list reports an 11px horizontal scroll at the source width because the label measures 31.6 against the source 30 (a font metric): it is a responsive advisory, not a delta, and the band stays one row. The guide apps/storybook/src/guides/tabs.md records the source mapping. Prop conventions: `variant=\"line\"` is the drawn composition; `variant=\"default\"` (the pill list) is a library extension with no source frame; `orientation` is caller-owned because the source draws only the horizontal row; the labels and the list `aria-label` are consumer strings. No open design question."
     },
     "1154:4493": {
       "status": "mocked",

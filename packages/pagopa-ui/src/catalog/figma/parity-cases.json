@@ -2017,6 +2017,23 @@
     "note": "The declared condensed head (device mobile): the source draws a 320x48 Head with the menu icon and a placeholder label plus a 320x1 Divider; the DOM summary carries the divider as its own 1px border-b (49 against the source 48+1), shows the section name where the source's 'Menu' is placeholder copy (the fixture owns its copy) and adds the disclosure chevron."
   },
   {
+    "id": "1137-8910-default",
+    "nodeId": "1137:8910",
+    "export": "Tabs",
+    "storyId": "components-tabs--fidelity-tabs",
+    "state": "default",
+    "variant": "1137:8910",
+    "width": 658,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"tabs-list\"]",
+    "subjects": {
+      ".Tab item": "#storybook-root [data-slot=\"tabs-trigger\"]:first-of-type"
+    },
+    "compareOffset": true,
+    "ignores": [".Tab item.gap"],
+    "note": "reviewed: TabGroup at its 658x48 source width, no Device axis: seven 94x48 tabs, the first active. Each tab keeps the 16/8 padding, the 8px icon-to-label gap, the 24px kid_star artwork and the 18/26 Semibold label; the active tab turns primary (label, artwork and the 2px bottom line) while the inactive ones keep #555c70 over the #e8ebf1 line. The source nests Content and Frame 1049 inside the item; the DOM keeps one trigger row, so the item gap carries the inner 8px and the nested Content padding is the trigger own padding (mapping artifact). The list reports an 11px horizontal scroll at the source width because the label measures 31.6 against the source 30 — a font-metric advisory, not a delta."
+  },
+  {
     "id": "1278-6527-1278-6526-mobile",
     "nodeId": "1278:6527",
     "export": "Drawer",
