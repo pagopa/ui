@@ -7,13 +7,13 @@ and validation without stealing focus.
 
 The panel stacks its four blocks with the source's 8px gap: the `Header` — the
 label `Row` (14/20, 16/8 insets) over the month `Row` (18/26 Semibold with the
-24px chevrons, 8/16 insets, closed by its full-bleed `Divider`) — then the
-`Calendar` (its weekday row over the day rows, at the source's 8px inline
-inset), a `Divider` and the footer `Row` whose actions keep the source's 16px
-inline inset. The day rows keep the 44px pointer target the a11y contract
-requires (the source row is 36) and the footer uses real 48px buttons where the
-source draws 22px text links, so the panel is taller than the source's 426px
-sample.
+two 24px chevrons 4px apart at the 16px inset, closed by its full-bleed
+`Divider`) — then the `Calendar` (its weekday row over the day rows, at the
+source's 8px inline inset), a `Divider` and the footer `Row` (46px, 8/16
+insets, a 24px gap) whose 16/22 Semibold actions are text actions with their
+pointer target on the invisible expansion. The day rows keep the 44px pointer
+target the a11y contract requires (the source row is 36), so the panel is
+taller than the source's 426px sample by that grid only.
 
 Single selection uses `value?: Date` and `onConfirm: (value: Date) => void`.
 `mode="range"` uses `value?: DatePickerRange` and

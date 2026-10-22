@@ -6,7 +6,6 @@ import { it } from "react-day-picker/locale"
 export type { DateRange } from "react-day-picker"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { buttonVariants } from "./button"
 
 function Calendar({
   className,
@@ -31,9 +30,11 @@ function Calendar({
         month_caption:
           "-mx-2 flex items-center border-b border-secondary px-4 py-2 pr-22 text-body-big-sb",
         caption_label: "",
-        nav: "absolute right-2 top-0 flex items-center",
-        button_previous: buttonVariants({ variant: "ghost", size: "icon" }),
-        button_next: buttonVariants({ variant: "ghost", size: "icon" }),
+        nav: "absolute top-2 right-2 flex items-center gap-1",
+        button_previous:
+          "relative flex size-6 items-center justify-center rounded-md text-primary after:absolute after:-inset-2.5 after:content-[''] focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50",
+        button_next:
+          "relative flex size-6 items-center justify-center rounded-md text-primary after:absolute after:-inset-2.5 after:content-[''] focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50",
         month_grid: "w-full table-fixed border-collapse",
         weekday: "pb-2 text-caption-sb text-muted-foreground",
         day: "h-11 p-0 text-center",

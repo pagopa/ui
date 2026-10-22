@@ -71,9 +71,9 @@ export const SingleDateConfirmation: Story = {
       throw new Error("Expected the source calendar panel")
     }
     const round = (value: number) => Math.round(value)
-    const legend = panel.querySelector("legend")
-    if (!(legend instanceof HTMLElement)) throw new Error("Expected the panel label row")
-    await expect(round(legend.getBoundingClientRect().height)).toBe(44)
+    const labelRow = panel.querySelector('[id$="-label"]')
+    if (!(labelRow instanceof HTMLElement)) throw new Error("Expected the panel label row")
+    await expect(round(labelRow.getBoundingClientRect().height)).toBe(36)
     await expect(round(caption.getBoundingClientRect().top - panelBox.top)).toBe(44)
     await expect(round(caption.getBoundingClientRect().height)).toBe(43)
     await expect(round(caption.getBoundingClientRect().width)).toBe(round(panelBox.width))
@@ -92,6 +92,25 @@ export const SingleDateConfirmation: Story = {
     await expect(round(firstWeekday.getBoundingClientRect().left - panelBox.left)).toBe(8)
     await expect(round(firstRow.getBoundingClientRect().height)).toBe(44)
     await expect(round(firstDay.getBoundingClientRect().height)).toBe(44)
+    // The source footer and month navigation keep their own geometry: a 46px
+    // footer with 22px text actions and two 24px chevrons 4px apart.
+    const footer = panel.lastElementChild
+    if (!(footer instanceof HTMLElement)) throw new Error("Expected the panel footer")
+    await expect(round(footer.getBoundingClientRect().height)).toBe(46)
+    const actions = [...footer.querySelectorAll("button")]
+    await expect(actions).toHaveLength(2)
+    for (const action of actions) {
+      await expect(round(action.getBoundingClientRect().height)).toBe(22)
+      await expect(round(action.getBoundingClientRect().width)).toBeGreaterThanOrEqual(40)
+    }
+    const nav = panel.querySelector("nav")
+    const navButtons = nav ? [...nav.querySelectorAll("button")] : []
+    await expect(navButtons).toHaveLength(2)
+    for (const button of navButtons) {
+      await expect(round(button.getBoundingClientRect().width)).toBe(24)
+      await expect(round(button.getBoundingClientRect().height)).toBe(24)
+    }
+    await expect(round(panelBox.right - navButtons[1].getBoundingClientRect().right)).toBe(16)
   },
 }
 

@@ -75,9 +75,9 @@
   inline padding, and the `Informative + CTA` action is a 22px text action with
   its 44px pointer target on the invisible hit area instead of a 48px control.
 - `DatePicker` draws the source panel's four-block rhythm: the two-row header
-  (label row and month row) closed by its full-bleed divider, then the calendar,
-  a divider and the footer, with the source's 8px stack gap and 16px footer
-  inset.
+  (label row and month row, its 24px chevrons 4px apart) closed by its
+  full-bleed divider, then the calendar, a divider and the 46px footer, with the
+  source's 8px stack gap, 8px grid inset and 22px text actions.
 
 ### Removed
 
