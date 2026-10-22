@@ -70,7 +70,7 @@ command shown, run in the main checkout on `main`; exit code 0 means satisfied.
 | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
 | `G-API` | Fills the "Decision" column of the rename table in `02-public-api.md`, changes its line `Approval: PENDING` to `Approval: APPROVED` and commits to `main`.                                                                      | `grep -q '^Approval: APPROVED' docs/plans/improvements/02-public-api.md`  |
 | `G-VIS` | On the pull request of action 01, adds the `visual:update` label so the workflow commits Linux baselines, reviews a sample, re-runs the check and merges. The steps are in the "Report additions" of `01-visual-regression.md`. | `git ls-files 'apps/storybook/visual/__screenshots__/*.png' \| grep -q .` |
-| `G-EVD` | Exports `FIGMA_TOKEN` (or links the `.figma/` snapshot), runs `pnpm nx run pagopa-ui-cli:figma:parity:evidence -- --write`, checks the folder is under 10 MB and commits `docs/figma-parity/`.                                  | `git ls-files docs/figma-parity/source.json \| grep -q .`                 |
+| `G-EVD` | Exports `FIGMA_TOKEN` (or links the `.figma/` snapshot), runs `pnpm nx run pagopa-ui-cli:figma:parity:evidence -- --write`, checks the folder is under 10 MB and commits `docs/figma-parity/`.                                  | `git ls-files docs/figma-parity/manifest.json \| grep -q .`               |
 
 Person-only steps, which the action reports also remind about:
 

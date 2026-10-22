@@ -61,6 +61,12 @@ After this action:
   `text-*-mobile` typography pairs stay as they are; they get a ratchet only.
   Replacing them needs a design decision (deferred in the orchestrator file).
 - `IDModule`'s `device` prop stays.
+- Figma parity is the arbiter between 600 and 1199px. About 20 committed parity
+  cases (reviewed against Figma in M5) render at those widths, and the visual
+  gate can't tell whether a change there moves a component towards Figma or
+  away from it. Their verdicts are measured before and after (steps 1 and 5);
+  a case that gets worse is a regression, even when the visual diff is
+  accepted.
 
 ## Ownership
 
@@ -107,6 +113,30 @@ cd apps/storybook && VISUAL_SNAPSHOT_DIR=/tmp/pagopa-ui-visual-08 \
 
 Done when: the five counts are in the report and `/tmp/pagopa-ui-visual-08`
 holds PNGs.
+
+#### 1b. Parity baseline at 600–1199
+
+Start Storybook on port 6108 (rule 11). The evidence bundle makes the check
+work without `FIGMA_TOKEN`. This step calls the CLI directly, not through Nx,
+because it parses the JSON output; it is the same read-only command the
+`pagopa-ui-cli:figma:parity:check` target runs. Never pass `--save-case`.
+
+```sh
+cd packages/ui-cli
+node -e 'for (const c of require("../pagopa-ui/src/catalog/figma/parity-cases.json")) { const w = c.viewport ?? c.width; if (w >= 600 && w < 1200) console.log(c.id) }' > /tmp/pagopa-ui-parity-08-ids.txt
+mkdir -p /tmp/pagopa-ui-parity-08/before
+while read -r id; do
+  STORYBOOK_URL=http://localhost:6108 node src/cli.ts parity check --case "$id" --json \
+    > "/tmp/pagopa-ui-parity-08/before/$id.json" 2>/dev/null || true
+done < /tmp/pagopa-ui-parity-08-ids.txt
+for f in /tmp/pagopa-ui-parity-08/before/*.json; do
+  node -e 'const r = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8")).report; console.log(process.argv[1].split("/").pop(), r.verdict, r.deltas.length)' "$f" || echo "$f unreadable"
+done
+```
+
+Done when: the report has a table `case id · verdict · deltas` for every id
+in the list (about 20). An unreadable file means the capture failed: re-run
+that id once; if it still fails, mark it `error` and continue.
 
 ### 2. Foundation rules first
 
@@ -184,9 +214,20 @@ Done when:
 4. Run the story suites (`test:stories`, `test:coverage`) under the lock. A
    `play` assertion that depends on a width between 640 and 1200 may change:
    fix the story only if its assertion encodes the old breakpoint, and list it.
+5. Restart Storybook on port 6108 and repeat step 1b into
+   `/tmp/pagopa-ui-parity-08/after/`. Compare each case with its "before" row:
+   - **improved**: fewer deltas, or a verdict with deltas became clean;
+   - **unchanged**: same verdict and delta count;
+   - **regressed**: more deltas, or a clean verdict now has deltas.
+
+   For a regressed case, check its component's diff first: a mapping mistake
+   (a prefix the Decisions table maps differently) is fixed. Otherwise the
+   component's alignment relied on a Tailwind width: don't redesign it and
+   don't touch the case; list it for the person.
 
 Done when: the failing captures are all at 600 and listed in the report (story
-id, one line on what moved).
+id, one line on what moved), and the report has the parity table with
+before, after and the class (improved, unchanged, regressed) for every case.
 
 ### 6. Documentation
 
@@ -234,6 +275,8 @@ Heavy (under the lock): the Storybook build, step 5, `pagopa-ui:library:check`.
   library check fails because a class like `max-w-screen-*` is missing).
 - The library check (`library.spec.mjs`) fails on a layout assertion at a
   width between 640 and 1200.
+- More than 3 parity cases regress in step 5.5 after the mapping mistakes are
+  fixed.
 
 ## Commits
 
@@ -248,5 +291,7 @@ Heavy (under the lock): the Storybook build, step 5, `pagopa-ui:library:check`.
 
 - The five counts, before and after.
 - The failing `-600` captures from step 5.
-- Person steps: on the pull request, review the visual diff artifacts and add
-  the `visual:update` label; pause M5 burn-down sessions until merged.
+- The parity table from step 5.5; regressed cases first.
+- Person steps: on the pull request, review the visual diff artifacts and the
+  regressed parity cases (if any), then add the `visual:update` label; pause
+  M5 burn-down sessions until merged.

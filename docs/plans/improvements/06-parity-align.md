@@ -32,8 +32,14 @@ change. A cheaper model gets lost in that sequence. After this action:
   the classification or the tolerance.
 - Fan-in = the number of inventory components whose `dependencies` include the
   node. Ties keep today's order.
-- Part C is skipped when `docs/figma-parity/source.json` is not committed on
+- Part C is skipped when `docs/figma-parity/manifest.json` is not committed on
   your branch's base. Report it as `PARTIAL` with "part C waits for G-EVD".
+- The evidence bundle (`docs/figma-parity/`: `source.json.gz`, `manifest.json`,
+  `references/`) makes `check` and `align` work without `FIGMA_TOKEN` and
+  without the `.figma/` snapshot. Storybook is still needed for the render.
+- Storybook's address comes from the `STORYBOOK_URL` environment variable
+  (`packages/ui-cli/src/parity/render.ts`, default `http://localhost:6006`).
+  `align` uses the same variable; don't add a `--url` flag.
 
 ## Ownership
 
@@ -115,9 +121,9 @@ Done when:
 
 - `pnpm nx run pagopa-ui-cli:test` passes;
 - with Storybook running on port 6106
-  (`pnpm nx run pagopa-ui-cli:figma:parity:align -- --node <id> --url http://localhost:6106`,
-  or the URL flag `check` uses), the 3 measured nodes print a work order. Its
-  output is at most half the "before" lines.
+  (`STORYBOOK_URL=http://localhost:6106 pnpm nx run pagopa-ui-cli:figma:parity:align -- --node <id>`),
+  the 3 measured nodes print a work order. Its output is at most half the
+  "before" lines.
 
 ### 3. Part B — fan-in order
 
@@ -153,11 +159,17 @@ files didn't grow.
 
 ### 5. Part C — `verify` in the gate (only with `G-EVD`)
 
-Check first: `git ls-files docs/figma-parity/source.json`. If it prints
+Check first: `git ls-files docs/figma-parity/manifest.json`. If it prints
 nothing, skip this step and say so.
 
-1. `pnpm nx run pagopa-ui-cli:figma:parity:verify` must exit 0. If it fails
-   for reasons other than missing evidence, stop: that is M5 work.
+`figma:check` already validates the case corpus and device coverage; it doesn't
+check the evidence bundle (stale fingerprints, missing or orphan PNGs, the
+10 MB cap). That is what `verify` adds to the gate.
+
+1. `pnpm nx run pagopa-ui-cli:figma:parity:verify` must exit 0. Device
+   warnings (`warn: … misses device case(s)`) are expected and allowed. If it
+   fails, stop: a stale bundle is refreshed by a person with `FIGMA_TOKEN`
+   (`parity evidence --write`), never by you.
 2. Add `"pagopa-ui-cli:figma:parity:verify"` to the `dependsOn` of the
    `pagopa-ui:test` target.
 3. In `parity-tooling.md`, state that `verify` runs in the green chain.

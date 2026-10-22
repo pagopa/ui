@@ -67,8 +67,9 @@ ls .github/skills | wc -l
 node -e 'const r=require("./packages/pagopa-ui/src/catalog/figma/registry.json");const n=Object.values(r.entries).map(e=>(e.note||"").length);console.log("notes>600",n.filter(x=>x>600).length,"chars",n.reduce((a,b)=>a+b,0))'
 ```
 
-Record: total words, skill count, long notes (expected 41) and total note
-characters (expected about 70,000).
+Record: total words, skill count, long notes (44 on 2026-10-22) and total note
+characters (about 72,500 on 2026-10-22). M5 changes the notes: any value is
+valid, use what you measure.
 
 Done when: the numbers are in the report as "before".
 
