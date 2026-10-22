@@ -120,7 +120,9 @@ is exit 2 (stale evidence) until it is refreshed.
 
 ## Case mapping
 
-`--node` finds the registry target (module, export, story, `storyExports`).
+`--node` finds the registry target (module, export, story, `storyExports`). A
+node the file publishes without variants — a plain component — is its own single
+variant: `--state` names the case, `--variant` takes the node id.
 
 - `--root` is the element compared with the variant; `--subject-root <layer>`
   maps the component's own layer, never the mockup wrapper;
