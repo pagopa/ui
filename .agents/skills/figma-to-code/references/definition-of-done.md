@@ -12,8 +12,8 @@ green chain.
 - [ ] The guide in `code.guides` records the source mapping: which source
       property drives which prop, attribute or content. Figma layer names are
       quoted verbatim.
-- [ ] Props follow [prop-conventions.md](prop-conventions.md); every departure
-      is one line in the node's registry `note`.
+- [ ] The name and props follow [prop-conventions.md](prop-conventions.md);
+      every departure is one line in the node's registry `note`.
 - [ ] The registry entry has `target.module`, `target.export`, `target.story`,
       explicit `target.storyExports`, and `status: "implemented"` only after
       inspecting the source and the render ([catalogue.md](catalogue.md)).

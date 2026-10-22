@@ -37,9 +37,9 @@ paths fail, type-only cycles pass.
 - [ ] Prop JSDoc gives meaning, behaviour and `@default` values — never
       measurements, type scales, colours or geometry, which change while the
       contract stays. `@deprecated` and provenance notes stay.
-- [ ] Props follow the [prop conventions](prop-conventions.md): one line per
-      departure in the node's registry `note` when a source node backs the
-      component, in the guide when none does.
+- [ ] The name and props follow the [prop conventions](prop-conventions.md):
+      one line per departure in the node's registry `note` when a source node
+      backs the component, in the guide when none does.
 - [ ] Public or private is a decision; ask the person when in doubt. A
       production component is exported from its family `index.ts` and the
       public entry (`src/pagopa-ui.ts`); internal helpers, demos and no-op

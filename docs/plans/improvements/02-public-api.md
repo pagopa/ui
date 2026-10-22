@@ -9,7 +9,7 @@
 | Person gate   | `G-API`: the rename table below is approved before the agent starts |
 | Report source | [../improvements.md](../improvements.md), the "public API" finding  |
 
-Approval: PENDING
+Approval: APPROVED
 
 > **Person:** fill the "Decision" column, change the line above to
 > `Approval: APPROVED` and commit to `main`. Allowed decisions:
@@ -171,35 +171,48 @@ For each approved row, in table order:
 2. Rename the story file with `git mv` and update its `title`. Update the
    story-title map in `packages/pagopa-ui/src/catalog/figma/story-titles.json`
    (path and title).
-3. Update the catalogue:
+3. Keep the Figma name findable. The catalogue links code and Figma by node
+   id, so the rename doesn't break that link, but people still search by the
+   name they see in Figma. Read the node id from `registry.json` (the entry
+   whose `target.export` is the old name) and its Figma name from
+   `inventory.json` (`components[].name` for that `nodeId`). Then:
+   - add a JSDoc block directly above the renamed component's function, or
+     append to the existing one, ending with the line
+     `Figma: <Figma name> (node <nodeId>)`. Row R8 lists both nodes on two
+     lines; row R10 has no node, so skip it;
+   - in the renamed story file's `meta.parameters.docs`, set
+     `subtitle: "Figma: <Figma name>"`. Keep any existing `description`.
+4. Update the catalogue:
    - `registry.json`: `target.export` and `target.story`;
    - `parity-cases.json`: `export` and `storyId`;
    - `figma-to-code.yaml` if it names the export.
-4. Update the consumers of the name:
+5. Update the consumers of the name:
    - `REQUIRED_EXPORTS` in `packages/ui-cli/src/checks/library-artifact.ts`;
    - `packages/ui-cli/tests/fixtures/library-consumer/**`;
    - `packages/ui-cli/tests/e2e/library.spec.mjs`;
    - the guides in `apps/storybook/src/guides/**` and
      `packages/pagopa-ui/README.md`.
-5. Visual baselines: if `apps/storybook/visual/__screenshots__` exists, rename
+6. Visual baselines: if `apps/storybook/visual/__screenshots__` exists, rename
    every PNG whose name starts with the old story id prefix to the new prefix
    with `git mv`. The images don't change.
-6. Row R8 only: create `content/correction-tag.tsx` exporting `CorrectionTag`
+7. Row R8 only: create `content/correction-tag.tsx` exporting `CorrectionTag`
    with `status: "valid" | "not-valid"`. It renders exactly what the two old
    components render for each status, including their `data-*` attributes.
    Both registry entries target `CorrectionTag`, with the story export for each
    status. Delete the two old files and merge the two story files into
    `CorrectionTag.stories.tsx`, keeping one story per previous story.
-7. `pnpm nx run pagopa-ui:api:update` and check that the diff of
+8. `pnpm nx run pagopa-ui:api:update` and check that the diff of
    `etc/pagopa-ui.api.md` shows only this row's names.
-8. Run `pnpm nx run-many -p pagopa-ui,pagopa-ui-storybook,pagopa-ui-cli -c=ci -t typecheck,lint`
+9. Run `pnpm nx run-many -p pagopa-ui,pagopa-ui-storybook,pagopa-ui-cli -c=ci -t typecheck,lint`
    and `pnpm nx run pagopa-ui:figma:check`.
-9. Commit `refactor(api)!: rename <Old> to <New>`.
+10. Commit `refactor(api)!: rename <Old> to <New>`.
 
 Done when, for each row:
 
-- `git grep -nw '<Old>' -- ':!docs/decisions' ':!docs/plans' ':!packages/pagopa-ui/CHANGELOG.md'`
-  prints nothing;
+- `git grep -nw '<Old>' -- ':!docs/decisions' ':!docs/plans' ':!packages/pagopa-ui/CHANGELOG.md' | grep -v 'Figma: '`
+  prints nothing (the `Figma:` lines of item 3 may keep the old name);
+- `git grep -n 'Figma: ' -- packages/pagopa-ui/src apps/storybook/src` lists
+  the new component and its story;
 - typecheck, lint and `figma:check` pass.
 
 ### 6. `UIProvider` with `linkComponent`
