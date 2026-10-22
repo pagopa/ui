@@ -53,6 +53,9 @@ paths fail, type-only cycles pass.
       (button styling comes from the internal `buttonVariants` helper, never a
       button primitive rendering an anchor, which imposes button keyboard
       behaviour); form controls submit through native form data.
+- [ ] A fieldset that paints a card names its group with `aria-labelledby` on
+      a plain child. A `<legend>` lays out in the fieldset's border area and
+      can paint outside the card.
 - [ ] Pointer targets reach 44px (48px for buttons) through an invisible
       `::after` built from existing inset utilities — `after:absolute
       after:-inset-2.5` on a 24px box, `after:-inset-y-3` on a 20–22px text
@@ -87,6 +90,10 @@ paths fail, type-only cycles pass.
       keyboard order, accessible names, painted focus, widget behaviour, the
       single-announcement error strategy and the 320px and text-spacing
       conditions.
+- [ ] A source-fidelity story asserts the source rhythm its parity case maps
+      only at the root: the row heights, the inner padding and gap, the
+      full-bleed dividers and the footer. The story runs in every engine, so
+      that assertion is what catches an engine-specific layout escape.
 - [ ] A story that cannot satisfy a contract condition declares it in its own
       `parameters: { a11yContract: { reflow: false } }` with a reason comment
       beside the flag: exemptions live with each story. A pending reflow
