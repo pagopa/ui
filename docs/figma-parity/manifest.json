@@ -112,6 +112,105 @@
       "width": 852,
       "height": 176
     },
+    "295-1360-unchecked-enabled": {
+      "png": "references/295-1360-unchecked-enabled.png",
+      "sha256": "e4080c6f9c04008dd32ce3992f665d0af28d2f33c29a42d9e3568b867bfc824c",
+      "nodeId": "295:1360",
+      "variant": "295:1406",
+      "designFingerprint": "c650abc841c482805daaa8fab1be9b128dde94e261649a596474d1b5175768d7",
+      "width": 151,
+      "height": 44
+    },
+    "295-1360-unchecked-error": {
+      "png": "references/295-1360-unchecked-error.png",
+      "sha256": "627f424931a5f098d85a9aacbb26b6d8bfbc6e7077885dfcc239186f545a5f15",
+      "nodeId": "295:1360",
+      "variant": "295:1411",
+      "designFingerprint": "c556f63c9404878ee48cc943f83c0e13a3d21f931ded8fb6a18ea466825003f5",
+      "width": 151,
+      "height": 66
+    },
+    "295-1360-unchecked-disabled": {
+      "png": "references/295-1360-unchecked-disabled.png",
+      "sha256": "8fa8602ffce5b01c4537348206b56063dfcccd0187237a43f98f5690c8716ac4",
+      "nodeId": "295:1360",
+      "variant": "295:1424",
+      "designFingerprint": "010843a8b91f3a5fc829118e9d39f43dd7659b449acd066cfa8a2eb0f92c43c6",
+      "width": 151,
+      "height": 44
+    },
+    "295-1360-checked-enabled": {
+      "png": "references/295-1360-checked-enabled.png",
+      "sha256": "f57c61b82882acc03641945f9960dc705876bed0b3206ed3069e026099f7b92f",
+      "nodeId": "295:1360",
+      "variant": "295:1432",
+      "designFingerprint": "b14884293ee23072b9eed7700cf4aa2a49d8507754882a4b8a2d19215c823005",
+      "width": 151,
+      "height": 44
+    },
+    "295-1360-checked-disabled": {
+      "png": "references/295-1360-checked-disabled.png",
+      "sha256": "04a793efa173fc0056cc76aaa50eb33d0a54c09aab289fb7ba2d4f838ab9af43",
+      "nodeId": "295:1360",
+      "variant": "295:1440",
+      "designFingerprint": "1b3050facb5e8ae1496201d86c4c07f24d0eb15c2bcace58192f276cb4e3b341",
+      "width": 151,
+      "height": 44
+    },
+    "295-1360-unchecked-focused": {
+      "png": "references/295-1360-unchecked-focused.png",
+      "sha256": "2f89d97772ab5fa7f5870f2cfbd1964ee3fa2034d75381b670a26fc1a99aa888",
+      "nodeId": "295:1360",
+      "variant": "295:1466",
+      "designFingerprint": "0832e450450cf42223b957813feaa6a3e10ec7ae7a34dcee349b7e5be2be1e87",
+      "width": 151,
+      "height": 44
+    },
+    "295-1360-checked-focused": {
+      "png": "references/295-1360-checked-focused.png",
+      "sha256": "1ae08c616287f8d5dcb46c18885f353ad0956a17ed5cc405346e5a17e222a4cd",
+      "nodeId": "295:1360",
+      "variant": "295:1482",
+      "designFingerprint": "863d59995558dac54e97a81fc7c3fbf4edac0425b910b4a6b2999f9d0d5628a9",
+      "width": 151,
+      "height": 44
+    },
+    "349-4683-checked-available": {
+      "png": "references/349-4683-checked-available.png",
+      "sha256": "b4a5bf96939a98a417ea482403bf58b62c6419df4df609f58f7bd2b223794f63",
+      "nodeId": "349:4683",
+      "variant": "349:4684",
+      "designFingerprint": "cd6ef0ba80505b3dbb67f709bd5eaf1a707193476f8ea4718632be402c20726e",
+      "width": 320,
+      "height": 112
+    },
+    "349-4683-unchecked-available": {
+      "png": "references/349-4683-unchecked-available.png",
+      "sha256": "eaf2a7569df41d554faa02a5dda4f81c57800f9338de6aeb86175680b28a4203",
+      "nodeId": "349:4683",
+      "variant": "349:4703",
+      "designFingerprint": "9d66d35455fbd5c6e11ca831b05afa8f880fbf772e026a317595c0eeb0bd8943",
+      "width": 320,
+      "height": 112
+    },
+    "349-4683-unchecked-unavailable": {
+      "png": "references/349-4683-unchecked-unavailable.png",
+      "sha256": "e1ba6851aa3d38338f16fe6a8b55b9d30a3a13256f51c6ec8ec1a6a62445a722",
+      "nodeId": "349:4683",
+      "variant": "349:4717",
+      "designFingerprint": "e276161b29b5aa11eb732eeb59022dbc24aded37eb68da23fccab7f8081b6c71",
+      "width": 320,
+      "height": 119
+    },
+    "349-4683-checked-unavailable": {
+      "png": "references/349-4683-checked-unavailable.png",
+      "sha256": "270f6eec70667f67374812e9b4cd370c6c57c8bafcfb2c91546a7f25fee00f7c",
+      "nodeId": "349:4683",
+      "variant": "349:4727",
+      "designFingerprint": "8fce47ab0b0823627a0a019e1c642bb9857955755ef417a0108cea2a6f20225f",
+      "width": 320,
+      "height": 119
+    },
     "382-7813-desktop-desktop": {
       "png": "references/382-7813-desktop-desktop.png",
       "sha256": "bc5d8614d084f8f352db7961641e91f5ca532854af702c6d2ab27b467e4e017b",
@@ -174,6 +273,87 @@
       "designFingerprint": "924b81c331280c62e14615e5a920ac71e6c457fa3dd05f67091cf4e9469b49ea",
       "width": 274,
       "height": 53
+    },
+    "529-6111-enabled": {
+      "png": "references/529-6111-enabled.png",
+      "sha256": "8814eb3abadce6e5006bf23de42d7a2f43a06e4dd3c0da3e48459093b73733f5",
+      "nodeId": "529:6111",
+      "variant": "529:6123",
+      "designFingerprint": "d722d4ae6e8f29c410c8f97166d860c1ce5c69d6248d690f0cfe3f699f71b018",
+      "width": 274,
+      "height": 48
+    },
+    "529-6111-disabled-empty": {
+      "png": "references/529-6111-disabled-empty.png",
+      "sha256": "c60b5a3499fa025c673d80e9c89d0edd35edf3f94f6afdfb68519a9e5b213e63",
+      "nodeId": "529:6111",
+      "variant": "529:6137",
+      "designFingerprint": "83b10a45f0b28abcd87db0722b72df85a56a5ae3ee57bbe652ad914a617a177f",
+      "width": 274,
+      "height": 48
+    },
+    "529-6111-active-empty": {
+      "png": "references/529-6111-active-empty.png",
+      "sha256": "767187098fc3dfb4fe58ddc70e56cac06276b3eb18eccdc3dc79c8d02780aaa7",
+      "nodeId": "529:6111",
+      "variant": "529:6154",
+      "designFingerprint": "96beff061d65229107bbfe7661e2bfb8b946bc7b57b290e4326426c9735313df",
+      "width": 274,
+      "height": 52
+    },
+    "529-6111-active-filled": {
+      "png": "references/529-6111-active-filled.png",
+      "sha256": "ebeb4993956d4d77c2639184371d709212cb54584e59635363f58bc19aa94504",
+      "nodeId": "529:6111",
+      "variant": "529:6169",
+      "designFingerprint": "09cae156339c0d2d3e9c48d64aae0d035b0a0ac37dc4195668bfcb2b79a4992a",
+      "width": 274,
+      "height": 52
+    },
+    "529-6111-disabled-filled": {
+      "png": "references/529-6111-disabled-filled.png",
+      "sha256": "8ee6e04e2e6e05761a798ca9636ebe8c2135086e9d9fa2e78ad859c9f3fa9357",
+      "nodeId": "529:6111",
+      "variant": "529:6180",
+      "designFingerprint": "742de24bd81d68edf380d2a54cf07e60b129add7d1f1cb963ee1e2e1d243b606",
+      "width": 274,
+      "height": 53
+    },
+    "529-6111-success-filled": {
+      "png": "references/529-6111-success-filled.png",
+      "sha256": "710bf74e81f3bb3bba6f50282be19076a8c9ab3a9f26bfd0a9bbe135c5151da2",
+      "nodeId": "529:6111",
+      "variant": "529:6191",
+      "designFingerprint": "380dab3d30cffeb8b2b3cf98b4bc03f0d75f1600c7983b48607bcee87ff05fc7",
+      "width": 274,
+      "height": 53
+    },
+    "529-6111-error-empty": {
+      "png": "references/529-6111-error-empty.png",
+      "sha256": "c9f03b41152e4679a6e374403d2b4c4583c97cc3b75250cb4d4b28ac18eaac85",
+      "nodeId": "529:6111",
+      "variant": "529:6266",
+      "designFingerprint": "8d64cd0aab8cfab7ef7f35000b920dccf6c6e461e4a46e856e748353945c645d",
+      "width": 274,
+      "height": 70
+    },
+    "529-6111-error-filled": {
+      "png": "references/529-6111-error-filled.png",
+      "sha256": "1b4e5b520450248b02570ca2ec356d5ab343b3afee5cd5a6c4891fe72ccc3752",
+      "nodeId": "529:6111",
+      "variant": "529:6267",
+      "designFingerprint": "5078f7fe0a44ed39b7d1de7ef72c3b86976dfc18ee679ffbf2b537d4f6c48c9c",
+      "width": 274,
+      "height": 75
+    },
+    "529-6111-enabled-empty-optional": {
+      "png": "references/529-6111-enabled-empty-optional.png",
+      "sha256": "56aa67dd7c72e9f429f0fd2664e772683ba783bbffa11d32c10ebfe04ca33bcd",
+      "nodeId": "529:6111",
+      "variant": "10274:50122",
+      "designFingerprint": "50de7cf7a8c425babb931b379f1ac5fbe921db35f106f62951e3c985e3852908",
+      "width": 274,
+      "height": 48
     },
     "602-9417-enabled": {
       "png": "references/602-9417-enabled.png",
@@ -859,249 +1039,6 @@
       "width": 376,
       "height": 160
     },
-    "11133-16142-desktop-action-desktop": {
-      "png": "references/11133-16142-desktop-action-desktop.png",
-      "sha256": "7b5ccd9f43e60003383ba2a33cb33ad3e239257f63e25b3fcea331045b59bff0",
-      "nodeId": "11133:16142",
-      "variant": "11133:16159",
-      "designFingerprint": "ad80c171416e0a6a905524e23df8e860e61d60255ef5947a8cf648cfeb9218da",
-      "width": 560,
-      "height": 208
-    },
-    "11133-16142-desktop-default-desktop": {
-      "png": "references/11133-16142-desktop-default-desktop.png",
-      "sha256": "bf89d4d768d4a289cf6a9ed8321c7a8978d533492c8f1ff012012e5d28cc5e66",
-      "nodeId": "11133:16142",
-      "variant": "11133:16173",
-      "designFingerprint": "362b43c9f0938e608b85d4531bf206c0b7ae1ff1a010faa20843841f0d2b66de",
-      "width": 560,
-      "height": 136
-    },
-    "11133-16142-desktop-multi-payment-desktop": {
-      "png": "references/11133-16142-desktop-multi-payment-desktop.png",
-      "sha256": "a0726df22e66f919b2690a1403c00cad314978c07d67b25c4ad0eeca41316d96",
-      "nodeId": "11133:16142",
-      "variant": "11134:16267",
-      "designFingerprint": "f0907e0b9d7f7a532601a9ba6f546339b6bd857a1bd034873ae0eb5fb306b940",
-      "width": 560,
-      "height": 136
-    },
-    "11133-16142-mobile-action-mobile": {
-      "png": "references/11133-16142-mobile-action-mobile.png",
-      "sha256": "466ec46ae2ec36fed137e042bd42343a6343bfeb95fcac1d4b73aadd515414d7",
-      "nodeId": "11133:16142",
-      "variant": "11133:16211",
-      "designFingerprint": "9ddbda46d3163158247f16f894e647b9eaf54ef39acbd5671093c361e08bbc7d",
-      "width": 270,
-      "height": 274
-    },
-    "11133-16142-mobile-default-mobile": {
-      "png": "references/11133-16142-mobile-default-mobile.png",
-      "sha256": "2472588c32896dba4a9ce3a5b220a2a5f6cc9ed70b5e349cd30a7bb4e12442f9",
-      "nodeId": "11133:16142",
-      "variant": "11133:16192",
-      "designFingerprint": "5413b069fad975ea706c2e63763144a64b0415c0e136f9d58b630df571c6b438",
-      "width": 270,
-      "height": 194
-    },
-    "12812-16248-desktop-desktop": {
-      "png": "references/12812-16248-desktop-desktop.png",
-      "sha256": "1d5c28d3431cc7bf1c6ae73c7b58fc2fd1224e5d807aad7a16c77bda2bb27687",
-      "nodeId": "12812:16248",
-      "variant": "9694:13224",
-      "designFingerprint": "eed0e3235ee2cf14833c62bd2885d47a32e643bf05f44a2b31ec9fc6a1b94e62",
-      "width": 850,
-      "height": 118
-    },
-    "12812-16248-mobile-mobile": {
-      "png": "references/12812-16248-mobile-mobile.png",
-      "sha256": "82c74c16bbfa3f960cca256c1da4f1ada573b9f5c95844a477c1954f50c36ef6",
-      "nodeId": "12812:16248",
-      "variant": "12812:16249",
-      "designFingerprint": "40f38b51971372815e2db719aefa454c8ac6a9cfff116ed18c3e918747f9c149",
-      "width": 848,
-      "height": 128
-    },
-    "295-1360-unchecked-enabled": {
-      "png": "references/295-1360-unchecked-enabled.png",
-      "sha256": "e4080c6f9c04008dd32ce3992f665d0af28d2f33c29a42d9e3568b867bfc824c",
-      "nodeId": "295:1360",
-      "variant": "295:1406",
-      "designFingerprint": "c650abc841c482805daaa8fab1be9b128dde94e261649a596474d1b5175768d7",
-      "width": 151,
-      "height": 44
-    },
-    "295-1360-unchecked-error": {
-      "png": "references/295-1360-unchecked-error.png",
-      "sha256": "627f424931a5f098d85a9aacbb26b6d8bfbc6e7077885dfcc239186f545a5f15",
-      "nodeId": "295:1360",
-      "variant": "295:1411",
-      "designFingerprint": "c556f63c9404878ee48cc943f83c0e13a3d21f931ded8fb6a18ea466825003f5",
-      "width": 151,
-      "height": 66
-    },
-    "295-1360-unchecked-disabled": {
-      "png": "references/295-1360-unchecked-disabled.png",
-      "sha256": "8fa8602ffce5b01c4537348206b56063dfcccd0187237a43f98f5690c8716ac4",
-      "nodeId": "295:1360",
-      "variant": "295:1424",
-      "designFingerprint": "010843a8b91f3a5fc829118e9d39f43dd7659b449acd066cfa8a2eb0f92c43c6",
-      "width": 151,
-      "height": 44
-    },
-    "295-1360-checked-enabled": {
-      "png": "references/295-1360-checked-enabled.png",
-      "sha256": "f57c61b82882acc03641945f9960dc705876bed0b3206ed3069e026099f7b92f",
-      "nodeId": "295:1360",
-      "variant": "295:1432",
-      "designFingerprint": "b14884293ee23072b9eed7700cf4aa2a49d8507754882a4b8a2d19215c823005",
-      "width": 151,
-      "height": 44
-    },
-    "295-1360-checked-disabled": {
-      "png": "references/295-1360-checked-disabled.png",
-      "sha256": "04a793efa173fc0056cc76aaa50eb33d0a54c09aab289fb7ba2d4f838ab9af43",
-      "nodeId": "295:1360",
-      "variant": "295:1440",
-      "designFingerprint": "1b3050facb5e8ae1496201d86c4c07f24d0eb15c2bcace58192f276cb4e3b341",
-      "width": 151,
-      "height": 44
-    },
-    "295-1360-unchecked-focused": {
-      "png": "references/295-1360-unchecked-focused.png",
-      "sha256": "2f89d97772ab5fa7f5870f2cfbd1964ee3fa2034d75381b670a26fc1a99aa888",
-      "nodeId": "295:1360",
-      "variant": "295:1466",
-      "designFingerprint": "0832e450450cf42223b957813feaa6a3e10ec7ae7a34dcee349b7e5be2be1e87",
-      "width": 151,
-      "height": 44
-    },
-    "295-1360-checked-focused": {
-      "png": "references/295-1360-checked-focused.png",
-      "sha256": "1ae08c616287f8d5dcb46c18885f353ad0956a17ed5cc405346e5a17e222a4cd",
-      "nodeId": "295:1360",
-      "variant": "295:1482",
-      "designFingerprint": "863d59995558dac54e97a81fc7c3fbf4edac0425b910b4a6b2999f9d0d5628a9",
-      "width": 151,
-      "height": 44
-    },
-    "349-4683-checked-available": {
-      "png": "references/349-4683-checked-available.png",
-      "sha256": "b4a5bf96939a98a417ea482403bf58b62c6419df4df609f58f7bd2b223794f63",
-      "nodeId": "349:4683",
-      "variant": "349:4684",
-      "designFingerprint": "cd6ef0ba80505b3dbb67f709bd5eaf1a707193476f8ea4718632be402c20726e",
-      "width": 320,
-      "height": 112
-    },
-    "349-4683-unchecked-available": {
-      "png": "references/349-4683-unchecked-available.png",
-      "sha256": "eaf2a7569df41d554faa02a5dda4f81c57800f9338de6aeb86175680b28a4203",
-      "nodeId": "349:4683",
-      "variant": "349:4703",
-      "designFingerprint": "9d66d35455fbd5c6e11ca831b05afa8f880fbf772e026a317595c0eeb0bd8943",
-      "width": 320,
-      "height": 112
-    },
-    "349-4683-unchecked-unavailable": {
-      "png": "references/349-4683-unchecked-unavailable.png",
-      "sha256": "e1ba6851aa3d38338f16fe6a8b55b9d30a3a13256f51c6ec8ec1a6a62445a722",
-      "nodeId": "349:4683",
-      "variant": "349:4717",
-      "designFingerprint": "e276161b29b5aa11eb732eeb59022dbc24aded37eb68da23fccab7f8081b6c71",
-      "width": 320,
-      "height": 119
-    },
-    "349-4683-checked-unavailable": {
-      "png": "references/349-4683-checked-unavailable.png",
-      "sha256": "270f6eec70667f67374812e9b4cd370c6c57c8bafcfb2c91546a7f25fee00f7c",
-      "nodeId": "349:4683",
-      "variant": "349:4727",
-      "designFingerprint": "8fce47ab0b0823627a0a019e1c642bb9857955755ef417a0108cea2a6f20225f",
-      "width": 320,
-      "height": 119
-    },
-    "529-6111-enabled": {
-      "png": "references/529-6111-enabled.png",
-      "sha256": "8814eb3abadce6e5006bf23de42d7a2f43a06e4dd3c0da3e48459093b73733f5",
-      "nodeId": "529:6111",
-      "variant": "529:6123",
-      "designFingerprint": "d722d4ae6e8f29c410c8f97166d860c1ce5c69d6248d690f0cfe3f699f71b018",
-      "width": 274,
-      "height": 48
-    },
-    "529-6111-disabled-empty": {
-      "png": "references/529-6111-disabled-empty.png",
-      "sha256": "c60b5a3499fa025c673d80e9c89d0edd35edf3f94f6afdfb68519a9e5b213e63",
-      "nodeId": "529:6111",
-      "variant": "529:6137",
-      "designFingerprint": "83b10a45f0b28abcd87db0722b72df85a56a5ae3ee57bbe652ad914a617a177f",
-      "width": 274,
-      "height": 48
-    },
-    "529-6111-active-empty": {
-      "png": "references/529-6111-active-empty.png",
-      "sha256": "767187098fc3dfb4fe58ddc70e56cac06276b3eb18eccdc3dc79c8d02780aaa7",
-      "nodeId": "529:6111",
-      "variant": "529:6154",
-      "designFingerprint": "96beff061d65229107bbfe7661e2bfb8b946bc7b57b290e4326426c9735313df",
-      "width": 274,
-      "height": 52
-    },
-    "529-6111-active-filled": {
-      "png": "references/529-6111-active-filled.png",
-      "sha256": "ebeb4993956d4d77c2639184371d709212cb54584e59635363f58bc19aa94504",
-      "nodeId": "529:6111",
-      "variant": "529:6169",
-      "designFingerprint": "09cae156339c0d2d3e9c48d64aae0d035b0a0ac37dc4195668bfcb2b79a4992a",
-      "width": 274,
-      "height": 52
-    },
-    "529-6111-disabled-filled": {
-      "png": "references/529-6111-disabled-filled.png",
-      "sha256": "8ee6e04e2e6e05761a798ca9636ebe8c2135086e9d9fa2e78ad859c9f3fa9357",
-      "nodeId": "529:6111",
-      "variant": "529:6180",
-      "designFingerprint": "742de24bd81d68edf380d2a54cf07e60b129add7d1f1cb963ee1e2e1d243b606",
-      "width": 274,
-      "height": 53
-    },
-    "529-6111-success-filled": {
-      "png": "references/529-6111-success-filled.png",
-      "sha256": "710bf74e81f3bb3bba6f50282be19076a8c9ab3a9f26bfd0a9bbe135c5151da2",
-      "nodeId": "529:6111",
-      "variant": "529:6191",
-      "designFingerprint": "380dab3d30cffeb8b2b3cf98b4bc03f0d75f1600c7983b48607bcee87ff05fc7",
-      "width": 274,
-      "height": 53
-    },
-    "529-6111-error-empty": {
-      "png": "references/529-6111-error-empty.png",
-      "sha256": "c9f03b41152e4679a6e374403d2b4c4583c97cc3b75250cb4d4b28ac18eaac85",
-      "nodeId": "529:6111",
-      "variant": "529:6266",
-      "designFingerprint": "8d64cd0aab8cfab7ef7f35000b920dccf6c6e461e4a46e856e748353945c645d",
-      "width": 274,
-      "height": 70
-    },
-    "529-6111-error-filled": {
-      "png": "references/529-6111-error-filled.png",
-      "sha256": "1b4e5b520450248b02570ca2ec356d5ab343b3afee5cd5a6c4891fe72ccc3752",
-      "nodeId": "529:6111",
-      "variant": "529:6267",
-      "designFingerprint": "5078f7fe0a44ed39b7d1de7ef72c3b86976dfc18ee679ffbf2b537d4f6c48c9c",
-      "width": 274,
-      "height": 75
-    },
-    "529-6111-enabled-empty-optional": {
-      "png": "references/529-6111-enabled-empty-optional.png",
-      "sha256": "56aa67dd7c72e9f429f0fd2664e772683ba783bbffa11d32c10ebfe04ca33bcd",
-      "nodeId": "529:6111",
-      "variant": "10274:50122",
-      "designFingerprint": "50de7cf7a8c425babb931b379f1ac5fbe921db35f106f62951e3c985e3852908",
-      "width": 274,
-      "height": 48
-    },
     "10585-80643-enabled-empty": {
       "png": "references/10585-80643-enabled-empty.png",
       "sha256": "d461d2b99766c43f0ef342af32d9799c5a543fb491efa396fd70dba5826974d6",
@@ -1173,6 +1110,132 @@
       "designFingerprint": "43f1527a116fad401b63a59efb29cd41a93cb673b57c0b7640b3493dab1e53db",
       "width": 274,
       "height": 114
+    },
+    "11133-16142-desktop-action-desktop": {
+      "png": "references/11133-16142-desktop-action-desktop.png",
+      "sha256": "7b5ccd9f43e60003383ba2a33cb33ad3e239257f63e25b3fcea331045b59bff0",
+      "nodeId": "11133:16142",
+      "variant": "11133:16159",
+      "designFingerprint": "ad80c171416e0a6a905524e23df8e860e61d60255ef5947a8cf648cfeb9218da",
+      "width": 560,
+      "height": 208
+    },
+    "11133-16142-desktop-default-desktop": {
+      "png": "references/11133-16142-desktop-default-desktop.png",
+      "sha256": "bf89d4d768d4a289cf6a9ed8321c7a8978d533492c8f1ff012012e5d28cc5e66",
+      "nodeId": "11133:16142",
+      "variant": "11133:16173",
+      "designFingerprint": "362b43c9f0938e608b85d4531bf206c0b7ae1ff1a010faa20843841f0d2b66de",
+      "width": 560,
+      "height": 136
+    },
+    "11133-16142-desktop-multi-payment-desktop": {
+      "png": "references/11133-16142-desktop-multi-payment-desktop.png",
+      "sha256": "a0726df22e66f919b2690a1403c00cad314978c07d67b25c4ad0eeca41316d96",
+      "nodeId": "11133:16142",
+      "variant": "11134:16267",
+      "designFingerprint": "f0907e0b9d7f7a532601a9ba6f546339b6bd857a1bd034873ae0eb5fb306b940",
+      "width": 560,
+      "height": 136
+    },
+    "11133-16142-mobile-action-mobile": {
+      "png": "references/11133-16142-mobile-action-mobile.png",
+      "sha256": "466ec46ae2ec36fed137e042bd42343a6343bfeb95fcac1d4b73aadd515414d7",
+      "nodeId": "11133:16142",
+      "variant": "11133:16211",
+      "designFingerprint": "9ddbda46d3163158247f16f894e647b9eaf54ef39acbd5671093c361e08bbc7d",
+      "width": 270,
+      "height": 274
+    },
+    "11133-16142-mobile-default-mobile": {
+      "png": "references/11133-16142-mobile-default-mobile.png",
+      "sha256": "2472588c32896dba4a9ce3a5b220a2a5f6cc9ed70b5e349cd30a7bb4e12442f9",
+      "nodeId": "11133:16142",
+      "variant": "11133:16192",
+      "designFingerprint": "5413b069fad975ea706c2e63763144a64b0415c0e136f9d58b630df571c6b438",
+      "width": 270,
+      "height": 194
+    },
+    "12812-16248-desktop-desktop": {
+      "png": "references/12812-16248-desktop-desktop.png",
+      "sha256": "1d5c28d3431cc7bf1c6ae73c7b58fc2fd1224e5d807aad7a16c77bda2bb27687",
+      "nodeId": "12812:16248",
+      "variant": "9694:13224",
+      "designFingerprint": "eed0e3235ee2cf14833c62bd2885d47a32e643bf05f44a2b31ec9fc6a1b94e62",
+      "width": 850,
+      "height": 118
+    },
+    "12812-16248-mobile-mobile": {
+      "png": "references/12812-16248-mobile-mobile.png",
+      "sha256": "82c74c16bbfa3f960cca256c1da4f1ada573b9f5c95844a477c1954f50c36ef6",
+      "nodeId": "12812:16248",
+      "variant": "12812:16249",
+      "designFingerprint": "40f38b51971372815e2db719aefa454c8ac6a9cfff116ed18c3e918747f9c149",
+      "width": 848,
+      "height": 128
+    },
+    "616-3864-default": {
+      "png": "references/616-3864-default.png",
+      "sha256": "a02811dfa3247a75bf9008cbf549494e887e10c7b5fb345bb2774cacee0a3825",
+      "nodeId": "616:3864",
+      "variant": "610:36297",
+      "designFingerprint": "b221a202a1313e47b5f830695e29ae5249234059f501cf154d3e0b86c458ded6",
+      "width": 306,
+      "height": 424
+    },
+    "616-3864-multiselect-default": {
+      "png": "references/616-3864-multiselect-default.png",
+      "sha256": "8e6840428a5d97e9c67cb90819849bed37554af386a1edf139d85ea882e2ee2a",
+      "nodeId": "616:3864",
+      "variant": "616:3865",
+      "designFingerprint": "8e90de2c8b5e0d2a43be84d2aa38b76a026306f3412fea51cbb600b55dffbd72",
+      "width": 306,
+      "height": 564
+    },
+    "616-3864-selected": {
+      "png": "references/616-3864-selected.png",
+      "sha256": "a0c77cd1a158a4c4a66db7dda65d7ccd2077f8e1acb3df142d21078a1eb12d19",
+      "nodeId": "616:3864",
+      "variant": "617:18348",
+      "designFingerprint": "7278272322c5fffae4f4e744808df41d60b84be45ee19c9c9d01ffc60304a04a",
+      "width": 306,
+      "height": 424
+    },
+    "616-3864-multiselect-selected-all": {
+      "png": "references/616-3864-multiselect-selected-all.png",
+      "sha256": "9c23b59e038aa2cf60b649d96da095ed60419036cf144d42bec0107a4c0e3fb6",
+      "nodeId": "616:3864",
+      "variant": "617:18688",
+      "designFingerprint": "f52d42fe41266643f45e3dff33c61a0a7a801cde280d4e787dce5f5219a73096",
+      "width": 306,
+      "height": 564
+    },
+    "616-3864-multiselect-selected-true": {
+      "png": "references/616-3864-multiselect-selected-true.png",
+      "sha256": "6076337159c4d0a7bdac048897dd7fa88224a4ec842317502815e48b6d5f4ef6",
+      "nodeId": "616:3864",
+      "variant": "617:19035",
+      "designFingerprint": "188e22f9cc6f4fe0af35d0121e0c5ef5ed0791dbccb2183b7f5311b6a704db17",
+      "width": 306,
+      "height": 564
+    },
+    "616-3864-empty-state": {
+      "png": "references/616-3864-empty-state.png",
+      "sha256": "51a845e9ec308662d5ef8eb18883587beb91dc571109a7cf41ad10f14abc9942",
+      "nodeId": "616:3864",
+      "variant": "756:6063",
+      "designFingerprint": "ab8ae27d48c88352a66d1a0ea8d3cfbc263052b1cea6646f8e3b333fdd59f747",
+      "width": 306,
+      "height": 198
+    },
+    "616-3864-skeleton": {
+      "png": "references/616-3864-skeleton.png",
+      "sha256": "08f15024a9cc3dac102e958259e437bd7bcc0fa1cf2c6d9d1a140f4a6e6dbb6a",
+      "nodeId": "616:3864",
+      "variant": "756:6159",
+      "designFingerprint": "56d92a92233cc57f5d9495d671a2e0f797316ce6f52acc47e238189d5e7686e7",
+      "width": 306,
+      "height": 283
     }
   }
 }
