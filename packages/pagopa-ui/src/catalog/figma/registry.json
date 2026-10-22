@@ -1098,8 +1098,8 @@
       }
     },
     "295:1360": {
-      "status": "pending",
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented",
+      "status": "implemented",
+      "note": "Reviewed 2026-10-22 (M5 wave): seven committed cases, one per principal state of the set, all 150 wide against `FidelityStartStates`' control-before-copy rows: Checked=False/True with Enable=True (295:1406, 295:1432), the two disabled variants (295:1424, 295:1440), the error variant (295:1411, 150x66) and the two focused variants (295:1466, 295:1482, captured focused). Verified: the 150x44 row, the 12px control-to-copy gap, the 16/22 Semibold #0e0f13 title, the 14/20 #555c70 description, the 50% `Element` artwork fade on disabled, the 10px focus dot with the library keyboard perimeter outside it and the 14/20 #d13333 helper with its 16px report glyph. The source `.Switch single element` frame (58x38) rounds to the 56x44 native target (primitive `native-target-token-rounding`), which the row follows. Residue: disabled copy uses the muted-foreground token (the family adaptation `native-unavailable-state`, recorded on CheckboxField 194:3661) while the pinned source leaves the `Label` text at #0e0f13 and fades only the artwork; the guide records `legible disabled copy` as a deliberate adaptation. The two `Status=Hover` variants (295:1461, 295:1477) stay uncovered: the pointer halo is a transient state the parity capture cannot hold (there is no `--hover`), and the reviewed composition is the default one plus the halo the primitive documents. Automated a11y and render checks are not screen-reader or browser-zoom certification.",
       "target": {
         "module": "src/components/inputs/switch-field.tsx",
         "export": "SwitchField",
@@ -1139,8 +1139,8 @@
       "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
     },
     "349:4683": {
-      "status": "pending",
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented",
+      "status": "implemented",
+      "note": "Reviewed 2026-10-22 (M5 wave): four committed cases, one per `Checked` × `Availability` variant (349:4684, 349:4703, 349:4717, 349:4727), all 320 wide against `FidelityRichStates`. The node is one rich option, not a group; source names never determine identity. Verified: the 24px decorative leading art, the 12px icon-to-copy gap, the 16/22 Semibold #0e0f13 title, the 14/20 #555c70 description, the #555c70/#0b3ee3 track, the 14/20 primary link and the hidden helper. Residues: the rich row follows the 44px native control target (the source `.Switch single element` frame is 58x38, rounded to 56x44 by `native-target-token-rounding`), so the row is 8px taller than the content-driven source sample and the copy offsets follow; the source root spaces its stack with a 4/8px gap while the library stacks the label, messages and link inside one grid. The two `Availability=No` roots carry a source-wide reduced opacity; the library deliberately fades only the decorative art and keeps copy, control and link opaque (documented adaptation, switch-choices guide). Automated a11y and render checks are not screen-reader or browser-zoom certification.",
       "target": {
         "module": "src/components/inputs/switch-field.tsx",
         "export": "SwitchField",

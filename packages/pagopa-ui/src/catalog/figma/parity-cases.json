@@ -275,6 +275,287 @@
     "ignores": ["Chip.radius", "Pictogram.gap"]
   },
   {
+    "id": "295-1360-unchecked-enabled",
+    "nodeId": "295:1360",
+    "export": "SwitchField",
+    "storyId": "components-inputs-switchfield--fidelity-start-states",
+    "state": "unchecked enabled",
+    "variant": "295:1406",
+    "width": 150,
+    "height": 44,
+    "depth": 3,
+    "root": ".source-start-default-off",
+    "subjects": {
+      "Label": "#storybook-root label[for=switch-start-default-off]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: source Checked=False Enable=True Error=False Status=Default (295:1406, 150x44) against the FidelityStartStates control-before-copy row. Verified the 150x44 row, the 12px control-to-copy gap, the 16/22 Semibold #0e0f13 title at the row top, the 14/20 #555c70 description and the hidden helper. The source .Switch single element frame (58x38) rounds to the 56x44 native target (primitive native-target-token-rounding), which the row follows. Responsive clean."
+  },
+  {
+    "id": "295-1360-unchecked-error",
+    "nodeId": "295:1360",
+    "export": "SwitchField",
+    "storyId": "components-inputs-switchfield--fidelity-start-states",
+    "state": "unchecked error",
+    "variant": "295:1411",
+    "width": 150,
+    "height": 66,
+    "depth": 3,
+    "root": ".source-start-error",
+    "subjects": {
+      "Label": "#storybook-root label[for=switch-start-error]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: source Checked=False Enable=True Error=True Status=Default (295:1411, 150x66) against the FidelityStartStates error row. Verified the 150x66 row, the 12px control-to-copy gap, the 16/22 Semibold #0e0f13 title, the 14/20 #555c70 description and the 14/20 #d13333 helper line under the 44px control with its 16px report glyph. Responsive clean."
+  },
+  {
+    "id": "295-1360-unchecked-disabled",
+    "nodeId": "295:1360",
+    "export": "SwitchField",
+    "storyId": "components-inputs-switchfield--fidelity-start-states",
+    "state": "unchecked disabled",
+    "variant": "295:1424",
+    "width": 150,
+    "height": 44,
+    "depth": 3,
+    "root": ".source-start-disabled-off",
+    "subjects": {
+      "Label": "#storybook-root label[for=switch-start-disabled-off]"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "Label.font.color",
+        "reason": "the library's documented family adaptation native-unavailable-state (CheckboxField 194:3661 records the same choice): disabled copy uses the muted-foreground token while the pinned source leaves the Label text at #0e0f13 and fades only the 50% Element artwork. The switch-choices guide records legible disabled copy as a deliberate adaptation."
+      }
+    ],
+    "note": "reviewed: source Checked=False Enable=False Error=False Status=Default (295:1424, 150x44) against the FidelityStartStates disabled row. Verified the 150x44 row, the 12px control-to-copy gap, the 16/22 Semibold title, the 14/20 description and the 50% Element artwork fade. The source .Switch single element frame (58x38) rounds to the 56x44 native target (primitive native-target-token-rounding). Residue: the library's documented family adaptation native-unavailable-state (CheckboxField 194:3661 records the same choice): disabled copy uses the muted-foreground token while the pinned source leaves the Label text at #0e0f13 and fades only the 50% Element artwork. The switch-choices guide records legible disabled copy as a deliberate adaptation."
+  },
+  {
+    "id": "295-1360-checked-enabled",
+    "nodeId": "295:1360",
+    "export": "SwitchField",
+    "storyId": "components-inputs-switchfield--fidelity-start-states",
+    "state": "checked enabled",
+    "variant": "295:1432",
+    "width": 150,
+    "height": 44,
+    "depth": 3,
+    "root": ".source-start-default-on",
+    "subjects": {
+      "Label": "#storybook-root label[for=switch-start-default-on]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: source Checked=True Enable=True Error=False Status=Default (295:1432, 150x44) against the FidelityStartStates checked row. Verified the 150x44 row, the 12px control-to-copy gap, the 16/22 Semibold #0e0f13 title, the 14/20 #555c70 description and the selected #0b3ee3 track. The source .Switch single element frame (58x38) rounds to the 56x44 native target (primitive native-target-token-rounding), which the row follows. Responsive clean."
+  },
+  {
+    "id": "295-1360-checked-disabled",
+    "nodeId": "295:1360",
+    "export": "SwitchField",
+    "storyId": "components-inputs-switchfield--fidelity-start-states",
+    "state": "checked disabled",
+    "variant": "295:1440",
+    "width": 150,
+    "height": 44,
+    "depth": 3,
+    "root": ".source-start-disabled-on",
+    "subjects": {
+      "Label": "#storybook-root label[for=switch-start-disabled-on]"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "Label.font.color",
+        "reason": "the library's documented family adaptation native-unavailable-state (CheckboxField 194:3661 records the same choice): disabled copy uses the muted-foreground token while the pinned source leaves the Label text at #0e0f13 and fades only the 50% Element artwork. The switch-choices guide records legible disabled copy as a deliberate adaptation."
+      }
+    ],
+    "note": "reviewed: source Checked=True Enable=False Error=False Status=Default (295:1440, 150x44) against the FidelityStartStates checked disabled row. Verified the 150x44 row, the 12px control-to-copy gap, the 16/22 Semibold title, the 14/20 description, the selected #0b3ee3 track and its 50% Element artwork fade. The source .Switch single element frame (58x38) rounds to the 56x44 native target (primitive native-target-token-rounding). Residue: the library's documented family adaptation native-unavailable-state (CheckboxField 194:3661 records the same choice): disabled copy uses the muted-foreground token while the pinned source leaves the Label text at #0e0f13 and fades only the 50% Element artwork. The switch-choices guide records legible disabled copy as a deliberate adaptation."
+  },
+  {
+    "id": "295-1360-unchecked-focused",
+    "nodeId": "295:1360",
+    "export": "SwitchField",
+    "storyId": "components-inputs-switchfield--fidelity-start-states",
+    "state": "unchecked focused",
+    "variant": "295:1466",
+    "width": 150,
+    "height": 44,
+    "depth": 3,
+    "root": ".source-start-focus-off",
+    "subjects": {
+      "Label": "#storybook-root label[for=switch-start-focus-off]"
+    },
+    "focus": ["#switch-start-focus-off"],
+    "keepFocus": true,
+    "compareOffset": true,
+    "expectState": "focused",
+    "note": "reviewed: source Checked=False Enable=True Error=False Status=Focused (295:1466, 150x44) captured focused against the FidelityStartStates focused row. Verified the 150x44 row, the 12px control-to-copy gap, the 16/22 Semibold title and the 10px #555c70 focus dot on the track with the library's visible keyboard perimeter outside it (documented adaptation native-focus-target-token-rounding). Responsive clean."
+  },
+  {
+    "id": "295-1360-checked-focused",
+    "nodeId": "295:1360",
+    "export": "SwitchField",
+    "storyId": "components-inputs-switchfield--fidelity-start-states",
+    "state": "checked focused",
+    "variant": "295:1482",
+    "width": 150,
+    "height": 44,
+    "depth": 3,
+    "root": ".source-start-focus-on",
+    "subjects": {
+      "Label": "#storybook-root label[for=switch-start-focus-on]"
+    },
+    "focus": ["#switch-start-focus-on"],
+    "keepFocus": true,
+    "compareOffset": true,
+    "expectState": "focused",
+    "note": "reviewed: source Checked=True Enable=True Error=False Status=Focused (295:1482, 150x44) captured focused against the FidelityStartStates checked focused row. Verified the 150x44 row, the 12px control-to-copy gap, the 16/22 Semibold title and the 10px #0b3ee3 focus dot on the selected track with the library's visible keyboard perimeter outside it (documented adaptation checked-focus-target-token-rounding). Responsive clean."
+  },
+  {
+    "id": "349-4683-checked-available",
+    "nodeId": "349:4683",
+    "export": "SwitchField",
+    "storyId": "components-inputs-switchfield--fidelity-rich-states",
+    "state": "checked available",
+    "variant": "349:4684",
+    "width": 320,
+    "height": 112,
+    "depth": 6,
+    "root": ".source-rich-checked-yes",
+    "subjects": {
+      "Switch label": "#storybook-root label[for=switch-rich-checked-yes] > span.min-w-0",
+      "Description": "#storybook-root #switch-rich-checked-yes-description"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the rich row follows the 44px native control target: the source .Switch single element frame is 58x38 and the primitive rounds it to 56x44 (native-target-token-rounding), so the row is 8px taller than the content-driven source sample; the switch-choices guide records content-driven heights and the preserved 44px control and link targets as deliberate adaptations"
+      },
+      {
+        "path": "field.gap",
+        "reason": "the source variant root spaces its stack with a 4/8px gap while the library row stacks the label, messages and link inside one grid; the switch-choices guide records content-driven heights as a deliberate adaptation"
+      },
+      {
+        "path": "Switch label.offset.top",
+        "reason": "the rich row follows the 44px native control target: the source .Switch single element frame is 58x38 and the primitive rounds it to 56x44 (native-target-token-rounding), so the row is 8px taller than the content-driven source sample; the switch-choices guide records content-driven heights and the preserved 44px control and link targets as deliberate adaptations"
+      },
+      {
+        "path": "Description.offset.top",
+        "reason": "the rich row follows the 44px native control target: the source .Switch single element frame is 58x38 and the primitive rounds it to 56x44 (native-target-token-rounding), so the row is 8px taller than the content-driven source sample; the switch-choices guide records content-driven heights and the preserved 44px control and link targets as deliberate adaptations"
+      }
+    ],
+    "note": "reviewed: source Checked=Yes Availability=Yes (349:4684, 320x112) against the FidelityRichStates checked row. Verified the 320-wide rich option: the 24px decorative leading art, the 12px icon-to-copy gap, the 16/22 Semibold #0e0f13 title, the 14/20 #555c70 description, the selected #0b3ee3 track, the 14/20 primary link and the hidden helper. Residues record the row height, the root gap and the copy offsets, all following the 44px native target adaptation."
+  },
+  {
+    "id": "349-4683-unchecked-available",
+    "nodeId": "349:4683",
+    "export": "SwitchField",
+    "storyId": "components-inputs-switchfield--fidelity-rich-states",
+    "state": "unchecked available",
+    "variant": "349:4703",
+    "width": 320,
+    "height": 112,
+    "depth": 6,
+    "root": ".source-rich-unchecked-yes",
+    "subjects": {
+      "Switch label": "#storybook-root label[for=switch-rich-unchecked-yes] > span.min-w-0",
+      "Description": "#storybook-root #switch-rich-unchecked-yes-description"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the rich row follows the 44px native control target: the source .Switch single element frame is 58x38 and the primitive rounds it to 56x44 (native-target-token-rounding), so the row is 8px taller than the content-driven source sample; the switch-choices guide records content-driven heights and the preserved 44px control and link targets as deliberate adaptations"
+      },
+      {
+        "path": "field.gap",
+        "reason": "the source variant root spaces its stack with a 4/8px gap while the library row stacks the label, messages and link inside one grid; the switch-choices guide records content-driven heights as a deliberate adaptation"
+      },
+      {
+        "path": "Switch label.offset.top",
+        "reason": "the rich row follows the 44px native control target: the source .Switch single element frame is 58x38 and the primitive rounds it to 56x44 (native-target-token-rounding), so the row is 8px taller than the content-driven source sample; the switch-choices guide records content-driven heights and the preserved 44px control and link targets as deliberate adaptations"
+      },
+      {
+        "path": "Description.offset.top",
+        "reason": "the rich row follows the 44px native control target: the source .Switch single element frame is 58x38 and the primitive rounds it to 56x44 (native-target-token-rounding), so the row is 8px taller than the content-driven source sample; the switch-choices guide records content-driven heights and the preserved 44px control and link targets as deliberate adaptations"
+      }
+    ],
+    "note": "reviewed: source Checked=No Availability=Yes (349:4703, 320x112) against the FidelityRichStates unchecked row. Verified the 320-wide rich option: the 24px decorative leading art, the 12px icon-to-copy gap, the 16/22 Semibold #0e0f13 title, the 14/20 #555c70 description, the unselected #555c70 track, the 14/20 primary link and the hidden helper. Residues record the row height, the root gap and the copy offsets, all following the 44px native target adaptation."
+  },
+  {
+    "id": "349-4683-unchecked-unavailable",
+    "nodeId": "349:4683",
+    "export": "SwitchField",
+    "storyId": "components-inputs-switchfield--fidelity-rich-states",
+    "state": "unchecked unavailable",
+    "variant": "349:4717",
+    "width": 320,
+    "height": 119,
+    "depth": 6,
+    "root": ".source-rich-unchecked-no",
+    "subjects": {
+      "Switch label": "#storybook-root label[for=switch-rich-unchecked-no] > span.min-w-0",
+      "Description": "#storybook-root #switch-rich-unchecked-no-description"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the rich row follows the 44px native control target: the source .Switch single element frame is 58x38 and the primitive rounds it to 56x44 (native-target-token-rounding), so the row is 8px taller than the content-driven source sample; the switch-choices guide records content-driven heights and the preserved 44px control and link targets as deliberate adaptations"
+      },
+      {
+        "path": "field.gap",
+        "reason": "the source variant root spaces its stack with a 4/8px gap while the library row stacks the label, messages and link inside one grid; the switch-choices guide records content-driven heights as a deliberate adaptation"
+      },
+      {
+        "path": "Switch label.offset.top",
+        "reason": "the rich row follows the 44px native control target: the source .Switch single element frame is 58x38 and the primitive rounds it to 56x44 (native-target-token-rounding), so the row is 8px taller than the content-driven source sample; the switch-choices guide records content-driven heights and the preserved 44px control and link targets as deliberate adaptations"
+      },
+      {
+        "path": "Description.offset.top",
+        "reason": "the rich row follows the 44px native control target: the source .Switch single element frame is 58x38 and the primitive rounds it to 56x44 (native-target-token-rounding), so the row is 8px taller than the content-driven source sample; the switch-choices guide records content-driven heights and the preserved 44px control and link targets as deliberate adaptations"
+      }
+    ],
+    "note": "reviewed: source Checked=No Availability=No (349:4717, 320x119) against the FidelityRichStates unavailable row. Verified the 320-wide rich option, the 24px decorative leading art at the source 50% opacity, the 12px icon-to-copy gap, the 16/22 Semibold #0e0f13 title, the 14/20 #555c70 description, the unselected #555c70 track and the 14/20 primary link. The source root carries the source-wide reduced opacity; the library deliberately fades only the decorative art and keeps copy, control and link opaque (documented adaptation, switch-choices guide). Residues record the row height, the root gap and the copy offsets."
+  },
+  {
+    "id": "349-4683-checked-unavailable",
+    "nodeId": "349:4683",
+    "export": "SwitchField",
+    "storyId": "components-inputs-switchfield--fidelity-rich-states",
+    "state": "checked unavailable",
+    "variant": "349:4727",
+    "width": 320,
+    "height": 119,
+    "depth": 6,
+    "root": ".source-rich-checked-no",
+    "subjects": {
+      "Switch label": "#storybook-root label[for=switch-rich-checked-no] > span.min-w-0",
+      "Description": "#storybook-root #switch-rich-checked-no-description"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the rich row follows the 44px native control target: the source .Switch single element frame is 58x38 and the primitive rounds it to 56x44 (native-target-token-rounding), so the row is 8px taller than the content-driven source sample; the switch-choices guide records content-driven heights and the preserved 44px control and link targets as deliberate adaptations"
+      },
+      {
+        "path": "field.gap",
+        "reason": "the source variant root spaces its stack with a 4/8px gap while the library row stacks the label, messages and link inside one grid; the switch-choices guide records content-driven heights as a deliberate adaptation"
+      },
+      {
+        "path": "Switch label.offset.top",
+        "reason": "the rich row follows the 44px native control target: the source .Switch single element frame is 58x38 and the primitive rounds it to 56x44 (native-target-token-rounding), so the row is 8px taller than the content-driven source sample; the switch-choices guide records content-driven heights and the preserved 44px control and link targets as deliberate adaptations"
+      },
+      {
+        "path": "Description.offset.top",
+        "reason": "the rich row follows the 44px native control target: the source .Switch single element frame is 58x38 and the primitive rounds it to 56x44 (native-target-token-rounding), so the row is 8px taller than the content-driven source sample; the switch-choices guide records content-driven heights and the preserved 44px control and link targets as deliberate adaptations"
+      }
+    ],
+    "note": "reviewed: source Checked=Yes Availability=No (349:4727, 320x119) against the FidelityRichStates checked unavailable row. Verified the 320-wide rich option, the 24px decorative leading art at the source 50% opacity, the 12px icon-to-copy gap, the 16/22 Semibold #0e0f13 title, the 14/20 #555c70 description, the selected #0b3ee3 track and the 14/20 primary link. The source root carries the source-wide reduced opacity; the library deliberately fades only the decorative art and keeps copy, control and link opaque (documented adaptation, switch-choices guide). Residues record the row height, the root gap and the copy offsets."
+  },
+  {
     "id": "382-7813-desktop-desktop",
     "nodeId": "382:7813",
     "export": "CheckoutModule",
