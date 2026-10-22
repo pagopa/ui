@@ -8,14 +8,20 @@ It is **generated, never hand-edited**:
 
 | File                      | Content                                                                     |
 | ------------------------- | --------------------------------------------------------------------------- |
-| `source.json`             | the compact document map a case points at (its node and variants)           |
+| `source.json.gz`          | the compact document map a case points at (its node and variants), minified and gzipped |
 | `references/<caseId>.png` | the pinned Figma render of the case variant, scale 1, at the pinned version |
 | `manifest.json`           | the file key, the version, the per-case hash, variant and fingerprint       |
 
 The PNGs are review evidence, not a pixel gate: the verdict stays the 2 px
 property comparison of `parity check`. The whole bundle is capped at **10 MB**;
-a bundle that would exceed it is refused and reduced to the main components — the
-cap is never raised.
+the cap counts the bytes a clone receives, so the gzipped slice is measured
+compressed. A bundle that would exceed it is refused and reduced to the main
+components — the cap is never raised.
+
+The slice is gzipped with no timestamp in the header: the same corpus and
+snapshot always produce the same bytes, so a refresh with nothing changed does
+not rewrite the file. The tool reads `source.json.gz` transparently; the
+pre-compression name in the M2 plan text (`source.json`) is the same document.
 
 ## Refresh
 

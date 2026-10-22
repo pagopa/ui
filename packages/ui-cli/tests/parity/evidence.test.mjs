@@ -6,18 +6,21 @@ import os from "node:os"
 import path from "node:path"
 import { test } from "node:test"
 import { fileURLToPath } from "node:url"
+import { gunzipSync } from "node:zlib"
 
 import {
   MAX_EVIDENCE_BYTES,
   buildEvidence,
   checkCaseEvidence,
   checkEvidence,
+  evidenceBytes,
   loadManifest,
   loadSlice,
 } from "../../src/parity/evidence.ts"
 import { loadExport, resolveExport, sourceNode } from "../../src/parity/source.ts"
 import { caseVariant, loadCaseFile, loadInventoryNodes } from "../../src/parity/cases.ts"
 import { fixtureEnv } from "../../src/lib/paths.ts"
+import { gzipJson } from "../../src/lib/json.ts"
 
 const script = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
 
@@ -121,7 +124,7 @@ function sliceFor() {
 function writeEvidenceTree(root, { manifest = manifestFor(), slice = sliceFor(), pngs } = {}) {
   const dir = path.join(root, "docs/figma-parity")
   fs.mkdirSync(path.join(dir, "references"), { recursive: true })
-  fs.writeFileSync(path.join(dir, "source.json"), JSON.stringify(slice, null, 2))
+  fs.writeFileSync(path.join(dir, "source.json.gz"), gzipJson(slice))
   fs.writeFileSync(path.join(dir, "manifest.json"), JSON.stringify(manifest, null, 2))
   for (const [caseId, bytes] of Object.entries(pngs ?? { small: smallPng, large: largePng })) {
     fs.writeFileSync(path.join(dir, "references", `${caseId}.png`), bytes)
@@ -162,7 +165,7 @@ test("a manifest round-trip is accepted by the hermetic check", () => {
   const root = temporaryRoot()
   try {
     writeEvidenceTree(root)
-    const slice = loadSlice(path.join(root, "docs/figma-parity/source.json"))
+    const slice = loadSlice(path.join(root, "docs/figma-parity/source.json.gz"))
     const manifest = loadManifest(path.join(root, "docs/figma-parity/manifest.json"))
     assert.equal(slice.version, manifest.version)
     const report = checkEvidence({ root, cases, nodes: [node] })
@@ -309,7 +312,7 @@ test("loadExport reads the committed slice without normalizing the live export",
       }),
     )
     process.env.PAGOPA_UI_ROOT = root
-    const project = loadExport(path.join(root, "docs/figma-parity/source.json"))
+    const project = loadExport(path.join(root, "docs/figma-parity/source.json.gz"))
     assert.equal(project.catalogue.length, 1)
     assert.equal(project.version, "v1")
     assert.equal(sourceNode(project, "1:10").name, "Size=Small")
@@ -432,7 +435,7 @@ test("parity check refuses a stale evidence slice before Storybook", () => {
     assert.match(result.stdout, /source: .*\(evidence\)/)
     const explicit = spawnSync(
       process.execPath,
-      [script, "parity", "check", "--case", "small", "--input", "docs/figma-parity/source.json"],
+      [script, "parity", "check", "--case", "small", "--input", "docs/figma-parity/source.json.gz"],
       { cwd: root, encoding: "utf8", env: fixtureEnv(root, { FIGMA_TOKEN: "" }) },
     )
     assert.equal(explicit.status, 2, explicit.stderr)
@@ -440,4 +443,24 @@ test("parity check refuses a stale evidence slice before Storybook", () => {
   } finally {
     fs.rmSync(root, { recursive: true, force: true })
   }
+})
+
+// The slice is the large half of the bundle: it is committed minified and
+// gzipped, so the same content yields the same bytes and an unchanged artefact
+// never churns the diff.
+test("the committed slice is gzipped, minified and deterministic", () => {
+  const slice = sliceFor()
+  const first = gzipJson(slice)
+  const second = gzipJson(slice)
+  assert.ok(first.equals(second))
+  assert.deepEqual([...first.subarray(0, 2)], [0x1f, 0x8b])
+  const text = gunzipSync(first).toString("utf8")
+  assert.equal(text, `${JSON.stringify(slice)}\n`)
+  assert.equal(text.split("\n").length, 2)
+})
+
+test("the cap counts the compressed slice", () => {
+  const slice = sliceFor()
+  const { total } = evidenceBytes({ slice, pngs: new Map() })
+  assert.equal(total, gzipJson(slice).length)
 })

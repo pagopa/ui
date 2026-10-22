@@ -4,7 +4,7 @@
 // source side without the person's token and without the 160 MB snapshot. The
 // bundle has three generated parts:
 //
-//   docs/figma-parity/source.json      the compact document map a case points at
+//   docs/figma-parity/source.json.gz   the compact document map a case points at (gzipped)
 //   docs/figma-parity/references/*.png the pinned Figma render, one per case
 //   docs/figma-parity/manifest.json    the version, the hashes and the variant
 //
@@ -29,13 +29,13 @@ import {
 } from "./cases.ts"
 import { fetchFigmaImagesPng } from "../figma/rest.ts"
 import { resolveRoot, resolveWorkspaceRoot } from "../lib/paths.ts"
-import { readJson } from "../lib/json.ts"
+import { gzipJson, readJson, writeBytes } from "../lib/json.ts"
 import { parseSchema } from "../lib/validate.ts"
 import type { InventoryNode } from "../schemas/catalogue.ts"
 import type { ParityCase } from "../schemas/parity.ts"
 
 export const EVIDENCE_DIR = "docs/figma-parity"
-export const SOURCE_PATH = `${EVIDENCE_DIR}/source.json`
+export const SOURCE_PATH = `${EVIDENCE_DIR}/source.json.gz`
 export const MANIFEST_PATH = `${EVIDENCE_DIR}/manifest.json`
 export const REFERENCES_DIR = `${EVIDENCE_DIR}/references`
 export const MAX_EVIDENCE_BYTES = 10 * 1024 * 1024
@@ -332,7 +332,8 @@ export function evidenceBytes({
   pngs: Map<string, Buffer>
 }): { total: number; byCase: Array<{ caseId: string; bytes: number }> } {
   let total = 0
-  if (slice) total += Buffer.byteLength(`${JSON.stringify(slice, null, 2)}\n`)
+  // The cap is on the bytes a clone receives, so the slice counts compressed.
+  if (slice) total += gzipJson(slice).length
   if (manifest) total += Buffer.byteLength(`${JSON.stringify(manifest, null, 2)}\n`)
   const byCase = [...pngs.entries()].map(([caseId, bytes]) => {
     total += bytes.length
@@ -459,7 +460,7 @@ export async function writeEvidence({
   }
 
   fs.mkdirSync(paths.references, { recursive: true })
-  fs.writeFileSync(paths.source, `${JSON.stringify(result.slice, null, 2)}\n`)
+  writeBytes(paths.source, gzipJson(result.slice))
   for (const [caseId, bytes] of result.pngs) {
     fs.writeFileSync(path.join(paths.references, `${caseId}.png`), bytes)
   }
