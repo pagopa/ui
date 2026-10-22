@@ -1402,9 +1402,10 @@
       "target": {
         "module": "src/components/inputs/drag-and-drop.tsx",
         "export": "DragAndDrop",
-        "story": "apps/storybook/src/DragAndDrop.stories.tsx"
+        "story": "apps/storybook/src/DragAndDrop.stories.tsx",
+        "storyExports": ["Playground", "Multiple", "Processing", "Failed", "AvatarVariant"]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+      "note": "Figma delta 2026-10-14: reviewed 2026-10-22 (M5 wave). The Default Vertical dropzone (760:7433, 272x260) is measured: a 24px inset, the 236px box, the 24px upload icon, the 24px content gap, the 132x48 primary action and the 14/20 required helper. The set also declares Horizontal dispositions for Default, Processing, Failed and Error (505-608 wide), an Error composition with its own icon, message and action, and static File success rows; the component renders the vertical composition only and the Error state keeps the idle content. The Default border is dashed in the pinned image, while the numeric spec records only the 1px stroke. Stays `pending`: the open decision is docs/design-requests/2026-10-22-drag-and-drop-dispositions.md (owner: Figma design owner). Until it is answered no Drag & Drop case is committed and the Drawer dependency stays open."
     },
     "8049:39452": {
       "status": "pending",
