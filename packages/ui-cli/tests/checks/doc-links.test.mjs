@@ -18,6 +18,7 @@ function check(files) {
       const target = path.join(root, file)
       fs.mkdirSync(path.dirname(target), { recursive: true })
       fs.writeFileSync(target, source)
+      if (file.startsWith("node_modules/.bin/")) fs.chmodSync(target, 0o755)
     }
     return spawnSync(process.execPath, [script, "check", "docs"], {
       cwd: root,
@@ -98,5 +99,72 @@ test("other skills may name components and the shadcn skill is skipped", () => {
     ".agents/skills/shadcn/SKILL.md": "[x](missing.md)",
     "src/components/feedback/banner.tsx": "export function Banner() { return null }",
   })
+  assert.equal(result.status, 0, result.stderr)
+})
+
+// The command check reads the project graph through the workspace's own Nx
+// binary. The fixture stands a tiny executable in its place, so the test runs
+// the real code path without depending on the repository's node_modules.
+const fakeNx = `#!/bin/sh
+case "$1 $2" in
+  "show projects") printf '["alpha","beta"]\\n' ;;
+  "show project") printf '{"targets":{"build":{},"test":{},"lint":{},"typecheck":{}}}\\n' ;;
+  *) exit 1 ;;
+esac
+`
+
+function projectTree(extra = {}) {
+  return {
+    "nx.json": '{"targetDefaults":{}}',
+    "package.json": JSON.stringify({ name: "root", scripts: { lint: "oxlint", fmt: "oxfmt" } }),
+    "node_modules/.bin/nx": fakeNx,
+    "apps/alpha/project.json": JSON.stringify({ name: "alpha", targets: { build: {} } }),
+    "apps/alpha/package.json": JSON.stringify({ name: "alpha" }),
+    ...extra,
+  }
+}
+
+test("commands naming an existing Nx target and a root script pass", () => {
+  const result = check(
+    projectTree({
+      "AGENTS.md":
+        "Run `pnpm nx run alpha:build`, `pnpm nx run-many -p alpha,beta -t test` and `pnpm lint`.",
+    }),
+  )
+  assert.equal(result.status, 0, result.stderr)
+})
+
+test("an unknown Nx target, project or root script fails", () => {
+  const result = check(
+    projectTree({
+      "CONTRIBUTING.md":
+        "Run `pnpm nx run alpha:deploy`, `pnpm nx run gamma:build` and `pnpm storybook`.",
+    }),
+  )
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /unknown Nx target alpha:deploy/)
+  assert.match(result.stderr, /unknown Nx project gamma/)
+  assert.match(result.stderr, /unknown pnpm script storybook/)
+})
+
+test("run-many validates every project and target pair", () => {
+  const result = check(
+    projectTree({ "README.md": "Run `pnpm nx run-many -p alpha -t build,deploy`." }),
+  )
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /unknown Nx target alpha:deploy/)
+})
+
+test("a command with a placeholder is not validated and a script-only fence is checked", () => {
+  const result = check(
+    projectTree({
+      "AGENTS.md": "Use `pnpm nx run alpha:<target>`.\n\n```bash\npnpm nx run beta:test\n```\n",
+    }),
+  )
+  assert.equal(result.status, 0, result.stderr)
+})
+
+test("without nx.json the command check stays silent", () => {
+  const result = check({ "AGENTS.md": "Run `pnpm nx run anything:anywhere`." })
   assert.equal(result.status, 0, result.stderr)
 })

@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Documentation link check: every repository path the agent-facing documents,
-// the figma-to-code config and the scripts point to must exist, and the
-// figma-to-code skill stays agnostic (no docs/ paths, no ADR mentions, no
+// the figma-to-code config and the scripts point to must exist, every command
+// they name must resolve against the Nx project graph and the root scripts, and
+// the figma-to-code skill stays agnostic (no docs/ paths, no ADR mentions, no
 // nodeIds, no component names).
 //
 // Three roots meet here: the audited package (the guides, its README, the
@@ -12,6 +13,7 @@
 // is what the regression tests build.
 //
 // Run: node src/cli.ts check docs (from anywhere; PAGOPA_UI_ROOT names the package)
+import { execFileSync } from "node:child_process"
 import fs from "node:fs"
 import path from "node:path"
 import { walkFiles } from "../lib/fs.ts"
@@ -103,6 +105,7 @@ export function runDocLinks(): number {
     if (isLinksOnly(file)) return text
     for (const match of prose.matchAll(/`([^`\n]+)`/g))
       checkCodeSpan(file, text, match.index, match[1])
+    checkCommands(file, text)
     return text
   }
 
@@ -149,6 +152,215 @@ export function runDocLinks(): number {
       const value = match[1]
       if (/^[a-z]+:\/\//.test(value) || isLocal(value)) continue
       if (!exists(value)) report(file, text, match.index ?? 0, `missing path ${value}`)
+    }
+  }
+
+  // ------------------------------------------------------------ commands
+
+  // A command in a document is a claim like a path: an agent runs it literally,
+  // so an unknown Nx project, target or root script must fail the check. The
+  // project graph comes from the workspace's own Nx binary (targets are also
+  // inferred by plugins, which no manifest scan can see), read once per run and
+  // cached per project. A tree without `nx.json` (the regression fixtures)
+  // skips the Nx part; a tree without a root manifest skips the script part.
+  type CommandGraph = {
+    projects: Set<string>
+    targets: Map<string, Set<string>>
+    rootScripts: Set<string> | null
+  }
+
+  let graphRead = false
+  let graph: CommandGraph | null = null
+
+  function nx(args: string[]): string {
+    return execFileSync(path.join(workspace, "node_modules/.bin/nx"), args, {
+      cwd: workspace,
+      encoding: "utf8",
+      timeout: 20_000,
+      stdio: ["ignore", "pipe", "ignore"],
+      env: { ...process.env, NX_DAEMON: "false", NX_TUI: "false", FORCE_COLOR: "0" },
+    })
+  }
+
+  function commandGraph(): CommandGraph | null {
+    if (graphRead) return graph
+    graphRead = true
+    if (!fs.existsSync(path.join(workspace, "nx.json"))) return null
+    let rootScripts: Set<string> | null = null
+    const manifest = path.join(workspace, "package.json")
+    if (fs.existsSync(manifest)) {
+      try {
+        const parsed: { scripts?: Record<string, string> } = JSON.parse(
+          fs.readFileSync(manifest, "utf8"),
+        )
+        rootScripts = new Set(Object.keys(parsed.scripts ?? {}))
+      } catch {
+        rootScripts = null
+      }
+    }
+    try {
+      const projects = new Set<string>(JSON.parse(nx(["show", "projects", "--json"])))
+      graph = { projects, targets: new Map(), rootScripts }
+    } catch {
+      // Nx is not runnable here: the command part stays silent rather than
+      // reporting every command as unknown.
+      graph = null
+    }
+    return graph
+  }
+
+  // `null` means "the graph cannot answer" (unknown project or a failed read):
+  // the caller reports the unknown project itself or stays silent.
+  function projectTargets(projects: CommandGraph, name: string): Set<string> | null {
+    if (!projects.projects.has(name)) return null
+    const cached = projects.targets.get(name)
+    if (cached) return cached
+    try {
+      const shown: { targets?: Record<string, unknown> } = JSON.parse(
+        nx(["show", "project", name, "--json"]),
+      )
+      const targets = new Set(Object.keys(shown.targets ?? {}))
+      projects.targets.set(name, targets)
+      return targets
+    } catch {
+      return null
+    }
+  }
+
+  const BUILT_IN = new Set([
+    "add",
+    "dlx",
+    "exec",
+    "install",
+    "list",
+    "outdated",
+    "remove",
+    "run",
+    "update",
+    "why",
+  ])
+
+  function commandList(value: string | undefined): string[] {
+    return value ? value.split(",").filter(Boolean) : []
+  }
+
+  function optionValue(tokens: string[], names: string[]): string | undefined {
+    for (let position = 0; position < tokens.length; position += 1) {
+      const token = tokens[position]
+      for (const name of names) {
+        if (token === name) return tokens[position + 1]
+        if (token.startsWith(`${name}=`)) return token.slice(name.length + 1)
+      }
+    }
+    return undefined
+  }
+
+  function checkTarget(
+    file: string,
+    text: string,
+    index: number,
+    graphValue: CommandGraph,
+    project: string,
+    target: string,
+  ): void {
+    const targets = projectTargets(graphValue, project)
+    if (targets === null) {
+      if (!graphValue.projects.has(project))
+        report(file, text, index, `unknown Nx project ${project}`)
+      return
+    }
+    // A target may carry a configuration (`build:ci`); the base is the target.
+    if (!targets.has(target) && !targets.has(target.split(":")[0]))
+      report(file, text, index, `unknown Nx target ${project}:${target}`)
+  }
+
+  function checkCommand(file: string, text: string, index: number, raw: string): void {
+    const commands = commandGraph()
+    if (!commands) return
+    // A placeholder is an instruction to fill in, not a command to run.
+    if (/[<>{}$…]/.test(raw)) return
+    for (const part of raw.split(/&&|\|\||;/)) {
+      const command = part.trim().replace(/^(?:[A-Za-z_][A-Za-z0-9_]*=\S+\s+)+/, "")
+      if (!command.startsWith("pnpm ")) continue
+      const tokens = command.split(/\s+/)
+      let position = 1
+      if (tokens[position] === "--filter" || tokens[position] === "-F") {
+        const filter = tokens[position + 1]
+        position += 2
+        if (tokens[position] === "exec" || tokens[position] === "dlx") continue
+        if (tokens[position] === "run") position += 1
+        const script = tokens[position]
+        if (!filter) continue
+        const targets = projectTargets(commands, filter)
+        if (targets === null) {
+          report(file, text, index, `unknown workspace package ${filter}`)
+          continue
+        }
+        if (script && !targets.has(script))
+          report(file, text, index, `unknown script ${script} in ${filter}`)
+        continue
+      }
+      const first = tokens[position]
+      if (!first || first.startsWith("-")) continue
+      if (first === "nx") {
+        const subcommand = tokens[position + 1]
+        if (subcommand === "run") {
+          const spec = tokens[position + 2]
+          if (!spec || spec.startsWith("-")) continue
+          const separator = spec.indexOf(":")
+          if (separator < 0) continue
+          checkTarget(
+            file,
+            text,
+            index,
+            commands,
+            spec.slice(0, separator),
+            spec.slice(separator + 1),
+          )
+          continue
+        }
+        if (subcommand === "run-many") {
+          const projects = commandList(
+            optionValue(tokens.slice(position + 2), ["-p", "--projects"]),
+          )
+          const targets = commandList(optionValue(tokens.slice(position + 2), ["-t", "--targets"]))
+          for (const project of projects)
+            for (const target of targets) checkTarget(file, text, index, commands, project, target)
+          if (!targets.length) {
+            for (const project of projects)
+              if (!commands.projects.has(project))
+                report(file, text, index, `unknown Nx project ${project}`)
+          }
+          continue
+        }
+        // `nx affected`, `nx release`, `nx show` and the rest need a live graph
+        // or their own arguments: nothing static to validate.
+        continue
+      }
+      if (BUILT_IN.has(first)) continue
+      if (first === "run") {
+        const script = tokens[position + 1]
+        if (!script) continue
+        if (commands.rootScripts && !commands.rootScripts.has(script))
+          report(file, text, index, `unknown pnpm script ${script}`)
+        continue
+      }
+      if (!commands.rootScripts) continue
+      if (!commands.rootScripts.has(first))
+        report(file, text, index, `unknown pnpm script ${first}`)
+    }
+  }
+
+  function checkCommands(file: string, text: string): void {
+    for (const match of text.matchAll(/(`+)([^`\n]+)\1/g)) {
+      const span = match[2]
+      if (span.trim().startsWith("pnpm ")) checkCommand(file, text, match.index ?? 0, span)
+    }
+    for (const fence of text.matchAll(/```[^\n]*\n([\s\S]*?)```/g)) {
+      const body = fence[1].replace(/\\\n/g, " ")
+      const offset = fence.index ?? 0
+      for (const line of body.split("\n"))
+        if (line.trim().startsWith("pnpm ")) checkCommand(file, text, offset, line.trim())
     }
   }
 
