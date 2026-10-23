@@ -4,6 +4,8 @@ import { expect, within } from "storybook/test"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { Spacing, type SpacingSize } from "@/components/content"
 
+import spacingGuide from "./guides/spacing.md?raw"
+
 // Source `Dimensione` options (237:1307), smallest first: the ladder order of
 // the Spacing page, not a component state.
 const steps: SpacingSize[] = [4, 8, 16, 24, 32, 40, 48]
@@ -19,8 +21,9 @@ const meta = {
     design: { type: "figma", url: figmaEmbedUrl("237:1307") },
     docs: {
       description: {
-        component:
-          "Invisible source spacer: each `Dimensione` step paints nothing and takes its own height; it is `aria-hidden`, so it exposes no role. The scale is documented on a surface (`Ladder` story): bars, guides and labels belong to the narrative, not to the component.",
+        component: `Invisible source spacer: each \`Dimensione\` step paints nothing and takes its own height; it is \`aria-hidden\`, so it exposes no role. The scale is documented on a surface (\`Ladder\` story): bars, guides and labels belong to the narrative, not to the component.
+
+${spacingGuide}`,
       },
     },
   },

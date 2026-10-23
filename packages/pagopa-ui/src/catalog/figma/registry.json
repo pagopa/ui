@@ -979,8 +979,10 @@
       "target": {
         "module": "src/components/content/spacing.tsx",
         "export": "Spacing",
-        "story": "apps/storybook/src/Spacing.stories.tsx"
-      }
+        "story": "apps/storybook/src/Spacing.stories.tsx",
+        "storyExports": ["Ladder", "Playground"]
+      },
+      "note": "Reviewed 2026-10-23 (M5 second ring, structural node): the set declares seven `Dimensione` variants (4/8/16/24/32/40/48), each a 320×N component whose only child is `Rectangle 28`, a rectangle with no fill and no stroke — the source draws no surface, text or icon at any step, and the axis is a step ladder, not a device axis. No parity case is committed and none can be honest: a capture would compare a blank 320×N box with a blank 320×N box, and its only measurable property, the height, is exactly what the `Ladder` story already asserts (`Dimensione=N` → `size={N}` → `h-1`/`h-2`/`h-4`/`h-6`/`h-8`/`h-10`/`h-12`), together with the absent paint, border and shadow and the `aria-hidden`, role-less semantics. The node is therefore excluded from the parity corpus by design and stays `implemented`: the component is shipped, exported and mapped to every step. Guide: apps/storybook/src/guides/spacing.md."
     },
     "256:8579": {
       "status": "implemented",
