@@ -333,13 +333,14 @@
       }
     },
     "1137:8910": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/primitives/tabs.tsx",
         "export": "Tabs",
-        "story": "apps/storybook/src/Tabs.stories.tsx"
+        "story": "apps/storybook/src/Tabs.stories.tsx",
+        "storyExports": ["Default", "FidelityTabs"]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+      "note": "Reviewed 2026-10-23 (closing the 2026-10-14 delta): the node is a plain COMPONENT, not a set, so it has one variant and no Device axis; `1137-8910-default` verifies the whole 658x48 TabGroup at its source width. Seven 94x48 tabs, the first active: the 16px inline and 8px block padding, the 8px icon-to-label gap, the 24px kid_star artwork, the 18/26 Semibold label, the active tab in primary (label, artwork and the 2px bottom line) and the inactive ones at #555c70 over the #e8ebf1 line. The source nests Content and Frame 1049 inside each `.Tab item`; the DOM keeps one trigger row, so the item gap carries the inner 8px (ignored as a mapping artifact) and the nested Content padding is the trigger own padding. The list reports an 11px horizontal scroll at the source width because the label measures 31.6 against the source 30 (a font metric): it is a responsive advisory, not a delta, and the band stays one row. The guide apps/storybook/src/guides/tabs.md records the source mapping. Prop conventions: `variant=\"line\"` is the drawn composition; `variant=\"default\"` (the pill list) is a library extension with no source frame; `orientation` is caller-owned because the source draws only the horizontal row; the labels and the list `aria-label` are consumer strings. No open design question."
     },
     "1154:4493": {
       "status": "mocked",
@@ -381,8 +382,8 @@
       "note": "Reviewed per device 2026-10-15 (device burn-down wave 2): `123-4498-mobile-mobile` (Buttons=3, Inline=False at 312) and `123-4498-3-true-desktop` (Buttons=3, Inline=True at 560) verify against the source variants. The source text action is a content-sized 22px row where the shared Button keeps its 48px native target and 16px insets: recorded as residues (guides/actions.md). No layoutScope: the composition is the caller `orientation` prop, not a breakpoint, and the fidelity matrix story renders both devices. Adaptation `native-group-name`: the source is visual-only; the native group carries a meaningful accessible name without changing the action layout. Adaptation `text-action-target`: the 22px source text action keeps the shared Button's 48px native target, and the resulting stack height is reported, not waived."
     },
     "123:7768": {
-      "status": "pending",
-      "note": "Reviewed 2026-10-22 (closing the 2026-10-14 delta): no Device axis, so each Layout variant is verified once at its own source width. `123-7768-extended` (Layout=Extended 123:7769, 113x22: the semibold link, the 16px chevron separator and the regular #555c70 current page with aria-current, 6px gap, every offset exact; Level 1.gap is the single-child phantom gap) and `123-7768-compact` (Layout=Compact 123:7777, 65x24: the 24px arrow-back artwork, 4px gap, semibold label, every offset exact). The render exposed a drift fixed in navigation/breadcrumb.tsx: `min-h-11` inflated both rows to 44px; the rows now keep the source 22/24px and each link reaches its 44px pointer target through the invisible vertical ::after expansion (22 + 2x12, 24 + 2x10), with no horizontal expansion so reflow is unchanged. The private hover variants 124:3604 and 124:3608 are verified on a real-pointer render (#0b3ee3, underline, blue arrow; the source 21px hover line height is within tolerance of 22). Open, non-blocking questions on the set description (current-page colour/weight, Show Level 2-5 vs 3-6 and a maximum depth, automatic Back on mobile vs an explicit destination) are in docs/design-requests/2026-10-22-breadcrumb-description-vs-drawing.md; the render follows the drawn variants until they are answered. Prop-convention departures: the export stays `Breadcrumb` (the published API) for the set `Breadcrumbs`; the visibility flags `Show Level 2`-`Show Level 5` are not slots but the length of the published `items` array, since each level is caller data and the last entry is the `Current` frame; Compact `back` is a `{ label, href }` object rather than a `ReactNode` slot so the component owns the native link and its arrow artwork. The JSDoc tag `Figma: Breadcrumbs (node 123:7768)`, the story subtitle `Figma: Breadcrumbs` and the guide's Figma source mapping were added on 2026-10-22. Offline evidence blocker: `figma:parity:verify` has no evidence-bundle entry for 123-7768-extended and 123-7768-compact until `parity evidence --write` is run with the person's FIGMA_TOKEN.",
+      "status": "implemented",
+      "note": "Reviewed 2026-10-22 (closing the 2026-10-14 delta): no Device axis, so each Layout variant is verified once at its own source width. `123-7768-extended` (Layout=Extended 123:7769, 113x22: the semibold link, the 16px chevron separator and the regular #555c70 current page with aria-current, 6px gap, every offset exact; Level 1.gap is the single-child phantom gap) and `123-7768-compact` (Layout=Compact 123:7777, 65x24: the 24px arrow-back artwork, 4px gap, semibold label, every offset exact). The render exposed a drift fixed in navigation/breadcrumb.tsx: `min-h-11` inflated both rows to 44px; the rows now keep the source 22/24px and each link reaches its 44px pointer target through the invisible vertical ::after expansion (22 + 2x12, 24 + 2x10), with no horizontal expansion so reflow is unchanged. The private hover variants 124:3604 and 124:3608 are verified on a real-pointer render (#0b3ee3, underline, blue arrow; the source 21px hover line height is within tolerance of 22). Open, non-blocking questions on the set description (current-page colour/weight, Show Level 2-5 vs 3-6 and a maximum depth, automatic Back on mobile vs an explicit destination) are in docs/design-requests/2026-10-22-breadcrumb-description-vs-drawing.md; the render follows the drawn variants until they are answered. Prop-convention departures: the export stays `Breadcrumb` (the published API) for the set `Breadcrumbs`; the visibility flags `Show Level 2`-`Show Level 5` are not slots but the length of the published `items` array, since each level is caller data and the last entry is the `Current` frame; Compact `back` is a `{ label, href }` object rather than a `ReactNode` slot so the component owns the native link and its arrow artwork. The JSDoc tag `Figma: Breadcrumbs (node 123:7768)`, the story subtitle `Figma: Breadcrumbs` and the guide's Figma source mapping were added on 2026-10-22. Re-run on 2026-10-23: both cases still reproduce (`verified-with-residues` and `verified`) and the committed evidence bundle carries their pinned PNGs and manifest entries, so the node is `implemented`; the open questions above are non-blocking and do not change the drawn variants.",
       "target": {
         "module": "src/components/navigation/breadcrumb.tsx",
         "export": "Breadcrumb",
@@ -1408,13 +1409,22 @@
       }
     },
     "759:6399": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/navigation/accordion.tsx",
         "export": "Accordion",
-        "story": "apps/storybook/src/Accordion.stories.tsx"
+        "story": "apps/storybook/src/Accordion.stories.tsx",
+        "storyExports": [
+          "Playground",
+          "WithDisabledItem",
+          "Loading",
+          "FidelityClosed",
+          "FidelityOpen",
+          "FidelityDisabled",
+          "FidelitySkeleton"
+        ]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+      "note": "Reviewed 2026-10-23 (closing the 2026-10-14 delta): the set has no Device axis (its `State` values are states, not devices), so each of the four drawn states is verified once at the source 580 width. `759-6399-closed` (State=Close 759:6398): the item is 580x100 against the source 580x98 because Figma draws the 1px stroke inside the frame while CSS border-box adds it (+1px per edge); pad 24, radius 8, #e8ebf1 stroke, white fill; the header is 532x50 with the 24px photo, the 8px gap, the 16/22 Semibold title, the 24px Status chip at a 4px gap and the 24px chevron 12px after the title frame; the root gap is the single-child phantom gap. `759-6399-open` (State=Open 759:6537): the header is 50, the description sits at offset 82 (the 8px step) and the caller content starts at 136 (the 32px step); the item height follows the content slot, so the case records a height residue (the fixture carries one paragraph against the source three-section sample list) and leaves the content subtree unmapped as caller data. `759-6399-disabled` (State=Disabled 13027:5052): grey-100 item fill, the Status chip as a 1px #0e0f13 outline, the title at full #0e0f13 and only the chevron at #bbc2d6. `759-6399-skeleton` (State=Skeleton 13027:5623): the header plus the 32px step and six 68px placeholder rows (100x22 and 200x16 bars, 6px gap, #e8ebf1 fill) with five 1px dividers, so the content is 532x413 and the item 580x543, every offset exact. Component fixes in this wave: the loading item now renders the source skeleton composition instead of a generic two-bar card, the disabled item no longer fades its title (only the chevron changes colour), and the header title/chip stacks fill their row (496/464) like the source fill frames so the chevron keeps the 12px gap. The guide apps/storybook/src/guides/accordion.md records the source mapping. Prop conventions: the source `State` axis maps to the caller's `disabled`/`skeleton` data and `defaultValue`; `AccordionItemData` carries the caller copy (`title`, `description`, `chip`, `icon`, `content`); the announced strings are `aria-label` for the group (default `Approfondimenti`) and `loadingLabel` for the skeleton (default `Caricamento in corso`). No open design question."
     },
     "760:7432": {
       "status": "pending",

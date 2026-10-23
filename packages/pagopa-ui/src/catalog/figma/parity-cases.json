@@ -1692,6 +1692,86 @@
     "ignores": ["field.padding.top", "field.padding.bottom", "field.gap"]
   },
   {
+    "id": "759-6399-closed",
+    "nodeId": "759:6399",
+    "export": "Accordion",
+    "storyId": "components-navigation-accordion--fidelity-closed",
+    "state": "closed",
+    "variant": "759:6398",
+    "width": 580,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"accordion-item\"]",
+    "subjects": {
+      "Accordion header": "#storybook-root [data-fidelity-variant=\"759-6398\"] [data-slot=\"accordion-trigger\"]",
+      "Section title": "#storybook-root [data-fidelity-variant=\"759-6398\"] [data-slot=\"accordion-trigger\"] > span",
+      "Content": "#storybook-root [data-fidelity-variant=\"759-6398\"] [data-slot=\"accordion-trigger\"] > span > span:last-of-type"
+    },
+    "compareOffset": true,
+    "ignores": ["field.gap"],
+    "note": "reviewed: State=Close at its 580px source width, no Device axis. Item 580x100 against the source 580x98 (the source 1px stroke sits inside its padding; CSS border-box adds it, +1px per edge), padding 24, radius 8, #e8ebf1 stroke, white fill. Header 532x50: the 24px photo, the 8px gap, the Semibold 16/22 title and the 24px Status chip with a 4px gap, the 24px chevron at the right edge. Root gap is the phantom gap of a frame with one child."
+  },
+  {
+    "id": "759-6399-open",
+    "nodeId": "759:6399",
+    "export": "Accordion",
+    "storyId": "components-navigation-accordion--fidelity-open",
+    "state": "open",
+    "variant": "759:6537",
+    "width": 580,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"accordion-item\"]",
+    "subjects": {
+      "Accordion header": "#storybook-root [data-fidelity-variant=\"759-6537\"] [data-slot=\"accordion-trigger\"]",
+      "Description": "#storybook-root [data-fidelity-variant=\"759-6537\"] [data-slot=\"accordion-content\"] > div > div:first-child"
+    },
+    "expectState": "open",
+    "stateEvidence": "#storybook-root [data-fidelity-variant=\"759-6537\"] [data-slot=\"accordion-content\"]",
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the content slot is caller data: the fixture carries one paragraph against the source three-section sample list, so the item height follows the content; the header, the 8px description step and the 32px content step are compared"
+      }
+    ],
+    "ignores": ["field.gap"],
+    "note": "reviewed: State=Open at its 580px source width, no Device axis. The header 532x50, the 8px description step (offset 82) and the caller content start 32px after the description (offset 136) match the source. The item height follows the content slot: the fixture carries one paragraph against the source three-section sample list of 1247, so the content subtree is not mapped; header, description offset and content step are compared. Root gap is the phantom gap of the frame with one child."
+  },
+  {
+    "id": "759-6399-disabled",
+    "nodeId": "759:6399",
+    "export": "Accordion",
+    "storyId": "components-navigation-accordion--fidelity-disabled",
+    "state": "disabled",
+    "variant": "13027:5052",
+    "width": 580,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"accordion-item\"]",
+    "subjects": {
+      "Accordion header": "#storybook-root [data-fidelity-variant=\"13027-5052\"] [data-slot=\"accordion-trigger\"]",
+      "Section title": "#storybook-root [data-fidelity-variant=\"13027-5052\"] [data-slot=\"accordion-trigger\"] > span",
+      "Content": "#storybook-root [data-fidelity-variant=\"13027-5052\"] [data-slot=\"accordion-trigger\"] > span > span:last-of-type"
+    },
+    "expectState": "disabled",
+    "ignores": ["field.gap"],
+    "note": "reviewed: State=Disabled at its 580px source width, no Device axis. #e8ebf1 item fill, the 24px decorative photo, the Semibold 16/22 title at full #0e0f13 (no opacity fade; the chevron alone takes #bbc2d6) and the Status chip as a 1px #0e0f13 outline on the grey fill. 580x100 against the source 580x98 (the source stroke sits inside its padding; CSS border-box adds it). Header 532x50 with the 8/12px gaps exact. Root gap is the phantom gap of a frame with one child."
+  },
+  {
+    "id": "759-6399-skeleton",
+    "nodeId": "759:6399",
+    "export": "Accordion",
+    "storyId": "components-navigation-accordion--fidelity-skeleton",
+    "state": "skeleton",
+    "variant": "13027:5623",
+    "width": 580,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"accordion-skeleton\"]",
+    "subjects": {
+      "Accordion header": "#storybook-root [data-fidelity-variant=\"13027-5623\"] [data-slot=\"accordion-skeleton\"] > div:first-of-type",
+      "Content": "#storybook-root [data-fidelity-variant=\"13027-5623\"] [data-slot=\"accordion-skeleton\"] > div:last-of-type",
+      "ListItem": "#storybook-root [data-fidelity-variant=\"13027-5623\"] [data-slot=\"accordion-skeleton\"] > div:last-of-type > div:first-of-type > div"
+    },
+    "note": "reviewed: State=Skeleton at its 580px source width, no Device axis. Header 532x50 (photo, Semibold title, Status chip, the 24px up chevron), the 32px step and six 68px placeholder rows (100x22 and 200x16 bars, 6px gap, 12px vertical padding, #e8ebf1 fill) separated by five 1px #e8ebf1 dividers: content 532x413, item 580x543. Every offset exact."
+  },
+  {
     "id": "908-2234-actionable",
     "nodeId": "908:2234",
     "export": "ListItem",
@@ -1935,6 +2015,23 @@
     },
     "ignores": ["Bounding box.background"],
     "note": "The declared condensed head (device mobile): the source draws a 320x48 Head with the menu icon and a placeholder label plus a 320x1 Divider; the DOM summary carries the divider as its own 1px border-b (49 against the source 48+1), shows the section name where the source's 'Menu' is placeholder copy (the fixture owns its copy) and adds the disclosure chevron."
+  },
+  {
+    "id": "1137-8910-default",
+    "nodeId": "1137:8910",
+    "export": "Tabs",
+    "storyId": "components-tabs--fidelity-tabs",
+    "state": "default",
+    "variant": "1137:8910",
+    "width": 658,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"tabs-list\"]",
+    "subjects": {
+      ".Tab item": "#storybook-root [data-slot=\"tabs-trigger\"]:first-of-type"
+    },
+    "compareOffset": true,
+    "ignores": [".Tab item.gap"],
+    "note": "reviewed: TabGroup at its 658x48 source width, no Device axis: seven 94x48 tabs, the first active. Each tab keeps the 16/8 padding, the 8px icon-to-label gap, the 24px kid_star artwork and the 18/26 Semibold label; the active tab turns primary (label, artwork and the 2px bottom line) while the inactive ones keep #555c70 over the #e8ebf1 line. The source nests Content and Frame 1049 inside the item; the DOM keeps one trigger row, so the item gap carries the inner 8px and the nested Content padding is the trigger own padding (mapping artifact). The list reports an 11px horizontal scroll at the source width because the label measures 31.6 against the source 30 — a font-metric advisory, not a delta."
   },
   {
     "id": "1278-6527-1278-6526-mobile",

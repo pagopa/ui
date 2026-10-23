@@ -31,6 +31,87 @@
       "width": 320,
       "height": 650
     },
+    "108-1402-contained-label": {
+      "png": "references/108-1402-contained-label.png",
+      "sha256": "288308c01d994b884e628c9418823b3a382c20f784f778277ce49100f07df55b",
+      "nodeId": "108:1402",
+      "variant": "108:1403",
+      "designFingerprint": "dafdd3bc51a8caa012410c9d9e531187aa01655578e3ebeed7ed7da624dc762e",
+      "width": 96,
+      "height": 48
+    },
+    "108-1402-contained-contrast-skeleton": {
+      "png": "references/108-1402-contained-contrast-skeleton.png",
+      "sha256": "6c038ce25521d5082037a11606c01867b18f7e0f972abd16e34d203ac0e371f6",
+      "nodeId": "108:1402",
+      "variant": "108:1409",
+      "designFingerprint": "7ca548ef9259b689c8edb6a3a575d16e2b0bb8016f17fb27bb6b98f37a77d928",
+      "width": 141,
+      "height": 48
+    },
+    "108-1402-contained-error-right": {
+      "png": "references/108-1402-contained-error-right.png",
+      "sha256": "6405b17c61f0db6c48b369d3f09eb09dfdf61b894b8bb5f12aa6c15b5fca7e25",
+      "nodeId": "108:1402",
+      "variant": "108:1457",
+      "designFingerprint": "9888cccd0ea4c1f779fdc455c76a067a3fb0c7e5dde304c408f6fdb37df1ee30",
+      "width": 128,
+      "height": 48
+    },
+    "108-1402-text-right": {
+      "png": "references/108-1402-text-right.png",
+      "sha256": "863133cf09880cb4b888a328c69266a4a3145d94797a06dc105a649f344a9ebb",
+      "nodeId": "108:1402",
+      "variant": "108:1465",
+      "designFingerprint": "c2edc9d90395109d7941aa6333528d735388b208cfe395dbf77dcae11e859f98",
+      "width": 80,
+      "height": 24
+    },
+    "108-1402-outlined-left": {
+      "png": "references/108-1402-outlined-left.png",
+      "sha256": "7c0eaeb870290b86e0b85d1c302351c3ff5bef1b617aabe9ed08359dc8223f07",
+      "nodeId": "108:1402",
+      "variant": "108:1471",
+      "designFingerprint": "25ddc584f590954d5bc435ac5dbce8caeb1f76bb4a44923ebc051034f9c044db",
+      "width": 128,
+      "height": 48
+    },
+    "108-1402-outlined-contrast-spinner": {
+      "png": "references/108-1402-outlined-contrast-spinner.png",
+      "sha256": "956707750f17e7d10df14e3dc1125a10b28e6d68b9280eb0ae81b3aa48e085a6",
+      "nodeId": "108:1402",
+      "variant": "108:1487",
+      "designFingerprint": "07568f6758be5c2b33471003f8edbde817b7373092beb23e6b015eb3419c1f97",
+      "width": 72,
+      "height": 48
+    },
+    "108-1402-text-contrast-label": {
+      "png": "references/108-1402-text-contrast-label.png",
+      "sha256": "efd38a4bf91f992a0f9f3fb2b3723714e3903b5d550b3002c46a9416e71027a0",
+      "nodeId": "108:1402",
+      "variant": "108:1535",
+      "designFingerprint": "09d2148e92d0ce5c1faef568b93b791a2cffaff939e9dabc254253af50769daa",
+      "width": 48,
+      "height": 22
+    },
+    "108-1402-outlined-error-skeleton": {
+      "png": "references/108-1402-outlined-error-skeleton.png",
+      "sha256": "ff07cc6ca4ef31e3ffe8a60629de34373e9080328e61465cfbeead5a674dcbf6",
+      "nodeId": "108:1402",
+      "variant": "1527:26769",
+      "designFingerprint": "eec95407454000f8b51993b3f0098dc2581dc763b5c033da9106b3901d7bc339",
+      "width": 141,
+      "height": 48
+    },
+    "108-1402-text-error-spinner": {
+      "png": "references/108-1402-text-error-spinner.png",
+      "sha256": "c6a01b41d805f953feaafd4d70969145c5fa5a636e54eb11a3055c860f45c543",
+      "nodeId": "108:1402",
+      "variant": "1527:26775",
+      "designFingerprint": "97ac4d5bc3320f315ad647f19df3f54d11023adf228fe1fc08d8e881ddd49b88",
+      "width": 24,
+      "height": 24
+    },
     "123-4498-3-true-desktop": {
       "png": "references/123-4498-3-true-desktop.png",
       "sha256": "3a91e3441439d9168b803ee135747d784f09519ee8ae152caa68b0e733d8dd09",
@@ -48,6 +129,24 @@
       "designFingerprint": "3791652d6fa2a23cf35dde84b04df4a584d86d168d1e7832db5940c3ac326ba7",
       "width": 312,
       "height": 94
+    },
+    "123-7768-extended": {
+      "png": "references/123-7768-extended.png",
+      "sha256": "d7701e84c1d15c9a4bb896993fc9a09ff5ec265a49ff134c85f31bcf49c033a2",
+      "nodeId": "123:7768",
+      "variant": "123:7769",
+      "designFingerprint": "7cacfa15433584bc3812dc0923dca37b0287a0f270fe9b764eba2fcd8e09063b",
+      "width": 113,
+      "height": 22
+    },
+    "123-7768-compact": {
+      "png": "references/123-7768-compact.png",
+      "sha256": "ab32e6568d9cf9c4f3a1cfec7cba89f647377dcb9b484f219e7bbe9d7db051f6",
+      "nodeId": "123:7768",
+      "variant": "123:7777",
+      "designFingerprint": "c964659f4a3cda16a57be143125d5b0c42de04a09b3800d027344747e9210087",
+      "width": 65,
+      "height": 24
     },
     "198-828-empty": {
       "png": "references/198-828-empty.png",
@@ -1309,104 +1408,50 @@
       "width": 848,
       "height": 128
     },
-    "108-1402-contained-label": {
-      "png": "references/108-1402-contained-label.png",
-      "sha256": "288308c01d994b884e628c9418823b3a382c20f784f778277ce49100f07df55b",
-      "nodeId": "108:1402",
-      "variant": "108:1403",
-      "designFingerprint": "dafdd3bc51a8caa012410c9d9e531187aa01655578e3ebeed7ed7da624dc762e",
-      "width": 96,
+    "759-6399-closed": {
+      "png": "references/759-6399-closed.png",
+      "sha256": "a72fb6697a0f786e1c895c13db97608938e53f06d8fc487d1729008cfe09c829",
+      "nodeId": "759:6399",
+      "variant": "759:6398",
+      "designFingerprint": "0bbb01a90d60eee62da46bb1922a636b42ca282a7ff77206d4daeb7ac3da1001",
+      "width": 580,
+      "height": 98
+    },
+    "759-6399-open": {
+      "png": "references/759-6399-open.png",
+      "sha256": "801459f31762e69f9c75841cc9220f2d0f45545d672eed68b1c4c6525f5b3b1c",
+      "nodeId": "759:6399",
+      "variant": "759:6537",
+      "designFingerprint": "d5c8d8d8a5f7089a7a6d12c990417553f4a5469a38dd083a8032062a5dc409da",
+      "width": 580,
+      "height": 1247
+    },
+    "759-6399-disabled": {
+      "png": "references/759-6399-disabled.png",
+      "sha256": "48895ac4ddf8ac43bfc2f776071fe7e4cfe04bef84bc811a9e38c6b995082fe5",
+      "nodeId": "759:6399",
+      "variant": "13027:5052",
+      "designFingerprint": "f15ca76521c96a587eeecc0d0fcf8f6ac635d327ea6326625b196a9439e35d4c",
+      "width": 580,
+      "height": 98
+    },
+    "759-6399-skeleton": {
+      "png": "references/759-6399-skeleton.png",
+      "sha256": "faef6fb23aa28192672416464099decf7d093e1fb175598bc125fc0de670da1a",
+      "nodeId": "759:6399",
+      "variant": "13027:5623",
+      "designFingerprint": "ffc1c6eac4ea2fcd71de77361f5a88b0c1b1d5ecd8ecf11d273a15622e8ad05e",
+      "width": 580,
+      "height": 543
+    },
+    "1137-8910-default": {
+      "png": "references/1137-8910-default.png",
+      "sha256": "0a923bf3412dc05a017bddd8c8bea7814dcdc0d814e77cc361066437329ea9b2",
+      "nodeId": "1137:8910",
+      "variant": "1137:8910",
+      "designFingerprint": "ea816a3479c3d9acac78fa9507ee5f4a874e1209283f1ea4e1040e608ad1be1c",
+      "width": 658,
       "height": 48
-    },
-    "108-1402-contained-contrast-skeleton": {
-      "png": "references/108-1402-contained-contrast-skeleton.png",
-      "sha256": "6c038ce25521d5082037a11606c01867b18f7e0f972abd16e34d203ac0e371f6",
-      "nodeId": "108:1402",
-      "variant": "108:1409",
-      "designFingerprint": "7ca548ef9259b689c8edb6a3a575d16e2b0bb8016f17fb27bb6b98f37a77d928",
-      "width": 141,
-      "height": 48
-    },
-    "108-1402-contained-error-right": {
-      "png": "references/108-1402-contained-error-right.png",
-      "sha256": "6405b17c61f0db6c48b369d3f09eb09dfdf61b894b8bb5f12aa6c15b5fca7e25",
-      "nodeId": "108:1402",
-      "variant": "108:1457",
-      "designFingerprint": "9888cccd0ea4c1f779fdc455c76a067a3fb0c7e5dde304c408f6fdb37df1ee30",
-      "width": 128,
-      "height": 48
-    },
-    "108-1402-text-right": {
-      "png": "references/108-1402-text-right.png",
-      "sha256": "863133cf09880cb4b888a328c69266a4a3145d94797a06dc105a649f344a9ebb",
-      "nodeId": "108:1402",
-      "variant": "108:1465",
-      "designFingerprint": "c2edc9d90395109d7941aa6333528d735388b208cfe395dbf77dcae11e859f98",
-      "width": 80,
-      "height": 24
-    },
-    "108-1402-outlined-left": {
-      "png": "references/108-1402-outlined-left.png",
-      "sha256": "7c0eaeb870290b86e0b85d1c302351c3ff5bef1b617aabe9ed08359dc8223f07",
-      "nodeId": "108:1402",
-      "variant": "108:1471",
-      "designFingerprint": "25ddc584f590954d5bc435ac5dbce8caeb1f76bb4a44923ebc051034f9c044db",
-      "width": 128,
-      "height": 48
-    },
-    "108-1402-outlined-contrast-spinner": {
-      "png": "references/108-1402-outlined-contrast-spinner.png",
-      "sha256": "956707750f17e7d10df14e3dc1125a10b28e6d68b9280eb0ae81b3aa48e085a6",
-      "nodeId": "108:1402",
-      "variant": "108:1487",
-      "designFingerprint": "07568f6758be5c2b33471003f8edbde817b7373092beb23e6b015eb3419c1f97",
-      "width": 72,
-      "height": 48
-    },
-    "108-1402-text-contrast-label": {
-      "png": "references/108-1402-text-contrast-label.png",
-      "sha256": "efd38a4bf91f992a0f9f3fb2b3723714e3903b5d550b3002c46a9416e71027a0",
-      "nodeId": "108:1402",
-      "variant": "108:1535",
-      "designFingerprint": "09d2148e92d0ce5c1faef568b93b791a2cffaff939e9dabc254253af50769daa",
-      "width": 48,
-      "height": 22
-    },
-    "108-1402-outlined-error-skeleton": {
-      "png": "references/108-1402-outlined-error-skeleton.png",
-      "sha256": "ff07cc6ca4ef31e3ffe8a60629de34373e9080328e61465cfbeead5a674dcbf6",
-      "nodeId": "108:1402",
-      "variant": "1527:26769",
-      "designFingerprint": "eec95407454000f8b51993b3f0098dc2581dc763b5c033da9106b3901d7bc339",
-      "width": 141,
-      "height": 48
-    },
-    "108-1402-text-error-spinner": {
-      "png": "references/108-1402-text-error-spinner.png",
-      "sha256": "c6a01b41d805f953feaafd4d70969145c5fa5a636e54eb11a3055c860f45c543",
-      "nodeId": "108:1402",
-      "variant": "1527:26775",
-      "designFingerprint": "97ac4d5bc3320f315ad647f19df3f54d11023adf228fe1fc08d8e881ddd49b88",
-      "width": 24,
-      "height": 24
-    },
-    "123-7768-extended": {
-      "png": "references/123-7768-extended.png",
-      "sha256": "d7701e84c1d15c9a4bb896993fc9a09ff5ec265a49ff134c85f31bcf49c033a2",
-      "nodeId": "123:7768",
-      "variant": "123:7769",
-      "designFingerprint": "7cacfa15433584bc3812dc0923dca37b0287a0f270fe9b764eba2fcd8e09063b",
-      "width": 113,
-      "height": 22
-    },
-    "123-7768-compact": {
-      "png": "references/123-7768-compact.png",
-      "sha256": "ab32e6568d9cf9c4f3a1cfec7cba89f647377dcb9b484f219e7bbe9d7db051f6",
-      "nodeId": "123:7768",
-      "variant": "123:7777",
-      "designFingerprint": "c964659f4a3cda16a57be143125d5b0c42de04a09b3800d027344747e9210087",
-      "width": 65,
-      "height": 24
     }
   }
 }
