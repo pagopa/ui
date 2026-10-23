@@ -3,6 +3,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { Overlay } from "@/components/overlays/overlay"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
+import overlayGuide from "./guides/overlay.md?raw"
+
 const meta = {
   title: "Components/Overlays/Overlay",
   component: Overlay,
@@ -16,8 +18,9 @@ const meta = {
     design: { type: "figma", url: figmaEmbedUrl("67:3964") },
     docs: {
       description: {
-        component:
-          "Contextual blocking veil. It announces the wait with a status region and does not capture focus. The default spinner is a runtime extension; Fidelity turns it off to show the source veil with no content.",
+        component: `Contextual blocking veil. It announces the wait with a status region and does not capture focus. The default spinner is a runtime extension; Fidelity turns it off to show the source veil with no content.
+
+${overlayGuide}`,
       },
     },
   },

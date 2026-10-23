@@ -5,6 +5,8 @@ import { expect, spyOn, userEvent, waitFor, within } from "storybook/test"
 import { ScrollToBottom } from "@/components/feedback/scroll-to-bottom"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
+import scrollToBottomGuide from "./guides/scroll-to-bottom.md?raw"
+
 const meta = {
   title: "Components/Feedback/ScrollToBottom",
   component: ScrollToBottom,
@@ -13,8 +15,9 @@ const meta = {
     design: { type: "figma", url: figmaEmbedUrl("180:3931") },
     docs: {
       description: {
-        component:
-          "Floating button that returns to the bottom of a scrollable region or of the page. Under reduced motion the scroll is instant instead of animated.",
+        component: `Floating button that returns to the bottom of a scrollable region or of the page. Under reduced motion the scroll is instant instead of animated.
+
+${scrollToBottomGuide}`,
       },
     },
   },
@@ -81,4 +84,36 @@ export const ReducedMotionScroll: Story = {
       scroll.mockRestore()
     }
   },
+}
+
+// The source draws the floating button alone: a 56x56 primary circle with
+// Shadow 32 and the 24px arrow/down artwork. The scroll region only keeps the
+// button in its visible state, since the component hides itself once the
+// region has reached its end.
+function SourceButtonFixture() {
+  const target = React.useRef<HTMLDivElement>(null)
+  return (
+    <div className="grid w-14 gap-4">
+      <ScrollToBottom target={target} />
+      <div
+        ref={target}
+        role="region"
+        aria-label="Informazioni"
+        tabIndex={0}
+        className="h-56 w-14 overflow-auto"
+      >
+        {Array.from({ length: 8 }, (_, index) => (
+          <p key={index} className="py-2">
+            Informazione {index + 1}
+          </p>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export const SourceButton: Story = {
+  // Reflow exemption: the fixture pins the source 56px button, not a product surface.
+  parameters: { layout: "fullscreen", a11yContract: { reflow: false } },
+  render: () => <SourceButtonFixture />,
 }

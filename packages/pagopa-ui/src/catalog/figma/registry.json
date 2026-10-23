@@ -672,9 +672,9 @@
         "module": "src/components/feedback/scroll-to-bottom.tsx",
         "export": "ScrollToBottom",
         "story": "apps/storybook/src/ScrollToBottom.stories.tsx",
-        "storyExports": ["Playground", "ReducedMotionScroll"]
+        "storyExports": ["Playground", "ReducedMotionScroll", "SourceButton"]
       },
-      "note": "Verified against the pinned source: 56px primary circle, Shadow 32 and the mapped 24px arrow/down variant 98:917."
+      "note": "Verified against the pinned source: 56px primary `#0b3ee3` circle, Shadow 32 and the mapped 24px arrow/down variant 98:917 at its 16px inset. Case `180-3931-default` captures the source 56x56 button from `SourceButton` at 56x56, no device axis; `rounded-full` paints the source radius 56 on the 56px box (residue) and the source gap 10 is the single-child phantom gap (ignored). The fixture keeps the button visible through a scroll region, because the component hides itself at the end of the region. Guide: apps/storybook/src/guides/scroll-to-bottom.md."
     },
     "1904:9589": {
       "status": "implemented",
@@ -1386,7 +1386,7 @@
         "story": "apps/storybook/src/Overlay.stories.tsx",
         "storyExports": ["Playground", "Fidelity"]
       },
-      "note": "Source-matched scrim uses Color/Surface/Surface overlay at 35% opacity and clips to its container. The default loading spinner is a documented runtime extension and is disabled in Fidelity. Adaptation `accessible-status-region`: a polite, visually hidden loading status is kept while the source scrim has no visible content. The scrim is #0e0f13 at 35% with no blur, the same modal backdrop as Dialog and Drawer."
+      "note": "Reviewed: the scrim uses Color/Surface/Surface overlay (`bg-overlay`) at 35% opacity, #0e0f13, with no blur, radius 0 and clipping to its container, the same modal backdrop as Dialog and Drawer. Case `67-3964-default` captures the source 320x568 veil from `Fidelity` at 320x568, no device axis; residue: the component's p-6 (24px) content inset guards projected content, since the source scrim draws no content. The default loading spinner is a documented runtime extension and is disabled in Fidelity. Adaptation `accessible-status-region`: a polite, visually hidden loading status is kept while the source scrim has no visible content. Guide: apps/storybook/src/guides/overlay.md."
     },
     "731:20386": {
       "status": "implemented",
@@ -1643,9 +1643,16 @@
       "target": {
         "module": "src/components/content/feature-list.tsx",
         "export": "FeatureList",
-        "story": "apps/storybook/src/FeatureList.stories.tsx"
+        "story": "apps/storybook/src/FeatureList.stories.tsx",
+        "storyExports": [
+          "Playground",
+          "Indicators",
+          "SourcePictogram",
+          "SourceIcon",
+          "SourceNumbered"
+        ]
       },
-      "note": "Reviewed: FeatureList items render the source title/description 16/22–14/20 grey-700, the 24px icon indicator, the 40px pictogram framed by the 2×28 connectors, the numeric variant and the optional primary link."
+      "note": "Reviewed: FeatureList renders the source row for every `Indicator` variant — the 16px row gap, the 40px pictogram slot, the 24px icon/ordinal slot and the 214/230px text column (16/22 Semibold grey-700 title over the 14/20 grey-700 description at the 4px gap, then the 16/21 Semibold blue CTA with its source static underline 8px below). The source `Rectangle 673`/`Rectangle 672` connectors are hidden in all three variants and are not rendered; the numbered ordinal keeps grey-700 although the source paint is #bbc2d6, because the source colour fails the 4.5:1 accessibility gate on white (the indicator is decorative). Cases: `920-4502-indicator-pictogram`, `920-4502-indicator-icon` and `920-4502-indicator-numberlist`, one per `Indicator` variant at the source 270x135 row in `SourcePictogram`/`SourceIcon`/`SourceNumbered`; no device axis (the set's axis is `Indicator`). The single-child indicator frame's source gap (8) is a mapping artifact, ignored. Guide: apps/storybook/src/guides/feature-list.md."
     },
     "920:7219": {
       "status": "implemented",

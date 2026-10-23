@@ -122,6 +122,39 @@
     "note": "reviewed: 2026-10-23 Padding=0, Type=With text at the 320x20 source box: the 8px root gap, the 130x1 lines at y9.5 and the Text layer, 'oppure' 14/20 Regular #555c70 (grey-700) at x138 measuring 43.47 against the source 44 (a font metric within tolerance); strict composition clean. The source Line-Left and Line-Right are empty frames that carry a 10px padding with no DOM counterpart, so only their root gap and the centred text are mapped (the mapping note)."
   },
   {
+    "id": "67-3964-default",
+    "nodeId": "67:3964",
+    "export": "Overlay",
+    "storyId": "components-overlays-overlay--fidelity",
+    "state": "Default",
+    "width": 320,
+    "viewport": 320,
+    "height": 568,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"overlay\"]",
+    "subjects": {},
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.padding.top",
+        "reason": "the 24px p-6 content inset is the documented runtime extension: the source scrim draws no content and its 0 padding says nothing about projected content"
+      },
+      {
+        "path": "field.padding.right",
+        "reason": "the 24px p-6 content inset is the documented runtime extension: the source scrim draws no content and its 0 padding says nothing about projected content"
+      },
+      {
+        "path": "field.padding.bottom",
+        "reason": "the 24px p-6 content inset is the documented runtime extension: the source scrim draws no content and its 0 padding says nothing about projected content"
+      },
+      {
+        "path": "field.padding.left",
+        "reason": "the 24px p-6 content inset is the documented runtime extension: the source scrim draws no content and its 0 padding says nothing about projected content"
+      }
+    ],
+    "note": "reviewed: Overlay at the source 320x568 scrim, no device axis. Root 320x568, radius 0: the #0e0f13 at 35% paint is the shared surface-overlay token (bg-overlay), and the source has no children so the Fidelity story renders the veil with the spinner off. Residue: the component's p-6 (24px) content inset guards projected content; the source scrim draws no content, so its 0 padding says nothing about it. The visually hidden polite status region is the documented accessibility adaptation (no visible content in the source). Strict composition clean, responsive clean."
+  },
+  {
     "id": "105-2043-status-info",
     "nodeId": "105:2043",
     "export": "Tag",
@@ -810,6 +843,30 @@
     "root": "[data-fidelity-variant=\"160-1439\"] [data-slot=avatar-identity]",
     "subjects": {},
     "note": "reviewed: 2026-10-23 render of FigmaBigStates at 66 against pinned 160:1439 (Type=Skeleton): size-16 at 64px (-2px), 8px corners, the #e8ebf1 skeleton fill"
+  },
+  {
+    "id": "180-3931-default",
+    "nodeId": "180:3931",
+    "export": "ScrollToBottom",
+    "storyId": "components-feedback-scrolltobottom--source-button",
+    "state": "Default",
+    "width": 56,
+    "viewport": 320,
+    "height": 56,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"button\"]",
+    "subjects": {
+      "arrow": "#storybook-root [data-slot=\"button\"] [data-figma-node-id]"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.radius",
+        "reason": "rounded-full paints the same 56px circle as the source radius 56 on the 56px box"
+      }
+    ],
+    "ignores": ["field.gap"],
+    "note": "reviewed: ScrollToBottom at the source 56x56 button, no device axis. Root 56x56: the #0b3ee3 fill, Shadow 32 (0 4 32 at 10%) and the 24x24 arrow/down artwork at the 16,16 inset are exact. The source radius 56 is painted by rounded-full (residue) and the source gap 10 is the single-child phantom gap (ignored). The fixture keeps the button in its visible state through a scroll region; the source draws no label text. Strict composition clean, responsive clean."
   },
   {
     "id": "192-1208-icon",
@@ -3816,6 +3873,74 @@
     "root": "#storybook-root > *",
     "subjects": {},
     "note": "reviewed: source Type=Transactional (913:2749, 320x68). Verified the 44px payment-method avatar, content 168x44 with value 16/22 Semibold then description 14/20, and the primary amount 16/22. The source Suggestion layer is hidden in this variant, so the parity fixture no longer renders it; a separate WithSuggestion demo keeps the prop covered. Responsive clean."
+  },
+  {
+    "id": "920-4502-indicator-icon",
+    "nodeId": "920:4502",
+    "export": "FeatureList",
+    "storyId": "components-content-featurelist--source-icon",
+    "state": "Indicator=Icon",
+    "variant": "920:4503",
+    "width": 270,
+    "viewport": 320,
+    "height": 135,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"icon\"] [data-slot=\"feature\"]",
+    "subjects": {
+      "Frame 1048": "#storybook-root [data-fidelity-variant=\"icon\"] [data-slot=\"feature\"] > span",
+      "Frame 918": "#storybook-root [data-fidelity-variant=\"icon\"] [data-slot=\"feature\"] > div",
+      "Frame 5328": "#storybook-root [data-fidelity-variant=\"icon\"] [data-slot=\"feature\"] > div > div",
+      "Nome servizio": "#storybook-root [data-fidelity-variant=\"icon\"] [data-slot=\"feature\"] a",
+      "Title": "#storybook-root [data-fidelity-variant=\"icon\"] [data-slot=\"feature\"] h3"
+    },
+    "compareOffset": true,
+    "ignores": ["Frame 1048.gap"],
+    "note": "reviewed: Indicator=Icon at the source 270x135 row, no device axis. Root 270x135: the 16px row gap, the 24x135 indicator slot and the 230x135 text column are exact. Frame 1048 centres the 24x24 photo icon in #bbc2d6; its source gap 8 is the single-child phantom gap and is ignored. Frame 918 is 230x135: the 16/22 Semibold grey-700 title, the 14/20 grey-700 mock copy at the 4px gap and the 16/21 Semibold blue CTA with the source static underline 8px below. Strict composition clean, responsive clean."
+  },
+  {
+    "id": "920-4502-indicator-numberlist",
+    "nodeId": "920:4502",
+    "export": "FeatureList",
+    "storyId": "components-content-featurelist--source-numbered",
+    "state": "Indicator=Numberlist",
+    "variant": "920:4511",
+    "width": 270,
+    "viewport": 320,
+    "height": 135,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"numbered\"] [data-slot=\"feature\"]",
+    "subjects": {
+      "Frame 1048": "#storybook-root [data-fidelity-variant=\"numbered\"] [data-slot=\"feature\"] > span",
+      "Frame 918": "#storybook-root [data-fidelity-variant=\"numbered\"] [data-slot=\"feature\"] > div",
+      "Frame 5327": "#storybook-root [data-fidelity-variant=\"numbered\"] [data-slot=\"feature\"] > div > div",
+      "Nome servizio": "#storybook-root [data-fidelity-variant=\"numbered\"] [data-slot=\"feature\"] a",
+      "Title": "#storybook-root [data-fidelity-variant=\"numbered\"] [data-slot=\"feature\"] h3"
+    },
+    "compareOffset": true,
+    "note": "reviewed: Indicator=Numberlist at the source 270x135 row, no device axis. Root 270x135: the 16px row gap, the 24x135 ordinal slot and the 230x135 text column are exact. Frame 1048 centres the 16/22 Semibold ordinal (1.) in its 24px slot; Frame 918 is 230x135 with the 16/22 Semibold grey-700 title, the 14/20 grey-700 mock copy at the 4px gap and the 16/21 Semibold blue CTA with the source static underline 8px below. Adaptation: the ordinal keeps grey-700 (muted-foreground) although the source paint is #bbc2d6, because the source colour reads 1.77:1 on white and fails the 4.5:1 accessibility gate; the frame subject does not compare the text paint. Strict composition clean, responsive clean."
+  },
+  {
+    "id": "920-4502-indicator-pictogram",
+    "nodeId": "920:4502",
+    "export": "FeatureList",
+    "storyId": "components-content-featurelist--source-pictogram",
+    "state": "Indicator=Pictogram",
+    "variant": "920:4517",
+    "width": 270,
+    "viewport": 320,
+    "height": 135,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"pictogram\"] [data-slot=\"feature\"]",
+    "subjects": {
+      "Frame 1048": "#storybook-root [data-fidelity-variant=\"pictogram\"] [data-slot=\"feature\"] > span",
+      "Frame 918": "#storybook-root [data-fidelity-variant=\"pictogram\"] [data-slot=\"feature\"] > div",
+      "Frame 5329": "#storybook-root [data-fidelity-variant=\"pictogram\"] [data-slot=\"feature\"] > div > div",
+      "Nome servizio": "#storybook-root [data-fidelity-variant=\"pictogram\"] [data-slot=\"feature\"] a",
+      "Title": "#storybook-root [data-fidelity-variant=\"pictogram\"] [data-slot=\"feature\"] h3"
+    },
+    "compareOffset": true,
+    "ignores": ["Frame 1048.gap"],
+    "note": "reviewed: Indicator=Pictogram at the source 270x135 row, no device axis. Root 270x135: the 16px row gap, the 40px indicator slot and the 214x135 text column are exact. Frame 1048 holds the 40x40 Flag pictogram vertically centred; its source gap 8 is the single-child phantom gap and is ignored. Frame 918 is 214x135: the 16/22 Semibold grey-700 title, the 14/20 grey-700 mock copy at the 4px gap and the 16/21 Semibold blue CTA with the source static underline 8px below. The 2x28 connector rectangles are hidden in the source set and are not rendered. Strict composition clean, responsive clean."
   },
   {
     "id": "1042-18133-desktop-default-desktop",

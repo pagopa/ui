@@ -25,29 +25,27 @@ function FeatureList({
   titleAs?: "h2" | "h3"
 }) {
   return (
-    <ul className={cn("grid gap-4 sm:grid-cols-2", className)}>
+    <ul data-slot="feature-list" className={cn("grid gap-4 sm:grid-cols-2", className)}>
       {features.map((feature, index) => (
-        <li key={feature.title} className="flex gap-4">
+        <li key={feature.title} data-slot="feature" className="flex gap-4">
           {feature.pictogram ? (
             <span
               aria-hidden="true"
-              className="flex w-10 shrink-0 flex-col items-center justify-center gap-2"
+              className="flex w-10 shrink-0 flex-col items-center justify-center"
             >
-              <span className="h-7 w-0.5 rounded-full bg-border" />
               {feature.pictogram}
-              <span className="h-7 w-0.5 rounded-full bg-border" />
             </span>
           ) : feature.icon ? (
             <span
               aria-hidden="true"
-              className="shrink-0 self-center text-decorative-secondary [&>svg]:size-6"
+              className="flex shrink-0 items-center text-decorative-secondary [&>svg]:size-6"
             >
               {feature.icon}
             </span>
           ) : numbered ? (
             <span
               aria-hidden="true"
-              className="w-6 shrink-0 self-center text-body-sb text-muted-foreground"
+              className="flex w-6 shrink-0 items-center text-body-sb text-muted-foreground"
             >
               {index + 1}.
             </span>
@@ -62,7 +60,7 @@ function FeatureList({
             {feature.action ? (
               <a
                 href={feature.action.href}
-                className="w-fit text-body-sb text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                className="w-fit text-body-sb text-primary underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
               >
                 {feature.action.label}
               </a>

@@ -38,6 +38,13 @@
 
 ### Changed
 
+- `FeatureList`: each `Indicator` variant has a reviewed parity case. The two
+  2×28 connector rectangles the source set hides are no longer rendered, the
+  action link carries the source static underline instead of a hover-only one,
+  and the icon and ordinal slots now fill the source row height so the 24px
+  artwork keeps its source position. The numbered ordinal keeps grey-700 where
+  the source paints `#bbc2d6`, which fails the 4.5:1 accessibility gate on
+  white (the indicator is decorative).
 - `AttachmentModule`: the source 1px `#e8ebf1` stroke is the card family's
   `ring-1 ring-border` instead of a border, so it no longer grows the 428px
   tile, and the Available title link keeps its source line box (`min-h-0`,
