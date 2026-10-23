@@ -216,7 +216,7 @@
     },
     "109:2455": {
       "status": "implemented",
-      "note": "Path C reviewed pinned Brand=Primary 109:2456 and Brand=Contrast 109:2458 against SpinnerBrandVariants at 320×240/1×. Both source and render are 24×24px; the 2px annulus/20px opening and rounded terminal match, with source/render terminal bounds 2.09×3.41px at 21.91×9.59px (under 0.001px difference). Default size-6 is 24px (0px delta); text-primary (#0B3EE3) and text-contrast (white) match source. size-5/size-12 remain 20px/48px API extensions. The 2px mask is source ring geometry, not a spacing/radius compensation. Contrast artwork is white on transparency and needs a caller-owned primary surface outside source bounds. A labeled Spinner exposes one status; unlabeled siblings stay decorative and the caller owns aria-busy. The documented 1s functional animation remains under reduced motion; the fidelity capture is static.",
+      "note": "Path C reviewed pinned Brand=Primary 109:2456 and Brand=Contrast 109:2458 against SpinnerBrandVariants at 320×240/1×. Both source and render are 24×24px; the 2px annulus/20px opening and rounded terminal match, with source/render terminal bounds 2.09×3.41px at 21.91×9.59px (under 0.001px difference). Default size-6 is 24px (0px delta); text-primary (#0B3EE3) and text-contrast (white) match source. size-5/size-12 remain 20px/48px API extensions. The 2px mask is source ring geometry, not a spacing/radius compensation. Contrast artwork is white on transparency and needs a caller-owned primary surface outside source bounds. A labeled Spinner exposes one status; unlabeled siblings stay decorative and the caller owns aria-busy. The documented 1s functional animation remains under reduced motion; the fidelity capture is static. Reviewed 2026-10-23 (second ring): the two cases `109-2455-primary` and `109-2455-contrast` reproduce the two variants at 24×24 from SpinnerBrandVariants, mapping the `Ellipse 8 (Stroke)` terminal (2.09×3.41 at 21.91/9.59) and both strict-composition clean. The ring is a conic-gradient, so its colour is verified by the reviewed render, not by a DOM background property. Guide: apps/storybook/src/guides/loading-indicators.md.",
       "target": {
         "module": "src/components/feedback/spinner.tsx",
         "export": "Spinner",
@@ -968,7 +968,8 @@
         "export": "ProgressLoader",
         "story": "apps/storybook/src/ProgressLoader.stories.tsx",
         "storyExports": ["FigmaDefault", "Indeterminate", "Matrix", "Playground"]
-      }
+      },
+      "note": "Reviewed 2026-10-23 (second ring, implemented node without a case): the set declares one variant, `Status=Default` (236:1312, 272x4) and no Device axis. `236-1311-default` captures the `Indeterminate` story at the 272px source width and maps the progressbar: the 10x4 `Color` leading piece at 0 (#e8ebf1), the 262x4 track and the 32x4 primary indicator at x10, strict-composition clean. The source names all three rectangles `Color`, so only the leading one is addressable as a subject; the indicator and the track are verified by the reviewed render. The determinate `value` path and the label row (the story label sits above the mapped bar) are documented API extensions with no source variant. Guide: apps/storybook/src/guides/progress-loader.md."
     },
     "237:1307": {
       "status": "implemented",
@@ -1350,7 +1351,7 @@
         "story": "apps/storybook/src/Separator.stories.tsx",
         "storyExports": ["Playground", "Padded", "WithText", "Fidelity"]
       },
-      "note": "Source variants verified: Color/Border/Border fill 1px lines with 0/16/24/32px horizontal insets and a With text divider with 8px gaps and the 14/20px grey-700 text token. `--border` is Figma Color/Border/Border fill #e8ebf1 (grey-100); do not swap in grey-200 #d2d6e3, which is reserved for nodes whose source stroke is grey-200 (Stepper 1314:10512)."
+      "note": "Reviewed 2026-10-23 (second ring, implemented node without a case): all five source variants at the 320px set width, no Device axis — `61-2786-line` (Padding=0, Type=Line, 320x1 #e8ebf1), `61-2786-padding-16`, `61-2786-padding-24` and `61-2786-padding-32` (the line inset 16/24/32, 288/272/256x1, the spacers unpainted) and `61-2786-with-text` (320x20, 8px root gap, the 130x1 lines at y9.5, the Text layer `oppure` 14/20 Regular #555c70 at x138 measuring 43.47 against 44, a font metric). All five are strict-composition clean. The `With text` source `Line-Left`/`Line-Right` are empty frames that carry a 10px padding with no DOM counterpart, so they are mapped through the root gap and the centred text (mapping note). The `Fidelity` story renders all five variants at 320. `--border` is Figma Color/Border/Border fill #e8ebf1 (grey-100); do not swap in grey-200 #d2d6e3, which is reserved for nodes whose source stroke is grey-200 (Stepper 1314:10512). Text contract: `label` is consumer-owned content, translated outside the component. Guide: apps/storybook/src/guides/separator.md."
     },
     "616:3864": {
       "status": "implemented",

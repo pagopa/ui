@@ -3,6 +3,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { Separator } from "@/components/primitives/separator"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
+import separatorGuide from "./guides/separator.md?raw"
+
 const meta = {
   title: "Components/Separator",
   component: Separator,
@@ -10,8 +12,9 @@ const meta = {
     design: { type: "figma", url: figmaEmbedUrl("61:2786") },
     docs: {
       description: {
-        component:
-          "Semantic separator between content blocks, with an optional centred label; it is decorative for assistive technology and does not replace the visual hierarchy.",
+        component: `Semantic separator between content blocks, with an optional centred label; it is decorative for assistive technology and does not replace the visual hierarchy.
+
+${separatorGuide}`,
       },
     },
   },
@@ -52,12 +55,27 @@ export const WithText: Story = {
   ),
 }
 
+const fidelityVariant = (nodeId: string) => nodeId.replace(":", "-")
+
 export const Fidelity: Story = {
-  args: { padding: 0 },
   parameters: { layout: "fullscreen" },
-  render: (args) => (
-    <div id="separator-fidelity" className="w-[320px]">
-      <Separator {...args} />
+  render: () => (
+    <div id="separator-fidelity" className="grid w-[320px] gap-6">
+      <div data-fidelity-variant={fidelityVariant("61:2787")}>
+        <Separator />
+      </div>
+      <div data-fidelity-variant={fidelityVariant("61:2789")}>
+        <Separator padding={16} />
+      </div>
+      <div data-fidelity-variant={fidelityVariant("61:2793")}>
+        <Separator padding={24} />
+      </div>
+      <div data-fidelity-variant={fidelityVariant("61:2797")}>
+        <Separator padding={32} />
+      </div>
+      <div data-fidelity-variant={fidelityVariant("9557:62590")}>
+        <Separator label="oppure" />
+      </div>
     </div>
   ),
 }

@@ -20,3 +20,14 @@ The source colors use the existing secondary/primary tokens with no delta. The
 label layout's spacing tokens remain a library extension; the `Matrix` story's
 constrained wrapper is story-only and does not impose a runtime width on the
 component.
+
+## Source mapping
+
+`Indeterminate` is the parity surface: `236-1311-default` compares the
+`Status=Default` variant (272×4) at the 272px source width. The source draws
+three rectangles named `Color` — the 10×4 leading piece, the 262×4 track and
+the 32×4 primary indicator at x10 — so the case maps the addressable leading
+piece and reviews the other two in the render. The label row and the determinate
+`value` path are library extensions with no source variant; the story label sits
+above the mapped bar. The bar is width-responsive, so 272px is the artboard
+composition, not a fixed runtime width.

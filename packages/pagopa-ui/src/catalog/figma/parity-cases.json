@@ -45,6 +45,83 @@
     "note": "The declared mobile device (Breakpoint=XS Mobile, 320x650): the set draws one composition — an empty white canvas whose source root declares the component's own minHeight 650 — so no layoutScope is declared (both scope probes report the composition unchanged, a scope declaration would be vacuous: the InformativeDrawer caller-driven reading). The `Fidelity` story renders the source-exact empty surface; the `Playground` SafeArea paragraph stays under the 650 floor at every captured width, so the height is not content-driven here. The capture verifies the canvas at 320 (white #ffffff, no padding or gap) and is responsive clean."
   },
   {
+    "id": "61-2786-line",
+    "nodeId": "61:2786",
+    "export": "Separator",
+    "storyId": "components-separator--fidelity",
+    "state": "line",
+    "variant": "61:2787",
+    "width": 320,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"61-2787\"] [data-slot=\"separator\"]",
+    "subjects": {},
+    "note": "reviewed: 2026-10-23 Padding=0, Type=Line at the 320x1 source box, no device axis. The root is the separator element: 320x1, Color/Border/Border fill #e8ebf1 (grey-100), no padding and no gap; strict composition clean. The Fidelity story renders all five source variants at 320px."
+  },
+  {
+    "id": "61-2786-padding-16",
+    "nodeId": "61:2786",
+    "export": "Separator",
+    "storyId": "components-separator--fidelity",
+    "state": "padding-16",
+    "variant": "61:2789",
+    "width": 320,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"61-2789\"] [data-slot=\"separator-padding\"]",
+    "subjects": {
+      "Rectangle 28": "#storybook-root [data-fidelity-variant=\"61-2789\"] [data-slot=\"separator\"]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: 2026-10-23 Padding=16, Type=Line at the 320x1 source box. The root is the padded row; Rectangle 28 is the 288x1 line at left 16 with the #e8ebf1 fill, the two 16px spacers carrying no paint; offsets exact and strict composition clean."
+  },
+  {
+    "id": "61-2786-padding-24",
+    "nodeId": "61:2786",
+    "export": "Separator",
+    "storyId": "components-separator--fidelity",
+    "state": "padding-24",
+    "variant": "61:2793",
+    "width": 320,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"61-2793\"] [data-slot=\"separator-padding\"]",
+    "subjects": {
+      "Rectangle 29": "#storybook-root [data-fidelity-variant=\"61-2793\"] [data-slot=\"separator\"]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: 2026-10-23 Padding=24, Type=Line at the 320x1 source box. The root is the padded row; Rectangle 29 is the 272x1 line at left 24 with the #e8ebf1 fill, the two 24px spacers carrying no paint; offsets exact and strict composition clean."
+  },
+  {
+    "id": "61-2786-padding-32",
+    "nodeId": "61:2786",
+    "export": "Separator",
+    "storyId": "components-separator--fidelity",
+    "state": "padding-32",
+    "variant": "61:2797",
+    "width": 320,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"61-2797\"] [data-slot=\"separator-padding\"]",
+    "subjects": {
+      "Rectangle 29": "#storybook-root [data-fidelity-variant=\"61-2797\"] [data-slot=\"separator\"]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: 2026-10-23 Padding=32, Type=Line at the 320x1 source box. The root is the padded row; Rectangle 29 is the 256x1 line at left 32 with the #e8ebf1 fill, the two 32px spacers carrying no paint; offsets exact and strict composition clean."
+  },
+  {
+    "id": "61-2786-with-text",
+    "nodeId": "61:2786",
+    "export": "Separator",
+    "storyId": "components-separator--fidelity",
+    "state": "with-text",
+    "variant": "9557:62590",
+    "width": 320,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"9557-62590\"] [data-slot=\"separator\"]",
+    "subjects": {
+      "Text": "#storybook-root [data-fidelity-variant=\"9557-62590\"] [data-slot=\"separator-label\"]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: 2026-10-23 Padding=0, Type=With text at the 320x20 source box: the 8px root gap, the 130x1 lines at y9.5 and the Text layer, 'oppure' 14/20 Regular #555c70 (grey-700) at x138 measuring 43.47 against the source 44 (a font metric within tolerance); strict composition clean. The source Line-Left and Line-Right are empty frames that carry a 10px padding with no DOM counterpart, so only their root gap and the centred text are mapped (the mapping note)."
+  },
+  {
     "id": "108-1402-contained-label",
     "nodeId": "108:1402",
     "export": "Button",
@@ -274,6 +351,42 @@
     ],
     "ignores": ["field.gap"],
     "note": "reviewed: 2026-10-22 render of FigmaStateMatrix (fullscreen, each appearance row sized to its five buttons, no clipping) at 1200 against the pinned source 1527:26775 (Variant=Text error, Spinner=True): 24px spinner in the destructive #d13333 like the source. Composition check left off: the minimum-text-action-target adaptation moves the spinner by measured amounts (--compare-offset --strict, 2026-10-22): Spinner.offset.left 0 -> 17 (1px transparent border + 16px ghost hit area), Spinner.offset.top 0 -> 12 (the 24px source frame centred in the 48px target). Box 58x48 vs 24x24 and padding 16 vs 0 are the same adaptation (residues); field.gap is the phantom gap of the single-child root"
+  },
+  {
+    "id": "109-2455-primary",
+    "nodeId": "109:2455",
+    "export": "Spinner",
+    "storyId": "components-feedback-spinner--spinner-brand-variants",
+    "state": "primary",
+    "variant": "109:2456",
+    "width": 24,
+    "viewport": 320,
+    "height": 240,
+    "depth": 3,
+    "root": "#storybook-root [data-testid=\"primary-spinner\"] [data-slot=\"spinner\"]",
+    "subjects": {
+      "Ellipse 8 (Stroke)": "#storybook-root [data-testid=\"primary-spinner\"] [data-figma-node-id=\"5966:24996\"]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: 2026-10-23 Brand=Primary at the 24x24 source variant, no device axis. The root is the labelled Spinner in SpinnerBrandVariants: 24x24, the 2px annulus/20px opening and the rounded terminal (source Ellipse 8 (Stroke)) at 21.91/9.59 measuring 2.09x3.41, under 0.001px from the source; the terminal and ring paint #0b3ee3 (text-primary). Strict composition clean. The default md size is the source's; sm/lg remain documented API extensions. The ring is a conic-gradient background and the DOM background is transparent, so the ring colour is verified by the reviewed render, not by a background property."
+  },
+  {
+    "id": "109-2455-contrast",
+    "nodeId": "109:2455",
+    "export": "Spinner",
+    "storyId": "components-feedback-spinner--spinner-brand-variants",
+    "state": "contrast",
+    "variant": "109:2458",
+    "width": 24,
+    "viewport": 320,
+    "height": 240,
+    "depth": 3,
+    "root": "#storybook-root [data-testid=\"contrast-spinner-surface\"] [data-slot=\"spinner\"]",
+    "subjects": {
+      "Ellipse 8 (Stroke)": "#storybook-root [data-testid=\"contrast-spinner-surface\"] [data-figma-node-id=\"5966:24996\"]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: 2026-10-23 Brand=Contrast at the 24x24 source variant, no device axis: the same 24x24 box, 2px annulus/20px opening and terminal bounds (2.09x3.41 at 21.91/9.59), painted white (text-contrast). The source is white artwork on transparency, so the primary surface behind it is caller-owned and sits outside the source bounds; the capture maps the Spinner, not the surface. Strict composition clean."
   },
   {
     "id": "123-4498-3-true-desktop",
@@ -1705,6 +1818,23 @@
       }
     ],
     "note": "reviewed: 2026-10-23 render of SourceArrowBottom at the 312x92 source box against pinned source 230:1328 (Arrow Direction=Bottom, side=top): Content 312x72 with the 16 padding, 4 gap, radius 8, #2b2e38 fill, the 252x40 two-line 14/20 label and the 24x24 close mark at the text top, and the 24x16 arrow below the popup. Measured render offsets (Content 0, text 16, Close 16, arrow 72) match the source directly, so composition is recorded here instead of --compare-offset. The root height, the Indicator height and bottom padding and its phantom gap are the mapping residues"
+  },
+  {
+    "id": "236-1311-default",
+    "nodeId": "236:1311",
+    "export": "ProgressLoader",
+    "storyId": "components-feedback-progressloader--indeterminate",
+    "state": "default",
+    "variant": "236:1312",
+    "width": 272,
+    "viewport": 320,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"progress\"]",
+    "subjects": {
+      "Color": "#storybook-root [data-slot=\"progress-track-leading\"]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: 2026-10-23 Status=Default at the 272x4 source bar, no Device axis. The Indeterminate story renders the source composition: the mapped root is the 272x4 progressbar, the 10x4 Color leading piece at 0 (#e8ebf1), the 262x4 track and the 32x4 primary indicator at x10. Strict composition clean. The source names all three rectangles Color, so only the leading one is addressable as a subject; the indicator and the track are verified by the reviewed render. The determinate value path and the label row (the story label sits above the mapped bar) are documented API extensions with no source variant."
   },
   {
     "id": "261-6501-desktop-desktop",
