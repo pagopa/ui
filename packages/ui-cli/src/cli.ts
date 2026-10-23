@@ -403,9 +403,10 @@ const parity = defineCommand({
         depth: parityString,
         json: parityBoolean,
         compact: parityBoolean,
+        png: parityBoolean,
       },
-      run: execute(() => {
-        sourceCli(rawArguments("source"))
+      run: execute(async () => {
+        await sourceCli(rawArguments("source"))
         return 0
       }),
     }),

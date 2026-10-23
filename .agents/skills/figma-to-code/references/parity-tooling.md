@@ -23,7 +23,7 @@ Every row is a target of `pagopa-ui-cli`: run it as
 | `figma:parity:verify`                              | the case corpus, the device coverage and the evidence bundle, hermetically (no snapshot, no browser); exit 1 on errors, 0 with warnings                      |
 | `figma:parity:evidence --write` / `--check`        | the offline bundle: `--write` refreshes the slice, the pinned PNGs and the manifest (token + snapshot); `--check` proves they still match the corpus         |
 | `figma:parity:report --wave <name>`                | the wave record: counts, verdicts, advisories, residues, open deltas, the re-run command per case                                                            |
-| `source <nodeId>` (via `pnpm --filter pagopa-ui-cli run cli -- parity source <nodeId>`) | the source spec `check` diffs against (`--compact` anatomy, `--json`, `--depth N`)                                                                           |
+| `source <nodeId>` (via `pnpm --filter pagopa-ui-cli run cli -- parity source <nodeId>`) | the source spec `check` diffs against (`--compact` anatomy, `--json`, `--depth N`); `--png [file]` writes the pinned variant render (needs the token and the pinned snapshot), default `.figma/parity/source/<nodeId>.png` |
 | `render --story <storyId>` (via `pnpm --filter pagopa-ui-cli run cli -- parity render --story <storyId>`) | a render probe alone; `--tree [--depth N]` prints the DOM anatomy (box, position, padding, gap) of the root's descendants, the render-side counterpart of `source --compact` |
 
 `source.mjs` is the only reader of the source: never grow a second reader from a

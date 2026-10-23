@@ -33,8 +33,9 @@ devices (one iteration each).
 
 1. **Source numbers.** `node packages/ui-cli/src/cli.ts parity source <nodeId> --compact
    --depth 3`, `--json` for the variant list. Anatomy questions:
-   `get_screenshot` (read-only) for the source, `parity render --tree` for the
-   rendered boxes, padding and gaps. Read the face from `fontPostScriptName`: the
+   `parity source <variant> --png` for the pinned source image (default
+   `.figma/parity/source/`), `parity render --tree` for the rendered boxes,
+   padding and gaps. Read the face from `fontPostScriptName`: the
    REST `fontWeight` can say 500 for a Semibold face.
    **Done when** the variant's geometry and type are written down.
 2. **First capture.** `pnpm nx run pagopa-ui-cli:figma:parity:check` with `--state` (it names the
