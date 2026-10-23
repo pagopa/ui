@@ -629,13 +629,16 @@ const figmaAlign = defineWorkflow({
       // ------------------------------------------------------------ delta
       ctx.phase("Delta")
       if (opts.refresh) {
+        // The MCP list discovers the roots a REST read cannot see; the REST
+        // plan is the fallback when the connected server has no such tool, and
+        // the prompt states both so the agent never has to introspect.
         const refreshed = await ctx.agent(
           `${preamble(config)}
 
 TASK: take a fresh Figma snapshot (figma-to-code delta.md step 1). Nothing else.
-1. Run the token preflight from references/init.md. If it fails, stop and return ok=false with its guidance verbatim (never the token).
-2. Call the Figma MCP tool list_file_components_for_code_connect with the FIGMA_FILE_KEY exported by packages/pagopa-ui/${config.figma.fileModule}; save the full JSON response to ${mcpInventory}.
-3. Run \`pnpm nx run pagopa-ui-cli:figma:export --input ${mcpInventory}\`.
+1. Run the token preflight: \`pnpm nx run pagopa-ui-cli:figma:status\`. If the token is missing, stop and return ok=false with its guidance verbatim (never the token).
+2. When the connected MCP server exposes list_file_components_for_code_connect, call it with FIGMA_FILE_KEY from packages/pagopa-ui/${config.figma.fileModule}, save the full response to ${mcpInventory}, then run \`pnpm nx run pagopa-ui-cli:figma:export --input ${mcpInventory}\`. It keeps the MCP-only roots.
+3. When that tool is not available, run \`pnpm nx run pagopa-ui-cli:figma:plan\` instead and say in the message that MCP-only roots were not rediscovered: the REST read is complete for the file's own components.
 Return ok=true with the pinned version in message when ${snapshot} pins the current version with a complete baseline.`,
           { label: `snapshot:${ctx.runId}`, schema: refreshSchema },
         )
@@ -684,7 +687,10 @@ Return ok=true with the pinned version in message when ${snapshot} pins the curr
       const drift = ["added", "removed", "changed", "renamed", "moved", "affected", "baseline"]
         .map((key) => `${key} ${(plan[key] ?? []).length}`)
         .join(" · ")
-      ctx.log(`Delta: ${drift} · implementationOrder ${(plan.implementationOrder ?? []).length}`)
+      ctx.log(
+        `Delta: ${drift} · implementationOrder ${(plan.implementationOrder ?? []).length} · ` +
+          `pending ${(plan.pending ?? []).length}`,
+      )
       ctx.log(`Pending queue: ${queue.cases.length} nodes`)
 
       const wave = await ctx.step("wave-v1", async () => {
