@@ -1,3 +1,11 @@
+<!-- component-rules:start -->
+
+## Component Rules
+
+- Use Scroll to bottom when the reader must see the whole content before tapping the call to action that advances the flow, typically before accepting the terms of service.
+
+<!-- component-rules:end -->
+
 # Scroll to bottom
 
 `ScrollToBottom` implements the Figma component `ScrollToBottom` (`180:3931`):

@@ -1,3 +1,15 @@
+<!-- component-rules:start -->
+
+## Component Rules
+
+- On desktop place the drawer on the right at the fixed panel width — 416px in code, a 1px residue against the 417px source.
+- On mobile compose a full-width bottom sheet anchored to the bottom edge; keep 24px of empty space at its top and let the body scroll inside the viewport.
+- At the SM breakpoint keep the desktop placement and width, with the title on the mobile type scale.
+- Use the drawer for additional details about an object, or to select and insert elements that affect the main page, such as adding from a library.
+- Keep the action row anchored to the bottom of the panel: only the content scrolls, the actions stay visible.
+
+<!-- component-rules:end -->
+
 `Drawer` is built on Base UI's `Drawer`. Base UI has no `direction`: the library
 prop (`"top" | "right" | "bottom" | "left"`, default `"right"`) maps to
 `swipeDirection` (the dismiss gesture) plus the panel geometry of that edge.
