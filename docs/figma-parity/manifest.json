@@ -1210,6 +1210,15 @@
       "width": 272,
       "height": 106
     },
+    "422-16012-type-neutral-style-solid": {
+      "png": "references/422-16012-type-neutral-style-solid.png",
+      "sha256": "373b8a8c82f84ebefd6df0a9cc7473081f71bcc8ebd9c326c3fa2e36fbd3188e",
+      "nodeId": "422:16012",
+      "variant": "422:16019",
+      "designFingerprint": "14db39f2ce421b36f8a71bc983dc13cea3cbaeac097449f6f8d5b76e441d2a63",
+      "width": 93,
+      "height": 24
+    },
     "529-6111-filled": {
       "png": "references/529-6111-filled.png",
       "sha256": "dbd18a99c10da1e95b8f8eeb3ac9f46994b61e5226db5230e30faf465dfa350f",
@@ -2146,6 +2155,33 @@
       "width": 24,
       "height": 24
     },
+    "9866-4503-info": {
+      "png": "references/9866-4503-info.png",
+      "sha256": "648c4d28f7ce38b44c82c32ffa7a17b64b660e95b79d0c6e63163b44a413a4a3",
+      "nodeId": "9866:4503",
+      "variant": "9866:4503",
+      "designFingerprint": "a85fb7887b2e84280bbb850758e41e89f653dacb3caa0e30a3c1e7afa0f6f672",
+      "width": 24,
+      "height": 24
+    },
+    "9924-27054-horizontal": {
+      "png": "references/9924-27054-horizontal.png",
+      "sha256": "c1828cedafdd9e7fc61f15e84e3cb9e5ee8e46f9039e8a8351c0d6029c9de7d1",
+      "nodeId": "9924:27054",
+      "variant": "9828:25733",
+      "designFingerprint": "aeb314290dbd3ff27e871b01125a6c825e9811aaf3bdc8a96dc9fe62a2042cea",
+      "width": 312,
+      "height": 110
+    },
+    "9924-27054-vertical": {
+      "png": "references/9924-27054-vertical.png",
+      "sha256": "89b9285b5e2ae110e2c1d64f0ea1b43847a17da554b2413e5861298211c77d69",
+      "nodeId": "9924:27054",
+      "variant": "9924:27055",
+      "designFingerprint": "8f710754911b24fdc6272ab1fc9f71360f4039dc00353c9e7d5bdf689054a413",
+      "width": 312,
+      "height": 142
+    },
     "9927-36954-9927-36955": {
       "png": "references/9927-36954-9927-36955.png",
       "sha256": "26bb75e5fd6d367e68b19290fda38a5c5176a7f16a1c7abe3c8b66c0142445a3",
@@ -2335,41 +2371,176 @@
       "width": 848,
       "height": 128
     },
-    "422-16012-type-neutral-style-solid": {
-      "png": "references/422-16012-type-neutral-style-solid.png",
-      "sha256": "373b8a8c82f84ebefd6df0a9cc7473081f71bcc8ebd9c326c3fa2e36fbd3188e",
-      "nodeId": "422:16012",
-      "variant": "422:16019",
-      "designFingerprint": "14db39f2ce421b36f8a71bc983dc13cea3cbaeac097449f6f8d5b76e441d2a63",
-      "width": 93,
-      "height": 24
-    },
-    "9866-4503-info": {
-      "png": "references/9866-4503-info.png",
-      "sha256": "648c4d28f7ce38b44c82c32ffa7a17b64b660e95b79d0c6e63163b44a413a4a3",
-      "nodeId": "9866:4503",
-      "variant": "9866:4503",
-      "designFingerprint": "a85fb7887b2e84280bbb850758e41e89f653dacb3caa0e30a3c1e7afa0f6f672",
+    "382-7640-brand-mastercard": {
+      "png": "references/382-7640-brand-mastercard.png",
+      "sha256": "034806728b85bbfadd55fe87c27990f9121c51024cb75c896d65591175a41625",
+      "nodeId": "382:7640",
+      "variant": "382:7435",
+      "designFingerprint": "abe8f580c5441f6d494aeeb8aa2bcb3e6ac685e405820a5e72c3c9ca2422f4bc",
       "width": 24,
       "height": 24
     },
-    "9924-27054-horizontal": {
-      "png": "references/9924-27054-horizontal.png",
-      "sha256": "c1828cedafdd9e7fc61f15e84e3cb9e5ee8e46f9039e8a8351c0d6029c9de7d1",
-      "nodeId": "9924:27054",
-      "variant": "9828:25733",
-      "designFingerprint": "aeb314290dbd3ff27e871b01125a6c825e9811aaf3bdc8a96dc9fe62a2042cea",
-      "width": 312,
-      "height": 110
+    "382-7640-brand-maestro": {
+      "png": "references/382-7640-brand-maestro.png",
+      "sha256": "13fb2aef2ffadf866cc4740ec893591274b1f59e12146f646d06fc1ea7d785c5",
+      "nodeId": "382:7640",
+      "variant": "382:7437",
+      "designFingerprint": "049e09b317ab5629bd16f9f01cded52dfb410e2095669d73cb253a077881c9ff",
+      "width": 24,
+      "height": 24
     },
-    "9924-27054-vertical": {
-      "png": "references/9924-27054-vertical.png",
-      "sha256": "89b9285b5e2ae110e2c1d64f0ea1b43847a17da554b2413e5861298211c77d69",
-      "nodeId": "9924:27054",
-      "variant": "9924:27055",
-      "designFingerprint": "8f710754911b24fdc6272ab1fc9f71360f4039dc00353c9e7d5bdf689054a413",
-      "width": 312,
-      "height": 142
+    "382-7640-brand-visa": {
+      "png": "references/382-7640-brand-visa.png",
+      "sha256": "7b9a3cdca505ff30c368e425dc5769f12f83b7db85ece18f63a4b087ce92ced0",
+      "nodeId": "382:7640",
+      "variant": "382:7439",
+      "designFingerprint": "7d75548c45278dbdeb83ae69e07f1b6faa2270d354397a53102dd821f04381a3",
+      "width": 24,
+      "height": 24
+    },
+    "382-7640-brand-amex": {
+      "png": "references/382-7640-brand-amex.png",
+      "sha256": "94cea577c66b33b76ca4d655fb09d9ee09871fe9ead717b5b6540e79a22afdf1",
+      "nodeId": "382:7640",
+      "variant": "382:7441",
+      "designFingerprint": "a7a2aa7ebd52b70060925e58809c43d45908566f6e39a0659dff8f4260f026db",
+      "width": 24,
+      "height": 24
+    },
+    "382-7640-brand-diners": {
+      "png": "references/382-7640-brand-diners.png",
+      "sha256": "f9b4863fe7d242f19fc46b0c326a1bc4d920b8d4f0fbb80d73fafc5f4ef87027",
+      "nodeId": "382:7640",
+      "variant": "382:7443",
+      "designFingerprint": "03410ee6fc56e9af0b275d13bfa696ce5e9efd9f64a19b105faa094dda2ec7a6",
+      "width": 24,
+      "height": 24
+    },
+    "382-7640-brand-discover": {
+      "png": "references/382-7640-brand-discover.png",
+      "sha256": "0b026c80e03213eeae09cb98fe8b75cd515061d10e30d25d9b6d974868f6a4d8",
+      "nodeId": "382:7640",
+      "variant": "382:7445",
+      "designFingerprint": "358e2e77f4ff281b36f056c2d7b127d4f21bd553c1182148f19d05f2e61c047f",
+      "width": 24,
+      "height": 24
+    },
+    "382-7640-brand-jcb": {
+      "png": "references/382-7640-brand-jcb.png",
+      "sha256": "147e14be49be6a5643e265f22eb0f074863575eba6ea2ffc714f1a10cfa998cd",
+      "nodeId": "382:7640",
+      "variant": "382:7447",
+      "designFingerprint": "ced3a658c96bbc1a95016fc053a2277b6b3dd7d34a1ee5471422e9f12e177bc5",
+      "width": 24,
+      "height": 24
+    },
+    "382-7640-brand-unionpay": {
+      "png": "references/382-7640-brand-unionpay.png",
+      "sha256": "6620599c95279356580389dd2e1e3ff8330198ce10865cb65861f6aa6ab6dead",
+      "nodeId": "382:7640",
+      "variant": "382:7449",
+      "designFingerprint": "81968e97c947de64501c904e1238f71bdf508c2b6b19f2318767c6bfd9bf3aa9",
+      "width": 24,
+      "height": 24
+    },
+    "382-7640-brand-bancomat-pay": {
+      "png": "references/382-7640-brand-bancomat-pay.png",
+      "sha256": "1baa54d71f21b79b50cc4cf223a4a42d60860c8f8725592e9def2ee7d6235df6",
+      "nodeId": "382:7640",
+      "variant": "382:7451",
+      "designFingerprint": "52ab714878340f9e695d0f0821abdbff326adead6abb0812d589f1971df8e589",
+      "width": 24,
+      "height": 24
+    },
+    "382-7640-brand-pagobancomat": {
+      "png": "references/382-7640-brand-pagobancomat.png",
+      "sha256": "f6efe3a7ddc22b6883daf1f971deff4a1d3b44c3535235638108ca16e67bb214",
+      "nodeId": "382:7640",
+      "variant": "382:7458",
+      "designFingerprint": "e7818ce120815632a526b0f8e8308bb0d7207705ae8ecf266eba73a776933867",
+      "width": 24,
+      "height": 24
+    },
+    "382-7640-brand-apple-pay": {
+      "png": "references/382-7640-brand-apple-pay.png",
+      "sha256": "7863a7464adff5e02d94b4f4a670e8aa3cb5da8c3305639bc4c6898bffe0b918",
+      "nodeId": "382:7640",
+      "variant": "382:7460",
+      "designFingerprint": "f2996c88d73dd32dc807ea82e0be3f85df2255cbcbd50a903004139e7d41b911",
+      "width": 24,
+      "height": 24
+    },
+    "382-7640-brand-paypal": {
+      "png": "references/382-7640-brand-paypal.png",
+      "sha256": "ada6306337978030c403ccf2346188f758e9838423482c258e378ed55e4bd327",
+      "nodeId": "382:7640",
+      "variant": "382:7462",
+      "designFingerprint": "cacfedcd5a8129ba01ece2035d039a3aac41c81ddf37f93fbe3413e6ed144403",
+      "width": 24,
+      "height": 24
+    },
+    "382-7640-brand-satispay": {
+      "png": "references/382-7640-brand-satispay.png",
+      "sha256": "a8fa13c64cf0443def4a20026a3e415d0b8ffc4413c48e824dc5ac658b4cb91f",
+      "nodeId": "382:7640",
+      "variant": "382:7467",
+      "designFingerprint": "e21937aa7559d81dfa623ebe5251b6381a368f2b1dacb73936ab732b52695495",
+      "width": 24,
+      "height": 24
+    },
+    "382-7640-brand-mybank": {
+      "png": "references/382-7640-brand-mybank.png",
+      "sha256": "0efe0b7794d9e3d2b67f27967567a55bfae933f5ee4180ee36c2f0fa5a613743",
+      "nodeId": "382:7640",
+      "variant": "382:7469",
+      "designFingerprint": "5adc13b05638440b8d3ee23eda3e75d1db37929dd1afb788656866f999e18f1b",
+      "width": 24,
+      "height": 24
+    },
+    "382-7640-brand-app-postepay": {
+      "png": "references/382-7640-brand-app-postepay.png",
+      "sha256": "d7bfa8a4d5080333f10dbc3968ef732381805d4f70e0e873239c937aba69c6fe",
+      "nodeId": "382:7640",
+      "variant": "382:7478",
+      "designFingerprint": "0d2891a6d37ab75fcc0d524f77e4a808688d86ac0d40b2724846397577296d9a",
+      "width": 24,
+      "height": 24
+    },
+    "382-7640-brand-vpay": {
+      "png": "references/382-7640-brand-vpay.png",
+      "sha256": "d21d991eb35619eb7cf589ae98f30da909f9cbba6a57b00fe722b16102cc69eb",
+      "nodeId": "382:7640",
+      "variant": "382:7483",
+      "designFingerprint": "50034f96f9c5293aacb1591c64140512a87b5508070f1f8d6680e919d8b166bb",
+      "width": 24,
+      "height": 24
+    },
+    "808-6302-default": {
+      "png": "references/808-6302-default.png",
+      "sha256": "ea017ddbd2132022496ede91c53aac2c285b659411c5f92f9b8d86cbc3e19ca7",
+      "nodeId": "808:6302",
+      "variant": "808:6302",
+      "designFingerprint": "7cee7a4f36cca05f176619cbad2f99dc82049b78c3b76e1dd6fd37b0bcbc354d",
+      "width": 360,
+      "height": 236
+    },
+    "10192-41460-state-available": {
+      "png": "references/10192-41460-state-available.png",
+      "sha256": "e15dc01897017da4a01275408cc8bc1b065e8dcf6522794716c58ad8b7b16a41",
+      "nodeId": "10192:41460",
+      "variant": "10192:41415",
+      "designFingerprint": "5e4830fd91771e35b794a81cdd8beef9b6563ff88fbe476fd8b4b0e2f9d7ae12",
+      "width": 428,
+      "height": 104
+    },
+    "10192-41460-state-unavailable": {
+      "png": "references/10192-41460-state-unavailable.png",
+      "sha256": "c5ca1c495a3311758d08c4214989e2a18a1ca7bbf5542986ca9464c02dbe6689",
+      "nodeId": "10192:41460",
+      "variant": "10192:41459",
+      "designFingerprint": "82ee8a822c38ab1e879d7e2307c9d930029f872b4932c1927b9cceea30a857f1",
+      "width": 428,
+      "height": 114
     }
   }
 }

@@ -28,7 +28,7 @@ function AttachmentModule({
 }) {
   return (
     <section
-      className={cn("flex items-center gap-4 rounded-lg border bg-card p-4", className)}
+      className={cn("flex items-center gap-4 rounded-lg bg-card p-4 ring-1 ring-border", className)}
       {...props}
     >
       <div className="grid min-w-0 flex-1 gap-2">
@@ -36,7 +36,7 @@ function AttachmentModule({
           <Button
             type="button"
             variant="link"
-            className="h-auto justify-start p-0 text-body-sb"
+            className="relative h-auto min-h-0 justify-start border-0 p-0 text-body-sb after:absolute after:inset-x-0 after:-inset-y-3"
             onClick={onOpen}
           >
             {title}

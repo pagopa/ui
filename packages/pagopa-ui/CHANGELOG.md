@@ -38,6 +38,11 @@
 
 ### Changed
 
+- `AttachmentModule`: the source 1px `#e8ebf1` stroke is the card family's
+  `ring-1 ring-border` instead of a border, so it no longer grows the 428px
+  tile, and the Available title link keeps its source line box (`min-h-0`,
+  `border-0`) with the pointer target on the invisible `::after` expansion; both
+  `State` variants have reviewed parity cases.
 - `StatusTile`: the surface is an inset ring instead of a border, so the 1px
   source stroke no longer grows the 312px box, and the channel wrapper is a flex
   box so the 24px artwork stops adding its line-box descender; both source
