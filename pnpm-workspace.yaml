@@ -2,6 +2,10 @@ packages:
   - packages/*
   - apps/*
 
+registries:
+  https://npm.pkg.github.com/:
+    prefix: gh
+
 linkWorkspacePackages: true
 packageImportMethod: "clone-or-copy"
 cleanupUnusedCatalogs: true
@@ -16,3 +20,5 @@ allowBuilds:
   sharp: true
 patchedDependencies:
   '@pagopa/nx-terraform@0.5.13': patches/@pagopa__nx-terraform@0.5.13.patch
+
+minimumReleaseAge: 4320
