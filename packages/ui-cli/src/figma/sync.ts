@@ -23,12 +23,12 @@
 //     - exits 1 on any drift so the delta is explicitly reconciled
 //
 // Refresh the committed inventory from a live export:
-//   node src/cli.ts figma sync --write --input .figma/live.json
+//   node src/cli.ts figma sync --write --input .figma/live-rest.json
 //
 // Refresh + queue new/changed/affected implementations for review (delta triage).
 // Mocked demos retain their status and note and are not queued: they are demos,
 // not approvals to renew. Merging the drift PR is the review record.
-//   node src/cli.ts figma sync --triage --input .figma/live.json
+//   node src/cli.ts figma sync --triage --input .figma/live-rest.json
 //
 // PR mode for the scheduled drift job: refresh only when there is drift and
 // write the review instructions as a markdown body for the pull request.
@@ -37,8 +37,9 @@
 // Fetch the live export directly (requires FIGMA_TOKEN, read-only scope):
 //   FIGMA_TOKEN=... node src/cli.ts figma sync --rest [--write|--triage]
 //
-// --write/--triage default to .figma/live.json when it exists. --pr-body exits
-// 0 with and without drift; the workflow branches on the git diff.
+// --write/--triage default to .figma/live-rest.json, or .figma/live.json when
+// only the older MCP dump exists. --pr-body exits 0 with and without drift; the
+// workflow branches on the git diff.
 // The Figma side is never written to. Mapping is stored in the repo, keyed by
 // nodeId, so renames in Figma never break the mapping.
 import fs from "node:fs"
@@ -242,11 +243,19 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
 
   let live: InventoryNode[] | null = null
   let liveVersion: string | undefined
+  let liveLastModified: string | undefined
   let restSnapshot: Awaited<ReturnType<typeof fetchFigmaSnapshot>> | null = null
   let inputOption = option("input")
   if (!inputOption && (flag("write") || flag("triage") || flag("pr-body"))) {
-    // Convenience: the agent workflow saves the Figma MCP export here.
-    if (fs.existsSync(path.join(ROOT, ".figma/live.json"))) inputOption = ".figma/live.json"
+    // Convenience: the pinned REST snapshot `figma export` writes is the
+    // default source; the older MCP dump path still works when it is the only
+    // file present.
+    for (const candidate of [".figma/live-rest.json", ".figma/live.json"]) {
+      if (fs.existsSync(path.join(ROOT, candidate))) {
+        inputOption = candidate
+        break
+      }
+    }
   }
   if (flag("rest")) {
     const keyFromFile = fileKeyFromSource()
@@ -255,6 +264,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
       committed.filter((node) => node.sources?.includes("mcp")),
     )
     liveVersion = restSnapshot.version
+    liveLastModified = restSnapshot.lastModified
     live = normalizeLive(restSnapshot)
   } else if (inputOption) {
     const input: unknown = JSON.parse(fs.readFileSync(path.resolve(inputOption), "utf8"))
@@ -265,6 +275,14 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
       typeof input.version === "string"
     ) {
       liveVersion = input.version
+    }
+    if (
+      input &&
+      typeof input === "object" &&
+      "lastModified" in input &&
+      typeof input.lastModified === "string"
+    ) {
+      liveLastModified = input.lastModified
     }
     if (
       input &&
@@ -291,7 +309,9 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     try {
       fs.mkdirSync(path.dirname(savePath), { recursive: true })
       fs.writeFileSync(savePath, `${JSON.stringify(restSnapshot, null, 2)}\n`)
-      console.log(`snapshot: ${saveOption} (version ${restSnapshot.version})`)
+      // `--plan` owns stdout: the plan stays parseable as JSON.
+      const report = flag("plan") ? console.error : console.log
+      report(`snapshot: ${saveOption} (version ${restSnapshot.version})`)
     } catch (error) {
       fail(
         `cannot save the REST snapshot to ${saveOption}: ` +
@@ -338,6 +358,8 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
       schemaVersion: 2,
       fileKey: inventory.fileKey,
       syncedAt: new Date().toISOString().slice(0, 10),
+      ...(liveVersion ? { fileVersion: liveVersion } : {}),
+      ...(liveLastModified ? { lastModified: liveLastModified } : {}),
       components: live,
     }
     pendingWrites.set(INVENTORY_PATH, inventory)
@@ -1214,6 +1236,18 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     for (const id of [...selected]) {
       if (entries[id]?.status === "mocked") selected.delete(id)
     }
+    // The queue that was already waiting is not today's delta: read it here so
+    // a plan reader never mistakes a standing blocker for a new change.
+    const designRequest = /\bdocs\/design-requests\/[\w./-]+\.md\b/g
+    const pending = Object.entries(entries)
+      .filter(([, entry]) => entry.status === "pending")
+      .map(([nodeId, entry]) => ({
+        nodeId,
+        name: snapshot.find((node) => node.nodeId === nodeId)?.name ?? null,
+        target: entry.target?.export ?? null,
+        designRequests: [...new Set(entry.note?.match(designRequest) ?? [])],
+      }))
+      .sort((left, right) => left.nodeId.localeCompare(right.nodeId, undefined, { numeric: true }))
     console.log(
       JSON.stringify(
         {
@@ -1225,7 +1259,9 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
               key === "changedVariants" ? nodes : nodes.map((node) => node.nodeId),
             ]),
           ),
+          snapshotVersion: liveVersion ?? null,
           implementationOrder: implementationOrder(snapshot, selected),
+          pending,
           unverifiedDesign: snapshot
             .filter((node) => !node.designFingerprint)
             .map((node) => node.nodeId),

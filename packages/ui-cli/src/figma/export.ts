@@ -16,7 +16,8 @@ export async function runExport(argv: string[] = process.argv.slice(2)): Promise
   const target = ".figma/live-rest.json"
   writeText(target, JSON.stringify(snapshot) + "\n")
   console.log(
-    `Read-only export: ${nodes.length} component roots, version ${snapshot.version} -> ${target}`,
+    `Read-only export: ${nodes.length} component roots, version ${snapshot.version}` +
+      `${snapshot.lastModified ? ` (modified ${snapshot.lastModified})` : ""} -> ${target}`,
   )
   return 0
 }

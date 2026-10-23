@@ -49,8 +49,14 @@ const ComponentSetInventorySchema = z.looseObject({
   meta: z.looseObject({ component_sets: z.array(PublishedNodeSchema) }),
 })
 
+const FileHeaderSchema = z.looseObject({
+  version: z.string(),
+  lastModified: z.string().optional(),
+})
+
 const FileResponseSchema = z.looseObject({
   version: z.string(),
+  lastModified: z.string().optional(),
   document: z.looseObject({
     children: z.array(z.looseObject({ id: z.string(), name: z.string() })),
   }),
@@ -63,6 +69,18 @@ const ApiResponseSchema = z.looseObject({
 
 export type FigmaDocument = z.infer<typeof DocumentSchema>
 export type PublishedNode = z.infer<typeof PublishedNodeSchema>
+export type FigmaFileHeader = { version: string; lastModified?: string }
+
+// The file header alone: the version pins a reading and `lastModified` says
+// when the file last changed. One small call answers "is there anything to
+// align?" without reading any node document.
+export async function fetchFileHeader(fileKey: string): Promise<FigmaFileHeader> {
+  const file = await get(`files/${fileKey}?depth=1`, FileHeaderSchema)
+  if (typeof file.version !== "string" || !file.version) {
+    throw new Error("Figma returned no file version")
+  }
+  return { version: file.version, lastModified: file.lastModified }
+}
 
 async function get<T>(endpoint: string, schema: z.ZodType<T>): Promise<T> {
   const token = figmaToken()
@@ -301,6 +319,7 @@ export async function fetchFigmaSnapshot(fileKey: string, mcpNodes: McpNode[] = 
   return {
     fileKey,
     version: file.version,
+    lastModified: file.lastModified,
     meta: {
       components: components.map(publishedRecord),
       component_sets: sets.map(publishedRecord),

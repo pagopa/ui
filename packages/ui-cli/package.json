@@ -11,6 +11,8 @@
   "scripts": {
     "figma:check": "node src/cli.ts check figma",
     "figma:devices": "node src/cli.ts figma devices",
+    "figma:status": "node src/cli.ts figma status",
+    "figma:plan": "node src/cli.ts figma sync --rest --plan --save .figma/live-rest.json",
     "figma:export": "node src/cli.ts figma export",
     "figma:update": "node src/cli.ts figma sync --write",
     "figma:triage": "node src/cli.ts figma sync --triage",

@@ -862,6 +862,55 @@ test("a delta plan schedules a component set with internal variant references on
   )
 })
 
+test("the plan separates the standing pending queue and triage records the file version", () => {
+  fixture(
+    ({ check, read }) => {
+      const plan = check("--input", "live.json", "--plan")
+      assert.equal(plan.status, 0, plan.stderr)
+      const parsed = JSON.parse(plan.stdout)
+      assert.deepEqual(parsed.pending, [
+        {
+          nodeId: "1:1",
+          name: "Control",
+          target: "Control",
+          designRequests: ["docs/design-requests/2026-10-21-control.md"],
+        },
+      ])
+      assert.deepEqual(parsed.implementationOrder, ["1:1"])
+
+      const triage = check("--triage", "--input", "live.json")
+      assert.equal(triage.status, 0, triage.stderr)
+      const inventory = JSON.parse(read("src/catalog/figma/inventory.json"))
+      assert.equal(inventory.fileVersion, "v-test")
+      assert.equal(inventory.lastModified, "2026-10-09T10:00:00Z")
+    },
+    {
+      "src/catalog/figma/inventory.json": JSON.stringify({
+        fileKey: "fixture",
+        syncedAt: new Date().toISOString().slice(0, 10),
+        components: [node],
+      }),
+      "src/catalog/figma/registry.json": JSON.stringify({
+        bulkRules: [],
+        entries: {
+          "1:1": {
+            status: "pending",
+            target: { module: "src/components/primitives/control.tsx", export: "Control" },
+            note: "Blocked by docs/design-requests/2026-10-21-control.md",
+          },
+        },
+      }),
+      "src/components/primitives/control.tsx": "export function Control() { return null }",
+      "live.json": JSON.stringify({
+        fileKey: "fixture",
+        version: "v-test",
+        lastModified: "2026-10-09T10:00:00Z",
+        components: [node],
+      }),
+    },
+  )
+})
+
 test("the REST adapter preserves component sets, defaults and design evidence", () => {
   fixture(
     ({ check, read }) => {

@@ -16,6 +16,7 @@ import { runIcons } from "./figma/icons.ts"
 import { runPictograms } from "./figma/pictograms.ts"
 import { runStories } from "./figma/stories.ts"
 import { runSync } from "./figma/sync.ts"
+import { runStatus } from "./figma/status.ts"
 import { runTokens } from "./figma/tokens.ts"
 import { main as runParity } from "./parity/cli.ts"
 import { renderCli } from "./parity/render.ts"
@@ -288,9 +289,28 @@ const figmaStories = defineCommand({
   run: ({ args }) => execute(() => runStories(args.write ? ["--write"] : []))(),
 })
 
+const figmaStatus = defineCommand({
+  meta: { name: "status", description: "Report the token, snapshot, drift and pending queue" },
+  args: {
+    json: jsonArg,
+    live: {
+      type: "boolean",
+      default: false,
+      description: "Ask the live file for its version and last-modified date",
+    },
+  },
+  run: ({ args }) => {
+    const argv: string[] = []
+    if (args.json) argv.push("--json")
+    if (args.live) argv.push("--live")
+    return execute(() => runStatus(argv))()
+  },
+})
+
 const figma = defineCommand({
   meta: { name: "figma", description: "Figma catalogue and artwork commands" },
   subCommands: {
+    status: figmaStatus,
     sync: figmaSync,
     export: figmaExport,
     devices: figmaDevices,
