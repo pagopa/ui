@@ -30,6 +30,7 @@ import {
   ExtractedCardSchema,
   RuleCardSchema,
   RuleDispositionSchema,
+  RuleScopeSchema,
   RulesLedgerSchema,
   RulesSnapshotSchema,
 } from "../schemas/rules.ts"
@@ -455,6 +456,7 @@ export function mark(
     reason?: string
     duplicateOf?: string
     request?: string
+    scope?: string
   },
 ): RuleCard {
   const found = cardIndex(snapshot).get(options.cardId)
@@ -486,7 +488,12 @@ export function mark(
         .filter(Boolean),
     )
   }
-  card.provisionalTargets = card.targets.length === 0
+  if (options.scope) {
+    const parsedScope = RuleScopeSchema.safeParse(options.scope)
+    if (!parsedScope.success) throw new UsageError("invalid --scope")
+    card.scope = parsedScope.data
+  }
+  card.provisionalTargets = card.targets.length === 0 && card.scope === "component"
   if (options.disposition === "removed") card.removedAt = today()
   if (options.disposition !== "pending") card.reviewedAt = today()
 
@@ -705,6 +712,7 @@ export async function runRules(argv: string[] = process.argv.slice(2)): Promise<
       reason: option(argv, "reason"),
       duplicateOf: option(argv, "duplicate-of"),
       request: option(argv, "request"),
+      scope: option(argv, "scope"),
     })
     writeLedger(root, ledger)
     console.log(`rules: ${cardId} → ${card.disposition}${card.titleEn ? ` · ${card.titleEn}` : ""}`)
