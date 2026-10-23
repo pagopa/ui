@@ -1,3 +1,12 @@
+<!-- component-rules:start -->
+
+## Component Rules
+
+- Use `DialogTemplate` to confirm or cancel an operation.
+- Use `FeedbackPage` to show the positive or negative outcome of a process, such as a wizard.
+
+<!-- component-rules:end -->
+
 The `Components/Templates` pages are page fragments implemented from their
 source sets: `Dialog`, `Security Code Dialog`, `Informative Drawer` and
 `Feedback Page`. They are private modules, not part of the public entry, and

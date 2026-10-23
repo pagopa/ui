@@ -1,3 +1,11 @@
+<!-- component-rules:start -->
+
+## Component Rules
+
+- Feedback icons are four: success, info, warning and error; `notice` is legacy and will be removed.
+
+<!-- component-rules:end -->
+
 `PagoPAIcon` renders the pinned Figma artwork by name, with no icon font or
 raw-name fallback. Brand images preserve their owners' colors; monochrome masks
 inherit the surrounding semantic `currentColor` and the user's forced-color
