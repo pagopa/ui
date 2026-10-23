@@ -8,7 +8,7 @@ work.
 ## Setup
 
 - The toolchain comes from [mise](https://mise.jdx.dev/) (`mise install`, then
-  `mise trust` once): Node 22.23.3 and pnpm 11.28.6, pinned in `.node-version`
+  `mise trust` once): Node 24.22.1 and pnpm 11.28.6, pinned in `.node-version`
   and `mise.lock`.
 - `pnpm install`
 - `pnpm nx run pagopa-ui-storybook:storybook` for the documentation and the visual checks
@@ -54,8 +54,8 @@ underlying command is the package script of the same name
 (`pnpm --filter @pagopa/ui run <script>` or
 `pnpm --filter pagopa-ui-cli run <script>`).
 
-- `pnpm nx run pagopa-ui-storybook:storybook` — Storybook on `:6006`, also the parity
-  capture surface.
+- `pnpm nx run pagopa-ui-storybook:storybook` — Storybook through portless on a
+  free port behind the printed stable URL; `PORTLESS=0` keeps `:6006`.
 - `pnpm nx run pagopa-ui-storybook:test:stories` — the stories in Firefox and WebKit;
   `pnpm nx run pagopa-ui-storybook:test:webkit` — the stories in WebKit alone, the pass a
   pull request runs; `pnpm nx run pagopa-ui-storybook:test:coverage` — the stories in

@@ -22,6 +22,7 @@ import {
   readFileSync,
   writeFileSync,
 } from "node:fs"
+import { homedir } from "node:os"
 import { dirname, join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { defineWorkflow, joinSession } from "@github/copilot-sdk/extension"
@@ -30,6 +31,13 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../..")
 const PACKAGE_DIR = join(ROOT, "packages/pagopa-ui")
 const CONFIG_FILE = join(PACKAGE_DIR, "figma-to-code.yaml")
 const DECISIONS = ["implement", "review", "map", "exclude", "design-request", "skip"]
+
+// Node does not read the OS trust store: trust the portless CA so `fetch` can
+// probe the HTTPS Storybook URL the proxy serves.
+const PORTLESS_CA = join(homedir(), ".portless/ca.pem")
+if (!process.env.NODE_EXTRA_CA_CERTS && existsSync(PORTLESS_CA)) {
+  process.env.NODE_EXTRA_CA_CERTS = PORTLESS_CA
+}
 
 // ---------------------------------------------------------------- helpers
 
@@ -163,6 +171,25 @@ async function storybookAnswers(url) {
   }
 }
 
+// portless owns the branch prefix, so ask it for the URL instead of building it.
+async function portlessUrl(name, signal) {
+  try {
+    const { stdout } = await run(
+      "pnpm",
+      ["--filter", "pagopa-ui-storybook", "exec", "portless", "get", name],
+      { signal, allowExit: [0, 1] },
+    )
+    const line = stdout
+      .trim()
+      .split("\n")
+      .reverse()
+      .find((candidate) => /^https?:\/\//.test(candidate))
+    return line?.trim() ?? null
+  } catch {
+    return null
+  }
+}
+
 // ---------------------------------------------------------------- schemas
 
 const strings = { type: "array", items: { type: "string" } }
@@ -289,7 +316,7 @@ Hard rules for this run:
 - Figma is read-only: use only get_design_context, get_screenshot, get_metadata, get_variable_defs and list_file_components_for_code_connect. Never use_figma or any tool that writes to Figma or publishes Code Connect.
 - Never commit, push, switch branches or open pull requests: the person delivers.
 - The working tree is shared with the person and other writers. Never revert, delete, stash, \`git checkout\` or \`git restore\` a change you did not make in this task, even if it looks unrelated or breaks a check: report it in openPoints instead.
-- Storybook already runs at ${config.storybook.url}. Never start, restart or kill it. A file created now enters the Tailwind scan only after \`touch packages/pagopa-ui/src/index.css\`.
+- Storybook already runs at ${config.storybook.url}. Prefix every command that renders it (\`figma:parity:check\`, \`figma:parity:capture\`) with \`STORYBOOK_URL=${config.storybook.url}\`. Never start, restart or kill it. A file created now enters the Tailwind scan only after \`touch packages/pagopa-ui/src/index.css\`.
 - Run project targets as \`pnpm nx run <project>:<target> [flags]\` (the ui-cli changes directory to packages/pagopa-ui, so pass absolute paths or package-relative ones); \`node packages/ui-cli/src/cli.ts parity source ...\` and \`... figma sync ...\` run from the root as the skill shows.
 - Code, comments and docs in English; Italian only for rendered component and story copy.
 - Parity is the render: never claim a match from reading code.`
@@ -549,25 +576,19 @@ const figmaAlign = defineWorkflow({
     mkdirSync(outDir, { recursive: true })
     let storybook = null
 
-    const ensureStorybook = async (url) => {
-      if (await storybookAnswers(url)) return true
-      if (!opts.startStorybook) return false
+    const ensureStorybook = async (config) => {
+      const fallback = config.storybook.url
+      // portless serves a named URL; the probe follows the route it assigned.
+      const portless = await portlessUrl("pagopa-ui-storybook", signal)
+      if (portless && (await storybookAnswers(portless))) return portless
+      if (await storybookAnswers(fallback)) return fallback
+      if (!opts.startStorybook) return null
       if (!storybook) {
-        ctx.log(`Storybook does not answer on ${url}: starting it (log in ${outDir})`)
+        ctx.log(`Storybook does not answer: starting it through portless (log in ${outDir})`)
         const log = createWriteStream(join(outDir, "storybook.log"))
-        // Pin the configured port: without it Storybook falls back to a free one the probe never finds.
-        const port = new URL(url).port || "6006"
         storybook = spawn(
           "pnpm",
-          [
-            "nx",
-            "run",
-            "pagopa-ui-storybook:storybook",
-            `--port=${port}`,
-            "--exact-port",
-            "--ci",
-            "--no-open",
-          ],
+          ["nx", "run", "pagopa-ui-storybook:storybook", "--ci", "--no-open"],
           {
             cwd: ROOT,
             env: { ...process.env, NX_TUI: "false", CI: "true" },
@@ -579,12 +600,13 @@ const figmaAlign = defineWorkflow({
         storybook.stderr.pipe(log)
       }
       for (let i = 0; i < 90; i++) {
-        if (signal.aborted) return false
-        if (storybook.exitCode !== null) return false
-        if (await storybookAnswers(url)) return true
+        if (signal.aborted) return null
+        if (storybook.exitCode !== null) return null
+        const url = portless ?? (await portlessUrl("pagopa-ui-storybook", signal))
+        if (url && (await storybookAnswers(url))) return url
         await new Promise((r) => setTimeout(r, 2000))
       }
-      return false
+      return null
     }
 
     try {
@@ -747,10 +769,15 @@ Return ok=true with the pinned version in message when ${snapshot} pins the curr
 
       // ------------------------------------------------------------ analyse
       ctx.phase("Analyse")
-      if (!(await ensureStorybook(config.storybook.url))) {
+      const analysedUrl = await ensureStorybook(config)
+      if (!analysedUrl) {
         ctx.log(
           "Storybook is not reachable: the analysis reads the source only, renders unverified.",
         )
+      } else {
+        config.storybook.url = analysedUrl
+        process.env.STORYBOOK_URL = analysedUrl
+        ctx.log(`Storybook: ${analysedUrl}`)
       }
       const analyses = await ctx.parallel(
         wave.map(
@@ -826,10 +853,15 @@ Return ok=true with the pinned version in message when ${snapshot} pins the curr
 
       // ------------------------------------------------------------ align
       ctx.phase("Align")
-      if (work.length && !(await ensureStorybook(config.storybook.url))) {
-        throw new Error(
-          `Storybook does not answer on ${config.storybook.url}: the parity loop needs it (see ${join(outDir, "storybook.log")}). Start it and resume run ${ctx.runId}.`,
-        )
+      if (work.length) {
+        const alignedUrl = await ensureStorybook(config)
+        if (!alignedUrl) {
+          throw new Error(
+            `Storybook does not answer: the parity loop needs it (see ${join(outDir, "storybook.log")}). Start it and resume run ${ctx.runId}.`,
+          )
+        }
+        config.storybook.url = alignedUrl
+        process.env.STORYBOOK_URL = alignedUrl
       }
       const exclusive = createLock()
       const writeNode = (label, prompt) =>

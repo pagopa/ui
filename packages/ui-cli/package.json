@@ -6,7 +6,7 @@
   "version": "0.0.0",
   "type": "module",
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   },
   "scripts": {
     "figma:check": "node src/cli.ts check figma",

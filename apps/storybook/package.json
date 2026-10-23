@@ -6,10 +6,10 @@
   "version": "0.0.0",
   "type": "module",
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   },
   "scripts": {
-    "storybook": "storybook dev",
+    "storybook": "portless run --name pagopa-ui-storybook node scripts/storybook-dev.mjs",
     "build": "storybook build -o dist",
     "test:stories": "vitest --run",
     "test:webkit": "vitest --run --mode webkit",
@@ -45,6 +45,7 @@
     "pagopa-ui-artwork": "workspace:*",
     "pagopa-ui-tokens": "workspace:*",
     "playwright": "1.63.0",
+    "portless": "^0.15.8",
     "react": "^19.2.8",
     "react-day-picker": "^10.0.2",
     "react-dom": "^19.2.8",
