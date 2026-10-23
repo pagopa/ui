@@ -13,6 +13,7 @@ import fs from "node:fs"
 import path from "node:path"
 import { z } from "zod"
 
+import { fetchFigmaImagesPng } from "../figma/rest.ts"
 import { normalizeLive } from "../figma/snapshot.ts"
 import { loadInventoryNodes } from "../figma/devices.ts"
 import { evidencePaths } from "./evidence.ts"
@@ -542,10 +543,12 @@ export function offsetBetween(
   return { left: round2(node.at.x - origin.at.x), top: round2(node.at.y - origin.at.y) }
 }
 
-export function sourceCli(argv: string[] = process.argv.slice(2)): void {
+export async function sourceCli(argv: string[] = process.argv.slice(2)): Promise<void> {
   const [nodeId, ...rest] = argv
   if (!nodeId) {
-    console.error("usage: node src/cli.ts parity source <nodeId> [--depth N] [--json] [--compact]")
+    console.error(
+      "usage: node src/cli.ts parity source <nodeId> [--depth N] [--json] [--compact] [--png [file]]",
+    )
     process.exit(2)
   }
   const depthIndex = rest.indexOf("--depth")
@@ -558,6 +561,29 @@ export function sourceCli(argv: string[] = process.argv.slice(2)): void {
   if (!node) {
     console.error(`${nodeId} is not in the pinned export`)
     process.exit(2)
+  }
+  const pngIndex = rest.indexOf("--png")
+  if (pngIndex >= 0) {
+    const next = rest[pngIndex + 1]
+    // An explicit path follows `--png`; without one the pinned variant PNG
+    // lands in the gitignored parity output, named by its node id.
+    const file =
+      next && !next.startsWith("--")
+        ? path.isAbsolute(next)
+          ? next
+          : rootPath(next)
+        : rootPath(".figma/parity/source", `${node.id.replace(":", "-")}.png`)
+    const { fileKey } = project.raw
+    const version = project.version
+    if (!fileKey || !version) {
+      throw new Error("--png needs the pinned export's fileKey and version")
+    }
+    const images = await fetchFigmaImagesPng(fileKey, version, [node.id])
+    const buffer = images.get(node.id)
+    if (!buffer) throw new Error(`Figma rendered no PNG for ${node.id}`)
+    fs.mkdirSync(path.dirname(file), { recursive: true })
+    fs.writeFileSync(file, buffer)
+    console.error(`png: ${file} (version ${version})`)
   }
   const spec = nodeSpec(node, { depth })
   const variants = variantsOf(node)
@@ -576,5 +602,5 @@ export function sourceCli(argv: string[] = process.argv.slice(2)): void {
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   enterRoot()
-  sourceCli()
+  await sourceCli()
 }
