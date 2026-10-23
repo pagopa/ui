@@ -1,3 +1,17 @@
+<!-- component-rules:start -->
+
+## Component Rules
+
+- Choose the text colour from the background's accessible pair; the background decides which text colours pass contrast.
+- Prefer tone-on-tone colour pairings for a fresher look.
+- Order every palette from the darkest step to the lightest.
+- Name a colour by its hue and saturation step, never by the feature it serves.
+- Express a colour's function through a design token, not through its name.
+- Reserve the 32px shadow for modals and drawers.
+- Tie the corner radius to the element's elevation, not to its width or content.
+
+<!-- component-rules:end -->
+
 ## Tokens
 
 Colours, typography, radius and elevation are generated from the Figma

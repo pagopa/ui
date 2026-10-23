@@ -1,3 +1,11 @@
+<!-- component-rules:start -->
+
+## Component Rules
+
+- The overlay is a plain scrim: it never blurs the screen behind it.
+
+<!-- component-rules:end -->
+
 # Overlay
 
 `Overlay` implements the Figma component `Overlay` (`67:3964`): the translucent

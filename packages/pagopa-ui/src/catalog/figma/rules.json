@@ -9,11 +9,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Safe area per prodotto",
+      "titleEn": "Safe area by product",
+      "summary": "Safe area follows the product: SEND recipients are mobile; SEND senders, Interop and the IO back-office are desktop; Checkout serves both citizens and PSPs.",
       "sourceHash": "151d308dbb9caf7d",
-      "targets": ["50:1700"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "50:1700"
+      ],
+      "scope": "foundation",
+      "disposition": "recorded",
+      "reason": "A product policy for the safe area, recorded from the design source.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I52:1459;52:896": {
       "pageId": "1:17",
@@ -22,11 +28,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Variabili",
+      "titleEn": "Variables",
       "sourceHash": "9f2d91ea6ce5a54a",
-      "targets": ["50:1700"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "50:1700"
+      ],
+      "scope": "foundation",
+      "disposition": "out-of-scope",
+      "reason": "A Figma implementation label: the radius is a Figma variable, not a consumer rule.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I52:1459;52:903": {
       "pageId": "1:17",
@@ -35,11 +46,18 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["50:1700"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "50:1700"
+      ],
+      "scope": "foundation",
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reason": "The page has no single published component; the card repeats the global responsive rule.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I52:1381;52:895": {
       "pageId": "1:18",
@@ -48,11 +66,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Dimensione border radius",
+      "titleEn": "Corner radius size",
+      "summary": "The corner radius follows the element's elevation.",
       "sourceHash": "065fbad9334ee955",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/foundations.md",
+      "reason": "A foundations rule: it binds every component rather than one set.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I52:1381;52:896": {
       "pageId": "1:18",
@@ -61,11 +84,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Variabili",
+      "titleEn": "Variables",
       "sourceHash": "9f2d91ea6ce5a54a",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "out-of-scope",
+      "reason": "A Figma implementation label: the radius is a Figma variable, not a consumer rule.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I52:1381;52:903": {
       "pageId": "1:18",
@@ -74,11 +100,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reason": "The page has no single published component; the card repeats the global responsive rule.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I68:2775;52:895": {
       "pageId": "1:19",
@@ -87,11 +118,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Colore testo",
+      "titleEn": "Text colour",
+      "summary": "The background colour decides which text colours are accessible on top of it.",
       "sourceHash": "ce675123f2ba7a98",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/foundations.md",
+      "reason": "A foundations rule: it binds every component rather than one set.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I68:2775;52:896": {
       "pageId": "1:19",
@@ -100,11 +136,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Testo",
+      "titleEn": "Text",
+      "summary": "Prefer tone-on-tone colour pairings for a fresher look.",
       "sourceHash": "3acd2b0b684c2072",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/foundations.md",
+      "reason": "A foundations rule: it binds every component rather than one set.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I68:2775;52:897": {
       "pageId": "1:19",
@@ -113,11 +154,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Background/Testo",
+      "titleEn": "Background and text",
+      "summary": "The card repeats the tone-on-tone pairing rule.",
       "sourceHash": "7498d542b9ae8eb6",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "duplicate",
+      "duplicateOf": "I68:2775;52:896",
+      "reason": "A foundations rule: it binds every component rather than one set.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I68:2775;52:898": {
       "pageId": "1:19",
@@ -126,11 +172,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Ordinamento",
+      "titleEn": "Ordering",
+      "summary": "Order every palette from the darkest step to the lightest.",
       "sourceHash": "9a2f5f1be2f58f54",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/foundations.md",
+      "reason": "A foundations rule: it binds every component rather than one set.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I68:2775;52:899": {
       "pageId": "1:19",
@@ -139,11 +190,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Nomenclatura",
+      "titleEn": "Naming",
+      "summary": "Name a colour by its hue and saturation step, never by the feature it serves.",
       "sourceHash": "6e23fbd8a9c57860",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/foundations.md",
+      "reason": "A foundations rule: it binds every component rather than one set.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I68:2775;52:900": {
       "pageId": "1:19",
@@ -152,11 +208,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Funzionalità del colore",
+      "titleEn": "Colour function",
+      "summary": "Express a colour's function through a design token, not through its name.",
       "sourceHash": "46a2bf222bd1ee1d",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/foundations.md",
+      "reason": "A foundations rule: it binds every component rather than one set.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I68:2775;52:903": {
       "pageId": "1:19",
@@ -165,11 +226,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reason": "The page has no single published component; the card repeats the global responsive rule.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I124:4070;52:895": {
       "pageId": "1:21",
@@ -181,7 +247,9 @@
       "titleEn": "Breadcrumb behaviour",
       "summary": "Desktop: ancestor levels are links and the current page is not clickable; mobile: one compact back reaches the previous flow level.",
       "sourceHash": "fef030d0c64eea2e",
-      "targets": ["123:7768"],
+      "targets": [
+        "123:7768"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/breadcrumb-navigation.md",
@@ -198,7 +266,9 @@
       "titleEn": "Breadcrumb breakpoint",
       "summary": "Mobile and tablet portrait use the Compact layout.",
       "sourceHash": "b953dbaeca7a4ae9",
-      "targets": ["123:7768"],
+      "targets": [
+        "123:7768"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/breadcrumb-navigation.md",
@@ -215,7 +285,9 @@
       "titleEn": "Breadcrumb in a wizard",
       "summary": "In wizard templates use the Compact breadcrumb with the primary colour; leaving the flow asks for confirmation.",
       "sourceHash": "7efbd90801eff562",
-      "targets": ["123:7768"],
+      "targets": [
+        "123:7768"
+      ],
       "scope": "component",
       "disposition": "recorded",
       "reviewedAt": "2026-10-23",
@@ -231,7 +303,9 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["123:7768"],
+      "targets": [
+        "123:7768"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -248,7 +322,9 @@
       "titleEn": "Tertiary tap area",
       "summary": "The source tertiary button has no padding; its tap area is 24/14 around the label.",
       "sourceHash": "86f9f3835c1f2989",
-      "targets": ["108:1402"],
+      "targets": [
+        "108:1402"
+      ],
       "scope": "component",
       "disposition": "recorded",
       "reviewedAt": "2026-10-23",
@@ -264,7 +340,10 @@
       "titleEn": "Spacing between buttons",
       "summary": "Keep 8px between actions, vertically and horizontally.",
       "sourceHash": "fad4d260599d746f",
-      "targets": ["108:1402", "123:4498"],
+      "targets": [
+        "108:1402",
+        "123:4498"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/actions.md",
@@ -281,7 +360,9 @@
       "titleEn": "Solid backgrounds",
       "summary": "Never dim an action with opacity: every variant keeps a solid background that meets AA contrast.",
       "sourceHash": "f09fcacb7abe11b9",
-      "targets": ["108:1402"],
+      "targets": [
+        "108:1402"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/actions.md",
@@ -298,7 +379,9 @@
       "titleEn": "Focused state",
       "summary": "The source draws no focused variant: the platform draws focus, so the library's focus perimeter is an accessibility adaptation.",
       "sourceHash": "02ccb01d0f109d15",
-      "targets": ["108:1402"],
+      "targets": [
+        "108:1402"
+      ],
       "scope": "component",
       "disposition": "recorded",
       "reviewedAt": "2026-10-23",
@@ -314,7 +397,10 @@
       "titleEn": "Distance from the content above",
       "summary": "Keep 24px or 32px between a group of actions and the content above it, unless the page composition needs an exception.",
       "sourceHash": "cadc357d7e6743b9",
-      "targets": ["108:1402", "123:4498"],
+      "targets": [
+        "108:1402",
+        "123:4498"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/actions.md",
@@ -331,7 +417,9 @@
       "titleEn": "Disabled actions",
       "summary": "Do not use the disabled variant: it is not accessible. Keep the default action and explain the failure with an error toast.",
       "sourceHash": "a7d4890af0388a92",
-      "targets": ["108:1402"],
+      "targets": [
+        "108:1402"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/actions.md",
@@ -348,7 +436,9 @@
       "titleEn": "Responsive width",
       "summary": "The component takes the width of its container.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["108:1402"],
+      "targets": [
+        "108:1402"
+      ],
       "scope": "component",
       "disposition": "recorded",
       "reviewedAt": "2026-10-23",
@@ -361,11 +451,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Effetti su overlay",
+      "titleEn": "Overlay effects",
+      "summary": "The overlay is a plain scrim with no blur effect.",
       "sourceHash": "8b9c475005b1cf0e",
-      "targets": ["67:3964"],
+      "targets": [
+        "67:3964"
+      ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/overlay.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I67:3790;52:896": {
       "pageId": "1:23",
@@ -374,11 +470,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Variabili",
+      "titleEn": "Variables",
       "sourceHash": "9f2d91ea6ce5a54a",
-      "targets": ["67:3964"],
+      "targets": [
+        "67:3964"
+      ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "A Figma implementation label: the radius is a Figma variable, not a consumer rule.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I67:3790;52:903": {
       "pageId": "1:23",
@@ -387,11 +488,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["67:3964"],
+      "targets": [
+        "67:3964"
+      ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I99:3347;52:895": {
       "pageId": "1:24",
@@ -400,6 +507,8 @@
       "section": "Consolidate",
       "status": "",
       "title": "Icone di Feedback",
+      "titleEn": "Feedback icons",
+      "summary": "Feedback uses four icons — success, info, warning and error; notice is legacy.",
       "sourceHash": "4be200c90641bce3",
       "targets": [
         "94:1982",
@@ -558,9 +667,12 @@
         "14164:11363",
         "14241:48931"
       ],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/icons.md",
+      "reason": "A foundations rule: it binds every component rather than one set.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I99:3347;52:896": {
       "pageId": "1:24",
@@ -569,6 +681,7 @@
       "section": "Consolidate",
       "status": "",
       "title": "Padding laterale in sviluppo",
+      "titleEn": "Development padding scale",
       "sourceHash": "714dc725e85d10b0",
       "targets": [
         "94:1982",
@@ -727,9 +840,11 @@
         "14164:11363",
         "14241:48931"
       ],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "out-of-scope",
+      "reason": "A development padding scale (8/16/24/32) with no component contract.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I99:3347;52:897": {
       "pageId": "1:24",
@@ -738,6 +853,8 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "Icons are produced with the Material Symbols plugin settings.",
       "sourceHash": "00c41242f44a2462",
       "targets": [
         "94:1982",
@@ -896,9 +1013,12 @@
         "14164:11363",
         "14241:48931"
       ],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reason": "A foundations rule: it binds every component rather than one set.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I99:3347;52:903": {
       "pageId": "1:24",
@@ -907,6 +1027,8 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": [
         "94:1982",
@@ -1065,9 +1187,12 @@
         "14164:11363",
         "14241:48931"
       ],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reason": "The page has no single published component; the card repeats the global responsive rule.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I10183:4294;52:895": {
       "pageId": "1:25",
@@ -1078,7 +1203,9 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "2e6107e9fb081061",
-      "targets": ["10169:11964"],
+      "targets": [
+        "10169:11964"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is a template label, not a rule.",
@@ -1095,7 +1222,9 @@
       "titleEn": "Spacing between buttons",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "fad4d260599d746f",
-      "targets": ["10169:11964"],
+      "targets": [
+        "10169:11964"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:896",
@@ -1112,7 +1241,9 @@
       "titleEn": "Solid backgrounds",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "f09fcacb7abe11b9",
-      "targets": ["10169:11964"],
+      "targets": [
+        "10169:11964"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:897",
@@ -1129,7 +1260,9 @@
       "titleEn": "Focused state",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "02ccb01d0f109d15",
-      "targets": ["10169:11964"],
+      "targets": [
+        "10169:11964"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:898",
@@ -1146,7 +1279,9 @@
       "titleEn": "Distance from the content above",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "cadc357d7e6743b9",
-      "targets": ["10169:11964"],
+      "targets": [
+        "10169:11964"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:899",
@@ -1163,7 +1298,9 @@
       "titleEn": "Disabled actions",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "a7d4890af0388a92",
-      "targets": ["10169:11964"],
+      "targets": [
+        "10169:11964"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:900",
@@ -1180,7 +1317,9 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["10169:11964"],
+      "targets": [
+        "10169:11964"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -1197,7 +1336,9 @@
       "titleEn": "Pagination behaviour",
       "summary": "Below 900px the middle pages collapse to Previous and Next; when the results fit one page the whole control hides.",
       "sourceHash": "03d9a76340282170",
-      "targets": ["127:1510"],
+      "targets": [
+        "127:1510"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/pagination.md",
@@ -1214,7 +1355,9 @@
       "titleEn": "Spacing between buttons",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "fad4d260599d746f",
-      "targets": ["10169:11964"],
+      "targets": [
+        "10169:11964"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:896",
@@ -1231,7 +1374,9 @@
       "titleEn": "Solid backgrounds",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "f09fcacb7abe11b9",
-      "targets": ["10169:11964"],
+      "targets": [
+        "10169:11964"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:897",
@@ -1248,7 +1393,9 @@
       "titleEn": "Focused state",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "02ccb01d0f109d15",
-      "targets": ["10169:11964"],
+      "targets": [
+        "10169:11964"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:898",
@@ -1265,7 +1412,9 @@
       "titleEn": "Distance from the content above",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "cadc357d7e6743b9",
-      "targets": ["10169:11964"],
+      "targets": [
+        "10169:11964"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:899",
@@ -1282,7 +1431,9 @@
       "titleEn": "Disabled actions",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "a7d4890af0388a92",
-      "targets": ["10169:11964"],
+      "targets": [
+        "10169:11964"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:900",
@@ -1299,7 +1450,9 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["10169:11964"],
+      "targets": [
+        "10169:11964"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -1316,7 +1469,9 @@
       "titleEn": "Tags are not actions",
       "summary": "A tag is not a call to action and carries no action.",
       "sourceHash": "714bf20281603f0c",
-      "targets": ["105:2043"],
+      "targets": [
+        "105:2043"
+      ],
       "scope": "component",
       "disposition": "recorded",
       "reviewedAt": "2026-10-23",
@@ -1332,7 +1487,9 @@
       "titleEn": "Override rules",
       "summary": "Semantic states lock icon, border and colour to the severity tokens; the default state is fully customisable; the counter state has no icon.",
       "sourceHash": "60ec027b3b5f96ec",
-      "targets": ["105:2043"],
+      "targets": [
+        "105:2043"
+      ],
       "scope": "component",
       "disposition": "recorded",
       "reviewedAt": "2026-10-23",
@@ -1348,7 +1505,9 @@
       "titleEn": "Icon production",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["105:2043"],
+      "targets": [
+        "105:2043"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -1365,7 +1524,9 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["105:2043"],
+      "targets": [
+        "105:2043"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -1379,11 +1540,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Campo obbligatorio",
+      "titleEn": "Required fields in words",
+      "summary": "Mark required fields after the introductory text with the *required version of text field and select; state it once when every field is required.",
       "sourceHash": "a3144593faa998a0",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "1154:4493",
+        "2786:78783"
+      ],
+      "scope": "template",
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1154:3691;52:896": {
       "pageId": "1:4",
@@ -1392,11 +1559,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Variabili",
+      "titleEn": "Variables",
       "sourceHash": "9f2d91ea6ce5a54a",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "1154:4493",
+        "2786:78783"
+      ],
+      "scope": "template",
+      "disposition": "out-of-scope",
+      "reason": "A template label: it states a Figma variable, not a rule for the consumer.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1154:3691;52:903": {
       "pageId": "1:4",
@@ -1405,11 +1578,18 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "1154:4493",
+        "2786:78783"
+      ],
+      "scope": "template",
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1904:8511;52:895": {
       "pageId": "1:4",
@@ -1418,11 +1598,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Utilizzo",
+      "titleEn": "Usage",
+      "summary": "FeedbackPage shows the positive or negative outcome of a process, such as a wizard.",
       "sourceHash": "3399705f69c33e68",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "1904:9589"
+      ],
+      "scope": "template",
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/templates.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1904:8511;52:896": {
       "pageId": "1:4",
@@ -1431,11 +1617,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Variabili",
+      "titleEn": "Variables",
       "sourceHash": "9f2d91ea6ce5a54a",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "1904:9589"
+      ],
+      "scope": "template",
+      "disposition": "out-of-scope",
+      "reason": "A template label: it states a Figma variable, not a rule for the consumer.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1904:8511;52:903": {
       "pageId": "1:4",
@@ -1444,11 +1635,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "1904:9589"
+      ],
+      "scope": "template",
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1907:98040;52:895": {
       "pageId": "1:4",
@@ -1457,11 +1654,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Utilizzo",
+      "titleEn": "Usage",
+      "summary": "Terms of Use shows and accepts the terms and conditions.",
       "sourceHash": "59024a1a8202e5ac",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "1908:98740"
+      ],
+      "scope": "template",
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1907:98040;52:896": {
       "pageId": "1:4",
@@ -1470,11 +1672,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Variabili",
+      "titleEn": "Variables",
       "sourceHash": "9f2d91ea6ce5a54a",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "1908:98740"
+      ],
+      "scope": "template",
+      "disposition": "out-of-scope",
+      "reason": "A template label: it states a Figma variable, not a rule for the consumer.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1907:98040;52:903": {
       "pageId": "1:4",
@@ -1483,11 +1690,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "1908:98740"
+      ],
+      "scope": "template",
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1909:108138;52:895": {
       "pageId": "1:4",
@@ -1496,11 +1709,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Utilizzo",
+      "titleEn": "Usage",
+      "summary": "Recap shows a read-only set of information; the wizard owns the edits.",
       "sourceHash": "5a539a4ec064e016",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "1931:112838",
+        "2776:74243"
+      ],
+      "scope": "template",
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1909:108138;52:896": {
       "pageId": "1:4",
@@ -1509,11 +1728,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Variabili",
+      "titleEn": "Variables",
       "sourceHash": "9f2d91ea6ce5a54a",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "1931:112838",
+        "2776:74243"
+      ],
+      "scope": "template",
+      "disposition": "out-of-scope",
+      "reason": "A template label: it states a Figma variable, not a rule for the consumer.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1909:108138;52:903": {
       "pageId": "1:4",
@@ -1522,11 +1747,18 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "1931:112838",
+        "2776:74243"
+      ],
+      "scope": "template",
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1909:98994;52:895": {
       "pageId": "1:4",
@@ -1535,11 +1767,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Utilizzo",
+      "titleEn": "Usage",
+      "summary": "DialogTemplate confirms or cancels an operation.",
       "sourceHash": "9791988342cbf594",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "1909:98992"
+      ],
+      "scope": "template",
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/templates.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1909:98994;52:896": {
       "pageId": "1:4",
@@ -1548,11 +1786,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Variabili",
+      "titleEn": "Variables",
       "sourceHash": "9f2d91ea6ce5a54a",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "1909:98992",
+        "1909:99033"
+      ],
+      "scope": "template",
+      "disposition": "out-of-scope",
+      "reason": "A template label: it states a Figma variable, not a rule for the consumer.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1909:98994;52:903": {
       "pageId": "1:4",
@@ -1561,11 +1805,18 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "1909:98992",
+        "1909:99033"
+      ],
+      "scope": "template",
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1982:116466;52:895": {
       "pageId": "1:4",
@@ -1574,11 +1825,20 @@
       "section": "Consolidate",
       "status": "",
       "title": "Utilizzo",
+      "titleEn": "Usage",
+      "summary": "A drawer holds extra details about an object or selects content that affects the main page, such as adding from a library.",
       "sourceHash": "962ba6a1b373857b",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "1983:116988",
+        "1983:116998",
+        "1992:127582",
+        "1992:130380",
+        "2809:77828"
+      ],
+      "scope": "template",
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1982:116466;52:896": {
       "pageId": "1:4",
@@ -1587,11 +1847,20 @@
       "section": "Consolidate",
       "status": "",
       "title": "Variabili",
+      "titleEn": "Variables",
       "sourceHash": "9f2d91ea6ce5a54a",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "1983:116988",
+        "1983:116998",
+        "1992:127582",
+        "1992:130380",
+        "2809:77828"
+      ],
+      "scope": "template",
+      "disposition": "out-of-scope",
+      "reason": "A template label: it states a Figma variable, not a rule for the consumer.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1982:116466;52:903": {
       "pageId": "1:4",
@@ -1600,11 +1869,21 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "1983:116988",
+        "1983:116998",
+        "1992:127582",
+        "1992:130380",
+        "2809:77828"
+      ],
+      "scope": "template",
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I2337:69485;52:895": {
       "pageId": "1:4",
@@ -1613,11 +1892,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Utilizzo",
+      "titleEn": "Usage",
+      "summary": "Log In serves the authentication flows with SPID or CIE.",
       "sourceHash": "30540c42a915fa12",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "2339:80916",
+        "1992:147363"
+      ],
+      "scope": "template",
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I2337:69485;52:896": {
       "pageId": "1:4",
@@ -1626,11 +1911,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Variabili",
+      "titleEn": "Variables",
       "sourceHash": "9f2d91ea6ce5a54a",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "2339:80916",
+        "1992:147363"
+      ],
+      "scope": "template",
+      "disposition": "out-of-scope",
+      "reason": "A template label: it states a Figma variable, not a rule for the consumer.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I2337:69485;52:903": {
       "pageId": "1:4",
@@ -1639,11 +1930,18 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "2339:80916",
+        "1992:147363"
+      ],
+      "scope": "template",
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I2801:86305;52:895": {
       "pageId": "1:4",
@@ -1652,11 +1950,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Utilizzo",
+      "titleEn": "Usage",
+      "summary": "Object Detail shows an entity's main information and activity history.",
       "sourceHash": "999349521d35ca28",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "2801:85126"
+      ],
+      "scope": "template",
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I2801:86305;52:896": {
       "pageId": "1:4",
@@ -1665,11 +1968,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Variabili",
+      "titleEn": "Usage",
+      "summary": "The List View template shows a list of elements with a few main data points each.",
       "sourceHash": "5d900a50ffbb946a",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "2801:85126"
+      ],
+      "scope": "template",
+      "disposition": "duplicate",
+      "duplicateOf": "I3228:36333;52:895",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I2801:86305;52:903": {
       "pageId": "1:4",
@@ -1678,11 +1987,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "2801:85126"
+      ],
+      "scope": "template",
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I2822:80721;52:895": {
       "pageId": "1:4",
@@ -1691,11 +2006,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Utilizzo",
+      "titleEn": "Usage",
+      "summary": "Homepage shows the entity's data and the entry points to active products and to product subscriptions.",
       "sourceHash": "52cfccebeebfc836",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "2822:80432",
+        "2822:83244"
+      ],
+      "scope": "template",
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I2822:80721;52:896": {
       "pageId": "1:4",
@@ -1704,11 +2025,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Variabili",
+      "titleEn": "Variables",
       "sourceHash": "5d900a50ffbb946a",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "2822:80432",
+        "2822:83244"
+      ],
+      "scope": "template",
+      "disposition": "out-of-scope",
+      "reason": "A template label: it states a Figma variable, not a rule for the consumer.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I2822:80721;52:903": {
       "pageId": "1:4",
@@ -1717,11 +2044,18 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "2822:80432",
+        "2822:83244"
+      ],
+      "scope": "template",
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I2827:29267;52:895": {
       "pageId": "1:4",
@@ -1730,11 +2064,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Comportamento",
+      "titleEn": "Behaviour",
       "sourceHash": "2301a2bd0c31d2f9",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "2827:30226"
+      ],
+      "scope": "template",
+      "disposition": "out-of-scope",
+      "reason": "Copied from Footer: it describes the footer privacy link, not a key template.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I2827:29267;52:896": {
       "pageId": "1:4",
@@ -1743,11 +2082,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Variabili",
+      "titleEn": "Variables",
       "sourceHash": "9f2d91ea6ce5a54a",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "2827:30226"
+      ],
+      "scope": "template",
+      "disposition": "out-of-scope",
+      "reason": "A template label: it states a Figma variable, not a rule for the consumer.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I2827:29267;52:903": {
       "pageId": "1:4",
@@ -1756,11 +2100,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "2827:30226"
+      ],
+      "scope": "template",
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I2843:34334;52:895": {
       "pageId": "1:4",
@@ -1769,11 +2119,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Comportamento",
+      "titleEn": "Behaviour",
+      "summary": "The dashboard shows the main information that represents a process state and guides the user to the next action.",
       "sourceHash": "d916c829c6ce0636",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "2846:37569",
+        "2846:40095"
+      ],
+      "scope": "template",
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I2843:34334;52:896": {
       "pageId": "1:4",
@@ -1782,11 +2138,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Variabili",
+      "titleEn": "Variables",
       "sourceHash": "9f2d91ea6ce5a54a",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "2846:37569",
+        "2846:40095"
+      ],
+      "scope": "template",
+      "disposition": "out-of-scope",
+      "reason": "A template label: it states a Figma variable, not a rule for the consumer.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I2843:34334;52:903": {
       "pageId": "1:4",
@@ -1795,11 +2157,18 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "2846:37569",
+        "2846:40095"
+      ],
+      "scope": "template",
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I3228:36333;52:895": {
       "pageId": "1:4",
@@ -1808,11 +2177,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Utilizzo",
+      "titleEn": "Usage",
+      "summary": "The List View template shows a list of elements with a few main data points each.",
       "sourceHash": "0659df50be052749",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "3228:36387"
+      ],
+      "scope": "template",
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I3228:36333;52:896": {
       "pageId": "1:4",
@@ -1821,11 +2195,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Variabili",
+      "titleEn": "Usage",
+      "summary": "The List View template shows a list of elements with a few main data points each.",
       "sourceHash": "5d900a50ffbb946a",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "3228:36387"
+      ],
+      "scope": "template",
+      "disposition": "duplicate",
+      "duplicateOf": "I3228:36333;52:895",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I3228:36333;52:903": {
       "pageId": "1:4",
@@ -1834,11 +2214,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "3228:36387"
+      ],
+      "scope": "template",
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I3696:35741;52:895": {
       "pageId": "1:4",
@@ -1847,11 +2233,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "3823:36774"
+      ],
+      "scope": "template",
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I3696:35741;52:896": {
       "pageId": "1:4",
@@ -1860,11 +2251,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Variabili",
+      "titleEn": "Variables",
       "sourceHash": "9f2d91ea6ce5a54a",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "3823:36774"
+      ],
+      "scope": "template",
+      "disposition": "out-of-scope",
+      "reason": "A template label: it states a Figma variable, not a rule for the consumer.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I3696:35741;52:903": {
       "pageId": "1:4",
@@ -1873,11 +2269,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "3823:36774"
+      ],
+      "scope": "template",
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "9547:46489": {
       "pageId": "1:4",
@@ -1886,11 +2288,16 @@
       "section": null,
       "status": "",
       "title": "Utilizzo",
+      "titleEn": "Usage",
+      "summary": "A boxed row shows a few complex entities without a rigid grid; use a table when the data needs vertical comparison, sorting, per-column filters or high density.",
       "sourceHash": "b7703c44af19ff34",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "9520:55438"
+      ],
+      "scope": "template",
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "9547:46490": {
       "pageId": "1:4",
@@ -1899,11 +2306,17 @@
       "section": null,
       "status": "",
       "title": "Variabili",
+      "titleEn": "Usage",
+      "summary": "The List View template shows a list of elements with a few main data points each.",
       "sourceHash": "5d900a50ffbb946a",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
+      "targets": [
+        "9520:55438"
+      ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I3228:36333;52:895",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "9547:46497": {
       "pageId": "1:4",
@@ -1912,11 +2325,17 @@
       "section": null,
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "9520:55438"
+      ],
+      "scope": "template",
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "9547:48214": {
       "pageId": "1:4",
@@ -1925,11 +2344,17 @@
       "section": null,
       "status": "",
       "title": "Handoff regole di paginazione",
+      "titleEn": "Pagination behaviour handoff",
       "sourceHash": "d0bd78ea65266264",
-      "targets": ["1904:9589", "1909:98992", "1909:99033", "1992:127582", "2339:80916"],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "targets": [
+        "9520:55438"
+      ],
+      "scope": "template",
+      "disposition": "deferred",
+      "reason": "Its thresholds are placeholders (X) and the Pagination node is pending on the open design request 2026-10-21-pagination-order-axis.md; it becomes a Pagination rule when that request is answered.",
+      "request": "docs/design-requests/2026-10-21-pagination-order-axis.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1051:11398;52:895": {
       "pageId": "1042:14217",
@@ -1940,7 +2365,9 @@
       "title": "Utilizzo",
       "titleEn": "Usage",
       "sourceHash": "9791988342cbf594",
-      "targets": ["1042:18133"],
+      "targets": [
+        "1042:18133"
+      ],
       "scope": "component",
       "disposition": "deferred",
       "reason": "The Dialog story has no guide and this wave may not add one; the consumer rule needs a guide before it can be imported.",
@@ -1956,7 +2383,9 @@
       "title": "Larghezza del banner responsive",
       "titleEn": "Banner width, empty",
       "sourceHash": "fa17d2f37f65ec61",
-      "targets": ["1042:18133"],
+      "targets": [
+        "1042:18133"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card is copied from Banner and its body is only a question mark; it describes no rule.",
@@ -1973,7 +2402,9 @@
       "titleEn": "Icon production",
       "summary": "The same icon production note is recorded on the Text Field page.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["1042:18133"],
+      "targets": [
+        "1042:18133"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -1990,7 +2421,9 @@
       "titleEn": "Responsive width",
       "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1042:18133"],
+      "targets": [
+        "1042:18133"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -2007,7 +2440,9 @@
       "titleEn": "Customisation",
       "summary": "The text and the pictogram are both caller-owned; the component ships no copy or artwork.",
       "sourceHash": "e60f08ae2e0c5e2b",
-      "targets": ["11149:7765"],
+      "targets": [
+        "11149:7765"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/empty-state.md",
@@ -2023,7 +2458,9 @@
       "title": "Padding laterale in sviluppo",
       "titleEn": "Development padding scale",
       "sourceHash": "714dc725e85d10b0",
-      "targets": ["11149:7765"],
+      "targets": [
+        "11149:7765"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "A development padding scale (8/16/24/32) with no component contract.",
@@ -2040,7 +2477,9 @@
       "titleEn": "Icon production",
       "summary": "The same icon production note is recorded on the Text Field page.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["11149:7765"],
+      "targets": [
+        "11149:7765"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -2057,7 +2496,9 @@
       "titleEn": "Responsive width",
       "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["11149:7765"],
+      "targets": [
+        "11149:7765"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -2074,7 +2515,9 @@
       "titleEn": "Tertiary tap area",
       "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "86f9f3835c1f2989",
-      "targets": ["109:2455"],
+      "targets": [
+        "109:2455"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:895",
@@ -2091,7 +2534,9 @@
       "titleEn": "Spacing between buttons",
       "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "fad4d260599d746f",
-      "targets": ["109:2455"],
+      "targets": [
+        "109:2455"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:896",
@@ -2108,7 +2553,9 @@
       "titleEn": "Solid backgrounds",
       "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "f09fcacb7abe11b9",
-      "targets": ["109:2455"],
+      "targets": [
+        "109:2455"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:897",
@@ -2125,7 +2572,9 @@
       "titleEn": "Focused state",
       "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "02ccb01d0f109d15",
-      "targets": ["109:2455"],
+      "targets": [
+        "109:2455"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:898",
@@ -2142,7 +2591,9 @@
       "titleEn": "Distance from the content above",
       "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "cadc357d7e6743b9",
-      "targets": ["109:2455"],
+      "targets": [
+        "109:2455"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:899",
@@ -2159,7 +2610,9 @@
       "titleEn": "Disabled actions",
       "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "a7d4890af0388a92",
-      "targets": ["109:2455"],
+      "targets": [
+        "109:2455"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:900",
@@ -2176,7 +2629,9 @@
       "titleEn": "Responsive width",
       "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["109:2455"],
+      "targets": [
+        "109:2455"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -2192,7 +2647,9 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1134:6812"],
+      "targets": [
+        "1134:6812"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -2208,7 +2665,9 @@
       "title": "Larghezza del banner responsive",
       "titleEn": "Banner width, empty",
       "sourceHash": "fa17d2f37f65ec61",
-      "targets": ["1134:6812"],
+      "targets": [
+        "1134:6812"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card is copied from Banner and its body is only a question mark.",
@@ -2225,7 +2684,9 @@
       "titleEn": "Icon production",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["1134:6812"],
+      "targets": [
+        "1134:6812"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -2242,7 +2703,9 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1134:6812"],
+      "targets": [
+        "1134:6812"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -2259,7 +2722,9 @@
       "titleEn": "Responsive width",
       "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1314:10512"],
+      "targets": [
+        "1314:10512"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -2275,7 +2740,9 @@
       "title": "Padding laterale in sviluppo",
       "titleEn": "Development padding scale",
       "sourceHash": "714dc725e85d10b0",
-      "targets": ["1314:10512"],
+      "targets": [
+        "1314:10512"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "A development padding scale (8/16/24/32) with no component contract.",
@@ -2292,7 +2759,9 @@
       "titleEn": "Icon production",
       "summary": "The same icon production note is recorded on the Text Field page.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["1314:10512"],
+      "targets": [
+        "1314:10512"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -2309,7 +2778,9 @@
       "titleEn": "Responsive width",
       "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1314:10512"],
+      "targets": [
+        "1314:10512"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -2325,7 +2796,9 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1137:8910"],
+      "targets": [
+        "1137:8910"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -2341,7 +2814,9 @@
       "title": "Larghezza dell’alert responsive",
       "titleEn": "Alert width, empty",
       "sourceHash": "63f7b1af5550cfd7",
-      "targets": ["1137:8910"],
+      "targets": [
+        "1137:8910"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card is copied from Alert and its body is only a question mark.",
@@ -2358,7 +2833,9 @@
       "titleEn": "Icon production",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["1137:8910"],
+      "targets": [
+        "1137:8910"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -2375,7 +2852,9 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1137:8910"],
+      "targets": [
+        "1137:8910"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -2392,7 +2871,9 @@
       "titleEn": "Behaviour across breakpoints",
       "summary": "Desktop is a fixed-width right panel; mobile is a full-width bottom sheet that wraps short content, scrolls tall content and keeps 24px of empty space at its top.",
       "sourceHash": "02362c33671a457a",
-      "targets": ["1278:6527"],
+      "targets": [
+        "1278:6527"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/drawer.md",
@@ -2409,7 +2890,9 @@
       "titleEn": "SM breakpoint (tablet portrait)",
       "summary": "At the SM breakpoint the panel keeps the desktop placement and width while the title stays on the mobile type scale.",
       "sourceHash": "85e20d20ef7c9d10",
-      "targets": ["1278:6527"],
+      "targets": [
+        "1278:6527"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/drawer.md",
@@ -2426,7 +2909,9 @@
       "titleEn": "Usage",
       "summary": "A drawer holds additional details about an object or selects and inserts elements that affect the main page.",
       "sourceHash": "962ba6a1b373857b",
-      "targets": ["1278:6527"],
+      "targets": [
+        "1278:6527"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/drawer.md",
@@ -2443,7 +2928,9 @@
       "titleEn": "Scroll behaviour",
       "summary": "The action row stays anchored to the bottom of the panel; only the content scrolls.",
       "sourceHash": "cd24dba3b9f8739f",
-      "targets": ["1278:6527"],
+      "targets": [
+        "1278:6527"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/drawer.md",
@@ -2460,7 +2947,9 @@
       "titleEn": "Responsive width",
       "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1278:6527"],
+      "targets": [
+        "1278:6527"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -2476,7 +2965,9 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1293:8394"],
+      "targets": [
+        "1293:8394"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -2493,7 +2984,9 @@
       "titleEn": "Spacing between buttons",
       "summary": "The same rule is recorded on the Button page.",
       "sourceHash": "fad4d260599d746f",
-      "targets": ["1293:8394"],
+      "targets": [
+        "1293:8394"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:896",
@@ -2510,7 +3003,9 @@
       "titleEn": "Solid backgrounds",
       "summary": "The same rule is recorded on the Button page.",
       "sourceHash": "f09fcacb7abe11b9",
-      "targets": ["1293:8394"],
+      "targets": [
+        "1293:8394"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:897",
@@ -2527,7 +3022,9 @@
       "titleEn": "Focused state",
       "summary": "The same rule is recorded on the Button page.",
       "sourceHash": "02ccb01d0f109d15",
-      "targets": ["1293:8394"],
+      "targets": [
+        "1293:8394"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:898",
@@ -2544,7 +3041,9 @@
       "titleEn": "Distance from the content above",
       "summary": "The same rule is recorded on the Button page.",
       "sourceHash": "cadc357d7e6743b9",
-      "targets": ["1293:8394"],
+      "targets": [
+        "1293:8394"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:899",
@@ -2561,7 +3060,9 @@
       "titleEn": "Disabled actions",
       "summary": "The same rule is recorded on the Button page.",
       "sourceHash": "a7d4890af0388a92",
-      "targets": ["1293:8394"],
+      "targets": [
+        "1293:8394"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:900",
@@ -2578,7 +3079,9 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1293:8394"],
+      "targets": [
+        "1293:8394"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -2595,7 +3098,11 @@
       "titleEn": "Header objective",
       "summary": "The header states the parent site and the cross-service links (support, account).",
       "sourceHash": "89209b26510c847e",
-      "targets": ["1298:5209", "1298:5299", "8090:46352"],
+      "targets": [
+        "1298:5209",
+        "1298:5299",
+        "8090:46352"
+      ],
       "scope": "component",
       "disposition": "recorded",
       "reviewedAt": "2026-10-23",
@@ -2610,7 +3117,11 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1298:5209", "1298:5299", "8090:46352"],
+      "targets": [
+        "1298:5209",
+        "1298:5299",
+        "8090:46352"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -2626,7 +3137,11 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1298:5209", "1298:5299", "8090:46352"],
+      "targets": [
+        "1298:5209",
+        "1298:5299",
+        "8090:46352"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -2642,7 +3157,11 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1298:5209", "1298:5299", "8090:46352"],
+      "targets": [
+        "1298:5209",
+        "1298:5299",
+        "8090:46352"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -2659,7 +3178,11 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1298:5209", "1298:5299", "8090:46352"],
+      "targets": [
+        "1298:5209",
+        "1298:5299",
+        "8090:46352"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -2675,7 +3198,11 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1298:5209", "1298:5299", "8090:46352"],
+      "targets": [
+        "1298:5209",
+        "1298:5299",
+        "8090:46352"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -2691,7 +3218,11 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1298:5209", "1298:5299", "8090:46352"],
+      "targets": [
+        "1298:5209",
+        "1298:5299",
+        "8090:46352"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -2707,7 +3238,11 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1298:5209", "1298:5299", "8090:46352"],
+      "targets": [
+        "1298:5209",
+        "1298:5299",
+        "8090:46352"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -2723,7 +3258,11 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1298:5209", "1298:5299", "8090:46352"],
+      "targets": [
+        "1298:5209",
+        "1298:5299",
+        "8090:46352"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -2740,7 +3279,11 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1298:5209", "1298:5299", "8090:46352"],
+      "targets": [
+        "1298:5209",
+        "1298:5299",
+        "8090:46352"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -2757,7 +3300,11 @@
       "titleEn": "Skip link purpose",
       "summary": "A skip link lets keyboard and screen-reader users jump over repeated navigation blocks.",
       "sourceHash": "9959c51f8d94ab46",
-      "targets": ["1298:5209", "1298:5299", "8090:46352"],
+      "targets": [
+        "1298:5209",
+        "1298:5299",
+        "8090:46352"
+      ],
       "scope": "component",
       "disposition": "recorded",
       "reviewedAt": "2026-10-23",
@@ -2773,7 +3320,11 @@
       "titleEn": "Skip link focus state",
       "summary": "Visually hidden by default, it becomes visible as soon as it receives keyboard focus.",
       "sourceHash": "21f11b1b15d339cf",
-      "targets": ["1298:5209", "1298:5299", "8090:46352"],
+      "targets": [
+        "1298:5209",
+        "1298:5299",
+        "8090:46352"
+      ],
       "scope": "component",
       "disposition": "recorded",
       "reviewedAt": "2026-10-23",
@@ -2789,7 +3340,11 @@
       "titleEn": "Skip link for screen readers",
       "summary": "It stays in the document flow and is announced when the page loads.",
       "sourceHash": "358eae58565d1f58",
-      "targets": ["1298:5209", "1298:5299", "8090:46352"],
+      "targets": [
+        "1298:5209",
+        "1298:5299",
+        "8090:46352"
+      ],
       "scope": "component",
       "disposition": "recorded",
       "reviewedAt": "2026-10-23",
@@ -2805,7 +3360,11 @@
       "titleEn": "Skip link presence",
       "summary": "Every page with repeated blocks carries one.",
       "sourceHash": "2846ea9962dba1f3",
-      "targets": ["1298:5209", "1298:5299", "8090:46352"],
+      "targets": [
+        "1298:5209",
+        "1298:5299",
+        "8090:46352"
+      ],
       "scope": "component",
       "disposition": "recorded",
       "reviewedAt": "2026-10-23",
@@ -2821,7 +3380,11 @@
       "titleEn": "Skip link position",
       "summary": "It is the first element of the header, so it takes focus first.",
       "sourceHash": "42a6603e4a449ba2",
-      "targets": ["1298:5209", "1298:5299", "8090:46352"],
+      "targets": [
+        "1298:5209",
+        "1298:5299",
+        "8090:46352"
+      ],
       "scope": "component",
       "disposition": "recorded",
       "reviewedAt": "2026-10-23",
@@ -2837,7 +3400,11 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1298:5209", "1298:5299", "8090:46352"],
+      "targets": [
+        "1298:5209",
+        "1298:5299",
+        "8090:46352"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -2851,11 +3418,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Popper",
+      "titleEn": "Popper",
+      "summary": "A popper is a temporary message anchored to the field that failed validation: it closes on its own action or when the value is corrected, and it is announced with the field.",
       "sourceHash": "6805e05b1ea69585",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "recorded",
+      "reason": "The page has no published component: the card records the design intent for a popper pattern.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I13211:26150;52:896": {
       "pageId": "13211:26147",
@@ -2864,11 +3435,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Trigger",
+      "titleEn": "Trigger",
       "sourceHash": "588e6ae516c78782",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "out-of-scope",
+      "reason": "Copied from Tooltip: it describes the trigger icon of a tooltip, not the popper pattern.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I13211:26150;52:897": {
       "pageId": "13211:26147",
@@ -2877,11 +3451,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "Icons are produced with the Material Symbols plugin settings.",
       "sourceHash": "00c41242f44a2462",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reason": "A foundations rule: it binds every component rather than one set.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I13211:26150;52:903": {
       "pageId": "13211:26147",
@@ -2890,11 +3469,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reason": "The page has no single published component; the card repeats the global responsive rule.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1340:20003;52:895": {
       "pageId": "1322:6627",
@@ -2905,7 +3489,11 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1349:22020", "9520:2537", "9624:10625"],
+      "targets": [
+        "1349:22020",
+        "9520:2537",
+        "9624:10625"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -2921,7 +3509,11 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1349:22020", "9520:2537", "9624:10625"],
+      "targets": [
+        "1349:22020",
+        "9520:2537",
+        "9624:10625"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -2937,7 +3529,11 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1349:22020", "9520:2537", "9624:10625"],
+      "targets": [
+        "1349:22020",
+        "9520:2537",
+        "9624:10625"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -2954,7 +3550,11 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1349:22020", "9520:2537", "9624:10625"],
+      "targets": [
+        "1349:22020",
+        "9520:2537",
+        "9624:10625"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -2971,7 +3571,9 @@
       "titleEn": "Row list versus table",
       "summary": "Use the row list for flexible rows with long, wrapping content and low density; use the table for vertical comparison, sorting, filters and high density.",
       "sourceHash": "452adcccfa559cf6",
-      "targets": ["9520:2537"],
+      "targets": [
+        "9520:2537"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/tables.md",
@@ -2987,7 +3589,11 @@
       "title": "Larghezza del banner responsive",
       "titleEn": "Banner width, empty",
       "sourceHash": "fa17d2f37f65ec61",
-      "targets": ["1349:22020", "9520:2537", "9624:10625"],
+      "targets": [
+        "1349:22020",
+        "9520:2537",
+        "9624:10625"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card is copied from Banner and its body is only a question mark.",
@@ -3004,7 +3610,11 @@
       "titleEn": "Icon production",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["1349:22020", "9520:2537", "9624:10625"],
+      "targets": [
+        "1349:22020",
+        "9520:2537",
+        "9624:10625"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -3021,7 +3631,11 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1349:22020", "9520:2537", "9624:10625"],
+      "targets": [
+        "1349:22020",
+        "9520:2537",
+        "9624:10625"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -3243,7 +3857,10 @@
       "titleEn": "Post-login footer",
       "summary": "The post-login footer gives a logged-in user only the essentials.",
       "sourceHash": "951c8ea77180d863",
-      "targets": ["1360:20138", "1360:23904"],
+      "targets": [
+        "1360:20138",
+        "1360:23904"
+      ],
       "scope": "component",
       "disposition": "recorded",
       "reviewedAt": "2026-10-23",
@@ -3259,7 +3876,10 @@
       "titleEn": "Pre-login footer",
       "summary": "The pre-login footer carries the corporate information, products, legal links, social links, accessibility and language switch.",
       "sourceHash": "62c0a102cdbaf0d2",
-      "targets": ["1360:20138", "1360:23904"],
+      "targets": [
+        "1360:20138",
+        "1360:23904"
+      ],
       "scope": "component",
       "disposition": "recorded",
       "reviewedAt": "2026-10-23",
@@ -3274,7 +3894,10 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1360:20138", "1360:23904"],
+      "targets": [
+        "1360:20138",
+        "1360:23904"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -3290,7 +3913,10 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1360:20138", "1360:23904"],
+      "targets": [
+        "1360:20138",
+        "1360:23904"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -3307,7 +3933,10 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1360:20138", "1360:23904"],
+      "targets": [
+        "1360:20138",
+        "1360:23904"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -3323,7 +3952,10 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1360:20138", "1360:23904"],
+      "targets": [
+        "1360:20138",
+        "1360:23904"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -3339,7 +3971,10 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1360:20138", "1360:23904"],
+      "targets": [
+        "1360:20138",
+        "1360:23904"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -3355,7 +3990,10 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1360:20138", "1360:23904"],
+      "targets": [
+        "1360:20138",
+        "1360:23904"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -3371,7 +4009,10 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1360:20138", "1360:23904"],
+      "targets": [
+        "1360:20138",
+        "1360:23904"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -3388,7 +4029,10 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1360:20138", "1360:23904"],
+      "targets": [
+        "1360:20138",
+        "1360:23904"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -3405,7 +4049,9 @@
       "titleEn": "Scroll-to-bottom purpose",
       "summary": "Scroll to bottom is for content the reader must see in full before tapping the CTA that advances the flow, typically the terms of service.",
       "sourceHash": "09202480ddbe3098",
-      "targets": ["180:3931"],
+      "targets": [
+        "180:3931"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/scroll-to-bottom.md",
@@ -3422,7 +4068,9 @@
       "titleEn": "Spacing between buttons",
       "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "fad4d260599d746f",
-      "targets": ["180:3931"],
+      "targets": [
+        "180:3931"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:896",
@@ -3439,7 +4087,9 @@
       "titleEn": "Solid backgrounds",
       "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "f09fcacb7abe11b9",
-      "targets": ["180:3931"],
+      "targets": [
+        "180:3931"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:897",
@@ -3456,7 +4106,9 @@
       "titleEn": "Focused state",
       "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "02ccb01d0f109d15",
-      "targets": ["180:3931"],
+      "targets": [
+        "180:3931"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:898",
@@ -3473,7 +4125,9 @@
       "titleEn": "Distance from the content above",
       "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "cadc357d7e6743b9",
-      "targets": ["180:3931"],
+      "targets": [
+        "180:3931"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:899",
@@ -3490,7 +4144,9 @@
       "titleEn": "Disabled actions",
       "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "a7d4890af0388a92",
-      "targets": ["180:3931"],
+      "targets": [
+        "180:3931"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:900",
@@ -3507,7 +4163,9 @@
       "titleEn": "Responsive width",
       "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["180:3931"],
+      "targets": [
+        "180:3931"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -3523,7 +4181,9 @@
       "title": "Utilizzo",
       "titleEn": "Empty card",
       "sourceHash": "3a047825490a5589",
-      "targets": ["192:1208"],
+      "targets": [
+        "192:1208"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is a template label, not a rule.",
@@ -3539,7 +4199,9 @@
       "title": "Padding laterale in sviluppo",
       "titleEn": "Development padding scale",
       "sourceHash": "714dc725e85d10b0",
-      "targets": ["192:1208"],
+      "targets": [
+        "192:1208"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "A development padding scale (8/16/24/32) with no component contract.",
@@ -3555,7 +4217,9 @@
       "title": "Creazione di una nuova icona",
       "titleEn": "Icon production",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["192:1208"],
+      "targets": [
+        "192:1208"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "Icon production instructions, not a component rule.",
@@ -3572,7 +4236,9 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["192:1208"],
+      "targets": [
+        "192:1208"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -3589,7 +4255,10 @@
       "titleEn": "Group dividers",
       "summary": "A choice group separates its items with a divider from the second to the second-to-last; the current group implementation does not draw them.",
       "sourceHash": "765c097f9ae47399",
-      "targets": ["194:3763", "194:3700"],
+      "targets": [
+        "194:3763",
+        "194:3700"
+      ],
       "scope": "component",
       "disposition": "recorded",
       "reviewedAt": "2026-10-23",
@@ -3605,7 +4274,14 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["194:3654", "194:3661", "194:3677", "194:3700", "194:3763", "194:3841"],
+      "targets": [
+        "194:3654",
+        "194:3661",
+        "194:3677",
+        "194:3700",
+        "194:3763",
+        "194:3841"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -3622,7 +4298,14 @@
       "titleEn": "Solid backgrounds",
       "summary": "The same rule is recorded on the Button page.",
       "sourceHash": "f09fcacb7abe11b9",
-      "targets": ["194:3654", "194:3661", "194:3677", "194:3700", "194:3763", "194:3841"],
+      "targets": [
+        "194:3654",
+        "194:3661",
+        "194:3677",
+        "194:3700",
+        "194:3763",
+        "194:3841"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:897",
@@ -3639,7 +4322,14 @@
       "titleEn": "Focused state",
       "summary": "The same rule is recorded on the Button page.",
       "sourceHash": "02ccb01d0f109d15",
-      "targets": ["194:3654", "194:3661", "194:3677", "194:3700", "194:3763", "194:3841"],
+      "targets": [
+        "194:3654",
+        "194:3661",
+        "194:3677",
+        "194:3700",
+        "194:3763",
+        "194:3841"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:898",
@@ -3656,7 +4346,14 @@
       "titleEn": "Distance from the content above",
       "summary": "The same rule is recorded on the Button page.",
       "sourceHash": "cadc357d7e6743b9",
-      "targets": ["194:3654", "194:3661", "194:3677", "194:3700", "194:3763", "194:3841"],
+      "targets": [
+        "194:3654",
+        "194:3661",
+        "194:3677",
+        "194:3700",
+        "194:3763",
+        "194:3841"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:899",
@@ -3673,7 +4370,14 @@
       "titleEn": "Disabled actions",
       "summary": "The same rule is recorded on the Button page.",
       "sourceHash": "a7d4890af0388a92",
-      "targets": ["194:3654", "194:3661", "194:3677", "194:3700", "194:3763", "194:3841"],
+      "targets": [
+        "194:3654",
+        "194:3661",
+        "194:3677",
+        "194:3700",
+        "194:3763",
+        "194:3841"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:900",
@@ -3690,7 +4394,14 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["194:3654", "194:3661", "194:3677", "194:3700", "194:3763", "194:3841"],
+      "targets": [
+        "194:3654",
+        "194:3661",
+        "194:3677",
+        "194:3700",
+        "194:3763",
+        "194:3841"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -3707,7 +4418,9 @@
       "titleEn": "Fixed width by character count",
       "summary": "The field width follows the number of characters in the code, so the boxes never misalign.",
       "sourceHash": "446192d59267cd8e",
-      "targets": ["198:828"],
+      "targets": [
+        "198:828"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/authentication-codes.md",
@@ -3723,7 +4436,9 @@
       "title": "Padding laterale in sviluppo",
       "titleEn": "Development padding scale",
       "sourceHash": "714dc725e85d10b0",
-      "targets": ["198:828"],
+      "targets": [
+        "198:828"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "A development padding scale (8/16/24/32) with no component contract.",
@@ -3740,7 +4455,9 @@
       "titleEn": "Icon production",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["198:828"],
+      "targets": [
+        "198:828"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -3757,7 +4474,9 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["198:828"],
+      "targets": [
+        "198:828"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -3771,11 +4490,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I409:6286;52:896": {
       "pageId": "157:614",
@@ -3784,11 +4506,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Variabili",
+      "titleEn": "Variables",
       "sourceHash": "9f2d91ea6ce5a54a",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "out-of-scope",
+      "reason": "A Figma implementation label: the radius is a Figma variable, not a consumer rule.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I409:6286;52:903": {
       "pageId": "157:614",
@@ -3797,11 +4522,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reason": "The page has no single published component; the card repeats the global responsive rule.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I161:859;52:895": {
       "pageId": "157:744",
@@ -3813,7 +4543,10 @@
       "titleEn": "Breadcrumb behaviour",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "c8f9145c666ec392",
-      "targets": ["160:1344", "160:1403"],
+      "targets": [
+        "160:1344",
+        "160:1403"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I124:4070;52:895",
@@ -3830,7 +4563,10 @@
       "titleEn": "Breadcrumb breakpoint",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "45674408a3e7abba",
-      "targets": ["160:1344", "160:1403"],
+      "targets": [
+        "160:1344",
+        "160:1403"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I124:4070;52:896",
@@ -3847,7 +4583,10 @@
       "titleEn": "Breadcrumb in a wizard",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "46982c9d2e732f3c",
-      "targets": ["160:1344", "160:1403"],
+      "targets": [
+        "160:1344",
+        "160:1403"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I124:4070;52:897",
@@ -3864,7 +4603,10 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["160:1344", "160:1403"],
+      "targets": [
+        "160:1344",
+        "160:1403"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -3880,7 +4622,10 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["197:1985", "422:16012"],
+      "targets": [
+        "197:1985",
+        "422:16012"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -3896,7 +4641,10 @@
       "title": "Padding laterale in sviluppo",
       "titleEn": "Development padding scale",
       "sourceHash": "714dc725e85d10b0",
-      "targets": ["197:1985", "422:16012"],
+      "targets": [
+        "197:1985",
+        "422:16012"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "A development padding scale (8/16/24/32) with no component contract.",
@@ -3913,7 +4661,10 @@
       "titleEn": "Icon production",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["197:1985", "422:16012"],
+      "targets": [
+        "197:1985",
+        "422:16012"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -3930,7 +4681,10 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["197:1985", "422:16012"],
+      "targets": [
+        "197:1985",
+        "422:16012"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -3946,7 +4700,10 @@
       "title": "Copy",
       "titleEn": "Badge rule on the Chip page",
       "sourceHash": "f9b7a26658458367",
-      "targets": ["197:1985", "422:16012"],
+      "targets": [
+        "197:1985",
+        "422:16012"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "A badge rule pasted on the wrong page.",
@@ -3962,7 +4719,10 @@
       "title": "Padding laterale in sviluppo",
       "titleEn": "Development padding scale",
       "sourceHash": "714dc725e85d10b0",
-      "targets": ["197:1985", "422:16012"],
+      "targets": [
+        "197:1985",
+        "422:16012"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "A development padding scale (8/16/24/32) with no component contract.",
@@ -3979,7 +4739,10 @@
       "titleEn": "Icon production",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["197:1985", "422:16012"],
+      "targets": [
+        "197:1985",
+        "422:16012"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -3996,7 +4759,10 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["197:1985", "422:16012"],
+      "targets": [
+        "197:1985",
+        "422:16012"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -4013,7 +4779,9 @@
       "titleEn": "Spacing",
       "summary": "A banner is composed into the page with 24px of space around it.",
       "sourceHash": "9efb7ce9e4c66939",
-      "targets": ["261:6501"],
+      "targets": [
+        "261:6501"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/banners.md",
@@ -4029,7 +4797,9 @@
       "title": "Larghezza del banner responsive",
       "titleEn": "Responsive banner width",
       "sourceHash": "fa17d2f37f65ec61",
-      "targets": ["261:6501"],
+      "targets": [
+        "261:6501"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is only a question mark; no rule was written.",
@@ -4046,7 +4816,9 @@
       "titleEn": "Icon production",
       "summary": "The same icon production note is recorded on the Text Field page.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["261:6501"],
+      "targets": [
+        "261:6501"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -4063,7 +4835,9 @@
       "titleEn": "Responsive width",
       "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["261:6501"],
+      "targets": [
+        "261:6501"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -4080,7 +4854,12 @@
       "titleEn": "Spacing between boxed modules",
       "summary": "Keep 8px between one boxed module and the next.",
       "sourceHash": "13c57831e9ba074c",
-      "targets": ["382:7813", "403:4116", "10192:41460", "11133:16142"],
+      "targets": [
+        "382:7813",
+        "403:4116",
+        "10192:41460",
+        "11133:16142"
+      ],
       "scope": "component",
       "disposition": "recorded",
       "reviewedAt": "2026-10-23",
@@ -4095,7 +4874,12 @@
       "title": "Larghezza del banner responsive",
       "titleEn": "Banner width, empty",
       "sourceHash": "fa17d2f37f65ec61",
-      "targets": ["382:7813", "403:4116", "10192:41460", "11133:16142"],
+      "targets": [
+        "382:7813",
+        "403:4116",
+        "10192:41460",
+        "11133:16142"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card is copied from Banner and its body is only a question mark.",
@@ -4112,7 +4896,12 @@
       "titleEn": "Icon production",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["382:7813", "403:4116", "10192:41460", "11133:16142"],
+      "targets": [
+        "382:7813",
+        "403:4116",
+        "10192:41460",
+        "11133:16142"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -4129,7 +4918,12 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["382:7813", "403:4116", "10192:41460", "11133:16142"],
+      "targets": [
+        "382:7813",
+        "403:4116",
+        "10192:41460",
+        "11133:16142"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -4146,7 +4940,9 @@
       "titleEn": "Tooltip versus Popover",
       "summary": "Use a tooltip for one short unstructured string only; longer, regulatory or mobile-critical copy belongs to a Popover opened on click, and new tooltips are discouraged.",
       "sourceHash": "885bdeee59b3f1ad",
-      "targets": ["230:1317"],
+      "targets": [
+        "230:1317"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/tooltips.md",
@@ -4163,7 +4959,9 @@
       "titleEn": "Trigger",
       "summary": "The element a tooltip explains carries an information icon that opens it.",
       "sourceHash": "588e6ae516c78782",
-      "targets": ["230:1317"],
+      "targets": [
+        "230:1317"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/tooltips.md",
@@ -4180,7 +4978,9 @@
       "titleEn": "Icon production",
       "summary": "The same icon production note is recorded on the Text Field page.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["230:1317"],
+      "targets": [
+        "230:1317"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -4197,7 +4997,9 @@
       "titleEn": "Responsive width",
       "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["230:1317"],
+      "targets": [
+        "230:1317"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -4213,7 +5015,9 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1317:10404"],
+      "targets": [
+        "1317:10404"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -4229,7 +5033,9 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1317:10404"],
+      "targets": [
+        "1317:10404"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -4245,7 +5051,9 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1317:10404"],
+      "targets": [
+        "1317:10404"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -4261,7 +5069,9 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1317:10404"],
+      "targets": [
+        "1317:10404"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -4278,7 +5088,9 @@
       "titleEn": "Responsive width",
       "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1317:10404"],
+      "targets": [
+        "1317:10404"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -4295,7 +5107,9 @@
       "titleEn": "Spacing",
       "summary": "An alert keeps 24px of contextual space above it and 40px below it.",
       "sourceHash": "eb34d4d5d66f76b5",
-      "targets": ["212:1899"],
+      "targets": [
+        "212:1899"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/alerts.md",
@@ -4311,7 +5125,9 @@
       "title": "Larghezza dell’alert responsive",
       "titleEn": "Responsive alert width",
       "sourceHash": "63f7b1af5550cfd7",
-      "targets": ["212:1899"],
+      "targets": [
+        "212:1899"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is only a question mark; no rule was written.",
@@ -4328,7 +5144,9 @@
       "titleEn": "Icon production",
       "summary": "The same icon production note is recorded on the Text Field page.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["212:1899"],
+      "targets": [
+        "212:1899"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -4345,7 +5163,9 @@
       "titleEn": "Responsive width",
       "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["212:1899"],
+      "targets": [
+        "212:1899"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -4362,7 +5182,9 @@
       "titleEn": "Tertiary tap area",
       "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "86f9f3835c1f2989",
-      "targets": ["236:1311"],
+      "targets": [
+        "236:1311"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:895",
@@ -4379,7 +5201,9 @@
       "titleEn": "Spacing between buttons",
       "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "fad4d260599d746f",
-      "targets": ["236:1311"],
+      "targets": [
+        "236:1311"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:896",
@@ -4396,7 +5220,9 @@
       "titleEn": "Solid backgrounds",
       "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "f09fcacb7abe11b9",
-      "targets": ["236:1311"],
+      "targets": [
+        "236:1311"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:897",
@@ -4413,7 +5239,9 @@
       "titleEn": "Focused state",
       "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "02ccb01d0f109d15",
-      "targets": ["236:1311"],
+      "targets": [
+        "236:1311"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:898",
@@ -4430,7 +5258,9 @@
       "titleEn": "Distance from the content above",
       "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "cadc357d7e6743b9",
-      "targets": ["236:1311"],
+      "targets": [
+        "236:1311"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:899",
@@ -4447,7 +5277,9 @@
       "titleEn": "Disabled actions",
       "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "a7d4890af0388a92",
-      "targets": ["236:1311"],
+      "targets": [
+        "236:1311"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:900",
@@ -4464,7 +5296,9 @@
       "titleEn": "Responsive width",
       "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["236:1311"],
+      "targets": [
+        "236:1311"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -4478,11 +5312,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Spacing",
+      "titleEn": "Spacing",
       "sourceHash": "68a13e29a2d87da6",
-      "targets": ["237:1307"],
+      "targets": [
+        "237:1307"
+      ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "Composition spacing copied from a content component: the Spacing primitive only exposes scale steps.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I237:2015;52:896": {
       "pageId": "237:2012",
@@ -4491,11 +5330,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Trigger",
+      "titleEn": "Trigger",
       "sourceHash": "588e6ae516c78782",
-      "targets": ["237:1307"],
+      "targets": [
+        "237:1307"
+      ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "Copied from Tooltip: it describes the trigger icon of a tooltip, not the spacing primitive.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I237:2015;52:897": {
       "pageId": "237:2012",
@@ -4504,11 +5348,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "Icons are produced with the Material Symbols plugin settings.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["237:1307"],
+      "targets": [
+        "237:1307"
+      ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I237:2015;52:903": {
       "pageId": "237:2012",
@@ -4517,11 +5367,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["237:1307"],
+      "targets": [
+        "237:1307"
+      ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I240:2170;52:895": {
       "pageId": "239:1483",
@@ -4530,11 +5386,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Shadow 16",
+      "titleEn": "Shadow 16",
       "sourceHash": "ed8419b944c35ddb",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "out-of-scope",
+      "reason": "The card body is a template status label, not a rule.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I240:2170;52:896": {
       "pageId": "239:1483",
@@ -4543,11 +5402,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Shadow 32",
+      "titleEn": "Shadow 32",
+      "summary": "Only modals and drawers use the 32px shadow.",
       "sourceHash": "b07188bf46c30340",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/foundations.md",
+      "reason": "A foundations rule: it binds every component rather than one set.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I240:2170;52:903": {
       "pageId": "239:1483",
@@ -4556,11 +5420,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reason": "The page has no single published component; the card repeats the global responsive rule.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I301:1123;52:895": {
       "pageId": "295:1358",
@@ -4572,7 +5441,10 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["295:1360", "349:4683"],
+      "targets": [
+        "295:1360",
+        "349:4683"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -4588,7 +5460,10 @@
       "title": "Padding laterale in sviluppo",
       "titleEn": "Development padding scale",
       "sourceHash": "714dc725e85d10b0",
-      "targets": ["295:1360", "349:4683"],
+      "targets": [
+        "295:1360",
+        "349:4683"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "A development padding scale (8/16/24/32) with no component contract.",
@@ -4604,7 +5479,10 @@
       "title": "Creazione di una nuova icona",
       "titleEn": "Icon production",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["295:1360", "349:4683"],
+      "targets": [
+        "295:1360",
+        "349:4683"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "Icon production instructions, not a component rule.",
@@ -4621,7 +5499,10 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["295:1360", "349:4683"],
+      "targets": [
+        "295:1360",
+        "349:4683"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -4638,7 +5519,9 @@
       "titleEn": "Position",
       "summary": "A snackbar sits at the bottom right of the viewport, 24px from the bottom and 24px from the right edge.",
       "sourceHash": "f1c18594c5e2144c",
-      "targets": ["357:4970"],
+      "targets": [
+        "357:4970"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/snackbars.md",
@@ -4655,7 +5538,10 @@
       "titleEn": "Snackbar width",
       "summary": "A snackbar is between 280px, the mobile XS minimum including 24px side padding, and 560px on desktop.",
       "sourceHash": "863eba923d4e1815",
-      "targets": ["357:4970", "392:4667"],
+      "targets": [
+        "357:4970",
+        "392:4667"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/snackbars.md",
@@ -4672,7 +5558,9 @@
       "titleEn": "Timing",
       "summary": "A snackbar auto-dismisses only when the same message is reachable elsewhere on the page.",
       "sourceHash": "304f2e8c444f274b",
-      "targets": ["357:4970"],
+      "targets": [
+        "357:4970"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/snackbars.md",
@@ -4689,7 +5577,10 @@
       "titleEn": "Error with an error code",
       "summary": "An error snackbar never auto-dismisses.",
       "sourceHash": "7613f03089c37db4",
-      "targets": ["357:4970", "392:4667"],
+      "targets": [
+        "357:4970",
+        "392:4667"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/snackbars.md",
@@ -4706,7 +5597,10 @@
       "titleEn": "Responsive width",
       "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["357:4970", "392:4667"],
+      "targets": [
+        "357:4970",
+        "392:4667"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -4722,7 +5616,9 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["360:797"],
+      "targets": [
+        "360:797"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -4739,7 +5635,9 @@
       "titleEn": "Breadcrumb breakpoint",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "45674408a3e7abba",
-      "targets": ["360:797"],
+      "targets": [
+        "360:797"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I124:4070;52:896",
@@ -4756,7 +5654,9 @@
       "titleEn": "Breadcrumb in a wizard",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "46982c9d2e732f3c",
-      "targets": ["360:797"],
+      "targets": [
+        "360:797"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I124:4070;52:897",
@@ -4773,7 +5673,9 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["360:797"],
+      "targets": [
+        "360:797"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -4790,7 +5692,10 @@
       "titleEn": "Spacing between fields",
       "summary": "The same rule is recorded on the first Text Field container.",
       "sourceHash": "20d59b3a2e44ed41",
-      "targets": ["529:6111", "10585:80643"],
+      "targets": [
+        "529:6111",
+        "10585:80643"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:895",
@@ -4807,7 +5712,10 @@
       "titleEn": "Required fields in words",
       "summary": "The same rule is recorded on the first Text Field container.",
       "sourceHash": "e472f87b2e3bfe39",
-      "targets": ["529:6111", "10585:80643"],
+      "targets": [
+        "529:6111",
+        "10585:80643"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:896",
@@ -4824,7 +5732,10 @@
       "titleEn": "Icon production",
       "summary": "The same rule is recorded on the first Text Field container.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["529:6111", "10585:80643"],
+      "targets": [
+        "529:6111",
+        "10585:80643"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -4841,7 +5752,10 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the first Text Field container.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["529:6111", "10585:80643"],
+      "targets": [
+        "529:6111",
+        "10585:80643"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:903",
@@ -4858,7 +5772,10 @@
       "titleEn": "Spacing between fields",
       "summary": "Keep 24px between two or more fields.",
       "sourceHash": "20d59b3a2e44ed41",
-      "targets": ["529:6111", "10585:80643"],
+      "targets": [
+        "529:6111",
+        "10585:80643"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/fields.md",
@@ -4875,7 +5792,10 @@
       "titleEn": "Required fields in words",
       "summary": "An asterisk alone does not state that a field is required: write it in words next to the label, for example \"(required)\".",
       "sourceHash": "e472f87b2e3bfe39",
-      "targets": ["529:6111", "10585:80643"],
+      "targets": [
+        "529:6111",
+        "10585:80643"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/fields.md",
@@ -4891,7 +5811,10 @@
       "title": "Creazione di una nuova icona",
       "titleEn": "Icon production",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["529:6111", "10585:80643"],
+      "targets": [
+        "529:6111",
+        "10585:80643"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "Icon production instructions, not a component rule.",
@@ -4908,7 +5831,10 @@
       "titleEn": "Responsive width",
       "summary": "The component takes the width of its container.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["529:6111", "10585:80643"],
+      "targets": [
+        "529:6111",
+        "10585:80643"
+      ],
       "scope": "component",
       "disposition": "recorded",
       "reviewedAt": "2026-10-23",
@@ -4923,7 +5849,9 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["1566:29849"],
+      "targets": [
+        "1566:29849"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -4939,7 +5867,9 @@
       "title": "Larghezza dell’alert responsive",
       "titleEn": "Alert width, empty",
       "sourceHash": "63f7b1af5550cfd7",
-      "targets": ["1566:29849"],
+      "targets": [
+        "1566:29849"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card is copied from Alert and its body is only a question mark.",
@@ -4956,7 +5886,9 @@
       "titleEn": "Icon production",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["1566:29849"],
+      "targets": [
+        "1566:29849"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -4973,7 +5905,9 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1566:29849"],
+      "targets": [
+        "1566:29849"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -4990,7 +5924,9 @@
       "titleEn": "Logos placement",
       "summary": "Place the logos 24px from the bottom and right edge of the viewport.",
       "sourceHash": "f1c18594c5e2144c",
-      "targets": ["382:7640"],
+      "targets": [
+        "382:7640"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/loghi-psp.md",
@@ -5006,7 +5942,9 @@
       "title": "Larghezza della snackbar",
       "titleEn": "Snackbar width, copied",
       "sourceHash": "863eba923d4e1815",
-      "targets": ["382:7640"],
+      "targets": [
+        "382:7640"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The rule is copied from the Snackbar page.",
@@ -5023,7 +5961,9 @@
       "titleEn": "Icon production",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["382:7640"],
+      "targets": [
+        "382:7640"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -5040,7 +5980,9 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["382:7640"],
+      "targets": [
+        "382:7640"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -5056,7 +5998,11 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["757:6288", "808:6302", "12133:82475"],
+      "targets": [
+        "757:6288",
+        "808:6302",
+        "12133:82475"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -5072,7 +6018,11 @@
       "title": "Larghezza del banner responsive",
       "titleEn": "Banner width, empty",
       "sourceHash": "fa17d2f37f65ec61",
-      "targets": ["757:6288", "808:6302", "12133:82475"],
+      "targets": [
+        "757:6288",
+        "808:6302",
+        "12133:82475"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card is copied from Banner and its body is only a question mark.",
@@ -5089,7 +6039,11 @@
       "titleEn": "Icon production",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["757:6288", "808:6302", "12133:82475"],
+      "targets": [
+        "757:6288",
+        "808:6302",
+        "12133:82475"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -5106,7 +6060,11 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["757:6288", "808:6302", "12133:82475"],
+      "targets": [
+        "757:6288",
+        "808:6302",
+        "12133:82475"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -5123,7 +6081,9 @@
       "titleEn": "Progress KPI card usage",
       "summary": "Up to four cards per row; on mobile use the mobile variant as a peek carousel, never stack; switch the state through the nested instance; the info icon opens a tooltip, not a modal.",
       "sourceHash": "8ff338b8ccae43af",
-      "targets": ["12133:82475"],
+      "targets": [
+        "12133:82475"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/progress-kpi.md",
@@ -5139,7 +6099,11 @@
       "title": "Larghezza del banner responsive",
       "titleEn": "Banner width, empty",
       "sourceHash": "fa17d2f37f65ec61",
-      "targets": ["757:6288", "808:6302", "12133:82475"],
+      "targets": [
+        "757:6288",
+        "808:6302",
+        "12133:82475"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card is copied from Banner and its body is only a question mark.",
@@ -5156,7 +6120,11 @@
       "titleEn": "Icon production",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["757:6288", "808:6302", "12133:82475"],
+      "targets": [
+        "757:6288",
+        "808:6302",
+        "12133:82475"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -5173,7 +6141,11 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["757:6288", "808:6302", "12133:82475"],
+      "targets": [
+        "757:6288",
+        "808:6302",
+        "12133:82475"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -5187,11 +6159,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reason": "The page has no published component; the card is a copy of the global responsive rule.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I602:9291;52:895": {
       "pageId": "602:7181",
@@ -5203,7 +6180,9 @@
       "titleEn": "Spacing between fields",
       "summary": "Keep 24px between two or more fields, selects included.",
       "sourceHash": "20d59b3a2e44ed41",
-      "targets": ["602:9417"],
+      "targets": [
+        "602:9417"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/select-choices.md",
@@ -5219,7 +6198,9 @@
       "title": "Larghezza del banner responsive",
       "titleEn": "Banner width, empty",
       "sourceHash": "fa17d2f37f65ec61",
-      "targets": ["602:9417"],
+      "targets": [
+        "602:9417"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card is copied from Banner and its body is only a question mark; it describes no rule.",
@@ -5235,7 +6216,9 @@
       "title": "Creazione di una nuova icona",
       "titleEn": "Icon production",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["602:9417"],
+      "targets": [
+        "602:9417"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "Icon production instructions, not a component rule.",
@@ -5252,7 +6235,9 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the Text Field page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["602:9417"],
+      "targets": [
+        "602:9417"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:903",
@@ -5269,7 +6254,9 @@
       "titleEn": "Module spacing",
       "summary": "Keep 8px between modules and 24px at the sides.",
       "sourceHash": "e088c90a04765105",
-      "targets": ["731:20386"],
+      "targets": [
+        "731:20386"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/id-module.md",
@@ -5286,7 +6273,9 @@
       "titleEn": "Uniform width at breakpoints",
       "summary": "The modal keeps a uniform 410px width from 600px to 1440px.",
       "sourceHash": "10ed640515255089",
-      "targets": ["731:20386"],
+      "targets": [
+        "731:20386"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/id-module.md",
@@ -5303,7 +6292,9 @@
       "titleEn": "Icon production",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["731:20386"],
+      "targets": [
+        "731:20386"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -5320,7 +6311,9 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["731:20386"],
+      "targets": [
+        "731:20386"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -5334,11 +6327,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Un unico colore: Grey 100",
+      "titleEn": "Single colour: Grey 100",
       "sourceHash": "bf069b4c06a4253e",
-      "targets": ["61:2786"],
+      "targets": [
+        "61:2786"
+      ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The body was copied from Border Radius; the grey-100 rule it titles is already stated in the guide.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I61:2990;52:896": {
       "pageId": "61:2777",
@@ -5347,11 +6345,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Un unico spessore: 1 px",
+      "titleEn": "Single thickness: 1px",
       "sourceHash": "83395a5cf2ac717d",
-      "targets": ["61:2786"],
+      "targets": [
+        "61:2786"
+      ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The body was copied from the Variables template; the one-pixel rule it titles is already stated in the guide.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I61:2990;52:897": {
       "pageId": "61:2777",
@@ -5360,11 +6363,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "List item → ultimo elemento",
+      "titleEn": "Last list item",
+      "summary": "A list omits the divider after its last item.",
       "sourceHash": "ce5a105df677a486",
-      "targets": ["61:2786"],
+      "targets": [
+        "61:2786"
+      ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/separator.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I61:2990;52:903": {
       "pageId": "61:2777",
@@ -5373,11 +6382,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["61:2786"],
+      "targets": [
+        "61:2786"
+      ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I617:19772;52:895": {
       "pageId": "617:19227",
@@ -5388,7 +6403,10 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["616:3864", "3262:40787"],
+      "targets": [
+        "616:3864",
+        "3262:40787"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -5404,7 +6422,10 @@
       "title": "Larghezza del banner responsive",
       "titleEn": "Banner width, empty",
       "sourceHash": "fa17d2f37f65ec61",
-      "targets": ["616:3864", "3262:40787"],
+      "targets": [
+        "616:3864",
+        "3262:40787"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card is copied from Banner and its body is only a question mark; it describes no rule.",
@@ -5421,7 +6442,10 @@
       "titleEn": "Icon production",
       "summary": "The same rule is recorded on the Text Field page.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["616:3864", "3262:40787"],
+      "targets": [
+        "616:3864",
+        "3262:40787"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -5438,7 +6462,10 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the Text Field page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["616:3864", "3262:40787"],
+      "targets": [
+        "616:3864",
+        "3262:40787"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:903",
@@ -5452,11 +6479,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Border radius, Padding, Stroke, Elevation",
+      "titleEn": "Paper combinations",
+      "summary": "Paper combines radius, padding, stroke and elevation from fixed scales; the card's stroke values disagree with the drawing.",
       "sourceHash": "25370f38df26c956",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "conflict",
+      "request": "docs/design-requests/2026-10-23-paper-stroke-values.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I7393:45981;52:896": {
       "pageId": "7295:40450",
@@ -5465,11 +6496,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Variabili",
+      "titleEn": "Variables",
       "sourceHash": "9f2d91ea6ce5a54a",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "out-of-scope",
+      "reason": "A Figma implementation label: the radius is a Figma variable, not a consumer rule.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I7393:45981;52:903": {
       "pageId": "7295:40450",
@@ -5478,11 +6512,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": [],
-      "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "scope": "foundation",
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reason": "The page has no single published component; the card repeats the global responsive rule.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I733:32256;52:895": {
       "pageId": "733:21958",
@@ -5493,7 +6532,11 @@
       "title": "Utilizzo",
       "titleEn": "Usage",
       "sourceHash": "3399705f69c33e68",
-      "targets": ["733:22841", "749:5695", "749:5867"],
+      "targets": [
+        "733:22841",
+        "749:5695",
+        "749:5867"
+      ],
       "scope": "component",
       "disposition": "deferred",
       "reason": "The OK, KO and Waiting state stories have no guide and this wave may not add one; the consumer rule needs a guide before it can be imported.",
@@ -5510,7 +6553,11 @@
       "titleEn": "Snackbar width",
       "summary": "The same snackbar width rule is recorded on the Snackbar page.",
       "sourceHash": "863eba923d4e1815",
-      "targets": ["733:22841", "749:5695", "749:5867"],
+      "targets": [
+        "733:22841",
+        "749:5695",
+        "749:5867"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I357:4968;52:896",
@@ -5526,7 +6573,11 @@
       "title": "Temporizzazione",
       "titleEn": "Snackbar timing",
       "sourceHash": "a45bbe04955c6436",
-      "targets": ["733:22841", "749:5695", "749:5867"],
+      "targets": [
+        "733:22841",
+        "749:5695",
+        "749:5867"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "Describes snackbar timing, not the full-page OK, KO and Waiting states; copied from the Snackbar page.",
@@ -5543,7 +6594,11 @@
       "titleEn": "Error with an error code",
       "summary": "The same snackbar rule is recorded on the Snackbar page.",
       "sourceHash": "7613f03089c37db4",
-      "targets": ["733:22841", "749:5695", "749:5867"],
+      "targets": [
+        "733:22841",
+        "749:5695",
+        "749:5867"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I357:4968;52:898",
@@ -5560,7 +6615,11 @@
       "titleEn": "Responsive width",
       "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["733:22841", "749:5695", "749:5867"],
+      "targets": [
+        "733:22841",
+        "749:5695",
+        "749:5867"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -5576,7 +6635,9 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["759:6399"],
+      "targets": [
+        "759:6399"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -5592,7 +6653,9 @@
       "title": "Larghezza dell’alert responsive",
       "titleEn": "Alert width, empty",
       "sourceHash": "63f7b1af5550cfd7",
-      "targets": ["759:6399"],
+      "targets": [
+        "759:6399"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card is copied from Alert and its body is only a question mark.",
@@ -5609,7 +6672,9 @@
       "titleEn": "Icon production",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["759:6399"],
+      "targets": [
+        "759:6399"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -5626,7 +6691,9 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["759:6399"],
+      "targets": [
+        "759:6399"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -5640,11 +6707,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": [],
+      "targets": [
+        "760:7432"
+      ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I813:5423;52:896": {
       "pageId": "759:7440",
@@ -5653,11 +6725,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Larghezza del banner responsive",
+      "titleEn": "Banner width, empty",
       "sourceHash": "fa17d2f37f65ec61",
-      "targets": [],
+      "targets": [
+        "760:7432"
+      ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card is copied from Banner and its body is only a question mark; it describes no rule.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I813:5423;52:897": {
       "pageId": "759:7440",
@@ -5666,11 +6743,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "Icons are produced with the Material Symbols plugin settings.",
       "sourceHash": "00c41242f44a2462",
-      "targets": [],
+      "targets": [
+        "760:7432"
+      ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I813:5423;52:903": {
       "pageId": "759:7440",
@@ -5679,11 +6762,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": [],
+      "targets": [
+        "760:7432"
+      ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I8057:39502;52:895": {
       "pageId": "8049:39180",
@@ -5694,7 +6783,9 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["8049:39452"],
+      "targets": [
+        "8049:39452"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -5710,7 +6801,9 @@
       "title": "Larghezza del banner responsive",
       "titleEn": "Banner width, empty",
       "sourceHash": "fa17d2f37f65ec61",
-      "targets": ["8049:39452"],
+      "targets": [
+        "8049:39452"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card is copied from Banner and its body is only a question mark; it describes no rule.",
@@ -5727,7 +6820,9 @@
       "titleEn": "Icon production",
       "summary": "The same rule is recorded on the Text Field page.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["8049:39452"],
+      "targets": [
+        "8049:39452"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -5744,7 +6839,9 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the Text Field page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["8049:39452"],
+      "targets": [
+        "8049:39452"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:903",
@@ -5761,7 +6858,9 @@
       "titleEn": "Spacing between fields",
       "summary": "The same rule is recorded on the Text Field page.",
       "sourceHash": "20d59b3a2e44ed41",
-      "targets": ["824:8838"],
+      "targets": [
+        "824:8838"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:895",
@@ -5777,7 +6876,9 @@
       "title": "Larghezza del banner responsive",
       "titleEn": "Banner width, empty",
       "sourceHash": "fa17d2f37f65ec61",
-      "targets": ["824:8838"],
+      "targets": [
+        "824:8838"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card is copied from Banner and its body is only a question mark; it describes no rule.",
@@ -5793,7 +6894,9 @@
       "title": "Creazione di una nuova icona",
       "titleEn": "Icon production",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["824:8838"],
+      "targets": [
+        "824:8838"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "Icon production instructions, not a component rule.",
@@ -5810,7 +6913,9 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the Text Field page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["824:8838"],
+      "targets": [
+        "824:8838"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:903",
@@ -5827,7 +6932,9 @@
       "titleEn": "Source frame workaround",
       "summary": "The source frames its images through an external Figma library because autolayout does not scale them; the component keeps the same frame model.",
       "sourceHash": "867e621f42d660b5",
-      "targets": ["8818:39878"],
+      "targets": [
+        "8818:39878"
+      ],
       "scope": "component",
       "disposition": "recorded",
       "reviewedAt": "2026-10-23",
@@ -5842,7 +6949,9 @@
       "title": "Padding laterale in sviluppo",
       "titleEn": "Development padding scale",
       "sourceHash": "714dc725e85d10b0",
-      "targets": ["8818:39878"],
+      "targets": [
+        "8818:39878"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "A development padding scale (8/16/24/32) with no component contract.",
@@ -5859,7 +6968,9 @@
       "titleEn": "Icon production",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["8818:39878"],
+      "targets": [
+        "8818:39878"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -5876,7 +6987,9 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["8818:39878"],
+      "targets": [
+        "8818:39878"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -5892,7 +7005,10 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["908:2234", "9924:27054"],
+      "targets": [
+        "908:2234",
+        "9924:27054"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -5908,7 +7024,10 @@
       "title": "Larghezza dell’alert responsive",
       "titleEn": "Alert width, empty",
       "sourceHash": "63f7b1af5550cfd7",
-      "targets": ["908:2234", "9924:27054"],
+      "targets": [
+        "908:2234",
+        "9924:27054"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card is copied from Alert and its body is only a question mark.",
@@ -5925,7 +7044,10 @@
       "titleEn": "Icon production",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["908:2234", "9924:27054"],
+      "targets": [
+        "908:2234",
+        "9924:27054"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -5942,7 +7064,10 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["908:2234", "9924:27054"],
+      "targets": [
+        "908:2234",
+        "9924:27054"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -5958,7 +7083,10 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["908:2234", "9924:27054"],
+      "targets": [
+        "908:2234",
+        "9924:27054"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -5974,7 +7102,10 @@
       "title": "Larghezza dell’alert responsive",
       "titleEn": "Alert width, empty",
       "sourceHash": "63f7b1af5550cfd7",
-      "targets": ["908:2234", "9924:27054"],
+      "targets": [
+        "908:2234",
+        "9924:27054"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card is copied from Alert and its body is only a question mark.",
@@ -5991,7 +7122,10 @@
       "titleEn": "Icon production",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["908:2234", "9924:27054"],
+      "targets": [
+        "908:2234",
+        "9924:27054"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -6008,7 +7142,10 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["908:2234", "9924:27054"],
+      "targets": [
+        "908:2234",
+        "9924:27054"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -6024,7 +7161,9 @@
       "title": "-",
       "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["920:4502"],
+      "targets": [
+        "920:4502"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card body is empty.",
@@ -6040,7 +7179,9 @@
       "title": "Larghezza dell’alert responsive",
       "titleEn": "Alert width, empty",
       "sourceHash": "63f7b1af5550cfd7",
-      "targets": ["920:4502"],
+      "targets": [
+        "920:4502"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The card is copied from Alert and its body is only a question mark.",
@@ -6057,7 +7198,9 @@
       "titleEn": "Icon production",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["920:4502"],
+      "targets": [
+        "920:4502"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -6074,7 +7217,9 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["920:4502"],
+      "targets": [
+        "920:4502"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -6091,7 +7236,9 @@
       "titleEn": "Pin point meaning",
       "summary": "The pin shows the positive or negative outcome of a process, for example a wizard step.",
       "sourceHash": "d25fa8b1341bb3ae",
-      "targets": ["920:7219"],
+      "targets": [
+        "920:7219"
+      ],
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/pin-point.md",
@@ -6107,7 +7254,9 @@
       "title": "Larghezza della snackbar",
       "titleEn": "Snackbar width, copied",
       "sourceHash": "863eba923d4e1815",
-      "targets": ["920:7219"],
+      "targets": [
+        "920:7219"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The rule is copied from the Snackbar page.",
@@ -6123,7 +7272,9 @@
       "title": "Temporizzazione",
       "titleEn": "Snackbar timing, copied",
       "sourceHash": "a45bbe04955c6436",
-      "targets": ["920:7219"],
+      "targets": [
+        "920:7219"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The rule is copied from the Snackbar page.",
@@ -6139,7 +7290,9 @@
       "title": "Alert errore con codice di errore",
       "titleEn": "Snackbar error, copied",
       "sourceHash": "7613f03089c37db4",
-      "targets": ["920:7219"],
+      "targets": [
+        "920:7219"
+      ],
       "scope": "component",
       "disposition": "out-of-scope",
       "reason": "The rule is copied from the Snackbar page.",
@@ -6156,7 +7309,9 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["920:7219"],
+      "targets": [
+        "920:7219"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -6173,7 +7328,9 @@
       "titleEn": "Fixed side nav width",
       "summary": "The side nav is a fixed 300px; only mobile/tablet (XS, SM, MD) and desktop (LG, XL) change.",
       "sourceHash": "6dc5959332720ce7",
-      "targets": ["1120:7458"],
+      "targets": [
+        "1120:7458"
+      ],
       "scope": "component",
       "disposition": "recorded",
       "reviewedAt": "2026-10-23",
@@ -6189,7 +7346,9 @@
       "titleEn": "Side nav scroll",
       "summary": "The sidebar scrolls independently of the page; the collapse control stays sticky.",
       "sourceHash": "d0a426c7c3f3acdf",
-      "targets": ["1120:7458"],
+      "targets": [
+        "1120:7458"
+      ],
       "scope": "component",
       "disposition": "recorded",
       "reviewedAt": "2026-10-23",
@@ -6205,7 +7364,9 @@
       "titleEn": "Icon production",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["1120:7458"],
+      "targets": [
+        "1120:7458"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I411:5360;52:897",
@@ -6222,7 +7383,9 @@
       "titleEn": "Responsive width",
       "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["1120:7458"],
+      "targets": [
+        "1120:7458"
+      ],
       "scope": "component",
       "disposition": "duplicate",
       "duplicateOf": "I123:3565;52:903",
@@ -6236,11 +7399,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Tooltip vs Popover",
+      "titleEn": "Tooltip versus Popover",
+      "summary": "Choose by text length and device: tooltip for a short single string on hover or focus, popover for multi-line content that opens on click or tap and closes with X, outside click or Escape.",
       "sourceHash": "885bdeee59b3f1ad",
-      "targets": ["9927:36954"],
+      "targets": [
+        "9927:36954"
+      ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9927:36952;52:896": {
       "pageId": "9927:36949",
@@ -6249,11 +7417,16 @@
       "section": "Consolidate",
       "status": "",
       "title": "Trigger",
+      "titleEn": "Trigger",
       "sourceHash": "588e6ae516c78782",
-      "targets": ["9927:36954"],
+      "targets": [
+        "9927:36954"
+      ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "Copied from Tooltip: it describes the trigger icon of a tooltip, not the popover.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9927:36952;52:897": {
       "pageId": "9927:36949",
@@ -6262,11 +7435,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "Icons are produced with the Material Symbols plugin settings.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["9927:36954"],
+      "targets": [
+        "9927:36954"
+      ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9927:36952;52:903": {
       "pageId": "9927:36949",
@@ -6275,11 +7454,17 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The component adapts to the device width.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["9927:36954"],
+      "targets": [
+        "9927:36954"
+      ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     }
   }
 }

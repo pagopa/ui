@@ -1,3 +1,11 @@
+<!-- component-rules:start -->
+
+## Component Rules
+
+- A list omits the divider after its last item.
+
+<!-- component-rules:end -->
+
 # Separator
 
 `Separator` implements the divider set `61:2786` at its 320px source width. The
