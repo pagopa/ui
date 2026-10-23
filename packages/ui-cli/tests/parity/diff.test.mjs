@@ -83,6 +83,19 @@ test("a declared residue stays visible without blocking the verdict", () => {
   assert.equal(result.verdict, "verified-with-residues")
 })
 
+test("a bare residue path names the root subject", () => {
+  const probe = readProbe()
+  probe.subjects.field.box.width = 250
+  const result = compare({
+    sources: textFieldSources(),
+    probe,
+    residues: [{ path: "box.width", reason: "the root box is the fixture width" }],
+  })
+  assert.deepEqual(result.deltas, [])
+  assert.equal(result.residues[0].path, "field.box.width")
+  assert.equal(result.verdict, "verified-with-residues")
+})
+
 test("the target rule accepts an expanded 22px action and rejects a bare one", () => {
   const source = {
     box: { width: 154, height: 22 },

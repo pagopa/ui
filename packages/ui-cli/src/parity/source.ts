@@ -217,7 +217,9 @@ export function hexOf(paint: Paint | undefined): string | undefined {
 // pinned snapshot, the committed evidence slice. The slice makes the source side
 // reproducible in a clone without `.figma/` and without a token.
 export function resolveExport(input?: string): { file: string; origin: SourceOrigin } {
-  if (input) return { file: path.resolve(input), origin: "input" }
+  // Every path is relative to the design-system root, like the rest of the CLI;
+  // an absolute path is taken as written.
+  if (input) return { file: path.isAbsolute(input) ? input : rootPath(input), origin: "input" }
   const snapshot = rootPath(SNAPSHOT_PATH)
   if (fs.existsSync(snapshot)) return { file: snapshot, origin: "snapshot" }
   const evidence = evidencePaths().source

@@ -355,6 +355,23 @@ test("resolveExport falls back from the snapshot to the committed slice", () => 
   }
 })
 
+test("an explicit input path resolves from the design-system root", () => {
+  const root = temporaryRoot()
+  const previous = process.env.PAGOPA_UI_ROOT
+  try {
+    process.env.PAGOPA_UI_ROOT = root
+    assert.equal(
+      resolveExport(".figma/live-rest.json").file,
+      path.join(fs.realpathSync(root), ".figma/live-rest.json"),
+    )
+    assert.equal(resolveExport("/tmp/absolute.json").file, "/tmp/absolute.json")
+  } finally {
+    if (previous === undefined) delete process.env.PAGOPA_UI_ROOT
+    else process.env.PAGOPA_UI_ROOT = previous
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
 test("the case evidence check accepts a bundle that matches the inventory", () => {
   const root = temporaryRoot()
   try {
