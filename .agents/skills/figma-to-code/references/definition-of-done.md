@@ -7,8 +7,9 @@ green chain.
       numbers and images ([visual-parity.md](visual-parity.md)); every declared
       device has its case ([devices.md](devices.md)).
 - [ ] The component story is the parity capture surface: source width, real
-      states, `parameters.design` built with `figmaEmbedUrl`. No fidelity
-      fixture outside it.
+      states, `parameters.design` built with `figmaEmbedUrl`. Every export in
+      `storyExports` shows the registry node — the set, not the variant — in its
+      effective `parameters.design`. No fidelity fixture outside it.
 - [ ] The guide in `code.guides` records the source mapping: which source
       property drives which prop, attribute or content. Figma layer names are
       quoted verbatim.

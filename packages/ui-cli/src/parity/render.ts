@@ -533,6 +533,14 @@ export function capturePreflight({
               ? { state: expectState, ok: true }
               : fail("a value or selection is present")
           break
+        case "open": {
+          const openSelector = "[aria-expanded='true'], [data-state='open'], [open]"
+          state =
+            root?.matches(openSelector) || root?.querySelector(openSelector)
+              ? { state: expectState, ok: true }
+              : fail("no open control inside the story root")
+          break
+        }
         case "error":
           state = root?.querySelector("[aria-invalid='true'], [data-invalid], [role='alert']")
             ? { state: expectState, ok: true }

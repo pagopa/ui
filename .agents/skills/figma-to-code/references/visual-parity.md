@@ -162,6 +162,9 @@ filled is a delta, not a variant.
 - A saved render can predate the pin; the pinned export is the truth. Re-shoot
   with `get_screenshot` when they disagree; the Design-panel thumbnail is never
   evidence.
+- The numbers read geometry, paint and type, not text opacity: on a disabled or
+  muted state, read the render image; a faded title is a delta even when every
+  measured property matches.
 
 ## Reporting
 

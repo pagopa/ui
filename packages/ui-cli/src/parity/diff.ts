@@ -613,6 +613,17 @@ export function compareSubject({
   return deltas
 }
 
+// A residue may name a root delta by its bare property path (`gap`,
+// `box.height`) or a nested subject by its own layer name (`Level 1.gap`). The
+// root subject is always `field`, so a path that names no subject takes it.
+function rootSubjectPath(path: string, subjects: Set<string>): string {
+  if (path.startsWith("responsive.")) return path
+  for (const name of subjects) {
+    if (path === name || path.startsWith(`${name}.`)) return path
+  }
+  return `field.${path}`
+}
+
 // Splits the deltas into the recorded residues, the advisory ones and the ones
 // that still need a fix, then classifies every numeric value against the token
 // vocabulary.
@@ -714,7 +725,12 @@ export function compare({
   deltas.push(...responsiveDeltas({ responsive: probe.responsive }))
   deltas.push(...bandDeltas({ source: band, responsive: probe.responsive }))
   deltas.push(...scopeDeltas({ scope }))
-  return classifyResults(deltas, { residues, index: vocabulary, strict })
+  const subjects = new Set(Object.keys(sources))
+  const recorded = residues.map((entry) => ({
+    ...entry,
+    path: rootSubjectPath(entry.path, subjects),
+  }))
+  return classifyResults(deltas, { residues: recorded, index: vocabulary, strict })
 }
 
 function tokenSuffix(token: Delta["token"]): string {
