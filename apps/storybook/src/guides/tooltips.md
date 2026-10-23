@@ -5,12 +5,12 @@ Escape, blur or pointer exit. `side` places the bubble on a trigger side: the
 source `Arrow Direction=Top` (arrow pointing up, bubble below the trigger) maps
 to `side="bottom"`, and `Arrow Direction=Bottom` maps to `side="top"`.
 
-| Source layer                                                                                         | Maps to                                                    |
-| ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| `Content`                                                                                            | the popup: 16px padding, 4px gap, radius 8, `bg-tooltip`   |
-| `Descrizione di approfondimento su più righe più righe più righe`                                     | the `children` copy at `text-label-mini` (14/20)           |
-| `Close`                                                                                              | the decorative mark shown by `showClose`                   |
-| `Indicator`                                                                                          | the arrow: the 24×16 `Polygon` plus its 4px standoff        |
+| Source layer                                                      | Maps to                                                  |
+| ----------------------------------------------------------------- | -------------------------------------------------------- |
+| `Content`                                                         | the popup: 16px padding, 4px gap, radius 8, `bg-tooltip` |
+| `Descrizione di approfondimento su più righe più righe più righe` | the `children` copy at `text-label-mini` (14/20)         |
+| `Close`                                                           | the decorative mark shown by `showClose`                 |
+| `Indicator`                                                       | the arrow: the 24×16 `Polygon` plus its 4px standoff     |
 
 The popup keeps the bubble 312px wide at most (`max-w-78`, the source `Content`
 width), the close mark top-aligned with the first text line (`items-start`, the
