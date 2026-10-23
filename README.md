@@ -26,7 +26,7 @@ implement it, and the repository checks what they produce.
 ## Requirements
 
 - Node.js and pnpm, resolved by [mise](https://mise.jdx.dev/) from `.node-version`
-  and `mise.lock` (Node 22.23.3, pnpm 11.28.6 at the time of writing).
+  and `mise.lock` (Node 24.22.1, pnpm 11.28.6 at the time of writing).
 - Terraform, tflint, trivy and terraform-docs, also from `mise.toml`/`mise.lock`:
   they are needed by the `infra/` projects only.
 
