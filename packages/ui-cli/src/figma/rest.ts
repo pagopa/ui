@@ -84,21 +84,30 @@ export async function fetchFileHeader(fileKey: string): Promise<FigmaFileHeader>
 
 async function get<T>(endpoint: string, schema: z.ZodType<T>): Promise<T> {
   const token = figmaToken()
-  const response = await fetch(`https://api.figma.com/v1/${endpoint}`, {
-    method: "GET",
-    headers: { "X-Figma-Token": token },
-    signal: AbortSignal.timeout(90_000),
-  })
-  if (!response.ok) {
+  // A large read is a burst of requests; Figma answers 429 with a Retry-After.
+  // Waiting and retrying is part of the reader, not of every caller.
+  for (let attempt = 0; ; attempt += 1) {
+    const response = await fetch(`https://api.figma.com/v1/${endpoint}`, {
+      method: "GET",
+      headers: { "X-Figma-Token": token },
+      signal: AbortSignal.timeout(90_000),
+    })
+    if (response.ok) {
+      const data: unknown = await response.json()
+      const api = ApiResponseSchema.parse(data)
+      if (api.error || api.err) throw new Error(`Figma GET ${endpoint}: API error`)
+      return schema.parse(data)
+    }
     const retry = response.headers.get("retry-after")
-    throw new Error(
-      `Figma GET ${endpoint}: HTTP ${response.status}${retry ? `; retry after ${retry} seconds` : ""}`,
-    )
+    const retryable = response.status === 429 || response.status >= 500
+    if (!retryable || attempt >= 5) {
+      throw new Error(
+        `Figma GET ${endpoint}: HTTP ${response.status}${retry ? `; retry after ${retry} seconds` : ""}`,
+      )
+    }
+    const seconds = retry ? Number(retry) : 2 ** attempt
+    await new Promise((resolve) => setTimeout(resolve, Math.min(seconds, 30) * 1000))
   }
-  const data: unknown = await response.json()
-  const api = ApiResponseSchema.parse(data)
-  if (api.error || api.err) throw new Error(`Figma GET ${endpoint}: API error`)
-  return schema.parse(data)
 }
 
 export async function fetchFigmaImages(
@@ -326,4 +335,94 @@ export async function fetchFigmaSnapshot(fileKey: string, mcpNodes: McpNode[] = 
     },
     nodes,
   }
+}
+
+// ------------------------------------------------------- pages, rules, comments
+
+const FilePagesSchema = z.looseObject({
+  document: z.looseObject({
+    id: z.string(),
+    name: z.string(),
+    children: z.array(z.looseObject({ id: z.string(), name: z.string(), type: z.string() })),
+  }),
+})
+
+const NodeTreesSchema = z.looseObject({
+  nodes: z.record(z.string(), z.looseObject({ document: z.unknown().optional() })),
+})
+
+const CommentsResponseSchema = z.looseObject({
+  comments: z.array(
+    z.looseObject({
+      id: z.string(),
+      parent_id: z.string().optional(),
+      user: z.looseObject({ handle: z.string().optional() }).optional(),
+      created_at: z.string(),
+      resolved_at: z.string().nullable().optional(),
+      message: z.string(),
+      order_id: z.string().nullish(),
+      client_meta: z.looseObject({ node_id: z.string().optional() }).nullish(),
+    }),
+  ),
+})
+
+export type FigmaPage = { id: string; name: string }
+export type FigmaComment = {
+  id: string
+  parentId: string | null
+  nodeId: string | null
+  author: string
+  createdAt: string
+  resolvedAt: string | null
+  message: string
+  order: string
+}
+
+export async function fetchFilePages(fileKey: string): Promise<FigmaPage[]> {
+  const file = await get(`files/${fileKey}?depth=1`, FilePagesSchema)
+  return file.document.children
+    .filter((child) => child.type === "CANVAS")
+    .map((child) => ({ id: child.id, name: child.name }))
+}
+
+// The raw document of each node, children included. The published-node reader
+// above stops at the direct children; the rules boxes need the whole card
+// subtree, so they get their own reader instead of a widened shared schema.
+export async function fetchNodeTrees(
+  fileKey: string,
+  version: string,
+  ids: string[],
+  depth = 10,
+): Promise<Map<string, unknown>> {
+  const documents = new Map<string, unknown>()
+  const selected = [...new Set(ids)]
+  // A page read is a shallow list of children: many ids per request keep the
+  // burst small. A card subtree is deep and heavy: a few ids at a time.
+  const size = depth <= 2 ? 20 : 4
+  for (let start = 0; start < selected.length; start += size) {
+    const batch = selected.slice(start, start + size)
+    const query = new URLSearchParams({ ids: batch.join(","), version, depth: String(depth) })
+    const data = await get(`files/${fileKey}/nodes?${query}`, NodeTreesSchema)
+    for (const id of batch) {
+      const record = data.nodes[id]
+      if (!record?.document) throw new Error(`Figma REST returned no document for ${id}`)
+      documents.set(id, record.document)
+    }
+    await new Promise((resolve) => setTimeout(resolve, 120))
+  }
+  return documents
+}
+
+export async function fetchFileComments(fileKey: string): Promise<FigmaComment[]> {
+  const data = await get(`files/${fileKey}/comments`, CommentsResponseSchema)
+  return data.comments.map((comment) => ({
+    id: comment.id,
+    parentId: comment.parent_id?.trim() ? comment.parent_id : null,
+    nodeId: comment.client_meta?.node_id ?? null,
+    author: comment.user?.handle ?? "",
+    createdAt: comment.created_at,
+    resolvedAt: comment.resolved_at ?? null,
+    message: comment.message,
+    order: comment.order_id ?? "",
+  }))
 }

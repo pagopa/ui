@@ -101,6 +101,19 @@ jobs:
             --delta .figma/delta.json \
             --evidence-base "https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${branch}"
 
+      # The `.Regole` boxes and the comments are outside the design
+      # fingerprint, so the catalogue delta cannot see them. The rules diff and
+      # the comment counts are reported in the job log; the ledger stays a
+      # reviewed change, never a generated one.
+      - name: Report the rules and comment drift
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+          PAGOPA_UI_ROOT: ../pagopa-ui
+        run: |
+          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma rules --refresh
+          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma rules --plan || true
+          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma comments --refresh
+
       - name: Refresh the evidence bundle
         if: hashFiles('packages/pagopa-ui/.figma/pr-body.md') != ''
         env:

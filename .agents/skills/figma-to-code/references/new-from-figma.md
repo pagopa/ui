@@ -6,7 +6,11 @@ component with no node needs only its catalogue coverage
 
 ## Steps
 
-1. **Read the source.** `node packages/ui-cli/src/cli.ts parity source <nodeId> --depth 1`
+1. **Read the source.** `pnpm nx run pagopa-ui-cli:figma:brief --node <nodeId>`
+   gives the catalogue decision, the rules that target the node, the open
+   comments and the open design requests ([rules.md](rules.md)); refresh the
+   local rules snapshot when the session started on a file that may have
+   changed. `node packages/ui-cli/src/cli.ts parity source <nodeId> --depth 1`
    lists the variants with their declared device and box; `--compact --depth 3`
    gives each variant's anatomy (box, offsets, layout, hug/fill sizing, radius,
    strokes, fills, text style, hidden layers). Confirm anatomy with the read-only
@@ -35,8 +39,13 @@ component with no node needs only its catalogue coverage
    source state the parity cases will compare, framed at the exact source width
    (`max-w-full`, no invented wrapper width) and with `parameters.design` set to
    `figmaEmbedUrl("<nodeId>")`. Write or extend the guide in `code.guides` with
-   the source mapping and import it into the docs description.
-   **Done when** the story renders in Storybook and the a11y suite passes.
+   the source mapping and import it into the docs description; add the
+   consumer-facing rules in the guide's first block
+   (`<!-- component-rules:start -->` … `<!-- component-rules:end -->`), under
+   `## Component Rules` and without source references, and mark them
+   ([rules.md](rules.md)).
+   **Done when** the story renders in Storybook, the a11y suite passes and no
+   rule that targets the node is `pending` or `stale`.
 
 5. **Parity.** Run the loop in [visual-parity.md](visual-parity.md) for every
    variant the stories expose and every declared device; save one case each.

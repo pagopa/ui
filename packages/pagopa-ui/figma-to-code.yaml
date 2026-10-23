@@ -13,6 +13,10 @@ figma:
 catalog:
   inventory: src/catalog/figma/inventory.json
   registry: src/catalog/figma/registry.json
+  # The English record of every consolidated rule card of the Figma `.Regole`
+  # boxes, with its source hash, review date and the guide that carries it.
+  # Read and written by `figma:rules`.
+  rules: src/catalog/figma/rules.json
   parityCases: src/catalog/figma/parity-cases.json
   devicePolicy: src/catalog/figma/device-policy.json
   deviceExceptions: src/catalog/figma/device-exceptions.json

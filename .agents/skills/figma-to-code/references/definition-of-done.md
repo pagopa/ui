@@ -13,6 +13,12 @@ green chain.
 - [ ] The guide in `code.guides` records the source mapping: which source
       property drives which prop, attribute or content. Figma layer names are
       quoted verbatim.
+- [ ] Every consolidated rule that targets the node has a disposition; the
+      consumer-facing ones are the guide's first block
+      (`<!-- component-rules:start -->` … `<!-- component-rules:end -->`),
+      under `## Component Rules` and with no source reference in the text; the
+      open comments are read and either answered by the source or promoted to a
+      design request ([rules.md](rules.md)).
 - [ ] The name and props follow [prop-conventions.md](prop-conventions.md);
       every departure is one line in the node's registry `note`.
 - [ ] The registry entry has `target.module`, `target.export`, `target.story`,

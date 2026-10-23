@@ -1,3 +1,12 @@
+<!-- component-rules:start -->
+
+## Component Rules
+
+- Keep 24px between two or more fields.
+- An asterisk alone does not state that a field is required: write it in words next to the label, for example "(required)".
+
+<!-- component-rules:end -->
+
 ## Floating labels
 
 Text fields, text areas, the autocomplete, the selects and the date field share

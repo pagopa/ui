@@ -12,10 +12,12 @@ files the config names: read them, never copy them into this skill.
 ## Session start
 
 `pnpm nx run pagopa-ui-cli:figma:status` prints the token state, the pinned
-snapshot, the drift against the committed inventory, the pending queue with its
-design requests and the next command. `-- --live` adds the file version and its
-last-modified date: that is what tells whether Figma changed at all. Run it
-before reading anything else; nothing below repeats what it reports.
+snapshot, the drift against the committed inventory, the rules ledger and comment
+counts, the pending queue with its design requests and the next command.
+`-- --live` adds the file version and its last-modified date: that is what tells
+whether Figma changed at all. Run it before reading anything else; nothing below
+repeats what it reports. Before touching one node, read
+`figma:brief --node <nodeId>`.
 
 ## Config first
 
@@ -64,6 +66,11 @@ written as `catalog.registry`. Every command runs from the repository root.
 - **The registry is the only status source.** Per-node constraints live in the
   node's registry `note`, component behaviour in its guide under `code.guides`.
   Read both before touching a component.
+- **The rules boxes and the comments are source.** The `.Regole` cards and the
+  node comments sit outside the fingerprint, so no drift reports them. Read the
+  node's brief before implementing, translate the consumer-facing rules into
+  the guide, record every other card with a disposition, and leave no `pending`
+  or `stale` rule on a node you touch ([rules.md](references/rules.md)).
 
 ## Use cases
 
@@ -80,12 +87,14 @@ written as `catalog.registry`. Every command runs from the repository root.
 | Icons and pictograms                         | [artwork.md](references/artwork.md)                   |
 | Review of an existing node                   | [node-review.md](references/node-review.md)           |
 | An open question for the design owner        | [design-request.md](references/design-request.md)     |
+| Rules and comments of a node: brief, ledger, guide | [rules.md](references/rules.md)                 |
 
 Shared references, loaded when a use case points at them:
 [definition-of-done.md](references/definition-of-done.md) (source alignment:
 what a node-backed component proves), [catalogue.md](references/catalogue.md)
 (alignment files, statuses, the `figma:check` contract),
 [parity-tooling.md](references/parity-tooling.md) (the parity commands),
+[rules.md](references/rules.md) (the rules ledger and node comments),
 [init.md](references/init.md) (config and token preflight).
 
 ## Closing every use case

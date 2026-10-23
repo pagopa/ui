@@ -36,6 +36,7 @@ relayed failure).
 | `catalog.apiExceptions`      | public exports with no source mapping, each with a reason             | `src/catalog/figma/api-exceptions.json`     |
 | `catalog.evidenceExceptions` | story-evidence exceptions, must shrink                                | `src/catalog/figma/evidence-exceptions.json`|
 | `catalog.inventoryStory`     | the rendered join of inventory and registry                           | `apps/storybook/src/FigmaInventory.stories.tsx`    |
+| `catalog.rules`              | the English record of every consolidated `.Regole` card                | `src/catalog/figma/rules.json`              |
 | `tokens.manifest`            | every Figma variable, exclusion and reason                            | `packages/tokens/src/manifest.json`                  |
 | `tokens.generatedCss`        | the generated CSS foundation layer                                    | `packages/tokens/src/figma.generated.css`            |
 | `tokens.stylesheet`          | semantic aliases and local extensions                                 | `src/index.css`                             |

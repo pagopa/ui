@@ -31,8 +31,10 @@ After this action:
   date and file version of the review;
 - a change in Figma produces a `stale` entry and a non-zero `rules --plan`,
   even though the design fingerprint cannot see it;
-- the guide of a component carries the consumer-facing rules in English under
-  `## Figma rules`, each with an anchor back to its card;
+- the guide of a component opens with the consumer-facing rules in English, in
+  a delimited block (`<!-- component-rules:start -->` …
+  `<!-- component-rules:end -->`) under `## Component Rules`, with no source
+  reference in the text;
 - `figma:brief --node <id>` prints, in one read-only command, the registry
   entry, the applicable rules, the open comment threads and the open design
   requests: the brief a coding agent reads before implementing or reviewing a
@@ -71,8 +73,8 @@ After this action:
   search) and nowhere else; the Italian body is never copied into the
   repository.
 - **The agent decides; no human gate per rule.** Dispositions are chosen by the
-  agent and recorded with a reason. `--check` validates structure and anchors,
-  never taste.
+  agent and recorded with a reason. `--check` validates structure and guide
+  files, never taste.
 - **Rules are keyed to component nodes, not inferred from the page.** A page
   hosts several sets and rules are copied across pages, so `targets` is an
   explicit list of component-set (or single-component) node ids, validated
@@ -112,7 +114,6 @@ After this action:
       "scope": "component",
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/actions.md",
-      "anchor": "(Figma rule 123:3570)",
       "reviewedAt": "2026-10-24",
       "figmaVersion": "2412426961662147678"
     }
@@ -128,9 +129,10 @@ Rules of the model:
   `stale` card: re-read, re-translate if the meaning changed.
 - `disposition` ∈ `imported`, `recorded`, `duplicate`, `out-of-scope`,
   `deferred`, `conflict`, `pending`.
-  - `imported`: `titleEn`, `summary`, `guide`, `anchor` mandatory; `anchor` is
-    the literal marker `(Figma rule <cardId>)` the guide bullet ends with, and
-    `--mark` refuses to write it when the guide does not contain that string.
+  - `imported`: `titleEn`, `summary` and `guide` mandatory. The rule goes in the
+    guide's first block, delimited by `<!-- component-rules:start -->` and
+    `<!-- component-rules:end -->`, under `## Component Rules`; it carries no
+    source reference: the ledger keeps the card id, hash and review date.
   - `recorded`: `titleEn` and `summary` mandatory; not in the guide.
   - `duplicate`: `duplicateOf` (a canonical card id) and `summary`.
   - `out-of-scope` and `deferred`: `reason` mandatory.
@@ -188,14 +190,15 @@ New CLI surface in `packages/ui-cli`. Four npm scripts in
 - `--mark <cardId> --disposition <d> [--title-en <text>] [--summary <text>] [--guide <path>] [--targets <ids>] [--reason <text>] [--duplicate-of <id>] [--request <path>]` —
   stamps `reviewedAt`, `figmaVersion` and `sourceHash` from the snapshot,
   clears `provisionalTargets`, refuses a disposition whose mandatory fields are
-  missing and refuses an anchor that is not in the guide. `--mark` is how the
-  agent records its decision; it is the only command that writes English.
+  missing and refuses an imported rule whose guide file does not exist.
+  `--mark` is how the agent records its decision; it is the only command that
+  writes English.
 - `--sync` — canonical rewrite (see above), adds `removed`, adds consolidated
   cards the ledger does not know as `new`, keeps `pending`.
 - `--check` — no network: schema, unique ids, enum fields, mandatory fields,
-  `targets` exist in inventory, every `imported` card's guide file and anchor
-  exist, every `(Figma rule <id>)` anchor in the guides resolves to a ledger
-  entry, and no card is `new`, `stale`, `removed` or `orphaned`. `pending` is
+  `targets` exist in inventory, every `imported` card's guide has a rules block
+  that opens the file and at least one imported rule points at it, and no card is
+  `new`, `stale`, `removed` or `orphaned`. `pending` is
   the migration backlog and passes; `--strict` makes it fail too, and is
   enabled once the last wave has merged. Non-zero on any violation.
 - `--node <id>` — the rules that target the node (variant ids normalised),
@@ -208,7 +211,7 @@ variants, to a descendant when the pinned snapshot holds the subtree, and to the
 node's page (flagged `page`); replies are nested under their root.
 
 `figma:brief --node <id>` prints: registry status, target and note; the guide
-path; rules (disposition, English title, summary, anchor); open comments with
+path; rules (disposition, English title, summary, guide); open comments with
 author and date; open design requests that cite the node. A variant id is
 normalised to its set. `--json` for tools.
 
@@ -234,7 +237,7 @@ Allowed:
   chain), `AGENTS.md` (Figma sessions and skills table)
 - `.agents/skills/figma-to-code/SKILL.md` and `references/rules.md` (new),
   `references/{new-from-figma,node-review,delta,definition-of-done,init}.md`
-- `apps/storybook/src/guides/*.md` (`## Figma rules` sections only)
+- `apps/storybook/src/guides/*.md` (`## Component Rules` sections only)
 - `docs/design-requests/*.md` (promotions only)
 - `.github/workflows/figma-drift.yml` (rules in the drift report)
 
@@ -256,9 +259,9 @@ shape beyond `note` updates, or any Figma node.
    352 `pending` entries, a second init changes nothing, a body edit makes one
    card `stale`, a removed card becomes `removed`, and `--sync` is byte-stable
    on an unchanged snapshot.
-3. **Check.** Hermetic validation and the guide anchor parser. **Done when** a
-   missing guide, a broken anchor, an unknown target, a `new` rule on an
-   `implemented` node and a duplicated card each fail with a readable message,
+3. **Check.** Hermetic validation and the guide file reader. **Done when** a
+   missing guide, an unknown target, a `new` rule on an `implemented` node and a
+   duplicated card each fail with a readable message,
    the `pending` backlog passes, `--strict` refuses it, and a clean ledger
    passes without network.
 4. **Comments and brief.** `comments.ts` (REST refresh, thread assembly,
@@ -275,7 +278,8 @@ shape beyond `note` updates, or any Figma node.
    touched node), to `definition-of-done.md` and to `init.md`; update the
    `SKILL.md` use-case table and `AGENTS.md`. The instruction must say: read the
    brief before implementing; translate the rules that bind the consumer into
-   the guide's `## Figma rules`; record every other card with a disposition;
+   the guide's first block, `## Component Rules`, with no source reference;
+   record every other card with a disposition;
    never leave a `pending` rule on a node you touch; promote an unanswered
    comment to a design request. **Done when** `pnpm nx run pagopa-ui:docs`
    passes and a dry read of the skill shows no dangling reference.
@@ -341,8 +345,7 @@ from then on a `pending` rule fails the build.
   refresh, and `--plan` exits 1.
 - `figma:brief --node 123:7768` prints the Breadcrumb rules, the open threads
   and the existing design request offline.
-- A guide bullet with a wrong anchor fails `figma:rules:check`; a ledger entry
-  pointing at a missing guide fails too.
+- A ledger entry pointing at a missing guide fails `figma:rules:check`.
 - The green chain passes; stories run in a browser or the report says they did
   not.
 

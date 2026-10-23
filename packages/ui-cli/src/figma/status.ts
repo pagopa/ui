@@ -15,6 +15,8 @@ import { InventorySchema, RegistrySchema, type Inventory } from "../schemas/cata
 import { fetchFileHeader } from "./rest.ts"
 import { fileKeyFromSource } from "./snapshot.ts"
 import { figmaToken } from "./token.ts"
+import { RULES_PATH, plan as planRules, readLedger, readRulesSnapshot } from "./rules.ts"
+import { COMMENTS_SNAPSHOT_PATH, readComments } from "./comments.ts"
 
 const CONFIG_PATH = "figma-to-code.yaml"
 const INVENTORY_PATH = "src/catalog/figma/inventory.json"
@@ -64,6 +66,24 @@ type StatusReport = {
     error: string | null
   }
   registry: Counts & { path: string; error: string | null }
+  rules: {
+    path: string
+    present: boolean
+    consolidated: number
+    imported: number
+    recorded: number
+    pending: number
+    stale: number
+    error: string | null
+  }
+  comments: {
+    path: string
+    present: boolean
+    threads: number
+    open: number
+    mappedOpen: number
+    error: string | null
+  }
   pending: PendingRow[]
   requests: { path: string | null; open: number; answered: number; files: string[] }
   live: LiveReport | null
@@ -169,6 +189,26 @@ function printText(report: StatusReport): void {
       `${label("registry")}implemented ${counts.implemented} · mocked ${counts.mocked} · ` +
         `pending ${counts.pending} · excluded ${counts.excluded}`,
     )
+  }
+  if (report.rules.error) {
+    console.log(`${label("rules")}${report.rules.error}`)
+  } else if (report.rules.present) {
+    console.log(
+      `${label("rules")}${report.rules.consolidated} consolidated · ${report.rules.imported} imported · ` +
+        `${report.rules.recorded} recorded · ${report.rules.pending} pending · ${report.rules.stale} stale`,
+    )
+  } else {
+    console.log(`${label("rules")}${report.rules.path} (missing)`)
+  }
+  if (report.comments.error) {
+    console.log(`${label("comments")}${report.comments.error}`)
+  } else if (report.comments.present) {
+    console.log(
+      `${label("comments")}${report.comments.open} open of ${report.comments.threads} threads · ` +
+        `${report.comments.mappedOpen} on mapped nodes`,
+    )
+  } else {
+    console.log(`${label("comments")}${report.comments.path} (missing)`)
   }
   for (const row of report.pending) {
     const reason = row.designRequests.length
@@ -322,6 +362,62 @@ export async function runStatus(argv: string[] = process.argv.slice(2)): Promise
     }
   }
 
+  const rulesReport: StatusReport["rules"] = {
+    path: RULES_PATH,
+    present: false,
+    consolidated: 0,
+    imported: 0,
+    recorded: 0,
+    pending: 0,
+    stale: 0,
+    error: null,
+  }
+  try {
+    const ledger = readLedger(root, false)
+    if (ledger) {
+      rulesReport.present = true
+      rulesReport.consolidated = Object.keys(ledger.cards).length
+      for (const card of Object.values(ledger.cards)) {
+        if (card.disposition === "imported") rulesReport.imported += 1
+        if (card.disposition === "recorded") rulesReport.recorded += 1
+        if (card.disposition === "pending") rulesReport.pending += 1
+      }
+      const rulesSnapshot = readRulesSnapshot(root, false)
+      if (rulesSnapshot) {
+        rulesReport.stale = planRules(rulesSnapshot, ledger).stale.length
+      }
+    }
+  } catch (error) {
+    rulesReport.error = error instanceof Error ? error.message.split("\n")[0] : String(error)
+  }
+
+  const commentsReport: StatusReport["comments"] = {
+    path: COMMENTS_SNAPSHOT_PATH,
+    present: false,
+    threads: 0,
+    open: 0,
+    mappedOpen: 0,
+    error: null,
+  }
+  try {
+    const comments = readComments(root)
+    if (comments) {
+      const mapped = new Set<string>()
+      for (const component of inventory?.components ?? []) {
+        mapped.add(component.nodeId)
+        for (const variant of component.variants ?? []) mapped.add(variant.nodeId)
+      }
+      commentsReport.present = true
+      commentsReport.threads = comments.threads.length
+      commentsReport.open = comments.threads.filter((thread) => !thread.resolvedAt).length
+      commentsReport.mappedOpen = comments.threads.filter(
+        (thread) => !thread.resolvedAt && thread.nodeId !== null && mapped.has(thread.nodeId),
+      ).length
+    }
+  } catch (error) {
+    commentsReport.error = error instanceof Error ? error.message.split("\n")[0] : String(error)
+  }
+
   const configFile = path.join(root, CONFIG_PATH)
   const base: Omit<StatusReport, "next"> = {
     config: fs.existsSync(configFile) ? relativeTo(workspaceRoot(root), configFile) : null,
@@ -329,6 +425,8 @@ export async function runStatus(argv: string[] = process.argv.slice(2)): Promise
     snapshot,
     inventory: inventoryReport,
     registry: registryReport,
+    rules: rulesReport,
+    comments: commentsReport,
     pending,
     requests: designRequests(),
     live,

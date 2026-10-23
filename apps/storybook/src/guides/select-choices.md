@@ -1,3 +1,11 @@
+<!-- component-rules:start -->
+
+## Component Rules
+
+- Keep 24px between two or more fields, selects included.
+
+<!-- component-rules:end -->
+
 `SelectField` and `MultiSelectField` share rich options: `label`, optional
 `description`, `leading` content and a `chip`. The multiselect keeps its
 array-valued selection in the named form control.

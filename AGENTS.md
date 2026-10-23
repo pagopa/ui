@@ -36,6 +36,15 @@ version and last-modified date. When Figma changed, `figma:plan` then
 `figma:triage` are the whole refresh, and the pending queue is not a delta. The
 `figma-to-code` skill owns every rule that follows.
 
+Before touching one node, read its brief:
+`pnpm nx run pagopa-ui-cli:figma:brief --node <nodeId>` prints the registry
+entry, the `.Regole` cards that target it, the open comments and the design
+requests. The rules boxes and the comments sit outside `designFingerprint`, so
+no drift reports them: `figma:rules` keeps the committed English ledger, and a
+node is not finished while a rule that targets it is `pending` or `stale`.
+Refresh the local snapshots with `figma:rules -- --refresh` and
+`figma:comments --refresh`.
+
 ## Skills
 
 Each skill stands alone and never points at another skill or at this file; the

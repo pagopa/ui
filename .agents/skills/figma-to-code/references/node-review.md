@@ -7,12 +7,15 @@ bulk re-approval.
 
 ## Steps
 
-1. **Read the record.** The node's registry entry (status, target, `note`), its
-   committed cases (`pnpm nx run pagopa-ui-cli:figma:parity:queue --node <id>`), and the guide of the
-   target component. The note's constraints and open decisions are binding until
-   the review changes them.
+1. **Read the record.** `pnpm nx run pagopa-ui-cli:figma:brief --node <nodeId>`
+   gathers the registry entry (status, target, `note`), the rules that target the
+   node, the open comments and the design requests ([rules.md](rules.md)). Read
+   its committed cases
+   (`pnpm nx run pagopa-ui-cli:figma:parity:queue --node <id>`) and the guide of
+   the target component too. The note's constraints and open decisions are
+   binding until the review changes them.
    **Done when** the current target, its stories and the recorded adaptations are
-   written down.
+   written down, and no rule that targets the node is `pending` or `stale`.
 
 2. **Read what changed.** For a drift node: its class (`changed`, `affected`,
    `renamed`, `moved`) and changed devices from the pull request body or
@@ -40,7 +43,9 @@ bulk re-approval.
 
    A `mocked` demo keeps its status and note: a review is not a renewal. A
    mapping to an existing implementation needs that implementation to cover the
-   node's whole contract, every device included.
+   node's whole contract, every device included. A changed rule updates the
+   guide and its ledger entry in the same pull request
+   ([rules.md](rules.md)).
    **Done when** the registry entry reflects the decision; a constraint or
    residue is in the note, and an open question names its design request.
 

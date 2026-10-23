@@ -66,10 +66,16 @@ request ([node-review.md](node-review.md)).
      design request ([design-request.md](design-request.md)) and keep the node
      `pending`.
 
+   The design fingerprint cannot see the `.Regole` boxes or the component
+   description: `pnpm nx run pagopa-ui-cli:figma:rules -- --plan` reports the
+   rules a page changed, and `figma:brief --node <nodeId>` is the read that
+   closes the gap ([rules.md](rules.md)).
+
    "It matches the desktop frame" is not a decision for a node with a device
    axis. **Done when** every delta node has one decision and the per-device
    compositions it covers are written down; nodes left `pending` name their
-   design request or blocker.
+   design request or blocker, and no rule that targets a touched node is
+   `pending` or `stale`.
 
 ## Tokens: the design foundations changed
 

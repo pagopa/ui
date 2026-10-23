@@ -11,8 +11,11 @@ import { runImportLayers } from "./checks/import-layers.ts"
 import { runLibraryCheck } from "./checks/library.ts"
 import { runPrepareTypes } from "./commands/prepare-types.ts"
 import { cli as runDevices } from "./figma/devices.ts"
+import { runBrief } from "./figma/brief.ts"
+import { runComments } from "./figma/comments.ts"
 import { runExport } from "./figma/export.ts"
 import { runIcons } from "./figma/icons.ts"
+import { runRules } from "./figma/rules.ts"
 import { runPictograms } from "./figma/pictograms.ts"
 import { runStories } from "./figma/stories.ts"
 import { runSync } from "./figma/sync.ts"
@@ -307,6 +310,21 @@ const figmaStatus = defineCommand({
   },
 })
 
+const figmaRules = defineCommand({
+  meta: { name: "rules", description: "Read, record and check the component rules boxes" },
+  run: execute(() => runRules(rawArguments("rules"))),
+})
+
+const figmaComments = defineCommand({
+  meta: { name: "comments", description: "Read the node comments of the file" },
+  run: execute(() => runComments(rawArguments("comments"))),
+})
+
+const figmaBrief = defineCommand({
+  meta: { name: "brief", description: "Print the implementation brief of a node" },
+  run: execute(() => runBrief(rawArguments("brief"))),
+})
+
 const figma = defineCommand({
   meta: { name: "figma", description: "Figma catalogue and artwork commands" },
   subCommands: {
@@ -315,6 +333,9 @@ const figma = defineCommand({
     export: figmaExport,
     devices: figmaDevices,
     stories: figmaStories,
+    rules: figmaRules,
+    comments: figmaComments,
+    brief: figmaBrief,
     tokens,
     ...assets.subCommands,
   },

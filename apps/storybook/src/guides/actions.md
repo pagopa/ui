@@ -1,3 +1,14 @@
+<!-- component-rules:start -->
+
+## Component Rules
+
+- Give a group of actions 8px between them, vertically and horizontally.
+- Keep 24px or 32px between a group of actions and the content above it, unless the page composition needs an exception.
+- Never dim an action with opacity: every variant keeps a solid background that meets AA contrast.
+- Do not use the disabled variant: it is not accessible. Keep the default action and explain the failure with an error toast.
+
+<!-- component-rules:end -->
+
 `Button` labels wrap automatically only when the available width requires it;
 long words remain inside the container rather than being clipped. Multiline
 actions grow without losing their minimum target or native behavior. This is an
