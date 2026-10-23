@@ -122,6 +122,108 @@
     "note": "reviewed: 2026-10-23 Padding=0, Type=With text at the 320x20 source box: the 8px root gap, the 130x1 lines at y9.5 and the Text layer, 'oppure' 14/20 Regular #555c70 (grey-700) at x138 measuring 43.47 against the source 44 (a font metric within tolerance); strict composition clean. The source Line-Left and Line-Right are empty frames that carry a 10px padding with no DOM counterpart, so only their root gap and the centred text are mapped (the mapping note)."
   },
   {
+    "id": "105-2043-status-info",
+    "nodeId": "105:2043",
+    "export": "Tag",
+    "storyId": "components-content-tag--fidelity",
+    "state": "Status=Info",
+    "variant": "105:2044",
+    "width": 68,
+    "depth": 4,
+    "root": "#storybook-root [data-fidelity-variant=\"105-2044\"] [data-slot=\"tag\"]",
+    "subjects": {
+      "Icon": "#storybook-root [data-fidelity-variant=\"105-2044\"] [data-slot=\"tag\"] > span:first-of-type",
+      "label": "#storybook-root [data-fidelity-variant=\"105-2044\"] [data-slot=\"tag-label\"]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: Status=Info at the 68x30 source tag, no device axis. Root 30 high with a 1px #e8ebf1 Color/Border/Border stroke, #ffffff fill, 6px radius, 6px/8px insets and the 6px icon-label gap; the render measures 69.19 against the source 68 and 32 against 30 (`min-h-8`), radius 8 (`rounded-md`) and a 1px CSS border inside the 8px inset (+1: Icon at left 9 against the source 8), all within the 2px tolerance. Icon 16x16 and label 12/18 weight 600 #555c70 at x31 against the source 30; strict composition clean. The Fidelity story renders all six source variants at their own wrappers."
+  },
+  {
+    "id": "105-2043-status-warning",
+    "nodeId": "105:2043",
+    "export": "Tag",
+    "storyId": "components-content-tag--fidelity",
+    "state": "Status=Warning",
+    "variant": "105:2047",
+    "width": 96,
+    "depth": 4,
+    "root": "#storybook-root [data-fidelity-variant=\"105-2047\"] [data-slot=\"tag\"]",
+    "subjects": {
+      "Icon": "#storybook-root [data-fidelity-variant=\"105-2047\"] [data-slot=\"tag\"] > span:first-of-type",
+      "label": "#storybook-root [data-fidelity-variant=\"105-2047\"] [data-slot=\"tag-label\"]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: Status=Warning at the 96x30 source tag, no device axis. Root 30 high with a 1px #e8ebf1 Color/Border/Border stroke, #ffffff fill, 6px radius, 6px/8px insets and the 6px icon-label gap; the render measures 97.8 against the source 96 and 32 against 30 (`min-h-8`), radius 8 (`rounded-md`) and a 1px CSS border inside the 8px inset (+1: Icon at left 9 against the source 8), all within the 2px tolerance. Icon 16x16 and label 12/18 weight 600 #555c70 at x31 against the source 30; strict composition clean. The Fidelity story renders all six source variants at their own wrappers."
+  },
+  {
+    "id": "105-2043-status-success",
+    "nodeId": "105:2043",
+    "export": "Tag",
+    "storyId": "components-content-tag--fidelity",
+    "state": "Status=Success",
+    "variant": "105:2050",
+    "width": 90,
+    "depth": 4,
+    "root": "#storybook-root [data-fidelity-variant=\"105-2050\"] [data-slot=\"tag\"]",
+    "subjects": {
+      "Icon": "#storybook-root [data-fidelity-variant=\"105-2050\"] [data-slot=\"tag\"] > span:first-of-type",
+      "label": "#storybook-root [data-fidelity-variant=\"105-2050\"] [data-slot=\"tag-label\"]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: Status=Success at the 90x30 source tag, no device axis. Root 30 high with a 1px #e8ebf1 Color/Border/Border stroke, #ffffff fill, 6px radius, 6px/8px insets and the 6px icon-label gap; the render measures 91.95 against the source 90 and 32 against 30 (`min-h-8`), radius 8 (`rounded-md`) and a 1px CSS border inside the 8px inset (+1: Icon at left 9 against the source 8), all within the 2px tolerance. Icon 16x16 and label 12/18 weight 600 #555c70 at x31 against the source 30; strict composition clean. The Fidelity story renders all six source variants at their own wrappers."
+  },
+  {
+    "id": "105-2043-status-error",
+    "nodeId": "105:2043",
+    "export": "Tag",
+    "storyId": "components-content-tag--fidelity",
+    "state": "Status=Error",
+    "variant": "105:2053",
+    "width": 78,
+    "depth": 4,
+    "root": "#storybook-root [data-fidelity-variant=\"105-2053\"] [data-slot=\"tag\"]",
+    "subjects": {
+      "Icon": "#storybook-root [data-fidelity-variant=\"105-2053\"] [data-slot=\"tag\"] > span:first-of-type",
+      "label": "#storybook-root [data-fidelity-variant=\"105-2053\"] [data-slot=\"tag-label\"]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: Status=Error at the 78x30 source tag, no device axis. Root 30 high with a 1px #e8ebf1 Color/Border/Border stroke, #ffffff fill, 6px radius, 6px/8px insets and the 6px icon-label gap; the render measures 79.83 against the source 78 and 32 against 30 (`min-h-8`), radius 8 (`rounded-md`) and a 1px CSS border inside the 8px inset (+1: Icon at left 9 against the source 8), all within the 2px tolerance. Icon 16x16 and label 12/18 weight 600 #555c70 at x31 against the source 30; strict composition clean. The Fidelity story renders all six source variants at their own wrappers."
+  },
+  {
+    "id": "105-2043-status-default",
+    "nodeId": "105:2043",
+    "export": "Tag",
+    "storyId": "components-content-tag--fidelity",
+    "state": "Status=Default",
+    "variant": "105:2056",
+    "width": 89,
+    "depth": 4,
+    "root": "#storybook-root [data-fidelity-variant=\"105-2056\"] [data-slot=\"tag\"]",
+    "subjects": {
+      "Icon": "#storybook-root [data-fidelity-variant=\"105-2056\"] [data-slot=\"tag\"] > span:first-of-type",
+      "label": "#storybook-root [data-fidelity-variant=\"105-2056\"] [data-slot=\"tag-label\"]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: Status=Default at the 89x30 source tag, no device axis. Root 30 high with a 1px #e8ebf1 Color/Border/Border stroke, #ffffff fill, 6px radius, 6px/8px insets and the 6px icon-label gap; the render measures 90.19 against the source 89 and 32 against 30 (`min-h-8`), radius 8 (`rounded-md`) and a 1px CSS border inside the 8px inset (+1: Icon at left 9 against the source 8), all within the 2px tolerance. The 16x16 kid_star artwork and the label 12/18 weight 600 #555c70 at x31 against the source 30; strict composition clean. The Fidelity story renders all six source variants at their own wrappers."
+  },
+  {
+    "id": "105-2043-status-counter",
+    "nodeId": "105:2043",
+    "export": "Tag",
+    "storyId": "components-content-tag--fidelity",
+    "state": "Status=Counter",
+    "variant": "105:2059",
+    "width": 31,
+    "viewport": 320,
+    "depth": 4,
+    "root": "#storybook-root [data-fidelity-variant=\"105-2059\"] [data-slot=\"tag\"]",
+    "subjects": {
+      "label": "#storybook-root [data-fidelity-variant=\"105-2059\"] [data-slot=\"tag-label\"]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: Status=Counter at the 31x30 source tag, no device axis. Root 30 high with the 1px #e8ebf1 Color/Border/Border stroke, #ffffff fill, 6px radius and 6px/8px insets; the iconless variant renders only the label at the 8px left inset, 32.33 wide against the source 31 and 32 high against the source 30 (`min-h-8`) with radius 8 (`rounded-md`): within the 2px tolerance. Label 12/18 weight 600 #555c70 '+1'; strict composition clean. The Fidelity story renders all six source variants at their own wrappers."
+  },
+  {
     "id": "108-1402-contained-label",
     "nodeId": "108:1402",
     "export": "Button",
@@ -2205,6 +2307,86 @@
     "note": "reviewed: source Checked=Yes Availability=No (349:4727, 320x119) against the FidelityRichStates checked unavailable row. Verified the 320-wide rich option, the 24px decorative leading art at the source 50% opacity, the 12px icon-to-copy gap, the 16/22 Semibold #0e0f13 title, the 14/20 #555c70 description, the selected #0b3ee3 track and the 14/20 primary link. The source root carries the source-wide reduced opacity; the library deliberately fades only the decorative art and keeps copy, control and link opaque (documented adaptation, switch-choices guide). Residues record the row height, the root gap and the copy offsets."
   },
   {
+    "id": "357-4970-status-error",
+    "nodeId": "357:4970",
+    "export": "Snackbar",
+    "storyId": "components-feedback-snackbar--fidelity",
+    "state": "Status=Error",
+    "variant": "357:4971",
+    "width": 280,
+    "viewport": 320,
+    "depth": 5,
+    "root": "#storybook-root [data-fidelity-variant=\"357-4971\"] [data-slot=\"snackbar\"]",
+    "subjects": {
+      "Content": "#storybook-root [data-fidelity-variant=\"357-4971\"] [data-slot=\"snackbar-content\"]",
+      "report": "#storybook-root [data-fidelity-variant=\"357-4971\"] [data-slot=\"snackbar-icon\"]",
+      "Message": "#storybook-root [data-fidelity-variant=\"357-4971\"] [data-slot=\"snackbar-content\"] > div",
+      "Close": "#storybook-root [data-fidelity-variant=\"357-4971\"] [data-slot=\"snackbar-close-icon\"]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: Status=Error at the 280x118 source snackbar, no device axis. The 8px radius, 16px padding and 16px root gap, the 1px #ff6666 stroke over the #ffd9d9 soft fill and the #5d1313 foreground, the 24px report artwork, the 8px icon-message gap, the 176-wide message column with its 4px title-description gap (title 16/22 Semibold, description 14/20 Regular) and the 24x24 close at 240/16 are all exact within the 2px tolerance: the render measures 280x120 (the 1px CSS border sits inside the source 16px inset, +2) with Content 206 against 208 and Close at 239 against 240. Two deltas were fixed in feedback/snackbar.tsx: the root gap was 6 on the dismiss-only composition (now the source 16, both the flex and the grid branch) and the dismiss used a 44px box with negative margins that ate 12px from the message track (now a 24px box with the shared invisible 44px after:-inset-2.5 target); strict composition clean."
+  },
+  {
+    "id": "357-4970-status-warning",
+    "nodeId": "357:4970",
+    "export": "Snackbar",
+    "storyId": "components-feedback-snackbar--fidelity",
+    "state": "Status=Warning",
+    "variant": "357:4981",
+    "width": 280,
+    "viewport": 320,
+    "depth": 5,
+    "root": "#storybook-root [data-fidelity-variant=\"357-4981\"] [data-slot=\"snackbar\"]",
+    "subjects": {
+      "Content": "#storybook-root [data-fidelity-variant=\"357-4981\"] [data-slot=\"snackbar-content\"]",
+      "warning": "#storybook-root [data-fidelity-variant=\"357-4981\"] [data-slot=\"snackbar-icon\"]",
+      "Message": "#storybook-root [data-fidelity-variant=\"357-4981\"] [data-slot=\"snackbar-content\"] > div",
+      "Close": "#storybook-root [data-fidelity-variant=\"357-4981\"] [data-slot=\"snackbar-close-icon\"]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: Status=Warning at the 280x118 source snackbar, no device axis. The 8px radius, 16px padding and 16px root gap, the 1px #ffd56b stroke over the #fff5da soft fill and the #614c15 foreground, the 24px warning artwork, the 8px icon-message gap, the 176-wide message column with its 4px title-description gap (title 16/22 Semibold, description 14/20 Regular) and the 24x24 close at 240/16 are all exact within the 2px tolerance: the render measures 280x120 (the 1px CSS border sits inside the source 16px inset, +2) with Content 206 against 208 and Close at 239 against 240. Two deltas were fixed in feedback/snackbar.tsx: the root gap was 6 on the dismiss-only composition (now the source 16, both the flex and the grid branch) and the dismiss used a 44px box with negative margins that ate 12px from the message track (now a 24px box with the shared invisible 44px after:-inset-2.5 target); strict composition clean."
+  },
+  {
+    "id": "357-4970-status-info",
+    "nodeId": "357:4970",
+    "export": "Snackbar",
+    "storyId": "components-feedback-snackbar--fidelity",
+    "state": "Status=Info",
+    "variant": "357:4993",
+    "width": 280,
+    "viewport": 320,
+    "depth": 5,
+    "root": "#storybook-root [data-fidelity-variant=\"357-4993\"] [data-slot=\"snackbar\"]",
+    "subjects": {
+      "Content": "#storybook-root [data-fidelity-variant=\"357-4993\"] [data-slot=\"snackbar-content\"]",
+      "info": "#storybook-root [data-fidelity-variant=\"357-4993\"] [data-slot=\"snackbar-icon\"]",
+      "Message": "#storybook-root [data-fidelity-variant=\"357-4993\"] [data-slot=\"snackbar-content\"] > div",
+      "Close": "#storybook-root [data-fidelity-variant=\"357-4993\"] [data-slot=\"snackbar-close-icon\"]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: Status=Info at the 280x118 source snackbar, no device axis. The 8px radius, 16px padding and 16px root gap, the 1px #89d9fc stroke over the #e1f5fe soft fill and the #215c76 foreground, the 24px info artwork, the 8px icon-message gap, the 176-wide message column with its 4px title-description gap (title 16/22 Semibold, description 14/20 Regular) and the 24x24 close at 240/16 are all exact within the 2px tolerance: the render measures 280x120 (the 1px CSS border sits inside the source 16px inset, +2) with Content 206 against 208 and Close at 239 against 240. Two deltas were fixed in feedback/snackbar.tsx: the root gap was 6 on the dismiss-only composition (now the source 16, both the flex and the grid branch) and the dismiss used a 44px box with negative margins that ate 12px from the message track (now a 24px box with the shared invisible 44px after:-inset-2.5 target); strict composition clean."
+  },
+  {
+    "id": "357-4970-status-success",
+    "nodeId": "357:4970",
+    "export": "Snackbar",
+    "storyId": "components-feedback-snackbar--fidelity",
+    "state": "Status=Success",
+    "variant": "357:5005",
+    "width": 280,
+    "viewport": 320,
+    "depth": 5,
+    "root": "#storybook-root [data-fidelity-variant=\"357-5005\"] [data-slot=\"snackbar\"]",
+    "subjects": {
+      "Content": "#storybook-root [data-fidelity-variant=\"357-5005\"] [data-slot=\"snackbar-content\"]",
+      "check_circle": "#storybook-root [data-fidelity-variant=\"357-5005\"] [data-slot=\"snackbar-icon\"]",
+      "Message": "#storybook-root [data-fidelity-variant=\"357-5005\"] [data-slot=\"snackbar-content\"] > div",
+      "Close": "#storybook-root [data-fidelity-variant=\"357-5005\"] [data-slot=\"snackbar-close-icon\"]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: Status=Success at the 280x118 source snackbar, no device axis. The 8px radius, 16px padding and 16px root gap, the 1px #89d188 stroke over the #e1f4e1 soft fill and the #224021 foreground, the 24px check_circle artwork, the 8px icon-message gap, the 176-wide message column with its 4px title-description gap (title 16/22 Semibold, description 14/20 Regular) and the 24x24 close at 240/16 are all exact within the 2px tolerance: the render measures 280x120 (the 1px CSS border sits inside the source 16px inset, +2) with Content 206 against 208 and Close at 239 against 240. Two deltas were fixed in feedback/snackbar.tsx: the root gap was 6 on the dismiss-only composition (now the source 16, both the flex and the grid branch) and the dismiss used a 44px box with negative margins that ate 12px from the message track (now a 24px box with the shared invisible 44px after:-inset-2.5 target); strict composition clean."
+  },
+  {
     "id": "360-797-numbered",
     "nodeId": "360:797",
     "export": "Badge",
@@ -2411,6 +2593,30 @@
       }
     ],
     "ignores": ["Button.box.width"]
+  },
+  {
+    "id": "392-4667-default",
+    "nodeId": "392:4667",
+    "export": "SnackbarErrorCode",
+    "storyId": "components-feedback-snackbarerrorcode--source-case",
+    "state": "default",
+    "width": 280,
+    "viewport": 320,
+    "depth": 5,
+    "root": "#storybook-root [data-slot=\"snackbar\"]",
+    "subjects": {
+      "Message": "#storybook-root [data-slot=\"snackbar-content\"]",
+      "report": "#storybook-root [data-slot=\"snackbar-icon\"]",
+      "Titolo della snackbar": "#storybook-root [data-slot=\"snackbar-title\"]",
+      "Ut enim ad minim veniam, quis ullamco laboris nisi ut aliquid": "#storybook-root [data-slot=\"snackbar-description\"]",
+      "Close": "#storybook-root [data-slot=\"snackbar-close-icon\"]",
+      "Error code input": "#storybook-root [data-slot=\"snackbar-error-code-field\"]",
+      "Description": "#storybook-root [data-slot=\"snackbar-error-code-value\"]",
+      "content_copy": "#storybook-root [data-slot=\"snackbar-error-code-copy\"]"
+    },
+    "compareOffset": true,
+    "ignores": ["Error code input.padding.bottom"],
+    "note": "reviewed: SnackbarErrorCode at its 280x182 source card, no variants and no device axis. The 8px radius, 16px padding and 16px root gap, the 1px #ff6666 stroke over the #ffd9d9 fill and the #5d1313 foreground, the 24x24 report artwork, the 8px icon-message gap, the 176-wide message column with the 4px title-description gap (title 16/22 Semibold at 16, description 14/20 Regular at 42), the 24x24 close at 240/16 and the 248x48 code field (8px radius, 1px #636b82 stroke, 12px insets and gap, 16/21 mono code) are all within the 2px tolerance: the render measures 280x184 (the 1px CSS border sits inside the source 16px inset, +2), Message 206x86 against 208x86, Close at 239, the field 246x48 at 17/119 and its copy action at 226 against 228. The copy action and the close were 44px boxes that consumed the source track; both are now 24px source boxes with the shared invisible 44px after:-inset-2.5 target (the story play proves the expanded target by hit-testing). The code field now keeps the source 48px box with 12px top/left insets and h-12 so the 1px border no longer grows it. Ignored: Error code input.padding.bottom, the source encodes the bottom 12px as a padding while the DOM fixes the 48px box and leaves the line-box remainder below the top-aligned text. Strict composition clean."
   },
   {
     "id": "403-4116-desktop-action-desktop",

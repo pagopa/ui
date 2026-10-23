@@ -42,6 +42,14 @@
   8x8 box and the 44px pointer target comes from the invisible vertical
   `::after` expansion instead of a 44px button that tripled the row width and
   height.
+- `Snackbar`: the dismiss-only composition uses the source 16px root gap and the
+  close is a 24px source box with the 44px target on the invisible `::after`
+  expansion instead of a 44px control that stole 12px from the message column;
+  the four `Status` variants have reviewed parity cases.
+- `SnackbarErrorCode`: the close and copy actions are 24px source boxes with the
+  44px target on the invisible `::after` expansion and the code field keeps the
+  source 48px box (`h-12`, 12px top inset) instead of growing by the 1px border;
+  the source card has a reviewed parity case.
 - `EmptyState`: the message column fills the card like the source frames, so a
   long title wraps at the card width instead of at the widest line.
 - `ProgressKpi`: the header artwork keeps its own 24px size in a flex box

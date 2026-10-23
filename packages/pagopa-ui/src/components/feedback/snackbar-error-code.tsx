@@ -51,7 +51,7 @@ function SnackbarErrorCode({
         <div className="grid gap-2">
           <div
             data-slot="snackbar-error-code-field"
-            className="flex min-h-12 items-center gap-3 rounded-lg border border-input bg-background px-3"
+            className="flex h-12 items-start gap-3 rounded-lg border border-input bg-background px-3 pt-3"
           >
             <span
               data-slot="snackbar-error-code-value"
@@ -64,7 +64,7 @@ function SnackbarErrorCode({
               onClick={copyCode}
               aria-label={copyLabel}
               data-slot="snackbar-error-code-copy"
-              className="grid size-11 shrink-0 place-items-center rounded-md text-primary focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring"
+              className="relative grid size-6 shrink-0 place-items-center rounded-md p-0 text-primary after:absolute after:-inset-2.5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
               <PagoPAIcon name="content_copy" />
             </button>

@@ -44,3 +44,27 @@ export const AllStatuses: Story = {
     </div>
   ),
 }
+
+const fidelityVariant = (nodeId: string) => nodeId.replace(":", "-")
+
+const fidelityVariants = [
+  { nodeId: "105:2044", status: "info", label: "INFO" },
+  { nodeId: "105:2047", status: "warning", label: "WARNING" },
+  { nodeId: "105:2050", status: "success", label: "SUCCESS" },
+  { nodeId: "105:2053", status: "error", label: "ERROR" },
+  { nodeId: "105:2056", status: "default", label: "DEFAULT" },
+  { nodeId: "105:2059", status: "counter", label: "+1" },
+] as const
+
+export const Fidelity: Story = {
+  parameters: { layout: "fullscreen" },
+  render: () => (
+    <div id="tag-fidelity" className="grid w-[320px] justify-items-start gap-4">
+      {fidelityVariants.map((variant) => (
+        <div key={variant.nodeId} data-fidelity-variant={fidelityVariant(variant.nodeId)}>
+          <Tag status={variant.status}>{variant.label}</Tag>
+        </div>
+      ))}
+    </div>
+  ),
+}

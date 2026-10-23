@@ -54,15 +54,14 @@ function Snackbar({
         "min-h-14 w-(--overlay-width) max-w-[calc(100vw-var(--page-gutter))] items-start rounded-lg border p-4 shadow-32",
         hasFooter
           ? cn(
-              "grid gap-y-4",
-              action ? "gap-x-4" : "gap-x-1.5",
+              "grid gap-4",
               action && onDismiss
                 ? "grid-cols-[minmax(0,1fr)_auto_auto]"
                 : action || onDismiss
                   ? "grid-cols-[minmax(0,1fr)_auto]"
                   : "grid-cols-[minmax(0,1fr)]",
             )
-          : cn("flex gap-1.5", action && "gap-4"),
+          : "flex gap-4",
         toneStyles[tone],
         className,
       )}
@@ -106,7 +105,7 @@ function Snackbar({
           aria-label={dismissLabel}
           data-slot="snackbar-dismiss"
           className={cn(
-            "-mr-2.5 -mt-2.5 flex size-11 shrink-0 items-center justify-center rounded-md text-foreground hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-current",
+            "relative size-6 shrink-0 rounded-md text-foreground after:absolute after:-inset-2.5 hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-current",
             hasFooter && (action ? "col-start-3" : "col-start-2"),
             hasFooter && "row-start-1",
           )}

@@ -183,9 +183,9 @@
         "module": "src/components/content/tag.tsx",
         "export": "Tag",
         "story": "apps/storybook/src/Tag.stories.tsx",
-        "storyExports": ["AllStatuses", "Playground"]
+        "storyExports": ["AllStatuses", "Fidelity", "Playground"]
       },
-      "note": "Fresh Path C review at pinned version 2409404974909792292 covers variants 105:2044/2047/2050/2053/2056/2059. Source: 30px height, 6px radius, 1px Color/Border/Border fill stroke, 16px status artwork, 6px icon-label gap, 8px insets and Caption SB 12/18px uppercase; Info uses the Filled icon and Counter is iconless. Token-first rendering uses min-h-8 (32px, +2px), rounded-md (radius-8 foundation, +2px), gap-1.5 (6px) and px-2 (8px); the 1px border makes rendered insets 9px (+1px), and the taller centered content shifts down 1px. Semantic status and Gray-700 text tokens are retained. Titillio 12/18px weight 500 maps to Titillium Web 12/18px weight 600; label runs measure 1.5-5.6px narrower. Source→render tag widths are Info 68→65.64px, Warning 96→92.36px, Success 90→87.02px, Error 78→76.77px, Default 89→86.30px and Counter 31→31.45px; no per-variant width compensation is added. The former removable Badge pill moved to InputChip, the source's removable-chip equivalent. (2026-10-14: the source Titillio family is now bundled directly; earlier substitute-font statements and figures in this note are historical and pending re-measurement.)"
+      "note": "Reviewed 2026-10-23 (M5 wave): six committed cases, one per source variant (`105-2043-status-info|warning|success|error|default|counter`), each capturing `Fidelity` at its own variant width. The source is 30px high with a 6px radius, a 1px Color/Border/Border #e8ebf1 stroke, a #ffffff fill, 6px/8px insets, the 6px icon-label gap, 16px status artwork and Caption SB 12/18 uppercase #555c70; Info uses the Filled icon and Counter is iconless. Rendering uses `min-h-8` (32px, +2), `rounded-md` (radius-8 foundation, +2), `gap-1.5` (6px) and `px-2` (8px); the 1px CSS border sits inside the 8px inset (+1, the Icon measures left 9) and the taller centred content keeps the label at top 7, both within tolerance. Source→render widths are Info 68→69.19, Warning 96→97.8, Success 90→91.95, Error 78→79.83, Default 89→90.19 and Counter 31→32.33: every delta under 2px, no per-variant compensation, strict composition clean. The former removable Badge pill moved to InputChip, the source's removable-chip equivalent."
     },
     "10585:80643": {
       "status": "implemented",
@@ -1191,9 +1191,9 @@
         "module": "src/components/feedback/snackbar.tsx",
         "export": "Snackbar",
         "story": "apps/storybook/src/Snackbar.stories.tsx",
-        "storyExports": ["Dismissable", "Playground", "SourceCase", "WithAction"]
+        "storyExports": ["Dismissable", "Fidelity", "Playground", "SourceCase", "WithAction"]
       },
-      "note": "The Snackbar renders the light source surface; the dark navy variant is retired and must not return. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`."
+      "note": "Reviewed 2026-10-23 (M5 wave): four committed cases, one per source `Status` variant (`357-4970-status-error|warning|info|success`), each capturing `Fidelity` at the 280 source width. The 8px radius, 16px padding and 16px root gap, the 1px tone stroke over the soft fill, the 24px status artwork, the 8px icon-message gap, the 176-wide message column with its 4px title-description gap (16/22 Semibold and 14/20 Regular) and the 24x24 close at 240/16 match within the 2px tolerance; the render measures 280x120 because the 1px CSS border sits inside the 16px source inset. Two deltas were fixed: the dismiss-only composition had a 6px root gap (now the source 16) and the dismiss was a 44px box with negative margins that ate 12px from the message track (now a 24px source box with the shared invisible 44px `after:-inset-2.5` target). The Snackbar renders the light source surface; the dark navy variant is retired and must not return. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`."
     },
     "360:797": {
       "status": "implemented",
@@ -1256,7 +1256,7 @@
           "ClipboardRejected"
         ]
       },
-      "note": "The SnackbarErrorCode renders the light source surface; the dark navy variant is retired and must not return. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`."
+      "note": "Reviewed 2026-10-23 (M5 wave): one committed case (`392-4667-default`) capturing `SourceCase` at the 280 source width. The 8px radius, 16px padding and 16px root gap, the 1px #ff6666 stroke over the #ffd9d9 fill and the #5d1313 foreground, the 24px report artwork, the 8px icon-message gap, the 176-wide message column with its 4px title-description gap, the 24x24 close at 240/16 and the 248x48 code field (1px #636b82 stroke, 12px insets and gap, 16/21 mono code) match within the 2px tolerance; the render measures 280x184 because the 1px CSS border sits inside the 16px source inset. The close and copy actions were 44px boxes that consumed the source track; both are now 24px source boxes with the shared invisible 44px `after:-inset-2.5` target, and the code field keeps the source 48px box with `h-12` and the 12px top inset. Ignored: `Error code input.padding.bottom` (the source encodes the bottom 12px as padding while the DOM fixes the 48px box). The SnackbarErrorCode renders the light source surface; the dark navy variant is retired and must not return. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`."
     },
     "392:5291": {
       "status": "implemented",

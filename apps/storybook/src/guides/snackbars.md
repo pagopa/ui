@@ -24,6 +24,11 @@ reason; the source-matched story shows it. Caller-provided actions remain native
 controls. Focus uses a visible solid perimeter; the component adds no motion, so
 reduced-motion settings do not alter it.
 
+The source `Content` row separates the message from the `Close` layer by 16px and
+that is the root gap of every composition. The close is a 24px source box; the
+44px pointer target is its invisible `::after` expansion, so the message column
+keeps the source 176px track instead of losing 12px to a 44px control.
+
 ## Error-code composition
 
 Node `392:4667` composes an error title and description, a full-width error-code
@@ -36,3 +41,8 @@ The code row is content-driven; the code remains selectable and wraps instead of
 overflowing at narrow widths. Clipboard success, missing API and rejected
 permission remain separate native button states; failure leaves the code visible
 for manual copying.
+
+The error-code field is the source 48px box: `h-12` with a 12px top inset and a
+24px copy box whose 44px pointer target is its invisible `::after` expansion.
+The 1px CSS border sits inside the source stroke, so the field keeps the source
+height instead of growing by it.

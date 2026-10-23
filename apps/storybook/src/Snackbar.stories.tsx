@@ -105,3 +105,34 @@ export const Dismissable: Story = {
     await expect(canvas.getByText("Notifica chiusa")).toBeVisible()
   },
 }
+
+const fidelityVariant = (nodeId: string) => nodeId.replace(":", "-")
+
+const fidelityVariants = [
+  { nodeId: "357:4971", tone: "error", label: "Error" },
+  { nodeId: "357:4981", tone: "warning", label: "Warning" },
+  { nodeId: "357:4993", tone: "info", label: "Info" },
+  { nodeId: "357:5005", tone: "success", label: "Success" },
+] as const
+
+export const Fidelity: Story = {
+  parameters: { layout: "fullscreen" },
+  render: () => (
+    <div id="snackbar-fidelity" className="grid justify-items-start gap-4">
+      {fidelityVariants.map((variant) => (
+        <div
+          key={variant.nodeId}
+          data-fidelity-variant={fidelityVariant(variant.nodeId)}
+          className="w-[280px] [&>*]:w-full"
+        >
+          <Snackbar
+            tone={variant.tone}
+            title="Titolo della snackbar"
+            message="Ut enim ad minim veniam, quis ullamco laboris nisi ut aliquid"
+            onDismiss={() => {}}
+          />
+        </div>
+      ))}
+    </div>
+  ),
+}
