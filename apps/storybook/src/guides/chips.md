@@ -6,7 +6,11 @@ action are accessibility adaptations; `primary` remains a library extension.
 `removeLabel` customizes the removal button name.
 
 The compact source frame maps to the existing height, padding and radius tokens;
-label widths remain content-driven instead of compensating for font metrics.
+label widths remain content-driven instead of compensating for font metrics. With
+the bundled Titillio family the labels now measure the source widths exactly
+(57/58/63/62/40/44/66), so the full-pill radius (source 100, painted by
+`rounded-full`) is the only recorded residue; every `Type`/`Style` variant has a
+reviewed case on `ChipSourceVariantMatrix`.
 
 ## InputChip — Figma node `422:16012`
 

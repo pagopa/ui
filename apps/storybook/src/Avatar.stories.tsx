@@ -394,6 +394,117 @@ function SelectableIdentity() {
   )
 }
 
+// The eight variants of the small source set (`160:1344`), each rendered at the
+// source size so parity captures one frame per variant.
+export const FigmaSmallStates: Story = {
+  tags: ["color-pinned"],
+  parameters: {
+    // The matrix is wider than one avatar: fullscreen keeps it unclipped.
+    layout: "fullscreen",
+    // Reflow exemption: fixture pinned at the source width, not a product surface.
+    a11yContract: { reflow: false },
+    design: { type: "figma", url: figmaEmbedUrl("160:1344") },
+  },
+  render: () => (
+    <div className="flex w-max flex-wrap items-start gap-4 p-4">
+      <div data-fidelity-variant="160-1345">
+        <Avatar alt="Identità non disponibile" size="small" />
+      </div>
+      <div data-fidelity-variant="160-1350">
+        <Avatar alt="Identità selezionata" size="small" selected />
+      </div>
+      <div data-fidelity-variant="160-1354">
+        <Avatar alt="Logo del comune" src={productLogo} imageFit="contain" size="small" />
+      </div>
+      <div data-fidelity-variant="160-1361">
+        <Avatar alt="Logo dell'istituzione" src={productLogo} imageFit="contain" size="small" />
+      </div>
+      <div data-fidelity-variant="160-1368">
+        <Avatar alt="Logo del servizio" src={productLogo} imageFit="contain" size="small" />
+      </div>
+      <div data-fidelity-variant="160-1375">
+        <Avatar alt="Logo del prodotto" src={productLogo} imageFit="contain" size="small" />
+      </div>
+      <div data-fidelity-variant="160-1382">
+        <Avatar alt="Identità in caricamento" size="small" loading />
+      </div>
+      <div data-fidelity-variant="160-1384">
+        <Avatar
+          alt="Prodotto principale"
+          src={productLogo}
+          imageFit="contain"
+          size="small"
+          secondary={{ alt: "Prodotto collegato", src: productLogo, imageFit: "contain" }}
+        />
+      </div>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    await expect(canvasElement.querySelectorAll("[data-fidelity-variant]")).toHaveLength(8)
+    const canvas = within(canvasElement)
+    await expect(canvas.getAllByRole("img")).toHaveLength(9)
+  },
+}
+
+// The eight variants of the large source set (`160:1403`).
+export const FigmaBigStates: Story = {
+  tags: ["color-pinned"],
+  parameters: {
+    // The matrix is wider than one avatar: fullscreen keeps it unclipped.
+    layout: "fullscreen",
+    // Reflow exemption: fixture pinned at the source width, not a product surface.
+    a11yContract: { reflow: false },
+    design: { type: "figma", url: figmaEmbedUrl("160:1403") },
+  },
+  render: () => (
+    <div className="flex w-max flex-wrap items-start gap-4 p-4">
+      <div data-fidelity-variant="160-1404">
+        <Avatar alt="Identità grande non disponibile" size="large" />
+      </div>
+      <div data-fidelity-variant="160-1409">
+        <Avatar
+          alt="Servizio culturale"
+          size="large"
+          icon={<PagoPAIcon name="theater_comedy" size={32} />}
+        />
+      </div>
+      <div data-fidelity-variant="160-1412" className="rounded-lg bg-navy p-4">
+        <Avatar
+          alt="Servizio culturale su superficie scura"
+          size="large"
+          icon={<PagoPAIcon name="theater_comedy" size={32} />}
+          tone="inverse"
+        />
+      </div>
+      <div data-fidelity-variant="160-1415">
+        <Avatar alt="Logo del comune grande" src={productLogo} imageFit="contain" size="large" />
+      </div>
+      <div data-fidelity-variant="160-1421">
+        <Avatar
+          alt="Logo dell'istituzione grande"
+          src={productLogo}
+          imageFit="contain"
+          size="large"
+        />
+      </div>
+      <div data-fidelity-variant="160-1427">
+        <Avatar alt="Logo del servizio grande" src={productLogo} imageFit="contain" size="large" />
+      </div>
+      <div data-fidelity-variant="160-1433">
+        <Avatar alt="Logo del prodotto grande" src={productLogo} imageFit="contain" size="large" />
+      </div>
+      <div data-fidelity-variant="160-1439">
+        <Avatar alt="Identità grande in caricamento" size="large" loading />
+      </div>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    await expect(canvasElement.querySelectorAll("[data-fidelity-variant]")).toHaveLength(8)
+    const canvas = within(canvasElement)
+    await expect(canvas.getAllByRole("img")).toHaveLength(8)
+  },
+}
+
 export const SourceSelection: Story = {
   tags: ["color-pinned"],
   parameters: { design: { type: "figma", url: figmaEmbedUrl("160:1344") } },

@@ -1,16 +1,31 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 
+// The visible dot is the source box (16x4 active, 8x8 inactive); the pointer
+// target comes from the invisible vertical ::after expansion, so the row keeps
+// the source 8px height instead of inflating to the 44px target.
+const indicator =
+  "relative shrink-0 rounded-2xl transition-[width,height,background-color] motion-reduce:transition-none after:absolute after:inset-x-0 after:-inset-y-5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+
 function CarouselStepper({
   count,
   activeIndex,
   onChange,
   label = "Seleziona contenuto",
+  getControlLabel = (index, count) => `Contenuto ${index + 1} di ${count}`,
 }: {
   count: number
   activeIndex: number
   onChange: (index: number) => void
+  /** Accessible name of the whole control. */
   label?: string
+  /**
+   * Accessible name of one position control. The caller receives the index and
+   * the count and returns the whole sentence, so it owns plurals and word
+   * order.
+   * @default (index, count) => `Contenuto ${index + 1} di ${count}`
+   */
+  getControlLabel?: (index: number, count: number) => string
 }) {
   const refs = React.useRef<(HTMLButtonElement | null)[]>([])
   const move = (index: number) => {
@@ -28,7 +43,7 @@ function CarouselStepper({
           }}
           type="button"
           aria-current={index === activeIndex ? "true" : undefined}
-          aria-label={`Contenuto ${index + 1} di ${count}`}
+          aria-label={getControlLabel(index, count)}
           tabIndex={index === activeIndex ? 0 : -1}
           onClick={() => onChange(index)}
           onKeyDown={(event) => {
@@ -49,18 +64,11 @@ function CarouselStepper({
               move(count - 1)
             }
           }}
-          className="grid size-11 place-items-center rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-        >
-          <span
-            aria-hidden="true"
-            className={cn(
-              "pointer-events-none rounded-full transition-[width,height,background-color] motion-reduce:transition-none",
-              index === activeIndex
-                ? "h-1 w-4 bg-primary"
-                : "size-2 border border-input bg-background",
-            )}
-          />
-        </button>
+          className={cn(
+            indicator,
+            index === activeIndex ? "h-1 w-4 bg-primary" : "size-2 border border-input",
+          )}
+        />
       ))}
     </div>
   )

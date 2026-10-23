@@ -12,6 +12,12 @@ A source text action (an Alert, Banner or Switch information link) keeps its
 text line: reach the accessible pointer target with an expanded hit area rather
 than inflating the visible box.
 
+The source `IconButton` (`192:1208`) is a single 44×44 frame: it maps to the
+ghost, icon-size `Button`, whose 44×44 box holds the 24px `menu` icon instance
+(18×12 glyph) at 10,10. The button's accessible name replaces the label-less
+source glyph; the transparent interaction surface, the visible focus perimeter
+and the 8px hover radius are the recorded accessibility adaptations.
+
 Figma-mapped buttons use the shared button geometry through existing tokens; the
 source skeleton takes the nearest existing width token, and the shared ghost
 hit-area padding is an accessibility adaptation rather than the source's

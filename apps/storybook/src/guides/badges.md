@@ -19,6 +19,12 @@ clipping it. The story uses the pinned `mail` artwork and its source
 `unselected`/`selected` variants. All forms use the existing tokens instead of
 near-match literals.
 
+The source `Badge`/`Badge-Wrapper` ellipses carry a separation stroke: white on
+the white surfaces (`ring-background`), grey 50 on the muted surface
+(`ring-muted`) and blue 50 on the selected sidenav form (`ring-selection-soft`).
+The 2.5px source stroke becomes the 2px `ring-2` box-shadow, so the parity probe
+reads no border and the ring is recorded as a residue.
+
 ## Accessibility
 
 The plain dot and sidenav composition are hidden from assistive technology;

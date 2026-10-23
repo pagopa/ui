@@ -389,6 +389,1082 @@
     "note": "reviewed: Layout=Compact at its 65px source width, no device axis. Row 65x24; the back link (.Breadcrumb single element) 65x24 with the 24px arrow-back artwork and the 4px gap to the semibold label, every offset exact. The 44px pointer target is the link's invisible vertical ::after expansion (24 + 2x10), so the visible row keeps the source 24px; the outer 8px gap is the single-child phantom gap and does not render. Hover 124:3608 verified on a real-pointer render (#0b3ee3 label and arrow, underline). Re-run 2026-10-22 after the JSDoc tag, story subtitle and guide source mapping (no render change)."
   },
   {
+    "id": "160-1344-placeholder",
+    "nodeId": "160:1344",
+    "export": "Avatar",
+    "storyId": "components-content-avatar--figma-small-states",
+    "state": "Placeholder",
+    "variant": "160:1345",
+    "width": 44,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"160-1345\"] [data-slot=\"avatar-identity\"]",
+    "subjects": {},
+    "note": "reviewed: 2026-10-23 render of FigmaSmallStates at 44 against pinned 160:1345 (Type=Placeholder): 44x44 frame, 8px corners, the source placeholder glyph at 24px (size-6 at 24 vs the source 22, +2px) on the muted #f4f5f8 surface"
+  },
+  {
+    "id": "160-1344-selected",
+    "nodeId": "160:1344",
+    "export": "Avatar",
+    "storyId": "components-content-avatar--figma-small-states",
+    "state": "Selected",
+    "variant": "160:1350",
+    "width": 44,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"160-1350\"] [data-slot=\"avatar-identity\"]",
+    "subjects": {},
+    "note": "reviewed: 2026-10-23 render of FigmaSmallStates at 44 against pinned 160:1350 (Type=Selected): 44x44 frame, 8px corners, primary #0b3ee3 surface with the source 24px check glyph (size-6 at 24 vs 22, +2px)"
+  },
+  {
+    "id": "160-1344-municipalities",
+    "nodeId": "160:1344",
+    "export": "Avatar",
+    "storyId": "components-content-avatar--figma-small-states",
+    "state": "Municipalities",
+    "variant": "160:1354",
+    "width": 44,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"160-1354\"] [data-slot=\"avatar-identity\"]",
+    "subjects": {},
+    "note": "reviewed: 2026-10-23 render of FigmaSmallStates at 44 against pinned 160:1354 (Type=Municipalities): 44x44 frame, 8px corners, 32px contained logo at the 6px inset; the bundled product mark stands for the caller-owned municipality image, so the case proves the contain geometry, not the category brand art"
+  },
+  {
+    "id": "160-1344-institutions",
+    "nodeId": "160:1344",
+    "export": "Avatar",
+    "storyId": "components-content-avatar--figma-small-states",
+    "state": "Institutions",
+    "variant": "160:1361",
+    "width": 44,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"160-1361\"] [data-slot=\"avatar-identity\"]",
+    "subjects": {},
+    "note": "reviewed: 2026-10-23 render of FigmaSmallStates at 44 against pinned 160:1361 (Type=Institutions): 44x44 frame, 8px corners, 32px contained logo at the 6px inset; the bundled product mark stands for the caller-owned institution image, so the case proves the contain geometry, not the category brand art"
+  },
+  {
+    "id": "160-1344-services",
+    "nodeId": "160:1344",
+    "export": "Avatar",
+    "storyId": "components-content-avatar--figma-small-states",
+    "state": "Services",
+    "variant": "160:1368",
+    "width": 44,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"160-1368\"] [data-slot=\"avatar-identity\"]",
+    "subjects": {},
+    "note": "reviewed: 2026-10-23 render of FigmaSmallStates at 44 against pinned 160:1368 (Type=Services): 44x44 frame, 8px corners, 32px contained logo at the 6px inset; the bundled product mark stands for the caller-owned service image, so the case proves the contain geometry, not the category brand art"
+  },
+  {
+    "id": "160-1344-products",
+    "nodeId": "160:1344",
+    "export": "Avatar",
+    "storyId": "components-content-avatar--figma-small-states",
+    "state": "Products",
+    "variant": "160:1375",
+    "width": 44,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"160-1375\"] [data-slot=\"avatar-identity\"]",
+    "subjects": {},
+    "note": "reviewed: 2026-10-23 render of FigmaSmallStates at 44 against pinned 160:1375 (Type=Products): 44x44 frame, 8px corners, 32px contained logo at the 6px inset, the source product geometry"
+  },
+  {
+    "id": "160-1344-skeleton",
+    "nodeId": "160:1344",
+    "export": "Avatar",
+    "storyId": "components-content-avatar--figma-small-states",
+    "state": "Skeleton",
+    "variant": "160:1382",
+    "width": 44,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"160-1382\"] [data-slot=\"avatar-identity\"]",
+    "subjects": {},
+    "note": "reviewed: 2026-10-23 render of FigmaSmallStates at 44 against pinned 160:1382 (Type=Skeleton): 44x44 frame, 8px corners, the #e8ebf1 skeleton fill"
+  },
+  {
+    "id": "160-1344-double-avatar",
+    "nodeId": "160:1344",
+    "export": "Avatar",
+    "storyId": "components-content-avatar--figma-small-states",
+    "state": "Double avatar",
+    "variant": "160:1384",
+    "width": 44,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"160-1384\"] [data-slot=\"avatar-pair\"]",
+    "subjects": {},
+    "note": "reviewed: 2026-10-23 render of FigmaSmallStates at 44 against pinned 160:1384 (Type=Double avatar): 44x44 pair frame, both faces at 28px with the source 16px step and the 5.09px rear radius against the source 5.9px (-0.81px)"
+  },
+  {
+    "id": "160-1403-placeholder",
+    "nodeId": "160:1403",
+    "export": "Avatar",
+    "storyId": "components-content-avatar--figma-big-states",
+    "state": "Placeholder",
+    "variant": "160:1404",
+    "width": 66,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"160-1404\"] [data-slot=avatar-identity]",
+    "subjects": {},
+    "note": "reviewed: 2026-10-23 render of FigmaBigStates at 66 against pinned 160:1404 (Type=Placeholder): the 66px source frame uses size-16 at 64px (-2px), 8px corners, the source 33px placeholder glyph at 32px (size-8, -1px) on the muted surface"
+  },
+  {
+    "id": "160-1403-icon-black",
+    "nodeId": "160:1403",
+    "export": "Avatar",
+    "storyId": "components-content-avatar--figma-big-states",
+    "state": "Icon black",
+    "variant": "160:1409",
+    "width": 66,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"160-1409\"] [data-slot=avatar-identity]",
+    "subjects": {},
+    "note": "reviewed: 2026-10-23 render of FigmaBigStates at 66 against pinned 160:1409 (Type=Icon black): size-16 at 64px (-2px), 8px corners, the actual theater_comedy artwork at 32px against the source 33px (-1px) in the source foreground"
+  },
+  {
+    "id": "160-1403-icon-white",
+    "nodeId": "160:1403",
+    "export": "Avatar",
+    "storyId": "components-content-avatar--figma-big-states",
+    "state": "Icon white",
+    "variant": "160:1412",
+    "width": 66,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"160-1412\"] [data-slot=avatar-identity]",
+    "subjects": {},
+    "note": "reviewed: 2026-10-23 render of FigmaBigStates at 66 against pinned 160:1412 (Type=Icon white): size-16 at 64px (-2px), 8px corners, the actual theater_comedy artwork at 32px against the source 33px (-1px), inverse artwork on the caller-owned contrasting surface (registry note)"
+  },
+  {
+    "id": "160-1403-municipalities",
+    "nodeId": "160:1403",
+    "export": "Avatar",
+    "storyId": "components-content-avatar--figma-big-states",
+    "state": "Municipalities",
+    "variant": "160:1415",
+    "width": 66,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"160-1415\"] [data-slot=avatar-identity]",
+    "subjects": {},
+    "note": "reviewed: 2026-10-23 render of FigmaBigStates at 66 against pinned 160:1415 (Type=Municipalities): size-16 at 64px (-2px), 8px corners, 48px contained logo at the 8px inset against the source 9px (-1px); the bundled product mark stands for the caller-owned municipality image, so the case proves the contain geometry, not the category brand art"
+  },
+  {
+    "id": "160-1403-institutions",
+    "nodeId": "160:1403",
+    "export": "Avatar",
+    "storyId": "components-content-avatar--figma-big-states",
+    "state": "Institutions",
+    "variant": "160:1421",
+    "width": 66,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"160-1421\"] [data-slot=avatar-identity]",
+    "subjects": {},
+    "note": "reviewed: 2026-10-23 render of FigmaBigStates at 66 against pinned 160:1421 (Type=Institutions): size-16 at 64px (-2px), 8px corners, 48px contained logo at the 8px inset against the source 9px (-1px); the bundled product mark stands for the caller-owned institution image, so the case proves the contain geometry, not the category brand art"
+  },
+  {
+    "id": "160-1403-services",
+    "nodeId": "160:1403",
+    "export": "Avatar",
+    "storyId": "components-content-avatar--figma-big-states",
+    "state": "Services",
+    "variant": "160:1427",
+    "width": 66,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"160-1427\"] [data-slot=avatar-identity]",
+    "subjects": {},
+    "note": "reviewed: 2026-10-23 render of FigmaBigStates at 66 against pinned 160:1427 (Type=Services): size-16 at 64px (-2px), 8px corners, 48px contained logo at the 8px inset against the source 9px (-1px); the bundled product mark stands for the caller-owned service image, so the case proves the contain geometry, not the category brand art"
+  },
+  {
+    "id": "160-1403-products",
+    "nodeId": "160:1403",
+    "export": "Avatar",
+    "storyId": "components-content-avatar--figma-big-states",
+    "state": "Products",
+    "variant": "160:1433",
+    "width": 66,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"160-1433\"] [data-slot=avatar-identity]",
+    "subjects": {},
+    "note": "reviewed: 2026-10-23 render of FigmaBigStates at 66 against pinned 160:1433 (Type=Products): size-16 at 64px (-2px), 8px corners, the source 48px contained product logo at the 8px inset against the source 9px (-1px)"
+  },
+  {
+    "id": "160-1403-skeleton",
+    "nodeId": "160:1403",
+    "export": "Avatar",
+    "storyId": "components-content-avatar--figma-big-states",
+    "state": "Skeleton",
+    "variant": "160:1439",
+    "width": 66,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"160-1439\"] [data-slot=avatar-identity]",
+    "subjects": {},
+    "note": "reviewed: 2026-10-23 render of FigmaBigStates at 66 against pinned 160:1439 (Type=Skeleton): size-16 at 64px (-2px), 8px corners, the #e8ebf1 skeleton fill"
+  },
+  {
+    "id": "192-1208-icon",
+    "nodeId": "192:1208",
+    "export": "Button",
+    "storyId": "components-button--figma-icon-button",
+    "state": "icon",
+    "variant": "192:1208",
+    "width": 44,
+    "height": 44,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"192-1208\"]",
+    "subjects": {
+      "menu": "#storybook-root [data-fidelity-icon]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: the 44x44 IconButton frame maps to the ghost, icon-size Button: a transparent 44px surface holding the 24px menu icon at 10,10; the composition check is clean (icon offset 10,10) and the accessible name on the native button is the recorded accessibility adaptation."
+  },
+  {
+    "id": "194-3654-default",
+    "nodeId": "194:3654",
+    "export": "Checkbox",
+    "storyId": "components-checkbox--source-default",
+    "state": "default",
+    "variant": "194:3655",
+    "width": 24,
+    "height": 24,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"checkbox\"]",
+    "subjects": {
+      "check_box": "#storybook-root [data-slot=\"checkbox\"] > span"
+    },
+    "compareOffset": true,
+    "expectState": "empty",
+    "note": "reviewed: source Status=Default (194:3655, 24x24) against SourceDefault. Verified the 24x24 unchecked check_box artwork at 0,0 and the 24x24 box; the 44px native target is the invisible after:-inset-2.5 expansion, the recorded native-target-minimum adaptation (the visual box stays 24). Composition clean under --strict (artwork offset 0,0); responsive clean."
+  },
+  {
+    "id": "194-3654-selected",
+    "nodeId": "194:3654",
+    "export": "Checkbox",
+    "storyId": "components-checkbox--source-selected",
+    "state": "selected",
+    "variant": "194:3657",
+    "width": 24,
+    "height": 24,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"checkbox\"]",
+    "subjects": {
+      "check_box": "#storybook-root [data-slot=\"checkbox\"] [data-slot=\"checkbox-indicator\"] [data-figma-node-id]"
+    },
+    "compareOffset": true,
+    "expectState": "filled",
+    "stateEvidence": "#storybook-root [data-slot=\"checkbox\"]",
+    "note": "reviewed: source Status=Selected (194:3657, 24x24) against SourceSelected. Verified the 24x24 checked check_box artwork at 0,0 inside the 24x24 box; the selected state is evidenced by aria-checked=true on the control (the filled predicate has no native checkbox branch, so the case declares the control as its evidence). The 44px native target is the invisible after:-inset-2.5 expansion, the recorded native-target-minimum adaptation. Composition clean under --strict; responsive clean."
+  },
+  {
+    "id": "194-3654-focused",
+    "nodeId": "194:3654",
+    "export": "Checkbox",
+    "storyId": "components-checkbox--source-focused",
+    "state": "focused",
+    "variant": "194:3659",
+    "width": 24,
+    "height": 24,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"checkbox\"]",
+    "subjects": {
+      "check_box": "#storybook-root [data-slot=\"checkbox\"] > span"
+    },
+    "focus": ["#storybook-root [data-slot=\"checkbox\"]"],
+    "keepFocus": true,
+    "compareOffset": true,
+    "expectState": "focused",
+    "note": "reviewed: source Status=Focused (194:3659, 24x24) against SourceFocused, captured with the real keyboard focus on the native control. Verified the 24x24 focused glyph at 0,0 and the 24x24 box; the library draws its visible keyboard focus perimeter outside the box (outline-offset 2), the recorded keyboard-focus-perimeter adaptation, so the box does not grow. Composition clean under --strict; responsive clean."
+  },
+  {
+    "id": "194-3661-default",
+    "nodeId": "194:3661",
+    "export": "CheckboxField",
+    "storyId": "components-inputs-checkboxfield--source-default",
+    "state": "default",
+    "variant": "194:3662",
+    "width": 320,
+    "height": 56,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"checkbox-field\"]",
+    "subjects": {
+      "Checkbox single element": "#storybook-root [data-slot=\"checkbox\"]",
+      "Checkbox label": "#storybook-root [data-fidelity-part=\"label\"]"
+    },
+    "compareOffset": true,
+    "expectState": "enabled",
+    "ignores": ["gap"],
+    "note": "reviewed: source Status=Default (194:3662, 320x56) against SourceDefault at 320. Verified the 320x56 field (16/0 padding), the 24x24 checkbox at 0,16 and the 16/22 Semibold #0e0f13 label at 32,16; composition clean under --strict. field.gap is an ignored mapping artifact: the source variant frame is both the field and the row, while the DOM keeps the source 8px row gap on the inner label and the wrapper 2px grid gap before the message block. Responsive clean."
+  },
+  {
+    "id": "194-3661-default-disabled",
+    "nodeId": "194:3661",
+    "export": "CheckboxField",
+    "storyId": "components-inputs-checkboxfield--source-default-disabled",
+    "state": "default-disabled",
+    "variant": "194:3665",
+    "width": 320,
+    "height": 56,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"checkbox-field\"]",
+    "subjects": {
+      "Checkbox single element": "#storybook-root [data-slot=\"checkbox\"]",
+      "Checkbox label": "#storybook-root [data-fidelity-part=\"label\"]"
+    },
+    "compareOffset": true,
+    "expectState": "disabled",
+    "residues": [
+      {
+        "path": "Checkbox label.font.color",
+        "reason": "the source paints the whole 320x56 field at 50% opacity over the #0e0f13 label, so the effective colour is muted; the library uses the muted-foreground token on the copy and the native disabled control instead of fading the whole field (adaptation native-unavailable-state in the registry note)."
+      }
+    ],
+    "ignores": ["gap"],
+    "note": "reviewed: source Status=Default disable (194:3665, 320x56) against SourceDefaultDisabled. Verified the 320x56 field (16/0 padding), the 24x24 disabled checkbox at 0,16 and the 16/22 Semibold #555c70 label at 32,16 on the native disabled control. Residue Checkbox label.font.color records the native-unavailable-state adaptation: the source fades the whole field to 50% over #0e0f13, the library paints the muted-foreground token and the native disabled control. field.gap is the recorded mapping artifact (source variant frame vs the DOM row/wrapper split). Responsive clean."
+  },
+  {
+    "id": "194-3661-selected",
+    "nodeId": "194:3661",
+    "export": "CheckboxField",
+    "storyId": "components-inputs-checkboxfield--source-selected",
+    "state": "selected",
+    "variant": "194:3668",
+    "width": 320,
+    "height": 56,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"checkbox-field\"]",
+    "subjects": {
+      "Checkbox single element": "#storybook-root [data-slot=\"checkbox\"]",
+      "Checkbox label": "#storybook-root [data-fidelity-part=\"label\"]"
+    },
+    "compareOffset": true,
+    "expectState": "filled",
+    "stateEvidence": "#storybook-root [data-slot=\"checkbox\"]",
+    "ignores": ["gap"],
+    "note": "reviewed: source Status=Selected (194:3668, 320x56) against SourceSelected. Verified the 320x56 field (16/0 padding), the 24x24 checked artwork at 0,16 and the 16/22 Semibold #0e0f13 label at 32,16; the selected state is evidenced by aria-checked=true on the control (the filled predicate has no native checkbox branch, so the case declares the control as its evidence). Composition clean under --strict; field.gap is the recorded mapping artifact (source variant frame vs the DOM row/wrapper split). Responsive clean."
+  },
+  {
+    "id": "194-3661-selected-disabled",
+    "nodeId": "194:3661",
+    "export": "CheckboxField",
+    "storyId": "components-inputs-checkboxfield--source-selected-disabled",
+    "state": "selected-disabled",
+    "variant": "194:3671",
+    "width": 320,
+    "height": 56,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"checkbox-field\"]",
+    "subjects": {
+      "check_box": "#storybook-root [data-slot=\"checkbox\"]",
+      "Checkbox label": "#storybook-root [data-fidelity-part=\"label\"]"
+    },
+    "compareOffset": true,
+    "expectState": "disabled",
+    "stateEvidence": "#storybook-root [data-slot=\"checkbox\"]",
+    "ignores": ["gap"],
+    "note": "reviewed: source Status=Selected disabled (194:3671, 320x56) against SourceSelectedDisabled. The Selected disabled variant draws the checked artwork directly as check_box, mapped to the control; verified the 320x56 field (16/0 padding), the 24x24 checked artwork at 0,16, the native disabled control and the 16/22 Semibold #555c70 label at 32,16, which matches the muted-foreground token. Composition clean under --strict; field.gap is the recorded mapping artifact (source variant frame vs the DOM row/wrapper split). Responsive clean."
+  },
+  {
+    "id": "194-3661-feedback",
+    "nodeId": "194:3661",
+    "export": "CheckboxField",
+    "storyId": "components-inputs-checkboxfield--source-feedback",
+    "state": "feedback",
+    "variant": "194:3674",
+    "width": 320,
+    "height": 78,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"checkbox-field\"]",
+    "subjects": {
+      "Checkbox single element": "#storybook-root [data-slot=\"checkbox\"]",
+      "Checkbox label": "#storybook-root [data-fidelity-part=\"label\"]",
+      "Frame 2087324382": "#storybook-root [data-slot=\"checkbox-field\"] > div",
+      "Helper text": "#storybook-root [data-slot=\"field-error\"]"
+    },
+    "compareOffset": true,
+    "expectState": "error",
+    "note": "reviewed: source Status=Feedback (194:3674, 320x78) against SourceFeedback at 320. Verified the 320x78 field (16/0 padding, 2px root gap), the 24x24 checkbox at 0,16, the 16/22 #0e0f13 label at 32,16, the 320x20 helper row at 0,42 (32px left inset, 16px report icon and 6px gap) and the 14/20 #d13333 helper text. Composition clean under --strict with no residue: the source variant root gap is the library wrapper gap (both 2) and the source helper frame maps to the message block. Responsive clean."
+  },
+  {
+    "id": "194-3677-default",
+    "nodeId": "194:3677",
+    "export": "RadioGroupItem",
+    "storyId": "components-inputs-radiofield--radio-indicator-states",
+    "state": "default",
+    "variant": "194:3678",
+    "width": 24,
+    "height": 24,
+    "depth": 3,
+    "root": "div.grid.w-full.gap-5 > span:nth-of-type(1)",
+    "subjects": {},
+    "note": "reviewed: source 194:3678 default indicator. The 24px frame is the compared box; the 20px unchecked glyph rides inside it (2px inset per side), so the case maps the frame and leaves the artwork to the shared radio_button icon."
+  },
+  {
+    "id": "194-3677-active",
+    "nodeId": "194:3677",
+    "export": "RadioGroupItem",
+    "storyId": "components-inputs-radiofield--radio-indicator-states",
+    "state": "active",
+    "variant": "194:3680",
+    "width": 24,
+    "height": 24,
+    "depth": 3,
+    "root": "div.grid.w-full.gap-5 > span:nth-of-type(2)",
+    "subjects": {},
+    "expectState": "filled",
+    "note": "reviewed: source 194:3680 active indicator. 24px frame verified; the checked glyph carries the primary #0B3EE3 through the text-primary token, the filled state is asserted on the real radio."
+  },
+  {
+    "id": "194-3677-feedback-error",
+    "nodeId": "194:3677",
+    "export": "RadioGroupItem",
+    "storyId": "components-inputs-radiofield--radio-indicator-states",
+    "state": "feedback-error",
+    "variant": "194:3682",
+    "width": 24,
+    "height": 24,
+    "depth": 3,
+    "root": "div.grid.w-full.gap-5 > span:nth-of-type(3)",
+    "subjects": {},
+    "expectState": "error",
+    "note": "reviewed: source 194:3682 feedback-error indicator. 24px frame verified; the destructive ring uses the text-destructive token and the native aria-invalid state is asserted."
+  },
+  {
+    "id": "194-3700-selected",
+    "nodeId": "194:3700",
+    "export": "RadioField",
+    "storyId": "components-inputs-radiofield--radio-source-state-matrix",
+    "state": "selected",
+    "variant": "194:3701",
+    "width": 320,
+    "height": 80,
+    "depth": 3,
+    "root": "fieldset:nth-of-type(4) [data-slot=\"radio-field\"]",
+    "subjects": {
+      "Heading": "fieldset:nth-of-type(4) [data-slot=\"radio-field\"] > label",
+      "Title": "fieldset:nth-of-type(4) [data-slot=\"radio-field\"] > label > span:nth-of-type(2)",
+      "Description": "fieldset:nth-of-type(4) [data-slot=\"radio-field\"] p:not([data-slot=\"field-error\"])"
+    },
+    "compareOffset": "fieldset:nth-of-type(4) [data-slot=\"radio-field\"]",
+    "expectState": "filled",
+    "note": "reviewed: source 194:3701 selected rich option (end indicator, notifications_active icon, description). Root 320x80, 16px vertical padding and 4px root gap; Heading/Title/Description subjects and strict composition clean."
+  },
+  {
+    "id": "194-3700-selected-unavailable",
+    "nodeId": "194:3700",
+    "export": "RadioField",
+    "storyId": "components-inputs-radiofield--radio-source-state-matrix",
+    "state": "selected-unavailable",
+    "variant": "194:3709",
+    "width": 320,
+    "height": 80,
+    "depth": 3,
+    "root": "fieldset:nth-of-type(8) [data-slot=\"radio-field\"]",
+    "subjects": {
+      "Heading": "fieldset:nth-of-type(8) [data-slot=\"radio-field\"] > label",
+      "Title": "fieldset:nth-of-type(8) [data-slot=\"radio-field\"] > label > span:nth-of-type(2)",
+      "Description": "fieldset:nth-of-type(8) [data-slot=\"radio-field\"] p:not([data-slot=\"field-error\"])"
+    },
+    "compareOffset": "fieldset:nth-of-type(8) [data-slot=\"radio-field\"]",
+    "expectState": "filled",
+    "note": "reviewed: source 194:3709 selected unavailable rich option. The checked native state is preserved under disabled; 320x80 frame and subjects clean."
+  },
+  {
+    "id": "194-3700-skeleton-title",
+    "nodeId": "194:3700",
+    "export": "RadioField",
+    "storyId": "components-inputs-radiofield--radio-source-state-matrix",
+    "state": "skeleton-title",
+    "variant": "194:3717",
+    "width": 320,
+    "height": 56,
+    "depth": 3,
+    "root": "fieldset:nth-of-type(11) [data-slot=\"radio-field\"]",
+    "subjects": {
+      "Frame 1243": "fieldset:nth-of-type(11) [data-slot=\"radio-field\"] > label",
+      "Rectangle 53": "fieldset:nth-of-type(11) [data-slot=\"radio-field\"] > label > span:nth-of-type(2) > [data-slot=\"skeleton\"]"
+    },
+    "compareOffset": "fieldset:nth-of-type(11) [data-slot=\"radio-field\"]",
+    "ignores": ["gap"],
+    "note": "reviewed: source 194:3717 skeleton Title. 320x56; the 244px title placeholder against the source 243px stays inside the 2px tolerance, and the source single-child 16px gap is ignored as a mapping artifact. The real selected state is kept, not faked."
+  },
+  {
+    "id": "194-3700-unselected",
+    "nodeId": "194:3700",
+    "export": "RadioField",
+    "storyId": "components-inputs-radiofield--radio-source-state-matrix",
+    "state": "unselected",
+    "variant": "194:3722",
+    "width": 320,
+    "height": 80,
+    "depth": 3,
+    "root": "fieldset:nth-of-type(2) [data-slot=\"radio-field\"]",
+    "subjects": {
+      "Heading": "fieldset:nth-of-type(2) [data-slot=\"radio-field\"] > label",
+      "Title": "fieldset:nth-of-type(2) [data-slot=\"radio-field\"] > label > span:nth-of-type(2)",
+      "Description": "fieldset:nth-of-type(2) [data-slot=\"radio-field\"] p:not([data-slot=\"field-error\"])"
+    },
+    "compareOffset": "fieldset:nth-of-type(2) [data-slot=\"radio-field\"]",
+    "note": "reviewed: source 194:3722 unselected rich option (end indicator, icon and description). Same 320x80 frame and subjects; the radio reports the unselected state."
+  },
+  {
+    "id": "194-3700-unselected-unavailable",
+    "nodeId": "194:3700",
+    "export": "RadioField",
+    "storyId": "components-inputs-radiofield--radio-source-state-matrix",
+    "state": "unselected-unavailable",
+    "variant": "194:3730",
+    "width": 320,
+    "height": 80,
+    "depth": 3,
+    "root": "fieldset:nth-of-type(6) [data-slot=\"radio-field\"]",
+    "subjects": {
+      "Heading": "fieldset:nth-of-type(6) [data-slot=\"radio-field\"] > label",
+      "Title": "fieldset:nth-of-type(6) [data-slot=\"radio-field\"] > label > span:nth-of-type(2)",
+      "Description": "fieldset:nth-of-type(6) [data-slot=\"radio-field\"] p:not([data-slot=\"field-error\"])"
+    },
+    "compareOffset": "fieldset:nth-of-type(6) [data-slot=\"radio-field\"]",
+    "note": "reviewed: source 194:3730 unselected unavailable rich option. Native disabled state, muted copy and the shared unfaded icon contract; 320x80 frame and subjects clean."
+  },
+  {
+    "id": "194-3700-skeleton-icon-title-description",
+    "nodeId": "194:3700",
+    "export": "RadioField",
+    "storyId": "components-inputs-radiofield--radio-source-state-matrix",
+    "state": "skeleton-icon-title-description",
+    "variant": "194:3738",
+    "width": 320,
+    "height": 108,
+    "depth": 3,
+    "root": "fieldset:nth-of-type(14) [data-slot=\"radio-field\"]",
+    "subjects": {
+      "Frame 1243": "fieldset:nth-of-type(14) [data-slot=\"radio-field\"] > label",
+      "Frame 1245": "fieldset:nth-of-type(14) [data-slot=\"radio-field\"] span[aria-hidden=\"true\"].grid",
+      "Rectangle 564": "fieldset:nth-of-type(14) [data-slot=\"radio-field\"] span[aria-hidden=\"true\"].size-6 [data-slot=\"skeleton\"]",
+      "Rectangle 53": "fieldset:nth-of-type(14) [data-slot=\"radio-field\"] > label > span:nth-of-type(2) > [data-slot=\"skeleton\"]"
+    },
+    "compareOffset": "fieldset:nth-of-type(14) [data-slot=\"radio-field\"]",
+    "note": "reviewed: source 194:3738 skeleton Icon + Title + Description. Root 320x108 with the 24px icon placeholder, the 180px title placeholder and the 44px description block; skeleton radii use the 8px token so the computed radius matches the source r8."
+  },
+  {
+    "id": "194-3700-skeleton-title-description",
+    "nodeId": "194:3700",
+    "export": "RadioField",
+    "storyId": "components-inputs-radiofield--radio-source-state-matrix",
+    "state": "skeleton-title-description",
+    "variant": "194:3748",
+    "width": 320,
+    "height": 108,
+    "depth": 3,
+    "root": "fieldset:nth-of-type(13) [data-slot=\"radio-field\"]",
+    "subjects": {
+      "Frame 1243": "fieldset:nth-of-type(13) [data-slot=\"radio-field\"] > label",
+      "Rectangle 53": "fieldset:nth-of-type(13) [data-slot=\"radio-field\"] > label > span:nth-of-type(2) > [data-slot=\"skeleton\"]",
+      "Frame 1245": "fieldset:nth-of-type(13) [data-slot=\"radio-field\"] span[aria-hidden=\"true\"].grid"
+    },
+    "compareOffset": "fieldset:nth-of-type(13) [data-slot=\"radio-field\"]",
+    "note": "reviewed: source 194:3748 skeleton Title + Description. Root 320x108; the 8px root gap matches the source 8px, the description block keeps 44px with 10px bar gaps, the 180px title placeholder sits against 179px."
+  },
+  {
+    "id": "194-3700-skeleton-icon-title",
+    "nodeId": "194:3700",
+    "export": "RadioField",
+    "storyId": "components-inputs-radiofield--radio-source-state-matrix",
+    "state": "skeleton-icon-title",
+    "variant": "194:3757",
+    "width": 320,
+    "height": 56,
+    "depth": 3,
+    "root": "fieldset:nth-of-type(12) [data-slot=\"radio-field\"]",
+    "subjects": {
+      "Frame 1243": "fieldset:nth-of-type(12) [data-slot=\"radio-field\"] > label",
+      "Rectangle 53": "fieldset:nth-of-type(12) [data-slot=\"radio-field\"] > label > span:nth-of-type(2) > [data-slot=\"skeleton\"]",
+      "Rectangle 564": "fieldset:nth-of-type(12) [data-slot=\"radio-field\"] span[aria-hidden=\"true\"].size-6 [data-slot=\"skeleton\"]"
+    },
+    "compareOffset": "fieldset:nth-of-type(12) [data-slot=\"radio-field\"]",
+    "ignores": ["gap"],
+    "note": "reviewed: source 194:3757 skeleton Icon + Title. 320x56 with the 24px icon placeholder (4px radius) and the 180px title placeholder against 179px; the single-child gap is ignored. Loading keeps the real checked state and announces busy."
+  },
+  {
+    "id": "194-3700-error",
+    "nodeId": "194:3700",
+    "export": "RadioField",
+    "storyId": "components-inputs-radiofield--radio-source-state-matrix",
+    "state": "error",
+    "variant": "295:1275",
+    "width": 320,
+    "height": 104,
+    "depth": 3,
+    "root": "fieldset:nth-of-type(10) [data-slot=\"radio-field\"]",
+    "subjects": {
+      "Frame 1243": "fieldset:nth-of-type(10) [data-slot=\"radio-field\"] > label",
+      "Frame 1246": "fieldset:nth-of-type(10) [data-slot=\"radio-field\"] > label > span:nth-of-type(2)",
+      "Nome servizio": "fieldset:nth-of-type(10) [data-slot=\"radio-field\"] p:not([data-slot=\"field-error\"])",
+      "Frame 2087324382": "fieldset:nth-of-type(10) [data-slot=\"radio-field\"] [data-slot=\"field-error\"]"
+    },
+    "compareOffset": "fieldset:nth-of-type(10) [data-slot=\"radio-field\"]",
+    "expectState": "error",
+    "note": "reviewed: source 295:1275 feedback error (end indicator, icon, description). Root 320x104; the 4px root gap, 8px heading-to-description rhythm and the 6px report row match; Frame 1243/Frame 1246/Nome servizio/Frame 2087324382 subjects clean."
+  },
+  {
+    "id": "194-3763-selected",
+    "nodeId": "194:3763",
+    "export": "CheckboxField",
+    "storyId": "components-inputs-checkboxfield--source-rich-selected",
+    "state": "selected",
+    "variant": "194:3764",
+    "width": 320,
+    "height": 80,
+    "depth": 3,
+    "root": "[data-slot=\"checkbox-field\"]",
+    "subjects": {
+      "Heading": "[data-slot=\"checkbox-field\"] > label",
+      "Title": "[data-fidelity-part=\"copy\"]",
+      "Description": "[data-slot=\"checkbox-field\"] p"
+    },
+    "compareOffset": "[data-slot=\"checkbox-field\"]",
+    "expectState": "filled",
+    "note": "reviewed: source 194:3764 rich option (selected, available, decorative privacy_tip icon, end indicator). Root 320x80 with 16px vertical padding and 4px gap; Heading/Title/Description subjects clean; composition strict-clean."
+  },
+  {
+    "id": "194-3763-selected-unavailable",
+    "nodeId": "194:3763",
+    "export": "CheckboxField",
+    "storyId": "components-inputs-checkboxfield--source-rich-selected-unavailable",
+    "state": "selected-unavailable",
+    "variant": "194:3772",
+    "width": 320,
+    "height": 80,
+    "depth": 3,
+    "root": "[data-slot=\"checkbox-field\"]",
+    "subjects": {
+      "Frame 1243": "[data-slot=\"checkbox-field\"] > label",
+      "Frame 1247": "[data-fidelity-part=\"copy\"]",
+      "Description": "[data-slot=\"checkbox-field\"] p"
+    },
+    "compareOffset": "[data-slot=\"checkbox-field\"]",
+    "expectState": "filled",
+    "note": "reviewed: source 194:3772 rich option (selected, unavailable, decorative privacy_tip icon, end indicator). The disabled native state keeps only the icon and checkbox artwork faded; Frame 1243/Frame 1247 subjects and strict composition clean."
+  },
+  {
+    "id": "194-3763-unselected",
+    "nodeId": "194:3763",
+    "export": "CheckboxField",
+    "storyId": "components-inputs-checkboxfield--source-rich-default",
+    "state": "unselected",
+    "variant": "194:3780",
+    "width": 320,
+    "height": 80,
+    "depth": 3,
+    "root": "[data-slot=\"checkbox-field\"]",
+    "subjects": {
+      "Heading": "[data-slot=\"checkbox-field\"] > label",
+      "Title": "[data-fidelity-part=\"copy\"]",
+      "Description": "[data-slot=\"checkbox-field\"] p"
+    },
+    "compareOffset": "[data-slot=\"checkbox-field\"]",
+    "expectState": "empty",
+    "note": "reviewed: source 194:3780 rich option (unselected, available, decorative privacy_tip icon, end indicator). Same 320x80 frame as the selected state; subjects and strict composition clean."
+  },
+  {
+    "id": "194-3763-unselected-unavailable",
+    "nodeId": "194:3763",
+    "export": "CheckboxField",
+    "storyId": "components-inputs-checkboxfield--source-rich-default-unavailable",
+    "state": "unselected-unavailable",
+    "variant": "194:3788",
+    "width": 320,
+    "height": 80,
+    "depth": 3,
+    "root": "[data-slot=\"checkbox-field\"]",
+    "subjects": {
+      "Heading": "[data-slot=\"checkbox-field\"] > label",
+      "Title": "[data-fidelity-part=\"copy\"]",
+      "Description": "[data-slot=\"checkbox-field\"] p"
+    },
+    "compareOffset": "[data-slot=\"checkbox-field\"]",
+    "expectState": "empty",
+    "note": "reviewed: source 194:3788 rich option (unselected, unavailable, decorative privacy_tip icon, end indicator). Same native disabled adaptation and 320x80 frame; strict composition clean."
+  },
+  {
+    "id": "194-3763-error",
+    "nodeId": "194:3763",
+    "export": "CheckboxField",
+    "storyId": "components-inputs-checkboxfield--source-rich-error",
+    "state": "error",
+    "variant": "295:1257",
+    "width": 320,
+    "height": 104,
+    "depth": 3,
+    "root": "[data-slot=\"checkbox-field\"]",
+    "subjects": {
+      "Heading": "[data-slot=\"checkbox-field\"] > label",
+      "Title": "[data-fidelity-part=\"copy\"]",
+      "Description": "[data-slot=\"checkbox-field\"] p:not([data-slot=\"field-error\"])",
+      "Frame 2087324382": "[data-slot=\"field-error\"]"
+    },
+    "compareOffset": "[data-slot=\"checkbox-field\"]",
+    "expectState": "error",
+    "note": "reviewed: source 295:1257 rich option error. Root 320x104; the source 4px root gap and 6px error-row gap match; Heading/Title/Description and the error row subjects clean, the native invalid state and the red report row are asserted."
+  },
+  {
+    "id": "194-3841-default",
+    "nodeId": "194:3841",
+    "export": "RadioField",
+    "storyId": "components-inputs-radiofield--figma-state-matrix",
+    "state": "Default",
+    "variant": "194:3842",
+    "width": 320,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"194-3842\"] [data-slot=\"radio-group\"] > div",
+    "subjects": {},
+    "ignores": ["field.gap"],
+    "note": "reviewed: 2026-10-23 render of FigmaStateMatrix at 320 against pinned 194:3842 (Status=Default): outer box 320x56, padding 16/0/16/0, 24px indicator, 8px gap to the Titillio-Semibold 16/22 label; field.gap is the phantom gap of the DOM root that wraps radio and label in one native label"
+  },
+  {
+    "id": "194-3841-default-disable",
+    "nodeId": "194:3841",
+    "export": "RadioField",
+    "storyId": "components-inputs-radiofield--figma-state-matrix",
+    "state": "Default disable",
+    "variant": "194:3845",
+    "width": 320,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"194-3845\"] [data-slot=\"radio-group\"] > div",
+    "subjects": {},
+    "ignores": ["field.gap"],
+    "note": "reviewed: 2026-10-23 render of FigmaStateMatrix at 320 against pinned 194:3845 (Status=Default disable): outer box 320x56, padding 16/0/16/0, 24px disabled indicator and muted label, 8px gap to the Titillio-Semibold 16/22 label; field.gap is the phantom gap of the DOM root that wraps radio and label in one native label"
+  },
+  {
+    "id": "194-3841-selected",
+    "nodeId": "194:3841",
+    "export": "RadioField",
+    "storyId": "components-inputs-radiofield--figma-state-matrix",
+    "state": "Selected",
+    "variant": "194:3848",
+    "width": 320,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"194-3848\"] [data-slot=\"radio-group\"] > div",
+    "subjects": {},
+    "ignores": ["field.gap"],
+    "note": "reviewed: 2026-10-23 render of FigmaStateMatrix at 320 against pinned 194:3848 (Status=Selected): outer box 320x56, padding 16/0/16/0, the 24px primary checked indicator and 8px gap to the Titillio-Semibold 16/22 label; field.gap is the phantom gap of the DOM root that wraps radio and label in one native label"
+  },
+  {
+    "id": "194-3841-selected-disabled",
+    "nodeId": "194:3841",
+    "export": "RadioField",
+    "storyId": "components-inputs-radiofield--figma-state-matrix",
+    "state": "Selected disabled",
+    "variant": "194:3851",
+    "width": 320,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"194-3851\"] [data-slot=\"radio-group\"] > div",
+    "subjects": {},
+    "ignores": ["field.gap"],
+    "note": "reviewed: 2026-10-23 render of FigmaStateMatrix at 320 against pinned 194:3851 (Status=Selected disabled): outer box 320x56, padding 16/0/16/0, the 24px checked indicator at the disabled 50% artwork opacity and the muted label; field.gap is the phantom gap of the DOM root that wraps radio and label in one native label"
+  },
+  {
+    "id": "194-3841-feedback",
+    "nodeId": "194:3841",
+    "export": "RadioField",
+    "storyId": "components-inputs-radiofield--figma-state-matrix",
+    "state": "Feedback",
+    "variant": "194:3854",
+    "width": 320,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"194-3854\"] [data-slot=\"radio-group\"] > div",
+    "subjects": {},
+    "note": "reviewed: 2026-10-23 render of FigmaStateMatrix at 320 against pinned 194:3854 (Status=Feedback): outer box 320x76, padding 16/0/16/0, the 24px destructive indicator, 8px gap to the label and the source report glyph with the destructive helper text at the 32px inset; the inner 18px feedback frame is not mapped because the shared caption line is 20px (registry note: shared 20px feedback lines avoid the source clipped 18px frame)"
+  },
+  {
+    "id": "197-1985-highlight-solid",
+    "nodeId": "197:1985",
+    "export": "Chip",
+    "storyId": "components-inputs-chip--chip-source-variant-matrix",
+    "state": "highlight-solid",
+    "variant": "197:1986",
+    "depth": 3,
+    "root": "[data-testid=\"chip-highlight-solid\"]",
+    "subjects": {
+      "label": "#storybook-root [data-testid=\"chip-highlight-solid\"] > span:first-of-type"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.radius",
+        "reason": "rounded-full paints the same full pill as the source radius 100"
+      }
+    ],
+    "note": "reviewed: 2026-10-23 render of ChipSourceVariantMatrix at the 66x24 source box against pinned source 197:1986 (Type=Highlight, Style=Solid): compact chip 66x24 with the 3/8 padding, full pill and #dbf9fa fill and the #003b3d 12/18 Semibold label, no border; composition (--compare-offset, --strict) clean. The source radius 100 is painted by rounded-full (residue); the label width stays content-driven."
+  },
+  {
+    "id": "197-1985-highlight-outline",
+    "nodeId": "197:1985",
+    "export": "Chip",
+    "storyId": "components-inputs-chip--chip-source-variant-matrix",
+    "state": "highlight-outline",
+    "variant": "197:1988",
+    "depth": 3,
+    "root": "[data-testid=\"chip-highlight-outline\"]",
+    "subjects": {
+      "label": "#storybook-root [data-testid=\"chip-highlight-outline\"] > span:first-of-type"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.radius",
+        "reason": "rounded-full paints the same full pill as the source radius 100"
+      }
+    ],
+    "note": "reviewed: 2026-10-23 render of ChipSourceVariantMatrix at the 66x24 source box against pinned source 197:1988 (Type=Highlight, Style=Outline): compact chip 66x24 with the 3/8 padding, full pill and transparent fill, the 1px #003b3d border and the #003b3d 12/18 Semibold label; composition (--compare-offset, --strict) clean. The source radius 100 is painted by rounded-full (residue); the label width stays content-driven."
+  },
+  {
+    "id": "197-1985-default-solid",
+    "nodeId": "197:1985",
+    "export": "Chip",
+    "storyId": "components-inputs-chip--chip-source-variant-matrix",
+    "state": "default-solid",
+    "variant": "197:1990",
+    "depth": 3,
+    "root": "[data-testid=\"chip-default-solid\"]",
+    "subjects": {
+      "label": "#storybook-root [data-testid=\"chip-default-solid\"] > span:first-of-type"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.radius",
+        "reason": "rounded-full paints the same full pill as the source radius 100"
+      }
+    ],
+    "note": "reviewed: 2026-10-23 render of ChipSourceVariantMatrix at the 57x24 source box against pinned source 197:1990 (Type=Default, Style=Solid): compact chip 57x24 with the 3/8 padding, full pill and #e7ecfc fill and the #031344 12/18 Semibold label, no border; composition (--compare-offset, --strict) clean. The source radius 100 is painted by rounded-full (residue); the label width stays content-driven."
+  },
+  {
+    "id": "197-1985-default-outline",
+    "nodeId": "197:1985",
+    "export": "Chip",
+    "storyId": "components-inputs-chip--chip-source-variant-matrix",
+    "state": "default-outline",
+    "variant": "197:1992",
+    "depth": 3,
+    "root": "[data-testid=\"chip-default-outline\"]",
+    "subjects": {
+      "label": "#storybook-root [data-testid=\"chip-default-outline\"] > span:first-of-type"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.radius",
+        "reason": "rounded-full paints the same full pill as the source radius 100"
+      }
+    ],
+    "note": "reviewed: 2026-10-23 render of ChipSourceVariantMatrix at the 57x24 source box against pinned source 197:1992 (Type=Default, Style=Outline): compact chip 57x24 with the 3/8 padding, full pill and transparent fill, the 1px #0932b6 border and the #0932b6 12/18 Semibold label; composition (--compare-offset, --strict) clean. The source radius 100 is painted by rounded-full (residue); the label width stays content-driven."
+  },
+  {
+    "id": "197-1985-warning-solid",
+    "nodeId": "197:1985",
+    "export": "Chip",
+    "storyId": "components-inputs-chip--chip-source-variant-matrix",
+    "state": "warning-solid",
+    "variant": "197:1994",
+    "depth": 3,
+    "root": "[data-testid=\"chip-warning-solid\"]",
+    "subjects": {
+      "label": "#storybook-root [data-testid=\"chip-warning-solid\"] > span:first-of-type"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.radius",
+        "reason": "rounded-full paints the same full pill as the source radius 100"
+      }
+    ],
+    "note": "reviewed: 2026-10-23 render of ChipSourceVariantMatrix at the 63x24 source box against pinned source 197:1994 (Type=Warning, Style=Solid): compact chip 63x24 with the 3/8 padding, full pill and #fff5da fill and the #614c15 12/18 Semibold label, no border; composition (--compare-offset, --strict) clean. The source radius 100 is painted by rounded-full (residue); the label width stays content-driven."
+  },
+  {
+    "id": "197-1985-warning-outline",
+    "nodeId": "197:1985",
+    "export": "Chip",
+    "storyId": "components-inputs-chip--chip-source-variant-matrix",
+    "state": "warning-outline",
+    "variant": "197:1996",
+    "depth": 3,
+    "root": "[data-testid=\"chip-warning-outline\"]",
+    "subjects": {
+      "label": "#storybook-root [data-testid=\"chip-warning-outline\"] > span:first-of-type"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.radius",
+        "reason": "rounded-full paints the same full pill as the source radius 100"
+      }
+    ],
+    "note": "reviewed: 2026-10-23 render of ChipSourceVariantMatrix at the 63x24 source box against pinned source 197:1996 (Type=Warning, Style=Outline): compact chip 63x24 with the 3/8 padding, full pill and transparent fill, the 1px #614c15 border and the #614c15 12/18 Semibold label; composition (--compare-offset, --strict) clean. The source radius 100 is painted by rounded-full (residue); the label width stays content-driven."
+  },
+  {
+    "id": "197-1985-success-solid",
+    "nodeId": "197:1985",
+    "export": "Chip",
+    "storyId": "components-inputs-chip--chip-source-variant-matrix",
+    "state": "success-solid",
+    "variant": "197:1998",
+    "depth": 3,
+    "root": "[data-testid=\"chip-success-solid\"]",
+    "subjects": {
+      "label": "#storybook-root [data-testid=\"chip-success-solid\"] > span:first-of-type"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.radius",
+        "reason": "rounded-full paints the same full pill as the source radius 100"
+      }
+    ],
+    "note": "reviewed: 2026-10-23 render of ChipSourceVariantMatrix at the 62x24 source box against pinned source 197:1998 (Type=Success, Style=Solid): compact chip 62x24 with the 3/8 padding, full pill and #e1f4e1 fill and the #224021 12/18 Semibold label, no border; composition (--compare-offset, --strict) clean. The source radius 100 is painted by rounded-full (residue); the label width stays content-driven."
+  },
+  {
+    "id": "197-1985-success-outline",
+    "nodeId": "197:1985",
+    "export": "Chip",
+    "storyId": "components-inputs-chip--chip-source-variant-matrix",
+    "state": "success-outline",
+    "variant": "197:2000",
+    "depth": 3,
+    "root": "[data-testid=\"chip-success-outline\"]",
+    "subjects": {
+      "label": "#storybook-root [data-testid=\"chip-success-outline\"] > span:first-of-type"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.radius",
+        "reason": "rounded-full paints the same full pill as the source radius 100"
+      }
+    ],
+    "note": "reviewed: 2026-10-23 render of ChipSourceVariantMatrix at the 62x24 source box against pinned source 197:2000 (Type=Success, Style=Outline): compact chip 62x24 with the 3/8 padding, full pill and transparent fill, the 1px #224021 border and the #224021 12/18 Semibold label; composition (--compare-offset, --strict) clean. The source radius 100 is painted by rounded-full (residue); the label width stays content-driven."
+  },
+  {
+    "id": "197-1985-error-solid",
+    "nodeId": "197:1985",
+    "export": "Chip",
+    "storyId": "components-inputs-chip--chip-source-variant-matrix",
+    "state": "error-solid",
+    "variant": "197:2002",
+    "depth": 3,
+    "root": "[data-testid=\"chip-error-solid\"]",
+    "subjects": {
+      "label": "#storybook-root [data-testid=\"chip-error-solid\"] > span:first-of-type"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.radius",
+        "reason": "rounded-full paints the same full pill as the source radius 100"
+      }
+    ],
+    "note": "reviewed: 2026-10-23 render of ChipSourceVariantMatrix at the 44x24 source box against pinned source 197:2002 (Type=Error, Style=Solid): compact chip 44x24 with the 3/8 padding, full pill and #ffd9d9 fill and the #5d1313 12/18 Semibold label, no border; composition (--compare-offset, --strict) clean. The source radius 100 is painted by rounded-full (residue); the label width stays content-driven."
+  },
+  {
+    "id": "197-1985-error-outline",
+    "nodeId": "197:1985",
+    "export": "Chip",
+    "storyId": "components-inputs-chip--chip-source-variant-matrix",
+    "state": "error-outline",
+    "variant": "197:2004",
+    "depth": 3,
+    "root": "[data-testid=\"chip-error-outline\"]",
+    "subjects": {
+      "label": "#storybook-root [data-testid=\"chip-error-outline\"] > span:first-of-type"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.radius",
+        "reason": "rounded-full paints the same full pill as the source radius 100"
+      }
+    ],
+    "note": "reviewed: 2026-10-23 render of ChipSourceVariantMatrix at the 44x24 source box against pinned source 197:2004 (Type=Error, Style=Outline): compact chip 44x24 with the 3/8 padding, full pill and transparent fill, the 1px #d13333 border and the #d13333 12/18 Semibold label; composition (--compare-offset, --strict) clean. The source radius 100 is painted by rounded-full (residue); the label width stays content-driven."
+  },
+  {
+    "id": "197-1985-neutral-solid",
+    "nodeId": "197:1985",
+    "export": "Chip",
+    "storyId": "components-inputs-chip--chip-source-variant-matrix",
+    "state": "neutral-solid",
+    "variant": "266:25749",
+    "depth": 3,
+    "root": "[data-testid=\"chip-neutral-solid\"]",
+    "subjects": {
+      "label": "#storybook-root [data-testid=\"chip-neutral-solid\"] > span:first-of-type"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.radius",
+        "reason": "rounded-full paints the same full pill as the source radius 100"
+      }
+    ],
+    "note": "reviewed: 2026-10-23 render of ChipSourceVariantMatrix at the 58x24 source box against pinned source 266:25749 (Type=Neutral, Style=Solid): compact chip 58x24 with the 3/8 padding, full pill and #e8ebf1 fill and the #0e0f13 12/18 Semibold label, no border; composition (--compare-offset, --strict) clean. The source radius 100 is painted by rounded-full (residue); the label width stays content-driven."
+  },
+  {
+    "id": "197-1985-neutral-outline",
+    "nodeId": "197:1985",
+    "export": "Chip",
+    "storyId": "components-inputs-chip--chip-source-variant-matrix",
+    "state": "neutral-outline",
+    "variant": "266:25751",
+    "depth": 3,
+    "root": "[data-testid=\"chip-neutral-outline\"]",
+    "subjects": {
+      "label": "#storybook-root [data-testid=\"chip-neutral-outline\"] > span:first-of-type"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.radius",
+        "reason": "rounded-full paints the same full pill as the source radius 100"
+      }
+    ],
+    "note": "reviewed: 2026-10-23 render of ChipSourceVariantMatrix at the 58x24 source box against pinned source 266:25751 (Type=Neutral, Style=Outline): compact chip 58x24 with the 3/8 padding, full pill and transparent fill, the 1px #0e0f13 border and the #0e0f13 12/18 Semibold label; composition (--compare-offset, --strict) clean. The source radius 100 is painted by rounded-full (residue); the label width stays content-driven."
+  },
+  {
+    "id": "197-1985-informative-solid",
+    "nodeId": "197:1985",
+    "export": "Chip",
+    "storyId": "components-inputs-chip--chip-source-variant-matrix",
+    "state": "informative-solid",
+    "variant": "8856:39832",
+    "depth": 3,
+    "root": "[data-testid=\"chip-informative-solid\"]",
+    "subjects": {
+      "label": "#storybook-root [data-testid=\"chip-informative-solid\"] > span:first-of-type"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.radius",
+        "reason": "rounded-full paints the same full pill as the source radius 100"
+      }
+    ],
+    "note": "reviewed: 2026-10-23 render of ChipSourceVariantMatrix at the 40x24 source box against pinned source 8856:39832 (Type=Informative, Style=Solid): compact chip 40x24 with the 3/8 padding, full pill and #e1f5fe fill and the #215c76 12/18 Semibold label, no border; composition (--compare-offset, --strict) clean. The source radius 100 is painted by rounded-full (residue); the label width stays content-driven."
+  },
+  {
+    "id": "197-1985-informative-outline",
+    "nodeId": "197:1985",
+    "export": "Chip",
+    "storyId": "components-inputs-chip--chip-source-variant-matrix",
+    "state": "informative-outline",
+    "variant": "8856:39834",
+    "depth": 3,
+    "root": "[data-testid=\"chip-informative-outline\"]",
+    "subjects": {
+      "label": "#storybook-root [data-testid=\"chip-informative-outline\"] > span:first-of-type"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.radius",
+        "reason": "rounded-full paints the same full pill as the source radius 100"
+      }
+    ],
+    "note": "reviewed: 2026-10-23 render of ChipSourceVariantMatrix at the 40x24 source box against pinned source 8856:39834 (Type=Informative, Style=Outline): compact chip 40x24 with the 3/8 padding, full pill and transparent fill, the 1px #215c76 border and the #215c76 12/18 Semibold label; composition (--compare-offset, --strict) clean. The source radius 100 is painted by rounded-full (residue); the label width stays content-driven."
+  },
+  {
     "id": "198-828-empty",
     "nodeId": "198:828",
     "export": "AuthenticationCodeInput",
@@ -553,6 +1629,82 @@
     "root": "[data-testid=\"alert-warning-vertical\"]",
     "subjects": {},
     "note": "reviewed: source Severity=Warning Direction=Vertical (212:1910, 272x166) against the AllStatuses Warning card. Verified 16px padding, the 8px icon-to-content gap, the 16px copy-to-action gap, the 1px #ffd56b stroke and #fff5da fill, text #614c15, the warning icon, title 18/26 Semibold, body 16/22, and the 16/22 text action with its 44px after target. Responsive clean."
+  },
+  {
+    "id": "230-1317-arrow-top",
+    "nodeId": "230:1317",
+    "export": "Tooltip",
+    "storyId": "components-overlays-tooltip--source-arrow-top",
+    "state": "arrow-top",
+    "variant": "230:1318",
+    "depth": 3,
+    "root": "[data-slot=\"tooltip-positioner\"]",
+    "subjects": {
+      "Indicator": "[data-slot=\"tooltip-arrow\"]",
+      "Content": "[data-slot=\"tooltip-content\"]",
+      "Descrizione di approfondimento su più righe più righe più righe": "[data-slot=\"tooltip-description\"]",
+      "Close": "[data-slot=\"tooltip-close-mark\"]"
+    },
+    "focus": ["#storybook-root button"],
+    "expectState": "open",
+    "stateEvidence": "[role=\"tooltip\"]",
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the source 92px root stacks the 20px Indicator band beside the 72px Content; the DOM positioner is the 72px popup and the 16px arrow overflows above it, so the band stays outside the root box"
+      },
+      {
+        "path": "Indicator.box.height",
+        "reason": "the source Indicator frame is 24x20 (the 24x16 polygon plus its 4px standoff); the DOM arrow is the polygon itself, 24x16"
+      },
+      {
+        "path": "Indicator.padding.top",
+        "reason": "the 4px source standoff is the tooltip sideOffset of 4px, painted between the trigger and the arrow rather than inside the arrow box"
+      },
+      {
+        "path": "Indicator.gap",
+        "reason": "phantom gap of the single-child Indicator frame"
+      }
+    ],
+    "note": "reviewed: 2026-10-23 render of SourceArrowTop at the 312x92 source box against pinned source 230:1318 (Arrow Direction=Top, side=bottom): Content 312x72 with the 16 padding, 4 gap, radius 8, #2b2e38 fill, the 252x40 two-line 14/20 label and the 24x24 close mark at the text top, and the 24x16 arrow above the popup. Adding the source 20px Indicator band to the measured render offsets (arrow -16, Content 0, text 16, Close 16) yields 4/20/36/36, the source values, so composition is recorded here instead of --compare-offset. The root height, the Indicator height and top padding and its phantom gap are the mapping residues"
+  },
+  {
+    "id": "230-1317-arrow-bottom",
+    "nodeId": "230:1317",
+    "export": "Tooltip",
+    "storyId": "components-overlays-tooltip--source-arrow-bottom",
+    "state": "arrow-bottom",
+    "variant": "230:1328",
+    "depth": 3,
+    "root": "[data-slot=\"tooltip-positioner\"]",
+    "subjects": {
+      "Indicator": "[data-slot=\"tooltip-arrow\"]",
+      "Content": "[data-slot=\"tooltip-content\"]",
+      "Descrizione di approfondimento su più righe più righe più righe": "[data-slot=\"tooltip-description\"]",
+      "Close": "[data-slot=\"tooltip-close-mark\"]"
+    },
+    "focus": ["#storybook-root button"],
+    "expectState": "open",
+    "stateEvidence": "[role=\"tooltip\"]",
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "the source 92px root stacks the 72px Content beside the 20px Indicator band; the DOM positioner is the 72px popup and the 16px arrow overflows below it, so the band stays outside the root box"
+      },
+      {
+        "path": "Indicator.box.height",
+        "reason": "the source Indicator frame is 24x20 (the 24x16 polygon plus its 4px standoff); the DOM arrow is the polygon itself, 24x16"
+      },
+      {
+        "path": "Indicator.padding.bottom",
+        "reason": "the 4px source standoff is the tooltip sideOffset of 4px, painted between the trigger and the arrow rather than inside the arrow box"
+      },
+      {
+        "path": "Indicator.gap",
+        "reason": "phantom gap of the single-child Indicator frame"
+      }
+    ],
+    "note": "reviewed: 2026-10-23 render of SourceArrowBottom at the 312x92 source box against pinned source 230:1328 (Arrow Direction=Bottom, side=top): Content 312x72 with the 16 padding, 4 gap, radius 8, #2b2e38 fill, the 252x40 two-line 14/20 label and the 24x24 close mark at the text top, and the 24x16 arrow below the popup. Measured render offsets (Content 0, text 16, Close 16, arrow 72) match the source directly, so composition is recorded here instead of --compare-offset. The root height, the Indicator height and bottom padding and its phantom gap are the mapping residues"
   },
   {
     "id": "261-6501-desktop-desktop",
@@ -921,6 +2073,151 @@
       }
     ],
     "note": "reviewed: source Checked=Yes Availability=No (349:4727, 320x119) against the FidelityRichStates checked unavailable row. Verified the 320-wide rich option, the 24px decorative leading art at the source 50% opacity, the 12px icon-to-copy gap, the 16/22 Semibold #0e0f13 title, the 14/20 #555c70 description, the selected #0b3ee3 track and the 14/20 primary link. The source root carries the source-wide reduced opacity; the library deliberately fades only the decorative art and keeps copy, control and link opaque (documented adaptation, switch-choices guide). Residues record the row height, the root gap and the copy offsets."
+  },
+  {
+    "id": "360-797-numbered",
+    "nodeId": "360:797",
+    "export": "Badge",
+    "storyId": "components-badge--fidelity",
+    "state": "numbered",
+    "variant": "360:800",
+    "depth": 3,
+    "root": "[data-fidelity-case=\"numbered\"]",
+    "subjects": {
+      "Badge-Wrapper": "#storybook-root [data-fidelity-case=\"numbered\"] [data-slot=\"badge-indicator\"]",
+      "text": "#storybook-root [data-fidelity-case=\"numbered\"] [data-slot=\"badge-count\"]"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.radius",
+        "reason": "the source rounds the transparent 24px container (radius 64) whose only paint is the inner wrapper; the render root stays overflow-visible for the sidenav overhang, the painted pill carries the full radius"
+      },
+      {
+        "path": "Badge-Wrapper.radius",
+        "reason": "rounded-full paints the same full pill as the source radius 64"
+      }
+    ],
+    "note": "reviewed: 2026-10-23 render of Fidelity at the variant 24x24 box against pinned source 360:800 (Property=Numbered, Background=Transparent): the 24x24 root holds the 22x20 blue pill and the 1 at 14/20 Semibold, padding 6, full radius and #0b3ee3 fill with the #ffffff label; composition (--compare-offset, --strict) clean. The source rounds the transparent root (radius 64) whose only paint is the inner wrapper, and the wrapper radius 64 is painted by rounded-full; both recorded as residues"
+  },
+  {
+    "id": "360-797-plain-white",
+    "nodeId": "360:797",
+    "export": "Badge",
+    "storyId": "components-badge--fidelity",
+    "state": "plain-white",
+    "variant": "360:810",
+    "depth": 3,
+    "root": "[data-fidelity-case=\"plain-white\"]",
+    "subjects": {
+      "Badge": "#storybook-root [data-fidelity-case=\"plain-white\"] [data-slot=\"badge-indicator\"]"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "Badge.border.width",
+        "reason": "the source 2.5px ellipse stroke is the white separation ring; the render paints it as the 2px ring-2 box-shadow, within the 2px tolerance"
+      },
+      {
+        "path": "Badge.border.color",
+        "reason": "the source white stroke is painted by the ring-2 box-shadow (ring-background, #ffffff); border-top-color is the unpainted CSS default, the probe compares borders only"
+      }
+    ],
+    "note": "reviewed: 2026-10-23 render of Fidelity at the variant 14x14 box against pinned source 360:810 (Property=Plain, Background=White): the 14x14 transparent root centres the 10x10 #0b3ee3 dot with its white separation ring; composition (--compare-offset, --strict) clean. The source 2.5px stroke is painted by the 2px ring-2 in the background token; border width and colour are the ring, recorded as residues"
+  },
+  {
+    "id": "360-797-sidenav-selected",
+    "nodeId": "360:797",
+    "export": "Badge",
+    "storyId": "components-badge--fidelity",
+    "state": "sidenav-selected",
+    "variant": "363:7574",
+    "depth": 3,
+    "root": "[data-fidelity-case=\"sidenav-selected\"]",
+    "subjects": {
+      "mail": "#storybook-root [data-fidelity-case=\"sidenav-selected\"] [data-slot=\"badge-icon-art\"]",
+      "Badge": "#storybook-root [data-fidelity-case=\"sidenav-selected\"] [data-slot=\"badge-indicator\"]"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "Badge.border.color",
+        "reason": "the source 2px #e7ecfc separation stroke is painted by the ring-2 box-shadow (ring-selection-soft, #e7ecfc); border-top-color is the unpainted CSS default, the probe compares borders only"
+      }
+    ],
+    "note": "reviewed: 2026-10-23 render of Fidelity at the variant 24x24 box against pinned source 363:7574 (Property=Sidenav icon, Selected=True, Background=Primary): the 24x24 mail artwork and the 10x10 #0b3ee3 dot at the top-right overhang (19,-5), with the 2px #e7ecfc ring painted by ring-selection-soft; composition (--compare-offset, --strict) clean. The separation stroke is a ring box-shadow, so border-top-colour is recorded as the residue"
+  },
+  {
+    "id": "360-797-sidenav-unselected",
+    "nodeId": "360:797",
+    "export": "Badge",
+    "storyId": "components-badge--fidelity",
+    "state": "sidenav-unselected",
+    "variant": "363:7629",
+    "depth": 3,
+    "root": "[data-fidelity-case=\"sidenav-unselected\"]",
+    "subjects": {
+      "mail": "#storybook-root [data-fidelity-case=\"sidenav-unselected\"] [data-slot=\"badge-icon-art\"]",
+      "Badge": "#storybook-root [data-fidelity-case=\"sidenav-unselected\"] [data-slot=\"badge-indicator\"]"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "Badge.border.color",
+        "reason": "the source 2px white separation stroke is painted by the ring-2 box-shadow (ring-background, #ffffff); border-top-color is the unpainted CSS default, the probe compares borders only"
+      }
+    ],
+    "note": "reviewed: 2026-10-23 render of Fidelity at the variant 24x24 box against pinned source 363:7629 (Property=Sidenav icon, Selected=False, Background=White): the 24x24 mail artwork and the 10x10 #0b3ee3 dot at the top-right overhang with the 2px white ring painted by ring-background; composition (--compare-offset, --strict) clean. The separation stroke is a ring box-shadow, so border-top-colour is recorded as the residue"
+  },
+  {
+    "id": "360-797-plain-muted",
+    "nodeId": "360:797",
+    "export": "Badge",
+    "storyId": "components-badge--fidelity",
+    "state": "plain-muted",
+    "variant": "382:6343",
+    "depth": 3,
+    "root": "[data-fidelity-case=\"plain-muted\"]",
+    "subjects": {
+      "Badge": "#storybook-root [data-fidelity-case=\"plain-muted\"] [data-slot=\"badge-indicator\"]"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "Badge.border.width",
+        "reason": "the source 2.5px ellipse stroke is the grey-50 separation ring; the render paints it as the 2px ring-2 box-shadow, within the 2px tolerance"
+      },
+      {
+        "path": "Badge.border.color",
+        "reason": "the source #f4f5f8 stroke is painted by the ring-2 box-shadow (ring-muted, #f4f5f8); border-top-color is the unpainted CSS default, the probe compares borders only"
+      }
+    ],
+    "note": "reviewed: 2026-10-23 render of Fidelity at the variant 14x14 box against pinned source 382:6343 (Property=Plain, Background=Grey 50): the 14x14 transparent root centres the 10x10 #0b3ee3 dot with its grey-50 separation ring; composition (--compare-offset, --strict) clean. The source 2.5px stroke is painted by the 2px ring-2 in the muted token; border width and colour are the ring, recorded as residues"
+  },
+  {
+    "id": "360-797-plain-transparent",
+    "nodeId": "360:797",
+    "export": "Badge",
+    "storyId": "components-badge--fidelity",
+    "state": "plain-transparent",
+    "variant": "9828:23894",
+    "depth": 3,
+    "root": "[data-fidelity-case=\"plain-transparent\"]",
+    "subjects": {
+      "Badge-Wrapper": "#storybook-root [data-fidelity-case=\"plain-transparent\"] [data-slot=\"badge-indicator\"]"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.radius",
+        "reason": "the source rounds the transparent 24px container (radius 64) whose only paint is the inner dot; the render root has no paint and no clip, the dot carries the full radius"
+      },
+      {
+        "path": "Badge-Wrapper.radius",
+        "reason": "rounded-full paints the same full circle as the source radius 64"
+      }
+    ],
+    "note": "reviewed: 2026-10-23 render of Fidelity at the variant 24x24 box against pinned source 9828:23894 (Property=Plain, Background=Transparent): the 24x24 transparent root centres the 10x10 #0b3ee3 dot; composition (--compare-offset, --strict) clean. The source root radius 64 is invisible (no fill) and the dot radius 64 is painted by rounded-full; both recorded as residues"
   },
   {
     "id": "382-7813-desktop-desktop",
@@ -3383,6 +4680,49 @@
     "note": "Composition check off: the mockup draws its 56px Breadcrumb inside the header band (the module starts at the 54+77 chrome), so every module block sits 45px higher than the page flow, where the Breadcrumb is its own 44px row. The module's internal offsets are exact and the shift is uniform — Text 195→240, Alert 375→420, Actions 513→560, TOS 736→783 — the last two carrying the shared +2 alert tolerance (the alert renders 100 against the source 98). Enable --compare-offset to re-measure."
   },
   {
+    "id": "3262-40787-open",
+    "nodeId": "3262:40787",
+    "export": "MenuDropDown",
+    "storyId": "components-inputs-menudropdown--source-panel",
+    "state": "Open",
+    "width": 274,
+    "height": 900,
+    "depth": 3,
+    "root": "[role=\"menu\"]",
+    "subjects": {
+      ".Single drop down item": "[role=\"menu\"] [role=\"menuitem\"]",
+      "Divider": "[role=\"menu\"] [role=\"separator\"]"
+    },
+    "click": ["#storybook-root button"],
+    "compareOffset": true,
+    "expectState": "open",
+    "stateEvidence": "[role=menu]",
+    "note": "reviewed: source MenuDropDown (3262:40787, 274x330, radius 8, #ffffff panel with the 4/16px shadow-16 elevation) against the SourcePanel open menu. Verified the 274x330 panel, zero panel padding and gap, the 1px #e8ebf1 dividers between all seven rows, the 46px text rows (12/16 insets, 8px gap, 16/22 Semibold #0b3ee3 label) and the closing 48px destructive row that leads with the 24px cancel artwork and paints the 16/22 Semibold label #d13333. The seven source rows share one layer name ('.Single drop down item'), so the case maps the first text row and the divider as subjects and the total height proves the destructive row's 48px. Responsive clean."
+  },
+  {
+    "id": "3424-12354-bar",
+    "nodeId": "3424:12354",
+    "export": "StickyButtonBar",
+    "storyId": "components-inputs-stickybuttonbar--source-bar",
+    "state": "Bar",
+    "width": 360,
+    "height": 900,
+    "depth": 3,
+    "root": "[role=\"region\"]",
+    "subjects": {
+      "Block buttons": "[role=\"group\"]",
+      "Button": "[role=\"region\"] button"
+    },
+    "compareOffset": true,
+    "ignores": [
+      "field.padding.top",
+      "field.padding.right",
+      "field.padding.bottom",
+      "field.padding.left"
+    ],
+    "note": "reviewed: source ButtonStickyBottom (3424:12354, 360x97) against the SourceBar story at the 360 source width. Verified the 360x97 region: the 1px #e8ebf1 divider as the region's top border, the 24px inset surface (Block buttons offset 24/25 proves the 1px divider + the 24px padding), the 312x48 contained action (#0b3ee3 fill, radius 8, 24px horizontal inset, 16/22 Semibold #ffffff label centred) and the 8px stack gap. Mapping artifacts: the source's 1px Divider plus 96px Group are the library's one 97px region, so field.padding.* is ignored (the inset lives on the region in the DOM) and the Group frame is not mapped because its 24px padding is proven by the Block buttons offsets; the button's vertical 12px inset is the flex centring of a leaf. Responsive clean."
+  },
+  {
     "id": "8049-39452-single-date",
     "nodeId": "8049:39452",
     "export": "DatePicker",
@@ -3399,6 +4739,34 @@
       }
     ],
     "note": "reviewed: the source panel's four-block rhythm — 44px label row, 42px month row closed by its full-bleed divider, 24px chevrons 4px apart, an 8px inset date grid with 44px day targets (the source rows are 36), the source 8px stack gaps and a 46px footer with 22px text actions. Residue: the panel is 448 against the source 426 — the day targets. The story asserts the header rows, the divider, the grid inset, the nav chevrons and the footer."
+  },
+  {
+    "id": "8090-46352-focused",
+    "nodeId": "8090:46352",
+    "export": "SkipToMainContent",
+    "storyId": "components-navigation-skiptomaincontent--source-band",
+    "state": "Focused",
+    "width": 320,
+    "height": 900,
+    "depth": 6,
+    "root": "#storybook-root a",
+    "subjects": {
+      "Content layer": "#storybook-root a",
+      "arrow": "#storybook-root a > span"
+    },
+    "focus": ["#storybook-root a"],
+    "keepFocus": true,
+    "compareOffset": true,
+    "expectState": "focused",
+    "ignores": [
+      "field.padding.top",
+      "field.padding.right",
+      "field.padding.bottom",
+      "field.padding.left",
+      "field.gap",
+      "Content layer.gap"
+    ],
+    "note": "reviewed: source SkipToMainContent (8090:46352, 320x40) against the SourceBand story at the 320 source width, captured with the link focused (it is off screen until then; --expect-state focused, focus kept). Verified the 320x40 band at the source origin: the #ffffff Content layer surface, its 8/24 insets and its 320 width; the underlined 16/22 Semibold #0b3ee3 label starting at the 24px inset; the 24x24 arrow at offset 226.66/8 against the source 227/8 (the 8px label-to-artwork gap). The review closed the drifts in skip-to-main-content.tsx: the link is the source's full-width top band (fixed inset-x-0 top-0) instead of a 16/12 floating box, the source carries no elevation so the Tailwind shadow-32 is gone, and the hidden state is -translate-y-full so it depends on the band instead of a fixed 96px. Residues: the label line is the 16/22 text-body-sb token against the source 16/21 (1px, inside tolerance; the scale has no 21px line); the focus ring is the a11y contract's visible indicator (2px outline drawn inside the band so the viewport edge does not clip it) where the source variant draws none. Mapping artifacts: the source's root (no padding) and its Content layer collapse into the one anchor in the DOM, so field.padding.*/field.gap are ignored and the Content layer is mapped to that same element for its 8/24 insets; the layer's 16px gap is the phantom gap of its single child (the DOM gap 8 is the source Content frame's label-to-artwork gap). Responsive clean."
   },
   {
     "id": "9520-2537-layout-desktop-desktop",
@@ -3596,6 +4964,23 @@
     "expectState": "open",
     "stateEvidence": "[data-slot=\"popover-card\"]",
     "note": "Popover source Bottom: 312x76 card and 24x20 indicator; close action is keyboard- and pointer-accessible."
+  },
+  {
+    "id": "10169-11964-default",
+    "nodeId": "10169:11964",
+    "export": "CarouselStepper",
+    "storyId": "components-navigation-carouselstepper--fidelity",
+    "state": "default",
+    "variant": "10169:11964",
+    "width": 96,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"10169-11964\"] [role=\"group\"]",
+    "subjects": {
+      ".CarouselStepper element": "#storybook-root [data-fidelity-variant=\"10169-11964\"] button:first-of-type",
+      "Ellipse": "#storybook-root [data-fidelity-variant=\"10169-11964\"] button:nth-of-type(2)"
+    },
+    "compareOffset": true,
+    "note": "reviewed: CarouselStepper at its 96x8 source row, no variant and no device axis. Six positions: the active `.CarouselStepper element` 16x4 at @0,2 (fill #0b3ee3) and the five 8x8 outlined dots at 24/40/56/72/88 (1px #636b82 stroke on the nested `Ellipse`), every offset exact on the root's 8px gap. The render exposed an inflation fixed in navigation/carousel-stepper.tsx: each dot was a 44x44 button (a 304x44 row); the button is now the source dot (16x4/8x8) and the 44px pointer target comes from the invisible vertical ::after expansion (4 + 2x20, 8 + 2x20), so the row keeps the source 8px height with no horizontal expansion over the source 16px pitch. `rounded-2xl` (16) is the nearest radius token to the source 15 and the 8x8 circle clamps to the same shape. The composition check is clean under --strict."
   },
   {
     "id": "10585-80643-enabled-empty",
@@ -3912,6 +5297,81 @@
       }
     ],
     "note": "Composition check off: the fixture's full object description wraps to two lines (the row 64 against the source's 20) and the in-flow detail adds 18 to the tail, so both the module height and the tail's offset follow the recorded residue chain. The chip is caller-owned (the fixture's to-pay tone; the Default mockup's paid green chip is recorded on the desktop sibling)."
+  },
+  {
+    "id": "11149-7765-default",
+    "nodeId": "11149:7765",
+    "export": "EmptyState",
+    "storyId": "components-feedback-emptystate--fidelity",
+    "state": "default",
+    "variant": "11149:7765",
+    "width": 832,
+    "height": 184,
+    "depth": 4,
+    "root": "#storybook-root [data-fidelity-variant=\"11149-7765\"] section",
+    "subjects": {
+      "Container": "#storybook-root [data-fidelity-variant=\"11149-7765\"] section > div:first-of-type",
+      "Error": "#storybook-root [data-fidelity-variant=\"11149-7765\"] [data-slot=\"empty-state-icon\"]",
+      "Title": "#storybook-root [data-fidelity-variant=\"11149-7765\"] h2",
+      "Subtitle": "#storybook-root [data-fidelity-variant=\"11149-7765\"] p",
+      "Button": "#storybook-root [data-fidelity-variant=\"11149-7765\"] section > div:last-of-type button"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "box.height",
+        "reason": "the shared link action keeps its 24px native box where the source Button instance is a content-sized 22px row (+2), and the 1px #e8ebf1 stroke is inside the source frame while the CSS border adds its 2px inside the 184px card: 188 against the source 184, the same retained-border/action residue as Banner 261:6501 (guides/empty-state.md)"
+      }
+    ],
+    "note": "reviewed: EmptyState at its 832x184 source card, no variant and no device axis. The 8px radius, 1px #e8ebf1 stroke, #ffffff fill, 16px padding, 16px root gap, the 800-wide message column (8px gap), the 56x56 `Error` pictogram at @17,17, `Title` at 81 (16/22 Semibold #636b82), `Subtitle` at 111 (14/20 Regular #555c70) and the 48x22 `Button` text action at 147 are exact; the composition check is clean under --strict. The message column gained `w-full` in feedback/empty-state.tsx so the source FILL frames map to 800-wide boxes (the render was content-sized, 412.83), with no visual change in the centred composition. The single residue is the card height: the shared link action keeps its 24px native box (+2 on the source 22) and the CSS 1px border sits inside the 184px card (+2), the same retained-border/action residue Banner 261:6501 records. The `Error` pictogram slot is the source 56x56 box and stays aria-hidden."
+  },
+  {
+    "id": "12133-82475-type-default",
+    "nodeId": "12133:82475",
+    "export": "ProgressKpi",
+    "storyId": "components-data-display-progresskpi--fidelity-default",
+    "state": "Type=Default",
+    "variant": "9612:4303",
+    "width": 202,
+    "height": 190,
+    "depth": 5,
+    "root": "#storybook-root [data-fidelity-variant=\"9612-4303\"] section",
+    "subjects": {
+      "Stack-Header": "#storybook-root [data-fidelity-variant=\"9612-4303\"] [data-slot=\"progress-kpi-header\"]",
+      "Title": "#storybook-root [data-fidelity-variant=\"9612-4303\"] [data-slot=\"progress-kpi-header\"] span:nth-of-type(2)",
+      "Percentage": "#storybook-root [data-fidelity-variant=\"9612-4303\"] [data-slot=\"progress-kpi-percentage\"]",
+      "LinearProgress": "#storybook-root [data-fidelity-variant=\"9612-4303\"] [role=\"progressbar\"]",
+      "LinearProgress single item": "#storybook-root [data-fidelity-variant=\"9612-4303\"] [role=\"progressbar\"] > div",
+      "Stack-Footer": "#storybook-root [data-fidelity-variant=\"9612-4303\"] [data-slot=\"progress-kpi-footer\"]"
+    },
+    "compareOffset": true,
+    "ignores": ["LinearProgress.padding.right", "LinearProgress.gap"],
+    "note": "reviewed: Type=Default at its 202x190 source card, no device axis. The 24px radius, 1px #e8ebf1 stroke, #ffffff fill, 24px padding and 12px root gap are exact; the header is 24 high with the 8px gap, the 24px channel and info artwork and Title 16/22 Semibold #555c70 at 26; Percentage is 32/48 Bold #0e0f13 at 61 (`text-title-xl-mobile` is the only scale step with those three values); the 152x16 bar (#e8ebf1, r=16, the 51% fill #0b3ee3) and the 22-high footer with the source 2px gap and the 16/22 Semibold + 14/20 Regular pair match. The render exposed three deltas fixed in data-display/progress-kpi.tsx: the channel and info slots were inline, so the header line box measured 31 against 24 (now flex and centred, keeping the artwork's own 24px size), the footer gap was 8 against 2 (now gap-0.5) and the bars were rounded-full against the source r=16 (now rounded-2xl). The inner frames measure 152 against the source 154 and the card 192 against 190 because the CSS border sits inside the 202px card while the Figma stroke is drawn inside the frame: within the 2px tolerance, no residue. LinearProgress.padding.right (78) and gap (10) are the source frame's encoding of the fill and its single-child phantom gap, painted by the DOM child instead."
+  },
+  {
+    "id": "12133-82475-type-multi",
+    "nodeId": "12133:82475",
+    "export": "ProgressKpi",
+    "storyId": "components-data-display-progresskpi--fidelity-multi",
+    "state": "Type=Multi",
+    "variant": "12133:82476",
+    "width": 202,
+    "height": 282,
+    "depth": 5,
+    "root": "#storybook-root [data-fidelity-variant=\"12133-82476\"] section",
+    "subjects": {
+      "Stack-Header": "#storybook-root [data-fidelity-variant=\"12133-82476\"] [data-slot=\"progress-kpi-header\"]",
+      "Title": "#storybook-root [data-fidelity-variant=\"12133-82476\"] [data-slot=\"progress-kpi-header\"] span:nth-of-type(2)",
+      "Percentage": "#storybook-root [data-fidelity-variant=\"12133-82476\"] [data-slot=\"progress-kpi-percentage\"]",
+      "LinearProgress": "#storybook-root [data-fidelity-variant=\"12133-82476\"] [role=\"progressbar\"]:first-of-type",
+      "LinearProgress single item": "#storybook-root [data-fidelity-variant=\"12133-82476\"] [role=\"progressbar\"]:first-of-type > div",
+      "Stack-Footer": "#storybook-root [data-fidelity-variant=\"12133-82476\"] [data-slot=\"progress-kpi-data\"] > [data-slot=\"progress-kpi-footer\"]",
+      "Data": "#storybook-root [data-fidelity-variant=\"12133-82476\"] [data-slot=\"progress-kpi-details\"]",
+      "Description": "#storybook-root [data-fidelity-variant=\"12133-82476\"] [data-slot=\"progress-kpi-row\"] p"
+    },
+    "compareOffset": true,
+    "ignores": ["LinearProgress.padding.right", "LinearProgress.gap"],
+    "note": "reviewed: Type=Multi at its 202x282 source card, no device axis. The Default composition is exact and the Data slot adds one secondary row: the 152-wide Data slot at 179 (10px gap, 80 high), the Description 12/18 Semibold #555c70 at 187, the row's 8px bar and its 22-high footer inside the row's own 8px vertical padding. The header, Percentage and main bar repeat the Default verdict (see the Type=Default case). The row's nested .ProgressKpiData padding is the row box the case maps as Data, so it is not a second subject. LinearProgress.padding.right (78) and gap (10) are the source frame's encoding of the fill and its single-child phantom gap, painted by the DOM child instead."
   },
   {
     "id": "12812-16248-desktop-desktop",

@@ -38,6 +38,7 @@ function RadioField({
 
   return (
     <div
+      data-slot="radio-field"
       className={cn(
         "grid gap-0.5 py-4",
         indicatorPlacement === "end" && "gap-1",
@@ -73,7 +74,10 @@ function RadioField({
           ) : null}
           {loading ? (
             <Skeleton
-              className={cn("h-4 max-w-full", leadingIcon || description ? "w-45" : "w-61")}
+              className={cn(
+                "h-4 max-w-full rounded-lg",
+                leadingIcon || description ? "w-45" : "w-61",
+              )}
             />
           ) : null}
           <span
@@ -103,9 +107,9 @@ function RadioField({
                 {description}
               </p>
               <span aria-hidden="true" className="grid gap-2.5">
-                <Skeleton className="h-2 w-full" />
-                <Skeleton className="h-2 w-full" />
-                <Skeleton className="h-2 w-full" />
+                <Skeleton className="h-2 w-full rounded-lg" />
+                <Skeleton className="h-2 w-full rounded-lg" />
+                <Skeleton className="h-2 w-full rounded-lg" />
               </span>
             </>
           ) : null}

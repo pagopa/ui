@@ -113,13 +113,14 @@
   ],
   "entries": {
     "10169:11964": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/navigation/carousel-stepper.tsx",
         "export": "CarouselStepper",
-        "story": "apps/storybook/src/CarouselStepper.stories.tsx"
+        "story": "apps/storybook/src/CarouselStepper.stories.tsx",
+        "storyExports": ["Playground", "CarouselTargets", "Fidelity", "ControlLabels"]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+      "note": "Reviewed 2026-10-23 (closing the 2026-10-14 delta): plain component, no variant and no device axis, so one case at its 96x8 source width. `10169-11964-default` verifies the six positions — the active `.CarouselStepper element` 16x4 at @0,2 (fill #0b3ee3, aria-current) and the five 8x8 outlined dots at 24/40/56/72/88 (1px #636b82 on the nested `Ellipse`) — with every offset exact on the root's 8px gap; the composition check is clean under --strict. The render exposed an inflation fixed in navigation/carousel-stepper.tsx: each dot was a 44x44 button, so the row measured 304x44 instead of 96x8; the button is now the source dot and the 44px pointer target comes from the invisible vertical ::after expansion (4+2x20, 8+2x20), with no horizontal expansion because the source's own 16px pitch would make the targets overlap, so the WCAG 2.5.8 spacing rule is not reachable at this pitch — the source composition is followed and the constraint is recorded in apps/storybook/src/guides/carousel-stepper.md; the open question for the design owner is docs/design-requests/2026-10-23-carousel-stepper-target-size.md and does not block this render. Text contract: the announced position name is overridable through the new optional `getControlLabel(index, count)` prop (default `Contenuto N di M`), the group name stays `label`, and the `ControlLabels` story proves the replacement. Prop-convention departures: the component is a controlled value (`count`, `activeIndex`, `onChange`) rather than a children list, because the source draws one instance per position and the caller owns the collection. `rounded-2xl` is the nearest radius token to the source 15 (the browser clamps both to the 2px pill) and the 8x8 circle clamps to the same shape."
     },
     "10192:41460": {
       "status": "implemented",
@@ -270,13 +271,14 @@
       "note": "Reviewed 2026-10-16 (device burn-down wave 6, closing the 2026-10-14 delta): the boxed payment module — 8px radius, the 1px --border stroke, white card, 16px padding, the source root gap 24 (mobile 16), the code 16/22 semibold, the 14/20 label + semibold value rows 6px apart on the desktop / 12 on the mobile, the 12/18 Han Purple suggestion and either the price column with its 16px tail gap (8 with the radio) or the Action buttons. The module now answers its own width through @container/payment-module (the source Layout axis is the module box: 560/270) instead of the max-sm viewport media queries — the wave's scope finding; the container scope is verified on every case. Five cases: desktop Default (11133-16142-desktop-default-desktop, the source 560x136), mobile Default (11133-16142-mobile-default-mobile, 270x194), desktop Action (11133-16142-desktop-action-desktop, 560x208), mobile Action (11133-16142-mobile-action-mobile, 270x274, the ActionMobile export) and desktop Multi-payment (11133-16142-desktop-multi-payment-desktop, 560x136); all responsive-clean. Component fixes: the root is the source model (a flex column on the 24px gap; the content row on 16px mobile / 24 desktop with @md:items-center), the suggestion icon slot is a 20px flex box (it added a phantom 5px line box: the row was 25 against the source 20), and the download action is the source 24px icon frame with the invisible 44px ::after target (the sibling ProductModule reading) instead of an inflated 44px box. Recorded adaptations: the source label frames are 22px tall with the 124px price detail overflowing them, so every tail is the in-flow detail (40 tall, the width following the widest line, 123.38 in the bundled font, against the source 24/108); the fixture's full object description wraps in the 236px mobile track where the mockups truncate their placeholder (the row 64 against 20); the shared ghost action keeps its 48px native target where the source mobile secondary is a 24px row; the source's desktop Action and Multi-payment frames exclude the 20px suggestion they draw (and overlap their button row), so those module heights follow the stacked content. Finding: the mobile Multi-payment frame (11134:16286) moves the radio into the code row (a 238x24 row, gap 16, the radio at x=230) and overlaps its own suggestion with the 68x22 price-only tail at 156 against the suggestion ending at 172 — a composition the library does not reproduce at any width (the radio stays with the price at every width, the desktop composition), so no mobile case is committed for that type."
     },
     "11149:7765": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/feedback/empty-state.tsx",
         "export": "EmptyState",
-        "story": "apps/storybook/src/EmptyState.stories.tsx"
+        "story": "apps/storybook/src/EmptyState.stories.tsx",
+        "storyExports": ["Playground", "WithAction", "Fidelity"]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+      "note": "Reviewed 2026-10-23 (closing the 2026-10-14 delta): plain component, no variant and no device axis, so one case at its 832x184 source width. `11149-7765-default` verifies the card (8px radius, 1px #e8ebf1 stroke, #ffffff fill, 16px padding, 16px root gap), the 800-wide message column with its 8px gap, the 56x56 `Error` pictogram, `Title` at 81 (16/22 Semibold #636b82), `Subtitle` at 111 (14/20 Regular #555c70) and the 48x22 `Button` text action at 147, every offset exact; the composition check is clean under --strict. The render exposed one structural delta fixed in feedback/empty-state.tsx: the message column was content-sized (412.83) where the source `EmptyStateWrapper` and `Container` frames fill 800, so it gained `w-full`, with no visual change in the centred composition. The single residue is the card height 188 against 184: the shared link action keeps its 24px native box (+2 on the source 22) and the CSS 1px border sits inside the 184px card (+2), the same retained-border/action residue Banner 261:6501 records. The pictogram slot is decorative (aria-hidden) and the title is a real heading (`titleAs`, h2 by default). Prop conventions: `icon` and `actions` are optional ReactNode slots with no boolean mirror, `title` is required, and every visible string is caller-owned; no departures."
     },
     "1120:7458": {
       "status": "implemented",
@@ -363,13 +365,14 @@
       }
     },
     "12133:82475": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/data-display/progress-kpi.tsx",
         "export": "ProgressKpi",
-        "story": "apps/storybook/src/ProgressKpi.stories.tsx"
+        "story": "apps/storybook/src/ProgressKpi.stories.tsx",
+        "storyExports": ["Playground", "States", "FidelityDefault", "FidelityMulti"]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+      "note": "Reviewed 2026-10-23 (closing the 2026-10-14 delta): the `Type` axis has two variants and no device axis, so one case per variant at the 202px source width. `12133-82475-type-default` verifies the 202x190 card (24px radius, 1px #e8ebf1 stroke, #ffffff fill, 24px padding, 12px root gap), the 24-high header with its 8px gap, the 24px channel and info artwork and Title 16/22 Semibold #555c70, the Percentage 32/48 Bold #0e0f13, the 152x16 bar (#e8ebf1, r=16, 51% fill #0b3ee3) and the 22-high footer with the source 2px gap; `12133-82475-type-multi` adds the `Data` slot (10px gap) with the 80-high secondary row, its 12/18 Semibold description and its own 8px bar and footer. Both are clean under --strict. The render exposed deltas fixed in data-display/progress-kpi.tsx: the channel and info slots were inline, so the header line box measured 31 against 24 (now flex and centred around the artwork's own 24px size), the footer gap was 8 against 2 (now `gap-0.5`) and the bars were `rounded-full` against the source r=16 (now `rounded-2xl`). The Percentage uses `text-title-xl-mobile`: it is the only scale step with the source's 32/48 Bold values, so no new token and no face residue. The inner frames measure 152 against the source 154 and the card 2px taller because the CSS border sits inside the 202px card while the Figma stroke is drawn inside the frame — within the 2px tolerance. `LinearProgress.padding.right` (78) and its gap (10) are the source frame's encoding of the fill and its single-child phantom gap, painted by the DOM child instead. The source draws 6.000 of 11.000 but labels the card 51%, so the fidelity fixture uses 51 of 100 to keep the bar and the number while the copy stays caller-owned. Prop conventions: `details` is caller data (one row per `ProgressKpiRow`), `channel` and `info` are optional ReactNode slots, `completed` is the state flag and `locale` owns number formatting; `detail` is an optional supporting sentence the source variants do not draw, so the fidelity story omits it."
     },
     "123:4498": {
       "status": "implemented",
@@ -621,7 +624,7 @@
     },
     "160:1344": {
       "status": "implemented",
-      "note": "Fresh Path C review against pinned version 2409404974909792292: all eight source variants under root 160:1344 are source-bound, inspected and pass in Chromium. The 44px frame, 8px corners, and 32px contained logo at a 6px inset match. Source 22px placeholder/check glyphs use size-6 at 24px (+2px). The double faces match 28px at 0/16px; the proportional rear radius is 5.09px versus source 5.9px (-0.81px). SourceLogos uses the bundled product mark for caller-owned municipality/institution/service image examples, so those cases inspect container/contain geometry, not category brand-art parity. Nearby logo bounds use existing compact size-6 24px instead of 23.27px (+0.73px), and medium size-9 36px instead of 35px (+1px). Targeted Avatar story tests, typecheck and formatting pass; manual zoom and screen-reader tests remain unverified.",
+      "note": "Fresh Path C review against pinned version 2409404974909792292: all eight source variants under root 160:1344 are source-bound, inspected and pass in Chromium. The 44px frame, 8px corners, and 32px contained logo at a 6px inset match. Source 22px placeholder/check glyphs use size-6 at 24px (+2px). The double faces match 28px at 0/16px; the proportional rear radius is 5.09px versus source 5.9px (-0.81px). SourceLogos uses the bundled product mark for caller-owned municipality/institution/service image examples, so those cases inspect container/contain geometry, not category brand-art parity. Nearby logo bounds use existing compact size-6 24px instead of 23.27px (+0.73px), and medium size-9 36px instead of 35px (+1px). Targeted Avatar story tests, typecheck and formatting pass; manual zoom and screen-reader tests remain unverified. The eight source variants carry reviewed cases in FigmaSmallStates against pinned version 2412426961662147678 (160-1344-placeholder, -selected, -municipalities, -institutions, -services, -products, -skeleton, -double-avatar) at the source 44px frame.",
       "target": {
         "module": "src/components/content/avatar.tsx",
         "export": "Avatar",
@@ -636,13 +639,14 @@
           "SourceDoubleAvatar",
           "PairedImageRecovery",
           "PairedReadableInitials",
-          "NonColorStatuses"
+          "NonColorStatuses",
+          "FigmaSmallStates"
         ]
       }
     },
     "160:1403": {
       "status": "implemented",
-      "note": "Fresh Path C review against pinned version 2409404974909792292: all eight source variants under root 160:1403 are source-bound, inspected and pass in Chromium. The 66px source frame uses size-16 at 64px (-2px), with 8px corners. The 48px contained logo remains 48px with an 8px inset instead of the source 9px (-1px); 33px placeholder/icon glyphs use size-8 at 32px (-1px). SourceLogos uses the bundled product mark for caller-owned municipality/institution/service examples, so those cases inspect container/contain geometry, not category brand-art parity. The actual black/white theater icon artwork is preserved; inverse artwork remains on a caller-owned contrasting surface. Targeted Avatar story tests, typecheck and formatting pass; manual zoom and screen-reader tests remain unverified.",
+      "note": "Fresh Path C review against pinned version 2409404974909792292: all eight source variants under root 160:1403 are source-bound, inspected and pass in Chromium. The 66px source frame uses size-16 at 64px (-2px), with 8px corners. The 48px contained logo remains 48px with an 8px inset instead of the source 9px (-1px); 33px placeholder/icon glyphs use size-8 at 32px (-1px). SourceLogos uses the bundled product mark for caller-owned municipality/institution/service examples, so those cases inspect container/contain geometry, not category brand-art parity. The actual black/white theater icon artwork is preserved; inverse artwork remains on a caller-owned contrasting surface. Targeted Avatar story tests, typecheck and formatting pass; manual zoom and screen-reader tests remain unverified. The eight source variants carry reviewed cases in FigmaBigStates against pinned version 2412426961662147678 (160-1403-placeholder, -icon-black, -icon-white, -municipalities, -institutions, -services, -products, -skeleton) at the source 66px frame.",
       "target": {
         "module": "src/components/content/avatar.tsx",
         "export": "Avatar",
@@ -656,7 +660,8 @@
           "DecorativeIconSlot",
           "ImageIconRecovery",
           "SourceSkeleton",
-          "NonColorStatuses"
+          "NonColorStatuses",
+          "FigmaBigStates"
         ]
       }
     },
@@ -716,7 +721,7 @@
         "story": "apps/storybook/src/Button.stories.tsx",
         "storyExports": ["FigmaIconButton"]
       },
-      "note": "Reviewed against the pinned source: the 44×44 IconButton frame contains a 24px menu icon (18×12 glyph). FigmaIconButton renders the native Button with that 24px icon and an accessible name; the transparent interaction surface, visible focus perimeter and 8px hover radius are accessibility adaptations."
+      "note": "Reviewed against the pinned source: the 44×44 IconButton frame contains a 24px menu icon (18×12 glyph). FigmaIconButton renders the native Button with that 24px icon and an accessible name; the transparent interaction surface, visible focus perimeter and 8px hover radius are accessibility adaptations. Reviewed 2026-10-23 (case 192-1208-icon): the 44×44 box, 0 padding and the 24×24 menu icon at 10,10 match the source exactly, composition clean under --strict; the icon slot is the mapped subject and the native accessible name is the recorded adaptation."
     },
     "1931:112838": {
       "status": "mocked",
@@ -734,16 +739,23 @@
         "story": "apps/storybook/src/Checkbox.stories.tsx",
         "storyExports": ["SourceDefault", "SourceSelected", "SourceFocused"]
       },
-      "note": "Adaptation `native-target-minimum`: the 24px source visual stays while the invisible native target expands to 44px (`after:-inset-2.5`). Adaptation `keyboard-focus-perimeter`: the source focused glyph is kept and the library's visible keyboard focus perimeter is drawn outside it."
+      "note": "Adaptation `native-target-minimum`: the 24px source visual stays while the invisible native target expands to 44px (`after:-inset-2.5`). Adaptation `keyboard-focus-perimeter`: the source focused glyph is kept and the library's visible keyboard focus perimeter is drawn outside it. Reviewed 2026-10-23: one case per source Status variant (194-3654-default, -selected, -focused), each 24×24 with the 24×24 check_box artwork at 0,0, composition clean under --strict; the selected case declares aria-checked on the control as its state evidence and the focused case captures the real keyboard focus (the perimeter sits outside the 24px box)."
     },
     "194:3661": {
       "status": "implemented",
       "target": {
         "module": "src/components/inputs/checkbox-field.tsx",
         "export": "CheckboxField",
-        "story": "apps/storybook/src/CheckboxField.stories.tsx"
+        "story": "apps/storybook/src/CheckboxField.stories.tsx",
+        "storyExports": [
+          "SourceDefault",
+          "SourceDefaultDisabled",
+          "SourceSelected",
+          "SourceSelectedDisabled",
+          "SourceFeedback"
+        ]
       },
-      "note": "Adaptation `native-target-minimum`: the 24px checkbox artwork stays and only the native target expands to 44px. Adaptation `native-unavailable-state`: disabled uses the native disabled control and muted-foreground copy instead of the source 50% opacity over the whole field; only the shared checkbox artwork keeps its 50% disabled fade. Adaptation `keyboard-focus-perimeter`: visible keyboard focus is retained without replacing the source feedback state."
+      "note": "Adaptation `native-target-minimum`: the 24px checkbox artwork stays and only the native target expands to 44px. Adaptation `native-unavailable-state`: disabled uses the native disabled control and muted-foreground copy instead of the source 50% opacity over the whole field; only the shared checkbox artwork keeps its 50% disabled fade. Adaptation `keyboard-focus-perimeter`: visible keyboard focus is retained without replacing the source feedback state. Reviewed 2026-10-23: one case per source Status variant (194-3661-default, -default-disabled, -selected, -selected-disabled, -feedback) against the 320-wide fullscreen source fixtures, composition clean under --strict; the 320×56 field (16/0 padding), the 24×24 control at 0,16 and the 16/22 Semibold label at 32,16 match every variant, the 320×78 Feedback variant matches its 2px root gap, 32px helper inset and 14/20 #d13333 helper text. Residues: `field.gap` is the recorded mapping artifact for the 56-high variants (the source variant frame is both the field and the row, while the DOM keeps the source 8px row gap on the inner label and the wrapper 2px grid gap before the message block); `Checkbox label.font.color` in the default-disabled case records the native-unavailable-state adaptation (the source paints the whole field at 50% over #0e0f13, the library paints the muted-foreground token). The selected and selected-disabled cases declare aria-checked on the control as their state evidence because the filled predicate has no native checkbox branch."
     },
     "194:3677": {
       "status": "implemented",
@@ -753,7 +765,7 @@
         "story": "apps/storybook/src/RadioField.stories.tsx",
         "storyExports": ["RadioIndicatorStates"]
       },
-      "note": "Fresh Path C review at pinned source version 2409404974909792292: Default (194:3678), Active (194:3680), and Feedback error (194:3682) use the real 20px glyphs centered in 24px frames (2px inset per side); size-6 keeps the frame exact (0px delta). The 10px after:-inset-2.5 extension creates the accessible 44px hit target, with a solid external keyboard focus perimeter. Source #0E0F13/#0B3EE3/#D13333 map to foreground/primary/destructive tokens. The 64x152px sample artboard and 20px example spacing are not runtime sizing. Nearby 179px/243px RadioField skeleton widths remain content placeholders outside this indicator contract; no one-off sizing compensation was added. Fresh 1280x900 source/render cases pass for all required variants; targeted RadioField interaction/a11y and type checks pass. Manual zoom and screen-reader testing remain unverified."
+      "note": "Fresh Path C review at pinned source version 2409404974909792292: Default (194:3678), Active (194:3680), and Feedback error (194:3682) use the real 20px glyphs centered in 24px frames (2px inset per side); size-6 keeps the frame exact (0px delta). The 10px after:-inset-2.5 extension creates the accessible 44px hit target, with a solid external keyboard focus perimeter. Source #0E0F13/#0B3EE3/#D13333 map to foreground/primary/destructive tokens. The 64x152px sample artboard and 20px example spacing are not runtime sizing. Nearby 179px/243px RadioField skeleton widths remain content placeholders outside this indicator contract; no one-off sizing compensation was added. Committed cases 194-3677-default, 194-3677-active and 194-3677-feedback-error reproduce the 24x24 frames and the checked/error states; the 20px artwork is the shared radio_button icon, so the cases map the frame rather than the glyph. Targeted RadioField interaction/a11y and type checks pass. Manual zoom and screen-reader testing remain unverified."
     },
     "194:3700": {
       "status": "implemented",
@@ -769,16 +781,23 @@
           }
         ]
       },
-      "note": "The source node is a rich option, not the whole collection: RadioField with an end indicator supplies its decorative icon, description, feedback and four metadata-dependent skeleton layouts; RadioGroup supplies the named native collection. Reviewed all source states and the rendered matrix. Loading announces busy/unavailable and retains the real checked state instead of faking the source skeleton's unchecked indicator; disabled controls follow native submission exclusion. Re-reviewed the corrected notifications_active default-master edge 99:2117: the rich, loading and state-matrix stories already use its actual 24px source artwork and retain native keyboard/selection behavior."
+      "note": "The source node is a rich option, not the whole collection: RadioField with an end indicator supplies its decorative icon, description, feedback and four metadata-dependent skeleton layouts; RadioGroup supplies the named native collection. Reviewed all source states and the rendered matrix. Loading announces busy/unavailable and retains the real checked state instead of faking the source skeleton's unchecked indicator; disabled controls follow native submission exclusion. Re-reviewed the corrected notifications_active default-master edge 99:2117: the rich, loading and state-matrix stories already use its actual 24px source artwork and retain native keyboard/selection behavior. Parity reviewed at pinned source version 2412426961662147678 with nine committed cases: the five rich states (320x80, Error 320x104) match the 16px vertical padding, the 4px root gap and the Heading/Title/Description subjects, with strict composition clean; the four skeleton layouts (320x56/108) match the 8px root gap and the 44px description block, the 244px/180px placeholders against 243px/179px stay inside tolerance and the skeleton radii now use the radius 8 token. The single-child skeleton 16px gap is recorded as a mapping ignore."
     },
     "194:3763": {
       "status": "implemented",
       "target": {
         "module": "src/components/inputs/checkbox-field.tsx",
         "export": "CheckboxField",
-        "story": "apps/storybook/src/CheckboxField.stories.tsx"
+        "story": "apps/storybook/src/CheckboxField.stories.tsx",
+        "storyExports": [
+          "SourceRichSelected",
+          "SourceRichSelectedUnavailable",
+          "SourceRichDefault",
+          "SourceRichDefaultUnavailable",
+          "SourceRichError"
+        ]
       },
-      "note": "The node is one rich option, not a group: reviewed and mapped to CheckboxField with the decorative 24px icon and the end indicator placement. The public CheckboxGroup fieldset remains a documented collection extension (api-exceptions.json), mirroring the 349:4683 → SwitchField decision. Adaptation `native-unavailable-state`: native checked/disabled semantics are preserved, only the icon and checkbox artwork fade, and the label and description stay legible on muted-foreground tokens instead of the source-wide 50% opacity. Adaptations `native-target-minimum` and `source-error-state` (44px native target around the 24px art; the error exposed through the native invalid state and an associated alert without replacing the red outline art) are stated in guides/checkbox-choices.md."
+      "note": "The node is one rich option, not a group: reviewed and mapped to CheckboxField with the decorative 24px icon and the end indicator placement. The public CheckboxGroup fieldset remains a documented collection extension (api-exceptions.json), mirroring the 349:4683 → SwitchField decision. Adaptation `native-unavailable-state`: native checked/disabled semantics are preserved, only the icon and checkbox artwork fade, and the label and description stay legible on muted-foreground tokens instead of the source-wide 50% opacity. Adaptations `native-target-minimum` and `source-error-state` (44px native target around the 24px art; the error exposed through the native invalid state and an associated alert without replacing the red outline art) are stated in guides/checkbox-choices.md. Parity reviewed at pinned source version 2412426961662147678 with five committed cases (selected, unselected, selected-unavailable, unselected-unavailable and Error) at the 320px source width: the 320x80 / 320x104 root, the 16px vertical padding and the 4px root gap match, the Heading/Title/Description and error-row subjects are clean and the strict composition check passes."
     },
     "194:3841": {
       "status": "implemented",
@@ -786,13 +805,18 @@
         "module": "src/components/inputs/radio-field.tsx",
         "export": "RadioField",
         "story": "apps/storybook/src/RadioField.stories.tsx",
-        "storyExports": ["RadioIndicatorStates", "RadioFieldFeedback", "RadioSourceStateMatrix"]
+        "storyExports": [
+          "RadioIndicatorStates",
+          "RadioFieldFeedback",
+          "RadioSourceStateMatrix",
+          "FigmaStateMatrix"
+        ]
       },
-      "note": "Reviewed Default/Selected/Feedback and both disabled source states. The enclosing native label has the source 24px indicator, 8px gap and 56px minimum row. Description/error/required state is associated with the actual control; feedback uses the source report glyph. Shared 20px feedback lines avoid the source's clipped 18px frame, and semantic disabled text retains stronger contrast than the source fade."
+      "note": "Reviewed Default/Selected/Feedback and both disabled source states. The enclosing native label has the source 24px indicator, 8px gap and 56px minimum row. Description/error/required state is associated with the actual control; feedback uses the source report glyph. Shared 20px feedback lines avoid the source's clipped 18px frame, and semantic disabled text retains stronger contrast than the source fade. The five source variants carry reviewed cases in FigmaStateMatrix against pinned version 2412426961662147678 at the source 320px option width (194-3841-default, 194-3841-default-disable, 194-3841-selected, 194-3841-selected-disabled, 194-3841-feedback); field.gap is ignored as the phantom gap of the DOM root that wraps indicator and label in one native label, and the source 18px feedback frame is not mapped because the shared caption line is 20px."
     },
     "197:1985": {
       "status": "implemented",
-      "note": "Path C reviewed against pinned Figma v2409404974909792292. All 14 Type/Style variants have source-bound cases; the render preserves visible centered labels and 12/18 typography, while the matrix play verifies solid/outline paints, border state and 24px source height. Keep token-driven compact sizing (h-6, px-2, nearest py-0.5, rounded-full) and the existing Titillio to bundled Titillium Web Semibold mapping. Measured frame height/label inset are 24/3px; glyphs are 2.05–5.12px narrower, yielding -5.12–-0.05px content-driven frame-width deltas; no fixed-width or tracking correction. Default 44px sizing and the 44×44 removal action remain accessibility adaptations; removal interaction verifies its name, keyboard use and non-submission. Manual zoom and screen-reader testing remain unverified. (2026-10-14: the source Titillio family is now bundled directly; earlier substitute-font statements and figures in this note are historical and pending re-measurement.)",
+      "note": "Path C reviewed against pinned Figma v2412426961662147678 on 2026-10-23. All 14 Type/Style variants have committed source-bound cases (`197-1985-*`) captured from ChipSourceVariantMatrix; the render preserves visible centered labels and 12/18 typography, while the matrix play verifies solid/outline paints, border state and 24px source height. Keep token-driven compact sizing (h-6, px-2, nearest py-0.5, rounded-full) and the bundled Titillio to Titillium Web Semibold mapping. With the bundled family the labels now measure the source widths exactly (57/58/63/62/40/44/66), so the earlier 2.05–5.12px narrower figures are historical; the only residue is the full-pill radius (source 100, rounded-full). Default 44px sizing and the 44×44 removal action remain accessibility adaptations; removal interaction verifies its name, keyboard use and non-submission. Manual zoom and screen-reader testing remain unverified.",
       "target": {
         "module": "src/components/inputs/chips.tsx",
         "export": "Chip",
@@ -907,7 +931,7 @@
         "story": "apps/storybook/src/Tooltip.stories.tsx",
         "storyExports": ["Playground", "Sides", "SourceArrowTop", "SourceArrowBottom"]
       },
-      "note": "Adaptation `decorative-close-mark`: the pinned source records no Close interaction, so the 10px close mark stays decorative and the Tooltip noninteractive; Escape, blur and pointer exit dismiss it. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`."
+      "note": "Reviewed against pinned Figma v2412426961662147678 on 2026-10-23: both Arrow Direction variants have committed cases (`230-1317-arrow-top`, `230-1317-arrow-bottom`) captured with the trigger focused. The popup keeps the 312px `Content`, 16 padding, 4 gap, radius 8, `#2b2e38` fill, the 252x40 two-line 14/20 label and the close mark top-aligned with the text (source `Close` at the 16px `Content` inset); the source `Indicator` 24x20 frame becomes the 24x16 polygon arrow plus the 4px positioner sideOffset. Adaptation `decorative-close-mark`: the pinned source records no Close interaction, so the 10px close mark stays decorative and the Tooltip noninteractive; Escape, blur and pointer exit dismiss it. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`."
     },
     "232:1673": {
       "status": "implemented",
@@ -1126,22 +1150,24 @@
       }
     },
     "3262:40787": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/inputs/menus.tsx",
         "export": "MenuDropDown",
-        "story": "apps/storybook/src/MenuDropDown.stories.tsx"
+        "story": "apps/storybook/src/MenuDropDown.stories.tsx",
+        "storyExports": ["SourcePanel", "Playground"]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Elevation comes only from the Figma shadow scale: `shadow-16` for menus and dropdowns, never Tailwind `shadow-md/lg/xl`."
+      "note": "Reviewed 2026-10-23 (M5 wave): one committed case against the `SourcePanel` story, captured with the icon trigger clicked open (`--expect-state open`, the `[role=menu]` popup as evidence), root `[role=menu]` at 274: box 274x330 exactly, zero panel padding and gap, radius 8, #ffffff surface, `shadow-16` (the source 0/4/16 #0e0f13 at 10%), the six 46px text rows (12/16 insets, 8px leading gap, 16/22 Semibold #0b3ee3 label) and the closing 48px destructive row (24px `cancel` artwork, 16/22 Semibold #d13333 label) with the 1px #e8ebf1 dividers between all seven. The review removed the row's 48px minimum (`min-h-12`): the source row is 12px insets plus the 22px line (46px), which clears the 44px target on its own, and the floor inflated the panel by 12px. The seven source rows share the layer name `.Single drop down item`, so the case maps the first text row and the divider as subjects and the total height proves the destructive row. Elevation comes only from the Figma shadow scale: `shadow-16` for menus and dropdowns, never Tailwind `shadow-md/lg/xl`. The `Playground` keeps the public `icon` prop (a lucide component painted with the destructive colour); the fidelity fixture leads with the design system's own `cancel` artwork, which is the source's leading art. Automated a11y and render checks are not screen-reader or browser-zoom certification."
     },
     "3424:12354": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/inputs/actions.tsx",
         "export": "StickyButtonBar",
-        "story": "apps/storybook/src/StickyButtonBar.stories.tsx"
+        "story": "apps/storybook/src/StickyButtonBar.stories.tsx",
+        "storyExports": ["SourceBar", "Playground", "CtaFade"]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+      "note": "Reviewed 2026-10-23 (M5 wave): one committed case against the `SourceBar` story at the 360 source width. Verified the 360x97 region exactly (the 1px #e8ebf1 divider as its top border plus the 96px surface), the 24px insets (the `Block buttons` subject sits at 24/25, which proves the 1px divider plus the 24px padding), the 312x48 contained action (`#0b3ee3` fill, radius 8, 24px horizontal inset, 16/22 Semibold #ffffff label centred on the 24px line) and the 8px stack gap of `ButtonGroup`. No component change was needed. The source's 1px Divider and its 96px Group are the library's one 97px region, so the case ignores `field.padding.*` (the inset lives on the region in the DOM) and leaves the Group unmapped because its 24px padding is proven by the `Block buttons` offsets; the button's vertical 12px inset is the flex centring of a leaf. The node is the `bar` variant (`ButtonStickyBottom`); the `fade` variant is the unregistered `.CTASticky` overlay and is not part of this node. Automated a11y and render checks are not screen-reader or browser-zoom certification."
     },
     "349:4683": {
       "status": "implemented",
@@ -1175,7 +1201,8 @@
         "export": "Badge",
         "story": "apps/storybook/src/Badge.stories.tsx",
         "storyExports": ["Fidelity", "Playground"]
-      }
+      },
+      "note": "Reviewed against pinned Figma v2412426961662147678 on 2026-10-23. All six Property/Selected/Background variants have source-bound cases: the numbered 24x24 frame with the 22x20 pill and the 14/20 Semibold count, the transparent and 14px plain frames with their 10px dot, and the two sidenav forms with the 10px indicator overhanging the 24x24 artwork. The separation stroke of the dot is painted by the ring-2 box-shadow in the background, muted and selection-soft tokens; the selected sidenav ring uses selection-soft (#e7ecfc) instead of the near-match accent, and the probe reads borders, so the ring is a recorded residue. The invisible radius 64 of the transparent 24px container is a recorded residue. Manual zoom and screen-reader testing remain unverified."
     },
     "382:7640": {
       "status": "implemented",
@@ -1464,13 +1491,14 @@
       "note": "Reviewed: CatalogueCard renders the source catalogue card itself (360x236, r8, the INSIDE-aligned 1px #e8ebf1 stroke as the card family's ring-1 ring-border so the 24px insets stay exact, pad 24, gap 24): header gap 12 = 44px Avatar small + 256px column (16/22 semibold title over the 16/22 grey-700 Ente, gap 2), 14/20 grey-700 description, action row 24 high with gap 24 = two 16/22 semibold blue text actions (source 22px line kept, >=44px pointer target through the invisible ::after expansion) and the 24px person/check feedback glyphs. eyebrow/tags/children/titleAs/className remain documented extensions. Residue: the Avatar placeholder glyph is our 24px optical size where the source instance is 18px (shared Avatar dependency)."
     },
     "8090:46352": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/navigation/skip-to-main-content.tsx",
         "export": "SkipToMainContent",
-        "story": "apps/storybook/src/SkipToMainContent.stories.tsx"
+        "story": "apps/storybook/src/SkipToMainContent.stories.tsx",
+        "storyExports": ["SourceBand", "Playground"]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented"
+      "note": "Reviewed 2026-10-23 (M5 wave): one committed case against the `SourceBand` story at the 320 source width, captured with the link focused (it is off screen until then; `--expect-state focused`, focus kept). Verified the 320x40 band at the source origin, the #ffffff Content layer surface with its 8/24 insets, the underlined 16/22 Semibold #0b3ee3 label at the 24px inset and the 24x24 `arrow` at offset 226.66/8 against the source 227/8 (the 8px label-to-artwork gap). The review closed the drifts in navigation/skip-to-main-content.tsx: the link is the source's full-width top band (`fixed inset-x-0 top-0`, hidden by `-translate-y-full` until focus) instead of a 16/12 floating box, and the source carries no elevation, so the Tailwind `shadow-32` is gone. Residues: the label line is the 16/22 `text-body-sb` token against the source 16/21 (1px, inside tolerance; the scale has no 21px line) and the focus ring is the a11y contract's visible indicator (2px outline drawn inside the band so the viewport edge does not clip it) where the source draws none. The source's root (no padding) and its Content layer collapse into the one anchor in the DOM: the case ignores `field.padding.*` and `field.gap` and maps the Content layer to that same anchor for its insets, while the layer's 16px gap is the phantom gap of its single child. Automated a11y and render checks are not screen-reader or browser-zoom certification."
     },
     "824:8838": {
       "status": "pending",

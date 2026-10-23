@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
+import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { ButtonGroup, StickyButtonBar } from "@/components/inputs"
 import { Button } from "@/components/primitives/button"
 
@@ -22,6 +23,7 @@ const meta = {
     variant: { control: "select", options: ["bar", "fade"] },
   },
   parameters: {
+    design: { type: "figma", url: figmaEmbedUrl("3424:12354") },
     docs: {
       description: {
         component:
@@ -33,6 +35,34 @@ const meta = {
 
 export default meta
 type Story = StoryObj<typeof meta>
+
+// The source bar (`3424:12354`): the 360x97 `ButtonStickyBottom` — a full-bleed
+// 1px divider over the 96px white surface (24px insets) holding the 312x48
+// contained action. The bar is the first box in the flow, so the capture
+// measures it from the source origin; the paragraph below is the page surface.
+export const SourceBar: Story = {
+  tags: ["color-pinned"],
+  args: {
+    children: (
+      <ButtonGroup className="w-full" orientation="vertical">
+        <Button type="submit" className="w-full">
+          Primary
+        </Button>
+      </ButtonGroup>
+    ),
+  },
+  render: (args) => (
+    <form
+      className="flex w-full flex-col px-4"
+      onSubmit={(event) => {
+        event.preventDefault()
+      }}
+    >
+      <StickyButtonBar {...args} />
+      <p className="py-6">Contenuto della pagina sotto la barra.</p>
+    </form>
+  ),
+}
 
 export const Playground: Story = {
   render: (args) => (

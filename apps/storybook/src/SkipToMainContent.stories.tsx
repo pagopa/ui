@@ -25,6 +25,22 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+// The source band (`8090:46352`): the 320x40 white surface with its 8/24 insets,
+// the underlined 16/21 Semibold link and the 24px `arrow_forward`. The link is
+// fixed, so the story owns the page surface and renders fullscreen.
+export const SourceBand: Story = {
+  tags: ["color-pinned"],
+  parameters: { layout: "fullscreen" },
+  render: () => (
+    <div className="min-h-screen bg-background">
+      <SkipToMainContent />
+      <main id="main-content" tabIndex={-1} className="p-6">
+        <p>Usa Tab per portare il focus sul link di salto.</p>
+      </main>
+    </div>
+  ),
+}
+
 export const Playground: Story = {
   render: () => (
     <div className="min-h-40">

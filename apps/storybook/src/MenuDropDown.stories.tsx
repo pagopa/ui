@@ -3,6 +3,8 @@ import { expect, fn, screen, userEvent, waitFor, within } from "storybook/test"
 
 import { XCircle } from "lucide-react"
 
+import { figmaEmbedUrl } from "@/catalog/figma/file"
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { MenuDropDown } from "@/components/inputs"
 
 const notifyMenuItem = fn()
@@ -34,6 +36,7 @@ const meta = {
     accessibleLabel: { control: "text" },
   },
   parameters: {
+    design: { type: "figma", url: figmaEmbedUrl("3262:40787") },
     docs: {
       description: {
         component:
@@ -45,6 +48,41 @@ const meta = {
 
 export default meta
 type Story = StoryObj<typeof meta>
+
+// The source panel (`3262:40787`): six text rows with the full-bleed 1px
+// dividers, closed by the destructive row that leads with its 24px `cancel`
+// artwork. The mockup repeats one row; the fixture keeps the count so the panel
+// is the source's content-driven sample.
+const sourceItems = ["first", "second", "third", "fourth", "fifth", "sixth"].map((id) => ({
+  id,
+  label: "Value",
+  onSelect: () => undefined,
+}))
+
+export const SourcePanel: Story = {
+  tags: ["color-pinned"],
+  args: {
+    items: [
+      ...sourceItems,
+      {
+        id: "cancel",
+        label: "Value",
+        // Source row: the destructive action leads with the 24px `cancel`
+        // artwork, so the fixture uses the design system's own icon rather than
+        // a lucide silhouette; the public `icon` prop paints any component it
+        // receives with the destructive colour.
+        leading: <PagoPAIcon name="cancel" size={24} />,
+        destructive: true,
+        onSelect: () => undefined,
+      },
+    ],
+  },
+  render: (args) => (
+    <div className="w-[274px] max-w-full">
+      <MenuDropDown {...args} />
+    </div>
+  ),
+}
 
 export const Playground: Story = {
   play: async ({ canvasElement }) => {

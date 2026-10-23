@@ -3,6 +3,7 @@ import { expect, userEvent, within } from "storybook/test"
 
 import { CheckboxField } from "@/components/inputs/checkbox-field"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import checkboxGuide from "./guides/checkbox-choices.md?raw"
 import { fieldError } from "./support/a11y-contract"
@@ -76,12 +77,12 @@ export const RichOption: Story = {
 
 export const SourceDefault: Story = {
   args: { label: figmaLabel },
-  parameters: fidelityParameters,
+  parameters: { ...fidelityParameters, design: { type: "figma", url: figmaEmbedUrl("194:3661") } },
 }
 
 export const SourceDefaultDisabled: Story = {
   args: { label: figmaLabel, disabled: true },
-  parameters: fidelityParameters,
+  parameters: { ...fidelityParameters, design: { type: "figma", url: figmaEmbedUrl("194:3661") } },
   play: async ({ canvasElement }) => {
     const checkbox = within(canvasElement).getByRole("checkbox", { name: figmaLabel })
     await expect(checkbox).toHaveAttribute("aria-disabled", "true")
@@ -93,7 +94,7 @@ export const SourceDefaultDisabled: Story = {
 
 export const SourceSelected: Story = {
   args: { label: figmaLabel, defaultChecked: true },
-  parameters: fidelityParameters,
+  parameters: { ...fidelityParameters, design: { type: "figma", url: figmaEmbedUrl("194:3661") } },
   play: async ({ canvasElement }) => {
     await expect(within(canvasElement).getByRole("checkbox", { name: figmaLabel })).toBeChecked()
   },
@@ -101,7 +102,7 @@ export const SourceSelected: Story = {
 
 export const SourceSelectedDisabled: Story = {
   args: { label: figmaLabel, defaultChecked: true, disabled: true },
-  parameters: fidelityParameters,
+  parameters: { ...fidelityParameters, design: { type: "figma", url: figmaEmbedUrl("194:3661") } },
   play: async ({ canvasElement }) => {
     const checkbox = within(canvasElement).getByRole("checkbox", { name: figmaLabel })
     await expect(checkbox).toHaveAttribute("aria-disabled", "true")
@@ -113,7 +114,7 @@ export const SourceSelectedDisabled: Story = {
 
 export const SourceFeedback: Story = {
   args: { label: figmaLabel, error: "Helper text" },
-  parameters: fidelityParameters,
+  parameters: { ...fidelityParameters, design: { type: "figma", url: figmaEmbedUrl("194:3661") } },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const checkbox = canvas.getByRole("checkbox", { name: figmaLabel })
@@ -133,7 +134,11 @@ export const SourceRichSelected: Story = {
     defaultChecked: true,
   },
   // Reflow exemption: fixture pinned at the source width, not a product surface.
-  parameters: { ...fidelityParameters, a11yContract: { reflow: false } },
+  parameters: {
+    layout: "fullscreen",
+    design: { type: "figma", url: figmaEmbedUrl("194:3763") },
+    a11yContract: { reflow: false },
+  },
   play: async ({ canvasElement }) => {
     await expect(within(canvasElement).getByRole("checkbox", { name: figmaLabel })).toBeChecked()
   },
@@ -149,7 +154,11 @@ export const SourceRichSelectedUnavailable: Story = {
     disabled: true,
   },
   // Reflow exemption: fixture pinned at the source width, not a product surface.
-  parameters: { ...fidelityParameters, a11yContract: { reflow: false } },
+  parameters: {
+    layout: "fullscreen",
+    design: { type: "figma", url: figmaEmbedUrl("194:3763") },
+    a11yContract: { reflow: false },
+  },
   play: async ({ canvasElement }) => {
     const checkbox = within(canvasElement).getByRole("checkbox", { name: figmaLabel })
     await expect(checkbox).toHaveAttribute("aria-disabled", "true")
@@ -167,7 +176,11 @@ export const SourceRichDefault: Story = {
     indicatorPlacement: "end",
   },
   // Reflow exemption: fixture pinned at the source width, not a product surface.
-  parameters: { ...fidelityParameters, a11yContract: { reflow: false } },
+  parameters: {
+    layout: "fullscreen",
+    design: { type: "figma", url: figmaEmbedUrl("194:3763") },
+    a11yContract: { reflow: false },
+  },
   play: async ({ canvasElement }) => {
     await expect(
       within(canvasElement).getByRole("checkbox", { name: figmaLabel }),
@@ -184,7 +197,11 @@ export const SourceRichDefaultUnavailable: Story = {
     disabled: true,
   },
   // Reflow exemption: fixture pinned at the source width, not a product surface.
-  parameters: { ...fidelityParameters, a11yContract: { reflow: false } },
+  parameters: {
+    layout: "fullscreen",
+    design: { type: "figma", url: figmaEmbedUrl("194:3763") },
+    a11yContract: { reflow: false },
+  },
   play: async ({ canvasElement }) => {
     const checkbox = within(canvasElement).getByRole("checkbox", { name: figmaLabel })
     await expect(checkbox).toHaveAttribute("aria-disabled", "true")
@@ -203,7 +220,11 @@ export const SourceRichError: Story = {
     indicatorPlacement: "end",
   },
   // Reflow exemption: fixture pinned at the source width, not a product surface.
-  parameters: { ...fidelityParameters, a11yContract: { reflow: false } },
+  parameters: {
+    layout: "fullscreen",
+    design: { type: "figma", url: figmaEmbedUrl("194:3763") },
+    a11yContract: { reflow: false },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.getByRole("checkbox", { name: figmaLabel })).toHaveAttribute(

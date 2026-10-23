@@ -43,7 +43,7 @@ const badgeBackgroundRings: Record<BadgeBackground, string> = {
   transparent: "",
   white: "ring-2 ring-background",
   muted: "ring-2 ring-muted",
-  primary: "ring-2 ring-accent",
+  primary: "ring-2 ring-selection-soft",
 }
 
 function Badge({

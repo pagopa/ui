@@ -134,11 +134,13 @@ function MenuItems({
               render={(attributes) => {
                 const className = cn(
                   // Source rows fill the panel edge to edge (panel padding 0) and
-                  // keep the 16/22 label line box. The source's Titillio 500 is the
-                  // Semibold face, which this bundle declares at CSS 600 (there is no
-                  // 500 face and font-synthesis is off, so `font-medium` would render
-                  // Regular).
-                  "min-h-12 gap-2 rounded-none px-4 py-3 text-body",
+                  // keep the 16/22 label line box: 12px insets + the 22px line make
+                  // the source 46px row, which clears the 44px target without a
+                  // minimum-height floor. The source's Titillio 500 is the
+                  // Semibold face, which this bundle declares at CSS 600 (there
+                  // is no 500 face and font-synthesis is off, so `font-medium`
+                  // would render Regular).
+                  "gap-2 rounded-none px-4 py-3 text-body",
                   !rich && "text-body-sb",
                   attributes.className,
                   tone === "primary" && "text-primary",

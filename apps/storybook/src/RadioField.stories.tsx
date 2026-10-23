@@ -109,7 +109,10 @@ export const RichRadioOptions: Story = {
 
 export const RadioIndicatorStates: Story = {
   tags: ["color-pinned"],
-  parameters: { a11y: { test: "error" } },
+  parameters: {
+    a11y: { test: "error" },
+    design: { type: "figma", url: figmaEmbedUrl("194:3677") },
+  },
   render: () => (
     <div className="grid max-w-xl gap-6">
       <RadioGroup legend="Canale di contatto" defaultValue="email" name="contact">
@@ -288,9 +291,65 @@ export const RadioLoadingStates: Story = {
   },
 }
 
+// The five variants of the source option set (`194:3841`), each rendered at the
+// source 320 width with the source state, so parity captures one row per variant.
+export const FigmaStateMatrix: Story = {
+  tags: ["color-pinned"],
+  parameters: {
+    // The matrix is wider than a single option: fullscreen keeps it unclipped.
+    layout: "fullscreen",
+    // Reflow exemption: fixture pinned at the source width, not a product surface.
+    a11yContract: { reflow: false },
+    design: { type: "figma", url: figmaEmbedUrl("194:3841") },
+  },
+  render: () => (
+    <div className="grid w-max gap-4 p-4">
+      <div data-fidelity-variant="194-3842" className="w-80 max-w-full">
+        <RadioGroupPrimitive aria-label="Default" defaultValue="contact">
+          <RadioField value="contact" label="Canale di contatto" />
+        </RadioGroupPrimitive>
+      </div>
+      <div data-fidelity-variant="194-3845" className="w-80 max-w-full">
+        <RadioGroupPrimitive aria-label="Default disabilitato" defaultValue="contact" disabled>
+          <RadioField value="contact" label="Canale di contatto" disabled />
+        </RadioGroupPrimitive>
+      </div>
+      <div data-fidelity-variant="194-3848" className="w-80 max-w-full">
+        <RadioGroupPrimitive aria-label="Selezionato" defaultValue="contact">
+          <RadioField value="contact" label="Canale di contatto" />
+        </RadioGroupPrimitive>
+      </div>
+      <div data-fidelity-variant="194-3851" className="w-80 max-w-full">
+        <RadioGroupPrimitive aria-label="Selezionato disabilitato" defaultValue="contact" disabled>
+          <RadioField value="contact" label="Canale di contatto" disabled />
+        </RadioGroupPrimitive>
+      </div>
+      <div data-fidelity-variant="194-3854" className="w-80 max-w-full">
+        <RadioGroupPrimitive aria-label="Feedback">
+          <RadioField value="contact" label="Canale di contatto" error="Seleziona un canale." />
+        </RadioGroupPrimitive>
+      </div>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const rows = canvasElement.querySelectorAll<HTMLElement>("[data-fidelity-variant]")
+    await expect(rows).toHaveLength(5)
+    for (const row of rows) {
+      const radio = within(row).getByRole("radio")
+      await expect(radio.getBoundingClientRect().width).toBe(24)
+      await expect(radio.getBoundingClientRect().height).toBe(24)
+    }
+    await expect(canvas.getAllByRole("radio")).toHaveLength(5)
+  },
+}
+
 export const RadioSourceStateMatrix: Story = {
   // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
-  parameters: { a11yContract: { reflow: false } },
+  parameters: {
+    a11yContract: { reflow: false },
+    design: { type: "figma", url: figmaEmbedUrl("194:3700") },
+  },
   render: () => {
     const states = [
       { label: "Default", selected: false, disabled: false, error: undefined },

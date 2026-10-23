@@ -33,9 +33,27 @@
 - `locale` on DatePicker, DatePickerField and ProgressKpi: the application owns
   the date and number formatting (BCP 47, `it-IT` by default), and the day-grid
   language of the calendar remains a `calendarLocale` passthrough.
+- `getControlLabel` on `CarouselStepper`: the announced position name arrives as
+  a function returning the whole sentence, so the consumer owns the language.
 
 ### Changed
 
+- `CarouselStepper` is the source 96x8 row again: every dot keeps its 16x4 or
+  8x8 box and the 44px pointer target comes from the invisible vertical
+  `::after` expansion instead of a 44px button that tripled the row width and
+  height.
+- `EmptyState`: the message column fills the card like the source frames, so a
+  long title wraps at the card width instead of at the widest line.
+- `ProgressKpi`: the header artwork keeps its own 24px size in a flex box
+  instead of adding its line-box descender, the footer uses the source 2px gap
+  and the bars use the 16px radius step; the percentage is the 32/48 Bold step
+  of the scale.
+- `Badge`: the selected sidenav separation ring uses the `selection-soft` token
+  (`#e7ecfc`) instead of the near-match accent, and all six source
+  Property/Selected/Background variants have reviewed parity cases.
+- `Tooltip`: the close mark is top-aligned with the first text line like the
+  source `Close` layer instead of being vertically centred, and both Arrow
+  Direction variants have reviewed parity cases.
 - `Accordion`: the loading item renders the source `State=Skeleton` composition
   (the header, the 32px step and six placeholder rows with five dividers)
   instead of a generic two-bar card; a disabled item keeps its full-colour
@@ -63,7 +81,10 @@
   demo grids) lives in documented local extensions in `src/index.css`.
 - The payment and radio skeletons use the shared skeleton widths
   (240/356/168 and 180/244 px); the previous 241/357/170/179/243 values differed
-  by one or two pixels.
+  by one or two pixels. The `RadioField` skeleton bars carry the 8px radius
+  token and the option root exposes `data-slot="radio-field"` for the parity
+  capture; the reviewed cases cover the five rich states and the four skeleton
+  layouts.
 - Secondary text, decorative strokes, drag-and-drop surfaces, selected rows and
   white surfaces use semantic aliases instead of raw Figma variables or
   Tailwind's `white`.
@@ -90,6 +111,12 @@
   22/24px height with the 44px pointer target on the invisible `::after`
   expansion; pagination controls are 40px wide, with pages hugging their number
   to 46px high and the 44px target on the invisible expansion.
+- The `MenuDropDown` panel rows are 46px, the source height: the 48px row
+  minimum is gone (12px insets plus the 22px line clear the 44px target), so a
+  six-row panel closes at the source 330px instead of 342.
+- `SkipToMainContent` is the source's full-width top band: `fixed inset-x-0
+  top-0` with the 8/24 insets and no elevation, instead of a floating box at
+  16/12 with a shadow; it stays off screen (`-translate-y-full`) until focus.
 
 ### Removed
 

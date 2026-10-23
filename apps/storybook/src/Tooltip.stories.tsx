@@ -5,6 +5,8 @@ import { Tooltip } from "@/components/overlays/tooltip"
 import { Button } from "@/components/primitives/button"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
+import tooltipGuide from "./guides/tooltips.md?raw"
+
 const meta = {
   title: "Components/Overlays/Tooltip",
   component: Tooltip,
@@ -23,8 +25,9 @@ const meta = {
     design: { type: "figma", url: figmaEmbedUrl("230:1317") },
     docs: {
       description: {
-        component:
-          'Non-essential hint: it opens on hover and focus and closes with Escape. `side` indicates the trigger side where the content appears: the source `Arrow Direction=Top` maps to `side="bottom"`, while `Arrow Direction=Bottom` maps to `side="top"`. `showClose` keeps the source mark visible; it stays decorative because the tooltip contains no actions and the source declares no interaction.',
+        component: `Non-essential hint: it opens on hover and focus and closes with Escape. \`side\` indicates the trigger side where the content appears: the source \`Arrow Direction=Top\` maps to \`side="bottom"\`, while \`Arrow Direction=Bottom\` maps to \`side="top"\`. \`showClose\` keeps the source mark visible; it stays decorative because the tooltip contains no actions and the source declares no interaction.
+
+${tooltipGuide}`,
       },
     },
   },
