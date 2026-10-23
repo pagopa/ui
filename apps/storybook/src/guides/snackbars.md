@@ -1,3 +1,14 @@
+<!-- component-rules:start -->
+
+## Component Rules
+
+- Place a snackbar at the bottom right of the viewport, 24px from the bottom and 24px from the right edge.
+- Size a snackbar between 280px, the mobile XS minimum including 24px side padding, and 560px on desktop.
+- Auto-dismiss a snackbar only when the same message is available elsewhere on the page.
+- Never auto-dismiss an error snackbar.
+
+<!-- component-rules:end -->
+
 # Snackbar
 
 `Snackbar` is a compact status update with a severity icon, optional title,

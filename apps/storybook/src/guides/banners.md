@@ -1,3 +1,11 @@
+<!-- component-rules:start -->
+
+## Component Rules
+
+- Keep 24px of space around a banner when composing it into a page.
+
+<!-- component-rules:end -->
+
 `Banner` exposes the source White, Primary and Grey color treatments and the
 Primary, Secondary and Tertiary hierarchies. `direction` selects the source
 horizontal or vertical composition; vertical is used for the mobile cases.

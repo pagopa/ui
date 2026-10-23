@@ -1,3 +1,11 @@
+<!-- component-rules:start -->
+
+## Component Rules
+
+- Treat both the text and the pictogram as caller-owned: the component ships no copy and no artwork of its own.
+
+<!-- component-rules:end -->
+
 # EmptyState
 
 `EmptyState` is the empty surface of a section: it says why there is nothing and

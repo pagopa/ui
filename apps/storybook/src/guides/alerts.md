@@ -1,3 +1,11 @@
+<!-- component-rules:start -->
+
+## Component Rules
+
+- Place an alert 24px below the content above it, following the page rhythm, and 40px above the content below it.
+
+<!-- component-rules:end -->
+
 `Alert` maps Figma `Severity=Error|Warning|Info|Success` to
 `variant="destructive"|"warning"|"info"|"success"`. The Error→`destructive`
 mapping preserves the existing public variant; `default` remains the Info

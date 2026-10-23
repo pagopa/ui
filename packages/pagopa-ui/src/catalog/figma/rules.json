@@ -1854,11 +1854,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Utilizzo",
+      "titleEn": "Usage",
       "sourceHash": "9791988342cbf594",
       "targets": ["1042:18133"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "deferred",
+      "reason": "The Dialog story has no guide and this wave may not add one; the consumer rule needs a guide before it can be imported.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1051:11398;52:896": {
       "pageId": "1042:14217",
@@ -1867,11 +1870,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Larghezza del banner responsive",
+      "titleEn": "Banner width, empty",
       "sourceHash": "fa17d2f37f65ec61",
       "targets": ["1042:18133"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card is copied from Banner and its body is only a question mark; it describes no rule.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1051:11398;52:897": {
       "pageId": "1042:14217",
@@ -1880,11 +1886,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same icon production note is recorded on the Text Field page.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["1042:18133"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1051:11398;52:903": {
       "pageId": "1042:14217",
@@ -1893,11 +1903,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["1042:18133"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I11149:7732;52:895": {
       "pageId": "10620:81742",
@@ -1906,11 +1920,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Personalizzazione",
+      "titleEn": "Customisation",
+      "summary": "The text and the pictogram are both caller-owned; the component ships no copy or artwork.",
       "sourceHash": "e60f08ae2e0c5e2b",
       "targets": ["11149:7765"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/empty-state.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I11149:7732;52:896": {
       "pageId": "10620:81742",
@@ -1919,11 +1937,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Padding laterale in sviluppo",
+      "titleEn": "Development padding scale",
       "sourceHash": "714dc725e85d10b0",
       "targets": ["11149:7765"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "A development padding scale (8/16/24/32) with no component contract.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I11149:7732;52:897": {
       "pageId": "10620:81742",
@@ -1932,11 +1953,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same icon production note is recorded on the Text Field page.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["11149:7765"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I11149:7732;52:903": {
       "pageId": "10620:81742",
@@ -1945,11 +1970,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["11149:7765"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I123:4974;52:895": {
       "pageId": "109:2426",
@@ -1958,11 +1987,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Area tappabile tertiary",
+      "titleEn": "Tertiary tap area",
+      "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "86f9f3835c1f2989",
       "targets": ["109:2455"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:895",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I123:4974;52:896": {
       "pageId": "109:2426",
@@ -1971,11 +2004,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Spazio tra più button",
+      "titleEn": "Spacing between buttons",
+      "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "fad4d260599d746f",
       "targets": ["109:2455"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:896",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I123:4974;52:897": {
       "pageId": "109:2426",
@@ -1984,11 +2021,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Background",
+      "titleEn": "Solid backgrounds",
+      "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "f09fcacb7abe11b9",
       "targets": ["109:2455"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I123:4974;52:898": {
       "pageId": "109:2426",
@@ -1997,11 +2038,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Stato focused",
+      "titleEn": "Focused state",
+      "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "02ccb01d0f109d15",
       "targets": ["109:2455"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:898",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I123:4974;52:899": {
       "pageId": "109:2426",
@@ -2010,11 +2055,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Posizione button rispetto al contenuto sovrastante",
+      "titleEn": "Distance from the content above",
+      "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "cadc357d7e6743b9",
       "targets": ["109:2455"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:899",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I123:4974;52:900": {
       "pageId": "109:2426",
@@ -2023,11 +2072,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Button disabled",
+      "titleEn": "Disabled actions",
+      "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "a7d4890af0388a92",
       "targets": ["109:2455"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:900",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I123:4974;52:903": {
       "pageId": "109:2426",
@@ -2036,11 +2089,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["109:2455"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1134:6815;52:895": {
       "pageId": "1134:4499",
@@ -2101,11 +2158,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["1314:10512"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1137:26249;52:896": {
       "pageId": "1137:25092",
@@ -2114,11 +2175,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Padding laterale in sviluppo",
+      "titleEn": "Development padding scale",
       "sourceHash": "714dc725e85d10b0",
       "targets": ["1314:10512"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "A development padding scale (8/16/24/32) with no component contract.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1137:26249;52:897": {
       "pageId": "1137:25092",
@@ -2127,11 +2191,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same icon production note is recorded on the Text Field page.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["1314:10512"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1137:26249;52:903": {
       "pageId": "1137:25092",
@@ -2140,11 +2208,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["1314:10512"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1137:9328;52:895": {
       "pageId": "1137:8776",
@@ -2205,11 +2277,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Comportamento sui diversi breakpoint",
+      "titleEn": "Behaviour across breakpoints",
+      "summary": "Desktop is a fixed-width right panel; mobile is a full-width bottom sheet that wraps short content, scrolls tall content and keeps 24px of empty space at its top.",
       "sourceHash": "02362c33671a457a",
-      "targets": [],
+      "targets": ["1278:6527"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/drawer.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1262:6496;52:896": {
       "pageId": "1262:6072",
@@ -2218,11 +2294,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Breakpoint SM (Tablet portrait)",
+      "titleEn": "SM breakpoint (tablet portrait)",
+      "summary": "At the SM breakpoint the panel keeps the desktop placement and width while the title stays on the mobile type scale.",
       "sourceHash": "85e20d20ef7c9d10",
-      "targets": [],
+      "targets": ["1278:6527"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/drawer.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1262:6496;52:897": {
       "pageId": "1262:6072",
@@ -2231,11 +2311,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Utilizzo",
+      "titleEn": "Usage",
+      "summary": "A drawer holds additional details about an object or selects and inserts elements that affect the main page.",
       "sourceHash": "962ba6a1b373857b",
-      "targets": [],
+      "targets": ["1278:6527"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/drawer.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1262:6496;52:898": {
       "pageId": "1262:6072",
@@ -2244,11 +2328,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Comportamento allo scroll",
+      "titleEn": "Scroll behaviour",
+      "summary": "The action row stays anchored to the bottom of the panel; only the content scrolls.",
       "sourceHash": "cd24dba3b9f8739f",
-      "targets": [],
+      "targets": ["1278:6527"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/drawer.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1262:6496;52:903": {
       "pageId": "1262:6072",
@@ -2257,11 +2345,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": [],
+      "targets": ["1278:6527"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1280:13528;52:895": {
       "pageId": "1280:13101",
@@ -3058,11 +3150,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Funzione “Scroll to bottom”",
+      "titleEn": "Scroll-to-bottom purpose",
+      "summary": "Scroll to bottom is for content the reader must see in full before tapping the CTA that advances the flow, typically the terms of service.",
       "sourceHash": "09202480ddbe3098",
       "targets": ["180:3931"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/scroll-to-bottom.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I180:4348;52:896": {
       "pageId": "157:1194",
@@ -3071,11 +3167,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Spazio tra più button",
+      "titleEn": "Spacing between buttons",
+      "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "fad4d260599d746f",
       "targets": ["180:3931"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:896",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I180:4348;52:897": {
       "pageId": "157:1194",
@@ -3084,11 +3184,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Background",
+      "titleEn": "Solid backgrounds",
+      "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "f09fcacb7abe11b9",
       "targets": ["180:3931"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I180:4348;52:898": {
       "pageId": "157:1194",
@@ -3097,11 +3201,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Stato focused",
+      "titleEn": "Focused state",
+      "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "02ccb01d0f109d15",
       "targets": ["180:3931"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:898",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I180:4348;52:899": {
       "pageId": "157:1194",
@@ -3110,11 +3218,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Posizione button rispetto al contenuto sovrastante",
+      "titleEn": "Distance from the content above",
+      "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "cadc357d7e6743b9",
       "targets": ["180:3931"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:899",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I180:4348;52:900": {
       "pageId": "157:1194",
@@ -3123,11 +3235,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Button disabled",
+      "titleEn": "Disabled actions",
+      "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "a7d4890af0388a92",
       "targets": ["180:3931"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:900",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I180:4348;52:903": {
       "pageId": "157:1194",
@@ -3136,11 +3252,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["180:3931"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I189:593;52:895": {
       "pageId": "157:1195",
@@ -3579,11 +3699,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Spacing",
+      "titleEn": "Spacing",
+      "summary": "A banner is composed into the page with 24px of space around it.",
       "sourceHash": "9efb7ce9e4c66939",
       "targets": ["261:6501"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/banners.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I261:6606;52:896": {
       "pageId": "158:1198",
@@ -3592,11 +3716,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Larghezza del banner responsive",
+      "titleEn": "Responsive banner width",
       "sourceHash": "fa17d2f37f65ec61",
       "targets": ["261:6501"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is only a question mark; no rule was written.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I261:6606;52:897": {
       "pageId": "158:1198",
@@ -3605,11 +3732,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same icon production note is recorded on the Text Field page.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["261:6501"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I261:6606;52:903": {
       "pageId": "158:1198",
@@ -3618,11 +3749,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["261:6501"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I370:5499;52:895": {
       "pageId": "158:1199",
@@ -3683,11 +3818,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Tooltip vs Popover",
+      "titleEn": "Tooltip versus Popover",
+      "summary": "Use a tooltip for one short unstructured string only; longer, regulatory or mobile-critical copy belongs to a Popover opened on click, and new tooltips are discouraged.",
       "sourceHash": "885bdeee59b3f1ad",
       "targets": ["230:1317"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/tooltips.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9927:37034;52:896": {
       "pageId": "212:1390",
@@ -3696,11 +3835,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Trigger",
+      "titleEn": "Trigger",
+      "summary": "The element a tooltip explains carries an information icon that opens it.",
       "sourceHash": "588e6ae516c78782",
       "targets": ["230:1317"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/tooltips.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9927:37034;52:897": {
       "pageId": "212:1390",
@@ -3709,11 +3852,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same icon production note is recorded on the Text Field page.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["230:1317"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9927:37034;52:903": {
       "pageId": "212:1390",
@@ -3722,11 +3869,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["230:1317"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1317:10367;52:895": {
       "pageId": "212:1810",
@@ -3735,11 +3886,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["212:1899", "1317:10404"],
+      "targets": ["1317:10404"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1317:10367;52:896": {
       "pageId": "212:1810",
@@ -3748,11 +3902,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["212:1899", "1317:10404"],
+      "targets": ["1317:10404"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1317:10367;52:897": {
       "pageId": "212:1810",
@@ -3761,11 +3918,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["212:1899", "1317:10404"],
+      "targets": ["1317:10404"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1317:10367;52:898": {
       "pageId": "212:1810",
@@ -3774,11 +3934,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
-      "targets": ["212:1899", "1317:10404"],
+      "targets": ["1317:10404"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1317:10367;52:903": {
       "pageId": "212:1810",
@@ -3787,11 +3950,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["212:1899", "1317:10404"],
+      "targets": ["1317:10404"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I218:2540;52:895": {
       "pageId": "212:1810",
@@ -3800,11 +3967,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Spacing",
+      "titleEn": "Spacing",
+      "summary": "An alert keeps 24px of contextual space above it and 40px below it.",
       "sourceHash": "eb34d4d5d66f76b5",
-      "targets": ["212:1899", "1317:10404"],
+      "targets": ["212:1899"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/alerts.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I218:2540;52:896": {
       "pageId": "212:1810",
@@ -3813,11 +3984,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Larghezza dell’alert responsive",
+      "titleEn": "Responsive alert width",
       "sourceHash": "63f7b1af5550cfd7",
-      "targets": ["212:1899", "1317:10404"],
+      "targets": ["212:1899"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is only a question mark; no rule was written.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I218:2540;52:897": {
       "pageId": "212:1810",
@@ -3826,11 +4000,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same icon production note is recorded on the Text Field page.",
       "sourceHash": "00c41242f44a2462",
-      "targets": ["212:1899", "1317:10404"],
+      "targets": ["212:1899"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I218:2540;52:903": {
       "pageId": "212:1810",
@@ -3839,11 +4017,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
-      "targets": ["212:1899", "1317:10404"],
+      "targets": ["212:1899"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I236:1259;52:895": {
       "pageId": "235:2985",
@@ -3852,11 +4034,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Area tappabile tertiary",
+      "titleEn": "Tertiary tap area",
+      "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "86f9f3835c1f2989",
       "targets": ["236:1311"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:895",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I236:1259;52:896": {
       "pageId": "235:2985",
@@ -3865,11 +4051,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Spazio tra più button",
+      "titleEn": "Spacing between buttons",
+      "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "fad4d260599d746f",
       "targets": ["236:1311"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:896",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I236:1259;52:897": {
       "pageId": "235:2985",
@@ -3878,11 +4068,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Background",
+      "titleEn": "Solid backgrounds",
+      "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "f09fcacb7abe11b9",
       "targets": ["236:1311"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I236:1259;52:898": {
       "pageId": "235:2985",
@@ -3891,11 +4085,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Stato focused",
+      "titleEn": "Focused state",
+      "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "02ccb01d0f109d15",
       "targets": ["236:1311"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:898",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I236:1259;52:899": {
       "pageId": "235:2985",
@@ -3904,11 +4102,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Posizione button rispetto al contenuto sovrastante",
+      "titleEn": "Distance from the content above",
+      "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "cadc357d7e6743b9",
       "targets": ["236:1311"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:899",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I236:1259;52:900": {
       "pageId": "235:2985",
@@ -3917,11 +4119,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Button disabled",
+      "titleEn": "Disabled actions",
+      "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "a7d4890af0388a92",
       "targets": ["236:1311"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:900",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I236:1259;52:903": {
       "pageId": "235:2985",
@@ -3930,11 +4136,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same Button rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["236:1311"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I237:2015;52:895": {
       "pageId": "237:2012",
@@ -4100,11 +4310,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Posizione",
+      "titleEn": "Position",
+      "summary": "A snackbar sits at the bottom right of the viewport, 24px from the bottom and 24px from the right edge.",
       "sourceHash": "f1c18594c5e2144c",
-      "targets": ["357:4970", "392:4667"],
+      "targets": ["357:4970"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/snackbars.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I357:4968;52:896": {
       "pageId": "357:4687",
@@ -4113,11 +4327,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Larghezza della snackbar",
+      "titleEn": "Snackbar width",
+      "summary": "A snackbar is between 280px, the mobile XS minimum including 24px side padding, and 560px on desktop.",
       "sourceHash": "863eba923d4e1815",
       "targets": ["357:4970", "392:4667"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/snackbars.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I357:4968;52:897": {
       "pageId": "357:4687",
@@ -4126,11 +4344,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Temporizzazione",
+      "titleEn": "Timing",
+      "summary": "A snackbar auto-dismisses only when the same message is reachable elsewhere on the page.",
       "sourceHash": "304f2e8c444f274b",
-      "targets": ["357:4970", "392:4667"],
+      "targets": ["357:4970"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/snackbars.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I357:4968;52:898": {
       "pageId": "357:4687",
@@ -4139,11 +4361,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Alert errore con codice di errore",
+      "titleEn": "Error with an error code",
+      "summary": "An error snackbar never auto-dismisses.",
       "sourceHash": "7613f03089c37db4",
       "targets": ["357:4970", "392:4667"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/snackbars.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I357:4968;52:903": {
       "pageId": "357:4687",
@@ -4152,11 +4378,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["357:4970", "392:4667"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I360:7011;52:895": {
       "pageId": "360:796",
@@ -4847,11 +5077,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Utilizzo",
+      "titleEn": "Usage",
       "sourceHash": "3399705f69c33e68",
       "targets": ["733:22841", "749:5695", "749:5867"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "deferred",
+      "reason": "The OK, KO and Waiting state stories have no guide and this wave may not add one; the consumer rule needs a guide before it can be imported.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I733:32256;52:896": {
       "pageId": "733:21958",
@@ -4860,11 +5093,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Larghezza della snackbar",
+      "titleEn": "Snackbar width",
+      "summary": "The same snackbar width rule is recorded on the Snackbar page.",
       "sourceHash": "863eba923d4e1815",
       "targets": ["733:22841", "749:5695", "749:5867"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I357:4968;52:896",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I733:32256;52:897": {
       "pageId": "733:21958",
@@ -4873,11 +5110,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Temporizzazione",
+      "titleEn": "Snackbar timing",
       "sourceHash": "a45bbe04955c6436",
       "targets": ["733:22841", "749:5695", "749:5867"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "Describes snackbar timing, not the full-page OK, KO and Waiting states; copied from the Snackbar page.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I733:32256;52:898": {
       "pageId": "733:21958",
@@ -4886,11 +5126,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Alert errore con codice di errore",
+      "titleEn": "Error with an error code",
+      "summary": "The same snackbar rule is recorded on the Snackbar page.",
       "sourceHash": "7613f03089c37db4",
       "targets": ["733:22841", "749:5695", "749:5867"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I357:4968;52:898",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I733:32256;52:903": {
       "pageId": "733:21958",
@@ -4899,11 +5143,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same responsive rule is recorded on the Button page.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["733:22841", "749:5695", "749:5867"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I758:8862;52:895": {
       "pageId": "758:8859",
