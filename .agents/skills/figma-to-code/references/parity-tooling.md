@@ -90,9 +90,10 @@ scaled capture or one that missed the forced width exits 2.
   stay below the next breakpoint. A mobile frame narrower than 320 is not a
   device width: Storybook's minimum is 320, capture there.
 - `--expect-state <state>` exits 2 when the story does not show it (a filled
-  source against an empty story). A state without a generic predicate gets
-  `--state-evidence <selector>`. No Figma-label → prop map exists: the state is
-  checked, never inferred.
+  source against an empty story). The generic predicates are `enabled`,
+  `disabled`, `focused`, `filled`, `empty`, `open` and `error`; a state outside
+  them gets `--state-evidence <selector>`. No Figma-label → prop map exists: the
+  state is checked, never inferred.
 - Always pass `--state`: it names the case.
 
 ## The case corpus
@@ -100,7 +101,9 @@ scaled capture or one that missed the forced width exits 2.
 `catalog.parityCases` holds one entry per compared variant and device: `id`,
 story, width/viewport/height, `device`, `layoutScope`, selectors, residues,
 flags, `note`. `--save-case` writes it back in canonical field order; never
-hand-edit a mapping into a report. `pnpm nx run pagopa-ui-cli:test` validates every case
+hand-edit a mapping into a report. After a save, run the package formatter
+(`pnpm nx run pagopa-ui:fmt`): the canonical file is valid but not formatted,
+and `fmt:check` fails on it. `pnpm nx run pagopa-ui-cli:test` validates every case
 hermetically (node in the inventory, story among the declared `storyExports`,
 non-empty selectors and residue reasons, no unknown fields).
 
@@ -113,7 +116,8 @@ A case created with `--node` has no note: attach one with `--note`. A
 coverage until a reviewed render replaces its note (`--save-case --note
 "reviewed: …"`). `cases --sync` proposes one draft per missing device and one
 per variant no reviewed case points at, from one sibling; a draft pins the
-variant, its device and its width.
+variant, its device and its width. A node with no reviewed case at all starts
+with one manual `check --node` capture: there is no sibling to propose from.
 
 When the source is the committed evidence slice, `--case` checks the manifest's
 version and design fingerprint against the committed inventory before the
@@ -130,7 +134,9 @@ variant: `--state` names the case, `--variant` takes the node id.
   maps the component's own layer, never the mockup wrapper;
   `--subject "<layer>=<selector>"` adds a nested subject. Subjects are declared
   per device: a missing layer exits 2. Subject paths are written key first
-  (`X.offset.top`).
+  (`X.offset.top`). The root subject is `field`: its deltas are
+  `field.<property>`, and `--ignore gap` or `--residue "box.height=…"` may
+  omit the prefix.
 - A case that maps only the root proves the variant's outer box, not its inner
   padding or gap: add a subject for the frames that drive the rhythm, or record
   the adaptation in the note.
