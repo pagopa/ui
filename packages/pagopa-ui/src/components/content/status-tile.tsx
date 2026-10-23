@@ -18,7 +18,13 @@ function StatusTile({
   children?: React.ReactNode
 }) {
   return (
-    <article className={cn("grid gap-2 rounded-lg border bg-background p-4", className)} {...props}>
+    <article
+      className={cn(
+        "grid gap-2 rounded-lg bg-background p-4 ring-1 ring-inset ring-border forced-colors:ring-0 forced-colors:outline-1 forced-colors:outline-solid forced-colors:outline-[CanvasText]",
+        className,
+      )}
+      {...props}
+    >
       <div
         className={cn(
           "flex gap-2",
@@ -29,7 +35,7 @@ function StatusTile({
       >
         <span className="flex min-w-0 items-center gap-2">
           {channel ? (
-            <span aria-hidden="true" className="shrink-0 [&>svg]:size-6">
+            <span aria-hidden="true" className="flex shrink-0 [&>svg]:size-6">
               {channel}
             </span>
           ) : null}

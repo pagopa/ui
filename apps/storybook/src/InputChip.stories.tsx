@@ -4,6 +4,8 @@ import { expect, fn, userEvent, within } from "storybook/test"
 import { InputChip } from "@/components/inputs/chips"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
+import chipsGuide from "./guides/chips.md?raw"
+
 const meta = {
   title: "Components/Inputs/InputChip",
   component: InputChip,
@@ -16,8 +18,9 @@ const meta = {
     design: { type: "figma", url: figmaEmbedUrl("422:16012") },
     docs: {
       description: {
-        component:
-          "Neutral chip of the multi-select field with a close control and an adequate hit area; without `onRemove` it stays a static label.",
+        component: `Neutral chip of the multi-select field with a close control and an adequate hit area; without \`onRemove\` it stays a static label.
+
+${chipsGuide}`,
       },
     },
   },
@@ -35,12 +38,19 @@ export const Playground: Story = {
   ),
 }
 
+// The set `422:16012` publishes one variant, `422:16019`
+// (`Type=Neutral, Style=Solid`), a 93x24 pill. The source tab is a last element
+// of the sample, so the fixture renders the chip with its live remove control.
 export const NeutralSolid: Story = {
   args: {
     children: "Input chip",
-    className: "input-chip-fidelity",
     onRemove: fn(),
   },
+  render: (args) => (
+    <div data-fidelity-variant="422-16019" className="w-[93px]">
+      <InputChip {...args} />
+    </div>
+  ),
 }
 
 export const Removable: Story = {

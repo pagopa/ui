@@ -2729,6 +2729,29 @@
     "ignores": ["Chip.radius"]
   },
   {
+    "id": "422-16012-type-neutral-style-solid",
+    "nodeId": "422:16012",
+    "export": "InputChip",
+    "storyId": "components-inputs-inputchip--neutral-solid",
+    "state": "Type=Neutral, Style=Solid",
+    "variant": "422:16019",
+    "width": 93,
+    "depth": 4,
+    "root": "#storybook-root [data-fidelity-variant=\"422-16019\"] > span",
+    "subjects": {
+      "Label container": "#storybook-root [data-fidelity-variant=\"422-16019\"] > span > span",
+      "close": "#storybook-root [data-fidelity-variant=\"422-16019\"] > span > button"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.radius",
+        "reason": "source 100 is the full pill on a 24px box; rounded-full paints the 12px cap"
+      }
+    ],
+    "note": "reviewed: Type=Neutral, Style=Solid at the 93x24 source chip, no device axis. Root 92.88x24 against the source 93x24 with the #e8ebf1 secondary fill, no stroke and the 12px cap painted by rounded-full (source 100 on a 24px box, the pill residue). Label container 68.88x18 at 0/4 with the source 8/4 insets, the exact 57px Titillio-Semibold 12/18 label and the 4px label-close gap moved into the label box so the root gap is the source 0; close cell 24x24 at 68.88 against the source 69 with the 9x9 close_small glyph from PagoPAIcon. The native remove control keeps its 44px invisible hit target (a11y adaptation, not a visual box). Strict composition clean, responsive clean."
+  },
+  {
     "id": "529-6111-filled",
     "nodeId": "529:6111",
     "export": "TextField",
@@ -5322,6 +5345,61 @@
       "Dot.border.color"
     ],
     "note": "reviewed: the warning cursor (.TimelineDot/Warning, 24x24) captured from the Fidelity story at its own 24px width, no device axis. Root 24x24, the 12x12 dot centred at 6/6 with the exact #a5822a warning fill; the source 6px #0e0f13 outside stroke at 35% opacity is the render 6px outer box-shadow halo, which the probe does not read as a border, so Dot.border.width and Dot.border.color are ignored as a mapping artifact. The source root 6px padding and the DOM place-items-center centring are the same inset, so field.padding.left and field.padding.right are ignored. The source Rectangle 777 (2x7) is the rail stub: the element draws one continuous absolute rail on a non-last item and this capture is a last item, so the cursor is mapped alone. Strict composition clean, responsive clean."
+  },
+  {
+    "id": "9866-4503-info",
+    "nodeId": "9866:4503",
+    "export": "Timeline",
+    "storyId": "components-data-display-timeline--dot-info",
+    "state": "info",
+    "width": 24,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"9866-4503\"] li > span > span",
+    "subjects": {
+      "Dot": "#storybook-root [data-fidelity-variant=\"9866-4503\"] li > span > span > span"
+    },
+    "compareOffset": true,
+    "ignores": [
+      "field.padding.left",
+      "field.padding.right",
+      "Dot.border.width",
+      "Dot.border.color"
+    ],
+    "note": "reviewed: the info cursor (.TimelineDot/Info, 24x24) captured from the DotInfo story at its own 24px width, no device axis. Root 24x24, the 12x12 dot centred at 6/6 with the exact #418daf info fill; the source 6px #0e0f13 outside stroke at 35% opacity is the render 6px outer box-shadow halo, which the probe does not read as a border, so Dot.border.width and Dot.border.color are ignored as a mapping artifact. The source root 6px padding and the DOM place-items-center centring are the same inset, so field.padding.left and field.padding.right are ignored. The source Rectangle 777 (2x7) is the rail stub: the element draws one continuous absolute rail on a non-last item and this capture is a last item, so the cursor is mapped alone. Strict composition clean, responsive clean."
+  },
+  {
+    "id": "9924-27054-horizontal",
+    "nodeId": "9924:27054",
+    "export": "StatusTile",
+    "storyId": "components-content-statustile--source-horizontal",
+    "state": "horizontal",
+    "variant": "9828:25733",
+    "width": 312,
+    "depth": 4,
+    "root": "#storybook-root [data-fidelity-variant=\"horizontal\"] > article",
+    "subjects": {
+      "Header-Row": "#storybook-root [data-fidelity-variant=\"horizontal\"] > article > div",
+      "Body-Text": "#storybook-root [data-fidelity-variant=\"horizontal\"] > article > p"
+    },
+    "compareOffset": true,
+    "note": "reviewed: Orientation=Horizontal at the 312x110 source tile, no device axis. Root 312 wide, the 8px radius, 16px inset and 8px gap match; the source 1px #e8ebf1 stroke is an inset ring so it does not add to the box. Header-Row (280x32 against the source 280x30) carries the 24px SEND channel, the 16/22 title and the caller Tag; Body-Text 280x40 at 16/56 against the source 16/54, the 2px coming from the Tag min-h-8 (32 against 30, reviewed in 105-2043). The Tag frame inner padding belongs to the Tag component and is not re-mapped here. Strict composition clean, responsive clean."
+  },
+  {
+    "id": "9924-27054-vertical",
+    "nodeId": "9924:27054",
+    "export": "StatusTile",
+    "storyId": "components-content-statustile--source-vertical",
+    "state": "vertical",
+    "variant": "9924:27055",
+    "width": 312,
+    "depth": 4,
+    "root": "#storybook-root [data-fidelity-variant=\"vertical\"] > article",
+    "subjects": {
+      "Header-Row": "#storybook-root [data-fidelity-variant=\"vertical\"] > article > div",
+      "Body-Text": "#storybook-root [data-fidelity-variant=\"vertical\"] > article > p"
+    },
+    "compareOffset": true,
+    "note": "reviewed: Orientation=Vertical at the 312x142 source tile, no device axis. Root 312 wide, the 8px radius, 16px inset and 8px gap match; the source 1px #e8ebf1 stroke is an inset ring. Header-Row 280x62 against the source 280x62: the 24px SEND channel, then the Tag stacked under it with the 8px gap (the Tag renders 32 against 30, reviewed in 105-2043, so the header is 64 and the Body-Text starts at 16/88 against the source 16/86, both within tolerance). The Tag frame inner padding belongs to the Tag component and is not re-mapped here. Strict composition clean, responsive clean."
   },
   {
     "id": "9927-36954-9927-36955",

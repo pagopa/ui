@@ -1298,7 +1298,7 @@
         "story": "apps/storybook/src/InputChip.stories.tsx",
         "storyExports": ["NeutralSolid"]
       },
-      "note": "Fresh Path C review against pinned Figma v2409404974909792292: Neutral/Solid is 24px high with a 24px close cell and 9.15px small glyph. The native remove button retains a 44px hit target; decorativeRemove stays inert inside one-button containers. Titillio-Semibold maps to Titillium Web Semibold; for “Input chip” the label measures 50.875px vs 57px source and remains content-driven. (2026-10-14: the source Titillio family is now bundled directly; earlier substitute-font statements and figures in this note are historical and pending re-measurement.)"
+      "note": "Reviewed 2026-10-23 (M5 second ring): one committed case (`422-16012-type-neutral-style-solid`) captures the set's only variant, `Type=Neutral, Style=Solid` (422:16019), at the 93px source width; no device axis. The render is 92.88x24 with the #e8ebf1 secondary fill and the exact 57px Titillio-Semibold 12/18 label; the label container keeps the source 8/4 insets and 4px label-close gap (the gap sits in the label box, so the root gap is the source 0) and the close cell is 24x24 at 68.88 with the 9x9 close_small glyph. The source 100 radius is the full pill on a 24px box; `rounded-full` paints the 12px cap and that is the only residue. The native remove button keeps its 44px invisible hit target; `pointerRemove` stays inert inside one-button containers. Guide: apps/storybook/src/guides/chips.md."
     },
     "50:1700": {
       "status": "implemented",
@@ -2679,11 +2679,12 @@
     },
     "9866:4503": {
       "status": "implemented",
-      "note": "Reviewed: info cursor — 12px #418daf dot with the halo.",
+      "note": "Reviewed 2026-10-23 (M5 second ring): one committed case (`9866-4503-info`) captures the `.TimelineDot/Info` cursor from `DotInfo` at its own 24px width; the node is a plain COMPONENT, no variant and no device axis. Root 24x24, the 12x12 dot centred at 6/6 with the exact #418daf info fill; the source 6px #0e0f13 outside stroke at 35% opacity is the render's 6px outer box-shadow halo, which the probe does not read as a border, so `Dot.border.width` and `Dot.border.color` are ignored as a mapping artifact. The source root's 6px padding and the DOM `place-items-center` centring are the same inset, so `field.padding.left/right` are ignored. The source `Rectangle 777` (2x7) is the rail stub: the element draws one continuous absolute rail on a non-last item and the capture is a last item, so the cursor is mapped alone. Strict composition clean, responsive clean. Guide: apps/storybook/src/guides/timeline.md.",
       "target": {
         "module": "src/components/data-display/timeline.tsx",
         "export": "Timeline",
-        "story": "apps/storybook/src/Timeline.stories.tsx"
+        "story": "apps/storybook/src/Timeline.stories.tsx",
+        "storyExports": ["DotInfo"]
       }
     },
     "9876:42679": {
@@ -3333,9 +3334,10 @@
       "target": {
         "module": "src/components/content/status-tile.tsx",
         "export": "StatusTile",
-        "story": "apps/storybook/src/StatusTile.stories.tsx"
+        "story": "apps/storybook/src/StatusTile.stories.tsx",
+        "storyExports": ["SourceHorizontal", "SourceVertical"]
       },
-      "note": "Reviewed: StatusTile is the source 8px surface with the 24px channel, 16/22 title, Tag slot, 14/20 body and the horizontal/vertical orientations."
+      "note": "Reviewed 2026-10-23 (M5 second ring): two committed cases, one per source orientation (`9924-27054-horizontal`, `9924-27054-vertical`), each capturing the variant at the 312px column in `SourceHorizontal`/`SourceVertical`, no device axis. The surface is the source 16px inset, 8px gap and 8px radius; the source 1px #e8ebf1 stroke is an inset ring, so the box is exactly 312 wide. The 24px channel artwork, 16/22 title, Tag slot and 14/20 body map the source layers; the Tag renders 32 high against the source 30 (reviewed in 105-2043), so the horizontal tile is 112 against 110 and the vertical 144 against 142, both within tolerance, and the Tag frame's inner padding is owned by the Tag component, not re-mapped here. Guide: apps/storybook/src/guides/status-tile.md."
     },
     "9927:36954": {
       "status": "implemented",

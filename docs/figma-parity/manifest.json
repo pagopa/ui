@@ -2119,6 +2119,33 @@
       "width": 272,
       "height": 1238
     },
+    "9866-4494-success": {
+      "png": "references/9866-4494-success.png",
+      "sha256": "e3b14702bf335d03bca9e0ff19d91b71b7c137cf262fe11d632f10407cc00730",
+      "nodeId": "9866:4494",
+      "variant": "9866:4494",
+      "designFingerprint": "31c43106d4943dc731f6c5086ef8478c1a8c8be8471b4766d8a7417db5617c5d",
+      "width": 24,
+      "height": 24
+    },
+    "9866-4497-error": {
+      "png": "references/9866-4497-error.png",
+      "sha256": "3aa2d73aeabedaf91a5c53fd5b001188deb41a8bfaa598c8df7e6b7f3c845eff",
+      "nodeId": "9866:4497",
+      "variant": "9866:4497",
+      "designFingerprint": "04237b8a93ab14f6675e22cbba84180fb3799cad071677860a8c835e4eba32fd",
+      "width": 24,
+      "height": 24
+    },
+    "9866-4500-warning": {
+      "png": "references/9866-4500-warning.png",
+      "sha256": "3f8195f7078dde2e8c7a3e0950128ea02e572bf363207b6d149ea622bbcb8ce8",
+      "nodeId": "9866:4500",
+      "variant": "9866:4500",
+      "designFingerprint": "09f79a90355dffaed0135dbe332271d20255efac66f76aea861dbd7a7a150f33",
+      "width": 24,
+      "height": 24
+    },
     "9927-36954-9927-36955": {
       "png": "references/9927-36954-9927-36955.png",
       "sha256": "26bb75e5fd6d367e68b19290fda38a5c5176a7f16a1c7abe3c8b66c0142445a3",
@@ -2308,32 +2335,41 @@
       "width": 848,
       "height": 128
     },
-    "9866-4494-success": {
-      "png": "references/9866-4494-success.png",
-      "sha256": "e3b14702bf335d03bca9e0ff19d91b71b7c137cf262fe11d632f10407cc00730",
-      "nodeId": "9866:4494",
-      "variant": "9866:4494",
-      "designFingerprint": "31c43106d4943dc731f6c5086ef8478c1a8c8be8471b4766d8a7417db5617c5d",
+    "422-16012-type-neutral-style-solid": {
+      "png": "references/422-16012-type-neutral-style-solid.png",
+      "sha256": "373b8a8c82f84ebefd6df0a9cc7473081f71bcc8ebd9c326c3fa2e36fbd3188e",
+      "nodeId": "422:16012",
+      "variant": "422:16019",
+      "designFingerprint": "14db39f2ce421b36f8a71bc983dc13cea3cbaeac097449f6f8d5b76e441d2a63",
+      "width": 93,
+      "height": 24
+    },
+    "9866-4503-info": {
+      "png": "references/9866-4503-info.png",
+      "sha256": "648c4d28f7ce38b44c82c32ffa7a17b64b660e95b79d0c6e63163b44a413a4a3",
+      "nodeId": "9866:4503",
+      "variant": "9866:4503",
+      "designFingerprint": "a85fb7887b2e84280bbb850758e41e89f653dacb3caa0e30a3c1e7afa0f6f672",
       "width": 24,
       "height": 24
     },
-    "9866-4497-error": {
-      "png": "references/9866-4497-error.png",
-      "sha256": "3aa2d73aeabedaf91a5c53fd5b001188deb41a8bfaa598c8df7e6b7f3c845eff",
-      "nodeId": "9866:4497",
-      "variant": "9866:4497",
-      "designFingerprint": "04237b8a93ab14f6675e22cbba84180fb3799cad071677860a8c835e4eba32fd",
-      "width": 24,
-      "height": 24
+    "9924-27054-horizontal": {
+      "png": "references/9924-27054-horizontal.png",
+      "sha256": "c1828cedafdd9e7fc61f15e84e3cb9e5ee8e46f9039e8a8351c0d6029c9de7d1",
+      "nodeId": "9924:27054",
+      "variant": "9828:25733",
+      "designFingerprint": "aeb314290dbd3ff27e871b01125a6c825e9811aaf3bdc8a96dc9fe62a2042cea",
+      "width": 312,
+      "height": 110
     },
-    "9866-4500-warning": {
-      "png": "references/9866-4500-warning.png",
-      "sha256": "3f8195f7078dde2e8c7a3e0950128ea02e572bf363207b6d149ea622bbcb8ce8",
-      "nodeId": "9866:4500",
-      "variant": "9866:4500",
-      "designFingerprint": "09f79a90355dffaed0135dbe332271d20255efac66f76aea861dbd7a7a150f33",
-      "width": 24,
-      "height": 24
+    "9924-27054-vertical": {
+      "png": "references/9924-27054-vertical.png",
+      "sha256": "89b9285b5e2ae110e2c1d64f0ea1b43847a17da554b2413e5861298211c77d69",
+      "nodeId": "9924:27054",
+      "variant": "9924:27055",
+      "designFingerprint": "8f710754911b24fdc6272ab1fc9f71360f4039dc00353c9e7d5bdf689054a413",
+      "width": 312,
+      "height": 142
     }
   }
 }

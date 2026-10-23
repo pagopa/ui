@@ -132,13 +132,12 @@ function InputChip({
   return (
     <span
       className={cn(
-        "inline-flex h-6 max-w-full items-center gap-1 rounded-full bg-secondary pl-2 text-caption-sb text-foreground",
-        trailing ? "pr-0" : "pr-2",
+        "inline-flex h-6 max-w-full items-center rounded-full bg-secondary text-caption-sb text-foreground",
         className,
       )}
       {...props}
     >
-      <span className="min-w-0 truncate">{children}</span>
+      <span className={cn("min-w-0 truncate pl-2", trailing ? "pr-1" : "pr-2")}>{children}</span>
       {onRemove && !pointerRemove ? (
         <button
           type="button"

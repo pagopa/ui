@@ -38,6 +38,14 @@
 
 ### Changed
 
+- `StatusTile`: the surface is an inset ring instead of a border, so the 1px
+  source stroke no longer grows the 312px box, and the channel wrapper is a flex
+  box so the 24px artwork stops adding its line-box descender; both source
+  orientations have reviewed parity cases.
+- `InputChip`: the source label container owns the 8/4 insets and the 4px
+  label-close gap, so the chip's own padding and gap match the source zero; the
+  only residue is the `rounded-full` cap against the source 100 pill radius, and
+  the variant has a reviewed parity case.
 - `CarouselStepper` is the source 96x8 row again: every dot keeps its 16x4 or
   8x8 box and the 44px pointer target comes from the invisible vertical
   `::after` expansion instead of a 44px button that tripled the row width and

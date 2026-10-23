@@ -262,6 +262,16 @@ export const DotWarning: Story = {
   render: cursorFixture("9866:4500", "warning", "Warning"),
 }
 
+export const DotInfo: Story = {
+  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  parameters: {
+    layout: "fullscreen",
+    a11yContract: { reflow: false },
+    design: { type: "figma", url: figmaEmbedUrl("9866:4503") },
+  },
+  render: cursorFixture("9866:4503", "info", "Info"),
+}
+
 // The element captures (`Device=Desktop` at the 848 page column,
 // `Device=Mobile` at the 417 drawer panel) map this single item.
 export const SourceCase: Story = {
