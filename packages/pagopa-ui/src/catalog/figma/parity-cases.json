@@ -5258,6 +5258,72 @@
     "ignores": ["Pagination.gap"]
   },
   {
+    "id": "9866-4494-success",
+    "nodeId": "9866:4494",
+    "export": "Timeline",
+    "storyId": "components-data-display-timeline--dot-success",
+    "state": "success",
+    "variant": "9866:4494",
+    "width": 24,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"9866-4494\"] li > span > span",
+    "subjects": {
+      "Dot": "#storybook-root [data-fidelity-variant=\"9866-4494\"] li > span > span > span"
+    },
+    "compareOffset": true,
+    "ignores": [
+      "field.padding.left",
+      "field.padding.right",
+      "Dot.border.width",
+      "Dot.border.color"
+    ],
+    "note": "reviewed: the success cursor (.TimelineDot/Success, 24x24) captured from the Fidelity story at its own 24px width, no device axis. Root 24x24, the 12x12 dot centred at 6/6 with the exact #427940 success fill; the source 6px #0e0f13 outside stroke at 35% opacity is the render 6px outer box-shadow halo, which the probe does not read as a border, so Dot.border.width and Dot.border.color are ignored as a mapping artifact. The source root 6px padding and the DOM place-items-center centring are the same inset, so field.padding.left and field.padding.right are ignored. The source Rectangle 777 (2x7) is the rail stub: the element draws one continuous absolute rail on a non-last item and this capture is a last item, so the cursor is mapped alone. Strict composition clean, responsive clean."
+  },
+  {
+    "id": "9866-4497-error",
+    "nodeId": "9866:4497",
+    "export": "Timeline",
+    "storyId": "components-data-display-timeline--dot-error",
+    "state": "error",
+    "variant": "9866:4497",
+    "width": 24,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"9866-4497\"] li > span > span",
+    "subjects": {
+      "Dot": "#storybook-root [data-fidelity-variant=\"9866-4497\"] li > span > span > span"
+    },
+    "compareOffset": true,
+    "ignores": [
+      "field.padding.left",
+      "field.padding.right",
+      "Dot.border.width",
+      "Dot.border.color"
+    ],
+    "note": "reviewed: the error cursor (.TimelineDot/Error, 24x24) captured from the Fidelity story at its own 24px width, no device axis. Root 24x24, the 12x12 dot centred at 6/6 with the exact #d13333 error fill; the source 6px #0e0f13 outside stroke at 35% opacity is the render 6px outer box-shadow halo, which the probe does not read as a border, so Dot.border.width and Dot.border.color are ignored as a mapping artifact. The source root 6px padding and the DOM place-items-center centring are the same inset, so field.padding.left and field.padding.right are ignored. The source Rectangle 777 (2x7) is the rail stub: the element draws one continuous absolute rail on a non-last item and this capture is a last item, so the cursor is mapped alone. Strict composition clean, responsive clean."
+  },
+  {
+    "id": "9866-4500-warning",
+    "nodeId": "9866:4500",
+    "export": "Timeline",
+    "storyId": "components-data-display-timeline--dot-warning",
+    "state": "warning",
+    "variant": "9866:4500",
+    "width": 24,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"9866-4500\"] li > span > span",
+    "subjects": {
+      "Dot": "#storybook-root [data-fidelity-variant=\"9866-4500\"] li > span > span > span"
+    },
+    "compareOffset": true,
+    "ignores": [
+      "field.padding.left",
+      "field.padding.right",
+      "Dot.border.width",
+      "Dot.border.color"
+    ],
+    "note": "reviewed: the warning cursor (.TimelineDot/Warning, 24x24) captured from the Fidelity story at its own 24px width, no device axis. Root 24x24, the 12x12 dot centred at 6/6 with the exact #a5822a warning fill; the source 6px #0e0f13 outside stroke at 35% opacity is the render 6px outer box-shadow halo, which the probe does not read as a border, so Dot.border.width and Dot.border.color are ignored as a mapping artifact. The source root 6px padding and the DOM place-items-center centring are the same inset, so field.padding.left and field.padding.right are ignored. The source Rectangle 777 (2x7) is the rail stub: the element draws one continuous absolute rail on a non-last item and this capture is a last item, so the cursor is mapped alone. Strict composition clean, responsive clean."
+  },
+  {
     "id": "9927-36954-9927-36955",
     "nodeId": "9927:36954",
     "export": "Popover",

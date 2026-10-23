@@ -2649,29 +2649,32 @@
     },
     "9866:4494": {
       "status": "implemented",
-      "note": "Reviewed: success cursor — 12px #427940 dot with the halo.",
+      "note": "Reviewed 2026-10-23 (M5 second ring): one committed case (`9866-4494-success`) captures the `.TimelineDot/Success` cursor from `DotSuccess` at its own 24px width; the node is a plain COMPONENT, no variant and no device axis. Root 24x24, the 12x12 dot centred at 6/6 with the exact #427940 success fill; the source 6px #0e0f13 outside stroke at 35% opacity is the render's 6px outer box-shadow halo, which the probe does not read as a border, so `Dot.border.width` and `Dot.border.color` are ignored as a mapping artifact. The source root's 6px padding and the DOM `place-items-center` centring are the same inset, so `field.padding.left/right` are ignored. The source `Rectangle 777` (2x7) is the rail stub: the element draws one continuous absolute rail on a non-last item and the capture is a last item, so the cursor is mapped alone. Strict composition clean, responsive clean. Guide: apps/storybook/src/guides/timeline.md.",
       "target": {
         "module": "src/components/data-display/timeline.tsx",
         "export": "Timeline",
-        "story": "apps/storybook/src/Timeline.stories.tsx"
+        "story": "apps/storybook/src/Timeline.stories.tsx",
+        "storyExports": ["DotSuccess"]
       }
     },
     "9866:4497": {
       "status": "implemented",
-      "note": "Reviewed: error cursor — 12px #d13333 dot with the halo.",
+      "note": "Reviewed 2026-10-23 (M5 second ring): one committed case (`9866-4497-error`) captures the `.TimelineDot/Error` cursor from `DotError` at its own 24px width; the node is a plain COMPONENT, no variant and no device axis. Root 24x24, the 12x12 dot centred at 6/6 with the exact #d13333 error fill; the source 6px #0e0f13 outside stroke at 35% opacity is the render's 6px outer box-shadow halo, which the probe does not read as a border, so `Dot.border.width` and `Dot.border.color` are ignored as a mapping artifact. The source root's 6px padding and the DOM `place-items-center` centring are the same inset, so `field.padding.left/right` are ignored. The source `Rectangle 777` (2x7) is the rail stub: the element draws one continuous absolute rail on a non-last item and the capture is a last item, so the cursor is mapped alone. Strict composition clean, responsive clean. Guide: apps/storybook/src/guides/timeline.md.",
       "target": {
         "module": "src/components/data-display/timeline.tsx",
         "export": "Timeline",
-        "story": "apps/storybook/src/Timeline.stories.tsx"
+        "story": "apps/storybook/src/Timeline.stories.tsx",
+        "storyExports": ["DotError"]
       }
     },
     "9866:4500": {
       "status": "implemented",
-      "note": "Reviewed: warning cursor — 12px #a5822a dot with the halo.",
+      "note": "Reviewed 2026-10-23 (M5 second ring): one committed case (`9866-4500-warning`) captures the `.TimelineDot/Warning` cursor from `DotWarning` at its own 24px width; the node is a plain COMPONENT, no variant and no device axis. Root 24x24, the 12x12 dot centred at 6/6 with the exact #a5822a warning fill; the source 6px #0e0f13 outside stroke at 35% opacity is the render's 6px outer box-shadow halo, which the probe does not read as a border, so `Dot.border.width` and `Dot.border.color` are ignored as a mapping artifact. The source root's 6px padding and the DOM `place-items-center` centring are the same inset, so `field.padding.left/right` are ignored. The source `Rectangle 777` (2x7) is the rail stub: the element draws one continuous absolute rail on a non-last item and the capture is a last item, so the cursor is mapped alone. Strict composition clean, responsive clean. Guide: apps/storybook/src/guides/timeline.md.",
       "target": {
         "module": "src/components/data-display/timeline.tsx",
         "export": "Timeline",
-        "story": "apps/storybook/src/Timeline.stories.tsx"
+        "story": "apps/storybook/src/Timeline.stories.tsx",
+        "storyExports": ["DotWarning"]
       }
     },
     "9866:4503": {

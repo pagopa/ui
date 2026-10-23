@@ -3,8 +3,10 @@ import { expect, userEvent, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { CorrectionNotValid, CorrectionValid } from "@/components/content"
-import { Timeline } from "@/components/data-display"
+import { Timeline, type TimelineItemStatus } from "@/components/data-display"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+
+import timelineGuide from "./guides/timeline.md?raw"
 
 // The source sample of set `12812:16248` (`Device=Desktop|Mobile`): one Default
 // item with its correction tag. The element publishes a single item, so the
@@ -57,8 +59,9 @@ const meta = {
     design: { type: "figma", url: figmaEmbedUrl("12812:16248") },
     docs: {
       description: {
-        component:
-          "Event timeline with the source cursors, vertical timestamps, plain contents or status cards with the correction tag.",
+        component: `Event timeline with the source cursors, vertical timestamps, plain contents or status cards with the correction tag.
+
+${timelineGuide}`,
       },
     },
   },
@@ -217,6 +220,46 @@ export const Multidestinatario: Story = {
     await expect(canvas.getByText("Comune di Milano - 01199250158")).toBeVisible()
     await expect(canvas.getAllByRole("button")).toHaveLength(3)
   },
+}
+
+// The cursor components are 24x24 frames whose 12px dot the element draws from
+// `item.status`. Each capture is its own export so the Design panel shows the
+// cursor node, and each renders a single-item timeline so the cursor is alone:
+// a last item carries no rail, and the source `Rectangle 777` stub is that rail.
+const cursorFixture = (nodeId: string, status: TimelineItemStatus, label: string) => () => (
+  <div data-fidelity-variant={nodeId.replace(":", "-")} className="w-[320px]">
+    <Timeline items={[{ id: status, title: label, status }]} />
+  </div>
+)
+
+export const DotSuccess: Story = {
+  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  parameters: {
+    layout: "fullscreen",
+    a11yContract: { reflow: false },
+    design: { type: "figma", url: figmaEmbedUrl("9866:4494") },
+  },
+  render: cursorFixture("9866:4494", "success", "Success"),
+}
+
+export const DotError: Story = {
+  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  parameters: {
+    layout: "fullscreen",
+    a11yContract: { reflow: false },
+    design: { type: "figma", url: figmaEmbedUrl("9866:4497") },
+  },
+  render: cursorFixture("9866:4497", "error", "Error"),
+}
+
+export const DotWarning: Story = {
+  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  parameters: {
+    layout: "fullscreen",
+    a11yContract: { reflow: false },
+    design: { type: "figma", url: figmaEmbedUrl("9866:4500") },
+  },
+  render: cursorFixture("9866:4500", "warning", "Warning"),
 }
 
 // The element captures (`Device=Desktop` at the 848 page column,
