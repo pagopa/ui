@@ -5837,6 +5837,93 @@
     "ignores": ["Pagination.gap"]
   },
   {
+    "id": "9676-5453-default",
+    "nodeId": "9676:5453",
+    "export": "CorrectionValid",
+    "storyId": "components-content-correctionvalid--source",
+    "state": "default",
+    "width": 166,
+    "height": 30,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"default\"] [data-slot=\"tag\"]",
+    "subjects": {
+      "Tag": "#storybook-root [data-fidelity-variant=\"default\"] [data-slot=\"tag\"]",
+      "Icon": "#storybook-root [data-fidelity-variant=\"default\"] [data-slot=\"tag\"] > span:first-of-type",
+      "label": "#storybook-root [data-fidelity-variant=\"default\"] [data-slot=\"tag\"] [data-slot=\"tag-label\"]"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.gap",
+        "reason": "the source Correction/Valid wrapper frame is merged with its only child in the DOM, so its 10px single-child gap has no separate box; the Tag subject below compares the real 6px icon-label gap"
+      },
+      {
+        "path": "field.padding.left",
+        "reason": "the source wrapper frame has no inset of its own; the 8px inset belongs to the Tag instance and is compared on the Tag subject"
+      },
+      {
+        "path": "field.padding.right",
+        "reason": "the source wrapper frame has no inset of its own; the 8px inset belongs to the Tag instance and is compared on the Tag subject"
+      }
+    ],
+    "note": "reviewed: Correction/Valid at the source 164x30 single component, no device axis. The node is a wrapper frame whose only child is the shared Tag instance at the identical 164x30 box, so the case maps the Tag (165.78x32 against the source 164x30, the 1.78px coming from the 1px CSS border on each side and the 32px min-h-8 against the 30px source; both inside the 2px tolerance) and the DOM merge is recorded as three residues on the wrapper. Tag insets 6/8, 6px icon-label gap, radius 8 against the source 6, the 1px #e8ebf1 stroke and #ffffff fill match; the min-h-8 centres the 18px label so the vertical 6px insets read as computed 0 (the centred-content rule). Icon 16x16 at 9/8 against the source 8/7; label 12/18 Semibold #555c70 at 7px top against the source 6. The leading 10px wrapper gap is the single-child phantom gap. Strict composition clean, responsive clean. Guide: apps/storybook/src/guides/corrections.md."
+  },
+  {
+    "id": "9676-5455-default",
+    "nodeId": "9676:5455",
+    "export": "CorrectionNotValid",
+    "storyId": "components-content-correctionnotvalid--source",
+    "state": "default",
+    "width": 162,
+    "height": 30,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"default\"] [data-slot=\"tag\"]",
+    "subjects": {
+      "Tag": "#storybook-root [data-fidelity-variant=\"default\"] [data-slot=\"tag\"]",
+      "Icon": "#storybook-root [data-fidelity-variant=\"default\"] [data-slot=\"tag\"] > span:first-of-type",
+      "label": "#storybook-root [data-fidelity-variant=\"default\"] [data-slot=\"tag\"] [data-slot=\"tag-label\"]"
+    },
+    "compareOffset": true,
+    "residues": [
+      {
+        "path": "field.gap",
+        "reason": "the source Correction/NotValid wrapper frame is merged with its only child in the DOM, so its 10px single-child gap has no separate box; the Tag subject below compares the real 6px icon-label gap"
+      },
+      {
+        "path": "field.padding.left",
+        "reason": "the source wrapper frame has no inset of its own; the 8px inset belongs to the Tag instance and is compared on the Tag subject"
+      },
+      {
+        "path": "field.padding.right",
+        "reason": "the source wrapper frame has no inset of its own; the 8px inset belongs to the Tag instance and is compared on the Tag subject"
+      }
+    ],
+    "note": "reviewed: Correction/NotValid at the source 160x30 single component, no device axis. The node is a wrapper frame whose only child is the shared Tag instance at the identical 160x30 box, so the case maps the Tag (161.3x32 against the source 160x30, the 1.3px coming from the 1px CSS border on each side and the 32px min-h-8 against the 30px source; both inside the 2px tolerance) and the DOM merge is recorded as three residues on the wrapper. Tag insets 6/8, 6px icon-label gap, radius 8 against the source 6, the 1px #e8ebf1 stroke and #ffffff fill match; the min-h-8 centres the 18px label so the vertical 6px insets read as computed 0 (the centred-content rule). Icon 16x16 at 9/8 against the source 8/7; label 12/18 Semibold #555c70 at 7px top against the source 6. The leading 10px wrapper gap is the single-child phantom gap. Strict composition clean, responsive clean. Guide: apps/storybook/src/guides/corrections.md."
+  },
+  {
+    "id": "9676-5633-default",
+    "nodeId": "9676:5633",
+    "export": "Microevento",
+    "storyId": "components-data-display-microevento--source",
+    "state": "default",
+    "width": 725,
+    "height": 91,
+    "depth": 3,
+    "root": "#storybook-root [data-fidelity-variant=\"default\"] > div",
+    "subjects": {
+      "Tag": "#storybook-root [data-fidelity-variant=\"default\"] [data-slot=\"tag\"]",
+      "Frame 2087324583": "#storybook-root [data-fidelity-variant=\"default\"] > div > div",
+      "Description": "#storybook-root [data-fidelity-variant=\"default\"] > div > div > p"
+    },
+    "residues": [
+      {
+        "path": "Frame 2087324583.box.width",
+        "reason": "the source sample reserves a 21px leading slot (Frame 2087324584, an empty Description text) that the component collapses when its optional time is absent; the 21px goes to the FILL content column, and the component draws the leading slot when a caller passes time"
+      }
+    ],
+    "note": "reviewed: Microevento at the source 725x91 single component, no device axis. Root 725x92 against 91, the source insets 8/0/8/28 exact and the root gap 0 (the previous 20px gap-5 was drift and is removed); the tag starts at 28 and the copy at 28 where the source reserves a 21px leading slot (Frame 2087324584, an empty Description text) that collapses when the optional time is absent, so the FILL content column (Frame 2087324583) measures 697x76 against the source 676x75 and is the single residue; with a time the component draws the slot. Tag subject: the shared Tag instance 161.3x32 against the source 160x30, the same 32/30 and 1.3px border reading as its own review; 6/8 insets, 6px gap, radius 8 against 6, the 1px #e8ebf1 stroke and white fill match. Column gap 4 against the source 5; the copy is 14/20 Regular #0e0f13 (text-label-mini text-foreground) and sits at 44 against the source 43 (read from the anatomy): the source names both the empty leading slot and the copy Description, so the style subject resolves the empty one and the offsets are left off with this measurement. Strict composition clean without the offsets, which the reserved slot explains. The 28px inset is the recorded foundation exception for this node (no 28px spacing step). Guide: apps/storybook/src/guides/microevento.md."
+  },
+  {
     "id": "9866-4494-success",
     "nodeId": "9866:4494",
     "export": "Timeline",

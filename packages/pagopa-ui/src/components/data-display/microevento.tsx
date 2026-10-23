@@ -18,7 +18,7 @@ function Microevento({
   className?: string
 }) {
   return (
-    <div className={cn("flex items-start gap-5 py-2 pl-7", className)}>
+    <div className={cn("flex items-start py-2 pl-7", className)}>
       {time ? <span className="shrink-0 text-label-mini text-muted-foreground">{time}</span> : null}
       <div className="flex min-w-0 flex-col gap-1">
         {invalid ? <CorrectionNotValid label={label} /> : <CorrectionValid label={label} />}

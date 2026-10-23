@@ -38,6 +38,10 @@
 
 ### Changed
 
+- `Microevento`: the row keeps the source zero root gap instead of the 20px
+  `gap-5` between the optional time and the content column, and the source
+  725×91 sample has a reviewed parity case; the component's optional `time`
+  fills the source leading slot.
 - `Image`: the story is the component's own `Image.stories.tsx` instead of the
   ProductCard template, and all five source `Aspect ratio` values have reviewed
   parity cases on the `Han Purple 100` surface the set paints; the box exposes

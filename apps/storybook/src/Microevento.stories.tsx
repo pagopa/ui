@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
+import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { Microevento } from "@/components/data-display"
+
+import microeventoGuide from "./guides/microevento.md?raw"
 
 const meta = {
   title: "Components/Data display/Microevento",
@@ -17,10 +20,12 @@ const meta = {
     time: { control: "text" },
   },
   parameters: {
+    design: { type: "figma", url: figmaEmbedUrl("9676:5633") },
     docs: {
       description: {
-        component:
-          "Timeline micro-event with the correction tag (EVENTO NON VALIDO / EVENTO RETTIFICATO) and the event description.",
+        component: `Timeline micro-event with the correction tag (EVENTO NON VALIDO / EVENTO RETTIFICATO) and the event description.
+
+${microeventoGuide}`,
       },
     },
   },
@@ -38,4 +43,22 @@ export const Corrected: Story = {
     invalid: false,
     title: "Evento rettificato: la raccomandata è stata riconsegnata al mittente.",
   },
+}
+
+// The source `9676:5633` sample: a 725x91 row whose leading 21x20 slot is an
+// empty `Description` text and whose description copies the source placeholder
+// copy, so the two 14/20 lines wrap as drawn. The source draws no visible time,
+// so the capture omits the component's optional `time`.
+const sourceDescription =
+  "Raccomandata pronta - La raccomandata  {type} numero {numero raccomandata} per {name} ({CF}) è stata stampata e imbustata ed è pronta per essere spedita. 01 FEB, 14:30"
+
+export const Source: Story = {
+  // Reflow exemption: fixture pinned at the source width, not a product surface.
+  parameters: { layout: "fullscreen", a11yContract: { reflow: false } },
+  args: { time: undefined, invalid: true, title: sourceDescription },
+  render: (args) => (
+    <div data-fidelity-variant="default" className="w-[725px] max-w-full">
+      <Microevento {...args} />
+    </div>
+  ),
 }

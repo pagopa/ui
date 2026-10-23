@@ -1804,6 +1804,42 @@
       "width": 270,
       "height": 135
     },
+    "920-7219-default": {
+      "png": "references/920-7219-default.png",
+      "sha256": "056d782fb92b6e29f293f6dcae5648f5df414cf6168299d49e052be17ebd07d7",
+      "nodeId": "920:7219",
+      "variant": "920:7223",
+      "designFingerprint": "fb753d2de301b275679b7d71cd05796125949bef386200da5c432fe7cff34e00",
+      "width": 56,
+      "height": 74
+    },
+    "920-7219-numbered": {
+      "png": "references/920-7219-numbered.png",
+      "sha256": "e60a2b87143a56d753210426f72adc5b7be0fcd9e752e78fbb0e9d0b15b9130c",
+      "nodeId": "920:7219",
+      "variant": "920:7228",
+      "designFingerprint": "d8f0bfd7d70622022309a59419e2dafc7046d454bf4773e0ef58e4d50139387c",
+      "width": 48,
+      "height": 61
+    },
+    "920-7219-placeholder": {
+      "png": "references/920-7219-placeholder.png",
+      "sha256": "a1cd833db331d4f13285c63d3a33ce00311da3b4aade8e6bbe093937a6958dfa",
+      "nodeId": "920:7219",
+      "variant": "920:7236",
+      "designFingerprint": "f3b74f64fc7ebb1580f5f71a9578b2e51b599d52a14115f9c4b088e6f0d3aa79",
+      "width": 56,
+      "height": 74
+    },
+    "920-7219-selected": {
+      "png": "references/920-7219-selected.png",
+      "sha256": "1d5c8392005e5db3b11bc55076e1608fd26fb831ca1b859dc82a844ae09b8261",
+      "nodeId": "920:7219",
+      "variant": "920:7240",
+      "designFingerprint": "d8c4184387b689a8c8d0308f33ae847053eb36cc15242779aa6e3631f68bd521",
+      "width": 84,
+      "height": 97
+    },
     "1042-18133-desktop-default-desktop": {
       "png": "references/1042-18133-desktop-default-desktop.png",
       "sha256": "7e9aacd0d0370d25a4318f3540df5d11ecd6e5606210aebda4e0693d102daad8",
@@ -1839,6 +1875,15 @@
       "designFingerprint": "9acff12ed72a6e2d9308e26e4428b5195f50a5dd001a5f96c9cbec4e6fb675c5",
       "width": 320,
       "height": 49
+    },
+    "1134-6812-default": {
+      "png": "references/1134-6812-default.png",
+      "sha256": "1cd42ad71d318132a1dd0a938d53d000f43f58f1d901e6ca0d73ab51c0953c94",
+      "nodeId": "1134:6812",
+      "variant": "1134:6812",
+      "designFingerprint": "74c4c04ed331c355d414a8bc0bfe865a90c57284e69931ade093da108ab066fd",
+      "width": 376,
+      "height": 378
     },
     "1137-8910-default": {
       "png": "references/1137-8910-default.png",
@@ -2290,6 +2335,51 @@
       "width": 320,
       "height": 40
     },
+    "8818-39878-square": {
+      "png": "references/8818-39878-square.png",
+      "sha256": "4ae1c4bc1e14d75442e3177282f8eb928779ba1e42d761e44b6b5d284236aca2",
+      "nodeId": "8818:39878",
+      "variant": "8818:39879",
+      "designFingerprint": "bb45e2152a25381d77d05fb20354afe1efab48ca34f33b3ec7f87d2fe66ad5c9",
+      "width": 360,
+      "height": 360
+    },
+    "8818-39878-photo": {
+      "png": "references/8818-39878-photo.png",
+      "sha256": "3befaf1a5e9ebb60e337e1a33855fa146937a48d114b3b4dcb7ede281cf1e5f6",
+      "nodeId": "8818:39878",
+      "variant": "8818:39882",
+      "designFingerprint": "58e64caf3db1177a7f108fd285d03e5887ba37507be160da4bf938273bc9f4b6",
+      "width": 360,
+      "height": 270
+    },
+    "8818-39878-video": {
+      "png": "references/8818-39878-video.png",
+      "sha256": "75bae5610809cd84295eb6140080d865bdf72b6a9dd0f82d758e86c25ff77286",
+      "nodeId": "8818:39878",
+      "variant": "8818:39885",
+      "designFingerprint": "449227c093f702e89ad9e6d9863cc7ade0ae88086bbe484efe79187af6a8b21c",
+      "width": 360,
+      "height": 203
+    },
+    "8818-39878-cinema": {
+      "png": "references/8818-39878-cinema.png",
+      "sha256": "fd63fada036f0fc7c4247816fa61a60dc18b2775766fecf846846b7e4090152f",
+      "nodeId": "8818:39878",
+      "variant": "8818:39887",
+      "designFingerprint": "26d66b6cd9d4ab39bef83a9ca30f4fb30336fac92cf29560b63e0b6192dd32dd",
+      "width": 360,
+      "height": 155
+    },
+    "8818-39878-portrait": {
+      "png": "references/8818-39878-portrait.png",
+      "sha256": "a77127896c69bc30170bc6ba6f0e9bd393cdf1ac784bdf7d0bf7fec67efef979",
+      "nodeId": "8818:39878",
+      "variant": "8818:39889",
+      "designFingerprint": "876ebd94ee2a4e7f105f96839285159ebf14c2024834fb1f8f1b0a38f0032844",
+      "width": 360,
+      "height": 480
+    },
     "9520-2537-layout-desktop-desktop": {
       "png": "references/9520-2537-layout-desktop-desktop.png",
       "sha256": "8c95d956fa1a37ef21af1008c78c5493754314c4c93b63e5f8ceb6bf3e91e2d5",
@@ -2587,95 +2677,32 @@
       "width": 848,
       "height": 128
     },
-    "920-7219-default": {
-      "png": "references/920-7219-default.png",
-      "sha256": "056d782fb92b6e29f293f6dcae5648f5df414cf6168299d49e052be17ebd07d7",
-      "nodeId": "920:7219",
-      "variant": "920:7223",
-      "designFingerprint": "fb753d2de301b275679b7d71cd05796125949bef386200da5c432fe7cff34e00",
-      "width": 56,
-      "height": 74
+    "9676-5453-default": {
+      "png": "references/9676-5453-default.png",
+      "sha256": "3159f8df432de55ccdde88cbdb4af40fdcc8e3688ffdceeb963211536e0102eb",
+      "nodeId": "9676:5453",
+      "variant": "9676:5453",
+      "designFingerprint": "4401d49a7c829de67af3356acaa50b72dc24bc63409147d3f488d7701728aed4",
+      "width": 164,
+      "height": 30
     },
-    "920-7219-numbered": {
-      "png": "references/920-7219-numbered.png",
-      "sha256": "e60a2b87143a56d753210426f72adc5b7be0fcd9e752e78fbb0e9d0b15b9130c",
-      "nodeId": "920:7219",
-      "variant": "920:7228",
-      "designFingerprint": "d8f0bfd7d70622022309a59419e2dafc7046d454bf4773e0ef58e4d50139387c",
-      "width": 48,
-      "height": 61
+    "9676-5455-default": {
+      "png": "references/9676-5455-default.png",
+      "sha256": "0a87672972ad2287d703d61b2736f8bee867d376741726de8f4a44bab04f4252",
+      "nodeId": "9676:5455",
+      "variant": "9676:5455",
+      "designFingerprint": "4245233d10d662cb27cb376b690e3aa20ce71c9fd4b5e3c3160aec2ee0b6c450",
+      "width": 160,
+      "height": 30
     },
-    "920-7219-placeholder": {
-      "png": "references/920-7219-placeholder.png",
-      "sha256": "a1cd833db331d4f13285c63d3a33ce00311da3b4aade8e6bbe093937a6958dfa",
-      "nodeId": "920:7219",
-      "variant": "920:7236",
-      "designFingerprint": "f3b74f64fc7ebb1580f5f71a9578b2e51b599d52a14115f9c4b088e6f0d3aa79",
-      "width": 56,
-      "height": 74
-    },
-    "920-7219-selected": {
-      "png": "references/920-7219-selected.png",
-      "sha256": "1d5c8392005e5db3b11bc55076e1608fd26fb831ca1b859dc82a844ae09b8261",
-      "nodeId": "920:7219",
-      "variant": "920:7240",
-      "designFingerprint": "d8c4184387b689a8c8d0308f33ae847053eb36cc15242779aa6e3631f68bd521",
-      "width": 84,
-      "height": 97
-    },
-    "1134-6812-default": {
-      "png": "references/1134-6812-default.png",
-      "sha256": "1cd42ad71d318132a1dd0a938d53d000f43f58f1d901e6ca0d73ab51c0953c94",
-      "nodeId": "1134:6812",
-      "variant": "1134:6812",
-      "designFingerprint": "74c4c04ed331c355d414a8bc0bfe865a90c57284e69931ade093da108ab066fd",
-      "width": 376,
-      "height": 378
-    },
-    "8818-39878-square": {
-      "png": "references/8818-39878-square.png",
-      "sha256": "4ae1c4bc1e14d75442e3177282f8eb928779ba1e42d761e44b6b5d284236aca2",
-      "nodeId": "8818:39878",
-      "variant": "8818:39879",
-      "designFingerprint": "bb45e2152a25381d77d05fb20354afe1efab48ca34f33b3ec7f87d2fe66ad5c9",
-      "width": 360,
-      "height": 360
-    },
-    "8818-39878-photo": {
-      "png": "references/8818-39878-photo.png",
-      "sha256": "3befaf1a5e9ebb60e337e1a33855fa146937a48d114b3b4dcb7ede281cf1e5f6",
-      "nodeId": "8818:39878",
-      "variant": "8818:39882",
-      "designFingerprint": "58e64caf3db1177a7f108fd285d03e5887ba37507be160da4bf938273bc9f4b6",
-      "width": 360,
-      "height": 270
-    },
-    "8818-39878-video": {
-      "png": "references/8818-39878-video.png",
-      "sha256": "75bae5610809cd84295eb6140080d865bdf72b6a9dd0f82d758e86c25ff77286",
-      "nodeId": "8818:39878",
-      "variant": "8818:39885",
-      "designFingerprint": "449227c093f702e89ad9e6d9863cc7ade0ae88086bbe484efe79187af6a8b21c",
-      "width": 360,
-      "height": 203
-    },
-    "8818-39878-cinema": {
-      "png": "references/8818-39878-cinema.png",
-      "sha256": "fd63fada036f0fc7c4247816fa61a60dc18b2775766fecf846846b7e4090152f",
-      "nodeId": "8818:39878",
-      "variant": "8818:39887",
-      "designFingerprint": "26d66b6cd9d4ab39bef83a9ca30f4fb30336fac92cf29560b63e0b6192dd32dd",
-      "width": 360,
-      "height": 155
-    },
-    "8818-39878-portrait": {
-      "png": "references/8818-39878-portrait.png",
-      "sha256": "a77127896c69bc30170bc6ba6f0e9bd393cdf1ac784bdf7d0bf7fec67efef979",
-      "nodeId": "8818:39878",
-      "variant": "8818:39889",
-      "designFingerprint": "876ebd94ee2a4e7f105f96839285159ebf14c2024834fb1f8f1b0a38f0032844",
-      "width": 360,
-      "height": 480
+    "9676-5633-default": {
+      "png": "references/9676-5633-default.png",
+      "sha256": "09bb94b5948a1859e9c93683ae64d5fe6749ebecc3f35f4ebf9ca44fdb1f8d8c",
+      "nodeId": "9676:5633",
+      "variant": "9676:5633",
+      "designFingerprint": "9976ca0b111dae8c6057b989839f894096e3b0b322911125665b5aba1d68dd59",
+      "width": 725,
+      "height": 91
     }
   }
 }
