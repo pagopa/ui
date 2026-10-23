@@ -1,7 +1,8 @@
 # F2 — Deep checks: shorter pull requests, same proof
 
-Status: the split (M1) is implemented in `.github/workflows/deep-checks.yml`;
-M2–M5 are future work. Common rules: [README.md](./README.md).
+Status: the split (M1) and the Debian archive cache (M0) are implemented in
+`.github/workflows/deep-checks.yml`; M2–M5 are future work. Common rules:
+[README.md](./README.md).
 
 ## Goal
 
@@ -56,6 +57,37 @@ Three structural costs, in order of weight:
 - **Drafts are skipped** and re-run on `ready_for_review`.
 - **No remote cache yet.** `neverConnectToCloud: true` is a governance choice,
   not a setting to flip in a performance change.
+
+## What M0 changed — the Debian packages of `--with-deps` (2026-10-23)
+
+`playwright install --with-deps` does two things, and only one of them was
+cached. The browser binaries land in `~/.cache/ms-playwright` and are restored
+in about five seconds at 116 MB/s. The system libraries are installed with
+`apt-get` into `/var/lib/dpkg`, outside every cache, so each fresh runner
+downloaded them again from `azure.archive.ubuntu.com`. That mirror is
+intermittently throttled: `Fetched 20.2 MB in 12min 14s (27.6 kB/s)` in run
+39950372632 and `Fetched 108 MB in 46min 2s (39.0 kB/s)` in run 39922092601 —
+the same command that takes 12–16 s when the mirror is healthy.
+
+| Run         | Job                | `Install Playwright browsers` | Tests |
+| ----------- | ------------------ | ----------------------------- | ----- |
+| 39915276896 | Coverage (healthy) | 16 s                          | 181 s |
+| 39950372632 | Coverage           | 966 s                         | 173 s |
+| 39922092601 | Packed artifact    | 2796 s                        | 108 s |
+| 39839608058 | Coverage           | 745 s                         | 175 s |
+
+Across the previous 30 runs, 17 of the 90 install steps took more than two
+minutes (mean 770 s, worst 2796 s): roughly 3.6 hours of runner time spent
+waiting on a mirror.
+
+`deep-checks.yml` now caches the downloaded archives in
+`~/.cache/playwright-debs`, keyed on the Playwright version — the dependency
+list comes from Playwright, and a new runner image only changes a few package
+versions, which apt fetches alone — and copies them into
+`/var/cache/apt/archives` before the install; after the install the new
+archives are copied back out. The step also carries a ten-minute timeout: a
+cold cache on a throttled mirror fails fast instead of holding a runner for
+forty-six minutes.
 
 ## What M1 changed
 
