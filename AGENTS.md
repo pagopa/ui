@@ -27,6 +27,15 @@ This file adds what holds only for agents.
 5. **Storybook runs through portless.** `pnpm nx run pagopa-ui-storybook:storybook`
    prints the stable URL to open (branch-prefixed in a worktree); `PORTLESS=0` keeps `:6006`.
 
+## Figma sessions
+
+Open with `pnpm nx run pagopa-ui-cli:figma:status`: it prints the config path,
+the token state, the snapshot, the drift against the inventory, the pending
+queue with its design requests and the next command; `-- --live` adds the file
+version and last-modified date. When Figma changed, `figma:plan` then
+`figma:triage` are the whole refresh, and the pending queue is not a delta. The
+`figma-to-code` skill owns every rule that follows.
+
 ## Skills
 
 Each skill stands alone and never points at another skill or at this file; the

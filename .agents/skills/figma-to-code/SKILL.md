@@ -9,11 +9,21 @@ Keeps the components of this repository aligned with their Figma source. Project
 data — paths, the device vocabulary, per-node decisions, tokens — lives in the
 files the config names: read them, never copy them into this skill.
 
+## Session start
+
+`pnpm nx run pagopa-ui-cli:figma:status` prints the token state, the pinned
+snapshot, the drift against the committed inventory, the pending queue with its
+design requests and the next command. `-- --live` adds the file version and its
+last-modified date: that is what tells whether Figma changed at all. Run it
+before reading anything else; nothing below repeats what it reports.
+
 ## Config first
 
-Read `figma-to-code.yaml` at the repository root; when it is missing, run
-[init](references/init.md). Paths below are its keys, written as
-`catalog.registry`. Every command runs from the repository root.
+Find the config with `git ls-files '*figma-to-code.yaml'` — one per repository,
+beside the package it describes; when it is missing, run
+[init](references/init.md). Paths are relative to the config's folder, except
+`design.requests`, which is relative to the workspace root. Keys below are
+written as `catalog.registry`. Every command runs from the repository root.
 
 ## Rules for every use case
 
@@ -24,9 +34,10 @@ Read `figma-to-code.yaml` at the repository root; when it is missing, run
   publishing). Drift is reconciled in the repository.
 - **Credentials.** The person exports `FIGMA_TOKEN` (scopes
   `file_content:read`, `library_content:read`) in the process environment.
-  Never read, source or load `.env`, never print the token. The preflight is in
-  [init](references/init.md); when it fails, stop the live steps, relay its
-  guidance and keep working from the pinned snapshot.
+  Never read, source or load `.env`, never print the token. The preflight is
+  `pnpm nx run pagopa-ui-cli:figma:status`; when it reports the token missing,
+  stop the live steps, relay its guidance and keep working from the pinned
+  snapshot.
 - **`nodeId` is identity.** Names and pages change; the registry is keyed by
   `nodeId`, bulk rules by `pageId`.
 - **Figma URLs come from `figma.fileModule`** (`FIGMA_FILE_KEY`,

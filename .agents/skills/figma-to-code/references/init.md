@@ -1,14 +1,15 @@
 # Init — the config and the token preflight
 
-**Done when** `figma-to-code.yaml` exists at the repository root, every
+**Done when** `figma-to-code.yaml` exists beside the package it describes, every
 committed path it names exists, and the token preflight has been run (pass or a
 relayed failure).
 
 ## 1. The config
 
-1. **Exists?** Read `figma-to-code.yaml`. When it exists, run `pnpm nx run pagopa-ui:docs`:
-   it fails on a committed path the config names that does not exist. Green →
-   go to the preflight.
+1. **Exists?** Find it with `git ls-files '*figma-to-code.yaml'` and read it.
+   When it exists, run `pnpm nx run pagopa-ui:docs`: it fails on a committed
+   path the config names that does not exist and on every command that does not
+   resolve, and it reports where. Green → go to the preflight.
 2. **Propose the paths.** Start from the defaults below and look for the real
    files (`glob` for `**/inventory.json`, `**/registry.json`,
    `**/parity-cases.json`, `**/device-policy.json`, `**/manifest.json`, the
@@ -56,17 +57,16 @@ request. A Storybook on another port is passed as
 
 ## 2. The token preflight
 
-Only the live steps (export, triage against a fresh library, pictogram export)
-need the token; everything else reads the pinned snapshot. Test its presence
-without reading or printing its value:
+Only the live steps (plan/export, triage against a fresh library, pictogram
+export) need the token; everything else reads the pinned snapshot. The preflight
+is the session report:
 
 ```bash
-node --input-type=module -e "const { requireFigmaToken } = await import('./packages/ui-cli/src/figma/token.ts'); requireFigmaToken(); console.log('FIGMA_TOKEN: present')"
+pnpm nx run pagopa-ui-cli:figma:status
 ```
 
-Exit 1 prints the guidance (missing, empty or containing whitespace). Relay it:
-the person exports the token in the shell that runs the session and restarts the
-session, or runs the live command themselves (for example
-`node --env-file=.env packages/ui-cli/src/cli.ts figma export --input .figma/live-mcp.json`)
-and hands over its JSON output. Then wait for it, or continue with the offline
-use cases.
+`token present` clears the live steps. A missing, empty or whitespace-containing
+token prints its guidance instead: relay it, and keep the offline use cases on
+the pinned snapshot. The person exports the token in the shell that runs the
+session and restarts it, or runs the live command themselves and hands over its
+JSON output. Then wait for it, or continue with the offline use cases.

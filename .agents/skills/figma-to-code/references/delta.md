@@ -8,52 +8,52 @@ request ([node-review.md](node-review.md)).
 
 - **A drift pull request** is a complete handoff: its body lists the delta nodes
   with links, classes, targets and per-device variants. Start from its branch
-  after the setup in [handoff.md](handoff.md), then step 4.
-- **Figma changed, no drift pull request**, or `figma:check` warns that the
+  after the setup in [handoff.md](handoff.md), then step 3.
+- **Figma changed, no drift pull request**, or the session report says the
   inventory is older than 30 days: start at step 1.
 - **The design foundations changed** (Variables): the token step below.
-- **Icon or pictogram artwork changed**: [artwork.md](artwork.md) after step 3.
+- **Icon or pictogram artwork changed**: [artwork.md](artwork.md) after step 2.
 - **A code-side change to a node already in `catalog.inventory`** (fix,
   refactor): [node-review.md](node-review.md).
 
 ## Steps
 
-1. **Snapshot.** Run the token preflight ([init.md](init.md)). Call
-   `list_file_components_for_code_connect` with `FIGMA_FILE_KEY` from
-   `figma.fileModule`, save the response to `figma.mcpInventory`, then
-   `pnpm nx run pagopa-ui-cli:figma:export --input <figma.mcpInventory>`. The export joins the MCP-only
-   roots with the REST components and sets and fetches document and design
-   evidence at one pinned version into `figma.snapshot`.
-   **Done when** `figma.snapshot` pins the current version with a complete
-   baseline. A metadata-only MCP response is not a baseline, and the scheduled
-   REST job cannot discover new MCP-only roots without this step.
-
-2. **Delta.** `node packages/ui-cli/src/cli.ts figma sync --input <figma.snapshot> --plan`
-   prints JSON (exit 1 means drift):
+1. **Snapshot and delta.** `pnpm nx run pagopa-ui-cli:figma:plan` reads the live
+   file over REST, pins its version into `figma.snapshot` and prints the delta
+   plan as JSON on stdout (exit 1 means drift, not failure). It reports:
    - `added`, `removed`, `changed`, `renamed`, `moved`: identity, property and
      design changes;
+   - `changedVariants`: the variant and the device each design change landed in;
    - `baseline`: a node without a full design baseline — the next snapshot must
      carry its evidence;
    - `affected`: implementations that depend on a changed node;
    - `implementationOrder`: the work order, dependencies first, never a `mocked`
      demo;
+   - `pending`: the queue that was already waiting, with its design requests. It
+     is not today's delta;
    - `unverifiedDesign`: nodes without a design fingerprint.
 
    A set with a device axis is reported **per device**: name the variants and
    links the delta touches; a mobile-only change is a mobile review.
-   **Done when** every delta node, its class, its changed devices and the order
-   are reported to the person, before any file changes.
+   The REST read covers every component published in the file. When a remote
+   library may hold roots it cannot see, add the MCP inventory: save
+   `list_file_components_for_code_connect` to `figma.mcpInventory` and run
+   `pnpm nx run pagopa-ui-cli:figma:export --input <figma.mcpInventory>`. When
+   the connected MCP server has no such tool, the REST path is complete for the
+   file's own components; say so in the report.
+   **Done when** every delta node, its class, its changed devices and its place
+   in the order are reported to the person, before any file changes.
 
-3. **Triage.** `pnpm nx run pagopa-ui-cli:figma:triage --input <figma.snapshot> --plan`
-   (`pnpm nx run pagopa-ui-cli:figma:update` is the same refresh). It validates before writing,
-   refreshes `catalog.inventory`, turns new, changed and affected production
-   nodes `pending` (including nodes a bulk rule covered) and prunes removed
-   entries with their story exceptions. `mocked` and `excluded` entries keep
-   their status. Then `pnpm nx run-many -t fmt`.
+2. **Triage.** `pnpm nx run pagopa-ui-cli:figma:triage` refreshes
+   `catalog.inventory` from the pinned snapshot, records the file version it was
+   read from, turns new, changed and affected production nodes `pending`
+   (including nodes a bulk rule covered) and prunes removed entries with their
+   story exceptions. `mocked` and `excluded` entries keep their status. Then
+   `pnpm nx run-many -t fmt`.
    **Done when** the inventory is refreshed and each production delta is
    `pending`. A refresh is not approval.
 
-4. **Decision.** Per queued node, in `implementationOrder`, read the source of
+3. **Decision.** Per queued node, in `implementationOrder`, read the source of
    **every declared device** (`node packages/ui-cli/src/cli.ts parity source <nodeId>
    --compact`, `get_design_context` / `get_screenshot`) and pick exactly one:
    - implement it in the matching family → [new-from-figma.md](new-from-figma.md);

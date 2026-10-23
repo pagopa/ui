@@ -19,10 +19,11 @@ note. A design request is for the question the source leaves open.
 
 ## Where
 
-The path is `design.requests` in `figma-to-code.yaml`. Name the file
-`YYYY-MM-DD-<slug>.md`, one request per file. Keep the node `pending` and name
-the request in its registry `note`; the request carries the full question, the
-note carries the status and the pointer.
+The path is `design.requests` in `figma-to-code.yaml`; unlike the other keys it
+is relative to the workspace root. Name the file `YYYY-MM-DD-<slug>.md`, one
+request per file. Keep the node `pending` and name the request in its registry
+`note`; the request carries the full question, the note carries the status and
+the pointer.
 
 ## The document
 

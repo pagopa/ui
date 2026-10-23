@@ -1,7 +1,8 @@
 # Paths read by the figma-to-code skill (.agents/skills/figma-to-code) and by
 # the package scripts. The design-system keys are relative to this package; the
 # artwork keys carry the workspace prefix because the artwork lives in its own
-# package. `pnpm docs:check` fails when a committed path below is missing; the
+# package; `design.requests` is the one key relative to the workspace root.
+# `pnpm nx run pagopa-ui:docs` fails when a committed path below is missing; the
 # `.figma/` paths are local, git-ignored exports of this package.
 figma:
   fileModule: src/catalog/figma/file.ts
