@@ -17,7 +17,7 @@
     "figma:update": "node src/cli.ts figma sync --write",
     "figma:triage": "node src/cli.ts figma sync --triage",
     "figma:rules": "node src/cli.ts figma rules",
-    "figma:rules:check": "node src/cli.ts figma rules --check",
+    "figma:rules:check": "node src/cli.ts figma rules --check --strict",
     "figma:comments": "node src/cli.ts figma comments",
     "figma:brief": "node src/cli.ts figma brief",
     "figma:parity:check": "node src/cli.ts parity check",
