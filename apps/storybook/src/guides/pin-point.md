@@ -1,3 +1,11 @@
+<!-- component-rules:start -->
+
+## Component Rules
+
+- The pin shows the positive or negative outcome of a process, for example a wizard step.
+
+<!-- component-rules:end -->
+
 # PinPoint
 
 `PinPoint` implements the Figma component set `PinPoint` (`920:7219`): a map

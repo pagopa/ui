@@ -1,3 +1,11 @@
+<!-- component-rules:start -->
+
+## Component Rules
+
+- Up to four cards per row; on mobile use the mobile variant as a peek carousel, never stack; switch the state through the nested instance; the info icon opens a tooltip, not a modal.
+
+<!-- component-rules:end -->
+
 # ProgressKpi
 
 `ProgressKpi` is a KPI card: a channel and a title, a percentage over a bar, the

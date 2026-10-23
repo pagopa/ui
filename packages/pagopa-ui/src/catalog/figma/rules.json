@@ -178,11 +178,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Comportamento",
+      "titleEn": "Breadcrumb behaviour",
+      "summary": "Desktop: ancestor levels are links and the current page is not clickable; mobile: one compact back reaches the previous flow level.",
       "sourceHash": "fef030d0c64eea2e",
       "targets": ["123:7768"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/breadcrumb-navigation.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I124:4070;52:896": {
       "pageId": "1:21",
@@ -191,11 +195,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Breakpoint",
+      "titleEn": "Breadcrumb breakpoint",
+      "summary": "Mobile and tablet portrait use the Compact layout.",
       "sourceHash": "b953dbaeca7a4ae9",
       "targets": ["123:7768"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/breadcrumb-navigation.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I124:4070;52:897": {
       "pageId": "1:21",
@@ -204,11 +212,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Wizard",
+      "titleEn": "Breadcrumb in a wizard",
+      "summary": "In wizard templates use the Compact breadcrumb with the primary colour; leaving the flow asks for confirmation.",
       "sourceHash": "7efbd90801eff562",
       "targets": ["123:7768"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I124:4070;52:903": {
       "pageId": "1:21",
@@ -217,11 +228,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["123:7768"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I123:3565;52:895": {
       "pageId": "1:22",
@@ -1061,11 +1076,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "2e6107e9fb081061",
       "targets": ["10169:11964"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is a template label, not a rule.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I10183:4294;52:896": {
       "pageId": "1:25",
@@ -1074,11 +1092,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Spazio tra più button",
+      "titleEn": "Spacing between buttons",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "fad4d260599d746f",
       "targets": ["10169:11964"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:896",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I10183:4294;52:897": {
       "pageId": "1:25",
@@ -1087,11 +1109,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Background",
+      "titleEn": "Solid backgrounds",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "f09fcacb7abe11b9",
       "targets": ["10169:11964"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I10183:4294;52:898": {
       "pageId": "1:25",
@@ -1100,11 +1126,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Stato focused",
+      "titleEn": "Focused state",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "02ccb01d0f109d15",
       "targets": ["10169:11964"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:898",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I10183:4294;52:899": {
       "pageId": "1:25",
@@ -1113,11 +1143,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Posizione button rispetto al contenuto sovrastante",
+      "titleEn": "Distance from the content above",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "cadc357d7e6743b9",
       "targets": ["10169:11964"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:899",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I10183:4294;52:900": {
       "pageId": "1:25",
@@ -1126,11 +1160,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Button disabled",
+      "titleEn": "Disabled actions",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "a7d4890af0388a92",
       "targets": ["10169:11964"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:900",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I10183:4294;52:903": {
       "pageId": "1:25",
@@ -1139,11 +1177,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["10169:11964"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I125:4947;52:895": {
       "pageId": "1:25",
@@ -1152,11 +1194,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Comportamento",
+      "titleEn": "Pagination behaviour",
+      "summary": "Below 900px the middle pages collapse to Previous and Next; when the results fit one page the whole control hides.",
       "sourceHash": "03d9a76340282170",
-      "targets": ["10169:11964"],
+      "targets": ["127:1510"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/pagination.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I125:4947;52:896": {
       "pageId": "1:25",
@@ -1165,11 +1211,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Spazio tra più button",
+      "titleEn": "Spacing between buttons",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "fad4d260599d746f",
       "targets": ["10169:11964"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:896",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I125:4947;52:897": {
       "pageId": "1:25",
@@ -1178,11 +1228,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Background",
+      "titleEn": "Solid backgrounds",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "f09fcacb7abe11b9",
       "targets": ["10169:11964"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I125:4947;52:898": {
       "pageId": "1:25",
@@ -1191,11 +1245,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Stato focused",
+      "titleEn": "Focused state",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "02ccb01d0f109d15",
       "targets": ["10169:11964"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:898",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I125:4947;52:899": {
       "pageId": "1:25",
@@ -1204,11 +1262,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Posizione button rispetto al contenuto sovrastante",
+      "titleEn": "Distance from the content above",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "cadc357d7e6743b9",
       "targets": ["10169:11964"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:899",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I125:4947;52:900": {
       "pageId": "1:25",
@@ -1217,11 +1279,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Button disabled",
+      "titleEn": "Disabled actions",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "a7d4890af0388a92",
       "targets": ["10169:11964"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:900",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I125:4947;52:903": {
       "pageId": "1:25",
@@ -1230,11 +1296,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["10169:11964"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I107:2154;52:895": {
       "pageId": "1:26",
@@ -1243,11 +1313,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Copy",
+      "titleEn": "Tags are not actions",
+      "summary": "A tag is not a call to action and carries no action.",
       "sourceHash": "714bf20281603f0c",
       "targets": ["105:2043"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I107:2154;52:896": {
       "pageId": "1:26",
@@ -1256,11 +1329,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Linee guida per gli override",
+      "titleEn": "Override rules",
+      "summary": "Semantic states lock icon, border and colour to the severity tokens; the default state is fully customisable; the counter state has no icon.",
       "sourceHash": "60ec027b3b5f96ec",
       "targets": ["105:2043"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I107:2154;52:897": {
       "pageId": "1:26",
@@ -1269,11 +1345,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["105:2043"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I107:2154;52:903": {
       "pageId": "1:26",
@@ -1282,11 +1362,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["105:2043"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1154:3691;52:895": {
       "pageId": "1:4",
@@ -2049,11 +2133,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["1134:6812"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1134:6815;52:896": {
       "pageId": "1134:4499",
@@ -2062,11 +2149,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Larghezza del banner responsive",
+      "titleEn": "Banner width, empty",
       "sourceHash": "fa17d2f37f65ec61",
       "targets": ["1134:6812"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card is copied from Banner and its body is only a question mark.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1134:6815;52:897": {
       "pageId": "1134:4499",
@@ -2075,11 +2165,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["1134:6812"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1134:6815;52:903": {
       "pageId": "1134:4499",
@@ -2088,11 +2182,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["1134:6812"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1137:26249;52:895": {
       "pageId": "1137:25092",
@@ -2153,11 +2251,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["1137:8910"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1137:9328;52:896": {
       "pageId": "1137:8776",
@@ -2166,11 +2267,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Larghezza dell’alert responsive",
+      "titleEn": "Alert width, empty",
       "sourceHash": "63f7b1af5550cfd7",
       "targets": ["1137:8910"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card is copied from Alert and its body is only a question mark.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1137:9328;52:897": {
       "pageId": "1137:8776",
@@ -2179,11 +2283,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["1137:8910"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1137:9328;52:903": {
       "pageId": "1137:8776",
@@ -2192,11 +2300,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["1137:8910"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1262:6496;52:895": {
       "pageId": "1262:6072",
@@ -2388,11 +2500,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Obiettivo",
+      "titleEn": "Header objective",
+      "summary": "The header states the parent site and the cross-service links (support, account).",
       "sourceHash": "89209b26510c847e",
       "targets": ["1298:5209", "1298:5299", "8090:46352"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1313:22649;52:896": {
       "pageId": "1298:4696",
@@ -2401,11 +2516,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["1298:5209", "1298:5299", "8090:46352"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1313:22649;52:897": {
       "pageId": "1298:4696",
@@ -2414,11 +2532,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["1298:5209", "1298:5299", "8090:46352"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1313:22649;52:898": {
       "pageId": "1298:4696",
@@ -2427,11 +2548,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["1298:5209", "1298:5299", "8090:46352"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1313:22649;52:903": {
       "pageId": "1298:4696",
@@ -2440,11 +2564,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["1298:5209", "1298:5299", "8090:46352"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1316:10177;52:895": {
       "pageId": "1298:4696",
@@ -2453,11 +2581,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["1298:5209", "1298:5299", "8090:46352"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1316:10177;52:896": {
       "pageId": "1298:4696",
@@ -2466,11 +2597,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["1298:5209", "1298:5299", "8090:46352"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1316:10177;52:897": {
       "pageId": "1298:4696",
@@ -2479,11 +2613,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["1298:5209", "1298:5299", "8090:46352"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1316:10177;52:898": {
       "pageId": "1298:4696",
@@ -2492,11 +2629,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["1298:5209", "1298:5299", "8090:46352"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1316:10177;52:903": {
       "pageId": "1298:4696",
@@ -2505,11 +2645,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["1298:5209", "1298:5299", "8090:46352"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I8730:10176;52:895": {
       "pageId": "1298:4696",
@@ -2518,11 +2662,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Cos’è",
+      "titleEn": "Skip link purpose",
+      "summary": "A skip link lets keyboard and screen-reader users jump over repeated navigation blocks.",
       "sourceHash": "9959c51f8d94ab46",
       "targets": ["1298:5209", "1298:5299", "8090:46352"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I8730:10176;52:896": {
       "pageId": "1298:4696",
@@ -2531,11 +2678,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Focus state",
+      "titleEn": "Skip link focus state",
+      "summary": "Visually hidden by default, it becomes visible as soon as it receives keyboard focus.",
       "sourceHash": "21f11b1b15d339cf",
       "targets": ["1298:5209", "1298:5299", "8090:46352"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I8730:10176;52:897": {
       "pageId": "1298:4696",
@@ -2544,11 +2694,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Screen reader",
+      "titleEn": "Skip link for screen readers",
+      "summary": "It stays in the document flow and is announced when the page loads.",
       "sourceHash": "358eae58565d1f58",
       "targets": ["1298:5209", "1298:5299", "8090:46352"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I8730:10176;52:898": {
       "pageId": "1298:4696",
@@ -2557,11 +2710,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Presenza",
+      "titleEn": "Skip link presence",
+      "summary": "Every page with repeated blocks carries one.",
       "sourceHash": "2846ea9962dba1f3",
       "targets": ["1298:5209", "1298:5299", "8090:46352"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I8730:10176;52:899": {
       "pageId": "1298:4696",
@@ -2570,11 +2726,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Posizione",
+      "titleEn": "Skip link position",
+      "summary": "It is the first element of the header, so it takes focus first.",
       "sourceHash": "42a6603e4a449ba2",
       "targets": ["1298:5209", "1298:5299", "8090:46352"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I8730:10176;52:903": {
       "pageId": "1298:4696",
@@ -2583,11 +2742,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["1298:5209", "1298:5299", "8090:46352"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I13211:26150;52:895": {
       "pageId": "13211:26147",
@@ -2648,11 +2811,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["1349:22020", "9520:2537", "9624:10625"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1340:20003;52:896": {
       "pageId": "1322:6627",
@@ -2661,11 +2827,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["1349:22020", "9520:2537", "9624:10625"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1340:20003;52:897": {
       "pageId": "1322:6627",
@@ -2674,11 +2843,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["1349:22020", "9520:2537", "9624:10625"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1340:20003;52:903": {
       "pageId": "1322:6627",
@@ -2687,11 +2859,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["1349:22020", "9520:2537", "9624:10625"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9520:40254;52:895": {
       "pageId": "1322:6627",
@@ -2700,11 +2876,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Utilizzo",
+      "titleEn": "Row list versus table",
+      "summary": "Use the row list for flexible rows with long, wrapping content and low density; use the table for vertical comparison, sorting, filters and high density.",
       "sourceHash": "452adcccfa559cf6",
-      "targets": ["1349:22020", "9520:2537", "9624:10625"],
+      "targets": ["9520:2537"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/tables.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9520:40254;52:896": {
       "pageId": "1322:6627",
@@ -2713,11 +2893,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Larghezza del banner responsive",
+      "titleEn": "Banner width, empty",
       "sourceHash": "fa17d2f37f65ec61",
       "targets": ["1349:22020", "9520:2537", "9624:10625"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card is copied from Banner and its body is only a question mark.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9520:40254;52:897": {
       "pageId": "1322:6627",
@@ -2726,11 +2909,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["1349:22020", "9520:2537", "9624:10625"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9520:40254;52:903": {
       "pageId": "1322:6627",
@@ -2739,11 +2926,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["1349:22020", "9520:2537", "9624:10625"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1327:17488;52:895": {
       "pageId": "1326:5181",
@@ -2752,6 +2943,8 @@
       "section": "Consolidate",
       "status": "",
       "title": "Size",
+      "titleEn": "Timeline drawer size",
+      "summary": "The detail drawer is 320px on mobile and 410px for the timeline element, and keeps that size on larger devices.",
       "sourceHash": "ac5146ec43f2cf71",
       "targets": [
         "9676:5453",
@@ -2764,8 +2957,9 @@
         "12812:16248"
       ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1327:17488;52:896": {
       "pageId": "1326:5181",
@@ -2774,6 +2968,8 @@
       "section": "Consolidate",
       "status": "",
       "title": "Breakpoint SM (Tablet portrait)",
+      "titleEn": "Timeline drawer at SM",
+      "summary": "At tablet portrait the drawer position and size match MD, LG and XL; the type stays the XS mobile one.",
       "sourceHash": "85e20d20ef7c9d10",
       "targets": [
         "9676:5453",
@@ -2786,8 +2982,9 @@
         "12812:16248"
       ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1327:17488;52:897": {
       "pageId": "1326:5181",
@@ -2796,6 +2993,8 @@
       "section": "Consolidate",
       "status": "",
       "title": "Utilizzo",
+      "titleEn": "Timeline drawer usage",
+      "summary": "It holds extra detail about an item, or selects content that changes the page.",
       "sourceHash": "962ba6a1b373857b",
       "targets": [
         "9676:5453",
@@ -2808,8 +3007,9 @@
         "12812:16248"
       ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1327:17488;52:903": {
       "pageId": "1326:5181",
@@ -2818,6 +3018,8 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": [
         "9676:5453",
@@ -2830,8 +3032,10 @@
         "12812:16248"
       ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9667:62181;52:895": {
       "pageId": "1326:5181",
@@ -2840,6 +3044,8 @@
       "section": "Consolidate",
       "status": "",
       "title": "Size",
+      "titleEn": "Timeline drawer size",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "ac5146ec43f2cf71",
       "targets": [
         "9676:5453",
@@ -2852,8 +3058,10 @@
         "12812:16248"
       ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I1327:17488;52:895",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9667:62181;52:896": {
       "pageId": "1326:5181",
@@ -2862,6 +3070,8 @@
       "section": "Consolidate",
       "status": "",
       "title": "Breakpoint SM (Tablet portrait)",
+      "titleEn": "Timeline drawer at SM",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "85e20d20ef7c9d10",
       "targets": [
         "9676:5453",
@@ -2874,8 +3084,10 @@
         "12812:16248"
       ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I1327:17488;52:896",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9667:62181;52:897": {
       "pageId": "1326:5181",
@@ -2884,6 +3096,8 @@
       "section": "Consolidate",
       "status": "",
       "title": "Utilizzo",
+      "titleEn": "Timeline drawer usage",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "962ba6a1b373857b",
       "targets": [
         "9676:5453",
@@ -2896,8 +3110,10 @@
         "12812:16248"
       ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I1327:17488;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9667:62181;52:903": {
       "pageId": "1326:5181",
@@ -2906,6 +3122,8 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": [
         "9676:5453",
@@ -2918,8 +3136,10 @@
         "12812:16248"
       ],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1360:15449;52:895": {
       "pageId": "1360:12228",
@@ -2928,11 +3148,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Obiettivo Footer post login",
+      "titleEn": "Post-login footer",
+      "summary": "The post-login footer gives a logged-in user only the essentials.",
       "sourceHash": "951c8ea77180d863",
       "targets": ["1360:20138", "1360:23904"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1360:15449;52:896": {
       "pageId": "1360:12228",
@@ -2941,11 +3164,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Obiettivo Footer pre login",
+      "titleEn": "Pre-login footer",
+      "summary": "The pre-login footer carries the corporate information, products, legal links, social links, accessibility and language switch.",
       "sourceHash": "62c0a102cdbaf0d2",
       "targets": ["1360:20138", "1360:23904"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1360:15449;52:897": {
       "pageId": "1360:12228",
@@ -2954,11 +3180,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["1360:20138", "1360:23904"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1360:15449;52:898": {
       "pageId": "1360:12228",
@@ -2967,11 +3196,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["1360:20138", "1360:23904"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1360:15449;52:903": {
       "pageId": "1360:12228",
@@ -2980,11 +3212,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["1360:20138", "1360:23904"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1361:9012;52:895": {
       "pageId": "1360:12228",
@@ -2993,11 +3229,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["1360:20138", "1360:23904"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1361:9012;52:896": {
       "pageId": "1360:12228",
@@ -3006,11 +3245,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["1360:20138", "1360:23904"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1361:9012;52:897": {
       "pageId": "1360:12228",
@@ -3019,11 +3261,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["1360:20138", "1360:23904"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1361:9012;52:898": {
       "pageId": "1360:12228",
@@ -3032,11 +3277,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["1360:20138", "1360:23904"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1361:9012;52:903": {
       "pageId": "1360:12228",
@@ -3045,11 +3293,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["1360:20138", "1360:23904"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I180:4348;52:895": {
       "pageId": "157:1194",
@@ -3332,11 +3584,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Larghezza fissa",
+      "titleEn": "Fixed width by character count",
+      "summary": "The field width follows the number of characters in the code, so the boxes never misalign.",
       "sourceHash": "446192d59267cd8e",
       "targets": ["198:828"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/authentication-codes.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I198:1615;52:896": {
       "pageId": "157:1197",
@@ -3345,11 +3601,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Padding laterale in sviluppo",
+      "titleEn": "Development padding scale",
       "sourceHash": "714dc725e85d10b0",
       "targets": ["198:828"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "A development padding scale (8/16/24/32) with no component contract.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I198:1615;52:897": {
       "pageId": "157:1197",
@@ -3358,11 +3617,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["198:828"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I198:1615;52:903": {
       "pageId": "157:1197",
@@ -3371,11 +3634,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["198:828"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I409:6286;52:895": {
       "pageId": "157:614",
@@ -3423,11 +3690,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Comportamento",
+      "titleEn": "Breadcrumb behaviour",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "c8f9145c666ec392",
       "targets": ["160:1344", "160:1403"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I124:4070;52:895",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I161:859;52:896": {
       "pageId": "157:744",
@@ -3436,11 +3707,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Breakpoint",
+      "titleEn": "Breadcrumb breakpoint",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "45674408a3e7abba",
       "targets": ["160:1344", "160:1403"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I124:4070;52:896",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I161:859;52:897": {
       "pageId": "157:744",
@@ -3449,11 +3724,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Wizard",
+      "titleEn": "Breadcrumb in a wizard",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "46982c9d2e732f3c",
       "targets": ["160:1344", "160:1403"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I124:4070;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I161:859;52:903": {
       "pageId": "157:744",
@@ -3462,11 +3741,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["160:1344", "160:1403"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I10850:20306;52:895": {
       "pageId": "157:745",
@@ -3475,11 +3758,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["197:1985", "422:16012"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I10850:20306;52:896": {
       "pageId": "157:745",
@@ -3488,11 +3774,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Padding laterale in sviluppo",
+      "titleEn": "Development padding scale",
       "sourceHash": "714dc725e85d10b0",
       "targets": ["197:1985", "422:16012"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "A development padding scale (8/16/24/32) with no component contract.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I10850:20306;52:897": {
       "pageId": "157:745",
@@ -3501,11 +3790,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["197:1985", "422:16012"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I10850:20306;52:903": {
       "pageId": "157:745",
@@ -3514,11 +3807,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["197:1985", "422:16012"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I197:1558;52:895": {
       "pageId": "157:745",
@@ -3527,11 +3824,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Copy",
+      "titleEn": "Badge rule on the Chip page",
       "sourceHash": "f9b7a26658458367",
       "targets": ["197:1985", "422:16012"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "A badge rule pasted on the wrong page.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I197:1558;52:896": {
       "pageId": "157:745",
@@ -3540,11 +3840,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Padding laterale in sviluppo",
+      "titleEn": "Development padding scale",
       "sourceHash": "714dc725e85d10b0",
       "targets": ["197:1985", "422:16012"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "A development padding scale (8/16/24/32) with no component contract.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I197:1558;52:897": {
       "pageId": "157:745",
@@ -3553,11 +3856,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["197:1985", "422:16012"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I197:1558;52:903": {
       "pageId": "157:745",
@@ -3566,11 +3873,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["197:1985", "422:16012"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I261:6606;52:895": {
       "pageId": "158:1198",
@@ -3631,11 +3942,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Spacing",
+      "titleEn": "Spacing between boxed modules",
+      "summary": "Keep 8px between one boxed module and the next.",
       "sourceHash": "13c57831e9ba074c",
       "targets": ["382:7813", "403:4116", "10192:41460", "11133:16142"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I370:5499;52:896": {
       "pageId": "158:1199",
@@ -3644,11 +3958,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Larghezza del banner responsive",
+      "titleEn": "Banner width, empty",
       "sourceHash": "fa17d2f37f65ec61",
       "targets": ["382:7813", "403:4116", "10192:41460", "11133:16142"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card is copied from Banner and its body is only a question mark.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I370:5499;52:897": {
       "pageId": "158:1199",
@@ -3657,11 +3974,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["382:7813", "403:4116", "10192:41460", "11133:16142"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I370:5499;52:903": {
       "pageId": "158:1199",
@@ -3670,11 +3991,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["382:7813", "403:4116", "10192:41460", "11133:16142"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9927:37034;52:895": {
       "pageId": "212:1390",
@@ -4165,11 +4490,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["360:797"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I360:7011;52:896": {
       "pageId": "360:796",
@@ -4178,11 +4506,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Breakpoint",
+      "titleEn": "Breadcrumb breakpoint",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "45674408a3e7abba",
       "targets": ["360:797"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I124:4070;52:896",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I360:7011;52:897": {
       "pageId": "360:796",
@@ -4191,11 +4523,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Wizard",
+      "titleEn": "Breadcrumb in a wizard",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "46982c9d2e732f3c",
       "targets": ["360:797"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I124:4070;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I360:7011;52:903": {
       "pageId": "360:796",
@@ -4204,11 +4540,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["360:797"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I10545:25593;52:895": {
       "pageId": "369:5497",
@@ -4351,11 +4691,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["1566:29849"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I3782:38162;52:896": {
       "pageId": "3782:38158",
@@ -4364,11 +4707,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Larghezza dell’alert responsive",
+      "titleEn": "Alert width, empty",
       "sourceHash": "63f7b1af5550cfd7",
       "targets": ["1566:29849"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card is copied from Alert and its body is only a question mark.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I3782:38162;52:897": {
       "pageId": "3782:38158",
@@ -4377,11 +4723,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["1566:29849"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I3782:38162;52:903": {
       "pageId": "3782:38158",
@@ -4390,11 +4740,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["1566:29849"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I382:7643;52:895": {
       "pageId": "382:7289",
@@ -4403,11 +4757,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Posizione",
+      "titleEn": "Logos placement",
+      "summary": "Place the logos 24px from the bottom and right edge of the viewport.",
       "sourceHash": "f1c18594c5e2144c",
       "targets": ["382:7640"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/loghi-psp.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I382:7643;52:896": {
       "pageId": "382:7289",
@@ -4416,11 +4774,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Larghezza della snackbar",
+      "titleEn": "Snackbar width, copied",
       "sourceHash": "863eba923d4e1815",
       "targets": ["382:7640"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The rule is copied from the Snackbar page.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I382:7643;52:897": {
       "pageId": "382:7289",
@@ -4429,11 +4790,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["382:7640"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I382:7643;52:903": {
       "pageId": "382:7289",
@@ -4442,11 +4807,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["382:7640"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I757:5959;52:895": {
       "pageId": "392:5292",
@@ -4455,11 +4824,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["757:6288", "808:6302", "12133:82475"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I757:5959;52:896": {
       "pageId": "392:5292",
@@ -4468,11 +4840,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Larghezza del banner responsive",
+      "titleEn": "Banner width, empty",
       "sourceHash": "fa17d2f37f65ec61",
       "targets": ["757:6288", "808:6302", "12133:82475"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card is copied from Banner and its body is only a question mark.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I757:5959;52:897": {
       "pageId": "392:5292",
@@ -4481,11 +4856,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["757:6288", "808:6302", "12133:82475"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I757:5959;52:903": {
       "pageId": "392:5292",
@@ -4494,11 +4873,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["757:6288", "808:6302", "12133:82475"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9698:58982;52:895": {
       "pageId": "392:5292",
@@ -4507,11 +4890,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Linee guida & regole responsive: ProgressKPI Card",
+      "titleEn": "Progress KPI card usage",
+      "summary": "Up to four cards per row; on mobile use the mobile variant as a peek carousel, never stack; switch the state through the nested instance; the info icon opens a tooltip, not a modal.",
       "sourceHash": "8ff338b8ccae43af",
-      "targets": ["757:6288", "808:6302", "12133:82475"],
+      "targets": ["12133:82475"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/progress-kpi.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9698:58982;52:896": {
       "pageId": "392:5292",
@@ -4520,11 +4907,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Larghezza del banner responsive",
+      "titleEn": "Banner width, empty",
       "sourceHash": "fa17d2f37f65ec61",
       "targets": ["757:6288", "808:6302", "12133:82475"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card is copied from Banner and its body is only a question mark.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9698:58982;52:897": {
       "pageId": "392:5292",
@@ -4533,11 +4923,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["757:6288", "808:6302", "12133:82475"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9698:58982;52:903": {
       "pageId": "392:5292",
@@ -4546,11 +4940,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["757:6288", "808:6302", "12133:82475"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "52:903": {
       "pageId": "50:1017",
@@ -4638,11 +5036,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Spacing",
+      "titleEn": "Module spacing",
+      "summary": "Keep 8px between modules and 24px at the sides.",
       "sourceHash": "e088c90a04765105",
       "targets": ["731:20386"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/id-module.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I731:13732;52:896": {
       "pageId": "604:10959",
@@ -4651,11 +5053,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Dimensioni Breakpoint",
+      "titleEn": "Uniform width at breakpoints",
+      "summary": "The modal keeps a uniform 410px width from 600px to 1440px.",
       "sourceHash": "10ed640515255089",
       "targets": ["731:20386"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/id-module.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I731:13732;52:897": {
       "pageId": "604:10959",
@@ -4664,11 +5070,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["731:20386"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I731:13732;52:903": {
       "pageId": "604:10959",
@@ -4677,11 +5087,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["731:20386"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I61:2990;52:895": {
       "pageId": "61:2777",
@@ -4912,11 +5326,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["759:6399"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I758:8862;52:896": {
       "pageId": "758:8859",
@@ -4925,11 +5342,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Larghezza dell’alert responsive",
+      "titleEn": "Alert width, empty",
       "sourceHash": "63f7b1af5550cfd7",
       "targets": ["759:6399"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card is copied from Alert and its body is only a question mark.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I758:8862;52:897": {
       "pageId": "758:8859",
@@ -4938,11 +5358,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["759:6399"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I758:8862;52:903": {
       "pageId": "758:8859",
@@ -4951,11 +5375,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["759:6399"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I813:5423;52:895": {
       "pageId": "759:7440",
@@ -5148,11 +5576,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Frame utilizzato",
+      "titleEn": "Source frame workaround",
+      "summary": "The source frames its images through an external Figma library because autolayout does not scale them; the component keeps the same frame model.",
       "sourceHash": "867e621f42d660b5",
       "targets": ["8818:39878"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I8823:40103;52:896": {
       "pageId": "8818:39847",
@@ -5161,11 +5592,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Padding laterale in sviluppo",
+      "titleEn": "Development padding scale",
       "sourceHash": "714dc725e85d10b0",
       "targets": ["8818:39878"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "A development padding scale (8/16/24/32) with no component contract.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I8823:40103;52:897": {
       "pageId": "8818:39847",
@@ -5174,11 +5608,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["8818:39878"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I8823:40103;52:903": {
       "pageId": "8818:39847",
@@ -5187,11 +5625,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["8818:39878"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I920:4143;52:895": {
       "pageId": "894:4396",
@@ -5200,11 +5642,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["908:2234", "9924:27054"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I920:4143;52:896": {
       "pageId": "894:4396",
@@ -5213,11 +5658,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Larghezza dell’alert responsive",
+      "titleEn": "Alert width, empty",
       "sourceHash": "63f7b1af5550cfd7",
       "targets": ["908:2234", "9924:27054"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card is copied from Alert and its body is only a question mark.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I920:4143;52:897": {
       "pageId": "894:4396",
@@ -5226,11 +5674,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["908:2234", "9924:27054"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I920:4143;52:903": {
       "pageId": "894:4396",
@@ -5239,11 +5691,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["908:2234", "9924:27054"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9927:29713;52:895": {
       "pageId": "894:4396",
@@ -5252,11 +5708,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["908:2234", "9924:27054"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9927:29713;52:896": {
       "pageId": "894:4396",
@@ -5265,11 +5724,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Larghezza dell’alert responsive",
+      "titleEn": "Alert width, empty",
       "sourceHash": "63f7b1af5550cfd7",
       "targets": ["908:2234", "9924:27054"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card is copied from Alert and its body is only a question mark.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9927:29713;52:897": {
       "pageId": "894:4396",
@@ -5278,11 +5740,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["908:2234", "9924:27054"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9927:29713;52:903": {
       "pageId": "894:4396",
@@ -5291,11 +5757,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["908:2234", "9924:27054"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I920:4532;52:895": {
       "pageId": "920:4314",
@@ -5304,11 +5774,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "-",
+      "titleEn": "Empty card",
       "sourceHash": "f1e9946b2370d1e7",
       "targets": ["920:4502"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card body is empty.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I920:4532;52:896": {
       "pageId": "920:4314",
@@ -5317,11 +5790,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Larghezza dell’alert responsive",
+      "titleEn": "Alert width, empty",
       "sourceHash": "63f7b1af5550cfd7",
       "targets": ["920:4502"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The card is copied from Alert and its body is only a question mark.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I920:4532;52:897": {
       "pageId": "920:4314",
@@ -5330,11 +5806,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["920:4502"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I920:4532;52:903": {
       "pageId": "920:4314",
@@ -5343,11 +5823,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["920:4502"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I920:7326;52:895": {
       "pageId": "920:7201",
@@ -5356,11 +5840,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Snazzy map",
+      "titleEn": "Pin point meaning",
+      "summary": "The pin shows the positive or negative outcome of a process, for example a wizard step.",
       "sourceHash": "d25fa8b1341bb3ae",
       "targets": ["920:7219"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "imported",
+      "guide": "apps/storybook/src/guides/pin-point.md",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I920:7326;52:896": {
       "pageId": "920:7201",
@@ -5369,11 +5857,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Larghezza della snackbar",
+      "titleEn": "Snackbar width, copied",
       "sourceHash": "863eba923d4e1815",
       "targets": ["920:7219"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The rule is copied from the Snackbar page.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I920:7326;52:897": {
       "pageId": "920:7201",
@@ -5382,11 +5873,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Temporizzazione",
+      "titleEn": "Snackbar timing, copied",
       "sourceHash": "a45bbe04955c6436",
       "targets": ["920:7219"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The rule is copied from the Snackbar page.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I920:7326;52:898": {
       "pageId": "920:7201",
@@ -5395,11 +5889,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Alert errore con codice di errore",
+      "titleEn": "Snackbar error, copied",
       "sourceHash": "7613f03089c37db4",
       "targets": ["920:7219"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "out-of-scope",
+      "reason": "The rule is copied from the Snackbar page.",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I920:7326;52:903": {
       "pageId": "920:7201",
@@ -5408,11 +5905,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["920:7219"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1093:6556;52:895": {
       "pageId": "920:7388",
@@ -5421,11 +5922,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Breakpoint",
+      "titleEn": "Fixed side nav width",
+      "summary": "The side nav is a fixed 300px; only mobile/tablet (XS, SM, MD) and desktop (LG, XL) change.",
       "sourceHash": "6dc5959332720ce7",
       "targets": ["1120:7458"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1093:6556;52:896": {
       "pageId": "920:7388",
@@ -5434,11 +5938,14 @@
       "section": "Consolidate",
       "status": "",
       "title": "Scroll",
+      "titleEn": "Side nav scroll",
+      "summary": "The sidebar scrolls independently of the page; the collapse control stays sticky.",
       "sourceHash": "d0a426c7c3f3acdf",
       "targets": ["1120:7458"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "recorded",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1093:6556;52:897": {
       "pageId": "920:7388",
@@ -5447,11 +5954,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Creazione di una nuova icona",
+      "titleEn": "Icon production",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "00c41242f44a2462",
       "targets": ["1120:7458"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I411:5360;52:897",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I1093:6556;52:903": {
       "pageId": "920:7388",
@@ -5460,11 +5971,15 @@
       "section": "Consolidate",
       "status": "",
       "title": "Regole responsive",
+      "titleEn": "Responsive width",
+      "summary": "The same rule is recorded on the canonical card.",
       "sourceHash": "48d0b926a60ea25e",
       "targets": ["1120:7458"],
       "scope": "component",
-      "disposition": "pending",
-      "provisionalTargets": true
+      "disposition": "duplicate",
+      "duplicateOf": "I123:3565;52:903",
+      "reviewedAt": "2026-10-23",
+      "figmaVersion": "2412426961662147678"
     },
     "I9927:36952;52:895": {
       "pageId": "9927:36949",

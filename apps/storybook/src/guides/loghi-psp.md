@@ -1,3 +1,11 @@
+<!-- component-rules:start -->
+
+## Component Rules
+
+- Place the logos 24px from the bottom and right edge of the viewport.
+
+<!-- component-rules:end -->
+
 # Loghi PSP
 
 `LoghiPSP` implements the Figma component set `382:7640`. Each `brand` value

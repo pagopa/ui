@@ -1,3 +1,12 @@
+<!-- component-rules:start -->
+
+## Component Rules
+
+- Keep 8px between modules and 24px at the sides.
+- The modal keeps a uniform 410px width from 600px to 1440px.
+
+<!-- component-rules:end -->
+
 # IDModule
 
 `IDModule` renders a provider chooser for digital identity sign-in. The caller

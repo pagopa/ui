@@ -1,3 +1,11 @@
+<!-- component-rules:start -->
+
+## Component Rules
+
+- Use the row list for flexible rows with long, wrapping content and low density; use the table for vertical comparison, sorting, filters and high density.
+
+<!-- component-rules:end -->
+
 `Table` retains the required `caption`, `columns` and `rows` interface. Use
 `captionHidden` to preserve the accessible name without a visible caption.
 Column `sort: { direction, onChange }` exposes a native keyboard control and

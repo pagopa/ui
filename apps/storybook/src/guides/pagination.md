@@ -1,3 +1,11 @@
+<!-- component-rules:start -->
+
+## Component Rules
+
+- Below 900px the middle pages collapse to Previous and Next; when the results fit one page the whole control hides.
+
+<!-- component-rules:end -->
+
 `Pagination` is controlled by the application: it receives `currentPage` and
 `totalPages` and reports the chosen page through `onPageChange`. An out-of-range
 `currentPage` is clamped to the available pages; a negative or fractional

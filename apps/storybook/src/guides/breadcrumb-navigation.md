@@ -1,3 +1,12 @@
+<!-- component-rules:start -->
+
+## Component Rules
+
+- Desktop: ancestor levels are links and the current page is not clickable; mobile: one compact back reaches the previous flow level.
+- Mobile and tablet portrait use the Compact layout.
+
+<!-- component-rules:end -->
+
 `Breadcrumb` keeps the existing `items` interface and Extended layout by default.
 Ancestors with a destination are real links; an ancestor without `href` is text,
 never an invented `#` link. The last item is non-interactive and announces the

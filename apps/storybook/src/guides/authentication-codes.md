@@ -1,3 +1,11 @@
+<!-- component-rules:start -->
+
+## Component Rules
+
+- The field width follows the number of characters in the code, so the boxes never misalign.
+
+<!-- component-rules:end -->
+
 `AuthenticationCodeInput` is a labelled group of real per-slot inputs, one per
 digit. Base UI owns the value, the roving tabindex, arrow keys, paste, IME
 composition and the hidden named input that carries the submitted value; the
