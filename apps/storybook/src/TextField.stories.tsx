@@ -166,7 +166,7 @@ export const FigmaStateMatrix: Story = {
       if ("error" in state.props) await expect(input).toHaveAttribute("aria-invalid", "true")
       else await expect(input).not.toHaveAttribute("aria-invalid")
     }
-    const optional = canvas.getByRole("textbox", { name: "Label text", exact: true })
+    const optional = canvas.getByRole("textbox", { name: "Label text" })
     await expect(optional).not.toBeRequired()
   },
 }
