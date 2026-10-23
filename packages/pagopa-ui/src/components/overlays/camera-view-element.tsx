@@ -23,11 +23,22 @@ function CameraViewElement({
   active?: boolean
 }) {
   return (
-    <figure className="relative aspect-square w-(--camera-size) max-w-full overflow-hidden rounded-2xl bg-overlay text-inverse-foreground">
+    <figure
+      data-slot="camera-view"
+      className="relative aspect-square w-(--camera-size) max-w-full overflow-hidden rounded-2xl bg-overlay text-inverse-foreground"
+    >
       <div className="absolute inset-0 grid place-items-center">
-        {children || <Camera aria-hidden="true" className="size-16 opacity-40" />}
+        {children === undefined ? (
+          <Camera aria-hidden="true" className="size-16 opacity-40" />
+        ) : (
+          children
+        )}
       </div>
-      <span aria-hidden="true" className="pointer-events-none absolute inset-[21.3%]">
+      <span
+        aria-hidden="true"
+        data-slot="camera-crop"
+        className="pointer-events-none absolute inset-[21.3%]"
+      >
         <span className="absolute top-0 left-0 size-11 rounded-tl-3xl border-t-4 border-l-4 border-inverse-foreground" />
         <span className="absolute top-0 right-0 size-11 rounded-tr-3xl border-t-4 border-r-4 border-inverse-foreground" />
         <span className="absolute bottom-0 left-0 size-11 rounded-bl-3xl border-b-4 border-l-4 border-inverse-foreground" />

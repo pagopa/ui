@@ -38,6 +38,22 @@
 
 ### Changed
 
+- `Image`: the story is the component's own `Image.stories.tsx` instead of the
+  ProductCard template, and all five source `Aspect ratio` values have reviewed
+  parity cases on the `Han Purple 100` surface the set paints; the box exposes
+  `data-slot="image"` for the parity capture. `ratio="wide"` stays a library
+  extension with no source variant.
+- `CameraViewElement`: `children={null}` now clears the centre instead of
+  falling back to the camera glyph (`undefined` selects it), so the
+  source-faithful story can drop the runtime extension the source frame does not
+  draw; the frame exposes `data-slot="camera-view"` and `camera-crop` for the
+  parity capture, and the source frame has a reviewed parity case.
+- `PinPoint`: the selected marker's glyph slot paints the source white
+  (`text-primary-foreground`), so a currentColor icon reads on the primary
+  teardrop; the component exposes `data-slot="pin-point"`, `pin-point-marker`,
+  `pin-point-numbered` and `pin-point-glyph` for the parity capture. All four
+  source `Properties` variants have reviewed parity cases, and the shared
+  48x61 frame is documented as a layout box, not an anchor.
 - `FeatureList`: each `Indicator` variant has a reviewed parity case. The two
   2×28 connector rectangles the source set hides are no longer rendered, the
   action link carries the source static underline instead of a hover-only one,

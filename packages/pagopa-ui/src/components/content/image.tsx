@@ -33,6 +33,7 @@ function Image({
     return (
       <div
         role="img"
+        data-slot="image"
         aria-label={alt || fallbackLabel}
         className={cn(
           "grid place-items-center bg-han-purple-soft text-muted-foreground",
@@ -51,6 +52,7 @@ function Image({
   return (
     <img
       alt={alt}
+      data-slot="image"
       className={cn("w-full object-cover", ratioClass, className)}
       onError={() => setFailed(true)}
       {...props}

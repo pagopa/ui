@@ -332,8 +332,10 @@
       "target": {
         "module": "src/components/overlays/camera-view-element.tsx",
         "export": "CameraViewElement",
-        "story": "apps/storybook/src/CameraViewElement.stories.tsx"
-      }
+        "story": "apps/storybook/src/CameraViewElement.stories.tsx",
+        "storyExports": ["Playground", "Inactive", "Fidelity"]
+      },
+      "note": "Reviewed 2026-10-23: a plain COMPONENT, not a set, so one variant and no Device axis; `1134-6812-default` verifies the whole 376x378 frame at its source width. The 376 square (the artboard's 2px of extra height is within tolerance), radius 16, the `bg-overlay` token for the 35% `#0e0f13` scrim, the four 44x44 brackets at 80/81 and 252/253 with the 4px stroke and 24px elbow, and the guide bar at x 84.09 with the 208x4 source stroke. The source `Line 55` is a LINE (a zero-height box with a 4px stroke), so its box height, border width, border colour and top offset are mapping artifacts, ignored; the bar is measured in the case note. The default camera glyph is a runtime extension the source frame does not draw, so the Fidelity story clears the centre by passing `null` (`children === undefined` selects the glyph, not null); `active` only changes the announcement because the source has no active/inactive paint. Guide: apps/storybook/src/guides/camera-view-element.md."
     },
     "1137:8910": {
       "status": "implemented",
@@ -1565,8 +1567,19 @@
       "target": {
         "module": "src/components/content/image.tsx",
         "export": "Image",
-        "story": "apps/storybook/src/ProductCard.stories.tsx"
-      }
+        "story": "apps/storybook/src/Image.stories.tsx",
+        "storyExports": [
+          "Playground",
+          "Ratios",
+          "Fallback",
+          "SourceSquare",
+          "SourcePhoto",
+          "SourceVideo",
+          "SourceCinema",
+          "SourcePortrait"
+        ]
+      },
+      "note": "Reviewed 2026-10-23: the set's axis is `Aspect ratio` (1:1, 4:3, 16:9, 21:9, 3:4), not a device axis. Five reviewed cases, one per value at its source 360px width: `8818-39878-square` (360x360), `8818-39878-photo` (360x270), `8818-39878-video` (360x202.5 against the source 203), `8818-39878-cinema` (360x154.28 against 154) and `8818-39878-portrait` (360x480). Every variant paints the `Color/Han Purple/Han Purple 100` #ddd1f9 surface with no radius; the component's `bg-han-purple-soft` is that token. The source draws only the empty `Aspect ratio keeper` frames and no content, so the icon and `fallbackLabel` are the component's own labelled fallback (one `role=\"img\"`, named by `alt` and else by `fallbackLabel`), not source content; the case maps the box and its surface. `ratio=\"wide\"` (3:1) is a library extension with no source variant and no case. The story target moved to the component's own `apps/storybook/src/Image.stories.tsx`; `ProductCard.stories.tsx` keeps the cover node `757:6288`. Guide: apps/storybook/src/guides/image.md."
     },
     "8854:39311": {
       "status": "implemented",
@@ -1659,8 +1672,17 @@
       "target": {
         "module": "src/components/overlays/pin-point.tsx",
         "export": "PinPoint",
-        "story": "apps/storybook/src/PinPoint.stories.tsx"
-      }
+        "story": "apps/storybook/src/PinPoint.stories.tsx",
+        "storyExports": [
+          "Playground",
+          "PinPointSelection",
+          "SourceDefault",
+          "SourceNumbered",
+          "SourcePlaceholder",
+          "SourceSelected"
+        ]
+      },
+      "note": "Reviewed 2026-10-23: the set has two axes, `Properties` (Default, Numbered, Placeholder, Selected) and `Product` (Default, Send), and no Device axis. Four reviewed cases, one per `Properties` value: `920-7219-default` (the 32x40.67 marker glyph against the source `Group 1` 32x41, the 11x11 `Ellipse 2` dot at its 10.67 inset), `920-7219-numbered` (the 32x32 primary square with the 16/22 Semibold ordinal, the source `5` a 24x24 line box 4px inside it), `920-7219-placeholder` (`bg-destructive` #d13333 inside the 1px `error-foreground` #5d1313 ring, the dot in the same dark red) and `920-7219-selected` (the 48x61 teardrop with no dot and the 28x28 `storefront` instance at the source 10,9 inset). `Product=Send` is the Selected composition with the send glyph and is covered by the selected case's `children` slot, not a second capture. The cases map the marker glyph (`data-slot=\"pin-point-marker\"` / `pin-point-numbered`) through `--subject-root`, never the 44px button: that button is the invisible pointer target around the 32px glyph, and the source 48x61 frame is a layout box shared by the five variants that draws no anchor, so the component centres the marker on the `x`/`y` point. Fix from the review: the selected glyph slot paints `text-primary-foreground`, because the source storefront is white on the primary marker. Guide: apps/storybook/src/guides/pin-point.md."
     },
     "94:1982": {
       "status": "implemented",

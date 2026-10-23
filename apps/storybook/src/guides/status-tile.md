@@ -4,12 +4,12 @@
 variants, `Orientation=Horizontal` and `Orientation=Vertical`, on a 312px
 column; the article keeps the source 16px inset, 8px gap and 8px radius.
 
-| Source layer      | Code                                                        |
-| ----------------- | ----------------------------------------------------------- |
-| `Channel-Wrapper` | `channel`: the 24px artwork slot beside the title           |
-| `Title`           | `title`: 16/22 semibold, `text-label-sb`                    |
-| `Tag`             | `tag`: caller-owned `Tag`, beside the title or stacked      |
-| `Body-Text`       | `children`: 14/20 muted, wraps at the content width         |
+| Source layer      | Code                                                   |
+| ----------------- | ------------------------------------------------------ |
+| `Channel-Wrapper` | `channel`: the 24px artwork slot beside the title      |
+| `Title`           | `title`: 16/22 semibold, `text-label-sb`               |
+| `Tag`             | `tag`: caller-owned `Tag`, beside the title or stacked |
+| `Body-Text`       | `children`: 14/20 muted, wraps at the content width    |
 
 `orientation` maps the source axis: `"horizontal"` keeps the header row with
 the channel and title on the left and the tag on the right; `"vertical"` stacks

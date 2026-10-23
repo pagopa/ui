@@ -33,6 +33,7 @@
   "apps/storybook/src/HeaderAlert.stories.tsx": "Components/Feedback/HeaderAlert",
   "apps/storybook/src/IDModule.stories.tsx": "Components/Composites/IDModule",
   "apps/storybook/src/Icons.stories.tsx": "Foundations/Icons and pictograms",
+  "apps/storybook/src/Image.stories.tsx": "Components/Content/Image",
   "apps/storybook/src/InformativeDrawer.stories.tsx": "Components/Templates/Informative Drawer",
   "apps/storybook/src/InputChip.stories.tsx": "Components/Inputs/InputChip",
   "apps/storybook/src/KOState.stories.tsx": "Components/Feedback/KOState",

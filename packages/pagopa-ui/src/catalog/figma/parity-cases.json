@@ -3943,6 +3943,76 @@
     "note": "reviewed: Indicator=Pictogram at the source 270x135 row, no device axis. Root 270x135: the 16px row gap, the 40px indicator slot and the 214x135 text column are exact. Frame 1048 holds the 40x40 Flag pictogram vertically centred; its source gap 8 is the single-child phantom gap and is ignored. Frame 918 is 214x135: the 16/22 Semibold grey-700 title, the 14/20 grey-700 mock copy at the 4px gap and the 16/21 Semibold blue CTA with the source static underline 8px below. The 2x28 connector rectangles are hidden in the source set and are not rendered. Strict composition clean, responsive clean."
   },
   {
+    "id": "920-7219-default",
+    "nodeId": "920:7219",
+    "export": "PinPoint",
+    "storyId": "components-overlays-pinpoint--source-default",
+    "state": "Default",
+    "variant": "920:7223",
+    "width": 48,
+    "height": 61,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"pin-point-marker\"]",
+    "subjectRoot": "Group 1",
+    "subjects": {
+      "Ellipse 2": "#storybook-root [data-slot=\"pin-point-marker\"] svg circle"
+    },
+    "compareOffset": true,
+    "note": "reviewed: the Default variant at its 48x61 source frame, mapped to the 32x40.67 marker glyph (Group 1 32x41) rather than the 44px button, which is the invisible pointer target around it; the 11px white dot (Ellipse 2) sits at the source 10.67 inset. The frame is a layout box shared by the five variants and draws no anchor, so the component centres the marker on the x/y point. Strict composition clean, responsive clean."
+  },
+  {
+    "id": "920-7219-numbered",
+    "nodeId": "920:7219",
+    "export": "PinPoint",
+    "storyId": "components-overlays-pinpoint--source-numbered",
+    "state": "Numbered",
+    "variant": "920:7228",
+    "width": 48,
+    "height": 61,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"pin-point-numbered\"]",
+    "subjectRoot": "Group 1",
+    "subjects": {},
+    "compareOffset": true,
+    "note": "reviewed: the Numbered variant: the 32x32 primary square (Group 1) with the ordinal in text-label-sb (16/22 Semibold, white); the source 5 TEXT layer is a 24x24 line box 4px inside the square. The SEND instance inside the source group is hidden and is not rendered. The root is the numbered slot and the ordinal is its text node, so no box subject maps it. Strict composition clean, responsive clean."
+  },
+  {
+    "id": "920-7219-placeholder",
+    "nodeId": "920:7219",
+    "export": "PinPoint",
+    "storyId": "components-overlays-pinpoint--source-placeholder",
+    "state": "Placeholder",
+    "variant": "920:7236",
+    "width": 48,
+    "height": 61,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"pin-point-marker\"]",
+    "subjectRoot": "Group 1",
+    "subjects": {
+      "Ellipse 2": "#storybook-root [data-slot=\"pin-point-marker\"] svg circle"
+    },
+    "compareOffset": true,
+    "note": "reviewed: the Placeholder variant: the 32x40.67 teardrop in bg-destructive #d13333 with the 1px error-foreground #5d1313 ring and the 11px Ellipse 2 dot in the same dark red at the source 10.67 inset. Strict composition clean, responsive clean."
+  },
+  {
+    "id": "920-7219-selected",
+    "nodeId": "920:7219",
+    "export": "PinPoint",
+    "storyId": "components-overlays-pinpoint--source-selected",
+    "state": "Selected",
+    "variant": "920:7240",
+    "width": 48,
+    "height": 61,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"pin-point-marker\"]",
+    "subjectRoot": "Ellipse 1",
+    "subjects": {
+      "storefront": "#storybook-root [data-slot=\"pin-point-glyph\"] [data-figma-node-id]"
+    },
+    "compareOffset": true,
+    "note": "reviewed: the Selected variant: the marker grows to the source 48x61 teardrop with no dot, and the 28x28 storefront instance at the source 10,9 inset paints in text-primary-foreground (white). The Product=Send variant is the same composition with the send glyph, covered by this case's children slot rather than a second capture. Strict composition clean, responsive clean."
+  },
+  {
     "id": "1042-18133-desktop-default-desktop",
     "nodeId": "1042:18133",
     "export": "Dialog",
@@ -4056,6 +4126,32 @@
     },
     "ignores": ["Bounding box.background"],
     "note": "The declared condensed head (device mobile): the source draws a 320x48 Head with the menu icon and a placeholder label plus a 320x1 Divider; the DOM summary carries the divider as its own 1px border-b (49 against the source 48+1), shows the section name where the source's 'Menu' is placeholder copy (the fixture owns its copy) and adds the disclosure chevron."
+  },
+  {
+    "id": "1134-6812-default",
+    "nodeId": "1134:6812",
+    "export": "CameraViewElement",
+    "storyId": "components-overlays-cameraviewelement--fidelity",
+    "state": "Default",
+    "width": 376,
+    "height": 378,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"camera-view\"]",
+    "subjects": {
+      "Vector 75 (Stroke)": "#storybook-root [data-slot=\"camera-crop\"] > span:nth-of-type(1)",
+      "Vector 74 (Stroke)": "#storybook-root [data-slot=\"camera-crop\"] > span:nth-of-type(2)",
+      "Vector 73 (Stroke)": "#storybook-root [data-slot=\"camera-crop\"] > span:nth-of-type(3)",
+      "Vector 72 (Stroke)": "#storybook-root [data-slot=\"camera-crop\"] > span:nth-of-type(4)",
+      "Line 55": "#storybook-root [data-slot=\"camera-crop\"] > span:nth-of-type(5)"
+    },
+    "compareOffset": true,
+    "ignores": [
+      "Line 55.box.height",
+      "Line 55.border.width",
+      "Line 55.border.color",
+      "Line 55.offset.top"
+    ],
+    "note": "reviewed: the plain source component at its 376x378 frame, no device axis. Root 376x376 (the artboard's extra 2px of height is within tolerance and the component keeps the square camera ratio), radius 16, and the #0e0f13 at 35% paint is the shared bg-overlay token. The four 44x44 brackets sit at the source 80/81 and 252/253 with the 4px stroke and the 24px elbow; the guide bar measures 207.8x4 at x 84.09, y 186-190 against the source stroke 208x4 at x 84, y 187-191 (1px from the square box). Line 55 is a Figma LINE - a zero-height box whose 4px stroke paints around it - so its box height, border width, border colour and top offset are ignored as mapping artifacts; the rendered bar is measured above. The children fallback camera glyph is a runtime extension the source frame does not draw, so Fidelity passes null to clear the centre, and the source draws no active/inactive paint. Strict composition clean, responsive clean."
   },
   {
     "id": "1137-8910-default",
@@ -5511,6 +5607,81 @@
       "Content layer.gap"
     ],
     "note": "reviewed: source SkipToMainContent (8090:46352, 320x40) against the SourceBand story at the 320 source width, captured with the link focused (it is off screen until then; --expect-state focused, focus kept). Verified the 320x40 band at the source origin: the #ffffff Content layer surface, its 8/24 insets and its 320 width; the underlined 16/22 Semibold #0b3ee3 label starting at the 24px inset; the 24x24 arrow at offset 226.66/8 against the source 227/8 (the 8px label-to-artwork gap). The review closed the drifts in skip-to-main-content.tsx: the link is the source's full-width top band (fixed inset-x-0 top-0) instead of a 16/12 floating box, the source carries no elevation so the Tailwind shadow-32 is gone, and the hidden state is -translate-y-full so it depends on the band instead of a fixed 96px. Residues: the label line is the 16/22 text-body-sb token against the source 16/21 (1px, inside tolerance; the scale has no 21px line); the focus ring is the a11y contract's visible indicator (2px outline drawn inside the band so the viewport edge does not clip it) where the source variant draws none. Mapping artifacts: the source's root (no padding) and its Content layer collapse into the one anchor in the DOM, so field.padding.*/field.gap are ignored and the Content layer is mapped to that same element for its 8/24 insets; the layer's 16px gap is the phantom gap of its single child (the DOM gap 8 is the source Content frame's label-to-artwork gap). Responsive clean."
+  },
+  {
+    "id": "8818-39878-square",
+    "nodeId": "8818:39878",
+    "export": "Image",
+    "storyId": "components-content-image--source-square",
+    "state": "Square",
+    "variant": "8818:39879",
+    "width": 360,
+    "height": 360,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"image\"]",
+    "subjects": {},
+    "compareOffset": true,
+    "note": "reviewed: Aspect ratio=1:1 at the source 360x360 box, no Device axis. Root 360x360 with no radius and the bg-han-purple-soft surface, the source Color/Han Purple/Han Purple 100 #ddd1f9 fill. The source draws only its empty Aspect ratio keeper frames and no content: the image icon and fallbackLabel are the component's own labelled fallback, announced once as role=\"img\". Strict composition clean, responsive clean."
+  },
+  {
+    "id": "8818-39878-photo",
+    "nodeId": "8818:39878",
+    "export": "Image",
+    "storyId": "components-content-image--source-photo",
+    "state": "Photo",
+    "variant": "8818:39882",
+    "width": 360,
+    "height": 270,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"image\"]",
+    "subjects": {},
+    "compareOffset": true,
+    "note": "reviewed: Aspect ratio=4:3 at the source 360x270 box, no Device axis. Root 360x270 with the bg-han-purple-soft surface against the source Han Purple 100 #ddd1f9 fill and no radius; the source content is only its empty Aspect ratio keeper frames, so the icon and fallbackLabel are the component's own labelled fallback. Strict composition clean, responsive clean."
+  },
+  {
+    "id": "8818-39878-video",
+    "nodeId": "8818:39878",
+    "export": "Image",
+    "storyId": "components-content-image--source-video",
+    "state": "Video",
+    "variant": "8818:39885",
+    "width": 360,
+    "height": 203,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"image\"]",
+    "subjects": {},
+    "compareOffset": true,
+    "note": "reviewed: Aspect ratio=16:9 at the source 360x203 box, no Device axis. Root 360x202.5 against the source 203 (0.5 within tolerance), the bg-han-purple-soft surface against the source Han Purple 100 #ddd1f9 fill and no radius; the source content is only its empty Aspect ratio keeper frames, so the icon and fallbackLabel are the component's own labelled fallback. Strict composition clean, responsive clean."
+  },
+  {
+    "id": "8818-39878-cinema",
+    "nodeId": "8818:39878",
+    "export": "Image",
+    "storyId": "components-content-image--source-cinema",
+    "state": "Cinema",
+    "variant": "8818:39887",
+    "width": 360,
+    "height": 154,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"image\"]",
+    "subjects": {},
+    "compareOffset": true,
+    "note": "reviewed: Aspect ratio=21:9 at the source 360x154 box, no Device axis. Root 360x154.28 against the source 154 (0.28 within tolerance), the bg-han-purple-soft surface against the source Han Purple 100 #ddd1f9 fill and no radius; the source content is only its empty Aspect ratio keeper frames, so the icon and fallbackLabel are the component's own labelled fallback. Strict composition clean, responsive clean."
+  },
+  {
+    "id": "8818-39878-portrait",
+    "nodeId": "8818:39878",
+    "export": "Image",
+    "storyId": "components-content-image--source-portrait",
+    "state": "Portrait",
+    "variant": "8818:39889",
+    "width": 360,
+    "height": 480,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"image\"]",
+    "subjects": {},
+    "compareOffset": true,
+    "note": "reviewed: Aspect ratio=3:4 at the source 360x480 box, no Device axis. Root 360x480 with the bg-han-purple-soft surface against the source Han Purple 100 #ddd1f9 fill and no radius; the source content is only its empty Aspect ratio keeper frames, so the icon and fallbackLabel are the component's own labelled fallback. The source keeper frames overflow their variant box; they carry no paint and are not mapped. Strict composition clean, responsive clean."
   },
   {
     "id": "9520-2537-layout-desktop-desktop",

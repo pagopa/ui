@@ -34,6 +34,7 @@ function PinPoint({
   return (
     <button
       type="button"
+      data-slot="pin-point"
       aria-label={label}
       aria-pressed={active}
       onClick={() => onPressedChange?.(!active)}
@@ -41,11 +42,17 @@ function PinPoint({
       className="absolute grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full outline-none focus-visible:ring-4 focus-visible:ring-primary/30"
     >
       {variant === "numbered" ? (
-        <span className="grid size-8 place-items-center bg-primary text-label-sb text-primary-foreground">
+        <span
+          data-slot="pin-point-numbered"
+          className="grid size-8 place-items-center bg-primary text-label-sb text-primary-foreground"
+        >
           {children}
         </span>
       ) : (
-        <span className={cn("relative block", active ? "w-12" : "w-8")}>
+        <span
+          data-slot="pin-point-marker"
+          className={cn("relative block", active ? "w-12" : "w-8")}
+        >
           <svg
             aria-hidden="true"
             viewBox="12 11.3333 32 40.6667"
@@ -65,7 +72,10 @@ function PinPoint({
             )}
           </svg>
           {active && children ? (
-            <span className="absolute inset-x-0 top-0 grid aspect-square place-items-center [&_img]:size-7 [&_svg]:size-7">
+            <span
+              data-slot="pin-point-glyph"
+              className="absolute inset-x-0 top-0 grid aspect-square place-items-center text-primary-foreground [&_img]:size-7 [&_svg]:size-7"
+            >
               {children}
             </span>
           ) : null}
