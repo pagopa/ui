@@ -254,7 +254,10 @@ function NavRow({
             aria-label={open ? collapseLabel(item.label) : expandLabel(item.label)}
             onClick={() => setOpen((value) => !value)}
             className={cn(
-              "mr-1 grid size-11 shrink-0 place-items-center rounded-sm outline-none hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring",
+              // `not-sr-only` resets width and height to auto, which would shrink
+              // the toggle to its 20px icon and break the 24px target minimum: the
+              // minimums keep the 44px box in both rail states.
+              "mr-1 grid min-h-11 min-w-11 shrink-0 place-items-center rounded-sm outline-none hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring",
               condensed && labelsHidden,
             )}
           >
