@@ -32,10 +32,14 @@ export const Inactive: Story = {
   args: { active: false, label: "Fotocamera disattivata" },
 }
 
+const cameraStyle: React.CSSProperties & { "--camera-size": string } = {
+  "--camera-size": "376px",
+}
+
 export const Fidelity: Story = {
   parameters: { layout: "fullscreen" },
   render: () => (
-    <div style={{ "--camera-size": "376px" } as React.CSSProperties}>
+    <div style={cameraStyle}>
       <CameraViewElement label="Inquadra il codice">{null}</CameraViewElement>
     </div>
   ),
