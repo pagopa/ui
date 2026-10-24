@@ -1,14 +1,21 @@
+"use client"
+
 import * as React from "react"
 
+import { useMessages } from "@/lib/ui-provider"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 function SkipToMainContent({
   targetId = "main-content",
-  children = "Vai al contenuto principale",
+  children: childrenProp,
 }: {
   targetId?: string
+  /** Link text of the skip control. @default messages.skipToMainContent.children */
   children?: React.ReactNode
 }) {
+  const t = useMessages("skipToMainContent")
+  const children = childrenProp ?? t.children
+
   return (
     <a
       href={`#${targetId}`}

@@ -1,5 +1,8 @@
+"use client"
+
 import * as React from "react"
 import { cn } from "@/lib/cn"
+import { useMessages } from "@/lib/ui-provider"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 export interface StepperItem {
@@ -8,26 +11,18 @@ export interface StepperItem {
   status?: "complete" | "current" | "upcoming"
 }
 
-function defaultStatusLabel(status: StepperItem["status"]) {
-  return status === "complete"
-    ? "Completato"
-    : status === "current"
-      ? "Passaggio corrente"
-      : "Da completare"
-}
-
 interface StepperLabels {
-  /** Accessible name of each progress list. @default "Avanzamento" */
+  /** Accessible name of each progress list. @default messages.stepper.navigationLabel */
   navigationLabel?: string
-  /** Announced completion text of a finished step. @default "Completato:" */
+  /** Announced completion text of a finished step. @default messages.stepper.completedLabel */
   completedLabel?: string
-  /** Announced status of a step; the caller owns the phrase. @default built-in Italian status */
+  /** Announced status of a step; the caller owns the phrase. @default messages.stepper.statusLabel */
   statusLabel?: (status: StepperItem["status"]) => string
-  /** Announced status on the numbered badge; end it with the punctuation you want. @default built-in Italian status with ":" */
+  /** Announced status on the numbered badge; end it with the punctuation you want. @default messages.stepper.indicatorLabel */
   indicatorLabel?: (status: StepperItem["status"]) => string
   /**
    * Complete announcement of a step, from its data: the caller owns word
-   * order, plurals and grammar. @default built-in Italian step sentence
+   * order, plurals and grammar. @default messages.stepper.stepLabel
    */
   stepLabel?: (step: {
     index: number
@@ -41,8 +36,8 @@ function StepIndicator({
   item,
   index,
   labelled = true,
-  completedLabel = "Completato:",
-  indicatorLabel = (status) => `${defaultStatusLabel(status)}:`,
+  completedLabel: completedLabelProp,
+  indicatorLabel: indicatorLabelProp,
 }: {
   item: StepperItem
   index: number
@@ -50,6 +45,10 @@ function StepIndicator({
   completedLabel?: string
   indicatorLabel?: (status: StepperItem["status"]) => string
 }) {
+  const t = useMessages("stepper")
+  const completedLabel = completedLabelProp ?? t.completedLabel
+  const indicatorLabel = indicatorLabelProp ?? t.indicatorLabel
+
   // The source slots every marker in 24x24 with the 20px visual centred
   // (`Base Step Elements` / `Number` + `Background`); the slot is the row's
   // rhythm, so the DOM keeps it too.
@@ -93,13 +92,19 @@ function Connector({ complete, className }: { complete: boolean; className?: str
 function Stepper({
   items,
   className,
-  navigationLabel = "Avanzamento",
-  completedLabel = "Completato:",
-  statusLabel = defaultStatusLabel,
-  indicatorLabel = (status) => `${defaultStatusLabel(status)}:`,
-  stepLabel = ({ index, total, label, status }) =>
-    `Passaggio ${index} di ${total}: ${label} — ${statusLabel(status)}`,
+  navigationLabel: navigationLabelProp,
+  completedLabel: completedLabelProp,
+  statusLabel: statusLabelProp,
+  indicatorLabel: indicatorLabelProp,
+  stepLabel: stepLabelProp,
 }: { items: StepperItem[]; className?: string } & StepperLabels) {
+  const t = useMessages("stepper")
+  const navigationLabel = navigationLabelProp ?? t.navigationLabel
+  const completedLabel = completedLabelProp ?? t.completedLabel
+  const statusLabel = statusLabelProp ?? t.statusLabel
+  const indicatorLabel = indicatorLabelProp ?? t.indicatorLabel
+  const stepLabel = stepLabelProp ?? ((step) => t.stepLabel(step, statusLabel))
+
   const stepperStyle: React.CSSProperties & Record<`--${string}`, string | number> = {
     "--steps": items.length,
   }
