@@ -50,7 +50,7 @@ export default defineConfig(({ mode }) => ({
       // The documented components live in packages/pagopa-ui.
       allowExternal: true,
       include: [`${packageRoot}/src/components/**/*.{ts,tsx}`],
-      exclude: [`${packageRoot}/src/components/templates/**`, "**/*.stories.*"],
+      exclude: ["**/*.stories.*"],
       // Ratchet policy: thresholds follow current coverage with a small margin
       // and never go down. Raise them as new stories land (see CONTRIBUTING).
       thresholds: {
