@@ -134,6 +134,8 @@ jobs:
         run: pnpm nx run pagopa-ui-storybook:test:visual:update
 
       - name: Commit the baselines
+        env:
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
         run: |
           git config --system --add safe.directory "$GITHUB_WORKSPACE" 2>/dev/null || true
           git config user.name "github-actions[bot]"
@@ -144,4 +146,4 @@ jobs:
             exit 0
           fi
           git commit -m "test(visual): update baselines"
-          git push origin "HEAD:${{ github.event.pull_request.head.ref }}"
+          git push origin "HEAD:$PR_HEAD_REF"
