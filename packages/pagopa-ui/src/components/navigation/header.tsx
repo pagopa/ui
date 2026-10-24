@@ -43,7 +43,7 @@ function Header({ product, user, actions, className }: HeaderProps) {
           {product.logo}
         </span>
       ) : null}
-      <span className="truncate text-title-sm-mobile text-foreground sm:text-title-sm">
+      <span className="truncate text-title-sm-mobile text-foreground tablet:text-title-sm">
         {product.label}
       </span>
       {/* Source `Logo=True`: the logo is the identity, the chevron is hidden.
@@ -53,7 +53,7 @@ function Header({ product, user, actions, className }: HeaderProps) {
         <PagoPAIcon
           name="chevron"
           variant="down"
-          className="shrink-0 text-foreground sm:text-primary"
+          className="shrink-0 text-foreground tablet:text-primary"
         />
       )}
     </>
@@ -63,7 +63,7 @@ function Header({ product, user, actions, className }: HeaderProps) {
   const userContent = user ? (
     <>
       {user.avatar ? <span className="shrink-0">{user.avatar}</span> : null}
-      <span className="sr-only min-w-0 flex-col gap-0.5 text-left sm:not-sr-only sm:flex">
+      <span className="sr-only min-w-0 flex-col gap-0.5 text-left tablet:not-sr-only tablet:flex">
         {/* Source order (`User name`, 1298:5227): the parent line (14/20
             semibold) above the entity name (18/26 semibold), then the role. */}
         {user.parent ? (
@@ -77,7 +77,7 @@ function Header({ product, user, actions, className }: HeaderProps) {
       <PagoPAIcon
         name="chevron"
         variant="down"
-        className="hidden shrink-0 text-foreground sm:block"
+        className="hidden shrink-0 text-foreground tablet:block"
       />
     </>
   ) : null
@@ -86,7 +86,7 @@ function Header({ product, user, actions, className }: HeaderProps) {
     <header className={cn("border-b bg-background", className)}>
       {/* Mobile 320x77 and desktop 1200x103 share the bar: the source keeps a
           single row at both devices and only the identity collapses. */}
-      <div className="mx-auto flex min-h-19 max-w-7xl items-center justify-between gap-2 px-6 py-4 sm:min-h-(--header-height) sm:gap-6">
+      <div className="mx-auto flex min-h-19 max-w-7xl items-center justify-between gap-2 px-6 py-4 tablet:min-h-(--header-height) tablet:gap-6">
         {product.href ? (
           <Link
             href={product.href}
@@ -97,7 +97,7 @@ function Header({ product, user, actions, className }: HeaderProps) {
         ) : (
           <div className="flex min-w-0 flex-1 items-center gap-2">{productContent}</div>
         )}
-        <div className="flex shrink-0 items-center gap-2 sm:gap-6">
+        <div className="flex shrink-0 items-center gap-2 tablet:gap-6">
           {user ? (
             user.href ? (
               <Link
