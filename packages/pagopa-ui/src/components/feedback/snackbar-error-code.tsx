@@ -1,29 +1,39 @@
+"use client"
+
 import * as React from "react"
 
+import { useMessages } from "@/lib/ui-provider"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 import { Snackbar } from "./snackbar"
 
 function SnackbarErrorCode({
-  message = "Si è verificato un errore",
+  message: messageProp,
   description,
   code,
   onDismiss,
-  copyLabel = "Copia codice",
-  copiedLabel = "Codice copiato",
-  copyErrorLabel = "Impossibile copiare il codice. Copialo manualmente.",
+  copyLabel: copyLabelProp,
+  copiedLabel: copiedLabelProp,
+  copyErrorLabel: copyErrorLabelProp,
 }: {
+  /** Visible error message. @default messages.snackbarErrorCode.message */
   message?: React.ReactNode
   description?: React.ReactNode
   code: string
   onDismiss?: () => void
-  /** Accessible name of the copy control. @default "Copia codice" */
+  /** Accessible name of the copy control. @default messages.snackbarErrorCode.copyLabel */
   copyLabel?: string
-  /** Announced text once the code is in the clipboard. @default "Codice copiato" */
+  /** Announced text once the code is in the clipboard. @default messages.snackbarErrorCode.copiedLabel */
   copiedLabel?: string
-  /** Announced text when the clipboard write fails. @default "Impossibile copiare il codice. Copialo manualmente." */
+  /** Announced text when the clipboard write fails. @default messages.snackbarErrorCode.copyErrorLabel */
   copyErrorLabel?: string
 }) {
+  const t = useMessages("snackbarErrorCode")
+  const message = messageProp ?? t.message
+  const copyLabel = copyLabelProp ?? t.copyLabel
+  const copiedLabel = copiedLabelProp ?? t.copiedLabel
+  const copyErrorLabel = copyErrorLabelProp ?? t.copyErrorLabel
+
   const [copyState, setCopyState] = React.useState<"idle" | "copied" | "failed">("idle")
 
   async function copyCode() {

@@ -1,3 +1,6 @@
+"use client"
+
+import { useMessages } from "@/lib/ui-provider"
 import { Progress } from "@/components/primitives/progress"
 
 /** Props of {@link ProgressLoader}. */
@@ -7,7 +10,7 @@ interface ProgressLoaderProps {
    * the indeterminate animation.
    */
   value?: number
-  /** Visible label of the bar; also its accessible name. @default "Avanzamento" */
+  /** Visible label of the bar; also its accessible name. @default messages.progressLoader.label */
   label?: string
   /** Renders the label row above the bar. @default true */
   showLabel?: boolean
@@ -17,10 +20,13 @@ interface ProgressLoaderProps {
 
 function ProgressLoader({
   value,
-  label = "Avanzamento",
+  label: labelProp,
   showLabel = true,
   showValue = true,
 }: ProgressLoaderProps) {
+  const t = useMessages("progressLoader")
+  const label = labelProp ?? t.label
+
   const normalized = value === undefined ? undefined : Math.min(100, Math.max(0, value))
   return (
     <div className={showLabel ? "w-full" : "w-full px-6 py-5"}>

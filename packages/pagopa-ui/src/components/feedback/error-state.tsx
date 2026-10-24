@@ -1,8 +1,11 @@
+"use client"
+
 import * as React from "react"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
 import { cn } from "@/lib/cn"
+import { useMessages } from "@/lib/ui-provider"
 
 import { StatePanel, type StateProps } from "./state-panel"
 
@@ -14,27 +17,33 @@ import { StatePanel, type StateProps } from "./state-panel"
  */
 function ErrorState({
   code,
-  codeLabel = "Codice errore",
-  copyLabel = (label) => `Copia ${label.toLowerCase()}`,
-  copiedLabel = "Codice copiato",
-  copyErrorLabel = "Impossibile copiare il codice. Copialo manualmente.",
+  codeLabel: codeLabelProp,
+  copyLabel: copyLabelProp,
+  copiedLabel: copiedLabelProp,
+  copyErrorLabel: copyErrorLabelProp,
   onCopy,
   className,
   ...props
 }: Omit<StateProps, "extra"> & {
   /** Error code of the state, shown in a copyable row. */
   code?: string
-  /** Label of the code row; drives the copy button's accessible name. @default "Codice errore" */
+  /** Label of the code row; drives the copy button's accessible name. @default messages.errorState.codeLabel */
   codeLabel?: string
-  /** Complete accessible name of the copy control, from the row label. @default built-in Italian "Copia {label}" */
+  /** Complete accessible name of the copy control, from the row label. @default messages.errorState.copyLabel */
   copyLabel?: (codeLabel: string) => string
-  /** Announced text once the code is in the clipboard. @default "Codice copiato" */
+  /** Announced text once the code is in the clipboard. @default messages.errorState.copiedLabel */
   copiedLabel?: string
-  /** Announced text when the clipboard write fails. @default "Impossibile copiare il codice. Copialo manualmente." */
+  /** Announced text when the clipboard write fails. @default messages.errorState.copyErrorLabel */
   copyErrorLabel?: string
   /** Called only after a successful clipboard write. */
   onCopy?: () => void
 }) {
+  const t = useMessages("errorState")
+  const codeLabel = codeLabelProp ?? t.codeLabel
+  const copyLabel = copyLabelProp ?? t.copyLabel
+  const copiedLabel = copiedLabelProp ?? t.copiedLabel
+  const copyErrorLabel = copyErrorLabelProp ?? t.copyErrorLabel
+
   const [copyState, setCopyState] = React.useState<"idle" | "copied" | "failed">("idle")
 
   async function copyCode() {

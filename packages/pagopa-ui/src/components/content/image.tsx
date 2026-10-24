@@ -1,20 +1,25 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
+import { useMessages } from "@/lib/ui-provider"
 
 import { ImageIcon } from "@/components/primitives/icons"
 
 type ImageProps = React.ComponentProps<"img"> & {
   ratio?: "square" | "video" | "photo" | "portrait" | "cinema" | "wide"
+  /** Announced text when the image fails to load. @default messages.image.fallbackLabel */
   fallbackLabel?: string
 }
 
 function Image({
   ratio = "video",
-  fallbackLabel = "Immagine non disponibile",
+  fallbackLabel: fallbackLabelProp,
   className,
   alt,
   ...props
 }: ImageProps) {
+  const t = useMessages("image")
+  const fallbackLabel = fallbackLabelProp ?? t.fallbackLabel
+
   const [failed, setFailed] = React.useState(false)
   const ratioClass =
     ratio === "square"
