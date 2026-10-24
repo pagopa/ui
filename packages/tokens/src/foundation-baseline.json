@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "note": "The ceiling of the foundation lint: the counts measured on 2026-10-16, before the token migration. A change may lower a ceiling when it removes values; raising one requires a new token or a registered exception. Regenerate the counts with `node scripts/check-foundation.mjs --measure`.",
+  "note": "The ceiling of the foundation lint: the counts measured on 2026-10-16, before the token migration. A change may lower a ceiling when it removes values; raising one requires a new token or a registered exception. Regenerate the counts with `pnpm nx run pagopa-ui:foundation:check -- --measure`.",
   "counts": {
     "arbitrary-length": 0,
     "tailwind-text-size": 0,
