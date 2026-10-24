@@ -450,6 +450,7 @@
   /* Foundations/spacing-132 — 132px */
   --spacing-33: 8.25rem;
 
+  --breakpoint-*: initial;
   /* Foundations/breakpoint-sm — 600px */
   --breakpoint-tablet: 37.5rem;
   /* Foundations/breakpoint-md — 900px */
