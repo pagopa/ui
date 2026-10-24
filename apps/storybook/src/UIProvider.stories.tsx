@@ -26,7 +26,7 @@ const RouterLink = React.forwardRef<HTMLAnchorElement, LinkComponentProps>(
 RouterLink.displayName = "RouterLink"
 
 const meta = {
-  title: "Components/UIProvider",
+  title: "Components/Composites/UIProvider",
   parameters: {
     docs: {
       description: {
