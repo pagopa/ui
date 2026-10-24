@@ -4138,8 +4138,8 @@
   {
     "id": "1134-6812-default",
     "nodeId": "1134:6812",
-    "export": "CameraViewElement",
-    "storyId": "components-overlays-cameraviewelement--fidelity",
+    "export": "CameraView",
+    "storyId": "components-overlays-cameraview--fidelity",
     "state": "Default",
     "width": 376,
     "height": 378,

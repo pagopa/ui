@@ -195,8 +195,8 @@ export type ButtonGroupProps = React_2.ComponentProps<"div"> & {
     orientation?: "horizontal" | "vertical";
 };
 
-// @public (undocumented)
-export function CameraViewElement(input: {
+// @public
+export function CameraView(input: {
     label?: string;
     announcement?: (state: {
         label: string;
