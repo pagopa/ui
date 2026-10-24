@@ -1,5 +1,11 @@
 # Design request — TableCellRow mobile card: wrapper, component or Table contract
 
+- Type: design
+- Issue: https://github.com/pagopa/ui/issues/38
+- Status: open — the node stays `pending`
+- Decision owner: @gunzip
+- Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-table-cell-row-mobile-card--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-table-cell-row-mobile-card--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-table-cell-row-mobile-card--option-c
+
 Date: 21 October 2026. Origin: flow A/E, milestone M5
 ([figma-fidelity-and-drift.md](../plans/figma-fidelity-and-drift.md)), node
 `1344:40672`. Figma was not modified: the measurements below come from the

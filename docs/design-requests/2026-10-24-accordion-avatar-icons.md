@@ -4,7 +4,7 @@
 - Issue: https://github.com/pagopa/ui/issues/35
 - Status: open
 - Decision owner: @gunzip
-- Preview: pending — the previews session adds the option stories and the PR #19 index
+- Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-accordion-avatar-icons--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-accordion-avatar-icons--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-accordion-avatar-icons--option-c
 - Figma node: `759:6399` (`AccordionItem`)
 - Comment thread: `1919241855` (2026-09-09)
 

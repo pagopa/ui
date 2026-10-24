@@ -4,7 +4,7 @@
 - Issue: https://github.com/pagopa/ui/issues/33
 - Status: open
 - Decision owner: @gunzip
-- Preview: pending — the previews session adds the option stories and the PR #19 index
+- Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-identity-provider-skeleton--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-identity-provider-skeleton--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-identity-provider-skeleton--option-c
 - Figma node: `1992:147363` (`Identity Provider Selector`, mocked)
 - Comment thread: `1770336895` (2026-05-21)
 

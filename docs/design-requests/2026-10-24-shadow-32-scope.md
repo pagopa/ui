@@ -2,6 +2,8 @@
 
 - Node: [Shadow](https://www.figma.com/design/pvhsJpPGQbEwNLiyP7BOIw?node-id=239-1483) (`239:1483`), page • Shadow
 - Rule card: `I240:2170;52:896` ("Shadow 32")
+- Issue: https://github.com/pagopa/ui/issues/20
+- Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-shadow-32--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-shadow-32--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-shadow-32--option-c
 - Status: open — the rule and the implementation disagree; the components keep
   the current elevation until the answer is recorded
 - Decision owner: Figma design owner

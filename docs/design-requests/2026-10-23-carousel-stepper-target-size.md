@@ -2,6 +2,9 @@
 
 - Node: [CarouselStepper](https://www.figma.com/design/pvhsJpPGQbEwNLiyP7BOIw?node-id=10169-11964) (`10169:11964`)
 - Page: • Pagination
+- Type: design
+- Issue: https://github.com/pagopa/ui/issues/44
+- Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-carousel-stepper-target-size--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-carousel-stepper-target-size--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-carousel-stepper-target-size--option-c / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-carousel-stepper-target-size--option-d
 - Status: open — the question does not block the render; the node is
   `implemented` against the drawn composition and the answer may change it later
 - Decision owner: Figma design owner

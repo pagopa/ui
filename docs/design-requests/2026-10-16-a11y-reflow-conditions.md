@@ -1,5 +1,11 @@
 # Design request — reflow conditions (WCAG 1.4.10, 1.4.12, 1.4.4)
 
+- Type: design
+- Issue: https://github.com/pagopa/ui/issues/45
+- Status: open
+- Decision owner: @gunzip
+- Preview: not applicable — the request spans 34 component families and has no two-option composition; the issue lists every family
+
 Date: 16 October 2026. Origin: flow D (`docs/plans/d-accessibility-contract.md`).
 Figma was not modified: the request comes from the test contract, not from a
 change to the library. The stories below are the ones that declare

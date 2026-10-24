@@ -1,5 +1,11 @@
 # Design request — TimelineDrawer mobile edge and header rhythm
 
+- Type: design
+- Issue: https://github.com/pagopa/ui/issues/39
+- Status: open — the node stays `pending`
+- Decision owner: @gunzip
+- Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-timeline-drawer-width-and-mobile--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-timeline-drawer-width-and-mobile--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-timeline-drawer-width-and-mobile--option-c
+
 Date: 21 October 2026. Origin: flow A/E, milestone M5
 ([figma-fidelity-and-drift.md](../plans/figma-fidelity-and-drift.md)), node
 `1333:16408`. Figma was not modified: the measurements below come from the

@@ -1,5 +1,11 @@
 # Design request — foundation variables to publish
 
+- Type: design
+- Issue: https://github.com/pagopa/ui/issues/46
+- Status: open
+- Decision owner: @gunzip
+- Preview: not applicable — the question is a set of token values, not a visual choice; the issue carries the tables
+
 Date: 16 October 2026. Origin: flow C (`docs/plans/c-foundation-and-lint.md`).
 Figma was not modified: the values below are derived read-only from the
 "Regole spaziatura" page (`123:4852`) and from the recurring values in the

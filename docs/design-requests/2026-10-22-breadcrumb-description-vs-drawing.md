@@ -2,6 +2,9 @@
 
 - Node: [Breadcrumbs](https://www.figma.com/design/pvhsJpPGQbEwNLiyP7BOIw?node-id=123-7768) (`123:7768`)
 - Page: • Breadcrumb 🟠
+- Type: design
+- Issue: https://github.com/pagopa/ui/issues/41
+- Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-breadcrumb-description-vs-drawing--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-breadcrumb-description-vs-drawing--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-breadcrumb-description-vs-drawing--option-c
 - Status: open — the questions do not block the render; the node is
   `implemented` against the drawn variants and the answers may change it later
 - Decision owner: Figma design owner
