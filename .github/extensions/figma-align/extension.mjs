@@ -22,7 +22,6 @@ import {
   readFileSync,
   writeFileSync,
 } from "node:fs"
-import { homedir } from "node:os"
 import { dirname, join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { defineWorkflow, joinSession } from "@github/copilot-sdk/extension"
@@ -31,13 +30,6 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../..")
 const PACKAGE_DIR = join(ROOT, "packages/pagopa-ui")
 const CONFIG_FILE = join(PACKAGE_DIR, "figma-to-code.yaml")
 const DECISIONS = ["implement", "review", "map", "exclude", "design-request", "skip"]
-
-// Node does not read the OS trust store: trust the portless CA so `fetch` can
-// probe the HTTPS Storybook URL the proxy serves.
-const PORTLESS_CA = join(homedir(), ".portless/ca.pem")
-if (!process.env.NODE_EXTRA_CA_CERTS && existsSync(PORTLESS_CA)) {
-  process.env.NODE_EXTRA_CA_CERTS = PORTLESS_CA
-}
 
 // ---------------------------------------------------------------- helpers
 
@@ -168,25 +160,6 @@ async function storybookAnswers(url) {
     return response.ok
   } catch {
     return false
-  }
-}
-
-// portless owns the branch prefix, so ask it for the URL instead of building it.
-async function portlessUrl(name, signal) {
-  try {
-    const { stdout } = await run(
-      "pnpm",
-      ["--filter", "pagopa-ui-storybook", "exec", "portless", "get", name],
-      { signal, allowExit: [0, 1] },
-    )
-    const line = stdout
-      .trim()
-      .split("\n")
-      .reverse()
-      .find((candidate) => /^https?:\/\//.test(candidate))
-    return line?.trim() ?? null
-  } catch {
-    return null
   }
 }
 
@@ -577,14 +550,11 @@ const figmaAlign = defineWorkflow({
     let storybook = null
 
     const ensureStorybook = async (config) => {
-      const fallback = config.storybook.url
-      // portless serves a named URL; the probe follows the route it assigned.
-      const portless = await portlessUrl("pagopa-ui-storybook", signal)
-      if (portless && (await storybookAnswers(portless))) return portless
-      if (await storybookAnswers(fallback)) return fallback
+      const url = config.storybook.url
+      if (await storybookAnswers(url)) return url
       if (!opts.startStorybook) return null
       if (!storybook) {
-        ctx.log(`Storybook does not answer: starting it through portless (log in ${outDir})`)
+        ctx.log(`Storybook does not answer: starting it on ${url} (log in ${outDir})`)
         const log = createWriteStream(join(outDir, "storybook.log"))
         storybook = spawn(
           "pnpm",
@@ -602,8 +572,7 @@ const figmaAlign = defineWorkflow({
       for (let i = 0; i < 90; i++) {
         if (signal.aborted) return null
         if (storybook.exitCode !== null) return null
-        const url = portless ?? (await portlessUrl("pagopa-ui-storybook", signal))
-        if (url && (await storybookAnswers(url))) return url
+        if (await storybookAnswers(url)) return url
         await new Promise((r) => setTimeout(r, 2000))
       }
       return null

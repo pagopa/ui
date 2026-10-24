@@ -24,8 +24,8 @@ This file adds what holds only for agents.
    pull request titles and descriptions are written in English even when the
    session runs in Italian. Italian stays only where the product renders it:
    component and story texts, and the UI examples quoted in a guide.
-5. **Storybook runs through portless.** `pnpm nx run pagopa-ui-storybook:storybook`
-   prints the stable URL to open (branch-prefixed in a worktree); `PORTLESS=0` keeps `:6006`.
+5. **Storybook runs on `:6006`.** `pnpm nx run pagopa-ui-storybook:storybook`
+   starts it and prints `http://localhost:6006`.
 
 ## Figma sessions
 

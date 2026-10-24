@@ -4,7 +4,7 @@
 | ------------- | --------------------------------------------------------------------- |
 | Branches      | `improve/12-rules-tooling`, then one `improve/12-rules-w<n>` per wave |
 | Worktrees     | `../pagopa-ui-imp-12` (tooling), `../pagopa-ui-imp-12-w1`…`w4`        |
-| Ports         | Storybook through portless (branch-prefixed); `PORTLESS=0` keeps 6006 |
+| Ports         | Storybook on `:6006`                                                  |
 | Depends on    | nothing                                                               |
 | Person gate   | merge of each wave only; the agent makes every rule decision          |
 | Report source | the Figma audit run on 2026-10-23 (numbers in "Baseline")             |
