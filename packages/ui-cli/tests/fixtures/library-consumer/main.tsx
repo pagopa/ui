@@ -18,7 +18,7 @@ import {
   DatePickerField,
   Dialog,
   Drawer,
-  figmaIconNames,
+  iconNames,
   Image,
   InputChip,
   MenuDropdown,
@@ -83,7 +83,7 @@ const sourceIconVariants = [
   variants: NonNullable<React.ComponentProps<typeof PagoPAIcon>["variant"]>[]
 }[]
 
-const iconCases = figmaIconNames.flatMap((name) => {
+const iconCases = iconNames.flatMap((name) => {
   const variants = sourceIconVariants.find((entry) => entry.name === name)?.variants ?? [undefined]
   return variants.map((variant) => ({ name, variant }))
 })
