@@ -22,9 +22,9 @@ Every row is a target of `pagopa-ui-cli`: run it as
 | `figma:parity:check --node <id> --devices`         | every declared device's committed case in one table; exit 1 when a device has no reviewed case or its case fails                                            |
 | `figma:parity:capture`                             | a whole wave: per case the report, probe and PNG under `figma.parityOut`, plus `summary.json`                                                                |
 | `figma:parity:cases --sync`                        | proposes the missing device cases and the variants no reviewed case points at, as drafts                                                                     |
-| `figma:parity:verify`                              | the case corpus, the device coverage and the evidence bundle, hermetically (no snapshot, no browser); exit 1 on errors, 0 with warnings                      |
+| `figma:parity:verify`                              | the case corpus, device coverage and evidence bundle, hermetically (no snapshot, no browser); runs in the green chain; exit 1 on errors, 0 with warnings |
 | `figma:parity:evidence --write` / `--check`        | the offline bundle: `--write` refreshes slice, PNGs and manifest (token + snapshot); `--check` proves they match the corpus                                    |
-| `figma:parity:report --wave <name>`                | the wave record: counts, verdicts, advisories, residues, open deltas, the re-run command per case                                                            |
+| `figma:parity:report --wave <name>`                | the wave record: counts, verdicts, advisories, residues, open deltas, the re-run command                                                            |
 | `source <nodeId>` (via `pnpm --filter pagopa-ui-cli run cli -- parity source <nodeId>`) | the source spec `check` diffs against (`--compact` anatomy, `--json`, `--depth N`); `--png [file]` writes the pinned variant render (token + pinned snapshot), default `.figma/parity/source/<nodeId>.png` |
 | `render --story <storyId>` (via `pnpm --filter pagopa-ui-cli run cli -- parity render --story <storyId>`) | a render probe alone; `--tree [--depth N]` prints the DOM anatomy (box, position, padding, gap) of the root's descendants |
 
