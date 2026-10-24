@@ -46,7 +46,8 @@ curated choice. A `modulePatterns` rule maps a whole subtree.
 
 Write a per-node constraint, an open decision or an unblock condition in the
 node's `note`, self-contained: state the rule and the measurement, never point to
-a document.
+a document. A note stays under 600 characters: it states the current residues
+and their reasons, not the history.
 
 ## Review semantics
 
