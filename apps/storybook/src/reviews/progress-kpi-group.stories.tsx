@@ -4,12 +4,10 @@ import type { ReactNode } from "react"
 import { ProgressKpi } from "@/components/data-display"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
-// One review story per open design question. It lives only on the long-lived
-// review pull request (`feedback/previews`), never merges, and answers the
-// question with a side-by-side comparison instead of prose. The cards are the
-// real component; the group is the composition under review.
-
-const VIEWPORTS = [320, 1200] as const
+// One story per option, so a designer can open a single layout at the real
+// viewport. Review stories live only on the long-lived review pull request
+// (`feedback/previews`) and never merge. The cards are the real component; the
+// group is the composition under review.
 
 const cards = [
   { label: "Inviate", value: 51, total: 69, completed: false },
@@ -18,10 +16,9 @@ const cards = [
   { label: "Pagamenti", value: 34, total: 50, completed: false },
 ]
 
-function KpiCards() {
-  return cards.map((card) => (
+function KpiCard({ card }: { card: (typeof cards)[number] }) {
+  return (
     <ProgressKpi
-      key={card.label}
       label={card.label}
       value={card.value}
       total={card.total}
@@ -29,78 +26,48 @@ function KpiCards() {
       channel={<PagoPAIcon name="send" />}
       info={<PagoPAIcon name="info" />}
     />
-  ))
+  )
 }
 
-function Frame({ width, children }: { width: number; children: ReactNode }) {
+function FourUpGrid() {
   return (
-    <div className="shrink-0 rounded-2xl border border-dashed border-border p-4" style={{ width }}>
-      <p className="text-label-mini text-foreground mb-3">{width} px</p>
-      {children}
+    <div className="grid grid-cols-2 gap-4 tablet-md:grid-cols-4" data-review-layout="grid">
+      {cards.map((card) => (
+        <KpiCard key={card.label} card={card} />
+      ))}
     </div>
   )
 }
 
-function FourUpGrid({ width }: { width: number }) {
+function PeekCarousel() {
   return (
-    <Frame width={width}>
+    <>
       <div
-        className={`grid gap-4 ${width >= 900 ? "grid-cols-4" : "grid-cols-2"}`}
-        data-review-layout="grid"
+        className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 tablet-md:hidden"
+        data-review-layout="carousel"
       >
-        <KpiCards />
-      </div>
-    </Frame>
-  )
-}
-
-function PeekCarousel({ width }: { width: number }) {
-  return (
-    <Frame width={width}>
-      {width >= 900 ? (
-        <div className="grid grid-cols-4 gap-4" data-review-layout="grid">
-          <KpiCards />
-        </div>
-      ) : (
-        <div
-          className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2"
-          data-review-layout="carousel"
-        >
-          {cards.map((card) => (
-            <div key={card.label} className="w-[82%] shrink-0 snap-start">
-              <ProgressKpi
-                label={card.label}
-                value={card.value}
-                total={card.total}
-                completed={card.completed}
-                channel={<PagoPAIcon name="send" />}
-                info={<PagoPAIcon name="info" />}
-              />
-            </div>
-          ))}
-        </div>
-      )}
-    </Frame>
-  )
-}
-
-function PlainGrid({ width }: { width: number }) {
-  return (
-    <Frame width={width}>
-      <div className="grid gap-4" data-review-layout="plain">
-        {cards.slice(0, 3).map((card) => (
-          <ProgressKpi
-            key={card.label}
-            label={card.label}
-            value={card.value}
-            total={card.total}
-            completed={card.completed}
-            channel={<PagoPAIcon name="send" />}
-            info={<PagoPAIcon name="info" />}
-          />
+        {cards.map((card) => (
+          <div key={card.label} className="w-[82%] shrink-0 snap-start">
+            <KpiCard card={card} />
+          </div>
         ))}
       </div>
-    </Frame>
+      <div className="hidden grid-cols-4 gap-4 tablet-md:grid" data-review-layout="grid">
+        {cards.map((card) => (
+          <KpiCard key={card.label} card={card} />
+        ))}
+      </div>
+    </>
+  )
+}
+
+function PlainGrid() {
+  return (
+    <div className="grid gap-4" data-review-layout="plain">
+      {cards.slice(0, 3).map((card) => (
+        <KpiCard key={card.label} card={card} />
+      ))}
+    </div>
   )
 }
 
@@ -108,7 +75,7 @@ interface Option {
   key: string
   title: string
   summary: string
-  render: (width: number) => ReactNode
+  render: () => ReactNode
 }
 
 const options: Option[] = [
@@ -116,23 +83,35 @@ const options: Option[] = [
     key: "A",
     title: "Four-up grid at every width",
     summary: "Four cards per row above 900, two by two below. No carousel and no peeking card.",
-    render: (width) => <FourUpGrid width={width} />,
+    render: () => <FourUpGrid />,
   },
   {
     key: "B",
     title: "Four-up grid, peek carousel on mobile",
     summary:
       "Four cards per row above 900; below 900 the cards scroll sideways and the next one peeks.",
-    render: (width) => <PeekCarousel width={width} />,
+    render: () => <PeekCarousel />,
   },
   {
     key: "C",
     title: "No group",
     summary:
       "The page composes three cards in a plain grid at every width, as the templates do now.",
-    render: (width) => <PlainGrid width={width} />,
+    render: () => <PlainGrid />,
   },
 ]
+
+function OptionView({ option }: { option: Option }) {
+  return (
+    <div className="min-h-dvh p-8">
+      <p className="text-title-sb text-foreground">
+        {option.key} — {option.title}
+      </p>
+      <p className="text-body text-foreground mt-2 mb-8 max-w-3xl">{option.summary}</p>
+      {option.render()}
+    </div>
+  )
+}
 
 const meta = {
   title: "Reviews/Progress KPI group",
@@ -146,30 +125,17 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Options: Story = {
-  render: () => (
-    <div className="overflow-x-auto p-8">
-      <p className="text-title-sb text-foreground">
-        Progress KPI group — grid or peek carousel on mobile?
-      </p>
-      <p className="text-body text-foreground mt-2 mb-8">
-        The same four cards in every option, rendered at 320 and 1200.
-      </p>
-      <div className="flex items-start gap-10">
-        {options.map((option) => (
-          <div key={option.key} className="shrink-0">
-            <p className="text-body-sb text-foreground">
-              {option.key} — {option.title}
-            </p>
-            <p className="text-label-mini text-foreground mt-1 mb-4">{option.summary}</p>
-            <div className="flex flex-col gap-6">
-              {VIEWPORTS.map((width) => (
-                <div key={width}>{option.render(width)}</div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  ),
+export const OptionA: Story = {
+  name: "A — Four-up grid at every width",
+  render: () => <OptionView option={options[0]} />,
+}
+
+export const OptionB: Story = {
+  name: "B — Four-up grid, peek carousel on mobile",
+  render: () => <OptionView option={options[1]} />,
+}
+
+export const OptionC: Story = {
+  name: "C — No group",
+  render: () => <OptionView option={options[2]} />,
 }
