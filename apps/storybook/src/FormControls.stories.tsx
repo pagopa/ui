@@ -57,12 +57,12 @@ function FormControls() {
       />
 
       <div className="grid gap-2">
-        <Label id="municipality-label" className="text-label-sb">
+        <Label id="municipality-label" className="flex-wrap text-label-sb">
           Comune
           <span aria-hidden="true" className="text-destructive">
             *
           </span>
-          <span className="sr-only"> (obbligatorio)</span>
+          <span className="text-caption"> (obbligatorio)</span>
         </Label>
         <Select
           name="municipality"
@@ -1058,6 +1058,9 @@ export const UploadNativeForm: Story = {
     if (!(form instanceof HTMLFormElement)) throw new Error("Expected a native form")
     const input = canvas.getByLabelText(/Ricevuta/)
     if (!(input instanceof HTMLInputElement)) throw new Error("Expected a native file input")
+    // The block label used by the upload fields also writes the state in words.
+    await expect(input).toHaveAccessibleName("Ricevuta (obbligatorio)")
+    await expect(canvas.getByText("(obbligatorio)")).toBeVisible()
     await expect(form.checkValidity()).toBe(false)
     const receipt = new File(["contenuto della ricevuta"], "ricevuta.pdf", {
       type: "application/pdf",

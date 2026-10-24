@@ -38,6 +38,24 @@
 
 ### Changed
 
+- `Pagination`: the middle pages collapse at the 900px container step
+  (`tablet-md`, a container alias of the device breakpoint) instead of the
+  640px `narrow` one, and a collection that fits one page renders no control at
+  all; the source page-position frames stay 836 wide, below the step.
+- `ButtonGroup`: every group keeps 8px between its actions in both
+  orientations, the imported rule, instead of 24px for two or more children.
+  The `BlockButtons` source variants draw 24px, so the parity cases record the
+  16px divergence per subject.
+- `Drawer`: the title keeps the mobile type scale through the tablet range and
+  switches at the `tablet-md` device step (900px) instead of Tailwind's 768px
+  `md`; `direction` stays caller-owned.
+- `IDModule`: the module is 410px wide from the `tablet` device step (600px),
+  capped by its container, through the 1440 source range; the width lives in
+  the documented `--id-module-width` local extension.
+- The field family writes the required state in words next to the label
+  (`requiredLabel`, `"(obbligatorio)"` by default) instead of hiding it in an
+  `sr-only` span: the asterisk stays decorative, the label's accessible name
+  reads the words once and the native `required` keeps the constraint.
 - `Microevento`: the row keeps the source zero root gap instead of the 20px
   `gap-5` between the optional time and the content column, and the source
   725×91 sample has a reviewed parity case; the component's optional `time`

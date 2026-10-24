@@ -21,6 +21,14 @@ for the resting and floated states and the source resting/floated gaps. The
 floated box stays centred on the frame's top edge whatever its tallest child
 measures.
 
+A required field states its state in words: the label carries the decorative
+asterisk and the visible `requiredLabel` (`"(obbligatorio)"` by default) after
+it, at the caption step. The words are inside the label element, so the
+accessible name reads them once; the native `required` attribute still carries
+the constraint. The source drawings show the asterisk alone, so the visible
+suffix is the accessibility adaptation the field rule asks for; the label keeps
+its source height because the suffix steps down to the caption line box.
+
 - Native date and time editors keep the same pattern. Their `:placeholder-shown`
   never matches, so the filled state is tracked in React, and the browser's
   empty-editor text stays hidden until focus.
@@ -35,8 +43,8 @@ control, `Active` is focus (the primary stroke and the floated label),
 `Disabled` is the disabled control (the muted surface), `Success` the decorative
 `check_circle` with the announced success line, and `Error` the `report` glyph
 with `aria-invalid` and the destructive stroke. `Filled` is the native value —
-the label floats into the notch — and `* Required` is the marker next to the
-label.
+the label floats into the notch — and `* Required` is the marker plus the words
+next to the label.
 
 ## Feedback and fixtures
 

@@ -83,7 +83,12 @@ function IDModuleView({
   return (
     <section
       aria-labelledby={titleId}
-      className={cn("w-full bg-background text-foreground", className)}
+      // The source draws the module 410 wide from the tablet device step up
+      // (731:20387); below 600 it takes the available width.
+      className={cn(
+        "w-full max-w-full bg-background text-foreground tablet:w-(--id-module-width)",
+        className,
+      )}
       data-id-module="true"
       data-device={device}
     >

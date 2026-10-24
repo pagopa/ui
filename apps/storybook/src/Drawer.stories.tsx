@@ -142,3 +142,47 @@ export const SourceMobile: Story = {
     design: { type: "figma", url: figmaEmbedUrl("1278:6526") },
   },
 }
+
+// The browser provider resizes the page inside the test runner only; the
+// interactive Storybook has no page controller and the check is skipped there.
+async function viewportController() {
+  const module = await import("@vitest/browser/context").catch(() => undefined)
+  return module?.page
+}
+
+async function applyViewport(width: number, height: number) {
+  const page = await viewportController()
+  await page?.viewport(width, height)
+  for (let frame = 0; frame < 60; frame += 1) {
+    if (window.innerWidth === width && window.innerHeight === height) break
+    await new Promise((resolve) => requestAnimationFrame(() => resolve(null)))
+  }
+  // The media query follows the resize on the next frame lock.
+  await new Promise((resolve) =>
+    requestAnimationFrame(() => requestAnimationFrame(() => resolve(null))),
+  )
+}
+
+// The title keeps the mobile type scale through the tablet range and switches at
+// the 900px device step (`tablet-md`), not at Tailwind's default 768px `md`.
+export const TitleScale: Story = {
+  parameters: { layout: "fullscreen" },
+  render: () => <SourceFrame direction="right" />,
+  play: async () => {
+    const title = document.querySelector<HTMLElement>('[data-slot="drawer-title"]')
+    if (!title) throw new Error("Expected the drawer title")
+    const page = await viewportController()
+    if (!page) return
+    const previous = { width: window.innerWidth, height: window.innerHeight }
+    try {
+      for (const width of [599, 600, 768, 899]) {
+        await applyViewport(width, 900)
+        await expect(getComputedStyle(title).fontSize).toBe("18px")
+      }
+      await applyViewport(900, 900)
+      await expect(getComputedStyle(title).fontSize).toBe("24px")
+    } finally {
+      await applyViewport(previous.width, previous.height)
+    }
+  },
+}

@@ -65,6 +65,12 @@ function FidelityAction({
   )
 }
 
+// The source `BlockButtons` variants space their actions 24px apart, while the
+// imported component rule asks for 8px in both orientations (123:3565;52:896).
+// The component paints the rule; these fixtures therefore assert 8px and the
+// parity cases record the 16px divergence per subject. The two `2 Button group`
+// frames below are the source's own inner compositions (caller markup), so they
+// keep the drawn 24px.
 const fidelityStates = [
   {
     nodeId: "123:4499",
@@ -77,35 +83,35 @@ const fidelityStates = [
     nodeId: "123:4501",
     name: "Azioni impilate",
     orientation: "vertical",
-    gap: 24,
+    gap: 8,
     labels: ["Primary", "Action"],
   },
   {
     nodeId: "123:4504",
     name: "Azioni mobile",
     orientation: "vertical",
-    gap: 24,
+    gap: 8,
     labels: ["Tertiary", "Secondary", "Primary"],
   },
   {
     nodeId: "123:4508",
     name: "Azioni inline",
     orientation: "horizontal",
-    gap: 24,
+    gap: 8,
     labels: ["Secondary", "Primary"],
   },
   {
     nodeId: "2939:34214",
     name: "Azioni desktop",
     orientation: "horizontal",
-    gap: 24,
+    gap: 8,
     labels: ["Tertiary", "Secondary", "Primary"],
   },
   {
     nodeId: "2939:34947",
     name: "Azioni desktop secondarie",
     orientation: "horizontal",
-    gap: 24,
+    gap: 8,
     labels: ["Secondary", "Primary"],
   },
 ] as const
@@ -273,6 +279,7 @@ export const InteractionChecks: Story = {
         `[data-fidelity-subgroup="${nodeId}"]`,
       )
       if (!subgroup) throw new Error(`ButtonGroup source subgroup ${nodeId} is missing`)
+      // Caller markup inside the source frame, not the group's own gap.
       await expect(getComputedStyle(subgroup).gap).toBe("24px")
     }
 

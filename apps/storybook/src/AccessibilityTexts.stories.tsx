@@ -172,13 +172,13 @@ export const NavigationTexts: Story = {
   // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
   parameters: {
     a11yContract: { reflow: false },
-    // The play function reads the wide layout: the narrow container hides the
-    // page buttons it queries, so Chromatic captures and plays this fixture at
-    // the desktop width only.
+    // The play function reads the wide layout: below the 900px collapse step the
+    // page buttons it queries are hidden, so Chromatic captures and plays this
+    // fixture at the desktop width only.
     chromatic: { viewports: [1200] },
   },
   render: () => (
-    <div className="grid max-w-3xl gap-6">
+    <div className="grid max-w-5xl gap-6">
       <Pagination
         currentPage={1}
         totalPages={3}
@@ -283,7 +283,12 @@ export const FieldTexts: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await expect(canvas.getByRole("textbox", { name: /campo obbligatorio/ })).toBeVisible()
+    const requiredField = canvas.getByRole("textbox", { name: "Nome (campo obbligatorio)" })
+    await expect(requiredField).toBeVisible()
+    await expect(requiredField).toBeRequired()
+    const requiredWords = canvas.getByText("(campo obbligatorio)")
+    await expect(requiredWords).toBeVisible()
+    await expect(requiredWords).not.toHaveClass("sr-only")
     await expect(canvasElement.querySelector('[aria-label="Cifra 2 di 4"]')).not.toBeNull()
     await expect(canvas.getByRole("progressbar", { name: "Invio in corso" })).toBeVisible()
     await expect(canvas.getByRole("button", { name: "Interrompi" })).toBeVisible()

@@ -29,9 +29,12 @@ owns the provider labels, logos, destinations, and close behavior:
 ```
 
 `device` selects the source header scale (`"mobile"` by default or `"desktop"`).
-Panel width and height remain content-driven; the Figma frames are reference
-viewports, not fixed runtime dimensions. `IDModule.Provider` is also available
-for a single, caller-configured provider row.
+From the `tablet` device step (600px) the module is 410px wide, the source
+frame width, capped by its container; below 600 it fills the available width.
+The `--id-module-width` local extension carries that value, and the source
+frames above 1440 only widen the page, so the panel keeps the same width.
+`IDModule.Provider` is also available for a single, caller-configured provider
+row.
 
 ## Accessibility and composition
 

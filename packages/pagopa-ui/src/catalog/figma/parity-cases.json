@@ -559,6 +559,10 @@
       {
         "path": "2 Button group.box.width",
         "reason": "follows the wider text action: the flex-1 subgroup absorbs the 33px the ghost inset adds"
+      },
+      {
+        "path": "2 Button group.offset.left",
+        "reason": "the imported 8px action gap replaces the source 24px gap before the flex-1 subgroup (123:3565;52:896): the end-aligned pair starts 16px further left (guides/actions.md)"
       }
     ]
   },
@@ -598,6 +602,10 @@
       {
         "path": "field.box.height",
         "reason": "follows the 26px text-action target above: the stacked mobile composition is otherwise exact"
+      },
+      {
+        "path": "2 Button group.offset.top",
+        "reason": "the imported rule sets 8px between actions where the source stack draws 24px (123:3565;52:896), so the pair sits 16px above its source offset (guides/actions.md)"
       }
     ]
   },
@@ -6333,6 +6341,10 @@
       {
         "path": "field.box.height",
         "reason": "the source Main-Content frame is 104px tall and does not contain the 20px suggestion it draws at 126 (which overlaps the BlockButtons row at 144); the DOM stacks code+rows+suggestion (130) and the buttons below the root 24px gap: 236 against the source 208"
+      },
+      {
+        "path": "BlockButtons.box.width",
+        "reason": "the imported 8px action gap narrows the two-action group 16px against the source 24px gap (123:3565;52:896, guides/actions.md)"
       }
     ],
     "note": "Composition check off: the source frame's Main-Content (104px) excludes the 20px suggestion it draws at 126 and its BlockButtons (144) overlaps it, so the source's offsets are not a flow: the DOM's suggestion sits at 127 (the source 126) and the buttons follow the stacked content (171 against 144) — the recorded field.box.height residue."
@@ -6428,11 +6440,11 @@
     "residues": [
       {
         "path": "Block buttons.box.height",
-        "reason": "the shared ghost action keeps its 48px minimum native target where the source mobile secondary is a 24px row (the primary 48 + the source 24px gap + the secondary; 120 against the source 96, guides/actions.md)"
+        "reason": "the shared ghost action keeps its 48px minimum native target where the source mobile secondary is a 24px row, on the imported 8px action gap (the source draws 24): 104 against the source 96 (guides/actions.md)"
       },
       {
         "path": "field.box.height",
-        "reason": "the fixture full object description wraps to two lines in the 236px mobile track (the row 64 against the source 20, +44) and the second action row is 48 against the source 24 (+24): the module measures 376 against the source 274"
+        "reason": "the fixture full object description wraps to two lines in the 236px mobile track (the row 64 against the source 20, +44) and the second action row is 48 against the source 24, less the 16px the imported 8px gap removes: the module measures 360 against the source 274"
       }
     ],
     "note": "Composition check off: the wrapped object row (+44) and the ghost's 48px target (+24) are the recorded field.box.height chain; the mobile Action stacks the primary above the secondary, the group orientation the mobile export carries, and the suggestion sits at the source offsets otherwise."

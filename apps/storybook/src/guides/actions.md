@@ -69,12 +69,18 @@ The source `Button` set (`108:1402`) maps to the props as follows:
 
 `ButtonGroup` is a named native `role="group"` wrapper. Use
 `orientation="vertical"` for stacked actions and `"horizontal"` for inline
-actions; orientation does not change at a device breakpoint. Horizontal groups
-wrap when their caller-constrained width cannot fit the actions. The group
-defaults to its content width; callers choose `w-full` when the containing
-layout should fill its available space. Keep the child controls as native
-`Button`s, with their own `type`, accessible names, focus and submission
+actions; orientation does not change at a device breakpoint. Every group keeps
+8px between its actions, in both orientations and for any number of children.
+Horizontal groups wrap when their caller-constrained width cannot fit the
+actions. The group defaults to its content width; callers choose `w-full` when
+the containing layout should fill its available space. Keep the child controls as
+native `Button`s, with their own `type`, accessible names, focus and submission
 behavior.
+
+The imported rule sets 8px between actions, while the `BlockButtons` variants
+draw their outer stack and row at 24px. The component follows the rule; the
+source drawings stay the reference for the actions themselves, so a
+source-fidelity render records the 16px difference instead of hiding it.
 
 The source `BlockButtons` set maps through these real compositions:
 

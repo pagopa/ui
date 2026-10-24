@@ -23,5 +23,9 @@ source pictogram, `description` is associated supporting copy and `footer` holds
 the actions (full width when stacked, intrinsic and end-aligned from `sm`). The
 close button is a native icon button with an accessible name.
 
+The title keeps the mobile type scale through the tablet range and switches to
+the desktop title scale from the `tablet-md` device step (900px). `direction`
+stays caller-owned: the component does not choose a bottom sheet on mobile.
+
 The drag-handle pill is a bottom-sheet-only source affordance: it appears only
 when the drawer opens from the bottom edge and is decorative.

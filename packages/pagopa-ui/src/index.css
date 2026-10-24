@@ -162,6 +162,7 @@
   --state-width: 368px; /* Waiting, Ok and Ko states, 23rem */
   --drawer-width: 416px; /* demo drawer, 26rem */
   --drawer-width-wide: 417px; /* Informative Drawer, 26.0625rem */
+  --id-module-width: 410px; /* ID module from the 600px device step, 25.625rem */
   --camera-size: 376px; /* camera viewfinder, 23.5rem */
   --menu-width: 274px; /* MenuDropDown minimum, 17.125rem */
   --menu-skeleton-width: 106px; /* MenuDropDown skeleton, 6.625rem */
@@ -291,6 +292,11 @@ body {
   --radius-2xl: var(--figma-radius-16);
   --radius-3xl: var(--figma-radius-24);
   --radius-4xl: var(--figma-radius-24);
+  /* Below the 900px device step the pagination collapses its page numbers. The
+     generated layer publishes that step as the viewport breakpoint
+     `tablet-md` (56.25rem); a container query step needs a literal value, so the
+     container scale repeats the same rem instead of the 40rem `narrow` step. */
+  --container-tablet-md: 56.25rem;
 }
 
 /* WebKit keeps native calendar-editor focus inside its user-agent shadow DOM. */

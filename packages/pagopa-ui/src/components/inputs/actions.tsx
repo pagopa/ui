@@ -1,18 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 
-function countGroupChildren(children: React.ReactNode): number {
-  return React.Children.toArray(children).reduce<number>((count, child) => {
-    if (
-      React.isValidElement<{ children?: React.ReactNode }>(child) &&
-      child.type === React.Fragment
-    ) {
-      return count + countGroupChildren(child.props.children)
-    }
-    return count + 1
-  }, 0)
-}
-
 /** Props of {@link ButtonGroup}. */
 type ButtonGroupProps = React.ComponentProps<"div"> & {
   /** Layout of the action list. @default "horizontal" */
@@ -26,17 +14,15 @@ function ButtonGroup({
   children,
   ...props
 }: ButtonGroupProps) {
-  const single = countGroupChildren(children) <= 1
   return (
     <div
       role="group"
       aria-label={ariaLabel}
       data-orientation={orientation}
       className={cn(
-        "flex w-fit max-w-full",
+        "flex w-fit max-w-full gap-2",
         "data-[orientation=vertical]:flex-col",
         "data-[orientation=horizontal]:flex-row data-[orientation=horizontal]:flex-wrap",
-        single ? "gap-2" : "gap-6",
         className,
       )}
       {...props}

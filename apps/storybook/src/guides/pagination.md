@@ -14,8 +14,16 @@ disabled on the edge pages, the current page carries `aria-current="page"` and
 the ellipses are decorative, so they are not announced.
 
 The list keeps the first page, the last page, the current page and its
-neighbours; the gaps become an ellipsis. Below the `narrow` container threshold
-only previous, the current page and next remain.
+neighbours; the gaps become an ellipsis. Below the `tablet-md` container step
+(900px, the same step as the device breakpoint of that name) only previous, the
+current page and next remain. The step measures the pagination region, not the
+viewport: the component collapses inside a narrow column on a wide screen. When
+the results fit one page (`totalPages` is 1 or 0) the whole control renders
+nothing.
+
+The source page-position frames are 836px wide, below that step, so a preview
+framed at the source width shows the collapsed state the rule asks for; the
+page-position variants stay the mapping evidence for the controls themselves.
 
 Every announced string is a prop with an Italian default, so the application
 can translate it. `pageLabel` receives the page number and returns the whole

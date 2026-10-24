@@ -81,6 +81,13 @@ export const Validation: Story = {
     const canvas = within(canvasElement)
     const email = canvas.getByRole("textbox", { name: /^Email/ })
     await expect(email).toBeRequired()
+    // The required state is written in words next to the label, not left to the
+    // asterisk alone; the label's accessible name carries the same suffix once.
+    await expect(email).toHaveAccessibleName("Email (obbligatorio)")
+    const requiredWords = canvas.getByText("(obbligatorio)")
+    await expect(requiredWords).toBeVisible()
+    await expect(requiredWords).not.toHaveClass("sr-only")
+    await expect(canvas.getAllByText("(obbligatorio)")).toHaveLength(1)
     await expect(email).toHaveAttribute("aria-invalid", "true")
     await expect(email).toHaveAccessibleDescription("Inserisci un indirizzo email valido.")
 

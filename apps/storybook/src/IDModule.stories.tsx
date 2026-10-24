@@ -157,3 +157,53 @@ export const ConfigurableHeading: Story = {
     await expect(canvas.queryByRole("heading", { level: 2 })).not.toBeInTheDocument()
   },
 }
+
+// The browser provider resizes the page inside the test runner only; the
+// interactive Storybook has no page controller and the check is skipped there.
+async function viewportController() {
+  const module = await import("@vitest/browser/context").catch(() => undefined)
+  return module?.page
+}
+
+async function applyViewport(width: number, height: number) {
+  const page = await viewportController()
+  await page?.viewport(width, height)
+  for (let frame = 0; frame < 60; frame += 1) {
+    if (window.innerWidth === width && window.innerHeight === height) break
+    await new Promise((resolve) => requestAnimationFrame(() => resolve(null)))
+  }
+  await new Promise((resolve) =>
+    requestAnimationFrame(() => requestAnimationFrame(() => resolve(null))),
+  )
+}
+
+// The source keeps the module 410px wide from 600 to 1440; below the tablet
+// device step it takes the available width.
+export const ResponsiveWidth: Story = {
+  parameters: {
+    layout: "fullscreen",
+    // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+    a11yContract: { reflow: false },
+  },
+  play: async ({ canvasElement }) => {
+    const module = canvasElement.querySelector<HTMLElement>("[data-id-module]")
+    if (!module) throw new Error("Expected the ID module")
+    const page = await viewportController()
+    if (!page) return
+    const previous = { width: window.innerWidth, height: window.innerHeight }
+    const measured = () => Math.round(module.getBoundingClientRect().width)
+    const available = () => Math.round(module.parentElement?.getBoundingClientRect().width ?? 0)
+    try {
+      for (const width of [320, 599]) {
+        await applyViewport(width, 900)
+        await expect(measured()).toBe(available())
+      }
+      for (const width of [600, 900, 1200, 1440]) {
+        await applyViewport(width, 900)
+        await expect(measured()).toBe(410)
+      }
+    } finally {
+      await applyViewport(previous.width, previous.height)
+    }
+  },
+}

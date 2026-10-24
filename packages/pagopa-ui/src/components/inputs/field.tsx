@@ -34,7 +34,7 @@ function FloatingFieldLabel({
   htmlFor: string
   label: React.ReactNode
   required?: boolean
-  /** Announced suffix of the required marker. @default "(obbligatorio)" */
+  /** Visible suffix of the required marker. @default "(obbligatorio)" */
   requiredLabel?: string
   floated?: boolean
   leadingIcon?: React.ReactNode
@@ -52,7 +52,10 @@ function FloatingFieldLabel({
       id={id}
       htmlFor={htmlFor}
       className={cn(
-        "pointer-events-none absolute left-3 inline-flex items-center bg-background px-1 text-muted-foreground transition-all duration-150 peer-disabled:bg-muted motion-reduce:transition-none",
+        // Bounded to the control (the right inset plus `w-fit`) so a long label
+        // with the visible required suffix wraps instead of widening the page at
+        // 200% text.
+        "pointer-events-none absolute left-3 right-3 inline-flex w-fit flex-wrap items-center bg-background px-1 text-muted-foreground transition-all duration-150 peer-disabled:bg-muted motion-reduce:transition-none",
         // Resting: the source 16/22 label with its 18/26 required marker and
         // the source 4px gap.
         "gap-1 text-label-sb [&>span:first-of-type]:text-body-big-sb",
@@ -83,7 +86,11 @@ function FloatingFieldLabel({
           <span aria-hidden="true" className="text-destructive">
             *
           </span>
-          <span className="sr-only"> {requiredLabel}</span>
+          {/* The rule asks for the state in words, not the asterisk alone. The
+              suffix is a flex item (blockified), so the accessible-name
+              computation separates it from the label text with a space; the
+              group gap keeps the visual rhythm. */}
+          <span className="text-caption">{requiredLabel}</span>
         </>
       ) : null}
     </label>
@@ -103,7 +110,11 @@ function FieldLabel({
     <label
       id={id}
       htmlFor={htmlFor}
-      className={cn("w-fit text-label-sb", disabled && "text-muted-foreground", className)}
+      className={cn(
+        "w-fit text-label-sb wrap-anywhere",
+        disabled && "text-muted-foreground",
+        className,
+      )}
     >
       {label}
       {required ? (
@@ -111,7 +122,10 @@ function FieldLabel({
           <span aria-hidden="true" className="ml-0.5 text-destructive">
             *
           </span>
-          <span className="sr-only"> {requiredLabel}</span>
+          {/* Visible words next to the marker, as the field rule asks. The
+              inline-block display separates it from the label text in the
+              accessible-name computation; the margin keeps the visual gap. */}
+          <span className="ml-0.5 inline-block text-caption">{requiredLabel}</span>
         </>
       ) : null}
     </label>

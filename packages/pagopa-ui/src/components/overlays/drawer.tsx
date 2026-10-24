@@ -68,8 +68,10 @@ function Drawer({
             ) : null}
             {/* The source title style is Titillio/600 (our 700 face): the
                 title token carries that weight over the primitive's base
-                (the InformativeDrawer reading). */}
-            <DrawerTitle className="pr-10 text-title-xs-mobile md:text-title-xs">
+                (the InformativeDrawer reading). The desktop scale starts at
+                the 900px device step, so the title keeps the mobile scale
+                through the whole tablet range (600–899). */}
+            <DrawerTitle className="pr-10 text-title-xs-mobile tablet-md:text-title-xs">
               {title}
             </DrawerTitle>
           </div>
