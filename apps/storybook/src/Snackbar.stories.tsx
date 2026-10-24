@@ -129,7 +129,7 @@ export const Fidelity: Story = {
             tone={variant.tone}
             title="Titolo della snackbar"
             message="Ut enim ad minim veniam, quis ullamco laboris nisi ut aliquid"
-            onDismiss={() => {}}
+            onDismiss={() => undefined}
           />
         </div>
       ))}

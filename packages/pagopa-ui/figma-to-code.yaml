@@ -27,6 +27,19 @@ catalog:
 # question for the Figma design owner.
 design:
   requests: docs/design-requests
+  # GitHub handles that answer the design questions. One list for the whole
+  # design system; add a handle when a second owner joins.
+  owners:
+    - gunzip
+  # The one long-lived review pull request: its stable Storybook preview, its
+  # number and the branch the review stories live on. Never a second review
+  # pull request, never merged. A question links to
+  # `<url>/?path=/story/reviews-<slug>`. The placeholder host and `pr: 19` stay
+  # until the review pull request exists and its first deploy has finished.
+  preview:
+    url: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net
+    pr: 19
+    branch: feedback/previews
 tokens:
   manifest: packages/tokens/src/manifest.json
   generatedCss: packages/tokens/src/figma.generated.css

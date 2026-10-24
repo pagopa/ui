@@ -148,8 +148,12 @@ export function runDocLinks(): number {
   function checkConfig(file: string): void {
     if (!fs.existsSync(file)) return
     const text = fs.readFileSync(file, "utf8")
-    for (const match of text.matchAll(/^\s+[A-Za-z]+:\s*"?([^"\s#]+)"?\s*$/gm)) {
-      const value = match[1]
+    // A config value is a path claim unless the key names something else: the
+    // review pull request number and the branch the review stories live on.
+    const NOT_A_PATH = new Set(["pr", "branch"])
+    for (const match of text.matchAll(/^\s+([A-Za-z]+):\s*"?([^"\s#]+)"?\s*$/gm)) {
+      if (NOT_A_PATH.has(match[1])) continue
+      const value = match[2]
       if (/^[a-z]+:\/\//.test(value) || isLocal(value)) continue
       if (!exists(value)) report(file, text, match.index ?? 0, `missing path ${value}`)
     }

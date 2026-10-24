@@ -16,6 +16,11 @@ const storiesRoot = resolveStoriesRoot()
 // `Templates/*` and `Alignment/*` sections were retired on 2026-10-15 (the
 // definition of done of the pagopa-ui-standards skill keeps them retired).
 // A new section is a deliberate decision: add it here with its reason.
+//
+// `Reviews/<slug>` is the documented exception: one review story per open
+// design question, its title after the section. Review stories live only on the
+// long-lived `feedback/previews` branch, never merge, and are deleted when the
+// question closes; the exception keeps that branch's story suite green.
 const FOUNDATIONS = new Set(["Tokens", "Icons and pictograms", "Figma inventory"])
 const COMPONENT_SECTIONS = new Set([
   // The accessibility contract per component type: text overrides and the
@@ -61,6 +66,10 @@ test("every story title stays inside the documented taxonomy", () => {
       continue
     }
     const [top, section] = title.split("/")
+    if (top === "Reviews") {
+      if (!section) offenders.push(`${relative}: "Reviews" needs a question slug`)
+      continue
+    }
     const allowed =
       top === "Foundations" ? FOUNDATIONS : top === "Components" ? COMPONENT_SECTIONS : null
     if (!allowed || !allowed.has(section))

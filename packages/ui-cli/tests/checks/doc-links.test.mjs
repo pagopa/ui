@@ -71,6 +71,14 @@ test("a config path that does not exist fails", () => {
   assert.match(result.stderr, /figma-to-code\.yaml:2: missing path src\/catalog\/registry\.json/)
 })
 
+test("the review pull request number and branch are not path claims", () => {
+  const result = check({
+    "figma-to-code.yaml":
+      "design:\n  preview:\n    url: https://example.azurestaticapps.net\n    pr: 42\n    branch: feedback/previews\n",
+  })
+  assert.equal(result.status, 0, result.stderr)
+})
+
 test("a script that points to a removed skill or document fails", () => {
   const result = check({
     "scripts/tool.mjs": 'const hint = ".agents/skills/old-skill/references/x.md"',

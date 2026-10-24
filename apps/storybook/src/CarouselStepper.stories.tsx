@@ -79,7 +79,7 @@ export const Fidelity: Story = {
   },
   render: () => (
     <div data-fidelity-variant="10169-11964">
-      <CarouselStepper count={6} activeIndex={0} onChange={() => {}} />
+      <CarouselStepper count={6} activeIndex={0} onChange={() => undefined} />
     </div>
   ),
   play: async ({ canvasElement }) => {
