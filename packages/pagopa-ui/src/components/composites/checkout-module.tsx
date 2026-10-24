@@ -5,6 +5,7 @@ import { Button } from "@/components/primitives/button"
 import { Heading, type HeadingTag } from "@/components/primitives/heading"
 import { Skeleton } from "@/components/primitives/skeleton"
 import { cn } from "@/lib/cn"
+import { useMessages } from "@/lib/ui-provider"
 
 interface CheckoutSuggestion {
   label: string
@@ -34,17 +35,17 @@ type CheckoutModuleProps = React.ComponentProps<"section"> & {
   creditor?: string
   /** Legacy notice code. */
   noticeCode?: string
-  /** Legacy label of the notice-code row. @default "Codice avviso" */
+  /** Legacy label of the notice-code row. @default messages.checkoutModule.noticeCodeLabel */
   noticeCodeLabel?: string
-  /** Legacy row title when `title` is omitted. @default "Payment data" */
+  /** Legacy row title when `title` is omitted. @default messages.checkoutModule.legacyTitle */
   legacyTitle?: string
-  /** Legacy supporting copy when neither `description` nor `creditor` is set. @default "Description" */
+  /** Legacy supporting copy when neither `description` nor `creditor` is set. @default messages.checkoutModule.legacyDescription */
   legacyDescription?: string
-  /** Legacy recommendation line in the compatibility composition. @default "Suggerito perché sei già cliente" */
+  /** Legacy recommendation line in the compatibility composition. @default messages.checkoutModule.legacySuggestion */
   legacySuggestion?: string
-  /** Action text of the legacy continue handler. @default "Continua" */
+  /** Action text of the legacy continue handler. @default messages.checkoutModule.continueLabel */
   continueLabel?: string
-  /** Action text of the legacy edit handler. @default "Modifica" */
+  /** Action text of the legacy edit handler. @default messages.checkoutModule.editLabel */
   editLabel?: string
   /** Legacy continue handler. */
   onContinue?: () => void
@@ -81,15 +82,23 @@ function CheckoutModule({
   showSuggestion = true,
   skeleton = false,
   suggestion,
-  legacyTitle = "Payment data",
-  legacyDescription = "Description",
-  legacySuggestion = "Suggerito perché sei già cliente",
-  noticeCodeLabel = "Codice avviso",
-  continueLabel = "Continua",
-  editLabel = "Modifica",
+  legacyTitle: legacyTitleProp,
+  legacyDescription: legacyDescriptionProp,
+  legacySuggestion: legacySuggestionProp,
+  noticeCodeLabel: noticeCodeLabelProp,
+  continueLabel: continueLabelProp,
+  editLabel: editLabelProp,
   className,
   ...props
 }: CheckoutModuleProps) {
+  const t = useMessages("checkoutModule")
+  const legacyTitle = legacyTitleProp ?? t.legacyTitle
+  const legacyDescription = legacyDescriptionProp ?? t.legacyDescription
+  const legacySuggestion = legacySuggestionProp ?? t.legacySuggestion
+  const noticeCodeLabel = noticeCodeLabelProp ?? t.noticeCodeLabel
+  const continueLabel = continueLabelProp ?? t.continueLabel
+  const editLabel = editLabelProp ?? t.editLabel
+
   const headingId = React.useId()
   const legacy = title === undefined
   const heading = title ?? legacyTitle
