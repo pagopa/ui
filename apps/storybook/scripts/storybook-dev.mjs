@@ -1,5 +1,5 @@
-// Starts Storybook on the port portless assigns, or :6006 without it, and
-// forwards the extra arguments Nx appends to the Storybook CLI.
+// Starts Storybook on :6006 (or $PORT) and forwards the extra arguments Nx
+// appends to the Storybook CLI.
 import { spawn } from "node:child_process"
 
 const port = process.env.PORT ?? "6006"
