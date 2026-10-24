@@ -59,8 +59,10 @@ written as `catalog.registry`. Every command runs from the repository root.
   decision written in the session. Historical nodes are reviewed one at a time on
   request, never in bulk; `mocked` demos are never queued or renewed.
 - **An open point goes to the design owner.** A question the source cannot answer
-  becomes a design request at `design.requests`; the node stays `pending` until
-  the answer is recorded ([design-request.md](references/design-request.md)).
+  becomes one issue for `design.owners`, with a review story on the review pull
+  request when it is visual, and one record at `design.requests`; the node stays
+  `pending` until the answer is recorded
+  ([design-request.md](references/design-request.md)).
 - **A drift branch is the handoff.** Commit the alignment on the drift branch;
   the person pushes and merges ([handoff.md](references/handoff.md)).
 - **The registry is the only status source.** Per-node constraints live in the

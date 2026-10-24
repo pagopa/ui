@@ -37,6 +37,10 @@ relayed failure).
 | `catalog.evidenceExceptions` | story-evidence exceptions, must shrink                                | `src/catalog/figma/evidence-exceptions.json`|
 | `catalog.inventoryStory`     | the rendered join of inventory and registry                           | `apps/storybook/src/FigmaInventory.stories.tsx`    |
 | `catalog.rules`              | the English record of every consolidated `.Regole` card                | `src/catalog/figma/rules.json`              |
+| `design.owners`              | GitHub handles that answer the design questions                       | the person's handle, one per line           |
+| `design.preview.url`         | stable Storybook preview of the review pull request                   | the preview host, without a trailing slash  |
+| `design.preview.pr`          | number of the one review pull request, never merged                   | the pull request number                     |
+| `design.preview.branch`      | branch the review stories live on, never merged                       | `feedback/previews`                         |
 | `tokens.manifest`            | every Figma variable, exclusion and reason                            | `packages/tokens/src/manifest.json`                  |
 | `tokens.generatedCss`        | the generated CSS foundation layer                                    | `packages/tokens/src/figma.generated.css`            |
 | `tokens.stylesheet`          | semantic aliases and local extensions                                 | `src/index.css`                             |
@@ -49,6 +53,15 @@ relayed failure).
 | `code.stories`               | Storybook stories, the parity capture surface                         | `apps/storybook/src`                               |
 | `code.guides`                | component guides rendered on the docs pages                           | `apps/storybook/src/guides`                        |
 | `storybook.url`              | the Storybook the parity tools capture                                | `http://localhost:6006`                     |
+
+The `design.preview` block names the one long-lived review pull request: `url`
+is its stable Storybook preview, `pr` its number and `branch` the branch its
+review stories live on. That pull request owns the single preview environment,
+so the repository keeps exactly that one, open and unmerged: closing it deletes
+the preview and breaks every link a question points at. A question links to
+`<url>/?path=/story/reviews-<slug>`. Fill the block in order: create the review
+pull request from `design.preview.branch`, let the first deploy finish, then
+copy the preview URL and the pull request number into the config.
 
 The scripts under `packages/ui-cli/` read these same defaults. A path the config moves
 must also move where a script reads it: pass it where the script takes a flag
