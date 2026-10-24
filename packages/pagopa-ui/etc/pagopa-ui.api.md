@@ -308,13 +308,9 @@ export function Cookies(input: {
     label?: string;
 }): React_2.JSX.Element;
 
-// @public (undocumented)
-export function CorrectionNotValid(input: {
-    label?: string;
-}): JSX.Element;
-
-// @public (undocumented)
-export function CorrectionValid(input: {
+// @public
+export function CorrectionTag(input: {
+    status: "valid" | "not-valid";
     label?: string;
 }): JSX.Element;
 

@@ -1,6 +1,5 @@
 export * from "./avatar"
-export * from "./correction-not-valid"
-export * from "./correction-valid"
+export * from "./correction-tag"
 export * from "./feature-list"
 export * from "./image"
 export * from "./list-item"

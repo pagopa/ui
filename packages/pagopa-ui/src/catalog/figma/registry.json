@@ -2088,20 +2088,20 @@
     "9676:5453": {
       "status": "implemented",
       "target": {
-        "module": "src/components/content/correction-valid.tsx",
-        "export": "CorrectionValid",
-        "story": "apps/storybook/src/CorrectionValid.stories.tsx",
-        "storyExports": ["Playground", "Source"]
+        "module": "src/components/content/correction-tag.tsx",
+        "export": "CorrectionTag",
+        "story": "apps/storybook/src/CorrectionTag.stories.tsx",
+        "storyExports": ["Valid", "ValidSource"]
       },
       "note": "Reviewed 2026-10-23 (M5 second ring): `Correction/Valid` is a single component, not a set, so one case and no device axis. `9676-5453-default` verifies the 164x30 source box, whose only child is the shared Tag instance at the identical box: the component renders that Tag directly, so the case maps `Tag` (165.78x32, the 1.78px from the 1px CSS border and the 32px min-h-8 against 30) and records the merged wrapper's zero insets and 10px single-child gap as residues. Insets 6/8, the 6px icon-label gap, radius 8 against the source 6, the 1px #e8ebf1 stroke and the white fill match; the `check_circle` 16 at 9/8 and the 12/18 Semibold #555c70 label at 7 against the source 8/7 and 6. Guide: apps/storybook/src/guides/corrections.md."
     },
     "9676:5455": {
       "status": "implemented",
       "target": {
-        "module": "src/components/content/correction-not-valid.tsx",
-        "export": "CorrectionNotValid",
-        "story": "apps/storybook/src/CorrectionNotValid.stories.tsx",
-        "storyExports": ["Playground", "Source"]
+        "module": "src/components/content/correction-tag.tsx",
+        "export": "CorrectionTag",
+        "story": "apps/storybook/src/CorrectionTag.stories.tsx",
+        "storyExports": ["NotValid", "NotValidSource"]
       },
       "note": "Reviewed 2026-10-23 (M5 second ring): `Correction/NotValid` is a single component, not a set, so one case and no device axis. `9676-5455-default` verifies the 160x30 source box, whose only child is the shared Tag instance at the identical box: the component renders that Tag directly, so the case maps `Tag` (161.3x32, the 1.3px from the 1px CSS border and the 32px min-h-8 against 30) and records the merged wrapper's zero insets and 10px single-child gap as residues. Insets 6/8, the 6px icon-label gap, radius 8 against the source 6, the 1px #e8ebf1 stroke and the white fill match; the `warning` 16 at 9/8 and the 12/18 Semibold #555c70 label at 7 against the source 8/7 and 6. Guide: apps/storybook/src/guides/corrections.md."
     },
