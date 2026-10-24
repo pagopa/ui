@@ -12,6 +12,13 @@
 
 ### Added
 
+- `UIProvider` gains `locale`, `messages` and `calendarLocale`, and the package
+  ships the default dictionary (`itMessages`) and a complete English one
+  (`enMessages`) with the `Messages` type. Every text default reads from the
+  dictionary, a partial `messages` object overrides single keys and a nested
+  provider merges over the enclosing one; the precedence is the prop, then the
+  provider, then the default dictionary. `useMessages` and `useLocale` expose
+  both contexts.
 - `UIProvider` with `linkComponent`: every navigation link renders through the
   application's own link component, so a client router keeps client-side
   transitions; without the provider the links stay plain anchors.
