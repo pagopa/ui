@@ -1395,9 +1395,9 @@
     "731:20386": {
       "status": "implemented",
       "target": {
-        "module": "src/components/composites/id-module.tsx",
-        "export": "IDModule",
-        "story": "apps/storybook/src/IDModule.stories.tsx",
+        "module": "src/components/composites/identity-provider-picker.tsx",
+        "export": "IdentityProviderPicker",
+        "story": "apps/storybook/src/IdentityProviderPicker.stories.tsx",
         "storyExports": ["Playground", "Desktop"]
       },
       "note": "Device review 2026-10-16 (device burn-down wave 10): both declared devices verified — desktop `731-20386-desktop-desktop` (731:20387, 410x912) on the Desktop export and mobile `731-20386-mobile-mobile` (731:20385, 320x908) on the Playground export, both `compareOffset` clean and responsive-clean. The whole composition verifies without a component change: header 80/76 (min-h-20/min-h-19), title 24/32 vs 18/28 on the source Titillio-Bold (font-bold), close glyph 24x24, IDP modules pad 0/24/24 with gap 8, rows 362/272x60 with the 16px inset, 12px gap and 8px radius, the 14/16 label against the source 14/16.8 and the 116px caller logo against the source artwork 115 (both inside the 2px tolerance). No layoutScope: the composition is the caller's `device` prop, not a width that flips it (the 123:4498 ButtonGroup precedent); the reason is in both cases' note. The story exports SingleProvider (a standalone Provider row) is caller documentation, not a module composition."

@@ -31,7 +31,7 @@
   "apps/storybook/src/Footer.stories.tsx": "Components/Navigation/Footer",
   "apps/storybook/src/Header.stories.tsx": "Components/Navigation/Header",
   "apps/storybook/src/HeaderAlert.stories.tsx": "Components/Feedback/HeaderAlert",
-  "apps/storybook/src/IDModule.stories.tsx": "Components/Composites/IDModule",
+  "apps/storybook/src/IdentityProviderPicker.stories.tsx": "Components/Composites/IdentityProviderPicker",
   "apps/storybook/src/Icons.stories.tsx": "Foundations/Icons and pictograms",
   "apps/storybook/src/Image.stories.tsx": "Components/Content/Image",
   "apps/storybook/src/InformativeDrawer.stories.tsx": "Components/Templates/Informative Drawer",

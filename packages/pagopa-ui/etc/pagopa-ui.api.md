@@ -601,32 +601,15 @@ export interface HeaderProps {
     };
 }
 
-// Warning: (ae-forgotten-export) The symbol "IDModuleView" needs to be exported by the entry point pagopa-ui.d.ts
+// Warning: (ae-forgotten-export) The symbol "IdentityProviderPickerView" needs to be exported by the entry point pagopa-ui.d.ts
 //
-// @public (undocumented)
-export const IDModule: typeof IDModuleView & {
-    Provider: typeof IDModuleProvider;
+// @public
+export const IdentityProviderPicker: typeof IdentityProviderPickerView & {
+    Provider: typeof IdentityProviderPickerRow;
 };
 
 // @public (undocumented)
-export interface IDModuleProps {
-    // (undocumented)
-    className?: string;
-    // (undocumented)
-    closeLabel: string;
-    // (undocumented)
-    device?: "mobile" | "desktop";
-    // (undocumented)
-    onClose: () => void;
-    // (undocumented)
-    providers: readonly IDModuleProviderOption[];
-    // (undocumented)
-    title: string;
-    titleAs?: HeadingTag;
-}
-
-// @public (undocumented)
-export interface IDModuleProviderOption {
+export interface IdentityProviderPickerOption {
     // (undocumented)
     href: string;
     // (undocumented)
@@ -641,6 +624,23 @@ export interface IDModuleProviderOption {
     rel?: string;
     // (undocumented)
     target?: ComponentProps<"a">["target"];
+}
+
+// @public (undocumented)
+export interface IdentityProviderPickerProps {
+    // (undocumented)
+    className?: string;
+    // (undocumented)
+    closeLabel: string;
+    // (undocumented)
+    device?: "mobile" | "desktop";
+    // (undocumented)
+    onClose: () => void;
+    // (undocumented)
+    providers: readonly IdentityProviderPickerOption[];
+    // (undocumented)
+    title: string;
+    titleAs?: HeadingTag;
 }
 
 // Warning: (ae-forgotten-export) The symbol "ImageProps" needs to be exported by the entry point pagopa-ui.d.ts
@@ -1398,7 +1398,7 @@ export function WhiteTemplate(input: React_2.ComponentProps<"section">): React_2
 
 // Warnings were encountered during analysis:
 //
-// dist/types/components/composites/id-module.d.ts:28:5 - (ae-forgotten-export) The symbol "IDModuleProvider" needs to be exported by the entry point pagopa-ui.d.ts
+// dist/types/components/composites/identity-provider-picker.d.ts:34:5 - (ae-forgotten-export) The symbol "IdentityProviderPickerRow" needs to be exported by the entry point pagopa-ui.d.ts
 // dist/types/components/composites/payment-module.d.ts:18:5 - (ae-forgotten-export) The symbol "PaymentMetadataRow" needs to be exported by the entry point pagopa-ui.d.ts
 // dist/types/components/composites/payment-module.d.ts:20:5 - (ae-forgotten-export) The symbol "PaymentSuggestion" needs to be exported by the entry point pagopa-ui.d.ts
 // dist/types/components/composites/payment-module.d.ts:22:5 - (ae-forgotten-export) The symbol "PaymentPrice" needs to be exported by the entry point pagopa-ui.d.ts

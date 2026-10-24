@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, fn, userEvent, within } from "storybook/test"
 
-import { IDModule, type IDModuleProviderOption } from "@/components/composites/id-module"
+import { IdentityProviderPicker, type IdentityProviderPickerOption } from "@/components/composites/identity-provider-picker"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import arubaLogo from "./assets/idp-logos/aruba-id.png"
@@ -18,7 +18,7 @@ import teamsystemLogo from "./assets/idp-logos/teamsystem-id.png"
 import timLogo from "./assets/idp-logos/tim-id.png"
 import idModuleGuide from "./guides/id-module.md?raw"
 
-const providerOptions: readonly IDModuleProviderOption[] = [
+const providerOptions: readonly IdentityProviderPickerOption[] = [
   { id: "poste-id", label: "POSTE ID", logo: sourceLogo(posteLogo), href: "#poste-id" },
   { id: "infocert-id", label: "INFOCERT ID", logo: sourceLogo(infocertLogo), href: "#infocert-id" },
   { id: "aruba-id", label: "ARUBA ID", logo: sourceLogo(arubaLogo), href: "#aruba-id" },
@@ -71,8 +71,8 @@ function sourceLogo(src: string) {
 }
 
 const meta = {
-  title: "Components/Composites/IDModule",
-  component: IDModule,
+  title: "Components/Composites/IdentityProviderPicker",
+  component: IdentityProviderPicker,
   args: {
     title: "Scegli il tuo SPID",
     closeLabel: "Chiudi",
@@ -93,9 +93,10 @@ const meta = {
       description: {
         component: idModuleGuide,
       },
+      subtitle: "Figma: IDModule",
     },
   },
-} satisfies Meta<typeof IDModule>
+} satisfies Meta<typeof IdentityProviderPicker>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -140,7 +141,7 @@ export const SingleProvider: Story = {
   },
   render: () => (
     <div className="w-80 px-1">
-      <IDModule.Provider {...providerOptions[0]} />
+      <IdentityProviderPicker.Provider {...providerOptions[0]} />
     </div>
   ),
 }
