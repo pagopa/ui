@@ -179,6 +179,7 @@ export const SourceHierarchies: Story = {
 }
 
 export const SourceCase: Story = {
+  tags: ["live-region"],
   args: { color: "white", hierarchy: "primary", direction: "horizontal" },
   parameters: { layout: "fullscreen" },
   render: (args) => (
