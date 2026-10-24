@@ -2,8 +2,8 @@
   {
     "id": "50-1700-lg-desktop-desktop",
     "nodeId": "50:1700",
-    "export": "WhiteTemplate",
-    "storyId": "components-content-whitetemplate--fidelity",
+    "export": "PageSurface",
+    "storyId": "components-content-pagesurface--fidelity",
     "state": "LG Desktop",
     "device": "desktop",
     "width": 1200,
@@ -17,8 +17,8 @@
   {
     "id": "50-1700-md-tablet-tablet",
     "nodeId": "50:1700",
-    "export": "WhiteTemplate",
-    "storyId": "components-content-whitetemplate--fidelity",
+    "export": "PageSurface",
+    "storyId": "components-content-pagesurface--fidelity",
     "state": "MD Tablet",
     "device": "tablet",
     "width": 900,
@@ -32,8 +32,8 @@
   {
     "id": "50-1700-xs-mobile-mobile",
     "nodeId": "50:1700",
-    "export": "WhiteTemplate",
-    "storyId": "components-content-whitetemplate--fidelity",
+    "export": "PageSurface",
+    "storyId": "components-content-pagesurface--fidelity",
     "state": "XS Mobile",
     "device": "mobile",
     "width": 320,

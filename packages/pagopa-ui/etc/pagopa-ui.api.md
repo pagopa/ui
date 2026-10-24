@@ -740,6 +740,9 @@ export function Overlay(input: {
     className?: string;
 }): React_2.JSX.Element | null;
 
+// @public
+export function PageSurface(input: React_2.ComponentProps<"section">): React_2.JSX.Element;
+
 // @public (undocumented)
 export function Pagination(input: {
     currentPage: number;
@@ -1392,9 +1395,6 @@ export interface TooltipProps {
 
 // @public (undocumented)
 export function WaitingState(input: StateProps): JSX.Element;
-
-// @public (undocumented)
-export function WhiteTemplate(input: React_2.ComponentProps<"section">): React_2.JSX.Element;
 
 // Warnings were encountered during analysis:
 //

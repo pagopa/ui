@@ -1309,9 +1309,9 @@
     "50:1700": {
       "status": "implemented",
       "target": {
-        "module": "src/components/content/white-template.tsx",
-        "export": "WhiteTemplate",
-        "story": "apps/storybook/src/WhiteTemplate.stories.tsx",
+        "module": "src/components/content/page-surface.tsx",
+        "export": "PageSurface",
+        "story": "apps/storybook/src/PageSurface.stories.tsx",
         "storyExports": ["Playground", "Fidelity"]
       },
       "note": "Reviewed 2026-10-16 (device burn-down wave 5): the white page canvas — a section with the source root's own minHeight 650 over the white surface, growing with caller content; `SafeArea` owns the max width and gutters. One case per declared device, all responsive-clean and each with no layoutScope (the set draws one composition — an empty white canvas — at every device, so both scope probes report the composition unchanged and a scope declaration would be vacuous): mobile 50:1701 (case 50-1700-xs-mobile-mobile, 320x650), tablet 50:1707 (case 50-1700-md-tablet-tablet, 900x650 — of the set's two tablet frames the MD 900 is the frame nearest the midpoint of the captured pair 320/1200 and above the library's sm breakpoint) and desktop 50:1710 (case 50-1700-lg-desktop-desktop, 1200x650; the XL 1536 and XXL 1920 frames are the same canvas). The cases capture the `Fidelity` story, the source-exact empty surface (the `Playground` SafeArea paragraph stays under the 650 floor at every captured width, so the height is the source floor, not content-driven)."
