@@ -36,7 +36,7 @@
   "apps/storybook/src/Image.stories.tsx": "Components/Content/Image",
   "apps/storybook/src/InformativeDrawer.stories.tsx": "Components/Templates/Informative Drawer",
   "apps/storybook/src/InputChip.stories.tsx": "Components/Inputs/InputChip",
-  "apps/storybook/src/KOState.stories.tsx": "Components/Feedback/KOState",
+  "apps/storybook/src/ErrorState.stories.tsx": "Components/Feedback/ErrorState",
   "apps/storybook/src/ListItem.stories.tsx": "Components/Content/ListItem",
   "apps/storybook/src/LogIn.stories.tsx": "Components/Templates/Log In",
   "apps/storybook/src/LoghiPSP.stories.tsx": "Components/Content/LoghiPSP",

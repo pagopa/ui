@@ -482,6 +482,16 @@ export function EmptyState(input: Omit<StateProps, "extra"> & {
     icon?: ReactNode;
 }): JSX.Element;
 
+// @public
+export function ErrorState(input: Omit<StateProps, "extra"> & {
+    code?: string;
+    codeLabel?: string;
+    copyLabel?: (codeLabel: string) => string;
+    copiedLabel?: string;
+    copyErrorLabel?: string;
+    onCopy?: () => void;
+}): React_2.JSX.Element;
+
 // @public (undocumented)
 export function ErrorSummary(input: {
     errors: ErrorSummaryItem[];
@@ -657,16 +667,6 @@ export function InputChip(input: React_2.ComponentProps<"span"> & {
     onRemove?: () => void;
     removeLabel?: string;
     pointerRemove?: boolean;
-}): React_2.JSX.Element;
-
-// @public (undocumented)
-export function KOState(input: Omit<StateProps, "extra"> & {
-    code?: string;
-    codeLabel?: string;
-    copyLabel?: (codeLabel: string) => string;
-    copiedLabel?: string;
-    copyErrorLabel?: string;
-    onCopy?: () => void;
 }): React_2.JSX.Element;
 
 // @public (undocumented)
