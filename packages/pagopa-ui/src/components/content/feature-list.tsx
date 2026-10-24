@@ -27,7 +27,7 @@ function FeatureList({
 }) {
   const Link = useLinkComponent()
   return (
-    <ul data-slot="feature-list" className={cn("grid gap-4 sm:grid-cols-2", className)}>
+    <ul data-slot="feature-list" className={cn("grid gap-4 tablet:grid-cols-2", className)}>
       {features.map((feature, index) => (
         <li key={feature.title} data-slot="feature" className="flex gap-4">
           {feature.pictogram ? (

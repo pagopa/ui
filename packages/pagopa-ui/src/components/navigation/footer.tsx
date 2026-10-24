@@ -110,7 +110,7 @@ function Footer({
         // Source `Logged user=True, Device=Mobile` (1360:12618): a 32px gap
         // between the centred brand and the centred link stack, 16px apart,
         // with the source 20px rows (the 44px target is the invisible `::after`).
-        <div className="mx-auto flex max-w-7xl flex-col items-center gap-8 px-6 py-6 sm:flex-row sm:flex-nowrap sm:items-center sm:justify-between sm:gap-6">
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-8 px-6 py-6 tablet:flex-row tablet:flex-nowrap tablet:items-center tablet:justify-between tablet:gap-6">
           <Link
             href={homeHref}
             className="rounded-sm text-title-xs text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
@@ -119,7 +119,7 @@ function Footer({
           </Link>
           {/* Source desktop band: one row where a long label wraps inside its
               own item (the 900px page band is 44px tall for that reason). */}
-          <ul className="flex min-w-0 flex-col items-center gap-4 sm:flex-row sm:flex-nowrap sm:items-center sm:gap-6">
+          <ul className="flex min-w-0 flex-col items-center gap-4 tablet:flex-row tablet:flex-nowrap tablet:items-center tablet:gap-6">
             {links.map((link) => (
               <li key={link.href} className="min-w-0">
                 <FooterLinkRow link={link} />

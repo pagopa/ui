@@ -45,7 +45,7 @@ function Foundations() {
         {groupColors(colors).map(([group, tokens]) => (
           <div key={group} className="space-y-3">
             <h3 className="text-label-sb">{group}</h3>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-3 tablet:grid-cols-2 desktop:grid-cols-3">
               {tokens.map((token) => (
                 <div key={token.name} className="overflow-hidden rounded-lg border bg-card">
                   <div

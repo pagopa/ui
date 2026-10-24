@@ -52,13 +52,13 @@ function SideNav({
     <nav
       aria-label={title}
       data-condensed={condensed || undefined}
-      className={cn("w-full bg-background", condensed ? "sm:w-18" : "sm:w-75", className)}
+      className={cn("w-full bg-background", condensed ? "tablet:w-18" : "tablet:w-75", className)}
     >
       {/* Source `Condensed=True, Device=Mobile` (1519:2721): a 48px head with the
           menu icon, the section name and the bottom divider; the items below are
           full-bleed, as in the source's 320-wide panel. The condensed rail is a
           desktop composition: below `sm` the disclosure stays the same. */}
-      <details className="group sm:hidden">
+      <details className="group tablet:hidden">
         <summary className="flex min-h-12 cursor-pointer list-none items-center gap-2 border-b px-6 py-3 text-body-sb focus-visible:outline-2 focus-visible:outline-ring">
           <PagoPAIcon name="menu" aria-hidden="true" className="shrink-0" />
           <span className="min-w-0 flex-1 truncate">{title}</span>
@@ -69,7 +69,7 @@ function SideNav({
         </summary>
         <NavLinks items={items} profile={profile} />
       </details>
-      <div className="relative hidden sm:block sm:py-4">
+      <div className="relative hidden tablet:block tablet:py-4">
         <div
           className={cn(
             "group/nav relative z-30 bg-background",
