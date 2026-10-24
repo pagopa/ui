@@ -1,0 +1,82 @@
+name: Setup
+description: The toolchain, the registry, the dependencies and the Playwright browsers of a deep-check job.
+
+inputs:
+  token:
+    description: The GITHUB_TOKEN that authenticates the npm registry
+    required: true
+  browsers:
+    description: The Playwright browsers to install, space separated; empty installs none
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Setup pnpm
+      uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+      with:
+        node-version-file: .node-version
+        cache: pnpm
+
+    - name: Set the base and head SHAs for `nx affected`
+      uses: nrwl/nx-set-shas@e602fada7ad5987b0f7b1905e7a99ea1c661514c # v5.1.0
+
+    # DX packages come from GitHub Packages through pnpm's built-in `gh:`
+    # alias. Pass the token explicitly; the action writes authentication to a
+    # temporary npm config for this job.
+    - name: Setup npm registry
+      uses: pagopa/dx/actions/setup-npm-registry@main
+      with:
+        token: ${{ inputs.token }}
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile
+
+    # The browser cache key carries the browser list, so the whitespace of the
+    # input becomes the dash form the jobs used before this action existed.
+    - name: Resolve the Playwright version
+      id: playwright
+      if: inputs.browsers != ''
+      shell: bash
+      run: |
+        echo "version=$(pnpm --filter @pagopa/ui exec playwright --version | awk '{ print $2 }')" >> "$GITHUB_OUTPUT"
+        echo "browsers=$(echo "${{ inputs.browsers }}" | tr ' ' '-')" >> "$GITHUB_OUTPUT"
+
+    - name: Cache Playwright browsers
+      if: inputs.browsers != ''
+      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+      with:
+        path: ~/.cache/ms-playwright
+        key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}-${{ steps.playwright.outputs.browsers }}
+
+    # Playwright owns the dependency list, so its version decides the key: a
+    # new runner image only changes a few package versions, and apt fetches
+    # those few instead of the whole set.
+    - name: Cache the Debian packages of the Playwright dependencies
+      if: inputs.browsers != ''
+      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+      with:
+        path: ~/.cache/playwright-debs
+        key: ${{ runner.os }}-playwright-deps-${{ steps.playwright.outputs.version }}-${{ steps.playwright.outputs.browsers }}
+
+    # The browser cache holds the binaries alone: `--with-deps` also installs
+    # the Debian libraries, which live in /var/lib/dpkg of a runner that is
+    # thrown away, so apt downloaded them again on every job from a mirror
+    # that is intermittently throttled to tens of kB/s. The archives now
+    # round-trip through the cache instead; a miss fails in ten minutes
+    # rather than holding the job for forty-six.
+    - name: Install Playwright browsers
+      if: inputs.browsers != ''
+      timeout-minutes: 10
+      shell: bash
+      run: |
+        mkdir -p ~/.cache/playwright-debs
+        sudo cp -n ~/.cache/playwright-debs/*.deb /var/cache/apt/archives/ 2>/dev/null || true
+        pnpm --filter @pagopa/ui exec playwright install --with-deps ${{ inputs.browsers }}
+        sudo cp -n /var/cache/apt/archives/*.deb ~/.cache/playwright-debs/ 2>/dev/null || true
+        sudo chown -R "$USER" ~/.cache/playwright-debs
