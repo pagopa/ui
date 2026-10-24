@@ -207,7 +207,7 @@ export const RichSearchableChoice: Story = {
     await expect(input).toHaveValue("Milano")
     await userEvent.clear(input)
     await userEvent.type(input, "Ro")
-    const list = await screen.findByRole("listbox", { name: "Comune da cercare" })
+    const list = await screen.findByRole("listbox", { name: "Lista Comune da cercare" })
     const option = within(list).getByRole("option", { name: "Roma" })
     await waitFor(() => expect(within(option).getByText("Description")).toBeVisible())
     await expect(option).toHaveAccessibleDescription("Description Warning")

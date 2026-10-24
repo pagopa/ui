@@ -1579,12 +1579,12 @@ test("the packed artifact behaves as documented", async ({ browserName, context,
     day11,
     calendarSave,
     page.getByRole("textbox", { name: "Note della preferenza" }),
-    page.getByRole("button", { name: "Rimuovi Servizio facoltativo" }),
+    page.getByRole("button", { name: "Elimina Servizio facoltativo" }),
   ]) {
     await control.focus()
     await assertFocusPerimeter(control)
   }
-  const schoolPreference = page.getByRole("button", { name: "Rimuovi Servizi scolastici" })
+  const schoolPreference = page.getByRole("button", { name: "Elimina Servizi scolastici" })
   await schoolPreference.focus()
   await assertFocusPerimeter(schoolPreference)
   await schoolPreference.click()

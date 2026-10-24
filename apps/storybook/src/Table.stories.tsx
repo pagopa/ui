@@ -1,6 +1,6 @@
 import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { expect, userEvent, waitFor, within } from "storybook/test"
+import { expect, screen, userEvent, waitFor, within } from "storybook/test"
 import { Paperclip, Tag as TagIcon } from "lucide-react"
 
 import {
@@ -703,5 +703,96 @@ export const ConfigurableHeading: Story = {
     // level instead of a fixed h2.
     await expect(canvas.getByRole("heading", { level: 3, name: "Pagamenti" })).toBeVisible()
     await expect(canvas.queryByRole("heading", { level: 2 })).not.toBeInTheDocument()
+  },
+}
+
+const longCellValue =
+  "Comunicazione a valore legale con un valore molto lungo che non deve allargare la tabella"
+
+export const TruncatedCells: Story = {
+  // Reflow exemption: fixture pinned at the source width, not a product surface.
+  parameters: { a11yContract: { reflow: false } },
+  render: () => (
+    <div style={{ width: 852, maxWidth: "100%" }}>
+      <Table
+        caption="Notifiche troncate"
+        columns={[
+          { key: "reference", label: "Identificativo" },
+          {
+            key: "description",
+            label: "Descrizione",
+            truncate: true,
+            maxWidth: "9rem",
+          },
+        ]}
+        rows={[{ id: "one", reference: "123456789", description: longCellValue }]}
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const table = within(within(canvasElement).getByRole("table", { name: "Notifiche troncate" }))
+    const value = table.getByText(longCellValue)
+    await expect(getComputedStyle(value).textOverflow).toBe("ellipsis")
+    await expect(value.scrollWidth).toBeGreaterThan(value.clientWidth)
+
+    await userEvent.hover(value)
+    const hovered = await screen.findByRole("tooltip")
+    await expect(hovered).toHaveTextContent(longCellValue)
+    await userEvent.unhover(value)
+    await waitFor(() => expect(screen.queryByRole("tooltip")).not.toBeInTheDocument())
+
+    value.focus()
+    const focused = await screen.findByRole("tooltip")
+    await expect(focused).toHaveTextContent(longCellValue)
+  },
+}
+
+function SelectableNotifications() {
+  const [selected, setSelected] = React.useState<React.Key[]>([])
+  const rows = Array.from({ length: 10 }, (_, index) => ({
+    id: String(index + 1),
+    reference: `Notifica ${index + 1}`,
+    unread: index < 3,
+  }))
+  return (
+    <div style={{ width: 852, maxWidth: "100%" }}>
+      <Table
+        caption="Notifiche selezionabili"
+        columns={[{ key: "reference", label: "Notifiche" }]}
+        rows={rows}
+        selectable
+        selected={selected}
+        onSelectionChange={setSelected}
+        notification={(row) => row.unread}
+      />
+    </div>
+  )
+}
+
+export const Selection: Story = {
+  // Reflow exemption: fixture pinned at the source width, not a product surface.
+  parameters: { a11yContract: { reflow: false } },
+  render: () => <SelectableNotifications />,
+  play: async ({ canvasElement }) => {
+    const table = within(
+      within(canvasElement).getByRole("table", { name: "Notifiche selezionabili" }),
+    )
+    const header = table.getByRole("checkbox", { name: "Seleziona tutte le righe" })
+    await expect(header).not.toBeChecked()
+    await expect(table.getAllByRole("img", { name: "Notifica non letta" })).toHaveLength(3)
+
+    await userEvent.click(header)
+    await expect(header).toBeChecked()
+    for (const checkbox of table.getAllByRole("checkbox").slice(1)) {
+      await expect(checkbox).toBeChecked()
+    }
+    await expect(table.getAllByRole("row")[1]).toHaveAttribute("aria-selected", "true")
+
+    await userEvent.click(table.getByRole("checkbox", { name: "Seleziona Notifica 1" }))
+    await expect(header).toHaveAttribute("aria-checked", "mixed")
+    await expect(table.getAllByRole("row")[1]).toHaveAttribute("aria-selected", "false")
+
+    await userEvent.click(table.getByRole("checkbox", { name: "Seleziona Notifica 1" }))
+    await expect(header).toBeChecked()
   },
 }

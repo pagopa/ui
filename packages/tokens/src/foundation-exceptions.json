@@ -50,6 +50,13 @@
       "match": "font-normal",
       "nodeId": "2339:80916",
       "reason": "The source description is 18px regular; the captured library exposes no regular 18px text style (Body Big is semibold only). Requested to design."
+    },
+    {
+      "rule": "off-scale-spacing",
+      "file": "src/components/inputs/autocomplete.tsx",
+      "match": "pl-11",
+      "nodeId": "824:8839",
+      "reason": "Derived composite: the source insets the value 12px after a 24px leading icon frame with an 8px gap (12 + 24 + 8 = 44), the same field geometry as TextField 529:6102. No 44px spacing exists in the source; requested to design."
     }
   ]
 }

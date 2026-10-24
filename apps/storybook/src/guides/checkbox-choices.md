@@ -3,7 +3,11 @@ from an associated label. Its glyph keeps the source size; the pointer target is
 an invisible expansion on that box, and the keyboard focus is the shared solid
 perimeter. The source set (`194:3654`) is the same control in its `Status`
 values: `Default` is unchecked, `Selected` is checked and `Focused` is the
-keyboard-focused unchecked state.
+keyboard-focused unchecked state. Focus uses the shared blue perimeter; the
+source red glyph is treated as the error state, exposed through `aria-invalid`,
+because red on plain focus would read as a validation error. The open question
+is recorded in
+[2026-10-24-checkbox-focus-state.md](../../../../docs/design-requests/2026-10-24-checkbox-focus-state.md).
 
 `CheckboxField` covers Figma nodes `194:3661` (plain control) and `194:3763`
 (one rich option), not a group. The option row is the source row plus its

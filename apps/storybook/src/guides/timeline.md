@@ -27,7 +27,10 @@ container query `@max-[27rem]/timeline`, so a timeline inside a narrow panel get
 the drawer composition without the caller choosing a device.
 
 The status card keeps the source 16px radius, the 1px border over the soft fill,
-the 24px status glyph, the 4px message gap and the 14/20 description. `icon`
+the 24px status glyph, the 4px message gap and the 14/20 description. The gap
+from the title to the description is 4px; when the description is absent, the
+gap from the title to the touchpoint group is 12px. The plain composition mirrors
+the same rhythm. `icon`
 overrides the status glyph; `correction` is the caller's tag. Every rendered and
 announced string is consumer-owned: the list name defaults to `Cronologia` and is
 replaceable through `label`, the titles, descriptions, timestamps and touchpoint

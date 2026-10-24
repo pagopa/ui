@@ -148,7 +148,7 @@ function MultiSelectField({
                         <InputChip
                           key={option.value}
                           data-slot="multi-select-chip"
-                          removeLabel={`Rimuovi ${option.label}`}
+                          removeLabel={`Elimina ${option.label}`}
                           pointerRemove
                           onRemove={() => removeValue(option.value)}
                         >

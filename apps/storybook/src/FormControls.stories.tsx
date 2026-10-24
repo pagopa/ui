@@ -148,8 +148,8 @@ export const PaintedKeyboardPerimeters: Story = {
       canvas.getByRole("checkbox", { name: "Consenso alle comunicazioni" }),
       canvas.getByRole("radio", { name: "Email di conferma" }),
       canvas.getByRole("switch", { name: "Aggiornamenti della pratica" }),
-      canvas.getByRole("button", { name: "Rimuovi Servizi scolastici" }),
-      canvas.getByRole("button", { name: "Rimuovi Servizio facoltativo" }),
+      canvas.getByRole("button", { name: "Elimina Servizi scolastici" }),
+      canvas.getByRole("button", { name: "Elimina Servizio facoltativo" }),
       canvas.getByRole("button", { name: /11 maggio 2026/i }),
       canvas.getByRole("button", { name: "Conferma preferenze" }),
     ]

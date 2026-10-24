@@ -2,6 +2,7 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 
 import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
+import { Checkbox } from "@/components/primitives/checkbox"
 import { Heading, type HeadingTag } from "@/components/primitives/heading"
 import {
   Empty,
@@ -19,6 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/primitives/table"
+import { Tooltip } from "@/components/overlays/tooltip"
 
 import { TableHeaderField, type TableSort } from "./table-header-field"
 import { TableListField } from "./table-list-field"
@@ -28,7 +30,17 @@ export interface TableColumn<Row> {
   label: string
   sort?: TableSort
   render?: (value: Row[keyof Row], row: Row) => React.ReactNode
+  /**
+   * Truncates the cell value with an ellipsis and exposes the full value in a
+   * tooltip on hover and keyboard focus. The source asks the designer to choose
+   * which columns truncate (thread 1664533717).
+   */
+  truncate?: boolean
+  /** Maximum width of a truncated cell, as a CSS length. @default "16rem" */
+  maxWidth?: string
 }
+
+const defaultTruncatedWidth = "16rem"
 
 function Table<Row extends { id: React.Key }>({
   caption,
@@ -40,6 +52,14 @@ function Table<Row extends { id: React.Key }>({
   columns,
   rows,
   rowActions,
+  selectable = false,
+  selected,
+  defaultSelected,
+  onSelectionChange,
+  selectionLabel = "Seleziona tutte le righe",
+  selectionRowLabel,
+  notification,
+  notificationLabel = "Notifica non letta",
   pagination,
   actionsLabel = "Azioni",
   emptyLabel = "Nessun risultato",
@@ -55,6 +75,22 @@ function Table<Row extends { id: React.Key }>({
   columns: TableColumn<Row>[]
   rows: Row[]
   rowActions?: (row: Row) => React.ReactNode
+  /** Adds the select-all header checkbox and one checkbox per row. @default false */
+  selectable?: boolean
+  /** Controlled selection, by row id. */
+  selected?: React.Key[]
+  /** Initial selection for the uncontrolled table. */
+  defaultSelected?: React.Key[]
+  /** Called with the next selection, in row order. */
+  onSelectionChange?: (selected: React.Key[]) => void
+  /** Accessible name of the select-all checkbox. @default "Seleziona tutte le righe" */
+  selectionLabel?: string
+  /** Accessible name of a row checkbox, from the row. @default "Seleziona {first cell}" */
+  selectionRowLabel?: (row: Row) => string
+  /** Marks a row with the source notification dot after its checkbox. */
+  notification?: (row: Row) => boolean
+  /** Accessible name of the notification dot. @default "Notifica non letta" */
+  notificationLabel?: string
   /** Announced name of the row-actions column. @default "Azioni" */
   actionsLabel?: string
   /** Announced text of an empty state with no visible copy. @default "Nessun risultato" */
@@ -68,7 +104,31 @@ function Table<Row extends { id: React.Key }>({
 }) {
   const descriptionId = React.useId()
   const tableId = React.useId()
+  const [internalSelected, setInternalSelected] = React.useState<React.Key[]>(defaultSelected ?? [])
   const hasSorting = columns.some((column) => column.sort)
+  const selectedIds = selected ?? internalSelected
+  const selectedSet = new Set(selectedIds)
+  const allSelected = rows.length > 0 && rows.every((row) => selectedSet.has(row.id))
+  const someSelected = rows.some((row) => selectedSet.has(row.id))
+  const showHeaderOnMobile = hasSorting || selectable
+
+  const updateSelection = (next: React.Key[]) => {
+    const rowOrder = new Map(rows.map((row, index) => [row.id, index]))
+    const ordered = [...new Set(next)].sort(
+      (a, b) =>
+        (rowOrder.get(a) ?? Number.MAX_SAFE_INTEGER) - (rowOrder.get(b) ?? Number.MAX_SAFE_INTEGER),
+    )
+    if (selected === undefined) setInternalSelected(ordered)
+    onSelectionChange?.(ordered)
+  }
+
+  const rowLabel = (row: Row) => {
+    if (selectionRowLabel) return selectionRowLabel(row)
+    const first = columns[0] ? row[columns[0].key] : undefined
+    const text = first == null ? "" : String(first)
+    return text ? `Seleziona ${text}` : "Seleziona riga"
+  }
+
   return (
     <section
       aria-label={caption}
@@ -126,12 +186,33 @@ function Table<Row extends { id: React.Key }>({
           <TableCaption className={cn(captionHidden && "sr-only")}>{caption}</TableCaption>
           <TableHeader
             role="rowgroup"
-            className={cn(hasSorting ? "@max-narrow/table:block" : "@max-narrow/table:sr-only")}
+            className={cn(
+              showHeaderOnMobile ? "@max-narrow/table:block" : "@max-narrow/table:sr-only",
+            )}
           >
             <TableRow
               role="row"
-              className={cn(hasSorting && "@max-narrow/table:flex @max-narrow/table:flex-wrap")}
+              className={cn(
+                showHeaderOnMobile && "@max-narrow/table:flex @max-narrow/table:flex-wrap",
+              )}
             >
+              {selectable ? (
+                <TableHeaderField
+                  id={`${tableId}-selection`}
+                  role="columnheader"
+                  scope="col"
+                  className="pr-0"
+                >
+                  <Checkbox
+                    checked={allSelected}
+                    indeterminate={someSelected && !allSelected}
+                    onCheckedChange={(checked) =>
+                      updateSelection(checked ? rows.map((row) => row.id) : [])
+                    }
+                    aria-label={selectionLabel}
+                  />
+                </TableHeaderField>
+              ) : null}
               {columns.map((column, index) => (
                 <TableHeaderField
                   key={column.key}
@@ -140,7 +221,9 @@ function Table<Row extends { id: React.Key }>({
                   scope="col"
                   aria-label={column.label}
                   sort={column.sort}
-                  className={cn(hasSorting && !column.sort && "@max-narrow/table:sr-only")}
+                  className={cn(
+                    !column.sort && (hasSorting || selectable) && "@max-narrow/table:sr-only",
+                  )}
                 >
                   {column.label}
                 </TableHeaderField>
@@ -158,35 +241,94 @@ function Table<Row extends { id: React.Key }>({
             </TableRow>
           </TableHeader>
           <TableBody role="rowgroup" className="@max-narrow/table:block">
-            {rows.map((row) => (
-              <TableRow
-                key={row.id}
-                role="row"
-                className="@max-narrow/table:flex @max-narrow/table:flex-col @max-narrow/table:gap-0 @max-narrow/table:py-2"
-              >
-                {columns.map((column, index) => (
-                  <TableListField
-                    key={column.key}
-                    headers={`${tableId}-column-${index}`}
-                    role="cell"
-                    label={column.label}
-                    className="@max-narrow/table:block"
-                  >
-                    {column.render ? column.render(row[column.key], row) : String(row[column.key])}
-                  </TableListField>
-                ))}
-                {rowActions ? (
-                  <TableCell
-                    role="cell"
-                    data-actions
-                    headers={`${tableId}-actions`}
-                    className="@max-narrow/table:mt-2 @max-narrow/table:block"
-                  >
-                    <div className="flex items-center justify-end gap-2">{rowActions(row)}</div>
-                  </TableCell>
-                ) : null}
-              </TableRow>
-            ))}
+            {rows.map((row) => {
+              const isSelected = selectedSet.has(row.id)
+              return (
+                <TableRow
+                  key={row.id}
+                  role="row"
+                  aria-selected={selectable ? isSelected : undefined}
+                  data-state={isSelected ? "selected" : undefined}
+                  className="@max-narrow/table:flex @max-narrow/table:flex-col @max-narrow/table:gap-0 @max-narrow/table:py-2"
+                >
+                  {selectable ? (
+                    <TableCell
+                      role="cell"
+                      className="@max-narrow/table:block @max-narrow/table:pb-2"
+                      headers={`${tableId}-selection`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Checkbox
+                          checked={isSelected}
+                          onCheckedChange={(checked) =>
+                            updateSelection(
+                              checked
+                                ? [...selectedIds, row.id]
+                                : selectedIds.filter((id) => id !== row.id),
+                            )
+                          }
+                          aria-label={rowLabel(row)}
+                        />
+                        {notification?.(row) ? (
+                          <span
+                            role="img"
+                            aria-label={notificationLabel}
+                            className="size-2 shrink-0 rounded-full bg-primary"
+                          />
+                        ) : null}
+                      </div>
+                    </TableCell>
+                  ) : null}
+                  {columns.map((column, index) => {
+                    const value = column.render
+                      ? column.render(row[column.key], row)
+                      : String(row[column.key])
+                    return (
+                      <TableListField
+                        key={column.key}
+                        headers={`${tableId}-column-${index}`}
+                        role="cell"
+                        label={column.label}
+                        className="@max-narrow/table:block"
+                      >
+                        {column.truncate ? (
+                          <Tooltip
+                            showClose={false}
+                            trigger={
+                              // The truncated value is the tooltip trigger, so
+                              // it must take keyboard focus to reveal the full
+                              // text; otherwise the affordance is mouse-only.
+                              // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- focus reveals the full value
+                              <span
+                                tabIndex={0}
+                                className="block max-w-full truncate outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                                style={{ maxWidth: column.maxWidth ?? defaultTruncatedWidth }}
+                              >
+                                {value}
+                              </span>
+                            }
+                          >
+                            {value}
+                          </Tooltip>
+                        ) : (
+                          value
+                        )}
+                      </TableListField>
+                    )
+                  })}
+                  {rowActions ? (
+                    <TableCell
+                      role="cell"
+                      data-actions
+                      headers={`${tableId}-actions`}
+                      className="@max-narrow/table:mt-2 @max-narrow/table:block"
+                    >
+                      <div className="flex items-center justify-end gap-2">{rowActions(row)}</div>
+                    </TableCell>
+                  ) : null}
+                </TableRow>
+              )
+            })}
           </TableBody>
         </TablePrimitive>
       )}

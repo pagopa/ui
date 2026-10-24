@@ -31,7 +31,7 @@ function Checkbox({
         if (!details.isCanceled && checked === undefined) setUncontrolledChecked(next)
       }}
       className={cn(
-        "group/checkbox peer relative flex size-6 shrink-0 items-center justify-center text-foreground outline-none after:absolute after:-inset-2.5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring focus:data-unchecked:text-destructive data-disabled:cursor-not-allowed data-disabled:opacity-50 aria-invalid:text-destructive data-checked:text-primary aria-invalid:data-checked:text-primary",
+        "group/checkbox peer relative flex size-6 shrink-0 items-center justify-center text-foreground outline-none after:absolute after:-inset-2.5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring data-disabled:cursor-not-allowed data-disabled:opacity-50 aria-invalid:text-destructive data-checked:text-primary aria-invalid:data-checked:text-primary",
         className,
       )}
       {...props}
@@ -39,11 +39,16 @@ function Checkbox({
       <PagoPAIcon
         name="check_box"
         variant="unchecked"
-        className="group-data-checked/checkbox:hidden"
+        className="group-data-checked/checkbox:hidden group-data-indeterminate/checkbox:hidden"
+      />
+      <PagoPAIcon
+        name="check_box"
+        variant="indeterminate"
+        className="hidden group-data-indeterminate/checkbox:block"
       />
       <CheckboxPrimitive.Indicator
         data-slot="checkbox-indicator"
-        className="flex items-center justify-center data-unchecked:hidden"
+        className="flex items-center justify-center data-unchecked:hidden data-indeterminate:hidden"
       >
         <PagoPAIcon name="check_box" variant="checked" />
       </CheckboxPrimitive.Indicator>

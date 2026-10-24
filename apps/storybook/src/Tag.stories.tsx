@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import { expect, within } from "storybook/test"
 
 import { Tag } from "@/components/content/tag"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
@@ -13,6 +14,7 @@ const meta = {
       options: ["default", "info", "warning", "success", "error", "counter"],
     },
     icon: { control: false },
+    iconLabel: { control: "text" },
     children: { control: "text" },
   },
   parameters: {
@@ -20,7 +22,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Non-interactive status label: an optional status icon and uppercase copy from the generated tokens, with the shared height and radius steps instead of one-off values. `counter` shows the numeric count without an icon.",
+          "Non-interactive status label: an optional status icon and uppercase copy from the generated tokens, with the shared height and radius steps instead of one-off values. `counter` shows the numeric count without an icon. The default status artwork is decorative; `iconLabel` exposes it to assistive technology, for example `Stato: avviso`.",
       },
     },
   },
@@ -67,4 +69,37 @@ export const Fidelity: Story = {
       ))}
     </div>
   ),
+}
+
+export const NamedStatusIcon: Story = {
+  render: () => (
+    <div className="flex flex-wrap gap-2">
+      <Tag status="warning" iconLabel="Stato: avviso">
+        warning
+      </Tag>
+      <Tag status="success" iconLabel="Stato confermato">
+        success
+      </Tag>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByRole("img", { name: "Stato: avviso" })).toBeVisible()
+    await expect(canvas.getByRole("img", { name: "Stato confermato" })).toBeVisible()
+  },
+}
+
+export const CounterHasNoIcon: Story = {
+  render: () => (
+    <div className="flex flex-wrap gap-2">
+      <Tag status="counter" iconLabel="Stato: nuova notifica">
+        +1
+      </Tag>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.queryByRole("img")).not.toBeInTheDocument()
+    await expect(canvas.getByText("+1")).toBeVisible()
+  },
 }

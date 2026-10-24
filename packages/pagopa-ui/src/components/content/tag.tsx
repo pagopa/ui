@@ -5,17 +5,21 @@ import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 type TagStatus = "default" | "info" | "warning" | "success" | "error" | "counter"
 
-const statusIcons: Record<Exclude<TagStatus, "counter">, React.ReactElement> = {
-  default: <PagoPAIcon name="kid_star" size={16} className="text-primary" />,
-  info: <PagoPAIcon name="info" filled size={16} className="text-info" />,
-  warning: <PagoPAIcon name="warning" size={16} className="text-warning" />,
-  success: <PagoPAIcon name="check_circle" size={16} className="text-success" />,
-  error: <PagoPAIcon name="report" size={16} className="text-destructive" />,
+const statusIcons: Record<
+  Exclude<TagStatus, "counter">,
+  { name: React.ComponentProps<typeof PagoPAIcon>["name"]; filled?: boolean; className: string }
+> = {
+  default: { name: "kid_star", className: "text-primary" },
+  info: { name: "info", filled: true, className: "text-info" },
+  warning: { name: "warning", className: "text-warning" },
+  success: { name: "check_circle", className: "text-success" },
+  error: { name: "report", className: "text-destructive" },
 }
 
 function Tag({
   status = "default",
   icon,
+  iconLabel,
   children,
   className,
   ...props
@@ -24,7 +28,15 @@ function Tag({
   status?: TagStatus
   /** Optional caller icon replacing the status artwork. */
   icon?: React.ReactNode
+  /**
+   * Accessible name of the default status artwork. When omitted the artwork is
+   * decorative, as in the source. The thread suggests `Stato: informativo`,
+   * `Stato: avviso`, `Stato confermato`, `Stato: errore` and `Stato: standard`;
+   * the caller owns the language.
+   */
+  iconLabel?: string
 }) {
+  const artwork = status === "counter" ? undefined : statusIcons[status]
   return (
     <span
       {...props}
@@ -35,7 +47,18 @@ function Tag({
         className,
       )}
     >
-      {status === "counter" ? null : (icon ?? statusIcons[status])}
+      {artwork
+        ? (icon ?? (
+            <PagoPAIcon
+              name={artwork.name}
+              filled={artwork.filled}
+              size={16}
+              className={artwork.className}
+              decorative={!iconLabel}
+              label={iconLabel}
+            />
+          ))
+        : null}
       <span data-slot="tag-label">{children}</span>
     </span>
   )

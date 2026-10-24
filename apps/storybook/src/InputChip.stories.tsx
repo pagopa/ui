@@ -59,7 +59,7 @@ export const Removable: Story = {
   args: { onRemove: fn() },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    const remove = canvas.getByRole("button", { name: "Rimuovi Servizi scolastici" })
+    const remove = canvas.getByRole("button", { name: "Elimina Servizi scolastici" })
     const hitTarget = window.getComputedStyle(remove, "::after")
     await expect(hitTarget.width).toBe("44px")
     await expect(hitTarget.height).toBe("44px")

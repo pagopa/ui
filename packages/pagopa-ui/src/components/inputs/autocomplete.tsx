@@ -15,6 +15,11 @@ type AutocompleteOption = ItemRowContent & {
   disabled?: boolean
 }
 
+const defaultLeadingIcon = <PagoPAIcon name="account_balance" size={24} aria-hidden="true" />
+
+const defaultListLabel = (label: string) => (label ? `Lista ${label}` : "Lista")
+const defaultSelectedLabel = (values: string[]) => `hai selezionato ${values.join(", ")}`
+
 function Autocomplete({
   id,
   label,
@@ -30,6 +35,14 @@ function Autocomplete({
   disabled,
   name,
   emptyLabel = "Nessun risultato",
+  leadingIcon = defaultLeadingIcon,
+  clearLabel = "Svuota campo",
+  openLabel = "apri lista",
+  closeLabel = "chiudi lista",
+  listLabel = defaultListLabel,
+  selectedLabel = defaultSelectedLabel,
+  loading = false,
+  loadingLabel = "Caricamento lista in corso",
   className,
 }: FieldStateProps & {
   id?: string
@@ -40,11 +53,30 @@ function Autocomplete({
   name?: string
   /** Announced and shown text when no option matches. @default "Nessun risultato" */
   emptyLabel?: string
+  /** Decorative artwork before the value; pass `null` to remove it. */
+  leadingIcon?: React.ReactNode
+  /** Accessible name of the clear control. @default "Svuota campo" */
+  clearLabel?: string
+  /** Accessible name of the trigger that opens the list. @default "apri lista" */
+  openLabel?: string
+  /** Accessible name of the trigger that closes the list. @default "chiudi lista" */
+  closeLabel?: string
+  /** Accessible name of the list, from the field label. @default "Lista {label}" */
+  listLabel?: (label: string) => string
+  /** Announcement after a choice, from the selected values. @default "hai selezionato {values}" */
+  selectedLabel?: (values: string[]) => string
+  /** Announces that the options are being loaded. @default false */
+  loading?: boolean
+  /** Announced loading text. @default "Caricamento lista in corso" */
+  loadingLabel?: string
   className?: string
 }) {
   const ids = useFieldIds(id)
   const inputRef = React.useRef<HTMLInputElement>(null)
   const [internalValue, setInternalValue] = React.useState<string | null>(defaultValue || null)
+  const [inputValue, setInputValue] = React.useState(defaultValue)
+  const [open, setOpen] = React.useState(false)
+  const [announcement, setAnnouncement] = React.useState("")
   useFormReset(inputRef, () => {
     if (value === undefined) setInternalValue(defaultValue || null)
   })
@@ -56,29 +88,50 @@ function Autocomplete({
       }),
     [options],
   )
+  const currentValue = value === undefined ? internalValue : value || null
+  const filled = Boolean(currentValue || inputValue)
+  const labelText = typeof label === "string" ? label : ""
+  const listName = listLabel(labelText)
+  const statusText = loading ? loadingLabel : announcement
 
   return (
     <Combobox.Root
       items={items}
       name={name}
-      value={value === undefined ? internalValue : value || null}
+      value={currentValue}
       required={required}
       disabled={disabled}
       autoComplete="off"
+      onOpenChange={setOpen}
+      onInputValueChange={(next) => setInputValue(next)}
       onValueChange={(next) => {
         if (value === undefined) setInternalValue(next)
         onValueChange?.(next ?? "")
+        const option = options.find((entry) => entry.value === next)
+        const announced = option && typeof option.label === "string" ? option.label : next
+        setAnnouncement(announced ? selectedLabel([announced]) : "")
       }}
     >
       <div className={cn("grid gap-2", className)}>
         <Combobox.InputGroup className="relative">
+          {leadingIcon ? (
+            <span
+              aria-hidden="true"
+              data-slot="autocomplete-leading-icon"
+              className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-choice-icon [&_svg]:size-6"
+            >
+              {leadingIcon}
+            </span>
+          ) : null}
           <Combobox.Input
             ref={inputRef}
             id={ids.controlId}
             placeholder=" "
             aria-invalid={Boolean(error) || undefined}
             aria-describedby={describedBy(ids, { description, error, success })}
-            render={<Input className="peer py-3 pr-10 text-label-sb" />}
+            render={
+              <Input className={cn("peer py-3 pr-10 text-label-sb", leadingIcon && "pl-11")} />
+            }
           />
           <FloatingFieldLabel
             id={`${ids.controlId}-label`}
@@ -86,14 +139,44 @@ function Autocomplete({
             label={label}
             required={required}
             requiredLabel={requiredLabel}
+            leadingIcon={Boolean(leadingIcon)}
           />
-          <PagoPAIcon
-            name="chevron"
-            variant="down"
-            size={24}
-            aria-hidden="true"
-            className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-foreground"
-          />
+          {disabled ? (
+            <PagoPAIcon
+              name="chevron"
+              variant="down"
+              size={24}
+              aria-hidden="true"
+              className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-foreground"
+            />
+          ) : filled ? (
+            // The source `Filled=True` state draws `close_small` instead of the
+            // arrow (824:8863), and the disabled filled state keeps the arrow
+            // (824:8886). Base UI keeps the control mounted only while there is
+            // text, so an empty field never shows it.
+            <Combobox.Clear
+              aria-label={clearLabel}
+              tabIndex={0}
+              className="absolute top-1/2 right-3 grid size-6 -translate-y-1/2 place-items-center rounded-sm text-foreground outline-none after:absolute after:-inset-2.5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-1 focus-visible:outline-ring"
+            >
+              <PagoPAIcon name="close" size={24} variant="small" aria-hidden="true" />
+            </Combobox.Clear>
+          ) : (
+            <Combobox.Trigger
+              aria-label={open ? closeLabel : openLabel}
+              className="absolute top-1/2 right-3 grid size-6 -translate-y-1/2 place-items-center rounded-sm text-foreground outline-none after:absolute after:-inset-2.5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-1 focus-visible:outline-ring"
+            >
+              <PagoPAIcon
+                name="chevron"
+                variant={open ? "up" : "down"}
+                size={24}
+                aria-hidden="true"
+              />
+            </Combobox.Trigger>
+          )}
+          {/* The live region stays mounted so the loading and selection
+              announcements are not lost to a remount. */}
+          <Combobox.Status className="sr-only">{statusText}</Combobox.Status>
         </Combobox.InputGroup>
         {/* Source helper inset: 14px (824:8846 `.HelperText` pad=14/1/14). */}
         <div className="px-3.5">
@@ -111,10 +194,11 @@ function Autocomplete({
               data-slot="combobox-empty"
               className="text-label-mini text-muted-foreground"
             >
-              <span className="block px-3 py-3">{emptyLabel}</span>
+              <span className="block px-3 py-3">{loading ? loadingLabel : emptyLabel}</span>
             </Combobox.Empty>
             <Combobox.List
-              aria-labelledby={`${ids.controlId}-label`}
+              aria-label={listName}
+              aria-busy={loading || undefined}
               className={cn(
                 "max-h-60 overflow-auto overscroll-contain",
                 options.some((option) => option.description || option.leading || option.chip)

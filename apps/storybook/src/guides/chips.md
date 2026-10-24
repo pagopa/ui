@@ -3,7 +3,8 @@
 `appearance` (`solid` by default or `outline`). Use `size="compact"` for the
 source's static chips. The default minimum height and the optional native remove
 action are accessibility adaptations; `primary` remains a library extension.
-`removeLabel` customizes the removal button name.
+`removeLabel` customizes the removal button name; the default is
+`Elimina {label}`.
 
 The compact source frame maps to the existing height, padding and radius tokens;
 label widths remain content-driven instead of compensating for font metrics. With

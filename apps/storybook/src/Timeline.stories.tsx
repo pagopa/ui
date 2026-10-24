@@ -291,3 +291,58 @@ export const SourceCase: Story = {
     ],
   },
 }
+
+export const Spacing: Story = {
+  // Reflow exemption: fixture pinned at the source width, not a product surface.
+  parameters: { layout: "fullscreen", a11yContract: { reflow: false } },
+  args: {
+    label: "Spaziatura della timeline",
+    items: [
+      {
+        id: "card-with-description",
+        title: "Scheda con descrizione",
+        description: "Descrizione della scheda.",
+        status: "default",
+        touchpoints: [{ id: "card-a", label: "Primo touchpoint" }],
+      },
+      {
+        id: "card-without-description",
+        title: "Scheda senza descrizione",
+        status: "default",
+        touchpoints: [{ id: "card-b", label: "Secondo touchpoint" }],
+      },
+      {
+        id: "plain-with-description",
+        title: "Testo con descrizione",
+        description: "Descrizione del testo.",
+        touchpoints: [{ id: "plain-a", label: "Terzo touchpoint" }],
+      },
+      {
+        id: "plain-without-description",
+        title: "Testo senza descrizione",
+        touchpoints: [{ id: "plain-b", label: "Quarto touchpoint" }],
+      },
+    ],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const gap = (from: HTMLElement, to: HTMLElement) =>
+      to.getBoundingClientRect().top - from.getBoundingClientRect().bottom
+
+    const cardTitle = canvas.getByText("Scheda con descrizione")
+    const cardDescription = canvas.getByText("Descrizione della scheda.", { selector: "p" })
+    await expect(Math.round(gap(cardTitle, cardDescription))).toBe(4)
+
+    const cardBareTitle = canvas.getByText("Scheda senza descrizione")
+    const cardFirstTouchpoint = canvas.getByRole("button", { name: /Secondo touchpoint/ })
+    await expect(Math.round(gap(cardBareTitle, cardFirstTouchpoint))).toBe(12)
+
+    const plainTitle = canvas.getByText("Testo con descrizione")
+    const plainDescription = canvas.getByText("Descrizione del testo.", { selector: "p" })
+    await expect(Math.round(gap(plainTitle, plainDescription))).toBe(4)
+
+    const plainBareTitle = canvas.getByText("Testo senza descrizione")
+    const plainLastTouchpoint = canvas.getByRole("button", { name: /Quarto touchpoint/ })
+    await expect(Math.round(gap(plainBareTitle, plainLastTouchpoint))).toBe(12)
+  },
+}

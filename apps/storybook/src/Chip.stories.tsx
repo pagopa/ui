@@ -182,7 +182,7 @@ export const ChipRemovalAction: Story = {
     const canvas = within(canvasElement)
     const form = canvas.getByRole("form", { name: "Rimozione chip" })
     const chip = within(form).getByTestId("removable-chip")
-    const remove = within(chip).getByRole("button", { name: "Rimuovi Roma" })
+    const remove = within(chip).getByRole("button", { name: "Elimina Roma" })
 
     await expect(chip.dataset.variant).toBe("default")
     await expect(chip.dataset.appearance).toBe("solid")

@@ -36,6 +36,22 @@ its source height because the suffix steps down to the caption line box.
   while open and floats it only when a value is selected.
 - The autocomplete's empty live region adds no layout band above the results.
 
+## Autocomplete
+
+The source `Type=Default` field draws the decorative 24px `account_balance` art at
+the leading edge; `leadingIcon` keeps that default and accepts a caller's node
+(pass `null` to remove it). A filled enabled field shows the clear control and
+the disabled filled field keeps the arrow, as the source variants draw
+(`824:8863`, `824:8886`). The clear control keeps focus on the input after it
+empties the field.
+
+The announced strings are consumer-owned: `clearLabel` (`Svuota campo`),
+`openLabel`/`closeLabel` (`apri lista` / `chiudi lista`), `listLabel` from the
+field label (`Lista {label}`) and `selectedLabel` from the chosen value
+(`hai selezionato {value}`). `loading` announces `loadingLabel`
+(`Caricamento lista in corso`), marks the list busy and shows the same line in
+the empty slot. A removable chip uses `Elimina {value}` by default.
+
 ## States
 
 The source `Status` axis drives the field states: `Enabled` is the resting

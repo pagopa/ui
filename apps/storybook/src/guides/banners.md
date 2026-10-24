@@ -10,7 +10,8 @@
 Primary, Secondary and Tertiary hierarchies. `direction` selects the source
 horizontal or vertical composition; vertical is used for the mobile cases.
 Callers own the native action, optional Highlight Chip, source icon and Push
-pictogram. The source icon and pictogram are decorative; the native dismiss
+pictogram. `title` is optional, as the source `Title` boolean allows; a banner
+without a title renders no heading and takes its accessible name from `label`. The source icon and pictogram are decorative; the native dismiss
 button retains the source close glyph and has an accessible name.
 
 The source paddings, radius, accents, gaps and type scales map to the existing

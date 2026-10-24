@@ -27,6 +27,19 @@ removable chips retain a full-size action target. Ordered headers use the
 genuine source arrows; the neutral bidirectional glyph is an explicit semantic
 extension rather than pretending an unsorted column is descending.
 
+`TableColumn.truncate` constrains one column, draws the value with an ellipsis
+and opens the full value in a tooltip on hover and keyboard focus; `maxWidth`
+sets the column measure (16rem by default). This is the source rule: the designer
+chooses which cells truncate, and the full value stays reachable without a
+mouse-only `title`.
+
+The optional selection contract keeps the row selection controlled:
+`selectable`, `selected`/`defaultSelected`, `onSelectionChange` and
+`selectionRowLabel`. The first header cell is a select-all checkbox with the
+mixed state; each row gets a checkbox, the row carries `aria-selected`, and
+`notification` puts the source dot after the checkbox with a replaceable
+`notificationLabel`. The header checkbox is named by `selectionLabel`.
+
 ## TableList
 
 `TableList` is the container of the card-style list: a slot of `TableListItem`

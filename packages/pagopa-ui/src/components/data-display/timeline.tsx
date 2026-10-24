@@ -249,7 +249,10 @@ function Timeline({ items, label = "Cronologia" }: { items: TimelineItem[]; labe
                   </div>
                   {item.description ? <p className="text-label-mini">{item.description}</p> : null}
                   {item.touchpoints || item.recipients ? (
-                    <div className="mt-1">
+                    // 4px between title and description, 12px between the
+                    // title and the group when the description is absent
+                    // (thread 1924385837, Elena 2026-10-09).
+                    <div className={cn(item.description ? "mt-1" : "mt-2")}>
                       <TimelineTouchpoints
                         touchpoints={item.touchpoints}
                         recipients={item.recipients}
@@ -260,17 +263,21 @@ function Timeline({ items, label = "Cronologia" }: { items: TimelineItem[]; labe
               </div>
             ) : (
               <div className="grid min-w-0 flex-1 gap-2 py-6">
-                <div className="grid gap-0.5">
+                <div className="grid gap-1">
                   <span className="text-label-mini-sb text-foreground">{item.title}</span>
                   {item.description ? (
                     <p className="text-label-mini text-foreground">{item.description}</p>
                   ) : null}
                 </div>
                 {item.touchpoints || item.recipients ? (
-                  <TimelineTouchpoints
-                    touchpoints={item.touchpoints}
-                    recipients={item.recipients}
-                  />
+                  // 4px title/description and 12px title/group without one,
+                  // mirroring the status card composition.
+                  <div className={cn(!item.description && "mt-1")}>
+                    <TimelineTouchpoints
+                      touchpoints={item.touchpoints}
+                      recipients={item.recipients}
+                    />
+                  </div>
                 ) : null}
                 {item.children}
               </div>

@@ -121,6 +121,7 @@ const meta = {
     hierarchy: { control: "select", options: ["primary", "secondary", "tertiary"] },
     direction: { control: "select", options: ["horizontal", "vertical"] },
     titleAs: { control: "select", options: ["h2", "h3", "h4"] },
+    label: { control: "text" },
     actions: { control: false },
     chip: { control: false },
     icon: { control: false },
@@ -131,7 +132,7 @@ const meta = {
     design: { type: "figma", url: figmaEmbedUrl("261:6501") },
     docs: {
       description: {
-        component: `Contextual notice with the source hierarchy variants and the adaptive direction.\n\n${bannerGuide}`,
+        component: `Contextual notice with the source hierarchy variants and the adaptive direction. The title is optional, as in the source \`Title\` boolean; when it is absent, \`label\` names the status region.\n\n${bannerGuide}`,
       },
     },
   },
@@ -238,5 +239,36 @@ export const Dismissable: Story = {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByRole("button", { name: "Chiudi avviso" }))
     await expect(canvas.getByText("Avviso chiuso")).toBeVisible()
+  },
+}
+
+export const WithoutTitle: Story = {
+  // The source `Title` boolean allows a banner with no heading; the region is
+  // named by `label` instead of an empty heading.
+  render: () => (
+    <div className="w-213 max-w-full">
+      <Banner
+        color="white"
+        hierarchy="secondary"
+        label="Nuova comunicazione"
+        actions={
+          <Button type="button" variant="default" size="sm" className="min-h-12 px-6">
+            Scopri di più
+          </Button>
+        }
+      >
+        Da oggi puoi salvare i tuoi metodi di pagamento preferiti.
+      </Banner>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const banner = canvas.getByRole("status", { name: "Nuova comunicazione" })
+    await expect(banner).toBeVisible()
+    await expect(within(banner).queryByRole("heading")).not.toBeInTheDocument()
+    await expect(
+      within(banner).queryByRole("button", { name: "Chiudi avviso" }),
+    ).not.toBeInTheDocument()
+    await expect(within(banner).getByRole("button", { name: "Scopri di più" })).toBeVisible()
   },
 }

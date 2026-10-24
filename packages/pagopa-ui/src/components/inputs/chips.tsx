@@ -62,7 +62,7 @@ function Chip({
 }: React.ComponentProps<"span"> & {
   /** Adds the source remove control; without it the chip is a static label. */
   onRemove?: () => void
-  /** Accessible name of the remove control; defaults to `Rimuovi {label}`. */
+  /** Accessible name of the remove control; defaults to `Elimina {label}`. */
   removeLabel?: string
   /** Meaning of the chip. @default "default" */
   variant?: ChipVariant
@@ -96,7 +96,7 @@ function Chip({
           type="button"
           onClick={onRemove}
           aria-label={
-            removeLabel ?? (typeof children === "string" ? `Rimuovi ${children}` : "Rimuovi")
+            removeLabel ?? (typeof children === "string" ? `Elimina ${children}` : "Elimina")
           }
           className="relative -my-0.5 inline-grid size-6 shrink-0 place-items-center rounded-full text-current outline-none after:absolute after:-inset-2.5 hover:bg-foreground/10 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-1 focus-visible:outline-ring"
         >
@@ -117,7 +117,7 @@ function InputChip({
 }: React.ComponentProps<"span"> & {
   /** Removes the chip; with `pointerRemove` it is the pointer-only control. */
   onRemove?: () => void
-  /** Accessible name of the remove button; defaults to `Rimuovi {label}`. */
+  /** Accessible name of the remove button; defaults to `Elimina {label}`. */
   removeLabel?: string
   /**
    * Removes on pointer only, without a nested `<button>`: the control for
@@ -141,7 +141,7 @@ function InputChip({
       {onRemove && !pointerRemove ? (
         <button
           type="button"
-          aria-label={removeLabel ?? (label ? `Rimuovi ${label}` : "Rimuovi")}
+          aria-label={removeLabel ?? (label ? `Elimina ${label}` : "Elimina")}
           onClick={onRemove}
           className="relative grid size-6 shrink-0 place-items-center rounded-full text-primary after:absolute after:-inset-2.5 hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring"
         >

@@ -86,10 +86,31 @@ export const SourceFocused: Story = {
     const checkbox = within(canvasElement).getByRole("checkbox", { name: "Consenso" })
     await userEvent.tab()
     await expect(checkbox).toHaveFocus()
-    await expect(getComputedStyle(checkbox).color).toBe("rgb(209, 51, 51)")
+    // Focus alone is not an error: the red belongs to `aria-invalid` only.
+    await expect(getComputedStyle(checkbox).color).not.toBe("rgb(209, 51, 51)")
     const focus = getComputedStyle(checkbox)
     await expect(focus.outlineStyle).toBe("solid")
     await expect(Number.parseFloat(focus.outlineWidth)).toBeGreaterThanOrEqual(2)
     await expect(focus.outlineColor).toBe("rgb(11, 62, 227)")
+  },
+}
+
+export const Invalid: Story = {
+  tags: ["color-pinned"],
+  render: () => <Checkbox aria-label="Consenso" aria-invalid="true" />,
+  play: async ({ canvasElement }) => {
+    const checkbox = within(canvasElement).getByRole("checkbox", { name: "Consenso" })
+    await expect(getComputedStyle(checkbox).color).toBe("rgb(209, 51, 51)")
+    await userEvent.click(checkbox)
+    await expect(checkbox).toBeChecked()
+    await expect(getComputedStyle(checkbox).color).toBe("rgb(11, 62, 227)")
+  },
+}
+
+export const Indeterminate: Story = {
+  render: () => <Checkbox aria-label="Alcune righe" indeterminate />,
+  play: async ({ canvasElement }) => {
+    const checkbox = within(canvasElement).getByRole("checkbox", { name: "Alcune righe" })
+    await expect(checkbox).toHaveAttribute("aria-checked", "mixed")
   },
 }

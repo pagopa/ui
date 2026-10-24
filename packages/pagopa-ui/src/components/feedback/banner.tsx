@@ -13,25 +13,12 @@ const bannerColors: Record<BannerColor, string> = {
   grey: "border-border bg-muted",
 }
 
-function Banner({
-  color = "white",
-  hierarchy = "secondary",
-  direction = "horizontal",
-  title,
-  children,
-  actions,
-  chip,
-  icon,
-  pictogram,
-  onDismiss,
-  titleAs: Title = "h2",
-  dismissLabel = "Chiudi avviso",
-  className,
-}: {
+interface BannerBaseProps {
   color?: BannerColor
   hierarchy?: BannerHierarchy
   direction?: BannerDirection
-  title: React.ReactNode
+  /** Optional heading; when absent, `label` names the banner. */
+  title?: React.ReactNode
   children?: React.ReactNode
   actions?: React.ReactNode
   /** Optional Chip slot (source Primary hierarchy). */
@@ -45,7 +32,38 @@ function Banner({
   /** Accessible name of the dismiss control. @default "Chiudi avviso" */
   dismissLabel?: string
   className?: string
-}) {
+}
+
+type BannerProps = BannerBaseProps &
+  (
+    | {
+        title: React.ReactNode
+        /** Accessible name; required only when the banner has no title. */
+        label?: string
+      }
+    | {
+        title?: undefined
+        /** Accessible name; required only when the banner has no title. */
+        label: string
+      }
+  )
+
+function Banner({
+  color = "white",
+  hierarchy = "secondary",
+  direction = "horizontal",
+  title,
+  label,
+  children,
+  actions,
+  chip,
+  icon,
+  pictogram,
+  onDismiss,
+  titleAs: Title = "h2",
+  dismissLabel = "Chiudi avviso",
+  className,
+}: BannerProps) {
   const primary = hierarchy === "primary"
   const secondary = hierarchy === "secondary"
   const tertiary = hierarchy === "tertiary"
@@ -64,6 +82,7 @@ function Banner({
   return (
     <section
       role="status"
+      aria-label={title ? undefined : label}
       data-slot="banner"
       className={cn(
         "relative w-full rounded-lg border p-4",
@@ -95,13 +114,15 @@ function Banner({
                 )}
               >
                 <div className="col-start-1 row-start-1 flex min-w-0 flex-col">
-                  <Title data-slot="banner-title" className={cn(titleClassName, "min-w-0")}>
-                    {title}
-                  </Title>
+                  {title ? (
+                    <Title data-slot="banner-title" className={cn(titleClassName, "min-w-0")}>
+                      {title}
+                    </Title>
+                  ) : null}
                   {children ? (
                     <div
                       data-slot="banner-description"
-                      className={cn(descriptionClassName, "mt-2 min-w-0")}
+                      className={cn(descriptionClassName, title && "mt-2", "min-w-0")}
                     >
                       {children}
                     </div>
@@ -124,24 +145,37 @@ function Banner({
               </div>
             ) : (
               <div className={cn("flex min-w-0 flex-col", chip && "mt-2")}>
-                <div className="flex min-w-0 items-start gap-4">
-                  <Title data-slot="banner-title" className={cn(titleClassName, "min-w-0 flex-1")}>
-                    {title}
-                  </Title>
-                  {pictogram ? (
-                    <span
-                      aria-hidden="true"
-                      data-slot="banner-pictogram"
-                      className="size-14 shrink-0"
+                {title ? (
+                  <div className="flex min-w-0 items-start gap-4">
+                    <Title
+                      data-slot="banner-title"
+                      className={cn(titleClassName, "min-w-0 flex-1")}
                     >
-                      {pictogram}
-                    </span>
-                  ) : null}
-                </div>
+                      {title}
+                    </Title>
+                    {pictogram ? (
+                      <span
+                        aria-hidden="true"
+                        data-slot="banner-pictogram"
+                        className="size-14 shrink-0"
+                      >
+                        {pictogram}
+                      </span>
+                    ) : null}
+                  </div>
+                ) : pictogram ? (
+                  <span
+                    aria-hidden="true"
+                    data-slot="banner-pictogram"
+                    className="size-14 shrink-0"
+                  >
+                    {pictogram}
+                  </span>
+                ) : null}
                 {children ? (
                   <div
                     data-slot="banner-description"
-                    className={cn(descriptionClassName, "mt-4 min-w-0")}
+                    className={cn(descriptionClassName, title && "mt-4", "min-w-0")}
                   >
                     {children}
                   </div>
@@ -158,11 +192,13 @@ function Banner({
       ) : null}
       {secondary ? (
         <div data-slot="banner-content" className="flex min-w-0 flex-col gap-2">
-          <div className={cn("min-w-0", onDismiss && "pr-12")}>
-            <Title data-slot="banner-title" className={titleClassName}>
-              {title}
-            </Title>
-          </div>
+          {title ? (
+            <div className={cn("min-w-0", onDismiss && "pr-12")}>
+              <Title data-slot="banner-title" className={titleClassName}>
+                {title}
+              </Title>
+            </div>
+          ) : null}
           <div
             className={cn(
               "flex min-w-0",
@@ -208,9 +244,11 @@ function Banner({
             data-slot="banner-content"
             className={cn("flex min-w-0 flex-1 flex-col gap-1", onDismiss && "pr-8")}
           >
-            <Title data-slot="banner-title" className={titleClassName}>
-              {title}
-            </Title>
+            {title ? (
+              <Title data-slot="banner-title" className={titleClassName}>
+                {title}
+              </Title>
+            ) : null}
             {children ? (
               <div data-slot="banner-description" className={descriptionClassName}>
                 {children}

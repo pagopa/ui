@@ -35,6 +35,17 @@
   language of the calendar remains a `calendarLocale` passthrough.
 - `getControlLabel` on `CarouselStepper`: the announced position name arrives as
   a function returning the whole sentence, so the consumer owns the language.
+- `Autocomplete` renders the source `account_balance` leading art, the
+  `close_small` clear control when filled and enabled (focus returns to the
+  input), and the announced list, trigger, selection and loading strings; chip
+  removal defaults to `Elimina {value}`.
+- `Table` gains per-column truncation with an ellipsis and a hover/focus
+  tooltip, and the controlled select-all/row selection with the source
+  notification dot after the checkbox.
+- `SideNav` gains `condensed`: a 72px icon rail that opens as a hover/focus
+  overlay, a numeric badge as a dot, a chip slot on `NavItem` and parent toggles.
+- `Banner.title` is optional and the region takes `label` as its accessible name
+  when no heading renders; `Tag.iconLabel` names the default status artwork.
 
 ### Changed
 
