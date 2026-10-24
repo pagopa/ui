@@ -730,9 +730,6 @@ export interface NavItem {
 }
 
 // @public (undocumented)
-export function OKState(input: StateProps): JSX.Element;
-
-// @public (undocumented)
 export function OrganizationModule(input: {
     name: string;
     fiscalCode?: string;
@@ -1114,6 +1111,9 @@ export type StickyButtonBarProps = React_2.ComponentProps<"div"> & {
     position?: "top" | "bottom";
     variant?: "bar" | "fade";
 };
+
+// @public
+export function SuccessState(input: StateProps): JSX.Element;
 
 // @public (undocumented)
 export function Switch(input: Switch_2.Root.Props & {

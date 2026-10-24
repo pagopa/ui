@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { Avatar } from "@/components/content"
-import { ErrorState, OKState, WaitingState } from "@/components/feedback"
+import { ErrorState, SuccessState, WaitingState } from "@/components/feedback"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Footer, Header, Preheader } from "@/components/navigation"
 import { Button } from "@/components/primitives/button"
@@ -110,7 +110,7 @@ type Story = StoryObj<typeof meta>
 export const ThankYou: Story = {
   render: () => (
     <SourceChrome>
-      <OKState
+      <SuccessState
         title="Abbiamo ricevuto la tua richiesta!"
         description="Ti risponderemo al più presto all’indirizzo e-mail che hai indicato."
         actions={

@@ -1405,9 +1405,9 @@
     "733:22841": {
       "status": "implemented",
       "target": {
-        "module": "src/components/feedback/ok-state.tsx",
-        "export": "OKState",
-        "story": "apps/storybook/src/OKState.stories.tsx",
+        "module": "src/components/feedback/success-state.tsx",
+        "export": "SuccessState",
+        "story": "apps/storybook/src/SuccessState.stories.tsx",
         "storyExports": ["Playground", "WithAction"]
       },
       "note": "Device review 2026-10-16 (device burn-down wave 10): both declared devices verified against the Playground fixture — mobile `733-22841-mobile-mobile` (733:22842, 320x450) and desktop `733-22841-desktop-desktop` (733:22856, 900x466), both viewport-scoped (verified) with `compareOffset` on and responsive-clean. No component change: the responsive title tokens (text-title-md-mobile 24/36, md:text-title-md 32/44) and the 64/24 padding already follow the source; the desktop 64/0 reading is inert behind the 23rem content cap and the tool excuses it as centred content. Content 272/368x204/220, pictogram 56x56, Message 272/368x124/140 with gap 8, title and description typography exact (Titillio-Bold 700, 16/22 Regular), the section 452/468 against the source 450/466 (inside the 2px tolerance). The x1 tablet fix (max-w-none md:max-w-[23rem]) is untouched and the state's own cases stay green. Adaptation `accessible-secondary-action-target`: the source 154x22 secondary text action is a native link with the shared 48px minimum target and a visible keyboard focus perimeter; its label stays horizontally unpadded and centred within the larger target."
