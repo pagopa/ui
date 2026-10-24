@@ -67,7 +67,7 @@ for a designer: one link, one navigation.
 PR for a group of questions. Two situations are handled inside that PR, not by
 splitting.
 
-- **Many open visual questions.** One story per question is fine. When the
+- **Many open visual questions.** One story per option is fine. When the
   preview grows crowded, add a `Reviews/Index` story that links the open
   questions, keep the titles ordered by area, and remove the stories of closed
   questions. About ten open stories is a curation guideline, not the Azure
@@ -141,15 +141,18 @@ design:
     branch: feedback/previews
 ```
 
-The preview link of a question is:
+The preview link of an option is:
 
 ```text
-<design.preview.url>/?path=/story/reviews-<slug>
+<design.preview.url>/?path=/story/reviews-<slug>--option-<a|b|c>
 ```
 
-`<slug>` is the story title after `Reviews/`, lower-case and hyphenated (for
-example `Reviews/Shadow 32` → `reviews-shadow-32`). The agent writes the link in
-the issue; it does not need the hostname from a comment.
+`<slug>` is the story title after `Reviews/`, lower-case and hyphenated. Each
+option is its own story export (`OptionA`, `OptionB`, `OptionC`), so
+`Reviews/Shadow 32` with `OptionA` is `reviews-shadow-32--option-a`. A design
+issue links every option to its own story; the bare `reviews-<slug>` link is not
+published. The agent writes the links in the issue; it does not need the
+hostname from a comment.
 
 Bootstrap once: create the review PR, let the first deploy finish, read the URL
 from the bot comment, write it in the configuration. After that, no waiting.
@@ -163,8 +166,10 @@ cloud agent and no scheduled job.
    one, open a separate issue and link it.
 2. **Add the preview (visual questions only).** Create
    `apps/storybook/src/reviews/<slug>.stories.tsx` with title `Reviews/<slug>`,
-   tags `['!dev', '!test', '!autodocs']`, and the options side by side at 320
-   and 1200. Push to `feedback/previews`. The preview deploy updates.
+   tags `['!dev', '!test', '!autodocs']`, and one export per option (`OptionA`,
+   `OptionB`, `OptionC`) at full canvas. The designer changes the viewport in
+   Storybook; the story does not force 320 and 1200 side by side. Push to
+   `feedback/previews`. The preview deploy updates.
 3. **Write the issue.** Use `gh issue create` with a body file. Pick the
    template for the audience:
    - `design-question.md` — designers; simple English, no technical detail;
@@ -335,7 +340,7 @@ record so a reader can find the conversation.
   composed from it renders.
 - The six issues exist, in English, labelled, assigned, and linked from the
   review PR index.
-- Each design issue has a preview link; each dev issue has the technical
+- Each option in a design issue has its own preview link; each dev issue has the technical
   context it needs.
 - The skill explains the flow and the language rules; no `feedback:*` command
   exists.

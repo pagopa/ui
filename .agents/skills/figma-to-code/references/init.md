@@ -58,8 +58,8 @@ The `design.preview` block names the one long-lived review pull request: `url`
 is its stable Storybook preview, `pr` its number and `branch` the branch its
 review stories live on. That pull request owns the single preview environment,
 so the repository keeps exactly that one, open and unmerged: closing it deletes
-the preview and breaks every link a question points at. A question links to
-`<url>/?path=/story/reviews-<slug>`. Fill the block in order: create the review
+the preview and breaks every link a question points at. Each option links to
+`<url>/?path=/story/reviews-<slug>--option-<a|b|c>`. Fill the block in order: create the review
 pull request from `design.preview.branch`, let the first deploy finish, then
 copy the preview URL and the pull request number into the config.
 
