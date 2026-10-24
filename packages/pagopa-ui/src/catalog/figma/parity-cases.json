@@ -3303,7 +3303,7 @@
   {
     "id": "616-3864-default",
     "nodeId": "616:3864",
-    "export": "DropDown",
+    "export": "Dropdown",
     "storyId": "components-inputs-dropdown--source-panel-default",
     "state": "Default",
     "variant": "610:36297",
@@ -3321,7 +3321,7 @@
   {
     "id": "616-3864-multiselect-default",
     "nodeId": "616:3864",
-    "export": "DropDown",
+    "export": "Dropdown",
     "storyId": "components-inputs-dropdown--source-panel-multiselect",
     "state": "Multiselect|Default",
     "variant": "616:3865",
@@ -3339,7 +3339,7 @@
   {
     "id": "616-3864-selected",
     "nodeId": "616:3864",
-    "export": "DropDown",
+    "export": "Dropdown",
     "storyId": "components-inputs-dropdown--source-panel-selected",
     "state": "Selected",
     "variant": "617:18348",
@@ -3357,7 +3357,7 @@
   {
     "id": "616-3864-multiselect-selected-all",
     "nodeId": "616:3864",
-    "export": "DropDown",
+    "export": "Dropdown",
     "storyId": "components-inputs-dropdown--source-panel-multiselect-all",
     "state": "Multiselect|Selected|All",
     "variant": "617:18688",
@@ -3375,7 +3375,7 @@
   {
     "id": "616-3864-multiselect-selected-true",
     "nodeId": "616:3864",
-    "export": "DropDown",
+    "export": "Dropdown",
     "storyId": "components-inputs-dropdown--source-panel-multiselect-selected",
     "state": "Multiselect|Selected|True",
     "variant": "617:19035",
@@ -3393,7 +3393,7 @@
   {
     "id": "616-3864-empty-state",
     "nodeId": "616:3864",
-    "export": "DropDown",
+    "export": "Dropdown",
     "storyId": "components-inputs-dropdown--source-panel-empty",
     "state": "Empty state",
     "variant": "756:6063",
@@ -3411,7 +3411,7 @@
   {
     "id": "616-3864-skeleton",
     "nodeId": "616:3864",
-    "export": "DropDown",
+    "export": "Dropdown",
     "storyId": "components-inputs-dropdown--source-panel-skeleton",
     "state": "Skeleton",
     "variant": "756:6159",
@@ -5530,7 +5530,7 @@
   {
     "id": "3262-40787-open",
     "nodeId": "3262:40787",
-    "export": "MenuDropDown",
+    "export": "MenuDropdown",
     "storyId": "components-inputs-menudropdown--source-panel",
     "state": "Open",
     "width": 274,

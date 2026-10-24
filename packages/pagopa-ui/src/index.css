@@ -164,8 +164,8 @@
   --drawer-width-wide: 417px; /* Informative Drawer, 26.0625rem */
   --id-module-width: 410px; /* ID module from the 600px device step, 25.625rem */
   --camera-size: 376px; /* camera viewfinder, 23.5rem */
-  --menu-width: 274px; /* MenuDropDown minimum, 17.125rem */
-  --menu-skeleton-width: 106px; /* MenuDropDown skeleton, 6.625rem */
+  --menu-width: 274px; /* menu minimum, 17.125rem */
+  --menu-skeleton-width: 106px; /* menu skeleton, 6.625rem */
   --overlay-width: 512px; /* Snackbar and demo hero, 32rem */
   --header-height: 102px; /* Header desktop, 6.375rem */
   --preheader-height: 55px; /* Preheader, 3.4375rem */

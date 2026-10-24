@@ -1159,8 +1159,8 @@
       "status": "implemented",
       "target": {
         "module": "src/components/inputs/menus.tsx",
-        "export": "MenuDropDown",
-        "story": "apps/storybook/src/MenuDropDown.stories.tsx",
+        "export": "MenuDropdown",
+        "story": "apps/storybook/src/MenuDropdown.stories.tsx",
         "storyExports": ["SourcePanel", "Playground"]
       },
       "note": "Reviewed 2026-10-23 (M5 wave): one committed case against the `SourcePanel` story, captured with the icon trigger clicked open (`--expect-state open`, the `[role=menu]` popup as evidence), root `[role=menu]` at 274: box 274x330 exactly, zero panel padding and gap, radius 8, #ffffff surface, `shadow-16` (the source 0/4/16 #0e0f13 at 10%), the six 46px text rows (12/16 insets, 8px leading gap, 16/22 Semibold #0b3ee3 label) and the closing 48px destructive row (24px `cancel` artwork, 16/22 Semibold #d13333 label) with the 1px #e8ebf1 dividers between all seven. The review removed the row's 48px minimum (`min-h-12`): the source row is 12px insets plus the 22px line (46px), which clears the 44px target on its own, and the floor inflated the panel by 12px. The seven source rows share the layer name `.Single drop down item`, so the case maps the first text row and the divider as subjects and the total height proves the destructive row. Elevation comes only from the Figma shadow scale: `shadow-16` for menus and dropdowns, never Tailwind `shadow-md/lg/xl`. The `Playground` keeps the public `icon` prop (a lucide component painted with the destructive colour); the fidelity fixture leads with the design system's own `cancel` artwork, which is the source's leading art. Automated a11y and render checks are not screen-reader or browser-zoom certification."
@@ -1363,8 +1363,8 @@
       "status": "implemented",
       "target": {
         "module": "src/components/inputs/menus.tsx",
-        "export": "DropDown",
-        "story": "apps/storybook/src/DropDown.stories.tsx",
+        "export": "Dropdown",
+        "story": "apps/storybook/src/Dropdown.stories.tsx",
         "storyExports": [
           "Playground",
           "SingleSelect",
