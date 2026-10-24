@@ -1,4 +1,4 @@
-export * from "./camera-view-element"
+export * from "./camera-view"
 export * from "./dialog"
 export * from "./drawer"
 export * from "./overlay"

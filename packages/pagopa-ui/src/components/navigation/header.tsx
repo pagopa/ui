@@ -1,5 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
+import { useLinkComponent } from "@/lib/ui-provider"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
@@ -34,6 +35,7 @@ interface HeaderProps {
 }
 
 function Header({ product, user, actions, className }: HeaderProps) {
+  const Link = useLinkComponent()
   const productContent = (
     <>
       {product.logo ? (
@@ -86,24 +88,24 @@ function Header({ product, user, actions, className }: HeaderProps) {
           single row at both devices and only the identity collapses. */}
       <div className="mx-auto flex min-h-19 max-w-7xl items-center justify-between gap-2 px-6 py-4 sm:min-h-(--header-height) sm:gap-6">
         {product.href ? (
-          <a
+          <Link
             href={product.href}
             className="flex min-w-0 flex-1 items-center gap-2 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           >
             {productContent}
-          </a>
+          </Link>
         ) : (
           <div className="flex min-w-0 flex-1 items-center gap-2">{productContent}</div>
         )}
         <div className="flex shrink-0 items-center gap-2 sm:gap-6">
           {user ? (
             user.href ? (
-              <a
+              <Link
                 href={user.href}
                 className="flex min-w-0 items-center gap-2 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
               >
                 {userContent}
-              </a>
+              </Link>
             ) : (
               <div className="flex min-w-0 items-center gap-2">{userContent}</div>
             )

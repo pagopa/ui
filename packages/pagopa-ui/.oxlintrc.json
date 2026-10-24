@@ -40,7 +40,7 @@
           "RadioGroupItem",
           "Switch",
           "TextField",
-          "TextAreaField",
+          "TextareaField",
           "SelectField",
           "MultiSelectField",
           "Autocomplete",

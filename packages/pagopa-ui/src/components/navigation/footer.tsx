@@ -1,6 +1,7 @@
 import * as React from "react"
 
 import { cn } from "@/lib/cn"
+import { useLinkComponent } from "@/lib/ui-provider"
 import { Heading, type HeadingTag } from "@/components/primitives/heading"
 
 import type { NavItem } from "./nav-item"
@@ -41,9 +42,10 @@ interface FooterColumn {
 }
 
 function FooterLinkRow({ link }: { link: FooterLink }) {
+  const Link = useLinkComponent()
   const hasArtwork = Boolean(link.icon) || Boolean(link.trailing)
   return (
-    <a
+    <Link
       href={link.href}
       aria-current={link.current ? "page" : undefined}
       className={cn(
@@ -65,7 +67,7 @@ function FooterLinkRow({ link }: { link: FooterLink }) {
           {link.trailing}
         </span>
       ) : null}
-    </a>
+    </Link>
   )
 }
 
@@ -96,6 +98,7 @@ function Footer({
   /** ClassName applied to the footer element. */
   className?: string
 }) {
+  const Link = useLinkComponent()
   return (
     <footer className={cn("border-t border-border bg-background", className)}>
       {/* The two source anatomies are alternatives: columns replace the band. */}
@@ -104,12 +107,12 @@ function Footer({
         // between the centred brand and the centred link stack, 16px apart,
         // with the source 20px rows (the 44px target is the invisible `::after`).
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-8 px-6 py-6 sm:flex-row sm:flex-nowrap sm:items-center sm:justify-between sm:gap-6">
-          <a
+          <Link
             href={homeHref}
             className="rounded-sm text-title-xs text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           >
             {brand}
-          </a>
+          </Link>
           {/* Source desktop band: one row where a long label wraps inside its
               own item (the 900px page band is 44px tall for that reason). */}
           <ul className="flex min-w-0 flex-col items-center gap-4 sm:flex-row sm:flex-nowrap sm:items-center sm:gap-6">
@@ -138,12 +141,12 @@ function Footer({
                 className="flex min-w-0 flex-col gap-4"
               >
                 {column.brand ? (
-                  <a
+                  <Link
                     href={homeHref}
                     className="mb-2 w-fit rounded-sm text-title-xs text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                   >
                     {brand}
-                  </a>
+                  </Link>
                 ) : null}
                 {column.title ? (
                   <Heading as={titleAs} className="text-label-overline text-muted-foreground">
@@ -154,7 +157,7 @@ function Footer({
                   <ul data-slot="footer-social" className="mb-4 flex flex-wrap gap-8">
                     {column.social.map((social) => (
                       <li key={social.href}>
-                        <a
+                        <Link
                           href={social.href}
                           aria-label={social.label}
                           className="relative flex size-6 items-center justify-center rounded-sm text-foreground after:absolute after:-inset-2.5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring"
@@ -165,7 +168,7 @@ function Footer({
                           >
                             {social.icon}
                           </span>
-                        </a>
+                        </Link>
                       </li>
                     ))}
                   </ul>

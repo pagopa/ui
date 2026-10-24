@@ -1,6 +1,6 @@
 export * from "./attachment-module"
 export * from "./checkout-module"
-export * from "./id-module"
+export * from "./identity-provider-picker"
 export * from "./organization-module"
 export * from "./payment-module"
 export * from "./product-module"

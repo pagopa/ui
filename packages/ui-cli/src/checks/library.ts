@@ -194,7 +194,7 @@ export async function runLibraryCheck(): Promise<number> {
       /ProductCard: choose href or onAction, not both/,
       "untyped consumers must not silently discard a competing product action",
     )
-    for (const Menu of [mod.DropDown, mod.MenuDropDown]) {
+    for (const Menu of [mod.Dropdown, mod.MenuDropdown]) {
       assert.throws(
         () => renderToString(React.createElement(Menu, {
           triggerLabel: "Server actions",

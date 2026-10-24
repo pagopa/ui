@@ -153,7 +153,10 @@ request unless you ask for them.
 4. A change to the public API exported from `src/pagopa-ui.ts`, or to how a
    component renders, is described in the pull request and in
    [CHANGELOG.md](./packages/pagopa-ui/CHANGELOG.md). The version plans of
-   `nx release` carry it to the published package.
+   `nx release` carry it to the published package. An export change also updates
+   the committed API report with
+   `pnpm nx run pagopa-ui:api:update`; the `etc/pagopa-ui.api.md` diff is what
+   the pull request reviews, and `api:check` fails until it is committed.
 
 ## Git hooks
 

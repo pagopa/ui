@@ -6,7 +6,13 @@ import { Camera } from "@/components/primitives/icons"
 // overlay scrim at radius 16, four 44px corner brackets (4px stroke, 24px
 // elbow) and a centred 4px guide line. The brackets sit 80px inside the
 // frame's edges, which the percentage inset reproduces at any width.
-function CameraViewElement({
+/**
+ * Camera framing overlay: decorative crop brackets around a square preview and
+ * the active/inactive state announced with spoken text.
+ *
+ * Figma: CameraViewElement (node 1134:6812)
+ */
+function CameraView({
   label = "Inquadra il codice",
   announcement = ({ label: name, active: isActive }) =>
     `${name}. ${isActive ? "Fotocamera attiva" : "Fotocamera non attiva"}`,
@@ -53,4 +59,4 @@ function CameraViewElement({
   )
 }
 
-export { CameraViewElement }
+export { CameraView }
