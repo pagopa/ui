@@ -8,6 +8,8 @@
     "raw-figma-variable": 0,
     "hex-color": 0,
     "palette-color": 0,
-    "off-scale-spacing": 0
+    "off-scale-spacing": 0,
+    "shadow-scale": 3,
+    "center-overflow": 0
   }
 }
