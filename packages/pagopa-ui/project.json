@@ -58,7 +58,10 @@
       "outputs": [],
       "cache": true
     },
-    "figma:check": { "options": { "command": "node src/cli.ts check figma" } },
+    "figma:check": {
+      "options": { "command": "node src/cli.ts check figma" },
+      "inputs": ["default", "tooling", "{workspaceRoot}/apps/storybook/src/**/*"]
+    },
     "figma:stories": {
       "executor": "nx:run-commands",
       "options": {
@@ -73,7 +76,10 @@
     "text-defaults:check": {
       "options": { "command": "node src/cli.ts check text-defaults --max 0" }
     },
-    "foundation:check": { "options": { "command": "node src/cli.ts check foundation" } },
+    "foundation:check": {
+      "options": { "command": "node src/cli.ts check foundation" },
+      "inputs": ["default", "tooling", "{workspaceRoot}/apps/storybook/src/**/*"]
+    },
     "a11y:conformance:check": {
       "options": { "command": "node src/cli.ts check a11y-conformance" }
     },
