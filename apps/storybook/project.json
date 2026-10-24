@@ -22,7 +22,6 @@
       ]
     },
     "test:stories": {
-      "dependsOn": ["pagopa-ui:figma:check", "pagopa-ui-artwork:test", "pagopa-ui-tokens:test"],
       "inputs": [
         "default",
         "{workspaceRoot}/packages/pagopa-ui/src/**",
@@ -31,7 +30,6 @@
       ]
     },
     "test:webkit": {
-      "dependsOn": ["pagopa-ui:figma:check", "pagopa-ui-artwork:test", "pagopa-ui-tokens:test"],
       "inputs": [
         "default",
         "{workspaceRoot}/packages/pagopa-ui/src/**",

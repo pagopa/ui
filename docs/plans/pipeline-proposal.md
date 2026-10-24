@@ -160,3 +160,39 @@ Options considered and not taken:
 2. Whether M3 (sharding) is worth the extra runner minutes after M1 is measured.
 3. Whether M4 (remote cache) belongs to this repository at all, or waits for a
    platform-wide PagoPA DX decision.
+
+## Measured after action 05
+
+CI timings are the median of the last ten successful `deep-checks.yml`
+pull-request runs (2026-10-24, before the change); local timings ran with
+`--skip-nx-cache` on the same 18-core machine.
+
+| Metric                                          | Before        | After                                  |
+| ----------------------------------------------- | ------------- | -------------------------------------- |
+| CI job, `Coverage gates (Chromium)`             | 283 s         | unchanged by this action               |
+| CI job, `Stories (WebKit, Firefox nightly)`     | 355 s         | not measured yet                       |
+| CI job, `Packed artifact (three engines)`       | 150 s         | not measured yet                       |
+| `pagopa-ui:library:check`, local, three engines | 61 s          | 61 s — a local run keeps every engine  |
+| `pagopa-ui:library:check`, local, Chromium      | 61 s          | 25 s (Playwright: 2 tests, 10.1 s)     |
+| `pagopa-ui-storybook:test:webkit`, local        | 56 s, 6 tasks | 39 s, 1 task                           |
+| Stories listed by the WebKit pass               | 8 830         | 4 756 — the conditions project is gone |
+| `.github/workflows/deep-checks.yml`             | 288 lines     | 154 lines                              |
+
+What changed:
+
+- The packed artifact installs and drives Chromium only on a pull request and on
+  a push to `main`; the nightly and the dispatched run keep the three engines.
+  `LIBRARY_ENGINES` carries the choice to `packages/ui-cli/playwright.config.mjs`,
+  and an unset variable keeps every engine for a local run.
+- The WebKit pass runs the `storybook` project alone; the accessibility
+  conditions stay in the Chromium coverage pass and in the nightly Firefox pass.
+- `test:stories` and `test:webkit` no longer depend on `figma:check`, the artwork
+  test and the tokens test: the stories import the artwork and token sources, not
+  their build output. The unit tasks run once, in the DX code review.
+- The three jobs share `.github/actions/setup`, which takes the browser list as
+  an input and skips the four Playwright steps when it is empty.
+- `pnpm nx run workspace:verify` replaces the four-line chain a person copied
+  from `CONTRIBUTING.md`; `-c fast` stops before the browser suites.
+
+After the merge, compare the durations of the next five pull-request runs against
+the table above, and confirm the first scheduled run still drives three engines.
