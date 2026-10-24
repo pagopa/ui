@@ -57,20 +57,20 @@
 
 - Renamed exports, with no deprecated aliases. Update the imports:
 
-  | Before                                                      | After                                                           |
-  | ----------------------------------------------------------- | --------------------------------------------------------------- |
-  | `IDModule`, `IDModuleProps`, `IDModuleProviderOption`         | `IdentityProviderPicker`, `IdentityProviderPickerProps`, `IdentityProviderPickerOption` |
-  | `KOState`                                                   | `ErrorState`                                                    |
-  | `OKState`                                                   | `SuccessState`                                                  |
-  | `LoghiPSP`                                                  | `PaymentProviderLogos`                                          |
-  | `Microevento`                                               | `MicroEvent`                                                    |
-  | `WhiteTemplate`                                             | `PageSurface`                                                   |
-  | `Spacing`, `SpacingSize`                                    | `Spacer`, `SpacerSize`                                          |
-  | `CorrectionValid`, `CorrectionNotValid`                     | `CorrectionTag` with `status: "valid" \| "not-valid"`            |
-  | `DropDown`, `MenuDropDown`, `DropDownItem`                  | `Dropdown`, `MenuDropdown`, `DropdownItem`                      |
-  | `figmaIconNames`, `figmaPictogramNames`                     | `iconNames`, `pictogramNames`                                   |
-  | `TextAreaField`                                             | `TextareaField`                                                 |
-  | `CameraViewElement`                                         | `CameraView`                                                    |
+  | Before                                                | After                                                                                   |
+  | ----------------------------------------------------- | --------------------------------------------------------------------------------------- |
+  | `IDModule`, `IDModuleProps`, `IDModuleProviderOption` | `IdentityProviderPicker`, `IdentityProviderPickerProps`, `IdentityProviderPickerOption` |
+  | `KOState`                                             | `ErrorState`                                                                            |
+  | `OKState`                                             | `SuccessState`                                                                          |
+  | `LoghiPSP`                                            | `PaymentProviderLogos`                                                                  |
+  | `Microevento`                                         | `MicroEvent`                                                                            |
+  | `WhiteTemplate`                                       | `PageSurface`                                                                           |
+  | `Spacing`, `SpacingSize`                              | `Spacer`, `SpacerSize`                                                                  |
+  | `CorrectionValid`, `CorrectionNotValid`               | `CorrectionTag` with `status: "valid" \| "not-valid"`                                   |
+  | `DropDown`, `MenuDropDown`, `DropDownItem`            | `Dropdown`, `MenuDropdown`, `DropdownItem`                                              |
+  | `figmaIconNames`, `figmaPictogramNames`               | `iconNames`, `pictogramNames`                                                           |
+  | `TextAreaField`                                       | `TextareaField`                                                                         |
+  | `CameraViewElement`                                   | `CameraView`                                                                            |
 
 - `Pagination`: the middle pages collapse at the 900px container step
   (`tablet-md`, a container alias of the device breakpoint) instead of the
