@@ -144,6 +144,8 @@ function IdentityProviderPickerView({
  *
  * Figma: IDModule (node 731:20386)
  */
-const IdentityProviderPicker = Object.assign(IdentityProviderPickerView, { Provider: IdentityProviderPickerRow })
+const IdentityProviderPicker = Object.assign(IdentityProviderPickerView, {
+  Provider: IdentityProviderPickerRow,
+})
 
 export { IdentityProviderPicker }

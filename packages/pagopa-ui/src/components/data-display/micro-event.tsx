@@ -27,7 +27,11 @@ function MicroEvent({
     <div className={cn("flex items-start py-2 pl-7", className)}>
       {time ? <span className="shrink-0 text-label-mini text-muted-foreground">{time}</span> : null}
       <div className="flex min-w-0 flex-col gap-1">
-        {invalid ? <CorrectionTag label={label} status="not-valid" /> : <CorrectionTag label={label} status="valid" />}
+        {invalid ? (
+          <CorrectionTag label={label} status="not-valid" />
+        ) : (
+          <CorrectionTag label={label} status="valid" />
+        )}
         <p className="text-label-mini text-foreground break-words">{title}</p>
       </div>
     </div>
