@@ -1291,10 +1291,10 @@ export type TagStatus = "default" | "info" | "warning" | "success" | "error" | "
 // @public (undocumented)
 export function Textarea(input: React_2.ComponentProps<"textarea">): React_2.JSX.Element;
 
-// Warning: (ae-forgotten-export) The symbol "TextAreaFieldProps" needs to be exported by the entry point pagopa-ui.d.ts
+// Warning: (ae-forgotten-export) The symbol "TextareaFieldProps" needs to be exported by the entry point pagopa-ui.d.ts
 //
-// @public (undocumented)
-export function TextAreaField(input: TextAreaFieldProps): React_2.JSX.Element;
+// @public
+export function TextareaField(input: TextareaFieldProps): React_2.JSX.Element;
 
 // Warning: (ae-forgotten-export) The symbol "TextFieldProps" needs to be exported by the entry point pagopa-ui.d.ts
 //

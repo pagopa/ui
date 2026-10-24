@@ -52,7 +52,7 @@ export const REQUIRED_EXPORTS = [
   "Table",
   "Tabs",
   "Tag",
-  "TextAreaField",
+  "TextareaField",
   "TextField",
   "Timeline",
   "Tooltip",

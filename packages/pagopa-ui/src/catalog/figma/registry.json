@@ -192,8 +192,8 @@
       "status": "implemented",
       "target": {
         "module": "src/components/inputs/text-fields.tsx",
-        "export": "TextAreaField",
-        "story": "apps/storybook/src/TextAreaField.stories.tsx",
+        "export": "TextareaField",
+        "story": "apps/storybook/src/TextareaField.stories.tsx",
         "storyExports": ["Playground", "Disabled", "FigmaStateMatrix"]
       },
       "note": "Reviewed 2026-10-22 (M5 wave): eight committed cases, one per principal state of the set's `Status` × `Filled` axes plus one Required=False row, all capturing `FigmaStateMatrix` at the 274 source width (the story gained the Design-panel mapping and the matrix export; the node declared no story export before). Enabled empty (10585:80644, control 274x92) and Enabled empty Required=False (12079:79635, no required marker) are clean; Enabled filled (10585:80662), Active empty (10585:80681, captured focused), Active filled (10585:80693, 274x94), Success filled (10585:80703), Error empty (10585:80713, 274x94) and Error filled (10585:80722) each carry the two ignored vertical-padding mapping artifacts below. Field border: grey-650 #636b82 1px when enabled, disabled or success; primary #0b3ee3 when active/focused (the library paints the 1px border plus the 2px focus ring, inside the 2px tolerance); #d13333 on error; never grey-450 (it is not a source field stroke). Mapping artifact ignored: the source `Input` frame nests its row inset in the `Content` child (12/0/13/0) while the library textarea owns its own padding, so the vertical padding is ignored on the filled and active states. The source `Status` axis has no Disabled variant: the `Disabled` story is a library state outside the pinned set. The remaining `* Required=False` variants repeat these reviewed compositions with the marker removed; one case proves that axis. Automated a11y and render checks are not screen-reader or browser-zoom certification."

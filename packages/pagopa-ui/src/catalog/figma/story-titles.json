@@ -74,7 +74,7 @@
   "apps/storybook/src/TableListItem.stories.tsx": "Components/Data display/TableListItem",
   "apps/storybook/src/Tabs.stories.tsx": "Components/Tabs",
   "apps/storybook/src/Tag.stories.tsx": "Components/Content/Tag",
-  "apps/storybook/src/TextAreaField.stories.tsx": "Components/Inputs/TextAreaField",
+  "apps/storybook/src/TextareaField.stories.tsx": "Components/Inputs/TextareaField",
   "apps/storybook/src/TextField.stories.tsx": "Components/Inputs/TextField",
   "apps/storybook/src/Timeline.stories.tsx": "Components/Data display/Timeline",
   "apps/storybook/src/TimelineDrawer.stories.tsx": "Components/Overlays/TimelineDrawer",
