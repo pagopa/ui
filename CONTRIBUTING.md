@@ -54,8 +54,8 @@ underlying command is the package script of the same name
 (`pnpm --filter @pagopa/ui run <script>` or
 `pnpm --filter pagopa-ui-cli run <script>`).
 
-- `pnpm nx run pagopa-ui-storybook:storybook` — Storybook through portless on a
-  free port behind the printed stable URL; `PORTLESS=0` keeps `:6006`.
+- `pnpm nx run pagopa-ui-storybook:storybook` — Storybook on
+  `http://localhost:6006`.
 - `pnpm nx run pagopa-ui-storybook:test:stories` — the stories in Firefox and WebKit;
   `pnpm nx run pagopa-ui-storybook:test:webkit` — the stories in WebKit alone, the pass a
   pull request runs; `pnpm nx run pagopa-ui-storybook:test:coverage` — the stories in
