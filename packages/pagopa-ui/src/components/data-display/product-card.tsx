@@ -1,6 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
-import { useLinkComponent } from "@/lib/ui-provider"
+import { useLinkComponent, useMessages } from "@/lib/ui-provider"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Button, buttonVariants } from "@/components/primitives/button"
@@ -26,7 +26,7 @@ type ProductCardProps = Omit<React.ComponentProps<typeof Card>, "variant"> & {
   chip?: React.ReactNode
   /** Heading level of the title. @default "h3" */
   titleAs?: "h2" | "h3"
-  /** Text of the action. @default "Scopri di più" */
+  /** Text of the action. @default messages.productCard.actionLabel */
   actionLabel?: string
   /** Cover image; selects the product-image composition. */
   image?: React.ReactNode
@@ -50,7 +50,7 @@ function ProductCard({
   logo,
   chip,
   titleAs: Title = "h3",
-  actionLabel = "Scopri di più",
+  actionLabel: actionLabelProp,
   href,
   onAction,
   image,
@@ -58,6 +58,9 @@ function ProductCard({
   className,
   ...props
 }: ProductCardProps) {
+  const t = useMessages("productCard")
+  const actionLabel = actionLabelProp ?? t.actionLabel
+
   const Link = useLinkComponent()
   if (href !== undefined && onAction !== undefined) {
     throw new Error("ProductCard: choose href or onAction, not both")
