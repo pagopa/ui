@@ -1,0 +1,343 @@
+{
+  "types": [
+    "Button",
+    "Field",
+    "Choice group",
+    "Dialog and Drawer",
+    "Tab",
+    "Combobox and Select",
+    "Table",
+    "Notifications and alerts",
+    "Navigation and breadcrumb",
+    "Header and footer",
+    "Content display",
+    "State and progress",
+    "Module"
+  ],
+  "components": {
+    "Accordion": {
+      "type": "Navigation and breadcrumb"
+    },
+    "Alert": {
+      "type": "Notifications and alerts"
+    },
+    "AlertAction": {
+      "type": "Notifications and alerts"
+    },
+    "AlertDescription": {
+      "type": "Notifications and alerts"
+    },
+    "AlertTitle": {
+      "type": "Notifications and alerts"
+    },
+    "AttachmentModule": {
+      "type": "Module"
+    },
+    "AuthenticationCodeInput": {
+      "type": "Field"
+    },
+    "Autocomplete": {
+      "type": "Combobox and Select"
+    },
+    "Avatar": {
+      "type": "Content display"
+    },
+    "Badge": {
+      "type": "Content display"
+    },
+    "Banner": {
+      "type": "Notifications and alerts"
+    },
+    "Breadcrumb": {
+      "type": "Navigation and breadcrumb"
+    },
+    "Button": {
+      "type": "Button"
+    },
+    "ButtonGroup": {
+      "type": "Button"
+    },
+    "CameraView": {
+      "type": "Content display"
+    },
+    "Card": {
+      "type": "Content display"
+    },
+    "CardAction": {
+      "type": "Content display"
+    },
+    "CardContent": {
+      "type": "Content display"
+    },
+    "CardDescription": {
+      "type": "Content display"
+    },
+    "CardFooter": {
+      "type": "Content display"
+    },
+    "CardHeader": {
+      "type": "Content display"
+    },
+    "CardTitle": {
+      "type": "Content display"
+    },
+    "CarouselStepper": {
+      "type": "State and progress"
+    },
+    "CatalogueCard": {
+      "type": "Content display"
+    },
+    "CheckboxField": {
+      "type": "Field"
+    },
+    "CheckboxGroup": {
+      "type": "Choice group"
+    },
+    "CheckoutModule": {
+      "type": "Module"
+    },
+    "Chip": {
+      "type": "Content display"
+    },
+    "Cookies": {
+      "type": "Notifications and alerts"
+    },
+    "CorrectionTag": {
+      "type": "Content display"
+    },
+    "DatePicker": {
+      "type": "Field"
+    },
+    "DatePickerField": {
+      "type": "Field"
+    },
+    "Dialog": {
+      "type": "Dialog and Drawer"
+    },
+    "DownloadCard": {
+      "type": "Content display"
+    },
+    "DragAndDrop": {
+      "type": "Field"
+    },
+    "Drawer": {
+      "type": "Dialog and Drawer"
+    },
+    "Dropdown": {
+      "type": "Combobox and Select"
+    },
+    "EmptyState": {
+      "type": "State and progress"
+    },
+    "ErrorState": {
+      "type": "State and progress"
+    },
+    "ErrorSummary": {
+      "type": "Notifications and alerts"
+    },
+    "FeatureList": {
+      "type": "Content display"
+    },
+    "Footer": {
+      "type": "Header and footer"
+    },
+    "Header": {
+      "type": "Header and footer"
+    },
+    "HeaderAlert": {
+      "type": "Notifications and alerts"
+    },
+    "IdentityProviderPicker": {
+      "type": "Choice group"
+    },
+    "Input": {
+      "type": "Field"
+    },
+    "InputChip": {
+      "type": "Field"
+    },
+    "Label": {
+      "type": "Field"
+    },
+    "ListItem": {
+      "type": "Content display"
+    },
+    "MenuDropdown": {
+      "type": "Navigation and breadcrumb"
+    },
+    "MicroEvent": {
+      "type": "Content display"
+    },
+    "MultiSelectField": {
+      "type": "Combobox and Select"
+    },
+    "OrganizationModule": {
+      "type": "Module"
+    },
+    "Overlay": {
+      "type": "Notifications and alerts"
+    },
+    "PageSurface": {
+      "type": "Content display"
+    },
+    "Pagination": {
+      "type": "Navigation and breadcrumb"
+    },
+    "PagoPAIcon": {
+      "type": "Content display"
+    },
+    "PagoPAPictogram": {
+      "type": "Content display"
+    },
+    "PaymentModule": {
+      "type": "Module"
+    },
+    "PaymentProviderLogos": {
+      "type": "Content display"
+    },
+    "PinPoint": {
+      "type": "Button"
+    },
+    "Popover": {
+      "type": "Dialog and Drawer"
+    },
+    "Preheader": {
+      "type": "Header and footer"
+    },
+    "ProductCard": {
+      "type": "Content display"
+    },
+    "ProductModule": {
+      "type": "Module"
+    },
+    "ProgressKpi": {
+      "type": "State and progress"
+    },
+    "ProgressLoader": {
+      "type": "State and progress"
+    },
+    "RadioField": {
+      "type": "Field"
+    },
+    "RadioGroup": {
+      "type": "Choice group"
+    },
+    "SafeArea": {
+      "type": null,
+      "reason": "layout wrapper: it centres its children and renders no UI of its own"
+    },
+    "ScrollToBottom": {
+      "type": "Button"
+    },
+    "SectionHeader": {
+      "type": "Content display"
+    },
+    "SegmentedControl": {
+      "type": "Choice group"
+    },
+    "SelectField": {
+      "type": "Combobox and Select"
+    },
+    "Separator": {
+      "type": "Content display"
+    },
+    "SideNav": {
+      "type": "Navigation and breadcrumb"
+    },
+    "SkipToMainContent": {
+      "type": "Navigation and breadcrumb"
+    },
+    "Snackbar": {
+      "type": "Notifications and alerts"
+    },
+    "SnackbarErrorCode": {
+      "type": "Notifications and alerts"
+    },
+    "Spacer": {
+      "type": null,
+      "reason": "paints nothing and is hidden from assistive technology"
+    },
+    "Spinner": {
+      "type": "State and progress"
+    },
+    "StatusTile": {
+      "type": "Content display"
+    },
+    "Stepper": {
+      "type": "State and progress"
+    },
+    "StickyButtonBar": {
+      "type": "Button"
+    },
+    "SuccessState": {
+      "type": "State and progress"
+    },
+    "Switch": {
+      "type": "Field"
+    },
+    "SwitchField": {
+      "type": "Field"
+    },
+    "SwitchGroup": {
+      "type": "Choice group"
+    },
+    "Table": {
+      "type": "Table"
+    },
+    "TableCellRow": {
+      "type": "Table"
+    },
+    "TableHeaderField": {
+      "type": "Table"
+    },
+    "TableList": {
+      "type": "Table"
+    },
+    "TableListField": {
+      "type": "Table"
+    },
+    "TableListItem": {
+      "type": "Table"
+    },
+    "Tabs": {
+      "type": "Tab"
+    },
+    "TabsContent": {
+      "type": "Tab"
+    },
+    "TabsList": {
+      "type": "Tab"
+    },
+    "TabsTrigger": {
+      "type": "Tab"
+    },
+    "Tag": {
+      "type": "Content display"
+    },
+    "Textarea": {
+      "type": "Field"
+    },
+    "TextareaField": {
+      "type": "Field"
+    },
+    "TextField": {
+      "type": "Field"
+    },
+    "Timeline": {
+      "type": "Content display"
+    },
+    "TimelineDrawer": {
+      "type": "Dialog and Drawer"
+    },
+    "Tooltip": {
+      "type": "Dialog and Drawer"
+    },
+    "UIProvider": {
+      "type": null,
+      "reason": "renders no UI: it supplies the router link and locale contexts"
+    },
+    "WaitingState": {
+      "type": "State and progress"
+    }
+  }
+}

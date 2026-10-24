@@ -4,6 +4,7 @@
 // argument surface, so a new command is discovered instead of documented twice.
 import { defineCommand, runMain } from "citty"
 
+import { runA11yConformance } from "./checks/a11y-conformance.ts"
 import { runCssBudget } from "./checks/css-budget.ts"
 import { runDocLinks } from "./checks/doc-links.ts"
 import { runFoundation } from "./checks/foundation.ts"
@@ -229,9 +230,18 @@ const assets = defineCommand({
   subCommands: { icons, pictograms },
 })
 
+const a11yConformance = defineCommand({
+  meta: {
+    name: "a11y-conformance",
+    description: "Check the accessibility conformance map",
+  },
+  run: execute(() => runA11yConformance()),
+})
+
 const check = defineCommand({
   meta: { name: "check", description: "Run one of the repository contracts" },
   subCommands: {
+    "a11y-conformance": a11yConformance,
     layers,
     foundation,
     docs,
