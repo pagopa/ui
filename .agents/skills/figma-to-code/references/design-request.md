@@ -38,9 +38,9 @@ note. A design request is for the question the source leaves open.
    preview. One decision per issue; a question that opens another one gets its
    own issue and a link. Labels: `type/design-question` or `type/dev-decision`,
    `status/needs-answer`, and `source/figma-rules` when a rules card raised it.
-   Assign every handle in `design.owners`. A visual question links to
-   `<design.preview.url>/?path=/story/reviews-<slug>`, and the link enters the
-   review pull request index.
+   Assign every handle in `design.owners`. Each visual option links to its own
+   story, `<design.preview.url>/?path=/story/reviews-<slug>--option-<a|b|c>`,
+   and the links enter the review pull request index.
 3. **Record.** Write `design.requests` at `<yyyy-mm-dd>-<slug>.md` with the
    type, the issue URL, the status, the decision owner and the preview. Name it
    in the node's registry note, which carries the status and the pointer.
