@@ -53,6 +53,13 @@ export default defineConfig(() => ({
     sourcemap: true,
     rollupOptions: {
       external: (id) => externalPackages.some((name) => id === name || id.startsWith(`${name}/`)),
+      output: {
+        // One ES module per source module: a consumer bundler keeps the client
+        // boundary of each module instead of pulling one large file.
+        preserveModules: true,
+        preserveModulesRoot: "src",
+        entryFileNames: (chunk) => (chunk.name === "library-entry" ? "pagopa-ui.js" : "[name].js"),
+      },
     },
   },
   test: {
