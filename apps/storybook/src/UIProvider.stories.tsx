@@ -80,9 +80,7 @@ export const RouterLinkStory: Story = {
 
 export const ButtonAsLink: Story = {
   render: () => (
-    <Button render={<a aria-label="Vai alla sezione" href="/somewhere" />}>
-      Vai alla sezione
-    </Button>
+    <Button render={<a aria-label="Vai alla sezione" href="/somewhere" />}>Vai alla sezione</Button>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
