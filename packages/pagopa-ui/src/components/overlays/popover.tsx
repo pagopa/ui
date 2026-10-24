@@ -1,5 +1,8 @@
+"use client"
+
 import * as React from "react"
 
+import { useMessages } from "@/lib/ui-provider"
 import {
   PopoverClose,
   Popover as PopoverPrimitive,
@@ -22,9 +25,9 @@ interface PopoverProps {
   defaultOpen?: boolean
   /** Allows interaction with the page while the popover is open. */
   modal?: boolean
-  /** Accessible name of the panel. @default "Informazione contestuale" */
+  /** Accessible name of the panel. @default messages.popover.label */
   label?: string
-  /** Accessible name of the close button. @default "Chiudi popover" */
+  /** Accessible name of the close button. @default messages.popover.closeLabel */
   closeLabel?: string
 }
 
@@ -35,9 +38,13 @@ function Popover({
   arrowPosition = "top",
   defaultOpen,
   modal,
-  label = "Informazione contestuale",
-  closeLabel = "Chiudi popover",
+  label: labelProp,
+  closeLabel: closeLabelProp,
 }: PopoverProps) {
+  const t = useMessages("popover")
+  const label = labelProp ?? t.label
+  const closeLabel = closeLabelProp ?? t.closeLabel
+
   return (
     <PopoverPrimitive defaultOpen={defaultOpen} modal={modal}>
       <PopoverTrigger render={trigger} />

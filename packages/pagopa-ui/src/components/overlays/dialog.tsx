@@ -1,5 +1,8 @@
+"use client"
+
 import * as React from "react"
 
+import { useMessages } from "@/lib/ui-provider"
 import { X } from "@/components/primitives/icons"
 import { Button } from "@/components/primitives/button"
 import { Dialog as DialogPrimitive } from "@/components/primitives/dialog"
@@ -16,7 +19,7 @@ interface DialogProps {
   children?: React.ReactNode
   /** Optional actions row. */
   footer?: React.ReactNode
-  /** Accessible name of the close button. @default "Chiudi finestra" */
+  /** Accessible name of the close button. @default messages.dialog.closeLabel */
   closeLabel?: string
 }
 
@@ -26,8 +29,11 @@ function Dialog({
   description,
   children,
   footer,
-  closeLabel = "Chiudi finestra",
+  closeLabel: closeLabelProp,
 }: DialogProps) {
+  const t = useMessages("dialog")
+  const closeLabel = closeLabelProp ?? t.closeLabel
+
   return (
     <DialogPrimitive.Root>
       <DialogPrimitive.Trigger render={trigger} />
