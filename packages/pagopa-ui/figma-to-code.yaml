@@ -34,11 +34,11 @@ design:
   # The one long-lived review pull request: its stable Storybook preview, its
   # number and the branch the review stories live on. Never a second review
   # pull request, never merged. A question links to
-  # `<url>/?path=/story/reviews-<slug>`. The placeholder host and `pr: 0` stay
+  # `<url>/?path=/story/reviews-<slug>`. The placeholder host and `pr: 19` stay
   # until the review pull request exists and its first deploy has finished.
   preview:
-    url: https://<preview-host>
-    pr: 0
+    url: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net
+    pr: 19
     branch: feedback/previews
 tokens:
   manifest: packages/tokens/src/manifest.json
