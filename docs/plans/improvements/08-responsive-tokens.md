@@ -21,10 +21,27 @@ The token layer already defines the Figma breakpoints, with their own names:
 | `Foundations/breakpoint-xl`  | `--breakpoint-desktop-xl`  | 1536px | `desktop-xl:`  |
 | `Foundations/breakpoint-2xl` | `--breakpoint-desktop-xxl` | 1920px | `desktop-xxl:` |
 
-No component uses them. About 100 classes use Tailwind's default `sm:`
-(640px), `md:` (768px) and `lg:` (1024px), so components switch layout at
-widths that don't exist in Figma. The token-first rule is broken in the one
-place no check looks at.
+Two components already use them (the drawer title and the identity-provider
+width). About 120 classes use Tailwind's default `sm:` (640px), `md:` (768px)
+and `lg:` (1024px), so components switch layout at widths that don't exist in
+Figma. The token-first rule is broken in the one place no check looks at.
+
+## State on 2026-10-24
+
+- The theme still ships only `--breakpoint-tablet` … `--breakpoint-desktop-xxl`
+  and **no** `--breakpoint-*: initial`, so the Tailwind defaults are still
+  generated.
+- The off-token counts moved since the plan: **119** default-breakpoint
+  variants in `packages/pagopa-ui/src/components`, 14 in `apps/storybook/src`,
+  **2** Figma variants already in use (`overlays/drawer.tsx`,
+  `composites/id-module.tsx`), 14 `text-*-mobile` classes and 34 default
+  container-query variants.
+- The parity corpus now has 300 cases, **24** of them with a `viewport` between
+  600 and 1199; `viewport` is a number, so step 1b's extractor works as
+  written. The evidence bundle is committed, so no `FIGMA_TOKEN` is needed.
+- The Storybook dev server takes `PORT` (see the orchestrator); use
+  `PORT=6108 pnpm nx run pagopa-ui-storybook:storybook`.
+- The visual reference of step 1 needs action 01 merged (`G-VIS`).
 
 After this action:
 
@@ -61,12 +78,12 @@ After this action:
   `text-*-mobile` typography pairs stay as they are; they get a ratchet only.
   Replacing them needs a design decision (deferred in the orchestrator file).
 - `IDModule`'s `device` prop stays.
-- Figma parity is the arbiter between 600 and 1199px. About 20 committed parity
-  cases (reviewed against Figma in M5) render at those widths, and the visual
-  gate can't tell whether a change there moves a component towards Figma or
-  away from it. Their verdicts are measured before and after (steps 1 and 5);
-  a case that gets worse is a regression, even when the visual diff is
-  accepted.
+- Figma parity is the arbiter between 600 and 1199px. 24 committed parity
+  cases (reviewed against Figma in M5) render at those widths on 2026-10-24,
+  and the visual gate can't tell whether a change there moves a component
+  towards Figma or away from it. Their verdicts are measured before and after
+  (steps 1 and 5); a case that gets worse is a regression, even when the visual
+  diff is accepted.
 
 ## Ownership
 
@@ -101,7 +118,8 @@ grep -rhoE 'text-[a-z0-9-]+-mobile\b' packages/pagopa-ui/src/components --includ
 grep -rhoE '@(3xs|2xs|xs|sm|md|lg|xl|[2-7]xl)(/[a-z-]+)?:' packages/pagopa-ui/src/components --include=*.tsx | wc -l
 ```
 
-Expected roughly: 100 · 14 · 0 · 13 · 20. Write them in the report.
+Expected roughly on 2026-10-24: 119 · 14 · 2 · 14 · 34. Write the measured
+values in the report.
 
 Then, under the heavy lock, record a host visual reference **before** any
 change (temporary folder, never committed):
@@ -116,10 +134,10 @@ holds PNGs.
 
 #### 1b. Parity baseline at 600–1199
 
-Start Storybook on port 6108 (rule 11). The evidence bundle makes the check
-work without `FIGMA_TOKEN`. This step calls the CLI directly, not through Nx,
-because it parses the JSON output; it is the same read-only command the
-`pagopa-ui-cli:figma:parity:check` target runs. Never pass `--save-case`.
+Start Storybook on port 6108 (`PORT=6108`, rule 11). The evidence bundle makes
+the check work without `FIGMA_TOKEN`. This step calls the CLI directly, not
+through Nx, because it parses the JSON output; it is the same read-only command
+the `pagopa-ui-cli:figma:parity:check` target runs. Never pass `--save-case`.
 
 ```sh
 cd packages/ui-cli
@@ -135,8 +153,8 @@ done
 ```
 
 Done when: the report has a table `case id · verdict · deltas` for every id
-in the list (about 20). An unreadable file means the capture failed: re-run
-that id once; if it still fails, mark it `error` and continue.
+in the list (24 on 2026-10-24). An unreadable file means the capture failed:
+re-run that id once; if it still fails, mark it `error` and continue.
 
 ### 2. Foundation rules first
 
@@ -294,4 +312,5 @@ Heavy (under the lock): the Storybook build, step 5, `pagopa-ui:library:check`.
 - The parity table from step 5.5; regressed cases first.
 - Person steps: on the pull request, review the visual diff artifacts and the
   regressed parity cases (if any), then add the `visual:update` label; pause
-  M5 burn-down sessions until merged.
+  the Figma alignment sessions (the M5 remainder and any `figma-align` wave)
+  until merged.

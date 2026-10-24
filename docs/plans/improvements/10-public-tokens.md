@@ -9,13 +9,28 @@
 | Person gate   | none                                                                  |
 | Report source | [../improvements.md](../improvements.md), the "consumer DX" finding   |
 
+## State on 2026-10-24
+
+- `packages/tokens/src/figma.generated.css` declares **128** `--figma-*`
+  properties, and `packages/pagopa-ui/dist/styles.css` carries the same 128:
+  the build does not drop any today.
+- `packages/tokens` exports `figmaTokens`, `figmaTokenSource`, `FigmaToken`,
+  `FigmaTokenType` and `figmaTextClasses`; it has no `./tokens.generated.css`
+  entry.
+- The build entry is `src/library-entry.ts`, with `cssFileName: "styles"` and
+  the `bundled-font-licenses` plugin emitting `licenses/titillio.txt` and
+  `licenses/artwork.txt`. Step 2.5 adds `tokens.css` to that plugin.
+- `prepare-types` already inlines the artwork declarations; it does not yet
+  handle a tokens package import.
+- No `src/tokens.ts`, `etc/tokens.txt` or `tokens.generated.css` exists.
+
 ## Goal
 
 `dist/styles.css` already ships the Figma variables as `:root` custom
-properties (`--figma-color-blue-100`, `--figma-z-20`…, about 130). Nothing says
-they are public, nothing types them, and nothing stops a rename from breaking a
-consumer silently. A consumer who builds a page section next to the library has
-no supported way to match its colours and spacing.
+properties (`--figma-color-blue-100`, `--figma-z-20`…, 128 in the current
+build). Nothing says they are public, nothing types them, and nothing stops a
+rename from breaking a consumer silently. A consumer who builds a page section
+next to the library has no supported way to match its colours and spacing.
 
 After this action:
 
@@ -71,9 +86,10 @@ grep -c '^  --figma-' packages/tokens/src/figma.generated.css
 grep -oE -- '--figma-[a-z0-9-]+:' packages/pagopa-ui/dist/styles.css | sort -u | wc -l
 ```
 
-(Build first under the lock if `dist` is missing.) Record both counts. If they
-differ, list the names that are in the generator but not in `dist`: the build
-drops unused variables, and the public list must be the generator's.
+(Build first under the lock if `dist` is missing.) Record both counts; on
+2026-10-24 both are 128. If they differ, list the names that are in the
+generator but not in `dist`: the build drops unused variables, and the public
+list must be the generator's.
 
 Done when: both counts and the difference are in the report.
 
@@ -91,7 +107,7 @@ Done when: both counts and the difference are in the report.
 4. Export it from the tokens package (`"./tokens.generated.css"` in
    `packages/tokens/package.json` `exports`).
 5. In `packages/pagopa-ui/vite.config.ts`, add the file to the existing
-   asset-emitting plugin (the one that emits the licenses) as `tokens.css`.
+   `bundled-font-licenses` asset plugin as `tokens.css`.
 6. Test: `emitCss(manifest).startsWith(emitRootCss(manifest))` or the
    equivalent containment, in the existing token tests.
 

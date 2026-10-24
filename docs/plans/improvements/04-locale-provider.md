@@ -9,9 +9,30 @@
 | Person gate   | none                                                          |
 | Report source | [../improvements.md](../improvements.md), the "texts" finding |
 
+## State on 2026-10-24
+
+- The review counted "about 130" literal defaults. A destructuring-only
+  heuristic on `src/components` (templates excluded) finds **107 defaults in 46
+  files**; the raw regex of step 1 also matches JSX attributes such as
+  `className=`, so the AST check is the source of truth, not a grep.
+- The text contract is in place: `CHANGELOG.md` (`Unreleased`) records the
+  overridable text props and the function-valued labels (`pageLabel`,
+  `slotLabel`, `stepLabel`, `statusLabel`, `fileMeta`, …). Every existing prop
+  keeps its name and type; only the defaults move.
+- `DatePicker` already exposes `locale` (BCP 47, default `"it-IT"`) and
+  `calendarLocale`; step 5.2 reads their defaults from the provider instead of
+  hard-coding them.
+- `src/lib` contains only `cn.ts`: `ui-provider` does not exist yet.
+- `primitives/calendar.tsx` imports `it` from `react-day-picker/locale`, and
+  `import-layers` allows third-party imports only in `primitives`; the fallback
+  of step 3.5 is therefore the current behaviour.
+- `docs/plans/refactor-locale.md` still exists and is deleted by step 7.4.
+- There is no `text-defaults` check and no `packages/ui-cli/src/checks/`
+  entry for it.
+
 ## Goal
 
-Today about 130 Italian text defaults are literals spread across about 50
+Today about 110 Italian text defaults are literals spread across about 46
 component files (`closeLabel = "Chiudi finestra"`,
 `pageLabel = (page) => \`Pagina ${page}\``, …). Each is overridable by a prop,
 so the text contract holds, but an application that needs English, or a
@@ -95,8 +116,8 @@ a guess.
 4. Add a unit test with a small fixture file covering: a string default, a
    function default, a `className` default (ignored).
 
-Done when: the check runs and the total (expected around 130) is in the
-report as "before".
+Done when: the check runs and the total (about 105–110 on 2026-10-24; the
+review's older 130 may differ) is in the report as "before".
 
 ### 2. Define the dictionary type and the Italian dictionary
 
@@ -160,8 +181,9 @@ For each family folder (`overlays`, `navigation`, `inputs`, `feedback`,
    Keep the prop optional with the same type, and update its JSDoc `@default`
    to name the dictionary key (`@default messages.dialog.closeLabel`).
 
-2. `DatePicker`: when the `locale` and `calendarLocale` props are absent, read
-   them from `useLocale()`.
+2. `DatePicker`: the `locale` and `calendarLocale` props already exist; when
+   they are absent, read them from `useLocale()` instead of the hard-coded
+   `"it-IT"`/`undefined` defaults.
 3. A component that must stay a server component (no hook today, no
    `"use client"`) still needs the hook now. Add `"use client"` as the file's
    first line and list the file in the report: action 03 reviews directives.

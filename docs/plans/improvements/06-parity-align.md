@@ -6,8 +6,26 @@
 | Worktree      | `../pagopa-ui-imp-06`                                                    |
 | Ports         | Storybook 6106 · static server 6206                                      |
 | Depends on    | 07 merged (it rewrites the parity-tooling reference first)               |
-| Person gate   | none for parts A and B; `G-EVD` for part C                               |
+| Person gate   | none; `G-EVD` for part C is satisfied                                    |
 | Report source | [../improvements.md](../improvements.md), the "agent-first flow" finding |
+
+## State on 2026-10-24
+
+- Gate `G-EVD` is satisfied: `docs/figma-parity/manifest.json` is tracked, the
+  bundle is 9.0 MB, and `pnpm nx run pagopa-ui-cli:figma:parity:verify` exits 0.
+  **Part C is in scope**; do not skip it.
+- `figma:parity:verify` already runs in the green chain of `CONTRIBUTING.md` and
+  as a step of the `coverage` job in `deep-checks.yml`. Part C only adds it to
+  the `dependsOn` of `pagopa-ui:test`.
+- The corpus holds 300 cases; `figma:parity:queue`, `check --save-case`,
+  `capture`, `report` and `evidence` exist. There is no `align` command and no
+  `--order` flag.
+- `packages/ui-cli/src/parity/render.ts` exports `STORYBOOK_URL`
+  (`STORYBOOK_URL ?? "http://localhost:6006"`) and `parity/cli.ts` imports
+  `cases.ts`, `render.ts`, `diff.ts` and `source.ts`, as the decisions assume.
+- The skill reference `parity-tooling.md` still names `source.mjs`,
+  `render.mjs` and `diff.mjs`; the modules are `.ts` today. Action 07 fixes the
+  names; step 4 of this action rewrites the same table, so keep them consistent.
 
 ## Goal
 
@@ -121,7 +139,8 @@ Done when:
 
 - `pnpm nx run pagopa-ui-cli:test` passes;
 - with Storybook running on port 6106
-  (`STORYBOOK_URL=http://localhost:6106 pnpm nx run pagopa-ui-cli:figma:parity:align -- --node <id>`),
+  (`PORT=6106 pnpm nx run pagopa-ui-storybook:storybook`, then
+  `STORYBOOK_URL=http://localhost:6106 pnpm nx run pagopa-ui-cli:figma:parity:align -- --node <id>`),
   the 3 measured nodes print a work order. Its output is at most half the
   "before" lines.
 
@@ -159,8 +178,8 @@ files didn't grow.
 
 ### 5. Part C — `verify` in the gate (only with `G-EVD`)
 
-Check first: `git ls-files docs/figma-parity/manifest.json`. If it prints
-nothing, skip this step and say so.
+`G-EVD` is satisfied on `main` today: `git ls-files docs/figma-parity/manifest.json`
+prints the file. Run this step unless the branch's base lost it.
 
 `figma:check` already validates the case corpus and device coverage; it doesn't
 check the evidence bundle (stale fingerprints, missing or orphan PNGs, the

@@ -6,8 +6,25 @@
 | Worktrees     | `../pagopa-ui-imp-12` (tooling), `../pagopa-ui-imp-12-w1`…`w4`        |
 | Ports         | Storybook on `:6006`                                                  |
 | Depends on    | nothing                                                               |
-| Person gate   | merge of each wave only; the agent makes every rule decision          |
+| Person gate   | merged; no further gate                                               |
 | Report source | the Figma audit run on 2026-10-23 (numbers in "Baseline")             |
+
+## Outcome — merged on 2026-10-24
+
+This action is **done**. All four waves are merged and the plan is kept as the
+record of the model, not as work to execute.
+
+- `packages/pagopa-ui/src/catalog/figma/rules.json` holds 356 cards:
+  43 `imported`, 36 `recorded`, 172 `duplicate`, 101 `out-of-scope`,
+  3 `deferred`, 1 `conflict`, **0 pending and 0 stale**.
+- `figma:rules:check` already runs `--strict`; a `pending` card fails the build.
+- `figma:status` prints the rules and comments lines, `figma:brief` is in
+  `AGENTS.md` and in the `figma-to-code` skill, and `figma:rules`,
+  `figma:comments` and `figma:brief` are Nx targets.
+- What is left is ordinary operation, not this plan: 7 registry nodes are
+  `pending`, 24 design requests are open in `docs/design-requests`, and the
+  local `.figma/comments.json` snapshot is missing until
+  `pnpm nx run pagopa-ui-cli:figma:comments --refresh` recreates it.
 
 ## Goal
 

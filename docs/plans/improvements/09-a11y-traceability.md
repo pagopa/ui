@@ -9,6 +9,25 @@
 | Person gate   | none (the manual screen reader pass is a person step after merge)     |
 | Report source | [../improvements.md](../improvements.md), the "accessibility" finding |
 
+## State on 2026-10-24
+
+- `apps/storybook/.storybook/preview.tsx` sets `a11y.test: "error"`, excludes
+  `[data-base-ui-focus-guard]`, and still comments that reason with
+  `.migration/project.md`. It has **no** `runOnly` tag set and no
+  `config.rules`, so the `region` rule is not disabled today.
+- The contract changed shape since this plan: `a11yContractAfterEach` records
+  `{ id, canvas, parameters }` into `globalThis.__pagopaA11yContractSurface`,
+  and `runA11yContract()` (called from `src/support/a11y-setup.ts`, a Vitest
+  `afterEach`) runs the checks. Tags are **not** part of the recorded surface;
+  step 3 adds them.
+- `expectLiveRegions` already proves that every **visible** live region carries
+  content; the new `live-region` tag proves that a story with a dynamic message
+  actually announces it. Six components render live regions: `overlay`,
+  `banner`, `snackbar-error-code`, `ko-state`, `table-list`, `error-summary`.
+- The accessibility guide has 10 rows in "Criteria by component type".
+- `packages/pagopa-ui/etc/pagopa-ui.api.md` does not exist yet: this action
+  waits for 02, as its "Depends on" says.
+
 ## Goal
 
 The automatic layer is strong (axe on every story, the shared contract, the
@@ -117,9 +136,10 @@ how it was resolved.
 ### 3. The `live-region` contract
 
 1. In `a11y-contract.ts`, add `expectAnnouncement(canvas)`, called from
-   `runA11yContract` only when the story's tags include `live-region`.
-   Pass the tags through `a11yContractAfterEach` (`context.tags`) like the
-   other fields of the recorded surface.
+   `runA11yContract()` only when the story's tags include `live-region`.
+   Extend the recorded `StorySurface` with `tags: string[]`, set from
+   `context.tags` in `a11yContractAfterEach`, and read it in
+   `runA11yContract()` like `parameters`.
 2. It asserts that, after the story's `play`, the canvas or the document
    contains at least one visible element matching
    `[role='status'],[role='alert'],[role='log'],[aria-live='polite'],[aria-live='assertive']`

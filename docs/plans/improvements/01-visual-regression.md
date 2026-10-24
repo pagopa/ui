@@ -9,6 +9,20 @@
 | Person gate   | none to start; `G-VIS` (baselines) before merge                |
 | Report source | [../improvements.md](../improvements.md), the "visual" finding |
 
+## State on 2026-10-24
+
+- `apps/storybook` already declares `playwright@1.63.0`; `@playwright/test` is
+  not installed yet.
+- A previous build left `apps/storybook/dist/index.json`: **467 stories** in 95
+  story files, none tagged `no-visual`.
+- `.gitignore` already ignores `test-results/` and `playwright-report/` at the
+  repository root, so step 6 only has to set `outputDir`.
+- `chromatic.yml` still runs on the `chromatic` label with
+  `exitZeroOnChanges: true`, as the "Decisions" assume.
+- The Storybook build is `pnpm nx run pagopa-ui-storybook:build`, which writes
+  `apps/storybook/dist`; it is unchanged. The dev server takes its port from
+  `PORT=6101` (the table's 6101 still applies).
+
 ## Goal
 
 A pixel change in any story fails a required CI check, before review. Today
@@ -59,7 +73,8 @@ pnpm nx run pagopa-ui-storybook:build
 node -e 'const j=require("./apps/storybook/dist/index.json");const s=Object.values(j.entries).filter(e=>e.type==="story");console.log("stories",s.length)'
 ```
 
-Record the story count and the build time in the report as "before".
+Record the story count and the build time in the report as "before". The build
+measured on 2026-10-24 reports 467 stories; re-measure, don't trust the number.
 
 Done when: both numbers are in your notes.
 
@@ -153,8 +168,10 @@ count equals 3 × (stories − `no-visual` stories).
    `test:visual:update`, each with `"dependsOn": ["build"]` and
    `"cache": false`.
 3. Add `apps/storybook/visual/test-results/` and
-   `apps/storybook/visual/playwright-report/` to `.gitignore`. Set `outputDir`
-   in the config to `test-results` so the results land there.
+   `apps/storybook/visual/playwright-report/` to `.gitignore`. The root already
+   ignores `test-results/` and `playwright-report/`, so this is a no-op unless
+   the patterns were narrowed; keep it as written. Set `outputDir` in the
+   config to `test-results` so the results land there.
 
 Done when: `pnpm nx show project pagopa-ui-storybook --json | grep -c test:visual`
 prints at least 2.

@@ -9,6 +9,25 @@
 | Person gate   | none                                                                     |
 | Report source | [../improvements.md](../improvements.md), the "agent-first flow" finding |
 
+## State on 2026-10-24
+
+- Step 2 (the command-aware `docs` check) **already landed** (commit `6734923`)
+  and `pnpm nx run pagopa-ui:docs` passes. Keep it as the measure; do not
+  rewrite it unless a new stale command appears.
+- Step 3 largely landed too: the config discovery, `init.md`, the Storybook
+  command in the two skills and the `figma-to-code.yaml` header are fixed. Two
+  stale references remain, in the table below.
+- Current measures: 17,149 words across the two skills, their references,
+  `AGENTS.md` and `CONTRIBUTING.md`; 10 skills under `.github/skills` (4 of
+  them Nx Cloud); registry notes total 127,682 characters with **90** notes
+  over 600 characters.
+- `foundation.ts` defines 7 rules; every baseline ceiling is 0, and
+  `foundation-exceptions.json` absorbs 1 `font-weight` and 11
+  `off-scale-spacing` hits. `shadow-scale` finds 3 occurrences, all in
+  `src/components/templates/figma/TemplateShell.tsx`; `center-overflow` finds 0.
+- The stale `node scripts/check-foundation.mjs --measure` note lives in
+  `packages/tokens/src/foundation-baseline.json`, as the table says.
+
 ## Goal
 
 Agents follow the skills literally, so a wrong path or command in a skill costs
@@ -67,58 +86,52 @@ ls .github/skills | wc -l
 node -e 'const r=require("./packages/pagopa-ui/src/catalog/figma/registry.json");const n=Object.values(r.entries).map(e=>(e.note||"").length);console.log("notes>600",n.filter(x=>x>600).length,"chars",n.reduce((a,b)=>a+b,0))'
 ```
 
-Record: total words, skill count, long notes (44 on 2026-10-22) and total note
-characters (about 72,500 on 2026-10-22). M5 changes the notes: any value is
-valid, use what you measure.
+Record: total words, skill count, long notes (90 and 127,682 characters on
+2026-10-24) and total note characters. M5 and the rules waves changed the
+notes: any value is valid, use what you measure.
 
 Done when: the numbers are in the report as "before".
 
-### 2. Command-aware docs check (write it before fixing, so it finds the list)
+### 2. Command-aware docs check (already landed)
 
-Extend `packages/ui-cli/src/checks/doc-links.ts`. For the Markdown files it
-already scans that are **not** links-only (`AGENTS.md`, `CONTRIBUTING.md`,
-`README.md`, the package README and CHANGELOG, the skills), and for
-`packages/pagopa-ui/figma-to-code.yaml`, find commands in code spans and in
-fenced code blocks:
+**Done on `main`.** `packages/ui-cli/src/checks/doc-links.ts` already resolves
+every `pnpm` command it finds against the Nx graph and the root scripts (commit
+`6734923`), with the rules listed below, and `pnpm nx run pagopa-ui:docs`
+passes. Read it, keep it green, and only extend it if step 3 finds a command it
+does not cover.
+
+For reference, the check as it stands:
 
 1. `pnpm nx run <project>:<target>` (and `pnpm nx run-many … -p <projects> -t <targets>`):
-   the project must exist and have the target. Read the real project graph
-   once: `nx show projects --json`, then `nx show project <name> --json` per
-   project named in the documents, using the workspace's own `nx` binary
-   (`node_modules/.bin/nx`). Cache the results for the run. A target with a
-   configuration (`build:ci`) is checked without it.
+   the project must exist and have the target. It reads the real project graph
+   once (`nx show projects --json`, then `nx show project <name> --json`), using
+   the workspace's own `nx` binary and caching the result for the run. A target
+   with a configuration (`build:ci`) is checked without it.
 2. `pnpm <word>` where `<word>` is not a pnpm built-in: the root `package.json`
-   must have that script. Built-ins: `install`, `add`, `remove`, `exec`, `dlx`,
-   `nx`, `run`, `why`, `list`, `update`, `outdated`, `--filter`, `-r`, `-w`.
+   must have that script.
 3. `pnpm --filter <name> run <script>`: the package must exist and have the
    script.
-4. Skip any command containing a placeholder (`<…>`, `…`, `$`).
-5. When the workspace has no `nx.json` (the regression fixtures build their
-   own tree), skip the Nx part.
+4. Commands containing a placeholder (`<…>`, `…`, `$`) are skipped.
+5. A tree without `nx.json` (the regression fixtures) skips the Nx part.
 
-Add a unit test with a fixture document naming one existing and one missing
-target, and one root script that doesn't exist.
+### 3. Fix the remaining stale references
 
-Done when: `pnpm nx run pagopa-ui:docs` now **fails**, and its output lists at
-least `pnpm storybook` and `pnpm docs:check`. Paste the list in the report.
-
-### 3. Fix every stale reference
-
-Fix all the errors the check reports, plus these known ones:
+The check reports clean today; these two references are stale but invisible to
+it. Fix exactly these:
 
 | File                                                        | Wrong                                         | Right                                                                                               |
 | ----------------------------------------------------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `.agents/skills/figma-to-code/SKILL.md` ("Config first")    | the YAML is "at the repository root"          | find it with `git ls-files '*figma-to-code.yaml'`; paths in it are relative to its folder           |
-| `.agents/skills/figma-to-code/references/init.md` (line 3)  | "exists at the repository root"               | "exists (one per repository)"                                                                       |
 | `.agents/skills/figma-to-code/references/parity-tooling.md` | `source.mjs`, `render.mjs`, `diff.mjs`        | the module names without the extension: "the source reader", "the render module", "the diff module" |
-| `.agents/skills/figma-to-code/references/visual-parity.md`  | `pnpm storybook`                              | `pnpm nx run pagopa-ui-storybook:storybook`                                                         |
-| `.agents/skills/pagopa-ui-standards/SKILL.md`               | `pnpm storybook`                              | `pnpm nx run pagopa-ui-storybook:storybook`                                                         |
-| `packages/pagopa-ui/figma-to-code.yaml` (header comment)    | `pnpm docs:check`                             | `pnpm nx run pagopa-ui:docs`                                                                        |
 | `packages/tokens/src/foundation-baseline.json` (`note`)     | `node scripts/check-foundation.mjs --measure` | `pnpm nx run pagopa-ui:foundation:check -- --measure`                                               |
 
+The following were in this table when the plan was written and are **already
+fixed** on `main`: the "repository root" wording in `SKILL.md` and `init.md`,
+`pnpm storybook` in `visual-parity.md` and the standards skill, and
+`pnpm docs:check` in the `figma-to-code.yaml` header.
+
 The skill must stay free of repository paths, so name modules by role, not by
-path. Check that the `--measure` command really works before writing it; if
-the flag must be passed differently, write the form that works.
+path. `pnpm nx run pagopa-ui:foundation:check -- --measure` works as written;
+the flag needs the `--` separator.
 
 Done when: `pnpm nx run pagopa-ui:docs` passes.
 
@@ -135,8 +148,9 @@ In `packages/ui-cli/src/checks/foundation.ts`, add two rules to `RULES`:
 Then:
 
 1. Run `pnpm nx run pagopa-ui:foundation:check -- --measure` and set the two
-   new counts in `foundation-baseline.json`. Expected: `shadow-scale` 3 (all
-   in the Figma templates), `center-overflow` 0. Do not touch any other count.
+   new counts in `foundation-baseline.json`. Measured on 2026-10-24:
+   `shadow-scale` 3 (all in `templates/figma/TemplateShell.tsx`),
+   `center-overflow` 0. Re-measure; do not touch any other count.
 2. Add a unit test per rule (one hit, one miss).
 3. In `visual-parity.md`, "Paint", replace the shadow bullet with: "Elevation
    comes only from the Figma shadow scale; the foundation check rejects
@@ -162,8 +176,9 @@ makes `foundation:check` fail. Revert the probe.
    when the count is **above** the value stored in
    `packages/pagopa-ui/src/catalog/figma/note-length-baseline.json`
    (`{ "maxLength": 600, "overLimit": <today's count>, "note": "…" }`). The
-   note says: lower `overLimit` when you shorten notes; never raise it; a note
-   records the current state and its residues, not history.
+   count was **90** on 2026-10-24; re-measure. The note says: lower
+   `overLimit` when you shorten notes; never raise it; a note records the
+   current state and its residues, not history.
 3. Fail **also** when the count is below the baseline, with the message "lower
    overLimit to <n>", so the ratchet tightens.
 4. Unit test: a fixture registry over and under the baseline.
@@ -223,13 +238,12 @@ Heavy: none beyond the full green chain (rule 22).
 
 ## Commits
 
-1. `feat(ui-cli): check commands named in docs and skills`
-2. `docs: fix stale paths and commands in skills and contributor docs`
-3. `feat(ui-cli): enforce the shadow scale and safe centring`
-4. `feat(ui-cli): ratchet long registry notes`
-5. `chore: remove the Nx Cloud skills`
-6. `docs(skills): replace enforced prose with check names`
-7. `docs(plans): report action 07`
+1. `docs: fix stale module names and the foundation measure command`
+2. `feat(ui-cli): enforce the shadow scale and safe centring`
+3. `feat(ui-cli): ratchet long registry notes`
+4. `chore: remove the Nx Cloud skills`
+5. `docs(skills): replace enforced prose with check names`
+6. `docs(plans): report action 07`
 
 ## Report additions
 

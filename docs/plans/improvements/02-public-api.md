@@ -9,16 +9,40 @@
 | Person gate   | `G-API`: the rename table below is approved before the agent starts |
 | Report source | [../improvements.md](../improvements.md), the "public API" finding  |
 
+## State on 2026-10-24
+
+- `Approval: APPROVED` is committed and every row R1–R12 reads `rename`, so
+  gate `G-API` is satisfied.
+- All twelve rename targets still exist under the names in the table: the
+  exports live in `content/`, `feedback/`, `inputs/`, `overlays/`,
+  `composites/`, `data-display/` and `icons/index.ts`, and `pagopa-ui.ts`
+  re-exports the families.
+- `pagopa-ui@0.0.1` is tagged and published on GitHub Packages, as assumed.
+- The build entry is `src/library-entry.ts` (the stylesheet plus
+  `export * from "./pagopa-ui"`); the declarations api-extractor reads still
+  come from `src/pagopa-ui.ts` through `tsconfig.lib.json`, i.e.
+  `dist/types/pagopa-ui.d.ts`.
+- No `@microsoft/api-extractor`, `api-extractor.json` or `etc/` exists yet.
+- `src/catalog/figma/api-exceptions.json` is new since this plan was written:
+  it maps exports that have no 1:1 Figma node (`SafeArea`, `DownloadCard`,
+  `ErrorSummary`, …) and one of its descriptions names `WhiteTemplate`. A
+  rename must keep that file consistent.
+- Base UI is 1.9.0: `Button` accepts `render` and `nativeButton`, so the
+  `ButtonAsLink` story of step 6 works as written.
+- Six anchors are missing from step 6.3's list (see the step); two anchors
+  stay plain.
+
+The catalogue holds `registry.json` (273 entries), `parity-cases.json` (300
+cases), `story-titles.json` (83 files), `inventory.json`, `api-exceptions.json`,
+`device-policy.json`, `device-exceptions.json` and `evidence-exceptions.json`.
+
 Approval: APPROVED
 
-> **Person:** fill the "Decision" column, change the line above to
-> `Approval: APPROVED` and commit to `main`. Allowed decisions:
->
-> - `rename` — use the proposed name;
-> - `keep` — leave the current name;
-> - `use <Name>` — use the name you write instead.
->
-> An empty cell counts as `keep`.
+> **Done.** The person filled the "Decision" column with `rename` for every row
+> and set the line above to `Approval: APPROVED`. Allowed decisions, for
+> reference: `rename` — use the proposed name; `keep` — leave the current name;
+> `use <Name>` — use the name you write instead. An empty cell counts as
+> `keep`.
 
 ## Rename table
 
@@ -185,6 +209,10 @@ For each approved row, in table order:
 4. Update the catalogue:
    - `registry.json`: `target.export` and `target.story`;
    - `parity-cases.json`: `export` and `storyId`;
+   - `story-titles.json`: the story path and title (moved with the story file
+     in item 2);
+   - `api-exceptions.json`: any description or key that names the old export
+     (for example `SafeArea` names `WhiteTemplate`);
    - `figma-to-code.yaml` if it names the export.
 5. Update the consumers of the name:
    - `REQUIRED_EXPORTS` in `packages/ui-cli/src/checks/library-artifact.ts`;
@@ -245,11 +273,15 @@ Done when, for each row:
    - `navigation/breadcrumb.tsx`, `navigation/footer.tsx`,
      `navigation/header.tsx`, `navigation/side-nav.tsx`,
      `navigation/preheader.tsx`, `composites/id-module.tsx` (or its renamed
-     file), `content/list-item.tsx`.
-   - Do **not** change `skip-to-main-content.tsx`: an in-page `#id` link must
-     stay a plain anchor.
+     file), `content/list-item.tsx`;
+   - `content/feature-list.tsx`, `data-display/catalogue-card.tsx`,
+     `data-display/product-card.tsx`, `data-display/table-list-item.tsx`,
+     `data-display/download-card.tsx`, `inputs/switch-field.tsx` (the
+     `learnMore` link). These anchors landed after this plan was written.
+   - Do **not** change `skip-to-main-content.tsx` or `inputs/error-summary.tsx`:
+     an in-page `#id` link must stay a plain anchor.
    - Find any remaining case with
-     `git grep -n '<a$\|<a ' packages/pagopa-ui/src/components -- ':!*/templates/*'`.
+     `grep -rnE '<a( |$)' packages/pagopa-ui/src/components --include='*.tsx'`.
 4. Add `apps/storybook/src/UIProvider.stories.tsx` (title
    `Components/UIProvider`), with:
    - a story `RouterLink`, where a fake link component adds
@@ -273,8 +305,8 @@ Done when:
 - the two stories pass in `pnpm nx run pagopa-ui-storybook:test:stories`
   (under the heavy lock);
 - the unit test passes;
-- `git grep -n '<a ' packages/pagopa-ui/src/components -- ':!*/templates/*'`
-  only lists `skip-to-main-content.tsx`.
+- `grep -rnE '<a( |$)' packages/pagopa-ui/src/components --include='*.tsx'`
+  only lists `skip-to-main-content.tsx` and `error-summary.tsx`.
 
 ### 7. Release bookkeeping
 
@@ -334,4 +366,5 @@ Then the full green chain (rule 22).
 - Whether api-extractor or the fallback is in use.
 - Person steps:
   - review the `etc/pagopa-ui.api.md` diff in the pull request;
-  - resume the M5 sessions after the merge (they must rebase on the new names).
+  - resume the paused Figma alignment sessions after the merge (they must
+    rebase on the new names).

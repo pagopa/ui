@@ -9,6 +9,30 @@
 | Person gate   | none                                                                                               |
 | Report source | [../improvements.md](../improvements.md), §3.3 "Demo code inside the library"                      |
 
+## State on 2026-10-24
+
+- `packages/pagopa-ui/src/components/templates/figma` holds 9 files and 1,091
+  lines: the 5 `implemented` compositions plus `TemplateComponents.tsx`,
+  `TemplateShell.tsx`, `templateConfigs.ts` and `index.ts`.
+- The registry has 273 entries: 242 `implemented`, 19 `mocked`, 7 `pending` and
+  5 `excluded`; the entries that point at the folder are exactly the 19 mocked
+  and 5 implemented ones (step 1's script prints `{ mocked: 19, implemented: 5 }`).
+- `packages/ui-cli/src/figma/sync.ts` still checks `entry.target.module` and
+  `pair.module` with `path.join(ROOT, …)` around lines 918–925, while
+  `absolutePath` in `src/lib/paths.ts` already resolves `apps/…` against the
+  workspace root.
+- `packages/tokens/src/foundation-exceptions.json` has one entry under the
+  folder (`src/components/templates/figma/LogIn.tsx`).
+- `packages/pagopa-ui/src/library.css` ends with
+  `@source not "../src/components/templates";`.
+- `apps/storybook/vite.config.ts` excludes
+  `packages/pagopa-ui/src/components/templates/**` from coverage.
+- `import-layers.ts` still allows the `templates` layer and exempts it from the
+  third-party rule; `story-taxonomy.test.mjs` still calls it "the templates
+  layer" in a comment.
+- `foundation.ts` walks only `COMPONENTS` (`src/components`), which currently
+  includes the folder.
+
 ## Goal
 
 `packages/pagopa-ui/src/components/templates/figma/` holds the Figma page
@@ -112,7 +136,7 @@ holds PNG files.
 ### 2. Let the registry point outside the package
 
 In `packages/ui-cli/src/figma/sync.ts`, the two existence checks on
-`entry.target.module` and `pair.module` (around lines 897 and 907) use
+`entry.target.module` and `pair.module` (around lines 918–925) use
 `path.join(ROOT, …)`. Replace both with `absolutePath(…)` from
 `../lib/paths.ts`. It already reads `apps/…` against the workspace root and
 `src/…` against the package. `runtimeExports` already goes through the same
@@ -204,8 +228,9 @@ explicitly allows rewriting them:
 
 Never delete a test; record each rewritten test in the report.
 
-In `story-taxonomy.test.mjs`, line 39 is a comment: change "implemented as the
-templates layer" to "implemented as Storybook templates".
+In `story-taxonomy.test.mjs`, the comment around line 38 says the source sets
+are "implemented as the templates layer": change it to "implemented as
+Storybook templates".
 
 Done when: `pnpm nx run pagopa-ui-cli:test` and
 `pnpm nx run pagopa-ui:layers:check` pass.

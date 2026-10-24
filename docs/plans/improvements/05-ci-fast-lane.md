@@ -9,6 +9,27 @@
 | Person gate   | none                                                             |
 | Report source | [../improvements.md](../improvements.md), the "pipeline" finding |
 
+## State on 2026-10-24
+
+- `apps/storybook/vite.config.ts` already names the two projects `storybook`
+  and `storybook-conditions` and already carries `conditionInstances`. Step 3.2
+  is therefore a one-line change to the `test:webkit` script.
+- `deep-checks.yml` still has the three jobs and their `name:` values
+  (`Coverage gates (Chromium)`, `Stories (WebKit, Firefox nightly)`, `Packed
+  artifact (three engines)`); each repeats the same setup, which now includes
+  the Debian package cache steps added after this plan was written. The
+  composite action must carry them.
+- The `library` job installs Chromium, Firefox and WebKit on every event today.
+- The green chain in `CONTRIBUTING.md` is four commands and now includes
+  `figma:rules:check` and `figma:parity:verify`; step 7 copies it verbatim. The
+  `workspace` project does not exist.
+- `packages/ui-cli/playwright.config.mjs` declares the three projects with fixed
+  names and no environment filter.
+- CI has no Nx cache step on purpose (Nx 23 does not reuse a local cache across
+  runners); this action does not add one.
+- `pagopa/dx/actions/setup-npm-registry@main` is the only action not pinned to a
+  SHA; copy it unchanged.
+
 ## Goal
 
 Shorten the pull request feedback loop without dropping a check:
@@ -101,10 +122,11 @@ Done when:
 ### 3. Skip the duplicated conditions pass on the WebKit pull request run
 
 1. Read `apps/storybook/vite.config.ts`. The stories project and the
-   `storybook-conditions` project both run in every mode.
-2. Give the stories project an explicit `name` if it has none (for example
-   `storybook`). Change `test:webkit` in `apps/storybook/package.json` to
-   `vitest --run --mode webkit --project storybook` (use the real name).
+   `storybook-conditions` project both run in every mode, and both already have
+   a name (`storybook`, `storybook-conditions`).
+2. Change `test:webkit` in `apps/storybook/package.json` to
+   `vitest --run --mode webkit --project storybook`. The project name already
+   exists, so there is nothing else to name.
 3. Leave `test:stories` (nightly Firefox and WebKit) and `test:coverage`
    (Chromium, with conditions) unchanged.
 
@@ -160,9 +182,9 @@ no longer lists the three unit tasks.
 2. The steps are the ones each job repeats today, copied verbatim with the same
    pinned SHAs: pnpm setup, Node setup, `nx-set-shas`, `setup-npm-registry`,
    `pnpm install --frozen-lockfile`, resolving the Playwright version, the
-   browser cache (key including `inputs.browsers`), and
-   `playwright install --with-deps ${{ inputs.browsers }}` — the last three only
-   when `browsers` is not empty. Each `run` step needs `shell: bash`.
+   browser cache (key including `inputs.browsers`), the Debian package cache,
+   and `playwright install --with-deps ${{ inputs.browsers }}` — the last four
+   only when `browsers` is not empty. Each `run` step needs `shell: bash`.
 3. In `deep-checks.yml`, each job keeps its `actions/checkout` step (the action
    lives in the repository) and replaces the rest of its setup with
    `uses: ./.github/actions/setup`.
@@ -219,9 +241,12 @@ shows no job-level `name:` change).
    ```
 
    The commands are the green chain of `CONTRIBUTING.md`, split at each `&&`,
-   one Nx command per array item, verbatim. `fast` drops the
-   browser suites (`test:coverage`, `test:stories`, `library:check`) and the
-   Storybook build.
+   one Nx command per array item, verbatim. On 2026-10-24 the chain is four
+   lines (the package checks including `figma:check` and `test`; the three
+   tooling packages' static checks; the tooling and token tests plus
+   `figma:rules:check` and `figma:parity:verify`; the browser suites, the
+   Storybook build and `library:check`). `fast` drops the browser suites
+   (`test:coverage`, `test:stories`, `library:check`) and the Storybook build.
 
 2. Check that the new project doesn't change `nx affected` for existing work:
    `pnpm nx show projects` lists `workspace`, and

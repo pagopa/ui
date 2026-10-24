@@ -9,9 +9,26 @@
 | Person gate   | none                                                                |
 | Report source | [../improvements.md](../improvements.md), the "consumer DX" finding |
 
+## State on 2026-10-24
+
+- The build still emits a single `dist/pagopa-ui.js` (389,187 bytes) plus
+  `dist/styles.css` (126,165 bytes) from `src/library-entry.ts`, which is
+  `./library.css` + `export * from "./pagopa-ui"`.
+- Source: 143 modules (tests and stories excluded), 4 with `"use client"`
+  (`primitives/table.tsx`, `checkbox.tsx`, `dropdown-menu.tsx`, `select.tsx`),
+  0 with the directive in `dist`.
+- The classifier in "Decisions" matches **65** modules without the directive —
+  below the stop condition of 120.
+- `prepare-types` already inlines the artwork declarations and rewrites the
+  `@/…` specifiers; it only runs on the public entry.
+- The packed-artifact spec is `packages/ui-cli/tests/e2e/library.spec.mjs` (not
+  `tests/library.spec.mjs`); the Vite consumer fixture is
+  `packages/ui-cli/tests/fixtures/library-consumer`.
+- `next` is not a dependency of any workspace package.
+
 ## Goal
 
-`@pagopa/ui` ships one minified 386 KB file, `dist/pagopa-ui.js`, with no
+`@pagopa/ui` ships one minified 389 KB file, `dist/pagopa-ui.js`, with no
 `"use client"` directive. Two consumer problems follow:
 
 - In a Next.js App Router page (a Server Component by default), importing any
@@ -61,7 +78,7 @@ Allowed:
   `packages/ui-cli/src/cli.ts`, `packages/ui-cli/package.json` (one script and
   the `next` devDependency), `pnpm-lock.yaml`
 - `packages/ui-cli/tests/fixtures/library-rsc-consumer/**` (new)
-- `packages/ui-cli/tests/library.spec.mjs` (only if a path it reads moves)
+- `packages/ui-cli/tests/e2e/library.spec.mjs` (only if a path it reads moves)
 - `packages/pagopa-ui/project.json` (one target and one `test.dependsOn` entry)
 - `packages/pagopa-ui/README.md` (a "Next.js" usage section)
 - `packages/pagopa-ui/CHANGELOG.md`, `.nx/version-plans/**`

@@ -1,8 +1,9 @@
 # Improvement plan — orchestrator
 
 This folder turns the review in [../improvements.md](../improvements.md) into
-eleven actions. One implementing agent executes each action, on its own branch and git
-worktree.
+twelve actions. Eleven are still open; action 12 (component rules and node
+comments) is **merged** and stays as a record. One implementing agent executes
+each open action, on its own branch and git worktree.
 
 Who reads what:
 
@@ -24,34 +25,66 @@ Manual alternative, without the orchestrator: create the worktree as in
 section 4.3, start a session inside it, and paste the sub-agent prompt of
 section 4.3 with the placeholders filled in.
 
+## 0. State of the plans (measured 2026-10-24, `main` at `56ee17d`)
+
+No action 01–11 is merged: there is no
+`apps/storybook/visual`, no `etc/pagopa-ui.api.md`, no `UIProvider`, no
+`tools/workspace` project and no `client-directives`, `text-defaults`,
+`public-tokens`, `a11y-conformance` or `api-report` check. Action 12 is merged:
+`rules.json` holds 356 cards (43 imported, 36 recorded, 0 pending, 0 stale) and
+`figma:rules:check` already runs `--strict`.
+
+Some groundwork landed with action 12 and the M5 waves, and it changes the
+starting point of several plans:
+
+- the Figma evidence bundle is committed (`docs/figma-parity/manifest.json`,
+  9.0 MB), so `G-EVD` is satisfied and `figma:parity:verify` passes;
+- the API rename table is already `Approval: APPROVED` with every row `rename`,
+  so `G-API` is satisfied;
+- the command-aware `docs` check is in place (action 07, step 2) and
+  `pnpm nx run pagopa-ui:docs` passes today;
+- Storybook starts through `apps/storybook/scripts/storybook-dev.mjs`: the port
+  comes from `PORT`, so use
+  `PORT=61NN pnpm nx run pagopa-ui-storybook:storybook` instead of appending
+  `-p 61NN`;
+- the token theme still has no `--breakpoint-*: initial` and the components
+  carry 119 Tailwind default breakpoint variants;
+- the registry has 273 entries and 90 notes longer than 600 characters
+  (127,682 characters in total).
+
+Each action file carries its own "State on 2026-10-24" block with the numbers
+to re-measure, and marks the steps that already landed.
+
 ---
 
 ## 1. The actions
 
-| #   | File                                                     | Goal (one line)                                                                           | Depends on (merged) | Person gate before start  |
-| --- | -------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------- | ------------------------- |
-| 01  | [01-visual-regression.md](./01-visual-regression.md)     | Gating screenshot regression of every story at 320/600/1200 (Playwright)                  | —                   | —                         |
-| 02  | [02-public-api.md](./02-public-api.md)                   | Explicit exports, API report gate, approved renames, `UIProvider` with router links       | —                   | `G-API` (rename approval) |
-| 03  | [03-packaging-rsc.md](./03-packaging-rsc.md)             | Per-module build, `"use client"` check, Next.js App Router consumer                       | 02, 04              | —                         |
-| 04  | [04-locale-provider.md](./04-locale-provider.md)         | Messages in `UIProvider`: Italian default dictionary, English one, `text-defaults` gate   | 02                  | —                         |
-| 05  | [05-ci-fast-lane.md](./05-ci-fast-lane.md)               | `workspace:verify` target, Chromium-only packed check on PRs, less duplicate CI work      | —                   | —                         |
-| 06  | [06-parity-align.md](./06-parity-align.md)               | `parity align <nodeId>`, fan-in queue order, `parity verify` in the gate                  | 07                  | `G-EVD` for part C only   |
-| 07  | [07-agent-context.md](./07-agent-context.md)             | Fix stale references, turn known traps into checks, cap registry notes, prune skills      | —                   | —                         |
-| 08  | [08-responsive-tokens.md](./08-responsive-tokens.md)     | Only Figma breakpoints in Tailwind; off-token responsive variants become foundation rules | 01, 02, 07          | `G-VIS` (baselines)       |
-| 09  | [09-a11y-traceability.md](./09-a11y-traceability.md)     | Explicit WCAG axe tags, live-region contract, conformance matrix                          | 02                  | —                         |
-| 10  | [10-public-tokens.md](./10-public-tokens.md)             | Public token contract: `@pagopa/ui/tokens.css` and the typed `@pagopa/ui/tokens`          | 03, 08              | —                         |
-| 11  | [11-storybook-templates.md](./11-storybook-templates.md) | Figma page templates move to `apps/storybook`; the `templates` layer is retired           | 01, 02, 07, 08      | —                         |
+| #   | File                                                     | Goal (one line)                                                                           | Depends on (merged) | Person gate before start |
+| --- | -------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------- | ------------------------ |
+| 01  | [01-visual-regression.md](./01-visual-regression.md)     | Gating screenshot regression of every story at 320/600/1200 (Playwright)                  | —                   | —                        |
+| 02  | [02-public-api.md](./02-public-api.md)                   | Explicit exports, API report gate, approved renames, `UIProvider` with router links       | —                   | `G-API` satisfied        |
+| 03  | [03-packaging-rsc.md](./03-packaging-rsc.md)             | Per-module build, `"use client"` check, Next.js App Router consumer                       | 02, 04              | —                        |
+| 04  | [04-locale-provider.md](./04-locale-provider.md)         | Messages in `UIProvider`: Italian default dictionary, English one, `text-defaults` gate   | 02                  | —                        |
+| 05  | [05-ci-fast-lane.md](./05-ci-fast-lane.md)               | `workspace:verify` target, Chromium-only packed check on PRs, less duplicate CI work      | —                   | —                        |
+| 06  | [06-parity-align.md](./06-parity-align.md)               | `parity align <nodeId>`, fan-in queue order, `parity verify` in the gate                  | 07                  | `G-EVD` satisfied        |
+| 07  | [07-agent-context.md](./07-agent-context.md)             | Fix stale references, turn known traps into checks, cap registry notes, prune skills      | —                   | —                        |
+| 08  | [08-responsive-tokens.md](./08-responsive-tokens.md)     | Only Figma breakpoints in Tailwind; off-token responsive variants become foundation rules | 01, 02, 07          | `G-VIS` (baselines)      |
+| 09  | [09-a11y-traceability.md](./09-a11y-traceability.md)     | Explicit WCAG axe tags, live-region contract, conformance matrix                          | 02                  | —                        |
+| 10  | [10-public-tokens.md](./10-public-tokens.md)             | Public token contract: `@pagopa/ui/tokens.css` and the typed `@pagopa/ui/tokens`          | 03, 08              | —                        |
+| 11  | [11-storybook-templates.md](./11-storybook-templates.md) | Figma page templates move to `apps/storybook`; the `templates` layer is retired           | 01, 02, 07, 08      | —                        |
+| 12  | [12-component-rules.md](./12-component-rules.md)         | Component rules ledger, node comments and the node brief                                  | —                   | **merged** — do not run  |
 
 Dependencies (each line lists what must already be merged into `main`):
 
 ```text
 01, 02, 05, 07  nothing
 04, 09          02
-06              07              (part C also needs G-EVD)
+06              07              (part C needs G-EVD, already satisfied)
 08              01, 02, 07      (and G-VIS)
 03              02, 04
 10              03, 08
 11              01, 02, 07, 08
+12              merged
 ```
 
 Expected waves when nothing fails:
@@ -68,28 +101,29 @@ Expected waves when nothing fails:
 The orchestrator never satisfies a gate itself. It checks each one with the
 command shown, run in the main checkout on `main`; exit code 0 means satisfied.
 
-| Gate    | What the person does                                                                                                                                                                                                            | Check command                                                             |
-| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `G-API` | Fills the "Decision" column of the rename table in `02-public-api.md`, changes its line `Approval: PENDING` to `Approval: APPROVED` and commits to `main`.                                                                      | `grep -q '^Approval: APPROVED' docs/plans/improvements/02-public-api.md`  |
-| `G-VIS` | On the pull request of action 01, adds the `visual:update` label so the workflow commits Linux baselines, reviews a sample, re-runs the check and merges. The steps are in the "Report additions" of `01-visual-regression.md`. | `git ls-files 'apps/storybook/visual/__screenshots__/*.png' \| grep -q .` |
-| `G-EVD` | Exports `FIGMA_TOKEN` (or links the `.figma/` snapshot), runs `pnpm nx run pagopa-ui-cli:figma:parity:evidence -- --write`, checks the folder is under 10 MB and commits `docs/figma-parity/`.                                  | `git ls-files docs/figma-parity/manifest.json \| grep -q .`               |
+| Gate    | Status on 2026-10-24 | What the person does                                                                                                                                                                                                            | Check command                                                             |
+| ------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `G-API` | **satisfied**        | Filled the "Decision" column of the rename table in `02-public-api.md` (every row `rename`), changed its line `Approval: PENDING` to `Approval: APPROVED` and committed to `main`.                                              | `grep -q '^Approval: APPROVED' docs/plans/improvements/02-public-api.md`  |
+| `G-VIS` | open                 | On the pull request of action 01, adds the `visual:update` label so the workflow commits Linux baselines, reviews a sample, re-runs the check and merges. The steps are in the "Report additions" of `01-visual-regression.md`. | `git ls-files 'apps/storybook/visual/__screenshots__/*.png' \| grep -q .` |
+| `G-EVD` | **satisfied**        | Exports `FIGMA_TOKEN` (or links the `.figma/` snapshot), runs `pnpm nx run pagopa-ui-cli:figma:parity:evidence -- --write`, checks the folder is under 10 MB and commits `docs/figma-parity/`.                                  | `git ls-files docs/figma-parity/manifest.json \| grep -q .`               |
 
 Person-only steps, which the action reports also remind about:
 
-- **Before W1:** commit `docs/plans/improvements.md` and this folder to `main`.
-  Worktrees start from the last commit, so uncommitted files never reach the
-  agents.
+- **Before W1:** the plans are already committed on `main`; re-commit them if a
+  session edits this folder. Worktrees start from the last commit, so
+  uncommitted files never reach the agents.
 - **After 01 is merged:** make the `Visual regression` check required in the
   branch protection.
-- **While 02 and 08 are in flight:** pause the M5 burn-down sessions of
-  [figma-fidelity-and-drift.md](../figma-fidelity-and-drift.md). Both edit the
-  registry, the parity cases and the components, so whichever lands second must
-  rebase.
+- **While 02 and 08 are in flight:** pause the Figma alignment sessions — the
+  remaining M5 nodes of
+  [figma-fidelity-and-drift.md](../figma-fidelity-and-drift.md) and any
+  `figma-align` wave. Both action 02 and action 08 edit the registry, the parity
+  cases and the components, so whichever lands second must rebase.
 
 ### Deferred (no action file in this wave)
 
 - Nx remote cache for CI.
-- Splitting `packages/ui-cli/tests/library.spec.mjs` into per-family specs.
+- Splitting `packages/ui-cli/tests/e2e/library.spec.mjs` into per-family specs.
 - An oxlint rule ratchet.
 - Publishing to the public npm registry.
 - Responsive typography utilities that replace the `text-*-mobile` pairs, and
@@ -102,7 +136,7 @@ Person-only steps, which the action reports also remind about:
 | ------------------- | -------------------------------------------------------------------- |
 | Branch              | `improve/NN-<slug>` (the slug is the action file name without `NN-`) |
 | Worktree            | `<parent of the main checkout>/pagopa-ui-imp-NN` (absolute path)     |
-| Storybook dev port  | `61NN` (for example 6101 for action 01)                              |
+| Storybook dev port  | `61NN` (for example 6101 for action 01), passed as `PORT`            |
 | Static preview port | `62NN`                                                               |
 | Commit trailer      | `Improvement-Action: NN` on every commit, plus the Copilot trailer   |
 | Report file         | `docs/plans/improvements/reports/NN.md`, committed last              |
@@ -162,8 +196,8 @@ An action is **ready** when all of these hold:
 - every dependency in section 1 is merged;
 - its person gate (if any) passes its check command.
 
-Action 06 is ready without `G-EVD`: its part C is then skipped, as its file
-explains.
+Action 06 runs part C now: `G-EVD` is satisfied and
+`docs/figma-parity/manifest.json` is committed.
 
 ### 4.3 Launch (at most 3 agents at the same time)
 
@@ -293,11 +327,16 @@ a `README.md` or a skill when its **Ownership** section lists that file.
 ### How to run things
 
 9. Run every task through Nx: `pnpm nx run <project>:<target>`, extra arguments
-   after `--`. The projects are `pagopa-ui`, `pagopa-ui-storybook`,
-   `pagopa-ui-cli`, `pagopa-ui-tokens` and `pagopa-ui-artwork`.
+   after `--`. The design-system projects are `pagopa-ui`,
+   `pagopa-ui-storybook`, `pagopa-ui-cli`, `pagopa-ui-tokens` and
+   `pagopa-ui-artwork`; the workspace also carries the `infra` projects
+   (`bootstrapper-dev`, `resources-dev`, `repository`), out of scope here, and
+   `workspace` once action 05 merges.
 10. Wrap every browser suite in the heavy lock (section 3).
-11. Start Storybook with `pnpm nx run pagopa-ui-storybook:storybook -- -p 61NN`
-    and stop it before you finish.
+11. Start Storybook with
+    `PORT=61NN pnpm nx run pagopa-ui-storybook:storybook` and stop it before you
+    finish. The current script reads `PORT` and passes `-p` itself; appending
+    `-p 61NN` would pass the port twice.
 12. **Measure before you change.** Every action starts with a "Measure" step:
     record the numbers in the report as "before", then measure again as
     "after".
