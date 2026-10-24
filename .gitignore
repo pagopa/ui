@@ -328,6 +328,8 @@ dist-ssr
 storybook-static
 test-results/
 playwright-report/
+apps/storybook/visual/test-results/
+apps/storybook/visual/playwright-report/
 *.local
 
 # Figma live exports (local, produced by the Figma MCP; never committed)
