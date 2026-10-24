@@ -39,7 +39,7 @@
   "apps/storybook/src/ErrorState.stories.tsx": "Components/Feedback/ErrorState",
   "apps/storybook/src/ListItem.stories.tsx": "Components/Content/ListItem",
   "apps/storybook/src/LogIn.stories.tsx": "Components/Templates/Log In",
-  "apps/storybook/src/LoghiPSP.stories.tsx": "Components/Content/LoghiPSP",
+  "apps/storybook/src/PaymentProviderLogos.stories.tsx": "Components/Content/PaymentProviderLogos",
   "apps/storybook/src/MenuDropDown.stories.tsx": "Components/Inputs/MenuDropDown",
   "apps/storybook/src/Microevento.stories.tsx": "Components/Data display/Microevento",
   "apps/storybook/src/SuccessState.stories.tsx": "Components/Feedback/SuccessState",

@@ -685,11 +685,6 @@ export interface ListItemSuggestion {
     label: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "LoghiPSPProps" needs to be exported by the entry point pagopa-ui.d.ts
-//
-// @public (undocumented)
-export function LoghiPSP(props: LoghiPSPProps): JSX.Element;
-
 // @public (undocumented)
 export function MenuDropDown(input: {
     accessibleLabel?: string;
@@ -799,6 +794,11 @@ export function PaymentModule(input: Omit<React_2.ComponentProps<"div">, "onSele
     actions?: React_2.ReactNode;
     loading?: boolean;
 }): React_2.JSX.Element;
+
+// Warning: (ae-forgotten-export) The symbol "PaymentProviderLogosProps" needs to be exported by the entry point pagopa-ui.d.ts
+//
+// @public
+export function PaymentProviderLogos(props: PaymentProviderLogosProps): JSX.Element;
 
 // @public (undocumented)
 export function PinPoint(input: {

@@ -1213,12 +1213,12 @@
     "382:7640": {
       "status": "implemented",
       "target": {
-        "module": "src/components/content/loghi-psp.tsx",
-        "export": "LoghiPSP",
-        "story": "apps/storybook/src/LoghiPSP.stories.tsx",
+        "module": "src/components/content/payment-provider-logos.tsx",
+        "export": "PaymentProviderLogos",
+        "story": "apps/storybook/src/PaymentProviderLogos.stories.tsx",
         "storyExports": ["Fidelity", "Playground"]
       },
-      "note": "Reviewed: LoghiPSP publishes the set's sixteen brand variants as pinned, source-colour SVGs at the shared 24x24 artwork box with no card, frame or extra radius. Sixteen committed cases, one per variant (`382-7640-brand-*`), each captured from `Fidelity` at 24x24 with no device axis; the two variants whose source frame carries a 4px radius and fill paint them inside the exported artwork (rect rx=4), so the img's own radius is a mapping artifact. Composition and responsive clean on all sixteen; the artwork itself is owned by `assets:check` (guides/loghi-psp.md)."
+      "note": "Reviewed: PaymentProviderLogos publishes the set's sixteen brand variants as pinned, source-colour SVGs at the shared 24x24 artwork box with no card, frame or extra radius. Sixteen committed cases, one per variant (`382-7640-brand-*`), each captured from `Fidelity` at 24x24 with no device axis; the two variants whose source frame carries a 4px radius and fill paint them inside the exported artwork (rect rx=4), so the img's own radius is a mapping artifact. Composition and responsive clean on all sixteen; the artwork itself is owned by `assets:check` (guides/loghi-psp.md)."
     },
     "382:7813": {
       "status": "implemented",
