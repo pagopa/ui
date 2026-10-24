@@ -4,6 +4,7 @@ import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Button } from "@/components/primitives/button"
 import { Heading, type HeadingTag } from "@/components/primitives/heading"
 import { cn } from "@/lib/cn"
+import { useLinkComponent } from "@/lib/ui-provider"
 
 export interface IdentityProviderPickerOption {
   id: string
@@ -40,8 +41,9 @@ function IdentityProviderPickerRow({
   onClick,
   className,
 }: IdentityProviderPickerRowProps) {
+  const Link = useLinkComponent()
   return (
-    <a
+    <Link
       className={cn(
         "flex min-h-15 w-full items-center justify-between gap-3 rounded-lg bg-background p-4 text-left text-muted-foreground ring-1 ring-inset ring-border outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring forced-colors:ring-0 forced-colors:outline-1 forced-colors:outline-solid forced-colors:outline-[CanvasText]",
         className,
@@ -65,7 +67,7 @@ function IdentityProviderPickerRow({
       >
         {logo}
       </span>
-    </a>
+    </Link>
   )
 }
 

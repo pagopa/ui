@@ -1,5 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
+import { useLinkComponent } from "@/lib/ui-provider"
 
 export interface Feature {
   title: string
@@ -24,6 +25,7 @@ function FeatureList({
   className?: string
   titleAs?: "h2" | "h3"
 }) {
+  const Link = useLinkComponent()
   return (
     <ul data-slot="feature-list" className={cn("grid gap-4 sm:grid-cols-2", className)}>
       {features.map((feature, index) => (
@@ -58,12 +60,12 @@ function FeatureList({
               ) : null}
             </div>
             {feature.action ? (
-              <a
+              <Link
                 href={feature.action.href}
                 className="w-fit text-body-sb text-primary underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
               >
                 {feature.action.label}
-              </a>
+              </Link>
             ) : null}
           </div>
         </li>

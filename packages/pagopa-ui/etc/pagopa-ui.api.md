@@ -665,6 +665,12 @@ export function InputChip(input: React_2.ComponentProps<"span"> & {
 // @public (undocumented)
 export function Label(input: React_2.ComponentProps<"label">): React_2.JSX.Element;
 
+// @public (undocumented)
+export type LinkComponentProps = React_2.AnchorHTMLAttributes<HTMLAnchorElement> & {
+    href: string;
+    ref?: React_2.Ref<HTMLAnchorElement>;
+};
+
 // Warning: (ae-forgotten-export) The symbol "ListItemProps" needs to be exported by the entry point pagopa-ui.d.ts
 //
 // @public (undocumented)
@@ -1387,6 +1393,16 @@ export interface TooltipProps {
     showClose?: boolean;
     side?: "top" | "right" | "bottom" | "left";
     trigger: React_2.ReactElement;
+}
+
+// @public
+export function UIProvider(input: UIProviderProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export interface UIProviderProps {
+    // (undocumented)
+    children: React_2.ReactNode;
+    linkComponent?: React_2.ElementType<LinkComponentProps>;
 }
 
 // @public (undocumented)

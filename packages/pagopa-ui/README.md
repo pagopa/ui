@@ -31,3 +31,21 @@ import { Button } from "@pagopa/ui"
 React and ReactDOM are peer dependencies. The package ships compiled CSS,
 fonts, artwork, and TypeScript declarations; consumers do not need Tailwind,
 shadcn, or the repository's build aliases.
+
+## Router links
+
+Every navigation link renders as a plain `<a>` unless a provider supplies the
+application's link component. With Next.js:
+
+```tsx
+import Link from "next/link"
+import { UIProvider } from "@pagopa/ui"
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return <UIProvider linkComponent={Link}>{children}</UIProvider>
+}
+```
+
+The component receives `href`, the anchor attributes and a `ref`; keep it
+forwarding all of them so client-side routing, open-in-new-tab and which-link
+focus survive. In-page `#id` links stay plain anchors.
