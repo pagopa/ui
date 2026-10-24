@@ -2108,7 +2108,7 @@
     "9676:5633": {
       "status": "implemented",
       "target": {
-        "module": "src/components/data-display/micro-event.tsx",
+        "module": "src/components/data-display/microevento.tsx",
         "export": "MicroEvent",
         "story": "apps/storybook/src/MicroEvent.stories.tsx",
         "storyExports": ["Playground", "Corrected", "Source"]
