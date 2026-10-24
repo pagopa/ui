@@ -692,8 +692,8 @@ export function MenuDropDown(input: {
     label?: string;
 }): React_2.JSX.Element;
 
-// @public (undocumented)
-export function Microevento(input: {
+// @public
+export function MicroEvent(input: {
     title: React_2.ReactNode;
     time?: string;
     invalid?: boolean;

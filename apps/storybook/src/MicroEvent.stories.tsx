@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { Microevento } from "@/components/data-display"
+import { MicroEvent } from "@/components/data-display"
 
 import microeventoGuide from "./guides/microevento.md?raw"
 
 const meta = {
-  title: "Components/Data display/Microevento",
-  component: Microevento,
+  title: "Components/Data display/MicroEvent",
+  component: MicroEvent,
   args: {
     title: "Raccomandata pronta - La raccomandata è stata preparata per la spedizione.",
     time: "11:20",
@@ -27,9 +27,10 @@ const meta = {
 
 ${microeventoGuide}`,
       },
+      subtitle: "Figma: Microevento",
     },
   },
-} satisfies Meta<typeof Microevento>
+} satisfies Meta<typeof MicroEvent>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -58,7 +59,7 @@ export const Source: Story = {
   args: { time: undefined, invalid: true, title: sourceDescription },
   render: (args) => (
     <div data-fidelity-variant="default" className="w-[725px] max-w-full">
-      <Microevento {...args} />
+      <MicroEvent {...args} />
     </div>
   ),
 }

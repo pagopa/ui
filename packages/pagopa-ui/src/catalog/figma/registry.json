@@ -2108,9 +2108,9 @@
     "9676:5633": {
       "status": "implemented",
       "target": {
-        "module": "src/components/data-display/microevento.tsx",
-        "export": "Microevento",
-        "story": "apps/storybook/src/Microevento.stories.tsx",
+        "module": "src/components/data-display/micro-event.tsx",
+        "export": "MicroEvent",
+        "story": "apps/storybook/src/MicroEvent.stories.tsx",
         "storyExports": ["Playground", "Corrected", "Source"]
       },
       "note": "Reviewed 2026-10-23 (M5 second ring): `9676-5633-default` verifies the 725x91 row. The root gap is the source 0: the previous 20px `gap-5` was drift and is removed. Insets 8/0/8/28 match (the 28px is this node's recorded foundation exception, no 28px spacing step). The source reserves a 21px leading slot (`Frame 2087324584`, an empty `Description` text) that the component collapses without its optional `time`, so the FILL content column is 697 wide against 676 and is the case residue; with a time the slot is drawn. The shared Tag instance is 161.3x32 against 160x30 with the same reading as its own review; column gap 4 against 5; the copy is 14/20 Regular #0e0f13 and sits at 44 against the source 43. The source names both the empty leading slot and the copy `Description`, so the style subject resolves the empty one and the offsets stay recorded in the case note. Guide: apps/storybook/src/guides/microevento.md."

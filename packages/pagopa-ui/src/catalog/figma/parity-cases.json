@@ -5911,8 +5911,8 @@
   {
     "id": "9676-5633-default",
     "nodeId": "9676:5633",
-    "export": "Microevento",
-    "storyId": "components-data-display-microevento--source",
+    "export": "MicroEvent",
+    "storyId": "components-data-display-microevent--source",
     "state": "default",
     "width": 725,
     "height": 91,
