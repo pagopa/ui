@@ -4,7 +4,7 @@
 - Issue: https://github.com/pagopa/ui/issues/27
 - Status: open
 - Decision owner: @gunzip
-- Preview: none (the implemented state is the `Checkbox` story `SourceFocused`; the error state is `Invalid`)
+- Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-checkbox-focus--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-checkbox-focus--option-b
 - Figma node: `194:3654` (`CheckboxSingleElement`), variant `Status=Focused` `194:3659`
 - Comment thread: `1950671869` (2026-10-02)
 

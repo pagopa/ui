@@ -4,7 +4,7 @@
 - Issue: https://github.com/pagopa/ui/issues/28
 - Status: open
 - Decision owner: @gunzip
-- Preview: none (the range panel already exists in the `DatePicker` stories)
+- Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-date-picker-range--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-date-picker-range--option-b
 - Figma node: `8049:39452` (the mapped `DatePicker` panel)
 - Comment thread: `1745170530` (2026-05-04)
 
