@@ -1,6 +1,9 @@
 # Design request — Pagination `Order`: page position, compact state or device
 
 - Node: [Pagination](https://www.figma.com/design/pvhsJpPGQbEwNLiyP7BOIw?node-id=127-1510) (`127:1510`)
+- Type: design
+- Issue: https://github.com/pagopa/ui/issues/37
+- Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-pagination-order-axis--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-pagination-order-axis--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-pagination-order-axis--option-c
 - Status: open — the node stays `pending`
 - Decision owner: Figma design owner
 - Updated: 22 October 2026 — questions 5 to 7 added after the source review;

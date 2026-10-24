@@ -4,7 +4,7 @@
 - Issue: https://github.com/pagopa/ui/issues/34
 - Status: open
 - Decision owner: @gunzip
-- Preview: pending — the previews session adds the option stories and the PR #19 index
+- Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-focus-perimeter--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-focus-perimeter--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-focus-perimeter--option-c
 - Figma node: `1527:20695` (now removed; the decision is recorded in the thread)
 - Rule card: `I123:3565;52:898` (“Stato focused”)
 - Comment threads: `1525594157`, `1530342125` (2025-11)

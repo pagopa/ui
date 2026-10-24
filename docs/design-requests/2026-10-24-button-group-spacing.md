@@ -3,6 +3,8 @@
 - Nodes: [Button](https://www.figma.com/design/pvhsJpPGQbEwNLiyP7BOIw?node-id=108-1402) (`108:1402`) and
   [BlockButtons](https://www.figma.com/design/pvhsJpPGQbEwNLiyP7BOIw?node-id=123-4498) (`123:4498`), page • Button 🟢
 - Rule card: `I123:3565;52:896` ("Spazio tra più button")
+- Issue: https://github.com/pagopa/ui/issues/21
+- Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-button-group-spacing--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-button-group-spacing--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-button-group-spacing--option-c
 - Status: open — the code follows the rule (8px); the drawing shows 24px and
   the parity cases record the divergence
 - Decision owner: Figma design owner

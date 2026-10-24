@@ -4,6 +4,8 @@
   [ProgressKpiCard](https://www.figma.com/design/pvhsJpPGQbEwNLiyP7BOIw?node-id=12133-82475) (`12133:82475`, `implemented`)
 - Page: • Card 🟠 (`392:5292`)
 - Rule card: `I9698:58982;52:895` ("Progress KPI card usage")
+- Issue: https://github.com/pagopa/ui/issues/22
+- Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-progress-kpi-group--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-progress-kpi-group--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-progress-kpi-group--option-c
 - Status: open — the card is implemented and the rule is in
   `apps/storybook/src/guides/progress-kpi.md`; the group has no implementation
   and the set is `excluded`

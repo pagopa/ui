@@ -1,5 +1,11 @@
 # Design request — Autocomplete: does the field own the source `Type=Multiselect`, or is it another component?
 
+- Type: design
+- Issue: https://github.com/pagopa/ui/issues/40
+- Status: open — the node stays `pending`
+- Decision owner: @gunzip
+- Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-autocomplete-multiselect--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-autocomplete-multiselect--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-autocomplete-multiselect--option-c
+
 Date: 22 October 2026. Origin: flow A/E, milestone M5
 ([figma-fidelity-and-drift.md](../plans/figma-fidelity-and-drift.md)), node
 `824:8838`. Figma was not modified: the measurements below come from the pinned
@@ -30,12 +36,12 @@ selection", with the same `account_balance` 24px leading art, and the
 
 ## Evidence
 
-| Source variant                       | Node        | Box    | The library today                          |
-| ------------------------------------ | ----------- | ------ | ------------------------------------------ |
-| `Type=Default` (4 statuses × filled) | `824:8839`… | 272x48 | `Autocomplete`, single value               |
-| `Type=Multiselect`, filled           | `824:8872`  | 272x48 | not rendered by `Autocomplete`             |
-| `Type=Multiselect counter`, filled   | `11073:2336`| 272x48 | not rendered by `Autocomplete`             |
-| `Type=Error`                         | `824:8919`  | 274x71 | `Autocomplete` with `error`                |
+| Source variant                       | Node         | Box    | The library today              |
+| ------------------------------------ | ------------ | ------ | ------------------------------ |
+| `Type=Default` (4 statuses × filled) | `824:8839`…  | 272x48 | `Autocomplete`, single value   |
+| `Type=Multiselect`, filled           | `824:8872`   | 272x48 | not rendered by `Autocomplete` |
+| `Type=Multiselect counter`, filled   | `11073:2336` | 272x48 | not rendered by `Autocomplete` |
+| `Type=Error`                         | `824:8919`   | 274x71 | `Autocomplete` with `error`    |
 
 The `Default` type is implemented and would be reviewable on its own; the
 multiselect types are what keep the node out of `implemented`.

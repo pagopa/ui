@@ -4,7 +4,7 @@
 - Issue: https://github.com/pagopa/ui/issues/29
 - Status: open
 - Decision owner: @gunzip
-- Preview: pending — the previews session adds the option stories and the PR #19 index
+- Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-table-list-skeleton--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-table-list-skeleton--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-table-list-skeleton--option-c
 - Figma node: `9520:2537` (`TableListItem`)
 - Comment thread: `1813923067` (2026-06-23)
 

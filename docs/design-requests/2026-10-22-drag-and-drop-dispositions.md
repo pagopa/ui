@@ -1,5 +1,11 @@
 # Design request — Drag & Drop dispositions and error composition
 
+- Type: design
+- Issue: https://github.com/pagopa/ui/issues/42
+- Status: open — the node stays `pending`
+- Decision owner: @gunzip
+- Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-drag-and-drop-dispositions--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-drag-and-drop-dispositions--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-drag-and-drop-dispositions--option-c
+
 Date: 22 October 2026. Origin: flow A/E, milestone M5
 ([figma-fidelity-and-drift.md](../plans/figma-fidelity-and-drift.md)), node
 `760:7432`. Figma was not modified: the measurements below come from the pinned

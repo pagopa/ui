@@ -1,6 +1,9 @@
 # Design request — Paper stroke values
 
 - Card: `I7393:45981;52:895` on the `• Paper 🟢` page (`7295:40450`)
+- Type: design
+- Issue: https://github.com/pagopa/ui/issues/47
+- Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-paper-stroke-values--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-paper-stroke-values--option-b
 - Status: open — the rule stays `conflict` until the values are confirmed
 - Decision owner: Figma design owner
 - Updated: 23 October 2026 — surfaced by the wave-4 rules import

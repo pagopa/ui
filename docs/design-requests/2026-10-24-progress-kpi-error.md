@@ -4,7 +4,7 @@
 - Issue: https://github.com/pagopa/ui/issues/30
 - Status: open
 - Decision owner: @gunzip
-- Preview: pending — the previews session adds the option stories and the PR #19 index
+- Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-progress-kpi-error--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-progress-kpi-error--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-progress-kpi-error--option-c
 - Figma node: `9612:3997` (`.ProgressKpiBody`); public card `12133:82475`
 - Comment thread: `1913329252` (2026-09-04)
 

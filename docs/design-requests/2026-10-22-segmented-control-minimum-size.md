@@ -2,6 +2,9 @@
 
 - Node: [ButtonGroup](https://www.figma.com/design/pvhsJpPGQbEwNLiyP7BOIw?node-id=1293-8394) (`1293:8394`)
 - Page: • Button Group
+- Type: design
+- Issue: https://github.com/pagopa/ui/issues/43
+- Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-segmented-control-minimum-size--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-segmented-control-minimum-size--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-segmented-control-minimum-size--option-c
 - Status: open — the node stays `pending`
 - Decision owner: Figma design owner
 
