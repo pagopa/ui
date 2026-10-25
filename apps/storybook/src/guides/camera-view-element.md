@@ -1,6 +1,6 @@
-# CameraViewElement
+# CameraView
 
-`CameraViewElement` implements the Figma component `CameraViewElement`
+`CameraView` implements the Figma component `CameraViewElement`
 (`1134:6812`): the framing overlay a camera preview paints around the area the
 reader has to capture.
 
@@ -18,9 +18,9 @@ between them.
 ## Example
 
 ```tsx
-<CameraViewElement active={streaming} label="Inquadra il codice">
+<CameraView active={streaming} label="Inquadra il codice">
   <video ref={video} autoPlay playsInline muted />
-</CameraViewElement>
+</CameraView>
 ```
 
 ## Behaviour

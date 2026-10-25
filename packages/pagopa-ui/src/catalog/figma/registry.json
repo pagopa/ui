@@ -330,9 +330,9 @@
     "1134:6812": {
       "status": "implemented",
       "target": {
-        "module": "src/components/overlays/camera-view-element.tsx",
-        "export": "CameraViewElement",
-        "story": "apps/storybook/src/CameraViewElement.stories.tsx",
+        "module": "src/components/overlays/camera-view.tsx",
+        "export": "CameraView",
+        "story": "apps/storybook/src/CameraView.stories.tsx",
         "storyExports": ["Playground", "Inactive", "Fidelity"]
       },
       "note": "Reviewed 2026-10-23: a plain COMPONENT, not a set, so one variant and no Device axis; `1134-6812-default` verifies the whole 376x378 frame at its source width. The 376 square (the artboard's 2px of extra height is within tolerance), radius 16, the `bg-overlay` token for the 35% `#0e0f13` scrim, the four 44x44 brackets at 80/81 and 252/253 with the 4px stroke and 24px elbow, and the guide bar at x 84.09 with the 208x4 source stroke. The source `Line 55` is a LINE (a zero-height box with a 4px stroke), so its box height, border width, border colour and top offset are mapping artifacts, ignored; the bar is measured in the case note. The default camera glyph is a runtime extension the source frame does not draw, so the Fidelity story clears the centre by passing `null` (`children === undefined` selects the glyph, not null); `active` only changes the announcement because the source has no active/inactive paint. Guide: apps/storybook/src/guides/camera-view-element.md."

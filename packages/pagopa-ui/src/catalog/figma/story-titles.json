@@ -10,7 +10,7 @@
   "apps/storybook/src/Breadcrumb.stories.tsx": "Components/Navigation/Breadcrumb",
   "apps/storybook/src/Button.stories.tsx": "Components/Button",
   "apps/storybook/src/ButtonGroup.stories.tsx": "Components/Inputs/ButtonGroup",
-  "apps/storybook/src/CameraViewElement.stories.tsx": "Components/Overlays/CameraViewElement",
+  "apps/storybook/src/CameraView.stories.tsx": "Components/Overlays/CameraView",
   "apps/storybook/src/CarouselStepper.stories.tsx": "Components/Navigation/CarouselStepper",
   "apps/storybook/src/Checkbox.stories.tsx": "Components/Checkbox",
   "apps/storybook/src/CheckboxField.stories.tsx": "Components/Inputs/CheckboxField",
