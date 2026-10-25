@@ -20,6 +20,7 @@
         "figma:check",
         "pagopa-ui-artwork:test",
         "layers:check",
+        "text-defaults:check",
         "foundation:check",
         "pagopa-ui-cli:test",
         "pagopa-ui-tokens:test"
@@ -67,6 +68,9 @@
       "cache": false
     },
     "layers:check": { "options": { "command": "node src/cli.ts check layers" } },
+    "text-defaults:check": {
+      "options": { "command": "node src/cli.ts check text-defaults --max 0" }
+    },
     "foundation:check": { "options": { "command": "node src/cli.ts check foundation" } },
     "library:check": {
       "dependsOn": ["build"],
