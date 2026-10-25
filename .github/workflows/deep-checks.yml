@@ -100,11 +100,25 @@ jobs:
           # Nothing here pushes: the token stays out of .git/config.
           persist-credentials: false
 
+      # A pull request proves the stories on WebKit alone; the nightly and
+      # dispatched runs add Firefox, whose binaries are not installed when
+      # nothing runs on them.
+      - name: Choose the engines of this event
+        id: engines
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ] || [ "$EVENT_NAME" = "push" ]; then
+            echo "browsers=webkit" >> "$GITHUB_OUTPUT"
+          else
+            echo "browsers=firefox webkit" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Setup
         uses: ./.github/actions/setup
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          browsers: firefox webkit
+          browsers: ${{ steps.engines.outputs.browsers }}
 
       - name: Stories in WebKit (affected)
         if: github.event_name == 'pull_request' || github.event_name == 'push'
