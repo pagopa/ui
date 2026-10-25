@@ -68,15 +68,13 @@ runs:
     # the Debian libraries, which live in /var/lib/dpkg of a runner that is
     # thrown away, so apt downloaded them again on every job from a mirror
     # that is intermittently throttled to tens of kB/s. The archives now
-    # round-trip through the cache instead; a miss fails in ten minutes
-    # rather than holding the job for forty-six.
+    # round-trip through the cache instead.
     - name: Install Playwright browsers
       if: inputs.browsers != ''
-      timeout-minutes: 10
       shell: bash
       run: |
         mkdir -p ~/.cache/playwright-debs
         sudo cp -n ~/.cache/playwright-debs/*.deb /var/cache/apt/archives/ 2>/dev/null || true
-        pnpm --filter @pagopa/ui exec playwright install --with-deps ${{ inputs.browsers }}
+        timeout 600 pnpm --filter @pagopa/ui exec playwright install --with-deps ${{ inputs.browsers }}
         sudo cp -n /var/cache/apt/archives/*.deb ~/.cache/playwright-debs/ 2>/dev/null || true
         sudo chown -R "$USER" ~/.cache/playwright-debs

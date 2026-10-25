@@ -41,6 +41,10 @@ export const itMessages: Messages = {
     statusLabel: (status) => `Stato: ${avatarStatusLabels[status]}`,
     selectedLabel: "Selezionato",
   },
+  correctionTag: {
+    validLabel: "EVENTO RETTIFICATO",
+    notValidLabel: "EVENTO NON VALIDO",
+  },
   image: {
     fallbackLabel: "Immagine non disponibile",
   },

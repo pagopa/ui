@@ -111,12 +111,24 @@ function letters(value: string): number {
 }
 
 // The literal source text of a default, or undefined when the default is not
-// text-shaped: an identifier, a boolean, a call or an object.
+// text-shaped: an identifier, a boolean, a call or an object. A conditional
+// counts through its branches: a literal hidden behind a ternary (valid /
+// not-valid label forks) is a literal default just the same.
 function textValue(node: Node, source: string): string | undefined {
   if (node.type === "Literal" && typeof node.value === "string") {
     return source.slice(node.start, node.end)
   }
   if (node.type === "TemplateLiteral") return source.slice(node.start, node.end)
+  if (node.type === "ConditionalExpression") {
+    for (const key of ["consequent", "alternate"]) {
+      const branch = child(node, key)
+      if (branch) {
+        const text = textValue(branch, source)
+        if (text !== undefined) return text
+      }
+    }
+    return undefined
+  }
   if (node.type === "ArrowFunctionExpression") {
     const body = child(node, "body")
     return body ? textValue(body, source) : undefined

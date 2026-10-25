@@ -1,3 +1,7 @@
+"use client"
+
+import { useMessages } from "@/lib/ui-provider"
+
 import { Tag } from "./tag"
 
 /**
@@ -9,13 +13,18 @@ import { Tag } from "./tag"
  */
 function CorrectionTag({
   status,
-  label = status === "valid" ? "EVENTO RETTIFICATO" : "EVENTO NON VALIDO",
+  label: labelProp,
 }: {
   /** Correction outcome: rettificato (`valid`) or non valido (`not-valid`). */
   status: "valid" | "not-valid"
-  /** Visible label. @default "EVENTO RETTIFICATO" / "EVENTO NON VALIDO" */
+  /**
+   * Visible label. @default messages.correctionTag.validLabel on `valid`,
+   * messages.correctionTag.notValidLabel on `not-valid`
+   */
   label?: string
 }) {
+  const t = useMessages("correctionTag")
+  const label = labelProp ?? (status === "valid" ? t.validLabel : t.notValidLabel)
   return <Tag status={status === "valid" ? "success" : "warning"}>{label}</Tag>
 }
 

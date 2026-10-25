@@ -41,6 +41,10 @@ export interface Messages {
     statusLabel: (status: "online" | "offline" | "busy") => string
     selectedLabel: string
   }
+  correctionTag: {
+    validLabel: string
+    notValidLabel: string
+  }
   image: {
     fallbackLabel: string
   }

@@ -38,6 +38,10 @@ type PspBrand =
   | "app-postepay"
   | "vpay"
 
+// The `alt`s are the registered names of the logos: brand marks are not copy,
+// they are the same words in every locale, so a literal here is not a message
+// the dictionary owns. The `alt` prop of the single-brand variant keeps the
+// text contract: it overrides this map.
 const pspBrandLogos: Record<PspBrand, { src: string; alt: string }> = {
   mastercard: { src: mastercardLogo, alt: "Mastercard" },
   maestro: { src: maestroLogo, alt: "Maestro" },

@@ -36,6 +36,10 @@ export const enMessages: Messages = {
     statusLabel: (status) => `Status: ${avatarStatusLabels[status]}`,
     selectedLabel: "Selected",
   },
+  correctionTag: {
+    validLabel: "RECTIFIED EVENT",
+    notValidLabel: "INVALID EVENT",
+  },
   image: {
     fallbackLabel: "Image not available",
   },

@@ -78,3 +78,38 @@ test("skips templates and test files", () => {
     fs.rmSync(root, { recursive: true, force: true })
   }
 })
+
+const TERNARY = `function Tag({
+  status,
+  label = status === "valid" ? "EVENTO RETTIFICATO" : "EVENTO NON VALIDO",
+  shape = status === "valid" ? "round" : "square",
+}) {
+  return null
+}
+`
+
+test("reports a literal hidden behind a conditional", () => {
+  const { root, run } = fixture({ "src/components/tag/tag.tsx": TERNARY })
+  try {
+    const result = run("--max", "0")
+    assert.equal(result.status, 1, result.stdout)
+    assert.match(result.stdout, /src\/components\/tag\/tag\.tsx:3 label/)
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test("a conditional of identifiers alone is not text", () => {
+  const { root, run } = fixture({
+    "src/components/tag/tag.tsx": `function Tag({
+  shape = status === "valid" ? "round" : "square",
+}) { return null }
+`,
+  })
+  try {
+    const result = run("--max", "0")
+    assert.equal(result.status, 0, result.stdout)
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})

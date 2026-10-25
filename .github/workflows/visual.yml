@@ -147,4 +147,10 @@ jobs:
           fi
           git commit -m "test(visual): update baselines"
           git push origin "HEAD:$PR_HEAD_REF"
-
+      # A GITHUB_TOKEN commit does not trigger the gate against the new
+      # baselines: without this notice the red check from the run before the
+      # label is the only feedback the workflow ever gives.
+      - name: Ask for the verifying re-run
+        if: always()
+        run: |
+          echo "::notice::The baselines are committed to ${{ github.event.pull_request.head.ref }}. Remove the 'visual:update' label and re-run the Visual regression check so it verifies the new baselines."
