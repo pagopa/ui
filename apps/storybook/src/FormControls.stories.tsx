@@ -17,7 +17,7 @@ import {
   RadioGroup,
   SelectField,
   SwitchField,
-  TextareaField,
+  TextAreaField,
   TextField,
 } from "@/components/inputs"
 import { Button } from "@/components/primitives/button"
@@ -117,7 +117,7 @@ export const PaintedKeyboardPerimeters: Story = {
       onSubmit={(event) => event.preventDefault()}
     >
       <TextField label="Indirizzo email" name="email" />
-      <TextareaField label="Note della pratica" name="notes" />
+      <TextAreaField label="Note della pratica" name="notes" />
       <Autocomplete label="Comune" name="city" options={[{ value: "roma", label: "Roma" }]} />
       <SelectField label="Provincia" name="province" options={[{ value: "rm", label: "Roma" }]} />
       <CheckboxField label="Consenso alle comunicazioni" name="consent" />

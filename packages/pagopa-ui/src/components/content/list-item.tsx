@@ -1,6 +1,5 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
-import { useLinkComponent } from "@/lib/ui-provider"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Button } from "@/components/primitives/button"
@@ -71,7 +70,6 @@ function ListItem({
   className,
   ...props
 }: ListItemProps) {
-  const Link = useLinkComponent()
   const interactive = Boolean(href || onPress)
   const showChevron = chevron ?? (interactive && variant !== "link")
   const valueClassName = cn(
@@ -192,9 +190,9 @@ function ListItem({
 
   if (href) {
     return (
-      <Link href={href} className={classes} {...props}>
+      <a href={href} className={classes} {...props}>
         {row}
-      </Link>
+      </a>
     )
   }
 

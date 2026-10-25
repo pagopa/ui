@@ -1,7 +1,6 @@
 import { cn } from "@/lib/cn"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { useLinkComponent } from "@/lib/ui-provider"
 
 export interface BreadcrumbItem {
   label: string
@@ -38,7 +37,6 @@ function Breadcrumb({
       items?: never
     }
 )) {
-  const Link = useLinkComponent()
   const compact = props.layout === "compact"
   const items = props.layout === "compact" ? [props.back] : props.items
   return (
@@ -60,7 +58,7 @@ function Breadcrumb({
                 />
               ) : null}
               {!current && item.href ? (
-                <Link
+                <a
                   href={item.href}
                   className={cn(
                     "relative inline-flex min-w-0 items-center gap-1 rounded-sm text-body-sb text-foreground underline-offset-4 [overflow-wrap:anywhere] after:absolute after:inset-x-0 hover:text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
@@ -72,7 +70,7 @@ function Breadcrumb({
                     <PagoPAIcon name="arrow" variant="left" className="breadcrumb-back-icon" />
                   ) : null}
                   {item.label}
-                </Link>
+                </a>
               ) : (
                 <span
                   aria-current={current ? "page" : undefined}

@@ -1,6 +1,5 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
-import { useLinkComponent } from "@/lib/ui-provider"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Button, buttonVariants } from "@/components/primitives/button"
@@ -42,7 +41,6 @@ function TableListItem({
   /** Text of an action row that carries no label. @default "Apri" */
   actionFallbackLabel?: string
 }) {
-  const Link = useLinkComponent()
   const actionLabel = action?.label ?? actionFallbackLabel
   const actionIcon = <PagoPAIcon name="arrow" variant="right" />
   return (
@@ -90,7 +88,7 @@ function TableListItem({
         </div>
         {action ? (
           action.href !== undefined ? (
-            <Link
+            <a
               href={action.href}
               aria-label={action.ariaLabel}
               className={cn(
@@ -100,7 +98,7 @@ function TableListItem({
             >
               {actionLabel}
               {actionIcon}
-            </Link>
+            </a>
           ) : (
             <Button
               type="button"

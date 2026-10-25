@@ -6,7 +6,7 @@ import { Separator } from "@/components/primitives/separator"
 
 export type TimelineItemStatus = "default" | "success" | "error" | "warning" | "info"
 
-/** MicroEvent of an open touchpoint: correction tag plus description. */
+/** Microevento of an open touchpoint: correction tag plus description. */
 export interface TimelineEvent {
   id: React.Key
   correction?: React.ReactNode

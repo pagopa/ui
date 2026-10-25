@@ -15,17 +15,11 @@ const sizeClasses = {
   48: "h-12",
 } as const
 
-type SpacerSize = keyof typeof sizeClasses
+type SpacingSize = keyof typeof sizeClasses
 
-/**
- * Invisible vertical spacer: a step of the spacing scale as an empty block with
- * no role, hidden from assistive technology.
- *
- * Figma: Spacing (node 237:1307)
- */
-function Spacer({ size = 4, className }: { size?: SpacerSize; className?: string }) {
+function Spacing({ size = 4, className }: { size?: SpacingSize; className?: string }) {
   return <div aria-hidden="true" data-slot="spacing" className={cn(sizeClasses[size], className)} />
 }
 
-export { Spacer }
-export type { SpacerSize }
+export { Spacing }
+export type { SpacingSize }

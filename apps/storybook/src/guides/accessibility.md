@@ -71,7 +71,7 @@ that need the manual checklist.
   the caller updates the summary with it. `ErrorSummary` moves the focus to
   the entry's target, giving a tabindex to a composite target that has none.
 - Component titles take a heading level. `Heading as` (`titleAs`, default
-  `h2`) replaced the fixed `h2` in Footer, Table, IdentityProviderPicker, CheckoutModule and
+  `h2`) replaced the fixed `h2` in Footer, Table, IDModule, CheckoutModule and
   the other components that render a title: the caller owns the outline.
 - Visible **and** assistive strings are props with an Italian default,
   replaceable from outside: visible labels, hints, state and error copy,

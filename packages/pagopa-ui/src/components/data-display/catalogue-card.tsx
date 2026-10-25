@@ -1,6 +1,5 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
-import { useLinkComponent } from "@/lib/ui-provider"
 
 import { InputChip } from "@/components/inputs"
 import { Button, buttonVariants } from "@/components/primitives/button"
@@ -53,7 +52,6 @@ function CatalogueCard({
   className,
   ...props
 }: CatalogueCardProps) {
-  const Link = useLinkComponent()
   return (
     <div
       data-slot="catalogue-card"
@@ -114,13 +112,13 @@ function CatalogueCard({
             >
               {actions.map((action, index) =>
                 action.href !== undefined ? (
-                  <Link
+                  <a
                     key={index}
                     href={action.href}
                     className={cn(buttonVariants({ variant: "ghost" }), actionClassName)}
                   >
                     {action.label}
-                  </Link>
+                  </a>
                 ) : (
                   <Button
                     key={index}

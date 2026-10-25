@@ -4,9 +4,8 @@ import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Button } from "@/components/primitives/button"
 import { Heading, type HeadingTag } from "@/components/primitives/heading"
 import { cn } from "@/lib/cn"
-import { useLinkComponent } from "@/lib/ui-provider"
 
-export interface IdentityProviderPickerOption {
+export interface IDModuleProviderOption {
   id: string
   label: string
   logo: ReactNode
@@ -16,22 +15,22 @@ export interface IdentityProviderPickerOption {
   onClick?: ComponentProps<"a">["onClick"]
 }
 
-export interface IdentityProviderPickerProps {
+export interface IDModuleProps {
   title: string
   closeLabel: string
   onClose: () => void
-  providers: readonly IdentityProviderPickerOption[]
+  providers: readonly IDModuleProviderOption[]
   device?: "mobile" | "desktop"
   /** Heading tag of the module title. @default "h2" */
   titleAs?: HeadingTag
   className?: string
 }
 
-type IdentityProviderPickerRowProps = IdentityProviderPickerOption & {
+type IDModuleProviderProps = IDModuleProviderOption & {
   className?: string
 }
 
-function IdentityProviderPickerRow({
+function IDModuleProvider({
   id,
   label,
   logo,
@@ -40,10 +39,9 @@ function IdentityProviderPickerRow({
   rel,
   onClick,
   className,
-}: IdentityProviderPickerRowProps) {
-  const Link = useLinkComponent()
+}: IDModuleProviderProps) {
   return (
-    <Link
+    <a
       className={cn(
         "flex min-h-15 w-full items-center justify-between gap-3 rounded-lg bg-background p-4 text-left text-muted-foreground ring-1 ring-inset ring-border outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring forced-colors:ring-0 forced-colors:outline-1 forced-colors:outline-solid forced-colors:outline-[CanvasText]",
         className,
@@ -67,11 +65,11 @@ function IdentityProviderPickerRow({
       >
         {logo}
       </span>
-    </Link>
+    </a>
   )
 }
 
-function IdentityProviderPickerView({
+function IDModuleView({
   title,
   closeLabel,
   onClose,
@@ -79,7 +77,7 @@ function IdentityProviderPickerView({
   device = "mobile",
   titleAs = "h2",
   className,
-}: IdentityProviderPickerProps) {
+}: IDModuleProps) {
   const titleId = useId()
 
   return (
@@ -130,7 +128,7 @@ function IdentityProviderPickerView({
       >
         {providers.map((provider) => (
           <li className="min-w-0" key={provider.id}>
-            <IdentityProviderPickerRow {...provider} />
+            <IDModuleProvider {...provider} />
           </li>
         ))}
       </ul>
@@ -138,12 +136,6 @@ function IdentityProviderPickerView({
   )
 }
 
-/**
- * Provider chooser for digital identity sign-in: a labelled section listing the
- * caller's providers as links, with a close action and an optional desktop step.
- *
- * Figma: IDModule (node 731:20386)
- */
-const IdentityProviderPicker = Object.assign(IdentityProviderPickerView, { Provider: IdentityProviderPickerRow })
+const IDModule = Object.assign(IDModuleView, { Provider: IDModuleProvider })
 
-export { IdentityProviderPicker }
+export { IDModule }

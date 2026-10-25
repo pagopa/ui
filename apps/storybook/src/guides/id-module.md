@@ -7,13 +7,13 @@
 
 <!-- component-rules:end -->
 
-# IdentityProviderPicker
+# IDModule
 
-`IdentityProviderPicker` renders a provider chooser for digital identity sign-in. The caller
+`IDModule` renders a provider chooser for digital identity sign-in. The caller
 owns the provider labels, logos, destinations, and close behavior:
 
 ```tsx
-<IdentityProviderPicker
+<IDModule
   title="Scegli il tuo SPID"
   closeLabel="Chiudi"
   onClose={closeChooser}
@@ -33,7 +33,7 @@ From the `tablet` device step (600px) the module is 410px wide, the source
 frame width, capped by its container; below 600 it fills the available width.
 The `--id-module-width` local extension carries that value, and the source
 frames above 1440 only widen the page, so the panel keeps the same width.
-`IdentityProviderPicker.Provider` is also available for a single, caller-configured provider
+`IDModule.Provider` is also available for a single, caller-configured provider
 row.
 
 ## Accessibility and composition
@@ -44,7 +44,7 @@ row.
   its link, while the logo is passed in as caller-owned `ReactNode` artwork.
 - The close action is a native `type="button"` with an accessible label and an
   enlarged target; its glyph stays aligned to the source edge while the larger
-  target expands toward the title. `IdentityProviderPicker` is a labelled section, not a modal
+  target expands toward the title. `IDModule` is a labelled section, not a modal
   dialog. A parent that presents it as a dialog owns dialog semantics, focus
   management, Escape, and focus restoration.
 - Focus outlines remain explicit in forced-colors mode. The component adds no

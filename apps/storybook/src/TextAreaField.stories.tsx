@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, within } from "storybook/test"
 
-import { TextareaField } from "@/components/inputs"
+import { TextAreaField } from "@/components/inputs"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import fieldsGuide from "./guides/fields.md?raw"
 
 const meta = {
-  title: "Components/Inputs/TextareaField",
-  component: TextareaField,
+  title: "Components/Inputs/TextAreaField",
+  component: TextAreaField,
   args: {
     label: "Note",
     description: "Massimo 500 caratteri.",
@@ -20,10 +20,9 @@ const meta = {
       description: {
         component: `Multiline text area with the same semantics as TextField: label, description, validation and caller-owned count.\n\n${fieldsGuide}`,
       },
-      subtitle: "Figma: TextArea",
     },
   },
-} satisfies Meta<typeof TextareaField>
+} satisfies Meta<typeof TextAreaField>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -32,7 +31,7 @@ type Story = StoryObj<typeof meta>
 export const Playground: Story = {
   render: (args) => (
     <div className="w-68 max-w-full">
-      <TextareaField {...args} />
+      <TextAreaField {...args} />
     </div>
   ),
 }
@@ -81,7 +80,7 @@ export const FigmaStateMatrix: Story = {
     <div className="grid gap-6">
       {sourceAreaStates.map((state) => (
         <div key={state.id} className="w-[274px] max-w-full">
-          <TextareaField
+          <TextAreaField
             id={state.id}
             data-fidelity-state={state.id}
             label="Label text"
