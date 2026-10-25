@@ -1,3 +1,5 @@
+"use client"
+
 import {
   ArrowRight,
   Bell,
@@ -63,12 +65,12 @@ function Brand() {
 function AppHeader({ compact = false }: { compact?: boolean }) {
   return (
     <header className="border-b bg-background">
-      <div className="mx-auto flex min-h-16 max-w-7xl items-center gap-4 px-4 tablet:px-6 desktop:px-8">
+      <div className="mx-auto flex min-h-16 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
         <Brand />
         {!compact ? (
           <nav
             aria-label="Navigazione principale"
-            className="ml-auto hidden items-center gap-1 tablet-md:flex"
+            className="ml-auto hidden items-center gap-1 md:flex"
           >
             <Button variant="ghost">
               <Home aria-hidden="true" />
@@ -80,14 +82,14 @@ function AppHeader({ compact = false }: { compact?: boolean }) {
             </Button>
           </nav>
         ) : null}
-        <div className="ml-auto flex items-center gap-1 tablet-md:ml-0">
+        <div className="ml-auto flex items-center gap-1 md:ml-0">
           <Button variant="ghost" size="icon" aria-label="Notifiche">
             <Bell aria-hidden="true" />
           </Button>
           <Button variant="ghost" size="icon" aria-label="Profilo">
             <UserRound aria-hidden="true" />
           </Button>
-          <Button variant="ghost" size="icon" aria-label="Menu" className="tablet-md:hidden">
+          <Button variant="ghost" size="icon" aria-label="Menu" className="md:hidden">
             <Menu aria-hidden="true" />
           </Button>
         </div>
@@ -113,10 +115,10 @@ function Actions({ config }: { config: TemplateConfig }) {
 function LandingBody({ config }: { config: TemplateConfig }) {
   return (
     <>
-      <section className="grid items-center gap-8 py-8 tablet-md:grid-cols-2 tablet-md:py-16">
+      <section className="grid items-center gap-8 py-8 md:grid-cols-2 md:py-16">
         <div>
           <InputChip>{config.eyebrow || "Servizi pubblici digitali"}</InputChip>
-          <h1 className="mt-5 text-title-lg tablet:text-title-xxl">{config.title}</h1>
+          <h1 className="mt-5 text-title-lg sm:text-title-xxl">{config.title}</h1>
           <p className="mt-4 max-w-xl text-body text-muted-foreground">{config.description}</p>
           <div className="mt-6">
             <Actions config={config} />
@@ -146,7 +148,7 @@ function LandingBody({ config }: { config: TemplateConfig }) {
             icon: <CheckCircle2 />,
           },
         ]}
-        className="py-8 tablet-md:grid-cols-3"
+        className="py-8 md:grid-cols-3"
       />
     </>
   )
@@ -163,12 +165,12 @@ function DashboardBody({ config }: { config: TemplateConfig }) {
         </div>
         <Actions config={config} />
       </div>
-      <div className="grid gap-4 tablet:grid-cols-2 desktop:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <ProgressKpi label="Pagamenti completati" value={84} detail="Ultimi 30 giorni" />
         <ProgressKpi label="Servizi attivi" value={12} total={16} />
         <ProgressKpi label="Richieste gestite" value={236} total={300} />
       </div>
-      <div className="grid gap-6 desktop:grid-cols-[1fr_var(--grid-aside)]">
+      <div className="grid gap-6 lg:grid-cols-[1fr_var(--grid-aside)]">
         <TableList
           label="Attività recenti"
           rows={[
@@ -224,13 +226,13 @@ function FormBody({ config, wizard = false }: { config: TemplateConfig; wizard?:
 
 function AuthBody({ config }: { config: TemplateConfig }) {
   return (
-    <div className="mx-auto grid max-w-5xl overflow-hidden rounded-2xl border bg-card shadow-sm tablet-md:grid-cols-2">
-      <div className="bg-primary p-8 text-primary-foreground tablet-md:p-12">
+    <div className="mx-auto grid max-w-5xl overflow-hidden rounded-2xl border bg-card shadow-sm md:grid-cols-2">
+      <div className="bg-primary p-8 text-primary-foreground md:p-12">
         <Brand />
         <h1 className="mt-16 text-title-lg">{config.title}</h1>
         <p className="mt-4 text-primary-foreground/85">{config.description}</p>
       </div>
-      <form className="space-y-5 p-8 tablet-md:p-12" onSubmit={(event) => event.preventDefault()}>
+      <form className="space-y-5 p-8 md:p-12" onSubmit={(event) => event.preventDefault()}>
         <h2 className="text-title-xs">Accedi al servizio</h2>
         <label className="grid gap-2 text-label-sb">
           Email
@@ -271,7 +273,7 @@ function ListBody({ config, table = false }: { config: TemplateConfig; table?: b
       </label>
       {table ? (
         <div className="overflow-hidden rounded-xl border">
-          <div className="hidden grid-cols-[1fr_var(--grid-fields)_var(--grid-actions)] gap-4 bg-muted p-4 text-label-sb tablet:grid">
+          <div className="hidden grid-cols-[1fr_var(--grid-fields)_var(--grid-actions)] gap-4 bg-muted p-4 text-label-sb sm:grid">
             <span>Elemento</span>
             <span>Stato</span>
             <span />
@@ -306,14 +308,14 @@ function ListBody({ config, table = false }: { config: TemplateConfig; table?: b
 
 function DetailBody({ config }: { config: TemplateConfig }) {
   return (
-    <div className="grid gap-8 desktop:grid-cols-[1fr_var(--grid-aside)]">
+    <div className="grid gap-8 lg:grid-cols-[1fr_var(--grid-aside)]">
       <article>
         <p className="text-label-sb text-primary">{config.eyebrow}</p>
         <h1 className="text-title-lg">{config.title}</h1>
         <p className="mt-3 text-body text-muted-foreground">{config.description}</p>
         <div className="mt-8 rounded-xl border p-6">
           <h2 className="text-h4">Dettagli</h2>
-          <dl className="mt-4 grid gap-4 tablet:grid-cols-2">
+          <dl className="mt-4 grid gap-4 sm:grid-cols-2">
             <div>
               <dt className="text-label-mini text-muted-foreground">Identificativo</dt>
               <dd className="text-body-sb">PPA-2026-00421</dd>
@@ -425,7 +427,7 @@ function EmailBody({ config }: { config: TemplateConfig }) {
       <div className="border-b p-6">
         <Brand />
       </div>
-      <div className="p-6 tablet:p-10">
+      <div className="p-6 sm:p-10">
         <p className="text-label-mini-sb text-primary">{config.eyebrow}</p>
         <h1 className="mt-2 text-title-sm">{config.title}</h1>
         <p className="mt-4 text-body">{config.description}</p>
@@ -475,7 +477,7 @@ export function TemplateShell({
       <main
         id="main-content"
         className={cn(
-          "mx-auto max-w-7xl space-y-8 px-4 py-8 tablet:px-6 desktop:px-8",
+          "mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6 lg:px-8",
           standalone && "py-10",
         )}
       >
@@ -496,7 +498,7 @@ export function TemplateShell({
       </main>
       {!standalone ? (
         <footer className="mt-10 border-t bg-muted">
-          <div className="mx-auto flex max-w-7xl flex-wrap justify-between gap-4 px-4 py-8 tablet:px-6 desktop:px-8">
+          <div className="mx-auto flex max-w-7xl flex-wrap justify-between gap-4 px-4 py-8 sm:px-6 lg:px-8">
             <Brand />
             <p className="text-label-mini text-muted-foreground">© 2026 PagoPA S.p.A.</p>
           </div>

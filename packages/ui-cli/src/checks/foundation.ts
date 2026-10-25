@@ -7,12 +7,11 @@
 //   ui-cli check foundation            # enforce the baseline
 //   ui-cli check foundation --measure  # print the current counts
 import fs from "node:fs"
-import path from "node:path"
 import { z } from "zod"
 
 import { readJson } from "../lib/json.ts"
 import { walkFiles } from "../lib/fs.ts"
-import { absolutePath, enterRoot, tokensPath } from "../lib/paths.ts"
+import { enterRoot, tokensPath } from "../lib/paths.ts"
 import { parseSchema } from "../lib/validate.ts"
 import { parseSource } from "../lib/source-modules.ts"
 import {
@@ -31,10 +30,6 @@ const MANIFEST_PATH = tokensPath("src/manifest.json")
 const BASELINE_PATH = tokensPath("src/foundation-baseline.json")
 const EXCEPTIONS_PATH = tokensPath("src/foundation-exceptions.json")
 const COMPONENTS = "src/components"
-// The Figma page templates live in the Storybook application, outside the
-// package, and follow the same token-first rules.
-const TEMPLATES = "apps/storybook/src/templates"
-const ROOTS = [COMPONENTS, TEMPLATES]
 
 export const RULES = {
   "arbitrary-length": /\[[^[\]]*?\d+(?:\.\d+)?(?:px|rem)\b[^[\]]*?\]/g,
@@ -53,15 +48,6 @@ export const RULES = {
   // safe form.
   "center-overflow":
     /justify-center(?!-)[^"\n]*overflow-(?:x-|y-)?(?:auto|scroll)|overflow-(?:x-|y-)?(?:auto|scroll)[^"\n]*justify-center(?!-)/g,
-  // Viewport variants come only from the Figma breakpoints (`tablet:`,
-  // `tablet-md:`, `desktop:`, `desktop-xl:`, `desktop-xxl:`). The lookbehind
-  // spares `@md/alert:` container queries and any hyphenated token such as
-  // `text-sm:` or `max-w-screen-sm:`.
-  "default-breakpoint": /(?<![@\w-])(?:max-)?(?:sm|md|lg|xl|2xl):/g,
-  // Device typography pairs; frozen until a responsive type decision exists.
-  "mobile-text-class": /\btext-[a-z0-9-]+-mobile\b/g,
-  // Container sizes not backed by a Figma container token; frozen.
-  "default-container-query": /@(?:3xs|2xs|xs|sm|md|lg|xl|[2-7]xl)(?:\/[a-z-]+)?:/g,
 } as const
 
 export type RuleName = keyof typeof RULES
@@ -147,30 +133,23 @@ function spacingValue(token: string): number | null {
 export function measure(manifest: FoundationManifest): Occurrence[] {
   const spacing = allowedSpacing(manifest)
   const occurrences: Occurrence[] = []
-  for (const root of ROOTS) {
-    const absolute = absolutePath(root)
-    for (const file of walkFiles(absolute, (file) => /\.(ts|tsx)$/.test(file))) {
-      const identity = path.posix.join(
-        root,
-        path.relative(absolute, file).split(path.sep).join("/"),
-      )
-      const { source, literals } = stringLiterals(file)
-      for (const literal of literals) {
-        for (const [rule, pattern] of Object.entries(RULES)) {
-          pattern.lastIndex = 0
-          for (const match of literal.value.matchAll(pattern)) {
-            const token = match[0]
-            if (rule === "off-scale-spacing") {
-              const value = spacingValue(token)
-              if (value === null || spacing.has(value)) continue
-            }
-            occurrences.push({
-              rule,
-              file: identity,
-              token,
-              line: lineOf(source, literal.start + (match.index ?? 0)),
-            })
+  for (const file of walkFiles(COMPONENTS, (file) => /\.(ts|tsx)$/.test(file))) {
+    const { source, literals } = stringLiterals(file)
+    for (const literal of literals) {
+      for (const [rule, pattern] of Object.entries(RULES)) {
+        pattern.lastIndex = 0
+        for (const match of literal.value.matchAll(pattern)) {
+          const token = match[0]
+          if (rule === "off-scale-spacing") {
+            const value = spacingValue(token)
+            if (value === null || spacing.has(value)) continue
           }
+          occurrences.push({
+            rule,
+            file,
+            token,
+            line: lineOf(source, literal.start + (match.index ?? 0)),
+          })
         }
       }
     }

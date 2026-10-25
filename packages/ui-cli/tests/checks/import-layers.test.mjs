@@ -62,8 +62,7 @@ test("dynamic imports cannot bring the demo layer into the library", () => {
     "src/components/templates/demo.tsx": "export const Demo = () => null",
   })
   assert.equal(result.status, 1)
-  assert.match(result.stderr, /imports removed layer "src\/components\/templates"/)
-  assert.match(result.stderr, /removed layer must not exist/)
+  assert.match(result.stderr, /inputs must not import templates/)
 })
 
 test("the retired screens layer cannot be restored", () => {
@@ -108,8 +107,7 @@ test("CommonJS imports cannot bypass the demo boundary", () => {
     "src/components/templates/demo.tsx": "export const Demo = () => null",
   })
   assert.equal(result.status, 1)
-  assert.match(result.stderr, /imports removed layer "src\/components\/templates"/)
-  assert.match(result.stderr, /removed layer must not exist/)
+  assert.match(result.stderr, /inputs must not import templates/)
 })
 
 test("legitimate composition and type-only relationships remain allowed", () => {
@@ -119,18 +117,9 @@ test("legitimate composition and type-only relationships remain allowed", () => 
       'export { Control } from "../primitives/control"; import type { Notice } from "../feedback"',
     "src/components/feedback/index.ts":
       'export type Notice = {}; import type { Control } from "../inputs"',
-    "src/lib/demo.ts": 'export { Control } from "../components/inputs"',
+    "src/components/templates/demo.tsx": 'export { Control } from "../inputs"',
   })
   assert.equal(result.status, 0, result.stderr)
-})
-
-test("the retired templates layer cannot be restored", () => {
-  const result = check({
-    "src/components/templates/demo.tsx": 'export { Control } from "../inputs"',
-    "src/components/inputs/control.tsx": "export const Control = () => null",
-  })
-  assert.equal(result.status, 1)
-  assert.match(result.stderr, /removed layer must not exist/)
 })
 
 test("comments and strings are not mistaken for dependencies", () => {
@@ -173,14 +162,10 @@ test("third-party runtimes stay inside the primitives layer", () => {
   const allowed = check({
     "src/components/primitives/control.tsx":
       'import { Checkbox } from "@base-ui/react/checkbox"\nexport const Control = () => Checkbox',
-  })
-  assert.equal(allowed.status, 0, allowed.stderr)
-  const retired = check({
     "src/components/templates/demo.tsx":
       'import { X } from "lucide-react"\nexport const Demo = () => X',
   })
-  assert.equal(retired.status, 1)
-  assert.match(retired.stderr, /removed layer must not exist/)
+  assert.equal(allowed.status, 0, allowed.stderr)
 })
 
 test("computed imports fail instead of silently escaping enforcement", () => {

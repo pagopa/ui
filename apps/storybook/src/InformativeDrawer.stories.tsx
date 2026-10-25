@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
 import { Button } from "@/components/primitives/button"
-import { InformativeDrawer } from "./templates/InformativeDrawer"
+import { InformativeDrawer } from "@/components/templates/figma/InformativeDrawer"
 
 import templatesGuide from "./guides/templates.md?raw"
 

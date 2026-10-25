@@ -59,7 +59,7 @@ function InformativeDrawer({
           // no drag handle.
           className={
             side
-              ? "w-full tablet:max-w-(--drawer-width-wide) [&>[data-slot=drawer-handle]]:hidden"
+              ? "w-full sm:max-w-(--drawer-width-wide) [&>[data-slot=drawer-handle]]:hidden"
               : "[&>[data-slot=drawer-handle]]:hidden"
           }
         >

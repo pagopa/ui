@@ -22,6 +22,7 @@
         "layers:check",
         "text-defaults:check",
         "foundation:check",
+        "client:check",
         "a11y:conformance:check",
         "pagopa-ui-cli:test",
         "pagopa-ui-cli:figma:parity:verify",
@@ -58,10 +59,7 @@
       "outputs": [],
       "cache": true
     },
-    "figma:check": {
-      "options": { "command": "node src/cli.ts check figma" },
-      "inputs": ["default", "tooling", "{workspaceRoot}/apps/storybook/src/**/*"]
-    },
+    "figma:check": { "options": { "command": "node src/cli.ts check figma" } },
     "figma:stories": {
       "executor": "nx:run-commands",
       "options": {
@@ -76,10 +74,8 @@
     "text-defaults:check": {
       "options": { "command": "node src/cli.ts check text-defaults --max 0" }
     },
-    "foundation:check": {
-      "options": { "command": "node src/cli.ts check foundation" },
-      "inputs": ["default", "tooling", "{workspaceRoot}/apps/storybook/src/**/*"]
-    },
+    "foundation:check": { "options": { "command": "node src/cli.ts check foundation" } },
+    "client:check": { "options": { "command": "node src/cli.ts check client-directives" } },
     "a11y:conformance:check": {
       "options": { "command": "node src/cli.ts check a11y-conformance" }
     },
