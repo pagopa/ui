@@ -40,17 +40,17 @@ function Preheader({
     <div className="bg-background">
       {/* Source band: 54px content + the 1px divider in every variant
           (1315:11011), regardless of whether an action button is present. */}
-      <div className="mx-auto flex min-h-(--preheader-height) max-w-7xl flex-wrap items-center justify-between gap-0 border-b px-6 py-1 sm:gap-4">
+      <div className="mx-auto flex min-h-(--preheader-height) max-w-7xl flex-wrap items-center justify-between gap-0 border-b px-6 py-1 tablet:gap-4">
         <Link
           href={homeHref}
           className="inline-flex min-h-10 shrink-0 items-center rounded-sm text-label-mini-sb text-foreground underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
           {institution}
         </Link>
-        <div className="flex min-w-0 flex-wrap items-center gap-4 sm:gap-8">
+        <div className="flex min-w-0 flex-wrap items-center gap-4 tablet:gap-8">
           {links.length ? (
             <nav aria-label={linksLabel}>
-              <ul className="flex flex-wrap items-center gap-4 sm:gap-8">
+              <ul className="flex flex-wrap items-center gap-4 tablet:gap-8">
                 {links.map((link) => (
                   <li key={link.href}>
                     <Link
@@ -66,16 +66,18 @@ function Preheader({
                           aria-hidden="true"
                           className={cn(
                             "flex shrink-0 items-center [&>svg]:size-6",
-                            link.avatar && "max-sm:hidden",
+                            link.avatar && "max-tablet:hidden",
                           )}
                         >
                           {link.icon}
                         </span>
                       ) : null}
                       {link.avatar ? (
-                        <span className="shrink-0 sm:hidden">{link.avatar}</span>
+                        <span className="shrink-0 tablet:hidden">{link.avatar}</span>
                       ) : null}
-                      <span className={cn((link.icon || link.avatar) && "sr-only sm:not-sr-only")}>
+                      <span
+                        className={cn((link.icon || link.avatar) && "sr-only tablet:not-sr-only")}
+                      >
                         {link.label}
                       </span>
                     </Link>

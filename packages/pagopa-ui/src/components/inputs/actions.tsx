@@ -90,7 +90,7 @@ function SegmentedControl<T extends string>({
             aria-pressed={selected}
             onClick={() => onValueChange(item.value)}
             className={cn(
-              "min-h-12 min-w-0 truncate rounded-full px-6 max-sm:px-4 text-label-sb transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+              "min-h-12 min-w-0 truncate rounded-full px-6 max-tablet:px-4 text-label-sb transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
               selected
                 ? "bg-primary text-primary-foreground"
                 : "text-foreground hover:bg-foreground/5",
