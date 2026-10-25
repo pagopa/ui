@@ -2,8 +2,8 @@
   {
     "id": "50-1700-lg-desktop-desktop",
     "nodeId": "50:1700",
-    "export": "PageSurface",
-    "storyId": "components-content-pagesurface--fidelity",
+    "export": "WhiteTemplate",
+    "storyId": "components-content-whitetemplate--fidelity",
     "state": "LG Desktop",
     "device": "desktop",
     "width": 1200,
@@ -17,8 +17,8 @@
   {
     "id": "50-1700-md-tablet-tablet",
     "nodeId": "50:1700",
-    "export": "PageSurface",
-    "storyId": "components-content-pagesurface--fidelity",
+    "export": "WhiteTemplate",
+    "storyId": "components-content-whitetemplate--fidelity",
     "state": "MD Tablet",
     "device": "tablet",
     "width": 900,
@@ -32,8 +32,8 @@
   {
     "id": "50-1700-xs-mobile-mobile",
     "nodeId": "50:1700",
-    "export": "PageSurface",
-    "storyId": "components-content-pagesurface--fidelity",
+    "export": "WhiteTemplate",
+    "storyId": "components-content-whitetemplate--fidelity",
     "state": "XS Mobile",
     "device": "mobile",
     "width": 320,
@@ -2599,8 +2599,8 @@
   {
     "id": "382-7640-brand-mastercard",
     "nodeId": "382:7640",
-    "export": "PaymentProviderLogos",
-    "storyId": "components-content-paymentproviderlogos--fidelity",
+    "export": "LoghiPSP",
+    "storyId": "components-content-loghipsp--fidelity",
     "state": "Brand=Mastercard",
     "variant": "382:7435",
     "width": 24,
@@ -2614,8 +2614,8 @@
   {
     "id": "382-7640-brand-maestro",
     "nodeId": "382:7640",
-    "export": "PaymentProviderLogos",
-    "storyId": "components-content-paymentproviderlogos--fidelity",
+    "export": "LoghiPSP",
+    "storyId": "components-content-loghipsp--fidelity",
     "state": "Brand=Maestro",
     "variant": "382:7437",
     "width": 24,
@@ -2629,8 +2629,8 @@
   {
     "id": "382-7640-brand-visa",
     "nodeId": "382:7640",
-    "export": "PaymentProviderLogos",
-    "storyId": "components-content-paymentproviderlogos--fidelity",
+    "export": "LoghiPSP",
+    "storyId": "components-content-loghipsp--fidelity",
     "state": "Brand=Visa",
     "variant": "382:7439",
     "width": 24,
@@ -2644,8 +2644,8 @@
   {
     "id": "382-7640-brand-amex",
     "nodeId": "382:7640",
-    "export": "PaymentProviderLogos",
-    "storyId": "components-content-paymentproviderlogos--fidelity",
+    "export": "LoghiPSP",
+    "storyId": "components-content-loghipsp--fidelity",
     "state": "Brand=Amex",
     "variant": "382:7441",
     "width": 24,
@@ -2659,8 +2659,8 @@
   {
     "id": "382-7640-brand-diners",
     "nodeId": "382:7640",
-    "export": "PaymentProviderLogos",
-    "storyId": "components-content-paymentproviderlogos--fidelity",
+    "export": "LoghiPSP",
+    "storyId": "components-content-loghipsp--fidelity",
     "state": "Brand=Diners",
     "variant": "382:7443",
     "width": 24,
@@ -2674,8 +2674,8 @@
   {
     "id": "382-7640-brand-discover",
     "nodeId": "382:7640",
-    "export": "PaymentProviderLogos",
-    "storyId": "components-content-paymentproviderlogos--fidelity",
+    "export": "LoghiPSP",
+    "storyId": "components-content-loghipsp--fidelity",
     "state": "Brand=Discover",
     "variant": "382:7445",
     "width": 24,
@@ -2689,8 +2689,8 @@
   {
     "id": "382-7640-brand-jcb",
     "nodeId": "382:7640",
-    "export": "PaymentProviderLogos",
-    "storyId": "components-content-paymentproviderlogos--fidelity",
+    "export": "LoghiPSP",
+    "storyId": "components-content-loghipsp--fidelity",
     "state": "Brand=JCB",
     "variant": "382:7447",
     "width": 24,
@@ -2704,8 +2704,8 @@
   {
     "id": "382-7640-brand-unionpay",
     "nodeId": "382:7640",
-    "export": "PaymentProviderLogos",
-    "storyId": "components-content-paymentproviderlogos--fidelity",
+    "export": "LoghiPSP",
+    "storyId": "components-content-loghipsp--fidelity",
     "state": "Brand=UnionPay",
     "variant": "382:7449",
     "width": 24,
@@ -2719,8 +2719,8 @@
   {
     "id": "382-7640-brand-bancomat-pay",
     "nodeId": "382:7640",
-    "export": "PaymentProviderLogos",
-    "storyId": "components-content-paymentproviderlogos--fidelity",
+    "export": "LoghiPSP",
+    "storyId": "components-content-loghipsp--fidelity",
     "state": "Brand=BANCOMAT Pay",
     "variant": "382:7451",
     "width": 24,
@@ -2735,8 +2735,8 @@
   {
     "id": "382-7640-brand-pagobancomat",
     "nodeId": "382:7640",
-    "export": "PaymentProviderLogos",
-    "storyId": "components-content-paymentproviderlogos--fidelity",
+    "export": "LoghiPSP",
+    "storyId": "components-content-loghipsp--fidelity",
     "state": "Brand=PagoBANCOMAT",
     "variant": "382:7458",
     "width": 24,
@@ -2750,8 +2750,8 @@
   {
     "id": "382-7640-brand-apple-pay",
     "nodeId": "382:7640",
-    "export": "PaymentProviderLogos",
-    "storyId": "components-content-paymentproviderlogos--fidelity",
+    "export": "LoghiPSP",
+    "storyId": "components-content-loghipsp--fidelity",
     "state": "Brand=Apple Pay",
     "variant": "382:7460",
     "width": 24,
@@ -2765,8 +2765,8 @@
   {
     "id": "382-7640-brand-paypal",
     "nodeId": "382:7640",
-    "export": "PaymentProviderLogos",
-    "storyId": "components-content-paymentproviderlogos--fidelity",
+    "export": "LoghiPSP",
+    "storyId": "components-content-loghipsp--fidelity",
     "state": "Brand=PayPal",
     "variant": "382:7462",
     "width": 24,
@@ -2780,8 +2780,8 @@
   {
     "id": "382-7640-brand-satispay",
     "nodeId": "382:7640",
-    "export": "PaymentProviderLogos",
-    "storyId": "components-content-paymentproviderlogos--fidelity",
+    "export": "LoghiPSP",
+    "storyId": "components-content-loghipsp--fidelity",
     "state": "Brand=Satispay",
     "variant": "382:7467",
     "width": 24,
@@ -2796,8 +2796,8 @@
   {
     "id": "382-7640-brand-mybank",
     "nodeId": "382:7640",
-    "export": "PaymentProviderLogos",
-    "storyId": "components-content-paymentproviderlogos--fidelity",
+    "export": "LoghiPSP",
+    "storyId": "components-content-loghipsp--fidelity",
     "state": "Brand=MyBank",
     "variant": "382:7469",
     "width": 24,
@@ -2811,8 +2811,8 @@
   {
     "id": "382-7640-brand-app-postepay",
     "nodeId": "382:7640",
-    "export": "PaymentProviderLogos",
-    "storyId": "components-content-paymentproviderlogos--fidelity",
+    "export": "LoghiPSP",
+    "storyId": "components-content-loghipsp--fidelity",
     "state": "Brand=App Postepay",
     "variant": "382:7478",
     "width": 24,
@@ -2826,8 +2826,8 @@
   {
     "id": "382-7640-brand-vpay",
     "nodeId": "382:7640",
-    "export": "PaymentProviderLogos",
-    "storyId": "components-content-paymentproviderlogos--fidelity",
+    "export": "LoghiPSP",
+    "storyId": "components-content-loghipsp--fidelity",
     "state": "Brand=vPay",
     "variant": "382:7483",
     "width": 24,
@@ -3303,7 +3303,7 @@
   {
     "id": "616-3864-default",
     "nodeId": "616:3864",
-    "export": "Dropdown",
+    "export": "DropDown",
     "storyId": "components-inputs-dropdown--source-panel-default",
     "state": "Default",
     "variant": "610:36297",
@@ -3321,7 +3321,7 @@
   {
     "id": "616-3864-multiselect-default",
     "nodeId": "616:3864",
-    "export": "Dropdown",
+    "export": "DropDown",
     "storyId": "components-inputs-dropdown--source-panel-multiselect",
     "state": "Multiselect|Default",
     "variant": "616:3865",
@@ -3339,7 +3339,7 @@
   {
     "id": "616-3864-selected",
     "nodeId": "616:3864",
-    "export": "Dropdown",
+    "export": "DropDown",
     "storyId": "components-inputs-dropdown--source-panel-selected",
     "state": "Selected",
     "variant": "617:18348",
@@ -3357,7 +3357,7 @@
   {
     "id": "616-3864-multiselect-selected-all",
     "nodeId": "616:3864",
-    "export": "Dropdown",
+    "export": "DropDown",
     "storyId": "components-inputs-dropdown--source-panel-multiselect-all",
     "state": "Multiselect|Selected|All",
     "variant": "617:18688",
@@ -3375,7 +3375,7 @@
   {
     "id": "616-3864-multiselect-selected-true",
     "nodeId": "616:3864",
-    "export": "Dropdown",
+    "export": "DropDown",
     "storyId": "components-inputs-dropdown--source-panel-multiselect-selected",
     "state": "Multiselect|Selected|True",
     "variant": "617:19035",
@@ -3393,7 +3393,7 @@
   {
     "id": "616-3864-empty-state",
     "nodeId": "616:3864",
-    "export": "Dropdown",
+    "export": "DropDown",
     "storyId": "components-inputs-dropdown--source-panel-empty",
     "state": "Empty state",
     "variant": "756:6063",
@@ -3411,7 +3411,7 @@
   {
     "id": "616-3864-skeleton",
     "nodeId": "616:3864",
-    "export": "Dropdown",
+    "export": "DropDown",
     "storyId": "components-inputs-dropdown--source-panel-skeleton",
     "state": "Skeleton",
     "variant": "756:6159",
@@ -3429,8 +3429,8 @@
   {
     "id": "731-20386-desktop-desktop",
     "nodeId": "731:20386",
-    "export": "IdentityProviderPicker",
-    "storyId": "components-composites-identityproviderpicker--desktop",
+    "export": "IDModule",
+    "storyId": "components-composites-idmodule--desktop",
     "state": "desktop",
     "device": "desktop",
     "width": 410,
@@ -3452,8 +3452,8 @@
   {
     "id": "731-20386-mobile-mobile",
     "nodeId": "731:20386",
-    "export": "IdentityProviderPicker",
-    "storyId": "components-composites-identityproviderpicker--playground",
+    "export": "IDModule",
+    "storyId": "components-composites-idmodule--playground",
     "state": "mobile",
     "device": "mobile",
     "width": 320,
@@ -3475,8 +3475,8 @@
   {
     "id": "733-22841-desktop-desktop",
     "nodeId": "733:22841",
-    "export": "SuccessState",
-    "storyId": "components-feedback-successstate--playground",
+    "export": "OKState",
+    "storyId": "components-feedback-okstate--playground",
     "state": "desktop",
     "device": "desktop",
     "layoutScope": "viewport",
@@ -3496,8 +3496,8 @@
   {
     "id": "733-22841-mobile-mobile",
     "nodeId": "733:22841",
-    "export": "SuccessState",
-    "storyId": "components-feedback-successstate--playground",
+    "export": "OKState",
+    "storyId": "components-feedback-okstate--playground",
     "state": "mobile",
     "device": "mobile",
     "layoutScope": "viewport",
@@ -3517,8 +3517,8 @@
   {
     "id": "749-5695-desktop-desktop",
     "nodeId": "749:5695",
-    "export": "ErrorState",
-    "storyId": "components-feedback-errorstate--source-desktop",
+    "export": "KOState",
+    "storyId": "components-feedback-kostate--source-desktop",
     "state": "desktop",
     "device": "desktop",
     "layoutScope": "viewport",
@@ -3540,8 +3540,8 @@
   {
     "id": "749-5695-mobile-mobile",
     "nodeId": "749:5695",
-    "export": "ErrorState",
-    "storyId": "components-feedback-errorstate--source-mobile",
+    "export": "KOState",
+    "storyId": "components-feedback-kostate--source-mobile",
     "state": "mobile",
     "device": "mobile",
     "layoutScope": "viewport",
@@ -4138,8 +4138,8 @@
   {
     "id": "1134-6812-default",
     "nodeId": "1134:6812",
-    "export": "CameraView",
-    "storyId": "components-overlays-cameraview--fidelity",
+    "export": "CameraViewElement",
+    "storyId": "components-overlays-cameraviewelement--fidelity",
     "state": "Default",
     "width": 376,
     "height": 378,
@@ -5051,7 +5051,7 @@
     "depth": 4,
     "root": "[data-slot=\"feedback-page\"]",
     "subjects": {
-      "SuccessState": "[data-slot=\"feedback-page\"] section"
+      "OKState": "[data-slot=\"feedback-page\"] section"
     },
     "compareOffset": true,
     "residues": [
@@ -5530,7 +5530,7 @@
   {
     "id": "3262-40787-open",
     "nodeId": "3262:40787",
-    "export": "MenuDropdown",
+    "export": "MenuDropDown",
     "storyId": "components-inputs-menudropdown--source-panel",
     "state": "Open",
     "width": 274,
@@ -5847,8 +5847,8 @@
   {
     "id": "9676-5453-default",
     "nodeId": "9676:5453",
-    "export": "CorrectionTag",
-    "storyId": "components-content-correctiontag--valid-source",
+    "export": "CorrectionValid",
+    "storyId": "components-content-correctionvalid--source",
     "state": "default",
     "width": 166,
     "height": 30,
@@ -5879,8 +5879,8 @@
   {
     "id": "9676-5455-default",
     "nodeId": "9676:5455",
-    "export": "CorrectionTag",
-    "storyId": "components-content-correctiontag--not-valid-source",
+    "export": "CorrectionNotValid",
+    "storyId": "components-content-correctionnotvalid--source",
     "state": "default",
     "width": 162,
     "height": 30,
@@ -5911,8 +5911,8 @@
   {
     "id": "9676-5633-default",
     "nodeId": "9676:5633",
-    "export": "MicroEvent",
-    "storyId": "components-data-display-microevent--source",
+    "export": "Microevento",
+    "storyId": "components-data-display-microevento--source",
     "state": "default",
     "width": 725,
     "height": 91,
@@ -6165,7 +6165,7 @@
   {
     "id": "10585-80643-enabled-empty",
     "nodeId": "10585:80643",
-    "export": "TextareaField",
+    "export": "TextAreaField",
     "storyId": "components-inputs-textareafield--figma-state-matrix",
     "state": "Enabled|empty",
     "variant": "10585:80644",
@@ -6183,7 +6183,7 @@
   {
     "id": "10585-80643-enabled-filled",
     "nodeId": "10585:80643",
-    "export": "TextareaField",
+    "export": "TextAreaField",
     "storyId": "components-inputs-textareafield--figma-state-matrix",
     "state": "Enabled|filled",
     "variant": "10585:80662",
@@ -6202,7 +6202,7 @@
   {
     "id": "10585-80643-active-empty",
     "nodeId": "10585:80643",
-    "export": "TextareaField",
+    "export": "TextAreaField",
     "storyId": "components-inputs-textareafield--figma-state-matrix",
     "state": "Active|empty",
     "variant": "10585:80681",
@@ -6224,7 +6224,7 @@
   {
     "id": "10585-80643-active-filled",
     "nodeId": "10585:80643",
-    "export": "TextareaField",
+    "export": "TextAreaField",
     "storyId": "components-inputs-textareafield--figma-state-matrix",
     "state": "Active|filled",
     "variant": "10585:80693",
@@ -6246,7 +6246,7 @@
   {
     "id": "10585-80643-success-filled",
     "nodeId": "10585:80643",
-    "export": "TextareaField",
+    "export": "TextAreaField",
     "storyId": "components-inputs-textareafield--figma-state-matrix",
     "state": "Success|filled",
     "variant": "10585:80703",
@@ -6265,7 +6265,7 @@
   {
     "id": "10585-80643-error-empty",
     "nodeId": "10585:80643",
-    "export": "TextareaField",
+    "export": "TextAreaField",
     "storyId": "components-inputs-textareafield--figma-state-matrix",
     "state": "Error|empty",
     "variant": "10585:80713",
@@ -6284,7 +6284,7 @@
   {
     "id": "10585-80643-error-filled",
     "nodeId": "10585:80643",
-    "export": "TextareaField",
+    "export": "TextAreaField",
     "storyId": "components-inputs-textareafield--figma-state-matrix",
     "state": "Error|filled",
     "variant": "10585:80722",
@@ -6303,7 +6303,7 @@
   {
     "id": "10585-80643-enabled-empty-optional",
     "nodeId": "10585:80643",
-    "export": "TextareaField",
+    "export": "TextAreaField",
     "storyId": "components-inputs-textareafield--figma-state-matrix",
     "state": "Enabled|empty|optional",
     "variant": "12079:79635",

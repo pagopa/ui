@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
-import { PaymentProviderLogos } from "@/components/content/payment-provider-logos"
+import { LoghiPSP } from "@/components/content/loghi-psp"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import loghiPspGuide from "./guides/loghi-psp.md?raw"
 
@@ -24,8 +24,8 @@ const pspBrands = [
 ] as const
 
 const meta = {
-  title: "Components/Content/PaymentProviderLogos",
-  component: PaymentProviderLogos,
+  title: "Components/Content/LoghiPSP",
+  component: LoghiPSP,
   args: {
     providers: [{ name: "PSP One" }, { name: "PSP Two" }, { name: "PSP Three" }],
   },
@@ -40,10 +40,9 @@ const meta = {
     a11y: { test: "error" },
     docs: {
       description: { component: loghiPspGuide },
-      subtitle: "Figma: Loghi PSP",
     },
   },
-} satisfies Meta<typeof PaymentProviderLogos>
+} satisfies Meta<typeof LoghiPSP>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -58,7 +57,7 @@ export const Fidelity: Story = {
     >
       {pspBrands.map((brand) => (
         <li className="flex size-6 items-center justify-center" key={brand}>
-          <PaymentProviderLogos brand={brand} />
+          <LoghiPSP brand={brand} />
         </li>
       ))}
     </ul>

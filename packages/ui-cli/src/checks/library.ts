@@ -194,7 +194,7 @@ export async function runLibraryCheck(): Promise<number> {
       /ProductCard: choose href or onAction, not both/,
       "untyped consumers must not silently discard a competing product action",
     )
-    for (const Menu of [mod.Dropdown, mod.MenuDropdown]) {
+    for (const Menu of [mod.DropDown, mod.MenuDropDown]) {
       assert.throws(
         () => renderToString(React.createElement(Menu, {
           triggerLabel: "Server actions",
@@ -296,6 +296,10 @@ export async function runLibraryCheck(): Promise<number> {
     // The Playwright test runner drives the browser sequence: one project per
     // engine, one retry for load-related flakiness, per-engine reporting. It runs
     // from the tooling package, which owns the spec and its runner.
+    const engines = (process.env.LIBRARY_ENGINES?.trim() || "chromium,firefox,webkit")
+      .split(",")
+      .map((engine) => engine.trim())
+      .join(", ")
     await runStreaming(
       "pnpm",
       ["exec", "playwright", "test", "--config", toolingPath("playwright.config.mjs")],
@@ -307,7 +311,7 @@ export async function runLibraryCheck(): Promise<number> {
       },
     )
     console.log(
-      `library OK: isolated tarball, ${imported.exports.length} exports, strict types, shared React, native forms, responsive Table/sorting/paging, mobile chrome bands/one-row header/no clipped actions, viewport and container device scopes (narrow-column module, scrollable-list first item, segmented fit), calendar confirmation/ranges, explicit Breadcrumb navigation, source ProductCard/native links/actions/reflow, source OTP/password/paste/native-length/reset/system-color paint, source Avatar/native images/selection/non-color statuses/unoccluded initials/font preferences/system-color paint, keyboard/focus, standalone CSS/fonts/artwork in Chromium, Firefox and WebKit`,
+      `library OK: isolated tarball, ${imported.exports.length} exports, strict types, shared React, native forms, responsive Table/sorting/paging, mobile chrome bands/one-row header/no clipped actions, viewport and container device scopes (narrow-column module, scrollable-list first item, segmented fit), calendar confirmation/ranges, explicit Breadcrumb navigation, source ProductCard/native links/actions/reflow, source OTP/password/paste/native-length/reset/system-color paint, source Avatar/native images/selection/non-color statuses/unoccluded initials/font preferences/system-color paint, keyboard/focus, standalone CSS/fonts/artwork in ${engines}`,
     )
   } finally {
     const active = server

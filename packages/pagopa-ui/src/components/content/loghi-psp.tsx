@@ -54,7 +54,7 @@ const pspBrandLogos: Record<PspBrand, { src: string; alt: string }> = {
   vpay: { src: vPayLogo, alt: "vPay" },
 }
 
-type PaymentProviderLogosProps =
+type LoghiPSPProps =
   | {
       brand: PspBrand
       alt?: string
@@ -70,13 +70,7 @@ type PaymentProviderLogosProps =
       alt?: never
     }
 
-/**
- * Payment service provider marks: one brand logo, or a labelled list of the
- * caller's providers.
- *
- * Figma: Loghi PSP (node 382:7640)
- */
-function PaymentProviderLogos(props: PaymentProviderLogosProps) {
+function LoghiPSP(props: LoghiPSPProps) {
   if (props.brand) {
     const logo = pspBrandLogos[props.brand]
     return (
@@ -113,4 +107,4 @@ function PaymentProviderLogos(props: PaymentProviderLogosProps) {
   )
 }
 
-export { PaymentProviderLogos }
+export { LoghiPSP }

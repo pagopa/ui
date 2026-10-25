@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { CorrectionTag } from "@/components/content"
+import { CorrectionNotValid, CorrectionValid } from "@/components/content"
 import { Timeline, type TimelineItemStatus } from "@/components/data-display"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
@@ -32,7 +32,7 @@ const meta = {
         title: "Consegnata",
         description: "La notifica digitale è stata consegnata al destinatario.",
         status: "success",
-        correction: <CorrectionTag status="valid" />,
+        correction: <CorrectionValid />,
         timestamp: { month: "FEB", day: "02", time: "09:12" },
       },
       {
@@ -122,13 +122,13 @@ export const Touchpoints: Story = {
         title: "Notifica in validazione",
         status: "default",
         icon: <PagoPAIcon name="troubleshoot" size={24} />,
-        correction: <CorrectionTag status="valid" />,
+        correction: <CorrectionValid />,
         touchpoints: [
           {
             id: "digital",
             label: "Prima comunicazione digitale",
             icon: <PagoPAIcon name="mark_email_read" size={24} />,
-            correction: <CorrectionTag status="valid" />,
+            correction: <CorrectionValid />,
           },
           {
             id: "paper",
@@ -138,7 +138,7 @@ export const Touchpoints: Story = {
             events: [
               {
                 id: "printed",
-                correction: <CorrectionTag status="not-valid" />,
+                correction: <CorrectionNotValid />,
                 description: "L'invio per via cartacea è stato annullato.",
               },
               {
@@ -180,7 +180,7 @@ export const Multidestinatario: Story = {
         title: "Notifica in validazione",
         status: "default",
         icon: <PagoPAIcon name="troubleshoot" size={24} />,
-        correction: <CorrectionTag status="valid" />,
+        correction: <CorrectionValid />,
         recipients: [
           {
             id: "mario",
@@ -206,7 +206,7 @@ export const Multidestinatario: Story = {
                 id: "ente-digital",
                 label: "Prima comunicazione digitale",
                 icon: <PagoPAIcon name="mark_email_read" size={24} />,
-                correction: <CorrectionTag status="valid" />,
+                correction: <CorrectionValid />,
               },
             ],
           },
@@ -286,7 +286,7 @@ export const SourceCase: Story = {
         title: "La notifica ha assunto valore di legge",
         description: sourceDescription,
         status: "default",
-        correction: <CorrectionTag status="not-valid" />,
+        correction: <CorrectionNotValid />,
       },
     ],
   },

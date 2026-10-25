@@ -55,7 +55,7 @@ The current gaps are `Building2`, `Camera`, `Cookie`, `FileText` and
 uses `CheckCircle2` while the source glyph is `check_circle`. Source-true glyphs
 are already used where they exist: the field error `report`, the `HeaderAlert`
 and `Alert` tones (`info` filled, `check_circle`, `warning`, `report`) and the
-`Button` loading `SpinnerIndicator`. `DropdownItem.icon` exposes the lucide
+`Button` loading `SpinnerIndicator`. `DropDownItem.icon` exposes the lucide
 `LucideIcon` type in the public declarations, so replacing it is a breaking
 change.
 

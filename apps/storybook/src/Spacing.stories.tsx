@@ -2,17 +2,17 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { Spacer, type SpacerSize } from "@/components/content"
+import { Spacing, type SpacingSize } from "@/components/content"
 
 import spacingGuide from "./guides/spacing.md?raw"
 
 // Source `Dimensione` options (237:1307), smallest first: the ladder order of
-// the Spacer page, not a component state.
-const steps: SpacerSize[] = [4, 8, 16, 24, 32, 40, 48]
+// the Spacing page, not a component state.
+const steps: SpacingSize[] = [4, 8, 16, 24, 32, 40, 48]
 
 const meta = {
-  title: "Components/Content/Spacer",
-  component: Spacer,
+  title: "Components/Content/Spacing",
+  component: Spacing,
   args: { size: 4 },
   argTypes: {
     size: { control: "select", options: steps },
@@ -25,10 +25,9 @@ const meta = {
 
 ${spacingGuide}`,
       },
-      subtitle: "Figma: Spacing",
     },
   },
-} satisfies Meta<typeof Spacer>
+} satisfies Meta<typeof Spacing>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -44,7 +43,7 @@ export const Ladder: Story = {
             <span className="w-12 text-right text-label-mini text-muted-foreground">{step}px</span>
             <div className="flex-1">
               <div className="border-t border-dashed border-border-strong" />
-              <Spacer size={step} />
+              <Spacing size={step} />
               <div className="border-t border-dashed border-border-strong" />
             </div>
           </div>

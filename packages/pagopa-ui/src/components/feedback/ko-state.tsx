@@ -6,13 +6,7 @@ import { cn } from "@/lib/cn"
 
 import { StatePanel, type StateProps } from "./state-panel"
 
-/**
- * Negative outcome: title, description, native actions and an optional copyable
- * error-code row.
- *
- * Figma: KOState (node 749:5695)
- */
-function ErrorState({
+function KOState({
   code,
   codeLabel = "Codice errore",
   copyLabel = (label) => `Copia ${label.toLowerCase()}`,
@@ -106,4 +100,4 @@ function ErrorState({
   )
 }
 
-export { ErrorState }
+export { KOState }

@@ -8,7 +8,7 @@
 
 # Loghi PSP
 
-`PaymentProviderLogos` implements the Figma component set `382:7640`. Each `brand` value
+`LoghiPSP` implements the Figma component set `382:7640`. Each `brand` value
 renders one pinned, source-colour logo; the default alternative text is the
 brand name, and pass `alt` only when a more useful label is needed in context.
 

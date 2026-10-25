@@ -1,14 +1,14 @@
 import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
-import { CameraView } from "@/components/overlays"
+import { CameraViewElement } from "@/components/overlays"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import cameraViewElementGuide from "./guides/camera-view-element.md?raw"
 
 const meta = {
-  title: "Components/Overlays/CameraView",
-  component: CameraView,
+  title: "Components/Overlays/CameraViewElement",
+  component: CameraViewElement,
   args: { label: "Inquadra il codice", active: true },
   argTypes: { active: { control: "boolean" }, children: { control: false } },
   parameters: {
@@ -19,10 +19,9 @@ const meta = {
 
 ${cameraViewElementGuide}`,
       },
-      subtitle: "Figma: CameraViewElement",
     },
   },
-} satisfies Meta<typeof CameraView>
+} satisfies Meta<typeof CameraViewElement>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -41,7 +40,7 @@ export const Fidelity: Story = {
   parameters: { layout: "fullscreen" },
   render: () => (
     <div style={cameraStyle}>
-      <CameraView label="Inquadra il codice">{null}</CameraView>
+      <CameraViewElement label="Inquadra il codice">{null}</CameraViewElement>
     </div>
   ),
 }

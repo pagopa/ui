@@ -1,15 +1,9 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 
-import { CorrectionTag } from "@/components/content"
+import { CorrectionNotValid, CorrectionValid } from "@/components/content"
 
-/**
- * Timeline micro-event: the correction tag for the current status plus the
- * event description, optionally prefixed by its time.
- *
- * Figma: Microevento (node 9676:5633)
- */
-function MicroEvent({
+function Microevento({
   title,
   time,
   invalid = true,
@@ -27,11 +21,11 @@ function MicroEvent({
     <div className={cn("flex items-start py-2 pl-7", className)}>
       {time ? <span className="shrink-0 text-label-mini text-muted-foreground">{time}</span> : null}
       <div className="flex min-w-0 flex-col gap-1">
-        {invalid ? <CorrectionTag label={label} status="not-valid" /> : <CorrectionTag label={label} status="valid" />}
+        {invalid ? <CorrectionNotValid label={label} /> : <CorrectionValid label={label} />}
         <p className="text-label-mini text-foreground break-words">{title}</p>
       </div>
     </div>
   )
 }
 
-export { MicroEvent }
+export { Microevento }

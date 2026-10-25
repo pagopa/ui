@@ -1,19 +1,19 @@
-# Spacer
+# Spacing
 
-`Spacer` implements the Figma `Spacing` set `237:1307`: seven variants, one per step
+`Spacing` implements the `Spacing` set `237:1307`: seven variants, one per step
 of the spacing scale. Every variant is a 320×N component whose only child,
 `Rectangle 28`, is a rectangle with no fill and no stroke, so the source paints
 nothing at any step. The height is the whole contract.
 
 | Source variant  | Code                    | Height |
 | --------------- | ----------------------- | ------ |
-| `Dimensione=4`  | `<Spacer size={4} />`  | 4px    |
-| `Dimensione=8`  | `<Spacer size={8} />`  | 8px    |
-| `Dimensione=16` | `<Spacer size={16} />` | 16px   |
-| `Dimensione=24` | `<Spacer size={24} />` | 24px   |
-| `Dimensione=32` | `<Spacer size={32} />` | 32px   |
-| `Dimensione=40` | `<Spacer size={40} />` | 40px   |
-| `Dimensione=48` | `<Spacer size={48} />` | 48px   |
+| `Dimensione=4`  | `<Spacing size={4} />`  | 4px    |
+| `Dimensione=8`  | `<Spacing size={8} />`  | 8px    |
+| `Dimensione=16` | `<Spacing size={16} />` | 16px   |
+| `Dimensione=24` | `<Spacing size={24} />` | 24px   |
+| `Dimensione=32` | `<Spacing size={32} />` | 32px   |
+| `Dimensione=40` | `<Spacing size={40} />` | 40px   |
+| `Dimensione=48` | `<Spacing size={48} />` | 48px   |
 
 Each height is the spacing-scale utility of the same value (`h-1`, `h-2`, `h-4`,
 `h-6`, `h-8`, `h-10`, `h-12`); there is no inline pixel and no step outside the

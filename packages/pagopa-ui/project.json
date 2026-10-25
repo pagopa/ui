@@ -16,7 +16,6 @@
     },
     "test": {
       "dependsOn": [
-        "api:check",
         "figma:check",
         "pagopa-ui-artwork:test",
         "layers:check",
@@ -25,15 +24,6 @@
         "pagopa-ui-tokens:test"
       ],
       "configurations": { "ci": { "script": "test:unit" } }
-    },
-    "api:check": {
-      "dependsOn": ["build"],
-      "cache": true,
-      "inputs": ["default"]
-    },
-    "api:update": {
-      "dependsOn": ["build"],
-      "cache": false
     },
     "docs": {
       "executor": "nx:run-commands",

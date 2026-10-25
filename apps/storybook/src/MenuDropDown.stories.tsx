@@ -5,15 +5,15 @@ import { XCircle } from "lucide-react"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { MenuDropdown } from "@/components/inputs"
+import { MenuDropDown } from "@/components/inputs"
 
 const notifyMenuItem = fn()
 const documentsMenuItem = fn()
 const deleteMenuItem = fn()
 
 const meta = {
-  title: "Components/Inputs/MenuDropdown",
-  component: MenuDropdown,
+  title: "Components/Inputs/MenuDropDown",
+  component: MenuDropDown,
   args: {
     accessibleLabel: "Altre opzioni",
     // Source 3262:40787: text rows carry the 16/22 blue label and the full-bleed
@@ -42,10 +42,9 @@ const meta = {
         component:
           "Icon menu for secondary actions: the control has a dedicated accessible name and does not depend on the visible text.",
       },
-      subtitle: "Figma: MenuDropDown",
     },
   },
-} satisfies Meta<typeof MenuDropdown>
+} satisfies Meta<typeof MenuDropDown>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -80,7 +79,7 @@ export const SourcePanel: Story = {
   },
   render: (args) => (
     <div className="w-[274px] max-w-full">
-      <MenuDropdown {...args} />
+      <MenuDropDown {...args} />
     </div>
   ),
 }
@@ -97,7 +96,7 @@ export const Playground: Story = {
     await waitFor(() =>
       expect(document.querySelector("[data-aria-hidden]")).not.toBeInTheDocument(),
     )
-    // The source MenuDropdown (3262:40787) is the open panel: leave the preview
+    // The source MenuDropDown (3262:40787) is the open panel: leave the preview
     // in that state so the primary story shows the menu, not just the trigger.
     await userEvent.click(trigger)
     await screen.findByRole("menu")

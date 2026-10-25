@@ -192,8 +192,8 @@
       "status": "implemented",
       "target": {
         "module": "src/components/inputs/text-fields.tsx",
-        "export": "TextareaField",
-        "story": "apps/storybook/src/TextareaField.stories.tsx",
+        "export": "TextAreaField",
+        "story": "apps/storybook/src/TextAreaField.stories.tsx",
         "storyExports": ["Playground", "Disabled", "FigmaStateMatrix"]
       },
       "note": "Reviewed 2026-10-22 (M5 wave): eight committed cases, one per principal state of the set's `Status` × `Filled` axes plus one Required=False row, all capturing `FigmaStateMatrix` at the 274 source width (the story gained the Design-panel mapping and the matrix export; the node declared no story export before). Enabled empty (10585:80644, control 274x92) and Enabled empty Required=False (12079:79635, no required marker) are clean; Enabled filled (10585:80662), Active empty (10585:80681, captured focused), Active filled (10585:80693, 274x94), Success filled (10585:80703), Error empty (10585:80713, 274x94) and Error filled (10585:80722) each carry the two ignored vertical-padding mapping artifacts below. Field border: grey-650 #636b82 1px when enabled, disabled or success; primary #0b3ee3 when active/focused (the library paints the 1px border plus the 2px focus ring, inside the 2px tolerance); #d13333 on error; never grey-450 (it is not a source field stroke). Mapping artifact ignored: the source `Input` frame nests its row inset in the `Content` child (12/0/13/0) while the library textarea owns its own padding, so the vertical padding is ignored on the filled and active states. The source `Status` axis has no Disabled variant: the `Disabled` story is a library state outside the pinned set. The remaining `* Required=False` variants repeat these reviewed compositions with the marker removed; one case proves that axis. Automated a11y and render checks are not screen-reader or browser-zoom certification."
@@ -330,9 +330,9 @@
     "1134:6812": {
       "status": "implemented",
       "target": {
-        "module": "src/components/overlays/camera-view.tsx",
-        "export": "CameraView",
-        "story": "apps/storybook/src/CameraView.stories.tsx",
+        "module": "src/components/overlays/camera-view-element.tsx",
+        "export": "CameraViewElement",
+        "story": "apps/storybook/src/CameraViewElement.stories.tsx",
         "storyExports": ["Playground", "Inactive", "Fidelity"]
       },
       "note": "Reviewed 2026-10-23: a plain COMPONENT, not a set, so one variant and no Device axis; `1134-6812-default` verifies the whole 376x378 frame at its source width. The 376 square (the artboard's 2px of extra height is within tolerance), radius 16, the `bg-overlay` token for the 35% `#0e0f13` scrim, the four 44x44 brackets at 80/81 and 252/253 with the 4px stroke and 24px elbow, and the guide bar at x 84.09 with the 208x4 source stroke. The source `Line 55` is a LINE (a zero-height box with a 4px stroke), so its box height, border width, border colour and top offset are mapping artifacts, ignored; the bar is measured in the case note. The default camera glyph is a runtime extension the source frame does not draw, so the Fidelity story clears the centre by passing `null` (`children === undefined` selects the glyph, not null); `active` only changes the announcement because the source has no active/inactive paint. Guide: apps/storybook/src/guides/camera-view-element.md."
@@ -977,9 +977,9 @@
     "237:1307": {
       "status": "implemented",
       "target": {
-        "module": "src/components/content/spacer.tsx",
-        "export": "Spacer",
-        "story": "apps/storybook/src/Spacer.stories.tsx",
+        "module": "src/components/content/spacing.tsx",
+        "export": "Spacing",
+        "story": "apps/storybook/src/Spacing.stories.tsx",
         "storyExports": ["Ladder", "Playground"]
       },
       "note": "Reviewed 2026-10-23 (M5 second ring, structural node): the set declares seven `Dimensione` variants (4/8/16/24/32/40/48), each a 320×N component whose only child is `Rectangle 28`, a rectangle with no fill and no stroke — the source draws no surface, text or icon at any step, and the axis is a step ladder, not a device axis. No parity case is committed and none can be honest: a capture would compare a blank 320×N box with a blank 320×N box, and its only measurable property, the height, is exactly what the `Ladder` story already asserts (`Dimensione=N` → `size={N}` → `h-1`/`h-2`/`h-4`/`h-6`/`h-8`/`h-10`/`h-12`), together with the absent paint, border and shadow and the `aria-hidden`, role-less semantics. The node is therefore excluded from the parity corpus by design and stays `implemented`: the component is shipped, exported and mapped to every step. Guide: apps/storybook/src/guides/spacing.md."
@@ -1159,8 +1159,8 @@
       "status": "implemented",
       "target": {
         "module": "src/components/inputs/menus.tsx",
-        "export": "MenuDropdown",
-        "story": "apps/storybook/src/MenuDropdown.stories.tsx",
+        "export": "MenuDropDown",
+        "story": "apps/storybook/src/MenuDropDown.stories.tsx",
         "storyExports": ["SourcePanel", "Playground"]
       },
       "note": "Reviewed 2026-10-23 (M5 wave): one committed case against the `SourcePanel` story, captured with the icon trigger clicked open (`--expect-state open`, the `[role=menu]` popup as evidence), root `[role=menu]` at 274: box 274x330 exactly, zero panel padding and gap, radius 8, #ffffff surface, `shadow-16` (the source 0/4/16 #0e0f13 at 10%), the six 46px text rows (12/16 insets, 8px leading gap, 16/22 Semibold #0b3ee3 label) and the closing 48px destructive row (24px `cancel` artwork, 16/22 Semibold #d13333 label) with the 1px #e8ebf1 dividers between all seven. The review removed the row's 48px minimum (`min-h-12`): the source row is 12px insets plus the 22px line (46px), which clears the 44px target on its own, and the floor inflated the panel by 12px. The seven source rows share the layer name `.Single drop down item`, so the case maps the first text row and the divider as subjects and the total height proves the destructive row. Elevation comes only from the Figma shadow scale: `shadow-16` for menus and dropdowns, never Tailwind `shadow-md/lg/xl`. The `Playground` keeps the public `icon` prop (a lucide component painted with the destructive colour); the fidelity fixture leads with the design system's own `cancel` artwork, which is the source's leading art. Automated a11y and render checks are not screen-reader or browser-zoom certification."
@@ -1213,12 +1213,12 @@
     "382:7640": {
       "status": "implemented",
       "target": {
-        "module": "src/components/content/payment-provider-logos.tsx",
-        "export": "PaymentProviderLogos",
-        "story": "apps/storybook/src/PaymentProviderLogos.stories.tsx",
+        "module": "src/components/content/loghi-psp.tsx",
+        "export": "LoghiPSP",
+        "story": "apps/storybook/src/LoghiPSP.stories.tsx",
         "storyExports": ["Fidelity", "Playground"]
       },
-      "note": "Reviewed: PaymentProviderLogos publishes the set's sixteen brand variants as pinned, source-colour SVGs at the shared 24x24 artwork box with no card, frame or extra radius. Sixteen committed cases, one per variant (`382-7640-brand-*`), each captured from `Fidelity` at 24x24 with no device axis; the two variants whose source frame carries a 4px radius and fill paint them inside the exported artwork (rect rx=4), so the img's own radius is a mapping artifact. Composition and responsive clean on all sixteen; the artwork itself is owned by `assets:check` (guides/loghi-psp.md)."
+      "note": "Reviewed: LoghiPSP publishes the set's sixteen brand variants as pinned, source-colour SVGs at the shared 24x24 artwork box with no card, frame or extra radius. Sixteen committed cases, one per variant (`382-7640-brand-*`), each captured from `Fidelity` at 24x24 with no device axis; the two variants whose source frame carries a 4px radius and fill paint them inside the exported artwork (rect rx=4), so the img's own radius is a mapping artifact. Composition and responsive clean on all sixteen; the artwork itself is owned by `assets:check` (guides/loghi-psp.md)."
     },
     "382:7813": {
       "status": "implemented",
@@ -1309,9 +1309,9 @@
     "50:1700": {
       "status": "implemented",
       "target": {
-        "module": "src/components/content/page-surface.tsx",
-        "export": "PageSurface",
-        "story": "apps/storybook/src/PageSurface.stories.tsx",
+        "module": "src/components/content/white-template.tsx",
+        "export": "WhiteTemplate",
+        "story": "apps/storybook/src/WhiteTemplate.stories.tsx",
         "storyExports": ["Playground", "Fidelity"]
       },
       "note": "Reviewed 2026-10-16 (device burn-down wave 5): the white page canvas — a section with the source root's own minHeight 650 over the white surface, growing with caller content; `SafeArea` owns the max width and gutters. One case per declared device, all responsive-clean and each with no layoutScope (the set draws one composition — an empty white canvas — at every device, so both scope probes report the composition unchanged and a scope declaration would be vacuous): mobile 50:1701 (case 50-1700-xs-mobile-mobile, 320x650), tablet 50:1707 (case 50-1700-md-tablet-tablet, 900x650 — of the set's two tablet frames the MD 900 is the frame nearest the midpoint of the captured pair 320/1200 and above the library's sm breakpoint) and desktop 50:1710 (case 50-1700-lg-desktop-desktop, 1200x650; the XL 1536 and XXL 1920 frames are the same canvas). The cases capture the `Fidelity` story, the source-exact empty surface (the `Playground` SafeArea paragraph stays under the 650 floor at every captured width, so the height is the source floor, not content-driven)."
@@ -1363,8 +1363,8 @@
       "status": "implemented",
       "target": {
         "module": "src/components/inputs/menus.tsx",
-        "export": "Dropdown",
-        "story": "apps/storybook/src/Dropdown.stories.tsx",
+        "export": "DropDown",
+        "story": "apps/storybook/src/DropDown.stories.tsx",
         "storyExports": [
           "Playground",
           "SingleSelect",
@@ -1395,9 +1395,9 @@
     "731:20386": {
       "status": "implemented",
       "target": {
-        "module": "src/components/composites/identity-provider-picker.tsx",
-        "export": "IdentityProviderPicker",
-        "story": "apps/storybook/src/IdentityProviderPicker.stories.tsx",
+        "module": "src/components/composites/id-module.tsx",
+        "export": "IDModule",
+        "story": "apps/storybook/src/IDModule.stories.tsx",
         "storyExports": ["Playground", "Desktop"]
       },
       "note": "Device review 2026-10-16 (device burn-down wave 10): both declared devices verified — desktop `731-20386-desktop-desktop` (731:20387, 410x912) on the Desktop export and mobile `731-20386-mobile-mobile` (731:20385, 320x908) on the Playground export, both `compareOffset` clean and responsive-clean. The whole composition verifies without a component change: header 80/76 (min-h-20/min-h-19), title 24/32 vs 18/28 on the source Titillio-Bold (font-bold), close glyph 24x24, IDP modules pad 0/24/24 with gap 8, rows 362/272x60 with the 16px inset, 12px gap and 8px radius, the 14/16 label against the source 14/16.8 and the 116px caller logo against the source artwork 115 (both inside the 2px tolerance). No layoutScope: the composition is the caller's `device` prop, not a width that flips it (the 123:4498 ButtonGroup precedent); the reason is in both cases' note. The story exports SingleProvider (a standalone Provider row) is caller documentation, not a module composition."
@@ -1405,9 +1405,9 @@
     "733:22841": {
       "status": "implemented",
       "target": {
-        "module": "src/components/feedback/success-state.tsx",
-        "export": "SuccessState",
-        "story": "apps/storybook/src/SuccessState.stories.tsx",
+        "module": "src/components/feedback/ok-state.tsx",
+        "export": "OKState",
+        "story": "apps/storybook/src/OKState.stories.tsx",
         "storyExports": ["Playground", "WithAction"]
       },
       "note": "Device review 2026-10-16 (device burn-down wave 10): both declared devices verified against the Playground fixture — mobile `733-22841-mobile-mobile` (733:22842, 320x450) and desktop `733-22841-desktop-desktop` (733:22856, 900x466), both viewport-scoped (verified) with `compareOffset` on and responsive-clean. No component change: the responsive title tokens (text-title-md-mobile 24/36, md:text-title-md 32/44) and the 64/24 padding already follow the source; the desktop 64/0 reading is inert behind the 23rem content cap and the tool excuses it as centred content. Content 272/368x204/220, pictogram 56x56, Message 272/368x124/140 with gap 8, title and description typography exact (Titillio-Bold 700, 16/22 Regular), the section 452/468 against the source 450/466 (inside the 2px tolerance). The x1 tablet fix (max-w-none md:max-w-[23rem]) is untouched and the state's own cases stay green. Adaptation `accessible-secondary-action-target`: the source 154x22 secondary text action is a native link with the shared 48px minimum target and a visible keyboard focus perimeter; its label stays horizontally unpadded and centred within the larger target."
@@ -1415,9 +1415,9 @@
     "749:5695": {
       "status": "implemented",
       "target": {
-        "module": "src/components/feedback/error-state.tsx",
-        "export": "ErrorState",
-        "story": "apps/storybook/src/ErrorState.stories.tsx",
+        "module": "src/components/feedback/ko-state.tsx",
+        "export": "KOState",
+        "story": "apps/storybook/src/KOState.stories.tsx",
         "storyExports": ["SourceMobile", "SourceDesktop"]
       },
       "note": "Device review 2026-10-16 (device burn-down wave 11): both declared devices verified against the source fixtures - mobile `749-5695-mobile-mobile` (`749:5693`, 320x546) and desktop `749-5695-desktop-desktop` (`749:5694`, 900x562), both viewport-scoped (verified) with `compareOffset` on, `--strict` clean and responsive-clean. No component change: the section measures 320x546 / 900x562 exactly (the shared 48px action against the source 50px is absorbed in the band), Content 272/368 at (24/266,64) with gap 24, the Maintenance pictogram 56x56 at (132/422,64), Message 272/368x146/162 with gap 8, the title 24/36 mobile -> 32/44 desktop on the Bold face (the source style is Titillio-Bold), the description 16/22 grey-700, and the Code error input row exact (272/368x48, radius 8, gap 12, padding 12, the 1px #e8ebf1 border, white fill) at the source offsets (24/266,314/330). Ignored: the source's Content frame nests the code row while the DOM keeps it as a section sibling, so Content.box.height compares 226/242 against 298/314 - exactly the code row 48 + the 24px gap - while the row's own box and offset are exact (the x1 tablet reading). The x1 tablet fix (`max-w-none md:max-w-[23rem]`) is untouched and the states' other cases stay green. Adaptations (mobile and desktop): `ko-state-*-mono-font` — DM Mono is not bundled, so `text-mono` keeps the source 16/21 metrics on the platform monospace stack; `ko-state-*-copy-target` — the 24px copy glyph sits in a native `size-11` (44px) target and `min-h-12` keeps the source 48px code row; `ko-state-*-action-targets` — the 50px source action uses the shared 48px Button (-2px) and the secondary text action keeps its visible label in a native 44px target with no horizontal padding."
@@ -2088,29 +2088,29 @@
     "9676:5453": {
       "status": "implemented",
       "target": {
-        "module": "src/components/content/correction-tag.tsx",
-        "export": "CorrectionTag",
-        "story": "apps/storybook/src/CorrectionTag.stories.tsx",
-        "storyExports": ["Valid", "ValidSource"]
+        "module": "src/components/content/correction-valid.tsx",
+        "export": "CorrectionValid",
+        "story": "apps/storybook/src/CorrectionValid.stories.tsx",
+        "storyExports": ["Playground", "Source"]
       },
       "note": "Reviewed 2026-10-23 (M5 second ring): `Correction/Valid` is a single component, not a set, so one case and no device axis. `9676-5453-default` verifies the 164x30 source box, whose only child is the shared Tag instance at the identical box: the component renders that Tag directly, so the case maps `Tag` (165.78x32, the 1.78px from the 1px CSS border and the 32px min-h-8 against 30) and records the merged wrapper's zero insets and 10px single-child gap as residues. Insets 6/8, the 6px icon-label gap, radius 8 against the source 6, the 1px #e8ebf1 stroke and the white fill match; the `check_circle` 16 at 9/8 and the 12/18 Semibold #555c70 label at 7 against the source 8/7 and 6. Guide: apps/storybook/src/guides/corrections.md."
     },
     "9676:5455": {
       "status": "implemented",
       "target": {
-        "module": "src/components/content/correction-tag.tsx",
-        "export": "CorrectionTag",
-        "story": "apps/storybook/src/CorrectionTag.stories.tsx",
-        "storyExports": ["NotValid", "NotValidSource"]
+        "module": "src/components/content/correction-not-valid.tsx",
+        "export": "CorrectionNotValid",
+        "story": "apps/storybook/src/CorrectionNotValid.stories.tsx",
+        "storyExports": ["Playground", "Source"]
       },
       "note": "Reviewed 2026-10-23 (M5 second ring): `Correction/NotValid` is a single component, not a set, so one case and no device axis. `9676-5455-default` verifies the 160x30 source box, whose only child is the shared Tag instance at the identical box: the component renders that Tag directly, so the case maps `Tag` (161.3x32, the 1.3px from the 1px CSS border and the 32px min-h-8 against 30) and records the merged wrapper's zero insets and 10px single-child gap as residues. Insets 6/8, the 6px icon-label gap, radius 8 against the source 6, the 1px #e8ebf1 stroke and the white fill match; the `warning` 16 at 9/8 and the 12/18 Semibold #555c70 label at 7 against the source 8/7 and 6. Guide: apps/storybook/src/guides/corrections.md."
     },
     "9676:5633": {
       "status": "implemented",
       "target": {
-        "module": "src/components/data-display/micro-event.tsx",
-        "export": "MicroEvent",
-        "story": "apps/storybook/src/MicroEvent.stories.tsx",
+        "module": "src/components/data-display/microevento.tsx",
+        "export": "Microevento",
+        "story": "apps/storybook/src/Microevento.stories.tsx",
         "storyExports": ["Playground", "Corrected", "Source"]
       },
       "note": "Reviewed 2026-10-23 (M5 second ring): `9676-5633-default` verifies the 725x91 row. The root gap is the source 0: the previous 20px `gap-5` was drift and is removed. Insets 8/0/8/28 match (the 28px is this node's recorded foundation exception, no 28px spacing step). The source reserves a 21px leading slot (`Frame 2087324584`, an empty `Description` text) that the component collapses without its optional `time`, so the FILL content column is 697 wide against 676 and is the case residue; with a time the slot is drawn. The shared Tag instance is 161.3x32 against 160x30 with the same reading as its own review; column gap 4 against 5; the copy is 14/20 Regular #0e0f13 and sits at 44 against the source 43. The source names both the empty leading slot and the copy `Description`, so the style subject resolves the empty one and the offsets stay recorded in the case note. Guide: apps/storybook/src/guides/microevento.md."
