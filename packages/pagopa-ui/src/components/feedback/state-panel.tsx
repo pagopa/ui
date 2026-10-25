@@ -53,7 +53,7 @@ function StatePanel({
       <div className={cn("flex flex-col items-center gap-6", contentClassName)}>
         <div className="flex size-14 items-center justify-center">{icon}</div>
         <div className={cn("flex flex-col items-center gap-6", messageClassName)}>
-          <Title className={cn("text-title-md-mobile md:text-title-md", titleClassName)}>
+          <Title className={cn("text-title-md-mobile tablet-md:text-title-md", titleClassName)}>
             {title}
           </Title>
           {description && <p className="text-body text-muted-foreground">{description}</p>}
