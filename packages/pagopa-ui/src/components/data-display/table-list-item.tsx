@@ -1,6 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
-import { useLinkComponent } from "@/lib/ui-provider"
+import { useLinkComponent, useMessages } from "@/lib/ui-provider"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Button, buttonVariants } from "@/components/primitives/button"
@@ -35,13 +35,16 @@ type TableListItemProps = Omit<React.ComponentProps<"li">, "onClick"> & {
 function TableListItem({
   fields,
   action,
-  actionFallbackLabel = "Apri",
+  actionFallbackLabel: actionFallbackLabelProp,
   className,
   ...props
 }: TableListItemProps & {
-  /** Text of an action row that carries no label. @default "Apri" */
+  /** Text of an action row that carries no label. @default messages.tableListItem.actionFallbackLabel */
   actionFallbackLabel?: string
 }) {
+  const t = useMessages("tableListItem")
+  const actionFallbackLabel = actionFallbackLabelProp ?? t.actionFallbackLabel
+
   const Link = useLinkComponent()
   const actionLabel = action?.label ?? actionFallbackLabel
   const actionIcon = <PagoPAIcon name="arrow" variant="right" />

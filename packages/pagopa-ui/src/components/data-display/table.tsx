@@ -1,5 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
+import { useMessages } from "@/lib/ui-provider"
 
 import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
 import { Checkbox } from "@/components/primitives/checkbox"
@@ -56,13 +57,13 @@ function Table<Row extends { id: React.Key }>({
   selected,
   defaultSelected,
   onSelectionChange,
-  selectionLabel = "Seleziona tutte le righe",
+  selectionLabel: selectionLabelProp,
   selectionRowLabel,
   notification,
-  notificationLabel = "Notifica non letta",
+  notificationLabel: notificationLabelProp,
   pagination,
-  actionsLabel = "Azioni",
-  emptyLabel = "Nessun risultato",
+  actionsLabel: actionsLabelProp,
+  emptyLabel: emptyLabelProp,
   emptyState = { title: "Nessun risultato" },
 }: {
   caption: string
@@ -83,17 +84,17 @@ function Table<Row extends { id: React.Key }>({
   defaultSelected?: React.Key[]
   /** Called with the next selection, in row order. */
   onSelectionChange?: (selected: React.Key[]) => void
-  /** Accessible name of the select-all checkbox. @default "Seleziona tutte le righe" */
+  /** Accessible name of the select-all checkbox. @default messages.table.selectionLabel */
   selectionLabel?: string
   /** Accessible name of a row checkbox, from the row. @default "Seleziona {first cell}" */
   selectionRowLabel?: (row: Row) => string
   /** Marks a row with the source notification dot after its checkbox. */
   notification?: (row: Row) => boolean
-  /** Accessible name of the notification dot. @default "Notifica non letta" */
+  /** Accessible name of the notification dot. @default messages.table.notificationLabel */
   notificationLabel?: string
-  /** Announced name of the row-actions column. @default "Azioni" */
+  /** Announced name of the row-actions column. @default messages.table.actionsLabel */
   actionsLabel?: string
-  /** Announced text of an empty state with no visible copy. @default "Nessun risultato" */
+  /** Announced text of an empty state with no visible copy. @default messages.table.emptyLabel */
   emptyLabel?: string
   pagination?: React.ReactNode
   emptyState?: {
@@ -102,6 +103,12 @@ function Table<Row extends { id: React.Key }>({
     actions?: React.ReactNode
   }
 }) {
+  const t = useMessages("table")
+  const selectionLabel = selectionLabelProp ?? t.selectionLabel
+  const notificationLabel = notificationLabelProp ?? t.notificationLabel
+  const actionsLabel = actionsLabelProp ?? t.actionsLabel
+  const emptyLabel = emptyLabelProp ?? t.emptyLabel
+
   const descriptionId = React.useId()
   const tableId = React.useId()
   const [internalSelected, setInternalSelected] = React.useState<React.Key[]>(defaultSelected ?? [])
