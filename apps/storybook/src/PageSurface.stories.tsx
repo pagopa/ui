@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { SafeArea } from "@/components/content/safe-area"
-import { WhiteTemplate } from "@/components/content/white-template"
+import { PageSurface } from "@/components/content/page-surface"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 const meta = {
-  title: "Components/Content/WhiteTemplate",
-  component: WhiteTemplate,
+  title: "Components/Content/PageSurface",
+  component: PageSurface,
   args: {
     children: (
       <SafeArea>
@@ -21,9 +21,10 @@ const meta = {
         component:
           "White template surface with content-driven growth; `SafeArea` handles the maximum width and the responsive gutters.",
       },
+      subtitle: "Figma: White Template",
     },
   },
-} satisfies Meta<typeof WhiteTemplate>
+} satisfies Meta<typeof PageSurface>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -31,6 +32,6 @@ type Story = StoryObj<typeof meta>
 export const Playground: Story = {}
 
 export const Fidelity: Story = {
-  render: () => <WhiteTemplate />,
+  render: () => <PageSurface />,
   parameters: { layout: "fullscreen" },
 }

@@ -81,5 +81,5 @@
   "apps/storybook/src/TimelineDrawer.stories.tsx": "Components/Overlays/TimelineDrawer",
   "apps/storybook/src/Tooltip.stories.tsx": "Components/Overlays/Tooltip",
   "apps/storybook/src/WaitingState.stories.tsx": "Components/Feedback/WaitingState",
-  "apps/storybook/src/WhiteTemplate.stories.tsx": "Components/Content/WhiteTemplate"
+  "apps/storybook/src/PageSurface.stories.tsx": "Components/Content/PageSurface"
 }
