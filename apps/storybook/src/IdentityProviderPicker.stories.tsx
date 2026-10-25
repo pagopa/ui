@@ -1,7 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, fn, userEvent, within } from "storybook/test"
 
-import { IdentityProviderPicker, type IdentityProviderPickerOption } from "@/components/composites/identity-provider-picker"
+import {
+  IdentityProviderPicker,
+  type IdentityProviderPickerOption,
+} from "@/components/composites/identity-provider-picker"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import arubaLogo from "./assets/idp-logos/aruba-id.png"

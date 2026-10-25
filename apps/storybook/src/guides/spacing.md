@@ -5,8 +5,8 @@ of the spacing scale. Every variant is a 320×N component whose only child,
 `Rectangle 28`, is a rectangle with no fill and no stroke, so the source paints
 nothing at any step. The height is the whole contract.
 
-| Source variant  | Code                    | Height |
-| --------------- | ----------------------- | ------ |
+| Source variant  | Code                   | Height |
+| --------------- | ---------------------- | ------ |
 | `Dimensione=4`  | `<Spacer size={4} />`  | 4px    |
 | `Dimensione=8`  | `<Spacer size={8} />`  | 8px    |
 | `Dimensione=16` | `<Spacer size={16} />` | 16px   |
