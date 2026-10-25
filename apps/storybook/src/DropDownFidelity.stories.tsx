@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { Avatar } from "@/components/content/avatar"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Chip } from "@/components/inputs/chips"
-import { DropDown, type DropDownItem } from "@/components/inputs/menus"
+import { Dropdown, type DropdownItem } from "@/components/inputs/menus"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 interface FidelityVariant {
@@ -127,7 +127,7 @@ function DropDownFidelityFixture({ variant }: { variant: string }) {
         ? ("label" as const)
         : ("center" as const),
   }
-  const sourceItem: DropDownItem =
+  const sourceItem: DropdownItem =
     configuration.type === "cta"
       ? {
           ...common,
@@ -147,7 +147,7 @@ function DropDownFidelityFixture({ variant }: { variant: string }) {
             multiple: false,
             onSelect: () => undefined,
           }
-  const contextItem: DropDownItem = {
+  const contextItem: DropdownItem = {
     id: "context",
     label: "Context",
     onSelect: () => undefined,
@@ -156,13 +156,13 @@ function DropDownFidelityFixture({ variant }: { variant: string }) {
 
   return (
     <div style={{ width: 274 }}>
-      <DropDown triggerLabel="Open options" className="w-full" items={items} />
+      <Dropdown triggerLabel="Open options" className="w-full" items={items} />
     </div>
   )
 }
 
 const meta = {
-  title: "Components/Inputs/DropDown Fidelity",
+  title: "Components/Inputs/Dropdown Fidelity",
   component: DropDownFidelityFixture,
   args: { variant: "default-single" },
   argTypes: {
@@ -176,7 +176,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Source-bound DropDown rows use the public item composition and shared Avatar, Chip and PagoPAIcon implementations. The anchor width is a Storybook-only evidence fixture; the component remains anchor-sized at runtime.",
+          "Source-bound Dropdown rows use the public item composition and shared Avatar, Chip and PagoPAIcon implementations. The anchor width is a Storybook-only evidence fixture; the component remains anchor-sized at runtime.",
       },
     },
   },

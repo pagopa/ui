@@ -7,8 +7,8 @@ import { Avatar } from "@/components/content"
 import {
   Autocomplete,
   Chip,
-  DropDown,
-  MenuDropDown,
+  Dropdown,
+  MenuDropdown,
   MultiSelectField,
   SelectField,
 } from "@/components/inputs"
@@ -225,7 +225,7 @@ export const RichSearchableChoice: Story = {
 function NativeSourceActionMenus() {
   const [action, setAction] = React.useState("")
   const [submitted, setSubmitted] = React.useState(false)
-  const items: React.ComponentProps<typeof DropDown>["items"] = [
+  const items: React.ComponentProps<typeof Dropdown>["items"] = [
     { ...sourceOptions[0], id: "rome", onSelect: () => setAction("Comando per Roma ricevuto") },
     { id: "unavailable", label: "Comando non disponibile", disabled: true },
   ]
@@ -237,8 +237,8 @@ function NativeSourceActionMenus() {
         setSubmitted(true)
       }}
     >
-      <DropDown triggerLabel="Comandi della riga" items={items} />
-      <MenuDropDown accessibleLabel="Altri comandi della riga" items={items} />
+      <Dropdown triggerLabel="Comandi della riga" items={items} />
+      <MenuDropdown accessibleLabel="Altri comandi della riga" items={items} />
       <output aria-label="Comando della riga">{action}</output>
       <output aria-label="Invio del menu">{submitted ? "Inviato" : "Non inviato"}</output>
     </form>

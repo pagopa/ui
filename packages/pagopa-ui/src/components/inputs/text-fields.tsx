@@ -175,9 +175,15 @@ function TextField({
   )
 }
 
-type TextAreaFieldProps = React.ComponentProps<typeof Textarea> & FieldStateProps
+type TextareaFieldProps = React.ComponentProps<typeof Textarea> & FieldStateProps
 
-function TextAreaField({
+/**
+ * Multiline text field: label, description, validation messages and the
+ * caller-owned character count around the native textarea.
+ *
+ * Figma: TextArea (node 10585:80643)
+ */
+function TextareaField({
   id,
   label,
   description,
@@ -189,7 +195,7 @@ function TextAreaField({
   className,
   "aria-describedby": ariaDescribedBy,
   ...props
-}: TextAreaFieldProps) {
+}: TextareaFieldProps) {
   const ids = useFieldIds(id)
   const state = { description, error, success }
 
@@ -542,4 +548,4 @@ function DatePickerField({
   )
 }
 
-export { AuthenticationCodeInput, DatePickerField, TextAreaField, TextField }
+export { AuthenticationCodeInput, DatePickerField, TextareaField, TextField }
