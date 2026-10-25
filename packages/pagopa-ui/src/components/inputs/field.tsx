@@ -1,5 +1,8 @@
+"use client"
+
 import * as React from "react"
 import { cn } from "@/lib/cn"
+import { useMessages } from "@/lib/ui-provider"
 import { CheckCircle2 } from "@/components/primitives/icons"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
@@ -22,7 +25,7 @@ function FloatingFieldLabel({
   htmlFor,
   label,
   required,
-  requiredLabel = "(obbligatorio)",
+  requiredLabel: requiredLabelProp,
   floated,
   leadingIcon,
   focusDriven = true,
@@ -34,7 +37,7 @@ function FloatingFieldLabel({
   htmlFor: string
   label: React.ReactNode
   required?: boolean
-  /** Visible suffix of the required marker. @default "(obbligatorio)" */
+  /** Visible suffix of the required marker. @default messages.floatingFieldLabel.requiredLabel */
   requiredLabel?: string
   floated?: boolean
   leadingIcon?: React.ReactNode
@@ -45,6 +48,9 @@ function FloatingFieldLabel({
   restingClassName?: string
   className?: string
 }) {
+  const t = useMessages("floatingFieldLabel")
+  const requiredLabel = requiredLabelProp ?? t.requiredLabel
+
   const focusFloats = !floated && focusDriven
   const placeholderFloats = !floated && placeholderValue
   return (
@@ -102,10 +108,13 @@ function FieldLabel({
   htmlFor,
   label,
   required,
-  requiredLabel = "(obbligatorio)",
+  requiredLabel: requiredLabelProp,
   disabled,
   className,
 }: FieldStateProps & { id?: string; htmlFor: string; className?: string }) {
+  const t = useMessages("fieldLabel")
+  const requiredLabel = requiredLabelProp ?? t.requiredLabel
+
   return (
     <label
       id={id}

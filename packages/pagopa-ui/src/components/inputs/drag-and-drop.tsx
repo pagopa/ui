@@ -1,5 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
+import { useMessages } from "@/lib/ui-provider"
 import { FileUp, X } from "@/components/primitives/icons"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
@@ -8,12 +9,6 @@ import { Progress } from "@/components/primitives/progress"
 
 import { FieldLabel, FieldMessages } from "./field"
 import { describedBy, useFieldIds, useFormReset, type FieldStateProps } from "./field-utils"
-
-function formatFileSize(bytes: number) {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
-}
 
 // The native `files` list is the submission source. Real browsers accept the
 // DataTransfer assignment; some test drivers expose `files` as a getter-only
@@ -30,7 +25,7 @@ function replaceInputFiles(input: HTMLInputElement, next: File[]) {
 
 function DragAndDrop({
   id,
-  label = "Carica file",
+  label: labelProp,
   description,
   error,
   success,
@@ -49,25 +44,25 @@ function DragAndDrop({
   variant = "file",
   preview,
   helper,
-  loadingLabel = "Caricamento in corso",
-  loadingText = "Caricamento in corso...",
-  filesLabel = "File selezionati",
-  failedText = "Caricamento fallito",
-  disabledText = "Caricamento non disponibile",
-  draggingText = "Rilascia qui per caricare",
-  idleText = "Trascina qui i file o selezionali",
+  loadingLabel: loadingLabelProp,
+  loadingText: loadingTextProp,
+  filesLabel: filesLabelProp,
+  failedText: failedTextProp,
+  disabledText: disabledTextProp,
+  draggingText: draggingTextProp,
+  idleText: idleTextProp,
   selectionHint = (multiple) => (multiple ? "Puoi selezionare più file" : "Seleziona un file"),
-  uploadLabel = "Carica il file",
-  uploadLogoLabel = "Carica il logo",
-  cancelLabel = "Annulla",
-  retryLabel = "Riprova",
-  fileMeta = (file) => `${file.type || "File"} · ${formatFileSize(file.size)}`,
-  removeFileLabel = (fileName) => `Rimuovi ${fileName}`,
-  singleFileError = "Seleziona un solo file.",
-  invalidFormatError = (fileName) => `Formato non consentito: ${fileName}.`,
+  uploadLabel: uploadLabelProp,
+  uploadLogoLabel: uploadLogoLabelProp,
+  cancelLabel: cancelLabelProp,
+  retryLabel: retryLabelProp,
+  fileMeta: fileMetaProp,
+  removeFileLabel: removeFileLabelProp,
+  singleFileError: singleFileErrorProp,
+  invalidFormatError: invalidFormatErrorProp,
 }: Omit<FieldStateProps, "label"> & {
   id?: string
-  /** Visible field label. @default "Carica file" */
+  /** Visible field label. @default messages.dragAndDrop.label */
   label?: React.ReactNode
   accept?: string
   multiple?: boolean
@@ -84,45 +79,63 @@ function DragAndDrop({
   variant?: "file" | "avatar"
   preview?: React.ReactNode
   helper?: React.ReactNode
-  /** Announced name of the progress loader. @default "Caricamento in corso" */
+  /** Announced name of the progress loader. @default messages.dragAndDrop.loadingLabel */
   loadingLabel?: string
-  /** Visible text of the processing state. @default "Caricamento in corso..." */
+  /** Visible text of the processing state. @default messages.dragAndDrop.loadingText */
   loadingText?: string
-  /** Accessible name of the selected-files list. @default "File selezionati" */
+  /** Accessible name of the selected-files list. @default messages.dragAndDrop.filesLabel */
   filesLabel?: string
-  /** Visible text of the failed state. @default "Caricamento fallito" */
+  /** Visible text of the failed state. @default messages.dragAndDrop.failedText */
   failedText?: string
-  /** Visible text while the field is disabled. @default "Caricamento non disponibile" */
+  /** Visible text while the field is disabled. @default messages.dragAndDrop.disabledText */
   disabledText?: string
-  /** Visible text while a file hovers the drop area. @default "Rilascia qui per caricare" */
+  /** Visible text while a file hovers the drop area. @default messages.dragAndDrop.draggingText */
   draggingText?: string
-  /** Visible invitation of the resting drop area. @default "Trascina qui i file o selezionali" */
+  /** Visible invitation of the resting drop area. @default messages.dragAndDrop.idleText */
   idleText?: string
   /**
    * Hint under the invitation, from whether multiple files are allowed: the
    * caller owns the complete sentence. @default built-in Italian hint
    */
   selectionHint?: (multiple: boolean) => string
-  /** Visible label of the file picker. @default "Carica il file" */
+  /** Visible label of the file picker. @default messages.dragAndDrop.uploadLabel */
   uploadLabel?: string
-  /** Visible label of the avatar picker. @default "Carica il logo" */
+  /** Visible label of the avatar picker. @default messages.dragAndDrop.uploadLogoLabel */
   uploadLogoLabel?: string
-  /** Processing action text. @default "Annulla" */
+  /** Processing action text. @default messages.dragAndDrop.cancelLabel */
   cancelLabel?: string
-  /** Failed action text. @default "Riprova" */
+  /** Failed action text. @default messages.dragAndDrop.retryLabel */
   retryLabel?: string
   /**
    * Complete meta line of a selected file (type and size): the caller receives
-   * the file and owns the phrase. @default built-in Italian "type · size"
+   * the file and owns the phrase. @default messages.dragAndDrop.fileMeta
    */
   fileMeta?: (file: File) => string
-  /** Accessible name of a file's remove control, from the file name. @default "Rimuovi {name}" */
+  /** Accessible name of a file's remove control, from the file name. @default messages.dragAndDrop.removeFileLabel */
   removeFileLabel?: (fileName: string) => string
-  /** Validation message for more files than the field accepts. @default "Seleziona un solo file." */
+  /** Validation message for more files than the field accepts. @default messages.dragAndDrop.singleFileError */
   singleFileError?: string
-  /** Validation message for a rejected format, from the file name. @default "Formato non consentito: {name}." */
+  /** Validation message for a rejected format, from the file name. @default messages.dragAndDrop.invalidFormatError */
   invalidFormatError?: (fileName: string) => string
 }) {
+  const t = useMessages("dragAndDrop")
+  const label = labelProp ?? t.label
+  const loadingLabel = loadingLabelProp ?? t.loadingLabel
+  const loadingText = loadingTextProp ?? t.loadingText
+  const filesLabel = filesLabelProp ?? t.filesLabel
+  const failedText = failedTextProp ?? t.failedText
+  const disabledText = disabledTextProp ?? t.disabledText
+  const draggingText = draggingTextProp ?? t.draggingText
+  const idleText = idleTextProp ?? t.idleText
+  const uploadLabel = uploadLabelProp ?? t.uploadLabel
+  const uploadLogoLabel = uploadLogoLabelProp ?? t.uploadLogoLabel
+  const cancelLabel = cancelLabelProp ?? t.cancelLabel
+  const retryLabel = retryLabelProp ?? t.retryLabel
+  const fileMeta = fileMetaProp ?? t.fileMeta
+  const removeFileLabel = removeFileLabelProp ?? t.removeFileLabel
+  const singleFileError = singleFileErrorProp ?? t.singleFileError
+  const invalidFormatError = invalidFormatErrorProp ?? t.invalidFormatError
+
   const ids = useFieldIds(id)
   const [dragging, setDragging] = React.useState(false)
   const [files, setFiles] = React.useState<File[]>([])
