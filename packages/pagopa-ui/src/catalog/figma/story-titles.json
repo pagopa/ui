@@ -64,7 +64,7 @@
   "apps/storybook/src/SkipToMainContent.stories.tsx": "Components/Navigation/SkipToMainContent",
   "apps/storybook/src/Snackbar.stories.tsx": "Components/Feedback/Snackbar",
   "apps/storybook/src/SnackbarErrorCode.stories.tsx": "Components/Feedback/SnackbarErrorCode",
-  "apps/storybook/src/Spacing.stories.tsx": "Components/Content/Spacing",
+  "apps/storybook/src/Spacer.stories.tsx": "Components/Content/Spacer",
   "apps/storybook/src/Spinner.stories.tsx": "Components/Feedback/Spinner",
   "apps/storybook/src/StatusTile.stories.tsx": "Components/Content/StatusTile",
   "apps/storybook/src/Stepper.stories.tsx": "Components/Navigation/Stepper",

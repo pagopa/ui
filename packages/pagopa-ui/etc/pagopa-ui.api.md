@@ -1047,16 +1047,16 @@ export interface SnackbarProps {
     tone?: Tone;
 }
 
-// @public (undocumented)
-export function Spacing(input: {
-    size?: SpacingSize;
+// @public
+export function Spacer(input: {
+    size?: SpacerSize;
     className?: string;
 }): JSX.Element;
 
 // Warning: (ae-forgotten-export) The symbol "sizeClasses" needs to be exported by the entry point pagopa-ui.d.ts
 //
 // @public (undocumented)
-export type SpacingSize = keyof typeof sizeClasses;
+export type SpacerSize = keyof typeof sizeClasses;
 
 // @public (undocumented)
 export function Spinner(input: SpinnerProps): JSX.Element;
