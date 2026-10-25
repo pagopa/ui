@@ -1,8 +1,9 @@
 # Parity tooling — the commands of the loop
 
 `pnpm --filter pagopa-ui-cli run cli -- parity` with no arguments prints every subcommand and flag; read it
-there. This file says what each command proves and how to read it. `check` and
-`source` read `--input`, else `figma.snapshot`, else the committed evidence
+there. For one node, start with `align`: apply its hints, re-run it until
+aligned, then save the cases with `check --save-case`. `check` and `source`
+read `--input`, else `figma.snapshot`, else the committed evidence
 slice; `check` and `capture` also need Storybook on `storybook.url`
 (`STORYBOOK_URL=<url>` for another one). The default case corpus is
 `catalog.parityCases` (`--cases <file>` overrides it).
@@ -14,24 +15,24 @@ Every row is a target of `pagopa-ui-cli`: run it as
 
 | Target                                             | Proves                                                                                                                                                       |
 | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `figma:parity:align --node <id>`                   | one node's work order: header, each case's verdict and deltas with the class its token maps to, the next command; read-only                                   |
 | `figma:devices [--check]`                          | every declared axis value resolves through `catalog.devicePolicy` (no snapshot, no browser)                                                                   |
-| `figma:parity:queue`                               | the work list: per registry node its story ids, Design-panel nodes and undeclared exports; `--unmapped`, `--coverage`, `--uncovered` (the device burn-down) |
+| `figma:parity:queue`                               | the work list: per registry node its story ids, Design-panel nodes and undeclared exports; `--order fan-in` (most reused first), `--unmapped`, `--coverage`, `--uncovered` (the device burn-down) |
 | `figma:parity:check --node <id>` / `--case <caseId>` | source numbers, render probe, classified diff, responsive verdict and capture preflight for one case                                                         |
 | `figma:parity:check --node <id> --devices`         | every declared device's committed case in one table; exit 1 when a device has no reviewed case or its case fails                                            |
 | `figma:parity:capture`                             | a whole wave: per case the report, probe and PNG under `figma.parityOut`, plus `summary.json`                                                                |
 | `figma:parity:cases --sync`                        | proposes the missing device cases and the variants no reviewed case points at, as drafts                                                                     |
 | `figma:parity:verify`                              | the case corpus, the device coverage and the evidence bundle, hermetically (no snapshot, no browser); exit 1 on errors, 0 with warnings                      |
-| `figma:parity:evidence --write` / `--check`        | the offline bundle: `--write` refreshes the slice, the pinned PNGs and the manifest (token + snapshot); `--check` proves they still match the corpus         |
+| `figma:parity:evidence --write` / `--check`        | the offline bundle: `--write` refreshes slice, PNGs and manifest (token + snapshot); `--check` proves they match the corpus                                    |
 | `figma:parity:report --wave <name>`                | the wave record: counts, verdicts, advisories, residues, open deltas, the re-run command per case                                                            |
-| `source <nodeId>` (via `pnpm --filter pagopa-ui-cli run cli -- parity source <nodeId>`) | the source spec `check` diffs against (`--compact` anatomy, `--json`, `--depth N`); `--png [file]` writes the pinned variant render (needs the token and the pinned snapshot), default `.figma/parity/source/<nodeId>.png` |
-| `render --story <storyId>` (via `pnpm --filter pagopa-ui-cli run cli -- parity render --story <storyId>`) | a render probe alone; `--tree [--depth N]` prints the DOM anatomy (box, position, padding, gap) of the root's descendants, the render-side counterpart of `source --compact` |
+| `source <nodeId>` (via `pnpm --filter pagopa-ui-cli run cli -- parity source <nodeId>`) | the source spec `check` diffs against (`--compact` anatomy, `--json`, `--depth N`); `--png [file]` writes the pinned variant render (token + pinned snapshot), default `.figma/parity/source/<nodeId>.png` |
+| `render --story <storyId>` (via `pnpm --filter pagopa-ui-cli run cli -- parity render --story <storyId>`) | a render probe alone; `--tree [--depth N]` prints the DOM anatomy (box, position, padding, gap) of the root's descendants |
 
-The source reader is the only reader of the source: never grow a second reader
-from a scratch file. A render to look at is `check` with `--screenshot <file>`
-(the same preflight as the numbers); the source render is the pinned PNG or
-`get_screenshot`. Trust `figma:parity:check` over the render module's `--root`:
-the latter forces `display:block` on the root, `check` forces only
-`#storybook-root`.
+The source reader is the only reader of the source: never grow a second one
+from a scratch file. A render to look at is `check --screenshot <file>` (same
+preflight); the source render is the pinned PNG or `get_screenshot`. Trust
+`figma:parity:check` over the render module's `--root`: the latter forces
+`display:block`, `check` only `#storybook-root`.
 
 ## Rules the scripts encode
 
@@ -41,30 +42,28 @@ beside them and run in `pnpm nx run pagopa-ui-cli:test` with no snapshot and no
 browser.
 
 The check's messages name the rest: 2px tolerance and the weight law (source
-`500` → CSS 600, `600` → 700, so a 400 face is always a delta); a ≥44px target
+`500` → CSS 600, `600` → 700, a 400 face is always a delta); a ≥44px target
 only when the invisible `::after` expands it; a borderless render's inset ring
-(an inset box-shadow with no offset and no blur) as its stroke; token classes
+(an inset box-shadow with no offset or blur) as its stroke; token classes
 against `tokens.generatedCss` and `tokens.manifest`, offsets against the 4px
-scale — the capture forces Storybook's 16px `border-box` centred-layout padding
-to 0. Apply states with `--fill`/`--click`: the Storybook `args` URL parameter
+scale — the capture forces Storybook's 16px `border-box` padding to 0. Apply states with `--fill`/`--click`: the Storybook `args` URL parameter
 silently drops values with spaces.
 
 ## Exit codes and profiles
 
 `0` verified (residues allowed) · `1` deltas above tolerance · `2` invalid input,
-missing snapshot or Storybook, a stale evidence slice, or a capture the preflight
-refused (`capture-mismatch`, `state-mismatch`). Missing evidence is never a pass.
+missing snapshot or Storybook, a stale evidence slice, or a refused capture
+(`capture-mismatch`, `state-mismatch`). Missing evidence is never a pass.
 
 The default profile is the reviewed one: mapped property deltas and residues
 decide; composition evidence (offsets, sibling order) is an `advisory`.
-`--strict` promotes advisories into the verdict — for a dedicated run on a case
-whose mapping is calibrated (`compareOffset`), not for the everyday loop.
+`--strict` promotes advisories into the verdict — for a calibrated mapping
+(`compareOffset`), not the everyday loop.
 
 ## Reading the result
 
 - `deltas`: what still needs a fix; numeric ones carry the token class
-  (`token`, `near-token`, `inline`) against `tokens.generatedCss` and
-  `tokens.manifest` (offsets against the 4px spacing scale).
+  (`token`, `near-token`, `inline`) against the token vocabulary.
 - `advisories`: offsets from the declared origin, inverted sibling order.
 - `responsive`: `clipped`, `escaped`, `truncated`, the band rows and
   `scrollable` (advisory). All but `scrollable` are deltas; a deliberate
