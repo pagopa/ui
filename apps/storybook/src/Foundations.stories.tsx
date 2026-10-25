@@ -140,8 +140,6 @@ function Foundations() {
 const meta = {
   title: "Foundations/Tokens",
   component: Foundations,
-  // A catalogue of every token: it changes whenever the palette does.
-  tags: ["no-visual"],
   parameters: {
     layout: "fullscreen",
     docs: {

@@ -204,8 +204,6 @@ const meta = {
   title: "Foundations/Figma inventory",
   component: FigmaInventory,
   parameters: { layout: "fullscreen" },
-  // A catalogue of other stories: it changes whenever any of them does.
-  tags: ["no-visual"],
 } satisfies Meta<typeof FigmaInventory>
 
 export default meta

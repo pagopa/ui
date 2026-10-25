@@ -243,22 +243,3 @@ The `ci` configuration is the gate: `lint` and `fmt` check instead of writing.
 (`pnpm exec playwright install chromium firefox webkit`) and the built artifact;
 they are the slow end of the chain and run last. The `infra/` projects validate
 in CI, where `mise deps` has initialized their toolchain.
-
-### Visual regression
-
-`visual.yml` captures every story at 320, 600 and 1200 px, except the ones
-tagged `no-visual`, and compares each image with the baselines in
-`apps/storybook/visual/__screenshots__`. Baselines are produced only on Linux,
-in the Playwright container `mcr.microsoft.com/playwright:v1.63.0-noble`, by the
-workflow itself: never commit one produced on macOS.
-
-To accept a visual change, add the `visual:update` label to the pull request.
-The workflow commits the new images to its head branch, and that commit starts
-no run: review a sample, remove the label and re-run the check. The same
-comparison runs locally with Docker and the same image:
-
-```bash
-docker run --rm --ipc=host -v "$PWD":/work -w /work/apps/storybook \
-  mcr.microsoft.com/playwright:v1.63.0-noble \
-  pnpm exec playwright test -c visual/playwright.config.ts
-```
