@@ -505,9 +505,6 @@ function emitCss(manifest: Manifest): string {
     const entriesForCategory = themeEntries(manifest, category)
     if (!entriesForCategory.length) continue
     lines.push("")
-    // Tailwind ships its own viewport scale; the theme keeps the Figma
-    // breakpoints only.
-    if (category === "breakpoint") lines.push("  --breakpoint-*: initial;")
     for (const entry of entriesForCategory) {
       lines.push(
         `  /* ${entry.name} — ${trimNumber(Number(entry.value))}${category === "z-index" ? "" : "px"} */`,

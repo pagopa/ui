@@ -31,17 +31,10 @@ alias, a device-like value on a non-device axis.
 
 - **viewport** — the page width decides: a surface used once per page and
   spanning it (chrome bands, full-width panels, page-level states). Media
-  queries (`tablet:`, `tablet-md:`, `desktop:`, `desktop-xl:`, `desktop-xxl:`);
-  the device width is the capture viewport.
+  queries (`max-sm:`, `sm:`, `md:`); the device width is the capture viewport.
 - **container** — the space the component receives decides: a module inside a
   column, card, panel or drawer. Container queries (`@container/*`,
   `@max-[…]/*`); the capture sets the root width and keeps the viewport wide.
-
-The viewport variants are the Figma breakpoints and nothing else: `tablet:`
-600px, `tablet-md:` 900px, `desktop:` 1200px, `desktop-xl:` 1536px and
-`desktop-xxl:` 1920px. The theme resets Tailwind's scale, and the foundation
-check's `default-breakpoint` rejects `sm:`, `md:`, `lg:`, `xl:`, `2xl:` and
-their `max-` forms.
 
 Decide by one question: **can the component's own width differ from the page
 width?** Always the page → viewport. A caller can place it in a narrow column of
@@ -120,7 +113,7 @@ composition; a wide frame does not make it the desktop one.
 
 ### Hidden per device is not hidden in the DOM
 
-Artwork one device drops (`hidden tablet:block`) is expected to be `display:none` in
+Artwork one device drops (`hidden sm:block`) is expected to be `display:none` in
 the other capture. The defect is the inverse: content clipped
 (`scrollWidth > clientWidth`), painted outside its container, or ellipsised with
 no reason.
@@ -128,7 +121,7 @@ no reason.
 ### Collapsed content keeps its accessible name
 
 - Collapsing text stays in the DOM as `sr-only` and returns above the breakpoint
-  (`sr-only tablet:not-sr-only tablet:flex`, or the container equivalent).
+  (`sr-only sm:not-sr-only sm:flex`, or the container equivalent).
 - A link collapsing to its icon keeps its label as `sr-only`; a link that also
   carries an avatar paints the avatar collapsed and the icon above it.
 - The accessible name never degrades to an avatar `alt` or an icon.
@@ -171,14 +164,13 @@ Before calling something clipped, skip: `.sr-only` subtrees, container-variant
 and elements whose own `overflow` is `auto|scroll` (`scrollable`, not clipped).
 Without that allowlist a sweep is mostly noise.
 
-### The tablet device has no exact frame width
+### The tablet device has no exact breakpoint
 
-A source tablet frame is drawn at the width it was designed on, while `tablet:`
-starts at 600px and `tablet-md:` at 900px; the two need not coincide. Decide per
-case — viewport for a page surface, container for a module — and record the
-choice in the registry note or the case. With several tablet frames, take the one
-nearest the midpoint above `tablet` and skip frames that exercise the same
-branch. Never add a breakpoint for a variant nobody renders.
+Source tablet frames and the library breakpoints (`sm` 640, `md` 768) do not
+coincide. Decide per case — viewport for a page surface, container for a module —
+and record the choice in the registry note or the case. With several tablet
+frames, take the one nearest the midpoint above `sm` and skip frames that
+exercise the same branch. Never add a breakpoint for a variant nobody renders.
 
 ### Story tests run at one viewport
 

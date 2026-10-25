@@ -81,7 +81,7 @@ function Connector({ complete, className }: { complete: boolean; className?: str
     <span
       aria-hidden="true"
       className={cn(
-        "hidden h-1 flex-1 rounded-full tablet:block",
+        "hidden h-1 flex-1 rounded-full sm:block",
         complete ? "bg-primary" : "bg-border-strong",
         className,
       )}
@@ -112,7 +112,7 @@ function Stepper({
 
   return (
     <div className={cn("grid gap-4", className)}>
-      <div className="grid gap-4 tablet:hidden">
+      <div className="grid gap-4 sm:hidden">
         <div className="grid w-fit gap-0.5">
           <p className="text-body-sb">{current?.label}</p>
           {current?.description ? (
@@ -151,7 +151,7 @@ function Stepper({
       </div>
       <ol
         aria-label={navigationLabel}
-        className="hidden tablet:grid tablet:grid-cols-[repeat(var(--steps),minmax(0,1fr))]"
+        className="hidden sm:grid sm:grid-cols-[repeat(var(--steps),minmax(0,1fr))]"
         style={stepperStyle}
       >
         {items.map((item, index) => (

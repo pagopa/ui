@@ -45,7 +45,7 @@ function IconCatalogue() {
           fill off, grade normal, 24dp — Apache-2.0), {iconOriginCounts.brand ?? 0} marchi di brand
           riprodotti nei colori sorgente e {iconOriginCounts.custom ?? 0} glifi PagoPA.
         </p>
-        <div className="mt-6 grid grid-cols-2 gap-3 tablet:grid-cols-3 tablet-md:grid-cols-5 desktop:grid-cols-7">
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-7">
           {iconNames.map((name) => {
             const asset = iconCatalogue.get(name)
             return (
@@ -102,7 +102,7 @@ function IconCatalogue() {
             {pictogramProvenance.license}
           </p>
         ) : null}
-        <div className="mt-6 grid grid-cols-2 gap-6 tablet:grid-cols-3 tablet-md:grid-cols-5">
+        <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-5">
           {pictogramNames.map((name) => (
             <PagoPAPictogram key={name} name={name} label={name} />
           ))}
@@ -227,7 +227,7 @@ export const Catalogue: Story = {
 
 export const LocalDefaults: Story = {
   render: () => (
-    <main className="grid grid-cols-2 gap-4 p-4 text-primary tablet:grid-cols-4">
+    <main className="grid grid-cols-2 gap-4 p-4 text-primary sm:grid-cols-4">
       {(
         [
           "feedback",
@@ -296,7 +296,7 @@ export const LocalDefaults: Story = {
 
 export const LocalVariants: Story = {
   render: () => (
-    <main className="grid grid-cols-2 gap-4 p-4 tablet:grid-cols-3">
+    <main className="grid grid-cols-2 gap-4 p-4 sm:grid-cols-3">
       <PagoPAIcon name="Media logos" variant="instagram" decorative={false} label="Instagram" />
       <PagoPAIcon name="Media logos" variant="linkedin" decorative={false} label="LinkedIn" />
       <PagoPAIcon name="Media logos" variant="threads" decorative={false} label="Threads" />
@@ -487,7 +487,7 @@ export const StateVariants: Story = {
   // Reflow exemption: fixture pinned at the source width, not a product surface.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <main className="grid grid-cols-2 gap-4 p-4 tablet:grid-cols-4">
+    <main className="grid grid-cols-2 gap-4 p-4 sm:grid-cols-4">
       {stateIcons.map(({ name, variant }) => (
         <figure
           key={`${name}-${variant}`}

@@ -116,7 +116,7 @@ function SourceFrame({ direction }: { direction: "bottom" | "right" }) {
         title="Drawer title"
         description={<SourceDescription />}
         icon={<PagoPAIcon name="flag" size={40} className="text-primary" />}
-        footer={<Button className="w-full tablet:w-auto">Primary</Button>}
+        footer={<Button className="w-full sm:w-auto">Primary</Button>}
         footerPlacement="flow"
         showHandle={false}
         direction={direction}

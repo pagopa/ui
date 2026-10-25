@@ -1,3 +1,5 @@
+"use client"
+
 import { useId, type ComponentProps, type ReactNode } from "react"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"

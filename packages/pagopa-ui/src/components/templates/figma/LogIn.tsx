@@ -28,13 +28,10 @@ function LogIn({ title, description, alert, actions, terms, className }: LogInPr
   return (
     <div
       data-slot="login-module"
-      className={cn(
-        "flex flex-col items-center gap-10 px-6 py-16 tablet-md:px-10 tablet-md:py-20",
-        className,
-      )}
+      className={cn("flex flex-col items-center gap-10 px-6 py-16 md:px-10 md:py-20", className)}
     >
-      <div className="flex w-full flex-col gap-2 text-center tablet-md:max-w-(--login-width)">
-        <h1 className="text-title-lg-mobile tablet-md:text-title-lg">{title}</h1>
+      <div className="flex w-full flex-col gap-2 text-center md:max-w-(--login-width)">
+        <h1 className="text-title-lg-mobile md:text-title-lg">{title}</h1>
         {/* The source description is 18/26 Regular; the file publishes only the
             18/26 Semibold variable (`Body/Body Big SB`), so the block takes its
             metrics and states the regular weight explicitly. */}
@@ -52,7 +49,7 @@ function LogIn({ title, description, alert, actions, terms, className }: LogInPr
       {terms ? (
         <div
           data-slot="login-module-terms"
-          className="flex w-full flex-col gap-4 text-center tablet-md:max-w-(--login-width)"
+          className="flex w-full flex-col gap-4 text-center md:max-w-(--login-width)"
         >
           <Separator />
           <p className="text-body text-muted-foreground">{terms}</p>
