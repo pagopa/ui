@@ -21,7 +21,6 @@
     "figma:comments": "node src/cli.ts figma comments",
     "figma:brief": "node src/cli.ts figma brief",
     "figma:parity:check": "node src/cli.ts parity check",
-    "figma:parity:align": "node src/cli.ts parity align",
     "figma:parity:queue": "node src/cli.ts parity queue",
     "figma:parity:cases": "node src/cli.ts parity cases",
     "figma:parity:verify": "node src/cli.ts parity verify",

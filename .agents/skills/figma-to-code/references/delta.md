@@ -7,7 +7,8 @@ request ([node-review.md](node-review.md)).
 ## Entry points
 
 - **A drift pull request** is a complete handoff: its body lists the delta nodes
-  with links, classes, targets and per-device variants. Start from its branch ([handoff.md](handoff.md)), then step 3.
+  with links, classes, targets and per-device variants. Start from its branch
+  after the setup in [handoff.md](handoff.md), then step 3.
 - **Figma changed, no drift pull request**, or the session report says the
   inventory is older than 30 days: start at step 1.
 - **The design foundations changed** (Variables): the token step below.
@@ -32,8 +33,9 @@ request ([node-review.md](node-review.md)).
      is not today's delta;
    - `unverifiedDesign`: nodes without a design fingerprint.
 
-   A set with a device axis is reported **per device**: a mobile-only change
-   is a mobile review. The REST read covers every component in the file. When a remote
+   A set with a device axis is reported **per device**: name the variants and
+   links the delta touches; a mobile-only change is a mobile review.
+   The REST read covers every component published in the file. When a remote
    library may hold roots it cannot see, add the MCP inventory: save
    `list_file_components_for_code_connect` to `figma.mcpInventory` and run
    `pnpm nx run pagopa-ui-cli:figma:export --input <figma.mcpInventory>`. When
@@ -51,10 +53,9 @@ request ([node-review.md](node-review.md)).
    **Done when** the inventory is refreshed and each production delta is
    `pending`. A refresh is not approval.
 
-3. **Decision.** Per queued node, in `implementationOrder`, start with
-   `pnpm nx run pagopa-ui-cli:figma:parity:align --node <id>`, read the source of
-   **every declared device** (`parity source <nodeId> --compact`,
-   `get_design_context` / `get_screenshot`) and pick exactly one:
+3. **Decision.** Per queued node, in `implementationOrder`, read the source of
+   **every declared device** (`node packages/ui-cli/src/cli.ts parity source <nodeId>
+   --compact`, `get_design_context` / `get_screenshot`) and pick exactly one:
    - implement it in the matching family → [new-from-figma.md](new-from-figma.md);
    - it is already implemented and the change reaches it →
      [node-review.md](node-review.md);

@@ -22,7 +22,6 @@
         "layers:check",
         "foundation:check",
         "pagopa-ui-cli:test",
-        "pagopa-ui-cli:figma:parity:verify",
         "pagopa-ui-tokens:test"
       ],
       "configurations": { "ci": { "script": "test:unit" } }

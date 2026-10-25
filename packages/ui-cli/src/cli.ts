@@ -383,15 +383,9 @@ const parity = defineCommand({
       status: parityString,
       node: parityString,
       cases: parityString,
-      order: parityString,
       unmapped: parityBoolean,
       coverage: parityBoolean,
       uncovered: parityBoolean,
-      json: parityBoolean,
-    }),
-    align: parityCommand("align", "One node's read-only work order", {
-      node: parityString,
-      cases: parityString,
       json: parityBoolean,
     }),
     check: parityCommand("check", "Compare one reviewed case", {
