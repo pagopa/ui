@@ -1,4 +1,7 @@
+"use client"
+
 import { cn } from "@/lib/cn"
+import { useMessages } from "@/lib/ui-provider"
 
 import amexLogo from "@/assets/psp-logos/382-7441.svg"
 import appPostepayLogo from "@/assets/psp-logos/382-7478.svg"
@@ -64,6 +67,7 @@ type PaymentProviderLogosProps =
     }
   | {
       providers: { name: string; logo?: string }[]
+      /** Accessible name of the logo list. @default messages.paymentProviderLogos.label */
       label?: string
       className?: string
       brand?: never
@@ -77,6 +81,7 @@ type PaymentProviderLogosProps =
  * Figma: Loghi PSP (node 382:7640)
  */
 function PaymentProviderLogos(props: PaymentProviderLogosProps) {
+  const t = useMessages("paymentProviderLogos")
   if (props.brand) {
     const logo = pspBrandLogos[props.brand]
     return (
@@ -89,7 +94,8 @@ function PaymentProviderLogos(props: PaymentProviderLogosProps) {
     )
   }
 
-  const { providers, label = "Prestatori di servizi di pagamento", className } = props
+  const { providers, label: labelProp, className } = props
+  const label = labelProp ?? t.label
 
   return (
     <ul aria-label={label} className={cn("flex flex-wrap items-center gap-4", className)}>
