@@ -49,3 +49,26 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 The component receives `href`, the anchor attributes and a `ref`; keep it
 forwarding all of them so client-side routing, open-in-new-tab and which-link
 focus survive. In-page `#id` links stay plain anchors.
+
+## Languages and texts
+
+The default dictionary is Italian. A text prop wins over the provider, and the
+provider wins over the default dictionary. Switch a whole tree to English:
+
+```tsx
+import { UIProvider, enMessages } from "@pagopa/ui"
+
+;<UIProvider locale="en-US" messages={enMessages}>
+  {children}
+</UIProvider>
+```
+
+`locale` is the BCP 47 code the components format with; `calendarLocale` takes
+a react-day-picker locale. Override a single label, leaving the rest Italian:
+
+```tsx
+<UIProvider messages={{ pagination: { previousLabel: "Indietro" } }}>
+```
+
+A nested provider merges over the enclosing one. `itMessages` and `enMessages`
+are exported whole; `Messages` types a complete dictionary.
