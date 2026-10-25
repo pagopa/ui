@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
-import { OKState } from "@/components/feedback/ok-state"
+import { SuccessState } from "@/components/feedback/success-state"
 import { Button, buttonVariants } from "@/components/primitives/button"
 import { cn } from "@/lib/cn"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 const meta = {
-  title: "Components/Feedback/OKState",
-  component: OKState,
+  title: "Components/Feedback/SuccessState",
+  component: SuccessState,
   args: {
     title: "Abbiamo ricevuto la tua richiesta!",
     description: "Ti risponderemo al più presto all’indirizzo e-mail che hai indicato.",
@@ -23,9 +23,10 @@ const meta = {
       description: {
         component: "Positive outcome of an operation.",
       },
+      subtitle: "Figma: OKState",
     },
   },
-} satisfies Meta<typeof OKState>
+} satisfies Meta<typeof SuccessState>
 
 export default meta
 type Story = StoryObj<typeof meta>

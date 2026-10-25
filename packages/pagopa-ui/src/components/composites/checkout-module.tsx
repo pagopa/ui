@@ -1,5 +1,5 @@
 import * as React from "react"
-import { LoghiPSP } from "@/components/content/loghi-psp"
+import { PaymentProviderLogos } from "@/components/content/payment-provider-logos"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Button } from "@/components/primitives/button"
 import { Heading, type HeadingTag } from "@/components/primitives/heading"
@@ -98,7 +98,7 @@ function CheckoutModule({
   const actionName = actionLabel ?? (onContinue && !onAction && !onEdit ? continueLabel : editLabel)
   const visibleAction = showButton ?? Boolean(action)
   const visibleBrand =
-    showLogo !== false ? (brand ?? (legacy ? <LoghiPSP brand="paypal" /> : null)) : null
+    showLogo !== false ? (brand ?? (legacy ? <PaymentProviderLogos brand="paypal" /> : null)) : null
   const descriptionText = description ?? (legacy ? (creditor ?? legacyDescription) : undefined)
   const recommendation: CheckoutSuggestion | undefined =
     typeof suggestion === "string"
