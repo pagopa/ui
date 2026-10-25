@@ -163,6 +163,12 @@ test("write keys the manifest by the published id and emits the foundation theme
     assert.match(css, /--text-hero--line-height: 3rem;/)
     assert.match(css, /--radius-8: var\(--figma-radius-8\);/)
     assert.match(read("src/figma-text-classes.generated.ts"), /figmaTextClasses/)
+    const rootCss = read("src/tokens.generated.css")
+    assert.ok(
+      css.startsWith(rootCss),
+      "the standalone tokens stylesheet is the :root block of the full stylesheet",
+    )
+    assert.doesNotMatch(rootCss, /@theme/, "the Tailwind theme stays out of the public tokens")
     const inventory = read("src/figma-tokens.generated.ts")
     assert.match(inventory, /id: "key-blue-500"/)
     assert.match(inventory, /category: "spacing"/)
