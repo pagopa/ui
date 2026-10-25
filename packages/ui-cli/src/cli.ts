@@ -383,6 +383,7 @@ const parity = defineCommand({
       status: parityString,
       node: parityString,
       cases: parityString,
+      order: parityString,
       unmapped: parityBoolean,
       coverage: parityBoolean,
       uncovered: parityBoolean,

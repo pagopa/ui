@@ -198,6 +198,20 @@ export function loadInventoryNodes(file: string = rootPath(INVENTORY_PATH)): Inv
   return loadInventory(file)
 }
 
+// Fan-in: how many inventory components depend on a node. A fix in a shared
+// part lands before the components that contain it, so the queue can order the
+// work by reuse instead of by node id.
+export function fanInCounts(nodes: InventoryNode[] = loadInventoryNodes()): Map<string, number> {
+  const counts = new Map<string, number>()
+  for (const node of nodes) {
+    for (const dependency of node.dependencies ?? []) {
+      if (dependency.external) continue
+      counts.set(dependency.nodeId, (counts.get(dependency.nodeId) ?? 0) + 1)
+    }
+  }
+  return counts
+}
+
 // `529:6111` + `filled` -> `529-6111-filled`: the same shape the wave evidence
 // files use, so a case id is greppable in `.figma/parity`. A device case carries
 // its device in the id (`529-6111-filled-mobile`): the reviewed corpus is read
