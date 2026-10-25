@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 import { PaymentProviderLogos } from "@/components/content/payment-provider-logos"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"

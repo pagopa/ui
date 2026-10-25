@@ -22,6 +22,8 @@
         "layers:check",
         "text-defaults:check",
         "foundation:check",
+        "tokens:public:check",
+        "client:check",
         "a11y:conformance:check",
         "pagopa-ui-cli:test",
         "pagopa-ui-cli:figma:parity:verify",
@@ -80,6 +82,8 @@
       "options": { "command": "node src/cli.ts check foundation" },
       "inputs": ["default", "tooling", "{workspaceRoot}/apps/storybook/src/**/*"]
     },
+    "tokens:public:check": { "options": { "command": "node src/cli.ts check public-tokens" } },
+    "client:check": { "options": { "command": "node src/cli.ts check client-directives" } },
     "a11y:conformance:check": {
       "options": { "command": "node src/cli.ts check a11y-conformance" }
     },

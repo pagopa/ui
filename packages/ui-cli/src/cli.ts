@@ -5,11 +5,13 @@
 import { defineCommand, runMain } from "citty"
 
 import { runA11yConformance } from "./checks/a11y-conformance.ts"
+import { runClientDirectives } from "./checks/client-directives.ts"
 import { runCssBudget } from "./checks/css-budget.ts"
 import { runDocLinks } from "./checks/doc-links.ts"
 import { runFoundation } from "./checks/foundation.ts"
 import { runImportLayers } from "./checks/import-layers.ts"
 import { runLibraryCheck } from "./checks/library.ts"
+import { runPublicTokens } from "./checks/public-tokens.ts"
 import { runTextDefaults } from "./checks/text-defaults.ts"
 import { runPrepareTypes } from "./commands/prepare-types.ts"
 import { cli as runDevices } from "./figma/devices.ts"
@@ -96,6 +98,17 @@ const css = defineCommand({
 const library = defineCommand({
   meta: { name: "library", description: "Verify the packed artifact in an isolated app" },
   run: execute(() => runLibraryCheck()),
+})
+
+const publicTokens = defineCommand({
+  meta: {
+    name: "public-tokens",
+    description: "Compare the public token list with the generated tokens",
+  },
+  args: {
+    write: { type: "boolean", default: false, description: "Record the list you accept" },
+  },
+  run: ({ args }) => execute(() => runPublicTokens(args.write ? ["--write"] : []))(),
 })
 
 const textDefaults = defineCommand({
@@ -256,11 +269,26 @@ const check = defineCommand({
   meta: { name: "check", description: "Run one of the repository contracts" },
   subCommands: {
     "a11y-conformance": a11yConformance,
+    "client-directives": defineCommand({
+      meta: {
+        name: "client-directives",
+        description: "Check the client boundary of every source module",
+      },
+      args: {
+        report: {
+          type: "boolean",
+          default: false,
+          description: "Print both lists and exit 0",
+        },
+      },
+      run: ({ args }) => execute(() => runClientDirectives(args.report ? ["--report"] : []))(),
+    }),
     layers,
     foundation,
     docs,
     css,
     library,
+    "public-tokens": publicTokens,
     "text-defaults": textDefaults,
     figma: figmaCheck,
     tokens: tokensCheck,
