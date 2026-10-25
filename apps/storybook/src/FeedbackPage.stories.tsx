@@ -7,7 +7,7 @@ import { ErrorState, SuccessState, WaitingState } from "@/components/feedback"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Footer, Header, Preheader } from "@/components/navigation"
 import { Button } from "@/components/primitives/button"
-import { FeedbackPage } from "@/components/templates/figma/FeedbackPage"
+import { FeedbackPage } from "./templates/FeedbackPage"
 
 import templatesGuide from "./guides/templates.md?raw"
 

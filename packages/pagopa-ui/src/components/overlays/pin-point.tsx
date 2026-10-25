@@ -1,5 +1,3 @@
-"use client"
-
 import { cn } from "@/lib/cn"
 
 // Source marker glyph ("Ellipse 1", PinPoint set 920:7219): a 32×40.67 teardrop

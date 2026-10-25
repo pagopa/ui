@@ -11,7 +11,6 @@
       "import": "./src/index.ts"
     },
     "./figma.generated.css": "./src/figma.generated.css",
-    "./tokens.generated.css": "./src/tokens.generated.css",
     "./manifest.json": "./src/manifest.json"
   },
   "engines": {

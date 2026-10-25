@@ -14,12 +14,7 @@
       "types": "./dist/types/pagopa-ui.d.ts",
       "import": "./dist/pagopa-ui.js"
     },
-    "./styles.css": "./dist/styles.css",
-    "./tokens": {
-      "types": "./dist/types/tokens.d.ts",
-      "import": "./dist/tokens.js"
-    },
-    "./tokens.css": "./dist/tokens.css"
+    "./styles.css": "./dist/styles.css"
   },
   "files": [
     "dist",

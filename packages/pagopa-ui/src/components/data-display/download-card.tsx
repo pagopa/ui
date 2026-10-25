@@ -1,5 +1,3 @@
-"use client"
-
 import { Download, ImageIcon } from "@/components/primitives/icons"
 import { Button, buttonVariants } from "@/components/primitives/button"
 import { useLinkComponent } from "@/lib/ui-provider"

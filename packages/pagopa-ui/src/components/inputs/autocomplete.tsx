@@ -1,5 +1,3 @@
-"use client"
-
 import * as React from "react"
 import { Combobox } from "@/components/primitives/combobox"
 import { cn } from "@/lib/cn"
