@@ -140,10 +140,8 @@ Preflight is `box-sizing: border-box`: a `min-h` and the element's own 1px
 `border-b` together make the source band height. Split across two elements, the
 band gains a pixel. Source band = content + divider.
 
-### `justify-center` with overflow hides the first item
-
-A centred scrollable list loses its start beyond the scroll origin. Use
-`justify-center-safe`.
+- A centred scrollable list uses `justify-center-safe`; the foundation check
+  rejects the unsafe form (`center-overflow`).
 
 ### A narrow container is not a narrow viewport
 
