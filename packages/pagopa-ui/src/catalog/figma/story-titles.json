@@ -41,7 +41,7 @@
   "apps/storybook/src/LogIn.stories.tsx": "Components/Templates/Log In",
   "apps/storybook/src/PaymentProviderLogos.stories.tsx": "Components/Content/PaymentProviderLogos",
   "apps/storybook/src/MenuDropDown.stories.tsx": "Components/Inputs/MenuDropDown",
-  "apps/storybook/src/Microevento.stories.tsx": "Components/Data display/Microevento",
+  "apps/storybook/src/MicroEvent.stories.tsx": "Components/Data display/MicroEvent",
   "apps/storybook/src/SuccessState.stories.tsx": "Components/Feedback/SuccessState",
   "apps/storybook/src/Overlay.stories.tsx": "Components/Overlays/Overlay",
   "apps/storybook/src/Pagination.stories.tsx": "Components/Navigation/Pagination",

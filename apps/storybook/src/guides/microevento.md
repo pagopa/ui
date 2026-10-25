@@ -1,6 +1,6 @@
-# Microevento
+# MicroEvent
 
-`Microevento` implements the Figma component `9676:5633`: one row of a timeline
+`MicroEvent` implements the Figma component `9676:5633`: one row of a timeline
 touchpoint with the correction tag above the event description.
 
 | Source layer          | Source property                           | Implementation                             |
@@ -26,7 +26,7 @@ the component never composes it.
 ## Example
 
 ```tsx
-<Microevento
+<MicroEvent
   time="14:30"
   invalid={false}
   label="Evento rettificato"

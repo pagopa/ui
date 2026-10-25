@@ -29,7 +29,7 @@ vertical gap is a single-child phantom gap and is not mapped.
 tag is announced by its copy. The default is Italian and every consumer can
 replace it.
 
-Both tags are composed by `Microevento` and by the Timeline status card; the
+Both tags are composed by `MicroEvent` and by the Timeline status card; the
 parity story `Source` frames each one at its own source width plus the 2px the
 CSS border adds (166 and 162), because the source inside stroke does not grow
 the box.

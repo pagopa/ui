@@ -3,7 +3,13 @@ import { cn } from "@/lib/cn"
 
 import { CorrectionNotValid, CorrectionValid } from "@/components/content"
 
-function Microevento({
+/**
+ * Timeline micro-event: the correction tag for the current status plus the
+ * event description, optionally prefixed by its time.
+ *
+ * Figma: Microevento (node 9676:5633)
+ */
+function MicroEvent({
   title,
   time,
   invalid = true,
@@ -28,4 +34,4 @@ function Microevento({
   )
 }
 
-export { Microevento }
+export { MicroEvent }

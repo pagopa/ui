@@ -1,6 +1,6 @@
 export * from "./catalogue-card"
 export * from "./download-card"
-export * from "./microevento"
+export * from "./micro-event"
 export * from "./product-card"
 export * from "./progress-kpi"
 export * from "./table"
