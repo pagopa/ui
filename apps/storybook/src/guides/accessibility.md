@@ -1,23 +1,27 @@
 The library targets **WCAG 2.2 AA** as the working reference: EN 301 549
 v4.1.1 (its §9) points at WCAG 2.2, the earlier v3.2.1 pointed at WCAG 2.1 AA,
-so 2.2 AA is the stricter superset; the AgID guidelines and the ARIA Authoring
-Practices are the pattern sources. The per-type table below is written to be
-reusable as an annex to a product's accessibility statement; a product still
-answers for its own content and copy.
+so 2.2 AA is the stricter superset — and the tags the automated layer runs cover
+the WCAG 2.1 AA level the AgID guidelines require. The AgID guidelines and the
+ARIA Authoring Practices are the pattern sources. The per-type table below is
+written to be reusable as an annex to a product's accessibility statement; a
+product still answers for its own content and copy.
 
 ## How the criteria are verified
 
 Two layers run automatically on every story:
 
-- **axe** through `@storybook/addon-a11y`, configured with
-  `a11y.test: "error"` in `.storybook/preview.tsx`: a violation fails the
-  story's test run.
+- **axe** through `@storybook/addon-a11y`, configured with `a11y.test: "error"`
+  and the tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa` and
+  `best-practice` in `.storybook/preview.tsx`: a violation of those rules fails
+  the story's test run.
 - The **shared contract** (`apps/storybook/src/support/a11y-contract.ts`) runs after
   every story and checks the behaviour the story's widgets actually render:
   natural DOM order (no positive `tabindex`), accessible names, painted focus,
   dialog focus ownership and Escape, arrow keys in tab lists, radio groups and
   comboboxes, `aria-expanded`/selected/checked state, live regions with
   content, error association, and `aria-busy` actions that stay focusable.
+  A story tagged `live-region` must also leave, after its `play`, a visible
+  status, alert or log region carrying the announced message.
 
 The same hook re-runs each story under two accessibility conditions: **320 px**
 (WCAG 1.4.10 Reflow) and **increased text spacing with text at 200%** (1.4.12
@@ -57,6 +61,13 @@ that need the manual checklist.
 | Notifications and alerts  | 4.1.3 Status Messages · 1.4.1 Use of Color · 2.1.1 · 4.1.2 · 1.4.10 · 1.4.12                                                                                | axe; contract: every visible live region carries content. Manual: checklist.                                                       | Passing; titles take a heading tag (`Heading as`). The alert playground and the header-alert, KO-state and waiting-state showcases are reflow exemptions. |
 | Navigation and breadcrumb | 1.3.1 · 2.4.4 Link Purpose (In Context) · 2.4.7 · 2.5.8 · 4.1.2                                                                                             | axe; contract: when a page has several navigations, each announces a name. Manual: checklist.                                      | Passing; the accordion and header stories are reflow exemptions.                                                                                          |
 | Header and footer         | 1.3.1 · 2.4.1 Bypass Blocks · 2.4.7 · 1.4.3 · 4.1.2 · 1.4.10 · 1.4.12                                                                                       | axe; contract: named landmarks, visible focus, reflow conditions. Manual: checklist.                                               | Passing; footer column titles take a heading tag. `header--with-actions` is a reflow exemption.                                                           |
+| Content display           | 1.1.1 · 1.3.1 · 1.4.1 · 1.4.3 · 1.4.4 · 1.4.10 · 1.4.12 · 4.1.2                                                                                             | axe; contract: names on images and landmark structure, reflow conditions. Manual: checklist.                                       | Passing on the automatic layer.                                                                                                                           |
+| State and progress        | 4.1.3 Status Messages · 1.3.1 · 1.4.1 · 1.4.3 · 2.1.1 · 4.1.2 · 1.4.10 · 1.4.12                                                                             | axe; contract: every visible live region carries content, names, reflow conditions. Manual: checklist.                             | Passing on the automatic layer.                                                                                                                           |
+| Module                    | 1.3.1 · 2.1.1 · 2.4.7 · 3.3.1 Error Identification · 3.3.2 Labels or Instructions · 4.1.2 · 1.4.10 · 1.4.12                                                 | axe; contract: tab order, names, single error announcement, reflow conditions. Manual: checklist.                                  | Passing on the automatic layer.                                                                                                                           |
+
+The map in `apps/storybook/src/a11y/conformance.json` assigns every public
+component to one of these rows, and `a11y:conformance:check` fails when a
+component or a type is missing.
 
 ## What this flow changed
 

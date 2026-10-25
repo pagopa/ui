@@ -22,7 +22,9 @@
         "layers:check",
         "text-defaults:check",
         "foundation:check",
+        "a11y:conformance:check",
         "pagopa-ui-cli:test",
+        "pagopa-ui-cli:figma:parity:verify",
         "pagopa-ui-tokens:test"
       ],
       "configurations": { "ci": { "script": "test:unit" } }
@@ -72,6 +74,9 @@
       "options": { "command": "node src/cli.ts check text-defaults --max 0" }
     },
     "foundation:check": { "options": { "command": "node src/cli.ts check foundation" } },
+    "a11y:conformance:check": {
+      "options": { "command": "node src/cli.ts check a11y-conformance" }
+    },
     "library:check": {
       "dependsOn": ["build"],
       "options": { "command": "node src/cli.ts check library" }

@@ -50,6 +50,9 @@ importers:
       '@pagopa/ui':
         specifier: workspace:*
         version: link:../../packages/pagopa-ui
+      '@playwright/test':
+        specifier: 1.63.0
+        version: 1.63.0
       '@storybook/addon-a11y':
         specifier: ^10.6.2
         version: 10.6.2(storybook@10.6.2(@types/react@19.3.0)(prettier@3.9.9)(react@19.3.0))

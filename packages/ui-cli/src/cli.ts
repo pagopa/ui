@@ -4,6 +4,8 @@
 // argument surface, so a new command is discovered instead of documented twice.
 import { defineCommand, runMain } from "citty"
 
+import { runA11yConformance } from "./checks/a11y-conformance.ts"
+import { runClientDirectives } from "./checks/client-directives.ts"
 import { runCssBudget } from "./checks/css-budget.ts"
 import { runDocLinks } from "./checks/doc-links.ts"
 import { runFoundation } from "./checks/foundation.ts"
@@ -243,9 +245,32 @@ const assets = defineCommand({
   subCommands: { icons, pictograms },
 })
 
+const a11yConformance = defineCommand({
+  meta: {
+    name: "a11y-conformance",
+    description: "Check the accessibility conformance map",
+  },
+  run: execute(() => runA11yConformance()),
+})
+
 const check = defineCommand({
   meta: { name: "check", description: "Run one of the repository contracts" },
   subCommands: {
+    "a11y-conformance": a11yConformance,
+    "client-directives": defineCommand({
+      meta: {
+        name: "client-directives",
+        description: "Check the client boundary of every source module",
+      },
+      args: {
+        report: {
+          type: "boolean",
+          default: false,
+          description: "Print both lists and exit 0",
+        },
+      },
+      run: ({ args }) => execute(() => runClientDirectives(args.report ? ["--report"] : []))(),
+    }),
     layers,
     foundation,
     docs,
@@ -398,9 +423,15 @@ const parity = defineCommand({
       status: parityString,
       node: parityString,
       cases: parityString,
+      order: parityString,
       unmapped: parityBoolean,
       coverage: parityBoolean,
       uncovered: parityBoolean,
+      json: parityBoolean,
+    }),
+    align: parityCommand("align", "One node's read-only work order", {
+      node: parityString,
+      cases: parityString,
       json: parityBoolean,
     }),
     check: parityCommand("check", "Compare one reviewed case", {
