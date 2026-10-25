@@ -3475,8 +3475,8 @@
   {
     "id": "733-22841-desktop-desktop",
     "nodeId": "733:22841",
-    "export": "OKState",
-    "storyId": "components-feedback-okstate--playground",
+    "export": "SuccessState",
+    "storyId": "components-feedback-successstate--playground",
     "state": "desktop",
     "device": "desktop",
     "layoutScope": "viewport",
@@ -3496,8 +3496,8 @@
   {
     "id": "733-22841-mobile-mobile",
     "nodeId": "733:22841",
-    "export": "OKState",
-    "storyId": "components-feedback-okstate--playground",
+    "export": "SuccessState",
+    "storyId": "components-feedback-successstate--playground",
     "state": "mobile",
     "device": "mobile",
     "layoutScope": "viewport",
@@ -5051,7 +5051,7 @@
     "depth": 4,
     "root": "[data-slot=\"feedback-page\"]",
     "subjects": {
-      "OKState": "[data-slot=\"feedback-page\"] section"
+      "SuccessState": "[data-slot=\"feedback-page\"] section"
     },
     "compareOffset": true,
     "residues": [

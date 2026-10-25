@@ -42,7 +42,7 @@
   "apps/storybook/src/LoghiPSP.stories.tsx": "Components/Content/LoghiPSP",
   "apps/storybook/src/MenuDropDown.stories.tsx": "Components/Inputs/MenuDropDown",
   "apps/storybook/src/Microevento.stories.tsx": "Components/Data display/Microevento",
-  "apps/storybook/src/OKState.stories.tsx": "Components/Feedback/OKState",
+  "apps/storybook/src/SuccessState.stories.tsx": "Components/Feedback/SuccessState",
   "apps/storybook/src/Overlay.stories.tsx": "Components/Overlays/Overlay",
   "apps/storybook/src/Pagination.stories.tsx": "Components/Navigation/Pagination",
   "apps/storybook/src/PaymentModule.stories.tsx": "Components/Composites/PaymentModule",
