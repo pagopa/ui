@@ -1,4 +1,7 @@
+"use client"
+
 import { cn } from "@/lib/cn"
+import { useMessages } from "@/lib/ui-provider"
 
 import { ChevronLeft, ChevronRight } from "@/components/primitives/icons"
 import { Button } from "@/components/primitives/button"
@@ -20,27 +23,33 @@ function Pagination({
   totalPages,
   onPageChange,
   className,
-  label = "Paginazione",
-  previousLabel = "Pagina precedente",
-  nextLabel = "Pagina successiva",
-  pageLabel = (page) => `Pagina ${page}`,
+  label: labelProp,
+  previousLabel: previousLabelProp,
+  nextLabel: nextLabelProp,
+  pageLabel: pageLabelProp,
 }: {
   currentPage: number
   totalPages: number
   onPageChange: (page: number) => void
   className?: string
-  /** Accessible name of the page list. @default "Paginazione" */
+  /** Accessible name of the page list. @default messages.pagination.label */
   label?: string
-  /** Accessible name of the previous-page control. @default "Pagina precedente" */
+  /** Accessible name of the previous-page control. @default messages.pagination.previousLabel */
   previousLabel?: string
-  /** Accessible name of the next-page control. @default "Pagina successiva" */
+  /** Accessible name of the next-page control. @default messages.pagination.nextLabel */
   nextLabel?: string
   /**
    * Accessible name of a page control. The caller owns the phrase, so word
-   * order and grammar stay translatable. @default (page) => `Pagina ${page}`
+   * order and grammar stay translatable. @default messages.pagination.pageLabel
    */
   pageLabel?: (page: number) => string
 }) {
+  const t = useMessages("pagination")
+  const label = labelProp ?? t.label
+  const previousLabel = previousLabelProp ?? t.previousLabel
+  const nextLabel = nextLabelProp ?? t.nextLabel
+  const pageLabel = pageLabelProp ?? t.pageLabel
+
   if (!Number.isInteger(totalPages) || totalPages < 0) {
     throw new RangeError("Pagination totalPages must be a non-negative integer")
   }

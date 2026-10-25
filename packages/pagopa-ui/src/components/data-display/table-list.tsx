@@ -1,5 +1,8 @@
+"use client"
+
 import * as React from "react"
 
+import { useMessages } from "@/lib/ui-provider"
 import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
 import {
   Empty,
@@ -25,9 +28,9 @@ function TableList<Row extends { id: React.Key }>({
   rows,
   fields,
   action,
-  actionFallbackLabel = "Apri",
+  actionFallbackLabel: actionFallbackLabelProp,
   pagination,
-  emptyLabel = "Nessun risultato",
+  emptyLabel: emptyLabelProp,
   emptyState = { title: "Nessun risultato" },
 }: {
   /** Accessible name of the list region (source wrapper `aria-label`). */
@@ -37,15 +40,19 @@ function TableList<Row extends { id: React.Key }>({
   fields: (row: Row) => TableListItemField[]
   /** Per-row action; omit for static rows. */
   action?: (row: Row) => TableListItemAction | undefined
-  /** Text of an action row that carries no label. @default "Apri" */
+  /** Text of an action row that carries no label. @default messages.tableList.actionFallbackLabel */
   actionFallbackLabel?: string
   /** Source Show Pagination footer; hidden in the empty state. */
   pagination?: React.ReactNode
   /** Source State=Empty fallback: pictogram, title, optional subtitle and action. */
   emptyState?: TableListEmptyState
-  /** Announced text of an empty state with no visible copy. @default "Nessun risultato" */
+  /** Announced text of an empty state with no visible copy. @default messages.tableList.emptyLabel */
   emptyLabel?: string
 }) {
+  const t = useMessages("tableList")
+  const actionFallbackLabel = actionFallbackLabelProp ?? t.actionFallbackLabel
+  const emptyLabel = emptyLabelProp ?? t.emptyLabel
+
   if (!rows.length) {
     return (
       <section aria-label={label} className="flex flex-col gap-8">

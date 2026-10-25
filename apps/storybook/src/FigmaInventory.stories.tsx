@@ -160,7 +160,7 @@ function FigmaInventory() {
               </h2>
               <Badge variant="secondary">{rows.length}</Badge>
             </div>
-            <div className="mt-4 grid gap-3 tablet:grid-cols-2 desktop:grid-cols-3">
+            <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {rows.map((row) => {
                 const story = storyUrl(row)
                 return (
@@ -204,8 +204,6 @@ const meta = {
   title: "Foundations/Figma inventory",
   component: FigmaInventory,
   parameters: { layout: "fullscreen" },
-  // A catalogue of other stories: it changes whenever any of them does.
-  tags: ["no-visual"],
 } satisfies Meta<typeof FigmaInventory>
 
 export default meta

@@ -5,6 +5,7 @@ import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Button } from "@/components/primitives/button"
 import { RadioGroup, RadioGroupItem } from "@/components/primitives/radio-group"
 import { cn } from "@/lib/cn"
+import { useMessages } from "@/lib/ui-provider"
 
 interface ProductAction {
   label: string
@@ -29,13 +30,13 @@ type ProductModuleProps = Omit<React.ComponentProps<"div">, "onSelect" | "title"
   action?: ProductAction
   /** Legacy status text. */
   status?: string
-  /** Legacy visible status text when none is passed. @default "Default" */
+  /** Legacy visible status text when none is passed. @default messages.productModule.legacyStatusLabel */
   legacyStatusLabel?: string
   /** Value of the native radio input. */
   value?: string
   /** Overrides the composition: `radio` or `action`. */
   variant?: "radio" | "action"
-  /** Legacy action label. @default "Aggiorna documenti" */
+  /** Legacy action label. @default messages.productModule.actionLabel */
   actionLabel?: string
   /** Legacy action handler. */
   onOpen?: () => void
@@ -67,13 +68,17 @@ function ProductModule({
   status,
   value,
   variant: requestedVariant,
-  actionLabel = "Aggiorna documenti",
-  legacyStatusLabel = "Default",
+  actionLabel: actionLabelProp,
+  legacyStatusLabel: legacyStatusLabelProp,
   disabled,
   onOpen,
   className,
   ...props
 }: ProductModuleProps) {
+  const t = useMessages("productModule")
+  const actionLabel = actionLabelProp ?? t.actionLabel
+  const legacyStatusLabel = legacyStatusLabelProp ?? t.legacyStatusLabel
+
   const titleId = React.useId()
   const statusId = React.useId()
   const descriptionId = React.useId()

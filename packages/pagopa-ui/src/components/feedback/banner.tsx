@@ -1,5 +1,8 @@
+"use client"
+
 import * as React from "react"
 import { cn } from "@/lib/cn"
+import { useMessages } from "@/lib/ui-provider"
 
 import { X } from "@/components/primitives/icons"
 
@@ -29,7 +32,7 @@ interface BannerBaseProps {
   pictogram?: React.ReactNode
   onDismiss?: () => void
   titleAs?: "h2" | "h3" | "h4"
-  /** Accessible name of the dismiss control. @default "Chiudi avviso" */
+  /** Accessible name of the dismiss control. @default messages.banner.dismissLabel */
   dismissLabel?: string
   className?: string
 }
@@ -61,9 +64,12 @@ function Banner({
   pictogram,
   onDismiss,
   titleAs: Title = "h2",
-  dismissLabel = "Chiudi avviso",
+  dismissLabel: dismissLabelProp,
   className,
 }: BannerProps) {
+  const t = useMessages("banner")
+  const dismissLabel = dismissLabelProp ?? t.dismissLabel
+
   const primary = hierarchy === "primary"
   const secondary = hierarchy === "secondary"
   const tertiary = hierarchy === "tertiary"
@@ -72,7 +78,7 @@ function Banner({
       ? "text-label-sb"
       : direction === "vertical"
         ? "text-title-xs-mobile"
-        : "text-title-xs-mobile tablet-md:text-title-xs",
+        : "text-title-xs-mobile md:text-title-xs",
   )
   const descriptionClassName = cn(
     "text-muted-foreground",
@@ -137,7 +143,7 @@ function Banner({
                   <span
                     aria-hidden="true"
                     data-slot="banner-pictogram"
-                    className="col-start-2 row-start-1 size-14 shrink-0 self-center translate-y-2 tablet-md:size-20"
+                    className="col-start-2 row-start-1 size-14 shrink-0 self-center translate-y-2 md:size-20"
                   >
                     {pictogram}
                   </span>
@@ -203,7 +209,7 @@ function Banner({
             className={cn(
               "flex min-w-0",
               direction === "horizontal"
-                ? "flex-col gap-4 tablet-md:flex-row tablet-md:items-center tablet-md:gap-8"
+                ? "flex-col gap-4 md:flex-row md:items-center md:gap-8"
                 : "flex-col items-start gap-4",
             )}
           >
@@ -214,7 +220,7 @@ function Banner({
                   descriptionClassName,
                   "min-w-0",
                   direction === "vertical" && "w-full",
-                  direction === "horizontal" && "tablet-md:flex-1",
+                  direction === "horizontal" && "md:flex-1",
                 )}
               >
                 {children}

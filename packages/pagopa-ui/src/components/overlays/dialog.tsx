@@ -1,5 +1,8 @@
+"use client"
+
 import * as React from "react"
 
+import { useMessages } from "@/lib/ui-provider"
 import { X } from "@/components/primitives/icons"
 import { Button } from "@/components/primitives/button"
 import { Dialog as DialogPrimitive } from "@/components/primitives/dialog"
@@ -16,7 +19,7 @@ interface DialogProps {
   children?: React.ReactNode
   /** Optional actions row. */
   footer?: React.ReactNode
-  /** Accessible name of the close button. @default "Chiudi finestra" */
+  /** Accessible name of the close button. @default messages.dialog.closeLabel */
   closeLabel?: string
 }
 
@@ -26,8 +29,11 @@ function Dialog({
   description,
   children,
   footer,
-  closeLabel = "Chiudi finestra",
+  closeLabel: closeLabelProp,
 }: DialogProps) {
+  const t = useMessages("dialog")
+  const closeLabel = closeLabelProp ?? t.closeLabel
+
   return (
     <DialogPrimitive.Root>
       <DialogPrimitive.Trigger render={trigger} />
@@ -35,7 +41,7 @@ function Dialog({
         <DialogPrimitive.Backdrop className="fixed inset-0 z-50 bg-overlay transition-opacity data-starting-style:opacity-0 data-ending-style:opacity-0" />
         <DialogPrimitive.Popup className="fixed top-1/2 left-1/2 z-50 flex max-h-[85vh] w-(--dialog-width) max-w-[calc(100vw-var(--page-gutter-lg))] -translate-x-1/2 -translate-y-1/2 flex-col gap-6 overflow-auto rounded-xl bg-background p-6 shadow-32 outline-none transition-opacity data-starting-style:opacity-0 data-ending-style:opacity-0">
           <div className="flex flex-col gap-2">
-            <DialogPrimitive.Title className="pr-10 text-title-xs-mobile tablet-md:text-title-xs">
+            <DialogPrimitive.Title className="pr-10 text-title-xs-mobile md:text-title-xs">
               {title}
             </DialogPrimitive.Title>
             {description ? (
@@ -48,7 +54,7 @@ function Dialog({
           {footer ? (
             <div
               data-slot="dialog-footer"
-              className="flex flex-col-reverse gap-4 [&>*]:w-full tablet:flex-row tablet:flex-wrap tablet:justify-end tablet:[&>*]:w-auto"
+              className="flex flex-col-reverse gap-4 [&>*]:w-full sm:flex-row sm:flex-wrap sm:justify-end sm:[&>*]:w-auto"
             >
               {footer}
             </div>

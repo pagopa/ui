@@ -1,5 +1,8 @@
+"use client"
+
 import * as React from "react"
 
+import { useMessages } from "@/lib/ui-provider"
 import { X } from "@/components/primitives/icons"
 import { Button } from "@/components/primitives/button"
 
@@ -9,8 +12,8 @@ function Cookies({
   onReject,
   onLearnMore,
   onDismiss,
-  closeLabel = "Chiudi",
-  label = "Preferenze cookie",
+  closeLabel: closeLabelProp,
+  label: labelProp,
 }: {
   /** Title and copy of the bar. */
   children: React.ReactNode
@@ -22,11 +25,15 @@ function Cookies({
   onLearnMore?: () => void
   /** Renders the close control when provided. */
   onDismiss?: () => void
-  /** Accessible name of the close control. @default "Chiudi" */
+  /** Accessible name of the close control. @default messages.cookies.closeLabel */
   closeLabel?: string
-  /** Accessible name of the bar. @default "Preferenze cookie" */
+  /** Accessible name of the bar. @default messages.cookies.label */
   label?: string
 }) {
+  const t = useMessages("cookies")
+  const closeLabel = closeLabelProp ?? t.closeLabel
+  const label = labelProp ?? t.label
+
   // Source `Device=Mobile` (1360:12856): the close sits beside the copy, the
   // three actions stack full width under it; the desktop row keeps the close
   // with the action block.
@@ -44,13 +51,13 @@ function Cookies({
   return (
     <section
       aria-label={label}
-      className="fixed inset-x-3 bottom-3 z-50 mx-auto flex max-w-4xl flex-col gap-8 bg-background p-6 shadow-32 desktop:flex-row desktop:flex-nowrap desktop:items-center"
+      className="fixed inset-x-3 bottom-3 z-50 mx-auto flex max-w-4xl flex-col gap-8 bg-background p-6 shadow-32 lg:flex-row lg:flex-nowrap lg:items-center"
     >
-      <div className="flex min-w-0 flex-1 items-start justify-between gap-4 tablet:gap-6 desktop:items-center">
+      <div className="flex min-w-0 flex-1 items-start justify-between gap-4 sm:gap-6 lg:items-center">
         <p className="min-w-0 flex-1 text-label-mini text-muted-foreground">{children}</p>
-        {closeButton ? <span className="desktop:hidden">{closeButton}</span> : null}
+        {closeButton ? <span className="lg:hidden">{closeButton}</span> : null}
       </div>
-      <div className="flex flex-col gap-6 max-tablet:w-full tablet:flex-row tablet:flex-wrap tablet:items-center">
+      <div className="flex flex-col gap-6 max-sm:w-full sm:flex-row sm:flex-wrap sm:items-center">
         {onLearnMore ? (
           <Button
             variant="ghost"
@@ -59,19 +66,19 @@ function Cookies({
             // (the source `Button block` aligns its children to the centre).
             // The 44px pointer target comes from the invisible ::after
             // expansion, not the visible box.
-            className="relative min-h-0 px-0 py-0 after:absolute after:inset-x-0 after:-inset-y-3 max-tablet:self-center"
+            className="relative min-h-0 px-0 py-0 after:absolute after:inset-x-0 after:-inset-y-3 max-sm:self-center"
             onClick={onLearnMore}
           >
             Scopri di più
           </Button>
         ) : null}
-        <Button className="max-tablet:w-full" onClick={onReject}>
+        <Button className="max-sm:w-full" onClick={onReject}>
           Rifiuta tutti
         </Button>
-        <Button className="max-tablet:w-full" onClick={onAccept}>
+        <Button className="max-sm:w-full" onClick={onAccept}>
           Accetta tutti
         </Button>
-        {closeButton ? <span className="hidden desktop:block">{closeButton}</span> : null}
+        {closeButton ? <span className="hidden lg:block">{closeButton}</span> : null}
       </div>
     </section>
   )

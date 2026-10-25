@@ -49,7 +49,7 @@ export const Playground: Story = {
 
 export const States: Story = {
   render: () => (
-    <div className="grid w-[min(36rem,calc(100vw-2rem))] gap-4 tablet:grid-cols-2">
+    <div className="grid w-[min(36rem,calc(100vw-2rem))] gap-4 sm:grid-cols-2">
       <ProgressKpi label="Inviate" value={51} total={69} channel={<PagoPAIcon name="send" />} />
       <ProgressKpi label="Consegnate" value={69} total={69} completed />
       <ProgressKpi

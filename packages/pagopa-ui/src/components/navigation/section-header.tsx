@@ -4,7 +4,7 @@ import { cn } from "@/lib/cn"
 const levelStyles = {
   // The source L1 style is Titillio-Bold (cssWeight 700): the type-scale token
   // carries that weight, an explicit `font-semibold` is the wrong face.
-  1: "text-title-xs-mobile tablet-md:text-title-xs",
+  1: "text-title-xs-mobile md:text-title-xs",
   2: "text-body-sb",
   3: "text-label-mini-sb leading-[1.2] uppercase text-muted-foreground",
 } as const
@@ -32,7 +32,7 @@ function SectionHeader({
 }) {
   return (
     <div className={cn("flex min-w-0 items-center justify-between gap-4", className)}>
-      <div className="flex min-w-0 flex-1 items-start gap-2 tablet:items-center">
+      <div className="flex min-w-0 flex-1 items-start gap-2 sm:items-center">
         {icon ? (
           <span
             aria-hidden="true"
@@ -43,7 +43,7 @@ function SectionHeader({
         ) : null}
         {/* The source groups the title with the chip: one row on desktop,
             stacked under the title on the narrow grid, FILL grow=1 in both. */}
-        <div className="flex min-w-0 flex-1 flex-col items-start gap-1 tablet:flex-row tablet:items-center tablet:gap-2.5">
+        <div className="flex min-w-0 flex-1 flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-2.5">
           <Title className={cn("min-w-0", levelStyles[level])}>{title}</Title>
           {status ? <span className="shrink-0">{status}</span> : null}
         </div>

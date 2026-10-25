@@ -57,14 +57,6 @@
       },
       "cache": false
     },
-    "test:visual": {
-      "dependsOn": ["build"],
-      "cache": false
-    },
-    "test:visual:update": {
-      "dependsOn": ["build"],
-      "cache": false
-    },
     "test:coverage:changed": {
       "executor": "nx:run-commands",
       "options": {

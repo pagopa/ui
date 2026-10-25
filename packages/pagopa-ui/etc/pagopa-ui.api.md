@@ -9,6 +9,7 @@ import { Checkbox as Checkbox_2 } from '@base-ui/react/checkbox';
 import { ClassProp } from 'class-variance-authority/types';
 import { ComponentProps } from 'react';
 import { DayPicker } from 'react-day-picker';
+import type { DayPickerLocale } from 'react-day-picker';
 import { JSX } from 'react';
 import { JSXElementConstructor } from 'react';
 import { LucideIcon } from 'lucide-react';
@@ -478,6 +479,9 @@ export function EmptyState(input: Omit<StateProps, "extra"> & {
     icon?: ReactNode;
 }): JSX.Element;
 
+// @public (undocumented)
+export const enMessages: Messages;
+
 // @public
 export function ErrorState(input: Omit<StateProps, "extra"> & {
     code?: string;
@@ -663,6 +667,9 @@ export function InputChip(input: React_2.ComponentProps<"span"> & {
 }): React_2.JSX.Element;
 
 // @public (undocumented)
+export const itMessages: Messages;
+
+// @public (undocumented)
 export function Label(input: React_2.ComponentProps<"label">): React_2.JSX.Element;
 
 // @public (undocumented)
@@ -690,6 +697,274 @@ export function MenuDropdown(input: {
     items: DropdownItem[];
     label?: string;
 }): React_2.JSX.Element;
+
+// @public (undocumented)
+export interface Messages {
+    // (undocumented)
+    accordion: {
+        ariaLabel: string;
+        label: string;
+        loadingLabel: string;
+    };
+    // (undocumented)
+    attachmentModule: {
+        downloadLabel: string;
+    };
+    // (undocumented)
+    authenticationCodeInput: {
+        label: string;
+        slotLabel: (slot: {
+            index: number;
+            total: number;
+        }) => string;
+    };
+    // (undocumented)
+    autocomplete: {
+        emptyLabel: string;
+        clearLabel: string;
+        openLabel: string;
+        closeLabel: string;
+        loadingLabel: string;
+    };
+    // (undocumented)
+    avatar: {
+        statusLabel: (status: "online" | "offline" | "busy") => string;
+        selectedLabel: string;
+    };
+    // (undocumented)
+    banner: {
+        dismissLabel: string;
+    };
+    // (undocumented)
+    breadcrumb: {
+        ariaLabel: string;
+    };
+    // (undocumented)
+    buttonGroup: {
+        ariaLabel: string;
+    };
+    // (undocumented)
+    cameraView: {
+        label: string;
+        announcement: (state: {
+            label: string;
+            active: boolean;
+        }) => string;
+    };
+    // (undocumented)
+    carouselStepper: {
+        label: string;
+        getControlLabel: (index: number, count: number) => string;
+    };
+    // (undocumented)
+    checkoutModule: {
+        legacyTitle: string;
+        legacyDescription: string;
+        legacySuggestion: string;
+        noticeCodeLabel: string;
+        continueLabel: string;
+        editLabel: string;
+    };
+    // (undocumented)
+    cookies: {
+        closeLabel: string;
+        label: string;
+    };
+    // (undocumented)
+    datePicker: {
+        label: string;
+        selectionText: (formattedDate: string) => string;
+        emptySelectionText: string;
+        missingDateError: string;
+        missingEndDateError: string;
+        cancelLabel: string;
+        confirmLabel: string;
+    };
+    // (undocumented)
+    datePickerField: {
+        panelLabel: string;
+    };
+    // (undocumented)
+    dialog: {
+        closeLabel: string;
+    };
+    // (undocumented)
+    dragAndDrop: {
+        label: string;
+        loadingLabel: string;
+        loadingText: string;
+        filesLabel: string;
+        failedText: string;
+        disabledText: string;
+        draggingText: string;
+        idleText: string;
+        uploadLabel: string;
+        uploadLogoLabel: string;
+        cancelLabel: string;
+        retryLabel: string;
+        fileMeta: (file: File) => string;
+        removeFileLabel: (fileName: string) => string;
+        singleFileError: string;
+        invalidFormatError: (fileName: string) => string;
+    };
+    // (undocumented)
+    drawer: {
+        closeLabel: string;
+    };
+    // (undocumented)
+    dropdown: {
+        emptyTitle: string;
+        backLabel: string;
+        loadingLabel: string;
+    };
+    // (undocumented)
+    errorState: {
+        codeLabel: string;
+        copyLabel: (label: string) => string;
+        copiedLabel: string;
+        copyErrorLabel: string;
+    };
+    // (undocumented)
+    errorSummary: {
+        title: string;
+    };
+    // (undocumented)
+    fieldLabel: {
+        requiredLabel: string;
+    };
+    // (undocumented)
+    floatingFieldLabel: {
+        requiredLabel: string;
+    };
+    // (undocumented)
+    footer: {
+        brand: string;
+        columnsLabel: string;
+    };
+    // (undocumented)
+    headerAlert: {
+        dismissLabel: string;
+    };
+    // (undocumented)
+    image: {
+        fallbackLabel: string;
+    };
+    // (undocumented)
+    menuDropdown: {
+        accessibleLabel: string;
+    };
+    // (undocumented)
+    overlay: {
+        label: string;
+    };
+    // (undocumented)
+    pagination: {
+        label: string;
+        previousLabel: string;
+        nextLabel: string;
+        pageLabel: (page: number) => string;
+    };
+    // (undocumented)
+    paymentModule: {
+        downloadLabel: string;
+    };
+    // (undocumented)
+    paymentProviderLogos: {
+        label: string;
+    };
+    // (undocumented)
+    popover: {
+        label: string;
+        closeLabel: string;
+    };
+    // (undocumented)
+    preheader: {
+        institution: string;
+        linksLabel: string;
+    };
+    // (undocumented)
+    productCard: {
+        actionLabel: string;
+    };
+    // (undocumented)
+    productModule: {
+        actionLabel: string;
+        legacyStatusLabel: string;
+    };
+    // (undocumented)
+    progressLoader: {
+        label: string;
+    };
+    // (undocumented)
+    scrollToBottom: {
+        label: string;
+    };
+    // (undocumented)
+    segmentedControl: {
+        ariaLabel: string;
+    };
+    // (undocumented)
+    sideNav: {
+        title: string;
+    };
+    // (undocumented)
+    skipToMainContent: {
+        children: string;
+    };
+    // (undocumented)
+    snackbar: {
+        dismissLabel: string;
+    };
+    // (undocumented)
+    snackbarErrorCode: {
+        message: string;
+        copyLabel: string;
+        copiedLabel: string;
+        copyErrorLabel: string;
+    };
+    // (undocumented)
+    stepper: {
+        navigationLabel: string;
+        completedLabel: string;
+        statusLabel: (status: StepperStatus) => string;
+        indicatorLabel: (status: StepperStatus) => string;
+        stepLabel: (step: {
+            index: number;
+            total: number;
+            label: string;
+            status?: StepperStatus;
+        }, statusLabel: (status: StepperStatus) => string) => string;
+    };
+    // (undocumented)
+    stickyButtonBar: {
+        ariaLabel: string;
+    };
+    // (undocumented)
+    table: {
+        selectionLabel: string;
+        notificationLabel: string;
+        actionsLabel: string;
+        emptyLabel: string;
+    };
+    // (undocumented)
+    tableList: {
+        actionFallbackLabel: string;
+        emptyLabel: string;
+    };
+    // (undocumented)
+    tableListItem: {
+        actionFallbackLabel: string;
+    };
+    // (undocumented)
+    timeline: {
+        label: string;
+    };
+    // (undocumented)
+    timelineDrawer: {
+        title: string;
+        description: string;
+    };
+}
 
 // @public
 export function MicroEvent(input: {
@@ -1400,9 +1675,13 @@ export function UIProvider(input: UIProviderProps): React_2.JSX.Element;
 
 // @public (undocumented)
 export interface UIProviderProps {
+    calendarLocale?: DayPickerLocale;
     // (undocumented)
     children: React_2.ReactNode;
     linkComponent?: React_2.ElementType<LinkComponentProps>;
+    locale?: string;
+    // Warning: (ae-forgotten-export) The symbol "DeepPartial" needs to be exported by the entry point pagopa-ui.d.ts
+    messages?: DeepPartial<Messages>;
 }
 
 // @public (undocumented)
@@ -1416,9 +1695,10 @@ export function WaitingState(input: StateProps): JSX.Element;
 // dist/types/components/composites/payment-module.d.ts:22:5 - (ae-forgotten-export) The symbol "PaymentPrice" needs to be exported by the entry point pagopa-ui.d.ts
 // dist/types/components/inputs/chips.d.ts:10:5 - (ae-forgotten-export) The symbol "ChipVariant" needs to be exported by the entry point pagopa-ui.d.ts
 // dist/types/components/inputs/chips.d.ts:12:5 - (ae-forgotten-export) The symbol "ChipAppearance" needs to be exported by the entry point pagopa-ui.d.ts
-// dist/types/components/inputs/date-picker.d.ts:15:5 - (ae-forgotten-export) The symbol "Calendar" needs to be exported by the entry point pagopa-ui.d.ts
+// dist/types/components/inputs/date-picker.d.ts:16:5 - (ae-forgotten-export) The symbol "Calendar" needs to be exported by the entry point pagopa-ui.d.ts
 // dist/types/components/navigation/footer.d.ts:36:5 - (ae-forgotten-export) The symbol "HeadingTag" needs to be exported by the entry point pagopa-ui.d.ts
 // dist/types/components/primitives/alert.d.ts:12:5 - (ae-forgotten-export) The symbol "AlertDirection" needs to be exported by the entry point pagopa-ui.d.ts
+// dist/types/lib/ui-provider/messages/types.d.ts:189:9 - (ae-forgotten-export) The symbol "StepperStatus" needs to be exported by the entry point pagopa-ui.d.ts
 
 // (No @packageDocumentation comment for this package)
 
