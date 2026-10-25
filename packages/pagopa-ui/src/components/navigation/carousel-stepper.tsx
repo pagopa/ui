@@ -1,8 +1,5 @@
-"use client"
-
 import * as React from "react"
 import { cn } from "@/lib/cn"
-import { useMessages } from "@/lib/ui-provider"
 
 // The visible dot is the source box (16x4 active, 8x8 inactive); the pointer
 // target comes from the invisible vertical ::after expansion, so the row keeps
@@ -14,26 +11,22 @@ function CarouselStepper({
   count,
   activeIndex,
   onChange,
-  label: labelProp,
-  getControlLabel: getControlLabelProp,
+  label = "Seleziona contenuto",
+  getControlLabel = (index, count) => `Contenuto ${index + 1} di ${count}`,
 }: {
   count: number
   activeIndex: number
   onChange: (index: number) => void
-  /** Accessible name of the whole control. @default messages.carouselStepper.label */
+  /** Accessible name of the whole control. */
   label?: string
   /**
    * Accessible name of one position control. The caller receives the index and
    * the count and returns the whole sentence, so it owns plurals and word
    * order.
-   * @default messages.carouselStepper.getControlLabel
+   * @default (index, count) => `Contenuto ${index + 1} di ${count}`
    */
   getControlLabel?: (index: number, count: number) => string
 }) {
-  const t = useMessages("carouselStepper")
-  const label = labelProp ?? t.label
-  const getControlLabel = getControlLabelProp ?? t.getControlLabel
-
   const refs = React.useRef<(HTMLButtonElement | null)[]>([])
   const move = (index: number) => {
     const next = (index + count) % count

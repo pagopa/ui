@@ -1,9 +1,6 @@
-"use client"
-
 import * as React from "react"
 import { ChevronDown, EllipsisVertical, type LucideIcon } from "@/components/primitives/icons"
 import { cn } from "@/lib/cn"
-import { useMessages } from "@/lib/ui-provider"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Button } from "@/components/primitives/button"
@@ -279,10 +276,10 @@ function Dropdown({
   loading = false,
   multiselect = false,
   dividers = true,
-  emptyTitle: emptyTitleProp,
+  emptyTitle = "Non ci sono corrispondenze",
   emptyDescription,
-  backLabel: backLabelProp,
-  loadingLabel: loadingLabelProp,
+  backLabel = "Indietro",
+  loadingLabel = "Caricamento in corso",
   className,
 }: {
   /** Visible label of the trigger button. */
@@ -301,22 +298,17 @@ function Dropdown({
   multiselect?: boolean
   /** Separators between the rows. @default true */
   dividers?: boolean
-  /** Title of the empty state when `items` is empty. @default messages.dropdown.emptyTitle */
+  /** Title of the empty state when `items` is empty. @default "Non ci sono corrispondenze" */
   emptyTitle?: React.ReactNode
   /** Description of the empty state. */
   emptyDescription?: React.ReactNode
-  /** Text of the back row when it carries no label. @default messages.dropdown.backLabel */
+  /** Text of the back row when it carries no label. @default "Indietro" */
   backLabel?: string
-  /** Announced text of the busy list. @default messages.dropdown.loadingLabel */
+  /** Announced text of the busy list. @default "Caricamento in corso" */
   loadingLabel?: string
   /** ClassName applied to the trigger button. */
   className?: string
 }) {
-  const t = useMessages("dropdown")
-  const emptyTitle = emptyTitleProp ?? t.emptyTitle
-  const backLabel = backLabelProp ?? t.backLabel
-  const loadingLabel = loadingLabelProp ?? t.loadingLabel
-
   assertMenuActions(items)
   return (
     <DropdownMenu>
@@ -383,20 +375,17 @@ function Dropdown({
  * Figma: MenuDropDown (node 3262:40787)
  */
 function MenuDropdown({
-  accessibleLabel: accessibleLabelProp,
+  accessibleLabel = "Apri menu",
   items,
   label,
 }: {
-  /** Accessible name of the icon trigger. @default messages.menuDropdown.accessibleLabel */
+  /** Accessible name of the icon trigger. @default "Apri menu" */
   accessibleLabel?: string
   /** Rows of the menu, with the same item contract as `Dropdown`. */
   items: DropdownItem[]
   /** Accessible name of the popup list. */
   label?: string
 }) {
-  const t = useMessages("menuDropdown")
-  const accessibleLabel = accessibleLabelProp ?? t.accessibleLabel
-
   assertMenuActions(items)
   return (
     <DropdownMenu>

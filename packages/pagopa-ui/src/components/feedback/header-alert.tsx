@@ -1,8 +1,5 @@
-"use client"
-
 import * as React from "react"
 import { cn } from "@/lib/cn"
-import { useMessages } from "@/lib/ui-provider"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { X } from "@/components/primitives/icons"
@@ -23,7 +20,7 @@ interface HeaderAlertProps {
   action?: React.ReactNode
   /** Shows the dismiss control when provided. */
   onDismiss?: () => void
-  /** Accessible name of the dismiss control. @default messages.headerAlert.dismissLabel */
+  /** Accessible name of the dismiss control. @default "Chiudi avviso" */
   dismissLabel?: string
 }
 
@@ -42,11 +39,8 @@ function HeaderAlert({
   tone = "info",
   action,
   onDismiss,
-  dismissLabel: dismissLabelProp,
+  dismissLabel = "Chiudi avviso",
 }: HeaderAlertProps) {
-  const t = useMessages("headerAlert")
-  const dismissLabel = dismissLabelProp ?? t.dismissLabel
-
   const isDefault = tone === "default"
   const toneIcon = isDefault ? undefined : toneIcons[tone]
   // The source's trailing control belongs to the Default tone; a caller-owned
@@ -66,7 +60,7 @@ function HeaderAlert({
           "mx-auto flex min-h-10 max-w-7xl items-center px-6 py-2",
           // The source root: 16 between its `Content` row and the trailing
           // button (Default), 8 between the icon and the copy (tinted).
-          isDefault ? "gap-4 max-sm:flex-col max-sm:items-start" : "gap-2",
+          isDefault ? "gap-4 max-tablet:flex-col max-tablet:items-start" : "gap-2",
           centred && "justify-center",
         )}
       >
@@ -78,11 +72,11 @@ function HeaderAlert({
             // row fills the band at every device; the tinted tones
             // (`1322:6534`, `align=CENTER`) centre the icon+copy pair, so their
             // row hugs from `sm` where the copy needs no wrapping.
-            isDefault ? "flex-1 max-sm:w-full" : centred ? "w-full sm:w-auto" : "flex-1",
+            isDefault ? "flex-1 max-tablet:w-full" : centred ? "w-full tablet:w-auto" : "flex-1",
           )}
         >
           {toneIcon ?? <PagoPAIcon name="kid_star" size={24} className="shrink-0" />}
-          <div className={cn("min-w-0 flex-1", centred && "sm:flex-initial")}>{children}</div>
+          <div className={cn("min-w-0 flex-1", centred && "tablet:flex-initial")}>{children}</div>
         </div>
         {action && (
           <div data-slot="header-alert-action" className="flex shrink-0">

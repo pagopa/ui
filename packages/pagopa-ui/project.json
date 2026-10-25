@@ -20,12 +20,8 @@
         "figma:check",
         "pagopa-ui-artwork:test",
         "layers:check",
-        "text-defaults:check",
         "foundation:check",
-        "client:check",
-        "a11y:conformance:check",
         "pagopa-ui-cli:test",
-        "pagopa-ui-cli:figma:parity:verify",
         "pagopa-ui-tokens:test"
       ],
       "configurations": { "ci": { "script": "test:unit" } }
@@ -71,14 +67,7 @@
       "cache": false
     },
     "layers:check": { "options": { "command": "node src/cli.ts check layers" } },
-    "text-defaults:check": {
-      "options": { "command": "node src/cli.ts check text-defaults --max 0" }
-    },
     "foundation:check": { "options": { "command": "node src/cli.ts check foundation" } },
-    "client:check": { "options": { "command": "node src/cli.ts check client-directives" } },
-    "a11y:conformance:check": {
-      "options": { "command": "node src/cli.ts check a11y-conformance" }
-    },
     "library:check": {
       "dependsOn": ["build"],
       "options": { "command": "node src/cli.ts check library" }

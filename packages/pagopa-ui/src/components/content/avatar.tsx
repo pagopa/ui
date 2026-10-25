@@ -1,8 +1,5 @@
-"use client"
-
 import * as React from "react"
 import { cn } from "@/lib/cn"
-import { useMessages } from "@/lib/ui-provider"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import {
@@ -42,10 +39,10 @@ type AvatarProps = AvatarIdentity & {
   status?: "online" | "offline" | "busy"
   /**
    * Announced presence text, from the status key: the caller owns the phrase.
-   * @default messages.avatar.statusLabel
+   * @default the built-in Italian label
    */
   statusLabel?: (status: "online" | "offline" | "busy") => string
-  /** Announced text of the selected state. @default messages.avatar.selectedLabel */
+  /** Announced text of the selected state. @default "Selezionato" */
   selectedLabel?: string
   /** Second identity composed with the primary one. */
   secondary?: AvatarIdentity
@@ -60,19 +57,21 @@ const avatarSizes = {
   large: "size-16",
 }
 
+const statusLabels = {
+  online: "online",
+  offline: "non in linea",
+  busy: "occupato",
+}
+
 function Avatar({
   size = "medium",
   status,
-  statusLabel: statusLabelProp,
-  selectedLabel: selectedLabelProp,
+  statusLabel = (status) => `Stato: ${statusLabels[status]}`,
+  selectedLabel = "Selezionato",
   secondary,
   className,
   ...props
 }: AvatarProps) {
-  const t = useMessages("avatar")
-  const statusLabel = statusLabelProp ?? t.statusLabel
-  const selectedLabel = selectedLabelProp ?? t.selectedLabel
-
   return (
     <span
       data-slot={secondary ? "avatar-pair" : "avatar-identity"}
@@ -125,7 +124,7 @@ function AvatarFace({
   icon,
   tone = "default",
   selected = false,
-  selectedLabel: selectedLabelProp,
+  selectedLabel = "Selezionato",
   loading = false,
   compact = false,
   overlapped = false,
@@ -135,9 +134,6 @@ function AvatarFace({
   compact?: boolean
   overlapped?: boolean
 }) {
-  const t = useMessages("avatar")
-  const selectedLabel = selectedLabelProp ?? t.selectedLabel
-
   const iconSize = size === "large" ? 32 : size === "compact" ? 16 : 24
   return (
     <span className={cn("relative inline-flex", className)}>

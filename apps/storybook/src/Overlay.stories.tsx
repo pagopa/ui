@@ -30,8 +30,6 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Playground: Story = {
-  // The veil announces the wait through its own status region.
-  tags: ["live-region"],
   render: (args) => (
     <div className="relative min-h-64 w-[min(32rem,calc(100vw-2rem))] rounded-xl border bg-muted">
       <div className="p-6 text-muted-foreground">Contenuto che resta visibile sotto il velo.</div>

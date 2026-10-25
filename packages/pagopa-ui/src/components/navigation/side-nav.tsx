@@ -1,8 +1,6 @@
-"use client"
-
 import * as React from "react"
 import { cn } from "@/lib/cn"
-import { useLinkComponent, useMessages } from "@/lib/ui-provider"
+import { useLinkComponent } from "@/lib/ui-provider"
 
 import { ChevronDown } from "@/components/primitives/icons"
 import { Badge } from "@/components/primitives/badge"
@@ -26,7 +24,7 @@ function hasCurrentItem(item: NavItem): boolean {
 }
 
 function SideNav({
-  title: titleProp,
+  title = "In questa sezione",
   items,
   profile,
   condensed = false,
@@ -34,7 +32,6 @@ function SideNav({
   collapseLabel = defaultCollapseLabel,
   className,
 }: {
-  /** Accessible name of the section. @default messages.sideNav.title */
   title?: string
   items: NavItem[]
   profile?: SideNavProfile
@@ -46,21 +43,18 @@ function SideNav({
   collapseLabel?: (label: string) => string
   className?: string
 }) {
-  const t = useMessages("sideNav")
-  const title = titleProp ?? t.title
-
   const [expanded, setExpanded] = React.useState(false)
   return (
     <nav
       aria-label={title}
       data-condensed={condensed || undefined}
-      className={cn("w-full bg-background", condensed ? "sm:w-18" : "sm:w-75", className)}
+      className={cn("w-full bg-background", condensed ? "tablet:w-18" : "tablet:w-75", className)}
     >
       {/* Source `Condensed=True, Device=Mobile` (1519:2721): a 48px head with the
           menu icon, the section name and the bottom divider; the items below are
           full-bleed, as in the source's 320-wide panel. The condensed rail is a
           desktop composition: below `sm` the disclosure stays the same. */}
-      <details className="group sm:hidden">
+      <details className="group tablet:hidden">
         <summary className="flex min-h-12 cursor-pointer list-none items-center gap-2 border-b px-6 py-3 text-body-sb focus-visible:outline-2 focus-visible:outline-ring">
           <PagoPAIcon name="menu" aria-hidden="true" className="shrink-0" />
           <span className="min-w-0 flex-1 truncate">{title}</span>
@@ -71,7 +65,7 @@ function SideNav({
         </summary>
         <NavLinks items={items} profile={profile} />
       </details>
-      <div className="relative hidden sm:block sm:py-4">
+      <div className="relative hidden tablet:block tablet:py-4">
         <div
           className={cn(
             "group/nav relative z-30 bg-background",
@@ -260,10 +254,7 @@ function NavRow({
             aria-label={open ? collapseLabel(item.label) : expandLabel(item.label)}
             onClick={() => setOpen((value) => !value)}
             className={cn(
-              // `not-sr-only` resets width and height to auto, which would shrink
-              // the toggle to its 20px icon and break the 24px target minimum: the
-              // minimums keep the 44px box in both rail states.
-              "mr-1 grid min-h-11 min-w-11 shrink-0 place-items-center rounded-sm outline-none hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring",
+              "mr-1 grid size-11 shrink-0 place-items-center rounded-sm outline-none hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring",
               condensed && labelsHidden,
             )}
           >

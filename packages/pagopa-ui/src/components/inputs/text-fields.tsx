@@ -1,8 +1,5 @@
-"use client"
-
 import * as React from "react"
 import { cn } from "@/lib/cn"
-import { useLocale, useMessages } from "@/lib/ui-provider"
 import { CalendarDays } from "@/components/primitives/icons"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
@@ -257,20 +254,20 @@ function TextareaField({
 // cryptographic encryption. Defaults stay explicit (native label, 6 slots).
 type AuthenticationCodeInputProps = Omit<React.ComponentProps<typeof OTPField>, "length"> &
   Omit<FieldStateProps, "label"> & {
-    /** Visible label of the group and of the first slot. @default messages.authenticationCodeInput.label */
+    /** Visible label of the group and of the first slot. @default "Codice di autenticazione" */
     label?: React.ReactNode
     /** Number of slots rendered. @default 6 */
     length?: number
     /**
      * Announced name of a slot after the first, from its position: the caller
-     * owns word order and grammar. @default messages.authenticationCodeInput.slotLabel
+     * owns word order and grammar. @default ({ index, total }) => `Carattere N di M`
      */
     slotLabel?: (slot: { index: number; total: number }) => string
   }
 
 function AuthenticationCodeInput({
   id,
-  label: labelProp,
+  label = "Codice di autenticazione",
   description,
   error,
   success,
@@ -278,15 +275,11 @@ function AuthenticationCodeInput({
   requiredLabel,
   disabled,
   length = 6,
-  slotLabel: slotLabelProp,
+  slotLabel = ({ index, total }) => `Carattere ${index + 1} di ${total}`,
   className,
   "aria-describedby": ariaDescribedBy,
   ...props
 }: AuthenticationCodeInputProps) {
-  const t = useMessages("authenticationCodeInput")
-  const label = labelProp ?? t.label
-  const slotLabel = slotLabelProp ?? t.slotLabel
-
   const ids = useFieldIds(id)
   const state = { description, error, success }
   const invalid = Boolean(error) || undefined
@@ -369,11 +362,11 @@ type DatePickerFieldProps = FieldStateProps & {
   onValueChange?: (value: string) => void
   /** Reference day highlighted as today in the panel. */
   today?: Date
-  /** BCP 47 locale of the field's own formatting (trigger value, panel caption and footer). @default the provider locale, "it-IT" at the root */
+  /** BCP 47 locale of the field's own formatting (trigger value, panel caption and footer). @default "it-IT" */
   locale?: string
-  /** Day-grid locale of the shared Calendar (a react-day-picker `Locale`). @default the provider calendar locale, Italian at the root */
+  /** Day-grid locale of the shared Calendar (a react-day-picker `Locale`); the default stays Italian. */
   calendarLocale?: React.ComponentProps<typeof Calendar>["locale"]
-  /** Accessible name of the panel when `label` is not a plain string. @default messages.datePickerField.panelLabel */
+  /** Accessible name of the panel when `label` is not a plain string. @default "Seleziona data" */
   panelLabel?: string
   /**
    * Complete footer line of the panel, from the formatted date: the caller
@@ -411,9 +404,9 @@ function DatePickerField({
   defaultValue = "",
   onValueChange,
   today,
-  locale: localeProp,
-  calendarLocale: calendarLocaleProp,
-  panelLabel: panelLabelProp,
+  locale = "it-IT",
+  calendarLocale,
+  panelLabel = "Seleziona data",
   selectionText,
   emptySelectionText,
   missingDateError,
@@ -423,12 +416,6 @@ function DatePickerField({
   className,
   leadingIcon = <CalendarDays />,
 }: DatePickerFieldProps) {
-  const t = useMessages("datePickerField")
-  const { locale: providerLocale, calendarLocale: providerCalendarLocale } = useLocale()
-  const panelLabel = panelLabelProp ?? t.panelLabel
-  const locale = localeProp ?? providerLocale
-  const calendarLocale = calendarLocaleProp ?? providerCalendarLocale
-
   const ids = useFieldIds(id)
   const state = { description, error, success }
   const dateFieldFormat = React.useMemo(() => new Intl.DateTimeFormat(locale, ISO_DAY), [locale])

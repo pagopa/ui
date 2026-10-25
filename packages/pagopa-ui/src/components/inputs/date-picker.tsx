@@ -1,8 +1,5 @@
-"use client"
-
 import { useRef, useState, type ComponentProps } from "react"
 import { cn } from "@/lib/cn"
-import { useLocale, useMessages } from "@/lib/ui-provider"
 import type { DateRange } from "@/components/primitives/calendar"
 
 import { Button } from "@/components/primitives/button"
@@ -17,29 +14,28 @@ interface DatePickerRange {
 }
 
 type DatePickerProps = {
-  /** Panel label. @default messages.datePicker.label */
   label?: string
   onCancel: () => void
   today?: Date
   className?: string
-  /** BCP 47 locale of the panel's own formatting (weekday names, footer, caption). @default the provider locale, "it-IT" at the root */
+  /** BCP 47 locale of the panel's own formatting (weekday names, footer, caption). @default "it-IT" */
   locale?: string
-  /** Day-grid locale of the shared Calendar (a react-day-picker `Locale`). @default the provider calendar locale, Italian at the root */
+  /** Day-grid locale of the shared Calendar (a react-day-picker `Locale`); the default stays Italian. */
   calendarLocale?: ComponentProps<typeof Calendar>["locale"]
   /**
    * Complete footer line of the panel, from the formatted date: the caller
-   * owns the phrase. @default messages.datePicker.selectionText
+   * owns the phrase. @default built-in Italian "Selezione: {date}"
    */
   selectionText?: (formattedDate: string) => string
-  /** Footer line with nothing selected. @default messages.datePicker.emptySelectionText */
+  /** Footer line with nothing selected. @default "Nessuna data selezionata" */
   emptySelectionText?: string
-  /** Validation message of a single date confirmed empty. @default messages.datePicker.missingDateError */
+  /** Validation message of a single date confirmed empty. @default "Seleziona una data prima di salvare." */
   missingDateError?: string
-  /** Validation message of an unfinished range. @default messages.datePicker.missingEndDateError */
+  /** Validation message of an unfinished range. @default "Seleziona la data di fine prima di salvare." */
   missingEndDateError?: string
-  /** Panel cancel action text. @default messages.datePicker.cancelLabel */
+  /** Panel cancel action text. @default "Annulla" */
   cancelLabel?: string
-  /** Panel confirm action text. @default messages.datePicker.confirmLabel */
+  /** Panel confirm action text. @default "Salva" */
   confirmLabel?: string
 } & (
   | { mode?: "single"; value?: Date; onConfirm: (value: Date) => void }
@@ -48,30 +44,19 @@ type DatePickerProps = {
 
 function DatePicker(props: DatePickerProps) {
   const {
-    label: labelProp,
+    label = "Seleziona data",
     onCancel,
     today,
     className,
-    locale: localeProp,
-    calendarLocale: calendarLocaleProp,
-    selectionText: selectionTextProp,
-    emptySelectionText: emptySelectionTextProp,
-    missingDateError: missingDateErrorProp,
-    missingEndDateError: missingEndDateErrorProp,
-    cancelLabel: cancelLabelProp,
-    confirmLabel: confirmLabelProp,
+    locale = "it-IT",
+    calendarLocale,
+    selectionText = (formattedDate) => `Selezione: ${formattedDate}`,
+    emptySelectionText = "Nessuna data selezionata",
+    missingDateError = "Seleziona una data prima di salvare.",
+    missingEndDateError = "Seleziona la data di fine prima di salvare.",
+    cancelLabel = "Annulla",
+    confirmLabel = "Salva",
   } = props
-  const t = useMessages("datePicker")
-  const { locale: providerLocale, calendarLocale: providerCalendarLocale } = useLocale()
-  const label = labelProp ?? t.label
-  const locale = localeProp ?? providerLocale
-  const calendarLocale = calendarLocaleProp ?? providerCalendarLocale
-  const selectionText = selectionTextProp ?? t.selectionText
-  const emptySelectionText = emptySelectionTextProp ?? t.emptySelectionText
-  const missingDateError = missingDateErrorProp ?? t.missingDateError
-  const missingEndDateError = missingEndDateErrorProp ?? t.missingEndDateError
-  const cancelLabel = cancelLabelProp ?? t.cancelLabel
-  const confirmLabel = confirmLabelProp ?? t.confirmLabel
   const ids = useFieldIds()
   const root = useRef<HTMLFieldSetElement>(null)
   const value =

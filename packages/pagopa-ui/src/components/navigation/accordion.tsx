@@ -1,8 +1,5 @@
-"use client"
-
 import * as React from "react"
 import { cn } from "@/lib/cn"
-import { useMessages } from "@/lib/ui-provider"
 
 import {
   Accordion as AccordionPrimitive,
@@ -34,15 +31,11 @@ const SKELETON_ROWS = 6
 
 function AccordionSkeleton({
   item,
-  label: labelProp,
+  label = "Caricamento in corso",
 }: {
   item: AccordionItemData
-  /** Announced text of the skeleton. @default messages.accordion.label */
   label?: string
 }) {
-  const t = useMessages("accordion")
-  const label = labelProp ?? t.label
-
   return (
     <div
       data-slot="accordion-skeleton"
@@ -132,21 +125,16 @@ function Accordion({
   items,
   defaultValue,
   className,
-  "aria-label": ariaLabelProp,
-  loadingLabel: loadingLabelProp,
+  "aria-label": ariaLabel = "Approfondimenti",
+  loadingLabel = "Caricamento in corso",
 }: {
   items: AccordionItemData[]
   defaultValue?: string
   className?: string
-  /** Name of the accordion landmark. @default messages.accordion.ariaLabel */
   "aria-label"?: string
-  /** Announced text of a loading item. @default messages.accordion.loadingLabel */
+  /** Announced text of a loading item. @default "Caricamento in corso" */
   loadingLabel?: string
 }) {
-  const t = useMessages("accordion")
-  const ariaLabel = ariaLabelProp ?? t.ariaLabel
-  const loadingLabel = loadingLabelProp ?? t.loadingLabel
-
   return (
     <AccordionPrimitive
       defaultValue={defaultValue ? [defaultValue] : undefined}

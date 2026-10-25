@@ -1,5 +1,3 @@
-"use client"
-
 import * as React from "react"
 import { mergeProps } from "@base-ui/react/merge-props"
 import { useRender } from "@base-ui/react/use-render"
@@ -59,7 +57,7 @@ function CardTitle({ className, render, ...props }: useRender.ComponentProps<"di
           // mobile, 24/32 desktop, Bold). The line height stays explicit: the
           // variant selector cannot beat the base `leading-snug` in the
           // cascade, and `leading-7`/`leading-8` carry the same source values.
-          "font-heading text-label-sb group-data-[size=sm]/card:text-caption-sb group-data-[variant^=product]/card:min-w-0 group-data-[variant^=product]/card:max-w-full group-data-[variant^=product]/card:text-title-xs-mobile group-data-[variant^=product]/card:leading-7 group-data-[variant^=product]/card:wrap-anywhere sm:group-data-[variant^=product]/card:text-title-xs sm:group-data-[variant^=product]/card:leading-8",
+          "font-heading text-label-sb group-data-[size=sm]/card:text-caption-sb group-data-[variant^=product]/card:min-w-0 group-data-[variant^=product]/card:max-w-full group-data-[variant^=product]/card:text-title-xs-mobile group-data-[variant^=product]/card:leading-7 group-data-[variant^=product]/card:wrap-anywhere tablet:group-data-[variant^=product]/card:text-title-xs tablet:group-data-[variant^=product]/card:leading-8",
           className,
         ),
       },

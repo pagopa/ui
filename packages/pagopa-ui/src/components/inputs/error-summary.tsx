@@ -1,9 +1,6 @@
-"use client"
-
 import * as React from "react"
 
 import { cn } from "@/lib/cn"
-import { useMessages } from "@/lib/ui-provider"
 
 /**
  * One entry of the error summary: the message the caller already renders next
@@ -32,22 +29,19 @@ function focusFieldTarget(fieldId: string) {
 // live regions would announce the same failure several times.
 function ErrorSummary({
   errors,
-  title: titleProp,
+  title = "Controlla i campi segnalati",
   className,
 }: {
   /** Errors to list: every message links back to its control. */
   errors: ErrorSummaryItem[]
   /**
    * Summary title. The caller owns the copy, including any count.
-   * @default messages.errorSummary.title
+   * @default "Controlla i campi segnalati"
    */
   title?: React.ReactNode
   /** ClassName applied to the summary box. */
   className?: string
 }) {
-  const t = useMessages("errorSummary")
-  const title = titleProp ?? t.title
-
   if (!errors.length) return null
   return (
     <div

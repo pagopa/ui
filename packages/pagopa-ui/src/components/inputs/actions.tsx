@@ -1,8 +1,5 @@
-"use client"
-
 import * as React from "react"
 import { cn } from "@/lib/cn"
-import { useMessages } from "@/lib/ui-provider"
 
 /** Props of {@link ButtonGroup}. */
 type ButtonGroupProps = React.ComponentProps<"div"> & {
@@ -13,13 +10,10 @@ type ButtonGroupProps = React.ComponentProps<"div"> & {
 function ButtonGroup({
   className,
   orientation = "horizontal",
-  "aria-label": ariaLabelProp,
+  "aria-label": ariaLabel = "Azioni",
   children,
   ...props
 }: ButtonGroupProps) {
-  const t = useMessages("buttonGroup")
-  const ariaLabel = ariaLabelProp ?? t.ariaLabel
-
   return (
     <div
       role="group"
@@ -54,7 +48,7 @@ interface SegmentedControlProps<T extends string> {
   value: T
   /** Called with the value of the pressed segment. */
   onValueChange: (value: T) => void
-  /** Accessible name of the group. @default messages.segmentedControl.ariaLabel */
+  /** Accessible name of the group. @default "Selezione" */
   "aria-label"?: string
   className?: string
 }
@@ -63,12 +57,9 @@ function SegmentedControl<T extends string>({
   items,
   value,
   onValueChange,
-  "aria-label": ariaLabelProp,
+  "aria-label": ariaLabel = "Selezione",
   className,
 }: SegmentedControlProps<T>) {
-  const t = useMessages("segmentedControl")
-  const ariaLabel = ariaLabelProp ?? t.ariaLabel
-
   return (
     <div
       role="group"
@@ -90,7 +81,7 @@ function SegmentedControl<T extends string>({
             aria-pressed={selected}
             onClick={() => onValueChange(item.value)}
             className={cn(
-              "min-h-12 min-w-0 truncate rounded-full px-6 max-sm:px-4 text-label-sb transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+              "min-h-12 min-w-0 truncate rounded-full px-6 max-tablet:px-4 text-label-sb transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
               selected
                 ? "bg-primary text-primary-foreground"
                 : "text-foreground hover:bg-foreground/5",
@@ -117,12 +108,9 @@ function StickyButtonBar({
   children,
   position = "bottom",
   variant = "bar",
-  "aria-label": ariaLabelProp,
+  "aria-label": ariaLabel = "Azioni del modulo",
   ...props
 }: StickyButtonBarProps) {
-  const t = useMessages("stickyButtonBar")
-  const ariaLabel = ariaLabelProp ?? t.ariaLabel
-
   const fade = variant === "fade"
   return (
     <div

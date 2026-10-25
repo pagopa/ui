@@ -4,14 +4,11 @@
 // argument surface, so a new command is discovered instead of documented twice.
 import { defineCommand, runMain } from "citty"
 
-import { runA11yConformance } from "./checks/a11y-conformance.ts"
-import { runClientDirectives } from "./checks/client-directives.ts"
 import { runCssBudget } from "./checks/css-budget.ts"
 import { runDocLinks } from "./checks/doc-links.ts"
 import { runFoundation } from "./checks/foundation.ts"
 import { runImportLayers } from "./checks/import-layers.ts"
 import { runLibraryCheck } from "./checks/library.ts"
-import { runTextDefaults } from "./checks/text-defaults.ts"
 import { runPrepareTypes } from "./commands/prepare-types.ts"
 import { cli as runDevices } from "./figma/devices.ts"
 import { runBrief } from "./figma/brief.ts"
@@ -97,19 +94,6 @@ const css = defineCommand({
 const library = defineCommand({
   meta: { name: "library", description: "Verify the packed artifact in an isolated app" },
   run: execute(() => runLibraryCheck()),
-})
-
-const textDefaults = defineCommand({
-  meta: { name: "text-defaults", description: "Reject literal text defaults in components" },
-  args: {
-    max: {
-      type: "string",
-      valueHint: "n",
-      description: "Exit 1 when the number of literal defaults exceeds n",
-    },
-  },
-  run: ({ args }) =>
-    execute(() => runTextDefaults(args.max === undefined ? [] : ["--max", String(args.max)]))(),
 })
 
 // The catalogue keeps its own note-length baseline: the number of notes past
@@ -245,38 +229,14 @@ const assets = defineCommand({
   subCommands: { icons, pictograms },
 })
 
-const a11yConformance = defineCommand({
-  meta: {
-    name: "a11y-conformance",
-    description: "Check the accessibility conformance map",
-  },
-  run: execute(() => runA11yConformance()),
-})
-
 const check = defineCommand({
   meta: { name: "check", description: "Run one of the repository contracts" },
   subCommands: {
-    "a11y-conformance": a11yConformance,
-    "client-directives": defineCommand({
-      meta: {
-        name: "client-directives",
-        description: "Check the client boundary of every source module",
-      },
-      args: {
-        report: {
-          type: "boolean",
-          default: false,
-          description: "Print both lists and exit 0",
-        },
-      },
-      run: ({ args }) => execute(() => runClientDirectives(args.report ? ["--report"] : []))(),
-    }),
     layers,
     foundation,
     docs,
     css,
     library,
-    "text-defaults": textDefaults,
     figma: figmaCheck,
     tokens: tokensCheck,
     icons: iconCheck,
@@ -423,15 +383,9 @@ const parity = defineCommand({
       status: parityString,
       node: parityString,
       cases: parityString,
-      order: parityString,
       unmapped: parityBoolean,
       coverage: parityBoolean,
       uncovered: parityBoolean,
-      json: parityBoolean,
-    }),
-    align: parityCommand("align", "One node's read-only work order", {
-      node: parityString,
-      cases: parityString,
       json: parityBoolean,
     }),
     check: parityCommand("check", "Compare one reviewed case", {

@@ -1,8 +1,5 @@
-"use client"
-
 import * as React from "react"
 
-import { useMessages } from "@/lib/ui-provider"
 import { Camera } from "@/components/primitives/icons"
 
 // Source "CameraViewElement" (1134:6812): a 376×378 Color/Surface/Surface
@@ -16,25 +13,21 @@ import { Camera } from "@/components/primitives/icons"
  * Figma: CameraViewElement (node 1134:6812)
  */
 function CameraView({
-  label: labelProp,
-  announcement: announcementProp,
+  label = "Inquadra il codice",
+  announcement = ({ label: name, active: isActive }) =>
+    `${name}. ${isActive ? "Fotocamera attiva" : "Fotocamera non attiva"}`,
   children,
   active = true,
 }: {
-  /** Announced instruction of the frame. @default messages.cameraView.label */
   label?: string
   /**
    * Complete announced caption, from the label and the camera state: the
-   * caller owns the sentence. @default messages.cameraView.announcement
+   * caller owns the sentence. @default built-in Italian caption
    */
   announcement?: (state: { label: string; active: boolean }) => string
   children?: React.ReactNode
   active?: boolean
 }) {
-  const t = useMessages("cameraView")
-  const label = labelProp ?? t.label
-  const announcement = announcementProp ?? t.announcement
-
   return (
     <figure
       data-slot="camera-view"
