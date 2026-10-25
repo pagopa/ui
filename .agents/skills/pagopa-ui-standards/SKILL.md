@@ -28,8 +28,9 @@ messages, empty, loading and error states. Announced: `aria-label`, visually
 hidden text, `alt`, live regions.
 
 Defaults are allowed, and every default is overridable from outside; a string
-the consumer cannot replace fails the contract. Where the repository exposes a
-text mechanism, use it.
+the consumer cannot replace fails the contract. A default lives in the default
+dictionary of the UI provider and the component reads it there; the check
+`text-defaults` rejects a literal default.
 
 The consumer assembles a sentence, not the component. Where the text depends on
 data — a count, a selection, a state — the consumer receives the data and

@@ -1,5 +1,8 @@
+"use client"
+
 import * as React from "react"
 import { cn } from "@/lib/cn"
+import { useMessages } from "@/lib/ui-provider"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { X } from "@/components/primitives/icons"
@@ -27,7 +30,7 @@ interface SnackbarProps {
   onDismiss?: () => void
   /** Semantic tone; it drives the announcing role. @default "info" */
   tone?: Tone
-  /** Accessible name of the dismiss control. @default "Chiudi notifica" */
+  /** Accessible name of the dismiss control. @default messages.snackbar.dismissLabel */
   dismissLabel?: string
   /** ClassName applied to the snackbar surface. */
   className?: string
@@ -40,9 +43,12 @@ function Snackbar({
   footer,
   onDismiss,
   tone = "info",
-  dismissLabel = "Chiudi notifica",
+  dismissLabel: dismissLabelProp,
   className,
 }: SnackbarProps) {
+  const t = useMessages("snackbar")
+  const dismissLabel = dismissLabelProp ?? t.dismissLabel
+
   const hasFooter = footer != null
 
   return (

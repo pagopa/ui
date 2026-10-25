@@ -1,7 +1,7 @@
 import * as React from "react"
 
 import { cn } from "@/lib/cn"
-import { useLinkComponent } from "@/lib/ui-provider"
+import { useLinkComponent, useMessages } from "@/lib/ui-provider"
 import { Heading, type HeadingTag } from "@/components/primitives/heading"
 
 import type { NavItem } from "./nav-item"
@@ -72,16 +72,16 @@ function FooterLinkRow({ link }: { link: FooterLink }) {
 }
 
 function Footer({
-  brand = "PagoPA",
+  brand: brandProp,
   homeHref = "#",
   links = [],
   company = COMPANY_INFORMATION,
   columns = [],
   titleAs = "h2",
-  columnsLabel = "Collegamenti del piè di pagina",
+  columnsLabel: columnsLabelProp,
   className,
 }: {
-  /** Brand slot of the footer. @default "PagoPA" */
+  /** Brand slot of the footer. @default messages.footer.brand */
   brand?: React.ReactNode
   /** Link target of the brand; the `#` placeholder keeps the source default. @default "#" */
   homeHref?: string
@@ -93,11 +93,15 @@ function Footer({
   columns?: FooterColumn[]
   /** Heading tag of the column titles. @default "h2" */
   titleAs?: HeadingTag
-  /** Accessible name of the columns navigation. @default "Collegamenti del piè di pagina" */
+  /** Accessible name of the columns navigation. @default messages.footer.columnsLabel */
   columnsLabel?: string
   /** ClassName applied to the footer element. */
   className?: string
 }) {
+  const t = useMessages("footer")
+  const brand = brandProp ?? t.brand
+  const columnsLabel = columnsLabelProp ?? t.columnsLabel
+
   const Link = useLinkComponent()
   return (
     <footer className={cn("border-t border-border bg-background", className)}>

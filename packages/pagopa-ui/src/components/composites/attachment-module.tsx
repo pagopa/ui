@@ -1,5 +1,8 @@
+"use client"
+
 import * as React from "react"
 import { cn } from "@/lib/cn"
+import { useMessages } from "@/lib/ui-provider"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Button } from "@/components/primitives/button"
@@ -10,7 +13,7 @@ function AttachmentModule({
   status,
   onOpen,
   onDownload,
-  downloadLabel = "Scarica",
+  downloadLabel: downloadLabelProp,
   className,
   ...props
 }: React.ComponentProps<"section"> & {
@@ -23,9 +26,12 @@ function AttachmentModule({
   onOpen?: () => void
   /** Download action of the attachment. */
   onDownload?: () => void
-  /** Accessible name of the download action. @default "Scarica" */
+  /** Accessible name of the download action. @default messages.attachmentModule.downloadLabel */
   downloadLabel?: string
 }) {
+  const t = useMessages("attachmentModule")
+  const downloadLabel = downloadLabelProp ?? t.downloadLabel
+
   return (
     <section
       className={cn("flex items-center gap-4 rounded-lg bg-card p-4 ring-1 ring-border", className)}

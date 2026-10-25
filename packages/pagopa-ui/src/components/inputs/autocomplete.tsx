@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Combobox } from "@/components/primitives/combobox"
 import { cn } from "@/lib/cn"
+import { useMessages } from "@/lib/ui-provider"
 import { Check } from "@/components/primitives/icons"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
@@ -34,15 +35,15 @@ function Autocomplete({
   requiredLabel,
   disabled,
   name,
-  emptyLabel = "Nessun risultato",
+  emptyLabel: emptyLabelProp,
   leadingIcon = defaultLeadingIcon,
-  clearLabel = "Svuota campo",
-  openLabel = "apri lista",
-  closeLabel = "chiudi lista",
+  clearLabel: clearLabelProp,
+  openLabel: openLabelProp,
+  closeLabel: closeLabelProp,
   listLabel = defaultListLabel,
   selectedLabel = defaultSelectedLabel,
   loading = false,
-  loadingLabel = "Caricamento lista in corso",
+  loadingLabel: loadingLabelProp,
   className,
 }: FieldStateProps & {
   id?: string
@@ -51,15 +52,15 @@ function Autocomplete({
   defaultValue?: string
   onValueChange?: (value: string) => void
   name?: string
-  /** Announced and shown text when no option matches. @default "Nessun risultato" */
+  /** Announced and shown text when no option matches. @default messages.autocomplete.emptyLabel */
   emptyLabel?: string
   /** Decorative artwork before the value; pass `null` to remove it. */
   leadingIcon?: React.ReactNode
-  /** Accessible name of the clear control. @default "Svuota campo" */
+  /** Accessible name of the clear control. @default messages.autocomplete.clearLabel */
   clearLabel?: string
-  /** Accessible name of the trigger that opens the list. @default "apri lista" */
+  /** Accessible name of the trigger that opens the list. @default messages.autocomplete.openLabel */
   openLabel?: string
-  /** Accessible name of the trigger that closes the list. @default "chiudi lista" */
+  /** Accessible name of the trigger that closes the list. @default messages.autocomplete.closeLabel */
   closeLabel?: string
   /** Accessible name of the list, from the field label. @default "Lista {label}" */
   listLabel?: (label: string) => string
@@ -67,10 +68,17 @@ function Autocomplete({
   selectedLabel?: (values: string[]) => string
   /** Announces that the options are being loaded. @default false */
   loading?: boolean
-  /** Announced loading text. @default "Caricamento lista in corso" */
+  /** Announced loading text. @default messages.autocomplete.loadingLabel */
   loadingLabel?: string
   className?: string
 }) {
+  const t = useMessages("autocomplete")
+  const emptyLabel = emptyLabelProp ?? t.emptyLabel
+  const clearLabel = clearLabelProp ?? t.clearLabel
+  const openLabel = openLabelProp ?? t.openLabel
+  const closeLabel = closeLabelProp ?? t.closeLabel
+  const loadingLabel = loadingLabelProp ?? t.loadingLabel
+
   const ids = useFieldIds(id)
   const inputRef = React.useRef<HTMLInputElement>(null)
   const [internalValue, setInternalValue] = React.useState<string | null>(defaultValue || null)

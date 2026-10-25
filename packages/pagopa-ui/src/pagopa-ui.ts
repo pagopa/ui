@@ -10,7 +10,8 @@ export * from "./components/overlays"
 // Screens and mocked Figma templates remain Storybook demos, not production API.
 
 export { UIProvider } from "./lib/ui-provider"
-export type { LinkComponentProps, UIProviderProps } from "./lib/ui-provider"
+export { enMessages, itMessages } from "./lib/ui-provider"
+export type { LinkComponentProps, Messages, UIProviderProps } from "./lib/ui-provider"
 
 export { Alert, AlertAction, AlertDescription, AlertTitle } from "./components/primitives/alert"
 export { Badge } from "./components/primitives/badge"

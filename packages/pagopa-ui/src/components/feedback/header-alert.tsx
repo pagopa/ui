@@ -1,5 +1,8 @@
+"use client"
+
 import * as React from "react"
 import { cn } from "@/lib/cn"
+import { useMessages } from "@/lib/ui-provider"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { X } from "@/components/primitives/icons"
@@ -20,7 +23,7 @@ interface HeaderAlertProps {
   action?: React.ReactNode
   /** Shows the dismiss control when provided. */
   onDismiss?: () => void
-  /** Accessible name of the dismiss control. @default "Chiudi avviso" */
+  /** Accessible name of the dismiss control. @default messages.headerAlert.dismissLabel */
   dismissLabel?: string
 }
 
@@ -39,8 +42,11 @@ function HeaderAlert({
   tone = "info",
   action,
   onDismiss,
-  dismissLabel = "Chiudi avviso",
+  dismissLabel: dismissLabelProp,
 }: HeaderAlertProps) {
+  const t = useMessages("headerAlert")
+  const dismissLabel = dismissLabelProp ?? t.dismissLabel
+
   const isDefault = tone === "default"
   const toneIcon = isDefault ? undefined : toneIcons[tone]
   // The source's trailing control belongs to the Default tone; a caller-owned

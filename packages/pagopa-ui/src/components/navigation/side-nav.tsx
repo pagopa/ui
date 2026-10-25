@@ -1,6 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
-import { useLinkComponent } from "@/lib/ui-provider"
+import { useLinkComponent, useMessages } from "@/lib/ui-provider"
 
 import { ChevronDown } from "@/components/primitives/icons"
 import { Badge } from "@/components/primitives/badge"
@@ -24,7 +24,7 @@ function hasCurrentItem(item: NavItem): boolean {
 }
 
 function SideNav({
-  title = "In questa sezione",
+  title: titleProp,
   items,
   profile,
   condensed = false,
@@ -32,6 +32,7 @@ function SideNav({
   collapseLabel = defaultCollapseLabel,
   className,
 }: {
+  /** Accessible name of the section. @default messages.sideNav.title */
   title?: string
   items: NavItem[]
   profile?: SideNavProfile
@@ -43,6 +44,9 @@ function SideNav({
   collapseLabel?: (label: string) => string
   className?: string
 }) {
+  const t = useMessages("sideNav")
+  const title = titleProp ?? t.title
+
   const [expanded, setExpanded] = React.useState(false)
   return (
     <nav
@@ -254,7 +258,10 @@ function NavRow({
             aria-label={open ? collapseLabel(item.label) : expandLabel(item.label)}
             onClick={() => setOpen((value) => !value)}
             className={cn(
-              "mr-1 grid size-11 shrink-0 place-items-center rounded-sm outline-none hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring",
+              // `not-sr-only` resets width and height to auto, which would shrink
+              // the toggle to its 20px icon and break the 24px target minimum: the
+              // minimums keep the 44px box in both rail states.
+              "mr-1 grid min-h-11 min-w-11 shrink-0 place-items-center rounded-sm outline-none hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring",
               condensed && labelsHidden,
             )}
           >

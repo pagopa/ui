@@ -1,7 +1,7 @@
 import { cn } from "@/lib/cn"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { useLinkComponent } from "@/lib/ui-provider"
+import { useLinkComponent, useMessages } from "@/lib/ui-provider"
 
 export interface BreadcrumbItem {
   label: string
@@ -15,12 +15,12 @@ export interface BreadcrumbItem {
  */
 function Breadcrumb({
   className,
-  "aria-label": ariaLabel = "Percorso di navigazione",
+  "aria-label": ariaLabelProp,
   ...props
 }: {
   /** Additional classes for the navigation element. */
   className?: string
-  /** Name of the navigation landmark. @default "Percorso di navigazione" */
+  /** Name of the navigation landmark. @default messages.breadcrumb.ariaLabel */
   "aria-label"?: string
 } & (
   | {
@@ -38,6 +38,8 @@ function Breadcrumb({
       items?: never
     }
 )) {
+  const t = useMessages("breadcrumb")
+  const ariaLabel = ariaLabelProp ?? t.ariaLabel
   const Link = useLinkComponent()
   const compact = props.layout === "compact"
   const items = props.layout === "compact" ? [props.back] : props.items

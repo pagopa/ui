@@ -112,6 +112,7 @@ interface StorySurface {
   id: string
   canvas: HTMLElement
   parameters: object
+  tags: string[]
 }
 
 declare global {
@@ -488,6 +489,20 @@ function expectLiveRegions(root: ParentNode) {
   }
 }
 
+// A story tagged `live-region` shows a message that appears or changes while it
+// runs: the announcement must reach a visible live region, not only the DOM.
+const ANNOUNCEMENT =
+  "[role='status'],[role='alert'],[role='log'],[aria-live='polite'],[aria-live='assertive']"
+
+function expectAnnouncement(canvas: HTMLElement, storyId: string) {
+  const announced = [canvas, document].some((root) =>
+    [...root.querySelectorAll<HTMLElement>(ANNOUNCEMENT)].some(
+      (region) => isVisible(region) && (region.textContent ?? "").trim().length > 0,
+    ),
+  )
+  expect(announced, `a live-region story must announce content: ${storyId}`).toBe(true)
+}
+
 // Several navigations on one page need names; a table needs header cells.
 async function expectLandmarks(root: ParentNode) {
   const navs = [...root.querySelectorAll<HTMLElement>("nav,[role='navigation']")].filter(isVisible)
@@ -651,6 +666,7 @@ export function a11yContractAfterEach(context: StoryContext) {
     id: context.id,
     canvas,
     parameters: context.parameters,
+    tags: context.tags,
   }
 }
 
@@ -663,7 +679,7 @@ export async function runA11yContract() {
   const story = globalThis.__pagopaA11yContractSurface
   delete globalThis.__pagopaA11yContractSurface
   if (!story || !isTestRun()) return
-  const { id, canvas, parameters } = story
+  const { id, canvas, parameters, tags } = story
   const contract = contractOf(parameters)
   // Freeze transitions and animations while the contract measures: the same
   // state the story runner uses during the story's own assertions.
@@ -680,6 +696,7 @@ export async function runA11yContract() {
     await expectRadioGroupBehaviour(canvas)
     await expectComboboxBehaviour(canvas)
     expectLiveRegions(canvas)
+    if (tags.includes("live-region")) expectAnnouncement(canvas, id)
     if (contract.landmarks !== false) await expectLandmarks(canvas)
     expectFieldErrors(canvas)
     expectBusyActionsFocusable(canvas)

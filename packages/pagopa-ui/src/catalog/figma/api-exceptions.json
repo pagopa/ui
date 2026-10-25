@@ -1,5 +1,6 @@
 {
   "modulePatterns": {
+    "src/lib/ui-provider/messages/*": "Message dictionaries and their types: text assets with no visual surface and no Figma node; the provider they feed is recorded separately",
     "src/components/primitives/*": "shadcn/Base UI primitives exported for composition; Figma mapping attaches to the composed family components, not to the primitives",
     "src/components/icons/*": "icon and pictogram runtime plus generated name lists, covered by the • Icon and • Pictograms bulk rules",
     "pagopa-ui-artwork*": "the generated artwork package: the icon and pictogram name lists and the variant types are covered by the • Icon and • Pictograms bulk rules"
