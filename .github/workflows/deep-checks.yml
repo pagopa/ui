@@ -62,6 +62,8 @@ jobs:
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
+          # Nothing here pushes: the token stays out of .git/config.
+          persist-credentials: false
 
       - name: Setup
         uses: ./.github/actions/setup
@@ -95,6 +97,8 @@ jobs:
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
+          # Nothing here pushes: the token stays out of .git/config.
+          persist-credentials: false
 
       - name: Setup
         uses: ./.github/actions/setup
@@ -125,13 +129,17 @@ jobs:
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
+          # Nothing here pushes: the token stays out of .git/config.
+          persist-credentials: false
 
       # A pull request proves the packed artifact on Chromium; the nightly and
       # dispatched runs prove it on all three engines.
       - name: Choose the engines of this event
         id: engines
+        env:
+          EVENT_NAME: ${{ github.event_name }}
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ] || [ "${{ github.event_name }}" = "push" ]; then
+          if [ "$EVENT_NAME" = "pull_request" ] || [ "$EVENT_NAME" = "push" ]; then
             echo "browsers=chromium" >> "$GITHUB_OUTPUT"
           else
             echo "browsers=chromium firefox webkit" >> "$GITHUB_OUTPUT"

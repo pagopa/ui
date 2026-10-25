@@ -5,7 +5,7 @@
     {
       "matchManagers": ["github-actions"],
       "matchPackageNames": ["pagopa/dx"],
-      "pinDigests": false
+      "pinDigests": true
     },
     {
       "matchManagers": ["dockerfile"],

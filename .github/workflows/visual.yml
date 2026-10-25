@@ -46,6 +46,8 @@ jobs:
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
+          # The build runs pull request code: no persisted credentials near it.
+          persist-credentials: false
 
       - name: Setup pnpm
         uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
@@ -57,7 +59,7 @@ jobs:
           cache: pnpm
 
       - name: Setup npm registry
-        uses: pagopa/dx/actions/setup-npm-registry@main
+        uses: pagopa/dx/actions/setup-npm-registry@ee2cd05d1129c09ddddddfa6704e6436f13639ea # ee2cd05c (2026-10-23)
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -111,6 +113,8 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
+          # The token reaches only the push command below, through its remote.
+          persist-credentials: false
 
       - name: Setup pnpm
         uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
@@ -122,7 +126,7 @@ jobs:
           cache: pnpm
 
       - name: Setup npm registry
-        uses: pagopa/dx/actions/setup-npm-registry@main
+        uses: pagopa/dx/actions/setup-npm-registry@ee2cd05d1129c09ddddddfa6704e6436f13639ea # ee2cd05c (2026-10-23)
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -135,6 +139,7 @@ jobs:
 
       - name: Commit the baselines
         env:
+          GH_TOKEN: ${{ github.token }}
           PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
         run: |
           git config --system --add safe.directory "$GITHUB_WORKSPACE" 2>/dev/null || true
@@ -146,7 +151,9 @@ jobs:
             exit 0
           fi
           git commit -m "test(visual): update baselines"
-          git push origin "HEAD:$PR_HEAD_REF"
+          # Checkout persists no credentials: the push carries the token
+          # explicitly, like the Figma drift job pushes its branch.
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:$PR_HEAD_REF"
       # A GITHUB_TOKEN commit does not trigger the gate against the new
       # baselines: without this notice the red check from the run before the
       # label is the only feedback the workflow ever gives.

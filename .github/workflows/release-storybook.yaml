@@ -51,7 +51,7 @@ jobs:
       # from GitHub Packages through pnpm's `gh:` alias.
       packages: read
       pull-requests: write
-    uses: pagopa/dx/.github/workflows/release-azure-staticapp-v1.yaml@main
+    uses: pagopa/dx/.github/workflows/release-azure-staticapp-v1.yaml@ee2cd05d1129c09ddddddfa6704e6436f13639ea # ee2cd05c (2026-10-23)
     secrets: inherit
     with:
       # Matches both the package.json name and the Nx project name.

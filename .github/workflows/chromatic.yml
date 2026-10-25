@@ -7,7 +7,9 @@ name: Chromatic
 #
 # The Storybook build is the same one the application ships; Chromatic only
 # publishes it and compares the stories. Every third-party action is pinned to a
-# full commit SHA, as in the other workflows.
+# full commit SHA, as in the other workflows. The label only triggers on a pull
+# request of this repository: the project token must not reach the
+# dependencies of a fork.
 on:
   workflow_dispatch:
   pull_request:
@@ -24,7 +26,9 @@ jobs:
   chromatic:
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'pull_request' && github.event.label.name == 'chromatic')
+      (github.event_name == 'pull_request' &&
+       github.event.label.name == 'chromatic' &&
+       github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-24.04
     # CHROMATIC_PROJECT_TOKEN is an environment secret of app-dev-ci; Terraform
     # creates the placeholder and the Key Vault reference, the person sets it.
@@ -51,6 +55,8 @@ jobs:
         with:
           # TurboSnap needs the history to trace the changed files to stories.
           fetch-depth: 0
+          # Nothing in this job pushes: the token stays out of .git/config.
+          persist-credentials: false
 
       - name: Setup pnpm
         if: steps.token.outputs.present == 'true'
@@ -68,7 +74,7 @@ jobs:
       # temporary npm config for this job.
       - name: Setup npm registry
         if: steps.token.outputs.present == 'true'
-        uses: pagopa/dx/actions/setup-npm-registry@main
+        uses: pagopa/dx/actions/setup-npm-registry@ee2cd05d1129c09ddddddfa6704e6436f13639ea # ee2cd05c (2026-10-23)
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 

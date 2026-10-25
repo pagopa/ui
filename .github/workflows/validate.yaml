@@ -18,7 +18,11 @@ jobs:
       id-token: write
       packages: read
       pull-requests: write
-    uses: pagopa/dx/.github/workflows/validate-v2.yaml@main
+    # The reusable workflow receives the ARM, AWS and GitHub App secrets of
+    # this repository: pinned to a full commit SHA, so a moved branch would be
+    # arbitrary code with those powers. renovate.json updates the digest
+    # through a reviewed pull request.
+    uses: pagopa/dx/.github/workflows/validate-v2.yaml@ee2cd05d1129c09ddddddfa6704e6436f13639ea # ee2cd05c (2026-10-23)
     secrets:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}

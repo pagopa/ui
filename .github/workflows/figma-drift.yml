@@ -17,10 +17,10 @@ name: Figma drift
 #
 # Every third-party action is pinned to a full commit SHA: this job can push
 # and reaches FIGMA_TOKEN and DRIFT_PR_TOKEN, so a moved tag would be arbitrary
-# code running with those powers. The first party `pagopa/dx` actions stay on
-# `main`, the branch renovate.json tracks them on. Permissions are read-only at
-# the workflow level; only the job that pushes and opens the pull request gets
-# write.
+# code running with those powers. The first party `pagopa/dx` actions are
+# pinned the same way: renovate.json pins the package and updates the digest
+# through a reviewed pull request. Permissions are read-only at the workflow
+# level; only the job that pushes and opens the pull request gets write.
 on:
   schedule:
     # Every Monday at 04:00 UTC
@@ -81,7 +81,7 @@ jobs:
       # alias. Pass the token explicitly; the action writes authentication to a
       # temporary npm config for this job.
       - name: Setup npm registry
-        uses: pagopa/dx/actions/setup-npm-registry@main
+        uses: pagopa/dx/actions/setup-npm-registry@ee2cd05d1129c09ddddddfa6704e6436f13639ea # ee2cd05c (2026-10-23)
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 

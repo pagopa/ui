@@ -29,7 +29,7 @@ runs:
     # alias. Pass the token explicitly; the action writes authentication to a
     # temporary npm config for this job.
     - name: Setup npm registry
-      uses: pagopa/dx/actions/setup-npm-registry@main
+      uses: pagopa/dx/actions/setup-npm-registry@ee2cd05d1129c09ddddddfa6704e6436f13639ea # ee2cd05c (2026-10-23)
       with:
         token: ${{ inputs.token }}
 
@@ -43,9 +43,11 @@ runs:
       id: playwright
       if: inputs.browsers != ''
       shell: bash
+      env:
+        BROWSERS: ${{ inputs.browsers }}
       run: |
         echo "version=$(pnpm --filter @pagopa/ui exec playwright --version | awk '{ print $2 }')" >> "$GITHUB_OUTPUT"
-        echo "browsers=$(echo "${{ inputs.browsers }}" | tr ' ' '-')" >> "$GITHUB_OUTPUT"
+        echo "browsers=$(echo "$BROWSERS" | tr ' ' '-')" >> "$GITHUB_OUTPUT"
 
     - name: Cache Playwright browsers
       if: inputs.browsers != ''
@@ -72,9 +74,11 @@ runs:
     - name: Install Playwright browsers
       if: inputs.browsers != ''
       shell: bash
+      env:
+        BROWSERS: ${{ inputs.browsers }}
       run: |
         mkdir -p ~/.cache/playwright-debs
         sudo cp -n ~/.cache/playwright-debs/*.deb /var/cache/apt/archives/ 2>/dev/null || true
-        timeout 600 pnpm --filter @pagopa/ui exec playwright install --with-deps ${{ inputs.browsers }}
+        timeout 600 pnpm --filter @pagopa/ui exec playwright install --with-deps "$BROWSERS"
         sudo cp -n /var/cache/apt/archives/*.deb ~/.cache/playwright-debs/ 2>/dev/null || true
         sudo chown -R "$USER" ~/.cache/playwright-debs
