@@ -6,7 +6,7 @@ import { Alert, AlertDescription } from "@/components/primitives/alert"
 import { Button } from "@/components/primitives/button"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Breadcrumb, Footer, Header, Preheader } from "@/components/navigation"
-import { LogIn } from "@/components/templates/figma/LogIn"
+import { LogIn } from "./templates/LogIn"
 
 // The source composition of set `2339:80916`: the application chrome around the
 // login module. The copy is caller-owned, so the story carries the source

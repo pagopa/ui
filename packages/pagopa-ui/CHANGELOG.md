@@ -12,8 +12,6 @@
 
 ### Added
 
-- `@pagopa/ui/tokens.css` and `@pagopa/ui/tokens`: the public, read-only token
-  contract.
 - `UIProvider` gains `locale`, `messages` and `calendarLocale`, and the package
   ships the default dictionary (`itMessages`) and a complete English one
   (`enMessages`) with the `Messages` type. Every text default reads from the
@@ -232,8 +230,6 @@
 - `SideNav`: the group toggle in the condensed rail keeps its 44px pointer
   target when the rail expands; `not-sr-only` reset its box to the 20px icon,
   below the WCAG 2.5.8 minimum.
-- The package ships one ES module per component with `"use client"` where
-  needed; Server Components can import it.
 
 ### Removed
 

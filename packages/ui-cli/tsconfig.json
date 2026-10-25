@@ -7,9 +7,5 @@
     "types": ["node"]
   },
   "include": ["src", "tests", "playwright.config.ts"],
-  "exclude": [
-    "node_modules",
-    "tests/fixtures/library-consumer",
-    "tests/fixtures/library-rsc-consumer"
-  ]
+  "exclude": ["node_modules", "tests/fixtures/library-consumer"]
 }

@@ -6,11 +6,9 @@ import fs from "node:fs"
 import path from "node:path"
 import { z } from "zod"
 
-import { walkFiles } from "../lib/fs.ts"
 import { artworkPath } from "../lib/paths.ts"
 import { parseSchema } from "../lib/validate.ts"
 import { IconManifestSchema } from "../schemas/artwork.ts"
-import { clientModules } from "./client-directives.ts"
 
 // Public export surface asserted on the packed module, and the retired or
 // demo exports that must stay out of the artifact.
@@ -151,9 +149,6 @@ export function verifyArtifactContract(root: string): ArtifactContract {
     fs.existsSync("dist/licenses/artwork.txt"),
     "missing the packaged artwork provenance notice",
   )
-  for (const file of ["dist/tokens.css", "dist/tokens.js", "dist/types/tokens.d.ts"]) {
-    assert.ok(fs.existsSync(file), `missing ${file} — the public token entries must ship`)
-  }
   const iconManifest = parseSchema(
     IconManifestSchema,
     JSON.parse(fs.readFileSync(artworkPath("src/assets/figma-icons/manifest.json"), "utf8")),
@@ -175,24 +170,6 @@ export function verifyArtifactContract(root: string): ArtifactContract {
   assert.ok(
     manifest.peerDependencies?.react && manifest.peerDependencies?.["react-dom"],
     "React and ReactDOM must be shared with the consuming application",
-  )
-
-  // The per-module build must publish the directive of every client module:
-  // a Server Component accepts a client module only when the module declares
-  // itself, and a bundler keeps that boundary only per module.
-  const client = new Set(clientModules().map((entry) => entry.file))
-  const distModules = walkFiles("dist", (file) => file.endsWith(".js"))
-  const withoutDirective: string[] = []
-  for (const file of distModules) {
-    const base = path.join("src", path.relative("dist", file)).replace(/\.js$/, "")
-    const source = [`${base}.tsx`, `${base}.ts`].find((candidate) => fs.existsSync(candidate))
-    if (!source || !client.has(source)) continue
-    if (!/^["']use client/.test(fs.readFileSync(file, "utf8"))) withoutDirective.push(file)
-  }
-  assert.deepEqual(
-    withoutDirective,
-    [],
-    'a client module reached the artifact without its "use client" directive',
   )
   assert.deepEqual(
     [
