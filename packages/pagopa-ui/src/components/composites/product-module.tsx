@@ -1,5 +1,3 @@
-"use client"
-
 import * as React from "react"
 import { Avatar } from "@/components/content/avatar"
 import { Chip } from "@/components/inputs/chips"

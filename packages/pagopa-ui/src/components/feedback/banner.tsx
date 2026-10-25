@@ -78,7 +78,7 @@ function Banner({
       ? "text-label-sb"
       : direction === "vertical"
         ? "text-title-xs-mobile"
-        : "text-title-xs-mobile md:text-title-xs",
+        : "text-title-xs-mobile tablet-md:text-title-xs",
   )
   const descriptionClassName = cn(
     "text-muted-foreground",
@@ -143,7 +143,7 @@ function Banner({
                   <span
                     aria-hidden="true"
                     data-slot="banner-pictogram"
-                    className="col-start-2 row-start-1 size-14 shrink-0 self-center translate-y-2 md:size-20"
+                    className="col-start-2 row-start-1 size-14 shrink-0 self-center translate-y-2 tablet-md:size-20"
                   >
                     {pictogram}
                   </span>
@@ -209,7 +209,7 @@ function Banner({
             className={cn(
               "flex min-w-0",
               direction === "horizontal"
-                ? "flex-col gap-4 md:flex-row md:items-center md:gap-8"
+                ? "flex-col gap-4 tablet-md:flex-row tablet-md:items-center tablet-md:gap-8"
                 : "flex-col items-start gap-4",
             )}
           >
@@ -220,7 +220,7 @@ function Banner({
                   descriptionClassName,
                   "min-w-0",
                   direction === "vertical" && "w-full",
-                  direction === "horizontal" && "md:flex-1",
+                  direction === "horizontal" && "tablet-md:flex-1",
                 )}
               >
                 {children}

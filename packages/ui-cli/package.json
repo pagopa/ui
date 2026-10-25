@@ -34,7 +34,6 @@
     "assets:check": "node src/cli.ts check assets",
     "layers:check": "node src/cli.ts check layers",
     "foundation:check": "node src/cli.ts check foundation",
-    "client:check": "node src/cli.ts check client-directives",
     "a11y:conformance:check": "node src/cli.ts check a11y-conformance",
     "docs:check": "node src/cli.ts check docs",
     "css:check": "node src/cli.ts check css",
@@ -51,7 +50,6 @@
   "devDependencies": {
     "@playwright/test": "1.63.0",
     "@types/node": "^26.6.5",
-    "next": "16.2.12",
     "oxc-parser": "^0.127.0",
     "oxfmt": "^0.73.0",
     "oxlint": "^1.81.0",

@@ -5,7 +5,6 @@
 import { defineCommand, runMain } from "citty"
 
 import { runA11yConformance } from "./checks/a11y-conformance.ts"
-import { runClientDirectives } from "./checks/client-directives.ts"
 import { runCssBudget } from "./checks/css-budget.ts"
 import { runDocLinks } from "./checks/doc-links.ts"
 import { runFoundation } from "./checks/foundation.ts"
@@ -257,20 +256,6 @@ const check = defineCommand({
   meta: { name: "check", description: "Run one of the repository contracts" },
   subCommands: {
     "a11y-conformance": a11yConformance,
-    "client-directives": defineCommand({
-      meta: {
-        name: "client-directives",
-        description: "Check the client boundary of every source module",
-      },
-      args: {
-        report: {
-          type: "boolean",
-          default: false,
-          description: "Print both lists and exit 0",
-        },
-      },
-      run: ({ args }) => execute(() => runClientDirectives(args.report ? ["--report"] : []))(),
-    }),
     layers,
     foundation,
     docs,

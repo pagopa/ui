@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { CheckboxField } from "@/components/inputs"
 import { Button } from "@/components/primitives/button"
-import { DialogTemplate } from "@/components/templates/figma/DialogTemplate"
+import { DialogTemplate } from "./templates/DialogTemplate"
 
 import templatesGuide from "./guides/templates.md?raw"
 

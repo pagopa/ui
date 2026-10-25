@@ -123,6 +123,53 @@ test("a registered exception is exempt and reported", () => {
   )
 })
 
+test("the Storybook page templates are scanned too", () => {
+  fixture(
+    ({ run }) => {
+      const result = run("--measure")
+      assert.equal(result.status, 0, result.stderr)
+      const measured = JSON.parse(result.stdout)
+      assert.equal(measured.raw["hex-color"], 1)
+      assert.equal(measured.raw["tailwind-text-size"], 1)
+    },
+    {
+      files: {
+        "apps/storybook/src/templates/Demo.tsx":
+          'export const demo = <p className="text-sm" style={{ color: "#ffffff" }} />\n',
+      },
+    },
+  )
+  fixture(
+    ({ run }) => {
+      const result = run("--measure")
+      assert.equal(result.status, 0, result.stderr)
+      const measured = JSON.parse(result.stdout)
+      assert.equal(measured.counts["hex-color"], 0)
+      assert.equal(measured.raw["hex-color"], 1)
+      const check = run()
+      assert.equal(check.status, 0, check.stderr)
+    },
+    {
+      files: {
+        "apps/storybook/src/templates/Demo.tsx":
+          'export const demo = <p className="text-body" style={{ color: "#ffffff" }} />\n',
+      },
+      exceptions: {
+        schemaVersion: 1,
+        exceptions: [
+          {
+            rule: "hex-color",
+            file: "apps/storybook/src/templates/Demo.tsx",
+            match: "#ffffff",
+            nodeId: "1:2",
+            reason: "registered for the test",
+          },
+        ],
+      },
+    },
+  )
+})
+
 test("a stale exception fails", () => {
   fixture(
     ({ run }) => {
@@ -257,6 +304,101 @@ test("a Tailwind shadow counts, a token shadow does not", () => {
       files: {
         "src/components/token-shadow.tsx":
           'export const tokenShadow = <div className="rounded-xl bg-card shadow-elevation" />\n',
+      },
+    },
+  )
+})
+
+test("a Tailwind breakpoint variant counts, the Figma ones do not", () => {
+  fixture(
+    ({ run }) => {
+      const result = run()
+      assert.notEqual(result.status, 0)
+      assert.match(result.stderr, /default-breakpoint: 6 occurrences, the ceiling is 0/)
+      assert.match(result.stderr, /2xl:/)
+    },
+    {
+      files: {
+        "src/components/responsive.tsx":
+          'export const responsive = <div className="sm:flex md:grid lg:p-4 xl:mt-2 2xl:flex max-lg:hidden" />\n',
+      },
+    },
+  )
+  fixture(
+    ({ run }) => {
+      const result = run()
+      assert.equal(result.status, 0, result.stderr)
+    },
+    {
+      // `@md/alert:` is a default container query: it proves the breakpoint
+      // rule's lookbehind, and it is exempted here so this fixture isolates one
+      // rule.
+      baseline: { schemaVersion: 1, counts: { ...zeroCounts(), "default-container-query": 1 } },
+      files: {
+        "src/components/figma.tsx": [
+          'export const figma = <div className="tablet:flex max-w-screen-sm" />',
+          'export const container = <div className="@md/alert:flex" />',
+          'export const state = <div className="data-[state=open]:flex" />',
+          "",
+        ].join("\n"),
+      },
+    },
+  )
+})
+
+test("a mobile typography pair counts, the plain scale classes do not", () => {
+  fixture(
+    ({ run }) => {
+      const result = run()
+      assert.notEqual(result.status, 0)
+      assert.match(result.stderr, /mobile-text-class: 2 occurrences, the ceiling is 0/)
+      assert.match(result.stderr, /text-title-lg-mobile/)
+    },
+    {
+      files: {
+        "src/components/titles.tsx":
+          'export const titles = <h2 className="text-title-lg-mobile text-title-md-mobile" />\n',
+      },
+    },
+  )
+  fixture(
+    ({ run }) => {
+      const result = run()
+      assert.equal(result.status, 0, result.stderr)
+    },
+    {
+      files: {
+        "src/components/titles.tsx":
+          'export const titles = <h2 className="text-title-lg text-body" />\n',
+      },
+    },
+  )
+})
+
+test("a default container size counts, a Figma viewport variant does not", () => {
+  fixture(
+    ({ run }) => {
+      const result = run()
+      assert.notEqual(result.status, 0)
+      assert.match(result.stderr, /default-container-query: 3 occurrences, the ceiling is 0/)
+      assert.match(result.stderr, /@4xl\/footer:/)
+    },
+    {
+      files: {
+        "src/components/containers.tsx":
+          'export const containers = <div className="@sm:flex @md/alert:grid @4xl/footer:grid" />\n',
+      },
+    },
+  )
+  fixture(
+    ({ run }) => {
+      const result = run()
+      assert.equal(result.status, 0, result.stderr)
+    },
+    {
+      files: {
+        "src/components/containers.tsx":
+          'export const containers = <div className="@container tablet:flex" />\n',
       },
     },
   )

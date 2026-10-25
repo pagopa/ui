@@ -1,5 +1,3 @@
-"use client"
-
 // Base UI Drawer, isolated so the library keeps a single seam to the
 // third-party implementation: only the primitives layer may import it (import
 // layer contract, enforced by `pnpm layers:check`). The composed Drawer lives in overlays.
@@ -137,9 +135,10 @@ function DrawerHeader({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="drawer-header"
       className={cn(
         // The base gap is the only horizontal-inset-independent default: an
-        // `md:gap-*` here would beat the composed `gap-2` above md and break
+        // `tablet-md:gap-*` here would beat the composed `gap-2` above
+        // `tablet-md` and break
         // the source's 8px head-to-description spacing.
-        "flex flex-col gap-0.5 p-4 group-data-[swipe-direction=down]/drawer-popup:text-center group-data-[swipe-direction=up]/drawer-popup:text-center md:text-left",
+        "flex flex-col gap-0.5 p-4 group-data-[swipe-direction=down]/drawer-popup:text-center group-data-[swipe-direction=up]/drawer-popup:text-center tablet-md:text-left",
         className,
       )}
       {...props}

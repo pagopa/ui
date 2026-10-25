@@ -115,8 +115,8 @@ function Drawer({
           <DrawerFooter
             className={
               flow
-                ? "mt-10 gap-6 p-0 [&>*]:w-full sm:flex-row sm:items-center sm:justify-end sm:[&>*]:w-auto"
-                : "gap-6 p-6 [&>*]:w-full sm:flex-row sm:items-center sm:justify-end sm:[&>*]:w-auto"
+                ? "mt-10 gap-6 p-0 [&>*]:w-full tablet:flex-row tablet:items-center tablet:justify-end tablet:[&>*]:w-auto"
+                : "gap-6 p-6 [&>*]:w-full tablet:flex-row tablet:items-center tablet:justify-end tablet:[&>*]:w-auto"
             }
           >
             {footer}

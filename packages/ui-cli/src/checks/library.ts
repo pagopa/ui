@@ -8,7 +8,6 @@ import os from "node:os"
 import path from "node:path"
 import { z } from "zod"
 import { pathToFileURL } from "node:url"
-import { walkFiles } from "../lib/fs.ts"
 import { enterRoot, toolingPath, TOOLING_ROOT } from "../lib/paths.ts"
 import { parseSchema } from "../lib/validate.ts"
 import { FORBIDDEN_EXPORTS, REQUIRED_EXPORTS, verifyArtifactContract } from "./library-artifact.ts"
@@ -84,11 +83,6 @@ export async function runLibraryCheck(): Promise<number> {
 
   const installedVersion = (name: string): string =>
     JSON.parse(fs.readFileSync(audited.resolve(`${name}/package.json`), "utf8")).version
-  // The Next fixture follows the tooling package: the workspace lockfile pins
-  // the version the check builds.
-  const tooling = createRequire(path.join(TOOLING_ROOT, "package.json"))
-  const toolingVersion = (name: string): string =>
-    JSON.parse(fs.readFileSync(tooling.resolve(`${name}/package.json`), "utf8")).version
   const packageSpecifier = JSON.stringify(manifest.name)
   const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-library-"))
   const consumer = path.join(temporary, "consumer")
@@ -290,56 +284,6 @@ export async function runLibraryCheck(): Promise<number> {
       consumer,
     )
 
-    // A second consumer proves the App Router boundary: a Server Component
-    // page imports the package, and the build fails when a client module lost
-    // its own directive.
-    const rsc = path.join(temporary, "rsc")
-    fs.cpSync(toolingPath("tests/fixtures/library-rsc-consumer"), rsc, { recursive: true })
-    for (const source of walkFiles(rsc, (file) => /\.(ts|tsx)$/.test(file))) {
-      fs.writeFileSync(
-        source,
-        fs.readFileSync(source, "utf8").replaceAll("__PAGOPA_UI_PACKAGE__", manifest.name),
-      )
-    }
-    fs.writeFileSync(
-      path.join(rsc, "package.json"),
-      JSON.stringify(
-        {
-          private: true,
-          type: "module",
-          dependencies: {
-            [manifest.name]: `file:${archive}`,
-            react: installedVersion("react"),
-            "react-dom": installedVersion("react-dom"),
-            next: toolingVersion("next"),
-          },
-          devDependencies: {
-            "@types/node": installedVersion("@types/node"),
-            "@types/react": installedVersion("@types/react"),
-            "@types/react-dom": installedVersion("@types/react-dom"),
-            // Next loads the TypeScript API from `lib/typescript.js`, which the
-            // workspace's native 7 alias does not publish: the fixture takes
-            // the 6 API package the workspace exposes under `typescript`.
-            typescript: `npm:@typescript/typescript6@${installedVersion("typescript")}`,
-          },
-        },
-        null,
-        2,
-      ),
-    )
-    run("pnpm", ["install", "--prefer-offline", "--ignore-scripts", "--reporter=append-only"], rsc)
-    const next = spawnSync("pnpm", ["exec", "next", "build"], {
-      cwd: rsc,
-      encoding: "utf8",
-      maxBuffer: 20 * 1024 * 1024,
-      env: { ...process.env, NEXT_TELEMETRY_DISABLED: "1" },
-    })
-    if (next.error) throw next.error
-    if (next.status !== 0) {
-      const lines = `${next.stdout}${next.stderr}`.trim().split("\n")
-      assert.fail(`next build failed:\n${lines.slice(-40).join("\n")}`)
-    }
-
     server = await preview({
       root: consumer,
       configFile: path.join(consumer, "vite.config.mjs"),
@@ -367,7 +311,7 @@ export async function runLibraryCheck(): Promise<number> {
       },
     )
     console.log(
-      `library OK: isolated tarball, ${imported.exports.length} exports, strict types, shared React, native forms, responsive Table/sorting/paging, mobile chrome bands/one-row header/no clipped actions, viewport and container device scopes (narrow-column module, scrollable-list first item, segmented fit), calendar confirmation/ranges, explicit Breadcrumb navigation, source ProductCard/native links/actions/reflow, source OTP/password/paste/native-length/reset/system-color paint, source Avatar/native images/selection/non-color statuses/unoccluded initials/font preferences/system-color paint, keyboard/focus, standalone CSS/fonts/artwork in ${engines}, Next.js App Router build`,
+      `library OK: isolated tarball, ${imported.exports.length} exports, strict types, shared React, native forms, responsive Table/sorting/paging, mobile chrome bands/one-row header/no clipped actions, viewport and container device scopes (narrow-column module, scrollable-list first item, segmented fit), calendar confirmation/ranges, explicit Breadcrumb navigation, source ProductCard/native links/actions/reflow, source OTP/password/paste/native-length/reset/system-color paint, source Avatar/native images/selection/non-color statuses/unoccluded initials/font preferences/system-color paint, keyboard/focus, standalone CSS/fonts/artwork in ${engines}`,
     )
   } finally {
     const active = server

@@ -1445,6 +1445,44 @@ test("refresh preserves mocked demos without queueing them for review", () => {
   }
 })
 
+test("a registry module outside the package is resolved against the workspace root", () => {
+  const target = { module: "apps/storybook/src/templates/demo.tsx", export: "Demo" }
+  fixture(
+    ({ check }) => {
+      const result = check("--plan")
+      assert.equal(result.status, 0, result.stderr)
+    },
+    {
+      "src/catalog/figma/registry.json": JSON.stringify({
+        entries: {
+          "1:1": { status: "mocked", target, note: "Demo shell only; never shipped" },
+        },
+        bulkRules: [],
+      }),
+      "apps/storybook/src/templates/demo.tsx": "export const Demo = () => <div>Demo shell</div>",
+    },
+  )
+})
+
+test("a workspace-relative registry module must exist too", () => {
+  const target = { module: "apps/storybook/src/templates/demo.tsx", export: "Demo" }
+  fixture(
+    ({ check }) => {
+      const result = check("--plan")
+      assert.equal(result.status, 1)
+      assert.match(result.stderr, /module not found apps\/storybook\/src\/templates\/demo\.tsx/)
+    },
+    {
+      "src/catalog/figma/registry.json": JSON.stringify({
+        entries: {
+          "1:1": { status: "mocked", target, note: "Demo shell only; never shipped" },
+        },
+        bulkRules: [],
+      }),
+    },
+  )
+})
+
 test("--pr-body refreshes the inventory and writes the review body on drift", () => {
   fixture(
     ({ check, read }) => {
