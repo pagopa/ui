@@ -43,7 +43,7 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-  TextAreaField,
+  TextareaField,
   type DatePickerRange,
 } from "__PAGOPA_UI_PACKAGE__"
 import "__PAGOPA_UI_PACKAGE__/styles.css"
@@ -784,7 +784,7 @@ function ConsumerFocusControls() {
   const [schoolVisible, setSchoolVisible] = React.useState(true)
   return (
     <section aria-label="Controlli di tastiera" style={{ minWidth: 0, display: "grid", gap: 16 }}>
-      <TextAreaField label="Note della preferenza" />
+      <TextareaField label="Note della preferenza" />
       <DatePickerField label="Data della preferenza" defaultValue="2026-05-11" />
       {schoolVisible ? (
         <InputChip onRemove={() => setSchoolVisible(false)}>Servizi scolastici</InputChip>

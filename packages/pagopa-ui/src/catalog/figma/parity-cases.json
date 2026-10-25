@@ -6165,7 +6165,7 @@
   {
     "id": "10585-80643-enabled-empty",
     "nodeId": "10585:80643",
-    "export": "TextAreaField",
+    "export": "TextareaField",
     "storyId": "components-inputs-textareafield--figma-state-matrix",
     "state": "Enabled|empty",
     "variant": "10585:80644",
@@ -6183,7 +6183,7 @@
   {
     "id": "10585-80643-enabled-filled",
     "nodeId": "10585:80643",
-    "export": "TextAreaField",
+    "export": "TextareaField",
     "storyId": "components-inputs-textareafield--figma-state-matrix",
     "state": "Enabled|filled",
     "variant": "10585:80662",
@@ -6202,7 +6202,7 @@
   {
     "id": "10585-80643-active-empty",
     "nodeId": "10585:80643",
-    "export": "TextAreaField",
+    "export": "TextareaField",
     "storyId": "components-inputs-textareafield--figma-state-matrix",
     "state": "Active|empty",
     "variant": "10585:80681",
@@ -6224,7 +6224,7 @@
   {
     "id": "10585-80643-active-filled",
     "nodeId": "10585:80643",
-    "export": "TextAreaField",
+    "export": "TextareaField",
     "storyId": "components-inputs-textareafield--figma-state-matrix",
     "state": "Active|filled",
     "variant": "10585:80693",
@@ -6246,7 +6246,7 @@
   {
     "id": "10585-80643-success-filled",
     "nodeId": "10585:80643",
-    "export": "TextAreaField",
+    "export": "TextareaField",
     "storyId": "components-inputs-textareafield--figma-state-matrix",
     "state": "Success|filled",
     "variant": "10585:80703",
@@ -6265,7 +6265,7 @@
   {
     "id": "10585-80643-error-empty",
     "nodeId": "10585:80643",
-    "export": "TextAreaField",
+    "export": "TextareaField",
     "storyId": "components-inputs-textareafield--figma-state-matrix",
     "state": "Error|empty",
     "variant": "10585:80713",
@@ -6284,7 +6284,7 @@
   {
     "id": "10585-80643-error-filled",
     "nodeId": "10585:80643",
-    "export": "TextAreaField",
+    "export": "TextareaField",
     "storyId": "components-inputs-textareafield--figma-state-matrix",
     "state": "Error|filled",
     "variant": "10585:80722",
@@ -6303,7 +6303,7 @@
   {
     "id": "10585-80643-enabled-empty-optional",
     "nodeId": "10585:80643",
-    "export": "TextAreaField",
+    "export": "TextareaField",
     "storyId": "components-inputs-textareafield--figma-state-matrix",
     "state": "Enabled|empty|optional",
     "variant": "12079:79635",
