@@ -11,7 +11,7 @@ import { TableListItem } from "@/components/data-display/table-list-item"
 import { Accordion } from "@/components/navigation/accordion"
 import { Banner } from "@/components/feedback/banner"
 import { HeaderAlert } from "@/components/feedback/header-alert"
-import { ErrorState } from "@/components/feedback/error-state"
+import { KOState } from "@/components/feedback/ko-state"
 import { Snackbar } from "@/components/feedback/snackbar"
 import { SnackbarErrorCode } from "@/components/feedback/snackbar-error-code"
 import { Autocomplete } from "@/components/inputs/autocomplete"
@@ -132,7 +132,7 @@ export const NoticeLabels: Story = {
         dismissLabel="Nascondi esito"
       />
       <SnackbarErrorCode code="3020123456789" copyLabel="Copia il codice" />
-      <ErrorState
+      <KOState
         title="Esito negativo"
         description="Nessun addebito effettuato."
         code="ERR-1"

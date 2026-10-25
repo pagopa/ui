@@ -3429,8 +3429,8 @@
   {
     "id": "731-20386-desktop-desktop",
     "nodeId": "731:20386",
-    "export": "IdentityProviderPicker",
-    "storyId": "components-composites-identityproviderpicker--desktop",
+    "export": "IDModule",
+    "storyId": "components-composites-idmodule--desktop",
     "state": "desktop",
     "device": "desktop",
     "width": 410,
@@ -3452,8 +3452,8 @@
   {
     "id": "731-20386-mobile-mobile",
     "nodeId": "731:20386",
-    "export": "IdentityProviderPicker",
-    "storyId": "components-composites-identityproviderpicker--playground",
+    "export": "IDModule",
+    "storyId": "components-composites-idmodule--playground",
     "state": "mobile",
     "device": "mobile",
     "width": 320,
@@ -3475,8 +3475,8 @@
   {
     "id": "733-22841-desktop-desktop",
     "nodeId": "733:22841",
-    "export": "SuccessState",
-    "storyId": "components-feedback-successstate--playground",
+    "export": "OKState",
+    "storyId": "components-feedback-okstate--playground",
     "state": "desktop",
     "device": "desktop",
     "layoutScope": "viewport",
@@ -3496,8 +3496,8 @@
   {
     "id": "733-22841-mobile-mobile",
     "nodeId": "733:22841",
-    "export": "SuccessState",
-    "storyId": "components-feedback-successstate--playground",
+    "export": "OKState",
+    "storyId": "components-feedback-okstate--playground",
     "state": "mobile",
     "device": "mobile",
     "layoutScope": "viewport",
@@ -3517,8 +3517,8 @@
   {
     "id": "749-5695-desktop-desktop",
     "nodeId": "749:5695",
-    "export": "ErrorState",
-    "storyId": "components-feedback-errorstate--source-desktop",
+    "export": "KOState",
+    "storyId": "components-feedback-kostate--source-desktop",
     "state": "desktop",
     "device": "desktop",
     "layoutScope": "viewport",
@@ -3540,8 +3540,8 @@
   {
     "id": "749-5695-mobile-mobile",
     "nodeId": "749:5695",
-    "export": "ErrorState",
-    "storyId": "components-feedback-errorstate--source-mobile",
+    "export": "KOState",
+    "storyId": "components-feedback-kostate--source-mobile",
     "state": "mobile",
     "device": "mobile",
     "layoutScope": "viewport",
@@ -5051,7 +5051,7 @@
     "depth": 4,
     "root": "[data-slot=\"feedback-page\"]",
     "subjects": {
-      "SuccessState": "[data-slot=\"feedback-page\"] section"
+      "OKState": "[data-slot=\"feedback-page\"] section"
     },
     "compareOffset": true,
     "residues": [

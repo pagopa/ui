@@ -5,7 +5,7 @@ import { Button } from "@/components/primitives/button"
 import { Heading, type HeadingTag } from "@/components/primitives/heading"
 import { cn } from "@/lib/cn"
 
-export interface IdentityProviderPickerOption {
+export interface IDModuleProviderOption {
   id: string
   label: string
   logo: ReactNode
@@ -15,22 +15,22 @@ export interface IdentityProviderPickerOption {
   onClick?: ComponentProps<"a">["onClick"]
 }
 
-export interface IdentityProviderPickerProps {
+export interface IDModuleProps {
   title: string
   closeLabel: string
   onClose: () => void
-  providers: readonly IdentityProviderPickerOption[]
+  providers: readonly IDModuleProviderOption[]
   device?: "mobile" | "desktop"
   /** Heading tag of the module title. @default "h2" */
   titleAs?: HeadingTag
   className?: string
 }
 
-type IdentityProviderPickerRowProps = IdentityProviderPickerOption & {
+type IDModuleProviderProps = IDModuleProviderOption & {
   className?: string
 }
 
-function IdentityProviderPickerRow({
+function IDModuleProvider({
   id,
   label,
   logo,
@@ -39,7 +39,7 @@ function IdentityProviderPickerRow({
   rel,
   onClick,
   className,
-}: IdentityProviderPickerRowProps) {
+}: IDModuleProviderProps) {
   return (
     <a
       className={cn(
@@ -69,7 +69,7 @@ function IdentityProviderPickerRow({
   )
 }
 
-function IdentityProviderPickerView({
+function IDModuleView({
   title,
   closeLabel,
   onClose,
@@ -77,7 +77,7 @@ function IdentityProviderPickerView({
   device = "mobile",
   titleAs = "h2",
   className,
-}: IdentityProviderPickerProps) {
+}: IDModuleProps) {
   const titleId = useId()
 
   return (
@@ -128,7 +128,7 @@ function IdentityProviderPickerView({
       >
         {providers.map((provider) => (
           <li className="min-w-0" key={provider.id}>
-            <IdentityProviderPickerRow {...provider} />
+            <IDModuleProvider {...provider} />
           </li>
         ))}
       </ul>
@@ -136,12 +136,6 @@ function IdentityProviderPickerView({
   )
 }
 
-/**
- * Provider chooser for digital identity sign-in: a labelled section listing the
- * caller's providers as links, with a close action and an optional desktop step.
- *
- * Figma: IDModule (node 731:20386)
- */
-const IdentityProviderPicker = Object.assign(IdentityProviderPickerView, { Provider: IdentityProviderPickerRow })
+const IDModule = Object.assign(IDModuleView, { Provider: IDModuleProvider })
 
-export { IdentityProviderPicker }
+export { IDModule }

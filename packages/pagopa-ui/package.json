@@ -34,9 +34,7 @@
     "test": "vitest --run",
     "test:unit": "vitest --run --project unit",
     "format": "oxfmt",
-    "format:check": "oxfmt --check",
-    "api:check": "api-extractor run",
-    "api:update": "api-extractor run --local"
+    "format:check": "oxfmt --check"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
@@ -50,7 +48,6 @@
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
-    "@microsoft/api-extractor": "^7.59.4",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
