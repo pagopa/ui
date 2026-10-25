@@ -2,12 +2,12 @@ name: Deep checks
 
 # The reusable DX code review (validate.yaml) runs the static checks and the
 # unit project. The suites that need a browser run here, in three parallel jobs:
-# the story project with the v8 coverage gates on Chromium, the WebKit pass, and
-# the packed artifact consumer. A pull request proves the coverage gates and
-# WebKit; the nightly run adds Firefox and is the only place where the three
-# engines meet. The story projects in three engines with the gates and the
-# packed artifact consumer stay the same checks, split by engine so the wait is
-# the longest job instead of their sum.
+# the story project with the v8 coverage gates and the accessibility conditions
+# on Chromium, the WebKit pass on the stories alone, and the packed artifact
+# consumer. A pull request proves those three on Chromium; the nightly run adds
+# Firefox and is the only place where the engines meet, for the stories and the
+# packed artifact alike. Same checks, split by engine so the wait is the longest
+# job instead of their sum.
 #
 # The release is not a change: the Version Packages pull request carries the
 # version, the changelog and the consumed version plan, and the commit it lands
@@ -126,14 +126,27 @@ jobs:
         with:
           fetch-depth: 0
 
+      # A pull request proves the packed artifact on Chromium; the nightly and
+      # dispatched runs prove it on all three engines.
+      - name: Choose the engines of this event
+        id: engines
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ] || [ "${{ github.event_name }}" = "push" ]; then
+            echo "browsers=chromium" >> "$GITHUB_OUTPUT"
+          else
+            echo "browsers=chromium firefox webkit" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Setup
         uses: ./.github/actions/setup
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          browsers: chromium firefox webkit
+          browsers: ${{ steps.engines.outputs.browsers }}
 
       - name: Packed artifact (affected)
         if: github.event_name == 'pull_request' || github.event_name == 'push'
+        env:
+          LIBRARY_ENGINES: chromium
         run: pnpm nx affected -t library:check
 
       - name: Packed artifact (everything)
