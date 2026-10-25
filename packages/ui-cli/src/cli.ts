@@ -11,6 +11,7 @@ import { runDocLinks } from "./checks/doc-links.ts"
 import { runFoundation } from "./checks/foundation.ts"
 import { runImportLayers } from "./checks/import-layers.ts"
 import { runLibraryCheck } from "./checks/library.ts"
+import { runPublicTokens } from "./checks/public-tokens.ts"
 import { runTextDefaults } from "./checks/text-defaults.ts"
 import { runPrepareTypes } from "./commands/prepare-types.ts"
 import { cli as runDevices } from "./figma/devices.ts"
@@ -97,6 +98,17 @@ const css = defineCommand({
 const library = defineCommand({
   meta: { name: "library", description: "Verify the packed artifact in an isolated app" },
   run: execute(() => runLibraryCheck()),
+})
+
+const publicTokens = defineCommand({
+  meta: {
+    name: "public-tokens",
+    description: "Compare the public token list with the generated tokens",
+  },
+  args: {
+    write: { type: "boolean", default: false, description: "Record the list you accept" },
+  },
+  run: ({ args }) => execute(() => runPublicTokens(args.write ? ["--write"] : []))(),
 })
 
 const textDefaults = defineCommand({
@@ -276,6 +288,7 @@ const check = defineCommand({
     docs,
     css,
     library,
+    "public-tokens": publicTokens,
     "text-defaults": textDefaults,
     figma: figmaCheck,
     tokens: tokensCheck,
