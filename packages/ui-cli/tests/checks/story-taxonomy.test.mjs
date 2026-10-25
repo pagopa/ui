@@ -41,7 +41,7 @@ const COMPONENT_SECTIONS = new Set([
   "Separator",
   "Tabs",
   // Page-level Figma templates (`◆ KEY TEMPLATE`): the source sets are full
-  // pages, not components, and they are implemented as the templates layer.
+  // pages, not components, and they are implemented as Storybook templates.
   "Templates",
 ])
 

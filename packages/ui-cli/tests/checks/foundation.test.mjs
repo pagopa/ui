@@ -123,6 +123,53 @@ test("a registered exception is exempt and reported", () => {
   )
 })
 
+test("the Storybook page templates are scanned too", () => {
+  fixture(
+    ({ run }) => {
+      const result = run("--measure")
+      assert.equal(result.status, 0, result.stderr)
+      const measured = JSON.parse(result.stdout)
+      assert.equal(measured.raw["hex-color"], 1)
+      assert.equal(measured.raw["tailwind-text-size"], 1)
+    },
+    {
+      files: {
+        "apps/storybook/src/templates/Demo.tsx":
+          'export const demo = <p className="text-sm" style={{ color: "#ffffff" }} />\n',
+      },
+    },
+  )
+  fixture(
+    ({ run }) => {
+      const result = run("--measure")
+      assert.equal(result.status, 0, result.stderr)
+      const measured = JSON.parse(result.stdout)
+      assert.equal(measured.counts["hex-color"], 0)
+      assert.equal(measured.raw["hex-color"], 1)
+      const check = run()
+      assert.equal(check.status, 0, check.stderr)
+    },
+    {
+      files: {
+        "apps/storybook/src/templates/Demo.tsx":
+          'export const demo = <p className="text-body" style={{ color: "#ffffff" }} />\n',
+      },
+      exceptions: {
+        schemaVersion: 1,
+        exceptions: [
+          {
+            rule: "hex-color",
+            file: "apps/storybook/src/templates/Demo.tsx",
+            match: "#ffffff",
+            nodeId: "1:2",
+            reason: "registered for the test",
+          },
+        ],
+      },
+    },
+  )
+})
+
 test("a stale exception fails", () => {
   fixture(
     ({ run }) => {
