@@ -35,7 +35,7 @@ type MenuAction =
   | { onSelect: (checked?: boolean) => void; disabled?: boolean }
   | { disabled: true; onSelect?: never }
 
-type DropDownItem =
+type DropdownItem =
   | (DropDownItemBase & {
       type?: "default"
       multiple?: false
@@ -61,7 +61,7 @@ type DropDownItem =
       onCheckedChange?: never
     } & MenuAction)
 
-function assertMenuActions(items: DropDownItem[]) {
+function assertMenuActions(items: DropdownItem[]) {
   for (const item of items) {
     if (item.multiple && item.type !== "cta") {
       const onCheckedChange: unknown = item.onCheckedChange
@@ -91,7 +91,7 @@ function MenuItems({
   multiselect = false,
   sourceAligned = false,
 }: {
-  items: DropDownItem[]
+  items: DropdownItem[]
   label?: string
   dividers?: boolean
   tone?: "default" | "primary"
@@ -261,7 +261,13 @@ function DropDownEmpty({
   )
 }
 
-function DropDown({
+/**
+ * Rich action and option menu behind a labelled trigger: single or multiple
+ * selection, second-level rows, caller actions and a loading/empty panel.
+ *
+ * Figma: DropDown (node 616:3864)
+ */
+function Dropdown({
   triggerLabel,
   items,
   label,
@@ -279,7 +285,7 @@ function DropDown({
   /** Visible label of the trigger button. */
   triggerLabel: React.ReactNode
   /** Ordinary rows; CTA/back rows keep their action semantics. */
-  items: DropDownItem[]
+  items: DropdownItem[]
   /** Accessible name of the popup list. */
   label?: string
   /** Source CTA row of the selection list. */
@@ -362,15 +368,21 @@ function DropDown({
   )
 }
 
-function MenuDropDown({
+/**
+ * Icon menu for secondary actions, with the same rows as `Dropdown` and a
+ * dedicated accessible name on the trigger.
+ *
+ * Figma: MenuDropDown (node 3262:40787)
+ */
+function MenuDropdown({
   accessibleLabel = "Apri menu",
   items,
   label,
 }: {
   /** Accessible name of the icon trigger. @default "Apri menu" */
   accessibleLabel?: string
-  /** Rows of the menu, with the same item contract as `DropDown`. */
-  items: DropDownItem[]
+  /** Rows of the menu, with the same item contract as `Dropdown`. */
+  items: DropdownItem[]
   /** Accessible name of the popup list. */
   label?: string
 }) {
@@ -389,4 +401,4 @@ function MenuDropDown({
   )
 }
 
-export { DropDown, MenuDropDown, type DropDownItem }
+export { Dropdown, MenuDropdown, type DropdownItem }

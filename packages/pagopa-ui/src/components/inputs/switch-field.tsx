@@ -1,5 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
+import { useLinkComponent } from "@/lib/ui-provider"
 
 import { Switch } from "@/components/primitives/switch"
 
@@ -35,6 +36,7 @@ function SwitchField({
     /** Source "availability no" state: never affects the choice. */
     unavailable?: boolean
   }) {
+  const Link = useLinkComponent()
   const ids = useFieldIds(id)
   const state = { description, error, success }
   const controlsDisabled = disabled || loading
@@ -108,7 +110,7 @@ function SwitchField({
           </div>
         ) : null}
         {learnMore ? (
-          <a
+          <Link
             href={learnMore.href}
             className={cn(
               "relative mt-1 flex w-fit min-w-0 max-w-full items-center rounded-sm text-label-mini-sb text-primary underline underline-offset-2 after:absolute after:-inset-y-3 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring",
@@ -116,7 +118,7 @@ function SwitchField({
             )}
           >
             {learnMore.label}
-          </a>
+          </Link>
         ) : null}
       </div>
     </div>

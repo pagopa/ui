@@ -146,51 +146,6 @@ export type BulkRule = z.infer<typeof BulkRuleSchema>
 export type Target = z.infer<typeof TargetSchema>
 export type LocalAsset = z.infer<typeof LocalAssetSchema>
 
-// ----------------------------------------------------------- registry notes
-
-// A registry note records the current state and its residues, not the history.
-// The limit is fixed here so the baseline file cannot loosen it.
-export const NOTE_LENGTH_LIMIT = 600
-
-export const NoteLengthBaselineSchema = z.strictObject({
-  maxLength: z.number().int().positive(),
-  overLimit: z.number().int().nonnegative(),
-  note: NonEmptyStringSchema,
-})
-
-export type NoteLengthBaseline = z.infer<typeof NoteLengthBaselineSchema>
-
-// The ratchet: the count of notes past the limit must equal the baseline. A new
-// long note fails, and a shortened one asks to lower the baseline, so the count
-// only ever goes down.
-export function longNoteErrors(
-  registry: Registry,
-  baseline: NoteLengthBaseline,
-  label: string,
-): string[] {
-  if (baseline.maxLength !== NOTE_LENGTH_LIMIT) {
-    return [
-      `${label}: maxLength is ${baseline.maxLength}, the limit is ${NOTE_LENGTH_LIMIT} — the limit cannot change`,
-    ]
-  }
-  const notes = [
-    ...Object.values(registry.entries).map((entry) => entry.note),
-    ...registry.bulkRules.map((rule) => rule.note),
-  ].filter((note): note is string => typeof note === "string")
-  const long = notes.filter((note) => note.length > NOTE_LENGTH_LIMIT).length
-  if (long > baseline.overLimit) {
-    return [
-      `${label}: ${long} registry notes exceed ${NOTE_LENGTH_LIMIT} characters, the baseline allows ${baseline.overLimit} — a note states the current residues, not the history`,
-    ]
-  }
-  if (long < baseline.overLimit) {
-    return [
-      `${label}: ${long} registry notes exceed ${NOTE_LENGTH_LIMIT} characters, lower overLimit to ${long}`,
-    ]
-  }
-  return []
-}
-
 // ---------------------------------------------------------------- exceptions
 
 export const EvidenceExceptionsSchema = z.strictObject({

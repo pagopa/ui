@@ -102,8 +102,9 @@ token deliberately.
 ### Typography
 
 - **The pinned source's `500` is the Semibold face (CSS 600), `600` is Bold
-  (700).** The bundle has no 500 face and `font-synthesis: none`; the foundation
-  check rejects `font-medium` (`font-weight`).
+  (700).** The bundle has no 500 face and `font-synthesis: none`, so
+  `font-medium` renders Regular: always suspect it. A test asserting
+  `fontWeight === "500"` freezes the wrong face; assert the mapped value.
 - A type-scale token carries its own weight: no weight override on top of it.
 - Widths measured under an old font substitute are history: re-measure, never
   re-approve.
@@ -145,8 +146,8 @@ filled is a delta, not a variant.
 
 ### Paint
 
-- Elevation comes only from the Figma shadow scale; the foundation check rejects
-  Tailwind shadows (`shadow-scale`).
+- Elevation comes only from the Figma shadow scale, never Tailwind
+  `shadow-md/lg/xl`.
 - Never apply a source group's 50% opacity to text; fade only the artwork.
 - Round source geometry to the nearest existing token and record the delta.
 - When a mockup hides or overflows its own layers, compare against the visible

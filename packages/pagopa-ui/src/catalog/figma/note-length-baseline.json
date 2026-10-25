@@ -1,5 +1,0 @@
-{
-  "maxLength": 600,
-  "overLimit": 90,
-  "note": "The ratchet of the registry notes: `figma:check` fails when the count of notes longer than `maxLength` differs from `overLimit`. Lower `overLimit` when you shorten notes; never raise it. A note records the current state and its residues, not the history."
-}

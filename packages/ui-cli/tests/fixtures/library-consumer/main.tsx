@@ -18,10 +18,10 @@ import {
   DatePickerField,
   Dialog,
   Drawer,
-  figmaIconNames,
+  iconNames,
   Image,
   InputChip,
-  MenuDropDown,
+  MenuDropdown,
   MultiSelectField,
   PagoPAIcon,
   PagoPAPictogram,
@@ -43,7 +43,7 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-  TextAreaField,
+  TextareaField,
   type DatePickerRange,
 } from "__PAGOPA_UI_PACKAGE__"
 import "__PAGOPA_UI_PACKAGE__/styles.css"
@@ -83,7 +83,7 @@ const sourceIconVariants = [
   variants: NonNullable<React.ComponentProps<typeof PagoPAIcon>["variant"]>[]
 }[]
 
-const iconCases = figmaIconNames.flatMap((name) => {
+const iconCases = iconNames.flatMap((name) => {
   const variants = sourceIconVariants.find((entry) => entry.name === name)?.variants ?? [undefined]
   return variants.map((variant) => ({ name, variant }))
 })
@@ -150,7 +150,7 @@ function ConsumerTable({ onMenuAction }: { onMenuAction: (action: string) => voi
         rows={empty ? [] : rows}
         rowActions={(row) =>
           row.id === "tari" ? (
-            <MenuDropDown
+            <MenuDropdown
               accessibleLabel="Apri azioni del servizio"
               label="Azioni del servizio"
               items={[
@@ -784,7 +784,7 @@ function ConsumerFocusControls() {
   const [schoolVisible, setSchoolVisible] = React.useState(true)
   return (
     <section aria-label="Controlli di tastiera" style={{ minWidth: 0, display: "grid", gap: 16 }}>
-      <TextAreaField label="Note della preferenza" />
+      <TextareaField label="Note della preferenza" />
       <DatePickerField label="Data della preferenza" defaultValue="2026-05-11" />
       {schoolVisible ? (
         <InputChip onRemove={() => setSchoolVisible(false)}>Servizi scolastici</InputChip>
