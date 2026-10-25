@@ -1,7 +1,7 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 
-import { CorrectionNotValid, CorrectionValid } from "@/components/content"
+import { CorrectionTag } from "@/components/content"
 
 /**
  * Timeline micro-event: the correction tag for the current status plus the
@@ -27,7 +27,7 @@ function MicroEvent({
     <div className={cn("flex items-start py-2 pl-7", className)}>
       {time ? <span className="shrink-0 text-label-mini text-muted-foreground">{time}</span> : null}
       <div className="flex min-w-0 flex-col gap-1">
-        {invalid ? <CorrectionNotValid label={label} /> : <CorrectionValid label={label} />}
+        {invalid ? <CorrectionTag label={label} status="not-valid" /> : <CorrectionTag label={label} status="valid" />}
         <p className="text-label-mini text-foreground break-words">{title}</p>
       </div>
     </div>

@@ -5847,8 +5847,8 @@
   {
     "id": "9676-5453-default",
     "nodeId": "9676:5453",
-    "export": "CorrectionValid",
-    "storyId": "components-content-correctionvalid--source",
+    "export": "CorrectionTag",
+    "storyId": "components-content-correctiontag--valid-source",
     "state": "default",
     "width": 166,
     "height": 30,
@@ -5879,8 +5879,8 @@
   {
     "id": "9676-5455-default",
     "nodeId": "9676:5455",
-    "export": "CorrectionNotValid",
-    "storyId": "components-content-correctionnotvalid--source",
+    "export": "CorrectionTag",
+    "storyId": "components-content-correctiontag--not-valid-source",
     "state": "default",
     "width": 162,
     "height": 30,
