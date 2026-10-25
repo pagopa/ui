@@ -151,6 +151,9 @@ export function verifyArtifactContract(root: string): ArtifactContract {
     fs.existsSync("dist/licenses/artwork.txt"),
     "missing the packaged artwork provenance notice",
   )
+  for (const file of ["dist/tokens.css", "dist/tokens.js", "dist/types/tokens.d.ts"]) {
+    assert.ok(fs.existsSync(file), `missing ${file} — the public token entries must ship`)
+  }
   const iconManifest = parseSchema(
     IconManifestSchema,
     JSON.parse(fs.readFileSync(artworkPath("src/assets/figma-icons/manifest.json"), "utf8")),

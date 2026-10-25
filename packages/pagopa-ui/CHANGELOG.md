@@ -12,6 +12,8 @@
 
 ### Added
 
+- `@pagopa/ui/tokens.css` and `@pagopa/ui/tokens`: the public, read-only token
+  contract.
 - `UIProvider` gains `locale`, `messages` and `calendarLocale`, and the package
   ships the default dictionary (`itMessages`) and a complete English one
   (`enMessages`) with the `Messages` type. Every text default reads from the

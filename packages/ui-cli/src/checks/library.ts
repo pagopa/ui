@@ -76,6 +76,7 @@ export async function runLibraryCheck(): Promise<number> {
     exports: z.array(z.string()),
     undefinedExports: z.array(z.string()),
     sharedReact: z.boolean(),
+    tokens: z.number(),
     rendered: z.string(),
     renderedCalendar: z.string(),
     renderedProduct: z.string(),
@@ -90,6 +91,7 @@ export async function runLibraryCheck(): Promise<number> {
   const toolingVersion = (name: string): string =>
     JSON.parse(fs.readFileSync(tooling.resolve(`${name}/package.json`), "utf8")).version
   const packageSpecifier = JSON.stringify(manifest.name)
+  const tokensSpecifier = JSON.stringify(`${manifest.name}/tokens`)
   const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-library-"))
   const consumer = path.join(temporary, "consumer")
   // The preview server comes from the audited package's own Vite: the consumer is
@@ -165,6 +167,7 @@ export async function runLibraryCheck(): Promise<number> {
             "-e",
             `
     import * as mod from ${packageSpecifier}
+    import * as tokens from ${tokensSpecifier}
     import * as React from "react"
     import { createRequire } from "node:module"
     import assert from "node:assert/strict"
@@ -221,6 +224,7 @@ export async function runLibraryCheck(): Promise<number> {
       exports: Object.keys(mod),
       undefinedExports: Object.keys(mod).filter((name) => typeof mod[name] === "undefined"),
       sharedReact: app.resolve("react") === library.resolve("react"),
+      tokens: tokens.figmaTokens.length,
       rendered: renderToString(React.createElement(mod.Button, null, "Server rendered button")),
       renderedCalendar: renderToString(React.createElement(mod.DatePicker, {
         value: new Date(2026, 4, 11),
@@ -258,6 +262,7 @@ export async function runLibraryCheck(): Promise<number> {
     )
     assert.deepEqual(imported.undefinedExports, [], "undefined packed exports")
     assert.equal(imported.sharedReact, true, "the library uses a different React instance")
+    assert.ok(imported.tokens > 0, "the packed token entry must export the typed token list")
     assert.match(imported.rendered, /<button[^>]*>Server rendered button<\/button>/)
     assert.match(imported.renderedCalendar, /role="grid"/, "source calendar must support SSR")
     assert.match(

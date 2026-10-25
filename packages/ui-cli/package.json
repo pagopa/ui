@@ -29,6 +29,7 @@
     "figma:parity:capture": "node src/cli.ts parity capture",
     "figma:parity:report": "node src/cli.ts parity report",
     "tokens:check": "node src/cli.ts tokens check",
+    "tokens:public:check": "node src/cli.ts check public-tokens",
     "icons:check": "node src/cli.ts assets icons check",
     "pictograms:check": "node src/cli.ts assets pictograms check",
     "assets:check": "node src/cli.ts check assets",
