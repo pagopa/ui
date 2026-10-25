@@ -18,10 +18,10 @@ const REMOVED_LAYERS = new Set([
   "figma-primitives",
   "ui",
   "screens",
+  "templates",
 ])
 const LIBRARY_BOUNDARY = ["src/catalog"]
-// Third-party runtimes are imported only from the primitives layer; the demo
-// layer (templates) is not shipped and stays free.
+// Third-party runtimes are imported only from the primitives layer.
 const THIRD_PARTY = ["@base-ui/react", "react-day-picker", "lucide-react"]
 const FAMILIES = [
   "inputs",
@@ -47,7 +47,6 @@ function allowedLayers(): Map<string, Set<string>> {
     ["primitives", new Set(["primitives", "icons"])],
     ["icons", new Set(["icons", "primitives"])],
     ...FAMILIES.map((family) => [family, new Set(LOWER_LAYERS)] as const),
-    ["templates", new Set([...LOWER_LAYERS, "templates"])],
   ])
 }
 
@@ -95,7 +94,7 @@ export function runImportLayers(): number {
       )
       if (dependency && file.startsWith("src/components/")) {
         const layer = category(file)
-        if (layer !== "primitives" && layer !== "templates") {
+        if (layer !== "primitives") {
           errors.push(`${file}: only the primitives layer may import "${dependency}"`)
         }
       }
