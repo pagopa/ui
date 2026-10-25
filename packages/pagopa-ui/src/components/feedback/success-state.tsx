@@ -3,7 +3,13 @@ import { cn } from "@/lib/cn"
 
 import { StatePanel, type StateProps } from "./state-panel"
 
-function OKState({ className, ...props }: StateProps) {
+/**
+ * Positive outcome: title, description and caller-owned native actions around
+ * the Completed pictogram.
+ *
+ * Figma: OKState (node 733:22841)
+ */
+function SuccessState({ className, ...props }: StateProps) {
   return (
     <StatePanel
       {...props}
@@ -25,4 +31,4 @@ function OKState({ className, ...props }: StateProps) {
   )
 }
 
-export { OKState }
+export { SuccessState }

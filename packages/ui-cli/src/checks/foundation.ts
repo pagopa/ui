@@ -41,13 +41,6 @@ export const RULES = {
     /\b(?:bg|text|border|ring|outline|fill|stroke|from|to|via|divide|decoration|accent|caret)-(?:black|white|(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-\d{2,3})\b/g,
   "off-scale-spacing":
     /\b-?(?:p|px|py|pt|pr|pb|pl|m|mx|my|mt|mr|mb|ml|gap|gap-x|gap-y|space-x|space-y)-(?:\d+(?:\.\d+)?|px)\b/g,
-  // Elevation comes only from the Figma shadow tokens, never from Tailwind.
-  "shadow-scale": /\bshadow-(?:2xs|xs|sm|md|lg|xl|2xl)\b/g,
-  // A centred scrollable list loses its start beyond the scroll origin. Both
-  // alternatives stay inside one class string; `justify-center(?!-)` spares the
-  // safe form.
-  "center-overflow":
-    /justify-center(?!-)[^"\n]*overflow-(?:x-|y-)?(?:auto|scroll)|overflow-(?:x-|y-)?(?:auto|scroll)[^"\n]*justify-center(?!-)/g,
 } as const
 
 export type RuleName = keyof typeof RULES

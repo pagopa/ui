@@ -1,5 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
+import { useLinkComponent } from "@/lib/ui-provider"
 
 import { ChevronDown } from "@/components/primitives/icons"
 import { Badge } from "@/components/primitives/badge"
@@ -107,6 +108,7 @@ function NavLinks({
   expandLabel?: (label: string) => string
   collapseLabel?: (label: string) => string
 }) {
+  const Link = useLinkComponent()
   return (
     <>
       <ul>
@@ -140,12 +142,12 @@ function NavLinks({
               <span className="text-label-mini text-muted-foreground">{profile.title}</span>
               <span className="truncate text-body-big-sb text-foreground">{profile.name}</span>
               {profile.action ? (
-                <a
+                <Link
                   href={profile.action.href}
                   className="w-fit text-label-mini text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                 >
                   {profile.action.label}
-                </a>
+                </Link>
               ) : null}
             </div>
           </div>
@@ -169,6 +171,7 @@ function NavRow({
   expandLabel: (label: string) => string
   collapseLabel: (label: string) => string
 }) {
+  const Link = useLinkComponent()
   const hasChildren = Boolean(item.children?.length)
   const [open, setOpen] = React.useState(() => Boolean(item.children?.some(hasCurrentItem)))
   const labelsHidden = condensed
@@ -184,7 +187,7 @@ function NavRow({
           item.current && "border-primary bg-selection-soft text-primary",
         )}
       >
-        <a
+        <Link
           href={item.href}
           aria-current={item.current ? "page" : undefined}
           className={cn(
@@ -243,7 +246,7 @@ function NavRow({
               {item.chip}
             </span>
           ) : null}
-        </a>
+        </Link>
         {hasChildren ? (
           <button
             type="button"

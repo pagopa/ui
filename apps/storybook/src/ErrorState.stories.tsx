@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, within } from "storybook/test"
 
-import { KOState } from "@/components/feedback/ko-state"
+import { ErrorState } from "@/components/feedback/error-state"
 import { Button } from "@/components/primitives/button"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 const meta = {
-  title: "Components/Feedback/KOState",
-  component: KOState,
+  title: "Components/Feedback/ErrorState",
+  component: ErrorState,
   args: {
     title: "Pagamento non riuscito",
     description: "Non è stato effettuato alcun addebito.",
@@ -25,9 +25,10 @@ const meta = {
         component:
           "Negative outcome: it uses the Maintenance pictogram, keeps native actions and, with `code`, shows a copyable row; the copy and text actions keep their accessible targets.",
       },
+      subtitle: "Figma: KOState",
     },
   },
-} satisfies Meta<typeof KOState>
+} satisfies Meta<typeof ErrorState>
 
 export default meta
 type Story = StoryObj<typeof meta>
