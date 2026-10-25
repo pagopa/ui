@@ -1,209 +1,29 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { expect, within } from "storybook/test"
+import { expect, userEvent, waitFor, within } from "storybook/test"
 
-import {
-  figmaCoverageCounts,
-  figmaCoverageGroups,
-  figmaDeviceCoverage,
-  figmaDeviceCoverageCounts,
-  figmaStatusOrder,
-  unaccountedFigmaNodes,
-  type FigmaCoverageRow,
-} from "@/catalog/figma/coverage"
-import { FIGMA_DESIGN_URL, figmaNodeUrl } from "@/catalog/figma/file"
-import { figmaInventoryMeta } from "@/catalog/figma/registry"
-import storyTitlesData from "@/catalog/figma/story-titles.json"
-import { Badge } from "@/components/primitives/badge"
+import { FigmaInventoryDashboard } from "./figma-inventory/dashboard"
 
-const statusStyles: Record<FigmaCoverageRow["status"], string> = {
-  implemented: "bg-success-soft text-success-foreground",
-  mocked: "bg-warning-soft text-warning-foreground",
-  excluded: "bg-muted text-muted-foreground",
-  pending: "bg-info-soft text-info-foreground",
-  unaccounted: "bg-error-soft text-error-foreground",
-}
-
-function slugify(value: string) {
-  return value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-}
-
-// Storybook derives both halves of a story id from words: the title
-// (`Components/Inputs/TextField`) and the export name (`SourceCase`) become
-// `components-inputs-textfield--source-case`, the identity the parity tooling
-// records in `parity-cases.json`.
-function exportSlug(name: string) {
-  return slugify(
-    name.replace(/([a-z0-9])([A-Z])/g, "$1 $2").replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2"),
-  )
-}
-
-const storyTitles: Record<string, string> = storyTitlesData
-
-// The Storybook page of a mapped node: its first declared story export, or the
-// story's docs page when the registry declares none. A node with no story
-// carries no link.
-function storyUrl(row: FigmaCoverageRow) {
-  const target = row.entry?.target
-  const title = target?.story ? storyTitles[target.story] : undefined
-  if (!title) return null
-  const story = target?.storyExports?.[0]
-  const path = story
-    ? `story/${slugify(title)}--${exportSlug(story)}`
-    : `docs/${slugify(title)}--docs`
-  return `${import.meta.env.BASE_URL}?path=/${path}`
-}
-
-function AccountLabel({ row }: { row: FigmaCoverageRow }) {
-  const { entry, rule, status } = row
-  const detail = entry?.target
-    ? `${entry.target.module.split("/").pop()} · ${entry.target.export}`
-    : (entry?.reason ?? entry?.note ?? rule?.reason ?? rule?.evidence ?? null)
-
-  return (
-    <>
-      <span className="mt-1 block text-sm break-all text-muted-foreground">
-        {row.node.type} · {row.node.nodeId}
-      </span>
-      <Badge className={`mt-3 ${statusStyles[status]}`}>{status}</Badge>
-      {detail ? (
-        <span className="mt-2 block text-xs break-all text-muted-foreground">{detail}</span>
-      ) : null}
-    </>
-  )
-}
-
-// The device dimension of the row (RA9): the devices the set declares against
-// the cases the corpus commits. Only `implemented`/`pending` rows show it — a
-// `mocked`/`excluded` node needs no case, and a source without a device axis is
-// not in the join at all.
-function DeviceLabel({ row }: { row: FigmaCoverageRow }) {
-  const coverage = figmaDeviceCoverage.get(row.node.nodeId)
-  if (!coverage || (row.status !== "implemented" && row.status !== "pending")) return null
-  return (
-    <span className="mt-2 block text-xs text-muted-foreground" data-slot="device-coverage">
-      devices {coverage.declared.join(", ")} ·{" "}
-      {coverage.missing.length ? (
-        <span className="text-error-foreground">missing {coverage.missing.join(", ")}</span>
-      ) : (
-        <span className="text-success-foreground">covered</span>
-      )}
-    </span>
-  )
-}
-
+// The inventory is a documentation surface, not a product page: it reads the
+// committed Figma snapshot and maps every published node to its implementation.
 function FigmaInventory() {
-  return (
-    <main className="w-[min(76rem,calc(100vw-2rem))] space-y-10 p-6">
-      <header className="max-w-3xl">
-        <p className="font-semibold text-primary">Figma alignment registry</p>
-        <h1 className="mt-2 text-hero">Published components</h1>
-        <p className="mt-2 text-muted-foreground">
-          {figmaInventoryMeta.total} published nodes found in the Figma file; the node →
-          implementation mapping lives in <code>src/catalog/figma/registry.json</code>, together
-          with <code>inventory.json</code> (generated). Last sync: {figmaInventoryMeta.syncedAt}.
-        </p>
-        <p className="mt-2 text-sm text-muted-foreground">
-          File:{" "}
-          <a
-            className="rounded-sm text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-            href={FIGMA_DESIGN_URL}
-            rel="noreferrer"
-            target="_blank"
-          >
-            {figmaInventoryMeta.fileKey}
-          </a>
-        </p>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Every card opens the Figma node; where the registry maps one, it opens the component's
-          Storybook page too.
-        </p>
-        <p className="mt-4 flex flex-wrap gap-2 text-sm">
-          {figmaStatusOrder.map((status) => (
-            <Badge key={status} className={statusStyles[status]}>
-              {status} {figmaCoverageCounts[status]}
-            </Badge>
-          ))}
-        </p>
-        <p className="mt-4 text-sm text-muted-foreground">
-          Devices (<code>implemented</code>/<code>pending</code> nodes):{" "}
-          <strong>
-            {figmaDeviceCoverageCounts.covered}/{figmaDeviceCoverageCounts.declared}
-          </strong>{" "}
-          cases covered · {figmaDeviceCoverageCounts.missing} missing across{" "}
-          {figmaDeviceCoverageCounts.nodes} sets with an axis. The column joins the axis declared by
-          the inventory with the cases committed in <code>src/catalog/figma/parity-cases.json</code>
-          {". A source with no device axis needs no case, and neither does a "}
-          <code>mocked</code>/<code>excluded</code> node, while the missing devices are the work
-          list of <code>pnpm figma:parity:queue --uncovered</code>.
-        </p>
-        {unaccountedFigmaNodes.length ? (
-          <p role="alert" className="mt-3 text-destructive">
-            {unaccountedFigmaNodes.length} nodes do not have a registry entry yet.
-          </p>
-        ) : (
-          <p role="status" className="mt-3 text-success-foreground">
-            Every published node is covered by a registry entry or a page rule.
-          </p>
-        )}
-      </header>
-
-      {figmaCoverageGroups.map(([pageName, rows]) => {
-        const sectionId = `group-${slugify(pageName)}`
-        return (
-          <section key={pageName} aria-labelledby={sectionId}>
-            <div className="flex flex-wrap items-center gap-3">
-              <h2 id={sectionId} className="text-h3">
-                {pageName}
-              </h2>
-              <Badge variant="secondary">{rows.length}</Badge>
-            </div>
-            <div className="mt-4 grid gap-3 tablet:grid-cols-2 desktop:grid-cols-3">
-              {rows.map((row) => {
-                const story = storyUrl(row)
-                return (
-                  <article key={row.node.nodeId} className="rounded-lg border p-4">
-                    <a
-                      className="rounded-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-                      href={figmaNodeUrl(row.node.nodeId)}
-                      rel="noreferrer"
-                      target="_blank"
-                    >
-                      {row.node.name}
-                    </a>
-                    <AccountLabel row={row} />
-                    <DeviceLabel row={row} />
-                    {story ? (
-                      <a
-                        className="mt-3 inline-flex items-center gap-1 rounded-sm text-sm font-semibold text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-                        href={story}
-                        rel="noreferrer"
-                        target="_blank"
-                        aria-label={`${row.node.name} in Storybook`}
-                      >
-                        Storybook{" "}
-                        <span aria-hidden="true" className="text-xs">
-                          ↗
-                        </span>
-                      </a>
-                    ) : null}
-                  </article>
-                )
-              })}
-            </div>
-          </section>
-        )
-      })}
-    </main>
-  )
+  return <FigmaInventoryDashboard />
 }
 
 const meta = {
   title: "Foundations/Figma inventory",
   component: FigmaInventory,
-  parameters: { layout: "fullscreen" },
+  parameters: {
+    layout: "fullscreen",
+    docs: {
+      description: {
+        component: `Every published Figma node with its registry status, variant matrix and parity cases, rendered as a filterable dashboard with an inspector drawer.
+
+The data is committed: \`inventory.json\` (generated), \`registry.json\` (reviewed), \`parity-cases.json\` (the case corpus) and \`story-titles.json\`. The **Area** filter is derived from the registry target module folder; the status filter uses the registry's own statuses. There is no per-component mapping to maintain: a new folder or status appears from the data. Nothing on the page calls Figma at runtime.
+
+Refresh the snapshot with \`pnpm nx run pagopa-ui-cli:figma:plan\` and \`pnpm nx run pagopa-ui-cli:figma:triage\`, then review the delta.`,
+      },
+    },
+  },
   // A catalogue of other stories: it changes whenever any of them does.
   tags: ["no-visual"],
 } satisfies Meta<typeof FigmaInventory>
@@ -212,9 +32,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const PublishedComponents: Story = {
-  // Reflow exemption: fixture pinned at the source width, not a product surface.
   parameters: {
-    a11yContract: { reflow: false },
     // The generated inventory (353 cards) exceeds Chromatic's 25,000,000px
     // capture cap at every configured viewport (1168x31,472 on desktop).
     // Chromatic skips the snapshot and its interaction run; the browser suite
@@ -223,26 +41,93 @@ export const PublishedComponents: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
+
     function card(nodeId: string) {
-      const target = canvas.getByText(new RegExp(nodeId)).closest("article")
+      const target = canvasElement.querySelector<HTMLElement>(`[data-node-id="${nodeId}"]`)
       if (!target) throw new Error(`The story must render a card for ${nodeId}`)
       return target
     }
+
+    await expect(
+      canvas.getByRole("heading", { name: "Published components", level: 1 }),
+    ).toBeVisible()
+    await expect(canvas.getByText(/Every published node is covered/)).toBeVisible()
+
+    // Search lands on a node that is not on the first page: a mocked demo that
+    // shows its raw registry status, no device column (a mock needs no case)
+    // and no Storybook page (it maps none).
+    const search = canvas.getByRole("searchbox", { name: "Search components" })
+    await userEvent.type(search, "Form Wizard")
+    await expect(canvas.getByText("1 of 353 components")).toBeVisible()
     const demo = card("1154:4493")
-    await expect(within(demo).getByText("mocked")).toBeVisible()
+    await expect(within(demo).getByText("Mocked")).toBeVisible()
     await expect(
       within(demo).getByText(/TemplateComponents\.tsx · FormWizardTemplate/),
     ).toBeVisible()
-    // RA9: the device column joins the inventory's axis with the committed
-    // cases. A mocked node needs no case (the premise above), while an
-    // implementation with a declared axis shows its devices.
     expect(demo.querySelector('[data-slot="device-coverage"]')).toBeNull()
-    // A mocked demo maps no story, so its card carries no Storybook link.
     expect(within(demo).queryByRole("link", { name: /Storybook/ })).toBeNull()
+
+    // The inspector opens as a modal dialog, exposes the three tabs and
+    // compares the canvas with the code contract.
+    await userEvent.click(
+      within(demo).getByRole("button", { name: "Inspect Form Wizard Template" }),
+    )
+    const dialog = await canvas.findByRole("dialog", { name: "Form Wizard Template" })
+    await expect(within(dialog).getByRole("tab", { name: "Overview" })).toBeVisible()
+    await userEvent.click(within(dialog).getByRole("tab", { name: /Version diff/ }))
+    await expect(within(dialog).getByText("Figma canvas")).toBeVisible()
+    await expect(within(dialog).getByText("Code contract")).toBeVisible()
+    await expect(
+      within(dialog).getByText(
+        "The registry record explains why this node is not compared as shipped.",
+      ),
+    ).toBeVisible()
+    await userEvent.keyboard("{Escape}")
+    await waitFor(() => {
+      expect(canvas.queryByRole("dialog", { name: "Form Wizard Template" })).not.toBeInTheDocument()
+    })
+    await userEvent.click(canvas.getByRole("button", { name: "Clear search" }))
+    await expect(canvas.getByText("353 components")).toBeVisible()
+
+    // The two filters are derived from the data: the area comes from the target
+    // module folder and the status is the registry's own vocabulary.
+    const areaFilter = canvas.getByRole("combobox", { name: "Filter by area" })
+    await userEvent.selectOptions(areaFilter, "Inputs")
+    await expect(canvas.getByText("20 of 353 components")).toBeVisible()
+    await userEvent.selectOptions(areaFilter, "all")
+    const statusGroup = canvas.getByRole("group", { name: "Filter by status" })
+    await userEvent.click(within(statusGroup).getByRole("button", { name: /^Mocked/ }))
+    await expect(canvas.getByText("19 of 353 components")).toBeVisible()
+    await userEvent.click(within(statusGroup).getByRole("button", { name: /^All/ }))
+    await expect(canvas.getByText("353 components")).toBeVisible()
+
+    // A shipped implementation on the first page with a device axis shows the
+    // declared devices and opens its first story export.
     const deviceNode = card("123:4498")
     await expect(within(deviceNode).getByText(/devices mobile, desktop/)).toBeVisible()
     const story = within(deviceNode).getByRole("link", { name: /Storybook/ })
     await expect(story).toBeVisible()
     expect(story.getAttribute("href")).toContain("?path=/story/components-inputs-buttongroup--")
+
+    // The data-dense view is a real table with header cells.
+    await userEvent.click(canvas.getByRole("button", { name: "Table view" }))
+    await expect(canvas.getByRole("table")).toBeVisible()
+    await expect(canvas.getByRole("columnheader", { name: /Figma v/ })).toBeVisible()
+
+    // Search matches across name, page, export and source fields, and clearing
+    // it restores the full inventory in the grid view.
+    await userEvent.click(canvas.getByRole("button", { name: "Grid view" }))
+    await userEvent.type(
+      canvas.getByRole("searchbox", { name: "Search components" }),
+      "ButtonGroup",
+    )
+    await expect(canvas.getByText("3 of 353 components")).toBeVisible()
+    await expect(canvasElement.querySelector('[data-node-id="123:4498"]')).not.toBeNull()
+    await expect(canvasElement.querySelector('[data-node-id="1154:4493"]')).toBeNull()
+    await userEvent.click(canvas.getByRole("button", { name: "Clear search" }))
+    await expect(canvas.getByText("353 components")).toBeVisible()
+    // Leaving the story at the top keeps the docs page readable after the play
+    // has scrolled to the cards and back.
+    window.scrollTo(0, 0)
   },
 }
