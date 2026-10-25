@@ -12,7 +12,7 @@
     "storybook": "node scripts/storybook-dev.mjs",
     "build": "storybook build -o dist",
     "test:stories": "vitest --run",
-    "test:webkit": "vitest --run --mode webkit --project storybook",
+    "test:webkit": "vitest --run --mode webkit",
     "test:coverage": "vitest --run --coverage --mode coverage",
     "typecheck": "tsc -b --force",
     "lint": "oxlint --fix",

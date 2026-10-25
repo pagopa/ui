@@ -3429,8 +3429,8 @@
   {
     "id": "731-20386-desktop-desktop",
     "nodeId": "731:20386",
-    "export": "IDModule",
-    "storyId": "components-composites-idmodule--desktop",
+    "export": "IdentityProviderPicker",
+    "storyId": "components-composites-identityproviderpicker--desktop",
     "state": "desktop",
     "device": "desktop",
     "width": 410,
@@ -3452,8 +3452,8 @@
   {
     "id": "731-20386-mobile-mobile",
     "nodeId": "731:20386",
-    "export": "IDModule",
-    "storyId": "components-composites-idmodule--playground",
+    "export": "IdentityProviderPicker",
+    "storyId": "components-composites-identityproviderpicker--playground",
     "state": "mobile",
     "device": "mobile",
     "width": 320,
@@ -3517,8 +3517,8 @@
   {
     "id": "749-5695-desktop-desktop",
     "nodeId": "749:5695",
-    "export": "KOState",
-    "storyId": "components-feedback-kostate--source-desktop",
+    "export": "ErrorState",
+    "storyId": "components-feedback-errorstate--source-desktop",
     "state": "desktop",
     "device": "desktop",
     "layoutScope": "viewport",
@@ -3540,8 +3540,8 @@
   {
     "id": "749-5695-mobile-mobile",
     "nodeId": "749:5695",
-    "export": "KOState",
-    "storyId": "components-feedback-kostate--source-mobile",
+    "export": "ErrorState",
+    "storyId": "components-feedback-errorstate--source-mobile",
     "state": "mobile",
     "device": "mobile",
     "layoutScope": "viewport",

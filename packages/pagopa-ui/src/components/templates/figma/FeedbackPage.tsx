@@ -7,7 +7,7 @@ export interface FeedbackPageProps {
   preheader?: React.ReactNode
   /** Application chrome below the preheader. */
   header?: React.ReactNode
-  /** The state block: `OKState`, `KOState` or `WaitingState`. */
+  /** The state block: `OKState`, `ErrorState` or `WaitingState`. */
   children: React.ReactNode
   /** Application chrome below the content. */
   footer?: React.ReactNode
