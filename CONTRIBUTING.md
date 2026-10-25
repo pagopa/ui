@@ -219,15 +219,6 @@ only the `nx-release/` branch is exempt.
 Green before commit; CI runs the same:
 
 ```bash
-pnpm nx run workspace:verify
-```
-
-`-c fast` is the quick subset: it stops before the browser suites and the
-Storybook build, so it never replaces the full run before a commit.
-
-What it runs:
-
-```bash
 pnpm nx run-many -p pagopa-ui -c=ci -t typecheck,fmt,lint,docs,figma:check,foundation:check,layers:check,build,test && \
   pnpm nx run-many -p pagopa-ui-artwork,pagopa-ui-tokens,pagopa-ui-cli -c=ci -t typecheck,fmt,lint && \
   pnpm nx run pagopa-ui-artwork:test && pnpm nx run pagopa-ui-tokens:test && pnpm nx run pagopa-ui-cli:test && \
