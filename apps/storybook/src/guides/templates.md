@@ -35,5 +35,5 @@ the panel is measured inside it.
   passes the edge its frame uses. Both keep the source padding, the pictogram
   row, the gap to the description and the gap before the action.
 - `FeedbackPage` is the application chrome (preheader, header, footer) around
-  one `SuccessState`, `ErrorState` or `WaitingState` block; its height is
+  one `OKState`, `KOState` or `WaitingState` block; its height is
   content-driven.

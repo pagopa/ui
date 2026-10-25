@@ -11,7 +11,7 @@ import { TableListItem } from "@/components/data-display/table-list-item"
 import { Accordion } from "@/components/navigation/accordion"
 import { Banner } from "@/components/feedback/banner"
 import { HeaderAlert } from "@/components/feedback/header-alert"
-import { ErrorState } from "@/components/feedback/error-state"
+import { KOState } from "@/components/feedback/ko-state"
 import { Snackbar } from "@/components/feedback/snackbar"
 import { SnackbarErrorCode } from "@/components/feedback/snackbar-error-code"
 import { Autocomplete } from "@/components/inputs/autocomplete"
@@ -27,7 +27,7 @@ import {
   TextField,
 } from "@/components/inputs/text-fields"
 import { DragAndDrop } from "@/components/inputs/drag-and-drop"
-import { CameraView } from "@/components/overlays/camera-view"
+import { CameraViewElement } from "@/components/overlays/camera-view-element"
 import { Dialog } from "@/components/overlays/dialog"
 import { Drawer } from "@/components/overlays/drawer"
 import { Popover } from "@/components/overlays/popover"
@@ -132,7 +132,7 @@ export const NoticeLabels: Story = {
         dismissLabel="Nascondi esito"
       />
       <SnackbarErrorCode code="3020123456789" copyLabel="Copia il codice" />
-      <ErrorState
+      <KOState
         title="Esito negativo"
         description="Nessun addebito effettuato."
         code="ERR-1"
@@ -398,7 +398,7 @@ export const OverlayAnnouncements: Story = {
   parameters: { a11yContract: { reflow: false } },
   render: () => (
     <div className="grid max-w-xl gap-6">
-      <CameraView
+      <CameraViewElement
         label="Inquadra il QR"
         active={false}
         announcement={({ label, active }) => `${label}: fotocamera ${active ? "accesa" : "spenta"}`}

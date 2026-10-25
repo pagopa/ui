@@ -10,7 +10,7 @@ import {
   TableListField,
   type TableColumn,
 } from "@/components/data-display"
-import { MenuDropdown, SelectField, Chip } from "@/components/inputs"
+import { MenuDropDown, SelectField, Chip } from "@/components/inputs"
 import { Pagination } from "@/components/navigation"
 import { Button } from "@/components/primitives/button"
 import {
@@ -288,7 +288,7 @@ function PaymentActions() {
             <Button variant="ghost" onClick={() => setAction(`Ricevuta ${row.service}`)}>
               Ricevuta
             </Button>
-            <MenuDropdown
+            <MenuDropDown
               accessibleLabel={`Altre azioni per ${row.service}`}
               label="Azioni pagamento"
               items={[
@@ -518,7 +518,7 @@ function SourceTable({ width }: { width: number }) {
             <Button variant="ghost" onClick={() => setAction(`Notifica ${row.reference}`)}>
               Action
             </Button>
-            <MenuDropdown
+            <MenuDropDown
               accessibleLabel={`Altre azioni per ${row.reference}`}
               items={[
                 {

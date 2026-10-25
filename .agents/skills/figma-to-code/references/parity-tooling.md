@@ -26,29 +26,28 @@ Every row is a target of `pagopa-ui-cli`: run it as
 | `source <nodeId>` (via `pnpm --filter pagopa-ui-cli run cli -- parity source <nodeId>`) | the source spec `check` diffs against (`--compact` anatomy, `--json`, `--depth N`); `--png [file]` writes the pinned variant render (needs the token and the pinned snapshot), default `.figma/parity/source/<nodeId>.png` |
 | `render --story <storyId>` (via `pnpm --filter pagopa-ui-cli run cli -- parity render --story <storyId>`) | a render probe alone; `--tree [--depth N]` prints the DOM anatomy (box, position, padding, gap) of the root's descendants, the render-side counterpart of `source --compact` |
 
-`source.mjs` is the only reader of the source: never grow a second reader from a
-scratch file. A render to look at is `check` with `--screenshot <file>` (the same
-preflight as the numbers); the source render is the pinned PNG or
-`get_screenshot`. Trust `figma:parity:check` over `render.mjs --root`: the latter
-forces `display:block` on the root, `check` forces only `#storybook-root`.
+The source reader is the only reader of the source: never grow a second reader
+from a scratch file. A render to look at is `check` with `--screenshot <file>`
+(the same preflight as the numbers); the source render is the pinned PNG or
+`get_screenshot`. Trust `figma:parity:check` over the render module's `--root`:
+the latter forces `display:block` on the root, `check` forces only
+`#storybook-root`.
 
 ## Rules the scripts encode
 
-One owner per rule: `source.mjs` (the spec), `render.mjs` (capture, probe,
-preflight), `diff.mjs` (classification). Tests and fixtures sit beside them and
-run in `pnpm nx run pagopa-ui-cli:test` with no snapshot and no browser.
+One owner per rule: the source reader (the spec), the render module (capture,
+probe, preflight), the diff module (classification). Tests and fixtures sit
+beside them and run in `pnpm nx run pagopa-ui-cli:test` with no snapshot and no
+browser.
 
-- Tolerance 2px. Weight law: source `500` → CSS 600, `600` → 700, so a 400 face
-  is always a delta.
-- A ≥44px target counts when it comes from the invisible `::after` expansion.
-- A borderless render's inset ring (an inset box-shadow with no offset and no
-  blur) is its stroke, the CSS form of a Figma inside stroke.
-- Token class against `tokens.generatedCss` and `tokens.manifest`; offsets
-  against the 4px spacing scale.
-- Centered-layout trap: Storybook's centered layout adds 16px `border-box`
-  padding, so the capture forces it to 0 before measuring.
-- `args` trap: the Storybook `args` URL parameter silently drops values with
-  spaces, so apply states with `--fill`/`--click`, not args.
+The check's messages name the rest: 2px tolerance and the weight law (source
+`500` → CSS 600, `600` → 700, so a 400 face is always a delta); a ≥44px target
+only when the invisible `::after` expands it; a borderless render's inset ring
+(an inset box-shadow with no offset and no blur) as its stroke; token classes
+against `tokens.generatedCss` and `tokens.manifest`, offsets against the 4px
+scale — the capture forces Storybook's 16px `border-box` centred-layout padding
+to 0. Apply states with `--fill`/`--click`: the Storybook `args` URL parameter
+silently drops values with spaces.
 
 ## Exit codes and profiles
 

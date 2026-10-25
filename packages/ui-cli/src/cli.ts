@@ -26,6 +26,9 @@ import { renderCli } from "./parity/render.ts"
 import { sourceCli } from "./parity/source.ts"
 import { runChanged } from "./test/changed.ts"
 import { runCommand, UsageError } from "./lib/command.ts"
+import { readJson } from "./lib/json.ts"
+import { rootPath } from "./lib/paths.ts"
+import { longNoteErrors, NoteLengthBaselineSchema, RegistrySchema } from "./schemas/catalogue.ts"
 
 const inputArg = {
   type: "string",
@@ -93,6 +96,22 @@ const library = defineCommand({
   run: execute(() => runLibraryCheck()),
 })
 
+// The catalogue keeps its own note-length baseline: the number of notes past
+// the limit ratchets down, and the command fails when it moves in either
+// direction.
+const REGISTRY_PATH = "src/catalog/figma/registry.json"
+const NOTE_LENGTH_BASELINE_PATH = "src/catalog/figma/note-length-baseline.json"
+
+function runNoteLengthRatchet(): number {
+  const baseline = readJson(rootPath(NOTE_LENGTH_BASELINE_PATH), NoteLengthBaselineSchema)
+  const registry = readJson(rootPath(REGISTRY_PATH), RegistrySchema)
+  const errors = longNoteErrors(registry, baseline, NOTE_LENGTH_BASELINE_PATH)
+  if (!errors.length) return 0
+  console.error(`figma:check: ${errors.length} problem(s)`)
+  for (const error of errors) console.error(`  ${error}`)
+  return 1
+}
+
 const figmaCheck = defineCommand({
   meta: { name: "figma", description: "Validate the catalogue and the device vocabulary" },
   args: {
@@ -121,7 +140,11 @@ const figmaCheck = defineCommand({
     if (args.save) argv.push("--save", String(args.save))
     if (args.delta) argv.push("--delta", String(args.delta))
     if (args["evidence-base"]) argv.push("--evidence-base", String(args["evidence-base"]))
-    return execute(() => runSync(argv))()
+    return execute(async () => {
+      const notes = runNoteLengthRatchet()
+      if (notes) return notes
+      return runSync(argv)
+    })()
   },
 })
 
