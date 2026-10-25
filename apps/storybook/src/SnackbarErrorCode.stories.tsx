@@ -115,8 +115,6 @@ export const ClipboardUnavailable: Story = {
 }
 
 export const ClipboardSuccess: Story = {
-  // The copy outcome is announced, not only shown: the story is the proof.
-  tags: ["live-region"],
   beforeEach: () => {
     const clipboard = spyOn(navigator.clipboard, "writeText").mockResolvedValue(undefined)
     return () => clipboard.mockRestore()

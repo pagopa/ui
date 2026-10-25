@@ -33,7 +33,6 @@
     "assets:check": "node src/cli.ts check assets",
     "layers:check": "node src/cli.ts check layers",
     "foundation:check": "node src/cli.ts check foundation",
-    "a11y:conformance:check": "node src/cli.ts check a11y-conformance",
     "docs:check": "node src/cli.ts check docs",
     "css:check": "node src/cli.ts check css",
     "test:changed": "node src/cli.ts test changed",

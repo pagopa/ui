@@ -69,20 +69,11 @@ const preview: Preview = {
 
     a11y: {
       test: "error",
-      // WCAG 2.2 AA, the accessibility guide's working reference.
-      options: {
-        runOnly: {
-          type: "tag",
-          values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"],
-        },
-      },
-      // A story renders a fragment, not a page: it has no landmark to wrap.
-      config: { rules: [{ id: "region", enabled: false }] },
       // Base UI's focus guards (dialog/menu focus containment) are focusable
       // spans that are intentionally hidden from assistive tech; axe reports
       // them as a false positive. Exclude only that element instead of
       // disabling the `aria-hidden-focus` rule for every story, so genuine
-      // violations elsewhere still fail the tests.
+      // violations elsewhere still fail the tests. See .migration/project.md.
       context: {
         exclude: [["[data-base-ui-focus-guard]"]],
       },

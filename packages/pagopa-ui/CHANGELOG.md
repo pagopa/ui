@@ -217,9 +217,6 @@
 - `SkipToMainContent` is the source's full-width top band: `fixed inset-x-0
   top-0` with the 8/24 insets and no elevation, instead of a floating box at
   16/12 with a shadow; it stays off screen (`-translate-y-full`) until focus.
-- `SideNav`: the group toggle in the condensed rail keeps its 44px pointer
-  target when the rail expands; `not-sr-only` reset its box to the 20px icon,
-  below the WCAG 2.5.8 minimum.
 
 ### Removed
 

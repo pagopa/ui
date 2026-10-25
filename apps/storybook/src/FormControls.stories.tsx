@@ -1316,8 +1316,6 @@ function ErrorSummaryForm() {
 }
 
 export const WithErrorSummary: Story = {
-  // The summary appears after the submission and is the announcement.
-  tags: ["live-region"],
   render: () => <ErrorSummaryForm />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)

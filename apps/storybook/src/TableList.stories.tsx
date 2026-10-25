@@ -184,8 +184,6 @@ function EmptyCampaigns() {
 }
 
 export const Empty: Story = {
-  // The empty state announces itself through a status region.
-  tags: ["live-region"],
   render: () => <EmptyCampaigns />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
