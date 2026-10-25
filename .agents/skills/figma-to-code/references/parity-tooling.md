@@ -40,17 +40,14 @@ probe, preflight), the diff module (classification). Tests and fixtures sit
 beside them and run in `pnpm nx run pagopa-ui-cli:test` with no snapshot and no
 browser.
 
-- Tolerance 2px. Weight law: source `500` → CSS 600, `600` → 700, so a 400 face
-  is always a delta.
-- A ≥44px target counts when it comes from the invisible `::after` expansion.
-- A borderless render's inset ring (an inset box-shadow with no offset and no
-  blur) is its stroke, the CSS form of a Figma inside stroke.
-- Token class against `tokens.generatedCss` and `tokens.manifest`; offsets
-  against the 4px spacing scale.
-- Centered-layout trap: Storybook's centered layout adds 16px `border-box`
-  padding, so the capture forces it to 0 before measuring.
-- `args` trap: the Storybook `args` URL parameter silently drops values with
-  spaces, so apply states with `--fill`/`--click`, not args.
+The check's messages name the rest: 2px tolerance and the weight law (source
+`500` → CSS 600, `600` → 700, so a 400 face is always a delta); a ≥44px target
+only when the invisible `::after` expands it; a borderless render's inset ring
+(an inset box-shadow with no offset and no blur) as its stroke; token classes
+against `tokens.generatedCss` and `tokens.manifest`, offsets against the 4px
+scale — the capture forces Storybook's 16px `border-box` centred-layout padding
+to 0. Apply states with `--fill`/`--click`: the Storybook `args` URL parameter
+silently drops values with spaces.
 
 ## Exit codes and profiles
 
