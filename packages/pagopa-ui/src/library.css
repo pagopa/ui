@@ -10,3 +10,4 @@
    stories live in apps/storybook and the Storybook preview module with them, so
    they never enter this scan surface. */
 @source not "../src/catalog";
+@source not "../src/components/templates";

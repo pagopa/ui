@@ -46,7 +46,7 @@
     },
     {
       "rule": "font-weight",
-      "file": "apps/storybook/src/templates/LogIn.tsx",
+      "file": "src/components/templates/figma/LogIn.tsx",
       "match": "font-normal",
       "nodeId": "2339:80916",
       "reason": "The source description is 18px regular; the captured library exposes no regular 18px text style (Body Big is semibold only). Requested to design."

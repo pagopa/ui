@@ -32,6 +32,17 @@ React and ReactDOM are peer dependencies. The package ships compiled CSS,
 fonts, artwork, and TypeScript declarations; consumers do not need Tailwind,
 shadcn, or the repository's build aliases.
 
+## Tokens
+
+The `--figma-*` custom properties in `styles.css` are the public token
+contract: a section that renders beside the components reads the same colours,
+spacing, radius and shadows. `@pagopa/ui/tokens` exports them as typed data,
+and `@pagopa/ui/tokens.css` ships the block alone for a page that does not load
+the component stylesheet. The values are read-only; a rename is a breaking
+change listed in the changelog. See the
+[tokens guide](../../apps/storybook/src/guides/tokens.md) for the loading
+options and the two examples.
+
 ## Router links
 
 Every navigation link renders as a plain `<a>` unless a provider supplies the
@@ -49,6 +60,32 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 The component receives `href`, the anchor attributes and a `ref`; keep it
 forwarding all of them so client-side routing, open-in-new-tab and which-link
 focus survive. In-page `#id` links stay plain anchors.
+
+## Next.js (App Router)
+
+The package ships one ES module per component, and each module that runs in the
+browser carries its own `"use client"`. A Server Component imports the
+components it needs directly and pulls no wrapper module of its own; a page
+loads only the modules it imports, not the whole library. Import the stylesheet
+once in the root layout and render the provider there, so every page keeps the
+link component and the texts:
+
+```tsx
+// app/layout.tsx
+import "@pagopa/ui/styles.css"
+import { UIProvider } from "@pagopa/ui"
+import type { ReactNode } from "react"
+
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return (
+    <UIProvider>
+      <html lang="it">
+        <body>{children}</body>
+      </html>
+    </UIProvider>
+  )
+}
+```
 
 ## Languages and texts
 

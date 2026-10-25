@@ -1,27 +1,43 @@
 // Makes the emitted `.d.ts` files consumable: alias-free ESM, with the types of
-// the artwork package inlined so the packed artifact stays standalone.
+// the bundled workspace packages inlined so the packed artifact stays standalone.
 import fs from "node:fs"
 import path from "node:path"
 
 import { enterRoot } from "../lib/paths.ts"
 import { parseSource, sourceDependencies } from "../lib/source-modules.ts"
 
+// A bundled package is not a dependency of the published artifact: its
+// declarations travel inside `dist/types/<folder>`.
+type BundledTypes = { folder: string; types: string }
+const BUNDLED: Record<string, BundledTypes> = {
+  "pagopa-ui-artwork": {
+    folder: "artwork",
+    types: process.env.PAGOPA_UI_ARTWORK_TYPES ?? "../artwork/dist/types",
+  },
+  "pagopa-ui-tokens": {
+    folder: "tokens",
+    types: process.env.PAGOPA_UI_TOKENS_TYPES ?? "../tokens/dist/types",
+  },
+}
+
 export function runPrepareTypes(): number {
   enterRoot()
   const root = path.resolve("dist/types")
 
-  // The artwork is bundled into the library at build time, so its declarations
-  // must travel in the tarball: copy them under `dist/types/artwork` and let the
-  // rewrite below point `pagopa-ui-artwork` there.
-  const artworkTypes = path.resolve(process.env.PAGOPA_UI_ARTWORK_TYPES ?? "../artwork/dist/types")
-  if (!fs.existsSync(path.join(artworkTypes, "index.d.ts"))) {
-    throw new Error(
-      `missing ${artworkTypes}/index.d.ts — run "pnpm nx run pagopa-ui-artwork:build"`,
-    )
+  // The artwork and the tokens are bundled into the library at build time, so
+  // their declarations must travel in the tarball: copy them under
+  // `dist/types/<folder>` and let the rewrite below point the specifier there.
+  const bundled = new Map<string, string>()
+  for (const [name, entry] of Object.entries(BUNDLED)) {
+    const types = path.resolve(entry.types)
+    if (!fs.existsSync(path.join(types, "index.d.ts"))) {
+      throw new Error(`missing ${types}/index.d.ts — run "pnpm nx run ${name}:build"`)
+    }
+    const target = path.join(root, entry.folder)
+    fs.rmSync(target, { recursive: true, force: true })
+    fs.cpSync(types, target, { recursive: true })
+    bundled.set(name, target)
   }
-  const artworkRoot = path.join(root, "artwork")
-  fs.rmSync(artworkRoot, { recursive: true, force: true })
-  fs.cpSync(artworkTypes, artworkRoot, { recursive: true })
 
   const files = fs
     .readdirSync(root, { recursive: true })
@@ -31,16 +47,16 @@ export function runPrepareTypes(): number {
     let source = fs.readFileSync(file, "utf8")
     const edits = new Map<number, { end: number; value: string }>()
     for (const request of sourceDependencies(file, parseSource(file))) {
-      const packageType = request.specifier === "pagopa-ui-artwork"
+      const packageRoot = bundled.get(request.specifier)
       if (
-        !packageType &&
+        !packageRoot &&
         !request.specifier.startsWith(".") &&
         !request.specifier.startsWith("@/")
       ) {
         continue
       }
-      const target = packageType
-        ? path.join(artworkRoot, "index.d.ts")
+      const target = packageRoot
+        ? path.join(packageRoot, "index.d.ts")
         : request.specifier.startsWith("@/")
           ? path.join(root, request.specifier.slice(2))
           : path.resolve(path.dirname(file), request.specifier)
@@ -67,6 +83,8 @@ export function runPrepareTypes(): number {
     }
     fs.writeFileSync(file, source)
   }
-  console.log(`library declarations OK: ${files.length} alias-free ESM modules, artwork inlined`)
+  console.log(
+    `library declarations OK: ${files.length} alias-free ESM modules, ${Object.keys(BUNDLED).length} bundled packages inlined`,
+  )
   return 0
 }

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { AuthenticationCodeInput } from "@/components/inputs"
 import { Button } from "@/components/primitives/button"
-import { SecurityCodeDialog } from "./templates/SecurityCodeDialog"
+import { SecurityCodeDialog } from "@/components/templates/figma/SecurityCodeDialog"
 
 import templatesGuide from "./guides/templates.md?raw"
 

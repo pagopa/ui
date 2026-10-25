@@ -28,6 +28,7 @@ name another package.
   `packages/artwork`.
 - `src/components/{inputs,navigation,feedback,content,data-display,composites,overlays}`
   — the families.
+- `src/components/templates` — private page modules and demos.
 - `src/pagopa-ui.ts` — the public entry point.
 - `src/catalog/figma` — inventory, registry, story titles, parity cases, device policy,
   exceptions.
@@ -37,8 +38,7 @@ name another package.
   configured class-merge engine. The token manifest and the generated CSS live in
   `packages/tokens`.
 - The stories and the guides are in `apps/storybook/src` (`guides/*.md`).
-- `apps/storybook` — the documentation application: the stories, the Figma
-  page templates (`apps/storybook/src/templates`, never shipped), the component
+- `apps/storybook` — the documentation application: the stories, the component
   guides and the accessibility support, with the Storybook configuration that
   renders them.
 - `packages/artwork` — the pinned SVG assets and the generated icon and

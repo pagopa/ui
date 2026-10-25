@@ -146,13 +146,6 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     return new Set(runtimeExports(file).keys())
   }
 
-  // A registry module may be missing or moved: the existence check reports it
-  // as `module not found`, so the reads that run before that report stay quiet
-  // instead of failing on the missing file.
-  function moduleExports(file: string): Map<string, string> {
-    return fs.existsSync(absolutePath(file)) ? runtimeExports(file) : new Map()
-  }
-
   // Walks the re-export graph from the public entry and records, for every
   // runtime export, the module that declares it. Types are ignored: they do not
   // exist at runtime and never need a Figma mapping.
@@ -923,7 +916,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     if (!node) fail(`registry ${nodeId}: stale entry (node not in ${INVENTORY_PATH})`)
     if (entry.status === "implemented" || entry.status === "mocked") {
       if (!entry.target?.module) fail(`registry ${nodeId}: ${entry.status} requires target.module`)
-      else if (!fs.existsSync(absolutePath(entry.target.module))) {
+      else if (!fs.existsSync(path.join(ROOT, entry.target.module))) {
         fail(`registry ${nodeId}: module not found ${entry.target.module}`)
       } else if (!entry.target.export) {
         fail(`registry ${nodeId}: ${entry.status} requires target.export`)
@@ -933,7 +926,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
             fail(`registry ${nodeId}: additionalTargets require module and export`)
             continue
           }
-          if (!fs.existsSync(absolutePath(pair.module))) {
+          if (!fs.existsSync(path.join(ROOT, pair.module))) {
             fail(`registry ${nodeId}: module not found ${pair.module}`)
           } else if (!exportNames(pair.module).has(pair.export)) {
             fail(`registry ${nodeId}: export "${pair.export}" not found in ${pair.module}`)
@@ -1053,7 +1046,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     }
     if (!reason) fail(`${EVIDENCE_EXCEPTIONS_PATH}: ${nodeId} requires a reason`)
     const renderedIdentity = entry.target
-      ? moduleExports(entry.target.module).get(entry.target.export)
+      ? runtimeExports(entry.target.module).get(entry.target.export)
       : undefined
     if (renderedIdentity && allStoryImports.has(renderedIdentity)) {
       fail(
@@ -1070,7 +1063,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
       .flatMap((entry) =>
         entry.target
           ? targetIdentities(entry.target).map((pair) =>
-              moduleExports(pair.module).get(pair.export),
+              runtimeExports(pair.module).get(pair.export),
             )
           : [],
       )

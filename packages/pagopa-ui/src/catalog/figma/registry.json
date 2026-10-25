@@ -351,7 +351,7 @@
       "status": "mocked",
       "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
-        "module": "apps/storybook/src/templates/TemplateComponents.tsx",
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
         "export": "FormWizardTemplate"
       }
     },
@@ -682,7 +682,7 @@
       "status": "implemented",
       "note": "Implemented 2026-10-15 from the pinned source set: the four-slot page (preheader, header, the state block, footer) whose content-driven height reproduces the 806/902/834 desktop frames and the 320 frames. The story composes the reviewed chrome and the OK/KO/Waiting states with the source copy. Device review 2026-10-16 (device burn-down, the Feedback Page tablet wave): nine cases, one per declared device and message, all viewport-scoped and responsive-clean — mobile 320 (`1904-9589-xs-mobile-ko/-thank-you/-waiting`), tablet 600 (`1904-9589-sm-tablet-ko-tablet/-thank-you-tablet/-waiting-tablet`, the source frames 600x1009/913/915) and desktop 900 (`1904-9589-md-desktop-ko/-thank-you/-waiting`). The tablet review closed the wave-1 finding: the state block's content capped at the desktop 368 at every width, so the 600 device rendered the 368 measure against the source's 552 and the blocks measured 508/450/486 against 488/392/394; the cap now applies from `md` only (`max-w-none md:max-w-[23rem]` in `ok-state.tsx`, `ko-state.tsx`, `waiting-state.tsx`) and the waiting title cap became `max-w-none md:max-w-xs` (the source tablet title is the full 552 on one line). The tablet now renders 486/392/392 blocks (pages 1008/914/914 against 1009/913/915); the −2 is the shared 48px action against the source's 50px KO/Waiting frames (guides/actions.md). The page's tablet KO instance fixes its code row at 272 inside the 552 content, which the state's own main components contradict (both variants mark the row `FILL`: it follows the content at 272/368), so the library keeps the reviewed `23rem` row measure (368x48 at the tablet) — the measured constraint is in the wave report. The KO description fixture no longer carries a literal `\\n` (a JSX attribute escapes nothing), so the render shows the copy and not the escape. Residues unchanged: the chrome bands aggregate to −3px (the header is 1px taller, the footer 4px shorter than the 55/103/182 source bands) and the page waiting instance uses 55px vertical paddings where the state set uses 64, so the block is 16px taller (the library keeps the verified 64).",
       "target": {
-        "module": "apps/storybook/src/templates/FeedbackPage.tsx",
+        "module": "src/components/templates/figma/FeedbackPage.tsx",
         "export": "FeedbackPage",
         "story": "apps/storybook/src/FeedbackPage.stories.tsx",
         "storyExports": ["ThankYou", "KO", "Waiting"]
@@ -692,7 +692,7 @@
       "status": "mocked",
       "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
-        "module": "apps/storybook/src/templates/TemplateComponents.tsx",
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
         "export": "TermsOfUse"
       }
     },
@@ -700,7 +700,7 @@
       "status": "implemented",
       "note": "Implemented 2026-10-15 from the pinned source set: the 650px artboard, the shared 35% overlay backdrop and the 16px panel (272x446 narrow / 600x290 wide) with 24px padding and the 24px body-to-actions gap; the body stacks title (18/28 narrow, 24/32 wide), description (16/22 grey-700) and the 56px option row on an 8px gap; the footer is a 16px-gap column narrow and a right-aligned 16px-gap row wide. The composition answers its own frame through container queries and the panel is not portaled (a page fragment, measurable by the parity tool). Device review 2026-10-16 (device burn-down wave 4): one case per declared device, all container-scoped and responsive-clean — mobile 1909:98989 (case 1909-98992-xs, the source 320: panel 272x446, the 18/28 narrow title and the stacked actions), tablet 1909:98990 (case 1909-98992-md, the source 900: panel 600x290, the 552px blocks, the option row 552x56 at 24/138 and the action row 552x48 at 24/218) and desktop 1909:98987 (case 1909-98992-lg-desktop, the source 1200: the same 600x290 panel — the desktop frames only widen the page). The container declaration is verified: the composition moves with the frame width and not with the viewport (the viewport probe reports `responsive.scope.viewport`). The `Checkbox with label.gap` residue (the source 8px option-row gap lives on the inner label row in the DOM) is carried by all three cases; the wide story now renders the page itself (`WideFrame` dropped its 900px wrapper) so the desktop device is captured in its own 1200 frame, while the narrow story keeps the 320 frame. The set's SM Tablet 600 frame draws the same 272x446 narrow panel as the mobile one; the tablet case captures the MD 900 wide frame.",
       "target": {
-        "module": "apps/storybook/src/templates/DialogTemplate.tsx",
+        "module": "src/components/templates/figma/DialogTemplate.tsx",
         "export": "DialogTemplate",
         "story": "apps/storybook/src/DialogTemplate.stories.tsx",
         "storyExports": ["NarrowFrame", "WideFrame"]
@@ -710,7 +710,7 @@
       "status": "implemented",
       "note": "Implemented 2026-10-15 from the pinned source set: the shared dialog panel (272x570 narrow / 600x374 wide, 16px radius, 24px padding and gap) with the code block on the source 16px gap — the 167x50 code control and the 14/20 helper (three lines narrow, one wide). The source alert row is a hidden instance in every variant. Residues: the code field owns its label (6px gap) where the mockup keeps an external 16px row, so the block and the panel are 8px shorter; the reviewed field keeps 24px slots on an 8px gap against the source 11px slots on 16px (the outer frame matches, 169 vs 167). Device review 2026-10-16 (device burn-down wave 4): one case per declared device, all container-scoped and responsive-clean — mobile 1909:99034 (case 1909-99033-xs, the source 320: panel 272x570, the code block 224x164 with the three-line 14/20 helper), tablet 1909:99040 (case 1909-99033-md, the source 900: panel 600x374 and the code block 552x124 with the one-line helper) and desktop 1909:99045 (case 1909-99033-lg-desktop, the source 1200: the same 600x374 panel). All three carry the `Authentication code.box.height` and `field.box.height` residues (the field owns its label, so the block and the panel are 8px shorter) and keep the composition check off with the recorded note: a `--compare-offset` run confirms the same shift at 1200 (`Authentication code input.offset.top` 182 against 192, `Block buttons.offset.top` 294 against 302). The wide story now renders the page itself (`WideFrame` dropped its 900px wrapper) so the desktop device is captured in its own 1200 frame, and the container declaration is verified at every device.",
       "target": {
-        "module": "apps/storybook/src/templates/SecurityCodeDialog.tsx",
+        "module": "src/components/templates/figma/SecurityCodeDialog.tsx",
         "export": "SecurityCodeDialog",
         "story": "apps/storybook/src/SecurityCodeDialog.stories.tsx",
         "storyExports": ["NarrowFrame", "WideFrame"]
@@ -730,7 +730,7 @@
       "status": "mocked",
       "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
-        "module": "apps/storybook/src/templates/TemplateComponents.tsx",
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
         "export": "RecapDefault"
       }
     },
@@ -854,7 +854,7 @@
       "status": "mocked",
       "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
-        "module": "apps/storybook/src/templates/TemplateComponents.tsx",
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
         "export": "HistoryDrawer"
       }
     },
@@ -862,7 +862,7 @@
       "status": "mocked",
       "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
-        "module": "apps/storybook/src/templates/TemplateComponents.tsx",
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
         "export": "ServiceDetailDrawer"
       }
     },
@@ -870,7 +870,7 @@
       "status": "implemented",
       "note": "Implemented 2026-10-15 from the pinned source set: the 320x650 bottom sheet (16px top corners, no drag handle in this composition) and the 417x800 square side panel from 600 up, both with the 35% surface overlay, 24px padding, the 40px Error pictogram row on a 16px gap, the 8px gap to the multi-paragraph description and the 40px gap before the action (full width on the sheet, intrinsic and right-aligned on the panel). Verified both frames; the sheet records one residue: the source text node carries 12px paragraph spacing on six paragraph breaks, and the same copy as six HTML paragraphs measures 4px taller. Device review 2026-10-16 (device burn-down wave 4): one case per declared device — mobile 1992:127583 (case 1992-127582-xs, the source 320: the 320x504 bottom sheet hugging the bottom edge with the 272px blocks, carrying the 4px copy residue), tablet 1992:127589 (case 1992-127582-md, the source 900: the 417x800 right panel with the 369px blocks, the 40px head, the 8px spacing and the 112x48 action, verified clean) and desktop 1992:127591 (case 1992-127582-lg-desktop, the source 1200: the same 417x800 panel at the 1200 edge, verified clean — the desktop frames only widen the page). The three cases declare no `layoutScope`: the edge and the panel geometry follow the caller's `direction` prop (the wide story passes `right`, the narrow one `bottom`), not an axis of the frame — the same reading the ButtonGroup orientation recorded — and the reason is recorded on every case. The wide story now renders the page itself (`WideFrame` dropped its 900px wrapper) so the desktop device is captured in its own 1200 frame.",
       "target": {
-        "module": "apps/storybook/src/templates/InformativeDrawer.tsx",
+        "module": "src/components/templates/figma/InformativeDrawer.tsx",
         "export": "InformativeDrawer",
         "story": "apps/storybook/src/InformativeDrawer.stories.tsx",
         "storyExports": ["NarrowFrame", "WideFrame"]
@@ -880,7 +880,7 @@
       "status": "mocked",
       "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
-        "module": "apps/storybook/src/templates/TemplateComponents.tsx",
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
         "export": "SearchDrawer"
       }
     },
@@ -888,7 +888,7 @@
       "status": "mocked",
       "note": "rendered by TemplateShell demo content; real implementation pending\n\nOpen design questions: the spinner (docs/design-requests/2026-10-24-identity-provider-spinner.md, issue #31), the SPID help link (docs/design-requests/2026-10-24-identity-provider-link.md, issue #32) and the loading skeleton (docs/design-requests/2026-10-24-identity-provider-skeleton.md, issue #33). The node stays mocked until the answers.",
       "target": {
-        "module": "apps/storybook/src/templates/TemplateComponents.tsx",
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
         "export": "IdentityProviderSelector"
       }
     },
@@ -958,7 +958,7 @@
       "status": "implemented",
       "note": "Implemented 2026-10-15 from the pinned source set: the application chrome around the centred login module. The module is exact on both frames (900x689 and the 320x757 mobile: pad 80/40 and 64/24, the 40px gap, the 520px text block at 84px, the warning alert at 98px, the 272px action column at 166px and the 520px terms block at 61px). The story renders the source copy, including the hidden title and action layers of the alert and the source 18/26 Regular description, which the file does not publish as a variable: the block takes the Body Big SB metrics and states the regular weight. Device review 2026-10-16 (device burn-down wave 5): one case per declared device, all viewport-scoped and responsive-clean — mobile 2339:80911 (2339-80916-xs-mobile, 320), tablet 2339:80912 (2339-80916-sm-tablet-tablet, 600) and desktop 2339:80913 (2339-80916-md-desktop, 900). The scope is viewport: the page always spans the page width and the chrome bands and the module padding/type switch on media queries (the container probe moves too, because any page reflows in a narrower box — recorded so the reading is not re-litigated). The tablet review fixed the module: the source tablet frame is the mobile composition at 600 (pad 64/24, the 28/40 title) and draws the text and terms blocks at the full 552, so the 520px caps now apply from md (LogIn.tsx: md:max-w-[32.5rem]); mobile (272) and desktop (520) are unchanged. All three cases carry the field.box.height page-aggregation residue (the module is exact; the shorter footer columns block is the Footer node still in the pending queue) and the Alert.gap mapping ignore.",
       "target": {
-        "module": "apps/storybook/src/templates/LogIn.tsx",
+        "module": "src/components/templates/figma/LogIn.tsx",
         "export": "LogIn",
         "story": "apps/storybook/src/LogIn.stories.tsx",
         "storyExports": ["Page", "Module"]
@@ -1052,7 +1052,7 @@
       "status": "mocked",
       "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
-        "module": "apps/storybook/src/templates/TemplateComponents.tsx",
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
         "export": "RecapDefault"
       }
     },
@@ -1060,7 +1060,7 @@
       "status": "mocked",
       "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
-        "module": "apps/storybook/src/templates/TemplateComponents.tsx",
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
         "export": "FormTemplate"
       }
     },
@@ -1068,7 +1068,7 @@
       "status": "mocked",
       "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
-        "module": "apps/storybook/src/templates/TemplateComponents.tsx",
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
         "export": "ObjectDetail"
       }
     },
@@ -1088,7 +1088,7 @@
       "status": "mocked",
       "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
-        "module": "apps/storybook/src/templates/TemplateComponents.tsx",
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
         "export": "FilterDrawer"
       }
     },
@@ -1096,7 +1096,7 @@
       "status": "mocked",
       "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
-        "module": "apps/storybook/src/templates/TemplateComponents.tsx",
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
         "export": "Homepage"
       }
     },
@@ -1104,7 +1104,7 @@
       "status": "mocked",
       "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
-        "module": "apps/storybook/src/templates/TemplateComponents.tsx",
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
         "export": "EditDrawer"
       }
     },
@@ -1112,7 +1112,7 @@
       "status": "mocked",
       "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
-        "module": "apps/storybook/src/templates/TemplateComponents.tsx",
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
         "export": "InformativaPrivacy"
       }
     },
@@ -1120,7 +1120,7 @@
       "status": "mocked",
       "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
-        "module": "apps/storybook/src/templates/TemplateComponents.tsx",
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
         "export": "Dashboard"
       }
     },
@@ -1128,7 +1128,7 @@
       "status": "mocked",
       "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
-        "module": "apps/storybook/src/templates/TemplateComponents.tsx",
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
         "export": "MultipleCtaDashboard"
       }
     },
@@ -1151,7 +1151,7 @@
       "status": "mocked",
       "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
-        "module": "apps/storybook/src/templates/TemplateComponents.tsx",
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
         "export": "ListView"
       }
     },
@@ -1243,7 +1243,7 @@
       "status": "mocked",
       "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
-        "module": "apps/storybook/src/templates/TemplateComponents.tsx",
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
         "export": "TemplateEmail"
       }
     },
@@ -1872,7 +1872,7 @@
       "status": "mocked",
       "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
-        "module": "apps/storybook/src/templates/TemplateComponents.tsx",
+        "module": "src/components/templates/figma/TemplateComponents.tsx",
         "export": "TableListView"
       }
     },

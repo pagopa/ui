@@ -13,16 +13,16 @@ paths fail, type-only cycles pass.
 - [ ] Lives in a family under `src/components` — `inputs`, `navigation`,
       `feedback`, `content`, `data-display`, `composites`, `overlays` — chosen
       by what the component does. Base UI wrappers live in `primitives`, the
-      generated icon and pictogram catalogue in `icons`.
-- [ ] Imports point only downward: `primitives`/`icons` ← families ← stories
-      and page templates. Primitives never reach a family; families may
+      generated icon and pictogram catalogue in `icons`, private page modules
+      and demos in `templates`.
+- [ ] Imports point only downward: `primitives`/`icons` ← families ←
+      `templates` ← stories. Primitives never reach a family; families may
       compose each other; nothing in `src/components` imports `apps/storybook/src` or
-      `src/catalog`. Page templates live in `apps/storybook/src/templates` and
-      may import any layer through `@/…`.
+      `src/catalog`.
 - [ ] `@base-ui/react`, `react-day-picker` and `lucide-react` only in
       `primitives`; `cn` only from `@/lib/cn`.
 - [ ] Removed layers stay removed: `atoms`, `molecules`, `organisms`,
-      `figma-primitives`, `ui`, `screens`, `templates`.
+      `figma-primitives`, `ui`, `screens`.
 - [ ] The family's primitives and existing components are reused before new
       markup is written; a template composes families and owns layout, not
       copy.

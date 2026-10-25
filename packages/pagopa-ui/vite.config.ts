@@ -26,6 +26,9 @@ export default defineConfig(() => ({
         for (const [fileName, source] of [
           ["licenses/titillio.txt", "src/assets/fonts/titillio/LICENSE.txt"],
           ["licenses/artwork.txt", "src/assets/artwork-provenance.txt"],
+          // The public token block on its own, for a consumer that renders
+          // beside the library without loading the component stylesheet.
+          ["tokens.css", "../tokens/src/tokens.generated.css"],
         ] as const) {
           this.emitFile({
             type: "asset",
@@ -45,14 +48,24 @@ export default defineConfig(() => ({
     assetsDir: "",
     // The build entry adds CSS; declarations come from the CSS-free public entry.
     lib: {
-      entry: path.resolve(dirname, "src/library-entry.ts"),
+      entry: {
+        "library-entry": path.resolve(dirname, "src/library-entry.ts"),
+        tokens: path.resolve(dirname, "src/tokens.ts"),
+      },
       formats: ["es"],
-      fileName: "pagopa-ui",
+      fileName: (_, entryName) => `${entryName}.js`,
       cssFileName: "styles",
     },
     sourcemap: true,
     rollupOptions: {
       external: (id) => externalPackages.some((name) => id === name || id.startsWith(`${name}/`)),
+      output: {
+        // One ES module per source module: a consumer bundler keeps the client
+        // boundary of each module instead of pulling one large file.
+        preserveModules: true,
+        preserveModulesRoot: "src",
+        entryFileNames: (chunk) => (chunk.name === "library-entry" ? "pagopa-ui.js" : "[name].js"),
+      },
     },
   },
   test: {
