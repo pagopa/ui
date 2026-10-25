@@ -71,14 +71,20 @@ runs:
     # thrown away, so apt downloaded them again on every job from a mirror
     # that is intermittently throttled to tens of kB/s. The archives now
     # round-trip through the cache instead.
+    #
+    # The list reaches the script through the environment, never through the
+    # generated shell, and is split into the one argument per engine that
+    # `playwright install` expects: a quoted "$BROWSERS" reaches it as the
+    # single target `firefox webkit`, which Playwright rejects.
     - name: Install Playwright browsers
       if: inputs.browsers != ''
       shell: bash
       env:
         BROWSERS: ${{ inputs.browsers }}
       run: |
+        read -r -a browsers <<< "$BROWSERS"
         mkdir -p ~/.cache/playwright-debs
         sudo cp -n ~/.cache/playwright-debs/*.deb /var/cache/apt/archives/ 2>/dev/null || true
-        timeout 600 pnpm --filter @pagopa/ui exec playwright install --with-deps "$BROWSERS"
+        timeout 600 pnpm --filter @pagopa/ui exec playwright install --with-deps "${browsers[@]}"
         sudo cp -n /var/cache/apt/archives/*.deb ~/.cache/playwright-debs/ 2>/dev/null || true
         sudo chown -R "$USER" ~/.cache/playwright-debs
