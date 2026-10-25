@@ -32,6 +32,17 @@ React and ReactDOM are peer dependencies. The package ships compiled CSS,
 fonts, artwork, and TypeScript declarations; consumers do not need Tailwind,
 shadcn, or the repository's build aliases.
 
+## Tokens
+
+The `--figma-*` custom properties in `styles.css` are the public token
+contract: a section that renders beside the components reads the same colours,
+spacing, radius and shadows. `@pagopa/ui/tokens` exports them as typed data,
+and `@pagopa/ui/tokens.css` ships the block alone for a page that does not load
+the component stylesheet. The values are read-only; a rename is a breaking
+change listed in the changelog. See the
+[tokens guide](../../apps/storybook/src/guides/tokens.md) for the loading
+options and the two examples.
+
 ## Router links
 
 Every navigation link renders as a plain `<a>` unless a provider supplies the
