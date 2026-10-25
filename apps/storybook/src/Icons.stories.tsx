@@ -5,8 +5,8 @@ import { expect, waitFor } from "storybook/test"
 
 import {
   type FigmaIconName,
-  figmaIconNames,
-  figmaPictogramNames,
+  iconNames,
+  pictogramNames,
   PagoPAIcon,
   PagoPAPictogram,
 } from "@/components/icons"
@@ -25,7 +25,7 @@ function cataloguePageId(namesExport: string) {
 const iconCatalogue = new Map(
   Object.values(iconManifest.entries).map((entry) => [entry.name, entry] as const),
 )
-const iconOriginCounts = figmaIconNames.reduce<Record<string, number>>((counts, name) => {
+const iconOriginCounts = iconNames.reduce<Record<string, number>>((counts, name) => {
   const origin = iconCatalogue.get(name)?.provenance.origin ?? "unknown"
   counts[origin] = (counts[origin] ?? 0) + 1
   return counts
@@ -40,13 +40,13 @@ function IconCatalogue() {
           Icone pubblicate
         </h1>
         <p className="text-muted-foreground">
-          {figmaIconNames.length} nomi sincronizzati da Figma:{" "}
+          {iconNames.length} nomi sincronizzati da Figma:{" "}
           {iconOriginCounts["material-symbols"] ?? 0} glifi Material Symbols (Rounded, weight 400,
           fill off, grade normal, 24dp — Apache-2.0), {iconOriginCounts.brand ?? 0} marchi di brand
           riprodotti nei colori sorgente e {iconOriginCounts.custom ?? 0} glifi PagoPA.
         </p>
         <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-7">
-          {figmaIconNames.map((name) => {
+          {iconNames.map((name) => {
             const asset = iconCatalogue.get(name)
             return (
               <div
@@ -80,7 +80,7 @@ function IconCatalogue() {
           Pittogrammi
         </h2>
         <p className="text-muted-foreground">
-          {figmaPictogramNames.length} concetti esposti tramite una API tipizzata.
+          {pictogramNames.length} concetti esposti tramite una API tipizzata.
         </p>
         {pictogramProvenance ? (
           <p className="mt-1 text-sm text-muted-foreground">
@@ -103,7 +103,7 @@ function IconCatalogue() {
           </p>
         ) : null}
         <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-5">
-          {figmaPictogramNames.map((name) => (
+          {pictogramNames.map((name) => (
             <PagoPAPictogram key={name} name={name} label={name} />
           ))}
         </div>
@@ -141,7 +141,7 @@ export const PictogramVariants: Story = {
   },
   render: () => (
     <div className="grid grid-cols-2 gap-4">
-      {figmaPictogramNames.map((name) => (
+      {pictogramNames.map((name) => (
         <div key={name} className="flex gap-4">
           <PagoPAPictogram name={name} label={`${name} Light`} background="light" />
           <div className="rounded-lg bg-navy p-2 text-white">
@@ -153,7 +153,7 @@ export const PictogramVariants: Story = {
   ),
   play: async ({ canvasElement }) => {
     const images = canvasElement.querySelectorAll("img")
-    await expect(images).toHaveLength(figmaPictogramNames.length * 2)
+    await expect(images).toHaveLength(pictogramNames.length * 2)
     await expect(canvasElement.querySelector(".material-symbols-outlined")).not.toBeInTheDocument()
     for (let index = 0; index < images.length; index += 2) {
       await expect(images[index].src).not.toBe(images[index + 1].src)
@@ -177,7 +177,7 @@ export const Catalogue: Story = {
     if (!section) throw new Error("Missing public icon catalogue")
     await document.fonts.ready
     const icons = section.querySelectorAll('[aria-hidden="true"]')
-    await expect(icons).toHaveLength(figmaIconNames.length)
+    await expect(icons).toHaveLength(iconNames.length)
     await expect(section.querySelector(".material-symbols-outlined")).not.toBeInTheDocument()
     for (const icon of icons) {
       await expect(icon).toHaveAttribute("data-figma-node-id")

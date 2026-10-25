@@ -524,16 +524,10 @@ export function FeatureList(input: {
 }): React_2.JSX.Element;
 
 // @public (undocumented)
-export type FigmaIconName = (typeof figmaIconNames)[number];
+export type FigmaIconName = (typeof iconNames)[number];
 
 // @public (undocumented)
-export const figmaIconNames: readonly ["CIE", "CIEID", "IO logo", "Media logos", "SEND", "SPID", "account_balance", "account_balance_wallet", "account_circle", "add", "adf_scanner", "approval_delegation", "arrow", "arrow_menu_close", "attach_email", "attach_file", "auto_awesome_mosaic", "backspace", "block", "bolt", "bug_report", "business_center", "cached", "call", "call_split", "cancel", "category", "chat", "check", "check_box", "check_circle", "check_indeterminate_small", "chevron", "close", "code", "confirmation_number", "construction", "contacts", "content_copy", "credit_card", "dashboard", "delete", "dialpad", "dns", "download", "drafts", "edit", "emoji_objects", "error", "euro", "event", "exit_to_app", "favorite", "feedback", "filter", "fingerprint", "first_letter", "flag", "flight_takeoff", "folder", "forum", "forward_to_inbox", "gavel", "gpp_bad", "grading", "help", "history", "hourglass_top", "how_to_reg", "id_card", "inbox", "info", "integration_instructions", "inventory_2", "ios_share", "keep", "keyboard_hide", "kid_star", "language", "leaderboard", "left_panel_close", "license", "local_laundry_service", "local_post_office", "location_on", "lock", "login", "logout", "mail", "mail_off", "mail_pec", "mail_shield", "mark_email_read", "mark_email_unread", "menu", "menu_book", "mobile_2", "mobile_vibrate", "mode_off_on", "more_vert", "my_location", "near_me", "news", "no_accounts", "notifications_active", "online_address", "open_in_browser", "open_in_new", "pagoPA", "payments", "pedal_bike", "person", "photo", "picture_as_pdf", "privacy_tip", "qr_code", "radio_button", "receipt_long", "report", "save", "savings", "schedule", "schedule_send", "search", "search_check_2", "second_letter", "sell", "send", "settings", "settings_remote", "share", "shopping_cart", "sort", "storefront", "supervised_user_circle", "support", "swipe", "swipe_down", "table_chart", "theater_comedy", "third_letter", "toggle_off", "touch_app", "troubleshoot", "unfold", "unsubscribe", "upload", "verified", "verified_user", "view_sidebar", "visibility", "volunteer_activism", "vpn_key", "wand_shine", "warning"];
-
-// @public (undocumented)
-export type FigmaPictogramName = (typeof figmaPictogramNames)[number];
-
-// @public (undocumented)
-export const figmaPictogramNames: readonly ["Access", "AlarmClock", "Assistance", "Award", "Badge", "Bell", "Bug", "Building", "Business", "Calendar", "CalendarCheck", "Citizen", "Cloud", "Code", "Completed", "CreditCard", "Data Security", "Delega", "Desktop", "Direction", "Documentation", "Download", "Earth", "Email Validation", "Enterprise", "Envelope", "Error", "Euro", "FileCheck", "Fingerprint", "Firma", "Flag", "Graduation", "History Doc", "Home", "Hourglass", "ID Card", "Idea", "Image", "In progress", "Inbox", "Institution", "Keypad", "Leggi", "LineChart", "Maintenance", "MapPin", "Message", "Messages", "Mouse", "MultipleFiles", "News", "OpenFolder", "Options", "PersonalFile", "PieChart", "Push", "Question", "Quick", "Repository", "Safe Deposit", "SavingMoney", "School", "Security", "Simplify", "SingleFile", "Smartphone validation", "Sms", "Storage", "Sync", "Trash", "Upload", "UploadFile", "User manual", "UserCheck", "Wallet"];
+export type FigmaPictogramName = (typeof pictogramNames)[number];
 
 // @public (undocumented)
 export function Footer(input: {
@@ -606,6 +600,9 @@ export interface HeaderProps {
         avatar?: React_2.ReactNode;
     };
 }
+
+// @public (undocumented)
+export const iconNames: readonly ["CIE", "CIEID", "IO logo", "Media logos", "SEND", "SPID", "account_balance", "account_balance_wallet", "account_circle", "add", "adf_scanner", "approval_delegation", "arrow", "arrow_menu_close", "attach_email", "attach_file", "auto_awesome_mosaic", "backspace", "block", "bolt", "bug_report", "business_center", "cached", "call", "call_split", "cancel", "category", "chat", "check", "check_box", "check_circle", "check_indeterminate_small", "chevron", "close", "code", "confirmation_number", "construction", "contacts", "content_copy", "credit_card", "dashboard", "delete", "dialpad", "dns", "download", "drafts", "edit", "emoji_objects", "error", "euro", "event", "exit_to_app", "favorite", "feedback", "filter", "fingerprint", "first_letter", "flag", "flight_takeoff", "folder", "forum", "forward_to_inbox", "gavel", "gpp_bad", "grading", "help", "history", "hourglass_top", "how_to_reg", "id_card", "inbox", "info", "integration_instructions", "inventory_2", "ios_share", "keep", "keyboard_hide", "kid_star", "language", "leaderboard", "left_panel_close", "license", "local_laundry_service", "local_post_office", "location_on", "lock", "login", "logout", "mail", "mail_off", "mail_pec", "mail_shield", "mark_email_read", "mark_email_unread", "menu", "menu_book", "mobile_2", "mobile_vibrate", "mode_off_on", "more_vert", "my_location", "near_me", "news", "no_accounts", "notifications_active", "online_address", "open_in_browser", "open_in_new", "pagoPA", "payments", "pedal_bike", "person", "photo", "picture_as_pdf", "privacy_tip", "qr_code", "radio_button", "receipt_long", "report", "save", "savings", "schedule", "schedule_send", "search", "search_check_2", "second_letter", "sell", "send", "settings", "settings_remote", "share", "shopping_cart", "sort", "storefront", "supervised_user_circle", "support", "swipe", "swipe_down", "table_chart", "theater_comedy", "third_letter", "toggle_off", "touch_app", "troubleshoot", "unfold", "unsubscribe", "upload", "verified", "verified_user", "view_sidebar", "visibility", "volunteer_activism", "vpn_key", "wand_shine", "warning"];
 
 // Warning: (ae-forgotten-export) The symbol "IdentityProviderPickerView" needs to be exported by the entry point pagopa-ui.d.ts
 //
@@ -798,6 +795,9 @@ export function PaymentModule(input: Omit<React_2.ComponentProps<"div">, "onSele
 //
 // @public
 export function PaymentProviderLogos(props: PaymentProviderLogosProps): JSX.Element;
+
+// @public (undocumented)
+export const pictogramNames: readonly ["Access", "AlarmClock", "Assistance", "Award", "Badge", "Bell", "Bug", "Building", "Business", "Calendar", "CalendarCheck", "Citizen", "Cloud", "Code", "Completed", "CreditCard", "Data Security", "Delega", "Desktop", "Direction", "Documentation", "Download", "Earth", "Email Validation", "Enterprise", "Envelope", "Error", "Euro", "FileCheck", "Fingerprint", "Firma", "Flag", "Graduation", "History Doc", "Home", "Hourglass", "ID Card", "Idea", "Image", "In progress", "Inbox", "Institution", "Keypad", "Leggi", "LineChart", "Maintenance", "MapPin", "Message", "Messages", "Mouse", "MultipleFiles", "News", "OpenFolder", "Options", "PersonalFile", "PieChart", "Push", "Question", "Quick", "Repository", "Safe Deposit", "SavingMoney", "School", "Security", "Simplify", "SingleFile", "Smartphone validation", "Sms", "Storage", "Sync", "Trash", "Upload", "UploadFile", "User manual", "UserCheck", "Wallet"];
 
 // @public (undocumented)
 export function PinPoint(input: {
