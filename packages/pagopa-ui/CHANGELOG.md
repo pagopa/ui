@@ -227,6 +227,8 @@
 - `SideNav`: the group toggle in the condensed rail keeps its 44px pointer
   target when the rail expands; `not-sr-only` reset its box to the 20px icon,
   below the WCAG 2.5.8 minimum.
+- The package ships one ES module per component with `"use client"` where
+  needed; Server Components can import it.
 
 ### Removed
 
