@@ -1,5 +1,8 @@
+"use client"
+
 import * as React from "react"
 import { cn } from "@/lib/cn"
+import { useMessages } from "@/lib/ui-provider"
 
 import { X } from "@/components/primitives/icons"
 
@@ -29,7 +32,7 @@ interface BannerBaseProps {
   pictogram?: React.ReactNode
   onDismiss?: () => void
   titleAs?: "h2" | "h3" | "h4"
-  /** Accessible name of the dismiss control. @default "Chiudi avviso" */
+  /** Accessible name of the dismiss control. @default messages.banner.dismissLabel */
   dismissLabel?: string
   className?: string
 }
@@ -61,9 +64,12 @@ function Banner({
   pictogram,
   onDismiss,
   titleAs: Title = "h2",
-  dismissLabel = "Chiudi avviso",
+  dismissLabel: dismissLabelProp,
   className,
 }: BannerProps) {
+  const t = useMessages("banner")
+  const dismissLabel = dismissLabelProp ?? t.dismissLabel
+
   const primary = hierarchy === "primary"
   const secondary = hierarchy === "secondary"
   const tertiary = hierarchy === "tertiary"
