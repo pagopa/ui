@@ -425,10 +425,10 @@ export interface DrawerProps {
     trigger: React_2.ReactElement;
 }
 
-// @public (undocumented)
-export function DropDown(input: {
+// @public
+export function Dropdown(input: {
     triggerLabel: React_2.ReactNode;
-    items: DropDownItem[];
+    items: DropdownItem[];
     label?: string;
     back?: {
         label?: string;
@@ -449,7 +449,7 @@ export function DropDown(input: {
 // Warning: (ae-forgotten-export) The symbol "MenuAction" needs to be exported by the entry point pagopa-ui.d.ts
 //
 // @public (undocumented)
-export type DropDownItem = (DropDownItemBase & {
+export type DropdownItem = (DropDownItemBase & {
     type?: "default";
     multiple?: false;
     checked?: boolean;
@@ -681,10 +681,10 @@ export interface ListItemSuggestion {
     label: string;
 }
 
-// @public (undocumented)
-export function MenuDropDown(input: {
+// @public
+export function MenuDropdown(input: {
     accessibleLabel?: string;
-    items: DropDownItem[];
+    items: DropdownItem[];
     label?: string;
 }): React_2.JSX.Element;
 

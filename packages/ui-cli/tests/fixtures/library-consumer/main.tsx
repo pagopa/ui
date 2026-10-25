@@ -21,7 +21,7 @@ import {
   figmaIconNames,
   Image,
   InputChip,
-  MenuDropDown,
+  MenuDropdown,
   MultiSelectField,
   PagoPAIcon,
   PagoPAPictogram,
@@ -150,7 +150,7 @@ function ConsumerTable({ onMenuAction }: { onMenuAction: (action: string) => voi
         rows={empty ? [] : rows}
         rowActions={(row) =>
           row.id === "tari" ? (
-            <MenuDropDown
+            <MenuDropdown
               accessibleLabel="Apri azioni del servizio"
               label="Azioni del servizio"
               items={[

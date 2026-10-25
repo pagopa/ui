@@ -6,7 +6,7 @@ import { Copy, Trash2 } from "lucide-react"
 
 import { Avatar } from "@/components/content"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { Chip, DropDown, type DropDownItem } from "@/components/inputs"
+import { Chip, Dropdown, type DropdownItem } from "@/components/inputs"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -28,7 +28,7 @@ const backAction = fn()
 function MultiSelectExample() {
   const [checked, setChecked] = React.useState(false)
   return (
-    <DropDown
+    <Dropdown
       triggerLabel="Filtri"
       items={[
         {
@@ -48,8 +48,8 @@ function MultiSelectExample() {
 }
 
 const meta = {
-  title: "Components/Inputs/DropDown",
-  component: DropDown,
+  title: "Components/Inputs/Dropdown",
+  component: Dropdown,
   args: {
     triggerLabel: "Gestisci",
     items: [
@@ -74,9 +74,10 @@ const meta = {
         component:
           'Accessible menu with rich actions and options. `multiple` items control `checked`/`onCheckedChange` as `menuitemcheckbox` without closing the menu. Global `multiselect` keeps the `checked`/`onSelect(checked)` items; explicit per-item callbacks stay the priority. `level="second"` and `indent` keep the indentation, `selected` marks the item, `leadingAlignment="label"` aligns the leading artwork with its label, and `type="cta"`/`back` stay actions in multiselect too. `dividers` controls the separators.',
       },
+      subtitle: "Figma: DropDown",
     },
   },
-} satisfies Meta<typeof DropDown>
+} satisfies Meta<typeof Dropdown>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -90,7 +91,7 @@ export const Playground: Story = {
     await userEvent.click(within(menu).getByRole("menuitem", { name: /Copia/ }))
     await expect(copyMenuItem).toHaveBeenCalled()
     await waitFor(() => expect(screen.queryByRole("menu")).not.toBeInTheDocument())
-    // The source DropDown (616:3864) is the open panel: leave the preview in
+    // The source Dropdown (616:3864) is the open panel: leave the preview in
     // that state so the primary story shows the menu, not just the trigger.
     await userEvent.click(trigger)
     await screen.findByRole("menu")
@@ -167,7 +168,7 @@ export const Loading: Story = {
 
 function SourceSingleSelect() {
   const [selected, setSelected] = React.useState("anagrafe")
-  const items: DropDownItem[] = [
+  const items: DropdownItem[] = [
     {
       id: "anagrafe",
       label: "Anagrafe",
@@ -188,7 +189,7 @@ function SourceSingleSelect() {
     },
   ]
   return (
-    <DropDown
+    <Dropdown
       triggerLabel="Servizio"
       items={items}
       back={{ label: "Tutti i servizi", onSelect: () => setSelected("") }}
@@ -220,7 +221,7 @@ function MultiselectServices() {
   const toggle = (id: string) => (next?: boolean) =>
     setChecked((previous) => (next ? [...previous, id] : previous.filter((entry) => entry !== id)))
   return (
-    <DropDown
+    <Dropdown
       multiselect
       triggerLabel="Filtra per servizio"
       back={{ label: "Tutti i servizi", onSelect: () => setChecked([]) }}
@@ -280,7 +281,7 @@ function MixedMultiselectExample() {
   const [globalChecked, setGlobalChecked] = React.useState(false)
   const [explicitChecked, setExplicitChecked] = React.useState(false)
   return (
-    <DropDown
+    <Dropdown
       triggerLabel="Opzioni miste"
       multiselect
       dividers={false}
@@ -376,7 +377,7 @@ function SourcePanel({ mode }: { mode: SourcePanelMode }) {
   const multiple = mode === "multi" || mode === "multi-selected" || mode === "multi-all"
   const initial = mode === "multi-all" ? [1, 2, 3, 4, 5] : mode === "multi-selected" ? [1] : []
   const [checked, setChecked] = React.useState<number[]>(initial)
-  const options: DropDownItem[] = [1, 2, 3, 4, 5].map((index) => {
+  const options: DropdownItem[] = [1, 2, 3, 4, 5].map((index) => {
     const common = {
       id: `option-${index}`,
       label: "Value",
@@ -408,7 +409,7 @@ function SourcePanel({ mode }: { mode: SourcePanelMode }) {
           onSelect: () => undefined,
         }
   })
-  const items: DropDownItem[] = [
+  const items: DropdownItem[] = [
     {
       id: "location",
       label: "Usa posizione attuale",
@@ -420,7 +421,7 @@ function SourcePanel({ mode }: { mode: SourcePanelMode }) {
   ]
   return (
     <div className="w-[274px] max-w-full">
-      <DropDown triggerLabel="Open options" className="w-full" items={items} />
+      <Dropdown triggerLabel="Open options" className="w-full" items={items} />
     </div>
   )
 }
@@ -454,7 +455,7 @@ export const SourcePanelEmpty: Story = {
   tags: ["color-pinned"],
   render: () => (
     <div className="w-[274px] max-w-full">
-      <DropDown
+      <Dropdown
         triggerLabel="Open options"
         className="w-full"
         items={[]}
@@ -469,7 +470,7 @@ export const SourcePanelSkeleton: Story = {
   tags: ["color-pinned"],
   render: () => (
     <div className="w-[274px] max-w-full">
-      <DropDown triggerLabel="Open options" className="w-full" items={[]} loading />
+      <Dropdown triggerLabel="Open options" className="w-full" items={[]} loading />
     </div>
   ),
 }
