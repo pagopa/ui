@@ -1,6 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
-import { useLinkComponent, useMessages } from "@/lib/ui-provider"
+import { useLinkComponent } from "@/lib/ui-provider"
 
 import type { NavItem } from "./nav-item"
 
@@ -12,13 +12,13 @@ export type PreheaderLink = Omit<NavItem, "badge" | "children" | "current"> & {
 }
 
 function Preheader({
-  institution: institutionProp,
+  institution = "PagoPA S.p.A.",
   homeHref = "#",
   links = [],
   actions,
-  linksLabel: linksLabelProp,
+  linksLabel = "Link istituzionali",
 }: {
-  /** Institution name; the link target follows `homeHref`. @default messages.preheader.institution */
+  /** Institution name; the link target follows `homeHref`. @default "PagoPA S.p.A." */
   institution?: string
   /** Link target of the institution row; the `#` placeholder keeps the source default. @default "#" */
   homeHref?: string
@@ -26,13 +26,9 @@ function Preheader({
   links?: PreheaderLink[]
   /** Optional actions of the band. */
   actions?: React.ReactNode
-  /** Accessible name of the institutional links navigation. @default messages.preheader.linksLabel */
+  /** Accessible name of the institutional links navigation. @default "Link istituzionali" */
   linksLabel?: string
 }) {
-  const t = useMessages("preheader")
-  const institution = institutionProp ?? t.institution
-  const linksLabel = linksLabelProp ?? t.linksLabel
-
   const Link = useLinkComponent()
   return (
     <div className="bg-background">

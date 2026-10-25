@@ -1,6 +1,5 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
-import { useMessages } from "@/lib/ui-provider"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Separator } from "@/components/primitives/separator"
@@ -204,17 +203,7 @@ function TimelineTouchpoints({
   )
 }
 
-function Timeline({
-  items,
-  label: labelProp,
-}: {
-  items: TimelineItem[]
-  /** Accessible name of the timeline list. @default messages.timeline.label */
-  label?: string
-}) {
-  const t = useMessages("timeline")
-  const label = labelProp ?? t.label
-
+function Timeline({ items, label = "Cronologia" }: { items: TimelineItem[]; label?: string }) {
   return (
     // The source pairs the item box with the device: a 16px inset, 12px icon
     // gap and a title row in a page column (848px frames), the 8px inset, 8px

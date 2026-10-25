@@ -1,15 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import * as React from "react"
-import { enUS } from "react-day-picker/locale"
-import { expect, fn, screen, userEvent, waitFor, within } from "storybook/test"
+import { expect, userEvent, within } from "storybook/test"
 
-import { DatePicker } from "@/components/inputs"
 import { Breadcrumb } from "@/components/navigation/breadcrumb"
 import { Footer } from "@/components/navigation/footer"
-import { Pagination } from "@/components/navigation/pagination"
-import { Dialog } from "@/components/overlays"
 import { Button } from "@/components/primitives/button"
-import { UIProvider, enMessages, itMessages, type LinkComponentProps } from "@/lib/ui-provider"
+import { UIProvider, type LinkComponentProps } from "@/lib/ui-provider"
 
 // A stand-in for a client router: it keeps the anchor, marks it and stops the
 // browser navigation the way a router intercepts a same-origin click.
@@ -89,69 +85,5 @@ export const ButtonAsLink: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.getByRole("link", { name: "Vai alla sezione" })).toBeVisible()
-  },
-}
-
-export const English: Story = {
-  name: "English",
-  render: () => (
-    <UIProvider locale="en-US" messages={enMessages} calendarLocale={enUS}>
-      <div className="grid gap-8">
-        <Dialog trigger={<Button>Open dialog</Button>} title="Payment details">
-          <Pagination currentPage={2} totalPages={5} onPageChange={fn()} />
-        </Dialog>
-        <DatePicker label={enMessages.datePicker.label} onCancel={fn()} onConfirm={fn()} />
-      </div>
-    </UIProvider>
-  ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-
-    // The open dialog hides the rest of the tree from assistive technology, so
-    // the pagination is asserted inside it and the dialog closes before the
-    // calendar checks.
-    await userEvent.click(canvas.getByRole("button", { name: "Open dialog" }))
-    const dialog = await screen.findByRole("dialog", { name: "Payment details" })
-    await waitFor(() => expect(dialog).toBeVisible())
-    await expect(
-      within(dialog).getByRole("button", { name: enMessages.dialog.closeLabel }),
-    ).toBeVisible()
-    await expect(
-      within(dialog).getByRole("navigation", { name: enMessages.pagination.label }),
-    ).toBeVisible()
-    await expect(
-      within(dialog).getByRole("button", { name: enMessages.pagination.previousLabel }),
-    ).toBeVisible()
-    await expect(
-      within(dialog).getByRole("button", { name: enMessages.pagination.nextLabel }),
-    ).toBeVisible()
-
-    await userEvent.keyboard("{Escape}")
-    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
-
-    await expect(canvas.getByText(enMessages.datePicker.label)).toBeVisible()
-    await expect(canvas.getByText(enMessages.datePicker.emptySelectionText)).toBeVisible()
-    await expect(
-      canvas.getByRole("button", { name: enMessages.datePicker.cancelLabel }),
-    ).toBeVisible()
-    await expect(
-      canvas.getByRole("button", { name: enMessages.datePicker.confirmLabel }),
-    ).toBeVisible()
-  },
-}
-
-export const PartialOverride: Story = {
-  name: "PartialOverride",
-  render: () => (
-    <UIProvider messages={{ pagination: { previousLabel: "Indietro" } }}>
-      <Pagination currentPage={2} totalPages={5} onPageChange={fn()} />
-    </UIProvider>
-  ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    await expect(canvas.getByRole("button", { name: "Indietro" })).toBeVisible()
-    await expect(
-      canvas.getByRole("button", { name: itMessages.pagination.nextLabel }),
-    ).toBeVisible()
   },
 }

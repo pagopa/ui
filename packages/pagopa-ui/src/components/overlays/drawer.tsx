@@ -1,8 +1,5 @@
-"use client"
-
 import * as React from "react"
 
-import { useMessages } from "@/lib/ui-provider"
 import { X } from "@/components/primitives/icons"
 import { Button } from "@/components/primitives/button"
 import {
@@ -40,7 +37,7 @@ interface DrawerProps {
   defaultOpen?: boolean
   /** Controls whether the open panel blocks interaction with the page. */
   modal?: boolean
-  /** Accessible name of the close button. @default messages.drawer.closeLabel */
+  /** Accessible name of the close button. @default "Chiudi pannello" */
   closeLabel?: string
 }
 
@@ -56,11 +53,8 @@ function Drawer({
   direction = "right",
   defaultOpen,
   modal,
-  closeLabel: closeLabelProp,
+  closeLabel = "Chiudi pannello",
 }: DrawerProps) {
-  const t = useMessages("drawer")
-  const closeLabel = closeLabelProp ?? t.closeLabel
-
   const flow = footerPlacement === "flow"
 
   return (

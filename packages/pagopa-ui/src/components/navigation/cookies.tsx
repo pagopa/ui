@@ -1,8 +1,5 @@
-"use client"
-
 import * as React from "react"
 
-import { useMessages } from "@/lib/ui-provider"
 import { X } from "@/components/primitives/icons"
 import { Button } from "@/components/primitives/button"
 
@@ -12,8 +9,8 @@ function Cookies({
   onReject,
   onLearnMore,
   onDismiss,
-  closeLabel: closeLabelProp,
-  label: labelProp,
+  closeLabel = "Chiudi",
+  label = "Preferenze cookie",
 }: {
   /** Title and copy of the bar. */
   children: React.ReactNode
@@ -25,15 +22,11 @@ function Cookies({
   onLearnMore?: () => void
   /** Renders the close control when provided. */
   onDismiss?: () => void
-  /** Accessible name of the close control. @default messages.cookies.closeLabel */
+  /** Accessible name of the close control. @default "Chiudi" */
   closeLabel?: string
-  /** Accessible name of the bar. @default messages.cookies.label */
+  /** Accessible name of the bar. @default "Preferenze cookie" */
   label?: string
 }) {
-  const t = useMessages("cookies")
-  const closeLabel = closeLabelProp ?? t.closeLabel
-  const label = labelProp ?? t.label
-
   // Source `Device=Mobile` (1360:12856): the close sits beside the copy, the
   // three actions stack full width under it; the desktop row keeps the close
   // with the action block.

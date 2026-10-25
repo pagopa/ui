@@ -1,26 +1,19 @@
-"use client"
-
 import * as React from "react"
 import { cn } from "@/lib/cn"
-import { useMessages } from "@/lib/ui-provider"
 
 function Overlay({
   visible,
-  label: labelProp,
+  label = "Caricamento",
   children,
   showSpinner = true,
   className,
 }: {
   visible: boolean
-  /** Announced loading text. @default messages.overlay.label */
   label?: string
   children?: React.ReactNode
   showSpinner?: boolean
   className?: string
 }) {
-  const t = useMessages("overlay")
-  const label = labelProp ?? t.label
-
   if (!visible) return null
   return (
     <div

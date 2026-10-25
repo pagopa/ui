@@ -1,23 +1,18 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
-import { useMessages } from "@/lib/ui-provider"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Button } from "@/components/primitives/button"
 
 function ScrollToBottom({
   target,
-  label: labelProp,
+  label = "Vai in fondo",
   className,
 }: {
   target?: React.RefObject<HTMLElement | null>
-  /** Accessible name of the scroll control. @default messages.scrollToBottom.label */
   label?: string
   className?: string
 }) {
-  const t = useMessages("scrollToBottom")
-  const label = labelProp ?? t.label
-
   const [visible, setVisible] = React.useState(true)
   React.useEffect(() => {
     const element = target?.current

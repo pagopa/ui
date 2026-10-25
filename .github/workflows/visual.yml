@@ -1,0 +1,147 @@
+# Visual regression: every story at 320, 600 and 1200 px, compared to the
+# Linux baselines committed under apps/storybook/visual/__screenshots__.
+# To accept a visual change, add the `visual:update` label to the pull request:
+# the workflow commits the new baselines to the head branch.
+# A commit made with GITHUB_TOKEN does not trigger a new run: remove the label
+# and re-run the check by hand.
+# Baselines are never produced on macOS: use the Playwright container as in
+# CONTRIBUTING.md.
+name: Visual regression
+
+on:
+  pull_request:
+    # `ready_for_review` is what turns a skipped draft into a checked pull
+    # request; `labeled` is the update mode of the baselines.
+    types: [opened, synchronize, reopened, ready_for_review, labeled]
+  push:
+    branches: [main]
+    paths-ignore:
+      - "packages/pagopa-ui/package.json"
+      - "packages/pagopa-ui/CHANGELOG.md"
+      - ".nx/version-plans/**"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  visual:
+    name: Visual regression
+    # A draft may still change its diff, and the label run belongs to the
+    # update job below.
+    if: >-
+      (github.event_name != 'pull_request' || github.event.pull_request.draft == false) &&
+      !startsWith(github.head_ref || '', 'nx-release/') &&
+      !(github.event_name == 'pull_request' && github.event.label.name == 'visual:update' && github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+      options: --ipc=host
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Setup npm registry
+        uses: pagopa/dx/actions/setup-npm-registry@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # The first run of the gate has no baseline to compare against: say so
+      # instead of writing 1446 new screenshots on the runner.
+      - name: Require the baselines
+        run: |
+          if ! ls apps/storybook/visual/__screenshots__/*.png >/dev/null 2>&1; then
+            echo "::error::No visual baselines are committed. Add the 'visual:update' label to this pull request to produce them on Linux."
+            exit 1
+          fi
+
+      - name: Visual regression
+        timeout-minutes: 60
+        run: pnpm nx run pagopa-ui-storybook:test:visual
+
+      - name: Upload the failures
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: visual-regression-${{ github.run_id }}
+          path: |
+            apps/storybook/visual/test-results
+            apps/storybook/visual/playwright-report
+          retention-days: 7
+          if-no-files-found: ignore
+
+  visual-update:
+    name: Visual regression (update baselines)
+    # Write access is granted to this job alone, and only for a label on a
+    # branch of this repository: a fork cannot push its baselines here.
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.label.name == 'visual:update' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.draft == false &&
+      !startsWith(github.head_ref || '', 'nx-release/')
+    runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+      options: --ipc=host
+    permissions:
+      contents: write
+      packages: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Setup npm registry
+        uses: pagopa/dx/actions/setup-npm-registry@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Write the baselines
+        timeout-minutes: 60
+        run: pnpm nx run pagopa-ui-storybook:test:visual:update
+
+      - name: Commit the baselines
+        run: |
+          git config --system --add safe.directory "$GITHUB_WORKSPACE" 2>/dev/null || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898812+github-actions[bot]@users.noreply.github.com"
+          git add apps/storybook/visual/__screenshots__
+          if git diff --cached --quiet; then
+            echo "The baselines are unchanged: nothing to commit."
+            exit 0
+          fi
+          git commit -m "test(visual): update baselines"
+          git push origin "HEAD:${{ github.event.pull_request.head.ref }}"

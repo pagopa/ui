@@ -10,6 +10,9 @@
     "palette-color": 0,
     "off-scale-spacing": 0,
     "shadow-scale": 3,
-    "center-overflow": 0
+    "center-overflow": 0,
+    "default-breakpoint": 116,
+    "mobile-text-class": 14,
+    "default-container-query": 34
   }
 }

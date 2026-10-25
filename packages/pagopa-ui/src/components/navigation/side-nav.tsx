@@ -1,6 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
-import { useLinkComponent, useMessages } from "@/lib/ui-provider"
+import { useLinkComponent } from "@/lib/ui-provider"
 
 import { ChevronDown } from "@/components/primitives/icons"
 import { Badge } from "@/components/primitives/badge"
@@ -24,7 +24,7 @@ function hasCurrentItem(item: NavItem): boolean {
 }
 
 function SideNav({
-  title: titleProp,
+  title = "In questa sezione",
   items,
   profile,
   condensed = false,
@@ -32,7 +32,6 @@ function SideNav({
   collapseLabel = defaultCollapseLabel,
   className,
 }: {
-  /** Accessible name of the section. @default messages.sideNav.title */
   title?: string
   items: NavItem[]
   profile?: SideNavProfile
@@ -44,9 +43,6 @@ function SideNav({
   collapseLabel?: (label: string) => string
   className?: string
 }) {
-  const t = useMessages("sideNav")
-  const title = titleProp ?? t.title
-
   const [expanded, setExpanded] = React.useState(false)
   return (
     <nav

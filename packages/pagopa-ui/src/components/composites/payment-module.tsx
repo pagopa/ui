@@ -1,8 +1,5 @@
-"use client"
-
 import * as React from "react"
 import { cn } from "@/lib/cn"
-import { useMessages } from "@/lib/ui-provider"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Button } from "@/components/primitives/button"
@@ -30,7 +27,7 @@ function PaymentModule({
   suggestion,
   price,
   onDownload,
-  downloadLabel: downloadLabelProp,
+  downloadLabel = "Scarica",
   selected = false,
   onSelect,
   selectName,
@@ -49,7 +46,7 @@ function PaymentModule({
   price?: PaymentPrice
   /** Download action of the row. */
   onDownload?: () => void
-  /** Accessible name of the download action. @default messages.paymentModule.downloadLabel */
+  /** Accessible name of the download action. @default "Scarica" */
   downloadLabel?: string
   /** Multi-payment: the radio selects the notice. */
   selected?: boolean
@@ -61,9 +58,6 @@ function PaymentModule({
   /** Skeleton state: placeholders replace the content. */
   loading?: boolean
 }) {
-  const t = useMessages("paymentModule")
-  const downloadLabel = downloadLabelProp ?? t.downloadLabel
-
   const content = loading ? (
     <div className="grid gap-1">
       <Skeleton className="h-6 w-60 max-w-full rounded-4 bg-muted" />
