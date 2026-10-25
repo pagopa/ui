@@ -10,7 +10,6 @@ import {
   caseKey,
   deviceCoverage,
   DRAFT_NOTE,
-  fanInCounts,
   findCase,
   isDraftCase,
   loadCaseFile,
@@ -800,44 +799,4 @@ test("--note annotates a case built from the command line", () => {
   assert.equal(spec.note, "reviewed: the desktop first render")
   assert.equal(spec.nodeId, "1:1")
   assert.equal(caseFromFlags(known, new Map(), args).note, undefined)
-})
-
-// Fan-in counts the components that contain a node: the shared part first, the
-// components that use it after, so a fix lands once in the place that reaches
-// both. A dependency on an external library is not a node and is skipped.
-test("fan-in counts the inventory components that depend on a node", () => {
-  const nodes = [
-    {
-      nodeId: "1:1",
-      name: "Part",
-      type: "COMPONENT",
-      pageId: "0:1",
-      pageName: "Components",
-      dependencies: [],
-    },
-    {
-      nodeId: "2:1",
-      name: "First",
-      type: "COMPONENT",
-      pageId: "0:1",
-      pageName: "Components",
-      dependencies: [{ external: false, nodeId: "1:1" }],
-    },
-    {
-      nodeId: "3:1",
-      name: "Second",
-      type: "COMPONENT",
-      pageId: "0:1",
-      pageName: "Components",
-      dependencies: [
-        { external: false, nodeId: "1:1" },
-        { external: true, assetKey: "abc" },
-      ],
-    },
-  ]
-  const counts = fanInCounts(nodes)
-  assert.equal(counts.get("1:1"), 2)
-  assert.equal(counts.get("2:1"), undefined)
-  assert.equal(counts.get("3:1"), undefined)
-  assert.equal(counts.get("4:1") ?? 0, 0)
 })

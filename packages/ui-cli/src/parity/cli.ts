@@ -5,8 +5,6 @@
 //   queue    work list: registry cases with their story ids, Design-panel nodes
 //            and the exports still undeclared (local files only)
 //   check    one case: source spec, render capture, classified diff
-//   align    one node: header, every case's verdict and deltas, class hints and
-//            the next command, read-only
 //   capture  a wave: run a case list (or the registry filter) and write the
 //            per-case probe/report and one summary into `--out`
 //   report   aggregate a wave directory into a committed markdown + the JSON
@@ -29,7 +27,6 @@ import {
   caseIdFor,
   type CaseRow,
   deviceCoverage,
-  fanInCounts,
   findCase,
   isDraftCase,
   loadCaseFile,
@@ -38,7 +35,6 @@ import {
   syncProposals,
   validateCaseFile,
 } from "./cases.ts"
-import { align } from "./align.ts"
 import {
   compare,
   compositionSignature,
@@ -128,8 +124,7 @@ const DEFAULT_CASES = rootPath("src/catalog/figma/parity-cases.json")
 const SCOPE_PROBES = [360, 1200]
 
 const USAGE = `usage:
-  figma-parity queue [--status pending,implemented] [--node <id>] [--cases <file>] [--order fan-in] [--unmapped] [--coverage] [--uncovered] [--json]
-  figma-parity align --node <id> [--cases <file>] [--json]
+  figma-parity queue [--status pending,implemented] [--node <id>] [--cases <file>] [--unmapped] [--coverage] [--uncovered] [--json]
   figma-parity check --node <id> | --case <caseId> [--cases <file>]
     [--state filled|empty|<declared state>] [--variant <nodeId>] [--device <key>]
     [--layout-scope viewport|container] [--story <storyId>]
@@ -766,17 +761,8 @@ function queue({ flags }: Parsed): number {
   if (flags.has("coverage") || flags.has("uncovered")) {
     return printCoverage({ flags }, path_, corpus)
   }
-  const order = flags.get("order")
-  if (order !== undefined && order !== "fan-in") {
-    throw new Error(`--order expects "fan-in", not ${order === true ? "(no value)" : order}`)
-  }
-  // Fan-in is a column and, with `--order fan-in`, the sort key; ties keep the
-  // registry order (a stable sort), so the default walk is unchanged.
-  const fanIn = fanInCounts()
-  const rows = cases.map((item) => ({ ...item, fanIn: fanIn.get(item.nodeId) ?? 0 }))
-  if (order === "fan-in") rows.sort((a, b) => b.fanIn - a.fanIn)
   if (flags.has("unmapped")) {
-    const unmapped = rows.filter((item) => !mapped.has(item.nodeId))
+    const unmapped = cases.filter((item) => !mapped.has(item.nodeId))
     if (flags.has("json")) {
       console.log(
         JSON.stringify(
@@ -801,18 +787,18 @@ function queue({ flags }: Parsed): number {
   if (flags.has("json")) {
     console.log(
       JSON.stringify(
-        { cases: rows, missing: cases.missing ?? [], corpus: path_, mapped: mapped.size },
+        { cases, missing: cases.missing ?? [], corpus: path_, mapped: mapped.size },
         null,
         2,
       ),
     )
   } else {
-    for (const item of rows) {
+    for (const item of cases) {
       const design = Object.entries(item.design)
         .map(([name, nodes]) => `${name}:${Array.isArray(nodes) ? nodes.join(",") || "-" : "-"}`)
         .join(" ")
       console.log(
-        `${item.nodeId} ${item.status.padEnd(11)} ${item.export.padEnd(24)} ${String(item.fanIn).padStart(3)} ${item.storyIds.join(" ")} [${design}]`,
+        `${item.nodeId} ${item.status.padEnd(11)} ${item.export.padEnd(24)} ${item.storyIds.join(" ")} [${design}]`,
       )
     }
     for (const item of cases.missing ?? []) {
@@ -1449,7 +1435,6 @@ async function main(argv: string[]): Promise<number> {
   }
   if (command === "queue") return queue(parsed)
   if (command === "check") return await check(parsed)
-  if (command === "align") return await align(parsed)
   if (command === "capture") return await captureWave(parsed)
   if (command === "cases") return cases(parsed)
   if (command === "evidence") return await evidenceCommand(argv.slice(1))
