@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "fileKey": "pvhsJpPGQbEwNLiyP7BOIw",
-  "version": "2412426961662147678",
-  "capturedAt": "2026-10-23",
+  "version": "2414642305250572457",
+  "capturedAt": "2026-10-26",
   "cases": {
     "50-1700-lg-desktop-desktop": {
       "png": "references/50-1700-lg-desktop-desktop.png",
@@ -2416,6 +2416,24 @@
       "width": 272,
       "height": 1238
     },
+    "9676-5453-default": {
+      "png": "references/9676-5453-default.png",
+      "sha256": "3159f8df432de55ccdde88cbdb4af40fdcc8e3688ffdceeb963211536e0102eb",
+      "nodeId": "9676:5453",
+      "variant": "9676:5453",
+      "designFingerprint": "4401d49a7c829de67af3356acaa50b72dc24bc63409147d3f488d7701728aed4",
+      "width": 164,
+      "height": 30
+    },
+    "9676-5455-default": {
+      "png": "references/9676-5455-default.png",
+      "sha256": "0a87672972ad2287d703d61b2736f8bee867d376741726de8f4a44bab04f4252",
+      "nodeId": "9676:5455",
+      "variant": "9676:5455",
+      "designFingerprint": "4245233d10d662cb27cb376b690e3aa20ce71c9fd4b5e3c3160aec2ee0b6c450",
+      "width": 160,
+      "height": 30
+    },
     "9866-4494-success": {
       "png": "references/9866-4494-success.png",
       "sha256": "e3b14702bf335d03bca9e0ff19d91b71b7c137cf262fe11d632f10407cc00730",
@@ -2659,50 +2677,32 @@
       "width": 202,
       "height": 282
     },
+    "9676-5633-default": {
+      "png": "references/9676-5633-default.png",
+      "sha256": "a4443b8737a819c768ae326bc6572c3143ff4c364c0dc6f17645c7c0d9588717",
+      "nodeId": "9676:5633",
+      "variant": "9676:5633",
+      "designFingerprint": "a19d10d21800c17b5bc5382623a2dffe1fd1f75eda7dd351ed133505c454d644",
+      "width": 725,
+      "height": 110
+    },
     "12812-16248-desktop-desktop": {
       "png": "references/12812-16248-desktop-desktop.png",
-      "sha256": "1d5c28d3431cc7bf1c6ae73c7b58fc2fd1224e5d807aad7a16c77bda2bb27687",
+      "sha256": "a4b147d6c7b86ab07d54f8f569a75b8e7b28eca445b2a1cb9705285d302386f7",
       "nodeId": "12812:16248",
       "variant": "9694:13224",
-      "designFingerprint": "eed0e3235ee2cf14833c62bd2885d47a32e643bf05f44a2b31ec9fc6a1b94e62",
+      "designFingerprint": "acedc7ec674ecdfad35e067b8122058d4ea3e7d0091f8ae1726c4fea12bdb0e8",
       "width": 850,
-      "height": 118
+      "height": 136
     },
     "12812-16248-mobile-mobile": {
       "png": "references/12812-16248-mobile-mobile.png",
-      "sha256": "82c74c16bbfa3f960cca256c1da4f1ada573b9f5c95844a477c1954f50c36ef6",
+      "sha256": "0932b10a106a526293699f59f57286f69deefb4d70e8d8b1506a40f4c862e2e9",
       "nodeId": "12812:16248",
       "variant": "12812:16249",
-      "designFingerprint": "40f38b51971372815e2db719aefa454c8ac6a9cfff116ed18c3e918747f9c149",
+      "designFingerprint": "a7104250c4775f7de70be7c230094187a8d1d5b887d59bb0f1c8b5ccb3a54962",
       "width": 848,
-      "height": 128
-    },
-    "9676-5453-default": {
-      "png": "references/9676-5453-default.png",
-      "sha256": "3159f8df432de55ccdde88cbdb4af40fdcc8e3688ffdceeb963211536e0102eb",
-      "nodeId": "9676:5453",
-      "variant": "9676:5453",
-      "designFingerprint": "4401d49a7c829de67af3356acaa50b72dc24bc63409147d3f488d7701728aed4",
-      "width": 164,
-      "height": 30
-    },
-    "9676-5455-default": {
-      "png": "references/9676-5455-default.png",
-      "sha256": "0a87672972ad2287d703d61b2736f8bee867d376741726de8f4a44bab04f4252",
-      "nodeId": "9676:5455",
-      "variant": "9676:5455",
-      "designFingerprint": "4245233d10d662cb27cb376b690e3aa20ce71c9fd4b5e3c3160aec2ee0b6c450",
-      "width": 160,
-      "height": 30
-    },
-    "9676-5633-default": {
-      "png": "references/9676-5633-default.png",
-      "sha256": "09bb94b5948a1859e9c93683ae64d5fe6749ebecc3f35f4ebf9ca44fdb1f8d8c",
-      "nodeId": "9676:5633",
-      "variant": "9676:5633",
-      "designFingerprint": "9976ca0b111dae8c6057b989839f894096e3b0b322911125665b5aba1d68dd59",
-      "width": 725,
-      "height": 91
+      "height": 146
     }
   }
 }
