@@ -1,6 +1,6 @@
-import { readJson, writeText } from "../lib/json.ts"
+import { readJson } from "../lib/json.ts"
 import { enterRoot } from "../lib/paths.ts"
-import { fetchFigmaSnapshot } from "./rest.ts"
+import { fetchFigmaSnapshot, writeFigmaSnapshot } from "./rest.ts"
 import { fileKeyFromSource, normalizeLive } from "./snapshot.ts"
 import { requireFigmaToken } from "./token.ts"
 
@@ -14,7 +14,7 @@ export async function runExport(argv: string[] = process.argv.slice(2)): Promise
   const snapshot = await fetchFigmaSnapshot(fileKeyFromSource(), mcpNodes)
   const nodes = normalizeLive(snapshot)
   const target = ".figma/live-rest.json"
-  writeText(target, JSON.stringify(snapshot) + "\n")
+  writeFigmaSnapshot(target, snapshot)
   console.log(
     `Read-only export: ${nodes.length} component roots, version ${snapshot.version}` +
       `${snapshot.lastModified ? ` (modified ${snapshot.lastModified})` : ""} -> ${target}`,

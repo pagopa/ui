@@ -70,7 +70,7 @@ import {
   loadDeviceExceptions,
   validateCaseFile,
 } from "../parity/cases.ts"
-import { fetchFigmaSnapshot } from "./rest.ts"
+import { fetchFigmaSnapshot, writeFigmaSnapshot } from "./rest.ts"
 import { staleStoryTitles } from "./stories.ts"
 import { requireFigmaToken } from "./token.ts"
 import { EVIDENCE_DIR, evidencePaths, loadManifest } from "../parity/evidence.ts"
@@ -314,8 +314,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     const saveOption = option("save") ?? ".figma/live-rest.json"
     const savePath = path.resolve(ROOT, saveOption)
     try {
-      fs.mkdirSync(path.dirname(savePath), { recursive: true })
-      fs.writeFileSync(savePath, `${JSON.stringify(restSnapshot, null, 2)}\n`)
+      writeFigmaSnapshot(savePath, restSnapshot)
       // `--plan` owns stdout: the plan stays parseable as JSON.
       const report = flag("plan") ? console.error : console.log
       report(`snapshot: ${saveOption} (version ${restSnapshot.version})`)

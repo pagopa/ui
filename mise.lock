@@ -8,21 +8,27 @@ backend = "aqua:aws/aws-cli"
 specifiers = ["2"]
 
 [tools.aws-cli."platforms.linux-arm64"]
+checksum = "sha256:f937a72a824c25f8cf38ff4249257c96840578c7eaea1d29117cdc249cbd3ebe"
 url = "https://awscli.amazonaws.com/awscli-exe-linux-aarch64-2.37.13.zip"
 
 [tools.aws-cli."platforms.linux-arm64-musl"]
+checksum = "sha256:f937a72a824c25f8cf38ff4249257c96840578c7eaea1d29117cdc249cbd3ebe"
 url = "https://awscli.amazonaws.com/awscli-exe-linux-aarch64-2.37.13.zip"
 
 [tools.aws-cli."platforms.linux-x64"]
+checksum = "sha256:c92fde59827622889d3d38a44e2089a137894ce151a2c658a3988ecde4860caa"
 url = "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.37.13.zip"
 
 [tools.aws-cli."platforms.linux-x64-musl"]
+checksum = "sha256:c92fde59827622889d3d38a44e2089a137894ce151a2c658a3988ecde4860caa"
 url = "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.37.13.zip"
 
 [tools.aws-cli."platforms.macos-arm64"]
+checksum = "sha256:2eefd8d0759fbdcd03038a0979479abc9a660326d1f4e36034f1c9307afa0732"
 url = "https://awscli.amazonaws.com/AWSCLIV2-2.37.13.pkg"
 
 [tools.aws-cli."platforms.macos-x64"]
+checksum = "sha256:2eefd8d0759fbdcd03038a0979479abc9a660326d1f4e36034f1c9307afa0732"
 url = "https://awscli.amazonaws.com/AWSCLIV2-2.37.13.pkg"
 
 [[tools.azure-cli]]
@@ -117,9 +123,12 @@ url = "https://nodejs.org/dist/v24.22.1/node-v24.22.1-win-x64.zip"
 
 [[tools.pnpm]]
 version = "11.28.6"
-aube = { path = ".mise/locks/pnpm/11.28.6", digest = "sha256:771e34862fd7956134725fa16f129d73acd12b5d30f79ad1625663b05b93ccbd" }
+aube = { path = ".mise/locks/pnpm/11.28.6~9503ab77", digest = "sha256:771e34862fd7956134725fa16f129d73acd12b5d30f79ad1625663b05b93ccbd" }
 backend = "npm:pnpm"
 specifiers = ["11.28.6"]
+
+[tools.pnpm.options]
+checksum = "sha512:55d90390c3b39042f1505a2697789f0256c6d95bb28bdd7cb731af1887c9f2629ef581acb9f4e4ec772024c8203c2aed22a03299b97103fdcf32668e905d0024"
 
 [[tools.python]]
 version = "3.14.8"
