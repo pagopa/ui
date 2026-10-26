@@ -123,9 +123,12 @@ url = "https://nodejs.org/dist/v24.22.1/node-v24.22.1-win-x64.zip"
 
 [[tools.pnpm]]
 version = "11.28.6"
-aube = { path = ".mise/locks/pnpm/11.28.6", digest = "sha256:771e34862fd7956134725fa16f129d73acd12b5d30f79ad1625663b05b93ccbd" }
+aube = { path = ".mise/locks/pnpm/11.28.6~9503ab77", digest = "sha256:771e34862fd7956134725fa16f129d73acd12b5d30f79ad1625663b05b93ccbd" }
 backend = "npm:pnpm"
 specifiers = ["11.28.6"]
+
+[tools.pnpm.options]
+checksum = "sha512:55d90390c3b39042f1505a2697789f0256c6d95bb28bdd7cb731af1887c9f2629ef581acb9f4e4ec772024c8203c2aed22a03299b97103fdcf32668e905d0024"
 
 [[tools.python]]
 version = "3.14.8"
