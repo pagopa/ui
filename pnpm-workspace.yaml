@@ -22,3 +22,6 @@ patchedDependencies:
   '@pagopa/nx-terraform@0.5.13': patches/@pagopa__nx-terraform@0.5.13.patch
 
 minimumReleaseAge: 4320
+minimumReleaseAgeExclude:
+  # Renovate security update: @vitest/browser@5.0.5
+  - "@vitest/browser@5.0.5"
