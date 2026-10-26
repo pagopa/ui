@@ -79,7 +79,8 @@ the one on variables opens only with a Figma Enterprise plan and the
    reads it. The committed evidence bundle lets a clone read the source side
    without it; Storybook is still required for a render.
 4. For A/E: a GitHub repository created and the secrets ready. The drift job
-   needs `FIGMA_TOKEN` and `DRIFT_PR_TOKEN`; the opt-in Chromatic baseline needs
+   needs `FIGMA_TOKEN` (it pushes and opens its pull request with the job's
+   `GITHUB_TOKEN`); the opt-in Chromatic baseline needs
    `CHROMATIC_PROJECT_TOKEN` and the `chromatic` label. The agent writes the
    workflow and the secrets document; the person inserts the secrets and
    creates the Chromatic project.

@@ -10,17 +10,22 @@ name: Figma drift
 # uploaded as artifacts (never `.figma/`), and the branch guard refuses to
 # force-push a branch whose head is not the bot's commit.
 #
-# DRIFT_PR_TOKEN is a fine-grained token (contents + pull requests) so the PR
-# can trigger CI; the default GITHUB_TOKEN cannot start workflow runs on its
-# own pull request. The GITHUB_TOKEN fallback still opens the PR, but its
-# checks stay empty until a human re-runs them.
+# The branch and the pull request use the job's GITHUB_TOKEN: the job asks for
+# `contents: write` and `pull-requests: write` explicitly, which replaces the
+# repository default. `checkout` does not persist it: the step that pushes
+# attaches the credential with `-c` to the three git commands that need it, so
+# `pnpm install` and the Figma sync run with no token on disk and none in their
+# environment. The runs started on a pull request that GITHUB_TOKEN created stay
+# in an approval-required state, so the person reviewing the drift approves them
+# — one click inside the review they were going to do anyway. No extra token to
+# create, approve or rotate, and no credential that outlives the run.
 #
 # Every third-party action is pinned to a full commit SHA: this job can push
-# and reaches FIGMA_TOKEN and DRIFT_PR_TOKEN, so a moved tag would be arbitrary
-# code running with those powers. The first party `pagopa/dx` actions are
-# pinned the same way: renovate.json pins the package and updates the digest
-# through a reviewed pull request. Permissions are read-only at the workflow
-# level; only the job that pushes and opens the pull request gets write.
+# and reaches FIGMA_TOKEN, so a moved tag would be arbitrary code running with
+# those powers. The first party `pagopa/dx` actions are pinned the same way:
+# renovate.json pins the package and updates the digest through a reviewed
+# pull request. Permissions are read-only at the workflow level; only the job
+# that pushes and opens the pull request gets write.
 on:
   schedule:
     # Every Monday at 04:00 UTC
@@ -64,8 +69,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
-          # The job pushes with the drift token explicitly; a GITHUB_TOKEN left
-          # in .git/config would widen what every step below can reach.
+          # `checkout` needs the token to clone and holds it in memory only; the
+          # one step that pushes attaches it to its own commands, so
+          # `pnpm install` cannot read it from .git/config.
           persist-credentials: false
 
       - name: Setup pnpm
@@ -135,17 +141,21 @@ jobs:
       - name: Open the review pull request
         if: hashFiles('packages/pagopa-ui/.figma/pr-body.md') != ''
         env:
-          GH_TOKEN: ${{ secrets.DRIFT_PR_TOKEN || secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
+          # The credential lives in this step alone and is never encoded: these
+          # two `-c` flags give git one helper that reads the token from the step
+          # environment when asked. Nothing lands in `.git/config`, and no copy
+          # of the token — base64 or otherwise — is ever built, so an argv echo
+          # or a stray git trace cannot print one that the log masker would not
+          # recognise.
+          auth=(-c credential.helper= -c 'credential.helper=!f() { test "$1" = get && printf "username=x-access-token\npassword=%s\n" "$GH_TOKEN"; }; f')
           branch="figma-drift/$(date -u +%Y-%m-%d)"
-          remote="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git config user.name "figma-drift[bot]"
           git config user.email "figma-drift[bot]@users.noreply.github.com"
-          if git ls-remote --exit-code --heads "$remote" "$branch" >/dev/null; then
-            # Fetch with the same token the push uses: checkout persists no
-            # credentials, so a bare `origin` would not authenticate.
-            git fetch "$remote" "+refs/heads/$branch:refs/remotes/origin/$branch"
+          if git "${auth[@]}" ls-remote --exit-code --heads origin "$branch" >/dev/null; then
+            git "${auth[@]}" fetch origin "+refs/heads/$branch:refs/remotes/origin/$branch"
             last_author="$(git log -1 --format='%an' "origin/$branch")"
             last_subject="$(git log -1 --format='%s' "origin/$branch")"
             if [ "$last_author" != "figma-drift[bot]" ] ||
@@ -167,9 +177,7 @@ jobs:
             exit 0
           fi
           git commit -m "chore(figma): refresh the drift inventory and queue the review"
-          # Checkout persists no credentials: the push carries the same token
-          # `gh` uses, and only for this one command.
-          git push --force-with-lease "$remote" "$branch"
+          git "${auth[@]}" push --force-with-lease origin "$branch"
           gh pr create \
             --title "Figma drift — $(date -u +%Y-%m-%d)" \
             --body-file packages/pagopa-ui/.figma/pr-body.md \

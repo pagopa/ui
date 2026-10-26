@@ -284,10 +284,11 @@ run does not move it. Each command records its own baseline under
   `node src/cli.ts figma sync --rest --save .figma/live-rest.json --pr-body .figma/pr-body.md --delta .figma/delta.json`.
   The job needs the read-only `FIGMA_TOKEN` secret and fails when it is missing.
   With drift it refreshes the inventory and the evidence bundle and opens one
-  review pull request (`DRIFT_PR_TOKEN`), uploading `delta.json`, `run.json` and
-  the body as artifacts; without drift it leaves the tree untouched and opens
-  nothing. The branch guard refuses to force-push a branch whose head is not the
-  bot's commit. The merge is the review record.
+  review pull request with the job's `GITHUB_TOKEN`, whose runs wait for the
+  reviewer's approval, uploading `delta.json`, `run.json` and the body as
+  artifacts; without drift it leaves the tree untouched and opens nothing. The
+  branch guard refuses to force-push a branch whose head is not the bot's
+  commit. The merge is the review record.
 
 ## When to run which Figma command
 

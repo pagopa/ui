@@ -422,6 +422,8 @@ machine-readable delta and a local procedure the person can follow.
    - `FIGMA_TOKEN` (`file_content:read`, `library_content:read`) for the drift
      job and the live local steps;
    - `DRIFT_PR_TOKEN` (contents + pull requests) so the bot PR triggers CI;
+     retired on 2026-10-26: the drift job now pushes and opens the pull request
+     with its `GITHUB_TOKEN`, and the reviewer approves the runs on it;
    - the registry token the workflow already uses for `pnpm install`
      (`GITHUB_TOKEN` through `pagopa/dx/actions/setup-npm-registry`; add a
      dedicated `NODE_AUTH_TOKEN` only if the organisation requires it);
@@ -598,7 +600,7 @@ Do not touch:
 | M5 scope explodes (123 proposals)           | an endless wave                       | the queue is the scope; principal states per node, not every proposal; three passes per case                                            |
 | A design defect is absorbed into code       | a silent deviation                    | the node stays `pending`; a file under `docs/design-requests/`; the registry note carries the decision                                  |
 | A same-day drift re-run destroys local work | lost commits                          | the branch guard before the push; fail closed                                                                                           |
-| A missing `FIGMA_TOKEN` or `DRIFT_PR_TOKEN` | no drift PR, or an unchecked one      | the preflight fails explicitly; the secrets doc names the failure mode                                                                  |
+| A missing `FIGMA_TOKEN`                     | no drift PR                           | the preflight fails explicitly; the secrets doc names the failure mode                                                                  |
 | The Chromatic token is missing              | the opt-in run is skipped             | skip with a notice; never a required check                                                                                              |
 | The local agent follows a stale instruction | a wrong implementation                | read the skill and the plan; the registry note is binding; the person reviews the diff                                                  |
 | Storybook cannot start                      | render evidence missing               | `parity verify` and the source slice still run; do not count the render as passed                                                       |
@@ -620,7 +622,8 @@ Remaining prerequisites, owned by the person:
 
 1. Create the Chromatic project and insert `CHROMATIC_PROJECT_TOKEN`; create the
    `chromatic` label on the repository.
-2. Insert `FIGMA_TOKEN` and `DRIFT_PR_TOKEN` in the repository secrets.
+2. Insert `FIGMA_TOKEN` in the environment secrets and delete the retired
+   `DRIFT_PR_TOKEN`; the drift pull request uses the job's `GITHUB_TOKEN`.
 3. The Figma design owner records the decisions for TimelineDrawer (mobile edge
    and header rhythm; the 416 width is already the shared width), TableCellRow
    and Pagination `Order`; the requests are
