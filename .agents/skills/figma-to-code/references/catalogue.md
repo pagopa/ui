@@ -123,6 +123,7 @@ never as a partial synchronization.
 read-only `FIGMA_TOKEN` secret and fails when it is missing: a skipped check
 cannot certify alignment. With drift it refreshes the inventory, queues the
 production delta as `pending`, formats the payload and opens one review pull
-request (`DRIFT_PR_TOKEN`, a bot identity that can trigger CI). Its body is the
-handoff: per node the name, `nodeId`, link, change class, current status and
-target, the per-device variants and the three decisions.
+request with the job's `GITHUB_TOKEN`; the runs on that pull request wait for
+the reviewer's approval. Its body is the handoff: per node the name, `nodeId`,
+link, change class, current status and target, the per-device variants and the
+three decisions.

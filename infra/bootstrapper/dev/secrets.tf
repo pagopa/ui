@@ -3,8 +3,11 @@
 # manage them here; these blocks forget every instance without destroying the
 # secrets that already exist.
 #
-# Key Vault: ui-figma-token, ui-drift-pr-token, ui-chromatic-project-token
-# GitHub environment: FIGMA_TOKEN, DRIFT_PR_TOKEN, CHROMATIC_PROJECT_TOKEN
+# Key Vault: ui-figma-token, ui-chromatic-project-token, and ui-drift-pr-token
+# until the person deletes it — the drift pull request now uses the job's
+# GITHUB_TOKEN instead of that personal access token.
+# GitHub environment: FIGMA_TOKEN, CHROMATIC_PROJECT_TOKEN, and DRIFT_PR_TOKEN
+# until it is deleted.
 
 removed {
   from = azurerm_key_vault_secret.github_actions
