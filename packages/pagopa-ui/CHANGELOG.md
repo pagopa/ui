@@ -1,3 +1,13 @@
+## 0.0.3 (2026-10-26)
+
+### 🩹 Fixes
+
+- chore(deps): bump the development toolchain (next 16.4.1, vite 8.3.3, vitest 5.0.5) ([#58](https://github.com/pagopa/ui/pull/58))
+
+### ❤️ Thank You
+
+- Danilo Spinelli @gunzip
+
 ## 0.0.2 (2026-10-25)
 
 ### 🚀 Features
