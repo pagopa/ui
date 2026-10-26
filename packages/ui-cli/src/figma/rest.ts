@@ -1,3 +1,5 @@
+import fs from "node:fs"
+import path from "node:path"
 import { z } from "zod"
 
 import { figmaToken } from "./token.ts"
@@ -334,6 +336,38 @@ export async function fetchFigmaSnapshot(fileKey: string, mcpNodes: McpNode[] = 
       component_sets: sets.map(publishedRecord),
     },
     nodes,
+  }
+}
+
+export type FigmaSnapshot = Awaited<ReturnType<typeof fetchFigmaSnapshot>>
+
+// The pinned snapshot is a large document: the compact form of the live file is
+// already around 160 MB, and its pretty form is past V8's string cap, so
+// `JSON.stringify(snapshot, null, 2)` dies with "Invalid string length" and no
+// file is written at all. This writer emits the compact JSON `figma export`
+// always produced — the file is local and gitignored, so it is read, never
+// diffed — one member and one node record at a time: the largest string it
+// builds is a single record, never the whole document.
+export function writeFigmaSnapshot(file: string, snapshot: FigmaSnapshot): void {
+  const { nodes, ...head } = snapshot
+  fs.mkdirSync(path.dirname(file), { recursive: true })
+  const temporary = `${file}.${process.pid}.${Date.now()}.tmp`
+  try {
+    const descriptor = fs.openSync(temporary, "wx")
+    try {
+      fs.writeSync(descriptor, `${JSON.stringify(head).slice(0, -1)},"nodes":{`)
+      let separator = ""
+      for (const [id, record] of Object.entries(nodes)) {
+        fs.writeSync(descriptor, `${separator}${JSON.stringify(id)}:${JSON.stringify(record)}`)
+        separator = ","
+      }
+      fs.writeSync(descriptor, "}}\n")
+    } finally {
+      fs.closeSync(descriptor)
+    }
+    fs.renameSync(temporary, file)
+  } finally {
+    if (fs.existsSync(temporary)) fs.unlinkSync(temporary)
   }
 }
 

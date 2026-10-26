@@ -1,6 +1,9 @@
 import assert from "node:assert/strict"
+import fs from "node:fs"
+import os from "node:os"
+import path from "node:path"
 import { test } from "node:test"
-import { fetchFigmaNodeDocuments } from "../../src/figma/rest.ts"
+import { fetchFigmaNodeDocuments, writeFigmaSnapshot } from "../../src/figma/rest.ts"
 
 const nodeId = "12:34"
 const version = "fixture-pinned-version"
@@ -132,4 +135,39 @@ test("supplemental document reads require a process token and explicit pinned in
     fetchFigmaNodeDocuments("fixture-file", version, ["invalid"]),
     /valid node IDs/,
   )
+})
+
+// The live snapshot is too large for one string, so the writer streams compact
+// records instead of stringifying the whole document: a missing `lastModified`
+// must stay absent (a bare `undefined` is not JSON) and no temporary file may
+// survive the rename.
+test("the snapshot writer streams compact JSON and drops an absent lastModified", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-snapshot-"))
+  try {
+    const file = path.join(root, ".figma", "live-rest.json")
+    const snapshot = {
+      fileKey: "fixture-file",
+      version: "fixture-pinned-version",
+      meta: {
+        components: [
+          {
+            node_id: nodeId,
+            key: "fixture-key",
+            name: "Frame",
+            containing_frame: { pageId: "1:0", pageName: "Controls" },
+            sources: ["rest"],
+          },
+        ],
+        component_sets: [],
+      },
+      nodes: { [nodeId]: { document } },
+    }
+    writeFigmaSnapshot(file, snapshot)
+    const text = fs.readFileSync(file, "utf8")
+    assert.equal(text.trim().split("\n").length, 1)
+    assert.deepEqual(JSON.parse(text), snapshot)
+    assert.deepEqual(fs.readdirSync(path.dirname(file)), ["live-rest.json"])
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
 })
