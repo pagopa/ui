@@ -144,7 +144,7 @@ function OptionView({ option }: { option: Option }) {
 
 const meta = {
   title: "Reviews/Timeline drawer width and mobile",
-  tags: ["!dev", "!test", "!autodocs"],
+  tags: ["!dev", "!test", "!autodocs", "no-visual"],
   parameters: {
     layout: "fullscreen",
     options: { showPanel: false },

@@ -126,7 +126,7 @@ function OptionView({ option }: { option: Option }) {
 
 const meta = {
   title: "Reviews/Identity provider spinner",
-  tags: ["!dev", "!test", "!autodocs"],
+  tags: ["!dev", "!test", "!autodocs", "no-visual"],
   parameters: {
     layout: "fullscreen",
     options: { showPanel: false },

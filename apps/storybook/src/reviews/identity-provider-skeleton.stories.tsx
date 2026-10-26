@@ -97,7 +97,7 @@ function OptionView({ option }: { option: Option }) {
 
 const meta = {
   title: "Reviews/Identity provider skeleton",
-  tags: ["!dev", "!test", "!autodocs"],
+  tags: ["!dev", "!test", "!autodocs", "no-visual"],
   parameters: {
     layout: "fullscreen",
     options: { showPanel: false },

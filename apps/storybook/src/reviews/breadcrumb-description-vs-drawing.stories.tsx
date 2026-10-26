@@ -160,7 +160,7 @@ function OptionView({ option }: { option: Option }) {
 
 const meta = {
   title: "Reviews/Breadcrumb description vs drawing",
-  tags: ["!dev", "!test", "!autodocs"],
+  tags: ["!dev", "!test", "!autodocs", "no-visual"],
   parameters: {
     layout: "fullscreen",
     options: { showPanel: false },

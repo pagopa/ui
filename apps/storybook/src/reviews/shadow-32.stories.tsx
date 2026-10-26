@@ -90,7 +90,7 @@ function OptionView({ option }: { option: (typeof options)[number] }) {
 
 const meta = {
   title: "Reviews/Shadow 32",
-  tags: ["!dev", "!test", "!autodocs"],
+  tags: ["!dev", "!test", "!autodocs", "no-visual"],
   parameters: {
     layout: "fullscreen",
     options: { showPanel: false },

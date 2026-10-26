@@ -93,7 +93,7 @@ function OptionView({ option }: { option: Option }) {
 
 const meta = {
   title: "Reviews/Accordion avatar icons",
-  tags: ["!dev", "!test", "!autodocs"],
+  tags: ["!dev", "!test", "!autodocs", "no-visual"],
   parameters: {
     layout: "fullscreen",
     options: { showPanel: false },

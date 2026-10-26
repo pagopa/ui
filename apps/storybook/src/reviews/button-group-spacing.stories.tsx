@@ -87,7 +87,7 @@ function OptionView({ option }: { option: Option }) {
 
 const meta = {
   title: "Reviews/Button group spacing",
-  tags: ["!dev", "!test", "!autodocs"],
+  tags: ["!dev", "!test", "!autodocs", "no-visual"],
   parameters: {
     layout: "fullscreen",
     options: { showPanel: false },

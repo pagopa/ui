@@ -99,7 +99,7 @@ function OptionView({ option }: { option: Option }) {
 
 const meta = {
   title: "Reviews/Focus perimeter",
-  tags: ["!dev", "!test", "!autodocs"],
+  tags: ["!dev", "!test", "!autodocs", "no-visual"],
   parameters: {
     layout: "fullscreen",
     options: { showPanel: false },
