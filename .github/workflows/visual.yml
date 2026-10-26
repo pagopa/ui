@@ -30,9 +30,14 @@ jobs:
     name: Visual regression
     # A draft may still change its diff, and the label run belongs to the
     # update job below.
+    # The review pull request (`design.preview.branch` in the figma-to-code
+    # config) adds review stories only: they carry `no-visual`, never merge and
+    # exist for the preview deploy. Its run would re-check the unchanged library
+    # and fail on stories that have no baseline, so the job reports `skipped`.
     if: >-
       (github.event_name != 'pull_request' || github.event.pull_request.draft == false) &&
       !startsWith(github.head_ref || '', 'nx-release/') &&
+      github.head_ref != 'feedback/previews' &&
       !(github.event_name == 'pull_request' && github.event.label.name == 'visual:update' && github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-24.04
     container:
@@ -99,7 +104,8 @@ jobs:
       github.event.label.name == 'visual:update' &&
       github.event.pull_request.head.repo.full_name == github.repository &&
       github.event.pull_request.draft == false &&
-      !startsWith(github.head_ref || '', 'nx-release/')
+      !startsWith(github.head_ref || '', 'nx-release/') &&
+      github.head_ref != 'feedback/previews'
     runs-on: ubuntu-24.04
     container:
       image: mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27

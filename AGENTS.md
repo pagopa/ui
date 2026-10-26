@@ -54,8 +54,8 @@ orchestration lives here.
   component, its props, texts, story, test and guide are written, and the
   definition of done of a component. Every component, with or without Figma.
 - [`figma-to-code`](.agents/skills/figma-to-code/SKILL.md) — the Figma workflow:
-  deltas, new nodes, alignment and parity, devices, tokens, icons, pictograms
-  and node reviews.
+  deltas, new nodes, alignment and parity, devices, tokens, icons, pictograms,
+  node reviews and questions for the design owner.
 
 | Work                                                       | Skills                                                                                          |
 | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
@@ -63,6 +63,7 @@ orchestration lives here.
 | A component from a Figma node, its alignment or its review | both: done when the standards' definition of done and the `figma-to-code` source alignment hold |
 | A component with no node joining the public API            | both: `figma-to-code` adds the catalogue coverage                                               |
 | A Figma delta, tokens, icons, pictograms                   | `figma-to-code`; `pagopa-ui-standards` for each component it touches                            |
+| A question for the design owner, opened or answered        | `figma-to-code`: the design request flow                                                        |
 
 ## Workflows
 
