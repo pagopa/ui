@@ -392,6 +392,11 @@ repository, under review in a pull request.
   review or assistive-technology tests.
 - The files `evidence-exceptions.json` and `api-exceptions.json` are burn-down
   lists. They must shrink. A new entry needs a reason.
+- `figma:check` counts the registry notes longer than 600 characters against
+  `src/catalog/figma/note-length-baseline.json` in both directions: a new long
+  note fails, and a count below the baseline asks to lower `overLimit`. The
+  drift refresh lowers it when the `pending` stub shortens a reviewed note;
+  nothing raises it.
 - `figma:check` warns when the inventory is older than 30 days.
 - Storybook and `library:check` need Playwright Chromium, Firefox and WebKit. Run
   `pnpm exec playwright install chromium firefox webkit` one time.

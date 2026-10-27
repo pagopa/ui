@@ -94,6 +94,14 @@ function fixture(run, overrides = {}) {
           encoding: "utf8",
           env: fixtureEnv(root, { PAGOPA_UI_STORIES_ROOT: "src/stories" }),
         }),
+      // The command the drift pull request runs: `figma sync` plus the
+      // note-length ratchet, so a fixture sees the same gate as CI.
+      checkCatalogue: (...args) =>
+        spawnSync(process.execPath, [script, "check", "figma", ...args], {
+          cwd: root,
+          encoding: "utf8",
+          env: fixtureEnv(root, { PAGOPA_UI_STORIES_ROOT: "src/stories" }),
+        }),
       read: (file) => fs.readFileSync(path.join(root, file), "utf8"),
       write: (file, source) => fs.writeFileSync(path.join(root, file), source),
       exportLive: (...args) =>
@@ -492,6 +500,61 @@ test("a public namesake cannot reuse another component's Figma mapping", () => {
       "src/pagopa-ui.ts": 'export { Control } from "./components/primitives/decoy"',
       "src/stories/Fixture.stories.tsx":
         'import { Control } from "@/components/primitives/control"\nimport { figmaEmbedUrl } from "@/catalog/figma/file"\nexport default { title: "Fixture", component: Control, parameters: { design: { type: "figma", url: figmaEmbedUrl("1:1") } } }\nexport const Example = {}',
+    },
+  )
+})
+
+test("a queued node lowers the note-length ratchet in the same write", () => {
+  // The stub that replaces a reviewed note is shorter than it, so the count of
+  // long notes drops with the queue. Without the baseline move, `figma:check`
+  // fails on the branch the job itself generated.
+  const reviewedNote = `Reviewed 2026-10-20: ${"the source insets 28px and the card keeps a 1px stroke. ".repeat(20)}`
+  fixture(
+    ({ check, checkCatalogue, read }) => {
+      const refresh = check("--triage", "--input", "live.json")
+      assert.equal(refresh.status, 0, refresh.stderr)
+      const entry = JSON.parse(read("src/catalog/figma/registry.json")).entries["1:1"]
+      assert.equal(entry.status, "pending")
+      assert.match(entry.note, /review new\/changed node or dependency/)
+      const baseline = JSON.parse(read("src/catalog/figma/note-length-baseline.json"))
+      assert.equal(baseline.maxLength, 600)
+      assert.equal(baseline.overLimit, 0)
+      const hermetic = checkCatalogue()
+      assert.equal(hermetic.status, 0, hermetic.stderr)
+    },
+    {
+      "src/catalog/figma/registry.json": JSON.stringify({
+        bulkRules: [],
+        entries: {
+          "1:1": {
+            status: "implemented",
+            target: {
+              module: "src/components/primitives/control.tsx",
+              export: "Control",
+              story: "src/stories/Fixture.stories.tsx",
+              storyExports: ["Example"],
+            },
+            note: reviewedNote,
+          },
+        },
+      }),
+      "src/catalog/figma/note-length-baseline.json": JSON.stringify({
+        maxLength: 600,
+        overLimit: 1,
+        note: "fixture",
+      }),
+      "src/components/primitives/control.tsx":
+        "export function Control() { return <button>Control</button> }",
+      "src/stories/Fixture.stories.tsx":
+        'import { Control } from "@/components/primitives/control"\nimport { figmaEmbedUrl } from "@/catalog/figma/file"\nexport default { title: "Fixture", component: Control, parameters: { design: { type: "figma", url: figmaEmbedUrl("1:1") } } }\nexport const Example = {}',
+      "live.json": JSON.stringify([
+        {
+          ...node,
+          properties: {
+            Size: { type: "VARIANT", defaultValue: "Large", variantOptions: ["Small", "Large"] },
+          },
+        },
+      ]),
     },
   )
 })

@@ -81,6 +81,9 @@ import {
   ApiExceptionsSchema,
   EvidenceExceptionsSchema,
   InventorySchema,
+  loweredNoteLengthBaseline,
+  NOTE_LENGTH_BASELINE_PATH,
+  NoteLengthBaselineSchema,
   RegistrySchema,
   type ApiExceptions,
   type InventoryNode,
@@ -251,6 +254,9 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
   let live: InventoryNode[] | null = null
   let liveVersion: string | undefined
   let liveLastModified: string | undefined
+  // The ratchet move of this refresh, when the queued stubs shortened notes:
+  // the pull request body reports it, because the reviewer must not raise it.
+  let ratchet: { from: number; to: number } | null = null
   let restSnapshot: Awaited<ReturnType<typeof fetchFigmaSnapshot>> | null = null
   let inputOption = option("input")
   if (!inputOption && (flag("write") || flag("triage") || flag("pr-body"))) {
@@ -400,6 +406,18 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     evidenceExceptions = dropKeys<string>(evidenceExceptions, new Set([...renewed, ...removed]))
     pendingWrites.set(REGISTRY_PATH, registry)
     pendingWrites.set(EVIDENCE_EXCEPTIONS_PATH, { storyEvidence: evidenceExceptions })
+    // The stub above replaces a reviewed note with a shorter one, so the count of
+    // long notes drops with it. The ratchet fails in either direction: the same
+    // write that shortened the notes lowers its baseline, so the generated branch
+    // is consistent before anyone reviews it. It never raises it.
+    const baseline = readExceptions(NOTE_LENGTH_BASELINE_PATH, NoteLengthBaselineSchema)
+    if (baseline) {
+      const lowered = loweredNoteLengthBaseline(registry, baseline)
+      if (lowered) {
+        ratchet = { from: baseline.overLimit, to: lowered.overLimit }
+        pendingWrites.set(NOTE_LENGTH_BASELINE_PATH, lowered)
+      }
+    }
   }
 
   // ------------------------------------------------------------ drift PR body
@@ -538,6 +556,12 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
       '1. still matches the source → set `status: "implemented"`;',
       "2. must change → update the component and its story in this PR, then set `implemented`;",
       "3. out of scope → set `excluded` with a reason.",
+      ...(ratchet
+        ? [
+            "",
+            `This refresh replaced the queued notes with the pending stub, so \`overLimit\` in \`src/catalog/figma/note-length-baseline.json\` ratcheted from ${ratchet.from} to ${ratchet.to}: a re-reviewed note stays under 600 characters, and the baseline is never raised.`,
+          ]
+        : []),
       "",
       "## Instructions — agent handoff",
       "",

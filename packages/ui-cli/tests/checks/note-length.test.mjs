@@ -1,7 +1,12 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
 
-import { longNoteErrors, NOTE_LENGTH_LIMIT, RegistrySchema } from "../../src/schemas/catalogue.ts"
+import {
+  longNoteErrors,
+  loweredNoteLengthBaseline,
+  NOTE_LENGTH_LIMIT,
+  RegistrySchema,
+} from "../../src/schemas/catalogue.ts"
 
 // The fixtures hold the notes only: the registry schema owns the shape, so the
 // ratchet is tested against a registry a person could commit.
@@ -45,4 +50,18 @@ test("the baseline cannot loosen the limit", () => {
   const errors = longNoteErrors(registry([short]), baseline(0, 1_200), "x.json")
   assert.equal(errors.length, 1)
   assert.match(errors[0], /maxLength is 1200, the limit is 600/)
+})
+
+// The drift refresh replaces a reviewed note with the pending stub, so the
+// writer that shortens the note owns the move the check would otherwise demand
+// from a person. It only ever lowers.
+test("a shortened note lowers the baseline the writer reads", () => {
+  const tightened = loweredNoteLengthBaseline(registry([short]), baseline(1))
+  assert.equal(tightened?.overLimit, 0)
+  assert.equal(tightened?.maxLength, NOTE_LENGTH_LIMIT)
+})
+
+test("a count that did not drop leaves the baseline alone", () => {
+  assert.equal(loweredNoteLengthBaseline(registry([short, long]), baseline(1)), null)
+  assert.equal(loweredNoteLengthBaseline(registry([short, long]), baseline(0)), null)
 })
