@@ -32,7 +32,12 @@ import { runChanged } from "./test/changed.ts"
 import { runCommand, UsageError } from "./lib/command.ts"
 import { readJson } from "./lib/json.ts"
 import { rootPath } from "./lib/paths.ts"
-import { longNoteErrors, NoteLengthBaselineSchema, RegistrySchema } from "./schemas/catalogue.ts"
+import {
+  longNoteErrors,
+  NOTE_LENGTH_BASELINE_PATH,
+  NoteLengthBaselineSchema,
+  RegistrySchema,
+} from "./schemas/catalogue.ts"
 
 const inputArg = {
   type: "string",
@@ -126,9 +131,9 @@ const textDefaults = defineCommand({
 
 // The catalogue keeps its own note-length baseline: the number of notes past
 // the limit ratchets down, and the command fails when it moves in either
-// direction.
+// direction. The path belongs to the schema module so the drift refresh, which
+// shortens the notes it queues, lowers the same file.
 const REGISTRY_PATH = "src/catalog/figma/registry.json"
-const NOTE_LENGTH_BASELINE_PATH = "src/catalog/figma/note-length-baseline.json"
 
 function runNoteLengthRatchet(): number {
   const baseline = readJson(rootPath(NOTE_LENGTH_BASELINE_PATH), NoteLengthBaselineSchema)

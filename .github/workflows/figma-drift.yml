@@ -4,7 +4,9 @@ name: Figma drift
 # and the review payload, then open one review pull request. The merge is the
 # review record (docs/decisions/0001-rework.md); the pending queue is the
 # visible signal. The refreshed JSON is formatted before the commit so the
-# review diff carries only the drift.
+# review diff carries only the drift. Queuing a node replaces its reviewed note
+# with the pending stub, so the same refresh lowers the note-length ratchet that
+# `figma:check` reads: the diff carries that move with the drift that caused it.
 #
 # The job produces a reproducible handoff: delta.json, run.json and the body are
 # uploaded as artifacts (never `.figma/`), and the branch guard refuses to
@@ -135,7 +137,8 @@ jobs:
           pnpm --filter @pagopa/ui exec oxfmt \
             src/catalog/figma/inventory.json \
             src/catalog/figma/registry.json \
-            src/catalog/figma/evidence-exceptions.json
+            src/catalog/figma/evidence-exceptions.json \
+            src/catalog/figma/note-length-baseline.json
           pnpm exec oxfmt docs/figma-parity/manifest.json
 
       - name: Open the review pull request
@@ -171,6 +174,7 @@ jobs:
             packages/pagopa-ui/src/catalog/figma/inventory.json \
             packages/pagopa-ui/src/catalog/figma/registry.json \
             packages/pagopa-ui/src/catalog/figma/evidence-exceptions.json \
+            packages/pagopa-ui/src/catalog/figma/note-length-baseline.json \
             docs/figma-parity
           if git diff --cached --quiet; then
             echo "no change to commit"

@@ -46,8 +46,11 @@ request ([node-review.md](node-review.md)).
    `catalog.inventory` from the pinned snapshot, records the file version it was
    read from, turns new, changed and affected production nodes `pending`
    (including nodes a bulk rule covered) and prunes removed entries with their
-   story exceptions. `mocked` and `excluded` entries keep their status. Then
-   `pnpm nx run-many -t fmt`.
+   story exceptions. `mocked` and `excluded` entries keep their status. A
+   queued node's reviewed note becomes the pending stub, so the same write
+   lowers `overLimit` in `src/catalog/figma/note-length-baseline.json` to the
+   count it produced — never raises it, and the re-reviewed note stays under
+   600 characters. Then `pnpm nx run-many -t fmt`.
    **Done when** the inventory is refreshed and each production delta is
    `pending`. A refresh is not approval.
 
