@@ -23,6 +23,7 @@
 import { spawn } from "node:child_process"
 import { createHash } from "node:crypto"
 import { createWriteStream, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"
+import { createServer } from "node:net"
 import { dirname, join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { defineWorkflow, joinSession } from "@github/copilot-sdk/extension"
@@ -281,6 +282,35 @@ async function storybookAnswers(url) {
   } catch {
     return false
   }
+}
+
+// The parity commands refuse a Storybook that serves another checkout, and a
+// served build cannot prove its tree at all. The workflow therefore asks the
+// dev server for a file only this worktree owns (Vite answers 200 for its own
+// tree and 403 for a sibling) and starts its own server when the answer is no.
+async function storybookServesTree(url) {
+  try {
+    const response = await fetch(`${url}/@fs${join(ROOT, "apps/storybook/package.json")}`, {
+      signal: AbortSignal.timeout(3000),
+    })
+    return response.status === 200
+  } catch {
+    return false
+  }
+}
+
+// A port the OS says is free: the configured one may belong to another worktree
+// that started its Storybook first.
+async function freePort() {
+  return new Promise((resolvePort, reject) => {
+    const server = createServer()
+    server.unref()
+    server.once("error", reject)
+    server.listen(0, "127.0.0.1", () => {
+      const { port } = server.address()
+      server.close(() => resolvePort(port))
+    })
+  })
 }
 
 // ---------------------------------------------------------------- schemas
@@ -763,15 +793,24 @@ const figmaAlign = defineWorkflow({
     let storybook = null
 
     const ensureStorybook = async (config) => {
-      const url = config.storybook.url
-      if (await storybookAnswers(url)) return url
+      const configured = config.storybook.url
+      if (await storybookServesTree(configured)) return configured
       if (!opts.startStorybook) return null
+      // A server that answers but serves another tree is worse than none: its
+      // renders are evidence for that checkout. This worktree takes a port of
+      // its own instead of borrowing the configured one.
+      let url = configured
+      if (await storybookAnswers(configured)) {
+        url = `http://localhost:${await freePort()}`
+        ctx.log(`Storybook on ${configured} does not serve this tree: starting one on ${url}`)
+      }
       if (!storybook) {
-        ctx.log(`Storybook does not answer: starting it on ${url} (log in ${outDir})`)
+        ctx.log(`Starting Storybook on ${url} (log in ${outDir})`)
         const log = createWriteStream(join(outDir, "storybook.log"))
+        const port = new URL(url).port || "6006"
         storybook = spawn("pnpm", ["nx", "run", "pagopa-ui-storybook:storybook"], {
           cwd: ROOT,
-          env: { ...process.env, NX_TUI: "false", CI: "true" },
+          env: { ...process.env, PORT: port, NX_TUI: "false", CI: "true" },
           stdio: ["ignore", "pipe", "pipe"],
           detached: true,
         })
@@ -781,7 +820,7 @@ const figmaAlign = defineWorkflow({
       for (let i = 0; i < 90; i++) {
         if (signal.aborted) return null
         if (storybook.exitCode !== null) return null
-        if (await storybookAnswers(url)) return url
+        if (await storybookServesTree(url)) return url
         await new Promise((r) => setTimeout(r, 2000))
       }
       return null
@@ -1078,7 +1117,7 @@ Return ok=true with the pinned version in message when ${snapshot} pins the curr
       const analysedUrl = await ensureStorybook(config)
       if (!analysedUrl) {
         ctx.log(
-          "Storybook is not reachable: the analysis reads the source only, renders unverified.",
+          "Storybook is not reachable, or it serves another worktree: the analysis reads the source only, renders unverified.",
         )
       } else {
         config.storybook.url = analysedUrl
@@ -1169,7 +1208,7 @@ Return ok=true with the pinned version in message when ${snapshot} pins the curr
         const alignedUrl = await ensureStorybook(config)
         if (!alignedUrl) {
           throw new Error(
-            `Storybook does not answer: the parity loop needs it (see ${join(outDir, "storybook.log")}). Start it and resume run ${ctx.runId}.`,
+            `Storybook does not serve this worktree: the parity loop needs it (see ${join(outDir, "storybook.log")}). Start it and resume run ${ctx.runId}.`,
           )
         }
         config.storybook.url = alignedUrl

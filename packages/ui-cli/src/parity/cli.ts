@@ -130,9 +130,9 @@ const DEFAULT_CASES = rootPath("src/catalog/figma/parity-cases.json")
 // 32rem is crossed by 1200, not by 900).
 const SCOPE_PROBES = [360, 1200]
 
-// How long a second pass waits for the dev server to finish recompiling before
-// it measures again (`PARITY_NO_SETTLE=1` keeps a single pass).
-const SETTLE_DELAY_MS = 250
+// How many captures a failing case may take while it waits for the dev server
+// to settle (`PARITY_NO_SETTLE=1` keeps a single pass).
+const SETTLE_PASSES = 3
 
 const USAGE = `usage:
   figma-parity queue [--status pending,implemented] [--node <id>] [--cases <file>] [--order fan-in] [--unmapped] [--coverage] [--uncovered] [--json]
@@ -163,9 +163,9 @@ a reason). Composition evidence (--compare-offset) is reported as ADVISORY and o
 clipped box, paint outside the root, text lost to an ellipsis or a wrapped band
 fails the case unless a residue records the adaptation. \`check\` and \`capture\`
 refuse a Storybook that does not answer for this checkout (\`PARITY_ALLOW_FOREIGN_STORYBOOK=1\`
-accepts one from another tree), and a first pass with deltas is measured twice
-(\`PARITY_NO_SETTLE=1\` keeps a single pass). Exit codes: 0 verified, 1 deltas
-above tolerance, 2 invalid input or missing evidence.`
+accepts one from another tree), and a failing pass is measured again until two
+consecutive passes agree (\`PARITY_NO_SETTLE=1\` keeps a single pass). Exit codes:
+0 verified, 1 deltas above tolerance, 2 invalid input or missing evidence.`
 
 function parse(argv: string[]): Parsed {
   const flags: Flags = new Map()
@@ -381,7 +381,7 @@ async function evaluateCase(
       stateEvidence: spec.stateEvidence,
       ...overrides,
     })
-  const probe = await runCapture({})
+  let probe = await runCapture({})
   // The far values the declared axis is probed at: both sides, so a scope that
   // only flips at one of them is still confirmed.
   const probes = (declared: number): number[] =>
@@ -449,22 +449,28 @@ async function evaluateCase(
     })
   let result = runCompare(probe)
   // A dev server that is still recompiling renders a partial story, so the
-  // numbers describe the build and not the component: a first pass that finds
-  // deltas is measured twice, and a stable pass is the verdict. Two passes that
-  // disagree are no evidence either way — the first is kept and marked
-  // `unstable`, which is a review, never a pass.
+  // numbers describe the build and not the component: a failing pass is measured
+  // again until two consecutive passes agree, and the accepted pass is the last
+  // one measured — the verdict, the probe and the screenshot on disk then
+  // describe the same render. Passes that never agree keep the last one and mark
+  // the report `unstable`, which is a review, never a pass.
   let unstable: CaseReport["unstable"]
   if (result.deltas.length && !process.env.PARITY_NO_SETTLE) {
-    await new Promise((resolve) => setTimeout(resolve, SETTLE_DELAY_MS))
-    const settled = runCompare(await runCapture({}))
-    if (sameDeltas(result.deltas, settled.deltas)) {
-      result = settled
-    } else {
-      unstable = {
-        first: result.deltas.map((delta) => delta.path),
-        second: settled.deltas.map((delta) => delta.path),
+    let previous = result.deltas
+    let stable = false
+    for (let attempt = 1; attempt < SETTLE_PASSES && !stable; attempt++) {
+      probe = await runCapture({})
+      result = runCompare(probe)
+      stable = sameDeltas(previous, result.deltas)
+      if (!stable) {
+        unstable = {
+          first: previous.map((delta) => delta.path),
+          second: result.deltas.map((delta) => delta.path),
+        }
+        previous = result.deltas
       }
     }
+    if (stable) unstable = undefined
   }
   return {
     report: {
@@ -652,8 +658,8 @@ function printResult(report: CaseReport, { notes }: { notes?: boolean }): void {
   console.log(formatResult(report))
   if (report.unstable) {
     console.log(
-      `  unstable: two passes disagreed (${report.unstable.first.join(", ") || "none"} vs ` +
-        `${report.unstable.second.join(", ") || "none"}) — the render was still settling; run it again`,
+      `  unstable: the passes never agreed (${report.unstable.first.join(", ") || "none"} vs ` +
+        `${report.unstable.second.join(", ") || "none"}) — the render kept changing; run it again`,
     )
   }
   const responsive = responsiveCounts(report)
@@ -1088,6 +1094,7 @@ async function captureWave(parsed: Parsed): Promise<number> {
     advisories?: number
     residues?: number
     responsive?: string
+    unstable?: true
     case?: unknown
     message?: string
   }
@@ -1134,6 +1141,7 @@ async function captureWave(parsed: Parsed): Promise<number> {
         advisories: report.advisories.length,
         residues: report.residues.length,
         responsive: responsiveSummary(responsiveCounts(report)),
+        ...(report.unstable ? { unstable: true as const } : {}),
         case: spec,
       })
       console.log(
