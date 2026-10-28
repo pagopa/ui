@@ -188,6 +188,38 @@ narrow-viewport assertions of `library:check`, never a `play()` test that does
 not set its own viewport. Never encode a source frame width as a component
 dimension: force the root width in the capture.
 
+### The story draws the frame the capture measures
+
+A `container`-scoped case forces the story root to the source width before it
+measures, so the capture is right even when the story renders something else:
+the global `centered` layout shrinks the root to a few pixels, every
+`@container` variant flips to its tight branch, and the reader — and the visual
+snapshot — see a composition the source never draws. The two renders must be
+one. A story whose parity case is `container`-scoped wraps its composition in
+`SourceFrame` (`apps/storybook/src/support/source-frame.tsx`) and declares
+`layout: "fullscreen"`; the helper reads the width from
+`src/catalog/figma/parity-cases.json`, so no story copies a source number and no
+component grows a width prop.
+
+```tsx
+parameters: { layout: "fullscreen" },
+// the node id and the device are the case's own: never copied, never a literal
+render: (args) => (
+  <SourceFrame nodeId={caseNodeId} device="desktop">
+    <Story {...args} />
+  </SourceFrame>
+),
+```
+
+`parity capture` reads `[data-source-frame]` before forcing anything and fails
+`story-collapsed` when a container-scoped story draws no frame or draws one that
+is none of its node's case widths. The legacy stories that owe one are listed in
+`src/catalog/figma/frame-baseline.json`: the list only shrinks — `parity verify`
+fails when an entry stays after the story stops owing a frame, and warns while a
+waived story still renders without one. A full-screen surface that sizes itself
+(the dialogs) is a `viewport`-shaped composition the corpus still scopes to a
+container: reasoned entries, not a copied exemption.
+
 ## Reporting
 
 Per node: the declared devices · one capture per device (source width, height or

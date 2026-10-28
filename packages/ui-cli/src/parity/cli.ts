@@ -119,6 +119,10 @@ type Scope = {
 
 const DEFAULT_WAVE_DIR = rootPath(".figma/parity")
 const DEFAULT_CASES = rootPath("src/catalog/figma/parity-cases.json")
+// The legacy stories still owing a source frame: the rule is enforced on every
+// story that is not here, and the list only shrinks (a waived story that draws
+// its frame again is a failure).
+const FRAME_BASELINE = rootPath("src/catalog/figma/frame-baseline.json")
 
 // The widths the declared scope is verified against (RA5): the composition the
 // case declares must follow the axis it declares. Two far values, one on each
@@ -297,6 +301,43 @@ function mappingGaps(root: SpecNode, mapped: string[]): string[] {
   return [...new Set(found)]
 }
 
+// The baseline read once per process: every case of a wave asks the same files.
+let frameBaselineEntries: Record<string, string> | undefined
+
+function frameBaseline(): Record<string, string> {
+  if (!frameBaselineEntries) {
+    const parsed: { stories?: Record<string, string> } = fs.existsSync(FRAME_BASELINE)
+      ? JSON.parse(fs.readFileSync(FRAME_BASELINE, "utf8"))
+      : {}
+    frameBaselineEntries = parsed.stories ?? {}
+  }
+  return frameBaselineEntries
+}
+
+// The widths a container-scoped story has to draw itself: the case widths of
+// the node on that story. Read from the corpus for the same reason the story
+// reads them there — one source, no copied number. `viewport` cases need none:
+// the story root is the page and `fullscreen` already gives it.
+function expectedFrames(nodeId: string, storyId: string): number[] {
+  return [
+    ...new Set(
+      loadCaseFile(DEFAULT_CASES)
+        .filter(
+          (entry) =>
+            entry.nodeId === nodeId &&
+            entry.storyId === storyId &&
+            entry.layoutScope === "container",
+        )
+        .map((entry) => Number(entry.width))
+        .filter((width) => Number.isFinite(width) && width > 0),
+    ),
+  ]
+}
+
+function frameWaiver(storyId: string): boolean {
+  return storyId in frameBaseline()
+}
+
 // One case: the source variant, the story, the subject mapping and the stated
 // residues in, the classified report and the probe out.
 const CaptureInfoSchema = z.looseObject({
@@ -306,6 +347,14 @@ const CaptureInfoSchema = z.looseObject({
   focus: z.string().optional(),
   offsetOrigin: z.string().optional(),
   state: z.looseObject({ state: z.string().optional(), ok: z.boolean().optional() }).optional(),
+})
+
+// The source frame the story drew, as the capture reports it (only a waived
+// story reaches the caller with `ok: false`).
+const SourceFrameReportSchema = z.looseObject({
+  ok: z.boolean(),
+  expected: z.array(z.number()),
+  waived: z.boolean().optional(),
 })
 
 async function evaluateCase(
@@ -371,7 +420,21 @@ async function evaluateCase(
       stateEvidence: spec.stateEvidence,
       ...overrides,
     })
-  const probe = await runCapture({})
+  // The story owes the frame on the base capture only: the scope probes force
+  // another element on purpose and would read a frame they just moved.
+  const frames = expectedFrames(spec.nodeId, spec.storyId)
+  const probe = await runCapture({
+    ...(frames.length ? { expectFrames: frames, frameWaiver: frameWaiver(spec.storyId) } : {}),
+  })
+  // Only a waived story reaches here without a frame: the reader is told which
+  // story still renders another composition than the one the capture measures.
+  const frame = SourceFrameReportSchema.safeParse(probe.frame)
+  if (frame.success && !frame.data.ok) {
+    console.warn(
+      `warn: ${spec.storyId} does not draw its source frame at ${frame.data.expected.join(" or ")}px ` +
+        `(src/catalog/figma/frame-baseline.json): the Storybook render is not the captured composition`,
+    )
+  }
   // The far values the declared axis is probed at: both sides, so a scope that
   // only flips at one of them is still confirmed.
   const probes = (declared: number): number[] =>
@@ -1202,6 +1265,26 @@ function verify({ flags }: Parsed): number {
     else warnings.push(message)
   }
   const drafts = cases.filter(isDraftCase).length
+  // The frame baseline only shrinks: a story that left the corpus, or that now
+  // has nothing to frame, owes its removal; a story that renders its own frame
+  // again owes it too — a waiver that outlives its reason hides the next
+  // collapse the same way the missing frame hid this one.
+  const baselined = frameBaseline()
+  for (const storyId of Object.keys(baselined)) {
+    const owed = cases.filter(
+      (entry) =>
+        entry.storyId === storyId && entry.layoutScope === "container" && Number(entry.width) > 0,
+    )
+    if (!owed.length) {
+      errors.push(`frame-baseline: ${storyId} owes no source frame any more — delete its entry`)
+    }
+    if (!owed.length) continue
+    warnings.push(
+      `frame-baseline: ${storyId} still renders without a source frame (${[
+        ...new Set(owed.map((entry) => Number(entry.width))),
+      ].join(" or ")}px) — wrap it in \`SourceFrame\` and drop the entry`,
+    )
+  }
   const evidence = checkEvidence({ cases, nodes })
   for (const warning of evidence.warnings) warnings.push(`evidence: ${warning}`)
   for (const error of evidence.errors) errors.push(`evidence: ${error}`)
