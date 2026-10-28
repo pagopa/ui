@@ -1156,14 +1156,14 @@
       "note": "rendered by TemplateShell demo content; real implementation pending"
     },
     "3262:40787": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/inputs/menus.tsx",
         "export": "MenuDropdown",
         "story": "apps/storybook/src/MenuDropdown.stories.tsx",
         "storyExports": ["SourcePanel", "Playground"]
       },
-      "note": "Figma delta 2026-10-28: review new/changed node or dependency before marking implemented"
+      "note": "MenuDropDown (3262:40787) verified at its open state: the 274x330 panel, the 1px dividers between all seven rows, the 46px text rows and the 48px destructive row all match the render, no deltas and no residues. Delta 2026-10-28 renamed the shared row layer .Single drop down item to .SingleDropDownItem and narrowed only the destructive row instance 274x48 to 272x48 inside the unchanged 274 panel; the case subject key follows the rename. No code change."
     },
     "3424:12354": {
       "status": "implemented",

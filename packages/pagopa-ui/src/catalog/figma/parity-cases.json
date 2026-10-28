@@ -5538,14 +5538,14 @@
     "depth": 3,
     "root": "[role=\"menu\"]",
     "subjects": {
-      ".Single drop down item": "[role=\"menu\"] [role=\"menuitem\"]",
+      ".SingleDropDownItem": "[role=\"menu\"] [role=\"menuitem\"]",
       "Divider": "[role=\"menu\"] [role=\"separator\"]"
     },
     "click": ["#storybook-root button"],
     "compareOffset": true,
     "expectState": "open",
     "stateEvidence": "[role=menu]",
-    "note": "reviewed: source MenuDropDown (3262:40787, 274x330, radius 8, #ffffff panel with the 4/16px shadow-16 elevation) against the SourcePanel open menu. Verified the 274x330 panel, zero panel padding and gap, the 1px #e8ebf1 dividers between all seven rows, the 46px text rows (12/16 insets, 8px gap, 16/22 Semibold #0b3ee3 label) and the closing 48px destructive row that leads with the 24px cancel artwork and paints the 16/22 Semibold label #d13333. The seven source rows share one layer name ('.Single drop down item'), so the case maps the first text row and the divider as subjects and the total height proves the destructive row's 48px. Responsive clean."
+    "note": "reviewed: source MenuDropDown (3262:40787, 274x330, radius 8, #ffffff panel with the 4/16px shadow-16 elevation) against the SourcePanel open menu. Verified the 274x330 panel, zero panel padding and gap, the 1px #e8ebf1 dividers between all seven rows, the 46px text rows (12/16 insets, 8px gap, 16/22 Semibold #0b3ee3 label) and the closing 48px destructive row that leads with the 24px cancel artwork and paints the 16/22 Semibold label #d13333. The 2026-10-28 delta renamed the shared row layer to '.SingleDropDownItem' and narrowed only the destructive row instance to 272x48 (its Button 240x24) inside the unchanged 274 panel; the seven rows still share that one layer name, so the case maps the first text row and the divider as subjects and the total height proves the destructive row's 48px. Responsive clean."
   },
   {
     "id": "3424-12354-bar",
