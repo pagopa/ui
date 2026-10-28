@@ -142,28 +142,47 @@ questions the drawing left open:
 | What does the counter count?        | The selected values, not the matching options: the badge reads `2` and `3` next to the chips it replaces.                                                                                        |
 | Where is the badge drawn?           | At the trailing edge of the chips row, before the chevron, from two values on. A single value keeps its full name, so the count is never `1`.                                                    |
 | What is the second trailing action? | Clear. The `48x24 Action goup` of the `Multiselect` variants is `[clear][chevron]`; the `24x24` group of `Multiselect counter` is the chevron alone because the badge carries the clear control. |
+| How is one value removed?           | Each pill carries its own `close` in the `Type=Multiselect` variants, and the count badge carries one in `Type=Multiselect counter`.                                                                |
 
 The field therefore maps as follows: `Type=Default` is single value
 (`multiple` absent, `value?: string`); `Type=Multiselect` and
-`Type=Multiselect counter` are `multiple` (`value?: string[]`). The chevron
-points up while the list is open, as the card draws it, and clearing the last
-value resets the field to its resting label.
+`Type=Multiselect counter` are both `multiple` (`value?: string[]`), and
+`multipleDisplay` (`"chips"`, the default, or `"counter"`) chooses between the
+two renderings. The chevron points up while the list is open, as the card draws
+it, and clearing the last value resets the field to its resting label.
 
 ### What the implementation does
 
 - `multiple` is a discriminated prop: `multiple?: false` keeps `value?: string`
   and `onValueChange?: (value: string) => void`; `multiple: true` takes
   `value?: string[]` and `onValueChange?: (value: string[]) => void`.
-- One value renders as a chip carrying its full label with no remove control;
-  from two values the chips collapse into a count badge whose visible count is
-  `aria-hidden` and whose screen-reader sentence comes from `counterLabel`. The
-  badge owns the clear action, so the trailing group is `[clear][chevron]` at
-  one value and `[chevron]` from two.
+- `multipleDisplay: "chips"` (`Type=Multiselect`) renders one `InputChip` per
+  value, each with its own remove control read as `removeValueLabel`
+  (`Elimina {value}`), the source's per-pill `close`.
+- `multipleDisplay: "counter"` (`Type=Multiselect counter`) keeps one value as
+  its full-label pill and, from two values, collapses the row into a count
+  badge whose visible count is `aria-hidden` and whose screen-reader sentence
+  comes from `counterLabel`. The badge owns the clear action
+  (`clearAllLabel`, `Svuota tutti i valori`), so the trailing group is
+  `[clear][chevron]` at one value and `[chevron]` from two.
 - The input keeps filtering with chips present and the cursor sits after the
-  last chip. Without a per-chip remove control the last value leaves with
-  `Backspace` on an empty input, the native combobox removal.
+  last chip; `Backspace` on an empty input removes the last value beside the
+  pills' own controls.
 - A `selectAllLabel` adds the list's first row, which selects or clears every
   enabled option.
+
+### The two types in the source
+
+A live read of the filled variants confirms the split the card draws.
+`824:8872` (`Type=Multiselect`) holds two 68x24 `Input chip` pills side by side,
+each one carrying its own `close` icon container, and a 48x24 `Action goup`
+`[clear][chevron]`. `11073:2423` (`Type=Multiselect counter`) holds one 44x24
+`Input chip` reading `4` with its own `close`, no pill per value, the resting
+label drawn inside the control, and a 24x24 group with the chevron alone. The
+field frame is the same in both: 272x48, radius 8, 1px `#636b82` stroke, 12px
+insets; the pill is radius 100, `#e8ebf1`, `Titillio-Semibold` 12/18
+`#0e0f13`, and its remove glyph is a 24px target holding a 9x9 `close_small` in
+`#0b3ee3`.
 
 ### Open points, left to the design owner
 
@@ -175,9 +194,17 @@ value resets the field to its resting label.
    floats it at one; the implementation floats it whenever the field holds a
    value or has focus, because a chips row is not the notch the label folds
    into. Confirm which of the two the set means.
-3. Removing one value of several has no visible per-chip control; the keyboard
-   path is `Backspace`. If a pointer path is required, the badge and the chips
-   need a remove glyph.
+3. ~~Removing one value of several has no visible per-chip control.~~ Answered
+   by the source: every pill carries its own `close`, and the implementation
+   follows it through `removeValueLabel`.
 4. A chip carries its full label and the field is 272 wide, so a long label is
-   truncated by the frame rather than inside the chip. Confirm the truncation
-   belongs to the chip.
+   truncated by the frame rather than inside the chip. The pills now sit in a
+   one-line strip that scrolls once the pills and the caret target stop fitting
+   the 160px `Label container` — the source instead lets five pills overflow the
+   272 frame. Confirm the scroll is the behaviour the design wants for many
+   values, or whether `Type=Multiselect counter` is the only intended display
+   once the row stops fitting.
+5. The `Type=Multiselect` variants also draw a `Cursor` frame, the 8x24 frame
+   with a 1px rule after the last pill; the implementation leaves the real text
+   caret there instead. Confirm the drawn cursor is the editable input's caret
+   and not a separate decoration.

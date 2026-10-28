@@ -1508,20 +1508,28 @@
       "note": "Reviewed 2026-10-23 (M5 wave): one committed case against the `SourceBand` story at the 320 source width, captured with the link focused (it is off screen until then; `--expect-state focused`, focus kept). Verified the 320x40 band at the source origin, the #ffffff Content layer surface with its 8/24 insets, the underlined 16/22 Semibold #0b3ee3 label at the 24px inset and the 24x24 `arrow` at offset 226.66/8 against the source 227/8 (the 8px label-to-artwork gap). The review closed the drifts in navigation/skip-to-main-content.tsx: the link is the source's full-width top band (`fixed inset-x-0 top-0`, hidden by `-translate-y-full` until focus) instead of a 16/12 floating box, and the source carries no elevation, so the Tailwind `shadow-32` is gone. Residues: the label line is the 16/22 `text-body-sb` token against the source 16/21 (1px, inside tolerance; the scale has no 21px line) and the focus ring is the a11y contract's visible indicator (2px outline drawn inside the band so the viewport edge does not clip it) where the source draws none. The source's root (no padding) and its Content layer collapse into the one anchor in the DOM: the case ignores `field.padding.*` and `field.gap` and maps the Content layer to that same anchor for its insets, while the layer's 16px gap is the phantom gap of its single child. Automated a11y and render checks are not screen-reader or browser-zoom certification."
     },
     "824:8838": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/inputs/autocomplete.tsx",
         "export": "Autocomplete",
         "story": "apps/storybook/src/Autocomplete.stories.tsx",
         "storyExports": [
           "Playground",
+          "Fidelity",
+          "ClearControl",
+          "OverridableTexts",
+          "Loading",
+          "AutocompleteDisabledOptions",
           "Multiselect",
+          "MultiselectCounter",
           "MultiselectClearAll",
           "MultiselectBackspace",
-          "MultiselectSelectAll"
+          "MultiselectSelectAll",
+          "MultiselectRemoveValue",
+          "MultiselectOverridableTexts"
         ]
       },
-      "note": "Answered 12 November 2026 (docs/design-requests/2026-10-22-autocomplete-multiselect.md, issue #40): Option A, the field owns both multiselect types through a discriminated `multiple` prop taking a `string[]`. Two values or more collapse into a count badge before the chevron; the badge counts the selected values and carries the clear action, so the trailing group is [clear][chevron] at one value and [chevron] above. Departures: the label floats when the field holds a value, and no per-chip remove control exists (Backspace removes the last). Pending on the parity capture."
+      "note": "Answered 2026-11-12 (#40, design-requests/2026-10-22-autocomplete-multiselect): Option A \u2014 the field owns both filled multiselect types through a discriminated `multiple` taking a `string[]`. `Type=Multiselect` (824:8872): a removable pill per value (`removeValueLabel`) beside [clear][chevron]. `Type=Multiselect counter` (11073:2423): a 44x24 count pill from two values that clears them all (`clearAllLabel`). Both keep the 272x48 frame and Backspace. Departures: the pills strip scrolls past the source's 160px; the label floats at one value where the counter draws it inside. Parity: two cases."
     },
     "8702:266": {
       "status": "implemented",

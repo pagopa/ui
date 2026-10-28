@@ -104,6 +104,7 @@ export interface Messages {
     emptyLabel: string
     clearLabel: string
     counterLabel: (count: number) => string
+    removeValueLabel: (value: string) => string
     clearAllLabel: string
     openLabel: string
     closeLabel: string

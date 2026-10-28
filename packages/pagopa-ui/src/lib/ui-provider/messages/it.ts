@@ -101,6 +101,7 @@ export const itMessages: Messages = {
     emptyLabel: "Nessun risultato",
     clearLabel: "Svuota campo",
     counterLabel: (count) => `${count} selezionati`,
+    removeValueLabel: (value) => `Elimina ${value}`,
     clearAllLabel: "Svuota tutti i valori",
     openLabel: "apri lista",
     closeLabel: "chiudi lista",

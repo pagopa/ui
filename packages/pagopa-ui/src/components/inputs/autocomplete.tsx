@@ -40,6 +40,8 @@ type AutocompleteSharedProps = FieldStateProps & {
   clearLabel?: string
   /** Sentence read in place of the count badge. @default messages.autocomplete.counterLabel */
   counterLabel?: (count: number) => string
+  /** Accessible name of the control that removes one value. @default messages.autocomplete.removeValueLabel */
+  removeValueLabel?: (value: string) => string
   /** Accessible name of the badge control that empties the selection. @default messages.autocomplete.clearAllLabel */
   clearAllLabel?: string
   /** Accessible name of the trigger that opens the list. @default messages.autocomplete.openLabel */
@@ -76,6 +78,12 @@ type AutocompleteProps = AutocompleteSharedProps &
     | {
         /** Keeps several values as chips, the source Multiselect and counter types. */
         multiple: true
+        /**
+         * Draws every value as its own removable chip, or collapses two or more
+         * into a count badge that carries the clear control.
+         * @default "chips"
+         */
+        multipleDisplay?: "chips" | "counter"
         value?: string[]
         defaultValue?: string[]
         onValueChange?: (value: string[]) => void
@@ -103,6 +111,7 @@ function Autocomplete(props: AutocompleteProps) {
     leadingIcon = defaultLeadingIcon,
     clearLabel: clearLabelProp,
     counterLabel: counterLabelProp,
+    removeValueLabel: removeValueLabelProp,
     clearAllLabel: clearAllLabelProp,
     openLabel: openLabelProp,
     closeLabel: closeLabelProp,
@@ -118,6 +127,7 @@ function Autocomplete(props: AutocompleteProps) {
   const emptyLabel = emptyLabelProp ?? t.emptyLabel
   const clearLabel = clearLabelProp ?? t.clearLabel
   const counterLabel = counterLabelProp ?? t.counterLabel
+  const removeValueLabel = removeValueLabelProp ?? t.removeValueLabel
   const clearAllLabel = clearAllLabelProp ?? t.clearAllLabel
   const openLabel = openLabelProp ?? t.openLabel
   const closeLabel = closeLabelProp ?? t.closeLabel
@@ -165,10 +175,15 @@ function Autocomplete(props: AutocompleteProps) {
     const announced = labelsOf(next)
     setAnnouncement(announced.length ? selectedLabel(announced) : "")
   }
-  // The source collapses two or more values into a count badge and keeps the
-  // clear control inside it, so a single value keeps its full name and the
-  // action group keeps `[clear][chevron]` (616:3865, 824:8838).
-  const showClear = multiple ? selection.length === 1 : filled
+  // The source draws two types of the same field: `Type=Multiselect` keeps a
+  // removable pill per value, `Type=Multiselect counter` collapses two or more
+  // values into a badge whose own control clears them all (824:8872,
+  // 11073:2423). A single value is never a count of one, so it keeps its name.
+  const collapsed =
+    props.multiple && (props.multipleDisplay ?? "chips") === "counter" && selection.length > 1
+  // The badge carries the clear control, so the action group is the arrow alone
+  // there and `[clear][chevron]` everywhere else.
+  const showClear = multiple ? selection.length > 0 && !collapsed : filled
   const selectableOptions = options.filter((option) => !option.disabled)
   const allListedSelected =
     selectableOptions.length > 0 &&
@@ -188,7 +203,7 @@ function Autocomplete(props: AutocompleteProps) {
       onValueChange={(next) => commit(toSelection(next))}
     >
       <div className={cn("grid min-w-0 gap-2", className)}>
-        <Combobox.InputGroup className="relative min-w-0">
+        <Combobox.InputGroup data-slot="autocomplete" className="relative min-w-0">
           {leadingIcon ? (
             <span
               aria-hidden="true"
@@ -204,36 +219,53 @@ function Autocomplete(props: AutocompleteProps) {
             <div
               data-slot="autocomplete-multiple"
               className={cn(
-                "flex min-h-12 min-w-0 flex-wrap items-center gap-2 rounded-lg border border-input bg-background py-2 pr-16 pl-3 transition-[color,background-color,border-color]",
+                "flex min-h-12 min-w-0 flex-nowrap items-center gap-2 rounded-lg border border-input bg-background py-2 pr-3 pl-3 transition-[color,background-color,border-color]",
                 leadingIcon && "pl-11",
                 focused && !error && "border-ring outline-2 outline-offset-1 outline-ring",
                 error && "border-destructive",
                 disabled && "bg-muted text-muted-foreground",
               )}
             >
-              <Combobox.Value>
-                {(selectedValues: string[]) => {
-                  const values = selectedValues ?? []
-                  if (values.length > 1) {
-                    return (
-                      <InputChip
-                        data-slot="autocomplete-counter"
-                        className="shrink-0"
-                        removeLabel={clearAllLabel}
-                        onRemove={disabled ? undefined : () => commit([])}
-                      >
-                        <span aria-hidden="true">{values.length}</span>
-                        <span className="sr-only">{counterLabel(values.length)}</span>
-                      </InputChip>
-                    )
-                  }
-                  return values.map((entry, index) => (
-                    <InputChip key={`${entry}-${index}`} className="max-w-full">
-                      {labelsOf([entry])[0] ?? entry}
-                    </InputChip>
-                  ))
-                }}
-              </Combobox.Value>
+              <div
+                data-slot="autocomplete-multiple-chips"
+                className="flex min-w-0 shrink items-center gap-2 overflow-x-auto"
+              >
+                <Combobox.Value>
+                  {(selectedValues: string[]) => {
+                    const values = selectedValues ?? []
+                    if (collapsed) {
+                      return (
+                        <InputChip
+                          data-slot="autocomplete-counter"
+                          className="shrink-0"
+                          removeLabel={clearAllLabel}
+                          onRemove={disabled ? undefined : () => commit([])}
+                        >
+                          <span aria-hidden="true">{values.length}</span>
+                          <span className="sr-only">{counterLabel(values.length)}</span>
+                        </InputChip>
+                      )
+                    }
+                    return values.map((entry, index) => {
+                      const text = labelsOf([entry])[0] ?? entry
+                      return (
+                        <InputChip
+                          key={`${entry}-${index}`}
+                          className="max-w-full shrink-0"
+                          removeLabel={removeValueLabel(text)}
+                          onRemove={
+                            disabled
+                              ? undefined
+                              : () => commit(selection.filter((v) => v !== entry))
+                          }
+                        >
+                          {text}
+                        </InputChip>
+                      )
+                    })
+                  }}
+                </Combobox.Value>
+              </div>
               <Combobox.Input
                 ref={inputRef}
                 id={ids.controlId}
@@ -243,8 +275,8 @@ function Autocomplete(props: AutocompleteProps) {
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
                 onKeyDown={(event) => {
-                  // Without a per-chip control the last value leaves with
-                  // Backspace, the native combobox removal.
+                  // Backspace on an empty input removes the last value, the
+                  // native combobox path next to each chip's own control.
                   if (event.key !== "Backspace" || inputValue || disabled) return
                   if (!selection.length) return
                   event.preventDefault()
@@ -253,12 +285,39 @@ function Autocomplete(props: AutocompleteProps) {
                 render={
                   <Input
                     className={cn(
-                      "peer min-h-6 min-w-0 flex-1 border-0 bg-transparent p-0 text-label-sb focus-visible:outline-none",
+                      "peer min-h-6 min-w-6 flex-1 border-0 bg-transparent p-0 text-label-sb focus-visible:outline-none",
                       disabled && "bg-transparent text-muted-foreground",
                     )}
                   />
                 }
               />
+              {disabled ? null : (
+                // The source `Active` row puts the `48x24 Action goup` after the
+                // chips and the caret target, inside the frame: a flex sibling
+                // keeps the row on the source's 12px inset.
+                <span data-slot="autocomplete-actions" className="flex shrink-0 items-center">
+                  {showClear ? (
+                    <Combobox.Clear
+                      aria-label={clearLabel}
+                      tabIndex={0}
+                      className="relative grid size-6 place-items-center rounded-sm text-foreground outline-none after:absolute after:-inset-2.5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-1 focus-visible:outline-ring"
+                    >
+                      <PagoPAIcon name="close" size={24} variant="small" aria-hidden="true" />
+                    </Combobox.Clear>
+                  ) : null}
+                  <Combobox.Trigger
+                    aria-label={open ? closeLabel : openLabel}
+                    className="relative grid size-6 place-items-center rounded-sm text-foreground outline-none after:absolute after:-inset-2.5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-1 focus-visible:outline-ring"
+                  >
+                    <PagoPAIcon
+                      name="chevron"
+                      variant={open ? "up" : "down"}
+                      size={24}
+                      aria-hidden="true"
+                    />
+                  </Combobox.Trigger>
+                </span>
+              )}
             </div>
           ) : (
             <Combobox.Input
@@ -293,33 +352,7 @@ function Autocomplete(props: AutocompleteProps) {
               aria-hidden="true"
               className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-foreground"
             />
-          ) : multiple ? (
-            <span
-              data-slot="autocomplete-actions"
-              className="absolute top-1/2 right-3 flex -translate-y-1/2 items-center"
-            >
-              {showClear ? (
-                <Combobox.Clear
-                  aria-label={clearLabel}
-                  tabIndex={0}
-                  className="grid size-6 place-items-center rounded-sm text-foreground outline-none after:absolute after:-inset-2.5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-1 focus-visible:outline-ring"
-                >
-                  <PagoPAIcon name="close" size={24} variant="small" aria-hidden="true" />
-                </Combobox.Clear>
-              ) : null}
-              <Combobox.Trigger
-                aria-label={open ? closeLabel : openLabel}
-                className="grid size-6 place-items-center rounded-sm text-foreground outline-none after:absolute after:-inset-2.5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-1 focus-visible:outline-ring"
-              >
-                <PagoPAIcon
-                  name="chevron"
-                  variant={open ? "up" : "down"}
-                  size={24}
-                  aria-hidden="true"
-                />
-              </Combobox.Trigger>
-            </span>
-          ) : showClear ? (
+          ) : !multiple && showClear ? (
             // The source `Filled=True` state draws `close_small` instead of the
             // arrow (824:8863), and the disabled filled state keeps the arrow
             // (824:8886). Base UI keeps the control mounted only while there is
@@ -331,7 +364,7 @@ function Autocomplete(props: AutocompleteProps) {
             >
               <PagoPAIcon name="close" size={24} variant="small" aria-hidden="true" />
             </Combobox.Clear>
-          ) : (
+          ) : multiple ? null : (
             <Combobox.Trigger
               aria-label={open ? closeLabel : openLabel}
               className="absolute top-1/2 right-3 grid size-6 -translate-y-1/2 place-items-center rounded-sm text-foreground outline-none after:absolute after:-inset-2.5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-1 focus-visible:outline-ring"

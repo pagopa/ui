@@ -708,6 +708,7 @@ export interface Messages {
         emptyLabel: string;
         clearLabel: string;
         counterLabel: (count: number) => string;
+        removeValueLabel: (value: string) => string;
         clearAllLabel: string;
         openLabel: string;
         closeLabel: string;
@@ -1691,7 +1692,7 @@ export function WaitingState(input: StateProps): JSX.Element;
 // dist/types/components/inputs/date-picker.d.ts:16:5 - (ae-forgotten-export) The symbol "Calendar" needs to be exported by the entry point pagopa-ui.d.ts
 // dist/types/components/navigation/footer.d.ts:36:5 - (ae-forgotten-export) The symbol "HeadingTag" needs to be exported by the entry point pagopa-ui.d.ts
 // dist/types/components/primitives/alert.d.ts:12:5 - (ae-forgotten-export) The symbol "AlertDirection" needs to be exported by the entry point pagopa-ui.d.ts
-// dist/types/lib/ui-provider/messages/types.d.ts:195:9 - (ae-forgotten-export) The symbol "StepperStatus" needs to be exported by the entry point pagopa-ui.d.ts
+// dist/types/lib/ui-provider/messages/types.d.ts:196:9 - (ae-forgotten-export) The symbol "StepperStatus" needs to be exported by the entry point pagopa-ui.d.ts
 
 // (No @packageDocumentation comment for this package)
 

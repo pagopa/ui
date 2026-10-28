@@ -96,6 +96,7 @@ export const enMessages: Messages = {
     emptyLabel: "No results",
     clearLabel: "Clear field",
     counterLabel: (count) => `${count} selected`,
+    removeValueLabel: (value) => `Remove ${value}`,
     clearAllLabel: "Clear all values",
     openLabel: "open list",
     closeLabel: "close list",

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, fn, screen, userEvent, within } from "storybook/test"
 
+import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { Autocomplete } from "@/components/inputs"
 
 import fieldsGuide from "./guides/fields.md?raw"
@@ -26,6 +27,7 @@ const meta = {
     onValueChange: { control: false },
   },
   parameters: {
+    design: { type: "figma", url: figmaEmbedUrl("824:8838") },
     docs: {
       description: {
         component: `Search with suggestions: the field is an input with an associated listbox, disabled options stay announced but cannot be selected, and the choice happens from keyboard or pointer. The source leading art is the decorative 24px \`account_balance\` glyph; a filled enabled field shows the clear control, while a disabled one keeps the arrow.\n\n${fieldsGuide}`,
@@ -52,6 +54,46 @@ export const Playground: Story = {
     await userEvent.keyboard("{ArrowDown}{Enter}")
     await expect(city).toHaveValue("Milano")
     await expect(canvas.getByText("hai selezionato Milano")).toBeInTheDocument()
+  },
+}
+
+// The two filled multiselect types at the source 272x48 frame: `824:8872` keeps
+// a removable pill per value with `[clear][chevron]`, `11073:2423` collapses the
+// row into the count badge, which carries the clear action, beside the arrow.
+export const Fidelity: Story = {
+  args: { multiple: true, label: "Erogatori", required: true, description: undefined },
+  render: (args) => (
+    <div className="grid w-68 max-w-full gap-6">
+      <div data-fidelity-variant="824-8872">
+        <Autocomplete {...args} defaultValue={["roma", "milano"]} onValueChange={fn()} />
+      </div>
+      <div data-fidelity-variant="11073-2423">
+        <Autocomplete
+          {...args}
+          multipleDisplay="counter"
+          placeholder="Seleziona gli erogatori"
+          defaultValue={["roma", "milano", "napoli", "torino"]}
+          onValueChange={fn()}
+        />
+      </div>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const chips = canvasElement.querySelector(
+      '[data-fidelity-variant="824-8872"] [data-slot="autocomplete-multiple"]',
+    )
+    const counter = canvasElement.querySelector(
+      '[data-fidelity-variant="11073-2423"] [data-slot="autocomplete-multiple"]',
+    )
+    if (!(chips instanceof HTMLElement) || !(counter instanceof HTMLElement)) {
+      throw new Error("Expected both multiselect fields")
+    }
+    await expect(within(chips).getByText("Roma")).toBeVisible()
+    await expect(within(chips).getByRole("button", { name: "Elimina Roma" })).toBeVisible()
+    await expect(within(counter).getByText("4 selezionati")).toBeInTheDocument()
+    await expect(
+      within(counter).getByRole("button", { name: "Svuota tutti i valori" }),
+    ).toBeVisible()
   },
 }
 
@@ -160,9 +202,10 @@ export const AutocompleteDisabledOptions: Story = {
 }
 
 const pickCities = fn()
+const collapseCities = fn()
 
-// Source frame: 272x48 (`824:8838`), Multiselect=True. One value keeps its full
-// name in a chip, two values collapse into the count badge.
+// Source frame: 272x48 (`824:8872`), Multiselect=True. Every value keeps its
+// own pill and its own remove control, next to `[clear][chevron]`.
 export const Multiselect: Story = {
   args: { multiple: true, onValueChange: pickCities, label: "Erogatori" },
   render: (args) => (
@@ -185,10 +228,54 @@ export const Multiselect: Story = {
     await userEvent.type(field, "rom")
     await userEvent.keyboard("{ArrowDown}{Enter}")
     await expect(within(group).getByText("Roma")).toBeVisible()
-    await expect(group.querySelector('[data-slot="autocomplete-counter"]')).toBeNull()
-    // One value keeps its name and the action group keeps `[clear][chevron]`.
+    // One value keeps its name and the group keeps `[clear][chevron]`.
     await expect(actions()).toHaveLength(2)
     await expect(actions()[0]).toHaveAttribute("aria-label", "Svuota campo")
+
+    await userEvent.type(field, "mil")
+    await userEvent.keyboard("{ArrowDown}{Enter}")
+    // Two values stay two pills, each with its own control.
+    await expect(within(group).getByText("Roma")).toBeVisible()
+    await expect(within(group).getByText("Milano")).toBeVisible()
+    await expect(group.querySelector('[data-slot="autocomplete-counter"]')).toBeNull()
+    await expect(actions()).toHaveLength(2)
+
+    await userEvent.click(within(group).getByRole("button", { name: "Elimina Roma" }))
+    await expect(within(group).queryByText("Roma")).toBeNull()
+    await expect(within(group).getByText("Milano")).toBeVisible()
+    await expect(pickCities).toHaveBeenLastCalledWith(["milano"])
+  },
+}
+
+// Source frame: 272x48 (`11073:2423`), Multiselect counter=True. Two values
+// collapse into a badge whose own control clears them all.
+export const MultiselectCounter: Story = {
+  args: {
+    multiple: true,
+    multipleDisplay: "counter",
+    onValueChange: collapseCities,
+    label: "Erogatori",
+  },
+  render: (args) => (
+    <div className="w-68 max-w-full">
+      <Autocomplete {...args} />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const field = canvas.getByRole("combobox", { name: /Erogatori/ })
+    const group = canvasElement.querySelector('[data-slot="autocomplete-multiple"]')
+    if (!(group instanceof HTMLElement)) throw new Error("Expected the chips row")
+    const actions = () => [
+      ...canvasElement.querySelectorAll('[data-slot="autocomplete-actions"] button'),
+    ]
+
+    await userEvent.click(field)
+    await userEvent.type(field, "rom")
+    await userEvent.keyboard("{ArrowDown}{Enter}")
+    // A single value is never a count of one: it keeps its full name.
+    await expect(within(group).getByText("Roma")).toBeVisible()
+    await expect(group.querySelector('[data-slot="autocomplete-counter"]')).toBeNull()
 
     await userEvent.type(field, "mil")
     await userEvent.keyboard("{ArrowDown}{Enter}")
@@ -202,12 +289,17 @@ export const Multiselect: Story = {
     await expect(
       within(counter).getByRole("button", { name: "Svuota tutti i valori" }),
     ).toBeVisible()
-    await expect(pickCities).toHaveBeenLastCalledWith(["roma", "milano"])
+    await expect(collapseCities).toHaveBeenLastCalledWith(["roma", "milano"])
   },
 }
 
 export const MultiselectClearAll: Story = {
-  args: { multiple: true, defaultValue: ["roma", "milano", "napoli"], label: "Erogatori" },
+  args: {
+    multiple: true,
+    multipleDisplay: "counter",
+    defaultValue: ["roma", "milano", "napoli"],
+    label: "Erogatori",
+  },
   render: (args) => (
     <div className="w-68 max-w-full">
       <Autocomplete {...args} />
@@ -247,7 +339,12 @@ export const MultiselectBackspace: Story = {
 }
 
 export const MultiselectSelectAll: Story = {
-  args: { multiple: true, label: "Erogatori", selectAllLabel: "Seleziona tutti" },
+  args: {
+    multiple: true,
+    multipleDisplay: "counter",
+    label: "Erogatori",
+    selectAllLabel: "Seleziona tutti",
+  },
   render: (args) => (
     <div className="w-68 max-w-full">
       <Autocomplete {...args} />
@@ -264,9 +361,36 @@ export const MultiselectSelectAll: Story = {
   },
 }
 
+const removeCity = fn()
+
+export const MultiselectRemoveValue: Story = {
+  args: {
+    multiple: true,
+    defaultValue: ["roma", "milano"],
+    label: "Erogatori",
+    removeValueLabel: (value) => `Togli ${value}`,
+    onValueChange: removeCity,
+  },
+  render: (args) => (
+    <div className="w-68 max-w-full">
+      <Autocomplete {...args} />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const group = canvasElement.querySelector('[data-slot="autocomplete-multiple"]')
+    if (!(group instanceof HTMLElement)) throw new Error("Expected the chips row")
+    await userEvent.click(within(group).getByRole("button", { name: "Togli Roma" }))
+    await expect(within(group).queryByText("Roma")).toBeNull()
+    await expect(within(group).getByText("Milano")).toBeVisible()
+    await expect(removeCity).toHaveBeenLastCalledWith(["milano"])
+  },
+}
+
 export const MultiselectOverridableTexts: Story = {
   args: {
     multiple: true,
+    multipleDisplay: "counter",
     defaultValue: ["roma", "milano"],
     label: "Erogatori",
     clearLabel: "Cancella l'erogatore",
