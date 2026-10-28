@@ -429,10 +429,11 @@ export async function runStatus(argv: string[] = process.argv.slice(2)): Promise
 
   // The surface is what the census says the pages draw, and it is the only line
   // here the inventory cannot produce: the export holds published nodes, a page
-  // holds drawings and compositions.
+  // holds drawings and compositions. The inventory only counts the pages a
+  // census still owes.
   const surfaceReport: StatusReport["surface"] = { stats: null, error: null }
   try {
-    surfaceReport.stats = surfaceSummary(loadPageSurface())
+    surfaceReport.stats = surfaceSummary(loadPageSurface(), inventory?.components ?? [])
   } catch (error) {
     surfaceReport.error = error instanceof Error ? error.message.split("\n")[0] : String(error)
   }

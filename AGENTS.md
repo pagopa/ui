@@ -38,7 +38,9 @@ not a delta. The `figma-to-code` skill owns every rule that follows.
 
 The scope is the library, and every page a session touches is censused: read the
 page tree with `get_metadata` on the page node and update
-`packages/pagopa-ui/src/catalog/figma/page-surface.json`. An identity the file
+`packages/pagopa-ui/src/catalog/figma/page-surface.json`. The census grows a page
+at a time, so the status line counts the pages still to read — the exact
+remainder is the `surfaceUncensused` list in `figma:plan`. An identity the file
 never published is `unpublished` there and owes no work; publishing it is what
 makes its decision due.
 

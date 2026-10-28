@@ -1,7 +1,14 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
 
-import { checkPageSurface, surfacePending, surfaceUnmirrored } from "../../src/figma/surface.ts"
+import {
+  checkPageSurface,
+  formatSurfaceLine,
+  surfacePending,
+  surfaceSummary,
+  surfaceUncensused,
+  surfaceUnmirrored,
+} from "../../src/figma/surface.ts"
 
 const FILE_KEY = "pvhsJpPGQbEwNLiyP7BOIw"
 const PAGE = "1326:5181"
@@ -225,4 +232,53 @@ test("waiting work is the published node, never the unpublished drawing", () => 
     surfacePending(data).map((entry) => entry.nodeId),
     ["b:2"],
   )
+})
+
+test("a page the census never read is counted, not refused", () => {
+  const result = run(surface(), {
+    nodes: [
+      inventory("12812:16248", { pageId: "392:5285" }),
+      inventory("392:5292", { pageId: "1:0" }),
+    ],
+  })
+  assert.deepEqual(result.errors, [])
+  assert.equal(result.warnings.length, 1)
+  assert.match(result.warnings[0], /2 page\(s\) with published nodes are not censused/)
+  assert.equal(result.stats.pagesPublished, 2)
+  assert.match(formatSurfaceLine(result.stats), /surface: 1\/2 page\(s\)/)
+})
+
+test("the burn-down names the densest uncensused page first", () => {
+  const data = surface({ pageId: "1:1" })
+  const nodes = [
+    inventory("a", { pageId: "9:9" }),
+    inventory("b", { pageId: "8:8" }),
+    inventory("c", { pageId: "8:8" }),
+    inventory("d", { pageId: "8:8" }),
+    inventory("e", { pageId: "1:1" }),
+  ]
+  assert.deepEqual(
+    surfaceUncensused(data, nodes).map((page) => [page.pageId, page.nodes]),
+    [
+      ["8:8", 3],
+      ["9:9", 1],
+    ],
+  )
+})
+
+test("a censused page leaves nothing in the burn-down", () => {
+  const result = run(surface({ identities: [identity("12812:16248", "shipped")] }), {
+    nodes: [inventory("12812:16248")],
+    entries: { "12812:16248": { status: "implemented" } },
+  })
+  assert.match(formatSurfaceLine(result.stats), /surface: 1\/1 page\(s\)/)
+  assert.deepEqual(
+    result.warnings.filter((warning) => /not censused/.test(warning)),
+    [],
+  )
+})
+
+test("the ratio is printed only when the inventory says how many pages publish", () => {
+  const data = surface({ identities: [identity("12812:16248", "shipped")] })
+  assert.match(formatSurfaceLine(surfaceSummary(data)), /^surface: 1 page\(s\) /)
 })

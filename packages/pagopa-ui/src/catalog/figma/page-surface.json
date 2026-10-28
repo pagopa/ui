@@ -250,6 +250,92 @@
           "reason": "The drawer from SM up: a 600 backdrop holding Timeline drawer at 417, the width the MD, LG and XL frames draw too. That 417 is what the case labelled mobile measures, which is why it is not a mobile measurement."
         }
       ]
+    },
+    {
+      "pageId": "1:23",
+      "pageName": "• Overlay",
+      "identities": [
+        {
+          "nodeId": "67:3964",
+          "name": "Overlay",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": [
+        {
+          "nodeId": "68:2280",
+          "name": "Overlay",
+          "device": "mobile",
+          "drawn": 1,
+          "mirrors": ["67-3964-default"],
+          "reason": "The 320 board draws one Overlay at 320x568, the scrim the component is, and the case 67-3964-default captures that same 320x568 box: the drawing is measured."
+        },
+        {
+          "nodeId": "68:2281",
+          "name": "Overlay",
+          "device": "tablet",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "The 600 board draws the same scrim at 600x800. The scrim has no content and no radius, so the only thing the larger box changes is its size, and the corpus captures 320 only: the 600 drawing is measured nowhere."
+        },
+        {
+          "nodeId": "68:2284",
+          "name": "Overlay",
+          "device": "tablet",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "The MD 900 board draws the same scrim at 900x800, and the corpus holds no 900 capture: the drawing is measured nowhere."
+        },
+        {
+          "nodeId": "68:2286",
+          "name": "Overlay",
+          "device": "desktop",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "The LG 1200 board draws the same scrim at 1200x800, and the corpus holds no 1200 capture: the drawing is measured nowhere."
+        },
+        {
+          "nodeId": "68:2288",
+          "name": "Overlay",
+          "device": "desktop",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "The XL 1536 board draws the same scrim at 1536x800, and the corpus holds no 1536 capture: the drawing is measured nowhere."
+        }
+      ]
+    },
+    {
+      "pageId": "61:2777",
+      "pageName": "• Divider ",
+      "identities": [
+        {
+          "nodeId": "61:2786",
+          "name": "Divider",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": [
+        {
+          "nodeId": "61:2815",
+          "name": "360",
+          "device": "mobile",
+          "drawn": 1,
+          "mirrors": ["61-2786-line"],
+          "reason": "Group 2 draws one divider full width in a 320x568 board (at y 283.5), and the case 61-2786-line measures the Padding=0, Type=Line variant at its 320x1 box: the drawing is measured, and the padded and With text variants are measured by their own cases."
+        },
+        {
+          "nodeId": "61:2824",
+          "name": "375",
+          "device": "desktop",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "Group 1 draws one divider full width in a 1536x812 board, and the frame is named 375 while it measures 1536. The corpus has no 1536 capture and the divider is a 100%-width line, so the width the page draws is measured nowhere."
+        }
+      ]
     }
   ]
 }

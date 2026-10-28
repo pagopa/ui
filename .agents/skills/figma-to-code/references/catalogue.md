@@ -102,18 +102,26 @@ the page's frame list — with:
   one the device policy declares.
 - A page is listed once, and identities and compositions once each; the recorded
   `fileKey` is the inventory's.
+- Every page the inventory publishes on is censused or counted: an unread page
+  warns with its published node count and waits in `surfaceUncensused`.
 
-It cannot see Figma: a component added to a page without re-reading the page tree
-leaves the census short, which is why the page read closes a Figma session. The
-census line says whether the page still reads as it did:
+The census grows a page at a time, from the page a session opened, and the file
+publishes on more pages than any session reads. So the census is also
+accounted: every page the inventory publishes on is either censused or waiting
+in the burn-down, and `figma:check` warns with the count until the last one is
+read. That is why the line leads with a ratio:
 
 ```text
-surface: <n> page(s) · <n> identities (<n> in the library, <n> not) · <n> pending · <n> composition(s) · <n> case mirror(s)
+surface: <censused>/<published> page(s) · <n> identities (<n> in the library, <n> not) · <n> pending · <n> composition(s) · <n> case mirror(s)
 ```
 
+It cannot see Figma: a component added to a page without re-reading the page tree
+leaves the census short, which is why the page read closes a Figma session.
+
 `figma:plan` adds `surfaceWaiting` (published identities still owed an
-implementation) and `surfaceUnmirrored` (compositions the source draws that no
-case measures) instead of hiding them behind the delta.
+implementation), `surfaceUnmirrored` (compositions the source draws that no case
+measures) and `surfaceUncensused` (the pages still to read, densest first)
+instead of hiding them behind the delta.
 
 ## Review semantics
 

@@ -69,12 +69,20 @@ export const PAGE_SURFACE_PATH = "src/catalog/figma/page-surface.json"
 
 export type SurfaceStats = {
   pages: number
+  pagesPublished: number
   identities: number
   inLibrary: number
   unpublished: number
   pending: number
   compositions: number
   mirrored: number
+}
+
+/** A page the inventory publishes on and the census never read. */
+export type SurfaceUncensused = {
+  pageId: string
+  pageName: string
+  nodes: number
 }
 
 export type SurfaceResult = {
@@ -280,7 +288,39 @@ export function checkPageSurface(
     warnings.push(`${label}: no page is censused — a Figma session reads the pages it touched`)
   }
 
-  return { errors, warnings, stats: surfaceSummary(surface) }
+  const uncensused = surfaceUncensused(surface, nodes)
+  if (uncensused.length) {
+    const named = uncensused
+      .slice(0, 3)
+      .map((page) => `${page.pageName} (${page.nodes})`)
+      .join(", ")
+    warnings.push(
+      `${label}: ${uncensused.length} page(s) with published nodes are not censused — ` +
+        `the census grows a page at a time and \`figma:plan\` carries the rest: ${named}` +
+        (uncensused.length > 3 ? ", …" : ""),
+    )
+  }
+
+  return { errors, warnings, stats: surfaceSummary(surface, nodes) }
+}
+
+/**
+ * The pages the inventory publishes on and the census has not read yet: the
+ * burn-down of a census that starts from the page a session opened.
+ */
+export function surfaceUncensused(
+  surface: PageSurface,
+  nodes: InventoryNode[],
+): SurfaceUncensused[] {
+  const censused = new Set(surface.pages.map((page) => page.pageId))
+  const pages = new Map<string, SurfaceUncensused>()
+  for (const node of nodes) {
+    if (censused.has(node.pageId)) continue
+    const page = pages.get(node.pageId)
+    if (page) page.nodes++
+    else pages.set(node.pageId, { pageId: node.pageId, pageName: node.pageName ?? "", nodes: 1 })
+  }
+  return [...pages.values()].sort((left, right) => right.nodes - left.nodes)
 }
 
 /** Published identities still waiting: the work a censused page asks for. */
@@ -317,8 +357,9 @@ export function surfaceUnmirrored(surface: PageSurface): SurfaceUnmirrored[] {
 }
 
 /** What the census holds, counted without asking the inventory anything. */
-export function surfaceSummary(surface: PageSurface): SurfaceStats {
+export function surfaceSummary(surface: PageSurface, nodes?: InventoryNode[]): SurfaceStats {
   const stats = emptyStats()
+  if (nodes) stats.pagesPublished = new Set(nodes.map((node) => node.pageId)).size
   for (const page of surface.pages) {
     stats.pages++
     for (const identity of page.identities) {
@@ -338,6 +379,7 @@ export function surfaceSummary(surface: PageSurface): SurfaceStats {
 export function emptyStats(): SurfaceStats {
   return {
     pages: 0,
+    pagesPublished: 0,
     identities: 0,
     inLibrary: 0,
     unpublished: 0,
@@ -348,8 +390,11 @@ export function emptyStats(): SurfaceStats {
 }
 
 export function formatSurfaceLine(stats: SurfaceStats): string {
+  const pages = stats.pagesPublished
+    ? `${stats.pages}/${stats.pagesPublished} page(s)`
+    : `${stats.pages} page(s)`
   return (
-    `surface: ${stats.pages} page(s) · ${stats.identities} identities ` +
+    `surface: ${pages} · ${stats.identities} identities ` +
     `(${stats.inLibrary} in the library, ${stats.unpublished} not) · ` +
     `${stats.pending} pending · ${stats.compositions} composition(s) · ` +
     `${stats.mirrored} case mirror(s)`
