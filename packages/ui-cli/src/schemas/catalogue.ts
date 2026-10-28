@@ -255,9 +255,12 @@ export type ApiExceptions = z.infer<typeof ApiExceptionsSchema>
 // The census mirrors the inventory both ways, so the two cannot drift apart
 // silently, and `inLibrary` is the hinge: an identity marked in the library must
 // be an inventory node, and one marked outside it must not be.
-export const SurfaceDecisionSchema = z.enum(["shipped", "excluded", "pending", "unpublished"], {
-  error: "expected shipped, excluded, pending or unpublished",
-})
+export const SurfaceDecisionSchema = z.enum(
+  ["shipped", "mocked", "excluded", "pending", "unpublished"],
+  {
+    error: "expected shipped, mocked, excluded, pending or unpublished",
+  },
+)
 export type SurfaceDecision = z.infer<typeof SurfaceDecisionSchema>
 
 export const PageIdentitySchema = z.strictObject({

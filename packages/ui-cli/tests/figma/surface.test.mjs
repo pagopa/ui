@@ -1,7 +1,14 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
 
-import { checkPageSurface, surfacePending, surfaceUnmirrored } from "../../src/figma/surface.ts"
+import {
+  checkPageSurface,
+  formatSurfaceLine,
+  surfacePending,
+  surfaceSummary,
+  surfaceUncensused,
+  surfaceUnmirrored,
+} from "../../src/figma/surface.ts"
 
 const FILE_KEY = "pvhsJpPGQbEwNLiyP7BOIw"
 const PAGE = "1326:5181"
@@ -39,11 +46,17 @@ function composition(nodeId, extra = {}) {
 
 function run(
   data,
-  { nodes = [], entries = {}, cases = [], devices = ["mobile", "tablet", "desktop"] } = {},
+  {
+    nodes = [],
+    entries = {},
+    bulkRules = [],
+    cases = [],
+    devices = ["mobile", "tablet", "desktop"],
+  } = {},
 ) {
   return checkPageSurface(data, {
     nodes,
-    registry: { entries },
+    registry: { entries, bulkRules },
     cases,
     fileKey: FILE_KEY,
     devices,
@@ -126,6 +139,52 @@ test("a decision other than shipped carries a reason and agrees with the registr
     },
   )
   assert.match(disagreement.errors[0], /is excluded but the registry says "implemented"/)
+})
+
+test("a mocked identity agrees with the registry and carries a reason", () => {
+  const pass = run(
+    surface({ identities: [identity("1:1", "mocked", { reason: "a facade renders it" })] }),
+    {
+      nodes: [inventory("1:1")],
+      entries: { "1:1": { status: "mocked" } },
+    },
+  )
+  assert.deepEqual(pass.errors, [])
+  const noReason = run(
+    surface({ identities: [identity("1:1", "mocked", { reason: "a facade renders it" })] }),
+    {
+      nodes: [inventory("1:1")],
+      entries: { "1:1": { status: "implemented" } },
+    },
+  )
+  assert.match(noReason.errors[0], /is mocked but the registry says "implemented"/)
+})
+
+test("a page bulk rule is the decision for a node with no entry of its own", () => {
+  const shipped = run(
+    surface({ identities: [identity("1:1", "shipped", { name: "SavingMoney" })] }),
+    {
+      nodes: [inventory("1:1", { name: "SavingMoney" })],
+      bulkRules: [{ pageId: PAGE, status: "implemented" }],
+    },
+  )
+  assert.deepEqual(shipped.errors, [])
+  const excluded = run(
+    surface({
+      identities: [identity("1:2", "excluded", { name: "Scrollbar", reason: "native chrome" })],
+    }),
+    {
+      nodes: [inventory("1:2", { name: "Scrollbar" })],
+      bulkRules: [{ pageId: PAGE, status: "excluded" }],
+    },
+  )
+  assert.deepEqual(excluded.errors, [])
+  const owned = run(surface({ identities: [identity("1:1", "shipped")] }), {
+    nodes: [inventory("1:1")],
+    entries: { "1:1": { status: "pending" } },
+    bulkRules: [{ pageId: PAGE, status: "implemented" }],
+  })
+  assert.match(owned.errors[0], /is shipped but the registry says "pending"/)
 })
 
 test("the in-library mirror runs both ways", () => {
@@ -225,4 +284,53 @@ test("waiting work is the published node, never the unpublished drawing", () => 
     surfacePending(data).map((entry) => entry.nodeId),
     ["b:2"],
   )
+})
+
+test("a page the census never read is counted, not refused", () => {
+  const result = run(surface(), {
+    nodes: [
+      inventory("12812:16248", { pageId: "392:5285" }),
+      inventory("392:5292", { pageId: "1:0" }),
+    ],
+  })
+  assert.deepEqual(result.errors, [])
+  assert.equal(result.warnings.length, 1)
+  assert.match(result.warnings[0], /2 page\(s\) with published nodes are not censused/)
+  assert.equal(result.stats.pagesPublished, 2)
+  assert.match(formatSurfaceLine(result.stats), /surface: 1\/2 page\(s\)/)
+})
+
+test("the burn-down names the densest uncensused page first", () => {
+  const data = surface({ pageId: "1:1" })
+  const nodes = [
+    inventory("a", { pageId: "9:9" }),
+    inventory("b", { pageId: "8:8" }),
+    inventory("c", { pageId: "8:8" }),
+    inventory("d", { pageId: "8:8" }),
+    inventory("e", { pageId: "1:1" }),
+  ]
+  assert.deepEqual(
+    surfaceUncensused(data, nodes).map((page) => [page.pageId, page.nodes]),
+    [
+      ["8:8", 3],
+      ["9:9", 1],
+    ],
+  )
+})
+
+test("a censused page leaves nothing in the burn-down", () => {
+  const result = run(surface({ identities: [identity("12812:16248", "shipped")] }), {
+    nodes: [inventory("12812:16248")],
+    entries: { "12812:16248": { status: "implemented" } },
+  })
+  assert.match(formatSurfaceLine(result.stats), /surface: 1\/1 page\(s\)/)
+  assert.deepEqual(
+    result.warnings.filter((warning) => /not censused/.test(warning)),
+    [],
+  )
+})
+
+test("the ratio is printed only when the inventory says how many pages publish", () => {
+  const data = surface({ identities: [identity("12812:16248", "shipped")] })
+  assert.match(formatSurfaceLine(surfaceSummary(data)), /^surface: 1 page\(s\) /)
 })

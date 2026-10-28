@@ -84,9 +84,11 @@ import {
   formatSurfaceLine,
   loadPageSurface,
   surfacePending,
+  surfaceUncensused,
   surfaceUnmirrored,
   type SurfacePending,
   type SurfaceStats,
+  type SurfaceUncensused,
   type SurfaceUnmirrored,
 } from "./surface.ts"
 import { requireFigmaToken } from "./token.ts"
@@ -836,6 +838,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
   let surfaceStats: SurfaceStats | null = null
   let surfaceWaiting: SurfacePending[] = []
   let surfaceExcusals: SurfaceUnmirrored[] = []
+  let surfaceDeferred: SurfaceUncensused[] = []
 
   if (devicePolicy) {
     try {
@@ -949,6 +952,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     surfaceStats = result.stats
     surfaceWaiting = surfacePending(surface)
     surfaceExcusals = surfaceUnmirrored(surface)
+    surfaceDeferred = surfaceUncensused(surface, committed)
   } catch (error) {
     fail(error instanceof Error ? error.message : String(error))
   }
@@ -1350,6 +1354,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
           // plan reader could not learn from the inventory.
           surfaceWaiting: surfaceWaiting,
           surfaceUnmirrored: surfaceExcusals,
+          surfaceUncensused: surfaceDeferred,
           unverifiedDesign: snapshot
             .filter((node) => !node.designFingerprint)
             .map((node) => node.nodeId),

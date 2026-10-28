@@ -1,7 +1,7 @@
 {
   "fileKey": "pvhsJpPGQbEwNLiyP7BOIw",
   "readAt": "2026-10-28",
-  "note": "Read from the Figma page tree (MCP get_metadata on the page node), not from the library export: the export lists published nodes only, so the rows marked inLibrary: false exist nowhere else. One row per component and component set drawn on the page with the decision the library gives it, and one row per composition the page draws with the cases that measure it. A drawing that was never published is out of the implementation scope, so its decision is `unpublished` and no work follows; publishing it is what opens the decision, and the inLibrary mirror in `figma:check` is what makes that fail loudly. See .agents/skills/figma-to-code/references/catalogue.md.",
+  "note": "Read from the Figma page tree at the pinned file version, not from the library export: the export lists published nodes only, so the rows marked inLibrary: false exist nowhere else. One row per component and component set drawn on the page with the decision the library gives it (a registry bulk rule is the decision for a node of its page that carries no entry of its own), and one row per composition the page draws with the cases that measure it. A drawing that was never published is out of the implementation scope, so its decision is `unpublished` and no work follows; publishing it is what opens the decision, and the inLibrary mirror in `figma:check` is what makes that fail loudly. See .agents/skills/figma-to-code/references/catalogue.md.",
   "pages": [
     {
       "pageId": "1326:5181",
@@ -250,6 +250,3333 @@
           "reason": "The drawer from SM up: a 600 backdrop holding Timeline drawer at 417, the width the MD, LG and XL frames draw too. That 417 is what the case labelled mobile measures, which is why it is not a mobile measurement."
         }
       ]
+    },
+    {
+      "pageId": "1:23",
+      "pageName": "• Overlay",
+      "identities": [
+        {
+          "nodeId": "67:3964",
+          "name": "Overlay",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": [
+        {
+          "nodeId": "68:2280",
+          "name": "Overlay",
+          "device": "mobile",
+          "drawn": 1,
+          "mirrors": ["67-3964-default"],
+          "reason": "The 320 board draws one Overlay at 320x568, the scrim the component is, and the case 67-3964-default captures that same 320x568 box: the drawing is measured."
+        },
+        {
+          "nodeId": "68:2281",
+          "name": "Overlay",
+          "device": "tablet",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "The 600 board draws the same scrim at 600x800. The scrim has no content and no radius, so the only thing the larger box changes is its size, and the corpus captures 320 only: the 600 drawing is measured nowhere."
+        },
+        {
+          "nodeId": "68:2284",
+          "name": "Overlay",
+          "device": "tablet",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "The MD 900 board draws the same scrim at 900x800, and the corpus holds no 900 capture: the drawing is measured nowhere."
+        },
+        {
+          "nodeId": "68:2286",
+          "name": "Overlay",
+          "device": "desktop",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "The LG 1200 board draws the same scrim at 1200x800, and the corpus holds no 1200 capture: the drawing is measured nowhere."
+        },
+        {
+          "nodeId": "68:2288",
+          "name": "Overlay",
+          "device": "desktop",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "The XL 1536 board draws the same scrim at 1536x800, and the corpus holds no 1536 capture: the drawing is measured nowhere."
+        }
+      ]
+    },
+    {
+      "pageId": "61:2777",
+      "pageName": "• Divider ",
+      "identities": [
+        {
+          "nodeId": "61:2786",
+          "name": "Divider",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": [
+        {
+          "nodeId": "61:2815",
+          "name": "360",
+          "device": "mobile",
+          "drawn": 1,
+          "mirrors": ["61-2786-line"],
+          "reason": "Group 2 draws one divider full width in a 320x568 board (at y 283.5), and the case 61-2786-line measures the Padding=0, Type=Line variant at its 320x1 box: the drawing is measured, and the padded and With text variants are measured by their own cases."
+        },
+        {
+          "nodeId": "61:2824",
+          "name": "375",
+          "device": "desktop",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "Group 1 draws one divider full width in a 1536x812 board, and the frame is named 375 while it measures 1536. The corpus has no 1536 capture and the divider is a 100%-width line, so the width the page draws is measured nowhere."
+        }
+      ]
+    },
+    {
+      "pageId": "1:17",
+      "pageName": "• Safe Area",
+      "identities": [
+        {
+          "nodeId": "50:1700",
+          "name": "White Template",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "1:24",
+      "pageName": "• Icon",
+      "identities": [
+        {
+          "nodeId": "94:1982",
+          "name": "category",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "94:1997",
+          "name": "supervised_user_circle",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "94:2021",
+          "name": "person",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "94:2036",
+          "name": "mail",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "94:2057",
+          "name": "settings",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "94:2072",
+          "name": "vpn_key",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "94:2093",
+          "name": "view_sidebar",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "94:2106",
+          "name": "menu_book",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "95:680",
+          "name": "content_copy",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "95:1620",
+          "name": "edit",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "95:1691",
+          "name": "lock",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "96:621",
+          "name": "filter",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "96:628",
+          "name": "adf_scanner",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "96:668",
+          "name": "check_box",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "96:671",
+          "name": "radio_button",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "96:686",
+          "name": "visibility",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "96:708",
+          "name": "keep",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "96:722",
+          "name": "backspace",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:668",
+          "name": "close",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:675",
+          "name": "help",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:697",
+          "name": "add",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:704",
+          "name": "search",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:711",
+          "name": "mode_off_on",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:718",
+          "name": "block",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:737",
+          "name": "more_vert",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:738",
+          "name": "menu",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:871",
+          "name": "chevron",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:878",
+          "name": "history",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:919",
+          "name": "arrow",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:932",
+          "name": "logout",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:933",
+          "name": "login",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:952",
+          "name": "exit_to_app",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:965",
+          "name": "download",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:966",
+          "name": "upload",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:973",
+          "name": "ios_share",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:980",
+          "name": "share",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:987",
+          "name": "open_in_new",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:994",
+          "name": "cached",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:1001",
+          "name": "call_split",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:1016",
+          "name": "unfold",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:1065",
+          "name": "check_circle",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:1152",
+          "name": "info",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:1153",
+          "name": "warning",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:1154",
+          "name": "report",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:1155",
+          "name": "cancel",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:1158",
+          "name": "check",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:1162",
+          "name": "error",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:1252",
+          "name": "forum",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:1253",
+          "name": "chat",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:1254",
+          "name": "mark_email_unread",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:1257",
+          "name": "favorite",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:1258",
+          "name": "kid_star",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:1271",
+          "name": "inbox",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:1290",
+          "name": "attach_email",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:1297",
+          "name": "feedback",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:1300",
+          "name": "inventory_2",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "98:1351",
+          "name": "photo",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:616",
+          "name": "receipt_long",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:623",
+          "name": "folder",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:630",
+          "name": "news",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:637",
+          "name": "verified",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:644",
+          "name": "picture_as_pdf",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:666",
+          "name": "account_balance",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:673",
+          "name": "id_card",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:781",
+          "name": "Media logos",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2068",
+          "name": "hourglass_top",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2075",
+          "name": "schedule",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2082",
+          "name": "event",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2089",
+          "name": "gpp_bad",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2096",
+          "name": "verified_user",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2110",
+          "name": "privacy_tip",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2117",
+          "name": "notifications_active",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2124",
+          "name": "keyboard_hide",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2131",
+          "name": "call",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2138",
+          "name": "qr_code",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2145",
+          "name": "bug_report",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2152",
+          "name": "delete",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2159",
+          "name": "sell",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2166",
+          "name": "leaderboard",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2173",
+          "name": "wand_shine",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2180",
+          "name": "auto_awesome_mosaic",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2187",
+          "name": "bolt",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2194",
+          "name": "language",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2201",
+          "name": "fingerprint",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2208",
+          "name": "attach_file",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2215",
+          "name": "shopping_cart",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2222",
+          "name": "mobile_2",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2229",
+          "name": "emoji_objects",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2248",
+          "name": "touch_app",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2249",
+          "name": "swipe",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2250",
+          "name": "swipe_down",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2257",
+          "name": "dialpad",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2264",
+          "name": "code",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2271",
+          "name": "business_center",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2278",
+          "name": "theater_comedy",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2285",
+          "name": "flight_takeoff",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2292",
+          "name": "pedal_bike",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2299",
+          "name": "volunteer_activism",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2331",
+          "name": "near_me",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2338",
+          "name": "my_location",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2345",
+          "name": "location_on",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2381",
+          "name": "credit_card",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2388",
+          "name": "euro",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2395",
+          "name": "storefront",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2408",
+          "name": "account_balance_wallet",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2415",
+          "name": "payments",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "99:2422",
+          "name": "savings",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "232:1673",
+          "name": "IO logo",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "256:8579",
+          "name": "SPID",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "256:8580",
+          "name": "CIEID",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "256:8581",
+          "name": "CIE",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "256:8582",
+          "name": "pagoPA",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "392:5291",
+          "name": "how_to_reg",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "1101:3862",
+          "name": "contacts",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "1101:4296",
+          "name": "approval_delegation",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "1101:4422",
+          "name": "integration_instructions",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "1120:7621",
+          "name": "construction",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "1120:7638",
+          "name": "dns",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "1120:7821",
+          "name": "dashboard",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "1174:9780",
+          "name": "save",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "1311:12896",
+          "name": "table_chart",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "1315:8596",
+          "name": "account_circle",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "1501:5288",
+          "name": "support",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "1509:25567",
+          "name": "confirmation_number",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "2080:3319",
+          "name": "arrow_menu_close",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "2080:3320",
+          "name": "left_panel_close",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "2801:90017",
+          "name": "sort",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "8702:266",
+          "name": "mark_email_read",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "8704:37763",
+          "name": "drafts",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "8704:37815",
+          "name": "flag",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "8717:781",
+          "name": "SEND",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "8854:39311",
+          "name": "first_letter",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "8854:39312",
+          "name": "second_letter",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "8854:39315",
+          "name": "mobile_vibrate",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "9082:974",
+          "name": "open_in_browser",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "9584:66412",
+          "name": "send",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "9640:793",
+          "name": "gavel",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "9642:949",
+          "name": "no_accounts",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "9643:953",
+          "name": "grading",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "9643:960",
+          "name": "troubleshoot",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "9643:961",
+          "name": "search_check_2",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "9790:9527",
+          "name": "mail_off",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "9833:26066",
+          "name": "local_post_office",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "9833:27244",
+          "name": "mail_shield",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "9876:42679",
+          "name": "online_address",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "9924:27038",
+          "name": "unsubscribe",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "9977:21200",
+          "name": "check_indeterminate_small",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "9977:23980",
+          "name": "toggle_off",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "10297:6918",
+          "name": "schedule_send",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "10444:14812",
+          "name": "local_laundry_service",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "10444:15263",
+          "name": "settings_remote",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "12785:14427",
+          "name": "forward_to_inbox",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "13906:25597",
+          "name": "third_letter",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "14164:11363",
+          "name": "license",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "14241:48931",
+          "name": "mail_pec",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "14709:279",
+          "name": "mail_error",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "1:26",
+      "pageName": "• Tag 🟢",
+      "identities": [
+        {
+          "nodeId": "105:2043",
+          "name": "Tag",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "1:22",
+      "pageName": "• Button 🟢",
+      "identities": [
+        {
+          "nodeId": "108:1402",
+          "name": "Button",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "123:1838",
+          "name": ".UnstyledButton",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The bare button surface the published Button variants share their reset with. Not published: each variant carries its own rendering."
+        },
+        {
+          "nodeId": "123:4498",
+          "name": "BlockButtons",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "3424:12354",
+          "name": "ButtonStickyBottom",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "109:2426",
+      "pageName": "• Spinner 🟢",
+      "identities": [
+        {
+          "nodeId": "109:2455",
+          "name": "Spinner",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "1:21",
+      "pageName": "• Breadcrumb 🟠",
+      "identities": [
+        {
+          "nodeId": "123:7768",
+          "name": "Breadcrumbs",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "124:3575",
+          "name": ".BreadcrumbsSingleElement",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "One crumb — label, chevron, separator — that the Breadcrumb composes from. Not published: the crumb is internal to the set."
+        },
+        {
+          "nodeId": "10789:15213",
+          "name": ".Separator",
+          "kind": "COMPONENT",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The 16x16 slash between two crumbs. Not published: Breadcrumb paints its separator itself."
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "1:25",
+      "pageName": "• Pagination",
+      "identities": [
+        {
+          "nodeId": "126:4982",
+          "name": ".PaginationSingleElement",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "One page number, current or not. Not published: Pagination renders the item itself."
+        },
+        {
+          "nodeId": "127:1510",
+          "name": "Pagination",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "pending",
+          "reason": "Pending behind docs/design-requests/2026-10-21-pagination-order-axis.md: the `Order` axis mixes page positions (first page, second page and more, last page), so the set has no clean mapping yet."
+        },
+        {
+          "nodeId": "1503:9760",
+          "name": ".RowPerPageSelect",
+          "kind": "COMPONENT",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The rows-per-page select field. Not published: the published Pagination covers the order question, and this control waits with it."
+        },
+        {
+          "nodeId": "1504:9763",
+          "name": ".RowsPerPage",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The rows-per-page option list. Not published: same control as 1503:9760, drawn beside it."
+        },
+        {
+          "nodeId": "10169:11956",
+          "name": ".CarouselStepperSingleElement",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "One carousel step glyph. Not published: Pagination draws its own step markers."
+        },
+        {
+          "nodeId": "10169:11964",
+          "name": "CarouselStepper",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "157:744",
+      "pageName": "• Avatar 🟠",
+      "identities": [
+        {
+          "nodeId": "160:1344",
+          "name": "AvatarSmall",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "160:1403",
+          "name": "AvatarBig",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "1501:5860",
+          "name": "Gravatar",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "excluded",
+          "reason": "Excluded: initials-only avatar content is composed through Avatar(initials), and the source alias implies an email-derived Gravatar service the library does not ship."
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "157:1194",
+      "pageName": "• Scroll-to-Bottom",
+      "identities": [
+        {
+          "nodeId": "180:3931",
+          "name": "ScrollToBottom",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": [
+        {
+          "nodeId": "180:4852",
+          "name": "White template",
+          "device": "mobile",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "The mobile white template 320x650 draws the 56x56 button in the page corner. No case measures the template: 180-3931-default measures the button itself at 56, not the 320 page that places it."
+        },
+        {
+          "nodeId": "180:4857",
+          "name": "White template",
+          "device": "tablet",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "The tablet white template 900x650 draws the same 56px button. The button declares no device axis, so no case can measure the 900 placement."
+        }
+      ]
+    },
+    {
+      "pageId": "157:1195",
+      "pageName": "• Icon Button 🟢",
+      "identities": [
+        {
+          "nodeId": "192:1208",
+          "name": "IconButton",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": [
+        {
+          "nodeId": "266:27388",
+          "name": "Group 1072",
+          "device": "tablet",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "A 900x568 board composing the 44x44 icon button beside its label. 192-1208-icon measures the 44x44 button, and Button declares no device axis, so the 900 board is an arrangement no case frames."
+        },
+        {
+          "nodeId": "266:27389",
+          "name": "Group 1073",
+          "device": "tablet",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "The second 900x568 arrangement of the same icon button and label (Group 1073); unmirrored for the same reason as Group 1072."
+        }
+      ]
+    },
+    {
+      "pageId": "157:1196",
+      "pageName": "• Checkbox and Radio Button",
+      "identities": [
+        {
+          "nodeId": "194:3654",
+          "name": "CheckboxSingleElement",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "194:3661",
+          "name": "CheckboxWithLabel",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "194:3677",
+          "name": "RadioButtonSingleElement",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "194:3700",
+          "name": "RadioButtonGroup",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "194:3763",
+          "name": "CheckboxGroup",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "194:3841",
+          "name": "RadioButtonWithLabel",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "157:745",
+      "pageName": "• Chip 🟢",
+      "identities": [
+        {
+          "nodeId": "197:1985",
+          "name": "Chip",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "422:16012",
+          "name": "InputChip",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "157:1197",
+      "pageName": "• Authentication Code Input 🟢",
+      "identities": [
+        {
+          "nodeId": "198:828",
+          "name": "AuthenticationCodeInput",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "212:1249",
+          "name": ".SingleInputElement",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "One digit cell of the code input. Not published: the published set composes the cells."
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "212:1810",
+      "pageName": "• Alert 🟢",
+      "identities": [
+        {
+          "nodeId": "212:1899",
+          "name": "Alert",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "1317:10404",
+          "name": "HeaderAlert",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "212:1390",
+      "pageName": "• Tooltip",
+      "identities": [
+        {
+          "nodeId": "230:1317",
+          "name": "Tooltip",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "235:2985",
+      "pageName": "• Progress loader",
+      "identities": [
+        {
+          "nodeId": "236:1311",
+          "name": "ProgressLoader",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "237:2012",
+      "pageName": "• Spacing",
+      "identities": [
+        {
+          "nodeId": "237:1307",
+          "name": "Spacing",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "158:1198",
+      "pageName": "• Banner 🟢",
+      "identities": [
+        {
+          "nodeId": "261:6501",
+          "name": "Banner",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "295:1358",
+      "pageName": "• Switch",
+      "identities": [
+        {
+          "nodeId": "295:1360",
+          "name": "Switch",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "349:4683",
+          "name": "SwitchGroup",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "349:5484",
+          "name": ".Switch Single Element",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The switch track and thumb pair. Not published: the two published Switch variants draw it."
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "357:4687",
+      "pageName": "• Snackbar 🟢",
+      "identities": [
+        {
+          "nodeId": "357:4970",
+          "name": "Snackbar",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "392:4667",
+          "name": "SnackbarErrorCode",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": [
+        {
+          "nodeId": "525:4644",
+          "name": "SnackbarErrorCode",
+          "device": "mobile",
+          "drawn": 1,
+          "mirrors": ["392-4667-default"]
+        }
+      ]
+    },
+    {
+      "pageId": "360:796",
+      "pageName": "• Badge",
+      "identities": [
+        {
+          "nodeId": "360:797",
+          "name": "Badge",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "382:7289",
+      "pageName": "• Loghi PSP",
+      "identities": [
+        {
+          "nodeId": "382:7640",
+          "name": "Loghi PSP",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "158:1199",
+      "pageName": "• Boxed Module",
+      "identities": [
+        {
+          "nodeId": "382:7813",
+          "name": "CheckoutModule",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "403:4116",
+          "name": "ProductModule",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "10192:41460",
+          "name": "AttachmentTile",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "11133:16142",
+          "name": "PaymentModule",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "369:5497",
+      "pageName": "• Text Field",
+      "identities": [
+        {
+          "nodeId": "417:11954",
+          "name": ".TextfieldHelperText",
+          "kind": "COMPONENT",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The single-line field's helper row. Not published: TextField draws its helper text inline."
+        },
+        {
+          "nodeId": "529:6111",
+          "name": "TextField",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "10585:80643",
+          "name": "TextArea",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "10585:80899",
+          "name": ".TextAreaHelperText",
+          "kind": "COMPONENT",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The multiline field's helper row. Not published: TextField draws its helper text inline."
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "602:7181",
+      "pageName": "• Select",
+      "identities": [
+        {
+          "nodeId": "602:9417",
+          "name": "Select",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "602:10834",
+          "name": ".HelperText",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The helper row of the select. Not published: Select paints its helper text inline."
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "617:19227",
+      "pageName": "• Drop Down",
+      "identities": [
+        {
+          "nodeId": "610:33732",
+          "name": ".SingleDropDownItem",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "One option row of the menu. Not published: DropDown composes the rows."
+        },
+        {
+          "nodeId": "616:3864",
+          "name": "DropDown",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "3262:40787",
+          "name": "MenuDropDown",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "604:10959",
+      "pageName": "• Identity Provider Module 🟠",
+      "identities": [
+        {
+          "nodeId": "604:22542",
+          "name": ".IDPSingleModule",
+          "kind": "COMPONENT",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "One identity provider row: a 32px logo, a name and a selection mark. Not published: the module composes the rows."
+        },
+        {
+          "nodeId": "731:20386",
+          "name": "IDModule",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "733:21958",
+      "pageName": "• OK, KO, Waiting state",
+      "identities": [
+        {
+          "nodeId": "733:22841",
+          "name": "OKState",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "749:5695",
+          "name": "KOState",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "749:5867",
+          "name": "WaitingState",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "392:5292",
+      "pageName": "• Card 🟠",
+      "identities": [
+        {
+          "nodeId": "757:6288",
+          "name": "ProductCard&Image",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "757:10713",
+          "name": "ProductCard",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "A composed product card the page draws as an example. Not published: it arranges published Card parts, so the library owes it nothing until Figma publishes it."
+        },
+        {
+          "nodeId": "808:6302",
+          "name": "CatalogueCard",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "9612:3997",
+          "name": ".ProgressKpiBody",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The body block of the progress card. Not published: Card composes the published KPI parts."
+        },
+        {
+          "nodeId": "9698:58826",
+          "name": "ProgressKpiGroup",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "excluded",
+          "reason": "Excluded: a presentational grid wrapper app code composes with CSS grid, not a component."
+        },
+        {
+          "nodeId": "12098:80026",
+          "name": ".ProgressKpiData",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The data block of the progress card. Not published: same composition as 9612:3997."
+        },
+        {
+          "nodeId": "12133:82475",
+          "name": "ProgressKpiCard",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "758:8859",
+      "pageName": "• Accordion 🟠",
+      "identities": [
+        {
+          "nodeId": "759:6399",
+          "name": "AccordionItem",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "759:7440",
+      "pageName": "• Drag & Drop",
+      "identities": [
+        {
+          "nodeId": "760:7432",
+          "name": "Drag&Drop",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "pending",
+          "reason": "Pending with its measurements committed: the Default Vertical dropzone 760:7433 draws a 272x260 plate, a 24px inset, the 236px box and a 24px upload glyph, and the status waits for a delta review to close."
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "824:8833",
+      "pageName": "• Autocomplete 🟢",
+      "identities": [
+        {
+          "nodeId": "824:8838",
+          "name": "Autocomplete",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "pending",
+          "reason": "Pending behind docs/design-requests/2026-10-22-autocomplete-multiselect.md: the Type=Multiselect variants have no agreed behaviour yet."
+        },
+        {
+          "nodeId": "824:8937",
+          "name": ".HelperText",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The helper row of the autocomplete field. Not published: Autocomplete paints its helper text inline."
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "894:4396",
+      "pageName": "• List Item",
+      "identities": [
+        {
+          "nodeId": "908:2234",
+          "name": "ListItem",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "9924:27054",
+          "name": "StatusTile",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "920:4314",
+      "pageName": "• Feature List",
+      "identities": [
+        {
+          "nodeId": "920:4502",
+          "name": "FeatureList",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "920:7201",
+      "pageName": "• Pin point",
+      "identities": [
+        {
+          "nodeId": "920:7219",
+          "name": "PinPoint",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "1042:14217",
+      "pageName": "• Dialog",
+      "identities": [
+        {
+          "nodeId": "1042:18133",
+          "name": "Dialog",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "920:7388",
+      "pageName": "• Side nav 🟠",
+      "identities": [
+        {
+          "nodeId": "1096:3193",
+          "name": ".SideNavSingleItem",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "One side nav row. Not published: SideNav composes the rows."
+        },
+        {
+          "nodeId": "1120:7458",
+          "name": "SideNav",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "9684:50737",
+          "name": ".Profile item",
+          "kind": "COMPONENT",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The profile row at the foot of the side nav. Not published: a piece of the same row layout as 1096:3193."
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "1134:4499",
+      "pageName": "• Camera view",
+      "identities": [
+        {
+          "nodeId": "1134:6812",
+          "name": "CameraViewElement",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": [
+        {
+          "nodeId": "1134:4653",
+          "name": "Checkout",
+          "device": "desktop",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "The 1280x864 checkout screen draws the 376x378 camera view in its frame. 1134-6812-default measures the view at 376, and the page that places it in a checkout is measured nowhere."
+        }
+      ]
+    },
+    {
+      "pageId": "1137:8776",
+      "pageName": "• Tab",
+      "identities": [
+        {
+          "nodeId": "1137:8876",
+          "name": ".TabItem",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "One tab: icon slot, label, active rail. Not published: Tab composes the item."
+        },
+        {
+          "nodeId": "1137:8910",
+          "name": "TabGroup",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": [
+        {
+          "nodeId": "1137:23850",
+          "name": "List View / Row hover",
+          "device": "mobile",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "The 320-wide list view board draws the tab list above a 5001-tall page. 1137-8910-default measures the seven tabs at 658, and the mobile page that stacks them is measured nowhere."
+        },
+        {
+          "nodeId": "1137:23738",
+          "name": "List View / Row hover",
+          "device": "desktop",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "The 1200-wide list view board draws the same tab list over a 1486-tall page; the desktop placement is measured nowhere for the same reason."
+        }
+      ]
+    },
+    {
+      "pageId": "1262:6072",
+      "pageName": "• Drawer",
+      "identities": [
+        {
+          "nodeId": "1278:6527",
+          "name": "Drawer",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "pending",
+          "reason": "Pending: the desktop flow 1278:6528 (417x800) and the mobile one 1278:6526 (320x646) are reviewed, and the panel action geometry is still open."
+        },
+        {
+          "nodeId": "1294:14848",
+          "name": ".SingleDropDownItem",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "One drawer dropdown row. Not published: the drawer's own option list, drawn again at 1294:14919."
+        },
+        {
+          "nodeId": "1294:14919",
+          "name": ".DrawerDropDown",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The drawer's dropdown panel. Not published: same control as 1294:14848, at panel size."
+        },
+        {
+          "nodeId": "1297:4002",
+          "name": ".CTASticky",
+          "kind": "COMPONENT",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The sticky action bar at the foot of the drawer. Not published: Drawer composes it."
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "1280:13101",
+      "pageName": "• Button Group",
+      "identities": [
+        {
+          "nodeId": "1281:3820",
+          "name": ".ButtonGroupSingleElement",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "One slot of the button group. Not published: ButtonGroup composes the slots."
+        },
+        {
+          "nodeId": "1293:8394",
+          "name": "ButtonGroup",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "pending",
+          "reason": "Pending: the Size=Default variant 1281:3856 holds one committed case at the source 748 width, and the remaining sizes wait for review."
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "1298:4696",
+      "pageName": "• Header, Preheader ",
+      "identities": [
+        {
+          "nodeId": "1298:5209",
+          "name": "Header",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "1298:5299",
+          "name": "Preheader",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "8090:46352",
+          "name": "SkipToMainContent",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": [
+        {
+          "nodeId": "8770:11953",
+          "name": "Group 26",
+          "device": "mobile",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "The 320x4773 mobile page group draws the skip-to-main band above the header. 8090-46352-focused measures the 320x40 band on its own, not the tall page group that places it."
+        },
+        {
+          "nodeId": "8770:10510",
+          "name": "Group 25",
+          "device": "desktop",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "The 1200x1598 desktop page group draws the same band and header; no case measures the desktop page."
+        }
+      ]
+    },
+    {
+      "pageId": "1137:25092",
+      "pageName": "• Stepper ",
+      "identities": [
+        {
+          "nodeId": "1137:26377",
+          "name": ".StepDesktop",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The desktop step: number disc, connector stubs and label. Not published: Stepper composes the steps."
+        },
+        {
+          "nodeId": "1152:5284",
+          "name": ".Connector",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The rail between two steps. Not published: Stepper draws it."
+        },
+        {
+          "nodeId": "1152:5437",
+          "name": ".StepMobile",
+          "kind": "COMPONENT",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The mobile step. Not published: Stepper draws it beside the desktop step."
+        },
+        {
+          "nodeId": "1270:13560",
+          "name": ".NumberedPlaceholder",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The numbered disc a step draws. Not published: internal to the stepper steps."
+        },
+        {
+          "nodeId": "1314:10512",
+          "name": "Stepper",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "1322:6627",
+      "pageName": "• Table",
+      "identities": [
+        {
+          "nodeId": "1337:73971",
+          "name": ".TableHeaderSingleItem",
+          "kind": "COMPONENT",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "One header cell. Not published: Table composes the header row."
+        },
+        {
+          "nodeId": "1337:74030",
+          "name": ".TableCell",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "One body cell. Not published: Table composes the cells."
+        },
+        {
+          "nodeId": "1344:40672",
+          "name": "TableCellRow",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "pending",
+          "reason": "Pending: the desktop device stays committed and the row waits for its delta review to close."
+        },
+        {
+          "nodeId": "1349:22020",
+          "name": "Table",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "9520:2537",
+          "name": "TableListItem",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "9520:2555",
+          "name": ".TableListItemField",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The list-view field of a table row. Not published: TableListView arranges published Table parts."
+        },
+        {
+          "nodeId": "9624:10625",
+          "name": "TableList",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "1360:12228",
+      "pageName": "• Footer",
+      "identities": [
+        {
+          "nodeId": "1360:12590",
+          "name": ".CompanyInformation",
+          "kind": "COMPONENT",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The company information row at the foot of the footer. Not published: Footer composes it."
+        },
+        {
+          "nodeId": "1360:20138",
+          "name": "Footer",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "1360:23904",
+          "name": "Cookies",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "3782:38158",
+      "pageName": "• Section Header",
+      "identities": [
+        {
+          "nodeId": "1566:29849",
+          "name": "SectionHeader",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "8049:39180",
+      "pageName": "• Date picker ",
+      "identities": [
+        {
+          "nodeId": "8049:39452",
+          "name": "DatePicker",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "8244:2035",
+          "name": ".BuildingBlocksCalendar",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The calendar block of the picker. Not published: DatePicker composes it."
+        }
+      ],
+      "compositions": [
+        {
+          "nodeId": "8244:3320",
+          "name": "DatePicker",
+          "device": "mobile",
+          "drawn": 1,
+          "mirrors": ["8049-39452-single-date"]
+        }
+      ]
+    },
+    {
+      "pageId": "8818:39847",
+      "pageName": "• Image",
+      "identities": [
+        {
+          "nodeId": "8818:39878",
+          "name": "Image",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "9927:36949",
+      "pageName": "• Popover 🚧",
+      "identities": [
+        {
+          "nodeId": "9927:36954",
+          "name": "Popover",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "10620:81742",
+      "pageName": "• Missing Element",
+      "identities": [
+        {
+          "nodeId": "11149:7765",
+          "name": "Empty state",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "13211:26147",
+      "pageName": "• Popper",
+      "identities": [
+        {
+          "nodeId": "13211:26152",
+          "name": "Popper",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "pending",
+          "reason": "Pending behind docs/design-requests/2026-10-28-popper-status-card.md: four Status variants at 312x76 have no shipped counterpart."
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "157:614",
+      "pageName": "• Pictograms 🟢",
+      "identities": [
+        {
+          "nodeId": "329:1629",
+          "name": "SavingMoney",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1642",
+          "name": "Simplify",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1648",
+          "name": "AlarmClock",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1650",
+          "name": "Completed",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1656",
+          "name": "UploadFile",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1668",
+          "name": "Email Validation",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1675",
+          "name": "Leggi",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1683",
+          "name": "Push",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1690",
+          "name": "FileCheck",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1701",
+          "name": "Flag",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1712",
+          "name": "Code",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1718",
+          "name": "Assistance",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1726",
+          "name": "Bell",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1733",
+          "name": "Envelope",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1739",
+          "name": "Institution",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1750",
+          "name": "User manual",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1757",
+          "name": "Safe Deposit",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1764",
+          "name": "Idea",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1770",
+          "name": "MultipleFiles",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1777",
+          "name": "News",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1786",
+          "name": "Sms",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1792",
+          "name": "Documentation",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1799",
+          "name": "Business",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1807",
+          "name": "ID Card",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1815",
+          "name": "Fingerprint",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1823",
+          "name": "Keypad",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1837",
+          "name": "Messages",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1844",
+          "name": "Direction",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1850",
+          "name": "Repository",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1856",
+          "name": "Security",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1862",
+          "name": "Sync",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1868",
+          "name": "Options",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1881",
+          "name": "PersonalFile",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1888",
+          "name": "MapPin",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1894",
+          "name": "Award",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1901",
+          "name": "School",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1910",
+          "name": "Badge",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1917",
+          "name": "OpenFolder",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1923",
+          "name": "LineChart",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1929",
+          "name": "History Doc",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1935",
+          "name": "Calendar",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1942",
+          "name": "Upload",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1949",
+          "name": "Citizen",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1959",
+          "name": "Desktop",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1965",
+          "name": "Cloud",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1971",
+          "name": "Graduation",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1977",
+          "name": "CalendarCheck",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1984",
+          "name": "Trash",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:1992",
+          "name": "Delega",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:2000",
+          "name": "Access",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:2006",
+          "name": "Inbox",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:2012",
+          "name": "Wallet",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:2019",
+          "name": "Quick",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:2028",
+          "name": "SingleFile",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:2035",
+          "name": "UserCheck",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:2042",
+          "name": "Firma",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:2049",
+          "name": "Building",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:2058",
+          "name": "Euro",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:2064",
+          "name": "Storage",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:2071",
+          "name": "PieChart",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:2077",
+          "name": "Home",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:2083",
+          "name": "CreditCard",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:2090",
+          "name": "Download",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:2097",
+          "name": "Enterprise",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:2105",
+          "name": "Bug",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:2113",
+          "name": "Earth",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:2120",
+          "name": "Message",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:2127",
+          "name": "Image",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "329:2134",
+          "name": "Data Security",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "873:1241",
+          "name": "Maintenance",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "1992:128990",
+          "name": "Error",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "7459:51329",
+          "name": "Smartphone validation",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "8712:443",
+          "name": "Mouse",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "11719:39455",
+          "name": "Hourglass",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "11719:39465",
+          "name": "Question",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "11731:39515",
+          "name": "In progress",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "1:16",
+      "pageName": "• Componenti nativi",
+      "identities": [
+        {
+          "nodeId": "610:33637",
+          "name": "Scrollbar",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "excluded",
+          "reason": "Excluded by the page rule: native scrollbar chrome the platform renders, drawn on the page only to show the intended look."
+        },
+        {
+          "nodeId": "8868:42628",
+          "name": "Status Bar",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "excluded",
+          "reason": "Excluded by the page rule: the platform status bar, drawn to frame the mobile screens."
+        },
+        {
+          "nodeId": "8868:42690",
+          "name": "Webview url",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "excluded",
+          "reason": "Excluded by the page rule: the browser's own address bar, drawn to frame the mobile screens."
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "1:4",
+      "pageName": "◆ KEY TEMPLATE",
+      "identities": [
+        {
+          "nodeId": "1154:4493",
+          "name": "Form Wizard Template",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "mocked",
+          "reason": "rendered by TemplateShell demo content; real implementation pending"
+        },
+        {
+          "nodeId": "1904:9589",
+          "name": "Feedback Page",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "1908:98740",
+          "name": "Terms of Use",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "mocked",
+          "reason": "rendered by TemplateShell demo content; real implementation pending"
+        },
+        {
+          "nodeId": "1909:98992",
+          "name": "Diaolog",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "1909:99033",
+          "name": "Security Code Dialog",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "1931:112838",
+          "name": "Recap Default",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "mocked",
+          "reason": "rendered by TemplateShell demo content; real implementation pending"
+        },
+        {
+          "nodeId": "1983:116988",
+          "name": "History Drawer",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "mocked",
+          "reason": "rendered by TemplateShell demo content; real implementation pending"
+        },
+        {
+          "nodeId": "1983:116998",
+          "name": "Service Detail Drawer",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "mocked",
+          "reason": "rendered by TemplateShell demo content; real implementation pending"
+        },
+        {
+          "nodeId": "1992:127582",
+          "name": "Informative Drawer",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "1992:130380",
+          "name": "Search Drawer",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "mocked",
+          "reason": "rendered by TemplateShell demo content; real implementation pending"
+        },
+        {
+          "nodeId": "1992:147363",
+          "name": "Identity Provider Selector",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "mocked",
+          "reason": "rendered by TemplateShell demo content; real implementation pending\n\nOpen design questions: the spinner (docs/design-requests/2026-10-24-identity-provider-spinner.md, issue #31), the SPID help link (docs/design-requests/2026-10-24-identity-provider-link.md, issue #32) and the loading skeleton (docs/design-requests/2026-10-24-identity-provider-skeleton.md, issue #33). The node stays mocked until the answers."
+        },
+        {
+          "nodeId": "2337:68500",
+          "name": ".Login Module",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The login module the Log In template places in its application chrome. Not published: the template composes it."
+        },
+        {
+          "nodeId": "2339:80916",
+          "name": "Log In",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "2776:74243",
+          "name": "Recap Default",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "mocked",
+          "reason": "rendered by TemplateShell demo content; real implementation pending"
+        },
+        {
+          "nodeId": "2786:78783",
+          "name": "Form Template",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "mocked",
+          "reason": "rendered by TemplateShell demo content; real implementation pending"
+        },
+        {
+          "nodeId": "2801:85126",
+          "name": "Object Detail",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "mocked",
+          "reason": "rendered by TemplateShell demo content; real implementation pending"
+        },
+        {
+          "nodeId": "2809:77828",
+          "name": "Filter Drawer",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "mocked",
+          "reason": "rendered by TemplateShell demo content; real implementation pending"
+        },
+        {
+          "nodeId": "2822:80432",
+          "name": "Homepage",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "mocked",
+          "reason": "rendered by TemplateShell demo content; real implementation pending"
+        },
+        {
+          "nodeId": "2822:83244",
+          "name": "Edit Drawer",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "mocked",
+          "reason": "rendered by TemplateShell demo content; real implementation pending"
+        },
+        {
+          "nodeId": "2827:30226",
+          "name": "Informativa Privacy",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "mocked",
+          "reason": "rendered by TemplateShell demo content; real implementation pending"
+        },
+        {
+          "nodeId": "2846:37569",
+          "name": "Dashboard",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "mocked",
+          "reason": "rendered by TemplateShell demo content; real implementation pending"
+        },
+        {
+          "nodeId": "2846:40095",
+          "name": "Multiple CTA Dashboard",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "mocked",
+          "reason": "rendered by TemplateShell demo content; real implementation pending"
+        },
+        {
+          "nodeId": "3228:36387",
+          "name": "List View",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "mocked",
+          "reason": "rendered by TemplateShell demo content; real implementation pending"
+        },
+        {
+          "nodeId": "3823:36774",
+          "name": "Template Email",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "mocked",
+          "reason": "rendered by TemplateShell demo content; real implementation pending"
+        },
+        {
+          "nodeId": "9520:55438",
+          "name": "Table List View",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "mocked",
+          "reason": "rendered by TemplateShell demo content; real implementation pending"
+        }
+      ],
+      "compositions": []
+    },
+    {
+      "pageId": "50:1017",
+      "pageName": "• Componenti file",
+      "identities": [
+        {
+          "nodeId": "50:1027",
+          "name": ".Design-token",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The token sheet of the file's cover. Not published: documentation for designers, not a component."
+        },
+        {
+          "nodeId": "51:768",
+          "name": ".Intestazione",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The file's title card. Not published: documentation for designers."
+        },
+        {
+          "nodeId": "52:889",
+          "name": ".Regole",
+          "kind": "COMPONENT",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The rules box itself, the .Regole card that carries the design rules for a page. Not published: documentation for designers."
+        },
+        {
+          "nodeId": "52:1506",
+          "name": ".Checklist Label",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The checklist label the file's own rules boxes use. Not published: documentation for designers."
+        },
+        {
+          "nodeId": "61:3144",
+          "name": ".Pantone",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The Pantone swatch board. Not published: documentation for designers, not a component."
+        },
+        {
+          "nodeId": "123:4852",
+          "name": ".Regole spaziatura",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The spacing rules card. Not published: documentation for designers."
+        },
+        {
+          "nodeId": "1520:6606",
+          "name": ".Icon semantics",
+          "kind": "COMPONENT",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The icon semantics card. Not published: documentation for designers."
+        },
+        {
+          "nodeId": "4834:42599",
+          "name": "Regole accessibilità",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "excluded",
+          "reason": "Excluded by the page rule: the file's own documentation, a component the file uses to explain the accessibility rules to designers, not a library component."
+        },
+        {
+          "nodeId": "9547:48200",
+          "name": ".Handoff",
+          "kind": "COMPONENT",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The handoff note card. Not published: documentation for designers."
+        }
+      ],
+      "compositions": []
     }
   ]
 }

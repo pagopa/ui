@@ -27,8 +27,9 @@
 //     with `inLibrary` saying whether the published export carries it, and the
 //     decision the library gives it: `unpublished` (not in the export, so not
 //     implemented, by rule), `shipped` (the registry's implemented mapping),
-//     `excluded` (published and deliberately not implemented) or `pending`
-//     (published, mapped, and waiting).
+//     `mocked` (published, mapped, and rendered by a facade), `excluded`
+//     (published and deliberately not implemented) or `pending` (published,
+//     mapped, and waiting).
 //   * every composition the page draws — the frame that composes the mapped
 //     implementation, with the device it is drawn at and the parity cases that
 //     measure it. An empty `mirrors` list with a reason is a written statement
@@ -43,9 +44,11 @@
 //     what makes publication the trigger — the day an unpublished identity is
 //     published, the export grows, the mirror fails and a decision is owed;
 //   * the decision agrees with the registry: `shipped` is `implemented`,
-//     `excluded` is `excluded`, `pending` is `pending`, and `unpublished` is
-//     not in the library at all. Every decision other than `unpublished` and
-//     `shipped` carries a reason;
+//     `mocked` is `mocked`, `excluded` is `excluded`, `pending` is `pending`,
+//     and `unpublished` is not in the library at all. A registry bulk rule is
+//     the decision for every node of its page that carries no entry of its own,
+//     the same fallback the rest of the inventory accounting uses. Every
+//     decision other than `unpublished` and `shipped` carries a reason;
 //   * a composition's cases exist in the case corpus, measure an identity on
 //     that page, and are measured on the device the composition is drawn at.
 //
@@ -69,12 +72,20 @@ export const PAGE_SURFACE_PATH = "src/catalog/figma/page-surface.json"
 
 export type SurfaceStats = {
   pages: number
+  pagesPublished: number
   identities: number
   inLibrary: number
   unpublished: number
   pending: number
   compositions: number
   mirrored: number
+}
+
+/** A page the inventory publishes on and the census never read. */
+export type SurfaceUncensused = {
+  pageId: string
+  pageName: string
+  nodes: number
 }
 
 export type SurfaceResult = {
@@ -138,6 +149,10 @@ export function checkPageSurface(
 
   const byNode = new Map<string, InventoryNode>(nodes.map((node) => [node.nodeId, node]))
   const entries = registry.entries ?? {}
+  const bulkByPage = new Map<string, string>()
+  for (const rule of registry.bulkRules ?? []) {
+    if (rule.status) bulkByPage.set(rule.pageId, rule.status)
+  }
   const caseById = new Map<string, ParityCase>(cases.map((entry) => [entry.id, entry]))
   const pages = new Set<string>()
 
@@ -187,12 +202,12 @@ export function checkPageSurface(
         }
       }
 
-      const status = entries[identity.nodeId]?.status ?? null
+      const status = entries[identity.nodeId]?.status ?? bulkByPage.get(page.pageId) ?? null
       if (identity.decision === "unpublished") {
         if (identity.inLibrary) {
           errors.push(
             `${where} is published and cannot be called unpublished — ` +
-              `give it shipped, excluded or pending`,
+              `give it shipped, mocked, excluded or pending`,
           )
         }
         continue
@@ -280,7 +295,39 @@ export function checkPageSurface(
     warnings.push(`${label}: no page is censused — a Figma session reads the pages it touched`)
   }
 
-  return { errors, warnings, stats: surfaceSummary(surface) }
+  const uncensused = surfaceUncensused(surface, nodes)
+  if (uncensused.length) {
+    const named = uncensused
+      .slice(0, 3)
+      .map((page) => `${page.pageName} (${page.nodes})`)
+      .join(", ")
+    warnings.push(
+      `${label}: ${uncensused.length} page(s) with published nodes are not censused — ` +
+        `the census grows a page at a time and \`figma:plan\` carries the rest: ${named}` +
+        (uncensused.length > 3 ? ", …" : ""),
+    )
+  }
+
+  return { errors, warnings, stats: surfaceSummary(surface, nodes) }
+}
+
+/**
+ * The pages the inventory publishes on and the census has not read yet: the
+ * burn-down of a census that starts from the page a session opened.
+ */
+export function surfaceUncensused(
+  surface: PageSurface,
+  nodes: InventoryNode[],
+): SurfaceUncensused[] {
+  const censused = new Set(surface.pages.map((page) => page.pageId))
+  const pages = new Map<string, SurfaceUncensused>()
+  for (const node of nodes) {
+    if (censused.has(node.pageId)) continue
+    const page = pages.get(node.pageId)
+    if (page) page.nodes++
+    else pages.set(node.pageId, { pageId: node.pageId, pageName: node.pageName ?? "", nodes: 1 })
+  }
+  return [...pages.values()].sort((left, right) => right.nodes - left.nodes)
 }
 
 /** Published identities still waiting: the work a censused page asks for. */
@@ -317,8 +364,9 @@ export function surfaceUnmirrored(surface: PageSurface): SurfaceUnmirrored[] {
 }
 
 /** What the census holds, counted without asking the inventory anything. */
-export function surfaceSummary(surface: PageSurface): SurfaceStats {
+export function surfaceSummary(surface: PageSurface, nodes?: InventoryNode[]): SurfaceStats {
   const stats = emptyStats()
+  if (nodes) stats.pagesPublished = new Set(nodes.map((node) => node.pageId)).size
   for (const page of surface.pages) {
     stats.pages++
     for (const identity of page.identities) {
@@ -338,6 +386,7 @@ export function surfaceSummary(surface: PageSurface): SurfaceStats {
 export function emptyStats(): SurfaceStats {
   return {
     pages: 0,
+    pagesPublished: 0,
     identities: 0,
     inLibrary: 0,
     unpublished: 0,
@@ -348,8 +397,11 @@ export function emptyStats(): SurfaceStats {
 }
 
 export function formatSurfaceLine(stats: SurfaceStats): string {
+  const pages = stats.pagesPublished
+    ? `${stats.pages}/${stats.pagesPublished} page(s)`
+    : `${stats.pages} page(s)`
   return (
-    `surface: ${stats.pages} page(s) · ${stats.identities} identities ` +
+    `surface: ${pages} · ${stats.identities} identities ` +
     `(${stats.inLibrary} in the library, ${stats.unpublished} not) · ` +
     `${stats.pending} pending · ${stats.compositions} composition(s) · ` +
     `${stats.mirrored} case mirror(s)`
