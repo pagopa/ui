@@ -1,5 +1,13 @@
 # Visual regression: every story at 320, 600 and 1200 px, compared to the
 # Linux baselines committed under apps/storybook/visual/__screenshots__.
+#
+# A pull request captures only the stories its diff can move: `ui-cli test
+# visual` walks the imports the change reaches and writes the story ids the spec
+# keeps. Every other trigger — the push on `main`, the nightly, a manual run —
+# captures the whole catalogue, so a change the walk cannot see is caught within
+# a day rather than never. The update job always writes the complete catalogue:
+# it is the moment the baselines are accepted, and a scope that missed a story
+# would leave that story wrong for good.
 # To accept a visual change, add the `visual:update` label to the pull request:
 # the workflow commits the new baselines to the head branch.
 # A commit made with GITHUB_TOKEN does not trigger a new run: remove the label
@@ -19,6 +27,11 @@ on:
       - "packages/pagopa-ui/package.json"
       - "packages/pagopa-ui/CHANGELOG.md"
       - ".nx/version-plans/**"
+  schedule:
+    # Every day at 04:00 UTC, an hour after the deep checks: only here does the
+    # whole catalogue run, so a change the scope walk cannot see is caught within
+    # a day instead of never.
+    - cron: "0 4 * * *"
   workflow_dispatch:
 
 concurrency:
@@ -80,9 +93,35 @@ jobs:
             exit 1
           fi
 
+      - name: Scope the run
+        env:
+          # The tip of the base branch: the three-dot diff is the pull
+          # request's own change, whatever `main` moved in the meantime.
+          BASE: ${{ github.event.pull_request.base.sha }}
+          VISUAL_SCOPE: apps/storybook/visual/scope.json
+        run: |
+          # The checkout owns the tree as the runner user while these steps run
+          # as root in the container, and the action writes its exception to a
+          # temporary HOME: without this, every `git` call here refuses to read
+          # the repository and the diff cannot be computed.
+          git config --system --add safe.directory "$GITHUB_WORKSPACE" 2>/dev/null || true
+          # The index names the stories and the files that define them, so the
+          # build comes first and `test:visual` reuses it.
+          pnpm nx run pagopa-ui-storybook:build
+          if [ -n "$BASE" ]; then
+            pnpm nx run pagopa-ui-cli:test:visual -- --since "$BASE" --out "$VISUAL_SCOPE"
+          else
+            # A push to `main`, the nightly and a manual run check everything.
+            pnpm nx run pagopa-ui-cli:test:visual -- --all --out "$VISUAL_SCOPE"
+          fi
+
       - name: Visual regression
         timeout-minutes: 60
-        run: pnpm nx run pagopa-ui-storybook:test:visual
+        env:
+          VISUAL_SCOPE: apps/storybook/visual/scope.json
+        # A change that moves no story (`--pass-with-no-tests`) leaves the gate
+        # green with nothing to capture.
+        run: pnpm nx run pagopa-ui-storybook:test:visual -- --pass-with-no-tests
 
       - name: Upload the failures
         if: failure()
