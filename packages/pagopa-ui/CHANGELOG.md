@@ -1,3 +1,14 @@
+## 0.0.4 (2026-10-28)
+
+### 🚀 Features
+
+- feat(timeline): add the source event time under the copy ([#64](https://github.com/pagopa/ui/pull/64))
+
+### ❤️ Thank You
+
+- Danilo Spinelli @gunzip
+- gunzip
+
 ## 0.0.3 (2026-10-26)
 
 ### 🩹 Fixes
