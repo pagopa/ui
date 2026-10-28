@@ -13,11 +13,15 @@ files the config names: read them, never copy them into this skill.
 
 `pnpm nx run pagopa-ui-cli:figma:status` prints the token state, the pinned
 snapshot, the drift against the committed inventory, the rules ledger and comment
-counts, the pending queue with its design requests and the next command.
-`--live` adds the file version and its last-modified date: that is what tells
-whether Figma changed at all. Run it before reading anything else; nothing below
-repeats what it reports. Before touching one node, read
+counts, the pending queue with its design requests, the page surface line and the
+next command. `--live` adds the file version and its last-modified date: that is
+what tells whether Figma changed at all. Run it before reading anything else;
+nothing below repeats what it reports. Before touching one node, read
 `figma:brief --node <nodeId>`.
+
+A session that touches a page also reads that page's tree — `get_metadata` on the
+page node — and brings its census up to date
+([catalogue.md](references/catalogue.md#the-page-surface)).
 
 ## Config first
 
@@ -65,6 +69,16 @@ its flags, space-separated:
   read through the MCP. The gate is [init.md](references/init.md) §2.
 - **`nodeId` is identity.** Names and pages change; the registry is keyed by
   `nodeId`, bulk rules by `pageId`.
+- **The library is the scope.** A drawing the file never published is not
+  implemented: not a component of this design system, no work owed. The census
+  records it as `unpublished`, so publication — which grows the export — fails
+  the mirror and makes the decision due
+  ([catalogue.md](references/catalogue.md#the-page-surface)).
+- **A composition is source too.** A page draws arrangements, not only
+  identities: the frame stacking four elements, the mobile page at 304, the
+  drawer panel at 417. Each is measured by a case at the device it is drawn at,
+  or excused in writing in the census; a row rendered at the set's own variant
+  width measures the set, not the page.
 - **Figma URLs come from `figma.fileModule`** (`FIGMA_FILE_KEY`,
   `figmaNodeUrl`, `figmaEmbedUrl`); never hardcode the file URL. A story's
   `design` parameter uses `figmaEmbedUrl`: the addon only rewrites a URL with a

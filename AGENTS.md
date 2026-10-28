@@ -31,10 +31,19 @@ This file adds what holds only for agents.
 
 Open with `pnpm nx run pagopa-ui-cli:figma:status`: it prints the config path,
 the token state, the snapshot, the drift against the inventory, the pending
-queue with its design requests and the next command; `--live` adds the file
-version and last-modified date. When Figma changed, `figma:plan` then
-`figma:triage` are the whole refresh, and the pending queue is not a delta. The
-`figma-to-code` skill owns every rule that follows.
+queue with its design requests, the page surface line and the next command;
+`--live` adds the file version and last-modified date. When Figma changed,
+`figma:plan` then `figma:triage` are the whole refresh, and the pending queue is
+not a delta. The `figma-to-code` skill owns every rule that follows.
+
+The scope is the library, and every page a session touches is censused: read the
+page tree with `get_metadata` on the page node and update
+`packages/pagopa-ui/src/catalog/figma/page-surface.json`. It is complete: the
+status line reads the same number twice, and it stops doing so the moment a page
+gains a published node without a re-read — the remainder is the
+`surfaceUncensused` list in `figma:plan`. An identity the file
+never published is `unpublished` there and owes no work; publishing it is what
+makes its decision due.
 
 Before touching one node, read its brief:
 `pnpm nx run pagopa-ui-cli:figma:brief --node <nodeId>` prints the registry

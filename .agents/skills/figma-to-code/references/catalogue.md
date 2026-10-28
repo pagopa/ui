@@ -11,6 +11,7 @@ Consulted by every use case that reads or writes the catalogue.
 | `catalog.parityCases`            | the reviewed case per compared variant and device                                            | `figma:parity:check --save-case` only           |
 | `catalog.devicePolicy`           | the device vocabulary: axes, canonical devices, aliases, widths, default scopes              | reviewed by hand; never a component name or path |
 | `catalog.deviceExceptions`       | `<nodeId>: <reason>` for a node whose declared devices have no case yet                      | by hand, must shrink                            |
+| `catalog.pageSurface`            | what a page draws: every identity with its decision, every composition with its cases         | by hand, after reading the page tree            |
 | `catalog.apiExceptions`          | public exports with no source mapping: "deliberate extension, not a source-alignment claim"  | by hand, each with a reason, must shrink        |
 | `catalog.evidenceExceptions`     | story-evidence exceptions                                                                    | by hand, each with a reason, must shrink        |
 | `figma.fileModule`               | the file key and the URL builders                                                            | rarely                                          |
@@ -54,6 +55,80 @@ node's `note`, self-contained: state the rule and the measurement, never point t
 a document. A note stays under 600 characters: it states the current residues
 and their reasons, not the history.
 
+## The page surface
+
+The inventory is built from the published library export, and the export lists
+only what the file owner published. A page draws more than that: helper
+components, variant sets that were never published, and the compositions
+themselves — the frame that stacks four rows at 852, the mobile page that draws
+them at 304, the drawer panel at 320 or 417. None of them appears in the
+inventory, so nothing in the procedure saw them. The page surface is the
+committed census that names them.
+
+One record per page read from the page tree — `get_metadata` on the page node, or
+the page's frame list — with:
+
+- **identities**, one row per component and component set drawn on the page, each
+  with `inLibrary` and the decision the library gives it:
+
+  | Decision      | Meaning                                                                   |
+  | ------------- | ------------------------------------------------------------------------- |
+  | `shipped`     | published and `implemented` in the registry                               |
+  | `mocked`      | published and mapped, rendered by a facade; a reason is required          |
+  | `excluded`    | published, deliberately not shipped; a reason is required                 |
+  | `pending`     | published and mapped, still waiting; a reason is required                 |
+  | `unpublished` | not in the export, so not implemented, by rule — no work follows          |
+
+  A registry bulk rule is the decision for a node of its page that carries no
+  entry of its own, the same fallback the inventory accounting uses.
+
+  A drawing that was never published is out of the implementation scope: it is
+  recorded so that its absence from the registry is a fact rather than an
+  oversight, not so that it gets built. The day it is published the export
+  grows, the mirror below fails, and the decision becomes due.
+
+- **compositions**, one row per frame the page draws with the implementation
+  inside it: the `device` it is drawn at, how many times the implementation is
+  `drawn`, and the parity cases that `mirror` it. A case mirrors a composition
+  only if it measures that frame at that device; a composition with no case
+  carries a `reason` saying what stays unmeasured and why.
+
+`figma:check` enforces, so the census cannot go stale or polite:
+
+- `inLibrary` works both ways. Marked in the library, the identity must be an
+  inventory node with the same name, kind and page; marked outside it, it must
+  not be in the inventory. Every inventory node on a censused page must appear in
+  the census.
+- The decision agrees with the registry: `shipped` is `implemented`, `mocked` is
+  `mocked`, `excluded` is `excluded`, `pending` is `pending`, resolved through the
+  page's bulk rule when the node has no entry; `mocked`, `excluded` and `pending`
+  carry a reason.
+- A composition's cases exist in the case corpus, measure an identity on that
+  page, and are measured on the device the composition declares; the device is
+  one the device policy declares.
+- A page is listed once, and identities and compositions once each; the recorded
+  `fileKey` is the inventory's.
+- Every page the inventory publishes on is censused or counted: an unread page
+  warns with its published node count and waits in `surfaceUncensused`.
+
+The census is also accounted: every page the inventory publishes on is either
+censused or waiting in the burn-down, and `figma:check` warns with the count
+until the last one is read. That is why the line leads with a ratio, and it
+reads `58/58` — a page that gains a published node without a re-read shows up
+as `57/58`, not as a silent gap:
+
+```text
+surface: <censused>/<published> page(s) · <n> identities (<n> in the library, <n> not) · <n> pending · <n> composition(s) · <n> case mirror(s)
+```
+
+It cannot see Figma: a component added to a page without re-reading the page tree
+leaves the census short, which is why the page read closes a Figma session.
+
+`figma:plan` adds `surfaceWaiting` (published identities still owed an
+implementation), `surfaceUnmirrored` (compositions the source draws that no case
+measures) and `surfaceUncensused` (the pages still to read, densest first)
+instead of hiding them behind the delta.
+
 ## Review semantics
 
 - The review record is the drift pull request merge (the audit trail is the
@@ -82,6 +157,9 @@ Hermetic, no network:
 
 - the inventory and `figma.fileModule` agree on the file key;
 - every published node is accounted for by a registry entry or a bulk rule;
+- every identity a censused page draws is accounted for, and every composition it
+  draws is mirrored by a case at its own device or excused in writing
+  ([the page surface](#the-page-surface));
 - every `implemented`/`mocked` target module and export exists; `implemented`
   also needs a story file that renders the export through its actual declaring
   identity (nested stories count; an unused or type-only import never does);

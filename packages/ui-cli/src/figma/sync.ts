@@ -5,6 +5,13 @@
 //   node src/cli.ts figma sync
 //     - inventory/registry/file-key consistency
 //     - every published Figma node accounted (registry entry or bulk rule)
+//     - every identity a censused page draws accounted: the page surface mirrors
+//       the inventory both ways, so a drawing the library never published is
+//       named as out of scope instead of staying invisible, and publishing it
+//       fails the mirror until a decision is written
+//     - every composition a censused page draws either measured by a parity case
+//       or excused in writing, so a layout the source draws without a story is
+//       a recorded decision rather than an omission
 //     - every implemented target (module + export [+ story]) exists
 //     - every implemented target is rendered by its linked story, or listed in
 //       src/catalog/figma/evidence-exceptions.json with a reason
@@ -72,6 +79,18 @@ import {
 } from "../parity/cases.ts"
 import { fetchFigmaSnapshot, writeFigmaSnapshot } from "./rest.ts"
 import { staleStoryTitles } from "./stories.ts"
+import {
+  checkPageSurface,
+  formatSurfaceLine,
+  loadPageSurface,
+  surfacePending,
+  surfaceUncensused,
+  surfaceUnmirrored,
+  type SurfacePending,
+  type SurfaceStats,
+  type SurfaceUncensused,
+  type SurfaceUnmirrored,
+} from "./surface.ts"
 import { requireFigmaToken } from "./token.ts"
 import { EVIDENCE_DIR, evidencePaths, loadManifest } from "../parity/evidence.ts"
 import { renderedStoryExports, runtimeExports, storyDesignNodes } from "../lib/source-modules.ts"
@@ -813,6 +832,14 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     drafts: number
   } | null = null
 
+  // What the censused pages draw, and the identities they draw it with: the
+  // published export is not the whole page, so this is the only record of the
+  // drawings the library never had and of the compositions nothing measures.
+  let surfaceStats: SurfaceStats | null = null
+  let surfaceWaiting: SurfacePending[] = []
+  let surfaceExcusals: SurfaceUnmirrored[] = []
+  let surfaceDeferred: SurfaceUncensused[] = []
+
   if (devicePolicy) {
     try {
       const cases = loadCaseFile()
@@ -900,6 +927,34 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     } catch (error) {
       fail(error instanceof Error ? error.message : String(error))
     }
+  }
+
+  // ------------------------------------------------------------ page surface
+  //
+  // `figma:check` only ever asked about published nodes, so the page as a whole
+  // was never read: a drawing the file owner kept unpublished changed the scope
+  // silently the day it was published, and a composition the page draws (a stack
+  // at 852, a mobile page at 304, a drawer panel at 417) had no counterpart in
+  // the procedure at all. The committed census makes both data, and this gate
+  // keeps it and the inventory in step, both ways.
+  try {
+    const surface = loadPageSurface()
+    const cases = devicePolicy ? loadCaseFile() : []
+    const result = checkPageSurface(surface, {
+      nodes: committed,
+      registry,
+      cases,
+      fileKey,
+      devices: Object.keys(devicePolicy?.devices ?? {}),
+    })
+    for (const error of result.errors) fail(error)
+    for (const warning of result.warnings) warnings.push(warning)
+    surfaceStats = result.stats
+    surfaceWaiting = surfacePending(surface)
+    surfaceExcusals = surfaceUnmirrored(surface)
+    surfaceDeferred = surfaceUncensused(surface, committed)
+  } catch (error) {
+    fail(error instanceof Error ? error.message : String(error))
   }
 
   const bulkByPage = new Map()
@@ -1245,6 +1300,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     )
     if (deviceStats) console.log(formatDeviceLine(deviceStats))
     if (deviceCoverageStats) console.log(formatCoverageLine(deviceCoverageStats))
+    if (surfaceStats) console.log(formatSurfaceLine(surfaceStats))
     if (caseCorpusStats) {
       console.log(
         `cases: ${caseCorpusStats.cases} case(s) · errors ${caseCorpusStats.errors} · ` +
@@ -1292,6 +1348,13 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
           snapshotVersion: liveVersion ?? null,
           implementationOrder: implementationOrder(snapshot, selected),
           pending,
+          // The surface is not a delta either. `waiting` is the published
+          // identity still owed an implementation, and `unmirrored` is a
+          // composition the source draws that no case measures: the two things a
+          // plan reader could not learn from the inventory.
+          surfaceWaiting: surfaceWaiting,
+          surfaceUnmirrored: surfaceExcusals,
+          surfaceUncensused: surfaceDeferred,
           unverifiedDesign: snapshot
             .filter((node) => !node.designFingerprint)
             .map((node) => node.nodeId),

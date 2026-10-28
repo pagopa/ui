@@ -17,6 +17,7 @@ import { fileKeyFromSource } from "./snapshot.ts"
 import { figmaToken } from "./token.ts"
 import { RULES_PATH, plan as planRules, readLedger, readRulesSnapshot } from "./rules.ts"
 import { COMMENTS_SNAPSHOT_PATH, readComments } from "./comments.ts"
+import { formatSurfaceLine, loadPageSurface, surfaceSummary, type SurfaceStats } from "./surface.ts"
 
 const CONFIG_PATH = "figma-to-code.yaml"
 const INVENTORY_PATH = "src/catalog/figma/inventory.json"
@@ -85,6 +86,7 @@ type StatusReport = {
     error: string | null
   }
   pending: PendingRow[]
+  surface: { stats: SurfaceStats | null; error: string | null }
   requests: { path: string | null; open: number; answered: number; files: string[] }
   live: LiveReport | null
   next: string
@@ -209,6 +211,13 @@ function printText(report: StatusReport): void {
     )
   } else {
     console.log(`${label("comments")}${report.comments.path} (missing)`)
+  }
+  if (report.surface.error) {
+    console.log(`${label("surface")}${report.surface.error}`)
+  } else if (report.surface.stats) {
+    console.log(
+      `${label("surface")}${formatSurfaceLine(report.surface.stats).replace("surface: ", "")}`,
+    )
   }
   for (const row of report.pending) {
     const reason = row.designRequests.length
@@ -418,6 +427,17 @@ export async function runStatus(argv: string[] = process.argv.slice(2)): Promise
     commentsReport.error = error instanceof Error ? error.message.split("\n")[0] : String(error)
   }
 
+  // The surface is what the census says the pages draw, and it is the only line
+  // here the inventory cannot produce: the export holds published nodes, a page
+  // holds drawings and compositions. The inventory only counts the pages a
+  // census still owes.
+  const surfaceReport: StatusReport["surface"] = { stats: null, error: null }
+  try {
+    surfaceReport.stats = surfaceSummary(loadPageSurface(), inventory?.components ?? [])
+  } catch (error) {
+    surfaceReport.error = error instanceof Error ? error.message.split("\n")[0] : String(error)
+  }
+
   const configFile = path.join(root, CONFIG_PATH)
   const base: Omit<StatusReport, "next"> = {
     config: fs.existsSync(configFile) ? relativeTo(workspaceRoot(root), configFile) : null,
@@ -428,6 +448,7 @@ export async function runStatus(argv: string[] = process.argv.slice(2)): Promise
     rules: rulesReport,
     comments: commentsReport,
     pending,
+    surface: surfaceReport,
     requests: designRequests(),
     live,
   }
