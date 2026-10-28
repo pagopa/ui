@@ -3441,7 +3441,7 @@
     },
     "14709:279": {
       "status": "pending",
-      "note": "Figma delta 2026-10-28: a new 24px icon on the • Icon page, absent from the 155-entry icon manifest. Blocked: the artwork generators read the REST snapshot (assets icons --write --input .figma/live-rest.json), which needs FIGMA_TOKEN, so nothing can be regenerated this session. A token session exports, regenerates the manifest and icon-assets, adds the registry entry with localAsset.rendering mask and runs artwork assets:check."
+      "note": "Figma delta 2026-10-28: a new 24px icon on the • Icon page, absent from the 155-entry icon manifest. Blocked: the artwork generators read the REST snapshot (assets icons --write --input .figma/live-rest.json), which needs FIGMA_TOKEN, so nothing can be regenerated this session. A token session exports, regenerates the manifest and icon-assets, adds the registry entry with localAsset.rendering mask and runs artwork assets:check. It is the only failing task in workspace:verify on this branch, so it gates the pull request."
     }
   }
 }
