@@ -62,8 +62,8 @@ only what the file owner published. A page draws more than that: helper
 components, variant sets that were never published, and the compositions
 themselves — the frame that stacks four rows at 852, the mobile page that draws
 them at 304, the drawer panel at 320 or 417. None of them appears in the
-inventory, so none of them can drift, be queued or be missed. The page surface is
-the committed census that names them.
+inventory, so nothing in the procedure saw them. The page surface is the
+committed census that names them.
 
 One record per page read from the page tree — `get_metadata` on the page node, or
 the page's frame list — with:
@@ -104,9 +104,8 @@ the page's frame list — with:
   `fileKey` is the inventory's.
 
 It cannot see Figma: a component added to a page without re-reading the page tree
-leaves the census short. Re-reading the tree is what closes a Figma session on a
-page, and the census line in `figma:check` and `figma:status` is what says whether
-the page still reads as it did:
+leaves the census short, which is why the page read closes a Figma session. The
+census line says whether the page still reads as it did:
 
 ```text
 surface: <n> page(s) · <n> identities (<n> in the library, <n> not) · <n> pending · <n> composition(s) · <n> case mirror(s)
@@ -144,10 +143,9 @@ Hermetic, no network:
 
 - the inventory and `figma.fileModule` agree on the file key;
 - every published node is accounted for by a registry entry or a bulk rule;
-- every identity a censused page draws is accounted for ([the page
-  surface](#the-page-surface)): the census mirrors the inventory both ways, each
-  decision agrees with the registry, and every composition the page draws is
-  mirrored by a case at its own device or excused in writing;
+- every identity a censused page draws is accounted for, and every composition it
+  draws is mirrored by a case at its own device or excused in writing
+  ([the page surface](#the-page-surface));
 - every `implemented`/`mocked` target module and export exists; `implemented`
   also needs a story file that renders the export through its actual declaring
   identity (nested stories count; an unused or type-only import never does);

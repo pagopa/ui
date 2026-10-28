@@ -36,13 +36,11 @@ queue with its design requests, the page surface line and the next command;
 `figma:plan` then `figma:triage` are the whole refresh, and the pending queue is
 not a delta. The `figma-to-code` skill owns every rule that follows.
 
-The library is the scope, not the page: a drawing the file never published is
-not implemented, by rule. What a page draws is still recorded — read the page
-tree with `get_metadata` on the page node and update
-`packages/pagopa-ui/src/catalog/figma/page-surface.json`, which `figma:check`
-mirrors against the inventory both ways and against the case corpus for the
-compositions the page draws. Publishing a drawing is what makes its decision
-due.
+The scope is the library, and every page a session touches is censused: read the
+page tree with `get_metadata` on the page node and update
+`packages/pagopa-ui/src/catalog/figma/page-surface.json`. An identity the file
+never published is `unpublished` there and owes no work; publishing it is what
+makes its decision due.
 
 Before touching one node, read its brief:
 `pnpm nx run pagopa-ui-cli:figma:brief --node <nodeId>` prints the registry
