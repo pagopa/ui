@@ -134,14 +134,14 @@
     },
     "10297:6918": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "1042:18133": {
@@ -156,26 +156,26 @@
     },
     "10444:14812": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "10444:15263": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "105:2043": {
@@ -217,48 +217,48 @@
     },
     "109:2455": {
       "status": "implemented",
-      "note": "Path C reviewed pinned Brand=Primary 109:2456 and Brand=Contrast 109:2458 against SpinnerBrandVariants at 320×240/1×. Both source and render are 24×24px; the 2px annulus/20px opening and rounded terminal match, with source/render terminal bounds 2.09×3.41px at 21.91×9.59px (under 0.001px difference). Default size-6 is 24px (0px delta); text-primary (#0B3EE3) and text-contrast (white) match source. size-5/size-12 remain 20px/48px API extensions. The 2px mask is source ring geometry, not a spacing/radius compensation. Contrast artwork is white on transparency and needs a caller-owned primary surface outside source bounds. A labeled Spinner exposes one status; unlabeled siblings stay decorative and the caller owns aria-busy. The documented 1s functional animation remains under reduced motion; the fidelity capture is static. Reviewed 2026-10-23 (second ring): the two cases `109-2455-primary` and `109-2455-contrast` reproduce the two variants at 24×24 from SpinnerBrandVariants, mapping the `Ellipse 8 (Stroke)` terminal (2.09×3.41 at 21.91/9.59) and both strict-composition clean. The ring is a conic-gradient, so its colour is verified by the reviewed render, not by a DOM background property. Guide: apps/storybook/src/guides/loading-indicators.md.",
       "target": {
         "module": "src/components/feedback/spinner.tsx",
         "export": "Spinner",
         "story": "apps/storybook/src/Spinner.stories.tsx",
         "storyExports": ["SpinnerBrandVariants"]
-      }
+      },
+      "note": "Path C reviewed pinned Brand=Primary 109:2456 and Brand=Contrast 109:2458 against SpinnerBrandVariants at 320×240/1×. Both source and render are 24×24px; the 2px annulus/20px opening and rounded terminal match, with source/render terminal bounds 2.09×3.41px at 21.91×9.59px (under 0.001px difference). Default size-6 is 24px (0px delta); text-primary (#0B3EE3) and text-contrast (white) match source. size-5/size-12 remain 20px/48px API extensions. The 2px mask is source ring geometry, not a spacing/radius compensation. Contrast artwork is white on transparency and needs a caller-owned primary surface outside source bounds. A labeled Spinner exposes one status; unlabeled siblings stay decorative and the caller owns aria-busy. The documented 1s functional animation remains under reduced motion; the fidelity capture is static. Reviewed 2026-10-23 (second ring): the two cases `109-2455-primary` and `109-2455-contrast` reproduce the two variants at 24×24 from SpinnerBrandVariants, mapping the `Ellipse 8 (Stroke)` terminal (2.09×3.41 at 21.91/9.59) and both strict-composition clean. The ring is a conic-gradient, so its colour is verified by the reviewed render, not by a DOM background property. Guide: apps/storybook/src/guides/loading-indicators.md."
     },
     "1101:3862": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "1101:4296": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "1101:4422": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "11133:16142": {
@@ -293,38 +293,38 @@
     },
     "1120:7621": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "1120:7638": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "1120:7821": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "1134:6812": {
@@ -349,22 +349,22 @@
     },
     "1154:4493": {
       "status": "mocked",
-      "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
         "module": "apps/storybook/src/templates/TemplateComponents.tsx",
         "export": "FormWizardTemplate"
-      }
+      },
+      "note": "rendered by TemplateShell demo content; real implementation pending"
     },
     "1174:9780": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "12133:82475": {
@@ -389,7 +389,6 @@
     },
     "123:7768": {
       "status": "implemented",
-      "note": "Reviewed 2026-10-22 (closing the 2026-10-14 delta): no Device axis, so each Layout variant is verified once at its own source width. `123-7768-extended` (Layout=Extended 123:7769, 113x22: the semibold link, the 16px chevron separator and the regular #555c70 current page with aria-current, 6px gap, every offset exact; Level 1.gap is the single-child phantom gap) and `123-7768-compact` (Layout=Compact 123:7777, 65x24: the 24px arrow-back artwork, 4px gap, semibold label, every offset exact). The render exposed a drift fixed in navigation/breadcrumb.tsx: `min-h-11` inflated both rows to 44px; the rows now keep the source 22/24px and each link reaches its 44px pointer target through the invisible vertical ::after expansion (22 + 2x12, 24 + 2x10), with no horizontal expansion so reflow is unchanged. The private hover variants 124:3604 and 124:3608 are verified on a real-pointer render (#0b3ee3, underline, blue arrow; the source 21px hover line height is within tolerance of 22). Open, non-blocking questions on the set description (current-page colour/weight, Show Level 2-5 vs 3-6 and a maximum depth, automatic Back on mobile vs an explicit destination) are in docs/design-requests/2026-10-22-breadcrumb-description-vs-drawing.md; the render follows the drawn variants until they are answered. Prop-convention departures: the export stays `Breadcrumb` (the published API) for the set `Breadcrumbs`; the visibility flags `Show Level 2`-`Show Level 5` are not slots but the length of the published `items` array, since each level is caller data and the last entry is the `Current` frame; Compact `back` is a `{ label, href }` object rather than a `ReactNode` slot so the component owns the native link and its arrow artwork. The JSDoc tag `Figma: Breadcrumbs (node 123:7768)`, the story subtitle `Figma: Breadcrumbs` and the guide's Figma source mapping were added on 2026-10-22. Re-run on 2026-10-23: both cases still reproduce (`verified-with-residues` and `verified`) and the committed evidence bundle carries their pinned PNGs and manifest entries, so the node is `implemented`; the open questions above are non-blocking and do not change the drawn variants.",
       "target": {
         "module": "src/components/navigation/breadcrumb.tsx",
         "export": "Breadcrumb",
@@ -402,7 +401,8 @@
           "BreadcrumbFidelityHoverLink",
           "BreadcrumbFidelityHoverBack"
         ]
-      }
+      },
+      "note": "Reviewed 2026-10-22 (closing the 2026-10-14 delta): no Device axis, so each Layout variant is verified once at its own source width. `123-7768-extended` (Layout=Extended 123:7769, 113x22: the semibold link, the 16px chevron separator and the regular #555c70 current page with aria-current, 6px gap, every offset exact; Level 1.gap is the single-child phantom gap) and `123-7768-compact` (Layout=Compact 123:7777, 65x24: the 24px arrow-back artwork, 4px gap, semibold label, every offset exact). The render exposed a drift fixed in navigation/breadcrumb.tsx: `min-h-11` inflated both rows to 44px; the rows now keep the source 22/24px and each link reaches its 44px pointer target through the invisible vertical ::after expansion (22 + 2x12, 24 + 2x10), with no horizontal expansion so reflow is unchanged. The private hover variants 124:3604 and 124:3608 are verified on a real-pointer render (#0b3ee3, underline, blue arrow; the source 21px hover line height is within tolerance of 22). Open, non-blocking questions on the set description (current-page colour/weight, Show Level 2-5 vs 3-6 and a maximum depth, automatic Back on mobile vs an explicit destination) are in docs/design-requests/2026-10-22-breadcrumb-description-vs-drawing.md; the render follows the drawn variants until they are answered. Prop-convention departures: the export stays `Breadcrumb` (the published API) for the set `Breadcrumbs`; the visibility flags `Show Level 2`-`Show Level 5` are not slots but the length of the published `items` array, since each level is caller data and the last entry is the `Current` frame; Compact `back` is a `{ label, href }` object rather than a `ReactNode` slot so the component owns the native link and its arrow artwork. The JSDoc tag `Figma: Breadcrumbs (node 123:7768)`, the story subtitle `Figma: Breadcrumbs` and the guide's Figma source mapping were added on 2026-10-22. Re-run on 2026-10-23: both cases still reproduce (`verified-with-residues` and `verified`) and the committed evidence bundle carries their pinned PNGs and manifest entries, so the node is `implemented`; the open questions above are non-blocking and do not change the drawn variants."
     },
     "127:1510": {
       "status": "pending",
@@ -426,25 +426,25 @@
     },
     "12785:14427": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "12812:16248": {
-      "status": "implemented",
+      "status": "pending",
       "target": {
         "module": "src/components/data-display/timeline.tsx",
         "export": "Timeline",
         "story": "apps/storybook/src/Timeline.stories.tsx",
         "storyExports": ["SourceCase"]
       },
-      "note": "Reviewed 2026-10-16 (device burn-down wave 7, closing the 2026-10-14 delta): the timeline element — the item row (24px cursor, the 8px root gap), the status card (16px radius, the 1px --border stroke, the 24px status glyph, the message stack on its 4px gap with the header and the 14/20 description), the touchpoints accordion and the timestamp column. Two cases, one per declared device, both container-scoped (the source pairs the composition with the device but draws both variants 848 wide: the 8px inset, 8px icon gap and stacked title/tag header belong to the drawer-width frames, so the container is the query — verified) and responsive-clean: desktop 9694:13224 (case 12812-16248-desktop-desktop, the 848 page column: 16px inset, 12px icon gap, title row) and mobile 12812:16249 (case 12812-16248-mobile-mobile, the 417 drawer panel: 8px inset, 8px icon gap, stacked header). Fixes from the captures (data-display/timeline.tsx): the row gap was 12 and is gap-2 (the source root 8); the icon slot was a line box (24x29) and is a 24px flex box; the compact composition gained @max-[27rem]/timeline:gap-2 and the stacked header (flex-col items-start gap-1); the card children are items-start as the source MIN counter axis. The story gains SourceCase (the source sample: one Default item with its correction tag). Recorded adaptations: the card measures 110 against the source 106 (the retained 1px border and the shared 32px tag against the source 30) and the row hugs the card where the source instance insets it 6px inside its 118 row (the dot stays centred on the card either way); the mobile capture reads the drawer composition at the source drawer-panel width 417 where the mockup draws it in the set 848 frame (a source frame width is never a component dimension), so the card/message widths follow the panel and the source copy wraps to four lines against the mockup two. The composition check is off with the recorded 6px item-inset reading. Responsive contract: the compact drawer-width composition (8px inset) is driven by the container query `@max-[27rem]/timeline:p-2`, not by the viewport. Comment 2026-10-24 (F-04): the status card keeps 4px title/description and now uses 12px title/touchpoint-group when the description is absent; the plain composition mirrors 4px title/description and 12px title/group. Covered by the `Spacing` story with computed gaps (thread 1924385837)."
+      "note": "Figma delta 2026-10-28: review new/changed node or dependency before marking implemented"
     },
     "1293:8394": {
       "status": "pending",
@@ -478,14 +478,14 @@
     },
     "1311:12896": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "1314:10512": {
@@ -500,14 +500,14 @@
     },
     "1315:8596": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "1317:10404": {
@@ -577,26 +577,26 @@
     },
     "13906:25597": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue", "LocalDefaults"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "1501:5288": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "1501:5860": {
@@ -605,14 +605,14 @@
     },
     "1509:25567": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "1566:29849": {
@@ -627,7 +627,6 @@
     },
     "160:1344": {
       "status": "implemented",
-      "note": "Fresh Path C review against pinned version 2409404974909792292: all eight source variants under root 160:1344 are source-bound, inspected and pass in Chromium. The 44px frame, 8px corners, and 32px contained logo at a 6px inset match. Source 22px placeholder/check glyphs use size-6 at 24px (+2px). The double faces match 28px at 0/16px; the proportional rear radius is 5.09px versus source 5.9px (-0.81px). SourceLogos uses the bundled product mark for caller-owned municipality/institution/service image examples, so those cases inspect container/contain geometry, not category brand-art parity. Nearby logo bounds use existing compact size-6 24px instead of 23.27px (+0.73px), and medium size-9 36px instead of 35px (+1px). Targeted Avatar story tests, typecheck and formatting pass; manual zoom and screen-reader tests remain unverified. The eight source variants carry reviewed cases in FigmaSmallStates against pinned version 2412426961662147678 (160-1344-placeholder, -selected, -municipalities, -institutions, -services, -products, -skeleton, -double-avatar) at the source 44px frame.",
       "target": {
         "module": "src/components/content/avatar.tsx",
         "export": "Avatar",
@@ -645,11 +644,11 @@
           "NonColorStatuses",
           "FigmaSmallStates"
         ]
-      }
+      },
+      "note": "Fresh Path C review against pinned version 2409404974909792292: all eight source variants under root 160:1344 are source-bound, inspected and pass in Chromium. The 44px frame, 8px corners, and 32px contained logo at a 6px inset match. Source 22px placeholder/check glyphs use size-6 at 24px (+2px). The double faces match 28px at 0/16px; the proportional rear radius is 5.09px versus source 5.9px (-0.81px). SourceLogos uses the bundled product mark for caller-owned municipality/institution/service image examples, so those cases inspect container/contain geometry, not category brand-art parity. Nearby logo bounds use existing compact size-6 24px instead of 23.27px (+0.73px), and medium size-9 36px instead of 35px (+1px). Targeted Avatar story tests, typecheck and formatting pass; manual zoom and screen-reader tests remain unverified. The eight source variants carry reviewed cases in FigmaSmallStates against pinned version 2412426961662147678 (160-1344-placeholder, -selected, -municipalities, -institutions, -services, -products, -skeleton, -double-avatar) at the source 44px frame."
     },
     "160:1403": {
       "status": "implemented",
-      "note": "Fresh Path C review against pinned version 2409404974909792292: all eight source variants under root 160:1403 are source-bound, inspected and pass in Chromium. The 66px source frame uses size-16 at 64px (-2px), with 8px corners. The 48px contained logo remains 48px with an 8px inset instead of the source 9px (-1px); 33px placeholder/icon glyphs use size-8 at 32px (-1px). SourceLogos uses the bundled product mark for caller-owned municipality/institution/service examples, so those cases inspect container/contain geometry, not category brand-art parity. The actual black/white theater icon artwork is preserved; inverse artwork remains on a caller-owned contrasting surface. Targeted Avatar story tests, typecheck and formatting pass; manual zoom and screen-reader tests remain unverified. The eight source variants carry reviewed cases in FigmaBigStates against pinned version 2412426961662147678 (160-1403-placeholder, -icon-black, -icon-white, -municipalities, -institutions, -services, -products, -skeleton) at the source 66px frame.",
       "target": {
         "module": "src/components/content/avatar.tsx",
         "export": "Avatar",
@@ -666,7 +665,8 @@
           "NonColorStatuses",
           "FigmaBigStates"
         ]
-      }
+      },
+      "note": "Fresh Path C review against pinned version 2409404974909792292: all eight source variants under root 160:1403 are source-bound, inspected and pass in Chromium. The 66px source frame uses size-16 at 64px (-2px), with 8px corners. The 48px contained logo remains 48px with an 8px inset instead of the source 9px (-1px); 33px placeholder/icon glyphs use size-8 at 32px (-1px). SourceLogos uses the bundled product mark for caller-owned municipality/institution/service examples, so those cases inspect container/contain geometry, not category brand-art parity. The actual black/white theater icon artwork is preserved; inverse artwork remains on a caller-owned contrasting surface. Targeted Avatar story tests, typecheck and formatting pass; manual zoom and screen-reader tests remain unverified. The eight source variants carry reviewed cases in FigmaBigStates against pinned version 2412426961662147678 (160-1403-placeholder, -icon-black, -icon-white, -municipalities, -institutions, -services, -products, -skeleton) at the source 66px frame."
     },
     "180:3931": {
       "status": "implemented",
@@ -680,41 +680,41 @@
     },
     "1904:9589": {
       "status": "implemented",
-      "note": "Implemented 2026-10-15 from the pinned source set: the four-slot page (preheader, header, the state block, footer) whose content-driven height reproduces the 806/902/834 desktop frames and the 320 frames. The story composes the reviewed chrome and the OK/KO/Waiting states with the source copy. Device review 2026-10-16 (device burn-down, the Feedback Page tablet wave): nine cases, one per declared device and message, all viewport-scoped and responsive-clean — mobile 320 (`1904-9589-xs-mobile-ko/-thank-you/-waiting`), tablet 600 (`1904-9589-sm-tablet-ko-tablet/-thank-you-tablet/-waiting-tablet`, the source frames 600x1009/913/915) and desktop 900 (`1904-9589-md-desktop-ko/-thank-you/-waiting`). The tablet review closed the wave-1 finding: the state block's content capped at the desktop 368 at every width, so the 600 device rendered the 368 measure against the source's 552 and the blocks measured 508/450/486 against 488/392/394; the cap now applies from `md` only (`max-w-none md:max-w-[23rem]` in `ok-state.tsx`, `ko-state.tsx`, `waiting-state.tsx`) and the waiting title cap became `max-w-none md:max-w-xs` (the source tablet title is the full 552 on one line). The tablet now renders 486/392/392 blocks (pages 1008/914/914 against 1009/913/915); the −2 is the shared 48px action against the source's 50px KO/Waiting frames (guides/actions.md). The page's tablet KO instance fixes its code row at 272 inside the 552 content, which the state's own main components contradict (both variants mark the row `FILL`: it follows the content at 272/368), so the library keeps the reviewed `23rem` row measure (368x48 at the tablet) — the measured constraint is in the wave report. The KO description fixture no longer carries a literal `\\n` (a JSX attribute escapes nothing), so the render shows the copy and not the escape. Residues unchanged: the chrome bands aggregate to −3px (the header is 1px taller, the footer 4px shorter than the 55/103/182 source bands) and the page waiting instance uses 55px vertical paddings where the state set uses 64, so the block is 16px taller (the library keeps the verified 64).",
       "target": {
         "module": "apps/storybook/src/templates/FeedbackPage.tsx",
         "export": "FeedbackPage",
         "story": "apps/storybook/src/FeedbackPage.stories.tsx",
         "storyExports": ["ThankYou", "KO", "Waiting"]
-      }
+      },
+      "note": "Implemented 2026-10-15 from the pinned source set: the four-slot page (preheader, header, the state block, footer) whose content-driven height reproduces the 806/902/834 desktop frames and the 320 frames. The story composes the reviewed chrome and the OK/KO/Waiting states with the source copy. Device review 2026-10-16 (device burn-down, the Feedback Page tablet wave): nine cases, one per declared device and message, all viewport-scoped and responsive-clean — mobile 320 (`1904-9589-xs-mobile-ko/-thank-you/-waiting`), tablet 600 (`1904-9589-sm-tablet-ko-tablet/-thank-you-tablet/-waiting-tablet`, the source frames 600x1009/913/915) and desktop 900 (`1904-9589-md-desktop-ko/-thank-you/-waiting`). The tablet review closed the wave-1 finding: the state block's content capped at the desktop 368 at every width, so the 600 device rendered the 368 measure against the source's 552 and the blocks measured 508/450/486 against 488/392/394; the cap now applies from `md` only (`max-w-none md:max-w-[23rem]` in `ok-state.tsx`, `ko-state.tsx`, `waiting-state.tsx`) and the waiting title cap became `max-w-none md:max-w-xs` (the source tablet title is the full 552 on one line). The tablet now renders 486/392/392 blocks (pages 1008/914/914 against 1009/913/915); the −2 is the shared 48px action against the source's 50px KO/Waiting frames (guides/actions.md). The page's tablet KO instance fixes its code row at 272 inside the 552 content, which the state's own main components contradict (both variants mark the row `FILL`: it follows the content at 272/368), so the library keeps the reviewed `23rem` row measure (368x48 at the tablet) — the measured constraint is in the wave report. The KO description fixture no longer carries a literal `\\n` (a JSX attribute escapes nothing), so the render shows the copy and not the escape. Residues unchanged: the chrome bands aggregate to −3px (the header is 1px taller, the footer 4px shorter than the 55/103/182 source bands) and the page waiting instance uses 55px vertical paddings where the state set uses 64, so the block is 16px taller (the library keeps the verified 64)."
     },
     "1908:98740": {
       "status": "mocked",
-      "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
         "module": "apps/storybook/src/templates/TemplateComponents.tsx",
         "export": "TermsOfUse"
-      }
+      },
+      "note": "rendered by TemplateShell demo content; real implementation pending"
     },
     "1909:98992": {
       "status": "implemented",
-      "note": "Implemented 2026-10-15 from the pinned source set: the 650px artboard, the shared 35% overlay backdrop and the 16px panel (272x446 narrow / 600x290 wide) with 24px padding and the 24px body-to-actions gap; the body stacks title (18/28 narrow, 24/32 wide), description (16/22 grey-700) and the 56px option row on an 8px gap; the footer is a 16px-gap column narrow and a right-aligned 16px-gap row wide. The composition answers its own frame through container queries and the panel is not portaled (a page fragment, measurable by the parity tool). Device review 2026-10-16 (device burn-down wave 4): one case per declared device, all container-scoped and responsive-clean — mobile 1909:98989 (case 1909-98992-xs, the source 320: panel 272x446, the 18/28 narrow title and the stacked actions), tablet 1909:98990 (case 1909-98992-md, the source 900: panel 600x290, the 552px blocks, the option row 552x56 at 24/138 and the action row 552x48 at 24/218) and desktop 1909:98987 (case 1909-98992-lg-desktop, the source 1200: the same 600x290 panel — the desktop frames only widen the page). The container declaration is verified: the composition moves with the frame width and not with the viewport (the viewport probe reports `responsive.scope.viewport`). The `Checkbox with label.gap` residue (the source 8px option-row gap lives on the inner label row in the DOM) is carried by all three cases; the wide story now renders the page itself (`WideFrame` dropped its 900px wrapper) so the desktop device is captured in its own 1200 frame, while the narrow story keeps the 320 frame. The set's SM Tablet 600 frame draws the same 272x446 narrow panel as the mobile one; the tablet case captures the MD 900 wide frame.",
       "target": {
         "module": "apps/storybook/src/templates/DialogTemplate.tsx",
         "export": "DialogTemplate",
         "story": "apps/storybook/src/DialogTemplate.stories.tsx",
         "storyExports": ["NarrowFrame", "WideFrame"]
-      }
+      },
+      "note": "Implemented 2026-10-15 from the pinned source set: the 650px artboard, the shared 35% overlay backdrop and the 16px panel (272x446 narrow / 600x290 wide) with 24px padding and the 24px body-to-actions gap; the body stacks title (18/28 narrow, 24/32 wide), description (16/22 grey-700) and the 56px option row on an 8px gap; the footer is a 16px-gap column narrow and a right-aligned 16px-gap row wide. The composition answers its own frame through container queries and the panel is not portaled (a page fragment, measurable by the parity tool). Device review 2026-10-16 (device burn-down wave 4): one case per declared device, all container-scoped and responsive-clean — mobile 1909:98989 (case 1909-98992-xs, the source 320: panel 272x446, the 18/28 narrow title and the stacked actions), tablet 1909:98990 (case 1909-98992-md, the source 900: panel 600x290, the 552px blocks, the option row 552x56 at 24/138 and the action row 552x48 at 24/218) and desktop 1909:98987 (case 1909-98992-lg-desktop, the source 1200: the same 600x290 panel — the desktop frames only widen the page). The container declaration is verified: the composition moves with the frame width and not with the viewport (the viewport probe reports `responsive.scope.viewport`). The `Checkbox with label.gap` residue (the source 8px option-row gap lives on the inner label row in the DOM) is carried by all three cases; the wide story now renders the page itself (`WideFrame` dropped its 900px wrapper) so the desktop device is captured in its own 1200 frame, while the narrow story keeps the 320 frame. The set's SM Tablet 600 frame draws the same 272x446 narrow panel as the mobile one; the tablet case captures the MD 900 wide frame."
     },
     "1909:99033": {
       "status": "implemented",
-      "note": "Implemented 2026-10-15 from the pinned source set: the shared dialog panel (272x570 narrow / 600x374 wide, 16px radius, 24px padding and gap) with the code block on the source 16px gap — the 167x50 code control and the 14/20 helper (three lines narrow, one wide). The source alert row is a hidden instance in every variant. Residues: the code field owns its label (6px gap) where the mockup keeps an external 16px row, so the block and the panel are 8px shorter; the reviewed field keeps 24px slots on an 8px gap against the source 11px slots on 16px (the outer frame matches, 169 vs 167). Device review 2026-10-16 (device burn-down wave 4): one case per declared device, all container-scoped and responsive-clean — mobile 1909:99034 (case 1909-99033-xs, the source 320: panel 272x570, the code block 224x164 with the three-line 14/20 helper), tablet 1909:99040 (case 1909-99033-md, the source 900: panel 600x374 and the code block 552x124 with the one-line helper) and desktop 1909:99045 (case 1909-99033-lg-desktop, the source 1200: the same 600x374 panel). All three carry the `Authentication code.box.height` and `field.box.height` residues (the field owns its label, so the block and the panel are 8px shorter) and keep the composition check off with the recorded note: a `--compare-offset` run confirms the same shift at 1200 (`Authentication code input.offset.top` 182 against 192, `Block buttons.offset.top` 294 against 302). The wide story now renders the page itself (`WideFrame` dropped its 900px wrapper) so the desktop device is captured in its own 1200 frame, and the container declaration is verified at every device.",
       "target": {
         "module": "apps/storybook/src/templates/SecurityCodeDialog.tsx",
         "export": "SecurityCodeDialog",
         "story": "apps/storybook/src/SecurityCodeDialog.stories.tsx",
         "storyExports": ["NarrowFrame", "WideFrame"]
-      }
+      },
+      "note": "Implemented 2026-10-15 from the pinned source set: the shared dialog panel (272x570 narrow / 600x374 wide, 16px radius, 24px padding and gap) with the code block on the source 16px gap — the 167x50 code control and the 14/20 helper (three lines narrow, one wide). The source alert row is a hidden instance in every variant. Residues: the code field owns its label (6px gap) where the mockup keeps an external 16px row, so the block and the panel are 8px shorter; the reviewed field keeps 24px slots on an 8px gap against the source 11px slots on 16px (the outer frame matches, 169 vs 167). Device review 2026-10-16 (device burn-down wave 4): one case per declared device, all container-scoped and responsive-clean — mobile 1909:99034 (case 1909-99033-xs, the source 320: panel 272x570, the code block 224x164 with the three-line 14/20 helper), tablet 1909:99040 (case 1909-99033-md, the source 900: panel 600x374 and the code block 552x124 with the one-line helper) and desktop 1909:99045 (case 1909-99033-lg-desktop, the source 1200: the same 600x374 panel). All three carry the `Authentication code.box.height` and `field.box.height` residues (the field owns its label, so the block and the panel are 8px shorter) and keep the composition check off with the recorded note: a `--compare-offset` run confirms the same shift at 1200 (`Authentication code input.offset.top` 182 against 192, `Block buttons.offset.top` 294 against 302). The wide story now renders the page itself (`WideFrame` dropped its 900px wrapper) so the desktop device is captured in its own 1200 frame, and the container declaration is verified at every device."
     },
     "192:1208": {
       "status": "implemented",
@@ -728,11 +728,11 @@
     },
     "1931:112838": {
       "status": "mocked",
-      "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
         "module": "apps/storybook/src/templates/TemplateComponents.tsx",
         "export": "RecapDefault"
-      }
+      },
+      "note": "rendered by TemplateShell demo content; real implementation pending"
     },
     "194:3654": {
       "status": "implemented",
@@ -819,17 +819,16 @@
     },
     "197:1985": {
       "status": "implemented",
-      "note": "Path C reviewed against pinned Figma v2412426961662147678 on 2026-10-23. All 14 Type/Style variants have committed source-bound cases (`197-1985-*`) captured from ChipSourceVariantMatrix; the render preserves visible centered labels and 12/18 typography, while the matrix play verifies solid/outline paints, border state and 24px source height. Keep token-driven compact sizing (h-6, px-2, nearest py-0.5, rounded-full) and the bundled Titillio to Titillium Web Semibold mapping. With the bundled family the labels now measure the source widths exactly (57/58/63/62/40/44/66), so the earlier 2.05–5.12px narrower figures are historical; the only residue is the full-pill radius (source 100, rounded-full). Default 44px sizing and the 44×44 removal action remain accessibility adaptations; removal interaction verifies its name, keyboard use and non-submission. Manual zoom and screen-reader testing remain unverified.",
       "target": {
         "module": "src/components/inputs/chips.tsx",
         "export": "Chip",
         "story": "apps/storybook/src/Chip.stories.tsx",
         "storyExports": ["ChipSourceVariantMatrix", "ChipRemovalAction"]
-      }
+      },
+      "note": "Path C reviewed against pinned Figma v2412426961662147678 on 2026-10-23. All 14 Type/Style variants have committed source-bound cases (`197-1985-*`) captured from ChipSourceVariantMatrix; the render preserves visible centered labels and 12/18 typography, while the matrix play verifies solid/outline paints, border state and 24px source height. Keep token-driven compact sizing (h-6, px-2, nearest py-0.5, rounded-full) and the bundled Titillio to Titillium Web Semibold mapping. With the bundled family the labels now measure the source widths exactly (57/58/63/62/40/44/66), so the earlier 2.05–5.12px narrower figures are historical; the only residue is the full-pill radius (source 100, rounded-full). Default 44px sizing and the 44×44 removal action remain accessibility adaptations; removal interaction verifies its name, keyboard use and non-submission. Manual zoom and screen-reader testing remain unverified."
     },
     "198:828": {
       "status": "implemented",
-      "note": "Reviewed 2026-10-22 (M5 wave): six committed cases, one per source variant — empty 198:829 (`198-828-empty`), selected 266:25977 (`198-828-selected`), filled 198:847 (`198-828-filled`), encrypted 198:856 (`198-828-encrypted`), error 198:874 (`198-828-error`) and error encrypted 274:1478 (`198-828-error-encrypted`) — all on the five-slot frame at the 169 capture width, verdict `verified-with-residues`. Verified: the 169x52 border box against the source 168x50, radius 8, the #636b82 / #d13333 strokes, the 8/24 frame insets, the 27px slot step (11px slot + 16px gap), the 11x34 slot with its underline, the 8px mask marker and the 2x16px primary cursor. Residues: `field.gap` is ignored on the four non-error cases because the source frame gaps its five slots directly while the DOM nests them in one group carrying the same 16px gap (a mapping artifact); `field.box.height` is 74 against 70 on the two error variants — the recorded 169x52 border box plus the 14/20 message line against the source's 18px helper. The adaptations `accessible-error-feedback` (the visible native label and report icon supplement the source helper copy, the error text stays a `role=alert` with the source 14/20 metrics), `token-frame-inset` and `native-password-mask` (px-6/py-2 insets; native `type=password` with a font-independent rounded marker) stay as stated in guides/authentication-codes.md. The remaining exports are behaviour and narrow-container states with no source variant.",
       "target": {
         "module": "src/components/inputs/text-fields.tsx",
         "export": "AuthenticationCodeInput",
@@ -848,72 +847,73 @@
           "SourceErrorVariant",
           "SourceErrorEncryptedVariant"
         ]
-      }
+      },
+      "note": "Reviewed 2026-10-22 (M5 wave): six committed cases, one per source variant — empty 198:829 (`198-828-empty`), selected 266:25977 (`198-828-selected`), filled 198:847 (`198-828-filled`), encrypted 198:856 (`198-828-encrypted`), error 198:874 (`198-828-error`) and error encrypted 274:1478 (`198-828-error-encrypted`) — all on the five-slot frame at the 169 capture width, verdict `verified-with-residues`. Verified: the 169x52 border box against the source 168x50, radius 8, the #636b82 / #d13333 strokes, the 8/24 frame insets, the 27px slot step (11px slot + 16px gap), the 11x34 slot with its underline, the 8px mask marker and the 2x16px primary cursor. Residues: `field.gap` is ignored on the four non-error cases because the source frame gaps its five slots directly while the DOM nests them in one group carrying the same 16px gap (a mapping artifact); `field.box.height` is 74 against 70 on the two error variants — the recorded 169x52 border box plus the 14/20 message line against the source's 18px helper. The adaptations `accessible-error-feedback` (the visible native label and report icon supplement the source helper copy, the error text stays a `role=alert` with the source 14/20 metrics), `token-frame-inset` and `native-password-mask` (px-6/py-2 insets; native `type=password` with a font-independent rounded marker) stay as stated in guides/authentication-codes.md. The remaining exports are behaviour and narrow-container states with no source variant."
     },
     "1983:116988": {
       "status": "mocked",
-      "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
         "module": "apps/storybook/src/templates/TemplateComponents.tsx",
         "export": "HistoryDrawer"
-      }
+      },
+      "note": "rendered by TemplateShell demo content; real implementation pending"
     },
     "1983:116998": {
       "status": "mocked",
-      "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
         "module": "apps/storybook/src/templates/TemplateComponents.tsx",
         "export": "ServiceDetailDrawer"
-      }
+      },
+      "note": "rendered by TemplateShell demo content; real implementation pending"
     },
     "1992:127582": {
       "status": "implemented",
-      "note": "Implemented 2026-10-15 from the pinned source set: the 320x650 bottom sheet (16px top corners, no drag handle in this composition) and the 417x800 square side panel from 600 up, both with the 35% surface overlay, 24px padding, the 40px Error pictogram row on a 16px gap, the 8px gap to the multi-paragraph description and the 40px gap before the action (full width on the sheet, intrinsic and right-aligned on the panel). Verified both frames; the sheet records one residue: the source text node carries 12px paragraph spacing on six paragraph breaks, and the same copy as six HTML paragraphs measures 4px taller. Device review 2026-10-16 (device burn-down wave 4): one case per declared device — mobile 1992:127583 (case 1992-127582-xs, the source 320: the 320x504 bottom sheet hugging the bottom edge with the 272px blocks, carrying the 4px copy residue), tablet 1992:127589 (case 1992-127582-md, the source 900: the 417x800 right panel with the 369px blocks, the 40px head, the 8px spacing and the 112x48 action, verified clean) and desktop 1992:127591 (case 1992-127582-lg-desktop, the source 1200: the same 417x800 panel at the 1200 edge, verified clean — the desktop frames only widen the page). The three cases declare no `layoutScope`: the edge and the panel geometry follow the caller's `direction` prop (the wide story passes `right`, the narrow one `bottom`), not an axis of the frame — the same reading the ButtonGroup orientation recorded — and the reason is recorded on every case. The wide story now renders the page itself (`WideFrame` dropped its 900px wrapper) so the desktop device is captured in its own 1200 frame.",
       "target": {
         "module": "apps/storybook/src/templates/InformativeDrawer.tsx",
         "export": "InformativeDrawer",
         "story": "apps/storybook/src/InformativeDrawer.stories.tsx",
         "storyExports": ["NarrowFrame", "WideFrame"]
-      }
+      },
+      "note": "Implemented 2026-10-15 from the pinned source set: the 320x650 bottom sheet (16px top corners, no drag handle in this composition) and the 417x800 square side panel from 600 up, both with the 35% surface overlay, 24px padding, the 40px Error pictogram row on a 16px gap, the 8px gap to the multi-paragraph description and the 40px gap before the action (full width on the sheet, intrinsic and right-aligned on the panel). Verified both frames; the sheet records one residue: the source text node carries 12px paragraph spacing on six paragraph breaks, and the same copy as six HTML paragraphs measures 4px taller. Device review 2026-10-16 (device burn-down wave 4): one case per declared device — mobile 1992:127583 (case 1992-127582-xs, the source 320: the 320x504 bottom sheet hugging the bottom edge with the 272px blocks, carrying the 4px copy residue), tablet 1992:127589 (case 1992-127582-md, the source 900: the 417x800 right panel with the 369px blocks, the 40px head, the 8px spacing and the 112x48 action, verified clean) and desktop 1992:127591 (case 1992-127582-lg-desktop, the source 1200: the same 417x800 panel at the 1200 edge, verified clean — the desktop frames only widen the page). The three cases declare no `layoutScope`: the edge and the panel geometry follow the caller's `direction` prop (the wide story passes `right`, the narrow one `bottom`), not an axis of the frame — the same reading the ButtonGroup orientation recorded — and the reason is recorded on every case. The wide story now renders the page itself (`WideFrame` dropped its 900px wrapper) so the desktop device is captured in its own 1200 frame."
     },
     "1992:130380": {
       "status": "mocked",
-      "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
         "module": "apps/storybook/src/templates/TemplateComponents.tsx",
         "export": "SearchDrawer"
-      }
+      },
+      "note": "rendered by TemplateShell demo content; real implementation pending"
     },
     "1992:147363": {
       "status": "mocked",
-      "note": "rendered by TemplateShell demo content; real implementation pending\n\nOpen design questions: the spinner (docs/design-requests/2026-10-24-identity-provider-spinner.md, issue #31), the SPID help link (docs/design-requests/2026-10-24-identity-provider-link.md, issue #32) and the loading skeleton (docs/design-requests/2026-10-24-identity-provider-skeleton.md, issue #33). The node stays mocked until the answers.",
       "target": {
         "module": "apps/storybook/src/templates/TemplateComponents.tsx",
         "export": "IdentityProviderSelector"
-      }
+      },
+      "note": "rendered by TemplateShell demo content; real implementation pending\n\nOpen design questions: the spinner (docs/design-requests/2026-10-24-identity-provider-spinner.md, issue #31), the SPID help link (docs/design-requests/2026-10-24-identity-provider-link.md, issue #32) and the loading skeleton (docs/design-requests/2026-10-24-identity-provider-skeleton.md, issue #33). The node stays mocked until the answers."
     },
     "2080:3319": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "2080:3320": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "212:1899": {
@@ -938,6 +938,12 @@
     },
     "232:1673": {
       "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "LocalDefaults", "LocalVariants"]
+      },
       "localAsset": {
         "rendering": "image",
         "defaultVariantNodeId": "232:1672",
@@ -946,23 +952,17 @@
           "dark": "232:1674"
         }
       },
-      "target": {
-        "module": "src/components/icons/PagoPAIcon.tsx",
-        "export": "PagoPAIcon",
-        "story": "apps/storybook/src/Icons.stories.tsx",
-        "storyExports": ["Catalogue", "LocalDefaults", "LocalVariants"]
-      },
       "note": "The source default 232:1672 is white IO Light and needs a contrasting dark surface; 232:1674 is blue IO Dark. Preserve brand colors and the source default rather than substituting a more convenient variant."
     },
     "2339:80916": {
       "status": "implemented",
-      "note": "Implemented 2026-10-15 from the pinned source set: the application chrome around the centred login module. The module is exact on both frames (900x689 and the 320x757 mobile: pad 80/40 and 64/24, the 40px gap, the 520px text block at 84px, the warning alert at 98px, the 272px action column at 166px and the 520px terms block at 61px). The story renders the source copy, including the hidden title and action layers of the alert and the source 18/26 Regular description, which the file does not publish as a variable: the block takes the Body Big SB metrics and states the regular weight. Device review 2026-10-16 (device burn-down wave 5): one case per declared device, all viewport-scoped and responsive-clean — mobile 2339:80911 (2339-80916-xs-mobile, 320), tablet 2339:80912 (2339-80916-sm-tablet-tablet, 600) and desktop 2339:80913 (2339-80916-md-desktop, 900). The scope is viewport: the page always spans the page width and the chrome bands and the module padding/type switch on media queries (the container probe moves too, because any page reflows in a narrower box — recorded so the reading is not re-litigated). The tablet review fixed the module: the source tablet frame is the mobile composition at 600 (pad 64/24, the 28/40 title) and draws the text and terms blocks at the full 552, so the 520px caps now apply from md (LogIn.tsx: md:max-w-[32.5rem]); mobile (272) and desktop (520) are unchanged. All three cases carry the field.box.height page-aggregation residue (the module is exact; the shorter footer columns block is the Footer node still in the pending queue) and the Alert.gap mapping ignore.",
       "target": {
         "module": "apps/storybook/src/templates/LogIn.tsx",
         "export": "LogIn",
         "story": "apps/storybook/src/LogIn.stories.tsx",
         "storyExports": ["Page", "Module"]
-      }
+      },
+      "note": "Implemented 2026-10-15 from the pinned source set: the application chrome around the centred login module. The module is exact on both frames (900x689 and the 320x757 mobile: pad 80/40 and 64/24, the 40px gap, the 520px text block at 84px, the warning alert at 98px, the 272px action column at 166px and the 520px terms block at 61px). The story renders the source copy, including the hidden title and action layers of the alert and the source 18/26 Regular description, which the file does not publish as a variable: the block takes the Body Big SB metrics and states the regular weight. Device review 2026-10-16 (device burn-down wave 5): one case per declared device, all viewport-scoped and responsive-clean — mobile 2339:80911 (2339-80916-xs-mobile, 320), tablet 2339:80912 (2339-80916-sm-tablet-tablet, 600) and desktop 2339:80913 (2339-80916-md-desktop, 900). The scope is viewport: the page always spans the page width and the chrome bands and the module padding/type switch on media queries (the container probe moves too, because any page reflows in a narrower box — recorded so the reading is not re-litigated). The tablet review fixed the module: the source tablet frame is the mobile composition at 600 (pad 64/24, the 28/40 title) and draws the text and terms blocks at the full 552, so the 520px caps now apply from md (LogIn.tsx: md:max-w-[32.5rem]); mobile (272) and desktop (520) are unchanged. All three cases carry the field.box.height page-aggregation residue (the module is exact; the shorter footer columns block is the Footer node still in the pending queue) and the Alert.gap mapping ignore."
     },
     "236:1311": {
       "status": "implemented",
@@ -986,50 +986,50 @@
     },
     "256:8579": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "image"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue", "LocalDefaults"]
+      },
+      "localAsset": {
+        "rendering": "image"
       }
     },
     "256:8580": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "image"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue", "LocalDefaults"]
+      },
+      "localAsset": {
+        "rendering": "image"
       }
     },
     "256:8581": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "image"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue", "LocalDefaults"]
+      },
+      "localAsset": {
+        "rendering": "image"
       }
     },
     "256:8582": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "image"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue", "LocalDefaults"]
+      },
+      "localAsset": {
+        "rendering": "image"
       }
     },
     "261:6501": {
@@ -1050,91 +1050,90 @@
     },
     "2776:74243": {
       "status": "mocked",
-      "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
         "module": "apps/storybook/src/templates/TemplateComponents.tsx",
         "export": "RecapDefault"
-      }
+      },
+      "note": "rendered by TemplateShell demo content; real implementation pending"
     },
     "2786:78783": {
       "status": "mocked",
-      "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
         "module": "apps/storybook/src/templates/TemplateComponents.tsx",
         "export": "FormTemplate"
-      }
+      },
+      "note": "rendered by TemplateShell demo content; real implementation pending"
     },
     "2801:85126": {
       "status": "mocked",
-      "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
         "module": "apps/storybook/src/templates/TemplateComponents.tsx",
         "export": "ObjectDetail"
-      }
+      },
+      "note": "rendered by TemplateShell demo content; real implementation pending"
     },
     "2801:90017": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "2809:77828": {
       "status": "mocked",
-      "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
         "module": "apps/storybook/src/templates/TemplateComponents.tsx",
         "export": "FilterDrawer"
-      }
+      },
+      "note": "rendered by TemplateShell demo content; real implementation pending"
     },
     "2822:80432": {
       "status": "mocked",
-      "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
         "module": "apps/storybook/src/templates/TemplateComponents.tsx",
         "export": "Homepage"
-      }
+      },
+      "note": "rendered by TemplateShell demo content; real implementation pending"
     },
     "2822:83244": {
       "status": "mocked",
-      "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
         "module": "apps/storybook/src/templates/TemplateComponents.tsx",
         "export": "EditDrawer"
-      }
+      },
+      "note": "rendered by TemplateShell demo content; real implementation pending"
     },
     "2827:30226": {
       "status": "mocked",
-      "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
         "module": "apps/storybook/src/templates/TemplateComponents.tsx",
         "export": "InformativaPrivacy"
-      }
+      },
+      "note": "rendered by TemplateShell demo content; real implementation pending"
     },
     "2846:37569": {
       "status": "mocked",
-      "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
         "module": "apps/storybook/src/templates/TemplateComponents.tsx",
         "export": "Dashboard"
-      }
+      },
+      "note": "rendered by TemplateShell demo content; real implementation pending"
     },
     "2846:40095": {
       "status": "mocked",
-      "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
         "module": "apps/storybook/src/templates/TemplateComponents.tsx",
         "export": "MultipleCtaDashboard"
-      }
+      },
+      "note": "rendered by TemplateShell demo content; real implementation pending"
     },
     "295:1360": {
       "status": "implemented",
-      "note": "Reviewed 2026-10-22 (M5 wave): seven committed cases, one per principal state of the set, all 150 wide against `FidelityStartStates`' control-before-copy rows: Checked=False/True with Enable=True (295:1406, 295:1432), the two disabled variants (295:1424, 295:1440), the error variant (295:1411, 150x66) and the two focused variants (295:1466, 295:1482, captured focused). Verified: the 150x44 row, the 12px control-to-copy gap, the 16/22 Semibold #0e0f13 title, the 14/20 #555c70 description, the 50% `Element` artwork fade on disabled, the 10px focus dot with the library keyboard perimeter outside it and the 14/20 #d13333 helper with its 16px report glyph. The source `.Switch single element` frame (58x38) rounds to the 56x44 native target (primitive `native-target-token-rounding`), which the row follows. Residue: disabled copy uses the muted-foreground token (the family adaptation `native-unavailable-state`, recorded on CheckboxField 194:3661) while the pinned source leaves the `Label` text at #0e0f13 and fades only the artwork; the guide records `legible disabled copy` as a deliberate adaptation. The two `Status=Hover` variants (295:1461, 295:1477) stay uncovered: the pointer halo is a transient state the parity capture cannot hold (there is no `--hover`), and the reviewed composition is the default one plus the halo the primitive documents. Automated a11y and render checks are not screen-reader or browser-zoom certification.",
       "target": {
         "module": "src/components/inputs/switch-field.tsx",
         "export": "SwitchField",
@@ -1145,25 +1144,26 @@
           "NarrowRichSource",
           "FidelityStartStates"
         ]
-      }
+      },
+      "note": "Reviewed 2026-10-22 (M5 wave): seven committed cases, one per principal state of the set, all 150 wide against `FidelityStartStates`' control-before-copy rows: Checked=False/True with Enable=True (295:1406, 295:1432), the two disabled variants (295:1424, 295:1440), the error variant (295:1411, 150x66) and the two focused variants (295:1466, 295:1482, captured focused). Verified: the 150x44 row, the 12px control-to-copy gap, the 16/22 Semibold #0e0f13 title, the 14/20 #555c70 description, the 50% `Element` artwork fade on disabled, the 10px focus dot with the library keyboard perimeter outside it and the 14/20 #d13333 helper with its 16px report glyph. The source `.Switch single element` frame (58x38) rounds to the 56x44 native target (primitive `native-target-token-rounding`), which the row follows. Residue: disabled copy uses the muted-foreground token (the family adaptation `native-unavailable-state`, recorded on CheckboxField 194:3661) while the pinned source leaves the `Label` text at #0e0f13 and fades only the artwork; the guide records `legible disabled copy` as a deliberate adaptation. The two `Status=Hover` variants (295:1461, 295:1477) stay uncovered: the pointer halo is a transient state the parity capture cannot hold (there is no `--hover`), and the reviewed composition is the default one plus the halo the primitive documents. Automated a11y and render checks are not screen-reader or browser-zoom certification."
     },
     "3228:36387": {
       "status": "mocked",
-      "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
         "module": "apps/storybook/src/templates/TemplateComponents.tsx",
         "export": "ListView"
-      }
+      },
+      "note": "rendered by TemplateShell demo content; real implementation pending"
     },
     "3262:40787": {
-      "status": "implemented",
+      "status": "pending",
       "target": {
         "module": "src/components/inputs/menus.tsx",
         "export": "MenuDropdown",
         "story": "apps/storybook/src/MenuDropdown.stories.tsx",
         "storyExports": ["SourcePanel", "Playground"]
       },
-      "note": "Reviewed 2026-10-23 (M5 wave): one committed case against the `SourcePanel` story, captured with the icon trigger clicked open (`--expect-state open`, the `[role=menu]` popup as evidence), root `[role=menu]` at 274: box 274x330 exactly, zero panel padding and gap, radius 8, #ffffff surface, `shadow-16` (the source 0/4/16 #0e0f13 at 10%), the six 46px text rows (12/16 insets, 8px leading gap, 16/22 Semibold #0b3ee3 label) and the closing 48px destructive row (24px `cancel` artwork, 16/22 Semibold #d13333 label) with the 1px #e8ebf1 dividers between all seven. The review removed the row's 48px minimum (`min-h-12`): the source row is 12px insets plus the 22px line (46px), which clears the 44px target on its own, and the floor inflated the panel by 12px. The seven source rows share the layer name `.Single drop down item`, so the case maps the first text row and the divider as subjects and the total height proves the destructive row. Elevation comes only from the Figma shadow scale: `shadow-16` for menus and dropdowns, never Tailwind `shadow-md/lg/xl`. The `Playground` keeps the public `icon` prop (a lucide component painted with the destructive colour); the fidelity fixture leads with the design system's own `cancel` artwork, which is the source's leading art. Automated a11y and render checks are not screen-reader or browser-zoom certification."
+      "note": "Figma delta 2026-10-28: review new/changed node or dependency before marking implemented"
     },
     "3424:12354": {
       "status": "implemented",
@@ -1177,7 +1177,6 @@
     },
     "349:4683": {
       "status": "implemented",
-      "note": "Reviewed 2026-10-22 (M5 wave): four committed cases, one per `Checked` × `Availability` variant (349:4684, 349:4703, 349:4717, 349:4727), all 320 wide against `FidelityRichStates`. The node is one rich option, not a group; source names never determine identity. Verified: the 24px decorative leading art, the 12px icon-to-copy gap, the 16/22 Semibold #0e0f13 title, the 14/20 #555c70 description, the #555c70/#0b3ee3 track, the 14/20 primary link and the hidden helper. Residues: the rich row follows the 44px native control target (the source `.Switch single element` frame is 58x38, rounded to 56x44 by `native-target-token-rounding`), so the row is 8px taller than the content-driven source sample and the copy offsets follow; the source root spaces its stack with a 4/8px gap while the library stacks the label, messages and link inside one grid. The two `Availability=No` roots carry a source-wide reduced opacity; the library deliberately fades only the decorative art and keeps copy, control and link opaque (documented adaptation, switch-choices guide). Automated a11y and render checks are not screen-reader or browser-zoom certification.",
       "target": {
         "module": "src/components/inputs/switch-field.tsx",
         "export": "SwitchField",
@@ -1188,7 +1187,8 @@
           "NarrowRichSource",
           "FidelityRichStates"
         ]
-      }
+      },
+      "note": "Reviewed 2026-10-22 (M5 wave): four committed cases, one per `Checked` × `Availability` variant (349:4684, 349:4703, 349:4717, 349:4727), all 320 wide against `FidelityRichStates`. The node is one rich option, not a group; source names never determine identity. Verified: the 24px decorative leading art, the 12px icon-to-copy gap, the 16/22 Semibold #0e0f13 title, the 14/20 #555c70 description, the #555c70/#0b3ee3 track, the 14/20 primary link and the hidden helper. Residues: the rich row follows the 44px native control target (the source `.Switch single element` frame is 58x38, rounded to 56x44 by `native-target-token-rounding`), so the row is 8px taller than the content-driven source sample and the copy offsets follow; the source root spaces its stack with a 4/8px gap while the library stacks the label, messages and link inside one grid. The two `Availability=No` roots carry a source-wide reduced opacity; the library deliberately fades only the decorative art and keeps copy, control and link opaque (documented adaptation, switch-choices guide). Automated a11y and render checks are not screen-reader or browser-zoom certification."
     },
     "357:4970": {
       "status": "implemented",
@@ -1241,11 +1241,11 @@
     },
     "3823:36774": {
       "status": "mocked",
-      "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
         "module": "apps/storybook/src/templates/TemplateComponents.tsx",
         "export": "TemplateEmail"
-      }
+      },
+      "note": "rendered by TemplateShell demo content; real implementation pending"
     },
     "392:4667": {
       "status": "implemented",
@@ -1266,14 +1266,14 @@
     },
     "392:5291": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "403:4116": {
@@ -1360,7 +1360,7 @@
       "note": "Reviewed 2026-10-23 (second ring, implemented node without a case): all five source variants at the 320px set width, no Device axis — `61-2786-line` (Padding=0, Type=Line, 320x1 #e8ebf1), `61-2786-padding-16`, `61-2786-padding-24` and `61-2786-padding-32` (the line inset 16/24/32, 288/272/256x1, the spacers unpainted) and `61-2786-with-text` (320x20, 8px root gap, the 130x1 lines at y9.5, the Text layer `oppure` 14/20 Regular #555c70 at x138 measuring 43.47 against 44, a font metric). All five are strict-composition clean. The `With text` source `Line-Left`/`Line-Right` are empty frames that carry a 10px padding with no DOM counterpart, so they are mapped through the root gap and the centred text (mapping note). The `Fidelity` story renders all five variants at 320. `--border` is Figma Color/Border/Border fill #e8ebf1 (grey-100); do not swap in grey-200 #d2d6e3, which is reserved for nodes whose source stroke is grey-200 (Stepper 1314:10512). Text contract: `label` is consumer-owned content, translated outside the component. Guide: apps/storybook/src/guides/separator.md."
     },
     "616:3864": {
-      "status": "implemented",
+      "status": "pending",
       "target": {
         "module": "src/components/inputs/menus.tsx",
         "export": "Dropdown",
@@ -1380,7 +1380,7 @@
           "SourcePanelSkeleton"
         ]
       },
-      "note": "Reviewed 2026-10-22 (M5 wave): seven committed cases, one per source variant, all 274 wide against the `SourcePanel*` stories, each captured with the trigger clicked open (`--expect-state open`, the `[role=menu]` popup as evidence): Default (610:36297, 274x392), Selected (617:18348), multiselect Default (616:3865, 274x532), Selected Checked=True (617:19035), Selected Checked=All (617:18688), the Empty state (756:6063, 274x166, mapped to `[data-slot=dropdown-empty]`) and the Skeleton (756:6159, 274x251, mapped to `[data-slot=dropdown-skeleton]`). The panel is the source composition: edge-to-edge rows, no panel padding or gap, the 48px location action row and the 68px single-select / 96px multiselect rich rows, which is what makes the panel height (the library draws a divider between all six rows against the source four: +1px). The source's 15px Figma scrollbar is a mockup overflow artifact: the library rows run the full 274 width. Elevation comes only from the Figma shadow scale: `shadow-16` for menus and dropdowns, never Tailwind `shadow-md/lg/xl`. The loading skeleton is hidden from assistive technology and the menu keeps one disabled sr-only item so it remains a valid ARIA menu shape (at least one menuitem) that names the busy state. Item rows (610:33732, not registered) carry the adaptations `location-icon-currentcolor`, `selected-soft-token` (the source highlight is Blue 500 at 8%, composite #EBF0FD; the selected row uses the accent token, the same 8% mix) and `cta-menuitem-action` (the location row is one native menuitem, never a nested button), stated in code in inputs/menus.tsx. The empty state renders as one disabled menuitem block and the popup keeps `p-0`, so the empty and skeleton cases map the block, not the popup. Automated a11y and render checks are not screen-reader or browser-zoom certification."
+      "note": "Figma delta 2026-10-28: review new/changed node or dependency before marking implemented"
     },
     "67:3964": {
       "status": "implemented",
@@ -1434,13 +1434,13 @@
     },
     "757:6288": {
       "status": "implemented",
-      "note": "Reviewed 2026-10-15: affected by the same Button 108:1402 helper delta; design fingerprints unchanged. The cover set renders 272x441 desktop and 272x437 mobile exactly, with the 272x191 cover, the 64x64 plate at the 24px inset (8px corners, 4px nested tile) and the source 24/32 and 18/28 Bold headings via `text-title-xs`/`text-title-xs-mobile`; the action measures 111.67x48 against the source 108x48 (bundled-font metrics) and the description keeps the semantic grey-700 against the source's raw, unpublished #17324d. The text-only set 757:10713 was unpublished in the 2026-10-14 export, so its story is a caller composition.",
       "target": {
         "module": "src/components/data-display/product-card.tsx",
         "export": "ProductCard",
         "story": "apps/storybook/src/ProductCard.stories.tsx",
         "storyExports": ["SourceImage"]
-      }
+      },
+      "note": "Reviewed 2026-10-15: affected by the same Button 108:1402 helper delta; design fingerprints unchanged. The cover set renders 272x441 desktop and 272x437 mobile exactly, with the 272x191 cover, the 64x64 plate at the 24px inset (8px corners, 4px nested tile) and the source 24/32 and 18/28 Bold headings via `text-title-xs`/`text-title-xs-mobile`; the action measures 111.67x48 against the source 108x48 (bundled-font metrics) and the description keeps the semantic grey-700 against the source's raw, unpublished #17324d. The text-only set 757:10713 was unpublished in the 2026-10-14 export, so its story is a caller composition."
     },
     "759:6399": {
       "status": "implemented",
@@ -1472,7 +1472,6 @@
     },
     "8049:39452": {
       "status": "implemented",
-      "note": "Reviewed 2026-10-22 (M5 wave): one committed case, `8049-39452-single-date`, against `SingleDateConfirmation` at the 310 source width and a 320 viewport, verdict `verified-with-residues`. The panel draws the source's four-block rhythm (root gap 8): the two-row header — label row 44 (16/8 insets, 14/20 #555c70) and month row 42 (8/16 insets, 18/26 semibold, the 24px chevrons) closed by its full-bleed divider — then the calendar, a divider and the footer. The date grid keeps the source's 8px inline inset, the caption no longer doubles its own 8px padding, and the footer actions use the source's 16px inset. Verified: width 310, radius 16, #ffffff surface, root padding 0, the header rows, the full-bleed divider and the grid inset, asserted by the story. Residue `field.box.height`: the panel is 448 against the source 426 — the 44px day rows (the source rows are 36, and the source Dates frame adds its own 8px inner padding and 2px row gaps). The footer is the source's 46px row with 22px text actions and the month navigation keeps the source's two 24px chevrons 4px apart. The other five exports are implementation states with no source variant: they render the same panel inline and are not separate cases. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`. Comment 2026-10-24 (F-14): the panel already supports `mode=\"range\"`; `DatePickerField` still accepts a single day. The question whether the field owns a dal–al trigger is recorded in docs/design-requests/2026-10-24-date-picker-field-range.md; the DatePicker node is unchanged.",
       "target": {
         "module": "src/components/inputs/date-picker.tsx",
         "export": "DatePicker",
@@ -1485,7 +1484,8 @@
           "KeyboardNavigation",
           "NarrowGrid"
         ]
-      }
+      },
+      "note": "Reviewed 2026-10-22 (M5 wave): one committed case, `8049-39452-single-date`, against `SingleDateConfirmation` at the 310 source width and a 320 viewport, verdict `verified-with-residues`. The panel draws the source's four-block rhythm (root gap 8): the two-row header — label row 44 (16/8 insets, 14/20 #555c70) and month row 42 (8/16 insets, 18/26 semibold, the 24px chevrons) closed by its full-bleed divider — then the calendar, a divider and the footer. The date grid keeps the source's 8px inline inset, the caption no longer doubles its own 8px padding, and the footer actions use the source's 16px inset. Verified: width 310, radius 16, #ffffff surface, root padding 0, the header rows, the full-bleed divider and the grid inset, asserted by the story. Residue `field.box.height`: the panel is 448 against the source 426 — the 44px day rows (the source rows are 36, and the source Dates frame adds its own 8px inner padding and 2px row gaps). The footer is the source's 46px row with 22px text actions and the month navigation keeps the source's two 24px chevrons 4px apart. The other five exports are implementation states with no source variant: they render the same panel inline and are not separate cases. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`. Comment 2026-10-24 (F-14): the panel already supports `mode=\"range\"`; `DatePickerField` still accepts a single day. The question whether the field owns a dal–al trigger is recorded in docs/design-requests/2026-10-24-date-picker-field-range.md; the DatePicker node is unchanged."
     },
     "808:6302": {
       "status": "implemented",
@@ -1514,54 +1514,54 @@
         "export": "Autocomplete",
         "story": "apps/storybook/src/Autocomplete.stories.tsx"
       },
-      "note": "Blocked 2026-10-22 (M5 wave): the source set declares three `Type` values and the implementation covers one. `Type=Default` is the single-value `Autocomplete` — 272x48, radius 8, the 1px #636b82 stroke (primary when active, #d13333 on error), the 12px insets, the resting 16/22 #555c70 label inside the control, the floated 12/18 notch label, the 24px `account_balance` leading art and the 24px trailing glyph — and is reviewable on its own. `Type=Multiselect` (824:8872) and `Type=Multiselect counter` (11073:2336) draw a row of `Input chip` pills inside the same field frame with the same leading art and a `keyboard_arrow_down` chevron, and the component is single-value (`value?: string`, no `multiple`). The library matching composition is `MultiSelectField` (the trigger renders a removable chip per selection), already declared as an `additionalTarget` of `SelectField` 602:9417, so the mapping is a decision rather than an implementation gap: the open decision is docs/design-requests/2026-10-22-autocomplete-multiselect.md (owner: Figma design owner), and the node stays `pending` until it is answered. The story declares no `storyExports` and carries no Design-panel mapping, so the `Type=Default` states need those two declared before their cases can land. Field border: grey-650 #636b82 1px when enabled, disabled or success; primary 2px when active/focused; #d13333 on error; never grey-450 (it is not a source field stroke). Elevation comes only from the Figma shadow scale: `shadow-16` for the results popup, never Tailwind `shadow-md/lg/xl`. Comments 2026-10-24 (F-01): the `Type=Default` field now renders the source 24px `account_balance` leading art (`leadingIcon`, overridable), the `close_small` clear control when filled and enabled (`clearLabel` default `Svuota campo`, focus returns to the input), and the announced strings `openLabel`/`closeLabel` (`apri lista`/`chiudi lista`), `listLabel` (`Lista {label}`), `selectedLabel` (`hai selezionato {value}`) and `loading`/`loadingLabel` (`Caricamento lista in corso`). The filled disabled variant keeps the arrow, as `824:8886` draws. Chip removal defaults to `Elimina {value}`. The node stays `pending` for the multiselect types owned by docs/design-requests/2026-10-22-autocomplete-multiselect.md."
+      "note": "Figma delta 2026-10-28: review new/changed node or dependency before marking implemented"
     },
     "8702:266": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "8704:37763": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "8704:37815": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "8717:781": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "image"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue", "LocalDefaults"]
+      },
+      "localAsset": {
+        "rendering": "image"
       }
     },
     "8818:39878": {
@@ -1585,38 +1585,38 @@
     },
     "8854:39311": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue", "LocalDefaults"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "8854:39312": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue", "LocalDefaults"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "8854:39315": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "908:2234": {
@@ -1643,14 +1643,14 @@
     },
     "9082:974": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "920:4502": {
@@ -1688,6 +1688,12 @@
     },
     "94:1982": {
       "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "94:1980",
@@ -1695,16 +1701,16 @@
           "unselected": "94:1980",
           "selected": "94:1981"
         }
-      },
+      }
+    },
+    "94:1997": {
+      "status": "implemented",
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue", "StateVariants"]
-      }
-    },
-    "94:1997": {
-      "status": "implemented",
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "94:1996",
@@ -1712,16 +1718,16 @@
           "unselected": "94:1996",
           "selected": "94:1995"
         }
-      },
+      }
+    },
+    "94:2021": {
+      "status": "implemented",
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue", "StateVariants"]
-      }
-    },
-    "94:2021": {
-      "status": "implemented",
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "94:2016",
@@ -1729,16 +1735,16 @@
           "unselected": "94:2016",
           "selected": "94:2020"
         }
-      },
+      }
+    },
+    "94:2036": {
+      "status": "implemented",
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue", "StateVariants"]
-      }
-    },
-    "94:2036": {
-      "status": "implemented",
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "94:2034",
@@ -1746,16 +1752,16 @@
           "unselected": "94:2034",
           "selected": "94:2035"
         }
-      },
+      }
+    },
+    "94:2057": {
+      "status": "implemented",
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue", "StateVariants"]
-      }
-    },
-    "94:2057": {
-      "status": "implemented",
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "94:2055",
@@ -1763,16 +1769,16 @@
           "unselected": "94:2055",
           "selected": "94:2056"
         }
-      },
+      }
+    },
+    "94:2072": {
+      "status": "implemented",
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue", "StateVariants"]
-      }
-    },
-    "94:2072": {
-      "status": "implemented",
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "94:2071",
@@ -1780,16 +1786,16 @@
           "unselected": "94:2071",
           "selected": "94:2070"
         }
-      },
+      }
+    },
+    "94:2093": {
+      "status": "implemented",
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue", "StateVariants"]
-      }
-    },
-    "94:2093": {
-      "status": "implemented",
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "94:2091",
@@ -1797,40 +1803,40 @@
           "unselected": "94:2091",
           "selected": "94:2092"
         }
+      }
+    },
+    "94:2106": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
       },
+      "localAsset": {
+        "rendering": "mask"
+      }
+    },
+    "95:1620": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
+      }
+    },
+    "95:1691": {
+      "status": "implemented",
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue", "StateVariants"]
-      }
-    },
-    "94:2106": {
-      "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
       },
-      "target": {
-        "module": "src/components/icons/PagoPAIcon.tsx",
-        "export": "PagoPAIcon",
-        "story": "apps/storybook/src/Icons.stories.tsx",
-        "storyExports": ["Catalogue"]
-      }
-    },
-    "95:1620": {
-      "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
-      "target": {
-        "module": "src/components/icons/PagoPAIcon.tsx",
-        "export": "PagoPAIcon",
-        "story": "apps/storybook/src/Icons.stories.tsx",
-        "storyExports": ["Catalogue"]
-      }
-    },
-    "95:1691": {
-      "status": "implemented",
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "95:1689",
@@ -1838,24 +1844,18 @@
           "closed": "95:1689",
           "open": "95:1690"
         }
-      },
-      "target": {
-        "module": "src/components/icons/PagoPAIcon.tsx",
-        "export": "PagoPAIcon",
-        "story": "apps/storybook/src/Icons.stories.tsx",
-        "storyExports": ["Catalogue", "StateVariants"]
       }
     },
     "95:680": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "9520:2537": {
@@ -1870,14 +1870,20 @@
     },
     "9520:55438": {
       "status": "mocked",
-      "note": "rendered by TemplateShell demo content; real implementation pending",
       "target": {
         "module": "apps/storybook/src/templates/TemplateComponents.tsx",
         "export": "TableListView"
-      }
+      },
+      "note": "rendered by TemplateShell demo content; real implementation pending"
     },
     "9584:66412": {
       "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants", "SourceFilled"]
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "9584:66408",
@@ -1885,16 +1891,16 @@
           "outlined": "9584:66411",
           "filled": "9584:66408"
         }
-      },
-      "target": {
-        "module": "src/components/icons/PagoPAIcon.tsx",
-        "export": "PagoPAIcon",
-        "story": "apps/storybook/src/Icons.stories.tsx",
-        "storyExports": ["Catalogue", "StateVariants", "SourceFilled"]
       }
     },
     "96:621": {
       "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "95:1676",
@@ -1902,28 +1908,28 @@
           "filter-alt": "95:1676",
           "tune": "95:1675"
         }
-      },
-      "target": {
-        "module": "src/components/icons/PagoPAIcon.tsx",
-        "export": "PagoPAIcon",
-        "story": "apps/storybook/src/Icons.stories.tsx",
-        "storyExports": ["Catalogue", "StateVariants"]
       }
     },
     "96:628": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "96:668": {
       "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "96:666",
@@ -1932,16 +1938,16 @@
           "checked": "96:667",
           "indeterminate": "96:665"
         }
-      },
-      "target": {
-        "module": "src/components/icons/PagoPAIcon.tsx",
-        "export": "PagoPAIcon",
-        "story": "apps/storybook/src/Icons.stories.tsx",
-        "storyExports": ["Catalogue", "StateVariants"]
       }
     },
     "96:671": {
       "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "DirectionalVariants"]
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "96:670",
@@ -1949,16 +1955,16 @@
           "unchecked": "96:670",
           "checked": "96:669"
         }
-      },
-      "target": {
-        "module": "src/components/icons/PagoPAIcon.tsx",
-        "export": "PagoPAIcon",
-        "story": "apps/storybook/src/Icons.stories.tsx",
-        "storyExports": ["Catalogue", "DirectionalVariants"]
       }
     },
     "96:686": {
       "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "96:685",
@@ -1966,16 +1972,16 @@
           "visible": "96:685",
           "hidden": "96:684"
         }
-      },
+      }
+    },
+    "96:708": {
+      "status": "implemented",
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue", "StateVariants"]
-      }
-    },
-    "96:708": {
-      "status": "implemented",
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "96:699",
@@ -1983,24 +1989,18 @@
           "pinned": "96:699",
           "unpinned": "96:715"
         }
-      },
-      "target": {
-        "module": "src/components/icons/PagoPAIcon.tsx",
-        "export": "PagoPAIcon",
-        "story": "apps/storybook/src/Icons.stories.tsx",
-        "storyExports": ["Catalogue", "StateVariants"]
       }
     },
     "96:722": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "9624:10625": {
@@ -2015,62 +2015,62 @@
     },
     "9640:793": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "9642:949": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "9643:953": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "9643:960": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "9643:961": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "9676:5408": {
@@ -2106,14 +2106,14 @@
       "note": "Reviewed 2026-10-23 (M5 second ring): `Correction/NotValid` is a single component, not a set, so one case and no device axis. `9676-5455-default` verifies the 160x30 source box, whose only child is the shared Tag instance at the identical box: the component renders that Tag directly, so the case maps `Tag` (161.3x32, the 1.3px from the 1px CSS border and the 32px min-h-8 against 30) and records the merged wrapper's zero insets and 10px single-child gap as residues. Insets 6/8, the 6px icon-label gap, radius 8 against the source 6, the 1px #e8ebf1 stroke and the white fill match; the `warning` 16 at 9/8 and the 12/18 Semibold #555c70 label at 7 against the source 8/7 and 6. Guide: apps/storybook/src/guides/corrections.md."
     },
     "9676:5633": {
-      "status": "implemented",
+      "status": "pending",
       "target": {
         "module": "src/components/data-display/microevento.tsx",
         "export": "MicroEvent",
         "story": "apps/storybook/src/MicroEvent.stories.tsx",
         "storyExports": ["Playground", "Corrected", "Source"]
       },
-      "note": "Reviewed 2026-10-23 (M5 second ring): `9676-5633-default` verifies the 725x91 row. The root gap is the source 0: the previous 20px `gap-5` was drift and is removed. Insets 8/0/8/28 match (the 28px is this node's recorded foundation exception, no 28px spacing step). The source reserves a 21px leading slot (`Frame 2087324584`, an empty `Description` text) that the component collapses without its optional `time`, so the FILL content column is 697 wide against 676 and is the case residue; with a time the slot is drawn. The shared Tag instance is 161.3x32 against 160x30 with the same reading as its own review; column gap 4 against 5; the copy is 14/20 Regular #0e0f13 and sits at 44 against the source 43. The source names both the empty leading slot and the copy `Description`, so the style subject resolves the empty one and the offsets stay recorded in the case note. Guide: apps/storybook/src/guides/microevento.md."
+      "note": "Figma delta 2026-10-28: review new/changed node or dependency before marking implemented"
     },
     "9698:58826": {
       "status": "excluded",
@@ -2121,30 +2121,36 @@
     },
     "9790:9527": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:1001": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:1016": {
       "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "DirectionalVariants"]
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "98:1014",
@@ -2152,28 +2158,28 @@
           "less": "98:1014",
           "more": "98:1015"
         }
-      },
-      "target": {
-        "module": "src/components/icons/PagoPAIcon.tsx",
-        "export": "PagoPAIcon",
-        "story": "apps/storybook/src/Icons.stories.tsx",
-        "storyExports": ["Catalogue", "DirectionalVariants"]
       }
     },
     "98:1065": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:1152": {
       "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants", "SourceFilled"]
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "98:1114",
@@ -2181,52 +2187,52 @@
           "outlined": "98:1114",
           "filled": "98:1115"
         }
-      },
-      "target": {
-        "module": "src/components/icons/PagoPAIcon.tsx",
-        "export": "PagoPAIcon",
-        "story": "apps/storybook/src/Icons.stories.tsx",
-        "storyExports": ["Catalogue", "StateVariants", "SourceFilled"]
       }
     },
     "98:1153": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:1154": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:1155": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:1158": {
       "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "98:1156",
@@ -2234,16 +2240,16 @@
           "big": "98:1156",
           "small": "98:1157"
         }
-      },
-      "target": {
-        "module": "src/components/icons/PagoPAIcon.tsx",
-        "export": "PagoPAIcon",
-        "story": "apps/storybook/src/Icons.stories.tsx",
-        "storyExports": ["Catalogue", "StateVariants"]
       }
     },
     "98:1162": {
       "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants", "SourceFilled"]
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "98:1159",
@@ -2252,52 +2258,52 @@
           "filled": "98:1160",
           "stroke": "98:1161"
         }
-      },
-      "target": {
-        "module": "src/components/icons/PagoPAIcon.tsx",
-        "export": "PagoPAIcon",
-        "story": "apps/storybook/src/Icons.stories.tsx",
-        "storyExports": ["Catalogue", "StateVariants", "SourceFilled"]
       }
     },
     "98:1252": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:1253": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:1254": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:1257": {
       "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "98:1256",
@@ -2305,16 +2311,16 @@
           "unselected": "98:1256",
           "selected": "98:1255"
         }
-      },
+      }
+    },
+    "98:1258": {
+      "status": "implemented",
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue", "StateVariants"]
-      }
-    },
-    "98:1258": {
-      "status": "implemented",
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "98:1250",
@@ -2322,52 +2328,52 @@
           "unselected": "98:1250",
           "selected": "98:1251"
         }
-      },
-      "target": {
-        "module": "src/components/icons/PagoPAIcon.tsx",
-        "export": "PagoPAIcon",
-        "story": "apps/storybook/src/Icons.stories.tsx",
-        "storyExports": ["Catalogue", "StateVariants"]
       }
     },
     "98:1271": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:1290": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:1297": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue", "LocalDefaults"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:1300": {
       "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants", "SourceFilled"]
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "98:1298",
@@ -2375,28 +2381,28 @@
           "outlined": "98:1298",
           "filled": "98:1299"
         }
-      },
-      "target": {
-        "module": "src/components/icons/PagoPAIcon.tsx",
-        "export": "PagoPAIcon",
-        "story": "apps/storybook/src/Icons.stories.tsx",
-        "storyExports": ["Catalogue", "StateVariants", "SourceFilled"]
       }
     },
     "98:1351": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:668": {
       "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "98:666",
@@ -2404,28 +2410,28 @@
           "big": "98:666",
           "small": "98:667"
         }
-      },
-      "target": {
-        "module": "src/components/icons/PagoPAIcon.tsx",
-        "export": "PagoPAIcon",
-        "story": "apps/storybook/src/Icons.stories.tsx",
-        "storyExports": ["Catalogue", "StateVariants"]
       }
     },
     "98:675": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:697": {
       "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "98:689",
@@ -2433,76 +2439,76 @@
           "big": "98:689",
           "small": "98:688"
         }
-      },
-      "target": {
-        "module": "src/components/icons/PagoPAIcon.tsx",
-        "export": "PagoPAIcon",
-        "story": "apps/storybook/src/Icons.stories.tsx",
-        "storyExports": ["Catalogue", "StateVariants"]
       }
     },
     "98:704": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:711": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:718": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:737": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:738": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:871": {
       "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "DirectionalVariants"]
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "98:868",
@@ -2512,28 +2518,28 @@
           "down": "98:870",
           "up": "98:869"
         }
-      },
-      "target": {
-        "module": "src/components/icons/PagoPAIcon.tsx",
-        "export": "PagoPAIcon",
-        "story": "apps/storybook/src/Icons.stories.tsx",
-        "storyExports": ["Catalogue", "DirectionalVariants"]
       }
     },
     "98:878": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:919": {
       "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "DirectionalVariants"]
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "98:915",
@@ -2543,597 +2549,596 @@
           "down": "98:917",
           "up": "98:918"
         }
-      },
-      "target": {
-        "module": "src/components/icons/PagoPAIcon.tsx",
-        "export": "PagoPAIcon",
-        "story": "apps/storybook/src/Icons.stories.tsx",
-        "storyExports": ["Catalogue", "DirectionalVariants"]
       }
     },
     "98:932": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:933": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:952": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:965": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:966": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:973": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:980": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:987": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "98:994": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "9833:26066": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "9833:27244": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "9866:4494": {
       "status": "implemented",
-      "note": "Reviewed 2026-10-23 (M5 second ring): one committed case (`9866-4494-success`) captures the `.TimelineDot/Success` cursor from `DotSuccess` at its own 24px width; the node is a plain COMPONENT, no variant and no device axis. Root 24x24, the 12x12 dot centred at 6/6 with the exact #427940 success fill; the source 6px #0e0f13 outside stroke at 35% opacity is the render's 6px outer box-shadow halo, which the probe does not read as a border, so `Dot.border.width` and `Dot.border.color` are ignored as a mapping artifact. The source root's 6px padding and the DOM `place-items-center` centring are the same inset, so `field.padding.left/right` are ignored. The source `Rectangle 777` (2x7) is the rail stub: the element draws one continuous absolute rail on a non-last item and the capture is a last item, so the cursor is mapped alone. Strict composition clean, responsive clean. Guide: apps/storybook/src/guides/timeline.md.",
       "target": {
         "module": "src/components/data-display/timeline.tsx",
         "export": "Timeline",
         "story": "apps/storybook/src/Timeline.stories.tsx",
         "storyExports": ["DotSuccess"]
-      }
+      },
+      "note": "Reviewed 2026-10-23 (M5 second ring): one committed case (`9866-4494-success`) captures the `.TimelineDot/Success` cursor from `DotSuccess` at its own 24px width; the node is a plain COMPONENT, no variant and no device axis. Root 24x24, the 12x12 dot centred at 6/6 with the exact #427940 success fill; the source 6px #0e0f13 outside stroke at 35% opacity is the render's 6px outer box-shadow halo, which the probe does not read as a border, so `Dot.border.width` and `Dot.border.color` are ignored as a mapping artifact. The source root's 6px padding and the DOM `place-items-center` centring are the same inset, so `field.padding.left/right` are ignored. The source `Rectangle 777` (2x7) is the rail stub: the element draws one continuous absolute rail on a non-last item and the capture is a last item, so the cursor is mapped alone. Strict composition clean, responsive clean. Guide: apps/storybook/src/guides/timeline.md."
     },
     "9866:4497": {
       "status": "implemented",
-      "note": "Reviewed 2026-10-23 (M5 second ring): one committed case (`9866-4497-error`) captures the `.TimelineDot/Error` cursor from `DotError` at its own 24px width; the node is a plain COMPONENT, no variant and no device axis. Root 24x24, the 12x12 dot centred at 6/6 with the exact #d13333 error fill; the source 6px #0e0f13 outside stroke at 35% opacity is the render's 6px outer box-shadow halo, which the probe does not read as a border, so `Dot.border.width` and `Dot.border.color` are ignored as a mapping artifact. The source root's 6px padding and the DOM `place-items-center` centring are the same inset, so `field.padding.left/right` are ignored. The source `Rectangle 777` (2x7) is the rail stub: the element draws one continuous absolute rail on a non-last item and the capture is a last item, so the cursor is mapped alone. Strict composition clean, responsive clean. Guide: apps/storybook/src/guides/timeline.md.",
       "target": {
         "module": "src/components/data-display/timeline.tsx",
         "export": "Timeline",
         "story": "apps/storybook/src/Timeline.stories.tsx",
         "storyExports": ["DotError"]
-      }
+      },
+      "note": "Reviewed 2026-10-23 (M5 second ring): one committed case (`9866-4497-error`) captures the `.TimelineDot/Error` cursor from `DotError` at its own 24px width; the node is a plain COMPONENT, no variant and no device axis. Root 24x24, the 12x12 dot centred at 6/6 with the exact #d13333 error fill; the source 6px #0e0f13 outside stroke at 35% opacity is the render's 6px outer box-shadow halo, which the probe does not read as a border, so `Dot.border.width` and `Dot.border.color` are ignored as a mapping artifact. The source root's 6px padding and the DOM `place-items-center` centring are the same inset, so `field.padding.left/right` are ignored. The source `Rectangle 777` (2x7) is the rail stub: the element draws one continuous absolute rail on a non-last item and the capture is a last item, so the cursor is mapped alone. Strict composition clean, responsive clean. Guide: apps/storybook/src/guides/timeline.md."
     },
     "9866:4500": {
       "status": "implemented",
-      "note": "Reviewed 2026-10-23 (M5 second ring): one committed case (`9866-4500-warning`) captures the `.TimelineDot/Warning` cursor from `DotWarning` at its own 24px width; the node is a plain COMPONENT, no variant and no device axis. Root 24x24, the 12x12 dot centred at 6/6 with the exact #a5822a warning fill; the source 6px #0e0f13 outside stroke at 35% opacity is the render's 6px outer box-shadow halo, which the probe does not read as a border, so `Dot.border.width` and `Dot.border.color` are ignored as a mapping artifact. The source root's 6px padding and the DOM `place-items-center` centring are the same inset, so `field.padding.left/right` are ignored. The source `Rectangle 777` (2x7) is the rail stub: the element draws one continuous absolute rail on a non-last item and the capture is a last item, so the cursor is mapped alone. Strict composition clean, responsive clean. Guide: apps/storybook/src/guides/timeline.md.",
       "target": {
         "module": "src/components/data-display/timeline.tsx",
         "export": "Timeline",
         "story": "apps/storybook/src/Timeline.stories.tsx",
         "storyExports": ["DotWarning"]
-      }
+      },
+      "note": "Reviewed 2026-10-23 (M5 second ring): one committed case (`9866-4500-warning`) captures the `.TimelineDot/Warning` cursor from `DotWarning` at its own 24px width; the node is a plain COMPONENT, no variant and no device axis. Root 24x24, the 12x12 dot centred at 6/6 with the exact #a5822a warning fill; the source 6px #0e0f13 outside stroke at 35% opacity is the render's 6px outer box-shadow halo, which the probe does not read as a border, so `Dot.border.width` and `Dot.border.color` are ignored as a mapping artifact. The source root's 6px padding and the DOM `place-items-center` centring are the same inset, so `field.padding.left/right` are ignored. The source `Rectangle 777` (2x7) is the rail stub: the element draws one continuous absolute rail on a non-last item and the capture is a last item, so the cursor is mapped alone. Strict composition clean, responsive clean. Guide: apps/storybook/src/guides/timeline.md."
     },
     "9866:4503": {
       "status": "implemented",
-      "note": "Reviewed 2026-10-23 (M5 second ring): one committed case (`9866-4503-info`) captures the `.TimelineDot/Info` cursor from `DotInfo` at its own 24px width; the node is a plain COMPONENT, no variant and no device axis. Root 24x24, the 12x12 dot centred at 6/6 with the exact #418daf info fill; the source 6px #0e0f13 outside stroke at 35% opacity is the render's 6px outer box-shadow halo, which the probe does not read as a border, so `Dot.border.width` and `Dot.border.color` are ignored as a mapping artifact. The source root's 6px padding and the DOM `place-items-center` centring are the same inset, so `field.padding.left/right` are ignored. The source `Rectangle 777` (2x7) is the rail stub: the element draws one continuous absolute rail on a non-last item and the capture is a last item, so the cursor is mapped alone. Strict composition clean, responsive clean. Guide: apps/storybook/src/guides/timeline.md.",
       "target": {
         "module": "src/components/data-display/timeline.tsx",
         "export": "Timeline",
         "story": "apps/storybook/src/Timeline.stories.tsx",
         "storyExports": ["DotInfo"]
-      }
+      },
+      "note": "Reviewed 2026-10-23 (M5 second ring): one committed case (`9866-4503-info`) captures the `.TimelineDot/Info` cursor from `DotInfo` at its own 24px width; the node is a plain COMPONENT, no variant and no device axis. Root 24x24, the 12x12 dot centred at 6/6 with the exact #418daf info fill; the source 6px #0e0f13 outside stroke at 35% opacity is the render's 6px outer box-shadow halo, which the probe does not read as a border, so `Dot.border.width` and `Dot.border.color` are ignored as a mapping artifact. The source root's 6px padding and the DOM `place-items-center` centring are the same inset, so `field.padding.left/right` are ignored. The source `Rectangle 777` (2x7) is the rail stub: the element draws one continuous absolute rail on a non-last item and the capture is a last item, so the cursor is mapped alone. Strict composition clean, responsive clean. Guide: apps/storybook/src/guides/timeline.md."
     },
     "9876:42679": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue", "LocalDefaults"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2068": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2075": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2082": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2089": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2096": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2110": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2117": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2124": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2131": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2138": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2145": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2152": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2159": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2166": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2173": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2180": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2187": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2194": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2201": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2208": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2215": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2222": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2229": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2248": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2249": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2250": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2257": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2264": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2271": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2278": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2285": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2292": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2299": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2331": {
       "status": "implemented",
-      "note": "The source Filled labels are inverted: 99:2329 (On, source default) is outlined; 99:2330 (Off) is filled. API aliases follow the actual reviewed geometry, not the inverted labels. Monochrome artwork intentionally inherits currentColor.",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants", "SourceFilled"]
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "99:2329",
@@ -3142,111 +3147,112 @@
           "outlined": "99:2329"
         }
       },
-      "target": {
-        "module": "src/components/icons/PagoPAIcon.tsx",
-        "export": "PagoPAIcon",
-        "story": "apps/storybook/src/Icons.stories.tsx",
-        "storyExports": ["Catalogue", "StateVariants", "SourceFilled"]
-      }
+      "note": "The source Filled labels are inverted: 99:2329 (On, source default) is outlined; 99:2330 (Off) is filled. API aliases follow the actual reviewed geometry, not the inverted labels. Monochrome artwork intentionally inherits currentColor."
     },
     "99:2338": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2345": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue", "LocalDefaults"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2381": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2388": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2395": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2408": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2415": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:2422": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:616": {
       "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "StateVariants"]
+      },
       "localAsset": {
         "rendering": "mask",
         "defaultVariantNodeId": "99:614",
@@ -3254,88 +3260,88 @@
           "active": "99:614",
           "inactive": "99:615"
         }
-      },
-      "target": {
-        "module": "src/components/icons/PagoPAIcon.tsx",
-        "export": "PagoPAIcon",
-        "story": "apps/storybook/src/Icons.stories.tsx",
-        "storyExports": ["Catalogue", "StateVariants"]
       }
     },
     "99:623": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:630": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:637": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:644": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:666": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:673": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "99:781": {
       "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue", "LocalDefaults", "LocalVariants"]
+      },
       "localAsset": {
         "rendering": "image",
         "defaultVariantNodeId": "99:777",
@@ -3345,24 +3351,18 @@
           "threads": "99:779",
           "youtube": "99:780"
         }
-      },
-      "target": {
-        "module": "src/components/icons/PagoPAIcon.tsx",
-        "export": "PagoPAIcon",
-        "story": "apps/storybook/src/Icons.stories.tsx",
-        "storyExports": ["Catalogue", "LocalDefaults", "LocalVariants"]
       }
     },
     "9924:27038": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "9924:27054": {
@@ -3387,53 +3387,61 @@
     },
     "9977:21200": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "9977:23980": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       }
     },
     "14164:11363": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
       },
       "note": "New Material Symbols glyph (license medallion) from the 2026-10-14 export; reviewed against the Figma source before marking implemented."
     },
     "14241:48931": {
       "status": "implemented",
-      "localAsset": {
-        "rendering": "mask"
-      },
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",
         "export": "PagoPAIcon",
         "story": "apps/storybook/src/Icons.stories.tsx",
         "storyExports": ["Catalogue"]
       },
+      "localAsset": {
+        "rendering": "mask"
+      },
       "note": "New in-house PEC envelope glyph from the 2026-10-14 export; reviewed against the Figma source before marking implemented. Provenance override: custom."
+    },
+    "13211:26152": {
+      "status": "pending",
+      "note": "Figma delta 2026-10-28: review new/changed node or dependency before marking implemented"
+    },
+    "14709:279": {
+      "status": "pending",
+      "note": "Figma delta 2026-10-28: review new/changed node or dependency before marking implemented"
     }
   }
 }
