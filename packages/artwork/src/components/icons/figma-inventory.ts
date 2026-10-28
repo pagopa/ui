@@ -88,6 +88,7 @@ export const figmaIconNames = [
   "login",
   "logout",
   "mail",
+  "mail_error",
   "mail_off",
   "mail_pec",
   "mail_shield",
