@@ -5,6 +5,8 @@ import { CheckoutModule } from "@/components/composites/checkout-module"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
+import { SourceFrame } from "./support/source-frame"
+
 const edit = fn()
 const legacyContinue = fn()
 const callerAction = fn()
@@ -51,7 +53,15 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+// The source draws this row in a 560 page column and a 272 drawer panel: the
+// story draws that frame, so a reader sees the composition the capture
+// measures. `maxWidth: 100%` follows the narrower case of the same node down.
 export const Playground: Story = {
+  render: (args) => (
+    <SourceFrame nodeId="382:7813" device="desktop">
+      <CheckoutModule {...args} />
+    </SourceFrame>
+  ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.getByRole("heading", { name: "Payment data" })).toBeVisible()

@@ -213,10 +213,11 @@ render: (args) => (
 
 `parity capture` reads `[data-source-frame]` before forcing anything and fails
 `story-collapsed` when a container-scoped story draws no frame or draws one that
-is none of its node's case widths. The legacy stories that owe one are listed in
-`src/catalog/figma/frame-baseline.json`: the list only shrinks — `parity verify`
-fails when an entry stays after the story stops owing a frame, and warns while a
-waived story still renders without one.
+is none of its node's case widths. The stories that still owed one were listed
+in `src/catalog/figma/frame-baseline.json`, and the list is empty: the corpus
+paid that debt one composition at a time. A story that draws no frame today is a
+capture failure to fix in the story, not an entry to add — `parity verify` fails
+when an entry outlives the debt it records, so the file cannot quietly refill.
 
 A surface that paints its own backdrop — a dialog template, a full-page
 template — is a frame too: the panel inside it answers the frame width (the
