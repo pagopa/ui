@@ -1,0 +1,255 @@
+{
+  "fileKey": "pvhsJpPGQbEwNLiyP7BOIw",
+  "readAt": "2026-10-28",
+  "note": "Read from the Figma page tree (MCP get_metadata on the page node), not from the library export: the export lists published nodes only, so the rows marked inLibrary: false exist nowhere else. One row per component and component set drawn on the page with the decision the library gives it, and one row per composition the page draws with the cases that measure it. A drawing that was never published is out of the implementation scope, so its decision is `unpublished` and no work follows; publishing it is what opens the decision, and the inLibrary mirror in `figma:check` is what makes that fail loudly. See .agents/skills/figma-to-code/references/catalogue.md.",
+  "pages": [
+    {
+      "pageId": "1326:5181",
+      "pageName": "• Timeline",
+      "identities": [
+        {
+          "nodeId": "1326:5597",
+          "name": ".Connector",
+          "kind": "COMPONENT",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "A 2x35 rail segment drawn between two rows. Not published; the row draws its own rail as a pseudo-element, the same way the three .Position/* share their rendering."
+        },
+        {
+          "nodeId": "1326:6107",
+          "name": ".TimelineDot",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "Fifteen cursors: Variant Filled|Outlined x Color Neutral|Primary|Secondary|Error|Warning|Info|Success x Size Big|Small (Small only for Filled and Neutral, 24x24 each). Not published — the four .TimelineDot/* that ship are standalone components, not variants of this set."
+        },
+        {
+          "nodeId": "9676:5408",
+          "name": ".Position/Top",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "excluded",
+          "reason": "The share and the connector belong to the row, so the position is derived from the row's place in the list and the component draws no separate element."
+        },
+        {
+          "nodeId": "9676:5410",
+          "name": ".Position/Middle",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "excluded",
+          "reason": "Same as .Position/Top: the rail above and below a middle row is the row's own pseudo-element."
+        },
+        {
+          "nodeId": "9676:5420",
+          "name": ".Position/Bottom",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "excluded",
+          "reason": "Same as .Position/Top: the last row draws a single rail."
+        },
+        {
+          "nodeId": "12766:9880",
+          "name": ".Position/OnlyElement",
+          "kind": "COMPONENT",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The position of a list holding one element, where no rail is drawn at all. Not published; the row derives it from the child count."
+        },
+        {
+          "nodeId": "9676:5429",
+          "name": ".Touchpoint",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "Four accordion variants, Accordion Closed|Open x Device Desktop|Mobile, all drawn 786 wide (closed 30 desktop and 55 mobile, open 1015 desktop and 1040 mobile). Not published."
+        },
+        {
+          "nodeId": "9676:5453",
+          "name": "Correction/Valid",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped",
+          "reason": "CorrectionTag in the registry, rendered by the timeline stories."
+        },
+        {
+          "nodeId": "9676:5455",
+          "name": "Correction/NotValid",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped",
+          "reason": "CorrectionTag in the registry, rendered by the timeline stories."
+        },
+        {
+          "nodeId": "9676:5633",
+          "name": "Microevento",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped",
+          "reason": "MicroEvent in the registry, rendered by the timeline stories."
+        },
+        {
+          "nodeId": "9866:4489",
+          "name": ".TimelineDot/Default",
+          "kind": "COMPONENT",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The neutral cursor as a standalone component, drawn beside the four coloured ones. Not published: the neutral state is a prop of Timeline.dot, not a node of its own."
+        },
+        {
+          "nodeId": "9866:4494",
+          "name": ".TimelineDot/Success",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped",
+          "reason": "Timeline in the registry, rendered by the DotSuccess story."
+        },
+        {
+          "nodeId": "9866:4497",
+          "name": ".TimelineDot/Error",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped",
+          "reason": "Timeline in the registry, rendered by the DotError story."
+        },
+        {
+          "nodeId": "9866:4500",
+          "name": ".TimelineDot/Warning",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped",
+          "reason": "Timeline in the registry, rendered by the DotWarning story."
+        },
+        {
+          "nodeId": "9866:4503",
+          "name": ".TimelineDot/Info",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped",
+          "reason": "Timeline in the registry, rendered by the DotInfo story."
+        },
+        {
+          "nodeId": "12808:14459",
+          "name": ".TimelineItem/Success",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The success row, Device=Desktop 826x108 and Device=Mobile 826x92. Not published; the published row is TimelineElement."
+        },
+        {
+          "nodeId": "12808:14469",
+          "name": ".TimelineItem/Informative",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The informative row, Device=Desktop 826x108 and Device=Mobile 826x92. Not published."
+        },
+        {
+          "nodeId": "12808:14500",
+          "name": ".TimelineItem/Error",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The error row, Device=Desktop 826x108 and Device=Mobile 826x92. Not published."
+        },
+        {
+          "nodeId": "12808:14510",
+          "name": ".TimelineItem/Warning",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The warning row, Device=Desktop 826x108 and Device=Mobile 826x92. Not published."
+        },
+        {
+          "nodeId": "12808:14520",
+          "name": ".TimelineItem/Default",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The neutral row, Device=Desktop 826x108 and Device=Mobile 826x92. Not published."
+        },
+        {
+          "nodeId": "12812:14728",
+          "name": ".TimelineItem/Multidestinatario",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The recipient list, Device=Desktop 826x418 and Device=Mobile 826x500. Not published."
+        },
+        {
+          "nodeId": "12812:14843",
+          "name": ".TimelineItem/Touchpoints",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "The touchpoint rows, Device=Desktop 826x192 and Device=Mobile 826x226. Not published."
+        },
+        {
+          "nodeId": "12812:16248",
+          "name": "TimelineElement",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "shipped",
+          "reason": "Timeline in the registry, drawn by the SourceCase story on both devices."
+        },
+        {
+          "nodeId": "1333:16408",
+          "name": "Timeline drawer",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "pending",
+          "reason": "Desktop 417x2294, Mobile 320x2136. The registry entry is pending behind docs/design-requests/2026-10-21-timeline-drawer-width-and-mobile.md: the mobile variant is drawn 320 wide while the open question asks whether it is a bottom sheet, and no story builds it."
+        },
+        {
+          "nodeId": "1334:17210",
+          "name": ".Time stamps",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "One variant, Direction=Vertical, 39x72: the timestamps as their own column. Not published; the element prints the timestamp inside the row."
+        },
+        {
+          "nodeId": "1336:16029",
+          "name": ".Timeline single item",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "Seven variants at 417 wide: On top event, Between event, Bottom event, Icon between event, Icon on top event, Show more event (417x72), Minor event (417x90). Not published."
+        }
+      ],
+      "compositions": [
+        {
+          "nodeId": "10981:11318",
+          "name": "Frame 2087324448",
+          "device": "desktop",
+          "drawn": 4,
+          "mirrors": [],
+          "reason": "The desktop page 10981:11294 draws four TimelineElement at 852 in an 852 column, 136, 136, 116 and 116 high. No case measures the stack: the desktop case measures the set's own variant box (848) and no story frames four rows in a column, so the 136-to-116 difference between a full row and the last two is measured nowhere."
+        },
+        {
+          "nodeId": "12812:16805",
+          "name": "Frame 2087324448",
+          "device": "mobile",
+          "drawn": 4,
+          "mirrors": [],
+          "reason": "The mobile page 10981:11795 draws four TimelineElement at 304 inside a 320 page, 8px inset, 248, 248, 178 and 146 high. The mobile case measures 417 — the drawer's desktop panel — and the SourceCase story renders device=\"desktop\", so no case measures the 304 the mobile page draws."
+        },
+        {
+          "nodeId": "1337:16263",
+          "name": "XS Mobile",
+          "device": "mobile",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "The drawer at the XS breakpoint: a 320 backdrop holding Timeline drawer at 320x1914. The drawer is pending and no story builds it; this frame is the only place the 320 width is drawn, and the registry note asks about a bottom sheet instead."
+        },
+        {
+          "nodeId": "1337:16266",
+          "name": "SM Tablet",
+          "device": "tablet",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "The drawer from SM up: a 600 backdrop holding Timeline drawer at 417, the width the MD, LG and XL frames draw too. That 417 is what the case labelled mobile measures, which is why it is not a mobile measurement."
+        }
+      ]
+    }
+  ]
+}

@@ -73,6 +73,14 @@ function fixture(run, overrides = {}) {
     "src/catalog/figma/evidence-exceptions.json": '{"storyEvidence":{}}',
     "src/catalog/figma/api-exceptions.json": '{"modulePatterns":{},"exports":{}}',
     "src/catalog/figma/device-policy.json": JSON.stringify(devicePolicy),
+    // The census is a committed catalogue file like the policy: an empty one is
+    // the state of a repository that has not read a page yet.
+    "src/catalog/figma/page-surface.json": JSON.stringify({
+      fileKey: "fixture",
+      readAt: new Date().toISOString().slice(0, 10),
+      note: "Fixture census: no page is censused here.",
+      pages: [],
+    }),
     "src/components/icons/figma-inventory.ts":
       "export const figmaIconNames = [] as const\nexport const figmaPictogramNames = [] as const",
     "src/stories/Fixture.stories.tsx": "export default { title: 'Fixture' }",

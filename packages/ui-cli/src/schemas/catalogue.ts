@@ -227,3 +227,74 @@ export const ApiExceptionsSchema = z.strictObject({
 
 export type EvidenceExceptions = z.infer<typeof EvidenceExceptionsSchema>
 export type ApiExceptions = z.infer<typeof ApiExceptionsSchema>
+
+// --------------------------------------------------------------- page surface
+
+// The library export lists the nodes Figma *published*, and the library — not
+// the page — is the implementation scope: a helper a designer drew but never
+// published is deliberately not a component of this design system. The hole the
+// page surface closes is a different one: the export is the only thing the
+// procedure ever read, so nothing ever looked at the page as a whole. Three
+// things stayed invisible that way:
+//
+//   * an identity that was *published* but not drawn on the page the census
+//     covers — the inventory sees it, and no page read ever asked for it;
+//   * an identity drawn on the page but not published, whose only trace is this
+//     record: it is out of the implementation scope, and it enters scope the
+//     day it is published, which is why publishing it must break a check;
+//   * the compositions a page draws — the frame that stacks four elements at
+//     852, the mobile page that draws them at 304, the drawer panel at 320 or
+//     417 — which no node-level accounting can see and no story necessarily
+//     reproduces.
+//
+// So the record holds, per page read from the page tree (the Figma MCP
+// `get_metadata` call on the page node, which sees unpublished frames and
+// symbols), every identity drawn on it with the decision the library gives it,
+// and every composition with the parity cases that measure it.
+//
+// The census mirrors the inventory both ways, so the two cannot drift apart
+// silently, and `inLibrary` is the hinge: an identity marked in the library must
+// be an inventory node, and one marked outside it must not be.
+export const SurfaceDecisionSchema = z.enum(["shipped", "excluded", "pending", "unpublished"], {
+  error: "expected shipped, excluded, pending or unpublished",
+})
+export type SurfaceDecision = z.infer<typeof SurfaceDecisionSchema>
+
+export const PageIdentitySchema = z.strictObject({
+  nodeId: NodeIdSchema,
+  name: NonEmptyStringSchema,
+  kind: z.enum(["COMPONENT", "COMPONENT_SET"]),
+  inLibrary: z.boolean(),
+  decision: SurfaceDecisionSchema,
+  reason: NonEmptyStringSchema.optional(),
+})
+
+export const PageCompositionSchema = z.strictObject({
+  nodeId: NodeIdSchema,
+  name: NonEmptyStringSchema,
+  device: NonEmptyStringSchema,
+  // How many times the mapped implementation is drawn in the frame: a stack of
+  // four elements is one composition, not four.
+  drawn: z.number().int().positive(),
+  mirrors: z.array(NonEmptyStringSchema),
+  reason: NonEmptyStringSchema.optional(),
+})
+
+export const PageSurfacePageSchema = z.strictObject({
+  pageId: NodeIdSchema,
+  pageName: NonEmptyStringSchema,
+  identities: z.array(PageIdentitySchema),
+  compositions: z.array(PageCompositionSchema),
+})
+
+export const PageSurfaceSchema = z.strictObject({
+  fileKey: NonEmptyStringSchema,
+  readAt: NonEmptyStringSchema,
+  note: NonEmptyStringSchema,
+  pages: z.array(PageSurfacePageSchema),
+})
+
+export type PageIdentity = z.infer<typeof PageIdentitySchema>
+export type PageComposition = z.infer<typeof PageCompositionSchema>
+export type PageSurfacePage = z.infer<typeof PageSurfacePageSchema>
+export type PageSurface = z.infer<typeof PageSurfaceSchema>

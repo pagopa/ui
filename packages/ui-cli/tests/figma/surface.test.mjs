@@ -1,0 +1,228 @@
+import assert from "node:assert/strict"
+import { test } from "node:test"
+
+import { checkPageSurface, surfacePending, surfaceUnmirrored } from "../../src/figma/surface.ts"
+
+const FILE_KEY = "pvhsJpPGQbEwNLiyP7BOIw"
+const PAGE = "1326:5181"
+
+function inventory(
+  nodeId,
+  { name = "TimelineElement", type = "COMPONENT_SET", pageId = PAGE } = {},
+) {
+  return { nodeId, name, type, pageId }
+}
+
+function surface({ identities = [], compositions = [], pageId = PAGE } = {}) {
+  return {
+    fileKey: FILE_KEY,
+    readAt: "2026-10-28",
+    note: "fixture",
+    pages: [{ pageId, pageName: "• Timeline", identities, compositions }],
+  }
+}
+
+function identity(nodeId, decision, extra = {}) {
+  return {
+    nodeId,
+    name: "TimelineElement",
+    kind: "COMPONENT_SET",
+    inLibrary: true,
+    decision,
+    ...extra,
+  }
+}
+
+function composition(nodeId, extra = {}) {
+  return { nodeId, name: "Frame", device: "desktop", drawn: 1, mirrors: [], ...extra }
+}
+
+function run(
+  data,
+  { nodes = [], entries = {}, cases = [], devices = ["mobile", "tablet", "desktop"] } = {},
+) {
+  return checkPageSurface(data, {
+    nodes,
+    registry: { entries },
+    cases,
+    fileKey: FILE_KEY,
+    devices,
+  })
+}
+
+test("a census that mirrors the inventory passes", () => {
+  const result = run(
+    surface({
+      identities: [
+        identity("12812:16248", "shipped"),
+        identity("1333:16408", "pending", { reason: "a design request is open" }),
+      ],
+      compositions: [composition("10981:11318", { device: "desktop", mirrors: ["case-1"] })],
+    }),
+    {
+      nodes: [inventory("12812:16248"), inventory("1333:16408", { name: "TimelineElement" })],
+      entries: { "12812:16248": { status: "implemented" }, "1333:16408": { status: "pending" } },
+      cases: [{ id: "case-1", nodeId: "12812:16248", device: "desktop" }],
+    },
+  )
+  assert.deepEqual(result.errors, [])
+  assert.equal(result.stats.identities, 2)
+  assert.equal(result.stats.inLibrary, 2)
+  assert.equal(result.stats.pending, 1)
+  assert.equal(result.stats.mirrored, 1)
+})
+
+test("an unpublished drawing is out of scope and needs no reason", () => {
+  const result = run(
+    surface({ identities: [identity("12808:14459", "unpublished", { inLibrary: false })] }),
+  )
+  assert.deepEqual(result.errors, [])
+  assert.equal(result.stats.unpublished, 1)
+  assert.equal(result.stats.pending, 0)
+})
+
+test("an unpublished drawing that the library now publishes fails the mirror", () => {
+  const result = run(
+    surface({ identities: [identity("12808:14459", "unpublished", { inLibrary: false })] }),
+    {
+      nodes: [inventory("12808:14459")],
+    },
+  )
+  assert.equal(result.errors.length, 1)
+  assert.match(result.errors[0], /marked as unpublished but the library export publishes it/)
+})
+
+test("a published identity the decision calls unpublished fails", () => {
+  const result = run(surface({ identities: [identity("12812:16248", "unpublished")] }), {
+    nodes: [inventory("12812:16248")],
+  })
+  assert.equal(result.errors.length, 1)
+  assert.match(result.errors[0], /is published and cannot be called unpublished/)
+})
+
+test("shipped needs the library and an implemented registry entry", () => {
+  const unpublished = run(
+    surface({ identities: [identity("1:1", "shipped", { inLibrary: false })] }),
+  )
+  assert.match(unpublished.errors[0], /is shipped but not in the library/)
+  const pending = run(surface({ identities: [identity("1:1", "shipped")] }), {
+    nodes: [inventory("1:1")],
+    entries: { "1:1": { status: "pending" } },
+  })
+  assert.match(pending.errors[0], /is shipped but the registry says "pending"/)
+})
+
+test("a decision other than shipped carries a reason and agrees with the registry", () => {
+  const noReason = run(surface({ identities: [identity("1:1", "excluded")] }), {
+    nodes: [inventory("1:1")],
+    entries: { "1:1": { status: "excluded" } },
+  })
+  assert.match(noReason.errors[0], /is excluded and requires a reason/)
+  const disagreement = run(
+    surface({ identities: [identity("1:1", "excluded", { reason: "why" })] }),
+    {
+      nodes: [inventory("1:1")],
+      entries: { "1:1": { status: "implemented" } },
+    },
+  )
+  assert.match(disagreement.errors[0], /is excluded but the registry says "implemented"/)
+})
+
+test("the in-library mirror runs both ways", () => {
+  const notPublished = run(surface({ identities: [identity("1:1", "shipped")] }), {
+    entries: { "1:1": { status: "implemented" } },
+  })
+  assert.match(
+    notPublished.errors[0],
+    /is marked in the library but the inventory does not publish it/,
+  )
+  const unrecorded = run(surface({ identities: [] }), { nodes: [inventory("2:2")] })
+  assert.match(
+    unrecorded.errors[0],
+    /inventory node 2:2 TimelineElement is missing from the census/,
+  )
+})
+
+test("the census names the file it was read from", () => {
+  const elsewhere = surface()
+  elsewhere.fileKey = "someOtherFileKey"
+  const result = run(elsewhere)
+  assert.match(result.errors[0], /is not the inventory file/)
+})
+
+test("a composition that measures nothing needs a written reason", () => {
+  const unexcused = run(surface({ compositions: [composition("10981:11318", { drawn: 4 })] }))
+  assert.match(unexcused.errors[0], /measures nothing and requires a reason/)
+  const excused = run(
+    surface({ compositions: [composition("10981:11318", { reason: "no case" })] }),
+  )
+  assert.deepEqual(excused.errors, [])
+  assert.equal(surfaceUnmirrored(surface({ compositions: [composition("10981:11318")] })).length, 1)
+})
+
+test("a composition's cases must exist, measure an identity on the page and share its device", () => {
+  const identities = [identity("12812:16248", "shipped")]
+  const entries = { "12812:16248": { status: "implemented" } }
+  const nodes = [inventory("12812:16248")]
+
+  const unknown = run(
+    surface({ identities, compositions: [composition("f:1", { mirrors: ["nope"] })] }),
+    {
+      nodes,
+      entries,
+    },
+  )
+  assert.match(unknown.errors[0], /case nope is not in the case corpus/)
+
+  const offPage = run(
+    surface({ identities, compositions: [composition("f:1", { mirrors: ["c"] })] }),
+    {
+      nodes,
+      entries,
+      cases: [{ id: "c", nodeId: "999:999", device: "desktop" }],
+    },
+  )
+  assert.match(offPage.errors[0], /measures 999:999, which is not an identity on page/)
+
+  const wrongDevice = run(
+    surface({
+      identities,
+      compositions: [composition("f:1", { device: "mobile", mirrors: ["c"] })],
+    }),
+    { nodes, entries, cases: [{ id: "c", nodeId: "12812:16248", device: "desktop" }] },
+  )
+  assert.match(wrongDevice.errors[0], /is a desktop case but the composition is drawn at mobile/)
+})
+
+test("a composition speaks the device vocabulary of the case corpus", () => {
+  const result = run(
+    surface({ compositions: [composition("f:1", { device: "phablet", reason: "x" })] }),
+  )
+  assert.match(result.errors[0], /device "phablet" is not declared/)
+})
+
+test("duplicates are refused on pages, identities and compositions", () => {
+  const data = surface({
+    identities: [
+      identity("1:1", "unpublished", { inLibrary: false }),
+      identity("1:1", "unpublished", { inLibrary: false }),
+    ],
+    compositions: [composition("f:1", { reason: "x" }), composition("f:1", { reason: "x" })],
+  })
+  const result = run(data)
+  assert.equal(result.errors.filter((error) => /is listed twice/.test(error)).length, 2)
+})
+
+test("waiting work is the published node, never the unpublished drawing", () => {
+  const data = surface({
+    identities: [
+      identity("b:2", "pending", { reason: "open design request" }),
+      identity("a:1", "unpublished", { inLibrary: false, reason: "not published" }),
+      identity("c:3", "shipped"),
+    ],
+  })
+  assert.deepEqual(
+    surfacePending(data).map((entry) => entry.nodeId),
+    ["b:2"],
+  )
+})

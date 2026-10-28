@@ -13,11 +13,16 @@ files the config names: read them, never copy them into this skill.
 
 `pnpm nx run pagopa-ui-cli:figma:status` prints the token state, the pinned
 snapshot, the drift against the committed inventory, the rules ledger and comment
-counts, the pending queue with its design requests and the next command.
-`--live` adds the file version and its last-modified date: that is what tells
-whether Figma changed at all. Run it before reading anything else; nothing below
-repeats what it reports. Before touching one node, read
+counts, the pending queue with its design requests, the page surface line and the
+next command. `--live` adds the file version and its last-modified date: that is
+what tells whether Figma changed at all. Run it before reading anything else;
+nothing below repeats what it reports. Before touching one node, read
 `figma:brief --node <nodeId>`.
+
+A session that touches a page also reads that page's tree — `get_metadata` on the
+page node — and updates its census, because the export lists published nodes and
+a page draws more than the export holds
+([catalogue.md](references/catalogue.md#the-page-surface)).
 
 ## Config first
 
@@ -65,6 +70,16 @@ its flags, space-separated:
   read through the MCP. The gate is [init.md](references/init.md) §2.
 - **`nodeId` is identity.** Names and pages change; the registry is keyed by
   `nodeId`, bulk rules by `pageId`.
+- **The library is the scope.** A drawing the file never published is not
+  implemented, by rule: it is not a component of this design system and no work
+  is owed. The page census records it as `unpublished` so that publication —
+  which grows the export — fails the mirror and forces the decision, instead of
+  changing the scope silently ([catalogue.md](references/catalogue.md#the-page-surface)).
+- **A composition is source too.** A page draws an arrangement, not only
+  identities: the frame stacking four elements, the mobile page at 304, the
+  drawer panel at 417. Every such composition is measured by a parity case at the
+  device it is drawn at, or excused in writing in the census. A story that draws
+  a row at the set's own variant width has not measured the page.
 - **Figma URLs come from `figma.fileModule`** (`FIGMA_FILE_KEY`,
   `figmaNodeUrl`, `figmaEmbedUrl`); never hardcode the file URL. A story's
   `design` parameter uses `figmaEmbedUrl`: the addon only rewrites a URL with a
