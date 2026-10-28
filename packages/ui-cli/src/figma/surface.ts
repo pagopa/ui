@@ -27,8 +27,9 @@
 //     with `inLibrary` saying whether the published export carries it, and the
 //     decision the library gives it: `unpublished` (not in the export, so not
 //     implemented, by rule), `shipped` (the registry's implemented mapping),
-//     `excluded` (published and deliberately not implemented) or `pending`
-//     (published, mapped, and waiting).
+//     `mocked` (published, mapped, and rendered by a facade), `excluded`
+//     (published and deliberately not implemented) or `pending` (published,
+//     mapped, and waiting).
 //   * every composition the page draws — the frame that composes the mapped
 //     implementation, with the device it is drawn at and the parity cases that
 //     measure it. An empty `mirrors` list with a reason is a written statement
@@ -43,9 +44,11 @@
 //     what makes publication the trigger — the day an unpublished identity is
 //     published, the export grows, the mirror fails and a decision is owed;
 //   * the decision agrees with the registry: `shipped` is `implemented`,
-//     `excluded` is `excluded`, `pending` is `pending`, and `unpublished` is
-//     not in the library at all. Every decision other than `unpublished` and
-//     `shipped` carries a reason;
+//     `mocked` is `mocked`, `excluded` is `excluded`, `pending` is `pending`,
+//     and `unpublished` is not in the library at all. A registry bulk rule is
+//     the decision for every node of its page that carries no entry of its own,
+//     the same fallback the rest of the inventory accounting uses. Every
+//     decision other than `unpublished` and `shipped` carries a reason;
 //   * a composition's cases exist in the case corpus, measure an identity on
 //     that page, and are measured on the device the composition is drawn at.
 //
@@ -146,6 +149,10 @@ export function checkPageSurface(
 
   const byNode = new Map<string, InventoryNode>(nodes.map((node) => [node.nodeId, node]))
   const entries = registry.entries ?? {}
+  const bulkByPage = new Map<string, string>()
+  for (const rule of registry.bulkRules ?? []) {
+    if (rule.status) bulkByPage.set(rule.pageId, rule.status)
+  }
   const caseById = new Map<string, ParityCase>(cases.map((entry) => [entry.id, entry]))
   const pages = new Set<string>()
 
@@ -195,12 +202,12 @@ export function checkPageSurface(
         }
       }
 
-      const status = entries[identity.nodeId]?.status ?? null
+      const status = entries[identity.nodeId]?.status ?? bulkByPage.get(page.pageId) ?? null
       if (identity.decision === "unpublished") {
         if (identity.inLibrary) {
           errors.push(
             `${where} is published and cannot be called unpublished — ` +
-              `give it shipped, excluded or pending`,
+              `give it shipped, mocked, excluded or pending`,
           )
         }
         continue

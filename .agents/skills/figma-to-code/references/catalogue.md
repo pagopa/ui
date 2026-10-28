@@ -74,9 +74,13 @@ the page's frame list — with:
   | Decision      | Meaning                                                                   |
   | ------------- | ------------------------------------------------------------------------- |
   | `shipped`     | published and `implemented` in the registry                               |
+  | `mocked`      | published and mapped, rendered by a facade; a reason is required          |
   | `excluded`    | published, deliberately not shipped; a reason is required                 |
   | `pending`     | published and mapped, still waiting; a reason is required                 |
   | `unpublished` | not in the export, so not implemented, by rule — no work follows          |
+
+  A registry bulk rule is the decision for a node of its page that carries no
+  entry of its own, the same fallback the inventory accounting uses.
 
   A drawing that was never published is out of the implementation scope: it is
   recorded so that its absence from the registry is a fact rather than an
@@ -95,8 +99,10 @@ the page's frame list — with:
   inventory node with the same name, kind and page; marked outside it, it must
   not be in the inventory. Every inventory node on a censused page must appear in
   the census.
-- The decision agrees with the registry: `shipped` is `implemented`, `excluded`
-  is `excluded`, `pending` is `pending`; `excluded` and `pending` carry a reason.
+- The decision agrees with the registry: `shipped` is `implemented`, `mocked` is
+  `mocked`, `excluded` is `excluded`, `pending` is `pending`, resolved through the
+  page's bulk rule when the node has no entry; `mocked`, `excluded` and `pending`
+  carry a reason.
 - A composition's cases exist in the case corpus, measure an identity on that
   page, and are measured on the device the composition declares; the device is
   one the device policy declares.
@@ -105,11 +111,11 @@ the page's frame list — with:
 - Every page the inventory publishes on is censused or counted: an unread page
   warns with its published node count and waits in `surfaceUncensused`.
 
-The census grows a page at a time, from the page a session opened, and the file
-publishes on more pages than any session reads. So the census is also
-accounted: every page the inventory publishes on is either censused or waiting
-in the burn-down, and `figma:check` warns with the count until the last one is
-read. That is why the line leads with a ratio:
+The census is also accounted: every page the inventory publishes on is either
+censused or waiting in the burn-down, and `figma:check` warns with the count
+until the last one is read. That is why the line leads with a ratio, and it
+reads `58/58` — a page that gains a published node without a re-read shows up
+as `57/58`, not as a silent gap:
 
 ```text
 surface: <censused>/<published> page(s) · <n> identities (<n> in the library, <n> not) · <n> pending · <n> composition(s) · <n> case mirror(s)

@@ -46,11 +46,17 @@ function composition(nodeId, extra = {}) {
 
 function run(
   data,
-  { nodes = [], entries = {}, cases = [], devices = ["mobile", "tablet", "desktop"] } = {},
+  {
+    nodes = [],
+    entries = {},
+    bulkRules = [],
+    cases = [],
+    devices = ["mobile", "tablet", "desktop"],
+  } = {},
 ) {
   return checkPageSurface(data, {
     nodes,
-    registry: { entries },
+    registry: { entries, bulkRules },
     cases,
     fileKey: FILE_KEY,
     devices,
@@ -133,6 +139,52 @@ test("a decision other than shipped carries a reason and agrees with the registr
     },
   )
   assert.match(disagreement.errors[0], /is excluded but the registry says "implemented"/)
+})
+
+test("a mocked identity agrees with the registry and carries a reason", () => {
+  const pass = run(
+    surface({ identities: [identity("1:1", "mocked", { reason: "a facade renders it" })] }),
+    {
+      nodes: [inventory("1:1")],
+      entries: { "1:1": { status: "mocked" } },
+    },
+  )
+  assert.deepEqual(pass.errors, [])
+  const noReason = run(
+    surface({ identities: [identity("1:1", "mocked", { reason: "a facade renders it" })] }),
+    {
+      nodes: [inventory("1:1")],
+      entries: { "1:1": { status: "implemented" } },
+    },
+  )
+  assert.match(noReason.errors[0], /is mocked but the registry says "implemented"/)
+})
+
+test("a page bulk rule is the decision for a node with no entry of its own", () => {
+  const shipped = run(
+    surface({ identities: [identity("1:1", "shipped", { name: "SavingMoney" })] }),
+    {
+      nodes: [inventory("1:1", { name: "SavingMoney" })],
+      bulkRules: [{ pageId: PAGE, status: "implemented" }],
+    },
+  )
+  assert.deepEqual(shipped.errors, [])
+  const excluded = run(
+    surface({
+      identities: [identity("1:2", "excluded", { name: "Scrollbar", reason: "native chrome" })],
+    }),
+    {
+      nodes: [inventory("1:2", { name: "Scrollbar" })],
+      bulkRules: [{ pageId: PAGE, status: "excluded" }],
+    },
+  )
+  assert.deepEqual(excluded.errors, [])
+  const owned = run(surface({ identities: [identity("1:1", "shipped")] }), {
+    nodes: [inventory("1:1")],
+    entries: { "1:1": { status: "pending" } },
+    bulkRules: [{ pageId: PAGE, status: "implemented" }],
+  })
+  assert.match(owned.errors[0], /is shipped but the registry says "pending"/)
 })
 
 test("the in-library mirror runs both ways", () => {
