@@ -12,6 +12,7 @@ content block or a status card.
 | status card                | `status="default" \| "success" \| "error" \| "warning" \| "info"` |
 | `Correction tag`           | `correction` (caller-owned content)                               |
 | `Timestamp`                | `timestamp={{ month, day, time }}`                                |
+| second `Description`       | `time`: upper caption line under the copy                         |
 | touchpoint accordion       | `touchpoints` or `recipients`                                     |
 
 The cursor fill follows the status: success #427940, error #d13333, warning
@@ -27,7 +28,11 @@ container query `@max-[27rem]/timeline`, so a timeline inside a narrow panel get
 the drawer composition without the caller choosing a device.
 
 The status card keeps the source 16px radius, the 1px border over the soft fill,
-the 24px status glyph, the 4px message gap and the 14/20 description. The gap
+the 24px status glyph, the 4px message gap and the 14/20 description. The source
+sets the event time on its own line below the copy, a 12/14.4 upper-case
+`Description` layer: `time` draws it in the published 14/20 caption at a 1:1 line
+height, because the foundation has no 12px Regular step, and the line box still
+matches the source's 14.4. The gap
 from the title to the description is 4px; when the description is absent, the
 gap from the title to the touchpoint group is 12px. The plain composition mirrors
 the same rhythm. `icon`

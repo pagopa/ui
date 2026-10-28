@@ -4,8 +4,8 @@ import { cn } from "@/lib/cn"
 import { CorrectionTag } from "@/components/content"
 
 /**
- * Timeline micro-event: the correction tag for the current status plus the
- * event description, optionally prefixed by its time.
+ * Timeline micro-event: the correction tag for the current status, the event
+ * description and, when present, the event time on its own line below the copy.
  *
  * Figma: Microevento (node 9676:5633)
  */
@@ -25,7 +25,6 @@ function MicroEvent({
 }) {
   return (
     <div className={cn("flex items-start py-2 pl-7", className)}>
-      {time ? <span className="shrink-0 text-label-mini text-muted-foreground">{time}</span> : null}
       <div className="flex min-w-0 flex-col gap-1">
         {invalid ? (
           <CorrectionTag label={label} status="not-valid" />
@@ -33,6 +32,9 @@ function MicroEvent({
           <CorrectionTag label={label} status="valid" />
         )}
         <p className="text-label-mini text-foreground break-words">{title}</p>
+        {time ? (
+          <span className="text-caption leading-none uppercase text-muted-foreground">{time}</span>
+        ) : null}
       </div>
     </div>
   )

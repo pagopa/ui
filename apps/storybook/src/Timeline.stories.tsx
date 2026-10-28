@@ -7,12 +7,14 @@ import { Timeline, type TimelineItemStatus } from "@/components/data-display"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 import timelineGuide from "./guides/timeline.md?raw"
+import { SourceFrame } from "./support/source-frame"
 
 // The source sample of set `12812:16248` (`Device=Desktop|Mobile`): one Default
 // item with its correction tag. The element publishes a single item, so the
-// device captures map the variant to exactly this row.
+// device captures map the variant to exactly this row. The source keeps the copy
+// and the event time in two separate layers, so the capture passes `time`.
 const sourceDescription =
-  "Né {name/ragione sociale} né un suo delegato hanno effettuato un accesso entro i termini, ma la notifica SEND si è comunque perfezionata il giorno {DD/MM/YYYY}.  01 FEB, 14:30"
+  "Né {name/ragione sociale} né un suo delegato hanno effettuato un accesso entro i termini, ma la notifica SEND si è comunque perfezionata il giorno {DD/MM/YYYY}."
 
 const meta = {
   title: "Components/Data display/Timeline",
@@ -276,7 +278,10 @@ export const DotInfo: Story = {
 // `Device=Mobile` at the 417 drawer panel) map this single item.
 export const SourceCase: Story = {
   // Reflow exemption: fixture pinned at the source width, not a product surface.
-  parameters: { a11yContract: { reflow: false } },
+  // `fullscreen` gives the page width the frame is capped by: under the global
+  // `centered` layout the root is a few pixels wide and the `@container` card
+  // stacks, which is not the composition the source draws.
+  parameters: { layout: "fullscreen", a11yContract: { reflow: false } },
   name: "Source case",
   args: {
     label: "Cronologia della notifica",
@@ -285,11 +290,17 @@ export const SourceCase: Story = {
         id: "law",
         title: "La notifica ha assunto valore di legge",
         description: sourceDescription,
+        time: "01 FEB, 14:30",
         status: "default",
         correction: <CorrectionTag status="not-valid" />,
       },
     ],
   },
+  render: (args) => (
+    <SourceFrame nodeId="12812:16248" device="desktop">
+      <Timeline {...args} />
+    </SourceFrame>
+  ),
 }
 
 export const Spacing: Story = {

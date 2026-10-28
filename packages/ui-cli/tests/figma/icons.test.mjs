@@ -333,6 +333,42 @@ test("flattened Boolean geometry is painted once with its source winding and not
   assert.equal(data[(6 * 24 + 5) * 4 + 3], 0, "construction layers must not fill the Boolean hole")
 })
 
+test("an inside stroke stays within its shape while a centered one may overflow it", async (t) => {
+  const badge = {
+    ...square,
+    id: "1:7",
+    name: "Stroked badge",
+    relativeTransform: [
+      [1, 0, 8],
+      [0, 1, 8],
+    ],
+    strokes: [{ type: "SOLID", color: { r: 0, g: 0, b: 0, a: 1 } }],
+    strokeAlign: "INSIDE",
+    fillGeometry: [{ windingRule: "NONZERO", path: "M2 2H6V6H2Z" }],
+    strokeGeometry: [{ windingRule: "NONZERO", path: "M0 0H8V8H0Z" }],
+  }
+  const inside = fixture(t, { ...component, children: [badge] })
+  const written = inside.run("--write", "--input", "live.json")
+  assert.equal(written.status, 0, written.stderr)
+  const { data } = await sharp(path.join(inside.root, "src/assets/figma-icons/1-1.svg"))
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true })
+  assert.equal(data[(11 * 24 + 11) * 4 + 3], 255, "paint the stroke inside the shape")
+  assert.equal(data[(11 * 24 + 9) * 4 + 3], 0, "an inside stroke never paints outside the shape")
+
+  const centered = fixture(t, { ...component, children: [{ ...badge, strokeAlign: "CENTER" }] })
+  const centeredWritten = centered.run("--write", "--input", "live.json")
+  assert.equal(centeredWritten.status, 0, centeredWritten.stderr)
+  const { data: centeredData } = await sharp(
+    path.join(centered.root, "src/assets/figma-icons/1-1.svg"),
+  )
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true })
+  assert.equal(centeredData[(11 * 24 + 9) * 4 + 3], 255, "a centered stroke keeps its own overflow")
+})
+
 test("nested group transforms and frame clipping preserve the source coordinate spaces", async (t) => {
   const frame = {
     id: "1:6",

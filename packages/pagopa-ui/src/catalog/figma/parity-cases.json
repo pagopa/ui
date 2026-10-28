@@ -3316,7 +3316,7 @@
     "compareOffset": true,
     "expectState": "open",
     "stateEvidence": "[role=menu]",
-    "note": "reviewed: source Multiselect=False Status=Default (610:36297, 274x392) against the SourcePanelDefault open menu. Verified the 274x393 panel (the library draws a divider between all six rows, the source four: +1px, inside tolerance), zero panel padding and gap, the #ffffff surface, the 48px location action row and five 68px rich rows. The panel is the source composition: an edge-to-edge location action row then five rich option rows with their dividers, no panel padding and no gap; the source's 15px Figma scrollbar is a mockup overflow artifact, so the library rows run the full 274 width. Adaptations stated in inputs/menus.tsx: location-icon-currentcolor (the 16px decorative art keeps its silhouette and paints with the row currentColor), selected-soft-token (the source highlight is Blue 500 at 8%, composite #EBF0FD; the selected row uses the accent token, the same 8% mix) and cta-menuitem-action (the location row is one native menuitem, never a nested button). Responsive clean."
+    "note": "reviewed 2026-10-28: source Multiselect=False Status=Default (610:36297, 272x393) against the SourcePanelDefault open menu. The source now draws its Divider after the 48px action row and keeps its 15px Figma scrollbar as a sibling of the 257px content (257+15=272); the library already separated the action row from the options, so the delta closes with no code change. The render is 274 wide (+2, the scrollbar is a mockup overflow artifact, so the rows run the full 274) and 393 tall, zero panel padding and gap, the #ffffff surface. The panel is the source composition: an edge-to-edge 48px location action row, the source Divider under it, then five 68px rich option rows with their dividers. Adaptations stated in inputs/menus.tsx: location-icon-currentcolor (the 16px decorative art keeps its silhouette and paints with the row currentColor), selected-soft-token (the source highlight is Blue 500 at 8%, composite #EBF0FD; the selected row uses the accent token, the same 8% mix) and cta-menuitem-action (the location row is one native menuitem, never a nested button). Responsive clean."
   },
   {
     "id": "616-3864-multiselect-default",
@@ -3334,7 +3334,7 @@
     "compareOffset": true,
     "expectState": "open",
     "stateEvidence": "[role=menu]",
-    "note": "reviewed: source Multiselect=True Status=Default Checked=False (616:3865, 274x532) against the SourcePanelMultiselect open menu. Verified the 274x533 panel, zero panel padding and gap, the #ffffff surface, the 48px location action row and five 96px multiselect rows (the 16/22 label, 14/20 description, chip and the 24px check_box in the row), which is what makes the panel 532 tall. The panel is the source composition: an edge-to-edge location action row then five rich option rows with their dividers, no panel padding and no gap; the source's 15px Figma scrollbar is a mockup overflow artifact, so the library rows run the full 274 width. Adaptations stated in inputs/menus.tsx: location-icon-currentcolor (the 16px decorative art keeps its silhouette and paints with the row currentColor), selected-soft-token (the source highlight is Blue 500 at 8%, composite #EBF0FD; the selected row uses the accent token, the same 8% mix) and cta-menuitem-action (the location row is one native menuitem, never a nested button). Responsive clean."
+    "note": "reviewed 2026-10-28: source Multiselect=True Status=Default Checked=False (616:3865, 272x533) against the SourcePanelMultiselect open menu. The source now draws its Divider after the 48px action row and keeps its 15px Figma scrollbar as a sibling of the 257px content (257+15=272); the library already separated the action row from the options, so the delta closes with no code change. The render is 274 wide (+2, the scrollbar is a mockup overflow artifact, so the rows run the full 274) and 533 tall, zero panel padding and gap, the #ffffff surface. Five 96px multiselect rows (the 16/22 label, 14/20 description, chip and the 24px check_box) plus their dividers make the 533px panel. Adaptations stated in inputs/menus.tsx: location-icon-currentcolor (the 16px decorative art keeps its silhouette and paints with the row currentColor), selected-soft-token (the source highlight is Blue 500 at 8%, composite #EBF0FD; the selected row uses the accent token, the same 8% mix) and cta-menuitem-action (the location row is one native menuitem, never a nested button). Responsive clean."
   },
   {
     "id": "616-3864-selected",
@@ -3352,7 +3352,7 @@
     "compareOffset": true,
     "expectState": "open",
     "stateEvidence": "[role=menu]",
-    "note": "reviewed: source Multiselect=False Status=Selected (617:18348, 274x392) against the SourcePanelSelected open menu. Verified the 274x393 panel, zero panel padding and gap, the #ffffff surface, the 48px location action row and five 68px rich rows with the first option row carrying the source selected highlight (Blue 500 at 8%, composite #EBF0FD) through the accent token. The panel is the source composition: an edge-to-edge location action row then five rich option rows with their dividers, no panel padding and no gap; the source's 15px Figma scrollbar is a mockup overflow artifact, so the library rows run the full 274 width. Adaptations stated in inputs/menus.tsx: location-icon-currentcolor (the 16px decorative art keeps its silhouette and paints with the row currentColor), selected-soft-token (the source highlight is Blue 500 at 8%, composite #EBF0FD; the selected row uses the accent token, the same 8% mix) and cta-menuitem-action (the location row is one native menuitem, never a nested button). Responsive clean."
+    "note": "reviewed 2026-10-28: source Multiselect=False Status=Selected (617:18348, 272x393) against the SourcePanelSelected open menu. The source now draws its Divider after the 48px action row and keeps its 15px Figma scrollbar as a sibling of the 257px content (257+15=272); the library already separated the action row from the options, so the delta closes with no code change. The render is 274 wide (+2, the scrollbar is a mockup overflow artifact, so the rows run the full 274) and 393 tall, zero panel padding and gap, the #ffffff surface. Same composition as Default with the first option row carrying the selected highlight. Adaptations stated in inputs/menus.tsx: location-icon-currentcolor (the 16px decorative art keeps its silhouette and paints with the row currentColor), selected-soft-token (the source highlight is Blue 500 at 8%, composite #EBF0FD; the selected row uses the accent token, the same 8% mix) and cta-menuitem-action (the location row is one native menuitem, never a nested button). Responsive clean."
   },
   {
     "id": "616-3864-multiselect-selected-all",
@@ -3370,7 +3370,7 @@
     "compareOffset": true,
     "expectState": "open",
     "stateEvidence": "[role=menu]",
-    "note": "reviewed: source Multiselect=True Status=Selected Checked=All (617:18688, 274x532) against the SourcePanelMultiselectAll open menu. Verified the 274x533 panel, zero panel padding and gap, the #ffffff surface, the location action row and five 96px multiselect rows all checked, each carrying the source selected highlight (8% Blue 500) through the accent token. The panel is the source composition: an edge-to-edge location action row then five rich option rows with their dividers, no panel padding and no gap; the source's 15px Figma scrollbar is a mockup overflow artifact, so the library rows run the full 274 width. Adaptations stated in inputs/menus.tsx: location-icon-currentcolor (the 16px decorative art keeps its silhouette and paints with the row currentColor), selected-soft-token (the source highlight is Blue 500 at 8%, composite #EBF0FD; the selected row uses the accent token, the same 8% mix) and cta-menuitem-action (the location row is one native menuitem, never a nested button). Responsive clean."
+    "note": "reviewed 2026-10-28: source Multiselect=True Status=Selected Checked=All (617:18688, 272x533) against the SourcePanelMultiselectAll open menu. The source now draws its Divider after the 48px action row and keeps its 15px Figma scrollbar as a sibling of the 257px content (257+15=272); the library already separated the action row from the options, so the delta closes with no code change. The render is 274 wide (+2, the scrollbar is a mockup overflow artifact, so the rows run the full 274) and 533 tall, zero panel padding and gap, the #ffffff surface. Same composition as the multiselect default with all five rows checked. Adaptations stated in inputs/menus.tsx: location-icon-currentcolor (the 16px decorative art keeps its silhouette and paints with the row currentColor), selected-soft-token (the source highlight is Blue 500 at 8%, composite #EBF0FD; the selected row uses the accent token, the same 8% mix) and cta-menuitem-action (the location row is one native menuitem, never a nested button). Responsive clean."
   },
   {
     "id": "616-3864-multiselect-selected-true",
@@ -3388,7 +3388,7 @@
     "compareOffset": true,
     "expectState": "open",
     "stateEvidence": "[role=menu]",
-    "note": "reviewed: source Multiselect=True Status=Selected Checked=True (617:19035, 274x532) against the SourcePanelMultiselectSelected open menu. Verified the 274x533 panel, zero panel padding and gap, the #ffffff surface, the location action row and five 96px multiselect rows with the first row checked and carrying the source selected highlight (8% Blue 500) through the accent token. The panel is the source composition: an edge-to-edge location action row then five rich option rows with their dividers, no panel padding and no gap; the source's 15px Figma scrollbar is a mockup overflow artifact, so the library rows run the full 274 width. Adaptations stated in inputs/menus.tsx: location-icon-currentcolor (the 16px decorative art keeps its silhouette and paints with the row currentColor), selected-soft-token (the source highlight is Blue 500 at 8%, composite #EBF0FD; the selected row uses the accent token, the same 8% mix) and cta-menuitem-action (the location row is one native menuitem, never a nested button). Responsive clean."
+    "note": "reviewed 2026-10-28: source Multiselect=True Status=Selected Checked=True (617:19035, 272x533) against the SourcePanelMultiselectSelected open menu. The source now draws its Divider after the 48px action row and keeps its 15px Figma scrollbar as a sibling of the 257px content (257+15=272); the library already separated the action row from the options, so the delta closes with no code change. The render is 274 wide (+2, the scrollbar is a mockup overflow artifact, so the rows run the full 274) and 533 tall, zero panel padding and gap, the #ffffff surface. Same composition as the multiselect default with the first row checked. Adaptations stated in inputs/menus.tsx: location-icon-currentcolor (the 16px decorative art keeps its silhouette and paints with the row currentColor), selected-soft-token (the source highlight is Blue 500 at 8%, composite #EBF0FD; the selected row uses the accent token, the same 8% mix) and cta-menuitem-action (the location row is one native menuitem, never a nested button). Responsive clean."
   },
   {
     "id": "616-3864-empty-state",
@@ -5538,14 +5538,14 @@
     "depth": 3,
     "root": "[role=\"menu\"]",
     "subjects": {
-      ".Single drop down item": "[role=\"menu\"] [role=\"menuitem\"]",
+      ".SingleDropDownItem": "[role=\"menu\"] [role=\"menuitem\"]",
       "Divider": "[role=\"menu\"] [role=\"separator\"]"
     },
     "click": ["#storybook-root button"],
     "compareOffset": true,
     "expectState": "open",
     "stateEvidence": "[role=menu]",
-    "note": "reviewed: source MenuDropDown (3262:40787, 274x330, radius 8, #ffffff panel with the 4/16px shadow-16 elevation) against the SourcePanel open menu. Verified the 274x330 panel, zero panel padding and gap, the 1px #e8ebf1 dividers between all seven rows, the 46px text rows (12/16 insets, 8px gap, 16/22 Semibold #0b3ee3 label) and the closing 48px destructive row that leads with the 24px cancel artwork and paints the 16/22 Semibold label #d13333. The seven source rows share one layer name ('.Single drop down item'), so the case maps the first text row and the divider as subjects and the total height proves the destructive row's 48px. Responsive clean."
+    "note": "reviewed: source MenuDropDown (3262:40787, 274x330, radius 8, #ffffff panel with the 4/16px shadow-16 elevation) against the SourcePanel open menu. Verified the 274x330 panel, zero panel padding and gap, the 1px #e8ebf1 dividers between all seven rows, the 46px text rows (12/16 insets, 8px gap, 16/22 Semibold #0b3ee3 label) and the closing 48px destructive row that leads with the 24px cancel artwork and paints the 16/22 Semibold label #d13333. The 2026-10-28 delta renamed the shared row layer to '.SingleDropDownItem' and narrowed only the destructive row instance to 272x48 (its Button 240x24) inside the unchanged 274 panel; the seven rows still share that one layer name, so the case maps the first text row and the divider as subjects and the total height proves the destructive row's 48px. Responsive clean."
   },
   {
     "id": "3424-12354-bar",
@@ -5915,7 +5915,7 @@
     "storyId": "components-data-display-microevent--source",
     "state": "default",
     "width": 725,
-    "height": 91,
+    "height": 110,
     "depth": 3,
     "root": "#storybook-root [data-fidelity-variant=\"default\"] > div",
     "subjects": {
@@ -5926,10 +5926,10 @@
     "residues": [
       {
         "path": "Frame 2087324583.box.width",
-        "reason": "the source sample reserves a 21px leading slot (Frame 2087324584, an empty Description text) that the component collapses when its optional time is absent; the 21px goes to the FILL content column, and the component draws the leading slot when a caller passes time"
+        "reason": "the source sample reserves a 21px leading slot (Frame 2087324584, an empty Description text) beside the content column; the component draws the copy column at the 28px inset and gives the 21px to the FILL column, so the column reads 697 against the source 676"
       }
     ],
-    "note": "reviewed: Microevento at the source 725x91 single component, no device axis. Root 725x92 against 91, the source insets 8/0/8/28 exact and the root gap 0 (the previous 20px gap-5 was drift and is removed); the tag starts at 28 and the copy at 28 where the source reserves a 21px leading slot (Frame 2087324584, an empty Description text) that collapses when the optional time is absent, so the FILL content column (Frame 2087324583) measures 697x76 against the source 676x75 and is the single residue; with a time the component draws the slot. Tag subject: the shared Tag instance 161.3x32 against the source 160x30, the same 32/30 and 1.3px border reading as its own review; 6/8 insets, 6px gap, radius 8 against 6, the 1px #e8ebf1 stroke and white fill match. Column gap 4 against the source 5; the copy is 14/20 Regular #0e0f13 (text-label-mini text-foreground) and sits at 44 against the source 43 (read from the anatomy): the source names both the empty leading slot and the copy Description, so the style subject resolves the empty one and the offsets are left off with this measurement. Strict composition clean without the offsets, which the reserved slot explains. The 28px inset is the recorded foundation exception for this node (no 28px spacing step). Guide: apps/storybook/src/guides/microevento.md."
+    "note": "reviewed: Microevento at the source 725x110 single component, no device axis. Root 725x110 exact: insets 8/0/8/28, gap 0. The source moved the event time out of the description text into its own 676x14 line below the copy, so the component now draws `time` under the paragraph instead of in the leading slot; the column (Frame 2087324583) measures 697x94 against the source 676x94, height exact and width the single residue (the unused 21px leading slot). Column gap 4 against the source 5; copy 14/20 Regular #0e0f13 (text-label-mini text-foreground) at 44 against 43; the time line is a 14px line box against the source 14.4, drawn `text-caption leading-none uppercase text-muted-foreground` (#555c70) - the source style is Label & Caption/Label overline Small (12px Titillio Regular UPPER) and the foundation publishes no 12px Regular step, so the glyph reads 2px larger while the line box matches. Date subject left off: the source names all three layers Description (the empty slot, the copy and the time), so the tag/copy subjects resolve the copy and the time is measured through the column height. Tag subject as its own review (161.3x32 against 160x30, 6/8 insets, 6px gap, radius 8 against 6, 1px #e8ebf1 stroke, white fill match). Strict composition clean, responsive clean. The 28px inset is the recorded foundation exception for this node (no 28px spacing step). Guide: apps/storybook/src/guides/microevento.md."
   },
   {
     "id": "9866-4494-success",
@@ -6578,11 +6578,11 @@
     "residues": [
       {
         "path": "Content.box.height",
-        "reason": "the retained 1px --border adds 2 outside the source inset and the shared tag measures 32 against the source 30 (the 261:6501/1909:98992 reading): the card measures 110 against the source 106"
+        "reason": "the retained 1px --border adds 2 outside the source inset and the shared tag measures 32 against the source 30 (the 261:6501/1909:98992 reading): the card measures 128 against the source 124"
       },
       {
         "path": "field.box.height",
-        "reason": "the source item instance insets the card 6px top/bottom inside its 118 row (the cursor column sets the row height); the DOM row hugs the card (110) and the dot stays centred on the card either way; the +4 follows the card border/tag reading"
+        "reason": "the source item instance insets the card 6px top/bottom inside its 136 row (the cursor column sets the row height); the DOM row hugs its 128 card, so the 8px gap is the 12px source inset less the 4px the card adds over the source 124; the dot stays centred on the card either way"
       },
       {
         "path": "Message.box.width",
@@ -6593,7 +6593,7 @@
         "reason": "follows the Message.box.width reading (746 against 750)"
       }
     ],
-    "note": "the composition check stays off: Content.offset.top measures 0 against the source 6 (the item instance 6/6 card inset inside its 118 row, the field.box.height residue) and the inner subjects 17 against 22 (the same inset less the runtime 1px border); the horizontal offsets are clean (Content.offset.left 32 = the cursor 24 + the 8px root gap)"
+    "note": "the composition check stays off: Content.offset.top measures 0 against the source 6 (the item instance 6/6 card inset inside its 136 row, the field.box.height residue) and the inner subjects 17 against 22 (the same inset less the runtime 1px border); the horizontal offsets are clean (Content.offset.left 32 = the cursor 24 + the 8px root gap). The row grows with the source time line: the second Description (758x14, 12/14.4 UPPER) is drawn as `time` under the copy and the Message measures 92 against the new 92."
   },
   {
     "id": "12812-16248-mobile-mobile",
@@ -6632,17 +6632,17 @@
       },
       {
         "path": "field.box.height",
-        "reason": "the source copy runs two lines in the drawn 816 column; at the 417 panel the same copy wraps to four lines, so the row measures 160 against the source 128 (the card border/tag +4 included)"
+        "reason": "the source row is 146 (the 134 card plus the 6/6 item inset); at the 417 drawer panel the copy wraps further and the row measures 178 against 146"
       },
       {
         "path": "Content.box.height",
-        "reason": "follows the copy-wrap reading above (160 against 116)"
+        "reason": "follows the copy-wrap reading above: the card measures 178 against the source 134"
       },
       {
         "path": "Message.box.height",
-        "reason": "follows the copy-wrap reading above (142 against 100)"
+        "reason": "follows the copy-wrap reading above: the message measures 160 against the source 118, the 18px of time line and its gap included"
       }
     ],
-    "note": "the composition check stays off: Content.offset.top measures 0 against the source 6 (the same item-instance inset) and the inner subjects 9 against 14 (the inset less the runtime 1px border)"
+    "note": "the composition check stays off: Content.offset.top measures 0 against the source 6 (the same item-instance inset) and the inner subjects 9 against 14 (the inset less the runtime 1px border). The source time line (the second Description, 758x14) is drawn as `time` under the copy on both devices."
   }
 ]

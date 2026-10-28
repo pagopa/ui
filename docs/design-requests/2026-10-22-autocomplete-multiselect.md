@@ -57,6 +57,38 @@ multiselect types are what keep the node out of `implemented`.
 - Is the `Type=Multiselect` field a chooser (chevron, no free text) or a search
   with chips? The pinned variant draws the chevron and no clear glyph.
 
+## Evidence added 28 October 2026
+
+The drift delta of 28 October touched exactly the seven variants of the two
+multiselect types, and no `Type=Default` or `Type=Error` variant:
+`824:8872` and `824:8904` (`Required=True`), `10276:53843` and `10276:53877`
+(`Required=False`), `11073:2336` and `11073:2286` (`Multiselect counter`). The
+pinned snapshot is a slice of top-level nodes, so it does not hold these
+variants; the shapes below come from the live Figma MCP, read variant by
+variant.
+
+- Every box stays 272x48, the insets stay 12, the chips stay 68 wide and 24
+  tall: nothing about the field frame changed.
+- The chips row gained a `Cursor`: an 8x24 frame holding a 1px
+  `rounded-rectangle`, drawn after the last visible chip in `824:8904` and
+  `10276:53877`. The multiselect type therefore keeps a typed value next to the
+  chips, and the first open question below is answered by the drawing: it is a
+  search with chips, not a chevron-only chooser.
+- The trailing glyph changed. The `Multiselect` variants now draw a 48x24
+  `Action goup` at x=200 holding **two** 24px
+  `primitive/input/select/default arrow` instances, side by side at x=0 and
+  x=24. The `Multiselect counter` variants draw a 24x24 `Action goup` with
+  **one** arrow. A `Default` field draws one 24px trailing glyph.
+- The layer name is `Action goup`, and the second arrow is drawn by no rule and
+  named by no card.
+
+This leaves the request open and adds one part to it: the multiselect type now
+declares a second 24px trailing action that the counter type does not, and the
+field is 248 wide with the chips row taking 160 of it, so the two arrows share
+the space a single glyph used to own. What the second arrow does (clear all
+chips? open the list?) and why the counter type keeps one are not in the
+drawing.
+
 ## Why it matters
 
 The node cannot reach `implemented` while a declared type has no implementation

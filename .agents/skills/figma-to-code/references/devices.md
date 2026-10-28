@@ -188,6 +188,44 @@ narrow-viewport assertions of `library:check`, never a `play()` test that does
 not set its own viewport. Never encode a source frame width as a component
 dimension: force the root width in the capture.
 
+### The story draws the frame the capture measures
+
+A `container`-scoped case forces the story root to the source width before it
+measures, so the capture is right even when the story renders something else:
+the global `centered` layout shrinks the root to a few pixels, every
+`@container` variant flips to its tight branch, and the reader — and the visual
+snapshot — see a composition the source never draws. The two renders must be
+one. A story whose parity case is `container`-scoped wraps its composition in
+`SourceFrame` (`apps/storybook/src/support/source-frame.tsx`) and declares
+`layout: "fullscreen"`; the helper reads the width from
+`src/catalog/figma/parity-cases.json`, so no story copies a source number and no
+component grows a width prop.
+
+```tsx
+parameters: { layout: "fullscreen" },
+// the node id and the device are the case's own: never copied, never a literal
+render: (args) => (
+  <SourceFrame nodeId={caseNodeId} device="desktop">
+    <Story {...args} />
+  </SourceFrame>
+),
+```
+
+`parity capture` reads `[data-source-frame]` before forcing anything and fails
+`story-collapsed` when a container-scoped story draws no frame or draws one that
+is none of its node's case widths. The stories that still owed one were listed
+in `src/catalog/figma/frame-baseline.json`, and the list is empty: the corpus
+paid that debt one composition at a time. A story that draws no frame today is a
+capture failure to fix in the story, not an entry to add — `parity verify` fails
+when an entry outlives the debt it records, so the file cannot quietly refill.
+
+A surface that paints its own backdrop — a dialog template, a full-page
+template — is a frame too: the panel inside it answers the frame width (the
+`@container` query on the page element), so the story draws the frame exactly
+as a card does, one `SourceFrame` per device story. `max-width: 100%` keeps the
+same story usable at the narrower device of its node, where the capture forces a
+root below the declared width.
+
 ## Reporting
 
 Per node: the declared devices · one capture per device (source width, height or

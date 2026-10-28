@@ -1,6 +1,6 @@
 {
   "fileKey": "pvhsJpPGQbEwNLiyP7BOIw",
-  "version": "2410226648852620157",
+  "version": "2415097349015371204",
   "entries": {
     "94:1982": {
       "name": "category",
@@ -3964,6 +3964,30 @@
           "nodeId": "14241:48931",
           "file": "14241-48931.svg",
           "sha256": "29bfb26053b3d19c7f865bdb2c3c8b5ac2014c61d6fb70f0a68708da75d4df1c"
+        }
+      }
+    },
+    "14709:279": {
+      "name": "mail_error",
+      "rendering": "mask",
+      "kind": "glyph",
+      "designFingerprint": "7dfbff15c4e63ab596422100e3a9855e4a221ec1d992c0513afd55b22732c3dc",
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "defaultVariantNodeId": "14709:279",
+      "aliases": {},
+      "provenance": {
+        "provider": "Material Symbols (Google)",
+        "origin": "material-symbols",
+        "license": "Apache-2.0",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+        "sourceUrl": "https://fonts.google.com/icons",
+        "note": "Built with the Figma Material Symbols plugin: Rounded shape, weight 400, fill off, grade normal, optical size 24dp. Brand marks and custom glyphs carry their own complete provenance override."
+      },
+      "variants": {
+        "14709:279": {
+          "nodeId": "14709:279",
+          "file": "14709-279.svg",
+          "sha256": "a19837c759b93d0652c2610e463438e25e39c752eaf488d18b2731934943adfc"
         }
       }
     }

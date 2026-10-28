@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, waitFor, within } from "storybook/test"
 
 import { FigmaInventoryDashboard } from "./figma-inventory/dashboard"
+import { areaCounts, statusCounts, totals } from "./figma-inventory/model"
 
 // The inventory is a documentation surface, not a product page: it reads the
 // committed Figma snapshot and maps every published node to its implementation.
@@ -33,7 +34,7 @@ type Story = StoryObj<typeof meta>
 
 export const PublishedComponents: Story = {
   parameters: {
-    // The generated inventory (353 cards) exceeds Chromatic's 25,000,000px
+    // The generated inventory (355 cards) exceeds Chromatic's 25,000,000px
     // capture cap at every configured viewport (1168x31,472 on desktop).
     // Chromatic skips the snapshot and its interaction run; the browser suite
     // still runs the play function below.
@@ -58,7 +59,7 @@ export const PublishedComponents: Story = {
     // and no Storybook page (it maps none).
     const search = canvas.getByRole("searchbox", { name: "Search components" })
     await userEvent.type(search, "Form Wizard")
-    await expect(canvas.getByText("1 of 353 components")).toBeVisible()
+    await expect(canvas.getByText(`1 of ${totals.total} components`)).toBeVisible()
     const demo = card("1154:4493")
     await expect(within(demo).getByText("Mocked")).toBeVisible()
     await expect(
@@ -87,19 +88,23 @@ export const PublishedComponents: Story = {
       expect(canvas.queryByRole("dialog", { name: "Form Wizard Template" })).not.toBeInTheDocument()
     })
     await userEvent.click(canvas.getByRole("button", { name: "Clear search" }))
-    await expect(canvas.getByText("353 components")).toBeVisible()
+    await expect(canvas.getByText(`${totals.total} components`)).toBeVisible()
 
     // The two filters are derived from the data: the area comes from the target
     // module folder and the status is the registry's own vocabulary.
     const areaFilter = canvas.getByRole("combobox", { name: "Filter by area" })
     await userEvent.selectOptions(areaFilter, "Inputs")
-    await expect(canvas.getByText("20 of 353 components")).toBeVisible()
+    await expect(
+      canvas.getByText(`${areaCounts.Inputs} of ${totals.total} components`),
+    ).toBeVisible()
     await userEvent.selectOptions(areaFilter, "all")
     const statusGroup = canvas.getByRole("group", { name: "Filter by status" })
     await userEvent.click(within(statusGroup).getByRole("button", { name: /^Mocked/ }))
-    await expect(canvas.getByText("19 of 353 components")).toBeVisible()
+    await expect(
+      canvas.getByText(`${statusCounts.mocked} of ${totals.total} components`),
+    ).toBeVisible()
     await userEvent.click(within(statusGroup).getByRole("button", { name: /^All/ }))
-    await expect(canvas.getByText("353 components")).toBeVisible()
+    await expect(canvas.getByText(`${totals.total} components`)).toBeVisible()
 
     // A shipped implementation on the first page with a device axis shows the
     // declared devices and opens its first story export.
@@ -121,11 +126,11 @@ export const PublishedComponents: Story = {
       canvas.getByRole("searchbox", { name: "Search components" }),
       "ButtonGroup",
     )
-    await expect(canvas.getByText("3 of 353 components")).toBeVisible()
+    await expect(canvas.getByText(`3 of ${totals.total} components`)).toBeVisible()
     await expect(canvasElement.querySelector('[data-node-id="123:4498"]')).not.toBeNull()
     await expect(canvasElement.querySelector('[data-node-id="1154:4493"]')).toBeNull()
     await userEvent.click(canvas.getByRole("button", { name: "Clear search" }))
-    await expect(canvas.getByText("353 components")).toBeVisible()
+    await expect(canvas.getByText(`${totals.total} components`)).toBeVisible()
     // Leaving the story at the top keeps the docs page readable after the play
     // has scrolled to the cards and back.
     window.scrollTo(0, 0)

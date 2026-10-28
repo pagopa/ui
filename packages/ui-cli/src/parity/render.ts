@@ -54,6 +54,11 @@ export class CaptureError extends Error {
 const RULER_WIDTH = 100
 const WIDTH_TOLERANCE = 2
 
+// The marker a story puts on the element that draws its source width
+// (`apps/storybook/src/support/source-frame.tsx`): the capture forces that width,
+// so the story has to declare it too or the reader sees another composition.
+export const SOURCE_FRAME_ATTRIBUTE = "data-source-frame"
+
 // One parametrized probe: geometry, box model, paint, type, the ::after
 // expansion target and the offset from the declared origin of every subject.
 //
@@ -560,6 +565,57 @@ export function capturePreflight({
   }
 }
 
+// The story's own source frame, read before the capture forces the width: the
+// element a story marks with `data-source-frame` must measure the width it
+// declares, and at least one of those widths must be a case width of the node.
+// A story that marks none collapses for every reader (the global `centered`
+// layout shrinks the root to a few pixels) while the forced capture still
+// measures the source composition: the two renders are different components.
+export type SourceFrameReport = {
+  drawn: Array<{ declared: number; measured: number }>
+  expected: number[]
+  ok: boolean
+  waived?: boolean
+}
+
+export function sourceFrameReport({
+  drawn,
+  expected,
+  waived = false,
+  storyId,
+}: {
+  drawn: Array<{ declared: number; measured: number }>
+  expected: number[]
+  waived?: boolean
+} & { storyId: string }): SourceFrameReport {
+  const ok =
+    drawn.length > 0 &&
+    drawn.some((frame) =>
+      expected.some((width) => Math.abs(frame.declared - width) <= WIDTH_TOLERANCE),
+    )
+  if (ok) return { drawn, expected, ok }
+  const message =
+    drawn.length === 0
+      ? `${storyId} draws no source frame (${SOURCE_FRAME_ATTRIBUTE}) at ${expected.join(" or ")}px: wrap the composition in \`SourceFrame\` (apps/storybook/src/support/source-frame.tsx) so the Storybook render is the composition the capture measures`
+      : `${storyId} draws its source frame at ${drawn.map((frame) => frame.declared).join(", ")}px against the case ${expected.join(" or ")}px`
+  if (!waived) throw new CaptureError("story-collapsed", message)
+  return { drawn, expected, ok, waived: true }
+}
+
+async function readSourceFrames(
+  page: { evaluate: <T>(fn: (attribute: string) => T, attribute: string) => Promise<T> },
+  expected: number[],
+  { storyId, waived }: { storyId: string; waived: boolean },
+): Promise<SourceFrameReport> {
+  const drawn = await page.evaluate((attribute: string) => {
+    return [...document.querySelectorAll(`[${attribute}]`)].map((element) => ({
+      declared: Number(element.getAttribute(attribute)) || 0,
+      measured: Math.round(element.getBoundingClientRect().width),
+    }))
+  }, SOURCE_FRAME_ATTRIBUTE)
+  return sourceFrameReport({ drawn, expected, waived, storyId })
+}
+
 // The module-side half of the preflight, pure so it is testable without a
 // browser: an empty list means the capture is what the case claims.
 export function captureChecks({
@@ -622,6 +678,12 @@ export type CaptureOptions = {
   bandRoot?: string
   widthTarget?: string
   expectRootWidth?: boolean
+  // The widths the story must draw itself (the container-scoped case widths of
+  // its node). The capture forces `rootWidth` regardless, so a story without a
+  // frame passes here and collapses for every reader: `story-collapsed` is that
+  // disagreement, and a waived story reports it instead of throwing.
+  expectFrames?: number[]
+  frameWaiver?: boolean
   subjects?: Record<string, string>
   offsetOrigin?: string
   fill?: Array<[string, string]>
@@ -657,6 +719,8 @@ export async function capture({
   // The story root is the measured width reference; a probe that forces another
   // element skips that comparison on purpose.
   expectRootWidth = true,
+  expectFrames,
+  frameWaiver = false,
   subjects = { field: rootSelector },
   // The element the offsets are measured from: the case's `--root` element by
   // default (the variant-root counterpart), or the declared `offsetOrigin`.
@@ -694,6 +758,12 @@ export async function capture({
     })
     await page.waitForSelector(rootSelector, { timeout: 15000 })
     await page.addStyleTag({ content: DISABLE_MOTION_CSS })
+    // The story's own frame, read before the capture forces anything: a
+    // container-scoped story that declares none renders narrow in Storybook
+    // while the forced capture measures the source width.
+    const frame = expectFrames?.length
+      ? await readSourceFrames(page, expectFrames, { storyId, waived: frameWaiver })
+      : undefined
     await page.evaluate(
       ({ selector, width }) => {
         const root = document.querySelector(selector)
@@ -766,6 +836,7 @@ export async function capture({
       },
       subjects: subjectsProbe.subjects,
       responsive: subjectsProbe.responsive,
+      ...(frame ? { frame } : {}),
       ...(tree ? { tree: subjectsProbe.tree } : {}),
     }
   } finally {

@@ -9,6 +9,8 @@ import { RadioGroup } from "@/components/inputs/radio-group"
 import { Button } from "@/components/primitives/button"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
+import { SourceFrame } from "./support/source-frame"
+
 const callerAction = fn()
 
 const meta = {
@@ -48,27 +50,32 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const renderRadio = (args: React.ComponentProps<typeof ProductModule>) => (
-  <div className="w-screen min-w-0 max-w-full">
-    <RadioGroup
-      className="min-w-0"
-      legend="Prodotti disponibili"
-      name="products"
-      defaultValue={args.value}
-    >
-      <ProductModule {...args} />
-    </RadioGroup>
-  </div>
-)
+// The source draws this row in a 560 page column and a 272 drawer panel: the
+// story draws that frame, so a reader sees the composition the capture
+// measures. `maxWidth: 100%` follows the narrower case of the same node down.
+const renderRadio =
+  (device: "desktop" | "mobile") => (args: React.ComponentProps<typeof ProductModule>) => (
+    <SourceFrame nodeId="403:4116" device={device}>
+      <RadioGroup
+        className="min-w-0"
+        legend="Prodotti disponibili"
+        name="products"
+        defaultValue={args.value}
+      >
+        <ProductModule {...args} />
+      </RadioGroup>
+    </SourceFrame>
+  )
 
-const renderAction = (args: React.ComponentProps<typeof ProductModule>) => (
-  <div className="w-screen min-w-0 max-w-full">
-    <ProductModule {...args} />
-  </div>
-)
+const renderAction =
+  (device: "desktop" | "mobile") => (args: React.ComponentProps<typeof ProductModule>) => (
+    <SourceFrame nodeId="403:4116" device={device}>
+      <ProductModule {...args} />
+    </SourceFrame>
+  )
 
 export const Playground: Story = {
-  render: renderRadio,
+  render: renderRadio("desktop"),
 }
 
 export const WithAction: Story = {
@@ -79,17 +86,17 @@ export const WithAction: Story = {
     await expect(args.onOpen).toHaveBeenCalledTimes(1)
     action.blur()
   },
-  render: renderAction,
+  render: renderAction("desktop"),
 }
 
 export const RadioMobile: Story = {
   args: { value: "mobile-product" },
-  render: renderRadio,
+  render: renderRadio("mobile"),
 }
 
 export const ActionMobile: Story = {
   args: { variant: "action", onOpen: fn() },
-  render: renderAction,
+  render: renderAction("mobile"),
 }
 
 export const RadioFormBehavior: Story = {

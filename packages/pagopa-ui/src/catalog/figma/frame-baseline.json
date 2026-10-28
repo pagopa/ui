@@ -1,0 +1,4 @@
+{
+  "$comment": "Stories whose parity case is container-scoped but which draw no `SourceFrame`: the capture forces the source width, so the numbers match Figma while a reader sees another composition (the global `centered` layout shrinks the story root until every `@container` variant flips). The list only shrinks: `figma:parity:capture` measures the story's own frame before forcing anything and fails `story-collapsed` for a story below, `figma:parity:verify` fails when an entry no longer owes a frame, and warns for each entry still owed. Empty today: every container-scoped story draws its frame, and a story that does not is a capture failure to fix in the story, not an entry to add here.",
+  "stories": {}
+}

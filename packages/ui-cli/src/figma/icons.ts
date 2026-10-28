@@ -65,6 +65,7 @@ type SvgNode = {
   children?: SvgNode[]
   fills?: SvgPaint[]
   strokes?: SvgPaint[]
+  strokeAlign?: string
   fillGeometry?: SvgShape[]
   strokeGeometry?: SvgShape[]
   effects?: Array<{ visible?: boolean }>
@@ -101,6 +102,7 @@ const SvgNodeSchema: z.ZodType<SvgNode> = z.lazy(() =>
     children: z.array(SvgNodeSchema).optional(),
     fills: z.array(SvgPaintSchema).optional(),
     strokes: z.array(SvgPaintSchema).optional(),
+    strokeAlign: z.string().optional(),
     fillGeometry: z.array(SvgShapeSchema).optional(),
     strokeGeometry: z.array(SvgShapeSchema).optional(),
     effects: z.array(z.looseObject({ visible: z.boolean().optional() })).optional(),
@@ -252,7 +254,22 @@ function svg(value: unknown): string {
       .flat()
       .map((value) => number(value, `transform on ${node.id}`))
     const opacity = number(node.opacity ?? 1, `node opacity on ${node.id}`, 0, 1)
-    return `<g transform="matrix(${a} ${b} ${c} ${d} ${root ? 0 : x} ${root ? 0 : y})" opacity="${opacity}">${paint(node, node.fillGeometry, node.fills, alphaMask)}${paint(node, node.strokeGeometry, node.strokes, alphaMask)}${clip(node, children(node, alphaMask))}</g>`
+    let strokePaint = paint(node, node.strokeGeometry, node.strokes, alphaMask)
+    if (strokePaint && node.strokeAlign === "INSIDE" && node.fillGeometry?.length) {
+      // An inside stroke never paints outside the shape, but the exported stroke
+      // geometry still covers the interior holes, so it is clipped to the fill.
+      const id = `clip_${definitionId++}`
+      definitions.push(
+        `<clipPath id="${id}">${paint(
+          node,
+          node.fillGeometry,
+          [{ type: "SOLID", color: { r: 1, g: 1, b: 1, a: 1 } }],
+          true,
+        )}</clipPath>`,
+      )
+      strokePaint = `<g clip-path="url(#${id})">${strokePaint}</g>`
+    }
+    return `<g transform="matrix(${a} ${b} ${c} ${d} ${root ? 0 : x} ${root ? 0 : y})" opacity="${opacity}">${paint(node, node.fillGeometry, node.fills, alphaMask)}${strokePaint}${clip(node, children(node, alphaMask))}</g>`
   }
   const width = number(document.size?.x, `width on ${document.id}`, Number.MIN_VALUE)
   const height = number(document.size?.y, `height on ${document.id}`, Number.MIN_VALUE)

@@ -15,6 +15,7 @@ import asset_1315_8596 from "../../assets/figma-icons/1315-8596.svg?no-inline"
 import asset_13906_25597 from "../../assets/figma-icons/13906-25597.svg?no-inline"
 import asset_14164_11363 from "../../assets/figma-icons/14164-11363.svg?no-inline"
 import asset_14241_48931 from "../../assets/figma-icons/14241-48931.svg?no-inline"
+import asset_14709_279 from "../../assets/figma-icons/14709-279.svg?no-inline"
 import asset_1501_5288 from "../../assets/figma-icons/1501-5288.svg?no-inline"
 import asset_1509_25567 from "../../assets/figma-icons/1509-25567.svg?no-inline"
 import asset_2080_3319 from "../../assets/figma-icons/2080-3319.svg?no-inline"
@@ -313,6 +314,13 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "14241:48931",
     aliases: {},
     variants: { "14241:48931": { nodeId: "14241:48931", url: asset_14241_48931 } },
+  },
+  "14709:279": {
+    name: "mail_error",
+    rendering: "mask",
+    defaultVariantNodeId: "14709:279",
+    aliases: {},
+    variants: { "14709:279": { nodeId: "14709:279", url: asset_14709_279 } },
   },
   "1501:5288": {
     name: "support",
@@ -1475,6 +1483,7 @@ export const iconAssetsByName = {
   login: iconAssets["98:933"],
   logout: iconAssets["98:932"],
   mail: iconAssets["94:2036"],
+  mail_error: iconAssets["14709:279"],
   mail_off: iconAssets["9790:9527"],
   mail_pec: iconAssets["14241:48931"],
   mail_shield: iconAssets["9833:27244"],
@@ -1634,6 +1643,7 @@ export type IconVariantsByName = {
   login: never
   logout: never
   mail: "selected" | "unselected"
+  mail_error: never
   mail_off: never
   mail_pec: never
   mail_shield: never

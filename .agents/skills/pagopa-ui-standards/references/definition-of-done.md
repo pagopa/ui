@@ -94,6 +94,10 @@ paths fail, type-only cycles pass.
       only at the root: the row heights, the inner padding and gap, the
       full-bleed dividers and the footer. The story runs in every engine, so
       that assertion is what catches an engine-specific layout escape.
+- [ ] A story whose parity case is `container`-scoped draws the source frame
+      itself — `SourceFrame` plus `layout: "fullscreen"` — so the Storybook
+      render, the visual snapshot and the verified capture are one composition;
+      `parity capture` fails `story-collapsed` otherwise.
 - [ ] A story that cannot satisfy a contract condition declares it in its own
       `parameters: { a11yContract: { reflow: false } }` with a reason comment
       beside the flag: exemptions live with each story. A pending reflow

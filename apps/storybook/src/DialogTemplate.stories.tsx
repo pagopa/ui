@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { CheckboxField } from "@/components/inputs"
 import { Button } from "@/components/primitives/button"
+import { SourceFrame } from "./support/source-frame"
 import { DialogTemplate } from "./templates/DialogTemplate"
 
 import templatesGuide from "./guides/templates.md?raw"
@@ -64,19 +65,24 @@ type Story = StoryObj<typeof meta>
 
 // The composition answers its own frame: the narrow frame keeps the 272×446
 // panel, the 18/28 title and the stacked actions; the wide frame takes the
-// 600×290 panel, the 24/32 title and the right-aligned action row. The wide
-// story is the page itself (no width wrapper): the frame is the capture width,
-// so the desktop devices are measured in their own 1200/1536 frame.
+// 600×290 panel, the 24/32 title and the right-aligned action row. Each story
+// draws the frame of the device it is captured at — the panel is sized by the
+// `@container/dialog-page` query on the page element, so the wrapper's width is
+// the frame the composition answers, not a component dimension.
 export const NarrowFrame: Story = {
   name: "Narrow frame (320)",
   render: () => (
-    <div className="w-80 max-w-full">
+    <SourceFrame nodeId="1909:98992" device="mobile">
       <SourceDialog />
-    </div>
+    </SourceFrame>
   ),
 }
 
 export const WideFrame: Story = {
   name: "Wide frame",
-  render: () => <SourceDialog />,
+  render: () => (
+    <SourceFrame nodeId="1909:98992" device="desktop">
+      <SourceDialog />
+    </SourceFrame>
+  ),
 }

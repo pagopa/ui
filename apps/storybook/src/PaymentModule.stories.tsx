@@ -8,6 +8,8 @@ import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { ButtonGroup, Chip } from "@/components/inputs"
 import { Button } from "@/components/primitives/button"
 
+import { SourceFrame } from "./support/source-frame"
+
 const meta = {
   title: "Components/Composites/PaymentModule",
   component: PaymentModule,
@@ -50,6 +52,10 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Playground: Story = {
+  // The source draws this module in a 560 page column. The frame is what the
+  // story draws and the capture verifies, so a reader sees the composition the
+  // source drew; `maxWidth: 100%` carries the same story down to the 270 case.
+  parameters: { layout: "fullscreen" },
   args: {
     suggestion: { label: "Sei già cliente" },
     actions: (
@@ -62,6 +68,11 @@ export const Playground: Story = {
       </ButtonGroup>
     ),
   },
+  render: (args) => (
+    <SourceFrame nodeId="11133:16142" device="desktop">
+      <PaymentModule {...args} />
+    </SourceFrame>
+  ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.getByText("3020 1234 5678 9012 34")).toBeVisible()
@@ -76,6 +87,7 @@ export const Playground: Story = {
 // own export (the desktop `Playground` keeps the source row).
 export const ActionMobile: Story = {
   name: "Action (mobile)",
+  parameters: { layout: "fullscreen" },
   args: {
     suggestion: { label: "Sei già cliente" },
     actions: (
@@ -88,13 +100,24 @@ export const ActionMobile: Story = {
       </ButtonGroup>
     ),
   },
+  render: (args) => (
+    <SourceFrame nodeId="11133:16142" device="mobile">
+      <PaymentModule {...args} />
+    </SourceFrame>
+  ),
 }
 
 export const Summary: Story = {
+  parameters: { layout: "fullscreen" },
   args: {
     price: { amount: "744,00 €", detail: "Costi di notifica inclusi" },
     onDownload: () => undefined,
   },
+  render: (args) => (
+    <SourceFrame nodeId="11133:16142" device="desktop">
+      <PaymentModule {...args} />
+    </SourceFrame>
+  ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.getByText("744,00 €")).toBeVisible()
@@ -129,7 +152,12 @@ function SelectablePayment() {
 }
 
 export const MultiPayment: Story = {
-  render: () => <SelectablePayment />,
+  parameters: { layout: "fullscreen" },
+  render: () => (
+    <SourceFrame nodeId="11133:16142" device="desktop">
+      <SelectablePayment />
+    </SourceFrame>
+  ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const radio = canvas.getByRole("radio")
