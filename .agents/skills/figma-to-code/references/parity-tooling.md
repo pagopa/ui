@@ -1,6 +1,6 @@
 # Parity tooling — the commands of the loop
 
-`pnpm --filter pagopa-ui-cli run cli -- parity` with no arguments prints every subcommand and flag; read it
+`pnpm --filter pagopa-ui-cli run cli parity` with no arguments prints every subcommand and flag; read it
 there. For one node, start with `align`: apply its hints, re-run it until
 aligned, then save the cases with `check --save-case`. `check` and `source`
 read `--input`, else `figma.snapshot`, else the committed evidence
@@ -9,7 +9,8 @@ slice; `check` and `capture` also need Storybook on `storybook.url`
 `catalog.parityCases` (`--cases <file>` overrides it).
 
 Every row is a target of `pagopa-ui-cli`: run it as
-`pnpm nx run pagopa-ui-cli:<target> [flags]`.
+`pnpm nx run pagopa-ui-cli:<target> --flag value`, the flags space-separated and
+straight after the target.
 
 ## Commands
 
@@ -25,8 +26,8 @@ Every row is a target of `pagopa-ui-cli`: run it as
 | `figma:parity:verify`                              | the case corpus, device coverage and evidence bundle, hermetically (no snapshot, no browser); runs in the green chain; exit 1 on errors, 0 with warnings |
 | `figma:parity:evidence --write` / `--check`        | the offline bundle: `--write` refreshes slice, PNGs and manifest (token + snapshot); `--check` proves they match the corpus                                    |
 | `figma:parity:report --wave <name>`                | the wave record: counts, verdicts, advisories, residues, open deltas, the re-run command                                                            |
-| `source <nodeId>` (via `pnpm --filter pagopa-ui-cli run cli -- parity source <nodeId>`) | the source spec `check` diffs against (`--compact` anatomy, `--json`, `--depth N`); `--png [file]` writes the pinned variant render (token + pinned snapshot), default `.figma/parity/source/<nodeId>.png` |
-| `render --story <storyId>` (via `pnpm --filter pagopa-ui-cli run cli -- parity render --story <storyId>`) | a render probe alone; `--tree [--depth N]` prints the DOM anatomy (box, position, padding, gap) of the root's descendants |
+| `source <nodeId>` (via `pnpm --filter pagopa-ui-cli run cli parity source <nodeId>`) | the source spec `check` diffs against (`--compact` anatomy, `--json`, `--depth N`); `--png [file]` writes the pinned variant render (token + pinned snapshot), default `.figma/parity/source/<nodeId>.png` |
+| `render --story <storyId>` (via `pnpm --filter pagopa-ui-cli run cli parity render --story <storyId>`) | a render probe alone; `--tree [--depth N]` prints the DOM anatomy (box, position, padding, gap) of the root's descendants |
 
 The source reader is the only reader of the source: never grow a second one
 from a scratch file. A render to look at is `check --screenshot <file>` (same

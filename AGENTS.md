@@ -31,7 +31,7 @@ This file adds what holds only for agents.
 
 Open with `pnpm nx run pagopa-ui-cli:figma:status`: it prints the config path,
 the token state, the snapshot, the drift against the inventory, the pending
-queue with its design requests and the next command; `-- --live` adds the file
+queue with its design requests and the next command; `--live` adds the file
 version and last-modified date. When Figma changed, `figma:plan` then
 `figma:triage` are the whole refresh, and the pending queue is not a delta. The
 `figma-to-code` skill owns every rule that follows.
@@ -42,7 +42,7 @@ entry, the `.Regole` cards that target it, the open comments and the design
 requests. The rules boxes and the comments sit outside `designFingerprint`, so
 no drift reports them: `figma:rules` keeps the committed English ledger, and a
 node is not finished while a rule that targets it is `pending` or `stale`.
-Refresh the local snapshots with `figma:rules -- --refresh` and
+Refresh the local snapshots with `figma:rules --refresh` and
 `figma:comments --refresh`.
 
 ## Skills

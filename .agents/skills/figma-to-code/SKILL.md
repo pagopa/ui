@@ -14,7 +14,7 @@ files the config names: read them, never copy them into this skill.
 `pnpm nx run pagopa-ui-cli:figma:status` prints the token state, the pinned
 snapshot, the drift against the committed inventory, the rules ledger and comment
 counts, the pending queue with its design requests and the next command.
-`-- --live` adds the file version and its last-modified date: that is what tells
+`--live` adds the file version and its last-modified date: that is what tells
 whether Figma changed at all. Run it before reading anything else; nothing below
 repeats what it reports. Before touching one node, read
 `figma:brief --node <nodeId>`.
@@ -27,6 +27,30 @@ beside the package it describes; when it is missing, run
 `design.requests`, which is relative to the workspace root. Keys below are
 written as `catalog.registry`. Every command runs from the repository root.
 
+## Running the commands
+
+Every command is an Nx target — `pnpm nx run <project>:<target>` — followed by
+its flags, space-separated:
+
+- **`--flag value`, both halves separate.** `parity check --case <id>`. The `=`
+  form dies in the wrapper and the tool never sees it: `--case=<id>` exits with
+  `check requires --node <id> or --case <caseId>`.
+- **The flags go straight after the target.** `figma:rules --refresh --node <id>`.
+  A `--` of their own reaches the script, which answers "No command specified".
+- **Nx reads its own options first** (`-c=ci`, `-t`, `--output-style=static`), so
+  those keep their form; no task flag collides with them today.
+- **Ask the target for its flags**: the target with `--help`, or
+  `pnpm --filter pagopa-ui-cli run cli parity` with no arguments, prints every
+  subcommand and flag. `parity source` and `parity render` have no target of
+  their own and take the filter form, the flags in the same two shapes.
+- **A failed task prints its name and a `full log:` path.** Read that file, or
+  re-run with `--output-style=static`: the log names the rule that failed, so
+  quote the rule and never the task alone.
+- **Exit 1 is a result twice** — drift in `figma:plan`, a delta in
+  `parity:check` — and a failure everywhere else; read the code's meaning
+  ([parity-tooling.md](references/parity-tooling.md)) before calling a run
+  broken.
+
 ## Rules for every use case
 
 - **Figma is read-only.** Read through the REST export or the Figma MCP read
@@ -34,12 +58,11 @@ written as `catalog.registry`. Every command runs from the repository root.
   `get_variable_defs`, `list_file_components_for_code_connect`). Never rename,
   move or edit a node, never call a tool that writes (`use_figma`, Code Connect
   publishing). Drift is reconciled in the repository.
-- **Credentials.** The person exports `FIGMA_TOKEN` (scopes
-  `file_content:read`, `library_content:read`) in the process environment.
-  Never read, source or load `.env`, never print the token. The preflight is
-  `pnpm nx run pagopa-ui-cli:figma:status`; when it reports the token missing,
-  stop the live steps, relay its guidance and keep working from the pinned
-  snapshot.
+- **Credentials and the MCP gate.** The person exports `FIGMA_TOKEN` (scopes
+  `file_content:read`, `library_content:read`) in the process environment; never
+  read, source or load `.env`, never print the token. `figma:status` reports the
+  token state, and a missing token stops only the REST steps: the source is still
+  read through the MCP. The gate is [init.md](references/init.md) §2.
 - **`nodeId` is identity.** Names and pages change; the registry is keyed by
   `nodeId`, bulk rules by `pageId`.
 - **Figma URLs come from `figma.fileModule`** (`FIGMA_FILE_KEY`,
@@ -97,7 +120,7 @@ what a node-backed component proves), [catalogue.md](references/catalogue.md)
 (alignment files, statuses, the `figma:check` contract),
 [parity-tooling.md](references/parity-tooling.md) (the parity commands),
 [rules.md](references/rules.md) (the rules ledger and node comments),
-[init.md](references/init.md) (config and token preflight).
+[init.md](references/init.md) (config and the MCP gate).
 
 ## Closing every use case
 

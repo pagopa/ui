@@ -19,15 +19,26 @@ the session.
 
 ## Start
 
-1. Resolve the pull request:
+1. **MCP gate: the Figma MCP is the source of this session.** One read call of
+   the session's Figma MCP server — `get_metadata` or `get_screenshot` on a node
+   of the file — is the whole test.
+   **Done when** a read call answered.
+   When it does not answer — no server, no read tools, authentication refused —
+   the session ends here: report the call that stayed silent and leave the
+   repository untouched. The pinned snapshot is not a substitute, and a node
+   decided from stale evidence is a decision with no source.
+2. Resolve the pull request:
    `gh pr view <number> --json number,headRefName,state,body`.
    **Done when** the head branch and state are known. A merged or closed pull
    request stops the session here: report it and never reopen it.
-2. `pnpm nx run pagopa-ui-cli:figma:status` and report the token state.
-   Without `FIGMA_TOKEN`, work from the committed evidence and say so.
-3. Check out the head branch in a worktree as `handoff.md` says.
+3. `pnpm nx run pagopa-ui-cli:figma:status` and report the token state.
+   **Done when** the token state is known and the delta's route is chosen: the
+   REST targets with the token, the MCP export path without it
+   (`figma:export --input <figma.mcpInventory>`, `delta.md`), and your report
+   names which one.
+4. Check out the head branch in a worktree as `handoff.md` says.
    **Done when** the worktree is on that branch and `pnpm install` has run.
-4. Read the pull request body and its `delta.json` artifact, then
+5. Read the pull request body and its `delta.json` artifact, then
    `figma:brief --node <id>` for every queued node.
    **Done when** every queued node has its brief, its target and its devices.
 
