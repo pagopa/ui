@@ -3383,7 +3383,7 @@
         "story": "apps/storybook/src/Popover.stories.tsx",
         "storyExports": ["SourceTop", "SourceBottom"]
       },
-      "note": "Both source variants are reviewed: Arrow-Position Top and Bottom render their indicators, the 312x76 card, and a keyboard/pointer close action; elevation uses `shadow-32`. Popper `13211:26152` is a separate set absent from the pinned Figma export and inventory, so it remains unregistered until a fresh local export is supplied; its severity API is a separate implementation decision."
+      "note": "Both source variants are reviewed: Arrow-Position Top and Bottom render their indicators, the 312x76 card, and a keyboard/pointer close action; elevation uses `shadow-32`. The 2026-10-28 export added the separate set Popper `13211:26152` on page \"• Popper\" — four `Status` variants, 312x76, no arrow — which carries a byte-identical copy of this set's `[COMPONENT DESCRIPTION: InfoPopover]` while declaring no `Placement` property; its disposition is the open design request docs/design-requests/2026-10-28-popper-status-card.md (issue #68)."
     },
     "9977:21200": {
       "status": "implemented",
@@ -3437,7 +3437,7 @@
     },
     "13211:26152": {
       "status": "pending",
-      "note": "Figma delta 2026-10-28: new set, four Status variants (Status2 warning, Status3 info, Status4 check_circle, Status5 report) at 312x76: a 16px inset, a 24px status glyph, a 16/22 body and a 24px close mark, no arrow, unlike the dark Tooltip 230:1317. Blocked: no FIGMA_TOKEN, so figma export cannot pin the node (it requires the token even through the MCP inventory) and no parity case can be sourced. A token session pins it, then implements the status bubble or records why it is excluded."
+      "note": "Design request open: docs/design-requests/2026-10-28-popper-status-card.md (issue #68, @gunzip). Delta 2026-10-28 set, four Status variants at 312x76: a 24px glyph, a 16/22 body, a 24px close, no shadow, no arrow. No new token: soft, border and foreground are status-<severity> 100/400/850, the triples Alert's variants read, in Alert's geometry. Open: its description is Popover 9927:36954's verbatim and asks for an arrow and a Placement property this set does not declare; Alert has no close. Anchored (Popover gains the severity) or inline and dismissed (Alert gains the close) stays open."
     },
     "14709:279": {
       "status": "implemented",
