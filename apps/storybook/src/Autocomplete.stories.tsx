@@ -62,15 +62,27 @@ export const Playground: Story = {
 // row into the count badge, which carries the clear action, beside the arrow.
 export const Fidelity: Story = {
   args: { multiple: true, label: "Erogatori", required: true, description: undefined },
-  render: (args) => (
+  render: ({ label, options, description, required }) => (
     <div className="grid w-68 max-w-full gap-6">
       <div data-fidelity-variant="824-8872">
-        <Autocomplete {...args} defaultValue={["roma", "milano"]} onValueChange={fn()} />
+        <Autocomplete
+          multiple
+          label={label}
+          options={options}
+          description={description}
+          required={required}
+          defaultValue={["roma", "milano"]}
+          onValueChange={fn()}
+        />
       </div>
       <div data-fidelity-variant="11073-2423">
         <Autocomplete
-          {...args}
+          multiple
           multipleDisplay="counter"
+          label={label}
+          options={options}
+          description={description}
+          required={required}
           placeholder="Seleziona gli erogatori"
           defaultValue={["roma", "milano", "napoli", "torino"]}
           onValueChange={fn()}
@@ -377,7 +389,6 @@ export const MultiselectRemoveValue: Story = {
     </div>
   ),
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
     const group = canvasElement.querySelector('[data-slot="autocomplete-multiple"]')
     if (!(group instanceof HTMLElement)) throw new Error("Expected the chips row")
     await userEvent.click(within(group).getByRole("button", { name: "Togli Roma" }))
