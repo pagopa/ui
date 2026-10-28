@@ -203,7 +203,10 @@ insets; the pill is radius 100, `#e8ebf1`, `Titillio-Semibold` 12/18
    the 160px `Label container` — the source instead lets five pills overflow the
    272 frame. Confirm the scroll is the behaviour the design wants for many
    values, or whether `Type=Multiselect counter` is the only intended display
-   once the row stops fitting.
+   once the row stops fitting. Opened as
+   [the overflow request](./2026-10-28-autocomplete-multiselect-overflow.md)
+   (issue [#76](https://github.com/pagopa/ui/issues/76)): the preview carries
+   the scrolling row, the counter and a taller wrapping field.
 5. The `Type=Multiselect` variants also draw a `Cursor` frame, the 8x24 frame
    with a 1px rule after the last pill; the implementation leaves the real text
    caret there instead. Confirm the drawn cursor is the editable input's caret

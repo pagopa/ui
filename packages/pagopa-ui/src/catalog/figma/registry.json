@@ -1529,7 +1529,7 @@
           "MultiselectOverridableTexts"
         ]
       },
-      "note": "Answered 2026-11-12 (#40, design-requests/2026-10-22-autocomplete-multiselect): Option A \u2014 the field owns both filled multiselect types through a discriminated `multiple` taking a `string[]`. `Type=Multiselect` (824:8872): a removable pill per value (`removeValueLabel`) beside [clear][chevron]. `Type=Multiselect counter` (11073:2423): a 44x24 count pill from two values that clears them all (`clearAllLabel`). Both keep the 272x48 frame and Backspace. Departures: the pills strip scrolls past the source's 160px; the label floats at one value where the counter draws it inside. Parity: two cases."
+      "note": "Answered 2026-11-12 (#40, design-requests/2026-10-22-autocomplete-multiselect): Option A \u2014 the field owns both filled types through `multiple: string[]`. `824:8872` draws a removable pill per value (`removeValueLabel`) beside [clear][chevron]; `11073:2423` a 44x24 count pill from two values that clears them all (`clearAllLabel`). Both keep the 48px frame and Backspace. Departures: the strip scrolls past the source's 160px; the label floats at one value where the counter draws it inside. Overflow: design-requests/2026-10-28-autocomplete-multiselect-overflow (#76). Parity: two cases."
     },
     "8702:266": {
       "status": "implemented",
