@@ -5915,7 +5915,7 @@
     "storyId": "components-data-display-microevent--source",
     "state": "default",
     "width": 725,
-    "height": 91,
+    "height": 110,
     "depth": 3,
     "root": "#storybook-root [data-fidelity-variant=\"default\"] > div",
     "subjects": {
@@ -5926,10 +5926,10 @@
     "residues": [
       {
         "path": "Frame 2087324583.box.width",
-        "reason": "the source sample reserves a 21px leading slot (Frame 2087324584, an empty Description text) that the component collapses when its optional time is absent; the 21px goes to the FILL content column, and the component draws the leading slot when a caller passes time"
+        "reason": "the source sample reserves a 21px leading slot (Frame 2087324584, an empty Description text) beside the content column; the component draws the copy column at the 28px inset and gives the 21px to the FILL column, so the column reads 697 against the source 676"
       }
     ],
-    "note": "reviewed: Microevento at the source 725x91 single component, no device axis. Root 725x92 against 91, the source insets 8/0/8/28 exact and the root gap 0 (the previous 20px gap-5 was drift and is removed); the tag starts at 28 and the copy at 28 where the source reserves a 21px leading slot (Frame 2087324584, an empty Description text) that collapses when the optional time is absent, so the FILL content column (Frame 2087324583) measures 697x76 against the source 676x75 and is the single residue; with a time the component draws the slot. Tag subject: the shared Tag instance 161.3x32 against the source 160x30, the same 32/30 and 1.3px border reading as its own review; 6/8 insets, 6px gap, radius 8 against 6, the 1px #e8ebf1 stroke and white fill match. Column gap 4 against the source 5; the copy is 14/20 Regular #0e0f13 (text-label-mini text-foreground) and sits at 44 against the source 43 (read from the anatomy): the source names both the empty leading slot and the copy Description, so the style subject resolves the empty one and the offsets are left off with this measurement. Strict composition clean without the offsets, which the reserved slot explains. The 28px inset is the recorded foundation exception for this node (no 28px spacing step). Guide: apps/storybook/src/guides/microevento.md."
+    "note": "reviewed: Microevento at the source 725x110 single component, no device axis. Root 725x110 exact: insets 8/0/8/28, gap 0. The source moved the event time out of the description text into its own 676x14 line below the copy, so the component now draws `time` under the paragraph instead of in the leading slot; the column (Frame 2087324583) measures 697x94 against the source 676x94, height exact and width the single residue (the unused 21px leading slot). Column gap 4 against the source 5; copy 14/20 Regular #0e0f13 (text-label-mini text-foreground) at 44 against 43; the time line is a 14px line box against the source 14.4, drawn `text-caption leading-none uppercase text-muted-foreground` (#555c70) - the source style is Label & Caption/Label overline Small (12px Titillio Regular UPPER) and the foundation publishes no 12px Regular step, so the glyph reads 2px larger while the line box matches. Date subject left off: the source names all three layers Description (the empty slot, the copy and the time), so the tag/copy subjects resolve the copy and the time is measured through the column height. Tag subject as its own review (161.3x32 against 160x30, 6/8 insets, 6px gap, radius 8 against 6, 1px #e8ebf1 stroke, white fill match). Strict composition clean, responsive clean. The 28px inset is the recorded foundation exception for this node (no 28px spacing step). Guide: apps/storybook/src/guides/microevento.md."
   },
   {
     "id": "9866-4494-success",

@@ -46,17 +46,17 @@ export const Corrected: Story = {
   },
 }
 
-// The source `9676:5633` sample: a 725x91 row whose leading 21x20 slot is an
+// The source `9676:5633` sample: a 725x110 row whose leading 21x20 slot is an
 // empty `Description` text and whose description copies the source placeholder
-// copy, so the two 14/20 lines wrap as drawn. The source draws no visible time,
-// so the capture omits the component's optional `time`.
+// copy, so the two 14/20 lines wrap as drawn. The source draws the event time on
+// its own 676x14 line below the copy, so the capture passes `time`.
 const sourceDescription =
-  "Raccomandata pronta - La raccomandata  {type} numero {numero raccomandata} per {name} ({CF}) è stata stampata e imbustata ed è pronta per essere spedita. 01 FEB, 14:30"
+  "Raccomandata pronta - La raccomandata  {type} numero {numero raccomandata} per {name} ({CF}) è stata stampata e imbustata ed è pronta per essere spedita."
 
 export const Source: Story = {
   // Reflow exemption: fixture pinned at the source width, not a product surface.
   parameters: { layout: "fullscreen", a11yContract: { reflow: false } },
-  args: { time: undefined, invalid: true, title: sourceDescription },
+  args: { time: "01 FEB, 14:30", invalid: true, title: sourceDescription },
   render: (args) => (
     <div data-fidelity-variant="default" className="w-[725px] max-w-full">
       <MicroEvent {...args} />
