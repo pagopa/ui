@@ -1514,7 +1514,7 @@
         "export": "Autocomplete",
         "story": "apps/storybook/src/Autocomplete.stories.tsx"
       },
-      "note": "Figma delta 2026-10-28: review new/changed node or dependency before marking implemented"
+      "note": "Design request open: docs/design-requests/2026-10-22-autocomplete-multiselect.md (issue #40, @gunzip). Delta 2026-10-28 touched only the 7 Type=Multiselect and Type=Multiselect counter variants, box unchanged at 272x48: the chips row gained a 1px Cursor, so typed text stays next to the chips, and the Multiselect variants gained a 48x24 Action goup holding two 24px default arrows where the counter keeps one. What the second arrow does, what the counter counts and which component owns the types stay open; Autocomplete renders only Type=Default, so the node stays pending."
     },
     "8702:266": {
       "status": "implemented",
