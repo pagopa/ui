@@ -94,11 +94,15 @@ export const PublishedComponents: Story = {
     // module folder and the status is the registry's own vocabulary.
     const areaFilter = canvas.getByRole("combobox", { name: "Filter by area" })
     await userEvent.selectOptions(areaFilter, "Inputs")
-    await expect(canvas.getByText(`${areaCounts.Inputs} of ${totals.total} components`)).toBeVisible()
+    await expect(
+      canvas.getByText(`${areaCounts.Inputs} of ${totals.total} components`),
+    ).toBeVisible()
     await userEvent.selectOptions(areaFilter, "all")
     const statusGroup = canvas.getByRole("group", { name: "Filter by status" })
     await userEvent.click(within(statusGroup).getByRole("button", { name: /^Mocked/ }))
-    await expect(canvas.getByText(`${statusCounts.mocked} of ${totals.total} components`)).toBeVisible()
+    await expect(
+      canvas.getByText(`${statusCounts.mocked} of ${totals.total} components`),
+    ).toBeVisible()
     await userEvent.click(within(statusGroup).getByRole("button", { name: /^All/ }))
     await expect(canvas.getByText(`${totals.total} components`)).toBeVisible()
 

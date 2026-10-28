@@ -23,11 +23,11 @@ The set draws one card in four severities: 312x76, radius 8, a 1px border, a
 24px close mark. Its colours are bound to variables and are the `status-*`
 ramp, which is what `Alert`'s four variants already read:
 
-| Variant        | Node         | Glyph          | Soft      | Border    | Foreground | The library today           |
-| -------------- | ------------ | -------------- | --------- | --------- | ---------- | --------------------------- |
-| `Status=Status2` | `13211:26809` | `warning`      | `#fff5da` | `#ffd56b` | `#614c15`  | `Alert variant="warning"`   |
-| `Status=Status3` | `13211:26880` | `info`         | `#e1f5fe` | `#89d9fc` | `#215c76`  | `Alert variant="info"`      |
-| `Status=Status4` | `13211:26923` | `check_circle` | `#e1f4e1` | `#89d188` | `#224021`  | `Alert variant="success"`   |
+| Variant          | Node          | Glyph          | Soft      | Border    | Foreground | The library today             |
+| ---------------- | ------------- | -------------- | --------- | --------- | ---------- | ----------------------------- |
+| `Status=Status2` | `13211:26809` | `warning`      | `#fff5da` | `#ffd56b` | `#614c15`  | `Alert variant="warning"`     |
+| `Status=Status3` | `13211:26880` | `info`         | `#e1f5fe` | `#89d9fc` | `#215c76`  | `Alert variant="info"`        |
+| `Status=Status4` | `13211:26923` | `check_circle` | `#e1f4e1` | `#89d188` | `#224021`  | `Alert variant="success"`     |
 | `Status=Status5` | `13294:26980` | `report`       | `#ffd9d9` | `#ff6666` | `#5d1313`  | `Alert variant="destructive"` |
 
 So the question is not what the card looks like — `Alert` already draws that

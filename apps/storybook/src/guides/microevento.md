@@ -3,13 +3,13 @@
 `MicroEvent` implements the Figma component `9676:5633`: one row of a timeline
 touchpoint with the correction tag above the event description.
 
-| Source layer          | Source property                           | Implementation                                       |
-| --------------------- | ----------------------------------------- | ---------------------------------------------------- |
-| root                  | 725×110, insets 8/0/8/28                  | `py-2 pl-7`, no root gap                             |
-| `Frame 2087324584`    | 21×20 `Description` slot, drawn empty     | not drawn: the column starts at the 28px inset        |
-| `Frame 2087324583`    | 676×94 wide, vertical, 5px gap            | `flex min-w-0 flex-col gap-1`                        |
-| `Correction/NotValid` | 160×30 tag instance                       | `<CorrectionTag status="not-valid" label={label} />` |
-| `Description`         | 676×40, Titillio-Regular 14/20, `#0e0f13` | `title`, `text-label-mini text-foreground`           |
+| Source layer          | Source property                             | Implementation                                                      |
+| --------------------- | ------------------------------------------- | ------------------------------------------------------------------- |
+| root                  | 725×110, insets 8/0/8/28                    | `py-2 pl-7`, no root gap                                            |
+| `Frame 2087324584`    | 21×20 `Description` slot, drawn empty       | not drawn: the column starts at the 28px inset                      |
+| `Frame 2087324583`    | 676×94 wide, vertical, 5px gap              | `flex min-w-0 flex-col gap-1`                                       |
+| `Correction/NotValid` | 160×30 tag instance                         | `<CorrectionTag status="not-valid" label={label} />`                |
+| `Description`         | 676×40, Titillio-Regular 14/20, `#0e0f13`   | `title`, `text-label-mini text-foreground`                          |
 | `Description` (time)  | 676×14, Titillio-Regular 12/14.4, `#555c70` | `time`, `text-caption leading-none uppercase text-muted-foreground` |
 
 The source draws the event time on its own line below the copy; the component
