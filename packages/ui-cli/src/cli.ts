@@ -29,6 +29,7 @@ import { main as runParity } from "./parity/cli.ts"
 import { renderCli } from "./parity/render.ts"
 import { sourceCli } from "./parity/source.ts"
 import { runChanged } from "./test/changed.ts"
+import { runVisual } from "./test/visual.ts"
 import { runCommand, UsageError } from "./lib/command.ts"
 import { readJson } from "./lib/json.ts"
 import { rootPath } from "./lib/paths.ts"
@@ -578,9 +579,25 @@ const testChanged = defineCommand({
   run: execute(() => runChanged(rawArguments("changed"))),
 })
 
+const testVisual = defineCommand({
+  meta: { name: "visual", description: "Scope the visual-regression run to the change" },
+  args: {
+    since: {
+      type: "string",
+      valueHint: "ref",
+      description: "The ref the change is measured against",
+    },
+    all: { type: "boolean", default: false, description: "Capture every story" },
+    index: { type: "string", valueHint: "file", description: "The built Storybook index" },
+    out: { type: "string", valueHint: "file", description: "Write the scope as JSON" },
+    json: { type: "boolean", default: false, description: "Print the scope as JSON" },
+  },
+  run: execute(() => runVisual(rawArguments("visual"))),
+})
+
 const test = defineCommand({
   meta: { name: "test", description: "Test-runner commands" },
-  subCommands: { changed: testChanged },
+  subCommands: { changed: testChanged, visual: testVisual },
 })
 
 const prepareTypes = defineCommand({

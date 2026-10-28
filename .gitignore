@@ -330,6 +330,8 @@ test-results/
 playwright-report/
 apps/storybook/visual/test-results/
 apps/storybook/visual/playwright-report/
+# The story scope `ui-cli test visual` writes for the run
+apps/storybook/visual/scope.json
 *.local
 
 # Figma live exports (local, produced by the Figma MCP; never committed)

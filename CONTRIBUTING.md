@@ -252,6 +252,31 @@ tagged `no-visual`, and compares each image with the baselines in
 in the Playwright container `mcr.microsoft.com/playwright:v1.63.0-noble`, by the
 workflow itself: never commit one produced on macOS.
 
+A pull request captures only the stories its diff can move. `ui-cli test visual`
+reads the built Storybook index, walks the imports each story reaches — the
+story file, what it imports, the shared preview and the stylesheets behind it —
+and writes the story ids to `apps/storybook/visual/scope.json`, which the spec
+reads through `VISUAL_SCOPE`. A change to a component the walk reaches re-runs
+the stories that render it; a change to a file no story imports runs nothing.
+The same walk widens to the whole catalogue for anything that can move every
+screenshot without an import edge: `packages/tokens`, `packages/artwork`, the
+design-system `assets`, the storybook manifests and lockfile, the visual harness
+itself, and any deleted source. The push on `main`, the nightly at 04:00 UTC and
+a manual run always capture everything, so a change the walk cannot see is
+caught within a day; the `visual:update` job is complete for the same reason.
+
+Run the same two steps locally:
+
+```bash
+pnpm nx run pagopa-ui-storybook:build
+pnpm nx run pagopa-ui-cli:test:visual -- --since origin/main --out apps/storybook/visual/scope.json
+VISUAL_SCOPE=apps/storybook/visual/scope.json pnpm nx run pagopa-ui-storybook:test:visual
+```
+
+`--all` skips the walk and names no story; without `VISUAL_SCOPE` the suite is
+complete too. The file carries the mode as well: `stories` lists the ids to
+capture, `all` names none because the whole catalogue runs.
+
 To accept a visual change, add the `visual:update` label to the pull request.
 The workflow commits the new images to its head branch, and that commit starts
 no run: review a sample, remove the label and re-run the check. The same
