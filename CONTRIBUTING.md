@@ -255,8 +255,8 @@ workflow itself: never commit one produced on macOS.
 A pull request captures only the stories its diff can move. `ui-cli test visual`
 reads the built Storybook index, walks the imports each story reaches — the
 story file, what it imports, the shared preview and the stylesheets behind it —
-and writes the story ids to `apps/storybook/visual/scope.json`, which the spec
-reads through `VISUAL_SCOPE`. A change to a component the walk reaches re-runs
+and writes the story ids to `scope.json` in `apps/storybook/visual/`, which the
+spec reads through `VISUAL_SCOPE`. A change to a component the walk reaches re-runs
 the stories that render it; a change to a file no story imports runs nothing.
 The same walk widens to the whole catalogue for anything that can move every
 screenshot without an import edge: `packages/tokens`, `packages/artwork`, the
