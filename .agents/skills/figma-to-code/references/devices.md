@@ -216,9 +216,14 @@ render: (args) => (
 is none of its node's case widths. The legacy stories that owe one are listed in
 `src/catalog/figma/frame-baseline.json`: the list only shrinks — `parity verify`
 fails when an entry stays after the story stops owing a frame, and warns while a
-waived story still renders without one. A full-screen surface that sizes itself
-(the dialogs) is a `viewport`-shaped composition the corpus still scopes to a
-container: reasoned entries, not a copied exemption.
+waived story still renders without one.
+
+A surface that paints its own backdrop — a dialog template, a full-page
+template — is a frame too: the panel inside it answers the frame width (the
+`@container` query on the page element), so the story draws the frame exactly
+as a card does, one `SourceFrame` per device story. `max-width: 100%` keeps the
+same story usable at the narrower device of its node, where the capture forces a
+root below the declared width.
 
 ## Reporting
 

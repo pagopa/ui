@@ -9,10 +9,6 @@
     "components-composites-productmodule--action-mobile": "The story returns the module directly; the source 272px action frame is not drawn, so it owes a `SourceFrame nodeId=\"403:4116\" device=\"mobile\"`.",
     "components-composites-productmodule--playground": "The story returns the module directly; the source 560px frame is not drawn, so it owes a `SourceFrame nodeId=\"403:4116\"`.",
     "components-composites-productmodule--radio-mobile": "The story returns the module directly; the source 272px radio frame is not drawn, so it owes a `SourceFrame nodeId=\"403:4116\" device=\"mobile\"`.",
-    "components-composites-productmodule--with-action": "The story returns the module directly; the source 560px with-action frame is not drawn, so it owes a `SourceFrame nodeId=\"403:4116\"`.",
-    "components-templates-dialog--narrow-frame": "The dialog sizes itself from the viewport, so its 320px narrow frame is a behaviour of the surface rather than a box the story can draw: the case is container-scoped by its parity case, the story is a full-screen surface. Convert only once the surface exposes a width prop.",
-    "components-templates-dialog--wide-frame": "The dialog sizes itself from the viewport, so the 900/1200px wide frames are a behaviour of the surface rather than boxes the story can draw: the case is container-scoped by its parity case, the story is a full-screen surface. Convert only once the surface exposes a width prop.",
-    "components-templates-security-code-dialog--narrow-frame": "The dialog sizes itself from the viewport, so its 320px narrow frame is a behaviour of the surface rather than a box the story can draw: the case is container-scoped by its parity case, the story is a full-screen surface. Convert only once the surface exposes a width prop.",
-    "components-templates-security-code-dialog--wide-frame": "The dialog sizes itself from the viewport, so the 900/1200px wide frames are a behaviour of the surface rather than boxes the story can draw: the case is container-scoped by its parity case, the story is a full-screen surface. Convert only once the surface exposes a width prop."
+    "components-composites-productmodule--with-action": "The story returns the module directly; the source 560px with-action frame is not drawn, so it owes a `SourceFrame nodeId=\"403:4116\"`."
   }
 }

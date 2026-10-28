@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { AuthenticationCodeInput } from "@/components/inputs"
 import { Button } from "@/components/primitives/button"
+import { SourceFrame } from "./support/source-frame"
 import { SecurityCodeDialog } from "./templates/SecurityCodeDialog"
 
 import templatesGuide from "./guides/templates.md?raw"
@@ -81,18 +82,22 @@ type Story = StoryObj<typeof meta>
 
 // The composition answers its own frame: the narrow frame keeps the 272×570
 // panel and the three-line helper; the wide frame takes the 600-wide panel with
-// the helper on a single line. The wide story is the page itself (no width
-// wrapper), so the desktop devices are captured in their own frame.
+// the helper on a single line. Each story draws the frame of the device it is
+// captured at, so the panel and the helper wrap the way the source draws them.
 export const NarrowFrame: Story = {
   name: "Narrow frame (320)",
   render: () => (
-    <div className="w-80 max-w-full">
+    <SourceFrame nodeId="1909:99033" device="mobile">
       <SourceDialog />
-    </div>
+    </SourceFrame>
   ),
 }
 
 export const WideFrame: Story = {
   name: "Wide frame",
-  render: () => <SourceDialog />,
+  render: () => (
+    <SourceFrame nodeId="1909:99033" device="desktop">
+      <SourceDialog />
+    </SourceFrame>
+  ),
 }
