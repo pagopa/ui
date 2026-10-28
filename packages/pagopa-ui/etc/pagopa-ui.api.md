@@ -1624,6 +1624,7 @@ export interface TimelineItem {
     id: React_2.Key;
     recipients?: TimelineRecipient[];
     status?: TimelineItemStatus;
+    time?: string;
     timestamp?: {
         month?: string;
         day?: string;
