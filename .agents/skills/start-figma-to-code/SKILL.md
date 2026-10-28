@@ -19,7 +19,27 @@ the session.
 
 ## Start
 
-1. **MCP gate: the Figma MCP is the source of this session.** One read call of
+1. **Token preflight: `FIGMA_TOKEN`, else the macOS keychain.** The environment
+   is the first source and the only one on a machine without a keychain — a CI
+   runner is Linux — and the keychain is read only when it is absent:
+
+   ```sh
+   [ -n "${FIGMA_TOKEN:-}" ] || { command -v security >/dev/null 2>&1 && security find-generic-password -s figma-pat -w >/dev/null 2>&1; }
+   ```
+
+   **Done when** the command exits `0`, and the report names the source:
+   `FIGMA_TOKEN` from the environment, or the keychain entry. A failed preflight
+   ends the session here: no token in the environment and, where a keychain
+   exists, no readable `figma-pat`. Report the exit code and the fix the
+   platform has — export a read-only `FIGMA_TOKEN`
+   (`file_content:read`, `library_content:read`) where there is no keychain, or
+   store it once on macOS with
+   `security add-generic-password -s figma-pat -a "$USER" -w`. Leave the
+   repository untouched. The value never leaves a command that needs it: the
+   probe discards it, and step 4 exports it inside the same shell invocation as
+   `figma:status`. The transcript carries the command and the exit code, never
+   the secret.
+2. **MCP gate: the Figma MCP is the source of this session.** One read call of
    the session's Figma MCP server — `get_metadata` or `get_screenshot` on a node
    of the file — is the whole test.
    **Done when** a read call answered.
@@ -27,18 +47,25 @@ the session.
    the session ends here: report the call that stayed silent and leave the
    repository untouched. The pinned snapshot is not a substitute, and a node
    decided from stale evidence is a decision with no source.
-2. Resolve the pull request:
+3. Resolve the pull request:
    `gh pr view <number> --json number,headRefName,state,body`.
    **Done when** the head branch and state are known. A merged or closed pull
    request stops the session here: report it and never reopen it.
-3. `pnpm nx run pagopa-ui-cli:figma:status` and report the token state.
+4. Run `figma:status` with the preflight's token in place, and report the token
+   state:
+
+   ```sh
+   [ -n "${FIGMA_TOKEN:-}" ] || export FIGMA_TOKEN="$(security find-generic-password -s figma-pat -w)"
+   pnpm nx run pagopa-ui-cli:figma:status
+   ```
+
    **Done when** the token state is known and the delta's route is chosen: the
    REST targets with the token, the MCP export path without it
    (`figma:export --input <figma.mcpInventory>`, `delta.md`), and your report
    names which one.
-4. Check out the head branch in a worktree as `handoff.md` says.
+5. Check out the head branch in a worktree as `handoff.md` says.
    **Done when** the worktree is on that branch and `pnpm install` has run.
-5. Read the pull request body and its `delta.json` artifact, then
+6. Read the pull request body and its `delta.json` artifact, then
    `figma:brief --node <id>` for every queued node.
    **Done when** every queued node has its brief, its target and its devices.
 
