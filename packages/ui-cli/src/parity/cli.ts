@@ -43,6 +43,7 @@ import {
   compare,
   compositionSignature,
   formatResult,
+  sameDeltas,
   type Delta,
   type SourceSubject,
 } from "./diff.ts"
@@ -50,6 +51,7 @@ import { markdownTable } from "../lib/markdown.ts"
 import { enterRoot, rootPath } from "../lib/paths.ts"
 import { parseSchema } from "../lib/validate.ts"
 import { capture as captureStory, DEFAULT_ROOT, type CaptureOptions } from "./render.ts"
+import { guardStorybook } from "./storybook.ts"
 import { checkCaseEvidence, checkEvidence, evidenceCommand } from "./evidence.ts"
 import {
   loadExport,
@@ -97,6 +99,7 @@ type CaseReport = {
   advisories: Delta[]
   residues: Array<Delta & { reason: string }>
   notes: Array<{ path: string; note: unknown }>
+  unstable?: { first: string[]; second: string[] }
   responsive?: unknown
   scope?: Scope
   capture?: {
@@ -127,6 +130,10 @@ const DEFAULT_CASES = rootPath("src/catalog/figma/parity-cases.json")
 // 32rem is crossed by 1200, not by 900).
 const SCOPE_PROBES = [360, 1200]
 
+// How long a second pass waits for the dev server to finish recompiling before
+// it measures again (`PARITY_NO_SETTLE=1` keeps a single pass).
+const SETTLE_DELAY_MS = 250
+
 const USAGE = `usage:
   figma-parity queue [--status pending,implemented] [--node <id>] [--cases <file>] [--order fan-in] [--unmapped] [--coverage] [--uncovered] [--json]
   figma-parity align --node <id> [--cases <file>] [--json]
@@ -154,8 +161,11 @@ Profiles: the default verdict is the reviewed one (2px per property, residues wi
 a reason). Composition evidence (--compare-offset) is reported as ADVISORY and only
 --strict promotes it into the verdict. The responsive verdict (RA5) is a delta: a
 clipped box, paint outside the root, text lost to an ellipsis or a wrapped band
-fails the case unless a residue records the adaptation. Exit codes: 0 verified, 1
-deltas above tolerance, 2 invalid input or missing evidence.`
+fails the case unless a residue records the adaptation. \`check\` and \`capture\`
+refuse a Storybook that does not answer for this checkout (\`PARITY_ALLOW_FOREIGN_STORYBOOK=1\`
+accepts one from another tree), and a first pass with deltas is measured twice
+(\`PARITY_NO_SETTLE=1\` keeps a single pass). Exit codes: 0 verified, 1 deltas
+above tolerance, 2 invalid input or missing evidence.`
 
 function parse(argv: string[]): Parsed {
   const flags: Flags = new Map()
@@ -419,23 +429,43 @@ async function evaluateCase(
     path: path_,
     reason: "ignored by the case mapping",
   }))
-  const result = compare({
-    sources,
-    probe,
-    subject: {
-      interactive: Boolean(spec.interactive),
-      compareText: Boolean(spec.compareText),
-      compareBox: spec.compareBox,
-      compareOffset: spec.compareOffset,
-    },
-    // The band check reads the layer the case maps to its root element (the
-    // variant root, or the `subjectRoot` it narrows to) — its layout mode and
-    // its children — so a wrapped band is a number, not an opinion.
-    band: sourceOrigin,
-    scope,
-    residues: [...(spec.residues ?? []), ...ignored],
-    strict: Boolean(spec.strict),
-  })
+  const runCompare = (measured: Record<string, unknown>) =>
+    compare({
+      sources,
+      probe: measured,
+      subject: {
+        interactive: Boolean(spec.interactive),
+        compareText: Boolean(spec.compareText),
+        compareBox: spec.compareBox,
+        compareOffset: spec.compareOffset,
+      },
+      // The band check reads the layer the case maps to its root element (the
+      // variant root, or the `subjectRoot` it narrows to) — its layout mode and
+      // its children — so a wrapped band is a number, not an opinion.
+      band: sourceOrigin,
+      scope,
+      residues: [...(spec.residues ?? []), ...ignored],
+      strict: Boolean(spec.strict),
+    })
+  let result = runCompare(probe)
+  // A dev server that is still recompiling renders a partial story, so the
+  // numbers describe the build and not the component: a first pass that finds
+  // deltas is measured twice, and a stable pass is the verdict. Two passes that
+  // disagree are no evidence either way — the first is kept and marked
+  // `unstable`, which is a review, never a pass.
+  let unstable: CaseReport["unstable"]
+  if (result.deltas.length && !process.env.PARITY_NO_SETTLE) {
+    await new Promise((resolve) => setTimeout(resolve, SETTLE_DELAY_MS))
+    const settled = runCompare(await runCapture({}))
+    if (sameDeltas(result.deltas, settled.deltas)) {
+      result = settled
+    } else {
+      unstable = {
+        first: result.deltas.map((delta) => delta.path),
+        second: settled.deltas.map((delta) => delta.path),
+      }
+    }
+  }
   return {
     report: {
       nodeId: spec.nodeId,
@@ -449,6 +479,7 @@ async function evaluateCase(
       capture: probe.capture
         ? parseSchema(CaptureInfoSchema, probe.capture, "capture preflight")
         : undefined,
+      ...(unstable ? { unstable } : {}),
       ...result,
     },
     probe,
@@ -619,6 +650,12 @@ function printResult(report: CaseReport, { notes }: { notes?: boolean }): void {
   console.log(`${report.nodeId} ${report.variant} "${report.variantName}" -> ${report.storyId}`)
   if (report.device) console.log(`  device ${report.device}`)
   console.log(formatResult(report))
+  if (report.unstable) {
+    console.log(
+      `  unstable: two passes disagreed (${report.unstable.first.join(", ") || "none"} vs ` +
+        `${report.unstable.second.join(", ") || "none"}) — the render was still settling; run it again`,
+    )
+  }
   const responsive = responsiveCounts(report)
   console.log(
     `  responsive: ${responsiveSummary(responsive)}` +
@@ -860,6 +897,9 @@ async function check(parsed: Parsed): Promise<number> {
     }
     if (!flags.has("json")) console.log("evidence: bundle matches the committed inventory")
   }
+  // The server is the last precondition: an evidence problem is the run's
+  // answer whether or not a Storybook is up.
+  if (!(await guardStorybook())) return 2
   const { report, probe, mapping } = await evaluateCase(spec, { project })
   if (flags.has("save-case")) {
     const saved = saveCase(
@@ -996,6 +1036,7 @@ async function captureWave(parsed: Parsed): Promise<number> {
   const out = String(flags.get("out") ?? DEFAULT_WAVE_DIR)
   const project = loadExport(stringFlag(flags, "input"))
   const limit = flags.get("limit") ? Number(flags.get("limit")) : Number.POSITIVE_INFINITY
+  if (!flags.get("dry-run") && !(await guardStorybook())) return 2
 
   let specs
   if (flags.get("cases") && flags.get("cases") !== true) {

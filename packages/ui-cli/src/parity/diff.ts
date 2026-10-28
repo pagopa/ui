@@ -33,6 +33,21 @@ export type TokenIndex = {
   space: TokenCandidate[]
 }
 
+// Two passes over the same case agree when they name the same paths with the
+// same values: the order the probe walks the tree in carries no meaning.
+export function sameDeltas(first: Delta[], second: Delta[]): boolean {
+  const fingerprint = (deltas: Delta[]) =>
+    deltas
+      .map(
+        (delta) =>
+          `${delta.path}=${JSON.stringify([delta.value ?? null, delta.source ?? null, delta.render ?? null])}`,
+      )
+      .sort()
+  const left = fingerprint(first)
+  const right = fingerprint(second)
+  return left.length === right.length && left.every((entry, index) => entry === right[index])
+}
+
 export type Delta = {
   path: string
   source?: unknown

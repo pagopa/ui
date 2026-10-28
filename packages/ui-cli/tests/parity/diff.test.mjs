@@ -10,6 +10,7 @@ import {
   compositionSignature,
   renderStroke,
   responsiveDeltas,
+  sameDeltas,
   scopeDeltas,
   tokenIndex,
 } from "../../src/parity/diff.ts"
@@ -497,4 +498,20 @@ test("a borderless render compares its inset ring as the source's inside stroke"
   )
   const bordered = { width: 1, color: "rgb(1, 2, 3)" }
   assert.deepEqual(renderStroke({ ...render, border: bordered }), bordered)
+})
+
+// The settle pass: a second capture of the same case is the same verdict when
+// it names the same paths with the same values, whatever order the probe walked.
+test("two passes agree on the same deltas in any order", () => {
+  const first = [
+    { path: "Message.box.height", source: 92, render: 76, severity: "delta" },
+    { path: "field.box.width", source: 136, render: 110, severity: "delta" },
+  ]
+  const second = [first[1], first[0]]
+  assert.equal(sameDeltas(first, second), true)
+  // A value that moved is a different pass, not the same one.
+  assert.equal(sameDeltas(first, [{ ...first[0], render: 80 }, first[1]]), false)
+  // So is a path that only one pass reported.
+  assert.equal(sameDeltas(first, [first[0]]), false)
+  assert.equal(sameDeltas([], []), true)
 })

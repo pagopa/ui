@@ -7,7 +7,7 @@
 import { CASES_PATH, isDraftCase, loadCaseFile, loadInventoryNodes, loadRegistry } from "./cases.ts"
 import { classify, tokenIndex, TOLERANCE, type Delta, type TokenIndex } from "./diff.ts"
 import { loadDevicePolicy, requiredDevices } from "../figma/devices.ts"
-import { STORYBOOK_URL } from "./render.ts"
+import { guardStorybook } from "./storybook.ts"
 import { rootPath } from "../lib/paths.ts"
 import type { ParityCase } from "../schemas/parity.ts"
 
@@ -46,8 +46,6 @@ export type AlignDeps = {
   evaluate?: (entry: ParityCase) => Promise<AlignReport>
   storybook?: () => Promise<boolean>
 }
-
-const START_STORYBOOK = "pnpm nx run pagopa-ui-storybook:storybook"
 
 // --------------------------------------------------------------- class hints
 
@@ -243,17 +241,6 @@ function loadNode(parsed: Parsed, nodeId: string): AlignNode {
   }
 }
 
-async function storybookAnswers(): Promise<boolean> {
-  try {
-    const response = await fetch(`${STORYBOOK_URL}/index.json`, {
-      signal: AbortSignal.timeout(3000),
-    })
-    return response.ok
-  } catch {
-    return false
-  }
-}
-
 // The default evaluator is `check --case`'s own path: the same case spec, the
 // same evidence guard and the same capture. It lives in `cli.ts`, which imports
 // this module, so it is loaded on demand instead of at module evaluation.
@@ -294,9 +281,8 @@ export async function align(parsed: Parsed, deps: AlignDeps = {}): Promise<numbe
       loadCaseFile(corpusPath(parsed_.flags)).filter((item) => item.nodeId === id))
   )(parsed, String(nodeId))
   const evaluate = deps.evaluate ?? (await cliEvaluate())
-  const answers = deps.storybook ?? storybookAnswers
+  const answers = deps.storybook ?? guardStorybook
   if (cases.length && !(await answers())) {
-    console.error(`error: no Storybook on ${STORYBOOK_URL}; start it with: ${START_STORYBOOK}`)
     return 2
   }
   const results: AlignCaseResult[] = []

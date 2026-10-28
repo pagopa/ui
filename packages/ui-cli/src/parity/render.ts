@@ -22,6 +22,9 @@ import path from "node:path"
 import { enterRoot } from "../lib/paths.ts"
 
 export const STORYBOOK_URL = process.env.STORYBOOK_URL ?? "http://localhost:6006"
+// A file every checkout owns, asked for through Vite's `/@fs/` endpoint: only
+// the tree the server was started from answers 200 (see `storybook.ts`).
+export const STORYBOOK_IDENTITY = "/apps/storybook/package.json"
 export const SCHEMA_VERSION = 1
 export const DEFAULT_ROOT = "#storybook-root"
 
