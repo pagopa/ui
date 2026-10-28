@@ -5,8 +5,10 @@ there. For one node, start with `align`: apply its hints, re-run it until
 aligned, then save the cases with `check --save-case`. `check` and `source`
 read `--input`, else `figma.snapshot`, else the committed evidence
 slice; `check` and `capture` also need Storybook on `storybook.url`
-(`STORYBOOK_URL=<url>` for another one). The default case corpus is
-`catalog.parityCases` (`--cases <file>` overrides it).
+(`STORYBOOK_URL=<url>` for another one), and they refuse a server that does not
+answer for this checkout — a sibling worktree holds `:6006` as easily as this
+one, so a worktree gives its Storybook a port of its own. The default case corpus
+is `catalog.parityCases` (`--cases <file>` overrides it).
 
 Every row is a target of `pagopa-ui-cli`: run it as
 `pnpm nx run pagopa-ui-cli:<target> --flag value`, the flags space-separated and

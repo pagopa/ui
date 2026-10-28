@@ -36,27 +36,41 @@ the session.
    REST targets with the token, the MCP export path without it
    (`figma:export --input <figma.mcpInventory>`, `delta.md`), and your report
    names which one.
-4. Check out the head branch in a worktree as `handoff.md` says.
+4. Check out the head branch in a worktree as `handoff.md` says. A git branch
+   checks out in one worktree at a time: when `git worktree list` already shows
+   the drift branch, name that path in the report before going further.
    **Done when** the worktree is on that branch and `pnpm install` has run.
-5. Read the pull request body and its `delta.json` artifact, then
+5. Serve this worktree's Storybook on a port of its own
+   (`pnpm nx run pagopa-ui-storybook:storybook --port 6007`) and export
+   `STORYBOOK_URL=http://localhost:6007` for every parity command: `:6006`
+   belongs to whichever worktree started first, and a render from the other
+   checkout is evidence for neither. `figma:parity:check` refuses a server that
+   does not answer for this tree.
+   **Done when** a parity command answers with a verdict instead of a
+   refusal.
+6. Read the pull request body and its `delta.json` artifact, then
    `figma:brief --node <id>` for every queued node.
    **Done when** every queued node has its brief, its target and its devices.
 
 ## Work
 
-- Follow `implementationOrder`, one node at a time, one commit per node, on the
-  pull request head branch.
-- Inspect every declared device and run the committed cases. Parity is the
-  render: a code read is not evidence.
-- Take exactly one decision per node: `new-from-figma.md`, `node-review.md`,
-  `exclude`, or `design-request.md`.
-- A design request keeps the node `pending`: write the record, name it in the
-  registry note, then continue with the next node. Never implement an answer
-  that does not exist. A visual question lands on `design.preview.branch` and
-  its one review pull request, never a second one.
-- Record every decision in `src/catalog/figma/registry.json`. Set `implemented`
-  only after inspecting the render of every declared device.
-- Leave no rule that targets a touched node `pending` or `stale`.
+Follow `implementationOrder`, one node at a time, one commit per node, on the
+pull request head branch. Every node takes the same three steps.
+
+1. **Measure.** Run the committed cases and inspect the render of every
+   declared device. Parity is the render: a code read is not evidence, and a
+   decision taken before the numbers is a guess.
+   **Done when** every declared device has its verdict and its residues.
+2. **Decide.** Take exactly one decision: `new-from-figma.md`,
+   `node-review.md`, `exclude`, or `design-request.md`.
+   - A design request keeps the node `pending`: write the record, name it in the
+     registry note, then continue with the next node. Never implement an answer
+     that does not exist. A visual question lands on `design.preview.branch`
+     and its one review pull request, never a second one.
+3. **Record** the decision and the render behind it in
+   `src/catalog/figma/registry.json`, and leave no rule that targets a touched
+   node `pending` or `stale`. `implemented` follows a reviewed render of every
+   declared device, never the code alone.
 
 **Done when** every node in `implementationOrder` is either `implemented` with a
 reviewed render, or `pending` with its design request or blocker named.
