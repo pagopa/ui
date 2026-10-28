@@ -2215,8 +2215,8 @@
           "name": "Autocomplete",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Pending behind docs/design-requests/2026-10-22-autocomplete-multiselect.md: the Type=Multiselect variants have no agreed behaviour yet."
+          "decision": "shipped",
+          "reason": "Shipped with the multiselect answered in docs/design-requests/2026-10-22-autocomplete-multiselect.md; the values that overflow the field are an open, non-blocking question in 2026-10-28-autocomplete-multiselect-overflow.md."
         },
         {
           "nodeId": "824:8937",
