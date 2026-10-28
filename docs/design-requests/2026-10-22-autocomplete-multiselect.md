@@ -142,7 +142,7 @@ questions the drawing left open:
 | What does the counter count?        | The selected values, not the matching options: the badge reads `2` and `3` next to the chips it replaces.                                                                                        |
 | Where is the badge drawn?           | At the trailing edge of the chips row, before the chevron, from two values on. A single value keeps its full name, so the count is never `1`.                                                    |
 | What is the second trailing action? | Clear. The `48x24 Action goup` of the `Multiselect` variants is `[clear][chevron]`; the `24x24` group of `Multiselect counter` is the chevron alone because the badge carries the clear control. |
-| How is one value removed?           | Each pill carries its own `close` in the `Type=Multiselect` variants, and the count badge carries one in `Type=Multiselect counter`.                                                                |
+| How is one value removed?           | Each pill carries its own `close` in the `Type=Multiselect` variants, and the count badge carries one in `Type=Multiselect counter`.                                                             |
 
 The field therefore maps as follows: `Type=Default` is single value
 (`multiple` absent, `value?: string`); `Type=Multiselect` and
