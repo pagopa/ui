@@ -3437,11 +3437,11 @@
     },
     "13211:26152": {
       "status": "pending",
-      "note": "Figma delta 2026-10-28: review new/changed node or dependency before marking implemented"
+      "note": "Figma delta 2026-10-28: new set, four Status variants (Status2 warning, Status3 info, Status4 check_circle, Status5 report) at 312x76: a 16px inset, a 24px status glyph, a 16/22 body and a 24px close mark, no arrow, unlike the dark Tooltip 230:1317. Blocked: no FIGMA_TOKEN, so figma export cannot pin the node (it requires the token even through the MCP inventory) and no parity case can be sourced. A token session pins it, then implements the status bubble or records why it is excluded."
     },
     "14709:279": {
       "status": "pending",
-      "note": "Figma delta 2026-10-28: review new/changed node or dependency before marking implemented"
+      "note": "Figma delta 2026-10-28: a new 24px icon on the • Icon page, absent from the 155-entry icon manifest. Blocked: the artwork generators read the REST snapshot (assets icons --write --input .figma/live-rest.json), which needs FIGMA_TOKEN, so nothing can be regenerated this session. A token session exports, regenerates the manifest and icon-assets, adds the registry entry with localAsset.rendering mask and runs artwork assets:check."
     }
   }
 }
