@@ -263,7 +263,10 @@ screenshot without an import edge: `packages/tokens`, `packages/artwork`, the
 design-system `assets`, the storybook manifests and lockfile, the visual harness
 itself, and any deleted source. The push on `main`, the nightly at 04:00 UTC and
 a manual run always capture everything, so a change the walk cannot see is
-caught within a day; the `visual:update` job is complete for the same reason.
+caught within a day. The `visual:update` job accepts the same scope, so the
+label rewrites the baselines the pull request moves and leaves the other images'
+bytes alone; the complete catalogue run on `main`, the nightly and a manual run
+is what revisits a story the walk missed.
 
 Run the same two steps locally:
 

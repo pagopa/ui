@@ -3,11 +3,12 @@
 #
 # A pull request captures only the stories its diff can move: `ui-cli test
 # visual` walks the imports the change reaches and writes the story ids the spec
-# keeps. Every other trigger — the push on `main`, the nightly, a manual run —
-# captures the whole catalogue, so a change the walk cannot see is caught within
-# a day rather than never. The update job always writes the complete catalogue:
-# it is the moment the baselines are accepted, and a scope that missed a story
-# would leave that story wrong for good.
+# keeps. The baseline update behind the `visual:update` label reads the same
+# scope, so the label accepts the stories the diff moves and leaves every other
+# baseline's bytes alone. Every other capture — the push on `main`, the nightly,
+# a manual run — is the whole catalogue, so a change the walk cannot see is
+# caught within a day rather than never, and that complete run is what revisits
+# a story the scope left out.
 # To accept a visual change, add the `visual:update` label to the pull request:
 # the workflow commits the new baselines to the head branch.
 # A commit made with GITHUB_TOKEN does not trigger a new run: remove the label
@@ -178,9 +179,30 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # The same scope the check job runs, so the label rewrites only the
+      # baselines the pull request can move. A change that widens to `all` still
+      # recaptures everything. `fetch-depth: 0` above already holds the base
+      # branch, so `--since` resolves without a fetch of its own.
+      - name: Scope the update
+        env:
+          # The tip of the base branch: the three-dot diff is the pull
+          # request's own change, whatever `main` moved in the meantime.
+          BASE: ${{ github.event.pull_request.base.sha }}
+          VISUAL_SCOPE: apps/storybook/visual/scope.json
+        run: |
+          git config --system --add safe.directory "$GITHUB_WORKSPACE" 2>/dev/null || true
+          # The index names the stories and the files that define them, so the
+          # build comes first and the update reuses it.
+          pnpm nx run pagopa-ui-storybook:build
+          pnpm nx run pagopa-ui-cli:test:visual -- --since "$BASE" --out "$VISUAL_SCOPE"
+
       - name: Write the baselines
         timeout-minutes: 60
-        run: pnpm nx run pagopa-ui-storybook:test:visual:update
+        env:
+          VISUAL_SCOPE: apps/storybook/visual/scope.json
+        # A change that moves no story (`--pass-with-no-tests`) leaves the job
+        # green with nothing to commit.
+        run: pnpm nx run pagopa-ui-storybook:test:visual:update -- --pass-with-no-tests
 
       - name: Commit the baselines
         env:
