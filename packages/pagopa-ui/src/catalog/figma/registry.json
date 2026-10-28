@@ -1360,7 +1360,7 @@
       "note": "Reviewed 2026-10-23 (second ring, implemented node without a case): all five source variants at the 320px set width, no Device axis — `61-2786-line` (Padding=0, Type=Line, 320x1 #e8ebf1), `61-2786-padding-16`, `61-2786-padding-24` and `61-2786-padding-32` (the line inset 16/24/32, 288/272/256x1, the spacers unpainted) and `61-2786-with-text` (320x20, 8px root gap, the 130x1 lines at y9.5, the Text layer `oppure` 14/20 Regular #555c70 at x138 measuring 43.47 against 44, a font metric). All five are strict-composition clean. The `With text` source `Line-Left`/`Line-Right` are empty frames that carry a 10px padding with no DOM counterpart, so they are mapped through the root gap and the centred text (mapping note). The `Fidelity` story renders all five variants at 320. `--border` is Figma Color/Border/Border fill #e8ebf1 (grey-100); do not swap in grey-200 #d2d6e3, which is reserved for nodes whose source stroke is grey-200 (Stepper 1314:10512). Text contract: `label` is consumer-owned content, translated outside the component. Guide: apps/storybook/src/guides/separator.md."
     },
     "616:3864": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/inputs/menus.tsx",
         "export": "Dropdown",
@@ -1380,7 +1380,7 @@
           "SourcePanelSkeleton"
         ]
       },
-      "note": "Figma delta 2026-10-28: review new/changed node or dependency before marking implemented"
+      "note": "Reviewed 2026-10-28 (2026-10-28 delta): the source rebuilt the panel as a 257px Content frame plus a sibling 15px scrollbar and added a Divider after the 48px action row (610:36297 272x393). The render is 274x393 (+2, the Figma scrollbar is a mockup overflow artifact, rows run full width) and already drew that divider (dividers, mx-0), so no code changed: 48 action row + 1 divider + five 68px rows and their 4 dividers. The rows dropped a decorative account_balance instance the render never had; the header mockup now says \"Value\", the story keeps the product label. Five 616-3864-* cases verify."
     },
     "67:3964": {
       "status": "implemented",
