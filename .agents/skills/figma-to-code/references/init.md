@@ -1,15 +1,15 @@
-# Init — the config and the token preflight
+# Init — the config and the MCP gate
 
 **Done when** `figma-to-code.yaml` exists beside the package it describes, every
-committed path it names exists, and the token preflight has been run (pass or a
-relayed failure).
+committed path it names exists, and both halves have run (a read call answered,
+token pass or a relayed failure).
 
 ## 1. The config
 
 1. **Exists?** Find it with `git ls-files '*figma-to-code.yaml'` and read it.
    When it exists, run `pnpm nx run pagopa-ui:docs`: it fails on a committed
    path the config names that does not exist and on every command that does not
-   resolve, and it reports where. Green → go to the preflight.
+   resolve, and it reports where. Green → go to the MCP gate.
 2. **Propose the paths.** Start from the defaults below and look for the real
    files (`glob` for `**/inventory.json`, `**/registry.json`,
    `**/parity-cases.json`, `**/device-policy.json`, `**/manifest.json`, the
@@ -69,18 +69,27 @@ must also move where a script reads it: pass it where the script takes a flag
 request. A Storybook on another port is passed as
 `STORYBOOK_URL=<url>` to the parity commands.
 
-## 2. The token preflight
+## 2. The MCP gate, then the token
 
-Only the live steps (plan/export, triage against a fresh library, pictogram
-export) need the token; everything else reads the pinned snapshot. The preflight
-is the session report:
+The Figma MCP server is how a session reads the source, so every use case that
+compares a node — a delta, a new node, a review — goes through the MCP gate. One
+read call (`get_metadata`, `get_screenshot`) answers it. When it does not answer —
+server absent, read tools unavailable, authentication refused — that use case
+ends before its first file change and the report names the call that stayed
+silent. Use cases over committed work — catalogue coverage, the checks — run
+without it.
+
+Then the session report. Only the live steps (plan/export, triage against a
+fresh library, pictogram export) need the token; everything else reads the pinned
+snapshot:
 
 ```bash
 pnpm nx run pagopa-ui-cli:figma:status
 ```
 
 `token present` clears the live steps. A missing, empty or whitespace-containing
-token prints its guidance instead: relay it, and keep the offline use cases on
-the pinned snapshot. The person exports the token in the shell that runs the
-session and restarts it, or runs the live command themselves and hands over its
-JSON output. Then wait for it, or continue with the offline use cases.
+token prints its guidance instead: relay it, read the source through the MCP
+export path ([delta.md](delta.md)) and keep the offline use cases on the pinned
+snapshot. The person exports the token in the shell that runs the session and
+restarts it, or runs the live command themselves and hands over its JSON output.
+Then wait for it, or continue with the offline use cases.

@@ -20,6 +20,11 @@ Consulted by every use case that reads or writes the catalogue.
 Generated files are never edited by hand. The refresh writes unformatted JSON:
 run `pnpm nx run-many -t fmt` before the green chain.
 
+`catalog.registry` and `catalog.parityCases` are reviewed by hand, in place: a
+parse-and-write round-trip reformats the whole file (the formatter keeps short
+arrays on one line), so a one-entry decision lands as a whole-file diff and
+hides the review. Change the entry's own lines and leave the rest byte for byte.
+
 `.figma/` is gitignored and can exceed 100 MB: never commit the snapshot, the
 renders or the probes. The parity tools never write under `src/` except the case
 corpus through `--save-case`.

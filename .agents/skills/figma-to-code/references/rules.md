@@ -27,7 +27,7 @@ The live snapshots are local and git-ignored. Refresh them when the session
 starts on a file that may have changed:
 
 ```bash
-pnpm nx run pagopa-ui-cli:figma:rules -- --refresh --node <nodeId>
+pnpm nx run pagopa-ui-cli:figma:rules --refresh --node <nodeId>
 pnpm nx run pagopa-ui-cli:figma:comments --refresh
 ```
 
@@ -92,7 +92,7 @@ containers before deciding; do not ask a person to arbitrate.
 Record the decision from the snapshot, never by writing the ledger by hand:
 
 ```bash
-pnpm nx run pagopa-ui-cli:figma:rules -- --mark <cardId> \
+pnpm nx run pagopa-ui-cli:figma:rules --mark <cardId> \
   --disposition imported \
   --title-en "<English title>" \
   --summary "<one sentence, in English>" \
@@ -112,7 +112,7 @@ again with the same English; if it changed, update the guide bullet too.
 ## Verification
 
 ```bash
-pnpm nx run pagopa-ui-cli:figma:rules -- --check
+pnpm nx run pagopa-ui-cli:figma:rules --check
 ```
 
 Hermetic: schema, mandatory fields, targets, guide files and their rules block

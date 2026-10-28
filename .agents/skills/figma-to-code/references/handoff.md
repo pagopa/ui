@@ -15,9 +15,10 @@ time; the person pushes and merges.
    pnpm install
    ```
 
-2. Run the token preflight ([init.md](init.md)). Without a token, the committed
-   evidence slice still gives the source side; Storybook is still required for
-   the render.
+2. Run the MCP gate and the session report ([init.md](init.md) §2). A session
+   without the MCP stops here, before its first file change; a missing
+   `FIGMA_TOKEN` only narrows the REST targets. Storybook is required for the
+   render.
 3. Read the handoff: the pull request body and its `delta.json` artifact
    (`counts`, `nodes`, `implementationOrder`, the device and coverage
    summaries), then the registry note of each node.

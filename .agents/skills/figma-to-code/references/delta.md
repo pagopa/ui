@@ -69,7 +69,7 @@ request ([node-review.md](node-review.md)).
      `pending`.
 
    The design fingerprint cannot see the `.Regole` boxes or the component
-   description: `pnpm nx run pagopa-ui-cli:figma:rules -- --plan` reports the
+   description: `pnpm nx run pagopa-ui-cli:figma:rules --plan` reports the
    rules a page changed, and `figma:brief --node <nodeId>` is the read that
    closes the gap ([rules.md](rules.md)).
 
