@@ -43,8 +43,10 @@ export interface TimelineItem {
   status?: TimelineItemStatus
   /** Cursor form: filled, outlined or small. @default "filled" */
   dot?: "filled" | "outlined" | "small"
-  /** Timestamp of the event. */
+  /** Timestamp of the event, drawn in the leading column. */
   timestamp?: { month?: string; day?: string; time?: string }
+  /** Time line under the description, from the source second `Description`. */
+  time?: string
   /** Extra plain-content slot (chip, action button). */
   children?: React.ReactNode
   /** Correction tag of the status card. */
@@ -261,6 +263,11 @@ function Timeline({
                     {item.correction}
                   </div>
                   {item.description ? <p className="text-label-mini">{item.description}</p> : null}
+                  {item.time ? (
+                    <span className="text-caption leading-none uppercase text-muted-foreground">
+                      {item.time}
+                    </span>
+                  ) : null}
                   {item.touchpoints || item.recipients ? (
                     // 4px between title and description, 12px between the
                     // title and the group when the description is absent
@@ -280,6 +287,11 @@ function Timeline({
                   <span className="text-label-mini-sb text-foreground">{item.title}</span>
                   {item.description ? (
                     <p className="text-label-mini text-foreground">{item.description}</p>
+                  ) : null}
+                  {item.time ? (
+                    <span className="text-caption leading-none uppercase text-muted-foreground">
+                      {item.time}
+                    </span>
                   ) : null}
                 </div>
                 {item.touchpoints || item.recipients ? (

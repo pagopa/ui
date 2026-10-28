@@ -437,14 +437,14 @@
       }
     },
     "12812:16248": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/data-display/timeline.tsx",
         "export": "Timeline",
         "story": "apps/storybook/src/Timeline.stories.tsx",
         "storyExports": ["SourceCase"]
       },
-      "note": "Figma delta 2026-10-28: review new/changed node or dependency before marking implemented"
+      "note": "Figma delta 2026-10-28: both device variants gained a second Description (758x14, 12/14.4 UPPER) under the copy, so the item now takes `time` and draws it as the same caption line the Microevento uses. Desktop Message 92 and card 128 against 92/124; the row and width residues are unchanged in cause. Mobile verified at the 417 drawer panel with the copy-wrap residues. Guide: apps/storybook/src/guides/timeline.md."
     },
     "1293:8394": {
       "status": "pending",

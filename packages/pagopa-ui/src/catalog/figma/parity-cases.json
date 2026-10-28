@@ -6578,11 +6578,11 @@
     "residues": [
       {
         "path": "Content.box.height",
-        "reason": "the retained 1px --border adds 2 outside the source inset and the shared tag measures 32 against the source 30 (the 261:6501/1909:98992 reading): the card measures 110 against the source 106"
+        "reason": "the retained 1px --border adds 2 outside the source inset and the shared tag measures 32 against the source 30 (the 261:6501/1909:98992 reading): the card measures 128 against the source 124"
       },
       {
         "path": "field.box.height",
-        "reason": "the source item instance insets the card 6px top/bottom inside its 118 row (the cursor column sets the row height); the DOM row hugs the card (110) and the dot stays centred on the card either way; the +4 follows the card border/tag reading"
+        "reason": "the source item instance insets the card 6px top/bottom inside its 136 row (the cursor column sets the row height); the DOM row hugs its 128 card, so the 8px gap is the 12px source inset less the 4px the card adds over the source 124; the dot stays centred on the card either way"
       },
       {
         "path": "Message.box.width",
@@ -6593,7 +6593,7 @@
         "reason": "follows the Message.box.width reading (746 against 750)"
       }
     ],
-    "note": "the composition check stays off: Content.offset.top measures 0 against the source 6 (the item instance 6/6 card inset inside its 118 row, the field.box.height residue) and the inner subjects 17 against 22 (the same inset less the runtime 1px border); the horizontal offsets are clean (Content.offset.left 32 = the cursor 24 + the 8px root gap)"
+    "note": "the composition check stays off: Content.offset.top measures 0 against the source 6 (the item instance 6/6 card inset inside its 136 row, the field.box.height residue) and the inner subjects 17 against 22 (the same inset less the runtime 1px border); the horizontal offsets are clean (Content.offset.left 32 = the cursor 24 + the 8px root gap). The row grows with the source time line: the second Description (758x14, 12/14.4 UPPER) is drawn as `time` under the copy and the Message measures 92 against the new 92."
   },
   {
     "id": "12812-16248-mobile-mobile",
@@ -6632,17 +6632,17 @@
       },
       {
         "path": "field.box.height",
-        "reason": "the source copy runs two lines in the drawn 816 column; at the 417 panel the same copy wraps to four lines, so the row measures 160 against the source 128 (the card border/tag +4 included)"
+        "reason": "the source row is 146 (the 134 card plus the 6/6 item inset); at the 417 drawer panel the copy wraps further and the row measures 178 against 146"
       },
       {
         "path": "Content.box.height",
-        "reason": "follows the copy-wrap reading above (160 against 116)"
+        "reason": "follows the copy-wrap reading above: the card measures 178 against the source 134"
       },
       {
         "path": "Message.box.height",
-        "reason": "follows the copy-wrap reading above (142 against 100)"
+        "reason": "follows the copy-wrap reading above: the message measures 160 against the source 118, the 18px of time line and its gap included"
       }
     ],
-    "note": "the composition check stays off: Content.offset.top measures 0 against the source 6 (the same item-instance inset) and the inner subjects 9 against 14 (the inset less the runtime 1px border)"
+    "note": "the composition check stays off: Content.offset.top measures 0 against the source 6 (the same item-instance inset) and the inner subjects 9 against 14 (the inset less the runtime 1px border). The source time line (the second Description, 758x14) is drawn as `time` under the copy on both devices."
   }
 ]

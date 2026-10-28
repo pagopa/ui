@@ -10,9 +10,10 @@ import timelineGuide from "./guides/timeline.md?raw"
 
 // The source sample of set `12812:16248` (`Device=Desktop|Mobile`): one Default
 // item with its correction tag. The element publishes a single item, so the
-// device captures map the variant to exactly this row.
+// device captures map the variant to exactly this row. The source keeps the copy
+// and the event time in two separate layers, so the capture passes `time`.
 const sourceDescription =
-  "Né {name/ragione sociale} né un suo delegato hanno effettuato un accesso entro i termini, ma la notifica SEND si è comunque perfezionata il giorno {DD/MM/YYYY}.  01 FEB, 14:30"
+  "Né {name/ragione sociale} né un suo delegato hanno effettuato un accesso entro i termini, ma la notifica SEND si è comunque perfezionata il giorno {DD/MM/YYYY}."
 
 const meta = {
   title: "Components/Data display/Timeline",
@@ -285,6 +286,7 @@ export const SourceCase: Story = {
         id: "law",
         title: "La notifica ha assunto valore di legge",
         description: sourceDescription,
+        time: "01 FEB, 14:30",
         status: "default",
         correction: <CorrectionTag status="not-valid" />,
       },
