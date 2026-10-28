@@ -27,13 +27,39 @@ declare global {
   }
 }
 
+interface Scope {
+  mode: "all" | "stories"
+  stories?: string[]
+}
+
 const index: { entries: Record<string, IndexEntry> } = JSON.parse(
   readFileSync(new URL("../dist/index.json", import.meta.url), "utf8"),
 )
 
+// The scope of this run: `VISUAL_SCOPE` names the file `ui-cli test visual`
+// wrote, which limits a pull request to the stories its diff can move. Without
+// it — the nightly, a manual run, a baseline update — the run is complete.
+// A relative path is read from the repository root, where the command wrote it.
+function storyScope(): Set<string> | null {
+  const file = process.env.VISUAL_SCOPE
+  if (!file) return null
+  const fromRoot = new URL(`../../../${file}`, import.meta.url)
+  const scope: Scope = JSON.parse(readFileSync(file.startsWith("/") ? file : fromRoot, "utf8"))
+  return scope.mode === "stories" ? new Set(scope.stories ?? []) : null
+}
+
+const scope = storyScope()
+
 const stories = Object.values(index.entries)
   .filter((entry) => entry.type === "story" && !(entry.tags ?? []).includes("no-visual"))
+  .filter((entry) => scope === null || scope.has(entry.id))
   .sort((a, b) => a.id.localeCompare(b.id))
+
+console.log(
+  scope === null
+    ? `visual: the complete catalogue, ${stories.length} stories`
+    : `visual: ${stories.length} stories of the diff's scope`,
+)
 
 for (const story of stories) {
   test.describe(story.id, () => {
