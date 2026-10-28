@@ -158,3 +158,144 @@ export const AutocompleteDisabledOptions: Story = {
     await expect(selectUnavailableCity).not.toHaveBeenCalled()
   },
 }
+
+const pickCities = fn()
+
+// Source frame: 272x48 (`824:8838`), Multiselect=True. One value keeps its full
+// name in a chip, two values collapse into the count badge.
+export const Multiselect: Story = {
+  args: { multiple: true, onValueChange: pickCities, label: "Erogatori" },
+  render: (args) => (
+    <div className="w-68 max-w-full">
+      <Autocomplete {...args} />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const field = canvas.getByRole("combobox", { name: /Erogatori/ })
+    const group = canvasElement.querySelector('[data-slot="autocomplete-multiple"]')
+    if (!(group instanceof HTMLElement)) throw new Error("Expected the chips row")
+    // The open list marks the field aria-hidden, so the trailing controls are
+    // read from the DOM instead of the accessibility tree.
+    const actions = () => [
+      ...canvasElement.querySelectorAll('[data-slot="autocomplete-actions"] button'),
+    ]
+
+    await userEvent.click(field)
+    await userEvent.type(field, "rom")
+    await userEvent.keyboard("{ArrowDown}{Enter}")
+    await expect(within(group).getByText("Roma")).toBeVisible()
+    await expect(group.querySelector('[data-slot="autocomplete-counter"]')).toBeNull()
+    // One value keeps its name and the action group keeps `[clear][chevron]`.
+    await expect(actions()).toHaveLength(2)
+    await expect(actions()[0]).toHaveAttribute("aria-label", "Svuota campo")
+
+    await userEvent.type(field, "mil")
+    await userEvent.keyboard("{ArrowDown}{Enter}")
+    const counter = group.querySelector('[data-slot="autocomplete-counter"]')
+    if (!(counter instanceof HTMLElement)) throw new Error("Expected the count badge")
+    await expect(counter).toHaveTextContent("2")
+    await expect(within(counter).getByText("2 selezionati")).toBeInTheDocument()
+    await expect(within(group).queryByText("Roma")).toBeNull()
+    // The badge carries the clear control, so the group keeps the arrow alone.
+    await expect(actions()).toHaveLength(1)
+    await expect(
+      within(counter).getByRole("button", { name: "Svuota tutti i valori" }),
+    ).toBeVisible()
+    await expect(pickCities).toHaveBeenLastCalledWith(["roma", "milano"])
+  },
+}
+
+export const MultiselectClearAll: Story = {
+  args: { multiple: true, defaultValue: ["roma", "milano", "napoli"], label: "Erogatori" },
+  render: (args) => (
+    <div className="w-68 max-w-full">
+      <Autocomplete {...args} />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const group = canvasElement.querySelector('[data-slot="autocomplete-multiple"]')
+    if (!(group instanceof HTMLElement)) throw new Error("Expected the chips row")
+    await expect(group.querySelector('[data-slot="autocomplete-counter"]')).toHaveTextContent("3")
+    await userEvent.click(canvas.getByRole("button", { name: "Svuota tutti i valori" }))
+    await expect(group.querySelector('[data-slot="autocomplete-counter"]')).toBeNull()
+    await expect(canvas.getByRole("combobox", { name: /Erogatori/ })).toHaveValue("")
+    await expect(canvas.getByRole("button", { name: "apri lista" })).toBeVisible()
+  },
+}
+
+export const MultiselectBackspace: Story = {
+  args: { multiple: true, defaultValue: ["roma"], label: "Erogatori" },
+  render: (args) => (
+    <div className="w-68 max-w-full">
+      <Autocomplete {...args} />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const field = canvas.getByRole("combobox", { name: /Erogatori/ })
+    const group = canvasElement.querySelector('[data-slot="autocomplete-multiple"]')
+    if (!(group instanceof HTMLElement)) throw new Error("Expected the chips row")
+    await expect(within(group).getByText("Roma")).toBeVisible()
+    field.focus()
+    await userEvent.keyboard("{Backspace}")
+    // The only value is gone, so the field is back to its resting label.
+    await expect(within(group).queryByText("Roma")).toBeNull()
+    await expect(canvas.getByRole("button", { name: "apri lista" })).toBeVisible()
+  },
+}
+
+export const MultiselectSelectAll: Story = {
+  args: { multiple: true, label: "Erogatori", selectAllLabel: "Seleziona tutti" },
+  render: (args) => (
+    <div className="w-68 max-w-full">
+      <Autocomplete {...args} />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole("combobox", { name: /Erogatori/ }))
+    await userEvent.click(await screen.findByRole("button", { name: "Seleziona tutti" }))
+    const group = canvasElement.querySelector('[data-slot="autocomplete-multiple"]')
+    if (!(group instanceof HTMLElement)) throw new Error("Expected the chips row")
+    await expect(group.querySelector('[data-slot="autocomplete-counter"]')).toHaveTextContent("5")
+    await userEvent.keyboard("{Escape}")
+  },
+}
+
+export const MultiselectOverridableTexts: Story = {
+  args: {
+    multiple: true,
+    defaultValue: ["roma", "milano"],
+    label: "Erogatori",
+    clearLabel: "Cancella l'erogatore",
+    clearAllLabel: "Azzera gli erogatori",
+    counterLabel: (count) => `${count} erogatori scelti`,
+    openLabel: "Mostra gli erogatori",
+    closeLabel: "Nascondi gli erogatori",
+    listLabel: (label) => `Suggerimenti per ${label}`,
+    selectedLabel: (values) => `Erogatori scelti: ${values.join(" / ")}`,
+    selectAllLabel: "Scegli tutti",
+  },
+  render: (args) => (
+    <div className="w-68 max-w-full">
+      <Autocomplete {...args} />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByText("2 erogatori scelti")).toBeInTheDocument()
+    await userEvent.click(canvas.getByRole("button", { name: "Mostra gli erogatori" }))
+    const listbox = await screen.findByRole("listbox")
+    await expect(listbox).toHaveAccessibleName("Suggerimenti per Erogatori")
+    await expect(await screen.findByRole("button", { name: "Scegli tutti" })).toBeVisible()
+    await userEvent.keyboard("{Escape}")
+    await userEvent.click(canvas.getByRole("button", { name: "Azzera gli erogatori" }))
+    await userEvent.click(canvas.getByRole("button", { name: "Mostra gli erogatori" }))
+    await userEvent.keyboard("{ArrowDown}{Enter}")
+    await expect(canvas.getByText("Erogatori scelti: Roma")).toBeInTheDocument()
+    await userEvent.keyboard("{Escape}")
+    await expect(canvas.getByRole("button", { name: "Cancella l'erogatore" })).toBeVisible()
+  },
+}

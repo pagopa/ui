@@ -2,7 +2,7 @@
 
 - Type: design
 - Issue: https://github.com/pagopa/ui/issues/40
-- Status: open — the node stays `pending`
+- Status: answered 12 November 2026 — Option A, the node stays `pending` until its parity capture
 - Decision owner: @gunzip
 - Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-autocomplete-multiselect--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-autocomplete-multiselect--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-autocomplete-multiselect--option-c
 
@@ -12,9 +12,11 @@ Date: 22 October 2026. Origin: flow A/E, milestone M5
 inventory, the registry note and the current code.
 
 The node stays `pending`; this request is named in its registry note. The
+decision below is written in
+[issue #40](https://github.com/pagopa/ui/issues/40#issuecomment-6471855771). The
 implementation is
 [autocomplete.tsx](../../packages/pagopa-ui/src/components/inputs/autocomplete.tsx),
-the candidate second implementation is
+the second implementation considered is
 [multi-select-field.tsx](../../packages/pagopa-ui/src/components/inputs/multi-select-field.tsx)
 and the story is
 [Autocomplete.stories.tsx](../../apps/storybook/src/Autocomplete.stories.tsx).
@@ -122,3 +124,60 @@ A recommendation is an option, not a decision.
   success, required, disabled; the tokens come from the design foundations.
 - The multiselect composition exists as `MultiSelectField` and is already
   reviewed under `602:9417`; nothing here re-opens that mapping.
+
+## Decision
+
+**Option A.** `Autocomplete` owns the two multiselect types: the field gains a
+`multiple` prop whose value is a list of strings, and the search input stays
+editable next to the chips. `MultiSelectField` keeps its own contract — a
+non-searchable chooser whose trigger renders the chips and whose popup is the
+list — and is not the target of this node.
+
+The rules card _BEHAVIOR & ACCESSIBILITY / Multiselect counter_ closes the four
+questions the drawing left open:
+
+| Question                            | Answer from the card                                                                                                                                                                             |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Chooser or search with chips?       | Search with chips: the card draws the text cursor after the last chip, and filtering continues while chips are present.                                                                          |
+| What does the counter count?        | The selected values, not the matching options: the badge reads `2` and `3` next to the chips it replaces.                                                                                        |
+| Where is the badge drawn?           | At the trailing edge of the chips row, before the chevron, from two values on. A single value keeps its full name, so the count is never `1`.                                                    |
+| What is the second trailing action? | Clear. The `48x24 Action goup` of the `Multiselect` variants is `[clear][chevron]`; the `24x24` group of `Multiselect counter` is the chevron alone because the badge carries the clear control. |
+
+The field therefore maps as follows: `Type=Default` is single value
+(`multiple` absent, `value?: string`); `Type=Multiselect` and
+`Type=Multiselect counter` are `multiple` (`value?: string[]`). The chevron
+points up while the list is open, as the card draws it, and clearing the last
+value resets the field to its resting label.
+
+### What the implementation does
+
+- `multiple` is a discriminated prop: `multiple?: false` keeps `value?: string`
+  and `onValueChange?: (value: string) => void`; `multiple: true` takes
+  `value?: string[]` and `onValueChange?: (value: string[]) => void`.
+- One value renders as a chip carrying its full label with no remove control;
+  from two values the chips collapse into a count badge whose visible count is
+  `aria-hidden` and whose screen-reader sentence comes from `counterLabel`. The
+  badge owns the clear action, so the trailing group is `[clear][chevron]` at
+  one value and `[chevron]` from two.
+- The input keeps filtering with chips present and the cursor sits after the
+  last chip. Without a per-chip remove control the last value leaves with
+  `Backspace` on an empty input, the native combobox removal.
+- A `selectAllLabel` adds the list's first row, which selects or clears every
+  enabled option.
+
+### Open points, left to the design owner
+
+1. The card's open state draws the chevron pointing up and names the control
+   "Chiudi il menu", a label that describes the action rather than the control;
+   the implementation follows both. Confirm the wording is intended next to the
+   state glyph.
+2. The card keeps the label drawn inside the control at two or more values and
+   floats it at one; the implementation floats it whenever the field holds a
+   value or has focus, because a chips row is not the notch the label folds
+   into. Confirm which of the two the set means.
+3. Removing one value of several has no visible per-chip control; the keyboard
+   path is `Backspace`. If a pointer path is required, the badge and the chips
+   need a remove glyph.
+4. A chip carries its full label and the field is 272 wide, so a long label is
+   truncated by the frame rather than inside the chip. Confirm the truncation
+   belongs to the chip.

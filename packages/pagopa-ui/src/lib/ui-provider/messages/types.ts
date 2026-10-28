@@ -103,6 +103,8 @@ export interface Messages {
   autocomplete: {
     emptyLabel: string
     clearLabel: string
+    counterLabel: (count: number) => string
+    clearAllLabel: string
     openLabel: string
     closeLabel: string
     loadingLabel: string

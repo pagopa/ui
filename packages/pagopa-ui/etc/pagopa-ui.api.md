@@ -81,27 +81,10 @@ export function AttachmentModule(input: React_2.ComponentProps<"section"> & {
 // @public (undocumented)
 export function AuthenticationCodeInput(input: AuthenticationCodeInputProps): React_2.JSX.Element;
 
-// Warning: (ae-forgotten-export) The symbol "FieldStateProps" needs to be exported by the entry point pagopa-ui.d.ts
+// Warning: (ae-forgotten-export) The symbol "AutocompleteProps" needs to be exported by the entry point pagopa-ui.d.ts
 //
 // @public (undocumented)
-export function Autocomplete(input: FieldStateProps & {
-    id?: string;
-    options: AutocompleteOption[];
-    value?: string;
-    defaultValue?: string;
-    onValueChange?: (value: string) => void;
-    name?: string;
-    emptyLabel?: string;
-    leadingIcon?: React_2.ReactNode;
-    clearLabel?: string;
-    openLabel?: string;
-    closeLabel?: string;
-    listLabel?: (label: string) => string;
-    selectedLabel?: (values: string[]) => string;
-    loading?: boolean;
-    loadingLabel?: string;
-    className?: string;
-}): React_2.JSX.Element;
+export function Autocomplete(props: AutocompleteProps): React_2.JSX.Element;
 
 // Warning: (ae-forgotten-export) The symbol "ItemRowContent" needs to be exported by the entry point pagopa-ui.d.ts
 //
@@ -373,6 +356,8 @@ export interface DialogProps {
 // @public (undocumented)
 export function DownloadCard(input: DownloadCardProps): JSX.Element;
 
+// Warning: (ae-forgotten-export) The symbol "FieldStateProps" needs to be exported by the entry point pagopa-ui.d.ts
+//
 // @public (undocumented)
 export function DragAndDrop(input: Omit<FieldStateProps, "label"> & {
     id?: string;
@@ -722,6 +707,8 @@ export interface Messages {
     autocomplete: {
         emptyLabel: string;
         clearLabel: string;
+        counterLabel: (count: number) => string;
+        clearAllLabel: string;
         openLabel: string;
         closeLabel: string;
         loadingLabel: string;
@@ -1704,7 +1691,7 @@ export function WaitingState(input: StateProps): JSX.Element;
 // dist/types/components/inputs/date-picker.d.ts:16:5 - (ae-forgotten-export) The symbol "Calendar" needs to be exported by the entry point pagopa-ui.d.ts
 // dist/types/components/navigation/footer.d.ts:36:5 - (ae-forgotten-export) The symbol "HeadingTag" needs to be exported by the entry point pagopa-ui.d.ts
 // dist/types/components/primitives/alert.d.ts:12:5 - (ae-forgotten-export) The symbol "AlertDirection" needs to be exported by the entry point pagopa-ui.d.ts
-// dist/types/lib/ui-provider/messages/types.d.ts:193:9 - (ae-forgotten-export) The symbol "StepperStatus" needs to be exported by the entry point pagopa-ui.d.ts
+// dist/types/lib/ui-provider/messages/types.d.ts:195:9 - (ae-forgotten-export) The symbol "StepperStatus" needs to be exported by the entry point pagopa-ui.d.ts
 
 // (No @packageDocumentation comment for this package)
 

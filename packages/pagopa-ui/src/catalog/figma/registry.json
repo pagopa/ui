@@ -1512,9 +1512,16 @@
       "target": {
         "module": "src/components/inputs/autocomplete.tsx",
         "export": "Autocomplete",
-        "story": "apps/storybook/src/Autocomplete.stories.tsx"
+        "story": "apps/storybook/src/Autocomplete.stories.tsx",
+        "storyExports": [
+          "Playground",
+          "Multiselect",
+          "MultiselectClearAll",
+          "MultiselectBackspace",
+          "MultiselectSelectAll"
+        ]
       },
-      "note": "Design request open: docs/design-requests/2026-10-22-autocomplete-multiselect.md (issue #40, @gunzip). Delta 2026-10-28 touched only the 7 Type=Multiselect and Type=Multiselect counter variants, box unchanged at 272x48: the chips row gained a 1px Cursor, so typed text stays next to the chips, and the Multiselect variants gained a 48x24 Action goup holding two 24px default arrows where the counter keeps one. What the second arrow does, what the counter counts and which component owns the types stay open; Autocomplete renders only Type=Default, so the node stays pending."
+      "note": "Answered 12 November 2026 (docs/design-requests/2026-10-22-autocomplete-multiselect.md, issue #40): Option A, the field owns both multiselect types through a discriminated `multiple` prop taking a `string[]`. Two values or more collapse into a count badge before the chevron; the badge counts the selected values and carries the clear action, so the trailing group is [clear][chevron] at one value and [chevron] above. Departures: the label floats when the field holds a value, and no per-chip remove control exists (Backspace removes the last). Pending on the parity capture."
     },
     "8702:266": {
       "status": "implemented",

@@ -52,6 +52,23 @@ field label (`Lista {label}`) and `selectedLabel` from the chosen value
 (`Caricamento lista in corso`), marks the list busy and shows the same line in
 the empty slot. A removable chip uses `Elimina {value}` by default.
 
+`multiple` turns the field into the source `Type=Multiselect` and
+`Type=Multiselect counter` types (`824:8872`, `11073:2336`). The value becomes a
+list: one chip per selection while only one value is held, and from two values a
+count badge in place of the chips. The badge counts the **selected values**, not
+the matching options, keeps its visible count `aria-hidden` and reads
+`counterLabel` (`{count} selezionati`) to a screen reader. The search input stays
+editable next to the chips and the cursor sits after the last chip, so filtering
+continues with chips present.
+
+The trailing group is the source `48x24 Action goup`: `[clear][chevron]` while
+one value is held, where the clear control carries `clearLabel`, and the chevron
+alone from two values, where the badge carries `clearAllLabel` (`Svuota tutti i
+valori`) instead. A single value keeps its full label, so the badge never reads
+`1`. Without a per-chip remove control the last value leaves with `Backspace` on
+an empty input, the native combobox removal. `selectAllLabel` adds the list's
+first row, which selects every enabled option or clears the selection.
+
 ## States
 
 The source `Status` axis drives the field states: `Enabled` is the resting
