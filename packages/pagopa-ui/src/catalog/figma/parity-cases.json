@@ -4176,14 +4176,14 @@
     "width": 300,
     "viewport": 1200,
     "depth": 6,
-    "root": "nav > div > div.mt-6",
+    "root": "nav > div > div > div.mt-6",
     "subjectRoot": ".Profile item",
     "subjects": {
-      "Description": "nav > div > div.mt-6 span.text-label-mini",
-      "Value": "nav > div > div.mt-6 span.text-body-big-sb",
-      "Container": "nav > div > div.mt-6 > div.flex.items-center",
-      "Gravatar": "nav > div > div.mt-6 [data-slot=\"avatar\"]",
-      "Content": "nav > div > ul > li:first-child > a"
+      "Description": "nav > div > div > div.mt-6 span.text-label-mini",
+      "Value": "nav > div > div > div.mt-6 span.text-body-big-sb",
+      "Container": "nav > div > div > div.mt-6 > div.flex.items-center",
+      "Gravatar": "nav > div > div > div.mt-6 [data-slot=\"avatar\"]",
+      "Content": "nav > div > div > ul > li:first-child a"
     },
     "residues": [
       {
@@ -4192,7 +4192,7 @@
       }
     ],
     "ignores": ["Gravatar.gap", "Gravatar.border.color", "Content.box.width"],
-    "note": "Composition check off: the story composes the profile block below the items where the source mockup places it first (the item offset reads -312 against the source 103), so the mapped offsets are clean in the block (Description 0, Value 22, Gravatar left 24/top 19) and the item rhythm is verified as its own subject."
+    "note": "reviewed 2026-10-29: the delta reaches this node only through its embedded Banner instances (FILL to HUG on their own frames), so no side-nav geometry changed. The case had been unmeasurable since 2026-10-24, when the condensed group/nav wrapper landed under the desktop block: its root and Content selectors no longer matched. Remapped to that wrapper and the row anchor; both devices now verify and the residues are the documented Avatar adaptations."
   },
   {
     "id": "1120-7458-side-nav-condensed-mobile",

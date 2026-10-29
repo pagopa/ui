@@ -2311,8 +2311,8 @@
           "name": "SideNav",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Figma delta 2026-10-29: queued by the drift refresh, the review decides"
+          "decision": "shipped",
+          "reason": "SideNav in the registry, rendered by the NestedAndProfile and Playground stories."
         },
         {
           "nodeId": "9684:50737",

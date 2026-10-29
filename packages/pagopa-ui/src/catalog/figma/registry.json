@@ -282,14 +282,14 @@
       "note": "Reviewed 2026-10-23 (closing the 2026-10-14 delta): plain component, no variant and no device axis, so one case at its 832x184 source width. `11149-7765-default` verifies the card (8px radius, 1px #e8ebf1 stroke, #ffffff fill, 16px padding, 16px root gap), the 800-wide message column with its 8px gap, the 56x56 `Error` pictogram, `Title` at 81 (16/22 Semibold #636b82), `Subtitle` at 111 (14/20 Regular #555c70) and the 48x22 `Button` text action at 147, every offset exact; the composition check is clean under --strict. The render exposed one structural delta fixed in feedback/empty-state.tsx: the message column was content-sized (412.83) where the source `EmptyStateWrapper` and `Container` frames fill 800, so it gained `w-full`, with no visual change in the centred composition. The single residue is the card height 188 against 184: the shared link action keeps its 24px native box (+2 on the source 22) and the CSS 1px border sits inside the 184px card (+2), the same retained-border/action residue Banner 261:6501 records. The pictogram slot is decorative (aria-hidden) and the title is a real heading (`titleAs`, h2 by default). Prop conventions: `icon` and `actions` are optional ReactNode slots with no boolean mirror, `title` is required, and every visible string is caller-owned; no departures."
     },
     "1120:7458": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/navigation/side-nav.tsx",
         "export": "SideNav",
         "story": "apps/storybook/src/SideNav.stories.tsx",
         "storyExports": ["Playground", "NestedAndProfile"]
       },
-      "note": "Figma delta 2026-10-29: review new/changed node or dependency before marking implemented"
+      "note": "Reviewed 2026-10-29: the delta reaches this node only through its embedded Banner instances (FILL→HUG on their own frames), so no side-nav geometry changed. 1120-7458-back-office-io-desktop had been unmeasurable since 2026-10-24, when the condensed group/nav wrapper landed under the desktop block — its root and Content selectors no longer matched; they are remapped to that wrapper and the row anchor. Both devices verify (the residues are the documented Avatar adaptations and the story's bounding-box fill). No component change."
     },
     "1120:7621": {
       "status": "implemented",
