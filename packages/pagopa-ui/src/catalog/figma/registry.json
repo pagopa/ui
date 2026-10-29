@@ -1498,14 +1498,14 @@
       "note": "Reviewed: CatalogueCard renders the source catalogue card itself (360x236, r8, the INSIDE-aligned 1px #e8ebf1 stroke as the card family's ring-1 ring-border so the 24px insets stay exact, pad 24, gap 24): header gap 12 = 44px Avatar small + 256px column (16/22 semibold title over the 16/22 grey-700 Ente, gap 2), 14/20 grey-700 description, action row 24 high with gap 24 = two 16/22 semibold blue text actions (source 22px line kept, >=44px pointer target through the invisible ::after expansion) and the 24px person/check feedback glyphs. eyebrow/tags/children/titleAs/className remain documented extensions. Residue: the Avatar placeholder glyph is our 24px optical size where the source instance is 18px (shared Avatar dependency). Case 808-6302-default captures the 360x236 source frame from `SourceCatalogueCard` with Header/Description/Action subjects, no device axis; strict composition and responsive clean. Guide: apps/storybook/src/guides/product-cards.md."
     },
     "8090:46352": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/navigation/skip-to-main-content.tsx",
         "export": "SkipToMainContent",
         "story": "apps/storybook/src/SkipToMainContent.stories.tsx",
         "storyExports": ["SourceBand", "Playground"]
       },
-      "note": "Figma delta 2026-10-29: review new/changed node or dependency before marking implemented"
+      "note": "Reviewed 2026-10-29: the source replaces the 320x40 white bar with a 236x56 dark pill — a 2px Blue 300 ring around a radius-8 #0e0f13 rect carrying a white 16/22 underlined label; the arrow is gone. navigation/skip-to-main-content.tsx renders an anchor holding the ring (border-2 border-skip-to-main-ring, px-0.5 py-0.5, rounded-xl, 234.66x56) around the pill span (h-12 rounded-lg bg-foreground px-4 text-body-sb underline, 226.66x48). Case 8090-46352-focused: verified-with-residues on the focus state and the responsive probe; the radius stays 16, the layer publishes no 12 step."
     },
     "824:8838": {
       "status": "implemented",

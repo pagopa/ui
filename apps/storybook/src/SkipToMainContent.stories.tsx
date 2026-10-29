@@ -25,9 +25,10 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-// The source band (`8090:46352`): the 320x40 white surface with its 8/24 insets,
-// the underlined 16/21 Semibold link and the 24px `arrow_forward`. The link is
-// fixed, so the story owns the page surface and renders fullscreen.
+// The source component (`8090:46352`): the 236x56 dark pill (radius 8, #0e0f13)
+// with its 2px Blue 300 ring, its 8/16 insets and the underlined white 16/21
+// Semibold link. The link is fixed, so the story owns the page surface and
+// renders fullscreen.
 export const SourceBand: Story = {
   tags: ["color-pinned"],
   parameters: { layout: "fullscreen" },

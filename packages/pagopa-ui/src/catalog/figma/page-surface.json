@@ -2472,8 +2472,8 @@
           "name": "SkipToMainContent",
           "kind": "COMPONENT",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Figma delta 2026-10-29: queued by the drift refresh, the review decides"
+          "decision": "shipped",
+          "reason": "SkipToMainContent in the registry, rendered by the SourceBand story."
         }
       ],
       "compositions": [
