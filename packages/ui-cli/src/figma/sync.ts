@@ -452,13 +452,15 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
         for (const identity of page.identities) {
           const node = published.get(identity.nodeId)
           if (!node) continue
-          // The identity follows its node to the page it now sits on, but only
-          // into a censused page: an uncensused one is a page read, not a move.
-          const destination = pages.get(node.pageId) ?? page
-          if (destination !== page) {
+          // The identity follows its node to the page it now sits on, and an
+          // uncensused destination takes no identity: that page is a page read.
+          const moved = node.pageId !== page.pageId
+          const destination = pages.get(node.pageId)
+          if (moved) {
             page.identities = page.identities.filter((entry) => entry.nodeId !== node.nodeId)
-            destination.identities.push(identity)
             reconciled = true
+            if (!destination) continue
+            destination.identities.push(identity)
           }
           if (identity.name !== node.name) {
             identity.name = node.name
@@ -468,7 +470,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
             identity.kind = node.type
             reconciled = true
           }
-          censused.set(node.nodeId, destination)
+          censused.set(node.nodeId, destination ?? page)
         }
       }
       for (const node of published.values()) {

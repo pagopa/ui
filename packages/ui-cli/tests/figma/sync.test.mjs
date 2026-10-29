@@ -1726,6 +1726,25 @@ test("a node published after the page was read joins the census as pending", () 
   )
 })
 
+test("a node moved onto a page the census never read leaves the census", () => {
+  fixture(
+    ({ check, read }) => {
+      const result = check("--pr-body", "pr-body.md", "--input", "live.json")
+      assert.equal(result.status, 0, result.stderr)
+      // The identity follows its node off the read page, and the unread
+      // destination is the page read the drift pull request asks for.
+      const pages = JSON.parse(read("src/catalog/figma/page-surface.json")).pages
+      assert.equal(pages[0].identities.length, 0)
+      assert.match(result.stderr, /1 page\(s\) with published nodes are not censused/)
+    },
+    {
+      ...implementedControlFiles,
+      "src/catalog/figma/page-surface.json": shippedCensus([shippedControl]),
+      "live.json": JSON.stringify([{ ...node, pageId: "3:0", pageName: "Elsewhere" }]),
+    },
+  )
+})
+
 test("--pr-body leaves the tree untouched when there is no drift", () => {
   fixture(({ check, read }) => {
     const inventory = read("src/catalog/figma/inventory.json")
