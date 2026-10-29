@@ -208,6 +208,16 @@ cannot certify alignment. With drift it refreshes the inventory, queues the
 production delta as `pending`, lowers the note-length ratchet when the queued
 stubs shorten its notes, formats the payload and opens one review pull
 request with the job's `GITHUB_TOKEN`; the runs on that pull request wait for
-the reviewer's approval. Its body is the handoff: per node the name, `nodeId`,
+the reviewer's approval.
+
+The queue reaches the census in the same run, because the two sides hold one
+decision: the refresh copies what it just read — `name`, `kind`, the page an
+identity sits on, `inLibrary` — and lowers `shipped` to `pending` with the
+delta's reason for every identity it queued, adding the identity of a node the
+file published after its page was read. A census row is what the page shows plus
+what was decided about it, and only the first is the job's to write: a decision
+it did not queue is left alone. This is why the drift pull request carries
+`page-surface.json` and why a shipped census never holds the job hostage. A
+page the census never read stays a page read. Its body is the handoff: per node the name, `nodeId`,
 link, change class, current status and target, the per-device variants and the
 three decisions.

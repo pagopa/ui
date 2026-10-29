@@ -83,6 +83,7 @@ import {
   checkPageSurface,
   formatSurfaceLine,
   loadPageSurface,
+  PAGE_SURFACE_PATH,
   surfacePending,
   surfaceUncensused,
   surfaceUnmirrored,
@@ -106,6 +107,8 @@ import {
   RegistrySchema,
   type ApiExceptions,
   type InventoryNode,
+  type PageSurface,
+  type PageSurfacePage,
   type Registry,
 } from "../schemas/catalogue.ts"
 import type { DevicePolicy } from "../schemas/devices.ts"
@@ -276,6 +279,10 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
   // The ratchet move of this refresh, when the queued stubs shortened notes:
   // the pull request body reports it, because the reviewer must not raise it.
   let ratchet: { from: number; to: number } | null = null
+  // The census this refresh reconciled, when the queue moved a decision on the
+  // page side: the gate below reads it instead of the committed file, so the
+  // check sees the state the pull request will carry.
+  let reconciledSurface: PageSurface | null = null
   let restSnapshot: Awaited<ReturnType<typeof fetchFigmaSnapshot>> | null = null
   let inputOption = option("input")
   if (!inputOption && (flag("write") || flag("triage") || flag("pr-body"))) {
@@ -424,6 +431,82 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     registry.entries = dropKeys<Registry["entries"][string]>(registry.entries, removed)
     evidenceExceptions = dropKeys<string>(evidenceExceptions, new Set([...renewed, ...removed]))
     pendingWrites.set(REGISTRY_PATH, registry)
+    // The census records the same decision on the page side, so the queue has to
+    // reach it too: a refresh that lowered a node to `pending` while the census
+    // still said `shipped` fails the page-surface gate below, and the drift pull
+    // request never opens. A census row holds two kinds of claim — what the page
+    // shows (`name`, `kind`, the page it sits on, the library that publishes it)
+    // and what was decided about it (`decision`, `reason`) — and the refresh owns
+    // the first: it copies the observations it just read, while the decision moves
+    // only where the queue renewed it, so no page read is needed and no judgement
+    // is invented.
+    const surfaceFile = path.join(ROOT, PAGE_SURFACE_PATH)
+    const surface = fs.existsSync(surfaceFile) ? loadPageSurface(surfaceFile) : null
+    if (surface) {
+      const reason = `Figma delta ${date}: queued by the drift refresh, the review decides`
+      const pages = new Map(surface.pages.map((page) => [page.pageId, page]))
+      const published = new Map(committed.map((node) => [node.nodeId, node]))
+      const censused = new Map<string, PageSurfacePage>()
+      let reconciled = false
+      for (const page of surface.pages) {
+        for (const identity of page.identities) {
+          const node = published.get(identity.nodeId)
+          if (!node) continue
+          // The identity follows its node to the page it now sits on, but only
+          // into a censused page: an uncensused one is a page read, not a move.
+          const destination = pages.get(node.pageId) ?? page
+          if (destination !== page) {
+            page.identities = page.identities.filter((entry) => entry.nodeId !== node.nodeId)
+            destination.identities.push(identity)
+            reconciled = true
+          }
+          if (identity.name !== node.name) {
+            identity.name = node.name
+            reconciled = true
+          }
+          if (identity.kind !== node.type) {
+            identity.kind = node.type
+            reconciled = true
+          }
+          censused.set(node.nodeId, destination)
+        }
+      }
+      for (const node of published.values()) {
+        const page = censused.get(node.nodeId)
+        // A node the file published after its page was read: the census cannot
+        // have decided it, so the queue writes the decision instead of guessing
+        // `shipped`. An uncensused page is a page read, and the gate says so.
+        if (!page) {
+          const destination = pages.get(node.pageId)
+          if (!destination || !renewed.has(node.nodeId)) continue
+          destination.identities.push({
+            nodeId: node.nodeId,
+            name: node.name,
+            kind: node.type,
+            inLibrary: true,
+            decision: "pending",
+            reason,
+          })
+          censused.set(node.nodeId, destination)
+          reconciled = true
+          continue
+        }
+        const identity = page.identities.find((entry) => entry.nodeId === node.nodeId)
+        // A node the library now exports owes the decision the library requires,
+        // and the queue is the one decision this refresh may write.
+        const gained = identity ? !identity.inLibrary : false
+        const queued = renewed.has(node.nodeId) && identity?.decision !== "pending"
+        if (!identity || (!gained && !queued)) continue
+        identity.inLibrary = true
+        identity.decision = "pending"
+        identity.reason = reason
+        reconciled = true
+      }
+      if (reconciled) {
+        reconciledSurface = surface
+        pendingWrites.set(PAGE_SURFACE_PATH, surface)
+      }
+    }
     pendingWrites.set(EVIDENCE_EXCEPTIONS_PATH, { storyEvidence: evidenceExceptions })
     // The stub above replaces a reviewed note with a shorter one, so the count of
     // long notes drops with it. The ratchet fails in either direction: the same
@@ -938,7 +1021,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
   // the procedure at all. The committed census makes both data, and this gate
   // keeps it and the inventory in step, both ways.
   try {
-    const surface = loadPageSurface()
+    const surface = reconciledSurface ?? loadPageSurface()
     const cases = devicePolicy ? loadCaseFile() : []
     const result = checkPageSurface(surface, {
       nodes: committed,

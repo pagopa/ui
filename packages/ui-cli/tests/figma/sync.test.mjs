@@ -1607,6 +1607,125 @@ test("--pr-body refreshes the inventory and writes the review body on drift", ()
   )
 })
 
+// The census and the registry hold the same decision on two sides: the queue
+// lowers the registry to `pending`, so the refresh has to lower the census row
+// with it, or the page-surface gate fails the drift pull request before it opens.
+const shippedCensus = (identities) =>
+  JSON.stringify({
+    fileKey: "fixture",
+    readAt: "2026-01-01",
+    note: "Fixture census: the Controls page was read.",
+    pages: [{ pageId: "1:0", pageName: "Controls", identities, compositions: [] }],
+  })
+
+const implementedControl = JSON.stringify({
+  bulkRules: [],
+  entries: {
+    "1:1": {
+      status: "implemented",
+      target: {
+        module: "src/components/primitives/control.tsx",
+        export: "Control",
+        story: "src/stories/Fixture.stories.tsx",
+        storyExports: ["Example"],
+      },
+    },
+  },
+})
+
+const implementedControlFiles = {
+  "src/catalog/figma/registry.json": implementedControl,
+  "src/components/primitives/control.tsx":
+    "export function Control() { return <button>Control</button> }",
+  "src/stories/Fixture.stories.tsx":
+    'import { Control } from "@/components/primitives/control"\nimport { figmaEmbedUrl } from "@/catalog/figma/file"\nexport default { title: "Fixture", component: Control, parameters: { design: { type: "figma", url: figmaEmbedUrl("1:1") } } }\nexport const Example = {}',
+}
+
+const shippedControl = {
+  nodeId: "1:1",
+  name: "Control",
+  kind: "COMPONENT_SET",
+  inLibrary: true,
+  decision: "shipped",
+}
+
+test("the drift refresh lowers the census of the identity it queues", () => {
+  fixture(
+    ({ check, read }) => {
+      const result = check("--pr-body", "pr-body.md", "--input", "live.json")
+      assert.equal(result.status, 0, result.stderr)
+      const census = JSON.parse(read("src/catalog/figma/page-surface.json"))
+      const identity = census.pages[0].identities[0]
+      assert.equal(identity.decision, "pending")
+      assert.match(identity.reason, /Figma delta \d{4}-\d{2}-\d{2}/)
+      // The census is part of the review the pull request carries.
+      assert.match(result.stdout, /validated and written: src\/catalog\/figma\/page-surface\.json/)
+    },
+    {
+      ...implementedControlFiles,
+      "src/catalog/figma/page-surface.json": shippedCensus([shippedControl]),
+      "live.json": JSON.stringify([
+        {
+          ...node,
+          properties: {
+            Size: { type: "VARIANT", defaultValue: "Large", variantOptions: ["Small", "Large"] },
+          },
+        },
+      ]),
+    },
+  )
+})
+
+test("a renamed identity follows its node instead of failing the census", () => {
+  fixture(
+    ({ check, read }) => {
+      const result = check("--pr-body", "pr-body.md", "--input", "live.json")
+      assert.equal(result.status, 0, result.stderr)
+      const identity = JSON.parse(read("src/catalog/figma/page-surface.json")).pages[0]
+        .identities[0]
+      assert.equal(identity.name, "Control Renamed")
+      // A rename is Figma's, not a decision: the review keeps what it approved.
+      assert.equal(identity.decision, "shipped")
+    },
+    {
+      ...implementedControlFiles,
+      "src/catalog/figma/page-surface.json": shippedCensus([shippedControl]),
+      "live.json": JSON.stringify([{ ...node, name: "Control Renamed" }]),
+    },
+  )
+})
+
+test("a node published after the page was read joins the census as pending", () => {
+  fixture(
+    ({ check, read }) => {
+      const result = check("--pr-body", "pr-body.md", "--input", "live.json")
+      assert.equal(result.status, 0, result.stderr)
+      const identities = JSON.parse(read("src/catalog/figma/page-surface.json")).pages[0].identities
+      const added = identities.find((identity) => identity.nodeId === "2:2")
+      assert.equal(added.name, "Second")
+      assert.equal(added.decision, "pending")
+      assert.equal(added.inLibrary, true)
+      assert.match(added.reason, /Figma delta \d{4}-\d{2}-\d{2}/)
+      assert.equal(identities.find((identity) => identity.nodeId === "1:1").decision, "shipped")
+    },
+    {
+      ...implementedControlFiles,
+      "src/catalog/figma/page-surface.json": shippedCensus([shippedControl]),
+      "live.json": JSON.stringify([
+        node,
+        {
+          nodeId: "2:2",
+          name: "Second",
+          type: "COMPONENT",
+          pageId: "1:0",
+          pageName: "Controls",
+          dependencies: [],
+        },
+      ]),
+    },
+  )
+})
+
 test("--pr-body leaves the tree untouched when there is no drift", () => {
   fixture(({ check, read }) => {
     const inventory = read("src/catalog/figma/inventory.json")
