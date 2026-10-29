@@ -1033,7 +1033,7 @@
       }
     },
     "261:6501": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/feedback/banner.tsx",
         "export": "Banner",
@@ -1046,7 +1046,7 @@
           "SourceHierarchies"
         ]
       },
-      "note": "Figma delta 2026-10-29: review new/changed node or dependency before marking implemented"
+      "note": "Reviewed 2026-10-29: the delta touches only the Vertical/Device=Mobile variants — the source corrected them from desktop-shaped 852x222 frames to a 272x283 mobile stack, so 261-6501-mobile-mobile was recaptured at the 320 viewport with the root forced to 272 and now verifies with its five shared-adaptation residues (the +5 height is the 24px action row). 261-6501-desktop-desktop is unchanged and still verifies; the FILL→HUG relaxation on the desktop variants is geometry-neutral. No component change was needed."
     },
     "2776:74243": {
       "status": "mocked",

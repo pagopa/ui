@@ -2054,8 +2054,8 @@
     "storyId": "components-feedback-banner--source-case-vertical",
     "state": "Mobile",
     "device": "mobile",
-    "width": 852,
-    "viewport": 1200,
+    "width": 272,
+    "viewport": 320,
     "depth": 5,
     "root": "[role=\"status\"]",
     "subjects": {
@@ -2088,7 +2088,8 @@
         "reason": "the 44px native close target; the source close frame is 24px with the glyph below it (guides/banners.md)"
       }
     ],
-    "ignores": ["Chip.radius", "Pictogram.gap"]
+    "ignores": ["Chip.radius", "Pictogram.gap"],
+    "note": "reviewed 2026-10-29: only the Vertical/Device=Mobile variants changed — the source corrected them from desktop-shaped 852x222 frames to a 272x283 mobile stack (Line 4x251, Content 220x251, Title 148x56, Description 220x110). Captured at the 320 viewport with the root forced to the source 272; the Title/Description/Chip/Pictogram/Button/Close offsets map exactly and the responsive probe is clean. The five shared-adaptation residues are unchanged and the component needed no change."
   },
   {
     "id": "295-1360-unchecked-enabled",

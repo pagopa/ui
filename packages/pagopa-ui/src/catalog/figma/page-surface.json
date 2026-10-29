@@ -1853,8 +1853,8 @@
           "name": "Banner",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Figma delta 2026-10-29: queued by the drift refresh, the review decides"
+          "decision": "shipped",
+          "reason": "Banner in the registry, rendered by the SourceCase and SourceCaseVertical stories."
         }
       ],
       "compositions": []
