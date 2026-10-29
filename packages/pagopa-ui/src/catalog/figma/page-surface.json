@@ -2085,8 +2085,8 @@
           "name": "IDModule",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Figma delta 2026-10-29: queued by the drift refresh, the review decides"
+          "decision": "shipped",
+          "reason": "IDModule in the registry, rendered by its source stories."
         }
       ],
       "compositions": []

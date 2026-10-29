@@ -1393,14 +1393,14 @@
       "note": "Reviewed: the scrim uses Color/Surface/Surface overlay (`bg-overlay`) at 35% opacity, #0e0f13, with no blur, radius 0 and clipping to its container, the same modal backdrop as Dialog and Drawer. Case `67-3964-default` captures the source 320x568 veil from `Fidelity` at 320x568, no device axis; residue: the component's p-6 (24px) content inset guards projected content, since the source scrim draws no content. The default loading spinner is a documented runtime extension and is disabled in Fidelity. Adaptation `accessible-status-region`: a polite, visually hidden loading status is kept while the source scrim has no visible content. Guide: apps/storybook/src/guides/overlay.md."
     },
     "731:20386": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/composites/identity-provider-picker.tsx",
         "export": "IdentityProviderPicker",
         "story": "apps/storybook/src/IdentityProviderPicker.stories.tsx",
         "storyExports": ["Playground", "Desktop"]
       },
-      "note": "Figma delta 2026-10-29: review new/changed node or dependency before marking implemented"
+      "note": "Reviewed 2026-10-29: the delta carries no geometry for this node — the semantic diff of the pinned source found no structural field changed across its 803 nodes, so both declared devices were re-rendered: 731-20386-desktop-desktop and 731-20386-mobile-mobile verify clean with no residues. No component change."
     },
     "733:22841": {
       "status": "implemented",
