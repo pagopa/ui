@@ -41,6 +41,17 @@ function codeFrame(input: Element) {
   return frame
 }
 
+// A chooser that just closed stays mounted, and inert, until its exit settles:
+// an option query that lands in that frame matches the item of the list the
+// story has already left, and the pointer interaction fails on the inert
+// surface. Each chooser is therefore read from the listbox of the field the
+// story opens, in the same accessible name the trigger carries.
+async function chooseOption(trigger: HTMLElement, listName: string | RegExp, optionName: string) {
+  await userEvent.click(trigger)
+  const listbox = await screen.findByRole("listbox", { name: listName })
+  await userEvent.click(await within(listbox).findByRole("option", { name: optionName }))
+}
+
 function FormControls() {
   return (
     <form
@@ -742,11 +753,9 @@ export const ControlledSelectionFields: Story = {
     await userEvent.type(city, "rom")
     await userEvent.keyboard("{ArrowDown}{Enter}")
     await expect(new FormData(form).get("city")).toBe("roma")
-    await userEvent.click(province)
-    await userEvent.click(await screen.findByRole("option", { name: "Roma" }))
+    await chooseOption(province, /^Provincia/, "Roma")
     await expect(new FormData(form).get("province")).toBe("rm")
-    await userEvent.click(services)
-    await userEvent.click(await screen.findByRole("option", { name: "Tributi" }))
+    await chooseOption(services, /^Servizi/, "Tributi")
     await userEvent.keyboard("{Escape}")
     await expect(new FormData(form).getAll("services")).toEqual(["scuola", "tributi"])
 
@@ -822,14 +831,10 @@ export const CancelledFormReset: Story = {
     await userEvent.type(city, "mil")
     await userEvent.keyboard("{ArrowDown}{Enter}")
     const province = canvas.getByRole("combobox", { name: "Provincia" })
-    await userEvent.click(province)
-    await userEvent.click(await screen.findByRole("option", { name: "Milano" }))
-    await waitFor(() =>
-      expect(screen.queryByRole("option", { name: "Milano" })).not.toBeInTheDocument(),
-    )
+    await chooseOption(province, "Provincia", "Milano")
+    await waitFor(() => expect(screen.queryByRole("listbox")).not.toBeInTheDocument())
     const cities = canvas.getByRole("combobox", { name: "Comuni di interesse" })
-    await userEvent.click(cities)
-    await userEvent.click(await screen.findByRole("option", { name: "Milano" }))
+    await chooseOption(cities, "Comuni di interesse", "Milano")
     await userEvent.keyboard("{Escape}")
     const file = canvas.getByLabelText("Ricevuta")
     if (!(file instanceof HTMLInputElement)) throw new Error("Expected a native file input")
