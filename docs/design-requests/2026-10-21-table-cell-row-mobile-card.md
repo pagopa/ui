@@ -6,8 +6,7 @@
 - Decision owner: @gunzip
 - Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-table-cell-row-mobile-card--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-table-cell-row-mobile-card--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-table-cell-row-mobile-card--option-c
 
-Date: 21 October 2026. Origin: flow A/E, milestone M5
-([figma-fidelity-and-drift.md](../plans/figma-fidelity-and-drift.md)), node
+Date: 21 October 2026. Origin: the alignment wave, node
 `1344:40672`. Figma was not modified: the measurements below come from the
 pinned inventory, the registry note and the current render.
 

@@ -6,7 +6,7 @@
 - Decision owner: @gunzip
 - Preview: not applicable — the question is a set of token values, not a visual choice; the issue carries the tables
 
-Date: 16 October 2026. Origin: flow C (`docs/plans/c-foundation-and-lint.md`).
+Date: 16 October 2026. Origin: the design foundations flow.
 Figma was not modified: the values below are derived read-only from the
 "Regole spaziatura" page (`123:4852`) and from the recurring values in the
 component snapshot (`.figma/live-rest.json`). The manifest

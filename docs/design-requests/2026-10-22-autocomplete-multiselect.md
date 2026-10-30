@@ -6,8 +6,7 @@
 - Decision owner: @gunzip
 - Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-autocomplete-multiselect--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-autocomplete-multiselect--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-autocomplete-multiselect--option-c
 
-Date: 22 October 2026. Origin: flow A/E, milestone M5
-([figma-fidelity-and-drift.md](../plans/figma-fidelity-and-drift.md)), node
+Date: 22 October 2026. Origin: the alignment wave, node
 `824:8838`. Figma was not modified: the measurements below come from the pinned
 inventory, the registry note and the current code.
 
