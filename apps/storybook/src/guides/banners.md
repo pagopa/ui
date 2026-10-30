@@ -6,25 +6,16 @@
 
 <!-- component-rules:end -->
 
-`Banner` exposes the source White, Primary and Grey color treatments and the
-Primary, Secondary and Tertiary hierarchies. `direction` selects the source
-horizontal or vertical composition; vertical is used for the mobile cases.
-Callers own the native action, optional Highlight Chip, source icon and Push
-pictogram. `title` is optional, as the source `Title` boolean allows; a banner
-without a title renders no heading and takes its accessible name from `label`. The source icon and pictogram are decorative; the native dismiss
-button retains the source close glyph and has an accessible name.
+`Banner` exposes the source White, Primary and Grey colour treatments and the
+Primary, Secondary and Tertiary hierarchies. `direction` selects the horizontal
+or vertical composition; vertical is the mobile case. Callers own the native
+action, the optional Highlight Chip, the source icon and the Push pictogram.
 
-The source paddings, radius, accents, gaps and type scales map to the existing
-tokens, and the retained border keeps visible separation and system-color
-contrast without one-off padding compensation. Long titles and descriptions
-wrap instead of being clipped; the component remains `w-full`, and the
-specimens use the source artboard width as an evidence viewport rather than a
-fixed runtime width — the desktop artboards and the 272px wide mobile artboard,
-the latter captured inside the 320px viewport.
-
-Text actions are content-sized in the source; their native targets grow to the
-shared accessible minimum, and the close activation target grows while keeping
-its glyph inside the source frame. Buttons remain native, non-submitting
-controls in the examples, and the close button is keyboard-focusable with an
-explicit solid focus perimeter. No dark application theme or motion is required
-for this component.
+`title` is optional: without it the banner renders no heading and takes its
+accessible name from `label`. The source icon and pictogram are decorative. The
+close button is a native, keyboard-focusable icon button with an accessible name
+and an explicit solid focus perimeter, and the other actions stay native,
+non-submitting controls whose targets reach the shared accessible minimum
+without growing their text line. Long titles and descriptions wrap instead of
+being clipped, and the component stays `w-full` and content-driven. No dark
+application theme or motion is required.

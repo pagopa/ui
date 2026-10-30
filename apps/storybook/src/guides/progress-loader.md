@@ -1,33 +1,16 @@
-# ProgressLoader
-
-`ProgressLoader` implements the component set `236:1311`; its only required
-variant is `Status=Default` (`236:1312`). `FigmaDefault` renders the source
-composition at an evidence viewport; the runtime bar remains width-responsive,
-and the artboard width is not a fixed component width.
+`ProgressLoader` implements the source `Status=Default` bar and stays width
+responsive: the bar has no fixed width.
 
 ## Behavior and accessibility
 
-- An omitted `value` renders the source's indeterminate indicator and retains
-  the existing pulse motion. Reduced-motion preferences stop that animation.
-- A numeric `value` is clamped to 0–100 and rendered through the shared
-  progress primitive with an accessible value.
-- `showLabel` controls the visible label/value row. Hiding the row keeps the
-  progressbar's accessible name and applies the source's padded bar layout.
+- An omitted `value` renders the indeterminate indicator and retains the pulse
+  motion. Reduced-motion preferences stop that animation.
+- A numeric `value` is clamped to 0-100 and rendered through the shared progress
+  primitive with an accessible value.
+- `showLabel` controls the visible label/value row; hiding the row keeps the
+  progressbar's accessible name.
 - The track and indicator are decorative; the progressbar exposes its role,
   name and determinate or indeterminate state.
 
-The source colors use the existing secondary/primary tokens with no delta. The
-label layout's spacing tokens remain a library extension; the `Matrix` story's
-constrained wrapper is story-only and does not impose a runtime width on the
-component.
-
-## Source mapping
-
-`Indeterminate` is the parity surface: `236-1311-default` compares the
-`Status=Default` variant (272×4) at the 272px source width. The source draws
-three rectangles named `Color` — the 10×4 leading piece, the 262×4 track and
-the 32×4 primary indicator at x10 — so the case maps the addressable leading
-piece and reviews the other two in the render. The label row and the determinate
-`value` path are library extensions with no source variant; the story label sits
-above the mapped bar. The bar is width-responsive, so 272px is the artboard
-composition, not a fixed runtime width.
+The label row and the determinate `value` path are library extensions with no
+source variant.
