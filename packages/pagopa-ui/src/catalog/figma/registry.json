@@ -282,14 +282,14 @@
       "note": "Reviewed 2026-10-23 (closing the 2026-10-14 delta): plain component, no variant and no device axis, so one case at its 832x184 source width. `11149-7765-default` verifies the card (8px radius, 1px #e8ebf1 stroke, #ffffff fill, 16px padding, 16px root gap), the 800-wide message column with its 8px gap, the 56x56 `Error` pictogram, `Title` at 81 (16/22 Semibold #636b82), `Subtitle` at 111 (14/20 Regular #555c70) and the 48x22 `Button` text action at 147, every offset exact; the composition check is clean under --strict. The render exposed one structural delta fixed in feedback/empty-state.tsx: the message column was content-sized (412.83) where the source `EmptyStateWrapper` and `Container` frames fill 800, so it gained `w-full`, with no visual change in the centred composition. The single residue is the card height 188 against 184: the shared link action keeps its 24px native box (+2 on the source 22) and the CSS 1px border sits inside the 184px card (+2), the same retained-border/action residue Banner 261:6501 records. The pictogram slot is decorative (aria-hidden) and the title is a real heading (`titleAs`, h2 by default). Prop conventions: `icon` and `actions` are optional ReactNode slots with no boolean mirror, `title` is required, and every visible string is caller-owned; no departures."
     },
     "1120:7458": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/navigation/side-nav.tsx",
         "export": "SideNav",
         "story": "apps/storybook/src/SideNav.stories.tsx",
         "storyExports": ["Playground", "NestedAndProfile"]
       },
-      "note": "Figma delta 2026-10-29: review new/changed node or dependency before marking implemented"
+      "note": "Reviewed 2026-10-29: the delta reaches this node only through its embedded Banner instances (FILL→HUG on their own frames), so no side-nav geometry changed. 1120-7458-back-office-io-desktop had been unmeasurable since 2026-10-24, when the condensed group/nav wrapper landed under the desktop block — its root and Content selectors no longer matched; they are remapped to that wrapper and the row anchor. Both devices verify (the residues are the documented Avatar adaptations and the story's bounding-box fill). No component change."
     },
     "1120:7621": {
       "status": "implemented",
@@ -1033,7 +1033,7 @@
       }
     },
     "261:6501": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/feedback/banner.tsx",
         "export": "Banner",
@@ -1046,7 +1046,7 @@
           "SourceHierarchies"
         ]
       },
-      "note": "Figma delta 2026-10-29: review new/changed node or dependency before marking implemented"
+      "note": "Reviewed 2026-10-29: the delta touches only the Vertical/Device=Mobile variants — the source corrected them from desktop-shaped 852x222 frames to a 272x283 mobile stack, so 261-6501-mobile-mobile was recaptured at the 320 viewport with the root forced to 272 and now verifies with its five shared-adaptation residues (the +5 height is the 24px action row). 261-6501-desktop-desktop is unchanged and still verifies; the FILL→HUG relaxation on the desktop variants is geometry-neutral. No component change was needed."
     },
     "2776:74243": {
       "status": "mocked",
@@ -1393,14 +1393,14 @@
       "note": "Reviewed: the scrim uses Color/Surface/Surface overlay (`bg-overlay`) at 35% opacity, #0e0f13, with no blur, radius 0 and clipping to its container, the same modal backdrop as Dialog and Drawer. Case `67-3964-default` captures the source 320x568 veil from `Fidelity` at 320x568, no device axis; residue: the component's p-6 (24px) content inset guards projected content, since the source scrim draws no content. The default loading spinner is a documented runtime extension and is disabled in Fidelity. Adaptation `accessible-status-region`: a polite, visually hidden loading status is kept while the source scrim has no visible content. Guide: apps/storybook/src/guides/overlay.md."
     },
     "731:20386": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/composites/identity-provider-picker.tsx",
         "export": "IdentityProviderPicker",
         "story": "apps/storybook/src/IdentityProviderPicker.stories.tsx",
         "storyExports": ["Playground", "Desktop"]
       },
-      "note": "Figma delta 2026-10-29: review new/changed node or dependency before marking implemented"
+      "note": "Reviewed 2026-10-29: the delta carries no geometry for this node — the semantic diff of the pinned source found no structural field changed across its 803 nodes, so both declared devices were re-rendered: 731-20386-desktop-desktop and 731-20386-mobile-mobile verify clean with no residues. No component change."
     },
     "733:22841": {
       "status": "implemented",
@@ -1498,14 +1498,14 @@
       "note": "Reviewed: CatalogueCard renders the source catalogue card itself (360x236, r8, the INSIDE-aligned 1px #e8ebf1 stroke as the card family's ring-1 ring-border so the 24px insets stay exact, pad 24, gap 24): header gap 12 = 44px Avatar small + 256px column (16/22 semibold title over the 16/22 grey-700 Ente, gap 2), 14/20 grey-700 description, action row 24 high with gap 24 = two 16/22 semibold blue text actions (source 22px line kept, >=44px pointer target through the invisible ::after expansion) and the 24px person/check feedback glyphs. eyebrow/tags/children/titleAs/className remain documented extensions. Residue: the Avatar placeholder glyph is our 24px optical size where the source instance is 18px (shared Avatar dependency). Case 808-6302-default captures the 360x236 source frame from `SourceCatalogueCard` with Header/Description/Action subjects, no device axis; strict composition and responsive clean. Guide: apps/storybook/src/guides/product-cards.md."
     },
     "8090:46352": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/navigation/skip-to-main-content.tsx",
         "export": "SkipToMainContent",
         "story": "apps/storybook/src/SkipToMainContent.stories.tsx",
         "storyExports": ["SourceBand", "Playground"]
       },
-      "note": "Figma delta 2026-10-29: review new/changed node or dependency before marking implemented"
+      "note": "Reviewed 2026-10-29: the source replaces the 320x40 white bar with a 236x56 dark pill — a 2px Blue 300 ring around a radius-8 #0e0f13 rect carrying a white 16/22 underlined label; the arrow is gone. navigation/skip-to-main-content.tsx renders an anchor holding the ring (border-2 border-skip-to-main-ring, px-0.5 py-0.5, rounded-xl, 234.66x56) around the pill span (h-12 rounded-lg bg-foreground px-4 text-body-sb underline, 226.66x48). Case 8090-46352-focused: verified-with-residues on the focus state and the responsive probe; the radius stays 16, the layer publishes no 12 step."
     },
     "824:8838": {
       "status": "implemented",

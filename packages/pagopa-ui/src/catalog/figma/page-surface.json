@@ -1853,8 +1853,8 @@
           "name": "Banner",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Figma delta 2026-10-29: queued by the drift refresh, the review decides"
+          "decision": "shipped",
+          "reason": "Banner in the registry, rendered by the SourceCase and SourceCaseVertical stories."
         }
       ],
       "compositions": []
@@ -2085,8 +2085,8 @@
           "name": "IDModule",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Figma delta 2026-10-29: queued by the drift refresh, the review decides"
+          "decision": "shipped",
+          "reason": "IDModule in the registry, rendered by its source stories."
         }
       ],
       "compositions": []
@@ -2311,8 +2311,8 @@
           "name": "SideNav",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Figma delta 2026-10-29: queued by the drift refresh, the review decides"
+          "decision": "shipped",
+          "reason": "SideNav in the registry, rendered by the NestedAndProfile and Playground stories."
         },
         {
           "nodeId": "9684:50737",
@@ -2472,8 +2472,8 @@
           "name": "SkipToMainContent",
           "kind": "COMPONENT",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Figma delta 2026-10-29: queued by the drift refresh, the review decides"
+          "decision": "shipped",
+          "reason": "SkipToMainContent in the registry, rendered by the SourceBand story."
         }
       ],
       "compositions": [

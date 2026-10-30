@@ -149,6 +149,9 @@
   --drop-target: var(--figma-color-blue-300);
   --dragging-surface: var(--figma-color-opacity-blue-500-40);
   --inverse-foreground: var(--figma-color-neutrals-white);
+  --skip-to-main-ring: var(
+    --figma-color-blue-300
+  ); /* Color/Blue/300 — the source SkipToMainContent 2px stroke around the dark pill */
   --radius: var(--figma-radius-8);
 
   /* Component and page geometry read from the source frames and artboards.
@@ -268,6 +271,7 @@ body {
   --color-drop-target: var(--drop-target);
   --color-dragging-surface: var(--dragging-surface);
   --color-inverse-foreground: var(--inverse-foreground);
+  --color-skip-to-main-ring: var(--skip-to-main-ring);
   --color-chip-primary-foreground: var(--chip-primary-foreground);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
