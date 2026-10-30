@@ -3,7 +3,6 @@
 import * as React from "react"
 
 import { useMessages } from "@/lib/ui-provider"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 function SkipToMainContent({
   targetId = "main-content",
@@ -19,10 +18,11 @@ function SkipToMainContent({
   return (
     <a
       href={`#${targetId}`}
-      className="fixed inset-x-0 top-0 z-[100] inline-flex min-h-10 -translate-y-full items-center gap-2 bg-background px-6 py-2 text-body-sb text-primary underline transition-transform focus:translate-y-0 focus:outline-2 focus:-outline-offset-2 focus:outline-ring motion-reduce:transition-none"
+      className="fixed top-0 left-1/2 z-[100] inline-flex w-max -translate-x-1/2 -translate-y-full rounded-xl border-2 border-skip-to-main-ring px-0.5 py-0.5 transition-transform focus:translate-y-0 motion-reduce:transition-none"
     >
-      {children}
-      <PagoPAIcon name="arrow" className="shrink-0" />
+      <span className="inline-flex h-12 items-center justify-center rounded-lg bg-foreground px-4 text-body-sb whitespace-nowrap text-inverse-foreground underline">
+        {children}
+      </span>
     </a>
   )
 }

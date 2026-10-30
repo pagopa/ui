@@ -308,7 +308,7 @@
     },
     {
       "pageId": "61:2777",
-      "pageName": "• Divider ",
+      "pageName": "• Divider",
       "identities": [
         {
           "nodeId": "61:2786",
@@ -1853,7 +1853,8 @@
           "name": "Banner",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped"
+          "decision": "shipped",
+          "reason": "Banner in the registry, rendered by the SourceCase and SourceCaseVertical stories."
         }
       ],
       "compositions": []
@@ -2084,7 +2085,8 @@
           "name": "IDModule",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped"
+          "decision": "shipped",
+          "reason": "IDModule in the registry, rendered by its source stories."
         }
       ],
       "compositions": []
@@ -2309,7 +2311,8 @@
           "name": "SideNav",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped"
+          "decision": "shipped",
+          "reason": "SideNav in the registry, rendered by the NestedAndProfile and Playground stories."
         },
         {
           "nodeId": "9684:50737",
@@ -2448,7 +2451,7 @@
     },
     {
       "pageId": "1298:4696",
-      "pageName": "• Header, Preheader ",
+      "pageName": "• Header, Preheader",
       "identities": [
         {
           "nodeId": "1298:5209",
@@ -2469,7 +2472,8 @@
           "name": "SkipToMainContent",
           "kind": "COMPONENT",
           "inLibrary": true,
-          "decision": "shipped"
+          "decision": "shipped",
+          "reason": "SkipToMainContent in the registry, rendered by the SourceBand story."
         }
       ],
       "compositions": [
@@ -2493,7 +2497,7 @@
     },
     {
       "pageId": "1137:25092",
-      "pageName": "• Stepper ",
+      "pageName": "• Stepper",
       "identities": [
         {
           "nodeId": "1137:26377",
@@ -2642,7 +2646,7 @@
     },
     {
       "pageId": "8049:39180",
-      "pageName": "• Date picker ",
+      "pageName": "• Date picker",
       "identities": [
         {
           "nodeId": "8049:39452",
