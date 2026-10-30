@@ -12,19 +12,34 @@ This file adds what holds only for agents.
    exported by the person, or they run the read-only exporter and hand over its
    JSON output.
 2. **Green before commit**: [the green chain](./CONTRIBUTING.md#the-green-chain),
-   run in full, through Nx. Stories run in a browser: when they cannot start,
-   say so and never count them as passed.
-3. **The package owns the code.** The design system is `packages/pagopa-ui`, its
+   run in full, through Nx. The chain checks formatting without writing it, so
+   `pnpm nx run-many -t fmt` runs first. Stories run in a browser: when they
+   cannot start, say so and never count them as passed.
+3. **`nx release` owns the changelog.** A change to a released project —
+   `packages/pagopa-ui`, the only one in `nx.json`'s release list — carries its
+   version plan, written with the change
+   ([Releases](./CONTRIBUTING.md#releases)):
+
+   ```bash
+   pnpm nx release plan minor -p pagopa-ui -m "feat(autocomplete): …"
+   ```
+
+   The plan message is the changelog entry: `nx release` renders
+   `packages/pagopa-ui/CHANGELOG.md` from it when the Version Packages pull
+   request regenerates, so the agent writes the plan and leaves the changelog to
+   the release run.
+
+4. **The package owns the code.** The design system is `packages/pagopa-ui`, its
    generated artwork is `packages/artwork`, its design foundations are
    `packages/tokens` and its checks and Figma tooling are
    `packages/ui-cli`: run their targets with
    `pnpm nx run <project>:<target>`, never with a path that walks out of the
    project.
-4. **English whatever the session language.** Documentation, code comments and
+5. **English whatever the session language.** Documentation, code comments and
    pull request titles and descriptions are written in English even when the
    session runs in Italian. Italian stays only where the product renders it:
    component and story texts, and the UI examples quoted in a guide.
-5. **Storybook runs on `:6006`.** `pnpm nx run pagopa-ui-storybook:storybook`
+6. **Storybook runs on `:6006`.** `pnpm nx run pagopa-ui-storybook:storybook`
    starts it and prints `http://localhost:6006`.
 
 ## Figma sessions
