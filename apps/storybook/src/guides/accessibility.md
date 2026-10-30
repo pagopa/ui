@@ -1,47 +1,32 @@
-The library targets **WCAG 2.2 AA** as the working reference: EN 301 549
-v4.1.1 (its §9) points at WCAG 2.2, the earlier v3.2.1 pointed at WCAG 2.1 AA,
-so 2.2 AA is the stricter superset — and the tags the automated layer runs cover
-the WCAG 2.1 AA level the AgID guidelines require. The AgID guidelines and the
-ARIA Authoring Practices are the pattern sources. The per-type table below is
-written to be reusable as an annex to a product's accessibility statement; a
-product still answers for its own content and copy.
+The library targets **WCAG 2.2 AA** as the working reference: EN 301 549 v4.1.1
+(its §9) points at WCAG 2.2, and the AgID guidelines and the ARIA Authoring
+Practices are the pattern sources. The per-type table below is written to be
+reusable as an annex to a product's accessibility statement; a product still
+answers for its own content and copy.
 
 ## How the criteria are verified
 
-Two layers run automatically on every story:
+Every story runs under an automated layer: axe, plus a shared contract that checks
+the behaviour the story's widgets actually render — natural DOM order (no positive
+`tabindex`), accessible names, painted focus, dialog focus ownership and Escape,
+arrow keys in tab lists, radio groups and comboboxes,
+`aria-expanded`/selected/checked state, live regions with content, error
+association, and `aria-busy` actions that stay focusable. A story tagged
+`live-region` must leave a visible status, alert or log region carrying the
+announced message after its `play`.
 
-- **axe** through `@storybook/addon-a11y`, configured with `a11y.test: "error"`
-  and the tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa` and
-  `best-practice` in `.storybook/preview.tsx`: a violation of those rules fails
-  the story's test run.
-- The **shared contract** (`apps/storybook/src/support/a11y-contract.ts`) runs after
-  every story and checks the behaviour the story's widgets actually render:
-  natural DOM order (no positive `tabindex`), accessible names, painted focus,
-  dialog focus ownership and Escape, arrow keys in tab lists, radio groups and
-  comboboxes, `aria-expanded`/selected/checked state, live regions with
-  content, error association, and `aria-busy` actions that stay focusable.
-  A story tagged `live-region` must also leave, after its `play`, a visible
-  status, alert or log region carrying the announced message.
+The same layer re-runs each story at **320 px** (WCAG 1.4.10 Reflow) and with
+**increased text spacing at 200%** (1.4.12 Text Spacing, 1.4.4 Resize Text); in
+both the page must not scroll horizontally. **Forced colours** and **reduced
+motion** run in their own project, which excludes the colour-pinned stories — the
+ones that fix source colours on purpose.
 
-The same hook re-runs each story under two accessibility conditions: **320 px**
-(WCAG 1.4.10 Reflow) and **increased text spacing with text at 200%** (1.4.12
-Text Spacing, 1.4.4 Resize Text). In both, the page must not scroll
-horizontally. **Forced colours** and **reduced motion** run in the dedicated
-`storybook-conditions` vitest project (`vite.config.ts`), which excludes the
-colour-pinned stories — the ones that fix source colours on purpose.
-
-**Manual** criteria — the ones only a screen reader can confirm — use the
-checklist template at the end of this page. No manual pass has been executed
-yet: the outcome column reports the automatic layer.
-
-Stories that cannot satisfy the reflow conditions yet declare
-`a11yContract: { reflow: false }` in their own story — each exemption lives
-with the story it belongs to, with its reason beside the flag: source-width
-fixtures and the surfaces pending a design request, which carry one request
-each in
+Conditions a story cannot satisfy yet are declared on the story itself, with the
+reason beside the flag:
+`a11yContract: { reflow: false }` for source-width fixtures and surfaces pending a
+design request, which carry one request each in
 [the reflow request](../../../../docs/design-requests/2026-10-16-a11y-reflow-conditions.md).
-The exemption is temporary: remove the flag when its request lands, and keep
-the requests file in sync with the story flags.
+The exemption is temporary: it goes when its request lands.
 
 ## Criteria by component type
 
@@ -69,81 +54,23 @@ The map in `apps/storybook/src/a11y/conformance.json` assigns every public
 component to one of these rows, and `a11y:conformance:check` fails when a
 component or a type is missing.
 
-## What this flow changed
+## Manual verification
 
-- A busy Button keeps the tab order and announces its state: `disabled` became
-  `aria-disabled` + `aria-busy` with `focusableWhenDisabled`.
-- Errors are announced once. `ErrorSummary` renders the only `role="alert"`,
-  its items link each field, and the field message is an associated
-  description (`data-slot="field-error"`) instead of a second live region.
-  The announcement belongs to the form: a form that shows field messages
-  without a summary announces nothing, and a per-field message that changes
-  alone (async validation on blur, a server response) does not re-announce —
-  the caller updates the summary with it. `ErrorSummary` moves the focus to
-  the entry's target, giving a tabindex to a composite target that has none.
-- Component titles take a heading level. `Heading as` (`titleAs`, default
-  `h2`) replaced the fixed `h2` in Footer, Table, IdentityProviderPicker, CheckoutModule and
-  the other components that render a title: the caller owns the outline.
-- Visible **and** assistive strings are props with an Italian default,
-  replaceable from outside: visible labels, hints, state and error copy,
-  `aria-label`, `sr-only` announcements. Where the text depends on data, the
-  caller composes the complete sentence (`pageLabel`, `slotLabel`, `stepLabel`,
-  `statusLabel`, `fileMeta`, `removeFileLabel`, `announcement`…). The date and
-  number formatting language is a prop too (`locale` on the date picker and the
-  progress KPI), with the calendar's day grid as a `calendarLocale`
-  passthrough.
+The criteria only a screen reader can confirm stay manual, and no manual pass has
+been recorded yet: the outcome column above reports the automatic layer.
 
-## Manual screen reader checklist (template)
+Cover NVDA on Windows 11 (Firefox, Chrome), JAWS on Windows 11 (Chrome), VoiceOver
+on macOS and iOS (Safari) and TalkBack on Android (Chrome), and record the tool, OS
+and browser versions at test time so the pass can be reproduced.
 
-### Technologies to cover
-
-Record the tool version, the OS and the browser version at test time: a pass
-without them cannot be reproduced. One pass per row is the minimum matrix.
-
-| Technology        | Platform          | Browser         | Version recorded at test time |
-| ----------------- | ----------------- | --------------- | ----------------------------- |
-| NVDA              | Windows 11        | Firefox, Chrome |                               |
-| JAWS              | Windows 11        | Chrome          |                               |
-| VoiceOver (macOS) | macOS (current)   | Safari          |                               |
-| VoiceOver (iOS)   | iOS (current)     | Safari          |                               |
-| TalkBack          | Android (current) | Chrome          |                               |
-
-### Steps for one pass
-
-1. Record the environment: tool and version, OS, browser, zoom level and font
-   settings.
-2. Navigate the outline by headings and landmarks with the screen off and
-   confirm the reading order.
-3. Run the keyboard walk: Tab and Shift+Tab through the surface, activate the
-   controls, and check that each one announces name, role and state and paints
-   focus.
-4. Exercise the widget pattern: arrows in a radio group or tab list, ArrowDown
-   on a combobox, Enter and Escape on a dialog, an invalid form submission and
-   its announcement.
-5. Compare the announcement with the criterion's expectation for that
-   component type in the table above; the automatic layer already covers
-   names, focus paint and state, so a failure here points at the announcement
-   itself.
-6. Record the pass below. On a failure, open an issue and — when the expected
-   behaviour is a design decision — a request in `docs/design-requests/`.
-
-### Record template
-
-One table per pass; a criterion can need several passes, one per technology.
-Leave the cells empty until the pass is executed.
-
-| Field                              | Value |
-| ---------------------------------- | ----- |
-| Story / surface                    |       |
-| Component type and criterion       |       |
-| Technology, version, OS, browser   |       |
-| Steps executed                     |       |
-| Expected announcement              |       |
-| Observed announcement              |       |
-| Outcome (pass / fail / blocked)    |       |
-| Date                               |       |
-| Follow-up (issue / design request) |       |
+One pass records the environment, walks the outline by headings and landmarks with
+the screen off, runs the keyboard walk (name, role, state and painted focus on every
+control), exercises the widget pattern (arrows in a radio group or tab list,
+ArrowDown on a combobox, Enter and Escape on a dialog, an invalid submission and its
+announcement) and compares the announcement with the criterion's expectation for
+that component type. A failure opens an issue and — when the expected behaviour is a
+design decision — a request in `docs/design-requests/`.
 
 Screen-reader support is claimed only from recorded passes. Browser zoom and
-screen-reader specific settings stay manual by design; the automated contract
-never replaces them.
+screen-reader specific settings stay manual by design; the automated layer never
+replaces them.
