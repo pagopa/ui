@@ -1,12 +1,13 @@
-## Unreleased
+## 0.0.4 (2026-10-28)
 
 ### 🚀 Features
 
-- feat(autocomplete): own the Figma multiselect types — `multiple` takes a `string[]` and renders both filled types: one removable pill per value (`removeValueLabel`, default `Elimina {value}`) beside the `[clear][chevron]` group, or `multipleDisplay="counter"` collapsing the row into the count badge that carries the clear of every value (`clearAllLabel`, `counterLabel`); the pills stay on one line and scroll when they stop fitting, so the field keeps its 48px frame. Backspace on an empty input removes the last value. Answers [#40](https://github.com/pagopa/ui/issues/40).
+- feat(timeline): add the source event time under the copy ([#64](https://github.com/pagopa/ui/pull/64))
 
 ### ❤️ Thank You
 
 - Danilo Spinelli @gunzip
+- gunzip
 
 ## 0.0.3 (2026-10-26)
 
