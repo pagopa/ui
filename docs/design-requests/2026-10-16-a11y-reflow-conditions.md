@@ -6,7 +6,7 @@
 - Decision owner: @gunzip
 - Preview: not applicable — the request spans 34 component families and has no two-option composition; the issue lists every family
 
-Date: 16 October 2026. Origin: flow D (`docs/plans/d-accessibility-contract.md`).
+Date: 16 October 2026. Origin: the accessibility contract.
 Figma was not modified: the request comes from the test contract, not from a
 change to the library. The stories below are the ones that declare
 `a11yContract: { reflow: false }` in their `parameters`

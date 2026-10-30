@@ -3,8 +3,8 @@
 - **Status:** Accepted — adopted on 2026-10-19.
 - **Date:** 2026-10-19
 - **Context:** the workspace split deferred in [ADR-0002 §2](./0002-deferred-decisions.md),
-  triggered by the validation and release needs. Follow-up implementation flows
-  are indexed in [the execution plans](../plans/README.md).
+  triggered by the validation and release needs. The follow-up implementation
+  flows landed with the monorepo itself.
 
 ## 1. Problem
 
@@ -112,5 +112,3 @@ later, independent step with its own trigger. Concretely:
   now resolved.
 - [ADR-0002 §4](./0002-deferred-decisions.md) — the public API evolution: still
   open, its trigger is the first publication.
-- [Execution plans](../plans/README.md) — follow-up implementation flows for
-  the workspace decision.

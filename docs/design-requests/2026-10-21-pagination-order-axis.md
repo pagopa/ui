@@ -9,8 +9,7 @@
 - Updated: 22 October 2026 — questions 5 to 7 added after the source review;
   the element sizes and the narrow-canvas overflow are fixed (see "Already fixed").
 
-Date: 21 October 2026. Origin: flow A/E, milestone M5
-([figma-fidelity-and-drift.md](../plans/figma-fidelity-and-drift.md)), node
+Date: 21 October 2026. Origin: the alignment wave, node
 `127:1510`. Figma was not modified: the measurements below come from the
 pinned inventory, the registry note and the current render.
 

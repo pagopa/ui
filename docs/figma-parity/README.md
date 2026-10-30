@@ -20,8 +20,8 @@ components — the cap is never raised.
 
 The slice is gzipped with no timestamp in the header: the same corpus and
 snapshot always produce the same bytes, so a refresh with nothing changed does
-not rewrite the file. The tool reads `source.json.gz` transparently; the
-pre-compression name in the M2 plan text (`source.json`) is the same document.
+not rewrite the file. The tool reads `source.json.gz` transparently, so no
+pre-compression copy is needed.
 
 ## Refresh
 
