@@ -1,6 +1,12 @@
 import assert from "node:assert/strict"
+import { spawnSync } from "node:child_process"
+import fs from "node:fs"
+import os from "node:os"
+import path from "node:path"
 import { test } from "node:test"
+import { fileURLToPath } from "node:url"
 
+import { fixtureEnv } from "../../src/lib/paths.ts"
 import { RulesLedgerSchema, RulesSnapshotSchema } from "../../src/schemas/rules.ts"
 import {
   componentRulesFirst,
@@ -214,4 +220,57 @@ test("the component-rules block opens the guide", () => {
   assert.equal(componentRulesFirst(block), true)
   assert.equal(componentRulesFirst(`\n\n${block}`), true)
   assert.equal(componentRulesFirst(`Intro first.\n\n${block}`), false)
+})
+
+const cli = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
+
+// A fixture root holding the two files `--plan` reads: the live snapshot and
+// the committed ledger. No token and no network, like the drift job after its
+// refresh.
+function runPlan({ ledger }) {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-rules-plan-"))
+  try {
+    const files = [
+      [".figma/rules.json", snapshot],
+      ["src/catalog/figma/rules.json", ledger],
+    ]
+    for (const [file, value] of files) {
+      const target = path.join(root, file)
+      fs.mkdirSync(path.dirname(target), { recursive: true })
+      fs.writeFileSync(target, JSON.stringify(value))
+    }
+    return spawnSync(process.execPath, [cli, "figma", "rules", "--plan"], {
+      cwd: root,
+      encoding: "utf8",
+      env: fixtureEnv(root),
+    })
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+}
+
+test("rules --plan reports a new card and exits 0", () => {
+  const empty = RulesLedgerSchema.parse({ schemaVersion: 1, fileKey: "file", cards: {} })
+  const result = runPlan({ ledger: empty })
+  assert.equal(result.status, 0, result.stderr)
+  assert.match(result.stdout, /cards: 1 new · 0 stale · 0 removed/)
+  assert.match(result.stdout, /  new +I1:2;3:3 Spacing/)
+})
+
+test("rules --plan reports stale and removed cards and still exits 0", () => {
+  // The drift job runs this command and must stay green, so a ledger behind by
+  // any kind of card is a report and never a failure.
+  const behind = RulesLedgerSchema.parse({
+    schemaVersion: 1,
+    fileKey: "file",
+    cards: {
+      "I1:2;3:3": { ...pending, sourceHash: "0000000000000000" },
+      "I1:2;9:9": pending,
+    },
+  })
+  const result = runPlan({ ledger: behind })
+  assert.equal(result.status, 0, result.stderr)
+  assert.match(result.stdout, /cards: 0 new · 1 stale · 1 removed/)
+  assert.match(result.stdout, /  stale I1:2;3:3 Spacing/)
+  assert.match(result.stdout, /  removed I1:2;9:9 Spacing/)
 })

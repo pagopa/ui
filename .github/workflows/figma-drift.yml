@@ -111,16 +111,43 @@ jobs:
 
       # The `.Regole` boxes and the comments are outside the design
       # fingerprint, so the catalogue delta cannot see them. The rules diff and
-      # the comment counts are reported in the job log; the ledger stays a
-      # reviewed change, never a generated one.
+      # the comment counts are reported in the job log and in the job summary;
+      # the ledger stays a reviewed change, never a generated one, so `--plan`
+      # reports and the job stays green. The annotation is what makes the drift
+      # visible outside the raw log: a green run that silently ignored a card
+      # would read as "nothing to do".
       - name: Report the rules and comment drift
         env:
           FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
           PAGOPA_UI_ROOT: ../pagopa-ui
         run: |
+          # The text run feeds the log, the JSON run feeds the summary: `--plan`
+          # reads the local snapshot, so neither touches the network.
+          mkdir -p packages/pagopa-ui/.figma
           pnpm --filter pagopa-ui-cli exec node src/cli.ts figma rules --refresh
-          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma rules --plan || true
-          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma comments --refresh
+          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma rules --plan \
+            | tee packages/pagopa-ui/.figma/rules-plan.txt
+          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma rules --plan --json \
+            > packages/pagopa-ui/.figma/rules-plan.json
+          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma comments --refresh \
+            | tee packages/pagopa-ui/.figma/comments.txt
+          plan=packages/pagopa-ui/.figma/rules-plan.json
+          behind="$(jq -r '[.new, .stale, .removed] | map(length) | add' "$plan")"
+          counts="$(jq -r '"\(.new | length) new · \(.stale | length) stale · \(.removed | length) removed"' "$plan")"
+          {
+            echo "### Rules and comments"
+            echo
+            echo '```'
+            cat packages/pagopa-ui/.figma/rules-plan.txt packages/pagopa-ui/.figma/comments.txt
+            echo '```'
+            if [ "$behind" -gt 0 ]; then
+              echo
+              echo "The rules ledger is behind: ${counts}. A new or stale card needs \`figma:rules --mark\`, a removed one needs \`figma:rules --sync\`. The ledger stays a reviewed change, so this run only reports it."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "$behind" -gt 0 ]; then
+            echo "::warning title=Rules ledger behind::${counts} card(s): see the job summary."
+          fi
 
       - name: Refresh the evidence bundle
         if: hashFiles('packages/pagopa-ui/.figma/pr-body.md') != ''
