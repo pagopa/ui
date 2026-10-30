@@ -138,7 +138,9 @@ instead of hiding them behind the delta.
   detector.
 - Per node of a drift pull request, one decision: still matches → `implemented`;
   must change → fix the component and its story in the same pull request, then
-  `implemented`; out of scope → `excluded` with a reason.
+  `implemented`; out of scope → `excluded` with a reason. The queue left the
+  census identity `pending`, so the decision moves the registry entry and the
+  census identity together.
 - Never mark a node `implemented` without inspecting the source and the render.
   Historical `pending` and `implemented` entries are reviewed per node on
   request, never in bulk.
@@ -211,3 +213,11 @@ request with the job's `GITHUB_TOKEN`; the runs on that pull request wait for
 the reviewer's approval. Its body is the handoff: per node the name, `nodeId`,
 link, change class, current status and target, the per-device variants and the
 three decisions.
+
+The run writes the census side of what it queued: each queued identity becomes
+`pending` with the delta's reason, the identity of a node the file published
+after its page was read joins as `pending`, and `name`, `kind`, the page and
+`inLibrary` follow the run's own read. The observations are the job's and the
+judgements the reviewer's, so a decision the run did not queue stays as
+reviewed. An identity whose node moved onto a page the census never read leaves
+the census: it is the next page read, not a row to invent.
