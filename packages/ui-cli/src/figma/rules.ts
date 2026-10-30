@@ -821,5 +821,8 @@ export async function runRules(argv: string[] = process.argv.slice(2)): Promise<
     }
     for (const id of diff.removed) console.log(`  removed ${id} ${ledger.cards[id]?.title ?? ""}`)
   }
-  return diff.fresh.length || diff.stale.length || diff.removed.length ? 1 : 0
+  // A report, not a gate: the drift it prints is work for a person, and
+  // `figma:rules --check` is what fails on it. The drift job reads this same
+  // output, so a nonzero code here would only fail a job that must stay green.
+  return 0
 }
