@@ -2,19 +2,20 @@
 
 - Type: design
 - Issue: https://github.com/pagopa/ui/issues/40
-- Status: open — the node stays `pending`
+- Status: answered 12 November 2026 — Option A, the node stays `pending` until its parity capture
 - Decision owner: @gunzip
 - Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-autocomplete-multiselect--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-autocomplete-multiselect--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-autocomplete-multiselect--option-c
 
-Date: 22 October 2026. Origin: flow A/E, milestone M5
-([figma-fidelity-and-drift.md](../plans/figma-fidelity-and-drift.md)), node
+Date: 22 October 2026. Origin: the alignment wave, node
 `824:8838`. Figma was not modified: the measurements below come from the pinned
 inventory, the registry note and the current code.
 
 The node stays `pending`; this request is named in its registry note. The
+decision below is written in
+[issue #40](https://github.com/pagopa/ui/issues/40#issuecomment-6471855771). The
 implementation is
 [autocomplete.tsx](../../packages/pagopa-ui/src/components/inputs/autocomplete.tsx),
-the candidate second implementation is
+the second implementation considered is
 [multi-select-field.tsx](../../packages/pagopa-ui/src/components/inputs/multi-select-field.tsx)
 and the story is
 [Autocomplete.stories.tsx](../../apps/storybook/src/Autocomplete.stories.tsx).
@@ -122,3 +123,90 @@ A recommendation is an option, not a decision.
   success, required, disabled; the tokens come from the design foundations.
 - The multiselect composition exists as `MultiSelectField` and is already
   reviewed under `602:9417`; nothing here re-opens that mapping.
+
+## Decision
+
+**Option A.** `Autocomplete` owns the two multiselect types: the field gains a
+`multiple` prop whose value is a list of strings, and the search input stays
+editable next to the chips. `MultiSelectField` keeps its own contract — a
+non-searchable chooser whose trigger renders the chips and whose popup is the
+list — and is not the target of this node.
+
+The rules card _BEHAVIOR & ACCESSIBILITY / Multiselect counter_ closes the four
+questions the drawing left open:
+
+| Question                            | Answer from the card                                                                                                                                                                             |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Chooser or search with chips?       | Search with chips: the card draws the text cursor after the last chip, and filtering continues while chips are present.                                                                          |
+| What does the counter count?        | The selected values, not the matching options: the badge reads `2` and `3` next to the chips it replaces.                                                                                        |
+| Where is the badge drawn?           | At the trailing edge of the chips row, before the chevron, from two values on. A single value keeps its full name, so the count is never `1`.                                                    |
+| What is the second trailing action? | Clear. The `48x24 Action goup` of the `Multiselect` variants is `[clear][chevron]`; the `24x24` group of `Multiselect counter` is the chevron alone because the badge carries the clear control. |
+| How is one value removed?           | Each pill carries its own `close` in the `Type=Multiselect` variants, and the count badge carries one in `Type=Multiselect counter`.                                                             |
+
+The field therefore maps as follows: `Type=Default` is single value
+(`multiple` absent, `value?: string`); `Type=Multiselect` and
+`Type=Multiselect counter` are both `multiple` (`value?: string[]`), and
+`multipleDisplay` (`"chips"`, the default, or `"counter"`) chooses between the
+two renderings. The chevron points up while the list is open, as the card draws
+it, and clearing the last value resets the field to its resting label.
+
+### What the implementation does
+
+- `multiple` is a discriminated prop: `multiple?: false` keeps `value?: string`
+  and `onValueChange?: (value: string) => void`; `multiple: true` takes
+  `value?: string[]` and `onValueChange?: (value: string[]) => void`.
+- `multipleDisplay: "chips"` (`Type=Multiselect`) renders one `InputChip` per
+  value, each with its own remove control read as `removeValueLabel`
+  (`Elimina {value}`), the source's per-pill `close`.
+- `multipleDisplay: "counter"` (`Type=Multiselect counter`) keeps one value as
+  its full-label pill and, from two values, collapses the row into a count
+  badge whose visible count is `aria-hidden` and whose screen-reader sentence
+  comes from `counterLabel`. The badge owns the clear action
+  (`clearAllLabel`, `Svuota tutti i valori`), so the trailing group is
+  `[clear][chevron]` at one value and `[chevron]` from two.
+- The input keeps filtering with chips present and the cursor sits after the
+  last chip; `Backspace` on an empty input removes the last value beside the
+  pills' own controls.
+- A `selectAllLabel` adds the list's first row, which selects or clears every
+  enabled option.
+
+### The two types in the source
+
+A live read of the filled variants confirms the split the card draws.
+`824:8872` (`Type=Multiselect`) holds two 68x24 `Input chip` pills side by side,
+each one carrying its own `close` icon container, and a 48x24 `Action goup`
+`[clear][chevron]`. `11073:2423` (`Type=Multiselect counter`) holds one 44x24
+`Input chip` reading `4` with its own `close`, no pill per value, the resting
+label drawn inside the control, and a 24x24 group with the chevron alone. The
+field frame is the same in both: 272x48, radius 8, 1px `#636b82` stroke, 12px
+insets; the pill is radius 100, `#e8ebf1`, `Titillio-Semibold` 12/18
+`#0e0f13`, and its remove glyph is a 24px target holding a 9x9 `close_small` in
+`#0b3ee3`.
+
+### Open points, left to the design owner
+
+1. The card's open state draws the chevron pointing up and names the control
+   "Chiudi il menu", a label that describes the action rather than the control;
+   the implementation follows both. Confirm the wording is intended next to the
+   state glyph.
+2. The card keeps the label drawn inside the control at two or more values and
+   floats it at one; the implementation floats it whenever the field holds a
+   value or has focus, because a chips row is not the notch the label folds
+   into. Confirm which of the two the set means.
+3. ~~Removing one value of several has no visible per-chip control.~~ Answered
+   by the source: every pill carries its own `close`, and the implementation
+   follows it through `removeValueLabel`.
+4. A chip carries its full label and the field is 272 wide, so a long label is
+   truncated by the frame rather than inside the chip. The pills now sit in a
+   one-line strip that scrolls once the pills and the caret target stop fitting
+   the 160px `Label container` — the source instead lets five pills overflow the
+   272 frame. Confirm the scroll is the behaviour the design wants for many
+   values, or whether `Type=Multiselect counter` is the only intended display
+   once the row stops fitting. Opened as
+   [the overflow request](./2026-10-28-autocomplete-multiselect-overflow.md)
+   (issue [#76](https://github.com/pagopa/ui/issues/76)): the preview carries
+   the scrolling row, the counter and a taller wrapping field.
+5. The `Type=Multiselect` variants also draw a `Cursor` frame, the 8x24 frame
+   with a 1px rule after the last pill; the implementation leaves the real text
+   caret there instead. Confirm the drawn cursor is the editable input's caret
+   and not a separate decoration.

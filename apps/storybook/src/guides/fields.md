@@ -50,7 +50,34 @@ The announced strings are consumer-owned: `clearLabel` (`Svuota campo`),
 field label (`Lista {label}`) and `selectedLabel` from the chosen value
 (`hai selezionato {value}`). `loading` announces `loadingLabel`
 (`Caricamento lista in corso`), marks the list busy and shows the same line in
-the empty slot. A removable chip uses `Elimina {value}` by default.
+the empty slot.
+
+`multiple` turns the value into a list and renders the source's two multiselect
+types, which `multipleDisplay` selects between. `chips` (the default) is
+`Type=Multiselect` (`824:8872`): one pill per value, each carrying its own remove
+control named by `removeValueLabel` (`Elimina {value}`). `counter` is
+`Type=Multiselect counter` (`11073:2423`): one value keeps its full name as a
+pill, and from two values the pills collapse into a count badge. The badge counts
+the **selected values**, not the matching options, keeps its visible count
+`aria-hidden` and reads `counterLabel` (`{count} selezionati`) to a screen
+reader. The search input stays editable next to the chips and the cursor sits
+after the last chip, so filtering continues with chips present.
+
+The trailing group is the source `48x24 Action goup`: `[clear][chevron]`
+wherever a value is held, where the clear control carries `clearLabel`. The one
+exception is the collapsed badge, which carries `clearAllLabel` (`Svuota tutti i
+valori`) itself and leaves the chevron alone. A single value is never a count of
+`1`, so `counter` keeps its full label until the second value arrives. `Backspace`
+on an empty input removes the last value, the native combobox path next to each
+pill's own control. `selectAllLabel` adds the list's first row, which selects
+every enabled option or clears the selection.
+
+The pills sit in the source `Label container`, a one-line strip after the
+leading icon: when the pills and the 24px caret target no longer fit the 160px
+the source gives the pills alone, the strip scrolls instead of wrapping, so the
+field keeps its 48px frame and no value is lost. The source instead lets its
+five pills overflow the frame (`824:8872`); `counter` is the display the design
+provides once the values stop fitting.
 
 ## States
 

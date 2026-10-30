@@ -5,6 +5,13 @@
 //   node src/cli.ts figma sync
 //     - inventory/registry/file-key consistency
 //     - every published Figma node accounted (registry entry or bulk rule)
+//     - every identity a censused page draws accounted: the page surface mirrors
+//       the inventory both ways, so a drawing the library never published is
+//       named as out of scope instead of staying invisible, and publishing it
+//       fails the mirror until a decision is written
+//     - every composition a censused page draws either measured by a parity case
+//       or excused in writing, so a layout the source draws without a story is
+//       a recorded decision rather than an omission
 //     - every implemented target (module + export [+ story]) exists
 //     - every implemented target is rendered by its linked story, or listed in
 //       src/catalog/figma/evidence-exceptions.json with a reason
@@ -72,6 +79,19 @@ import {
 } from "../parity/cases.ts"
 import { fetchFigmaSnapshot, writeFigmaSnapshot } from "./rest.ts"
 import { staleStoryTitles } from "./stories.ts"
+import {
+  checkPageSurface,
+  formatSurfaceLine,
+  loadPageSurface,
+  PAGE_SURFACE_PATH,
+  surfacePending,
+  surfaceUncensused,
+  surfaceUnmirrored,
+  type SurfacePending,
+  type SurfaceStats,
+  type SurfaceUncensused,
+  type SurfaceUnmirrored,
+} from "./surface.ts"
 import { requireFigmaToken } from "./token.ts"
 import { EVIDENCE_DIR, evidencePaths, loadManifest } from "../parity/evidence.ts"
 import { renderedStoryExports, runtimeExports, storyDesignNodes } from "../lib/source-modules.ts"
@@ -87,6 +107,8 @@ import {
   RegistrySchema,
   type ApiExceptions,
   type InventoryNode,
+  type PageSurface,
+  type PageSurfacePage,
   type Registry,
 } from "../schemas/catalogue.ts"
 import type { DevicePolicy } from "../schemas/devices.ts"
@@ -257,6 +279,10 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
   // The ratchet move of this refresh, when the queued stubs shortened notes:
   // the pull request body reports it, because the reviewer must not raise it.
   let ratchet: { from: number; to: number } | null = null
+  // The census this refresh reconciled, when the queue moved a decision on the
+  // page side: the gate below reads it instead of the committed file, so the
+  // check sees the state the pull request will carry.
+  let reconciledSurface: PageSurface | null = null
   let restSnapshot: Awaited<ReturnType<typeof fetchFigmaSnapshot>> | null = null
   let inputOption = option("input")
   if (!inputOption && (flag("write") || flag("triage") || flag("pr-body"))) {
@@ -405,6 +431,84 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     registry.entries = dropKeys<Registry["entries"][string]>(registry.entries, removed)
     evidenceExceptions = dropKeys<string>(evidenceExceptions, new Set([...renewed, ...removed]))
     pendingWrites.set(REGISTRY_PATH, registry)
+    // The census records the same decision on the page side, so the queue has to
+    // reach it too: a refresh that lowered a node to `pending` while the census
+    // still said `shipped` fails the page-surface gate below, and the drift pull
+    // request never opens. A census row holds two kinds of claim — what the page
+    // shows (`name`, `kind`, the page it sits on, the library that publishes it)
+    // and what was decided about it (`decision`, `reason`) — and the refresh owns
+    // the first: it copies the observations it just read, while the decision moves
+    // only where the queue renewed it, so no page read is needed and no judgement
+    // is invented.
+    const surfaceFile = path.join(ROOT, PAGE_SURFACE_PATH)
+    const surface = fs.existsSync(surfaceFile) ? loadPageSurface(surfaceFile) : null
+    if (surface) {
+      const reason = `Figma delta ${date}: queued by the drift refresh, the review decides`
+      const pages = new Map(surface.pages.map((page) => [page.pageId, page]))
+      const published = new Map(committed.map((node) => [node.nodeId, node]))
+      const censused = new Map<string, PageSurfacePage>()
+      let reconciled = false
+      for (const page of surface.pages) {
+        for (const identity of page.identities) {
+          const node = published.get(identity.nodeId)
+          if (!node) continue
+          // The identity follows its node to the page it now sits on, and an
+          // uncensused destination takes no identity: that page is a page read.
+          const moved = node.pageId !== page.pageId
+          const destination = pages.get(node.pageId)
+          if (moved) {
+            page.identities = page.identities.filter((entry) => entry.nodeId !== node.nodeId)
+            reconciled = true
+            if (!destination) continue
+            destination.identities.push(identity)
+          }
+          if (identity.name !== node.name) {
+            identity.name = node.name
+            reconciled = true
+          }
+          if (identity.kind !== node.type) {
+            identity.kind = node.type
+            reconciled = true
+          }
+          censused.set(node.nodeId, destination ?? page)
+        }
+      }
+      for (const node of published.values()) {
+        const page = censused.get(node.nodeId)
+        // A node the file published after its page was read: the census cannot
+        // have decided it, so the queue writes the decision instead of guessing
+        // `shipped`. An uncensused page is a page read, and the gate says so.
+        if (!page) {
+          const destination = pages.get(node.pageId)
+          if (!destination || !renewed.has(node.nodeId)) continue
+          destination.identities.push({
+            nodeId: node.nodeId,
+            name: node.name,
+            kind: node.type,
+            inLibrary: true,
+            decision: "pending",
+            reason,
+          })
+          censused.set(node.nodeId, destination)
+          reconciled = true
+          continue
+        }
+        const identity = page.identities.find((entry) => entry.nodeId === node.nodeId)
+        // A node the library now exports owes the decision the library requires,
+        // and the queue is the one decision this refresh may write.
+        const gained = identity ? !identity.inLibrary : false
+        const queued = renewed.has(node.nodeId) && identity?.decision !== "pending"
+        if (!identity || (!gained && !queued)) continue
+        identity.inLibrary = true
+        identity.decision = "pending"
+        identity.reason = reason
+        reconciled = true
+      }
+      if (reconciled) {
+        reconciledSurface = surface
+        pendingWrites.set(PAGE_SURFACE_PATH, surface)
+      }
+    }
     pendingWrites.set(EVIDENCE_EXCEPTIONS_PATH, { storyEvidence: evidenceExceptions })
     // The stub above replaces a reviewed note with a shorter one, so the count of
     // long notes drops with it. The ratchet fails in either direction: the same
@@ -813,6 +917,14 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     drafts: number
   } | null = null
 
+  // What the censused pages draw, and the identities they draw it with: the
+  // published export is not the whole page, so this is the only record of the
+  // drawings the library never had and of the compositions nothing measures.
+  let surfaceStats: SurfaceStats | null = null
+  let surfaceWaiting: SurfacePending[] = []
+  let surfaceExcusals: SurfaceUnmirrored[] = []
+  let surfaceDeferred: SurfaceUncensused[] = []
+
   if (devicePolicy) {
     try {
       const cases = loadCaseFile()
@@ -900,6 +1012,34 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     } catch (error) {
       fail(error instanceof Error ? error.message : String(error))
     }
+  }
+
+  // ------------------------------------------------------------ page surface
+  //
+  // `figma:check` only ever asked about published nodes, so the page as a whole
+  // was never read: a drawing the file owner kept unpublished changed the scope
+  // silently the day it was published, and a composition the page draws (a stack
+  // at 852, a mobile page at 304, a drawer panel at 417) had no counterpart in
+  // the procedure at all. The committed census makes both data, and this gate
+  // keeps it and the inventory in step, both ways.
+  try {
+    const surface = reconciledSurface ?? loadPageSurface()
+    const cases = devicePolicy ? loadCaseFile() : []
+    const result = checkPageSurface(surface, {
+      nodes: committed,
+      registry,
+      cases,
+      fileKey,
+      devices: Object.keys(devicePolicy?.devices ?? {}),
+    })
+    for (const error of result.errors) fail(error)
+    for (const warning of result.warnings) warnings.push(warning)
+    surfaceStats = result.stats
+    surfaceWaiting = surfacePending(surface)
+    surfaceExcusals = surfaceUnmirrored(surface)
+    surfaceDeferred = surfaceUncensused(surface, committed)
+  } catch (error) {
+    fail(error instanceof Error ? error.message : String(error))
   }
 
   const bulkByPage = new Map()
@@ -1245,6 +1385,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     )
     if (deviceStats) console.log(formatDeviceLine(deviceStats))
     if (deviceCoverageStats) console.log(formatCoverageLine(deviceCoverageStats))
+    if (surfaceStats) console.log(formatSurfaceLine(surfaceStats))
     if (caseCorpusStats) {
       console.log(
         `cases: ${caseCorpusStats.cases} case(s) · errors ${caseCorpusStats.errors} · ` +
@@ -1292,6 +1433,13 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
           snapshotVersion: liveVersion ?? null,
           implementationOrder: implementationOrder(snapshot, selected),
           pending,
+          // The surface is not a delta either. `waiting` is the published
+          // identity still owed an implementation, and `unmirrored` is a
+          // composition the source draws that no case measures: the two things a
+          // plan reader could not learn from the inventory.
+          surfaceWaiting: surfaceWaiting,
+          surfaceUnmirrored: surfaceExcusals,
+          surfaceUncensused: surfaceDeferred,
           unverifiedDesign: snapshot
             .filter((node) => !node.designFingerprint)
             .map((node) => node.nodeId),

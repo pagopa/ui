@@ -19,10 +19,9 @@ name: Deep checks
 #
 # There is no Nx cache step: Nx 23 keys its task cache to the machine that wrote
 # it, so a cache restored on another runner is reported as unrecognized and
-# ignored. Reusing work across runs needs a remote cache, which
-# docs/plans/pipeline-proposal.md keeps as its own decision along with the
-# measured cost, the options not taken and the next steps (sharding, per-task
-# timings).
+# ignored. Reusing work across runs needs a remote cache, which ADR-0005 §5
+# keeps as its own decision along with the measured cost, the options not taken
+# and the next steps (sharding, per-task timings).
 #
 # The review pull request (`design.preview.branch` in the figma-to-code config)
 # adds review stories only. They are tagged `!test` and `no-visual`, they never

@@ -18,6 +18,10 @@ catalog:
   # Read and written by `figma:rules`.
   rules: src/catalog/figma/rules.json
   parityCases: src/catalog/figma/parity-cases.json
+  # The census of what a Figma page draws, read from the page tree so the
+  # identities the library export never published are not invisible. Written by
+  # hand from the page read, validated by `figma:check`.
+  pageSurface: src/catalog/figma/page-surface.json
   devicePolicy: src/catalog/figma/device-policy.json
   deviceExceptions: src/catalog/figma/device-exceptions.json
   apiExceptions: src/catalog/figma/api-exceptions.json

@@ -2054,8 +2054,8 @@
     "storyId": "components-feedback-banner--source-case-vertical",
     "state": "Mobile",
     "device": "mobile",
-    "width": 852,
-    "viewport": 1200,
+    "width": 272,
+    "viewport": 320,
     "depth": 5,
     "root": "[role=\"status\"]",
     "subjects": {
@@ -2088,7 +2088,8 @@
         "reason": "the 44px native close target; the source close frame is 24px with the glyph below it (guides/banners.md)"
       }
     ],
-    "ignores": ["Chip.radius", "Pictogram.gap"]
+    "ignores": ["Chip.radius", "Pictogram.gap"],
+    "note": "reviewed 2026-10-29: only the Vertical/Device=Mobile variants changed — the source corrected them from desktop-shaped 852x222 frames to a 272x283 mobile stack (Line 4x251, Content 220x251, Title 148x56, Description 220x110). Captured at the 320 viewport with the root forced to the source 272; the Title/Description/Chip/Pictogram/Button/Close offsets map exactly and the responsive probe is clean. The five shared-adaptation residues are unchanged and the component needed no change."
   },
   {
     "id": "295-1360-unchecked-enabled",
@@ -3753,6 +3754,84 @@
     "note": "reviewed: CatalogueCard at its 360x236 source frame, no device axis. Root 360x236, radius 8, #ffffff fill and ring-1 ring-border (#e8ebf1, the INSIDE-aligned source stroke) are exact; the 24px insets and the 24px root gap match. Header 312x68: 44px Avatar small at the 16/22 Semibold title with the 16/22 grey-700 Ente 2px below, column 256 wide. Description 312x60 at 14/20 grey-700. Action row 312x24 in 24px vertical gap: two 16/22 Semibold blue text actions with 24px between them, the 24px person/check glyphs on the right. Composition check clean under --strict; responsive clean. Residue: none."
   },
   {
+    "id": "824-8838-two-values-selected",
+    "nodeId": "824:8838",
+    "export": "Autocomplete",
+    "storyId": "components-inputs-autocomplete--fidelity",
+    "state": "two values selected",
+    "variant": "824:8872",
+    "width": 272,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"824-8872\"] [data-slot=\"autocomplete-multiple\"]",
+    "subjects": {},
+    "residues": [
+      {
+        "path": "field.padding.left",
+        "reason": "the source nests Input (12 inset) then Active (12/0/14/0) then Label container; the DOM flattens them onto the single row, so its 44px left inset carries the 24px icon plus the 8px gap"
+      },
+      {
+        "path": "field.padding.right",
+        "reason": "the compared row is the source Input frame, which draws no padding of its own; its 12px right inset is the Active row's right edge, now that the trailing 48px Action goup is a sibling inside the row"
+      },
+      {
+        "path": "field.padding.top",
+        "reason": "the source centers the 46px Active row inside the 48px Input frame; the DOM expresses that centering as the row vertical padding around the 24px pills"
+      },
+      {
+        "path": "field.padding.bottom",
+        "reason": "the source centers the 46px Active row inside the 48px Input frame; the DOM expresses that centering as the row vertical padding around the 24px pills"
+      },
+      {
+        "path": "field.gap",
+        "reason": "the 2px gap belongs to the multiselect variant frame that stacks Label Container over Input; inside the flattened row the 8px is the Label container gap the source draws between pills"
+      },
+      {
+        "path": "responsive.band.stack",
+        "reason": "the variant frame stacks its 2px Label Container placeholder over the Input; the compared root is the Input frame itself, whose label is absolutely positioned, so the stack has no counterpart in the row"
+      }
+    ],
+    "note": "Type=Multiselect filled at the source 272x48 frame: one removable pill per value carrying Elimina {value}, the [clear][chevron] group in the trailing 48px, the floated label over the row. The compared root is the Input frame (824:8873) the row renders: the variant 2px Label Container placeholder and the three nested insets (Input 12, Active 12/0/14/0, Label container) are flattened onto one DOM row, so the four paddings, the variant 2px gap and the variant two-child stack are recorded residues instead of deltas. The pills strip scrolls 34px at the source width: two 68px pills plus the 24px caret target do not fit the 160px Label container the source gives the pills alone; the source instead lets its five pills overflow the 272 frame, which is open point 4 of the design request."
+  },
+  {
+    "id": "824-8838-four-values-collapsed",
+    "nodeId": "824:8838",
+    "export": "Autocomplete",
+    "storyId": "components-inputs-autocomplete--fidelity",
+    "state": "four values collapsed",
+    "variant": "11073:2423",
+    "width": 272,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"11073-2423\"] [data-slot=\"autocomplete-multiple\"]",
+    "subjects": {},
+    "residues": [
+      {
+        "path": "field.padding.left",
+        "reason": "the source nests Input (12 inset) then Active (12/0/14/0) then its content; the DOM flattens them onto the single row, so its 44px left inset carries the 24px icon plus the 8px gap"
+      },
+      {
+        "path": "field.padding.right",
+        "reason": "the compared row is the source Input frame, which draws no padding of its own; its 12px right inset is the Active row's right edge, now that the 24px arrow is a sibling inside the row"
+      },
+      {
+        "path": "field.padding.top",
+        "reason": "the source centers the 46px Active row inside the 48px Input frame; the DOM expresses that centering as the row vertical padding around the 24px badge"
+      },
+      {
+        "path": "field.padding.bottom",
+        "reason": "the source centers the 46px Active row inside the 48px Input frame; the DOM expresses that centering as the row vertical padding around the 24px badge"
+      },
+      {
+        "path": "field.gap",
+        "reason": "the 2px gap belongs to the multiselect variant frame that stacks Label Container over Input; inside the flattened row the 8px is the gap the source draws between the counter badge and the resting text"
+      },
+      {
+        "path": "responsive.band.stack",
+        "reason": "the variant frame stacks its 2px Label Container placeholder over the Input; the compared root is the Input frame itself, whose label is absolutely positioned, so the stack has no counterpart in the row"
+      }
+    ],
+    "note": "Type=Multiselect counter filled at the source 272x48 frame: the 44x24 pill reading the selected count, which carries the clear of every value (Svuota tutti i valori), the resting placeholder text beside it and the chevron alone in the trailing 24px. The compared root is the Input frame (11073:2424) the row renders, so the variant 2px Label Container placeholder, the three nested insets and the variant two-child stack are the same flattened-row residues as the chips case. The badge measures 43.56 against the source 44, the resting text starts one gap after it and the field keeps the 48 frame; the count is announced as 4 selezionati and the badge remove clears every value, which is the behaviour the issue asked about."
+  },
+  {
     "id": "908-2234-actionable",
     "nodeId": "908:2234",
     "export": "ListItem",
@@ -4097,14 +4176,14 @@
     "width": 300,
     "viewport": 1200,
     "depth": 6,
-    "root": "nav > div > div.mt-6",
+    "root": "nav > div > div > div.mt-6",
     "subjectRoot": ".Profile item",
     "subjects": {
-      "Description": "nav > div > div.mt-6 span.text-label-mini",
-      "Value": "nav > div > div.mt-6 span.text-body-big-sb",
-      "Container": "nav > div > div.mt-6 > div.flex.items-center",
-      "Gravatar": "nav > div > div.mt-6 [data-slot=\"avatar\"]",
-      "Content": "nav > div > ul > li:first-child > a"
+      "Description": "nav > div > div > div.mt-6 span.text-label-mini",
+      "Value": "nav > div > div > div.mt-6 span.text-body-big-sb",
+      "Container": "nav > div > div > div.mt-6 > div.flex.items-center",
+      "Gravatar": "nav > div > div > div.mt-6 [data-slot=\"avatar\"]",
+      "Content": "nav > div > div > ul > li:first-child a"
     },
     "residues": [
       {
@@ -4113,7 +4192,7 @@
       }
     ],
     "ignores": ["Gravatar.gap", "Gravatar.border.color", "Content.box.width"],
-    "note": "Composition check off: the story composes the profile block below the items where the source mockup places it first (the item offset reads -312 against the source 103), so the mapped offsets are clean in the block (Description 0, Value 22, Gravatar left 24/top 19) and the item rhythm is verified as its own subject."
+    "note": "reviewed 2026-10-29: the delta reaches this node only through its embedded Banner instances (FILL to HUG on their own frames), so no side-nav geometry changed. The case had been unmeasurable since 2026-10-24, when the condensed group/nav wrapper landed under the desktop block: its root and Content selectors no longer matched. Remapped to that wrapper and the row anchor; both devices now verify and the residues are the documented Avatar adaptations."
   },
   {
     "id": "1120-7458-side-nav-condensed-mobile",
@@ -5599,13 +5678,19 @@
     "depth": 6,
     "root": "#storybook-root a",
     "subjects": {
-      "Content layer": "#storybook-root a",
-      "arrow": "#storybook-root a > span"
+      "Content layer": "#storybook-root a > span",
+      "Button": "#storybook-root a > span"
     },
     "focus": ["#storybook-root a"],
     "keepFocus": true,
     "compareOffset": true,
     "expectState": "focused",
+    "residues": [
+      {
+        "path": "field.radius",
+        "reason": "the radius layer publishes 0/8/16/24 (src/index.css @theme maps only those steps); 16 is the nearest published token and no 12 step exists"
+      }
+    ],
     "ignores": [
       "field.padding.top",
       "field.padding.right",
@@ -5614,7 +5699,7 @@
       "field.gap",
       "Content layer.gap"
     ],
-    "note": "reviewed: source SkipToMainContent (8090:46352, 320x40) against the SourceBand story at the 320 source width, captured with the link focused (it is off screen until then; --expect-state focused, focus kept). Verified the 320x40 band at the source origin: the #ffffff Content layer surface, its 8/24 insets and its 320 width; the underlined 16/22 Semibold #0b3ee3 label starting at the 24px inset; the 24x24 arrow at offset 226.66/8 against the source 227/8 (the 8px label-to-artwork gap). The review closed the drifts in skip-to-main-content.tsx: the link is the source's full-width top band (fixed inset-x-0 top-0) instead of a 16/12 floating box, the source carries no elevation so the Tailwind shadow-32 is gone, and the hidden state is -translate-y-full so it depends on the band instead of a fixed 96px. Residues: the label line is the 16/22 text-body-sb token against the source 16/21 (1px, inside tolerance; the scale has no 21px line); the focus ring is the a11y contract's visible indicator (2px outline drawn inside the band so the viewport edge does not clip it) where the source variant draws none. Mapping artifacts: the source's root (no padding) and its Content layer collapse into the one anchor in the DOM, so field.padding.*/field.gap are ignored and the Content layer is mapped to that same element for its 8/24 insets; the layer's 16px gap is the phantom gap of its single child (the DOM gap 8 is the source Content frame's label-to-artwork gap). Responsive clean."
+    "note": "reviewed 2026-10-29: the source replaced the 320x40 white bar with a 236x56 dark pill — a 2px Blue 300 ring (radius 12, 2.5 gap) around a radius-8 rect. The render maps it to an anchor (rounded-xl border-2 border-skip-to-main-ring, px-0.5 py-0.5 → 234.66x56) wrapping a span (h-12 rounded-lg bg-foreground px-4 text-body-sb underline → 226.66x48), the arrow is gone. Both subjects map to the span; the 0.5 gap step is off the source's 2.5 by 1.34, inside the 2px tolerance."
   },
   {
     "id": "8818-39878-square",

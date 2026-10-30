@@ -1,6 +1,6 @@
 ---
 name: figma-to-code
-description: Figma → React process for this design system. Use when Figma gained or changed components, icons, pictograms or variables; when a drift pull request needs its alignment; when a component is created from a Figma node, aligned, verified against its source frame or re-reviewed; when a component with no node joins the public API; when a set declares a Device/Breakpoint axis; when someone asks the designer a question or a design answer must land — review story, captures, issue, record; or when `figma:check` reports stale or missing evidence.
+description: Figma → React process for this design system. Use when Figma gained or changed components, icons, pictograms or variables; when a drift pull request needs its alignment, or its before/after captures of what changed; when a component is created from a Figma node, aligned, verified against its source frame or re-reviewed; when a component with no node joins the public API; when a set declares a Device/Breakpoint axis; when someone asks the designer a question or a design answer must land — review story, captures, issue, record; or when `figma:check` reports stale or missing evidence.
 ---
 
 # Figma to code
@@ -13,11 +13,15 @@ files the config names: read them, never copy them into this skill.
 
 `pnpm nx run pagopa-ui-cli:figma:status` prints the token state, the pinned
 snapshot, the drift against the committed inventory, the rules ledger and comment
-counts, the pending queue with its design requests and the next command.
-`--live` adds the file version and its last-modified date: that is what tells
-whether Figma changed at all. Run it before reading anything else; nothing below
-repeats what it reports. Before touching one node, read
+counts, the pending queue with its design requests, the page surface line and the
+next command. `--live` adds the file version and its last-modified date: that is
+what tells whether Figma changed at all. Run it before reading anything else;
+nothing below repeats what it reports. Before touching one node, read
 `figma:brief --node <nodeId>`.
+
+A session that touches a page also reads that page's tree — `get_metadata` on the
+page node — and brings its census up to date
+([catalogue.md](references/catalogue.md#the-page-surface)).
 
 ## Config first
 
@@ -65,6 +69,16 @@ its flags, space-separated:
   read through the MCP. The gate is [init.md](references/init.md) §2.
 - **`nodeId` is identity.** Names and pages change; the registry is keyed by
   `nodeId`, bulk rules by `pageId`.
+- **The library is the scope.** A drawing the file never published is not
+  implemented: not a component of this design system, no work owed. The census
+  records it as `unpublished`, so publication — which grows the export — fails
+  the mirror and makes the decision due
+  ([catalogue.md](references/catalogue.md#the-page-surface)).
+- **A composition is source too.** A page draws arrangements, not only
+  identities: the frame stacking four elements, the mobile page at 304, the
+  drawer panel at 417. Each is measured by a case at the device it is drawn at,
+  or excused in writing in the census; a row rendered at the set's own variant
+  width measures the set, not the page.
 - **Figma URLs come from `figma.fileModule`** (`FIGMA_FILE_KEY`,
   `figmaNodeUrl`, `figmaEmbedUrl`); never hardcode the file URL. A story's
   `design` parameter uses `figmaEmbedUrl`: the addon only rewrites a URL with a
@@ -102,7 +116,7 @@ its flags, space-separated:
 | Use case                                     | Reference                                             |
 | -------------------------------------------- | ----------------------------------------------------- |
 | Figma delta: snapshot, triage, pending queue | [delta.md](references/delta.md)                       |
-| Drift handoff: branch, artifacts, local alignment | [handoff.md](references/handoff.md)               |
+| Drift handoff: branch, artifacts, local alignment, before/after media | [handoff.md](references/handoff.md)               |
 | New component from a Figma node              | [new-from-figma.md](references/new-from-figma.md)     |
 | Component without a Figma node: coverage     | [new-without-node.md](references/new-without-node.md) |
 | Name and props of a new or revised node      | [prop-conventions.md](references/prop-conventions.md) |
@@ -131,7 +145,10 @@ what a node-backed component proves), [catalogue.md](references/catalogue.md)
 3. **Delivery stop**: report and ask before commit, push or pull request.
    Stories, registry, inventory and exception changes travel with the
    implementation. On a drift branch, commit the alignment there and leave the
-   push and merge to the person ([handoff.md](references/handoff.md)).
+   push and merge to the person ([handoff.md](references/handoff.md)). Once that
+   pull request exists, one comment on it carries the before/after pair of every
+   node whose render moved
+   ([handoff.md](references/handoff.md#before--after-media)).
 4. **Report**: what changed; per node the decision and its reason; per device
    the verdict; the residues with their reasons; what stays open and why; files
    touched; each command with its result.

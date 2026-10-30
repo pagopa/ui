@@ -8,9 +8,8 @@
 - Decision owner: Figma design owner
 - Updated: 23 October 2026 — surfaced by the wave-4 rules import
 
-Date: 23 October 2026. Origin: the component-rules migration
-([12-component-rules.md](../plans/improvements/12-component-rules.md)). Figma
-was not modified: the evidence below comes from the read-only page tree.
+Date: 23 October 2026. Origin: the component-rules migration. Figma was not
+modified: the evidence below comes from the read-only page tree.
 
 ## Why
 

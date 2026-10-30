@@ -289,7 +289,7 @@
         "story": "apps/storybook/src/SideNav.stories.tsx",
         "storyExports": ["Playground", "NestedAndProfile"]
       },
-      "note": "Reviewed 2026-10-15 against the current source: a square full-bleed column (300px desktop, 72px condensed) with no radius or border, 16/24 item padding, grey-50 hover and the blue-50 selected row with the 4px blue-500 indicator. The previous rounded, bordered 288px card was an implementation extension and is removed; the mobile details disclosure and the profile block remain the reviewed adaptations. Mobile review 2026-10-15: the disclosure head is the source 48px bar (1519:2721 — menu icon, section name, bottom divider) plus the disclosure chevron, and the items under it are full-bleed like the source 320px panel. Device review 2026-10-15 (device burn-down wave 3): one case per declared device, both viewport-scoped and responsive-clean — mobile 1519:2721 (case 1120-7458-side-nav-condensed-mobile, 320: head 49 against the source 48 head + 1 divider, icon 24, label 16/22 semibold) and desktop 1120:7649 (case 1120-7458-back-office-io-desktop, 300: the 300x103 profile block with its 300x70 row, 208 text column and 32px avatar slot, plus the first item 56/16-20-16-24/8). Fixes from the captured renders: the item icon slot is a flex box (the inline-block leading made every icon item 62px against the source 56 and the item band read two lines), the item right inset is pr-5 (the source's 20 + the 4px indicator = 24; the DOM border carries the indicator), the profile column is flex-1 (208 like the source) and the profile divider no longer adds an 8px margin over the block's own pb-2 (103 against 111). Recorded: the Avatar's proportional compact radius (the source Gravatar placeholder is a circle), the source Gravatar's placeholder gap/stroke and the icon bounding-box fill as mapping artifacts, and the story's profile-below-items order (the source mockup places it first). Comments 2026-10-24 (F-03): added `condensed` (source `Condensed=True` desktop variant `1130:11242`, 72px) with an icon-only rail whose 300px panel opens as a hover/focus overlay without reflow, `badgeCount` rendered as the source dot in the rail and as the numbered badge when expanded, `chip` on `NavItem` hidden on the rail, parent toggles with `aria-expanded` and `expandLabel`/`collapseLabel`, and child-only selection. The mobile disclosure (`1519:2721`) is unchanged. Disabled items stay out of the DOM (no prop). Guide: apps/storybook/src/guides/side-nav.md."
+      "note": "Reviewed 2026-10-29: the delta reaches this node only through its embedded Banner instances (FILL→HUG on their own frames), so no side-nav geometry changed. 1120-7458-back-office-io-desktop had been unmeasurable since 2026-10-24, when the condensed group/nav wrapper landed under the desktop block — its root and Content selectors no longer matched; they are remapped to that wrapper and the row anchor. Both devices verify (the residues are the documented Avatar adaptations and the story's bounding-box fill). No component change."
     },
     "1120:7621": {
       "status": "implemented",
@@ -1046,7 +1046,7 @@
           "SourceHierarchies"
         ]
       },
-      "note": "Reviewed per device 2026-10-15 (device burn-down wave 2): `261-6501-desktop-desktop` (261:6548, 852 wide, viewport scope verified) and `261-6501-mobile-mobile` (374:12526 through the new SourceCaseVertical story: the source pairs the mobile device with Direction=Vertical). Residues: the shared 24px action row (the source text action is 14/21), the 44px native close target and the retained 1px border (guides/banners.md). Comments 2026-10-24 (F-11): `title` is optional as the source `Title` boolean allows; a banner without a title renders no heading and needs `label` for the accessible name, while the dismiss control stays optional (`WithoutTitle` story). The title/link/wrap comments remain usage guidance."
+      "note": "Reviewed 2026-10-29: the delta touches only the Vertical/Device=Mobile variants — the source corrected them from desktop-shaped 852x222 frames to a 272x283 mobile stack, so 261-6501-mobile-mobile was recaptured at the 320 viewport with the root forced to 272 and now verifies with its five shared-adaptation residues (the +5 height is the 24px action row). 261-6501-desktop-desktop is unchanged and still verifies; the FILL→HUG relaxation on the desktop variants is geometry-neutral. No component change was needed."
     },
     "2776:74243": {
       "status": "mocked",
@@ -1400,7 +1400,7 @@
         "story": "apps/storybook/src/IdentityProviderPicker.stories.tsx",
         "storyExports": ["Playground", "Desktop"]
       },
-      "note": "Device review 2026-10-16 (device burn-down wave 10): both declared devices verified — desktop `731-20386-desktop-desktop` (731:20387, 410x912) on the Desktop export and mobile `731-20386-mobile-mobile` (731:20385, 320x908) on the Playground export, both `compareOffset` clean and responsive-clean. The whole composition verifies without a component change: header 80/76 (min-h-20/min-h-19), title 24/32 vs 18/28 on the source Titillio-Bold (font-bold), close glyph 24x24, IDP modules pad 0/24/24 with gap 8, rows 362/272x60 with the 16px inset, 12px gap and 8px radius, the 14/16 label against the source 14/16.8 and the 116px caller logo against the source artwork 115 (both inside the 2px tolerance). No layoutScope: the composition is the caller's `device` prop, not a width that flips it (the 123:4498 ButtonGroup precedent); the reason is in both cases' note. The story exports SingleProvider (a standalone Provider row) is caller documentation, not a module composition."
+      "note": "Reviewed 2026-10-29: the delta carries no geometry for this node — the semantic diff of the pinned source found no structural field changed across its 803 nodes, so both declared devices were re-rendered: 731-20386-desktop-desktop and 731-20386-mobile-mobile verify clean with no residues. No component change."
     },
     "733:22841": {
       "status": "implemented",
@@ -1505,16 +1505,31 @@
         "story": "apps/storybook/src/SkipToMainContent.stories.tsx",
         "storyExports": ["SourceBand", "Playground"]
       },
-      "note": "Reviewed 2026-10-23 (M5 wave): one committed case against the `SourceBand` story at the 320 source width, captured with the link focused (it is off screen until then; `--expect-state focused`, focus kept). Verified the 320x40 band at the source origin, the #ffffff Content layer surface with its 8/24 insets, the underlined 16/22 Semibold #0b3ee3 label at the 24px inset and the 24x24 `arrow` at offset 226.66/8 against the source 227/8 (the 8px label-to-artwork gap). The review closed the drifts in navigation/skip-to-main-content.tsx: the link is the source's full-width top band (`fixed inset-x-0 top-0`, hidden by `-translate-y-full` until focus) instead of a 16/12 floating box, and the source carries no elevation, so the Tailwind `shadow-32` is gone. Residues: the label line is the 16/22 `text-body-sb` token against the source 16/21 (1px, inside tolerance; the scale has no 21px line) and the focus ring is the a11y contract's visible indicator (2px outline drawn inside the band so the viewport edge does not clip it) where the source draws none. The source's root (no padding) and its Content layer collapse into the one anchor in the DOM: the case ignores `field.padding.*` and `field.gap` and maps the Content layer to that same anchor for its insets, while the layer's 16px gap is the phantom gap of its single child. Automated a11y and render checks are not screen-reader or browser-zoom certification."
+      "note": "Reviewed 2026-10-29: the source replaces the 320x40 white bar with a 236x56 dark pill — a 2px Blue 300 ring around a radius-8 #0e0f13 rect carrying a white 16/22 underlined label; the arrow is gone. navigation/skip-to-main-content.tsx renders an anchor holding the ring (border-2 border-skip-to-main-ring, px-0.5 py-0.5, rounded-xl, 234.66x56) around the pill span (h-12 rounded-lg bg-foreground px-4 text-body-sb underline, 226.66x48). Case 8090-46352-focused: verified-with-residues on the focus state and the responsive probe; the radius stays 16, the layer publishes no 12 step."
     },
     "824:8838": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/inputs/autocomplete.tsx",
         "export": "Autocomplete",
-        "story": "apps/storybook/src/Autocomplete.stories.tsx"
+        "story": "apps/storybook/src/Autocomplete.stories.tsx",
+        "storyExports": [
+          "Playground",
+          "Fidelity",
+          "ClearControl",
+          "OverridableTexts",
+          "Loading",
+          "AutocompleteDisabledOptions",
+          "Multiselect",
+          "MultiselectCounter",
+          "MultiselectClearAll",
+          "MultiselectBackspace",
+          "MultiselectSelectAll",
+          "MultiselectRemoveValue",
+          "MultiselectOverridableTexts"
+        ]
       },
-      "note": "Design request open: docs/design-requests/2026-10-22-autocomplete-multiselect.md (issue #40, @gunzip). Delta 2026-10-28 touched only the 7 Type=Multiselect and Type=Multiselect counter variants, box unchanged at 272x48: the chips row gained a 1px Cursor, so typed text stays next to the chips, and the Multiselect variants gained a 48x24 Action goup holding two 24px default arrows where the counter keeps one. What the second arrow does, what the counter counts and which component owns the types stay open; Autocomplete renders only Type=Default, so the node stays pending."
+      "note": "Answered 2026-11-12 (#40, design-requests/2026-10-22-autocomplete-multiselect): Option A — the field owns both filled types through `multiple: string[]`. `824:8872` draws a removable pill per value (`removeValueLabel`) beside [clear][chevron]; `11073:2423` a 44x24 count pill from two values that clears them all (`clearAllLabel`). Both keep the 48px frame and Backspace. Departures: the strip scrolls past the source's 160px; the label floats at one value where the counter draws it inside. Overflow: design-requests/2026-10-28-autocomplete-multiselect-overflow (#76). Parity: two cases."
     },
     "8702:266": {
       "status": "implemented",

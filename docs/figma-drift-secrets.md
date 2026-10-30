@@ -2,13 +2,8 @@
 
 The two tokens are **GitHub environment secrets of `app-dev-ci`**, the
 environment the drift and Chromatic jobs declare. They are created and rotated
-out of band, not by Terraform:
-
-- the value lives in the common Key Vault;
-- the GitHub environment secret is a copy of it;
-- `infra/bootstrapper/dev/secrets.tf` only contains `removed` blocks that forget
-  the resources created during an earlier Terraform attempt, without destroying
-  the existing secrets.
+out of band: the value lives in the common Key Vault, the GitHub environment
+secret is a copy of it, and Terraform manages neither.
 
 The drift pull request needs no third token: it pushes and opens with the job's
 `GITHUB_TOKEN` (see [The drift pull request](#the-drift-pull-request)).
@@ -46,10 +41,9 @@ az keyvault secret show --vault-name <common-vault> --name ui-figma-token \
 The same shape applies to `ui-chromatic-project-token` →
 `CHROMATIC_PROJECT_TOKEN`.
 
-The `app-dev-ci` environment is created by `infra/repository`.
-`infra/bootstrapper/dev/secrets.tf` no longer manages the secrets: its `removed`
-blocks use `destroy = false`, so a later bootstrapper apply forgets the
-resources without deleting the Key Vault or GitHub secrets.
+The `app-dev-ci` environment is created by `infra/repository`. A bootstrapper
+apply leaves both the Key Vault and the GitHub secrets untouched: the
+`removed` blocks in `infra/bootstrapper/dev/secrets.tf` use `destroy = false`.
 
 ### `FIGMA_TOKEN`
 
@@ -100,19 +94,6 @@ Two repository settings carry this, both set on `pagopa/ui`: **Workflow
 permissions** at `Read and write`, and **Allow GitHub Actions to create and
 approve pull requests** enabled. Turning either one off moves the failure into
 the job rather than into the review.
-
-### Retiring the older `DRIFT_PR_TOKEN`
-
-The drift job used a fine-grained personal access token until 2026-10-26. It is
-no longer read by any workflow; deleting it is an out-of-band action:
-
-```sh
-gh secret delete DRIFT_PR_TOKEN --repo pagopa/ui --env app-dev-ci
-az keyvault secret delete --vault-name <common-vault> --name ui-drift-pr-token
-```
-
-The Key Vault delete is a soft delete: the value stays recoverable for the
-retention period.
 
 ## Rules
 

@@ -17,9 +17,10 @@ button retains the source close glyph and has an accessible name.
 The source paddings, radius, accents, gaps and type scales map to the existing
 tokens, and the retained border keeps visible separation and system-color
 contrast without one-off padding compensation. Long titles and descriptions
-wrap instead of being clipped; the component remains `w-full`, and the desktop
+wrap instead of being clipped; the component remains `w-full`, and the
 specimens use the source artboard width as an evidence viewport rather than a
-fixed runtime width.
+fixed runtime width — the desktop artboards and the 272px wide mobile artboard,
+the latter captured inside the 320px viewport.
 
 Text actions are content-sized in the source; their native targets grow to the
 shared accessible minimum, and the close activation target grows while keeping
