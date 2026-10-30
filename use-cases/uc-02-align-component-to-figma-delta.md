@@ -111,8 +111,8 @@ sequenceDiagram
 
 ## Open questions and propagation
 
-| ID           | Type              | Item                                                                                                          | Impact / blocker                                                                             | Owner        | Resolution / link |
-| ------------ | ----------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ------------ | ----------------- |
-| `uc-open-04` | question          | Does a node that is aligned but not yet reviewed by design stay in the queue of the next delta?                | Determines whether the review debt accumulates or is carried between deltas                   | TBD          | TBD               |
-| `uc-open-05` | assumption        | The delta queue is closed when every node has a decision, not when parity is complete                          | If wrong, the delta is never closable until the aggregate coverage grows                      | TBD          | TBD               |
-| `uc-open-06` | proposed decision | A change that touches only rules or comments is always handled through `UC-06`, with no second path            | Avoids introducing a second path for the same work                                           | design owner | TBD               |
+| ID           | Type              | Item                                                                                                | Impact / blocker                                                            | Owner        | Resolution / link |
+| ------------ | ----------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------ | ----------------- |
+| `uc-open-04` | question          | Does a node that is aligned but not yet reviewed by design stay in the queue of the next delta?     | Determines whether the review debt accumulates or is carried between deltas | TBD          | TBD               |
+| `uc-open-05` | assumption        | The delta queue is closed when every node has a decision, not when parity is complete               | If wrong, the delta is never closable until the aggregate coverage grows    | TBD          | TBD               |
+| `uc-open-06` | proposed decision | A change that touches only rules or comments is always handled through `UC-06`, with no second path | Avoids introducing a second path for the same work                          | design owner | TBD               |

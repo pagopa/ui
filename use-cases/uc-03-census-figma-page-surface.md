@@ -102,7 +102,7 @@ sequenceDiagram
 
 ## Open questions and propagation
 
-| ID           | Type              | Item                                                                                          | Impact / blocker                                                                      | Owner | Resolution / link |
-| ------------ | ----------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ----- | ----------------- |
-| `uc-open-07` | question          | Must the census be redone for every page touched, or only for the pages with a delta?          | Changes the cost of every Figma session and the frequency of the live read            | TBD   | TBD               |
-| `uc-open-08` | proposed decision | An orphaned identity stays in the census marked as a residue instead of being removed         | Preserves the historical trace, at the cost of a list that does not match the file    | TBD   | TBD               |
+| ID           | Type              | Item                                                                                  | Impact / blocker                                                                   | Owner | Resolution / link |
+| ------------ | ----------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ----- | ----------------- |
+| `uc-open-07` | question          | Must the census be redone for every page touched, or only for the pages with a delta? | Changes the cost of every Figma session and the frequency of the live read         | TBD   | TBD               |
+| `uc-open-08` | proposed decision | An orphaned identity stays in the census marked as a residue instead of being removed | Preserves the historical trace, at the cost of a list that does not match the file | TBD   | TBD               |

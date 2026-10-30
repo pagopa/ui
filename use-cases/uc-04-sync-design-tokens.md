@@ -106,8 +106,8 @@ sequenceDiagram
 
 ## Open questions and propagation
 
-| ID           | Type              | Item                                                                                        | Impact / blocker                                                                       | Owner | Resolution / link |
-| ------------ | ----------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ----- | ----------------- |
-| `uc-open-09` | question          | Is a renamed variable a breaking change for consumers or an internal detail?                 | Determines whether a version plan with a declared impact and a migration note is needed | TBD   | TBD               |
-| `uc-open-10` | assumption        | The foundation's alignment date changes only when the value really changes                   | If wrong, the dates lose meaning as proof of alignment                                | TBD   | TBD               |
-| `uc-open-11` | proposed decision | The CSS budget is an absolute ceiling and not a per-component ratio                          | A large component can consume the quota available to the others                       | TBD   | TBD               |
+| ID           | Type              | Item                                                                         | Impact / blocker                                                                        | Owner | Resolution / link |
+| ------------ | ----------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ----- | ----------------- |
+| `uc-open-09` | question          | Is a renamed variable a breaking change for consumers or an internal detail? | Determines whether a version plan with a declared impact and a migration note is needed | TBD   | TBD               |
+| `uc-open-10` | assumption        | The foundation's alignment date changes only when the value really changes   | If wrong, the dates lose meaning as proof of alignment                                  | TBD   | TBD               |
+| `uc-open-11` | proposed decision | The CSS budget is an absolute ceiling and not a per-component ratio          | A large component can consume the quota available to the others                         | TBD   | TBD               |
