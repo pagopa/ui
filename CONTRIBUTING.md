@@ -289,6 +289,11 @@ VISUAL_SCOPE=apps/storybook/visual/scope.json pnpm nx run pagopa-ui-storybook:te
 complete too. The file carries the mode as well: `stories` lists the ids to
 capture, `all` names none because the whole catalogue runs.
 
+The comparison uses `threshold: 0` and a 32-pixel budget. Every counted pixel
+must match exactly; the budget absorbs Chromium's small border and text
+rasterisation drift (about 0.01% of a 320x900 capture) without hiding a surface
+or layout change. A failure above the budget is a finding, not noise.
+
 To accept a visual change, add the `visual:update` label to the pull request.
 The workflow commits the new images to its head branch, and that commit starts
 no run: review a sample, remove the label and re-run the check. The same

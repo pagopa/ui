@@ -17,7 +17,11 @@ export default defineConfig({
   snapshotPathTemplate: `${snapshots}/{arg}{ext}`,
   expect: {
     toHaveScreenshot: {
-      maxDiffPixels: 0,
+      // Chromium rasterisation moves a handful of border or text pixels between
+      // runs. A 32-pixel budget is about 0.01% of a 320x900 capture: enough to
+      // absorb that noise, far below a real surface or layout change.
+      // `threshold: 0` still compares every counted pixel's colour exactly.
+      maxDiffPixels: 32,
       threshold: 0,
       animations: "disabled",
       caret: "hide",
