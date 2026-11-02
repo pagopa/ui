@@ -18,6 +18,10 @@ const config: StorybookConfig = {
     "@storybook/addon-mcp",
   ],
   framework: "@storybook/react-vite",
+  // The core Actions panel only shows the events emitted by `action()` or by
+  // `parameters.actions.handles`. The stories use `storybook/test`'s `fn()`
+  // spies, so the panel would stay empty; the Interactions panel is separate.
+  features: { actions: false },
   viteFinal: (viteConfig, { configType }) => ({
     ...viteConfig,
     envDir: false,
