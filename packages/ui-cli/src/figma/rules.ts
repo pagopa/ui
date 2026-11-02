@@ -34,7 +34,7 @@ import {
   RulesLedgerSchema,
   RulesSnapshotSchema,
 } from "../schemas/rules.ts"
-import { fetchFileHeader, fetchFilePages, fetchNodeTrees, type FigmaPage } from "./rest.ts"
+import { fetchFilePages, fetchNodeTrees, type FigmaPage } from "./rest.ts"
 
 export const RULES_PATH = "src/catalog/figma/rules.json"
 export const RULES_SNAPSHOT_PATH = ".figma/rules.json"
@@ -294,8 +294,9 @@ function writeLedger(root: string, ledger: RulesLedger): void {
 export async function refresh(args: { pageId?: string; nodeId?: string }): Promise<RulesSnapshot> {
   const root = enterRoot()
   const fileKey = fileKeyOf(root)
-  const header = await fetchFileHeader(fileKey)
-  const pages = await fetchFilePages(fileKey)
+  // One read answers both: the page list is pinned to the same version the
+  // node reads below use.
+  const { version, pages } = await fetchFilePages(fileKey)
 
   let selected = pages
   if (args.pageId) selected = pages.filter((page) => page.id === args.pageId)
@@ -311,7 +312,7 @@ export async function refresh(args: { pageId?: string; nodeId?: string }): Promi
   // the full depth, and `fetchNodeTrees` batches it.
   const pageDocuments = await fetchNodeTrees(
     fileKey,
-    header.version,
+    version,
     selected.map((page) => page.id),
     2,
   )
@@ -327,7 +328,7 @@ export async function refresh(args: { pageId?: string; nodeId?: string }): Promi
     )
   }
   const ids = [...containers.values()].flat()
-  const documents = await fetchNodeTrees(fileKey, header.version, ids)
+  const documents = await fetchNodeTrees(fileKey, version, ids)
   const extracted = extractPages(
     selected,
     new Map(
@@ -345,7 +346,7 @@ export async function refresh(args: { pageId?: string; nodeId?: string }): Promi
   const previous = readRulesSnapshot(root, false)
   const merged: RulesSnapshot = {
     fileKey,
-    version: header.version,
+    version,
     fetchedAt: new Date().toISOString(),
     pages:
       args.pageId || args.nodeId
