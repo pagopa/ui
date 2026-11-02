@@ -45,6 +45,7 @@ import {
   TabsTrigger,
   TextareaField,
   type DatePickerRange,
+  UIProvider,
 } from "__PAGOPA_UI_PACKAGE__"
 import "__PAGOPA_UI_PACKAGE__/styles.css"
 
@@ -1016,4 +1017,8 @@ function Consumer() {
 
 const container = document.getElementById("root")
 if (!container) throw new Error("Missing consumer root")
-createRoot(container).render(<Consumer />)
+createRoot(container).render(
+  <UIProvider>
+    <Consumer />
+  </UIProvider>,
+)

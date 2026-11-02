@@ -2,9 +2,10 @@
 // Verify the actual packed artifact in an isolated application after `pnpm build`.
 import assert from "node:assert/strict"
 import { spawn, spawnSync } from "node:child_process"
+import { randomUUID } from "node:crypto"
 import fs from "node:fs"
 import { createRequire } from "node:module"
-import os from "node:os"
+import net from "node:net"
 import path from "node:path"
 import { z } from "zod"
 import { pathToFileURL } from "node:url"
@@ -15,6 +16,99 @@ import { FORBIDDEN_EXPORTS, REQUIRED_EXPORTS, verifyArtifactContract } from "./l
 
 const file = "dist/pagopa-ui.js"
 const typesFile = "dist/types/pagopa-ui.d.ts"
+
+function assertIsolatedInstall(directory: string, names: string[]): void {
+  const root = fs.realpathSync(directory)
+  for (const name of names) {
+    const installed = path.join(directory, "node_modules", ...name.split("/"))
+    assert.ok(fs.existsSync(installed), `${name} was not installed in the consumer`)
+    const relative = path.relative(root, fs.realpathSync(installed))
+    assert.ok(
+      relative !== ".." && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative),
+      `${name} resolved outside the isolated consumer`,
+    )
+  }
+}
+
+async function freePort(): Promise<number> {
+  return await new Promise((resolve, reject) => {
+    const server = net.createServer()
+    server.once("error", reject)
+    server.listen(0, "127.0.0.1", () => {
+      const address = server.address()
+      server.close((error) => {
+        if (error) reject(error)
+        else if (address && typeof address === "object") resolve(address.port)
+        else reject(new Error("Could not reserve a port for the Next server"))
+      })
+    })
+  })
+}
+
+async function startNextServer(
+  directory: string,
+  env: NodeJS.ProcessEnv,
+): Promise<{ url: string; output: () => string; close: () => Promise<void> }> {
+  const next = createRequire(path.join(directory, "package.json")).resolve("next/dist/bin/next")
+  const port = await freePort()
+  const child = spawn(
+    process.execPath,
+    [next, "start", "--hostname", "127.0.0.1", "--port", String(port)],
+    {
+      cwd: directory,
+      env: { ...env, NEXT_TELEMETRY_DISABLED: "1", NODE_ENV: "production" },
+      stdio: ["ignore", "pipe", "pipe"],
+    },
+  )
+  const url = `http://127.0.0.1:${port}`
+  let output = ""
+  let spawnError: Error | undefined
+  child.on("error", (error) => {
+    spawnError = error
+  })
+  const record = (chunk: Buffer) => {
+    output = `${output}${chunk.toString()}`.slice(-20_000)
+  }
+  child.stdout.on("data", record)
+  child.stderr.on("data", record)
+
+  const close = async () => {
+    if (child.exitCode !== null || child.signalCode !== null) return
+    const stopped = new Promise<void>((resolve) => child.once("close", () => resolve()))
+    if (!child.kill("SIGTERM")) return
+    const deadline = setTimeout(() => child.kill("SIGKILL"), 5_000)
+    try {
+      await stopped
+    } finally {
+      clearTimeout(deadline)
+    }
+  }
+
+  try {
+    const deadline = Date.now() + 30_000
+    let responseStatus = ""
+    while (Date.now() < deadline) {
+      if (spawnError) throw spawnError
+      if (child.exitCode !== null || child.signalCode !== null) {
+        throw new Error(`Next server exited (${child.exitCode ?? child.signalCode})`)
+      }
+      try {
+        const response = await fetch(url, { signal: AbortSignal.timeout(1_000) })
+        await response.arrayBuffer()
+        if (response.ok) return { url, output: () => output, close }
+        responseStatus = `; last HTTP status ${response.status}`
+      } catch {
+        // The server can accept the socket before the first response is ready.
+      }
+      await new Promise((resolve) => setTimeout(resolve, 100))
+    }
+    throw new Error(`Next server did not become ready${responseStatus}`)
+  } catch (error) {
+    await close()
+    const reason = error instanceof Error ? error.message : String(error)
+    throw new Error(`Next production server failed: ${reason}\n${output}`, { cause: error })
+  }
+}
 
 export async function runLibraryCheck(): Promise<number> {
   const root = enterRoot()
@@ -38,7 +132,7 @@ export async function runLibraryCheck(): Promise<number> {
       cwd,
       encoding: "utf8",
       maxBuffer: 10 * 1024 * 1024,
-      env: env ? { ...process.env, ...env } : process.env,
+      env: { ...consumerEnv, ...env },
     })
     if (result.error) throw result.error
     assert.equal(
@@ -61,13 +155,16 @@ export async function runLibraryCheck(): Promise<number> {
     await new Promise<void>((resolve, reject) => {
       const child = spawn(command, args, {
         cwd,
-        env: env ? { ...process.env, ...env } : process.env,
+        env: { ...consumerEnv, ...env },
         stdio: "inherit",
       })
       child.on("error", reject)
-      child.on("close", (code) => {
+      child.on("close", (code, signal) => {
         if (code === 0) resolve()
-        else reject(new Error(`${command} ${args.join(" ")} failed with exit code ${code}`))
+        else {
+          const reason = signal ? `signal ${signal}` : `exit code ${code}`
+          reject(new Error(`${command} ${args.join(" ")} failed with ${reason}`))
+        }
       })
     })
   }
@@ -92,17 +189,23 @@ export async function runLibraryCheck(): Promise<number> {
     JSON.parse(fs.readFileSync(tooling.resolve(`${name}/package.json`), "utf8")).version
   const packageSpecifier = JSON.stringify(manifest.name)
   const tokensSpecifier = JSON.stringify(`${manifest.name}/tokens`)
-  const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-library-"))
-  const consumer = path.join(temporary, "consumer")
   // The preview server comes from the audited package's own Vite: the consumer is
   // built with that toolchain, so serving it with another copy would prove less.
   const { preview } = await import(pathToFileURL(audited.resolve("vite")).href)
+  // Keep scratch outside the package tree so concurrent source walks cannot race with cleanup.
+  const cache = path.resolve(root, "../../.cache")
+  fs.mkdirSync(cache, { recursive: true })
+  const temporary = path.join(cache, `pagopa-library-${randomUUID()}`)
+  fs.mkdirSync(temporary)
+  const consumer = path.join(temporary, "consumer")
+  const consumerEnv = { ...process.env, TMPDIR: temporary, TMP: temporary, TEMP: temporary }
   let server:
     | {
         httpServer: { close: (callback: (error?: Error) => void) => void }
         resolvedUrls?: { local: string[] } | null
       }
     | undefined
+  let nextServer: Awaited<ReturnType<typeof startNextServer>> | undefined
   try {
     const archive = path.join(temporary, "pagopa-ui.tgz")
     run("pnpm", ["pack", "--out", archive, "--json"], root)
@@ -146,9 +249,16 @@ export async function runLibraryCheck(): Promise<number> {
     )
     run(
       "pnpm",
-      ["install", "--prefer-offline", "--ignore-scripts", "--reporter=append-only"],
+      [
+        "install",
+        "--ignore-workspace",
+        "--prefer-offline",
+        "--ignore-scripts",
+        "--reporter=append-only",
+      ],
       consumer,
     )
+    assertIsolatedInstall(consumer, [manifest.name, "react", "react-dom", "vite", "typescript"])
     for (const name of ["tailwindcss", "shadcn", "@tailwindcss/vite"]) {
       assert.equal(
         fs.existsSync(path.join(consumer, "node_modules", name)),
@@ -295,9 +405,18 @@ export async function runLibraryCheck(): Promise<number> {
       consumer,
     )
 
-    // A second consumer proves the App Router boundary: a Server Component
-    // page imports the package, and the build fails when a client module lost
-    // its own directive.
+    console.log("library: verifying the packed stylesheet against host styles")
+    await runStreaming(
+      process.execPath,
+      ["--test", toolingPath("tests/e2e/library-host-css-coexistence.spec.mjs")],
+      TOOLING_ROOT,
+      {
+        LIBRARY_HOST_CSS_CONSUMER_ROOT: consumer,
+        LIBRARY_HOST_CSS_PACKAGE: manifest.name,
+      },
+    )
+
+    // The Next fixture installs the same archive, without a workspace link.
     const rsc = path.join(temporary, "rsc")
     fs.cpSync(toolingPath("tests/fixtures/library-rsc-consumer"), rsc, { recursive: true })
     for (const source of walkFiles(rsc, (file) => /\.(ts|tsx)$/.test(file))) {
@@ -332,18 +451,40 @@ export async function runLibraryCheck(): Promise<number> {
         2,
       ),
     )
-    run("pnpm", ["install", "--prefer-offline", "--ignore-scripts", "--reporter=append-only"], rsc)
-    const next = spawnSync("pnpm", ["exec", "next", "build"], {
+    run(
+      "pnpm",
+      [
+        "install",
+        "--ignore-workspace",
+        "--prefer-offline",
+        "--ignore-scripts",
+        "--reporter=append-only",
+      ],
+      rsc,
+    )
+    assertIsolatedInstall(rsc, [manifest.name, "react", "react-dom", "next", "typescript"])
+    const rscRequire = createRequire(path.join(rsc, "package.json"))
+    const nextCli = rscRequire.resolve("next/dist/bin/next")
+    const next = spawnSync(process.execPath, [nextCli, "build"], {
       cwd: rsc,
       encoding: "utf8",
       maxBuffer: 20 * 1024 * 1024,
-      env: { ...process.env, NEXT_TELEMETRY_DISABLED: "1" },
+      env: { ...consumerEnv, NEXT_TELEMETRY_DISABLED: "1", NODE_ENV: "production" },
     })
     if (next.error) throw next.error
     if (next.status !== 0) {
       const lines = `${next.stdout}${next.stderr}`.trim().split("\n")
       assert.fail(`next build failed:\n${lines.slice(-40).join("\n")}`)
     }
+    parseSchema(
+      z.object({
+        compilerOptions: z.object({ strict: z.literal(true), skipLibCheck: z.literal(true) }),
+      }),
+      JSON.parse(fs.readFileSync(path.join(rsc, "tsconfig.json"), "utf8")),
+      "Next consumer TypeScript configuration",
+    )
+    run(process.execPath, [rscRequire.resolve("typescript/bin/tsc6"), "-p", "tsconfig.json"], rsc)
+    nextServer = await startNextServer(rsc, consumerEnv)
 
     server = await preview({
       root: consumer,
@@ -361,27 +502,40 @@ export async function runLibraryCheck(): Promise<number> {
       .split(",")
       .map((engine) => engine.trim())
       .join(", ")
-    await runStreaming(
-      "pnpm",
-      ["exec", "playwright", "test", "--config", toolingPath("playwright.config.mjs")],
-      TOOLING_ROOT,
-      {
-        CONSUMER_URL: url,
-        EXPECTED_ICON_VARIANTS: String(expectedIconVariants),
-        EXPECTED_ICON_VARIANT_IDS: expectedIconVariantIds.join(","),
-      },
-    )
+    try {
+      await runStreaming(
+        "pnpm",
+        ["exec", "playwright", "test", "--config", toolingPath("playwright.config.mjs")],
+        TOOLING_ROOT,
+        {
+          CONSUMER_URL: url,
+          NEXT_CONSUMER_URL: nextServer.url,
+          EXPECTED_ICON_VARIANTS: String(expectedIconVariants),
+          EXPECTED_ICON_VARIANT_IDS: expectedIconVariantIds.join(","),
+        },
+      )
+    } catch (error) {
+      console.error(`Next production server output:\n${nextServer.output()}`)
+      throw error
+    }
     console.log(
-      `library OK: isolated tarball, ${imported.exports.length} exports, strict types, shared React, native forms, responsive Table/sorting/paging, mobile chrome bands/one-row header/no clipped actions, viewport and container device scopes (narrow-column module, scrollable-list first item, segmented fit), calendar confirmation/ranges, explicit Breadcrumb navigation, source ProductCard/native links/actions/reflow, source OTP/password/paste/native-length/reset/system-color paint, source Avatar/native images/selection/non-color statuses/unoccluded initials/font preferences/system-color paint, keyboard/focus, standalone CSS/fonts/artwork in ${engines}, Next.js App Router build`,
+      `library OK: isolated tarball, ${imported.exports.length} exports, strict types, shared React, native forms, responsive Table/sorting/paging, mobile chrome bands/one-row header/no clipped actions, viewport and container device scopes (narrow-column module, scrollable-list first item, segmented fit), calendar confirmation/ranges, explicit Breadcrumb navigation, source ProductCard/native links/actions/reflow, source OTP/password/paste/native-length/reset/system-color paint, source Avatar/native images/selection/non-color statuses/unoccluded initials/font preferences/system-color paint, keyboard/focus, standalone CSS/fonts/artwork and host-style coexistence, Next.js App Router request-time SSR/hydration, provider messages and client routing in ${engines}`,
     )
   } finally {
-    const active = server
-    if (active) {
-      await new Promise<void>((resolve, reject) =>
-        active.httpServer.close((error) => (error ? reject(error) : resolve())),
-      )
+    try {
+      const active = server
+      if (active) {
+        await new Promise<void>((resolve, reject) =>
+          active.httpServer.close((error) => (error ? reject(error) : resolve())),
+        )
+      }
+    } finally {
+      try {
+        await nextServer?.close()
+      } finally {
+        fs.rmSync(temporary, { recursive: true, force: true })
+      }
     }
-    fs.rmSync(temporary, { recursive: true, force: true })
   }
   return 0
 }
