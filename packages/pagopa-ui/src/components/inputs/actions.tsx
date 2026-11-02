@@ -74,10 +74,8 @@ function SegmentedControl<T extends string>({
       role="group"
       aria-label={ariaLabel}
       className={cn(
-        // The source pill is 64/48 tall with 24px insets; on a 320 viewport the
-        // three source segments need 323px, so the 16px inset (a 4px step on the
-        // same scale) keeps the labels intact instead of clipping the group.
-        "inline-flex max-w-full min-h-16 items-center gap-2 rounded-full border bg-muted p-2",
+        // The source pill's radius is half its minimum height; cap it there when rows wrap.
+        "inline-flex max-w-full min-h-16 flex-wrap items-center gap-2 rounded-[var(--spacing-8)] border bg-muted p-2",
         className,
       )}
     >
@@ -90,7 +88,7 @@ function SegmentedControl<T extends string>({
             aria-pressed={selected}
             onClick={() => onValueChange(item.value)}
             className={cn(
-              "min-h-12 min-w-0 truncate rounded-full px-6 max-tablet:px-4 text-label-sb transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+              "min-h-12 min-w-0 max-w-full basis-[min-content] grow rounded-full px-6 max-tablet:px-4 text-label-sb whitespace-normal break-words transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
               selected
                 ? "bg-primary text-primary-foreground"
                 : "text-foreground hover:bg-foreground/5",

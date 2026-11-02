@@ -4317,7 +4317,7 @@
     "residues": [
       {
         "path": "field.radius",
-        "reason": "the source 54px radius exceeds half of the 64px pill, so it clips to the 32px shape rounded-full paints"
+        "reason": "the source 54px radius clips to half of the 64px pill, matching the radius derived from its minimum height"
       },
       {
         "path": ".Button group single element.radius",
