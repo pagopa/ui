@@ -462,12 +462,22 @@ export function formatDeviceLine(stats: DeviceStats): string {
 }
 
 const InventoryFileSchema = z.looseObject({
+  fileKey: z.string().optional(),
   components: z.array(InventoryNodeSchema).optional(),
 })
 
-export function loadInventoryNodes(file: string = rootPath(INVENTORY_PATH)): InventoryNode[] {
+export type InventoryFile = {
+  fileKey?: string
+  components: InventoryNode[]
+}
+
+export function loadInventory(file: string = rootPath(INVENTORY_PATH)): InventoryFile {
   const value = parseSchema(InventoryFileSchema, readJson(file), file)
-  return value.components ?? []
+  return { fileKey: value.fileKey, components: value.components ?? [] }
+}
+
+export function loadInventoryNodes(file: string = rootPath(INVENTORY_PATH)): InventoryNode[] {
+  return loadInventory(file).components
 }
 
 // ------------------------------------------------------------------------ CLI

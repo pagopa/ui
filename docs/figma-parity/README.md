@@ -8,26 +8,29 @@ It is **generated, never hand-edited**:
 
 | File                      | Content                                                                                 |
 | ------------------------- | --------------------------------------------------------------------------------------- |
-| `source.json.gz`          | the compact document map a case points at (its node and variants), minified and gzipped |
+| `source.json.br`          | the complete document map a case points at, minified and Brotli-compressed              |
 | `references/<caseId>.png` | the pinned Figma render of the case variant, scale 1, at the pinned version             |
-| `manifest.json`           | the file key, the version, the per-case hash, variant and fingerprint                   |
+| `manifest.json`           | schema version 2: file key, version, source hash, and per-case hash, variant and fingerprint |
 
 The PNGs are review evidence, not a pixel gate: the verdict stays the 2 px
-property comparison of `parity check`. The whole bundle is capped at **10 MB**;
-the cap counts the bytes a clone receives, so the gzipped slice is measured
-compressed. A bundle that would exceed it is refused and reduced to the main
-components — the cap is never raised.
+property comparison of `parity check`. The whole bundle is capped at **10 MiB**;
+the cap counts the bytes a clone receives, so the slice is measured compressed.
+A bundle that would exceed it is refused: retain every required case and reduce
+the bundle. The cap is not raised by editing a number here — it moves only
+through an amendment to [ADR-0006](../decisions/0006-parity-coverage-and-bulk-families.md)
+that the reviewer approves.
 
-The slice is gzipped with no timestamp in the header: the same corpus and
-snapshot always produce the same bytes, so a refresh with nothing changed does
-not rewrite the file. The tool reads `source.json.gz` transparently, so no
-pre-compression copy is needed.
+The slice uses lossless Brotli compression without a timestamp: the same corpus
+and snapshot produce the same bytes with the pinned toolchain. The tool reads
+`source.json.br` directly, and accepts older gzipped slices as explicit inputs.
+The source hash covers the uncompressed JSON: an explicit slice must match that
+content even when its compression format differs.
 
 ## Refresh
 
 ```sh
 export FIGMA_TOKEN=...    # file_content:read and library_content:read
-pnpm nx run pagopa-ui-cli:figma:parity:evidence -- --write
+pnpm nx run pagopa-ui-cli:figma:parity:evidence --write
 ```
 
 `--write` reads `.figma/live-rest.json` (or `--input <file>`), writes the slice
@@ -38,13 +41,13 @@ that left the corpus.
 ## Check
 
 ```sh
-pnpm nx run pagopa-ui-cli:figma:parity:evidence -- --check
+pnpm nx run pagopa-ui-cli:figma:parity:evidence --check
 ```
 
 `--check` is hermetic: it fails on a case without a manifest entry, an orphan
-entry or PNG, a missing file, a hash mismatch, a case node missing from the
-slice, or a manifest version that differs from the slice. `parity verify` runs
-the same check next to the corpus and the device coverage.
+entry or PNG, a missing file, a source or PNG hash mismatch, a case node missing
+from the slice, or a manifest version that differs from the slice. `parity
+verify` runs the same check next to the corpus and the device coverage.
 
 ## Staleness
 

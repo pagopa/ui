@@ -4,7 +4,7 @@
 // source side without the person's token and without the 160 MB snapshot. The
 // bundle has three generated parts:
 //
-//   docs/figma-parity/source.json.gz   the compact document map a case points at (gzipped)
+//   docs/figma-parity/source.json.br   the complete case document map (Brotli)
 //   docs/figma-parity/references/*.png the pinned Figma render, one per case
 //   docs/figma-parity/manifest.json    the version, the hashes and the variant
 //
@@ -29,13 +29,13 @@ import {
 } from "./cases.ts"
 import { fetchFigmaImagesPng } from "../figma/rest.ts"
 import { resolveRoot, resolveWorkspaceRoot } from "../lib/paths.ts"
-import { gzipJson, readJson, writeBytes } from "../lib/json.ts"
+import { brotliJson, decodeJsonBytes, parseJsonBytes, readJson, writeBytes } from "../lib/json.ts"
 import { parseSchema } from "../lib/validate.ts"
 import type { InventoryNode } from "../schemas/catalogue.ts"
 import type { ParityCase } from "../schemas/parity.ts"
 
 export const EVIDENCE_DIR = "docs/figma-parity"
-export const SOURCE_PATH = `${EVIDENCE_DIR}/source.json.gz`
+export const SOURCE_PATH = `${EVIDENCE_DIR}/source.json.br`
 export const MANIFEST_PATH = `${EVIDENCE_DIR}/manifest.json`
 export const REFERENCES_DIR = `${EVIDENCE_DIR}/references`
 export const MAX_EVIDENCE_BYTES = 10 * 1024 * 1024
@@ -66,10 +66,11 @@ const ManifestCaseSchema = z.strictObject({
 })
 
 const ManifestSchema = z.strictObject({
-  schemaVersion: z.literal(1),
+  schemaVersion: z.literal(2),
   fileKey: z.string().min(1),
   version: z.string().min(1),
   capturedAt: z.string().min(1),
+  sourceSha256: z.string().regex(/^[a-f0-9]{64}$/, "expected a sha256 digest"),
   cases: z.record(z.string(), ManifestCaseSchema),
 })
 
@@ -120,6 +121,22 @@ function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`
+}
+
+function evidenceBudgetExceeded(
+  bytes: number,
+  cap: number,
+  byCase: Array<{ caseId: string; bytes: number }>,
+): string {
+  const largest = [...byCase]
+    .sort((a, b) => b.bytes - a.bytes)
+    .slice(0, 5)
+    .map((item) => `${item.caseId} ${formatBytes(item.bytes)}`)
+    .join(" · ")
+  return (
+    `the evidence bundle is ${formatBytes(bytes)} (cap ${formatBytes(cap)}) — ` +
+    `largest cases: ${largest}; retain all required cases and reduce the bundle: the cap is not raised`
+  )
 }
 
 function isMissingFile(error: unknown): boolean {
@@ -192,6 +209,7 @@ export function loadManifest(file = evidencePaths().manifest): EvidenceManifest 
 
 type BuildResult = {
   slice: EvidenceSlice
+  source: Buffer
   manifest: EvidenceManifest
   pngs: Map<string, Buffer>
   reused: string[]
@@ -240,6 +258,7 @@ export async function buildEvidence({
     version: snapshot.version,
     nodes: sliceNodes,
   }
+  const source = brotliJson(slice)
   const inSlice = sliceIds(slice)
 
   const entries: EvidenceManifest["cases"] = {}
@@ -313,27 +332,31 @@ export async function buildEvidence({
   }
 
   const manifest: EvidenceManifest = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     fileKey: slice.fileKey,
     version: slice.version,
     capturedAt,
+    sourceSha256: sha256(Buffer.from(`${JSON.stringify(slice)}\n`)),
     cases: entries,
   }
-  return { result: { slice, manifest, pngs, reused, refreshed }, errors }
+  return { result: { slice, source, manifest, pngs, reused, refreshed }, errors }
 }
 
 export function evidenceBytes({
   slice,
+  source,
   manifest,
   pngs,
 }: {
   slice?: EvidenceSlice
+  source?: Buffer
   manifest?: EvidenceManifest
   pngs: Map<string, Buffer>
 }): { total: number; byCase: Array<{ caseId: string; bytes: number }> } {
   let total = 0
   // The cap is on the bytes a clone receives, so the slice counts compressed.
-  if (slice) total += gzipJson(slice).length
+  if (source) total += source.length
+  else if (slice) total += brotliJson(slice).length
   if (manifest) total += Buffer.byteLength(`${JSON.stringify(manifest, null, 2)}\n`)
   const byCase = [...pngs.entries()].map(([caseId, bytes]) => {
     total += bytes.length
@@ -439,28 +462,22 @@ export async function writeEvidence({
     try {
       size = fs.statSync(file).size
     } catch (error) {
-      if (isMissingFile(error)) continue
+      if (isMissingFile(error)) {
+        console.error(`error: ${file} disappeared while preparing evidence; retry the write`)
+        return 1
+      }
       throw error
     }
     totalBytes += size
     byCase.push({ caseId, bytes: size })
   }
-  byCase.sort((a, b) => b.bytes - a.bytes)
   if (totalBytes > MAX_EVIDENCE_BYTES) {
-    console.error(
-      `error: the evidence bundle would be ${formatBytes(totalBytes)} ` +
-        `(cap ${formatBytes(MAX_EVIDENCE_BYTES)}). Largest cases: ` +
-        byCase
-          .slice(0, 5)
-          .map((item) => `${item.caseId} ${formatBytes(item.bytes)}`)
-          .join(" · ") +
-        `. Reduce the bundle to the main components; the cap is not raised.`,
-    )
+    console.error(`error: ${evidenceBudgetExceeded(totalBytes, MAX_EVIDENCE_BYTES, byCase)}`)
     return 1
   }
 
   fs.mkdirSync(paths.references, { recursive: true })
-  writeBytes(paths.source, gzipJson(result.slice))
+  writeBytes(paths.source, result.source)
   for (const [caseId, bytes] of result.pngs) {
     fs.writeFileSync(path.join(paths.references, `${caseId}.png`), bytes)
   }
@@ -494,11 +511,14 @@ export async function writeEvidence({
 // ------------------------------------------------------------------- checking
 
 export type EvidenceReport = {
+  fileKey?: string
   errors: string[]
   warnings: string[]
   cases: number
   entries: number
   bytes: number
+  verifiedCases: string[]
+  verifiedVariants: Record<string, string>
 }
 
 // The two committed files, loaded once and with the guidance a missing bundle
@@ -507,12 +527,23 @@ function loadEvidenceForCheck(root: string): {
   slice?: EvidenceSlice
   manifest?: EvidenceManifest
   errors: string[]
+  bytes: number
 } {
   const paths = evidencePaths(root)
   const errors: string[] = []
   let slice: EvidenceSlice | undefined
   let manifest: EvidenceManifest | undefined
-  const sourceRead = loadIfExists(() => loadSlice(paths.source))
+  let bytes = 0
+  let sourceHash: string | undefined
+  const sourceRead = loadIfExists(() => {
+    const source = fs.readFileSync(paths.source)
+    const contents = decodeJsonBytes(source, paths.source)
+    return {
+      slice: parseSchema(SliceSchema, JSON.parse(contents.toString("utf8")), paths.source),
+      hash: sha256(contents),
+      bytes: source.length,
+    }
+  })
   if (sourceRead.missing) {
     errors.push(`${SOURCE_PATH} is missing — run \`parity evidence --write\` with FIGMA_TOKEN`)
   } else if (sourceRead.error) {
@@ -520,9 +551,21 @@ function loadEvidenceForCheck(root: string): {
       sourceRead.error instanceof Error ? sourceRead.error.message : String(sourceRead.error),
     )
   } else {
-    slice = sourceRead.value
+    slice = sourceRead.value?.slice
+    sourceHash = sourceRead.value?.hash
+    bytes += sourceRead.value?.bytes ?? 0
   }
-  const manifestRead = loadIfExists(() => loadManifest(paths.manifest))
+  const manifestRead = loadIfExists(() => {
+    const contents = fs.readFileSync(paths.manifest)
+    return {
+      manifest: parseSchema(
+        ManifestSchema,
+        parseJsonBytes(contents, paths.manifest),
+        paths.manifest,
+      ),
+      bytes: contents.length,
+    }
+  })
   if (manifestRead.missing) {
     errors.push(`${MANIFEST_PATH} is missing — run \`parity evidence --write\` with FIGMA_TOKEN`)
   } else if (manifestRead.error) {
@@ -530,9 +573,13 @@ function loadEvidenceForCheck(root: string): {
       manifestRead.error instanceof Error ? manifestRead.error.message : String(manifestRead.error),
     )
   } else {
-    manifest = manifestRead.value
+    manifest = manifestRead.value?.manifest
+    bytes += manifestRead.value?.bytes ?? 0
   }
-  return { slice, manifest, errors }
+  if (manifest && sourceHash && manifest.sourceSha256 !== sourceHash) {
+    errors.push(`${SOURCE_PATH} does not match the manifest sourceSha256`)
+  }
+  return { slice, manifest, errors, bytes }
 }
 
 // `parity evidence --check`: the corpus, the slice and the manifest must agree,
@@ -558,7 +605,15 @@ export function checkEvidence({
   const warnings: string[] = []
   const { slice, manifest } = bundle
   if (!slice || !manifest) {
-    return { errors, warnings, cases: corpus.length, entries: 0, bytes: 0 }
+    return {
+      errors,
+      warnings,
+      cases: corpus.length,
+      entries: 0,
+      bytes: 0,
+      verifiedCases: [],
+      verifiedVariants: {},
+    }
   }
   if (manifest.version !== slice.version) {
     errors.push(
@@ -569,19 +624,17 @@ export function checkEvidence({
   if (manifest.fileKey !== slice.fileKey) {
     errors.push(`${MANIFEST_PATH} names file ${manifest.fileKey}, the slice names ${slice.fileKey}`)
   }
+  const bundleValid = errors.length === 0
+  const verifiedCases: string[] = []
+  const verifiedVariants: Record<string, string> = {}
   const inSlice = sliceIds(slice)
   const byNode = new Map(inventory.map((node) => [node.nodeId, node]))
   const corpusIds = new Set(corpus.map((entry) => entry.id))
-  let bytes = 0
-  try {
-    bytes += fs.statSync(paths.source).size
-    bytes += fs.statSync(paths.manifest).size
-  } catch {
-    // The two files were read above: a stat failure is an fs race, not a shape.
-  }
+  let bytes = bundle.bytes
   const pngs = new Set<string>()
   const byCase: Array<{ caseId: string; bytes: number }> = []
   for (const entry of corpus) {
+    const errorCount = errors.length
     const where = entry.id
     const variant = pinnedVariant(byNode.get(entry.nodeId), entry)
     if (!inSlice.has(entry.nodeId))
@@ -631,6 +684,21 @@ export function checkEvidence({
     if (sha256(onDisk) !== record.sha256) {
       errors.push(`${where}: ${record.png} does not match the manifest sha256`)
     }
+    const dimensions = pngDimensions(onDisk)
+    if (!dimensions || dimensions.width !== record.width || dimensions.height !== record.height) {
+      errors.push(`${where}: ${record.png} has invalid PNG dimensions against the manifest`)
+    }
+    if (
+      bundleValid &&
+      variant &&
+      ((byNode.get(entry.nodeId)?.variants ?? []).length > 0 || record.variant === entry.nodeId) &&
+      errors.length === errorCount &&
+      dimensions?.width === record.width &&
+      dimensions.height === record.height
+    ) {
+      verifiedCases.push(entry.id)
+      verifiedVariants[entry.id] = record.variant
+    }
   }
   for (const caseId of Object.keys(manifest.cases)) {
     if (!corpusIds.has(caseId)) {
@@ -647,16 +715,7 @@ export function checkEvidence({
     if (!isMissingFile(error)) throw error
   }
   if (bytes > maxBytes) {
-    byCase.sort((a, b) => b.bytes - a.bytes)
-    errors.push(
-      `the evidence bundle is ${formatBytes(bytes)} (cap ${formatBytes(maxBytes)}) — ` +
-        `largest cases: ` +
-        byCase
-          .slice(0, 5)
-          .map((item) => `${item.caseId} ${formatBytes(item.bytes)}`)
-          .join(" · ") +
-        `; reduce it to the main components, do not raise the cap`,
-    )
+    errors.push(evidenceBudgetExceeded(bytes, maxBytes, byCase))
   }
   return {
     errors,
@@ -664,6 +723,9 @@ export function checkEvidence({
     cases: corpus.length,
     entries: Object.keys(manifest.cases).length,
     bytes,
+    fileKey: manifest.fileKey,
+    verifiedCases,
+    verifiedVariants,
   }
 }
 
@@ -675,16 +737,21 @@ export function checkCaseEvidence({
   entry,
   node,
   root = resolveWorkspaceRoot(),
+  sourceSha256,
 }: {
   entry: Pick<ParityCase, "nodeId" | "variant" | "state" | "device"> & { id?: string }
   node?: InventoryNode
   root?: string
+  sourceSha256?: string
 }): string[] {
   const where = entry.id ?? entry.nodeId
   const bundle = loadEvidenceForCheck(root)
   const errors = [...bundle.errors]
   const { slice, manifest } = bundle
   if (!slice || !manifest) return errors
+  if (sourceSha256 !== undefined && sourceSha256 !== manifest.sourceSha256) {
+    errors.push(`${where}: the supplied parity source does not match the manifest sourceSha256`)
+  }
   if (manifest.version !== slice.version) {
     errors.push(
       `${where}: the manifest pins version ${manifest.version}, the slice pins ${slice.version} — refresh the bundle`,

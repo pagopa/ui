@@ -2,11 +2,10 @@ import assert from "node:assert/strict"
 import { spawnSync } from "node:child_process"
 import { createHash } from "node:crypto"
 import fs from "node:fs"
-import os from "node:os"
 import path from "node:path"
 import { test } from "node:test"
 import { fileURLToPath } from "node:url"
-import { gunzipSync } from "node:zlib"
+import { brotliDecompressSync, gzipSync } from "node:zlib"
 
 import {
   MAX_EVIDENCE_BYTES,
@@ -20,9 +19,11 @@ import {
 import { loadExport, resolveExport, sourceNode } from "../../src/parity/source.ts"
 import { caseVariant, loadCaseFile, loadInventoryNodes } from "../../src/parity/cases.ts"
 import { fixtureEnv } from "../../src/lib/paths.ts"
-import { gzipJson } from "../../src/lib/json.ts"
+import { brotliJson } from "../../src/lib/json.ts"
 
 const script = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
+// Workspace scratch stays outside package symlinks scanned by concurrent checks.
+const workspaceCache = fileURLToPath(new URL("../../../../.cache/", import.meta.url))
 
 const smallFingerprint = "a".repeat(64)
 const largeFingerprint = "b".repeat(64)
@@ -79,15 +80,19 @@ const snapshot = {
 
 const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex")
 
-const smallPng = Buffer.from("small-png")
-const largePng = Buffer.from("large-png")
+const smallPng = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=",
+  "base64",
+)
+const largePng = smallPng
 
 function manifestFor({ version = "v1" } = {}) {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     fileKey: "fixture",
     version,
     capturedAt: "2026-10-21",
+    sourceSha256: sha256(Buffer.from(`${JSON.stringify(sliceFor())}\n`)),
     cases: {
       small: {
         png: "references/small.png",
@@ -95,8 +100,8 @@ function manifestFor({ version = "v1" } = {}) {
         nodeId: "1:1",
         variant: "1:10",
         designFingerprint: smallFingerprint,
-        width: 100,
-        height: 40,
+        width: 1,
+        height: 1,
       },
       large: {
         png: "references/large.png",
@@ -104,8 +109,8 @@ function manifestFor({ version = "v1" } = {}) {
         nodeId: "1:1",
         variant: "1:11",
         designFingerprint: largeFingerprint,
-        width: 120,
-        height: 40,
+        width: 1,
+        height: 1,
       },
     },
   }
@@ -124,7 +129,7 @@ function sliceFor() {
 function writeEvidenceTree(root, { manifest = manifestFor(), slice = sliceFor(), pngs } = {}) {
   const dir = path.join(root, "docs/figma-parity")
   fs.mkdirSync(path.join(dir, "references"), { recursive: true })
-  fs.writeFileSync(path.join(dir, "source.json.gz"), gzipJson(slice))
+  fs.writeFileSync(path.join(dir, "source.json.br"), brotliJson(slice))
   fs.writeFileSync(path.join(dir, "manifest.json"), JSON.stringify(manifest, null, 2))
   for (const [caseId, bytes] of Object.entries(pngs ?? { small: smallPng, large: largePng })) {
     fs.writeFileSync(path.join(dir, "references", `${caseId}.png`), bytes)
@@ -132,7 +137,10 @@ function writeEvidenceTree(root, { manifest = manifestFor(), slice = sliceFor(),
 }
 
 function temporaryRoot() {
-  return fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-evidence-"))
+  fs.mkdirSync(workspaceCache, { recursive: true })
+  const root = fs.mkdtempSync(path.join(workspaceCache, "pagopa-evidence-"))
+  fs.writeFileSync(path.join(root, "pnpm-workspace.yaml"), "packages: []\n")
+  return root
 }
 
 test("the slice carries every case node with its full variant subtree", async () => {
@@ -154,6 +162,7 @@ test("the slice carries every case node with its full variant subtree", async ()
   assert.deepEqual(Object.keys(result.slice.nodes), ["1:1"])
   assert.equal(result.slice.nodes["1:1"].document.id, "1:1")
   assert.equal(result.slice.nodes["1:1"].document.children.length, 2)
+  assert.equal(result.manifest.sourceSha256, sha256(brotliDecompressSync(result.source)))
   // Both cases were unchanged: no PNG was fetched or rewritten.
   assert.deepEqual(result.refreshed, [])
   assert.deepEqual(result.reused, ["small", "large"])
@@ -165,7 +174,7 @@ test("a manifest round-trip is accepted by the hermetic check", () => {
   const root = temporaryRoot()
   try {
     writeEvidenceTree(root)
-    const slice = loadSlice(path.join(root, "docs/figma-parity/source.json.gz"))
+    const slice = loadSlice(path.join(root, "docs/figma-parity/source.json.br"))
     const manifest = loadManifest(path.join(root, "docs/figma-parity/manifest.json"))
     assert.equal(slice.version, manifest.version)
     const report = checkEvidence({ root, cases, nodes: [node] })
@@ -173,6 +182,28 @@ test("a manifest round-trip is accepted by the hermetic check", () => {
     assert.deepEqual(report.warnings, [])
     assert.equal(report.entries, 2)
     assert.equal(report.cases, 2)
+    assert.deepEqual(report.verifiedCases, ["small", "large"])
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test("stale, missing and bogus pinned evidence never contributes verified case IDs", () => {
+  const root = temporaryRoot()
+  try {
+    const stale = manifestFor()
+    stale.cases.small.designFingerprint = "c".repeat(64)
+    writeEvidenceTree(root, { manifest: stale })
+    assert.deepEqual(checkEvidence({ root, cases, nodes: [node] }).verifiedCases, ["large"])
+    fs.rmSync(path.join(root, "docs/figma-parity/references/large.png"))
+    assert.deepEqual(checkEvidence({ root, cases, nodes: [node] }).verifiedCases, [])
+    const bogus = Buffer.from("not an image")
+    const manifest = manifestFor()
+    manifest.cases.small.sha256 = sha256(bogus)
+    writeEvidenceTree(root, { manifest, pngs: { small: bogus, large: largePng } })
+    assert.deepEqual(checkEvidence({ root, cases, nodes: [node] }).verifiedCases, ["large"])
+    writeEvidenceTree(root, { manifest: manifestFor({ version: "stale-version" }) })
+    assert.deepEqual(checkEvidence({ root, cases, nodes: [node] }).verifiedCases, [])
   } finally {
     fs.rmSync(root, { recursive: true, force: true })
   }
@@ -215,6 +246,28 @@ test("a PNG that no longer matches its hash is an error", () => {
     assert.ok(
       errors.some((error) => /small: references\/small\.png does not match/.test(error)),
       errors.join("\n"),
+    )
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test("a modified source slice is rejected by both corpus and case checks", () => {
+  const root = temporaryRoot()
+  try {
+    writeEvidenceTree(root)
+    const changed = sliceFor()
+    changed.nodes["1:1"].document.children[0].name = "Size=Changed"
+    fs.writeFileSync(path.join(root, "docs/figma-parity/source.json.br"), brotliJson(changed))
+    const report = checkEvidence({ root, cases, nodes: [node] })
+    assert.match(
+      report.errors.join("\n"),
+      /source\.json\.br does not match the manifest sourceSha256/,
+    )
+    assert.deepEqual(report.verifiedCases, [])
+    assert.match(
+      checkCaseEvidence({ entry: cases[0], node, root }).join("\n"),
+      /source\.json\.br does not match the manifest sourceSha256/,
     )
   } finally {
     fs.rmSync(root, { recursive: true, force: true })
@@ -264,6 +317,7 @@ test("a bundle above the cap is refused with its largest cases", () => {
       ),
       errors.join("\n"),
     )
+    assert.match(errors.join("\n"), /retain all required cases/)
   } finally {
     fs.rmSync(root, { recursive: true, force: true })
   }
@@ -312,9 +366,10 @@ test("loadExport reads the committed slice without normalizing the live export",
       }),
     )
     process.env.PAGOPA_UI_ROOT = root
-    const project = loadExport(path.join(root, "docs/figma-parity/source.json.gz"))
+    const project = loadExport(path.join(root, "docs/figma-parity/source.json.br"))
     assert.equal(project.catalogue.length, 1)
     assert.equal(project.version, "v1")
+    assert.equal(project.sourceSha256, manifestFor().sourceSha256)
     assert.equal(sourceNode(project, "1:10").name, "Size=Small")
   } finally {
     if (previous === undefined) delete process.env.PAGOPA_UI_ROOT
@@ -452,7 +507,7 @@ test("parity check refuses a stale evidence slice before Storybook", () => {
     assert.match(result.stdout, /source: .*\(evidence\)/)
     const explicit = spawnSync(
       process.execPath,
-      [script, "parity", "check", "--case", "small", "--input", "docs/figma-parity/source.json.gz"],
+      [script, "parity", "check", "--case", "small", "--input", "docs/figma-parity/source.json.br"],
       { cwd: root, encoding: "utf8", env: fixtureEnv(root, { FIGMA_TOKEN: "" }) },
     )
     assert.equal(explicit.status, 2, explicit.stderr)
@@ -462,22 +517,77 @@ test("parity check refuses a stale evidence slice before Storybook", () => {
   }
 })
 
-// The slice is the large half of the bundle: it is committed minified and
-// gzipped, so the same content yields the same bytes and an unchanged artefact
-// never churns the diff.
-test("the committed slice is gzipped, minified and deterministic", () => {
+test("parity check rejects an alternate slice even when the committed bundle is valid", () => {
+  const root = temporaryRoot()
+  try {
+    writeEvidenceTree(root)
+    fs.mkdirSync(path.join(root, "src/catalog/figma"), { recursive: true })
+    fs.writeFileSync(path.join(root, "src/catalog/figma/parity-cases.json"), JSON.stringify(cases))
+    fs.writeFileSync(
+      path.join(root, "src/catalog/figma/inventory.json"),
+      JSON.stringify({ fileKey: "fixture", syncedAt: "2026-10-21", components: [node] }),
+    )
+    const changed = sliceFor()
+    changed.nodes["1:1"].document.children[0].name = "Size=Changed"
+    fs.writeFileSync(path.join(root, "alternate.json.br"), brotliJson(changed))
+    const result = spawnSync(
+      process.execPath,
+      [script, "parity", "check", "--case", "small", "--input", "alternate.json.br"],
+      { cwd: root, encoding: "utf8", env: fixtureEnv(root, { FIGMA_TOKEN: "" }) },
+    )
+    assert.equal(result.status, 2, result.stderr)
+    assert.match(
+      result.stderr,
+      /the supplied parity source does not match the manifest sourceSha256/,
+    )
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test("the committed slice is losslessly compressed, minified and deterministic", () => {
   const slice = sliceFor()
-  const first = gzipJson(slice)
-  const second = gzipJson(slice)
+  const first = brotliJson(slice)
+  const second = brotliJson(slice)
   assert.ok(first.equals(second))
-  assert.deepEqual([...first.subarray(0, 2)], [0x1f, 0x8b])
-  const text = gunzipSync(first).toString("utf8")
+  const text = brotliDecompressSync(first).toString("utf8")
   assert.equal(text, `${JSON.stringify(slice)}\n`)
   assert.equal(text.split("\n").length, 2)
+})
+
+test("previous gzipped slices remain readable as explicit inputs", () => {
+  const root = temporaryRoot()
+  const previous = process.env.PAGOPA_UI_ROOT
+  try {
+    const file = path.join(root, "legacy.json.gz")
+    fs.writeFileSync(file, gzipSync(Buffer.from(`${JSON.stringify(sliceFor())}\n`)))
+    assert.deepEqual(loadSlice(file), sliceFor())
+    writeEvidenceTree(root)
+    fs.mkdirSync(path.join(root, "src/catalog/figma"), { recursive: true })
+    fs.writeFileSync(
+      path.join(root, "src/catalog/figma/inventory.json"),
+      JSON.stringify({ fileKey: "fixture", syncedAt: "2026-10-21", components: [node] }),
+    )
+    process.env.PAGOPA_UI_ROOT = root
+    const project = loadExport(file)
+    assert.deepEqual(
+      checkCaseEvidence({
+        entry: cases[0],
+        node,
+        root,
+        sourceSha256: project.sourceSha256,
+      }),
+      [],
+    )
+  } finally {
+    if (previous === undefined) delete process.env.PAGOPA_UI_ROOT
+    else process.env.PAGOPA_UI_ROOT = previous
+    fs.rmSync(root, { recursive: true, force: true })
+  }
 })
 
 test("the cap counts the compressed slice", () => {
   const slice = sliceFor()
   const { total } = evidenceBytes({ slice, pngs: new Map() })
-  assert.equal(total, gzipJson(slice).length)
+  assert.equal(total, brotliJson(slice).length)
 })

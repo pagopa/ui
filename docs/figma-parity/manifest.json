@@ -1,8 +1,9 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "fileKey": "pvhsJpPGQbEwNLiyP7BOIw",
   "version": "2415736194264125228",
   "capturedAt": "2026-10-29",
+  "sourceSha256": "f6ff24ccd520db8d02fbc323fa54ebb4d4292298de4a93999a0e07423a7f3ecf",
   "cases": {
     "50-1700-lg-desktop-desktop": {
       "png": "references/50-1700-lg-desktop-desktop.png",

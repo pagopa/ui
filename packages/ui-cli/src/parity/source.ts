@@ -9,6 +9,7 @@
 //
 // Usage:
 //   node src/cli.ts parity source <nodeId> [--depth N] [--json]
+import { createHash } from "node:crypto"
 import fs from "node:fs"
 import path from "node:path"
 import { z } from "zod"
@@ -18,7 +19,7 @@ import { normalizeLive } from "../figma/snapshot.ts"
 import { loadInventoryNodes } from "../figma/devices.ts"
 import { evidencePaths } from "./evidence.ts"
 import { enterRoot, rootPath } from "../lib/paths.ts"
-import { readJson } from "../lib/json.ts"
+import { decodeJsonBytes } from "../lib/json.ts"
 import { parseSchema } from "../lib/validate.ts"
 import type { InventoryNode } from "../schemas/catalogue.ts"
 
@@ -143,6 +144,7 @@ export type Project = {
   file: string
   origin: SourceOrigin
   version: string | undefined
+  sourceSha256: string
   raw: z.infer<typeof ExportSchema>
   catalogue: InventoryNode[]
 }
@@ -233,13 +235,15 @@ export function resolveExport(input?: string): { file: string; origin: SourceOri
 
 export function loadExport(input?: string): Project {
   const { file, origin } = resolveExport(input)
-  const raw = parseSchema(ExportSchema, readJson(file), file)
+  const contents = decodeJsonBytes(fs.readFileSync(file), file)
+  const raw = parseSchema(ExportSchema, JSON.parse(contents.toString("utf8")), file)
   // The committed slice carries only the documents a case points at, so it
   // cannot satisfy `normalizeLive` (which needs every published node): the
   // catalogue comes from the committed inventory instead. The full-snapshot
   // path stays the normalizer's.
   const catalogue = raw.kind === "parity-source" ? loadInventoryNodes() : normalizeLive(raw)
-  return { file, origin, version: raw.version, raw, catalogue }
+  const sourceSha256 = createHash("sha256").update(contents).digest("hex")
+  return { file, origin, version: raw.version, sourceSha256, raw, catalogue }
 }
 
 const documentIndexes = new WeakMap<Project, Map<string, RawNode>>()

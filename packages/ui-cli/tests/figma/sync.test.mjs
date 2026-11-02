@@ -2252,15 +2252,17 @@ test("--delta without a live source fails instead of writing an empty delta", ()
 
 test("the review body lists the case evidence, the artifacts and the handoff", () => {
   fixture(
-    ({ check, read }) => {
-      const result = check(
+    ({ check, read, write }) => {
+      const args = [
         "--pr-body",
         "pr-body.md",
         "--input",
         "live.json",
         "--evidence-base",
         "https://example.test/figma-drift/2026-10-21",
-      )
+      ]
+      const inventory = read("src/catalog/figma/inventory.json")
+      const result = check(...args)
       assert.equal(result.status, 0, result.stderr)
       const body = read("pr-body.md")
       assert.match(body, /- evidence: `case-one`/)
@@ -2278,6 +2280,19 @@ test("the review body lists the case evidence, the artifacts and the handoff", (
       assert.match(body, /## Handoff and metrics/)
       assert.match(body, /docs\/figma-drift-handoff\.md/)
       assert.doesNotMatch(body, /!\[/)
+
+      const manifest = read("docs/figma-parity/manifest.json")
+      write("src/catalog/figma/inventory.json", inventory)
+      write("docs/figma-parity/manifest.json", "not JSON")
+      const invalidManifest = check(...args)
+      assert.notEqual(invalidManifest.status, 0)
+      assert.match(invalidManifest.stderr, /Unexpected token/)
+      write("src/catalog/figma/inventory.json", inventory)
+      write("docs/figma-parity/manifest.json", manifest)
+      write("src/catalog/figma/parity-cases.json", "not JSON")
+      const invalidCases = check(...args)
+      assert.notEqual(invalidCases.status, 0)
+      assert.match(invalidCases.stderr, /Unexpected token/)
     },
     {
       "src/catalog/figma/registry.json": JSON.stringify({
@@ -2302,10 +2317,11 @@ test("the review body lists the case evidence, the artifacts and the handoff", (
         { id: "case-one", nodeId: "1:1", export: "Control", storyId: "fixture--example" },
       ]),
       "docs/figma-parity/manifest.json": JSON.stringify({
-        schemaVersion: 1,
+        schemaVersion: 2,
         fileKey: "fixture",
         version: "v1",
         capturedAt: "2026-10-21",
+        sourceSha256: "c".repeat(64),
         cases: {
           "case-one": {
             png: "references/case-one.png",

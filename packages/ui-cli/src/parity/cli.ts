@@ -20,7 +20,7 @@ import { z } from "zod"
 import {
   LAYOUT_SCOPES,
   loadDevicePolicy,
-  loadInventoryNodes,
+  loadInventory,
   requiredDevices,
   variantDevice,
 } from "../figma/devices.ts"
@@ -28,7 +28,6 @@ import {
   buildCases,
   caseIdFor,
   type CaseRow,
-  deviceCoverage,
   fanInCounts,
   findCase,
   isDraftCase,
@@ -39,6 +38,7 @@ import {
   validateCaseFile,
 } from "./cases.ts"
 import { align } from "./align.ts"
+import { formatCoverage, loadCoveragePopulations } from "./coverage.ts"
 import {
   compare,
   compositionSignature,
@@ -211,16 +211,24 @@ function waveDir(flags: Flags): string {
 // The device vocabulary and the inventory: the CLI resolves a `--device` (or a
 // case's `device`) against what the set declares, never against a list here.
 let policyCache: ReturnType<typeof loadDevicePolicy> | null = null
-let inventoryCache: ReturnType<typeof loadInventoryNodes> | null = null
+let inventoryCache: ReturnType<typeof loadInventory> | null = null
 
 function devicePolicy(): ReturnType<typeof loadDevicePolicy> {
   if (!policyCache) policyCache = loadDevicePolicy()
   return policyCache
 }
 
-function inventoryNodes(): ReturnType<typeof loadInventoryNodes> {
-  if (!inventoryCache) inventoryCache = loadInventoryNodes()
+function inventory(): ReturnType<typeof loadInventory> {
+  if (!inventoryCache) inventoryCache = loadInventory()
   return inventoryCache
+}
+
+function inventoryNodes(): ReturnType<typeof loadInventory>["components"] {
+  return inventory().components
+}
+
+function inventoryFileKey(): string {
+  return inventory().fileKey ?? ""
 }
 
 function inventoryNode(nodeId: string): ReturnType<typeof inventoryNodes>[number] | undefined {
@@ -760,7 +768,15 @@ function corpusPath(flags: Flags): string {
 function printCoverage({ flags }: { flags: Flags }, path_: string, corpus: ParityCase[]): number {
   const uncovered = flags.has("uncovered")
   const statuses = statusesFrom(flags, "implemented,pending")
-  const coverage = deviceCoverage({ registry: loadRegistry(), cases: corpus, statuses })
+  const populations = loadCoveragePopulations(
+    inventoryNodes(),
+    loadRegistry(),
+    corpus,
+    statuses,
+    undefined,
+    inventoryFileKey(),
+  )
+  const coverage = populations.devices
   const rows = coverage.rows.filter((row) => (uncovered ? row.missing.length : true))
   if (flags.has("json")) {
     console.log(
@@ -773,6 +789,7 @@ function printCoverage({ flags }: { flags: Flags }, path_: string, corpus: Parit
           ),
           rows,
           totals: coverage.totals,
+          populations,
         },
         null,
         2,
@@ -794,6 +811,7 @@ function printCoverage({ flags }: { flags: Flags }, path_: string, corpus: Parit
     )
     return 0
   }
+  for (const line of formatCoverage(populations)) console.log(line)
   for (const row of rows) {
     console.log(
       `${row.nodeId} ${row.status.padEnd(11)} ${String(row.export ?? "-").padEnd(24)} ` +
@@ -916,6 +934,7 @@ async function check(parsed: Parsed): Promise<number> {
     const evidenceErrors = checkCaseEvidence({
       entry: spec,
       node: inventoryNode(spec.nodeId),
+      sourceSha256: project.sourceSha256,
     })
     if (evidenceErrors.length) {
       for (const error of evidenceErrors) console.error(`error: ${error}`)
@@ -990,7 +1009,9 @@ async function checkDevices({
       ...new Set(
         devices.flatMap((device) => {
           const entry = corpus.find((item) => item.nodeId === nodeId && item.device === device)
-          return entry ? checkCaseEvidence({ entry, node: inventory }) : []
+          return entry
+            ? checkCaseEvidence({ entry, node: inventory, sourceSha256: project.sourceSha256 })
+            : []
         }),
       ),
     ]
@@ -1251,19 +1272,6 @@ function verify({ flags }: Parsed): number {
   const corpus = validateCaseFile(cases, { registry, nodes, policy })
   const errors = [...corpus.errors]
   const warnings = [...corpus.warnings]
-  const coverage = deviceCoverage({
-    policy,
-    nodes,
-    registry,
-    cases,
-    statuses: ["implemented", "pending"],
-  })
-  for (const row of coverage.rows) {
-    if (!row.missing.length) continue
-    const message = `${row.nodeId} (${row.status}) misses device case(s): ${row.missing.join(", ")}`
-    if (row.status === "implemented") errors.push(message)
-    else warnings.push(message)
-  }
   const drafts = cases.filter(isDraftCase).length
   // The frame baseline only shrinks: a story that left the corpus, or that now
   // has nothing to frame, owes its removal; a story that renders its own frame
@@ -1286,8 +1294,27 @@ function verify({ flags }: Parsed): number {
     )
   }
   const evidence = checkEvidence({ cases, nodes })
+  const populations = loadCoveragePopulations(
+    nodes,
+    registry,
+    cases,
+    ["implemented"],
+    evidence,
+    inventoryFileKey(),
+    corpus.errors,
+  )
+  // One source for the device numbers: the same populations the coverage lines
+  // print. `all` keeps the statuses the filtered rows omit, so a pending node
+  // still warns instead of vanishing.
+  for (const row of populations.devices.all) {
+    if (row.status !== "implemented" && row.status !== "pending") continue
+    if (!row.missing.length) continue
+    const message = `${row.nodeId} (${row.status}) misses device case(s): ${row.missing.join(", ")}`
+    if (row.status === "implemented") errors.push(message)
+    else warnings.push(message)
+  }
   for (const warning of evidence.warnings) warnings.push(`evidence: ${warning}`)
-  for (const error of evidence.errors) errors.push(`evidence: ${error}`)
+  for (const error of populations.evidence.errors) errors.push(`evidence: ${error}`)
   if (flags.has("json")) {
     console.log(
       JSON.stringify(
@@ -1301,8 +1328,9 @@ function verify({ flags }: Parsed): number {
             entries: evidence.entries,
             bytes: evidence.bytes,
           },
-          coverage: coverage.totals,
-          rows: coverage.rows,
+          coverage: populations.devices.totals,
+          rows: populations.devices.rows,
+          populations,
         },
         null,
         2,
@@ -1316,13 +1344,14 @@ function verify({ flags }: Parsed): number {
         `warnings ${warnings.length} · drafts ${drafts}`,
     )
     console.log(
-      `devices: ${coverage.totals.nodes} node(s) with an axis · declared ${coverage.totals.declared} · ` +
-        `covered ${coverage.totals.covered} · missing ${coverage.totals.missing} · ` +
-        `drafts ${coverage.totals.drafts}`,
+      `devices: ${populations.devices.totals.nodes} node(s) with an axis · declared ${populations.devices.totals.declared} · ` +
+        `covered ${populations.devices.totals.covered} · missing ${populations.devices.totals.missing} · ` +
+        `drafts ${populations.devices.totals.drafts}`,
     )
     console.log(
       `evidence: ${evidence.entries}/${evidence.cases} manifest entr(ies) · ${evidence.bytes} bytes`,
     )
+    for (const line of formatCoverage(populations)) console.log(line)
     console.log(errors.length ? "verify: failed" : "verify: ok")
   }
   return errors.length ? 1 : 0
