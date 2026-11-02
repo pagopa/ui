@@ -18,6 +18,7 @@ export default defineConfig({
   expect: {
     toHaveScreenshot: {
       maxDiffPixels: 0,
+      threshold: 0,
       animations: "disabled",
       caret: "hide",
       scale: "css",

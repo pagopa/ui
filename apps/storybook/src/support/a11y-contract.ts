@@ -54,6 +54,10 @@ function isTestRun() {
   return Boolean(globalThis.__vitest_browser__)
 }
 
+// Long enough for a decorative settle animation, short enough that a paused or
+// interrupted one cannot hold the afterEach pass.
+const ANIMATION_DEADLINE_MS = 1000
+
 function isVisible(element: Element): element is HTMLElement {
   if (!(element instanceof HTMLElement)) return false
   if (element.closest(`[hidden],[inert],[aria-hidden='true'],${FOCUS_GUARD}`)) return false
@@ -658,10 +662,30 @@ export function fieldError(scope: ParentNode): HTMLElement {
  * `afterEach` hook (`.storybook/preview.tsx`): it never throws, so Storybook's
  * own hook chain (the axe pass included) always completes.
  */
-export function a11yContractAfterEach(context: StoryContext) {
+export async function a11yContractAfterEach(context: StoryContext) {
   if (!isTestRun()) return
   const canvas = context.canvasElement
   if (!canvas) return
+  const animations = [...document.querySelectorAll<HTMLElement>(".pagopa-ui-root")]
+    .flatMap((root) => root.getAnimations({ subtree: true }))
+    .filter((animation) => {
+      const endTime = animation.effect?.getComputedTiming().endTime
+      return animation.playState === "running" && Number.isFinite(endTime)
+    })
+  // The contract reads computed surfaces and contrast. A running transition or
+  // entry animation would make it read an intermediate state, so wait for the
+  // finite ones the play function left behind. A paused or interrupted
+  // animation never resolves `finished`: the wait runs on a wall-clock budget,
+  // and the timer is cleared so a fast story does not leave one pending.
+  let deadline: ReturnType<typeof setTimeout> | undefined
+  await Promise.race([
+    Promise.allSettled(animations.map((animation) => animation.finished)),
+    new Promise<void>((resolve) => {
+      deadline = setTimeout(resolve, ANIMATION_DEADLINE_MS)
+    }),
+  ])
+  if (deadline) clearTimeout(deadline)
+  await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
   globalThis.__pagopaA11yContractSurface = {
     id: context.id,
     canvas,

@@ -64,18 +64,19 @@ export const DisclosureLabels: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await expect(
-      canvasElement.ownerDocument.querySelector(
-        '[role="dialog"][aria-label="Approfondimento su misura"]',
-      ),
-    ).not.toBeNull()
-    await expect(
-      canvasElement.ownerDocument.querySelector('[aria-label="Chiudi approfondimento"]'),
-    ).not.toBeNull()
+    await screen.findByRole("dialog", { name: "Approfondimento su misura" })
+    await screen.findByRole("button", { name: "Chiudi approfondimento" })
     await expect(canvas.getByRole("button", { name: "Dettagli" })).toBeVisible()
     // Close the panel before the shared contract runs: its reflow condition
     // belongs to the closed page.
     await userEvent.keyboard("{Escape}")
+    await waitFor(() =>
+      expect(
+        canvasElement.ownerDocument.querySelector(
+          '[role="dialog"][aria-label="Approfondimento su misura"]',
+        ),
+      ).toBeNull(),
+    )
   },
 }
 
