@@ -84,31 +84,114 @@ export async function fetchFileHeader(fileKey: string): Promise<FigmaFileHeader>
   return { version: file.version, lastModified: file.lastModified }
 }
 
+// The reader gives a slow answer another chance instead of failing the command
+// that wanted it: Figma holds the connection while it renders a large file, so
+// a single abort is a transient read, not a verdict. The 90 s cap stays; each
+// retryable answer gets its own budget, because a stalled connection deserves
+// fewer attempts than a rate-limit answer that recovers in seconds.
+const REQUEST_TIMEOUT_MS = 90_000
+const MAX_HTTP_ATTEMPTS = 6
+const MAX_TRANSPORT_ATTEMPTS = 3
+
+// undici reports a dropped socket as `TypeError("fetch failed")` with the
+// system error in `cause`; these are the transport failures a fresh attempt can
+// fix. A bad token or a response the schema no longer matches fails the first
+// time, because asking again would answer the same.
+const TRANSIENT_CODES = new Set([
+  "ECONNRESET",
+  "ECONNREFUSED",
+  "ETIMEDOUT",
+  "EAI_AGAIN",
+  "EPIPE",
+  "UND_ERR_CONNECT_TIMEOUT",
+  "UND_ERR_HEADERS_TIMEOUT",
+  "UND_ERR_BODY_TIMEOUT",
+  "UND_ERR_SOCKET",
+])
+
+function field(value: unknown, key: string): unknown {
+  return typeof value === "object" && value !== null ? Reflect.get(value, key) : undefined
+}
+
+function transportFailure(error: unknown): boolean {
+  const name = field(error, "name")
+  if (name === "TimeoutError" || name === "AbortError") return true
+  const code = field(field(error, "cause"), "code")
+  return typeof code === "string" && TRANSIENT_CODES.has(code)
+}
+
+function describeFailure(error: unknown): string {
+  if (field(error, "name") === "TimeoutError") {
+    return `timed out after ${REQUEST_TIMEOUT_MS / 1000} s`
+  }
+  const code = field(field(error, "cause"), "code")
+  const message = error instanceof Error ? error.message : String(error)
+  return typeof code === "string" && code ? `${message} (${code})` : message
+}
+
+// `Retry-After` is in seconds when Figma sends it; an unparsable value falls
+// back to the exponential wait, capped so one answer cannot park a job for long.
+function waitSeconds(attempt: number, retryAfter: string | null): number {
+  const declared = retryAfter === null ? Number.NaN : Number(retryAfter)
+  const seconds = Number.isFinite(declared) && declared > 0 ? declared : 2 ** attempt
+  return Math.min(seconds, 30)
+}
+
+function wait(seconds: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, seconds * 1000))
+}
+
+type Reply = { ok: true; data: unknown } | { ok: false; status: number; retryAfter: string | null }
+
+async function read(url: string, token: string): Promise<Reply> {
+  const response = await fetch(url, {
+    method: "GET",
+    headers: { "X-Figma-Token": token },
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+  })
+  if (!response.ok) {
+    return { ok: false, status: response.status, retryAfter: response.headers.get("retry-after") }
+  }
+  // The abort covers the body too: a response that stalls mid-stream rejects
+  // here, so the caller retries it like any other transport failure.
+  return { ok: true, data: await response.json() }
+}
+
 async function get<T>(endpoint: string, schema: z.ZodType<T>): Promise<T> {
   const token = figmaToken()
-  // A large read is a burst of requests; Figma answers 429 with a Retry-After.
-  // Waiting and retrying is part of the reader, not of every caller.
+  // A large read is a burst of requests; Figma answers 429 with a Retry-After
+  // and occasionally lets one request stall. Waiting and asking again is part
+  // of the reader, not of every caller.
+  const url = `https://api.figma.com/v1/${endpoint}`
   for (let attempt = 0; ; attempt += 1) {
-    const response = await fetch(`https://api.figma.com/v1/${endpoint}`, {
-      method: "GET",
-      headers: { "X-Figma-Token": token },
-      signal: AbortSignal.timeout(90_000),
-    })
-    if (response.ok) {
-      const data: unknown = await response.json()
-      const api = ApiResponseSchema.parse(data)
-      if (api.error || api.err) throw new Error(`Figma GET ${endpoint}: API error`)
-      return schema.parse(data)
+    let reply: Reply
+    try {
+      reply = await read(url, token)
+    } catch (error) {
+      const last = attempt >= MAX_TRANSPORT_ATTEMPTS - 1
+      if (!transportFailure(error) || last) {
+        throw new Error(`Figma GET ${endpoint}: ${describeFailure(error)}`, { cause: error })
+      }
+      const seconds = waitSeconds(attempt, null)
+      console.error(
+        `figma: GET ${endpoint}: ${describeFailure(error)}; ` +
+          `retrying in ${seconds} s (attempt ${attempt + 2}/${MAX_TRANSPORT_ATTEMPTS})`,
+      )
+      await wait(seconds)
+      continue
     }
-    const retry = response.headers.get("retry-after")
-    const retryable = response.status === 429 || response.status >= 500
-    if (!retryable || attempt >= 5) {
+    if (reply.ok) {
+      const api = ApiResponseSchema.parse(reply.data)
+      if (api.error || api.err) throw new Error(`Figma GET ${endpoint}: API error`)
+      return schema.parse(reply.data)
+    }
+    const retryable = reply.status === 429 || reply.status >= 500
+    if (!retryable || attempt >= MAX_HTTP_ATTEMPTS - 1) {
       throw new Error(
-        `Figma GET ${endpoint}: HTTP ${response.status}${retry ? `; retry after ${retry} seconds` : ""}`,
+        `Figma GET ${endpoint}: HTTP ${reply.status}${reply.retryAfter ? `; retry after ${reply.retryAfter} seconds` : ""}`,
       )
     }
-    const seconds = retry ? Number(retry) : 2 ** attempt
-    await new Promise((resolve) => setTimeout(resolve, Math.min(seconds, 30) * 1000))
+    await wait(waitSeconds(attempt, reply.retryAfter))
   }
 }
 
@@ -374,6 +457,7 @@ export function writeFigmaSnapshot(file: string, snapshot: FigmaSnapshot): void 
 // ------------------------------------------------------- pages, rules, comments
 
 const FilePagesSchema = z.looseObject({
+  version: z.string(),
   document: z.looseObject({
     id: z.string(),
     name: z.string(),
@@ -412,11 +496,19 @@ export type FigmaComment = {
   order: string
 }
 
-export async function fetchFilePages(fileKey: string): Promise<FigmaPage[]> {
+export type FigmaFilePages = { version: string; pages: FigmaPage[] }
+
+// The page list and the version come from the same read: the page trees are
+// then read at that version, so a file that changes between two calls cannot
+// pair one version's page list with another version's documents.
+export async function fetchFilePages(fileKey: string): Promise<FigmaFilePages> {
   const file = await get(`files/${fileKey}?depth=1`, FilePagesSchema)
-  return file.document.children
-    .filter((child) => child.type === "CANVAS")
-    .map((child) => ({ id: child.id, name: child.name }))
+  return {
+    version: file.version,
+    pages: file.document.children
+      .filter((child) => child.type === "CANVAS")
+      .map((child) => ({ id: child.id, name: child.name })),
+  }
 }
 
 // The raw document of each node, children included. The published-node reader

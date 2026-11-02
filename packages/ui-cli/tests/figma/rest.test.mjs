@@ -3,7 +3,11 @@ import fs from "node:fs"
 import os from "node:os"
 import path from "node:path"
 import { test } from "node:test"
-import { fetchFigmaNodeDocuments, writeFigmaSnapshot } from "../../src/figma/rest.ts"
+import {
+  fetchFigmaNodeDocuments,
+  fetchFileHeader,
+  writeFigmaSnapshot,
+} from "../../src/figma/rest.ts"
 
 const nodeId = "12:34"
 const version = "fixture-pinned-version"
@@ -134,6 +138,78 @@ test("supplemental document reads require a process token and explicit pinned in
   await assert.rejects(
     fetchFigmaNodeDocuments("fixture-file", version, ["invalid"]),
     /valid node IDs/,
+  )
+})
+
+// A stalled read is a transient answer, not a broken command: the drift job
+// used to fail on the 90 s abort of its first file read and leave the rules
+// report missing, so the reader asks again before giving up.
+test("a stalled read is retried and the answer is kept", async () => {
+  let attempts = 0
+  await withFigmaFetch(
+    async () => {
+      attempts += 1
+      if (attempts === 1) {
+        throw new DOMException("The operation was aborted due to timeout", "TimeoutError")
+      }
+      return jsonResponse({ version, lastModified: "2026-11-02T04:00:00Z" })
+    },
+    async () => {
+      const header = await fetchFileHeader("fixture-file")
+      assert.equal(header.version, version)
+      assert.equal(attempts, 2)
+    },
+  )
+})
+
+test("a dropped socket is retried like a stalled read", async () => {
+  let attempts = 0
+  await withFigmaFetch(
+    async () => {
+      attempts += 1
+      if (attempts === 1) {
+        throw new TypeError("fetch failed", { cause: { code: "ECONNRESET" } })
+      }
+      return jsonResponse({ version })
+    },
+    async () => {
+      assert.equal((await fetchFileHeader("fixture-file")).version, version)
+      assert.equal(attempts, 2)
+    },
+  )
+})
+
+test("a failure another attempt cannot fix stops at once and names the request", async () => {
+  let attempts = 0
+  await withFigmaFetch(
+    async () => {
+      attempts += 1
+      throw new Error("the token is not valid")
+    },
+    async () => {
+      await assert.rejects(
+        fetchFileHeader("fixture-file"),
+        /Figma GET files\/fixture-file\?depth=1: the token is not valid/,
+      )
+      assert.equal(attempts, 1)
+    },
+  )
+})
+
+test("an exhausted read reports the timeout and the endpoint", async () => {
+  let attempts = 0
+  await withFigmaFetch(
+    async () => {
+      attempts += 1
+      throw new DOMException("The operation was aborted due to timeout", "TimeoutError")
+    },
+    async () => {
+      await assert.rejects(
+        fetchFileHeader("fixture-file"),
+        /Figma GET files\/fixture-file\?depth=1: timed out after 90 s/,
+      )
+      assert.equal(attempts, 3)
+    },
   )
 })
 
