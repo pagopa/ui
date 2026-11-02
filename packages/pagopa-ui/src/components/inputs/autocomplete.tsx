@@ -3,7 +3,7 @@
 import * as React from "react"
 import { Combobox } from "@/components/primitives/combobox"
 import { cn } from "@/lib/cn"
-import { useMessages } from "@/lib/ui-provider"
+import { useMessages, usePortalHost } from "@/lib/ui-provider"
 import { Check } from "@/components/primitives/icons"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
@@ -134,6 +134,7 @@ function Autocomplete(props: AutocompleteProps) {
   const loadingLabel = loadingLabelProp ?? t.loadingLabel
 
   const ids = useFieldIds(id)
+  const portalHost = usePortalHost()
   const inputRef = React.useRef<HTMLInputElement>(null)
   const [internalSelection, setInternalSelection] = React.useState(() => toSelection(defaultValue))
   const [inputValue, setInputValue] = React.useState(
@@ -386,7 +387,7 @@ function Autocomplete(props: AutocompleteProps) {
           <FieldMessages ids={ids} description={description} error={error} success={success} />
         </div>
       </div>
-      <Combobox.Portal>
+      <Combobox.Portal container={portalHost}>
         <Combobox.Positioner sideOffset={4} className="isolate">
           <Combobox.Popup className="w-(--anchor-width) max-w-(--available-width) rounded-lg bg-popover text-popover-foreground shadow-16">
             {/* The select-all row sits outside the listbox so it stays one

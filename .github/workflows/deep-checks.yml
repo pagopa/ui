@@ -81,11 +81,25 @@ jobs:
 
       - name: Coverage gates (affected)
         if: github.event_name == 'pull_request' || github.event_name == 'push'
+        env:
+          NX_PROFILE: .nx/ci-metrics/coverage.json
         run: pnpm nx affected -t test:coverage
 
       - name: Coverage gates (everything)
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        env:
+          NX_PROFILE: .nx/ci-metrics/coverage.json
         run: pnpm nx run pagopa-ui-storybook:test:coverage
+
+      - name: Upload task timings
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: nx-profile-coverage-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .nx/ci-metrics/coverage.json
+          include-hidden-files: true
+          retention-days: 7
+          if-no-files-found: ignore
 
   webkit:
     name: Stories (WebKit, Firefox nightly)
@@ -128,11 +142,25 @@ jobs:
 
       - name: Stories in WebKit (affected)
         if: github.event_name == 'pull_request' || github.event_name == 'push'
+        env:
+          NX_PROFILE: .nx/ci-metrics/stories.json
         run: pnpm nx affected -t test:webkit
 
       - name: Stories in Firefox and WebKit (everything)
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        env:
+          NX_PROFILE: .nx/ci-metrics/stories.json
         run: pnpm nx run pagopa-ui-storybook:test:stories
+
+      - name: Upload task timings
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: nx-profile-stories-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .nx/ci-metrics/stories.json
+          include-hidden-files: true
+          retention-days: 7
+          if-no-files-found: ignore
 
   library:
     name: Packed artifact (three engines)
@@ -176,8 +204,21 @@ jobs:
         if: github.event_name == 'pull_request' || github.event_name == 'push'
         env:
           LIBRARY_ENGINES: chromium
+          NX_PROFILE: .nx/ci-metrics/library.json
         run: pnpm nx affected -t library:check
 
       - name: Packed artifact (everything)
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        env:
+          NX_PROFILE: .nx/ci-metrics/library.json
         run: pnpm nx run pagopa-ui:library:check
+
+      - name: Upload task timings
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: nx-profile-library-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .nx/ci-metrics/library.json
+          include-hidden-files: true
+          retention-days: 7
+          if-no-files-found: ignore

@@ -11,7 +11,7 @@
    shipped component happens to use yet — and the artwork module does the same
    for its catalogue. The artifact is byte-identical to the pre-split one; the
    published scan narrows the demo surfaces in src/library.css. */
-@import "tailwindcss" source(none);
+@import "tailwindcss/theme.css" theme(reference);
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "pagopa-ui-tokens/figma.generated.css";
@@ -19,6 +19,29 @@
 @source "../src";
 @source "../../artwork/src";
 @source "../../tokens/src";
+
+/* Everything the library styles lives under a UIProvider root. Scope
+   proximity lets these unlayered rules win over equally specific host rules
+   without !important; host !important rules still win. Defaults precede the
+   utilities so a utility class always overrides them. */
+@scope (.pagopa-ui-root) {
+  @import "tailwindcss/preflight.css";
+
+  :scope,
+  :scope * {
+    border-color: var(--border);
+    outline-color: var(--ring);
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    :scope,
+    :scope * {
+      outline-color: color-mix(in oklab, var(--ring) 50%, transparent);
+    }
+  }
+
+  @tailwind utilities;
+}
 
 /* The source Titillio family is bundled directly (src/assets/fonts/titillio).
    The faces are declared at the canonical CSS weights — Semibold 600 and Bold
@@ -49,13 +72,13 @@
   src: url("./assets/fonts/titillio/Titillio-Bold.woff2?no-inline") format("woff2");
 }
 
-:root {
+.pagopa-ui-root {
+  display: contents;
   color-scheme: light;
-  font-family: "Titillio", Arial, sans-serif;
+  font-family: var(--font-sans);
   line-height: 1.5;
-  font-weight: 400;
-  color: var(--figma-color-neutrals-black);
-  background: var(--figma-color-neutrals-white);
+  font-weight: var(--text-body--font-weight);
+  color: var(--foreground);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -174,30 +197,11 @@
   --preheader-height: 55px; /* Preheader, 3.4375rem */
   --page-gutter: 2rem; /* Snackbar viewport fallback */
   --page-gutter-lg: 3rem; /* Dialog viewport fallback */
-  --hairline: 2px; /* tooltip arrow offset, spinner mask inset */
-  --otp-clip-margin: 4px; /* OTP field overflow clip */
+  --hairline: var(--figma-spacing-2); /* tooltip arrow offset, spinner mask inset */
+  --otp-clip-margin: var(--figma-spacing-4); /* OTP field overflow clip */
   --grid-aside: 20rem; /* demo grid aside column */
   --grid-fields: 10rem; /* demo grid field column */
   --grid-actions: 3rem; /* demo grid action column */
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  background: var(--figma-color-neutrals-white);
-}
-
-* {
-  box-sizing: border-box;
-}
-
-#root {
-  min-height: 100vh;
 }
 
 @theme inline {
@@ -303,114 +307,99 @@ body {
   --container-tablet-md: 56.25rem;
 }
 
-/* WebKit keeps native calendar-editor focus inside its user-agent shadow DOM. */
-input[data-slot="input"]:is(
-    [type="date"],
-    [type="datetime-local"],
-    [type="time"],
-    [type="month"],
-    [type="week"]
-  ):focus-within {
-  border-color: var(--ring);
-  outline: 2px solid var(--ring);
-  outline-offset: 1px;
+@scope (.pagopa-ui-root) {
+  /* WebKit native editors do not match :focus-visible after keyboard tabbing. */
+  input[data-slot="input"]:is(
+      [type="date"],
+      [type="datetime-local"],
+      [type="time"],
+      [type="month"],
+      [type="week"]
+    ):focus-within {
+    border-color: var(--ring);
+    outline: var(--figma-spacing-2) solid var(--ring);
+    outline-offset: var(--figma-spacing-1);
 
-  &[aria-invalid="true"] {
-    border-color: var(--destructive);
-    outline-color: var(--destructive);
-  }
-
-  @media (forced-colors: active) {
-    &,
     &[aria-invalid="true"] {
-      outline-color: CanvasText;
+      border-color: var(--destructive);
+      outline-color: var(--destructive);
     }
-  }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0s !important;
-  }
-
-  .loading-spinner-motion {
-    animation-duration: 1s !important;
-    animation-iteration-count: infinite !important;
-  }
-}
-
-@media (forced-colors: active) {
-  [data-slot="avatar"][data-avatar-state="selected"] {
-    forced-color-adjust: none;
-    background-color: Highlight;
-    color: HighlightText;
-
-    .pagopa-icon-mask {
-      color: HighlightText;
-    }
-  }
-
-  [data-slot="avatar-status"] {
-    forced-color-adjust: none;
-    border-color: Canvas;
-    background-color: CanvasText;
-
-    &[data-status="offline"] {
-      background-color: Canvas;
-
-      &::after {
-        border-color: CanvasText;
+    @media (forced-colors: active) {
+      &,
+      &[aria-invalid="true"] {
+        outline-color: CanvasText;
       }
     }
   }
 
-  :focus-visible {
-    outline: 2px solid CanvasText;
-    outline-offset: 2px;
+  @media (prefers-reduced-motion: reduce) {
+    :scope *,
+    :scope *::before,
+    :scope *::after {
+      scroll-behavior: auto !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0s !important;
+    }
+
+    .loading-spinner-motion {
+      animation-duration: 1s !important;
+      animation-iteration-count: infinite !important;
+    }
   }
 
-  .pagopa-icon-mask {
-    color: inherit;
-  }
-
-  @supports not (forced-color-adjust: preserve-parent-color) {
-    .pagopa-icon-mask {
+  @media (forced-colors: active) {
+    [data-slot="avatar"][data-avatar-state="selected"] {
       forced-color-adjust: none;
-      color: CanvasText;
+      background-color: Highlight;
+      color: HighlightText;
+
+      .pagopa-icon-mask {
+        color: HighlightText;
+      }
     }
 
-    button .pagopa-icon-mask {
-      color: ButtonText;
+    [data-slot="avatar-status"] {
+      forced-color-adjust: none;
+      border-color: Canvas;
+      background-color: CanvasText;
+
+      &[data-status="offline"] {
+        background-color: Canvas;
+
+        &::after {
+          border-color: CanvasText;
+        }
+      }
     }
 
-    a:any-link .pagopa-icon-mask {
-      color: LinkText;
+    :scope :focus-visible {
+      outline: var(--figma-spacing-2) solid CanvasText;
+      outline-offset: var(--figma-spacing-2);
     }
 
-    a:visited .pagopa-icon-mask {
-      color: VisitedText;
+    .pagopa-icon-mask {
+      color: inherit;
     }
-  }
-}
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
+    @supports not (forced-color-adjust: preserve-parent-color) {
+      .pagopa-icon-mask {
+        forced-color-adjust: none;
+        color: CanvasText;
+      }
 
-  body {
-    @apply bg-background text-foreground;
-  }
-  html {
-    @apply font-sans;
+      button .pagopa-icon-mask {
+        color: ButtonText;
+      }
+
+      a:any-link .pagopa-icon-mask {
+        color: LinkText;
+      }
+
+      a:visited .pagopa-icon-mask {
+        color: VisitedText;
+      }
+    }
   }
 }

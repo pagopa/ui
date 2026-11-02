@@ -584,22 +584,12 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     ids: string[]
     links: Array<{ id: string; href: string }>
   } {
-    if (!evidenceCasesCache) {
-      try {
-        evidenceCasesCache = loadCaseFile()
-      } catch {
-        evidenceCasesCache = []
-      }
-    }
+    if (!evidenceCasesCache) evidenceCasesCache = loadCaseFile()
     const corpus = evidenceCasesCache.filter((entry) => entry.nodeId === nodeId)
     if (!corpus.length) return { ids: [], links: [] }
     if (evidenceManifestCache === undefined) {
-      try {
-        const manifestPath = evidencePaths().manifest
-        evidenceManifestCache = fs.existsSync(manifestPath) ? loadManifest(manifestPath) : null
-      } catch {
-        evidenceManifestCache = null
-      }
+      const manifestPath = evidencePaths().manifest
+      evidenceManifestCache = fs.existsSync(manifestPath) ? loadManifest(manifestPath) : null
     }
     const links = evidenceBase
       ? corpus.flatMap((entry) => {

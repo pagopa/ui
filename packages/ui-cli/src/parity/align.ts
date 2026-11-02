@@ -276,6 +276,7 @@ async function cliEvaluate() {
       const errors = checkCaseEvidence({
         entry: spec,
         node: loadInventoryNodes().find((node) => node.nodeId === entry.nodeId),
+        sourceSha256: project.sourceSha256,
       })
       if (errors.length) throw new Error(errors[0])
     }

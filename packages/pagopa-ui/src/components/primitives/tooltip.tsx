@@ -1,6 +1,7 @@
 "use client"
 
 import { Tooltip as TooltipPrimitive } from "@base-ui/react/tooltip"
+import { usePortalHost } from "@/lib/ui-provider"
 import { cn } from "@/lib/cn"
 
 const arrowDirectionTopPath =
@@ -31,9 +32,10 @@ function TooltipContent({
 }: TooltipPrimitive.Popup.Props &
   Pick<TooltipPrimitive.Positioner.Props, "align" | "alignOffset" | "side" | "sideOffset">) {
   const isVerticalSide = side === "top" || side === "bottom"
+  const portalHost = usePortalHost()
 
   return (
-    <TooltipPrimitive.Portal>
+    <TooltipPrimitive.Portal container={portalHost}>
       <TooltipPrimitive.Positioner
         align={align}
         alignOffset={alignOffset}

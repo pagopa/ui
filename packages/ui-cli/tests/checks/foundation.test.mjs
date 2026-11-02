@@ -1,7 +1,6 @@
 import assert from "node:assert/strict"
 import { spawnSync } from "node:child_process"
 import fs from "node:fs"
-import os from "node:os"
 import path from "node:path"
 import { test } from "node:test"
 import { fileURLToPath } from "node:url"
@@ -9,6 +8,7 @@ import { fileURLToPath } from "node:url"
 import { fixtureEnv } from "../../src/lib/paths.ts"
 
 import { RULES } from "../../src/checks/foundation.ts"
+import { STYLE_RULES } from "../../src/checks/foundation-styles.ts"
 
 const script = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
 
@@ -17,12 +17,22 @@ function zeroCounts() {
 }
 
 function fixture(run, { files = {}, baseline, exceptions } = {}) {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-foundation-"))
+  // Workspace links expose package-local scratch trees to concurrent source
+  // discovery. Keep fixtures in the ignored workspace cache, outside packages.
+  const scratch = fileURLToPath(new URL("../../../../.cache/", import.meta.url))
+  fs.mkdirSync(scratch, { recursive: true })
+  const root = fs.mkdtempSync(path.join(scratch, "foundation-fixture-"))
   const sources = {
+    "pnpm-workspace.yaml": "packages: []\n",
     "src/manifest.json": JSON.stringify({
       schemaVersion: 2,
       foundations: {
-        "spacing-4": { category: "spacing", value: 4, theme: { namespace: "spacing", key: "1" } },
+        "spacing-4": {
+          category: "spacing",
+          value: 4,
+          cssName: "figma-spacing-4",
+          theme: { namespace: "spacing", key: "1" },
+        },
         "spacing-8": { category: "spacing", value: 8, theme: { namespace: "spacing", key: "2" } },
         "spacing-12": { category: "spacing", value: 12, theme: { namespace: "spacing", key: "3" } },
         "spacing-16": { category: "spacing", value: 16, theme: { namespace: "spacing", key: "4" } },
@@ -433,6 +443,209 @@ test("a centred scroll container counts, the safe and split forms do not", () =>
           'export const split = <ul className="justify-center"><li className="overflow-y-auto" /></ul>',
           "",
         ].join("\n"),
+      },
+    },
+  )
+})
+
+test("library CSS declarations cannot add visual constants behind a clean utility baseline", () => {
+  fixture(
+    ({ run }) => {
+      const result = run()
+      assert.notEqual(result.status, 0)
+      assert.match(result.stderr, /visual-constant: 6 occurrences, the ceiling is 0/)
+      assert.match(result.stderr, /src\/components\/defaults.css:3: padding: 13px/)
+    },
+    {
+      files: {
+        "src/components/defaults.css": [
+          "/* padding: 999px; color: #badbad; */",
+          ".owned {",
+          "  padding: 13px;",
+          "  border-radius: .75rem;",
+          "  background: rgb(10 20 30);",
+          "  color: rebeccapurple;",
+          "  transition-duration: .2s;",
+          "  --owned-size: calc(100% - 5px);",
+          "}",
+        ].join("\n"),
+      },
+    },
+  )
+})
+
+test("inline numeric/string defaults, local style bindings and token fallbacks are checked", () => {
+  fixture(
+    ({ run }) => {
+      const result = run()
+      assert.notEqual(result.status, 0)
+      assert.match(result.stderr, /visual-constant: 7 occurrences, the ceiling is 0/)
+      assert.match(result.stderr, /maxWidth: 271/)
+      assert.match(result.stderr, /padding: var\(--space, 9px\)/)
+    },
+    {
+      files: {
+        "src/components/inline.tsx": [
+          'const radius = "13px"',
+          "const owned = { borderRadius: radius, fontWeight: 600 } satisfies React.CSSProperties",
+          "export const demo = ({ width, percentage }) => (",
+          '  <div style={{ ...owned, maxWidth: width ?? 271, padding: "var(--space, 9px)", margin: -17, opacity: 0.7, color: "rgb(1 2 3)", height: `${percentage}%` }} />',
+          ")",
+        ].join("\n"),
+      },
+    },
+  )
+})
+
+test("a caller prop or another component's local never resolves to an unrelated constant", () => {
+  fixture(
+    ({ run }) => {
+      const measured = JSON.parse(run("--measure").stdout)
+      // The caller prop resolves to nothing; the local and the module constant
+      // are each charged once. The old whole-file resolver returned zero.
+      assert.equal(measured.raw["visual-constant"], 3)
+    },
+    {
+      files: {
+        "src/components/scopes.tsx": [
+          'const width = "271px"',
+          "export const Caller = ({ width }) => <div style={{ width }} />",
+          "export const Local = () => {",
+          '  const width = "13px"',
+          "  return <span style={{ width }} />",
+          "}",
+          "export const Module = () => <div style={{ width }} />",
+          "export const Other = () => {",
+          "  const width = 9",
+          "  return <span style={{ width }} />",
+          "}",
+        ].join("\n"),
+      },
+    },
+  )
+})
+
+test("consumer inputs, computed percentages, resets and accessibility system colours remain valid", () => {
+  fixture(
+    ({ run }) => {
+      const result = run()
+      assert.equal(result.status, 0, result.stderr)
+    },
+    {
+      files: {
+        "src/components/data.tsx": [
+          "export const demo = ({ size, x, percentage, colour, opacity, style }) => (",
+          '  <div style={{ ...style, width: size, height: `${percentage}%`, left: `${x}%`, color: colour, backgroundColor: "currentColor", forcedColorAdjust: "preserve-parent-color", margin: 0, opacity, "--steps": 4 }} />',
+          ")",
+        ].join("\n"),
+        "src/components/data.css": [
+          ".owned { width: 100%; min-height: 100vh; padding: 0; color: CanvasText; color-scheme: light; border-color: var(--ring); gap: var(--figma-spacing-4); }",
+          '@font-face { font-family: "Titillio"; font-weight: 600; src: url("font.woff2"); }',
+        ].join("\n"),
+      },
+    },
+  )
+})
+
+test("unknown foundations fail even when the declaration has no literal value", () => {
+  fixture(
+    ({ run }) => {
+      const result = run()
+      assert.notEqual(result.status, 0)
+      assert.match(result.stderr, /unknown-foundation: 1 occurrences, the ceiling is 0/)
+      assert.match(result.stderr, /--figma-spacing-missing/)
+    },
+    { files: { "src/index.css": ":root { --gap: var(--figma-spacing-missing); }" } },
+  )
+})
+
+test("the existing caller-overridable table fallback is pinned, not a general width exemption", () => {
+  const table = (width) =>
+    [
+      `const defaultTruncatedWidth = "${width}"`,
+      "export const demo = ({ column }) => <div style={{ maxWidth: column.maxWidth ?? defaultTruncatedWidth }} />",
+    ].join("\n")
+  fixture(
+    ({ run }) => {
+      const result = run()
+      assert.equal(result.status, 0, result.stderr)
+    },
+    { files: { "src/components/data-display/table.tsx": table("16rem") } },
+  )
+  for (const files of [
+    { "src/components/data-display/table.tsx": table("17rem") },
+    { "src/components/copy.tsx": table("16rem") },
+  ]) {
+    fixture(
+      ({ run }) => {
+        const result = run()
+        assert.notEqual(result.status, 0)
+        assert.match(result.stderr, /visual-constant: 1 occurrences/)
+      },
+      { files },
+    )
+  }
+})
+
+test("established local CSS extensions are exact and limited to the owning stylesheet", () => {
+  fixture(
+    ({ run }) => {
+      const result = run()
+      assert.equal(result.status, 0, result.stderr)
+    },
+    {
+      files: {
+        "src/index.css":
+          ":root { --navy: #061b49; } .pagopa-ui-root { --dialog-width: 600px; line-height: 1.5; }",
+      },
+    },
+  )
+  for (const files of [
+    { "src/index.css": ":root { --navy: #061b48; }" },
+    { "src/components/other.css": ":root { --navy: #061b49; }" },
+    { "src/index.css": ".copied { --navy: #061b49; }" },
+  ]) {
+    fixture(
+      ({ run }) => {
+        const result = run()
+        assert.notEqual(result.status, 0)
+        assert.match(result.stderr, /visual-constant: 1 occurrences/)
+      },
+      { files },
+    )
+  }
+})
+
+test("new declaration rules are zero-ceiling gates and support existing reasoned exception machinery", () => {
+  fixture(
+    ({ run }) => {
+      const result = run()
+      assert.notEqual(result.status, 0)
+      assert.equal(result.stderr.match(/the "visual-constant" ceiling must be zero/g)?.length, 1)
+    },
+    { baseline: { schemaVersion: 1, counts: { ...zeroCounts(), "visual-constant": 1 } } },
+  )
+  fixture(
+    ({ run }) => {
+      const result = run()
+      assert.equal(result.status, 0, result.stderr)
+      const measured = JSON.parse(run("--measure").stdout)
+      assert.equal(measured.raw["visual-constant"], 1)
+      for (const rule of STYLE_RULES) assert.equal(measured.counts[rule], 0)
+    },
+    {
+      files: { "src/components/owned.css": ".owned { padding: 13px; }" },
+      exceptions: {
+        schemaVersion: 1,
+        exceptions: [
+          {
+            rule: "visual-constant",
+            file: "src/components/owned.css",
+            match: "padding: 13px",
+            nodeId: "1:2",
+            reason: "Source geometry; retire when the source publishes its spacing token",
+          },
+        ],
       },
     },
   )

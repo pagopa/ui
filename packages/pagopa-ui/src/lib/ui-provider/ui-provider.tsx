@@ -45,10 +45,43 @@ const UIContext = React.createContext<UIContextValue>({
   calendarLocale: it,
 })
 
+let portalHost: HTMLElement | undefined
+
 /**
- * Configures the library contexts a tree consumes. Without it every context
- * keeps its default, so the components render as the plain React elements with
- * the Italian default dictionary.
+ * The shared, library-styled overlay root. Creating the element is inert: it is
+ * detached until a mounted overlay appends it, so rendering never writes to the
+ * document and the server has nothing to emit.
+ */
+function portalHostElement(): HTMLElement | undefined {
+  if (typeof document === "undefined") return undefined
+  if (!portalHost) {
+    const host = document.createElement("div")
+    host.className = "pagopa-ui-root"
+    host.setAttribute("data-pagopa-ui", "")
+    host.setAttribute("data-pagopa-ui-portal-root", "")
+    portalHost = host
+  }
+  return portalHost
+}
+
+/**
+ * The container every overlay portals into: one library-owned root shared by the
+ * whole document, appended after mount. The element identity is stable, so an
+ * overlay opened on its first render already has its target and hydration sees
+ * the same tree the server produced (no portal markup at all).
+ */
+function usePortalHost(): HTMLElement | undefined {
+  const [host] = React.useState(portalHostElement)
+  React.useLayoutEffect(() => {
+    if (host && !host.isConnected) document.body.append(host)
+  }, [host])
+  return host
+}
+
+/**
+ * Provides component contexts and the root the library stylesheet is scoped
+ * to. Without it, contexts use their defaults and inline components are
+ * unstyled; overlays always render in the shared portal root.
  */
 function UIProvider({
   linkComponent,
@@ -67,7 +100,13 @@ function UIProvider({
     }),
     [linkComponent, locale, messages, calendarLocale, parent],
   )
-  return <UIContext.Provider value={value}>{children}</UIContext.Provider>
+  return (
+    <UIContext.Provider value={value}>
+      <div className="pagopa-ui-root" data-pagopa-ui="" data-pagopa-ui-root="">
+        {children}
+      </div>
+    </UIContext.Provider>
+  )
 }
 
 /** The component a navigation link renders through. @default "a" */
@@ -86,5 +125,5 @@ function useLocale(): { locale: string; calendarLocale: DayPickerLocale } {
   return React.useMemo(() => ({ locale, calendarLocale }), [locale, calendarLocale])
 }
 
-export { UIProvider, useLinkComponent, useLocale, useMessages }
+export { UIProvider, useLinkComponent, useLocale, useMessages, usePortalHost }
 export type { LinkComponentProps, UIProviderProps }

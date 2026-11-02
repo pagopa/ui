@@ -196,7 +196,7 @@ export const ResponsiveWidth: Story = {
     if (!page) return
     const previous = { width: window.innerWidth, height: window.innerHeight }
     const measured = () => Math.round(module.getBoundingClientRect().width)
-    const available = () => Math.round(module.parentElement?.getBoundingClientRect().width ?? 0)
+    const available = () => Math.round(canvasElement.getBoundingClientRect().width)
     try {
       for (const width of [320, 599]) {
         await applyViewport(width, 900)

@@ -14,6 +14,7 @@ import {
 } from "@/components/inputs"
 import { Button } from "@/components/primitives/button"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
+import { usePortalHost } from "@/lib/ui-provider"
 
 const meta = {
   title: "Components/Inputs/SelectableRows",
@@ -286,6 +287,7 @@ function SourceChoiceCommand({
   const [submitted, setSubmitted] = React.useState("")
   const [submitCount, setSubmitCount] = React.useState(0)
   const [dialogOpen, setDialogOpen] = React.useState(false)
+  const portalHost = usePortalHost()
   return (
     <>
       <form
@@ -322,7 +324,7 @@ function SourceChoiceCommand({
         <output aria-label="Numero di invii">{submitCount}</output>
       </form>
       <DialogPrimitive.Root open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogPrimitive.Portal>
+        <DialogPrimitive.Portal container={portalHost}>
           <DialogPrimitive.Backdrop className="fixed inset-0 z-40 bg-black/45" />
           <DialogPrimitive.Popup className="fixed top-1/2 left-1/2 z-50 grid -translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg bg-background p-6 shadow-lg">
             <DialogPrimitive.Title>Comando completato</DialogPrimitive.Title>
@@ -474,6 +476,7 @@ function SourceMultiChoiceCommand({
   const [submitted, setSubmitted] = React.useState("")
   const [submitCount, setSubmitCount] = React.useState(0)
   const [dialogOpen, setDialogOpen] = React.useState(false)
+  const portalHost = usePortalHost()
   return (
     <>
       <form
@@ -512,7 +515,7 @@ function SourceMultiChoiceCommand({
         <output aria-label="Numero di invii dei comuni">{submitCount}</output>
       </form>
       <DialogPrimitive.Root open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogPrimitive.Portal>
+        <DialogPrimitive.Portal container={portalHost}>
           <DialogPrimitive.Backdrop className="fixed inset-0 z-40 bg-black/45" />
           <DialogPrimitive.Popup className="fixed top-1/2 left-1/2 z-50 grid -translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg bg-background p-6 shadow-lg">
             <DialogPrimitive.Title>Comando dei comuni completato</DialogPrimitive.Title>

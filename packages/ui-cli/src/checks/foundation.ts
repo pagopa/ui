@@ -1,8 +1,7 @@
 #!/usr/bin/env node
-// Foundation contract for src/components (documented in README.md and
-// .agents/skills/figma-to-code/references/tokens.md): the components consume
-// the token scale instead of Tailwind defaults, raw Figma variables, palette
-// colours, hex colours or off-scale spacing.
+// Foundation contract for library CSS and component/template sources: utility
+// strings consume the token scale; declarations and inline defaults consume
+// semantic/foundation references instead of duplicating visual constants.
 //
 //   ui-cli check foundation            # enforce the baseline
 //   ui-cli check foundation --measure  # print the current counts
@@ -20,9 +19,20 @@ import {
   FoundationExceptionsSchema,
   type FoundationException,
 } from "../schemas/tokens.ts"
+import { cssStyleOccurrences, inlineStyleOccurrences, STYLE_RULES } from "./foundation-styles.ts"
 
 const FoundationManifestSchema = z.looseObject({
   foundations: z.record(z.string(), z.looseObject({ category: z.string(), value: z.unknown() })),
+  variables: z
+    .record(
+      z.string(),
+      z.looseObject({
+        cssName: z.string(),
+        alias: z.string().optional(),
+        type: z.string(),
+      }),
+    )
+    .optional(),
 })
 
 type FoundationManifest = z.infer<typeof FoundationManifestSchema>
@@ -65,6 +75,7 @@ export const RULES = {
 } as const
 
 export type RuleName = keyof typeof RULES
+const ALL_RULES = [...Object.keys(RULES), ...STYLE_RULES]
 
 export type Occurrence = {
   rule: string
@@ -76,6 +87,7 @@ export type Occurrence = {
 function stringLiterals(file: string): {
   source: string
   literals: Array<{ value: string; start: number }>
+  program: ReturnType<typeof parseSource>["program"]
 } {
   const source = fs.readFileSync(file, "utf8")
   const parsed = parseSource(file)
@@ -119,7 +131,7 @@ function stringLiterals(file: string): {
     }
   }
   visit(parsed.program)
-  return { source, literals }
+  return { source, literals, program: parsed.program }
 }
 
 function lineOf(source: string, offset: number): number {
@@ -146,7 +158,26 @@ function spacingValue(token: string): number | null {
 
 export function measure(manifest: FoundationManifest): Occurrence[] {
   const spacing = allowedSpacing(manifest)
+  const knownTokens = new Set<string>()
+  for (const entry of [
+    ...Object.values(manifest.foundations),
+    ...Object.values(manifest.variables ?? {}),
+  ]) {
+    if (typeof entry.cssName === "string") knownTokens.add(`--${entry.cssName}`)
+    if (typeof entry.alias === "string") {
+      for (const suffix of ["", "--line-height", "--font-weight", "--letter-spacing"]) {
+        knownTokens.add(`--text-${entry.alias}${suffix}`)
+      }
+    }
+  }
   const occurrences: Occurrence[] = []
+  for (const file of walkFiles(absolutePath("src"), (file) => /\.css$/.test(file))) {
+    const identity = path.posix.join(
+      "src",
+      path.relative(absolutePath("src"), file).split(path.sep).join("/"),
+    )
+    occurrences.push(...cssStyleOccurrences(fs.readFileSync(file, "utf8"), identity, knownTokens))
+  }
   for (const root of ROOTS) {
     const absolute = absolutePath(root)
     for (const file of walkFiles(absolute, (file) => /\.(ts|tsx)$/.test(file))) {
@@ -154,7 +185,8 @@ export function measure(manifest: FoundationManifest): Occurrence[] {
         root,
         path.relative(absolute, file).split(path.sep).join("/"),
       )
-      const { source, literals } = stringLiterals(file)
+      const { source, literals, program } = stringLiterals(file)
+      occurrences.push(...inlineStyleOccurrences(program, source, identity, knownTokens))
       for (const literal of literals) {
         for (const [rule, pattern] of Object.entries(RULES)) {
           pattern.lastIndex = 0
@@ -189,7 +221,7 @@ function semanticErrors(
   const errors: string[] = []
   const used = new Set<string>()
   for (const exception of exceptions.exceptions) {
-    if (!Object.hasOwn(RULES, exception.rule)) {
+    if (!ALL_RULES.includes(exception.rule)) {
       errors.push(`${EXCEPTIONS_PATH}: unknown rule "${exception.rule}"`)
       continue
     }
@@ -198,13 +230,18 @@ function semanticErrors(
     used.add(key)
   }
   for (const rule of Object.keys(baseline.counts)) {
-    if (!Object.hasOwn(RULES, rule)) {
+    if (!ALL_RULES.includes(rule)) {
       errors.push(`${BASELINE_PATH}: unknown rule "${rule}"`)
     }
   }
   for (const rule of Object.keys(RULES)) {
     if (!Object.hasOwn(baseline.counts, rule)) {
       errors.push(`${BASELINE_PATH}: missing the "${rule}" ceiling`)
+    }
+  }
+  for (const rule of STYLE_RULES) {
+    if ((baseline.counts[rule] ?? 0) !== 0) {
+      errors.push(`${BASELINE_PATH}: the "${rule}" ceiling must be zero`)
     }
   }
   return errors
@@ -217,9 +254,7 @@ export function evaluateFoundation(
 ): { errors: string[]; counts: Record<string, number>; exceptions: number } {
   const errors = semanticErrors(baseline, exceptions)
   const used = new Set(exceptions.exceptions.map(exceptionKey))
-  const counts: Record<string, number> = Object.fromEntries(
-    Object.keys(RULES).map((rule) => [rule, 0]),
-  )
+  const counts: Record<string, number> = Object.fromEntries(ALL_RULES.map((rule) => [rule, 0]))
   const recorded = new Set<string>()
   const examples: Record<string, string[]> = {}
 
@@ -237,8 +272,13 @@ export function evaluateFoundation(
   for (const key of used) {
     if (!recorded.has(key)) errors.push(`${EXCEPTIONS_PATH}: stale exception ${key}`)
   }
-  for (const [rule, ceiling] of Object.entries(baseline.counts)) {
-    if (!Object.hasOwn(RULES, rule)) continue
+  // New declaration checks start at zero without rewriting the historical
+  // utility baseline. Only a scoped, reasoned exception can waive a value.
+  for (const [rule, ceiling] of Object.entries({
+    ...baseline.counts,
+    ...Object.fromEntries(STYLE_RULES.map((rule) => [rule, 0])),
+  })) {
+    if (!ALL_RULES.includes(rule)) continue
     const current = counts[rule] ?? 0
     if (current > ceiling) {
       errors.push(
@@ -265,7 +305,7 @@ export function runFoundation(argv: string[] = process.argv.slice(2)): number {
     const used = new Set(exceptions.exceptions.map(exceptionKey))
     const counts: Record<string, number> = {}
     const raw: Record<string, number> = {}
-    for (const rule of Object.keys(RULES)) {
+    for (const rule of ALL_RULES) {
       counts[rule] = 0
       raw[rule] = 0
     }

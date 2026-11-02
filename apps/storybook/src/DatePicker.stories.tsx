@@ -269,11 +269,15 @@ export const KeyboardNavigation: Story = {
   render: () => <SingleDateExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    canvas.getByRole("button", { name: /mese precedente/i }).focus()
+    const previousMonth = canvas.getByRole("button", { name: /mese precedente/i })
+    previousMonth.focus()
+    await expect(previousMonth).toHaveFocus()
     await userEvent.tab()
-    await expect(canvas.getByRole("button", { name: /mese successivo/i })).toHaveFocus()
+    const nextMonth = canvas.getByRole("button", { name: /mese successivo/i })
+    await expect(nextMonth).toHaveFocus()
     await userEvent.tab()
-    await expect(canvas.getByRole("button", { name: /11 maggio 2026/i })).toHaveFocus()
+    const firstSelectedDay = canvas.getByRole("button", { name: /11 maggio 2026/i })
+    await expect(firstSelectedDay).toHaveFocus()
     await userEvent.keyboard("{ArrowRight}{Enter}")
     await expect(canvas.getByRole("gridcell", { selected: true })).toHaveTextContent("12")
     await expect(canvas.getByRole("status", { name: "Data confermata" })).toHaveTextContent(
@@ -289,7 +293,8 @@ export const KeyboardNavigation: Story = {
     await userEvent.keyboard("{PageUp}{Enter}")
     await expect(canvas.getByRole("gridcell", { selected: true })).toHaveTextContent("16")
     await userEvent.tab()
-    await expect(canvas.getByRole("button", { name: "Annulla" })).toHaveFocus()
+    const cancel = canvas.getByRole("button", { name: "Annulla" })
+    await expect(cancel).toHaveFocus()
     await userEvent.tab()
     const save = canvas.getByRole("button", { name: "Salva" })
     await expect(save).toHaveFocus()

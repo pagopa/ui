@@ -57,7 +57,7 @@ function StepIndicator({
       {item.status === "complete" ? (
         <>
           {labelled ? <span className="sr-only">{completedLabel} </span> : null}
-          <PagoPAIcon name="check_circle" aria-hidden="true" className="size-5 text-primary" />
+          <PagoPAIcon name="check_circle" aria-hidden="true" className="text-primary" />
         </>
       ) : (
         <span

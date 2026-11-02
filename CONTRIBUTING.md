@@ -203,6 +203,15 @@ path that publishes all projects with a publish target.
 - `figma-drift.yml` — the weekly drift snapshot and its review pull request.
 - `release.yaml` — the DX release manager, on `main`.
 
+Deep checks and visual regression attach seven-day `nx-profile-*` artifacts,
+including on failed runs. Their Chrome-trace JSON records each Nx task's duration
+(`dur` in microseconds) and status; visual artifacts also carry the actual scope.
+An affected run with no tasks is an empty sample, not a speed improvement.
+Compare runs with the same event, engine and non-empty scope, alongside GitHub's
+setup/job timings, before changing parallelism. No coverage threshold, engine,
+scope fallback or baseline review is relaxed by this instrumentation; sharding
+remains an experiment, not an assumed win.
+
 ### The release pull request
 
 The **Version Packages** pull request and the commit it lands on `main` are not
@@ -279,6 +288,11 @@ VISUAL_SCOPE=apps/storybook/visual/scope.json pnpm nx run pagopa-ui-storybook:te
 `--all` skips the walk and names no story; without `VISUAL_SCOPE` the suite is
 complete too. The file carries the mode as well: `stories` lists the ids to
 capture, `all` names none because the whole catalogue runs.
+
+The comparison uses `threshold: 0` and a 32-pixel budget. Every counted pixel
+must match exactly; the budget absorbs Chromium's small border and text
+rasterisation drift (about 0.01% of a 320x900 capture) without hiding a surface
+or layout change. A failure above the budget is a finding, not noise.
 
 To accept a visual change, add the `visual:update` label to the pull request.
 The workflow commits the new images to its head branch, and that commit starts

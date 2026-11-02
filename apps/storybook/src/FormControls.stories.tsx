@@ -200,10 +200,9 @@ export const NativeEditorKeyboardFocus: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     canvas.getByRole("textbox", { name: "Prima degli editor" }).focus()
-    await userEvent.tab()
     for (const label of ["Data", "Orario", "Data e ora", "Mese", "Settimana", "Data non valida"]) {
+      await userEvent.tab()
       const control = canvas.getByLabelText(label, { exact: true })
-      control.focus()
       await expect(control).toHaveFocus()
       await expect(control.matches(":focus-within")).toBe(true)
       const outline = getComputedStyle(control)

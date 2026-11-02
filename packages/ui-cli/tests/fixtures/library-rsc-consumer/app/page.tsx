@@ -1,15 +1,20 @@
-// A Server Component with no directive: a client component (Button), a
-// server-safe one (Tag) and the provider all render from here.
+import { headers } from "next/headers"
 import { Button, Tag, UIProvider } from "__PAGOPA_UI_PACKAGE__"
 
-export default function Page() {
+import { Interactions } from "./interactions"
+
+export default async function Page() {
+  const request = await headers()
+
   return (
-    <UIProvider>
-      <main>
-        <h1>Server Component</h1>
-        <Tag status="success">Attivo</Tag>
-        <Button>Continua</Button>
-      </main>
-    </UIProvider>
+    <main>
+      <h1>Server-rendered service</h1>
+      <Tag status="success">Active</Tag>
+      <p data-testid="request-marker">{request.get("x-consumer-request") ?? "ordinary request"}</p>
+      <UIProvider>
+        <Button type="button">Server-imported action</Button>
+      </UIProvider>
+      <Interactions />
+    </main>
   )
 }

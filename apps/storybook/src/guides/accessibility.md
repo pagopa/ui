@@ -63,13 +63,39 @@ Cover NVDA on Windows 11 (Firefox, Chrome), JAWS on Windows 11 (Chrome), VoiceOv
 on macOS and iOS (Safari) and TalkBack on Android (Chrome), and record the tool, OS
 and browser versions at test time so the pass can be reproduced.
 
-One pass records the environment, walks the outline by headings and landmarks with
-the screen off, runs the keyboard walk (name, role, state and painted focus on every
-control), exercises the widget pattern (arrows in a radio group or tab list,
-ArrowDown on a combobox, Enter and Escape on a dialog, an invalid submission and its
-announcement) and compares the announcement with the criterion's expectation for
-that component type. A failure opens an issue and — when the expected behaviour is a
-design decision — a request in `docs/design-requests/`.
+| Screen reader | Operating system | Browser | Outcome      |
+| ------------- | ---------------- | ------- | ------------ |
+| NVDA          | Windows 11       | Firefox | Not executed |
+| NVDA          | Windows 11       | Chrome  | Not executed |
+| JAWS          | Windows 11       | Chrome  | Not executed |
+| VoiceOver     | macOS            | Safari  | Not executed |
+| VoiceOver     | iOS              | Safari  | Not executed |
+| TalkBack      | Android          | Chrome  | Not executed |
+
+For each pass, record the versions, locale, story or consumer page, actions and
+observed result alongside the outcome. Walk headings and named landmarks with
+the screen off, then traverse every interactive control by keyboard or the
+screen reader's equivalent. Check that focus remains visible when the screen is
+on. Browser zoom and resize-text checks are also **not executed** until recorded:
+at 200% text and 400% zoom, verify that content and controls remain available,
+and record any justified two-dimensional scrolling exception.
+
+The expected information is semantic, not a prescribed phrase: speech varies
+with the screen reader, browser and locale. Record what was actually announced.
+
+| Representative interaction | Expected information and operation                                                                                                                   |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Button or toggle           | Consumer-supplied name and button role; unavailable, busy or pressed state when applicable; Enter or Space activates an enabled action.              |
+| Segmented control          | Consumer-supplied group name, each choice's name and pressed state; keyboard activation updates the state without losing its label.                  |
+| Field and invalid submit   | Field name, required/invalid state and associated error; the error summary announces the submission error without a competing per-field live region. |
+| Radio group or tabs        | Group or tab-list name, option/tab name and selected state; arrow keys move through the relevant choices.                                            |
+| Combobox or select         | Field name, expanded state, active option and selection; keyboard operation opens, navigates and closes the popup.                                   |
+| Dialog or drawer           | Dialog name and role, focus moved inside and contained while open; Escape closes it and focus returns to its trigger.                                |
+| Navigation and table       | Distinct landmark names and meaningful links; table headers remain associated with their cells.                                                      |
+| Status or alert            | The changed message is announced without unexpectedly moving focus.                                                                                  |
+
+A failure opens an issue and — when the expected behaviour is a design decision —
+a request in `docs/design-requests/`.
 
 Screen-reader support is claimed only from recorded passes. Browser zoom and
 screen-reader specific settings stay manual by design; the automated layer never

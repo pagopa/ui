@@ -21,12 +21,25 @@ After a version is released, install the package alongside React and ReactDOM:
 pnpm add @pagopa/ui
 ```
 
-Import the stylesheet once and use the public component exports:
+Import the stylesheet once and wrap the component tree in `UIProvider`:
 
 ```tsx
 import "@pagopa/ui/styles.css"
-import { Button } from "@pagopa/ui"
+import { Button, UIProvider } from "@pagopa/ui"
+
+export function App() {
+  return (
+    <UIProvider>
+      <Button>Continua</Button>
+    </UIProvider>
+  )
+}
 ```
+
+The provider renders the scope root the stylesheet is written against; a
+component tree outside it is unstyled. Scoped styles require `@scope` support:
+Chrome 118+, Safari 17.4+ or Firefox 128+. There is no fallback, so older
+browsers render the components unstyled.
 
 React and ReactDOM are peer dependencies. The package ships compiled CSS,
 fonts, artwork, and TypeScript declarations; consumers do not need Tailwind,
@@ -46,14 +59,27 @@ options and the two examples.
 ## Router links
 
 Every navigation link renders as a plain `<a>` unless a provider supplies the
-application's link component. With Next.js:
+application's link component. With Next.js, define the adapter in a Client
+Component: the provider value contains functions and cannot cross the
+Server/Client boundary.
 
 ```tsx
-import Link from "next/link"
-import { UIProvider } from "@pagopa/ui"
+// app/providers.tsx
+"use client"
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-  return <UIProvider linkComponent={Link}>{children}</UIProvider>
+import * as React from "react"
+import Link from "next/link"
+import { UIProvider, type LinkComponentProps } from "@pagopa/ui"
+
+const RouterLink = React.forwardRef<HTMLAnchorElement, LinkComponentProps>(function RouterLink(
+  { href, ...props },
+  ref,
+) {
+  return <Link {...props} href={href} ref={ref} />
+})
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return <UIProvider linkComponent={RouterLink}>{children}</UIProvider>
 }
 ```
 
@@ -67,25 +93,28 @@ The package ships one ES module per component, and each module that runs in the
 browser carries its own `"use client"`. A Server Component imports the
 components it needs directly and pulls no wrapper module of its own; a page
 loads only the modules it imports, not the whole library. Import the stylesheet
-once in the root layout and render the provider there, so every page keeps the
-link component and the texts:
+once in the root layout and render the provider inside `<body>`, so every page
+keeps the link component and the texts:
 
 ```tsx
 // app/layout.tsx
 import "@pagopa/ui/styles.css"
-import { UIProvider } from "@pagopa/ui"
 import type { ReactNode } from "react"
+import { Providers } from "./providers"
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <UIProvider>
-      <html lang="it">
-        <body>{children}</body>
-      </html>
-    </UIProvider>
+    <html lang="it">
+      <body>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
   )
 }
 ```
+
+Keep `locale` and `messages` in the same Client Component as `linkComponent`;
+a dictionary can contain functions, such as the pagination labels.
 
 ## Languages and texts
 

@@ -315,9 +315,11 @@ terraform.rc
 
 
 .nx/cache
+.nx/ci-metrics
 .nx/workspace-data
 .nx/migrate-runs
 .nx/polygraph
+.pnpm-store/
 .dx-tasks
 .tflint.d
 .claude/worktrees

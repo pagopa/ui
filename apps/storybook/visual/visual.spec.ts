@@ -18,7 +18,7 @@ interface IndexEntry {
 }
 
 interface StorybookRender {
-  currentRender?: { phase?: string }
+  currentRender?: { id?: string; phase?: string }
 }
 
 declare global {
@@ -69,20 +69,21 @@ for (const story of stories) {
       test(`${story.id} @${width}`, async ({ page }) => {
         await page.setViewportSize({ width, height: HEIGHT })
         await page.clock.install({ time: new Date("2025-01-15T10:00:00+01:00") })
-
         await page.goto(`/iframe.html?id=${story.id}&viewMode=story`)
 
         await page.evaluate(() => document.fonts.ready.then(() => undefined))
 
-        // The story is ready when its render reached a terminal phase; the
-        // store reports "finished" after the play function and the cleanup.
+        // "finished" follows the play function and its cleanup, so the
+        // captured page includes the final interactive state.
         const handle = await page.waitForFunction(
-          () => {
-            const phase = window.__STORYBOOK_PREVIEW__?.currentRender?.phase
-            const settled = ["completed", "played", "finished", "errored", "aborted"]
+          (storyId) => {
+            const render = window.__STORYBOOK_PREVIEW__?.currentRender
+            if (render?.id !== storyId) return false
+            const phase = render.phase
+            const settled = ["finished", "errored", "aborted"]
             return phase && settled.includes(phase) ? phase : false
           },
-          undefined,
+          story.id,
           { timeout: 30_000, polling: 100 },
         )
         const phase = await handle.jsonValue()

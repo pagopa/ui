@@ -1,6 +1,7 @@
 import type { Preview } from "@storybook/react-vite"
 import { useEffect, type ReactNode } from "react"
 import "../src/preview.css"
+import { UIProvider } from "@/lib/ui-provider"
 import { a11yContractAfterEach } from "../src/support/a11y-contract"
 
 // The design system content is Italian: keep the document language correct for
@@ -25,9 +26,11 @@ const preview: Preview = {
   afterEach: [a11yContractAfterEach],
   decorators: [
     (Story) => (
-      <ItalianLanguage>
-        <Story />
-      </ItalianLanguage>
+      <UIProvider>
+        <ItalianLanguage>
+          <Story />
+        </ItalianLanguage>
+      </UIProvider>
     ),
   ],
   parameters: {
