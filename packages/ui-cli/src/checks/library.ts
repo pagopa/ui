@@ -2,10 +2,10 @@
 // Verify the actual packed artifact in an isolated application after `pnpm build`.
 import assert from "node:assert/strict"
 import { spawn, spawnSync } from "node:child_process"
-import { randomUUID } from "node:crypto"
 import fs from "node:fs"
 import { createRequire } from "node:module"
 import net from "node:net"
+import os from "node:os"
 import path from "node:path"
 import { z } from "zod"
 import { pathToFileURL } from "node:url"
@@ -192,11 +192,11 @@ export async function runLibraryCheck(): Promise<number> {
   // The preview server comes from the audited package's own Vite: the consumer is
   // built with that toolchain, so serving it with another copy would prove less.
   const { preview } = await import(pathToFileURL(audited.resolve("vite")).href)
-  // Keep scratch outside the package tree so concurrent source walks cannot race with cleanup.
-  const cache = path.resolve(root, "../../.cache")
-  fs.mkdirSync(cache, { recursive: true })
-  const temporary = path.join(cache, `pagopa-library-${randomUUID()}`)
-  fs.mkdirSync(temporary)
+  // Keep scratch outside the package tree so concurrent source walks cannot race
+  // with cleanup, and short enough for a Chromium singleton socket. The system
+  // temp path is outside every package tree on Linux and macOS; a workspace
+  // `.cache` path under a CI checkout exceeds the Unix socket limit.
+  const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-lib-"))
   const consumer = path.join(temporary, "consumer")
   const consumerEnv = { ...process.env, TMPDIR: temporary, TMP: temporary, TEMP: temporary }
   let server:
