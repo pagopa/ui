@@ -6,10 +6,10 @@ and without `FIGMA_TOKEN`.
 
 It is **generated, never hand-edited**:
 
-| File                      | Content                                                                                 |
-| ------------------------- | --------------------------------------------------------------------------------------- |
-| `source.json.br`          | the complete document map a case points at, minified and Brotli-compressed              |
-| `references/<caseId>.png` | the pinned Figma render of the case variant, scale 1, at the pinned version             |
+| File                      | Content                                                                                      |
+| ------------------------- | -------------------------------------------------------------------------------------------- |
+| `source.json.br`          | the complete document map a case points at, minified and Brotli-compressed                   |
+| `references/<caseId>.png` | the pinned Figma render of the case variant, scale 1, at the pinned version                  |
 | `manifest.json`           | schema version 2: file key, version, source hash, and per-case hash, variant and fingerprint |
 
 The PNGs are review evidence, not a pixel gate: the verdict stays the 2 px
