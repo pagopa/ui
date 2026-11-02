@@ -100,8 +100,11 @@ delta plan and triage, a fresh rules/comments snapshot, the pending queue and
 from [CONTRIBUTING.md](./CONTRIBUTING.md#the-green-chain). It analyses each node
 in parallel and read-only, then pauses so the person can approve or edit
 `packages/pagopa-ui/.figma/align/<runId>/decisions.json`. After resume, one
-writer works at a time, while the previous node's independent verification runs
-alongside it. The workflow never commits.
+writer works at a time; read-only verification may run alongside it, and the
+start/end/final context hash invalidates a result whenever the relevant source
+or case context changed. A stale pass gets one fresh re-verification; a missing
+result, failed retry or later change remains not verified. The workflow never
+commits.
 Start it only when the person asks:
 `run_dynamic_workflow { name: "figma-align", args: { waveSize: 3 } }`, or
 `{ nodes: ["<nodeId>"] }` for named nodes and `{ analyseOnly: true }` to get the

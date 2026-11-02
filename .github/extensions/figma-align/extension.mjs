@@ -6,8 +6,8 @@
 // Phases: preflight (figma:status) → delta (snapshot, triage, rules/comments
 // refresh, pending queue, wave) → analyse (brief, source, cases, decision;
 // parallel, read-only) → decisions (durable pause) → align (one writer at a
-// time, verification overlapping) → close (fmt, figma:check, rules, parity
-// verify/capture/report, green chain) → report.
+// time, parallel read-only verification) → close (fmt, figma:check, rules, parity
+// verify/capture/report, green chain) → one final re-verification of stale passes → report.
 //
 // A visual design request cannot be published by this workflow: it needs the
 // review story on `design.preview.branch`, captures of the deployed preview and
@@ -21,11 +21,30 @@
 // and resume the run.
 
 import { spawn } from "node:child_process"
-import { createHash } from "node:crypto"
-import { createWriteStream, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"
-import { dirname, join, resolve } from "node:path"
+import { createHash, randomUUID } from "node:crypto"
+import {
+  createWriteStream,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  writeFileSync,
+} from "node:fs"
+import { dirname, join, relative, resolve, sep } from "node:path"
 import { fileURLToPath } from "node:url"
 import { defineWorkflow, joinSession } from "@github/copilot-sdk/extension"
+
+import {
+  assessVerification,
+  collectVerification,
+  contextSignature,
+  isIgnorableExcludedEntry,
+  isSafeContextPath,
+  isVerificationPath,
+  reverifyStaleResults,
+  VERIFICATION_FILES,
+  VERIFICATION_TREES,
+} from "./verification-context.mjs"
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../..")
 const PACKAGE_DIR = join(ROOT, "packages/pagopa-ui")
@@ -74,7 +93,7 @@ function run(cmd, args, { signal, allowExit = [0], timeoutMs = 10 * 60_000, logF
   return new Promise((resolvePromise, reject) => {
     const child = spawn(cmd, commandArgs, {
       cwd: ROOT,
-      env: { ...process.env, FORCE_COLOR: "0", NX_TUI: "false" },
+      env: { ...process.env, FORCE_COLOR: "0", NX_TUI: "false", NX_LOAD_DOT_ENV_FILES: "false" },
       stdio: ["ignore", "pipe", "pipe"],
       signal,
     })
@@ -243,28 +262,141 @@ function readGreenChain() {
   return block[1].replace(/\\\n/g, " ").replace(/\s+/g, " ").trim()
 }
 
-// Registry, case corpus and Storybook are shared: one writer at a time.
-function createLock() {
-  let last = Promise.resolve()
-  return (task) => {
-    const next = last.then(task, task)
-    last = next.catch(() => {})
-    return next
+function contextPath(absolute) {
+  const path = relative(ROOT, resolve(absolute)).split(sep).join("/")
+  if (!isSafeContextPath(path)) {
+    throw new Error("A configured context path is unsafe or outside the repository")
+  }
+  return path
+}
+
+function configuredContextFile(absolute) {
+  const path = contextPath(absolute)
+  if (!isVerificationPath(path) && !/^packages\/pagopa-ui\/\.figma\/[^/]+\.json$/.test(path)) {
+    throw new Error(`Configured verification file is outside the declared source scope: ${path}`)
+  }
+  return path
+}
+
+function configuredContextTree(absolute, requests = false) {
+  const path = contextPath(absolute)
+  const withinTree = VERIFICATION_TREES.some((root) => path === root || path.startsWith(`${root}/`))
+  if (!withinTree && !(requests && path.startsWith("docs/"))) {
+    throw new Error(
+      `Configured verification directory is outside the declared source scope: ${path}`,
+    )
+  }
+  return path
+}
+
+// The verifier reads shared source and case inputs — including untracked files —
+// but never walks the workspace or reads a credential: the path filter belongs
+// to `isSafeContextPath`, and a file's content is what a passing result depends on.
+function contextFile(path) {
+  try {
+    return `file:${createHash("sha256")
+      .update(readFileSync(join(ROOT, path)))
+      .digest("hex")}`
+  } catch (error) {
+    if (error.code === "ENOENT") return "missing"
+    throw error
   }
 }
 
-// Content hashes of every modified or untracked file, to attribute the files
-// each node's writer touched without trusting the agent's own list.
-async function worktreeHashes(signal) {
-  const { stdout } = await run("git", ["ls-files", "-m", "-o", "--exclude-standard", "-z"], {
-    signal,
-  })
+function verificationContext(config, signal) {
+  const entries = new Map()
+  const files = new Set(VERIFICATION_FILES)
+  const trees = new Set(VERIFICATION_TREES)
+  const configuredFiles = [
+    config.figma?.fileModule,
+    config.figma?.snapshot,
+    config.figma?.mcpInventory,
+    config.figma?.variables,
+    ...Object.values(config.catalog ?? {}),
+    ...Object.values(config.tokens ?? {}),
+    ...Object.values(config.artwork ?? {}),
+    config.code?.publicEntry,
+  ]
+  for (const path of configuredFiles) {
+    if (typeof path === "string" && path) files.add(configuredContextFile(resolveConfigPath(path)))
+  }
+  for (const path of [config.code?.components, config.code?.stories, config.code?.guides]) {
+    if (typeof path === "string" && path) trees.add(configuredContextTree(resolveConfigPath(path)))
+  }
+  if (config.design?.requests) {
+    trees.add(configuredContextTree(resolve(ROOT, config.design.requests), true))
+  }
+
+  const recordFile = (path) => {
+    entries.set(path, contextFile(path))
+  }
+  const walk = (path) => {
+    if (signal?.aborted) throw signal.reason ?? new Error("Aborted")
+    if (!isSafeContextPath(path)) throw new Error("Unsafe verification context path")
+    let directory
+    try {
+      directory = readdirSync(join(ROOT, path), { withFileTypes: true })
+    } catch (error) {
+      if (error.code === "ENOENT") return
+      throw error
+    }
+    for (const entry of directory) {
+      const child = `${path}/${entry.name}`
+      if (!isSafeContextPath(child)) {
+        if (isIgnorableExcludedEntry(child, entry)) continue
+        throw new Error(`Excluded verification input cannot be safely inspected: ${child}`)
+      }
+      if (entry.isDirectory()) walk(child)
+      else if (entry.isFile()) recordFile(child)
+      else throw new Error(`Unsafe context entry: ${child}`)
+    }
+  }
+  const orderedTrees = [...trees].sort((left, right) => left.length - right.length)
+  const roots = []
+  for (const tree of orderedTrees) {
+    if (!roots.some((root) => tree === root || tree.startsWith(`${root}/`))) roots.push(tree)
+  }
+  for (const tree of roots) walk(tree)
+  for (const path of files) {
+    if (signal?.aborted) throw signal.reason ?? new Error("Aborted")
+    if (!isSafeContextPath(path)) throw new Error("Unsafe verification context file")
+    if (!entries.has(path)) recordFile(path)
+  }
+  return contextSignature(entries)
+}
+
+function prepareCloseoutOutputs(parityOut) {
+  mkdirSync(parityOut, { recursive: true })
+  mkdirSync(join(PACKAGE_DIR, "docs/reports"), { recursive: true })
+}
+
+// Attribute only relevant modified/untracked files; never read environment or
+// credential files, even when Git lists them as modified.
+async function worktreeHashes(signal, onError) {
+  const { stdout } = await run(
+    "git",
+    [
+      "ls-files",
+      "-m",
+      "-o",
+      "--exclude-standard",
+      "-z",
+      "--",
+      ...VERIFICATION_TREES,
+      ...VERIFICATION_FILES,
+    ],
+    { signal },
+  )
   const hashes = {}
   for (const file of stdout.split("\0").filter(Boolean)) {
-    const path = join(ROOT, file)
-    hashes[file] = existsSync(path)
-      ? createHash("sha1").update(readFileSync(path)).digest("hex")
-      : "deleted"
+    if (!isVerificationPath(file)) continue
+    try {
+      hashes[file] = contextFile(file)
+    } catch (error) {
+      if (signal.aborted) throw error
+      onError(`Could not hash ${file} for attribution: ${String(error?.message ?? error)}`)
+      hashes[file] = "unreadable"
+    }
   }
   return hashes
 }
@@ -442,7 +574,7 @@ First load the \`figma-to-code\` skill and the \`pagopa-ui-standards\` skill and
 Design owner(s): ${design.owners.join(", ") || "(not configured)"} · review pull request #${design.preview.pr || "(not configured)"} on ${design.preview.branch || "(not configured)"} · preview ${design.preview.url || "(not configured)"}.
 
 Hard rules for this run:
-- Never read, source or load \`.env\`; never print FIGMA_TOKEN.
+- Never read, source or load \`.env\`; never print FIGMA_TOKEN. Prefix every Nx command with \`NX_LOAD_DOT_ENV_FILES=false\` so Nx does not load environment files.
 - Figma is read-only: use only get_design_context, get_screenshot, get_metadata, get_variable_defs and list_file_components_for_code_connect. Never use_figma or any tool that writes to Figma or publishes Code Connect.
 - Never commit, push, switch branches or open pull requests: the person delivers. Creating a design-question issue is allowed only as the design-request flow below says.
 - The working tree is shared with the person and other writers. Never revert, delete, stash, \`git checkout\` or \`git restore\` a change you did not make in this task, even if it looks unrelated or breaks a check: report it in openPoints instead.
@@ -557,7 +689,7 @@ Return the JSON: status = the registry status you left; cases = one per saved or
 function verifyPrompt(config, node, alignment) {
   return `${preamble(config)}
 
-TASK: independently verify ONE node's alignment. READ-ONLY: do not edit any repository file and never pass --save-case. Another writer may be changing other components meanwhile; judge only this node.
+TASK: independently verify ONE node's alignment. READ-ONLY: do not edit any repository file and never pass --save-case. Another node's writer may change shared files while you verify; judge only this node, and the workflow re-checks the context hash before trusting the result.
 
 ${nodeContext(node)}
 
@@ -646,7 +778,12 @@ ${details}
 function reportMarkdown(report, green) {
   const nodes = report.nodes
     .map((n) => {
-      if (n.status === "failed") return `## ${n.name} (\`${n.nodeId}\`) — the pipeline dropped it`
+      if (n.status === "failed") {
+        return `## ${n.name} (\`${n.nodeId}\`) — the pipeline dropped it
+
+- Independent verification: NOT passed
+  - The pipeline failed before a verification result was available.`
+      }
       const cases = n.cases
         .map(
           (c) =>
@@ -662,6 +799,10 @@ ${n.summary}
 - Reason: ${n.reason}
 - Independent verification: ${n.verified ? "pass" : "NOT passed"}${
         n.findings.length ? `\n  - ${n.findings.join("\n  - ")}` : ""
+      }${
+        n.verified
+          ? ""
+          : "\n- Case verdicts below are reported history, not a current verified result."
       }
 - Rules: ${
         n.rules
@@ -673,7 +814,7 @@ ${n.summary}
 - Preview: ${n.preview || "none"}
 - Open: ${n.openPoints.join("; ") || "nothing"}
 - Commands: ${n.commands.join("; ") || "none"}
-- Files: ${n.files.join(", ") || "none"}
+- Files (Git-visible verification inputs only): ${n.files.join(", ") || "none"}
 
 | Case | Device | Verdict | Residues |
 | --- | --- | --- | --- |
@@ -685,6 +826,9 @@ ${cases || "| — | — | — | — |"}`
     green && green.code !== 0
       ? `\nGreen chain tail (stories that could not start are NOT passed):\n\n\`\`\`\n${green.tail}\n\`\`\`\n`
       : ""
+  const attributionWarnings = report.attributionWarnings.length
+    ? `\n## File attribution warnings\n\n${report.attributionWarnings.map((warning) => `- ${warning}`).join("\n")}\n`
+    : ""
   return `# figma-align report — run ${report.runId}
 
 Branch \`${report.branch}\` · wave \`${report.wave}\` · skipped ${report.skipped.join(", ") || "none"}
@@ -698,6 +842,7 @@ ${nodes}
 ${commandRows}
 | green chain | ${green ? green.code : "not run"} |
 ${greenTail}
+${attributionWarnings}
 ## Delivery
 
 ${report.delivery}
@@ -710,7 +855,7 @@ const figmaAlign = defineWorkflow({
   meta: {
     name: "figma-align",
     description:
-      "Align pending Figma nodes with the React design system following the figma-to-code skill: the figma:status session report, the delta plan and triage with fresh rules/comments snapshots, a brief per node, parallel analysis, a durable decision checkpoint, one writer per node with overlapping independent verification, then figma:check, the rules check, the parity wave record and the green chain. Never commits. " +
+      "Align pending Figma nodes with the React design system following the figma-to-code skill: the figma:status session report, the delta plan and triage with fresh rules/comments snapshots, a brief per node, parallel analysis, a durable decision checkpoint, one writer at a time with read-only verification that can overlap a writer, then figma:check, the rules check, the parity wave record and the green chain. Never commits. " +
       "args: { nodes?: string[] (node ids; default: the next pending nodes in implementationOrder), waveSize?: integer (default 3), refresh?: boolean (live snapshot + triage first; needs FIGMA_TOKEN), triage?: boolean (triage the pinned snapshot), approval?: 'pause' | 'auto' (default 'pause': stop after the decisions so the person can edit packages/pagopa-ui/.figma/align/<runId>/decisions.json, then resume), analyseOnly?: boolean (stop after the decisions), greenChain?: boolean (default true), startStorybook?: boolean (default true) }",
     phases: [
       { title: "Preflight", detail: "Config, figma:status, working tree" },
@@ -771,7 +916,7 @@ const figmaAlign = defineWorkflow({
         const log = createWriteStream(join(outDir, "storybook.log"))
         storybook = spawn("pnpm", ["nx", "run", "pagopa-ui-storybook:storybook"], {
           cwd: ROOT,
-          env: { ...process.env, NX_TUI: "false", CI: "true" },
+          env: { ...process.env, NX_TUI: "false", CI: "true", NX_LOAD_DOT_ENV_FILES: "false" },
           stdio: ["ignore", "pipe", "pipe"],
           detached: true,
         })
@@ -1174,20 +1319,40 @@ Return ok=true with the pinned version in message when ${snapshot} pins the curr
         }
         config.storybook.url = alignedUrl
         process.env.STORYBOOK_URL = alignedUrl
+        // Create the output parents before verification so capture/report do
+        // not change an observed ancestor merely by creating their directories.
+        prepareCloseoutOutputs(parityOut)
       } else if (work.length) {
         ctx.log("No approved decision renders a case: Storybook is not required for this wave.")
       }
-      const exclusive = createLock()
-      const writeNode = (label, prompt) =>
-        exclusive(async () => {
-          const before = await worktreeHashes(signal)
-          const result = await ctx.agent(prompt, { label, schema: alignmentSchema })
-          const files = changedBetween(before, await worktreeHashes(signal))
-          return { result, files }
+      const attributionWarnings = new Set()
+      const captureChangedFiles = () =>
+        worktreeHashes(signal, (warning) => {
+          if (!attributionWarnings.has(warning)) ctx.log(warning)
+          attributionWarnings.add(warning)
+        })
+      const writeNode = async (label, prompt) => {
+        const before = await captureChangedFiles()
+        const result = await ctx.agent(prompt, { label, schema: alignmentSchema })
+        const files = changedBetween(before, await captureChangedFiles())
+        return { result, files }
+      }
+      const verifyNode = (node, alignment, kind) =>
+        collectVerification({
+          signal,
+          readContext: () => verificationContext(config, signal),
+          // A fresh label prevents the SDK from replaying a verifier from
+          // an earlier attempt or resume instead of inspecting this context.
+          verify: () =>
+            ctx.agent(verifyPrompt(config, node, alignment), {
+              label: `${kind}:${node.nodeId}:${randomUUID()}`,
+              schema: verificationSchema,
+            }),
         })
 
-      // Writers run one at a time in implementationOrder; each node's
-      // verification overlaps the next node's writer.
+      // Verification may overlap a writer; the start/end/final context hash
+      // invalidates any result whose relevant source changed, and the final
+      // report re-verifies it once, including after the green-chain fix.
       const results = await ctx.pipeline(
         work,
         async (_, { node, decision }) => {
@@ -1195,34 +1360,55 @@ Return ok=true with the pinned version in message when ${snapshot} pins the curr
             `align:${node.nodeId}`,
             alignPrompt(config, node, decision),
           )
-          ctx.log(`${node.name}: ${result ? `${result.status} — ${result.summary}` : "no result"}`)
-          return { node, decision, alignment: result, files }
+          const valid = result?.nodeId === node.nodeId
+          const writerFailure = valid
+            ? null
+            : result
+              ? "The alignment writer returned a different node."
+              : "The alignment writer returned no result."
+          ctx.log(`${node.name}: ${valid ? `${result.status} — ${result.summary}` : writerFailure}`)
+          return { node, decision, alignment: valid ? result : null, files, writerFailure }
         },
         async (previous) => {
           if (!previous.alignment) return { ...previous, verification: null }
-          const verification = await ctx.agent(
-            verifyPrompt(config, previous.node, previous.alignment),
-            { label: `verify:${previous.node.nodeId}`, schema: verificationSchema },
-          )
-          return { ...previous, verification }
+          return {
+            ...previous,
+            ...(await verifyNode(previous.node, previous.alignment, "verify")),
+          }
         },
         async (previous) => {
           const { node, alignment, verification } = previous
-          if (!alignment || !verification || verification.pass) return previous
+          if (
+            !alignment ||
+            !verification ||
+            verification.nodeId !== node.nodeId ||
+            verification.pass ||
+            !verification.findings?.length ||
+            previous.contextError ||
+            previous.startContext !== previous.endContext
+          ) {
+            return previous
+          }
           ctx.log(`${node.name}: ${verification.findings.length} findings — one fix round`)
           const fixed = await writeNode(
             `fix:${node.nodeId}`,
             fixPrompt(config, node, alignment, verification),
           )
-          const reverification = await ctx.agent(
-            verifyPrompt(config, node, fixed.result ?? alignment),
-            { label: `reverify:${node.nodeId}`, schema: verificationSchema },
-          )
+          const files = [...new Set([...previous.files, ...fixed.files])].sort()
+          if (!fixed.result || fixed.result.nodeId !== node.nodeId) {
+            return {
+              ...previous,
+              files,
+              writerFailure: fixed.result
+                ? "The fix writer returned a different node."
+                : "The fix writer returned no result.",
+            }
+          }
           return {
             ...previous,
-            alignment: fixed.result ?? alignment,
-            files: [...new Set([...previous.files, ...fixed.files])].sort(),
-            verification: reverification,
+            alignment: fixed.result,
+            files,
+            ...(await verifyNode(node, fixed.result, "reverify")),
           }
         },
       )
@@ -1263,10 +1449,13 @@ Return ok=true with the pinned version in message when ${snapshot} pins the curr
           waveName,
           "--dir",
           waveDir,
+          "--out",
+          join(PACKAGE_DIR, "docs/reports", `${waveName}-figma-parity.md`),
         ])
       }
 
       let green = null
+      let greenFixFailed = false
       if (opts.greenChain) {
         const chain = readGreenChain()
         const greenRun = async (attempt) => {
@@ -1286,11 +1475,10 @@ Return ok=true with the pinned version in message when ${snapshot} pins the curr
         }
         green = await greenRun(1)
         if (green.code !== 0) {
-          const reply = await exclusive(() =>
-            ctx.agent(greenFixPrompt(config, wave, green.tail), {
-              label: `green-fix:${ctx.runId}`,
-            }),
-          )
+          const reply = await ctx.agent(greenFixPrompt(config, wave, green.tail), {
+            label: `green-fix:${ctx.runId}`,
+          })
+          greenFixFailed = !reply
           ctx.log(`Green fix: ${reply ? tail(reply, 6) : "no result"}`)
           green = await greenRun(2)
         }
@@ -1299,37 +1487,89 @@ Return ok=true with the pinned version in message when ${snapshot} pins the curr
 
       // ------------------------------------------------------------ report
       ctx.phase("Report")
+      let changedFiles = changedBetween({}, await captureChangedFiles())
+      let finalContext
+      let finalContextError
+      const captureFinalContext = () => {
+        try {
+          finalContext = verificationContext(config, signal)
+          finalContextError = undefined
+        } catch (error) {
+          if (signal.aborted) throw error
+          finalContext = undefined
+          finalContextError = String(error?.message ?? error)
+          ctx.log(`Final verification context unavailable: ${finalContextError}`)
+        }
+      }
+      captureFinalContext()
+      const refreshed = await reverifyStaleResults({
+        results,
+        finalContext,
+        greenFixFailed,
+        parallel: (tasks) => ctx.parallel(tasks),
+        verify: (node, alignment) => verifyNode(node, alignment, "final-verify"),
+      })
+      if (refreshed.attempted) {
+        ctx.log(`Final re-verification attempted for ${refreshed.attempted} stale node(s).`)
+        changedFiles = changedBetween({}, await captureChangedFiles())
+        captureFinalContext()
+      }
+
       const report = {
         runId: ctx.runId,
         branch,
         wave: waveName,
-        nodes: results.map((r, i) =>
-          r
-            ? {
-                nodeId: r.node.nodeId,
-                name: r.node.name,
-                decision: r.decision.decision,
-                reason: r.decision.reason,
-                status: r.alignment?.status ?? "unknown",
-                summary: r.alignment?.summary ?? "the writer returned no result",
-                cases: r.verification?.cases ?? r.alignment?.cases ?? [],
-                verified: r.verification?.pass ?? false,
-                findings: r.verification?.findings ?? [],
-                rules: r.alignment?.rules ?? r.decision.rules ?? [],
-                comments: r.alignment?.comments ?? r.decision.comments ?? [],
-                designRequest: r.alignment?.designRequest ?? "",
-                preview: r.alignment?.preview ?? "",
-                openPoints: r.alignment?.openPoints ?? [],
-                commands: r.alignment?.commands ?? [],
-                files: r.files,
-              }
-            : { nodeId: work[i].node.nodeId, name: work[i].node.name, status: "failed" },
-        ),
+        nodes: refreshed.results.map((r, i) => {
+          if (r) {
+            const verdict = assessVerification({
+              nodeId: r.node.nodeId,
+              alignment: r.alignment,
+              verification: r.verification,
+              startContext: r.startContext,
+              endContext: r.endContext,
+              finalContext,
+              contextError: r.contextError ?? finalContextError,
+              writerFailure: r.writerFailure,
+              greenFixFailed,
+            })
+            return {
+              nodeId: r.node.nodeId,
+              name: r.node.name,
+              decision: r.decision.decision,
+              reason: r.decision.reason,
+              status: r.writerFailure ? "unknown" : (r.alignment?.status ?? "unknown"),
+              summary: r.alignment?.summary ?? "the writer returned no result",
+              cases:
+                (r.verification?.nodeId === r.node.nodeId && r.verification.cases) ||
+                r.alignment?.cases ||
+                [],
+              verified: verdict.verified,
+              findings: verdict.findings,
+              rules: r.alignment?.rules ?? r.decision.rules ?? [],
+              comments: r.alignment?.comments ?? r.decision.comments ?? [],
+              designRequest: r.alignment?.designRequest ?? "",
+              preview: r.alignment?.preview ?? "",
+              openPoints: r.alignment?.openPoints ?? [],
+              commands: r.alignment?.commands ?? [],
+              files: r.files,
+            }
+          }
+          return {
+            nodeId: work[i].node.nodeId,
+            name: work[i].node.name,
+            status: "failed",
+            verified: false,
+            findings: ["The pipeline failed before a verification result was available."],
+          }
+        }),
         skipped: approved.filter((d) => d.decision === "skip").map((d) => d.nodeId),
         commands,
         greenChain: green ? { code: green.code, log: green.logFile } : "not run",
         preexistingChanges: dirty ? dirty.split("\n").length : 0,
-        changedFiles: changedBetween({}, await worktreeHashes(signal)),
+        changedFiles,
+        changedFilesScope:
+          "Git-visible modified/untracked verification inputs only; ignored, credential and unrelated files are excluded.",
+        attributionWarnings: [...attributionWarnings],
         delivery: `Nothing was committed: this workflow never commits. Review the diff, then commit the alignment on the drift branch (one commit per node) and push it yourself — the drift branch merge is the review record (handoff.md). ${
           design.preview.branch
             ? `A visual design request still needs its review story on ${design.preview.branch}, its captures of the deployed preview and the review pull request index.`
