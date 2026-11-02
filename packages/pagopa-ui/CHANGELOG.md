@@ -1,3 +1,19 @@
+## 0.1.0 (2026-11-02)
+
+### 🩹 Fixes
+
+- fix(select,dropdown-menu): paint keyboard focus distinctly in forced colors ([#89](https://github.com/pagopa/ui/pull/89))
+- fix(overlays): mount the shared portal root after mount, not during render ([#89](https://github.com/pagopa/ui/pull/89))
+- fix: keep long and translated segmented-control labels visible at narrow widths and enlarged text ([#89](https://github.com/pagopa/ui/pull/89))
+
+### ⚠️  Breaking Changes
+
+- feat(styles)!: scope component styles to UIProvider (breaking); wrap each component tree in UIProvider ([#89](https://github.com/pagopa/ui/pull/89))
+
+### ❤️ Thank You
+
+- Danilo Spinelli @gunzip
+
 ## 0.0.5 (2026-10-30)
 
 ### 🚀 Features
