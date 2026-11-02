@@ -51,9 +51,17 @@
       "inputs": [
         "default",
         "tooling",
-        "projectConfigs",
-        "tokenSources",
-        "artworkSources",
+        "{workspaceRoot}/nx.json",
+        "{workspaceRoot}/package.json",
+        "{workspaceRoot}/pnpm-workspace.yaml",
+        "{workspaceRoot}/packages/*/project.json",
+        "{workspaceRoot}/packages/*/package.json",
+        "{workspaceRoot}/apps/*/project.json",
+        "{workspaceRoot}/apps/*/package.json",
+        "{workspaceRoot}/tools/*/project.json",
+        "{workspaceRoot}/infra/**/project.json",
+        "{workspaceRoot}/packages/tokens/src/**",
+        "{workspaceRoot}/packages/artwork/src/**",
         "{workspaceRoot}/apps/storybook/src/**",
         "{workspaceRoot}/AGENTS.md",
         "{workspaceRoot}/CONTRIBUTING.md",
@@ -67,7 +75,12 @@
     },
     "figma:check": {
       "options": { "command": "node src/cli.ts check figma" },
-      "inputs": ["default", "tooling", "artworkSources", "{workspaceRoot}/apps/storybook/src/**/*"]
+      "inputs": [
+        "default",
+        "tooling",
+        "{workspaceRoot}/packages/artwork/src/**",
+        "{workspaceRoot}/apps/storybook/src/**/*"
+      ]
     },
     "figma:stories": {
       "executor": "nx:run-commands",
@@ -88,13 +101,13 @@
       "inputs": [
         "default",
         "tooling",
-        "tokenSources",
+        "{workspaceRoot}/packages/tokens/src/**",
         "{workspaceRoot}/apps/storybook/src/templates/**"
       ]
     },
     "tokens:public:check": {
       "options": { "command": "node src/cli.ts check public-tokens" },
-      "inputs": ["default", "tooling", "tokenSources"]
+      "inputs": ["default", "tooling", "{workspaceRoot}/packages/tokens/src/**"]
     },
     "client:check": { "options": { "command": "node src/cli.ts check client-directives" } },
     "a11y:conformance:check": {
@@ -112,8 +125,8 @@
       "inputs": [
         "default",
         "tooling",
-        "artworkSources",
-        "tokenSources",
+        "{workspaceRoot}/packages/artwork/src/**",
+        "{workspaceRoot}/packages/tokens/src/**",
         { "dependentTasksOutputFiles": "**/*" },
         { "env": "LIBRARY_ENGINES" },
         { "runtime": "node --version" },
