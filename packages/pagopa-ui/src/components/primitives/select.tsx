@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Select as SelectPrimitive } from "@base-ui/react/select"
+import { usePortalHost } from "@/lib/ui-provider"
 import { cn } from "@/lib/cn"
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "./icons"
 
@@ -78,8 +79,9 @@ function SelectContent({
   > & {
     header?: React.ReactNode
   }) {
+  const portalHost = usePortalHost()
   return (
-    <SelectPrimitive.Portal>
+    <SelectPrimitive.Portal container={portalHost}>
       <SelectPrimitive.Positioner
         side={side}
         sideOffset={sideOffset}
@@ -133,7 +135,7 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "relative flex min-h-11 w-full cursor-default items-center gap-2 rounded-md py-2 pr-9 pl-3 text-body outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "relative flex min-h-11 w-full cursor-default items-center gap-2 rounded-md py-2 pr-9 pl-3 text-body focus:outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         multiple && "pr-12",
         className,
       )}

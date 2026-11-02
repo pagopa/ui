@@ -13,6 +13,7 @@
 // composed close button can stay absolutely positioned inside it.
 import * as React from "react"
 import { Drawer as DrawerPrimitive } from "@base-ui/react/drawer"
+import { usePortalHost } from "@/lib/ui-provider"
 import { cn } from "@/lib/cn"
 
 type DrawerDirection = "top" | "right" | "bottom" | "left"
@@ -59,8 +60,18 @@ function DrawerTrigger({ ...props }: React.ComponentProps<typeof DrawerPrimitive
   return <DrawerPrimitive.Trigger data-slot="drawer-trigger" {...props} />
 }
 
-function DrawerPortal({ ...props }: React.ComponentProps<typeof DrawerPrimitive.Portal>) {
-  return <DrawerPrimitive.Portal data-slot="drawer-portal" {...props} />
+function DrawerPortal({
+  container,
+  ...props
+}: React.ComponentProps<typeof DrawerPrimitive.Portal>) {
+  const portalHost = usePortalHost()
+  return (
+    <DrawerPrimitive.Portal
+      container={container ?? portalHost}
+      data-slot="drawer-portal"
+      {...props}
+    />
+  )
 }
 
 function DrawerClose({ ...props }: React.ComponentProps<typeof DrawerPrimitive.Close>) {

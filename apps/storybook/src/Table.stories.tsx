@@ -733,6 +733,7 @@ export const TruncatedCells: Story = {
     const table = within(within(canvasElement).getByRole("table", { name: "Notifiche troncate" }))
     const value = table.getByText(longCellValue)
     await expect(getComputedStyle(value).textOverflow).toBe("ellipsis")
+    await expect(getComputedStyle(value).maxWidth).toBe("144px")
     await expect(value.scrollWidth).toBeGreaterThan(value.clientWidth)
 
     await userEvent.hover(value)

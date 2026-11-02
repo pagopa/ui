@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { useMessages } from "@/lib/ui-provider"
+import { useMessages, usePortalHost } from "@/lib/ui-provider"
 import { X } from "@/components/primitives/icons"
 import { Button } from "@/components/primitives/button"
 import { Dialog as DialogPrimitive } from "@/components/primitives/dialog"
@@ -33,11 +33,12 @@ function Dialog({
 }: DialogProps) {
   const t = useMessages("dialog")
   const closeLabel = closeLabelProp ?? t.closeLabel
+  const portalHost = usePortalHost()
 
   return (
     <DialogPrimitive.Root>
       <DialogPrimitive.Trigger render={trigger} />
-      <DialogPrimitive.Portal>
+      <DialogPrimitive.Portal container={portalHost}>
         <DialogPrimitive.Backdrop className="fixed inset-0 z-50 bg-overlay transition-opacity data-starting-style:opacity-0 data-ending-style:opacity-0" />
         <DialogPrimitive.Popup className="fixed top-1/2 left-1/2 z-50 flex max-h-[85vh] w-(--dialog-width) max-w-[calc(100vw-var(--page-gutter-lg))] -translate-x-1/2 -translate-y-1/2 flex-col gap-6 overflow-auto rounded-xl bg-background p-6 shadow-32 outline-none transition-opacity data-starting-style:opacity-0 data-ending-style:opacity-0">
           <div className="flex flex-col gap-2">

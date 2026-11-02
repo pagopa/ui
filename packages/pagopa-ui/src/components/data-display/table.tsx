@@ -310,7 +310,7 @@ function Table<Row extends { id: React.Key }>({
                               // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- focus reveals the full value
                               <span
                                 tabIndex={0}
-                                className="block max-w-full truncate outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                                className="block truncate outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                                 style={{ maxWidth: column.maxWidth ?? defaultTruncatedWidth }}
                               >
                                 {value}
