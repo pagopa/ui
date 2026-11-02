@@ -22,7 +22,20 @@
     }
   },
   "namedInputs": {
-    "tooling": ["{workspaceRoot}/packages/ui-cli/**/*"]
+    "tooling": ["{workspaceRoot}/packages/ui-cli/**/*"],
+    "tokenSources": ["{workspaceRoot}/packages/tokens/src/**"],
+    "artworkSources": ["{workspaceRoot}/packages/artwork/src/**"],
+    "projectConfigs": [
+      "{workspaceRoot}/nx.json",
+      "{workspaceRoot}/package.json",
+      "{workspaceRoot}/pnpm-workspace.yaml",
+      "{workspaceRoot}/packages/*/project.json",
+      "{workspaceRoot}/packages/*/package.json",
+      "{workspaceRoot}/apps/*/project.json",
+      "{workspaceRoot}/apps/*/package.json",
+      "{workspaceRoot}/tools/*/project.json",
+      "{workspaceRoot}/infra/**/project.json"
+    ]
   },
   "release": {
     "versionPlans": true,

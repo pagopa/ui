@@ -15,6 +15,12 @@
     "test": {
       "inputs": [
         "default",
+        "projectConfigs",
+        "tokenSources",
+        "artworkSources",
+        "{workspaceRoot}/.github/extensions/figma-align/**",
+        "{workspaceRoot}/docs/figma-parity/**",
+        "{workspaceRoot}/apps/storybook/src/**",
         "{workspaceRoot}/packages/pagopa-ui/src/**",
         "{workspaceRoot}/packages/pagopa-ui/figma-to-code.yaml"
       ]

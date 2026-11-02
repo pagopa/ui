@@ -203,6 +203,15 @@ path that publishes all projects with a publish target.
 - `figma-drift.yml` — the weekly drift snapshot and its review pull request.
 - `release.yaml` — the DX release manager, on `main`.
 
+Deep checks and visual regression attach seven-day `nx-profile-*` artifacts,
+including on failed runs. Their Chrome-trace JSON records each Nx task's duration
+(`dur` in microseconds) and status; visual artifacts also carry the actual scope.
+An affected run with no tasks is an empty sample, not a speed improvement.
+Compare runs with the same event, engine and non-empty scope, alongside GitHub's
+setup/job timings, before changing parallelism. No coverage threshold, engine,
+scope fallback or baseline review is relaxed by this instrumentation; sharding
+remains an experiment, not an assumed win.
+
 ### The release pull request
 
 The **Version Packages** pull request and the commit it lands on `main` are not

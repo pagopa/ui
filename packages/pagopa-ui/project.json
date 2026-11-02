@@ -34,7 +34,8 @@
     "api:check": {
       "dependsOn": ["build"],
       "cache": true,
-      "inputs": ["default"]
+      "inputs": ["default", { "dependentTasksOutputFiles": "**/*.d.ts" }],
+      "outputs": ["{projectRoot}/dist/api"]
     },
     "api:update": {
       "dependsOn": ["build"],
@@ -50,6 +51,10 @@
       "inputs": [
         "default",
         "tooling",
+        "projectConfigs",
+        "tokenSources",
+        "artworkSources",
+        "{workspaceRoot}/apps/storybook/src/**",
         "{workspaceRoot}/AGENTS.md",
         "{workspaceRoot}/CONTRIBUTING.md",
         "{workspaceRoot}/README.md",
@@ -62,7 +67,7 @@
     },
     "figma:check": {
       "options": { "command": "node src/cli.ts check figma" },
-      "inputs": ["default", "tooling", "{workspaceRoot}/apps/storybook/src/**/*"]
+      "inputs": ["default", "tooling", "artworkSources", "{workspaceRoot}/apps/storybook/src/**/*"]
     },
     "figma:stories": {
       "executor": "nx:run-commands",
@@ -80,16 +85,40 @@
     },
     "foundation:check": {
       "options": { "command": "node src/cli.ts check foundation" },
-      "inputs": ["default", "tooling", "{workspaceRoot}/apps/storybook/src/**/*"]
+      "inputs": [
+        "default",
+        "tooling",
+        "tokenSources",
+        "{workspaceRoot}/apps/storybook/src/templates/**"
+      ]
     },
-    "tokens:public:check": { "options": { "command": "node src/cli.ts check public-tokens" } },
+    "tokens:public:check": {
+      "options": { "command": "node src/cli.ts check public-tokens" },
+      "inputs": ["default", "tooling", "tokenSources"]
+    },
     "client:check": { "options": { "command": "node src/cli.ts check client-directives" } },
     "a11y:conformance:check": {
-      "options": { "command": "node src/cli.ts check a11y-conformance" }
+      "options": { "command": "node src/cli.ts check a11y-conformance" },
+      "inputs": [
+        "default",
+        "tooling",
+        "{workspaceRoot}/apps/storybook/src/a11y/conformance.json",
+        "{workspaceRoot}/apps/storybook/src/guides/accessibility.md"
+      ]
     },
     "library:check": {
       "dependsOn": ["build"],
-      "options": { "command": "node src/cli.ts check library" }
+      "options": { "command": "node src/cli.ts check library" },
+      "inputs": [
+        "default",
+        "tooling",
+        "artworkSources",
+        "tokenSources",
+        { "dependentTasksOutputFiles": "**/*" },
+        { "env": "LIBRARY_ENGINES" },
+        { "runtime": "node --version" },
+        { "runtime": "node -p \"process.platform + '-' + process.arch\"" }
+      ]
     },
     "nx-release-publish": {
       "options": { "registry": "https://npm.pkg.github.com" }

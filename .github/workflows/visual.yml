@@ -108,21 +108,36 @@ jobs:
           git config --system --add safe.directory "$GITHUB_WORKSPACE" 2>/dev/null || true
           # The index names the stories and the files that define them, so the
           # build comes first and `test:visual` reuses it.
-          pnpm nx run pagopa-ui-storybook:build
+          NX_PROFILE=.nx/ci-metrics/build.json pnpm nx run pagopa-ui-storybook:build
           if [ -n "$BASE" ]; then
-            pnpm nx run pagopa-ui-cli:test:visual -- --since "$BASE" --out "$VISUAL_SCOPE"
+            NX_PROFILE=.nx/ci-metrics/scope.json pnpm nx run pagopa-ui-cli:test:visual -- --since "$BASE" --out "$VISUAL_SCOPE"
           else
             # A push to `main`, the nightly and a manual run check everything.
-            pnpm nx run pagopa-ui-cli:test:visual -- --all --out "$VISUAL_SCOPE"
+            NX_PROFILE=.nx/ci-metrics/scope.json pnpm nx run pagopa-ui-cli:test:visual -- --all --out "$VISUAL_SCOPE"
           fi
 
       - name: Visual regression
         timeout-minutes: 60
         env:
           VISUAL_SCOPE: apps/storybook/visual/scope.json
+          NX_PROFILE: .nx/ci-metrics/visual.json
         # A change that moves no story (`--pass-with-no-tests`) leaves the gate
         # green with nothing to capture.
         run: pnpm nx run pagopa-ui-storybook:test:visual -- --pass-with-no-tests
+
+      - name: Upload task timings and scope
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: nx-profile-visual-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            .nx/ci-metrics/build.json
+            .nx/ci-metrics/scope.json
+            .nx/ci-metrics/visual.json
+            apps/storybook/visual/scope.json
+          include-hidden-files: true
+          retention-days: 7
+          if-no-files-found: ignore
 
       - name: Upload the failures
         if: failure()
@@ -193,16 +208,31 @@ jobs:
           git config --system --add safe.directory "$GITHUB_WORKSPACE" 2>/dev/null || true
           # The index names the stories and the files that define them, so the
           # build comes first and the update reuses it.
-          pnpm nx run pagopa-ui-storybook:build
-          pnpm nx run pagopa-ui-cli:test:visual -- --since "$BASE" --out "$VISUAL_SCOPE"
+          NX_PROFILE=.nx/ci-metrics/build.json pnpm nx run pagopa-ui-storybook:build
+          NX_PROFILE=.nx/ci-metrics/scope.json pnpm nx run pagopa-ui-cli:test:visual -- --since "$BASE" --out "$VISUAL_SCOPE"
 
       - name: Write the baselines
         timeout-minutes: 60
         env:
           VISUAL_SCOPE: apps/storybook/visual/scope.json
+          NX_PROFILE: .nx/ci-metrics/visual.json
         # A change that moves no story (`--pass-with-no-tests`) leaves the job
         # green with nothing to commit.
         run: pnpm nx run pagopa-ui-storybook:test:visual:update -- --pass-with-no-tests
+
+      - name: Upload task timings and scope
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: nx-profile-visual-update-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            .nx/ci-metrics/build.json
+            .nx/ci-metrics/scope.json
+            .nx/ci-metrics/visual.json
+            apps/storybook/visual/scope.json
+          include-hidden-files: true
+          retention-days: 7
+          if-no-files-found: ignore
 
       - name: Commit the baselines
         env:
