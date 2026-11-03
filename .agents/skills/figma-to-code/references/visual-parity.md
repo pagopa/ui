@@ -50,7 +50,10 @@ devices (one iteration each).
    label on the wrong edge, an off-token colour, the wrong face, a swapped stack —
    is a delta however small the pixels. The root is the variant's outer box: map
    the inner frames whose padding or gap drives the rhythm (the header rows, the
-   grid, the footer) as subjects, or record why the case leaves them out.
+   grid, the footer) as subjects, or record why the case leaves them out. Inspect
+   both the source and render at native size and with magnified crops of seams,
+   notches, pointers and other joined edges. A one-pixel discontinuity is a
+   visible delta even if the numeric comparison passes.
 4. **Close every delta**, one of three ways: a token-ladder fix in the
    component; `--residue "path=reason"` for a deliberate adaptation;
    `--ignore <path>` for a mapping artifact. A subject off on every edge is a
@@ -165,6 +168,12 @@ filled is a delta, not a variant.
 - The numbers read geometry, paint and type, not text opacity: on a disabled or
   muted state, read the render image; a faded title is a delta even when every
   measured property matches.
+- Numeric parity and a full-page screenshot's pixel budget cannot prove a
+  small join is continuous. For a seam-sensitive fix, add a focused regression
+  against the rendered pixels that fails on the defect and checks both sides
+  and their border-colour endpoints, not just diagonal connectivity; include
+  the component's relevant variants and accessibility colour modes. Inspect
+  native and high-density renders as well as the source crop.
 
 ## Reporting
 

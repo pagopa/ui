@@ -3398,7 +3398,7 @@
         "story": "apps/storybook/src/Popover.stories.tsx",
         "storyExports": ["SourceTop", "SourceBottom"]
       },
-      "note": "Both source variants are reviewed: Arrow-Position Top and Bottom render their indicators, the 312x76 card, and a keyboard/pointer close action; elevation uses `shadow-32`. The 2026-10-28 export added the separate set Popper `13211:26152` on page \"• Popper\" — four `Status` variants, 312x76, no arrow — which carries a byte-identical copy of this set's `[COMPONENT DESCRIPTION: InfoPopover]` while declaring no `Placement` property; its disposition is the open design request docs/design-requests/2026-10-28-popper-status-card.md (issue #68)."
+      "note": "Both source variants are reviewed: Arrow-Position Top and Bottom render their indicators, the 312x76 card, and a keyboard/pointer close action; elevation uses `shadow-32`. The design owner decided that Popper `13211:26152` is a distinct component; see docs/design-requests/2026-10-28-popper-status-card.md (issue #68, closed)."
     },
     "9977:21200": {
       "status": "implemented",
@@ -3451,8 +3451,30 @@
       "note": "New in-house PEC envelope glyph from the 2026-10-14 export; reviewed against the Figma source before marking implemented. Provenance override: custom."
     },
     "13211:26152": {
-      "status": "pending",
-      "note": "Figma delta 2026-11-03: review new/changed node or dependency before marking implemented"
+      "status": "implemented",
+      "target": {
+        "module": "src/components/overlays/popper.tsx",
+        "export": "Popper",
+        "story": "apps/storybook/src/Popper.stories.tsx",
+        "storyExports": [
+          "Playground",
+          "Localized",
+          "SourceErrorCenter",
+          "SourceErrorLeft",
+          "SourceErrorRight",
+          "SourceWarningCenter",
+          "SourceWarningLeft",
+          "SourceWarningRight",
+          "SourceInfoCenter",
+          "SourceInfoLeft",
+          "SourceInfoRight",
+          "SourceSuccessCenter",
+          "SourceSuccessLeft",
+          "SourceSuccessRight",
+          "SourceVariants"
+        ]
+      },
+      "note": "Reviewed 2026-11-03: 12 status/pointer cases, no device axis; geometry, composition and responsive checks are clean. Magnified source and render junctions were inspected at native and high density; stories test both border endpoints in normal and forced colours. Indicator padding, gap and SVG border ignores are mapping artifacts. Shadow-32 omits the pointer. The caller owns anchoring, association and dismissal (apps/storybook/src/guides/popper.md). Page compositions are unmirrored. Distinct component: docs/design-requests/2026-10-28-popper-status-card.md (issue #68 closed)."
     },
     "14709:279": {
       "status": "implemented",

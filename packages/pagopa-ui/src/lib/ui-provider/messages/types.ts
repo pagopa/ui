@@ -235,6 +235,9 @@ export interface Messages {
     label: string
     closeLabel: string
   }
+  popper: {
+    dismissLabel: string
+  }
   timelineDrawer: {
     title: string
     description: string

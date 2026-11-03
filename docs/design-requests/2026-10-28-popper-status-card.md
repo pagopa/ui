@@ -2,9 +2,32 @@
 
 - Type: design
 - Issue: https://github.com/pagopa/ui/issues/68
-- Status: open — the node stays `pending`
+- Status: answered — issue closed; implementation and source variants reviewed
 - Decision owner: @gunzip
-- Preview: none — nothing is implemented, so there is no review story; both candidate drawings already exist in Figma (`13211:26152` and `9927:36954`)
+- Preview: `apps/storybook/src/Popper.stories.tsx`; the candidate drawings are in Figma (`13211:26152` and `9927:36954`)
+
+## Update — 3 November 2026
+
+The current Popper set draws four `Status` values (Error, Warning, Info and
+Success) crossed with three `Pointer` positions (Left, Center and Right). Each
+variant is 312x96: a 24x20 pointer above a 312x76 status card. The design owner
+confirmed in the Figma comment thread that the pointer and position variants
+were added to indicate the related element. The 1200px page examples show the
+card floating over page content.
+
+The refreshed page rule describes a temporary validation message associated
+with its field, announced with that field, and dismissed by its close action or
+when the value is corrected. It is imported into the Popper consumer guide.
+
+This supersedes the earlier no-arrow premise and rules out treating the drawing
+as an inline-only notice. On 3 November the decision owner chose a distinct
+`Popper` component, separate from `Popover` and inline `Alert`. The decision was
+recorded in issue #68, which is closed. The distinct component and all twelve
+source variants have since been reviewed.
+
+The sections below preserve the 28 October evidence and options; their
+no-arrow description and 312x76 overall size are historical, not the current
+source contract.
 
 Date: 28 October 2026. Origin: the drift delta of 28 October (Figma drift
 PR #64, milestone M5), node `13211:26152`, in the pinned export

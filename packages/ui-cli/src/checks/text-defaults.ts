@@ -52,6 +52,7 @@ export const NON_TEXT_PROPS = new Set([
   "navLayout",
   "orientation",
   "placement",
+  "pointer",
   "position",
   "ratio",
   "role",
