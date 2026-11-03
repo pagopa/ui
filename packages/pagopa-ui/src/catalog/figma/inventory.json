@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "fileKey": "pvhsJpPGQbEwNLiyP7BOIw",
-  "syncedAt": "2026-10-29",
-  "fileVersion": "2415736194264125228",
-  "lastModified": "2026-10-29T11:11:25Z",
+  "syncedAt": "2026-11-03",
+  "fileVersion": "2417684060719527268",
+  "lastModified": "2026-11-03T16:54:06Z",
   "components": [
     {
       "nodeId": "50:1700",
@@ -17465,7 +17465,7 @@
     },
     {
       "nodeId": "11149:7765",
-      "name": "Empty state",
+      "name": "Missing element",
       "type": "COMPONENT",
       "pageId": "10620:81742",
       "pageName": "• Missing Element",
@@ -17765,8 +17765,13 @@
         },
         "Status": {
           "type": "VARIANT",
-          "defaultValue": "Status5",
-          "variantOptions": ["Status2", "Status3", "Status4", "Status5"]
+          "defaultValue": "Error",
+          "variantOptions": ["Error", "Info", "Success", "Warning"]
+        },
+        "Pointer": {
+          "type": "VARIANT",
+          "defaultValue": "Center",
+          "variantOptions": ["Center", "Left", "Right"]
         }
       },
       "dependencies": [
@@ -17794,47 +17799,127 @@
       "variants": [
         {
           "nodeId": "13211:26809",
-          "name": "Status=Status2",
+          "name": "Status=Warning, Pointer=Center",
           "device": null,
           "box": {
             "width": 312,
-            "height": 76
+            "height": 96
           },
-          "designFingerprint": "bf35bb25165914a208a58001366ff5d7effdb34a6cbba0cc70a689139cdfb60f"
+          "designFingerprint": "a6bad3f8b85626d9772da9e442d0589410cfc4b6580462c88d493519df907dcd"
         },
         {
           "nodeId": "13211:26880",
-          "name": "Status=Status3",
+          "name": "Status=Info, Pointer=Center",
           "device": null,
           "box": {
             "width": 312,
-            "height": 76
+            "height": 96
           },
-          "designFingerprint": "47eff50a9a4573d8fa41ba2f3ffd221d2c6f994191a26d73d9ba7a1bfc762d60"
-        },
-        {
-          "nodeId": "13211:26923",
-          "name": "Status=Status4",
-          "device": null,
-          "box": {
-            "width": 312,
-            "height": 76
-          },
-          "designFingerprint": "86bf237114777759b29257f3014b89427c8c1e57debe9cbfa80813d7af2bb094"
+          "designFingerprint": "53ea5fa87caa8cf9cf9bb53913099e768cec5b5b23e7c658587b64c201e73503"
         },
         {
           "nodeId": "13294:26980",
-          "name": "Status=Status5",
+          "name": "Status=Error, Pointer=Center",
           "device": null,
           "box": {
             "width": 312,
-            "height": 76
+            "height": 96
           },
-          "designFingerprint": "0b2d26dd3c074d3b8461639500d0b20e7a09d5da2a60922cae6ae506ac51cc16"
+          "designFingerprint": "56f2aadb48b32b2f7bc25d210035b7225e8e6619240a7f814ad13c308973878c"
+        },
+        {
+          "nodeId": "15716:10563",
+          "name": "Status=Success, Pointer=Center",
+          "device": null,
+          "box": {
+            "width": 312,
+            "height": 96
+          },
+          "designFingerprint": "4cd05a7c10968f8ff9b1e4eb154941eb69a6a44c0bb1e29abba92ba694d6049c"
+        },
+        {
+          "nodeId": "15716:10583",
+          "name": "Status=Success, Pointer=Left",
+          "device": null,
+          "box": {
+            "width": 312,
+            "height": 96
+          },
+          "designFingerprint": "36af1945815ac0664258f9cbc65cb7e8c7bd57373263384f4dcbbf13b74c4723"
+        },
+        {
+          "nodeId": "15716:10591",
+          "name": "Status=Info, Pointer=Left",
+          "device": null,
+          "box": {
+            "width": 312,
+            "height": 96
+          },
+          "designFingerprint": "27931a52e7f676d76128614b3e7a039fd9f48f3170a52e865d0c24960d9153c8"
+        },
+        {
+          "nodeId": "15716:10599",
+          "name": "Status=Warning, Pointer=Left",
+          "device": null,
+          "box": {
+            "width": 312,
+            "height": 96
+          },
+          "designFingerprint": "518a811fb3a0e012afeab9bc2edf5743fa19d220a457540ccf4701ae8f48214c"
+        },
+        {
+          "nodeId": "15716:10607",
+          "name": "Status=Error, Pointer=Left",
+          "device": null,
+          "box": {
+            "width": 312,
+            "height": 96
+          },
+          "designFingerprint": "07025849479ef4fe9daaef57de76d33cd19277fff42b317175282b21da9b0df1"
+        },
+        {
+          "nodeId": "15746:12264",
+          "name": "Status=Error, Pointer=Right",
+          "device": null,
+          "box": {
+            "width": 312,
+            "height": 96
+          },
+          "designFingerprint": "f7237dc34b7050f60a23a4af3d46764c32db975a84ab0e03d687a7632524f45f"
+        },
+        {
+          "nodeId": "15746:12272",
+          "name": "Status=Warning, Pointer=Right",
+          "device": null,
+          "box": {
+            "width": 312,
+            "height": 96
+          },
+          "designFingerprint": "6a23cbac50a74262770b9556ee78e6aba6d09f753fd8ade787186acc65fe8863"
+        },
+        {
+          "nodeId": "15746:12280",
+          "name": "Status=Info, Pointer=Right",
+          "device": null,
+          "box": {
+            "width": 312,
+            "height": 96
+          },
+          "designFingerprint": "b60df640f792d0679c9a96337224c258153304b5a27e82ba61ca72f6d7d96486"
+        },
+        {
+          "nodeId": "15746:12288",
+          "name": "Status=Success, Pointer=Right",
+          "device": null,
+          "box": {
+            "width": 312,
+            "height": 96
+          },
+          "designFingerprint": "133851c49e70b282d4492daca002a213c465fdf9f50338e60c2a5533c91a854c"
         }
       ],
-      "contractFingerprint": "3224b5306a5dc1ac8fb8c86a06025b1f76d7ae00dad3742f9ab7016a031be63d",
-      "designFingerprint": "7dc353799a70f5927edd6fda218b1c6c967fad9a40b36133efac564bf0a4f71d"
+      "contractFingerprint": "ea8ec8905bd2c9b76a5469029af58dad5ff9bcdb5fa31c10e93dd291a7ac977a",
+      "designFingerprint": "840b9685f0bbb3b08592a61a34bc0bc76d352fc0b9d741d1347186e7b1689cbf"
     },
     {
       "nodeId": "13906:25597",

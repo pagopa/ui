@@ -2708,7 +2708,7 @@
       "identities": [
         {
           "nodeId": "11149:7765",
-          "name": "Empty state",
+          "name": "Missing element",
           "kind": "COMPONENT",
           "inLibrary": true,
           "decision": "shipped"

@@ -3452,7 +3452,7 @@
     },
     "13211:26152": {
       "status": "pending",
-      "note": "Design request open: docs/design-requests/2026-10-28-popper-status-card.md (issue #68, @gunzip). Delta 2026-10-28 set, four Status variants at 312x76: a 24px glyph, a 16/22 body, a 24px close, no shadow, no arrow. No new token: soft, border and foreground are status-<severity> 100/400/850, the triples Alert's variants read, in Alert's geometry. Open: its description is Popover 9927:36954's verbatim and asks for an arrow and a Placement property this set does not declare; Alert has no close. Anchored (Popover gains the severity) or inline and dismissed (Alert gains the close) stays open."
+      "note": "Figma delta 2026-11-03: review new/changed node or dependency before marking implemented"
     },
     "14709:279": {
       "status": "implemented",
