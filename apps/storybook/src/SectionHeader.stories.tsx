@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import { expect, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
@@ -26,7 +27,7 @@ const meta = {
     ),
   },
   argTypes: {
-    titleAs: { control: "select", options: ["h1", "h2", "h3"] },
+    titleAs: { control: "select", options: ["h2", "h3", "h4", "h5", "h6"] },
     level: { control: "select", options: [1, 2, 3] },
     icon: { control: false },
     status: { control: false },
@@ -45,7 +46,15 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Playground: Story = {}
+export const Playground: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    // The page owns its single h1: a section title is a level-2 heading unless
+    // the caller asks for another tag.
+    const title = canvas.getByRole("heading", { name: "Servizi per cittadini e imprese" })
+    await expect(title.tagName).toBe("H2")
+  },
+}
 
 export const WithAction: Story = {
   args: {
@@ -70,14 +79,25 @@ export const Levels: Story = {
       />
       <SectionHeader
         level={2}
+        titleAs="h3"
         icon={<PagoPAIcon name="credit_card" />}
         title="Documenti e pagamenti"
       />
       <SectionHeader
         level={3}
+        titleAs="h4"
         icon={<PagoPAIcon name="credit_card" />}
         title="Ultimo aggiornamento"
       />
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    // The tag follows `titleAs`, not `level`: the visual size and the outline
+    // are two separate choices.
+    const heading = (name: string) => canvas.getByRole("heading", { name }).tagName
+    await expect(heading("Servizi per cittadini e imprese")).toBe("H2")
+    await expect(heading("Documenti e pagamenti")).toBe("H3")
+    await expect(heading("Ultimo aggiornamento")).toBe("H4")
+  },
 }

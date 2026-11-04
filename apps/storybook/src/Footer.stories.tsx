@@ -4,6 +4,7 @@ import { expect, within } from "storybook/test"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Footer, type FooterColumn, type FooterLink } from "@/components/navigation"
+import { Button } from "@/components/primitives/button"
 
 const links: FooterLink[] = [
   { label: "Informativa Privacy", href: "#" },
@@ -90,7 +91,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Institutional footer on a light surface. `links` renders the compact band (source `Logged user=True`); `columns` renders the `Links` block of the source `Logged user=False` — the source columns plus the caller-owned column tail (`end`). The company information stays separate from the divider in both. Below the mobile breakpoint the compact band stacks the brand and the links at the centre (source `1360:12618`, with the accessible target expansion); the columns stack with the source gap.",
+          "Institutional footer on a light surface. `links` renders the compact band (source `Logged user=True`); `columns` renders the `Links` block of the source `Logged user=False` — the source columns plus the caller-owned column tail (`end`, pinned to the column bottom when a body sits above it and right under the title when it is the column's only content — a language control, for instance). The company information stays separate from the divider in both. Below the mobile breakpoint the compact band stacks the brand and the links at the centre (source `1360:12618`, with the accessible target expansion); the columns stack with the source gap.",
       },
     },
   },
@@ -218,6 +219,62 @@ export const LoggedUserFalseDesktop: Story = {
     await expect(getComputedStyle(footer).borderTopWidth).toBe("1px")
     await expect(getComputedStyle(footer).borderTopColor).toBe("rgb(232, 235, 241)")
     await expect(canvas.getByText(/^PagoPA S\.p\.A\. - Società per azioni/)).toBeVisible()
+  },
+}
+
+// The language control is a button, so `links` (which takes an `href`) cannot
+// carry it: the column's only content is its tail.
+const languageColumns: FooterColumn[] = [
+  {
+    brand: true,
+    links: [
+      { label: "Chi siamo", href: "#" },
+      { label: "Amministrazione trasparente", href: "#" },
+      { label: "Lavora con noi", href: "#" },
+    ],
+  },
+  {
+    title: "SERVIZI",
+    links: [
+      { label: "Certificati anagrafici", href: "#" },
+      { label: "Tributi locali", href: "#" },
+      { label: "Prenotazione appuntamenti", href: "#" },
+    ],
+  },
+  {
+    title: "LINGUA",
+    end: (
+      <Button variant="link" size="sm">
+        <PagoPAIcon name="language" size={20} />
+        Italiano
+      </Button>
+    ),
+  },
+]
+
+export const TitleOnlyColumn: Story = {
+  args: { links: [], columns: languageColumns },
+  parameters: {
+    // The column grid and the tail rule start at the `@4xl/footer` container
+    // width, so the story pins the desktop width the defect was reported at.
+    chromatic: { viewports: [1200] },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const [, services, language] = [...canvasElement.querySelectorAll("[data-slot=footer-column]")]
+    const tail = language.querySelector("[data-slot=footer-column-end]")
+    const body = services.querySelector("[data-slot=footer-links]")
+    if (!(tail instanceof HTMLElement) || !(body instanceof HTMLElement)) {
+      throw new Error("footer column slot not rendered")
+    }
+    const offset = (column: Element, node: Element) =>
+      Math.round(node.getBoundingClientRect().top - column.getBoundingClientRect().top)
+    // The tail of a column with no body follows its title, taking the place a
+    // link list would: flush left with the sibling column's first row instead
+    // of dropping to the column bottom.
+    await expect(offset(language, tail)).toBe(offset(services, body))
+    await expect(offset(language, tail)).toBeLessThan(language.getBoundingClientRect().height / 2)
+    await expect(canvas.getByRole("button", { name: "Italiano" })).toBeVisible()
   },
 }
 

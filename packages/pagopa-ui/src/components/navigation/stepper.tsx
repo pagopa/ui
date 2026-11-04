@@ -65,7 +65,10 @@ function StepIndicator({
             "flex size-5 items-center justify-center rounded-full text-caption-sb",
             item.status === "current"
               ? "bg-primary text-primary-foreground"
-              : "bg-border-strong text-muted-soft",
+              : // The source pairs `muted-soft` with this disc: 3.66:1 on
+                // `border-strong`, below WCAG AA for the 12px number. The
+                // darker muted step reads the same and reaches 4.59:1.
+                "bg-border-strong text-muted-foreground",
           )}
         >
           {labelled ? <span className="sr-only">{indicatorLabel(item.status)}</span> : null}

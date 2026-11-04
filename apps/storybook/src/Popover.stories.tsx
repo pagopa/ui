@@ -23,7 +23,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Popover anchored to the trigger, with an accessible name, Escape to close and focus restore.",
+          "Popover anchored to the trigger, with an accessible name, Escape to close and focus restore. The indicator follows the trigger when the popup is shifted to stay in the viewport.",
       },
     },
   },
@@ -129,5 +129,54 @@ export const SourceBottom: Story = {
     a11yContract: { reflow: false },
     layout: "fullscreen",
     design: { type: "figma", url: figmaEmbedUrl("9927:36954") },
+  },
+}
+
+export const ShiftedIndicator: Story = {
+  // The trigger sits at the edge a centred popup cannot fit: the popup is
+  // shifted back inside the viewport, and the arrow still points at the
+  // trigger instead of the popup centre.
+  render: () => (
+    <div className="relative min-h-screen w-full">
+      <Popover
+        trigger={
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Apri popover informativo"
+            className="absolute top-24 right-24 size-6 p-0 after:absolute after:-inset-2.5"
+          >
+            <Info aria-hidden="true" className="size-6" />
+          </Button>
+        }
+        defaultOpen
+        modal={false}
+      >
+        <p>Descrizione di approfondimento su più righe più righe più righe</p>
+      </Popover>
+    </div>
+  ),
+  parameters: {
+    // Reflow exemption: fixture holds the popup open, not a product surface.
+    a11yContract: { reflow: false },
+    layout: "fullscreen",
+  },
+  play: async ({ canvasElement }) => {
+    const trigger = within(canvasElement).getByRole("button", {
+      name: "Apri popover informativo",
+    })
+    const popup = await screen.findByRole("dialog")
+    const arrow = popup.querySelector("[data-slot='popover-arrow']")
+    if (!arrow) throw new Error("the popup renders no arrow")
+
+    const centre = (element: Element) => {
+      const rect = element.getBoundingClientRect()
+      return rect.x + rect.width / 2
+    }
+    const triggerCentre = centre(trigger)
+    await waitFor(() => expect(Math.abs(centre(arrow) - triggerCentre)).toBeLessThanOrEqual(2))
+    // The popup really is off-centre against the trigger, otherwise the
+    // assertion above would hold for a centred arrow too.
+    await expect(Math.abs(centre(popup) - triggerCentre)).toBeGreaterThan(40)
   },
 }

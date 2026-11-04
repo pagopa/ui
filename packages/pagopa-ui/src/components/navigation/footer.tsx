@@ -191,8 +191,20 @@ function Footer({
                   </ul>
                 ) : null}
                 {/* The tail is hidden while empty, so the caller owns the slot
-                  without paying for the column's gap. */}
-                <div className="mt-6 empty:hidden @4xl/footer:mt-auto @4xl/footer:pt-4">
+                  without paying for the column's gap. It pins to the column
+                  bottom only when a body sits above it (source
+                  `align=SPACE_BETWEEN`); a column whose tail is its only
+                  content keeps it under the title, level with the sibling
+                  columns' first row. */}
+                <div
+                  data-slot="footer-column-end"
+                  className={cn(
+                    "empty:hidden",
+                    column.social?.length || column.links?.length
+                      ? "mt-6 @4xl/footer:mt-auto @4xl/footer:pt-4"
+                      : "mt-0",
+                  )}
+                >
                   {column.end}
                 </div>
               </div>

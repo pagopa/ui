@@ -782,6 +782,10 @@ export interface Messages {
         closeLabel: string;
     };
     // (undocumented)
+    downloadCard: {
+        downloadLabel: (fileName: string) => string;
+    };
+    // (undocumented)
     dragAndDrop: {
         label: string;
         loadingLabel: string;
@@ -1243,7 +1247,7 @@ export function SectionHeader(input: {
     status?: React_2.ReactNode;
     actions?: React_2.ReactNode;
     level?: 1 | 2 | 3;
-    titleAs?: "h1" | "h2" | "h3";
+    titleAs?: HeadingTag;
     className?: string;
 }): React_2.JSX.Element;
 
@@ -1713,7 +1717,7 @@ export function WaitingState(input: StateProps): JSX.Element;
 // dist/types/components/inputs/date-picker.d.ts:16:5 - (ae-forgotten-export) The symbol "Calendar" needs to be exported by the entry point pagopa-ui.d.ts
 // dist/types/components/navigation/footer.d.ts:36:5 - (ae-forgotten-export) The symbol "HeadingTag" needs to be exported by the entry point pagopa-ui.d.ts
 // dist/types/components/primitives/alert.d.ts:12:5 - (ae-forgotten-export) The symbol "AlertDirection" needs to be exported by the entry point pagopa-ui.d.ts
-// dist/types/lib/ui-provider/messages/types.d.ts:196:9 - (ae-forgotten-export) The symbol "StepperStatus" needs to be exported by the entry point pagopa-ui.d.ts
+// dist/types/lib/ui-provider/messages/types.d.ts:199:9 - (ae-forgotten-export) The symbol "StepperStatus" needs to be exported by the entry point pagopa-ui.d.ts
 
 // (No @packageDocumentation comment for this package)
 
