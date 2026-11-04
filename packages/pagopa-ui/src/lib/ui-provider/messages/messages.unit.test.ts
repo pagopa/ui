@@ -87,14 +87,18 @@ const ECHOING = italian
 // unevaluated template.
 const LEAKED = /NaN|\[object Object\]|\$\{/
 
+// The probe is about the renderer, so the argument must not carry a leaked form
+// of its own: `"${"` is legitimate copy a caller may hand a message, and an
+// unchanged echo of it is what this test asks for.
+const ARGUMENT = fc.string().filter((value) => !LEAKED.test(value))
+
 test("the echoed argument reaches the rendered message unchanged", () => {
   expect(ECHOING.length).toBeGreaterThan(0)
   fc.assert(
-    fc.property(fc.string(), fc.string(), (left, right) => {
-      if (left === right) return
+    fc.property(ARGUMENT, (argument) => {
       for (const message of ECHOING) {
-        const rendered = message(standIn(`${ECHO}${right}`))
-        expect(rendered).toContain(`${ECHO}${right}`)
+        const rendered = message(standIn(`${ECHO}${argument}`))
+        expect(rendered).toContain(`${ECHO}${argument}`)
         expect(rendered).not.toMatch(LEAKED)
       }
     }),
