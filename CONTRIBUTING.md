@@ -202,6 +202,10 @@ path that publishes all projects with a publish target.
   until they are ready for review. A merge to `main` runs nothing: the diff it
   carries is the one the pull request already proved, and the nightly is the
   whole-repository pass.
+- `visual.yml` — the visual regression on the whole catalogue: the nightly and
+  the **Version Packages** pull request, so a publish is never gated on a scoped
+  guess. `visual:update` captures a diff's images, `visual:check` opts a pull
+  request into the comparison.
 - `figma-drift.yml` — the weekly drift snapshot and its review pull request.
 - `release.yaml` — the DX release manager, on `main`.
 
@@ -223,13 +227,24 @@ produced it, so the release skips the code review, the story preview and the
 deep checks. A skipped job reports `skipped`, which merges cleanly; a
 path-filtered workflow would leave a required check pending instead.
 
-Merging a release therefore starts the release and the production Storybook
-deploy, not seven runs at once. A hand-written pull request runs everything:
-only the `nx-release/` branch is exempt.
+The visual regression is the one check that runs there, because that pull
+request is the last moment before `@pagopa/ui` is published: it captures the
+whole catalogue, at every width, against the committed Linux baselines. A
+baseline the nightly or this gate rejects is repaired by its own pull request
+with the `visual:update` label; merging it updates the **Version Packages** pull
+request, whose synchronisation runs the gate again on the new images.
 
-No merge to `main` runs the deep checks or the visual regression: whatever a
-merge carries reached `main` through a pull request that already ran them on the
-same diff. The nightly schedules are what re-prove the whole repository.
+Merging a release therefore starts the release and the production Storybook
+deploy, not seven runs at once. A hand-written pull request runs everything but
+the visual regression: only the `nx-release/` branch is exempt from the other
+checks, and the visual gate belongs to it — or to a pull request carrying
+`visual:check`.
+
+No merge to `main` runs the deep checks or the visual regression: a merge
+carries the diff its pull request already proved, and the nightly schedules are
+what re-prove the whole repository. For the visual gate the proof a change
+carries is the baselines it commits with `visual:update`; the nightly and the
+release gate are where the whole catalogue is compared again.
 
 ## The green chain
 
@@ -266,22 +281,28 @@ tagged `no-visual`, and compares each image with the baselines in
 in the Playwright container `mcr.microsoft.com/playwright:v1.63.0-noble`, by the
 workflow itself: never commit one produced on macOS.
 
-A pull request captures only the stories its diff can move. `ui-cli test visual`
-reads the built Storybook index, walks the imports each story reaches — the
-story file, what it imports, the shared preview and the stylesheets behind it —
-and writes the story ids to `scope.json` in `apps/storybook/visual/`, which the
-spec reads through `VISUAL_SCOPE`. A change to a component the walk reaches re-runs
-the stories that render it; a change to a file no story imports runs nothing.
-The same walk widens to the whole catalogue for anything that can move every
-screenshot without an import edge: `packages/tokens`, `packages/artwork`, the
-design-system `assets`, the storybook manifests and lockfile, the visual harness
-itself, and any deleted source. The nightly at 04:00 UTC and
-a manual run always capture everything, so a change the walk cannot see is
-caught within a day. The `visual:update` job accepts the same scope, so the
-label rewrites the baselines the pull request moves and leaves the other images'
-bytes alone; the nightly and a manual run capture the complete catalogue, which
-is what revisits a story the walk missed. A merge to `main` captures nothing:
-the pull request it came from already captured that diff.
+The gate runs nightly at 04:00 UTC and on the **Version Packages** pull request,
+both times on the whole catalogue: a story nothing captured surfaces a day after
+it reached `main`, and a publish never rests on a scoped guess. `--all` names
+that capture and skips the walk.
+
+A change owns its images. `ui-cli test visual` reads the built Storybook index,
+walks the imports each story reaches — the story file, what it imports, the
+shared preview and the stylesheets behind it — and writes the story ids to
+`scope.json` in `apps/storybook/visual/`, which the spec reads through
+`VISUAL_SCOPE`. A change to a component the walk reaches names the stories that
+render it; a change to a file no story imports names none. The same walk widens
+to the whole catalogue for anything that can move every screenshot without an
+import edge: `packages/tokens`, `packages/artwork`, the design-system `assets`,
+the storybook manifests and lockfile, the visual harness itself, and any deleted
+source. The `visual:update` label runs that walk and commits the images it names
+to the head branch, so a pull request that adds or moves a story carries its
+baselines and leaves the other images' bytes alone.
+
+The `visual:check` label runs the same comparison on any pull request, for as
+long as the label stays: it is how a reviewer proves a risky change before the
+merge, and how the commit the update job pushed gets verified, since that commit
+is made with `GITHUB_TOKEN` and starts no run of its own.
 
 Run the same two steps locally:
 
@@ -304,8 +325,8 @@ rasterisation drift (about 0.01% of a 320x900 capture) without hiding a surface
 or layout change. A failure above the budget is a finding, not noise.
 
 To accept a visual change, add the `visual:update` label to the pull request.
-The workflow commits the new images to its head branch, and that commit starts
-no run: review a sample, remove the label and re-run the check. The same
+The workflow commits the new images to its head branch; review a sample, then
+add `visual:check` so the gate compares the committed images. The same
 comparison runs locally with Docker and the same image:
 
 ```bash
