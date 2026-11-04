@@ -63,15 +63,21 @@ export const itMessages: Messages = {
   tableList: {
     actionFallbackLabel: "Apri",
     emptyLabel: "Nessun risultato",
+    emptyStateTitle: "Nessun risultato",
   },
   table: {
     selectionLabel: "Seleziona tutte le righe",
     notificationLabel: "Notifica non letta",
     actionsLabel: "Azioni",
     emptyLabel: "Nessun risultato",
+    emptyStateTitle: "Nessun risultato",
+    sortLabel: (column) => `Ordina per ${column}`,
   },
   timeline: {
     label: "Cronologia",
+  },
+  progressKpi: {
+    valueLabel: (percentage) => `${percentage}%`,
   },
   banner: {
     dismissLabel: "Chiudi avviso",
@@ -109,6 +115,9 @@ export const itMessages: Messages = {
     openLabel: "apri lista",
     closeLabel: "chiudi lista",
     loadingLabel: "Caricamento lista in corso",
+  },
+  chip: {
+    removeLabel: (label) => (label ? `Elimina ${label}` : "Elimina"),
   },
   datePicker: {
     label: "Seleziona data",

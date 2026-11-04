@@ -115,3 +115,63 @@ test("a conditional of identifiers alone is not text", () => {
     fs.rmSync(root, { recursive: true, force: true })
   }
 })
+
+const ATTRIBUTES = `function Chip({ label }) {
+  return <span>
+    <button aria-label={\`Elimina \${label}\`} className="p-4" />
+    <input placeholder="Cerca qui" />
+  </span>
+}
+`
+
+test("reports copy a JSX attribute paints or announces", () => {
+  const { root, run } = fixture({ "src/components/chip/chip.tsx": ATTRIBUTES })
+  try {
+    const result = run("--max", "0")
+    assert.equal(result.status, 1, result.stdout)
+    assert.match(result.stdout, /src\/components\/chip\/chip\.tsx:3 aria-label/)
+    assert.match(result.stdout, /src\/components\/chip\/chip\.tsx:4 placeholder/)
+    assert.doesNotMatch(result.stdout, /className/)
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test("a literal that guards a type or reads a key is not copy", () => {
+  const { root, run } = fixture({
+    "src/components/chip/chip.tsx": `function Chip({ children, props, t }) {
+  return <span>
+    <button aria-label={typeof children === "string" ? t.sortLabel(children) : undefined} />
+    <span aria-label={props["aria-label"]} />
+    <span aria-label={\`\${props.count}%\`} />
+  </span>
+}
+`,
+  })
+  try {
+    const result = run("--max", "0")
+    assert.equal(result.status, 0, result.stdout)
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+const OBJECT_DEFAULT = `function Table({
+  emptyState = { title: "Nessun risultato" },
+  pagination = { show: true },
+}) {
+  return null
+}
+`
+
+test("reports copy an object-literal default carries", () => {
+  const { root, run } = fixture({ "src/components/table/table.tsx": OBJECT_DEFAULT })
+  try {
+    const result = run("--max", "0")
+    assert.equal(result.status, 1, result.stdout)
+    assert.match(result.stdout, /src\/components\/table\/table\.tsx:2 emptyState\.title/)
+    assert.doesNotMatch(result.stdout, /pagination/)
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
