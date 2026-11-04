@@ -5,10 +5,10 @@
 # visual` walks the imports the change reaches and writes the story ids the spec
 # keeps. The baseline update behind the `visual:update` label reads the same
 # scope, so the label accepts the stories the diff moves and leaves every other
-# baseline's bytes alone. Every other capture — the push on `main`, the nightly,
-# a manual run — is the whole catalogue, so a change the walk cannot see is
-# caught within a day rather than never, and that complete run is what revisits
-# a story the scope left out.
+# baseline's bytes alone. A merge to `main` starts nothing: the diff it carries
+# was captured on its pull request. The nightly and a manual run capture the
+# whole catalogue, so a change the walk cannot see is caught within a day rather
+# than never, and that complete run is what revisits a story the scope left out.
 # To accept a visual change, add the `visual:update` label to the pull request:
 # the workflow commits the new baselines to the head branch.
 # A commit made with GITHUB_TOKEN does not trigger a new run: remove the label
@@ -22,12 +22,8 @@ on:
     # `ready_for_review` is what turns a skipped draft into a checked pull
     # request; `labeled` is the update mode of the baselines.
     types: [opened, synchronize, reopened, ready_for_review, labeled]
-  push:
-    branches: [main]
-    paths-ignore:
-      - "packages/pagopa-ui/package.json"
-      - "packages/pagopa-ui/CHANGELOG.md"
-      - ".nx/version-plans/**"
+  # No `push` trigger: a merge to `main` carries the diff the pull request
+  # already captured. The nightly below is the whole-catalogue pass.
   schedule:
     # Every day at 04:00 UTC, an hour after the deep checks: only here does the
     # whole catalogue run, so a change the scope walk cannot see is caught within
@@ -103,7 +99,7 @@ jobs:
           if [ -n "$BASE" ]; then
             NX_PROFILE=.nx/ci-metrics/scope.json pnpm nx run pagopa-ui-cli:test:visual -- --since "$BASE" --out "$VISUAL_SCOPE" --check-baselines
           else
-            # A push to `main`, the nightly and a manual run check everything.
+            # The nightly and a manual run check everything.
             NX_PROFILE=.nx/ci-metrics/scope.json pnpm nx run pagopa-ui-cli:test:visual -- --all --out "$VISUAL_SCOPE" --check-baselines
           fi
 

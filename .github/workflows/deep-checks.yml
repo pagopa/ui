@@ -9,13 +9,14 @@ name: Deep checks
 # packed artifact alike. Same checks, split by engine so the wait is the longest
 # job instead of their sum.
 #
-# The release is not a change: the Version Packages pull request carries the
-# version, the changelog and the consumed version plan, and the commit it lands
-# on `main` carries the same three files. The code being published was proven
-# on the pull request that produced it, so the release pull request skips these
-# jobs and the version-only push skips the workflow. A skipped job reports
-# `skipped`, which merges cleanly where a path-filtered workflow would leave a
-# required check pending.
+# The merge is not a change either. Everything landing on `main` reached it
+# through a pull request that ran these jobs on the same diff, so a push to
+# `main` starts nothing here: the nightly schedule is what re-proves the whole
+# repository, and a manual dispatch is the recovery path. The release pull
+# request carries only the version, the changelog and the consumed version
+# plan, so it skips these jobs too. A skipped job reports `skipped`, which
+# merges cleanly where a path-filtered workflow would leave a required check
+# pending.
 #
 # There is no Nx cache step: Nx 23 keys its task cache to the machine that wrote
 # it, so a cache restored on another runner is reported as unrecognized and
@@ -32,14 +33,8 @@ on:
     # `ready_for_review` is what turns a skipped draft into a checked pull
     # request; without it a draft that becomes ready would never run.
     types: [opened, synchronize, reopened, ready_for_review]
-  push:
-    branches: [main]
-    # A push that carries only the release artifacts runs nothing here. Any
-    # other file in the same push still runs the workflow.
-    paths-ignore:
-      - "packages/pagopa-ui/package.json"
-      - "packages/pagopa-ui/CHANGELOG.md"
-      - ".nx/version-plans/**"
+  # No `push` trigger: a merge to `main` carries the diff these jobs already
+  # proved on the pull request. The nightly below is the whole-repository pass.
   schedule:
     # Every day at 03:00 UTC, an hour before the Figma drift check
     - cron: "0 3 * * *"
@@ -80,7 +75,7 @@ jobs:
         run: pnpm nx run pagopa-ui-cli:figma:parity:verify
 
       - name: Coverage gates (affected)
-        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        if: github.event_name == 'pull_request'
         env:
           NX_PROFILE: .nx/ci-metrics/coverage.json
         run: pnpm nx affected -t test:coverage
@@ -128,7 +123,7 @@ jobs:
         env:
           EVENT_NAME: ${{ github.event_name }}
         run: |
-          if [ "$EVENT_NAME" = "pull_request" ] || [ "$EVENT_NAME" = "push" ]; then
+          if [ "$EVENT_NAME" = "pull_request" ]; then
             echo "browsers=webkit" >> "$GITHUB_OUTPUT"
           else
             echo "browsers=firefox webkit" >> "$GITHUB_OUTPUT"
@@ -141,7 +136,7 @@ jobs:
           browsers: ${{ steps.engines.outputs.browsers }}
 
       - name: Stories in WebKit (affected)
-        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        if: github.event_name == 'pull_request'
         env:
           NX_PROFILE: .nx/ci-metrics/stories.json
         run: pnpm nx affected -t test:webkit
@@ -188,7 +183,7 @@ jobs:
         env:
           EVENT_NAME: ${{ github.event_name }}
         run: |
-          if [ "$EVENT_NAME" = "pull_request" ] || [ "$EVENT_NAME" = "push" ]; then
+          if [ "$EVENT_NAME" = "pull_request" ]; then
             echo "browsers=chromium" >> "$GITHUB_OUTPUT"
           else
             echo "browsers=chromium firefox webkit" >> "$GITHUB_OUTPUT"
@@ -201,7 +196,7 @@ jobs:
           browsers: ${{ steps.engines.outputs.browsers }}
 
       - name: Packed artifact (affected)
-        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        if: github.event_name == 'pull_request'
         env:
           LIBRARY_ENGINES: chromium
           NX_PROFILE: .nx/ci-metrics/library.json
