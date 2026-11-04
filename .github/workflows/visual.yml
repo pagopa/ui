@@ -1,33 +1,45 @@
 # Visual regression: every story at 320, 600 and 1200 px, compared to the
 # Linux baselines committed under apps/storybook/visual/__screenshots__.
 #
-# A pull request captures only the stories its diff can move: `ui-cli test
-# visual` walks the imports the change reaches and writes the story ids the spec
-# keeps. The baseline update behind the `visual:update` label reads the same
-# scope, so the label accepts the stories the diff moves and leaves every other
-# baseline's bytes alone. A merge to `main` starts nothing: the diff it carries
-# was captured on its pull request. The nightly and a manual run capture the
-# whole catalogue, so a change the walk cannot see is caught within a day rather
-# than never, and that complete run is what revisits a story the scope left out.
-# To accept a visual change, add the `visual:update` label to the pull request:
-# the workflow commits the new baselines to the head branch.
-# A commit made with GITHUB_TOKEN does not trigger a new run: remove the label
-# and re-run the check by hand.
+# Two events own the gate: the nightly, which captures the whole catalogue, and
+# the "Version Packages" pull request (`nx-release/`), the last moment before
+# `@pagopa/ui` is published. An ordinary pull request runs nothing on its own.
+# The stories import the package barrels, so the scope walk from one changed
+# component selects effectively every story: a pull-request run already costs
+# the whole catalogue, and paying it on every push buys no earlier answer than
+# the nightly and the release gate.
+#
+# A change still owns its images. `ui-cli test visual` walks the imports a diff
+# reaches and writes the story ids the spec keeps; the `visual:update` label
+# runs the same walk and commits those images to the head branch, so a change
+# that adds or moves a story carries its baselines and leaves every other
+# baseline's bytes alone. The `visual:check` label opts a pull request into the
+# same scoped comparison before the merge, for as long as the label stays: it is
+# how a reviewer proves a risky change and how the baselines the update job
+# pushed get verified, since a commit made with GITHUB_TOKEN starts no run.
+# The release pull request captures everything (`--all`): its own diff moves no
+# story, and the gate before a publish is the complete catalogue by definition.
+# A baseline it rejects is repaired on `main` through its own pull request with
+# the `visual:update` label; merging it updates the Version Packages pull
+# request, whose synchronisation runs this gate again on the new images.
 # Baselines are never produced on macOS: use the Playwright container as in
 # CONTRIBUTING.md.
 name: Visual regression
 
 on:
   pull_request:
-    # `ready_for_review` is what turns a skipped draft into a checked pull
-    # request; `labeled` is the update mode of the baselines.
-    types: [opened, synchronize, reopened, ready_for_review, labeled]
-  # No `push` trigger: a merge to `main` carries the diff the pull request
-  # already captured. The nightly below is the whole-catalogue pass.
+    # `synchronize` is what re-checks the Version Packages pull request every
+    # time a version plan moves it; `labeled` is the update mode of the
+    # baselines and the opt-in check. `ready_for_review` is not here: the
+    # release pull request is never a draft, and the label is the explicit ask
+    # whoever adds it makes.
+    types: [opened, synchronize, reopened, labeled]
+  # No `push` trigger: a merge to `main` carries the diff a pull request already
+  # proved. The nightly below is the whole-catalogue pass.
   schedule:
-    # Every day at 04:00 UTC, an hour after the deep checks: only here does the
-    # whole catalogue run, so a change the scope walk cannot see is caught within
-    # a day instead of never.
+    # Every day at 04:00 UTC, an hour after the deep checks: this is where a
+    # story nobody captured surfaces, a day after it reached `main` instead of
+    # never, and it is what keeps the release gate from being the first reader.
     - cron: "0 4 * * *"
   workflow_dispatch:
 
@@ -38,15 +50,20 @@ concurrency:
 jobs:
   visual:
     name: Visual regression
-    # A draft may still change its diff, and the label run belongs to the
-    # update job below.
+    # The release pull request is the pull request this job exists for: it is
+    # the last moment before the package is published. Every other pull request
+    # reports `skipped`, which merges cleanly where a path-filtered workflow
+    # would leave a required check pending, unless `visual:check` opts it in for
+    # as long as the label stays. The `visual:update` label belongs to the job
+    # below: it writes the baselines rather than comparing them.
     # The review pull request (`design.preview.branch` in the figma-to-code
     # config) adds review stories only: they carry `no-visual`, never merge and
     # exist for the preview deploy. Its run would re-check the unchanged library
     # and fail on stories that have no baseline, so the job reports `skipped`.
     if: >-
-      (github.event_name != 'pull_request' || github.event.pull_request.draft == false) &&
-      !startsWith(github.head_ref || '', 'nx-release/') &&
+      (github.event_name != 'pull_request' ||
+       startsWith(github.head_ref || '', 'nx-release/') ||
+       (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'visual:check'))) &&
       github.head_ref != 'feedback/previews' &&
       !(github.event_name == 'pull_request' && github.event.label.name == 'visual:update' && github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-24.04
@@ -86,6 +103,7 @@ jobs:
           # The tip of the base branch: the three-dot diff is the pull
           # request's own change, whatever `main` moved in the meantime.
           BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD_REF: ${{ github.head_ref }}
           VISUAL_SCOPE: apps/storybook/visual/scope.json
         run: |
           # The checkout owns the tree as the runner user while these steps run
@@ -96,12 +114,20 @@ jobs:
           # The index names the stories and the files that define them, so the
           # build comes first and `test:visual` reuses it.
           NX_PROFILE=.nx/ci-metrics/build.json pnpm nx run pagopa-ui-storybook:build
-          if [ -n "$BASE" ]; then
-            NX_PROFILE=.nx/ci-metrics/scope.json pnpm nx run pagopa-ui-cli:test:visual -- --since "$BASE" --out "$VISUAL_SCOPE" --check-baselines
-          else
-            # The nightly and a manual run check everything.
-            NX_PROFILE=.nx/ci-metrics/scope.json pnpm nx run pagopa-ui-cli:test:visual -- --all --out "$VISUAL_SCOPE" --check-baselines
-          fi
+          case "$HEAD_REF" in
+            # The nightly, a manual run and the release pull request capture the
+            # catalogue. The release diff carries the version, the changelog and
+            # the consumed version plan, so it moves no story; what it gates is
+            # the publish, and a publish answers to every story. HEAD_REF is
+            # empty on the scheduled and manual runs.
+            nx-release/*|"")
+              NX_PROFILE=.nx/ci-metrics/scope.json pnpm nx run pagopa-ui-cli:test:visual -- --all --out "$VISUAL_SCOPE" --check-baselines
+              ;;
+            # The `visual:check` opt-in on an ordinary pull request.
+            *)
+              NX_PROFILE=.nx/ci-metrics/scope.json pnpm nx run pagopa-ui-cli:test:visual -- --since "$BASE" --out "$VISUAL_SCOPE" --check-baselines
+              ;;
+          esac
 
       - name: Visual regression
         timeout-minutes: 60
@@ -238,10 +264,10 @@ jobs:
           # Checkout persists no credentials: the push carries the token
           # explicitly, like the Figma drift job pushes its branch.
           git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:$PR_HEAD_REF"
-      # A GITHUB_TOKEN commit does not trigger the gate against the new
-      # baselines: without this notice the red check from the run before the
-      # label is the only feedback the workflow ever gives.
-      - name: Ask for the verifying re-run
+      # A GITHUB_TOKEN commit does not trigger a run, and an ordinary pull
+      # request carries no visual check, so this notice is what points at the
+      # label that verifies the images it just pushed.
+      - name: Ask for the verifying run
         if: always()
         run: |
-          echo "::notice::The baselines are committed to ${{ github.event.pull_request.head.ref }}. Remove the 'visual:update' label and re-run the Visual regression check so it verifies the new baselines."
+          echo "::notice::The baselines are committed to ${{ github.event.pull_request.head.ref }}. Add the 'visual:check' label, or dispatch this workflow on the branch, so the comparison verifies the new baselines."
