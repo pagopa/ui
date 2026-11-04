@@ -1,6 +1,8 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 
+import type { HeadingTag } from "@/components/primitives/heading"
+
 const levelStyles = {
   // The source L1 style is Titillio-Bold (cssWeight 700): the type-scale token
   // carries that weight, an explicit `font-semibold` is the wrong face.
@@ -15,7 +17,7 @@ function SectionHeader({
   status,
   actions,
   level = 1,
-  titleAs: Title = "h1",
+  titleAs: Title = "h2",
   className,
 }: {
   /** Decorative icon (source "Decorative icon"). */
@@ -27,7 +29,8 @@ function SectionHeader({
   actions?: React.ReactNode
   /** Source heading level: 1, 2 or 3, from the largest to the smallest. */
   level?: 1 | 2 | 3
-  titleAs?: "h1" | "h2" | "h3"
+  /** Heading element of the title. The page owns its single `h1`. */
+  titleAs?: HeadingTag
   className?: string
 }) {
   return (

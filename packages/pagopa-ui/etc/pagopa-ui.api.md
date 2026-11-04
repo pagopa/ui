@@ -1247,7 +1247,7 @@ export function SectionHeader(input: {
     status?: React_2.ReactNode;
     actions?: React_2.ReactNode;
     level?: 1 | 2 | 3;
-    titleAs?: "h1" | "h2" | "h3";
+    titleAs?: HeadingTag;
     className?: string;
 }): React_2.JSX.Element;
 
