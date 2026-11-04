@@ -64,7 +64,9 @@ later, independent step with its own trigger. Concretely:
    dependencies of `test`. The suites that need a browser — the story projects
    with the v8 coverage gates on Chromium, the WebKit pass, and the packed
    artifact consumer — live in the repository's own `deep-checks.yml`, on pull
-   requests, on `main` and nightly, where Firefox joins the engines.
+   requests and nightly, where Firefox joins the engines. **Amended:** the push
+   trigger on `main` is gone — a merge only carries the diff its pull request
+   already proved — so the nightly schedule is the whole-repository pass.
 4. **TypeScript 7 with the TypeScript 6 API.** The compiler that runs the tasks
    is TypeScript 7 (`@typescript/native`); the `typescript` name carries the 6
    API so that `@nx/js/typescript` and every API-consuming tool keeps working.

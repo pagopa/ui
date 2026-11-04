@@ -197,9 +197,11 @@ path that publishes all projects with a publish target.
   to build on every pull request that touches the package.
 - `deep-checks.yml` — the suites that need a browser, in three parallel jobs: the
   coverage gates on Chromium, the WebKit pass and the packed artifact consumer. On
-  pull requests and on `main` for the affected projects, where WebKit is the extra
-  engine; nightly on everything, which adds Firefox. Draft pull requests are skipped
-  until they are ready for review.
+  pull requests for the affected projects, where WebKit is the extra engine;
+  nightly on everything, which adds Firefox. Draft pull requests are skipped
+  until they are ready for review. A merge to `main` runs nothing: the diff it
+  carries is the one the pull request already proved, and the nightly is the
+  whole-repository pass.
 - `figma-drift.yml` — the weekly drift snapshot and its review pull request.
 - `release.yaml` — the DX release manager, on `main`.
 
@@ -218,13 +220,16 @@ The **Version Packages** pull request and the commit it lands on `main` are not
 changes: they carry the version, the changelog and the consumed version plan,
 and nothing else. The code being published was proven on the pull request that
 produced it, so the release skips the code review, the story preview and the
-deep checks, and the version-only push skips the deep checks. A skipped job
-reports `skipped`, which merges cleanly; a path-filtered workflow would leave a
-required check pending instead.
+deep checks. A skipped job reports `skipped`, which merges cleanly; a
+path-filtered workflow would leave a required check pending instead.
 
 Merging a release therefore starts the release and the production Storybook
 deploy, not seven runs at once. A hand-written pull request runs everything:
 only the `nx-release/` branch is exempt.
+
+No merge to `main` runs the deep checks or the visual regression: whatever a
+merge carries reached `main` through a pull request that already ran them on the
+same diff. The nightly schedules are what re-prove the whole repository.
 
 ## The green chain
 
@@ -270,12 +275,13 @@ the stories that render it; a change to a file no story imports runs nothing.
 The same walk widens to the whole catalogue for anything that can move every
 screenshot without an import edge: `packages/tokens`, `packages/artwork`, the
 design-system `assets`, the storybook manifests and lockfile, the visual harness
-itself, and any deleted source. The push on `main`, the nightly at 04:00 UTC and
+itself, and any deleted source. The nightly at 04:00 UTC and
 a manual run always capture everything, so a change the walk cannot see is
 caught within a day. The `visual:update` job accepts the same scope, so the
 label rewrites the baselines the pull request moves and leaves the other images'
-bytes alone; the complete catalogue run on `main`, the nightly and a manual run
-is what revisits a story the walk missed.
+bytes alone; the nightly and a manual run capture the complete catalogue, which
+is what revisits a story the walk missed. A merge to `main` captures nothing:
+the pull request it came from already captured that diff.
 
 Run the same two steps locally:
 
