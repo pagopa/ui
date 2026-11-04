@@ -16,14 +16,15 @@ The commands are in [parity-tooling.md](parity-tooling.md); devices in
   `touch src/index.css`.
 - The work list: `pnpm nx run pagopa-ui-cli:figma:parity:queue --status pending` (never-closed or
   re-opened nodes), `--status implemented` (re-verification: report what moved,
-  the decisions stay), `--unmapped` (nodes without a committed case),
-  `--node <id>` or `--case <caseId>` for one.
+  the decisions stay), `--unmapped` (nodes without a committed case). List a
+  node's case IDs with `pnpm nx run pagopa-ui-cli:figma:parity:capture --saved
+  --node <id> --dry-run`.
 - The scope is the person's: by default a **wave** of three nodes, the highest in
   `implementationOrder` first, each finished before the next. A named list or the
   whole queue only when they say so. "Re-check everything mapped" is not a wave:
-  `pnpm nx run pagopa-ui-cli:figma:parity:capture` over the committed cases, then `report`, and only
-  what moved enters the loop. "Mapping only" calibrates and saves cases without
-  touching components or the registry.
+  run `parity:capture --saved --node <id>` for each mapped node, into a separate
+  `--out` directory per node, and only what moved enters the loop. "Mapping only"
+  calibrates and saves cases without touching components or the registry.
 
 **Done when** the snapshot is current, Storybook answers, and the node ids are
 written down with the variants they capture and, for a device axis, the declared
@@ -50,7 +51,10 @@ devices (one iteration each).
    label on the wrong edge, an off-token colour, the wrong face, a swapped stack —
    is a delta however small the pixels. The root is the variant's outer box: map
    the inner frames whose padding or gap drives the rhythm (the header rows, the
-   grid, the footer) as subjects, or record why the case leaves them out.
+   grid, the footer) as subjects, or record why the case leaves them out. Inspect
+   both the source and render at native size and with magnified crops of seams,
+   notches, pointers and other joined edges. A one-pixel discontinuity is a
+   visible delta even if the numeric comparison passes.
 4. **Close every delta**, one of three ways: a token-ladder fix in the
    component; `--residue "path=reason"` for a deliberate adaptation;
    `--ignore <path>` for a mapping artifact. A subject off on every edge is a
@@ -71,8 +75,10 @@ devices (one iteration each).
 
 ## Close the wave
 
-- `pnpm nx run pagopa-ui-cli:figma:parity:capture` over the committed cases, then
-  `pnpm nx run pagopa-ui-cli:figma:parity:report --wave <date>-alignment` for the wave record.
+- Run `pnpm nx run pagopa-ui-cli:figma:parity:capture --saved --node <id>
+  --out <dir>` for each node, then `pnpm nx run pagopa-ui-cli:figma:parity:report
+  --dir <dir> --wave <date>-<node-id>-alignment` for each record, using a distinct
+  wave name per node.
 - Registry for the verified nodes only ([new-from-figma.md](new-from-figma.md)
   step 6), then `pnpm nx run pagopa-ui:figma:check`.
 
@@ -165,6 +171,12 @@ filled is a delta, not a variant.
 - The numbers read geometry, paint and type, not text opacity: on a disabled or
   muted state, read the render image; a faded title is a delta even when every
   measured property matches.
+- Numeric parity and a full-page screenshot's pixel budget cannot prove a
+  small join is continuous. For a seam-sensitive fix, add a focused regression
+  against the rendered pixels that fails on the defect and checks both sides
+  and their border-colour endpoints, not just diagonal connectivity; include
+  the component's relevant variants and accessibility colour modes. Inspect
+  native and high-density renders as well as the source crop.
 
 ## Reporting
 

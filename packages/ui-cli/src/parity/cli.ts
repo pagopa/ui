@@ -49,6 +49,7 @@ import {
 import { markdownTable } from "../lib/markdown.ts"
 import { enterRoot, rootPath } from "../lib/paths.ts"
 import { parseSchema } from "../lib/validate.ts"
+import { UsageError } from "../lib/command.ts"
 import { capture as captureStory, DEFAULT_ROOT, type CaptureOptions } from "./render.ts"
 import { checkCaseEvidence, checkEvidence, evidenceCommand } from "./evidence.ts"
 import {
@@ -148,7 +149,9 @@ const USAGE = `usage:
   figma-parity check --node <id> --devices [--cases <file>] [--json]
   figma-parity capture [--cases <file.json>] [--status pending] [--node <id,id>]
     [--device <key>] [--note <text>] [--limit <n>] [--include-catalogue] [--out <directory>]
-    [--strict] [--dry-run]
+    [--input <file>] [--strict] [--dry-run]
+  figma-parity capture --saved --node <id> [--cases <file>] [--device <key>]
+    [--limit <n>] [--out <directory>] [--input <file>] [--strict] [--dry-run]
   figma-parity cases --sync [--node <id>] [--dry-run] [--cases <file>]
   figma-parity evidence --write [--input <file>] | --check
   figma-parity verify [--cases <file>] [--json]
@@ -1075,14 +1078,46 @@ async function checkDevices({
 // A wave of cases: an explicit case file when given, otherwise the registry
 // filter. The catalogue stories (the icon and pictogram sheets) are skipped
 // unless asked for: they are artwork sheets, not per-node renders.
-async function captureWave(parsed: Parsed): Promise<number> {
+async function captureWave(
+  parsed: Parsed,
+  { evaluate = evaluateCase }: { evaluate?: typeof evaluateCase } = {},
+): Promise<number> {
   const { flags } = parsed
   const out = String(flags.get("out") ?? DEFAULT_WAVE_DIR)
-  const project = loadExport(stringFlag(flags, "input"))
   const limit = flags.get("limit") ? Number(flags.get("limit")) : Number.POSITIVE_INFINITY
+  const saved = flags.has("saved")
 
   let specs
-  if (flags.get("cases") && flags.get("cases") !== true) {
+  if (saved) {
+    const nodeId = stringFlag(flags, "node")
+    if (!nodeId || nodeId.includes(",")) {
+      throw new UsageError("--saved requires one --node <id>")
+    }
+    if (flags.has("status") || flags.has("include-catalogue") || flags.has("note")) {
+      throw new UsageError(
+        "--status, --include-catalogue and --note apply to registry waves, not --saved",
+      )
+    }
+    if (flags.has("cases") && !stringFlag(flags, "cases")) {
+      throw new UsageError("--cases needs a file")
+    }
+    if (flags.has("device") && !deviceFrom(flags.get("device"))) {
+      throw new UsageError("--device needs a value")
+    }
+    if (flags.has("limit") && (!Number.isInteger(limit) || limit < 1)) {
+      throw new UsageError("--limit needs a positive integer")
+    }
+    const device = deviceFrom(flags.get("device"))
+    const entries = loadCaseFile(corpusPath(flags)).filter(
+      (entry) => entry.nodeId === nodeId && (!device || entry.device === device),
+    )
+    if (!entries.length) {
+      throw new UsageError(`${nodeId}: no saved cases${device ? ` for device ${device}` : ""}`)
+    }
+    const ids = new Set(entries.map((entry) => entry.id))
+    if (ids.size !== entries.length) throw new UsageError(`${nodeId}: duplicate saved case ids`)
+    specs = entries.map((entry) => specFromCase(entry, flags, parsed)).slice(0, limit)
+  } else if (flags.get("cases") && flags.get("cases") !== true) {
     specs = JSON.parse(fs.readFileSync(String(flags.get("cases")), "utf8"))
     if (!Array.isArray(specs)) throw new Error(`${flags.get("cases")}: expected a case array`)
   } else {
@@ -1106,9 +1141,41 @@ async function captureWave(parsed: Parsed): Promise<number> {
   }
 
   if (flags.has("dry-run")) {
-    for (const spec of specs) console.log(`${spec.nodeId} ${spec.storyId ?? "(no story)"}`)
+    for (const spec of specs) {
+      if (saved) {
+        console.log(
+          `${spec.id} ${spec.nodeId} ${spec.storyId || "(no story)"}${isDraftCase(spec) ? " (draft)" : ""}`,
+        )
+      } else {
+        console.log(`${spec.nodeId} ${spec.storyId ?? "(no story)"}`)
+      }
+    }
     console.log(`${specs.length} case(s)`)
+    if (saved && specs.some((spec) => !spec.storyId)) {
+      console.error("error: saved case has no storyId")
+      return 2
+    }
     return 0
+  }
+  let project: Project
+  try {
+    project = loadExport(stringFlag(flags, "input"))
+  } catch (error) {
+    if (!saved) throw error
+    throw new UsageError(error instanceof Error ? error.message : String(error))
+  }
+  if (saved && project.raw.kind === "parity-source") {
+    const errors = specs.flatMap((spec) =>
+      checkCaseEvidence({
+        entry: spec,
+        node: inventoryNode(spec.nodeId),
+        sourceSha256: project.sourceSha256,
+      }),
+    )
+    if (errors.length) {
+      for (const error of new Set(errors)) console.error(`error: ${error}`)
+      return 2
+    }
   }
   // The strict profile promotes the composition advisories into the verdict:
   // it is a case-level switch, and the command line forces it on the whole wave.
@@ -1131,14 +1198,16 @@ async function captureWave(parsed: Parsed): Promise<number> {
     advisories?: number
     residues?: number
     responsive?: string
+    id?: string
+    draft?: boolean
     case?: unknown
     message?: string
   }
   const results: WaveResult[] = []
-  for (const spec of specs.slice(0, limit)) {
+  for (const [index, spec] of specs.slice(0, limit).entries()) {
     // A wave case may declare its story; otherwise the registry decides, and a
     // case without a declared story export is recorded as missing evidence.
-    if (!spec.storyId) {
+    if (!saved && !spec.storyId) {
       try {
         const known = registryCase(spec.nodeId)
         const index = spec.export ? known.exports.indexOf(spec.export) : 0
@@ -1148,16 +1217,22 @@ async function captureWave(parsed: Parsed): Promise<number> {
       }
     }
     if (!spec.storyId) {
-      results.push({ nodeId: spec.nodeId, status: "missing-story" })
-      console.log(`missing-story ${spec.nodeId}`)
+      results.push({
+        ...(saved ? { id: spec.id } : {}),
+        nodeId: spec.nodeId,
+        status: "missing-story",
+      })
+      console.log(`missing-story ${spec.id ?? spec.nodeId}`)
       continue
     }
     try {
       // Two cases can share a node (two variants): the file name carries both,
       // and a device case carries its device after the selector.
       const selector = `${spec.variant ?? spec.state ?? "case"}${spec.device ? `-${spec.device}` : ""}`
-      const fileBase = `${spec.nodeId.replace(":", "-")}-${selector}`
-      const { report, probe } = await evaluateCase(
+      const fileBase = saved
+        ? `${String(index + 1).padStart(3, "0")}-${String(spec.id).replace(/[^a-zA-Z0-9._-]/g, "-")}`
+        : `${spec.nodeId.replace(":", "-")}-${selector}`
+      const { report, probe } = await evaluate(
         { ...spec, screenshot: path.join(out, `${fileBase}.png`) },
         { project },
       )
@@ -1167,6 +1242,7 @@ async function captureWave(parsed: Parsed): Promise<number> {
       )
       results.push({
         file: `${fileBase}.json`,
+        ...(saved ? { id: spec.id, draft: isDraftCase(spec) } : {}),
         nodeId: report.nodeId,
         variant: report.variant,
         variantName: report.variantName,
@@ -1180,13 +1256,19 @@ async function captureWave(parsed: Parsed): Promise<number> {
         case: spec,
       })
       console.log(
-        `${report.verdict.padEnd(22)} ${report.nodeId} ${report.variant}` +
+        `${report.verdict.padEnd(22)} ${saved ? `${spec.id} ` : ""}${report.nodeId} ${report.variant}` +
+          `${saved && isDraftCase(spec) ? " (draft)" : ""}` +
           `${report.device ? ` ${report.device}` : ""}`,
       )
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
-      results.push({ nodeId: spec.nodeId, status: "error", message })
-      console.log(`error ${spec.nodeId}: ${message}`)
+      results.push({
+        ...(saved ? { id: spec.id } : {}),
+        nodeId: spec.nodeId,
+        status: "error",
+        message,
+      })
+      console.log(`error ${spec.id ?? spec.nodeId}: ${message}`)
     }
   }
   const summary = {
@@ -1201,6 +1283,12 @@ async function captureWave(parsed: Parsed): Promise<number> {
   }
   fs.writeFileSync(path.join(out, "summary.json"), `${JSON.stringify(summary, null, 1)}\n`)
   console.log(`${results.length} case(s) -> ${out}/summary.json`)
+  if (
+    saved &&
+    results.some((item) => item.status === "missing-story" || item.status === "error" || item.draft)
+  ) {
+    return 2
+  }
   return results.some((item) => (item.deltas ?? 0) > 0 || item.status === "error") ? 1 : 0
 }
 

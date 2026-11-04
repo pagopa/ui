@@ -14,6 +14,13 @@ import { z } from "zod"
 import { readJson, writeJson } from "../lib/json.ts"
 import { resolveRoot, resolveStoriesRoot, resolveWorkspaceRoot } from "../lib/paths.ts"
 import { parseSource, sourceDependencies } from "../lib/source-modules.ts"
+import {
+  isVisualStory,
+  selectedVisualStories,
+  UNSTABLE_VISUAL_STORIES,
+  visualSnapshotName,
+  VISUAL_WIDTHS,
+} from "./visual-cases.ts"
 
 const DEFAULT_INDEX = "apps/storybook/dist/index.json"
 
@@ -36,6 +43,7 @@ const EVERYTHING_FILES = new Set([
   "pnpm-workspace.yaml",
   "apps/storybook/package.json",
   "packages/pagopa-ui/package.json",
+  "packages/ui-cli/src/test/visual-cases.ts",
 ])
 const EVERYTHING_DIRECTORIES = [
   "apps/storybook/.storybook/",
@@ -85,8 +93,8 @@ export type VisualScope = {
   reason?: string
 }
 
-const USAGE = `usage: ui-cli test visual --since <ref> [--index <file>] [--out <file>] [--json]
-       ui-cli test visual --all [--index <file>] [--out <file>] [--json]
+const USAGE = `usage: ui-cli test visual --since <ref> [--index <file>] [--out <file>] [--json] [--check-baselines]
+       ui-cli test visual --all [--index <file>] [--out <file>] [--json] [--check-baselines]
 
 Writes the stories a change can affect: the built Storybook index supplies the
 stories and their files, and the imports each story reaches decide whether a
@@ -98,8 +106,9 @@ run it after \`pagopa-ui-storybook:build\`.
   --index <file> the built Storybook index (default: ${DEFAULT_INDEX})
   --out <file>   write the scope as JSON, for VISUAL_SCOPE to read
   --json         print the scope instead of the summary line
+  --check-baselines  fail when a scoped story's committed Linux baseline is missing
 
-Exit codes: 0, 2 on invalid input.`
+Exit codes: 0, 1 on missing baselines, 2 on invalid input.`
 
 type Options = {
   since: string | null
@@ -107,6 +116,7 @@ type Options = {
   index: string
   out: string | null
   json: boolean
+  checkBaselines: boolean
   help: boolean
 }
 
@@ -117,6 +127,7 @@ function parseArguments(argv: string[]): Options {
     index: DEFAULT_INDEX,
     out: null,
     json: false,
+    checkBaselines: false,
     help: false,
   }
   for (let index = 0; index < argv.length; index += 1) {
@@ -124,6 +135,7 @@ function parseArguments(argv: string[]): Options {
     if (argument === "--help" || argument === "-h") options.help = true
     else if (argument === "--all") options.all = true
     else if (argument === "--json") options.json = true
+    else if (argument === "--check-baselines") options.checkBaselines = true
     else if (argument === "--since" || argument === "--index" || argument === "--out") {
       const value = argv[index + 1]
       if (!value || value.startsWith("--")) throw new Error(`${argument} needs a value`)
@@ -230,8 +242,7 @@ function isEverything(file: string): boolean {
 function visualStories(index: StoryIndex, storiesRoot: string): Map<string, string[]> {
   const byFile = new Map<string, string[]>()
   for (const [key, entry] of Object.entries(index.entries)) {
-    if (entry.type !== "story" || !entry.importPath) continue
-    if ((entry.tags ?? []).includes("no-visual")) continue
+    if (!isVisualStory(entry) || !entry.importPath) continue
     const id = entry.id ?? key
     const file = path.resolve(storiesRoot, entry.importPath)
     const ids = byFile.get(file) ?? []
@@ -294,6 +305,32 @@ export function visualScope(
   }
 }
 
+function requiredVisualBaselines(
+  index: StoryIndex,
+  scope: VisualScope,
+  storiesRoot: string,
+): string[] {
+  const selected = scope.mode === "stories" ? new Set(scope.stories ?? []) : null
+  const directory = path.join(storiesRoot, "visual", "__screenshots__")
+  return selectedVisualStories(index.entries, selected)
+    .filter((id) => !UNSTABLE_VISUAL_STORIES.has(id))
+    .flatMap((id) =>
+      VISUAL_WIDTHS.map((width) => path.join(directory, visualSnapshotName(id, width))),
+    )
+}
+
+export function missingVisualBaselines(
+  index: StoryIndex,
+  scope: VisualScope,
+  storiesRoot: string,
+): string[] {
+  return requiredVisualBaselines(index, scope, storiesRoot).filter(baselineMissing)
+}
+
+function baselineMissing(file: string): boolean {
+  return !fs.statSync(file, { throwIfNoEntry: false })?.isFile()
+}
+
 function git(args: string[], workspace: string): string[] | null {
   const result = spawnSync("git", args, { cwd: workspace, encoding: "utf8" })
   if (result.status !== 0) return null
@@ -301,6 +338,20 @@ function git(args: string[], workspace: string): string[] | null {
     .split("\n")
     .map((file) => file.trim())
     .filter((file) => file !== "")
+}
+
+function untrackedBaselines(files: string[], workspace: string, storiesRoot: string): string[] {
+  if (!files.length) return []
+  const directory = identityOf(path.join(storiesRoot, "visual", "__screenshots__"), workspace)
+  const result = spawnSync("git", ["ls-files", "--cached", "-z", "--", directory], {
+    cwd: workspace,
+    encoding: "utf8",
+  })
+  if (result.status !== 0) {
+    throw new Error(`cannot inspect tracked visual baselines: ${result.stderr.trim()}`)
+  }
+  const tracked = new Set(result.stdout.split("\0"))
+  return files.filter((file) => !tracked.has(identityOf(file, workspace)))
 }
 
 function changedPaths(since: string, workspace: string): string[] | null {
@@ -372,6 +423,32 @@ export function runVisual(argv: string[] = process.argv.slice(2)): number {
     console.log(
       `[visual] ${scope.stories?.length ?? 0} of ${total} stories are affected by ${scope.changed.length} changed path(s)`,
     )
+  }
+  if (options.checkBaselines) {
+    const required = requiredVisualBaselines(index, scope, storiesRoot)
+    const missing = required.filter(baselineMissing)
+    const missingSet = new Set(missing)
+    const untracked = untrackedBaselines(
+      required.filter((file) => !missingSet.has(file)),
+      workspace,
+      storiesRoot,
+    )
+    if (missing.length || untracked.length) {
+      if (missing.length) {
+        console.error(`[visual] ${missing.length} scoped baseline(s) missing:`)
+        for (const file of missing) console.error(`  ${identityOf(file, workspace)}`)
+      }
+      if (untracked.length) {
+        console.error(`[visual] ${untracked.length} scoped baseline(s) exist but are not tracked:`)
+        for (const file of untracked) console.error(`  ${identityOf(file, workspace)}`)
+        console.error("[visual] Stage and commit Linux baselines before pushing.")
+      }
+      console.error(
+        "[visual] For a pull request, use the visual:update label to create Linux baselines, review them, then remove the label and re-run the check.",
+      )
+      return 1
+    }
+    if (!options.json) console.log("[visual] scoped Linux baselines are present")
   }
   return 0
 }

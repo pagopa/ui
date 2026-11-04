@@ -2708,7 +2708,7 @@
       "identities": [
         {
           "nodeId": "11149:7765",
-          "name": "Empty state",
+          "name": "Missing element",
           "kind": "COMPONENT",
           "inLibrary": true,
           "decision": "shipped"
@@ -2725,11 +2725,35 @@
           "name": "Popper",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Pending behind docs/design-requests/2026-10-28-popper-status-card.md: four Status variants at 312x76 have no shipped counterpart."
+          "decision": "shipped"
         }
       ],
-      "compositions": []
+      "compositions": [
+        {
+          "nodeId": "13788:10012",
+          "name": "2",
+          "device": "desktop",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "The 1200x1058 page draws a 312x96 Popper over a list row. No case measures its page placement."
+        },
+        {
+          "nodeId": "13790:47252",
+          "name": "Posizione",
+          "device": "desktop",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "The 1200x1058 page draws a 312x96 Popper over a list row. No case measures its page placement."
+        },
+        {
+          "nodeId": "13788:9233",
+          "name": "4",
+          "device": "desktop",
+          "drawn": 1,
+          "mirrors": [],
+          "reason": "The 1200x1058 page draws a 312x96 Popper over the page content. No case measures its page placement."
+        }
+      ]
     },
     {
       "pageId": "157:614",

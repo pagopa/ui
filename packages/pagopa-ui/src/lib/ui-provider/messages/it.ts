@@ -229,6 +229,9 @@ export const itMessages: Messages = {
     label: "Informazione contestuale",
     closeLabel: "Chiudi popover",
   },
+  popper: {
+    dismissLabel: "Chiudi messaggio",
+  },
   timelineDrawer: {
     title: "Cronologia",
     description: "Eventi in ordine cronologico",

@@ -13,3 +13,10 @@ export const toneStyles: Record<Tone, string> = {
   warning: "border-warning-border bg-warning-soft text-warning-foreground",
   error: "border-error-border bg-error-soft text-error-foreground",
 }
+
+export const statusIcons = {
+  info: "info",
+  success: "check_circle",
+  warning: "warning",
+  error: "report",
+} as const

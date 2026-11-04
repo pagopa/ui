@@ -85,15 +85,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # The first run of the gate has no baseline to compare against: say so
-      # instead of writing 1446 new screenshots on the runner.
-      - name: Require the baselines
-        run: |
-          if ! ls apps/storybook/visual/__screenshots__/*.png >/dev/null 2>&1; then
-            echo "::error::No visual baselines are committed. Add the 'visual:update' label to this pull request to produce them on Linux."
-            exit 1
-          fi
-
       - name: Scope the run
         env:
           # The tip of the base branch: the three-dot diff is the pull
@@ -110,10 +101,10 @@ jobs:
           # build comes first and `test:visual` reuses it.
           NX_PROFILE=.nx/ci-metrics/build.json pnpm nx run pagopa-ui-storybook:build
           if [ -n "$BASE" ]; then
-            NX_PROFILE=.nx/ci-metrics/scope.json pnpm nx run pagopa-ui-cli:test:visual -- --since "$BASE" --out "$VISUAL_SCOPE"
+            NX_PROFILE=.nx/ci-metrics/scope.json pnpm nx run pagopa-ui-cli:test:visual -- --since "$BASE" --out "$VISUAL_SCOPE" --check-baselines
           else
             # A push to `main`, the nightly and a manual run check everything.
-            NX_PROFILE=.nx/ci-metrics/scope.json pnpm nx run pagopa-ui-cli:test:visual -- --all --out "$VISUAL_SCOPE"
+            NX_PROFILE=.nx/ci-metrics/scope.json pnpm nx run pagopa-ui-cli:test:visual -- --all --out "$VISUAL_SCOPE" --check-baselines
           fi
 
       - name: Visual regression

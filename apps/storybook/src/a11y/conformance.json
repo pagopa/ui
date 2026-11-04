@@ -201,6 +201,9 @@
     "Popover": {
       "type": "Dialog and Drawer"
     },
+    "Popper": {
+      "type": "Notifications and alerts"
+    },
     "Preheader": {
       "type": "Header and footer"
     },

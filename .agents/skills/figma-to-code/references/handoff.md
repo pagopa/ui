@@ -43,6 +43,12 @@ The closing checks of this skill, plus `pnpm nx run pagopa-ui-cli:figma:parity:v
 before the green chain. A slice that no longer matches the committed inventory
 exits 2: refresh it with the evidence command or use the current snapshot.
 
+Before handoff, run the scoped baseline preflight in
+[Visual regression](../../../../CONTRIBUTING.md#visual-regression) against the
+pull request base. Report missing images and follow its Linux update workflow
+once the pull request exists; the visual gate is unverified until the baselines
+are reviewed and the check reruns.
+
 ## Delivery
 
 Commit the alignment on the drift branch. The person pushes, reviews and merges;

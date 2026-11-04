@@ -223,6 +223,9 @@ export const enMessages: Messages = {
     label: "Contextual information",
     closeLabel: "Close popover",
   },
+  popper: {
+    dismissLabel: "Close message",
+  },
   timelineDrawer: {
     title: "Timeline",
     description: "Events in chronological order",

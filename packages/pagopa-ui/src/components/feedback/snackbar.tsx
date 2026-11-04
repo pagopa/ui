@@ -7,14 +7,7 @@ import { useMessages } from "@/lib/ui-provider"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { X } from "@/components/primitives/icons"
 
-import { toneStyles, type Tone } from "./tones"
-
-const statusIcons = {
-  info: "info",
-  success: "check_circle",
-  warning: "warning",
-  error: "report",
-} as const
+import { statusIcons, toneStyles, type Tone } from "./tones"
 
 /** Props of {@link Snackbar}. */
 interface SnackbarProps {

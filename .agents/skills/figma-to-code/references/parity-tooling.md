@@ -22,6 +22,7 @@ straight after the target.
 | `figma:parity:check --node <id>` / `--case <caseId>` | source numbers, render probe, classified diff, responsive verdict and capture preflight for one case                                                         |
 | `figma:parity:check --node <id> --devices`         | every declared device's committed case in one table; exit 1 when a device has no reviewed case or its case fails                                            |
 | `figma:parity:capture`                             | a whole wave: per case the report, probe and PNG under `figma.parityOut`, plus `summary.json`                                                                |
+| `figma:parity:capture --saved --node <id> [--dry-run]` | all saved cases of one node, regardless of registry status; `--dry-run` lists case IDs without capturing |
 | `figma:parity:cases --sync`                        | proposes the missing device cases and the variants no reviewed case points at, as drafts                                                                     |
 | `figma:parity:verify`                              | the case corpus, device coverage and evidence bundle, hermetically (no snapshot, no browser); runs in the green chain; exit 1 on errors, 0 with warnings |
 | `figma:parity:evidence --write` / `--check`        | the offline bundle: `--write` refreshes slice, PNGs and manifest (token + snapshot); `--check` proves they match the corpus                                    |
@@ -122,6 +123,12 @@ When the source is the committed evidence slice, `--case` checks the manifest's
 version and design fingerprint against the committed inventory before the
 capture: a slice that moved with the inventory is a rerun, a slice that did not
 is exit 2 (stale evidence) until it is refreshed.
+
+`capture --saved --node <id>` uses the same case mapping and evidence guard as
+`check --case`; its summary names every case and flags drafts. An absent case,
+missing story, capture error or draft cannot verify the node. Without `--saved`,
+`capture --node` uses the registry wave's status filter and first story, not the
+committed cases. `queue --node` likewise lists registry targets, not case IDs.
 
 ## Case mapping
 

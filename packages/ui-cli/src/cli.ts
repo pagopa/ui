@@ -494,6 +494,8 @@ const parity = defineCommand({
     }),
     capture: parityCommand("capture", "Run a parity wave", {
       cases: parityString,
+      saved: parityBoolean,
+      input: parityString,
       status: parityString,
       node: parityString,
       device: parityString,
@@ -591,6 +593,11 @@ const testVisual = defineCommand({
     index: { type: "string", valueHint: "file", description: "The built Storybook index" },
     out: { type: "string", valueHint: "file", description: "Write the scope as JSON" },
     json: { type: "boolean", default: false, description: "Print the scope as JSON" },
+    "check-baselines": {
+      type: "boolean",
+      default: false,
+      description: "Require every scoped Linux baseline",
+    },
   },
   run: execute(() => runVisual(rawArguments("visual"))),
 })

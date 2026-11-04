@@ -281,13 +281,16 @@ Run the same two steps locally:
 
 ```bash
 pnpm nx run pagopa-ui-storybook:build
-pnpm nx run pagopa-ui-cli:test:visual -- --since origin/main --out apps/storybook/visual/scope.json
+pnpm nx run pagopa-ui-cli:test:visual -- --since origin/main --out apps/storybook/visual/scope.json --check-baselines
 VISUAL_SCOPE=apps/storybook/visual/scope.json pnpm nx run pagopa-ui-storybook:test:visual
 ```
 
 `--all` skips the walk and names no story; without `VISUAL_SCOPE` the suite is
 complete too. The file carries the mode as well: `stories` lists the ids to
 capture, `all` names none because the whole catalogue runs.
+`--check-baselines` lists missing or untracked Linux images for the selected
+stories before the browser starts; the update job omits it so it can create
+those images.
 
 The comparison uses `threshold: 0` and a 32-pixel budget. Every counted pixel
 must match exactly; the budget absorbs Chromium's small border and text

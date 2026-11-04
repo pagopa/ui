@@ -14,6 +14,7 @@ const COMPONENT = `function Card({
   title = "Titolo predefinito",
   pageLabel = (page) => \`Pagina \${page}\`,
   className = "p-4",
+  pointer = "center",
   variant = "default",
 }) {
   return null
@@ -47,6 +48,7 @@ test("reports string and function defaults and ignores a className", () => {
     assert.match(result.stdout, /src\/components\/card\/card\.tsx:2 title/)
     assert.match(result.stdout, /src\/components\/card\/card\.tsx:3 pageLabel/)
     assert.doesNotMatch(result.stdout, /className/)
+    assert.doesNotMatch(result.stdout, /pointer/)
     assert.doesNotMatch(result.stdout, /variant/)
     assert.match(result.stdout, /2 literal default\(s\)/)
   } finally {

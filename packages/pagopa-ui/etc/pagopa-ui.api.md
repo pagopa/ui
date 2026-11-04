@@ -871,6 +871,10 @@ export interface Messages {
         closeLabel: string;
     };
     // (undocumented)
+    popper: {
+        dismissLabel: string;
+    };
+    // (undocumented)
     preheader: {
         institution: string;
         linksLabel: string;
@@ -1097,6 +1101,23 @@ export interface PopoverProps {
     label?: string;
     modal?: boolean;
     trigger: React_2.ReactElement;
+}
+
+// @public (undocumented)
+export function Popper(input: PopperProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export type PopperPointer = "left" | "center" | "right";
+
+// @public
+export interface PopperProps {
+    children: React_2.ReactNode;
+    className?: string;
+    dismissLabel?: string;
+    id: string;
+    onDismiss: () => void;
+    pointer?: PopperPointer;
+    tone?: Tone;
 }
 
 // @public (undocumented)
