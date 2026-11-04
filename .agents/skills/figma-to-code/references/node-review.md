@@ -10,10 +10,11 @@ bulk re-approval.
 1. **Read the record.** `pnpm nx run pagopa-ui-cli:figma:brief --node <nodeId>`
    gathers the registry entry (status, target, `note`), the rules that target the
    node, the open comments and the design requests ([rules.md](rules.md)). Read
-   its committed cases
-   (`pnpm nx run pagopa-ui-cli:figma:parity:queue --node <id>`) and the guide of
-   the target component too. The note's constraints and open decisions are
-   binding until the review changes them.
+   its committed case IDs
+   (`pnpm nx run pagopa-ui-cli:figma:parity:capture --saved --node <id> --dry-run`),
+   their entries in `catalog.parityCases`, and the guide of the target component
+   too. The note's constraints and open decisions are binding until the review
+   changes them.
    **Done when** the current target, its stories and the recorded adaptations are
    written down, and no rule that targets the node is `pending` or `stale`.
 
@@ -24,11 +25,12 @@ bulk re-approval.
    change: the source the change touches.
    **Done when** the source variants to compare are listed.
 
-3. **Re-run the evidence.** `pnpm nx run pagopa-ui-cli:figma:parity:check --case <caseId>` per
-   committed case, `--node <id> --devices` for a device axis; capture the cases
-   that are missing ([visual-parity.md](visual-parity.md)). A residue measured
-   under conditions that no longer hold (an old font, a removed dependency) is
-   re-measured, never re-approved.
+3. **Re-run the evidence.** `pnpm nx run pagopa-ui-cli:figma:parity:capture --saved --node <id>`
+   runs every committed case; use `--node <id> --devices` on `parity:check` for
+   a device axis. Capture the cases that are missing
+   ([visual-parity.md](visual-parity.md)). A residue measured under conditions
+   that no longer hold (an old font, a removed dependency) is re-measured, never
+   re-approved.
    **Done when** every case reports a verdict.
 
 4. **Decide** exactly one:

@@ -2,17 +2,19 @@ import { readFileSync } from "node:fs"
 
 import { expect, test } from "@playwright/test"
 
+import {
+  selectedVisualStories,
+  UNSTABLE_VISUAL_STORIES,
+  visualSnapshotName,
+  VISUAL_WIDTHS,
+} from "../../../packages/ui-cli/src/test/visual-cases.ts"
+
 // Every story of the built Storybook, at the three widths of the design
 // system's breakpoints. Baselines are produced only on Linux, by CI.
-const WIDTHS = [320, 600, 1200] as const
 const HEIGHT = 900
 
-// Stories that cannot settle in two consecutive runs; each one carries the
-// cause that kept it out of the gate.
-const UNSTABLE = new Set<string>([])
-
 interface IndexEntry {
-  id: string
+  id?: string
   type: string
   tags?: string[]
 }
@@ -50,10 +52,7 @@ function storyScope(): Set<string> | null {
 
 const scope = storyScope()
 
-const stories = Object.values(index.entries)
-  .filter((entry) => entry.type === "story" && !(entry.tags ?? []).includes("no-visual"))
-  .filter((entry) => scope === null || scope.has(entry.id))
-  .sort((a, b) => a.id.localeCompare(b.id))
+const stories = selectedVisualStories(index.entries, scope)
 
 console.log(
   scope === null
@@ -62,14 +61,14 @@ console.log(
 )
 
 for (const story of stories) {
-  test.describe(story.id, () => {
-    test.skip(UNSTABLE.has(story.id), "unstable render: see UNSTABLE in visual.spec.ts")
+  test.describe(story, () => {
+    test.skip(UNSTABLE_VISUAL_STORIES.has(story), "unstable render: see UNSTABLE_VISUAL_STORIES")
 
-    for (const width of WIDTHS) {
-      test(`${story.id} @${width}`, async ({ page }) => {
+    for (const width of VISUAL_WIDTHS) {
+      test(`${story} @${width}`, async ({ page }) => {
         await page.setViewportSize({ width, height: HEIGHT })
         await page.clock.install({ time: new Date("2025-01-15T10:00:00+01:00") })
-        await page.goto(`/iframe.html?id=${story.id}&viewMode=story`)
+        await page.goto(`/iframe.html?id=${story}&viewMode=story`)
 
         await page.evaluate(() => document.fonts.ready.then(() => undefined))
 
@@ -83,17 +82,17 @@ for (const story of stories) {
             const settled = ["finished", "errored", "aborted"]
             return phase && settled.includes(phase) ? phase : false
           },
-          story.id,
+          story,
           { timeout: 30_000, polling: 100 },
         )
         const phase = await handle.jsonValue()
         if (phase === "errored" || phase === "aborted") {
-          throw new Error(`Story ${story.id} did not render: phase "${phase}"`)
+          throw new Error(`Story ${story} did not render: phase "${phase}"`)
         }
 
         await page.waitForLoadState("networkidle")
 
-        await expect(page).toHaveScreenshot(`${story.id}-${width}.png`, { fullPage: true })
+        await expect(page).toHaveScreenshot(visualSnapshotName(story, width), { fullPage: true })
       })
     }
   })

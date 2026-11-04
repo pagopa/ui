@@ -7,7 +7,8 @@ import { test } from "node:test"
 import { fileURLToPath } from "node:url"
 
 import { fixtureEnv } from "../src/lib/paths.ts"
-import { visualScope } from "../src/test/visual.ts"
+import { missingVisualBaselines, visualScope } from "../src/test/visual.ts"
+import { UNSTABLE_VISUAL_STORIES } from "../src/test/visual-cases.ts"
 
 const script = fileURLToPath(new URL("../src/cli.ts", import.meta.url))
 
@@ -178,6 +179,7 @@ test("a change that can move every screenshot runs everything", () => {
     "packages/pagopa-ui/src/assets/font.woff2",
     "apps/storybook/.storybook/preview.tsx",
     "apps/storybook/visual/visual.spec.ts",
+    "packages/ui-cli/src/test/visual-cases.ts",
   ]) {
     const scope = scopeOf(fixture, [changed])
     assert.equal(scope.mode, "all", changed)
@@ -317,4 +319,100 @@ test("an unreadable ref and a missing index are refusals, not empty runs", () =>
   const noTarget = runCli(fixture.root, [])
   assert.equal(noTarget.status, 2)
   assert.match(noTarget.stderr, /--since <ref> or --all/)
+})
+
+test("baseline preflight selects the same stories and widths as the visual suite", () => {
+  const fixture = workspace()
+  const scope = { mode: "all", changed: [] }
+  const missing = missingVisualBaselines(fixture.index, scope, fixture.roots.storiesRoot)
+  assert.equal(missing.length, 15)
+  assert.deepEqual(
+    missing
+      .filter((file) => file.includes("components-card--plain"))
+      .map((file) => path.basename(file)),
+    [
+      "components-card--plain-320.png",
+      "components-card--plain-600.png",
+      "components-card--plain-1200.png",
+    ],
+  )
+  assert.ok(missing.every((file) => !file.includes("--docs") && !file.includes("introduction")))
+
+  for (const file of missing) write(fixture.root, path.relative(fixture.root, file), "")
+  fs.rmSync(missing[0])
+  assert.deepEqual(missingVisualBaselines(fixture.index, scope, fixture.roots.storiesRoot), [
+    missing[0],
+  ])
+})
+
+test("scoped, empty and unstable stories require only snapshots the suite will run", () => {
+  const fixture = workspace()
+  const scope = { mode: "stories", stories: ["components-card--plain"], changed: [] }
+  const missing = missingVisualBaselines(fixture.index, scope, fixture.roots.storiesRoot)
+  assert.equal(missing.length, 3)
+  assert.ok(missing.every((file) => file.includes("components-card--plain")))
+  assert.deepEqual(
+    missingVisualBaselines(
+      fixture.index,
+      { mode: "stories", stories: [], changed: [] },
+      fixture.roots.storiesRoot,
+    ),
+    [],
+  )
+
+  UNSTABLE_VISUAL_STORIES.add("components-card--plain")
+  try {
+    assert.deepEqual(missingVisualBaselines(fixture.index, scope, fixture.roots.storiesRoot), [])
+  } finally {
+    UNSTABLE_VISUAL_STORIES.delete("components-card--plain")
+  }
+})
+
+test("the CLI fails before capture for missing scoped images but leaves update mode usable", () => {
+  const fixture = workspace()
+  write(fixture.root, "apps/storybook/dist/index.json", JSON.stringify(fixture.index))
+  git(fixture.root, ["init", "-q"])
+  const base = commit(fixture.root, "base")
+  write(fixture.root, "packages/pagopa-ui/src/components/card.tsx", "export const Card = () => 1\n")
+
+  const args = ["--since", base, "--out", "scope.json"]
+  const checked = runCli(fixture.root, [...args, "--check-baselines"])
+  assert.equal(checked.status, 1, checked.stderr)
+  assert.match(checked.stderr, /3 scoped baseline\(s\) missing/)
+  assert.match(checked.stderr, /components-card--plain-320\.png/)
+  assert.doesNotMatch(checked.stderr, /components-button/)
+  assert.match(checked.stderr, /visual:update/)
+  assert.deepEqual(
+    JSON.parse(fs.readFileSync(path.join(fixture.root, "scope.json"), "utf8")).stories,
+    ["components-card--plain"],
+  )
+
+  const update = runCli(fixture.root, args)
+  assert.equal(update.status, 0, update.stderr)
+  for (const width of [320, 600, 1200]) {
+    write(
+      fixture.root,
+      `apps/storybook/visual/__screenshots__/components-card--plain-${width}.png`,
+      "",
+    )
+  }
+  const untracked = runCli(fixture.root, [...args, "--check-baselines"])
+  assert.equal(untracked.status, 1, untracked.stderr)
+  assert.match(untracked.stderr, /3 scoped baseline\(s\) exist but are not tracked/)
+  git(fixture.root, ["add", "apps/storybook/visual/__screenshots__"])
+  const complete = runCli(fixture.root, [...args, "--check-baselines", "--json"])
+  assert.equal(complete.status, 0, complete.stderr)
+  assert.deepEqual(JSON.parse(complete.stdout).stories, ["components-card--plain"])
+})
+
+test("the CI check uses preflight and the separate update job does not", () => {
+  const workflow = fs.readFileSync(
+    new URL("../../../.github/workflows/visual.yml", import.meta.url),
+    "utf8",
+  )
+  const [check, update] = workflow.split("\n  visual-update:")
+  assert.match(check, /--since "\$BASE" --out "\$VISUAL_SCOPE" --check-baselines/)
+  assert.match(check, /--all --out "\$VISUAL_SCOPE" --check-baselines/)
+  assert.ok(update)
+  assert.doesNotMatch(update, /--check-baselines/)
 })
