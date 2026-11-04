@@ -2,15 +2,25 @@
 
 import { Download, ImageIcon } from "@/components/primitives/icons"
 import { Button, buttonVariants } from "@/components/primitives/button"
-import { useLinkComponent } from "@/lib/ui-provider"
+import { useLinkComponent, useMessages } from "@/lib/ui-provider"
 
 type DownloadCardProps = {
   fileName: string
   meta?: string
+  /** Announced text of the download action. @default messages.downloadCard.downloadLabel */
+  downloadLabel?: (fileName: string) => string
 } & ({ href: string; onDownload?: never } | { href?: never; onDownload?: () => void })
 
-function DownloadCard({ fileName, meta, href, onDownload }: DownloadCardProps) {
+function DownloadCard({
+  fileName,
+  meta,
+  downloadLabel: downloadLabelProp,
+  href,
+  onDownload,
+}: DownloadCardProps) {
   const Link = useLinkComponent()
+  const t = useMessages("downloadCard")
+  const downloadLabel = (downloadLabelProp ?? t.downloadLabel)(fileName)
   if (href !== undefined && !href.trim()) {
     throw new TypeError("DownloadCard href must not be empty")
   }
@@ -24,14 +34,14 @@ function DownloadCard({ fileName, meta, href, onDownload }: DownloadCardProps) {
       {href !== undefined ? (
         <Link
           className={buttonVariants({ size: "icon", variant: "ghost" })}
-          aria-label={`Scarica ${fileName}`}
+          aria-label={downloadLabel}
           href={href}
           download={fileName}
         >
           <Download aria-hidden="true" />
         </Link>
       ) : onDownload ? (
-        <Button size="icon" variant="ghost" aria-label={`Scarica ${fileName}`} onClick={onDownload}>
+        <Button size="icon" variant="ghost" aria-label={downloadLabel} onClick={onDownload}>
           <Download aria-hidden="true" />
         </Button>
       ) : null}

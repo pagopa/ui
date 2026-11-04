@@ -51,6 +51,9 @@ export const itMessages: Messages = {
   paymentProviderLogos: {
     label: "Prestatori di servizi di pagamento",
   },
+  downloadCard: {
+    downloadLabel: (fileName: string) => `Scarica ${fileName}`,
+  },
   productCard: {
     actionLabel: "Scopri di più",
   },

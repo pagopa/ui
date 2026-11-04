@@ -46,6 +46,9 @@ export const enMessages: Messages = {
   paymentProviderLogos: {
     label: "Payment service providers",
   },
+  downloadCard: {
+    downloadLabel: (fileName: string) => `Download ${fileName}`,
+  },
   productCard: {
     actionLabel: "Learn more",
   },

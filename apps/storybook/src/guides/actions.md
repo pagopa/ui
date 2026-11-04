@@ -5,6 +5,11 @@
 - Give a group of actions 8px between them, vertically and horizontally.
 - Keep 24px or 32px between a group of actions and the content above it, unless the page composition needs an exception.
 - Never dim an action with opacity: every variant keeps a solid background that meets AA contrast.
+- The `*-contrast` family paints white for a brand or dark surface: `contrast` fills the
+  button white with the brand foreground, `outline-contrast` and `ghost-contrast` paint
+  the label and stroke white. On a white or pale surface the white label drops under AA
+  contrast (1.18:1 on the Primary Banner fill), so pair the family with a brand or dark
+  container and use `default`, `outline`, `ghost` or `link` everywhere else.
 - Do not use the disabled variant: it is not accessible. Keep the default action and explain the failure with an error toast.
 
 <!-- component-rules:end -->

@@ -52,6 +52,9 @@ export interface Messages {
     label: string
   }
   // data-display
+  downloadCard: {
+    downloadLabel: (fileName: string) => string
+  }
   productCard: {
     actionLabel: string
   }

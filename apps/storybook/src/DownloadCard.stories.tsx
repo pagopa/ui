@@ -10,6 +10,7 @@ const meta = {
   argTypes: {
     href: { control: "text" },
     onDownload: { control: false },
+    downloadLabel: { control: false },
     fileName: { control: "text" },
     meta: { control: "text" },
   },
@@ -17,7 +18,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Download row: with `href` it is a native link with a `download` attribute and keeps keyboard navigation; with `onDownload` it is an application button. Choose one or the other.",
+          "Download row: with `href` it is a native link with a `download` attribute and keeps keyboard navigation; with `onDownload` it is an application button. Choose one or the other. The action announces `messages.downloadCard.downloadLabel`, the file name included, and `downloadLabel` replaces the phrase.",
       },
     },
   },
@@ -55,4 +56,20 @@ export const NativeDownloadLink: Story = {
 
 export const ApplicationAction: Story = {
   args: { fileName: "dati.csv", onDownload: () => undefined },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByRole("button", { name: "Scarica dati.csv" })).toBeVisible()
+  },
+}
+
+export const CustomDownloadLabel: Story = {
+  args: {
+    fileName: "dati.csv",
+    onDownload: () => undefined,
+    downloadLabel: (fileName) => `Scarica il file ${fileName}`,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByRole("button", { name: "Scarica il file dati.csv" })).toBeVisible()
+  },
 }

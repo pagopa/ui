@@ -4,6 +4,7 @@ import { expect, screen, userEvent, waitFor, within } from "storybook/test"
 import { AttachmentModule } from "@/components/composites/attachment-module"
 import { CheckoutModule } from "@/components/composites/checkout-module"
 import { PaymentModule } from "@/components/composites/payment-module"
+import { DownloadCard } from "@/components/data-display/download-card"
 import { ProgressKpi } from "@/components/data-display/progress-kpi"
 import { Avatar } from "@/components/content/avatar"
 import { Table } from "@/components/data-display/table"
@@ -376,6 +377,12 @@ export const ContentAnnouncements: Story = {
         />
       </ul>
       <ProgressKpi label="Avanzamento" value={1234} total={2000} locale="en-US" />
+      <DownloadCard
+        fileName="modulo.pdf"
+        meta="PDF · 120 KB"
+        onDownload={() => undefined}
+        downloadLabel={(fileName) => `Scarica allegato ${fileName}`}
+      />
     </div>
   ),
   play: async ({ canvasElement }) => {
@@ -391,6 +398,7 @@ export const ContentAnnouncements: Story = {
     await expect(canvas.getByRole("button", { name: "Apri su misura" })).toBeVisible()
     // Numbers format with the caller's locale (en-US groups with commas).
     await expect(canvas.getByText("1,234")).toBeVisible()
+    await expect(canvas.getByRole("button", { name: "Scarica allegato modulo.pdf" })).toBeVisible()
   },
 }
 
