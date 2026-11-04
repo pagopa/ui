@@ -1,13 +1,25 @@
 // The `figma-align` dynamic workflow: the figma-to-code skill
-// (.agents/skills/figma-to-code) as an orchestration. The skill stays the
-// source of every rule; this file only sequences it, runs the deterministic
-// commands itself and hands each node to a subagent that loads the skill.
+// (.agents/skills/figma-to-code) and its start procedure
+// (.agents/skills/start-figma-to-code) as an orchestration. The skills stay the
+// source of every rule; this file only sequences them, runs the deterministic
+// commands itself and hands each node to a subagent that loads the skills.
 //
-// Phases: preflight (figma:status) → delta (snapshot, triage, rules/comments
-// refresh, pending queue, wave) → analyse (brief, source, cases, decision;
-// parallel, read-only) → decisions (durable pause) → align (one writer at a
-// time, parallel read-only verification) → close (fmt, figma:check, rules, parity
-// verify/capture/report, green chain) → one final re-verification of stale passes → report.
+// Phases: preflight (config, token, MCP gate, figma:status) → delta (snapshot,
+// triage, rules/comments refresh, plan, pending queue, wave) → analyse (brief,
+// source, cases, decision; parallel, read-only) → decisions (durable pause) →
+// align (one writer at a time, parallel read-only verification) → close (fmt,
+// figma:check, rules, parity verify, one capture/report per node, the visual
+// baseline preflight, green chain) → one final re-verification of stale passes
+// → report.
+//
+// The token is the environment first and the macOS `figma-pat` keychain entry
+// second, and only its source is ever logged. It clears the live steps and
+// nothing else: a run without it reads Figma through the MCP, where the pinned
+// snapshot and the committed evidence are the only local sources.
+//
+// The MCP gate follows it (start step 2, init.md §2): one read proves the route
+// answers before the run touches the repository, and a silent tool stops the
+// session there.
 //
 // A visual design request cannot be published by this workflow: it needs the
 // review story on `design.preview.branch`, captures of the deployed preview and
@@ -20,7 +32,7 @@
 // then edit `packages/pagopa-ui/.figma/align/<runId>/decisions.json` (git-ignored)
 // and resume the run.
 
-import { spawn } from "node:child_process"
+import { execFileSync, spawn } from "node:child_process"
 import { createHash, randomUUID } from "node:crypto"
 import {
   createWriteStream,
@@ -47,8 +59,12 @@ import {
 } from "./verification-context.mjs"
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../..")
-const PACKAGE_DIR = join(ROOT, "packages/pagopa-ui")
-const CONFIG_FILE = join(PACKAGE_DIR, "figma-to-code.yaml")
+// The skill finds the config with `git ls-files '*figma-to-code.yaml'`: one per
+// repository, beside the package it describes. Every path in it is relative to
+// that folder, so the folder — never a literal — is what the commands root in.
+const DEFAULT_CONFIG = "packages/pagopa-ui/figma-to-code.yaml"
+let CONFIG_FILE = join(ROOT, DEFAULT_CONFIG)
+let PACKAGE_DIR = dirname(CONFIG_FILE)
 const DECISIONS = ["implement", "review", "map", "exclude", "design-request", "skip"]
 
 // ---------------------------------------------------------------- helpers
@@ -60,7 +76,10 @@ const DECISIONS = ["implement", "review", "map", "exclude", "design-request", "s
 // the network, and a cached answer would be a stale one.
 const FRESH_TARGETS = new Set([
   "pagopa-ui-cli:figma:status",
+  "pagopa-ui-cli:figma:plan",
+  "pagopa-ui-cli:figma:export",
   "pagopa-ui-cli:figma:brief",
+  "pagopa-ui-cli:figma:parity:align",
   "pagopa-ui-cli:figma:parity:queue",
   "pagopa-ui-cli:figma:parity:evidence",
   "pagopa-ui-cli:figma:parity:capture",
@@ -69,6 +88,7 @@ const FRESH_TARGETS = new Set([
   "pagopa-ui-cli:figma:rules:check",
   "pagopa-ui-cli:figma:comments",
   "pagopa-ui-cli:figma:triage",
+  "pagopa-ui-cli:test:visual",
 ])
 
 function withNxFlags(args) {
@@ -167,10 +187,69 @@ function parseJsonOutput(text) {
   throw new Error(`unterminated JSON in output:\n${tail(text, 20)}`)
 }
 
+// `git ls-files` is the skill's discovery: it sees the committed config, not a
+// stale copy beside it, and two of them in one repository is a configuration
+// error rather than a choice. A repository without git falls back to the
+// documented path so the failure names the file.
+function discoverConfig() {
+  const override = process.env.FIGMA_ALIGN_CONFIG
+  if (override) return resolve(ROOT, override)
+  let found
+  try {
+    found = execFileSync("git", ["ls-files", "--", "*figma-to-code.yaml"], {
+      cwd: ROOT,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    })
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean)
+  } catch {
+    return join(ROOT, DEFAULT_CONFIG)
+  }
+  if (found.length === 1) return join(ROOT, found[0])
+  if (found.length > 1) {
+    throw new Error(
+      `One figma-to-code.yaml per repository: found ${found.length} — ${found.join(", ")}`,
+    )
+  }
+  throw new Error(
+    `No figma-to-code.yaml: run the init procedure (.agents/skills/figma-to-code/references/init.md) and write ${DEFAULT_CONFIG}`,
+  )
+}
+
+// The start skill's token preflight: the environment first, then — only where a
+// keychain exists — the `figma-pat` entry. The value is exported into this
+// process so every child command inherits it, and it is never logged: the
+// report names the source, never the secret.
+function tokenPreflight() {
+  const fromEnv = (process.env.FIGMA_TOKEN ?? "").trim()
+  if (fromEnv) return { present: true, source: "FIGMA_TOKEN from the environment" }
+  try {
+    const stored = execFileSync("security", ["find-generic-password", "-s", "figma-pat", "-w"], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    }).trim()
+    if (stored) {
+      process.env.FIGMA_TOKEN = stored
+      return { present: true, source: "the macOS keychain entry figma-pat" }
+    }
+  } catch {
+    // No `security` (a Linux runner has no keychain) or no readable entry: the
+    // route below is the offline one.
+  }
+  return {
+    present: false,
+    source: "none: no FIGMA_TOKEN and no readable figma-pat keychain entry",
+  }
+}
+
 // The config is YAML the repository owns. This parser covers the shape the
 // skill documents — nested maps and the one list of design owners — so the
 // workflow reads the same keys without a YAML dependency.
 function readConfig() {
+  CONFIG_FILE = discoverConfig()
+  PACKAGE_DIR = dirname(CONFIG_FILE)
   const lines = readFileSync(CONFIG_FILE, "utf8")
     .split("\n")
     .map((raw) => ({
@@ -262,8 +341,44 @@ function readGreenChain() {
   return block[1].replace(/\\\n/g, " ").replace(/\s+/g, " ").trim()
 }
 
+// The MCP gate needs a node of the file to read, and the committed inventory is
+// the one list that exists before any command has run.
+function readInventory(config) {
+  try {
+    return (
+      JSON.parse(readFileSync(resolveConfigPath(config.catalog.inventory), "utf8")).components ?? []
+    )
+  } catch {
+    return []
+  }
+}
+
+function firstInventoryNode(config) {
+  const [node] = readInventory(config)
+  if (!node?.nodeId) return null
+  return { nodeId: node.nodeId, name: node.name ?? "", pageName: node.pageName ?? "" }
+}
+
+// The page a node sits on is not in the registry: the export records it in the
+// inventory, and the census is keyed by page.
+function inventoryPages(config) {
+  const pages = new Map()
+  for (const node of readInventory(config)) {
+    if (node?.nodeId) {
+      pages.set(node.nodeId, { pageId: node.pageId ?? "", pageName: node.pageName ?? "" })
+    }
+  }
+  return pages
+}
+
+// A path the prompt and the log can quote: repository-relative with forward
+// slashes, so a Windows checkout names the same file a skill does.
+function repoPath(absolute) {
+  return relative(ROOT, resolve(absolute)).split(sep).join("/")
+}
+
 function contextPath(absolute) {
-  const path = relative(ROOT, resolve(absolute)).split(sep).join("/")
+  const path = repoPath(absolute)
   if (!isSafeContextPath(path)) {
     throw new Error("A configured context path is unsafe or outside the repository")
   }
@@ -565,12 +680,25 @@ const refreshSchema = {
   properties: { ok: { type: "boolean" }, message: { type: "string" } },
 }
 
+// One read call answers the MCP gate; `call` names the tool that answered or
+// stayed silent, so the report can quote it.
+const gateSchema = {
+  type: "object",
+  additionalProperties: false,
+  required: ["ok", "call", "message"],
+  properties: { ok: { type: "boolean" }, call: { type: "string" }, message: { type: "string" } },
+}
+
 // ---------------------------------------------------------------- prompts
 
 function preamble(config) {
   const design = designConfig(config)
+  const configRel = repoPath(CONFIG_FILE)
+  const packageRel = repoPath(PACKAGE_DIR)
+  const localDir = repoPath(dirname(resolveConfigPath(config.figma.snapshot)))
+  const stylesheetRel = repoPath(resolveConfigPath(config.tokens.stylesheet))
   return `You work in the pagopa-ui monorepo at ${ROOT}; run every command from there.
-First load the \`figma-to-code\` skill and the \`pagopa-ui-standards\` skill and follow them: they own every rule, this prompt only scopes your part. The skill config is packages/pagopa-ui/figma-to-code.yaml (paths in it are relative to packages/pagopa-ui, except \`design.requests\` which is ${design.requests} at the workspace root; the local \`.figma/\` exports live in packages/pagopa-ui/.figma).
+First load the \`figma-to-code\` skill and the \`pagopa-ui-standards\` skill and follow them: they own every rule, this prompt only scopes your part. The skill config is ${configRel} (paths in it are relative to ${packageRel}, except \`design.requests\` which is ${design.requests} at the workspace root; the local \`.figma/\` exports live in ${localDir}).
 Design owner(s): ${design.owners.join(", ") || "(not configured)"} · review pull request #${design.preview.pr || "(not configured)"} on ${design.preview.branch || "(not configured)"} · preview ${design.preview.url || "(not configured)"}.
 
 Hard rules for this run:
@@ -578,11 +706,41 @@ Hard rules for this run:
 - Figma is read-only: use only get_design_context, get_screenshot, get_metadata, get_variable_defs and list_file_components_for_code_connect. Never use_figma or any tool that writes to Figma or publishes Code Connect.
 - Never commit, push, switch branches or open pull requests: the person delivers. Creating a design-question issue is allowed only as the design-request flow below says.
 - The working tree is shared with the person and other writers. Never revert, delete, stash, \`git checkout\` or \`git restore\` a change you did not make in this task, even if it looks unrelated or breaks a check: report it in openPoints instead.
-- Storybook already runs at ${config.storybook.url}. Prefix every command that renders it (\`figma:parity:check\`, \`figma:parity:capture\`) with \`STORYBOOK_URL=${config.storybook.url}\`. Never start, restart or kill it. A file created now enters the Tailwind scan only after \`touch packages/pagopa-ui/src/index.css\`.
-- Run project targets as \`pnpm nx run <project>:<target> [flags]\` (the ui-cli changes directory to packages/pagopa-ui, so pass absolute paths or package-relative ones). The two subcommands without a target run from the repository root as \`node packages/ui-cli/src/cli.ts parity source <nodeId> [flags]\` and \`node packages/ui-cli/src/cli.ts parity render [flags]\`.
+- Storybook already runs at ${config.storybook.url}. Prefix every command that renders it (\`figma:parity:check\`, \`figma:parity:capture\`) with \`STORYBOOK_URL=${config.storybook.url}\`. Never start, restart or kill it. A file created now enters the Tailwind scan only after \`touch ${stylesheetRel}\`.
+- Run project targets as \`pnpm nx run <project>:<target> [flags]\` (the ui-cli changes directory to ${packageRel}, so pass absolute paths or package-relative ones). The two subcommands without a target run from the repository root as \`node packages/ui-cli/src/cli.ts parity source <nodeId> [flags]\` and \`node packages/ui-cli/src/cli.ts parity render [flags]\`.
 - Code, comments and docs in English; Italian only for rendered component and story copy.
 - Parity is the render: never claim a match from reading code. Pass \`--skip-nx-cache\` to every parity check or capture: a cached render is not evidence.
-- The \`.Regole\` cards and the node comments are source too. Read the node's \`figma:brief\` before touching it, and leave no rule that targets it \`pending\` or \`stale\`.`
+- The \`.Regole\` cards and the node comments are source too. Read the node's \`figma:brief\` before touching it, and leave no rule that targets it \`pending\` or \`stale\`.
+- The page tree is source as well: \`${config.catalog.pageSurface}\` censuses what the file draws. A page no entry covers is read once with get_metadata on the page node and written there; a page the census already covers is not re-read on its behalf, and publishing a node on a page whose tree was not re-read leaves the census short.`
+}
+
+// The gate is one read call: the workflow cannot call an MCP tool itself, so an
+// agent proves the route works before the run touches the repository.
+function mcpGatePrompt(config, node) {
+  const target = node
+    ? `Read node ${node.nodeId}${node.name ? ` (${node.name})` : ""}${
+        node.pageName ? ` on page ${node.pageName}` : ""
+      }`
+    : "Read any node of the file the config names"
+  return `${preamble(config)}
+
+TASK: answer the MCP gate (start-figma-to-code step 2, init.md §2). One read call, and nothing else: do not create, edit or delete any file.
+${target} with get_metadata — get_screenshot only when get_metadata is unavailable. Any readable answer proves the Figma MCP route works for this session.
+A tool that is missing, not connected or returns nothing is a failure, not a puzzle: return ok=false with the error verbatim in message. Never guess a node, never substitute a local file read, and never report success from what the repository already contains.
+The workflow stops when the gate fails, before anything is written; that state must stay untouched.
+Return ok=true with call = the tool that answered, message = one line naming what it returned (the node and its page, never a token).`
+}
+
+// The MCP component list is the only read that sees roots the REST export
+// cannot; the agent performs it and the workflow turns it into the snapshot.
+function mcpInventoryPrompt(config, mcpInventory) {
+  const fileModule = repoPath(resolveConfigPath(config.figma.fileModule))
+  return `${preamble(config)}
+
+TASK: discover the file's roots for the snapshot (figma-to-code delta.md step 1). One read call, then one write.
+1. Call list_file_components_for_code_connect with FIGMA_FILE_KEY from ${fileModule}.
+2. Write the response verbatim, unmodified, to ${mcpInventory} (create the folder if it is missing). The workflow then runs \`figma:export --input\` on it, which keeps the MCP-only roots.
+When the connected server does not expose that tool, write nothing and return ok=false with the reason in message: the workflow reads the file over REST instead. Return ok=true with the component count in message.`
 }
 
 // `figma:brief --json` is the offline read that closes the fingerprint gap.
@@ -620,6 +778,7 @@ function nodeContext(node) {
   return `Node ${node.nodeId} — ${node.name}
 - registry status: ${node.status}
 - registry note: ${node.note || "(none)"}
+- Figma page: ${node.pageName || "(not in the inventory)"}
 - target: ${JSON.stringify(node.target)}
 - story ids: ${JSON.stringify(node.storyIds)}
 - delta classes in the current plan: ${node.classes.length ? node.classes.join(", ") : "none (queued pending)"}
@@ -636,7 +795,7 @@ ${nodeContext(node)}
 Do:
 1. Read the brief yourself: \`pnpm nx run pagopa-ui-cli:figma:brief --node ${node.nodeId}\` prints the registry entry and note, every rule that targets the node, the open comments and the design requests that cite it. The note is binding. Read the target component, its story and its guide under apps/storybook/src/guides too. A \`pending\`, \`stale\` or \`conflict\` card is work, not a pass; an open comment the source answers is a decision, one it cannot answer is a design request.
 2. Read the source of EVERY declared device: start with \`pnpm nx run pagopa-ui-cli:figma:parity:align --node ${node.nodeId}\` (the work order), then \`node packages/ui-cli/src/cli.ts parity source ${node.nodeId} --depth 1\` (variants, device, box) and \`--compact --depth 3\` per device variant; \`--png\` or get_screenshot read-only when the anatomy is unclear. List each rendered dependency (instance-swap defaults included).
-3. List the committed cases with \`pnpm nx run pagopa-ui-cli:figma:parity:queue --node ${node.nodeId} --json --skip-nx-cache\` and run each with \`pnpm nx run pagopa-ui-cli:figma:parity:check --case <caseId> --skip-nx-cache\`; for a device axis also \`--node ${node.nodeId} --devices\`. Record each exit code and the deltas. A draft case or a warning is not coverage.
+3. List the committed cases with \`pnpm nx run pagopa-ui-cli:figma:parity:capture --saved --node ${node.nodeId} --dry-run\` — it prints \`<caseId> <nodeId> <storyId>\` per saved case, and \`no saved cases\` is the answer when there are none — then reproduce each with \`pnpm nx run pagopa-ui-cli:figma:parity:check --case <caseId> --skip-nx-cache\`; for a device axis also \`--node ${node.nodeId} --devices\`. Record each exit code and the deltas. A draft case or a warning is not coverage. (\`figma:parity:queue --node ${node.nodeId} --json\` lists registry targets per node, not case ids: never read it as the case list.)
 4. Pick exactly one decision:
    - implement: no real implementation covers the node yet (new-from-figma.md);
    - review: it is implemented and the change reaches it, or its cases fail (node-review.md);
@@ -644,8 +803,9 @@ Do:
    - exclude: out of scope, with the reason; dispose its rule cards (out-of-scope or duplicate) too;
    - design-request: the source leaves a question only the design owner can answer, or a rule conflicts with the drawing or an accessibility contract (design-request.md); an open request already named above keeps the node there unless its answer is recorded. For a visual question, add the preview work the flow needs (slug, options, captures, review PR index) to the plan.
    "It matches the desktop frame" is not a decision for a node with a device axis.
+5. The census is read-only here: read \`${config.catalog.pageSurface}\` and report in openQuestions whether it covers "${node.pageName || "(the node's page)"}" — the page, its drawn identities and their statuses. Do not re-read the page tree and do not write the census; the writer owns that.
 
-Return the JSON: devices = one entry per declared device (device "any" when there is no axis) with the variant node id, its box and what its composition shows; rules = every card that targets the node with its current disposition and the action the writer must take; comments = the open threads and how the source answers them or why they become a design request; deltas = what the render must change (empty when the cases pass); plan = the concrete steps the writer will take; openQuestions = what only the design owner can answer.`
+Return the JSON: devices = one entry per declared device (device "any" when there is no axis) with the variant node id, its box and what its composition shows; rules = every card that targets the node with its current disposition and the action the writer must take; comments = the open threads and how the source answers them or why they become a design request; deltas = what the render must change (empty when the cases pass); plan = the concrete steps the writer will take; openQuestions = what only the design owner can answer, and whether the census covers the node's page.`
 }
 
 const DECISION_GUIDANCE = {
@@ -683,6 +843,8 @@ Start by re-reading \`pnpm nx run pagopa-ui-cli:figma:brief --node ${node.nodeId
 
 Limits: three fix passes per case, then a residue with its reason or a written blocker. The case corpus is written only by \`figma:parity:check --save-case\` (with --note "reviewed: …"); never hand-edit it and never leave a draft as coverage. Set status implemented only after you inspected the source and the render of every declared device; otherwise leave it pending with the blocker in the note. A design request keeps the node pending, names its record in the note, and never invents an issue URL, a capture or a preview link. Do not edit registry entries of other nodes. Finish with \`pnpm nx run pagopa-ui:figma:check\` and fix what this node broke; a stale Storybook title is fixed with \`pnpm nx run pagopa-ui:figma:stories\` (the generator owns that map), never by hand-editing it. Do not run the full green chain: the workflow runs it once for the whole wave.
 
+Census: \`${config.catalog.pageSurface}\` is the record of what the node's Figma page draws. When this node's work touches a page no entry covers, or the source gained a published identity on it, read the page tree once with get_metadata on the page node and write the census; when the entry exists and nothing was published, leave it alone (a re-read that adds nothing is not work). \`figma:check\` enforces it, so a short census is a broken node.
+
 Return the JSON: status = the registry status you left; cases = one per saved or re-run case with its device, verdict and residues ("path=reason"); rules = every card that targets the node with the disposition you recorded and its guide or reason; comments = each open thread and how you answered or promoted it; designRequest = the record path or ""; preview = the preview links, or the handoff that still needs design.preview.branch, or ""; openPoints = what stays open and why; commands = each command you ran with its exit code.`
 }
 
@@ -697,7 +859,7 @@ The writer reported: ${JSON.stringify(alignment)}
 
 Check (references/definition-of-done.md, visual-parity.md and rules.md):
 1. \`pnpm nx run pagopa-ui-cli:figma:brief --node ${node.nodeId}\` closes the rules and comments: no rule that targets the node is \`pending\` or \`stale\`; every imported rule is in the guide's first block under \`## Component Rules\`; each open comment is answered by the source or points at a design request. A design request has its record, issue URL, owner handles, preview links or a stated handoff for the preview work, and the conflicting card points at the record.
-2. \`pnpm nx run pagopa-ui-cli:figma:parity:check --case <caseId> --skip-nx-cache\` reproduces every case the node has (list them with \`pnpm nx run pagopa-ui-cli:figma:parity:queue --node ${node.nodeId} --json --skip-nx-cache\`); for a device axis \`--node ${node.nodeId} --devices\` shows a reviewed passing case per declared device or a reasoned device exception.
+2. \`pnpm nx run pagopa-ui-cli:figma:parity:check --case <caseId> --skip-nx-cache\` reproduces every case the node has — list them with \`pnpm nx run pagopa-ui-cli:figma:parity:capture --saved --node ${node.nodeId} --dry-run\`, which prints \`<caseId> <nodeId> <storyId>\`; for a device axis \`--node ${node.nodeId} --devices\` shows a reviewed passing case per declared device or a reasoned device exception.
 3. Every residue has a reason; no inline [Npx] values or off-token colours in the touched component (token ladder); the story is framed at the source width with parameters.design = figmaEmbedUrl; the guide records the source mapping; props follow prop-conventions.md or the departure is in the note.
 4. The registry entry is consistent with the outcome: implemented has target.module/export/story/storyExports; pending names its blocker or design request; excluded has a reason.
 Skip the checks that do not apply to the decision (an exclusion has no render to verify; a design request stops at its record and handoff).
@@ -855,10 +1017,13 @@ const figmaAlign = defineWorkflow({
   meta: {
     name: "figma-align",
     description:
-      "Align pending Figma nodes with the React design system following the figma-to-code skill: the figma:status session report, the delta plan and triage with fresh rules/comments snapshots, a brief per node, parallel analysis, a durable decision checkpoint, one writer at a time with read-only verification that can overlap a writer, then figma:check, the rules check, the parity wave record and the green chain. Never commits. " +
-      "args: { nodes?: string[] (node ids; default: the next pending nodes in implementationOrder), waveSize?: integer (default 3), refresh?: boolean (live snapshot + triage first; needs FIGMA_TOKEN), triage?: boolean (triage the pinned snapshot), approval?: 'pause' | 'auto' (default 'pause': stop after the decisions so the person can edit packages/pagopa-ui/.figma/align/<runId>/decisions.json, then resume), analyseOnly?: boolean (stop after the decisions), greenChain?: boolean (default true), startStorybook?: boolean (default true) }",
+      "Align pending Figma nodes with the React design system following the figma-to-code and start-figma-to-code skills: the config found from git, the token preflight (environment, then the figma-pat keychain entry) and its route, the MCP gate before anything is written, the figma:status session report, the delta plan and triage with fresh rules/comments snapshots, a brief per node, parallel analysis, a durable decision checkpoint, one writer at a time with read-only verification that can overlap a writer, then figma:check, the rules check, one parity capture and report per node, the visual baseline preflight and the green chain. Never commits. " +
+      "args: { nodes?: string[] (node ids; default: the next pending nodes in implementationOrder), waveSize?: integer (default 3), refresh?: boolean (live snapshot + triage first; needs a token), triage?: boolean (triage the pinned snapshot), approval?: 'pause' | 'auto' (default 'pause': stop after the decisions so the person can edit packages/pagopa-ui/.figma/align/<runId>/decisions.json, then resume), analyseOnly?: boolean (stop after the decisions), greenChain?: boolean (default true), startStorybook?: boolean (default true) }",
     phases: [
-      { title: "Preflight", detail: "Config, figma:status, working tree" },
+      {
+        title: "Preflight",
+        detail: "Config, token and route, MCP gate, figma:status, working tree",
+      },
       { title: "Delta", detail: "Snapshot, plan, triage, rules/comments, pending queue, wave" },
       {
         title: "Analyse",
@@ -871,7 +1036,8 @@ const figmaAlign = defineWorkflow({
       },
       {
         title: "Close",
-        detail: "fmt, figma:check, rules check, parity verify/capture/report, green chain",
+        detail:
+          "fmt, figma:check, rules check, parity verify, one capture/report per node, visual baseline preflight, green chain",
       },
       { title: "Report" },
     ],
@@ -903,8 +1069,10 @@ const figmaAlign = defineWorkflow({
       startStorybook: args.startStorybook !== false,
     }
     const { signal } = ctx
-    const outDir = join(PACKAGE_DIR, ".figma/align", ctx.runId)
-    mkdirSync(outDir, { recursive: true })
+    // The decisions checkpoint lives beside the config it was written for: the
+    // discovery may name another package, so the path is settled once inside
+    // the preflight, which is also what creates the folder.
+    let outDir = join(PACKAGE_DIR, ".figma/align", ctx.runId)
     let storybook = null
 
     const ensureStorybook = async (config) => {
@@ -951,6 +1119,8 @@ const figmaAlign = defineWorkflow({
       // ------------------------------------------------------------ preflight
       ctx.phase("Preflight")
       const config = readConfig()
+      outDir = join(PACKAGE_DIR, ".figma/align", ctx.runId)
+      mkdirSync(outDir, { recursive: true })
       for (const key of ["figma", "catalog", "storybook", "design"]) {
         if (!config[key]) throw new Error(`figma-to-code.yaml: missing section '${key}'`)
       }
@@ -959,6 +1129,35 @@ const figmaAlign = defineWorkflow({
       const parityOut = resolveConfigPath(config.figma.parityOut)
       const mcpInventory = resolveConfigPath(config.figma.mcpInventory)
       const registryPath = join(PACKAGE_DIR, config.catalog.registry)
+
+      // Two states decide the whole run, so they come before any command that
+      // writes: where the config is, and whether Figma answers at all.
+      ctx.log(`Config: ${repoPath(CONFIG_FILE)}`)
+      const token = tokenPreflight()
+      ctx.log(`Token: ${token.source}`)
+      ctx.log(
+        token.present
+          ? "Route: REST — figma:plan and figma:export read the live file; the pinned snapshot stays the offline source."
+          : "Route: MCP — the Figma tools read the file and only the pinned snapshot and the committed evidence are available: every live step stays off.",
+      )
+      if (!token.present && opts.refresh) {
+        throw new Error(
+          `Snapshot refresh needs a token: ${token.source}. Export FIGMA_TOKEN (file_content:read, library_content:read) in the shell that runs the session, or work from the pinned snapshot without refresh.`,
+        )
+      }
+      const gateNode = firstInventoryNode(config)
+      const gate = await ctx.step(`mcp-gate:${ctx.runId}`, () =>
+        ctx.agent(mcpGatePrompt(config, gateNode), {
+          label: `mcp-gate:${ctx.runId}`,
+          schema: gateSchema,
+        }),
+      )
+      if (!gate?.ok) {
+        throw new Error(
+          `MCP gate: ${gate?.message ?? "no result"} — the session stops here, before anything is written.`,
+        )
+      }
+      ctx.log(`MCP gate: ${gate.call || "MCP"} answered`)
 
       // The session report is the preflight: token state, pinned snapshot, the
       // drift against the inventory, the rules ledger, the comments and the
@@ -980,21 +1179,13 @@ const figmaAlign = defineWorkflow({
         const comments = status.comments ?? {}
         const requests = status.requests ?? {}
         ctx.log(
-          `Token ${status.token?.present ? "present" : "missing"} · snapshot ${
-            status.snapshot?.present ? status.snapshot.path : "missing"
-          } · rules ${rules.pending ?? 0} pending/${rules.stale ?? 0} stale · ` +
-            `comments ${comments.open ?? 0} open · requests ${requests.open ?? 0} open/${
-              requests.answered ?? 0
-            } answered`,
+          `Snapshot ${status.snapshot?.present ? status.snapshot.path : "missing"} · rules ${
+            rules.pending ?? 0
+          } pending/${rules.stale ?? 0} stale · comments ${comments.open ?? 0} open · requests ${
+            requests.open ?? 0
+          } open/${requests.answered ?? 0} answered`,
         )
         if (status.next) ctx.log(`Next: ${status.next}`)
-        if (!status.token?.present && opts.refresh) {
-          throw new Error(
-            `Figma token missing: ${
-              status.token?.message ?? status.next
-            }. Export FIGMA_TOKEN (file_content:read, library_content:read) in the shell that runs the session, or work from the pinned snapshot without refresh.`,
-          )
-        }
         if (status.live?.changedSinceInventory === true && !opts.refresh) {
           ctx.log(
             "The file changed since the inventory sync: this wave reads the pinned snapshot. Pass refresh=true to re-snapshot and triage first.",
@@ -1011,29 +1202,52 @@ const figmaAlign = defineWorkflow({
       // ------------------------------------------------------------ delta
       ctx.phase("Delta")
       if (opts.refresh) {
-        // The MCP list discovers the roots a REST read cannot see; the REST
-        // plan is the fallback when the connected server has no such tool, and
-        // the prompt states both so the agent never has to introspect.
-        const refreshed = await ctx.agent(
-          `${preamble(config)}
-
-TASK: take a fresh Figma snapshot (figma-to-code delta.md step 1). Nothing else.
-1. Run the token preflight: \`pnpm nx run pagopa-ui-cli:figma:status --skip-nx-cache\`. If the token is missing, stop and return ok=false with its guidance verbatim (never the token).
-2. When the connected MCP server exposes list_file_components_for_code_connect, call it with FIGMA_FILE_KEY from packages/pagopa-ui/${config.figma.fileModule}, save the full response to ${mcpInventory}, then run \`pnpm nx run pagopa-ui-cli:figma:export --input ${mcpInventory} --skip-nx-cache\`. It keeps the MCP-only roots.
-3. When that tool is not available, run \`pnpm nx run pagopa-ui-cli:figma:plan --skip-nx-cache\` instead and say in the message that MCP-only roots were not rediscovered: the REST read is complete for the file's own components.
-Return ok=true with the pinned version in message when ${snapshot} pins the current version with a complete baseline.`,
-          { label: `snapshot:${ctx.runId}`, schema: refreshSchema },
-        )
-        if (!refreshed?.ok) {
-          throw new Error(
-            `Snapshot refresh failed: ${refreshed?.message ?? "no result"}. Export FIGMA_TOKEN in the shell that runs the session, or run the export yourself, then start a new run.`,
+        // The MCP list discovers the roots a REST read cannot see, so it is
+        // tried first and the workflow — never the agent — runs the export.
+        // The REST plan is the fallback: exit 1 there is drift, not failure.
+        const listed = await ctx.agent(mcpInventoryPrompt(config, mcpInventory), {
+          label: `mcp-inventory:${ctx.runId}`,
+          schema: refreshSchema,
+        })
+        let pinned = ""
+        if (listed?.ok) {
+          const exported = await check(
+            "figma:export",
+            ["nx", "run", "pagopa-ui-cli:figma:export", "--input", mcpInventory],
+            { allowExit: [0, 1], timeoutMs: 15 * 60_000 },
           )
+          if (exported?.code === 0) pinned = `figma:export from the MCP list (${listed.message})`
+          else ctx.log("figma:export did not pin the snapshot: the REST plan reads it instead.")
+        } else {
+          ctx.log(`MCP component list not read: ${listed?.message ?? "no result"}`)
         }
-        ctx.log(`Snapshot: ${refreshed.message}`)
+        if (!pinned) {
+          // The REST plan is the fallback, and it prints the plan JSON the wave
+          // reads: a nonzero exit there is a validation error, not drift.
+          const planned = await check("figma:plan", ["nx", "run", "pagopa-ui-cli:figma:plan"], {
+            allowExit: [0, 1, 2],
+            timeoutMs: 15 * 60_000,
+          })
+          if (!planned) {
+            throw new Error(
+              `Snapshot refresh failed: figma:plan did not run. Export FIGMA_TOKEN in the shell that runs the session, or run the export yourself, then start a new run.`,
+            )
+          }
+          if (planned.code !== 0) {
+            throw new Error(
+              `Snapshot refresh failed: figma:plan exited ${planned.code} — ${tail(
+                `${planned.stdout ?? ""}\n${planned.stderr ?? ""}`,
+                3,
+              ).replace(/\s+/g, " ")}`,
+            )
+          }
+          pinned = "figma:plan over REST (MCP-only roots not rediscovered)"
+        }
+        ctx.log(`Snapshot: ${pinned}`)
       }
       if (!existsSync(snapshot)) {
         throw new Error(
-          `No pinned snapshot at ${snapshot}: run with refresh=true (needs FIGMA_TOKEN) or export it yourself.`,
+          `No pinned snapshot at ${repoPath(snapshot)}: run with refresh=true (needs a token or the MCP route) or export it yourself.`,
         )
       }
 
@@ -1057,10 +1271,10 @@ Return ok=true with the pinned version in message when ${snapshot} pins the curr
       // changed without producing drift. Missing credentials never block the
       // pinned-snapshot path: the committed ledger and the last local snapshot
       // still answer.
-      if (status?.token?.present) {
+      if (token.present) {
         const rules = await check(
           "figma:rules --refresh",
-          ["nx", "run", "pagopa-ui-cli:figma:rules", "--", "--refresh"],
+          ["nx", "run", "pagopa-ui-cli:figma:rules", "--refresh"],
           { allowExit: [0, 1, 2], timeoutMs: 10 * 60_000 },
         )
         if (!rules || rules.code !== 0) {
@@ -1080,6 +1294,17 @@ Return ok=true with the pinned version in message when ${snapshot} pins the curr
         )
       }
 
+      // The plan diff of the rules ledger: which cards the snapshot gained,
+      // which the ledger no longer matches and which the source removed. A
+      // node is not finished while a card that targets it is pending or stale,
+      // so the wave reads this before it picks nodes.
+      const rulesPlan = await check("figma:rules", ["nx", "run", "pagopa-ui-cli:figma:rules"], {
+        allowExit: [0, 1, 2],
+      })
+      if (rulesPlan?.stdout) {
+        ctx.log(tail(rulesPlan.stdout, 2).replace(/\s+/g, " "))
+      }
+
       const plan = await ctx.step("plan-v1", async () => {
         const { stdout } = await run(
           "node",
@@ -1094,15 +1319,7 @@ Return ok=true with the pinned version in message when ${snapshot} pins the curr
       if (opts.refresh) {
         const evidence = await check(
           "figma:parity:evidence --write",
-          [
-            "nx",
-            "run",
-            "pagopa-ui-cli:figma:parity:evidence",
-            "--",
-            "--write",
-            "--input",
-            snapshot,
-          ],
+          ["nx", "run", "pagopa-ui-cli:figma:parity:evidence", "--write", "--input", snapshot],
           { allowExit: [0, 1, 2], timeoutMs: 30 * 60_000 },
         )
         if (!evidence || evidence.code !== 0) {
@@ -1123,8 +1340,23 @@ Return ok=true with the pinned version in message when ${snapshot} pins the curr
         .join(" · ")
       ctx.log(
         `Delta: ${drift} · implementationOrder ${(plan.implementationOrder ?? []).length} · ` +
-          `pending ${(plan.pending ?? []).length}`,
+          `pending ${(plan.pending ?? []).length} · unverifiedDesign ${
+            (plan.unverifiedDesign ?? []).length
+          }`,
       )
+      // The surface is not a delta: it is what the file draws that no node
+      // answers. `uncensused` is the page census debt, and the wave owes it a
+      // page-tree read before it can claim the pages it touched are complete.
+      ctx.log(
+        `Surface: ${(plan.surfaceWaiting ?? []).length} waiting · ` +
+          `${(plan.surfaceUnmirrored ?? []).length} unmirrored · ` +
+          `${(plan.surfaceUncensored ?? []).length} uncensused`,
+      )
+      if ((plan.surfaceUncensored ?? []).length) {
+        ctx.log(
+          `Page census: ${(plan.surfaceUncensored ?? []).length} page(s) owed a read — ${config.catalog.pageSurface}.`,
+        )
+      }
       ctx.log(`Pending queue: ${queue.cases.length} nodes`)
 
       const wave = await ctx.step("wave-v1", async () => {
@@ -1174,6 +1406,7 @@ Return ok=true with the pinned version in message when ${snapshot} pins the curr
             (plan[key] ?? []).some((item) => item === id || item?.nodeId === id || item?.id === id),
           )
         const nodes = []
+        const pages = inventoryPages(config)
         for (const id of ids) {
           const entry = registry[id]
           if (!entry) throw new Error(`Node ${id} is not in the registry`)
@@ -1198,6 +1431,7 @@ Return ok=true with the pinned version in message when ${snapshot} pins the curr
             name: entry.target?.export ?? queued?.export ?? id,
             status: entry.status,
             note: entry.note ?? brief?.note ?? "",
+            pageName: pages.get(id)?.pageName ?? "",
             target: entry.target ?? brief?.target ?? null,
             storyIds: queued?.storyIds ?? [],
             classes: classesOf(id),
@@ -1415,10 +1649,12 @@ Return ok=true with the pinned version in message when ${snapshot} pins the curr
 
       // ------------------------------------------------------------ close
       ctx.phase("Close")
-      const waveName = `${new Date().toISOString().slice(0, 10)}-alignment-${ctx.runId.slice(0, 8)}`
-      const waveDir = join(parityOut, waveName)
-      // An exclusion or a design request has no case to capture.
-      const captured = results
+      // One wave per node: the report names the node it measures, and a single
+      // comma-list capture would merge every node into a wave no reader can
+      // attribute. An exclusion or a design request has no case to capture.
+      const date = new Date().toISOString().slice(0, 10)
+      const runWave = `${date}-alignment-${ctx.runId.slice(0, 8)}`
+      const rendered = results
         .filter(Boolean)
         .filter((result) => renderDecisions.has(result.decision.decision))
         .map((result) => result.node.nodeId)
@@ -1427,32 +1663,59 @@ Return ok=true with the pinned version in message when ${snapshot} pins the curr
       await check("figma:check", ["nx", "run", "pagopa-ui:figma:check"])
       await check("figma:rules:check", ["nx", "run", "pagopa-ui-cli:figma:rules:check"])
       await check("figma:parity:verify", ["nx", "run", "pagopa-ui-cli:figma:parity:verify"])
-      if (captured.length) {
-        await check(
-          "figma:parity:capture",
+      for (const nodeId of rendered) {
+        const nodeWave = `${date}-${nodeId.replace(/[^A-Za-z0-9]+/g, "-")}-alignment`
+        const nodeDir = join(parityOut, nodeWave)
+        // `--saved` measures exactly the committed cases of this node: an
+        // ad-hoc capture would photograph a page nobody reviews again.
+        const measured = await check(
+          `figma:parity:capture (${nodeId})`,
           [
             "nx",
             "run",
             "pagopa-ui-cli:figma:parity:capture",
+            "--saved",
             "--node",
-            captured.join(","),
+            nodeId,
             "--out",
-            waveDir,
+            nodeDir,
           ],
           { timeoutMs: 30 * 60_000 },
         )
-        await check("figma:parity:report", [
+        if (!measured || measured.code !== 0) {
+          ctx.log(`${nodeId}: the capture measured nothing — the report would be empty.`)
+          continue
+        }
+        await check(`figma:parity:report (${nodeId})`, [
           "nx",
           "run",
           "pagopa-ui-cli:figma:parity:report",
           "--wave",
-          waveName,
+          nodeWave,
           "--dir",
-          waveDir,
+          nodeDir,
           "--out",
-          join(PACKAGE_DIR, "docs/reports", `${waveName}-figma-parity.md`),
+          join(PACKAGE_DIR, "docs/reports", `${nodeWave}-figma-parity.md`),
         ])
       }
+      // The visual gate is the other half of the green chain, and its baselines
+      // are reviewed Linux images: the preflight says which scoped stories have
+      // none, and a missing baseline is a finding for the person, not a reason
+      // to stop a wave that never produced one.
+      await check(
+        "test:visual (baseline preflight)",
+        [
+          "nx",
+          "run",
+          "pagopa-ui-cli:test:visual",
+          "--since",
+          "origin/main",
+          "--out",
+          "apps/storybook/visual/scope.json",
+          "--check-baselines",
+        ],
+        { allowExit: [0, 1, 2], timeoutMs: 20 * 60_000 },
+      )
 
       let green = null
       let greenFixFailed = false
@@ -1518,7 +1781,7 @@ Return ok=true with the pinned version in message when ${snapshot} pins the curr
       const report = {
         runId: ctx.runId,
         branch,
-        wave: waveName,
+        wave: runWave,
         nodes: refreshed.results.map((r, i) => {
           if (r) {
             const verdict = assessVerification({
@@ -1570,7 +1833,7 @@ Return ok=true with the pinned version in message when ${snapshot} pins the curr
         changedFilesScope:
           "Git-visible modified/untracked verification inputs only; ignored, credential and unrelated files are excluded.",
         attributionWarnings: [...attributionWarnings],
-        delivery: `Nothing was committed: this workflow never commits. Review the diff, then commit the alignment on the drift branch (one commit per node) and push it yourself — the drift branch merge is the review record (handoff.md). ${
+        delivery: `Nothing was committed: this workflow never commits. Review the diff, then commit the alignment on the drift branch — one commit per node — and push it yourself: the drift branch merge is the review record (handoff.md). Once the drift pull request exists, comment the before/after media on it (handoff.md, "Before/after media"). The visual preflight above only lists the scoped stories that still have no reviewed baseline: until those baselines are reviewed, the visual gate is unverified, and the per-device verdicts in this report are the case table, not a claim about the screenshots. ${
           design.preview.branch
             ? `A visual design request still needs its review story on ${design.preview.branch}, its captures of the deployed preview and the review pull request index.`
             : "Configure design.preview before a visual design request can be published."

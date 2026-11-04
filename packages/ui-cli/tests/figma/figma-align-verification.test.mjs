@@ -634,6 +634,11 @@ test("the snapshot, commands and report fail closed without workflows or secret 
   `)
   const spawnUrl = dataUrl(`
     export const spawn = (...args) => globalThis.__figmaAlignTestSpawn(...args);
+    // Config discovery and the keychain lookup run a local command; the test
+    // refuses both so no git read or credential lookup can happen here.
+    export const execFileSync = () => {
+      throw new Error("the workflow must not run a local command in this test");
+    };
   `)
   const source = `${fs
     .readFileSync(extension, "utf8")
