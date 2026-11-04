@@ -124,7 +124,7 @@ function Stepper({
         </div>
         <ol aria-label={navigationLabel} className="flex items-center gap-1">
           {items.map((item, index) => (
-            <React.Fragment key={item.label}>
+            <React.Fragment key={`${item.label}-${index}`}>
               <li
                 aria-current={item.status === "current" ? "step" : undefined}
                 className="flex flex-none items-center"
@@ -159,7 +159,7 @@ function Stepper({
       >
         {items.map((item, index) => (
           <li
-            key={item.label}
+            key={`${item.label}-${index}`}
             aria-current={item.status === "current" ? "step" : undefined}
             className="relative flex min-w-0 items-start"
           >

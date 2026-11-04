@@ -31,7 +31,7 @@ function TableList<Row extends { id: React.Key }>({
   actionFallbackLabel: actionFallbackLabelProp,
   pagination,
   emptyLabel: emptyLabelProp,
-  emptyState = { title: "Nessun risultato" },
+  emptyState: emptyStateProp,
 }: {
   /** Accessible name of the list region (source wrapper `aria-label`). */
   label: string
@@ -44,7 +44,7 @@ function TableList<Row extends { id: React.Key }>({
   actionFallbackLabel?: string
   /** Source Show Pagination footer; hidden in the empty state. */
   pagination?: React.ReactNode
-  /** Source State=Empty fallback: pictogram, title, optional subtitle and action. */
+  /** Source State=Empty fallback: pictogram, title, optional subtitle and action. @default messages.tableList.emptyStateTitle */
   emptyState?: TableListEmptyState
   /** Announced text of an empty state with no visible copy. @default messages.tableList.emptyLabel */
   emptyLabel?: string
@@ -52,6 +52,7 @@ function TableList<Row extends { id: React.Key }>({
   const t = useMessages("tableList")
   const actionFallbackLabel = actionFallbackLabelProp ?? t.actionFallbackLabel
   const emptyLabel = emptyLabelProp ?? t.emptyLabel
+  const emptyState = emptyStateProp ?? { title: t.emptyStateTitle }
 
   if (!rows.length) {
     return (

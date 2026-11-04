@@ -3,8 +3,11 @@
 // message dictionary of the UI provider, so a literal in a component
 // destructuring is a regression. Run: `ui-cli check text-defaults`.
 //
-// The scan is syntax-aware: only a destructuring default counts, never a JSX
-// attribute such as `className=`, which a line regex would also match.
+// The scan is syntax-aware and covers three positions a default hides in: the
+// destructuring default, the object literal a prop default carries
+// (`emptyState = { title: "…" }`), and the JSX attribute that paints or
+// announces copy (`aria-label={…}`, `placeholder={…}`). A literal anywhere
+// inside one of those expressions is copy, never a `className`.
 import fs from "node:fs"
 import { parseSync } from "oxc-parser"
 
@@ -68,6 +71,32 @@ export const NON_TEXT_PROPS = new Set([
   "type",
   "variant",
 ])
+
+// Positions whose value is copy: a JSX attribute the user reads or hears, and
+// an object-literal key a default carries. A prop named here is copy wherever
+// it appears, which is why the names are the rendered ones (`aria-label`,
+// `removeLabel`) and not the internal props (`className`, `variant`).
+export const TEXT_POSITIONS = new Set([
+  "alt",
+  "aria-description",
+  "aria-label",
+  "aria-placeholder",
+  "aria-roledescription",
+  "aria-valuetext",
+  "caption",
+  "description",
+  "heading",
+  "label",
+  "message",
+  "placeholder",
+  "removeLabel",
+  "summary",
+  "title",
+])
+
+// Operators a literal never counts as copy behind: `typeof children ===
+// "string"` guards a type, it does not write a sentence.
+const COMPARISONS = new Set(["==", "===", "!=", "!==", "<", ">", "<=", ">="])
 
 export type TextDefault = {
   file: string
@@ -141,6 +170,45 @@ function lineOf(source: string, position: number): number {
   return source.slice(0, position).split("\n").length
 }
 
+// The static text a template renders, its substitutions removed: a `${count}
+// elementi` writes "elementi", a `${percentage}%` writes punctuation only.
+function staticText(node: Node): string {
+  const parts: string[] = []
+  for (const quasi of children(node.quasis)) {
+    if (!isNode(quasi)) continue
+    const value = Reflect.get(quasi, "value")
+    if (typeof value !== "object" || value === null) continue
+    const raw = Reflect.get(value, "cooked") ?? Reflect.get(value, "raw")
+    parts.push(typeof raw === "string" ? raw : "")
+  }
+  return parts.join("")
+}
+
+// Any copy a text expression renders, wherever it hides: a bare literal, a
+// template literal, the `??` fallback, a ternary branch. The walk stops at a
+// comparison, whose strings are types rather than sentences.
+function textLiteral(node: Node, source: string): string | undefined {
+  if (node.type === "Literal" && typeof node.value === "string") {
+    return letters(node.value) >= 2 ? source.slice(node.start, node.end) : undefined
+  }
+  if (node.type === "TemplateLiteral") {
+    return letters(staticText(node)) >= 2 ? source.slice(node.start, node.end) : undefined
+  }
+  if (node.type === "BinaryExpression" && COMPARISONS.has(String(node.operator))) return undefined
+  for (const [key, value] of Object.entries(node)) {
+    // A key is a name, not a sentence: `props["aria-label"]` reads a prop and
+    // `{ "aria-label": … }` names one.
+    if (key === "property" && node.type === "MemberExpression" && node.computed === true) continue
+    if (key === "key" && node.type === "ObjectExpression") continue
+    for (const item of Array.isArray(value) ? value : [value]) {
+      if (!isNode(item)) continue
+      const text = textLiteral(item, source)
+      if (text !== undefined) return text
+    }
+  }
+  return undefined
+}
+
 const FUNCTION_TYPES = new Set([
   "ArrowFunctionExpression",
   "FunctionDeclaration",
@@ -167,7 +235,50 @@ function scan(root: unknown, file: string, source: string): TextDefault[] {
   const hits: TextDefault[] = []
   const seen = new Set<string>()
 
+  function record(line: number, name: string, value: string): void {
+    const identity = `${line}:${name}`
+    if (seen.has(identity)) return
+    seen.add(identity)
+    hits.push({ file, line, name, value })
+  }
+
+  // A JSX attribute that paints or announces copy: `aria-label={…}`,
+  // `placeholder={…}`, `title=[…]`. The literal can sit anywhere inside the
+  // expression the braces hold.
+  function attribute(node: Node): void {
+    const name = child(node, "name")
+    if (!name || name.type !== "JSXIdentifier" || typeof name.name !== "string") return
+    if (!TEXT_POSITIONS.has(name.name)) return
+    const value = child(node, "value")
+    if (!value) return
+    const expression = value.type === "JSXExpressionContainer" ? child(value, "expression") : value
+    if (!expression) return
+    const text = textLiteral(expression, source)
+    if (text === undefined) return
+    record(lineOf(source, node.start), name.name, text)
+  }
+
+  // The object literal a prop default carries: `emptyState = { title: "…" }`
+  // reads as copy through the keys of TEXT_POSITIONS, which is why the hit
+  // names both halves (`emptyState.title`).
+  function objectDefault(node: Node, prop: string): boolean {
+    for (const property of children(node.properties)) {
+      if (!isNode(property) || property.type !== "Property" || property.computed === true) continue
+      const key = child(property, "key")
+      const keyName = key ? propertyName(key) : undefined
+      if (!keyName || !TEXT_POSITIONS.has(keyName)) continue
+      const value = child(property, "value")
+      if (!value) continue
+      const text = textLiteral(value, source)
+      if (text === undefined) continue
+      record(lineOf(source, node.start), `${prop}.${keyName}`, text)
+      return true
+    }
+    return false
+  }
+
   function visit(node: Node): void {
+    if (node.type === "JSXAttribute") attribute(node)
     for (const pattern of patterns(node)) {
       for (const item of children(pattern.properties)) {
         if (!isNode(item) || item.type !== "Property" || item.computed === true) continue
@@ -179,14 +290,14 @@ function scan(root: unknown, file: string, source: string): TextDefault[] {
         if (!value || value.type !== "AssignmentPattern") continue
         const right = child(value, "right")
         if (!right) continue
+        if (right.type === "ObjectExpression") {
+          objectDefault(right, name)
+          continue
+        }
         if (NON_TEXT_PROPS.has(name)) continue
         const text = textValue(right, source)
         if (text === undefined || letters(text) < 2) continue
-        const line = lineOf(source, item.start)
-        const identity = `${line}:${name}`
-        if (seen.has(identity)) continue
-        seen.add(identity)
-        hits.push({ file, line, name, value: text })
+        record(lineOf(source, item.start), name, text)
       }
     }
     for (const value of Object.values(node)) {

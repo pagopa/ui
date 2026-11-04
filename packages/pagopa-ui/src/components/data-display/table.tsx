@@ -66,7 +66,7 @@ function Table<Row extends { id: React.Key }>({
   pagination,
   actionsLabel: actionsLabelProp,
   emptyLabel: emptyLabelProp,
-  emptyState = { title: "Nessun risultato" },
+  emptyState: emptyStateProp,
 }: {
   caption: string
   captionHidden?: boolean
@@ -99,6 +99,7 @@ function Table<Row extends { id: React.Key }>({
   /** Announced text of an empty state with no visible copy. @default messages.table.emptyLabel */
   emptyLabel?: string
   pagination?: React.ReactNode
+  /** Visible copy of the empty state. @default messages.table.emptyStateTitle */
   emptyState?: {
     title?: string
     description?: string
@@ -110,6 +111,7 @@ function Table<Row extends { id: React.Key }>({
   const notificationLabel = notificationLabelProp ?? t.notificationLabel
   const actionsLabel = actionsLabelProp ?? t.actionsLabel
   const emptyLabel = emptyLabelProp ?? t.emptyLabel
+  const emptyState = emptyStateProp ?? { title: t.emptyStateTitle }
 
   const descriptionId = React.useId()
   const tableId = React.useId()
