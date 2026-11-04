@@ -269,5 +269,9 @@ jobs:
       # label that verifies the images it just pushed.
       - name: Ask for the verifying run
         if: always()
+        env:
+          # The ref reaches the shell through the environment: a branch name
+          # interpolated into the script would be a command injection sink.
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
         run: |
-          echo "::notice::The baselines are committed to ${{ github.event.pull_request.head.ref }}. Add the 'visual:check' label, or dispatch this workflow on the branch, so the comparison verifies the new baselines."
+          echo "::notice::The baselines are committed to ${PR_HEAD_REF}. Add the 'visual:check' label, or dispatch this workflow on the branch, so the comparison verifies the new baselines."
