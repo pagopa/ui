@@ -1,3 +1,17 @@
+## 0.1.1 (2026-11-04)
+
+### 🚀 Features
+
+- feat(popper): add an anchored validation message ([#93](https://github.com/pagopa/ui/pull/93))
+
+### 🩹 Fixes
+
+- chore(figma): review renamed Missing element ([#93](https://github.com/pagopa/ui/pull/93))
+
+### ❤️ Thank You
+
+- gunzip
+
 ## 0.1.0 (2026-11-02)
 
 ### 🩹 Fixes
