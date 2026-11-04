@@ -218,6 +218,9 @@ function Timeline({
 }) {
   const t = useMessages("timeline")
   const label = labelProp ?? t.label
+  // A row without a timestamp still reserves the leading column when a sibling
+  // carries one, so every cursor stays on the same rail.
+  const hasTimestamps = items.some((item) => item.timestamp)
 
   return (
     // The source pairs the item box with the device: a 16px inset, 12px icon
@@ -231,8 +234,12 @@ function Timeline({
         const last = index === items.length - 1
         return (
           <li key={item.id} className="flex gap-2 pb-8 last:pb-0">
-            {item.timestamp ? <TimelineTimestamp {...item.timestamp} /> : null}
-            <span className="relative flex w-6 shrink-0 justify-center">
+            {item.timestamp ? (
+              <TimelineTimestamp {...item.timestamp} />
+            ) : hasTimestamps ? (
+              <span aria-hidden="true" className="w-10 shrink-0" />
+            ) : null}
+            <span data-slot="timeline-cursor" className="relative flex w-6 shrink-0 justify-center">
               {last ? null : (
                 <span
                   aria-hidden="true"
@@ -282,7 +289,9 @@ function Timeline({
                 </div>
               </div>
             ) : (
-              <div className="grid min-w-0 flex-1 gap-2 py-6">
+              // No top padding: the cursor and the copy share the row top, so a
+              // plain row lines up with a timestamped or carded one.
+              <div className="grid min-w-0 flex-1 gap-2 pb-6">
                 <div className="grid gap-1">
                   <span className="text-label-mini-sb text-foreground">{item.title}</span>
                   {item.description ? (

@@ -4,6 +4,7 @@ import * as React from "react"
 
 import { useMessages } from "@/lib/ui-provider"
 import {
+  PopoverArrow,
   PopoverClose,
   Popover as PopoverPrimitive,
   PopoverContent,
@@ -57,11 +58,13 @@ function Popover({
         <div data-slot="popover-frame" className="flex w-full flex-col items-center">
           {arrowPosition === "top" ? (
             <div className="relative flex h-5 w-full justify-center" aria-hidden="true">
-              <div data-slot="popover-indicator" className="flex h-5 w-6 flex-col gap-2.5 pt-1">
-                <svg viewBox="0 0 24 16" className="h-4 w-6 text-popover">
+              {/* Placed by the middleware, not centred: when the popup is shifted
+                  to stay in the viewport the arrow keeps pointing at the trigger. */}
+              <PopoverArrow className="absolute top-0 h-5 w-6 pt-1">
+                <svg viewBox="0 0 24 16" className="h-4 w-6">
                   <path d="M12 0 24 16H0L12 0Z" fill="currentColor" />
                 </svg>
-              </div>
+              </PopoverArrow>
             </div>
           ) : null}
           <div
@@ -77,11 +80,11 @@ function Popover({
           </div>
           {arrowPosition === "bottom" ? (
             <div className="relative flex h-5 w-full justify-center" aria-hidden="true">
-              <div data-slot="popover-indicator" className="flex h-5 w-6 flex-col gap-2.5 pb-1">
-                <svg viewBox="0 0 24 16" className="h-4 w-6 text-popover">
-                  <path d="M0 0h24L12 16 0 0Z" fill="currentColor" />
+              <PopoverArrow className="absolute bottom-0 h-5 w-6 rotate-180 pt-1">
+                <svg viewBox="0 0 24 16" className="h-4 w-6">
+                  <path d="M12 0 24 16H0L12 0Z" fill="currentColor" />
                 </svg>
-              </div>
+              </PopoverArrow>
             </div>
           ) : null}
         </div>

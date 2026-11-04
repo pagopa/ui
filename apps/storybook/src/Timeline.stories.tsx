@@ -111,6 +111,16 @@ export const PlainItems: Story = {
       },
     ],
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const timeline = canvas.getByRole("list", { name: "Cronologia della notifica" })
+    const cursors = [...timeline.querySelectorAll("[data-slot='timeline-cursor']")]
+    await expect(cursors).toHaveLength(3)
+    // A row without a timestamp still reserves the leading column, so every
+    // cursor keeps to the same vertical rail instead of stepping left.
+    const rail = new Set(cursors.map((cursor) => Math.round(cursor.getBoundingClientRect().x)))
+    await expect(rail.size).toBe(1)
+  },
 }
 
 export const Touchpoints: Story = {

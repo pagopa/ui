@@ -10,6 +10,11 @@ choosing a device. `correction` takes the caller's `CorrectionTag`, `timestamp`
 takes `{ month, day, time }`, and `time` renders an upper-case caption under the
 copy. The touchpoint group carries `touchpoints` or `recipients`.
 
+The rail is one line: a row without a `timestamp` keeps the leading column
+reserved when any sibling carries one, and the copy starts at the top of the row
+next to its cursor, so cursors and titles never step sideways or drop below
+their dot.
+
 Every rendered and announced string is consumer-owned: the list name defaults to
 `Cronologia` and is replaceable through `label`, the titles, descriptions,
 timestamps and touchpoint labels are content, and each accordion row announces its

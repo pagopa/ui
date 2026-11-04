@@ -67,6 +67,22 @@ function PopoverAnchor({ className, ...props }: React.ComponentProps<"div">) {
   return <div data-slot="popover-anchor" className={className} {...props} />
 }
 
+/**
+ * Arrow of the popup. The placement middleware anchors it to the trigger, so it
+ * keeps pointing at the trigger even when the popup is shifted to stay in the
+ * viewport. Position it against the popup and give it a box; the middleware only
+ * sets the cross-axis offset.
+ */
+function PopoverArrow({ className, ...props }: PopoverPrimitive.Arrow.Props) {
+  return (
+    <PopoverPrimitive.Arrow
+      data-slot="popover-arrow"
+      className={cn("text-popover", className)}
+      {...props}
+    />
+  )
+}
+
 function PopoverHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -99,6 +115,7 @@ function PopoverDescription({ className, ...props }: PopoverPrimitive.Descriptio
 
 export {
   Popover,
+  PopoverArrow,
   PopoverClose,
   PopoverAnchor,
   PopoverContent,

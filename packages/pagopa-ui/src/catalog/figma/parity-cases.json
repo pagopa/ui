@@ -6149,7 +6149,7 @@
     "depth": 3,
     "root": "[data-slot=\"popover-frame\"]",
     "subjects": {
-      "Indicator": "[data-slot=\"popover-indicator\"]",
+      "Indicator": "[data-slot=\"popover-arrow\"]",
       "Content": "[data-slot=\"popover-card\"]"
     },
     "compareText": true,
@@ -6172,7 +6172,7 @@
     "root": "[data-slot=\"popover-frame\"]",
     "subjects": {
       "Content": "[data-slot=\"popover-card\"]",
-      "Indicator": "[data-slot=\"popover-indicator\"]"
+      "Indicator": "[data-slot=\"popover-arrow\"]"
     },
     "compareText": true,
     "compareBox": "full",
