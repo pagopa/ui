@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { cn } from "@/lib/cn"
+import { useMessages } from "@/lib/ui-provider"
 import { X } from "@/components/primitives/icons"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
@@ -64,7 +65,7 @@ function Chip({
 }: React.ComponentProps<"span"> & {
   /** Adds the source remove control; without it the chip is a static label. */
   onRemove?: () => void
-  /** Accessible name of the remove control; defaults to `Elimina {label}`. */
+  /** Accessible name of the remove control. @default messages.chip.removeLabel */
   removeLabel?: string
   /** Meaning of the chip. @default "default" */
   variant?: ChipVariant
@@ -77,6 +78,8 @@ function Chip({
     size === "compact" && variant === "primary" && appearance === "solid"
       ? "border-transparent bg-chip-primary-soft text-chip-primary-foreground"
       : chipStyles[variant][appearance]
+  const t = useMessages("chip")
+  const chipLabel = typeof children === "string" ? children : undefined
 
   return (
     <span
@@ -97,9 +100,7 @@ function Chip({
         <button
           type="button"
           onClick={onRemove}
-          aria-label={
-            removeLabel ?? (typeof children === "string" ? `Elimina ${children}` : "Elimina")
-          }
+          aria-label={removeLabel ?? t.removeLabel(chipLabel)}
           className="relative -my-0.5 inline-grid size-6 shrink-0 place-items-center rounded-full text-current outline-none after:absolute after:-inset-2.5 hover:bg-foreground/10 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-1 focus-visible:outline-ring"
         >
           <X aria-hidden="true" className="size-5" />
@@ -119,7 +120,7 @@ function InputChip({
 }: React.ComponentProps<"span"> & {
   /** Removes the chip; with `pointerRemove` it is the pointer-only control. */
   onRemove?: () => void
-  /** Accessible name of the remove button; defaults to `Elimina {label}`. */
+  /** Accessible name of the remove button. @default messages.chip.removeLabel */
   removeLabel?: string
   /**
    * Removes on pointer only, without a nested `<button>`: the control for
@@ -129,6 +130,7 @@ function InputChip({
   pointerRemove?: boolean
 }) {
   const label = typeof children === "string" ? children : undefined
+  const t = useMessages("chip")
   const trailing = onRemove || pointerRemove
   const removeGlyph = <PagoPAIcon name="close" size={24} variant="small" />
   return (
@@ -143,7 +145,7 @@ function InputChip({
       {onRemove && !pointerRemove ? (
         <button
           type="button"
-          aria-label={removeLabel ?? (label ? `Elimina ${label}` : "Elimina")}
+          aria-label={removeLabel ?? t.removeLabel(label)}
           onClick={onRemove}
           className="relative grid size-6 shrink-0 place-items-center rounded-full text-primary after:absolute after:-inset-2.5 hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring"
         >

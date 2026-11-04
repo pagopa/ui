@@ -58,15 +58,21 @@ export const enMessages: Messages = {
   tableList: {
     actionFallbackLabel: "Open",
     emptyLabel: "No results",
+    emptyStateTitle: "No results",
   },
   table: {
     selectionLabel: "Select all rows",
     notificationLabel: "Unread notification",
     actionsLabel: "Actions",
     emptyLabel: "No results",
+    emptyStateTitle: "No results",
+    sortLabel: (column) => `Sort by ${column}`,
   },
   timeline: {
     label: "Timeline",
+  },
+  progressKpi: {
+    valueLabel: (percentage) => `${percentage}%`,
   },
   banner: {
     dismissLabel: "Close banner",
@@ -104,6 +110,9 @@ export const enMessages: Messages = {
     openLabel: "open list",
     closeLabel: "close list",
     loadingLabel: "Loading list",
+  },
+  chip: {
+    removeLabel: (label) => (label ? `Remove ${label}` : "Remove"),
   },
   datePicker: {
     label: "Select date",

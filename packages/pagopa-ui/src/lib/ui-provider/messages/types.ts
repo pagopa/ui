@@ -64,15 +64,21 @@ export interface Messages {
   tableList: {
     actionFallbackLabel: string
     emptyLabel: string
+    emptyStateTitle: string
   }
   table: {
     selectionLabel: string
     notificationLabel: string
     actionsLabel: string
     emptyLabel: string
+    emptyStateTitle: string
+    sortLabel: (column: string) => string
   }
   timeline: {
     label: string
+  }
+  progressKpi: {
+    valueLabel: (percentage: number) => string
   }
   // feedback
   banner: {
@@ -112,6 +118,9 @@ export interface Messages {
     openLabel: string
     closeLabel: string
     loadingLabel: string
+  }
+  chip: {
+    removeLabel: (label?: string) => string
   }
   datePicker: {
     label: string

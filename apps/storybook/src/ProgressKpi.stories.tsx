@@ -42,8 +42,23 @@ type Story = StoryObj<typeof meta>
 export const Playground: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await expect(canvas.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "72")
+    const bar = canvas.getByRole("progressbar")
+    await expect(bar).toHaveAttribute("aria-valuenow", "72")
+    await expect(bar).toHaveAccessibleName("72%")
     await expect(canvas.getByText("72%")).toBeVisible()
+  },
+}
+
+// A zero total has no ratio to report: the bar reads 0%, never NaN.
+export const ZeroTotal: Story = {
+  args: { label: "Obiettivo mensile", value: 0, total: 0, detail: "Nessuna operazione prevista" },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const bar = canvas.getByRole("progressbar")
+    await expect(bar).toHaveAttribute("aria-valuenow", "0")
+    await expect(bar).toHaveAccessibleName("0%")
+    await expect(canvas.getByText("0%")).toBeVisible()
+    await expect(canvas.queryByText(/NaN/)).not.toBeInTheDocument()
   },
 }
 

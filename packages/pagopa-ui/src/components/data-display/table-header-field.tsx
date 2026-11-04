@@ -2,6 +2,7 @@
 
 import * as React from "react"
 
+import { useMessages } from "@/lib/ui-provider"
 import { ArrowUpDown } from "@/components/primitives/icons"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { TableHead } from "@/components/primitives/table"
@@ -16,12 +17,13 @@ function TableHeaderField({
   sort,
   ...props
 }: React.ComponentProps<typeof TableHead> & { sort?: TableSort }) {
+  const t = useMessages("table")
   return (
     <TableHead scope="col" aria-sort={sort?.direction} {...props}>
       {sort ? (
         <button
           type="button"
-          aria-label={typeof children === "string" ? `Ordina per ${children}` : undefined}
+          aria-label={typeof children === "string" ? t.sortLabel(children) : undefined}
           onClick={sort.onChange}
           className="inline-flex min-h-11 items-center gap-2 rounded-sm text-left whitespace-normal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >

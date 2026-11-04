@@ -1,7 +1,12 @@
+"use client"
+
 import * as React from "react"
 import { cn } from "@/lib/cn"
+import { useMessages } from "@/lib/ui-provider"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+
+import { progressPercentage } from "./progress-kpi-utils"
 
 interface ProgressKpiRow {
   label?: string
@@ -19,13 +24,14 @@ function KpiBar({
   completed?: boolean
   className?: string
 }) {
+  const t = useMessages("progressKpi")
   return (
     <div
       role="progressbar"
       aria-valuemin={0}
       aria-valuemax={100}
       aria-valuenow={percentage}
-      aria-label={`${percentage}%`}
+      aria-label={t.valueLabel(percentage)}
       className={cn("w-full overflow-hidden rounded-2xl bg-secondary", className)}
     >
       <div
@@ -82,7 +88,8 @@ function ProgressKpi({
   /** BCP 47 locale of the number formatting. @default "it-IT" */
   locale?: string
 }) {
-  const percentage = Math.min(100, Math.round((value / total) * 100))
+  const t = useMessages("progressKpi")
+  const percentage = progressPercentage(value, total)
   return (
     <section
       aria-label={label}
@@ -111,7 +118,7 @@ function ProgressKpi({
       </header>
       <div data-slot="progress-kpi-body" className="grid gap-3">
         <p data-slot="progress-kpi-percentage" className="text-title-xl-mobile text-foreground">
-          {percentage}%
+          {t.valueLabel(percentage)}
         </p>
         <div data-slot="progress-kpi-data" className="grid gap-2">
           <KpiBar percentage={percentage} completed={completed} className="h-4" />

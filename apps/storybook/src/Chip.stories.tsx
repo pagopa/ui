@@ -212,3 +212,30 @@ export const ChipRemovalAction: Story = {
     await expect(submitChipForm).not.toHaveBeenCalled()
   },
 }
+
+// The dictionary supplies the remove label; an explicit `removeLabel` still
+// wins, so a consumer localising the chip by hand keeps its accessible name.
+export const ChipRemoveLabelOverride: Story = {
+  render: () => (
+    <div className="grid gap-2">
+      <Chip data-testid="default-remove-label" onRemove={removeChip}>
+        Roma
+      </Chip>
+      <Chip
+        data-testid="overridden-remove-label"
+        onRemove={removeChip}
+        removeLabel="Rimuovi filtro"
+      >
+        Roma
+      </Chip>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const original = canvas.getByTestId("default-remove-label")
+    const overridden = canvas.getByTestId("overridden-remove-label")
+
+    await expect(within(original).getByRole("button", { name: "Elimina Roma" })).toBeVisible()
+    await expect(within(overridden).getByRole("button", { name: "Rimuovi filtro" })).toBeVisible()
+  },
+}
