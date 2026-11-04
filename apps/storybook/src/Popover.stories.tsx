@@ -167,14 +167,14 @@ export const ShiftedIndicator: Story = {
     })
     const popup = await screen.findByRole("dialog")
     const arrow = popup.querySelector("[data-slot='popover-arrow']")
-    await expect(arrow).not.toBeNull()
+    if (!arrow) throw new Error("the popup renders no arrow")
 
     const centre = (element: Element) => {
       const rect = element.getBoundingClientRect()
       return rect.x + rect.width / 2
     }
     const triggerCentre = centre(trigger)
-    await waitFor(() => expect(Math.abs(centre(arrow!) - triggerCentre)).toBeLessThanOrEqual(2))
+    await waitFor(() => expect(Math.abs(centre(arrow) - triggerCentre)).toBeLessThanOrEqual(2))
     // The popup really is off-centre against the trigger, otherwise the
     // assertion above would hold for a centred arrow too.
     await expect(Math.abs(centre(popup) - triggerCentre)).toBeGreaterThan(40)
