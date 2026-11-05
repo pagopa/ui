@@ -1446,6 +1446,30 @@
           "kind": "COMPONENT",
           "inLibrary": true,
           "decision": "shipped"
+        },
+        {
+          "nodeId": "15901:18590",
+          "name": "school",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "pending",
+          "reason": "Figma delta 2026-11-05: queued by the drift refresh, the review decides"
+        },
+        {
+          "nodeId": "15901:18591",
+          "name": "directions_subway",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "pending",
+          "reason": "Figma delta 2026-11-05: queued by the drift refresh, the review decides"
+        },
+        {
+          "nodeId": "15901:18592",
+          "name": "health_and_safety",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "pending",
+          "reason": "Figma delta 2026-11-05: queued by the drift refresh, the review decides"
         }
       ],
       "compositions": []
@@ -2311,8 +2335,8 @@
           "name": "SideNav",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped",
-          "reason": "SideNav in the registry, rendered by the NestedAndProfile and Playground stories."
+          "decision": "pending",
+          "reason": "Figma delta 2026-11-05: queued by the drift refresh, the review decides"
         },
         {
           "nodeId": "9684:50737",
@@ -2574,7 +2598,8 @@
           "name": "Table",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped"
+          "decision": "pending",
+          "reason": "Figma delta 2026-11-05: queued by the drift refresh, the review decides"
         },
         {
           "nodeId": "9520:2537",
@@ -2596,7 +2621,8 @@
           "name": "TableList",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped"
+          "decision": "pending",
+          "reason": "Figma delta 2026-11-05: queued by the drift refresh, the review decides"
         }
       ],
       "compositions": []
@@ -3426,7 +3452,8 @@
           "name": "Log In",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped"
+          "decision": "pending",
+          "reason": "Figma delta 2026-11-05: queued by the drift refresh, the review decides"
         },
         {
           "nodeId": "2776:74243",

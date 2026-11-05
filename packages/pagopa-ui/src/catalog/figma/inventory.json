@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "fileKey": "pvhsJpPGQbEwNLiyP7BOIw",
-  "syncedAt": "2026-11-03",
-  "fileVersion": "2417684060719527268",
-  "lastModified": "2026-11-03T16:54:06Z",
+  "syncedAt": "2026-11-05",
+  "fileVersion": "2418407510373603717",
+  "lastModified": "2026-11-05T16:00:25Z",
   "components": [
     {
       "nodeId": "50:1700",
@@ -3320,7 +3320,7 @@
         }
       ],
       "contractFingerprint": "4df39829e35b954d7c6e7984bbb81e24345fdc1aa2dc25185314e5cd908dccaa",
-      "designFingerprint": "0359efedb5768db2172148ae93ef786aa24a0d36e8f644c8a8104d285d247617"
+      "designFingerprint": "b5421d96ddf16090f5466b2fe7b7932dea02a94d0c2fcbd35ceff41949a50338"
     },
     {
       "nodeId": "160:1344",
@@ -11424,7 +11424,7 @@
         }
       ],
       "contractFingerprint": "bf1759bb825a228845d9742fda33ff77e9c4e9de3b05dc2fd876aa6577b03c0e",
-      "designFingerprint": "00ae88bdd9c02bd578281d2aab630321d804d5142d38a9b86a70c1bd58d009d0"
+      "designFingerprint": "9df36e624797c8e0fe1f0b3fbe7292e1b38b9fc82a445ceb8b83e7ac0ed4a38f"
     },
     {
       "nodeId": "1120:7621",
@@ -14265,7 +14265,7 @@
             "width": 320,
             "height": 2205
           },
-          "designFingerprint": "748610b2eff309512489e75b593492e188a78120e6f9d4a90e3e0a603c4abaab"
+          "designFingerprint": "b65692673d0691a1fb69097993219cfda8dbb5f068aba8a953ea702add3e8ed6"
         },
         {
           "nodeId": "2339:80912",
@@ -14295,7 +14295,7 @@
             "width": 1200,
             "height": 1446
           },
-          "designFingerprint": "2577b22bc9845dbcdf7ee0b9dd9149d9a7607d5110fe3dc527d4ead1fd6fff81"
+          "designFingerprint": "ccd7557f8c516efbc084fa79f7e95206435b95baeb4c183af4685ca4b52ec467"
         },
         {
           "nodeId": "2339:80915",
@@ -14309,7 +14309,7 @@
         }
       ],
       "contractFingerprint": "575fda620cccdcb1c3d79d0b06714fc3069700102de8ac70dc5dcf0afa86115b",
-      "designFingerprint": "861b620469bd331c2198202fd41e28b5b8dbe0dd7d82cbda606418a74b615c21"
+      "designFingerprint": "f61553cfd482565b5497a7ef2944d251c4432458734dbf4a60619bb7e14422ab"
     },
     {
       "nodeId": "2776:74243",
@@ -14397,7 +14397,7 @@
             "width": 1200,
             "height": 1268
           },
-          "designFingerprint": "48d0fc0c8f994ca4cb90d3216378562aaa07d6dce04a2671f01808a3cba3b42d"
+          "designFingerprint": "fde800b5dfa64020249234bfd14db25d7c532406f8d75c808e7e6baa0f3222a6"
         },
         {
           "nodeId": "2776:74288",
@@ -14407,7 +14407,7 @@
             "width": 1536,
             "height": 1248
           },
-          "designFingerprint": "425a65c744861d9f360dd40be7cbfbb07eb63be4514c4baeac4ad5c307c58e9f"
+          "designFingerprint": "3216173a246e30359e0abf257c42b8f160cd42ac49dd0975bab4495b9a9b0d59"
         },
         {
           "nodeId": "2776:74331",
@@ -14417,7 +14417,7 @@
             "width": 900,
             "height": 1288
           },
-          "designFingerprint": "dce67fdd9669594698bf8862b8cccaaab719802014a1f7b075f205eb6b49982a"
+          "designFingerprint": "614fd480be839c832939464e65465744c108c9d52fa5c4ba06f56141aa9bfbee"
         },
         {
           "nodeId": "2776:74370",
@@ -14427,7 +14427,7 @@
             "width": 320,
             "height": 1683
           },
-          "designFingerprint": "f69d4315c94aa1addc324628cddfd9dfe9aebae8cfd45ef9b1ef3dbe1ed52b29"
+          "designFingerprint": "31fc6365ba1393d261e87b3558186ac35242c7faf5611b9db763a2395877ce57"
         },
         {
           "nodeId": "2776:75697",
@@ -14437,11 +14437,11 @@
             "width": 600,
             "height": 1537
           },
-          "designFingerprint": "c2c210914e2a5affa6aefedee3974ac1310583bdb0eb3e62d3e6162647113a0e"
+          "designFingerprint": "90b94b6b2ad9da01d10da65f147e35a33d9d818ca90637378a129cd87a3c9fe5"
         }
       ],
       "contractFingerprint": "f233a9ee7ebdadb03f898b7de770c605aa1f4fff5083e9f97917fa7625643bd3",
-      "designFingerprint": "1468bb254e319a27e4ec737f7659d4ca003ca46a90c903db781a12a1500d9858"
+      "designFingerprint": "e8a1f538fb6af936104028e99c23be9f68257298b63faefc10f2764de092b9e8"
     },
     {
       "nodeId": "2786:78783",
@@ -14537,7 +14537,7 @@
             "width": 320,
             "height": 3704
           },
-          "designFingerprint": "9f5de6f46dc05ae8f6b00009148c1ccb500c5e7f6cc19befcefa9f160dd65b77"
+          "designFingerprint": "de78f007e099d7fd96d5dfd4e1e5288b9b100a5d399f3fc312802a9df3e8e52b"
         },
         {
           "nodeId": "2786:78938",
@@ -14551,7 +14551,7 @@
         }
       ],
       "contractFingerprint": "fd71a9c504b5d322eb3267bc8d0236ada0aad1e30ffa6d331db17805c246b2a7",
-      "designFingerprint": "9ea306bb81368b59212a3250b8c1eaea699b83f44990a43fd369a266d12bd1a5"
+      "designFingerprint": "0ce873b4f446732f394f850a0c636b0257259ec9b18db623e09f57710f190d81"
     },
     {
       "nodeId": "2801:85126",
@@ -17972,6 +17972,45 @@
       "dependencies": [],
       "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
       "designFingerprint": "7dfbff15c4e63ab596422100e3a9855e4a221ec1d992c0513afd55b22732c3dc"
+    },
+    {
+      "nodeId": "15901:18590",
+      "name": "school",
+      "type": "COMPONENT",
+      "pageId": "1:24",
+      "pageName": "• Icon",
+      "assetKey": "7f6aad02d38d6eee6180d306731617aca676b209",
+      "sources": ["rest"],
+      "properties": {},
+      "dependencies": [],
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "designFingerprint": "c57411d16c978a2bd50216bcc0247082ffecaa500e7d59b7b2e9910de5d9f736"
+    },
+    {
+      "nodeId": "15901:18591",
+      "name": "directions_subway",
+      "type": "COMPONENT",
+      "pageId": "1:24",
+      "pageName": "• Icon",
+      "assetKey": "71cdf797a720b16bafbf670009fa8943f81c637a",
+      "sources": ["rest"],
+      "properties": {},
+      "dependencies": [],
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "designFingerprint": "603a3bb08c7dc2965314e084e06b9b0f2f5151e2260a487a750525aff7c29bf5"
+    },
+    {
+      "nodeId": "15901:18592",
+      "name": "health_and_safety",
+      "type": "COMPONENT",
+      "pageId": "1:24",
+      "pageName": "• Icon",
+      "assetKey": "00f3e20e217a632e3e029a9b438f82daee462fb5",
+      "sources": ["rest"],
+      "properties": {},
+      "dependencies": [],
+      "contractFingerprint": "267dca6da50c2b6e7daad104ebb154c13166a1c17543a1a79c165cefe92a1f75",
+      "designFingerprint": "199364d7b397d1e116a50482a5f6f716acaadfc7dd7479f7a55dad5017408cc9"
     }
   ]
 }

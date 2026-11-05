@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "fileKey": "pvhsJpPGQbEwNLiyP7BOIw",
-  "version": "2417684060719527268",
-  "capturedAt": "2026-11-03",
-  "sourceSha256": "eedcc3ad5ba31b4b3b64c4106783bfbe19170f5727abb5acde44fe737f3054c6",
+  "version": "2418407510373603717",
+  "capturedAt": "2026-11-05",
+  "sourceSha256": "f6b76e0da8477b20abfbd1156fe79e7c3e3e19dcaf034d86c9891d0d1fa08a6b",
   "cases": {
     "50-1700-lg-desktop-desktop": {
       "png": "references/50-1700-lg-desktop-desktop.png",
@@ -2309,15 +2309,6 @@
       "width": 600,
       "height": 2035
     },
-    "2339-80916-xs-mobile": {
-      "png": "references/2339-80916-xs-mobile.png",
-      "sha256": "9bd3545747eece60ad41abca4a5e0efe93ae3689ff8a44dcb0d24a1a317e8784",
-      "nodeId": "2339:80916",
-      "variant": "2339:80911",
-      "designFingerprint": "748610b2eff309512489e75b593492e188a78120e6f9d4a90e3e0a603c4abaab",
-      "width": 320,
-      "height": 2205
-    },
     "3262-40787-open": {
       "png": "references/3262-40787-open.png",
       "sha256": "b742c372c5c4dffd67c57572b1c5315d8e063c708afb3fab752236fde61696d1",
@@ -2830,6 +2821,15 @@
       "designFingerprint": "133851c49e70b282d4492daca002a213c465fdf9f50338e60c2a5533c91a854c",
       "width": 376,
       "height": 160
+    },
+    "2339-80916-xs-mobile": {
+      "png": "references/2339-80916-xs-mobile.png",
+      "sha256": "9bd3545747eece60ad41abca4a5e0efe93ae3689ff8a44dcb0d24a1a317e8784",
+      "nodeId": "2339:80916",
+      "variant": "2339:80911",
+      "designFingerprint": "b65692673d0691a1fb69097993219cfda8dbb5f068aba8a953ea702add3e8ed6",
+      "width": 320,
+      "height": 2205
     }
   }
 }
