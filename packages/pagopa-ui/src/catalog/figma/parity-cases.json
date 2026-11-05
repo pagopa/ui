@@ -5523,6 +5523,37 @@
     "note": "Composition check off: the head block is 6px taller than the source (the `field.box.height` residue: the copy as six HTML paragraphs), which shifts the drawer title by 6px and the action row by 9px. Enable `--compare-offset` with the matching `offset.*` residues. No `layoutScope`: the edge and the panel geometry follow the caller's `direction` prop (this story passes `bottom`), not an axis of the frame."
   },
   {
+    "id": "2339-80916-lgdesktop-desktop",
+    "nodeId": "2339:80916",
+    "export": "LogIn",
+    "storyId": "components-templates-log-in--page",
+    "state": "lgdesktop",
+    "device": "desktop",
+    "layoutScope": "viewport",
+    "variant": "2339:80914",
+    "width": 1200,
+    "viewport": 1200,
+    "height": 1446,
+    "depth": 3,
+    "root": "[data-slot=login-page]",
+    "subjects": {
+      "Text": "[data-slot=login-module-text]",
+      "Title": "[data-slot=login-module-title]",
+      "Description": "[data-slot=login-module-description]",
+      "Alert": "[data-slot=alert]",
+      "Actions": "[data-slot=login-module-actions]",
+      "TOS": "[data-slot=login-module-terms-text]"
+    },
+    "residues": [
+      {
+        "path": "field.box.height",
+        "reason": "source-1446px-render-1377px-due-to-page-chrome-breadcrumb-row-and-shorter-footer"
+      }
+    ],
+    "ignores": ["Alert.gap"],
+    "note": "reviewed-LG-desktop-1200px"
+  },
+  {
     "id": "2339-80916-md-desktop",
     "nodeId": "2339:80916",
     "export": "LogIn",

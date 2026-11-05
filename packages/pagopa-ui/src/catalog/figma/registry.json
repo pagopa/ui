@@ -955,14 +955,14 @@
       "note": "The source default 232:1672 is white IO Light and needs a contrasting dark surface; 232:1674 is blue IO Dark. Preserve brand colors and the source default rather than substituting a more convenient variant."
     },
     "2339:80916": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "apps/storybook/src/templates/LogIn.tsx",
         "export": "LogIn",
         "story": "apps/storybook/src/LogIn.stories.tsx",
         "storyExports": ["Page", "Module"]
       },
-      "note": "Figma delta 2026-11-05: review new/changed node or dependency before marking implemented"
+      "note": "Reviewed 2026-11-05: mobile 2339-80916-xs-mobile (320), tablet 2339-80916-sm-tablet-tablet (600), MD desktop 2339-80916-md-desktop (900), and LG desktop 2339-80916-lgdesktop-desktop (1200) all verify. The LogIn module matches. Full-page height retains a shared-chrome residue: Storybook renders a separate 44px breadcrumb where Figma overlays or hides a 56px layer; the Footer is shorter (LG 1377px vs 1446px)."
     },
     "236:1311": {
       "status": "implemented",

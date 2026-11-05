@@ -3450,8 +3450,7 @@
           "name": "Log In",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Figma delta 2026-11-05: queued by the drift refresh, the review decides"
+          "decision": "shipped"
         },
         {
           "nodeId": "2776:74243",

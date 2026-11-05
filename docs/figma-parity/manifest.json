@@ -2309,6 +2309,15 @@
       "width": 600,
       "height": 2035
     },
+    "2339-80916-xs-mobile": {
+      "png": "references/2339-80916-xs-mobile.png",
+      "sha256": "9bd3545747eece60ad41abca4a5e0efe93ae3689ff8a44dcb0d24a1a317e8784",
+      "nodeId": "2339:80916",
+      "variant": "2339:80911",
+      "designFingerprint": "b65692673d0691a1fb69097993219cfda8dbb5f068aba8a953ea702add3e8ed6",
+      "width": 320,
+      "height": 2205
+    },
     "3262-40787-open": {
       "png": "references/3262-40787-open.png",
       "sha256": "b742c372c5c4dffd67c57572b1c5315d8e063c708afb3fab752236fde61696d1",
@@ -2822,14 +2831,14 @@
       "width": 376,
       "height": 160
     },
-    "2339-80916-xs-mobile": {
-      "png": "references/2339-80916-xs-mobile.png",
-      "sha256": "9bd3545747eece60ad41abca4a5e0efe93ae3689ff8a44dcb0d24a1a317e8784",
+    "2339-80916-lgdesktop-desktop": {
+      "png": "references/2339-80916-lgdesktop-desktop.png",
+      "sha256": "d249b1a52302e8e6d983ba4b1f5d6d193ce0abab92968f17553ada2a47503247",
       "nodeId": "2339:80916",
-      "variant": "2339:80911",
-      "designFingerprint": "b65692673d0691a1fb69097993219cfda8dbb5f068aba8a953ea702add3e8ed6",
-      "width": 320,
-      "height": 2205
+      "variant": "2339:80914",
+      "designFingerprint": "ccd7557f8c516efbc084fa79f7e95206435b95baeb4c183af4685ca4b52ec467",
+      "width": 1200,
+      "height": 1446
     }
   }
 }
