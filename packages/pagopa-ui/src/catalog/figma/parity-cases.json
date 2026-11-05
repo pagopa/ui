@@ -5931,7 +5931,7 @@
     "id": "9624-10625-layout-mobile-mobile",
     "nodeId": "9624:10625",
     "export": "TableList",
-    "storyId": "components-data-display-tablelist--paginated",
+    "storyId": "components-data-display-tablelist--paginated-mobile",
     "state": "Layout=Mobile",
     "device": "mobile",
     "layoutScope": "container",

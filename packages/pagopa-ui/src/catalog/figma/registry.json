@@ -2019,14 +2019,21 @@
       }
     },
     "9624:10625": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/data-display/table-list.tsx",
         "export": "TableList",
         "story": "apps/storybook/src/TableList.stories.tsx",
-        "storyExports": ["Playground", "Paginated", "Empty", "StaticRows", "EmptyCustomPictogram"]
+        "storyExports": [
+          "Playground",
+          "Paginated",
+          "PaginatedMobile",
+          "Empty",
+          "StaticRows",
+          "EmptyCustomPictogram"
+        ]
       },
-      "note": "Figma delta 2026-11-05: review new/changed node or dependency before marking implemented"
+      "note": "Reviewed 2026-11-05: desktop 9624-10625-layout-desktop-desktop (852x568) and mobile 9624-10625-layout-mobile-mobile (272x1238) verify with documented residues and clean container reflow. The desktop fixture's four row titles wrap differently from the source placeholders; mobile's three-field rows with shared 48px actions are taller than the source cards. The Empty Device=Any story remains separate."
     },
     "9640:793": {
       "status": "implemented",

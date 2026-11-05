@@ -10,6 +10,7 @@ import { Button } from "@/components/primitives/button"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import tablesGuide from "./guides/tables.md?raw"
+import { SourceFrame } from "./support/source-frame"
 
 interface CampaignRow {
   id: number
@@ -127,26 +128,27 @@ function PaginatedList() {
   const totalPages = Math.ceil(campaigns.length / campaignsPerPage)
   const visible = campaigns.slice((page - 1) * campaignsPerPage, page * campaignsPerPage)
   return (
-    <div className="w-[min(53.25rem,calc(100vw-2rem))] max-w-full">
-      <TableList
-        label="Campagne"
-        rows={visible}
-        fields={campaignFields}
-        action={(row) => ({
-          label: "Apri",
-          ariaLabel: `Apri ${row.title}`,
-          href: `/campagne/${row.id}`,
-        })}
-        pagination={
-          <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
-        }
-      />
-    </div>
+    <TableList
+      label="Campagne"
+      rows={visible}
+      fields={campaignFields}
+      action={(row) => ({
+        label: "Apri",
+        ariaLabel: `Apri ${row.title}`,
+        href: `/campagne/${row.id}`,
+      })}
+      pagination={<Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />}
+    />
   )
 }
 
 export const Paginated: Story = {
-  render: () => <PaginatedList />,
+  parameters: { layout: "fullscreen" },
+  render: () => (
+    <SourceFrame nodeId="9624:10625" device="desktop">
+      <PaginatedList />
+    </SourceFrame>
+  ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.queryByText("Campagna di notifiche SEND")).not.toBeInTheDocument()
@@ -157,6 +159,15 @@ export const Paginated: Story = {
     await userEvent.click(canvas.getByRole("button", { name: "Pagina precedente" }))
     await expect(canvas.getAllByRole("listitem")).toHaveLength(4)
   },
+}
+
+export const PaginatedMobile: Story = {
+  parameters: { layout: "fullscreen" },
+  render: () => (
+    <SourceFrame nodeId="9624:10625" device="mobile">
+      <PaginatedList />
+    </SourceFrame>
+  ),
 }
 
 function EmptyCampaigns() {
