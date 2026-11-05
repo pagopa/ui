@@ -282,14 +282,14 @@
       "note": "Reviewed 2026-11-03: Figma renamed Empty state to Missing element; the same node and contract remain mapped to EmptyState. No variants or device axis; `11149-7765-default` verifies the 832x184 source, exact composition and responsive behaviour. The 188px rendered height retains the shared 24px link action (+2 versus 22px) and CSS border (+2). Text and pictogram are caller-owned; the decorative icon is hidden and the title is a heading. See apps/storybook/src/guides/empty-state.md."
     },
     "1120:7458": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/navigation/side-nav.tsx",
         "export": "SideNav",
         "story": "apps/storybook/src/SideNav.stories.tsx",
         "storyExports": ["Playground", "NestedAndProfile"]
       },
-      "note": "Figma delta 2026-11-05: review new/changed node or dependency before marking implemented"
+      "note": "Reviewed 2026-11-05: desktop 1120-7458-back-office-io-desktop and mobile 1120-7458-side-nav-condensed-mobile both verify with zero deltas and clean reflow. The compact Avatar keeps its 5.82px proportional radius instead of the source circle; the mobile 48px head uses the section label and disclosure plus a 1px divider rather than the source placeholder label."
     },
     "1120:7621": {
       "status": "implemented",
