@@ -3496,16 +3496,40 @@
       }
     },
     "15901:18590": {
-      "status": "pending",
-      "note": "Figma delta 2026-11-05: review new/changed node or dependency before marking implemented"
+      "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
+      }
     },
     "15901:18591": {
-      "status": "pending",
-      "note": "Figma delta 2026-11-05: review new/changed node or dependency before marking implemented"
+      "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
+      }
     },
     "15901:18592": {
-      "status": "pending",
-      "note": "Figma delta 2026-11-05: review new/changed node or dependency before marking implemented"
+      "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
+      }
     }
   }
 }
