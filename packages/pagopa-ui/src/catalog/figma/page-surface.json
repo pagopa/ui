@@ -1446,6 +1446,27 @@
           "kind": "COMPONENT",
           "inLibrary": true,
           "decision": "shipped"
+        },
+        {
+          "nodeId": "15901:18590",
+          "name": "school",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "15901:18591",
+          "name": "directions_subway",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
+          "nodeId": "15901:18592",
+          "name": "health_and_safety",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
         }
       ],
       "compositions": []
@@ -2311,8 +2332,7 @@
           "name": "SideNav",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped",
-          "reason": "SideNav in the registry, rendered by the NestedAndProfile and Playground stories."
+          "decision": "shipped"
         },
         {
           "nodeId": "9684:50737",

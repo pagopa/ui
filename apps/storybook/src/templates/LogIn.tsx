@@ -33,13 +33,23 @@ function LogIn({ title, description, alert, actions, terms, className }: LogInPr
         className,
       )}
     >
-      <div className="flex w-full flex-col gap-2 text-center tablet-md:max-w-(--login-width)">
-        <h1 className="text-title-lg-mobile tablet-md:text-title-lg">{title}</h1>
+      <div
+        data-slot="login-module-text"
+        className="flex w-full flex-col gap-2 text-center tablet-md:max-w-(--login-width)"
+      >
+        <h1 data-slot="login-module-title" className="text-title-lg-mobile tablet-md:text-title-lg">
+          {title}
+        </h1>
         {/* The source description is 18/26 Regular; the file publishes only the
             18/26 Semibold variable (`Body/Body Big SB`), so the block takes its
             metrics and states the regular weight explicitly. */}
         {description ? (
-          <p className="text-body-big-sb font-normal text-muted-foreground">{description}</p>
+          <p
+            data-slot="login-module-description"
+            className="text-body-big-sb font-normal text-muted-foreground"
+          >
+            {description}
+          </p>
         ) : null}
       </div>
       {alert ? <div className="w-full max-w-(--dialog-width-compact)">{alert}</div> : null}
@@ -55,7 +65,9 @@ function LogIn({ title, description, alert, actions, terms, className }: LogInPr
           className="flex w-full flex-col gap-4 text-center tablet-md:max-w-(--login-width)"
         >
           <Separator />
-          <p className="text-body text-muted-foreground">{terms}</p>
+          <p data-slot="login-module-terms-text" className="text-body text-muted-foreground">
+            {terms}
+          </p>
         </div>
       ) : null}
     </div>

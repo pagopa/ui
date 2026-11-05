@@ -289,7 +289,7 @@
         "story": "apps/storybook/src/SideNav.stories.tsx",
         "storyExports": ["Playground", "NestedAndProfile"]
       },
-      "note": "Reviewed 2026-10-29: the delta reaches this node only through its embedded Banner instances (FILL→HUG on their own frames), so no side-nav geometry changed. 1120-7458-back-office-io-desktop had been unmeasurable since 2026-10-24, when the condensed group/nav wrapper landed under the desktop block — its root and Content selectors no longer matched; they are remapped to that wrapper and the row anchor. Both devices verify (the residues are the documented Avatar adaptations and the story's bounding-box fill). No component change."
+      "note": "Reviewed 2026-11-05: desktop 1120-7458-back-office-io-desktop and mobile 1120-7458-side-nav-condensed-mobile both verify with zero deltas and clean reflow. The compact Avatar keeps its 5.82px proportional radius instead of the source circle; the mobile 48px head uses the section label and disclosure plus a 1px divider rather than the source placeholder label."
     },
     "1120:7621": {
       "status": "implemented",
@@ -412,7 +412,7 @@
         "story": "apps/storybook/src/Pagination.stories.tsx",
         "storyExports": ["FirstPage", "SecondPage", "LastPage"]
       },
-      "note": "Pending: blocked by the open design request docs/design-requests/2026-10-21-pagination-order-axis.md. The source `Order` axis is mixed: `First page`, `Second page and more` and `Last page` are page positions, while `Mobile` (130:1899, 836x46) selects a compact layout (previous, current, next) at the same width; it is not a device axis, and the device-policy `ignoredValues` entry keeps the checker warning informational. Open in the request: the compact state and the axis shape; whether the `.Rows per page` part (1504:9763, its own Device axis, default on, 463px slot with a 12px gap) belongs to the contract and the page group is right-aligned (365px, align end); the edge window (source 1 2 3 … N and 1 … N-2 N-1 N, code 1 2 … N and 1 … N-1 N); whether the edge arrow (`Show left arrow`, default true) is hidden or disabled (the source draws no previous chevron on First page and no next chevron on Last page). Aligned on 2026-10-22, independent of the request: pages are 40 wide and hug to 46 (padding 12, radius 8; a three-digit page renders 54.25 against the source 55, a font-metric residue within 2px), previous and next are 40x40 with the 2px #e8ebf1 stroke, the ellipsis is 40x40 unstroked; every control keeps a 44px target through the ::after expansion. FirstPage, SecondPage and LastPage render 126:5056, 127:1511 and 127:1535 out of 101 pages in an 836px source frame (the nav matches the 836x46 variant box; the 365px `Pagination group` against the 836px nav waits on the request); the guide apps/storybook/src/guides/pagination.md records the source mapping. No case is saved until the request is answered, because the rows-per-page, alignment and edge-window deltas are undecided."
+      "note": "Pending until the Figma owner answers the compact-state, rows-per-page, edge-window and edge-arrow questions. The node stays pending under docs/design-requests/2026-10-21-pagination-order-axis.md."
     },
     "1278:6527": {
       "status": "pending",
@@ -422,7 +422,7 @@
         "story": "apps/storybook/src/Drawer.stories.tsx",
         "storyExports": ["SourceDesktop", "SourceMobile"]
       },
-      "note": "Editorial source flow is reviewed on both declared devices: Desktop `1278:6528` (417x800) and Mobile `1278:6526` (320x646). The composition uses a body description, a 40px action gap, and a bottom sheet without a handle; Mobile matches the source box, while the nearest width token is 416px (`w-104`), a 1px Desktop residue. The title uses the source Bold face (CSS 700), head-to-description spacing is 8px, and elevation uses `shadow-32`. The set remains pending because Service detail, Search, Filters and Sort have unreviewed dependencies: Alert `212:1899`, DragAndDrop `760:7432`, and ListItem `908:2234`."
+      "note": "Reviewed devices: Desktop `1278:6528` (417x800) and Mobile `1278:6526` (320x646). Mobile matches; desktop uses the nearest 416px token (1px residue). The composition keeps a body description, 40px action gap, bottom sheet without a handle, 8px header gap and `shadow-32`. Pending shared width/mobile decision and unreviewed Service detail, Search, Filters and Sort dependencies; request: docs/design-requests/2026-10-21-timeline-drawer-width-and-mobile.md."
     },
     "12785:14427": {
       "status": "implemented",
@@ -553,7 +553,7 @@
           "Sorting"
         ]
       },
-      "note": "Device review 2026-10-16 (wave 9): desktop `1349-22020-default-desktop` (1344:42521, 852) and mobile `1349-22020-default-mobile` (1359:30426, 272), both container-scoped (the column grid and the card list switch on the 40rem container query: verified) and responsive-clean. Fixes: the fixture tag icon became the mobile-card affordance the source draws only in the card (`hidden @max-[40rem]/table:block`; the desktop cell draws text only, which removed the +1-per-row inline-flex line box) and the card stacks its fields on the source's own rhythm - no row gap, each field's own 12px padding, the 8px row gap before the trailing action cell (`@max-[40rem]/table:gap-0` plus `@max-[40rem]/table:mt-2`; the previous `gap-2` added 8px per field, +46 on the 492 card). Recorded: the desktop columns auto-lay from the fixture content against the mockup's fixed 124.2/... columns, the standalone row insets/gap map onto the inner row (ignores), the 15-vs-8 card stack (the fixture uses the desktop page of 15 against the mockup's 8) and the caller pager 44 against the source 46. The visible mobile sorting row stays (guides/tables.md: an accessibility adaptation) where the mockup drops the header. Comments 2026-10-24 (F-02): added `TableColumn.truncate`/`maxWidth` (ellipsis plus a hover/focus tooltip with the full value) and the controlled selection contract (`selectable`, `selected`/`defaultSelected`, `onSelectionChange`, mixed select-all header, `aria-selected` rows, `selectionLabel`/`selectionRowLabel`). `notification` puts the source dot after the row checkbox with `notificationLabel`. Rows per page and the page-number edge window stay owned by docs/design-requests/2026-10-21-pagination-order-axis.md; the mobile card composition stays owned by docs/design-requests/2026-10-21-table-cell-row-mobile-card.md."
+      "note": "Reviewed 2026-11-05: desktop 1349-22020-default-desktop (852x852) and mobile 1349-22020-default-mobile (272x4013) verify with documented residues and clean container reflow. Desktop's first column follows auto layout instead of the source's seven fixed widths; mobile's 15-row fixture and 4px label gap make cards taller than the source, without clipping. Sorting is activated by the whole header label and arrow, as confirmed in the 2026-10-27 Figma thread."
     },
     "1360:20138": {
       "status": "implemented",
@@ -962,7 +962,7 @@
         "story": "apps/storybook/src/LogIn.stories.tsx",
         "storyExports": ["Page", "Module"]
       },
-      "note": "Implemented 2026-10-15 from the pinned source set: the application chrome around the centred login module. The module is exact on both frames (900x689 and the 320x757 mobile: pad 80/40 and 64/24, the 40px gap, the 520px text block at 84px, the warning alert at 98px, the 272px action column at 166px and the 520px terms block at 61px). The story renders the source copy, including the hidden title and action layers of the alert and the source 18/26 Regular description, which the file does not publish as a variable: the block takes the Body Big SB metrics and states the regular weight. Device review 2026-10-16 (device burn-down wave 5): one case per declared device, all viewport-scoped and responsive-clean — mobile 2339:80911 (2339-80916-xs-mobile, 320), tablet 2339:80912 (2339-80916-sm-tablet-tablet, 600) and desktop 2339:80913 (2339-80916-md-desktop, 900). The scope is viewport: the page always spans the page width and the chrome bands and the module padding/type switch on media queries (the container probe moves too, because any page reflows in a narrower box — recorded so the reading is not re-litigated). The tablet review fixed the module: the source tablet frame is the mobile composition at 600 (pad 64/24, the 28/40 title) and draws the text and terms blocks at the full 552, so the 520px caps now apply from md (LogIn.tsx: md:max-w-[32.5rem]); mobile (272) and desktop (520) are unchanged. All three cases carry the field.box.height page-aggregation residue (the module is exact; the shorter footer columns block is the Footer node still in the pending queue) and the Alert.gap mapping ignore."
+      "note": "Reviewed 2026-11-05: mobile 2339-80916-xs-mobile (320), tablet 2339-80916-sm-tablet-tablet (600), MD desktop 2339-80916-md-desktop (900), and LG desktop 2339-80916-lgdesktop-desktop (1200) all verify. The LogIn module matches. Full-page height retains a shared-chrome residue: Storybook renders a separate 44px breadcrumb where Figma overlays or hides a 56px layer; the Footer is shorter (LG 1377px vs 1446px)."
     },
     "236:1311": {
       "status": "implemented",
@@ -2024,9 +2024,16 @@
         "module": "src/components/data-display/table-list.tsx",
         "export": "TableList",
         "story": "apps/storybook/src/TableList.stories.tsx",
-        "storyExports": ["Playground", "Paginated", "Empty", "StaticRows", "EmptyCustomPictogram"]
+        "storyExports": [
+          "Playground",
+          "Paginated",
+          "PaginatedMobile",
+          "Empty",
+          "StaticRows",
+          "EmptyCustomPictogram"
+        ]
       },
-      "note": "Reviewed against the pinned Desktop 9624:10266, Mobile 9624:10626 and Any/Empty 9779:18729 variants: a container of TableListItem cards 16px apart with the pagination footer 32px below (caller node, hidden with the empty state, like Table), and the empty fallback with the genuine 56px Message pictogram, 16/22 semibold title, 14/20 subtitle and optional action inside a role=status region. The empty title uses the shared muted foreground (source grey-650) and the empty card measures 228px (226px of content plus the card stroke) against the source's 200px with its 22px action; both cards keep the 1px `--border` stroke for the light application surface. Row-count changes are supplied by the caller through the pagination slot. Device review 2026-10-16 (device burn-down wave 4): one case per declared device, both container-scoped and responsive-clean — desktop 9624:10266 (case 9624-10625-layout-desktop-desktop, the list at the source 852: cards 16px apart, the caller footer 32px below) and mobile 9624:10626 (case 9624-10625-layout-mobile-mobile, the list at the source 272 with the same stack and footer placement); the `Paginated` fixture now frames the list at 53.25rem with max-w-full (53rem capped the forced width 4px short). The composition check is on with the `Pagination.offset.top` residue. Recorded: the fixture copy's wrap (the desktop third title wraps to two lines where the mockup's placeholder wraps to three; the mobile fixture draws three fields where the mockup adds a Stato row level with the action) against the reviewed 9520:2537 per-card adaptations (the shared 48px action and the 1px `--border` stroke: a single-line desktop card measures 98 against the source 94), the caller footer's 44 against the source 46, and `Pagination.gap` as a mapping artifact (the source instance's 8/16 row gap lives on the caller's inner row).\n\nOpen design question: the loading skeleton — docs/design-requests/2026-10-24-table-list-skeleton.md (issue #29). The node stays implemented for the drawn layouts."
+      "note": "Reviewed 2026-11-05: desktop 9624-10625-layout-desktop-desktop (852x568) and mobile 9624-10625-layout-mobile-mobile (272x1238) verify with documented residues and clean container reflow. The desktop fixture's four row titles wrap differently from the source placeholders; mobile's three-field rows with shared 48px actions are taller than the source cards. The Empty Device=Any story remains separate."
     },
     "9640:793": {
       "status": "implemented",
@@ -3477,6 +3484,42 @@
       "note": "Reviewed 2026-11-03: 12 status/pointer cases, no device axis; geometry, composition and responsive checks are clean. Magnified source and render junctions were inspected at native and high density; stories test both border endpoints in normal and forced colours. Indicator padding, gap and SVG border ignores are mapping artifacts. Shadow-32 omits the pointer. The caller owns anchoring, association and dismissal (apps/storybook/src/guides/popper.md). Page compositions are unmirrored. Distinct component: docs/design-requests/2026-10-28-popper-status-card.md (issue #68 closed)."
     },
     "14709:279": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
+      }
+    },
+    "15901:18590": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
+      }
+    },
+    "15901:18591": {
+      "status": "implemented",
+      "target": {
+        "module": "src/components/icons/PagoPAIcon.tsx",
+        "export": "PagoPAIcon",
+        "story": "apps/storybook/src/Icons.stories.tsx",
+        "storyExports": ["Catalogue"]
+      },
+      "localAsset": {
+        "rendering": "mask"
+      }
+    },
+    "15901:18592": {
       "status": "implemented",
       "target": {
         "module": "src/components/icons/PagoPAIcon.tsx",

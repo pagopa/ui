@@ -18,6 +18,9 @@ import asset_14241_48931 from "../../assets/figma-icons/14241-48931.svg?no-inlin
 import asset_14709_279 from "../../assets/figma-icons/14709-279.svg?no-inline"
 import asset_1501_5288 from "../../assets/figma-icons/1501-5288.svg?no-inline"
 import asset_1509_25567 from "../../assets/figma-icons/1509-25567.svg?no-inline"
+import asset_15901_18590 from "../../assets/figma-icons/15901-18590.svg?no-inline"
+import asset_15901_18591 from "../../assets/figma-icons/15901-18591.svg?no-inline"
+import asset_15901_18592 from "../../assets/figma-icons/15901-18592.svg?no-inline"
 import asset_2080_3319 from "../../assets/figma-icons/2080-3319.svg?no-inline"
 import asset_2080_3320 from "../../assets/figma-icons/2080-3320.svg?no-inline"
 import asset_232_1672 from "../../assets/figma-icons/232-1672.svg?no-inline"
@@ -335,6 +338,27 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "1509:25567",
     aliases: {},
     variants: { "1509:25567": { nodeId: "1509:25567", url: asset_1509_25567 } },
+  },
+  "15901:18590": {
+    name: "school",
+    rendering: "mask",
+    defaultVariantNodeId: "15901:18590",
+    aliases: {},
+    variants: { "15901:18590": { nodeId: "15901:18590", url: asset_15901_18590 } },
+  },
+  "15901:18591": {
+    name: "directions_subway",
+    rendering: "mask",
+    defaultVariantNodeId: "15901:18591",
+    aliases: {},
+    variants: { "15901:18591": { nodeId: "15901:18591", url: asset_15901_18591 } },
+  },
+  "15901:18592": {
+    name: "health_and_safety",
+    rendering: "mask",
+    defaultVariantNodeId: "15901:18592",
+    aliases: {},
+    variants: { "15901:18592": { nodeId: "15901:18592", url: asset_15901_18592 } },
   },
   "2080:3319": {
     name: "arrow_menu_close",
@@ -1437,6 +1461,7 @@ export const iconAssetsByName = {
   dashboard: iconAssets["1120:7821"],
   delete: iconAssets["99:2152"],
   dialpad: iconAssets["99:2257"],
+  directions_subway: iconAssets["15901:18591"],
   dns: iconAssets["1120:7638"],
   download: iconAssets["98:965"],
   drafts: iconAssets["8704:37763"],
@@ -1459,6 +1484,7 @@ export const iconAssetsByName = {
   gavel: iconAssets["9640:793"],
   gpp_bad: iconAssets["99:2089"],
   grading: iconAssets["9643:953"],
+  health_and_safety: iconAssets["15901:18592"],
   help: iconAssets["98:675"],
   history: iconAssets["98:878"],
   hourglass_top: iconAssets["99:2068"],
@@ -1518,6 +1544,7 @@ export const iconAssetsByName = {
   savings: iconAssets["99:2422"],
   schedule: iconAssets["99:2075"],
   schedule_send: iconAssets["10297:6918"],
+  school: iconAssets["15901:18590"],
   search: iconAssets["98:704"],
   search_check_2: iconAssets["9643:961"],
   second_letter: iconAssets["8854:39312"],
@@ -1597,6 +1624,7 @@ export type IconVariantsByName = {
   dashboard: never
   delete: never
   dialpad: never
+  directions_subway: never
   dns: never
   download: never
   drafts: never
@@ -1619,6 +1647,7 @@ export type IconVariantsByName = {
   gavel: never
   gpp_bad: never
   grading: never
+  health_and_safety: never
   help: never
   history: never
   hourglass_top: never
@@ -1678,6 +1707,7 @@ export type IconVariantsByName = {
   savings: never
   schedule: never
   schedule_send: never
+  school: never
   search: never
   search_check_2: never
   second_letter: never
