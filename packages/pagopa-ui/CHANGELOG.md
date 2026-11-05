@@ -1,3 +1,13 @@
+## 0.1.4 (2026-11-05)
+
+### 🚀 Features
+
+- feat(icons): add school, subway and health and safety icons ([#103](https://github.com/pagopa/ui/pull/103))
+
+### ❤️ Thank You
+
+- gunzip
+
 ## 0.1.3 (2026-11-04)
 
 ### 🚀 Features
