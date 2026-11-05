@@ -412,7 +412,7 @@
         "story": "apps/storybook/src/Pagination.stories.tsx",
         "storyExports": ["FirstPage", "SecondPage", "LastPage"]
       },
-      "note": "Figma delta 2026-11-05: review new/changed node or dependency before marking implemented"
+      "note": "Pending until the Figma owner answers the compact-state, rows-per-page, edge-window and edge-arrow questions. The node stays pending under docs/design-requests/2026-10-21-pagination-order-axis.md."
     },
     "1278:6527": {
       "status": "pending",
