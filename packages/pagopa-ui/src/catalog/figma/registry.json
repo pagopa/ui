@@ -422,7 +422,7 @@
         "story": "apps/storybook/src/Drawer.stories.tsx",
         "storyExports": ["SourceDesktop", "SourceMobile"]
       },
-      "note": "Editorial source flow is reviewed on both declared devices: Desktop `1278:6528` (417x800) and Mobile `1278:6526` (320x646). The composition uses a body description, a 40px action gap, and a bottom sheet without a handle; Mobile matches the source box, while the nearest width token is 416px (`w-104`), a 1px Desktop residue. The title uses the source Bold face (CSS 700), head-to-description spacing is 8px, and elevation uses `shadow-32`. The set remains pending because Service detail, Search, Filters and Sort have unreviewed dependencies: Alert `212:1899`, DragAndDrop `760:7432`, and ListItem `908:2234`."
+      "note": "Reviewed devices: Desktop `1278:6528` (417x800) and Mobile `1278:6526` (320x646). Mobile matches; desktop uses the nearest 416px token (1px residue). The composition keeps a body description, 40px action gap, bottom sheet without a handle, 8px header gap and `shadow-32`. Pending shared width/mobile decision and unreviewed Service detail, Search, Filters and Sort dependencies; request: docs/design-requests/2026-10-21-timeline-drawer-width-and-mobile.md."
     },
     "12785:14427": {
       "status": "implemented",
