@@ -23,6 +23,7 @@ import {
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import tablesGuide from "./guides/tables.md?raw"
+import { SourceFrame } from "./support/source-frame"
 
 const meta = {
   title: "Components/Data display/Table",
@@ -420,7 +421,7 @@ interface SourceRow {
 
 const sourceRowsPerPage = 15
 
-function SourceTable({ width }: { width: number }) {
+function SourceTable() {
   const [page, setPage] = React.useState(1)
   const [action, setAction] = React.useState("")
   const [sort, setSort] = React.useState<{
@@ -507,7 +508,7 @@ function SourceTable({ width }: { width: number }) {
     return sort.direction === "ascending" ? comparison : -comparison
   })
   return (
-    <div style={{ width, maxWidth: "100%" }}>
+    <>
       <Table
         caption="Notifiche: composizione Figma"
         captionHidden
@@ -533,13 +534,18 @@ function SourceTable({ width }: { width: number }) {
         pagination={<Pagination currentPage={page} totalPages={101} onPageChange={setPage} />}
       />
       <output>{action}</output>
-    </div>
+    </>
   )
 }
 
 export const SourceDesktop: Story = {
   tags: ["color-pinned"],
-  render: () => <SourceTable width={852} />,
+  parameters: { layout: "fullscreen" },
+  render: () => (
+    <SourceFrame nodeId="1349:22020" device="desktop">
+      <SourceTable />
+    </SourceFrame>
+  ),
   play: async ({ canvasElement }) => {
     const table = within(
       within(canvasElement).getByRole("table", { name: "Notifiche: composizione Figma" }),
@@ -552,7 +558,12 @@ export const SourceDesktop: Story = {
 }
 
 export const SourceMobile: Story = {
-  render: () => <SourceTable width={272} />,
+  parameters: { layout: "fullscreen" },
+  render: () => (
+    <SourceFrame nodeId="1349:22020" device="mobile">
+      <SourceTable />
+    </SourceFrame>
+  ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const region = canvas.getByRole("region", { name: "Notifiche: composizione Figma" })
