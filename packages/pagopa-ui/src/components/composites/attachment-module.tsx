@@ -42,7 +42,7 @@ function AttachmentModule({
           <Button
             type="button"
             variant="link"
-            className="relative h-auto min-h-0 justify-start border-0 p-0 text-body-sb after:absolute after:inset-x-0 after:-inset-y-3"
+            className="relative h-auto min-h-0 justify-start border-0 p-0 text-left text-body-sb after:absolute after:inset-x-0 after:-inset-y-3"
             onClick={onOpen}
           >
             {title}

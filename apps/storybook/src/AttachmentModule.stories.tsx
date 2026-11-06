@@ -90,6 +90,15 @@ export const SourceAvailable: Story = {
       />
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const title = within(canvasElement).getByRole("button", { name: sourceTitle })
+    await expect(getComputedStyle(title).textAlign).toBe("left")
+    const text = document.createRange()
+    text.selectNodeContents(title)
+    const lines = [...text.getClientRects()]
+    await expect(lines.length).toBeGreaterThan(1)
+    await expect(Math.abs(lines[0].left - lines[1].left)).toBeLessThan(1)
+  },
 }
 
 export const SourceUnavailable: Story = {

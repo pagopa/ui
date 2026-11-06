@@ -18,7 +18,8 @@ download action.
 ## Behaviour
 
 `onOpen` turns the title into the `Available` link; without it the title stays
-plain text. `description` is optional, `status` renders the caller-owned tag slot
+plain text. The title remains left-aligned when it wraps. `description` is
+optional, `status` renders the caller-owned tag slot
 of the `Unavailable` composition and `downloadLabel` is the accessible name of
 the download action. The download action and the title link take their pointer
 target from an invisible expansion on their own line box, so the visible box is
