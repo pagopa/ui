@@ -1,3 +1,13 @@
+## 0.1.5 (2026-11-06)
+
+### 🩹 Fixes
+
+- fix(attachment-module): align wrapped attachment titles ([#106](https://github.com/pagopa/ui/pull/106))
+
+### ❤️ Thank You
+
+- Danilo Spinelli @gunzip
+
 ## 0.1.4 (2026-11-05)
 
 ### 🚀 Features
