@@ -51,7 +51,8 @@ import { enterRoot, rootPath } from "../lib/paths.ts"
 import { parseSchema } from "../lib/validate.ts"
 import { UsageError } from "../lib/command.ts"
 import { capture as captureStory, DEFAULT_ROOT, type CaptureOptions } from "./render.ts"
-import { checkCaseEvidence, checkEvidence, evidenceCommand } from "./evidence.ts"
+import { checkCaseEvidence, checkEvidence, evidenceCommand, evidencePaths } from "./evidence.ts"
+import { referenceForCase, writeVisualReview } from "./visual-review.ts"
 import {
   loadExport,
   namedLeaves,
@@ -85,6 +86,7 @@ type CaseSpec = Partial<ParityCase> & {
   storyId: string
   id?: string
   screenshot?: string
+  visualScreenshot?: { file: string; selector: string }
   strict?: boolean
 }
 type CaseReport = {
@@ -145,7 +147,7 @@ const USAGE = `usage:
     [--compare-text] [--compare-box [height|full]] [--compare-offset] [--interactive]
     [--strict] [--save-case] [--note <text>]
     [--residue "<path>=<reason>" ...] [--ignore <path> ...]
-    [--viewport <px>] [--height <px>] [--screenshot <file>] [--depth <n>] [--notes] [--json]
+    [--viewport <px>] [--height <px>] [--screenshot <file>] [--visual-review <directory>] [--depth <n>] [--notes] [--json]
   figma-parity check --node <id> --devices [--cases <file>] [--json]
   figma-parity capture [--cases <file.json>] [--status pending] [--node <id,id>]
     [--device <key>] [--note <text>] [--limit <n>] [--include-catalogue] [--out <directory>]
@@ -422,6 +424,7 @@ async function evaluateCase(
           ? spec.compareOffset
           : (spec.offsetOrigin ?? spec.root),
       screenshot: spec.screenshot,
+      visualScreenshot: spec.visualScreenshot,
       fill: (spec.fill ?? []).map(([selector, value]) => [selector, value]),
       click: spec.click ?? [],
       focus: spec.focus ?? [],
@@ -477,6 +480,7 @@ async function evaluateCase(
               expectRootWidth: !spec.root,
             }),
         screenshot: undefined,
+        visualScreenshot: undefined,
       })
       if (compositionSignature(other) !== base) changedAt.push(value)
     }
@@ -912,6 +916,27 @@ async function check(parsed: Parsed): Promise<number> {
   const caseId = flags.get("case") === true ? undefined : flags.get("case")
   const nodeId = flags.get("node") === true ? undefined : flags.get("node")
   if (!caseId && !nodeId) throw new Error("check requires --node <id> or --case <caseId>")
+  const visual = stringFlag(flags, "visual-review")
+  if (flags.has("visual-review")) {
+    if (!visual || !caseId || flags.has("devices")) {
+      throw new UsageError("--visual-review requires --case <id> and a directory")
+    }
+    const allowed = new Set(["case", "visual-review", "notes", "json", "strict"])
+    const override = [...flags.keys()].find((key) => !allowed.has(key))
+    if (
+      override ||
+      parsed.subjects.length ||
+      parsed.residues.length ||
+      parsed.ignores.length ||
+      parsed.fill.length ||
+      parsed.click.length ||
+      parsed.focus.length
+    ) {
+      throw new UsageError(
+        "--visual-review uses the saved case without mapping or source overrides",
+      )
+    }
+  }
   if (flags.has("devices")) {
     if (!nodeId) throw new Error("--devices needs --node <id>: it runs the node's device cases")
     return await checkDevices({ nodeId: String(nodeId), flags, parsed })
@@ -927,7 +952,24 @@ async function check(parsed: Parsed): Promise<number> {
   } else {
     spec = caseFromFlags(registryCase(String(nodeId)), flags, parsed)
   }
-  const project = loadExport(stringFlag(flags, "input"))
+  if (visual) {
+    const relative = path.relative(DEFAULT_WAVE_DIR, path.resolve(visual))
+    if (!relative || relative.startsWith("..") || path.isAbsolute(relative)) {
+      throw new UsageError("--visual-review directory must be inside .figma/parity")
+    }
+    fs.mkdirSync(DEFAULT_WAVE_DIR, { recursive: true })
+    let existing = path.resolve(visual)
+    while (!fs.existsSync(existing)) existing = path.dirname(existing)
+    const realRelative = path.relative(fs.realpathSync(DEFAULT_WAVE_DIR), fs.realpathSync(existing))
+    if (realRelative.startsWith("..") || path.isAbsolute(realRelative)) {
+      throw new UsageError("--visual-review directory must resolve inside .figma/parity")
+    }
+    fs.mkdirSync(visual, { recursive: true })
+    for (const name of ["figma.png", "react.png", "diff.png"]) {
+      fs.rmSync(path.join(visual, name), { force: true })
+    }
+  }
+  const project = loadExport(visual ? evidencePaths().source : stringFlag(flags, "input"))
   if (!flags.has("json")) console.log(`source: ${project.file} (${project.origin})`)
   // The slice is evidence, not a live read: before capturing, prove it still
   // describes the case and the inventory it was pinned against. A stale slice
@@ -945,7 +987,19 @@ async function check(parsed: Parsed): Promise<number> {
     }
     if (!flags.has("json")) console.log("evidence: bundle matches the committed inventory")
   }
+  let reference: string | undefined
+  if (visual) {
+    reference = referenceForCase(String(caseId))
+    spec.visualScreenshot = {
+      file: path.join(visual, "react.png"),
+      selector: spec.root ?? DEFAULT_ROOT,
+    }
+  }
   const { report, probe, mapping } = await evaluateCase(spec, { project })
+  const review =
+    visual && reference
+      ? await writeVisualReview({ reference, render: path.join(visual, "react.png"), out: visual })
+      : undefined
   if (flags.has("save-case")) {
     const saved = saveCase(
       path_,
@@ -963,6 +1017,7 @@ async function check(parsed: Parsed): Promise<number> {
           case: spec,
           source: { file: project.file, origin: project.origin },
           mapping,
+          ...(review ? { visualReview: review } : {}),
         },
         null,
         2,
@@ -970,6 +1025,12 @@ async function check(parsed: Parsed): Promise<number> {
     )
   else {
     printResult(report, { notes: flags.has("notes") })
+    if (review) {
+      console.log(
+        `  visual review: ${visual} · Figma ${review.sourceSize} · React ${review.renderSize}` +
+          (review.comparable ? " · diff.png (informational)" : " · no diff: dimensions differ"),
+      )
+    }
     // The mapping nudge belongs to the per-node loop, where the case is written:
     // a reviewed `--case` run reproduces the stored mapping and stays quiet.
     if (!caseId && mapping.length) {

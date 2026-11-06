@@ -694,6 +694,7 @@ export type CaptureOptions = {
   expectState?: string
   stateEvidence?: string
   screenshot?: string
+  visualScreenshot?: { file: string; selector: string }
   tree?: { selector?: string; depth: number }
   baseUrl?: string
 }
@@ -733,6 +734,7 @@ export async function capture({
   expectState,
   stateEvidence,
   screenshot,
+  visualScreenshot,
   tree,
   baseUrl = STORYBOOK_URL,
 }: CaptureOptions): Promise<Record<string, unknown>> {
@@ -810,6 +812,32 @@ export async function capture({
     if (screenshot) {
       fs.mkdirSync(path.dirname(screenshot), { recursive: true })
       await page.screenshot({ path: screenshot, fullPage: true })
+    }
+    if (visualScreenshot) {
+      const box = await page.locator(visualScreenshot.selector).boundingBox()
+      if (!box || box.width < 1 || box.height < 1) {
+        throw new CaptureError("capture-mismatch", `${visualScreenshot.selector}: no visible box`)
+      }
+      const bounds = await page.evaluate(() => ({
+        x: window.scrollX,
+        y: window.scrollY,
+        width: Math.max(document.documentElement.scrollWidth, document.body.scrollWidth),
+        height: Math.max(document.documentElement.scrollHeight, document.body.scrollHeight),
+      }))
+      const clip = { ...box, x: box.x + bounds.x, y: box.y + bounds.y }
+      if (
+        clip.x < 0 ||
+        clip.y < 0 ||
+        clip.x + clip.width > bounds.width ||
+        clip.y + clip.height > bounds.height
+      ) {
+        throw new CaptureError(
+          "capture-mismatch",
+          `${visualScreenshot.selector}: visual box extends outside the document`,
+        )
+      }
+      fs.mkdirSync(path.dirname(visualScreenshot.file), { recursive: true })
+      await page.screenshot({ path: visualScreenshot.file, fullPage: true, clip })
     }
     const subjectsProbe = await page.evaluate(probeFunction, {
       subjects,

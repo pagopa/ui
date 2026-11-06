@@ -62,6 +62,21 @@ decide; composition evidence (offsets, sibling order) is an `advisory`.
 `--strict` promotes advisories into the verdict — for a calibrated mapping
 (`compareOffset`), not the everyday loop.
 
+## Optional visual review
+
+For a saved case, run `pnpm nx run pagopa-ui-cli:figma:parity:check --case <id>
+--visual-review .figma/parity/review/<id>`. The command uses the committed
+evidence slice and hash-checked PNG, even when a local snapshot exists. It
+captures the saved root and state in the same run and replaces `figma.png`,
+`react.png` and `diff.png` in that directory. The directory must be inside
+`.figma/parity`; mapping and source overrides are refused.
+
+At equal dimensions, `diff.png` marks RGB channel differences over 10/255 in
+red, after compositing transparency on white. Unequal dimensions leave both
+images but no diff; neither image is resized. Inspect both images at native size:
+the diff is a review aid, not a pixel-perfect verdict or CI gate, and it does
+not alter the numeric parity verdict.
+
 ## Reading the result
 
 - `deltas`: what still needs a fix; numeric ones carry the token class
@@ -160,8 +175,8 @@ variant: `--state` names the case, `--variant` takes the node id.
 
 ## What does not exist
 
-No PNG pixel diff or percentage budget (the gate is 2px per property plus the
-structural deltas); no workbench, packets, approval files or visual-contract
+No PNG percentage budget (the gate is 2px per property plus the structural
+deltas); no workbench, packets, approval files or visual-contract
 corpus; no `refs` or pixel baselines — after a code change re-run
 `check`. The parity tools never write under `src/` except `--save-case`; renders
 and probes stay in `figma.parityOut`. Story tests run at one viewport, so device

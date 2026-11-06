@@ -233,6 +233,20 @@ everyday primitives are bare verbs (`dev`, `build`, `lint`, `typecheck`, `test`,
 The task `figma:check` runs this tool without flags. Add a flag after the task
 name when you need it.
 
+## Optional Figma visual review
+
+With Storybook running, add `--visual-review .figma/parity/review/<case-id>` to
+`figma:parity:check --case <case-id>`. The saved case and committed, hash-checked
+Figma evidence produce `figma.png`, `react.png` and, when dimensions match,
+`diff.png`. The directory is relative to the design-system root and must be
+inside `.figma/parity`; these three filenames are replaced on each run.
+Mapping and source overrides are not supported.
+
+The diff marks RGB differences greater than 10/255 in red after compositing
+transparency on white. Images of different sizes are not resized and produce
+no diff. This is a review aid, not a pixel-perfect certification or CI gate;
+inspect both images and use the existing parity verdict.
+
 ## The changed-only test loop
 
 `pnpm nx run pagopa-ui-cli:test:changed` and

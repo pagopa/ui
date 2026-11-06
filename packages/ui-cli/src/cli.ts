@@ -487,6 +487,7 @@ const parity = defineCommand({
       viewport: parityString,
       height: parityString,
       screenshot: parityString,
+      "visual-review": parityString,
       depth: parityString,
       notes: parityBoolean,
       json: parityBoolean,

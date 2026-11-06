@@ -54,7 +54,9 @@ devices (one iteration each).
    grid, the footer) as subjects, or record why the case leaves them out. Inspect
    both the source and render at native size and with magnified crops of seams,
    notches, pointers and other joined edges. A one-pixel discontinuity is a
-   visible delta even if the numeric comparison passes.
+   visible delta even if the numeric comparison passes. For a saved case, the
+   [optional visual review](parity-tooling.md#optional-visual-review) highlights
+   differences alongside the two images.
 4. **Close every delta**, one of three ways: a token-ladder fix in the
    component; `--residue "path=reason"` for a deliberate adaptation;
    `--ignore <path>` for a mapping artifact. A subject off on every edge is a
