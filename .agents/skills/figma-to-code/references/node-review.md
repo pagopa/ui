@@ -11,7 +11,7 @@ bulk re-approval.
    gathers the registry entry (status, target, `note`), the rules that target the
    node, the open comments and the design requests ([rules.md](rules.md)). Read
    its committed case IDs
-   (`pnpm nx run pagopa-ui-cli:figma:parity:capture --saved --node <id> --dry-run`),
+   (`pnpm ui-cli parity capture --saved --node <id> --dry-run`),
    their entries in `catalog.parityCases`, and the guide of the target component
    too. The note's constraints and open decisions are binding until the review
    changes them.
@@ -25,7 +25,7 @@ bulk re-approval.
    change: the source the change touches.
    **Done when** the source variants to compare are listed.
 
-3. **Re-run the evidence.** `pnpm nx run pagopa-ui-cli:figma:parity:capture --saved --node <id>`
+3. **Re-run the evidence.** `pnpm ui-cli parity capture --saved --node <id>`
    runs every committed case; use `--node <id> --devices` on `parity:check` for
    a device axis. Capture the cases that are missing
    ([visual-parity.md](visual-parity.md)). A residue measured under conditions

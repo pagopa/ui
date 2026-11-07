@@ -14,15 +14,14 @@ import fs from "node:fs"
 import path from "node:path"
 import { z } from "zod"
 
-import { figmaToken } from "../adapters/figma-token.ts"
-import { fetchFigmaImagesPng } from "../figma/rest.ts"
-import { normalizeLive } from "../figma/snapshot.ts"
+import type { Workspace } from "../adapters/workspace.ts"
 import { loadInventoryNodes } from "../figma/devices.ts"
-import { evidencePaths } from "./evidence.ts"
-import { enterRoot, rootPath } from "../lib/paths.ts"
+import { normalizeLive } from "../figma/snapshot.ts"
+import { UsageError } from "../lib/command.ts"
 import { decodeJsonBytes } from "../lib/json.ts"
 import { parseSchema } from "../lib/validate.ts"
 import type { InventoryNode } from "../schemas/catalogue.ts"
+import { evidencePaths } from "./evidence.ts"
 
 export const SNAPSHOT_PATH = ".figma/live-rest.json"
 export const SCHEMA_VERSION = 1
@@ -220,29 +219,38 @@ export function hexOf(paint: Paint | undefined): string | undefined {
 // The source a parity run reads, in order: an explicit `--input`, the local
 // pinned snapshot, the committed evidence slice. The slice makes the source side
 // reproducible in a clone without `.figma/` and without a token.
-export function resolveExport(input?: string): { file: string; origin: SourceOrigin } {
+export function resolveExport(
+  workspace: Workspace,
+  input?: string,
+): { file: string; origin: SourceOrigin } {
   // Every path is relative to the design-system root, like the rest of the CLI;
   // an absolute path is taken as written.
-  if (input) return { file: path.isAbsolute(input) ? input : rootPath(input), origin: "input" }
-  const snapshot = rootPath(SNAPSHOT_PATH)
+  if (input)
+    return { file: path.isAbsolute(input) ? input : workspace.path(input), origin: "input" }
+  const snapshot = workspace.path(SNAPSHOT_PATH)
   if (fs.existsSync(snapshot)) return { file: snapshot, origin: "snapshot" }
-  const evidence = evidencePaths().source
+  const evidence = evidencePaths(workspace.workspaceRoot).source
   if (fs.existsSync(evidence)) return { file: evidence, origin: "evidence" }
-  throw new Error(
+  throw new UsageError(
     `${SNAPSHOT_PATH} and the committed evidence slice are both missing: the parity source is ` +
       `the pinned export the user produces with the live export, or the committed evidence slice.`,
   )
 }
 
-export function loadExport(input?: string): Project {
-  const { file, origin } = resolveExport(input)
+export function loadExport(workspace: Workspace, input?: string): Project {
+  const { file, origin } = resolveExport(workspace, input)
+  if (!fs.existsSync(file))
+    throw new UsageError(`${file} is missing: pass an existing --input file`)
   const contents = decodeJsonBytes(fs.readFileSync(file), file)
   const raw = parseSchema(ExportSchema, JSON.parse(contents.toString("utf8")), file)
   // The committed slice carries only the documents a case points at, so it
   // cannot satisfy `normalizeLive` (which needs every published node): the
   // catalogue comes from the committed inventory instead. The full-snapshot
   // path stays the normalizer's.
-  const catalogue = raw.kind === "parity-source" ? loadInventoryNodes() : normalizeLive(raw)
+  const catalogue =
+    raw.kind === "parity-source"
+      ? loadInventoryNodes(workspace.path("src/catalog/figma/inventory.json"))
+      : normalizeLive(raw)
   const sourceSha256 = createHash("sha256").update(contents).digest("hex")
   return { file, origin, version: raw.version, sourceSha256, raw, catalogue }
 }
@@ -470,13 +478,13 @@ export function pickVariant(
   // `--variant`, when given, has to be the node itself.
   if (!variants.length) {
     if (variant && variant !== node.id) {
-      throw new Error(`${variant} is not a variant of ${node.id}: the node has no variants`)
+      throw new UsageError(`${variant} is not a variant of ${node.id}: the node has no variants`)
     }
     return { nodeId: node.id, name: node.name, state: {}, box: boxOf(node) }
   }
   if (variant) {
     const match = variants.find((item) => item.nodeId === variant)
-    if (!match) throw new Error(`${variant} is not a variant of ${node.id}`)
+    if (!match) throw new UsageError(`${variant} is not a variant of ${node.id}`)
     return match
   }
   const wanted = (state ?? "").toLowerCase()
@@ -514,7 +522,7 @@ export function pickVariant(
     if (alias) return alias
   }
   const first = variants[0]
-  if (!first) throw new Error(`${node.id} has no variants`)
+  if (!first) throw new UsageError(`${node.id} has no variants`)
   return first
 }
 
@@ -546,66 +554,4 @@ export function offsetBetween(
 ): { left: number; top: number } | undefined {
   if (!node.at || !origin.at) return undefined
   return { left: round2(node.at.x - origin.at.x), top: round2(node.at.y - origin.at.y) }
-}
-
-export async function sourceCli(argv: string[] = process.argv.slice(2)): Promise<void> {
-  const [nodeId, ...rest] = argv
-  if (!nodeId) {
-    console.error(
-      "usage: node src/cli.ts parity source <nodeId> [--depth N] [--json] [--compact] [--png [file]]",
-    )
-    process.exit(2)
-  }
-  const depthIndex = rest.indexOf("--depth")
-  const depth = depthIndex >= 0 ? Number(rest[depthIndex + 1]) : 2
-  const inputIndex = rest.indexOf("--input")
-  const input = inputIndex >= 0 ? rest[inputIndex + 1] : undefined
-  const project = loadExport(input)
-  console.error(`source: ${project.file} (${project.origin})`)
-  const node = sourceNode(project, nodeId.replace("-", ":"))
-  if (!node) {
-    console.error(`${nodeId} is not in the pinned export`)
-    process.exit(2)
-  }
-  const pngIndex = rest.indexOf("--png")
-  if (pngIndex >= 0) {
-    const next = rest[pngIndex + 1]
-    // An explicit path follows `--png`; without one the pinned variant PNG
-    // lands in the gitignored parity output, named by its node id.
-    const file =
-      next && !next.startsWith("--")
-        ? path.isAbsolute(next)
-          ? next
-          : rootPath(next)
-        : rootPath(".figma/parity/source", `${node.id.replace(":", "-")}.png`)
-    const { fileKey } = project.raw
-    const version = project.version
-    if (!fileKey || !version) {
-      throw new Error("--png needs the pinned export's fileKey and version")
-    }
-    const images = await fetchFigmaImagesPng(fileKey, version, [node.id], figmaToken())
-    const buffer = images.get(node.id)
-    if (!buffer) throw new Error(`Figma rendered no PNG for ${node.id}`)
-    fs.mkdirSync(path.dirname(file), { recursive: true })
-    fs.writeFileSync(file, buffer)
-    console.error(`png: ${file} (version ${version})`)
-  }
-  const spec = nodeSpec(node, { depth })
-  const variants = variantsOf(node)
-  if (rest.includes("--compact")) {
-    for (const line of formatSpecTree(spec)) console.log(line)
-    for (const item of variants) console.log(`  variant ${item.nodeId} ${item.name}`)
-    return
-  }
-  const output = { spec, variants }
-  if (rest.includes("--json")) console.log(JSON.stringify(output, null, 2))
-  else {
-    console.log(JSON.stringify(output.spec, null, 2))
-    for (const item of output.variants) console.log(`  variant ${item.nodeId} ${item.name}`)
-  }
-}
-
-if (import.meta.url === `file://${process.argv[1]}`) {
-  enterRoot()
-  await sourceCli()
 }

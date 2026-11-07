@@ -6,20 +6,22 @@
 // Storybook index names the stories and their files, and a walk of the imports
 // each story reaches decides which of them a changed file can affect. The
 // nightly run stays complete, so a change the walk cannot see is caught there.
-import { spawnSync } from "node:child_process"
 import fs from "node:fs"
 import path from "node:path"
 import { z } from "zod"
 
+import type { TestingAdapters } from "../adapters/testing.ts"
+import type { Workspace } from "../adapters/workspace.ts"
+import { UsageError } from "../lib/command.ts"
 import { readJson, writeJson } from "../lib/json.ts"
-import { resolveRoot, resolveStoriesRoot, resolveWorkspaceRoot } from "../lib/paths.ts"
 import { parseSource, sourceDependencies } from "../lib/source-modules.ts"
+import { output, type ParityOutput } from "../parity/output.ts"
 import {
   isVisualStory,
   selectedVisualStories,
   UNSTABLE_VISUAL_STORIES,
-  visualSnapshotName,
   VISUAL_WIDTHS,
+  visualSnapshotName,
 } from "./visual-cases.ts"
 
 const DEFAULT_INDEX = "apps/storybook/dist/index.json"
@@ -43,7 +45,7 @@ const EVERYTHING_FILES = new Set([
   "pnpm-workspace.yaml",
   "apps/storybook/package.json",
   "packages/pagopa-ui/package.json",
-  "packages/ui-cli/src/test/visual-cases.ts",
+  "packages/ui-cli/src/testing/visual-cases.ts",
 ])
 const EVERYTHING_DIRECTORIES = [
   "apps/storybook/.storybook/",
@@ -93,64 +95,13 @@ export type VisualScope = {
   reason?: string
 }
 
-const USAGE = `usage: ui-cli test visual --since <ref> [--index <file>] [--out <file>] [--json] [--check-baselines]
-       ui-cli test visual --all [--index <file>] [--out <file>] [--json] [--check-baselines]
-
-Writes the stories a change can affect: the built Storybook index supplies the
-stories and their files, and the imports each story reaches decide whether a
-changed file is visible to it. \`--all\` skips the walk and names no story, so
-the runner executes the complete catalogue. The command needs the built index:
-run it after \`pagopa-ui-storybook:build\`.
-
-  --since <ref>  the git ref the change is measured against (merge-base diff)
-  --index <file> the built Storybook index (default: ${DEFAULT_INDEX})
-  --out <file>   write the scope as JSON, for VISUAL_SCOPE to read
-  --json         print the scope instead of the summary line
-  --check-baselines  fail when a scoped story's committed Linux baseline is missing
-
-Exit codes: 0, 1 on missing baselines, 2 on invalid input.`
-
-type Options = {
-  since: string | null
-  all: boolean
-  index: string
-  out: string | null
-  json: boolean
-  checkBaselines: boolean
-  help: boolean
-}
-
-function parseArguments(argv: string[]): Options {
-  const options: Options = {
-    since: null,
-    all: false,
-    index: DEFAULT_INDEX,
-    out: null,
-    json: false,
-    checkBaselines: false,
-    help: false,
-  }
-  for (let index = 0; index < argv.length; index += 1) {
-    const argument = argv[index]
-    if (argument === "--help" || argument === "-h") options.help = true
-    else if (argument === "--all") options.all = true
-    else if (argument === "--json") options.json = true
-    else if (argument === "--check-baselines") options.checkBaselines = true
-    else if (argument === "--since" || argument === "--index" || argument === "--out") {
-      const value = argv[index + 1]
-      if (!value || value.startsWith("--")) throw new Error(`${argument} needs a value`)
-      index += 1
-      if (argument === "--since") options.since = value
-      else if (argument === "--index") options.index = value
-      else options.out = value
-    } else {
-      throw new Error(`unknown option ${argument}`)
-    }
-  }
-  if (!options.help && !options.all && !options.since) {
-    throw new Error("pass --since <ref> or --all")
-  }
-  return options
+export type VisualOptions = {
+  since?: string
+  all?: boolean
+  index?: string
+  out?: string
+  json?: boolean
+  checkBaselines?: boolean
 }
 
 function isFile(file: string): boolean {
@@ -203,9 +154,8 @@ function importsOf(
       return dependency ? [dependency] : []
     })
   } else if (/\.[cm]?[jt]sx?$/.test(file)) {
-    const identity = identityOf(file, workspace)
-    const parsed = parseSource(identity)
-    resolved = sourceDependencies(identity, parsed).flatMap((dependency) =>
+    const parsed = parseSource(path.resolve(workspace, file))
+    resolved = sourceDependencies(file, parsed).flatMap((dependency) =>
       // A type-only import is erased: it cannot move a screenshot.
       dependency.runtime ? (resolveImport(dependency.specifier, file, designSystem) ?? []) : [],
     )
@@ -331,8 +281,8 @@ function baselineMissing(file: string): boolean {
   return !fs.statSync(file, { throwIfNoEntry: false })?.isFile()
 }
 
-function git(args: string[], workspace: string): string[] | null {
-  const result = spawnSync("git", args, { cwd: workspace, encoding: "utf8" })
+function git(adapters: TestingAdapters, args: string[], workspace: string): string[] | null {
+  const result = adapters.git(workspace, args)
   if (result.status !== 0) return null
   return result.stdout
     .split("\n")
@@ -340,13 +290,15 @@ function git(args: string[], workspace: string): string[] | null {
     .filter((file) => file !== "")
 }
 
-function untrackedBaselines(files: string[], workspace: string, storiesRoot: string): string[] {
+function untrackedBaselines(
+  adapters: TestingAdapters,
+  files: string[],
+  workspace: string,
+  storiesRoot: string,
+): string[] {
   if (!files.length) return []
   const directory = identityOf(path.join(storiesRoot, "visual", "__screenshots__"), workspace)
-  const result = spawnSync("git", ["ls-files", "--cached", "-z", "--", directory], {
-    cwd: workspace,
-    encoding: "utf8",
-  })
+  const result = adapters.git(workspace, ["ls-files", "--cached", "-z", "--", directory])
   if (result.status !== 0) {
     throw new Error(`cannot inspect tracked visual baselines: ${result.stderr.trim()}`)
   }
@@ -354,43 +306,49 @@ function untrackedBaselines(files: string[], workspace: string, storiesRoot: str
   return files.filter((file) => !tracked.has(identityOf(file, workspace)))
 }
 
-function changedPaths(since: string, workspace: string): string[] | null {
-  const resolved = spawnSync("git", ["rev-parse", "--verify", "--quiet", `${since}^{commit}`], {
-    cwd: workspace,
-    encoding: "utf8",
-  })
+function changedPaths(
+  adapters: TestingAdapters,
+  since: string,
+  workspace: string,
+): string[] | null {
+  const resolved = adapters.git(workspace, [
+    "rev-parse",
+    "--verify",
+    "--quiet",
+    `${since}^{commit}`,
+  ])
   if (resolved.status !== 0) return null
-  const committed = git(["diff", "--name-only", "--no-renames", `${since}...HEAD`], workspace)
+  const committed = git(
+    adapters,
+    ["diff", "--name-only", "--no-renames", `${since}...HEAD`],
+    workspace,
+  )
   if (committed === null) return null
   // The local run sees the working tree too, like `test changed`: the CI
   // checkout is clean, a developer's diff against `main` is not.
-  const staged = git(["diff", "--cached", "--name-only"], workspace) ?? []
-  const unstaged = git(["ls-files", "--other", "--modified", "--exclude-standard"], workspace) ?? []
+  const staged = git(adapters, ["diff", "--cached", "--name-only"], workspace) ?? []
+  const unstaged =
+    git(adapters, ["ls-files", "--other", "--modified", "--exclude-standard"], workspace) ?? []
   return [...new Set([...committed, ...staged, ...unstaged])]
 }
 
-export function runVisual(argv: string[] = process.argv.slice(2)): number {
-  let options: Options
-  try {
-    options = parseArguments(argv)
-  } catch (error) {
-    console.error(`error: ${error instanceof Error ? error.message : String(error)}`)
-    return 2
-  }
-  if (options.help) {
-    console.log(USAGE)
-    return 0
-  }
-
-  const workspace = resolveWorkspaceRoot()
-  const designSystem = path.join(resolveRoot(), "src")
-  const storiesRoot = resolveStoriesRoot()
-  const indexFile = path.resolve(workspace, options.index)
+export function runVisual(
+  tree: Workspace,
+  options: VisualOptions,
+  adapters: TestingAdapters,
+): ParityOutput {
+  const out: string[] = []
+  const err: string[] = []
+  if (!options.all && !options.since) throw new UsageError("pass --since <ref> or --all")
+  const workspace = tree.workspaceRoot
+  const designSystem = tree.path("src")
+  const storiesRoot = tree.storiesRoot
+  const indexFile = path.resolve(workspace, options.index ?? DEFAULT_INDEX)
   if (!isFile(indexFile)) {
-    console.error(
+    err.push(
       `error: missing ${identityOf(indexFile, workspace)}: build the Storybook first (\`pagopa-ui-storybook:build\`)`,
     )
-    return 2
+    return output(2, out, err)
   }
   const index = readJson(indexFile, StoryIndexSchema)
 
@@ -399,10 +357,10 @@ export function runVisual(argv: string[] = process.argv.slice(2)): number {
     scope = { mode: "all", changed: [] }
   } else {
     const since: string = options.since ?? ""
-    const changed = changedPaths(since, workspace)
+    const changed = changedPaths(adapters, since, workspace)
     if (changed === null) {
-      console.error(`error: cannot diff ${since} against HEAD`)
-      return 2
+      err.push(`error: cannot diff ${since} against HEAD`)
+      return output(2, out, err)
     }
     scope = visualScope(changed, index, { storiesRoot, designSystem, workspace })
   }
@@ -411,16 +369,16 @@ export function runVisual(argv: string[] = process.argv.slice(2)): number {
     writeJson(path.resolve(workspace, options.out), scope)
   }
   if (options.json) {
-    console.log(JSON.stringify(scope, null, 2))
+    out.push(JSON.stringify(scope, null, 2))
   } else if (scope.mode === "all") {
     const why = scope.reason ? ` (${scope.reason})` : ""
-    console.log(`[visual] every story${why}: the change can move any screenshot`)
+    out.push(`[visual] every story${why}: the change can move any screenshot`)
   } else {
     const total = [...visualStories(index, storiesRoot).values()].reduce(
       (count, ids) => count + ids.length,
       0,
     )
-    console.log(
+    out.push(
       `[visual] ${scope.stories?.length ?? 0} of ${total} stories are affected by ${scope.changed.length} changed path(s)`,
     )
   }
@@ -429,28 +387,29 @@ export function runVisual(argv: string[] = process.argv.slice(2)): number {
     const missing = required.filter(baselineMissing)
     const missingSet = new Set(missing)
     const untracked = untrackedBaselines(
+      adapters,
       required.filter((file) => !missingSet.has(file)),
       workspace,
       storiesRoot,
     )
     if (missing.length || untracked.length) {
       if (missing.length) {
-        console.error(`[visual] ${missing.length} scoped baseline(s) missing:`)
-        for (const file of missing) console.error(`  ${identityOf(file, workspace)}`)
+        err.push(`[visual] ${missing.length} scoped baseline(s) missing:`)
+        for (const file of missing) err.push(`  ${identityOf(file, workspace)}`)
       }
       if (untracked.length) {
-        console.error(`[visual] ${untracked.length} scoped baseline(s) exist but are not tracked:`)
-        for (const file of untracked) console.error(`  ${identityOf(file, workspace)}`)
-        console.error("[visual] Stage and commit Linux baselines before pushing.")
+        err.push(`[visual] ${untracked.length} scoped baseline(s) exist but are not tracked:`)
+        for (const file of untracked) err.push(`  ${identityOf(file, workspace)}`)
+        err.push("[visual] Stage and commit Linux baselines before pushing.")
       }
-      console.error(
+      err.push(
         "[visual] For a pull request, use the visual:update label to create Linux baselines, review them, then remove the label and re-run the check.",
       )
-      return 1
+      return output(1, out, err)
     }
-    if (!options.json) console.log("[visual] scoped Linux baselines are present")
+    if (!options.json) out.push("[visual] scoped Linux baselines are present")
   }
-  return 0
+  return output(0, out, err, scope)
 }
 
-export { changedPaths, visualStories }
+export { visualStories }

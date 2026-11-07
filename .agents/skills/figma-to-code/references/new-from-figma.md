@@ -47,10 +47,10 @@ component with no node needs only its catalogue coverage
    rule that targets the node is `pending` or `stale`.
 
 5. **Parity.** Order the work with
-   `pnpm nx run pagopa-ui-cli:figma:parity:align --node <id>`, then the loop in
+   `pnpm ui-cli parity align --node <id>`, then the loop in
    [visual-parity.md](visual-parity.md) for every variant the stories expose and
    every declared device; save one case each.
-   **Done when** each case reproduces with `pnpm nx run pagopa-ui-cli:figma:parity:check --case <id>`
+   **Done when** each case reproduces with `pnpm ui-cli parity check --case <id>`
    and every delta is fixed, a reasoned residue or a mapping artifact.
 
 6. **Registry.** Write the entry for the node in `catalog.registry`: `target`

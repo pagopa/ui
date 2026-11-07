@@ -8,7 +8,7 @@ Consulted by every use case that reads or writes the catalogue.
 | -------------------------------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------- |
 | `catalog.inventory`              | identities, canonical contracts, design fingerprints, dependency edges                       | `pnpm nx run pagopa-ui-cli:figma:triage` / `pnpm nx run pagopa-ui-cli:update:inventory` only  |
 | `catalog.registry`               | decision per `nodeId`, `pageId` bulk rules, targets, rendered stories, per-node `note`       | agents and people, reviewed in pull requests    |
-| `catalog.parityCases`            | the reviewed case per compared variant and device                                            | `figma:parity:check --save-case` only           |
+| `catalog.parityCases`            | the reviewed case per compared variant and device                                            | `parity:check --save-case` only           |
 | `catalog.devicePolicy`           | the device vocabulary: axes, canonical devices, aliases, widths, default scopes              | reviewed by hand; never a component name or path |
 | `catalog.deviceExceptions`       | `<nodeId>: <reason>` for a node whose declared devices have no case yet                      | by hand, must shrink                            |
 | `catalog.pageSurface`            | what a page draws: every identity with its decision, every composition with its cases         | by hand, after reading the page tree            |
@@ -186,7 +186,7 @@ Hermetic, no network:
   A node that enters the live delta, or is newly closed `implemented`, fails
   while a declared device has neither a reviewed case nor a
   `catalog.deviceExceptions` entry. The historical burn-down is one warning
-  whose work list is `pnpm nx run pagopa-ui-cli:figma:parity:queue --uncovered`;
+  whose work list is `pnpm ui-cli parity queue --uncovered`;
 - it warns when the inventory is older than 30 days: run the delta use case.
 
 With `--input <snapshot>` or `--rest` it also fails on live contract, design and

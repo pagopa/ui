@@ -39,7 +39,7 @@ reason or a written blocker.
 
 ## Checks
 
-The closing checks of this skill, plus `pnpm nx run pagopa-ui-cli:figma:parity:verify`
+The closing checks of this skill, plus `pnpm ui-cli check parity`
 before the green chain. A slice that no longer matches the committed inventory
 exits 2: refresh it with the evidence command or use the current snapshot.
 

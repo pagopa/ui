@@ -14,10 +14,10 @@ The commands are in [parity-tooling.md](parity-tooling.md); devices in
 - Storybook on `storybook.url`; start `pnpm nx run pagopa-ui-storybook:storybook` when nothing answers. A
   file created while Storybook runs is not in the Tailwind scan until
   `touch src/index.css`.
-- The work list: `pnpm nx run pagopa-ui-cli:figma:parity:queue --status pending` (never-closed or
+- The work list: `pnpm ui-cli parity queue --status pending` (never-closed or
   re-opened nodes), `--status implemented` (re-verification: report what moved,
   the decisions stay), `--unmapped` (nodes without a committed case). List a
-  node's case IDs with `pnpm nx run pagopa-ui-cli:figma:parity:capture --saved
+  node's case IDs with `pnpm ui-cli parity capture --saved
   --node <id> --dry-run`.
 - The scope is the person's: by default a **wave** of three nodes, the highest in
   `implementationOrder` first, each finished before the next. A named list or the
@@ -39,7 +39,7 @@ devices (one iteration each).
    padding and gaps. Read the face from `fontPostScriptName`: the
    REST `fontWeight` can say 500 for a Semibold face.
    **Done when** the variant's geometry and type are written down.
-2. **First capture.** `pnpm nx run pagopa-ui-cli:figma:parity:check` with `--state` (it names the
+2. **First capture.** `pnpm ui-cli parity check` with `--state` (it names the
    case id `<node>-<state>-<device>`), `--expect-state`, the source width and
    the source artboard `--height`. Exit 2 is missing evidence, not a delta: fix
    the width, viewport, height or state evidence and run again.
@@ -71,12 +71,12 @@ devices (one iteration each).
    **Done when** the case enables the composition check or carries its note.
 6. **Save.** `--save-case` (and `--note "reviewed: …"`); the command line is
    never the record.
-   **Done when** `pnpm nx run pagopa-ui-cli:figma:parity:check --case <id>` reproduces the node.
+   **Done when** `pnpm ui-cli parity check --case <id>` reproduces the node.
 
 ## Close the wave
 
-- Run `pnpm nx run pagopa-ui-cli:figma:parity:capture --saved --node <id>
-  --out <dir>` for each node, then `pnpm nx run pagopa-ui-cli:figma:parity:report
+- Run `pnpm ui-cli parity capture --saved --node <id>
+  --out <dir>` for each node, then `pnpm ui-cli parity report
   --dir <dir> --wave <date>-<node-id>-alignment` for each record, using a distinct
   wave name per node.
 - Registry for the verified nodes only ([new-from-figma.md](new-from-figma.md)

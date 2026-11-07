@@ -1,3 +1,5 @@
+import path from "node:path"
+import { workspaceAt } from "../helpers/cli.mjs"
 import assert from "node:assert/strict"
 import fs from "node:fs"
 import { test } from "node:test"
@@ -16,6 +18,7 @@ import {
 import { loadExport, namedLeaves, nodeSpec, sourceNode } from "../../src/parity/source.ts"
 import { toolingPath } from "../../src/lib/paths.ts"
 
+const workspace = workspaceAt(path.resolve(import.meta.dirname, "../../../pagopa-ui"))
 const SLICE = toolingPath("tests/fixtures/figma-parity/snapshot-slice.json")
 const RECORDED_PROBE = toolingPath("tests/fixtures/figma-parity/render-probe.json")
 
@@ -27,7 +30,7 @@ function readProbe() {
 // frame against the rendered input, and the source `Label text` layer against
 // the rendered label.
 function textFieldSources() {
-  const project = loadExport(SLICE)
+  const project = loadExport(workspace, SLICE)
   const spec = nodeSpec(sourceNode(project, "529:6123"), { depth: 3 })
   return {
     field: namedLeaves(spec, "Input")[0],
@@ -36,7 +39,11 @@ function textFieldSources() {
 }
 
 test("the recorded TextField render verifies against the pinned slice", () => {
-  const result = compare({ sources: textFieldSources(), probe: readProbe() })
+  const result = compare({
+    index: tokenIndex(workspace),
+    sources: textFieldSources(),
+    probe: readProbe(),
+  })
   assert.deepEqual(result.deltas, [])
   assert.deepEqual(result.residues, [])
   assert.equal(result.verdict, "verified")
@@ -49,7 +56,7 @@ test("the recorded TextField render verifies against the pinned slice", () => {
 test("a face on the wrong weight is a structural delta", () => {
   const probe = readProbe()
   probe.subjects["Label text"].font.weight = 400
-  const result = compare({ sources: textFieldSources(), probe })
+  const result = compare({ index: tokenIndex(workspace), sources: textFieldSources(), probe })
   const delta = result.deltas.find((item) => item.path === "Label text.font.weight")
   assert.ok(delta, "expected a weight delta")
   assert.equal(delta.source, 600)
@@ -60,7 +67,7 @@ test("a face on the wrong weight is a structural delta", () => {
 test("an off-tolerance box is a delta and a near-token value is classified", () => {
   const probe = readProbe()
   probe.subjects.field.box.width = 268
-  const result = compare({ sources: textFieldSources(), probe })
+  const result = compare({ index: tokenIndex(workspace), sources: textFieldSources(), probe })
   const delta = result.deltas.find((item) => item.path === "field.box.width")
   assert.ok(delta)
   assert.equal(delta.source, 274)
@@ -73,6 +80,7 @@ test("a declared residue stays visible without blocking the verdict", () => {
   const probe = readProbe()
   probe.subjects.field.box.width = 250
   const result = compare({
+    index: tokenIndex(workspace),
     sources: textFieldSources(),
     probe,
     residues: [{ path: "field.box.width", reason: "fixture residue with its reason" }],
@@ -87,6 +95,7 @@ test("a bare residue path names the root subject", () => {
   const probe = readProbe()
   probe.subjects.field.box.width = 250
   const result = compare({
+    index: tokenIndex(workspace),
     sources: textFieldSources(),
     probe,
     residues: [{ path: "box.width", reason: "the root box is the fixture width" }],
@@ -125,7 +134,7 @@ test("the target rule accepts an expanded 22px action and rejects a bare one", (
 })
 
 test("the token classification reads the generated scale", () => {
-  const index = tokenIndex()
+  const index = tokenIndex(workspace)
   assert.equal(classify(index, "type", 18, 2, { lineHeight: 28 }).name, "text-title-xs-mobile")
   assert.equal(classify(index, "type", 18, 2, { lineHeight: 26 }).name, "text-body-big-sb")
   assert.equal(classify(index, "type", 24, 2, { lineHeight: 32 }).name, "text-title-xs")
@@ -154,13 +163,18 @@ test("a TEXT subject compares its height only when the case asks for it", () => 
   probe.subjects["Label text"].box.height = height
   probe.subjects["Label text"].box.width = 999
 
-  const off = compare({ sources, probe })
+  const off = compare({ index: tokenIndex(workspace), sources, probe })
   assert.equal(
     off.deltas.find((delta) => delta.path === "Label text.box.height"),
     undefined,
   )
 
-  const heightOnly = compare({ sources, probe, subject: { compareBox: "height" } })
+  const heightOnly = compare({
+    index: tokenIndex(workspace),
+    sources,
+    probe,
+    subject: { compareBox: "height" },
+  })
   const delta = heightOnly.deltas.find((item) => item.path === "Label text.box.height")
   assert.ok(delta, "expected the label height to be compared")
   assert.equal(delta.render, height)
@@ -170,7 +184,12 @@ test("a TEXT subject compares its height only when the case asks for it", () => 
     "the glyph width is not a comparable box",
   )
 
-  const full = compare({ sources, probe, subject: { compareBox: "full" } })
+  const full = compare({
+    index: tokenIndex(workspace),
+    sources,
+    probe,
+    subject: { compareBox: "full" },
+  })
   assert.ok(full.deltas.find((item) => item.path === "Label text.box.width"))
 })
 
@@ -202,7 +221,12 @@ function compositionFixture({ titleTop, descriptionTop }) {
 
 test("the composition offsets are advisory by default and gate in strict mode", () => {
   const { sources, probe } = compositionFixture({ titleTop: 24, descriptionTop: 60 })
-  const advisory = compare({ sources, probe, subject: { compareOffset: true } })
+  const advisory = compare({
+    index: tokenIndex(workspace),
+    sources,
+    probe,
+    subject: { compareOffset: true },
+  })
   assert.deepEqual(advisory.deltas, [])
   assert.equal(advisory.advisories.length, 1)
   assert.equal(advisory.advisories[0].path, "Description.offset.top")
@@ -213,16 +237,23 @@ test("the composition offsets are advisory by default and gate in strict mode", 
   assert.equal(advisory.advisories[0].token.name, "space-15")
   assert.equal(advisory.verdict, "verified")
 
-  const strict = compare({ sources, probe, subject: { compareOffset: true }, strict: true })
+  const strict = compare({
+    index: tokenIndex(workspace),
+    sources,
+    probe,
+    subject: { compareOffset: true },
+    strict: true,
+  })
   assert.equal(strict.deltas.length, 1)
   assert.equal(strict.verdict, "review-required")
 
-  const off = compare({ sources, probe })
+  const off = compare({ index: tokenIndex(workspace), sources, probe })
   assert.deepEqual(off.advisories, [], "the offset check is opt-in")
 
   // A value between two steps is reported as a near-token, not as a token.
   const between = compositionFixture({ titleTop: 24, descriptionTop: 42 })
   const near = compare({
+    index: tokenIndex(workspace),
     sources: between.sources,
     probe: between.probe,
     subject: { compareOffset: true },
@@ -233,6 +264,7 @@ test("the composition offsets are advisory by default and gate in strict mode", 
 test("the order check reports an inverted sibling pair", () => {
   const inverted = compositionFixture({ titleTop: 48, descriptionTop: 24 })
   const result = compare({
+    index: tokenIndex(workspace),
     sources: inverted.sources,
     probe: inverted.probe,
     subject: { compareOffset: true },
@@ -244,6 +276,7 @@ test("the order check reports an inverted sibling pair", () => {
 
   const matching = compositionFixture({ titleTop: 24, descriptionTop: 48 })
   const clean = compare({
+    index: tokenIndex(workspace),
     sources: matching.sources,
     probe: matching.probe,
     subject: { compareOffset: true },
@@ -289,11 +322,12 @@ test("a responsive finding fails the case unless a residue records the reason", 
     subjects: { field: { box: { width: 320, height: 77 }, padding: [0, 0, 0, 0], gap: 0 } },
     responsive: { clipped: [{ selector: "button.action", axis: "x", hidden: 31, client: 320 }] },
   }
-  const gating = compare({ sources, probe })
+  const gating = compare({ index: tokenIndex(workspace), sources, probe })
   assert.equal(gating.verdict, "review-required")
   assert.equal(gating.deltas[0].path, "responsive.clipped.button.action")
 
   const recorded = compare({
+    index: tokenIndex(workspace),
     sources,
     probe,
     residues: [{ path: "responsive.clipped.button.action", reason: "the source clips it too" }],

@@ -72,7 +72,7 @@ parent_dr: design-review.md
 - `AC-03`: Every run with drift opens a single review pull request. - Evidence: `.github/workflows/figma-drift.yml`
 - `AC-04`: The review diff contains only the drift and the formatted regenerated data. - Evidence: `.github/workflows/figma-drift.yml` (formatting step)
 - `AC-05`: The rules ledger stays a reviewed change and not a generated one. - Evidence: `pnpm nx run pagopa-ui-cli:figma:rules`; `pnpm nx run pagopa-ui-cli:figma:rules:check`
-- `AC-06`: The regenerated parity evidence passes its own verification. - Evidence: `pnpm nx run pagopa-ui-cli:figma:parity:evidence`; `pnpm nx run pagopa-ui-cli:figma:parity:verify`
+- `AC-06`: The regenerated check evidence passes its own verification. - Evidence: `pnpm ui-cli check evidence`; `pnpm ui-cli check parity`
 - `AC-07`: A person without a Figma token can read the drift state. - Evidence: `pnpm nx run pagopa-ui-cli:figma:status`
 
 **Tracking events**:

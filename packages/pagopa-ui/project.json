@@ -42,7 +42,7 @@
         "client:check",
         "a11y:conformance:check",
         "pagopa-ui-cli:test",
-        "pagopa-ui-cli:figma:parity:verify",
+        "pagopa-ui-cli:check:parity",
         "pagopa-ui-tokens:test"
       ],
       "configurations": {

@@ -61,14 +61,14 @@ or when every device draws one composition; write the reason in the case note.
    (or `variantsOf()`): each variant's device and box. `any` values need no case.
 2. **Read each device's tree** at `--depth 3` or with `get_screenshot`: which
    layers disappear, which sizes and gaps change, one band or a stack.
-3. **Capture per device**: `pnpm nx run pagopa-ui-cli:figma:parity:check --node <id> --device <key>`
+3. **Capture per device**: `pnpm ui-cli parity check --node <id> --device <key>`
    (or `--variant <nodeId>`); the viewport follows the variant's width.
 4. **Diff device by device**: a layer hidden on one device is not a delta on
    another.
 5. **Save one case per device** with its `device` and its own width and viewport,
    the scope declared when the default does not fit.
 
-**Done when** `pnpm nx run pagopa-ui-cli:figma:parity:check --node <id> --devices` shows a reviewed,
+**Done when** `pnpm ui-cli parity check --node <id> --devices` shows a reviewed,
 passing case for every declared device, or `catalog.deviceExceptions` carries a
 reasoned entry for the missing ones.
 
@@ -79,7 +79,7 @@ reasoned entry for the missing ones.
   enters the live delta or is newly closed `implemented` without it; drift runs
   themselves are never blocked, the gate reads final statuses.
 - The historical gap is one `check:catalogue` warning. Burn it down with
-  `pnpm nx run pagopa-ui-cli:figma:parity:queue --uncovered` → `pnpm nx run pagopa-ui-cli:figma:parity:cases --sync` →
+  `pnpm ui-cli parity queue --uncovered` → `pnpm ui-cli parity cases --sync` →
   refine each draft → `check --devices`. Drafts never count as coverage.
 - The exception list only shrinks: `check:catalogue` fails an entry whose node no
   longer misses a device.
@@ -216,7 +216,7 @@ render: (args) => (
 is none of its node's case widths. The stories that still owed one were listed
 in `src/catalog/figma/frame-baseline.json`, and the list is empty: the corpus
 paid that debt one composition at a time. A story that draws no frame today is a
-capture failure to fix in the story, not an entry to add — `parity verify` fails
+capture failure to fix in the story, not an entry to add — `check parity` fails
 when an entry outlives the debt it records, so the file cannot quietly refill.
 
 A surface that paints its own backdrop — a dialog template, a full-page

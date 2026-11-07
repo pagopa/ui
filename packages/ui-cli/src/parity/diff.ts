@@ -7,16 +7,16 @@
 import fs from "node:fs"
 import { z } from "zod"
 
-import { tokensPath } from "../lib/paths.ts"
+import path from "node:path"
+import type { Workspace } from "../adapters/workspace.ts"
 import { parseSchema } from "../lib/validate.ts"
-import type { SpecNode } from "./source.ts"
 import { rgbToHex } from "./render.ts"
+import type { SpecNode } from "./source.ts"
 
 export const SCHEMA_VERSION = 1
 export const TOLERANCE = 2
 
-const TOKEN_CSS = tokensPath("src/figma.generated.css")
-const TOKEN_MANIFEST = tokensPath("src/manifest.json")
+export const EMPTY_TOKEN_INDEX: TokenIndex = { type: [], radius: [], color: [], space: [] }
 
 type TokenCandidate = {
   name: string
@@ -128,10 +128,9 @@ function hexOfColor(value: unknown): string | undefined {
 
 // The token vocabulary the classification uses: the generated type scale and
 // radii, plus every colour variable and its hex value from the manifest.
-export function tokenIndex({
-  cssPath = TOKEN_CSS,
-  manifestPath = TOKEN_MANIFEST,
-}: { cssPath?: string; manifestPath?: string } = {}): TokenIndex {
+export function tokenIndex(workspace: Workspace): TokenIndex {
+  const cssPath = path.join(workspace.tokensRoot, "src/figma.generated.css")
+  const manifestPath = path.join(workspace.tokensRoot, "src/manifest.json")
   const index: TokenIndex = { type: [], radius: [], color: [], space: [] }
   const css = fs.readFileSync(cssPath, "utf8")
   // Only the size declaration of a text token counts: its `--line-height`,
@@ -458,158 +457,11 @@ export function compareSubject({
   const compareBox = subject.compareBox === true ? "height" : subject.compareBox
   const textSubject = source.type === "TEXT" && compareBox !== "full"
 
-  if (source.box && render.box && (!textSubject || compareBox)) {
-    const dimensions: Array<"width" | "height"> = textSubject ? ["height"] : ["width", "height"]
-    for (const dimension of dimensions) {
-      const delta = (render.box[dimension] ?? 0) - (source.box[dimension] ?? 0)
-      if (Math.abs(delta) > tolerance) {
-        push(deltas, key, `box.${dimension}`, source.box[dimension], render.box[dimension])
-      } else {
-        note(`box.${dimension}`, `${render.box[dimension]}px`)
-      }
-    }
-  }
-  const offsets = subject.compareOffset ? source.offset : undefined
-  if (offsets && render.offset) {
-    const axes: Array<"left" | "top"> = textSubject ? ["top"] : ["left", "top"]
-    for (const axis of axes) {
-      const expected = offsets[axis]
-      const actual = render.offset[axis]
-      if (expected == null || actual == null) continue
-      if (Math.abs(actual - expected) > tolerance) {
-        push(deltas, key, `offset.${axis}`, expected, actual, "advisory")
-      } else {
-        note(`offset.${axis}`, `${actual}px`)
-      }
-    }
-  }
-  if (subject.interactive) {
-    const expansion = render.expansion
-    const reach =
-      (render.box?.height ?? 0) + Math.abs(expansion?.top ?? 0) + Math.abs(expansion?.bottom ?? 0)
-    if (reach >= 44) note("target", `${reach}px`)
-    else push(deltas, key, "target", ">=44px", `${reach}px`)
-  }
-  if (source.layout && render.padding && !textSubject) {
-    const sourcePadding = source.layout.padding ?? []
-    const verticalCentred =
-      source.layout.mode === "VERTICAL"
-        ? source.layout.align === "CENTER"
-        : source.layout.counterAlign === "CENTER"
-    const horizontalCentred =
-      source.layout.mode === "HORIZONTAL"
-        ? source.layout.align === "CENTER"
-        : source.layout.counterAlign === "CENTER"
-    const sameHeight =
-      source.box && render.box && Math.abs(render.box.height - source.box.height) <= tolerance
-    const sameWidth =
-      source.box && render.box && Math.abs(render.box.width - source.box.width) <= tolerance
-    for (const [position, edge] of ["top", "right", "bottom", "left"].entries()) {
-      const expected = sourcePadding[position]
-      const actual = render.padding[position]
-      if (expected == null || actual == null) continue
-      const centredEdge =
-        edge === "top" || edge === "bottom"
-          ? verticalCentred && sameHeight
-          : horizontalCentred && sameWidth
-      if (Math.abs(actual - expected) > tolerance) {
-        if (centredEdge) {
-          note(
-            `padding.${edge}`,
-            `centred content: computed ${actual}px against the source ${expected}px inset`,
-          )
-        } else {
-          push(deltas, key, `padding.${edge}`, expected, actual)
-        }
-      } else {
-        note(`padding.${edge}`, `${actual}px`)
-      }
-    }
-    // A source HORIZONTAL layout spaces its children along the inline axis, a
-    // VERTICAL one along the block axis: compare the matching CSS gap, not the
-    // shorthand's first value (which is always the row gap).
-    const renderGap =
-      source.layout.mode === "HORIZONTAL"
-        ? (render.columnGap ?? render.gap)
-        : (render.rowGap ?? render.gap)
-    if (source.layout.gap != null && renderGap != null) {
-      if (Math.abs(renderGap - source.layout.gap) > tolerance) {
-        if (render.childCount === 0) {
-          note(
-            "gap",
-            `leaf element: the source ${source.layout.gap}px gap belongs to its container`,
-          )
-        } else {
-          push(deltas, key, "gap", source.layout.gap, renderGap)
-        }
-      } else {
-        note("gap", `${renderGap}px`)
-      }
-    }
-  }
-  if (!textSubject && source.radius != null && render.radius != null) {
-    if (Math.abs(render.radius - source.radius) > tolerance) {
-      push(deltas, key, "radius", source.radius, render.radius)
-    } else {
-      note("radius", `${render.radius}px`)
-    }
-  }
-  const stroke = source.strokes?.[0]
-  const renderBorder = renderStroke(render)
-  if (stroke && renderBorder && !textSubject) {
-    if (Math.abs(renderBorder.width - stroke.width) > tolerance) {
-      push(deltas, key, "border.width", stroke.width, renderBorder.width)
-    } else {
-      note("border.width", `${renderBorder.width}px`)
-    }
-    if (stroke.color && hexOfColor(renderBorder.color) !== stroke.color.toLowerCase()) {
-      push(deltas, key, "border.color", stroke.color, hexOfColor(renderBorder.color))
-    } else if (stroke.color) {
-      note("border.color", stroke.color)
-    }
-  }
-  const fill = source.type === "TEXT" ? undefined : source.fills?.[0]
-  if (fill && render.background) {
-    if (/rgba?\([^)]*,\s*0\)$/.test(render.background)) {
-      note("background", "transparent: the painted surface is the panel behind")
-    } else if (hexOfColor(render.background) !== fill.toLowerCase()) {
-      push(deltas, key, "background", fill, hexOfColor(render.background))
-    } else {
-      note("background", fill)
-    }
-  }
-  if (source.text && render.font) {
-    for (const metric of ["size", "lineHeight"] as const) {
-      const expected = source.text[metric === "size" ? "fontSize" : "lineHeight"]
-      if (expected == null) continue
-      const actual = render.font[metric]
-      if (actual == null) continue
-      if (Math.abs(actual - expected) > tolerance) {
-        push(deltas, key, `font.${metric}`, expected, actual)
-      } else {
-        note(`font.${metric}`, `${actual}px`)
-      }
-    }
-    if (source.text.cssWeight != null && render.font.weight !== source.text.cssWeight) {
-      push(deltas, key, "font.weight", source.text.cssWeight, render.font.weight)
-    } else if (source.text.cssWeight != null) {
-      note("font.weight", `${source.text.styleName} -> ${render.font.weight}`)
-    }
-    const sourceColor = source.text.color
-    if (sourceColor && render.color) {
-      if (hexOfColor(render.color) !== sourceColor.toLowerCase()) {
-        push(deltas, key, "font.color", sourceColor, hexOfColor(render.color))
-      } else {
-        note("font.color", sourceColor)
-      }
-    }
-    if (subject.compareText === true && source.text.characters && render.text) {
-      const expected = source.text.characters.replace(/\s+/g, " ").trim()
-      if (!render.text.startsWith(expected.slice(0, 40))) {
-        push(deltas, key, "text", expected.slice(0, 60), render.text.slice(0, 60), "delta")
-      }
-    }
-  }
+  const context = { key, source, render, subject, tolerance, textSubject, compareBox, deltas, note }
+  compareGeometry(context)
+  compareLayout(context)
+  comparePaint(context)
+  compareText(context)
   return deltas
 }
 
@@ -631,7 +483,7 @@ export function classifyResults(
   deltas: Delta[],
   {
     residues = [],
-    index = tokenIndex(),
+    index = EMPTY_TOKEN_INDEX,
     strict = false,
   }: {
     residues?: Array<{ path: string; reason: string }>
@@ -706,7 +558,7 @@ export function compare({
   index?: TokenIndex
   strict?: boolean
 }) {
-  const vocabulary = index ?? tokenIndex()
+  const vocabulary = index ?? EMPTY_TOKEN_INDEX
   const deltas: Delta[] = []
   for (const [key, source] of Object.entries(sources)) {
     deltas.push(
@@ -762,4 +614,206 @@ export function formatResult(result: {
     )
   }
   return lines.join("\n")
+}
+
+type SubjectComparison = {
+  key: string
+  source: SourceSubject
+  render: RenderSubject
+  subject: NonNullable<Parameters<typeof compareSubject>[0]["subject"]>
+  tolerance: number
+  textSubject: boolean
+  compareBox: boolean | "height" | "full" | undefined
+  deltas: Delta[]
+  note(path: string, value: unknown): void
+}
+
+function compareGeometry({
+  key,
+  source,
+  render,
+  subject,
+  tolerance,
+  textSubject,
+  compareBox,
+  deltas,
+  note,
+}: SubjectComparison) {
+  if (source.box && render.box && (!textSubject || compareBox)) {
+    const dimensions: Array<"width" | "height"> = textSubject ? ["height"] : ["width", "height"]
+    for (const dimension of dimensions) {
+      const delta = (render.box[dimension] ?? 0) - (source.box[dimension] ?? 0)
+      if (Math.abs(delta) > tolerance) {
+        push(deltas, key, `box.${dimension}`, source.box[dimension], render.box[dimension])
+      } else {
+        note(`box.${dimension}`, `${render.box[dimension]}px`)
+      }
+    }
+  }
+  const offsets = subject.compareOffset ? source.offset : undefined
+  if (offsets && render.offset) {
+    const axes: Array<"left" | "top"> = textSubject ? ["top"] : ["left", "top"]
+    for (const axis of axes) {
+      const expected = offsets[axis]
+      const actual = render.offset[axis]
+      if (expected == null || actual == null) continue
+      if (Math.abs(actual - expected) > tolerance) {
+        push(deltas, key, `offset.${axis}`, expected, actual, "advisory")
+      } else {
+        note(`offset.${axis}`, `${actual}px`)
+      }
+    }
+  }
+  if (subject.interactive) {
+    const expansion = render.expansion
+    const reach =
+      (render.box?.height ?? 0) + Math.abs(expansion?.top ?? 0) + Math.abs(expansion?.bottom ?? 0)
+    if (reach >= 44) note("target", `${reach}px`)
+    else push(deltas, key, "target", ">=44px", `${reach}px`)
+  }
+}
+
+function compareLayout({
+  key,
+  source,
+  render,
+  tolerance,
+  textSubject,
+  deltas,
+  note,
+}: SubjectComparison) {
+  if (source.layout && render.padding && !textSubject) {
+    const sourcePadding = source.layout.padding ?? []
+    const verticalCentred =
+      source.layout.mode === "VERTICAL"
+        ? source.layout.align === "CENTER"
+        : source.layout.counterAlign === "CENTER"
+    const horizontalCentred =
+      source.layout.mode === "HORIZONTAL"
+        ? source.layout.align === "CENTER"
+        : source.layout.counterAlign === "CENTER"
+    const sameHeight =
+      source.box && render.box && Math.abs(render.box.height - source.box.height) <= tolerance
+    const sameWidth =
+      source.box && render.box && Math.abs(render.box.width - source.box.width) <= tolerance
+    for (const [position, edge] of ["top", "right", "bottom", "left"].entries()) {
+      const expected = sourcePadding[position]
+      const actual = render.padding[position]
+      if (expected == null || actual == null) continue
+      const centredEdge =
+        edge === "top" || edge === "bottom"
+          ? verticalCentred && sameHeight
+          : horizontalCentred && sameWidth
+      if (Math.abs(actual - expected) > tolerance) {
+        if (centredEdge) {
+          note(
+            `padding.${edge}`,
+            `centred content: computed ${actual}px against the source ${expected}px inset`,
+          )
+        } else {
+          push(deltas, key, `padding.${edge}`, expected, actual)
+        }
+      } else {
+        note(`padding.${edge}`, `${actual}px`)
+      }
+    }
+    // A source HORIZONTAL layout spaces its children along the inline axis, a
+    // VERTICAL one along the block axis: compare the matching CSS gap, not the
+    // shorthand's first value (which is always the row gap).
+    const renderGap =
+      source.layout.mode === "HORIZONTAL"
+        ? (render.columnGap ?? render.gap)
+        : (render.rowGap ?? render.gap)
+    if (source.layout.gap != null && renderGap != null) {
+      if (Math.abs(renderGap - source.layout.gap) > tolerance) {
+        if (render.childCount === 0) {
+          note(
+            "gap",
+            `leaf element: the source ${source.layout.gap}px gap belongs to its container`,
+          )
+        } else {
+          push(deltas, key, "gap", source.layout.gap, renderGap)
+        }
+      } else {
+        note("gap", `${renderGap}px`)
+      }
+    }
+  }
+}
+
+function comparePaint({
+  key,
+  source,
+  render,
+  tolerance,
+  textSubject,
+  deltas,
+  note,
+}: SubjectComparison) {
+  if (!textSubject && source.radius != null && render.radius != null) {
+    if (Math.abs(render.radius - source.radius) > tolerance) {
+      push(deltas, key, "radius", source.radius, render.radius)
+    } else {
+      note("radius", `${render.radius}px`)
+    }
+  }
+  const stroke = source.strokes?.[0]
+  const renderBorder = renderStroke(render)
+  if (stroke && renderBorder && !textSubject) {
+    if (Math.abs(renderBorder.width - stroke.width) > tolerance) {
+      push(deltas, key, "border.width", stroke.width, renderBorder.width)
+    } else {
+      note("border.width", `${renderBorder.width}px`)
+    }
+    if (stroke.color && hexOfColor(renderBorder.color) !== stroke.color.toLowerCase()) {
+      push(deltas, key, "border.color", stroke.color, hexOfColor(renderBorder.color))
+    } else if (stroke.color) {
+      note("border.color", stroke.color)
+    }
+  }
+  const fill = source.type === "TEXT" ? undefined : source.fills?.[0]
+  if (fill && render.background) {
+    if (/rgba?\([^)]*,\s*0\)$/.test(render.background)) {
+      note("background", "transparent: the painted surface is the panel behind")
+    } else if (hexOfColor(render.background) !== fill.toLowerCase()) {
+      push(deltas, key, "background", fill, hexOfColor(render.background))
+    } else {
+      note("background", fill)
+    }
+  }
+}
+
+function compareText({ key, source, render, subject, tolerance, deltas, note }: SubjectComparison) {
+  if (source.text && render.font) {
+    for (const metric of ["size", "lineHeight"] as const) {
+      const expected = source.text[metric === "size" ? "fontSize" : "lineHeight"]
+      if (expected == null) continue
+      const actual = render.font[metric]
+      if (actual == null) continue
+      if (Math.abs(actual - expected) > tolerance) {
+        push(deltas, key, `font.${metric}`, expected, actual)
+      } else {
+        note(`font.${metric}`, `${actual}px`)
+      }
+    }
+    if (source.text.cssWeight != null && render.font.weight !== source.text.cssWeight) {
+      push(deltas, key, "font.weight", source.text.cssWeight, render.font.weight)
+    } else if (source.text.cssWeight != null) {
+      note("font.weight", `${source.text.styleName} -> ${render.font.weight}`)
+    }
+    const sourceColor = source.text.color
+    if (sourceColor && render.color) {
+      if (hexOfColor(render.color) !== sourceColor.toLowerCase()) {
+        push(deltas, key, "font.color", sourceColor, hexOfColor(render.color))
+      } else {
+        note("font.color", sourceColor)
+      }
+    }
+    if (subject.compareText === true && source.text.characters && render.text) {
+      const expected = source.text.characters.replace(/\s+/g, " ").trim()
+      if (!render.text.startsWith(expected.slice(0, 40))) {
+        push(deltas, key, "text", expected.slice(0, 60), render.text.slice(0, 60), "delta")
+      }
+    }
+  }
 }

@@ -41,7 +41,7 @@ export const figmaCoverageGroups = Object.entries(
 // The reviewed case corpus as the story reads it: only the fields the join
 // needs. A draft case (`cases --sync`) never counts as coverage — the same R9
 // rule `packages/ui-cli/src/parity/cases.ts` applies, so the story's numbers agree
-// with `pnpm figma:parity:queue --coverage`.
+// with `pnpm ui-cli parity queue --coverage`.
 interface FigmaDeviceCase {
   nodeId: string
   device?: string | null
@@ -95,7 +95,7 @@ export const figmaDeviceCoverage = new Map<string, FigmaDeviceCoverageRow>(
 
 // The totals the story prints. Only `implemented`/`pending` rows count: a
 // `mocked`/`excluded` node needs no case, and neither does a set without a
-// device axis — the same statuses `pnpm figma:parity:queue --coverage` counts.
+// device axis — the same statuses `pnpm ui-cli parity queue --coverage` counts.
 export const figmaDeviceCoverageCounts = figmaCoverage.reduce(
   (counts, row) => {
     if (row.status !== "implemented" && row.status !== "pending") return counts

@@ -1,11 +1,13 @@
+import { runCli, workspaceAt } from "../helpers/cli.mjs"
 import assert from "node:assert/strict"
-import { spawnSync } from "node:child_process"
 import { createHash } from "node:crypto"
 import fs from "node:fs"
 import path from "node:path"
 import { test } from "node:test"
 import { fileURLToPath } from "node:url"
 import { brotliDecompressSync, gzipSync } from "node:zlib"
+
+import { check } from "../../src/parity/check.ts"
 
 import {
   MAX_EVIDENCE_BYTES,
@@ -18,10 +20,8 @@ import {
 } from "../../src/parity/evidence.ts"
 import { loadExport, resolveExport, sourceNode } from "../../src/parity/source.ts"
 import { caseVariant, loadCaseFile, loadInventoryNodes } from "../../src/parity/cases.ts"
-import { fixtureEnv } from "../../src/lib/paths.ts"
 import { brotliJson } from "../../src/lib/json.ts"
 
-const script = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
 // Workspace scratch stays outside package symlinks scanned by concurrent checks.
 const workspaceCache = fileURLToPath(new URL("../../../../.cache/", import.meta.url))
 
@@ -145,6 +145,10 @@ function temporaryRoot() {
 
 test("the slice carries every case node with its full variant subtree", async () => {
   const { result, errors } = await buildEvidence({
+    capturedAt: "2026-10-21",
+    images: async () => {
+      throw new Error("reused evidence needs no network")
+    },
     snapshot,
     cases,
     nodes: [node],
@@ -323,7 +327,7 @@ test("a bundle above the cap is refused with its largest cases", () => {
   }
 })
 
-test("the evidence command checks a fixture tree without a token", () => {
+test("the evidence command checks a fixture tree without a token", async () => {
   const root = temporaryRoot()
   try {
     writeEvidenceTree(root)
@@ -337,11 +341,7 @@ test("the evidence command checks a fixture tree without a token", () => {
         components: [node],
       }),
     )
-    const result = spawnSync(process.execPath, [script, "parity", "evidence", "--check"], {
-      cwd: root,
-      encoding: "utf8",
-      env: fixtureEnv(root, { FIGMA_TOKEN: "" }),
-    })
+    const result = await runCli(["check", "evidence"], { root, env: { FIGMA_TOKEN: "" } })
     assert.equal(result.status, 0, result.stderr)
     assert.match(result.stdout, /evidence: 2 case\(s\) · 2 manifest entr\(ies\)/)
     assert.match(result.stdout, /evidence: ok/)
@@ -366,7 +366,10 @@ test("loadExport reads the committed slice without normalizing the live export",
       }),
     )
     process.env.PAGOPA_UI_ROOT = root
-    const project = loadExport(path.join(root, "docs/figma-parity/source.json.br"))
+    const project = loadExport(
+      workspaceAt(root),
+      path.join(root, "docs/figma-parity/source.json.br"),
+    )
     assert.equal(project.catalogue.length, 1)
     assert.equal(project.version, "v1")
     assert.equal(project.sourceSha256, manifestFor().sourceSha256)
@@ -397,12 +400,12 @@ test("resolveExport falls back from the snapshot to the committed slice", () => 
   const previous = process.env.PAGOPA_UI_ROOT
   try {
     process.env.PAGOPA_UI_ROOT = root
-    assert.throws(() => resolveExport(), /are both missing/)
+    assert.throws(() => resolveExport(workspaceAt(root)), /are both missing/)
     writeEvidenceTree(root)
-    assert.equal(resolveExport().origin, "evidence")
+    assert.equal(resolveExport(workspaceAt(root)).origin, "evidence")
     fs.mkdirSync(path.join(root, ".figma"), { recursive: true })
     fs.writeFileSync(path.join(root, ".figma/live-rest.json"), "{}")
-    assert.equal(resolveExport().origin, "snapshot")
+    assert.equal(resolveExport(workspaceAt(root)).origin, "snapshot")
   } finally {
     if (previous === undefined) delete process.env.PAGOPA_UI_ROOT
     else process.env.PAGOPA_UI_ROOT = previous
@@ -416,10 +419,10 @@ test("an explicit input path resolves from the design-system root", () => {
   try {
     process.env.PAGOPA_UI_ROOT = root
     assert.equal(
-      resolveExport(".figma/live-rest.json").file,
+      resolveExport(workspaceAt(root), ".figma/live-rest.json").file,
       path.join(fs.realpathSync(root), ".figma/live-rest.json"),
     )
-    assert.equal(resolveExport("/tmp/absolute.json").file, "/tmp/absolute.json")
+    assert.equal(resolveExport(workspaceAt(root), "/absolute.json").file, "/absolute.json")
   } finally {
     if (previous === undefined) delete process.env.PAGOPA_UI_ROOT
     else process.env.PAGOPA_UI_ROOT = previous
@@ -485,7 +488,7 @@ test("a slice without the captured variant is missing evidence", () => {
   }
 })
 
-test("parity check refuses a stale evidence slice before Storybook", () => {
+test("parity check refuses a stale evidence slice before Storybook", async () => {
   const root = temporaryRoot()
   try {
     writeEvidenceTree(root)
@@ -497,19 +500,14 @@ test("parity check refuses a stale evidence slice before Storybook", () => {
       path.join(root, "src/catalog/figma/inventory.json"),
       JSON.stringify({ fileKey: "fixture", syncedAt: "2026-10-21", components: [stale] }),
     )
-    const result = spawnSync(process.execPath, [script, "parity", "check", "--case", "small"], {
-      cwd: root,
-      encoding: "utf8",
-      env: fixtureEnv(root, { FIGMA_TOKEN: "" }),
-    })
+    const result = await checked(root, { caseId: "small" })
     assert.equal(result.status, 2, result.stderr)
     assert.match(result.stderr, /stale against the committed inventory/)
     assert.match(result.stdout, /source: .*\(evidence\)/)
-    const explicit = spawnSync(
-      process.execPath,
-      [script, "parity", "check", "--case", "small", "--input", "docs/figma-parity/source.json.br"],
-      { cwd: root, encoding: "utf8", env: fixtureEnv(root, { FIGMA_TOKEN: "" }) },
-    )
+    const explicit = await checked(root, {
+      caseId: "small",
+      input: "docs/figma-parity/source.json.br",
+    })
     assert.equal(explicit.status, 2, explicit.stderr)
     assert.match(explicit.stderr, /stale against the committed inventory/)
   } finally {
@@ -517,7 +515,7 @@ test("parity check refuses a stale evidence slice before Storybook", () => {
   }
 })
 
-test("parity check rejects an alternate slice even when the committed bundle is valid", () => {
+test("parity check rejects an alternate slice even when the committed bundle is valid", async () => {
   const root = temporaryRoot()
   try {
     writeEvidenceTree(root)
@@ -530,11 +528,7 @@ test("parity check rejects an alternate slice even when the committed bundle is 
     const changed = sliceFor()
     changed.nodes["1:1"].document.children[0].name = "Size=Changed"
     fs.writeFileSync(path.join(root, "alternate.json.br"), brotliJson(changed))
-    const result = spawnSync(
-      process.execPath,
-      [script, "parity", "check", "--case", "small", "--input", "alternate.json.br"],
-      { cwd: root, encoding: "utf8", env: fixtureEnv(root, { FIGMA_TOKEN: "" }) },
-    )
+    const result = await checked(root, { caseId: "small", input: "alternate.json.br" })
     assert.equal(result.status, 2, result.stderr)
     assert.match(
       result.stderr,
@@ -569,7 +563,7 @@ test("previous gzipped slices remain readable as explicit inputs", () => {
       JSON.stringify({ fileKey: "fixture", syncedAt: "2026-10-21", components: [node] }),
     )
     process.env.PAGOPA_UI_ROOT = root
-    const project = loadExport(file)
+    const project = loadExport(workspaceAt(root), file)
     assert.deepEqual(
       checkCaseEvidence({
         entry: cases[0],
@@ -591,3 +585,12 @@ test("the cap counts the compressed slice", () => {
   const { total } = evidenceBytes({ slice, pngs: new Map() })
   assert.equal(total, brotliJson(slice).length)
 })
+
+async function checked(root, options) {
+  const result = await check(workspaceAt(root), options, {
+    capture: () => {
+      throw new Error("stale evidence must stop before capturing")
+    },
+  })
+  return { status: result.code, stdout: result.out.join("\n"), stderr: result.err.join("\n") }
+}

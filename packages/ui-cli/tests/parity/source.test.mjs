@@ -1,3 +1,5 @@
+import path from "node:path"
+import { workspaceAt } from "../helpers/cli.mjs"
 import assert from "node:assert/strict"
 import { test } from "node:test"
 
@@ -15,10 +17,11 @@ import {
 } from "../../src/parity/source.ts"
 import { toolingPath } from "../../src/lib/paths.ts"
 
+const workspace = workspaceAt(path.resolve(import.meta.dirname, "../../../pagopa-ui"))
 const FIXTURE = toolingPath("tests/fixtures/figma-parity/snapshot-slice.json")
 
 test("the pinned slice loads through the shared live normalizer", () => {
-  const project = loadExport(FIXTURE)
+  const project = loadExport(workspace, FIXTURE)
   assert.deepEqual(project.catalogue.map((node) => node.nodeId).sort(), [
     "529:6110",
     "529:6123",
@@ -28,7 +31,7 @@ test("the pinned slice loads through the shared live normalizer", () => {
 })
 
 test("the source spec carries the geometry, layout and type a diff needs", () => {
-  const project = loadExport(FIXTURE)
+  const project = loadExport(workspace, FIXTURE)
   const variant = sourceNode(project, "749:5865")
   const spec = nodeSpec(variant, { depth: 3 })
   assert.equal(spec.box.width, 320)
@@ -53,7 +56,7 @@ test("the source spec carries the geometry, layout and type a diff needs", () =>
 // The two review-only facts the diff skips: a hidden layer the tree still
 // lists, and the hug/fill sizing of each axis.
 test("the spec carries visibility and per-axis sizing", () => {
-  const project = loadExport(FIXTURE)
+  const project = loadExport(workspace, FIXTURE)
   const variant = nodeSpec(sourceNode(project, "749:5865"), { depth: 1 })
   assert.deepEqual(variant.sizing, { horizontal: "FIXED", vertical: "HUG" })
   assert.equal(variant.visible, undefined)
@@ -63,7 +66,7 @@ test("the spec carries visibility and per-axis sizing", () => {
 
 // `--compact`: one line per node, derived from the same spec the diff reads.
 test("the compact tree prints the anatomy a review reads", () => {
-  const project = loadExport(FIXTURE)
+  const project = loadExport(workspace, FIXTURE)
   const lines = formatSpecTree(nodeSpec(sourceNode(project, "749:5865"), { depth: 1 }))
   assert.equal(
     lines[0],
@@ -76,7 +79,7 @@ test("the compact tree prints the anatomy a review reads", () => {
 })
 
 test("the variant picker resolves by id and by declared state", () => {
-  const project = loadExport(FIXTURE)
+  const project = loadExport(workspace, FIXTURE)
   const set = sourceNode(project, "749:5867")
   assert.equal(variantsOf(set).length, 2)
   assert.equal(pickVariant(set, { state: "desktop" }).nodeId, "749:5866")
@@ -89,7 +92,7 @@ test("the variant picker resolves by id and by declared state", () => {
 // variant: the review compares the node against itself, so `--state` only names
 // the case and `--variant` has to be the node.
 test("the variant picker accepts a node without variants as its own variant", () => {
-  const project = loadExport(FIXTURE)
+  const project = loadExport(workspace, FIXTURE)
   const component = sourceNode(project, "529:6123")
   assert.equal(variantsOf(component).length, 0)
   const picked = pickVariant(component, { state: "Panel" })
@@ -117,7 +120,7 @@ test("the weight law and the paint reader stay in one place", () => {
 })
 
 test("the mapping gaps name the padded frames a root-only case does not compare", async () => {
-  const { mappingGaps } = await import("../../src/parity/cli.ts")
+  const { mappingGaps } = await import("../../src/parity/evaluate.ts")
   const tree = {
     nodeId: "1:1",
     name: "Root",

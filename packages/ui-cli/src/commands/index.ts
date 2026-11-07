@@ -4,15 +4,17 @@
 import { defineCommand, renderUsage, runCommand, type CommandDef } from "citty"
 
 import { buildCommands } from "./build.ts"
+import { checkCommands } from "./check.ts"
+import { EXIT, type CliContext } from "./context.ts"
 import {
   artworkCheckCommands,
   artworkUpdateCommands,
   catalogueCheckCommands,
   figmaCommands,
 } from "./figma.ts"
-import { checkCommands } from "./check.ts"
-import { EXIT, type CliContext } from "./context.ts"
 import { legacy, legacyChecks } from "./legacy.ts"
+import { parityCommands } from "./parity.ts"
+import { testCommands } from "./test.ts"
 import { updateCommands } from "./update.ts"
 
 export function createCli(ctx: CliContext): CommandDef {
@@ -31,6 +33,8 @@ export function createCli(ctx: CliContext): CommandDef {
       update: updateCommands(ctx, artworkUpdateCommands(ctx)),
       build: buildCommands(ctx),
       figma: figmaCommands(ctx),
+      parity: parityCommands(ctx),
+      test: testCommands(ctx),
       ...legacy(ctx),
     },
   })

@@ -8,7 +8,7 @@
   [ADR-0004](./0004-device-axis.md) hardened: a work list for historical nodes and
   a gate for the delta. The numbers below come from `registry.json`,
   `inventory.json`, `parity-cases.json` and `device-policy.json` at this date, and
-  from `pnpm nx run pagopa-ui-cli:figma:parity:queue --coverage`.
+  from `pnpm ui-cli parity queue --coverage`.
 - **Related:** [ADR-0004](./0004-device-axis.md) (the device axis, the coverage
   vocabulary and the delta-scoped gate), [ADR-0003](./0003-artwork-provenance.md)
   (the provenance the bulk families carry), [ADR-0001](./0001-rework.md) (the
@@ -168,7 +168,7 @@ debt rather than as a silent assumption.
 - The evidence budget stays at 8.41 MB of 10 MB. A future decision that wants a
   full glyph sweep must first change the cap policy or the bundle's shape, not
   quietly add 156 cases.
-- The metric needs code to match this text: `figma:parity:queue --coverage` and
+- The metric needs code to match this text: `parity:queue --coverage` and
   the `Foundations/Figma inventory` story must read the registry's bulk rules and
   the asset manifests to compute the denominator, and print the three
   populations. Until that lands, the honest reading of the current output is the
@@ -182,7 +182,7 @@ debt rather than as a silent assumption.
 - `pending` nodes keep missing their cases without being debt: the 3 cases on
   `1333:16408` and `1344:40672` close when the nodes are implemented, through
   the ordinary cycle (`parity cases --sync`, `parity capture`, `parity check`,
-  `parity evidence --write`).
+  `update evidence`).
 
 ## 5. Deferred decisions with triggers
 

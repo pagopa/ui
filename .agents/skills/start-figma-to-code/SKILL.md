@@ -90,7 +90,7 @@ reviewed render, or `pending` with its design request or blocker named.
 
 ## Close
 
-- `pnpm nx run pagopa-ui-cli:figma:parity:verify`, then the full green chain
+- `pnpm ui-cli check parity`, then the full green chain
   from `CONTRIBUTING.md`. Stories run in a browser: when they cannot start, say
   so and never count them as passed.
 - Commit on the drift branch only. The session stops before push, merge or pull

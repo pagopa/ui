@@ -16,24 +16,24 @@ straight after the target.
 
 | Target                                             | Proves                                                                                                                                                       |
 | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `figma:parity:align --node <id>`                   | one node's work order: header, each case's verdict and deltas with the class its token maps to, the next command; read-only                                   |
+| `parity:align --node <id>`                   | one node's work order: header, each case's verdict and deltas with the class its token maps to, the next command; read-only                                   |
 | `figma:devices [--check]`                          | every declared axis value resolves through `catalog.devicePolicy` (no snapshot, no browser)                                                                   |
-| `figma:parity:queue`                               | the work list: per registry node its story ids, Design-panel nodes and undeclared exports; `--order fan-in` (most reused first), `--unmapped`, `--coverage`, `--uncovered` (the device burn-down) |
-| `figma:parity:check --node <id>` / `--case <caseId>` | source numbers, render probe, classified diff, responsive verdict and capture preflight for one case                                                         |
-| `figma:parity:check --node <id> --devices`         | every declared device's committed case in one table; exit 1 when a device has no reviewed case or its case fails                                            |
-| `figma:parity:capture`                             | a whole wave: per case the report, probe and PNG under `figma.parityOut`, plus `summary.json`                                                                |
-| `figma:parity:capture --saved --node <id> [--dry-run]` | all saved cases of one node, regardless of registry status; `--dry-run` lists case IDs without capturing |
-| `figma:parity:cases --sync`                        | proposes the missing device cases and the variants no reviewed case points at, as drafts                                                                     |
-| `figma:parity:verify`                              | the case corpus, device coverage and evidence bundle, hermetically (no snapshot, no browser); runs in the green chain; exit 1 on errors, 0 with warnings |
-| `figma:parity:evidence --write` / `--check`        | the offline bundle: `--write` refreshes slice, PNGs and manifest (token + snapshot); `--check` proves they match the corpus                                    |
-| `figma:parity:report --wave <name>`                | the wave record: counts, verdicts, advisories, residues, open deltas, the re-run command                                                            |
+| `parity:queue`                               | the work list: per registry node its story ids, Design-panel nodes and undeclared exports; `--order fan-in` (most reused first), `--unmapped`, `--coverage`, `--uncovered` (the device burn-down) |
+| `parity:check --node <id>` / `--case <caseId>` | source numbers, render probe, classified diff, responsive verdict and capture preflight for one case                                                         |
+| `parity:check --node <id> --devices`         | every declared device's committed case in one table; exit 1 when a device has no reviewed case or its case fails                                            |
+| `parity:capture`                             | a whole wave: per case the report, probe and PNG under `figma.parityOut`, plus `summary.json`                                                                |
+| `parity:capture --saved --node <id> [--dry-run]` | all saved cases of one node, regardless of registry status; `--dry-run` lists case IDs without capturing |
+| `parity:cases --sync`                        | proposes the missing device cases and the variants no reviewed case points at, as drafts                                                                     |
+| `check:parity`                              | the case corpus, device coverage and evidence bundle, hermetically (no snapshot, no browser); runs in the green chain; exit 1 on errors, 0 with warnings |
+| `update:evidence` / `check:evidence`        | the offline bundle: `update evidence` refreshes slice, PNGs and manifest (token + snapshot); `check evidence` proves they match the corpus                                    |
+| `parity:report --wave <name>`                | the wave record: counts, verdicts, advisories, residues, open deltas, the re-run command                                                            |
 | `source <nodeId>` (via `pnpm --filter pagopa-ui-cli run cli parity source <nodeId>`) | the source spec `check` diffs against (`--compact` anatomy, `--json`, `--depth N`); `--png [file]` writes the pinned variant render (token + pinned snapshot), default `.figma/parity/source/<nodeId>.png` |
 | `render --story <storyId>` (via `pnpm --filter pagopa-ui-cli run cli parity render --story <storyId>`) | a render probe alone; `--tree [--depth N]` prints the DOM anatomy (box, position, padding, gap) of the root's descendants |
 
 The source reader is the only reader of the source: never grow a second one
 from a scratch file. A render to look at is `check --screenshot <file>` (same
 preflight); the source render is the pinned PNG or `get_screenshot`. Trust
-`figma:parity:check` over the render module's `--root`: the latter forces
+`parity:check` over the render module's `--root`: the latter forces
 `display:block`, `check` only `#storybook-root`.
 
 ## Rules the scripts encode

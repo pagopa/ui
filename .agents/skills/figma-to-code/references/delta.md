@@ -55,7 +55,7 @@ request ([node-review.md](node-review.md)).
    `pending`. A refresh is not approval.
 
 3. **Decision.** Per queued node, in `implementationOrder`, start with
-   `pnpm nx run pagopa-ui-cli:figma:parity:align --node <id>`, read the source of
+   `pnpm ui-cli parity align --node <id>`, read the source of
    **every declared device** (`parity source <nodeId> --compact`,
    `get_design_context` / `get_screenshot`) and pick exactly one:
    - implement it in the matching family → [new-from-figma.md](new-from-figma.md);

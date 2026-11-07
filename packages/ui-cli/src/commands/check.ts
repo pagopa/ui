@@ -15,6 +15,7 @@ import { checkTextDefaults } from "../checks/text-defaults.ts"
 import { checkTokens } from "../figma/tokens.ts"
 import { integer, text } from "./args.ts"
 import { action, EXIT, printJson, printLines, type CliContext } from "./context.ts"
+import { evidenceGate, parityGate } from "./parity-gates.ts"
 import { unresolvedCliTokens } from "./resolve.ts"
 
 export const budgetArg = {
@@ -48,51 +49,15 @@ export function checkCommands(
       tokens: gate("tokens", "Validate the committed token manifest", () =>
         checkTokens(ctx.workspace()),
       ),
-      "client-directives": defineCommand({
-        meta: {
-          name: "client-directives",
-          description: "Check the client boundary of every source module",
-        },
-        args: {
-          report: { type: "boolean", default: false, description: "Print both lists and exit 0" },
-        },
-        run: action(ctx, ({ report }) =>
-          printReport(ctx, checkClientDirectives(ctx.workspace(), { report })),
-        ),
-      }),
-      css: defineCommand({
-        meta: { name: "css", description: "Enforce the published stylesheet budget" },
-        args: {
-          measure: { type: "boolean", default: false, description: "Print the current sizes" },
-          budget: budgetArg,
-        },
-        run: action(ctx, ({ measure, budget }) => {
-          if (measure) {
-            printJson(ctx.io, measureCss(ctx.workspace()))
-            return EXIT.ok
-          }
-          return printReport(ctx, checkCssBudget(ctx.workspace(), { budgetFile: text(budget) }))
-        }),
-      }),
+      "client-directives": clientDirectivesCommand(ctx),
+      css: cssCommand(ctx),
       docs: gate("docs", "Resolve documentation links, path claims and commands", () =>
         checkDocLinks(ctx.workspace(), {
           env: ctx.env,
           cliCommand: (tokens) => unresolvedCliTokens(root(), tokens),
         }),
       ),
-      foundation: defineCommand({
-        meta: { name: "foundation", description: "Enforce the component class contract" },
-        args: {
-          measure: { type: "boolean", default: false, description: "Print the current counts" },
-        },
-        run: action(ctx, ({ measure }) => {
-          if (measure) {
-            printJson(ctx.io, measureFoundation(ctx.workspace()))
-            return EXIT.ok
-          }
-          return printReport(ctx, checkFoundation(ctx.workspace()))
-        }),
-      }),
+      foundation: foundationCommand(ctx),
       layers: gate("layers", "Enforce the import-layer contract", () =>
         checkImportLayers(ctx.workspace()),
       ),
@@ -117,7 +82,57 @@ export function checkCommands(
           printReport(ctx, checkTextDefaults(ctx.workspace(), { max: integer(max, "--max") })),
         ),
       }),
+      parity: parityGate(ctx),
+      evidence: evidenceGate(ctx),
       ...extra,
     },
+  })
+}
+
+function clientDirectivesCommand(ctx: CliContext) {
+  return defineCommand({
+    meta: {
+      name: "client-directives",
+      description: "Check the client boundary of every source module",
+    },
+    args: {
+      report: { type: "boolean", default: false, description: "Print both lists and exit 0" },
+    },
+    run: action(ctx, ({ report }) =>
+      printReport(ctx, checkClientDirectives(ctx.workspace(), { report })),
+    ),
+  })
+}
+
+function cssCommand(ctx: CliContext) {
+  return defineCommand({
+    meta: { name: "css", description: "Enforce the published stylesheet budget" },
+    args: {
+      measure: { type: "boolean", default: false, description: "Print the current sizes" },
+      budget: budgetArg,
+    },
+    run: action(ctx, ({ measure, budget }) => {
+      if (measure) {
+        printJson(ctx.io, measureCss(ctx.workspace()))
+        return EXIT.ok
+      }
+      return printReport(ctx, checkCssBudget(ctx.workspace(), { budgetFile: text(budget) }))
+    }),
+  })
+}
+
+function foundationCommand(ctx: CliContext) {
+  return defineCommand({
+    meta: { name: "foundation", description: "Enforce the component class contract" },
+    args: {
+      measure: { type: "boolean", default: false, description: "Print the current counts" },
+    },
+    run: action(ctx, ({ measure }) => {
+      if (measure) {
+        printJson(ctx.io, measureFoundation(ctx.workspace()))
+        return EXIT.ok
+      }
+      return printReport(ctx, checkFoundation(ctx.workspace()))
+    }),
   })
 }

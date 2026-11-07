@@ -1,6 +1,6 @@
 import type { Workspace } from "../../adapters/workspace.ts"
-import { fileKeyFromSource } from "../snapshot.ts"
-import { checkDevicePolicy, loadDevicePolicy, type DeviceStats } from "../devices.ts"
+import { readJson } from "../../lib/json.ts"
+import { parseSchema } from "../../lib/validate.ts"
 import {
   DEVICE_EXCEPTIONS_PATH,
   deviceCoverage,
@@ -9,6 +9,18 @@ import {
   loadDeviceExceptions,
   validateCaseFile,
 } from "../../parity/cases.ts"
+import {
+  longNoteErrors,
+  NOTE_LENGTH_BASELINE_PATH,
+  NoteLengthBaselineSchema,
+  type Inventory,
+  type InventoryNode,
+  type PageSurface,
+  type Registry,
+} from "../../schemas/catalogue.ts"
+import type { DevicePolicy } from "../../schemas/devices.ts"
+import { checkDevicePolicy, loadDevicePolicy, type DeviceStats } from "../devices.ts"
+import { fileKeyFromSource } from "../snapshot.ts"
 import {
   checkPageSurface,
   loadPageSurface,
@@ -21,18 +33,6 @@ import {
   type SurfaceUncensused,
   type SurfaceUnmirrored,
 } from "../surface.ts"
-import {
-  longNoteErrors,
-  NOTE_LENGTH_BASELINE_PATH,
-  NoteLengthBaselineSchema,
-  type Inventory,
-  type InventoryNode,
-  type PageSurface,
-  type Registry,
-} from "../../schemas/catalogue.ts"
-import type { DevicePolicy } from "../../schemas/devices.ts"
-import { readJson } from "../../lib/json.ts"
-import { parseSchema } from "../../lib/validate.ts"
 
 export type ValidationResult = { errors: string[]; warnings: string[] }
 export type DeviceValidation = ValidationResult & {
@@ -103,7 +103,7 @@ export function validateDeviceCases(
   if (!policy) return { result: { errors: [], warnings: [] }, stats: null }
   try {
     const cases = loadCaseFile(workspace.path("src/catalog/figma/parity-cases.json"))
-    const verdict = validateCaseFile(cases, { registry, nodes, policy })
+    const verdict = validateCaseFile(workspace, cases, { registry, nodes, policy })
     return {
       result: {
         errors: verdict.errors.map((error) => `cases: ${error}`),
@@ -200,7 +200,7 @@ export function validateDeviceCoverage(
     const historical = uncovered.filter((row) => !deltaIds.has(row.nodeId))
     if (historical.length)
       warnings.push(
-        `device coverage: ${historical.length} implemented node(s) miss ${historical.reduce((count, row) => count + row.missing.length, 0)} device case(s) — the burn-down work list is \`pnpm nx run pagopa-ui-cli:figma:parity:queue --uncovered\``,
+        `device coverage: ${historical.length} implemented node(s) miss ${historical.reduce((count, row) => count + row.missing.length, 0)} device case(s) — the burn-down work list is \`pnpm nx run pagopa-ui-cli:parity:queue --uncovered\``,
       )
     return {
       errors,

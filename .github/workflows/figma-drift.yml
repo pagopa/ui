@@ -155,8 +155,8 @@ jobs:
           FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
           PAGOPA_UI_ROOT: ../pagopa-ui
         run: |
-          pnpm --filter pagopa-ui-cli exec node src/cli.ts parity evidence --write --input .figma/live-rest.json
-          pnpm --filter pagopa-ui-cli exec node src/cli.ts parity evidence --check
+          pnpm --filter pagopa-ui-cli exec node src/cli.ts update evidence --input .figma/live-rest.json
+          pnpm --filter pagopa-ui-cli exec node src/cli.ts check evidence
 
       - name: Format the refreshed payload
         if: hashFiles('packages/pagopa-ui/.figma/pr-body.md') != ''

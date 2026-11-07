@@ -84,7 +84,7 @@ underlying command is the package script of the same name
   `pnpm nx run pagopa-ui:build`.
 - `pnpm nx run pagopa-ui-storybook:build` — the deployable documentation
   (`dist/` inside `apps/storybook`) out of the stories the application carries.
-- `pnpm nx run pagopa-ui-cli:figma:parity:check`,
+- `pnpm ui-cli parity check`,
   `pnpm nx run pagopa-ui-cli:figma:devices`
   — parity tools, see the
   [`figma-to-code`](./.agents/skills/figma-to-code/SKILL.md) skill.
@@ -263,7 +263,7 @@ What it runs:
 pnpm nx run-many -p pagopa-ui -c=ci -t typecheck,fmt,lint,docs,check:catalogue,foundation:check,layers:check,build,test && \
   pnpm nx run-many -p pagopa-ui-artwork,pagopa-ui-tokens,pagopa-ui-cli -c=ci -t typecheck,fmt,lint && \
   pnpm nx run pagopa-ui-artwork:test && pnpm nx run pagopa-ui-tokens:test && pnpm nx run pagopa-ui-cli:test && \
-  pnpm nx run pagopa-ui-cli:figma:rules:check && pnpm nx run pagopa-ui-cli:figma:parity:verify && \
+  pnpm nx run pagopa-ui-cli:figma:rules:check && pnpm ui-cli check parity && \
   pnpm nx run pagopa-ui-storybook:test:coverage && pnpm nx run pagopa-ui-storybook:test:stories && pnpm nx run pagopa-ui-storybook:build && pnpm nx run pagopa-ui:library:check
 ```
 

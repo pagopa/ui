@@ -1,3 +1,4 @@
+import type { ParityOutput } from "./output.ts"
 // Figma parity — the offline evidence bundle.
 //
 // The reviewed cases are reproducible evidence only if a clone can read the
@@ -16,6 +17,11 @@ import fs from "node:fs"
 import path from "node:path"
 import { z } from "zod"
 
+import type { Workspace } from "../adapters/workspace.ts"
+import { brotliJson, decodeJsonBytes, parseJsonBytes, readJson, writeBytes } from "../lib/json.ts"
+import { parseSchema } from "../lib/validate.ts"
+import type { InventoryNode } from "../schemas/catalogue.ts"
+import type { ParityCase } from "../schemas/parity.ts"
 import {
   CASES_PATH,
   INVENTORY_PATH,
@@ -27,13 +33,6 @@ import {
   validateCaseFile,
   variantOfCase,
 } from "./cases.ts"
-import { figmaToken } from "../adapters/figma-token.ts"
-import { fetchFigmaImagesPng } from "../figma/rest.ts"
-import { resolveRoot, resolveWorkspaceRoot } from "../lib/paths.ts"
-import { brotliJson, decodeJsonBytes, parseJsonBytes, readJson, writeBytes } from "../lib/json.ts"
-import { parseSchema } from "../lib/validate.ts"
-import type { InventoryNode } from "../schemas/catalogue.ts"
-import type { ParityCase } from "../schemas/parity.ts"
 
 export const EVIDENCE_DIR = "docs/figma-parity"
 export const SOURCE_PATH = `${EVIDENCE_DIR}/source.json.br`
@@ -92,7 +91,7 @@ type Snapshot = z.infer<typeof SnapshotSchema>
 // The bundle lives at the workspace root (`docs/figma-parity`), not inside the
 // audited package; a fixture tree without a workspace manifest resolves to its
 // own root, so the tests keep the same shape.
-export function evidencePaths(root = resolveWorkspaceRoot()): {
+export function evidencePaths(root: string): {
   dir: string
   source: string
   manifest: string
@@ -198,11 +197,11 @@ function pinnedVariant(
   return undefined
 }
 
-export function loadSlice(file = evidencePaths().source): EvidenceSlice {
+export function loadSlice(file: string): EvidenceSlice {
   return parseSchema(SliceSchema, readJson(file), file)
 }
 
-export function loadManifest(file = evidencePaths().manifest): EvidenceManifest {
+export function loadManifest(file: string): EvidenceManifest {
   return parseSchema(ManifestSchema, readJson(file), file)
 }
 
@@ -224,118 +223,48 @@ export async function buildEvidence({
   snapshot,
   cases,
   nodes,
-  capturedAt = new Date().toISOString().slice(0, 10),
+  capturedAt,
+  images: fetchImages,
   existing,
   existingPngs = new Map(),
 }: {
   snapshot: Snapshot
   cases: ParityCase[]
   nodes: InventoryNode[]
-  capturedAt?: string
+  capturedAt: string
+  images: (fileKey: string, version: string, ids: string[]) => Promise<Map<string, Buffer>>
   existing?: EvidenceManifest
   existingPngs?: Map<string, Buffer>
 }): Promise<{ result: BuildResult; errors: string[] }> {
   const errors: string[] = []
   const byNode = new Map(nodes.map((node) => [node.nodeId, node]))
-  const wanted = new Map<string, ParityCase[]>()
-  for (const entry of cases) {
-    const list = wanted.get(entry.nodeId) ?? []
-    list.push(entry)
-    wanted.set(entry.nodeId, list)
-  }
-  const sliceNodes: EvidenceSlice["nodes"] = {}
-  for (const nodeId of wanted.keys()) {
-    const document = snapshot.nodes[nodeId]?.document
-    if (!document) {
-      errors.push(`${nodeId}: the pinned snapshot has no document for this case node`)
-      continue
-    }
-    sliceNodes[nodeId] = { document }
-  }
-  const slice: EvidenceSlice = {
-    schemaVersion: 1,
-    kind: "parity-source",
-    fileKey: snapshot.fileKey,
-    version: snapshot.version,
-    nodes: sliceNodes,
-  }
-  const source = brotliJson(slice)
-  const inSlice = sliceIds(slice)
-
+  const { slice, source, inSlice } = buildSlice(snapshot, cases, errors)
   const entries: EvidenceManifest["cases"] = {}
   const pngs = new Map<string, Buffer>()
   const reused: string[] = []
   const refreshed: string[] = []
   const pending: ParityCase[] = []
-  for (const entry of cases) {
-    const node = byNode.get(entry.nodeId)
-    const variant = pinnedVariant(node, entry)
-    if (!variant) {
-      errors.push(`${entry.id}: no variant resolves for this case; pin one before writing evidence`)
-      continue
-    }
-    if (!inSlice.has(entry.nodeId)) {
-      errors.push(`${entry.id}: the slice has no document for ${entry.nodeId}`)
-    }
-    if (!inSlice.has(variant.nodeId)) {
-      errors.push(`${entry.id}: the slice has no variant ${variant.nodeId}`)
-    }
-    const relative = `references/${entry.id}.png`
-    const previous = existing?.cases?.[entry.id]
-    const previousBytes = existingPngs.get(entry.id)
-    if (
-      previous &&
-      previous.nodeId === entry.nodeId &&
-      previous.variant === variant.nodeId &&
-      previous.designFingerprint === variant.designFingerprint &&
-      previous.png === relative &&
-      previousBytes &&
-      sha256(previousBytes) === previous.sha256
-    ) {
-      entries[entry.id] = previous
-      reused.push(entry.id)
-      continue
-    }
-    pending.push(entry)
-  }
-
-  // One API call per distinct variant node: the pinned PNG, at scale 1.
-  if (pending.length) {
-    const variantIds = [
-      ...new Set(
-        pending
-          .map((entry) => pinnedVariant(byNode.get(entry.nodeId), entry)?.nodeId)
-          .filter((id): id is string => Boolean(id)),
-      ),
-    ]
-    const images = await fetchFigmaImagesPng(
-      snapshot.fileKey,
-      snapshot.version,
-      variantIds,
-      figmaToken(),
-    )
-    for (const entry of pending) {
-      const variant = pinnedVariant(byNode.get(entry.nodeId), entry)
-      if (!variant) continue
-      const bytes = images.get(variant.nodeId)
-      const size = bytes ? pngDimensions(bytes) : undefined
-      if (!bytes || !size) {
-        errors.push(`${entry.id}: Figma returned no pinned PNG for ${variant.nodeId}`)
-        continue
-      }
-      pngs.set(entry.id, bytes)
-      entries[entry.id] = {
-        png: `references/${entry.id}.png`,
-        sha256: sha256(bytes),
-        nodeId: entry.nodeId,
-        variant: variant.nodeId,
-        designFingerprint: variant.designFingerprint,
-        width: size.width,
-        height: size.height,
-      }
-      refreshed.push(entry.id)
-    }
-  }
+  selectEvidenceCases(
+    cases,
+    byNode,
+    inSlice,
+    existing,
+    existingPngs,
+    entries,
+    reused,
+    pending,
+    errors,
+  )
+  await refreshEvidenceCases(
+    snapshot,
+    pending,
+    byNode,
+    fetchImages,
+    entries,
+    pngs,
+    refreshed,
+    errors,
+  )
 
   const manifest: EvidenceManifest = {
     schemaVersion: 2,
@@ -396,122 +325,38 @@ function readSnapshot(file: string): Snapshot {
   return parseSchema(SnapshotSchema, readJson(file), file)
 }
 
-// `parity evidence --write`: refresh the slice, the changed PNGs and the
+// `update evidence`: refresh the slice, the changed PNGs and the
 // manifest from the pinned snapshot, then remove the entries whose case left the
 // corpus. The whole write is refused when the bundle exceeds the cap.
-export async function writeEvidence({
-  root = resolveWorkspaceRoot(),
-  dataRoot = resolveRoot(),
-  input,
-  capturedAt,
-}: {
-  root?: string
-  dataRoot?: string
-  input?: string
-  capturedAt?: string
-} = {}): Promise<number> {
-  const snapshotFile = input ? path.resolve(dataRoot, input) : path.join(dataRoot, SNAPSHOT_PATH)
-  const snapshotRead = loadIfExists(() => readSnapshot(snapshotFile))
-  if (snapshotRead.missing) {
-    console.error(
-      `error: ${snapshotFile} is missing: run the live export first ` +
-        `(parity evidence --write --input .figma/live-rest.json).`,
-    )
-    return 2
-  }
-  if (snapshotRead.error || !snapshotRead.value) {
-    console.error(
-      `error: ${snapshotRead.error instanceof Error ? snapshotRead.error.message : String(snapshotRead.error)}`,
-    )
-    return 1
-  }
-  const paths = evidencePaths(root)
-  const cases = loadCaseFile(path.join(dataRoot, CASES_PATH))
-  const nodes = loadInventoryNodes(path.join(dataRoot, INVENTORY_PATH))
-  const registry = loadRegistry(path.join(dataRoot, REGISTRY_PATH))
-  // The corpus validator owns the schema: writing evidence for a broken corpus
-  // would pin the wrong thing.
-  const validation = validateCaseFile(cases, { registry, nodes })
-  if (validation.errors.length) {
-    for (const error of validation.errors) console.error(`error: ${error}`)
-    return 1
-  }
-  const snapshot = snapshotRead.value
-  const existingRead = loadIfExists(() => loadManifest(paths.manifest))
-  if (existingRead.error) {
-    console.error(
-      `error: ${existingRead.error instanceof Error ? existingRead.error.message : String(existingRead.error)}`,
-    )
-    return 1
-  }
-  const existing = existingRead.value
-  const existingPngs = readExistingPngs(root, existing, cases)
-  const { result, errors } = await buildEvidence({
-    snapshot,
-    cases,
-    nodes,
+export async function writeEvidence(
+  workspace: Workspace,
+  {
+    input,
     capturedAt,
-    existing,
-    existingPngs,
-  })
-  if (errors.length) {
-    for (const error of errors) console.error(`error: ${error}`)
-    return 1
-  }
-  const { total, byCase } = evidenceBytes(result)
-  // The reused PNGs stay on disk: they count against the cap even though this
-  // run did not rewrite them.
-  let totalBytes = total
-  for (const caseId of result.reused) {
-    const file = path.join(paths.references, `${caseId}.png`)
-    let size: number
-    try {
-      size = fs.statSync(file).size
-    } catch (error) {
-      if (isMissingFile(error)) {
-        console.error(`error: ${file} disappeared while preparing evidence; retry the write`)
-        return 1
-      }
-      throw error
-    }
-    totalBytes += size
-    byCase.push({ caseId, bytes: size })
-  }
-  if (totalBytes > MAX_EVIDENCE_BYTES) {
-    console.error(`error: ${evidenceBudgetExceeded(totalBytes, MAX_EVIDENCE_BYTES, byCase)}`)
-    return 1
-  }
+    images,
+  }: {
+    input?: string
+    capturedAt: string
+    images: (key: string, version: string, ids: string[]) => Promise<Map<string, Buffer>>
+  },
+): Promise<ParityOutput> {
+  const out: string[] = []
+  const err: string[] = []
+  const prepared = await prepareEvidence(workspace, { input, capturedAt, images })
+  if ("code" in prepared) return prepared
+  const { paths, cases, existing, result } = prepared
+  const budget = checkWriteBudget(result, paths)
+  if (budget.error) return { code: 1, out, err: [`error: ${budget.error}`] }
+  const totalBytes = budget.totalBytes
+  persistEvidence(paths, cases, result, existing)
 
-  fs.mkdirSync(paths.references, { recursive: true })
-  writeBytes(paths.source, result.source)
-  for (const [caseId, bytes] of result.pngs) {
-    fs.writeFileSync(path.join(paths.references, `${caseId}.png`), bytes)
-  }
-  fs.writeFileSync(paths.manifest, `${JSON.stringify(result.manifest, null, 2)}\n`)
-
-  // An orphan is a case that left the corpus: its manifest entry and its PNG go
-  // too, so the bundle never accumulates stale pictures.
-  const live = new Set(cases.map((entry) => entry.id))
-  if (existing) {
-    for (const caseId of Object.keys(existing.cases)) {
-      if (!live.has(caseId)) {
-        fs.rmSync(path.join(paths.references, `${caseId}.png`), { force: true })
-      }
-    }
-  }
-  for (const file of fs.readdirSync(paths.references)) {
-    if (!file.endsWith(".png")) continue
-    const caseId = file.slice(0, -".png".length)
-    if (!live.has(caseId)) fs.rmSync(path.join(paths.references, file), { force: true })
-  }
-
-  console.log(
+  out.push(
     `evidence: ${cases.length} case(s) · written ${result.refreshed.length} · ` +
       `skipped ${result.reused.length} · ${formatBytes(totalBytes)} (cap ${formatBytes(MAX_EVIDENCE_BYTES)})`,
   )
-  console.log(`source: ${SOURCE_PATH} · version ${result.slice.version}`)
-  console.log(`manifest: ${MANIFEST_PATH} · references ${REFERENCES_DIR}/`)
-  return 0
+  out.push(`source: ${SOURCE_PATH} · version ${result.slice.version}`)
+  out.push(`manifest: ${MANIFEST_PATH} · references ${REFERENCES_DIR}/`)
+  return { code: 0, out, err }
 }
 
 // ------------------------------------------------------------------- checking
@@ -528,7 +373,7 @@ export type EvidenceReport = {
 }
 
 // The two committed files, loaded once and with the guidance a missing bundle
-// deserves. Both `evidence --check` and a parity run on the slice use it.
+// deserves. Both `check evidence` and a parity run on the slice use it.
 function loadEvidenceForCheck(root: string): {
   slice?: EvidenceSlice
   manifest?: EvidenceManifest
@@ -551,7 +396,7 @@ function loadEvidenceForCheck(root: string): {
     }
   })
   if (sourceRead.missing) {
-    errors.push(`${SOURCE_PATH} is missing — run \`parity evidence --write\` with FIGMA_TOKEN`)
+    errors.push(`${SOURCE_PATH} is missing — run \`update evidence\` with FIGMA_TOKEN`)
   } else if (sourceRead.error) {
     errors.push(
       sourceRead.error instanceof Error ? sourceRead.error.message : String(sourceRead.error),
@@ -573,7 +418,7 @@ function loadEvidenceForCheck(root: string): {
     }
   })
   if (manifestRead.missing) {
-    errors.push(`${MANIFEST_PATH} is missing — run \`parity evidence --write\` with FIGMA_TOKEN`)
+    errors.push(`${MANIFEST_PATH} is missing — run \`update evidence\` with FIGMA_TOKEN`)
   } else if (manifestRead.error) {
     errors.push(
       manifestRead.error instanceof Error ? manifestRead.error.message : String(manifestRead.error),
@@ -588,21 +433,15 @@ function loadEvidenceForCheck(root: string): {
   return { slice, manifest, errors, bytes }
 }
 
-// `parity evidence --check`: the corpus, the slice and the manifest must agree,
+// `check evidence`: the corpus, the slice and the manifest must agree,
 // byte for byte, with no token and no network.
 export function checkEvidence({
-  root = resolveWorkspaceRoot(),
-  dataRoot = resolveRoot(),
+  root,
+  dataRoot,
   cases,
   nodes,
   maxBytes = MAX_EVIDENCE_BYTES,
-}: {
-  root?: string
-  dataRoot?: string
-  cases?: ParityCase[]
-  nodes?: InventoryNode[]
-  maxBytes?: number
-} = {}): EvidenceReport {
+}: EvidenceCheckOptions): EvidenceReport {
   const paths = evidencePaths(root)
   const corpus = cases ?? loadCaseFile(path.join(dataRoot, CASES_PATH))
   const inventory = nodes ?? loadInventoryNodes(path.join(dataRoot, INVENTORY_PATH))
@@ -640,86 +479,25 @@ export function checkEvidence({
   const pngs = new Set<string>()
   const byCase: Array<{ caseId: string; bytes: number }> = []
   for (const entry of corpus) {
-    const errorCount = errors.length
-    const where = entry.id
-    const variant = pinnedVariant(byNode.get(entry.nodeId), entry)
-    if (!inSlice.has(entry.nodeId))
-      errors.push(`${where}: the slice has no document for ${entry.nodeId}`)
-    if (variant && !inSlice.has(variant.nodeId)) {
-      errors.push(`${where}: the slice has no variant ${variant.nodeId}`)
-    } else if (!variant) {
-      warnings.push(
-        `${where}: the case points at no single variant, the slice check cannot resolve it`,
-      )
-    }
-    const record = manifest.cases[entry.id]
-    if (!record) {
-      errors.push(`${where}: no manifest entry — run \`parity evidence --write\``)
-      continue
-    }
-    const expected = `references/${entry.id}.png`
-    if (record.png !== expected) {
-      errors.push(`${where}: manifest png must be ${expected}, found ${record.png}`)
-    }
-    if (record.nodeId !== entry.nodeId) {
-      errors.push(
-        `${where}: manifest nodeId ${record.nodeId} differs from the case ${entry.nodeId}`,
-      )
-    }
-    if (variant && record.variant !== variant.nodeId) {
-      errors.push(`${where}: manifest variant ${record.variant} differs from ${variant.nodeId}`)
-    }
-    if (variant && record.designFingerprint !== variant.designFingerprint) {
-      errors.push(
-        `${where}: manifest designFingerprint is stale against the inventory — ` +
-          `refresh the PNG with \`parity evidence --write\``,
-      )
-    }
-    pngs.add(record.png)
-    const file = path.join(root, EVIDENCE_DIR, record.png)
-    let onDisk: Buffer
-    try {
-      onDisk = fs.readFileSync(file)
-    } catch (error) {
-      if (!isMissingFile(error)) throw error
-      errors.push(`${where}: ${record.png} is missing`)
-      continue
-    }
-    bytes += onDisk.length
-    byCase.push({ caseId: entry.id, bytes: onDisk.length })
-    if (sha256(onDisk) !== record.sha256) {
-      errors.push(`${where}: ${record.png} does not match the manifest sha256`)
-    }
-    const dimensions = pngDimensions(onDisk)
-    if (!dimensions || dimensions.width !== record.width || dimensions.height !== record.height) {
-      errors.push(`${where}: ${record.png} has invalid PNG dimensions against the manifest`)
-    }
-    if (
-      bundleValid &&
-      variant &&
-      ((byNode.get(entry.nodeId)?.variants ?? []).length > 0 || record.variant === entry.nodeId) &&
-      errors.length === errorCount &&
-      dimensions?.width === record.width &&
-      dimensions.height === record.height
-    ) {
+    const checked = checkReference(
+      entry,
+      byNode.get(entry.nodeId),
+      inSlice,
+      manifest,
+      root,
+      bundleValid,
+      errors,
+      warnings,
+    )
+    bytes += checked.bytes
+    if (checked.png) pngs.add(checked.png)
+    if (checked.bytes) byCase.push({ caseId: entry.id, bytes: checked.bytes })
+    if (checked.variant) {
       verifiedCases.push(entry.id)
-      verifiedVariants[entry.id] = record.variant
+      verifiedVariants[entry.id] = checked.variant
     }
   }
-  for (const caseId of Object.keys(manifest.cases)) {
-    if (!corpusIds.has(caseId)) {
-      errors.push(`${caseId}: manifest entry with no case in the corpus — remove it`)
-    }
-  }
-  try {
-    for (const file of fs.readdirSync(paths.references)) {
-      if (!file.endsWith(".png")) continue
-      const relative = `references/${file}`
-      if (!pngs.has(relative)) errors.push(`${relative}: orphan reference with no manifest entry`)
-    }
-  } catch (error) {
-    if (!isMissingFile(error)) throw error
-  }
+  checkOrphans(manifest, corpusIds, paths.references, pngs, errors)
   if (bytes > maxBytes) {
     errors.push(evidenceBudgetExceeded(bytes, maxBytes, byCase))
   }
@@ -742,12 +520,12 @@ export function checkEvidence({
 export function checkCaseEvidence({
   entry,
   node,
-  root = resolveWorkspaceRoot(),
+  root,
   sourceSha256,
 }: {
   entry: Pick<ParityCase, "nodeId" | "variant" | "state" | "device"> & { id?: string }
   node?: InventoryNode
-  root?: string
+  root: string
   sourceSha256?: string
 }): string[] {
   const where = entry.id ?? entry.nodeId
@@ -780,7 +558,7 @@ export function checkCaseEvidence({
   if (!record) {
     errors.push(
       `${where}: no manifest entry — the reviewed case is missing from the bundle; ` +
-        `run \`parity evidence --write\` with FIGMA_TOKEN`,
+        `run \`update evidence\` with FIGMA_TOKEN`,
     )
   } else {
     if (record.nodeId !== entry.nodeId) {
@@ -796,7 +574,7 @@ export function checkCaseEvidence({
     if (target && record.designFingerprint !== target.designFingerprint) {
       errors.push(
         `${where}: the manifest designFingerprint is stale against the committed inventory — ` +
-          `refresh the evidence bundle with \`parity evidence --write\``,
+          `refresh the evidence bundle with \`update evidence\``,
       )
     }
   }
@@ -810,24 +588,380 @@ export function checkCaseEvidence({
   return errors
 }
 
-// The CLI adapter: `parity evidence --write|--check`.
-export async function evidenceCommand(argv: string[] = process.argv.slice(2)): Promise<number> {
-  const write = argv.includes("--write")
-  const check = argv.includes("--check")
-  const inputIndex = argv.indexOf("--input")
-  const input = inputIndex >= 0 ? argv[inputIndex + 1] : undefined
-  if (write === check) {
-    console.error("usage: figma-parity evidence --write [--input <file>] | --check")
-    return 2
+export function formatEvidence(report: EvidenceReport): { out: string[]; err: string[] } {
+  return {
+    err: [
+      ...report.warnings.map((warning) => `warn: ${warning}`),
+      ...report.errors.map((error) => `error: ${error}`),
+    ],
+    out: [
+      `evidence: ${report.cases} case(s) · ${report.entries} manifest entr(ies) · ${formatBytes(report.bytes)} (cap ${formatBytes(MAX_EVIDENCE_BYTES)})`,
+      report.errors.length ? "evidence: failed" : "evidence: ok",
+    ],
   }
-  if (write) return await writeEvidence({ input })
-  const report = checkEvidence()
-  for (const warning of report.warnings) console.warn(`warn: ${warning}`)
-  for (const error of report.errors) console.error(`error: ${error}`)
-  console.log(
-    `evidence: ${report.cases} case(s) · ${report.entries} manifest entr(ies) · ` +
-      `${formatBytes(report.bytes)} (cap ${formatBytes(MAX_EVIDENCE_BYTES)})`,
-  )
-  console.log(report.errors.length ? "evidence: failed" : "evidence: ok")
-  return report.errors.length ? 1 : 0
+}
+
+function buildSlice(snapshot: Snapshot, cases: ParityCase[], errors: string[]) {
+  const wanted = new Map<string, ParityCase[]>()
+  for (const entry of cases) {
+    const list = wanted.get(entry.nodeId) ?? []
+    list.push(entry)
+    wanted.set(entry.nodeId, list)
+  }
+  const sliceNodes: EvidenceSlice["nodes"] = {}
+  for (const nodeId of wanted.keys()) {
+    const document = snapshot.nodes[nodeId]?.document
+    if (!document) {
+      errors.push(`${nodeId}: the pinned snapshot has no document for this case node`)
+      continue
+    }
+    sliceNodes[nodeId] = { document }
+  }
+  const slice: EvidenceSlice = {
+    schemaVersion: 1,
+    kind: "parity-source",
+    fileKey: snapshot.fileKey,
+    version: snapshot.version,
+    nodes: sliceNodes,
+  }
+  const source = brotliJson(slice)
+  const inSlice = sliceIds(slice)
+
+  return { slice, source, inSlice }
+}
+
+function selectEvidenceCases(
+  cases: ParityCase[],
+  byNode: Map<string, InventoryNode>,
+  inSlice: Set<string>,
+  existing: EvidenceManifest | undefined,
+  existingPngs: Map<string, Buffer>,
+  entries: EvidenceManifest["cases"],
+  reused: string[],
+  pending: ParityCase[],
+  errors: string[],
+) {
+  for (const entry of cases) {
+    const node = byNode.get(entry.nodeId)
+    const variant = pinnedVariant(node, entry)
+    if (!variant) {
+      errors.push(`${entry.id}: no variant resolves for this case; pin one before writing evidence`)
+      continue
+    }
+    if (!inSlice.has(entry.nodeId)) {
+      errors.push(`${entry.id}: the slice has no document for ${entry.nodeId}`)
+    }
+    if (!inSlice.has(variant.nodeId)) {
+      errors.push(`${entry.id}: the slice has no variant ${variant.nodeId}`)
+    }
+    const relative = `references/${entry.id}.png`
+    const previous = existing?.cases?.[entry.id]
+    const previousBytes = existingPngs.get(entry.id)
+    if (
+      previous &&
+      previous.nodeId === entry.nodeId &&
+      previous.variant === variant.nodeId &&
+      previous.designFingerprint === variant.designFingerprint &&
+      previous.png === relative &&
+      previousBytes &&
+      sha256(previousBytes) === previous.sha256
+    ) {
+      entries[entry.id] = previous
+      reused.push(entry.id)
+      continue
+    }
+    pending.push(entry)
+  }
+}
+
+async function refreshEvidenceCases(
+  snapshot: Snapshot,
+  pending: ParityCase[],
+  byNode: Map<string, InventoryNode>,
+  fetchImages: (key: string, version: string, ids: string[]) => Promise<Map<string, Buffer>>,
+  entries: EvidenceManifest["cases"],
+  pngs: Map<string, Buffer>,
+  refreshed: string[],
+  errors: string[],
+) {
+  // One API call per distinct variant node: the pinned PNG, at scale 1.
+  if (pending.length) {
+    const variantIds = [
+      ...new Set(
+        pending
+          .map((entry) => pinnedVariant(byNode.get(entry.nodeId), entry)?.nodeId)
+          .filter((id): id is string => Boolean(id)),
+      ),
+    ]
+    const images = await fetchImages(snapshot.fileKey, snapshot.version, variantIds)
+    for (const entry of pending) {
+      const variant = pinnedVariant(byNode.get(entry.nodeId), entry)
+      if (!variant) continue
+      const bytes = images.get(variant.nodeId)
+      const size = bytes ? pngDimensions(bytes) : undefined
+      if (!bytes || !size) {
+        errors.push(`${entry.id}: Figma returned no pinned PNG for ${variant.nodeId}`)
+        continue
+      }
+      pngs.set(entry.id, bytes)
+      entries[entry.id] = {
+        png: `references/${entry.id}.png`,
+        sha256: sha256(bytes),
+        nodeId: entry.nodeId,
+        variant: variant.nodeId,
+        designFingerprint: variant.designFingerprint,
+        width: size.width,
+        height: size.height,
+      }
+      refreshed.push(entry.id)
+    }
+  }
+}
+
+type EvidenceWriteOptions = {
+  input?: string
+  capturedAt: string
+  images: (key: string, version: string, ids: string[]) => Promise<Map<string, Buffer>>
+}
+async function prepareEvidence(
+  workspace: Workspace,
+  { input, capturedAt, images }: EvidenceWriteOptions,
+): Promise<
+  | ParityOutput
+  | {
+      paths: ReturnType<typeof evidencePaths>
+      cases: ParityCase[]
+      existing: EvidenceManifest | undefined
+      result: BuildResult
+    }
+> {
+  const root = workspace.workspaceRoot
+  const dataRoot = workspace.root
+  const out: string[] = []
+  const err: string[] = []
+  const snapshotFile = input ? path.resolve(dataRoot, input) : path.join(dataRoot, SNAPSHOT_PATH)
+  const snapshotRead = loadIfExists(() => readSnapshot(snapshotFile))
+  if (snapshotRead.missing) {
+    err.push(
+      `error: ${snapshotFile} is missing: run the live export first ` +
+        `(update evidence --input .figma/live-rest.json).`,
+    )
+    return { code: 2, out, err }
+  }
+  if (snapshotRead.error || !snapshotRead.value) {
+    err.push(
+      `error: ${snapshotRead.error instanceof Error ? snapshotRead.error.message : String(snapshotRead.error)}`,
+    )
+    return { code: 1, out, err }
+  }
+  const paths = evidencePaths(root)
+  const cases = loadCaseFile(path.join(dataRoot, CASES_PATH))
+  const nodes = loadInventoryNodes(path.join(dataRoot, INVENTORY_PATH))
+  const registry = loadRegistry(path.join(dataRoot, REGISTRY_PATH))
+  // The corpus validator owns the schema: writing evidence for a broken corpus
+  // would pin the wrong thing.
+  const validation = validateCaseFile(workspace, cases, { registry, nodes })
+  if (validation.errors.length) {
+    for (const error of validation.errors) err.push(`error: ${error}`)
+    return { code: 1, out, err }
+  }
+  const snapshot = snapshotRead.value
+  const existingRead = loadIfExists(() => loadManifest(paths.manifest))
+  if (existingRead.error) {
+    err.push(
+      `error: ${existingRead.error instanceof Error ? existingRead.error.message : String(existingRead.error)}`,
+    )
+    return { code: 1, out, err }
+  }
+  const existing = existingRead.value
+  const existingPngs = readExistingPngs(root, existing, cases)
+  const { result, errors } = await buildEvidence({
+    snapshot,
+    cases,
+    nodes,
+    capturedAt,
+    existing,
+    existingPngs,
+    images,
+  })
+  if (errors.length) {
+    for (const error of errors) err.push(`error: ${error}`)
+    return { code: 1, out, err }
+  }
+  return { paths, cases, existing, result }
+}
+
+function checkWriteBudget(
+  result: BuildResult,
+  paths: ReturnType<typeof evidencePaths>,
+): { totalBytes: number; error?: string } {
+  const { total, byCase } = evidenceBytes(result)
+  // The reused PNGs stay on disk: they count against the cap even though this
+  // run did not rewrite them.
+  let totalBytes = total
+  for (const caseId of result.reused) {
+    const file = path.join(paths.references, `${caseId}.png`)
+    let size: number
+    try {
+      size = fs.statSync(file).size
+    } catch (error) {
+      if (isMissingFile(error)) {
+        return {
+          totalBytes,
+          error: `${file} disappeared while preparing evidence; retry the write`,
+        }
+      }
+      throw error
+    }
+    totalBytes += size
+    byCase.push({ caseId, bytes: size })
+  }
+  if (totalBytes > MAX_EVIDENCE_BYTES) {
+    return { totalBytes, error: evidenceBudgetExceeded(totalBytes, MAX_EVIDENCE_BYTES, byCase) }
+  }
+
+  return { totalBytes }
+}
+
+function persistEvidence(
+  paths: ReturnType<typeof evidencePaths>,
+  cases: ParityCase[],
+  result: BuildResult,
+  existing: EvidenceManifest | undefined,
+) {
+  fs.mkdirSync(paths.references, { recursive: true })
+  writeBytes(paths.source, result.source)
+  for (const [caseId, bytes] of result.pngs) {
+    fs.writeFileSync(path.join(paths.references, `${caseId}.png`), bytes)
+  }
+  fs.writeFileSync(paths.manifest, `${JSON.stringify(result.manifest, null, 2)}\n`)
+
+  // An orphan is a case that left the corpus: its manifest entry and its PNG go
+  // too, so the bundle never accumulates stale pictures.
+  const live = new Set(cases.map((entry) => entry.id))
+  if (existing) {
+    for (const caseId of Object.keys(existing.cases)) {
+      if (!live.has(caseId)) {
+        fs.rmSync(path.join(paths.references, `${caseId}.png`), { force: true })
+      }
+    }
+  }
+  for (const file of fs.readdirSync(paths.references)) {
+    if (!file.endsWith(".png")) continue
+    const caseId = file.slice(0, -".png".length)
+    if (!live.has(caseId)) fs.rmSync(path.join(paths.references, file), { force: true })
+  }
+}
+
+function checkReference(
+  entry: ParityCase,
+  node: InventoryNode | undefined,
+  inSlice: Set<string>,
+  manifest: EvidenceManifest,
+  root: string,
+  bundleValid: boolean,
+  errors: string[],
+  warnings: string[],
+): { bytes: number; png?: string; variant?: string } {
+  const errorCount = errors.length
+  const where = entry.id
+  const variant = pinnedVariant(node, entry)
+  if (!inSlice.has(entry.nodeId))
+    errors.push(`${where}: the slice has no document for ${entry.nodeId}`)
+  if (variant && !inSlice.has(variant.nodeId)) {
+    errors.push(`${where}: the slice has no variant ${variant.nodeId}`)
+  } else if (!variant) {
+    warnings.push(
+      `${where}: the case points at no single variant, the slice check cannot resolve it`,
+    )
+  }
+  const record = manifest.cases[entry.id]
+  if (!record) {
+    errors.push(`${where}: no manifest entry — run \`update evidence\``)
+    return { bytes: 0 }
+  }
+  checkManifestCase(entry, variant, record, errors)
+  const file = path.join(root, EVIDENCE_DIR, record.png)
+  let onDisk: Buffer
+  try {
+    onDisk = fs.readFileSync(file)
+  } catch (error) {
+    if (!isMissingFile(error)) throw error
+    errors.push(`${where}: ${record.png} is missing`)
+    return { bytes: 0, png: record.png }
+  }
+  if (sha256(onDisk) !== record.sha256) {
+    errors.push(`${where}: ${record.png} does not match the manifest sha256`)
+  }
+  const dimensions = pngDimensions(onDisk)
+  if (!dimensions || dimensions.width !== record.width || dimensions.height !== record.height) {
+    errors.push(`${where}: ${record.png} has invalid PNG dimensions against the manifest`)
+  }
+  if (
+    bundleValid &&
+    variant &&
+    ((node?.variants ?? []).length > 0 || record.variant === entry.nodeId) &&
+    errors.length === errorCount &&
+    dimensions?.width === record.width &&
+    dimensions.height === record.height
+  ) {
+    return { bytes: onDisk.length, png: record.png, variant: record.variant }
+  }
+  return { bytes: onDisk.length, png: record.png }
+}
+
+function checkManifestCase(
+  entry: ParityCase,
+  variant: ReturnType<typeof pinnedVariant>,
+  record: EvidenceManifestCase,
+  errors: string[],
+) {
+  const where = entry.id
+  const expected = `references/${entry.id}.png`
+  if (record.png !== expected) {
+    errors.push(`${where}: manifest png must be ${expected}, found ${record.png}`)
+  }
+  if (record.nodeId !== entry.nodeId) {
+    errors.push(`${where}: manifest nodeId ${record.nodeId} differs from the case ${entry.nodeId}`)
+  }
+  if (variant && record.variant !== variant.nodeId) {
+    errors.push(`${where}: manifest variant ${record.variant} differs from ${variant.nodeId}`)
+  }
+  if (variant && record.designFingerprint !== variant.designFingerprint) {
+    errors.push(
+      `${where}: manifest designFingerprint is stale against the inventory — ` +
+        `refresh the PNG with \`update evidence\``,
+    )
+  }
+}
+
+type EvidenceCheckOptions = {
+  root: string
+  dataRoot: string
+  cases?: ParityCase[]
+  nodes?: InventoryNode[]
+  maxBytes?: number
+}
+
+function checkOrphans(
+  manifest: EvidenceManifest,
+  corpusIds: Set<string>,
+  references: string,
+  pngs: Set<string>,
+  errors: string[],
+) {
+  for (const caseId of Object.keys(manifest.cases)) {
+    if (!corpusIds.has(caseId)) {
+      errors.push(`${caseId}: manifest entry with no case in the corpus — remove it`)
+    }
+  }
+  try {
+    for (const file of fs.readdirSync(references)) {
+      if (!file.endsWith(".png")) continue
+      const relative = `references/${file}`
+      if (!pngs.has(relative)) errors.push(`${relative}: orphan reference with no manifest entry`)
+    }
+  } catch (error) {
+    if (!isMissingFile(error)) throw error
+  }
 }
