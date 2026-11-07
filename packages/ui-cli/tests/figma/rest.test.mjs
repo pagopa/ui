@@ -22,8 +22,10 @@ const document = {
 async function withFigmaFetch(fetchImplementation, callback, token = "fixture-token") {
   const originalFetch = globalThis.fetch
   const previousToken = process.env.FIGMA_TOKEN
+  const previousPath = process.env.PATH
   if (token === null) delete process.env.FIGMA_TOKEN
   else process.env.FIGMA_TOKEN = token
+  if (token === null) process.env.PATH = ""
   globalThis.fetch = fetchImplementation
   try {
     return await callback()
@@ -31,6 +33,8 @@ async function withFigmaFetch(fetchImplementation, callback, token = "fixture-to
     globalThis.fetch = originalFetch
     if (previousToken === undefined) delete process.env.FIGMA_TOKEN
     else process.env.FIGMA_TOKEN = previousToken
+    if (previousPath === undefined) delete process.env.PATH
+    else process.env.PATH = previousPath
   }
 }
 

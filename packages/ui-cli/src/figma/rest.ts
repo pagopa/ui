@@ -2,7 +2,7 @@ import fs from "node:fs"
 import path from "node:path"
 import { z } from "zod"
 
-import { figmaToken } from "./token.ts"
+import { figmaToken } from "../adapters/figma-token.ts"
 
 const DocumentSchema = z.looseObject({
   id: z.string(),

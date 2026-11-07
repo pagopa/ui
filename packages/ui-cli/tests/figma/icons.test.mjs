@@ -13,9 +13,9 @@ import { fixtureEnv, toolingPath } from "../../src/lib/paths.ts"
 const script = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
 
 function iconsArguments(args) {
-  if (args[0] === "--write") return ["assets", "icons", "write", ...args.slice(1)]
-  if (args[0] === "--check") return ["assets", "icons", "check", ...args.slice(1)]
-  return ["assets", "icons", ...args]
+  if (args[0] === "--write") return ["update", "icons", ...args.slice(1)]
+  if (args[0] === "--check") return ["check", "icons", ...args.slice(1)]
+  return ["check", "icons", ...args]
 }
 const blue = { r: 11 / 255, g: 62 / 255, b: 227 / 255, a: 1 }
 

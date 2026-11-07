@@ -92,7 +92,7 @@ import {
   type SurfaceUncensused,
   type SurfaceUnmirrored,
 } from "./surface.ts"
-import { requireFigmaToken } from "./token.ts"
+import { requireFigmaToken } from "../adapters/figma-token.ts"
 import { EVIDENCE_DIR, evidencePaths, loadManifest } from "../parity/evidence.ts"
 import { renderedStoryExports, runtimeExports, storyDesignNodes } from "../lib/source-modules.ts"
 import { readJson } from "../lib/json.ts"

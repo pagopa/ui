@@ -83,15 +83,15 @@ request ([node-review.md](node-review.md)).
 
 1. Export the published Variables read-only (Figma MCP `get_variable_defs`) to
    `figma.variables` (local, never committed).
-2. `node packages/ui-cli/src/cli.ts tokens write --input <figma.variables>` curates the
+2. `pnpm ui-cli update tokens --input <figma.variables>` curates the
    snapshot into `tokens.manifest` and regenerates `tokens.generatedCss`.
 3. Every variable gets a value or a reasoned exclusion: an unknown namespace or
    an unresolved variable fails the refresh. Local values in `tokens.stylesheet`
    are documented extensions (their reason is in the manifest); re-link one to
    its Figma variable when a source becomes reachable. Text styles that no
    published node binds stay out of scope until a component consumes them.
-4. `pnpm nx run pagopa-ui-tokens:tokens:check`, then [visual-parity.md](visual-parity.md) for every
+4. `pnpm nx run pagopa-ui-tokens:check:tokens`, then [visual-parity.md](visual-parity.md) for every
    component whose token changed value.
 
-**Done when** `pnpm nx run pagopa-ui-tokens:tokens:check` passes and every `var(--figma-*)` reference in
+**Done when** `pnpm nx run pagopa-ui-tokens:check:tokens` passes and every `var(--figma-*)` reference in
 `tokens.stylesheet` resolves.

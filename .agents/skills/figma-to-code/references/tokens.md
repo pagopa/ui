@@ -15,7 +15,7 @@ contract is green, and every exception carries a node and a reason.
 3. Curate and regenerate with the token write command in the scripts
    reference. Unknown namespaces fail, every removal and every rename is
    printed.
-4. Keep the checks green: `pnpm nx run pagopa-ui-tokens:tokens:check`, `pnpm nx run pagopa-ui-cli:test`,
+4. Keep the checks green: `pnpm nx run pagopa-ui-tokens:check:tokens`, `pnpm nx run pagopa-ui-cli:test`,
    `pnpm nx run pagopa-ui:foundation:check`.
 
 ## The ladder for a value

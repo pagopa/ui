@@ -11,10 +11,10 @@ import { fixtureEnv } from "../../src/lib/paths.ts"
 const script = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
 
 function pictogramArguments(args) {
-  if (args[0] === "--export") return ["assets", "pictograms", "export", ...args.slice(1)]
-  if (args[0] === "--write") return ["assets", "pictograms", "write", ...args.slice(1)]
-  if (args[0] === "--check") return ["assets", "pictograms", "check", ...args.slice(1)]
-  return ["assets", "pictograms", ...args]
+  if (args[0] === "--export") return ["figma", "pictograms", "export", ...args.slice(1)]
+  if (args[0] === "--write") return ["update", "pictograms", ...args.slice(1)]
+  if (args[0] === "--check") return ["check", "pictograms", ...args.slice(1)]
+  return ["check", "pictograms", ...args]
 }
 
 // The device vocabulary every catalogue fixture carries: `normalizeNode`

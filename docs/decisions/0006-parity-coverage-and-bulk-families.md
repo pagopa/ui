@@ -64,7 +64,7 @@ Two facts make a case per glyph both unaffordable and redundant:
   is not _expressible_.
 
 What the icons have instead is stronger than a 2 px property comparison. An icon
-is an SVG regenerated from the drawing, and `figma:assets:check` re-derives it,
+is an SVG regenerated from the drawing, and `figma:check:artwork` re-derives it,
 requires it to reproduce its pinned geometry, and fails on a checksum or a
 rendered-pixel mismatch; `figma:check` requires every `implemented` identity to
 have a source asset mapping, a unique catalogue name and a provenance, and fails
@@ -131,7 +131,7 @@ figma parity coverage: cases 87/88 · bulk 232 (156 icons, 76 pictograms) · dev
 opposite: it is a _stronger_ evidence that replaces the case for a whole family,
 and it must carry its own proof — a `namesExport`, an `assetManifest` and a
 `provenance` per glyph (ADR-0003), verified hermetically by `figma:check` and
-`figma:assets:check`. A family without those three is not bulk-admitted, and its
+`figma:check:artwork`. A family without those three is not bulk-admitted, and its
 nodes stay in the case denominator.
 
 ### RD3 — the gate is unchanged
@@ -176,7 +176,7 @@ debt rather than as a silent assumption.
   name the population it divides.
 - A bulk family's fidelity rests on the geometry and manifest checks, not on a
   visual verdict: an icon drawn in Figma but shipped from a stale asset is caught
-  by `figma:assets:check`, while an icon whose _composition_ is wrong for its
+  by `figma:check:artwork`, while an icon whose _composition_ is wrong for its
   usage is not caught at all — that remains a review responsibility, and it is
   the reason the override glyphs keep the sample above.
 - `pending` nodes keep missing their cases without being debt: the 3 cases on

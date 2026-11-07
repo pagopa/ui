@@ -6,20 +6,16 @@ import { defineCommand } from "citty"
 import { cli as runDevices } from "../figma/devices.ts"
 import { runBrief } from "../figma/brief.ts"
 import { runComments } from "../figma/comments.ts"
-import { runExport } from "../figma/export.ts"
-import { runIcons } from "../figma/icons.ts"
 import { runRules } from "../figma/rules.ts"
-import { runPictograms } from "../figma/pictograms.ts"
 import { runStories } from "../figma/stories.ts"
 import { runSync } from "../figma/sync.ts"
 import { runStatus } from "../figma/status.ts"
-import { runTokens } from "../figma/tokens.ts"
 import { main as runParity } from "../parity/cli.ts"
 import { renderCli } from "../parity/render.ts"
 import { sourceCli } from "../parity/source.ts"
 import { runChanged } from "../test/changed.ts"
 import { runVisual } from "../test/visual.ts"
-import { runCommand, UsageError } from "../lib/command.ts"
+import { runCommand } from "../lib/command.ts"
 import { readJson } from "../lib/json.ts"
 import { rootPath } from "../lib/paths.ts"
 import {
@@ -45,13 +41,6 @@ function execute(command: () => number | Promise<number>) {
   return async (): Promise<void> => {
     await runCommand(async () => command())
   }
-}
-
-function requireInput(value: unknown, command: string): string {
-  if (typeof value !== "string" || !value.trim()) {
-    throw new UsageError(`${command} needs --input <file>`)
-  }
-  return value
 }
 
 function rawArguments(command: string): string[] {
@@ -112,101 +101,9 @@ const figmaCheck = defineCommand({
   },
 })
 
-const tokensCheck = defineCommand({
-  meta: { name: "check", description: "Validate the committed token manifest" },
-  run: execute(() => runTokens(["--check"])),
-})
-
-const tokensWrite = defineCommand({
-  meta: { name: "write", description: "Curate a pinned variable snapshot" },
-  args: { input: inputArg },
-  run: ({ args }) =>
-    execute(() => runTokens(["--write", "--input", requireInput(args.input, "tokens write")]))(),
-})
-
-const tokens = defineCommand({
-  meta: { name: "tokens", description: "Design-token manifest commands" },
-  subCommands: { check: tokensCheck, write: tokensWrite },
-})
-
-const iconCheck = defineCommand({
-  meta: { name: "check", description: "Validate the committed icon artwork" },
-  args: { input: inputArg },
-  run: ({ args }) =>
-    execute(() =>
-      runIcons(args.input ? ["--check", "--input", String(args.input)] : ["--check"]),
-    )(),
-})
-
-const iconWrite = defineCommand({
-  meta: { name: "write", description: "Generate icon artwork from a pinned snapshot" },
-  args: { input: { ...inputArg, required: true } },
-  run: ({ args }) =>
-    execute(() =>
-      runIcons(["--write", "--input", requireInput(args.input, "assets icons write")]),
-    )(),
-})
-
-const icons = defineCommand({
-  meta: { name: "icons", description: "Icon artwork commands" },
-  subCommands: { check: iconCheck, write: iconWrite },
-})
-
-const pictogramCheck = defineCommand({
-  meta: { name: "check", description: "Validate the committed pictogram artwork" },
-  args: { input: inputArg },
-  run: ({ args }) =>
-    execute(() =>
-      runPictograms(args.input ? ["--check", "--input", String(args.input)] : ["--check"]),
-    )(),
-})
-
-const pictogramWrite = defineCommand({
-  meta: { name: "write", description: "Import pictogram artwork from a pinned snapshot" },
-  args: { input: { ...inputArg, required: true } },
-  run: ({ args }) =>
-    execute(() =>
-      runPictograms(["--write", "--input", requireInput(args.input, "assets pictograms write")]),
-    )(),
-})
-
-const pictogramExport = defineCommand({
-  meta: { name: "export", description: "Render individual pictogram variants" },
-  args: { input: { ...inputArg, required: true } },
-  run: ({ args }) =>
-    execute(() =>
-      runPictograms(["--export", "--input", requireInput(args.input, "assets pictograms export")]),
-    )(),
-})
-
-const pictograms = defineCommand({
-  meta: { name: "pictograms", description: "Pictogram artwork commands" },
-  subCommands: {
-    check: pictogramCheck,
-    write: pictogramWrite,
-    export: pictogramExport,
-  },
-})
-
-const assets = defineCommand({
-  meta: { name: "assets", description: "Icon and pictogram artwork commands" },
-  subCommands: { icons, pictograms },
-})
-
 // The contracts not yet moved to the domain adapters; `check.ts` merges them.
 export const legacyChecks = {
   figma: figmaCheck,
-  tokens: tokensCheck,
-  icons: iconCheck,
-  pictograms: pictogramCheck,
-  assets: defineCommand({
-    meta: { name: "assets", description: "Run both artwork checks" },
-    run: execute(async () => {
-      const iconsCode = await runIcons(["--check"])
-      const pictogramsCode = await runPictograms(["--check"])
-      return iconsCode || pictogramsCode
-    }),
-  }),
 }
 
 const figmaSync = defineCommand({
@@ -239,12 +136,6 @@ const figmaSync = defineCommand({
     if (args["evidence-base"]) argv.push("--evidence-base", String(args["evidence-base"]))
     return execute(() => runSync(argv))()
   },
-})
-
-const figmaExport = defineCommand({
-  meta: { name: "export", description: "Write the read-only REST snapshot" },
-  args: { input: inputArg },
-  run: ({ args }) => execute(() => runExport(args.input ? ["--input", String(args.input)] : []))(),
 })
 
 const figmaDevices = defineCommand({
@@ -305,21 +196,15 @@ const figmaBrief = defineCommand({
   run: execute(() => runBrief(rawArguments("brief"))),
 })
 
-const figma = defineCommand({
-  meta: { name: "figma", description: "Figma catalogue and artwork commands" },
-  subCommands: {
-    status: figmaStatus,
-    sync: figmaSync,
-    export: figmaExport,
-    devices: figmaDevices,
-    stories: figmaStories,
-    rules: figmaRules,
-    comments: figmaComments,
-    brief: figmaBrief,
-    tokens,
-    ...assets.subCommands,
-  },
-})
+export const legacyFigmaSubCommands = {
+  status: figmaStatus,
+  sync: figmaSync,
+  devices: figmaDevices,
+  stories: figmaStories,
+  rules: figmaRules,
+  comments: figmaComments,
+  brief: figmaBrief,
+}
 
 const parityString = { type: "string" } as const
 const parityBoolean = { type: "boolean", default: false } as const
@@ -505,4 +390,4 @@ const test = defineCommand({
   subCommands: { changed: testChanged, visual: testVisual },
 })
 
-export const legacy = { figma, tokens, assets, parity, test }
+export const legacy = { parity, test }

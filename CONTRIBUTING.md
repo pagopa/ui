@@ -64,10 +64,10 @@ underlying command is the package script of the same name
   ([baseline](./packages/ui-cli/README.md#the-changed-only-test-loop)).
 - `pnpm nx run pagopa-ui:test` — the package's unit project.
 - `pnpm nx run pagopa-ui-artwork:test` — the artwork identities, variants,
-  standalone SVGs and provenance (`assets:check`, hung under `test` so the DX
+  standalone SVGs and provenance (`check:artwork`, hung under `test` so the DX
   review reaches it).
 - `pnpm nx run pagopa-ui-tokens:test` — the token manifest against the generated
-  CSS and TypeScript (`tokens:check`, hung under `test`).
+  CSS and TypeScript (`check:tokens`, hung under `test`).
 - `pnpm nx run pagopa-ui-cli:test` — the `node --test`
   suites of the tooling and of its fixtures.
 - `pnpm nx run pagopa-ui:figma:check` — hermetic catalogue check;

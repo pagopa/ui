@@ -3,8 +3,9 @@ import path from "node:path"
 import { z } from "zod"
 
 import { sha256 } from "../lib/hash.ts"
+import type { Workspace } from "../adapters/workspace.ts"
+import { report, type CheckReport } from "../checks/report.ts"
 import { readJson } from "../lib/json.ts"
-import { artworkPath, enterRoot } from "../lib/paths.ts"
 import { parseSchema } from "../lib/validate.ts"
 import { IconManifestSchema, type IconManifestEntry } from "../schemas/artwork.ts"
 import { RegistrySchema, type LocalAsset, type Registry } from "../schemas/catalogue.ts"
@@ -13,7 +14,7 @@ import { requireBulkRule, selectRuleNodes } from "./artwork/catalogue.ts"
 import { assertGeneratedModule, propertyKey } from "./artwork/generate-module.ts"
 import { assertPinnedManifest, readManifest, writeManifest } from "./artwork/manifest.ts"
 import { assertRenderedPixels, assertStandaloneSvg, xmlEscape as xml } from "./artwork/svg.ts"
-import { fileKeyFromSource, normalizeLive } from "./snapshot.ts"
+import { normalizeLive } from "./snapshot.ts"
 
 const SnapshotSchema = z.looseObject({
   fileKey: z.string(),
@@ -295,26 +296,51 @@ function localAssets(registry: Registry): Record<string, LocalAsset> {
   return policies
 }
 
-export async function runIcons(argv: string[] = process.argv.slice(2)): Promise<number> {
-  enterRoot()
-  const mode = argv[0]
-  if (
-    !["--write", "--check"].includes(mode ?? "") ||
-    !(argv.length === 1 || (argv.length === 3 && argv[1] === "--input" && argv[2])) ||
-    (mode === "--write" && argv.length !== 3)
-  ) {
-    throw new Error("Usage: ui-cli assets icons <--write|--check> [--input <full REST snapshot>]")
-  }
+export interface IconOptions {
+  input?: string
+}
 
-  const fileKey = fileKeyFromSource()
+export async function checkIcons(
+  workspace: Workspace,
+  options: IconOptions = {},
+): Promise<CheckReport> {
+  try {
+    const result = await runIcons(workspace, "check", options.input)
+    return report("icons", result)
+  } catch (error) {
+    return report("icons", "published icon identities and artwork must agree", [messageOf(error)])
+  }
+}
+
+export async function updateIcons(workspace: Workspace, input: string): Promise<string> {
+  return runIcons(workspace, "write", input)
+}
+
+function messageOf(error: unknown): string {
+  return error instanceof Error ? error.message : String(error)
+}
+
+function figmaFileKey(workspace: Workspace): string {
+  const file = fs.readFileSync(workspace.path("src/catalog/figma/file.ts"), "utf8")
+  const match = file.match(/FIGMA_FILE_KEY\s*=\s*["']([^"']+)["']/)
+  if (!match?.[1]) throw new Error("src/catalog/figma/file.ts must export a literal FIGMA_FILE_KEY")
+  return match[1]
+}
+
+async function runIcons(
+  workspace: Workspace,
+  mode: "write" | "check",
+  input?: string,
+): Promise<string> {
+  const fileKey = figmaFileKey(workspace)
   const snapshot = parseSchema(
     SnapshotSchema,
-    readJson(argv[2] ?? "src/catalog/figma/inventory.json"),
+    readJson(input ?? workspace.path("src/catalog/figma/inventory.json")),
     "icon snapshot",
   )
   if (
     snapshot.fileKey !== fileKey ||
-    ((mode === "--write" || snapshot.nodes || snapshot.version !== undefined) &&
+    ((mode === "write" || snapshot.nodes || snapshot.version !== undefined) &&
       (typeof snapshot.version !== "string" || !snapshot.version))
   ) {
     throw new Error(
@@ -323,7 +349,7 @@ export async function runIcons(argv: string[] = process.argv.slice(2)): Promise<
   }
   const registry = parseSchema(
     RegistrySchema,
-    readJson("src/catalog/figma/registry.json"),
+    readJson(workspace.path("src/catalog/figma/registry.json")),
     "registry",
   )
   const policies = localAssets(registry)
@@ -343,8 +369,8 @@ export async function runIcons(argv: string[] = process.argv.slice(2)): Promise<
     throw new Error("Every published icon identity must have a local source asset policy")
   }
 
-  const directory = artworkPath("src/assets/figma-icons")
-  const sourceFile = artworkPath("src/components/icons/icon-assets.ts")
+  const directory = path.join(workspace.artworkRoot, "src/assets/figma-icons")
+  const sourceFile = path.join(workspace.artworkRoot, "src/components/icons/icon-assets.ts")
   const manifestFile = path.join(directory, "manifest.json")
   const previousManifest = readManifest(manifestFile, IconManifestSchema)
   assertPinnedManifest(previousManifest, fileKey, "Local icon provenance")
@@ -368,7 +394,7 @@ export async function runIcons(argv: string[] = process.argv.slice(2)): Promise<
     }
     const variantIds = [...new Set([defaultVariantNodeId, ...Object.values(aliases)])].sort()
     const document = snapshot.nodes?.[node.nodeId]?.document
-    if (mode === "--write" && !document) {
+    if (mode === "write" && !document) {
       throw new Error(`Missing full source document ${node.nodeId}`)
     }
     if (document) {
@@ -430,9 +456,12 @@ export async function runIcons(argv: string[] = process.argv.slice(2)): Promise<
     }
   }
 
-  let manifest = mode === "--check" ? previousManifest : undefined
-  if (mode === "--check") {
-    if (!manifest) throw new Error("Missing local icon asset manifest; run --write")
+  let manifest = mode === "check" ? previousManifest : undefined
+  if (mode === "check") {
+    if (!manifest)
+      throw new Error(
+        'Missing local icon asset manifest; run "ui-cli update icons --input <snapshot>"',
+      )
     if (Object.keys(manifest.entries).sort().join() !== Object.keys(expected).sort().join()) {
       throw new Error("Local icon manifest identities do not match the registry")
     }
@@ -463,7 +492,7 @@ export async function runIcons(argv: string[] = process.argv.slice(2)): Promise<
     }
     for (const [variantId, variant] of Object.entries(entry.variants)) {
       const source =
-        mode === "--check"
+        mode === "check"
           ? fs.readFileSync(path.join(directory, variant.file), "utf8")
           : rendered.get(variantId)
       if (!source) throw new Error(`Missing local icon artwork for ${variantId}`)
@@ -517,7 +546,7 @@ export async function runIcons(argv: string[] = process.argv.slice(2)): Promise<
   byName.sort()
   variantsByType.sort()
   const source = `// Generated from pinned source geometry by packages/ui-cli/src/figma/icons.ts; keys are nodeIds.\n${imports.join("\n")}\nimport type { FigmaIconName } from "./figma-inventory"\n\nexport type IconAsset = {\n  name: FigmaIconName\n  rendering: "image" | "mask"\n  defaultVariantNodeId: string\n  aliases: Partial<Record<string, string>>\n  variants: Record<string, { nodeId: string; url: string }>\n}\n\nexport const iconAssets: Record<string, IconAsset> = {\n${declarations.join(",\n")}\n}\n\n/** Public-name index of the node-keyed catalogue; exhaustive by construction. */\nexport const iconAssetsByName = {\n${byName.join(",\n")}\n} as const satisfies Record<FigmaIconName, IconAsset>\n\n/** Variant aliases published by each icon (\`never\` when the identity has none). */\nexport type IconVariantsByName = {\n${variantsByType.join("\n")}\n}\n`
-  if (mode === "--check") {
+  if (mode === "check") {
     assertGeneratedModule(sourceFile, source, "Generated local icon module")
   } else {
     fs.mkdirSync(directory, { recursive: true })
@@ -532,10 +561,7 @@ export async function runIcons(argv: string[] = process.argv.slice(2)): Promise<
     fs.mkdirSync(path.dirname(sourceFile), { recursive: true })
     fs.writeFileSync(sourceFile, source)
   }
-  console.log(
-    `Local icons ${String(mode).slice(2)}: ${nodes.length} roots, ${Object.values(expected).reduce((count, entry) => count + Object.keys(entry.variants).length, 0)} standalone SVG variants`,
-  )
-  return 0
+  return `Local icons ${mode}: ${nodes.length} roots, ${Object.values(expected).reduce((count, entry) => count + Object.keys(entry.variants).length, 0)} standalone SVG variants`
 }
 
 export { svg }

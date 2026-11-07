@@ -162,5 +162,5 @@ Each item is a decision, not an open question:
 | `Headings/H2` not captured                             | Finding: `Headings/H1–H6 + Hero` are App IO text styles; the file binds only Hero/H3/H4 (captured). H1/H2/H5/H6 are not used by any published node, so they are out of scope until a component consumes them.                                                                                                                                |
 | Typography scale partial (MD/SM/XS only)               | Completed with the verified XXL/XL/LG titles and their Mobile variants (`text-title-xxl`…`text-title-lg-mobile`), completing the MUI Italia Next title scale.                                                                                                                                                                                |
 
-The manifest grew from 106 to 116 variables with 31 recorded exclusions; `tokens:check` is green and
+The manifest grew from 106 to 116 variables with 31 recorded exclusions; `check:tokens` is green and
 the generated CSS, inventory and class list are re-emitted from the manifest.

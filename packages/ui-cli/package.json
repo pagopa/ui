@@ -28,11 +28,7 @@
     "figma:parity:evidence": "node src/cli.ts parity evidence",
     "figma:parity:capture": "node src/cli.ts parity capture",
     "figma:parity:report": "node src/cli.ts parity report",
-    "tokens:check": "node src/cli.ts tokens check",
     "tokens:public:check": "node src/cli.ts check public-tokens",
-    "icons:check": "node src/cli.ts assets icons check",
-    "pictograms:check": "node src/cli.ts assets pictograms check",
-    "assets:check": "node src/cli.ts check assets",
     "layers:check": "node src/cli.ts check layers",
     "foundation:check": "node src/cli.ts check foundation",
     "client:check": "node src/cli.ts check client-directives",
@@ -48,7 +44,15 @@
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "cli": "node src/cli.ts"
+    "cli": "node src/cli.ts",
+    "check:tokens": "node src/cli.ts check tokens",
+    "check:icons": "node src/cli.ts check icons",
+    "check:pictograms": "node src/cli.ts check pictograms",
+    "check:artwork": "node src/cli.ts check artwork",
+    "update:tokens": "node src/cli.ts update tokens",
+    "update:icons": "node src/cli.ts update icons",
+    "update:pictograms": "node src/cli.ts update pictograms",
+    "figma:pictograms:export": "node src/cli.ts figma pictograms export"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",

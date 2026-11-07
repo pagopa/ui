@@ -21,7 +21,7 @@ function fixture(files, env = {}) {
     return spawnSync(process.execPath, [script, "figma", "status", "--json"], {
       cwd: root,
       encoding: "utf8",
-      env: fixtureEnv(root, { FIGMA_TOKEN: "", ...env }),
+      env: fixtureEnv(root, { PATH: "", FIGMA_TOKEN: "", ...env }),
     })
   } finally {
     fs.rmSync(root, { recursive: true, force: true })

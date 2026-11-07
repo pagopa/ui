@@ -13,7 +13,7 @@ parent_dr: design-review.md
 
 **Secondary actors**: Design owner; Continuous integration
 
-**Source artifact**: `packages/tokens/src/manifest.json`, `packages/tokens/src/foundations.json`; `packages/ui-cli/data/css-budget.json`; `packages/ui-cli/src/cli.ts` (`tokens check`, `check public-tokens`)
+**Source artifact**: `packages/tokens/src/manifest.json`, `packages/tokens/src/foundations.json`; `packages/ui-cli/data/css-budget.json`; `packages/ui-cli/src/cli.ts` (`check tokens`, `check public-tokens`)
 
 **Service Blueprint step**: N/A — confirmed: no service blueprint (see `open.item-019` of the parent DR).
 
@@ -69,7 +69,7 @@ parent_dr: design-review.md
 **Acceptance checks**:
 
 - `AC-01`: The manifest and the generated CSS match entry by entry. - Evidence: `pnpm nx run pagopa-ui-tokens:test`
-- `AC-02`: Every variable that is not exported has a recorded reason in the manifest. - Evidence: `packages/tokens/src/manifest.json`; `pnpm nx run pagopa-ui-cli:tokens:check`
+- `AC-02`: Every variable that is not exported has a recorded reason in the manifest. - Evidence: `packages/tokens/src/manifest.json`; `pnpm nx run pagopa-ui-cli:check:tokens`
 - `AC-03`: The compiled stylesheet stays within the three declared ceilings. - Evidence: `packages/ui-cli/data/css-budget.json`; `pnpm nx run pagopa-ui:build`
 - `AC-04`: Only the allowed tokens are exposed as public. - Evidence: `pnpm nx run pagopa-ui-cli:tokens:public:check`
 - `AC-05`: No component references a removed token. - Evidence: `pnpm nx run pagopa-ui:foundation:check`; `pnpm nx run pagopa-ui:typecheck`
@@ -93,7 +93,7 @@ sequenceDiagram
   M->>FIG: read of the variables
   FIG-->>M: variables and foundations
   M->>TOK: manifest, foundations, CSS and types regenerated
-  TOK->>CLI: tokens check, public-tokens, css budget
+  TOK->>CLI: check tokens, public-tokens, css budget
   CLI-->>M: outcome
   M->>M: green chain and pull request
 ```

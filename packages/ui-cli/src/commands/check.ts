@@ -12,6 +12,7 @@ import { checkLibrary } from "../checks/library.ts"
 import { checkPublicTokens } from "../checks/public-tokens.ts"
 import { formatCheck, passed, type CheckReport } from "../checks/report.ts"
 import { checkTextDefaults } from "../checks/text-defaults.ts"
+import { checkTokens } from "../figma/tokens.ts"
 import { integer, text } from "./args.ts"
 import { action, EXIT, printJson, printLines, type CliContext } from "./context.ts"
 import { unresolvedCliTokens } from "./resolve.ts"
@@ -43,6 +44,9 @@ export function checkCommands(
     subCommands: {
       a11y: gate("a11y", "Check the accessibility conformance map", () =>
         checkA11yConformance(ctx.workspace()),
+      ),
+      tokens: gate("tokens", "Validate the committed token manifest", () =>
+        checkTokens(ctx.workspace()),
       ),
       "client-directives": defineCommand({
         meta: {

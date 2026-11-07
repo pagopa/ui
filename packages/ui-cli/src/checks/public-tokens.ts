@@ -31,7 +31,7 @@ export async function publicTokenNames(
   const inventoryFile = path.join(tokensRoot, INVENTORY)
   for (const file of [cssFile, inventoryFile]) {
     if (!fs.existsSync(file)) {
-      throw new Error(`missing ${file} — run "pnpm nx run pagopa-ui-tokens:tokens:check"`)
+      throw new Error(`missing ${file} — run "pnpm nx run pagopa-ui-tokens:check:tokens"`)
     }
   }
   const css = cssTokenNames(fs.readFileSync(cssFile, "utf8"))

@@ -22,4 +22,4 @@ source Figma styles name the same faces "Semibold" (reported weight 500) and
 
 The upstream repository ships no tags, releases or npm package, so updates
 re-pin commit by commit: replace the files, refresh the digests above and re-run
-`pnpm tokens:check`, `pnpm build` and `pnpm library:check`.
+`pnpm nx run pagopa-ui-tokens:check:tokens`, `pnpm build` and `pnpm library:check`.

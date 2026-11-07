@@ -65,8 +65,10 @@ test("source --png needs FIGMA_TOKEN and writes nothing without it", async () =>
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-source-png-"))
   const file = path.join(directory, "node.png")
   const previousToken = process.env.FIGMA_TOKEN
+  const previousPath = process.env.PATH
   try {
     delete process.env.FIGMA_TOKEN
+    process.env.PATH = ""
     await assert.rejects(
       () => sourceCli([NODE_ID, "--input", SLICE, "--png", file, "--compact"]),
       /FIGMA_TOKEN is missing/,
@@ -74,6 +76,8 @@ test("source --png needs FIGMA_TOKEN and writes nothing without it", async () =>
     assert.equal(fs.existsSync(file), false)
   } finally {
     if (previousToken !== undefined) process.env.FIGMA_TOKEN = previousToken
+    if (previousPath === undefined) delete process.env.PATH
+    else process.env.PATH = previousPath
     fs.rmSync(directory, { recursive: true, force: true })
   }
 })

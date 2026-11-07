@@ -13,8 +13,8 @@ import { TYPOGRAPHY_ALIASES } from "../../src/figma/tokens.ts"
 const script = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
 
 function tokensArguments(cli, args) {
-  if (args[0] === "--write") return [cli, "tokens", "write", ...args.slice(1)]
-  return [cli, "tokens", "check"]
+  if (args[0] === "--write") return [cli, "update", "tokens", ...args.slice(1)]
+  return [cli, "check", "tokens"]
 }
 
 // The fixture must cover every alias of the policy, like the production
@@ -174,7 +174,7 @@ test("write keys the manifest by the published id and emits the foundation theme
     assert.match(inventory, /category: "spacing"/)
     const check = tokens("--check")
     assert.equal(check.status, 0, check.stderr)
-    assert.match(check.stdout, /tokens check: 34 variables/)
+    assert.match(check.stdout, /check tokens: 34 variables/)
     assert.match(check.stdout, /\+ 3 foundations/)
   })
 })

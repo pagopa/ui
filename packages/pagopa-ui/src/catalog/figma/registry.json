@@ -78,7 +78,7 @@
           "license": "In-house artwork"
         }
       },
-      "note": "Public names are stable aliases of manifest nodeIds, independent of source renames. Explicit localAsset entries retain reviewed rounded source geometry/defaults/variants; monochrome artwork intentionally inherits semantic currentColor, while brand images preserve source colors. icons:check validates complete identities, pinned SVG evidence and provenance."
+      "note": "Public names are stable aliases of manifest nodeIds, independent of source renames. Explicit localAsset entries retain reviewed rounded source geometry/defaults/variants; monochrome artwork intentionally inherits semantic currentColor, while brand images preserve source colors. check:icons validates complete identities, pinned SVG evidence and provenance."
     },
     {
       "pageId": "157:614",
@@ -96,7 +96,7 @@
         "attribution": "SeyfDesigner — Flaticon",
         "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
       },
-      "note": "Public names are stable aliases of manifest nodeIds, independent of source renames. pictograms:check validates identities, checksums and provenance."
+      "note": "Public names are stable aliases of manifest nodeIds, independent of source renames. check:pictograms validates identities, checksums and provenance."
     },
     {
       "pageId": "1:16",
@@ -1218,7 +1218,7 @@
         "story": "apps/storybook/src/PaymentProviderLogos.stories.tsx",
         "storyExports": ["Fidelity", "Playground"]
       },
-      "note": "Reviewed: PaymentProviderLogos publishes the set's sixteen brand variants as pinned, source-colour SVGs at the shared 24x24 artwork box with no card, frame or extra radius. Sixteen committed cases, one per variant (`382-7640-brand-*`), each captured from `Fidelity` at 24x24 with no device axis; the two variants whose source frame carries a 4px radius and fill paint them inside the exported artwork (rect rx=4), so the img's own radius is a mapping artifact. Composition and responsive clean on all sixteen; the artwork itself is owned by `assets:check` (guides/loghi-psp.md)."
+      "note": "Reviewed: PaymentProviderLogos publishes the set's sixteen brand variants as pinned, source-colour SVGs at the shared 24x24 artwork box with no card, frame or extra radius. Sixteen committed cases, one per variant (`382-7640-brand-*`), each captured from `Fidelity` at 24x24 with no device axis; the two variants whose source frame carries a 4px radius and fill paint them inside the exported artwork (rect rx=4), so the img's own radius is a mapping artifact. Composition and responsive clean on all sixteen; the artwork itself is owned by `check:artwork` (guides/loghi-psp.md)."
     },
     "382:7813": {
       "status": "implemented",
