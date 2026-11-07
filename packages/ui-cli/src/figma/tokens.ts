@@ -737,109 +737,112 @@ function previousManifest(manifestPath: string): {
   return { byId, byName }
 }
 
-function curatedManifest(
-  snapshot: TokenSnapshot,
-  foundationsSource: z.infer<typeof FoundationsFileSchema>,
-  workspace: Workspace,
-  paths: TokenPaths,
-): { manifest: Manifest; report: string[] } {
-  const fileKey = fileKeyFromWorkspace(workspace)
-  if (snapshot.fileKey && snapshot.fileKey !== fileKey) {
-    throw new Error("The variable snapshot belongs to a different Figma file")
+type ManifestCuration = {
+  variables: Record<string, TokenEntry>
+  excluded: Record<string, string>
+  unmapped: string[]
+  report: string[]
+  carried: number
+  synthetic: number
+  unresolvedIds: number
+  renamed: number
+  relinked: number
+}
+
+function emptyCuration(): ManifestCuration {
+  return {
+    variables: {},
+    excluded: {},
+    unmapped: [],
+    report: [],
+    carried: 0,
+    synthetic: 0,
+    unresolvedIds: 0,
+    renamed: 0,
+    relinked: 0,
   }
-  const { byId, byName } = previousManifest(paths.manifest)
-  const ids = snapshot.ids ?? {}
-  const variables: Record<string, TokenEntry> = {}
-  const excluded: Record<string, string> = {}
-  const unmapped: string[] = []
-  const report: string[] = []
-  let carried = 0
-  let synthetic = 0
-  let unresolvedIds = 0
-  let renamed = 0
-  let relinked = 0
-  for (const [name, raw] of Object.entries(snapshot.variables ?? {})) {
-    // Explicit exclusions override the canonical prefixes: legacy libraries
-    // sometimes reuse a canonical prefix (Color/Blue IO/*).
-    const reason = excludedReason(name)
-    if (reason) {
-      excluded[name] = reason
-      continue
-    }
-    if (!isCanonical(name)) {
-      unmapped.push(name)
-      continue
-    }
-    const idInfo = ids[name]
-    const incomingId =
-      typeof idInfo === "string"
-        ? idInfo
-        : idInfo && typeof idInfo === "object" && "key" in idInfo && typeof idInfo.key === "string"
-          ? idInfo.key
-          : null
-    const prior = (incomingId && byId.get(incomingId)) || byName.get(name)
-    const id = incomingId ?? prior?.id ?? `local:${name}`
-    if (incomingId && prior?.id && prior.id !== incomingId) {
-      relinked++
-      report.push(`relinked ${name}: ${prior.id} -> ${incomingId}`)
-    } else if (!incomingId && prior?.id && !prior.id.startsWith("local:")) {
-      carried++
-    } else if (!incomingId && prior?.id) {
-      unresolvedIds++
-    } else if (!incomingId) {
-      synthetic++
-      report.push(`no stable id for ${name}: recorded as ${id}`)
-    }
-    if (incomingId && prior && prior.name !== name) {
-      renamed++
-      report.push(`renamed ${prior.name} -> ${name} (${id})`)
-    }
-    if (typeof raw !== "string") throw new Error(`${name}: unsupported variable value`)
-    const token = classify(raw, name)
-    const alias = prior?.alias ?? TYPOGRAPHY_ALIASES[name]
-    if (token.type === "TYPOGRAPHY" && !alias) {
-      throw new Error(`${name}: missing text-* alias for the typography scale`)
-    }
-    variables[id] = {
-      id,
-      idKind: parseSchema(
-        z.enum(["variable", "style", "name"]),
-        (idInfo && typeof idInfo === "object" && "kind" in idInfo && typeof idInfo.kind === "string"
-          ? idInfo.kind
-          : undefined) ??
-          prior?.idKind ??
-          (incomingId ? "variable" : "name"),
-        `${name}: idKind`,
-      ),
-      idLibrary:
-        (idInfo &&
-        typeof idInfo === "object" &&
-        "library" in idInfo &&
-        typeof idInfo.library === "string"
-          ? idInfo.library
-          : undefined) ??
-        prior?.idLibrary ??
-        null,
-      name,
-      type: token.type,
-      value: token.value,
-      cssName: prior?.cssName ?? cssNameFor(name),
-      ...(alias ? { alias } : {}),
-    }
+}
+
+function curateVariable(
+  name: string,
+  raw: unknown,
+  ids: NonNullable<TokenSnapshot["ids"]>,
+  byId: Map<string, PriorToken>,
+  byName: Map<string, PriorToken>,
+  state: ManifestCuration,
+): void {
+  const reason = excludedReason(name)
+  if (reason) {
+    state.excluded[name] = reason
+    return
   }
-  if (unmapped.length) {
+  if (!isCanonical(name)) {
+    state.unmapped.push(name)
+    return
+  }
+  const info = ids[name]
+  const incomingId =
+    typeof info === "string"
+      ? info
+      : info && typeof info === "object" && "key" in info && typeof info.key === "string"
+        ? info.key
+        : null
+  const prior = (incomingId && byId.get(incomingId)) || byName.get(name)
+  const id = incomingId ?? prior?.id ?? `local:${name}`
+  if (incomingId && prior?.id && prior.id !== incomingId) {
+    state.relinked++
+    state.report.push(`relinked ${name}: ${prior.id} -> ${incomingId}`)
+  } else if (!incomingId && prior?.id && !prior.id.startsWith("local:")) state.carried++
+  else if (!incomingId && prior?.id) state.unresolvedIds++
+  else if (!incomingId) {
+    state.synthetic++
+    state.report.push(`no stable id for ${name}: recorded as ${id}`)
+  }
+  if (incomingId && prior && prior.name !== name) {
+    state.renamed++
+    state.report.push(`renamed ${prior.name} -> ${name} (${id})`)
+  }
+  if (typeof raw !== "string") throw new Error(`${name}: unsupported variable value`)
+  const token = classify(raw, name)
+  const alias = prior?.alias ?? TYPOGRAPHY_ALIASES[name]
+  if (token.type === "TYPOGRAPHY" && !alias)
+    throw new Error(`${name}: missing text-* alias for the typography scale`)
+  state.variables[id] = {
+    id,
+    idKind: parseSchema(
+      z.enum(["variable", "style", "name"]),
+      (info && typeof info === "object" && "kind" in info && typeof info.kind === "string"
+        ? info.kind
+        : undefined) ??
+        prior?.idKind ??
+        (incomingId ? "variable" : "name"),
+      `${name}: idKind`,
+    ),
+    idLibrary:
+      (info && typeof info === "object" && "library" in info && typeof info.library === "string"
+        ? info.library
+        : undefined) ??
+      prior?.idLibrary ??
+      null,
+    name,
+    type: token.type,
+    value: token.value,
+    cssName: prior?.cssName ?? cssNameFor(name),
+    ...(alias ? { alias } : {}),
+  }
+}
+
+function validateUnresolved(snapshot: TokenSnapshot, state: ManifestCuration): void {
+  if (state.unmapped.length) {
     throw new Error(
-      `Unmapped variable namespaces (${unmapped.length}) — extend the canonical prefixes or the exclusion patterns:\n` +
-        unmapped.map((name) => `  ${name}`).join("\n"),
+      `Unmapped variable namespaces (${state.unmapped.length}) — extend the canonical prefixes or the exclusion patterns:\n` +
+        state.unmapped.map((name) => `  ${name}`).join("\n"),
     )
   }
-  // Unresolved names (present in the library, not bound to a reachable node)
-  // must not linger: every one is either captured with a value or disposed by
-  // a reasoned exclusion pattern.
   const unresolved: string[] = []
   for (const name of Object.keys(snapshot.unresolved ?? {})) {
     const reason = excludedReason(name)
-    if (reason) excluded[name] = reason
+    if (reason) state.excluded[name] = reason
     else unresolved.push(name)
   }
   if (unresolved.length) {
@@ -848,13 +851,16 @@ function curatedManifest(
         unresolved.map((name) => `  ${name}`).join("\n"),
     )
   }
-  const seen = new Set(Object.keys(variables))
-  const seenNames = new Set(Object.values(variables).map((entry) => entry.name))
+}
+
+function appendCurationSummary(state: ManifestCuration, byId: Map<string, PriorToken>): void {
+  const seen = new Set(Object.keys(state.variables))
+  const seenNames = new Set(Object.values(state.variables).map((entry) => entry.name))
   const removed = [...byId.keys()].filter(
     (id) => !seen.has(id) && !seenNames.has(byId.get(id)?.name ?? ""),
   )
-  if (removed.length) {
-    report.push(
+  if (removed.length)
+    state.report.push(
       `removed ${removed.length}: ` +
         removed
           .map((id) => byId.get(id)?.name ?? id)
@@ -862,51 +868,65 @@ function curatedManifest(
           .join(", ") +
         (removed.length > 6 ? ", …" : ""),
     )
-  }
-  if (carried) {
-    report.push(
-      `${carried} ids carried over by name — export the variables with a figma id map to make renames explicit`,
+  if (state.carried)
+    state.report.push(
+      `${state.carried} ids carried over by name — export the variables with a figma id map to make renames explicit`,
     )
+  if (state.synthetic) state.report.push(`${state.synthetic} entries without a stable id`)
+  if (state.unresolvedIds)
+    state.report.push(
+      `${state.unresolvedIds} entries have no published id — their key stays local:<name>`,
+    )
+  if (state.renamed)
+    state.report.push(`${state.renamed} renames recorded — the id, the css name and the alias stay`)
+  if (state.relinked) state.report.push(`${state.relinked} entries relinked to their published key`)
+}
+
+function curatedManifest(
+  snapshot: TokenSnapshot,
+  foundationsSource: z.infer<typeof FoundationsFileSchema>,
+  workspace: Workspace,
+  paths: TokenPaths,
+): { manifest: Manifest; report: string[] } {
+  const fileKey = fileKeyFromWorkspace(workspace)
+  if (snapshot.fileKey && snapshot.fileKey !== fileKey)
+    throw new Error("The variable snapshot belongs to a different Figma file")
+  const { byId, byName } = previousManifest(paths.manifest)
+  const state = emptyCuration()
+  for (const [name, raw] of Object.entries(snapshot.variables ?? {})) {
+    curateVariable(name, raw, snapshot.ids ?? {}, byId, byName, state)
   }
-  if (synthetic) report.push(`${synthetic} entries without a stable id`)
-  if (unresolvedIds) {
-    report.push(`${unresolvedIds} entries have no published id — their key stays local:<name>`)
-  }
-  if (renamed) report.push(`${renamed} renames recorded — the id, the css name and the alias stay`)
-  if (relinked) report.push(`${relinked} entries relinked to their published key`)
+  validateUnresolved(snapshot, state)
+  appendCurationSummary(state, byId)
+  return buildCuratedManifest(snapshot, foundationsSource, fileKey, paths, state)
+}
+
+function buildCuratedManifest(
+  snapshot: TokenSnapshot,
+  foundationsSource: z.infer<typeof FoundationsFileSchema>,
+  fileKey: string,
+  paths: TokenPaths,
+  state: ManifestCuration,
+): { manifest: Manifest; report: string[] } {
   const foundations: Record<string, FoundationEntry> = {}
-  for (const [id, entry] of Object.entries(foundationsSource.entries)) {
-    foundations[id] = {
-      ...entry,
-      id,
-      cssName: cssNameFor(entry.name),
-    }
-  }
-  const sorted = Object.fromEntries(
-    Object.entries(variables).sort(([a], [b]) => a.localeCompare(b)),
+  for (const [id, entry] of Object.entries(foundationsSource.entries))
+    foundations[id] = { ...entry, id, cssName: cssNameFor(entry.name) }
+  const sort = <T>(record: Record<string, T>): Record<string, T> =>
+    Object.fromEntries(Object.entries(record).sort(([a], [b]) => a.localeCompare(b)))
+  const manifest = parseSchema(
+    TokenManifestSchema,
+    {
+      schemaVersion: 2,
+      fileKey,
+      syncedAt: snapshot.syncedAt ?? new Date().toISOString().slice(0, 10),
+      source: snapshot.source ?? { method: "unknown" },
+      variables: sort(state.variables),
+      foundations: sort(foundations),
+      excluded: sort(state.excluded),
+    },
+    paths.manifest,
   )
-  const sortedFoundations = Object.fromEntries(
-    Object.entries(foundations).sort(([a], [b]) => a.localeCompare(b)),
-  )
-  const sortedExcluded = Object.fromEntries(
-    Object.entries(excluded).sort(([a], [b]) => a.localeCompare(b)),
-  )
-  return {
-    manifest: parseSchema(
-      TokenManifestSchema,
-      {
-        schemaVersion: 2,
-        fileKey,
-        syncedAt: snapshot.syncedAt ?? new Date().toISOString().slice(0, 10),
-        source: snapshot.source ?? { method: "unknown" },
-        variables: sorted,
-        foundations: sortedFoundations,
-        excluded: sortedExcluded,
-      },
-      paths.manifest,
-    ),
-    report,
-  }
+  return { manifest, report: state.report }
 }
 
 function validateEffectList(value: unknown, name: string): void {

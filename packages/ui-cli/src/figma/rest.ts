@@ -327,6 +327,52 @@ type McpNode = {
   pageName: string
 }
 
+async function fetchSnapshotNodes(
+  fileKey: string,
+  version: string,
+  ids: string[],
+  token: string,
+  nodes: Record<string, z.infer<typeof NodeRecordSchema>>,
+): Promise<void> {
+  for (let start = 0; start < ids.length; start += 50) {
+    const batch = ids.slice(start, start + 50)
+    const query = new URLSearchParams({ ids: batch.join(","), version, geometry: "paths" })
+    const data = await get(`files/${fileKey}/nodes?${query}`, NodeDocumentsResponseSchema, token)
+    for (const id of batch) {
+      const record = data.nodes?.[id]
+      if (!record?.document || record.document.id !== id) {
+        throw new Error(
+          `Figma node ${id} is missing at version ${version}; no snapshot was written`,
+        )
+      }
+      nodes[id] = record
+    }
+  }
+}
+
+function publishedRecord(
+  node: PublishedNode,
+  pages: Map<string, string>,
+  nodes: Record<string, z.infer<typeof NodeRecordSchema>>,
+  mcpIds: Set<string>,
+  restIds: Set<string>,
+) {
+  const pageId = node.containing_frame?.pageId ?? node.containing_frame?.page_id
+  if (!pageId || !pages.has(pageId)) {
+    throw new Error(`Figma node ${node.node_id} has no valid containing page`)
+  }
+  return {
+    node_id: node.node_id,
+    key: node.key,
+    name: nodes[node.node_id]?.document?.name,
+    containing_frame: { pageId, pageName: pages.get(pageId) },
+    sources: [
+      ...(mcpIds.has(node.node_id) ? ["mcp"] : []),
+      ...(restIds.has(node.node_id) ? ["rest"] : []),
+    ],
+  }
+}
+
 export async function fetchFigmaSnapshot(fileKey: string, mcpNodes: McpNode[], token: string) {
   const [componentData, setData, file] = await Promise.all([
     get(`files/${fileKey}/components`, ComponentInventorySchema, token),
@@ -360,27 +406,13 @@ export async function fetchFigmaSnapshot(fileKey: string, mcpNodes: McpNode[], t
     ...mcpOnly.filter((node) => node.type === "COMPONENT_SET"),
   ]
   const nodes: Record<string, z.infer<typeof NodeRecordSchema>> = {}
-  async function fetchNodes(ids: string[]) {
-    for (let start = 0; start < ids.length; start += 50) {
-      const batch = ids.slice(start, start + 50)
-      const query = new URLSearchParams({
-        ids: batch.join(","),
-        version: file.version,
-        geometry: "paths",
-      })
-      const data = await get(`files/${fileKey}/nodes?${query}`, NodeDocumentsResponseSchema, token)
-      for (const id of batch) {
-        const record = data.nodes?.[id]
-        if (!record?.document || record.document.id !== id) {
-          throw new Error(
-            `Figma node ${id} is missing at version ${file.version}; no snapshot was written`,
-          )
-        }
-        nodes[id] = record
-      }
-    }
-  }
-  await fetchNodes(sets.map((node) => node.node_id))
+  await fetchSnapshotNodes(
+    fileKey,
+    file.version,
+    sets.map((node) => node.node_id),
+    token,
+    nodes,
+  )
   const variants = new Set(
     Object.values(nodes).flatMap((record) =>
       (record.document?.children ?? [])
@@ -392,30 +424,20 @@ export async function fetchFigmaSnapshot(fileKey: string, mcpNodes: McpNode[], t
     ...componentData.meta.components,
     ...mcpOnly.filter((node) => node.type === "COMPONENT"),
   ].filter((node) => !variants.has(node.node_id))
-  await fetchNodes(components.map((node) => node.node_id))
-  function publishedRecord(node: PublishedNode) {
-    const pageId = node.containing_frame?.pageId ?? node.containing_frame?.page_id
-    if (!pageId || !pages.has(pageId)) {
-      throw new Error(`Figma node ${node.node_id} has no valid containing page`)
-    }
-    return {
-      node_id: node.node_id,
-      key: node.key,
-      name: nodes[node.node_id]?.document?.name,
-      containing_frame: { pageId, pageName: pages.get(pageId) },
-      sources: [
-        ...(mcpIds.has(node.node_id) ? ["mcp"] : []),
-        ...(restIds.has(node.node_id) ? ["rest"] : []),
-      ],
-    }
-  }
+  await fetchSnapshotNodes(
+    fileKey,
+    file.version,
+    components.map((node) => node.node_id),
+    token,
+    nodes,
+  )
   return {
     fileKey,
     version: file.version,
     lastModified: file.lastModified,
     meta: {
-      components: components.map(publishedRecord),
-      component_sets: sets.map(publishedRecord),
+      components: components.map((node) => publishedRecord(node, pages, nodes, mcpIds, restIds)),
+      component_sets: sets.map((node) => publishedRecord(node, pages, nodes, mcpIds, restIds)),
     },
     nodes,
   }
