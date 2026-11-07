@@ -11,3 +11,15 @@ export function walkFiles(directory: string, accept: (file: string) => boolean):
     return accept(full) ? [full] : []
   })
 }
+
+// The same walk, as POSIX paths relative to `root` (`src/components/…`).
+export function walkRelative(
+  root: string,
+  directory: string,
+  accept: (file: string) => boolean,
+): string[] {
+  return walkFiles(path.join(root, directory), () => true)
+    .map((file) => path.relative(root, file).split(path.sep).join("/"))
+    .filter(accept)
+    .sort()
+}

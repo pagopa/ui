@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 // Documentation link check: every repository path the agent-facing documents,
 // the figma-to-code config and the scripts point to must exist, every command
 // they name must resolve against the Nx project graph and the root scripts, and
@@ -12,29 +11,31 @@
 // without a workspace manifest keeps the audited root as the workspace, which
 // is what the regression tests build.
 //
-// Run: node src/cli.ts check docs (from anywhere; PAGOPA_UI_ROOT names the package)
+// A `pnpm ui-cli …` command is resolved against the CLI's own tree: the
+// subcommands and every `--flag` it names must exist.
 import { execFileSync } from "node:child_process"
 import fs from "node:fs"
 import path from "node:path"
-import { walkFiles } from "../lib/fs.ts"
-import { enterRoot, TOOLING_ROOT } from "../lib/paths.ts"
 
-export function runDocLinks(): number {
-  const root = enterRoot()
+import type { Workspace } from "../adapters/workspace.ts"
+import { walkFiles } from "../lib/fs.ts"
+import { report as checkReport, type CheckReport } from "./report.ts"
+
+export interface DocLinksOptions {
+  /** The environment the Nx graph is read with. */
+  env: NodeJS.ProcessEnv
+  /** Resolves `ui-cli` argument tokens; returns the problem, or null. */
+  cliCommand?: (tokens: string[]) => string | null
+}
+
+export function checkDocLinks(workspaceTree: Workspace, options: DocLinksOptions): CheckReport {
+  const root = workspaceTree.root
+  const TOOLING_ROOT = workspaceTree.toolingRoot
   const errors: string[] = []
   const SKIPPED_SKILLS = new Set(["shadcn"])
   const LOCAL_PREFIXES = [".figma/", "node_modules/", "dist/", "coverage/"]
 
-  function findWorkspaceRoot(from: string): string {
-    for (let current = from; ;) {
-      if (fs.existsSync(path.join(current, "pnpm-workspace.yaml"))) return current
-      const parent = path.dirname(current)
-      if (parent === current) return from
-      current = parent
-    }
-  }
-
-  const workspace = findWorkspaceRoot(root)
+  const workspace = workspaceTree.workspaceRoot
   const SKILL = path.join(workspace, ".agents/skills/figma-to-code")
   // The tooling package is part of the repository this run audits only when it
   // sits inside the workspace: a regression fixture builds its own tree and must
@@ -182,7 +183,7 @@ export function runDocLinks(): number {
       encoding: "utf8",
       timeout: 20_000,
       stdio: ["ignore", "pipe", "ignore"],
-      env: { ...process.env, NX_DAEMON: "false", NX_TUI: "false", FORCE_COLOR: "0" },
+      env: { ...options.env, NX_DAEMON: "false", NX_TUI: "false", FORCE_COLOR: "0" },
     })
   }
 
@@ -278,7 +279,24 @@ export function runDocLinks(): number {
       report(file, text, index, `unknown Nx target ${project}:${target}`)
   }
 
+  // Only the command path and the flag names are static: a placeholder
+  // (`--node <id>`, `[--json]`) is dropped and the rest must resolve.
+  function checkCliCommand(file: string, text: string, index: number, raw: string): void {
+    if (!options.cliCommand) return
+    for (const part of raw.split(/&&|\|\||;|\|/)) {
+      const tokens = part.trim().split(/\s+/)
+      const at = tokens.findIndex(
+        (token, position) => token === "ui-cli" && tokens[position - 1] === "pnpm",
+      )
+      if (at < 0) continue
+      const concrete = tokens.slice(at + 1).filter((token) => !/[<>{}$…[\]]/.test(token))
+      const problem = options.cliCommand(concrete)
+      if (problem) report(file, text, index, problem)
+    }
+  }
+
   function checkCommand(file: string, text: string, index: number, raw: string): void {
+    checkCliCommand(file, text, index, raw)
     const commands = commandGraph()
     if (!commands) return
     // A placeholder is an instruction to fill in, not a command to run.
@@ -341,7 +359,7 @@ export function runDocLinks(): number {
         // or their own arguments: nothing static to validate.
         continue
       }
-      if (BUILT_IN.has(first)) continue
+      if (BUILT_IN.has(first) || first === "ui-cli") continue
       if (first === "run") {
         const script = tokens[position + 1]
         if (!script) continue
@@ -423,12 +441,5 @@ export function runDocLinks(): number {
   for (const file of scriptRoots.filter((name) => !/\.test\.(?:mjs|ts)$/.test(name)))
     checkScript(file)
 
-  if (errors.length) {
-    console.error(
-      `docs:check: ${errors.length} problem(s)\n${errors.map((error) => `  ${error}`).join("\n")}`,
-    )
-    return 1
-  }
-  console.log(`docs:check: ${markdown.length} documents, config and scripts resolve`)
-  return 0
+  return checkReport("docs", `${markdown.length} documents, config and scripts resolve`, errors)
 }

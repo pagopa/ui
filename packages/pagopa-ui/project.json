@@ -111,7 +111,7 @@
     },
     "client:check": { "options": { "command": "node src/cli.ts check client-directives" } },
     "a11y:conformance:check": {
-      "options": { "command": "node src/cli.ts check a11y-conformance" },
+      "options": { "command": "node src/cli.ts check a11y" },
       "inputs": [
         "default",
         "tooling",

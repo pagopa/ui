@@ -1,15 +1,16 @@
 import assert from "node:assert/strict"
-import { spawnSync } from "node:child_process"
 import fs from "node:fs"
-import os from "node:os"
 import path from "node:path"
 import { test } from "node:test"
-import { fileURLToPath } from "node:url"
 
-import { measure } from "../../src/checks/css-budget.ts"
-import { fixtureEnv } from "../../src/lib/paths.ts"
+import {
+  checkCssBudget,
+  measure,
+  measureCss,
+  updateCssBudget,
+} from "../../src/checks/css-budget.ts"
+import { fixtureTree, runCli, workspaceAt } from "../helpers/cli.mjs"
 
-const script = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
 const CSS = `.a{color:red}.b{display:flex}`.repeat(20)
 const METRICS = measure(CSS)
 const within = (delta) => ({
@@ -18,141 +19,160 @@ const within = (delta) => ({
   brotli: METRICS.brotli + 200,
 })
 
-// Every test cleans up its fixture root in its own finally.
 function fixture(budget) {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-css-budget-"))
-  const budgetPath = path.join(root, "data/css-budget.json")
   const files = {
-    "package.json": JSON.stringify({
-      name: "fixture",
-      exports: { "./styles.css": "./dist/styles.css" },
-    }),
+    "package.json": { name: "fixture", exports: { "./styles.css": "./dist/styles.css" } },
     "dist/styles.css": CSS,
-    ...(budget === null ? {} : { "data/css-budget.json": JSON.stringify(budget) }),
+    ...(budget === null ? {} : { "data/css-budget.json": budget }),
   }
-  for (const [file, source] of Object.entries(files)) {
-    const target = path.join(root, file)
-    fs.mkdirSync(path.dirname(target), { recursive: true })
-    fs.writeFileSync(target, source)
-  }
+  const tree = fixtureTree(files)
+  const budgetFile = path.join(tree.root, "data/css-budget.json")
   return {
-    root,
-    run: (...args) =>
-      spawnSync(process.execPath, [script, "check", "css", ...args], {
-        cwd: root,
-        encoding: "utf8",
-        env: fixtureEnv(root, { PAGOPA_UI_CSS_BUDGET: budgetPath }),
-      }),
-    budget: () => JSON.parse(fs.readFileSync(budgetPath, "utf8")),
+    ...tree,
+    budgetFile,
+    workspace: workspaceAt(tree.root),
+    readBudget: () => JSON.parse(fs.readFileSync(budgetFile, "utf8")),
   }
 }
 
 test("a stylesheet at the ceiling passes", () => {
-  const { root, run } = fixture({ schemaVersion: 1, metrics: within(0) })
+  const tree = fixture({ schemaVersion: 1, metrics: within(0) })
   try {
-    const result = run()
-    assert.equal(result.status, 0, result.stderr)
-    assert.match(result.stdout, /css budget OK/)
+    const result = checkCssBudget(tree.workspace, { budgetFile: tree.budgetFile })
+    assert.deepEqual(result.problems, [])
+    assert.equal(result.name, "css budget")
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
   }
 })
 
 test("growth past the margin fails on the metric that moved", () => {
-  const { root, run } = fixture({ schemaVersion: 1, metrics: within(-1) })
+  const tree = fixture({ schemaVersion: 1, metrics: within(-1) })
   try {
-    const result = run()
-    assert.equal(result.status, 1)
-    assert.match(result.stderr, /raw: \d+ bytes, the ceiling is \d+ \(\+1\)/)
-    assert.doesNotMatch(result.stderr, /gzip:/)
-  } finally {
-    fs.rmSync(root, { recursive: true, force: true })
-  }
-})
-
-test("a raise is a manual edit: the failure prints every measured size", () => {
-  const { root, run } = fixture({ schemaVersion: 1, metrics: within(-1) })
-  try {
-    const result = run()
-    assert.equal(result.status, 1)
-    assert.match(
-      result.stderr,
-      new RegExp(`measured: raw ${METRICS.raw} / gzip ${METRICS.gzip} / brotli ${METRICS.brotli}`),
+    const result = checkCssBudget(tree.workspace, { budgetFile: tree.budgetFile })
+    assert.ok(
+      result.problems.some((problem) => /raw: \d+ bytes, the ceiling is \d+ \(\+1\)/.test(problem)),
     )
-    assert.match(result.stderr, /data\/css-budget\.json/)
+    assert.ok(result.problems.every((problem) => !problem.includes("gzip:")))
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
   }
 })
 
-test("--measure prints the current sizes and enforces nothing", () => {
-  const { root, run } = fixture({ schemaVersion: 1, metrics: within(-5000) })
+test("a raise is a manual edit: the failure reports every measured size", () => {
+  const tree = fixture({ schemaVersion: 1, metrics: within(-1) })
   try {
-    const result = run("--measure")
-    assert.equal(result.status, 0, result.stderr)
-    assert.deepEqual(JSON.parse(result.stdout), METRICS)
+    const result = checkCssBudget(tree.workspace, { budgetFile: tree.budgetFile })
+    assert.match(
+      result.summary,
+      new RegExp(`measured raw ${METRICS.raw} / gzip ${METRICS.gzip} / brotli ${METRICS.brotli}`),
+    )
+    assert.match(result.summary, /copy the sizes you accept into data\/css-budget\.json/)
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
   }
 })
 
-test("a ceiling with slack warns and still passes", () => {
-  const { root, run } = fixture({ schemaVersion: 1, metrics: within(5000) })
+test("measureCss returns current sizes without enforcing the ceiling", () => {
+  const tree = fixture({ schemaVersion: 1, metrics: within(-5000) })
   try {
-    const result = run()
-    assert.equal(result.status, 0, result.stderr)
-    assert.match(result.stdout, /^note: raw: \d+ bytes, the ceiling is \d+ \(-5000\)/m)
-    assert.match(result.stdout, /record the size you accept with/)
-    assert.match(result.stdout, /css budget OK/)
+    assert.deepEqual(measureCss(tree.workspace), METRICS)
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
+  }
+})
+
+test("a ceiling with slack produces an informational note and still passes", () => {
+  const tree = fixture({ schemaVersion: 1, metrics: within(5000) })
+  try {
+    const result = checkCssBudget(tree.workspace, { budgetFile: tree.budgetFile })
+    assert.deepEqual(result.problems, [])
+    assert.match(result.details[0], /^note: raw: \d+ bytes, the ceiling is \d+ \(-5000\)/)
+    assert.match(result.details[0], /record the size you accept with/)
+  } finally {
+    tree.dispose()
   }
 })
 
 test("a budget without a metric is refused", () => {
-  const { root, run } = fixture({ schemaVersion: 1, metrics: { raw: METRICS.raw } })
+  const tree = fixture({ schemaVersion: 1, metrics: { raw: METRICS.raw } })
   try {
-    const result = run()
-    assert.equal(result.status, 1)
-    assert.match(result.stderr, /missing the "gzip" ceiling/)
+    assert.ok(
+      checkCssBudget(tree.workspace, { budgetFile: tree.budgetFile }).problems.some((problem) =>
+        problem.includes('missing the "gzip" ceiling'),
+      ),
+    )
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
   }
 })
 
-test("a missing budget tells how to create it", () => {
-  const { root, run } = fixture(null)
+test("a missing budget asks to create it", () => {
+  const tree = fixture(null)
   try {
-    const result = run()
-    assert.equal(result.status, 1)
-    assert.match(result.stderr, /missing the budget/)
+    assert.ok(
+      checkCssBudget(tree.workspace, { budgetFile: tree.budgetFile }).problems.some((problem) =>
+        problem.includes("missing the budget"),
+      ),
+    )
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
   }
 })
 
-test("--write records the current sizes and keeps the note", () => {
-  const { root, run, budget } = fixture({ schemaVersion: 1, note: "why", metrics: within(5000) })
+test("updateCssBudget records current sizes and keeps the note", () => {
+  const tree = fixture({ schemaVersion: 1, note: "why", metrics: within(5000) })
   try {
-    const result = run("--write")
-    assert.equal(result.status, 0, result.stderr)
-    assert.deepEqual(budget().metrics, METRICS)
-    assert.equal(budget().note, "why")
-    assert.equal(run().status, 0)
+    assert.match(
+      updateCssBudget(tree.workspace, { budgetFile: tree.budgetFile }),
+      /css budget written/,
+    )
+    const budget = tree.readBudget()
+    assert.deepEqual(budget.metrics, METRICS)
+    assert.equal(budget.note, "why")
+    assert.deepEqual(checkCssBudget(tree.workspace, { budgetFile: tree.budgetFile }).problems, [])
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
   }
 })
 
-test("--write never raises a ceiling", () => {
-  const { root, run, budget } = fixture({ schemaVersion: 1, metrics: within(-1000) })
+test("updateCssBudget never raises a ceiling", () => {
+  const tree = fixture({ schemaVersion: 1, metrics: within(-1000) })
   try {
-    const result = run("--write")
-    assert.equal(result.status, 0, result.stderr)
-    assert.match(result.stdout, /kept the higher raw ceiling/)
-    assert.equal(budget().metrics.raw, METRICS.raw - 1000)
-    assert.equal(budget().metrics.gzip, METRICS.gzip)
+    assert.match(
+      updateCssBudget(tree.workspace, { budgetFile: tree.budgetFile }),
+      /kept the higher raw ceiling/,
+    )
+    const budget = tree.readBudget()
+    assert.equal(budget.metrics.raw, METRICS.raw - 1000)
+    assert.equal(budget.metrics.gzip, METRICS.gzip)
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
+  }
+})
+
+test("check css --measure and --budget use the specified budget", async () => {
+  const tree = fixture({ schemaVersion: 1, metrics: within(0) })
+  try {
+    const measured = await runCli(["check", "css", "--measure"], { root: tree.root })
+    assert.equal(measured.status, 0)
+    assert.deepEqual(JSON.parse(measured.stdout), METRICS)
+    const checked = await runCli(["check", "css", "--budget", tree.budgetFile], { root: tree.root })
+    assert.equal(checked.status, 0)
+    assert.match(checked.stdout, /^css budget: OK — raw /)
+  } finally {
+    tree.dispose()
+  }
+})
+
+test("update css --budget writes the supplied budget file", async () => {
+  const tree = fixture({ schemaVersion: 1, metrics: within(5000) })
+  try {
+    const result = await runCli(["update", "css", "--budget", tree.budgetFile], { root: tree.root })
+    assert.equal(result.status, 0)
+    assert.match(result.stdout, /^css budget written: raw /)
+    assert.deepEqual(tree.readBudget().metrics, METRICS)
+  } finally {
+    tree.dispose()
   }
 })

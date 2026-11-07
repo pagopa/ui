@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 // Verify the actual packed artifact in an isolated application after `pnpm build`.
 import assert from "node:assert/strict"
 import { spawn, spawnSync } from "node:child_process"
@@ -9,10 +8,18 @@ import os from "node:os"
 import path from "node:path"
 import { z } from "zod"
 import { pathToFileURL } from "node:url"
+import type { Workspace } from "../adapters/workspace.ts"
 import { walkFiles } from "../lib/fs.ts"
-import { enterRoot, toolingPath, TOOLING_ROOT } from "../lib/paths.ts"
 import { parseSchema } from "../lib/validate.ts"
 import { FORBIDDEN_EXPORTS, REQUIRED_EXPORTS, verifyArtifactContract } from "./library-artifact.ts"
+import { report, type CheckReport } from "./report.ts"
+
+export interface LibraryOptions {
+  /** The environment every consumer install and browser run inherits. */
+  env: NodeJS.ProcessEnv
+  /** Progress lines; the check streams its child processes to stdio. */
+  log: (line: string) => void
+}
 
 const file = "dist/pagopa-ui.js"
 const typesFile = "dist/types/pagopa-ui.d.ts"
@@ -110,18 +117,23 @@ async function startNextServer(
   }
 }
 
-export async function runLibraryCheck(): Promise<number> {
-  const root = enterRoot()
-  if (!fs.existsSync(file)) {
-    console.error(`missing ${file} — run "pnpm build" first`)
-    return 1
-  }
-  if (!fs.existsSync(typesFile)) {
-    console.error(`missing ${typesFile} — type declarations were not emitted`)
-    return 1
-  }
+export async function checkLibrary(
+  workspace: Workspace,
+  options: LibraryOptions,
+): Promise<CheckReport> {
+  const { root } = workspace
+  const TOOLING_ROOT = workspace.toolingRoot
+  const toolingPath = (...segments: string[]): string => path.join(TOOLING_ROOT, ...segments)
+  const missing = [
+    [file, `missing ${file} — run "pnpm build" first`],
+    [typesFile, `missing ${typesFile} — type declarations were not emitted`],
+  ]
+    .filter(([relative]) => !fs.existsSync(path.join(root, relative)))
+    .map(([, message]) => message)
+  if (missing.length) return report("library", "the built artifact", missing)
 
-  const { manifest, expectedIconVariants, expectedIconVariantIds } = verifyArtifactContract(root)
+  const { manifest, expectedIconVariants, expectedIconVariantIds } =
+    verifyArtifactContract(workspace)
 
   // Versions come from the audited package: its toolchain is the one the
   // consumer reproduces, not the tooling's own.
@@ -198,7 +210,7 @@ export async function runLibraryCheck(): Promise<number> {
   // `.cache` path under a CI checkout exceeds the Unix socket limit.
   const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-lib-"))
   const consumer = path.join(temporary, "consumer")
-  const consumerEnv = { ...process.env, TMPDIR: temporary, TMP: temporary, TEMP: temporary }
+  const consumerEnv = { ...options.env, TMPDIR: temporary, TMP: temporary, TEMP: temporary }
   let server:
     | {
         httpServer: { close: (callback: (error?: Error) => void) => void }
@@ -206,6 +218,7 @@ export async function runLibraryCheck(): Promise<number> {
       }
     | undefined
   let nextServer: Awaited<ReturnType<typeof startNextServer>> | undefined
+  let summary = ""
   try {
     const archive = path.join(temporary, "pagopa-ui.tgz")
     run("pnpm", ["pack", "--out", archive, "--json"], root)
@@ -405,7 +418,7 @@ export async function runLibraryCheck(): Promise<number> {
       consumer,
     )
 
-    console.log("library: verifying the packed stylesheet against host styles")
+    options.log("library: verifying the packed stylesheet against host styles")
     await runStreaming(
       process.execPath,
       ["--test", toolingPath("tests/e2e/library-host-css-coexistence.spec.mjs")],
@@ -498,7 +511,7 @@ export async function runLibraryCheck(): Promise<number> {
     // The Playwright test runner drives the browser sequence: one project per
     // engine, one retry for load-related flakiness, per-engine reporting. It runs
     // from the tooling package, which owns the spec and its runner.
-    const engines = (process.env.LIBRARY_ENGINES?.trim() || "chromium,firefox,webkit")
+    const engines = (options.env.LIBRARY_ENGINES?.trim() || "chromium,firefox,webkit")
       .split(",")
       .map((engine) => engine.trim())
       .join(", ")
@@ -515,12 +528,12 @@ export async function runLibraryCheck(): Promise<number> {
         },
       )
     } catch (error) {
-      console.error(`Next production server output:\n${nextServer.output()}`)
-      throw error
+      throw new Error(
+        `${error instanceof Error ? error.message : String(error)}\nNext production server output:\n${nextServer.output()}`,
+        { cause: error },
+      )
     }
-    console.log(
-      `library OK: isolated tarball, ${imported.exports.length} exports, strict types, shared React, native forms, responsive Table/sorting/paging, mobile chrome bands/one-row header/no clipped actions, viewport and container device scopes (narrow-column module, scrollable-list first item, segmented fit), calendar confirmation/ranges, explicit Breadcrumb navigation, source ProductCard/native links/actions/reflow, source OTP/password/paste/native-length/reset/system-color paint, source Avatar/native images/selection/non-color statuses/unoccluded initials/font preferences/system-color paint, keyboard/focus, standalone CSS/fonts/artwork and host-style coexistence, Next.js App Router request-time SSR/hydration, provider messages and client routing in ${engines}`,
-    )
+    summary = `isolated tarball, ${imported.exports.length} exports, strict types, shared React, native forms, responsive Table/sorting/paging, mobile chrome bands/one-row header/no clipped actions, viewport and container device scopes (narrow-column module, scrollable-list first item, segmented fit), calendar confirmation/ranges, explicit Breadcrumb navigation, source ProductCard/native links/actions/reflow, source OTP/password/paste/native-length/reset/system-color paint, source Avatar/native images/selection/non-color statuses/unoccluded initials/font preferences/system-color paint, keyboard/focus, standalone CSS/fonts/artwork and host-style coexistence, Next.js App Router request-time SSR/hydration, provider messages and client routing in${engines}`
   } finally {
     try {
       const active = server
@@ -537,5 +550,5 @@ export async function runLibraryCheck(): Promise<number> {
       }
     }
   }
-  return 0
+  return report("library", summary, [])
 }

@@ -1,14 +1,8 @@
 import assert from "node:assert/strict"
-import { spawnSync } from "node:child_process"
-import fs from "node:fs"
-import os from "node:os"
-import path from "node:path"
 import { test } from "node:test"
-import { fileURLToPath } from "node:url"
 
-import { fixtureEnv } from "../../src/lib/paths.ts"
-
-const script = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
+import { checkTextDefaults } from "../../src/checks/text-defaults.ts"
+import { fixtureTree, runCli, workspaceAt } from "../helpers/cli.mjs"
 
 const COMPONENT = `function Card({
   title = "Titolo predefinito",
@@ -21,64 +15,39 @@ const COMPONENT = `function Card({
 }
 `
 
-// Every test cleans up its fixture root in its own finally.
-function fixture(files) {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-text-defaults-"))
-  for (const [file, source] of Object.entries(files)) {
-    const target = path.join(root, file)
-    fs.mkdirSync(path.dirname(target), { recursive: true })
-    fs.writeFileSync(target, source)
-  }
-  return {
-    root,
-    run: (...args) =>
-      spawnSync(process.execPath, [script, "check", "text-defaults", ...args], {
-        cwd: root,
-        encoding: "utf8",
-        env: fixtureEnv(root),
-      }),
+function check(files, options) {
+  const tree = fixtureTree(files)
+  try {
+    return checkTextDefaults(workspaceAt(tree.root), options)
+  } finally {
+    tree.dispose()
   }
 }
 
-test("reports string and function defaults and ignores a className", () => {
-  const { root, run } = fixture({ "src/components/card/card.tsx": COMPONENT })
-  try {
-    const result = run()
-    assert.equal(result.status, 0, result.stderr)
-    assert.match(result.stdout, /src\/components\/card\/card\.tsx:2 title/)
-    assert.match(result.stdout, /src\/components\/card\/card\.tsx:3 pageLabel/)
-    assert.doesNotMatch(result.stdout, /className/)
-    assert.doesNotMatch(result.stdout, /pointer/)
-    assert.doesNotMatch(result.stdout, /variant/)
-    assert.match(result.stdout, /2 literal default\(s\)/)
-  } finally {
-    fs.rmSync(root, { recursive: true, force: true })
-  }
+test("reports string and function defaults and ignores non-text props", () => {
+  const result = check({ "src/components/card/card.tsx": COMPONENT })
+  assert.deepEqual(result.details, [
+    "src/components/card/card.tsx:2 title",
+    "src/components/card/card.tsx:3 pageLabel",
+  ])
+  assert.match(result.summary, /^2 literal default\(s\) in 1 file\(s\)$/)
+  assert.deepEqual(result.problems, [])
 })
 
 test("--max fails above the ceiling and passes at it", () => {
-  const { root, run } = fixture({ "src/components/card/card.tsx": COMPONENT })
-  try {
-    assert.equal(run("--max", "1").status, 1)
-    assert.equal(run("--max", "2").status, 0)
-  } finally {
-    fs.rmSync(root, { recursive: true, force: true })
-  }
+  const files = { "src/components/card/card.tsx": COMPONENT }
+  assert.match(check(files, { max: 1 }).problems[0], /2 literal default\(s\), the ceiling is 1/)
+  assert.deepEqual(check(files, { max: 2 }).problems, [])
 })
 
-test("skips templates and test files", () => {
-  const { root, run } = fixture({
+test("templates and test files are skipped", () => {
+  const result = check({
     "src/components/templates/demo.tsx": COMPONENT,
     "src/components/card/card.test.tsx": COMPONENT,
     "src/components/card/card.unit.test.tsx": COMPONENT,
   })
-  try {
-    const result = run()
-    assert.equal(result.status, 0, result.stderr)
-    assert.match(result.stdout, /0 literal default\(s\)/)
-  } finally {
-    fs.rmSync(root, { recursive: true, force: true })
-  }
+  assert.deepEqual(result.problems, [])
+  assert.match(result.summary, /^0 literal default\(s\)/)
 })
 
 const TERNARY = `function Tag({
@@ -91,29 +60,20 @@ const TERNARY = `function Tag({
 `
 
 test("reports a literal hidden behind a conditional", () => {
-  const { root, run } = fixture({ "src/components/tag/tag.tsx": TERNARY })
-  try {
-    const result = run("--max", "0")
-    assert.equal(result.status, 1, result.stdout)
-    assert.match(result.stdout, /src\/components\/tag\/tag\.tsx:3 label/)
-  } finally {
-    fs.rmSync(root, { recursive: true, force: true })
-  }
+  const result = check({ "src/components/tag/tag.tsx": TERNARY }, { max: 0 })
+  assert.match(result.problems[0], /1 literal default/)
+  assert.deepEqual(result.details, ["src/components/tag/tag.tsx:3 label"])
 })
 
 test("a conditional of identifiers alone is not text", () => {
-  const { root, run } = fixture({
-    "src/components/tag/tag.tsx": `function Tag({
-  shape = status === "valid" ? "round" : "square",
-}) { return null }
-`,
-  })
-  try {
-    const result = run("--max", "0")
-    assert.equal(result.status, 0, result.stdout)
-  } finally {
-    fs.rmSync(root, { recursive: true, force: true })
-  }
+  const result = check(
+    {
+      "src/components/tag/tag.tsx": `function Tag({\n  shape = status === "valid" ? "round" : "square",\n}) { return null }\n`,
+    },
+    { max: 0 },
+  )
+  assert.deepEqual(result.problems, [])
+  assert.equal(result.summary, "0 literal default(s), the ceiling is 0")
 })
 
 const ATTRIBUTES = `function Chip({ label }) {
@@ -124,36 +84,25 @@ const ATTRIBUTES = `function Chip({ label }) {
 }
 `
 
-test("reports copy a JSX attribute paints or announces", () => {
-  const { root, run } = fixture({ "src/components/chip/chip.tsx": ATTRIBUTES })
-  try {
-    const result = run("--max", "0")
-    assert.equal(result.status, 1, result.stdout)
-    assert.match(result.stdout, /src\/components\/chip\/chip\.tsx:3 aria-label/)
-    assert.match(result.stdout, /src\/components\/chip\/chip\.tsx:4 placeholder/)
-    assert.doesNotMatch(result.stdout, /className/)
-  } finally {
-    fs.rmSync(root, { recursive: true, force: true })
-  }
+test("reports copy in JSX attributes that paint or announce", () => {
+  const result = check({ "src/components/chip/chip.tsx": ATTRIBUTES }, { max: 0 })
+  assert.deepEqual(result.details, [
+    "src/components/chip/chip.tsx:3 aria-label",
+    "src/components/chip/chip.tsx:4 placeholder",
+  ])
+  assert.equal(result.problems.length, 1)
 })
 
 test("a literal that guards a type or reads a key is not copy", () => {
-  const { root, run } = fixture({
-    "src/components/chip/chip.tsx": `function Chip({ children, props, t }) {
-  return <span>
-    <button aria-label={typeof children === "string" ? t.sortLabel(children) : undefined} />
-    <span aria-label={props["aria-label"]} />
-    <span aria-label={\`\${props.count}%\`} />
-  </span>
-}
-`,
-  })
-  try {
-    const result = run("--max", "0")
-    assert.equal(result.status, 0, result.stdout)
-  } finally {
-    fs.rmSync(root, { recursive: true, force: true })
-  }
+  assert.deepEqual(
+    check(
+      {
+        "src/components/chip/chip.tsx": `function Chip({ children, props, t }) {\n  return <span>\n    <button aria-label={typeof children === "string" ? t.sortLabel(children) : undefined} />\n    <span aria-label={props["aria-label"]} />\n    <span aria-label={\`\${props.count}%\`} />\n  </span>\n}\n`,
+      },
+      { max: 0 },
+    ).problems,
+    [],
+  )
 })
 
 const OBJECT_DEFAULT = `function Table({
@@ -164,14 +113,21 @@ const OBJECT_DEFAULT = `function Table({
 }
 `
 
-test("reports copy an object-literal default carries", () => {
-  const { root, run } = fixture({ "src/components/table/table.tsx": OBJECT_DEFAULT })
+test("reports copy carried by an object-literal default", () => {
+  const result = check({ "src/components/table/table.tsx": OBJECT_DEFAULT }, { max: 0 })
+  assert.deepEqual(result.details, ["src/components/table/table.tsx:2 emptyState.title"])
+})
+
+test("check text-defaults --max prints the verdict and rejects non-numeric limits", async () => {
+  const tree = fixtureTree({ "src/components/card/card.tsx": COMPONENT })
   try {
-    const result = run("--max", "0")
-    assert.equal(result.status, 1, result.stdout)
-    assert.match(result.stdout, /src\/components\/table\/table\.tsx:2 emptyState\.title/)
-    assert.doesNotMatch(result.stdout, /pagination/)
+    const accepted = await runCli(["check", "text-defaults", "--max", "2"], { root: tree.root })
+    assert.equal(accepted.status, 0)
+    assert.match(accepted.stdout, /^text defaults: OK — 2 literal default\(s\), the ceiling is 2$/m)
+    const invalid = await runCli(["check", "text-defaults", "--max", "x"], { root: tree.root })
+    assert.equal(invalid.status, 2)
+    assert.match(invalid.stderr, /--max must be an integer/)
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
   }
 })

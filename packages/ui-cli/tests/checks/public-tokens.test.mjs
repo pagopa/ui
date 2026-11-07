@@ -1,37 +1,30 @@
 import assert from "node:assert/strict"
-import { spawnSync } from "node:child_process"
 import fs from "node:fs"
-import os from "node:os"
-import path from "node:path"
 import { test } from "node:test"
-import { fileURLToPath } from "node:url"
 
-import { fixtureEnv } from "../../src/lib/paths.ts"
+import {
+  checkPublicTokens,
+  publicTokenNames,
+  updatePublicTokens,
+} from "../../src/checks/public-tokens.ts"
+import { fixtureTree, runCli, workspaceAt } from "../helpers/cli.mjs"
 
-const script = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
-
-const CSS = [
-  ":root {",
-  "  /* Color/Blue/Blue 100 */",
-  "  --figma-color-blue-100: #ced8f9;",
-  "  /* Foundations/z-50 */",
-  "  --figma-z-50: 50;",
-  "}",
-  "",
-].join("\n")
-
-const INVENTORY = [
-  "export const figmaTokens: FigmaToken[] = [",
-  "  {",
-  '    cssName: "--figma-color-blue-100",',
-  "  },",
-  "  {",
-  '    cssName: "text-body",',
-  "  },",
-  "]",
-  "",
-].join("\n")
-
+const CSS = `:root {
+  /* Color/Blue/Blue 100 */
+  --figma-color-blue-100: #ced8f9;
+  /* Foundations/z-50 */
+  --figma-z-50: 50;
+}
+`
+const INVENTORY = `export const figmaTokens: FigmaToken[] = [
+  {
+    cssName: "--figma-color-blue-100",
+  },
+  {
+    cssName: "text-body",
+  },
+]
+`
 const CONTRACT = [
   "--figma-color-blue-100",
   "--figma-z-50",
@@ -40,79 +33,56 @@ const CONTRACT = [
   "",
 ].join("\n")
 
-// The tokens root is the fixture root here: it has no sibling `packages/tokens`
-// manifest, so the check reads the generated files from the audited package.
 function fixture(files = {}) {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-public-tokens-"))
-  const sources = {
+  const tree = fixtureTree({
     "src/tokens.generated.css": CSS,
     "src/figma-tokens.generated.ts": INVENTORY,
     "etc/tokens.txt": CONTRACT,
     ...files,
-  }
-  for (const [file, source] of Object.entries(sources)) {
-    if (source === null) continue
-    const target = path.join(root, file)
-    fs.mkdirSync(path.dirname(target), { recursive: true })
-    fs.writeFileSync(target, source)
-  }
-  return {
-    root,
-    run: (...args) =>
-      spawnSync(process.execPath, [script, "check", "public-tokens", ...args], {
-        cwd: root,
-        encoding: "utf8",
-        env: fixtureEnv(root, { PAGOPA_UI_TOKENS_ROOT: root }),
-      }),
-    read: (file) => fs.readFileSync(path.join(root, file), "utf8"),
-  }
+  })
+  return { ...tree, workspace: workspaceAt(tree.root, { PAGOPA_UI_TOKENS_ROOT: tree.root }) }
 }
 
-test("identical lists pass", () => {
-  const { root, run } = fixture()
+test("identical CSS and typed lists pass", async () => {
+  const tree = fixture()
   try {
-    const result = run()
-    assert.equal(result.status, 0, result.stderr)
-    assert.match(
-      result.stdout,
-      /public tokens OK: 2 CSS names, 2 typed names, 4 in etc\/tokens\.txt/,
-    )
+    const result = await checkPublicTokens(tree.workspace)
+    assert.deepEqual(result.problems, [])
+    assert.equal(result.summary, "2 CSS names, 2 typed names, 4 in etc/tokens.txt")
+    assert.deepEqual(await publicTokenNames(tree.root), {
+      css: ["--figma-color-blue-100", "--figma-z-50"],
+      js: ["js:--figma-color-blue-100", "js:text-body"],
+    })
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
   }
 })
 
-test("a removed token fails as a breaking change", () => {
-  const { root, run } = fixture({
-    "etc/tokens.txt": CONTRACT.replace("--figma-z-50\n", ""),
-  })
+test("a removed token fails as a breaking change", async () => {
+  const tree = fixture({ "etc/tokens.txt": CONTRACT.replace("--figma-z-50\n", "") })
   try {
-    const result = run()
-    assert.equal(result.status, 1)
-    assert.match(result.stderr, /public tokens: 1 added, 0 removed/)
-    assert.match(result.stderr, /\+ --figma-z-50/)
-    assert.match(result.stderr, /a removed or renamed token is a breaking change/)
+    const result = await checkPublicTokens(tree.workspace)
+    assert.match(result.summary, /1 added, 0 removed/)
+    assert.ok(result.problems.includes("+ --figma-z-50"))
+    assert.match(result.summary, /a removed or renamed token is a breaking change/)
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
   }
 })
 
-test("a stale name in the contract is reported as removed", () => {
-  const { root, run } = fixture({
-    "etc/tokens.txt": `${CONTRACT}js:text-retired\n`,
-  })
+test("a stale name in the contract is reported as removed", async () => {
+  const tree = fixture({ "etc/tokens.txt": `${CONTRACT}js:text-retired\n` })
   try {
-    const result = run()
-    assert.equal(result.status, 1)
-    assert.match(result.stderr, /public tokens: 0 added, 1 removed/)
-    assert.match(result.stderr, /- js:text-retired/)
+    const result = await checkPublicTokens(tree.workspace)
+    assert.match(result.summary, /0 added, 1 removed/)
+    assert.ok(result.problems.includes("- js:text-retired"))
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
   }
 })
 
-test("a new CSS name or typed name is reported as added", () => {
-  const { root, run } = fixture({
+test("new CSS and typed names are reported as added", async () => {
+  const tree = fixture({
     "src/tokens.generated.css": CSS.replace(
       "  --figma-z-50: 50;",
       "  --figma-z-50: 50;\n  --figma-spacing-4: 4px;",
@@ -123,38 +93,56 @@ test("a new CSS name or typed name is reported as added", () => {
     ),
   })
   try {
-    const result = run()
-    assert.equal(result.status, 1)
-    assert.match(result.stderr, /public tokens: 2 added, 0 removed/)
-    assert.match(result.stderr, /\+ --figma-spacing-4/)
-    assert.match(result.stderr, /\+ js:text-label/)
+    const result = await checkPublicTokens(tree.workspace)
+    assert.match(result.summary, /2 added, 0 removed/)
+    assert.ok(result.problems.includes("+ --figma-spacing-4"))
+    assert.ok(result.problems.includes("+ js:text-label"))
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
   }
 })
 
-test("--write records the accepted list and the check passes afterwards", () => {
-  const { root, run, read } = fixture({
-    "etc/tokens.txt": "--figma-color-blue-100\n",
-  })
+test("updatePublicTokens records the accepted list and the check passes afterwards", async () => {
+  const tree = fixture({ "etc/tokens.txt": "--figma-color-blue-100\n" })
   try {
-    const write = run("--write")
-    assert.equal(write.status, 0, write.stderr)
-    assert.match(write.stdout, /public tokens written: 4 names/)
-    assert.equal(read("etc/tokens.txt"), CONTRACT)
-    assert.equal(run().status, 0)
+    assert.match(await updatePublicTokens(tree.workspace), /public tokens written: 4 names/)
+    const result = await checkPublicTokens(tree.workspace)
+    assert.deepEqual(result.problems, [])
+    assert.equal(fs.readFileSync(tree.workspace.path("etc/tokens.txt"), "utf8"), CONTRACT)
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
   }
 })
 
-test("a missing contract asks for --write", () => {
-  const { root, run } = fixture({ "etc/tokens.txt": null })
+test("a missing contract starts with every generated name added", async () => {
+  const tree = fixture({ "etc/tokens.txt": null })
   try {
-    const result = run()
-    assert.equal(result.status, 1)
-    assert.match(result.stderr, /4 added, 0 removed/)
+    const result = await checkPublicTokens(tree.workspace)
+    assert.match(result.summary, /4 added, 0 removed/)
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
+  }
+})
+
+test("check and update public-tokens expose their formatted contracts", async () => {
+  const tree = fixture()
+  try {
+    const checked = await runCli(["check", "public-tokens"], {
+      root: tree.root,
+      env: { PAGOPA_UI_TOKENS_ROOT: tree.root },
+    })
+    assert.equal(checked.status, 0)
+    assert.match(
+      checked.stdout,
+      /^public tokens: OK — 2 CSS names, 2 typed names, 4 in etc\/tokens\.txt$/,
+    )
+    const updated = await runCli(["update", "public-tokens"], {
+      root: tree.root,
+      env: { PAGOPA_UI_TOKENS_ROOT: tree.root },
+    })
+    assert.equal(updated.status, 0)
+    assert.match(updated.stdout, /^public tokens written: 4 names/)
+  } finally {
+    tree.dispose()
   }
 })

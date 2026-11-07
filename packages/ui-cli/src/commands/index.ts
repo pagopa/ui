@@ -3,18 +3,27 @@
 // reaches the environment, the workspace and the output.
 import { defineCommand, renderUsage, runCommand, type CommandDef } from "citty"
 
+import { buildCommands } from "./build.ts"
+import { checkCommands } from "./check.ts"
 import { EXIT, type CliContext } from "./context.ts"
-import { legacy } from "./legacy.ts"
+import { legacy, legacyChecks } from "./legacy.ts"
+import { updateCommands } from "./update.ts"
 
-export function createCli(_ctx: CliContext): CommandDef {
-  return defineCommand({
+export function createCli(ctx: CliContext): CommandDef {
+  const root: CommandDef = defineCommand({
     meta: {
       name: "ui-cli",
       version: "0.0.0",
       description: "The UI CLI, checks and Figma tooling of the PagoPA design system",
     },
-    subCommands: { ...legacy },
+    subCommands: {
+      check: checkCommands(ctx, () => root, legacyChecks),
+      update: updateCommands(ctx),
+      build: buildCommands(ctx),
+      ...legacy,
+    },
   })
+  return root
 }
 
 const HELP = new Set(["--help", "-h"])

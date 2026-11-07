@@ -1,14 +1,8 @@
 import assert from "node:assert/strict"
-import { spawnSync } from "node:child_process"
-import fs from "node:fs"
-import os from "node:os"
-import path from "node:path"
 import { test } from "node:test"
-import { fileURLToPath } from "node:url"
 
-import { fixtureEnv } from "../../src/lib/paths.ts"
-
-const script = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
+import { checkA11yConformance } from "../../src/checks/a11y-conformance.ts"
+import { fixtureTree, runCli, workspaceAt } from "../helpers/cli.mjs"
 
 const REPORT = `## API Report File for "@pagopa/ui"
 
@@ -42,79 +36,108 @@ const MAP = {
   },
 }
 
-function check({ report = REPORT, guide = GUIDE, map = MAP } = {}) {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-a11y-conformance-"))
-  try {
-    const files = {
-      "pnpm-workspace.yaml": "packages:\n  - packages/*\n  - apps/*\n",
-      "packages/pagopa-ui/etc/pagopa-ui.api.md": report,
-      "apps/storybook/src/guides/accessibility.md": guide,
-      "apps/storybook/src/a11y/conformance.json": JSON.stringify(map, null, 2),
-    }
-    for (const [file, source] of Object.entries(files)) {
-      const target = path.join(root, file)
-      fs.mkdirSync(path.dirname(target), { recursive: true })
-      fs.writeFileSync(target, source)
-    }
-    return spawnSync(process.execPath, [script, "check", "a11y-conformance"], {
-      cwd: root,
-      encoding: "utf8",
-      env: fixtureEnv(path.join(root, "packages/pagopa-ui")),
-    })
-  } finally {
-    fs.rmSync(root, { recursive: true, force: true })
-  }
+function fixture({ report = REPORT, guide = GUIDE, map = MAP } = {}) {
+  return fixtureTree({
+    "etc/pagopa-ui.api.md": report,
+    "apps/storybook/src/guides/accessibility.md": guide,
+    "apps/storybook/src/a11y/conformance.json": map,
+  })
 }
 
 test("a complete map passes and ignores types and lowercase exports", () => {
-  const result = check()
-  assert.equal(result.status, 0, result.stderr)
-  assert.match(result.stdout, /a11y-conformance OK \(2 components, 2 types\)/)
+  const tree = fixture()
+  try {
+    const result = checkA11yConformance(workspaceAt(tree.root))
+    assert.deepEqual(result.problems, [])
+    assert.equal(result.summary, "2 components, 2 types")
+  } finally {
+    tree.dispose()
+  }
 })
 
 test("a runtime export with no entry fails", () => {
-  const result = check({
+  const tree = fixture({
     report: REPORT.replace(
       "export function Button",
       "export declare function Probe(): null;\nexport function Button",
     ),
   })
-  assert.equal(result.status, 1)
-  assert.match(result.stderr, /"Probe" has no conformance entry/)
+  try {
+    assert.ok(
+      checkA11yConformance(workspaceAt(tree.root)).problems.some((problem) =>
+        problem.includes('"Probe" has no conformance entry'),
+      ),
+    )
+  } finally {
+    tree.dispose()
+  }
 })
 
 test("an entry naming an export that no longer exists fails", () => {
-  const result = check({
+  const tree = fixture({
     map: { ...MAP, components: { ...MAP.components, Gone: { type: "Button" } } },
   })
-  assert.equal(result.status, 1)
-  assert.match(
-    result.stderr,
-    /"Gone" is not a runtime export of packages\/pagopa-ui\/etc\/pagopa-ui\.api\.md/,
-  )
+  try {
+    assert.ok(
+      checkA11yConformance(workspaceAt(tree.root)).problems.some((problem) =>
+        problem.includes('"Gone" is not a runtime export'),
+      ),
+    )
+  } finally {
+    tree.dispose()
+  }
 })
 
 test("a type outside the declared list fails", () => {
-  const result = check({
+  const tree = fixture({
     map: { ...MAP, components: { ...MAP.components, Button: { type: "Link" } } },
   })
-  assert.equal(result.status, 1)
-  assert.match(result.stderr, /"Button" names the type "Link", which is not in "types"/)
+  try {
+    assert.ok(
+      checkA11yConformance(workspaceAt(tree.root)).problems.some((problem) =>
+        problem.includes('"Button" names the type "Link"'),
+      ),
+    )
+  } finally {
+    tree.dispose()
+  }
 })
 
 test("a declared type that is not a row of the guide table fails", () => {
-  const result = check({ map: { ...MAP, types: [...MAP.types, "Link"] } })
-  assert.equal(result.status, 1)
-  assert.match(
-    result.stderr,
-    /"Link" is not a component type of apps\/storybook\/src\/guides\/accessibility\.md/,
-  )
+  const tree = fixture({ map: { ...MAP, types: [...MAP.types, "Link"] } })
+  try {
+    assert.ok(
+      checkA11yConformance(workspaceAt(tree.root)).problems.some((problem) =>
+        problem.includes('"Link" is not a component type'),
+      ),
+    )
+  } finally {
+    tree.dispose()
+  }
 })
 
 test("a null type without a reason fails", () => {
-  const result = check({
+  const tree = fixture({
     map: { ...MAP, components: { ...MAP.components, UIProvider: { type: null } } },
   })
-  assert.equal(result.status, 1)
-  assert.match(result.stderr, /"UIProvider" has no type and no reason/)
+  try {
+    assert.ok(
+      checkA11yConformance(workspaceAt(tree.root)).problems.some((problem) =>
+        problem.includes('"UIProvider" has no type and no reason'),
+      ),
+    )
+  } finally {
+    tree.dispose()
+  }
+})
+
+test("check a11y prints the report name and verdict", async () => {
+  const tree = fixture()
+  try {
+    const result = await runCli(["check", "a11y"], { root: tree.root })
+    assert.equal(result.status, 0)
+    assert.match(result.stdout, /^a11y conformance: OK — 2 components, 2 types$/)
+  } finally {
+    tree.dispose()
+  }
 })

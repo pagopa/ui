@@ -3,16 +3,6 @@
 // its area is refactored (see src/commands/index.ts).
 import { defineCommand } from "citty"
 
-import { runA11yConformance } from "../checks/a11y-conformance.ts"
-import { runClientDirectives } from "../checks/client-directives.ts"
-import { runCssBudget } from "../checks/css-budget.ts"
-import { runDocLinks } from "../checks/doc-links.ts"
-import { runFoundation } from "../checks/foundation.ts"
-import { runImportLayers } from "../checks/import-layers.ts"
-import { runLibraryCheck } from "../checks/library.ts"
-import { runPublicTokens } from "../checks/public-tokens.ts"
-import { runTextDefaults } from "../checks/text-defaults.ts"
-import { runPrepareTypes } from "./prepare-types.ts"
 import { cli as runDevices } from "../figma/devices.ts"
 import { runBrief } from "../figma/brief.ts"
 import { runComments } from "../figma/comments.ts"
@@ -69,65 +59,6 @@ function rawArguments(command: string): string[] {
   const index = raw.indexOf(command)
   return index >= 0 ? raw.slice(index + 1) : []
 }
-
-const layers = defineCommand({
-  meta: { name: "layers", description: "Enforce the import-layer contract" },
-  run: execute(() => runImportLayers()),
-})
-
-const foundation = defineCommand({
-  meta: { name: "foundation", description: "Enforce the component class contract" },
-  args: {
-    measure: { type: "boolean", default: false, description: "Print the current counts" },
-  },
-  run: ({ args }) => execute(() => runFoundation(args.measure ? ["--measure"] : []))(),
-})
-
-const docs = defineCommand({
-  meta: { name: "docs", description: "Resolve documentation links and path claims" },
-  run: execute(() => runDocLinks()),
-})
-
-const css = defineCommand({
-  meta: { name: "css", description: "Enforce the published stylesheet budget" },
-  args: {
-    measure: { type: "boolean", default: false, description: "Print the current sizes" },
-    write: { type: "boolean", default: false, description: "Record the size you accept" },
-  },
-  run: ({ args }) => {
-    const argv = args.write ? ["--write"] : args.measure ? ["--measure"] : []
-    return execute(() => runCssBudget(argv))()
-  },
-})
-
-const library = defineCommand({
-  meta: { name: "library", description: "Verify the packed artifact in an isolated app" },
-  run: execute(() => runLibraryCheck()),
-})
-
-const publicTokens = defineCommand({
-  meta: {
-    name: "public-tokens",
-    description: "Compare the public token list with the generated tokens",
-  },
-  args: {
-    write: { type: "boolean", default: false, description: "Record the list you accept" },
-  },
-  run: ({ args }) => execute(() => runPublicTokens(args.write ? ["--write"] : []))(),
-})
-
-const textDefaults = defineCommand({
-  meta: { name: "text-defaults", description: "Reject literal text defaults in components" },
-  args: {
-    max: {
-      type: "string",
-      valueHint: "n",
-      description: "Exit 1 when the number of literal defaults exceeds n",
-    },
-  },
-  run: ({ args }) =>
-    execute(() => runTextDefaults(args.max === undefined ? [] : ["--max", String(args.max)]))(),
-})
 
 // The catalogue keeps its own note-length baseline: the number of notes past
 // the limit ratchets down, and the command fails when it moves in either
@@ -262,53 +193,21 @@ const assets = defineCommand({
   subCommands: { icons, pictograms },
 })
 
-const a11yConformance = defineCommand({
-  meta: {
-    name: "a11y-conformance",
-    description: "Check the accessibility conformance map",
-  },
-  run: execute(() => runA11yConformance()),
-})
-
-const check = defineCommand({
-  meta: { name: "check", description: "Run one of the repository contracts" },
-  subCommands: {
-    "a11y-conformance": a11yConformance,
-    "client-directives": defineCommand({
-      meta: {
-        name: "client-directives",
-        description: "Check the client boundary of every source module",
-      },
-      args: {
-        report: {
-          type: "boolean",
-          default: false,
-          description: "Print both lists and exit 0",
-        },
-      },
-      run: ({ args }) => execute(() => runClientDirectives(args.report ? ["--report"] : []))(),
+// The contracts not yet moved to the domain adapters; `check.ts` merges them.
+export const legacyChecks = {
+  figma: figmaCheck,
+  tokens: tokensCheck,
+  icons: iconCheck,
+  pictograms: pictogramCheck,
+  assets: defineCommand({
+    meta: { name: "assets", description: "Run both artwork checks" },
+    run: execute(async () => {
+      const iconsCode = await runIcons(["--check"])
+      const pictogramsCode = await runPictograms(["--check"])
+      return iconsCode || pictogramsCode
     }),
-    layers,
-    foundation,
-    docs,
-    css,
-    library,
-    "public-tokens": publicTokens,
-    "text-defaults": textDefaults,
-    figma: figmaCheck,
-    tokens: tokensCheck,
-    icons: iconCheck,
-    pictograms: pictogramCheck,
-    assets: defineCommand({
-      meta: { name: "assets", description: "Run both artwork checks" },
-      run: execute(async () => {
-        const iconsCode = await runIcons(["--check"])
-        const pictogramsCode = await runPictograms(["--check"])
-        return iconsCode || pictogramsCode
-      }),
-    }),
-  },
-})
+  }),
+}
 
 const figmaSync = defineCommand({
   meta: { name: "sync", description: "Validate, refresh or triage the Figma catalogue" },
@@ -606,9 +505,4 @@ const test = defineCommand({
   subCommands: { changed: testChanged, visual: testVisual },
 })
 
-const prepareTypes = defineCommand({
-  meta: { name: "prepare-types", description: "Make the emitted declarations alias-free ESM" },
-  run: execute(() => runPrepareTypes()),
-})
-
-export const legacy = { check, figma, tokens, assets, parity, test, "prepare-types": prepareTypes }
+export const legacy = { figma, tokens, assets, parity, test }

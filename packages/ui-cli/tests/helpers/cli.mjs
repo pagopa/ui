@@ -2,10 +2,11 @@
 // output captured. One contract test per command goes through here; the domain
 // tests call the domain functions directly.
 import fs from "node:fs"
-import os from "node:os"
 import path from "node:path"
+import { randomUUID } from "node:crypto"
 import { stripVTControlCharacters } from "node:util"
 
+import { createWorkspace } from "../../src/adapters/workspace.ts"
 import { createContext } from "../../src/commands/context.ts"
 import { createCli, execute } from "../../src/commands/index.ts"
 
@@ -22,10 +23,16 @@ export async function runCli(argv, { root, cwd = root, env = {} } = {}) {
   return { status, stdout: plain(out), stderr: plain(err) }
 }
 
-// A package-shaped fixture tree; `dispose` removes it.
+export function workspaceAt(root, env = {}) {
+  return createWorkspace({ env: { PAGOPA_UI_ROOT: root, ...env }, cwd: root })
+}
+
+// Fixtures live in the package's ignored cache, not the system temporary
+// directory. `dispose` removes the tree after each test.
 export function fixtureTree(files = {}, prefix = "pagopa-ui-cli-") {
-  const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), prefix)))
-  write(root, files)
+  const root = path.resolve(".cache", "test-fixtures", `${prefix}${randomUUID()}`)
+  fs.mkdirSync(root, { recursive: true })
+  write(root, { "pnpm-workspace.yaml": "packages: []\n", ...files })
   return {
     root,
     write: (more) => write(root, more),
@@ -35,6 +42,7 @@ export function fixtureTree(files = {}, prefix = "pagopa-ui-cli-") {
 
 function write(root, files) {
   for (const [file, source] of Object.entries(files)) {
+    if (source === null) continue
     const target = path.join(root, file)
     fs.mkdirSync(path.dirname(target), { recursive: true })
     fs.writeFileSync(target, typeof source === "string" ? source : JSON.stringify(source, null, 2))
