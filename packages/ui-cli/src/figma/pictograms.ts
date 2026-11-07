@@ -20,7 +20,7 @@ import { assertPinnedManifest, readManifest, writeManifest } from "./artwork/man
 import { assertStandaloneSvg, assertSvgDimensions } from "./artwork/svg.ts"
 import { fetchFigmaImages } from "./rest.ts"
 import { normalizeLive } from "./snapshot.ts"
-import { requireFigmaToken, type KeychainRunner } from "../adapters/figma-token.ts"
+import { figmaToken, type KeychainRunner } from "../adapters/figma-token.ts"
 
 const SnapshotSchema = z.looseObject({
   fileKey: z.string(),
@@ -100,7 +100,7 @@ async function runPictograms(
 ): Promise<string> {
   if (mode !== "check" && !input)
     throw new Error(`ui-cli ${mode} pictograms needs --input <snapshot>`)
-  if (mode === "export") requireFigmaToken(env ?? {}, run)
+  const token = mode === "export" ? figmaToken(env ?? {}, run) : ""
   const snapshot = parseSchema(
     SnapshotSchema,
     readJson(input ?? workspace.path("src/catalog/figma/inventory.json")),
@@ -125,7 +125,7 @@ async function runPictograms(
   const publishedManifest = readManifest(manifestFile, PictogramManifestSchema)
   assertPinnedManifest(publishedManifest, fileKey, "Pictogram provenance")
 
-  const roots = selectRuleNodes(registry, rule, normalizeLive(snapshot))
+  const roots = selectRuleNodes(registry, rule, normalizeLive(snapshot), workspace)
   if (!roots.length) throw new Error("The snapshot contains no published pictogram identities")
   const provenanceByNode = resolveProvenance(rule, new Set(roots.map((root) => root.nodeId)))
 
@@ -172,7 +172,9 @@ async function runPictograms(
       ? path.join(workspace.artworkRoot, "src/assets/figma-pictograms")
       : path.join(workspace.root, ".figma/pictograms")
   const assets =
-    mode === "export" ? await fetchFigmaImages(fileKey, snapshot.version ?? "", ids) : new Map()
+    mode === "export"
+      ? await fetchFigmaImages(fileKey, snapshot.version ?? "", ids, token)
+      : new Map()
 
   let manifest: PictogramManifest | undefined
   if (mode !== "export") {

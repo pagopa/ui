@@ -36,7 +36,7 @@ test("resolving links, code spans, config paths and script references passes", (
   const result = check({
     "AGENTS.md": "See [the skill](.agents/skills/figma-to-code/SKILL.md) and `src/index.css:12`.",
     [`${SKILL}/SKILL.md`]: "Read [init](references/init.md), then `figma-to-code.yaml`.",
-    [`${SKILL}/references/init.md`]: "Run `pnpm figma:check` from `scripts/`.",
+    [`${SKILL}/references/init.md`]: "Run `pnpm check:catalogue` from `scripts/`.",
     "figma-to-code.yaml":
       "catalog:\n  registry: src/index.css\nstorybook:\n  url: http://localhost:6006\nfigma:\n  snapshot: .figma/live-rest.json\n",
     "src/index.css": "",

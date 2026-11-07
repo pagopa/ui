@@ -81,7 +81,7 @@ export const InventorySchema = z.strictObject({
   syncedAt: z.string(),
   // The Figma file version and modification time the inventory was refreshed
   // from: the session report compares them with the live file without reading
-  // the pinned snapshot (a full fingerprint comparison stays in `figma sync`).
+  // the pinned snapshot (a full fingerprint comparison stays in `check catalogue`).
   fileVersion: NonEmptyStringSchema.optional(),
   lastModified: z.string().optional(),
   components: z.array(InventoryNodeSchema),

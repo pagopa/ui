@@ -1,4 +1,4 @@
-# Catalogue — the alignment files, the statuses and `figma:check`
+# Catalogue — the alignment files, the statuses and `check:catalogue`
 
 Consulted by every use case that reads or writes the catalogue.
 
@@ -6,7 +6,7 @@ Consulted by every use case that reads or writes the catalogue.
 
 | Config key                       | Role                                                                                         | Edited by                                       |
 | -------------------------------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| `catalog.inventory`              | identities, canonical contracts, design fingerprints, dependency edges                       | `pnpm nx run pagopa-ui-cli:figma:triage` / `pnpm nx run pagopa-ui-cli:figma:update` only  |
+| `catalog.inventory`              | identities, canonical contracts, design fingerprints, dependency edges                       | `pnpm nx run pagopa-ui-cli:figma:triage` / `pnpm nx run pagopa-ui-cli:update:inventory` only  |
 | `catalog.registry`               | decision per `nodeId`, `pageId` bulk rules, targets, rendered stories, per-node `note`       | agents and people, reviewed in pull requests    |
 | `catalog.parityCases`            | the reviewed case per compared variant and device                                            | `figma:parity:check --save-case` only           |
 | `catalog.devicePolicy`           | the device vocabulary: axes, canonical devices, aliases, widths, default scopes              | reviewed by hand; never a component name or path |
@@ -93,7 +93,7 @@ the page's frame list — with:
   only if it measures that frame at that device; a composition with no case
   carries a `reason` saying what stays unmeasured and why.
 
-`figma:check` enforces, so the census cannot go stale or polite:
+`check:catalogue` enforces, so the census cannot go stale or polite:
 
 - `inLibrary` works both ways. Marked in the library, the identity must be an
   inventory node with the same name, kind and page; marked outside it, it must
@@ -112,7 +112,7 @@ the page's frame list — with:
   warns with its published node count and waits in `surfaceUncensused`.
 
 The census is also accounted: every page the inventory publishes on is either
-censused or waiting in the burn-down, and `figma:check` warns with the count
+censused or waiting in the burn-down, and `check:catalogue` warns with the count
 until the last one is read. That is why the line leads with a ratio, and it
 reads `58/58` — a page that gains a published node without a re-read shows up
 as `57/58`, not as a silent gap:
@@ -146,14 +146,14 @@ instead of hiding them behind the delta.
   request, never in bulk.
 - Rendered instance-swap defaults are real dependencies: a swappable slot still
   carries its master's identity, so a change to it reaches every parent.
-- Exception lists shrink. A new entry needs a reason; `figma:check` fails a stale
+- Exception lists shrink. A new entry needs a reason; `check:catalogue` fails a stale
   one. The public export surface stays frozen until the first publication: a new
   public export needs a source mapping or a reasoned `catalog.apiExceptions`
   entry.
 - `catalog.registry` is the only status source: no workbench, packet, ledger or
   approval file beside it, and no hand-written component list anywhere else.
 
-## What `pnpm nx run pagopa-ui:figma:check` enforces
+## What `pnpm nx run pagopa-ui:check:catalogue` enforces
 
 Hermetic, no network:
 
@@ -204,7 +204,7 @@ never as a partial synchronization.
 ## The scheduled drift job
 
 `.github/workflows/figma-drift.yml` runs every Monday at 04:00 UTC
-`node packages/ui-cli/src/cli.ts figma sync --rest --pr-body .figma/pr-body.md`. It needs the
+`node packages/ui-cli/src/cli.ts update inventory --rest --pr-body .figma/pr-body.md`. It needs the
 read-only `FIGMA_TOKEN` secret and fails when it is missing: a skipped check
 cannot certify alignment. With drift it refreshes the inventory, queues the
 production delta as `pending`, lowers the note-length ratchet when the queued

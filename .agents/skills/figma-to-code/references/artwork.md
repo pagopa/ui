@@ -58,7 +58,7 @@ Pictogram accounting stays on the page rule and the asset manifest.
 ## New public names
 
 A new public icon or pictogram name needs a source mapping or a reasoned
-`catalog.apiExceptions` entry; `figma:check` verifies that the public names cover
+`catalog.apiExceptions` entry; `check:catalogue` verifies that the public names cover
 the node-keyed manifests.
 
 **Done when** `pnpm nx run pagopa-ui-artwork:check:artwork` passes, the regenerated artwork has been

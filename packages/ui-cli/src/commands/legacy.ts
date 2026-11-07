@@ -1,45 +1,26 @@
-// The command groups not yet moved to a domain adapter. They still read
-// `process.argv` and print through `console`; each group leaves this file when
-// its area is refactored (see src/commands/index.ts).
+// Legacy groups retained until their dedicated domain migrations.
 import { defineCommand } from "citty"
 
-import { cli as runDevices } from "../figma/devices.ts"
 import { runBrief } from "../figma/brief.ts"
 import { runComments } from "../figma/comments.ts"
 import { runRules } from "../figma/rules.ts"
-import { runStories } from "../figma/stories.ts"
-import { runSync } from "../figma/sync.ts"
-import { runStatus } from "../figma/status.ts"
 import { main as runParity } from "../parity/cli.ts"
 import { renderCli } from "../parity/render.ts"
 import { sourceCli } from "../parity/source.ts"
 import { runChanged } from "../test/changed.ts"
 import { runVisual } from "../test/visual.ts"
-import { runCommand } from "../lib/command.ts"
-import { readJson } from "../lib/json.ts"
-import { rootPath } from "../lib/paths.ts"
-import {
-  longNoteErrors,
-  NOTE_LENGTH_BASELINE_PATH,
-  NoteLengthBaselineSchema,
-  RegistrySchema,
-} from "../schemas/catalogue.ts"
+import { exitCodeOf } from "../lib/command.ts"
+import type { CliContext } from "./context.ts"
 
-const inputArg = {
-  type: "string",
-  valueHint: "file",
-  description: "Path to the pinned snapshot the command reads",
-} as const
-
-const jsonArg = {
-  type: "boolean",
-  default: false,
-  description: "Print machine-readable JSON",
-} as const
-
-function execute(command: () => number | Promise<number>) {
+function execute(ctx: CliContext, command: () => number | Promise<number>) {
   return async (): Promise<void> => {
-    await runCommand(async () => command())
+    try {
+      ctx.exitCode = await command()
+    } catch (error) {
+      ctx.io.err(`error: ${error instanceof Error ? error.message : String(error)}`)
+      if (ctx.env.DEBUG && error instanceof Error && error.stack) ctx.io.err(error.stack)
+      ctx.exitCode = exitCodeOf(error)
+    }
   }
 }
 
@@ -49,161 +30,31 @@ function rawArguments(command: string): string[] {
   return index >= 0 ? raw.slice(index + 1) : []
 }
 
-// The catalogue keeps its own note-length baseline: the number of notes past
-// the limit ratchets down, and the command fails when it moves in either
-// direction. The path belongs to the schema module so the drift refresh, which
-// shortens the notes it queues, lowers the same file.
-const REGISTRY_PATH = "src/catalog/figma/registry.json"
-
-function runNoteLengthRatchet(): number {
-  const baseline = readJson(rootPath(NOTE_LENGTH_BASELINE_PATH), NoteLengthBaselineSchema)
-  const registry = readJson(rootPath(REGISTRY_PATH), RegistrySchema)
-  const errors = longNoteErrors(registry, baseline, NOTE_LENGTH_BASELINE_PATH)
-  if (!errors.length) return 0
-  console.error(`figma:check: ${errors.length} problem(s)`)
-  for (const error of errors) console.error(`  ${error}`)
-  return 1
+export function legacyChecks(_ctx: CliContext): Record<string, never> {
+  return {}
 }
 
-const figmaCheck = defineCommand({
-  meta: { name: "figma", description: "Validate the catalogue and the device vocabulary" },
-  args: {
-    input: inputArg,
-    rest: { type: "boolean", default: false, description: "Read the live file over REST" },
-    plan: { type: "boolean", default: false, description: "Print the plan without writing" },
-    write: { type: "boolean", default: false, description: "Refresh the committed inventory" },
-    triage: { type: "boolean", default: false, description: "Refresh and queue the delta" },
-    "pr-body": { type: "string", valueHint: "file", description: "Write the drift PR body" },
-    save: { type: "string", valueHint: "file", description: "Save the pinned REST snapshot" },
-    delta: { type: "string", valueHint: "file", description: "Write the machine-readable delta" },
-    "evidence-base": {
-      type: "string",
-      valueHint: "url",
-      description: "Prefix for the raw evidence links in the body",
-    },
-  },
-  run: ({ args }) => {
-    const argv: string[] = []
-    if (args.write) argv.push("--write")
-    if (args.triage) argv.push("--triage")
-    if (args.plan) argv.push("--plan")
-    if (args.rest) argv.push("--rest")
-    if (args.input) argv.push("--input", String(args.input))
-    if (args["pr-body"]) argv.push("--pr-body", String(args["pr-body"]))
-    if (args.save) argv.push("--save", String(args.save))
-    if (args.delta) argv.push("--delta", String(args.delta))
-    if (args["evidence-base"]) argv.push("--evidence-base", String(args["evidence-base"]))
-    return execute(async () => {
-      const notes = runNoteLengthRatchet()
-      if (notes) return notes
-      return runSync(argv)
-    })()
-  },
-})
+export function legacyFigmaSubCommands(ctx: CliContext) {
+  const figmaRules = defineCommand({
+    meta: { name: "rules", description: "Read, record and check the component rules boxes" },
+    run: execute(ctx, () => runRules(rawArguments("rules"))),
+  })
 
-// The contracts not yet moved to the domain adapters; `check.ts` merges them.
-export const legacyChecks = {
-  figma: figmaCheck,
-}
+  const figmaComments = defineCommand({
+    meta: { name: "comments", description: "Read the node comments of the file" },
+    run: execute(ctx, () => runComments(rawArguments("comments"))),
+  })
 
-const figmaSync = defineCommand({
-  meta: { name: "sync", description: "Validate, refresh or triage the Figma catalogue" },
-  args: {
-    input: inputArg,
-    rest: { type: "boolean", default: false, description: "Read the live file over REST" },
-    write: { type: "boolean", default: false, description: "Refresh the committed inventory" },
-    triage: { type: "boolean", default: false, description: "Refresh and queue the delta" },
-    plan: { type: "boolean", default: false, description: "Print the plan without writing" },
-    "pr-body": { type: "string", valueHint: "file", description: "Write the drift PR body" },
-    save: { type: "string", valueHint: "file", description: "Save the pinned REST snapshot" },
-    delta: { type: "string", valueHint: "file", description: "Write the machine-readable delta" },
-    "evidence-base": {
-      type: "string",
-      valueHint: "url",
-      description: "Prefix for the raw evidence links in the body",
-    },
-  },
-  run: ({ args }) => {
-    const argv: string[] = []
-    if (args.write) argv.push("--write")
-    if (args.triage) argv.push("--triage")
-    if (args.plan) argv.push("--plan")
-    if (args.rest) argv.push("--rest")
-    if (args.input) argv.push("--input", String(args.input))
-    if (args["pr-body"]) argv.push("--pr-body", String(args["pr-body"]))
-    if (args.save) argv.push("--save", String(args.save))
-    if (args.delta) argv.push("--delta", String(args.delta))
-    if (args["evidence-base"]) argv.push("--evidence-base", String(args["evidence-base"]))
-    return execute(() => runSync(argv))()
-  },
-})
+  const figmaBrief = defineCommand({
+    meta: { name: "brief", description: "Print the implementation brief of a node" },
+    run: execute(ctx, () => runBrief(rawArguments("brief"))),
+  })
 
-const figmaDevices = defineCommand({
-  meta: { name: "devices", description: "Resolve the committed device vocabulary" },
-  args: {
-    check: { type: "boolean", default: false, description: "Fail on an invalid policy" },
-    json: jsonArg,
-  },
-  run: ({ args }) => {
-    const argv: string[] = []
-    if (args.check) argv.push("--check")
-    if (args.json) argv.push("--json")
-    return execute(() => runDevices(argv))()
-  },
-})
-
-const figmaStories = defineCommand({
-  meta: {
-    name: "stories",
-    description: "Commit or check the Storybook titles of the mapped stories",
-  },
-  args: {
-    write: { type: "boolean", default: false, description: "Write the committed map" },
-  },
-  run: ({ args }) => execute(() => runStories(args.write ? ["--write"] : []))(),
-})
-
-const figmaStatus = defineCommand({
-  meta: { name: "status", description: "Report the token, snapshot, drift and pending queue" },
-  args: {
-    json: jsonArg,
-    live: {
-      type: "boolean",
-      default: false,
-      description: "Ask the live file for its version and last-modified date",
-    },
-  },
-  run: ({ args }) => {
-    const argv: string[] = []
-    if (args.json) argv.push("--json")
-    if (args.live) argv.push("--live")
-    return execute(() => runStatus(argv))()
-  },
-})
-
-const figmaRules = defineCommand({
-  meta: { name: "rules", description: "Read, record and check the component rules boxes" },
-  run: execute(() => runRules(rawArguments("rules"))),
-})
-
-const figmaComments = defineCommand({
-  meta: { name: "comments", description: "Read the node comments of the file" },
-  run: execute(() => runComments(rawArguments("comments"))),
-})
-
-const figmaBrief = defineCommand({
-  meta: { name: "brief", description: "Print the implementation brief of a node" },
-  run: execute(() => runBrief(rawArguments("brief"))),
-})
-
-export const legacyFigmaSubCommands = {
-  status: figmaStatus,
-  sync: figmaSync,
-  devices: figmaDevices,
-  stories: figmaStories,
-  rules: figmaRules,
-  comments: figmaComments,
-  brief: figmaBrief,
+  return {
+    rules: figmaRules,
+    comments: figmaComments,
+    brief: figmaBrief,
+  }
 }
 
 const parityString = { type: "string" } as const
@@ -211,129 +62,47 @@ const parityBoolean = { type: "boolean", default: false } as const
 
 type ParityArg = typeof parityString | typeof parityBoolean
 
-const parityCommand = (name: string, description: string, args: Record<string, ParityArg> = {}) =>
-  defineCommand({
-    meta: { name, description },
-    args,
-    run: execute(() => runParity([name, ...rawArguments(name)])),
-  })
+function legacyCommands(ctx: CliContext) {
+  const parityCommand = (name: string, description: string, args: Record<string, ParityArg> = {}) =>
+    defineCommand({
+      meta: { name, description },
+      args,
+      run: execute(ctx, () => runParity([name, ...rawArguments(name)])),
+    })
 
-const parity = defineCommand({
-  meta: { name: "parity", description: "Visual-parity commands" },
-  subCommands: {
-    queue: parityCommand("queue", "Work list of registry cases", {
-      status: parityString,
-      node: parityString,
-      cases: parityString,
-      order: parityString,
-      unmapped: parityBoolean,
-      coverage: parityBoolean,
-      uncovered: parityBoolean,
-      json: parityBoolean,
-    }),
-    align: parityCommand("align", "One node's read-only work order", {
-      node: parityString,
-      cases: parityString,
-      json: parityBoolean,
-    }),
-    check: parityCommand("check", "Compare one reviewed case", {
-      node: parityString,
-      case: parityString,
-      cases: parityString,
-      input: parityString,
-      state: parityString,
-      variant: parityString,
-      device: parityString,
-      "layout-scope": parityString,
-      story: parityString,
-      width: parityString,
-      root: parityString,
-      "offset-origin": parityString,
-      "subject-root": parityString,
-      subject: parityString,
-      fill: parityString,
-      click: parityString,
-      focus: parityString,
-      blur: parityBoolean,
-      "keep-focus": parityBoolean,
-      "expect-state": parityString,
-      "state-evidence": parityString,
-      "compare-text": parityBoolean,
-      "compare-box": parityString,
-      "compare-offset": parityString,
-      interactive: parityBoolean,
-      strict: parityBoolean,
-      "save-case": parityBoolean,
-      note: parityString,
-      residue: parityString,
-      ignore: parityString,
-      viewport: parityString,
-      height: parityString,
-      screenshot: parityString,
-      depth: parityString,
-      notes: parityBoolean,
-      json: parityBoolean,
-      devices: parityBoolean,
-    }),
-    capture: parityCommand("capture", "Run a parity wave", {
-      cases: parityString,
-      saved: parityBoolean,
-      input: parityString,
-      status: parityString,
-      node: parityString,
-      device: parityString,
-      note: parityString,
-      limit: parityString,
-      "include-catalogue": parityBoolean,
-      out: parityString,
-      strict: parityBoolean,
-      "dry-run": parityBoolean,
-    }),
-    report: parityCommand("report", "Aggregate a wave directory", {
-      wave: parityString,
-      dir: parityString,
-      out: parityString,
-    }),
-    cases: parityCommand("cases", "Propose the missing device cases", {
-      sync: parityBoolean,
-      node: parityString,
-      "dry-run": parityBoolean,
-      cases: parityString,
-    }),
-    verify: parityCommand("verify", "Verify the case corpus and device coverage", {
-      cases: parityString,
-      json: parityBoolean,
-    }),
-    evidence: parityCommand("evidence", "Write or check the offline evidence bundle", {
-      write: parityBoolean,
-      check: parityBoolean,
-      input: parityString,
-    }),
-    source: defineCommand({
-      meta: { name: "source", description: "Print the pinned source spec" },
-      args: {
-        nodeId: { type: "positional", required: true },
-        input: parityString,
-        depth: parityString,
+  const parity = defineCommand({
+    meta: { name: "parity", description: "Visual-parity commands" },
+    subCommands: {
+      queue: parityCommand("queue", "Work list of registry cases", {
+        status: parityString,
+        node: parityString,
+        cases: parityString,
+        order: parityString,
+        unmapped: parityBoolean,
+        coverage: parityBoolean,
+        uncovered: parityBoolean,
         json: parityBoolean,
-        compact: parityBoolean,
-        png: parityBoolean,
-      },
-      run: execute(async () => {
-        await sourceCli(rawArguments("source"))
-        return 0
       }),
-    }),
-    render: defineCommand({
-      meta: { name: "render", description: "Probe one Storybook story" },
-      args: {
+      align: parityCommand("align", "One node's read-only work order", {
+        node: parityString,
+        cases: parityString,
+        json: parityBoolean,
+      }),
+      check: parityCommand("check", "Compare one reviewed case", {
+        node: parityString,
+        case: parityString,
+        cases: parityString,
+        input: parityString,
+        state: parityString,
+        variant: parityString,
+        device: parityString,
+        "layout-scope": parityString,
         story: parityString,
         width: parityString,
-        viewport: parityString,
-        height: parityString,
         root: parityString,
-        subject: parityString,
         "offset-origin": parityString,
+        "subject-root": parityString,
+        subject: parityString,
         fill: parityString,
         click: parityString,
         focus: parityString,
@@ -341,53 +110,141 @@ const parity = defineCommand({
         "keep-focus": parityBoolean,
         "expect-state": parityString,
         "state-evidence": parityString,
+        "compare-text": parityBoolean,
+        "compare-box": parityString,
+        "compare-offset": parityString,
+        interactive: parityBoolean,
+        strict: parityBoolean,
+        "save-case": parityBoolean,
+        note: parityString,
+        residue: parityString,
+        ignore: parityString,
+        viewport: parityString,
+        height: parityString,
         screenshot: parityString,
-        tree: parityBoolean,
         depth: parityString,
+        notes: parityBoolean,
         json: parityBoolean,
-      },
-      run: execute(() => {
-        renderCli(rawArguments("render"))
-        return 0
+        devices: parityBoolean,
       }),
-    }),
-  },
-})
-
-const testChanged = defineCommand({
-  meta: { name: "changed", description: "Run only the tests affected since the last pass" },
-  args: {
-    coverage: { type: "boolean", default: false, description: "Run the coverage pass" },
-    all: { type: "boolean", default: false, description: "Run every test file" },
-    since: { type: "string", valueHint: "ref", description: "Use an explicit git ref" },
-  },
-  run: execute(() => runChanged(rawArguments("changed"))),
-})
-
-const testVisual = defineCommand({
-  meta: { name: "visual", description: "Scope the visual-regression run to the change" },
-  args: {
-    since: {
-      type: "string",
-      valueHint: "ref",
-      description: "The ref the change is measured against",
+      capture: parityCommand("capture", "Run a parity wave", {
+        cases: parityString,
+        saved: parityBoolean,
+        input: parityString,
+        status: parityString,
+        node: parityString,
+        device: parityString,
+        note: parityString,
+        limit: parityString,
+        "include-catalogue": parityBoolean,
+        out: parityString,
+        strict: parityBoolean,
+        "dry-run": parityBoolean,
+      }),
+      report: parityCommand("report", "Aggregate a wave directory", {
+        wave: parityString,
+        dir: parityString,
+        out: parityString,
+      }),
+      cases: parityCommand("cases", "Propose the missing device cases", {
+        sync: parityBoolean,
+        node: parityString,
+        "dry-run": parityBoolean,
+        cases: parityString,
+      }),
+      verify: parityCommand("verify", "Verify the case corpus and device coverage", {
+        cases: parityString,
+        json: parityBoolean,
+      }),
+      evidence: parityCommand("evidence", "Write or check the offline evidence bundle", {
+        write: parityBoolean,
+        check: parityBoolean,
+        input: parityString,
+      }),
+      source: defineCommand({
+        meta: { name: "source", description: "Print the pinned source spec" },
+        args: {
+          nodeId: { type: "positional", required: true },
+          input: parityString,
+          depth: parityString,
+          json: parityBoolean,
+          compact: parityBoolean,
+          png: parityBoolean,
+        },
+        run: execute(ctx, async () => {
+          await sourceCli(rawArguments("source"))
+          return 0
+        }),
+      }),
+      render: defineCommand({
+        meta: { name: "render", description: "Probe one Storybook story" },
+        args: {
+          story: parityString,
+          width: parityString,
+          viewport: parityString,
+          height: parityString,
+          root: parityString,
+          subject: parityString,
+          "offset-origin": parityString,
+          fill: parityString,
+          click: parityString,
+          focus: parityString,
+          blur: parityBoolean,
+          "keep-focus": parityBoolean,
+          "expect-state": parityString,
+          "state-evidence": parityString,
+          screenshot: parityString,
+          tree: parityBoolean,
+          depth: parityString,
+          json: parityBoolean,
+        },
+        run: execute(ctx, () => {
+          renderCli(rawArguments("render"))
+          return 0
+        }),
+      }),
     },
-    all: { type: "boolean", default: false, description: "Capture every story" },
-    index: { type: "string", valueHint: "file", description: "The built Storybook index" },
-    out: { type: "string", valueHint: "file", description: "Write the scope as JSON" },
-    json: { type: "boolean", default: false, description: "Print the scope as JSON" },
-    "check-baselines": {
-      type: "boolean",
-      default: false,
-      description: "Require every scoped Linux baseline",
+  })
+
+  const testChanged = defineCommand({
+    meta: { name: "changed", description: "Run only the tests affected since the last pass" },
+    args: {
+      coverage: { type: "boolean", default: false, description: "Run the coverage pass" },
+      all: { type: "boolean", default: false, description: "Run every test file" },
+      since: { type: "string", valueHint: "ref", description: "Use an explicit git ref" },
     },
-  },
-  run: execute(() => runVisual(rawArguments("visual"))),
-})
+    run: execute(ctx, () => runChanged(rawArguments("changed"))),
+  })
 
-const test = defineCommand({
-  meta: { name: "test", description: "Test-runner commands" },
-  subCommands: { changed: testChanged, visual: testVisual },
-})
+  const testVisual = defineCommand({
+    meta: { name: "visual", description: "Scope the visual-regression run to the change" },
+    args: {
+      since: {
+        type: "string",
+        valueHint: "ref",
+        description: "The ref the change is measured against",
+      },
+      all: { type: "boolean", default: false, description: "Capture every story" },
+      index: { type: "string", valueHint: "file", description: "The built Storybook index" },
+      out: { type: "string", valueHint: "file", description: "Write the scope as JSON" },
+      json: { type: "boolean", default: false, description: "Print the scope as JSON" },
+      "check-baselines": {
+        type: "boolean",
+        default: false,
+        description: "Require every scoped Linux baseline",
+      },
+    },
+    run: execute(ctx, () => runVisual(rawArguments("visual"))),
+  })
 
-export const legacy = { parity, test }
+  const test = defineCommand({
+    meta: { name: "test", description: "Test-runner commands" },
+    subCommands: { changed: testChanged, visual: testVisual },
+  })
+
+  return { parity, test }
+}
+
+export function legacy(ctx: CliContext) {
+  return legacyCommands(ctx)
+}

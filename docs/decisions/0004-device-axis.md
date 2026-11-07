@@ -31,7 +31,7 @@ comparison whose registry entry stays `implemented`, and any node an agent close
 as `implemented`, cannot do so without **one case per declared device** or a
 **reasoned entry** in `src/catalog/figma/device-exceptions.json`.
 
-- Enforced hermetically in `figma:check` from `inventory.json` +
+- Enforced hermetically in `check:catalogue` from `inventory.json` +
   `registry.json` + `parity-cases.json`: the delta is what the run compares, so
   the rule needs no git history and no live payload.
 - The weekly drift run (`--rest --pr-body`) queues the changed nodes as
@@ -120,7 +120,7 @@ tooling.
 
 ## 3. Consequences
 
-- `pnpm figma:check` prints the vocabulary line and the coverage line
+- `pnpm check:catalogue` prints the vocabulary line and the coverage line
   (`devices: <n> implemented sets · covered · missing · exceptions`), and the
   exceptions count sits next to the existing `exceptions:` line.
 - The burn-down has three commands: `pnpm figma:parity:queue --uncovered` (the

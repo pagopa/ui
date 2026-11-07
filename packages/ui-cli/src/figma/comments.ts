@@ -9,7 +9,7 @@ import path from "node:path"
 import { z } from "zod"
 
 import { readJson, writeJson } from "../lib/json.ts"
-import { enterRoot } from "../lib/paths.ts"
+import { resolveRoot } from "../lib/paths.ts"
 import { UsageError } from "../lib/command.ts"
 import { InventorySchema } from "../schemas/catalogue.ts"
 import {
@@ -17,6 +17,7 @@ import {
   type CommentsSnapshot,
   CommentsSnapshotSchema,
 } from "../schemas/rules.ts"
+import { figmaToken } from "../adapters/figma-token.ts"
 import { fetchFileComments, fetchFileHeader, type FigmaComment } from "./rest.ts"
 import { fileKeyOf } from "./rules.ts"
 
@@ -79,11 +80,11 @@ function buildThreads(comments: FigmaComment[]): CommentThread[] {
 }
 
 export async function refreshComments(): Promise<CommentsSnapshot> {
-  const root = enterRoot()
+  const root = resolveRoot()
   const fileKey = fileKeyOf(root)
   const [header, comments] = await Promise.all([
-    fetchFileHeader(fileKey),
-    fetchFileComments(fileKey),
+    fetchFileHeader(fileKey, figmaToken()),
+    fetchFileComments(fileKey, figmaToken()),
   ])
   const snapshot: CommentsSnapshot = {
     fileKey,
@@ -194,7 +195,7 @@ function option(argv: string[], name: string): string | undefined {
 }
 
 export async function runComments(argv: string[] = process.argv.slice(2)): Promise<number> {
-  const root = enterRoot()
+  const root = resolveRoot()
   const json = argv.includes("--json")
   const openOnly = argv.includes("--open")
   const node = option(argv, "node")

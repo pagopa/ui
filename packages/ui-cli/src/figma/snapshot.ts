@@ -1,10 +1,13 @@
 import fs from "node:fs"
+import path from "node:path"
+import type { Workspace } from "../adapters/workspace.ts"
+import { createSourceModules, parseSource } from "../lib/source-modules.ts"
+
 import { z } from "zod"
 
 import { fingerprint } from "../lib/hash.ts"
 import { artworkPath } from "../lib/paths.ts"
 import { isSchema, parseSchema } from "../lib/validate.ts"
-import { parseSource } from "../lib/source-modules.ts"
 import {
   DependencySchema,
   InventoryNodeSchema,
@@ -130,9 +133,10 @@ const isRestExport = (value: unknown): value is RestExport => isSchema(RestExpor
 const isInventoryExport = (value: unknown): value is InventoryExport =>
   isSchema(InventoryExportSchema, value)
 
-export function fileKeyFromSource(): string {
+export function fileKeyFromSource(workspace?: Workspace): string {
   const file = "src/catalog/figma/file.ts"
-  const declarations = parseSource(file).program.body.flatMap((statement) =>
+  const source = workspace ? createSourceModules(workspace).parseSource : parseSource
+  const declarations = source(file).program.body.flatMap((statement) =>
     statement.type === "ExportNamedDeclaration" &&
     statement.declaration?.type === "VariableDeclaration"
       ? statement.declaration.declarations
@@ -157,13 +161,16 @@ const CatalogueManifestSchema = z.looseObject({
   entries: z.record(z.string(), z.unknown()),
 })
 
-export function catalogueIndex(registry: Registry): {
+export function catalogueIndex(
+  registry: Registry,
+  workspace?: Workspace,
+): {
   byNode: Map<string, BulkRule>
   manifests: Map<string, z.infer<typeof CatalogueManifestSchema>>
 } {
   const byNode = new Map<string, BulkRule>()
   const manifests = new Map<string, z.infer<typeof CatalogueManifestSchema>>()
-  const fileKey = fileKeyFromSource()
+  const fileKey = fileKeyFromSource(workspace)
   function own(id: string, rule: BulkRule): void {
     const previous = byNode.get(id)
     if (previous && previous !== rule) {
@@ -177,7 +184,9 @@ export function catalogueIndex(registry: Registry): {
       throw new Error(`${rule.pageId}: namesExport requires a node-keyed assetManifest`)
     }
     // A first artwork export may not have a manifest yet.
-    const file = artworkPath(rule.assetManifest)
+    const file = workspace
+      ? path.join(workspace.artworkRoot, rule.assetManifest)
+      : artworkPath(rule.assetManifest)
     if (!fs.existsSync(file)) continue
     const manifest = parseSchema(
       CatalogueManifestSchema,
@@ -410,9 +419,14 @@ export function normalizeNode(
 
 export function normalizeLive(
   rawValue: unknown,
-  options: { policy?: DevicePolicy } = {},
+  options: { policy?: DevicePolicy; workspace?: Workspace } = {},
 ): InventoryNode[] {
   const raw = parseSchema(LiveExportSchema, rawValue, "unrecognized live export shape")
+  const policy =
+    options.policy ??
+    (options.workspace
+      ? loadDevicePolicy(path.join(options.workspace.root, "src/catalog/figma/device-policy.json"))
+      : defaultDevicePolicyCached())
   let list: unknown[]
   if (Array.isArray(raw)) list = raw
   else if (isRestExport(raw)) {
@@ -444,7 +458,7 @@ export function normalizeLive(
   const seen = new Set<string>()
   const components: InventoryNode[] = []
   for (const item of list) {
-    const node = normalizeNode(item, options)
+    const node = normalizeNode(item, { policy })
     if (seen.has(node.nodeId)) throw new Error(`duplicate Figma nodeId ${node.nodeId}`)
     seen.add(node.nodeId)
     components.push(node)

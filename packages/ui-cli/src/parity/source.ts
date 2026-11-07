@@ -14,6 +14,7 @@ import fs from "node:fs"
 import path from "node:path"
 import { z } from "zod"
 
+import { figmaToken } from "../adapters/figma-token.ts"
 import { fetchFigmaImagesPng } from "../figma/rest.ts"
 import { normalizeLive } from "../figma/snapshot.ts"
 import { loadInventoryNodes } from "../figma/devices.ts"
@@ -582,7 +583,7 @@ export async function sourceCli(argv: string[] = process.argv.slice(2)): Promise
     if (!fileKey || !version) {
       throw new Error("--png needs the pinned export's fileKey and version")
     }
-    const images = await fetchFigmaImagesPng(fileKey, version, [node.id])
+    const images = await fetchFigmaImagesPng(fileKey, version, [node.id], figmaToken())
     const buffer = images.get(node.id)
     if (!buffer) throw new Error(`Figma rendered no PNG for ${node.id}`)
     fs.mkdirSync(path.dirname(file), { recursive: true })

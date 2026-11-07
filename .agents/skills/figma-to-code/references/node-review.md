@@ -51,6 +51,6 @@ bulk re-approval.
    **Done when** the registry entry reflects the decision; a constraint or
    residue is in the note, and an open question names its design request.
 
-5. **Close** with `pnpm nx run pagopa-ui:figma:check`, the source-alignment checklist in
+5. **Close** with `pnpm nx run pagopa-ui:check:catalogue`, the source-alignment checklist in
    [definition-of-done.md](definition-of-done.md) when code changed, and the
    closing steps of the skill.

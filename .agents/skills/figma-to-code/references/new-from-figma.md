@@ -57,7 +57,7 @@ component with no node needs only its catalogue coverage
    (`module`, `export`, `story`, `storyExports`, `additionalExports` when the set
    has several implementations), a self-contained `note` for any constraint,
    open decision or recorded adaptation, then `status: "implemented"`. Export it
-   publicly when it is a production component. Run `pnpm nx run pagopa-ui:figma:check`.
+   publicly when it is a production component. Run `pnpm nx run pagopa-ui:check:catalogue`.
    An open point for the design owner is a design request
    ([design-request.md](design-request.md)); the node stays `pending` and the
    request is named in the note.

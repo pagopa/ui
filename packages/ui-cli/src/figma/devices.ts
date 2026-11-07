@@ -24,7 +24,9 @@
 import fs from "node:fs"
 import { z } from "zod"
 
-import { enterRoot, rootPath } from "../lib/paths.ts"
+import { rootPath } from "../lib/paths.ts"
+import type { Workspace } from "../adapters/workspace.ts"
+import { report as checkReport, type CheckReport } from "../checks/report.ts"
 import { readJson } from "../lib/json.ts"
 import { parseSchema } from "../lib/validate.ts"
 import { InventoryNodeSchema, type InventoryNode } from "../schemas/catalogue.ts"
@@ -290,7 +292,7 @@ export function requiredDevices(policy: DevicePolicy, node: NodeVariants): strin
 // --------------------------------------------------------------------- check
 
 // Hermetic: the policy, the inventory and nothing else. Returns the verdict and
-// the counts the `figma:check` device line prints.
+// the counts the `check:catalogue` device line prints.
 export function checkDevicePolicy(
   policy: DevicePolicy,
   nodes: InventoryNode[],
@@ -453,7 +455,7 @@ export function checkDevicePolicy(
   return { errors, warnings, stats, unmapped, unused }
 }
 
-// The one line `figma:check` prints (RA1; RA4 appends its coverage line).
+// The one line `check:catalogue` prints (RA1; RA4 appends its coverage line).
 export function formatDeviceLine(stats: DeviceStats): string {
   return (
     `devices: ${stats.sets} sets with an axis · declared ${stats.declared} · ` +
@@ -480,9 +482,9 @@ export function loadInventoryNodes(file: string = rootPath(INVENTORY_PATH)): Inv
   return loadInventory(file).components
 }
 
-// ------------------------------------------------------------------------ CLI
+// ------------------------------------------------------------------------ reports
 
-function report(policy: DevicePolicy, stats: DeviceStats): void {
+export function formatDevices(policy: DevicePolicy, stats: DeviceStats): string[] {
   const lines = [
     `device policy: ${Object.keys(policy.devices).length} devices · ` +
       `${Object.values(policy.devices).reduce((count, device) => count + device.aliases.length, 0)} aliases · ` +
@@ -501,34 +503,50 @@ function report(policy: DevicePolicy, stats: DeviceStats): void {
     `values: ${stats.valuesResolved}/${stats.valuesTotal} resolved`,
     `unused aliases: ${stats.unusedAliases}`,
   ]
-  console.log(lines.join("\n"))
+  return [lines.join("\n")]
 }
 
-export function cli(argv: string[] = process.argv.slice(2)): number {
-  enterRoot()
-  const json = argv.includes("--json")
-  const check = argv.includes("--check")
-  let policy: DevicePolicy
-  let nodes: InventoryNode[]
+export interface DeviceReport {
+  policy: string
+  errors: string[]
+  warnings: string[]
+  stats: DeviceStats
+  unmapped: ReturnType<typeof checkDevicePolicy>["unmapped"]
+  unused: ReturnType<typeof checkDevicePolicy>["unused"]
+  vocabulary: DevicePolicy
+}
+
+export function readDevices(workspace: Workspace): DeviceReport {
+  const policy = loadDevicePolicy(workspace.path(DEVICE_POLICY_PATH))
+  const nodes = loadInventoryNodes(workspace.path(INVENTORY_PATH))
+  return { policy: DEVICE_POLICY_PATH, ...checkDevicePolicy(policy, nodes), vocabulary: policy }
+}
+
+export function checkDevices(workspace: Workspace): CheckReport {
   try {
-    policy = loadDevicePolicy()
-    nodes = loadInventoryNodes()
+    const result = readDevices(workspace)
+    return checkReport("devices", formatDeviceLine(result.stats), result.errors, {
+      warnings: result.warnings,
+    })
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error)
-    console.error(`error: ${message}`)
-    return 1
+    return checkReport("devices", "device policy could not be loaded", [
+      error instanceof Error ? error.message : String(error),
+    ])
   }
-  const result = checkDevicePolicy(policy, nodes)
-  if (json) {
-    console.log(JSON.stringify({ policy: DEVICE_POLICY_PATH, ...result }, null, 2))
-  } else {
-    if (!check) report(policy, result.stats)
-    for (const warning of result.warnings) console.warn(`warn: ${warning}`)
-    for (const error of result.errors) console.error(`error: ${error}`)
-    console.log(formatDeviceLine(result.stats))
-  }
-  return result.errors.length ? 1 : 0
 }
 
-const invoked = process.argv[1] && import.meta.url === `file://${process.argv[1]}`
-if (invoked) process.exitCode = cli()
+export function formatDeviceReport(
+  result: DeviceReport,
+  check: boolean,
+): { out: string[]; err: string[] } {
+  return {
+    out: [
+      ...(check ? [] : formatDevices(result.vocabulary, result.stats)),
+      formatDeviceLine(result.stats),
+    ],
+    err: [
+      ...result.warnings.map((warning) => `warn: ${warning}`),
+      ...result.errors.map((error) => `error: ${error}`),
+    ],
+  }
+}

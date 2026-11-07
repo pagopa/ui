@@ -4,7 +4,12 @@
 import { defineCommand, renderUsage, runCommand, type CommandDef } from "citty"
 
 import { buildCommands } from "./build.ts"
-import { artworkCheckCommands, artworkUpdateCommands, figmaCommands } from "./figma.ts"
+import {
+  artworkCheckCommands,
+  artworkUpdateCommands,
+  catalogueCheckCommands,
+  figmaCommands,
+} from "./figma.ts"
 import { checkCommands } from "./check.ts"
 import { EXIT, type CliContext } from "./context.ts"
 import { legacy, legacyChecks } from "./legacy.ts"
@@ -18,11 +23,15 @@ export function createCli(ctx: CliContext): CommandDef {
       description: "The UI CLI, checks and Figma tooling of the PagoPA design system",
     },
     subCommands: {
-      check: checkCommands(ctx, () => root, { ...legacyChecks, ...artworkCheckCommands(ctx) }),
+      check: checkCommands(ctx, () => root, {
+        ...legacyChecks(ctx),
+        ...artworkCheckCommands(ctx),
+        ...catalogueCheckCommands(ctx),
+      }),
       update: updateCommands(ctx, artworkUpdateCommands(ctx)),
       build: buildCommands(ctx),
       figma: figmaCommands(ctx),
-      ...legacy,
+      ...legacy(ctx),
     },
   })
   return root

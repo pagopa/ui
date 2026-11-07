@@ -16,10 +16,10 @@ export interface FigmaToken {
 }
 export type KeychainRunner = (command: string, args: string[]) => string
 
-function keychainToken(): string {
+function keychainToken(command: string, args: string[]): string {
   if (process.platform !== "darwin") return ""
   try {
-    return execFileSync("security", ["find-generic-password", "-s", "figma-pat", "-w"], {
+    return execFileSync(command, args, {
       encoding: "utf8",
       stdio: ["ignore", "pipe", "ignore"],
     })
@@ -54,11 +54,4 @@ export function resolveFigmaToken(
 
 export function figmaToken(env: NodeJS.ProcessEnv = process.env, run?: KeychainRunner): string {
   return resolveFigmaToken(env, run).token
-}
-
-export function requireFigmaToken(
-  env: NodeJS.ProcessEnv = process.env,
-  run?: KeychainRunner,
-): string {
-  return figmaToken(env, run)
 }

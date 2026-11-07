@@ -35,7 +35,7 @@ compare it with the source code of the audited package, `packages/pagopa-ui`.
   two device policy files beside it — `device-policy.json` (the vocabulary: the
   axes, the devices with their aliases and the values that mean "no device
   axis", never a component list) and `device-exceptions.json` (the reasoned
-  burn-down exceptions, `<nodeId>: <reason>`, which must shrink). `figma:check`
+  burn-down exceptions, `<nodeId>: <reason>`, which must shrink). `check:catalogue`
   validates their shapes, resolves every axis value the inventory declares and
   refuses an exception whose node no longer misses a device.
 - `packages/tokens/src/foundations.json` is hand-maintained, reviewed data: the
@@ -127,7 +127,7 @@ compare it with the source code of the audited package, `packages/pagopa-ui`.
    The device dimension is part of the check: `src/figma/devices.ts` resolves every
    axis value the inventory declares against the committed vocabulary, so a new
    source value fails with its axis in the message and the fix is one alias line.
-   `figma:check` prints the vocabulary line and the coverage line
+   `check:catalogue` prints the vocabulary line and the coverage line
    (`devices: <n> implemented sets · covered <n> · missing <n> · exceptions <n>`),
    fails a node that enters the live delta (or is newly closed `implemented`)
    while a declared device has no reviewed case and no reasoned
@@ -175,7 +175,7 @@ From the package:
 ```bash
 pnpm run cli -- --help
 pnpm run cli -- check --help
-pnpm run cli -- figma sync --help
+pnpm run cli -- check catalogue --help
 pnpm run cli -- parity check --help
 ```
 
@@ -198,11 +198,11 @@ which builds it first.
 
 | Task                      | Command                                  | Network     | Notes                                                                                                                                                                                                                                                                                                                                        |
 | ------------------------- | ---------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `figma:check`             | `check figma`                            | No          | The hermetic check. Runs on each push and pull request.                                                                                                                                                                                                                                                                                      |
-| `figma:devices`           | `figma devices`                          | No          | Resolves the declared device vocabulary; `--check` is the gate (also inside `figma:check`), `--json` feeds tooling.                                                                                                                                                                                                                          |
+| `check:catalogue`         | `check catalogue`                        | No          | The hermetic check. Runs on each push and pull request.                                                                                                                                                                                                                                                                                      |
+| `figma:devices`           | `figma devices`                          | No          | Resolves the declared device vocabulary; `--check` is the gate (also inside `check:catalogue`), `--json` feeds tooling.                                                                                                                                                                                                                      |
 | `figma:export`            | `figma export`                           | Yes         | Uses `FIGMA_TOKEN` from the environment or macOS keychain (`figma-pat`). Writes `.figma/live-rest.json`.                                                                                                                                                                                                                                     |
-| `figma:update`            | `figma sync --write`                     | Yes         | Refreshes the inventory and queues the delta. Equal to triage.                                                                                                                                                                                                                                                                               |
-| `figma:triage`            | `figma sync --triage`                    | Yes         | Refreshes the inventory and queues the delta. Equal to update.                                                                                                                                                                                                                                                                               |
+| `update:inventory`        | `update inventory`                       | Yes         | Refreshes the inventory and queues the delta. Equal to triage.                                                                                                                                                                                                                                                                               |
+| `figma:triage`            | `figma triage`                           | Yes         | Refreshes the inventory and queues the delta. Equal to update.                                                                                                                                                                                                                                                                               |
 | `figma:rules`             | `figma rules`                            | `--refresh` | The `.Regole` boxes: `--plan` diffs the live snapshot against the committed ledger, `--refresh` reads the boxes, `--mark` records a decision, `--check` validates the ledger and the guides, `--node` prints the rules of a node. `--plan` is a report and always exits 0; `--check` is the gate that fails on a new, stale or removed card. |
 | `figma:comments`          | `figma comments`                         | `--refresh` | The node comments: `--refresh` snapshots the threads, `--node` prints the threads of a node, `--open` keeps the unresolved ones.                                                                                                                                                                                                             |
 | `figma:brief`             | `figma brief --node <id>`                | No          | The implementation brief of a node: registry entry, rules, open comments and design requests, read offline from the local snapshots.                                                                                                                                                                                                         |
@@ -231,11 +231,11 @@ Task names follow the command surface: read-only gates are `check:<contract>`
 (`check:tokens`, `check:icons`, `check:pictograms`, `check:artwork`) or
 `<scope>:check` for existing checks; writers are `update:<artifact>`. Figma sync/export
 tasks remain `<scope>:<action>`
-(`figma:export`, `figma:update`, `figma:triage`, `storybook:build`) and the
+(`figma:export`, `update:inventory`, `figma:triage`, `storybook:build`) and the
 everyday primitives are bare verbs (`dev`, `build`, `lint`, `typecheck`, `test`,
 `format`).
 
-The task `figma:check` runs this tool without flags. Add a flag after the task
+The task `check:catalogue` runs this tool without flags. Add a flag after the task
 name when you need it.
 
 ## The changed-only test loop
@@ -288,7 +288,7 @@ run does not move it. Each command records its own baseline under
   where Firefox joins the engines. A merge to `main` starts nothing: the pull
   request it came from already ran them on the same diff.
 - **Each Monday at 04:00 UTC.** `.github/workflows/figma-drift.yml` runs
-  `node src/cli.ts figma sync --rest --save .figma/live-rest.json --pr-body .figma/pr-body.md --delta .figma/delta.json`.
+  `node src/cli.ts update inventory --rest --save .figma/live-rest.json --pr-body .figma/pr-body.md --delta .figma/delta.json`.
   The job needs the read-only `FIGMA_TOKEN` secret and fails when it is missing.
   With drift it refreshes the inventory and the evidence bundle and opens one
   review pull request with the job's `GITHUB_TOKEN`, whose runs wait for the
@@ -301,10 +301,10 @@ run does not move it. Each command records its own baseline under
 
 | Situation                                     | Command                                                                                                                               |
 | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Before each commit                            | `pnpm nx run pagopa-ui:figma:check`                                                                                                   |
-| You need the current delta and the work order | `node src/cli.ts figma sync --input .figma/live-rest.json --plan`                                                                     |
+| Before each commit                            | `pnpm nx run pagopa-ui:check:catalogue`                                                                                               |
+| You need the current delta and the work order | `node src/cli.ts figma plan --input .figma/live-rest.json`                                                                            |
 | You need a new live snapshot                  | `pnpm nx run pagopa-ui-cli:figma:export --input .figma/live-mcp.json`                                                                 |
-| A delta must enter the repository             | `pnpm nx run pagopa-ui-cli:figma:triage --input .figma/live-rest.json --plan`                                                         |
+| A delta must enter the repository             | `pnpm nx run pagopa-ui-cli:figma:triage --input .figma/live-rest.json`                                                                |
 | The design foundations changed in Figma       | `pnpm ui-cli update tokens --input .figma/variables.json`                                                                             |
 | The artwork of a pictogram changed            | `pnpm ui-cli figma pictograms export --input .figma/live-rest.json` and `pnpm ui-cli update pictograms --input .figma/live-rest.json` |
 | Icon artwork or variants changed              | `pnpm ui-cli update icons --input .figma/live-rest.json`                                                                              |
@@ -386,12 +386,12 @@ repository, under review in a pull request.
 
 ## Simpler alternatives for one check
 
-| Check           | Alternative                                        | What you lose                                                                              |
-| --------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `layers:check`  | `eslint-plugin-boundaries` or `dependency-cruiser` | The alias, type-only, dynamic and `require` rules; the cycle rules; the current CLI tests. |
-| `check:icons`   | Render smoke test                                  | Source/default/variant identity, pinned geometry, checksums and standalone SVG guarantees. |
-| `library:check` | `publint` and `@arethetypeswrong/cli`              | The browser flows, the focus containment, the fonts, the artwork and the reflow test.      |
-| `figma:check`   | No equivalent                                      | All the Figma guarantees.                                                                  |
+| Check             | Alternative                                        | What you lose                                                                              |
+| ----------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `layers:check`    | `eslint-plugin-boundaries` or `dependency-cruiser` | The alias, type-only, dynamic and `require` rules; the cycle rules; the current CLI tests. |
+| `check:icons`     | Render smoke test                                  | Source/default/variant identity, pinned geometry, checksums and standalone SVG guarantees. |
+| `library:check`   | `publint` and `@arethetypeswrong/cli`              | The browser flows, the focus containment, the fonts, the artwork and the reflow test.      |
+| `check:catalogue` | No equivalent                                      | All the Figma guarantees.                                                                  |
 
 ## Limits
 
@@ -399,11 +399,11 @@ repository, under review in a pull request.
   review or assistive-technology tests.
 - The files `evidence-exceptions.json` and `api-exceptions.json` are burn-down
   lists. They must shrink. A new entry needs a reason.
-- `figma:check` counts the registry notes longer than 600 characters against
+- `check:catalogue` counts the registry notes longer than 600 characters against
   `src/catalog/figma/note-length-baseline.json` in both directions: a new long
   note fails, and a count below the baseline asks to lower `overLimit`. The
   drift refresh lowers it when the `pending` stub shortens a reviewed note;
   nothing raises it.
-- `figma:check` warns when the inventory is older than 30 days.
+- `check:catalogue` warns when the inventory is older than 30 days.
 - Storybook and `library:check` need Playwright Chromium, Firefox and WebKit. Run
   `pnpm exec playwright install chromium firefox webkit` one time.

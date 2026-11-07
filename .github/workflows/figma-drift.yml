@@ -6,7 +6,7 @@ name: Figma drift
 # visible signal. The refreshed JSON is formatted before the commit so the
 # review diff carries only the drift. Queuing a node replaces its reviewed note
 # with the pending stub, so the same refresh lowers the note-length ratchet that
-# `figma:check` reads: the diff carries that move with the drift that caused it.
+# `check:catalogue` reads: the diff carries that move with the drift that caused it.
 #
 # The job produces a reproducible handoff: delta.json, run.json and the body are
 # uploaded as artifacts (never `.figma/`), and the branch guard refuses to
@@ -102,7 +102,7 @@ jobs:
           PAGOPA_UI_ROOT: ../pagopa-ui
         run: |
           branch="figma-drift/$(date -u +%Y-%m-%d)"
-          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma sync \
+          pnpm --filter pagopa-ui-cli exec node src/cli.ts update inventory \
             --rest \
             --save .figma/live-rest.json \
             --pr-body .figma/pr-body.md \

@@ -96,7 +96,7 @@ dynamic workflow that runs a wave of Figma alignment through both skills. It
 runs the deterministic commands itself: the `figma:status` session report, the
 delta plan and triage, a fresh rules/comments snapshot, the pending queue and
 `implementationOrder`, one `figma:brief` per node, the close-out checks
-(`figma:check`, `figma:rules:check`, the parity wave) and the green chain read
+(`check:catalogue`, `figma:rules:check`, the parity wave) and the green chain read
 from [CONTRIBUTING.md](./CONTRIBUTING.md#the-green-chain). It analyses each node
 in parallel and read-only, then pauses so the person can approve or edit
 `packages/pagopa-ui/.figma/align/<runId>/decisions.json`. After resume, one

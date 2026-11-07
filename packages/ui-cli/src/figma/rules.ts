@@ -16,7 +16,8 @@ import path from "node:path"
 import { readJson, writeJson } from "../lib/json.ts"
 import { sha256 } from "../lib/hash.ts"
 import { walkFiles } from "../lib/fs.ts"
-import { enterRoot, resolveWorkspaceRoot } from "../lib/paths.ts"
+import { resolveRoot, resolveWorkspaceRoot } from "../lib/paths.ts"
+import { figmaToken } from "../adapters/figma-token.ts"
 import { UsageError } from "../lib/command.ts"
 import { InventorySchema, RegistrySchema } from "../schemas/catalogue.ts"
 import {
@@ -292,11 +293,11 @@ function writeLedger(root: string, ledger: RulesLedger): void {
 // ------------------------------------------------------------------ refresh
 
 export async function refresh(args: { pageId?: string; nodeId?: string }): Promise<RulesSnapshot> {
-  const root = enterRoot()
+  const root = resolveRoot()
   const fileKey = fileKeyOf(root)
   // One read answers both: the page list is pinned to the same version the
   // node reads below use.
-  const { version, pages } = await fetchFilePages(fileKey)
+  const { version, pages } = await fetchFilePages(fileKey, figmaToken())
 
   let selected = pages
   if (args.pageId) selected = pages.filter((page) => page.id === args.pageId)
@@ -314,6 +315,7 @@ export async function refresh(args: { pageId?: string; nodeId?: string }): Promi
     fileKey,
     version,
     selected.map((page) => page.id),
+    figmaToken(),
     2,
   )
   const containers = new Map<string, string[]>()
@@ -328,7 +330,7 @@ export async function refresh(args: { pageId?: string; nodeId?: string }): Promi
     )
   }
   const ids = [...containers.values()].flat()
-  const documents = await fetchNodeTrees(fileKey, version, ids)
+  const documents = await fetchNodeTrees(fileKey, version, ids, figmaToken())
   const extracted = extractPages(
     selected,
     new Map(
@@ -646,7 +648,7 @@ function flag(argv: string[], name: string): boolean {
 }
 
 export async function runRules(argv: string[] = process.argv.slice(2)): Promise<number> {
-  const root = enterRoot()
+  const root = resolveRoot()
   const json = flag(argv, "json")
 
   if (flag(argv, "refresh")) {

@@ -80,12 +80,12 @@ devices (one iteration each).
   --dir <dir> --wave <date>-<node-id>-alignment` for each record, using a distinct
   wave name per node.
 - Registry for the verified nodes only ([new-from-figma.md](new-from-figma.md)
-  step 6), then `pnpm nx run pagopa-ui:figma:check`.
+  step 6), then `pnpm nx run pagopa-ui:check:catalogue`.
 
 Per node, done means: the preflight passes; every delta is fixed, a residue or
 an ignore; `--strict` is clean or the note explains it; the case reproduces;
 every declared device has a case or a reasoned exception; the registry covers
-only verified nodes and `figma:check` is green.
+only verified nodes and `check:catalogue` is green.
 
 ## The token ladder
 

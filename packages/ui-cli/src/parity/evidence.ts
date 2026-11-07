@@ -27,6 +27,7 @@ import {
   validateCaseFile,
   variantOfCase,
 } from "./cases.ts"
+import { figmaToken } from "../adapters/figma-token.ts"
 import { fetchFigmaImagesPng } from "../figma/rest.ts"
 import { resolveRoot, resolveWorkspaceRoot } from "../lib/paths.ts"
 import { brotliJson, decodeJsonBytes, parseJsonBytes, readJson, writeBytes } from "../lib/json.ts"
@@ -307,7 +308,12 @@ export async function buildEvidence({
           .filter((id): id is string => Boolean(id)),
       ),
     ]
-    const images = await fetchFigmaImagesPng(snapshot.fileKey, snapshot.version, variantIds)
+    const images = await fetchFigmaImagesPng(
+      snapshot.fileKey,
+      snapshot.version,
+      variantIds,
+      figmaToken(),
+    )
     for (const entry of pending) {
       const variant = pinnedVariant(byNode.get(entry.nodeId), entry)
       if (!variant) continue

@@ -358,7 +358,7 @@ async function runIcons(
     throw new Error("Local icons require one identity-keyed catalogue page rule")
   }
   const provenanceByNode = resolveProvenance(rule, new Set(Object.keys(policies)))
-  const nodes = selectRuleNodes(registry, rule, normalizeLive(snapshot))
+  const nodes = selectRuleNodes(registry, rule, normalizeLive(snapshot), workspace)
   if (
     !nodes.length ||
     nodes

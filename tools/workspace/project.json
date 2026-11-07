@@ -10,7 +10,7 @@
         "cwd": "{workspaceRoot}",
         "parallel": false,
         "commands": [
-          "pnpm nx run-many -p pagopa-ui -c=ci -t typecheck,fmt,lint,docs,figma:check,foundation:check,layers:check,build,test",
+          "pnpm nx run-many -p pagopa-ui -c=ci -t typecheck,fmt,lint,docs,check:catalogue,foundation:check,layers:check,build,test",
           "pnpm nx run-many -p pagopa-ui-artwork,pagopa-ui-tokens,pagopa-ui-cli -c=ci -t typecheck,fmt,lint",
           "pnpm nx run pagopa-ui-artwork:test",
           "pnpm nx run pagopa-ui-tokens:test",
@@ -26,7 +26,7 @@
       "configurations": {
         "fast": {
           "commands": [
-            "pnpm nx run-many -p pagopa-ui -c=ci -t typecheck,fmt,lint,docs,figma:check,foundation:check,layers:check,build,test",
+            "pnpm nx run-many -p pagopa-ui -c=ci -t typecheck,fmt,lint,docs,check:catalogue,foundation:check,layers:check,build,test",
             "pnpm nx run-many -p pagopa-ui-artwork,pagopa-ui-tokens,pagopa-ui-cli -c=ci -t typecheck,fmt,lint",
             "pnpm nx run pagopa-ui-artwork:test",
             "pnpm nx run pagopa-ui-tokens:test",

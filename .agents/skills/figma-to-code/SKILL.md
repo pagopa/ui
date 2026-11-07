@@ -1,6 +1,6 @@
 ---
 name: figma-to-code
-description: Figma → React process for this design system. Use when Figma gained or changed components, icons, pictograms or variables; when a drift pull request needs its alignment, or its before/after captures of what changed; when a component is created from a Figma node, aligned, verified against its source frame or re-reviewed; when a component with no node joins the public API; when a set declares a Device/Breakpoint axis; when someone asks the designer a question or a design answer must land — review story, captures, issue, record; or when `figma:check` reports stale or missing evidence.
+description: Figma → React process for this design system. Use when Figma gained or changed components, icons, pictograms or variables; when a drift pull request needs its alignment, or its before/after captures of what changed; when a component is created from a Figma node, aligned, verified against its source frame or re-reviewed; when a component with no node joins the public API; when a set declares a Device/Breakpoint axis; when someone asks the designer a question or a design answer must land — review story, captures, issue, record; or when `check:catalogue` reports stale or missing evidence.
 ---
 
 # Figma to code
@@ -131,7 +131,7 @@ its flags, space-separated:
 Shared references, loaded when a use case points at them:
 [definition-of-done.md](references/definition-of-done.md) (source alignment:
 what a node-backed component proves), [catalogue.md](references/catalogue.md)
-(alignment files, statuses, the `figma:check` contract),
+(alignment files, statuses, the `check:catalogue` contract),
 [parity-tooling.md](references/parity-tooling.md) (the parity commands),
 [rules.md](references/rules.md) (the rules ledger and node comments),
 [init.md](references/init.md) (config and the MCP gate).

@@ -1,8 +1,7 @@
 import fs from "node:fs"
+import { randomUUID } from "node:crypto"
 import path from "node:path"
 import { z } from "zod"
-
-import { figmaToken } from "../adapters/figma-token.ts"
 
 const DocumentSchema = z.looseObject({
   id: z.string(),
@@ -76,8 +75,8 @@ export type FigmaFileHeader = { version: string; lastModified?: string }
 // The file header alone: the version pins a reading and `lastModified` says
 // when the file last changed. One small call answers "is there anything to
 // align?" without reading any node document.
-export async function fetchFileHeader(fileKey: string): Promise<FigmaFileHeader> {
-  const file = await get(`files/${fileKey}?depth=1`, FileHeaderSchema)
+export async function fetchFileHeader(fileKey: string, token: string): Promise<FigmaFileHeader> {
+  const file = await get(`files/${fileKey}?depth=1`, FileHeaderSchema, token)
   if (typeof file.version !== "string" || !file.version) {
     throw new Error("Figma returned no file version")
   }
@@ -157,8 +156,8 @@ async function read(url: string, token: string): Promise<Reply> {
   return { ok: true, data: await response.json() }
 }
 
-async function get<T>(endpoint: string, schema: z.ZodType<T>): Promise<T> {
-  const token = figmaToken()
+async function get<T>(endpoint: string, schema: z.ZodType<T>, token: string): Promise<T> {
+  if (!token.trim()) throw new Error("Figma REST requests require a resolved token")
   // A large read is a burst of requests; Figma answers 429 with a Retry-After
   // and occasionally lets one request stall. Waiting and asking again is part
   // of the reader, not of every caller.
@@ -173,10 +172,6 @@ async function get<T>(endpoint: string, schema: z.ZodType<T>): Promise<T> {
         throw new Error(`Figma GET ${endpoint}: ${describeFailure(error)}`, { cause: error })
       }
       const seconds = waitSeconds(attempt, null)
-      console.error(
-        `figma: GET ${endpoint}: ${describeFailure(error)}; ` +
-          `retrying in ${seconds} s (attempt ${attempt + 2}/${MAX_TRANSPORT_ATTEMPTS})`,
-      )
       await wait(seconds)
       continue
     }
@@ -199,6 +194,7 @@ export async function fetchFigmaImages(
   fileKey: string,
   version: string,
   ids: string[],
+  token: string,
 ): Promise<Map<string, string>> {
   const assets = new Map<string, string>()
   for (let start = 0; start < ids.length; start += 50) {
@@ -211,7 +207,7 @@ export async function fetchFigmaImages(
       use_absolute_bounds: "true",
       svg_include_node_id: "true",
     })
-    const data = await get(`images/${fileKey}?${query}`, ImagesResponseSchema)
+    const data = await get(`images/${fileKey}?${query}`, ImagesResponseSchema, token)
     await Promise.all(
       batch.map(async (id) => {
         const url = data.images?.[id]
@@ -237,6 +233,7 @@ export async function fetchFigmaImagesPng(
   fileKey: string,
   version: string,
   ids: string[],
+  token: string,
 ): Promise<Map<string, Buffer>> {
   const assets = new Map<string, Buffer>()
   for (let start = 0; start < ids.length; start += 50) {
@@ -247,7 +244,7 @@ export async function fetchFigmaImagesPng(
       format: "png",
       scale: "1",
     })
-    const data = await get(`images/${fileKey}?${query}`, ImagesResponseSchema)
+    const data = await get(`images/${fileKey}?${query}`, ImagesResponseSchema, token)
     await Promise.all(
       batch.map(async (id) => {
         const url = data.images?.[id]
@@ -270,6 +267,7 @@ export async function fetchFigmaNodeDocuments(
   fileKey: string,
   version: string,
   ids: string[],
+  token: string,
 ): Promise<Map<string, FigmaDocument>> {
   if (typeof fileKey !== "string" || !fileKey.trim()) {
     throw new Error("Pinned Figma node reads require a file key")
@@ -293,6 +291,7 @@ export async function fetchFigmaNodeDocuments(
     const data = await get(
       `files/${encodeURIComponent(fileKey)}/nodes?${query}`,
       NodeDocumentsResponseSchema,
+      token,
     )
     if (data.fileKey !== undefined && data.fileKey !== fileKey) {
       throw new Error(`Figma returned node documents for the wrong file`)
@@ -328,11 +327,11 @@ type McpNode = {
   pageName: string
 }
 
-export async function fetchFigmaSnapshot(fileKey: string, mcpNodes: McpNode[] = []) {
+export async function fetchFigmaSnapshot(fileKey: string, mcpNodes: McpNode[], token: string) {
   const [componentData, setData, file] = await Promise.all([
-    get(`files/${fileKey}/components`, ComponentInventorySchema),
-    get(`files/${fileKey}/component_sets`, ComponentSetInventorySchema),
-    get(`files/${fileKey}?depth=1`, FileResponseSchema),
+    get(`files/${fileKey}/components`, ComponentInventorySchema, token),
+    get(`files/${fileKey}/component_sets`, ComponentSetInventorySchema, token),
+    get(`files/${fileKey}?depth=1`, FileResponseSchema, token),
   ])
   if (
     !Array.isArray(componentData.meta?.components) ||
@@ -369,7 +368,7 @@ export async function fetchFigmaSnapshot(fileKey: string, mcpNodes: McpNode[] = 
         version: file.version,
         geometry: "paths",
       })
-      const data = await get(`files/${fileKey}/nodes?${query}`, NodeDocumentsResponseSchema)
+      const data = await get(`files/${fileKey}/nodes?${query}`, NodeDocumentsResponseSchema, token)
       for (const id of batch) {
         const record = data.nodes?.[id]
         if (!record?.document || record.document.id !== id) {
@@ -434,7 +433,7 @@ export type FigmaSnapshot = Awaited<ReturnType<typeof fetchFigmaSnapshot>>
 export function writeFigmaSnapshot(file: string, snapshot: FigmaSnapshot): void {
   const { nodes, ...head } = snapshot
   fs.mkdirSync(path.dirname(file), { recursive: true })
-  const temporary = `${file}.${process.pid}.${Date.now()}.tmp`
+  const temporary = `${file}.${randomUUID()}.tmp`
   try {
     const descriptor = fs.openSync(temporary, "wx")
     try {
@@ -501,8 +500,8 @@ export type FigmaFilePages = { version: string; pages: FigmaPage[] }
 // The page list and the version come from the same read: the page trees are
 // then read at that version, so a file that changes between two calls cannot
 // pair one version's page list with another version's documents.
-export async function fetchFilePages(fileKey: string): Promise<FigmaFilePages> {
-  const file = await get(`files/${fileKey}?depth=1`, FilePagesSchema)
+export async function fetchFilePages(fileKey: string, token: string): Promise<FigmaFilePages> {
+  const file = await get(`files/${fileKey}?depth=1`, FilePagesSchema, token)
   return {
     version: file.version,
     pages: file.document.children
@@ -518,6 +517,7 @@ export async function fetchNodeTrees(
   fileKey: string,
   version: string,
   ids: string[],
+  token: string,
   depth = 10,
 ): Promise<Map<string, unknown>> {
   const documents = new Map<string, unknown>()
@@ -528,7 +528,7 @@ export async function fetchNodeTrees(
   for (let start = 0; start < selected.length; start += size) {
     const batch = selected.slice(start, start + size)
     const query = new URLSearchParams({ ids: batch.join(","), version, depth: String(depth) })
-    const data = await get(`files/${fileKey}/nodes?${query}`, NodeTreesSchema)
+    const data = await get(`files/${fileKey}/nodes?${query}`, NodeTreesSchema, token)
     for (const id of batch) {
       const record = data.nodes[id]
       if (!record?.document) throw new Error(`Figma REST returned no document for ${id}`)
@@ -539,8 +539,8 @@ export async function fetchNodeTrees(
   return documents
 }
 
-export async function fetchFileComments(fileKey: string): Promise<FigmaComment[]> {
-  const data = await get(`files/${fileKey}/comments`, CommentsResponseSchema)
+export async function fetchFileComments(fileKey: string, token: string): Promise<FigmaComment[]> {
+  const data = await get(`files/${fileKey}/comments`, CommentsResponseSchema, token)
   return data.comments.map((comment) => ({
     id: comment.id,
     parentId: comment.parent_id?.trim() ? comment.parent_id : null,

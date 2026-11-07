@@ -4,7 +4,7 @@ import { readJson } from "../lib/json.ts"
 import type { Workspace } from "../adapters/workspace.ts"
 import { fetchFigmaSnapshot, writeFigmaSnapshot } from "./rest.ts"
 import { normalizeLive } from "./snapshot.ts"
-import { requireFigmaToken, type KeychainRunner } from "../adapters/figma-token.ts"
+import { figmaToken, type KeychainRunner } from "../adapters/figma-token.ts"
 
 export async function exportFigma(
   workspace: Workspace,
@@ -12,9 +12,13 @@ export async function exportFigma(
   input?: string,
   run?: KeychainRunner,
 ): Promise<string> {
-  requireFigmaToken(env, run)
+  figmaToken(env, run)
   const mcpNodes = input ? normalizeLive(readJson(input)) : []
-  const snapshot = await fetchFigmaSnapshot(fileKeyFromWorkspace(workspace), mcpNodes)
+  const snapshot = await fetchFigmaSnapshot(
+    fileKeyFromWorkspace(workspace),
+    mcpNodes,
+    figmaToken(env, run),
+  )
   const nodes = normalizeLive(snapshot)
   const target = workspace.path(".figma/live-rest.json")
   writeFigmaSnapshot(target, snapshot)

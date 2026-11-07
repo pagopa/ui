@@ -8,7 +8,7 @@
 // triage, rules/comments refresh, plan, pending queue, wave) → analyse (brief,
 // source, cases, decision; parallel, read-only) → decisions (durable pause) →
 // align (one writer at a time, parallel read-only verification) → close (fmt,
-// figma:check, rules, parity verify, one capture/report per node, the visual
+// check:catalogue, rules, parity verify, one capture/report per node, the visual
 // baseline preflight, green chain) → one final re-verification of stale passes
 // → report.
 //
@@ -841,9 +841,9 @@ How: ${DECISION_GUIDANCE[decision.decision]}
 
 Start by re-reading \`pnpm nx run pagopa-ui-cli:figma:brief --node ${node.nodeId}\`: the rules and the open comments are source, and a node is not finished while a rule that targets it is \`pending\` or \`stale\`. Mark each card from the snapshot with \`figma:rules --mark\`; an \`imported\` card becomes a bullet in the guide's first block (\`<!-- component-rules:start -->\` … \`<!-- component-rules:end -->\`, under \`## Component Rules\`, no source reference). Never reply to or resolve a Figma comment.
 
-Limits: three fix passes per case, then a residue with its reason or a written blocker. The case corpus is written only by \`figma:parity:check --save-case\` (with --note "reviewed: …"); never hand-edit it and never leave a draft as coverage. Set status implemented only after you inspected the source and the render of every declared device; otherwise leave it pending with the blocker in the note. A design request keeps the node pending, names its record in the note, and never invents an issue URL, a capture or a preview link. Do not edit registry entries of other nodes. Finish with \`pnpm nx run pagopa-ui:figma:check\` and fix what this node broke; a stale Storybook title is fixed with \`pnpm nx run pagopa-ui:figma:stories\` (the generator owns that map), never by hand-editing it. Do not run the full green chain: the workflow runs it once for the whole wave.
+Limits: three fix passes per case, then a residue with its reason or a written blocker. The case corpus is written only by \`figma:parity:check --save-case\` (with --note "reviewed: …"); never hand-edit it and never leave a draft as coverage. Set status implemented only after you inspected the source and the render of every declared device; otherwise leave it pending with the blocker in the note. A design request keeps the node pending, names its record in the note, and never invents an issue URL, a capture or a preview link. Do not edit registry entries of other nodes. Finish with \`pnpm nx run pagopa-ui:check:catalogue\` and fix what this node broke; a stale Storybook title is fixed with \`pnpm nx run pagopa-ui:update:stories\` (the generator owns that map), never by hand-editing it. Do not run the full green chain: the workflow runs it once for the whole wave.
 
-Census: \`${config.catalog.pageSurface}\` is the record of what the node's Figma page draws. When this node's work touches a page no entry covers, or the source gained a published identity on it, read the page tree once with get_metadata on the page node and write the census; when the entry exists and nothing was published, leave it alone (a re-read that adds nothing is not work). \`figma:check\` enforces it, so a short census is a broken node.
+Census: \`${config.catalog.pageSurface}\` is the record of what the node's Figma page draws. When this node's work touches a page no entry covers, or the source gained a published identity on it, read the page tree once with get_metadata on the page node and write the census; when the entry exists and nothing was published, leave it alone (a re-read that adds nothing is not work). \`check:catalogue\` enforces it, so a short census is a broken node.
 
 Return the JSON: status = the registry status you left; cases = one per saved or re-run case with its device, verdict and residues ("path=reason"); rules = every card that targets the node with the disposition you recorded and its guide or reason; comments = each open thread and how you answered or promoted it; designRequest = the record path or ""; preview = the preview links, or the handoff that still needs design.preview.branch, or ""; openPoints = what stays open and why; commands = each command you ran with its exit code.`
 }
@@ -878,7 +878,7 @@ Writer report: ${JSON.stringify(alignment)}
 Verification findings: ${JSON.stringify(verification.findings)}
 Case verdicts: ${JSON.stringify(verification.cases)}
 
-Fix each finding with the token ladder, re-run and re-save the affected cases (--save-case --note "reviewed: …"), re-read the brief and close any rule or comment finding through \`figma:rules --mark\`, keep the registry consistent, then \`pnpm nx run pagopa-ui:figma:check\`. A finding you cannot close becomes a residue with its reason or a blocker in the registry note, never a silent pass.
+Fix each finding with the token ladder, re-run and re-save the affected cases (--save-case --note "reviewed: …"), re-read the brief and close any rule or comment finding through \`figma:rules --mark\`, keep the registry consistent, then \`pnpm nx run pagopa-ui:check:catalogue\`. A finding you cannot close becomes a residue with its reason or a blocker in the registry note, never a silent pass.
 
 Return the same JSON shape as the writer, updated.`
 }
@@ -1017,7 +1017,7 @@ const figmaAlign = defineWorkflow({
   meta: {
     name: "figma-align",
     description:
-      "Align pending Figma nodes with the React design system following the figma-to-code and start-figma-to-code skills: the config found from git, the token preflight (environment, then the figma-pat keychain entry) and its route, the MCP gate before anything is written, the figma:status session report, the delta plan and triage with fresh rules/comments snapshots, a brief per node, parallel analysis, a durable decision checkpoint, one writer at a time with read-only verification that can overlap a writer, then figma:check, the rules check, one parity capture and report per node, the visual baseline preflight and the green chain. Never commits. " +
+      "Align pending Figma nodes with the React design system following the figma-to-code and start-figma-to-code skills: the config found from git, the token preflight (environment, then the figma-pat keychain entry) and its route, the MCP gate before anything is written, the figma:status session report, the delta plan and triage with fresh rules/comments snapshots, a brief per node, parallel analysis, a durable decision checkpoint, one writer at a time with read-only verification that can overlap a writer, then check:catalogue, the rules check, one parity capture and report per node, the visual baseline preflight and the green chain. Never commits. " +
       "args: { nodes?: string[] (node ids; default: the next pending nodes in implementationOrder), waveSize?: integer (default 3), refresh?: boolean (live snapshot + triage first; needs a token), triage?: boolean (triage the pinned snapshot), approval?: 'pause' | 'auto' (default 'pause': stop after the decisions so the person can edit packages/pagopa-ui/.figma/align/<runId>/decisions.json, then resume), analyseOnly?: boolean (stop after the decisions), greenChain?: boolean (default true), startStorybook?: boolean (default true) }",
     phases: [
       {
@@ -1037,7 +1037,7 @@ const figmaAlign = defineWorkflow({
       {
         title: "Close",
         detail:
-          "fmt, figma:check, rules check, parity verify, one capture/report per node, visual baseline preflight, green chain",
+          "fmt, check:catalogue, rules check, parity verify, one capture/report per node, visual baseline preflight, green chain",
       },
       { title: "Report" },
     ],
@@ -1660,7 +1660,7 @@ const figmaAlign = defineWorkflow({
         .map((result) => result.node.nodeId)
 
       await check("fmt", ["nx", "run-many", "-t", "fmt"])
-      await check("figma:check", ["nx", "run", "pagopa-ui:figma:check"])
+      await check("check:catalogue", ["nx", "run", "pagopa-ui:check:catalogue"])
       await check("figma:rules:check", ["nx", "run", "pagopa-ui-cli:figma:rules:check"])
       await check("figma:parity:verify", ["nx", "run", "pagopa-ui-cli:figma:parity:verify"])
       for (const nodeId of rendered) {

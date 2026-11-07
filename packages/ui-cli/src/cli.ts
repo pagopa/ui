@@ -1,19 +1,8 @@
 #!/usr/bin/env node
 // The bin: the process becomes a context, the tree runs, the code is returned.
 // Everything else lives in src/commands (adapters) and the domain modules.
-import path from "node:path"
+import { createContext, processIo } from "./commands/context.ts"
+import { createCli, execute } from "./commands/index.ts"
 
-import { processIo } from "./commands/context.ts"
-
-// Captured before the tree loads: a legacy module still changes directory at
-// import time (figma/sync.ts), and the context must see the caller's cwd.
-const cwd = process.cwd()
-const configuredRoot = process.env.PAGOPA_UI_ROOT?.trim()
-if (configuredRoot) process.env.PAGOPA_UI_ROOT = path.resolve(cwd, configuredRoot)
-const { createContext } = await import("./commands/context.ts")
-const { createCli, execute } = await import("./commands/index.ts")
-
-const ctx = createContext({ env: process.env, cwd, io: processIo })
-const code = await execute(createCli(ctx), ctx, process.argv.slice(2))
-// A legacy group still reports through `process.exitCode`; the larger wins.
-process.exitCode = Math.max(Number(process.exitCode ?? 0), code)
+const ctx = createContext({ env: process.env, cwd: process.cwd(), io: processIo })
+process.exitCode = await execute(createCli(ctx), ctx, process.argv.slice(2))

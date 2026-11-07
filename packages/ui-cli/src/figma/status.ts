@@ -10,7 +10,7 @@ import fs from "node:fs"
 import path from "node:path"
 
 import { readJson } from "../lib/json.ts"
-import { enterRoot } from "../lib/paths.ts"
+import type { Workspace } from "../adapters/workspace.ts"
 import { InventorySchema, RegistrySchema, type Inventory } from "../schemas/catalogue.ts"
 import { fetchFileHeader } from "./rest.ts"
 import { fileKeyFromSource } from "./snapshot.ts"
@@ -47,7 +47,7 @@ type LiveReport = {
   error?: string
 }
 
-type StatusReport = {
+export type StatusReport = {
   config: string | null
   token: { present: boolean; message: string | null }
   snapshot: {
@@ -92,15 +92,6 @@ type StatusReport = {
   next: string
 }
 
-function workspaceRoot(from: string): string {
-  for (let current = from; ;) {
-    if (fs.existsSync(path.join(current, "pnpm-workspace.yaml"))) return current
-    const parent = path.dirname(current)
-    if (parent === current) return from
-    current = parent
-  }
-}
-
 function relativeTo(base: string, file: string): string {
   const relative = path.relative(base, file)
   return relative.startsWith("..") ? file : relative.split(path.sep).join("/")
@@ -117,12 +108,13 @@ function requestState(file: string): "open" | "answered" {
   return status.toLowerCase() === "open" ? "open" : "answered"
 }
 
-function designRequests(): StatusReport["requests"] {
-  const root = process.cwd()
-  const workspace = workspaceRoot(root)
-  const directory = [path.join(root, REQUESTS_PATH), path.join(workspace, REQUESTS_PATH)].find(
-    (candidate) => fs.existsSync(candidate),
-  )
+function designRequests(workspace: Workspace): StatusReport["requests"] {
+  const root = workspace.root
+  const workspaceRootPath = workspace.workspaceRoot
+  const directory = [
+    path.join(root, REQUESTS_PATH),
+    path.join(workspaceRootPath, REQUESTS_PATH),
+  ].find((candidate) => fs.existsSync(candidate))
   if (!directory) return { path: null, open: 0, answered: 0, files: [] }
   const files = fs
     .readdirSync(directory)
@@ -130,7 +122,7 @@ function designRequests(): StatusReport["requests"] {
     .sort()
   const states = files.map((file) => requestState(path.join(directory, file)))
   return {
-    path: relativeTo(workspace, directory),
+    path: relativeTo(workspaceRootPath, directory),
     open: states.filter((state) => state === "open").length,
     answered: states.filter((state) => state === "answered").length,
     files,
@@ -159,63 +151,64 @@ function nextCommand(report: Omit<StatusReport, "next">): string {
   return "pnpm nx run pagopa-ui-cli:figma:status -- --live (ask the file whether it changed)"
 }
 
-function printText(report: StatusReport): void {
+export function formatStatusText(report: StatusReport): string[] {
+  const lines: string[] = []
   const label = (name: string): string => name.padEnd(10)
-  console.log(`${label("config")}${report.config ?? "(missing figma-to-code.yaml)"}`)
-  console.log(
+  lines.push(`${label("config")}${report.config ?? "(missing figma-to-code.yaml)"}`)
+  lines.push(
     `${label("token")}${report.token.present ? "present" : "missing — export FIGMA_TOKEN (file_content:read, library_content:read)"}`,
   )
   if (report.snapshot.present) {
     const snapshot = report.snapshot
-    console.log(
+    lines.push(
       `${label("snapshot")}${snapshot.path} · ${bytesLabel(snapshot.bytes ?? 0)} · modified ${snapshot.modifiedAt}`,
     )
   } else {
-    console.log(`${label("snapshot")}${report.snapshot.path} (missing)`)
+    lines.push(`${label("snapshot")}${report.snapshot.path} (missing)`)
   }
   const inventory = report.inventory
   if (inventory.error) {
-    console.log(`${label("inventory")}${inventory.error}`)
+    lines.push(`${label("inventory")}${inventory.error}`)
   } else {
-    console.log(
+    lines.push(
       `${label("inventory")}synced ${inventory.syncedAt} · version ${inventory.fileVersion ?? "(not recorded yet)"}` +
         `${inventory.lastModified ? ` · file modified ${inventory.lastModified}` : ""} · ` +
         `${inventory.nodes} nodes (${inventory.components} components, ${inventory.sets} sets)`,
     )
   }
   if (report.registry.error) {
-    console.log(`${label("registry")}${report.registry.error}`)
+    lines.push(`${label("registry")}${report.registry.error}`)
   } else {
     const counts = report.registry
-    console.log(
+    lines.push(
       `${label("registry")}implemented ${counts.implemented} · mocked ${counts.mocked} · ` +
         `pending ${counts.pending} · excluded ${counts.excluded}`,
     )
   }
   if (report.rules.error) {
-    console.log(`${label("rules")}${report.rules.error}`)
+    lines.push(`${label("rules")}${report.rules.error}`)
   } else if (report.rules.present) {
-    console.log(
+    lines.push(
       `${label("rules")}${report.rules.consolidated} consolidated · ${report.rules.imported} imported · ` +
         `${report.rules.recorded} recorded · ${report.rules.pending} pending · ${report.rules.stale} stale`,
     )
   } else {
-    console.log(`${label("rules")}${report.rules.path} (missing)`)
+    lines.push(`${label("rules")}${report.rules.path} (missing)`)
   }
   if (report.comments.error) {
-    console.log(`${label("comments")}${report.comments.error}`)
+    lines.push(`${label("comments")}${report.comments.error}`)
   } else if (report.comments.present) {
-    console.log(
+    lines.push(
       `${label("comments")}${report.comments.open} open of ${report.comments.threads} threads · ` +
         `${report.comments.mappedOpen} on mapped nodes`,
     )
   } else {
-    console.log(`${label("comments")}${report.comments.path} (missing)`)
+    lines.push(`${label("comments")}${report.comments.path} (missing)`)
   }
   if (report.surface.error) {
-    console.log(`${label("surface")}${report.surface.error}`)
+    lines.push(`${label("surface")}${report.surface.error}`)
   } else if (report.surface.stats) {
-    console.log(
+    lines.push(
       `${label("surface")}${formatSurfaceLine(report.surface.stats).replace("surface: ", "")}`,
     )
   }
@@ -223,15 +216,15 @@ function printText(report: StatusReport): void {
     const reason = row.designRequests.length
       ? row.designRequests.join(", ")
       : "no design request named in the note"
-    console.log(`${label("pending")}${row.nodeId} ${row.name ?? "(removed)"} → ${reason}`)
+    lines.push(`${label("pending")}${row.nodeId} ${row.name ?? "(removed)"} → ${reason}`)
   }
-  console.log(
+  lines.push(
     `${label("requests")}${report.requests.open} open · ${report.requests.answered} answered` +
       `${report.requests.path ? ` in ${report.requests.path}` : ""}`,
   )
   if (report.live) {
     if (report.live.error) {
-      console.log(`${label("live")}unavailable — ${report.live.error}`)
+      lines.push(`${label("live")}unavailable — ${report.live.error}`)
     } else {
       const verdict =
         report.live.changedSinceInventory === false
@@ -239,21 +232,34 @@ function printText(report: StatusReport): void {
           : report.live.changedSinceInventory === true
             ? "changed since the inventory sync"
             : "the inventory records no version to compare"
-      console.log(
+      lines.push(
         `${label("live")}version ${report.live.version} · modified ${report.live.lastModified ?? "unknown"} · ${verdict}`,
       )
     }
   }
-  console.log(`${label("next")}${report.next}`)
+  lines.push(`${label("next")}${report.next}`)
+  return lines
+}
+export interface StatusOptions {
+  live?: boolean
 }
 
-export async function runStatus(argv: string[] = process.argv.slice(2)): Promise<number> {
-  const root = enterRoot()
-  const flag = (name: string): boolean => argv.includes(`--${name}`)
+export interface StatusResult {
+  report: StatusReport
+  exitCode: number
+}
+
+export async function buildStatusReport(
+  workspace: Workspace,
+  options: StatusOptions = {},
+  env: NodeJS.ProcessEnv = {},
+): Promise<StatusResult> {
+  const root = workspace.root
+  const flag = (name: string): boolean => name === "live" && Boolean(options.live)
 
   let token: { present: boolean; message: string | null } = { present: true, message: null }
   try {
-    figmaToken()
+    figmaToken(env)
   } catch (error) {
     token = {
       present: false,
@@ -273,7 +279,7 @@ export async function runStatus(argv: string[] = process.argv.slice(2)): Promise
   }
   let inventory: Inventory | null = null
   try {
-    inventory = readJson(path.join(root, INVENTORY_PATH), InventorySchema)
+    inventory = readJson(workspace.path(INVENTORY_PATH), InventorySchema)
     inventoryReport = {
       ...inventoryReport,
       syncedAt: inventory.syncedAt,
@@ -300,7 +306,7 @@ export async function runStatus(argv: string[] = process.argv.slice(2)): Promise
   }
   const pending: PendingRow[] = []
   try {
-    const registry = readJson(path.join(root, REGISTRY_PATH), RegistrySchema)
+    const registry = readJson(workspace.path(REGISTRY_PATH), RegistrySchema)
     const pageRules = new Map(registry.bulkRules.map((rule) => [rule.pageId, rule]))
     const counts: Counts = { implemented: 0, mocked: 0, pending: 0, excluded: 0, unaccounted: 0 }
     const isCounted = (value: string): value is keyof Counts => value in counts
@@ -338,7 +344,7 @@ export async function runStatus(argv: string[] = process.argv.slice(2)): Promise
     }`
   }
 
-  const snapshotFile = path.join(root, SNAPSHOT_PATH)
+  const snapshotFile = workspace.path(SNAPSHOT_PATH)
   const snapshotStat = fs.existsSync(snapshotFile) ? fs.statSync(snapshotFile) : null
   const snapshot: StatusReport["snapshot"] = snapshotStat
     ? {
@@ -355,9 +361,9 @@ export async function runStatus(argv: string[] = process.argv.slice(2)): Promise
       live = { error: "FIGMA_TOKEN is missing" }
     } else {
       try {
-        const fileKey = fileKeyFromSource() ?? inventory?.fileKey
+        const fileKey = fileKeyFromSource(workspace) ?? inventory?.fileKey
         if (!fileKey) throw new Error("no FIGMA_FILE_KEY and no inventory file key")
-        const header = await fetchFileHeader(fileKey)
+        const header = await fetchFileHeader(fileKey, figmaToken(env))
         live = {
           version: header.version,
           lastModified: header.lastModified,
@@ -433,14 +439,17 @@ export async function runStatus(argv: string[] = process.argv.slice(2)): Promise
   // census still owes.
   const surfaceReport: StatusReport["surface"] = { stats: null, error: null }
   try {
-    surfaceReport.stats = surfaceSummary(loadPageSurface(), inventory?.components ?? [])
+    surfaceReport.stats = surfaceSummary(
+      loadPageSurface(workspace.path("src/catalog/figma/page-surface.json")),
+      inventory?.components ?? [],
+    )
   } catch (error) {
     surfaceReport.error = error instanceof Error ? error.message.split("\n")[0] : String(error)
   }
 
-  const configFile = path.join(root, CONFIG_PATH)
+  const configFile = workspace.path(CONFIG_PATH)
   const base: Omit<StatusReport, "next"> = {
-    config: fs.existsSync(configFile) ? relativeTo(workspaceRoot(root), configFile) : null,
+    config: fs.existsSync(configFile) ? relativeTo(workspace.workspaceRoot, configFile) : null,
     token,
     snapshot,
     inventory: inventoryReport,
@@ -449,12 +458,10 @@ export async function runStatus(argv: string[] = process.argv.slice(2)): Promise
     comments: commentsReport,
     pending,
     surface: surfaceReport,
-    requests: designRequests(),
+    requests: designRequests(workspace),
     live,
   }
   const report: StatusReport = { ...base, next: nextCommand(base) }
 
-  if (flag("json")) console.log(JSON.stringify(report, null, 2))
-  else printText(report)
-  return inventoryReport.error ? 1 : 0
+  return { report, exitCode: inventoryReport.error ? 1 : 0 }
 }

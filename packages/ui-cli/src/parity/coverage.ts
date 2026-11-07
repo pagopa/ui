@@ -42,7 +42,7 @@ export function qualifyBulk(
         : PictogramManifestSchema.parse(raw)
     if (manifest.fileKey !== fileKey) fail("manifest file key differs from inventory")
     // The manifest is the single source of public names: the generated names
-    // export is checked against it by `figma sync`, never re-parsed here.
+    // export is checked against it by `check catalogue`, never re-parsed here.
     const provenance = resolveProvenance(rule, new Set(nodes.map((node) => node.nodeId)))
     const assets = Object.values(manifest.entries)
     const assetNames = assets.map((asset) => asset.name)

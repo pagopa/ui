@@ -1,54 +1,32 @@
 #!/usr/bin/env node
-// Figma delta tooling — read-only against Figma.
+// Figma catalogue validation and refresh domain.
 //
 // Static checks (no network, run in CI):
-//   node src/cli.ts figma sync
-//     - inventory/registry/file-key consistency
-//     - every published Figma node accounted (registry entry or bulk rule)
-//     - every identity a censused page draws accounted: the page surface mirrors
-//       the inventory both ways, so a drawing the library never published is
-//       named as out of scope instead of staying invisible, and publishing it
-//       fails the mirror until a decision is written
-//     - every composition a censused page draws either measured by a parity case
-//       or excused in writing, so a layout the source draws without a story is
-//       a recorded decision rather than an omission
-//     - every implemented target (module + export [+ story]) exists
-//     - every implemented target is rendered by its linked story, or listed in
-//       src/catalog/figma/evidence-exceptions.json with a reason
-//     - changed implementations carry explicit story exports rendering every
-//       mapped implementation
-//     - every implemented node linked to a single story export shows that node
-//       in the story's effective parameters.design (the Design panel mapping)
-//     - every public export maps to a registry target, a module pattern or
-//       src/catalog/figma/api-exceptions.json (reverse coverage)
+//   node src/cli.ts check catalogue
+//     - inventory/registry/file-key consistency and published-node accounting
+//     - page-surface census and composition evidence
+//     - implemented targets, stories and public API coverage
 //     - icon/pictogram public names cover manifest identities node-for-node
 //     - warns when the inventory snapshot is older than 30 days
 //
-// Drift check against a complete pinned export (see the figma-to-code skill):
-//   node src/cli.ts figma sync --input .figma/live-rest.json [--plan]
-//     - reports NEW / REMOVED / CHANGED / RENAMED / MOVED / AFFECTED nodes
-//     - exits 1 on any drift so the delta is explicitly reconciled
+// Read-only drift check against a pinned export:
+//   node src/cli.ts check catalogue --input .figma/live-rest.json
 //
-// Refresh the committed inventory from a live export:
-//   node src/cli.ts figma sync --write --input .figma/live-rest.json
+// Print a machine-readable plan, reading REST by default:
+//   node src/cli.ts figma plan [--input .figma/live-rest.json]
 //
-// Refresh + queue new/changed/affected implementations for review (delta triage).
-// Mocked demos retain their status and note and are not queued: they are demos,
-// not approvals to renew. Merging the drift PR is the review record.
-//   node src/cli.ts figma sync --triage --input .figma/live-rest.json
+// Refresh the committed inventory from a pinned export:
+//   node src/cli.ts update inventory --input .figma/live-rest.json
 //
-// PR mode for the scheduled drift job: refresh only when there is drift and
-// write the review instructions as a markdown body for the pull request.
-//   node src/cli.ts figma sync --rest --pr-body .figma/pr-body.md
+// Refresh and queue new/changed/affected implementations for review:
+//   node src/cli.ts figma triage --input .figma/live-rest.json
+// Mocked demos retain their status and note and are not queued. Merging the
+// drift PR is the review record.
 //
-// Fetch the live export directly (requires FIGMA_TOKEN, read-only scope):
-//   FIGMA_TOKEN=... node src/cli.ts figma sync --rest [--write|--triage]
-//
-// --write/--triage default to .figma/live-rest.json, or .figma/live.json when
-// only the older MCP dump exists. --pr-body exits 0 with and without drift; the
-// workflow branches on the git diff.
-// The Figma side is never written to. Mapping is stored in the repo, keyed by
-// nodeId, so renames in Figma never break the mapping.
+// PR mode for the scheduled drift job:
+//   node src/cli.ts update inventory --rest --pr-body .figma/pr-body.md
+// The PR body is written only when the live snapshot has drift. The Figma side
+// is never written to; mappings stay in the repository, keyed by nodeId.
 import fs from "node:fs"
 import path from "node:path"
 import { z } from "zod"
@@ -63,8 +41,6 @@ import {
 import type { RegistryEntry } from "../schemas/catalogue.ts"
 import {
   checkDevicePolicy,
-  declaredDevices,
-  deviceAxes,
   formatDeviceLine,
   loadDevicePolicy,
   type DeviceStats,
@@ -78,6 +54,8 @@ import {
   validateCaseFile,
 } from "../parity/cases.ts"
 import { fetchFigmaSnapshot, writeFigmaSnapshot } from "./rest.ts"
+import { renderCatalogueDelta, renderCataloguePrBody } from "./catalogue-render.ts"
+import { prepareCatalogueRefresh } from "./catalogue-refresh.ts"
 import { staleStoryTitles } from "./stories.ts"
 import {
   checkPageSurface,
@@ -92,57 +70,87 @@ import {
   type SurfaceUncensused,
   type SurfaceUnmirrored,
 } from "./surface.ts"
-import { requireFigmaToken } from "../adapters/figma-token.ts"
-import { EVIDENCE_DIR, evidencePaths, loadManifest } from "../parity/evidence.ts"
-import { renderedStoryExports, runtimeExports, storyDesignNodes } from "../lib/source-modules.ts"
+import type { Workspace } from "../adapters/workspace.ts"
+import { createSourceModules } from "../lib/source-modules.ts"
 import { readJson } from "../lib/json.ts"
 import { parseSchema } from "../lib/validate.ts"
+import { loadCatalogueState, INVENTORY_PATH } from "./catalogue-state.ts"
 import {
   ApiExceptionsSchema,
   EvidenceExceptionsSchema,
-  InventorySchema,
-  loweredNoteLengthBaseline,
+  longNoteErrors,
   NOTE_LENGTH_BASELINE_PATH,
   NoteLengthBaselineSchema,
-  RegistrySchema,
   type ApiExceptions,
   type InventoryNode,
   type PageSurface,
-  type PageSurfacePage,
+  type Inventory,
   type Registry,
 } from "../schemas/catalogue.ts"
 import type { DevicePolicy } from "../schemas/devices.ts"
-import {
-  absolutePath,
-  artworkPath,
-  enterRoot,
-  fileIdentity,
-  resolveStoriesRoot,
-} from "../lib/paths.ts"
 
-const ROOT = enterRoot()
-const INVENTORY_PATH = "src/catalog/figma/inventory.json"
-const REGISTRY_PATH = "src/catalog/figma/registry.json"
 const FILE_TS_PATH = "src/catalog/figma/file.ts"
 const ICONS_PATH = "src/components/icons/figma-inventory.ts"
 const VALID_STATUSES = new Set(["implemented", "mocked", "excluded", "pending"])
-
 const EVIDENCE_EXCEPTIONS_PATH = "src/catalog/figma/evidence-exceptions.json"
 const API_EXCEPTIONS_PATH = "src/catalog/figma/api-exceptions.json"
 
 type NodeDeltaKey = "added" | "changed" | "renamed" | "moved" | "removed" | "affected" | "baseline"
 
-export async function runSync(argv: string[] = process.argv.slice(2)): Promise<number> {
-  function flag(name: string): boolean {
-    return argv.includes(`--${name}`)
+export interface CatalogueOptions {
+  input?: string
+  rest?: boolean
+  plan?: boolean
+  write?: boolean
+  triage?: boolean
+  prBody?: string
+  save?: string
+  delta?: string
+  evidenceBase?: string
+  token?: string
+}
+
+export interface CatalogueReport {
+  exitCode: number
+  out: string[]
+  err: string[]
+}
+
+export async function syncCatalogue(
+  workspace: Workspace,
+  options: CatalogueOptions = {},
+): Promise<CatalogueReport> {
+  const out: string[] = []
+  const outputErrors: string[] = []
+  const flags: Record<string, boolean | undefined> = {
+    rest: options.rest,
+    plan: options.plan,
+    write: options.write,
+    triage: options.triage,
   }
-  function option(name: string): string | undefined {
-    const index = argv.indexOf(`--${name}`)
-    return index >= 0 ? argv[index + 1] : undefined
+  const flag = (name: string): boolean => Boolean(flags[name])
+  const option = (name: string): string | undefined => {
+    const values: Record<string, string | undefined> = {
+      input: options.input,
+      "pr-body": options.prBody,
+      save: options.save,
+      delta: options.delta,
+      "evidence-base": options.evidenceBase,
+    }
+    return values[name]
   }
+  const root = workspace.root
+  const sourceModules = createSourceModules(workspace)
+  const rootFile = (identity: string, ...segments: string[]): string =>
+    workspace.path(identity, ...segments)
+  const absolutePath = (file: string): string => workspace.path(file)
+  const artworkPath = (file: string): string => path.join(workspace.artworkRoot, file)
+  const resolveStoriesRoot = (): string => workspace.storiesRoot
+  const fileIdentity = (file: string): string => workspace.identity(file)
 
   // Fail fast before any file work: --rest needs the read-only token.
-  if (flag("rest")) requireFigmaToken()
+  if (flag("rest") && !options.token)
+    throw new Error("REST catalogue reads require a resolved Figma token")
 
   const errors: string[] = []
   const warnings: string[] = []
@@ -168,21 +176,21 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
   }
 
   function exportNames(file: string): Set<string> {
-    return new Set(runtimeExports(file).keys())
+    return new Set(sourceModules.runtimeExports(file).keys())
   }
 
   // A registry module may be missing or moved: the existence check reports it
   // as `module not found`, so the reads that run before that report stay quiet
   // instead of failing on the missing file.
   function moduleExports(file: string): Map<string, string> {
-    return fs.existsSync(absolutePath(file)) ? runtimeExports(file) : new Map()
+    return fs.existsSync(absolutePath(file)) ? sourceModules.runtimeExports(file) : new Map()
   }
 
   // Walks the re-export graph from the public entry and records, for every
   // runtime export, the module that declares it. Types are ignored: they do not
   // exist at runtime and never need a Figma mapping.
   function collectPublicExports(): Map<string, string> {
-    return runtimeExports("src/pagopa-ui.ts")
+    return sourceModules.runtimeExports("src/pagopa-ui.ts")
   }
 
   // Declaring runtime identities actually rendered by exported stories. The
@@ -195,7 +203,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
       if (typeof file !== "string" || !file.endsWith(".stories.tsx")) continue
       const identity = fileIdentity(path.join(directory, file))
       const names = new Set(
-        [...renderedStoryExports(identity).values()].flatMap((names) => [...names]),
+        [...sourceModules.renderedStoryExports(identity).values()].flatMap((names) => [...names]),
       )
       byFile.set(identity, names)
     }
@@ -203,20 +211,14 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
   }
 
   function readExceptions<T>(file: string, schema: z.ZodType<T>): T | null {
-    if (!fs.existsSync(path.join(ROOT, file))) return null
+    if (!fs.existsSync(path.join(root, file))) return null
     try {
-      return parseSchema(schema, readJson(path.join(ROOT, file)), file)
+      return parseSchema(schema, readJson(path.join(root, file)), file)
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
       fail(`${file}: invalid JSON (${message})`)
       return null
     }
-  }
-
-  // The registry and the exceptions are JSON maps keyed by a node id: the key is
-  // data, so the maps are rebuilt instead of deleting a dynamic key.
-  function dropKeys<T>(record: Record<string, T>, keys: Set<string>): Record<string, T> {
-    return Object.fromEntries(Object.entries(record).filter(([key]) => !keys.has(key)))
   }
 
   function matchesModulePattern(file: string, pattern: string): boolean {
@@ -226,33 +228,20 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
 
   // ---------------------------------------------------------------- load state
 
-  if (!fs.existsSync(path.join(ROOT, INVENTORY_PATH))) {
-    fail(`missing ${INVENTORY_PATH} (run with --write and a live export)`)
+  const state = loadCatalogueState(workspace)
+  for (const error of state.errors) fail(error)
+  if (!state.inventory || !state.registry) {
+    for (const error of errors) outputErrors.push(`error: ${error}`)
+    return { exitCode: 1, out, err: outputErrors }
   }
-  if (!fs.existsSync(path.join(ROOT, REGISTRY_PATH))) {
-    fail(`missing ${REGISTRY_PATH}`)
-  }
-  if (errors.length) {
-    for (const error of errors) console.error(`error: ${error}`)
-    return 1
-  }
-
-  let inventory: z.infer<typeof InventorySchema> = parseSchema(
-    InventorySchema,
-    readJson(path.join(ROOT, INVENTORY_PATH)),
-    INVENTORY_PATH,
-  )
-  const registry: Registry = parseSchema(
-    RegistrySchema,
-    readJson(path.join(ROOT, REGISTRY_PATH)),
-    REGISTRY_PATH,
-  )
-  const committed: InventoryNode[] = inventory.components
+  let inventory: Inventory = state.inventory
+  let registry: Registry = state.registry
+  let committed: InventoryNode[] = inventory.components
   const committedById = new Map(committed.map((node) => [node.nodeId, node]))
   const pendingWrites = new Map<string, unknown>()
 
   try {
-    const normalized = normalizeLive(inventory)
+    const normalized = normalizeLive(inventory, { workspace })
     if (inventory.schemaVersion === 2) {
       for (const node of normalized) {
         if (committedById.get(node.nodeId)?.contractFingerprint !== node.contractFingerprint) {
@@ -269,6 +258,12 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
   const apiExceptions: ApiExceptions = readExceptions(API_EXCEPTIONS_PATH, ApiExceptionsSchema) ?? {
     modulePatterns: {},
     exports: {},
+  }
+  const noteBaseline = readExceptions(NOTE_LENGTH_BASELINE_PATH, NoteLengthBaselineSchema)
+  if (noteBaseline) {
+    for (const problem of longNoteErrors(registry, noteBaseline, NOTE_LENGTH_BASELINE_PATH)) {
+      fail(problem)
+    }
   }
 
   // ------------------------------------------------------------- drift handling
@@ -290,23 +285,25 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     // default source; the older MCP dump path still works when it is the only
     // file present.
     for (const candidate of [".figma/live-rest.json", ".figma/live.json"]) {
-      if (fs.existsSync(path.join(ROOT, candidate))) {
+      if (fs.existsSync(path.join(root, candidate))) {
         inputOption = candidate
         break
       }
     }
   }
   if (flag("rest")) {
-    const keyFromFile = fileKeyFromSource()
+    const keyFromFile = fileKeyFromSource(workspace)
     restSnapshot = await fetchFigmaSnapshot(
       keyFromFile ?? inventory.fileKey,
       committed.filter((node) => node.sources?.includes("mcp")),
+      options.token ?? "",
     )
     liveVersion = restSnapshot.version
     liveLastModified = restSnapshot.lastModified
-    live = normalizeLive(restSnapshot)
+    live = normalizeLive(restSnapshot, { workspace })
   } else if (inputOption) {
-    const input: unknown = JSON.parse(fs.readFileSync(path.resolve(inputOption), "utf8"))
+    const inputPath = path.resolve(root, inputOption)
+    const input: unknown = JSON.parse(fs.readFileSync(inputPath, "utf8"))
     if (
       input &&
       typeof input === "object" &&
@@ -332,24 +329,25 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     ) {
       fail("live export file key does not match the committed inventory")
     }
-    live = normalizeLive(input)
+    live = normalizeLive(input, { workspace })
   } else if (flag("write") || flag("triage") || flag("pr-body")) {
-    console.error(
+    outputErrors.push(
       "--write/--triage/--pr-body need a live source: pass --input <file> (Figma MCP export) or --rest.",
     )
-    return 2
+    return { exitCode: 2, out, err: outputErrors }
   }
 
   // The REST read is the pinned snapshot the evidence refresh reads next: keep
   // it beside the PR body so the drift job does not spend a second API read.
   if (restSnapshot) {
     const saveOption = option("save") ?? ".figma/live-rest.json"
-    const savePath = path.resolve(ROOT, saveOption)
+    const savePath = path.resolve(root, saveOption)
     try {
       writeFigmaSnapshot(savePath, restSnapshot)
       // `--plan` owns stdout: the plan stays parseable as JSON.
-      const report = flag("plan") ? console.error : console.log
-      report(`snapshot: ${saveOption} (version ${restSnapshot.version})`)
+      if (flag("plan"))
+        outputErrors.push(`snapshot: ${saveOption} (version ${restSnapshot.version})`)
+      else out.push(`snapshot: ${saveOption} (version ${restSnapshot.version})`)
     } catch (error) {
       fail(
         `cannot save the REST snapshot to ${saveOption}: ` +
@@ -378,7 +376,6 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     }
   }
 
-  const writeRequested = flag("write") || flag("triage")
   const prBodyPath = option("pr-body")
   const driftKeys: Array<keyof SnapshotDelta> = [
     "added",
@@ -390,402 +387,38 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
     "affected",
   ]
   const hasDrift = Boolean(live) && driftKeys.some((key) => delta[key].length)
+  const writeRequested = (flag("write") || flag("triage")) && !(prBodyPath && live && !hasDrift)
 
   if (live && (writeRequested || (prBodyPath && hasDrift))) {
-    inventory = {
-      schemaVersion: 2,
-      fileKey: inventory.fileKey,
-      syncedAt: new Date().toISOString().slice(0, 10),
-      ...(liveVersion ? { fileVersion: liveVersion } : {}),
-      ...(liveLastModified ? { lastModified: liveLastModified } : {}),
-      components: live,
-    }
-    pendingWrites.set(INVENTORY_PATH, inventory)
-    committed.length = 0
+    const noteBaselineForRefresh = readExceptions(
+      NOTE_LENGTH_BASELINE_PATH,
+      NoteLengthBaselineSchema,
+    )
+    const refresh = prepareCatalogueRefresh(workspace, {
+      inventory,
+      registry,
+      live,
+      delta,
+      liveVersion,
+      liveLastModified,
+      evidenceExceptions,
+      noteBaseline: noteBaselineForRefresh,
+    })
+    inventory = refresh.inventory
+    registry = refresh.registry
+    evidenceExceptions = refresh.evidenceExceptions
+    ratchet = refresh.ratchet
+    reconciledSurface = refresh.reconciledSurface
+    for (const [file, value] of refresh.pendingWrites) pendingWrites.set(file, value)
+    committed = inventory.components
     committedById.clear()
-    for (const node of live) {
-      committed.push(node)
-      committedById.set(node.nodeId, node)
-    }
-
-    const date = new Date().toISOString().slice(0, 10)
-    registry.entries ??= {}
-    const renewed = new Set<string>()
-    const removed = new Set<string>()
-    for (const node of [...delta.added, ...delta.changed, ...delta.affected]) {
-      const previous = registry.entries[node.nodeId]
-      const rule = registry.bulkRules?.find((rule) => rule.pageId === node.pageId)
-      if (previous?.status === "excluded" || (!previous && rule?.status === "excluded")) continue
-      // Mocked demos are not approvals to renew: they stay demos and the drift
-      // PR shows their change for the human decision.
-      if (previous?.status === "mocked") continue
-      if (previous && !VALID_STATUSES.has(previous.status)) continue
-      registry.entries[node.nodeId] = {
-        ...previous,
-        status: "pending",
-        note: `Figma delta ${date}: review new/changed node or dependency before marking implemented`,
-      }
-      renewed.add(node.nodeId)
-    }
-    for (const node of delta.removed) removed.add(node.nodeId)
-    registry.entries = dropKeys<Registry["entries"][string]>(registry.entries, removed)
-    evidenceExceptions = dropKeys<string>(evidenceExceptions, new Set([...renewed, ...removed]))
-    pendingWrites.set(REGISTRY_PATH, registry)
-    // The census records the same decision on the page side, so the queue has to
-    // reach it too: a refresh that lowered a node to `pending` while the census
-    // still said `shipped` fails the page-surface gate below, and the drift pull
-    // request never opens. A census row holds two kinds of claim — what the page
-    // shows (`name`, `kind`, the page it sits on, the library that publishes it)
-    // and what was decided about it (`decision`, `reason`) — and the refresh owns
-    // the first: it copies the observations it just read, while the decision moves
-    // only where the queue renewed it, so no page read is needed and no judgement
-    // is invented.
-    const surfaceFile = path.join(ROOT, PAGE_SURFACE_PATH)
-    const surface = fs.existsSync(surfaceFile) ? loadPageSurface(surfaceFile) : null
-    if (surface) {
-      const reason = `Figma delta ${date}: queued by the drift refresh, the review decides`
-      const pages = new Map(surface.pages.map((page) => [page.pageId, page]))
-      const published = new Map(committed.map((node) => [node.nodeId, node]))
-      const censused = new Map<string, PageSurfacePage>()
-      let reconciled = false
-      for (const page of surface.pages) {
-        for (const identity of page.identities) {
-          const node = published.get(identity.nodeId)
-          if (!node) continue
-          // The identity follows its node to the page it now sits on, and an
-          // uncensused destination takes no identity: that page is a page read.
-          const moved = node.pageId !== page.pageId
-          const destination = pages.get(node.pageId)
-          if (moved) {
-            page.identities = page.identities.filter((entry) => entry.nodeId !== node.nodeId)
-            reconciled = true
-            if (!destination) continue
-            destination.identities.push(identity)
-          }
-          if (identity.name !== node.name) {
-            identity.name = node.name
-            reconciled = true
-          }
-          if (identity.kind !== node.type) {
-            identity.kind = node.type
-            reconciled = true
-          }
-          censused.set(node.nodeId, destination ?? page)
-        }
-      }
-      for (const node of published.values()) {
-        const page = censused.get(node.nodeId)
-        // A node the file published after its page was read: the census cannot
-        // have decided it, so the queue writes the decision instead of guessing
-        // `shipped`. An uncensused page is a page read, and the gate says so.
-        if (!page) {
-          const destination = pages.get(node.pageId)
-          if (!destination || !renewed.has(node.nodeId)) continue
-          destination.identities.push({
-            nodeId: node.nodeId,
-            name: node.name,
-            kind: node.type,
-            inLibrary: true,
-            decision: "pending",
-            reason,
-          })
-          censused.set(node.nodeId, destination)
-          reconciled = true
-          continue
-        }
-        const identity = page.identities.find((entry) => entry.nodeId === node.nodeId)
-        // A node the library now exports owes the decision the library requires,
-        // and the queue is the one decision this refresh may write.
-        const gained = identity ? !identity.inLibrary : false
-        const queued = renewed.has(node.nodeId) && identity?.decision !== "pending"
-        if (!identity || (!gained && !queued)) continue
-        identity.inLibrary = true
-        identity.decision = "pending"
-        identity.reason = reason
-        reconciled = true
-      }
-      if (reconciled) {
-        reconciledSurface = surface
-        pendingWrites.set(PAGE_SURFACE_PATH, surface)
-      }
-    }
-    pendingWrites.set(EVIDENCE_EXCEPTIONS_PATH, { storyEvidence: evidenceExceptions })
-    // The stub above replaces a reviewed note with a shorter one, so the count of
-    // long notes drops with it. The ratchet fails in either direction: the same
-    // write that shortened the notes lowers its baseline, so the generated branch
-    // is consistent before anyone reviews it. It never raises it.
-    const baseline = readExceptions(NOTE_LENGTH_BASELINE_PATH, NoteLengthBaselineSchema)
-    if (baseline) {
-      const lowered = loweredNoteLengthBaseline(registry, baseline)
-      if (lowered) {
-        ratchet = { from: baseline.overLimit, to: lowered.overLimit }
-        pendingWrites.set(NOTE_LENGTH_BASELINE_PATH, lowered)
-      }
-    }
+    for (const node of committed) committedById.set(node.nodeId, node)
   }
 
   // ------------------------------------------------------------ drift PR body
 
-  function figmaNodeLink(nodeId: string): string {
-    return `https://www.figma.com/design/${inventory.fileKey}?node-id=${nodeId.replace(":", "-")}`
-  }
-
-  // The device dimension of the review (RA2, gap VG1/VG2): a `Device` axis means
-  // the set draws one composition per device, so a change to one variant is a
-  // change to that device's composition — and a node with no changed variant still
-  // owes the reviewer the list of devices it declares. Generated from the
-  // inventory, so it follows renames and additions by itself (R8).
-  const DEVICE_INSTRUCTION =
-    "A `Device` axis is part of the contract: inspect and render **every** declared " +
-    "device (`.agents/skills/figma-to-code/references/devices.md`); " +
-    "save one case per device."
-
-  function boxText(box: { width: number; height: number } | undefined): string {
-    return box ? `${box.width}×${box.height}` : "box unknown"
-  }
-
-  function renderDevices(node: InventoryNode, changed: Map<string, string>): string[] {
-    if (!devicePolicy) return []
-    const variants = node.variants ?? []
-    const devices = declaredDevices(devicePolicy, node)
-    if (!variants.length) {
-      if (!devices.length) return []
-      const axes = deviceAxes(devicePolicy, node)
-        .map((axis) => `\`${axis.token}\``)
-        .join(", ")
-      return [
-        `- devices (${devices.length} declared by ${axes}): ` +
-          `${devices.map((device) => `\`${device}\``).join(" · ")} · no per-variant box in this export`,
-        `  - ${DEVICE_INSTRUCTION}`,
-      ]
-    }
-    const lines = [`- devices (${devices.length} declared):`]
-    for (const variant of variants) {
-      const change = changed.get(variant.nodeId)
-      lines.push(
-        `  - \`${variant.device ?? "any"}\` · \`${variant.nodeId}\` · ${boxText(variant.box)} · ` +
-          `[${variant.name}](${figmaNodeLink(variant.nodeId)}) · ${change ? `changed (${change})` : "unchanged"}`,
-      )
-    }
-    lines.push(
-      devices.length
-        ? `  - ${DEVICE_INSTRUCTION}`
-        : "  - no device declared: one composition at every width",
-    )
-    return lines
-  }
-
-  // The reviewed cases and the evidence manifest of one node: the PR names the
-  // case ids and, when the bundle is committed, the pinned reference image. The
-  // local agent still attaches the render; CI never embeds a component image.
-  let evidenceCasesCache: ReturnType<typeof loadCaseFile> | null = null
-  let evidenceManifestCache: ReturnType<typeof loadManifest> | null | undefined
-  function evidenceFor(nodeId: string): {
-    ids: string[]
-    links: Array<{ id: string; href: string }>
-  } {
-    if (!evidenceCasesCache) evidenceCasesCache = loadCaseFile()
-    const corpus = evidenceCasesCache.filter((entry) => entry.nodeId === nodeId)
-    if (!corpus.length) return { ids: [], links: [] }
-    if (evidenceManifestCache === undefined) {
-      const manifestPath = evidencePaths().manifest
-      evidenceManifestCache = fs.existsSync(manifestPath) ? loadManifest(manifestPath) : null
-    }
-    const links = evidenceBase
-      ? corpus.flatMap((entry) => {
-          const record = evidenceManifestCache?.cases?.[entry.id]
-          return record
-            ? [{ id: entry.id, href: `${evidenceBase}/${EVIDENCE_DIR}/${record.png}` }]
-            : []
-        })
-      : []
-    return { ids: corpus.map((entry) => entry.id), links }
-  }
-
-  // Readable review instructions for the scheduled drift pull request: the
-  // summary, the per-node context and the decisions the reviewer records in
-  // registry.json. Merging the PR is the review record.
-  function renderPrBody(): string {
-    const date = new Date().toISOString().slice(0, 10)
-    const classes: Array<[NodeDeltaKey, string]> = [
-      ["added", "New nodes"],
-      ["changed", "Changed nodes"],
-      ["renamed", "Renamed identities"],
-      ["moved", "Moved identities"],
-      ["removed", "Removed nodes"],
-      ["affected", "Affected implementations"],
-      ["baseline", "Missing design baseline"],
-    ]
-    const changedVariants = new Map(
-      delta.changedVariants.map((change) => [change.nodeId, change.class]),
-    )
-    const pages = new Map()
-    for (const [key] of classes) {
-      for (const node of delta[key]) {
-        pages.set(node.pageName, (pages.get(node.pageName) ?? 0) + 1)
-      }
-    }
-    const lines = [
-      `# Figma drift — ${date}`,
-      "",
-      `Live snapshot compared with \`src/catalog/figma/inventory.json\` (file \`${inventory.fileKey}\`).`,
-      "The inventory is refreshed and every production node below is queued as `pending`; merging this PR is the review record.",
-      "",
-      "## Summary",
-      "",
-      ...classes.map(([key, label]) => `- ${label}: ${delta[key].length}`),
-    ]
-    if (pages.size) {
-      lines.push(
-        "",
-        `By page: ${[...pages].map(([page, count]) => `${page} (${count})`).join(" · ")}`,
-      )
-    }
-    lines.push(
-      "",
-      "## Instructions — review",
-      "",
-      "For every node below, record one decision in `src/catalog/figma/registry.json`:",
-      "",
-      '1. still matches the source → set `status: "implemented"`;',
-      "2. must change → update the component and its story in this PR, then set `implemented`;",
-      "3. out of scope → set `excluded` with a reason.",
-      ...(ratchet
-        ? [
-            "",
-            `This refresh replaced the queued notes with the pending stub, so \`overLimit\` in \`src/catalog/figma/note-length-baseline.json\` ratcheted from ${ratchet.from} to ${ratchet.to}: a re-reviewed note stays under 600 characters, and the baseline is never raised.`,
-          ]
-        : []),
-      "",
-      "## Instructions — agent handoff",
-      "",
-      "This pull request is the handoff: a coding agent completes the alignment on this branch.",
-      "",
-      "- Procedure: follow `AGENTS.md`: the `figma-to-code` skill (Figma delta use case) for the alignment and the `pagopa-ui-standards` skill for every component it touches; Figma stays read-only.",
-      "- Inspect each node below in Figma with the Figma MCP (`get_design_context`, `get_screenshot`) or `pnpm nx run pagopa-ui-cli:figma:export` when `FIGMA_TOKEN` is in the environment.",
-      "- Record every decision in `src/catalog/figma/registry.json`; an `implemented` entry needs `target.module`, `target.export` and `target.story`, and a story that renders the export.",
-      "- The public API is frozen (`src/pagopa-ui.ts`); historical `pending` nodes are reviewed per node on demand, never in bulk.",
-      "- Run the verify chain below and report the results. Commit the alignment on this branch; the merge is the review record.",
-      "",
-      "## Instructions — verify",
-      "",
-      "Run and report the green chain documented in `CONTRIBUTING.md`:",
-      "`pnpm nx run-many -p pagopa-ui -c=ci -t typecheck,fmt,lint,docs,figma:check,foundation:check,layers:check,build,test && pnpm nx run-many -p pagopa-ui-artwork,pagopa-ui-tokens,pagopa-ui-cli -c=ci -t typecheck,fmt,lint && pnpm nx run pagopa-ui-artwork:test && pnpm nx run pagopa-ui-tokens:test && pnpm nx run pagopa-ui-cli:test && pnpm nx run pagopa-ui-storybook:test:coverage && pnpm nx run pagopa-ui-storybook:test:stories && pnpm nx run pagopa-ui-storybook:build && pnpm nx run pagopa-ui:library:check`",
-      "",
-    )
-    for (const [key, label] of classes) {
-      const nodes = delta[key]
-      if (!nodes.length) continue
-      lines.push(`## ${label}`, "")
-      for (const node of nodes) {
-        const entry = registry.entries[node.nodeId]
-        const target = entry?.target
-          ? ` · target \`${entry.target.module}#${entry.target.export}\`` +
-            (entry.target.story ? ` · story \`${entry.target.story}\`` : "")
-          : ""
-        lines.push(
-          `### ${node.name}`,
-          "",
-          `- node: \`${node.nodeId}\` · [open in Figma](${figmaNodeLink(node.nodeId)})`,
-          `- class: ${key}${node.change ? ` · change: ${node.change}` : ""}`,
-          `- page: ${node.pageName}`,
-          `- registry status: \`${entry?.status ?? "unaccounted"}\`${target}`,
-        )
-        // A removed node has no live variants to inspect: the block is a review
-        // reminder, and there is nothing left to review.
-        if (key !== "removed") lines.push(...renderDevices(node, changedVariants))
-        const evidence = evidenceFor(node.nodeId)
-        if (evidence.ids.length) {
-          lines.push(`- evidence: ${evidence.ids.map((id) => `\`${id}\``).join(" · ")}`)
-          if (evidence.links.length) {
-            lines.push(
-              `  - references: ${evidence.links
-                .map((item) => `[${item.id}](${item.href})`)
-                .join(" · ")}`,
-            )
-          }
-          lines.push(
-            "  - attach the local render after `parity check --case <id> --screenshot <file>`; CI never embeds a component image.",
-          )
-        }
-        lines.push("")
-      }
-    }
-    lines.push(
-      "## Artifacts",
-      "",
-      "- `delta.json`: the machine-readable delta of this run.",
-      "- `run.json`: the run metrics (`figmaChangeAt`, `handoffPrAt`, the counts).",
-      "- `pr-body.md`: this generated body.",
-      "",
-      "## Handoff and metrics",
-      "",
-      "- Local procedure: `docs/figma-drift-handoff.md`.",
-      "- `handoffPrAt − figmaChangeAt`: recorded in `run.json`.",
-      "- `mergedAt − handoffPrAt`: read after the merge with `gh pr view <number> --json mergedAt`.",
-      "",
-    )
-    return lines.join("\n")
-  }
-
-  // The machine-readable delta the workflow uploads with the body: the same
-  // classes, the resolved statuses and targets, the work order and the two
-  // summaries, so a rerun and the local agent read the same facts.
-  function renderDelta() {
-    const classes: Array<[NodeDeltaKey, string]> = [
-      ["added", "New nodes"],
-      ["changed", "Changed nodes"],
-      ["renamed", "Renamed identities"],
-      ["moved", "Moved identities"],
-      ["removed", "Removed nodes"],
-      ["affected", "Affected implementations"],
-      ["baseline", "Missing design baseline"],
-    ]
-    const statusOf = (node: InventoryNode): string =>
-      entries[node.nodeId]?.status ??
-      bulkByNode.get(node.nodeId)?.status ??
-      bulkByPage.get(node.pageId)?.status ??
-      "unaccounted"
-    const selected = new Set([
-      ...Object.entries(entries)
-        .filter(([, entry]) => entry.status === "pending")
-        .map(([id]) => id),
-      ...[...delta.added, ...delta.changed, ...delta.affected].map((node) => node.nodeId),
-    ])
-    for (const id of [...selected]) {
-      if (entries[id]?.status === "mocked") selected.delete(id)
-    }
-    return {
-      generatedAt: new Date().toISOString(),
-      fileKey: inventory.fileKey,
-      liveVersion: liveVersion ?? null,
-      counts: Object.fromEntries(classes.map(([key]) => [key, delta[key].length])),
-      nodes: Object.fromEntries(
-        classes.map(([key]) => [
-          key,
-          delta[key].map((node) => ({
-            nodeId: node.nodeId,
-            name: node.name,
-            pageName: node.pageName,
-            change: node.change ?? null,
-            status: statusOf(node),
-            target: entries[node.nodeId]?.target ?? null,
-          })),
-        ]),
-      ),
-      changedVariants: delta.changedVariants.map((change) => ({
-        nodeId: change.nodeId,
-        device: change.device ?? null,
-        class: change.class,
-      })),
-      implementationOrder: implementationOrder(live ?? committed, selected),
-      devices: deviceStats,
-      coverage: deviceCoverageStats,
-    }
-  }
-
   if (prBodyPath && !hasDrift && live && !flag("plan")) {
-    console.log("drift: none — inventory untouched, no pull request needed")
+    out.push("drift: none — inventory untouched, no pull request needed")
   }
 
   if (live && !writeRequested && !prBodyPath) {
@@ -824,15 +457,13 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
         )
     }
     if (!Object.values(delta).some((nodes) => nodes.length) && !flag("plan")) {
-      console.log(
-        `drift: none (${live.length} live nodes, contracts and design fingerprints match)`,
-      )
+      out.push(`drift: none (${live.length} live nodes, contracts and design fingerprints match)`)
     }
   }
 
   // -------------------------------------------------------------- static checks
 
-  const fileKey = fileKeyFromSource()
+  const fileKey = fileKeyFromSource(workspace)
   if (!fileKey) fail(`${FILE_TS_PATH}: FIGMA_FILE_KEY not found`)
   else if (fileKey !== inventory.fileKey)
     fail(`${FILE_TS_PATH}: FIGMA_FILE_KEY != inventory.fileKey`)
@@ -855,7 +486,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
   // names no alias are errors too. An alias with no current user only warns: a
   // component can be retired while the vocabulary stays.
   try {
-    devicePolicy = loadDevicePolicy()
+    devicePolicy = loadDevicePolicy(rootFile("src/catalog/figma/device-policy.json"))
     const result = checkDevicePolicy(devicePolicy, committed)
     deviceStats = result.stats
     for (const warning of result.warnings) warnings.push(warning)
@@ -917,8 +548,10 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
 
   if (devicePolicy) {
     try {
-      const cases = loadCaseFile()
-      const exceptions: Record<string, string> = loadDeviceExceptions()
+      const cases = loadCaseFile(rootFile("src/catalog/figma/parity-cases.json"))
+      const exceptions: Record<string, string> = loadDeviceExceptions(
+        rootFile(DEVICE_EXCEPTIONS_PATH),
+      )
       const coverage: Coverage = deviceCoverage({
         policy: devicePolicy,
         nodes: committed,
@@ -985,7 +618,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
   // the schema; this gate only reports its verdict.
   if (devicePolicy) {
     try {
-      const cases = loadCaseFile()
+      const cases = loadCaseFile(rootFile("src/catalog/figma/parity-cases.json"))
       const result = validateCaseFile(cases, {
         registry,
         nodes: committed,
@@ -1006,15 +639,15 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
 
   // ------------------------------------------------------------ page surface
   //
-  // `figma:check` only ever asked about published nodes, so the page as a whole
+  // `check:catalogue` only ever asked about published nodes, so the page as a whole
   // was never read: a drawing the file owner kept unpublished changed the scope
   // silently the day it was published, and a composition the page draws (a stack
   // at 852, a mobile page at 304, a drawer panel at 417) had no counterpart in
   // the procedure at all. The committed census makes both data, and this gate
   // keeps it and the inventory in step, both ways.
   try {
-    const surface = reconciledSurface ?? loadPageSurface()
-    const cases = devicePolicy ? loadCaseFile() : []
+    const surface = reconciledSurface ?? loadPageSurface(rootFile(PAGE_SURFACE_PATH))
+    const cases = devicePolicy ? loadCaseFile(rootFile("src/catalog/figma/parity-cases.json")) : []
     const result = checkPageSurface(surface, {
       nodes: committed,
       registry,
@@ -1046,7 +679,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
       continue
     }
   }
-  const { byNode: bulkByNode, manifests: catalogueManifests } = catalogueIndex(registry)
+  const { byNode: bulkByNode, manifests: catalogueManifests } = catalogueIndex(registry, workspace)
 
   const entries = registry.entries ?? {}
   const storiesByFile = new Map()
@@ -1104,11 +737,11 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
           } else if (entry.target.story && fs.existsSync(entry.target.story)) {
             const storyFile = entry.target.story
             if (!storiesByFile.has(storyFile))
-              storiesByFile.set(storyFile, renderedStoryExports(storyFile))
+              storiesByFile.set(storyFile, sourceModules.renderedStoryExports(storyFile))
             const stories = storiesByFile.get(storyFile)
             const identities = targetIdentities(entry.target).map((pair) => ({
               ...pair,
-              identity: runtimeExports(pair.module).get(pair.export),
+              identity: sourceModules.runtimeExports(pair.module).get(pair.export),
             }))
             const expected = identities.map((pair) => pair.identity)
             const rendered = new Set()
@@ -1138,7 +771,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
           const declaredImports = entry.target.story
             ? storyImportsByFile.get(entry.target.story)
             : undefined
-          const identity = runtimeExports(pair.module).get(pair.export)
+          const identity = sourceModules.runtimeExports(pair.module).get(pair.export)
           if (!identity) continue
           const verifiedInDeclared = declaredImports?.has(identity) ?? false
           const verifiedAnywhere = allStoryImports.has(identity)
@@ -1182,7 +815,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
   for (const [key, nodeIds] of designExpectations) {
     if (nodeIds.size !== 1) continue
     const [file, name] = key.split("::")
-    if (!designByFile.has(file)) designByFile.set(file, storyDesignNodes(file))
+    if (!designByFile.has(file)) designByFile.set(file, sourceModules.storyDesignNodes(file))
     const { meta, stories } = designByFile.get(file)
     const effective = stories.get(name) ?? meta
     const [nodeId] = nodeIds
@@ -1283,7 +916,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
 
   // The inventory story links each mapped node to its Storybook page from the
   // committed titles: a renamed story is a dead link, not a silent blank.
-  for (const problem of staleStoryTitles(registry)) fail(problem)
+  for (const problem of staleStoryTitles(workspace, registry)) fail(problem)
 
   // Public catalogue names are stable aliases; source labels are metadata.
   function iconListConstant(name: string): string[] {
@@ -1353,8 +986,8 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
   // -------------------------------------------------------------------- summary
 
   function report() {
-    for (const warning of warnings) console.warn(`warn: ${warning}`)
-    for (const error of errors) console.error(`error: ${error}`)
+    for (const warning of warnings) outputErrors.push(`warn: ${warning}`)
+    for (const error of errors) outputErrors.push(`error: ${error}`)
     const statuses: Record<string, number> = {}
     for (const node of committed) {
       const entry = entries[node.nodeId]
@@ -1362,22 +995,22 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
       const status = entry?.status ?? rule?.status ?? "unaccounted"
       statuses[status] = (statuses[status] ?? 0) + 1
     }
-    console.log(
+    out.push(
       `inventory: ${committed.length} nodes | ` +
         Object.entries(statuses)
           .map(([status, count]) => `${status} ${count}`)
           .join(" · "),
     )
-    console.log(
+    out.push(
       `exceptions: story evidence ${Object.keys(evidenceExceptions).length} · ` +
         `unmapped exports ${Object.keys(apiExceptions.exports ?? {}).length} · ` +
         `device ${deviceCoverageStats?.exceptions ?? 0}`,
     )
-    if (deviceStats) console.log(formatDeviceLine(deviceStats))
-    if (deviceCoverageStats) console.log(formatCoverageLine(deviceCoverageStats))
-    if (surfaceStats) console.log(formatSurfaceLine(surfaceStats))
+    if (deviceStats) out.push(formatDeviceLine(deviceStats))
+    if (deviceCoverageStats) out.push(formatCoverageLine(deviceCoverageStats))
+    if (surfaceStats) out.push(formatSurfaceLine(surfaceStats))
     if (caseCorpusStats) {
-      console.log(
+      out.push(
         `cases: ${caseCorpusStats.cases} case(s) · errors ${caseCorpusStats.errors} · ` +
           `warnings ${caseCorpusStats.warnings} · drafts ${caseCorpusStats.drafts}`,
       )
@@ -1409,7 +1042,7 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
         designRequests: [...new Set(entry.note?.match(designRequest) ?? [])],
       }))
       .sort((left, right) => left.nodeId.localeCompare(right.nodeId, undefined, { numeric: true }))
-    console.log(
+    out.push(
       JSON.stringify(
         {
           ...Object.fromEntries(
@@ -1440,33 +1073,77 @@ export async function runSync(argv: string[] = process.argv.slice(2)): Promise<n
         2,
       ),
     )
-    for (const error of errors) console.error(`error: ${error}`)
+    for (const error of errors) outputErrors.push(`error: ${error}`)
   } else {
     report()
   }
   if (!errors.length) {
     for (const [file, data] of pendingWrites) {
-      const temporary = path.join(ROOT, `${file}.${process.pid}.tmp`)
+      const temporary = path.join(root, `${file}.${Date.now()}.tmp`)
       try {
         fs.writeFileSync(temporary, JSON.stringify(data, null, 2) + "\n", { flag: "wx" })
-        fs.renameSync(temporary, path.join(ROOT, file))
+        fs.renameSync(temporary, path.join(root, file))
       } finally {
         if (fs.existsSync(temporary)) fs.unlinkSync(temporary)
       }
-      if (flag("plan")) console.warn(`validated and written: ${file}`)
-      else console.log(`validated and written: ${file}`)
+      if (flag("plan")) outputErrors.push(`validated and written: ${file}`)
+      else out.push(`validated and written: ${file}`)
     }
     if (prBodyPath && hasDrift) {
-      fs.mkdirSync(path.dirname(path.resolve(ROOT, prBodyPath)), { recursive: true })
-      fs.writeFileSync(path.resolve(ROOT, prBodyPath), `${renderPrBody()}\n`)
-      console.log(`pr body: ${prBodyPath}`)
+      fs.mkdirSync(path.dirname(path.resolve(root, prBodyPath)), { recursive: true })
+      fs.writeFileSync(
+        path.resolve(root, prBodyPath),
+        `${renderCataloguePrBody({
+          workspace,
+          inventory,
+          registry,
+          delta,
+          live,
+          committed,
+          liveVersion,
+          ratchet,
+          evidenceBase,
+          devicePolicy,
+          deviceStats,
+          deviceCoverage: deviceCoverageStats,
+          bulkByNode,
+          bulkByPage,
+          entries,
+        })}\n`,
+      )
+      out.push(`pr body: ${prBodyPath}`)
     }
     if (deltaPath && live) {
-      const target = path.resolve(ROOT, deltaPath)
+      const target = path.resolve(root, deltaPath)
       fs.mkdirSync(path.dirname(target), { recursive: true })
-      fs.writeFileSync(target, `${JSON.stringify(renderDelta(), null, 2)}\n`)
-      console.log(`delta: ${deltaPath}`)
+      fs.writeFileSync(
+        target,
+        `${JSON.stringify(
+          renderCatalogueDelta({
+            workspace,
+            inventory,
+            registry,
+            delta,
+            live,
+            committed,
+            liveVersion,
+            ratchet,
+            evidenceBase,
+            devicePolicy,
+            deviceStats,
+            deviceCoverage: deviceCoverageStats,
+            bulkByNode,
+            bulkByPage,
+            entries,
+          }),
+          null,
+          2,
+        )}\n`,
+      )
+      out.push(`delta: ${deltaPath}`)
     }
   }
-  return errors.length ? 1 : 0
+  const driftOnly = hasDrift && !writeRequested && !prBodyPath
+  const exitCode = errors.length ? (driftOnly ? 3 : 1) : 0
+  return { exitCode, out, err: outputErrors }
 }

@@ -70,11 +70,11 @@ underlying command is the package script of the same name
   CSS and TypeScript (`check:tokens`, hung under `test`).
 - `pnpm nx run pagopa-ui-cli:test` — the `node --test`
   suites of the tooling and of its fixtures.
-- `pnpm nx run pagopa-ui:figma:check` — hermetic catalogue check;
+- `pnpm nx run pagopa-ui:check:catalogue` — hermetic catalogue check;
   `foundation:check` — the component class contract. The artwork and the tokens
   validate themselves: `pagopa-ui-artwork:test` and `pagopa-ui-tokens:test`.
-  `pagopa-ui:figma:stories` refreshes the committed Storybook titles the
-  inventory story links read; `figma:check` fails when they are stale.
+  `pagopa-ui:update:stories` refreshes the committed Storybook titles the
+  inventory story links read; `check:catalogue` fails when they are stale.
 - `pnpm nx run pagopa-ui:layers:check` — the import layers of the
   [`pagopa-ui-standards`](./.agents/skills/pagopa-ui-standards/references/definition-of-done.md)
   definition of done; `pnpm nx run pagopa-ui:docs` — document links and the
@@ -260,7 +260,7 @@ Storybook build, so it never replaces the full run before a commit.
 What it runs:
 
 ```bash
-pnpm nx run-many -p pagopa-ui -c=ci -t typecheck,fmt,lint,docs,figma:check,foundation:check,layers:check,build,test && \
+pnpm nx run-many -p pagopa-ui -c=ci -t typecheck,fmt,lint,docs,check:catalogue,foundation:check,layers:check,build,test && \
   pnpm nx run-many -p pagopa-ui-artwork,pagopa-ui-tokens,pagopa-ui-cli -c=ci -t typecheck,fmt,lint && \
   pnpm nx run pagopa-ui-artwork:test && pnpm nx run pagopa-ui-tokens:test && pnpm nx run pagopa-ui-cli:test && \
   pnpm nx run pagopa-ui-cli:figma:rules:check && pnpm nx run pagopa-ui-cli:figma:parity:verify && \

@@ -73,7 +73,7 @@ parent_dr: design-review.md
 - `AC-03`: Every node of the queue has a recorded decision before the close. - Evidence: `pnpm nx run pagopa-ui-cli:figma:status`
 - `AC-04`: Divergences between devices are allowed only if they appear in the list of reasoned exceptions. - Evidence: `packages/pagopa-ui/src/catalog/figma/device-exceptions.json`; `pnpm nx run pagopa-ui-cli:figma:devices`
 - `AC-05`: The aligned nodes have parity cases reviewed after the change. - Evidence: `pnpm nx run pagopa-ui-cli:figma:parity:verify`
-- `AC-06`: The catalogue check is green after the alignment. - Evidence: `pnpm nx run pagopa-ui:figma:check`
+- `AC-06`: The catalogue check is green after the alignment. - Evidence: `pnpm nx run pagopa-ui:check:catalogue`
 - `AC-07`: The full green chain is green before the commit. - Evidence: `pnpm nx run workspace:verify`
 - `AC-08`: With no starting snapshot, the system returns `BASELINE_SNAPSHOT_MISSING` and modifies no file. - Evidence: `ui-cli` tests on the synchronisation command
 

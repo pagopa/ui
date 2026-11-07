@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url"
 const cli = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
 const clis = {
   export: ["figma", "export"],
-  sync: ["figma", "sync"],
+  sync: ["figma", "plan"],
   pictograms: ["figma", "pictograms", "export"],
 }
 

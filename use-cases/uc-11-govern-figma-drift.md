@@ -100,7 +100,7 @@ sequenceDiagram
 - Figma: `pvhsJpPGQbEwNLiyP7BOIw` library, file version recorded in the inventory, `.Regole` rules and open comments.
 - DR components: `solution.components.item-004`, `solution.components.item-005`, `solution.context.item-001`
 - Endpoint / OpenAPI / AsyncAPI / Data Contract: `contracts.item-004` (inventory), `contracts.item-005` (registry), `contracts.item-007` (surface census), `contracts.item-008` (rules ledger and device policy)
-- Validation evidence: `pnpm nx run pagopa-ui-cli:figma:check`; `pnpm nx run pagopa-ui:figma:check`; `pnpm nx run pagopa-ui-cli:figma:rules:check`
+- Validation evidence: `pnpm nx run pagopa-ui-cli:check:catalogue`; `pnpm nx run pagopa-ui:check:catalogue`; `pnpm nx run pagopa-ui-cli:figma:rules:check`
 
 ## Open questions and propagation
 

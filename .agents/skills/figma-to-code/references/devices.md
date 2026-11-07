@@ -23,7 +23,7 @@ decision.
 
 The capture width is read from the variant (`nodeSpec(variant).box.width`); the
 policy holds a canonical width only for an alias that carries none. A new source
-alias goes into the policy; `pnpm nx run pagopa-ui-cli:figma:devices --check` fails until it resolves.
+alias goes into the policy; `pnpm nx run pagopa-ui-cli:check:devices` fails until it resolves.
 Errors: an unmapped value, a duplicate alias, an unused axis. Warnings: an unused
 alias, a device-like value on a non-device axis.
 
@@ -75,13 +75,13 @@ reasoned entry for the missing ones.
 ## Coverage and the burn-down
 
 - An `implemented` node needs one reviewed case per declared device, or a
-  reasoned `catalog.deviceExceptions` entry. `figma:check` fails a node that
+  reasoned `catalog.deviceExceptions` entry. `check:catalogue` fails a node that
   enters the live delta or is newly closed `implemented` without it; drift runs
   themselves are never blocked, the gate reads final statuses.
-- The historical gap is one `figma:check` warning. Burn it down with
+- The historical gap is one `check:catalogue` warning. Burn it down with
   `pnpm nx run pagopa-ui-cli:figma:parity:queue --uncovered` → `pnpm nx run pagopa-ui-cli:figma:parity:cases --sync` →
   refine each draft → `check --devices`. Drafts never count as coverage.
-- The exception list only shrinks: `figma:check` fails an entry whose node no
+- The exception list only shrinks: `check:catalogue` fails an entry whose node no
   longer misses a device.
 - The work list is generated; never write a hand-made list of components.
 - A case lands after its reviewed render. A case with copied selectors that

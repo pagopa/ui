@@ -153,7 +153,7 @@ test("cache-contract: sibling reads invalidate cached checks without widening ev
     ],
     [
       library,
-      "figma:check",
+      "check:catalogue",
       [
         "packages/artwork/src/assets/figma-icons/manifest.json",
         "packages/artwork/src/assets/figma-pictograms/manifest.json",
