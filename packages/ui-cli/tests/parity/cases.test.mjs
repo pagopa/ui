@@ -22,18 +22,13 @@ import {
   variantOfCase,
 } from "../../src/parity/cases.ts"
 import { caseFromOptions, specFromCase } from "../../src/parity/mapping.ts"
-import { workspaceAt } from "../helpers/cli.mjs"
-import { rootPath } from "../../src/lib/paths.ts"
+import { fixtureTree, workspaceAt } from "../helpers/cli.mjs"
 import { coveragePopulations, formatCoverage, qualifyBulk } from "../../src/parity/coverage.ts"
 
 const workspace = workspaceAt(path.resolve(import.meta.dirname, "../../../pagopa-ui"))
-const CORPUS = rootPath("src/catalog/figma/parity-cases.json")
-// Workspace scratch stays outside package symlinks scanned by concurrent checks.
-const workspaceCache = path.resolve(import.meta.dirname, "../../../../.cache")
-
-function temporaryDirectory(prefix) {
-  fs.mkdirSync(workspaceCache, { recursive: true })
-  return fs.mkdtempSync(path.join(workspaceCache, prefix))
+const CORPUS = workspace.path("src/catalog/figma/parity-cases.json")
+function fixtureDirectory(prefix) {
+  return fixtureTree({}, prefix).root
 }
 
 // The device vocabulary of the fixtures: the resolver is data-driven, so the
@@ -302,7 +297,7 @@ test("a bulk rule without the accepted manifest and per-glyph proof stays ordina
 })
 
 test("bulk admission requires fresh manifests and complete per-glyph provenance", () => {
-  const root = temporaryDirectory("parity-bulk-")
+  const root = fixtureDirectory("parity-bulk-")
   const workspace = workspaceAt(root, { PAGOPA_UI_ARTWORK_ROOT: root })
   try {
     const provenance = { provider: "Fixture", origin: "custom", license: "In-house artwork" }
@@ -416,7 +411,7 @@ test("the canonical writer keeps one field order and drops empty collections", (
 })
 
 test("a saved case replaces the entry with the same identity", () => {
-  const dir = temporaryDirectory("parity-cases-")
+  const dir = fixtureDirectory("parity-cases-")
   const file = path.join(dir, "cases.json")
   const first = { nodeId: "529:6111", export: "TextField", state: "filled", width: 274 }
   const saved = saveCase(file, first)
@@ -673,7 +668,7 @@ test("a missing device case is proposed from the sibling the corpus has", () => 
   ])
   // The proposal is written through the same path a reviewed case uses, with the
   // device in its id.
-  const dir = temporaryDirectory("parity-sync-")
+  const dir = fixtureDirectory("parity-sync-")
   const file = path.join(dir, "cases.json")
   fs.writeFileSync(file, JSON.stringify(cases))
   const saved = saveCase(file, proposals[0])
@@ -786,7 +781,7 @@ test("a variant no reviewed case points at is proposed as a state draft", () => 
 })
 
 test("a state draft saves through the canonical path and waits for the review", () => {
-  const dir = temporaryDirectory("parity-state-")
+  const dir = fixtureDirectory("parity-state-")
   const file = path.join(dir, "cases.json")
   fs.writeFileSync(
     file,
@@ -928,7 +923,7 @@ test("a draft case is not coverage until the reviewed render replaces its note",
 // The corpus is addressed by `--case <id>`: a refinement that gains a device (or
 // a scope) replaces the entry it refines instead of appending a namesake.
 test("refining a case with a device keeps its id and replaces the entry", () => {
-  const dir = temporaryDirectory("parity-save-")
+  const dir = fixtureDirectory("parity-save-")
   const file = path.join(dir, "cases.json")
   fs.writeFileSync(
     file,
@@ -990,7 +985,7 @@ test("--note replaces a draft note without losing the reviewed mapping", () => {
   // case never clears it.
   assert.equal(specFromCase(draft).note, DRAFT_NOTE)
 
-  const dir = temporaryDirectory("parity-note-")
+  const dir = fixtureDirectory("parity-note-")
   const file = path.join(dir, "cases.json")
   fs.writeFileSync(file, JSON.stringify([draft]))
   const saved = saveCase(file, refined, { id: draft.id })

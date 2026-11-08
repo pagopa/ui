@@ -1,12 +1,11 @@
 import assert from "node:assert/strict"
 import { spawnSync } from "node:child_process"
 import fs from "node:fs"
-import os from "node:os"
 import path from "node:path"
 import { test } from "node:test"
 import { fileURLToPath } from "node:url"
 
-import { fixtureEnv } from "../../src/lib/paths.ts"
+import { fixtureEnvironment, fixtureTree } from "../helpers/cli.mjs"
 
 const script = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
 const exportScript = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
@@ -57,7 +56,8 @@ const devicePolicy = {
 }
 
 function fixture(run, overrides = {}) {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-figma-"))
+  const tree = fixtureTree({}, "pagopa-figma-")
+  const root = tree.root
   const files = {
     "pnpm-workspace.yaml": "packages: []\n",
     "src/catalog/figma/inventory.json": JSON.stringify({
@@ -102,7 +102,7 @@ function fixture(run, overrides = {}) {
           spawnSync(process.execPath, [script, ...command, ...forwarded], {
             cwd: root,
             encoding: "utf8",
-            env: fixtureEnv(root, { PAGOPA_UI_STORIES_ROOT: "src/stories" }),
+            env: fixtureEnvironment(root, { PAGOPA_UI_STORIES_ROOT: "src/stories" }),
           })
         const forwarded = args.filter((arg) => !["--write", "--triage", "--plan"].includes(arg))
         if (args.includes("--plan") && !args.includes("--input")) {
@@ -130,7 +130,7 @@ function fixture(run, overrides = {}) {
         spawnSync(process.execPath, [script, "check", "catalogue", ...args], {
           cwd: root,
           encoding: "utf8",
-          env: fixtureEnv(root, { PAGOPA_UI_STORIES_ROOT: "src/stories" }),
+          env: fixtureEnvironment(root, { PAGOPA_UI_STORIES_ROOT: "src/stories" }),
         }),
       read: (file) => fs.readFileSync(path.join(root, file), "utf8"),
       write: (file, source) => fs.writeFileSync(path.join(root, file), source),
@@ -148,7 +148,7 @@ function fixture(run, overrides = {}) {
           {
             cwd: root,
             encoding: "utf8",
-            env: fixtureEnv(root, {
+            env: fixtureEnvironment(root, {
               PAGOPA_UI_STORIES_ROOT: "src/stories",
               FIGMA_TOKEN: "fixture-token",
             }),
@@ -156,7 +156,7 @@ function fixture(run, overrides = {}) {
         ),
     })
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
   }
 }
 
@@ -276,7 +276,7 @@ test("the story titles map follows the stories the registry links", () => {
           {
             cwd: root,
             encoding: "utf8",
-            env: fixtureEnv(root, { PAGOPA_UI_STORIES_ROOT: "src/stories" }),
+            env: fixtureEnvironment(root, { PAGOPA_UI_STORIES_ROOT: "src/stories" }),
           },
         )
       const missing = stories()

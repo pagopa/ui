@@ -1,8 +1,8 @@
 import assert from "node:assert/strict"
 import fs from "node:fs"
-import os from "node:os"
 import path from "node:path"
 import { test } from "node:test"
+import { fixtureTree } from "../helpers/cli.mjs"
 import {
   fetchFigmaNodeDocuments,
   fetchFileHeader,
@@ -230,7 +230,8 @@ test("an exhausted read reports the timeout and the endpoint", async () => {
 // must stay absent (a bare `undefined` is not JSON) and no temporary file may
 // survive the rename.
 test("the snapshot writer streams compact JSON and drops an absent lastModified", () => {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-snapshot-"))
+  const tree = fixtureTree({}, "pagopa-snapshot-")
+  const root = tree.root
   try {
     const file = path.join(root, ".figma", "live-rest.json")
     const snapshot = {
@@ -254,8 +255,9 @@ test("the snapshot writer streams compact JSON and drops an absent lastModified"
     const text = fs.readFileSync(file, "utf8")
     assert.equal(text.trim().split("\n").length, 1)
     assert.deepEqual(JSON.parse(text), snapshot)
+    assert.equal(text, `${JSON.stringify(snapshot)}\n`)
     assert.deepEqual(fs.readdirSync(path.dirname(file)), ["live-rest.json"])
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
   }
 })

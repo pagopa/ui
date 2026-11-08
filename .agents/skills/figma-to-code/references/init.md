@@ -84,7 +84,7 @@ fresh library, pictogram export) need the token; everything else reads the pinne
 snapshot:
 
 ```bash
-pnpm nx run pagopa-ui-cli:figma:status
+pnpm ui-cli figma status
 ```
 
 `token present` clears the live steps. A missing, empty or whitespace-containing

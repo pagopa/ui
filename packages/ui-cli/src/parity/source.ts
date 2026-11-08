@@ -250,7 +250,7 @@ export function loadExport(workspace: Workspace, input?: string): Project {
   const catalogue =
     raw.kind === "parity-source"
       ? loadInventoryNodes(workspace.path("src/catalog/figma/inventory.json"))
-      : normalizeLive(raw)
+      : normalizeLive(raw, { workspace })
   const sourceSha256 = createHash("sha256").update(contents).digest("hex")
   return { file, origin, version: raw.version, sourceSha256, raw, catalogue }
 }

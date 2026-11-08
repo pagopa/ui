@@ -24,7 +24,6 @@
 import fs from "node:fs"
 import { z } from "zod"
 
-import { rootPath } from "../lib/paths.ts"
 import type { Workspace } from "../adapters/workspace.ts"
 import { report as checkReport, type CheckReport } from "../checks/report.ts"
 import { readJson } from "../lib/json.ts"
@@ -100,7 +99,7 @@ export function validateDevicePolicy(
   return parseSchema(DevicePolicySchema, policy, file)
 }
 
-export function loadDevicePolicy(file: string = rootPath(DEVICE_POLICY_PATH)): DevicePolicy {
+export function loadDevicePolicy(file: string): DevicePolicy {
   if (!fs.existsSync(file)) {
     throw new Error(
       `${file} is missing: the device vocabulary is committed next to registry.json ` +
@@ -529,12 +528,12 @@ export type InventoryFile = {
   components: InventoryNode[]
 }
 
-export function loadInventory(file: string = rootPath(INVENTORY_PATH)): InventoryFile {
+export function loadInventory(file: string): InventoryFile {
   const value = parseSchema(InventoryFileSchema, readJson(file), file)
   return { fileKey: value.fileKey, components: value.components ?? [] }
 }
 
-export function loadInventoryNodes(file: string = rootPath(INVENTORY_PATH)): InventoryNode[] {
+export function loadInventoryNodes(file: string): InventoryNode[] {
   return loadInventory(file).components
 }
 

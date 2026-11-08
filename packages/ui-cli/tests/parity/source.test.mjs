@@ -15,10 +15,10 @@ import {
   sourceNode,
   variantsOf,
 } from "../../src/parity/source.ts"
-import { toolingPath } from "../../src/lib/paths.ts"
+import { TOOLING_ROOT } from "../../src/adapters/workspace.ts"
 
 const workspace = workspaceAt(path.resolve(import.meta.dirname, "../../../pagopa-ui"))
-const FIXTURE = toolingPath("tests/fixtures/figma-parity/snapshot-slice.json")
+const FIXTURE = path.join(TOOLING_ROOT, "tests/fixtures/figma-parity/snapshot-slice.json")
 
 test("the pinned slice loads through the shared live normalizer", () => {
   const project = loadExport(workspace, FIXTURE)

@@ -125,7 +125,7 @@ async function runPictograms(
   const publishedManifest = readManifest(manifestFile, PictogramManifestSchema)
   assertPinnedManifest(publishedManifest, fileKey, "Pictogram provenance")
 
-  const roots = selectRuleNodes(registry, rule, normalizeLive(snapshot), workspace)
+  const roots = selectRuleNodes(registry, rule, normalizeLive(snapshot, { workspace }), workspace)
   if (!roots.length) throw new Error("The snapshot contains no published pictogram identities")
   const provenanceByNode = resolveProvenance(rule, new Set(roots.map((root) => root.nodeId)))
 

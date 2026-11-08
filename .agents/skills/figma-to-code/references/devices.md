@@ -57,7 +57,7 @@ or when every device draws one composition; write the reason in the case note.
 
 ## The loop
 
-1. **List the variants.** `node packages/ui-cli/src/cli.ts parity source <setId> --depth 1`
+1. **List the variants.** `pnpm ui-cli parity source <setId> --depth 1`
    (or `variantsOf()`): each variant's device and box. `any` values need no case.
 2. **Read each device's tree** at `--depth 3` or with `get_screenshot`: which
    layers disappear, which sizes and gaps change, one band or a stack.

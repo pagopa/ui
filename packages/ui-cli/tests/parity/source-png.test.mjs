@@ -7,11 +7,19 @@ import { test } from "node:test"
 import { readSource } from "../../src/parity/read-source.ts"
 import { figmaImages } from "../../src/adapters/figma-images.ts"
 import { workspaceAt } from "../helpers/cli.mjs"
-import { toolingPath } from "../../src/lib/paths.ts"
+import { TOOLING_ROOT } from "../../src/adapters/workspace.ts"
 
-const SLICE = toolingPath("tests/fixtures/figma-parity/snapshot-slice.json")
+const SLICE = path.join(TOOLING_ROOT, "tests/fixtures/figma-parity/snapshot-slice.json")
 const NODE_ID = "529:6123"
 const PNG = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 1, 2, 3])
+const DEVICE_POLICY = fs.readFileSync(
+  path.join(TOOLING_ROOT, "../pagopa-ui/src/catalog/figma/device-policy.json"),
+  "utf8",
+)
+
+function sourceFixture(prefix = "pagopa-source-png-") {
+  return fixtureTree({ "src/catalog/figma/device-policy.json": DEVICE_POLICY }, prefix)
+}
 
 function withTokenAndFetch(run) {
   const previousToken = process.env.FIGMA_TOKEN
@@ -26,7 +34,7 @@ function withTokenAndFetch(run) {
 
 test("source --png writes the pinned node PNG", () =>
   withTokenAndFetch(async () => {
-    const directory = fixtureTree({}, "pagopa-source-png-").root
+    const directory = sourceFixture("pagopa-source-png-").root
     const file = path.join(directory, "node.png")
     const calls = []
     globalThis.fetch = async (input, options) => {
@@ -65,7 +73,7 @@ test("source --png writes the pinned node PNG", () =>
   }))
 
 test("source --png needs FIGMA_TOKEN and writes nothing without it", async () => {
-  const directory = fixtureTree({}, "pagopa-source-png-").root
+  const directory = sourceFixture("pagopa-source-png-").root
   const file = path.join(directory, "node.png")
   const previousToken = process.env.FIGMA_TOKEN
   const previousPath = process.env.PATH
@@ -92,7 +100,7 @@ test("source --png needs FIGMA_TOKEN and writes nothing without it", async () =>
 
 test("the CLI wires optional --png values and keeps the spec on stdout", () =>
   withTokenAndFetch(async () => {
-    const f = fixtureTree({}, "pagopa-source-png-cli-")
+    const f = sourceFixture("pagopa-source-png-cli-")
     globalThis.fetch = async (input, options) => {
       const url = new URL(input)
       if (url.hostname === "api.figma.com")

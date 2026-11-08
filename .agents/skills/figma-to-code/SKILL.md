@@ -11,7 +11,7 @@ files the config names: read them, never copy them into this skill.
 
 ## Session start
 
-`pnpm nx run pagopa-ui-cli:figma:status` prints the token state, the pinned
+`pnpm ui-cli figma status` prints the token state, the pinned
 snapshot, the drift against the committed inventory, the rules ledger and comment
 counts, the pending queue with its design requests, the page surface line and the
 next command. `--live` adds the file version and its last-modified date: that is
@@ -33,20 +33,19 @@ written as `catalog.registry`. Every command runs from the repository root.
 
 ## Running the commands
 
-Every command is an Nx target — `pnpm nx run <project>:<target>` — followed by
-its flags, space-separated:
+Run CLI commands as `pnpm ui-cli <group> <command>` followed by their flags,
+space-separated. Keep Nx targets for checks and CI gates:
 
-- **`--flag value`, both halves separate.** `parity check --case <id>`. The `=`
+- **`--flag value`, both halves separate.** `pnpm ui-cli parity check --case <id>`. The `=`
   form dies in the wrapper and the tool never sees it: `--case=<id>` exits with
   `check requires --node <id> or --case <caseId>`.
-- **The flags go straight after the target.** `figma:rules refresh --node <id>`.
+- **The flags go straight after the command.** `pnpm ui-cli figma rules refresh --node <id>`.
   A `--` of their own reaches the script, which answers "No command specified".
 - **Nx reads its own options first** (`-c=ci`, `-t`, `--output-style=static`), so
   those keep their form; no task flag collides with them today.
-- **Ask the target for its flags**: the target with `--help`, or
-  `pnpm --filter pagopa-ui-cli run cli parity` with no arguments, prints every
-  subcommand and flag. `parity source` and `parity render` have no target of
-  their own and take the filter form, the flags in the same two shapes.
+- **Ask the CLI for its flags**: `pnpm ui-cli <group> <command> --help`, or
+  `pnpm ui-cli parity` with no arguments, prints the available subcommands and
+  flags. `parity source` and `parity render` are CLI commands as well.
 - **A failed task prints its name and a `full log:` path.** Read that file, or
   re-run with `--output-style=static`: the log names the rule that failed, so
   quote the rule and never the task alone.

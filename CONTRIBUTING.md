@@ -49,10 +49,10 @@ name another package.
 ## Nx tasks
 
 Every task is an Nx target: `pnpm nx show project pagopa-ui` lists the design
-system's, `pnpm nx show project pagopa-ui-cli` the tooling's. The
-underlying command is the package script of the same name
-(`pnpm --filter @pagopa/ui run <script>` or
-`pnpm --filter pagopa-ui-cli run <script>`).
+system's, `pnpm nx show project pagopa-ui-cli` the tooling's. Direct UI CLI
+invocation is documented in [AGENTS.md](./AGENTS.md#rules) and [the UI CLI
+README](./packages/ui-cli/README.md#cli); the Nx targets below remain the gates
+and CI entry points.
 
 - `pnpm nx run pagopa-ui-storybook:storybook` — Storybook on
   `http://localhost:6006`.
@@ -85,7 +85,7 @@ underlying command is the package script of the same name
 - `pnpm nx run pagopa-ui-storybook:build` — the deployable documentation
   (`dist/` inside `apps/storybook`) out of the stories the application carries.
 - `pnpm ui-cli parity check`,
-  `pnpm nx run pagopa-ui-cli:figma:devices`
+  `pnpm ui-cli figma devices`
   — parity tools, see the
   [`figma-to-code`](./.agents/skills/figma-to-code/SKILL.md) skill.
 

@@ -69,7 +69,7 @@ inside the review stories folder of `design.preview.branch`, and the folder
 stays when the question closes: a closed issue keeps its images.
 
 ```sh
-STORYBOOK_URL=<design.preview.url> pnpm --filter pagopa-ui-cli run cli parity render \
+STORYBOOK_URL=<design.preview.url> pnpm ui-cli parity render \
   --story reviews-<slug>--option-<x> --width <width> --viewport <width> --height 100 \
   --screenshot <absolute path>/reviews-<slug>/option-<x>-<width>.png
 ```

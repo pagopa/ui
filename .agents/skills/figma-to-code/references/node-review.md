@@ -7,7 +7,7 @@ bulk re-approval.
 
 ## Steps
 
-1. **Read the record.** `pnpm nx run pagopa-ui-cli:figma:brief --node <nodeId>`
+1. **Read the record.** `pnpm ui-cli figma brief --node <nodeId>`
    gathers the registry entry (status, target, `note`), the rules that target the
    node, the open comments and the design requests ([rules.md](rules.md)). Read
    its committed case IDs

@@ -13,13 +13,13 @@ export async function exportFigma(
   run?: KeychainRunner,
 ): Promise<string> {
   figmaToken(env, run)
-  const mcpNodes = input ? normalizeLive(readJson(input)) : []
+  const mcpNodes = input ? normalizeLive(readJson(input), { workspace }) : []
   const snapshot = await fetchFigmaSnapshot(
     fileKeyFromWorkspace(workspace),
     mcpNodes,
     figmaToken(env, run),
   )
-  const nodes = normalizeLive(snapshot)
+  const nodes = normalizeLive(snapshot, { workspace })
   const target = workspace.path(".figma/live-rest.json")
   writeFigmaSnapshot(target, snapshot)
   return (

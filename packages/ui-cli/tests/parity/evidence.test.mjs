@@ -1,10 +1,9 @@
-import { runCli, workspaceAt } from "../helpers/cli.mjs"
+import { fixtureTree, runCli, workspaceAt } from "../helpers/cli.mjs"
 import assert from "node:assert/strict"
 import { createHash } from "node:crypto"
 import fs from "node:fs"
 import path from "node:path"
 import { test } from "node:test"
-import { fileURLToPath } from "node:url"
 import { brotliDecompressSync, gzipSync } from "node:zlib"
 
 import { check } from "../../src/parity/check.ts"
@@ -21,9 +20,7 @@ import {
 import { loadExport, resolveExport, sourceNode } from "../../src/parity/source.ts"
 import { caseVariant, loadCaseFile, loadInventoryNodes } from "../../src/parity/cases.ts"
 import { brotliJson } from "../../src/lib/json.ts"
-
-// Workspace scratch stays outside package symlinks scanned by concurrent checks.
-const workspaceCache = fileURLToPath(new URL("../../../../.cache/", import.meta.url))
+import { TOOLING_ROOT } from "../../src/adapters/workspace.ts"
 
 const smallFingerprint = "a".repeat(64)
 const largeFingerprint = "b".repeat(64)
@@ -136,11 +133,8 @@ function writeEvidenceTree(root, { manifest = manifestFor(), slice = sliceFor(),
   }
 }
 
-function temporaryRoot() {
-  fs.mkdirSync(workspaceCache, { recursive: true })
-  const root = fs.mkdtempSync(path.join(workspaceCache, "pagopa-evidence-"))
-  fs.writeFileSync(path.join(root, "pnpm-workspace.yaml"), "packages: []\n")
-  return root
+function fixtureRoot() {
+  return fixtureTree({}, "pagopa-evidence-").root
 }
 
 test("the slice carries every case node with its full variant subtree", async () => {
@@ -175,7 +169,7 @@ test("the slice carries every case node with its full variant subtree", async ()
 })
 
 test("a manifest round-trip is accepted by the hermetic check", () => {
-  const root = temporaryRoot()
+  const root = fixtureRoot()
   try {
     writeEvidenceTree(root)
     const slice = loadSlice(path.join(root, "docs/figma-parity/source.json.br"))
@@ -193,7 +187,7 @@ test("a manifest round-trip is accepted by the hermetic check", () => {
 })
 
 test("stale, missing and bogus pinned evidence never contributes verified case IDs", () => {
-  const root = temporaryRoot()
+  const root = fixtureRoot()
   try {
     const stale = manifestFor()
     stale.cases.small.designFingerprint = "c".repeat(64)
@@ -214,7 +208,7 @@ test("stale, missing and bogus pinned evidence never contributes verified case I
 })
 
 test("an orphan manifest entry and an orphan PNG are errors", () => {
-  const root = temporaryRoot()
+  const root = fixtureRoot()
   try {
     const manifest = manifestFor()
     manifest.cases.gone = {
@@ -243,7 +237,7 @@ test("an orphan manifest entry and an orphan PNG are errors", () => {
 })
 
 test("a PNG that no longer matches its hash is an error", () => {
-  const root = temporaryRoot()
+  const root = fixtureRoot()
   try {
     writeEvidenceTree(root, { pngs: { small: Buffer.from("changed"), large: largePng } })
     const { errors } = checkEvidence({ root, cases, nodes: [node] })
@@ -257,7 +251,7 @@ test("a PNG that no longer matches its hash is an error", () => {
 })
 
 test("a modified source slice is rejected by both corpus and case checks", () => {
-  const root = temporaryRoot()
+  const root = fixtureRoot()
   try {
     writeEvidenceTree(root)
     const changed = sliceFor()
@@ -279,7 +273,7 @@ test("a modified source slice is rejected by both corpus and case checks", () =>
 })
 
 test("a manifest version that differs from the slice is an error", () => {
-  const root = temporaryRoot()
+  const root = fixtureRoot()
   try {
     writeEvidenceTree(root, { manifest: manifestFor({ version: "v0" }) })
     const { errors } = checkEvidence({ root, cases, nodes: [node] })
@@ -293,7 +287,7 @@ test("a manifest version that differs from the slice is an error", () => {
 })
 
 test("a slice without the case variant is an error", () => {
-  const root = temporaryRoot()
+  const root = fixtureRoot()
   try {
     const slice = sliceFor()
     slice.nodes["1:1"].document.children = [
@@ -311,7 +305,7 @@ test("a slice without the case variant is an error", () => {
 })
 
 test("a bundle above the cap is refused with its largest cases", () => {
-  const root = temporaryRoot()
+  const root = fixtureRoot()
   try {
     writeEvidenceTree(root)
     const { errors } = checkEvidence({ root, cases, nodes: [node], maxBytes: 10 })
@@ -328,7 +322,7 @@ test("a bundle above the cap is refused with its largest cases", () => {
 })
 
 test("the evidence command checks a fixture tree without a token", async () => {
-  const root = temporaryRoot()
+  const root = fixtureRoot()
   try {
     writeEvidenceTree(root)
     fs.mkdirSync(path.join(root, "src/catalog/figma"), { recursive: true })
@@ -352,7 +346,7 @@ test("the evidence command checks a fixture tree without a token", async () => {
 })
 
 test("loadExport reads the committed slice without normalizing the live export", () => {
-  const root = temporaryRoot()
+  const root = fixtureRoot()
   const previous = process.env.PAGOPA_UI_ROOT
   try {
     writeEvidenceTree(root)
@@ -382,8 +376,9 @@ test("loadExport reads the committed slice without normalizing the live export",
 })
 
 test("every committed case resolves to a variant", () => {
-  const corpus = loadCaseFile()
-  const nodes = loadInventoryNodes()
+  const designSystemRoot = path.resolve(TOOLING_ROOT, "../pagopa-ui")
+  const corpus = loadCaseFile(path.join(designSystemRoot, "src/catalog/figma/parity-cases.json"))
+  const nodes = loadInventoryNodes(path.join(designSystemRoot, "src/catalog/figma/inventory.json"))
   const byNode = new Map(nodes.map((item) => [item.nodeId, item]))
   const unresolved = corpus
     .filter((entry) => {
@@ -396,7 +391,7 @@ test("every committed case resolves to a variant", () => {
 })
 
 test("resolveExport falls back from the snapshot to the committed slice", () => {
-  const root = temporaryRoot()
+  const root = fixtureRoot()
   const previous = process.env.PAGOPA_UI_ROOT
   try {
     process.env.PAGOPA_UI_ROOT = root
@@ -414,7 +409,7 @@ test("resolveExport falls back from the snapshot to the committed slice", () => 
 })
 
 test("an explicit input path resolves from the design-system root", () => {
-  const root = temporaryRoot()
+  const root = fixtureRoot()
   const previous = process.env.PAGOPA_UI_ROOT
   try {
     process.env.PAGOPA_UI_ROOT = root
@@ -431,7 +426,7 @@ test("an explicit input path resolves from the design-system root", () => {
 })
 
 test("the case evidence check accepts a bundle that matches the inventory", () => {
-  const root = temporaryRoot()
+  const root = fixtureRoot()
   try {
     writeEvidenceTree(root)
     assert.deepEqual(checkCaseEvidence({ entry: cases[0], node, root }), [])
@@ -441,7 +436,7 @@ test("the case evidence check accepts a bundle that matches the inventory", () =
 })
 
 test("a stale design fingerprint is missing evidence", () => {
-  const root = temporaryRoot()
+  const root = fixtureRoot()
   try {
     writeEvidenceTree(root)
     const stale = structuredClone(node)
@@ -457,7 +452,7 @@ test("a stale design fingerprint is missing evidence", () => {
 })
 
 test("a case without a manifest entry is missing evidence", () => {
-  const root = temporaryRoot()
+  const root = fixtureRoot()
   try {
     writeEvidenceTree(root)
     const errors = checkCaseEvidence({ entry: { ...cases[0], id: "missing" }, node, root })
@@ -471,7 +466,7 @@ test("a case without a manifest entry is missing evidence", () => {
 })
 
 test("a slice without the captured variant is missing evidence", () => {
-  const root = temporaryRoot()
+  const root = fixtureRoot()
   try {
     const slice = sliceFor()
     slice.nodes["1:1"].document.children = [
@@ -489,7 +484,7 @@ test("a slice without the captured variant is missing evidence", () => {
 })
 
 test("parity check refuses a stale evidence slice before Storybook", async () => {
-  const root = temporaryRoot()
+  const root = fixtureRoot()
   try {
     writeEvidenceTree(root)
     fs.mkdirSync(path.join(root, "src/catalog/figma"), { recursive: true })
@@ -516,7 +511,7 @@ test("parity check refuses a stale evidence slice before Storybook", async () =>
 })
 
 test("parity check rejects an alternate slice even when the committed bundle is valid", async () => {
-  const root = temporaryRoot()
+  const root = fixtureRoot()
   try {
     writeEvidenceTree(root)
     fs.mkdirSync(path.join(root, "src/catalog/figma"), { recursive: true })
@@ -550,7 +545,7 @@ test("the committed slice is losslessly compressed, minified and deterministic",
 })
 
 test("previous gzipped slices remain readable as explicit inputs", () => {
-  const root = temporaryRoot()
+  const root = fixtureRoot()
   const previous = process.env.PAGOPA_UI_ROOT
   try {
     const file = path.join(root, "legacy.json.gz")

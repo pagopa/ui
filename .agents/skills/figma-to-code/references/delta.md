@@ -17,7 +17,7 @@ request ([node-review.md](node-review.md)).
 
 ## Steps
 
-1. **Snapshot and delta.** `pnpm nx run pagopa-ui-cli:figma:plan` reads the live
+1. **Snapshot and delta.** `pnpm ui-cli figma plan` reads the live
    file over REST, pins its version into `figma.snapshot` and prints the delta
    plan as JSON on stdout (exit 1 means drift, not failure). It reports:
    - `added`, `removed`, `changed`, `renamed`, `moved`: identity, property and
@@ -36,13 +36,13 @@ request ([node-review.md](node-review.md)).
    is a mobile review. The REST read covers every component in the file. When a remote
    library may hold roots it cannot see, add the MCP inventory: save
    `list_file_components_for_code_connect` to `figma.mcpInventory` and run
-   `pnpm nx run pagopa-ui-cli:figma:export --input <figma.mcpInventory>`. When
+   `pnpm ui-cli figma export --input <figma.mcpInventory>`. When
    the connected MCP server has no such tool, the REST path is complete for the
    file's own components; say so in the report.
    **Done when** every delta node, its class, its changed devices and its place
    in the order are reported to the person, before any file changes.
 
-2. **Triage.** `pnpm nx run pagopa-ui-cli:figma:triage` refreshes
+2. **Triage.** `pnpm ui-cli figma triage` refreshes
    `catalog.inventory` from the pinned snapshot, records the file version it was
    read from, turns new, changed and affected production nodes `pending`
    (including nodes a bulk rule covered) and prunes removed entries with their
@@ -69,7 +69,7 @@ request ([node-review.md](node-review.md)).
      `pending`.
 
    The design fingerprint cannot see the `.Regole` boxes or the component
-   description: `pnpm nx run pagopa-ui-cli:figma:rules plan` reports the
+   description: `pnpm ui-cli figma rules plan` reports the
    rules a page changed, and `figma:brief --node <nodeId>` is the read that
    closes the gap ([rules.md](rules.md)).
 

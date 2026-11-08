@@ -16,11 +16,11 @@ import {
   tokenIndex,
 } from "../../src/parity/diff.ts"
 import { loadExport, namedLeaves, nodeSpec, sourceNode } from "../../src/parity/source.ts"
-import { toolingPath } from "../../src/lib/paths.ts"
+import { TOOLING_ROOT } from "../../src/adapters/workspace.ts"
 
 const workspace = workspaceAt(path.resolve(import.meta.dirname, "../../../pagopa-ui"))
-const SLICE = toolingPath("tests/fixtures/figma-parity/snapshot-slice.json")
-const RECORDED_PROBE = toolingPath("tests/fixtures/figma-parity/render-probe.json")
+const SLICE = path.join(TOOLING_ROOT, "tests/fixtures/figma-parity/snapshot-slice.json")
+const RECORDED_PROBE = path.join(TOOLING_ROOT, "tests/fixtures/figma-parity/render-probe.json")
 
 function readProbe() {
   return JSON.parse(fs.readFileSync(RECORDED_PROBE, "utf8"))

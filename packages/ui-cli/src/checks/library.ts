@@ -4,7 +4,7 @@ import { spawn, spawnSync } from "node:child_process"
 import fs from "node:fs"
 import { createRequire } from "node:module"
 import net from "node:net"
-import os from "node:os"
+import { randomUUID } from "node:crypto"
 import path from "node:path"
 import { z } from "zod"
 import { pathToFileURL } from "node:url"
@@ -204,11 +204,8 @@ export async function checkLibrary(
   // The preview server comes from the audited package's own Vite: the consumer is
   // built with that toolchain, so serving it with another copy would prove less.
   const { preview } = await import(pathToFileURL(audited.resolve("vite")).href)
-  // Keep scratch outside the package tree so concurrent source walks cannot race
-  // with cleanup, and short enough for a Chromium singleton socket. The system
-  // temp path is outside every package tree on Linux and macOS; a workspace
-  // `.cache` path under a CI checkout exceeds the Unix socket limit.
-  const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-lib-"))
+  const temporary = path.join(workspace.workspaceRoot, ".cache/ui-cli/library", randomUUID())
+  fs.mkdirSync(temporary, { recursive: true })
   const consumer = path.join(temporary, "consumer")
   const consumerEnv = { ...options.env, TMPDIR: temporary, TMP: temporary, TEMP: temporary }
   let server:

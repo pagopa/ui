@@ -6,7 +6,7 @@ Consulted by every use case that reads or writes the catalogue.
 
 | Config key                       | Role                                                                                         | Edited by                                       |
 | -------------------------------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| `catalog.inventory`              | identities, canonical contracts, design fingerprints, dependency edges                       | `pnpm nx run pagopa-ui-cli:figma:triage` / `pnpm nx run pagopa-ui-cli:update:inventory` only  |
+| `catalog.inventory`              | identities, canonical contracts, design fingerprints, dependency edges                       | `pnpm ui-cli figma triage` / `pnpm ui-cli update inventory` only  |
 | `catalog.registry`               | decision per `nodeId`, `pageId` bulk rules, targets, rendered stories, per-node `note`       | agents and people, reviewed in pull requests    |
 | `catalog.parityCases`            | the reviewed case per compared variant and device                                            | `parity:check --save-case` only           |
 | `catalog.devicePolicy`           | the device vocabulary: axes, canonical devices, aliases, widths, default scopes              | reviewed by hand; never a component name or path |
@@ -204,7 +204,7 @@ never as a partial synchronization.
 ## The scheduled drift job
 
 `.github/workflows/figma-drift.yml` runs every Monday at 04:00 UTC
-`node packages/ui-cli/src/cli.ts update inventory --rest --pr-body .figma/pr-body.md`. It needs the
+`pnpm ui-cli update inventory --rest --prBody .figma/pr-body.md`. It needs the
 read-only `FIGMA_TOKEN` secret and fails when it is missing: a skipped check
 cannot certify alignment. With drift it refreshes the inventory, queues the
 production delta as `pending`, lowers the note-length ratchet when the queued

@@ -1,12 +1,11 @@
 import fs from "node:fs"
 import path from "node:path"
 import type { Workspace } from "../adapters/workspace.ts"
-import { createSourceModules, parseSource } from "../lib/source-modules.ts"
+import { createSourceModules } from "../lib/source-modules.ts"
 
 import { z } from "zod"
 
 import { fingerprint } from "../lib/hash.ts"
-import { artworkPath } from "../lib/paths.ts"
 import { isSchema, parseSchema } from "../lib/validate.ts"
 import {
   DependencySchema,
@@ -134,15 +133,16 @@ const isRestExport = (value: unknown): value is RestExport => isSchema(RestExpor
 const isInventoryExport = (value: unknown): value is InventoryExport =>
   isSchema(InventoryExportSchema, value)
 
-export function fileKeyFromSource(workspace?: Workspace): string {
+export function fileKeyFromSource(workspace: Workspace): string {
   const file = "src/catalog/figma/file.ts"
-  const source = workspace ? createSourceModules(workspace).parseSource : parseSource
-  const declarations = source(file).program.body.flatMap((statement) =>
-    statement.type === "ExportNamedDeclaration" &&
-    statement.declaration?.type === "VariableDeclaration"
-      ? statement.declaration.declarations
-      : [],
-  )
+  const declarations = createSourceModules(workspace)
+    .parseSource(file)
+    .program.body.flatMap((statement) =>
+      statement.type === "ExportNamedDeclaration" &&
+      statement.declaration?.type === "VariableDeclaration"
+        ? statement.declaration.declarations
+        : [],
+    )
   const initializer = declarations.find(
     (declaration) =>
       declaration.id.type === "Identifier" && declaration.id.name === "FIGMA_FILE_KEY",
@@ -164,7 +164,7 @@ const CatalogueManifestSchema = z.looseObject({
 
 export function catalogueIndex(
   registry: Registry,
-  workspace?: Workspace,
+  workspace: Workspace,
 ): {
   byNode: Map<string, BulkRule>
   manifests: Map<string, z.infer<typeof CatalogueManifestSchema>>
@@ -185,9 +185,7 @@ export function catalogueIndex(
       throw new Error(`${rule.pageId}: namesExport requires a node-keyed assetManifest`)
     }
     // A first artwork export may not have a manifest yet.
-    const file = workspace
-      ? path.join(workspace.artworkRoot, rule.assetManifest)
-      : artworkPath(rule.assetManifest)
+    const file = path.join(workspace.artworkRoot, rule.assetManifest)
     if (!fs.existsSync(file)) continue
     const manifest = parseSchema(
       CatalogueManifestSchema,
@@ -287,15 +285,6 @@ function propertyDefault(value: unknown): unknown {
   return value
 }
 
-// The device vocabulary is committed data. It is loaded once per process; a
-// fixture that pins its own policy passes it explicitly to `normalizeNode`.
-let devicePolicyCache: DevicePolicy | null = null
-
-export function defaultDevicePolicyCached(): DevicePolicy {
-  if (!devicePolicyCache) devicePolicyCache = loadDevicePolicy()
-  return devicePolicyCache
-}
-
 function boxOf(
   node: z.infer<typeof RawDocumentSchema>,
 ): { width: number; height: number } | undefined {
@@ -323,9 +312,14 @@ function variantRecords(
     .sort((a, b) => a.nodeId.localeCompare(b.nodeId, undefined, { numeric: true }))
 }
 
+function requirePolicy(policy: DevicePolicy | undefined): DevicePolicy {
+  if (!policy) throw new Error("normalizing component variants needs a device policy")
+  return policy
+}
+
 export function normalizeNode(
   rawValue: unknown,
-  { policy = defaultDevicePolicyCached() }: { policy?: DevicePolicy } = {},
+  { policy }: { policy?: DevicePolicy } = {},
 ): InventoryNode {
   const raw = parseSchema(RawNodeSchema, rawValue, "invalid Figma node")
   const nodeId = raw.nodeId ?? raw.node_id
@@ -390,7 +384,11 @@ export function normalizeNode(
     raw.type,
     `invalid Figma type for node ${nodeId}`,
   )
-  const variants = raw.variants ?? variantRecords(raw, normalizedProperties, policy)
+  const variants =
+    raw.variants ??
+    (raw.document?.children?.length
+      ? variantRecords(raw, normalizedProperties, requirePolicy(policy))
+      : undefined)
   const designFingerprint = raw.document
     ? fingerprint(designEvidence(raw.document))
     : (raw.designFingerprint ?? null)
@@ -426,8 +424,9 @@ export function normalizeLive(
   const policy =
     options.policy ??
     (options.workspace
-      ? loadDevicePolicy(path.join(options.workspace.root, "src/catalog/figma/device-policy.json"))
-      : defaultDevicePolicyCached())
+      ? loadDevicePolicy(options.workspace.path("src/catalog/figma/device-policy.json"))
+      : undefined)
+  if (!policy) throw new Error("normalizeLive needs a workspace or explicit device policy")
   let list: unknown[]
   if (Array.isArray(raw)) list = raw
   else if (isRestExport(raw)) {

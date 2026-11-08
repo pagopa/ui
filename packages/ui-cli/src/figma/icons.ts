@@ -369,7 +369,7 @@ function loadIconContext(workspace: Workspace, input?: string): IconContext {
   if (!/^\d+:\d+$/.test(rule.pageId))
     throw new Error("Local icons require one identity-keyed catalogue page rule")
   const provenanceByNode = resolveProvenance(rule, new Set(Object.keys(policies)))
-  const nodes = selectRuleNodes(registry, rule, normalizeLive(snapshot), workspace)
+  const nodes = selectRuleNodes(registry, rule, normalizeLive(snapshot, { workspace }), workspace)
   if (
     !nodes.length ||
     nodes

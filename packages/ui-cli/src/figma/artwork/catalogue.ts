@@ -20,7 +20,7 @@ export function selectRuleNodes(
   registry: Registry,
   rule: BulkRule,
   nodes: InventoryNode[],
-  workspace?: Workspace,
+  workspace: Workspace,
 ): InventoryNode[] {
   const { byNode } = catalogueIndex(registry, workspace)
   return nodes.filter((node) => {

@@ -8,13 +8,15 @@ compare it with the source code of the audited package, `packages/pagopa-ui`.
 
 ## Rules
 
-- Run each command through Nx (`pnpm nx run pagopa-ui-cli:<target>`) or
-  `pnpm --filter pagopa-ui-cli run <script>`: the CLI reads the
-  design system through an explicit root (`PAGOPA_UI_ROOT`), never from the
-  working directory. Every path inside a command is relative to that root.
-- Figma is read-only. The tools use GET requests only. They never write to the
-  Figma file.
-- Only `src/figma/rest.ts` uses the network.
+- Agents invoke CLI commands as `pnpm ui-cli …`; Nx targets remain the gates and
+  CI entry points. The CLI reads the design system through an explicit root
+  (`PAGOPA_UI_ROOT`), never from the working directory. Every path inside a
+  command is relative to that root.
+- Figma is read-only. Figma REST calls use GET requests only; tools never write
+  to the Figma file.
+- `src/figma/rest.ts` handles Figma API reads. The handoff adapters also access
+  GitHub pull-request data and the local Storybook preview as documented by
+  their commands.
 - A token comes from the process environment variable `FIGMA_TOKEN`. The token
   needs the `file_content:read` and `library_content:read` scopes. The live
   commands preflight it at startup and exit with explicit guidance when it is
@@ -156,7 +158,7 @@ keeps the same preflight behavior as the other live Figma commands.
    fails a node that enters the live delta (or is newly closed `implemented`)
    while a declared device has no reviewed case and no reasoned
    `device-exceptions.json` entry, and keeps the historical burn-down a single
-   warning whose work list is `node src/cli.ts parity queue --uncovered`.
+   warning whose work list is `pnpm ui-cli parity queue --uncovered`.
 5. **The artwork.** The icon check and the pictogram check prove that each public
    alias maps to a real source identity with pinned export provenance. Names
    remain stable through source renames and page moves. A newer metadata-only
@@ -194,25 +196,17 @@ only way in, and a new command is added to `src/cli.ts`.
 
 Every command is a subcommand of one entry point, so `--help` is the reference:
 
-From the package:
+From the workspace root, use the installed CLI entry point:
 
 ```bash
-pnpm run cli -- --help
-pnpm run cli -- check --help
-pnpm run cli -- check catalogue --help
-pnpm run cli -- parity check --help
+pnpm ui-cli --help
+pnpm ui-cli check --help
+pnpm ui-cli check catalogue --help
+pnpm ui-cli parity check --help
 ```
 
-From the workspace root, either the package script or the installed bin:
-
-```bash
-pnpm --filter pagopa-ui-cli run cli -- --help
-node packages/ui-cli/src/cli.ts --help
-```
-
-The npm tasks below are thin aliases over that tree, kept because the Nx
-targets and the agent skills name them. A direct call is always
-`ui-cli <group> <command>` (or `node packages/ui-cli/src/cli.ts <group> <command>`).
+Nx targets remain the gates and CI entry points. A direct call is always
+`pnpm ui-cli <group> <command>`.
 
 The packed-artifact check is not aliased here: it audits the built package, so
 it belongs to that package and runs as `pnpm nx run pagopa-ui:library:check`,
@@ -358,7 +352,7 @@ run does not move it. Each command records its own baseline under
   where Firefox joins the engines. A merge to `main` starts nothing: the pull
   request it came from already ran them on the same diff.
 - **Each Monday at 04:00 UTC.** `.github/workflows/figma-drift.yml` runs
-  `node src/cli.ts update inventory --rest --save .figma/live-rest.json --pr-body .figma/pr-body.md --delta .figma/delta.json`.
+  `pnpm ui-cli update inventory --rest --save .figma/live-rest.json --prBody .figma/pr-body.md --delta .figma/delta.json`.
   The job needs the read-only `FIGMA_TOKEN` secret and fails when it is missing.
   With drift it refreshes the inventory and the evidence bundle and opens one
   review pull request with the job's `GITHUB_TOKEN`, whose runs wait for the
@@ -372,9 +366,9 @@ run does not move it. Each command records its own baseline under
 | Situation                                     | Command                                                                                                                               |
 | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | Before each commit                            | `pnpm nx run pagopa-ui:check:catalogue`                                                                                               |
-| You need the current delta and the work order | `node src/cli.ts figma plan --input .figma/live-rest.json`                                                                            |
-| You need a new live snapshot                  | `pnpm nx run pagopa-ui-cli:figma:export --input .figma/live-mcp.json`                                                                 |
-| A delta must enter the repository             | `pnpm nx run pagopa-ui-cli:figma:triage --input .figma/live-rest.json`                                                                |
+| You need the current delta and the work order | `pnpm ui-cli figma plan --input .figma/live-rest.json`                                                                                |
+| You need a new live snapshot                  | `pnpm ui-cli figma export --input .figma/live-mcp.json`                                                                               |
+| A delta must enter the repository             | `pnpm ui-cli figma triage --input .figma/live-rest.json`                                                                              |
 | The design foundations changed in Figma       | `pnpm ui-cli update tokens --input .figma/variables.json`                                                                             |
 | The artwork of a pictogram changed            | `pnpm ui-cli figma pictograms export --input .figma/live-rest.json` and `pnpm ui-cli update pictograms --input .figma/live-rest.json` |
 | Icon artwork or variants changed              | `pnpm ui-cli update icons --input .figma/live-rest.json`                                                                              |

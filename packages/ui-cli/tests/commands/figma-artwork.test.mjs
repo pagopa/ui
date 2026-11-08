@@ -4,7 +4,7 @@ import { spawnSync } from "node:child_process"
 import { test } from "node:test"
 
 import { runCli, fixtureTree } from "../helpers/cli.mjs"
-import { toolingPath } from "../../src/lib/paths.ts"
+import { TOOLING_ROOT } from "../../src/adapters/workspace.ts"
 
 test("Figma artwork commands expose the contracted check and update routes", async (t) => {
   const fixture = fixtureTree({
@@ -52,10 +52,14 @@ test("Figma artwork commands expose the contracted check and update routes", asy
 })
 
 test("the executable resolves a relative design-system root before legacy imports change cwd", () => {
-  const result = spawnSync(process.execPath, [toolingPath("src/cli.ts"), "check", "icons"], {
-    cwd: path.resolve(toolingPath("../..")),
-    encoding: "utf8",
-    env: { ...process.env, PAGOPA_UI_ROOT: "packages/pagopa-ui" },
-  })
+  const result = spawnSync(
+    process.execPath,
+    [path.join(TOOLING_ROOT, "src/cli.ts"), "check", "icons"],
+    {
+      cwd: path.resolve(path.join(TOOLING_ROOT, "../..")),
+      encoding: "utf8",
+      env: { ...process.env, PAGOPA_UI_ROOT: "packages/pagopa-ui" },
+    },
+  )
   assert.equal(result.status, 0, result.stderr)
 })

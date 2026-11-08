@@ -32,7 +32,7 @@ devices (one iteration each).
 
 ## The loop (per node, per declared device)
 
-1. **Source numbers.** `node packages/ui-cli/src/cli.ts parity source <nodeId> --compact
+1. **Source numbers.** `pnpm ui-cli parity source <nodeId> --compact
    --depth 3`, `--json` for the variant list. Anatomy questions:
    `parity source <variant> --png` for the pinned source image (default
    `.figma/parity/source/`), `parity render --tree` for the rendered boxes,

@@ -7,9 +7,9 @@ import { fileURLToPath } from "node:url"
 
 import { captureWave } from "../../src/parity/capture.ts"
 import { workspaceAt } from "../helpers/cli.mjs"
-import { toolingPath } from "../../src/lib/paths.ts"
+import { TOOLING_ROOT } from "../../src/adapters/workspace.ts"
 
-const source = toolingPath("tests/fixtures/figma-parity/snapshot-slice.json")
+const source = path.join(TOOLING_ROOT, "tests/fixtures/figma-parity/snapshot-slice.json")
 const evidence = fileURLToPath(
   new URL("../../../../docs/figma-parity/source.json.br", import.meta.url),
 )
@@ -45,6 +45,10 @@ function fixture(entries = cases) {
   fs.writeFileSync(
     path.join(root, "src/catalog/figma/inventory.json"),
     JSON.stringify({ fileKey: "fixture", components: [] }),
+  )
+  fs.copyFileSync(
+    path.join(TOOLING_ROOT, "../pagopa-ui/src/catalog/figma/device-policy.json"),
+    path.join(root, "src/catalog/figma/device-policy.json"),
   )
   return { root, corpus, out: path.join(root, "output") }
 }

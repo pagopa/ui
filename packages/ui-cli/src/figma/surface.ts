@@ -58,7 +58,6 @@
 import fs from "node:fs"
 
 import { readJson } from "../lib/json.ts"
-import { rootPath } from "../lib/paths.ts"
 import { DEVICE_POLICY_PATH } from "./devices.ts"
 import {
   PageSurfaceSchema,
@@ -111,7 +110,7 @@ export type SurfaceUnmirrored = {
   reason: string
 }
 
-export function loadPageSurface(file: string = rootPath(PAGE_SURFACE_PATH)): PageSurface {
+export function loadPageSurface(file: string): PageSurface {
   if (!fs.existsSync(file)) {
     throw new Error(
       `${file} is missing: a page census is committed next to registry.json ` +

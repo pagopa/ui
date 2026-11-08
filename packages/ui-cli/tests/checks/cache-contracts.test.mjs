@@ -3,6 +3,7 @@ import { spawnSync } from "node:child_process"
 import fs from "node:fs"
 import { createRequire } from "node:module"
 import path from "node:path"
+import { randomUUID } from "node:crypto"
 import { test } from "node:test"
 import { fileURLToPath } from "node:url"
 
@@ -53,9 +54,8 @@ const namedInputs = JSON.parse(fs.readFileSync(path.join(workspace, "nx.json"), 
 function fixture(project, target, files, { artifact = false } = {}) {
   // .cache is already excluded by the workspace's .gitignore, so a parallel
   // graph scan cannot discover the fixture's duplicate project identities.
-  const scratch = path.join(workspace, ".cache")
-  fs.mkdirSync(scratch, { recursive: true })
-  const root = fs.mkdtempSync(path.join(scratch, "nx-contract-"))
+  const root = path.join(workspace, ".cache", `nx-contract-${randomUUID()}`)
+  fs.mkdirSync(root, { recursive: true })
   function write(file, source) {
     const absolute = path.join(root, file)
     fs.mkdirSync(path.dirname(absolute), { recursive: true })

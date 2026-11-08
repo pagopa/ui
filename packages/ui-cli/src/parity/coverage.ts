@@ -193,7 +193,7 @@ export function loadCoveragePopulations(
   let byNode = new Map<string, BulkRule>()
   let ownershipError: string | undefined
   try {
-    byNode = catalogueIndex(registry).byNode
+    byNode = catalogueIndex(registry, workspace).byNode
   } catch (error) {
     ownershipError = error instanceof Error ? error.message : String(error)
   }

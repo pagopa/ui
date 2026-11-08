@@ -32,9 +32,9 @@ This file adds what holds only for agents.
 4. **The package owns the code.** The design system is `packages/pagopa-ui`, its
    generated artwork is `packages/artwork`, its design foundations are
    `packages/tokens` and its checks and Figma tooling are
-   `packages/ui-cli`: run their targets with
-   `pnpm nx run <project>:<target>`, never with a path that walks out of the
-   project.
+   `packages/ui-cli`: agents run CLI commands as `pnpm ui-cli …`; use Nx targets
+   (`pnpm nx run <project>:<target>`) for gates and CI. Never use a path that
+   walks out of the project.
 5. **English whatever the session language.** Documentation, code comments and
    pull request titles and descriptions are written in English even when the
    session runs in Italian. Italian stays only where the product renders it:
@@ -44,11 +44,11 @@ This file adds what holds only for agents.
 
 ## Figma sessions
 
-Open with `pnpm nx run pagopa-ui-cli:figma:status`: it prints the config path,
+Open with `pnpm ui-cli figma status`: it prints the config path,
 the token state, the snapshot, the drift against the inventory, the pending
 queue with its design requests, the page surface line and the next command;
 `--live` adds the file version and last-modified date. When Figma changed,
-`figma:plan` then `figma:triage` are the whole refresh, and the pending queue is
+`pnpm ui-cli figma plan` then `pnpm ui-cli figma triage` are the whole refresh, and the pending queue is
 not a delta. The `figma-to-code` skill owns every rule that follows.
 
 The scope is the library, and every page a session touches is censused: read the
@@ -61,13 +61,13 @@ never published is `unpublished` there and owes no work; publishing it is what
 makes its decision due.
 
 Before touching one node, read its brief:
-`pnpm nx run pagopa-ui-cli:figma:brief --node <nodeId>` prints the registry
+`pnpm ui-cli figma brief --node <nodeId>` prints the registry
 entry, the `.Regole` cards that target it, the open comments and the design
 requests. The rules boxes and the comments sit outside `designFingerprint`, so
 no drift reports them: `figma:rules` keeps the committed English ledger, and a
 node is not finished while a rule that targets it is `pending` or `stale`.
-Refresh the local snapshots with `figma:rules refresh` and
-`figma:comments --refresh`.
+Refresh the local snapshots with `pnpm ui-cli figma rules refresh` and
+`pnpm ui-cli figma comments --refresh`.
 
 ## Skills
 

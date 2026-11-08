@@ -1,5 +1,6 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
+import path from "node:path"
 
 import {
   checkDevicePolicy,
@@ -370,7 +371,9 @@ test("the device axes of a node are named or derived from their values", () => {
 })
 
 test("the committed policy covers the committed inventory", () => {
-  const committed = loadDevicePolicy()
+  const committed = loadDevicePolicy(
+    path.resolve(import.meta.dirname, "../../../pagopa-ui/src/catalog/figma/device-policy.json"),
+  )
   assert.ok(committed.axes.length > 0)
   assert.ok(Object.keys(committed.devices).length >= 3)
 })

@@ -56,7 +56,7 @@ the session.
 
    ```sh
    [ -n "${FIGMA_TOKEN:-}" ] || export FIGMA_TOKEN="$(security find-generic-password -s figma-pat -w)"
-   pnpm nx run pagopa-ui-cli:figma:status
+   pnpm ui-cli figma status
    ```
 
    **Done when** the token state is known and the delta's route is chosen: the

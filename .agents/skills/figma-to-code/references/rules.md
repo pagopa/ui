@@ -14,7 +14,7 @@ implementing, and into an English record the repository keeps.
 ## Read the brief first
 
 ```bash
-pnpm nx run pagopa-ui-cli:figma:brief --node <nodeId>
+pnpm ui-cli figma brief --node <nodeId>
 ```
 
 It prints, offline, the registry entry, the guide, every rule that targets the
@@ -27,8 +27,8 @@ The live snapshots are local and git-ignored. Refresh them when the session
 starts on a file that may have changed:
 
 ```bash
-pnpm nx run pagopa-ui-cli:figma:rules refresh --node <nodeId>
-pnpm nx run pagopa-ui-cli:figma:comments --refresh
+pnpm ui-cli figma rules refresh --node <nodeId>
+pnpm ui-cli figma comments --refresh
 ```
 
 `--page <pageId>` scopes the rules refresh; the full refresh reads every rules
@@ -92,7 +92,7 @@ containers before deciding; do not ask a person to arbitrate.
 Record the decision from the snapshot, never by writing the ledger by hand:
 
 ```bash
-pnpm nx run pagopa-ui-cli:figma:rules mark <cardId> \
+pnpm ui-cli figma rules mark <cardId> \
   --disposition imported \
   --title-en "<English title>" \
   --summary "<one sentence, in English>" \
