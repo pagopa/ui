@@ -8,25 +8,26 @@ The commands are in [parity-tooling.md](parity-tooling.md); devices in
 
 ## Inputs
 
-- `figma.snapshot` current. When it is missing or older than the last Figma
-  change, stop and ask the person to export it (the credentials are theirs);
-  without it `check` exits 2.
+- A current source: `figma.snapshot`, explicit input, or a valid committed
+  evidence slice ([parity-tooling.md](parity-tooling.md)). Refresh missing/stale
+  live evidence through [delta.md](delta.md); without usable evidence the run
+  exits 2.
 - Storybook on `storybook.url`; start `pnpm nx run pagopa-ui-storybook:storybook` when nothing answers. A
-  file created while Storybook runs is not in the Tailwind scan until
-  `touch src/index.css`.
-- The work list: `pnpm ui-cli parity queue --status pending` (never-closed or
-  re-opened nodes), `--status implemented` (re-verification: report what moved,
-  the decisions stay), `--unmapped` (nodes without a committed case). List a
+  newly created source file may need the stylesheet named by `tokens.stylesheet`
+  touched to refresh the Tailwind scan.
+- Take the next pending wave with
+  `pnpm ui-cli parity queue --next --size 3 --json`. For other requested scopes,
+  use queue's status/coverage filters from `--help`. List a
   node's case IDs with `pnpm ui-cli parity capture --saved
   --node <id> --dry-run`.
 - The scope is the person's: by default a **wave** of three nodes, the highest in
   `implementationOrder` first, each finished before the next. A named list or the
   whole queue only when they say so. "Re-check everything mapped" is not a wave:
-  run `parity:capture --saved --node <id>` for each mapped node, into a separate
+  run `parity capture --saved --node <id>` for each mapped node, into a separate
   `--out` directory per node, and only what moved enters the loop. "Mapping only"
   calibrates and saves cases without touching components or the registry.
 
-**Done when** the snapshot is current, Storybook answers, and the node ids are
+**Done when** the source evidence is current, Storybook answers, and the node ids are
 written down with the variants they capture and, for a device axis, the declared
 devices (one iteration each).
 
@@ -43,7 +44,7 @@ devices (one iteration each).
    case id `<node>-<state>-<device>`), `--expect-state`, the source width and
    the source artboard `--height`. Exit 2 is missing evidence, not a delta: fix
    the width, viewport, height or state evidence and run again.
-   **Done when** the run reports deltas (not exit 2) and the `capture` block
+   **Done when** the run reports a valid comparison (exit 0 or 3) and the `capture` block
    reads devicePixelRatio 1, ruler 100px and the expected root width.
 3. **Compare both ways.** The images and the numbers (box, padding, gap, radius,
    borders, fills, font size, line height, weight, colour, icon box). Tolerance
@@ -61,7 +62,7 @@ devices (one iteration each).
    mapping defect: fix the case, not the component. **Three fix passes per
    case**, then stop and report. Never accept a deviation because it looks
    right.
-   **Done when** no delta is left unexplained.
+   **Done when** no delta is left unexplained; unresolved findings stay blocked.
 5. **Composition.** `--compare-offset` (plus `--compare-box height` for text
    layers) with `--strict`. Clean → keep it in the case. Explained by a recorded
    adaptation → leave it off and save a `note` with the measurement. Neither →
@@ -87,29 +88,14 @@ an ignore; `--strict` is clean or the note explains it; the case reproduces;
 every declared device has a case or a reasoned exception; the registry covers
 only verified nodes and `check:catalogue` is green.
 
-## The token ladder
-
-Every visual value, in order:
-
-1. an existing token (semantic colour, type class, spacing or radius step);
-2. the nearest compatible token within 2px — keep it and record the residue;
-3. a recurring source value earns a token through `tokens.manifest`; the change
-   lands once in the token layer.
-
-An arbitrary `[Npx]` utility or a local override that closes a 1–2px gap hides
-the difference and breaks the scale. Not gaps, and source-exact: the frame size
-of the source frame itself (forced by the capture, never baked into the
-component) and source artwork geometry. Radius steps are 8/16/24. A colour shared
-by several tokens matches the `token` class by value only: pick the semantic
-token deliberately.
+Use the [token ladder](tokens.md#the-ladder-for-a-value) for every visual fix.
 
 ## Traps
 
 ### Typography
 
-- **The pinned source's `500` is the Semibold face (CSS 600), `600` is Bold
-  (700).** The bundle has no 500 face and `font-synthesis: none`; the foundation
-  check rejects `font-medium` (`font-weight`).
+- Resolve the source face with the
+  [type contract](tokens.md#the-component-class-contract).
 - A type-scale token carries its own weight: no weight override on top of it.
 - Widths measured under an old font substitute are history: re-measure, never
   re-approve.
@@ -178,8 +164,6 @@ filled is a delta, not a variant.
   the component's relevant variants and accessibility colour modes. Inspect
   native and high-density renders as well as the source crop.
 
-## Reporting
-
-Per component: story id · source PNG · render PNG · source vs render numbers ·
-state (`verified` | `fixed` | `review-required`) · residues with their reasons.
-"Aligned" without the numbers and both images is an unverified claim.
+The [completion report](definition-of-done.md#closing-and-delivery) includes
+story IDs, source/render images and numbers, and whether each case is verified,
+fixed or review-required. An alignment claim without that evidence is unverified.

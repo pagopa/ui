@@ -91,16 +91,10 @@ function figmaFileKey(workspace: Workspace): string {
   return match[1]
 }
 
-async function runPictograms(
-  workspace: Workspace,
-  mode: "export" | "write" | "check",
-  input?: string,
-  env?: NodeJS.ProcessEnv,
-  run?: KeychainRunner,
-): Promise<string> {
-  if (mode !== "check" && !input)
-    throw new Error(`ui-cli ${mode} pictograms needs --input <snapshot>`)
-  const token = mode === "export" ? figmaToken(env ?? {}, run) : ""
+type PictogramMode = "export" | "write" | "check"
+type PictogramContext = ReturnType<typeof loadPictogramContext>
+
+function loadPictogramContext(workspace: Workspace, mode: PictogramMode, input?: string) {
   const snapshot = parseSchema(
     SnapshotSchema,
     readJson(input ?? workspace.path("src/catalog/figma/inventory.json")),
@@ -128,8 +122,30 @@ async function runPictograms(
   const roots = selectRuleNodes(registry, rule, normalizeLive(snapshot, { workspace }), workspace)
   if (!roots.length) throw new Error("The snapshot contains no published pictogram identities")
   const provenanceByNode = resolveProvenance(rule, new Set(roots.map((root) => root.nodeId)))
+  const directory =
+    mode === "check"
+      ? path.join(workspace.artworkRoot, "src/assets/figma-pictograms")
+      : path.join(workspace.root, ".figma/pictograms")
+  const output =
+    mode === "export"
+      ? path.join(workspace.root, ".figma/pictograms")
+      : path.join(workspace.artworkRoot, "src/assets/figma-pictograms")
+  const sourceFile = path.join(workspace.artworkRoot, "src/components/icons/pictogram-assets.ts")
+  return {
+    snapshot,
+    fileKey,
+    publishedManifest,
+    roots,
+    provenanceByNode,
+    directory,
+    output,
+    sourceFile,
+  }
+}
 
-  let entries: Record<string, PictogramManifestEntry> = {}
+function snapshotEntries(context: PictogramContext, mode: PictogramMode) {
+  const { snapshot, publishedManifest, roots, provenanceByNode } = context
+  const entries: Record<string, PictogramManifestEntry> = {}
   const ids: string[] = []
   for (const root of roots) {
     if (mode === "check" && !snapshot.nodes) continue
@@ -166,67 +182,72 @@ async function runPictograms(
     }
     entries[root.nodeId] = entry
   }
+  return { entries, ids }
+}
 
-  const directory =
-    mode === "check"
-      ? path.join(workspace.artworkRoot, "src/assets/figma-pictograms")
-      : path.join(workspace.root, ".figma/pictograms")
-  const assets =
-    mode === "export"
-      ? await fetchFigmaImages(fileKey, snapshot.version ?? "", ids, token)
-      : new Map()
-
-  let manifest: PictogramManifest | undefined
-  if (mode !== "export") {
-    manifest = parseSchema(
-      PictogramManifestSchema,
-      readJson(path.join(directory, "manifest.json")),
-      path.join(directory, "manifest.json"),
-    )
-    if (Object.keys(manifest.entries).length !== roots.length) {
-      throw new Error("The asset manifest does not cover every pictogram")
+function loadPictogramAssets(
+  context: PictogramContext,
+  mode: "write" | "check",
+  expectedEntries: Record<string, PictogramManifestEntry>,
+  assets: Map<string, string>,
+): PictogramManifest {
+  const { directory, roots, publishedManifest, provenanceByNode } = context
+  const manifest = parseSchema(
+    PictogramManifestSchema,
+    readJson(path.join(directory, "manifest.json")),
+    path.join(directory, "manifest.json"),
+  )
+  if (Object.keys(manifest.entries).length !== roots.length) {
+    throw new Error("The asset manifest does not cover every pictogram")
+  }
+  for (const root of roots) {
+    const entry = manifest.entries[root.nodeId]
+    if (!entry || entry.designFingerprint !== root.designFingerprint) {
+      throw new Error(`Pictogram ${root.nodeId} asset evidence is stale`)
     }
-    for (const root of roots) {
-      const entry = manifest.entries[root.nodeId]
-      if (!entry || entry.designFingerprint !== root.designFingerprint) {
-        throw new Error(`Pictogram ${root.nodeId} asset evidence is stale`)
-      }
-      entry.name = publishedManifest?.entries[root.nodeId]?.name ?? entry.name
-      const provenance = provenanceByNode.get(root.nodeId)
+    entry.name = publishedManifest?.entries[root.nodeId]?.name ?? entry.name
+    const provenance = provenanceByNode.get(root.nodeId)
+    if (
+      mode === "check" &&
+      JSON.stringify(entry.provenance ?? null) !== JSON.stringify(provenance ?? null)
+    ) {
+      throw new Error(`Pictogram ${root.nodeId} provenance evidence is stale`)
+    }
+    for (const background of ["light", "dark"] as const) {
+      const variant = entry[background]
       if (
-        mode === "check" &&
-        JSON.stringify(entry.provenance ?? null) !== JSON.stringify(provenance ?? null)
+        !/^\d+:\d+$/.test(variant?.nodeId) ||
+        variant.file !== `${variant.nodeId.replace(":", "-")}.svg`
       ) {
-        throw new Error(`Pictogram ${root.nodeId} provenance evidence is stale`)
+        throw new Error(`Pictogram ${root.nodeId} has an invalid asset identity or path`)
       }
-      for (const background of ["light", "dark"] as const) {
-        const variant = entry[background]
-        if (
-          !/^\d+:\d+$/.test(variant?.nodeId) ||
-          variant.file !== `${variant.nodeId.replace(":", "-")}.svg`
-        ) {
-          throw new Error(`Pictogram ${root.nodeId} has an invalid asset identity or path`)
-        }
-        if (entries[root.nodeId] && entries[root.nodeId][background].nodeId !== variant.nodeId) {
-          throw new Error(`Pictogram ${root.nodeId} has the wrong ${background} variant identity`)
-        }
-        const source = fs.readFileSync(path.join(directory, variant.file), "utf8")
-        if (sha256(source) !== variant.sha256) {
-          throw new Error(`Pictogram ${variant.nodeId} asset checksum does not match`)
-        }
-        assets.set(variant.nodeId, source)
+      if (
+        expectedEntries[root.nodeId] &&
+        expectedEntries[root.nodeId][background].nodeId !== variant.nodeId
+      ) {
+        throw new Error(`Pictogram ${root.nodeId} has the wrong ${background} variant identity`)
       }
-    }
-    entries = manifest.entries
-    if (mode === "write") {
-      for (const root of roots) {
-        const entry = entries[root.nodeId]
-        const provenance = provenanceByNode.get(root.nodeId)
-        if (entry && provenance) entry.provenance = provenance
+      const source = fs.readFileSync(path.join(directory, variant.file), "utf8")
+      if (sha256(source) !== variant.sha256) {
+        throw new Error(`Pictogram ${variant.nodeId} asset checksum does not match`)
       }
+      assets.set(variant.nodeId, source)
     }
   }
+  if (mode === "write") {
+    for (const root of roots) {
+      const entry = manifest.entries[root.nodeId]
+      const provenance = provenanceByNode.get(root.nodeId)
+      if (entry && provenance) entry.provenance = provenance
+    }
+  }
+  return manifest
+}
 
+async function validatePictogramAssets(
+  entries: Record<string, PictogramManifestEntry>,
+  assets: Map<string, string>,
+): Promise<void> {
   const publicNames = new Set<string>()
   for (const entry of Object.values(entries)) {
     if (!entry.name.trim() || publicNames.has(entry.name)) {
@@ -242,14 +263,9 @@ async function runPictograms(
       variant.sha256 = sha256(source)
     }
   }
+}
 
-  const output =
-    mode === "export"
-      ? path.join(workspace.root, ".figma/pictograms")
-      : path.join(workspace.artworkRoot, "src/assets/figma-pictograms")
-  manifest ??= { fileKey, version: snapshot.version ?? "", entries }
-
-  const sourceFile = path.join(workspace.artworkRoot, "src/components/icons/pictogram-assets.ts")
+function pictogramModule(entries: Record<string, PictogramManifestEntry>): string {
   const imports: string[] = []
   const declarations: string[] = []
   const byName: string[] = []
@@ -269,13 +285,22 @@ async function runPictograms(
     byName.push(`${propertyKey(entry.name)}: pictogramAssets[${JSON.stringify(id)}]`)
   }
   byName.sort()
-  const source = `// Generated by packages/ui-cli/src/figma/pictograms.ts; identity is the Figma nodeId.\n${imports.join("\n")}\nimport type { FigmaPictogramName } from "./figma-inventory"\n\nexport type PictogramAsset = {\n  name: FigmaPictogramName\n  light: { nodeId: string; url: string }\n  dark: { nodeId: string; url: string }\n}\n\nexport const pictogramAssets: Record<string, PictogramAsset> = {\n${declarations.join(",\n")}\n}\n\n/** Public-name index of the node-keyed catalogue; exhaustive by construction. */\nexport const pictogramAssetsByName = {\n${byName.join(",\n")}\n} as const satisfies Record<FigmaPictogramName, PictogramAsset>\n`
+  return `// Generated by packages/ui-cli/src/figma/pictograms.ts; identity is the Figma nodeId.\n${imports.join("\n")}\nimport type { FigmaPictogramName } from "./figma-inventory"\n\nexport type PictogramAsset = {\n  name: FigmaPictogramName\n  light: { nodeId: string; url: string }\n  dark: { nodeId: string; url: string }\n}\n\nexport const pictogramAssets: Record<string, PictogramAsset> = {\n${declarations.join(",\n")}\n}\n\n/** Public-name index of the node-keyed catalogue; exhaustive by construction. */\nexport const pictogramAssetsByName = {\n${byName.join(",\n")}\n} as const satisfies Record<FigmaPictogramName, PictogramAsset>\n`
+}
 
+function publishPictograms(
+  context: PictogramContext,
+  mode: PictogramMode,
+  manifest: PictogramManifest,
+  assets: Map<string, string>,
+): void {
+  const { sourceFile, output } = context
+  const source = pictogramModule(manifest.entries)
   if (mode === "check") {
     assertGeneratedModule(sourceFile, source, "Generated pictogram module")
   } else {
     fs.mkdirSync(output, { recursive: true })
-    for (const entry of Object.values(entries)) {
+    for (const entry of Object.values(manifest.entries)) {
       for (const background of ["light", "dark"] as const) {
         const variant = entry[background]
         const art = assets.get(variant.nodeId)
@@ -289,5 +314,29 @@ async function runPictograms(
       fs.writeFileSync(sourceFile, source)
     }
   }
-  return `Pictograms ${mode}: ${roots.length} roots, ${assets.size} individual SVG variants -> ${output}`
+}
+
+async function runPictograms(
+  workspace: Workspace,
+  mode: PictogramMode,
+  input?: string,
+  env?: NodeJS.ProcessEnv,
+  run?: KeychainRunner,
+): Promise<string> {
+  if (mode !== "check" && !input)
+    throw new Error(`ui-cli ${mode} pictograms needs --input <snapshot>`)
+  const token = mode === "export" ? figmaToken(env ?? {}, run) : ""
+  const context = loadPictogramContext(workspace, mode, input)
+  const { entries, ids } = snapshotEntries(context, mode)
+  const assets =
+    mode === "export"
+      ? await fetchFigmaImages(context.fileKey, context.snapshot.version ?? "", ids, token)
+      : new Map<string, string>()
+  const manifest =
+    mode === "export"
+      ? { fileKey: context.fileKey, version: context.snapshot.version ?? "", entries }
+      : loadPictogramAssets(context, mode, entries, assets)
+  await validatePictogramAssets(manifest.entries, assets)
+  publishPictograms(context, mode, manifest, assets)
+  return `Pictograms ${mode}: ${context.roots.length} roots, ${assets.size} individual SVG variants -> ${context.output}`
 }

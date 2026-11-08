@@ -8,9 +8,9 @@ This file adds what holds only for agents.
 ## Rules
 
 1. **Never read `.env`.** Never read, source or load it; Vite and Storybook
-   disable env-file loading on purpose. Live Figma steps need `FIGMA_TOKEN`
-   exported by the person, or they run the read-only exporter and hand over its
-   JSON output.
+   disable env-file loading on purpose. The CLI resolves Figma credentials
+   without exposing them; its source gate and fallback are in
+   [init](.agents/skills/figma-to-code/references/init.md#credentials-and-source-gate).
 2. **Green before commit**: [the green chain](./CONTRIBUTING.md#the-green-chain),
    run in full, through Nx. The chain checks formatting without writing it, so
    `pnpm nx run-many -t fmt` runs first. Stories run in a browser: when they
@@ -44,35 +44,16 @@ This file adds what holds only for agents.
 
 ## Figma sessions
 
-Open with `pnpm ui-cli figma status`: it prints the config path,
-the token state, the snapshot, the drift against the inventory, the pending
-queue with its design requests, the page surface line and the next command;
-`--live` adds the file version and last-modified date. When Figma changed,
-`pnpm ui-cli figma plan` then `pnpm ui-cli figma triage` are the whole refresh, and the pending queue is
-not a delta. The `figma-to-code` skill owns every rule that follows.
-
-The scope is the library, and every page a session touches is censused: read the
-page tree with `get_metadata` on the page node and update
-`packages/pagopa-ui/src/catalog/figma/page-surface.json`. It is complete: the
-status line reads the same number twice, and it stops doing so the moment a page
-gains a published node without a re-read — the remainder is the
-`surfaceUncensused` list in `figma:plan`. An identity the file
-never published is `unpublished` there and owes no work; publishing it is what
-makes its decision due.
-
-Before touching one node, read its brief:
-`pnpm ui-cli figma brief --node <nodeId>` prints the registry
-entry, the `.Regole` cards that target it, the open comments and the design
-requests. The rules boxes and the comments sit outside `designFingerprint`, so
-no drift reports them: `figma:rules` keeps the committed English ledger, and a
-node is not finished while a rule that targets it is `pending` or `stale`.
-Refresh the local snapshots with `pnpm ui-cli figma rules refresh` and
-`pnpm ui-cli figma comments --refresh`.
+Invoke `figma-to-code` for source work: its sequence owns status, source gates,
+delta/triage, node briefs, page census, device parity and closing.
+Use `pnpm ui-cli … --help` for interactive command signatures; keep Nx for
+the workspace gates. Automation never replaces source/render inspection or
+the person's delivery permissions.
 
 ## Skills
 
-Each skill stands alone and never points at another skill or at this file; the
-orchestration lives here.
+The standards and source-alignment skills own separate contracts; apply both
+when work touches a component with a design source.
 
 - [`pagopa-ui-standards`](.agents/skills/pagopa-ui-standards/SKILL.md) — how a
   component, its props, texts, story, test and guide are written, and the
@@ -80,6 +61,8 @@ orchestration lives here.
 - [`figma-to-code`](.agents/skills/figma-to-code/SKILL.md) — the Figma workflow:
   deltas, new nodes, alignment and parity, devices, tokens, icons, pictograms,
   node reviews and questions for the design owner.
+- [`start-figma-to-code`](.agents/skills/start-figma-to-code/SKILL.md) — the
+  user-invoked entrypoint that scopes an open drift pull request.
 
 | Work                                                       | Skills                                                                                          |
 | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
@@ -93,9 +76,9 @@ orchestration lives here.
 
 [`figma-align`](.github/extensions/figma-align/extension.mjs) is a Copilot CLI
 dynamic workflow that runs a wave of Figma alignment through both skills. It
-runs the deterministic commands itself: the `figma:status` session report, the
-delta plan and triage, a fresh rules/comments snapshot, the pending queue and
-`implementationOrder`, one `figma:brief` per node, the close-out checks
+runs the deterministic commands itself: status, delta plan and inventory triage,
+fresh rules/comments snapshots, the pending queue and `implementationOrder`,
+node briefs, the close-out checks
 (`check:catalogue`, `check:rules`, the parity wave) and the green chain read
 from [CONTRIBUTING.md](./CONTRIBUTING.md#the-green-chain). It analyses each node
 in parallel and read-only, then pauses so the person can approve or edit
@@ -117,7 +100,7 @@ the workflow only sequences them.
 ## General Guidelines for working with Nx
 
 - For navigating/exploring the workspace, invoke the `nx-workspace` skill first - it has patterns for querying projects, targets, and dependencies
-- When running tasks (for example build, lint, test, e2e, etc.), always prefer running the task through `nx` (i.e. `nx run`, `nx run-many`, `nx affected`) instead of using the underlying tooling directly
+- Run workspace tasks and CI gates through `nx` (`nx run`, `nx run-many`, `nx affected`); interactive UI CLI operations use `pnpm ui-cli …`
 - Prefix nx commands with the workspace's package manager (e.g., `pnpm nx build`, `npm exec nx test`) - avoids using globally installed CLI
 - You have access to the Nx MCP server and its tools, use them to help the user
 - For Nx plugin best practices, check `node_modules/@nx/<plugin>/PLUGIN.md`. Not all plugins have this file - proceed without it if unavailable.

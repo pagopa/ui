@@ -120,176 +120,186 @@ export function loadPageSurface(file: string): PageSurface {
   return readJson(file, PageSurfaceSchema)
 }
 
-export function checkPageSurface(
-  surface: PageSurface,
-  {
-    nodes,
-    registry,
-    cases,
-    fileKey,
-    devices,
-    label = PAGE_SURFACE_PATH,
-  }: {
-    nodes: InventoryNode[]
-    registry: Registry
-    cases: ParityCase[]
-    fileKey: string
-    devices?: Iterable<string>
-    label?: string
-  },
-): SurfaceResult {
+type SurfacePage = PageSurface["pages"][number]
+type SurfaceIdentity = SurfacePage["identities"][number]
+type SurfaceCheckInput = {
+  nodes: InventoryNode[]
+  registry: Registry
+  cases: ParityCase[]
+  fileKey: string
+  devices?: Iterable<string>
+  label?: string
+}
+type SurfaceContext = {
+  nodes: InventoryNode[]
+  entries: Registry["entries"]
+  byNode: Map<string, InventoryNode>
+  bulkByPage: Map<string, string>
+  caseById: Map<string, ParityCase>
+  vocabulary: Set<string> | null
+  label: string
+}
+
+function checkIdentityPublication(
+  identity: SurfaceIdentity,
+  node: InventoryNode | undefined,
+  pageId: string,
+  where: string,
+): string[] {
   const errors: string[] = []
-  const warnings: string[] = []
-  const vocabulary = devices ? new Set(devices) : null
-
-  if (surface.fileKey !== fileKey) {
-    errors.push(`${label}: fileKey ${surface.fileKey} is not the inventory file ${fileKey}`)
-  }
-
-  const byNode = new Map<string, InventoryNode>(nodes.map((node) => [node.nodeId, node]))
-  const entries = registry.entries ?? {}
-  const bulkByPage = new Map<string, string>()
-  for (const rule of registry.bulkRules ?? []) {
-    if (rule.status) bulkByPage.set(rule.pageId, rule.status)
-  }
-  const caseById = new Map<string, ParityCase>(cases.map((entry) => [entry.id, entry]))
-  const pages = new Set<string>()
-
-  for (const page of surface.pages) {
-    const at = `${label}: page ${page.pageId}`
-    if (pages.has(page.pageId)) {
-      errors.push(`${at} is listed twice — one census per page`)
-      continue
-    }
-    pages.add(page.pageId)
-
-    const identities = new Set<string>()
-    for (const identity of page.identities) {
-      const where = `${label}: ${identity.nodeId} ${identity.name}`
-      if (identities.has(identity.nodeId)) {
-        errors.push(`${where} is listed twice on page ${page.pageId}`)
-        continue
-      }
-      identities.add(identity.nodeId)
-
-      const node = byNode.get(identity.nodeId)
-      if (identity.inLibrary) {
-        if (!node) {
-          errors.push(
-            `${where} is marked in the library but the inventory does not publish it — ` +
-              `re-export the library or flip inLibrary`,
-          )
-        } else {
-          if (node.name !== identity.name) {
-            errors.push(`${where} is named "${node.name}" in the inventory`)
-          }
-          if (node.type !== identity.kind) {
-            errors.push(
-              `${where} is a ${node.type} in the inventory, the census says ${identity.kind}`,
-            )
-          }
-          if (node.pageId !== page.pageId) {
-            errors.push(`${where} sits on page ${node.pageId}, not ${page.pageId}`)
-          }
-        }
-      } else {
-        if (node) {
-          errors.push(
-            `${where} is marked as unpublished but the library export publishes it — ` +
-              `flip inLibrary and give it the decision the library owes it`,
-          )
-        }
-      }
-
-      const status = entries[identity.nodeId]?.status ?? bulkByPage.get(page.pageId) ?? null
-      if (identity.decision === "unpublished") {
-        if (identity.inLibrary) {
-          errors.push(
-            `${where} is published and cannot be called unpublished — ` +
-              `give it shipped, mocked, excluded or pending`,
-          )
-        }
-        continue
-      }
-      if (!identity.inLibrary) {
-        errors.push(
-          `${where} is ${identity.decision} but not in the library — ` +
-            `an unpublished identity has no mapping, the decision is unpublished`,
-        )
-        continue
-      }
-      if (identity.decision === "shipped") {
-        if (status !== "implemented") {
-          errors.push(
-            `${where} is shipped but the registry says "${status ?? "unaccounted"}" — ` +
-              `the decision and the registry disagree`,
-          )
-        }
-        continue
-      }
-      if (status !== identity.decision) {
-        errors.push(
-          `${where} is ${identity.decision} but the registry says "${status ?? "unaccounted"}" — ` +
-            `the decision and the registry disagree`,
-        )
-      }
-      if (!identity.reason) {
-        errors.push(
-          `${where} is ${identity.decision} and requires a reason — the census is where the ` +
-            `decision is written down`,
-        )
-      }
-    }
-
-    for (const node of nodes) {
-      if (node.pageId !== page.pageId || identities.has(node.nodeId)) continue
+  if (identity.inLibrary) {
+    if (!node) {
       errors.push(
-        `${at}: inventory node ${node.nodeId} ${node.name} is missing from the census — ` +
-          `re-read the page tree and record the decision it got`,
+        `${where} is marked in the library but the inventory does not publish it — ` +
+          `re-export the library or flip inLibrary`,
+      )
+    } else {
+      if (node.name !== identity.name) {
+        errors.push(`${where} is named "${node.name}" in the inventory`)
+      }
+      if (node.type !== identity.kind) {
+        errors.push(`${where} is a ${node.type} in the inventory, the census says ${identity.kind}`)
+      }
+      if (node.pageId !== pageId) {
+        errors.push(`${where} sits on page ${node.pageId}, not ${pageId}`)
+      }
+    }
+  } else {
+    if (node) {
+      errors.push(
+        `${where} is marked as unpublished but the library export publishes it — ` +
+          `flip inLibrary and give it the decision the library owes it`,
       )
     }
+  }
+  return errors
+}
 
-    const compositions = new Set<string>()
-    for (const composition of page.compositions) {
-      const where = `${at}: composition ${composition.nodeId} ${composition.name}`
-      if (compositions.has(composition.nodeId)) {
-        errors.push(`${where} is listed twice`)
+function checkIdentityDecision(
+  identity: SurfaceIdentity,
+  status: string | null,
+  where: string,
+): string[] {
+  const errors: string[] = []
+  if (identity.decision === "unpublished") {
+    if (identity.inLibrary) {
+      errors.push(
+        `${where} is published and cannot be called unpublished — ` +
+          `give it shipped, mocked, excluded or pending`,
+      )
+    }
+    return errors
+  }
+  if (!identity.inLibrary) {
+    errors.push(
+      `${where} is ${identity.decision} but not in the library — ` +
+        `an unpublished identity has no mapping, the decision is unpublished`,
+    )
+    return errors
+  }
+  if (identity.decision === "shipped") {
+    if (status !== "implemented") {
+      errors.push(
+        `${where} is shipped but the registry says "${status ?? "unaccounted"}" — ` +
+          `the decision and the registry disagree`,
+      )
+    }
+    return errors
+  }
+  if (status !== identity.decision) {
+    errors.push(
+      `${where} is ${identity.decision} but the registry says "${status ?? "unaccounted"}" — ` +
+        `the decision and the registry disagree`,
+    )
+  }
+  if (!identity.reason) {
+    errors.push(
+      `${where} is ${identity.decision} and requires a reason — the census is where the ` +
+        `decision is written down`,
+    )
+  }
+  return errors
+}
+
+function checkCompositions(
+  page: SurfacePage,
+  identities: Set<string>,
+  context: SurfaceContext,
+): string[] {
+  const { label, vocabulary, caseById } = context
+  const at = `${label}: page ${page.pageId}`
+  const errors: string[] = []
+  const compositions = new Set<string>()
+  for (const composition of page.compositions) {
+    const where = `${at}: composition ${composition.nodeId} ${composition.name}`
+    if (compositions.has(composition.nodeId)) {
+      errors.push(`${where} is listed twice`)
+      continue
+    }
+    compositions.add(composition.nodeId)
+    if (vocabulary && !vocabulary.has(composition.device)) {
+      errors.push(
+        `${where}: device "${composition.device}" is not declared by ${DEVICE_POLICY_PATH} — ` +
+          `the composition speaks the same vocabulary as the cases`,
+      )
+    }
+    if (!composition.mirrors.length && !composition.reason) {
+      errors.push(
+        `${where} measures nothing and requires a reason — a composition the source draws ` +
+          `and no case measures is a decision, not an omission`,
+      )
+    }
+    for (const id of composition.mirrors) {
+      const entry = caseById.get(id)
+      if (!entry) {
+        errors.push(`${where}: case ${id} is not in the case corpus`)
         continue
       }
-      compositions.add(composition.nodeId)
-      if (vocabulary && !vocabulary.has(composition.device)) {
+      if (!identities.has(entry.nodeId)) {
         errors.push(
-          `${where}: device "${composition.device}" is not declared by ${DEVICE_POLICY_PATH} — ` +
-            `the composition speaks the same vocabulary as the cases`,
+          `${where}: case ${id} measures ${entry.nodeId}, which is not an identity on page ${page.pageId}`,
         )
       }
-      if (!composition.mirrors.length && !composition.reason) {
+      if (entry.device && entry.device !== composition.device) {
         errors.push(
-          `${where} measures nothing and requires a reason — a composition the source draws ` +
-            `and no case measures is a decision, not an omission`,
+          `${where}: case ${id} is a ${entry.device} case but the composition is drawn at ` +
+            `${composition.device} — a case must measure the frame it claims`,
         )
-      }
-      for (const id of composition.mirrors) {
-        const entry = caseById.get(id)
-        if (!entry) {
-          errors.push(`${where}: case ${id} is not in the case corpus`)
-          continue
-        }
-        if (!identities.has(entry.nodeId)) {
-          errors.push(
-            `${where}: case ${id} measures ${entry.nodeId}, which is not an identity on page ${page.pageId}`,
-          )
-        }
-        if (entry.device && entry.device !== composition.device) {
-          errors.push(
-            `${where}: case ${id} is a ${entry.device} case but the composition is drawn at ` +
-              `${composition.device} — a case must measure the frame it claims`,
-          )
-        }
       }
     }
   }
+  return errors
+}
 
+function checkCensusedPage(page: SurfacePage, context: SurfaceContext): string[] {
+  const { label, byNode, entries, bulkByPage, nodes } = context
+  const errors: string[] = []
+  const identities = new Set<string>()
+  for (const identity of page.identities) {
+    const where = `${label}: ${identity.nodeId} ${identity.name}`
+    if (identities.has(identity.nodeId)) {
+      errors.push(`${where} is listed twice on page ${page.pageId}`)
+      continue
+    }
+    identities.add(identity.nodeId)
+    errors.push(
+      ...checkIdentityPublication(identity, byNode.get(identity.nodeId), page.pageId, where),
+    )
+    const status = entries[identity.nodeId]?.status ?? bulkByPage.get(page.pageId) ?? null
+    errors.push(...checkIdentityDecision(identity, status, where))
+  }
+  for (const node of nodes) {
+    if (node.pageId !== page.pageId || identities.has(node.nodeId)) continue
+    errors.push(
+      `${label}: page ${page.pageId}: inventory node ${node.nodeId} ${node.name} is missing from the census — ` +
+        `re-read the page tree and record the decision it got`,
+    )
+  }
+  return [...errors, ...checkCompositions(page, identities, context)]
+}
+
+function surfaceWarnings(surface: PageSurface, nodes: InventoryNode[], label: string): string[] {
+  const warnings: string[] = []
   if (!surface.pages.length) {
     warnings.push(`${label}: no page is censused — a Figma session reads the pages it touched`)
   }
@@ -307,7 +317,42 @@ export function checkPageSurface(
     )
   }
 
-  return { errors, warnings, stats: surfaceSummary(surface, nodes) }
+  return warnings
+}
+
+export function checkPageSurface(surface: PageSurface, input: SurfaceCheckInput): SurfaceResult {
+  const { nodes, registry, cases, fileKey, devices, label = PAGE_SURFACE_PATH } = input
+  const errors: string[] = []
+  if (surface.fileKey !== fileKey) {
+    errors.push(`${label}: fileKey ${surface.fileKey} is not the inventory file ${fileKey}`)
+  }
+  const bulkByPage = new Map<string, string>()
+  for (const rule of registry.bulkRules ?? []) {
+    if (rule.status) bulkByPage.set(rule.pageId, rule.status)
+  }
+  const context: SurfaceContext = {
+    nodes,
+    entries: registry.entries ?? {},
+    byNode: new Map(nodes.map((node) => [node.nodeId, node])),
+    bulkByPage,
+    caseById: new Map(cases.map((entry) => [entry.id, entry])),
+    vocabulary: devices ? new Set(devices) : null,
+    label,
+  }
+  const pages = new Set<string>()
+  for (const page of surface.pages) {
+    if (pages.has(page.pageId)) {
+      errors.push(`${label}: page ${page.pageId} is listed twice — one census per page`)
+      continue
+    }
+    pages.add(page.pageId)
+    errors.push(...checkCensusedPage(page, context))
+  }
+  return {
+    errors,
+    warnings: surfaceWarnings(surface, nodes, label),
+    stats: surfaceSummary(surface, nodes),
+  }
 }
 
 /**

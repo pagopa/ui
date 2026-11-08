@@ -12,15 +12,17 @@ contract is green, and every exception carries a node and a reason.
    or effect style, its published key next to the value. Prefer an id-bearing
    export: the manifest is keyed by the published id, so a rename stays a delta
    instead of a remove-and-add.
-3. Curate and regenerate with the token write command in the scripts
-   reference. Unknown namespaces fail, every removal and every rename is
+3. `pnpm ui-cli update tokens --input <figma.variables>` curates and regenerates.
+   Unknown namespaces fail, every removal and every rename is
    printed.
-4. Keep the checks green: `pnpm nx run pagopa-ui-tokens:check:tokens`, `pnpm nx run pagopa-ui-cli:test`,
-   `pnpm nx run pagopa-ui:foundation:check`.
+4. Run `pnpm ui-cli check tokens`, `pnpm nx run pagopa-ui-cli:test` and
+   `pnpm ui-cli check foundation`. Re-run parity for components whose token
+   value changed ([visual-parity.md](visual-parity.md)).
 
 ## The ladder for a value
 
 - Use the existing foundation token.
+- Otherwise use a compatible token within 2px and record the residue.
 - No token within tolerance: add the entry the manifest owns. A value that
   recurs in the source geometry becomes a foundation entry with the node or
   page it comes from and, when no published asset carries it, the reason that
@@ -30,6 +32,13 @@ contract is green, and every exception carries a node and a reason.
 - A value that has no source and no clear owner is a registered exception with
   the node and the reason, and it enters a design request
   ([design-request.md](design-request.md)). It is never absorbed silently.
+
+Local extensions are reviewed token-layer entries with source/reason, not
+inline pixel utilities or component overrides that hide a 1–2px difference.
+Source frame dimensions belong in the capture, never the component; source
+artwork geometry stays exact. Read radius/spacing steps from the token manifest.
+A colour shared by tokens matches by value only: choose the semantic role
+deliberately.
 
 ## The component class contract
 

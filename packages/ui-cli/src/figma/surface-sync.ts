@@ -54,6 +54,13 @@ function treeNode(value: unknown): TreeNode | null {
 }
 
 function findTree(value: unknown, pageId: string): TreeNode | null {
+  if (Array.isArray(value)) {
+    for (const child of value) {
+      const found = findTree(child, pageId)
+      if (found) return found
+    }
+    return null
+  }
   const item = record(value)
   if (!item) return null
   const direct = treeNode(item)
@@ -66,12 +73,6 @@ function findTree(value: unknown, pageId: string): TreeNode | null {
   const nodeDocument = record(nodes?.[pageId])?.document
   const nested = treeNode(nodeDocument)
   if (nested?.id === pageId) return nested
-  if (Array.isArray(value)) {
-    for (const child of value) {
-      const found = findTree(child, pageId)
-      if (found) return found
-    }
-  }
   return null
 }
 

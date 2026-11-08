@@ -17,14 +17,13 @@ implementing, and into an English record the repository keeps.
 pnpm ui-cli figma brief --node <nodeId>
 ```
 
-It prints, offline, the registry entry, the guide, every rule that targets the
-node (disposition, English title, summary, guide), the open comment threads and
-the design requests that already cite the node. A variant id is resolved to its
-set. Run it before any implementation or review, and again before closing: a
-`pending` or `stale` rule that targets the node is unfinished work.
+The brief batches registry/guide, targeting rules, comments and requests; a
+variant resolves to its set. Use it again before closing to apply
+[source alignment](definition-of-done.md).
 
-The live snapshots are local and git-ignored. Refresh them when the session
-starts on a file that may have changed:
+The snapshots are local and gitignored. `figma brief --refresh` refreshes rules
+and comments when their versions differ from the inventory pin. After a live
+source change not represented by that pin, refresh explicitly:
 
 ```bash
 pnpm ui-cli figma rules refresh --node <nodeId>
@@ -100,30 +99,31 @@ pnpm ui-cli figma rules mark <cardId> \
   --targets <set nodeId>[,<set nodeId>…]
 ```
 
-`--mark` stamps `sourceHash`, `reviewedAt` and `figmaVersion` from the live
+`mark` stamps `sourceHash`, `reviewedAt` and `figmaVersion` from the local
 snapshot, validates the targets against the inventory, and refuses an `imported`
 rule whose guide has no rules block or does not open with it. `--disposition` is
 the only mandatory field besides the card id.
 
-For a changed card (`stale`) re-read `figma:rules show <cardId>`: the card
+For a changed card (`stale`) re-read `pnpm ui-cli figma rules show <cardId>`: the card
 shows the current Italian text and hash. If the meaning is unchanged, mark it
 again with the same English; if it changed, update the guide bullet too.
 
 ## Verification
 
 ```bash
-pnpm nx run pagopa-ui-cli:check:rules --no-strict
+pnpm ui-cli check rules
 ```
 
 Hermetic: schema, mandatory fields, targets, guide files and their rules block
 (present, first, referenced by at least one imported rule), duplicates pointing
 at a real card. With a local snapshot it also fails on `new`, `stale` and
-`removed` cards. `--strict` also fails on the
-`pending` backlog; it is off until the migration waves are closed.
+`removed` cards. Strict is the default and also rejects the pending backlog.
+`--no-strict` can inspect that backlog during migration; it is not the closing
+gate.
 
 ## Comments
 
-`figma:comments --node <nodeId>` prints the threads anchored to the node, its
+`pnpm ui-cli figma comments --node <nodeId>` prints the threads anchored to the node, its
 variants, its published descendants and its page (flagged `page`). Resolved
 threads are history; `--open` keeps the open ones.
 

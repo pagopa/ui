@@ -20,7 +20,7 @@ manifest `nodeId`s: a source rename or page move never renames the API.
    `pnpm ui-cli update icons --input <figma.snapshot>`.
 3. **Inspect** the regenerated SVGs and their manifest entries: the review
    follows the [node-review.md](node-review.md) rules.
-4. `pnpm nx run pagopa-ui-artwork:check:artwork` (icons and pictograms
+4. `pnpm ui-cli check artwork` (icons and pictograms
    together). There is no icon font, text fallback or missing-glyph
    exception. Unchanged artwork may keep its pinned version; the check still
    compares design fingerprints, variant identities, checksums and geometry.
@@ -36,7 +36,7 @@ icon module; no other layer imports them.
 2. **Import**: `pnpm ui-cli update pictograms --input <figma.snapshot>`.
 3. **Inspect** the light and dark variants (fixed variants, not a theme switch;
    dark artwork needs a contrasting caller surface), then
-   `pnpm nx run pagopa-ui-artwork:check:artwork`.
+   `pnpm ui-cli check artwork`.
 
 Pictogram accounting stays on the page rule and the asset manifest.
 
@@ -61,6 +61,6 @@ A new public icon or pictogram name needs a source mapping or a reasoned
 `catalog.apiExceptions` entry; `check:catalogue` verifies that the public names cover
 the node-keyed manifests.
 
-**Done when** `pnpm nx run pagopa-ui-artwork:check:artwork` passes, the regenerated artwork has been
+**Done when** `pnpm ui-cli check artwork` passes, the regenerated artwork has been
 inspected, and the decision per changed identity is recorded (the drift pull
 request merge or the session report).

@@ -10,8 +10,9 @@ component with no node needs only its catalogue coverage
    gives the catalogue decision, the rules that target the node, the open
    comments and the open design requests ([rules.md](rules.md)); refresh the
    local rules snapshot when the session started on a file that may have
-   changed. `pnpm ui-cli parity source <nodeId> --depth 1`
-   lists the variants with their declared device and box; `--compact --depth 3`
+   changed. `pnpm ui-cli parity align --node <nodeId>`
+   lists declared devices and their exact check commands; `parity source`
+   with `--compact --depth 3`
    gives each variant's anatomy (box, offsets, layout, hug/fill sizing, radius,
    strokes, fills, text style, hidden layers). Confirm anatomy with the read-only
    `get_screenshot` / `get_design_context` when the numbers are not enough.
@@ -27,7 +28,7 @@ component with no node needs only its catalogue coverage
 
 3. **Implement.** Build the source model, not a look-alike: `gap-*` for a vertical
    auto-layout (not child margins), hug/fill sizing from the spec, the source
-   face and the token ladder for every value ([visual-parity.md](visual-parity.md)).
+   face and the token ladder for every value ([tokens.md](tokens.md#the-ladder-for-a-value)).
    A set with a device axis is built device by device ([devices.md](devices.md)).
    Never encode a source frame width as a dimension: the component stays fluid and
    the capture forces the root width.
@@ -43,8 +44,8 @@ component with no node needs only its catalogue coverage
    (`<!-- component-rules:start -->` … `<!-- component-rules:end -->`), under
    `## Component Rules` and without source references, and mark them
    ([rules.md](rules.md)).
-   **Done when** the story renders in Storybook, the a11y suite passes and no
-   rule that targets the node is `pending` or `stale`.
+   **Done when** the story renders in Storybook, the a11y suite passes and the
+   guide/ledger satisfy [source alignment](definition-of-done.md).
 
 5. **Parity.** Order the work with
    `pnpm ui-cli parity align --node <id>`, then the loop in
@@ -53,11 +54,11 @@ component with no node needs only its catalogue coverage
    **Done when** each case reproduces with `pnpm ui-cli parity check --case <id>`
    and every delta is fixed, a reasoned residue or a mapping artifact.
 
-6. **Registry.** Write the entry for the node in `catalog.registry`: `target`
-   (`module`, `export`, `story`, `storyExports`, `additionalExports` when the set
-   has several implementations), a self-contained `note` for any constraint,
-   open decision or recorded adaptation, then `status: "implemented"`. Export it
-   publicly when it is a production component. Run `pnpm nx run pagopa-ui:check:catalogue`.
+6. **Registry.** Use `pnpm ui-cli figma registry set <nodeId> --status implemented`
+   with the target and note flags in
+   [catalogue.md](catalogue.md#review-semantics). Several implementations of a
+   set still require an in-place `additionalExports` edit. Export it
+   publicly when it is a production component. Run `pnpm ui-cli check catalogue`.
    An open point for the design owner is a design request
    ([design-request.md](design-request.md)); the node stays `pending` and the
    request is named in the note.

@@ -98,6 +98,25 @@ test("surface sync preserves reviewed identities and compositions, adding tree i
   }
 })
 
+test("surface sync locates the requested page in an exported page array", () => {
+  const fixture = fixtureTree(files, "surface-sync-pages-")
+  try {
+    const result = planSurfaceSync(
+      workspaceAt(fixture.root),
+      "1:1",
+      [{ id: "2:2", name: "Other page", type: "CANVAS", children: [] }, metadata],
+      "2026-02-02",
+    )
+    assert.equal(result.page.pageId, "1:1")
+    assert.deepEqual(
+      result.page.identities.map((identity) => identity.nodeId),
+      ["4:4", "4:5"],
+    )
+  } finally {
+    fixture.dispose()
+  }
+})
+
 test("surface sync checks the candidate and writes only when not dry-running", async () => {
   const fixture = fixtureTree(files, "surface-sync-write-")
   const workspace = workspaceAt(fixture.root)

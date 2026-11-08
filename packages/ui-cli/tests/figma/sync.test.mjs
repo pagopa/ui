@@ -1598,7 +1598,7 @@ test("--pr-body refreshes the inventory and writes the review body on drift", ()
       assert.match(body, /## Instructions — agent handoff/)
       assert.match(body, /`figma-to-code` skill/)
       assert.match(body, /get_design_context/)
-      assert.match(body, /pnpm nx run-many -p pagopa-ui -c=ci/)
+      assert.match(body, /pnpm nx run workspace:verify/)
       const registry = JSON.parse(read("src/catalog/figma/registry.json"))
       assert.equal(registry.entries["1:1"].status, "pending")
     },

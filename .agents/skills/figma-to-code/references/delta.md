@@ -1,97 +1,67 @@
-# Figma delta — snapshot, triage, pending queue
+# Figma delta — snapshot, triage, decisions
 
-Scope: the delta nodes — `added`, `changed`, `affected`, plus `renamed`/`moved`
-identities. `excluded` policy nodes and historical entries wait for an explicit
-request ([node-review.md](node-review.md)).
+Scope is the current production delta and its affected dependants, not the
+historical pending queue. Policy-excluded nodes and historical reviews require
+an explicit request; mocked demos are never renewed.
 
 ## Entry points
 
-- **A drift pull request** is a complete handoff: its body lists the delta nodes
-  with links, classes, targets and per-device variants. Start from its branch ([handoff.md](handoff.md)), then step 3.
-- **Figma changed, no drift pull request**, or the session report says the
-  inventory is older than 30 days: start at step 1.
-- **The design foundations changed** (Variables): the token step below.
-- **Icon or pictogram artwork changed**: [artwork.md](artwork.md) after step 2.
-- **A code-side change to a node already in `catalog.inventory`** (fix,
-  refactor): [node-review.md](node-review.md).
+An open drift pull request already carries the refreshed state:
+[handoff.md](handoff.md), then step 3. A new Figma change or an aged inventory
+starts at step 1. A code-side change to a mapped node uses
+[node-review.md](node-review.md). Variables use [tokens.md](tokens.md);
+artwork uses [artwork.md](artwork.md) after triage.
 
 ## Steps
 
-1. **Snapshot and delta.** `pnpm ui-cli figma plan` reads the live
-   file over REST, pins its version into `figma.snapshot` and prints the delta
-   plan as JSON on stdout (exit 1 means drift, not failure). It reports:
-   - `added`, `removed`, `changed`, `renamed`, `moved`: identity, property and
-     design changes;
-   - `changedVariants`: the variant and the device each design change landed in;
-   - `baseline`: a node without a full design baseline — the next snapshot must
-     carry its evidence;
-   - `affected`: implementations that depend on a changed node;
-   - `implementationOrder`: the work order, dependencies first, never a `mocked`
-     demo;
-   - `pending`: the queue that was already waiting, with its design requests. It
-     is not today's delta;
-   - `unverifiedDesign`: nodes without a design fingerprint.
+1. **Snapshot and delta.**
 
-   A set with a device axis is reported **per device**: a mobile-only change
-   is a mobile review. The REST read covers every component in the file. When a remote
-   library may hold roots it cannot see, add the MCP inventory: save
-   `list_file_components_for_code_connect` to `figma.mcpInventory` and run
-   `pnpm ui-cli figma export --input <figma.mcpInventory>`. When
-   the connected MCP server has no such tool, the REST path is complete for the
-   file's own components; say so in the report.
-   **Done when** every delta node, its class, its changed devices and its place
-   in the order are reported to the person, before any file changes.
+   ```sh
+   pnpm ui-cli figma plan --json
+   ```
 
-2. **Triage.** `pnpm ui-cli figma triage` refreshes
-   `catalog.inventory` from the pinned snapshot, records the file version it was
-   read from, turns new, changed and affected production nodes `pending`
-   (including nodes a bulk rule covered) and prunes removed entries with their
-   story exceptions. `mocked` and `excluded` entries keep their status. A
-   queued node's reviewed note becomes the pending stub, so the same write
-   lowers `overLimit` in `src/catalog/figma/note-length-baseline.json` to the
-   count it produced — never raises it, and the re-reviewed note stays under
-   600 characters. Then `pnpm nx run-many -t fmt`.
-   **Done when** the inventory is refreshed and each production delta is
-   `pending`. A refresh is not approval.
+   REST is the default; `--input <snapshot>` plans from supplied evidence.
+   Read the complete result: added/removed/changed/renamed/moved identities,
+   affected dependants, changed variants and devices, missing baselines,
+   unverified design, dependency-first `implementationOrder`, and page-surface
+   gaps. `pending` is the pre-existing queue, not this delta. Exit 3 means
+   reconciliation is due, not a failed export
+   ([parity-tooling.md](parity-tooling.md#exit-codes-and-profiles)).
 
-3. **Decision.** Per queued node, in `implementationOrder`, start with
-   `pnpm ui-cli parity align --node <id>`, read the source of
-   **every declared device** (`parity source <nodeId> --compact`,
-   `get_design_context` / `get_screenshot`) and pick exactly one:
-   - implement it in the matching family → [new-from-figma.md](new-from-figma.md);
-   - it is already implemented and the change reaches it →
-     [node-review.md](node-review.md);
-   - map it to an existing implementation that actually covers its contract →
-     [node-review.md](node-review.md);
-   - `excluded` with a reason;
-   - the source leaves a question only the design owner can answer → write a
-     design request ([design-request.md](design-request.md)) and keep the node
-     `pending`.
+   If MCP exposes the published component list, save its unmodified response to
+   `figma.mcpInventory`, then
+   `pnpm ui-cli figma export --input <figma.mcpInventory>` and plan from the
+   resulting snapshot. This joins MCP-only roots with REST; it still needs a
+   REST token. If that tool is absent, REST covers the file's own components;
+   report that remote roots were not rediscovered. With no REST token, obtain
+   fresh usable evidence from the person; a component list alone cannot replace
+   the full snapshot.
 
-   The design fingerprint cannot see the `.Regole` boxes or the component
-   description: `pnpm ui-cli figma rules plan` reports the
-   rules a page changed, and `figma:brief --node <nodeId>` is the read that
-   closes the gap ([rules.md](rules.md)).
+   **Done when** the person has the delta, changed devices and work order before
+   implementation or accepted-state writes. Pinning a local snapshot is not an
+   implementation decision.
+2. **Triage the inspected snapshot.**
 
-   "It matches the desktop frame" is not a decision for a node with a device
-   axis. **Done when** every delta node has one decision and the per-device
-   compositions it covers are written down; nodes left `pending` name their
-   design request or blocker, and no rule that targets a touched node is
-   `pending` or `stale`.
+   ```sh
+   pnpm ui-cli update inventory --input <figma.snapshot> --triage
+   ```
 
-## Tokens: the design foundations changed
+   This refreshes the inventory, queues production changes and affected nodes,
+   prunes removed entries and synchronizes queued census identities. Mocked
+   and excluded decisions survive. The writer formats JSON and lowers the
+   note-length ratchet; no manual JSON round-trip or formatter step is needed.
+   **Done when** accepted inventory and production pending queue reflect the
+   reported delta. A refresh is not approval.
+3. **Decide**, in the delta's `implementationOrder`.
+   Read the batched context with `pnpm ui-cli figma brief --queue --refresh`;
+   use `--node <id>` for a scoped node. Run
+   `pnpm ui-cli parity align --node <id>` and inspect every declared device's
+   source and render. Apply [review semantics](catalogue.md#review-semantics):
+   implement → [new-from-figma.md](new-from-figma.md);
+   existing implementation or mapping → [node-review.md](node-review.md);
+   exclusion → `figma registry set` with a reason;
+   unanswered source question → [design-request.md](design-request.md).
 
-1. Export the published Variables read-only (Figma MCP `get_variable_defs`) to
-   `figma.variables` (local, never committed).
-2. `pnpm ui-cli update tokens --input <figma.variables>` curates the
-   snapshot into `tokens.manifest` and regenerates `tokens.generatedCss`.
-3. Every variable gets a value or a reasoned exclusion: an unknown namespace or
-   an unresolved variable fails the refresh. Local values in `tokens.stylesheet`
-   are documented extensions (their reason is in the manifest); re-link one to
-   its Figma variable when a source becomes reachable. Text styles that no
-   published node binds stay out of scope until a component consumes them.
-4. `pnpm nx run pagopa-ui-tokens:check:tokens`, then [visual-parity.md](visual-parity.md) for every
-   component whose token changed value.
-
-**Done when** `pnpm nx run pagopa-ui-tokens:check:tokens` passes and every `var(--figma-*)` reference in
-`tokens.stylesheet` resolves.
+   **Done when** every delta node has a reasoned decision and the device
+   compositions it covers are recorded. Pending nodes name a request/blocker;
+   implemented nodes satisfy [source alignment](definition-of-done.md).

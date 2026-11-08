@@ -1256,7 +1256,7 @@ const figmaAlign = defineWorkflow({
         await ctx.step(`triage:${ctx.runId}`, async () => {
           const triage = await run(
             "pnpm",
-            ["nx", "run", "pagopa-ui-cli:figma:triage", "--input", snapshot],
+            ["ui-cli", "update", "inventory", "--input", snapshot, "--triage"],
             { signal, allowExit: [0, 1] },
           )
           commands.push({ label: "figma:triage", code: triage.code })

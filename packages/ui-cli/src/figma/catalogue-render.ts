@@ -1,7 +1,7 @@
 import fs from "node:fs"
 
 import { declaredDevices, deviceAxes, type DeviceStats } from "./devices.ts"
-import { implementationOrder, type SnapshotDelta } from "./snapshot.ts"
+import { implementationOrder, type DeltaNode, type SnapshotDelta } from "./snapshot.ts"
 import { EVIDENCE_DIR, evidencePaths, loadManifest } from "../parity/evidence.ts"
 import { loadCaseFile } from "../parity/cases.ts"
 import type { Workspace } from "../adapters/workspace.ts"
@@ -94,22 +94,12 @@ function renderDevices(
   return lines
 }
 
-export function renderCataloguePrBody(context: CatalogueRenderContext): string {
-  const { workspace, inventory, registry, delta, ratchet, evidenceBase } = context
-  const date = new Date().toISOString().slice(0, 10)
-  const changedVariants = new Map(
-    delta.changedVariants.map((change) => [change.nodeId, change.class]),
-  )
-  const pages = new Map<string, number>()
-  for (const [key] of classes) {
-    for (const node of delta[key]) pages.set(node.pageName, (pages.get(node.pageName) ?? 0) + 1)
-  }
+type NodeEvidence = { ids: string[]; links: Array<{ id: string; href: string }> }
+
+function evidenceReader(workspace: Workspace, evidenceBase?: string) {
   let casesCache: ReturnType<typeof loadCaseFile> | undefined
   let manifestCache: ReturnType<typeof loadManifest> | null | undefined
-  function evidenceFor(nodeId: string): {
-    ids: string[]
-    links: Array<{ id: string; href: string }>
-  } {
+  return (nodeId: string): NodeEvidence => {
     casesCache ??= loadCaseFile(workspace.path("src/catalog/figma/parity-cases.json"))
     const corpus = casesCache.filter((entry) => entry.nodeId === nodeId)
     if (!corpus.length) return { ids: [], links: [] }
@@ -127,22 +117,10 @@ export function renderCataloguePrBody(context: CatalogueRenderContext): string {
       : []
     return { ids: corpus.map((entry) => entry.id), links }
   }
-  const lines = [
-    `# Figma drift — ${date}`,
-    "",
-    `Live snapshot compared with \`src/catalog/figma/inventory.json\` (file \`${inventory.fileKey}\`).`,
-    "The inventory is refreshed and every production node below is queued as `pending`; merging this PR is the review record.",
-    "",
-    "## Summary",
-    "",
-    ...classes.map(([key, label]) => `- ${label}: ${delta[key].length}`),
-  ]
-  if (pages.size)
-    lines.push(
-      "",
-      `By page: ${[...pages].map(([page, count]) => `${page} (${count})`).join(" · ")}`,
-    )
-  lines.push(
+}
+
+function reviewInstructions(ratchet: CatalogueRenderContext["ratchet"]): string[] {
+  return [
     "",
     "## Instructions — review",
     "",
@@ -171,42 +149,82 @@ export function renderCataloguePrBody(context: CatalogueRenderContext): string {
     "## Instructions — verify",
     "",
     "Run and report the green chain documented in `CONTRIBUTING.md`:",
-    "`pnpm nx run-many -p pagopa-ui -c=ci -t typecheck,fmt,lint,docs,check:catalogue,foundation:check,layers:check,build,test && pnpm nx run-many -p pagopa-ui-artwork,pagopa-ui-tokens,pagopa-ui-cli -c=ci -t typecheck,fmt,lint && pnpm nx run pagopa-ui-artwork:test && pnpm nx run pagopa-ui-tokens:test && pnpm nx run pagopa-ui-cli:test && pnpm nx run pagopa-ui-storybook:test:coverage && pnpm nx run pagopa-ui-storybook:test:stories && pnpm nx run pagopa-ui-storybook:build && pnpm nx run pagopa-ui:library:check`",
+    "`pnpm nx run workspace:verify`",
     "",
+  ]
+}
+
+function renderDriftNode(
+  context: CatalogueRenderContext,
+  node: DeltaNode,
+  key: DeltaKey,
+  changedVariants: Map<string, string>,
+  evidence: NodeEvidence,
+): string[] {
+  const { registry, inventory } = context
+  const lines: string[] = []
+  const entry = registry.entries[node.nodeId]
+  const target = entry?.target
+    ? ` · target \`${entry.target.module}#${entry.target.export}\`` +
+      (entry.target.story ? ` · story \`${entry.target.story}\`` : "")
+    : ""
+  lines.push(
+    `### ${node.name}`,
+    "",
+    `- node: \`${node.nodeId}\` · [open in Figma](${nodeLink(inventory.fileKey, node.nodeId)})`,
+    `- class: ${key}${node.change ? ` · change: ${node.change}` : ""}`,
+    `- page: ${node.pageName}`,
+    `- registry status: \`${entry?.status ?? "unaccounted"}\`${target}`,
   )
+  if (key !== "removed")
+    lines.push(...renderDevices(inventory.fileKey, context.devicePolicy, node, changedVariants))
+  if (evidence.ids.length) {
+    lines.push(`- evidence: ${evidence.ids.map((id) => `\`${id}\``).join(" · ")}`)
+    if (evidence.links.length) {
+      lines.push(
+        `  - references: ${evidence.links.map((item) => `[${item.id}](${item.href})`).join(" · ")}`,
+      )
+    }
+    lines.push(
+      "  - attach the local render after `parity check --case <id> --screenshot <file>`; CI never embeds a component image.",
+    )
+  }
+  return [...lines, ""]
+}
+
+export function renderCataloguePrBody(context: CatalogueRenderContext): string {
+  const { workspace, inventory, delta, ratchet, evidenceBase } = context
+  const date = new Date().toISOString().slice(0, 10)
+  const changedVariants = new Map(
+    delta.changedVariants.map((change) => [change.nodeId, change.class]),
+  )
+  const pages = new Map<string, number>()
+  for (const [key] of classes) {
+    for (const node of delta[key]) pages.set(node.pageName, (pages.get(node.pageName) ?? 0) + 1)
+  }
+  const evidenceFor = evidenceReader(workspace, evidenceBase)
+  const lines = [
+    `# Figma drift — ${date}`,
+    "",
+    `Live snapshot compared with \`src/catalog/figma/inventory.json\` (file \`${inventory.fileKey}\`).`,
+    "The inventory is refreshed and every production node below is queued as `pending`; merging this PR is the review record.",
+    "",
+    "## Summary",
+    "",
+    ...classes.map(([key, label]) => `- ${label}: ${delta[key].length}`),
+  ]
+  if (pages.size)
+    lines.push(
+      "",
+      `By page: ${[...pages].map(([page, count]) => `${page} (${count})`).join(" · ")}`,
+    )
+  lines.push(...reviewInstructions(ratchet))
   for (const [key, label] of classes) {
     const nodes = delta[key]
     if (!nodes.length) continue
     lines.push(`## ${label}`, "")
     for (const node of nodes) {
-      const entry = registry.entries[node.nodeId]
-      const target = entry?.target
-        ? ` · target \`${entry.target.module}#${entry.target.export}\`` +
-          (entry.target.story ? ` · story \`${entry.target.story}\`` : "")
-        : ""
-      lines.push(
-        `### ${node.name}`,
-        "",
-        `- node: \`${node.nodeId}\` · [open in Figma](${nodeLink(inventory.fileKey, node.nodeId)})`,
-        `- class: ${key}${node.change ? ` · change: ${node.change}` : ""}`,
-        `- page: ${node.pageName}`,
-        `- registry status: \`${entry?.status ?? "unaccounted"}\`${target}`,
-      )
-      if (key !== "removed")
-        lines.push(...renderDevices(inventory.fileKey, context.devicePolicy, node, changedVariants))
-      const evidence = evidenceFor(node.nodeId)
-      if (evidence.ids.length) {
-        lines.push(`- evidence: ${evidence.ids.map((id) => `\`${id}\``).join(" · ")}`)
-        if (evidence.links.length) {
-          lines.push(
-            `  - references: ${evidence.links.map((item) => `[${item.id}](${item.href})`).join(" · ")}`,
-          )
-        }
-        lines.push(
-          "  - attach the local render after `parity check --case <id> --screenshot <file>`; CI never embeds a component image.",
-        )
-      }
-      lines.push("")
+      lines.push(...renderDriftNode(context, node, key, changedVariants, evidenceFor(node.nodeId)))
     }
   }
   lines.push(

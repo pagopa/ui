@@ -8,7 +8,7 @@ is outside this skill; this use case keeps the catalogue consistent with it.
    `check:catalogue`: a `modulePatterns` rule for a whole subtree, or a
    `catalog.apiExceptions` entry with its reason ("deliberate extension, not a
    source-alignment claim"; the existing entries are the model).
-   **Done when** `pnpm nx run pagopa-ui:check:catalogue` accepts the export surface.
+   **Done when** `pnpm ui-cli check catalogue` accepts the export surface.
 
 2. **Later coverage.** A component that a published set later covers enters
    through [delta.md](delta.md).

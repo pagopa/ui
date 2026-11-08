@@ -317,25 +317,7 @@ function requirePolicy(policy: DevicePolicy | undefined): DevicePolicy {
   return policy
 }
 
-export function normalizeNode(
-  rawValue: unknown,
-  { policy }: { policy?: DevicePolicy } = {},
-): InventoryNode {
-  const raw = parseSchema(RawNodeSchema, rawValue, "invalid Figma node")
-  const nodeId = raw.nodeId ?? raw.node_id
-  const pageName = raw.pageName ?? raw.containing_frame?.pageName ?? ""
-  const pageId = raw.pageId ?? raw.containing_frame?.pageId ?? raw.containing_frame?.page_id ?? ""
-  if (
-    !nodeId ||
-    !NodeIdSchema.safeParse(nodeId).success ||
-    !/^\d+:\d+$/.test(pageId) ||
-    typeof pageName !== "string"
-  ) {
-    throw new Error(`invalid Figma identity or page for node ${nodeId ?? "(missing)"}`)
-  }
-  if (!["COMPONENT", "COMPONENT_SET"].includes(raw.type)) {
-    throw new Error(`invalid Figma type for node ${nodeId}`)
-  }
+function normalizeProperties(raw: z.infer<typeof RawNodeSchema>, nodeId: string) {
   const definitions = raw.properties ?? raw.document?.componentPropertyDefinitions ?? {}
   const properties: Record<string, unknown> = {}
   for (const [name, definition] of Object.entries(definitions)) {
@@ -349,6 +331,15 @@ export function normalizeNode(
       ...(parsed.variantOptions ? { variantOptions: [...parsed.variantOptions].sort() } : {}),
     }
   }
+  return Object.fromEntries(
+    Object.entries(properties).map(([key, property]) => [
+      key,
+      parseSchema(PropertySchema, property, `invalid property ${key} on node ${nodeId}`),
+    ]),
+  )
+}
+
+function normalizeDependencies(raw: z.infer<typeof RawNodeSchema>, nodeId: string) {
   const dependencies = (raw.dependencies ?? [])
     .map((dependency) => {
       if (
@@ -368,17 +359,34 @@ export function normalizeNode(
     })
     .sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)))
 
-  const normalizedProperties = Object.fromEntries(
-    Object.entries(properties).map(([key, property]) => [
-      key,
-      parseSchema(PropertySchema, property, `invalid property ${key} on node ${nodeId}`),
-    ]),
-  )
-  const normalizedDependencies = parseSchema(
+  return parseSchema(
     z.array(DependencySchema),
     dependencies,
     `invalid dependency on node ${nodeId}`,
   )
+}
+
+export function normalizeNode(
+  rawValue: unknown,
+  { policy }: { policy?: DevicePolicy } = {},
+): InventoryNode {
+  const raw = parseSchema(RawNodeSchema, rawValue, "invalid Figma node")
+  const nodeId = raw.nodeId ?? raw.node_id
+  const pageName = raw.pageName ?? raw.containing_frame?.pageName ?? ""
+  const pageId = raw.pageId ?? raw.containing_frame?.pageId ?? raw.containing_frame?.page_id ?? ""
+  if (
+    !nodeId ||
+    !NodeIdSchema.safeParse(nodeId).success ||
+    !/^\d+:\d+$/.test(pageId) ||
+    typeof pageName !== "string"
+  ) {
+    throw new Error(`invalid Figma identity or page for node ${nodeId ?? "(missing)"}`)
+  }
+  if (!["COMPONENT", "COMPONENT_SET"].includes(raw.type)) {
+    throw new Error(`invalid Figma type for node ${nodeId}`)
+  }
+  const normalizedProperties = normalizeProperties(raw, nodeId)
+  const normalizedDependencies = normalizeDependencies(raw, nodeId)
   const type = parseSchema(
     z.enum(["COMPONENT", "COMPONENT_SET"]),
     raw.type,

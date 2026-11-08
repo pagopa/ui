@@ -37,9 +37,8 @@ alias, a device-like value on a non-device axis.
   column, card, panel or drawer. Container queries (`@container/*`,
   `@max-[…]/*`); the capture sets the root width and keeps the viewport wide.
 
-The viewport variants are the Figma breakpoints and nothing else: `tablet:`
-600px, `tablet-md:` 900px, `desktop:` 1200px, `desktop-xl:` 1536px and
-`desktop-xxl:` 1920px. The theme resets Tailwind's scale, and the foundation
+Read the viewport breakpoint values from the token layer: the Figma scale,
+not Tailwind defaults. The theme resets Tailwind's scale, and the foundation
 check's `default-breakpoint` rejects `sm:`, `md:`, `lg:`, `xl:`, `2xl:` and
 their `max-` forms.
 
@@ -57,18 +56,20 @@ or when every device draws one composition; write the reason in the case note.
 
 ## The loop
 
-1. **List the variants.** `pnpm ui-cli parity source <setId> --depth 1`
-   (or `variantsOf()`): each variant's device and box. `any` values need no case.
+1. **Order device work.** `pnpm ui-cli parity align --node <setId>`
+   lists declared devices, source variants and exact check commands. Read the
+   variant's box with `parity source`. `any` values need no device case.
 2. **Read each device's tree** at `--depth 3` or with `get_screenshot`: which
    layers disappear, which sizes and gaps change, one band or a stack.
-3. **Capture per device**: `pnpm ui-cli parity check --node <id> --device <key>`
-   (or `--variant <nodeId>`); the viewport follows the variant's width.
+3. **Capture per device** with the generated command, refining its story/state
+   and subjects. Name `--device` or `--variant` explicitly; the viewport follows
+   the variant's width.
 4. **Diff device by device**: a layer hidden on one device is not a delta on
    another.
 5. **Save one case per device** with its `device` and its own width and viewport,
    the scope declared when the default does not fit.
 
-**Done when** `pnpm ui-cli parity check --node <id> --devices` shows a reviewed,
+**Done when** `pnpm ui-cli parity check --node <id> --saved` shows a reviewed,
 passing case for every declared device, or `catalog.deviceExceptions` carries a
 reasoned entry for the missing ones.
 
@@ -93,9 +94,8 @@ reasoned entry for the missing ones.
 
 ### The first variant is the desktop one
 
-`variantsOf()[0]` and a `check` without `--state`/`--device` return the set's
-first child, a desktop variant in every set of this file. A review that does not
-name the device reviews the desktop twice. `--device mobile` resolves through
+An unscoped `check` can select the first variant rather than the intended
+device. Follow `align`'s explicit per-device command. `--device mobile` resolves through
 the policy; `--state mobile` is the raw substring escape hatch.
 
 ### `visible: false` is the device contract
@@ -105,13 +105,6 @@ Hiding a layer is per variant, inside the tree. Read
 expect a mobile variant to drop whole blocks: a text stack replaced by its
 avatar, a labelled link by its icon, a chevron. A size-only diff misses all of
 it.
-
-### A stale screenshot lies
-
-A saved set render or a hand-made PNG can predate the pin and show a layer the
-pin marks hidden. The pinned export is the truth: re-shoot with the read-only
-MCP `get_screenshot` when the two disagree. The Design-panel thumbnail is never
-evidence.
 
 ### The device is a composition, not a width
 
@@ -173,8 +166,8 @@ Without that allowlist a sweep is mostly noise.
 
 ### The tablet device has no exact frame width
 
-A source tablet frame is drawn at the width it was designed on, while `tablet:`
-starts at 600px and `tablet-md:` at 900px; the two need not coincide. Decide per
+A source tablet frame is drawn at its design width, which need not coincide with
+the token breakpoint. Decide per
 case — viewport for a page surface, container for a module — and record the
 choice in the registry note or the case. With several tablet frames, take the one
 nearest the midpoint above `tablet` and skip frames that exercise the same
@@ -226,8 +219,6 @@ as a card does, one `SourceFrame` per device story. `max-width: 100%` keeps the
 same story usable at the narrower device of its node, where the capture forces a
 root below the declared width.
 
-## Reporting
-
-Per node: the declared devices · one capture per device (source width, height or
-band height) · the per-device verdict · residues with reasons · the cases saved.
-"Responsive" without a render at the source mobile width is an unverified claim.
+The [completion report](definition-of-done.md#closing-and-delivery) includes
+each device's source dimensions, saved cases and verdict; "responsive" without
+its source-width render remains unverified.
