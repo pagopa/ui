@@ -225,6 +225,19 @@ versions do not match the inventory pin.
 Catalogue drift and parity differences above tolerance return exit code 3;
 validation failures return 1 and missing inputs return 2.
 
+`pnpm ui-cli figma registry set <nodeId> --status <status>` records a decision.
+Use `--module`, `--export`, `--story`, `--story-exports`, `--note` and
+`--reason` for its evidence. `--dry-run --json` previews the registry, census
+and ratchet edits without writing. A real edit runs the catalogue check and
+returns its overall verdict.
+
+`pnpm ui-cli figma close --nodes <id,id>` runs the local closing checks in
+order, then the full Nx verification chain. Without `--nodes`, it uses changed
+registry and case entries against `--base` (default: merge-base with
+`origin/main`), falling back to the pending queue. Parity requires a running
+Storybook; unavailable captures are reported as not run. `--skip-chain` skips
+only the Nx chain; `--json` emits the report as data (chain logs go to stderr).
+
 ## npm tasks
 
 | Task                      | Command                                  | Network     | Notes                                                                                                                                                                                                                                                                          |

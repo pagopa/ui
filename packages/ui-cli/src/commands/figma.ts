@@ -13,6 +13,7 @@ import { figmaToken } from "../adapters/figma-token.ts"
 import { UsageError } from "../lib/command.ts"
 import { formatCheck, passed } from "../checks/report.ts"
 import { rulesCommands } from "./figma-rules.ts"
+import { registryCommand, closeCommand } from "./figma-workflows.ts"
 import { action, EXIT, printJson, printLines, type CliContext } from "./context.ts"
 import { requireToken, requireTokenArg } from "./token.ts"
 
@@ -156,7 +157,7 @@ export function artworkCheckCommands(ctx: CliContext): SubCommandsDef {
   return { icons: checkIcon, pictograms: checkPictogram, artwork }
 }
 
-export function figmaCommands(ctx: CliContext): CommandDef {
+export function figmaCommands(ctx: CliContext, root: () => CommandDef): CommandDef {
   const status = defineCommand({
     meta: { name: "status", description: "Report the token, snapshot, drift and pending queue" },
     args: {
@@ -287,6 +288,8 @@ export function figmaCommands(ctx: CliContext): CommandDef {
     meta: { name: "figma", description: "Figma catalogue and artwork commands" },
     subCommands: {
       ...rulesCommands(ctx),
+      registry: registryCommand(ctx),
+      close: closeCommand(ctx, root),
       status,
       plan,
       triage,
