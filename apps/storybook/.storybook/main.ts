@@ -15,7 +15,6 @@ const config: StorybookConfig = {
     "@storybook/addon-a11y",
     "@storybook/addon-docs",
     "@storybook/addon-designs",
-    "@storybook/addon-mcp",
   ],
   framework: "@storybook/react-vite",
   // The core Actions panel only shows the events emitted by `action()` or by

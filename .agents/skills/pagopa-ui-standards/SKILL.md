@@ -18,7 +18,9 @@ holds whatever produced the component. The detail lives in the references:
   (`stories changed`, `stories find-by-component`, `docs list|show`, `test run`
   locally; `stories preview` and `review create` need
   `pnpm nx run pagopa-ui-storybook:storybook` running). Use only story ids those
-  tools return.
+  tools return. Reach the CLI before writing a story and before claiming what
+  the catalogue holds: props and story ids come from the configuration, never
+  from memory.
 
 ## The text contract
 
