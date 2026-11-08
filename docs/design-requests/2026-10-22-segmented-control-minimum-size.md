@@ -5,7 +5,7 @@
 - Type: design
 - Issue: https://github.com/pagopa/ui/issues/43
 - Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-segmented-control-minimum-size--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-segmented-control-minimum-size--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-segmented-control-minimum-size--option-c
-- Status: open — the node stays `pending`
+- Status: answered 8 November 2026 — option A, the compact mode is carried by an item-level option; the node stays `pending` until its parity capture
 - Decision owner: Figma design owner
 
 ## Context
@@ -56,6 +56,38 @@ source alone.
 - **Keep truncation** — treat `Size=Minimum` as an illustrative compact form,
   not a contract; the library keeps every label announced and truncates it.
   No work, and the source variant stays unimplemented.
+
+## Answer (8 November 2026)
+
+**Option A — compact mode via an item-level option.** `Size=Minimum` is an
+explicit compact mode a caller chooses in a tight surface, not the automatic
+narrow composition. The source draws the chevron and no popup, so the control
+owns neither a popup nor a scroll: what the icon-only segment does belongs to the
+caller, and the control only draws it.
+
+The public API grows by exactly two optional fields on `SegmentedControlItem`:
+
+- `icon?: ReactNode` — the glyph, drawn before the label, or alone when the item
+  carries no label.
+- `"aria-label"?: string` — required when an item has an icon and no label,
+  because an icon-only segment must still be announced. `label` stays required
+  for every other item.
+
+An icon-only segment is drawn at the source's 48x48 with no inline padding
+growth and keeps `aria-pressed` like every other segment. The narrow case keeps
+today's behaviour — every label stays announced and wraps or truncates at a 320px
+viewport — because the compact form is not automatic and so does not replace it.
+The `Size=Default` composition stays exactly as reviewed.
+
+## Unblock
+
+- Implement the two optional item fields and the icon-only segment geometry, and
+  keep the existing narrow behaviour.
+- Add a `Minimum` story export that renders the `Size=Minimum` composition
+  (`1293:8395`), and save its case against that node.
+- Keep `1293-8394-default-selected` as it is, update the registry note, and set
+  the node `implemented`.
+- The API addition goes through the normal decision and changelog path.
 
 ## What is already fixed
 

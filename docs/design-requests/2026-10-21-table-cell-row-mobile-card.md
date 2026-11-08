@@ -2,7 +2,7 @@
 
 - Type: design
 - Issue: https://github.com/pagopa/ui/issues/38
-- Status: open — the node stays `pending`
+- Status: answered 8 November 2026 — option A, the mobile card is a story composition; the node stays `pending` until its parity capture
 - Decision owner: @gunzip
 - Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-table-cell-row-mobile-card--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-table-cell-row-mobile-card--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-table-cell-row-mobile-card--option-c
 
@@ -38,6 +38,20 @@ case compares the card geometry successfully.
 The existing registry note already records this: the card is covered by the
 Table's mobile case (`1349-22020-default-mobile`); the open piece is whether the
 row helper has an honest mobile composition of its own.
+
+## Answer (8 November 2026)
+
+**Option A — a story composition.** The mobile `1337:75105` is a presentation
+wrapper around the row helper, not a reusable row contract, and not the Table's
+own card composition for the purposes of this node: a 272px card surface holding
+`TableCellRow`, with the labels carried by the cell content, is an honest mapping
+for the source card. `TableCellRow` stays a desktop row helper and its public API
+does not change.
+
+The target export stays `TableCellRow` and the mobile case compares the row
+inside the card, not a standalone 272-wide surface. The Table's own
+`1349-22020-default-mobile` case keeps measuring the card as the Table draws it;
+the two cases do not conflict.
 
 ## Options
 
