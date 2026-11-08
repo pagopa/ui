@@ -7,6 +7,7 @@ import { z } from "zod"
 import type { TestingAdapters } from "../adapters/testing.ts"
 import type { Workspace } from "../adapters/workspace.ts"
 import { UsageError } from "../lib/command.ts"
+import { writeJson } from "../lib/json.ts"
 import { output, type ParityOutput } from "../parity/output.ts"
 
 const MARKER_DIRECTORY = path.join("node_modules", ".cache", "pagopa-ui")
@@ -47,7 +48,7 @@ function readMarker(file: string): string | null {
 
 function writeMarker(file: string, since: string, recordedAt: string): void {
   fs.mkdirSync(path.dirname(file), { recursive: true })
-  fs.writeFileSync(file, `${JSON.stringify({ since, recordedAt: recordedAt }, null, 2)}\n`)
+  writeJson(file, { since, recordedAt })
 }
 
 export type ChangedOptions = {

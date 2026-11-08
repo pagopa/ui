@@ -14,7 +14,7 @@ import type { Workspace } from "../adapters/workspace.ts"
 import { InventorySchema, RegistrySchema, type Inventory } from "../schemas/catalogue.ts"
 import { fetchFileHeader } from "./rest.ts"
 import { fileKeyFromSource } from "./snapshot.ts"
-import { figmaToken } from "../adapters/figma-token.ts"
+import { figmaToken, resolveFigmaToken, type FigmaTokenSource } from "../adapters/figma-token.ts"
 import { RULES_PATH, plan as planRules, readLedger, readRulesSnapshot } from "./rules.ts"
 import { COMMENTS_SNAPSHOT_PATH, readComments } from "./comments.ts"
 import { formatSurfaceLine, loadPageSurface, surfaceSummary, type SurfaceStats } from "./surface.ts"
@@ -49,7 +49,7 @@ type LiveReport = {
 
 export type StatusReport = {
   config: string | null
-  token: { present: boolean; message: string | null }
+  token: { present: boolean; message: string | null; source: FigmaTokenSource | null }
   snapshot: {
     path: string
     present: boolean
@@ -248,7 +248,7 @@ export function formatStatusText(report: StatusReport): string[] {
     statusLine(
       "token",
       report.token.present
-        ? "present"
+        ? `present (${report.token.source})`
         : "missing — export FIGMA_TOKEN (file_content:read, library_content:read)",
     ),
     ...formatStatusInventory(report),
@@ -269,10 +269,14 @@ export interface StatusResult {
 
 function tokenStatus(env: NodeJS.ProcessEnv): StatusReport["token"] {
   try {
-    figmaToken(env)
-    return { present: true, message: null }
+    const { source } = resolveFigmaToken(env)
+    return { present: true, message: null, source }
   } catch (error) {
-    return { present: false, message: error instanceof Error ? error.message : String(error) }
+    return {
+      present: false,
+      message: error instanceof Error ? error.message : String(error),
+      source: null,
+    }
   }
 }
 

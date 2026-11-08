@@ -15,11 +15,14 @@ import {
   synchronizeRules,
 } from "../figma/rules-workflow.ts"
 import { buildBrief, formatBrief } from "../figma/brief.ts"
+import { refreshBrief } from "../figma/brief-workflow.ts"
+import { buildBriefQueue, formatBriefQueue } from "../figma/brief-queue.ts"
 import { commentsJson, commentsReport, formatComments } from "../figma/comments-workflow.ts"
 import { figmaToken } from "../adapters/figma-token.ts"
 import { UsageError } from "../lib/command.ts"
 import { jsonArg, requireText } from "./args.ts"
 import { action, EXIT, printJson, printLines, type CliContext } from "./context.ts"
+import { requireToken, requireTokenArg } from "./token.ts"
 
 const stringArg = { type: "string" } as const
 const idArg = { type: "positional", required: true } as const
@@ -27,8 +30,9 @@ const idArg = { type: "positional", required: true } as const
 function rulesRefresh(ctx: CliContext) {
   return defineCommand({
     meta: { name: "refresh", description: "Refresh the rules snapshot" },
-    args: { page: stringArg, node: stringArg },
-    run: action(ctx, async ({ page, node }) => {
+    args: { page: stringArg, node: stringArg, "require-token": requireTokenArg },
+    run: action(ctx, async ({ page, node, "require-token": required }) => {
+      requireToken(ctx, required)
       const snapshot = await refreshRules(ctx.workspace(), figmaToken(ctx.env), {
         pageId: page,
         nodeId: node,
@@ -165,11 +169,13 @@ function commentsCommand(ctx: CliContext) {
     meta: { name: "comments", description: "Read Figma comments" },
     args: {
       refresh: { type: "boolean", default: false },
+      "require-token": requireTokenArg,
       node: stringArg,
       open: { type: "boolean", default: false },
       json: jsonArg,
     },
-    run: action(ctx, async ({ refresh, node, open, json }) => {
+    run: action(ctx, async ({ refresh, node, open, json, "require-token": required }) => {
+      requireToken(ctx, required)
       const result = await commentsReport(
         ctx.workspace(),
         { refresh, nodeId: node, openOnly: open },
@@ -184,15 +190,34 @@ function commentsCommand(ctx: CliContext) {
 
 function briefCommand(ctx: CliContext) {
   return defineCommand({
-    meta: { name: "brief", description: "Read a node's implementation brief" },
-    args: { node: stringArg, json: jsonArg },
-    run: action(ctx, ({ node, json }) => {
-      const result = buildBrief(ctx.workspace(), requireText(node, "--node <id>", "figma brief"))
-      if (json) printJson(ctx.io, result)
-      else
-        printLines(ctx.io, {
-          out: formatBrief(result, Boolean(readLedger(ctx.workspace().root, false))),
-        })
+    meta: { name: "brief", description: "Read implementation briefs" },
+    args: {
+      node: stringArg,
+      queue: { type: "boolean", default: false },
+      json: jsonArg,
+      refresh: { type: "boolean", default: false },
+      "require-token": requireTokenArg,
+    },
+    run: action(ctx, async ({ node, queue, json, refresh, "require-token": required }) => {
+      if (queue && node) throw new UsageError("choose --node or --queue")
+      if (!queue && !node) throw new UsageError("figma brief needs --node <id> or --queue")
+      requireToken(ctx, required)
+      if (refresh) await refreshBrief(ctx.workspace(), () => figmaToken(ctx.env))
+      if (queue) {
+        const result = buildBriefQueue(ctx.workspace())
+        if (json) printJson(ctx.io, result)
+        else printLines(ctx.io, { out: formatBriefQueue(result) })
+      } else {
+        const result = buildBrief(
+          ctx.workspace(),
+          requireText(node, "--node <id> or --queue", "figma brief"),
+        )
+        if (json) printJson(ctx.io, result)
+        else
+          printLines(ctx.io, {
+            out: formatBrief(result, Boolean(readLedger(ctx.workspace().root, false))),
+          })
+      }
       return EXIT.ok
     }),
   })

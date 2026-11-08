@@ -18,7 +18,15 @@ import path from "node:path"
 import { z } from "zod"
 
 import type { Workspace } from "../adapters/workspace.ts"
-import { brotliJson, decodeJsonBytes, parseJsonBytes, readJson, writeBytes } from "../lib/json.ts"
+import {
+  brotliJson,
+  decodeJsonBytes,
+  parseJsonBytes,
+  readJson,
+  writeBytes,
+  writeJson,
+  formatJson,
+} from "../lib/json.ts"
 import { parseSchema } from "../lib/validate.ts"
 import type { InventoryNode } from "../schemas/catalogue.ts"
 import type { ParityCase } from "../schemas/parity.ts"
@@ -292,7 +300,7 @@ export function evidenceBytes({
   // The cap is on the bytes a clone receives, so the slice counts compressed.
   if (source) total += source.length
   else if (slice) total += brotliJson(slice).length
-  if (manifest) total += Buffer.byteLength(`${JSON.stringify(manifest, null, 2)}\n`)
+  if (manifest) total += Buffer.byteLength(formatJson(manifest))
   const byCase = [...pngs.entries()].map(([caseId, bytes]) => {
     total += bytes.length
     return { caseId, bytes: bytes.length }
@@ -834,7 +842,7 @@ function persistEvidence(
   for (const [caseId, bytes] of result.pngs) {
     fs.writeFileSync(path.join(paths.references, `${caseId}.png`), bytes)
   }
-  fs.writeFileSync(paths.manifest, `${JSON.stringify(result.manifest, null, 2)}\n`)
+  writeJson(paths.manifest, result.manifest)
 
   // An orphan is a case that left the corpus: its manifest entry and its PNG go
   // too, so the bundle never accumulates stale pictures.

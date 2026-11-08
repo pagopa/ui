@@ -19,7 +19,7 @@ import {
   loadInventoryNodes as loadInventory,
   requiredDevices,
 } from "../figma/devices.ts"
-import { readJson } from "../lib/json.ts"
+import { readJson, writeJson } from "../lib/json.ts"
 import { createSourceModules } from "../lib/source-modules.ts"
 import { parseSchema } from "../lib/validate.ts"
 import {
@@ -285,7 +285,7 @@ export function saveCase(
     caseKey(a).localeCompare(caseKey(b), undefined, { numeric: true }),
   )
   fs.mkdirSync(path.dirname(file), { recursive: true })
-  fs.writeFileSync(file, `${JSON.stringify(ordered, null, 2)}\n`)
+  writeJson(file, ordered)
   return { file, entry, replaced: index >= 0, total: ordered.length }
 }
 

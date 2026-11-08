@@ -28,7 +28,7 @@ import fs from "node:fs"
 import path from "node:path"
 import { z } from "zod"
 
-import { readJson } from "../lib/json.ts"
+import { readJson, writeJson } from "../lib/json.ts"
 import type { Workspace } from "../adapters/workspace.ts"
 import { report, type CheckReport } from "../checks/report.ts"
 import { parseSchema } from "../lib/validate.ts"
@@ -262,7 +262,7 @@ function runTokens(
     const inventory = emitInventory(manifest)
     const textClasses = emitTextClasses(manifest)
     fs.mkdirSync(path.dirname(paths.manifest), { recursive: true })
-    fs.writeFileSync(paths.manifest, JSON.stringify(manifest, null, 2) + "\n")
+    writeJson(paths.manifest, manifest)
     fs.writeFileSync(paths.css, css)
     fs.writeFileSync(paths.tokensCss, tokensCss)
     fs.writeFileSync(paths.inventory, inventory)

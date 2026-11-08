@@ -6,6 +6,7 @@ import { text } from "./args.ts"
 import { action, printLines, type CliContext } from "./context.ts"
 import { booleanArg, stringArg } from "./parity-args.ts"
 import { printParity } from "./parity.ts"
+import { requireToken, requireTokenArg } from "./token.ts"
 
 export function parityGate(ctx: CliContext) {
   return defineCommand({
@@ -30,16 +31,17 @@ export function evidenceGate(ctx: CliContext) {
 export function evidenceUpdate(ctx: CliContext) {
   return defineCommand({
     meta: { name: "evidence", description: "Write the offline evidence bundle" },
-    args: { input: stringArg },
-    run: action(ctx, async (args) =>
-      printParity(
+    args: { input: stringArg, "require-token": requireTokenArg },
+    run: action(ctx, async (args) => {
+      requireToken(ctx, args["require-token"])
+      return printParity(
         ctx,
         await writeEvidence(ctx.workspace(), {
           input: text(args.input),
           capturedAt: now().toISOString().slice(0, 10),
           images: figmaImages(ctx.env),
         }),
-      ),
-    ),
+      )
+    }),
   })
 }

@@ -2101,7 +2101,7 @@ test("an implemented node in the delta cannot close without its device cases", (
     // mobile composition has no reviewed case: the delta cannot close.
     write("live.json", JSON.stringify([deviceNode(false)]))
     const gated = check("--plan", "--input", "live.json")
-    assert.equal(gated.status, 3)
+    assert.equal(gated.status, 1)
     assert.match(gated.stderr, /device coverage: 1:1 is in the delta/)
     assert.match(gated.stderr, /without a case for mobile/)
     assert.match(gated.stderr, /device-exceptions\.json/)

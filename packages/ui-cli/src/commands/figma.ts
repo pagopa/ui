@@ -14,6 +14,7 @@ import { UsageError } from "../lib/command.ts"
 import { formatCheck, passed } from "../checks/report.ts"
 import { rulesCommands } from "./figma-rules.ts"
 import { action, EXIT, printJson, printLines, type CliContext } from "./context.ts"
+import { requireToken, requireTokenArg } from "./token.ts"
 
 const inputArg = {
   type: "string",
@@ -75,9 +76,11 @@ export function catalogueCheckCommands(ctx: CliContext): SubCommandsDef {
       },
       args: {
         input: inputArg,
+        "require-token": requireTokenArg,
         rest: { type: "boolean", default: false, description: "Read the live file over REST" },
       },
       run: action(ctx, async (args) => {
+        requireToken(ctx, args["require-token"])
         assertSingleSource(args.input, args.rest)
         return printCatalogue(
           ctx,
@@ -158,13 +161,15 @@ export function figmaCommands(ctx: CliContext): CommandDef {
     meta: { name: "status", description: "Report the token, snapshot, drift and pending queue" },
     args: {
       json: jsonArg,
+      "require-token": requireTokenArg,
       live: {
         type: "boolean",
         default: false,
         description: "Ask the live file for its version and last-modified date",
       },
     },
-    run: action(ctx, async ({ json, live }) => {
+    run: action(ctx, async ({ json, live, "require-token": required }) => {
+      requireToken(ctx, required)
       const result = await buildStatusReport(ctx.workspace(), { live }, ctx.env)
       if (json) printJson(ctx.io, result.report)
       else printLines(ctx.io, { out: formatStatusText(result.report) })
@@ -175,6 +180,7 @@ export function figmaCommands(ctx: CliContext): CommandDef {
     meta: { name: "plan", description: "Compare the inventory with a pinned or live snapshot" },
     args: {
       input: inputArg,
+      "require-token": requireTokenArg,
       rest: { type: "boolean", default: false, description: "Read the live file over REST" },
       save: {
         type: "string",
@@ -185,6 +191,7 @@ export function figmaCommands(ctx: CliContext): CommandDef {
       json: jsonArg,
     },
     run: action(ctx, async (args) => {
+      requireToken(ctx, args["require-token"])
       assertSingleSource(args.input, args.rest)
       const useRest = !args.input || args.rest
       const result = await syncCatalogue(
@@ -203,6 +210,7 @@ export function figmaCommands(ctx: CliContext): CommandDef {
     meta: { name: "triage", description: "Refresh the inventory and queue the delta for review" },
     args: {
       input: inputArg,
+      "require-token": requireTokenArg,
       rest: { type: "boolean", default: false, description: "Read the live file over REST" },
       save: { type: "string", valueHint: "file", description: "Save the REST snapshot" },
       prBody: { ...inputArg, description: "Write the drift pull request body" },
@@ -210,6 +218,7 @@ export function figmaCommands(ctx: CliContext): CommandDef {
       evidenceBase: { type: "string", valueHint: "url", description: "Evidence link base URL" },
     },
     run: action(ctx, async (args) => {
+      requireToken(ctx, args["require-token"])
       assertSingleSource(args.input, args.rest)
       return printCatalogue(
         ctx,
@@ -248,8 +257,9 @@ export function figmaCommands(ctx: CliContext): CommandDef {
   })
   const exportSnapshot = defineCommand({
     meta: { name: "export", description: "Write the read-only REST snapshot" },
-    args: { input: inputArg },
-    run: action(ctx, async ({ input }) => {
+    args: { input: inputArg, "require-token": requireTokenArg },
+    run: action(ctx, async ({ input, "require-token": required }) => {
+      requireToken(ctx, required)
       ctx.io.out(
         await exportFigma(
           ctx.workspace(),
@@ -262,8 +272,9 @@ export function figmaCommands(ctx: CliContext): CommandDef {
   })
   const exportPictogramAssets = defineCommand({
     meta: { name: "export", description: "Export pictogram variants from a pinned snapshot" },
-    args: { input: { ...inputArg, required: true } },
-    run: action(ctx, async ({ input }) => {
+    args: { input: { ...inputArg, required: true }, "require-token": requireTokenArg },
+    run: action(ctx, async ({ input, "require-token": required }) => {
+      requireToken(ctx, required)
       ctx.io.out(await exportPictograms(ctx.workspace(), path.resolve(ctx.cwd, input), ctx.env))
       return EXIT.ok
     }),
@@ -302,6 +313,7 @@ export function artworkUpdateCommands(ctx: CliContext): SubCommandsDef {
       },
       args: {
         input: inputArg,
+        "require-token": requireTokenArg,
         rest: { type: "boolean", default: false, description: "Read the live file over REST" },
         triage: { type: "boolean", default: false, description: "Queue changed nodes for review" },
         save: { type: "string", valueHint: "file", description: "Save the REST snapshot" },
@@ -310,6 +322,7 @@ export function artworkUpdateCommands(ctx: CliContext): SubCommandsDef {
         evidenceBase: { type: "string", valueHint: "url", description: "Evidence link base URL" },
       },
       run: action(ctx, async (args) => {
+        requireToken(ctx, args["require-token"])
         assertSingleSource(args.input, args.rest)
         return printCatalogue(
           ctx,

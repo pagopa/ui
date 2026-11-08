@@ -1,4 +1,5 @@
 import fs from "node:fs"
+import { writeJson } from "../lib/json.ts"
 import path from "node:path"
 import { now as clockNow } from "../adapters/figma-images.ts"
 import type { CaseReport } from "./types.ts"
@@ -212,10 +213,7 @@ async function captureOne(
       { project },
     )
     err.push(...(warnings ?? []))
-    fs.writeFileSync(
-      path.join(directory, `${fileBase}.json`),
-      `${JSON.stringify({ report, probe, case: spec }, null, 1)}\n`,
-    )
+    writeJson(path.join(directory, `${fileBase}.json`), { report, probe, case: spec })
     recordCaptured(spec, report, fileBase, saved, results, out)
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
@@ -248,7 +246,7 @@ function finishWave(
       return counts
     }, {}),
   }
-  fs.writeFileSync(path.join(directory, "summary.json"), `${JSON.stringify(summary, null, 1)}\n`)
+  writeJson(path.join(directory, "summary.json"), summary)
   out.push(`${results.length} case(s) -> ${options.outDir ?? directory}/summary.json`)
   if (
     saved &&

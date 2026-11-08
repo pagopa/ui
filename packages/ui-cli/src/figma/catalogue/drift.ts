@@ -52,6 +52,14 @@ export function formatCatalogueDrift(
           .join("\n"),
     )
   }
+  if (delta.changedVariants.length) {
+    errors.push(
+      `CHANGED variants (${delta.changedVariants.length}):\n` +
+        delta.changedVariants
+          .map((variant) => `  ${variant.nodeId} ${variant.class} · ${variant.device ?? "any"}`)
+          .join("\n"),
+    )
+  }
   if (!Object.values(delta).some((nodes) => nodes.length) && !plan) {
     lines.push(`drift: none (${live.length} live nodes, contracts and design fingerprints match)`)
   }

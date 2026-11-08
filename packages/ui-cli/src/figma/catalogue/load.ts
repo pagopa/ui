@@ -59,6 +59,7 @@ export type CatalogueLoadContext = {
   evidenceExceptions: Record<string, string>
   apiExceptions: ApiExceptions
   errors: string[]
+  driftErrors: string[]
   warnings: string[]
   out: string[]
   err: string[]
@@ -331,6 +332,7 @@ async function assembleCatalogueContext(
     "moved",
     "baseline",
     "affected",
+    "changedVariants",
   ]
   const hasDrift = Boolean(snapshot.live) && driftKeys.some((key) => delta[key].length)
   const writeRequested =
@@ -364,6 +366,7 @@ async function assembleCatalogueContext(
       evidenceExceptions: refreshed.evidenceExceptions,
       apiExceptions: base.apiExceptions,
       errors: base.errors,
+      driftErrors: drift.errors,
       warnings: base.warnings,
       out: [...snapshot.out, ...drift.lines],
       err: snapshot.err,

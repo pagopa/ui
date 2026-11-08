@@ -1225,8 +1225,8 @@ const figmaAlign = defineWorkflow({
         if (!pinned) {
           // The REST plan is the fallback, and it prints the plan JSON the wave
           // reads: a nonzero exit there is a validation error, not drift.
-          const planned = await check("figma:plan", ["nx", "run", "pagopa-ui-cli:figma:plan"], {
-            allowExit: [0, 1, 2],
+          const planned = await check("figma:plan", ["ui-cli", "figma", "plan"], {
+            allowExit: [0, 1, 2, 3],
             timeoutMs: 15 * 60_000,
           })
           if (!planned) {
@@ -1234,7 +1234,7 @@ const figmaAlign = defineWorkflow({
               `Snapshot refresh failed: figma:plan did not run. Export FIGMA_TOKEN in the shell that runs the session, or run the export yourself, then start a new run.`,
             )
           }
-          if (planned.code !== 0) {
+          if (planned.code !== 0 && planned.code !== 3) {
             throw new Error(
               `Snapshot refresh failed: figma:plan exited ${planned.code} — ${tail(
                 `${planned.stdout ?? ""}\n${planned.stderr ?? ""}`,
@@ -1309,8 +1309,8 @@ const figmaAlign = defineWorkflow({
       const plan = await ctx.step("plan-v1", async () => {
         const { stdout } = await run(
           "node",
-          ["packages/ui-cli/src/cli.ts", "figma", "sync", "--input", snapshot, "--plan"],
-          { signal, allowExit: [0, 1] },
+          ["packages/ui-cli/src/cli.ts", "figma", "plan", "--input", snapshot, "--json"],
+          { signal, allowExit: [0, 3] },
         )
         return parseJsonOutput(stdout)
       })

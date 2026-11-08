@@ -14,6 +14,7 @@ import { report } from "../parity/report.ts"
 import { integer, requireText, text } from "./args.ts"
 import { action, printLines, type CliContext } from "./context.ts"
 import { booleanArg, caseArgs, caseOptions, stringArg } from "./parity-args.ts"
+import { requireToken, requireTokenArg } from "./token.ts"
 
 export function printParity(ctx: CliContext, result: ParityOutput): number {
   printLines(ctx.io, result)
@@ -154,9 +155,11 @@ function sourceCommand(ctx: CliContext) {
       json: booleanArg,
       compact: booleanArg,
       png: booleanArg,
+      "require-token": requireTokenArg,
     },
-    run: action(ctx, async (args) =>
-      printParity(
+    run: action(ctx, async (args) => {
+      requireToken(ctx, args["require-token"])
+      return printParity(
         ctx,
         await readSource(
           ctx.workspace(),
@@ -170,8 +173,8 @@ function sourceCommand(ctx: CliContext) {
           },
           figmaImages(ctx.env),
         ),
-      ),
-    ),
+      )
+    }),
   })
 }
 function renderCommand(ctx: CliContext) {

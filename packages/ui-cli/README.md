@@ -211,6 +211,20 @@ For a deterministic local wave, use `pnpm ui-cli parity queue --next --size 3
 including multiple states on the same device, and refuses missing declared
 devices. `parity align` prints the exact check command for each declared device.
 
+### Figma workflow helpers
+
+`pnpm ui-cli figma status` reports whether a token is available and its source,
+without revealing it. Add `--require-token` to live-capable commands to fail
+with a usage error when no token can be resolved.
+
+`pnpm ui-cli figma brief --queue --json` returns all pending briefs, their
+implementation order, drift classes and devices. Use `--node <id>` for one
+brief; `--refresh` refreshes the rules and comments snapshots when their
+versions do not match the inventory pin.
+
+Catalogue drift and parity differences above tolerance return exit code 3;
+validation failures return 1 and missing inputs return 2.
+
 ## npm tasks
 
 | Task                      | Command                                  | Network     | Notes                                                                                                                                                                                                                                                                          |

@@ -1,6 +1,7 @@
 import fs from "node:fs"
 import path from "node:path"
 import type { Workspace } from "../../adapters/workspace.ts"
+import { writeJson } from "../../lib/json.ts"
 import type { CatalogueReport } from "../sync.ts"
 import { formatDeviceLine } from "../devices.ts"
 import { formatSurfaceLine } from "../surface.ts"
@@ -17,13 +18,7 @@ function writePendingFiles(
   err: string[],
 ): void {
   for (const [file, data] of context.pendingWrites) {
-    const temporary = path.join(root, `${file}.${Date.now()}.tmp`)
-    try {
-      fs.writeFileSync(temporary, JSON.stringify(data, null, 2) + "\n", { flag: "wx" })
-      fs.renameSync(temporary, path.join(root, file))
-    } finally {
-      if (fs.existsSync(temporary)) fs.unlinkSync(temporary)
-    }
+    writeJson(path.join(root, file), data)
     const line = `validated and written: ${file}`
     if (plan) err.push(line)
     else out.push(line)
@@ -71,31 +66,36 @@ function writeDeltaFile(
   if (!context.deltaPath || !context.live) return
   const file = path.resolve(workspace.root, context.deltaPath)
   fs.mkdirSync(path.dirname(file), { recursive: true })
-  fs.writeFileSync(
+  writeJson(
     file,
-    `${JSON.stringify(
-      renderCatalogueDelta({
-        workspace,
-        inventory: context.inventory,
-        registry: context.registry,
-        delta: context.delta,
-        live: context.live,
-        committed: context.committed,
-        liveVersion: context.liveVersion,
-        ratchet: context.ratchet,
-        evidenceBase: context.evidenceBase,
-        devicePolicy: validation.devicePolicy,
-        deviceStats: validation.deviceStats,
-        deviceCoverage: validation.deviceCoverage,
-        bulkByNode: validation.bulkByNode,
-        bulkByPage: validation.bulkByPage,
-        entries: validation.entries,
-      }),
-      null,
-      2,
-    )}\n`,
+    renderCatalogueDelta({
+      workspace,
+      inventory: context.inventory,
+      registry: context.registry,
+      delta: context.delta,
+      live: context.live,
+      committed: context.committed,
+      liveVersion: context.liveVersion,
+      ratchet: context.ratchet,
+      evidenceBase: context.evidenceBase,
+      devicePolicy: validation.devicePolicy,
+      deviceStats: validation.deviceStats,
+      deviceCoverage: validation.deviceCoverage,
+      bulkByNode: validation.bulkByNode,
+      bulkByPage: validation.bulkByPage,
+      entries: validation.entries,
+    }),
   )
   out.push(`delta: ${context.deltaPath}`)
+}
+
+export function catalogueExitCode(
+  errors: string[],
+  validationErrors: string[],
+  driftErrors: string[],
+): number {
+  if (validationErrors.length || errors.some((error) => !driftErrors.includes(error))) return 1
+  return driftErrors.length ? 3 : 0
 }
 
 export function finishCatalogue(
@@ -153,6 +153,9 @@ export function finishCatalogue(
     writePullRequestBody(workspace, context, validation, out)
     writeDeltaFile(workspace, context, validation, out)
   }
-  const driftOnly = context.hasDrift && !context.writeRequested && !context.prBodyPath
-  return { exitCode: errors.length ? (driftOnly ? 3 : 1) : 0, out, err }
+  return {
+    exitCode: catalogueExitCode(context.errors, validation.errors, context.driftErrors),
+    out,
+    err,
+  }
 }

@@ -89,6 +89,7 @@ const RawNodeSchema = z.looseObject({
   containing_frame: RawContainingFrameSchema.optional(),
   dependencies: z.array(RawDependencySchema).optional(),
   designFingerprint: z.string().nullable().optional(),
+  variants: InventoryNodeSchema.shape.variants,
 })
 
 const RestComponentSchema = z.looseObject({
@@ -309,8 +310,8 @@ function variantRecords(
   policy: DevicePolicy,
 ): InventoryNode["variants"] {
   if (raw.type !== "COMPONENT_SET") return undefined
-  const children = (raw.document?.children ?? []).filter((child) => child?.id)
-  if (!children.length) return undefined
+  if (!raw.document?.children) return undefined
+  const children = raw.document.children.filter((child) => child?.id)
   return children
     .map((child) => ({
       nodeId: child.id,
@@ -389,7 +390,7 @@ export function normalizeNode(
     raw.type,
     `invalid Figma type for node ${nodeId}`,
   )
-  const variants = variantRecords(raw, normalizedProperties, policy)
+  const variants = raw.variants ?? variantRecords(raw, normalizedProperties, policy)
   const designFingerprint = raw.document
     ? fingerprint(designEvidence(raw.document))
     : (raw.designFingerprint ?? null)
@@ -480,7 +481,7 @@ export type VariantChange = {
 }
 
 function variantDelta(old: InventoryNode | undefined, node: InventoryNode): VariantChange[] {
-  if (!(node.variants ?? []).length) return []
+  if (!node.variants) return []
   const changes: VariantChange[] = []
   const before = new Map((old?.variants ?? []).map((variant) => [variant.nodeId, variant]))
   const after = new Map((node.variants ?? []).map((variant) => [variant.nodeId, variant]))
@@ -539,7 +540,8 @@ export function compareSnapshots(
     }
     if (old.name !== node.name || old.pageName !== node.pageName) delta.renamed.push(node)
     if (old.pageId !== node.pageId) delta.moved.push(node)
-    delta.changedVariants.push(...variantDelta(old, node))
+    const variants = variantDelta(old, node)
+    delta.changedVariants.push(...variants)
     const changes: string[] = []
     if (old.type !== node.type) changes.push("type")
     if (
@@ -550,6 +552,7 @@ export function compareSnapshots(
     }
     if (old.designFingerprint && old.designFingerprint !== node.designFingerprint)
       changes.push("design")
+    if (variants.length && !changes.length) changes.push("variants")
     if (changes.length) delta.changed.push({ ...node, change: changes.join(" + ") })
     if (old.properties === undefined || (!old.designFingerprint && node.designFingerprint))
       delta.baseline.push(node)
