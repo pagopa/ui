@@ -13,7 +13,7 @@ import { figmaToken } from "../adapters/figma-token.ts"
 import { UsageError } from "../lib/command.ts"
 import { formatCheck, passed } from "../checks/report.ts"
 import { rulesCommands } from "./figma-rules.ts"
-import { registryCommand, closeCommand } from "./figma-workflows.ts"
+import { registryCommand } from "./figma-registry.ts"
 import { surfaceCommand } from "./figma-surface.ts"
 import { requestCommand } from "./figma-request.ts"
 import { handoffCommand } from "./figma-handoff.ts"
@@ -160,7 +160,7 @@ export function artworkCheckCommands(ctx: CliContext): SubCommandsDef {
   return { icons: checkIcon, pictograms: checkPictogram, artwork }
 }
 
-export function figmaCommands(ctx: CliContext, root: () => CommandDef): CommandDef {
+export function figmaCommands(ctx: CliContext): CommandDef {
   const status = defineCommand({
     meta: { name: "status", description: "Report the token, snapshot, drift and pending queue" },
     args: {
@@ -295,7 +295,6 @@ export function figmaCommands(ctx: CliContext, root: () => CommandDef): CommandD
       surface: surfaceCommand(ctx),
       request: requestCommand(ctx),
       handoff: handoffCommand(ctx),
-      close: closeCommand(ctx, root),
       status,
       plan,
       triage,

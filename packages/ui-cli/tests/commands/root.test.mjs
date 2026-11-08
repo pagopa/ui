@@ -13,6 +13,12 @@ test("an unknown command is a usage error", async () => {
   assert.match(result.stderr, /Unknown command nope/)
 })
 
+test("closing orchestration belongs to the caller, not a CLI command", async () => {
+  const result = await runCli(["figma", "close"])
+  assert.equal(result.status, 2)
+  assert.match(result.stderr, /Unknown command close/)
+})
+
 test("--help prints the usage of the named command and exits 0", async () => {
   const result = await runCli(["check", "--help"])
   assert.equal(result.status, 0)
@@ -65,4 +71,10 @@ test("a workspace resolves the sibling packages and both identity bases", () => 
 test("repeated flags keep every value in order", () => {
   assert.deepEqual(repeated(["--click", "a", "--node", "1:2", "--click=b"], "click"), ["a", "b"])
   assert.deepEqual(repeated(["--node", "1:2"], "click"), [])
+})
+
+test("a numeric flag without a value is a usage error, not its default", async () => {
+  const result = await runCli(["parity", "queue", "--next", "--size"])
+  assert.equal(result.status, 2)
+  assert.match(result.stderr, /--size.*integer/)
 })

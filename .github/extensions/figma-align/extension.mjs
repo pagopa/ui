@@ -81,12 +81,10 @@ const FRESH_TARGETS = new Set([
   "pagopa-ui-cli:figma:brief",
   "pagopa-ui-cli:parity:align",
   "pagopa-ui-cli:parity:queue",
-  "pagopa-ui-cli:check:evidence",
   "pagopa-ui-cli:update:evidence",
   "pagopa-ui-cli:parity:capture",
   "pagopa-ui-cli:parity:report",
   "pagopa-ui-cli:figma:rules",
-  "pagopa-ui-cli:check:rules",
   "pagopa-ui-cli:figma:comments",
   "pagopa-ui-cli:figma:triage",
   "pagopa-ui-cli:test:visual",
@@ -1663,8 +1661,15 @@ const figmaAlign = defineWorkflow({
       await check("fmt", ["nx", "run-many", "-t", "fmt"])
       await check("check:catalogue", ["nx", "run", "pagopa-ui:check:catalogue"])
       await check("check:rules", ["nx", "run", "pagopa-ui-cli:check:rules"])
+      await check("check:devices", ["nx", "run", "pagopa-ui-cli:check:devices"])
+      await check("check:evidence", ["nx", "run", "pagopa-ui-cli:check:evidence"])
       await check("check:parity", ["nx", "run", "pagopa-ui-cli:check:parity"])
       for (const nodeId of rendered) {
+        await check(
+          `parity:check (${nodeId})`,
+          ["ui-cli", "parity", "check", "--node", nodeId, "--saved"],
+          { timeoutMs: 30 * 60_000 },
+        )
         const nodeWave = `${date}-${nodeId.replace(/[^A-Za-z0-9]+/g, "-")}-alignment`
         const nodeDir = join(parityOut, nodeWave)
         // `--saved` measures exactly the committed cases of this node: an
@@ -1699,6 +1704,7 @@ const figmaAlign = defineWorkflow({
           join(PACKAGE_DIR, "docs/reports", `${nodeWave}-figma-parity.md`),
         ])
       }
+      await check("docs", ["nx", "run", "pagopa-ui:docs"])
       // The visual gate is the other half of the green chain, and its baselines
       // are reviewed Linux images: the preflight says which scoped stories have
       // none, and a missing baseline is a finding for the person, not a reason

@@ -87,8 +87,10 @@ scaled capture or one that missed the forced width exits 2.
 `catalog.parityCases` records compared variants, states, devices, dimensions,
 scope, selectors and reasoned residues. `--save-case` owns its formatted
 canonical write; inspect the diff and reproduce existing IDs with `--case`.
-`pnpm ui-cli check parity` validates the corpus, device coverage and evidence
-hermetically; `pnpm ui-cli check evidence` validates the bundle alone.
+`pnpm nx run pagopa-ui-cli:check:parity` validates the corpus, device coverage
+and evidence hermetically; `pnpm nx run pagopa-ui-cli:check:evidence` validates
+the bundle alone. These local gates reuse unchanged inputs; browser captures
+always run fresh.
 To refresh stale slices and pinned images use
 `pnpm ui-cli update evidence --input <snapshot>` with a token. Neither
 hermetic check substitutes for capturing a rendered story.

@@ -40,6 +40,8 @@ export function requireText(value: unknown, flag: string, command: string): stri
 }
 
 export function integer(value: unknown, flag: string): number | undefined {
+  if (value !== undefined && text(value) === undefined)
+    throw new UsageError(`${flag} must be an integer`)
   const raw = text(value)
   if (raw === undefined) return undefined
   const parsed = Number(raw)

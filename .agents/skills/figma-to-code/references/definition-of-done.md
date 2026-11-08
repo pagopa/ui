@@ -33,29 +33,38 @@ green chain.
 1. Satisfy the checklist for every node claimed implemented. Excluded nodes
    carry a reason; pending nodes name their request or blocker
    ([catalogue.md](catalogue.md#review-semantics)).
-2. With Storybook answering, run
-   `pnpm ui-cli figma close --nodes <id,id> --json` for the exact touched set.
-   It runs catalogue, strict rules, devices and evidence checks, every selected
-   node's saved parity cases, docs, then `pnpm nx run workspace:verify`.
-   `--nodes` and `--base` are alternatives: without explicit nodes the CLI uses
-   changed registry/case entries against the base (default merge-base with
-   `origin/main`), falling back to the pending queue. That fallback can check
-   the wrong scope for a targeted review; prefer `--nodes`.
-   Use [parity-tooling.md](parity-tooling.md) to read results. All steps must
-   pass; unavailable browser steps and `--skip-chain` are not full verification,
-   even if a process exits 0. A committed-only use case with no touched node
-   runs the full workspace chain directly.
-3. For a parity wave, preserve its per-node capture/report records
-   ([visual-parity.md](visual-parity.md#close-the-wave)); `figma close` does not
-   generate them. Drift delivery also owes the baseline preflight and
+2. The caller owns orchestration. Run the local gates explicitly:
+
+   ```bash
+   pnpm nx run pagopa-ui:check:catalogue
+   pnpm nx run pagopa-ui-cli:check:rules
+   pnpm nx run pagopa-ui-cli:check:devices
+   pnpm nx run pagopa-ui-cli:check:evidence
+   pnpm nx run pagopa-ui-cli:check:parity
+   ```
+
+   With Storybook answering, run
+   `pnpm ui-cli parity check --node <nodeId> --saved` for **each** touched node.
+   The local Nx gates reuse unchanged inputs; browser runs are fresh.
+   Then run `pnpm nx run pagopa-ui:docs` and
+   `pnpm nx run workspace:verify`. Record every command and exit code, continuing
+   after failures so the report accounts for all required checks.
+   Use [parity-tooling.md](parity-tooling.md) to read results. Every required
+   step must pass; unavailable browsers and skipped checks remain unverified.
+   A committed-only use case with no touched node runs the full workspace chain
+   directly.
+3. For a parity wave, also preserve its per-node capture/report records
+   ([visual-parity.md](visual-parity.md#close-the-wave)).
+   Drift delivery also owes the baseline preflight and
    before/after media in [handoff.md](handoff.md#checks-and-delivery).
 4. **Delivery permission stop.** Report and ask before commit, push or pull
    request unless the person already requested that action. On a drift branch,
    an authorized commit stays there; the person pushes and merges. Keep the
    stories, registry, inventory and exception changes with the implementation.
-5. Complete the close report's placeholders: what changed; each node's decision
+5. Report what changed; each node's decision
    and reason; each device's verdict; residues and reasons; open items and why;
-   files touched; every command and exit code. Include human image-inspection
+   files touched; every command, exit code and passed/failed/skipped/unavailable
+   result. Include human image-inspection
    findings and any unverified baseline, browser or assistive-technology step.
 
 **Done when** the exact node scope satisfies source alignment, the full green

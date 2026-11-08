@@ -58,7 +58,7 @@ component with no node needs only its catalogue coverage
    with the target and note flags in
    [catalogue.md](catalogue.md#review-semantics). Several implementations of a
    set still require an in-place `additionalExports` edit. Export it
-   publicly when it is a production component. Run `pnpm ui-cli check catalogue`.
+   publicly when it is a production component. Run `pnpm nx run pagopa-ui:check:catalogue`.
    An open point for the design owner is a design request
    ([design-request.md](design-request.md)); the node stays `pending` and the
    request is named in the note.

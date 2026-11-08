@@ -111,7 +111,7 @@ again with the same English; if it changed, update the guide bullet too.
 ## Verification
 
 ```bash
-pnpm ui-cli check rules
+pnpm nx run pagopa-ui-cli:check:rules
 ```
 
 Hermetic: schema, mandatory fields, targets, guide files and their rules block

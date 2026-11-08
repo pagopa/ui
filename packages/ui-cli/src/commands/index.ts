@@ -32,7 +32,7 @@ export function createCli(ctx: CliContext): CommandDef {
       }),
       update: updateCommands(ctx, artworkUpdateCommands(ctx)),
       build: buildCommands(ctx),
-      figma: figmaCommands(ctx, () => root),
+      figma: figmaCommands(ctx),
       parity: parityCommands(ctx),
       test: testCommands(ctx),
     },

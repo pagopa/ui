@@ -113,7 +113,10 @@
         "default",
         "tooling",
         "{workspaceRoot}/packages/artwork/src/**",
-        "{workspaceRoot}/apps/storybook/src/**/*"
+        "{workspaceRoot}/apps/storybook/src/**/*",
+        "{workspaceRoot}/docs/figma-parity/**",
+        "{workspaceRoot}/pnpm-lock.yaml",
+        { "runtime": "node --version" }
       ],
       "cache": true,
       "outputs": []

@@ -59,6 +59,23 @@ compare it with the source code of the audited package, `packages/pagopa-ui`.
 
 ## Figma workflow commands
 
+### Cache boundaries
+
+Run recurring local checks through `pnpm nx run <project>:<target>` to reuse
+their cache. The caller invokes Nx explicitly; the CLI never starts Nx.
+Unchanged inputs reuse the same checks; source, stories, evidence and the
+ignored `.figma/rules.json` snapshot invalidate the relevant cached results.
+The snapshot fingerprint is produced by `src/adapters/rules-cache-input.ts`,
+which distinguishes a missing snapshot and propagates other read errors.
+
+The cache contracts cover the standard workspace paths and default arguments.
+Use the direct CLI for alternate roots or external `--input`/`--cases` files;
+those files are outside the default Nx input sets.
+Direct CLI invocations are uncached. Live reads, writers and browser captures
+remain fresh, including each node's `parity check --node <id> --saved`.
+
+### Operations
+
 The deterministic handoff, design-request and page-surface operations are
 available from the CLI:
 
@@ -249,12 +266,11 @@ Use `--module`, `--export`, `--story`, `--story-exports`, `--note` and
 and ratchet edits without writing. A real edit runs the catalogue check and
 returns its overall verdict.
 
-`pnpm ui-cli figma close --nodes <id,id>` runs the local closing checks in
-order, then the full Nx verification chain. Without `--nodes`, it uses changed
-registry and case entries against `--base` (default: merge-base with
-`origin/main`), falling back to the pending queue. Parity requires a running
-Storybook; unavailable captures are reported as not run. `--skip-chain` skips
-only the Nx chain; `--json` emits the report as data (chain logs go to stderr).
+`figma close` has been removed: closing orchestration belongs to the caller.
+Run the local gates through Nx, each touched node's saved parity cases through
+the CLI, then docs and the full Nx verification chain. The complete sequence
+and reporting requirements live in the Figma skill's
+[definition of done](../../.agents/skills/figma-to-code/references/definition-of-done.md#closing-and-delivery).
 
 ## npm tasks
 
