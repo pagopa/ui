@@ -4,6 +4,7 @@ import { z } from "zod"
 
 import type { Workspace } from "../../adapters/workspace.ts"
 import type { RegistryEntry } from "../../schemas/catalogue.ts"
+import { walkFiles } from "../../lib/fs.ts"
 import { createSourceModules } from "../../lib/source-modules.ts"
 import { parseSchema } from "../../lib/validate.ts"
 
@@ -30,9 +31,8 @@ export function storyImports(
   sourceModules: SourceModules,
 ): Map<string, Set<string>> {
   const imports = new Map<string, Set<string>>()
-  for (const file of fs.readdirSync(workspace.storiesRoot, { recursive: true })) {
-    if (typeof file !== "string" || !file.endsWith(".stories.tsx")) continue
-    const identity = workspace.identity(path.join(workspace.storiesRoot, file))
+  for (const file of walkFiles(workspace.storiesRoot, (name) => name.endsWith(".stories.tsx"))) {
+    const identity = workspace.identity(file)
     imports.set(
       identity,
       new Set(

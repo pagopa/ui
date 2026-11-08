@@ -1,8 +1,11 @@
 import assert from "node:assert/strict"
+import path from "node:path"
 import { test } from "node:test"
 
 import { prepareCatalogueRefresh } from "../../src/figma/catalogue-refresh.ts"
 import { loadCatalogueState } from "../../src/figma/catalogue-state.ts"
+import { storyImports } from "../../src/figma/catalogue/source.ts"
+import { createSourceModules } from "../../src/lib/source-modules.ts"
 import { fixtureTree, runCli, workspaceAt } from "../helpers/cli.mjs"
 
 const node = {
@@ -171,4 +174,23 @@ test("catalogue CLI preserves success, failure and usage contracts", async () =>
   assert.equal(usage.status, 2)
   assert.equal(usage.stdout, "")
   assert.equal(usage.stderr, "error: choose either --input <file> or --rest")
+})
+
+test("story imports ignore dependency and cache directories under the stories root", () => {
+  const tree = fixtureTree({
+    ...baseFiles(),
+    "stories/control.stories.tsx": "export default {}",
+    "stories/node_modules/dep/leak.stories.tsx": "export default {}",
+    "stories/.cache/fixture/leak.stories.tsx": "export default {}",
+  })
+  try {
+    const workspace = workspaceAt(tree.root, { PAGOPA_UI_STORIES_ROOT: "stories" })
+    const imports = storyImports(workspace, createSourceModules(workspace))
+    assert.deepEqual(
+      [...imports.keys()].map((file) => path.basename(file)),
+      ["control.stories.tsx"],
+    )
+  } finally {
+    tree.dispose()
+  }
 })
