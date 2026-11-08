@@ -1,17 +1,56 @@
 # Contributing — PagoPA UI
 
-Work in this repository is done by asking a coding agent; the person reviews and
-merges. This file holds what is true for people and agents alike;
+The library is developed **agent-first**: people describe the work, coding
+agents implement it, and repository checks verify what they produce. The person
+reviews and merges. This file holds what is true for people and agents alike;
 [AGENTS.md](./AGENTS.md) adds the agent-only rules and which skill owns which
 work.
 
 ## Setup
 
-- The toolchain comes from [mise](https://mise.jdx.dev/) (`mise install`, then
-  `mise trust` once): Node 24.22.1 and pnpm 11.28.6, pinned in `.node-version`
-  and `mise.lock`.
-- `pnpm install`
-- `pnpm nx run pagopa-ui-storybook:storybook` for the documentation and the visual checks
+The toolchain comes from [mise](https://mise.jdx.dev/): Node.js and pnpm are
+pinned in `.node-version` and `mise.lock` (Node 24.22.1 and pnpm 11.28.6 at the
+time of writing). Terraform, tflint, trivy and terraform-docs are also locked
+in `mise.toml`/`mise.lock`; only the `infra/` projects need them.
+
+1. Install the locked toolchain and trust the repository configuration once:
+
+   ```bash
+   mise install
+   mise trust
+   ```
+
+2. Create the local, git-ignored `.npmrc`. The DX Nx packages are served by
+   GitHub Packages and installed through pnpm's `gh:` protocol, so the GitHub
+   token needs the `read:packages` scope:
+
+   ```bash
+   gh auth refresh --scopes read:packages
+   install -m 600 /dev/null .npmrc
+   printf '//npm.pkg.github.com/:_authToken=%s\n' "$(gh auth token)" > .npmrc
+   ```
+
+3. Install dependencies and build the workspace:
+
+   ```bash
+   pnpm install
+   pnpm nx run-many -t build
+   ```
+
+4. Start the documentation and visual-check surface:
+
+   ```bash
+   pnpm nx run pagopa-ui-storybook:storybook
+   ```
+
+   Storybook answers at `http://localhost:6006`.
+
+### GitHub Copilot plugins
+
+`.github/copilot/settings.json` carries the recommended PagoPA DX marketplace
+and plugin suggestions. Keep it committed to avoid per-developer setup drift;
+edit the related flags if the team does not use a suggested plugin. See the
+[DX plugin documentation](https://dx.pagopa.it/docs/coding-with-ai/plugin-marketplace).
 
 ## Composition
 
@@ -22,6 +61,9 @@ foundations are `packages/tokens`; its checks and Figma tooling are
 `apps/storybook`; the agent documents, the ADRs and the workflows live at the
 workspace root. The paths below are inside `packages/pagopa-ui` unless they
 name another package.
+
+The design system uses TypeScript 7, Tailwind CSS v4 and Base UI primitives
+(shadcn wrappers), with Storybook as its documentation surface.
 
 - `src/components/primitives` — Base UI primitives; `icons` — the public icon
   and pictogram components, re-exporting the generated catalogue from
@@ -46,6 +88,33 @@ name another package.
 - `packages/ui-cli` — the checks and the Figma tooling, audited through
   an explicit root ([README.md](./packages/ui-cli/README.md)).
 
+Each folder under `packages/` is a reusable workspace. Packages meant for
+internal sharing declare `private: true`; the others are intended for the
+registry. Components consume artwork through its package, never a file path.
+
+`apps/` holds deployable artifacts; deployment belongs to each application.
+Storybook builds its static documentation into `apps/storybook/dist`.
+Its hosting target is Azure Static Web App.
+
+`infra/` holds the infrastructure as code for project resources and execution
+environments. `docs/` holds technical documentation, architecture,
+[ADRs](https://adr.github.io/), standards, reports and plans. Deferred decisions
+and their triggers are in [docs/decisions](./docs/decisions/). Consumer
+documentation belongs to the package README or to an application under `apps/`.
+
+### Repository infrastructure
+
+`infra/repository` configures repository settings. It is intended to run once,
+locally, at project initialization:
+
+```bash
+cd infra/repository
+az account set --name <subscription_name>  # when Azure is the CSP
+terraform init
+terraform plan
+terraform apply
+```
+
 ## Nx tasks
 
 Every task is an Nx target: `pnpm nx show project pagopa-ui` lists the design
@@ -53,6 +122,9 @@ system's, `pnpm nx show project pagopa-ui-cli` the tooling's. Direct UI CLI
 invocation is documented in [AGENTS.md](./AGENTS.md#rules) and [the UI CLI
 README](./packages/ui-cli/README.md#cli); the Nx targets below remain the gates
 and CI entry points.
+
+Use `pnpm nx show projects` to list projects and
+`pnpm nx show project <name>` to inspect their targets.
 
 - `pnpm nx run pagopa-ui-storybook:storybook` — Storybook on
   `http://localhost:6006`.
@@ -88,6 +160,29 @@ and CI entry points.
   `pnpm ui-cli figma devices`
   — parity tools, see the
   [`figma-to-code`](./.agents/skills/figma-to-code/SKILL.md) skill.
+
+### Workspace commands
+
+```bash
+# Build all projects, run one target, or select affected tests
+pnpm nx run-many -t build
+pnpm nx run <project>:<target>
+pnpm nx run-many -t <target>
+pnpm nx affected -t test
+
+# Type-check or lint the design system
+pnpm nx run pagopa-ui:typecheck
+pnpm nx run pagopa-ui:lint
+
+# Run a package command in one workspace or in all workspaces
+pnpm --filter <workspace> <command>
+pnpm -r <command>
+
+# Add a dependency at the root, to one workspace, or to every workspace
+pnpm -w add -D <package>
+pnpm --filter <workspace> add <package>
+pnpm -r add <package>
+```
 
 ## Lint and format
 
@@ -189,7 +284,23 @@ GitHub token with `packages: write`. The normal release flow publishes only
 after a version plan is merged; `workflow_dispatch` is an explicit recovery
 path that publishes all projects with a publish target.
 
+Package visibility and consumer access are managed in GitHub Packages.
+The first publication is still pending; consumer installation is documented in
+the [root README](./README.md#install).
+
 ## CI
+
+`.github/workflows/validate.yaml` runs the DX code review on every pull request
+and delegates to the reusable
+[`validate-v2.yaml`](https://github.com/pagopa/dx/blob/main/.github/workflows/validate-v2.yaml)
+workflow. Alongside the Nx checks below, it formats projects and runs
+`validate`, `trivy` and Terraform plans for infrastructure projects under the
+`infra-<env>-ci` GitHub environments.
+
+Terraform roots under `infra/` are inferred by `@pagopa/nx-terraform`. Shared
+Terraform modules live in `_modules` directories; changing one marks every
+project in its area as affected. Projects with a `Dockerfile` are inferred by
+`@pagopa/nx-docker`.
 
 - `validate.yaml` — the DX reusable code review: `fmt`, `lint`, `typecheck`,
   `docs`, `build` and the unit project on the affected projects, plus the version
