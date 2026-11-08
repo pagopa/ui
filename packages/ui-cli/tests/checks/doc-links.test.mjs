@@ -71,6 +71,32 @@ test("generated directory roots are local paths even without a trailing slash", 
   )
 })
 
+test("a placeholder option value cannot hide a misspelled following flag", () => {
+  assert.match(
+    problems(
+      check({
+        "CONTRIBUTING.md": "`pnpm ui-cli check text-defaults --max <n> --mxa`",
+      }),
+    ),
+    /unknown ui-cli flag --mxa/,
+  )
+})
+
+test("the docs gate accepts optional comparison values and still checks following flags", () => {
+  for (const options of [
+    "--compare-box full",
+    "--compare-offset .origin",
+    "--compare-box full --compare-offset .origin",
+  ]) {
+    const command = `pnpm ui-cli parity check --case demo ${options}`
+    assert.deepEqual(check({ "CONTRIBUTING.md": `\`${command}\`` }).problems, [])
+    assert.match(
+      problems(check({ "CONTRIBUTING.md": `\`${command} --typo\`` })),
+      /unknown ui-cli flag --typo/,
+    )
+  }
+})
+
 test("historical documents are checked on links only", () => {
   assert.deepEqual(
     check({ "docs/plans/next.md": "Will add `scripts/future.mjs`.", "scripts/keep.mjs": "" })

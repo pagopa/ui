@@ -69,6 +69,51 @@ function fixture() {
   })
 }
 
+test("execution failures outrank drift while all saved cases are evaluated", async () => {
+  const f = fixture()
+  const seen = []
+  try {
+    const result = await check(
+      workspaceAt(f.root),
+      {
+        nodeId: "9:9",
+        saved: true,
+        json: true,
+        input: new URL("../fixtures/figma-parity/snapshot-slice.json", import.meta.url).pathname,
+      },
+      {
+        evaluate: async (_workspace, spec) => {
+          seen.push(spec.id)
+          if (spec.id === "desktop-empty") throw new Error("browser evaluation failed")
+          return {
+            report: {
+              nodeId: spec.nodeId,
+              variant: "1:1",
+              variantName: "Fixture",
+              storyId: spec.storyId,
+              device: spec.device,
+              verdict: "drift",
+              deltas: [{ path: "root.width", expected: 100, actual: 110 }],
+              advisories: [],
+              residues: [],
+              notes: [],
+            },
+            probe: {},
+            mapping: [],
+            err: [],
+          }
+        },
+      },
+    )
+    assert.equal(result.code, 1)
+    assert.deepEqual(seen, ["desktop-empty", "desktop-filled", "mobile-empty"])
+    assert.equal(result.data.cases.length, 3)
+    assert.match(result.err.join("\n"), /browser evaluation failed/)
+  } finally {
+    f.dispose()
+  }
+})
+
 test("next selects a bounded dependency-first wave without changing the ordinary queue", () => {
   const f = fixture()
   try {

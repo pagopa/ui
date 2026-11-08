@@ -2,6 +2,7 @@
 // anything: the docs gate uses it so a guide or a skill cannot name a
 // subcommand or a flag the CLI does not have.
 import type { ArgsDef, CommandDef } from "citty"
+import { acceptsOptionalValue } from "./args.ts"
 
 // A lazy (function or promise) node cannot be read statically: it passes.
 type Resolvable<T> = T | Promise<T> | (() => T) | (() => Promise<T>)
@@ -34,7 +35,19 @@ export function unresolvedCliTokens(root: CommandDef, tokens: readonly string[])
     if (token.startsWith("-")) {
       const declared = declaredFlag(args, token)
       if (!declared) return `unknown ui-cli flag ${token} for "${["ui-cli", ...path].join(" ")}"`
-      if (declared.type === "string" && !token.includes("=")) index += 1
+      if (
+        declared.type === "string" &&
+        !token.includes("=") &&
+        tokens[index + 1] !== undefined &&
+        !tokens[index + 1].startsWith("--")
+      )
+        index += 1
+      else if (
+        !token.includes("=") &&
+        tokens[index + 1] !== undefined &&
+        acceptsOptionalValue(declared, tokens[index + 1])
+      )
+        index += 1
       continue
     }
     const subCommands = readable(command.subCommands)

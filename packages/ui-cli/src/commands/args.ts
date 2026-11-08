@@ -15,6 +15,17 @@ export const inputArg = {
   description: "Path to the pinned snapshot the command reads",
 } as const
 
+export function acceptsOptionalValue(
+  arg: { type?: string; optionalValues?: true | readonly string[] },
+  value: string,
+): boolean {
+  return (
+    arg.type === "boolean" &&
+    !value.startsWith("-") &&
+    (arg.optionalValues === true || (arg.optionalValues?.includes(value) ?? false))
+  )
+}
+
 // citty 0.2 keeps only the last value of a repeated flag. The parity commands
 // take `--click a --click b`, so they read every value of those names here.
 export function repeated(rawArgs: readonly string[], name: string): string[] {

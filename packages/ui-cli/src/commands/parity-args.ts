@@ -1,7 +1,7 @@
 import type { ParsedArgs } from "citty"
 import { UsageError } from "../lib/command.ts"
 import type { CheckOptions } from "../parity/types.ts"
-import { repeated, text } from "./args.ts"
+import { acceptsOptionalValue, repeated, text } from "./args.ts"
 
 export const stringArg = { type: "string" } as const
 export const booleanArg = { type: "boolean" } as const
@@ -29,8 +29,8 @@ export const caseArgs = {
   "expect-state": stringArg,
   "state-evidence": stringArg,
   "compare-text": booleanArg,
-  "compare-box": booleanArg,
-  "compare-offset": booleanArg,
+  "compare-box": { ...booleanArg, optionalValues: ["height", "full"] },
+  "compare-offset": { ...booleanArg, optionalValues: true },
   interactive: booleanArg,
   strict: booleanArg,
   "save-case": booleanArg,
@@ -101,13 +101,16 @@ export function caseOptions(
     compareText: args["compare-text"] || undefined,
     compareBox: args["compare-box"]
       ? box(
-          args._.find((value) => value === "height" || value === "full") ??
+          args._.find((value) => acceptsOptionalValue(caseArgs["compare-box"], value)) ??
             (args["compare-offset"] ? true : (args._[0] ?? true)),
         )
       : undefined,
     compareOffset: args["compare-offset"]
-      ? (args._.find((value) => !args["compare-box"] || (value !== "height" && value !== "full")) ??
-        true)
+      ? (args._.find(
+          (value) =>
+            acceptsOptionalValue(caseArgs["compare-offset"], value) &&
+            (!args["compare-box"] || !acceptsOptionalValue(caseArgs["compare-box"], value)),
+        ) ?? true)
       : text(args["offset-origin"]),
     expectState: text(args["expect-state"]),
     stateEvidence: text(args["state-evidence"]),

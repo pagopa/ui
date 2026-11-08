@@ -63,10 +63,10 @@ export async function checkSaved(
   const code =
     missingDevices.length || results.some((result) => result.code === 2)
       ? 2
-      : results.some((result) => result.code === 3)
-        ? 3
-        : results.some((result) => result.code)
-          ? 1
+      : results.some((result) => result.code !== 0 && result.code !== 3)
+        ? 1
+        : results.some((result) => result.code === 3)
+          ? 3
           : 0
   return output(
     code,
