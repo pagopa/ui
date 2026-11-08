@@ -39,7 +39,7 @@ its flags, space-separated:
 - **`--flag value`, both halves separate.** `parity check --case <id>`. The `=`
   form dies in the wrapper and the tool never sees it: `--case=<id>` exits with
   `check requires --node <id> or --case <caseId>`.
-- **The flags go straight after the target.** `figma:rules --refresh --node <id>`.
+- **The flags go straight after the target.** `figma:rules refresh --node <id>`.
   A `--` of their own reaches the script, which answers "No command specified".
 - **Nx reads its own options first** (`-c=ci`, `-t`, `--output-style=static`), so
   those keep their form; no task flag collides with them today.

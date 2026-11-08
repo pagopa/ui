@@ -437,7 +437,10 @@ function rulesStatus(root: string): StatusReport["rules"] {
   return report
 }
 
-function commentsStatus(root: string, inventory: Inventory | null): StatusReport["comments"] {
+function commentsStatus(
+  workspace: Workspace,
+  inventory: Inventory | null,
+): StatusReport["comments"] {
   const report: StatusReport["comments"] = {
     path: COMMENTS_SNAPSHOT_PATH,
     present: false,
@@ -447,7 +450,7 @@ function commentsStatus(root: string, inventory: Inventory | null): StatusReport
     error: null,
   }
   try {
-    const comments = readComments(root)
+    const comments = readComments(workspace)
     if (comments) {
       const mapped = new Set<string>()
       for (const component of inventory?.components ?? []) {
@@ -508,7 +511,7 @@ export async function buildStatusReport(
     inventory: inventoryReport,
     registry: registryReport,
     rules: rulesStatus(workspace.root),
-    comments: commentsStatus(workspace.root, inventory),
+    comments: commentsStatus(workspace, inventory),
     pending,
     surface: surfaceStatus(workspace, inventory),
     requests: designRequests(workspace),

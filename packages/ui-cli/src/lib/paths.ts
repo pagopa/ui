@@ -17,14 +17,6 @@ export const resolveTokensRoot = (env?: NodeJS.ProcessEnv): string => current(en
 export const resolveWorkspaceRoot = (env?: NodeJS.ProcessEnv): string => current(env).workspaceRoot
 export const resolveStoriesRoot = (env?: NodeJS.ProcessEnv): string => current(env).storiesRoot
 
-// Entry points not yet given a `Workspace` keep their package-relative paths
-// (`src/…`, `.figma/…`) true by entering the root.
-export function enterRoot(env: NodeJS.ProcessEnv = process.env): string {
-  const root = resolveRoot(env)
-  process.chdir(root)
-  return root
-}
-
 export const toolingPath = (...segments: string[]): string => path.join(TOOLING_ROOT, ...segments)
 export const rootPath = (...segments: string[]): string => path.join(resolveRoot(), ...segments)
 export const artworkPath = (...segments: string[]): string =>

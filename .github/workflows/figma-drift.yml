@@ -124,10 +124,10 @@ jobs:
           # The text run feeds the log, the JSON run feeds the summary: `--plan`
           # reads the local snapshot, so neither touches the network.
           mkdir -p packages/pagopa-ui/.figma
-          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma rules --refresh
-          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma rules --plan \
+          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma rules refresh
+          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma rules plan \
             | tee packages/pagopa-ui/.figma/rules-plan.txt
-          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma rules --plan --json \
+          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma rules plan --json \
             > packages/pagopa-ui/.figma/rules-plan.json
           pnpm --filter pagopa-ui-cli exec node src/cli.ts figma comments --refresh \
             | tee packages/pagopa-ui/.figma/comments.txt
@@ -142,7 +142,7 @@ jobs:
             echo '```'
             if [ "$behind" -gt 0 ]; then
               echo
-              echo "The rules ledger is behind: ${counts}. A new or stale card needs \`figma:rules --mark\`, a removed one needs \`figma:rules --sync\`. The ledger stays a reviewed change, so this run only reports it."
+              echo "The rules ledger is behind: ${counts}. A new or stale card needs \`figma:rules mark\`, a removed one needs \`figma:rules sync\`. The ledger stays a reviewed change, so this run only reports it."
             fi
           } >> "$GITHUB_STEP_SUMMARY"
           if [ "$behind" -gt 0 ]; then

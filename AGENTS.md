@@ -66,7 +66,7 @@ entry, the `.Regole` cards that target it, the open comments and the design
 requests. The rules boxes and the comments sit outside `designFingerprint`, so
 no drift reports them: `figma:rules` keeps the committed English ledger, and a
 node is not finished while a rule that targets it is `pending` or `stale`.
-Refresh the local snapshots with `figma:rules --refresh` and
+Refresh the local snapshots with `figma:rules refresh` and
 `figma:comments --refresh`.
 
 ## Skills
@@ -96,7 +96,7 @@ dynamic workflow that runs a wave of Figma alignment through both skills. It
 runs the deterministic commands itself: the `figma:status` session report, the
 delta plan and triage, a fresh rules/comments snapshot, the pending queue and
 `implementationOrder`, one `figma:brief` per node, the close-out checks
-(`check:catalogue`, `figma:rules:check`, the parity wave) and the green chain read
+(`check:catalogue`, `check:rules`, the parity wave) and the green chain read
 from [CONTRIBUTING.md](./CONTRIBUTING.md#the-green-chain). It analyses each node
 in parallel and read-only, then pauses so the person can approve or edit
 `packages/pagopa-ui/.figma/align/<runId>/decisions.json`. After resume, one

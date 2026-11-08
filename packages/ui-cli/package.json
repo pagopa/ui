@@ -20,7 +20,7 @@
     "update:inventory": "node src/cli.ts update inventory",
     "figma:triage": "node src/cli.ts figma triage",
     "figma:rules": "node src/cli.ts figma rules",
-    "figma:rules:check": "node src/cli.ts figma rules --check --strict",
+    "check:rules": "node src/cli.ts check rules",
     "figma:comments": "node src/cli.ts figma comments",
     "figma:brief": "node src/cli.ts figma brief",
     "parity:check": "node src/cli.ts parity check",

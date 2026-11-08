@@ -239,7 +239,7 @@ function runPlan({ ledger }) {
       fs.mkdirSync(path.dirname(target), { recursive: true })
       fs.writeFileSync(target, JSON.stringify(value))
     }
-    return spawnSync(process.execPath, [cli, "figma", "rules", "--plan"], {
+    return spawnSync(process.execPath, [cli, "figma", "rules", "plan"], {
       cwd: root,
       encoding: "utf8",
       env: fixtureEnv(root),

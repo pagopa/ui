@@ -86,7 +86,7 @@ const FRESH_TARGETS = new Set([
   "pagopa-ui-cli:parity:capture",
   "pagopa-ui-cli:parity:report",
   "pagopa-ui-cli:figma:rules",
-  "pagopa-ui-cli:figma:rules:check",
+  "pagopa-ui-cli:check:rules",
   "pagopa-ui-cli:figma:comments",
   "pagopa-ui-cli:figma:triage",
   "pagopa-ui-cli:test:visual",
@@ -811,14 +811,14 @@ Return the JSON: devices = one entry per declared device (device "any" when ther
 
 const DECISION_GUIDANCE = {
   implement:
-    "Follow references/new-from-figma.md end to end: implement, story at the exact source width with parameters.design = figmaEmbedUrl, guide whose first block is the consumer rules, the visual-parity loop per variant and per declared device, one saved case each, then the registry entry. Mark every rule that targets the node with figma:rules --mark and leave none pending or stale.",
+    "Follow references/new-from-figma.md end to end: implement, story at the exact source width with parameters.design = figmaEmbedUrl, guide whose first block is the consumer rules, the visual-parity loop per variant and per declared device, one saved case each, then the registry entry. Mark every rule that targets the node with figma:rules mark and leave none pending or stale.",
   review:
     "Follow references/node-review.md: re-read the brief, re-run every committed case, capture the missing ones per device, fix the component and its story where they must change (token ladder), re-run, dispose the rule cards, then record the decision in the registry.",
   map: "Follow references/node-review.md for a mapping: prove the existing implementation covers the node's whole contract on every declared device with saved cases, dispose the rule cards, then point the registry target at it.",
   exclude:
     "Set the registry entry to excluded with a self-contained reason in its note. Dispose every rule card that targets it (out-of-scope or duplicate, with the reason). Change nothing else.",
   "design-request":
-    "Follow references/design-request.md and references/rules.md. Decide whether the question is visual or dev-only, then act within this run's limits. An open record already listed for the node is never duplicated: keep it, keep the node pending, and report in openPoints what is still missing (an answer, a preview capture, a link). A dev-only question gets its issue (gh issue create with .github/ISSUE_TEMPLATE/dev-decision.md, labels type/dev-decision and status/needs-answer, every handle in design.owners assigned), its record under design.requests carrying the issue URL, the conflicting card pointed at it with figma:rules --mark --request, and the node stays pending with the record named in its note. A visual question needs a review story on design.preview.branch, captures of the deployed preview and the one review pull request index: you cannot commit, push or switch branches, so never fabricate them. Prepare the question, every option, the recommendation and the exact preview work (slug, story id, captures, branch, review PR index) in openPoints, keep the node pending with a note naming design.preview.branch and the review pull request, and change nothing else. Never open a visual issue without its captures and option links.",
+    "Follow references/design-request.md and references/rules.md. Decide whether the question is visual or dev-only, then act within this run's limits. An open record already listed for the node is never duplicated: keep it, keep the node pending, and report in openPoints what is still missing (an answer, a preview capture, a link). A dev-only question gets its issue (gh issue create with .github/ISSUE_TEMPLATE/dev-decision.md, labels type/dev-decision and status/needs-answer, every handle in design.owners assigned), its record under design.requests carrying the issue URL, the conflicting card pointed at it with figma:rules mark --request, and the node stays pending with the record named in its note. A visual question needs a review story on design.preview.branch, captures of the deployed preview and the one review pull request index: you cannot commit, push or switch branches, so never fabricate them. Prepare the question, every option, the recommendation and the exact preview work (slug, story id, captures, branch, review PR index) in openPoints, keep the node pending with a note naming design.preview.branch and the review pull request, and change nothing else. Never open a visual issue without its captures and option links.",
 }
 
 function alignPrompt(config, node, decision) {
@@ -840,7 +840,7 @@ Open questions: ${JSON.stringify(decision.openQuestions)}
 ${decision.instructions ? `Instructions from the person (binding): ${decision.instructions}\n` : ""}
 How: ${DECISION_GUIDANCE[decision.decision]}
 
-Start by re-reading \`pnpm nx run pagopa-ui-cli:figma:brief --node ${node.nodeId}\`: the rules and the open comments are source, and a node is not finished while a rule that targets it is \`pending\` or \`stale\`. Mark each card from the snapshot with \`figma:rules --mark\`; an \`imported\` card becomes a bullet in the guide's first block (\`<!-- component-rules:start -->\` … \`<!-- component-rules:end -->\`, under \`## Component Rules\`, no source reference). Never reply to or resolve a Figma comment.
+Start by re-reading \`pnpm nx run pagopa-ui-cli:figma:brief --node ${node.nodeId}\`: the rules and the open comments are source, and a node is not finished while a rule that targets it is \`pending\` or \`stale\`. Mark each card from the snapshot with \`figma:rules mark\`; an \`imported\` card becomes a bullet in the guide's first block (\`<!-- component-rules:start -->\` … \`<!-- component-rules:end -->\`, under \`## Component Rules\`, no source reference). Never reply to or resolve a Figma comment.
 
 Limits: three fix passes per case, then a residue with its reason or a written blocker. The case corpus is written only by \`parity:check --save-case\` (with --note "reviewed: …"); never hand-edit it and never leave a draft as coverage. Set status implemented only after you inspected the source and the render of every declared device; otherwise leave it pending with the blocker in the note. A design request keeps the node pending, names its record in the note, and never invents an issue URL, a capture or a preview link. Do not edit registry entries of other nodes. Finish with \`pnpm nx run pagopa-ui:check:catalogue\` and fix what this node broke; a stale Storybook title is fixed with \`pnpm nx run pagopa-ui:update:stories\` (the generator owns that map), never by hand-editing it. Do not run the full green chain: the workflow runs it once for the whole wave.
 
@@ -879,7 +879,7 @@ Writer report: ${JSON.stringify(alignment)}
 Verification findings: ${JSON.stringify(verification.findings)}
 Case verdicts: ${JSON.stringify(verification.cases)}
 
-Fix each finding with the token ladder, re-run and re-save the affected cases (--save-case --note "reviewed: …"), re-read the brief and close any rule or comment finding through \`figma:rules --mark\`, keep the registry consistent, then \`pnpm nx run pagopa-ui:check:catalogue\`. A finding you cannot close becomes a residue with its reason or a blocker in the registry note, never a silent pass.
+Fix each finding with the token ladder, re-run and re-save the affected cases (--save-case --note "reviewed: …"), re-read the brief and close any rule or comment finding through \`figma:rules mark\`, keep the registry consistent, then \`pnpm nx run pagopa-ui:check:catalogue\`. A finding you cannot close becomes a residue with its reason or a blocker in the registry note, never a silent pass.
 
 Return the same JSON shape as the writer, updated.`
 }
@@ -1274,8 +1274,8 @@ const figmaAlign = defineWorkflow({
       // still answer.
       if (token.present) {
         const rules = await check(
-          "figma:rules --refresh",
-          ["nx", "run", "pagopa-ui-cli:figma:rules", "--refresh"],
+          "figma:rules refresh",
+          ["nx", "run", "pagopa-ui-cli:figma:rules", "refresh"],
           { allowExit: [0, 1, 2], timeoutMs: 10 * 60_000 },
         )
         if (!rules || rules.code !== 0) {
@@ -1299,7 +1299,7 @@ const figmaAlign = defineWorkflow({
       // which the ledger no longer matches and which the source removed. A
       // node is not finished while a card that targets it is pending or stale,
       // so the wave reads this before it picks nodes.
-      const rulesPlan = await check("figma:rules", ["nx", "run", "pagopa-ui-cli:figma:rules"], {
+      const rulesPlan = await check("figma:rules", ["nx", "run", "pagopa-ui-cli:figma:rules", "plan"], {
         allowExit: [0, 1, 2],
       })
       if (rulesPlan?.stdout) {
@@ -1662,7 +1662,7 @@ const figmaAlign = defineWorkflow({
 
       await check("fmt", ["nx", "run-many", "-t", "fmt"])
       await check("check:catalogue", ["nx", "run", "pagopa-ui:check:catalogue"])
-      await check("figma:rules:check", ["nx", "run", "pagopa-ui-cli:figma:rules:check"])
+      await check("check:rules", ["nx", "run", "pagopa-ui-cli:check:rules"])
       await check("check:parity", ["nx", "run", "pagopa-ui-cli:check:parity"])
       for (const nodeId of rendered) {
         const nodeWave = `${date}-${nodeId.replace(/[^A-Za-z0-9]+/g, "-")}-alignment`

@@ -12,7 +12,7 @@ import { checkArtwork } from "../figma/artwork.ts"
 import { figmaToken } from "../adapters/figma-token.ts"
 import { UsageError } from "../lib/command.ts"
 import { formatCheck, passed } from "../checks/report.ts"
-import { legacyFigmaSubCommands } from "./legacy.ts"
+import { rulesCommands } from "./figma-rules.ts"
 import { action, EXIT, printJson, printLines, type CliContext } from "./context.ts"
 
 const inputArg = {
@@ -275,7 +275,7 @@ export function figmaCommands(ctx: CliContext): CommandDef {
   return defineCommand({
     meta: { name: "figma", description: "Figma catalogue and artwork commands" },
     subCommands: {
-      ...legacyFigmaSubCommands(ctx),
+      ...rulesCommands(ctx),
       status,
       plan,
       triage,

@@ -12,7 +12,7 @@ import {
   catalogueCheckCommands,
   figmaCommands,
 } from "./figma.ts"
-import { legacy, legacyChecks } from "./legacy.ts"
+import { rulesCheckCommand } from "./figma-rules.ts"
 import { parityCommands } from "./parity.ts"
 import { testCommands } from "./test.ts"
 import { updateCommands } from "./update.ts"
@@ -26,7 +26,7 @@ export function createCli(ctx: CliContext): CommandDef {
     },
     subCommands: {
       check: checkCommands(ctx, () => root, {
-        ...legacyChecks(ctx),
+        rules: rulesCheckCommand(ctx),
         ...artworkCheckCommands(ctx),
         ...catalogueCheckCommands(ctx),
       }),
@@ -35,7 +35,6 @@ export function createCli(ctx: CliContext): CommandDef {
       figma: figmaCommands(ctx),
       parity: parityCommands(ctx),
       test: testCommands(ctx),
-      ...legacy(ctx),
     },
   })
   return root

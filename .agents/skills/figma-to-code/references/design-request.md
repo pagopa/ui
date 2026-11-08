@@ -53,7 +53,7 @@ registry note and no card exist to point at.
 3. **Record.** Write `design.requests` at `<yyyy-mm-dd>-<slug>.md` with the
    type, the issue URL, the status, the decision owner and the preview. Name it
    in the node's registry note, which carries the status and the pointer.
-4. **Ledger.** Point the rules card at the record with `figma:rules --mark`
+4. **Ledger.** Point the rules card at the record with `figma:rules mark`
    ([rules.md](rules.md)). The `request` field keeps card and record joined
    after the issue closes.
 
