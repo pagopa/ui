@@ -10,13 +10,15 @@ import { createWorkspace } from "../../src/adapters/workspace.ts"
 import { createContext } from "../../src/commands/context.ts"
 import { createCli, execute } from "../../src/commands/index.ts"
 
-export async function runCli(argv, { root, cwd = root, env = {} } = {}) {
+export async function runCli(argv, { root, cwd = root, env = {}, external, now } = {}) {
   const out = []
   const err = []
   const ctx = createContext({
     env: { ...(root ? { PAGOPA_UI_ROOT: root } : {}), ...env },
     cwd: cwd ?? process.cwd(),
     io: { out: (line) => out.push(line), err: (line) => err.push(line) },
+    ...(external ? { external } : {}),
+    ...(now ? { now } : {}),
   })
   const status = await execute(createCli(ctx), ctx, argv)
   const plain = (lines) => stripVTControlCharacters(lines.join("\n"))

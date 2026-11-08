@@ -55,6 +55,30 @@ compare it with the source code of the audited package, `packages/pagopa-ui`.
 - Do not commit the `.figma/` directory. It is in `.gitignore`. The REST
   snapshot can be larger than 100 MB.
 
+## Figma workflow commands
+
+The deterministic handoff, design-request and page-surface operations are
+available from the CLI:
+
+- `pnpm ui-cli figma handoff resolve [<pr|url|branch>]` resolves an open drift
+  pull request; `checkout <pr>` creates its sibling worktree and installs it;
+  `brief <pr>` reads its delta and ordered node briefs.
+- `pnpm ui-cli figma handoff media --pr <n> --base <ref>` captures changed
+  parity cases from local Storybook at `http://localhost:6006` (or
+  `STORYBOOK_URL`), attaches before/after evidence and verifies the comment.
+- `pnpm ui-cli figma request open --input <request.json>` creates the issue and
+  record; `list --waiting` and `list --answered` query open issues by status;
+  `close <record> --decision <text> --commit <sha>` records the answer and
+  closes its issue. `open` input includes `slug`, `title`, `type`, `question`,
+  `context`, `options`, `recommendation`, `ask`, and `when`; visual options
+  also include the preview captures.
+- `pnpm ui-cli figma surface sync --page <pageId> --input <tree.json>` refreshes
+  the identity census from a saved page tree; `--rest` reads it from Figma.
+
+Writers and external mutations accept `--dry-run` to print planned actions
+without applying them. Live REST reads use `FIGMA_TOKEN`; `--require-token`
+keeps the same preflight behavior as the other live Figma commands.
+
 ## Files
 
 | File                                       | Type             | Purpose                                                                                                                                                                                                                                                                                                                                                                                                    |

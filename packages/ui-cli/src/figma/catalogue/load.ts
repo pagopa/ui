@@ -375,7 +375,7 @@ async function assembleCatalogueContext(
       liveVersion: snapshot.version,
       liveLastModified: snapshot.lastModified,
       ratchet: refreshed.ratchet,
-      reconciledSurface: refreshed.reconciledSurface,
+      reconciledSurface: options.surface ?? refreshed.reconciledSurface,
       delta,
       deltaPath: options.delta,
       evidenceBase: options.evidenceBase?.replace(/\/+$/, ""),

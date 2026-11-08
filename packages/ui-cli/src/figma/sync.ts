@@ -32,6 +32,7 @@ import { loadCatalogue } from "./catalogue/load.ts"
 import { validateCatalogue } from "./catalogue/validate.ts"
 import { createCatalogueContext } from "./catalogue/context.ts"
 import { finishCatalogue } from "./catalogue/finish.ts"
+import type { PageSurface } from "../schemas/catalogue.ts"
 
 export interface CatalogueOptions {
   input?: string
@@ -44,6 +45,7 @@ export interface CatalogueOptions {
   delta?: string
   evidenceBase?: string
   token?: string
+  surface?: PageSurface
 }
 
 export interface CatalogueReport {

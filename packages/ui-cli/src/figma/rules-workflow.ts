@@ -84,12 +84,13 @@ export function markRule(
     duplicateOf?: string
     request?: string
     scope?: string
+    dryRun?: boolean
   },
 ): RuleCard {
   const snapshot = requireSnapshot(workspace)
   const ledger = requireLedger(workspace)
   const result = mark(ledger, snapshot, workspace.root, workspace.workspaceRoot, options)
-  writeRulesLedger(workspace.root, ledger)
+  if (!options.dryRun) writeRulesLedger(workspace.root, ledger)
   return result
 }
 

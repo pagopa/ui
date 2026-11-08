@@ -14,6 +14,9 @@ import { UsageError } from "../lib/command.ts"
 import { formatCheck, passed } from "../checks/report.ts"
 import { rulesCommands } from "./figma-rules.ts"
 import { registryCommand, closeCommand } from "./figma-workflows.ts"
+import { surfaceCommand } from "./figma-surface.ts"
+import { requestCommand } from "./figma-request.ts"
+import { handoffCommand } from "./figma-handoff.ts"
 import { action, EXIT, printJson, printLines, type CliContext } from "./context.ts"
 import { requireToken, requireTokenArg } from "./token.ts"
 
@@ -289,6 +292,9 @@ export function figmaCommands(ctx: CliContext, root: () => CommandDef): CommandD
     subCommands: {
       ...rulesCommands(ctx),
       registry: registryCommand(ctx),
+      surface: surfaceCommand(ctx),
+      request: requestCommand(ctx),
+      handoff: handoffCommand(ctx),
       close: closeCommand(ctx, root),
       status,
       plan,

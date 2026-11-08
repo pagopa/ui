@@ -4,6 +4,13 @@
 import type { CommandDef } from "citty"
 
 import { createWorkspace, type Workspace } from "../adapters/workspace.ts"
+import {
+  fetchHandoffArtifact,
+  runGh,
+  runGit,
+  runPnpm,
+  type ExternalCommand,
+} from "../adapters/handoff.ts"
 import { exitCodeOf } from "../lib/command.ts"
 
 // The public exit-code contract, consumed by the CI jobs and the agents.
@@ -20,19 +27,42 @@ export interface Io {
   err(line: string): void
 }
 
+export interface CliExternalAdapters {
+  gh: ExternalCommand
+  git: ExternalCommand
+  pnpm: ExternalCommand
+  fetchUrl(url: string): Promise<string>
+}
+
 export interface CliContext {
   readonly env: NodeJS.ProcessEnv
   readonly cwd: string
   readonly io: Io
+  readonly external: CliExternalAdapters
+  now(): Date
   workspace(): Workspace
   /** Set by the command that ran; read by the bin. */
   exitCode: number
 }
 
-export function createContext(input: { env: NodeJS.ProcessEnv; cwd: string; io: Io }): CliContext {
+export function createContext(input: {
+  env: NodeJS.ProcessEnv
+  cwd: string
+  io: Io
+  now?: () => Date
+  external?: Partial<CliExternalAdapters>
+}): CliContext {
   let workspace: Workspace | undefined
   return {
     ...input,
+    now: input.now ?? (() => new Date()),
+    external: {
+      gh: runGh,
+      git: runGit,
+      pnpm: runPnpm,
+      fetchUrl: fetchHandoffArtifact,
+      ...input.external,
+    },
     exitCode: EXIT.ok,
     workspace() {
       workspace ??= createWorkspace({ env: input.env, cwd: input.cwd })
