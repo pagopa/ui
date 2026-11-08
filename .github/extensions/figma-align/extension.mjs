@@ -1297,9 +1297,13 @@ const figmaAlign = defineWorkflow({
       // which the ledger no longer matches and which the source removed. A
       // node is not finished while a card that targets it is pending or stale,
       // so the wave reads this before it picks nodes.
-      const rulesPlan = await check("figma:rules", ["nx", "run", "pagopa-ui-cli:figma:rules", "plan"], {
-        allowExit: [0, 1, 2],
-      })
+      const rulesPlan = await check(
+        "figma:rules",
+        ["nx", "run", "pagopa-ui-cli:figma:rules", "plan"],
+        {
+          allowExit: [0, 1, 2],
+        },
+      )
       if (rulesPlan?.stdout) {
         ctx.log(tail(rulesPlan.stdout, 2).replace(/\s+/g, " "))
       }

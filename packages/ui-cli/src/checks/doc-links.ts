@@ -76,7 +76,7 @@ function report(
 }
 
 function isLocal(target: string): boolean {
-  const posix = toPosix(target)
+  const posix = `${toPosix(target).replace(/\/$/, "")}/`
   return LOCAL_PREFIXES.some((prefix) => posix.startsWith(prefix) || posix.includes(`/${prefix}`))
 }
 

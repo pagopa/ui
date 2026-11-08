@@ -60,6 +60,17 @@ test("a code span naming a missing repository path fails", () => {
   )
 })
 
+test("generated directory roots are local paths even without a trailing slash", () => {
+  assert.deepEqual(
+    check({
+      "CONTRIBUTING.md":
+        "Build into `apps/storybook/dist`; reports go to `apps/storybook/coverage`.",
+      "apps/storybook/package.json": "{}",
+    }).problems,
+    [],
+  )
+})
+
 test("historical documents are checked on links only", () => {
   assert.deepEqual(
     check({ "docs/plans/next.md": "Will add `scripts/future.mjs`.", "scripts/keep.mjs": "" })

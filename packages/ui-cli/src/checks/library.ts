@@ -2,7 +2,7 @@
 import assert from "node:assert/strict"
 import fs from "node:fs"
 import { createRequire } from "node:module"
-import { randomUUID } from "node:crypto"
+import os from "node:os"
 import path from "node:path"
 import { z } from "zod"
 import { pathToFileURL } from "node:url"
@@ -486,8 +486,9 @@ function createConsumerContext(
   const { root, toolingRoot } = workspace
   const version = (resolver: NodeRequire, name: string): string =>
     JSON.parse(fs.readFileSync(resolver.resolve(`${name}/package.json`), "utf8")).version
-  const temporary = path.join(workspace.workspaceRoot, ".cache/ui-cli/library", randomUUID())
-  fs.mkdirSync(temporary, { recursive: true })
+  // Chromium puts its singleton socket below TMPDIR; checkout paths exceed the
+  // Unix socket limit on CI. Keep scratch outside the repository and short.
+  const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-lib-"))
   const consumerEnv = { ...options.env, TMPDIR: temporary, TMP: temporary, TEMP: temporary }
   const context: ConsumerContext = {
     root,
