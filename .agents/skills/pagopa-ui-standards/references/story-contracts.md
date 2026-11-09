@@ -38,5 +38,5 @@ What a component's story proves, on top of the
       (`pnpm nx run pagopa-ui-storybook:test:coverage`) over production
       components, gates in `vite.config.ts`; test the required, disabled, reset
       and failure branches — render coverage is not native behaviour.
-- [ ] Automated checks are not screen-reader or browser-zoom testing: both are
-      manual, never claim them.
+- [ ] Assistive-technology and browser-zoom evidence follows the
+      [definition of done](definition-of-done.md#behaviour-and-accessibility).

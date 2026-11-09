@@ -13,10 +13,10 @@ predicates; this list owns the order.
 - [ ] Every targeting rule has a disposition and the guide opens with the
       consumer-facing block; open comments are answered by the source or promoted
       to a design request.
-- [ ] Name and props follow the standards skill; each departure is one line in the
-      node's registry `note`.
-- [ ] Automated a11y and render checks are not screen-reader or browser-zoom
-      certification: report them as unverified.
+- [ ] Name and props follow the [standards skill](../../pagopa-ui-standards/SKILL.md),
+      whose prop conventions own the departure rule.
+- [ ] Accessibility follows the [standards skill](../../pagopa-ui-standards/SKILL.md),
+      including what automation cannot certify.
 
 ## Closing and delivery
 
@@ -25,6 +25,7 @@ continuing after failures:
 
 ```bash
 pnpm nx run pagopa-ui:check:catalogue
+pnpm nx run pagopa-ui-cli:check:context-budget
 pnpm nx run pagopa-ui-cli:check:rules
 pnpm nx run pagopa-ui-cli:check:devices
 pnpm nx run pagopa-ui-cli:check:evidence

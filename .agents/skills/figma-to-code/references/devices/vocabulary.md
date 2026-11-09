@@ -28,5 +28,5 @@ duplicate alias and an unused axis fail, an unused alias and a device-like value
 on a non-device axis warn — and every error names the fix and the command. The
 policy is edited by hand: the check reports, it never invents a mapping.
 
-Next: [scope.md](scope.md) decides viewport or container; `devices/loop.md` runs
+Next: [scope.md](scope.md) decides viewport or container; [loop.md](loop.md) runs
 the device work and closes the coverage.

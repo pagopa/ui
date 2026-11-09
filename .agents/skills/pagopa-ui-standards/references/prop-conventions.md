@@ -32,12 +32,12 @@ component's JSDoc ends with `Figma: <node name> (node <id>)` and its story sets
 
 | Property in the source | What to do | Example |
 | --- | --- | --- |
-| Visibility flag (`Show …`, `Close`, `CTA`, `Title`) | The optional slot or callback above; no boolean mirror. | `actions?: ReactNode` |
 | Instance swap or slot (`INSTANCE_SWAP`, `SLOT`) | One optional `ReactNode` slot; the caller owns the instance. | `icon?: ReactNode` |
-| Device axis (`Device`, `Breakpoint`, any axis resolving to a device) | Never a prop: the width decides. A composition the caller chooses is that caller prop. | `orientation?: "horizontal" \| "vertical"` |
-| Interaction state (`State`, `Status`, `Selected`, `Checked`, `Open`, `Error`) | The native attribute, ARIA or pseudo-class above. | `error` → `aria-invalid` |
-| Semantic enumeration (one axis) | One prop named after the axis, values in kebab-case English. | `layout?: "compact" \| "extended"` |
-| Composite axis (style × colour in one axis) | One prop with named values, each combining both; the fold and its reason go in the registry `note`. | `variant?: "outline-destructive"` |
+
+Every other source property follows the table above by role: a visibility flag
+(`Show …`, `Close`, `CTA`, `Title`) is that optional part, a device axis is the
+width, an interaction state is the native attribute, and a semantic or composite
+axis is the choice prop.
 
 A source variant that no prop, attribute or content can reach is a finding in
 the report, not an invented prop.

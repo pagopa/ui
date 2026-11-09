@@ -25,13 +25,13 @@ runtime cycle or computed path fails, a type-only cycle passes.
 
 - [ ] Clear API and name. Colour, spacing, radius, type and elevation come from
       the tokens in `src/index.css`: no hex, no inline `[Npx]`.
+- [ ] Elevation comes only from the elevation tokens.
 - [ ] No mock data or product copy: every visible text is a prop.
 - [ ] Light theme only; dark artwork variants are supported.
 - [ ] Prop JSDoc gives meaning, behaviour and `@default`, never measurements,
       type scales, colours or geometry. `@deprecated` and provenance stay.
-- [ ] Name and props follow the [prop conventions](prop-conventions.md): one line
-      per departure in the registry `note` when a node backs the component, in
-      the guide when none does.
+- [ ] Name and props follow the [prop conventions](prop-conventions.md), which own
+      the departure rule and its record.
 - [ ] Public or private is a decision; ask when in doubt. A production component
       is exported from its family `index.ts` and `src/pagopa-ui.ts`; helpers,
       demos and no-op aliases stay out. The surface is frozen until the first
@@ -53,6 +53,8 @@ runtime cycle or computed path fails, a type-only cycle passes.
 - [ ] Collapsed or hidden content keeps its accessible name: `sr-only
       sm:not-sr-only`, or the container equivalent; a link collapsing to an icon
       keeps its label. The name never degrades to an avatar `alt` or an icon.
+- [ ] Automated checks are not screen-reader or browser-zoom testing: both are
+      manual, never claim them.
 
 The story and test contracts are in [story-contracts.md](story-contracts.md).
 

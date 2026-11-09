@@ -7,7 +7,7 @@
 | `catalog.parityCases` | the reviewed case per compared variant and device | `parity check --save-case` |
 | `catalog.devicePolicy` | the device vocabulary: axes, canonical devices, aliases, widths, default scopes | by hand; never a component name or path |
 | `catalog.deviceExceptions` | `<nodeId>: <reason>` for a node whose declared devices have no case yet | by hand, must shrink |
-| `catalog.pageSurface` | page identities and decisions, compositions and their cases | `figma surface sync` for identities; compositions by hand |
+| `catalog.pageSurface` | page identities and decisions, compositions and their cases ([page surface](page-surface.md)) | `figma surface sync` for identities; compositions by hand |
 | `catalog.apiExceptions` | public exports with no source mapping: a deliberate extension, not a source-alignment claim | by hand, each with a reason, must shrink |
 | `catalog.evidenceExceptions` | story-evidence exceptions | by hand, each with a reason, must shrink |
 | `figma.fileModule` | the file key and the URL builders | rarely |

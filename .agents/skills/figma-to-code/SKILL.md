@@ -5,25 +5,29 @@ description: Figma alignment for React components, device variants, tokens and a
 
 # Figma to code
 
-Align the repository with the published Figma library. Figma is read-only: read
-it through the CLI over REST, or on MCP where [init.md](references/init.md#rest-or-mcp)
-says so; changes land in the repository.
+Figma is read-only: read it over REST or MCP where
+[init.md](references/init.md#rest-or-mcp) says so; changes land in the repository.
 
 ## Sequence
 
-1. **Scope.** `pnpm ui-cli figma status` names the config and the route: missing
-   config or a source comparison → [init.md](references/init.md); a live change →
+1. **Scope.** `pnpm ui-cli figma status` names the config and the route: no config
+   or a source comparison → [init.md](references/init.md); a live change →
    [delta.md](references/delta.md).
-2. **Context.** `pnpm ui-cli figma brief --node <nodeId>` before touching a node;
-   `--queue` orders the delta's briefs and caps its length. Statuses:
-   [catalogue/statuses.md](references/catalogue/statuses.md). Done when each
-   node's target, guide, constraints, rules, comments and devices are read.
-3. **Decide.** Automation orders and measures; it does not decide. A node gets a
-   reviewed implementation, an exclusion, or a pending request in the ledger.
+2. **Context.** `pnpm ui-cli figma brief --node <nodeId>`; `--queue` orders the
+   delta's briefs. [Statuses](references/catalogue/statuses.md); done when target,
+   guide, constraints, rules, comments and devices are read.
+3. **Decide.** Automation orders and measures, never decides: implement, exclude,
+   or leave pending with a request.
 4. **Close.** [definition-of-done.md](references/definition-of-done.md).
 
 ## Routes
 
-One route per session; this is the live-delta one and links no other. The others
-start at `references/node-review.md`, `visual-parity.md`, `rules.md`,
-`new-from-figma.md`, and `pagopa-ui-standards` (component quality).
+One route per session; this is the live delta:
+[node review](references/node-review.md), [parity](references/visual-parity.md),
+[new from a node](references/new-from-figma.md),
+[without one](references/new-without-node.md),
+[design request](references/design-request.md),
+[devices](references/devices/vocabulary.md),
+[catalogue](references/catalogue/files.md), [artwork](references/artwork.md),
+[tokens](references/tokens.md), and the
+[component standards](../pagopa-ui-standards/SKILL.md).
