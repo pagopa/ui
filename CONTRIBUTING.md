@@ -119,7 +119,7 @@ terraform apply
 
 Every task is an Nx target: `pnpm nx show project pagopa-ui` lists the design
 system's, `pnpm nx show project pagopa-ui-cli` the tooling's. Direct UI CLI
-invocation is documented in [AGENTS.md](./AGENTS.md#rules) and [the UI CLI
+invocation is documented in [the UI CLI
 README](./packages/ui-cli/README.md#cli); the Nx targets below remain the gates
 and CI entry points.
 
@@ -133,6 +133,7 @@ Use `pnpm nx show projects` to list projects and
   `pnpm nx run pagopa-ui-storybook:test:webkit` — the stories in WebKit alone, the pass a
   pull request runs; `pnpm nx run pagopa-ui-storybook:test:coverage` — the stories in
   Chromium with v8 coverage and the gates.
+- `pnpm nx run pagopa-ui-storybook:test:changed` — only the tests affected since the last
   successful run of the same command; for iterating, the chain stays the gate
   ([baseline](./packages/ui-cli/README.md#the-changed-only-test-loop)).
 - `pnpm nx run pagopa-ui:test` — the package's unit project.
@@ -247,11 +248,11 @@ Both Figma skills carry graded sessions in the `evals.json` format
 [`.agents/skills/figma-to-code/evals`](./.agents/skills/figma-to-code/evals/evals.json),
 `figma-to-ui` in
 [`packages/pagopa-ui/skills/figma-to-ui/evals`](./packages/pagopa-ui/skills/figma-to-ui/evals/evals.json).
-Two evals each, three or four expectations each: one end-to-end pass over a
-single node or frame, and one guardrail that must stop and report instead of
-inventing a design. They grade the session — what the agent read, resolved and
-decided — not the diff, so they stay cheap; they are the regression net for the
-skills' own instructions.
+Two evals each: one end-to-end pass over a single node or frame, and one
+guardrail that must stop and report instead of inventing a design. They grade
+the session — what the agent read, resolved and decided — not the diff, so a
+skill change is graded without building anything; they are the regression net
+for the skills' own instructions.
 
 The `harbor/` directory next to each `evals/` builds that session for
 [harbor-bench](https://github.com/pagopa/dx/tree/main/apps/harbor-bench):
@@ -298,7 +299,10 @@ A session that cannot be graded does not start, and the failure names the fix:
   full of `node_modules` and screenshots cannot time the judge out.
 
 The evals are not in the green chain: they start agent sessions and need the
-network, a Copilot token and, for one eval, a Figma token.
+network, a Copilot token and, for one eval, a Figma token. Done when every eval
+the change touched reports 1.0 in its `verifier/reward.json`, and a 0.0 is read
+from `verifier/reward-details.json` before the agent is blamed — a broken judge
+scores the same.
 
 ## Workflow
 
@@ -307,10 +311,9 @@ network, a Copilot token and, for one eval, a Figma token.
    `refactor:`.
 3. A pull request to `main` with [the green chain](#the-green-chain) green.
 4. A change to the public API exported from `src/pagopa-ui.ts`, or to how a
-   component renders, is described in the pull request and in
-   [CHANGELOG.md](./packages/pagopa-ui/CHANGELOG.md). The version plans of
-   `nx release` carry it to the published package. An export change also updates
-   the committed API report with
+   component renders, is described in the pull request. The version plans of
+   `nx release` carry it to the changelog and to the published package. An
+   export change also updates the committed API report with
    `pnpm nx run pagopa-ui:api:update`; the `etc/pagopa-ui.api.md` diff is what
    the pull request reviews, and `api:check` fails until it is committed.
 
