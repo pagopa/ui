@@ -66,6 +66,11 @@ commands, the tokens they need and what fails fast are in
 [Skill evals](./CONTRIBUTING.md#skill-evals); an instruction an eval grades moves
 with its eval.
 
+The reverse holds too: editing a skill, or a retrospective over agentic sessions
+(the `retro` skill), proposes the eval that pins the change or the finding. A
+proposal names the session it came from, the expectation that would have failed,
+and whether it is a guardrail or an end-to-end pass.
+
 ## Figma sessions
 
 Invoke `figma-to-code` for source work: its sequence owns status, source gates,
