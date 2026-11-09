@@ -39,7 +39,13 @@ export interface RouteDeclaration {
   readonly name: string
   /** The file a session opens first, relative to the workspace root. */
   readonly root: string
-  /** Every corpus file the route may reach, relative to the workspace root. */
+  /**
+   * Where the read set stops: the root of another declared route, or the
+   * `SKILL.md` of another skill. A link across one is allowed and not followed,
+   * so the route it enters counts those bytes.
+   */
+  readonly boundaries: readonly string[]
+  /** Every corpus file the route reads, relative to the workspace root. */
   readonly files: readonly string[]
 }
 
@@ -86,48 +92,133 @@ const SKILL_CORPUS = ".agents/skills"
 const THIRD_PARTY = ".agents/skills/shadcn/"
 const WORKFLOW_SOURCE = ".github/extensions/figma-align/extension.mjs"
 
-// The four routes a session can take, each declaring every file it may read.
-// The declaration is checked against the markdown links, so it cannot quietly
-// stop describing the corpus: a file reachable but undeclared, or declared but
-// unreachable, fails the check. A sibling route is named as a code span rather
-// than a link, which is what keeps the sets disjoint.
+const FIGMA = ".agents/skills/figma-to-code"
+const FIGMA_REFERENCES = `${FIGMA}/references`
+const STANDARDS = ".agents/skills/pagopa-ui-standards"
+const STANDARDS_REFERENCES = `${STANDARDS}/references`
+const PREFLIGHT = ".agents/skills/start-figma-to-code"
+
+// The routes a session can take, named for the work and each declaring every
+// file it reads. The declaration is checked against the markdown links, so it
+// cannot quietly stop describing the corpus: a file reachable but undeclared, or
+// declared but unreachable, fails the check. Routes overlap where a session
+// shares a file, and a boundary is what keeps the overlap from counting twice:
+// the read set stops at another route's root and at another skill's entry, so a
+// skill links its branches and its sibling skill normally.
 export const CONTEXT_ROUTES: readonly RouteDeclaration[] = [
   {
     name: "live delta",
-    root: ".agents/skills/figma-to-code/SKILL.md",
-    files: [
-      ".agents/skills/figma-to-code/SKILL.md",
-      ".agents/skills/figma-to-code/references/catalogue/statuses.md",
-      ".agents/skills/figma-to-code/references/definition-of-done.md",
-      ".agents/skills/figma-to-code/references/delta.md",
-      ".agents/skills/figma-to-code/references/init.md",
+    root: `${FIGMA}/SKILL.md`,
+    boundaries: [
+      `${FIGMA_REFERENCES}/artwork.md`,
+      `${FIGMA_REFERENCES}/catalogue/files.md`,
+      `${FIGMA_REFERENCES}/catalogue/statuses.md`,
+      `${FIGMA_REFERENCES}/definition-of-done.md`,
+      `${FIGMA_REFERENCES}/design-request.md`,
+      `${FIGMA_REFERENCES}/devices/vocabulary.md`,
+      `${FIGMA_REFERENCES}/new-from-figma.md`,
+      `${FIGMA_REFERENCES}/new-without-node.md`,
+      `${FIGMA_REFERENCES}/node-review.md`,
+      `${FIGMA_REFERENCES}/tokens.md`,
+      `${FIGMA_REFERENCES}/visual-parity.md`,
+      `${STANDARDS}/SKILL.md`,
     ],
+    files: [`${FIGMA}/SKILL.md`, `${FIGMA_REFERENCES}/delta.md`, `${FIGMA_REFERENCES}/init.md`],
   },
   {
     name: "single-node review",
-    root: ".agents/skills/figma-to-code/references/node-review.md",
-    files: [
-      ".agents/skills/figma-to-code/references/catalogue/statuses.md",
-      ".agents/skills/figma-to-code/references/node-review.md",
-      ".agents/skills/figma-to-code/references/rules.md",
-    ],
+    root: `${FIGMA_REFERENCES}/node-review.md`,
+    boundaries: [`${FIGMA_REFERENCES}/catalogue/statuses.md`],
+    files: [`${FIGMA_REFERENCES}/node-review.md`, `${FIGMA_REFERENCES}/rules.md`],
+  },
+  {
+    name: "closing gates",
+    root: `${FIGMA_REFERENCES}/definition-of-done.md`,
+    boundaries: [`${STANDARDS}/SKILL.md`],
+    files: [`${FIGMA_REFERENCES}/definition-of-done.md`],
+  },
+  {
+    name: "node statuses",
+    root: `${FIGMA_REFERENCES}/catalogue/statuses.md`,
+    boundaries: [],
+    files: [`${FIGMA_REFERENCES}/catalogue/statuses.md`],
   },
   {
     name: "parity wave",
-    root: ".agents/skills/figma-to-code/references/visual-parity.md",
-    files: [
-      ".agents/skills/figma-to-code/references/parity-tooling.md",
-      ".agents/skills/figma-to-code/references/visual-parity.md",
-    ],
+    root: `${FIGMA_REFERENCES}/visual-parity.md`,
+    boundaries: [],
+    files: [`${FIGMA_REFERENCES}/parity-tooling.md`, `${FIGMA_REFERENCES}/visual-parity.md`],
   },
   {
     name: "eval and preflight",
-    root: ".agents/skills/start-figma-to-code/SKILL.md",
+    root: `${PREFLIGHT}/SKILL.md`,
+    boundaries: [`${FIGMA_REFERENCES}/definition-of-done.md`],
+    files: [`${FIGMA_REFERENCES}/handoff.md`, `${PREFLIGHT}/SKILL.md`],
+  },
+  {
+    name: "new component from a node",
+    root: `${FIGMA_REFERENCES}/new-from-figma.md`,
+    boundaries: [`${STANDARDS_REFERENCES}/prop-conventions.md`],
+    files: [`${FIGMA_REFERENCES}/new-from-figma.md`],
+  },
+  {
+    name: "new component without a node",
+    root: `${FIGMA_REFERENCES}/new-without-node.md`,
+    boundaries: [],
+    files: [`${FIGMA_REFERENCES}/new-without-node.md`],
+  },
+  {
+    name: "design request",
+    root: `${FIGMA_REFERENCES}/design-request.md`,
+    boundaries: [],
+    files: [`${FIGMA_REFERENCES}/design-request.md`],
+  },
+  {
+    name: "device vocabulary",
+    root: `${FIGMA_REFERENCES}/devices/vocabulary.md`,
+    boundaries: [],
     files: [
-      ".agents/skills/figma-to-code/references/definition-of-done.md",
-      ".agents/skills/figma-to-code/references/handoff.md",
-      ".agents/skills/start-figma-to-code/SKILL.md",
+      `${FIGMA_REFERENCES}/devices/loop.md`,
+      `${FIGMA_REFERENCES}/devices/scope.md`,
+      `${FIGMA_REFERENCES}/devices/vocabulary.md`,
     ],
+  },
+  {
+    name: "catalogue data",
+    root: `${FIGMA_REFERENCES}/catalogue/files.md`,
+    boundaries: [],
+    files: [
+      `${FIGMA_REFERENCES}/catalogue/files.md`,
+      `${FIGMA_REFERENCES}/catalogue/page-surface.md`,
+    ],
+  },
+  {
+    name: "artwork",
+    root: `${FIGMA_REFERENCES}/artwork.md`,
+    boundaries: [],
+    files: [`${FIGMA_REFERENCES}/artwork.md`],
+  },
+  {
+    name: "foundation tokens",
+    root: `${FIGMA_REFERENCES}/tokens.md`,
+    boundaries: [],
+    files: [`${FIGMA_REFERENCES}/tokens.md`],
+  },
+  {
+    name: "component standards",
+    root: `${STANDARDS}/SKILL.md`,
+    boundaries: [`${STANDARDS_REFERENCES}/prop-conventions.md`],
+    files: [
+      `${STANDARDS}/SKILL.md`,
+      `${STANDARDS_REFERENCES}/definition-of-done.md`,
+      `${STANDARDS_REFERENCES}/story-contracts.md`,
+    ],
+  },
+  {
+    name: "prop conventions",
+    root: `${STANDARDS_REFERENCES}/prop-conventions.md`,
+    boundaries: [],
+    files: [`${STANDARDS_REFERENCES}/prop-conventions.md`],
   },
 ]
 
@@ -190,7 +281,11 @@ function resolveLink(from: string, link: string): string | null {
   return target.startsWith(`${SKILL_CORPUS}/`) ? target : null
 }
 
-function reachableRouteFiles(workspace: Workspace, root: string): string[] {
+function reachableRouteFiles(
+  workspace: Workspace,
+  root: string,
+  boundaries: ReadonlySet<string>,
+): string[] {
   const pending = [root]
   const reached = new Set<string>()
   for (let index = 0; index < pending.length; index += 1) {
@@ -201,10 +296,25 @@ function reachableRouteFiles(workspace: Workspace, root: string): string[] {
     if (!fs.existsSync(absolute)) continue
     for (const link of links(absolute)) {
       const target = resolveLink(file, link)
-      if (target && !reached.has(target)) pending.push(target)
+      if (target && !boundaries.has(target) && !reached.has(target)) pending.push(target)
     }
   }
   return [...reached].sort()
+}
+
+// A boundary is where another route or another skill begins, so nothing else may
+// be declared as one: a route that named an arbitrary file would stop there and
+// report a read set smaller than the bytes a session loads.
+function boundaryErrors(routes: readonly RouteDeclaration[]): string[] {
+  const roots = new Set(routes.map((route) => route.root))
+  return routes.flatMap((route) =>
+    route.boundaries
+      .filter((boundary) => !roots.has(boundary) && path.posix.basename(boundary) !== "SKILL.md")
+      .map(
+        (boundary) =>
+          `route "${route.name}": ${boundary} is declared as a boundary but is neither a route root nor a skill entry`,
+      ),
+  )
 }
 
 function routeMeasurement(
@@ -214,7 +324,7 @@ function routeMeasurement(
   if (!fs.existsSync(path.join(workspace.workspaceRoot, route.root))) {
     return { files: [], errors: [`route "${route.name}": root ${route.root} is missing`] }
   }
-  const reachable = reachableRouteFiles(workspace, route.root)
+  const reachable = reachableRouteFiles(workspace, route.root, new Set(route.boundaries))
   const declared = new Set(route.files)
   const errors = [
     ...reachable
@@ -278,7 +388,8 @@ export function measureContextBudget(
   options: MeasureOptions = {},
 ): ContextBudgetMeasurement {
   const entries: BudgetEntry[] = []
-  const drift: string[] = []
+  const routes = options.routes ?? CONTEXT_ROUTES
+  const drift: string[] = boundaryErrors(routes)
   for (const file of walkRelative(workspace.workspaceRoot, SKILL_CORPUS, (name) =>
     name.endsWith(".md"),
   )) {
@@ -291,7 +402,7 @@ export function measureContextBudget(
       ceiling: CONTEXT_BUDGET_LIMITS[kind],
     })
   }
-  for (const route of options.routes ?? CONTEXT_ROUTES) {
+  for (const route of routes) {
     const measured = routeMeasurement(workspace, route)
     drift.push(...measured.errors)
     if (!measured.files.length) continue
@@ -322,14 +433,19 @@ export function measureContextBudget(
   return { entries, drift }
 }
 
-const totalBytes = (entries: readonly BudgetEntry[]): number =>
-  entries.reduce((total, entry) => total + (entry.snapshot ? 0 : entry.bytes), 0)
+// The ratchet's total is the corpus a session reads, file by file: a route, a
+// card and the preamble are derived views that re-measure those bytes, so adding
+// a route — the point of the model — never moves the total.
+const corpus = (entry: BudgetEntry): boolean => entry.kind === "file" || entry.kind === "entry"
 
-// The ratchet: the count of entries past their ceiling and the total the clean
+const totalBytes = (entries: readonly BudgetEntry[]): number =>
+  entries.reduce((total, entry) => total + (corpus(entry) ? entry.bytes : 0), 0)
+
+// The ratchet: the count of entries past their ceiling and the corpus the clean
 // checkout measures must equal the baseline. A new offender or a larger total
 // fails and names itself, and a fix asks to lower the baseline, so both only ever
 // go down. The total is what keeps the ratchet live at zero offenders: a byte
-// added anywhere still fails.
+// added to any skill file still fails.
 function ratchetErrors(entries: readonly BudgetEntry[], baseline: ContextBudgetBaseline): string[] {
   const errors: string[] = []
   const over = entries.filter(overBudget)

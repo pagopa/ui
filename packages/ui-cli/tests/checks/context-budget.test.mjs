@@ -16,7 +16,10 @@ const ROOT = `${SKILL}/SKILL.md`
 const reference = (name) => `${SKILL}/references/${name}.md`
 
 const totalOf = (entries) =>
-  entries.reduce((sum, entry) => sum + (entry.snapshot ? 0 : entry.bytes), 0)
+  entries.reduce(
+    (sum, entry) => sum + (entry.kind === "file" || entry.kind === "entry" ? entry.bytes : 0),
+    0,
+  )
 
 // The fixture holds the measured trees and the baseline only: the check reads
 // the workspace the fixture builds, so a route declaration and a rendered
@@ -50,8 +53,8 @@ const overCount = (measurement) => measurement.entries.filter((e) => e.bytes > e
 const problems = (result) => result.problems.join("\n")
 const bytes = (count) => "x".repeat(count)
 
-function route(files, name = "fixture route") {
-  return { name, root: ROOT, files }
+function route(files, name = "fixture route", boundaries = []) {
+  return { name, root: ROOT, boundaries, files }
 }
 
 test("a skill file over its ceiling fails and names it", () => {
@@ -127,6 +130,42 @@ test("a declared file the links do not reach fails", () => {
   )
 })
 
+// Routes overlap where a session shares a file: the boundary is what stops the
+// traversal, so the route that enters counts the bytes and this one does not.
+test("a link across a boundary is allowed and not traversed", () => {
+  const result = budget(
+    {
+      [ROOT]: "[a](references/a.md) [b](references/b.md)",
+      [reference("a")]: "a",
+      [reference("b")]: "b",
+    },
+    {
+      routes: [
+        {
+          name: "entry route",
+          root: ROOT,
+          boundaries: [reference("b")],
+          files: [ROOT, reference("a")],
+        },
+        { name: "branch route", root: reference("b"), boundaries: [], files: [reference("b")] },
+      ],
+    },
+  )
+  assert.deepEqual(result.problems, [])
+  assert.match(result.details.join("\n"), /route\s+"entry route"\s+[\d.]+ KB\s+ok/)
+})
+
+test("a boundary that starts no route and no skill fails", () => {
+  const result = budget(
+    { [ROOT]: "[a](references/a.md)", [reference("a")]: "a" },
+    { routes: [route([ROOT], "fixture route", [reference("a")])] },
+  )
+  assert.match(
+    problems(result),
+    /route "fixture route": \.agents\/skills\/figma-to-code\/references\/a\.md is declared as a boundary but is neither a route root nor a skill entry/,
+  )
+})
+
 test("a count below the baseline asks to lower it", () => {
   const result = budget(
     { [ROOT]: "entry" },
@@ -193,10 +232,10 @@ test("the total a session reads only where the export exists is not in the ratch
   ]
   const result = budget(
     { [ROOT]: "entry" },
-    { contexts, baseline: () => ({ overBudget: 0, totalBytes: 5 + "entry".length }) },
+    { contexts, baseline: () => ({ overBudget: 0, totalBytes: "entry".length }) },
   )
   assert.deepEqual(result.problems, [])
-  assert.match(result.summary, /3 entries, 0 over budget, 10 bytes/)
+  assert.match(result.summary, /3 entries, 0 over budget, 5 bytes/)
 })
 
 // The ceilings are code. This is what keeps them code: raising one has to edit
