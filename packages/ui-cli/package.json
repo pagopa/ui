@@ -12,6 +12,7 @@
     "check:catalogue": "node src/cli.ts check catalogue",
     "check:stories": "node src/cli.ts check stories",
     "update:stories": "node src/cli.ts update stories",
+    "check:context-budget": "node src/cli.ts check context-budget",
     "check:devices": "node src/cli.ts check devices",
     "figma:devices": "node src/cli.ts figma devices",
     "figma:status": "node src/cli.ts figma status",

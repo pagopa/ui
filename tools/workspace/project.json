@@ -15,6 +15,7 @@
           "pnpm nx run pagopa-ui-artwork:test",
           "pnpm nx run pagopa-ui-tokens:test",
           "pnpm nx run pagopa-ui-cli:test",
+          "pnpm nx run pagopa-ui-cli:check:context-budget",
           "pnpm nx run pagopa-ui-cli:check:rules",
           "pnpm nx run pagopa-ui-cli:check:parity",
           "pnpm nx run pagopa-ui-storybook:test:coverage",
@@ -31,6 +32,7 @@
             "pnpm nx run pagopa-ui-artwork:test",
             "pnpm nx run pagopa-ui-tokens:test",
             "pnpm nx run pagopa-ui-cli:test",
+            "pnpm nx run pagopa-ui-cli:check:context-budget",
             "pnpm nx run pagopa-ui-cli:check:rules",
             "pnpm nx run pagopa-ui-cli:check:parity"
           ]
