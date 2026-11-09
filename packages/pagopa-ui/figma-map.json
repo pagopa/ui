@@ -1208,7 +1208,8 @@
       "page": "• Checkbox and Radio Button",
       "type": "COMPONENT_SET",
       "status": "implemented",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "Checkbox"
       ],
       "story": "components-checkbox--source-default"
@@ -1228,7 +1229,8 @@
       "page": "• Checkbox and Radio Button",
       "type": "COMPONENT_SET",
       "status": "implemented",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "RadioGroupItem"
       ],
       "story": "components-inputs-radiofield--radio-indicator-states"
@@ -1394,6 +1396,627 @@
       ],
       "story": "components-inputs-switchfield--source-start-placement"
     },
+    "329:1629": {
+      "figma": "SavingMoney",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1642": {
+      "figma": "Simplify",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1648": {
+      "figma": "AlarmClock",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1650": {
+      "figma": "Completed",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1656": {
+      "figma": "UploadFile",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1668": {
+      "figma": "Email Validation",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1675": {
+      "figma": "Leggi",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1683": {
+      "figma": "Push",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1690": {
+      "figma": "FileCheck",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1701": {
+      "figma": "Flag",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1712": {
+      "figma": "Code",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1718": {
+      "figma": "Assistance",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1726": {
+      "figma": "Bell",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1733": {
+      "figma": "Envelope",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1739": {
+      "figma": "Institution",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1750": {
+      "figma": "User manual",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1757": {
+      "figma": "Safe Deposit",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1764": {
+      "figma": "Idea",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1770": {
+      "figma": "MultipleFiles",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1777": {
+      "figma": "News",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1786": {
+      "figma": "Sms",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1792": {
+      "figma": "Documentation",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1799": {
+      "figma": "Business",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1807": {
+      "figma": "ID Card",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1815": {
+      "figma": "Fingerprint",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1823": {
+      "figma": "Keypad",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1837": {
+      "figma": "Messages",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1844": {
+      "figma": "Direction",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1850": {
+      "figma": "Repository",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1856": {
+      "figma": "Security",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1862": {
+      "figma": "Sync",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1868": {
+      "figma": "Options",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1881": {
+      "figma": "PersonalFile",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1888": {
+      "figma": "MapPin",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1894": {
+      "figma": "Award",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1901": {
+      "figma": "School",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1910": {
+      "figma": "Badge",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1917": {
+      "figma": "OpenFolder",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1923": {
+      "figma": "LineChart",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1929": {
+      "figma": "History Doc",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1935": {
+      "figma": "Calendar",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1942": {
+      "figma": "Upload",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1949": {
+      "figma": "Citizen",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1959": {
+      "figma": "Desktop",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1965": {
+      "figma": "Cloud",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1971": {
+      "figma": "Graduation",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1977": {
+      "figma": "CalendarCheck",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1984": {
+      "figma": "Trash",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1992": {
+      "figma": "Delega",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2000": {
+      "figma": "Access",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2006": {
+      "figma": "Inbox",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2012": {
+      "figma": "Wallet",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2019": {
+      "figma": "Quick",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2028": {
+      "figma": "SingleFile",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2035": {
+      "figma": "UserCheck",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2042": {
+      "figma": "Firma",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2049": {
+      "figma": "Building",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2058": {
+      "figma": "Euro",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2064": {
+      "figma": "Storage",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2071": {
+      "figma": "PieChart",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2077": {
+      "figma": "Home",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2083": {
+      "figma": "CreditCard",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2090": {
+      "figma": "Download",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2097": {
+      "figma": "Enterprise",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2105": {
+      "figma": "Bug",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2113": {
+      "figma": "Earth",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2120": {
+      "figma": "Message",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2127": {
+      "figma": "Image",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2134": {
+      "figma": "Data Security",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
     "349:4683": {
       "figma": "SwitchGroup",
       "page": "• Switch",
@@ -1505,6 +2128,14 @@
       ],
       "story": "components-inputs-selectfield--source-frame"
     },
+    "610:33637": {
+      "figma": "Scrollbar",
+      "page": "• Componenti nativi",
+      "type": "COMPONENT_SET",
+      "status": "excluded",
+      "exports": [],
+      "reason": "native OS chrome (status bar, webview, scrollbar) — not shipped by the library"
+    },
     "616:3864": {
       "figma": "DropDown",
       "page": "• Drop Down",
@@ -1604,6 +2235,15 @@
         "Autocomplete"
       ],
       "story": "components-inputs-autocomplete--playground"
+    },
+    "873:1241": {
+      "figma": "Maintenance",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
     },
     "908:2234": {
       "figma": "ListItem",
@@ -1740,7 +2380,8 @@
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "mocked",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "FormWizardTemplate"
       ]
     },
@@ -1926,7 +2567,8 @@
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "implemented",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "FeedbackPage"
       ],
       "story": "components-templates-feedback-page--thank-you"
@@ -1936,7 +2578,8 @@
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "mocked",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "TermsOfUse"
       ]
     },
@@ -1945,7 +2588,8 @@
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "implemented",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "DialogTemplate"
       ],
       "story": "components-templates-dialog--narrow-frame"
@@ -1955,7 +2599,8 @@
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "implemented",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "SecurityCodeDialog"
       ],
       "story": "components-templates-security-code-dialog--narrow-frame"
@@ -1965,7 +2610,8 @@
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "mocked",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "RecapDefault"
       ]
     },
@@ -1974,7 +2620,8 @@
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "mocked",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "HistoryDrawer"
       ]
     },
@@ -1983,7 +2630,8 @@
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "mocked",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "ServiceDetailDrawer"
       ]
     },
@@ -1992,17 +2640,28 @@
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "implemented",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "InformativeDrawer"
       ],
       "story": "components-templates-informative-drawer--narrow-frame"
+    },
+    "1992:128990": {
+      "figma": "Error",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
     },
     "1992:130380": {
       "figma": "Search Drawer",
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "mocked",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "SearchDrawer"
       ]
     },
@@ -2011,7 +2670,8 @@
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "mocked",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "IdentityProviderSelector"
       ]
     },
@@ -2040,7 +2700,8 @@
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "implemented",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "LogIn"
       ],
       "story": "components-templates-log-in--page"
@@ -2050,7 +2711,8 @@
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "mocked",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "RecapDefault"
       ]
     },
@@ -2059,7 +2721,8 @@
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "mocked",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "FormTemplate"
       ]
     },
@@ -2068,7 +2731,8 @@
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "mocked",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "ObjectDetail"
       ]
     },
@@ -2087,7 +2751,8 @@
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "mocked",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "FilterDrawer"
       ]
     },
@@ -2096,7 +2761,8 @@
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "mocked",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "Homepage"
       ]
     },
@@ -2105,7 +2771,8 @@
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "mocked",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "EditDrawer"
       ]
     },
@@ -2114,7 +2781,8 @@
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "mocked",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "InformativaPrivacy"
       ]
     },
@@ -2123,7 +2791,8 @@
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "mocked",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "Dashboard"
       ]
     },
@@ -2132,7 +2801,8 @@
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "mocked",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "MultipleCtaDashboard"
       ]
     },
@@ -2141,7 +2811,8 @@
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "mocked",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "ListView"
       ]
     },
@@ -2170,8 +2841,26 @@
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "mocked",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "TemplateEmail"
+      ]
+    },
+    "4834:42599": {
+      "figma": "Regole accessibilità",
+      "page": "• Componenti file",
+      "type": "COMPONENT",
+      "status": "excluded",
+      "exports": [],
+      "reason": "Figma file documentation/process components — not shipped by the library"
+    },
+    "7459:51329": {
+      "figma": "Smartphone validation",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
       ]
     },
     "8049:39452": {
@@ -2224,6 +2913,15 @@
       ],
       "story": "foundations-icons-and-pictograms--catalogue"
     },
+    "8712:443": {
+      "figma": "Mouse",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
     "8717:781": {
       "figma": "SEND",
       "page": "• Icon",
@@ -2274,6 +2972,22 @@
       ],
       "story": "foundations-icons-and-pictograms--catalogue"
     },
+    "8868:42628": {
+      "figma": "Status Bar",
+      "page": "• Componenti nativi",
+      "type": "COMPONENT_SET",
+      "status": "excluded",
+      "exports": [],
+      "reason": "native OS chrome (status bar, webview, scrollbar) — not shipped by the library"
+    },
+    "8868:42690": {
+      "figma": "Webview url",
+      "page": "• Componenti nativi",
+      "type": "COMPONENT_SET",
+      "status": "excluded",
+      "exports": [],
+      "reason": "native OS chrome (status bar, webview, scrollbar) — not shipped by the library"
+    },
     "9082:974": {
       "figma": "open_in_browser",
       "page": "• Icon",
@@ -2299,7 +3013,8 @@
       "page": "◆ KEY TEMPLATE",
       "type": "COMPONENT_SET",
       "status": "mocked",
-      "exports": [
+      "exports": [],
+      "unexported": [
         "TableListView"
       ]
     },
@@ -2645,6 +3360,33 @@
       ],
       "story": "components-feedback-emptystate--playground"
     },
+    "11719:39455": {
+      "figma": "Hourglass",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "11719:39465": {
+      "figma": "Question",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "11731:39515": {
+      "figma": "In progress",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
     "12133:82475": {
       "figma": "ProgressKpiCard",
       "page": "• Card 🟠",
@@ -2811,9 +3553,6 @@
     "CatalogueCard": [
       "808:6302"
     ],
-    "Checkbox": [
-      "194:3654"
-    ],
     "CheckboxField": [
       "194:3661",
       "194:3763"
@@ -2832,18 +3571,12 @@
       "9676:5453",
       "9676:5455"
     ],
-    "Dashboard": [
-      "2846:37569"
-    ],
     "DatePicker": [
       "8049:39452"
     ],
     "DatePickerField": [],
     "Dialog": [
       "1042:18133"
-    ],
-    "DialogTemplate": [
-      "1909:98992"
     ],
     "DownloadCard": [],
     "DragAndDrop": [
@@ -2855,9 +3588,6 @@
     "Dropdown": [
       "616:3864"
     ],
-    "EditDrawer": [
-      "2822:83244"
-    ],
     "EmptyState": [
       "11149:7765"
     ],
@@ -2868,20 +3598,8 @@
     "FeatureList": [
       "920:4502"
     ],
-    "FeedbackPage": [
-      "1904:9589"
-    ],
-    "FilterDrawer": [
-      "2809:77828"
-    ],
     "Footer": [
       "1360:20138"
-    ],
-    "FormTemplate": [
-      "2786:78783"
-    ],
-    "FormWizardTemplate": [
-      "1154:4493"
     ],
     "Header": [
       "1298:5209"
@@ -2889,26 +3607,11 @@
     "HeaderAlert": [
       "1317:10404"
     ],
-    "HistoryDrawer": [
-      "1983:116988"
-    ],
-    "Homepage": [
-      "2822:80432"
-    ],
     "IdentityProviderPicker": [
       "731:20386"
     ],
-    "IdentityProviderSelector": [
-      "1992:147363"
-    ],
     "Image": [
       "8818:39878"
-    ],
-    "InformativaPrivacy": [
-      "2827:30226"
-    ],
-    "InformativeDrawer": [
-      "1992:127582"
     ],
     "Input": [],
     "InputChip": [
@@ -2918,12 +3621,6 @@
     "ListItem": [
       "908:2234"
     ],
-    "ListView": [
-      "3228:36387"
-    ],
-    "LogIn": [
-      "2339:80916"
-    ],
     "MenuDropdown": [
       "3262:40787"
     ],
@@ -2932,12 +3629,6 @@
     ],
     "MultiSelectField": [
       "602:9417"
-    ],
-    "MultipleCtaDashboard": [
-      "2846:40095"
-    ],
-    "ObjectDetail": [
-      "2801:85126"
     ],
     "OrganizationModule": [],
     "Overlay": [
@@ -3110,7 +3801,84 @@
       "15901:18591",
       "15901:18592"
     ],
-    "PagoPAPictogram": [],
+    "PagoPAPictogram": [
+      "329:1629",
+      "329:1642",
+      "329:1648",
+      "329:1650",
+      "329:1656",
+      "329:1668",
+      "329:1675",
+      "329:1683",
+      "329:1690",
+      "329:1701",
+      "329:1712",
+      "329:1718",
+      "329:1726",
+      "329:1733",
+      "329:1739",
+      "329:1750",
+      "329:1757",
+      "329:1764",
+      "329:1770",
+      "329:1777",
+      "329:1786",
+      "329:1792",
+      "329:1799",
+      "329:1807",
+      "329:1815",
+      "329:1823",
+      "329:1837",
+      "329:1844",
+      "329:1850",
+      "329:1856",
+      "329:1862",
+      "329:1868",
+      "329:1881",
+      "329:1888",
+      "329:1894",
+      "329:1901",
+      "329:1910",
+      "329:1917",
+      "329:1923",
+      "329:1929",
+      "329:1935",
+      "329:1942",
+      "329:1949",
+      "329:1959",
+      "329:1965",
+      "329:1971",
+      "329:1977",
+      "329:1984",
+      "329:1992",
+      "329:2000",
+      "329:2006",
+      "329:2012",
+      "329:2019",
+      "329:2028",
+      "329:2035",
+      "329:2042",
+      "329:2049",
+      "329:2058",
+      "329:2064",
+      "329:2071",
+      "329:2077",
+      "329:2083",
+      "329:2090",
+      "329:2097",
+      "329:2105",
+      "329:2113",
+      "329:2120",
+      "329:2127",
+      "329:2134",
+      "873:1241",
+      "1992:128990",
+      "7459:51329",
+      "8712:443",
+      "11719:39455",
+      "11719:39465",
+      "11731:39515"
+    ],
     "PaymentModule": [
       "11133:16142"
     ],
@@ -3148,25 +3916,12 @@
     "RadioGroup": [
       "194:3700"
     ],
-    "RadioGroupItem": [
-      "194:3677"
-    ],
-    "RecapDefault": [
-      "1931:112838",
-      "2776:74243"
-    ],
     "SafeArea": [],
     "ScrollToBottom": [
       "180:3931"
     ],
-    "SearchDrawer": [
-      "1992:130380"
-    ],
     "SectionHeader": [
       "1566:29849"
-    ],
-    "SecurityCodeDialog": [
-      "1909:99033"
     ],
     "SegmentedControl": [
       "1293:8394"
@@ -3176,9 +3931,6 @@
     ],
     "Separator": [
       "61:2786"
-    ],
-    "ServiceDetailDrawer": [
-      "1983:116998"
     ],
     "SideNav": [
       "1120:7458"
@@ -3230,9 +3982,6 @@
     "TableListItem": [
       "9520:2537"
     ],
-    "TableListView": [
-      "9520:55438"
-    ],
     "Tabs": [
       "1137:8910"
     ],
@@ -3241,12 +3990,6 @@
     "TabsTrigger": [],
     "Tag": [
       "105:2043"
-    ],
-    "TemplateEmail": [
-      "3823:36774"
-    ],
-    "TermsOfUse": [
-      "1908:98740"
     ],
     "TextField": [
       "529:6111"

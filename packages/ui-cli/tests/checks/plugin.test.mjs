@@ -1,10 +1,8 @@
 import assert from "node:assert/strict"
-import fs from "node:fs"
-import os from "node:os"
-import path from "node:path"
 import { test } from "node:test"
 
 import { frontmatter, pluginProblems } from "../../src/checks/plugin.ts"
+import { fixtureTree } from "../helpers/cli.mjs"
 
 const SCHEMA = "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json"
 
@@ -34,16 +32,11 @@ function tree(extra = {}) {
 }
 
 function problems(files) {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-plugin-"))
+  const tree = fixtureTree(files)
   try {
-    for (const [file, source] of Object.entries(files)) {
-      const target = path.join(root, file)
-      fs.mkdirSync(path.dirname(target), { recursive: true })
-      fs.writeFileSync(target, source)
-    }
-    return pluginProblems(root)
+    return pluginProblems(tree.root)
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
   }
 }
 

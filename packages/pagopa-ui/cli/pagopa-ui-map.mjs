@@ -23,17 +23,32 @@ export function loadMap(file = MAP_PATH) {
   return JSON.parse(fs.readFileSync(file, "utf8"))
 }
 
-// A Figma URL carries the node as `?node-id=50-1700`; the API and the map use
-// `50:1700`. Both reach the same row.
-export function normalizeNodeId(value) {
+// A Figma URL carries the node as `?node-id=50-1700` and the file it belongs to
+// in its path; the API and the map use `50:1700`. The file matters: node ids are
+// only unique inside a file, so the pair alone does not name a node.
+export function parseTarget(value) {
   const text = String(value ?? "").trim()
+  const url = /figma\.com\/(?:design|file|proto)\/([^/?#\s]+)/.exec(text)
   const fromUrl = /[?&]node-id=([^&]+)/.exec(text)
   const raw = decodeURIComponent(fromUrl ? fromUrl[1] : text).trim()
-  return /^\d+-\d+$/.test(raw) ? raw.replace("-", ":") : raw
+  return {
+    fileKey: url ? url[1] : undefined,
+    nodeId: /^\d+-\d+$/.test(raw) ? raw.replace("-", ":") : raw,
+  }
+}
+
+export function normalizeNodeId(value) {
+  return parseTarget(value).nodeId
 }
 
 export function nodeNames(node) {
   return node.exports?.length ? node.exports.join(", ") : "—"
+}
+
+// The names a row carries that a consumer cannot import. They answer "this part
+// is the Checkbox you see in Storybook", which is still worth knowing.
+function unexportedNames(node) {
+  return node.unexported?.length ? `${node.unexported.join(", ")} — not importable` : undefined
 }
 
 export function formatNode(nodeId, node) {
@@ -43,13 +58,19 @@ export function formatNode(nodeId, node) {
     `  exports: ${nodeNames(node)}`,
     `  status:  ${node.status}${node.reason ? ` — ${node.reason}` : ""}`,
   ]
+  const unexported = unexportedNames(node)
+  if (unexported) lines.push(`  also:    ${unexported}`)
   if (node.story) lines.push(`  story:   ${node.story}`)
   return lines.join("\n")
 }
 
+// The row a link names, or the reason the map cannot answer for it: a link to
+// another design file carries ids of that file, which are a different set of
+// nodes from the library ones this map indexes.
 export function resolveNode(map, value) {
-  const nodeId = normalizeNodeId(value)
-  return { nodeId, node: map.nodes[nodeId] }
+  const { fileKey, nodeId } = parseTarget(value)
+  const foreign = fileKey !== undefined && fileKey !== map.fileKey
+  return { fileKey, nodeId, foreign, node: foreign ? undefined : map.nodes[nodeId] }
 }
 
 // Both directions of the map, scored so a name that starts the query wins over
@@ -62,9 +83,12 @@ export function searchNodes(map, query) {
   if (!needle) return []
   const scored = []
   for (const [nodeId, node] of Object.entries(map.nodes)) {
-    const names = [node.figma ?? "", ...node.exports, ...(node.story ? [node.story] : [])].map(
-      (name) => name.toLowerCase(),
-    )
+    const names = [
+      node.figma ?? "",
+      ...node.exports,
+      ...(node.unexported ?? []),
+      ...(node.story ? [node.story] : []),
+    ].map((name) => name.toLowerCase())
     const id = nodeId.toLowerCase()
     let score = 0
     if (id === needle) score = 100
@@ -131,7 +155,15 @@ export function main(argv, map = loadMap()) {
   if (command === "resolve") {
     if (!value)
       return fail("resolve needs a node id, for example: pagopa-ui-map resolve 50:1700", 2)
-    const { nodeId, node } = resolveNode(map, value)
+    const { nodeId, foreign, node } = resolveNode(map, value)
+    if (foreign) {
+      // The ids of a layout of another file name that file's nodes, not the
+      // library's: the answer is the library source of each instance, not these.
+      return fail(
+        `node ${nodeId} belongs to another Figma file, and this map indexes ${map.fileKey} only.\n` +
+          `A layout's own ids have no row: ask the Figma tools for the library component each instance comes from, and resolve that id.`,
+      )
+    }
     if (!node) {
       // A variant id (`50:1701`) has no row of its own: the component set it
       // belongs to does, on the same page. Falling back to the page tells the
@@ -161,7 +193,7 @@ export function main(argv, map = loadMap()) {
         : `${rows
             .map(
               ({ nodeId, node }) =>
-                `${nodeId}  ${node.figma ?? "—"}  → ${nodeNames(node)}  [${node.status}]`,
+                `${nodeId}  ${node.figma ?? "—"}  → ${unexportedNames(node) ?? nodeNames(node)}  [${node.status}]`,
             )
             .join("\n")}\n`,
     )
@@ -181,7 +213,9 @@ export function main(argv, map = loadMap()) {
     }
     if (!nodeIds.length) {
       process.stdout.write(
-        `${name} has no Figma source: it is public, and no node of the file maps to it.\n`,
+        jsonFlag
+          ? json({ name, nodes: [] })
+          : `${name} has no Figma source: it is public, and no node of the file maps to it.\n`,
       )
       return 0
     }

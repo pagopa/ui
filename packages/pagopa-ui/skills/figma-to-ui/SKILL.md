@@ -5,11 +5,11 @@ description: Turn a Figma layout into @pagopa/ui components. Use when a Figma fr
 
 # Figma to UI
 
-The package ships `figma-map.json`: one row per Figma node the design system implements, carrying the exports that render it, the Storybook story that shows it and a status. `pagopa-ui-map` reads that map, so a layout costs one lookup per part instead of a read of the map.
+The package ships `figma-map.json`: one row per Figma node the design system implements, carrying the exports that render it, the Storybook story that shows it and a status. The rows name what `@pagopa/ui` exports; a node drawn by something the package keeps internal says so on its own line. `pagopa-ui-map` reads that map, so a layout costs one lookup per part instead of a read of the map.
 
 ## Steps
 
-1. **List the parts.** Walk the layout and collect the node id of every component instance, in the form the Figma tools report; a design link carries the same pair inside `node-id`, which the command accepts too. Plain frames, autolayout containers and loose text are the layout itself, with no row of their own, and you build them with the primitive components.
+1. **Collect one id per component instance: its source, not its placement.** An instance's own node id names where it sits in this layout, and the map indexes the library file, so that id answers nothing. Ask the Figma tools for the component each instance comes from, and when that component is a variant, take its parent component set's id, which is the level the map holds. Plain frames, autolayout containers and loose text are the layout itself, with no row of their own, and you build them with the primitive components.
 
 2. **Resolve every id you collected**, one command per component instance:
 
@@ -17,7 +17,7 @@ The package ships `figma-map.json`: one row per Figma node the design system imp
    pnpm exec pagopa-ui-map resolve <nodeId>
    ```
 
-   The answer names the exports to render, the status, and the story id whose stories show the variants and props. The step is done when every component instance in the layout has a row and every row has been read.
+   The answer names the exports to render, the status, and the story id whose stories show the variants and props. A refusal that names another Figma file means the id belongs to the layout's own file rather than the library: go back to step 1. The step is done when every component instance in the layout has a row and every row has been read.
 
 3. **Read the status before you build**, because it says how much of the node you can rely on:
 
@@ -39,6 +39,6 @@ The package ships `figma-map.json`: one row per Figma node the design system imp
 
    `search` matches the node name, the export, the story id and the node id. `export` answers the other direction: which nodes one export renders, and an answer that no node renders means the component is public with no Figma source, so the layout is free to place it.
 
-5. **Build from the package.** Import the exports from `@pagopa/ui`, load `@pagopa/ui/styles.css`, and take the props and variants from the story the map named. A part with no component and no close match is a gap in the design system: report it in the pull request rather than reshaping an unrelated component.
+5. **Build from the package.** Import the exports from `@pagopa/ui`, load `@pagopa/ui/styles.css`, and take the props and variants from the story the map named. A row whose `also` line names a component without an import is drawn by something the package keeps internal: render the exports the row names and build the rest from them. A part with no component and no close match is a gap in the design system: report it in the pull request rather than reshaping an unrelated component.
 
 Add `--json` to any command you read programmatically.

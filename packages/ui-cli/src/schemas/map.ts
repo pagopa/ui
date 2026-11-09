@@ -18,6 +18,10 @@ export const MapNodeSchema = z.strictObject({
   // The exports that render it, sorted; empty means the node maps to no
   // component at all (`excluded`), which is a decision the agent reads too.
   exports: z.array(z.string()),
+  // The names the registry gives it that `@pagopa/ui` does not export: internal
+  // components and Storybook-only templates. Readable in the row, never
+  // advertised as an import a consumer could write.
+  unexported: z.array(z.string()).optional(),
   // The Storybook id of the story that draws it (`<title>--<export>`), so the
   // consumer opens the reference implementation instead of guessing its shape.
   story: z.string().optional(),

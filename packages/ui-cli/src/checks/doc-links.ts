@@ -501,10 +501,7 @@ function validateScripts(context: DocsContext): string[] {
 
 export function checkDocLinks(workspaceTree: Workspace, options: DocLinksOptions): CheckReport {
   const { root, toolingRoot: TOOLING_ROOT, workspaceRoot: workspace } = workspaceTree
-  const SKILLS = [
-    path.join(workspace, ".agents/skills/figma-to-code"),
-    path.join(root, "skills"),
-  ]
+  const SKILLS = [path.join(workspace, ".agents/skills/figma-to-code"), path.join(root, "skills")]
   const ctx: DocsContext = {
     root,
     TOOLING_ROOT,

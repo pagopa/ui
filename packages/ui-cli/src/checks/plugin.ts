@@ -10,9 +10,10 @@ import fs from "node:fs"
 import path from "node:path"
 import { z } from "zod"
 
+import type { Workspace } from "../adapters/workspace.ts"
 import { readJson } from "../lib/json.ts"
-import { enterRoot, rootPath } from "../lib/paths.ts"
 import { parseSchema } from "../lib/validate.ts"
+import { report, type CheckReport } from "./report.ts"
 
 const PLUGIN_PATH = "plugin.json"
 // The package manifest, as far as the plugin needs it: the `files` list that
@@ -151,14 +152,13 @@ export function pluginProblems(root: string): string[] {
   return problems
 }
 
-export function runPlugin(): number {
-  enterRoot()
-  const problems = pluginProblems(rootPath())
-  if (!problems.length) {
-    console.log(`plugin:check: plugin.json, ${SKILLS_DIR}/ and the shipped files agree`)
-    return 0
-  }
-  console.error(`plugin:check: ${problems.length} problem(s)`)
-  for (const problem of problems) console.error(`  ${problem}`)
-  return 1
+export function checkPlugin(workspace: Workspace): CheckReport {
+  const problems = pluginProblems(workspace.root)
+  return report(
+    "plugin",
+    problems.length
+      ? `${problems.length} problem(s)`
+      : `${PLUGIN_PATH}, ${SKILLS_DIR}/ and the shipped files agree`,
+    problems,
+  )
 }

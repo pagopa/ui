@@ -24,16 +24,20 @@
 import fs from "node:fs"
 import { z } from "zod"
 
+import type { Workspace } from "../adapters/workspace.ts"
 import { UsageError } from "../lib/command.ts"
-import { readJson, writeJson } from "../lib/json.ts"
-import { enterRoot, rootPath } from "../lib/paths.ts"
+import { readJson, writeText } from "../lib/json.ts"
 import { parseSchema } from "../lib/validate.ts"
 import { storyId } from "../parity/cases.ts"
+import { report, type CheckReport } from "../checks/report.ts"
 import {
   InventorySchema,
   RegistrySchema,
+  type BulkRule,
   type Inventory,
+  type InventoryNode,
   type Registry,
+  type RegistryEntry,
   type Target,
 } from "../schemas/catalogue.ts"
 import { FigmaMapSchema, type FigmaMap, type MapNode } from "../schemas/map.ts"
@@ -47,9 +51,10 @@ const REGISTRY_PATH = "src/catalog/figma/registry.json"
 // The public surface is the API report, not the registry: a component the
 // package exports is what a consumer can render, whether or not Figma drew it.
 // Only values count (a type is not something to render), and the report lists
-// each one with its declaration keyword.
-export function publicValues(): Set<string> {
-  const file = rootPath(API_REPORT_PATH)
+// each one with its declaration keyword or, when the name is an alias, in an
+// `export { Source as Public }` clause.
+export function publicValues(workspace: Workspace): Set<string> {
+  const file = workspace.path(API_REPORT_PATH)
   if (!fs.existsSync(file)) {
     throw new UsageError(`missing ${API_REPORT_PATH} — run "pnpm nx run pagopa-ui:api:update"`)
   }
@@ -59,6 +64,12 @@ export function publicValues(): Set<string> {
     /^export (?:declare )?(?:function|const|class) ([A-Za-z0-9_]+)/gm,
   ))
     names.add(match[1])
+  for (const clause of text.matchAll(/^export \{([^}]+)\}/gm))
+    for (const part of clause[1].split(",")) {
+      const local = part.trim()
+      if (!local || local.startsWith("type ")) continue
+      names.add(local.split(/\s+as\s+/).at(-1) ?? local)
+    }
   return names
 }
 
@@ -80,6 +91,74 @@ function targetExports(target: Target | undefined): string[] {
   return [...new Set(names)].sort()
 }
 
+// The artwork pages decide every glyph at once through a registry rule, so the
+// node names no export of its own: the rule's names manifest is read by a single
+// renderer, and that export is what a consumer renders for the glyph.
+const ARTWORK_RENDERER: Record<NonNullable<BulkRule["namesExport"]>, string> = {
+  figmaIconNames: "PagoPAIcon",
+  figmaPictogramNames: "PagoPAPictogram",
+}
+
+function ruleExports(rule: BulkRule): string[] {
+  const renderer = rule.namesExport ? ARTWORK_RENDERER[rule.namesExport] : undefined
+  return renderer ? [renderer] : []
+}
+
+// The story of the export that renders a rule's glyphs, so a pictogram row
+// points at the catalogue page instead of nowhere. A renderer the file never
+// drew (the pictogram component) has no entry and therefore no story.
+function rendererTarget(registry: Registry, name: string | undefined): Target | undefined {
+  if (!name) return undefined
+  for (const entry of Object.values(registry.entries))
+    if (entry.target?.export === name) return entry.target
+  return undefined
+}
+
+type Decision = {
+  status: RegistryEntry["status"]
+  names: string[]
+  story?: string
+  reason?: string
+}
+
+function ruleFor(registry: Registry, node: InventoryNode | undefined): BulkRule | undefined {
+  return node ? registry.bulkRules.find((item) => item.pageId === node.pageId) : undefined
+}
+
+// A node's decision is its own entry or, when it has none, the rule that owns
+// its page — the same precedence the catalogue check applies, so a node the
+// registry decided in bulk still gets a row.
+function nodeDecision(
+  registry: Registry,
+  titles: StoryTitles,
+  nodeId: string,
+  node: InventoryNode | undefined,
+): Decision {
+  const entry = registry.entries[nodeId]
+  if (entry) {
+    const story = storyFor(entry.target, titles)
+    return {
+      status: entry.status,
+      names: targetExports(entry.target),
+      ...(story ? { story } : {}),
+      ...(entry.reason ? { reason: entry.reason } : {}),
+    }
+  }
+  const rule = ruleFor(registry, node)
+  if (!rule?.status)
+    throw new UsageError(
+      `${nodeId} has no registry decision — run "pnpm nx run pagopa-ui-cli:catalogue:check"`,
+    )
+  const names = ruleExports(rule)
+  const story = storyFor(rendererTarget(registry, names.at(0)), titles)
+  return {
+    status: rule.status,
+    names,
+    ...(story ? { story } : {}),
+    ...(rule.reason ? { reason: rule.reason } : {}),
+  }
+}
+
 export type MapSources = {
   registry: Registry
   inventory: Inventory
@@ -89,30 +168,33 @@ export type MapSources = {
 
 export function figmaMap({ registry, inventory, titles, values }: MapSources): FigmaMap {
   const listed = new Map(inventory.components.map((node) => [node.nodeId, node]))
-  const nodes: Record<string, MapNode> = {}
-  const nodeIds = Object.keys(registry.entries).sort((left, right) =>
-    left.localeCompare(right, undefined, { numeric: true }),
+  const nodeIds = [...new Set([...listed.keys(), ...Object.keys(registry.entries)])].sort(
+    (left, right) => left.localeCompare(right, undefined, { numeric: true }),
   )
+  const nodes: Record<string, MapNode> = {}
   for (const nodeId of nodeIds) {
-    const entry = registry.entries[nodeId]
     const node = listed.get(nodeId)
-    const story = storyFor(entry.target, titles)
+    const decision = nodeDecision(registry, titles, nodeId, node)
+    // The two directions of the map are the public surface: a name the package
+    // does not export is readable in the row but never advertised as an import
+    // a consumer could write.
+    const exports = decision.names.filter((name) => values.has(name))
+    const unexported = decision.names.filter((name) => !values.has(name))
     nodes[nodeId] = {
       ...(node ? { figma: node.name, page: node.pageName, type: node.type } : {}),
-      status: entry.status,
-      exports: targetExports(entry.target),
-      ...(story ? { story } : {}),
-      ...(entry.reason ? { reason: entry.reason } : {}),
+      status: decision.status,
+      exports,
+      ...(unexported.length ? { unexported } : {}),
+      ...(decision.story ? { story: decision.story } : {}),
+      ...(decision.reason ? { reason: decision.reason } : {}),
     }
   }
-  // The reverse index covers the public surface and every export a node names,
-  // so a search for an internal the package re-exports (`Checkbox`) still lands
-  // on its node. The public values seed it: an export with no node keeps an
-  // empty list rather than disappearing.
-  const names = new Set(values)
-  for (const node of Object.values(nodes)) for (const name of node.exports) names.add(name)
+  // The reverse index is the public API and nothing else: the values the report
+  // exports, each with the nodes that render it. An export with no node keeps an
+  // empty list rather than disappearing, and a name no consumer can import
+  // (`Checkbox`, a Storybook-only template) gets no row at all.
   const exports: Record<string, string[]> = {}
-  for (const name of [...names].sort()) exports[name] = []
+  for (const name of [...values].sort()) exports[name] = []
   for (const [nodeId, node] of Object.entries(nodes))
     for (const name of node.exports) {
       const row = exports[name]
@@ -127,19 +209,19 @@ export function figmaMap({ registry, inventory, titles, values }: MapSources): F
   }
 }
 
-function readRoot<T>(schema: z.ZodType<T>, file: string): T {
-  return parseSchema(schema, readJson(rootPath(file)), file)
+function readRoot<T>(workspace: Workspace, schema: z.ZodType<T>, file: string): T {
+  return parseSchema(schema, readJson(workspace.path(file)), file)
 }
 
 // The map a run of the tooling would write now. Regenerating it is the whole
 // check: the artifact holds no state of its own, so a difference is a stale
 // export and never a decision to reconcile by hand.
-export function currentMap(): FigmaMap {
+export function currentMap(workspace: Workspace): FigmaMap {
   return figmaMap({
-    registry: readRoot(RegistrySchema, REGISTRY_PATH),
-    inventory: readRoot(InventorySchema, INVENTORY_PATH),
-    titles: readRoot(StoryTitlesSchema, STORY_TITLES_PATH),
-    values: publicValues(),
+    registry: readRoot(workspace, RegistrySchema, REGISTRY_PATH),
+    inventory: readRoot(workspace, InventorySchema, INVENTORY_PATH),
+    titles: readRoot(workspace, StoryTitlesSchema, STORY_TITLES_PATH),
+    values: publicValues(workspace),
   })
 }
 
@@ -165,31 +247,46 @@ export function mapProblems(map: FigmaMap, inventory: Inventory, values: Set<str
     if (node.status === "implemented" && !listed.has(nodeId))
       problems.push(`${nodeId} is implemented but missing from ${INVENTORY_PATH}`)
     for (const name of node.exports) {
+      if (!values.has(name))
+        problems.push(`${nodeId} advertises ${name}, which @pagopa/ui does not export`)
       const row = map.exports[name]
       if (row && !row.includes(nodeId)) problems.push(`${nodeId} renders ${name}, which omits it`)
     }
+    for (const name of node.unexported ?? [])
+      if (values.has(name))
+        problems.push(`${nodeId} marks ${name} unexported, but @pagopa/ui exports it`)
   }
-  for (const [name, row] of Object.entries(map.exports))
+  for (const [name, row] of Object.entries(map.exports)) {
+    if (!values.has(name)) problems.push(`${name} is indexed but not exported by @pagopa/ui`)
     for (const nodeId of row)
       if (!(nodeId in map.nodes)) problems.push(`${name} lists ${nodeId}, which has no row`)
+  }
   return problems
 }
 
-export function runMap(argv: string[]): number {
-  enterRoot()
-  const map = currentMap()
-  if (argv.includes("--write")) {
-    writeJson(rootPath(FIGMA_MAP_PATH), map)
-    console.log(`${FIGMA_MAP_PATH}: ${summary(map)}`)
-    return 0
-  }
+export function updateMap(workspace: Workspace): string {
+  const map = currentMap(workspace)
+  // The shipped artifact is written with the exact bytes the check compares
+  // against: a formatter between them would make every regeneration look stale.
+  writeText(workspace.path(FIGMA_MAP_PATH), serialized(map))
+  return `${FIGMA_MAP_PATH}: ${summary(map)}`
+}
 
-  const file = rootPath(FIGMA_MAP_PATH)
+// The check and the write share one generator: a plain run regenerates the map
+// in memory and fails when the committed artifact differs, so no hand edit
+// survives a run.
+export function checkMap(workspace: Workspace): CheckReport {
+  const map = currentMap(workspace)
+  const problems = mapProblems(
+    map,
+    readRoot(workspace, InventorySchema, INVENTORY_PATH),
+    publicValues(workspace),
+  )
+  const file = workspace.path(FIGMA_MAP_PATH)
   if (!fs.existsSync(file)) {
-    console.error(
-      `figma:map:check: missing ${FIGMA_MAP_PATH} — run "pnpm nx run pagopa-ui:figma:map"`,
-    )
-    return 1
+    return report("figma map", `${FIGMA_MAP_PATH} is missing`, [
+      `missing ${FIGMA_MAP_PATH} — run "pnpm nx run pagopa-ui:figma:map"`,
+    ])
   }
   // A committed map that does not even parse is reported as such: the byte
   // comparison below would call a hand edit "stale", and the schema says which
@@ -197,19 +294,19 @@ export function runMap(argv: string[]): number {
   try {
     parseSchema(FigmaMapSchema, readJson(file), FIGMA_MAP_PATH)
   } catch (error) {
-    console.error(`figma:map:check: ${error instanceof Error ? error.message : String(error)}`)
-    return 1
+    return report("figma map", `${FIGMA_MAP_PATH} does not parse`, [
+      error instanceof Error ? error.message : String(error),
+    ])
   }
-  const problems = mapProblems(map, readRoot(InventorySchema, INVENTORY_PATH), publicValues())
   if (fs.readFileSync(file, "utf8") !== serialized(map))
     problems.unshift(
       `${FIGMA_MAP_PATH} is stale — run "pnpm nx run pagopa-ui:figma:map" (the build regenerates it)`,
     )
-  if (!problems.length) {
-    console.log(`figma:map:check: ${FIGMA_MAP_PATH} matches the catalogue (${summary(map)})`)
-    return 0
-  }
-  console.error(`figma:map:check: ${problems.length} problem(s)`)
-  for (const problem of problems.slice(0, 20)) console.error(`  ${problem}`)
-  return 1
+  return report(
+    "figma map",
+    problems.length
+      ? `${problems.length} problem(s) in ${FIGMA_MAP_PATH}`
+      : `${FIGMA_MAP_PATH} matches the catalogue (${summary(map)})`,
+    problems,
+  )
 }

@@ -147,12 +147,19 @@ offline, so a forty-part layout costs forty lookups instead of a read of the
 whole map:
 
 ```sh
-pagopa-ui-map resolve 50:1700   # the exports that render this node, and its status
-pagopa-ui-map search alert      # nodes by name, export, story id or node id
-pagopa-ui-map export Switch     # the nodes one export renders
+pagopa-ui-map resolve 194:3654   # the exports that render this node, and its status
+pagopa-ui-map search alert       # nodes by name, export, story id or node id
+pagopa-ui-map export Switch      # the nodes one export renders
 ```
 
-Every command accepts `--json`.
+Every command accepts `--json`. Node 22.18 or later runs them.
+
+The ids are the library's: the map indexes the component file, so `resolve` wants
+the component an instance comes from, not the instance. A link to another Figma
+file is refused for that reason — its ids belong to that file. A row whose `also`
+line names a component without an import (`Checkbox`, a template) is drawn by
+something the package keeps internal: render the public component the row names,
+or build the part.
 
 `plugin.json` makes the package an Agent Plugin. An agent that installs
 `@pagopa/ui` therefore also installs the `figma-to-ui` skill, which is the
