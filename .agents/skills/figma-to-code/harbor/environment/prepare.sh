@@ -14,7 +14,7 @@ PAGOPA_UI_REPO="${PAGOPA_UI_REPO:-https://github.com/pagopa/ui.git}"
 # this skill calls, so a command the skill names cannot fail on a missing flag.
 # Re-pin it to the merge commit once `main` carries the node card and the JSON
 # writer that degrades without the formatter.
-PAGOPA_UI_REF="${PAGOPA_UI_REF:-9cd7c87c91d8dc51dae2e50bfc995e013b8d393b}"
+PAGOPA_UI_REF="${PAGOPA_UI_REF:-3d4c7ba42d4717bfbbd80fc5d7eef948bb2f5c4f}"
 
 WORKSPACE=/workspace
 
