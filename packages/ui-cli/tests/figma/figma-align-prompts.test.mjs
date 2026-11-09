@@ -79,10 +79,13 @@ const alignment = {
 }
 const verification = { nodeId: node.nodeId, pass: false, cases: [], findings: ["padding is 4px"] }
 
+// The check measures the template, whose `${ROOT}` stays a token. A rendered
+// prompt carries this checkout's absolute path instead, so put the token back in
+// every place it was interpolated, and fail when it is nowhere: a prompt that
+// lost it would make these bytes depend on how long the checkout path is.
 function bytes(text) {
-  // The check measures the template, whose `${ROOT}` stays a token: put the
-  // token back so the assertion does not depend on the checkout path.
-  return Buffer.byteLength(text.replace(ROOT, "${ROOT}"))
+  assert.ok(text.includes(ROOT), "the prompt names the workspace root")
+  return Buffer.byteLength(text.split(ROOT).join("${ROOT}"))
 }
 
 test("the contract card every sub-agent reads stays under the preamble ceiling", () => {

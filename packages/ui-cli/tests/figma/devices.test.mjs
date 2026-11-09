@@ -171,11 +171,12 @@ test("two devices claiming one alias fail", () => {
     },
   }
   const { errors } = checkDevicePolicy(clashing, [deviceSet("1:1", ["Desktop", "Mobile"])])
-  assert.ok(
-    errors.some((error) => /alias "Device5" is claimed by tablet and desktop/.test(error)),
-    errors.join("\n"),
+  const clash = errors.filter((error) =>
+    /alias "Device5" is claimed by tablet and desktop/.test(error),
   )
-  assert.ok(errors.some((error) => /pnpm nx run pagopa-ui-cli:check:devices/.test(error)))
+  assert.equal(clash.length, 1, errors.join("\n"))
+  // The command belongs to that diagnostic, not to whichever error came first.
+  assert.match(clash[0], /pnpm nx run pagopa-ui-cli:check:devices/)
 })
 
 test("a device-like value on a non-device axis warns without failing", () => {
