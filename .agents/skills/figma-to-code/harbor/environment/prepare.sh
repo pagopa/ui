@@ -10,7 +10,11 @@ set -euo pipefail
 NODE_VERSION="${NODE_VERSION:-24.14.1}"
 PNPM_VERSION="${PNPM_VERSION:-11.28.6}"
 PAGOPA_UI_REPO="${PAGOPA_UI_REPO:-https://github.com/pagopa/ui.git}"
-PAGOPA_UI_REF="${PAGOPA_UI_REF:-d533a8bba6274d8cdf508cc9192340a1976da30b}"
+# The ref the agent's workspace is cut from: it must already carry the `ui-cli`
+# this skill calls, so a command the skill names cannot fail on a missing flag.
+# Re-pin it to the merge commit once `main` carries the node card and the JSON
+# writer that degrades without the formatter.
+PAGOPA_UI_REF="${PAGOPA_UI_REF:-9cd7c87c91d8dc51dae2e50bfc995e013b8d393b}"
 
 WORKSPACE=/workspace
 
