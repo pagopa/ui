@@ -21,7 +21,7 @@ import { buildBriefQueue, formatBriefQueue } from "../figma/brief-queue.ts"
 import { commentsJson, commentsReport, formatComments } from "../figma/comments-workflow.ts"
 import { figmaToken } from "../adapters/figma-token.ts"
 import { UsageError } from "../lib/command.ts"
-import { jsonArg, requireText } from "./args.ts"
+import { integer, jsonArg, requireText } from "./args.ts"
 import { action, EXIT, printJson, printLines, type CliContext } from "./context.ts"
 import { requireToken, requireTokenArg } from "./token.ts"
 
@@ -189,6 +189,51 @@ function commentsCommand(ctx: CliContext) {
   })
 }
 
+type BriefArgs = {
+  node?: string
+  queue: boolean
+  card: boolean
+  full: boolean
+  limit?: string
+  json?: boolean
+  refresh: boolean
+  "require-token": boolean
+}
+
+async function runBrief(ctx: CliContext, args: BriefArgs): Promise<number> {
+  const { node, queue, card, full, limit, json, refresh } = args
+  if (queue && node) throw new UsageError("choose --node or --queue")
+  if (!queue && !node) throw new UsageError("figma brief needs --node <id> or --queue")
+  if (!queue && (full || limit !== undefined))
+    throw new UsageError("--full and --limit only apply to --queue")
+  if (card && !node) throw new UsageError("--card needs --node <id>: one card per node")
+  requireToken(ctx, args["require-token"])
+  if (refresh) await refreshBrief(ctx.workspace(), () => figmaToken(ctx.env))
+  if (queue) {
+    const result = buildBriefQueue(ctx.workspace(), {
+      scope: full ? "all" : "delta",
+      lineCap: integer(limit, "--limit") ?? (full ? null : undefined),
+    })
+    if (json) printJson(ctx.io, result)
+    else printLines(ctx.io, { out: formatBriefQueue(result) })
+    return EXIT.ok
+  }
+  const requested = requireText(node, "--node <id> or --queue", "figma brief")
+  if (card) {
+    const nodeCard = buildNodeCard(ctx.workspace(), requested)
+    if (json) printJson(ctx.io, nodeCard)
+    else printLines(ctx.io, { out: formatNodeCard(nodeCard) })
+    return EXIT.ok
+  }
+  const result = buildBrief(ctx.workspace(), requested)
+  if (json) printJson(ctx.io, result)
+  else
+    printLines(ctx.io, {
+      out: formatBrief(result, Boolean(readLedger(ctx.workspace().root, false))),
+    })
+  return EXIT.ok
+}
+
 function briefCommand(ctx: CliContext) {
   return defineCommand({
     meta: { name: "brief", description: "Read implementation briefs" },
@@ -196,37 +241,13 @@ function briefCommand(ctx: CliContext) {
       node: stringArg,
       queue: { type: "boolean", default: false },
       card: { type: "boolean", default: false },
+      full: { type: "boolean", default: false },
+      limit: stringArg,
       json: jsonArg,
       refresh: { type: "boolean", default: false },
       "require-token": requireTokenArg,
     },
-    run: action(ctx, async ({ node, queue, card, json, refresh, "require-token": required }) => {
-      if (queue && node) throw new UsageError("choose --node or --queue")
-      if (!queue && !node) throw new UsageError("figma brief needs --node <id> or --queue")
-      if (card && !node) throw new UsageError("--card needs --node <id>: one card per node")
-      requireToken(ctx, required)
-      if (refresh) await refreshBrief(ctx.workspace(), () => figmaToken(ctx.env))
-      if (queue) {
-        const result = buildBriefQueue(ctx.workspace())
-        if (json) printJson(ctx.io, result)
-        else printLines(ctx.io, { out: formatBriefQueue(result) })
-        return EXIT.ok
-      }
-      const requested = requireText(node, "--node <id> or --queue", "figma brief")
-      if (card) {
-        const nodeCard = buildNodeCard(ctx.workspace(), requested)
-        if (json) printJson(ctx.io, nodeCard)
-        else printLines(ctx.io, { out: formatNodeCard(nodeCard) })
-        return EXIT.ok
-      }
-      const result = buildBrief(ctx.workspace(), requested)
-      if (json) printJson(ctx.io, result)
-      else
-        printLines(ctx.io, {
-          out: formatBrief(result, Boolean(readLedger(ctx.workspace().root, false))),
-        })
-      return EXIT.ok
-    }),
+    run: action(ctx, (args) => runBrief(ctx, args)),
   })
 }
 

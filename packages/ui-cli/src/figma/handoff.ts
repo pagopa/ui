@@ -158,7 +158,7 @@ function object(value: unknown): Record<string, unknown> | null {
 export function handoffBrief(
   workspace: Workspace,
   pr: PullRequest,
-  queue: BriefQueue = buildBriefQueue(workspace),
+  queue: BriefQueue = buildBriefQueue(workspace, { scope: "all" }),
   suppliedDelta?: unknown,
 ): { pullRequest: PullRequest; delta: unknown; queue: BriefQueue } {
   const delta = suppliedDelta ?? savedDelta(workspace, pr.body)
@@ -175,6 +175,7 @@ export function handoffBrief(
     pullRequest: pr,
     delta,
     queue: {
+      scope: queue.scope,
       implementationOrder: order,
       items: order.flatMap((id) => {
         const item = byId.get(id)

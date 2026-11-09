@@ -30,8 +30,9 @@ requested node has its delta class, target, constraints and devices.
 Follow the handoff's `implementationOrder`, dependencies first, one node at a
 time. The decision procedure is [delta.md](delta.md#steps), step 3:
 implementation, review/mapping, exclusion or a pending request/blocker.
-Use `pnpm ui-cli figma brief --queue --refresh` for batched current context,
-and the node brief again when its context changes.
+Use `pnpm ui-cli figma brief --queue --refresh` for the delta's own briefs —
+the read is scoped to it and names what it omitted — and the node brief again
+when a node's context changes.
 
 Record decisions through `figma registry set`
 ([catalogue.md](catalogue.md#review-semantics)). Cases, rules and guides travel

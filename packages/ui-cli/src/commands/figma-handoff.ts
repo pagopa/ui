@@ -77,7 +77,12 @@ function briefCommand(ctx: CliContext) {
       const supplied = artifactUrl
         ? JSON.parse(await ctx.external.fetchUrl(artifactUrl))
         : undefined
-      const result = handoffBrief(ctx.workspace(), pr, buildBriefQueue(ctx.workspace()), supplied)
+      const result = handoffBrief(
+        ctx.workspace(),
+        pr,
+        buildBriefQueue(ctx.workspace(), { scope: "all" }),
+        supplied,
+      )
       if (json) printJson(ctx.io, result)
       else {
         ctx.io.out(`#${pr.number} · ${pr.headRefName} · ${pr.url}`)
