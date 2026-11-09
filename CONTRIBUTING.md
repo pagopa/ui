@@ -248,8 +248,10 @@ Both Figma skills carry graded sessions in the `evals.json` format
 [`.agents/skills/figma-to-code/evals`](./.agents/skills/figma-to-code/evals/evals.json),
 `figma-to-ui` in
 [`packages/pagopa-ui/skills/figma-to-ui/evals`](./packages/pagopa-ui/skills/figma-to-ui/evals/evals.json).
-Two evals each: one end-to-end pass over a single node or frame, and one
-guardrail that must stop and report instead of inventing a design. They grade
+Three evals each: one end-to-end pass over a single node or frame, one
+guardrail that must stop and report instead of inventing a design, and one
+delta triage over two or three nodes that must read the batched context once
+instead of a brief per node. They grade
 the session — what the agent read, resolved and decided — not the diff, so a
 skill change is graded without building anything; they are the regression net
 for the skills' own instructions.
@@ -258,7 +260,7 @@ The `harbor/` directory next to each `evals/` builds that session for
 [harbor-bench](https://github.com/pagopa/dx/tree/main/apps/harbor-bench):
 `environment/prepare.sh` prepares the workspace at image build, one
 `<task>/task.toml` overlay per task sets the artifact excludes and the
-`FIGMA_TOKEN` of the live eval, and the generated verifier hands the judge a
+`FIGMA_TOKEN` of the live evals, and the generated verifier hands the judge a
 bounded packet of the workspace instead of the whole checkout. Neither `evals/` nor `harbor/`
 ships: the `files` list of `packages/pagopa-ui` excludes them.
 
@@ -280,9 +282,9 @@ FIGMA_TOKEN=… COPILOT_GITHUB_TOKEN=… "$HARBOR" run -c .harbor/code/config.ya
 ```
 
 `COPILOT_GITHUB_TOKEN` reaches the agent through `--ae` and the judge through
-the host environment. `FIGMA_TOKEN` stays in the host environment: the live
-task's `[environment.env]` entry forwards it to that task alone, so both
-guardrails and both `figma-to-ui` evals still start without one — an `--ae
+the host environment. `FIGMA_TOKEN` stays in the host environment: each live
+task's `[environment.env]` entry forwards it to that task alone, so the
+guardrails and every `figma-to-ui` eval still start without one — an `--ae
 FIGMA_TOKEN=…` would hand a token to every task and disarm the guardrail it
 grades.
 

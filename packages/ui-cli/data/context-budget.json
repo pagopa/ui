@@ -6,6 +6,6 @@
     "card": 1536,
     "preamble": 1024
   },
-  "overBudget": 15,
+  "overBudget": 14,
   "note": "The ratchet of the Figma flow's context: `check context-budget` fails when the count of entries past their ceiling differs from `overBudget`. The ceilings are constants in `src/checks/context-budget.ts` and this file may not raise them; lower `overBudget` as a layer lands, never raise it. `pnpm ui-cli check context-budget --report` prints every row."
 }
