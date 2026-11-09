@@ -183,23 +183,27 @@ const manyPendingFiles = files(
 )
 delete manyPendingFiles[".figma/live-rest.json"]
 
-test("the unscoped fallback counts the pending nodes it did not print", async () => {
+test("the unscoped fallback counts the pending nodes the cap dropped", async () => {
   const fixture = fixtureTree(manyPendingFiles, "brief-queue-nosnapshot-cap-")
   try {
     const json = await runCli(["figma", "brief", "--queue", "--json"], { root: fixture.root })
     assert.equal(json.status, 0, json.stderr)
     const queue = JSON.parse(json.stdout)
     assert.equal(queue.scope.kind, "pending")
-    assert.ok(queue.scope.omitted > 0, "the fallback says what it left out")
-    assert.equal(queue.scope.omitted, many.length - queue.items.length)
+    // Every pending node is in scope here, so nothing is omitted: the cap is
+    // what left them out, and calling that "outside this delta" would be false.
+    assert.equal(queue.scope.omitted, 0)
+    assert.ok(queue.scope.truncated > 0, "the fallback says what it left out")
+    assert.equal(queue.scope.truncated, many.length - queue.items.length)
     const text = await runCli(["figma", "brief", "--queue"], { root: fixture.root })
     assert.match(
       text.stdout,
       new RegExp(
-        `^${queue.scope.omitted} more pending node\\(s\\) outside this delta, not read$`,
+        `^truncated at ${queue.scope.lineCap} lines: ${queue.scope.truncated} more node\\(s\\) in scope not shown — raise --limit to read them$`,
         "m",
       ),
     )
+    assert.doesNotMatch(text.stdout, /more pending node\(s\) outside this delta/)
   } finally {
     fixture.dispose()
   }

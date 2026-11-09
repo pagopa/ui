@@ -126,16 +126,17 @@ export function buildBriefQueue(workspace: Workspace, options: BriefQueueOptions
     }
   })
   const capped = capItems(items, lineCap)
-  // Both counts are read off what the caller is about to print, not off the
-  // scope: a cap that drops a pending node has to say so, and the two numbers
-  // never describe the same node.
+  // The two counts describe disjoint sets, and each says only what is true: a
+  // pending node the delta left out is *omitted*, a node the cap dropped is
+  // *truncated* whether or not it is pending. Counting a cap-dropped pending
+  // node as omitted would call a node in scope "outside this delta".
   const printed = new Set(capped.map((item) => item.nodeId))
-  const dropped = inScope.filter((id) => !printed.has(id))
+  const inScopeIds = new Set(inScope)
   return {
     scope: {
       kind: kind === "all" ? "all" : scoped ? "delta" : "pending",
-      omitted: [...pending].filter((id) => !printed.has(id)).length,
-      truncated: dropped.filter((id) => !pending.has(id)).length,
+      omitted: [...pending].filter((id) => !inScopeIds.has(id)).length,
+      truncated: inScope.filter((id) => !printed.has(id)).length,
       lineCap,
     },
     implementationOrder: inScope,
