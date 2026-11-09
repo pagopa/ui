@@ -266,19 +266,25 @@ ships: the `files` list of `packages/pagopa-ui` excludes them.
 
 ```bash
 uv tool install "git+https://github.com/pagopa/dx@main#subdirectory=apps/harbor-bench"
+# harbor-bench pins `harbor` as a dependency, and `uv tool install` links only
+# the package's own executable, so `harbor` on PATH may be another install.
+HARBOR="$(uv tool dir)/harbor-bench/bin/harbor"
 
 # One convert per skill: it injects only the skill its evals belong to.
 harbor-bench convert --evals .agents/skills/figma-to-code/evals/evals.json --out .harbor/code
 harbor-bench convert --evals packages/pagopa-ui/skills/figma-to-ui/evals/evals.json --out .harbor/ui
 
-COPILOT_GITHUB_TOKEN=… harbor run -c .harbor/code/config.yaml -y \
-  --ae COPILOT_GITHUB_TOKEN=… --ae FIGMA_TOKEN=… \
+FIGMA_TOKEN=… COPILOT_GITHUB_TOKEN=… "$HARBOR" run -c .harbor/code/config.yaml -y \
+  --ae COPILOT_GITHUB_TOKEN=… \
   --jobs-dir .harbor/runs --job-name code
 ```
 
-`COPILOT_GITHUB_TOKEN` reaches the agent through `--ae` and the judge through the
-host environment. `FIGMA_TOKEN` is only for the live eval of `figma-to-code`:
-both guardrails, and both `figma-to-ui` evals, run without Figma.
+`COPILOT_GITHUB_TOKEN` reaches the agent through `--ae` and the judge through
+the host environment. `FIGMA_TOKEN` stays in the host environment: the live
+task's `[environment.env]` entry forwards it to that task alone, so both
+guardrails and both `figma-to-ui` evals still start without one — an `--ae
+FIGMA_TOKEN=…` would hand a token to every task and disarm the guardrail it
+grades.
 
 `harbor-bench compare <base> <head>` runs the same evals twice, base skill
 against head skill — a local directory or a git source such as
@@ -297,6 +303,9 @@ A session that cannot be graded does not start, and the failure names the fix:
   `figma-to-code` guardrail grades.
 - The workspace packet the verifier hands the judge is capped, so a checkout
   full of `node_modules` and screenshots cannot time the judge out.
+- A verifier that finds no judge credential writes `0` and a `reason.txt` naming
+  the variable to export, so an ungraded session cannot read as a pass. The same
+  holds for the skill-use gate: no proven skill load is a `0`, never a skip.
 
 The evals are not in the green chain: they start agent sessions and need the
 network, a Copilot token and, for one eval, a Figma token. Done when every eval
