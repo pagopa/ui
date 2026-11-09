@@ -116,7 +116,19 @@ test("analysis, alignment, verification and the fix read the card path", () => {
   for (const [name, text] of Object.entries(prompts)) {
     assert.ok(text.includes(card), `${name} names the card path`)
     assert.doesNotMatch(text, /figma:brief|figma brief/, `${name} re-invokes the brief`)
+    assert.doesNotMatch(text, /figma:rules(?! mark)/, `${name} shells out for rules`)
+    assert.doesNotMatch(
+      text,
+      /figma rules|figma:comments|figma comments/,
+      `${name} shells out for rules or comments`,
+    )
   }
+})
+
+test("an absent card names the command that produces it", () => {
+  const text = workflow.analysePrompt(config, { ...node, card: "", cardError: "no token" })
+  assert.match(text, /MISSING CARD — the brief failed for 61:2786 \(no token\)/)
+  assert.match(text, /pagopa-ui-cli:figma:brief --node 61:2786 --card/)
 })
 
 test("the gate and the green fix add a bounded task to the contract card", () => {

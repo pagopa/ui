@@ -731,9 +731,16 @@ When the connected server does not expose that tool, write nothing and return ok
 // The loop builds one card per node and hands its path: analyse, align and
 // verify read that file instead of re-invoking the brief, so a node costs one
 // brief read for the whole wave.
+// A card that could not be written is stated, never left blank: a sub-agent that
+// receives an empty path reads nothing and proceeds anyway.
+const cardRef = (node) =>
+  node.card
+    ? `\`${node.card}\``
+    : `MISSING CARD — the brief failed for ${node.nodeId} (${node.cardError}). Run \`pnpm nx run pagopa-ui-cli:figma:brief --node ${node.nodeId} --card\` and read its output; do not proceed on an empty card.`
+
 function nodeContext(node) {
   return `Node ${node.nodeId} — ${node.name}
-- card: ${node.card}
+- card: ${cardRef(node)}
 - registry status: ${node.status}
 - Figma page: ${node.pageName || "(not in the inventory)"}
 - target: ${JSON.stringify(node.target)}
@@ -749,7 +756,7 @@ TASK: analyse ONE node and propose its decision (figma-to-code delta.md step 3, 
 ${nodeContext(node)}
 
 Do:
-1. Read the card at \`${node.card}\`: the registry entry and its binding note, every rule that targets the node, the open comments and the design requests that cite it. \`pnpm nx run pagopa-ui-cli:figma:rules -- node ${node.nodeId}\` prints each card with its disposition and \`pnpm nx run pagopa-ui-cli:figma:comments --node ${node.nodeId}\` the open threads (\`--refresh\` first when the card says the snapshot is missing). Read the target component, its story and its guide under apps/storybook/src/guides too. A \`pending\`, \`stale\` or \`conflict\` card is work, not a pass; an open comment the source answers is a decision, one it cannot answer is a design request.
+1. Read the card at ${cardRef(node)}: the registry entry and its binding note, every rule that targets the node with its disposition, the open comments and the design requests that cite it. The card is the only source of them: read it once and take every rule, disposition, comment and request from it, never from a second command. Read the target component, its story and its guide under apps/storybook/src/guides too. A \`pending\`, \`stale\` or \`conflict\` card is work, not a pass; an open comment the source answers is a decision, one it cannot answer is a design request.
 2. Read the source of EVERY declared device: start with \`pnpm ui-cli parity align --node ${node.nodeId}\` (the work order), then \`node packages/ui-cli/src/cli.ts parity source ${node.nodeId} --depth 1\` (variants, device, box) and \`--compact --depth 3\` per device variant; \`--png\` or get_screenshot read-only when the anatomy is unclear. List each rendered dependency (instance-swap defaults included).
 3. List the committed cases with \`pnpm ui-cli parity capture --saved --node ${node.nodeId} --dry-run\` — it prints \`<caseId> <nodeId> <storyId>\` per saved case, and \`no saved cases\` is the answer when there are none — then reproduce each with \`pnpm ui-cli parity check --case <caseId>\`; for a device axis also \`--node ${node.nodeId} --devices\`. Record each exit code and the deltas. A draft case or a warning is not coverage. (\`parity:queue --node ${node.nodeId} --json\` lists registry targets per node, not case ids: never read it as the case list.)
 4. Pick exactly one decision:
@@ -795,7 +802,7 @@ Open questions: ${JSON.stringify(decision.openQuestions)}
 ${decision.instructions ? `Instructions from the person (binding): ${decision.instructions}\n` : ""}
 How: ${DECISION_GUIDANCE[decision.decision]}
 
-Start by re-reading the card at \`${node.card}\` and the current dispositions with \`pnpm nx run pagopa-ui-cli:figma:rules -- node ${node.nodeId}\`: the rules and the open comments are source, and a node is not finished while a rule that targets it is \`pending\` or \`stale\`. Mark each card from that read with \`figma:rules mark\`; an \`imported\` card becomes a bullet in the guide's first block (\`<!-- component-rules:start -->\` … \`<!-- component-rules:end -->\`, under \`## Component Rules\`, no source reference). Never reply to or resolve a Figma comment.
+Start by re-reading the card at ${cardRef(node)} and the dispositions it carries: the rules and the open comments are source, and a node is not finished while a rule that targets it is \`pending\` or \`stale\`. Mark each card from that read with \`figma:rules mark\`; an \`imported\` card becomes a bullet in the guide's first block (\`<!-- component-rules:start -->\` … \`<!-- component-rules:end -->\`, under \`## Component Rules\`, no source reference). Never reply to or resolve a Figma comment.
 
 Limits: three fix passes per case, then a residue with its reason or a written blocker. The case corpus is written only by \`parity:check --save-case\` (with --note "reviewed: …"); never hand-edit it and never leave a draft as coverage. Set status implemented only after you inspected the source and the render of every declared device; otherwise leave it pending with the blocker in the note. A design request keeps the node pending, names its record in the note, and never invents an issue URL, a capture or a preview link. Do not edit registry entries of other nodes. Finish with \`pnpm nx run pagopa-ui:check:catalogue\` and fix what this node broke; a stale Storybook title is fixed with \`pnpm nx run pagopa-ui:update:stories\` (the generator owns that map), never by hand-editing it. Do not run the full green chain: the workflow runs it once for the whole wave.
 
@@ -814,9 +821,9 @@ ${nodeContext(node)}
 The writer reported: ${JSON.stringify(alignment)}
 
 Check (references/definition-of-done.md, visual-parity.md and rules.md):
-1. \`pnpm nx run pagopa-ui-cli:figma:rules -- node ${node.nodeId}\` closes the rules, and the card at \`${node.card}\` the comments it carries: no rule that targets the node is \`pending\` or \`stale\`; every imported rule is in the guide's first block under \`## Component Rules\`; each open comment is answered by the source or points at a design request. A design request has its record, issue URL, owner handles, preview links or a stated handoff for the preview work, and the conflicting card points at the record.
+1. The card at ${cardRef(node)} closes the rules and carries the comments: no rule that targets the node is \`pending\` or \`stale\`; every imported rule is in the guide's first block under \`## Component Rules\`; each open comment is answered by the source or points at a design request. A design request has its record, issue URL, owner handles, preview links or a stated handoff for the preview work, and the conflicting card points at the record.
 2. \`pnpm ui-cli parity check --case <caseId>\` reproduces every case the node has — list them with \`pnpm ui-cli parity capture --saved --node ${node.nodeId} --dry-run\`, which prints \`<caseId> <nodeId> <storyId>\`; for a device axis \`--node ${node.nodeId} --devices\` shows a reviewed passing case per declared device or a reasoned device exception.
-3. Every residue has a reason; no inline [Npx] values or off-token colours in the touched component (token ladder); the story is framed at the source width with parameters.design = figmaEmbedUrl; the guide records the source mapping; props follow prop-conventions.md or the departure is in the note.
+3. Every residue has a reason; no inline [Npx] values or off-token colours in the touched component (token ladder); the story is framed at the source width with parameters.design = figmaEmbedUrl; the guide records the source mapping; props follow .agents/skills/pagopa-ui-standards/references/prop-conventions.md or the departure is in the note.
 4. The registry entry is consistent with the outcome: implemented has target.module/export/story/storyExports; pending names its blocker or design request; excluded has a reason.
 Skip the checks that do not apply to the decision (an exclusion has no render to verify; a design request stops at its record and handoff).
 
@@ -834,7 +841,7 @@ Writer report: ${JSON.stringify(alignment)}
 Verification findings: ${JSON.stringify(verification.findings)}
 Case verdicts: ${JSON.stringify(verification.cases)}
 
-Fix each finding with the token ladder, re-run and re-save the affected cases (--save-case --note "reviewed: …"), re-read the card at \`${node.card}\` and close any rule or comment finding through \`figma:rules mark\`, keep the registry consistent, then \`pnpm nx run pagopa-ui:check:catalogue\`. A finding you cannot close becomes a residue with its reason or a blocker in the registry note, never a silent pass.
+Fix each finding with the token ladder, re-run and re-save the affected cases (--save-case --note "reviewed: …"), re-read the card at ${cardRef(node)} and close any rule or comment finding through \`figma:rules mark\`, keep the registry consistent, then \`pnpm nx run pagopa-ui:check:catalogue\`. A finding you cannot close becomes a residue with its reason or a blocker in the registry note, never a silent pass.
 
 Return the same JSON shape as the writer, updated.`
 }
@@ -1347,10 +1354,10 @@ const figmaAlign = defineWorkflow({
             )
             mkdirSync(dirname(path), { recursive: true })
             writeFileSync(path, stdout.endsWith("\n") ? stdout : `${stdout}\n`)
-            return path
+            return { card: path, cardError: "" }
           } catch (error) {
             ctx.log(`Card ${id}: not read — ${tail(error.message, 2)}`)
-            return ""
+            return { card: "", cardError: tail(error.message, 2) }
           }
         }
         const classesOf = (id) =>
@@ -1385,7 +1392,7 @@ const figmaAlign = defineWorkflow({
                 )
               ).stdout,
             ).cases?.[0]
-          const card = await cardOf(id)
+          const { card, cardError } = await cardOf(id)
           nodes.push({
             nodeId: id,
             name: entry.target?.export ?? queued?.export ?? id,
@@ -1395,6 +1402,7 @@ const figmaAlign = defineWorkflow({
             storyIds: queued?.storyIds ?? [],
             classes: classesOf(id),
             card,
+            cardError,
           })
         }
         return nodes
