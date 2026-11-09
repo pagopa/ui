@@ -269,7 +269,7 @@ export async function align(
 ): Promise<ParityOutput> {
   const node = loadNode(workspace, options)
   const cases = loadCaseFile(corpusPath(workspace, options.casesFile)).filter(
-    (item) => item.nodeId === options.nodeId,
+    (item) => item.nodeId === options.nodeId && !isDraftCase(item),
   )
   if (cases.length && !(await deps.storybook()))
     return output(
