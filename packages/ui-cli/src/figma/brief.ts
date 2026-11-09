@@ -5,7 +5,12 @@ import path from "node:path"
 import type { Workspace } from "../adapters/workspace.ts"
 import { readJson } from "../lib/json.ts"
 import { walkFiles } from "../lib/fs.ts"
-import { InventorySchema, RegistrySchema } from "../schemas/catalogue.ts"
+import {
+  InventorySchema,
+  RegistrySchema,
+  type Inventory,
+  type InventoryNode,
+} from "../schemas/catalogue.ts"
 import { readComments, threadsForNode } from "./comments.ts"
 import { readLedger, readRulesSnapshot, rulesForNode } from "./rules.ts"
 
@@ -47,7 +52,7 @@ function designRequests(workspace: Workspace, nodeId: string): string[] {
     .sort()
 }
 
-function componentForNode(inventory: ReturnType<typeof readInventory>, nodeId: string) {
+export function componentForNode(inventory: Inventory, nodeId: string): InventoryNode | undefined {
   return (
     inventory.components.find((entry) => entry.nodeId === nodeId) ??
     inventory.components.find((entry) =>
@@ -56,7 +61,7 @@ function componentForNode(inventory: ReturnType<typeof readInventory>, nodeId: s
   )
 }
 
-function readInventory(workspace: Workspace) {
+export function readInventory(workspace: Workspace): Inventory {
   return readJson(workspace.path(INVENTORY_PATH), InventorySchema)
 }
 
@@ -96,7 +101,7 @@ export function buildBrief(workspace: Workspace, requested: string): NodeBrief {
   }
 }
 
-function compact(value: string): string {
+export function compact(value: string): string {
   return value.replace(/\s+/g, " ")
 }
 

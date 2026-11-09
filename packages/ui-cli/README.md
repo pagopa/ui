@@ -258,6 +258,12 @@ implementation order, drift classes and devices. Use `--node <id>` for one
 brief; `--refresh` refreshes the rules and comments snapshots when their
 versions do not match the inventory pin.
 
+`pnpm ui-cli figma brief --node <id> --card` prints the node card instead of
+the brief: one line per section, under 1.5 KB, every field derived from the
+catalogue the brief already reads, with `… +N more` where a section is cut.
+`--card --json` prints the same record. It carries no timestamp and no absolute
+path, so two runs on the same catalogue are byte-identical.
+
 Catalogue drift and parity differences above tolerance return exit code 3;
 validation failures return 1 and missing inputs return 2.
 
@@ -286,7 +292,7 @@ and reporting requirements live in the Figma skill's
 | `check:rules`             | `check rules`                            | No          | Checks the ledger and guides strictly; `--no-strict` allows pending rules.                                                                                                                                                                                                                         |
 | `check:context-budget`    | `check context-budget`                   | No          | The byte cost a Figma session reads: every skill file, every declared route's transitive read set, the rendered card and the workflow preamble. Ceilings are constants in code, the committed baseline counts only the entries still over budget, and `--report` prints every row without failing. |
 | `figma:comments`          | `figma comments`                         | `--refresh` | The node comments: `--refresh` snapshots the threads, `--node` prints the threads of a node, `--open` keeps the unresolved ones.                                                                                                                                                                   |
-| `figma:brief`             | `figma brief --node <id>`                | No          | The implementation brief of a node: registry entry, rules, open comments and design requests, read offline from the local snapshots.                                                                                                                                                               |
+| `figma:brief`             | `figma brief --node <id>`                | No          | The implementation brief of a node: registry entry, rules, open comments and design requests, read offline from the local snapshots. `--card` prints the bounded node card, in text or with `--json`.                                                                                              |
 | `parity:queue`            | `parity queue`                           | No          | The registry cases with their story ids and missing evidence; `--unmapped` prints the cases with no committed mapping.                                                                                                                                                                             |
 | `parity:check`            | `parity check`                           | No          | Needs a source (the local snapshot, `--input`, or the committed evidence slice) and Storybook on `:6006`; exit 3 on deltas, 2 on missing evidence (including a refused capture or a slice that no longer matches the committed inventory). `--case <id>` runs a reviewed case.                     |
 | `parity:cases`            | `parity cases`                           | No          | Proposes the missing device cases and the variants no reviewed case points at (states and visual properties) from a sibling case; a proposal is a draft (`note`) until a wave replaces its note with the reviewed render.                                                                          |

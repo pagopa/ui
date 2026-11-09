@@ -7,11 +7,11 @@ import path from "node:path"
 import { z } from "zod"
 
 import type { Workspace } from "../adapters/workspace.ts"
-import { buildBrief, formatBrief } from "../figma/brief.ts"
+import { buildNodeCard, formatNodeCard } from "../figma/card.ts"
+import { readInventory } from "../figma/brief.ts"
 import { readLedger } from "../figma/rules.ts"
 import { walkRelative } from "../lib/fs.ts"
 import { readJson } from "../lib/json.ts"
-import { InventorySchema } from "../schemas/catalogue.ts"
 import { report, type CheckReport } from "./report.ts"
 
 const NAME = "context budget"
@@ -95,7 +95,6 @@ const SKILL_CORPUS = ".agents/skills"
 // reads it; the doc-links check skips it for the same reason.
 const THIRD_PARTY = ".agents/skills/shadcn/"
 const WORKFLOW_SOURCE = ".github/extensions/figma-align/extension.mjs"
-const INVENTORY_PATH = "src/catalog/figma/inventory.json"
 
 // The four routes a session can take, each declaring every file it may read.
 // The declaration is checked against the markdown links, so it cannot quietly
@@ -280,10 +279,10 @@ function routeMeasurement(
 }
 
 // The card is measured as a clean checkout renders it: the `.figma/` exports
-// that carry rule bodies and comments are gitignored, so letting them in would
-// make the budget differ between a laptop and CI.
+// that carry comments and the delta against the live file are gitignored, so
+// letting them in would make the budget differ between a laptop and CI.
 function renderNodeCard(workspace: Workspace): string {
-  const inventory = readJson(workspace.path(INVENTORY_PATH), InventorySchema)
+  const inventory = readInventory(workspace)
   const ledger = readLedger(workspace.root, false)
   const counts = new Map<string, number>()
   for (const card of Object.values(ledger?.cards ?? {})) {
@@ -295,13 +294,7 @@ function renderNodeCard(workspace: Workspace): string {
   ])
   const node = nodes.sort((left, right) => (counts.get(right) ?? 0) - (counts.get(left) ?? 0))[0]
   if (!node) throw new Error("the inventory has no component to render a card for")
-  const brief = buildBrief(workspace, node)
-  return formatBrief({
-    ...brief,
-    rules: brief.rules.map((rule) => ({ ...rule, body: null })),
-    openComments: [],
-    commentsSnapshot: null,
-  }).join("\n")
+  return formatNodeCard(buildNodeCard(workspace, node, { local: false })).join("\n")
 }
 
 // The preamble is one template literal: its source is the text every agent of
