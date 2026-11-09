@@ -10,28 +10,24 @@ set -uo pipefail
 
 # --- F1: skill load + invoke proof (agent trajectory under /logs/agent) ----------
 # Enforced unless SKILL_EVAL_ENFORCE_SKILL_USE=false (e.g. without-skill jobs).
+# The proof reads the transferred ATIF trajectory — the same artifact the
+# RewardKit judge sees — through the `skill_use.py` the converter writes into
+# /tests, instead of grepping the raw Copilot CLI stream: Harbor normalizes
+# every `--output-format json` shape into ATIF, so a CLI output change cannot
+# invalidate the gate (CLI 1.0.97 dropped the `<skill-context>` user messages
+# that the previous grep looked for).
 SKILL_OK=1
-TRANSCRIPT=""
-if [ -d /logs/agent ]; then
-  TRANSCRIPT=$(find /logs/agent -type f -name '*.jsonl' 2>/dev/null | head -n 1)
-fi
 if [ "${SKILL_EVAL_ENFORCE_SKILL_USE:-true}" = "true" ]; then
-  SKILL_NAME="${SKILL_EVAL_SKILL_NAME:-figma-to-code}"
-  if [ -n "$TRANSCRIPT" ]; then
-    # load: skill context injected into the user turn
-    if ! grep -q '<skill-context' "$TRANSCRIPT" 2>/dev/null; then
-      SKILL_OK=0
-    fi
-    # invoke: at least one tool call to the `skill` tool
-    if ! grep -q '"name" *: *"skill"' "$TRANSCRIPT" 2>/dev/null; then
-      SKILL_OK=0
-    fi
-  else
-    SKILL_OK=0
+  SKILL_NAME="${SKILL_EVAL_SKILL_NAME:-figma-to-ui}"
+  if [ ! -f /tests/skill_use.py ]; then
+    echo 0 > /logs/verifier/reward.txt
+    echo "skill_use.py missing from /tests — the installed harbor-bench predates the ATIF gate; reinstall it from main: uv tool install --force 'git+https://github.com/pagopa/dx@main#subdirectory=apps/harbor-bench'" > /logs/verifier/reason.txt
+    exit 0
   fi
+  SKILL_OK=$(python3 /tests/skill_use.py /logs/agent/trajectory.json "$SKILL_NAME" 2>/dev/null || echo 0)
 fi
 
-if [ "$SKILL_OK" -eq 0 ]; then
+if [ "$SKILL_OK" != "1" ]; then
   echo 0 > /logs/verifier/reward.txt
   echo "skill_use_ok=$SKILL_OK" > /logs/verifier/reason.txt
   exit 0
@@ -183,5 +179,8 @@ PYEOF
     echo 0 > /logs/verifier/reward.txt
   fi
 else
-  echo 1 > /logs/verifier/reward.txt
+  # Fail closed: an ungraded session is not a passing one. The diagnostic names
+  # the fix, so a missing credential cannot read as a green regression check.
+  echo 0 > /logs/verifier/reward.txt
+  echo "judge credentials missing — export COPILOT_GITHUB_TOKEN in the shell that runs harbor run (the task forwards it as OPENAI_API_KEY through [verifier.env]), then re-run" > /logs/verifier/reason.txt
 fi
