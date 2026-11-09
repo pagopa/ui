@@ -41,16 +41,25 @@ export function validateBulkRules(
   const bulkByPage = new Map<string, Registry["bulkRules"][number]>()
   for (const rule of registry.bulkRules ?? []) {
     if (!/^\d+:\d+$/.test(rule.pageId) || !VALID_STATUSES.has(rule.status ?? ""))
-      errors.push(`bulk rule invalid: ${JSON.stringify(rule)}`)
-    else if (bulkByPage.has(rule.pageId)) errors.push(`duplicate bulk rule for page ${rule.pageId}`)
+      errors.push(
+        `bulk rule invalid: ${JSON.stringify(rule)} — a bulk rule needs a \`<page>:<node>\` pageId and a status of ${STATUSES}, then run \`${CATALOGUE_GATE}\``,
+      )
+    else if (bulkByPage.has(rule.pageId))
+      errors.push(
+        `duplicate bulk rule for page ${rule.pageId} — keep one bulk rule per page, then run \`${CATALOGUE_GATE}\``,
+      )
     else bulkByPage.set(rule.pageId, rule)
     if (rule.status === "excluded" && !rule.reason)
-      errors.push(`bulk rule ${rule.page}: excluded requires reason`)
+      errors.push(
+        `bulk rule ${rule.page}: excluded requires reason — state why the page is excluded, then run \`${CATALOGUE_GATE}\``,
+      )
     if (
       rule.namesExport &&
       (!rule.assetManifest || !fs.existsSync(`${workspace.artworkRoot}/${rule.assetManifest}`))
     ) {
-      errors.push(`${rule.page}: namesExport requires an existing node-keyed assetManifest`)
+      errors.push(
+        `${rule.page}: namesExport requires an existing node-keyed assetManifest — point assetManifest at a file that exists, then run \`${CATALOGUE_GATE}\``,
+      )
     }
   }
   const { byNode, manifests } = catalogueIndex(registry, workspace)
@@ -97,6 +106,9 @@ export function validateRegistry(
 }
 
 const CATALOGUE_GATE = "pnpm nx run pagopa-ui:check:catalogue"
+// Every error below names what to change and the gate that says whether it is
+// fixed: a rule a session can hit has to carry its own repair.
+const STATUSES = [...VALID_STATUSES].join(", ")
 
 function validateRegistryEntry(
   workspace: Workspace,
@@ -111,7 +123,9 @@ function validateRegistryEntry(
   errors: string[],
 ): void {
   if (!VALID_STATUSES.has(entry.status))
-    errors.push(`registry ${nodeId}: invalid status ${entry.status}`)
+    errors.push(
+      `registry ${nodeId}: invalid status ${entry.status} — set one of ${STATUSES}, then run \`${CATALOGUE_GATE}\``,
+    )
   if (!committedById.has(nodeId))
     errors.push(
       `registry ${nodeId}: stale entry (node not in ${INVENTORY_PATH}) — drop it or refresh the inventory, then run \`${CATALOGUE_GATE}\``,
@@ -123,10 +137,14 @@ function validateRegistryEntry(
       validateDeclaredStoryExports(workspace, source, nodeId, entry, storiesByFile, errors)
     }
     if (entry.status === "mocked" && !entry.note)
-      errors.push(`registry ${nodeId}: mocked requires note`)
+      errors.push(
+        `registry ${nodeId}: mocked requires note — state what the mock leaves open, then run \`${CATALOGUE_GATE}\``,
+      )
   }
   if (entry.status === "excluded" && !entry.reason)
-    errors.push(`registry ${nodeId}: excluded requires reason`)
+    errors.push(
+      `registry ${nodeId}: excluded requires reason — state why the node is excluded, then run \`${CATALOGUE_GATE}\``,
+    )
   if (entry.status === "implemented" && entry.target?.export) {
     validateStoryEvidence(
       source,
@@ -167,11 +185,15 @@ function validateTarget(
   }
   for (const pair of targetIdentities(entry.target)) {
     if (!pair.module || !pair.export) {
-      errors.push(`registry ${nodeId}: additionalTargets require module and export`)
+      errors.push(
+        `registry ${nodeId}: additionalTargets require module and export — give every additional target both, then run \`${CATALOGUE_GATE}\``,
+      )
       continue
     }
     if (!fs.existsSync(workspace.path(pair.module)))
-      errors.push(`registry ${nodeId}: module not found ${pair.module}`)
+      errors.push(
+        `registry ${nodeId}: module not found ${pair.module} — fix the module path, then run \`${CATALOGUE_GATE}\``,
+      )
     else if (!exportNames(source, pair.module).has(pair.export))
       errors.push(
         `registry ${nodeId}: export "${pair.export}" not found in ${pair.module} — fix target.export, then run \`${CATALOGUE_GATE}\``,
@@ -190,7 +212,9 @@ function validateStoryTarget(
       `registry ${nodeId}: implemented requires target.story — add the story that renders the component, then run \`${CATALOGUE_GATE}\``,
     )
   else if (!fs.existsSync(workspace.path(entry.target.story)))
-    errors.push(`registry ${nodeId}: story not found ${entry.target.story}`)
+    errors.push(
+      `registry ${nodeId}: story not found ${entry.target.story} — fix target.story, then run \`${CATALOGUE_GATE}\``,
+    )
 }
 
 function validateDeclaredStoryExports(
@@ -203,7 +227,9 @@ function validateDeclaredStoryExports(
 ): void {
   if (!entry.target?.storyExports) return
   if (!Array.isArray(entry.target.storyExports) || !entry.target.storyExports.length) {
-    errors.push(`registry ${nodeId}: storyExports must be a nonempty list`)
+    errors.push(
+      `registry ${nodeId}: storyExports must be a nonempty list — list the exports that render the component, then run \`${CATALOGUE_GATE}\``,
+    )
     return
   }
   const storyFile = entry.target.story
@@ -231,7 +257,7 @@ function validateDeclaredStoryExports(
   for (const pair of identities) {
     if (!rendered.has(pair.identity))
       errors.push(
-        `registry ${nodeId}: declared story exports do not render "${pair.export}" from ${pair.module}`,
+        `registry ${nodeId}: declared story exports do not render "${pair.export}" from ${pair.module} — declare the export that renders it, then run \`${CATALOGUE_GATE}\``,
       )
   }
 }
@@ -309,18 +335,25 @@ function validateEvidenceExceptions(
   for (const [nodeId, reason] of Object.entries(exceptions)) {
     const entry = entries[nodeId]
     if (!entry) {
-      errors.push(`${EVIDENCE_EXCEPTIONS_PATH}: ${nodeId} is not a registry entry`)
+      errors.push(
+        `${EVIDENCE_EXCEPTIONS_PATH}: ${nodeId} is not a registry entry — drop the exception or add the entry, then run \`${CATALOGUE_GATE}\``,
+      )
       continue
     }
     if (entry.status !== "implemented")
-      errors.push(`${EVIDENCE_EXCEPTIONS_PATH}: ${nodeId} is not implemented`)
-    if (!reason) errors.push(`${EVIDENCE_EXCEPTIONS_PATH}: ${nodeId} requires a reason`)
+      errors.push(
+        `${EVIDENCE_EXCEPTIONS_PATH}: ${nodeId} is not implemented — drop the exception or implement the node, then run \`${CATALOGUE_GATE}\``,
+      )
+    if (!reason)
+      errors.push(
+        `${EVIDENCE_EXCEPTIONS_PATH}: ${nodeId} requires a reason — state why no story covers it, then run \`${CATALOGUE_GATE}\``,
+      )
     const identity = entry.target
       ? moduleExports(workspace, source, entry.target.module).get(entry.target.export)
       : undefined
     if (identity && allStoryImports.has(identity))
       errors.push(
-        `${EVIDENCE_EXCEPTIONS_PATH}: ${nodeId} is now rendered by a story — remove the exception`,
+        `${EVIDENCE_EXCEPTIONS_PATH}: ${nodeId} is now rendered by a story — remove the exception, then run \`${CATALOGUE_GATE}\``,
       )
   }
 }
@@ -347,14 +380,17 @@ export function validatePublicApi(
   const modulePatterns = apiExceptions.modulePatterns ?? {}
   const exportExceptions = apiExceptions.exports ?? {}
   for (const [pattern, reason] of Object.entries(modulePatterns)) {
-    if (!reason) found.push(`${API_EXCEPTIONS_PATH}: module pattern ${pattern} requires a reason`)
+    if (!reason)
+      found.push(
+        `${API_EXCEPTIONS_PATH}: module pattern ${pattern} requires a reason — state why the module is unsourced, then run \`${CATALOGUE_GATE}\``,
+      )
     if (
       ![...publicExports.values()].some((identity) =>
         matchesModulePattern(identity.split("#")[0], pattern),
       )
     ) {
       found.push(
-        `${API_EXCEPTIONS_PATH}: module pattern ${pattern} matches no public export — remove it`,
+        `${API_EXCEPTIONS_PATH}: module pattern ${pattern} matches no public export — remove it, then run \`${CATALOGUE_GATE}\``,
       )
     }
   }
@@ -373,13 +409,18 @@ export function validatePublicApi(
       `public exports without a Figma mapping (${unsourced.length}) — map them or list them in ${API_EXCEPTIONS_PATH}, then run \`${CATALOGUE_GATE}\`:\n${unsourced.map((line) => `  ${line}`).join("\n")}`,
     )
   for (const [name, reason] of Object.entries(exportExceptions)) {
-    if (!reason) found.push(`${API_EXCEPTIONS_PATH}: ${name} requires a reason`)
+    if (!reason)
+      found.push(
+        `${API_EXCEPTIONS_PATH}: ${name} requires a reason — state why the export is unsourced, then run \`${CATALOGUE_GATE}\``,
+      )
     const identity = publicExports.get(name)
     if (identity === undefined)
-      found.push(`${API_EXCEPTIONS_PATH}: ${name} is not a public export — remove it`)
+      found.push(
+        `${API_EXCEPTIONS_PATH}: ${name} is not a public export — remove it, then run \`${CATALOGUE_GATE}\``,
+      )
     else if (targets.has(identity))
       found.push(
-        `${API_EXCEPTIONS_PATH}: ${name} now maps to a registry entry — remove the exception`,
+        `${API_EXCEPTIONS_PATH}: ${name} now maps to a registry entry — remove the exception, then run \`${CATALOGUE_GATE}\``,
       )
   }
   return found
@@ -410,9 +451,13 @@ export function validateIconNames(
         `${rule.page}: asset ${id}`,
       )
       if (!selected.some((node) => node.nodeId === id))
-        errors.push(`${rule.page}: stale asset identity ${id}`)
+        errors.push(
+          `${rule.page}: stale asset identity ${id} — drop the asset or map the node, then run \`${CATALOGUE_GATE}\``,
+        )
       if (!asset.name.trim() || names.includes(asset.name))
-        errors.push(`${rule.page}: ${id} requires a unique public catalogue name`)
+        errors.push(
+          `${rule.page}: ${id} requires a unique public catalogue name — give the asset a name no other asset uses, then run \`${CATALOGUE_GATE}\``,
+        )
       names.push(asset.name)
     }
     const implemented = selected.filter(
@@ -420,7 +465,9 @@ export function validateIconNames(
     )
     for (const node of implemented)
       if (!manifest.entries[node.nodeId])
-        errors.push(`${rule.page}: implemented identity ${node.nodeId} has no source asset mapping`)
+        errors.push(
+          `${rule.page}: implemented identity ${node.nodeId} has no source asset mapping — add the asset to the manifest or set the node to pending, then run \`${CATALOGUE_GATE}\``,
+        )
     const expected = implemented
       .map((node) => {
         const raw = manifest.entries[node.nodeId]
@@ -440,6 +487,9 @@ export function validateIconNames(
         rule.page ?? rule.pageId,
         ICONS_PATH,
         names,
+      ).map(
+        (error) =>
+          `${error} — sync ${ICONS_PATH} with the manifest, then run \`${CATALOGUE_GATE}\``,
       ),
     )
   }
@@ -460,7 +510,7 @@ export function findUnaccountedNodes(
   )
   return missing.length
     ? [
-        `unaccounted nodes (${missing.length}) — add registry entries:\n${missing.map((node) => `  ${node.nodeId}  ${node.name}  (${node.pageName})`).join("\n")}`,
+        `unaccounted nodes (${missing.length}) — add registry entries, then run \`${CATALOGUE_GATE}\`:\n${missing.map((node) => `  ${node.nodeId}  ${node.name}  (${node.pageName})`).join("\n")}`,
       ]
     : []
 }
