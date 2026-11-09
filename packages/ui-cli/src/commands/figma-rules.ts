@@ -15,6 +15,7 @@ import {
   synchronizeRules,
 } from "../figma/rules-workflow.ts"
 import { buildBrief, formatBrief } from "../figma/brief.ts"
+import { buildNodeCard, formatNodeCard } from "../figma/card.ts"
 import { refreshBrief } from "../figma/brief-workflow.ts"
 import { buildBriefQueue, formatBriefQueue } from "../figma/brief-queue.ts"
 import { commentsJson, commentsReport, formatComments } from "../figma/comments-workflow.ts"
@@ -194,30 +195,36 @@ function briefCommand(ctx: CliContext) {
     args: {
       node: stringArg,
       queue: { type: "boolean", default: false },
+      card: { type: "boolean", default: false },
       json: jsonArg,
       refresh: { type: "boolean", default: false },
       "require-token": requireTokenArg,
     },
-    run: action(ctx, async ({ node, queue, json, refresh, "require-token": required }) => {
+    run: action(ctx, async ({ node, queue, card, json, refresh, "require-token": required }) => {
       if (queue && node) throw new UsageError("choose --node or --queue")
       if (!queue && !node) throw new UsageError("figma brief needs --node <id> or --queue")
+      if (card && !node) throw new UsageError("--card needs --node <id>: one card per node")
       requireToken(ctx, required)
       if (refresh) await refreshBrief(ctx.workspace(), () => figmaToken(ctx.env))
       if (queue) {
         const result = buildBriefQueue(ctx.workspace())
         if (json) printJson(ctx.io, result)
         else printLines(ctx.io, { out: formatBriefQueue(result) })
-      } else {
-        const result = buildBrief(
-          ctx.workspace(),
-          requireText(node, "--node <id> or --queue", "figma brief"),
-        )
-        if (json) printJson(ctx.io, result)
-        else
-          printLines(ctx.io, {
-            out: formatBrief(result, Boolean(readLedger(ctx.workspace().root, false))),
-          })
+        return EXIT.ok
       }
+      const requested = requireText(node, "--node <id> or --queue", "figma brief")
+      if (card) {
+        const nodeCard = buildNodeCard(ctx.workspace(), requested)
+        if (json) printJson(ctx.io, nodeCard)
+        else printLines(ctx.io, { out: formatNodeCard(nodeCard) })
+        return EXIT.ok
+      }
+      const result = buildBrief(ctx.workspace(), requested)
+      if (json) printJson(ctx.io, result)
+      else
+        printLines(ctx.io, {
+          out: formatBrief(result, Boolean(readLedger(ctx.workspace().root, false))),
+        })
       return EXIT.ok
     }),
   })
