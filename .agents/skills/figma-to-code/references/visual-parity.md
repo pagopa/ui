@@ -17,8 +17,9 @@ The commands are in [parity-tooling.md](parity-tooling.md); devices in
   touched to refresh the Tailwind scan.
 - Take the next pending wave with
   `pnpm ui-cli parity queue --next --size 3 --json`. For other requested scopes,
-  use queue's status/coverage filters from `--help`. List a
-  node's case IDs with `pnpm ui-cli parity capture --saved
+  use queue's status/coverage filters. Read `pnpm ui-cli parity check --help`
+  once, at the start of the wave: the flag surface does not change per node.
+  List a node's case IDs with `pnpm ui-cli parity capture --saved
   --node <id> --dry-run`.
 - The scope is the person's: by default a **wave** of three nodes, the highest in
   `implementationOrder` first, each finished before the next. A named list or the
@@ -41,8 +42,12 @@ devices (one iteration each).
    REST `fontWeight` can say 500 for a Semibold face.
    **Done when** the variant's geometry and type are written down.
 2. **First capture.** `pnpm ui-cli parity check` with `--state` (it names the
-   case id `<node>-<state>-<device>`), `--expect-state`, the source width and
-   the source artboard `--height`. Exit 2 is missing evidence, not a delta: fix
+   case id `<node>-<state>-<device>`), `--expect-state`, the source width, the
+   source artboard `--height`, and `--compare-offset` (plus `--compare-box
+   height` for text layers) with `--strict` on this first run. Strict is the only
+   check that catches a swapped stack whose sizes match, and the case is saved
+   strict-clean, so a loose pass only buys a second run.
+   Exit 2 is missing evidence, not a delta: fix
    the width, viewport, height or state evidence and run again.
    **Done when** the run reports a valid comparison (exit 0 or 3) and the `capture` block
    reads devicePixelRatio 1, ruler 100px and the expected root width.
@@ -63,12 +68,11 @@ devices (one iteration each).
    case**, then stop and report. Never accept a deviation because it looks
    right.
    **Done when** no delta is left unexplained; unresolved findings stay blocked.
-5. **Composition.** `--compare-offset` (plus `--compare-box height` for text
-   layers) with `--strict`. Clean → keep it in the case. Explained by a recorded
-   adaptation → leave it off and save a `note` with the measurement. Neither →
-   a finding for the person. The composition-order advisory is the only check
-   that catches a swapped stack whose sizes match: keep it on, or check the order
-   by hand.
+5. **Composition.** A clean strict result keeps the flags in the case. A strict
+   delta explained by a recorded adaptation leaves them off and saves a `note`
+   with the measurement. Anything else is a finding for the person. The
+   composition-order advisory is the only check that catches a swapped stack
+   whose sizes match: keep it on, or check the order by hand.
    **Done when** the case enables the composition check or carries its note.
 6. **Save.** `--save-case` (and `--note "reviewed: …"`); the command line is
    never the record.

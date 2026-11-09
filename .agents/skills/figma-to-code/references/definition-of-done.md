@@ -45,7 +45,9 @@ green chain.
 
    With Storybook answering, run
    `pnpm ui-cli parity check --node <nodeId> --saved` for **each** touched node.
-   The local Nx gates reuse unchanged inputs; browser runs are fresh.
+   The local Nx gates reuse unchanged inputs; browser runs are fresh. Start a
+   long gate in the background and read its output when it finishes, so the next
+   node's source read proceeds meanwhile.
    Then run `pnpm nx run pagopa-ui:docs` and
    `pnpm nx run workspace:verify`. Record every command and exit code, continuing
    after failures so the report accounts for all required checks.

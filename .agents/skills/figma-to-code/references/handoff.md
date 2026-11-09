@@ -46,7 +46,9 @@ full green chain before each commit.
 Use [shared completion](definition-of-done.md#closing-and-delivery).
 Before handoff, also run the scoped baseline preflight in
 [Visual regression](../../../../CONTRIBUTING.md#visual-regression) against the
-pull request base. Missing Linux images remain a finding until the update
+pull request base: the scoped run is the session's visual obligation, and the
+whole-catalogue comparison belongs to the nightly and the release pull request.
+Missing Linux images remain a finding until the update
 workflow's baselines are reviewed and the visual check reruns.
 
 ### Before / after media
