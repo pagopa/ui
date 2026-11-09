@@ -83,4 +83,21 @@ if ! pnpm ui-cli figma status >/dev/null; then
   exit 1
 fi
 
+# Every command that records state goes through the JSON writer, and `figma
+# status` never reaches it, so the writer gets its own check: it writes and
+# re-reads a scratch file. It needs no Figma token and leaves nothing behind.
+if ! node --input-type=module -e '
+  import fs from "node:fs"
+  const { writeJson } = await import("./packages/ui-cli/src/lib/json.ts")
+  const file = "packages/ui-cli/.writer-check.json"
+  writeJson(file, { ok: true })
+  const parsed = JSON.parse(fs.readFileSync(file, "utf8"))
+  fs.rmSync(file)
+  if (parsed.ok !== true) process.exit(1)
+' >/dev/null; then
+  echo "figma-to-code eval: the ui-cli JSON writer failed in the prepared" \
+    "workspace. A command that records state would fail mid-session." >&2
+  exit 1
+fi
+
 echo "figma-to-code eval: workspace ready"

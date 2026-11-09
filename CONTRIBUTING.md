@@ -298,9 +298,10 @@ against head skill — a local directory or a git source such as
 
 A session that cannot be graded does not start, and the failure names the fix:
 
-- `prepare.sh` ends with the command the skill depends on (`pnpm ui-cli figma
-  status`, `pagopa-ui-map resolve 61:2786`), so a broken image build stops the
-  run before an agent spends a turn on it.
+- `prepare.sh` ends with the commands the skill depends on (`pnpm ui-cli figma
+  status`, `pagopa-ui-map resolve 61:2786`) and writes a scratch file through
+  the JSON writer, so a broken image build — or a writer that cannot write —
+  stops the run before an agent spends a turn on it.
 - Without a token the live read reports `token missing — export FIGMA_TOKEN
   (file_content:read, library_content:read)`, which is also the stop the
   `figma-to-code` guardrail grades.
