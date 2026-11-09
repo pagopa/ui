@@ -40,12 +40,12 @@ export interface RouteDeclaration {
   /** The file a session opens first, relative to the workspace root. */
   readonly root: string
   /**
-   * Where the read set stops: the root of another declared route, or the
-   * `SKILL.md` of another skill. A link across one is allowed and not followed,
-   * so the route it enters counts those bytes.
+   * The routes a session of this route also reads, by root: their files join the
+   * route's total. The walk stops at every other route root and every other skill
+   * entry by itself, so those files stay out of `files`.
    */
-  readonly boundaries: readonly string[]
-  /** Every corpus file the route reads, relative to the workspace root. */
+  readonly reads: readonly string[]
+  /** Every corpus file the route loads on its own, relative to the workspace root. */
   readonly files: readonly string[]
 }
 
@@ -65,6 +65,8 @@ export interface BudgetEntry {
   readonly ceiling: number
   /** The files a route's total is made of. */
   readonly files?: number
+  /** What the route reads once the routes it reads join in, deduplicated. */
+  readonly withBoundaries?: number
   /** A card a session reads only where the gitignored `.figma/` exports exist. */
   readonly snapshot?: boolean
 }
@@ -102,81 +104,71 @@ const PREFLIGHT = ".agents/skills/start-figma-to-code"
 // file it reads. The declaration is checked against the markdown links, so it
 // cannot quietly stop describing the corpus: a file reachable but undeclared, or
 // declared but unreachable, fails the check. Routes overlap where a session
-// shares a file, and a boundary is what keeps the overlap from counting twice:
-// the read set stops at another route's root and at another skill's entry, so a
-// skill links its branches and its sibling skill normally.
+// shares a file: the walk stops at another route's root and at another skill's
+// entry, so a skill links its branches and its sibling skill normally, and a
+// route that also reads one of them says so in `reads` instead of copying it.
 export const CONTEXT_ROUTES: readonly RouteDeclaration[] = [
   {
     name: "live delta",
     root: `${FIGMA}/SKILL.md`,
-    boundaries: [
-      `${FIGMA_REFERENCES}/artwork.md`,
-      `${FIGMA_REFERENCES}/catalogue/files.md`,
+    reads: [
       `${FIGMA_REFERENCES}/catalogue/statuses.md`,
       `${FIGMA_REFERENCES}/definition-of-done.md`,
-      `${FIGMA_REFERENCES}/design-request.md`,
-      `${FIGMA_REFERENCES}/devices/vocabulary.md`,
-      `${FIGMA_REFERENCES}/new-from-figma.md`,
-      `${FIGMA_REFERENCES}/new-without-node.md`,
-      `${FIGMA_REFERENCES}/node-review.md`,
-      `${FIGMA_REFERENCES}/tokens.md`,
-      `${FIGMA_REFERENCES}/visual-parity.md`,
-      `${STANDARDS}/SKILL.md`,
     ],
     files: [`${FIGMA}/SKILL.md`, `${FIGMA_REFERENCES}/delta.md`, `${FIGMA_REFERENCES}/init.md`],
   },
   {
     name: "single-node review",
     root: `${FIGMA_REFERENCES}/node-review.md`,
-    boundaries: [`${FIGMA_REFERENCES}/catalogue/statuses.md`],
+    reads: [`${FIGMA_REFERENCES}/catalogue/statuses.md`],
     files: [`${FIGMA_REFERENCES}/node-review.md`, `${FIGMA_REFERENCES}/rules.md`],
   },
   {
     name: "closing gates",
     root: `${FIGMA_REFERENCES}/definition-of-done.md`,
-    boundaries: [`${STANDARDS}/SKILL.md`],
+    reads: [`${STANDARDS}/SKILL.md`],
     files: [`${FIGMA_REFERENCES}/definition-of-done.md`],
   },
   {
     name: "node statuses",
     root: `${FIGMA_REFERENCES}/catalogue/statuses.md`,
-    boundaries: [],
+    reads: [],
     files: [`${FIGMA_REFERENCES}/catalogue/statuses.md`],
   },
   {
     name: "parity wave",
     root: `${FIGMA_REFERENCES}/visual-parity.md`,
-    boundaries: [],
+    reads: [],
     files: [`${FIGMA_REFERENCES}/parity-tooling.md`, `${FIGMA_REFERENCES}/visual-parity.md`],
   },
   {
     name: "eval and preflight",
     root: `${PREFLIGHT}/SKILL.md`,
-    boundaries: [`${FIGMA_REFERENCES}/definition-of-done.md`],
+    reads: [`${FIGMA_REFERENCES}/definition-of-done.md`],
     files: [`${FIGMA_REFERENCES}/handoff.md`, `${PREFLIGHT}/SKILL.md`],
   },
   {
     name: "new component from a node",
     root: `${FIGMA_REFERENCES}/new-from-figma.md`,
-    boundaries: [`${STANDARDS_REFERENCES}/prop-conventions.md`],
+    reads: [`${STANDARDS_REFERENCES}/prop-conventions.md`],
     files: [`${FIGMA_REFERENCES}/new-from-figma.md`],
   },
   {
     name: "new component without a node",
     root: `${FIGMA_REFERENCES}/new-without-node.md`,
-    boundaries: [],
+    reads: [],
     files: [`${FIGMA_REFERENCES}/new-without-node.md`],
   },
   {
     name: "design request",
     root: `${FIGMA_REFERENCES}/design-request.md`,
-    boundaries: [],
+    reads: [],
     files: [`${FIGMA_REFERENCES}/design-request.md`],
   },
   {
     name: "device vocabulary",
     root: `${FIGMA_REFERENCES}/devices/vocabulary.md`,
-    boundaries: [],
+    reads: [],
     files: [
       `${FIGMA_REFERENCES}/devices/loop.md`,
       `${FIGMA_REFERENCES}/devices/scope.md`,
@@ -186,7 +178,7 @@ export const CONTEXT_ROUTES: readonly RouteDeclaration[] = [
   {
     name: "catalogue data",
     root: `${FIGMA_REFERENCES}/catalogue/files.md`,
-    boundaries: [],
+    reads: [],
     files: [
       `${FIGMA_REFERENCES}/catalogue/files.md`,
       `${FIGMA_REFERENCES}/catalogue/page-surface.md`,
@@ -195,19 +187,19 @@ export const CONTEXT_ROUTES: readonly RouteDeclaration[] = [
   {
     name: "artwork",
     root: `${FIGMA_REFERENCES}/artwork.md`,
-    boundaries: [],
+    reads: [],
     files: [`${FIGMA_REFERENCES}/artwork.md`],
   },
   {
     name: "foundation tokens",
     root: `${FIGMA_REFERENCES}/tokens.md`,
-    boundaries: [],
+    reads: [],
     files: [`${FIGMA_REFERENCES}/tokens.md`],
   },
   {
     name: "component standards",
     root: `${STANDARDS}/SKILL.md`,
-    boundaries: [`${STANDARDS_REFERENCES}/prop-conventions.md`],
+    reads: [`${STANDARDS_REFERENCES}/prop-conventions.md`],
     files: [
       `${STANDARDS}/SKILL.md`,
       `${STANDARDS_REFERENCES}/definition-of-done.md`,
@@ -217,7 +209,7 @@ export const CONTEXT_ROUTES: readonly RouteDeclaration[] = [
   {
     name: "prop conventions",
     root: `${STANDARDS_REFERENCES}/prop-conventions.md`,
-    boundaries: [],
+    reads: [],
     files: [`${STANDARDS_REFERENCES}/prop-conventions.md`],
   },
 ]
@@ -256,7 +248,11 @@ function overBudgetError(entry: BudgetEntry): string {
 
 function row(entry: BudgetEntry): string {
   const verdict = overBudget(entry) ? `over ${kilobytes(entry.ceiling)}` : "ok"
-  return `${entry.kind.padEnd(9)}${labelled(entry).padEnd(72)}${kilobytes(entry.bytes).padStart(9)}  ${verdict}`
+  const suffix =
+    entry.withBoundaries === undefined
+      ? ""
+      : `  (${kilobytes(entry.withBoundaries)} with its boundaries)`
+  return `${entry.kind.padEnd(9)}${labelled(entry).padEnd(72)}${kilobytes(entry.bytes).padStart(9)}  ${verdict}${suffix}`
 }
 
 const message = (error: unknown): string => (error instanceof Error ? error.message : String(error))
@@ -265,9 +261,21 @@ function size(root: string, file: string): number {
   return fs.statSync(path.join(root, file)).size
 }
 
+function bytesOf(workspace: Workspace, files: readonly string[]): number {
+  return files.reduce(
+    (total, file) =>
+      total +
+      (fs.existsSync(path.join(workspace.workspaceRoot, file))
+        ? size(workspace.workspaceRoot, file)
+        : 0),
+    0,
+  )
+}
+
 const LINK = /\[[^\]]*\]\(([^)\s]+)\)/g
 
 function links(file: string): string[] {
+  if (!fs.existsSync(file)) return []
   const text = fs.readFileSync(file, "utf8")
   return [...text.matchAll(LINK)].map((match) => match[1].split("#")[0])
 }
@@ -284,7 +292,7 @@ function resolveLink(from: string, link: string): string | null {
 function reachableRouteFiles(
   workspace: Workspace,
   root: string,
-  boundaries: ReadonlySet<string>,
+  stops: ReadonlySet<string>,
 ): string[] {
   const pending = [root]
   const reached = new Set<string>()
@@ -296,36 +304,56 @@ function reachableRouteFiles(
     if (!fs.existsSync(absolute)) continue
     for (const link of links(absolute)) {
       const target = resolveLink(file, link)
-      if (target && !boundaries.has(target) && !reached.has(target)) pending.push(target)
+      if (target && !stops.has(target) && !reached.has(target)) pending.push(target)
     }
   }
   return [...reached].sort()
 }
 
-// A boundary is where another route or another skill begins, so nothing else may
-// be declared as one: a route that named an arbitrary file would stop there and
-// report a read set smaller than the bytes a session loads.
-function boundaryErrors(routes: readonly RouteDeclaration[]): string[] {
+// A read edge is another route, so it must start one: a route that named an
+// arbitrary file would report a total no session pays. The edge must also be a
+// link its own files carry, or it claims bytes the session never reads.
+function readsErrors(routes: readonly RouteDeclaration[]): string[] {
   const roots = new Set(routes.map((route) => route.root))
   return routes.flatMap((route) =>
-    route.boundaries
-      .filter((boundary) => !roots.has(boundary) && path.posix.basename(boundary) !== "SKILL.md")
-      .map(
-        (boundary) =>
-          `route "${route.name}": ${boundary} is declared as a boundary but is neither a route root nor a skill entry`,
-      ),
+    route.reads
+      .filter((read) => !roots.has(read))
+      .map((read) => `route "${route.name}": ${read} is read but starts no route`),
   )
+}
+
+// What one task really reads: the route's own files plus the files of every route
+// it reads, deduplicated. One level deep is what a session pays here; a route it
+// enters reports the next hop on its own row. The number is shown, never
+// enforced: the 8 KB ceiling is the size of one reading unit, and global growth is
+// bounded by the `totalBytes` ratchet on the file corpus, which every file of
+// every route feeds.
+export function transitiveRouteFiles(routes: readonly RouteDeclaration[], root: string): string[] {
+  const byRoot = new Map(routes.map((route) => [route.root, route]))
+  const own = byRoot.get(root)
+  if (!own) return []
+  const files = new Set(own.files)
+  for (const read of own.reads) {
+    for (const file of byRoot.get(read)?.files ?? []) files.add(file)
+  }
+  return [...files].sort()
 }
 
 function routeMeasurement(
   workspace: Workspace,
   route: RouteDeclaration,
+  stops: ReadonlySet<string>,
 ): { files: string[]; errors: string[] } {
   if (!fs.existsSync(path.join(workspace.workspaceRoot, route.root))) {
     return { files: [], errors: [`route "${route.name}": root ${route.root} is missing`] }
   }
-  const reachable = reachableRouteFiles(workspace, route.root, new Set(route.boundaries))
+  const reachable = reachableRouteFiles(workspace, route.root, stops)
   const declared = new Set(route.files)
+  const linked = new Set(
+    route.files.flatMap((file) =>
+      links(path.join(workspace.workspaceRoot, file)).map((link) => resolveLink(file, link)),
+    ),
+  )
   const errors = [
     ...reachable
       .filter((file) => !declared.has(file))
@@ -337,6 +365,9 @@ function routeMeasurement(
       .map(
         (file) => `route "${route.name}": ${file} is declared but not reachable from ${route.root}`,
       ),
+    ...route.reads
+      .filter((read) => !linked.has(read))
+      .map((read) => `route "${route.name}": ${read} is read but no file of the route links it`),
   ]
   return { files: reachable, errors }
 }
@@ -389,12 +420,14 @@ export function measureContextBudget(
 ): ContextBudgetMeasurement {
   const entries: BudgetEntry[] = []
   const routes = options.routes ?? CONTEXT_ROUTES
-  const drift: string[] = boundaryErrors(routes)
+  const drift: string[] = readsErrors(routes)
+  const stops = new Set(routes.map((route) => route.root))
   for (const file of walkRelative(workspace.workspaceRoot, SKILL_CORPUS, (name) =>
     name.endsWith(".md"),
   )) {
     if (file.startsWith(THIRD_PARTY)) continue
     const kind = path.posix.basename(file) === "SKILL.md" ? "entry" : "file"
+    if (kind === "entry") stops.add(file)
     entries.push({
       kind,
       name: file,
@@ -403,15 +436,16 @@ export function measureContextBudget(
     })
   }
   for (const route of routes) {
-    const measured = routeMeasurement(workspace, route)
+    const measured = routeMeasurement(workspace, route, stops)
     drift.push(...measured.errors)
     if (!measured.files.length) continue
     entries.push({
       kind: "route",
       name: route.name,
-      bytes: measured.files.reduce((total, file) => total + size(workspace.workspaceRoot, file), 0),
+      bytes: bytesOf(workspace, measured.files),
       ceiling: CONTEXT_BUDGET_LIMITS.route,
       files: measured.files.length,
+      withBoundaries: bytesOf(workspace, transitiveRouteFiles(routes, route.root)),
     })
   }
   // A file in no route is context no budget counts: a session reads it and the

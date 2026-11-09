@@ -7,7 +7,9 @@ import { fileURLToPath } from "node:url"
 import {
   checkContextBudget,
   CONTEXT_BUDGET_LIMITS,
+  CONTEXT_ROUTES,
   measureContextBudget,
+  transitiveRouteFiles,
 } from "../../src/checks/context-budget.ts"
 import { fixtureTree, runCli, workspaceAt } from "../helpers/cli.mjs"
 
@@ -53,8 +55,8 @@ const overCount = (measurement) => measurement.entries.filter((e) => e.bytes > e
 const problems = (result) => result.problems.join("\n")
 const bytes = (count) => "x".repeat(count)
 
-function route(files, name = "fixture route", boundaries = []) {
-  return { name, root: ROOT, boundaries, files }
+function route(files, name = "fixture route", reads = []) {
+  return { name, root: ROOT, reads, files }
 }
 
 test("a skill file over its ceiling fails and names it", () => {
@@ -130,8 +132,6 @@ test("a declared file the links do not reach fails", () => {
   )
 })
 
-// Routes overlap where a session shares a file: the boundary is what stops the
-// traversal, so the route that enters counts the bytes and this one does not.
 test("a skill file no route reads fails and names it", () => {
   const result = budget(
     {
@@ -144,7 +144,10 @@ test("a skill file no route reads fails and names it", () => {
   assert.match(problems(result), /references\/orphan\.md is in no route/)
 })
 
-test("a link across a boundary is allowed and not traversed", () => {
+// Routes overlap where a session shares a file: a link to another route's root
+// stops the walk, so the route that enters counts those bytes and this one does
+// not. The reading route says so in `reads`, and its total carries them.
+test("a link to another route's root is allowed and not traversed", () => {
   const result = budget(
     {
       [ROOT]: "[a](references/a.md) [b](references/b.md)",
@@ -153,29 +156,75 @@ test("a link across a boundary is allowed and not traversed", () => {
     },
     {
       routes: [
-        {
-          name: "entry route",
-          root: ROOT,
-          boundaries: [reference("b")],
-          files: [ROOT, reference("a")],
-        },
-        { name: "branch route", root: reference("b"), boundaries: [], files: [reference("b")] },
+        { name: "entry route", root: ROOT, reads: [reference("b")], files: [ROOT, reference("a")] },
+        { name: "branch route", root: reference("b"), reads: [], files: [reference("b")] },
       ],
     },
   )
   assert.deepEqual(result.problems, [])
-  assert.match(result.details.join("\n"), /route\s+"entry route"\s+[\d.]+ KB\s+ok/)
+  assert.match(
+    result.details.join("\n"),
+    /route\s+"entry route"\s+[\d.]+ KB\s+ok\s+\([\d.]+ KB with its boundaries\)/,
+  )
 })
 
-test("a boundary that starts no route and no skill fails", () => {
+test("a route reads a route its files never link and fails", () => {
+  const result = budget(
+    {
+      [ROOT]: "[a](references/a.md)",
+      [reference("a")]: "a",
+      [reference("b")]: "b",
+    },
+    {
+      routes: [
+        route([ROOT, reference("a")], "entry route", [reference("b")]),
+        { name: "branch route", root: reference("b"), reads: [], files: [reference("b")] },
+      ],
+    },
+  )
+  assert.match(
+    problems(result),
+    /route "entry route": \.agents\/skills\/figma-to-code\/references\/b\.md is read but no file of the route links it/,
+  )
+})
+
+test("a read edge that starts no route fails", () => {
   const result = budget(
     { [ROOT]: "[a](references/a.md)", [reference("a")]: "a" },
     { routes: [route([ROOT], "fixture route", [reference("a")])] },
   )
   assert.match(
     problems(result),
-    /route "fixture route": \.agents\/skills\/figma-to-code\/references\/a\.md is declared as a boundary but is neither a route root nor a skill entry/,
+    /route "fixture route": \.agents\/skills\/figma-to-code\/references\/a\.md is read but starts no route/,
   )
+})
+
+test("the live delta total is its own files plus the two routes it reads", () => {
+  const own = CONTEXT_ROUTES.find((route) => route.name === "live delta")
+  const closing = CONTEXT_ROUTES.find((route) => route.name === "closing gates")
+  const statuses = CONTEXT_ROUTES.find((route) => route.name === "node statuses")
+  assert.deepEqual(
+    transitiveRouteFiles(CONTEXT_ROUTES, own.root),
+    [...new Set([...own.files, ...closing.files, ...statuses.files])].sort(),
+  )
+})
+
+test("a route with no read edge reaches only its own files", () => {
+  const routes = [{ name: "alone", root: reference("a"), reads: [], files: [reference("a")] }]
+  assert.deepEqual(transitiveRouteFiles(routes, reference("a")), [reference("a")])
+})
+
+test("a route with no read edge reports its own bytes as the total", () => {
+  const tree = fixtureTree({ [ROOT]: "[a](references/a.md)", [reference("a")]: "a" })
+  try {
+    const workspace = workspaceAt(tree.root)
+    const routes = [route([ROOT, reference("a")], "alone")]
+    const measured = measureContextBudget(workspace, { routes, contexts: [] })
+    const entry = measured.entries.find((candidate) => candidate.kind === "route")
+    assert.equal(entry.withBoundaries, entry.bytes)
+  } finally {
+    tree.dispose()
+  }
 })
 
 test("a count below the baseline asks to lower it", () => {
