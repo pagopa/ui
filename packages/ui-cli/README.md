@@ -80,7 +80,8 @@ The deterministic handoff, design-request and page-surface operations are
 available from the CLI:
 
 - `pnpm ui-cli figma handoff resolve [<pr|url|branch>]` resolves an open drift
-  pull request; `checkout <pr>` creates its sibling worktree and installs it;
+  pull request; `checkout <pr>` creates a sibling worktree named for its branch,
+  reusing the one that already holds it, and installs its dependencies;
   `brief <pr>` reads its delta and ordered node briefs.
 - `pnpm ui-cli figma handoff media --pr <n> --base <ref>` captures changed
   parity cases from local Storybook at `http://localhost:6006` (or

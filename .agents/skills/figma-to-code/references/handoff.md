@@ -14,9 +14,10 @@ evidence. Align on its head branch; the person pushes and merges.
 3. If the active worktree is already on the resolved head branch, use it.
    Otherwise preview `pnpm ui-cli figma handoff checkout <pr> --dry-run --json`,
    then run it without `--dry-run` under the session's filesystem permissions.
-   It fetches the head, creates a sibling worktree and installs dependencies.
-   Continue in its reported path. A destination/branch collision is a blocker,
-   not permission to delete an existing worktree.
+   It fetches the head, creates a sibling worktree named for the branch and
+   installs dependencies; a worktree already holding that branch is reused.
+   Continue in its reported path. A destination holding something other than a
+   worktree is a blocker, not permission to delete it.
 4. `pnpm ui-cli figma handoff brief <pr> --json` batches the PR body, delta
    artifact and local pending briefs. Read both the PR order and the local
    order; stale/absent artifact data must not silently change scope.
@@ -62,7 +63,8 @@ pnpm ui-cli figma handoff media --pr <n> --base <ref> --json
 
 The CLI selects changed mapped nodes/cases, captures base and head with the same
 story, viewport and clip, restores source files, attaches one comment and checks
-the uploaded URLs. Identical frames become a line rather than a pair.
+the uploaded URLs. Identical frames become a line rather than a pair. It reads
+`STORYBOOK_URL` when a session serves its own Storybook on another port.
 
 **Done when** every node whose render moved has a verified before/after pair,
 every unchanged render is explained, and the working tree is restored.

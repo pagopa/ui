@@ -12,9 +12,12 @@ The commands are in [parity-tooling.md](parity-tooling.md); devices in
   evidence slice ([parity-tooling.md](parity-tooling.md)). Refresh missing/stale
   live evidence through [delta.md](delta.md); without usable evidence the run
   exits 2.
-- Storybook on `storybook.url`; start `pnpm nx run pagopa-ui-storybook:storybook` when nothing answers. A
-  newly created source file may need the stylesheet named by `tokens.stylesheet`
-  touched to refresh the Tailwind scan.
+- Storybook on `storybook.url`; start `pnpm nx run pagopa-ui-storybook:storybook`
+  when nothing answers. A concurrent session serves its own copy with
+  `PORT=6007 pnpm nx run pagopa-ui-storybook:storybook` and points the CLI at it
+  with `STORYBOOK_URL=http://localhost:6007`. A newly created source file may
+  need the stylesheet named by `tokens.stylesheet` touched to refresh the
+  Tailwind scan.
 - Take the next pending wave with
   `pnpm ui-cli parity queue --next --size 3 --json`. For other requested scopes,
   use queue's status/coverage filters. Read `pnpm ui-cli parity check --help`

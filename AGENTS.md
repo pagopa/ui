@@ -40,7 +40,8 @@ This file adds what holds only for agents.
    session runs in Italian. Italian stays only where the product renders it:
    component and story texts, and the UI examples quoted in a guide.
 6. **Storybook runs on `:6006`.** `pnpm nx run pagopa-ui-storybook:storybook`
-   starts it and prints `http://localhost:6006`.
+   starts it and prints `http://localhost:6006`. `PORT` moves it and
+   `STORYBOOK_URL` points the CLI at it, so concurrent sessions keep their own.
 
 ## Figma sessions
 

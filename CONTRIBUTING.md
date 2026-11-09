@@ -43,7 +43,7 @@ in `mise.toml`/`mise.lock`; only the `infra/` projects need them.
    pnpm nx run pagopa-ui-storybook:storybook
    ```
 
-   Storybook answers at `http://localhost:6006`.
+   Storybook answers at `http://localhost:6006`; `PORT` moves it.
 
 ### GitHub Copilot plugins
 
@@ -127,7 +127,8 @@ Use `pnpm nx show projects` to list projects and
 `pnpm nx show project <name>` to inspect their targets.
 
 - `pnpm nx run pagopa-ui-storybook:storybook` — Storybook on
-  `http://localhost:6006`.
+  `http://localhost:6006`; `PORT=6007` moves it, and `STORYBOOK_URL` points the
+  UI CLI at a Storybook another session serves.
 - `pnpm nx run pagopa-ui-storybook:test:stories` — the stories in Firefox and WebKit;
   `pnpm nx run pagopa-ui-storybook:test:webkit` — the stories in WebKit alone, the pass a
   pull request runs; `pnpm nx run pagopa-ui-storybook:test:coverage` — the stories in
