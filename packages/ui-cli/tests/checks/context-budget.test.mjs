@@ -132,6 +132,18 @@ test("a declared file the links do not reach fails", () => {
 
 // Routes overlap where a session shares a file: the boundary is what stops the
 // traversal, so the route that enters counts the bytes and this one does not.
+test("a skill file no route reads fails and names it", () => {
+  const result = budget(
+    {
+      [ROOT]: "[a](references/a.md)",
+      [reference("a")]: "a",
+      [reference("orphan")]: "b",
+    },
+    { routes: [route([ROOT, reference("a")], "entry route")] },
+  )
+  assert.match(problems(result), /references\/orphan\.md is in no route/)
+})
+
 test("a link across a boundary is allowed and not traversed", () => {
   const result = budget(
     {

@@ -414,6 +414,15 @@ export function measureContextBudget(
       files: measured.files.length,
     })
   }
+  // A file in no route is context no budget counts: a session reads it and the
+  // check says nothing, so the coverage is asserted rather than assumed. A caller
+  // that declares no route states no read set, and has nothing to cover.
+  const covered = new Set(routes.flatMap((route) => route.files))
+  if (routes.length) {
+    for (const entry of entries.filter(corpus)) {
+      if (!covered.has(entry.name)) drift.push(`${entry.name} is in no route`)
+    }
+  }
   for (const context of options.contexts ?? RENDERED_CONTEXTS) {
     try {
       const rendered = context.render(workspace)
