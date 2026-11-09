@@ -155,12 +155,13 @@ export function formatBriefQueue(queue: BriefQueue): string[] {
       "",
       "no delta snapshot (.figma/live-rest.json): this read is the unscoped pending queue, not the delta — run `pnpm ui-cli figma export` to scope it",
     )
-  if (omitted > 0)
-    lines.push("", `${omitted} more pending node(s) not shown — pass --full for the whole queue`)
+  // State the omission; never sell the widening. The scoped read is the point,
+  // so `--full` stays in `--help` instead of being advertised in the output.
+  if (omitted > 0) lines.push("", `${omitted} more pending node(s) outside this delta, not read`)
   if (truncated > 0)
     lines.push(
       "",
-      `truncated at ${lineCap} lines: ${truncated} more node(s) in scope not shown — pass --limit <lines> or --full`,
+      `truncated at ${lineCap} lines: ${truncated} more node(s) in scope not shown — raise --limit to read them`,
     )
   return lines
 }

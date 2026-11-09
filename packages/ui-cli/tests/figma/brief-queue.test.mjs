@@ -70,10 +70,7 @@ test("brief queue reads the delta and names the omitted count", async () => {
       assert.match(result.stdout, new RegExp(`^node       ${nodeId}\\b`, "m"))
     }
     assert.doesNotMatch(result.stdout, /^node       1:4/m)
-    assert.match(
-      result.stdout,
-      /^2 more pending node\(s\) not shown — pass --full for the whole queue$/m,
-    )
+    assert.match(result.stdout, /^2 more pending node\(s\) outside this delta, not read$/m)
   } finally {
     fixture.dispose()
   }
@@ -131,9 +128,9 @@ test("brief queue caps an oversized delta and says it was capped", async () => {
     assert.ok(lines.length <= 60, `expected at most 60 lines, got ${lines.length}`)
     assert.match(
       result.stdout,
-      /^truncated at 60 lines: \d+ more node\(s\) in scope not shown — pass --limit <lines> or --full$/m,
+      /^truncated at 60 lines: \d+ more node\(s\) in scope not shown — raise --limit to read them$/m,
     )
-    assert.doesNotMatch(result.stdout, /more pending node\(s\) not shown/)
+    assert.doesNotMatch(result.stdout, /more pending node\(s\) outside this delta/)
 
     const raised = await runCli(["figma", "brief", "--queue", "--limit", "400"], {
       root: fixture.root,
@@ -161,7 +158,7 @@ test("brief queue without a delta snapshot reads the pending queue and says so",
       result.stdout,
       /^no delta snapshot \(\.figma\/live-rest\.json\): this read is the unscoped pending queue, not the delta — run `pnpm ui-cli figma export` to scope it$/m,
     )
-    assert.doesNotMatch(result.stdout, /more pending node\(s\) not shown/)
+    assert.doesNotMatch(result.stdout, /more pending node\(s\) outside this delta/)
 
     const json = await runCli(["figma", "brief", "--queue", "--json"], { root: fixture.root })
     assert.equal(json.status, 0, json.stderr)
@@ -196,7 +193,7 @@ test("the unscoped fallback counts the pending nodes it did not print", async ()
     assert.match(
       text.stdout,
       new RegExp(
-        `^${queue.scope.omitted} more pending node\\(s\\) not shown — pass --full for the whole queue$`,
+        `^${queue.scope.omitted} more pending node\\(s\\) outside this delta, not read$`,
         "m",
       ),
     )
