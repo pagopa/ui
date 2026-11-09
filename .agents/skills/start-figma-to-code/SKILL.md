@@ -22,5 +22,5 @@ they own source alignment and component quality respectively.
    **Done when** every requested node has a reviewed decision or a named
    pending request/blocker; every implemented node covers its declared devices.
 4. Follow [shared completion](../figma-to-code/references/definition-of-done.md#closing-and-delivery).
-   Report the reviewable result on the drift branch; commit only when requested,
-   and leave push and merge to the person. A blocked gate is reported, not passed.
+   Report the reviewable result, committed on the drift branch; push and merge
+   stay with the person. A blocked gate is reported, not passed.

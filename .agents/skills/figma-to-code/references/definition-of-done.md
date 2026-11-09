@@ -57,10 +57,9 @@ green chain.
    ([visual-parity.md](visual-parity.md#close-the-wave)).
    Drift delivery also owes the baseline preflight and
    before/after media in [handoff.md](handoff.md#checks-and-delivery).
-4. **Delivery permission stop.** Report and ask before commit, push or pull
-   request unless the person already requested that action. On a drift branch,
-   an authorized commit stays there; the person pushes and merges. Keep the
-   stories, registry, inventory and exception changes with the implementation.
+4. **Push and pull request stay with the person.** The drift branch carries the
+   commits; the person pushes and merges. Keep the stories, registry, inventory
+   and exception changes with the implementation.
 5. Report what changed; each node's decision
    and reason; each device's verdict; residues and reasons; open items and why;
    files touched; every command, exit code and passed/failed/skipped/unavailable

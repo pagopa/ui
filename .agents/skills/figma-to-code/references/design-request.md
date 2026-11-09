@@ -85,7 +85,7 @@ pnpm ui-cli figma request list --answered
 
 Read the issue's answer, implement it, update guide and rule dispositions, and
 review the node's source/render cases. Remove the review story while retaining
-captures; update the review PR index. After the authorized implementation commit:
+captures; update the review PR index. With the implementation committed:
 
 ```sh
 pnpm ui-cli figma request close <record> --decision "<recorded answer>" --commit <sha> --dry-run --json
