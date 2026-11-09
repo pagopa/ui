@@ -53,7 +53,7 @@ const classes: Array<[DeltaKey, string]> = [
 
 const deviceInstruction =
   "A `Device` axis is part of the contract: inspect and render **every** declared " +
-  "device (`.agents/skills/figma-to-code/references/devices.md`); save one case per device."
+  "device (`.agents/skills/figma-to-code/references/devices/scope.md`); save one case per device."
 
 function nodeLink(fileKey: string, nodeId: string): string {
   return `https://www.figma.com/design/${fileKey}?node-id=${nodeId.replace(":", "-")}`

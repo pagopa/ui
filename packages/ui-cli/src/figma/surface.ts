@@ -114,7 +114,7 @@ export function loadPageSurface(file: string): PageSurface {
   if (!fs.existsSync(file)) {
     throw new Error(
       `${file} is missing: a page census is committed next to registry.json ` +
-        `(see .agents/skills/figma-to-code/references/catalogue.md)`,
+        `(see .agents/skills/figma-to-code/references/catalogue/page-surface.md)`,
     )
   }
   return readJson(file, PageSurfaceSchema)

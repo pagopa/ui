@@ -67,7 +67,7 @@ export const SOURCE_FRAME_ATTRIBUTE = "data-source-frame"
 // into. A story that renders several compositions at once (a fidelity matrix)
 // therefore reports nothing for its sibling sections: the case's claim is about
 // its own root. The allowlist is the device traps of the figma-to-code skill
-// (`references/devices.md`): `.sr-only` subtrees (the class, including its
+// (`references/devices/scope.md`): `.sr-only` subtrees (the class, including its
 // container-variant `@container/…:sr-only` forms), closed `<details>`,
 // `content-visibility: hidden`, `position: fixed` subtrees (anchored to the
 // viewport, not the root) and elements whose own overflow scrolls. Without it a
