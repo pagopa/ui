@@ -71,6 +71,9 @@ test("brief queue reads the delta and names the omitted count", async () => {
     }
     assert.doesNotMatch(result.stdout, /^node       1:4/m)
     assert.match(result.stdout, /^2 more pending node\(s\) outside this delta, not read$/m)
+    // The scoped read is the point of #121: never advertise the widening that
+    // replaces it, or a session takes it and loses the count it must report.
+    assert.doesNotMatch(result.stdout, /--full/)
   } finally {
     fixture.dispose()
   }

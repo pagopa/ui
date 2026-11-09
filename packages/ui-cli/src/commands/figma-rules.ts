@@ -240,13 +240,37 @@ function briefCommand(ctx: CliContext) {
   return defineCommand({
     meta: { name: "brief", description: "Read implementation briefs" },
     args: {
-      node: stringArg,
-      queue: { type: "boolean", default: false },
-      card: { type: "boolean", default: false },
-      full: { type: "boolean", default: false },
-      limit: stringArg,
+      node: {
+        type: "string",
+        valueHint: "node",
+        description: "Read one node's brief, or its card with --card",
+      },
+      queue: {
+        type: "boolean",
+        default: false,
+        description: "Read the delta's briefs in one batch, scoped to it",
+      },
+      card: {
+        type: "boolean",
+        default: false,
+        description: "Read the bounded node card instead of the whole brief",
+      },
+      full: {
+        type: "boolean",
+        default: false,
+        description: "Widen --queue to every pending node, not just the delta",
+      },
+      limit: {
+        type: "string",
+        valueHint: "lines",
+        description: "Cap the --queue read at this many lines",
+      },
       json: jsonArg,
-      refresh: { type: "boolean", default: false },
+      refresh: {
+        type: "boolean",
+        default: false,
+        description: "Rebuild the cached briefs before reading",
+      },
       "require-token": requireTokenArg,
     },
     run: action(ctx, (args) => runBrief(ctx, args)),
