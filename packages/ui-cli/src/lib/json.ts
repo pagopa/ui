@@ -33,20 +33,34 @@ export function brotliJson(value: unknown): Buffer {
   })
 }
 
-export function formatJson(value: unknown): string {
-  const input = `${JSON.stringify(value, null, 2)}\n`
-  const formatter = fileURLToPath(new URL("../../node_modules/.bin/oxfmt", import.meta.url))
-  const config = fileURLToPath(new URL("../../../../oxfmt.config.ts", import.meta.url))
-  const formatted = execFileSync(formatter, ["--config", config, "--stdin-filepath", "data.json"], {
-    input,
-    encoding: "utf8",
-    maxBuffer: Math.max(Buffer.byteLength(input) * 2, 1024 * 1024),
-  })
-  return formatted
+export interface JsonFormatter {
+  readonly binary?: string
+  readonly config?: string
 }
 
-export function writeJson(file: string, value: unknown): void {
-  writeText(file, formatJson(value))
+// The formatter is a development dependency, so a runtime command must not fail
+// because it is missing or rejects its input: the write degrades to plain
+// two-space JSON, which every reader of a written file can still parse.
+export function formatJson(value: unknown, formatter: JsonFormatter = {}): string {
+  const input = `${JSON.stringify(value, null, 2)}\n`
+  const binary =
+    formatter.binary ?? fileURLToPath(new URL("../../node_modules/.bin/oxfmt", import.meta.url))
+  const config =
+    formatter.config ?? fileURLToPath(new URL("../../../../oxfmt.config.ts", import.meta.url))
+  if (!fs.existsSync(binary) || !fs.existsSync(config)) return input
+  try {
+    return execFileSync(binary, ["--config", config, "--stdin-filepath", "data.json"], {
+      input,
+      encoding: "utf8",
+      maxBuffer: Math.max(Buffer.byteLength(input) * 2, 1024 * 1024),
+    })
+  } catch {
+    return input
+  }
+}
+
+export function writeJson(file: string, value: unknown, formatter?: JsonFormatter): void {
+  writeText(file, formatJson(value, formatter))
 }
 
 // A write is visible either completely or not at all: a crash mid-write must
