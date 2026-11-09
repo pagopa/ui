@@ -21,18 +21,25 @@
     },
     "./tokens.css": "./dist/tokens.css"
   },
+  "bin": {
+    "pagopa-ui-map": "./cli/pagopa-ui-map.mjs"
+  },
   "files": [
     "dist",
+    "cli",
+    "skills",
+    "plugin.json",
+    "figma-map.json",
     "README.md"
   ],
   "sideEffects": [
     "**/*.css"
   ],
   "engines": {
-    "node": ">=22"
+    "node": ">=22.18"
   },
   "scripts": {
-    "build": "tsc -b && vite build && tsc -p tsconfig.lib.json && node ../ui-cli/src/cli.ts build prepare-types && node ../ui-cli/src/cli.ts check css",
+    "build": "tsc -b && vite build && tsc -p tsconfig.lib.json && node ../ui-cli/src/cli.ts build prepare-types && node ../ui-cli/src/cli.ts check css && node ../ui-cli/src/cli.ts figma map --write",
     "lint": "oxlint --fix",
     "lint:check": "oxlint",
     "typecheck": "tsc -b --force",

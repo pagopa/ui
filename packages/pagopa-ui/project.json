@@ -34,6 +34,8 @@
       "dependsOn": [
         "api:check",
         "check:catalogue",
+        "figma:map:check",
+        "plugin:check",
         "pagopa-ui-artwork:test",
         "layers:check",
         "text-defaults:check",
@@ -137,6 +139,22 @@
       "options": {
         "command": "node src/cli.ts check layers"
       }
+    },
+    "figma:map": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node src/cli.ts figma map --write",
+        "cwd": "{workspaceRoot}/packages/ui-cli",
+        "env": { "PAGOPA_UI_ROOT": "../pagopa-ui" }
+      },
+      "outputs": ["{projectRoot}/figma-map.json"],
+      "cache": false
+    },
+    "figma:map:check": {
+      "options": { "command": "node src/cli.ts figma map" }
+    },
+    "plugin:check": {
+      "options": { "command": "node src/cli.ts check plugin" }
     },
     "text-defaults:check": {
       "options": {

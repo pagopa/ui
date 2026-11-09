@@ -1,0 +1,12 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "pagopa-ui",
+  "description": "The PagoPA web design system as React components, with the skill and the command line that tell an agent which component renders a Figma node.",
+  "author": {
+    "name": "PagoPA"
+  },
+  "homepage": "https://github.com/pagopa/ui",
+  "repository": "https://github.com/pagopa/ui",
+  "license": "UNLICENSED",
+  "keywords": ["design-system", "figma", "react", "pagopa", "accessibility"]
+}
