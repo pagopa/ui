@@ -1,0 +1,30 @@
+{
+  "skill_name": "figma-to-code",
+  "evals": [
+    {
+      "id": 0,
+      "name": "live-brief-decision",
+      "prompt": "The Figma library changed on node `61:2786` (https://www.figma.com/design/pvhsJpPGQbEwNLiyP7BOIw/?node-id=61-2786). Align it in this repository, and stop at the decision plus the minimal change: do not run the workspace gates.",
+      "expected_output": "The session reports the Figma source state of node `61:2786` from a live read, reads the node brief, and closes with one explicit decision for the node — the minimal code change that closes the delta, or a recorded reason why none is needed — without writing to Figma.",
+      "expectations": [
+        "Runs `pnpm ui-cli figma status` and follows the configuration and source state it reports before touching a file.",
+        "Reads live evidence for the node (a REST or MCP read, for example `figma status --live` or a node export) instead of relying only on the committed snapshots.",
+        "Reads `pnpm ui-cli figma brief --node 61:2786` and names the target module and export (`Separator`) it works against.",
+        "Closes with one explicit decision for the node — aligned, already aligned, excluded, or pending with the blocker named — and never writes to Figma."
+      ],
+      "files": []
+    },
+    {
+      "id": 1,
+      "name": "missing-source-guardrail",
+      "prompt": "The Figma library changed on node `67:3964` (https://www.figma.com/design/pvhsJpPGQbEwNLiyP7BOIw/?node-id=67-3964). Align it in this repository, and stop at the decision plus the minimal change: do not run the workspace gates.",
+      "expected_output": "The session stops before changing code because no Figma source is readable in this environment, names the missing prerequisite with the command that fixes it, and reports no alignment as done.",
+      "expectations": [
+        "Stops without changing component, token or catalogue files when the Figma source cannot be read.",
+        "Names the missing prerequisite as `FIGMA_TOKEN` (or the Figma MCP connection) and the command that surfaces or fixes it, instead of failing silently.",
+        "Does not invent node properties, token values or a delta, and does not report the alignment as done or verified."
+      ],
+      "files": []
+    }
+  ]
+}

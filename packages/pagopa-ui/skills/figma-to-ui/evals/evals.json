@@ -1,0 +1,30 @@
+{
+  "skill_name": "figma-to-ui",
+  "evals": [
+    {
+      "id": 0,
+      "name": "resolve-instances-to-exports",
+      "prompt": "`notification-settings.json` in the workspace root is the metadata dump of the `Notification settings` frame in our Figma library. Build that screen as a React component at `src/NotificationSettings.tsx`, with the `@pagopa/ui` design system this workspace depends on. The deliverable is the component source only: do not install, build or test anything.",
+      "expected_output": "`src/NotificationSettings.tsx` renders the four parts of the frame with the `@pagopa/ui` components the Figma map resolves for their component-set ids (Banner, TextField, Separator, Button), imports them from `@pagopa/ui`, and loads the library stylesheet.",
+      "expectations": [
+        "Resolves each part through the `componentId` on its instance (for example instance `4102:91` -> component set `261:6501`), never through the instance's own node id.",
+        "Resolves the component-set ids with the Figma map CLI (`pagopa-ui-map resolve <id>`) and takes each part's status and export from that answer.",
+        "Renders the `Divider` instance with the `Separator` export the map names for `61:2786`, instead of inventing a `Divider` component.",
+        "Imports every rendered part from `@pagopa/ui` and loads `@pagopa/ui/styles.css`; no mapped part is re-implemented by hand."
+      ],
+      "files": ["evals/fixtures/notification-settings.json"]
+    },
+    {
+      "id": 1,
+      "name": "pending-node-guardrail",
+      "prompt": "`search-results.json` in the workspace root is the metadata dump of the `Search results` frame in our Figma library. Build that screen as a React component at `src/SearchResults.tsx`, with the `@pagopa/ui` design system this workspace depends on. The deliverable is the component source only: do not install, build or test anything.",
+      "expected_output": "`src/SearchResults.tsx` renders the frame's mapped parts with their `@pagopa/ui` exports, reports the `Pagination` component set (`127:1510`) as pending and asks before building it, and leaves the `Scrollbar` (`610:33637`) out because the map marks it excluded.",
+      "expectations": [
+        "Reports that `127:1510` (Pagination) is pending and asks for a decision, instead of substituting another component or hand-rolling pagination.",
+        "Leaves `610:33637` (Scrollbar) out of the screen, because the map marks it excluded as native OS chrome.",
+        "Still renders the `Tag` and `Button` parts with the exports the map resolves for `105:2043` and `108:1402`."
+      ],
+      "files": ["evals/fixtures/search-results.json"]
+    }
+  ]
+}

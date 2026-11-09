@@ -64,6 +64,9 @@ when work touches a component with a design source.
   node reviews and questions for the design owner.
 - [`start-figma-to-code`](.agents/skills/start-figma-to-code/SKILL.md) — the
   user-invoked entrypoint that scopes an open drift pull request.
+- [`figma-to-ui`](packages/pagopa-ui/skills/figma-to-ui/SKILL.md) — the same
+  reading of the Figma library, shipped inside the package for its consumers:
+  a frame's instances to the `@pagopa/ui` exports that render them.
 
 | Work                                                       | Skills                                                                                          |
 | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
@@ -72,6 +75,12 @@ when work touches a component with a design source.
 | A component with no node joining the public API            | both: `figma-to-code` adds the catalogue coverage                                               |
 | A Figma delta, tokens, icons, pictograms                   | `figma-to-code`; `pagopa-ui-standards` for each component it touches                            |
 | A question for the design owner, opened or answered        | `figma-to-code`: the design request flow                                                        |
+
+Both Figma skills are graded by harbor-bench evals: `evals/` holds the graded
+scenarios and `harbor/` the session that runs them, next to each skill. The run
+commands, the tokens they need and what fails fast are in
+[Skill evals](./CONTRIBUTING.md#skill-evals); an instruction an eval grades moves
+with its eval.
 
 ## Workflows
 

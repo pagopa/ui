@@ -1,0 +1,51 @@
+schema_version = "1.4"
+artifacts = [
+  { source = "/workspace", exclude = [
+    ".git",
+    "node_modules",
+    "vendor",
+    ".nx",
+    ".mise",
+    ".pnpm-store",
+    "dist",
+    "coverage",
+    "apps/storybook/visual/__screenshots__",
+  ] },
+  "/logs/agent/copilot-cli.jsonl",
+  "/logs/agent/trajectory.json",
+]
+
+[verifier]
+timeout_sec = 600.0
+collect = []
+environment_mode = "separate"
+
+[verifier.env]
+OPENAI_API_BASE = "https://api.githubcopilot.com"
+OPENAI_API_KEY = "${COPILOT_GITHUB_TOKEN}"
+LITELLM_DROP_PARAMS = "true"
+LITELLM_ROUTE_ALL_CHAT_OPENAI_TO_RESPONSES = "true"
+
+[agent]
+timeout_sec = 900.0
+
+[environment]
+network_mode = "public"
+build_timeout_sec = 900.0
+os = "linux"
+mcp_servers = []
+
+[environment.env]
+
+[solution.env]
+
+[task]
+name = "pagopa/figma-to-ui-1-pending-node-guardrail"
+description = "Renders the mapped parts, reports the Pagination component set (127:1510) as pending and asks before building it, and leaves the excluded Scrollbar out."
+version = "1.0.0"
+
+[metadata]
+difficulty = "medium"
+category = "skill-eval"
+tags = ["figma-to-ui", "skill-eval"]
+estimated_duration_sec = 900

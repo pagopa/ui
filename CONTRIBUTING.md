@@ -240,6 +240,66 @@ Every session ends with a report — the decision per node, the residues and the
 reasons, the commands with their results — and stops before commit, push or pull
 request unless you ask for them.
 
+## Skill evals
+
+Both Figma skills carry graded sessions in the `evals.json` format
+(agentskills.io): `figma-to-code` in
+[`.agents/skills/figma-to-code/evals`](./.agents/skills/figma-to-code/evals/evals.json),
+`figma-to-ui` in
+[`packages/pagopa-ui/skills/figma-to-ui/evals`](./packages/pagopa-ui/skills/figma-to-ui/evals/evals.json).
+Two evals each, three or four expectations each: one end-to-end pass over a
+single node or frame, and one guardrail that must stop and report instead of
+inventing a design. They grade the session — what the agent read, resolved and
+decided — not the diff, so they stay cheap; they are the regression net for the
+skills' own instructions.
+
+The `harbor/` directory next to each `evals/` builds that session for
+[harbor-bench](https://github.com/pagopa/dx/tree/main/apps/harbor-bench):
+`environment/prepare.sh` prepares the workspace at image build, one
+`<task>/task.toml` overlay per task sets the artifact excludes and the
+`FIGMA_TOKEN` of the live eval, and the generated verifier hands the judge a
+bounded packet of the workspace instead of the whole checkout. Neither `evals/` nor `harbor/`
+ships: the `files` list of `packages/pagopa-ui` excludes them.
+
+### Running a skill's evals
+
+```bash
+uv tool install "git+https://github.com/pagopa/dx@main#subdirectory=apps/harbor-bench"
+
+# One convert per skill: it injects only the skill its evals belong to.
+harbor-bench convert --evals .agents/skills/figma-to-code/evals/evals.json --out .harbor/code
+harbor-bench convert --evals packages/pagopa-ui/skills/figma-to-ui/evals/evals.json --out .harbor/ui
+
+COPILOT_GITHUB_TOKEN=… harbor run -c .harbor/code/config.yaml -y \
+  --ae COPILOT_GITHUB_TOKEN=… --ae FIGMA_TOKEN=… \
+  --jobs-dir .harbor/runs --job-name code
+```
+
+`COPILOT_GITHUB_TOKEN` reaches the agent through `--ae` and the judge through the
+host environment. `FIGMA_TOKEN` is only for the live eval of `figma-to-code`:
+both guardrails, and both `figma-to-ui` evals, run without Figma.
+
+`harbor-bench compare <base> <head>` runs the same evals twice, base skill
+against head skill — a local directory or a git source such as
+`pagopa/ui@main` — and writes `comparison.md`. Keep `--out .harbor` and
+`--runs-dir .harbor/runs`: `.harbor` is ignored.
+
+### What fails fast
+
+A session that cannot be graded does not start, and the failure names the fix:
+
+- `prepare.sh` ends with the command the skill depends on (`pnpm ui-cli figma
+  status`, `pagopa-ui-map resolve 61:2786`), so a broken image build stops the
+  run before an agent spends a turn on it.
+- Without a token the live read reports `token missing — export FIGMA_TOKEN
+  (file_content:read, library_content:read)`, which is also the stop the
+  `figma-to-code` guardrail grades.
+- The workspace packet the verifier hands the judge is capped, so a checkout
+  full of `node_modules` and screenshots cannot time the judge out.
+
+The evals are not in the green chain: they start agent sessions and need the
+network, a Copilot token and, for one eval, a Figma token.
+
 ## Workflow
 
 1. A working branch from `main`.

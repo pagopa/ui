@@ -1,0 +1,35 @@
+{
+  "source": "Figma node metadata",
+  "fileKey": "pvhsJpPGQbEwNLiyP7BOIw",
+  "frame": {
+    "id": "4102:88",
+    "name": "Notification settings",
+    "width": 360,
+    "height": 420
+  },
+  "instances": [
+    {
+      "id": "4102:91",
+      "name": "Banner",
+      "componentId": "261:6501",
+      "text": "Le notifiche sono attive"
+    },
+    {
+      "id": "4102:94",
+      "name": "Email",
+      "componentId": "529:6111",
+      "text": "Email"
+    },
+    {
+      "id": "4102:97",
+      "name": "Divider",
+      "componentId": "61:2786"
+    },
+    {
+      "id": "4102:99",
+      "name": "Save",
+      "componentId": "108:1402",
+      "text": "Salva"
+    }
+  ]
+}

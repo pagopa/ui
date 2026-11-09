@@ -1,0 +1,34 @@
+{
+  "source": "Figma node metadata",
+  "fileKey": "pvhsJpPGQbEwNLiyP7BOIw",
+  "frame": {
+    "id": "5200:8",
+    "name": "Search results",
+    "width": 360,
+    "height": 640
+  },
+  "instances": [
+    {
+      "id": "5200:11",
+      "name": "Result tag",
+      "componentId": "105:2043",
+      "text": "Pagato"
+    },
+    {
+      "id": "5200:14",
+      "name": "Pagination",
+      "componentId": "127:1510"
+    },
+    {
+      "id": "5200:17",
+      "name": "Scrollbar",
+      "componentId": "610:33637"
+    },
+    {
+      "id": "5200:19",
+      "name": "Open",
+      "componentId": "108:1402",
+      "text": "Apri"
+    }
+  ]
+}
