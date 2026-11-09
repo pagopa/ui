@@ -768,7 +768,7 @@ const DECISION_GUIDANCE = {
   implement:
     "Follow references/new-from-figma.md end to end: implement, story at the exact source width with parameters.design = figmaEmbedUrl, guide whose first block is the consumer rules, the visual-parity loop per variant and per declared device, one saved case each, then the registry entry. Mark every rule that targets the node with figma:rules mark and leave none pending or stale.",
   review:
-    "Follow references/node-review.md: re-read the brief, re-run every committed case, capture the missing ones per device, fix the component and its story where they must change (token ladder), re-run, dispose the rule cards, then record the decision in the registry.",
+    "Follow references/node-review.md: re-read the card, re-run every committed case, capture the missing ones per device, fix the component and its story where they must change (token ladder), re-run, dispose the rule cards, then record the decision in the registry.",
   map: "Follow references/node-review.md for a mapping: prove the existing implementation covers the node's whole contract on every declared device with saved cases, dispose the rule cards, then point the registry target at it.",
   exclude:
     "Set the registry entry to excluded with a self-contained reason in its note. Dispose every rule card that targets it (out-of-scope or duplicate, with the reason). Change nothing else.",
