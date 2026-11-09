@@ -7,15 +7,20 @@ import path from "node:path"
 // workspace packages whose caches change while other tasks run.
 export function walkFiles(directory: string, accept: (file: string) => boolean): string[] {
   if (!fs.existsSync(directory)) return []
-  return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
-    const full = path.join(directory, entry.name)
-    if (entry.isDirectory()) {
-      return entry.name === "node_modules" || entry.name.startsWith(".")
-        ? []
-        : walkFiles(full, accept)
-    }
-    return accept(full) ? [full] : []
-  })
+  // The read order is the filesystem's, so it is fixed here: a walk that reports
+  // in directory order makes every caller's output depend on the machine.
+  return fs
+    .readdirSync(directory, { withFileTypes: true })
+    .sort((left, right) => left.name.localeCompare(right.name))
+    .flatMap((entry) => {
+      const full = path.join(directory, entry.name)
+      if (entry.isDirectory()) {
+        return entry.name === "node_modules" || entry.name.startsWith(".")
+          ? []
+          : walkFiles(full, accept)
+      }
+      return accept(full) ? [full] : []
+    })
 }
 
 // The same walk, as POSIX paths relative to `root` (`src/components/…`).

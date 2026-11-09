@@ -1,9 +1,10 @@
 import fs from "node:fs"
 import type { Workspace } from "../adapters/workspace.ts"
 import { readJson } from "../lib/json.ts"
-import { InventorySchema, RegistrySchema, type InventoryNode } from "../schemas/catalogue.ts"
+import type { InventoryNode } from "../schemas/catalogue.ts"
+import type { DevicePolicy } from "../schemas/devices.ts"
 import { loadDevicePolicy, requiredDevices } from "./devices.ts"
-import { buildBrief, formatBrief, type NodeBrief } from "./brief.ts"
+import { buildBrief, formatBrief, readBriefSources, type NodeBrief } from "./brief.ts"
 import {
   compareSnapshots,
   deltaChangeNodes,
@@ -19,9 +20,9 @@ export type BriefQueueKind = "delta" | "pending" | "all"
 
 export type BriefQueueScope = {
   kind: BriefQueueKind
-  /** Pending nodes the read left out because they are outside the delta. */
+  /** Pending nodes the read did not print, whether out of scope or past the cap. */
   omitted: number
-  /** Nodes the line cap dropped from the listing. */
+  /** Nodes the line cap dropped from the listing, the pending ones aside. */
   truncated: number
   /** The cap that produced `truncated`, `null` when the read is uncapped. */
   lineCap: number | null
@@ -60,9 +61,8 @@ function classes(delta: SnapshotDelta | null, node: InventoryNode): string[] {
   return found
 }
 
-function devices(workspace: Workspace, node: InventoryNode): string[] {
-  const file = workspace.path("src/catalog/figma/device-policy.json")
-  if (fs.existsSync(file)) return requiredDevices(loadDevicePolicy(file), node)
+function devices(policy: DevicePolicy | null, node: InventoryNode): string[] {
+  if (policy) return requiredDevices(policy, node)
   return [
     ...new Set(
       (node.variants ?? []).flatMap((variant) => (variant.device ? [variant.device] : [])),
@@ -75,11 +75,8 @@ function itemLines(item: BriefQueueItem): number {
   return formatBrief(item.brief).length + 2
 }
 
-function capItems(
-  items: BriefQueueItem[],
-  lineCap: number | null,
-): { items: BriefQueueItem[]; truncated: number } {
-  if (lineCap === null) return { items, truncated: 0 }
+function capItems(items: BriefQueueItem[], lineCap: number | null): BriefQueueItem[] {
+  if (lineCap === null) return items
   const shown: BriefQueueItem[] = []
   let lines = 0
   for (const item of items) {
@@ -88,15 +85,19 @@ function capItems(
     lines += cost
     shown.push(item)
   }
-  return { items: shown, truncated: items.length - shown.length }
+  return shown
 }
 
 export function buildBriefQueue(workspace: Workspace, options: BriefQueueOptions = {}): BriefQueue {
   const kind = options.scope ?? "delta"
   const lineCap =
     options.lineCap !== undefined ? options.lineCap : kind === "all" ? null : DEFAULT_QUEUE_LINE_CAP
-  const inventory = readJson(workspace.path("src/catalog/figma/inventory.json"), InventorySchema)
-  const registry = readJson(workspace.path("src/catalog/figma/registry.json"), RegistrySchema)
+  // One read of everything a brief needs, and one of the device policy: a queue
+  // of n nodes must not walk the workspace n times.
+  const sources = readBriefSources(workspace)
+  const policyFile = workspace.path("src/catalog/figma/device-policy.json")
+  const policy = fs.existsSync(policyFile) ? loadDevicePolicy(policyFile) : null
+  const { inventory, registry } = sources
   const pending = new Set(
     Object.entries(registry.entries)
       .filter(([, entry]) => entry.status === "pending")
@@ -115,26 +116,30 @@ export function buildBriefQueue(workspace: Workspace, options: BriefQueueOptions
   const inScope = implementationOrder(all, selected)
   const seen = new Set(inScope)
   inScope.push(...[...selected].filter((id) => !seen.has(id)).sort())
-  const pendingOrder = implementationOrder(all, pending)
   const items = inScope.map((id) => {
     const node = nodes.get(id)
     return {
       nodeId: id,
       class: node ? classes(delta, node).join(", ") || "pending" : "pending",
-      devices: node ? devices(workspace, node) : [],
-      brief: buildBrief(workspace, id),
+      devices: node ? devices(policy, node) : [],
+      brief: buildBrief(workspace, id, sources),
     }
   })
   const capped = capItems(items, lineCap)
+  // Both counts are read off what the caller is about to print, not off the
+  // scope: a cap that drops a pending node has to say so, and the two numbers
+  // never describe the same node.
+  const printed = new Set(capped.map((item) => item.nodeId))
+  const dropped = inScope.filter((id) => !printed.has(id))
   return {
     scope: {
       kind: kind === "all" ? "all" : scoped ? "delta" : "pending",
-      omitted: pendingOrder.length - inScope.filter((id) => pending.has(id)).length,
-      truncated: capped.truncated,
+      omitted: [...pending].filter((id) => !printed.has(id)).length,
+      truncated: dropped.filter((id) => !pending.has(id)).length,
       lineCap,
     },
     implementationOrder: inScope,
-    items: capped.items,
+    items: capped,
   }
 }
 
@@ -148,7 +153,7 @@ export function formatBriefQueue(queue: BriefQueue): string[] {
   if (kind === "pending")
     lines.push(
       "",
-      "no delta snapshot (.figma/live-rest.json): the whole pending queue is shown, unscoped",
+      "no delta snapshot (.figma/live-rest.json): this read is the unscoped pending queue, not the delta — run `pnpm ui-cli figma export` to scope it",
     )
   if (omitted > 0)
     lines.push("", `${omitted} more pending node(s) not shown — pass --full for the whole queue`)

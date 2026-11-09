@@ -40,15 +40,19 @@ export type NodeBrief = {
   commentsSnapshot: string | null
 }
 
-function designRequests(workspace: Workspace, nodeId: string): string[] {
-  const dashed = nodeId.replace(":", "-")
+function requestFiles(workspace: Workspace): Array<{ path: string; text: string }> {
   const directory = path.join(workspace.workspaceRoot, REQUESTS_DIR)
-  return walkFiles(directory, (file) => file.endsWith(".md"))
-    .filter((file) => {
-      const text = fs.readFileSync(file, "utf8")
-      return text.includes(nodeId) || text.includes(`node-id=${dashed}`)
-    })
-    .map((file) => path.relative(workspace.workspaceRoot, file).split(path.sep).join("/"))
+  return walkFiles(directory, (file) => file.endsWith(".md")).map((file) => ({
+    path: path.relative(workspace.workspaceRoot, file).split(path.sep).join("/"),
+    text: fs.readFileSync(file, "utf8"),
+  }))
+}
+
+function designRequests(sources: BriefSources, nodeId: string): string[] {
+  const dashed = nodeId.replace(":", "-")
+  return sources.requests
+    .filter((file) => file.text.includes(nodeId) || file.text.includes(`node-id=${dashed}`))
+    .map((file) => file.path)
     .sort()
 }
 
@@ -65,16 +69,32 @@ export function readInventory(workspace: Workspace): Inventory {
   return readJson(workspace.path(INVENTORY_PATH), InventorySchema)
 }
 
-export function buildBrief(workspace: Workspace, requested: string): NodeBrief {
-  const inventory = readInventory(workspace)
-  const registry = readJson(workspace.path(REGISTRY_PATH), RegistrySchema)
+// Everything a brief reads from disk, so a caller that builds several briefs
+// reads the catalogue, the ledger, the comment snapshot and the design requests
+// once instead of once per node.
+export function readBriefSources(workspace: Workspace) {
+  return {
+    inventory: readInventory(workspace),
+    registry: readJson(workspace.path(REGISTRY_PATH), RegistrySchema),
+    ledger: readLedger(workspace.root, false),
+    snapshot: readRulesSnapshot(workspace.root, false),
+    comments: readComments(workspace),
+    requests: requestFiles(workspace),
+  }
+}
+
+export type BriefSources = ReturnType<typeof readBriefSources>
+
+export function buildBrief(
+  workspace: Workspace,
+  requested: string,
+  sources: BriefSources = readBriefSources(workspace),
+): NodeBrief {
+  const { inventory, registry, ledger, snapshot, comments } = sources
   const component = componentForNode(inventory, requested)
   const identity = component?.nodeId ?? requested
   const entry = registry.entries[identity]
-  const ledger = readLedger(workspace.root, false)
-  const snapshot = readRulesSnapshot(workspace.root, false)
   const rules = ledger ? rulesForNode(ledger, snapshot, workspace.root, requested) : []
-  const comments = readComments(workspace)
   const openComments = comments
     ? threadsForNode(workspace, comments, requested, { openOnly: true })
     : []
@@ -96,7 +116,7 @@ export function buildBrief(workspace: Workspace, requested: string): NodeBrief {
       guide: rule.guide ?? null,
     })),
     openComments,
-    designRequests: designRequests(workspace, identity),
+    designRequests: designRequests(sources, identity),
     commentsSnapshot: comments?.fetchedAt ?? null,
   }
 }

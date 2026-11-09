@@ -155,9 +155,50 @@ test("brief queue without a delta snapshot reads the pending queue and says so",
     const result = await runCli(["figma", "brief", "--queue"], { root: fixture.root })
     assert.equal(result.status, 0, result.stderr)
     assert.match(result.stdout, /^implementationOrder 1:1, 1:4$/m)
+    // The fallback widens the read, so it says what it did not scope and which
+    // command scopes it, and it still counts what it did not print.
     assert.match(
       result.stdout,
-      /^no delta snapshot \(\.figma\/live-rest\.json\): the whole pending queue is shown, unscoped$/m,
+      /^no delta snapshot \(\.figma\/live-rest\.json\): this read is the unscoped pending queue, not the delta — run `pnpm ui-cli figma export` to scope it$/m,
+    )
+    assert.doesNotMatch(result.stdout, /more pending node\(s\) not shown/)
+
+    const json = await runCli(["figma", "brief", "--queue", "--json"], { root: fixture.root })
+    assert.equal(json.status, 0, json.stderr)
+    assert.deepEqual(JSON.parse(json.stdout).scope, {
+      kind: "pending",
+      omitted: 0,
+      truncated: 0,
+      lineCap: 60,
+    })
+  } finally {
+    fixture.dispose()
+  }
+})
+
+const manyPendingFiles = files(
+  [],
+  many,
+  many.map((node) => pending(node.nodeId)),
+)
+delete manyPendingFiles[".figma/live-rest.json"]
+
+test("the unscoped fallback counts the pending nodes it did not print", async () => {
+  const fixture = fixtureTree(manyPendingFiles, "brief-queue-nosnapshot-cap-")
+  try {
+    const json = await runCli(["figma", "brief", "--queue", "--json"], { root: fixture.root })
+    assert.equal(json.status, 0, json.stderr)
+    const queue = JSON.parse(json.stdout)
+    assert.equal(queue.scope.kind, "pending")
+    assert.ok(queue.scope.omitted > 0, "the fallback says what it left out")
+    assert.equal(queue.scope.omitted, many.length - queue.items.length)
+    const text = await runCli(["figma", "brief", "--queue"], { root: fixture.root })
+    assert.match(
+      text.stdout,
+      new RegExp(
+        `^${queue.scope.omitted} more pending node\\(s\\) not shown — pass --full for the whole queue$`,
+        "m",
+      ),
     )
   } finally {
     fixture.dispose()
