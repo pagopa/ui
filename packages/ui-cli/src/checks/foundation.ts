@@ -1,25 +1,22 @@
-#!/usr/bin/env node
 // Foundation contract for library CSS and component/template sources: utility
 // strings consume the token scale; declarations and inline defaults consume
 // semantic/foundation references instead of duplicating visual constants.
-//
-//   ui-cli check foundation            # enforce the baseline
-//   ui-cli check foundation --measure  # print the current counts
 import fs from "node:fs"
 import path from "node:path"
 import { z } from "zod"
 
 import { readJson } from "../lib/json.ts"
 import { walkFiles } from "../lib/fs.ts"
-import { absolutePath, enterRoot, tokensPath } from "../lib/paths.ts"
+import type { Workspace } from "../adapters/workspace.ts"
 import { parseSchema } from "../lib/validate.ts"
-import { parseSource } from "../lib/source-modules.ts"
+import { createSourceModules, type SourceModules } from "../lib/source-modules.ts"
 import {
   FoundationBaselineSchema,
   FoundationExceptionsSchema,
   type FoundationException,
 } from "../schemas/tokens.ts"
 import { cssStyleOccurrences, inlineStyleOccurrences, STYLE_RULES } from "./foundation-styles.ts"
+import { report, type CheckReport } from "./report.ts"
 
 const FoundationManifestSchema = z.looseObject({
   foundations: z.record(z.string(), z.looseObject({ category: z.string(), value: z.unknown() })),
@@ -37,9 +34,13 @@ const FoundationManifestSchema = z.looseObject({
 
 type FoundationManifest = z.infer<typeof FoundationManifestSchema>
 
-const MANIFEST_PATH = tokensPath("src/manifest.json")
-const BASELINE_PATH = tokensPath("src/foundation-baseline.json")
-const EXCEPTIONS_PATH = tokensPath("src/foundation-exceptions.json")
+// Inside the tokens package; the labels name them from the workspace root.
+const MANIFEST = "src/manifest.json"
+const BASELINE = "src/foundation-baseline.json"
+const EXCEPTIONS = "src/foundation-exceptions.json"
+const MANIFEST_PATH = `packages/tokens/${MANIFEST}`
+const BASELINE_PATH = `packages/tokens/${BASELINE}`
+const EXCEPTIONS_PATH = `packages/tokens/${EXCEPTIONS}`
 const COMPONENTS = "src/components"
 // The Figma page templates live in the Storybook application, outside the
 // package, and follow the same token-first rules.
@@ -84,10 +85,13 @@ export type Occurrence = {
   line: number
 }
 
-function stringLiterals(file: string): {
+function stringLiterals(
+  parseSource: SourceModules["parseSource"],
+  file: string,
+): {
   source: string
   literals: Array<{ value: string; start: number }>
-  program: ReturnType<typeof parseSource>["program"]
+  program: ReturnType<SourceModules["parseSource"]>["program"]
 } {
   const source = fs.readFileSync(file, "utf8")
   const parsed = parseSource(file)
@@ -156,7 +160,8 @@ function spacingValue(token: string): number | null {
   return Math.round(Number(match[1]) * 4 * 100) / 100
 }
 
-export function measure(manifest: FoundationManifest): Occurrence[] {
+export function measure(workspace: Workspace, manifest: FoundationManifest): Occurrence[] {
+  const { parseSource } = createSourceModules(workspace)
   const spacing = allowedSpacing(manifest)
   const knownTokens = new Set<string>()
   for (const entry of [
@@ -171,21 +176,21 @@ export function measure(manifest: FoundationManifest): Occurrence[] {
     }
   }
   const occurrences: Occurrence[] = []
-  for (const file of walkFiles(absolutePath("src"), (file) => /\.css$/.test(file))) {
+  for (const file of walkFiles(workspace.path("src"), (file) => /\.css$/.test(file))) {
     const identity = path.posix.join(
       "src",
-      path.relative(absolutePath("src"), file).split(path.sep).join("/"),
+      path.relative(workspace.path("src"), file).split(path.sep).join("/"),
     )
     occurrences.push(...cssStyleOccurrences(fs.readFileSync(file, "utf8"), identity, knownTokens))
   }
   for (const root of ROOTS) {
-    const absolute = absolutePath(root)
+    const absolute = workspace.path(root)
     for (const file of walkFiles(absolute, (file) => /\.(ts|tsx)$/.test(file))) {
       const identity = path.posix.join(
         root,
         path.relative(absolute, file).split(path.sep).join("/"),
       )
-      const { source, literals, program } = stringLiterals(file)
+      const { source, literals, program } = stringLiterals(parseSource, file)
       occurrences.push(...inlineStyleOccurrences(program, source, identity, knownTokens))
       for (const literal of literals) {
         for (const [rule, pattern] of Object.entries(RULES)) {
@@ -294,47 +299,50 @@ export function evaluateFoundation(
   return { errors, counts, exceptions: exceptions.exceptions.length }
 }
 
-export function runFoundation(argv: string[] = process.argv.slice(2)): number {
-  enterRoot()
-  const manifest = parseSchema(FoundationManifestSchema, readJson(MANIFEST_PATH), MANIFEST_PATH)
-  const occurrences = measure(manifest)
-  if (argv.includes("--measure")) {
-    const exceptions = fs.existsSync(EXCEPTIONS_PATH)
-      ? parseSchema(FoundationExceptionsSchema, readJson(EXCEPTIONS_PATH), EXCEPTIONS_PATH)
-      : { schemaVersion: 1 as const, exceptions: [] }
-    const used = new Set(exceptions.exceptions.map(exceptionKey))
-    const counts: Record<string, number> = {}
-    const raw: Record<string, number> = {}
-    for (const rule of ALL_RULES) {
-      counts[rule] = 0
-      raw[rule] = 0
-    }
-    for (const occurrence of occurrences) {
-      raw[occurrence.rule] = (raw[occurrence.rule] ?? 0) + 1
-      if (used.has(`${occurrence.rule}|${occurrence.file}|${occurrence.token}`)) continue
-      counts[occurrence.rule] = (counts[occurrence.rule] ?? 0) + 1
-    }
-    console.log(JSON.stringify({ counts, raw }, null, 2))
-    return 0
-  }
-
-  const baseline = parseSchema(FoundationBaselineSchema, readJson(BASELINE_PATH), BASELINE_PATH)
-  const exceptions = parseSchema(
-    FoundationExceptionsSchema,
-    readJson(EXCEPTIONS_PATH),
-    EXCEPTIONS_PATH,
+function readManifest(workspace: Workspace): FoundationManifest {
+  return parseSchema(
+    FoundationManifestSchema,
+    readJson(path.join(workspace.tokensRoot, MANIFEST)),
+    MANIFEST_PATH,
   )
-  const {
-    errors,
-    counts,
-    exceptions: registered,
-  } = evaluateFoundation(occurrences, baseline, exceptions)
-  if (errors.length) {
-    console.error(`foundation violations (${errors.length}):`)
-    for (const error of errors) console.error(`  ${error}`)
-    return 1
+}
+
+function readExceptions(workspace: Workspace): z.infer<typeof FoundationExceptionsSchema> {
+  const file = path.join(workspace.tokensRoot, EXCEPTIONS)
+  if (!fs.existsSync(file)) return { schemaVersion: 1, exceptions: [] }
+  return parseSchema(FoundationExceptionsSchema, readJson(file), EXCEPTIONS_PATH)
+}
+
+// The current counts per rule: `counts` net of the registered exceptions,
+// `raw` before them.
+export function measureFoundation(workspace: Workspace): {
+  counts: Record<string, number>
+  raw: Record<string, number>
+} {
+  const occurrences = measure(workspace, readManifest(workspace))
+  const used = new Set(readExceptions(workspace).exceptions.map(exceptionKey))
+  const counts: Record<string, number> = Object.fromEntries(ALL_RULES.map((rule) => [rule, 0]))
+  const raw: Record<string, number> = Object.fromEntries(ALL_RULES.map((rule) => [rule, 0]))
+  for (const occurrence of occurrences) {
+    raw[occurrence.rule] = (raw[occurrence.rule] ?? 0) + 1
+    if (used.has(`${occurrence.rule}|${occurrence.file}|${occurrence.token}`)) continue
+    counts[occurrence.rule] = (counts[occurrence.rule] ?? 0) + 1
   }
+  return { counts, raw }
+}
+
+export function checkFoundation(workspace: Workspace): CheckReport {
+  const occurrences = measure(workspace, readManifest(workspace))
+  const baseline = parseSchema(
+    FoundationBaselineSchema,
+    readJson(path.join(workspace.tokensRoot, BASELINE)),
+    BASELINE_PATH,
+  )
+  const { errors, counts, exceptions } = evaluateFoundation(
+    occurrences,
+    baseline,
+    readExceptions(workspace),
+  )
   const total = Object.values(counts).reduce((sum, count) => sum + count, 0)
-  console.log(`foundation OK (${total} occurrences, ${registered} registered exceptions)`)
-  return 0
+  return report("foundation", `${total} occurrences, ${exceptions} registered exceptions`, errors)
 }

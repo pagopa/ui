@@ -72,7 +72,7 @@ jobs:
           browsers: chromium
 
       - name: Parity evidence
-        run: pnpm nx run pagopa-ui-cli:figma:parity:verify
+        run: pnpm nx run pagopa-ui-cli:check:parity
 
       - name: Coverage gates (affected)
         if: github.event_name == 'pull_request'

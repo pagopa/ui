@@ -1,95 +1,38 @@
-# Init — the config and the MCP gate
+# Init — config, credentials and the source gate
 
-**Done when** `figma-to-code.yaml` exists beside the package it describes, every
-committed path it names exists, and both halves have run (a read call answered,
-token pass or a relayed failure).
+## Config
 
-## 1. The config
+Use the config path from `pnpm ui-cli figma status`, or locate it with
+`git ls-files '*figma-to-code.yaml'`. Read the file rather than copying its
+paths or defaults into instructions. Paths are relative to the config's folder,
+except `design.requests`, which is workspace-relative.
 
-1. **Exists?** Find it with `git ls-files '*figma-to-code.yaml'` and read it.
-   When it exists, run `pnpm nx run pagopa-ui:docs`: it fails on a committed
-   path the config names that does not exist and on every command that does not
-   resolve, and it reports where. Green → go to the MCP gate.
-2. **Propose the paths.** Start from the defaults below and look for the real
-   files (`glob` for `**/inventory.json`, `**/registry.json`,
-   `**/parity-cases.json`, `**/device-policy.json`, `**/manifest.json`, the
-   public entry the `package.json` `exports` names). Keep a default when the
-   file is there.
-3. **Agree.** In an interactive session, show the proposal grouped by section
-   and ask the person to confirm or correct each group. In a non-interactive
-   session, write the proposal as is and list in the report every default that
-   was not found on disk.
-4. **Write** the file, then run `pnpm nx run pagopa-ui:docs`.
+If absent, discover the existing inventory, registry, case corpus, policies,
+page surface, rules, artwork/token manifests and public entry. Propose a config
+beside the package it describes. In an interactive session, agree the grouped
+paths with the person; otherwise report unresolved paths with the proposal.
+There is no config-init command.
 
-| Key                          | What it is                                                            | Default                                     |
-| ---------------------------- | --------------------------------------------------------------------- | ------------------------------------------- |
-| `figma.fileModule`           | `FIGMA_FILE_KEY`, `figmaNodeUrl()`, `figmaEmbedUrl()`                 | `src/catalog/figma/file.ts`                 |
-| `figma.snapshot`             | pinned REST export, local, gitignored                                 | `.figma/live-rest.json`                     |
-| `figma.mcpInventory`         | MCP component list saved for the export                               | `.figma/live-mcp.json`                      |
-| `figma.variables`            | local export of the published Variables                               | `.figma/variables.json`                     |
-| `figma.parityOut`            | wave captures, probes and PNGs, gitignored                            | `.figma/parity`                             |
-| `catalog.inventory`          | generated identities, contracts, fingerprints, dependency edges       | `src/catalog/figma/inventory.json`          |
-| `catalog.registry`           | the decision per `nodeId`, page rules, targets, notes                 | `src/catalog/figma/registry.json`           |
-| `catalog.parityCases`        | the reviewed case corpus                                              | `src/catalog/figma/parity-cases.json`       |
-| `catalog.devicePolicy`       | the device vocabulary                                                 | `src/catalog/figma/device-policy.json`      |
-| `catalog.deviceExceptions`   | reasoned missing-device exceptions, must shrink                       | `src/catalog/figma/device-exceptions.json`  |
-| `catalog.apiExceptions`      | public exports with no source mapping, each with a reason             | `src/catalog/figma/api-exceptions.json`     |
-| `catalog.evidenceExceptions` | story-evidence exceptions, must shrink                                | `src/catalog/figma/evidence-exceptions.json`|
-| `catalog.inventoryStory`     | the rendered join of inventory and registry                           | `apps/storybook/src/FigmaInventory.stories.tsx`    |
-| `catalog.rules`              | the English record of every consolidated `.Regole` card                | `src/catalog/figma/rules.json`              |
-| `design.owners`              | GitHub handles that answer the design questions                       | the person's handle, one per line           |
-| `design.preview.url`         | stable Storybook preview of the review pull request                   | the preview host, without a trailing slash  |
-| `design.preview.pr`          | number of the one review pull request, never merged                   | the pull request number                     |
-| `design.preview.branch`      | branch the review stories live on, never merged                       | `feedback/previews`                         |
-| `tokens.manifest`            | every Figma variable, exclusion and reason                            | `packages/tokens/src/manifest.json`                  |
-| `tokens.generatedCss`        | the generated CSS foundation layer                                    | `packages/tokens/src/figma.generated.css`            |
-| `tokens.stylesheet`          | semantic aliases and local extensions                                 | `src/index.css`                             |
-| `artwork.iconManifest`       | icon identities, variants, provenance                                 | `packages/artwork/src/assets/figma-icons/manifest.json`      |
-| `artwork.iconModule`         | generated runtime icon map                                            | `packages/artwork/src/components/icons/icon-assets.ts`       |
-| `artwork.pictogramManifest`  | pictogram variants, fingerprints, checksums, provenance               | `packages/artwork/src/assets/figma-pictograms/manifest.json` |
-| `artwork.pictogramModule`    | generated runtime pictogram map                                       | `packages/artwork/src/components/icons/pictogram-assets.ts`  |
-| `code.components`            | component families                                                    | `src/components`                            |
-| `code.publicEntry`           | the public entry point                                                | `src/pagopa-ui.ts`                          |
-| `code.stories`               | Storybook stories, the parity capture surface                         | `apps/storybook/src`                               |
-| `code.guides`                | component guides rendered on the docs pages                           | `apps/storybook/src/guides`                        |
-| `storybook.url`              | the Storybook the parity tools capture                                | `http://localhost:6006`                     |
+**Done when** the config exists and `pnpm ui-cli check docs` accepts every
+committed path and command it names.
 
-The `design.preview` block names the one long-lived review pull request: `url`
-is its stable Storybook preview, `pr` its number and `branch` the branch its
-review stories live on. That pull request owns the single preview environment,
-so the repository keeps exactly that one, open and unmerged: closing it deletes
-the preview and breaks every link a question points at. Each option links to
-`<url>/?path=/story/reviews-<slug>--option-<a|b|c>`. Fill the block in order: create the review
-pull request from `design.preview.branch`, let the first deploy finish, then
-copy the preview URL and the pull request number into the config.
+## Credentials and source gate
 
-The scripts under `packages/ui-cli/` read these same defaults. A path the config moves
-must also move where a script reads it: pass it where the script takes a flag
-(`--cases`, `--input`, `--out`), otherwise change the script in the same pull
-request. A Storybook on another port is passed as
-`STORYBOOK_URL=<url>` to the parity commands.
+The CLI resolves `FIGMA_TOKEN` from the process environment, then the macOS
+keychain entry `figma-pat`. `pnpm ui-cli figma status --require-token` reports
+the source, never the secret, and exits 2 with guidance when none is readable.
+Use that strict preflight only for a route requiring REST; no token blocks
+REST, not the MCP source route. Never read, source or load `.env`.
 
-## 2. The MCP gate, then the token
+For a node comparison (delta, implementation or review), make one read call
+through the session's Figma MCP (`get_metadata` or `get_screenshot` on the
+file). **Done when** it answers. If unavailable or refused, stop that use case
+before changing files and report the failed call. A pinned snapshot alone does
+not satisfy this source gate. Committed-only catalogue coverage and checks can
+run without it.
 
-The Figma MCP server is how a session reads the source, so every use case that
-compares a node — a delta, a new node, a review — goes through the MCP gate. One
-read call (`get_metadata`, `get_screenshot`) answers it. When it does not answer —
-server absent, read tools unavailable, authentication refused — that use case
-ends before its first file change and the report names the call that stayed
-silent. Use cases over committed work — catalogue coverage, the checks — run
-without it.
-
-Then the session report. Only the live steps (plan/export, triage against a
-fresh library, pictogram export) need the token; everything else reads the pinned
-snapshot:
-
-```bash
-pnpm nx run pagopa-ui-cli:figma:status
-```
-
-`token present` clears the live steps. A missing, empty or whitespace-containing
-token prints its guidance instead: relay it, read the source through the MCP
-export path ([delta.md](delta.md)) and keep the offline use cases on the pinned
-snapshot. The person exports the token in the shell that runs the session and
-restarts it, or runs the live command themselves and hands over its JSON output.
-Then wait for it, or continue with the offline use cases.
+Choose the route from status: live REST where credentials are available;
+otherwise fresh read-only MCP evidence or an export the person supplies
+([delta.md](delta.md)). Missing source evidence remains a blocker. Read tools
+only: neither Code Connect publishing nor Figma comment replies/resolution is
+part of this workflow.

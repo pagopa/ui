@@ -1,20 +1,19 @@
 import assert from "node:assert/strict"
 import { spawnSync } from "node:child_process"
 import fs from "node:fs"
-import os from "node:os"
 import path from "node:path"
 import { test } from "node:test"
 import { fileURLToPath } from "node:url"
 
-import { fixtureEnv } from "../../src/lib/paths.ts"
+import { fixtureEnvironment, fixtureTree } from "../helpers/cli.mjs"
 
 const script = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
 
 function pictogramArguments(args) {
-  if (args[0] === "--export") return ["assets", "pictograms", "export", ...args.slice(1)]
-  if (args[0] === "--write") return ["assets", "pictograms", "write", ...args.slice(1)]
-  if (args[0] === "--check") return ["assets", "pictograms", "check", ...args.slice(1)]
-  return ["assets", "pictograms", ...args]
+  if (args[0] === "--export") return ["figma", "pictograms", "export", ...args.slice(1)]
+  if (args[0] === "--write") return ["update", "pictograms", ...args.slice(1)]
+  if (args[0] === "--check") return ["check", "pictograms", ...args.slice(1)]
+  return ["check", "pictograms", ...args]
 }
 
 // The device vocabulary every catalogue fixture carries: `normalizeNode`
@@ -31,7 +30,8 @@ const devicePolicy = {
 }
 
 test("pictogram export renders individual variants at the pinned version using only GET", () => {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-pictograms-"))
+  const tree = fixtureTree({}, "pagopa-pictograms-")
+  const root = tree.root
   const files = {
     "src/catalog/figma/file.ts": 'export const FIGMA_FILE_KEY = "fixture"',
     "src/catalog/figma/device-policy.json": JSON.stringify(devicePolicy),
@@ -115,7 +115,11 @@ test("pictogram export renders individual variants at the pinned version using o
         script,
         ...pictogramArguments(["--export", "--input", "live.json"]),
       ],
-      { cwd: root, encoding: "utf8", env: fixtureEnv(root, { FIGMA_TOKEN: "fixture-token" }) },
+      {
+        cwd: root,
+        encoding: "utf8",
+        env: fixtureEnvironment(root, { FIGMA_TOKEN: "fixture-token" }),
+      },
     )
     assert.equal(result.status, 0, result.stderr)
     const manifest = JSON.parse(
@@ -141,7 +145,7 @@ test("pictogram export renders individual variants at the pinned version using o
       {
         cwd: root,
         encoding: "utf8",
-        env: fixtureEnv(root),
+        env: fixtureEnvironment(root),
       },
     )
     assert.equal(write.status, 0, write.stderr)
@@ -159,7 +163,7 @@ test("pictogram export renders individual variants at the pinned version using o
       {
         cwd: root,
         encoding: "utf8",
-        env: fixtureEnv(root),
+        env: fixtureEnvironment(root),
       },
     )
     assert.equal(check.status, 0, check.stderr)
@@ -175,7 +179,7 @@ test("pictogram export renders individual variants at the pinned version using o
       {
         cwd: root,
         encoding: "utf8",
-        env: fixtureEnv(root),
+        env: fixtureEnvironment(root),
       },
     )
     assert.equal(renamed.status, 0, renamed.stderr)
@@ -185,7 +189,7 @@ test("pictogram export renders individual variants at the pinned version using o
       {
         cwd: root,
         encoding: "utf8",
-        env: fixtureEnv(root),
+        env: fixtureEnvironment(root),
       },
     )
     assert.equal(renamedWrite.status, 0, renamedWrite.stderr)
@@ -211,7 +215,7 @@ test("pictogram export renders individual variants at the pinned version using o
       {
         cwd: root,
         encoding: "utf8",
-        env: fixtureEnv(root),
+        env: fixtureEnvironment(root),
       },
     )
     assert.equal(moved.status, 0, moved.stderr)
@@ -223,12 +227,12 @@ test("pictogram export renders individual variants at the pinned version using o
       {
         cwd: root,
         encoding: "utf8",
-        env: fixtureEnv(root),
+        env: fixtureEnvironment(root),
       },
     )
     assert.equal(invalid.status, 1)
     assert.match(invalid.stderr, /checksum/i)
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
   }
 })

@@ -2,10 +2,10 @@ import fs from "node:fs"
 import path from "node:path"
 import { isDeepStrictEqual } from "node:util"
 
+import type { Workspace } from "../adapters/workspace.ts"
 import { resolveProvenance } from "../figma/asset-provenance.ts"
 import { loadDevicePolicy } from "../figma/devices.ts"
 import { catalogueIndex } from "../figma/snapshot.ts"
-import { artworkPath, rootPath } from "../lib/paths.ts"
 import { readJson } from "../lib/json.ts"
 import { IconManifestSchema, PictogramManifestSchema } from "../schemas/artwork.ts"
 import {
@@ -23,6 +23,7 @@ type BulkQualification = { pageId: string; nodeIds: string[]; errors: string[] }
 // Qualification reads the accepted manifest/provenance contract, not a new
 // screenshot per glyph. Geometry regeneration remains the artwork check's job.
 export function qualifyBulk(
+  workspace: Workspace,
   rule: BulkRule,
   nodes: InventoryNode[],
   fileKey: string,
@@ -35,14 +36,14 @@ export function qualifyBulk(
     return { pageId: rule.pageId, nodeIds: [], errors: ["no supported implemented bulk proof"] }
   }
   try {
-    const raw = readJson(artworkPath(rule.assetManifest))
+    const raw = readJson(path.join(workspace.artworkRoot, rule.assetManifest))
     const manifest =
       rule.namesExport === "figmaIconNames"
         ? IconManifestSchema.parse(raw)
         : PictogramManifestSchema.parse(raw)
     if (manifest.fileKey !== fileKey) fail("manifest file key differs from inventory")
     // The manifest is the single source of public names: the generated names
-    // export is checked against it by `figma sync`, never re-parsed here.
+    // export is checked against it by `check catalogue`, never re-parsed here.
     const provenance = resolveProvenance(rule, new Set(nodes.map((node) => node.nodeId)))
     const assets = Object.values(manifest.entries)
     const assetNames = assets.map((asset) => asset.name)
@@ -72,7 +73,12 @@ export function qualifyBulk(
       }
       for (const variant of variants) {
         if (
-          !fs.existsSync(path.join(path.dirname(artworkPath(rule.assetManifest)), variant.file))
+          !fs.existsSync(
+            path.join(
+              path.dirname(path.join(workspace.artworkRoot, rule.assetManifest)),
+              variant.file,
+            ),
+          )
         ) {
           fail(`missing asset file ${variant.file}`)
         }
@@ -88,18 +94,7 @@ export function qualifyBulk(
   }
 }
 
-export function coveragePopulations({
-  nodes,
-  registry,
-  cases,
-  evidence = checkEvidence({ cases, nodes }),
-  policy = loadDevicePolicy(),
-  bulk = [],
-  statuses = ["implemented"],
-  fileKey,
-  owners = new Map<string, BulkRule>(),
-  corpusErrors,
-}: {
+type PopulationOptions = {
   nodes: InventoryNode[]
   registry: Registry
   cases: ParityCase[]
@@ -110,7 +105,146 @@ export function coveragePopulations({
   fileKey?: string
   owners?: Map<string, BulkRule>
   corpusErrors?: string[]
-}) {
+}
+type ResolvedNode = {
+  node: InventoryNode
+  rule?: BulkRule
+  status: Registry["entries"][string]["status"] | "unaccounted"
+}
+type VariantRow = {
+  nodeId: string
+  name: string
+  reviewed: boolean
+  declared: string[]
+  covered: string[]
+  missing: string[]
+}
+export function coveragePopulations(
+  workspace: Workspace,
+  {
+    nodes,
+    registry,
+    cases,
+    evidence = checkEvidence({
+      root: workspace.workspaceRoot,
+      dataRoot: workspace.root,
+      cases,
+      nodes,
+    }),
+    policy = loadDevicePolicy(workspace.path("src/catalog/figma/device-policy.json")),
+    bulk = [],
+    statuses = ["implemented"],
+    fileKey,
+    owners = new Map<string, BulkRule>(),
+    corpusErrors,
+  }: PopulationOptions,
+) {
+  const resolved = resolveNodes(nodes, registry, owners)
+  const published = publishedCounts(resolved)
+  const bulkIds = new Set(bulk.flatMap((item) => item.nodeIds))
+  const ordinary = resolved.filter(
+    (row) => row.status === "implemented" && !bulkIds.has(row.node.nodeId),
+  )
+  const matchingFile = !fileKey || evidence.fileKey === fileKey
+  const validEvidence = new Set(matchingFile ? evidence.verifiedCases : [])
+  const validationErrors =
+    corpusErrors ?? validateCaseFile(workspace, cases, { nodes, registry, policy }).errors
+  const invalidIds = new Set(validationErrors.map((error) => error.split(": ")[0]))
+  const reviewed = cases.filter(
+    (entry) => !isDraftCase(entry) && validEvidence.has(entry.id) && !invalidIds.has(entry.id),
+  )
+  const rows = variantRows(ordinary, reviewed, evidence)
+  const devices = populationDevices(
+    nodes,
+    registry,
+    resolved,
+    cases,
+    reviewed,
+    invalidIds,
+    policy,
+    statuses,
+  )
+  const bulkFamilies = bulkRows(bulk, registry, resolved)
+  return populationSummary(
+    nodes,
+    published,
+    rows,
+    bulkFamilies,
+    devices,
+    statuses,
+    evidence,
+    reviewed,
+    cases,
+    matchingFile,
+    validationErrors,
+  )
+}
+
+export function loadCoveragePopulations(
+  workspace: Workspace,
+  nodes: InventoryNode[],
+  registry: Registry,
+  cases: ParityCase[],
+  statuses = ["implemented"],
+  evidence?: EvidenceReport,
+  fileKey?: string,
+  corpusErrors?: string[],
+) {
+  let byNode = new Map<string, BulkRule>()
+  let ownershipError: string | undefined
+  try {
+    byNode = catalogueIndex(registry, workspace).byNode
+  } catch (error) {
+    ownershipError = error instanceof Error ? error.message : String(error)
+  }
+  const resolvedFileKey =
+    fileKey ??
+    InventorySchema.parse(readJson(workspace.path("src/catalog/figma/inventory.json"))).fileKey
+  const bulk = registry.bulkRules
+    .filter((rule) => rule.status === "implemented")
+    .map((rule) =>
+      ownershipError
+        ? { pageId: rule.pageId, nodeIds: [], errors: [ownershipError] }
+        : qualifyBulk(
+            workspace,
+            rule,
+            nodes.filter(
+              (node) =>
+                (byNode.get(node.nodeId) ??
+                  registry.bulkRules.find((item) => item.pageId === node.pageId)) === rule,
+            ),
+            resolvedFileKey,
+          ),
+    )
+  return coveragePopulations(workspace, {
+    nodes,
+    registry,
+    cases,
+    statuses,
+    evidence,
+    owners: byNode,
+    bulk,
+    fileKey: resolvedFileKey,
+    corpusErrors,
+  })
+}
+
+export function formatCoverage(report: ReturnType<typeof coveragePopulations>): string[] {
+  const { published, cases, bulk, devices, variants } = report
+  return [
+    `published mappings: ${published.total} · ${Object.entries(published.statuses)
+      .map(([status, count]) => `${count} ${status}`)
+      .join(" · ")}`,
+    `figma parity coverage: ordinary implemented nodes with reviewed cases ${cases.reviewed}/${cases.declared} · bulk ${bulk.nodes} manifest/provenance-qualified (${bulk.families.map((family) => `${family.nodes} ${family.namesExport ?? family.pageId}`).join(", ")}) · devices ${devices.totals.covered}/${devices.totals.declared} (${devices.statuses.join(",")})`,
+    `explicit variants: ${variants.reviewed}/${variants.declared} reviewed with verified pinned evidence · ${variants.missing} missing (ordinary implemented nodes; no inferred equivalence)`,
+  ]
+}
+
+function resolveNodes(
+  nodes: InventoryNode[],
+  registry: Registry,
+  owners: Map<string, BulkRule>,
+): ResolvedNode[] {
   const resolved = nodes.map(
     (
       node,
@@ -128,6 +262,10 @@ export function coveragePopulations({
       }
     },
   )
+  return resolved
+}
+
+function publishedCounts(resolved: ResolvedNode[]) {
   const published: Record<string, number> = {
     implemented: 0,
     mocked: 0,
@@ -136,18 +274,14 @@ export function coveragePopulations({
     unaccounted: 0,
   }
   for (const row of resolved) published[row.status] += 1
-  const bulkIds = new Set(bulk.flatMap((item) => item.nodeIds))
-  const ordinary = resolved.filter(
-    (row) => row.status === "implemented" && !bulkIds.has(row.node.nodeId),
-  )
-  const matchingFile = !fileKey || evidence.fileKey === fileKey
-  const validEvidence = new Set(matchingFile ? evidence.verifiedCases : [])
-  const validationErrors =
-    corpusErrors ?? validateCaseFile(cases, { nodes, registry, policy }).errors
-  const invalidIds = new Set(validationErrors.map((error) => error.split(": ")[0]))
-  const reviewed = cases.filter(
-    (entry) => !isDraftCase(entry) && validEvidence.has(entry.id) && !invalidIds.has(entry.id),
-  )
+  return published
+}
+
+function variantRows(
+  ordinary: ResolvedNode[],
+  reviewed: ParityCase[],
+  evidence: EvidenceReport,
+): VariantRow[] {
   const coveredNodes = new Set(reviewed.map((entry) => entry.nodeId))
   const rows = ordinary.map(({ node }) => {
     const declared = (node.variants ?? []).map((variant) => variant.nodeId)
@@ -167,6 +301,19 @@ export function coveragePopulations({
       missing: declared.filter((id) => !covered.includes(id)),
     }
   })
+  return rows
+}
+
+function populationDevices(
+  nodes: InventoryNode[],
+  registry: Registry,
+  resolved: ResolvedNode[],
+  cases: ParityCase[],
+  reviewed: ParityCase[],
+  invalidIds: Set<string>,
+  policy: ReturnType<typeof loadDevicePolicy>,
+  statuses: string[],
+) {
   const entries: Registry["entries"] = {}
   for (const { node, status } of resolved) {
     if (status !== "unaccounted")
@@ -183,6 +330,10 @@ export function coveragePopulations({
     policy,
     statuses,
   })
+  return devices
+}
+
+function bulkRows(bulk: BulkQualification[], registry: Registry, resolved: ResolvedNode[]) {
   const bulkFamilies = bulk.map((item) => ({
     ...item,
     namesExport:
@@ -194,6 +345,22 @@ export function coveragePopulations({
       resolved.some((row) => row.node.nodeId === id && row.status === "implemented"),
     ).length,
   }))
+  return bulkFamilies
+}
+
+function populationSummary(
+  nodes: InventoryNode[],
+  published: Record<string, number>,
+  rows: VariantRow[],
+  bulkFamilies: ReturnType<typeof bulkRows>,
+  devices: ReturnType<typeof populationDevices>,
+  statuses: string[],
+  evidence: EvidenceReport,
+  reviewed: ParityCase[],
+  cases: ParityCase[],
+  matchingFile: boolean,
+  validationErrors: string[],
+) {
   return {
     basis:
       "committed non-draft cases with valid offline source evidence; not a fresh render or accessibility certification",
@@ -229,61 +396,4 @@ export function coveragePopulations({
       caseErrors: validationErrors,
     },
   }
-}
-
-export function loadCoveragePopulations(
-  nodes: InventoryNode[],
-  registry: Registry,
-  cases: ParityCase[],
-  statuses = ["implemented"],
-  evidence?: EvidenceReport,
-  fileKey?: string,
-  corpusErrors?: string[],
-) {
-  let byNode = new Map<string, BulkRule>()
-  let ownershipError: string | undefined
-  try {
-    byNode = catalogueIndex(registry).byNode
-  } catch (error) {
-    ownershipError = error instanceof Error ? error.message : String(error)
-  }
-  const resolvedFileKey =
-    fileKey ?? InventorySchema.parse(readJson(rootPath("src/catalog/figma/inventory.json"))).fileKey
-  const bulk = registry.bulkRules
-    .filter((rule) => rule.status === "implemented")
-    .map((rule) =>
-      ownershipError
-        ? { pageId: rule.pageId, nodeIds: [], errors: [ownershipError] }
-        : qualifyBulk(
-            rule,
-            nodes.filter(
-              (node) =>
-                (byNode.get(node.nodeId) ??
-                  registry.bulkRules.find((item) => item.pageId === node.pageId)) === rule,
-            ),
-            resolvedFileKey,
-          ),
-    )
-  return coveragePopulations({
-    nodes,
-    registry,
-    cases,
-    statuses,
-    evidence,
-    owners: byNode,
-    bulk,
-    fileKey: resolvedFileKey,
-    corpusErrors,
-  })
-}
-
-export function formatCoverage(report: ReturnType<typeof coveragePopulations>): string[] {
-  const { published, cases, bulk, devices, variants } = report
-  return [
-    `published mappings: ${published.total} · ${Object.entries(published.statuses)
-      .map(([status, count]) => `${count} ${status}`)
-      .join(" · ")}`,
-    `figma parity coverage: ordinary implemented nodes with reviewed cases ${cases.reviewed}/${cases.declared} · bulk ${bulk.nodes} manifest/provenance-qualified (${bulk.families.map((family) => `${family.nodes} ${family.namesExport ?? family.pageId}`).join(", ")}) · devices ${devices.totals.covered}/${devices.totals.declared} (${devices.statuses.join(",")})`,
-    `explicit variants: ${variants.reviewed}/${variants.declared} reviewed with verified pinned evidence · ${variants.missing} missing (ordinary implemented nodes; no inferred equivalence)`,
-  ]
 }

@@ -10,11 +10,11 @@ import fs from "node:fs"
 import path from "node:path"
 
 import { readJson } from "../lib/json.ts"
-import { enterRoot } from "../lib/paths.ts"
+import type { Workspace } from "../adapters/workspace.ts"
 import { InventorySchema, RegistrySchema, type Inventory } from "../schemas/catalogue.ts"
 import { fetchFileHeader } from "./rest.ts"
 import { fileKeyFromSource } from "./snapshot.ts"
-import { figmaToken } from "./token.ts"
+import { figmaToken, resolveFigmaToken, type FigmaTokenSource } from "../adapters/figma-token.ts"
 import { RULES_PATH, plan as planRules, readLedger, readRulesSnapshot } from "./rules.ts"
 import { COMMENTS_SNAPSHOT_PATH, readComments } from "./comments.ts"
 import { formatSurfaceLine, loadPageSurface, surfaceSummary, type SurfaceStats } from "./surface.ts"
@@ -47,9 +47,9 @@ type LiveReport = {
   error?: string
 }
 
-type StatusReport = {
+export type StatusReport = {
   config: string | null
-  token: { present: boolean; message: string | null }
+  token: { present: boolean; message: string | null; source: FigmaTokenSource | null }
   snapshot: {
     path: string
     present: boolean
@@ -92,15 +92,6 @@ type StatusReport = {
   next: string
 }
 
-function workspaceRoot(from: string): string {
-  for (let current = from; ;) {
-    if (fs.existsSync(path.join(current, "pnpm-workspace.yaml"))) return current
-    const parent = path.dirname(current)
-    if (parent === current) return from
-    current = parent
-  }
-}
-
 function relativeTo(base: string, file: string): string {
   const relative = path.relative(base, file)
   return relative.startsWith("..") ? file : relative.split(path.sep).join("/")
@@ -117,12 +108,13 @@ function requestState(file: string): "open" | "answered" {
   return status.toLowerCase() === "open" ? "open" : "answered"
 }
 
-function designRequests(): StatusReport["requests"] {
-  const root = process.cwd()
-  const workspace = workspaceRoot(root)
-  const directory = [path.join(root, REQUESTS_PATH), path.join(workspace, REQUESTS_PATH)].find(
-    (candidate) => fs.existsSync(candidate),
-  )
+function designRequests(workspace: Workspace): StatusReport["requests"] {
+  const root = workspace.root
+  const workspaceRootPath = workspace.workspaceRoot
+  const directory = [
+    path.join(root, REQUESTS_PATH),
+    path.join(workspaceRootPath, REQUESTS_PATH),
+  ].find((candidate) => fs.existsSync(candidate))
   if (!directory) return { path: null, open: 0, answered: 0, files: [] }
   const files = fs
     .readdirSync(directory)
@@ -130,7 +122,7 @@ function designRequests(): StatusReport["requests"] {
     .sort()
   const states = files.map((file) => requestState(path.join(directory, file)))
   return {
-    path: relativeTo(workspace, directory),
+    path: relativeTo(workspaceRootPath, directory),
     open: states.filter((state) => state === "open").length,
     answered: states.filter((state) => state === "answered").length,
     files,
@@ -159,109 +151,140 @@ function nextCommand(report: Omit<StatusReport, "next">): string {
   return "pnpm nx run pagopa-ui-cli:figma:status -- --live (ask the file whether it changed)"
 }
 
-function printText(report: StatusReport): void {
-  const label = (name: string): string => name.padEnd(10)
-  console.log(`${label("config")}${report.config ?? "(missing figma-to-code.yaml)"}`)
-  console.log(
-    `${label("token")}${report.token.present ? "present" : "missing — export FIGMA_TOKEN (file_content:read, library_content:read)"}`,
-  )
+function statusLine(name: string, value: string): string {
+  return `${name.padEnd(10)}${value}`
+}
+
+function formatStatusInventory(report: StatusReport): string[] {
+  const lines: string[] = []
   if (report.snapshot.present) {
-    const snapshot = report.snapshot
-    console.log(
-      `${label("snapshot")}${snapshot.path} · ${bytesLabel(snapshot.bytes ?? 0)} · modified ${snapshot.modifiedAt}`,
+    lines.push(
+      statusLine(
+        "snapshot",
+        `${report.snapshot.path} · ${bytesLabel(report.snapshot.bytes ?? 0)} · modified ${report.snapshot.modifiedAt}`,
+      ),
     )
-  } else {
-    console.log(`${label("snapshot")}${report.snapshot.path} (missing)`)
-  }
+  } else lines.push(statusLine("snapshot", `${report.snapshot.path} (missing)`))
   const inventory = report.inventory
-  if (inventory.error) {
-    console.log(`${label("inventory")}${inventory.error}`)
-  } else {
-    console.log(
-      `${label("inventory")}synced ${inventory.syncedAt} · version ${inventory.fileVersion ?? "(not recorded yet)"}` +
-        `${inventory.lastModified ? ` · file modified ${inventory.lastModified}` : ""} · ` +
-        `${inventory.nodes} nodes (${inventory.components} components, ${inventory.sets} sets)`,
+  if (inventory.error) lines.push(statusLine("inventory", inventory.error))
+  else
+    lines.push(
+      statusLine(
+        "inventory",
+        `synced ${inventory.syncedAt} · version ${inventory.fileVersion ?? "(not recorded yet)"}${inventory.lastModified ? ` · file modified ${inventory.lastModified}` : ""} · ${inventory.nodes} nodes (${inventory.components} components, ${inventory.sets} sets)`,
+      ),
     )
-  }
-  if (report.registry.error) {
-    console.log(`${label("registry")}${report.registry.error}`)
-  } else {
-    const counts = report.registry
-    console.log(
-      `${label("registry")}implemented ${counts.implemented} · mocked ${counts.mocked} · ` +
-        `pending ${counts.pending} · excluded ${counts.excluded}`,
+  if (report.registry.error) lines.push(statusLine("registry", report.registry.error))
+  else
+    lines.push(
+      statusLine(
+        "registry",
+        `implemented ${report.registry.implemented} · mocked ${report.registry.mocked} · pending ${report.registry.pending} · excluded ${report.registry.excluded}`,
+      ),
     )
-  }
-  if (report.rules.error) {
-    console.log(`${label("rules")}${report.rules.error}`)
-  } else if (report.rules.present) {
-    console.log(
-      `${label("rules")}${report.rules.consolidated} consolidated · ${report.rules.imported} imported · ` +
-        `${report.rules.recorded} recorded · ${report.rules.pending} pending · ${report.rules.stale} stale`,
+  return lines
+}
+
+function formatStatusEvidence(report: StatusReport): string[] {
+  const lines: string[] = []
+  if (report.rules.error) lines.push(statusLine("rules", report.rules.error))
+  else if (report.rules.present)
+    lines.push(
+      statusLine(
+        "rules",
+        `${report.rules.consolidated} consolidated · ${report.rules.imported} imported · ${report.rules.recorded} recorded · ${report.rules.pending} pending · ${report.rules.stale} stale`,
+      ),
     )
-  } else {
-    console.log(`${label("rules")}${report.rules.path} (missing)`)
-  }
-  if (report.comments.error) {
-    console.log(`${label("comments")}${report.comments.error}`)
-  } else if (report.comments.present) {
-    console.log(
-      `${label("comments")}${report.comments.open} open of ${report.comments.threads} threads · ` +
-        `${report.comments.mappedOpen} on mapped nodes`,
+  else lines.push(statusLine("rules", `${report.rules.path} (missing)`))
+  if (report.comments.error) lines.push(statusLine("comments", report.comments.error))
+  else if (report.comments.present)
+    lines.push(
+      statusLine(
+        "comments",
+        `${report.comments.open} open of ${report.comments.threads} threads · ${report.comments.mappedOpen} on mapped nodes`,
+      ),
     )
-  } else {
-    console.log(`${label("comments")}${report.comments.path} (missing)`)
-  }
-  if (report.surface.error) {
-    console.log(`${label("surface")}${report.surface.error}`)
-  } else if (report.surface.stats) {
-    console.log(
-      `${label("surface")}${formatSurfaceLine(report.surface.stats).replace("surface: ", "")}`,
+  else lines.push(statusLine("comments", `${report.comments.path} (missing)`))
+  if (report.surface.error) lines.push(statusLine("surface", report.surface.error))
+  else if (report.surface.stats)
+    lines.push(
+      statusLine("surface", formatSurfaceLine(report.surface.stats).replace("surface: ", "")),
     )
-  }
   for (const row of report.pending) {
     const reason = row.designRequests.length
       ? row.designRequests.join(", ")
       : "no design request named in the note"
-    console.log(`${label("pending")}${row.nodeId} ${row.name ?? "(removed)"} → ${reason}`)
+    lines.push(statusLine("pending", `${row.nodeId} ${row.name ?? "(removed)"} → ${reason}`))
   }
-  console.log(
-    `${label("requests")}${report.requests.open} open · ${report.requests.answered} answered` +
-      `${report.requests.path ? ` in ${report.requests.path}` : ""}`,
+  lines.push(
+    statusLine(
+      "requests",
+      `${report.requests.open} open · ${report.requests.answered} answered${report.requests.path ? ` in ${report.requests.path}` : ""}`,
+    ),
   )
-  if (report.live) {
-    if (report.live.error) {
-      console.log(`${label("live")}unavailable — ${report.live.error}`)
-    } else {
-      const verdict =
-        report.live.changedSinceInventory === false
-          ? "unchanged since the inventory sync"
-          : report.live.changedSinceInventory === true
-            ? "changed since the inventory sync"
-            : "the inventory records no version to compare"
-      console.log(
-        `${label("live")}version ${report.live.version} · modified ${report.live.lastModified ?? "unknown"} · ${verdict}`,
-      )
-    }
-  }
-  console.log(`${label("next")}${report.next}`)
+  return lines
 }
 
-export async function runStatus(argv: string[] = process.argv.slice(2)): Promise<number> {
-  const root = enterRoot()
-  const flag = (name: string): boolean => argv.includes(`--${name}`)
+function formatLiveStatus(report: StatusReport): string[] {
+  if (!report.live) return []
+  if (report.live.error) return [statusLine("live", `unavailable — ${report.live.error}`)]
+  const verdict =
+    report.live.changedSinceInventory === false
+      ? "unchanged since the inventory sync"
+      : report.live.changedSinceInventory === true
+        ? "changed since the inventory sync"
+        : "the inventory records no version to compare"
+  return [
+    statusLine(
+      "live",
+      `version ${report.live.version} · modified ${report.live.lastModified ?? "unknown"} · ${verdict}`,
+    ),
+  ]
+}
 
-  let token: { present: boolean; message: string | null } = { present: true, message: null }
+export function formatStatusText(report: StatusReport): string[] {
+  return [
+    statusLine("config", report.config ?? "(missing figma-to-code.yaml)"),
+    statusLine(
+      "token",
+      report.token.present
+        ? `present (${report.token.source})`
+        : "missing — export FIGMA_TOKEN (file_content:read, library_content:read)",
+    ),
+    ...formatStatusInventory(report),
+    ...formatStatusEvidence(report),
+    ...formatLiveStatus(report),
+    statusLine("next", report.next),
+  ]
+}
+
+export interface StatusOptions {
+  live?: boolean
+}
+
+export interface StatusResult {
+  report: StatusReport
+  exitCode: number
+}
+
+function tokenStatus(env: NodeJS.ProcessEnv): StatusReport["token"] {
   try {
-    figmaToken()
+    const { source } = resolveFigmaToken(env)
+    return { present: true, message: null, source }
   } catch (error) {
-    token = {
+    return {
       present: false,
       message: error instanceof Error ? error.message : String(error),
+      source: null,
     }
   }
+}
 
-  let inventoryReport: StatusReport["inventory"] = {
+function inventoryStatus(workspace: Workspace): {
+  report: StatusReport["inventory"]
+  inventory: Inventory | null
+} {
+  let report: StatusReport["inventory"] = {
     path: INVENTORY_PATH,
     syncedAt: null,
     fileVersion: null,
@@ -273,9 +296,9 @@ export async function runStatus(argv: string[] = process.argv.slice(2)): Promise
   }
   let inventory: Inventory | null = null
   try {
-    inventory = readJson(path.join(root, INVENTORY_PATH), InventorySchema)
-    inventoryReport = {
-      ...inventoryReport,
+    inventory = readJson(workspace.path(INVENTORY_PATH), InventorySchema)
+    report = {
+      ...report,
       syncedAt: inventory.syncedAt,
       fileVersion: inventory.fileVersion ?? null,
       lastModified: inventory.lastModified ?? null,
@@ -284,12 +307,33 @@ export async function runStatus(argv: string[] = process.argv.slice(2)): Promise
       sets: inventory.components.filter((node) => node.type === "COMPONENT_SET").length,
     }
   } catch (error) {
-    inventoryReport.error = `${INVENTORY_PATH}: ${
-      error instanceof Error ? error.message.split("\n")[0] : String(error)
-    }`
+    report.error = `${INVENTORY_PATH}: ${error instanceof Error ? error.message.split("\n")[0] : String(error)}`
   }
+  return { report, inventory }
+}
 
-  let registryReport: StatusReport["registry"] = {
+function pendingStatusRow(nodeId: string, name: string | null, target?: string, note?: string) {
+  const designRequest = /\bdocs\/design-requests\/[\w./-]+\.md\b/g
+  return {
+    nodeId,
+    name,
+    target: target ?? null,
+    designRequests: [...new Set(note?.match(designRequest) ?? [])],
+  }
+}
+
+function isCountedStatus(value: string): value is keyof Counts {
+  return value in { implemented: 0, mocked: 0, pending: 0, excluded: 0, unaccounted: 0 }
+}
+
+function registryStatus(
+  workspace: Workspace,
+  inventory: Inventory | null,
+): {
+  report: StatusReport["registry"]
+  pending: PendingRow[]
+} {
+  let report: StatusReport["registry"] = {
     path: REGISTRY_PATH,
     implemented: 0,
     mocked: 0,
@@ -300,78 +344,75 @@ export async function runStatus(argv: string[] = process.argv.slice(2)): Promise
   }
   const pending: PendingRow[] = []
   try {
-    const registry = readJson(path.join(root, REGISTRY_PATH), RegistrySchema)
+    const registry = readJson(workspace.path(REGISTRY_PATH), RegistrySchema)
     const pageRules = new Map(registry.bulkRules.map((rule) => [rule.pageId, rule]))
     const counts: Counts = { implemented: 0, mocked: 0, pending: 0, excluded: 0, unaccounted: 0 }
-    const isCounted = (value: string): value is keyof Counts => value in counts
-    const designRequest = /\bdocs\/design-requests\/[\w./-]+\.md\b/g
     for (const node of inventory?.components ?? []) {
       const entry = registry.entries[node.nodeId]
       const status = entry?.status ?? pageRules.get(node.pageId)?.status ?? "unaccounted"
-      if (isCounted(status)) counts[status] += 1
-      if (status !== "pending") continue
-      pending.push({
-        nodeId: node.nodeId,
-        name: node.name,
-        target: entry?.target?.export ?? null,
-        designRequests: [...new Set(entry?.note?.match(designRequest) ?? [])],
-      })
+      if (isCountedStatus(status)) counts[status] += 1
+      if (status === "pending")
+        pending.push(pendingStatusRow(node.nodeId, node.name, entry?.target?.export, entry?.note))
     }
     for (const [nodeId, entry] of Object.entries(registry.entries)) {
-      if (entry.status !== "pending") continue
-      if (!inventory?.components.some((node) => node.nodeId === nodeId)) {
-        pending.push({
-          nodeId,
-          name: null,
-          target: entry.target?.export ?? null,
-          designRequests: [...new Set(entry.note?.match(designRequest) ?? [])],
-        })
+      if (
+        entry.status === "pending" &&
+        !inventory?.components.some((node) => node.nodeId === nodeId)
+      ) {
+        pending.push(pendingStatusRow(nodeId, null, entry.target?.export, entry.note))
       }
     }
     pending.sort((left, right) =>
       left.nodeId.localeCompare(right.nodeId, undefined, { numeric: true }),
     )
-    registryReport = { ...registryReport, ...counts }
+    report = { ...report, ...counts }
   } catch (error) {
-    registryReport.error = `${REGISTRY_PATH}: ${
-      error instanceof Error ? error.message.split("\n")[0] : String(error)
-    }`
+    report.error = `${REGISTRY_PATH}: ${error instanceof Error ? error.message.split("\n")[0] : String(error)}`
   }
+  return { report, pending }
+}
 
-  const snapshotFile = path.join(root, SNAPSHOT_PATH)
-  const snapshotStat = fs.existsSync(snapshotFile) ? fs.statSync(snapshotFile) : null
-  const snapshot: StatusReport["snapshot"] = snapshotStat
+function snapshotStatus(workspace: Workspace): StatusReport["snapshot"] {
+  const file = workspace.path(SNAPSHOT_PATH)
+  const stat = fs.existsSync(file) ? fs.statSync(file) : null
+  return stat
     ? {
         path: SNAPSHOT_PATH,
         present: true,
-        bytes: snapshotStat.size,
-        modifiedAt: snapshotStat.mtime.toISOString().slice(0, 16).replace("T", " "),
+        bytes: stat.size,
+        modifiedAt: stat.mtime.toISOString().slice(0, 16).replace("T", " "),
       }
     : { path: SNAPSHOT_PATH, present: false, bytes: null, modifiedAt: null }
+}
 
-  let live: LiveReport | null = null
-  if (flag("live")) {
-    if (!token.present) {
-      live = { error: "FIGMA_TOKEN is missing" }
-    } else {
-      try {
-        const fileKey = fileKeyFromSource() ?? inventory?.fileKey
-        if (!fileKey) throw new Error("no FIGMA_FILE_KEY and no inventory file key")
-        const header = await fetchFileHeader(fileKey)
-        live = {
-          version: header.version,
-          lastModified: header.lastModified,
-          changedSinceInventory: inventoryReport.fileVersion
-            ? header.version !== inventoryReport.fileVersion
-            : null,
-        }
-      } catch (error) {
-        live = { error: error instanceof Error ? error.message : String(error) }
-      }
+async function liveStatus(
+  workspace: Workspace,
+  enabled: boolean,
+  token: StatusReport["token"],
+  inventory: Inventory | null,
+  inventoryReport: StatusReport["inventory"],
+  env: NodeJS.ProcessEnv,
+): Promise<LiveReport | null> {
+  if (!enabled) return null
+  if (!token.present) return { error: "FIGMA_TOKEN is missing" }
+  try {
+    const fileKey = fileKeyFromSource(workspace) ?? inventory?.fileKey
+    if (!fileKey) throw new Error("no FIGMA_FILE_KEY and no inventory file key")
+    const header = await fetchFileHeader(fileKey, figmaToken(env))
+    return {
+      version: header.version,
+      lastModified: header.lastModified,
+      changedSinceInventory: inventoryReport.fileVersion
+        ? header.version !== inventoryReport.fileVersion
+        : null,
     }
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : String(error) }
   }
+}
 
-  const rulesReport: StatusReport["rules"] = {
+function rulesStatus(root: string): StatusReport["rules"] {
+  const report: StatusReport["rules"] = {
     path: RULES_PATH,
     present: false,
     consolidated: 0,
@@ -384,23 +425,27 @@ export async function runStatus(argv: string[] = process.argv.slice(2)): Promise
   try {
     const ledger = readLedger(root, false)
     if (ledger) {
-      rulesReport.present = true
-      rulesReport.consolidated = Object.keys(ledger.cards).length
+      report.present = true
+      report.consolidated = Object.keys(ledger.cards).length
       for (const card of Object.values(ledger.cards)) {
-        if (card.disposition === "imported") rulesReport.imported += 1
-        if (card.disposition === "recorded") rulesReport.recorded += 1
-        if (card.disposition === "pending") rulesReport.pending += 1
+        if (card.disposition === "imported") report.imported += 1
+        if (card.disposition === "recorded") report.recorded += 1
+        if (card.disposition === "pending") report.pending += 1
       }
-      const rulesSnapshot = readRulesSnapshot(root, false)
-      if (rulesSnapshot) {
-        rulesReport.stale = planRules(rulesSnapshot, ledger).stale.length
-      }
+      const snapshot = readRulesSnapshot(root, false)
+      if (snapshot) report.stale = planRules(snapshot, ledger).stale.length
     }
   } catch (error) {
-    rulesReport.error = error instanceof Error ? error.message.split("\n")[0] : String(error)
+    report.error = error instanceof Error ? error.message.split("\n")[0] : String(error)
   }
+  return report
+}
 
-  const commentsReport: StatusReport["comments"] = {
+function commentsStatus(
+  workspace: Workspace,
+  inventory: Inventory | null,
+): StatusReport["comments"] {
+  const report: StatusReport["comments"] = {
     path: COMMENTS_SNAPSHOT_PATH,
     present: false,
     threads: 0,
@@ -409,52 +454,73 @@ export async function runStatus(argv: string[] = process.argv.slice(2)): Promise
     error: null,
   }
   try {
-    const comments = readComments(root)
+    const comments = readComments(workspace)
     if (comments) {
       const mapped = new Set<string>()
       for (const component of inventory?.components ?? []) {
         mapped.add(component.nodeId)
         for (const variant of component.variants ?? []) mapped.add(variant.nodeId)
       }
-      commentsReport.present = true
-      commentsReport.threads = comments.threads.length
-      commentsReport.open = comments.threads.filter((thread) => !thread.resolvedAt).length
-      commentsReport.mappedOpen = comments.threads.filter(
+      report.present = true
+      report.threads = comments.threads.length
+      report.open = comments.threads.filter((thread) => !thread.resolvedAt).length
+      report.mappedOpen = comments.threads.filter(
         (thread) => !thread.resolvedAt && thread.nodeId !== null && mapped.has(thread.nodeId),
       ).length
     }
   } catch (error) {
-    commentsReport.error = error instanceof Error ? error.message.split("\n")[0] : String(error)
+    report.error = error instanceof Error ? error.message.split("\n")[0] : String(error)
   }
+  return report
+}
 
-  // The surface is what the census says the pages draw, and it is the only line
-  // here the inventory cannot produce: the export holds published nodes, a page
-  // holds drawings and compositions. The inventory only counts the pages a
-  // census still owes.
-  const surfaceReport: StatusReport["surface"] = { stats: null, error: null }
+function surfaceStatus(workspace: Workspace, inventory: Inventory | null): StatusReport["surface"] {
   try {
-    surfaceReport.stats = surfaceSummary(loadPageSurface(), inventory?.components ?? [])
+    return {
+      stats: surfaceSummary(
+        loadPageSurface(workspace.path("src/catalog/figma/page-surface.json")),
+        inventory?.components ?? [],
+      ),
+      error: null,
+    }
   } catch (error) {
-    surfaceReport.error = error instanceof Error ? error.message.split("\n")[0] : String(error)
+    return {
+      stats: null,
+      error: error instanceof Error ? error.message.split("\n")[0] : String(error),
+    }
   }
+}
 
-  const configFile = path.join(root, CONFIG_PATH)
-  const base: Omit<StatusReport, "next"> = {
-    config: fs.existsSync(configFile) ? relativeTo(workspaceRoot(root), configFile) : null,
+export async function buildStatusReport(
+  workspace: Workspace,
+  options: StatusOptions = {},
+  env: NodeJS.ProcessEnv = {},
+): Promise<StatusResult> {
+  const token = tokenStatus(env)
+  const { report: inventoryReport, inventory } = inventoryStatus(workspace)
+  const { report: registryReport, pending } = registryStatus(workspace, inventory)
+  const live = await liveStatus(
+    workspace,
+    Boolean(options.live),
     token,
-    snapshot,
+    inventory,
+    inventoryReport,
+    env,
+  )
+  const configFile = workspace.path(CONFIG_PATH)
+  const base: Omit<StatusReport, "next"> = {
+    config: fs.existsSync(configFile) ? relativeTo(workspace.workspaceRoot, configFile) : null,
+    token,
+    snapshot: snapshotStatus(workspace),
     inventory: inventoryReport,
     registry: registryReport,
-    rules: rulesReport,
-    comments: commentsReport,
+    rules: rulesStatus(workspace.root),
+    comments: commentsStatus(workspace, inventory),
     pending,
-    surface: surfaceReport,
-    requests: designRequests(),
+    surface: surfaceStatus(workspace, inventory),
+    requests: designRequests(workspace),
     live,
   }
   const report: StatusReport = { ...base, next: nextCommand(base) }
-
-  if (flag("json")) console.log(JSON.stringify(report, null, 2))
-  else printText(report)
-  return inventoryReport.error ? 1 : 0
+  return { report, exitCode: inventoryReport.error ? 1 : 0 }
 }

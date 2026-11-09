@@ -1,12 +1,11 @@
 import assert from "node:assert/strict"
 import { spawnSync } from "node:child_process"
 import fs from "node:fs"
-import os from "node:os"
 import path from "node:path"
 import { test } from "node:test"
 import { fileURLToPath } from "node:url"
 
-import { fixtureEnv } from "../../src/lib/paths.ts"
+import { fixtureEnvironment, fixtureTree } from "../helpers/cli.mjs"
 import { RulesLedgerSchema, RulesSnapshotSchema } from "../../src/schemas/rules.ts"
 import {
   componentRulesFirst,
@@ -228,7 +227,8 @@ const cli = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
 // the committed ledger. No token and no network, like the drift job after its
 // refresh.
 function runPlan({ ledger }) {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-rules-plan-"))
+  const tree = fixtureTree({}, "pagopa-rules-plan-")
+  const root = tree.root
   try {
     const files = [
       [".figma/rules.json", snapshot],
@@ -239,13 +239,13 @@ function runPlan({ ledger }) {
       fs.mkdirSync(path.dirname(target), { recursive: true })
       fs.writeFileSync(target, JSON.stringify(value))
     }
-    return spawnSync(process.execPath, [cli, "figma", "rules", "--plan"], {
+    return spawnSync(process.execPath, [cli, "figma", "rules", "plan"], {
       cwd: root,
       encoding: "utf8",
-      env: fixtureEnv(root),
+      env: fixtureEnvironment(root),
     })
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
   }
 }
 

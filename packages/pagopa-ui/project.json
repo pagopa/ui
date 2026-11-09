@@ -5,19 +5,35 @@
   "sourceRoot": "packages/pagopa-ui/src",
   "tags": ["type:lib", "scope:design-system"],
   "targets": {
-    "build": { "dependsOn": ["^build"] },
-    "typecheck": { "dependsOn": ["pagopa-ui-artwork:build", "pagopa-ui-tokens:build"] },
-    "lint": { "configurations": { "ci": { "script": "lint:check" } } },
+    "build": {
+      "dependsOn": ["^build"]
+    },
+    "typecheck": {
+      "dependsOn": ["pagopa-ui-artwork:build", "pagopa-ui-tokens:build"]
+    },
+    "lint": {
+      "configurations": {
+        "ci": {
+          "script": "lint:check"
+        }
+      }
+    },
     "fmt": {
       "executor": "nx:run-script",
-      "options": { "script": "format" },
+      "options": {
+        "script": "format"
+      },
       "cache": true,
-      "configurations": { "ci": { "script": "format:check" } }
+      "configurations": {
+        "ci": {
+          "script": "format:check"
+        }
+      }
     },
     "test": {
       "dependsOn": [
         "api:check",
-        "figma:check",
+        "check:catalogue",
         "pagopa-ui-artwork:test",
         "layers:check",
         "text-defaults:check",
@@ -26,15 +42,24 @@
         "client:check",
         "a11y:conformance:check",
         "pagopa-ui-cli:test",
-        "pagopa-ui-cli:figma:parity:verify",
+        "pagopa-ui-cli:check:parity",
         "pagopa-ui-tokens:test"
       ],
-      "configurations": { "ci": { "script": "test:unit" } }
+      "configurations": {
+        "ci": {
+          "script": "test:unit"
+        }
+      }
     },
     "api:check": {
       "dependsOn": ["build"],
       "cache": true,
-      "inputs": ["default", { "dependentTasksOutputFiles": "**/*.d.ts" }],
+      "inputs": [
+        "default",
+        {
+          "dependentTasksOutputFiles": "**/*.d.ts"
+        }
+      ],
       "outputs": ["{projectRoot}/dist/api"]
     },
     "api:update": {
@@ -46,7 +71,9 @@
       "options": {
         "command": "node src/cli.ts check docs",
         "cwd": "{workspaceRoot}/packages/ui-cli",
-        "env": { "PAGOPA_UI_ROOT": "../pagopa-ui" }
+        "env": {
+          "PAGOPA_UI_ROOT": "../pagopa-ui"
+        }
       },
       "inputs": [
         "default",
@@ -73,31 +100,53 @@
       "outputs": [],
       "cache": true
     },
-    "figma:check": {
-      "options": { "command": "node src/cli.ts check figma" },
+    "check:catalogue": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node src/cli.ts check catalogue",
+        "cwd": "{workspaceRoot}/packages/ui-cli",
+        "env": {
+          "PAGOPA_UI_ROOT": "../pagopa-ui"
+        }
+      },
       "inputs": [
         "default",
         "tooling",
         "{workspaceRoot}/packages/artwork/src/**",
-        "{workspaceRoot}/apps/storybook/src/**/*"
-      ]
+        "{workspaceRoot}/apps/storybook/src/**/*",
+        "{workspaceRoot}/docs/figma-parity/**",
+        "{workspaceRoot}/pnpm-lock.yaml",
+        { "runtime": "node --version" }
+      ],
+      "cache": true,
+      "outputs": []
     },
-    "figma:stories": {
+    "update:stories": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node src/cli.ts figma stories --write",
+        "command": "node src/cli.ts update stories",
         "cwd": "{workspaceRoot}/packages/ui-cli",
-        "env": { "PAGOPA_UI_ROOT": "../pagopa-ui" }
+        "env": {
+          "PAGOPA_UI_ROOT": "../pagopa-ui"
+        }
       },
       "outputs": [],
       "cache": false
     },
-    "layers:check": { "options": { "command": "node src/cli.ts check layers" } },
+    "layers:check": {
+      "options": {
+        "command": "node src/cli.ts check layers"
+      }
+    },
     "text-defaults:check": {
-      "options": { "command": "node src/cli.ts check text-defaults --max 0" }
+      "options": {
+        "command": "node src/cli.ts check text-defaults --max 0"
+      }
     },
     "foundation:check": {
-      "options": { "command": "node src/cli.ts check foundation" },
+      "options": {
+        "command": "node src/cli.ts check foundation"
+      },
       "inputs": [
         "default",
         "tooling",
@@ -106,12 +155,20 @@
       ]
     },
     "tokens:public:check": {
-      "options": { "command": "node src/cli.ts check public-tokens" },
+      "options": {
+        "command": "node src/cli.ts check public-tokens"
+      },
       "inputs": ["default", "tooling", "{workspaceRoot}/packages/tokens/src/**"]
     },
-    "client:check": { "options": { "command": "node src/cli.ts check client-directives" } },
+    "client:check": {
+      "options": {
+        "command": "node src/cli.ts check client-directives"
+      }
+    },
     "a11y:conformance:check": {
-      "options": { "command": "node src/cli.ts check a11y-conformance" },
+      "options": {
+        "command": "node src/cli.ts check a11y"
+      },
       "inputs": [
         "default",
         "tooling",
@@ -121,20 +178,32 @@
     },
     "library:check": {
       "dependsOn": ["build"],
-      "options": { "command": "node src/cli.ts check library" },
+      "options": {
+        "command": "node src/cli.ts check library"
+      },
       "inputs": [
         "default",
         "tooling",
         "{workspaceRoot}/packages/artwork/src/**",
         "{workspaceRoot}/packages/tokens/src/**",
-        { "dependentTasksOutputFiles": "**/*" },
-        { "env": "LIBRARY_ENGINES" },
-        { "runtime": "node --version" },
-        { "runtime": "node -p \"process.platform + '-' + process.arch\"" }
+        {
+          "dependentTasksOutputFiles": "**/*"
+        },
+        {
+          "env": "LIBRARY_ENGINES"
+        },
+        {
+          "runtime": "node --version"
+        },
+        {
+          "runtime": "node -p \"process.platform + '-' + process.arch\""
+        }
       ]
     },
     "nx-release-publish": {
-      "options": { "registry": "https://npm.pkg.github.com" }
+      "options": {
+        "registry": "https://npm.pkg.github.com"
+      }
     }
   }
 }

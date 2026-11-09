@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "note": "Ceiling of the published stylesheet (dist/styles.css): raw bytes, gzip level 9 and brotli. Growth fails; a drop wider than the slack is recorded with `node src/cli.ts check css --write`; raising a ceiling is a reviewed edit of this file with its reason.",
+  "note": "Ceiling of the published stylesheet (dist/styles.css): raw bytes, gzip level 9 and brotli. Growth fails; a drop wider than the slack is recorded with `pnpm ui-cli update css`; raising a ceiling is a reviewed edit of this file with its reason.",
   "metrics": {
     "raw": 200000,
     "gzip": 30000,

@@ -7,7 +7,7 @@ import {
   UNSTABLE_VISUAL_STORIES,
   visualSnapshotName,
   VISUAL_WIDTHS,
-} from "../../../packages/ui-cli/src/test/visual-cases.ts"
+} from "../../../packages/ui-cli/src/testing/visual-cases.ts"
 
 // Every story of the built Storybook, at the three widths of the design
 // system's breakpoints. Baselines are produced only on Linux, by CI.

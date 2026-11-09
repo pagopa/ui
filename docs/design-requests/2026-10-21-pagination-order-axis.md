@@ -14,7 +14,7 @@ Date: 21 October 2026. Origin: the alignment wave, node
 pinned inventory, the registry note and the current render.
 
 The node stays `pending`; the M1 device-policy exception (`ignoredValues`) will
-keep the `figma:check` warning out of the output until this decision is made. The
+keep the `check:catalogue` warning out of the output until this decision is made. The
 implementation is
 [pagination.tsx](../../packages/pagopa-ui/src/components/navigation/pagination.tsx);
 the story is

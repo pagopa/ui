@@ -1,7 +1,6 @@
-#!/usr/bin/env node
 // Literal text defaults contract: every user-facing default lives in the
 // message dictionary of the UI provider, so a literal in a component
-// destructuring is a regression. Run: `ui-cli check text-defaults`.
+// destructuring is a regression.
 //
 // The scan is syntax-aware and covers three positions a default hides in: the
 // destructuring default, the object literal a prop default carries
@@ -9,10 +8,12 @@
 // announces copy (`aria-label={…}`, `placeholder={…}`). A literal anywhere
 // inside one of those expressions is copy, never a `className`.
 import fs from "node:fs"
+import path from "node:path"
 import { parseSync } from "oxc-parser"
 
-import { walkFiles } from "../lib/fs.ts"
-import { enterRoot } from "../lib/paths.ts"
+import type { Workspace } from "../adapters/workspace.ts"
+import { walkRelative } from "../lib/fs.ts"
+import { report, type CheckReport } from "./report.ts"
 
 const COMPONENTS = "src/components"
 
@@ -313,15 +314,16 @@ function scan(root: unknown, file: string, source: string): TextDefault[] {
   return hits
 }
 
-export function textDefaults(): TextDefault[] {
-  const files = walkFiles(
+export function textDefaults(root: string): TextDefault[] {
+  const files = walkRelative(
+    root,
     COMPONENTS,
     (file) =>
       file.endsWith(".tsx") && !file.includes("/templates/") && !/\.(unit\.)?test\.tsx$/.test(file),
   )
   const hits: TextDefault[] = []
   for (const file of files) {
-    const source = fs.readFileSync(file, "utf8")
+    const source = fs.readFileSync(path.join(root, file), "utf8")
     const parsed = parseSync(file, source)
     if (parsed.errors.length) {
       throw new Error(`${file}: ${parsed.errors.map((error) => error.message).join("; ")}`)
@@ -331,25 +333,26 @@ export function textDefaults(): TextDefault[] {
   return hits.sort((left, right) => left.file.localeCompare(right.file) || left.line - right.line)
 }
 
-export function runTextDefaults(argv: string[]): number {
-  enterRoot()
-  const maxIndex = argv.indexOf("--max")
-  const max = maxIndex >= 0 ? Number(argv[maxIndex + 1]) : undefined
-  if (maxIndex >= 0 && (max === undefined || !Number.isInteger(max) || max < 0)) {
-    console.error("text-defaults: --max needs a non-negative integer")
-    return 2
-  }
-  const hits = textDefaults()
-  for (const hit of hits) console.log(`${hit.file}:${hit.line} ${hit.name}`)
+// Without a ceiling the scan is an inventory and never fails.
+export function checkTextDefaults(
+  workspace: Workspace,
+  options: { max?: number } = {},
+): CheckReport {
+  const hits = textDefaults(workspace.root)
+  const details = hits.map((hit) => `${hit.file}:${hit.line} ${hit.name}`)
+  const files = new Set(hits.map((hit) => hit.file)).size
+  const { max } = options
   if (max === undefined) {
-    const files = new Set(hits.map((hit) => hit.file)).size
-    console.log(`text defaults: ${hits.length} literal default(s) in ${files} file(s)`)
-    return 0
+    return report("text defaults", `${hits.length} literal default(s) in ${files} file(s)`, [], {
+      details,
+    })
   }
-  if (hits.length > max) {
-    console.error(`text-defaults: ${hits.length} literal default(s), the ceiling is ${max}`)
-    return 1
-  }
-  console.log(`text-defaults: ${hits.length} literal default(s), the ceiling is ${max} — OK`)
-  return 0
+  const problems =
+    hits.length > max ? [`${hits.length} literal default(s), the ceiling is ${max}`] : []
+  return report(
+    "text defaults",
+    `${hits.length} literal default(s), the ceiling is ${max}`,
+    problems,
+    { details },
+  )
 }

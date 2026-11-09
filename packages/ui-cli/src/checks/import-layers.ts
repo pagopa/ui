@@ -1,15 +1,9 @@
-#!/usr/bin/env node
 // Import layer contract (documented in
 // .agents/skills/pagopa-ui-standards/references/definition-of-done.md).
-// Run: `ui-cli check layers`.
-import { walkFiles } from "../lib/fs.ts"
-import { enterRoot } from "../lib/paths.ts"
-import {
-  parseSource,
-  resolveSource,
-  sourceDependencies,
-  sourcePath,
-} from "../lib/source-modules.ts"
+import type { Workspace } from "../adapters/workspace.ts"
+import { walkRelative } from "../lib/fs.ts"
+import { createSourceModules } from "../lib/source-modules.ts"
+import { report, type CheckReport } from "./report.ts"
 
 const REMOVED_LAYERS = new Set([
   "atoms",
@@ -50,9 +44,10 @@ function allowedLayers(): Map<string, Set<string>> {
   ])
 }
 
-export function runImportLayers(): number {
+export function checkImportLayers(workspace: Workspace): CheckReport {
   const errors: string[] = []
-  enterRoot()
+  const { parseSource, resolveSource, sourceDependencies, sourcePath } =
+    createSourceModules(workspace)
   const allowed = allowedLayers()
   const graph = new Map<string, Dependency[]>()
 
@@ -74,7 +69,7 @@ export function runImportLayers(): number {
     }
   }
 
-  for (const file of walkFiles("src", (file) => /\.(ts|tsx)$/.test(file))) {
+  for (const file of walkRelative(workspace.root, "src", (file) => /\.(ts|tsx)$/.test(file))) {
     if (REMOVED_LAYERS.has(category(file))) errors.push(`${file}: removed layer must not exist`)
     let dependencies
     try {
@@ -133,12 +128,5 @@ export function runImportLayers(): number {
   }
   for (const file of graph.keys()) visit(file)
 
-  if (errors.length) {
-    const violations = new Set(errors)
-    console.error(`import layer violations (${violations.size}):`)
-    for (const error of violations) console.error(`  ${error}`)
-    return 1
-  }
-  console.log("import layers OK")
-  return 0
+  return report("import layers", `${graph.size} modules`, errors)
 }

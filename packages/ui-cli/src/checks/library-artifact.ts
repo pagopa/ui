@@ -6,8 +6,8 @@ import fs from "node:fs"
 import path from "node:path"
 import { z } from "zod"
 
-import { walkFiles } from "../lib/fs.ts"
-import { artworkPath } from "../lib/paths.ts"
+import type { Workspace } from "../adapters/workspace.ts"
+import { walkRelative } from "../lib/fs.ts"
 import { parseSchema } from "../lib/validate.ts"
 import { IconManifestSchema } from "../schemas/artwork.ts"
 import { clientModules } from "./client-directives.ts"
@@ -110,7 +110,9 @@ export type ArtifactContract = {
   expectedIconVariantIds: string[]
 }
 
-export function verifyArtifactContract(root: string): ArtifactContract {
+export function verifyArtifactContract(workspace: Workspace): ArtifactContract {
+  const { root } = workspace
+  const at = (file: string): string => path.join(root, file)
   const manifest = parseSchema(
     PackageManifestSchema,
     JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8")),
@@ -123,8 +125,8 @@ export function verifyArtifactContract(root: string): ArtifactContract {
     "./dist/styles.css",
     "the package must export built CSS, not a stylesheet requiring consumer build tools",
   )
-  assert.ok(fs.existsSync(stylesFile), "missing standalone stylesheet — run pnpm build")
-  const styles = fs.readFileSync(stylesFile, "utf8")
+  assert.ok(fs.existsSync(at(stylesFile)), "missing standalone stylesheet — run pnpm build")
+  const styles = fs.readFileSync(at(stylesFile), "utf8")
   assert.doesNotMatch(
     styles,
     /@(?:import|tailwind|theme|apply|source)\b/,
@@ -144,19 +146,24 @@ export function verifyArtifactContract(root: string): ArtifactContract {
     "do not ship an unused icon font",
   )
   for (const url of fontURLs) {
-    assert.ok(fs.existsSync(path.resolve(path.dirname(stylesFile), url)), `missing font ${url}`)
+    assert.ok(fs.existsSync(path.resolve(path.dirname(at(stylesFile)), url)), `missing font ${url}`)
   }
-  assert.ok(fs.existsSync("dist/licenses/titillio.txt"), "missing bundled text font license")
+  assert.ok(fs.existsSync(at("dist/licenses/titillio.txt")), "missing bundled text font license")
   assert.ok(
-    fs.existsSync("dist/licenses/artwork.txt"),
+    fs.existsSync(at("dist/licenses/artwork.txt")),
     "missing the packaged artwork provenance notice",
   )
   for (const file of ["dist/tokens.css", "dist/tokens.js", "dist/types/tokens.d.ts"]) {
-    assert.ok(fs.existsSync(file), `missing ${file} — the public token entries must ship`)
+    assert.ok(fs.existsSync(at(file)), `missing ${file} — the public token entries must ship`)
   }
   const iconManifest = parseSchema(
     IconManifestSchema,
-    JSON.parse(fs.readFileSync(artworkPath("src/assets/figma-icons/manifest.json"), "utf8")),
+    JSON.parse(
+      fs.readFileSync(
+        path.join(workspace.artworkRoot, "src/assets/figma-icons/manifest.json"),
+        "utf8",
+      ),
+    ),
     "icon manifest",
   )
   const expectedIconVariants = Object.values(iconManifest.entries).reduce(
@@ -168,7 +175,7 @@ export function verifyArtifactContract(root: string): ArtifactContract {
     .flatMap((entry) => Object.keys(entry.variants))
     .sort()
   assert.equal(
-    fs.existsSync("dist/licenses/material-symbols-outlined.txt"),
+    fs.existsSync(at("dist/licenses/material-symbols-outlined.txt")),
     false,
     "remove the retired icon font",
   )
@@ -180,14 +187,14 @@ export function verifyArtifactContract(root: string): ArtifactContract {
   // The per-module build must publish the directive of every client module:
   // a Server Component accepts a client module only when the module declares
   // itself, and a bundler keeps that boundary only per module.
-  const client = new Set(clientModules().map((entry) => entry.file))
-  const distModules = walkFiles("dist", (file) => file.endsWith(".js"))
+  const client = new Set(clientModules(root).map((entry) => entry.file))
+  const distModules = walkRelative(root, "dist", (file) => file.endsWith(".js"))
   const withoutDirective: string[] = []
   for (const file of distModules) {
     const base = path.join("src", path.relative("dist", file)).replace(/\.js$/, "")
-    const source = [`${base}.tsx`, `${base}.ts`].find((candidate) => fs.existsSync(candidate))
+    const source = [`${base}.tsx`, `${base}.ts`].find((candidate) => fs.existsSync(at(candidate)))
     if (!source || !client.has(source)) continue
-    if (!/^["']use client/.test(fs.readFileSync(file, "utf8"))) withoutDirective.push(file)
+    if (!/^["']use client/.test(fs.readFileSync(at(file), "utf8"))) withoutDirective.push(file)
   }
   assert.deepEqual(
     withoutDirective,

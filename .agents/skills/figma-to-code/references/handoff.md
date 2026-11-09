@@ -1,100 +1,75 @@
 # Drift handoff
 
-A drift pull request is a complete handoff: the branch already carries the
-refreshed inventory, the queued delta and the evidence. Align it one node at a
-time; the person pushes and merges.
+A drift pull request carries the refreshed inventory, queued delta and
+evidence. Align on its head branch; the person pushes and merges.
 
 ## Start
 
-1. Create a worktree from the drift branch:
+1. `pnpm ui-cli figma handoff resolve <pr-or-url-or-branch> --json` identifies
+   the open target. Without a reference it requires exactly one open drift pull
+   request. A closed/merged or ambiguous target stops the handoff.
+2. Run status and the source gate in [init.md](init.md#credentials-and-source-gate)
+   before changing files. A missing token blocks only REST; Storybook is required
+   for the render.
+3. If the active worktree is already on the resolved head branch, use it.
+   Otherwise preview `pnpm ui-cli figma handoff checkout <pr> --dry-run --json`,
+   then run it without `--dry-run` under the session's filesystem permissions.
+   It fetches the head, creates a sibling worktree named for the branch and
+   installs dependencies; a worktree already holding that branch is reused.
+   Continue in its reported path. A destination holding something other than a
+   worktree is a blocker, not permission to delete it.
+4. `pnpm ui-cli figma handoff brief <pr> --json` batches the PR body, delta
+   artifact and local pending briefs. Read both the PR order and the local
+   order; stale/absent artifact data must not silently change scope.
 
-   ```sh
-   git fetch origin
-   git worktree add ../pagopa-ui-drift -b figma-drift/<date> origin/figma-drift/<date>
-   cd ../pagopa-ui-drift
-   pnpm install
-   ```
-
-2. Run the MCP gate and the session report ([init.md](init.md) §2). A session
-   without the MCP stops here, before its first file change; a missing
-   `FIGMA_TOKEN` only narrows the REST targets. Storybook is required for the
-   render.
-3. Read the handoff: the pull request body and its `delta.json` artifact
-   (`counts`, `nodes`, `implementationOrder`, the device and coverage
-   summaries), then the registry note of each node.
+**Done when** the correct branch is active, the source gate passes, and every
+requested node has its delta class, target, constraints and devices.
 
 ## Work
 
-In `implementationOrder`, one node at a time, one commit per node. Pick the
-branch:
+Follow the handoff's `implementationOrder`, dependencies first, one node at a
+time. The decision procedure is [delta.md](delta.md#steps), step 3:
+implementation, review/mapping, exclusion or a pending request/blocker.
+Use `pnpm ui-cli figma brief --queue --refresh` for batched current context,
+and the node brief again when its context changes.
 
-- a delta node → [delta.md](delta.md) step 4;
-- a new implementation → [new-from-figma.md](new-from-figma.md);
-- a review → [node-review.md](node-review.md);
-- an open question for the design owner → [design-request.md](design-request.md);
-  the node stays `pending`.
+Record decisions through `figma registry set`
+([catalogue.md](catalogue.md#review-semantics)). Cases, rules and guides travel
+with the implementation. Source/render inspection and the parity loop in
+[visual-parity.md](visual-parity.md) remain required; a draft is not coverage.
+Changes to comparison tools, the public API, tokens or these instructions
+require an explicit decision; a mismatch alone is not permission to relax them.
+If commits were requested, keep one commit per node on this branch, with the
+full green chain before each commit.
 
-A draft case is not coverage. Three fix passes per case, then a residue with a
-reason or a written blocker.
+## Checks and delivery
 
-## Checks
-
-The closing checks of this skill, plus `pnpm nx run pagopa-ui-cli:figma:parity:verify`
-before the green chain. A slice that no longer matches the committed inventory
-exits 2: refresh it with the evidence command or use the current snapshot.
-
-Before handoff, run the scoped baseline preflight in
+Use [shared completion](definition-of-done.md#closing-and-delivery).
+Before handoff, also run the scoped baseline preflight in
 [Visual regression](../../../../CONTRIBUTING.md#visual-regression) against the
-pull request base. Report missing images and follow its Linux update workflow
-once the pull request exists; the visual gate is unverified until the baselines
-are reviewed and the check reruns.
-
-## Delivery
-
-Commit the alignment on the drift branch. The person pushes, reviews and merges;
-the session stops before push, merge or pull request.
+pull request base: the scoped run is the session's visual obligation, and the
+whole-catalogue comparison belongs to the nightly and the release pull request.
+Missing Linux images remain a finding until the update
+workflow's baselines are reviewed and the visual check reruns.
 
 ### Before / after media
 
-The drift pull request carries its visible change: one comment holding a pair of
-captures per node whose render moved, so the reviewer sees it without starting
-Storybook. Its generated body already asks each node for its local render: the
-comment is where those renders land. It runs once the pull request exists — on
-the delivery the person asked for, or after their own push.
+After authorized delivery, with a clean committed tree and Storybook answering:
 
-A node whose source moved without moving the render — a `FILL`→`HUG` relaxation,
-a case recaptured at the corrected width — is one line of the same comment
-instead of a pair.
+```sh
+pnpm ui-cli figma handoff media --pr <n> --base <ref> --dry-run --json
+pnpm ui-cli figma handoff media --pr <n> --base <ref> --json
+```
 
-1. **Start Storybook** — `pnpm nx run pagopa-ui-storybook:storybook` — and
-   confirm `http://localhost:6006/iframe.html` answers.
-2. **Capture the "before" pair** from the base commit's file:
-   `git show <base>:<path> > <path>` runs the pre-alignment component under the
-   same story. Then `git checkout -- <path>` and confirm `git status` is clean.
-3. **Capture the "after" pair** from the committed tree, so the last frame is the
-   code the pull request ships. Both captures come from a scratch script beside
-   `packages/ui-cli`, which already depends on `playwright`: open
-   `iframe.html?id=<storyId>&viewMode=story`, press `Tab` when the case's state is
-   focus, use `deviceScaleFactor: 2`, clip the band the change lives in, and read
-   the root's `boundingBox()` against the source numbers. Same story, viewport,
-   device, state and clip in both, so the frames differ by the change and by
-   nothing else; two identical frames mean the render never moved, and that node
-   belongs to the line above.
-4. **Comment** with `gh` 2.99 or later:
-   `gh pr comment <n> --repo <owner>/<repo> --body-file comment.md --attach ./before.png --attach ./after.png`,
-   the body naming each node, its decision and the bare file names (`before.png`,
-   `after.png`) that `gh` rewrites into the uploaded URLs.
-5. **Read it back**:
-   `gh pr view <n> --json comments --jq '.comments[] | select(.url == "<url>") | .body'`.
+The CLI selects changed mapped nodes/cases, captures base and head with the same
+story, viewport and clip, restores source files, attaches one comment and checks
+the uploaded URLs. Identical frames become a line rather than a pair. It reads
+`STORYBOOK_URL` when a session serves its own Storybook on another port.
 
-**Done when** every node whose render moved is named in the comment, the
-read-back body carries one `user-attachments/assets/` URL per captured frame and
-no local path, and the scratch script and the PNGs are deleted.
-
-## Guardrails
-
-- Figma is read-only.
-- The comparison tools, the public API, the tokens and these instructions change
-  only with an explicit decision.
-- `implemented` follows a reviewed render; a node without one stays `pending`.
-- One node, one decision, one commit.
+**Done when** every node whose render moved has a verified before/after pair,
+every unchanged render is explained, and the working tree is restored.
+Inspect the result: the helper does not replay arbitrary saved `fill`, `click`
+or focus-selector interactions, nor discover all indirect token/artwork
+dependants. For those cases, reproduce the saved state and capture both
+revisions explicitly; report missing pairs as unverified. Generated comment
+text does not replace the decision/reason report.

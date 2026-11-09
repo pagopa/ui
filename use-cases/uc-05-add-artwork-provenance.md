@@ -13,7 +13,7 @@ parent_dr: design-review.md
 
 **Secondary actors**: Design owner
 
-**Source artifact**: `docs/decisions/0003` (artwork provenance); `packages/artwork`; `packages/ui-cli/src/cli.ts` (`assets:check`, `icons:check`, `pictograms:check`)
+**Source artifact**: `docs/decisions/0003` (artwork provenance); `packages/artwork`; `packages/ui-cli/src/cli.ts` (`check:artwork`, `check:icons`, `check:pictograms`)
 
 **Service Blueprint step**: N/A — confirmed: no service blueprint (see `open.item-019` of the parent DR).
 
@@ -67,10 +67,10 @@ parent_dr: design-review.md
 **Acceptance checks**:
 
 - `AC-01`: Every published identity of the artwork has a resolved and validated provenance. - Evidence: `pnpm nx run pagopa-ui-artwork:test`
-- `AC-02`: Icons are verified separately from pictograms and both checks are green. - Evidence: `pnpm nx run pagopa-ui-cli:icons:check`; `pnpm nx run pagopa-ui-cli:pictograms:check`
+- `AC-02`: Icons are verified separately from pictograms and both checks are green. - Evidence: `pnpm nx run pagopa-ui-cli:check:icons`; `pnpm nx run pagopa-ui-cli:check:pictograms`
 - `AC-03`: The catalogue labels every identity not derived from Material Symbols and links its Figma page. - Evidence: `apps/storybook/src/guides/icons.md`, `apps/storybook/src/guides/pictograms.md`
 - `AC-04`: The distributed package contains the licence note of the artwork. - Evidence: `dist/licenses/artwork.txt`; `pnpm nx run pagopa-ui:library:check`
-- `AC-05`: The typed module exports the artifact and the library build includes it. - Evidence: `pnpm nx run pagopa-ui-artwork:assets:check`; `pnpm nx run pagopa-ui:build`
+- `AC-05`: The typed module exports the artifact and the library build includes it. - Evidence: `pnpm nx run pagopa-ui-artwork:check:artwork`; `pnpm nx run pagopa-ui:build`
 - `AC-06`: With a non-existent identity, the system returns `ARTWORK_IDENTITY_UNKNOWN` and generates no files. - Evidence: `ui-cli` tests on the artwork checks
 
 **Tracking events**:

@@ -690,7 +690,7 @@ test("the snapshot, commands and report fail closed without workflows or secret 
           files: [],
         },
       ],
-      commands: [{ label: "figma:parity:capture", code: 1 }],
+      commands: [{ label: "parity:capture", code: 1 }],
       attributionWarnings: [],
       delivery: "Not committed",
     },
@@ -698,7 +698,7 @@ test("the snapshot, commands and report fail closed without workflows or secret 
   )
   assert.match(report, /Independent verification: NOT passed/)
   assert.match(report, /context changed after verification/)
-  assert.match(report, /\| figma:parity:capture \| 1 \|/)
+  assert.match(report, /\| parity:capture \| 1 \|/)
   assert.match(report, /\| green chain \| 1 \|/)
   assert.match(report, /Storybook failed/)
 

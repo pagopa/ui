@@ -1,10 +1,12 @@
 import fs from "node:fs"
+import path from "node:path"
+import type { Workspace } from "../adapters/workspace.ts"
+import { createSourceModules } from "../lib/source-modules.ts"
+
 import { z } from "zod"
 
 import { fingerprint } from "../lib/hash.ts"
-import { artworkPath } from "../lib/paths.ts"
 import { isSchema, parseSchema } from "../lib/validate.ts"
-import { parseSource } from "../lib/source-modules.ts"
 import {
   DependencySchema,
   InventoryNodeSchema,
@@ -86,6 +88,7 @@ const RawNodeSchema = z.looseObject({
   containing_frame: RawContainingFrameSchema.optional(),
   dependencies: z.array(RawDependencySchema).optional(),
   designFingerprint: z.string().nullable().optional(),
+  variants: InventoryNodeSchema.shape.variants,
 })
 
 const RestComponentSchema = z.looseObject({
@@ -130,14 +133,16 @@ const isRestExport = (value: unknown): value is RestExport => isSchema(RestExpor
 const isInventoryExport = (value: unknown): value is InventoryExport =>
   isSchema(InventoryExportSchema, value)
 
-export function fileKeyFromSource(): string {
+export function fileKeyFromSource(workspace: Workspace): string {
   const file = "src/catalog/figma/file.ts"
-  const declarations = parseSource(file).program.body.flatMap((statement) =>
-    statement.type === "ExportNamedDeclaration" &&
-    statement.declaration?.type === "VariableDeclaration"
-      ? statement.declaration.declarations
-      : [],
-  )
+  const declarations = createSourceModules(workspace)
+    .parseSource(file)
+    .program.body.flatMap((statement) =>
+      statement.type === "ExportNamedDeclaration" &&
+      statement.declaration?.type === "VariableDeclaration"
+        ? statement.declaration.declarations
+        : [],
+    )
   const initializer = declarations.find(
     (declaration) =>
       declaration.id.type === "Identifier" && declaration.id.name === "FIGMA_FILE_KEY",
@@ -157,13 +162,16 @@ const CatalogueManifestSchema = z.looseObject({
   entries: z.record(z.string(), z.unknown()),
 })
 
-export function catalogueIndex(registry: Registry): {
+export function catalogueIndex(
+  registry: Registry,
+  workspace: Workspace,
+): {
   byNode: Map<string, BulkRule>
   manifests: Map<string, z.infer<typeof CatalogueManifestSchema>>
 } {
   const byNode = new Map<string, BulkRule>()
   const manifests = new Map<string, z.infer<typeof CatalogueManifestSchema>>()
-  const fileKey = fileKeyFromSource()
+  const fileKey = fileKeyFromSource(workspace)
   function own(id: string, rule: BulkRule): void {
     const previous = byNode.get(id)
     if (previous && previous !== rule) {
@@ -177,7 +185,7 @@ export function catalogueIndex(registry: Registry): {
       throw new Error(`${rule.pageId}: namesExport requires a node-keyed assetManifest`)
     }
     // A first artwork export may not have a manifest yet.
-    const file = artworkPath(rule.assetManifest)
+    const file = path.join(workspace.artworkRoot, rule.assetManifest)
     if (!fs.existsSync(file)) continue
     const manifest = parseSchema(
       CatalogueManifestSchema,
@@ -277,15 +285,6 @@ function propertyDefault(value: unknown): unknown {
   return value
 }
 
-// The device vocabulary is committed data. It is loaded once per process; a
-// fixture that pins its own policy passes it explicitly to `normalizeNode`.
-let devicePolicyCache: DevicePolicy | null = null
-
-export function defaultDevicePolicyCached(): DevicePolicy {
-  if (!devicePolicyCache) devicePolicyCache = loadDevicePolicy()
-  return devicePolicyCache
-}
-
 function boxOf(
   node: z.infer<typeof RawDocumentSchema>,
 ): { width: number; height: number } | undefined {
@@ -300,8 +299,8 @@ function variantRecords(
   policy: DevicePolicy,
 ): InventoryNode["variants"] {
   if (raw.type !== "COMPONENT_SET") return undefined
-  const children = (raw.document?.children ?? []).filter((child) => child?.id)
-  if (!children.length) return undefined
+  if (!raw.document?.children) return undefined
+  const children = raw.document.children.filter((child) => child?.id)
   return children
     .map((child) => ({
       nodeId: child.id,
@@ -313,25 +312,12 @@ function variantRecords(
     .sort((a, b) => a.nodeId.localeCompare(b.nodeId, undefined, { numeric: true }))
 }
 
-export function normalizeNode(
-  rawValue: unknown,
-  { policy = defaultDevicePolicyCached() }: { policy?: DevicePolicy } = {},
-): InventoryNode {
-  const raw = parseSchema(RawNodeSchema, rawValue, "invalid Figma node")
-  const nodeId = raw.nodeId ?? raw.node_id
-  const pageName = raw.pageName ?? raw.containing_frame?.pageName ?? ""
-  const pageId = raw.pageId ?? raw.containing_frame?.pageId ?? raw.containing_frame?.page_id ?? ""
-  if (
-    !nodeId ||
-    !NodeIdSchema.safeParse(nodeId).success ||
-    !/^\d+:\d+$/.test(pageId) ||
-    typeof pageName !== "string"
-  ) {
-    throw new Error(`invalid Figma identity or page for node ${nodeId ?? "(missing)"}`)
-  }
-  if (!["COMPONENT", "COMPONENT_SET"].includes(raw.type)) {
-    throw new Error(`invalid Figma type for node ${nodeId}`)
-  }
+function requirePolicy(policy: DevicePolicy | undefined): DevicePolicy {
+  if (!policy) throw new Error("normalizing component variants needs a device policy")
+  return policy
+}
+
+function normalizeProperties(raw: z.infer<typeof RawNodeSchema>, nodeId: string) {
   const definitions = raw.properties ?? raw.document?.componentPropertyDefinitions ?? {}
   const properties: Record<string, unknown> = {}
   for (const [name, definition] of Object.entries(definitions)) {
@@ -345,6 +331,15 @@ export function normalizeNode(
       ...(parsed.variantOptions ? { variantOptions: [...parsed.variantOptions].sort() } : {}),
     }
   }
+  return Object.fromEntries(
+    Object.entries(properties).map(([key, property]) => [
+      key,
+      parseSchema(PropertySchema, property, `invalid property ${key} on node ${nodeId}`),
+    ]),
+  )
+}
+
+function normalizeDependencies(raw: z.infer<typeof RawNodeSchema>, nodeId: string) {
   const dependencies = (raw.dependencies ?? [])
     .map((dependency) => {
       if (
@@ -364,23 +359,44 @@ export function normalizeNode(
     })
     .sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)))
 
-  const normalizedProperties = Object.fromEntries(
-    Object.entries(properties).map(([key, property]) => [
-      key,
-      parseSchema(PropertySchema, property, `invalid property ${key} on node ${nodeId}`),
-    ]),
-  )
-  const normalizedDependencies = parseSchema(
+  return parseSchema(
     z.array(DependencySchema),
     dependencies,
     `invalid dependency on node ${nodeId}`,
   )
+}
+
+export function normalizeNode(
+  rawValue: unknown,
+  { policy }: { policy?: DevicePolicy } = {},
+): InventoryNode {
+  const raw = parseSchema(RawNodeSchema, rawValue, "invalid Figma node")
+  const nodeId = raw.nodeId ?? raw.node_id
+  const pageName = raw.pageName ?? raw.containing_frame?.pageName ?? ""
+  const pageId = raw.pageId ?? raw.containing_frame?.pageId ?? raw.containing_frame?.page_id ?? ""
+  if (
+    !nodeId ||
+    !NodeIdSchema.safeParse(nodeId).success ||
+    !/^\d+:\d+$/.test(pageId) ||
+    typeof pageName !== "string"
+  ) {
+    throw new Error(`invalid Figma identity or page for node ${nodeId ?? "(missing)"}`)
+  }
+  if (!["COMPONENT", "COMPONENT_SET"].includes(raw.type)) {
+    throw new Error(`invalid Figma type for node ${nodeId}`)
+  }
+  const normalizedProperties = normalizeProperties(raw, nodeId)
+  const normalizedDependencies = normalizeDependencies(raw, nodeId)
   const type = parseSchema(
     z.enum(["COMPONENT", "COMPONENT_SET"]),
     raw.type,
     `invalid Figma type for node ${nodeId}`,
   )
-  const variants = variantRecords(raw, normalizedProperties, policy)
+  const variants =
+    raw.variants ??
+    (raw.document?.children?.length
+      ? variantRecords(raw, normalizedProperties, requirePolicy(policy))
+      : undefined)
   const designFingerprint = raw.document
     ? fingerprint(designEvidence(raw.document))
     : (raw.designFingerprint ?? null)
@@ -410,9 +426,15 @@ export function normalizeNode(
 
 export function normalizeLive(
   rawValue: unknown,
-  options: { policy?: DevicePolicy } = {},
+  options: { policy?: DevicePolicy; workspace?: Workspace } = {},
 ): InventoryNode[] {
   const raw = parseSchema(LiveExportSchema, rawValue, "unrecognized live export shape")
+  const policy =
+    options.policy ??
+    (options.workspace
+      ? loadDevicePolicy(options.workspace.path("src/catalog/figma/device-policy.json"))
+      : undefined)
+  if (!policy) throw new Error("normalizeLive needs a workspace or explicit device policy")
   let list: unknown[]
   if (Array.isArray(raw)) list = raw
   else if (isRestExport(raw)) {
@@ -444,7 +466,7 @@ export function normalizeLive(
   const seen = new Set<string>()
   const components: InventoryNode[] = []
   for (const item of list) {
-    const node = normalizeNode(item, options)
+    const node = normalizeNode(item, { policy })
     if (seen.has(node.nodeId)) throw new Error(`duplicate Figma nodeId ${node.nodeId}`)
     seen.add(node.nodeId)
     components.push(node)
@@ -466,7 +488,7 @@ export type VariantChange = {
 }
 
 function variantDelta(old: InventoryNode | undefined, node: InventoryNode): VariantChange[] {
-  if (!(node.variants ?? []).length) return []
+  if (!node.variants) return []
   const changes: VariantChange[] = []
   const before = new Map((old?.variants ?? []).map((variant) => [variant.nodeId, variant]))
   const after = new Map((node.variants ?? []).map((variant) => [variant.nodeId, variant]))
@@ -525,7 +547,8 @@ export function compareSnapshots(
     }
     if (old.name !== node.name || old.pageName !== node.pageName) delta.renamed.push(node)
     if (old.pageId !== node.pageId) delta.moved.push(node)
-    delta.changedVariants.push(...variantDelta(old, node))
+    const variants = variantDelta(old, node)
+    delta.changedVariants.push(...variants)
     const changes: string[] = []
     if (old.type !== node.type) changes.push("type")
     if (
@@ -536,6 +559,7 @@ export function compareSnapshots(
     }
     if (old.designFingerprint && old.designFingerprint !== node.designFingerprint)
       changes.push("design")
+    if (variants.length && !changes.length) changes.push("variants")
     if (changes.length) delta.changed.push({ ...node, change: changes.join(" + ") })
     if (old.properties === undefined || (!old.designFingerprint && node.designFingerprint))
       delta.baseline.push(node)

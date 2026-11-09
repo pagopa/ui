@@ -74,7 +74,7 @@ parent_dr: design-review.md
 - `AC-03`: The component is exported from the public entry point and the committed API report records it. - Evidence: `packages/pagopa-ui/src/pagopa-ui.ts`; `pnpm nx run pagopa-ui:api:update`
 - `AC-04`: The absence of the source node is recorded with a rationale among the declared exceptions. - Evidence: `packages/pagopa-ui/src/catalog/figma/api-exceptions.json`
 - `AC-05`: The component guide records behaviour, adaptations and the reason for the absence of the node. - Evidence: `apps/storybook/src/guides`; `pnpm nx run pagopa-ui:docs`
-- `AC-06`: The component has at least one story in the catalogue and the catalogue coverage is green. - Evidence: `pnpm nx run pagopa-ui:figma:check`; `apps/storybook`
+- `AC-06`: The component has at least one story in the catalogue and the catalogue coverage is green. - Evidence: `pnpm nx run pagopa-ui:check:catalogue`; `apps/storybook`
 - `AC-07`: The complete green chain is green. - Evidence: `pnpm nx run workspace:verify`
 
 **Tracking events**:
@@ -102,7 +102,7 @@ sequenceDiagram
 - Figma: N/A — confirmed: the component has no source node; the declared exception records its reason.
 - DR components: `solution.components.item-001`, `solution.components.item-005`, `solution.components.item-008`
 - Endpoint / OpenAPI / AsyncAPI / Data Contract: `contracts.item-001` (public surface), `contracts.item-009` (text contract), `contracts.item-010` (declared exceptions)
-- Validation evidence: `pnpm nx run pagopa-ui:layers:check`; `pnpm nx run pagopa-ui:api:check`; `pnpm nx run pagopa-ui:figma:check`
+- Validation evidence: `pnpm nx run pagopa-ui:layers:check`; `pnpm nx run pagopa-ui:api:check`; `pnpm nx run pagopa-ui:check:catalogue`
 
 ## Open questions and propagation
 

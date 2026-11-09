@@ -24,7 +24,8 @@
 import fs from "node:fs"
 import { z } from "zod"
 
-import { enterRoot, rootPath } from "../lib/paths.ts"
+import type { Workspace } from "../adapters/workspace.ts"
+import { report as checkReport, type CheckReport } from "../checks/report.ts"
 import { readJson } from "../lib/json.ts"
 import { parseSchema } from "../lib/validate.ts"
 import { InventoryNodeSchema, type InventoryNode } from "../schemas/catalogue.ts"
@@ -98,7 +99,7 @@ export function validateDevicePolicy(
   return parseSchema(DevicePolicySchema, policy, file)
 }
 
-export function loadDevicePolicy(file: string = rootPath(DEVICE_POLICY_PATH)): DevicePolicy {
+export function loadDevicePolicy(file: string): DevicePolicy {
   if (!fs.existsSync(file)) {
     throw new Error(
       `${file} is missing: the device vocabulary is committed next to registry.json ` +
@@ -290,7 +291,148 @@ export function requiredDevices(policy: DevicePolicy, node: NodeVariants): strin
 // --------------------------------------------------------------------- check
 
 // Hermetic: the policy, the inventory and nothing else. Returns the verdict and
-// the counts the `figma:check` device line prints.
+// the counts the `check:catalogue` device line prints.
+type DeviceAnalysis = {
+  seenAxes: Set<string>
+  seenValues: Map<string, SeenValue>
+  sets: string[]
+  byDevice: Record<string, number>
+  derivedAxes: Set<string>
+  deviceValuesOnOtherAxes: Map<string, SeenOtherAxis>
+  otherAxisValues: Map<string, SeenOtherAxis>
+  declared: number
+}
+
+function ignoredValueIndex(policy: DevicePolicy): {
+  index: Map<string, IgnoredValue>
+  errors: string[]
+} {
+  const index = new Map<string, IgnoredValue>()
+  const errors: string[] = []
+  for (const entry of policy.ignoredValues ?? []) {
+    const key = ignoredKey(entry)
+    if (index.has(key)) {
+      errors.push(
+        `the ignored value "${entry.value}" on the "${entry.axis}" axis is listed twice — one entry per axis and value`,
+      )
+    } else index.set(key, entry)
+  }
+  return { index, errors }
+}
+
+function inspectDeviceInventory(
+  policy: DevicePolicy,
+  nodes: InventoryNode[],
+  ignored: Map<string, IgnoredValue>,
+): DeviceAnalysis {
+  const analysis: DeviceAnalysis = {
+    seenAxes: new Set(),
+    seenValues: new Map(),
+    sets: [],
+    byDevice: {},
+    derivedAxes: new Set(),
+    deviceValuesOnOtherAxes: new Map(),
+    otherAxisValues: new Map(),
+    declared: 0,
+  }
+  for (const node of nodes) {
+    const axes = deviceAxes(policy, node)
+    if (axes.length) analysis.sets.push(node.nodeId)
+    inspectNodeAxes(analysis, node, axes)
+    inspectOtherVariantAxes(policy, analysis, node, axes, ignored)
+    for (const device of requiredDevices(policy, node)) {
+      analysis.declared += 1
+      analysis.byDevice[device] = (analysis.byDevice[device] ?? 0) + 1
+    }
+  }
+  return analysis
+}
+
+function inspectNodeAxes(analysis: DeviceAnalysis, node: InventoryNode, axes: DeviceAxis[]): void {
+  for (const axis of axes) {
+    analysis.seenAxes.add(normalizeDeviceValue(axis.token))
+    if (!axis.named) analysis.derivedAxes.add(axis.token)
+    for (const { value } of axis.values) {
+      let seen = analysis.seenValues.get(value)
+      if (!seen) {
+        seen = { value, axes: new Set(), nodes: [] }
+        analysis.seenValues.set(value, seen)
+      }
+      seen.axes.add(axis.token)
+      if (!seen.nodes.includes(node.nodeId)) seen.nodes.push(node.nodeId)
+    }
+  }
+}
+
+function inspectOtherVariantAxes(
+  policy: DevicePolicy,
+  analysis: DeviceAnalysis,
+  node: InventoryNode,
+  axes: DeviceAxis[],
+  ignored: Map<string, IgnoredValue>,
+): void {
+  for (const [name, definition] of Object.entries(node.properties ?? {})) {
+    if (definition?.type !== "VARIANT" || axes.some((axis) => axis.name === name)) continue
+    for (const value of definition.variantOptions ?? []) {
+      const axis = axisToken(name)
+      const key = ignoredKey({ axis, value })
+      const other = analysis.otherAxisValues.get(key) ?? { axis, value, nodes: [] }
+      if (!other.nodes.includes(node.nodeId)) other.nodes.push(node.nodeId)
+      analysis.otherAxisValues.set(key, other)
+      if (ignored.has(key)) continue
+      if ([UNKNOWN_DEVICE, ANY_DEVICE].includes(deviceOf(policy, value))) continue
+      const seen = analysis.deviceValuesOnOtherAxes.get(key) ?? { axis, value, nodes: [] }
+      if (!seen.nodes.includes(node.nodeId)) seen.nodes.push(node.nodeId)
+      analysis.deviceValuesOnOtherAxes.set(key, seen)
+    }
+  }
+}
+
+function deviceVocabularyErrors(
+  policy: DevicePolicy,
+  analysis: DeviceAnalysis,
+  file: string,
+): {
+  errors: string[]
+  unmapped: SeenValue[]
+} {
+  const errors: string[] = []
+  for (const axis of policy.axes) {
+    if (!analysis.seenAxes.has(normalizeDeviceValue(axisToken(axis)))) {
+      errors.push(
+        `the policy declares the axis "${axis}": the inventory never uses it — drop it from "axes" or map the values it declares`,
+      )
+    }
+  }
+  const unmapped = [...analysis.seenValues.values()].filter(
+    (seen) => deviceOf(policy, seen.value) === UNKNOWN_DEVICE,
+  )
+  for (const seen of unmapped) {
+    errors.push(
+      `value "${seen.value}" on axis ${[...seen.axes].map((axis) => `"${axis}"`).join(", ")} (${seen.nodes.slice(0, 3).join(", ")}${seen.nodes.length > 3 ? ", …" : ""}) is not mapped — add it to an alias list in ${file}`,
+    )
+  }
+  return { errors, unmapped }
+}
+
+function unusedDeviceAliases(
+  policy: DevicePolicy,
+  analysis: DeviceAnalysis,
+): Array<{ device: string; alias: string }> {
+  const used = new Set(
+    [...analysis.seenValues.values()].map((seen) => normalizeDeviceValue(seen.value)),
+  )
+  const unused: Array<{ device: string; alias: string }> = []
+  for (const [device, list] of deviceAliasIndex(policy).aliases) {
+    for (const alias of list)
+      if (!used.has(normalizeDeviceValue(alias))) unused.push({ device, alias })
+  }
+  for (const value of policy.any ?? []) {
+    if (!used.has(normalizeDeviceValue(value))) unused.push({ device: ANY_DEVICE, alias: value })
+  }
+  return unused
+}
+
 export function checkDevicePolicy(
   policy: DevicePolicy,
   nodes: InventoryNode[],
@@ -302,158 +444,73 @@ export function checkDevicePolicy(
   unmapped: SeenValue[]
   unused: Array<{ device: string; alias: string }>
 } {
-  const errors: string[] = []
-  const warnings: string[] = []
-  const { duplicates, aliases } = deviceAliasIndex(policy)
-  for (const duplicate of duplicates) {
+  const { index: ignored, errors } = ignoredValueIndex(policy)
+  const { duplicates } = deviceAliasIndex(policy)
+  for (const duplicate of duplicates)
     errors.push(
-      `alias "${duplicate.value}" is claimed by ${duplicate.devices.join(" and ")} — ` +
-        `one source value maps to one device`,
+      `alias "${duplicate.value}" is claimed by ${duplicate.devices.join(" and ")} — one source value maps to one device`,
     )
-  }
-  const seenAxes = new Set<string>()
-  const seenValues = new Map<string, SeenValue>()
-  const sets: string[] = []
-  const byDevice: Record<string, number> = {}
-  const derivedAxes = new Set<string>()
-  const deviceValuesOnOtherAxes = new Map<string, SeenOtherAxis>()
-  // Every value a non-device axis declares, including the ignored ones: the
-  // stale check needs the raw inventory, the warning loop needs the filter.
-  const otherAxisValues = new Map<string, SeenOtherAxis>()
-  const ignoredIndex = new Map<string, IgnoredValue>()
-  for (const entry of policy.ignoredValues ?? []) {
-    const key = ignoredKey(entry)
-    if (ignoredIndex.has(key)) {
-      errors.push(
-        `the ignored value "${entry.value}" on the "${entry.axis}" axis is listed twice — ` +
-          `one entry per axis and value`,
-      )
-    } else {
-      ignoredIndex.set(key, entry)
-    }
-  }
-  let declared = 0
-  for (const node of nodes) {
-    const axes = deviceAxes(policy, node)
-    if (axes.length) sets.push(node.nodeId)
-    for (const axis of axes) {
-      seenAxes.add(normalizeDeviceValue(axis.token))
-      if (!axis.named) derivedAxes.add(axis.token)
-      for (const { value } of axis.values) {
-        // Keyed by the written value: `XS Mobile` and `XSMobile` are one
-        // device, but the report says how many spellings the source declares.
-        let seen = seenValues.get(value)
-        if (!seen) {
-          seen = { value, axes: new Set(), nodes: [] }
-          seenValues.set(value, seen)
-        }
-        seen.axes.add(axis.token)
-        if (!seen.nodes.includes(node.nodeId)) seen.nodes.push(node.nodeId)
-      }
-    }
-    for (const [name, definition] of Object.entries(node?.properties ?? {})) {
-      if (definition?.type !== "VARIANT") continue
-      if (axes.some((axis) => axis.name === name)) continue
-      for (const value of definition.variantOptions ?? []) {
-        const key = ignoredKey({ axis: axisToken(name), value })
-        let other = otherAxisValues.get(key)
-        if (!other) {
-          other = { axis: axisToken(name), value, nodes: [] }
-          otherAxisValues.set(key, other)
-        }
-        if (!other.nodes.includes(node.nodeId)) other.nodes.push(node.nodeId)
-        // A reasoned policy entry says this value is not a device, even though
-        // its spelling matches one: the axis is not split and no warning is due.
-        if (ignoredIndex.has(key)) continue
-        // A non-device axis that names a device is worth a look; a generic
-        // `Default`/`Any` value is not (every list axis declares one).
-        const device = deviceOf(policy, value)
-        if (device === UNKNOWN_DEVICE || device === ANY_DEVICE) continue
-        let seen = deviceValuesOnOtherAxes.get(key)
-        if (!seen) {
-          seen = { axis: axisToken(name), value, nodes: [] }
-          deviceValuesOnOtherAxes.set(key, seen)
-        }
-        if (!seen.nodes.includes(node.nodeId)) seen.nodes.push(node.nodeId)
-      }
-    }
-    for (const device of requiredDevices(policy, node)) {
-      declared += 1
-      byDevice[device] = (byDevice[device] ?? 0) + 1
-    }
-  }
-  for (const axis of policy.axes) {
-    if (!seenAxes.has(normalizeDeviceValue(axisToken(axis)))) {
-      errors.push(
-        `the policy declares the axis "${axis}": the inventory never uses it — ` +
-          `drop it from "axes" or map the values it declares`,
-      )
-    }
-  }
-  const unmapped: SeenValue[] = []
-  for (const seen of seenValues.values()) {
-    if (deviceOf(policy, seen.value) !== UNKNOWN_DEVICE) continue
-    unmapped.push(seen)
-    errors.push(
-      `value "${seen.value}" on axis ${[...seen.axes].map((axis) => `"${axis}"`).join(", ")} ` +
-        `(${seen.nodes.slice(0, 3).join(", ")}${seen.nodes.length > 3 ? ", …" : ""}) is not mapped — ` +
-        `add it to an alias list in ${file}`,
-    )
-  }
-  const used = new Set([...seenValues.values()].map((seen) => normalizeDeviceValue(seen.value)))
-  const unused: Array<{ device: string; alias: string }> = []
-  for (const [device, list] of aliases) {
-    for (const alias of list) {
-      if (!used.has(normalizeDeviceValue(alias))) unused.push({ device, alias })
-    }
-  }
-  for (const value of policy.any ?? []) {
-    if (!used.has(normalizeDeviceValue(value))) unused.push({ device: ANY_DEVICE, alias: value })
-  }
-  for (const { device, alias } of unused) {
-    warnings.push(
-      `the alias "${alias}" (${device}) is not used by the inventory — ` +
-        `the vocabulary may stay ahead of the library`,
-    )
-  }
-  for (const { axis, value, nodes: found } of deviceValuesOnOtherAxes.values()) {
-    warnings.push(
-      `the "${axis}" axis of ${found.slice(0, 3).join(", ")}${found.length > 3 ? ", …" : ""} ` +
-        `declares "${value}", which names a device, but the axis is not a device axis ` +
-        `(not every value resolves) — split the axis or add the missing values`,
-    )
-  }
-  // An ignored value nobody declares is a stale exception, like a device
-  // exception whose node now covers every device: it only hides the next real
-  // warning.
-  for (const [key, entry] of ignoredIndex) {
-    if (!otherAxisValues.has(key)) {
-      errors.push(
-        `the ignored value "${entry.value}" on the "${entry.axis}" axis matches no non-device ` +
-          `axis value in the inventory — remove it from "ignoredValues"`,
-      )
-    }
-  }
-  const stats = {
+  const analysis = inspectDeviceInventory(policy, nodes, ignored)
+  const vocabulary = deviceVocabularyErrors(policy, analysis, file)
+  errors.push(...vocabulary.errors)
+  const warnings = deviceWarnings(policy, analysis, ignored)
+  errors.push(...warnings.errors)
+  const stats: DeviceStats = {
     nodes: nodes.length,
-    sets: sets.length,
-    declared,
-    byDevice,
-    valuesResolved: [...seenValues.values()].filter(
+    sets: analysis.sets.length,
+    declared: analysis.declared,
+    byDevice: analysis.byDevice,
+    valuesResolved: [...analysis.seenValues.values()].filter(
       (seen) => deviceOf(policy, seen.value) !== UNKNOWN_DEVICE,
     ).length,
-    valuesTotal: seenValues.size,
-    unmapped: unmapped.length,
-    unusedAliases: unused.length,
+    valuesTotal: analysis.seenValues.size,
+    unmapped: vocabulary.unmapped.length,
+    unusedAliases: warnings.unused.length,
     axisNames: {
-      named: policy.axes.filter((axis) => seenAxes.has(normalizeDeviceValue(axisToken(axis)))),
-      derived: [...derivedAxes].sort(),
+      named: policy.axes.filter((axis) =>
+        analysis.seenAxes.has(normalizeDeviceValue(axisToken(axis))),
+      ),
+      derived: [...analysis.derivedAxes].sort(),
     },
   }
-  return { errors, warnings, stats, unmapped, unused }
+  return {
+    errors,
+    warnings: warnings.messages,
+    stats,
+    unmapped: vocabulary.unmapped,
+    unused: warnings.unused,
+  }
 }
 
-// The one line `figma:check` prints (RA1; RA4 appends its coverage line).
+function deviceWarnings(
+  policy: DevicePolicy,
+  analysis: DeviceAnalysis,
+  ignored: Map<string, IgnoredValue>,
+): { messages: string[]; errors: string[]; unused: Array<{ device: string; alias: string }> } {
+  const messages: string[] = []
+  const errors: string[] = []
+  const unused = unusedDeviceAliases(policy, analysis)
+  for (const { device, alias } of unused) {
+    messages.push(
+      `the alias "${alias}" (${device}) is not used by the inventory — the vocabulary may stay ahead of the library`,
+    )
+  }
+  for (const { axis, value, nodes } of analysis.deviceValuesOnOtherAxes.values()) {
+    messages.push(
+      `the "${axis}" axis of ${nodes.slice(0, 3).join(", ")}${nodes.length > 3 ? ", …" : ""} declares "${value}", which names a device, but the axis is not a device axis (not every value resolves) — split the axis or add the missing values`,
+    )
+  }
+  for (const [key, entry] of ignored) {
+    if (!analysis.otherAxisValues.has(key)) {
+      errors.push(
+        `the ignored value "${entry.value}" on the "${entry.axis}" axis matches no non-device axis value in the inventory — remove it from "ignoredValues"`,
+      )
+    }
+  }
+  return { messages, errors, unused }
+}
+
+// The one line `check:catalogue` prints (RA1; RA4 appends its coverage line).
 export function formatDeviceLine(stats: DeviceStats): string {
   return (
     `devices: ${stats.sets} sets with an axis · declared ${stats.declared} · ` +
@@ -471,18 +528,18 @@ export type InventoryFile = {
   components: InventoryNode[]
 }
 
-export function loadInventory(file: string = rootPath(INVENTORY_PATH)): InventoryFile {
+export function loadInventory(file: string): InventoryFile {
   const value = parseSchema(InventoryFileSchema, readJson(file), file)
   return { fileKey: value.fileKey, components: value.components ?? [] }
 }
 
-export function loadInventoryNodes(file: string = rootPath(INVENTORY_PATH)): InventoryNode[] {
+export function loadInventoryNodes(file: string): InventoryNode[] {
   return loadInventory(file).components
 }
 
-// ------------------------------------------------------------------------ CLI
+// ------------------------------------------------------------------------ reports
 
-function report(policy: DevicePolicy, stats: DeviceStats): void {
+export function formatDevices(policy: DevicePolicy, stats: DeviceStats): string[] {
   const lines = [
     `device policy: ${Object.keys(policy.devices).length} devices · ` +
       `${Object.values(policy.devices).reduce((count, device) => count + device.aliases.length, 0)} aliases · ` +
@@ -501,34 +558,50 @@ function report(policy: DevicePolicy, stats: DeviceStats): void {
     `values: ${stats.valuesResolved}/${stats.valuesTotal} resolved`,
     `unused aliases: ${stats.unusedAliases}`,
   ]
-  console.log(lines.join("\n"))
+  return [lines.join("\n")]
 }
 
-export function cli(argv: string[] = process.argv.slice(2)): number {
-  enterRoot()
-  const json = argv.includes("--json")
-  const check = argv.includes("--check")
-  let policy: DevicePolicy
-  let nodes: InventoryNode[]
+export interface DeviceReport {
+  policy: string
+  errors: string[]
+  warnings: string[]
+  stats: DeviceStats
+  unmapped: ReturnType<typeof checkDevicePolicy>["unmapped"]
+  unused: ReturnType<typeof checkDevicePolicy>["unused"]
+  vocabulary: DevicePolicy
+}
+
+export function readDevices(workspace: Workspace): DeviceReport {
+  const policy = loadDevicePolicy(workspace.path(DEVICE_POLICY_PATH))
+  const nodes = loadInventoryNodes(workspace.path(INVENTORY_PATH))
+  return { policy: DEVICE_POLICY_PATH, ...checkDevicePolicy(policy, nodes), vocabulary: policy }
+}
+
+export function checkDevices(workspace: Workspace): CheckReport {
   try {
-    policy = loadDevicePolicy()
-    nodes = loadInventoryNodes()
+    const result = readDevices(workspace)
+    return checkReport("devices", formatDeviceLine(result.stats), result.errors, {
+      warnings: result.warnings,
+    })
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error)
-    console.error(`error: ${message}`)
-    return 1
+    return checkReport("devices", "device policy could not be loaded", [
+      error instanceof Error ? error.message : String(error),
+    ])
   }
-  const result = checkDevicePolicy(policy, nodes)
-  if (json) {
-    console.log(JSON.stringify({ policy: DEVICE_POLICY_PATH, ...result }, null, 2))
-  } else {
-    if (!check) report(policy, result.stats)
-    for (const warning of result.warnings) console.warn(`warn: ${warning}`)
-    for (const error of result.errors) console.error(`error: ${error}`)
-    console.log(formatDeviceLine(result.stats))
-  }
-  return result.errors.length ? 1 : 0
 }
 
-const invoked = process.argv[1] && import.meta.url === `file://${process.argv[1]}`
-if (invoked) process.exitCode = cli()
+export function formatDeviceReport(
+  result: DeviceReport,
+  check: boolean,
+): { out: string[]; err: string[] } {
+  return {
+    out: [
+      ...(check ? [] : formatDevices(result.vocabulary, result.stats)),
+      formatDeviceLine(result.stats),
+    ],
+    err: [
+      ...result.warnings.map((warning) => `warn: ${warning}`),
+      ...result.errors.map((error) => `error: ${error}`),
+    ],
+  }
+}

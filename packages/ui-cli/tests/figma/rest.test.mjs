@@ -1,8 +1,8 @@
 import assert from "node:assert/strict"
 import fs from "node:fs"
-import os from "node:os"
 import path from "node:path"
 import { test } from "node:test"
+import { fixtureTree } from "../helpers/cli.mjs"
 import {
   fetchFigmaNodeDocuments,
   fetchFileHeader,
@@ -22,8 +22,10 @@ const document = {
 async function withFigmaFetch(fetchImplementation, callback, token = "fixture-token") {
   const originalFetch = globalThis.fetch
   const previousToken = process.env.FIGMA_TOKEN
+  const previousPath = process.env.PATH
   if (token === null) delete process.env.FIGMA_TOKEN
   else process.env.FIGMA_TOKEN = token
+  if (token === null) process.env.PATH = ""
   globalThis.fetch = fetchImplementation
   try {
     return await callback()
@@ -31,6 +33,8 @@ async function withFigmaFetch(fetchImplementation, callback, token = "fixture-to
     globalThis.fetch = originalFetch
     if (previousToken === undefined) delete process.env.FIGMA_TOKEN
     else process.env.FIGMA_TOKEN = previousToken
+    if (previousPath === undefined) delete process.env.PATH
+    else process.env.PATH = previousPath
   }
 }
 
@@ -51,7 +55,12 @@ test("supplemental document reads request and preserve one exact pinned node", a
       return jsonResponse({ fileKey: "fixture-file", version, nodes: { [nodeId]: { document } } })
     },
     async () => {
-      const result = await fetchFigmaNodeDocuments("fixture-file", version, [nodeId, nodeId])
+      const result = await fetchFigmaNodeDocuments(
+        "fixture-file",
+        version,
+        [nodeId, nodeId],
+        "fixture-token",
+      )
       assert.equal(result.size, 1)
       assert.deepEqual(result.get(nodeId), document)
       assert.equal(result.get(nodeId).absoluteBoundingBox.x, -18)
@@ -64,7 +73,7 @@ test("supplemental document reads reject missing nodes and mismatched response i
     async () => jsonResponse({ version, nodes: {} }),
     async () => {
       await assert.rejects(
-        fetchFigmaNodeDocuments("fixture-file", version, [nodeId]),
+        fetchFigmaNodeDocuments("fixture-file", version, [nodeId], "fixture-token"),
         /missing at pinned version/,
       )
     },
@@ -77,7 +86,7 @@ test("supplemental document reads reject missing nodes and mismatched response i
       }),
     async () => {
       await assert.rejects(
-        fetchFigmaNodeDocuments("fixture-file", version, [nodeId]),
+        fetchFigmaNodeDocuments("fixture-file", version, [nodeId], "fixture-token"),
         /returned node 12:35 for requested node 12:34/,
       )
     },
@@ -88,14 +97,17 @@ test("supplemental document reads reject wrong file/version and HTTP failures", 
   await withFigmaFetch(
     async () => jsonResponse({ fileKey: "another-file", version, nodes: {} }),
     async () => {
-      await assert.rejects(fetchFigmaNodeDocuments("fixture-file", version, [nodeId]), /wrong file/)
+      await assert.rejects(
+        fetchFigmaNodeDocuments("fixture-file", version, [nodeId], "fixture-token"),
+        /wrong file/,
+      )
     },
   )
   await withFigmaFetch(
     async () => jsonResponse({ fileKey: "fixture-file", version: "latest", nodes: {} }),
     async () => {
       await assert.rejects(
-        fetchFigmaNodeDocuments("fixture-file", version, [nodeId]),
+        fetchFigmaNodeDocuments("fixture-file", version, [nodeId], "fixture-token"),
         /wrong version/,
       )
     },
@@ -108,14 +120,14 @@ test("supplemental document reads reject wrong file/version and HTTP failures", 
       }),
     async () => {
       await assert.rejects(
-        fetchFigmaNodeDocuments("fixture-file", version, [nodeId]),
+        fetchFigmaNodeDocuments("fixture-file", version, [nodeId], "fixture-token"),
         /HTTP 403; retry after 3 seconds/,
       )
     },
   )
 })
 
-test("supplemental document reads require a process token and explicit pinned inputs", async () => {
+test("supplemental document reads require a token and explicit pinned inputs", async () => {
   let fetched = false
   await withFigmaFetch(
     async () => {
@@ -124,19 +136,19 @@ test("supplemental document reads require a process token and explicit pinned in
     },
     async () => {
       await assert.rejects(
-        fetchFigmaNodeDocuments("fixture-file", version, [nodeId]),
-        /FIGMA_TOKEN is missing or empty/,
+        fetchFigmaNodeDocuments("fixture-file", version, [nodeId], ""),
+        /resolved token/,
       )
       assert.equal(fetched, false)
     },
     null,
   )
   await assert.rejects(
-    fetchFigmaNodeDocuments("fixture-file", "", [nodeId]),
+    fetchFigmaNodeDocuments("fixture-file", "", [nodeId], "fixture-token"),
     /explicit snapshot version/,
   )
   await assert.rejects(
-    fetchFigmaNodeDocuments("fixture-file", version, ["invalid"]),
+    fetchFigmaNodeDocuments("fixture-file", version, ["invalid"], "fixture-token"),
     /valid node IDs/,
   )
 })
@@ -155,7 +167,7 @@ test("a stalled read is retried and the answer is kept", async () => {
       return jsonResponse({ version, lastModified: "2026-11-02T04:00:00Z" })
     },
     async () => {
-      const header = await fetchFileHeader("fixture-file")
+      const header = await fetchFileHeader("fixture-file", "fixture-token")
       assert.equal(header.version, version)
       assert.equal(attempts, 2)
     },
@@ -173,7 +185,7 @@ test("a dropped socket is retried like a stalled read", async () => {
       return jsonResponse({ version })
     },
     async () => {
-      assert.equal((await fetchFileHeader("fixture-file")).version, version)
+      assert.equal((await fetchFileHeader("fixture-file", "fixture-token")).version, version)
       assert.equal(attempts, 2)
     },
   )
@@ -188,7 +200,7 @@ test("a failure another attempt cannot fix stops at once and names the request",
     },
     async () => {
       await assert.rejects(
-        fetchFileHeader("fixture-file"),
+        fetchFileHeader("fixture-file", "fixture-token"),
         /Figma GET files\/fixture-file\?depth=1: the token is not valid/,
       )
       assert.equal(attempts, 1)
@@ -205,7 +217,7 @@ test("an exhausted read reports the timeout and the endpoint", async () => {
     },
     async () => {
       await assert.rejects(
-        fetchFileHeader("fixture-file"),
+        fetchFileHeader("fixture-file", "fixture-token"),
         /Figma GET files\/fixture-file\?depth=1: timed out after 90 s/,
       )
       assert.equal(attempts, 3)
@@ -218,7 +230,8 @@ test("an exhausted read reports the timeout and the endpoint", async () => {
 // must stay absent (a bare `undefined` is not JSON) and no temporary file may
 // survive the rename.
 test("the snapshot writer streams compact JSON and drops an absent lastModified", () => {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-snapshot-"))
+  const tree = fixtureTree({}, "pagopa-snapshot-")
+  const root = tree.root
   try {
     const file = path.join(root, ".figma", "live-rest.json")
     const snapshot = {
@@ -242,8 +255,9 @@ test("the snapshot writer streams compact JSON and drops an absent lastModified"
     const text = fs.readFileSync(file, "utf8")
     assert.equal(text.trim().split("\n").length, 1)
     assert.deepEqual(JSON.parse(text), snapshot)
+    assert.equal(text, `${JSON.stringify(snapshot)}\n`)
     assert.deepEqual(fs.readdirSync(path.dirname(file)), ["live-rest.json"])
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
   }
 })

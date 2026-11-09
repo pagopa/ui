@@ -1,4 +1,4 @@
-# Figma parity evidence
+# Figma check evidence
 
 The committed evidence bundle lets a clone read the source side of every reviewed
 parity case and look at the pinned Figma image, without the local 160 MB snapshot
@@ -30,7 +30,7 @@ content even when its compression format differs.
 
 ```sh
 export FIGMA_TOKEN=...    # file_content:read and library_content:read
-pnpm nx run pagopa-ui-cli:figma:parity:evidence --write
+pnpm ui-cli update evidence
 ```
 
 `--write` reads `.figma/live-rest.json` (or `--input <file>`), writes the slice
@@ -41,7 +41,7 @@ that left the corpus.
 ## Check
 
 ```sh
-pnpm nx run pagopa-ui-cli:figma:parity:evidence --check
+pnpm ui-cli check evidence
 ```
 
 `--check` is hermetic: it fails on a case without a manifest entry, an orphan
@@ -52,7 +52,7 @@ verify` runs the same check next to the corpus and the device coverage.
 ## Staleness
 
 The bundle is a photograph of the reviewed source, not a live mirror: it is as
-fresh as the committed inventory, never fresher. `parity verify` and
+fresh as the committed inventory, never fresher. `check parity` and
 `parity check --case <id>` compare the manifest's version and design fingerprint
 with the committed inventory; when the inventory moved and the bundle did not,
 the run stops with exit 2 and asks for a refresh. Reproducing an old reviewed

@@ -1,3 +1,4 @@
+import { fixtureTree, workspaceAt } from "../helpers/cli.mjs"
 import assert from "node:assert/strict"
 import { test } from "node:test"
 
@@ -74,7 +75,8 @@ test("the formatter prints one line per delta with its class hint", () => {
     "    field radius: render 4 · source 8 · token: radius-8 → use rounded-lg",
     "    field font.size: render 23 · source 21 · inline",
   ])
-  assert.equal(lines[6], "Next")
+  assert.equal(lines[6], "  check desktop: pnpm ui-cli parity check --case 1-2-default-desktop")
+  assert.equal(lines[7], "Next")
 })
 
 // One case per property family: the utility prefix comes from the property, the
@@ -134,25 +136,47 @@ test("a token outside the property family prints its name only", () => {
 // A node with no committed case still answers: the header, the missing devices
 // and the sync command, exit 0 — no browser, no evaluator.
 test("a node without cases prints its missing devices and exits 0", async () => {
-  const logged = []
-  const original = console.log
-  console.log = (line) => logged.push(String(line))
-  try {
-    const code = await align(
-      { flags: new Map([["node", "9:9"]]) },
-      {
-        loadNode: () => ({
+  const fixture = fixtureTree({
+    "src/catalog/figma/inventory.json": {
+      fileKey: "fixture",
+      syncedAt: "2026-10-21",
+      components: [
+        {
           nodeId: "9:9",
           name: "Fixture",
-          status: "implemented",
-          export: "Fixture",
-          story: null,
-          declared: ["desktop", "mobile"],
-          covered: [],
-          missing: ["desktop", "mobile"],
-          cases: [],
-        }),
-        loadCases: () => [],
+          type: "COMPONENT_SET",
+          pageId: "9:0",
+          pageName: "Fixture",
+          properties: {
+            Device: {
+              type: "VARIANT",
+              defaultValue: "Desktop",
+              variantOptions: ["Desktop", "Mobile"],
+            },
+          },
+        },
+      ],
+    },
+    "src/catalog/figma/registry.json": {
+      entries: {
+        "9:9": { status: "implemented", target: { module: "src/fixture.ts", export: "Fixture" } },
+      },
+      bulkRules: [],
+    },
+    "src/catalog/figma/device-policy.json": {
+      axes: ["Device"],
+      any: [],
+      devices: {
+        desktop: { canonicalWidth: 1200, defaultLayoutScope: "viewport", aliases: ["Desktop"] },
+        mobile: { canonicalWidth: 320, defaultLayoutScope: "viewport", aliases: ["Mobile"] },
+      },
+    },
+  })
+  try {
+    const result = await align(
+      workspaceAt(fixture.root),
+      { nodeId: "9:9" },
+      {
         evaluate: () => {
           throw new Error("a node without cases has nothing to capture")
         },
@@ -161,19 +185,19 @@ test("a node without cases prints its missing devices and exits 0", async () => 
         },
       },
     )
-    assert.equal(code, 0)
+    assert.equal(result.code, 0)
+    const text = result.out.join("\n")
+    assert.match(text, /^9:9 Fixture · implemented · export Fixture · \(no story\)$/m)
+    assert.match(text, /devices: declared desktop,mobile · covered none · missing desktop,mobile/)
+    assert.match(text, /parity cases --sync --node 9:9/)
   } finally {
-    console.log = original
+    fixture.dispose()
   }
-  const text = logged.join("\n")
-  assert.match(text, /^9:9 Fixture · implemented · export Fixture · \(no story\)$/m)
-  assert.match(text, /devices: declared desktop,mobile · covered none · missing desktop,mobile/)
-  assert.match(text, /figma:parity:cases -- --sync --node 9:9/)
 })
 
 test("nextSteps stops at three lines and says nothing is left when clean", () => {
   assert.deepEqual(nextSteps({ ...node, cases: [] }), [
-    "pnpm nx run pagopa-ui-cli:figma:parity:cases -- --sync --node 1:2",
+    "pnpm ui-cli parity cases --sync --node 1:2",
   ])
   assert.deepEqual(
     nextSteps({
@@ -186,4 +210,80 @@ test("nextSteps stops at three lines and says nothing is left when clean", () =>
   assert.deepEqual(nextSteps({ ...node, cases: [{ ...node.cases[0], deltas: [] }] }), [
     "aligned, no action",
   ])
+})
+
+// R9: a draft is not coverage. The header already excludes drafts when it
+// counts the covered devices, so the loop that follows must exclude them too —
+// otherwise align evaluates a case for a device it reports as missing.
+test("align evaluates the reviewed cases and never a draft", async () => {
+  const fixture = fixtureTree({
+    "src/catalog/figma/inventory.json": {
+      fileKey: "fixture",
+      syncedAt: "2026-10-21",
+      components: [
+        {
+          nodeId: "9:9",
+          name: "Fixture",
+          type: "COMPONENT_SET",
+          pageId: "9:0",
+          pageName: "Fixture",
+          properties: {
+            Device: {
+              type: "VARIANT",
+              defaultValue: "Desktop",
+              variantOptions: ["Desktop", "Mobile"],
+            },
+          },
+        },
+      ],
+    },
+    "src/catalog/figma/registry.json": {
+      entries: {
+        "9:9": { status: "implemented", target: { module: "src/fixture.ts", export: "Fixture" } },
+      },
+      bulkRules: [],
+    },
+    "src/catalog/figma/device-policy.json": {
+      axes: ["Device"],
+      any: [],
+      devices: {
+        desktop: { canonicalWidth: 1200, defaultLayoutScope: "viewport", aliases: ["Desktop"] },
+        mobile: { canonicalWidth: 320, defaultLayoutScope: "viewport", aliases: ["Mobile"] },
+      },
+    },
+    "src/catalog/figma/parity-cases.json": [
+      { id: "9-9-default-desktop", nodeId: "9:9", export: "Fixture", device: "desktop" },
+      {
+        id: "9-9-mobile-mobile",
+        nodeId: "9:9",
+        export: "Fixture",
+        device: "mobile",
+        note: "draft — the mobile mapping still needs the reviewed render",
+      },
+    ],
+  })
+  const evaluated = []
+  try {
+    const result = await align(
+      workspaceAt(fixture.root),
+      { nodeId: "9:9", json: true },
+      {
+        evaluate: async (entry) => {
+          evaluated.push(entry.id)
+          return { verdict: "verified", deltas: [] }
+        },
+        storybook: async () => true,
+      },
+    )
+    assert.equal(result.code, 0)
+    assert.deepEqual(evaluated, ["9-9-default-desktop"])
+    assert.deepEqual(
+      result.data.cases.map((entry) => entry.id),
+      ["9-9-default-desktop"],
+    )
+    assert.deepEqual(result.data.node.covered, ["desktop"])
+    assert.deepEqual(result.data.node.missing, ["mobile"])
+  } finally {
+    fixture.dispose()
+  }
 })

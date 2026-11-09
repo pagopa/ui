@@ -5,17 +5,40 @@
   "sourceRoot": "packages/artwork/src",
   "tags": ["type:data", "scope:design-system"],
   "targets": {
-    "lint": { "configurations": { "ci": { "script": "lint:check" } } },
+    "lint": {
+      "configurations": {
+        "ci": {
+          "script": "lint:check"
+        }
+      }
+    },
     "fmt": {
       "executor": "nx:run-script",
-      "options": { "script": "format" },
+      "options": {
+        "script": "format"
+      },
       "cache": true,
-      "configurations": { "ci": { "script": "format:check" } }
+      "configurations": {
+        "ci": {
+          "script": "format:check"
+        }
+      }
     },
-    "assets:check": {
-      "options": { "command": "node src/cli.ts check assets" },
-      "inputs": ["default", "tooling", "{workspaceRoot}/packages/pagopa-ui/src/catalog/figma/**"]
+    "test": {
+      "dependsOn": ["check:artwork"]
     },
-    "test": { "dependsOn": ["assets:check"] }
+    "check:artwork": {
+      "options": {
+        "command": "node src/cli.ts check artwork",
+        "cwd": "packages/ui-cli",
+        "env": {
+          "PAGOPA_UI_ROOT": "../pagopa-ui"
+        }
+      },
+      "inputs": ["default", "tooling", "{workspaceRoot}/packages/pagopa-ui/src/catalog/figma/**"],
+      "executor": "nx:run-commands",
+      "cache": true,
+      "outputs": []
+    }
   }
 }

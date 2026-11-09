@@ -1,3 +1,4 @@
+import type { Workspace } from "../../adapters/workspace.ts"
 import type { BulkRule, InventoryNode, Registry } from "../../schemas/catalogue.ts"
 import { catalogueIndex } from "../snapshot.ts"
 
@@ -19,8 +20,9 @@ export function selectRuleNodes(
   registry: Registry,
   rule: BulkRule,
   nodes: InventoryNode[],
+  workspace: Workspace,
 ): InventoryNode[] {
-  const { byNode } = catalogueIndex(registry)
+  const { byNode } = catalogueIndex(registry, workspace)
   return nodes.filter((node) => {
     const owner = byNode.get(node.nodeId)
     return owner ? owner === rule : node.pageId === rule.pageId

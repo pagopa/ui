@@ -1,17 +1,15 @@
-#!/usr/bin/env node
 // Accessibility conformance map: every PascalCase runtime export of the public
 // API is assigned to a row of the accessibility guide's "Criteria by component
 // type" table, so a new export cannot ship without a declared conformance.
 // The guide stays the human view; the map is the machine one, and the two are
 // tied by the type name.
-//
-// Run: `ui-cli check a11y-conformance`
 import fs from "node:fs"
 import path from "node:path"
 import { z } from "zod"
 
-import { resolveRoot, resolveStoriesRoot } from "../lib/paths.ts"
+import type { Workspace } from "../adapters/workspace.ts"
 import { parseSchema } from "../lib/validate.ts"
+import { report, type CheckReport } from "./report.ts"
 
 const API_REPORT = "packages/pagopa-ui/etc/pagopa-ui.api.md"
 const STORIES = "apps/storybook"
@@ -92,28 +90,27 @@ export function evaluateConformance(
   return errors
 }
 
-export function runA11yConformance(): number {
-  const stories = resolveStoriesRoot()
+export function checkA11yConformance(workspace: Workspace): CheckReport {
+  const name = "a11y conformance"
   const files = {
-    [API_REPORT]: path.join(resolveRoot(), "etc", "pagopa-ui.api.md"),
-    [GUIDE]: path.join(stories, "src", "guides", GUIDE_NAME),
-    [MAP]: path.join(stories, "src", "a11y", "conformance.json"),
+    [API_REPORT]: workspace.path("etc", "pagopa-ui.api.md"),
+    [GUIDE]: path.join(workspace.storiesRoot, "src", "guides", GUIDE_NAME),
+    [MAP]: path.join(workspace.storiesRoot, "src", "a11y", "conformance.json"),
   }
-  for (const [label, file] of Object.entries(files)) {
-    if (!fs.existsSync(file)) {
-      console.error(`a11y-conformance: missing ${label}`)
-      return 1
-    }
+  const missing = Object.entries(files).filter(([, file]) => !fs.existsSync(file))
+  if (missing.length) {
+    return report(
+      name,
+      "inputs missing",
+      missing.map(([label]) => `missing ${label}`),
+    )
   }
   const map = parseSchema(ConformanceSchema, JSON.parse(fs.readFileSync(files[MAP], "utf8")), MAP)
   const exports = runtimeExports(fs.readFileSync(files[API_REPORT], "utf8"))
   const types = guideTypes(fs.readFileSync(files[GUIDE], "utf8"))
-  const errors = evaluateConformance(exports, types, map)
-  if (errors.length) {
-    console.error(`a11y-conformance: ${errors.length} problem(s)`)
-    for (const error of errors) console.error(`  ${error}`)
-    return 1
-  }
-  console.log(`a11y-conformance OK (${exports.length} components, ${types.length} types)`)
-  return 0
+  return report(
+    name,
+    `${exports.length} components, ${types.length} types`,
+    evaluateConformance(exports, types, map),
+  )
 }

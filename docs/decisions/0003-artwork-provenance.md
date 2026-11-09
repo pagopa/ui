@@ -29,8 +29,8 @@ the repository said any of this, so no check could keep it true.
    fails when the block is missing.
 2. **The manifests are the machine record.** `figma-icons.mjs` and
    `figma-pictograms.mjs` stamp the resolved block into every manifest entry
-   (plus `kind: "glyph" | "logo"` for icons), and `icons:check` /
-   `pictograms:check` fail when a published entry is missing it or drifted from
+   (plus `kind: "glyph" | "logo"` for icons), and `check:icons` /
+   `check:pictograms` fail when a published entry is missing it or drifted from
    the policy. The generated runtime modules stay free of provenance strings.
 3. **The provenance surfaces where people look.** The Storybook catalogue labels
    every non-Material identity and links the Figma page; `icons.md` and

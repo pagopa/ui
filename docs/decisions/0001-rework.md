@@ -10,7 +10,7 @@
 The Figma catalogue records, per published node, a target (module/export/story) and an approval.
 Today the approval is a machine-enforced attestation: `reviewRequired: true` demands a
 `reviewedFingerprint` (a hash over the node's design evidence and transitive dependencies) plus
-explicit `storyExports`, and `pnpm figma:check` fails when the hash is stale. The weekly drift job
+explicit `storyExports`, and `pnpm check:catalogue` fails when the hash is stale. The weekly drift job
 (`.github/workflows/figma-drift.yml`, Monday 04:00 UTC and `workflow_dispatch`) detects
 live-versus-committed drift and fails; reconciliation is manual.
 
@@ -44,7 +44,7 @@ approval record; the `pending` queue is the visible signal; the audit trail is
   needs a bot identity able to trigger CI on its own PR (the default `GITHUB_TOKEN` cannot); the
   CI gate becomes "no drift against the committed inventory" instead of "no stale approval".
 
-**Automated either way:** design-source drift detection (fingerprints), the hermetic `figma:check`,
+**Automated either way:** design-source drift detection (fingerprints), the hermetic `check:catalogue`,
 the `pending` queue, icon/pictogram checksums and the token manifest check.
 
 ## 3. Decision
@@ -162,5 +162,5 @@ Each item is a decision, not an open question:
 | `Headings/H2` not captured                             | Finding: `Headings/H1–H6 + Hero` are App IO text styles; the file binds only Hero/H3/H4 (captured). H1/H2/H5/H6 are not used by any published node, so they are out of scope until a component consumes them.                                                                                                                                |
 | Typography scale partial (MD/SM/XS only)               | Completed with the verified XXL/XL/LG titles and their Mobile variants (`text-title-xxl`…`text-title-lg-mobile`), completing the MUI Italia Next title scale.                                                                                                                                                                                |
 
-The manifest grew from 106 to 116 variables with 31 recorded exclusions; `tokens:check` is green and
+The manifest grew from 106 to 116 variables with 31 recorded exclusions; `check:tokens` is green and
 the generated CSS, inventory and class list are re-emitted from the manifest.
