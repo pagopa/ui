@@ -9,7 +9,7 @@ pnpm nx run pagopa-ui-storybook:build     # writes apps/storybook/dist
 
 The stories live here, next to the Storybook configuration that renders them;
 they import the design system through the `@/` alias (`packages/pagopa-ui/src`)
-and the generated data through its packages. `figma:check` follows those imports
+and the generated data through its packages. `check:catalogue` follows those imports
 to prove that every story renders the exact export of its registry target.
 
 The deployment is **Azure Static Web App** (decided 2026-10-19): the

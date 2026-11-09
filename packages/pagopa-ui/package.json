@@ -32,7 +32,7 @@
     "node": ">=22"
   },
   "scripts": {
-    "build": "tsc -b && vite build && tsc -p tsconfig.lib.json && node ../ui-cli/src/cli.ts prepare-types && node ../ui-cli/src/cli.ts check css",
+    "build": "tsc -b && vite build && tsc -p tsconfig.lib.json && node ../ui-cli/src/cli.ts build prepare-types && node ../ui-cli/src/cli.ts check css",
     "lint": "oxlint --fix",
     "lint:check": "oxlint",
     "typecheck": "tsc -b --force",

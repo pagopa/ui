@@ -6,7 +6,7 @@ import { figmaTextClasses } from "pagopa-ui-tokens"
 // The compiled `cn` engine ships Tailwind's default vocabulary; without this
 // extension it treats the generated Figma type scale as text colors and drops
 // them in conflicts (for example `text-caption-sb` against a chip color).
-// The class list is generated from the token manifest, so `pnpm tokens:check`
+// The class list is generated from the token manifest, so `pnpm nx run pagopa-ui-tokens:check:tokens`
 // keeps the merge tables and the design scale in sync.
 const fontSizes = figmaTextClasses.map((className) => className.replace(/^text-/, ""))
 

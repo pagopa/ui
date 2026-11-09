@@ -1,16 +1,13 @@
+import { fixtureTree, runCli, workspaceAt } from "../helpers/cli.mjs"
 import assert from "node:assert/strict"
 import { spawnSync } from "node:child_process"
 import fs from "node:fs"
-import os from "node:os"
 import path from "node:path"
 import { test } from "node:test"
-import { fileURLToPath } from "node:url"
 
-import { fixtureEnv } from "../src/lib/paths.ts"
-import { missingVisualBaselines, visualScope } from "../src/test/visual.ts"
-import { UNSTABLE_VISUAL_STORIES } from "../src/test/visual-cases.ts"
-
-const script = fileURLToPath(new URL("../src/cli.ts", import.meta.url))
+import { testingAdapters } from "../../src/adapters/testing.ts"
+import { missingVisualBaselines, runVisual, visualScope } from "../../src/testing/visual.ts"
+import { UNSTABLE_VISUAL_STORIES } from "../../src/testing/visual-cases.ts"
 
 const FILES = {
   "pnpm-workspace.yaml": "packages:\n  - packages/*\n  - apps/*\n",
@@ -28,7 +25,7 @@ const FILES = {
   "packages/pagopa-ui/src/components/logo.svg": '<svg viewBox="0 0 1 1"></svg>\n',
   "apps/storybook/vite.config.ts": "export default {}\n",
   "apps/storybook/.storybook/main.ts": "export default { stories: [] }\n",
-  "apps/storybook/.storybook/preview.tsx": 'import "../src/preview.css"\n',
+  "apps/storybook/.storybook/preview.tsx": 'import "../../src/preview.css"\n',
   "apps/storybook/src/preview.css": '@import "../../../packages/pagopa-ui/src/index.css";\n',
   "apps/storybook/src/button.stories.tsx":
     'import { Button } from "@/components/button"\n\nexport const Primary = () => null\nexport const Secondary = () => null\n',
@@ -82,7 +79,7 @@ const INDEX = {
 // A workspace-shaped tree: the stories app, the design system beside it and the
 // two manifests the tooling reads.
 function workspace() {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-visual-scope-"))
+  const root = fixtureTree({}, "pagopa-visual-scope-").root
   for (const [file, content] of Object.entries(FILES)) {
     const target = path.join(root, file)
     fs.mkdirSync(path.dirname(target), { recursive: true })
@@ -179,7 +176,7 @@ test("a change that can move every screenshot runs everything", () => {
     "packages/pagopa-ui/src/assets/font.woff2",
     "apps/storybook/.storybook/preview.tsx",
     "apps/storybook/visual/visual.spec.ts",
-    "packages/ui-cli/src/test/visual-cases.ts",
+    "packages/ui-cli/src/testing/visual-cases.ts",
   ]) {
     const scope = scopeOf(fixture, [changed])
     assert.equal(scope.mode, "all", changed)
@@ -262,14 +259,17 @@ function commit(root, message) {
   return git(root, ["rev-parse", "HEAD"])
 }
 
-function runCli(root, args) {
-  // The tooling audits the design-system package; the workspace is the tree
-  // that holds it.
-  return spawnSync(process.execPath, [script, "test", "visual", ...args], {
-    cwd: root,
-    encoding: "utf8",
-    env: fixtureEnv(root, { PAGOPA_UI_ROOT: path.join(root, "packages/pagopa-ui") }),
-  })
+function visual(root, options = {}) {
+  try {
+    const result = runVisual(
+      workspaceAt(path.join(root, "packages/pagopa-ui")),
+      options,
+      testingAdapters({ PATH: process.env.PATH }),
+    )
+    return { status: result.code, stdout: result.out.join("\n"), stderr: result.err.join("\n") }
+  } catch (error) {
+    return { status: error.exitCode ?? 1, stdout: "", stderr: error.message }
+  }
 }
 
 test("the diff against a ref becomes the scope file the runner reads", () => {
@@ -280,7 +280,7 @@ test("the diff against a ref becomes the scope file the runner reads", () => {
   write(fixture.root, "packages/pagopa-ui/src/components/card.tsx", "export const Card = () => 1\n")
   commit(fixture.root, "card")
 
-  const result = runCli(fixture.root, ["--since", base, "--out", "scope.json"])
+  const result = visual(fixture.root, { since: base, out: "scope.json" })
   assert.equal(result.status, 0, result.stderr)
 
   const scope = JSON.parse(fs.readFileSync(path.join(fixture.root, "scope.json"), "utf8"))
@@ -297,7 +297,7 @@ test("`--all` names no story and needs no diff", () => {
   const fixture = workspace()
   write(fixture.root, "apps/storybook/dist/index.json", JSON.stringify(fixture.index))
 
-  const result = runCli(fixture.root, ["--all", "--json"])
+  const result = visual(fixture.root, { all: true, json: true })
   assert.equal(result.status, 0, result.stderr)
   assert.deepEqual(JSON.parse(result.stdout), { mode: "all", changed: [] })
 })
@@ -307,16 +307,16 @@ test("an unreadable ref and a missing index are refusals, not empty runs", () =>
   git(fixture.root, ["init", "-q"])
   commit(fixture.root, "base")
 
-  const missingIndex = runCli(fixture.root, ["--all"])
+  const missingIndex = visual(fixture.root, { all: true })
   assert.equal(missingIndex.status, 2)
   assert.match(missingIndex.stderr, /build the Storybook first/)
 
   write(fixture.root, "apps/storybook/dist/index.json", JSON.stringify(fixture.index))
-  const unknownRef = runCli(fixture.root, ["--since", "origin/absent"])
+  const unknownRef = visual(fixture.root, { since: "origin/absent" })
   assert.equal(unknownRef.status, 2)
   assert.match(unknownRef.stderr, /cannot diff origin\/absent/)
 
-  const noTarget = runCli(fixture.root, [])
+  const noTarget = visual(fixture.root, {})
   assert.equal(noTarget.status, 2)
   assert.match(noTarget.stderr, /--since <ref> or --all/)
 })
@@ -375,8 +375,8 @@ test("the CLI fails before capture for missing scoped images but leaves update m
   const base = commit(fixture.root, "base")
   write(fixture.root, "packages/pagopa-ui/src/components/card.tsx", "export const Card = () => 1\n")
 
-  const args = ["--since", base, "--out", "scope.json"]
-  const checked = runCli(fixture.root, [...args, "--check-baselines"])
+  const args = { since: base, out: "scope.json" }
+  const checked = visual(fixture.root, { ...args, checkBaselines: true })
   assert.equal(checked.status, 1, checked.stderr)
   assert.match(checked.stderr, /3 scoped baseline\(s\) missing/)
   assert.match(checked.stderr, /components-card--plain-320\.png/)
@@ -387,7 +387,7 @@ test("the CLI fails before capture for missing scoped images but leaves update m
     ["components-card--plain"],
   )
 
-  const update = runCli(fixture.root, args)
+  const update = visual(fixture.root, args)
   assert.equal(update.status, 0, update.stderr)
   for (const width of [320, 600, 1200]) {
     write(
@@ -396,18 +396,18 @@ test("the CLI fails before capture for missing scoped images but leaves update m
       "",
     )
   }
-  const untracked = runCli(fixture.root, [...args, "--check-baselines"])
+  const untracked = visual(fixture.root, { ...args, checkBaselines: true })
   assert.equal(untracked.status, 1, untracked.stderr)
   assert.match(untracked.stderr, /3 scoped baseline\(s\) exist but are not tracked/)
   git(fixture.root, ["add", "apps/storybook/visual/__screenshots__"])
-  const complete = runCli(fixture.root, [...args, "--check-baselines", "--json"])
+  const complete = visual(fixture.root, { ...args, checkBaselines: true, json: true })
   assert.equal(complete.status, 0, complete.stderr)
   assert.deepEqual(JSON.parse(complete.stdout).stories, ["components-card--plain"])
 })
 
 test("the CI check uses preflight and the separate update job does not", () => {
   const workflow = fs.readFileSync(
-    new URL("../../../.github/workflows/visual.yml", import.meta.url),
+    new URL("../../../../.github/workflows/visual.yml", import.meta.url),
     "utf8",
   )
   const [check, update] = workflow.split("\n  visual-update:")
@@ -415,4 +415,19 @@ test("the CI check uses preflight and the separate update job does not", () => {
   assert.match(check, /--all --out "\$VISUAL_SCOPE" --check-baselines/)
   assert.ok(update)
   assert.doesNotMatch(update, /--check-baselines/)
+})
+
+test("the visual adapter returns the selected story ids as JSON", async () => {
+  const f = workspace()
+  try {
+    write(f.root, "apps/storybook/dist/index.json", JSON.stringify(f.index))
+    const result = await runCli(["test", "visual", "--all", "--json"], {
+      root: path.join(f.root, "packages/pagopa-ui"),
+      cwd: f.root,
+    })
+    assert.equal(result.status, 0, result.stderr)
+    assert.deepEqual(JSON.parse(result.stdout), { mode: "all", changed: [] })
+  } finally {
+    fs.rmSync(f.root, { recursive: true, force: true })
+  }
 })

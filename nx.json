@@ -22,7 +22,20 @@
     }
   },
   "namedInputs": {
-    "tooling": ["{workspaceRoot}/packages/ui-cli/**/*"]
+    "tooling": ["{workspaceRoot}/packages/ui-cli/**/*"],
+    "figmaChecks": [
+      "default",
+      "tooling",
+      "{workspaceRoot}/packages/pagopa-ui/src/**",
+      "{workspaceRoot}/packages/pagopa-ui/figma-to-code.yaml",
+      "{workspaceRoot}/packages/artwork/src/**",
+      "{workspaceRoot}/packages/tokens/src/**",
+      "{workspaceRoot}/apps/storybook/src/**",
+      "{workspaceRoot}/docs/figma-parity/**",
+      "{workspaceRoot}/docs/design-requests/**",
+      "{workspaceRoot}/pnpm-lock.yaml",
+      { "runtime": "node --version" }
+    ]
   },
   "release": {
     "versionPlans": true,

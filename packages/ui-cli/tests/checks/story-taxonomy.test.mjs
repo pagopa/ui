@@ -4,10 +4,11 @@ import path from "node:path"
 import { test } from "node:test"
 
 import { storyTitle } from "../../src/lib/source-modules.ts"
-import { resolveStoriesRoot, rootPath } from "../../src/lib/paths.ts"
+import { workspaceAt } from "../helpers/cli.mjs"
 
-const root = rootPath()
-const storiesRoot = resolveStoriesRoot()
+const workspace = workspaceAt(path.resolve(import.meta.dirname, "../../../pagopa-ui"))
+const root = workspace.root
+const storiesRoot = workspace.storiesRoot
 
 // Storybook documents the design system: library stories live under
 // `Foundations/*` (tokens, icon/pictogram catalogues and the inventory) and

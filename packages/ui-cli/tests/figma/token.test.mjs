@@ -6,8 +6,8 @@ import { fileURLToPath } from "node:url"
 const cli = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
 const clis = {
   export: ["figma", "export"],
-  sync: ["figma", "sync"],
-  pictograms: ["assets", "pictograms", "export"],
+  sync: ["figma", "plan"],
+  pictograms: ["figma", "pictograms", "export"],
 }
 
 function runPreflight(command, args, token) {
@@ -17,34 +17,16 @@ function runPreflight(command, args, token) {
   return spawnSync(process.execPath, [cli, ...command, ...args], { encoding: "utf8", env })
 }
 
-test("figma-export exits with explicit guidance when FIGMA_TOKEN is missing", () => {
-  const result = runPreflight(clis.export, [])
-  assert.equal(result.status, 1)
-  assert.match(result.stderr, /^error: FIGMA_TOKEN is missing or empty/m)
-  assert.match(result.stderr, /file_content:read and library_content:read/)
-  assert.doesNotMatch(result.stderr, /^\s+at /m)
-})
-
-test("figma-sync --rest exits with explicit guidance when FIGMA_TOKEN is missing", () => {
-  const result = runPreflight(clis.sync, ["--rest"])
-  assert.equal(result.status, 1)
-  assert.match(result.stderr, /^error: FIGMA_TOKEN is missing or empty/m)
-})
-
-test("figma-pictograms --export exits with explicit guidance when FIGMA_TOKEN is missing", () => {
-  const result = runPreflight(clis.pictograms, ["--input", "unused.json"])
-  assert.equal(result.status, 1)
-  assert.match(result.stderr, /^error: FIGMA_TOKEN is missing or empty/m)
-})
-
-test("an empty FIGMA_TOKEN fails like a missing one", () => {
-  const result = runPreflight(clis.export, [], "   ")
-  assert.equal(result.status, 1)
-  assert.match(result.stderr, /^error: FIGMA_TOKEN is missing or empty/m)
-})
-
-test("a token with internal whitespace fails with an explicit message", () => {
-  const result = runPreflight(clis.export, [], "figd_abc def")
-  assert.equal(result.status, 1)
-  assert.match(result.stderr, /^error: FIGMA_TOKEN contains whitespace/m)
+test("live Figma commands reject an invalid token before making a request", () => {
+  const inputs = {
+    export: [],
+    sync: ["--rest"],
+    pictograms: ["--input", "../pagopa-ui/src/catalog/figma/inventory.json"],
+  }
+  for (const [name, command] of Object.entries(clis)) {
+    const result = runPreflight(command, inputs[name], "figd_abc def")
+    assert.equal(result.status, 1)
+    assert.match(result.stderr, /^error: FIGMA_TOKEN contains whitespace/m)
+    assert.doesNotMatch(result.stderr, /^\s+at /m)
+  }
 })

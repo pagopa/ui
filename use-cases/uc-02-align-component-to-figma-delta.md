@@ -72,8 +72,8 @@ parent_dr: design-review.md
 - `AC-02`: The work order respects the dependencies: no dependent node precedes the node it depends on. - Evidence: `pnpm nx run pagopa-ui-cli:figma:triage`
 - `AC-03`: Every node of the queue has a recorded decision before the close. - Evidence: `pnpm nx run pagopa-ui-cli:figma:status`
 - `AC-04`: Divergences between devices are allowed only if they appear in the list of reasoned exceptions. - Evidence: `packages/pagopa-ui/src/catalog/figma/device-exceptions.json`; `pnpm nx run pagopa-ui-cli:figma:devices`
-- `AC-05`: The aligned nodes have parity cases reviewed after the change. - Evidence: `pnpm nx run pagopa-ui-cli:figma:parity:verify`
-- `AC-06`: The catalogue check is green after the alignment. - Evidence: `pnpm nx run pagopa-ui:figma:check`
+- `AC-05`: The aligned nodes have parity cases reviewed after the change. - Evidence: `pnpm ui-cli check parity`
+- `AC-06`: The catalogue check is green after the alignment. - Evidence: `pnpm nx run pagopa-ui:check:catalogue`
 - `AC-07`: The full green chain is green before the commit. - Evidence: `pnpm nx run workspace:verify`
 - `AC-08`: With no starting snapshot, the system returns `BASELINE_SNAPSHOT_MISSING` and modifies no file. - Evidence: `ui-cli` tests on the synchronisation command
 
@@ -107,7 +107,7 @@ sequenceDiagram
 - Figma: library `pvhsJpPGQbEwNLiyP7BOIw`, version of the current snapshot.
 - DR components: `solution.components.item-001`, `solution.components.item-005`, `solution.components.item-004`
 - Endpoint / OpenAPI / AsyncAPI / Data Contract: `contracts.item-004`, `contracts.item-005`, `contracts.item-006`, `contracts.item-007`, `contracts.item-008`
-- Validation evidence: `pnpm nx run pagopa-ui-cli:figma:parity:verify`; `docs/figma-drift-handoff.md`
+- Validation evidence: `pnpm ui-cli check parity`; `docs/figma-drift-handoff.md`
 
 ## Open questions and propagation
 

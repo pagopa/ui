@@ -78,7 +78,7 @@
           "license": "In-house artwork"
         }
       },
-      "note": "Public names are stable aliases of manifest nodeIds, independent of source renames. Explicit localAsset entries retain reviewed rounded source geometry/defaults/variants; monochrome artwork intentionally inherits semantic currentColor, while brand images preserve source colors. icons:check validates complete identities, pinned SVG evidence and provenance."
+      "note": "Public names are stable aliases of manifest nodeIds, independent of source renames. Explicit localAsset entries retain reviewed rounded source geometry/defaults/variants; monochrome artwork intentionally inherits semantic currentColor, while brand images preserve source colors. check:icons validates complete identities, pinned SVG evidence and provenance."
     },
     {
       "pageId": "157:614",
@@ -96,7 +96,7 @@
         "attribution": "SeyfDesigner — Flaticon",
         "note": "The Figma pictogram page links the Flaticon author collection; the light and dark variants are the two source backgrounds. The attribution terms of the acquisition licence still need confirmation."
       },
-      "note": "Public names are stable aliases of manifest nodeIds, independent of source renames. pictograms:check validates identities, checksums and provenance."
+      "note": "Public names are stable aliases of manifest nodeIds, independent of source renames. check:pictograms validates identities, checksums and provenance."
     },
     {
       "pageId": "1:16",
@@ -537,7 +537,7 @@
         "story": "apps/storybook/src/Table.stories.tsx",
         "storyExports": ["CellComposition"]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Wave 9 2026-10-16: stays pending with its measurements. The desktop device stays committed (`1344-40672-default-desktop`, `1344:40652`, 645x48: the cell 48 tall with `px-4` and the centred content, the first cell's link 16/22 600 primary; residues: the fixture draws two columns against the source sample's seven fixed cells 114/153/59/59/59/89/112, so the growing first column takes 380.45, and the single-child cell gap is a mapping ignore). The mobile device (`1337:75105`, 272x492) is the row as a card and that card composition is the Table's (`@container/table`): mapped against the Table's mobile render the case verifies (row 498 against 492, the standalone 272 against the table's inset 256, responsive clean), but `figma:check` refuses the mapping because the component has no card surface of its own and no honest `storyExports` entry can be declared for it - `SourceMobile` does not render `TableCellRow`, and the node's own export (`CellComposition`) renders the desktop cell row. Decided: the mobile case stays open; the card is covered by the Table's mobile case (`1349-22020-default-mobile`). Unblock: a dedicated story export that renders the row helper inside the card/`@container/table` context; then one mobile case. Design request: `docs/design-requests/2026-10-21-table-cell-row-mobile-card.md` (open); issue https://github.com/pagopa/ui/issues/38."
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Wave 9 2026-10-16: stays pending with its measurements. The desktop device stays committed (`1344-40672-default-desktop`, `1344:40652`, 645x48: the cell 48 tall with `px-4` and the centred content, the first cell's link 16/22 600 primary; residues: the fixture draws two columns against the source sample's seven fixed cells 114/153/59/59/59/89/112, so the growing first column takes 380.45, and the single-child cell gap is a mapping ignore). The mobile device (`1337:75105`, 272x492) is the row as a card and that card composition is the Table's (`@container/table`): mapped against the Table's mobile render the case verifies (row 498 against 492, the standalone 272 against the table's inset 256, responsive clean), but `check:catalogue` refuses the mapping because the component has no card surface of its own and no honest `storyExports` entry can be declared for it - `SourceMobile` does not render `TableCellRow`, and the node's own export (`CellComposition`) renders the desktop cell row. Decided: the mobile case stays open; the card is covered by the Table's mobile case (`1349-22020-default-mobile`). Unblock: a dedicated story export that renders the row helper inside the card/`@container/table` context; then one mobile case. Design request: `docs/design-requests/2026-10-21-table-cell-row-mobile-card.md` (open); issue https://github.com/pagopa/ui/issues/38."
     },
     "1349:22020": {
       "status": "implemented",
@@ -1218,7 +1218,7 @@
         "story": "apps/storybook/src/PaymentProviderLogos.stories.tsx",
         "storyExports": ["Fidelity", "Playground"]
       },
-      "note": "Reviewed: PaymentProviderLogos publishes the set's sixteen brand variants as pinned, source-colour SVGs at the shared 24x24 artwork box with no card, frame or extra radius. Sixteen committed cases, one per variant (`382-7640-brand-*`), each captured from `Fidelity` at 24x24 with no device axis; the two variants whose source frame carries a 4px radius and fill paint them inside the exported artwork (rect rx=4), so the img's own radius is a mapping artifact. Composition and responsive clean on all sixteen; the artwork itself is owned by `assets:check` (guides/loghi-psp.md)."
+      "note": "Reviewed: PaymentProviderLogos publishes the set's sixteen brand variants as pinned, source-colour SVGs at the shared 24x24 artwork box with no card, frame or extra radius. Sixteen committed cases, one per variant (`382-7640-brand-*`), each captured from `Fidelity` at 24x24 with no device axis; the two variants whose source frame carries a 4px radius and fill paint them inside the exported artwork (rect rx=4), so the img's own radius is a mapping artifact. Composition and responsive clean on all sixteen; the artwork itself is owned by `check:artwork` (guides/loghi-psp.md)."
     },
     "382:7813": {
       "status": "implemented",

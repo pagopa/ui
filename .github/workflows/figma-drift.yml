@@ -6,7 +6,7 @@ name: Figma drift
 # visible signal. The refreshed JSON is formatted before the commit so the
 # review diff carries only the drift. Queuing a node replaces its reviewed note
 # with the pending stub, so the same refresh lowers the note-length ratchet that
-# `figma:check` reads: the diff carries that move with the drift that caused it.
+# `check:catalogue` reads: the diff carries that move with the drift that caused it.
 #
 # The job produces a reproducible handoff: delta.json, run.json and the body are
 # uploaded as artifacts (never `.figma/`), and the branch guard refuses to
@@ -102,7 +102,7 @@ jobs:
           PAGOPA_UI_ROOT: ../pagopa-ui
         run: |
           branch="figma-drift/$(date -u +%Y-%m-%d)"
-          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma sync \
+          pnpm --filter pagopa-ui-cli exec node src/cli.ts update inventory \
             --rest \
             --save .figma/live-rest.json \
             --pr-body .figma/pr-body.md \
@@ -124,10 +124,10 @@ jobs:
           # The text run feeds the log, the JSON run feeds the summary: `--plan`
           # reads the local snapshot, so neither touches the network.
           mkdir -p packages/pagopa-ui/.figma
-          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma rules --refresh
-          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma rules --plan \
+          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma rules refresh
+          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma rules plan \
             | tee packages/pagopa-ui/.figma/rules-plan.txt
-          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma rules --plan --json \
+          pnpm --filter pagopa-ui-cli exec node src/cli.ts figma rules plan --json \
             > packages/pagopa-ui/.figma/rules-plan.json
           pnpm --filter pagopa-ui-cli exec node src/cli.ts figma comments --refresh \
             | tee packages/pagopa-ui/.figma/comments.txt
@@ -142,7 +142,7 @@ jobs:
             echo '```'
             if [ "$behind" -gt 0 ]; then
               echo
-              echo "The rules ledger is behind: ${counts}. A new or stale card needs \`figma:rules --mark\`, a removed one needs \`figma:rules --sync\`. The ledger stays a reviewed change, so this run only reports it."
+              echo "The rules ledger is behind: ${counts}. A new or stale card needs \`figma:rules mark\`, a removed one needs \`figma:rules sync\`. The ledger stays a reviewed change, so this run only reports it."
             fi
           } >> "$GITHUB_STEP_SUMMARY"
           if [ "$behind" -gt 0 ]; then
@@ -155,8 +155,8 @@ jobs:
           FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
           PAGOPA_UI_ROOT: ../pagopa-ui
         run: |
-          pnpm --filter pagopa-ui-cli exec node src/cli.ts parity evidence --write --input .figma/live-rest.json
-          pnpm --filter pagopa-ui-cli exec node src/cli.ts parity evidence --check
+          pnpm --filter pagopa-ui-cli exec node src/cli.ts update evidence --input .figma/live-rest.json
+          pnpm --filter pagopa-ui-cli exec node src/cli.ts check evidence
 
       - name: Format the refreshed payload
         if: hashFiles('packages/pagopa-ui/.figma/pr-body.md') != ''

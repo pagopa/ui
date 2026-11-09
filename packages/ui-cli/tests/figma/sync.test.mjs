@@ -1,12 +1,11 @@
 import assert from "node:assert/strict"
 import { spawnSync } from "node:child_process"
 import fs from "node:fs"
-import os from "node:os"
 import path from "node:path"
 import { test } from "node:test"
 import { fileURLToPath } from "node:url"
 
-import { fixtureEnv } from "../../src/lib/paths.ts"
+import { fixtureEnvironment, fixtureTree } from "../helpers/cli.mjs"
 
 const script = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
 const exportScript = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
@@ -57,8 +56,10 @@ const devicePolicy = {
 }
 
 function fixture(run, overrides = {}) {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-figma-"))
+  const tree = fixtureTree({}, "pagopa-figma-")
+  const root = tree.root
   const files = {
+    "pnpm-workspace.yaml": "packages: []\n",
     "src/catalog/figma/inventory.json": JSON.stringify({
       fileKey: "fixture",
       syncedAt: new Date().toISOString().slice(0, 10),
@@ -96,19 +97,40 @@ function fixture(run, overrides = {}) {
     }
     return run({
       root,
-      check: (...args) =>
-        spawnSync(process.execPath, [script, "figma", "sync", ...args], {
-          cwd: root,
-          encoding: "utf8",
-          env: fixtureEnv(root, { PAGOPA_UI_STORIES_ROOT: "src/stories" }),
-        }),
-      // The command the drift pull request runs: `figma sync` plus the
+      check: (...args) => {
+        const invoke = (command, forwarded) =>
+          spawnSync(process.execPath, [script, ...command, ...forwarded], {
+            cwd: root,
+            encoding: "utf8",
+            env: fixtureEnvironment(root, { PAGOPA_UI_STORIES_ROOT: "src/stories" }),
+          })
+        const forwarded = args.filter((arg) => !["--write", "--triage", "--plan"].includes(arg))
+        if (args.includes("--plan") && !args.includes("--input")) {
+          forwarded.push("--input", "src/catalog/figma/inventory.json")
+        }
+        if (args.includes("--plan") && (args.includes("--triage") || args.includes("--write"))) {
+          const plan = invoke(["figma", "plan"], forwarded)
+          const command = args.includes("--triage") ? ["figma", "triage"] : ["update", "inventory"]
+          const mutation = invoke(command, forwarded)
+          return { ...plan, status: mutation.status, stderr: mutation.stderr }
+        }
+        const command =
+          args.includes("--write") || args.includes("--pr-body") || args.includes("--delta")
+            ? ["update", "inventory"]
+            : args.includes("--triage")
+              ? ["figma", "triage"]
+              : args.includes("--plan")
+                ? ["figma", "plan"]
+                : ["check", "catalogue"]
+        return invoke(command, forwarded)
+      },
+      // The command the drift pull request runs: `update inventory / check catalogue` plus the
       // note-length ratchet, so a fixture sees the same gate as CI.
       checkCatalogue: (...args) =>
-        spawnSync(process.execPath, [script, "check", "figma", ...args], {
+        spawnSync(process.execPath, [script, "check", "catalogue", ...args], {
           cwd: root,
           encoding: "utf8",
-          env: fixtureEnv(root, { PAGOPA_UI_STORIES_ROOT: "src/stories" }),
+          env: fixtureEnvironment(root, { PAGOPA_UI_STORIES_ROOT: "src/stories" }),
         }),
       read: (file) => fs.readFileSync(path.join(root, file), "utf8"),
       write: (file, source) => fs.writeFileSync(path.join(root, file), source),
@@ -126,7 +148,7 @@ function fixture(run, overrides = {}) {
           {
             cwd: root,
             encoding: "utf8",
-            env: fixtureEnv(root, {
+            env: fixtureEnvironment(root, {
               PAGOPA_UI_STORIES_ROOT: "src/stories",
               FIGMA_TOKEN: "fixture-token",
             }),
@@ -134,7 +156,7 @@ function fixture(run, overrides = {}) {
         ),
     })
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
   }
 }
 
@@ -157,7 +179,7 @@ test("adding a variant to an existing identity is reported as changed", () => {
   fixture(
     ({ check }) => {
       const result = check("--input", "live.json")
-      assert.equal(result.status, 1)
+      assert.equal(result.status, 3)
       assert.match(result.stderr, /CHANGED.*1:1/s)
     },
     {
@@ -248,11 +270,15 @@ test("the story titles map follows the stories the registry links", () => {
   fixture(
     ({ root, check, write }) => {
       const stories = (...args) =>
-        spawnSync(process.execPath, [script, "figma", "stories", ...args], {
-          cwd: root,
-          encoding: "utf8",
-          env: fixtureEnv(root, { PAGOPA_UI_STORIES_ROOT: "src/stories" }),
-        })
+        spawnSync(
+          process.execPath,
+          [script, ...(args.includes("--write") ? ["update", "stories"] : ["check", "stories"])],
+          {
+            cwd: root,
+            encoding: "utf8",
+            env: fixtureEnvironment(root, { PAGOPA_UI_STORIES_ROOT: "src/stories" }),
+          },
+        )
       const missing = stories()
       assert.equal(missing.status, 1)
       assert.match(missing.stderr, /missing src\/catalog\/figma\/story-titles\.json/)
@@ -514,7 +540,7 @@ test("a public namesake cannot reuse another component's Figma mapping", () => {
 
 test("a queued node lowers the note-length ratchet in the same write", () => {
   // The stub that replaces a reviewed note is shorter than it, so the count of
-  // long notes drops with the queue. Without the baseline move, `figma:check`
+  // long notes drops with the queue. Without the baseline move, `check:catalogue`
   // fails on the branch the job itself generated.
   const reviewedNote = `Reviewed 2026-10-20: ${"the source insets 28px and the card keeps a 1px stroke. ".repeat(20)}`
   fixture(
@@ -754,7 +780,7 @@ test("a removed historical identity is not listed for source review", () => {
   fixture(
     ({ check }) => {
       const result = check("--input", "live.json", "--plan")
-      assert.equal(result.status, 1, result.stderr)
+      assert.equal(result.status, 3, result.stderr)
       const plan = JSON.parse(result.stdout)
       assert.deepEqual(plan.removed, ["1:1"])
       assert.deepEqual(plan.implementationOrder, [])
@@ -1186,7 +1212,7 @@ test("a paint change is detected even when identity and properties are unchanged
         ]),
       )
       const result = check("--input", "live.json")
-      assert.equal(result.status, 1)
+      assert.equal(result.status, 3)
       assert.match(result.stderr, /CHANGED.*design/s)
     },
     { "live.json": JSON.stringify([baseline]) },
@@ -1322,7 +1348,7 @@ test("swappable source instances remain in dependency-aware delta plans", () => 
       live.nodes[avatarId].document.children[0].cornerRadius = 9
       write("live.json", JSON.stringify(live))
       const result = check("--input", "live.json", "--plan")
-      assert.equal(result.status, 1, result.stderr)
+      assert.equal(result.status, 3, result.stderr)
       assert.deepEqual(JSON.parse(result.stdout).affected, [rowId])
     },
     {
@@ -1572,7 +1598,7 @@ test("--pr-body refreshes the inventory and writes the review body on drift", ()
       assert.match(body, /## Instructions — agent handoff/)
       assert.match(body, /`figma-to-code` skill/)
       assert.match(body, /get_design_context/)
-      assert.match(body, /pnpm nx run-many -p pagopa-ui -c=ci/)
+      assert.match(body, /pnpm nx run workspace:verify/)
       const registry = JSON.parse(read("src/catalog/figma/registry.json"))
       assert.equal(registry.entries["1:1"].status, "pending")
     },
@@ -1838,7 +1864,7 @@ test("a hidden layer in one variant is reported as that device's change", () => 
       const plan = check("--plan", "--input", "live.json")
       // The drift is real, so the run reports it: exit 1 is the point, and the
       // plan JSON is the device-shaped detail.
-      assert.equal(plan.status, 1, plan.stderr)
+      assert.equal(plan.status, 3, plan.stderr)
       const parsed = JSON.parse(plan.stdout)
       assert.deepEqual(parsed.changed, ["1:1"])
       assert.deepEqual(parsed.changedVariants, [
@@ -2245,8 +2271,8 @@ test("--delta writes the machine-readable delta next to the review body", () => 
 test("--delta without a live source fails instead of writing an empty delta", () => {
   fixture(({ check }) => {
     const result = check("--delta", "delta.json")
-    assert.equal(result.status, 1)
-    assert.match(result.stderr, /--delta needs a live source/)
+    assert.equal(result.status, 2)
+    assert.match(result.stderr, /need a live source/)
   })
 })
 

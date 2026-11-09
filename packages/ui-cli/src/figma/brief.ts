@@ -1,14 +1,10 @@
-// The implementation brief of a node: one read-only, offline command that
-// gathers what the coding agent needs before touching a component — the
-// catalogue decision, the rules the designers wrote for it, the open comments
-// and the design requests that already cite it.
+// The offline implementation context for one Figma node or the pending queue.
 import fs from "node:fs"
 import path from "node:path"
 
+import type { Workspace } from "../adapters/workspace.ts"
 import { readJson } from "../lib/json.ts"
-import { enterRoot, resolveWorkspaceRoot } from "../lib/paths.ts"
 import { walkFiles } from "../lib/fs.ts"
-import { UsageError } from "../lib/command.ts"
 import { InventorySchema, RegistrySchema } from "../schemas/catalogue.ts"
 import { readComments, threadsForNode } from "./comments.ts"
 import { readLedger, readRulesSnapshot, rulesForNode } from "./rules.ts"
@@ -17,49 +13,69 @@ const INVENTORY_PATH = "src/catalog/figma/inventory.json"
 const REGISTRY_PATH = "src/catalog/figma/registry.json"
 const REQUESTS_DIR = "docs/design-requests"
 
-function option(argv: string[], name: string): string | undefined {
-  const index = argv.indexOf(`--${name}`)
-  return index >= 0 ? argv[index + 1] : undefined
+export type NodeBrief = {
+  node: string
+  requested: string
+  name: string | null
+  page: string | null
+  status: string | null
+  target: ReturnType<typeof RegistrySchema.parse>["entries"][string]["target"] | null
+  note: string | null
+  rules: Array<{
+    card: string
+    disposition: string
+    title: string
+    titleSource: string
+    summary: string | null
+    body: string | null
+    guide: string | null
+  }>
+  openComments: ReturnType<typeof threadsForNode>
+  designRequests: string[]
+  commentsSnapshot: string | null
 }
 
-function designRequests(nodeId: string): string[] {
+function designRequests(workspace: Workspace, nodeId: string): string[] {
   const dashed = nodeId.replace(":", "-")
-  const workspace = resolveWorkspaceRoot()
-  return walkFiles(path.join(workspace, REQUESTS_DIR), (file) => file.endsWith(".md"))
+  const directory = path.join(workspace.workspaceRoot, REQUESTS_DIR)
+  return walkFiles(directory, (file) => file.endsWith(".md"))
     .filter((file) => {
       const text = fs.readFileSync(file, "utf8")
       return text.includes(nodeId) || text.includes(`node-id=${dashed}`)
     })
-    .map((file) => path.relative(workspace, file).split(path.sep).join("/"))
+    .map((file) => path.relative(workspace.workspaceRoot, file).split(path.sep).join("/"))
     .sort()
 }
 
-export async function runBrief(argv: string[] = process.argv.slice(2)): Promise<number> {
-  const root = enterRoot()
-  const node = option(argv, "node")
-  if (!node) throw new UsageError("figma:brief needs --node <id>")
-  const json = argv.includes("--json")
-
-  const inventory = readJson(path.join(root, INVENTORY_PATH), InventorySchema)
-  const registry = readJson(path.join(root, REGISTRY_PATH), RegistrySchema)
-  const component =
-    inventory.components.find((entry) => entry.nodeId === node) ??
+function componentForNode(inventory: ReturnType<typeof readInventory>, nodeId: string) {
+  return (
+    inventory.components.find((entry) => entry.nodeId === nodeId) ??
     inventory.components.find((entry) =>
-      (entry.variants ?? []).some((variant) => variant.nodeId === node),
+      entry.variants?.some((variant) => variant.nodeId === nodeId),
     )
-  const identity = component?.nodeId ?? node
+  )
+}
+
+function readInventory(workspace: Workspace) {
+  return readJson(workspace.path(INVENTORY_PATH), InventorySchema)
+}
+
+export function buildBrief(workspace: Workspace, requested: string): NodeBrief {
+  const inventory = readInventory(workspace)
+  const registry = readJson(workspace.path(REGISTRY_PATH), RegistrySchema)
+  const component = componentForNode(inventory, requested)
+  const identity = component?.nodeId ?? requested
   const entry = registry.entries[identity]
-
-  const ledger = readLedger(root, false)
-  const snapshot = readRulesSnapshot(root, false)
-  const rules = ledger ? rulesForNode(ledger, snapshot, root, node) : []
-  const comments = readComments(root)
-  const threads = comments ? threadsForNode(root, comments, node, { openOnly: true }) : []
-  const requests = designRequests(identity)
-
-  const report = {
+  const ledger = readLedger(workspace.root, false)
+  const snapshot = readRulesSnapshot(workspace.root, false)
+  const rules = ledger ? rulesForNode(ledger, snapshot, workspace.root, requested) : []
+  const comments = readComments(workspace)
+  const openComments = comments
+    ? threadsForNode(workspace, comments, requested, { openOnly: true })
+    : []
+  return {
     node: identity,
-    requested: node,
+    requested,
     name: component?.name ?? null,
     page: component?.pageName ?? null,
     status: entry?.status ?? null,
@@ -74,58 +90,67 @@ export async function runBrief(argv: string[] = process.argv.slice(2)): Promise<
       body: rule.body ?? null,
       guide: rule.guide ?? null,
     })),
-    openComments: threads,
-    designRequests: requests,
-    commentsSnapshot: comments ? comments.fetchedAt : null,
+    openComments,
+    designRequests: designRequests(workspace, identity),
+    commentsSnapshot: comments?.fetchedAt ?? null,
   }
+}
 
-  if (json) {
-    console.log(JSON.stringify(report, null, 2))
-    return 0
+function compact(value: string): string {
+  return value.replace(/\s+/g, " ")
+}
+
+export function formatBrief(report: NodeBrief, hasLedger = true): string[] {
+  const lines = [`node       ${report.node}${report.name ? ` · ${report.name}` : ""}`]
+  if (report.page) lines.push(`page       ${report.page}`)
+  lines.push(`status     ${report.status ?? "(no registry entry)"}`)
+  if (report.target) lines.push(`target     ${report.target.module} · ${report.target.export}`)
+  const guides = [...new Set(report.rules.map((rule) => rule.guide).filter(Boolean))]
+  if (guides.length) lines.push(`guide      ${guides.join(", ")}`)
+  if (hasLedger) appendRules(lines, report)
+  else lines.push("rules      (no ledger yet: run figma rules init)")
+  appendComments(lines, report)
+  appendRequests(lines, report)
+  return lines
+}
+
+function appendRules(lines: string[], report: NodeBrief): void {
+  if (!report.rules.length) {
+    lines.push(report.rules.length === 0 ? "rules      no rule targets this node" : "")
+    return
   }
+  const pending = report.rules.filter((rule) => rule.disposition === "pending").length
+  lines.push(`rules      ${report.rules.length} (${pending} pending)`)
+  for (const rule of report.rules) {
+    const detail = rule.summary ?? rule.body ?? ""
+    lines.push(
+      `  ${rule.disposition.padEnd(12)} ${rule.title}${detail ? ` — ${compact(detail)}` : ""}`,
+    )
+    if (rule.guide) lines.push(`  ${"".padEnd(12)} in ${rule.guide}`)
+  }
+}
 
-  console.log(`node       ${identity}${component?.name ? ` · ${component.name}` : ""}`)
-  if (component) console.log(`page       ${component.pageName}`)
-  console.log(`status     ${entry?.status ?? "(no registry entry)"}`)
-  if (entry?.target) console.log(`target     ${entry.target.module} · ${entry.target.export}`)
-  const guides = [...new Set(rules.map((rule) => rule.guide).filter(Boolean))]
-  if (guides.length) console.log(`guide      ${guides.join(", ")}`)
-
-  if (!ledger) {
-    console.log("rules      (no ledger yet: run figma:rules --init)")
-  } else if (rules.length === 0) {
-    console.log("rules      no rule targets this node")
+function appendComments(lines: string[], report: NodeBrief): void {
+  if (!report.commentsSnapshot) {
+    lines.push("comments   (no snapshot: run figma comments --refresh)")
+  } else if (!report.openComments.length) {
+    lines.push("comments   no open thread")
   } else {
-    const pending = rules.filter((rule) => rule.disposition === "pending").length
-    console.log(`rules      ${rules.length} (${pending} pending)`)
-    for (const rule of rules) {
-      const title = rule.titleEn ?? rule.title
-      const detail = rule.summary ?? rule.reason ?? rule.body?.replace(/\s+/g, " ") ?? ""
-      console.log(`  ${rule.disposition.padEnd(12)} ${title}${detail ? ` — ${detail}` : ""}`)
-      if (rule.guide) console.log(`  ${"".padEnd(12)} in ${rule.guide}`)
-    }
-  }
-
-  if (!comments) {
-    console.log("comments   (no snapshot: run figma:comments --refresh)")
-  } else if (threads.length === 0) {
-    console.log("comments   no open thread")
-  } else {
-    console.log(`comments   ${threads.length} open`)
-    for (const thread of threads) {
-      console.log(
-        `  ${thread.createdAt.slice(0, 10)} ${thread.author || "unknown"}: ${thread.message.replace(/\s+/g, " ")}`,
+    lines.push(`comments   ${report.openComments.length} open`)
+    for (const thread of report.openComments) {
+      lines.push(
+        `  ${thread.createdAt.slice(0, 10)} ${thread.author || "unknown"}: ${compact(thread.message)}`,
       )
       for (const reply of thread.replies) {
-        console.log(
-          `    ${reply.createdAt.slice(0, 10)} ${reply.author || "unknown"}: ${reply.message.replace(/\s+/g, " ")}`,
+        lines.push(
+          `    ${reply.createdAt.slice(0, 10)} ${reply.author || "unknown"}: ${compact(reply.message)}`,
         )
       }
     }
   }
+}
 
-  if (requests.length === 0) console.log("requests   none")
-  else for (const request of requests) console.log(`request    ${request}`)
-
-  return 0
+function appendRequests(lines: string[], report: NodeBrief): void {
+  if (!report.designRequests.length) lines.push("requests   none")
+  else for (const request of report.designRequests) lines.push(`request    ${request}`)
 }

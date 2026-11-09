@@ -1,18 +1,27 @@
+import { UsageError } from "../lib/command.ts"
 // Figma parity — `align`.
 //
 // One node, one read-only work order: the header the registry and the device
 // policy already know, one block per committed case with its verdict and its
 // deltas, a Tailwind class hint for every delta that lands on a token, and the
 // next command. Nothing is written: saving a case stays `check --save-case`.
-import { CASES_PATH, isDraftCase, loadCaseFile, loadInventoryNodes, loadRegistry } from "./cases.ts"
-import { classify, tokenIndex, TOLERANCE, type Delta, type TokenIndex } from "./diff.ts"
+import type { Workspace } from "../adapters/workspace.ts"
 import { loadDevicePolicy, requiredDevices } from "../figma/devices.ts"
-import { STORYBOOK_URL } from "./render.ts"
-import { rootPath } from "../lib/paths.ts"
 import type { ParityCase } from "../schemas/parity.ts"
+import { isDraftCase, loadCaseFile, loadInventoryNodes, loadRegistry } from "./cases.ts"
+import { corpusPath } from "./context.ts"
+import {
+  classify,
+  EMPTY_TOKEN_INDEX,
+  tokenIndex,
+  TOLERANCE,
+  type Delta,
+  type TokenIndex,
+} from "./diff.ts"
+import { output, type ParityOutput } from "./output.ts"
+import { STORYBOOK_URL } from "./render.ts"
 
-type Flags = Map<string, string | boolean>
-type Parsed = { flags: Flags }
+export type AlignOptions = { nodeId: string; casesFile?: string; json?: boolean }
 
 // The part of `check`'s report `align` reads. The evaluator is a parameter so
 // the formatter and the missing-case path run without a browser.
@@ -41,10 +50,9 @@ export type AlignNode = {
 }
 
 export type AlignDeps = {
-  loadNode?: (parsed: Parsed, nodeId: string) => AlignNode
-  loadCases?: (parsed: Parsed, nodeId: string) => ParityCase[]
-  evaluate?: (entry: ParityCase) => Promise<AlignReport>
-  storybook?: () => Promise<boolean>
+  evaluate: (entry: ParityCase) => Promise<AlignReport>
+  storybook: () => Promise<boolean>
+  baseUrl?: string
 }
 
 const START_STORYBOOK = "pnpm nx run pagopa-ui-storybook:storybook"
@@ -117,7 +125,7 @@ function sourceToken(
 export function classHint(
   property: string,
   token: Delta["token"],
-  index: TokenIndex = tokenIndex(),
+  index: TokenIndex = EMPTY_TOKEN_INDEX,
   lineHeight?: number,
   source?: unknown,
 ): string | undefined {
@@ -178,7 +186,7 @@ function deltaLine(delta: Delta, index: TokenIndex): string {
 
 // ------------------------------------------------------------------ printing
 
-export function formatAlign(node: AlignNode, index: TokenIndex = tokenIndex()): string {
+export function formatAlign(node: AlignNode, index: TokenIndex = EMPTY_TOKEN_INDEX): string {
   const lines = [
     `${node.nodeId} ${node.name} · ${node.status} · export ${node.export ?? "-"} · ${node.story ?? "(no story)"}`,
     `  devices: declared ${node.declared.join(",") || "none"} · covered ${node.covered.join(",") || "none"} · ` +
@@ -187,6 +195,15 @@ export function formatAlign(node: AlignNode, index: TokenIndex = tokenIndex()): 
   for (const entry of node.cases) {
     lines.push(`  ${entry.id} [${entry.device ?? "-"}] ${entry.verdict}`)
     for (const delta of entry.deltas) lines.push(deltaLine(delta, index))
+  }
+  for (const device of node.declared) {
+    const cases = node.cases.filter((entry) => entry.device === device)
+    for (const entry of cases)
+      lines.push(`  check ${device}: pnpm ui-cli parity check --case ${entry.id}`)
+    if (!cases.length)
+      lines.push(
+        `  check ${device}: pnpm ui-cli parity check --node ${node.nodeId} --device ${device} --save-case`,
+      )
   }
   const next = nextSteps(node)
   lines.push("Next")
@@ -199,14 +216,13 @@ export function formatAlign(node: AlignNode, index: TokenIndex = tokenIndex()): 
 export function nextSteps(node: AlignNode): string[] {
   const steps: string[] = []
   if (!node.cases.length || node.missing.length) {
-    steps.push(`pnpm nx run pagopa-ui-cli:figma:parity:cases -- --sync --node ${node.nodeId}`)
+    steps.push(`pnpm ui-cli parity cases --sync --node ${node.nodeId}`)
   }
   const pending = node.cases.find((entry) => entry.deltas.length > 0)
   if (pending) {
     const first = pending.deltas[0]
     steps.push(
-      `pnpm nx run pagopa-ui-cli:figma:parity:check -- --case ${pending.id} ` +
-        `--residue "${first.path}=<reason>"`,
+      `pnpm ui-cli parity check --case ${pending.id} ` + `--residue "${first.path}=<reason>"`,
     )
   }
   if (!steps.length) steps.push("aligned, no action")
@@ -215,18 +231,21 @@ export function nextSteps(node: AlignNode): string[] {
 
 // ------------------------------------------------------------------- loading
 
-function corpusPath(flags: Flags): string {
-  const value = flags.get("cases")
-  return typeof value === "string" ? value : rootPath(CASES_PATH)
-}
-
-function loadNode(parsed: Parsed, nodeId: string): AlignNode {
-  const inventory = loadInventoryNodes().find((node) => node.nodeId === nodeId)
-  if (!inventory) throw new Error(`${nodeId} is not in inventory.json`)
-  const entry = loadRegistry().entries?.[nodeId]
-  if (!entry) throw new Error(`${nodeId} is not in the registry`)
-  const declared = requiredDevices(loadDevicePolicy(), inventory)
-  const cases = loadCaseFile(corpusPath(parsed.flags)).filter((item) => item.nodeId === nodeId)
+function loadNode(workspace: Workspace, options: AlignOptions): AlignNode {
+  const { nodeId } = options
+  const inventory = loadInventoryNodes(workspace.path("src/catalog/figma/inventory.json")).find(
+    (node) => node.nodeId === nodeId,
+  )
+  if (!inventory) throw new UsageError(`${nodeId} is not in inventory.json`)
+  const entry = loadRegistry(workspace.path("src/catalog/figma/registry.json")).entries?.[nodeId]
+  if (!entry) throw new UsageError(`${nodeId} is not in the registry`)
+  const declared = requiredDevices(
+    loadDevicePolicy(workspace.path("src/catalog/figma/device-policy.json")),
+    inventory,
+  )
+  const cases = loadCaseFile(corpusPath(workspace, options.casesFile)).filter(
+    (item) => item.nodeId === nodeId,
+  )
   const covered = declared.filter((device) =>
     cases.some((item) => item.device === device && !isDraftCase(item)),
   )
@@ -243,66 +262,26 @@ function loadNode(parsed: Parsed, nodeId: string): AlignNode {
   }
 }
 
-async function storybookAnswers(): Promise<boolean> {
-  try {
-    const response = await fetch(`${STORYBOOK_URL}/index.json`, {
-      signal: AbortSignal.timeout(3000),
-    })
-    return response.ok
-  } catch {
-    return false
-  }
-}
-
-// The default evaluator is `check --case`'s own path: the same case spec, the
-// same evidence guard and the same capture. It lives in `cli.ts`, which imports
-// this module, so it is loaded on demand instead of at module evaluation.
-async function cliEvaluate() {
-  const { evaluateCase, specFromCase } = await import("./cli.ts")
-  const { checkCaseEvidence } = await import("./evidence.ts")
-  const { loadExport } = await import("./source.ts")
-  const project = loadExport()
-  return async (entry: ParityCase): Promise<AlignReport> => {
-    const spec = specFromCase(entry, new Map(), {
-      flags: new Map(),
-      subjects: [],
-      residues: [],
-      ignores: [],
-      fill: [],
-      click: [],
-      focus: [],
-    })
-    if (project.raw.kind === "parity-source") {
-      const errors = checkCaseEvidence({
-        entry: spec,
-        node: loadInventoryNodes().find((node) => node.nodeId === entry.nodeId),
-        sourceSha256: project.sourceSha256,
-      })
-      if (errors.length) throw new Error(errors[0])
-    }
-    const { report } = await evaluateCase(spec, { project })
-    return { verdict: report.verdict, deltas: report.deltas }
-  }
-}
-
-export async function align(parsed: Parsed, deps: AlignDeps = {}): Promise<number> {
-  const nodeId = parsed.flags.get("node")
-  if (!nodeId || nodeId === true) throw new Error("align requires --node <id>")
-  const node = (deps.loadNode ?? loadNode)(parsed, String(nodeId))
-  const cases = (
-    deps.loadCases ??
-    ((parsed_: Parsed, id: string) =>
-      loadCaseFile(corpusPath(parsed_.flags)).filter((item) => item.nodeId === id))
-  )(parsed, String(nodeId))
-  const evaluate = deps.evaluate ?? (await cliEvaluate())
-  const answers = deps.storybook ?? storybookAnswers
-  if (cases.length && !(await answers())) {
-    console.error(`error: no Storybook on ${STORYBOOK_URL}; start it with: ${START_STORYBOOK}`)
-    return 2
-  }
+export async function align(
+  workspace: Workspace,
+  options: AlignOptions,
+  deps: AlignDeps,
+): Promise<ParityOutput> {
+  const node = loadNode(workspace, options)
+  const cases = loadCaseFile(corpusPath(workspace, options.casesFile)).filter(
+    (item) => item.nodeId === options.nodeId && !isDraftCase(item),
+  )
+  if (cases.length && !(await deps.storybook()))
+    return output(
+      2,
+      [],
+      [
+        `error: no Storybook on ${deps.baseUrl ?? STORYBOOK_URL}; start it with: ${START_STORYBOOK}`,
+      ],
+    )
   const results: AlignCaseResult[] = []
   for (const entry of cases) {
-    const report = await evaluate(entry)
+    const report = await deps.evaluate(entry)
     results.push({
       id: entry.id ?? "",
       device: entry.device ?? null,
@@ -311,29 +290,14 @@ export async function align(parsed: Parsed, deps: AlignDeps = {}): Promise<numbe
     })
   }
   const result: AlignNode = { ...node, cases: results }
-  if (parsed.flags.has("json")) {
-    console.log(
-      JSON.stringify(
-        {
-          node: {
-            nodeId: result.nodeId,
-            name: result.name,
-            status: result.status,
-            export: result.export,
-            story: result.story,
-            declared: result.declared,
-            covered: result.covered,
-            missing: result.missing,
-          },
-          cases: result.cases,
-          next: nextSteps(result),
-        },
-        null,
-        2,
-      ),
-    )
-  } else {
-    console.log(formatAlign(result))
-  }
-  return results.some((entry) => entry.deltas.length > 0) ? 1 : 0
+  const { cases: _, ...header } = result
+  const data = { node: header, cases: result.cases, next: nextSteps(result) }
+  return output(
+    results.some((entry) => entry.deltas.length > 0) ? 3 : 0,
+    options.json
+      ? [JSON.stringify(data, null, 2)]
+      : [formatAlign(result, result.cases.length ? tokenIndex(workspace) : EMPTY_TOKEN_INDEX)],
+    [],
+    data,
+  )
 }

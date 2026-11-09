@@ -1,27 +1,17 @@
 import assert from "node:assert/strict"
-import { spawnSync } from "node:child_process"
 import fs from "node:fs"
 import path from "node:path"
 import { test } from "node:test"
-import { fileURLToPath } from "node:url"
 
-import { fixtureEnv } from "../../src/lib/paths.ts"
-
-import { RULES } from "../../src/checks/foundation.ts"
+import { checkFoundation, measureFoundation, RULES } from "../../src/checks/foundation.ts"
+import { fixtureTree, runCli, workspaceAt } from "../helpers/cli.mjs"
 import { STYLE_RULES } from "../../src/checks/foundation-styles.ts"
-
-const script = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
 
 function zeroCounts() {
   return Object.fromEntries(Object.keys(RULES).map((rule) => [rule, 0]))
 }
 
 function fixture(run, { files = {}, baseline, exceptions } = {}) {
-  // Workspace links expose package-local scratch trees to concurrent source
-  // discovery. Keep fixtures in the ignored workspace cache, outside packages.
-  const scratch = fileURLToPath(new URL("../../../../.cache/", import.meta.url))
-  fs.mkdirSync(scratch, { recursive: true })
-  const root = fs.mkdtempSync(path.join(scratch, "foundation-fixture-"))
   const sources = {
     "pnpm-workspace.yaml": "packages: []\n",
     "src/manifest.json": JSON.stringify({
@@ -48,32 +38,24 @@ function fixture(run, { files = {}, baseline, exceptions } = {}) {
       'export const clean = <p className="text-body text-primary p-4" />\n',
     ...files,
   }
+  const tree = fixtureTree(sources, "foundation-fixture-")
+  const workspace = workspaceAt(tree.root, { PAGOPA_UI_TOKENS_ROOT: tree.root })
   try {
-    for (const [file, source] of Object.entries(sources)) {
-      const target = path.join(root, file)
-      fs.mkdirSync(path.dirname(target), { recursive: true })
-      fs.writeFileSync(target, source)
-    }
     return run({
-      root,
+      root: tree.root,
       run: (...args) =>
-        spawnSync(process.execPath, [script, "check", "foundation", ...args], {
-          cwd: root,
-          encoding: "utf8",
-          env: fixtureEnv(root),
-        }),
-      read: (file) => fs.readFileSync(path.join(root, file), "utf8"),
+        args.includes("--measure") ? measureFoundation(workspace) : checkFoundation(workspace),
+      read: (file) => fs.readFileSync(path.join(tree.root, file), "utf8"),
     })
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
   }
 }
 
 test("a component tree that consumes the scale passes", () => {
   fixture(({ run }) => {
     const result = run()
-    assert.equal(result.status, 0, result.stderr)
-    assert.match(result.stdout, /foundation OK/)
+    assert.deepEqual(result.problems, [])
   })
 })
 
@@ -81,8 +63,11 @@ test("a value above the ceiling fails with the rule", () => {
   fixture(
     ({ run }) => {
       const result = run()
-      assert.notEqual(result.status, 0)
-      assert.match(result.stderr, /tailwind-text-size: 1 occurrences, the ceiling is 0/)
+      assert.ok(result.problems.length > 0)
+      assert.match(
+        result.problems.join("\n"),
+        /tailwind-text-size: 1 occurrences, the ceiling is 0/,
+      )
     },
     { files: { "src/components/bad.tsx": 'export const bad = <p className="text-sm" />\n' } },
   )
@@ -92,9 +77,9 @@ test("a count below the ceiling asks to lower it", () => {
   fixture(
     ({ run }) => {
       const result = run()
-      assert.notEqual(result.status, 0)
+      assert.ok(result.problems.length > 0)
       assert.match(
-        result.stderr,
+        result.problems.join("\n"),
         /tailwind-text-size: 0 occurrences, the ceiling is 1 — lower the ceiling to 0/,
       )
     },
@@ -108,10 +93,10 @@ test("a registered exception is exempt and reported", () => {
   fixture(
     ({ run }) => {
       const result = run()
-      assert.equal(result.status, 0, result.stderr)
-      assert.match(result.stdout, /1 registered exceptions/)
+      assert.deepEqual(result.problems, [])
+      assert.match(result.summary, /1 registered exceptions/)
       const measure = run("--measure")
-      const measured = JSON.parse(measure.stdout)
+      const measured = measure
       assert.equal(measured.counts["tailwind-text-size"], 0)
       assert.equal(measured.raw["tailwind-text-size"], 1)
     },
@@ -137,8 +122,7 @@ test("the Storybook page templates are scanned too", () => {
   fixture(
     ({ run }) => {
       const result = run("--measure")
-      assert.equal(result.status, 0, result.stderr)
-      const measured = JSON.parse(result.stdout)
+      const measured = result
       assert.equal(measured.raw["hex-color"], 1)
       assert.equal(measured.raw["tailwind-text-size"], 1)
     },
@@ -152,12 +136,11 @@ test("the Storybook page templates are scanned too", () => {
   fixture(
     ({ run }) => {
       const result = run("--measure")
-      assert.equal(result.status, 0, result.stderr)
-      const measured = JSON.parse(result.stdout)
+      const measured = result
       assert.equal(measured.counts["hex-color"], 0)
       assert.equal(measured.raw["hex-color"], 1)
       const check = run()
-      assert.equal(check.status, 0, check.stderr)
+      assert.deepEqual(check.problems, [])
     },
     {
       files: {
@@ -184,8 +167,8 @@ test("a stale exception fails", () => {
   fixture(
     ({ run }) => {
       const result = run()
-      assert.notEqual(result.status, 0)
-      assert.match(result.stderr, /stale exception/)
+      assert.ok(result.problems.length > 0)
+      assert.match(result.problems.join("\n"), /stale exception/)
     },
     {
       exceptions: {
@@ -207,9 +190,7 @@ test("a stale exception fails", () => {
 test("an exception without a node or a reason fails", () => {
   fixture(
     ({ run }) => {
-      const result = run()
-      assert.notEqual(result.status, 0)
-      assert.match(result.stderr, /nodeId and reason are required/)
+      assert.throws(() => run(), /nodeId and reason are required/)
     },
     {
       files: { "src/components/bad.tsx": 'export const bad = <p className="text-sm" />\n' },
@@ -227,7 +208,7 @@ test("comments and prose do not count", () => {
   fixture(
     ({ run }) => {
       const result = run()
-      assert.equal(result.status, 0, result.stderr)
+      assert.deepEqual(result.problems, [])
     },
     {
       files: {
@@ -246,7 +227,7 @@ test("spacing steps backed by a foundation token are allowed", () => {
   fixture(
     ({ run }) => {
       const result = run()
-      assert.equal(result.status, 0, result.stderr)
+      assert.deepEqual(result.problems, [])
     },
     {
       files: {
@@ -258,9 +239,9 @@ test("spacing steps backed by a foundation token are allowed", () => {
   fixture(
     ({ run }) => {
       const result = run()
-      assert.notEqual(result.status, 0)
-      assert.match(result.stderr, /off-scale-spacing: 1 occurrences/)
-      assert.match(result.stderr, /mt-7/)
+      assert.ok(result.problems.length > 0)
+      assert.match(result.problems.join("\n"), /off-scale-spacing: 1 occurrences/)
+      assert.match(result.problems.join("\n"), /mt-7/)
     },
     {
       files: {
@@ -274,8 +255,8 @@ test("template literal class strings count", () => {
   fixture(
     ({ run }) => {
       const result = run()
-      assert.notEqual(result.status, 0)
-      assert.match(result.stderr, /tailwind-text-size: 1 occurrences/)
+      assert.ok(result.problems.length > 0)
+      assert.match(result.problems.join("\n"), /tailwind-text-size: 1 occurrences/)
     },
     {
       files: {
@@ -294,9 +275,9 @@ test("a Tailwind shadow counts, a token shadow does not", () => {
   fixture(
     ({ run }) => {
       const result = run()
-      assert.notEqual(result.status, 0)
-      assert.match(result.stderr, /shadow-scale: 1 occurrences, the ceiling is 0/)
-      assert.match(result.stderr, /shadow-md/)
+      assert.ok(result.problems.length > 0)
+      assert.match(result.problems.join("\n"), /shadow-scale: 1 occurrences, the ceiling is 0/)
+      assert.match(result.problems.join("\n"), /shadow-md/)
     },
     {
       files: {
@@ -308,7 +289,7 @@ test("a Tailwind shadow counts, a token shadow does not", () => {
   fixture(
     ({ run }) => {
       const result = run()
-      assert.equal(result.status, 0, result.stderr)
+      assert.deepEqual(result.problems, [])
     },
     {
       files: {
@@ -323,9 +304,12 @@ test("a Tailwind breakpoint variant counts, the Figma ones do not", () => {
   fixture(
     ({ run }) => {
       const result = run()
-      assert.notEqual(result.status, 0)
-      assert.match(result.stderr, /default-breakpoint: 6 occurrences, the ceiling is 0/)
-      assert.match(result.stderr, /2xl:/)
+      assert.ok(result.problems.length > 0)
+      assert.match(
+        result.problems.join("\n"),
+        /default-breakpoint: 6 occurrences, the ceiling is 0/,
+      )
+      assert.match(result.problems.join("\n"), /2xl:/)
     },
     {
       files: {
@@ -337,7 +321,7 @@ test("a Tailwind breakpoint variant counts, the Figma ones do not", () => {
   fixture(
     ({ run }) => {
       const result = run()
-      assert.equal(result.status, 0, result.stderr)
+      assert.deepEqual(result.problems, [])
     },
     {
       // `@md/alert:` is a default container query: it proves the breakpoint
@@ -360,9 +344,9 @@ test("a mobile typography pair counts, the plain scale classes do not", () => {
   fixture(
     ({ run }) => {
       const result = run()
-      assert.notEqual(result.status, 0)
-      assert.match(result.stderr, /mobile-text-class: 2 occurrences, the ceiling is 0/)
-      assert.match(result.stderr, /text-title-lg-mobile/)
+      assert.ok(result.problems.length > 0)
+      assert.match(result.problems.join("\n"), /mobile-text-class: 2 occurrences, the ceiling is 0/)
+      assert.match(result.problems.join("\n"), /text-title-lg-mobile/)
     },
     {
       files: {
@@ -374,7 +358,7 @@ test("a mobile typography pair counts, the plain scale classes do not", () => {
   fixture(
     ({ run }) => {
       const result = run()
-      assert.equal(result.status, 0, result.stderr)
+      assert.deepEqual(result.problems, [])
     },
     {
       files: {
@@ -389,9 +373,12 @@ test("a default container size counts, a Figma viewport variant does not", () =>
   fixture(
     ({ run }) => {
       const result = run()
-      assert.notEqual(result.status, 0)
-      assert.match(result.stderr, /default-container-query: 3 occurrences, the ceiling is 0/)
-      assert.match(result.stderr, /@4xl\/footer:/)
+      assert.ok(result.problems.length > 0)
+      assert.match(
+        result.problems.join("\n"),
+        /default-container-query: 3 occurrences, the ceiling is 0/,
+      )
+      assert.match(result.problems.join("\n"), /@4xl\/footer:/)
     },
     {
       files: {
@@ -403,7 +390,7 @@ test("a default container size counts, a Figma viewport variant does not", () =>
   fixture(
     ({ run }) => {
       const result = run()
-      assert.equal(result.status, 0, result.stderr)
+      assert.deepEqual(result.problems, [])
     },
     {
       files: {
@@ -418,8 +405,8 @@ test("a centred scroll container counts, the safe and split forms do not", () =>
   fixture(
     ({ run }) => {
       const result = run()
-      assert.notEqual(result.status, 0)
-      assert.match(result.stderr, /center-overflow: 2 occurrences, the ceiling is 0/)
+      assert.ok(result.problems.length > 0)
+      assert.match(result.problems.join("\n"), /center-overflow: 2 occurrences, the ceiling is 0/)
     },
     {
       files: {
@@ -434,7 +421,7 @@ test("a centred scroll container counts, the safe and split forms do not", () =>
   fixture(
     ({ run }) => {
       const result = run()
-      assert.equal(result.status, 0, result.stderr)
+      assert.deepEqual(result.problems, [])
     },
     {
       files: {
@@ -452,9 +439,9 @@ test("library CSS declarations cannot add visual constants behind a clean utilit
   fixture(
     ({ run }) => {
       const result = run()
-      assert.notEqual(result.status, 0)
-      assert.match(result.stderr, /visual-constant: 6 occurrences, the ceiling is 0/)
-      assert.match(result.stderr, /src\/components\/defaults.css:3: padding: 13px/)
+      assert.ok(result.problems.length > 0)
+      assert.match(result.problems.join("\n"), /visual-constant: 6 occurrences, the ceiling is 0/)
+      assert.match(result.problems.join("\n"), /src\/components\/defaults.css:3: padding: 13px/)
     },
     {
       files: {
@@ -478,10 +465,10 @@ test("inline numeric/string defaults, local style bindings and token fallbacks a
   fixture(
     ({ run }) => {
       const result = run()
-      assert.notEqual(result.status, 0)
-      assert.match(result.stderr, /visual-constant: 7 occurrences, the ceiling is 0/)
-      assert.match(result.stderr, /maxWidth: 271/)
-      assert.match(result.stderr, /padding: var\(--space, 9px\)/)
+      assert.ok(result.problems.length > 0)
+      assert.match(result.problems.join("\n"), /visual-constant: 7 occurrences, the ceiling is 0/)
+      assert.match(result.problems.join("\n"), /maxWidth: 271/)
+      assert.match(result.problems.join("\n"), /padding: var\(--space, 9px\)/)
     },
     {
       files: {
@@ -500,7 +487,7 @@ test("inline numeric/string defaults, local style bindings and token fallbacks a
 test("a caller prop or another component's local never resolves to an unrelated constant", () => {
   fixture(
     ({ run }) => {
-      const measured = JSON.parse(run("--measure").stdout)
+      const measured = run("--measure")
       // The caller prop resolves to nothing; the local and the module constant
       // are each charged once. The old whole-file resolver returned zero.
       assert.equal(measured.raw["visual-constant"], 3)
@@ -529,7 +516,7 @@ test("consumer inputs, computed percentages, resets and accessibility system col
   fixture(
     ({ run }) => {
       const result = run()
-      assert.equal(result.status, 0, result.stderr)
+      assert.deepEqual(result.problems, [])
     },
     {
       files: {
@@ -551,9 +538,12 @@ test("unknown foundations fail even when the declaration has no literal value", 
   fixture(
     ({ run }) => {
       const result = run()
-      assert.notEqual(result.status, 0)
-      assert.match(result.stderr, /unknown-foundation: 1 occurrences, the ceiling is 0/)
-      assert.match(result.stderr, /--figma-spacing-missing/)
+      assert.ok(result.problems.length > 0)
+      assert.match(
+        result.problems.join("\n"),
+        /unknown-foundation: 1 occurrences, the ceiling is 0/,
+      )
+      assert.match(result.problems.join("\n"), /--figma-spacing-missing/)
     },
     { files: { "src/index.css": ":root { --gap: var(--figma-spacing-missing); }" } },
   )
@@ -568,7 +558,7 @@ test("the existing caller-overridable table fallback is pinned, not a general wi
   fixture(
     ({ run }) => {
       const result = run()
-      assert.equal(result.status, 0, result.stderr)
+      assert.deepEqual(result.problems, [])
     },
     { files: { "src/components/data-display/table.tsx": table("16rem") } },
   )
@@ -579,8 +569,8 @@ test("the existing caller-overridable table fallback is pinned, not a general wi
     fixture(
       ({ run }) => {
         const result = run()
-        assert.notEqual(result.status, 0)
-        assert.match(result.stderr, /visual-constant: 1 occurrences/)
+        assert.ok(result.problems.length > 0)
+        assert.match(result.problems.join("\n"), /visual-constant: 1 occurrences/)
       },
       { files },
     )
@@ -591,7 +581,7 @@ test("established local CSS extensions are exact and limited to the owning style
   fixture(
     ({ run }) => {
       const result = run()
-      assert.equal(result.status, 0, result.stderr)
+      assert.deepEqual(result.problems, [])
     },
     {
       files: {
@@ -608,8 +598,8 @@ test("established local CSS extensions are exact and limited to the owning style
     fixture(
       ({ run }) => {
         const result = run()
-        assert.notEqual(result.status, 0)
-        assert.match(result.stderr, /visual-constant: 1 occurrences/)
+        assert.ok(result.problems.length > 0)
+        assert.match(result.problems.join("\n"), /visual-constant: 1 occurrences/)
       },
       { files },
     )
@@ -620,16 +610,19 @@ test("new declaration rules are zero-ceiling gates and support existing reasoned
   fixture(
     ({ run }) => {
       const result = run()
-      assert.notEqual(result.status, 0)
-      assert.equal(result.stderr.match(/the "visual-constant" ceiling must be zero/g)?.length, 1)
+      assert.ok(result.problems.length > 0)
+      assert.equal(
+        result.problems.join("\n").match(/the "visual-constant" ceiling must be zero/g)?.length,
+        1,
+      )
     },
     { baseline: { schemaVersion: 1, counts: { ...zeroCounts(), "visual-constant": 1 } } },
   )
   fixture(
     ({ run }) => {
       const result = run()
-      assert.equal(result.status, 0, result.stderr)
-      const measured = JSON.parse(run("--measure").stdout)
+      assert.deepEqual(result.problems, [])
+      const measured = run("--measure")
       assert.equal(measured.raw["visual-constant"], 1)
       for (const rule of STYLE_RULES) assert.equal(measured.counts[rule], 0)
     },
@@ -649,4 +642,23 @@ test("new declaration rules are zero-ceiling gates and support existing reasoned
       },
     },
   )
+})
+
+test("check foundation --measure prints counts without enforcing the baseline", async () => {
+  const tree = fixtureTree({
+    "src/manifest.json": JSON.stringify({ schemaVersion: 2, foundations: {} }),
+    "src/foundation-baseline.json": JSON.stringify({ schemaVersion: 1, counts: zeroCounts() }),
+    "src/foundation-exceptions.json": JSON.stringify({ schemaVersion: 1, exceptions: [] }),
+    "src/components/bad.tsx": 'export const bad = <p className="text-sm" />\n',
+  })
+  try {
+    const result = await runCli(["check", "foundation", "--measure"], {
+      root: tree.root,
+      env: { PAGOPA_UI_TOKENS_ROOT: tree.root },
+    })
+    assert.equal(result.status, 0)
+    assert.ok(JSON.parse(result.stdout).raw["tailwind-text-size"] > 0)
+  } finally {
+    tree.dispose()
+  }
 })

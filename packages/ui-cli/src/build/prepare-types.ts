@@ -3,26 +3,23 @@
 import fs from "node:fs"
 import path from "node:path"
 
-import { enterRoot } from "../lib/paths.ts"
-import { parseSource, sourceDependencies } from "../lib/source-modules.ts"
+import type { Workspace } from "../adapters/workspace.ts"
+import { createSourceModules } from "../lib/source-modules.ts"
 
 // A bundled package is not a dependency of the published artifact: its
 // declarations travel inside `dist/types/<folder>`.
 type BundledTypes = { folder: string; types: string }
-const BUNDLED: Record<string, BundledTypes> = {
-  "pagopa-ui-artwork": {
-    folder: "artwork",
-    types: process.env.PAGOPA_UI_ARTWORK_TYPES ?? "../artwork/dist/types",
-  },
-  "pagopa-ui-tokens": {
-    folder: "tokens",
-    types: process.env.PAGOPA_UI_TOKENS_TYPES ?? "../tokens/dist/types",
-  },
-}
 
-export function runPrepareTypes(): number {
-  enterRoot()
-  const root = path.resolve("dist/types")
+export function prepareTypes(workspace: Workspace): string {
+  const { parseSource, sourceDependencies } = createSourceModules(workspace)
+  const BUNDLED: Record<string, BundledTypes> = {
+    "pagopa-ui-artwork": {
+      folder: "artwork",
+      types: path.join(workspace.artworkRoot, "dist/types"),
+    },
+    "pagopa-ui-tokens": { folder: "tokens", types: path.join(workspace.tokensRoot, "dist/types") },
+  }
+  const root = path.join(workspace.root, "dist/types")
 
   // The artwork and the tokens are bundled into the library at build time, so
   // their declarations must travel in the tarball: copy them under
@@ -83,8 +80,5 @@ export function runPrepareTypes(): number {
     }
     fs.writeFileSync(file, source)
   }
-  console.log(
-    `library declarations OK: ${files.length} alias-free ESM modules, ${Object.keys(BUNDLED).length} bundled packages inlined`,
-  )
-  return 0
+  return `library declarations OK: ${files.length} alias-free ESM modules, ${Object.keys(BUNDLED).length} bundled packages inlined`
 }

@@ -1,15 +1,13 @@
-#!/usr/bin/env node
 // The public token contract: the `--figma-*` custom properties the stylesheet
 // ships are public, and a rename or a removal is a breaking change. The
 // committed list is the reviewed diff every release carries.
-//
-//   node src/cli.ts check public-tokens           # compare the list
-//   node src/cli.ts check public-tokens --write   # record the list you accept
 import fs from "node:fs"
 import path from "node:path"
 import { pathToFileURL } from "node:url"
 
-import { enterRoot, resolveRoot, tokensPath } from "../lib/paths.ts"
+import type { Workspace } from "../adapters/workspace.ts"
+import { writeText } from "../lib/json.ts"
+import { report, type CheckReport } from "./report.ts"
 
 const CONTRACT_PATH = "etc/tokens.txt"
 const TOKENS_CSS = "src/tokens.generated.css"
@@ -27,13 +25,13 @@ export function cssTokenNames(source: string): string[] {
 // exports. The `js:` prefix keeps the two projections apart: a token that is
 // only in the CSS is not in the typed list, and vice versa.
 export async function publicTokenNames(
-  tokensRoot: string = tokensPath(),
+  tokensRoot: string,
 ): Promise<{ css: string[]; js: string[] }> {
   const cssFile = path.join(tokensRoot, TOKENS_CSS)
   const inventoryFile = path.join(tokensRoot, INVENTORY)
   for (const file of [cssFile, inventoryFile]) {
     if (!fs.existsSync(file)) {
-      throw new Error(`missing ${file} — run "pnpm nx run pagopa-ui-tokens:tokens:check"`)
+      throw new Error(`missing ${file} — run "pnpm nx run pagopa-ui-tokens:check:tokens"`)
     }
   }
   const css = cssTokenNames(fs.readFileSync(cssFile, "utf8"))
@@ -50,31 +48,34 @@ function contractNames(file: string): string[] {
     .filter(Boolean)
 }
 
-export async function runPublicTokens(argv: string[] = []): Promise<number> {
-  enterRoot()
-  const { css, js } = await publicTokenNames(tokensPath())
+async function compare(workspace: Workspace) {
+  const { css, js } = await publicTokenNames(workspace.tokensRoot)
   const expected = [...new Set([...css, ...js])].sort()
-  const file = path.join(resolveRoot(), CONTRACT_PATH)
-  const current = contractNames(file)
-  const added = expected.filter((name) => !current.includes(name))
-  const removed = current.filter((name) => !expected.includes(name))
-  if (!added.length && !removed.length) {
-    console.log(
-      `public tokens OK: ${css.length} CSS names, ${js.length} typed names, ${current.length} in ${CONTRACT_PATH}`,
-    )
-    return 0
+  const current = contractNames(workspace.path(CONTRACT_PATH))
+  return {
+    css,
+    js,
+    expected,
+    current,
+    added: expected.filter((name) => !current.includes(name)),
+    removed: current.filter((name) => !expected.includes(name)),
   }
-  if (argv.includes("--write")) {
-    fs.mkdirSync(path.dirname(file), { recursive: true })
-    fs.writeFileSync(file, `${expected.join("\n")}\n`)
-    console.log(`public tokens written: ${expected.length} names -> ${CONTRACT_PATH}`)
-    return 0
-  }
-  console.error(`public tokens: ${added.length} added, ${removed.length} removed`)
-  for (const name of added) console.error(`  + ${name}`)
-  for (const name of removed) console.error(`  - ${name}`)
-  console.error(
-    "a removed or renamed token is a breaking change: add a CHANGELOG line and a `minor` version plan, then run with `--write`",
+}
+
+export async function checkPublicTokens(workspace: Workspace): Promise<CheckReport> {
+  const { css, js, current, added, removed } = await compare(workspace)
+  const changed = added.length + removed.length > 0
+  return report(
+    "public tokens",
+    changed
+      ? `${added.length} added, ${removed.length} removed — a removed or renamed token is a breaking change: add a CHANGELOG line and a \`minor\` version plan, then run \`ui-cli update public-tokens\``
+      : `${css.length} CSS names, ${js.length} typed names, ${current.length} in ${CONTRACT_PATH}`,
+    [...added.map((name) => `+ ${name}`), ...removed.map((name) => `- ${name}`)],
   )
-  return 1
+}
+
+export async function updatePublicTokens(workspace: Workspace): Promise<string> {
+  const { expected } = await compare(workspace)
+  writeText(workspace.path(CONTRACT_PATH), `${expected.join("\n")}\n`)
+  return `public tokens written: ${expected.length} names -> ${CONTRACT_PATH}`
 }

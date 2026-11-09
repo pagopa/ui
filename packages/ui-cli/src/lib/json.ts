@@ -1,4 +1,6 @@
 import fs from "node:fs"
+import { execFileSync } from "node:child_process"
+import { fileURLToPath } from "node:url"
 import path from "node:path"
 import { brotliCompressSync, brotliDecompressSync, constants, gunzipSync } from "node:zlib"
 import { z } from "zod"
@@ -31,8 +33,20 @@ export function brotliJson(value: unknown): Buffer {
   })
 }
 
+export function formatJson(value: unknown): string {
+  const input = `${JSON.stringify(value, null, 2)}\n`
+  const formatter = fileURLToPath(new URL("../../node_modules/.bin/oxfmt", import.meta.url))
+  const config = fileURLToPath(new URL("../../../../oxfmt.config.ts", import.meta.url))
+  const formatted = execFileSync(formatter, ["--config", config, "--stdin-filepath", "data.json"], {
+    input,
+    encoding: "utf8",
+    maxBuffer: Math.max(Buffer.byteLength(input) * 2, 1024 * 1024),
+  })
+  return formatted
+}
+
 export function writeJson(file: string, value: unknown): void {
-  writeText(file, `${JSON.stringify(value, null, 2)}\n`)
+  writeText(file, formatJson(value))
 }
 
 // A write is visible either completely or not at all: a crash mid-write must

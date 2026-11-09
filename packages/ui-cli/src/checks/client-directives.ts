@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 // Client-boundary contract: the package ships one module per source file, so a
 // Server Component may import any module that stays server-safe, and every
 // module that runs in the browser must declare its own "use client".
@@ -7,14 +6,13 @@
 // React hook call, a context, an event handler prop written in JSX, a browser
 // global or an interactive runtime. Rendering a client component is not a
 // trigger, and a file made only of imports and re-exports is never client.
-//
-// Run: `ui-cli check client-directives` (`--report` prints both lists and
-// exits 0).
 import fs from "node:fs"
+import path from "node:path"
 import { parseSync } from "oxc-parser"
 
-import { walkFiles } from "../lib/fs.ts"
-import { enterRoot } from "../lib/paths.ts"
+import type { Workspace } from "../adapters/workspace.ts"
+import { walkRelative } from "../lib/fs.ts"
+import { report, type CheckReport } from "./report.ts"
 
 const SOURCE = "src"
 
@@ -69,8 +67,8 @@ function isDeclaration(statement: {
   return true
 }
 
-export function classify(file: string): Classification {
-  const source = fs.readFileSync(file, "utf8")
+export function classify(root: string, file: string): Classification {
+  const source = fs.readFileSync(path.join(root, file), "utf8")
   const parsed = parseSync(file, source)
   if (parsed.errors.length) {
     throw new Error(`${file}: ${parsed.errors.map((error) => error.message).join("; ")}`)
@@ -86,8 +84,9 @@ export function classify(file: string): Classification {
   }
 }
 
-export function sourceFiles(): string[] {
-  return walkFiles(
+export function sourceFiles(root: string): string[] {
+  return walkRelative(
+    root,
     SOURCE,
     (file) =>
       /\.(ts|tsx)$/.test(file) &&
@@ -96,35 +95,35 @@ export function sourceFiles(): string[] {
   )
 }
 
-export function classifications(): Classification[] {
-  return sourceFiles().map(classify)
+export function classifications(root: string): Classification[] {
+  return sourceFiles(root).map((file) => classify(root, file))
 }
 
 // The source modules the packed artifact must publish with the directive.
-export function clientModules(): Classification[] {
-  return classifications().filter((entry) => entry.client)
+export function clientModules(root: string): Classification[] {
+  return classifications(root).filter((entry) => entry.client)
 }
 
-export function runClientDirectives(argv: string[]): number {
-  enterRoot()
-  const report = argv.includes("--report")
-  const all = classifications()
+// `report: true` lists both sets and never fails.
+export function checkClientDirectives(
+  workspace: Workspace,
+  options: { report?: boolean } = {},
+): CheckReport {
+  const all = classifications(workspace.root)
   const missing = all.filter((entry) => entry.client && !entry.directive)
   const unneeded = all.filter((entry) => !entry.client && entry.directive)
-
-  for (const entry of missing) console.log(`missing: ${entry.file} (${entry.triggers.join(", ")})`)
-  for (const entry of unneeded) console.log(`unneeded: ${entry.file}`)
+  const details = [
+    ...missing.map((entry) => `missing: ${entry.file} (${entry.triggers.join(", ")})`),
+    ...unneeded.map((entry) => `unneeded: ${entry.file}`),
+  ]
   const summary = `${all.filter((entry) => entry.client).length} client module(s), ${missing.length} missing, ${unneeded.length} unneeded`
-  if (report) {
-    console.log(`client-directives: ${summary}`)
-    return 0
-  }
-  if (unneeded.length)
-    console.error(`client-directives: warning: ${unneeded.length} unneeded directive(s)`)
-  if (missing.length) {
-    console.error(`client-directives: ${missing.length} client module(s) without "use client"`)
-    return 1
-  }
-  console.log(`client-directives: ${summary} — OK`)
-  return 0
+  if (options.report) return report("client directives", summary, [], { details })
+  return report(
+    "client directives",
+    summary,
+    missing.map(
+      (entry) => `${entry.file}: client module without "use client" (${entry.triggers.join(", ")})`,
+    ),
+    { warnings: unneeded.map((entry) => `${entry.file}: unneeded "use client"`) },
+  )
 }

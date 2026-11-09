@@ -24,7 +24,7 @@ is a row helper: it renders `<TableRow>` with `TableHead`/`TableCell` and has no
 card surface of its own. The mobile source is the row drawn as a card. The
 current `CellComposition` story renders the desktop row; `SourceMobile` renders
 the Table's mobile composition but does not render `TableCellRow`. As a result
-`figma:check` refuses a mobile case for this node even though the Table's mobile
+`check:catalogue` refuses a mobile case for this node even though the Table's mobile
 case compares the card geometry successfully.
 
 ## Evidence

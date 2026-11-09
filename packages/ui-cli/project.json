@@ -12,6 +12,31 @@
       "cache": true,
       "configurations": { "ci": { "script": "format:check" } }
     },
+    "check:rules": {
+      "cache": true,
+      "inputs": [
+        "figmaChecks",
+        {
+          "runtime": "node packages/ui-cli/src/adapters/rules-cache-input.ts"
+        }
+      ],
+      "outputs": []
+    },
+    "check:devices": {
+      "cache": true,
+      "inputs": ["figmaChecks"],
+      "outputs": []
+    },
+    "check:parity": {
+      "cache": true,
+      "inputs": ["figmaChecks"],
+      "outputs": []
+    },
+    "check:evidence": {
+      "cache": true,
+      "inputs": ["figmaChecks"],
+      "outputs": []
+    },
     "test": {
       "inputs": [
         "default",

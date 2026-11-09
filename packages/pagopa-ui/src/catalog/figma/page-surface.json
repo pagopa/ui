@@ -1,7 +1,7 @@
 {
   "fileKey": "pvhsJpPGQbEwNLiyP7BOIw",
   "readAt": "2026-10-28",
-  "note": "Read from the Figma page tree at the pinned file version, not from the library export: the export lists published nodes only, so the rows marked inLibrary: false exist nowhere else. One row per component and component set drawn on the page with the decision the library gives it (a registry bulk rule is the decision for a node of its page that carries no entry of its own), and one row per composition the page draws with the cases that measure it. A drawing that was never published is out of the implementation scope, so its decision is `unpublished` and no work follows; publishing it is what opens the decision, and the inLibrary mirror in `figma:check` is what makes that fail loudly. See .agents/skills/figma-to-code/references/catalogue.md.",
+  "note": "Read from the Figma page tree at the pinned file version, not from the library export: the export lists published nodes only, so the rows marked inLibrary: false exist nowhere else. One row per component and component set drawn on the page with the decision the library gives it (a registry bulk rule is the decision for a node of its page that carries no entry of its own), and one row per composition the page draws with the cases that measure it. A drawing that was never published is out of the implementation scope, so its decision is `unpublished` and no work follows; publishing it is what opens the decision, and the inLibrary mirror in `check:catalogue` is what makes that fail loudly. See .agents/skills/figma-to-code/references/catalogue.md.",
   "pages": [
     {
       "pageId": "1326:5181",

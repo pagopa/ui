@@ -31,17 +31,17 @@ comparison whose registry entry stays `implemented`, and any node an agent close
 as `implemented`, cannot do so without **one case per declared device** or a
 **reasoned entry** in `src/catalog/figma/device-exceptions.json`.
 
-- Enforced hermetically in `figma:check` from `inventory.json` +
+- Enforced hermetically in `check:catalogue` from `inventory.json` +
   `registry.json` + `parity-cases.json`: the delta is what the run compares, so
   the rule needs no git history and no live payload.
 - The weekly drift run (`--rest --pr-body`) queues the changed nodes as
   `pending`; the gate reads the final statuses, so the automation is never
   blocked — the drift pull request is where the work happens.
 - Historical `implemented` entries warn (one aggregated line) and burn down from
-  `pnpm figma:parity:queue --uncovered`, exactly like `evidence-exceptions.json`
+  `pnpm parity:queue --uncovered`, exactly like `evidence-exceptions.json`
   did. The exceptions file must shrink: an entry whose node no longer misses a
   device is an error, and a reason is mandatory.
-- `figma:parity:cases --sync` proposes the missing per-device cases from a
+- `parity:cases --sync` proposes the missing per-device cases from a
   sibling case. A proposal is a **draft** (`note: "draft — refine the mapping"`):
   the coverage ignores it until the reviewed render replaces the note, so no
   unreviewed case can silence the queue (`R9`, no bulk approval).
@@ -75,7 +75,7 @@ variant the case points at.
 ### RD4 — device verification does not live in a story test (accepted)
 
 The Storybook/Vitest project runs every story at one viewport, so a story cannot
-express a device. Device verification lives in `figma:parity:check` (it sets the
+express a device. Device verification lives in `parity:check` (it sets the
 Playwright viewport and forces the story root) and in the narrow-viewport
 assertions of `library:check`. A story is documentation, never the gate.
 
@@ -99,7 +99,7 @@ narrow container is not a narrow viewport" — is now checked instead of trusted
 
 ### The responsive verdict
 
-`figma:parity:check` reports, per device: content hidden by an overflow
+`parity:check` reports, per device: content hidden by an overflow
 (`responsive.clipped`), paint outside the root box (`responsive.escaped`), text
 lost to an ellipsis (`responsive.truncated`) and a band that wrapped or a stack
 that collapsed (`responsive.band.wrap|stack`, derived from the variant's own
@@ -120,12 +120,12 @@ tooling.
 
 ## 3. Consequences
 
-- `pnpm figma:check` prints the vocabulary line and the coverage line
+- `pnpm check:catalogue` prints the vocabulary line and the coverage line
   (`devices: <n> implemented sets · covered · missing · exceptions`), and the
   exceptions count sits next to the existing `exceptions:` line.
-- The burn-down has three commands: `pnpm figma:parity:queue --uncovered` (the
-  work list), `pnpm figma:parity:cases --sync [--node <id>] [--dry-run]` (the
-  drafts) and `pnpm figma:parity:check --node <id> --devices` (the per-node
+- The burn-down has three commands: `pnpm parity:queue --uncovered` (the
+  work list), `pnpm parity:cases --sync [--node <id>] [--dry-run]` (the
+  drafts) and `pnpm parity:check --node <id> --devices` (the per-node
   loop).
 - Nothing here re-opens hardening `D2` or the scope choice: a historical node
   stays a work list entry, and the scope is per case and verified.

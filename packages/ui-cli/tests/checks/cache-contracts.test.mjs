@@ -3,6 +3,7 @@ import { spawnSync } from "node:child_process"
 import fs from "node:fs"
 import { createRequire } from "node:module"
 import path from "node:path"
+import { randomUUID } from "node:crypto"
 import { test } from "node:test"
 import { fileURLToPath } from "node:url"
 
@@ -53,9 +54,8 @@ const namedInputs = JSON.parse(fs.readFileSync(path.join(workspace, "nx.json"), 
 function fixture(project, target, files, { artifact = false } = {}) {
   // .cache is already excluded by the workspace's .gitignore, so a parallel
   // graph scan cannot discover the fixture's duplicate project identities.
-  const scratch = path.join(workspace, ".cache")
-  fs.mkdirSync(scratch, { recursive: true })
-  const root = fs.mkdtempSync(path.join(scratch, "nx-contract-"))
+  const root = path.join(workspace, ".cache", `nx-contract-${randomUUID()}`)
+  fs.mkdirSync(root, { recursive: true })
   function write(file, source) {
     const absolute = path.join(root, file)
     fs.mkdirSync(path.dirname(absolute), { recursive: true })
@@ -95,11 +95,18 @@ fs.writeFileSync("packages/pagopa-ui/dist/types/probe.d.ts", fs.readFileSync(".r
 `,
     )
   }
-  write(".gitignore", "node_modules/\n.nx/\n.runs/\ndist/\n")
-  write("package.json", '{"private":true}')
+  write(".gitignore", "node_modules/\n.nx/\n.runs/\ndist/\n.figma/\n")
+  write("package.json", '{"private":true,"type":"module"}')
   write("pnpm-workspace.yaml", "packages:\n  - packages/*\n")
   write("nx.json", JSON.stringify({ namedInputs, neverConnectToCloud: true, plugins: [] }))
   write(`${project.root}/project.json`, JSON.stringify({ name: project.name, targets }))
+  write(
+    "packages/ui-cli/src/adapters/rules-cache-input.ts",
+    fs.readFileSync(
+      path.join(workspace, "packages/ui-cli/src/adapters/rules-cache-input.ts"),
+      "utf8",
+    ),
+  )
   for (const [file, source] of Object.entries(files)) write(file, source)
   write(
     "probe.cjs",
@@ -129,6 +136,24 @@ console.log("fixture contract verified");
   }
 }
 
+test("cache-contract: removing an ignored rules snapshot invalidates cached success", () => {
+  const file = "packages/pagopa-ui/.figma/rules.json"
+  const tree = fixture(tooling, "check:rules", { [file]: "valid" })
+  try {
+    assert.equal(tree.run().status, 0)
+    assert.equal(tree.run().status, 0)
+    assert.equal(tree.executions(), 1)
+    fs.unlinkSync(path.join(tree.root, file))
+    assert.equal(tree.run().status, 1)
+    assert.equal(tree.executions(), 2)
+    tree.write(file, "valid")
+    assert.equal(tree.run().status, 0)
+    assert.equal(tree.executions(), 2)
+  } finally {
+    tree.close()
+  }
+})
+
 test("cache-contract: sibling reads invalidate cached checks without widening every task", () => {
   const cases = [
     [
@@ -153,11 +178,13 @@ test("cache-contract: sibling reads invalidate cached checks without widening ev
     ],
     [
       library,
-      "figma:check",
+      "check:catalogue",
       [
         "packages/artwork/src/assets/figma-icons/manifest.json",
         "packages/artwork/src/assets/figma-pictograms/manifest.json",
         "packages/artwork/src/components/icons/icon-assets.ts",
+        "docs/figma-parity/manifest.json",
+        "docs/figma-parity/source.json.br",
       ],
     ],
     [
@@ -169,6 +196,45 @@ test("cache-contract: sibling reads invalidate cached checks without widening ev
         "packages/artwork/src/assets/figma-icons/manifest.json",
         "apps/storybook/package.json",
         "tools/workspace/project.json",
+      ],
+    ],
+    [
+      tooling,
+      "check:rules",
+      [
+        "packages/pagopa-ui/src/catalog/figma/rules.json",
+        "packages/pagopa-ui/.figma/rules.json",
+        "apps/storybook/src/guides/probe.md",
+        "docs/design-requests/probe.md",
+      ],
+    ],
+    [
+      tooling,
+      "check:devices",
+      [
+        "packages/pagopa-ui/src/catalog/figma/inventory.json",
+        "packages/pagopa-ui/src/catalog/figma/device-policy.json",
+        "packages/pagopa-ui/src/catalog/figma/device-exceptions.json",
+      ],
+    ],
+    [
+      tooling,
+      "check:parity",
+      [
+        "packages/pagopa-ui/src/catalog/figma/parity-cases.json",
+        "apps/storybook/src/Probe.stories.tsx",
+        "docs/figma-parity/manifest.json",
+        "docs/figma-parity/source.json.br",
+        "docs/figma-parity/references/probe.png",
+      ],
+    ],
+    [
+      tooling,
+      "check:evidence",
+      [
+        "packages/pagopa-ui/src/catalog/figma/registry.json",
+        "docs/figma-parity/manifest.json",
+        "docs/figma-parity/references/probe.png",
       ],
     ],
     [

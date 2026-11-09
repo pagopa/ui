@@ -1,3 +1,4 @@
+import { UsageError } from "../lib/command.ts"
 // Figma parity — registry cases.
 //
 // Joins the reviewed registry (`registry.json`) with the story files it points
@@ -7,6 +8,7 @@
 import fs from "node:fs"
 import path from "node:path"
 
+import type { Workspace } from "../adapters/workspace.ts"
 import {
   LAYOUT_SCOPES,
   UNKNOWN_DEVICE,
@@ -17,9 +19,8 @@ import {
   loadInventoryNodes as loadInventory,
   requiredDevices,
 } from "../figma/devices.ts"
-import { storyDesignNodes, storyTitle } from "../lib/source-modules.ts"
-import { absolutePath, rootPath } from "../lib/paths.ts"
-import { readJson } from "../lib/json.ts"
+import { readJson, writeJson } from "../lib/json.ts"
+import { createSourceModules } from "../lib/source-modules.ts"
 import { parseSchema } from "../lib/validate.ts"
 import {
   RegistrySchema,
@@ -98,7 +99,7 @@ export function storyId(title: string, exportName: string): string {
   return `${slug(title)}--${exportSlug(exportName)}`
 }
 
-export function loadRegistry(file: string = rootPath(REGISTRY_PATH)): Registry {
+export function loadRegistry(file: string): Registry {
   return parseSchema(RegistrySchema, readJson(file), file)
 }
 
@@ -121,10 +122,14 @@ export type CaseRow = {
 
 export type CaseList = CaseRow[] & { missing: Array<{ nodeId: string; story: string }> }
 
-export function buildCases({
-  registry = loadRegistry(),
-  statuses = ["pending", "implemented"],
-}: { registry?: Registry; statuses?: string[] } = {}): CaseList {
+export function buildCases(
+  workspace: Workspace,
+  {
+    registry = loadRegistry(workspace.path(REGISTRY_PATH)),
+    statuses = ["pending", "implemented"],
+  }: { registry?: Registry; statuses?: string[] } = {},
+): CaseList {
+  const { storyTitle, storyDesignNodes } = createSourceModules(workspace)
   const wanted = new Set(statuses)
   const titles = new Map<string, string | undefined>()
   const designs = new Map<string, ReturnType<typeof storyDesignNodes>>()
@@ -149,7 +154,7 @@ export function buildCases({
       continue
     }
     const file = target.story
-    if (!fs.existsSync(absolutePath(file))) {
+    if (!fs.existsSync(workspace.path(file))) {
       // A registry pointer to a deleted story is a dangling reference, not a
       // silent skip: the queue reports it.
       missing.push({ nodeId, story: file })
@@ -187,21 +192,21 @@ export function buildCases({
 // The corpus is the committed record of *how* each variant was compared; the
 // registry stays the record of *what* the node maps to. Absent file, empty
 // corpus: the queue reports the coverage instead of failing.
-export function loadCaseFile(file: string = rootPath(CASES_PATH)): ParityCase[] {
+export function loadCaseFile(file: string): ParityCase[] {
   if (!fs.existsSync(file)) return []
   return parseSchema(ParityCaseFileSchema, readJson(file), file)
 }
 
 // The inventory as the corpus reads it: the full node records, because a case's
 // `device` must be checkable against the variants the node declares (RA3).
-export function loadInventoryNodes(file: string = rootPath(INVENTORY_PATH)): InventoryNode[] {
+export function loadInventoryNodes(file: string): InventoryNode[] {
   return loadInventory(file)
 }
 
 // Fan-in: how many inventory components depend on a node. A fix in a shared
 // part lands before the components that contain it, so the queue can order the
 // work by reuse instead of by node id.
-export function fanInCounts(nodes: InventoryNode[] = loadInventoryNodes()): Map<string, number> {
+export function fanInCounts(nodes: InventoryNode[]): Map<string, number> {
   const counts = new Map<string, number>()
   for (const node of nodes) {
     for (const dependency of node.dependencies ?? []) {
@@ -253,7 +258,7 @@ export function findCase(cases: ParityCase[], id: string): ParityCase {
   const entry = cases.find((item) => item.id === id)
   if (!entry) {
     const known = cases.map((item) => item.id).join(", ") || "none"
-    throw new Error(`${id}: no case with that id in the corpus (known: ${known})`)
+    throw new UsageError(`${id}: no case with that id in the corpus (known: ${known})`)
   }
   return entry
 }
@@ -280,7 +285,7 @@ export function saveCase(
     caseKey(a).localeCompare(caseKey(b), undefined, { numeric: true }),
   )
   fs.mkdirSync(path.dirname(file), { recursive: true })
-  fs.writeFileSync(file, `${JSON.stringify(ordered, null, 2)}\n`)
+  writeJson(file, ordered)
   return { file, entry, replaced: index >= 0, total: ordered.length }
 }
 
@@ -369,11 +374,12 @@ export function caseVariant(
 // recorded) the case carries the story id and the check warns instead of
 // failing.
 export function validateCaseFile(
+  workspace: Workspace,
   cases: ParityCase[],
   {
-    registry = loadRegistry(),
-    nodes = loadInventoryNodes(),
-    policy = loadDevicePolicy(),
+    registry = loadRegistry(workspace.path(REGISTRY_PATH)),
+    nodes = loadInventoryNodes(workspace.path(INVENTORY_PATH)),
+    policy = loadDevicePolicy(workspace.path("src/catalog/figma/device-policy.json")),
   }: {
     registry?: Registry
     nodes?: Array<InventoryNode | string>
@@ -388,147 +394,20 @@ export function validateCaseFile(
     if (typeof node === "string") byNode.set(node, undefined)
     else byNode.set(node.nodeId, node)
   }
-  for (const entry of cases) {
-    const where = entry?.id ?? entry?.nodeId ?? "(entry without id)"
-    const fail = (message: string): void => {
-      errors.push(`${where}: ${message}`)
-    }
-    if (!SELECTOR(entry?.id)) fail("a case needs a non-empty id")
-    else if (seen.has(entry.id)) fail("duplicate case id")
-    else seen.add(entry.id)
-    if (!/^\d+:\d+$/.test(String(entry?.nodeId ?? ""))) fail("nodeId must look like 529:6111")
-    else if (!byNode.has(entry.nodeId)) fail(`${entry.nodeId} is not in inventory.json`)
-    if (!SELECTOR(entry?.export)) fail("export is required")
-    if (entry?.storyId != null && !/^[a-z0-9-]+--[a-z0-9-]+$/.test(String(entry.storyId))) {
-      fail("storyId must look like components-inputs-textfield--playground")
-    }
-    if (entry?.variant != null && !/^\d+:\d+$/.test(String(entry.variant))) {
-      fail("variant must be a node id")
-    }
-    // The device dimension (RA3): the field names a canonical device the policy
-    // declares, and it cannot contradict the variant the case points at.
-    if (entry?.device != null) {
-      const devices = Object.keys(policy?.devices ?? {})
-      if (!SELECTOR(entry.device)) {
-        fail("device must be a device key")
-      } else if (!Object.hasOwn(policy?.devices ?? {}, entry.device)) {
-        const resolved = deviceOf(policy, entry.device)
-        fail(
-          `device "${entry.device}" is not a device key (${devices.join(", ")})` +
-            (resolved !== UNKNOWN_DEVICE ? ` — it resolves to "${resolved}"` : ""),
-        )
-      } else {
-        const variant = variantOfCase(byNode.get(entry.nodeId), entry)
-        if (variant && variant.device && variant.device !== entry.device) {
-          fail(
-            `device "${entry.device}" contradicts the variant ${variant.nodeId} ` +
-              `(${variant.name}), which declares "${variant.device}"`,
-          )
-        }
-      }
-    }
-    if (entry?.layoutScope != null && !LAYOUT_SCOPES.includes(entry.layoutScope)) {
-      fail(`layoutScope must be one of ${LAYOUT_SCOPES.join(" | ")}`)
-    }
-    const selectorFields = [
-      "state",
-      "root",
-      "subjectRoot",
-      "offsetOrigin",
-      "stateEvidence",
-    ] as const
-    for (const field of selectorFields) {
-      if (entry?.[field] != null && !SELECTOR(entry[field]))
-        fail(`${field} must be a selector or a state name`)
-    }
-    const numericFields = ["width", "viewport", "height", "depth"] as const
-    for (const field of numericFields) {
-      if (entry?.[field] != null && !NUMBER(entry[field]))
-        fail(`${field} must be a positive number`)
-    }
-    if (entry?.compareBox != null && !["height", "full"].includes(entry.compareBox)) {
-      fail('compareBox must be "height" or "full"')
-    }
-    if (
-      entry?.compareOffset != null &&
-      entry.compareOffset !== true &&
-      !SELECTOR(entry.compareOffset)
-    ) {
-      fail("compareOffset must be true or an offset-origin selector")
-    }
-    if (entry?.subjects != null) {
-      if (typeof entry.subjects !== "object" || Array.isArray(entry.subjects)) {
-        fail("subjects must be an object of layer=selector pairs")
-      } else {
-        for (const [layer, selector] of Object.entries(entry.subjects)) {
-          if (!SELECTOR(layer)) fail("a subject layer name is empty")
-          if (!SELECTOR(selector)) fail(`subject ${layer} has no selector`)
-        }
-      }
-    }
-    if (entry?.fill != null) {
-      if (!Array.isArray(entry.fill)) fail("fill must be an array of [selector, value] pairs")
-      else
-        for (const pair of entry.fill) {
-          if (!Array.isArray(pair) || pair.length !== 2 || !SELECTOR(pair[0])) {
-            fail("fill entries must be [selector, value] pairs")
-          }
-        }
-    }
-    for (const residue of entry?.residues ?? []) {
-      if (!SELECTOR(residue?.path)) fail("a residue needs a delta path")
-      if (!SELECTOR(residue?.reason)) fail(`residue ${residue?.path ?? "?"} has no reason`)
-    }
-    for (const path of entry?.ignores ?? []) {
-      if (!SELECTOR(path)) fail("an ignore entry needs a delta path")
-    }
-    for (const key of Object.keys(entry ?? {})) {
-      if (!CASE_FIELDS.includes(key)) fail(`unknown field ${key}`)
-    }
-    const known = registry.entries?.[entry?.nodeId]
-    // `export` is the implementation the case covers (the registry target), the
-    // `storyId` is the render surface. Both must agree with the registry where
-    // it declares them; where it does not, the case is the only record and the
-    // check warns instead of failing (decision D2: coverage stays a work list).
-    const targetExports = [
-      known?.target?.export,
-      ...(known?.target?.additionalTargets ?? []).map((target) => target.export),
-    ].filter(Boolean)
-    if (entry?.export && targetExports.length && !targetExports.includes(entry.export)) {
-      fail(
-        `export ${entry.export} is not the registry target nor an additionalTargets export of ${entry.nodeId} (${targetExports.join(", ")})`,
-      )
-    }
-    const declaredStories = registryStoryIds(known)
-    if (declaredStories.length) {
-      if (entry?.storyId && !declaredStories.includes(entry.storyId)) {
-        fail(
-          `storyId ${entry.storyId} is not among the declared story exports of ${entry.nodeId} (${declaredStories.join(", ")})`,
-        )
-      }
-      if (!entry?.storyId) {
-        warnings.push(`${where}: the registry declares storyExports; the case carries no storyId`)
-      }
-    } else if (known?.target) {
-      warnings.push(
-        `${where}: the registry declares no storyExports for ${entry?.nodeId}: the corpus is the only record of the story mapping`,
-      )
-    }
-    if (!known) warnings.push(`${where}: no registry entry for ${entry?.nodeId}`)
-  }
+  for (const entry of cases)
+    validateEntry(workspace, entry, registry, byNode, policy, seen, errors, warnings)
   return { errors, warnings }
 }
 
 // The story ids a registry entry declares, resolved through the same join the
 // queue uses (the story title and the declared exports, cached per file).
-const titleCache = new Map<string, string | undefined>()
 
-function registryStoryIds(entry: RegistryEntry | undefined): string[] {
+function registryStoryIds(workspace: Workspace, entry: RegistryEntry | undefined): string[] {
   if (!entry?.target?.story || !entry?.target?.storyExports?.length) return []
   const file = entry.target.story
-  if (!titleCache.has(file))
-    titleCache.set(file, fs.existsSync(absolutePath(file)) ? storyTitle(file) : undefined)
-  const title = titleCache.get(file)
+  const title = fs.existsSync(workspace.path(file))
+    ? createSourceModules(workspace).storyTitle(file)
+    : undefined
   if (!title) return []
   return entry.target.storyExports.map((name: string) => storyId(title, name))
 }
@@ -559,18 +438,18 @@ export type DeviceCoverage = {
 }
 
 export function deviceCoverage({
-  policy = loadDevicePolicy(),
-  nodes = loadInventoryNodes(),
-  registry = loadRegistry(),
+  policy,
+  nodes,
+  registry,
   cases = [],
   statuses = ["implemented", "pending"],
 }: {
-  policy?: ReturnType<typeof loadDevicePolicy>
-  nodes?: InventoryNode[]
-  registry?: Registry
+  policy: ReturnType<typeof loadDevicePolicy>
+  nodes: InventoryNode[]
+  registry: Registry
   cases?: ParityCase[]
   statuses?: string[]
-} = {}): DeviceCoverage {
+}): DeviceCoverage {
   const wanted = new Set(statuses)
   const byNode = new Map(nodes.map((node) => [node.nodeId, node]))
   const rows: CoverageRow[] = []
@@ -623,9 +502,7 @@ export function deviceCoverage({
 // The reasoned exceptions (RA4): one node id per entry, a non-empty reason, and
 // nothing else. The file is a burn-down list: an entry whose node no longer
 // misses a device is an error, not a permission that lingers.
-export function loadDeviceExceptions(
-  file: string = rootPath(DEVICE_EXCEPTIONS_PATH),
-): Record<string, string> {
+export function loadDeviceExceptions(file: string): Record<string, string> {
   if (!fs.existsSync(file)) return {}
   return parseSchema(DeviceExceptionsSchema, readJson(file), file)
 }
@@ -638,98 +515,27 @@ export function loadDeviceExceptions(
 // own width. The mapping is a draft by construction (R9): the note says so, the
 // coverage ignores it, and the wave replaces both after the reviewed render.
 export function syncProposals({
-  policy = loadDevicePolicy(),
-  nodes = loadInventoryNodes(),
-  registry = loadRegistry(),
+  policy,
+  nodes,
+  registry,
   cases = [],
   nodeId,
   statuses = ["implemented", "pending"],
 }: {
-  policy?: ReturnType<typeof loadDevicePolicy>
-  nodes?: InventoryNode[]
-  registry?: Registry
+  policy: ReturnType<typeof loadDevicePolicy>
+  nodes: InventoryNode[]
+  registry: Registry
   cases?: ParityCase[]
   nodeId?: string
   statuses?: string[]
-} = {}) {
+}) {
   const coverage = deviceCoverage({ policy, nodes, registry, cases, statuses })
   const byNode = new Map(nodes.map((node) => [node.nodeId, node]))
   const proposals: CaseProposal[] = []
   const skipped: Array<{ nodeId: string; variant?: string; missing?: string[]; reason: string }> =
     []
-  for (const row of coverage.rows) {
-    if (nodeId && row.nodeId !== nodeId) continue
-    if (!row.missing.length) continue
-    const siblings = cases.filter((item) => item.nodeId === row.nodeId)
-    if (!siblings.length) {
-      // Nothing to copy: the first case of a node needs the review, not a
-      // template.
-      skipped.push({ nodeId: row.nodeId, missing: row.missing, reason: "no sibling case" })
-      continue
-    }
-    const sibling = siblings.find((item) => !isDraftCase(item)) ?? siblings[0]
-    const node = byNode.get(row.nodeId)
-    // The sibling's state carries the other axes (`MD Desktop|KO`): the device
-    // token goes in, the device tokens come out, the rest is copied — a draft,
-    // still, because the device is not the only axis.
-    const otherTokens = String(sibling.state ?? "")
-      .split("|")
-      .map((token) => token.trim())
-      .filter(Boolean)
-      .filter((token) => deviceOf(policy, token) === UNKNOWN_DEVICE)
-    // Which variant of a device the draft points at: the sibling's own device
-    // spelling when the set draws that width, otherwise the one closest to the
-    // sibling's capture width.
-    const siblingDeviceToken = String(sibling.state ?? "")
-      .split("|")
-      .map((token) => token.trim())
-      .find((token) => ["mobile", "tablet", "desktop"].includes(deviceOf(policy, token)))
-    const reference = Number(sibling.width ?? sibling.viewport ?? 0)
-    const variantFor = (device: string) => {
-      const candidates = (node?.variants ?? []).filter((item) => item.device === device)
-      const exact = siblingDeviceToken
-        ? candidates.find((item) => item.name.includes(siblingDeviceToken))
-        : undefined
-      if (exact) return exact
-      if (!reference) return candidates[0]
-      return [...candidates].sort(
-        (a, b) =>
-          Math.abs((a.box?.width ?? 0) - reference) - Math.abs((b.box?.width ?? 0) - reference),
-      )[0]
-    }
-    for (const device of row.missing) {
-      const variant = variantFor(device)
-      if (!variant) {
-        skipped.push({
-          nodeId: row.nodeId,
-          missing: [device],
-          reason: `no variant declares ${device}`,
-        })
-        continue
-      }
-      const width = variant.box?.width
-      const axis = axisOfDevice(policy, node, device)
-      const value = axis ? variantState(variant.name)[axis] : undefined
-      proposals.push({
-        nodeId: row.nodeId,
-        export: sibling.export,
-        storyId: sibling.storyId,
-        state: [value ?? device, ...otherTokens].join("|"),
-        device,
-        ...(width ? { width, viewport: width } : {}),
-        ...(sibling.root ? { root: sibling.root } : {}),
-        ...(sibling.subjectRoot ? { subjectRoot: sibling.subjectRoot } : {}),
-        ...(sibling.offsetOrigin ? { offsetOrigin: sibling.offsetOrigin } : {}),
-        ...(sibling.subjects ? { subjects: { ...sibling.subjects } } : {}),
-        ...(sibling.compareOffset ? { compareOffset: true } : {}),
-        ...(sibling.compareBox ? { compareBox: sibling.compareBox } : {}),
-        ...(sibling.compareText ? { compareText: true } : {}),
-        ...(sibling.interactive ? { interactive: true } : {}),
-        ...(sibling.depth ? { depth: sibling.depth } : {}),
-        note: DRAFT_NOTE,
-      })
-    }
-  }
+  for (const row of coverage.rows)
+    proposeDevicesForNode(row, nodeId, cases, byNode.get(row.nodeId), policy, proposals, skipped)
   const states = stateProposals({ policy, nodes, registry, cases, nodeId, statuses, coverage })
   return {
     proposals,
@@ -781,22 +587,22 @@ export function pointedVariants(node: InventoryNode, cases: ParityCase[]): Set<s
 export type CaseProposal = Partial<ParityCase> & Pick<ParityCase, "nodeId" | "export">
 
 export function stateProposals({
-  policy = loadDevicePolicy(),
-  nodes = loadInventoryNodes(),
-  registry = loadRegistry(),
+  policy,
+  nodes,
+  registry,
   cases = [],
   nodeId,
   statuses = ["implemented", "pending"],
   coverage,
 }: {
-  policy?: ReturnType<typeof loadDevicePolicy>
-  nodes?: InventoryNode[]
-  registry?: Registry
+  policy: ReturnType<typeof loadDevicePolicy>
+  nodes: InventoryNode[]
+  registry: Registry
   cases?: ParityCase[]
   nodeId?: string
   statuses?: string[]
   coverage?: DeviceCoverage
-} = {}): {
+}): {
   proposals: CaseProposal[]
   skipped: Array<{ nodeId: string; variant?: string; missing?: string[]; reason: string }>
 } {
@@ -811,87 +617,23 @@ export function stateProposals({
   const proposals: CaseProposal[] = []
   const skipped: Array<{ nodeId: string; variant?: string; missing?: string[]; reason: string }> =
     []
-  const proposedIds = new Set()
+  const proposedIds = new Set<string>()
   const corpusIds = new Map(cases.map((item) => [item.id, item]))
-  const token = (name: string): string => axisToken(name).toLowerCase()
   for (const [id, entry] of Object.entries(registry.entries ?? {})) {
-    if (nodeId && id !== nodeId) continue
-    if (!wanted.has(entry.status)) continue
-    const node = byNode.get(id)
-    if (!node) continue
-    const deviceNames = new Set(deviceAxes(policy, node).map((axis) => token(axis.name)))
-    const stateAxes = Object.entries(node.properties ?? {}).filter(
-      ([name, definition]) => definition?.type === "VARIANT" && !deviceNames.has(token(name)),
+    proposeStatesForNode(
+      id,
+      entry,
+      byNode.get(id),
+      nodeId,
+      wanted,
+      policy,
+      cases,
+      deviceRows,
+      corpusIds,
+      proposedIds,
+      proposals,
+      skipped,
     )
-    if (!stateAxes.length) continue
-    const siblings = cases.filter((item) => item.nodeId === id)
-    if (!siblings.length) {
-      skipped.push({ nodeId: id, reason: "no sibling case" })
-      continue
-    }
-    const pointed = pointedVariants(node, siblings)
-    const missingDevices = new Set(deviceRows.get(id)?.missing ?? [])
-    const stateTokens = new Set(stateAxes.map(([name]) => token(name)))
-    const sibling = siblings.find((item) => !isDraftCase(item)) ?? siblings[0]
-    for (const variant of node.variants ?? []) {
-      if (pointed.has(variant.nodeId)) continue
-      if (variant.device && missingDevices.has(variant.device)) {
-        skipped.push({
-          nodeId: id,
-          variant: variant.nodeId,
-          reason: `device ${variant.device} waits for its device case`,
-        })
-        continue
-      }
-      const values = Object.entries(variantState(variant.name))
-        .filter(([key]) => stateTokens.has(token(key)))
-        .map(([, value]) => value)
-      if (!values.length) continue
-      const width = variant.box?.width
-      const spec: CaseProposal = {
-        nodeId: id,
-        export: sibling.export,
-        storyId: sibling.storyId,
-        state: values.join("|"),
-        variant: variant.nodeId,
-        ...(variant.device ? { device: variant.device } : {}),
-        ...(width ? { width, viewport: width } : {}),
-        ...(sibling.root ? { root: sibling.root } : {}),
-        ...(sibling.subjectRoot ? { subjectRoot: sibling.subjectRoot } : {}),
-        ...(sibling.offsetOrigin ? { offsetOrigin: sibling.offsetOrigin } : {}),
-        ...(sibling.subjects ? { subjects: { ...sibling.subjects } } : {}),
-        ...(sibling.compareOffset ? { compareOffset: true } : {}),
-        ...(sibling.compareBox ? { compareBox: sibling.compareBox } : {}),
-        ...(sibling.compareText ? { compareText: true } : {}),
-        ...(sibling.interactive ? { interactive: true } : {}),
-        ...(sibling.depth ? { depth: sibling.depth } : {}),
-        note: DRAFT_NOTE,
-      }
-      // The id is the identity `saveCase` replaces on: a proposal must never
-      // take the identity of a reviewed case, and one run must not propose two
-      // variants under the same identity (two records can share a state and a
-      // device, e.g. two source spellings of the same canonical device).
-      const identity = caseIdFor(spec)
-      const owner = corpusIds.get(identity)
-      if (proposedIds.has(identity)) {
-        skipped.push({
-          nodeId: id,
-          variant: variant.nodeId,
-          reason: `identity ${identity} already proposed by another variant`,
-        })
-        continue
-      }
-      if (owner && !isDraftCase(owner)) {
-        skipped.push({
-          nodeId: id,
-          variant: variant.nodeId,
-          reason: `identity ${identity} is owned by a reviewed case`,
-        })
-        continue
-      }
-      proposedIds.add(identity)
-      proposals.push(spec)
-    }
   }
   return { proposals, skipped }
 }
@@ -909,4 +651,388 @@ function axisOfDevice(
     if (axis.values.some((item) => item.device === device)) return axis.token
   }
   return undefined
+}
+
+type CaseFailure = (message: string) => void
+function validateEntry(
+  workspace: Workspace,
+  entry: ParityCase,
+  registry: Registry,
+  byNode: Map<string, InventoryNode | undefined>,
+  policy: ReturnType<typeof loadDevicePolicy>,
+  seen: Set<string>,
+  errors: string[],
+  warnings: string[],
+) {
+  const where = entry?.id ?? entry?.nodeId ?? "(entry without id)"
+  const fail = (message: string): void => {
+    errors.push(`${where}: ${message}`)
+  }
+  if (!SELECTOR(entry?.id)) fail("a case needs a non-empty id")
+  else if (seen.has(entry.id)) fail("duplicate case id")
+  else seen.add(entry.id)
+  if (!/^\d+:\d+$/.test(String(entry?.nodeId ?? ""))) fail("nodeId must look like 529:6111")
+  else if (!byNode.has(entry.nodeId)) fail(`${entry.nodeId} is not in inventory.json`)
+  if (!SELECTOR(entry?.export)) fail("export is required")
+  if (entry?.storyId != null && !/^[a-z0-9-]+--[a-z0-9-]+$/.test(String(entry.storyId))) {
+    fail("storyId must look like components-inputs-textfield--playground")
+  }
+  if (entry?.variant != null && !/^\d+:\d+$/.test(String(entry.variant))) {
+    fail("variant must be a node id")
+  }
+  validateDevice(entry, byNode, policy, fail)
+  validateMapping(entry, fail)
+  validateRegistry(workspace, entry, registry, where, fail, warnings)
+}
+
+function validateDevice(
+  entry: ParityCase,
+  byNode: Map<string, InventoryNode | undefined>,
+  policy: ReturnType<typeof loadDevicePolicy>,
+  fail: CaseFailure,
+) {
+  // The device dimension (RA3): the field names a canonical device the policy
+  // declares, and it cannot contradict the variant the case points at.
+  if (entry?.device != null) {
+    const devices = Object.keys(policy?.devices ?? {})
+    if (!SELECTOR(entry.device)) {
+      fail("device must be a device key")
+    } else if (!Object.hasOwn(policy?.devices ?? {}, entry.device)) {
+      const resolved = deviceOf(policy, entry.device)
+      fail(
+        `device "${entry.device}" is not a device key (${devices.join(", ")})` +
+          (resolved !== UNKNOWN_DEVICE ? ` — it resolves to "${resolved}"` : ""),
+      )
+    } else {
+      const variant = variantOfCase(byNode.get(entry.nodeId), entry)
+      if (variant && variant.device && variant.device !== entry.device) {
+        fail(
+          `device "${entry.device}" contradicts the variant ${variant.nodeId} ` +
+            `(${variant.name}), which declares "${variant.device}"`,
+        )
+      }
+    }
+  }
+}
+
+function validateMapping(entry: ParityCase, fail: CaseFailure) {
+  if (entry?.layoutScope != null && !LAYOUT_SCOPES.includes(entry.layoutScope)) {
+    fail(`layoutScope must be one of ${LAYOUT_SCOPES.join(" | ")}`)
+  }
+  const selectorFields = ["state", "root", "subjectRoot", "offsetOrigin", "stateEvidence"] as const
+  for (const field of selectorFields) {
+    if (entry?.[field] != null && !SELECTOR(entry[field]))
+      fail(`${field} must be a selector or a state name`)
+  }
+  const numericFields = ["width", "viewport", "height", "depth"] as const
+  for (const field of numericFields) {
+    if (entry?.[field] != null && !NUMBER(entry[field])) fail(`${field} must be a positive number`)
+  }
+  if (entry?.compareBox != null && !["height", "full"].includes(entry.compareBox)) {
+    fail('compareBox must be "height" or "full"')
+  }
+  if (
+    entry?.compareOffset != null &&
+    entry.compareOffset !== true &&
+    !SELECTOR(entry.compareOffset)
+  ) {
+    fail("compareOffset must be true or an offset-origin selector")
+  }
+  if (entry?.subjects != null) {
+    if (typeof entry.subjects !== "object" || Array.isArray(entry.subjects)) {
+      fail("subjects must be an object of layer=selector pairs")
+    } else {
+      for (const [layer, selector] of Object.entries(entry.subjects)) {
+        if (!SELECTOR(layer)) fail("a subject layer name is empty")
+        if (!SELECTOR(selector)) fail(`subject ${layer} has no selector`)
+      }
+    }
+  }
+  if (entry?.fill != null) {
+    if (!Array.isArray(entry.fill)) fail("fill must be an array of [selector, value] pairs")
+    else
+      for (const pair of entry.fill) {
+        if (!Array.isArray(pair) || pair.length !== 2 || !SELECTOR(pair[0])) {
+          fail("fill entries must be [selector, value] pairs")
+        }
+      }
+  }
+  for (const residue of entry?.residues ?? []) {
+    if (!SELECTOR(residue?.path)) fail("a residue needs a delta path")
+    if (!SELECTOR(residue?.reason)) fail(`residue ${residue?.path ?? "?"} has no reason`)
+  }
+  for (const path of entry?.ignores ?? []) {
+    if (!SELECTOR(path)) fail("an ignore entry needs a delta path")
+  }
+  for (const key of Object.keys(entry ?? {})) {
+    if (!CASE_FIELDS.includes(key)) fail(`unknown field ${key}`)
+  }
+}
+
+function validateRegistry(
+  workspace: Workspace,
+  entry: ParityCase,
+  registry: Registry,
+  where: string,
+  fail: CaseFailure,
+  warnings: string[],
+) {
+  const known = registry.entries?.[entry?.nodeId]
+  // `export` is the implementation the case covers (the registry target), the
+  // `storyId` is the render surface. Both must agree with the registry where
+  // it declares them; where it does not, the case is the only record and the
+  // check warns instead of failing (decision D2: coverage stays a work list).
+  const targetExports = [
+    known?.target?.export,
+    ...(known?.target?.additionalTargets ?? []).map((target) => target.export),
+  ].filter(Boolean)
+  if (entry?.export && targetExports.length && !targetExports.includes(entry.export)) {
+    fail(
+      `export ${entry.export} is not the registry target nor an additionalTargets export of ${entry.nodeId} (${targetExports.join(", ")})`,
+    )
+  }
+  const declaredStories = registryStoryIds(workspace, known)
+  if (declaredStories.length) {
+    if (entry?.storyId && !declaredStories.includes(entry.storyId)) {
+      fail(
+        `storyId ${entry.storyId} is not among the declared story exports of ${entry.nodeId} (${declaredStories.join(", ")})`,
+      )
+    }
+    if (!entry?.storyId) {
+      warnings.push(`${where}: the registry declares storyExports; the case carries no storyId`)
+    }
+  } else if (known?.target) {
+    warnings.push(
+      `${where}: the registry declares no storyExports for ${entry?.nodeId}: the corpus is the only record of the story mapping`,
+    )
+  }
+  if (!known) warnings.push(`${where}: no registry entry for ${entry?.nodeId}`)
+}
+
+type ProposalSkip = { nodeId: string; variant?: string; missing?: string[]; reason: string }
+function proposeDevicesForNode(
+  row: CoverageRow,
+  nodeId: string | undefined,
+  cases: ParityCase[],
+  node: InventoryNode | undefined,
+  policy: ReturnType<typeof loadDevicePolicy>,
+  proposals: CaseProposal[],
+  skipped: ProposalSkip[],
+) {
+  if (nodeId && row.nodeId !== nodeId) return
+  if (!row.missing.length) return
+  const siblings = cases.filter((item) => item.nodeId === row.nodeId)
+  if (!siblings.length) {
+    // Nothing to copy: the first case of a node needs the review, not a
+    // template.
+    skipped.push({ nodeId: row.nodeId, missing: row.missing, reason: "no sibling case" })
+    return
+  }
+  const sibling = siblings.find((item) => !isDraftCase(item)) ?? siblings[0]
+  // The sibling's state carries the other axes (`MD Desktop|KO`): the device
+  // token goes in, the device tokens come out, the rest is copied — a draft,
+  // still, because the device is not the only axis.
+  const otherTokens = String(sibling.state ?? "")
+    .split("|")
+    .map((token) => token.trim())
+    .filter(Boolean)
+    .filter((token) => deviceOf(policy, token) === UNKNOWN_DEVICE)
+  // Which variant of a device the draft points at: the sibling's own device
+  // spelling when the set draws that width, otherwise the one closest to the
+  // sibling's capture width.
+  const siblingDeviceToken = String(sibling.state ?? "")
+    .split("|")
+    .map((token) => token.trim())
+    .find((token) => ["mobile", "tablet", "desktop"].includes(deviceOf(policy, token)))
+  const reference = Number(sibling.width ?? sibling.viewport ?? 0)
+  for (const device of row.missing) {
+    const variant = deviceVariant(node, device, siblingDeviceToken, reference)
+    if (!variant) {
+      skipped.push({
+        nodeId: row.nodeId,
+        missing: [device],
+        reason: `no variant declares ${device}`,
+      })
+      continue
+    }
+    const width = variant.box?.width
+    const axis = axisOfDevice(policy, node, device)
+    const value = axis ? variantState(variant.name)[axis] : undefined
+    proposals.push(deviceProposal(row.nodeId, sibling, device, value, width, otherTokens))
+  }
+}
+
+function deviceVariant(
+  node: InventoryNode | undefined,
+  device: string,
+  siblingDeviceToken: string | undefined,
+  reference: number,
+) {
+  const candidates = (node?.variants ?? []).filter((item) => item.device === device)
+  const exact = siblingDeviceToken
+    ? candidates.find((item) => item.name.includes(siblingDeviceToken))
+    : undefined
+  if (exact) return exact
+  if (!reference) return candidates[0]
+  return [...candidates].sort(
+    (a, b) => Math.abs((a.box?.width ?? 0) - reference) - Math.abs((b.box?.width ?? 0) - reference),
+  )[0]
+}
+
+function deviceProposal(
+  nodeId: string,
+  sibling: ParityCase,
+  device: string,
+  value: string | undefined,
+  width: number | undefined,
+  otherTokens: string[],
+): CaseProposal {
+  return {
+    nodeId,
+    export: sibling.export,
+    storyId: sibling.storyId,
+    state: [value ?? device, ...otherTokens].join("|"),
+    device,
+    ...(width ? { width, viewport: width } : {}),
+    ...(sibling.root ? { root: sibling.root } : {}),
+    ...(sibling.subjectRoot ? { subjectRoot: sibling.subjectRoot } : {}),
+    ...(sibling.offsetOrigin ? { offsetOrigin: sibling.offsetOrigin } : {}),
+    ...(sibling.subjects ? { subjects: { ...sibling.subjects } } : {}),
+    ...(sibling.compareOffset ? { compareOffset: true } : {}),
+    ...(sibling.compareBox ? { compareBox: sibling.compareBox } : {}),
+    ...(sibling.compareText ? { compareText: true } : {}),
+    ...(sibling.interactive ? { interactive: true } : {}),
+    ...(sibling.depth ? { depth: sibling.depth } : {}),
+    note: DRAFT_NOTE,
+  }
+}
+
+function axisName(name: string): string {
+  return axisToken(name).toLowerCase()
+}
+function proposeStatesForNode(
+  id: string,
+  entry: RegistryEntry,
+  node: InventoryNode | undefined,
+  nodeId: string | undefined,
+  wanted: Set<string>,
+  policy: ReturnType<typeof loadDevicePolicy>,
+  cases: ParityCase[],
+  deviceRows: Map<string, CoverageRow>,
+  corpusIds: Map<string, ParityCase>,
+  proposedIds: Set<string>,
+  proposals: CaseProposal[],
+  skipped: ProposalSkip[],
+) {
+  if (nodeId && id !== nodeId) return
+  if (!wanted.has(entry.status)) return
+  if (!node) return
+  const deviceNames = new Set(deviceAxes(policy, node).map((axis) => axisName(axis.name)))
+  const stateAxes = Object.entries(node.properties ?? {}).filter(
+    ([name, definition]) => definition?.type === "VARIANT" && !deviceNames.has(axisName(name)),
+  )
+  if (!stateAxes.length) return
+  const siblings = cases.filter((item) => item.nodeId === id)
+  if (!siblings.length) {
+    skipped.push({ nodeId: id, reason: "no sibling case" })
+    return
+  }
+  const pointed = pointedVariants(node, siblings)
+  const missingDevices = new Set(deviceRows.get(id)?.missing ?? [])
+  const stateTokens = new Set(stateAxes.map(([name]) => axisName(name)))
+  const sibling = siblings.find((item) => !isDraftCase(item)) ?? siblings[0]
+  for (const variant of node.variants ?? [])
+    proposeStateVariant(
+      id,
+      variant,
+      sibling,
+      pointed,
+      missingDevices,
+      stateTokens,
+      corpusIds,
+      proposedIds,
+      proposals,
+      skipped,
+    )
+}
+
+function proposeStateVariant(
+  id: string,
+  variant: NonNullable<InventoryNode["variants"]>[number],
+  sibling: ParityCase,
+  pointed: Set<string>,
+  missingDevices: Set<string>,
+  stateTokens: Set<string>,
+  corpusIds: Map<string, ParityCase>,
+  proposedIds: Set<string>,
+  proposals: CaseProposal[],
+  skipped: ProposalSkip[],
+) {
+  if (pointed.has(variant.nodeId)) return
+  if (variant.device && missingDevices.has(variant.device)) {
+    skipped.push({
+      nodeId: id,
+      variant: variant.nodeId,
+      reason: `device ${variant.device} waits for its device case`,
+    })
+    return
+  }
+  const values = Object.entries(variantState(variant.name))
+    .filter(([key]) => stateTokens.has(axisName(key)))
+    .map(([, value]) => value)
+  if (!values.length) return
+  const spec = stateProposal(id, sibling, variant, values)
+  // The id is the identity `saveCase` replaces on: a proposal must never
+  // take the identity of a reviewed case, and one run must not propose two
+  // variants under the same identity (two records can share a state and a
+  // device, e.g. two source spellings of the same canonical device).
+  const identity = caseIdFor(spec)
+  const owner = corpusIds.get(identity)
+  if (proposedIds.has(identity)) {
+    skipped.push({
+      nodeId: id,
+      variant: variant.nodeId,
+      reason: `identity ${identity} already proposed by another variant`,
+    })
+    return
+  }
+  if (owner && !isDraftCase(owner)) {
+    skipped.push({
+      nodeId: id,
+      variant: variant.nodeId,
+      reason: `identity ${identity} is owned by a reviewed case`,
+    })
+    return
+  }
+  proposedIds.add(identity)
+  proposals.push(spec)
+}
+
+function stateProposal(
+  id: string,
+  sibling: ParityCase,
+  variant: NonNullable<InventoryNode["variants"]>[number],
+  values: string[],
+): CaseProposal {
+  const width = variant.box?.width
+  const spec: CaseProposal = {
+    nodeId: id,
+    export: sibling.export,
+    storyId: sibling.storyId,
+    state: values.join("|"),
+    variant: variant.nodeId,
+    ...(variant.device ? { device: variant.device } : {}),
+    ...(width ? { width, viewport: width } : {}),
+    ...(sibling.root ? { root: sibling.root } : {}),
+    ...(sibling.subjectRoot ? { subjectRoot: sibling.subjectRoot } : {}),
+    ...(sibling.offsetOrigin ? { offsetOrigin: sibling.offsetOrigin } : {}),
+    ...(sibling.subjects ? { subjects: { ...sibling.subjects } } : {}),
+    ...(sibling.compareOffset ? { compareOffset: true } : {}),
+    ...(sibling.compareBox ? { compareBox: sibling.compareBox } : {}),
+    ...(sibling.compareText ? { compareText: true } : {}),
+    ...(sibling.interactive ? { interactive: true } : {}),
+    ...(sibling.depth ? { depth: sibling.depth } : {}),
+    note: DRAFT_NOTE,
+  }
+  return spec
 }

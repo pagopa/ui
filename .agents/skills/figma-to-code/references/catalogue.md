@@ -1,4 +1,4 @@
-# Catalogue — the alignment files, the statuses and `figma:check`
+# Catalogue — the alignment files, the statuses and `check:catalogue`
 
 Consulted by every use case that reads or writes the catalogue.
 
@@ -6,25 +6,22 @@ Consulted by every use case that reads or writes the catalogue.
 
 | Config key                       | Role                                                                                         | Edited by                                       |
 | -------------------------------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| `catalog.inventory`              | identities, canonical contracts, design fingerprints, dependency edges                       | `pnpm nx run pagopa-ui-cli:figma:triage` / `pnpm nx run pagopa-ui-cli:figma:update` only  |
-| `catalog.registry`               | decision per `nodeId`, `pageId` bulk rules, targets, rendered stories, per-node `note`       | agents and people, reviewed in pull requests    |
-| `catalog.parityCases`            | the reviewed case per compared variant and device                                            | `figma:parity:check --save-case` only           |
+| `catalog.inventory`              | identities, canonical contracts, design fingerprints, dependency edges                       | `pnpm ui-cli update inventory --triage`  |
+| `catalog.registry`               | decision per `nodeId`, `pageId` bulk rules, targets, rendered stories, per-node `note`       | `figma registry set`; unsupported fields reviewed in place |
+| `catalog.parityCases`            | the reviewed case per compared variant and device                                            | `parity check --save-case`           |
 | `catalog.devicePolicy`           | the device vocabulary: axes, canonical devices, aliases, widths, default scopes              | reviewed by hand; never a component name or path |
 | `catalog.deviceExceptions`       | `<nodeId>: <reason>` for a node whose declared devices have no case yet                      | by hand, must shrink                            |
-| `catalog.pageSurface`            | what a page draws: every identity with its decision, every composition with its cases         | by hand, after reading the page tree            |
+| `catalog.pageSurface`            | page identities and decisions, compositions and their cases         | `figma surface sync` for identities; compositions reviewed by hand |
 | `catalog.apiExceptions`          | public exports with no source mapping: "deliberate extension, not a source-alignment claim"  | by hand, each with a reason, must shrink        |
 | `catalog.evidenceExceptions`     | story-evidence exceptions                                                                    | by hand, each with a reason, must shrink        |
 | `figma.fileModule`               | the file key and the URL builders                                                            | rarely                                          |
 | `catalog.inventoryStory`         | the rendered join of inventory and registry, the map of every node's status                 | —                                               |
 | `artwork.*`, `tokens.manifest`, `tokens.generatedCss` | generated artwork, runtime maps, tokens                                 | their generator only (`artwork.md`, `delta.md`) |
 
-Generated files are never edited by hand. The refresh writes unformatted JSON:
-run `pnpm nx run-many -t fmt` before the green chain.
-
-`catalog.registry` and `catalog.parityCases` are reviewed by hand, in place: a
-parse-and-write round-trip reformats the whole file (the formatter keeps short
-arrays on one line), so a one-entry decision lands as a whole-file diff and
-hides the review. Change the entry's own lines and leave the rest byte for byte.
+Generated files are owned by their writers. CLI JSON writes are formatted.
+Use `figma registry set` and `parity check --save-case` for decisions and cases;
+review the resulting diff. Unsupported registry fields (bulk rules, artwork
+metadata, `additionalExports`) still need a surgical in-place edit.
 
 `.figma/` is gitignored and can exceed 100 MB: never commit the snapshot, the
 renders or the probes. The parity tools never write under `src/` except the case
@@ -50,10 +47,10 @@ linked to exactly one story export shows that node in the export's
 `parameters.design` (`figmaEmbedUrl("<nodeId>")`); multi-node exports keep the
 curated choice. A `modulePatterns` rule maps a whole subtree.
 
-Write a per-node constraint, an open decision or an unblock condition in the
-node's `note`, self-contained: state the rule and the measurement, never point to
-a document. A note stays under 600 characters: it states the current residues
-and their reasons, not the history.
+Write constraints and unblock conditions in the node's self-contained `note`:
+the rule, measurement and current residue/reason, not its history. A design
+request adds its record pointer without replacing that context. The CLI enforces
+the 600-character limit and lowers the note ratchet.
 
 ## The page surface
 
@@ -65,8 +62,21 @@ them at 304, the drawer panel at 320 or 417. None of them appears in the
 inventory, so nothing in the procedure saw them. The page surface is the
 committed census that names them.
 
-One record per page read from the page tree — `get_metadata` on the page node, or
-the page's frame list — with:
+Read each touched page's complete tree through MCP `get_metadata` or REST.
+Refresh identities with:
+
+```sh
+pnpm ui-cli figma surface sync --page <pageId> --input <page-tree> --dry-run --json
+pnpm ui-cli figma surface sync --page <pageId> --input <page-tree> --json
+```
+
+Use `--rest` instead of `--input` for a live read with a token. The input needs
+a structured CANVAS tree, not an XML/text description: when MCP provides only
+text, use REST or obtain a structured export. The writer reconciles identities
+and publication, preserving existing decisions and compositions; inspect its
+check verdict. Human review still accounts for every composition.
+
+One record per page, with:
 
 - **identities**, one row per component and component set drawn on the page, each
   with `inLibrary` and the decision the library gives it:
@@ -93,7 +103,7 @@ the page's frame list — with:
   only if it measures that frame at that device; a composition with no case
   carries a `reason` saying what stays unmeasured and why.
 
-`figma:check` enforces, so the census cannot go stale or polite:
+`check:catalogue` enforces, so the census cannot go stale or polite:
 
 - `inLibrary` works both ways. Marked in the library, the identity must be an
   inventory node with the same name, kind and page; marked outside it, it must
@@ -111,20 +121,8 @@ the page's frame list — with:
 - Every page the inventory publishes on is censused or counted: an unread page
   warns with its published node count and waits in `surfaceUncensused`.
 
-The census is also accounted: every page the inventory publishes on is either
-censused or waiting in the burn-down, and `figma:check` warns with the count
-until the last one is read. That is why the line leads with a ratio, and it
-reads `58/58` — a page that gains a published node without a re-read shows up
-as `57/58`, not as a silent gap:
-
-```text
-surface: <censused>/<published> page(s) · <n> identities (<n> in the library, <n> not) · <n> pending · <n> composition(s) · <n> case mirror(s)
-```
-
-It cannot see Figma: a component added to a page without re-reading the page tree
-leaves the census short, which is why the page read closes a Figma session.
-
-`figma:plan` adds `surfaceWaiting` (published identities still owed an
+The check cannot discover unexported additions to a live page: re-read the tree
+each time the session touches it. `figma plan` adds `surfaceWaiting` (published identities still owed an
 implementation), `surfaceUnmirrored` (compositions the source draws that no case
 measures) and `surfaceUncensused` (the pages still to read, densest first)
 instead of hiding them behind the delta.
@@ -140,20 +138,32 @@ instead of hiding them behind the delta.
   must change → fix the component and its story in the same pull request, then
   `implemented`; out of scope → `excluded` with a reason. The queue left the
   census identity `pending`, so the decision moves the registry entry and the
-  census identity together.
-- Never mark a node `implemented` without inspecting the source and the render.
-  Historical `pending` and `implemented` entries are reviewed per node on
-  request, never in bulk.
+  census identity together. An unanswered question or blocker stays `pending`
+  with its request or unblock condition named. Historical reviews are scoped
+  to the person's request.
+
+  ```sh
+  pnpm ui-cli figma registry set <nodeId> --status implemented \
+    --module <module> --export <export> --story <story> --story-exports <exports> \
+    --note "<reviewed constraints and residues>"
+  pnpm ui-cli figma registry set <nodeId> --status excluded --reason "<reason>"
+  pnpm ui-cli figma registry set <nodeId> --status pending --note "<blocker>"
+  ```
+
+  `--dry-run --json` previews the edit. The writer synchronizes the census and
+  ratchet and runs the catalogue check; inspect its overall verdict, which can
+  include unrelated existing failures. Inspection requirements live in
+  [source alignment](definition-of-done.md).
 - Rendered instance-swap defaults are real dependencies: a swappable slot still
   carries its master's identity, so a change to it reaches every parent.
-- Exception lists shrink. A new entry needs a reason; `figma:check` fails a stale
+- Exception lists shrink. A new entry needs a reason; `check:catalogue` fails a stale
   one. The public export surface stays frozen until the first publication: a new
   public export needs a source mapping or a reasoned `catalog.apiExceptions`
   entry.
 - `catalog.registry` is the only status source: no workbench, packet, ledger or
   approval file beside it, and no hand-written component list anywhere else.
 
-## What `pnpm nx run pagopa-ui:figma:check` enforces
+## What `pnpm nx run pagopa-ui:check:catalogue` enforces
 
 Hermetic, no network:
 
@@ -186,7 +196,7 @@ Hermetic, no network:
   A node that enters the live delta, or is newly closed `implemented`, fails
   while a declared device has neither a reviewed case nor a
   `catalog.deviceExceptions` entry. The historical burn-down is one warning
-  whose work list is `pnpm nx run pagopa-ui-cli:figma:parity:queue --uncovered`;
+  whose work list is `pnpm ui-cli parity queue --uncovered`;
 - it warns when the inventory is older than 30 days: run the delta use case.
 
 With `--input <snapshot>` or `--rest` it also fails on live contract, design and
@@ -201,18 +211,11 @@ never as a partial synchronization.
 - Static story analysis does not replace browser tests, the visual review or
   assistive-technology testing.
 
-## The scheduled drift job
+## The scheduled drift handoff
 
-`.github/workflows/figma-drift.yml` runs every Monday at 04:00 UTC
-`node packages/ui-cli/src/cli.ts figma sync --rest --pr-body .figma/pr-body.md`. It needs the
-read-only `FIGMA_TOKEN` secret and fails when it is missing: a skipped check
-cannot certify alignment. With drift it refreshes the inventory, queues the
-production delta as `pending`, lowers the note-length ratchet when the queued
-stubs shorten its notes, formats the payload and opens one review pull
-request with the job's `GITHUB_TOKEN`; the runs on that pull request wait for
-the reviewer's approval. Its body is the handoff: per node the name, `nodeId`,
-link, change class, current status and target, the per-device variants and the
-three decisions.
+The drift workflow and its schedule are defined in the repository, not this
+skill. Its body/artifacts carry the delta classes, targets, device variants and
+work order. A skipped export is not alignment evidence.
 
 The run writes the census side of what it queued: each queued identity becomes
 `pending` with the delta's reason, the identity of a node the file published

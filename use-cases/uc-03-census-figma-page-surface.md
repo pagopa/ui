@@ -69,7 +69,7 @@ parent_dr: design-review.md
 - `AC-02`: The status line prints the same number of identities twice and the list of residues is empty. - Evidence: `pnpm nx run pagopa-ui-cli:figma:status`
 - `AC-03`: The census carries a read date not earlier than the latest publication considered. - Evidence: `readAt` field in `page-surface.json`
 - `AC-04`: The plan does not report the page in the uncensused residue list. - Evidence: `pnpm nx run pagopa-ui-cli:figma:plan`
-- `AC-05`: Every censused node is covered by a registry entry or by a bulk rule. - Evidence: `pnpm nx run pagopa-ui:figma:check`
+- `AC-05`: Every censused node is covered by a registry entry or by a bulk rule. - Evidence: `pnpm nx run pagopa-ui:check:catalogue`
 - `AC-06`: With a non-existent page, the system returns `PAGE_UNKNOWN` and does not modify the census. - Evidence: `ui-cli` tests on the census command
 
 **Tracking events**:
@@ -98,7 +98,7 @@ sequenceDiagram
 - Figma: library `pvhsJpPGQbEwNLiyP7BOIw`, page `<pageNodeId>`.
 - DR components: `solution.components.item-005`, `solution.components.item-004`
 - Endpoint / OpenAPI / AsyncAPI / Data Contract: `contracts.item-004` (inventory), `contracts.item-005` (registry), `contracts.item-007` (surface census)
-- Validation evidence: `pnpm nx run pagopa-ui:figma:check`; `pnpm nx run pagopa-ui-cli:figma:status`
+- Validation evidence: `pnpm nx run pagopa-ui:check:catalogue`; `pnpm nx run pagopa-ui-cli:figma:status`
 
 ## Open questions and propagation
 

@@ -133,8 +133,13 @@ export default defineConfig(({ mode }) => ({
           // the whole run lives in a context created with both media features.
           // Stories that pin their reviewed source colors opt out through the
           // `color-pinned` tag: forced colors intentionally replaces them.
+          // The config directory is its own, re-exporting the same config:
+          // `@storybook/addon-vitest` names a Vitest project after its config
+          // directory, so sharing `.storybook` with the project above makes the
+          // Storybook test module (`VITEST_STORYBOOK`) see one name twice and
+          // refuse to start.
           storybookTest({
-            configDir: path.join(dirname, ".storybook"),
+            configDir: path.join(dirname, ".storybook-conditions"),
             tags: { exclude: ["color-pinned"] },
           }),
         ],

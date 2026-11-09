@@ -21,17 +21,14 @@ import {
   validateCaseFile,
   variantOfCase,
 } from "../../src/parity/cases.ts"
-import { caseFromFlags, specFromCase } from "../../src/parity/cli.ts"
-import { rootPath } from "../../src/lib/paths.ts"
+import { caseFromOptions, specFromCase } from "../../src/parity/mapping.ts"
+import { fixtureTree, workspaceAt } from "../helpers/cli.mjs"
 import { coveragePopulations, formatCoverage, qualifyBulk } from "../../src/parity/coverage.ts"
 
-const CORPUS = rootPath("src/catalog/figma/parity-cases.json")
-// Workspace scratch stays outside package symlinks scanned by concurrent checks.
-const workspaceCache = path.resolve(import.meta.dirname, "../../../../.cache")
-
-function temporaryDirectory(prefix) {
-  fs.mkdirSync(workspaceCache, { recursive: true })
-  return fs.mkdtempSync(path.join(workspaceCache, prefix))
+const workspace = workspaceAt(path.resolve(import.meta.dirname, "../../../pagopa-ui"))
+const CORPUS = workspace.path("src/catalog/figma/parity-cases.json")
+function fixtureDirectory(prefix) {
+  return fixtureTree({}, prefix).root
 }
 
 // The device vocabulary of the fixtures: the resolver is data-driven, so the
@@ -179,7 +176,7 @@ test("coverage separates mappings, qualified bulk, ordinary cases, devices and e
     { id: "stale", nodeId: "1:1", export: "Control", device: "mobile", variant: "1:11" },
     { id: "invalid", nodeId: "1:1", export: "Control", device: "mobile", variant: "1:10" },
   ]
-  const report = coveragePopulations({
+  const report = coveragePopulations(workspace, {
     nodes,
     registry: sourceRegistry,
     cases: corpus,
@@ -224,7 +221,7 @@ test("coverage separates mappings, qualified bulk, ordinary cases, devices and e
 })
 
 test("canonical-device or state coverage does not imply explicit variant coverage", () => {
-  const report = coveragePopulations({
+  const report = coveragePopulations(workspace, {
     nodes: [node],
     registry,
     policy,
@@ -245,7 +242,7 @@ test("canonical-device or state coverage does not imply explicit variant coverag
 })
 
 test("a state-selected case covers only the explicit source variant pinned by its evidence", () => {
-  const report = coveragePopulations({
+  const report = coveragePopulations(workspace, {
     nodes: [node],
     registry,
     policy,
@@ -265,7 +262,7 @@ test("a state-selected case covers only the explicit source variant pinned by it
 })
 
 test("evidence from a different Figma file cannot certify the published population", () => {
-  const report = coveragePopulations({
+  const report = coveragePopulations(workspace, {
     nodes: [node],
     registry,
     policy,
@@ -289,15 +286,19 @@ test("evidence from a different Figma file cannot certify the published populati
 })
 
 test("a bulk rule without the accepted manifest and per-glyph proof stays ordinary", () => {
-  const qualification = qualifyBulk({ pageId: "1:0", status: "implemented" }, [node], "fixture")
+  const qualification = qualifyBulk(
+    workspace,
+    { pageId: "1:0", status: "implemented" },
+    [node],
+    "fixture",
+  )
   assert.deepEqual(qualification.nodeIds, [])
   assert.ok(qualification.errors.length)
 })
 
 test("bulk admission requires fresh manifests and complete per-glyph provenance", () => {
-  const root = temporaryDirectory("parity-bulk-")
-  const previous = process.env.PAGOPA_UI_ARTWORK_ROOT
-  process.env.PAGOPA_UI_ARTWORK_ROOT = root
+  const root = fixtureDirectory("parity-bulk-")
+  const workspace = workspaceAt(root, { PAGOPA_UI_ARTWORK_ROOT: root })
   try {
     const provenance = { provider: "Fixture", origin: "custom", license: "In-house artwork" }
     const glyph = { nodeId: "3:1", designFingerprint: "a".repeat(64) }
@@ -328,42 +329,45 @@ test("bulk admission requires fresh manifests and complete per-glyph provenance"
     }
     fs.writeFileSync(path.join(root, "manifest.json"), JSON.stringify(manifest))
     fs.writeFileSync(path.join(root, "3-1.svg"), "<svg/>")
-    assert.deepEqual(qualifyBulk(rule, [glyph], "fixture").nodeIds, ["3:1"])
+    assert.deepEqual(qualifyBulk(workspace, rule, [glyph], "fixture").nodeIds, ["3:1"])
     assert.deepEqual(
-      qualifyBulk(rule, [{ ...glyph, designFingerprint: "d".repeat(64) }], "fixture").nodeIds,
-      [],
-    )
-    assert.deepEqual(
-      qualifyBulk({ ...rule, provenance: { ...provenance, provider: "Other" } }, [glyph], "fixture")
+      qualifyBulk(workspace, rule, [{ ...glyph, designFingerprint: "d".repeat(64) }], "fixture")
         .nodeIds,
       [],
     )
+    assert.deepEqual(
+      qualifyBulk(
+        workspace,
+        { ...rule, provenance: { ...provenance, provider: "Other" } },
+        [glyph],
+        "fixture",
+      ).nodeIds,
+      [],
+    )
     fs.rmSync(path.join(root, "3-1.svg"))
-    assert.deepEqual(qualifyBulk(rule, [glyph], "fixture").nodeIds, [])
+    assert.deepEqual(qualifyBulk(workspace, rule, [glyph], "fixture").nodeIds, [])
   } finally {
-    if (previous === undefined) delete process.env.PAGOPA_UI_ARTWORK_ROOT
-    else process.env.PAGOPA_UI_ARTWORK_ROOT = previous
     fs.rmSync(root, { recursive: true, force: true })
   }
 })
 
 function validate(cases) {
-  return validateCaseFile(cases, { registry, nodes: [node], policy })
+  return validateCaseFile(workspace, cases, { registry, nodes: [node], policy })
 }
 
 test("the committed corpus is valid against the registry and the inventory", () => {
   const cases = loadCaseFile(CORPUS)
   assert.ok(cases.length > 0, "the corpus must not be empty")
-  const { errors, warnings } = validateCaseFile(cases, {
-    registry: loadRegistry(),
-    nodes: loadInventoryNodes(),
+  const { errors, warnings } = validateCaseFile(workspace, cases, {
+    registry: loadRegistry(workspace.path("src/catalog/figma/registry.json")),
+    nodes: loadInventoryNodes(workspace.path("src/catalog/figma/inventory.json")),
   })
   assert.deepEqual(errors, [])
   assert.deepEqual(warnings, [])
 })
 
 test("every committed case names a story the registry declares", () => {
-  const registry = loadRegistry()
+  const registry = loadRegistry(workspace.path("src/catalog/figma/registry.json"))
   for (const entry of loadCaseFile(CORPUS)) {
     assert.match(entry.storyId, /^[a-z0-9-]+--[a-z0-9-]+$/, `${entry.id} story id`)
     const known = registry.entries[entry.nodeId]
@@ -407,7 +411,7 @@ test("the canonical writer keeps one field order and drops empty collections", (
 })
 
 test("a saved case replaces the entry with the same identity", () => {
-  const dir = temporaryDirectory("parity-cases-")
+  const dir = fixtureDirectory("parity-cases-")
   const file = path.join(dir, "cases.json")
   const first = { nodeId: "529:6111", export: "TextField", state: "filled", width: 274 }
   const saved = saveCase(file, first)
@@ -454,7 +458,7 @@ test("the validator rejects the mapping mistakes the corpus exists to prevent", 
       variant: "not-a-node",
     },
   ]
-  const { errors } = validateCaseFile(cases)
+  const { errors } = validateCaseFile(workspace, cases)
   const joined = errors.join("\n")
   assert.match(joined, /529-6111-filled: duplicate case id/)
   assert.match(joined, /subject Label text has no selector/)
@@ -468,7 +472,7 @@ test("the validator rejects the mapping mistakes the corpus exists to prevent", 
 })
 
 test("a story id outside the declared exports is an error", () => {
-  const { errors } = validateCaseFile([
+  const { errors } = validateCaseFile(workspace, [
     {
       id: "529-6111-filled",
       nodeId: "529:6111",
@@ -664,7 +668,7 @@ test("a missing device case is proposed from the sibling the corpus has", () => 
   ])
   // The proposal is written through the same path a reviewed case uses, with the
   // device in its id.
-  const dir = temporaryDirectory("parity-sync-")
+  const dir = fixtureDirectory("parity-sync-")
   const file = path.join(dir, "cases.json")
   fs.writeFileSync(file, JSON.stringify(cases))
   const saved = saveCase(file, proposals[0])
@@ -777,7 +781,7 @@ test("a variant no reviewed case points at is proposed as a state draft", () => 
 })
 
 test("a state draft saves through the canonical path and waits for the review", () => {
-  const dir = temporaryDirectory("parity-state-")
+  const dir = fixtureDirectory("parity-state-")
   const file = path.join(dir, "cases.json")
   fs.writeFileSync(
     file,
@@ -806,7 +810,7 @@ test("a state draft saves through the canonical path and waits for the review", 
   assert.equal(saved.entry.variant, "2:11")
   assert.equal(saved.replaced, false)
   assert.equal(isDraftCase(saved.entry), true)
-  const { errors } = validateCaseFile([saved.entry], {
+  const { errors } = validateCaseFile(workspace, [saved.entry], {
     registry: panelRegistry,
     nodes: [panel],
     policy,
@@ -919,7 +923,7 @@ test("a draft case is not coverage until the reviewed render replaces its note",
 // The corpus is addressed by `--case <id>`: a refinement that gains a device (or
 // a scope) replaces the entry it refines instead of appending a namesake.
 test("refining a case with a device keeps its id and replaces the entry", () => {
-  const dir = temporaryDirectory("parity-save-")
+  const dir = fixtureDirectory("parity-save-")
   const file = path.join(dir, "cases.json")
   fs.writeFileSync(
     file,
@@ -973,20 +977,15 @@ test("--note replaces a draft note without losing the reviewed mapping", () => {
     subjects: { Label: "label" },
     note: DRAFT_NOTE,
   }
-  const args = { subjects: [], residues: [], ignores: [], fill: [], click: [], focus: [] }
-  const refined = specFromCase(
-    draft,
-    new Map([["note", "reviewed: the mobile composition at 320"]]),
-    args,
-  )
+  const refined = specFromCase(draft, { note: "reviewed: the mobile composition at 320" })
   assert.equal(refined.note, "reviewed: the mobile composition at 320")
   assert.equal(refined.root, '[data-slot="control"]')
   assert.deepEqual(refined.subjects, { Label: "label" })
   // Without `--note` the case keeps the note it carries: a plain re-run of the
   // case never clears it.
-  assert.equal(specFromCase(draft, new Map(), args).note, DRAFT_NOTE)
+  assert.equal(specFromCase(draft).note, DRAFT_NOTE)
 
-  const dir = temporaryDirectory("parity-note-")
+  const dir = fixtureDirectory("parity-note-")
   const file = path.join(dir, "cases.json")
   fs.writeFileSync(file, JSON.stringify([draft]))
   const saved = saveCase(file, refined, { id: draft.id })
@@ -1004,11 +1003,10 @@ test("--note annotates a case built from the command line", () => {
     export: "Control",
     storyIds: ["fixture--example"],
   }
-  const args = { subjects: [], residues: [], ignores: [], fill: [], click: [], focus: [] }
-  const spec = caseFromFlags(known, new Map([["note", "reviewed: the desktop first render"]]), args)
+  const spec = caseFromOptions(known, { note: "reviewed: the desktop first render" })
   assert.equal(spec.note, "reviewed: the desktop first render")
   assert.equal(spec.nodeId, "1:1")
-  assert.equal(caseFromFlags(known, new Map(), args).note, undefined)
+  assert.equal(caseFromOptions(known, {}).note, undefined)
 })
 
 // Fan-in counts the components that contain a node: the shared part first, the

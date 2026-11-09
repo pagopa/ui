@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // Figma design tokens — hermetic check and offline generation.
 //
-//   node src/cli.ts tokens write --input .figma/variables-with-ids.json
-//   node src/cli.ts tokens check
+//   pnpm ui-cli update tokens --input .figma/variables-with-ids.json
+//   pnpm ui-cli check tokens
 //
 // `--write` curates a pinned, read-only variable snapshot into the committed
 // source of truth (packages/tokens/src/manifest.json) together with the reviewed
@@ -28,8 +28,9 @@ import fs from "node:fs"
 import path from "node:path"
 import { z } from "zod"
 
-import { readJson } from "../lib/json.ts"
-import { enterRoot, tokensPath } from "../lib/paths.ts"
+import { readJson, writeJson } from "../lib/json.ts"
+import type { Workspace } from "../adapters/workspace.ts"
+import { report, type CheckReport } from "../checks/report.ts"
 import { parseSchema } from "../lib/validate.ts"
 import {
   FoundationsFileSchema,
@@ -41,15 +42,36 @@ import {
   TypographyValueSchema,
   EffectValueSchema,
 } from "../schemas/tokens.ts"
-import { fileKeyFromSource } from "./snapshot.ts"
 
-const MANIFEST_PATH = tokensPath("src/manifest.json")
-const FOUNDATIONS_PATH = tokensPath("src/foundations.json")
-const CSS_PATH = tokensPath("src/figma.generated.css")
-const TOKENS_CSS_PATH = tokensPath("src/tokens.generated.css")
-const INVENTORY_PATH = tokensPath("src/figma-tokens.generated.ts")
-const TEXT_CLASSES_PATH = tokensPath("src/figma-text-classes.generated.ts")
-const STYLES_PATH = "src/index.css"
+interface TokenPaths {
+  manifest: string
+  foundations: string
+  css: string
+  tokensCss: string
+  inventory: string
+  textClasses: string
+  styles: string
+}
+
+function tokenPaths(workspace: Workspace): TokenPaths {
+  return {
+    manifest: path.join(workspace.tokensRoot, "src/manifest.json"),
+    foundations: path.join(workspace.tokensRoot, "src/foundations.json"),
+    css: path.join(workspace.tokensRoot, "src/figma.generated.css"),
+    tokensCss: path.join(workspace.tokensRoot, "src/tokens.generated.css"),
+    inventory: path.join(workspace.tokensRoot, "src/figma-tokens.generated.ts"),
+    textClasses: path.join(workspace.tokensRoot, "src/figma-text-classes.generated.ts"),
+    styles: path.join(workspace.root, "src/index.css"),
+  }
+}
+
+function fileKeyFromWorkspace(workspace: Workspace): string {
+  const file = workspace.path("src/catalog/figma/file.ts")
+  const source = fs.readFileSync(file, "utf8")
+  const match = source.match(/FIGMA_FILE_KEY\s*=\s*["']([^"']+)["']/)
+  if (!match?.[1]) throw new Error("src/catalog/figma/file.ts must export a literal FIGMA_FILE_KEY")
+  return match[1]
+}
 
 const CANONICAL_PREFIXES = [
   "Color/",
@@ -203,80 +225,100 @@ function isFoundationEntry(entry: ManifestEntry): entry is FoundationEntry {
 
 // -------------------------------------------------------------------- main --
 
-export function runTokens(argv: string[] = process.argv.slice(2)): number {
-  enterRoot()
-  const mode = argv.includes("--write") ? "--write" : "--check"
-  if (mode === "--check" && argv.length > 0 && argv[0] !== "--check") {
-    throw new Error("Usage: node src/cli.ts tokens --write --input <snapshot> | --check")
+export function checkTokens(workspace: Workspace): CheckReport {
+  try {
+    const result = runTokens(workspace, "check")
+    return report("tokens", result.message, [], { details: result.details })
+  } catch (error) {
+    return report("tokens", "the manifest and generated token files must agree", [messageOf(error)])
   }
-  if (mode === "--write" && !(argv.length === 3 && argv[1] === "--input" && argv[2])) {
-    throw new Error("Usage: node src/cli.ts tokens --write --input <snapshot>")
-  }
+}
 
-  const source = fileKeyFromSource()
-  if (!source) throw new Error(`${STYLES_PATH}: FIGMA_FILE_KEY not found`)
+export function updateTokens(workspace: Workspace, input: string): string {
+  const result = runTokens(workspace, "write", input)
+  return [result.message, ...result.details.map((line) => `  ${line}`)].join("\n")
+}
 
-  if (mode === "--write") {
-    const snapshot = parseSchema(TokenSnapshotSchema, readJson(argv[2] ?? ""), "token snapshot")
-    const foundations = readFoundations()
-    const { manifest, report } = curatedManifest(snapshot, foundations)
-    validateManifest(manifest)
+function messageOf(error: unknown): string {
+  return error instanceof Error ? error.message : String(error)
+}
+
+function runTokens(
+  workspace: Workspace,
+  mode: "check" | "write",
+  input?: string,
+): { message: string; details: string[] } {
+  const paths = tokenPaths(workspace)
+  const fileKey = fileKeyFromWorkspace(workspace)
+
+  if (mode === "write") {
+    if (!input) throw new Error("update tokens needs --input <snapshot>")
+    const snapshot = parseSchema(TokenSnapshotSchema, readJson(input), "token snapshot")
+    const foundations = readFoundations(paths)
+    const { manifest, report: changes } = curatedManifest(snapshot, foundations, workspace, paths)
+    validateManifest(manifest, fileKey)
     const css = emitCss(manifest)
     const tokensCss = emitRootCss(manifest)
     const inventory = emitInventory(manifest)
     const textClasses = emitTextClasses(manifest)
-    fs.mkdirSync(path.dirname(MANIFEST_PATH), { recursive: true })
-    fs.writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2) + "\n")
-    fs.writeFileSync(CSS_PATH, css)
-    fs.writeFileSync(TOKENS_CSS_PATH, tokensCss)
-    fs.writeFileSync(INVENTORY_PATH, inventory)
-    fs.writeFileSync(TEXT_CLASSES_PATH, textClasses)
+    fs.mkdirSync(path.dirname(paths.manifest), { recursive: true })
+    writeJson(paths.manifest, manifest)
+    fs.writeFileSync(paths.css, css)
+    fs.writeFileSync(paths.tokensCss, tokensCss)
+    fs.writeFileSync(paths.inventory, inventory)
+    fs.writeFileSync(paths.textClasses, textClasses)
     const unresolved = Object.keys(snapshot.unresolved ?? {}).filter(
       (name) => !excludedReason(name),
     ).length
-    console.log(
-      `tokens write: ${Object.keys(manifest.variables).length} variables ` +
+    return {
+      message:
+        `tokens update: ${Object.keys(manifest.variables).length} variables ` +
         `(excluded ${Object.keys(manifest.excluded).length}, unresolved ${unresolved}) ` +
-        `+ ${Object.keys(manifest.foundations).length} foundations -> ${CSS_PATH}`,
-    )
-    for (const line of report) console.log(`  ${line}`)
-  } else {
-    const manifest = parseSchema(TokenManifestSchema, readJson(MANIFEST_PATH), MANIFEST_PATH)
-    validateManifest(manifest)
-    for (const [file, expected] of [
-      [CSS_PATH, emitCss(manifest)],
-      [TOKENS_CSS_PATH, emitRootCss(manifest)],
-      [INVENTORY_PATH, emitInventory(manifest)],
-      [TEXT_CLASSES_PATH, emitTextClasses(manifest)],
-    ]) {
-      const current = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : null
-      if (current !== expected) {
-        throw new Error(`${file} does not match the manifest — run figma-tokens --write`)
-      }
+        `+ ${Object.keys(manifest.foundations).length} foundations -> ${paths.css}`,
+      details: changes,
     }
-    const defined = new Set(allEntries(manifest).map((entry) => `--${entryCssName(entry)}`))
-    const missing = styleReferences().filter((reference) => !defined.has(reference))
-    if (missing.length) {
+  }
+
+  const manifest = parseSchema(TokenManifestSchema, readJson(paths.manifest), paths.manifest)
+  validateManifest(manifest, fileKey)
+  for (const [file, expected] of [
+    [paths.css, emitCss(manifest)],
+    [paths.tokensCss, emitRootCss(manifest)],
+    [paths.inventory, emitInventory(manifest)],
+    [paths.textClasses, emitTextClasses(manifest)],
+  ]) {
+    const current = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : null
+    if (current !== expected) {
       throw new Error(
-        `${STYLES_PATH} references tokens that the manifest does not define:\n` +
-          missing.map((name) => `  ${name}`).join("\n"),
+        `${file} does not match the manifest — run "ui-cli update tokens --input <snapshot>"`,
       )
     }
-    const counts: Record<string, number> = {}
-    for (const entry of allEntries(manifest)) {
-      counts[entry.type] = (counts[entry.type] ?? 0) + 1
-    }
-    console.log(
-      `tokens check: ${Object.keys(manifest.variables).length} variables ` +
-        `(excluded ${Object.keys(manifest.excluded).length}) ` +
-        `+ ${Object.keys(manifest.foundations).length} foundations ` +
-        `(${Object.entries(counts)
-          .sort(([a], [b]) => a.localeCompare(b))
-          .map(([type, count]) => `${type.toLowerCase()} ${count}`)
-          .join(" · ")})`,
+  }
+  const defined = new Set(allEntries(manifest).map((entry) => `--${entryCssName(entry)}`))
+  const missing = styleReferences(paths).filter((reference) => !defined.has(reference))
+  if (missing.length) {
+    throw new Error(
+      `${paths.styles} references tokens that the manifest does not define:\n` +
+        missing.map((name) => `  ${name}`).join("\n"),
     )
   }
-  return 0
+  const counts: Record<string, number> = {}
+  for (const entry of allEntries(manifest)) counts[entry.type] = (counts[entry.type] ?? 0) + 1
+  return {
+    message:
+      `${Object.keys(manifest.variables).length} variables ` +
+      `(excluded ${Object.keys(manifest.excluded).length}) ` +
+      `+ ${Object.keys(manifest.foundations).length} foundations ` +
+      `(${Object.entries(counts)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([type, count]) => `${type.toLowerCase()} ${count}`)
+        .join(" · ")})`,
+    details: [
+      `check tokens: ${Object.keys(manifest.variables).length} variables ` +
+        `(excluded ${Object.keys(manifest.excluded).length}) ` +
+        `+ ${Object.keys(manifest.foundations).length} foundations`,
+    ],
+  }
 }
 
 // ------------------------------------------------------------------ parsing --
@@ -642,8 +684,8 @@ function emitTextClasses(manifest: Manifest): string {
 
 // ------------------------------------------------------------- validation --
 
-function readFoundations(): z.infer<typeof FoundationsFileSchema> {
-  return parseSchema(FoundationsFileSchema, readJson(FOUNDATIONS_PATH), FOUNDATIONS_PATH)
+function readFoundations(paths: TokenPaths): z.infer<typeof FoundationsFileSchema> {
+  return parseSchema(FoundationsFileSchema, readJson(paths.foundations), paths.foundations)
 }
 
 type PriorToken = {
@@ -672,14 +714,14 @@ const PreviousManifestSchema = z.looseObject({
     .optional(),
 })
 
-function previousManifest(): {
+function previousManifest(manifestPath: string): {
   byId: Map<string, PriorToken>
   byName: Map<string, PriorToken>
 } {
-  if (!fs.existsSync(MANIFEST_PATH)) {
+  if (!fs.existsSync(manifestPath)) {
     return { byId: new Map(), byName: new Map() }
   }
-  const previous = parseSchema(PreviousManifestSchema, readJson(MANIFEST_PATH), MANIFEST_PATH)
+  const previous = parseSchema(PreviousManifestSchema, readJson(manifestPath), manifestPath)
   const byId = new Map<string, PriorToken>()
   const byName = new Map<string, PriorToken>()
   if (previous.schemaVersion === 1) {
@@ -695,108 +737,112 @@ function previousManifest(): {
   return { byId, byName }
 }
 
-function curatedManifest(
-  snapshot: TokenSnapshot,
-  foundationsSource: z.infer<typeof FoundationsFileSchema>,
-): { manifest: Manifest; report: string[] } {
-  const fileKey = fileKeyFromSource()
-  if (!fileKey) throw new Error(`${STYLES_PATH}: FIGMA_FILE_KEY not found`)
-  if (snapshot.fileKey && snapshot.fileKey !== fileKey) {
-    throw new Error("The variable snapshot belongs to a different Figma file")
+type ManifestCuration = {
+  variables: Record<string, TokenEntry>
+  excluded: Record<string, string>
+  unmapped: string[]
+  report: string[]
+  carried: number
+  synthetic: number
+  unresolvedIds: number
+  renamed: number
+  relinked: number
+}
+
+function emptyCuration(): ManifestCuration {
+  return {
+    variables: {},
+    excluded: {},
+    unmapped: [],
+    report: [],
+    carried: 0,
+    synthetic: 0,
+    unresolvedIds: 0,
+    renamed: 0,
+    relinked: 0,
   }
-  const { byId, byName } = previousManifest()
-  const ids = snapshot.ids ?? {}
-  const variables: Record<string, TokenEntry> = {}
-  const excluded: Record<string, string> = {}
-  const unmapped: string[] = []
-  const report: string[] = []
-  let carried = 0
-  let synthetic = 0
-  let unresolvedIds = 0
-  let renamed = 0
-  let relinked = 0
-  for (const [name, raw] of Object.entries(snapshot.variables ?? {})) {
-    // Explicit exclusions override the canonical prefixes: legacy libraries
-    // sometimes reuse a canonical prefix (Color/Blue IO/*).
-    const reason = excludedReason(name)
-    if (reason) {
-      excluded[name] = reason
-      continue
-    }
-    if (!isCanonical(name)) {
-      unmapped.push(name)
-      continue
-    }
-    const idInfo = ids[name]
-    const incomingId =
-      typeof idInfo === "string"
-        ? idInfo
-        : idInfo && typeof idInfo === "object" && "key" in idInfo && typeof idInfo.key === "string"
-          ? idInfo.key
-          : null
-    const prior = (incomingId && byId.get(incomingId)) || byName.get(name)
-    const id = incomingId ?? prior?.id ?? `local:${name}`
-    if (incomingId && prior?.id && prior.id !== incomingId) {
-      relinked++
-      report.push(`relinked ${name}: ${prior.id} -> ${incomingId}`)
-    } else if (!incomingId && prior?.id && !prior.id.startsWith("local:")) {
-      carried++
-    } else if (!incomingId && prior?.id) {
-      unresolvedIds++
-    } else if (!incomingId) {
-      synthetic++
-      report.push(`no stable id for ${name}: recorded as ${id}`)
-    }
-    if (incomingId && prior && prior.name !== name) {
-      renamed++
-      report.push(`renamed ${prior.name} -> ${name} (${id})`)
-    }
-    if (typeof raw !== "string") throw new Error(`${name}: unsupported variable value`)
-    const token = classify(raw, name)
-    const alias = prior?.alias ?? TYPOGRAPHY_ALIASES[name]
-    if (token.type === "TYPOGRAPHY" && !alias) {
-      throw new Error(`${name}: missing text-* alias for the typography scale`)
-    }
-    variables[id] = {
-      id,
-      idKind: parseSchema(
-        z.enum(["variable", "style", "name"]),
-        (idInfo && typeof idInfo === "object" && "kind" in idInfo && typeof idInfo.kind === "string"
-          ? idInfo.kind
-          : undefined) ??
-          prior?.idKind ??
-          (incomingId ? "variable" : "name"),
-        `${name}: idKind`,
-      ),
-      idLibrary:
-        (idInfo &&
-        typeof idInfo === "object" &&
-        "library" in idInfo &&
-        typeof idInfo.library === "string"
-          ? idInfo.library
-          : undefined) ??
-        prior?.idLibrary ??
-        null,
-      name,
-      type: token.type,
-      value: token.value,
-      cssName: prior?.cssName ?? cssNameFor(name),
-      ...(alias ? { alias } : {}),
-    }
+}
+
+function curateVariable(
+  name: string,
+  raw: unknown,
+  ids: NonNullable<TokenSnapshot["ids"]>,
+  byId: Map<string, PriorToken>,
+  byName: Map<string, PriorToken>,
+  state: ManifestCuration,
+): void {
+  const reason = excludedReason(name)
+  if (reason) {
+    state.excluded[name] = reason
+    return
   }
-  if (unmapped.length) {
+  if (!isCanonical(name)) {
+    state.unmapped.push(name)
+    return
+  }
+  const info = ids[name]
+  const incomingId =
+    typeof info === "string"
+      ? info
+      : info && typeof info === "object" && "key" in info && typeof info.key === "string"
+        ? info.key
+        : null
+  const prior = (incomingId && byId.get(incomingId)) || byName.get(name)
+  const id = incomingId ?? prior?.id ?? `local:${name}`
+  if (incomingId && prior?.id && prior.id !== incomingId) {
+    state.relinked++
+    state.report.push(`relinked ${name}: ${prior.id} -> ${incomingId}`)
+  } else if (!incomingId && prior?.id && !prior.id.startsWith("local:")) state.carried++
+  else if (!incomingId && prior?.id) state.unresolvedIds++
+  else if (!incomingId) {
+    state.synthetic++
+    state.report.push(`no stable id for ${name}: recorded as ${id}`)
+  }
+  if (incomingId && prior && prior.name !== name) {
+    state.renamed++
+    state.report.push(`renamed ${prior.name} -> ${name} (${id})`)
+  }
+  if (typeof raw !== "string") throw new Error(`${name}: unsupported variable value`)
+  const token = classify(raw, name)
+  const alias = prior?.alias ?? TYPOGRAPHY_ALIASES[name]
+  if (token.type === "TYPOGRAPHY" && !alias)
+    throw new Error(`${name}: missing text-* alias for the typography scale`)
+  state.variables[id] = {
+    id,
+    idKind: parseSchema(
+      z.enum(["variable", "style", "name"]),
+      (info && typeof info === "object" && "kind" in info && typeof info.kind === "string"
+        ? info.kind
+        : undefined) ??
+        prior?.idKind ??
+        (incomingId ? "variable" : "name"),
+      `${name}: idKind`,
+    ),
+    idLibrary:
+      (info && typeof info === "object" && "library" in info && typeof info.library === "string"
+        ? info.library
+        : undefined) ??
+      prior?.idLibrary ??
+      null,
+    name,
+    type: token.type,
+    value: token.value,
+    cssName: prior?.cssName ?? cssNameFor(name),
+    ...(alias ? { alias } : {}),
+  }
+}
+
+function validateUnresolved(snapshot: TokenSnapshot, state: ManifestCuration): void {
+  if (state.unmapped.length) {
     throw new Error(
-      `Unmapped variable namespaces (${unmapped.length}) — extend the canonical prefixes or the exclusion patterns:\n` +
-        unmapped.map((name) => `  ${name}`).join("\n"),
+      `Unmapped variable namespaces (${state.unmapped.length}) — extend the canonical prefixes or the exclusion patterns:\n` +
+        state.unmapped.map((name) => `  ${name}`).join("\n"),
     )
   }
-  // Unresolved names (present in the library, not bound to a reachable node)
-  // must not linger: every one is either captured with a value or disposed by
-  // a reasoned exclusion pattern.
   const unresolved: string[] = []
   for (const name of Object.keys(snapshot.unresolved ?? {})) {
     const reason = excludedReason(name)
-    if (reason) excluded[name] = reason
+    if (reason) state.excluded[name] = reason
     else unresolved.push(name)
   }
   if (unresolved.length) {
@@ -805,13 +851,16 @@ function curatedManifest(
         unresolved.map((name) => `  ${name}`).join("\n"),
     )
   }
-  const seen = new Set(Object.keys(variables))
-  const seenNames = new Set(Object.values(variables).map((entry) => entry.name))
+}
+
+function appendCurationSummary(state: ManifestCuration, byId: Map<string, PriorToken>): void {
+  const seen = new Set(Object.keys(state.variables))
+  const seenNames = new Set(Object.values(state.variables).map((entry) => entry.name))
   const removed = [...byId.keys()].filter(
     (id) => !seen.has(id) && !seenNames.has(byId.get(id)?.name ?? ""),
   )
-  if (removed.length) {
-    report.push(
+  if (removed.length)
+    state.report.push(
       `removed ${removed.length}: ` +
         removed
           .map((id) => byId.get(id)?.name ?? id)
@@ -819,51 +868,65 @@ function curatedManifest(
           .join(", ") +
         (removed.length > 6 ? ", …" : ""),
     )
-  }
-  if (carried) {
-    report.push(
-      `${carried} ids carried over by name — export the variables with a figma id map to make renames explicit`,
+  if (state.carried)
+    state.report.push(
+      `${state.carried} ids carried over by name — export the variables with a figma id map to make renames explicit`,
     )
+  if (state.synthetic) state.report.push(`${state.synthetic} entries without a stable id`)
+  if (state.unresolvedIds)
+    state.report.push(
+      `${state.unresolvedIds} entries have no published id — their key stays local:<name>`,
+    )
+  if (state.renamed)
+    state.report.push(`${state.renamed} renames recorded — the id, the css name and the alias stay`)
+  if (state.relinked) state.report.push(`${state.relinked} entries relinked to their published key`)
+}
+
+function curatedManifest(
+  snapshot: TokenSnapshot,
+  foundationsSource: z.infer<typeof FoundationsFileSchema>,
+  workspace: Workspace,
+  paths: TokenPaths,
+): { manifest: Manifest; report: string[] } {
+  const fileKey = fileKeyFromWorkspace(workspace)
+  if (snapshot.fileKey && snapshot.fileKey !== fileKey)
+    throw new Error("The variable snapshot belongs to a different Figma file")
+  const { byId, byName } = previousManifest(paths.manifest)
+  const state = emptyCuration()
+  for (const [name, raw] of Object.entries(snapshot.variables ?? {})) {
+    curateVariable(name, raw, snapshot.ids ?? {}, byId, byName, state)
   }
-  if (synthetic) report.push(`${synthetic} entries without a stable id`)
-  if (unresolvedIds) {
-    report.push(`${unresolvedIds} entries have no published id — their key stays local:<name>`)
-  }
-  if (renamed) report.push(`${renamed} renames recorded — the id, the css name and the alias stay`)
-  if (relinked) report.push(`${relinked} entries relinked to their published key`)
+  validateUnresolved(snapshot, state)
+  appendCurationSummary(state, byId)
+  return buildCuratedManifest(snapshot, foundationsSource, fileKey, paths, state)
+}
+
+function buildCuratedManifest(
+  snapshot: TokenSnapshot,
+  foundationsSource: z.infer<typeof FoundationsFileSchema>,
+  fileKey: string,
+  paths: TokenPaths,
+  state: ManifestCuration,
+): { manifest: Manifest; report: string[] } {
   const foundations: Record<string, FoundationEntry> = {}
-  for (const [id, entry] of Object.entries(foundationsSource.entries)) {
-    foundations[id] = {
-      ...entry,
-      id,
-      cssName: cssNameFor(entry.name),
-    }
-  }
-  const sorted = Object.fromEntries(
-    Object.entries(variables).sort(([a], [b]) => a.localeCompare(b)),
+  for (const [id, entry] of Object.entries(foundationsSource.entries))
+    foundations[id] = { ...entry, id, cssName: cssNameFor(entry.name) }
+  const sort = <T>(record: Record<string, T>): Record<string, T> =>
+    Object.fromEntries(Object.entries(record).sort(([a], [b]) => a.localeCompare(b)))
+  const manifest = parseSchema(
+    TokenManifestSchema,
+    {
+      schemaVersion: 2,
+      fileKey,
+      syncedAt: snapshot.syncedAt ?? new Date().toISOString().slice(0, 10),
+      source: snapshot.source ?? { method: "unknown" },
+      variables: sort(state.variables),
+      foundations: sort(foundations),
+      excluded: sort(state.excluded),
+    },
+    paths.manifest,
   )
-  const sortedFoundations = Object.fromEntries(
-    Object.entries(foundations).sort(([a], [b]) => a.localeCompare(b)),
-  )
-  const sortedExcluded = Object.fromEntries(
-    Object.entries(excluded).sort(([a], [b]) => a.localeCompare(b)),
-  )
-  return {
-    manifest: parseSchema(
-      TokenManifestSchema,
-      {
-        schemaVersion: 2,
-        fileKey,
-        syncedAt: snapshot.syncedAt ?? new Date().toISOString().slice(0, 10),
-        source: snapshot.source ?? { method: "unknown" },
-        variables: sorted,
-        foundations: sortedFoundations,
-        excluded: sortedExcluded,
-      },
-      MANIFEST_PATH,
-    ),
-    report,
-  }
+  return { manifest, report: state.report }
 }
 
 function validateEffectList(value: unknown, name: string): void {
@@ -947,10 +1010,9 @@ function validateFoundationEntry(
   cssNames.set(entryCssName(entry), id)
 }
 
-function validateManifest(manifest: Manifest): void {
+function validateManifest(manifest: Manifest, fileKey: string): void {
   if (manifest.schemaVersion !== 2) throw new Error("Unsupported manifest schema version")
-  const fileKey = fileKeyFromSource()
-  if (!fileKey || manifest.fileKey !== fileKey) {
+  if (manifest.fileKey !== fileKey) {
     throw new Error("The manifest does not belong to the configured Figma file")
   }
   if (typeof manifest.syncedAt !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(manifest.syncedAt)) {
@@ -1015,10 +1077,10 @@ function validateManifest(manifest: Manifest): void {
   }
 }
 
-function styleReferences(): string[] {
-  const source = fs.readFileSync(STYLES_PATH, "utf8")
+function styleReferences(paths: TokenPaths): string[] {
+  const source = fs.readFileSync(paths.styles, "utf8")
   if (!source.includes('@import "pagopa-ui-tokens/figma.generated.css";')) {
-    throw new Error(`${STYLES_PATH}: missing the generated tokens import`)
+    throw new Error(`${paths.styles}: missing the generated tokens import`)
   }
   return [...new Set([...source.matchAll(/var\((--figma-[a-z0-9-]+)/g)].map((match) => match[1]))]
 }

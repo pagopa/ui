@@ -1569,7 +1569,7 @@ function VersionPanel({ item }: { item: RegistryItem }) {
                 <p className="mt-2 text-[10.5px] text-slate-500">
                   Burn-down command:{" "}
                   <code className="font-mono text-slate-700">
-                    pnpm figma:parity:queue --uncovered
+                    pnpm ui-cli parity queue --uncovered
                   </code>
                 </p>
               ) : null}

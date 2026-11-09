@@ -16,7 +16,7 @@ import path from "node:path"
 import { readJson, writeJson } from "../lib/json.ts"
 import { sha256 } from "../lib/hash.ts"
 import { walkFiles } from "../lib/fs.ts"
-import { enterRoot, resolveWorkspaceRoot } from "../lib/paths.ts"
+import type { Workspace } from "../adapters/workspace.ts"
 import { UsageError } from "../lib/command.ts"
 import { InventorySchema, RegistrySchema } from "../schemas/catalogue.ts"
 import {
@@ -29,7 +29,6 @@ import {
   type RulesSnapshot,
   ExtractedCardSchema,
   RuleCardSchema,
-  RuleDispositionSchema,
   RuleScopeSchema,
   RulesLedgerSchema,
   RulesSnapshotSchema,
@@ -220,8 +219,7 @@ export function extractPages(
 export function readRulesSnapshot(root: string, required = true): RulesSnapshot | null {
   const file = path.join(root, RULES_SNAPSHOT_PATH)
   if (!fs.existsSync(file)) {
-    if (required)
-      throw new UsageError(`${RULES_SNAPSHOT_PATH} is missing: run figma:rules --refresh`)
+    if (required) throw new UsageError(`${RULES_SNAPSHOT_PATH} is missing: run figma rules refresh`)
     return null
   }
   return readJson(file, RulesSnapshotSchema)
@@ -234,7 +232,7 @@ function writeRulesSnapshot(root: string, snapshot: RulesSnapshot): void {
 export function readLedger(root: string, required = true): RulesLedger | null {
   const file = path.join(root, RULES_PATH)
   if (!fs.existsSync(file)) {
-    if (required) throw new UsageError(`${RULES_PATH} is missing: run figma:rules --init`)
+    if (required) throw new UsageError(`${RULES_PATH} is missing: run figma rules init`)
     return null
   }
   return readJson(file, RulesLedgerSchema)
@@ -285,18 +283,22 @@ export function canonicalLedger(ledger: RulesLedger): RulesLedger {
   return { schemaVersion: 1, fileKey: ledger.fileKey, cards: Object.fromEntries(cards) }
 }
 
-function writeLedger(root: string, ledger: RulesLedger): void {
+export function writeRulesLedger(root: string, ledger: RulesLedger): void {
   writeJson(path.join(root, RULES_PATH), canonicalLedger(ledger))
 }
 
 // ------------------------------------------------------------------ refresh
 
-export async function refresh(args: { pageId?: string; nodeId?: string }): Promise<RulesSnapshot> {
-  const root = enterRoot()
+export async function refresh(
+  workspace: Workspace,
+  token: string,
+  args: { pageId?: string; nodeId?: string },
+): Promise<RulesSnapshot> {
+  const root = workspace.root
   const fileKey = fileKeyOf(root)
   // One read answers both: the page list is pinned to the same version the
   // node reads below use.
-  const { version, pages } = await fetchFilePages(fileKey)
+  const { version, pages } = await fetchFilePages(fileKey, token)
 
   let selected = pages
   if (args.pageId) selected = pages.filter((page) => page.id === args.pageId)
@@ -314,6 +316,7 @@ export async function refresh(args: { pageId?: string; nodeId?: string }): Promi
     fileKey,
     version,
     selected.map((page) => page.id),
+    token,
     2,
   )
   const containers = new Map<string, string[]>()
@@ -328,7 +331,7 @@ export async function refresh(args: { pageId?: string; nodeId?: string }): Promi
     )
   }
   const ids = [...containers.values()].flat()
-  const documents = await fetchNodeTrees(fileKey, version, ids)
+  const documents = await fetchNodeTrees(fileKey, version, ids, token)
   const extracted = extractPages(
     selected,
     new Map(
@@ -447,6 +450,7 @@ export function mark(
   ledger: RulesLedger,
   snapshot: RulesSnapshot,
   root: string,
+  workspaceRoot: string,
   options: {
     cardId: string
     disposition: RuleDisposition
@@ -500,7 +504,7 @@ export function mark(
 
   if (options.disposition === "imported") {
     if (!card.guide) throw new UsageError("an imported rule needs --guide <path>")
-    const guideFile = path.join(resolveWorkspaceRoot(), card.guide)
+    const guideFile = path.join(workspaceRoot, card.guide)
     if (!fs.existsSync(guideFile)) throw new UsageError(`${card.guide} does not exist`)
     const text = fs.readFileSync(guideFile, "utf8")
     if (!hasComponentRules(text)) {
@@ -537,6 +541,7 @@ export function check(
   ledger: RulesLedger,
   snapshot: RulesSnapshot | null,
   root: string,
+  workspaceRoot: string,
   strict: boolean,
 ): CheckReport {
   const errors: string[] = []
@@ -552,11 +557,10 @@ export function check(
     removed: 0,
     stale: 0,
   }
-  const workspace = resolveWorkspaceRoot()
   const guidesWithBlock = new Set(
-    walkFiles(path.join(workspace, GUIDES_DIR), (file) => file.endsWith(".md"))
+    walkFiles(path.join(workspaceRoot, GUIDES_DIR), (file) => file.endsWith(".md"))
       .filter((file) => hasComponentRules(fs.readFileSync(file, "utf8")))
-      .map((file) => path.relative(workspace, file).split(path.sep).join("/")),
+      .map((file) => path.relative(workspaceRoot, file).split(path.sep).join("/")),
   )
   const importedGuides = new Set<string>()
   for (const [id, card] of Object.entries(ledger.cards)) {
@@ -571,10 +575,10 @@ export function check(
       if (!card.guide) errors.push(`${id}: imported rule has no guide`)
       else {
         importedGuides.add(card.guide)
-        if (!fs.existsSync(path.join(workspace, card.guide))) {
+        if (!fs.existsSync(path.join(workspaceRoot, card.guide))) {
           errors.push(`${id}: guide ${card.guide} does not exist`)
         } else {
-          const text = fs.readFileSync(path.join(workspace, card.guide), "utf8")
+          const text = fs.readFileSync(path.join(workspaceRoot, card.guide), "utf8")
           if (!hasComponentRules(text)) {
             errors.push(`${id}: guide ${card.guide} has no component-rules block`)
           } else if (!componentRulesFirst(text)) {
@@ -589,7 +593,7 @@ export function check(
     if (
       card.disposition === "conflict" &&
       card.request &&
-      !fs.existsSync(path.join(resolveWorkspaceRoot(), card.request))
+      !fs.existsSync(path.join(workspaceRoot, card.request))
     ) {
       errors.push(`${id}: design request ${card.request} does not exist`)
     }
@@ -632,198 +636,4 @@ export function rulesForNode(
 
 export function cardForNode(snapshot: RulesSnapshot, cardId: string) {
   return cardIndex(snapshot).get(cardId) ?? null
-}
-
-// ------------------------------------------------------------------ command
-
-function option(argv: string[], name: string): string | undefined {
-  const index = argv.indexOf(`--${name}`)
-  return index >= 0 ? argv[index + 1] : undefined
-}
-
-function flag(argv: string[], name: string): boolean {
-  return argv.includes(`--${name}`)
-}
-
-export async function runRules(argv: string[] = process.argv.slice(2)): Promise<number> {
-  const root = enterRoot()
-  const json = flag(argv, "json")
-
-  if (flag(argv, "refresh")) {
-    const started = Date.now()
-    const snapshot = await refresh({
-      pageId: option(argv, "page"),
-      nodeId: option(argv, "node"),
-    })
-    const cards = snapshot.pages.flatMap((page) => page.containers.flatMap((c) => c.cards))
-    const real = cards.filter((card) => !card.placeholder)
-    console.log(
-      `rules: refreshed ${snapshot.pages.length} page(s), ${cards.length} cards ` +
-        `(${real.length} consolidated, ${cards.length - real.length} placeholder) ` +
-        `in ${((Date.now() - started) / 1000).toFixed(1)}s · version ${snapshot.version}`,
-    )
-    return 0
-  }
-
-  const snapshot = readRulesSnapshot(root, false)
-  const ledger = readLedger(root, !flag(argv, "init"))
-
-  if (flag(argv, "init")) {
-    if (!snapshot)
-      throw new UsageError(`${RULES_SNAPSHOT_PATH} is missing: run figma:rules --refresh`)
-    const target = ledger ?? { schemaVersion: 1 as const, fileKey: snapshot.fileKey, cards: {} }
-    const added = initLedger(snapshot, target, root)
-    writeLedger(root, target)
-    console.log(
-      `rules: init added ${added} pending card(s) · ${Object.keys(target.cards).length} total`,
-    )
-    return 0
-  }
-
-  if (!ledger) throw new UsageError(`${RULES_PATH} is missing: run figma:rules --init`)
-
-  if (flag(argv, "sync")) {
-    if (!snapshot)
-      throw new UsageError(`${RULES_SNAPSHOT_PATH} is missing: run figma:rules --refresh`)
-    const removed = sync(ledger, snapshot)
-    writeLedger(root, ledger)
-    console.log(
-      `rules: sync marked ${removed} card(s) removed · ${Object.keys(ledger.cards).length} total`,
-    )
-    return 0
-  }
-
-  if (flag(argv, "mark")) {
-    if (!snapshot)
-      throw new UsageError(`${RULES_SNAPSHOT_PATH} is missing: run figma:rules --refresh`)
-    const cardId = option(argv, "card") ?? option(argv, "mark")
-    if (!cardId) throw new UsageError("figma:rules --mark needs a card id")
-    const parsed = RuleDispositionSchema.safeParse(option(argv, "disposition"))
-    if (!parsed.success) {
-      throw new UsageError("figma:rules --mark needs a valid --disposition")
-    }
-    const disposition = parsed.data
-    const card = mark(ledger, snapshot, root, {
-      cardId,
-      disposition,
-      titleEn: option(argv, "title-en"),
-      summary: option(argv, "summary"),
-      guide: option(argv, "guide"),
-      targets: option(argv, "targets"),
-      reason: option(argv, "reason"),
-      duplicateOf: option(argv, "duplicate-of"),
-      request: option(argv, "request"),
-      scope: option(argv, "scope"),
-    })
-    writeLedger(root, ledger)
-    console.log(`rules: ${cardId} → ${card.disposition}${card.titleEn ? ` · ${card.titleEn}` : ""}`)
-    return 0
-  }
-
-  if (flag(argv, "check")) {
-    const report = check(ledger, snapshot, root, flag(argv, "strict"))
-    if (json) {
-      console.log(JSON.stringify(report, null, 2))
-    } else if (report.errors.length) {
-      console.error(`rules:check: ${report.errors.length} problem(s)`)
-      for (const error of report.errors) console.error(`  ${error}`)
-    } else {
-      const total = Object.values(report.counts).reduce((sum, value) => sum + value, 0)
-      console.log(
-        `rules:check: ok (${total} cards, ${report.counts.pending} pending` +
-          `${snapshot ? ", snapshot compared" : ", no snapshot"})`,
-      )
-    }
-    return report.errors.length ? 1 : 0
-  }
-
-  if (flag(argv, "node")) {
-    const node = option(argv, "node")
-    if (!node) throw new UsageError("figma:rules --node needs a node id")
-    const cards = rulesForNode(ledger, snapshot, root, node)
-    if (json) {
-      console.log(JSON.stringify(cards, null, 2))
-      return 0
-    }
-    if (cards.length === 0) {
-      console.log(`rules: no rule targets ${node}`)
-      return 0
-    }
-    for (const card of cards) {
-      const title = card.titleEn ?? card.title
-      const detail = card.summary ?? card.reason ?? card.body ?? ""
-      console.log(`${card.disposition.padEnd(12)} ${title}${detail ? ` — ${detail}` : ""}`)
-    }
-    return 0
-  }
-
-  if (flag(argv, "card")) {
-    const id = option(argv, "card")
-    if (!id) throw new UsageError("figma:rules --card needs a card id")
-    const found = snapshot ? cardForNode(snapshot, id) : null
-    if (!found) throw new UsageError(`${id} is not in the live snapshot`)
-    const entry = ledger.cards[id] ?? null
-    if (json) {
-      console.log(JSON.stringify({ card: found.card, entry }, null, 2))
-      return 0
-    }
-    console.log(`card     ${id} · ${found.card.section ?? "unfiled"} · ${found.card.status}`)
-    console.log(`title    ${found.card.title}`)
-    console.log(`body     ${found.card.body.replace(/\s+/g, " ")}`)
-    console.log(`hash     ${sourceHash(found.card.title, found.card.body)}`)
-    if (entry)
-      console.log(`decision ${entry.disposition}${entry.titleEn ? ` · ${entry.titleEn}` : ""}`)
-    return 0
-  }
-
-  if (!snapshot) {
-    const counts = Object.values(ledger.cards).reduce<Record<string, number>>((acc, card) => {
-      acc[card.disposition] = (acc[card.disposition] ?? 0) + 1
-      return acc
-    }, {})
-    console.log(JSON.stringify({ version: ledger.fileKey, counts }, null, 2))
-    console.log(`rules: ${RULES_SNAPSHOT_PATH} is missing; refresh to plan a diff`)
-    return 0
-  }
-
-  const diff = plan(snapshot, ledger)
-  const live = [...diff.live.values()].filter((entry) => !entry.card.placeholder)
-  const counts = Object.values(ledger.cards).reduce<Record<string, number>>((acc, card) => {
-    acc[card.disposition] = (acc[card.disposition] ?? 0) + 1
-    return acc
-  }, {})
-  if (json) {
-    console.log(
-      JSON.stringify(
-        {
-          version: snapshot.version,
-          consolidated: live.length,
-          counts,
-          new: diff.fresh,
-          stale: diff.stale,
-          removed: diff.removed,
-        },
-        null,
-        2,
-      ),
-    )
-  } else {
-    console.log(
-      `rules: ${live.length} consolidated · ${counts.imported ?? 0} imported · ` +
-        `${counts.recorded ?? 0} recorded · ${counts.pending ?? 0} pending · ${diff.stale.length} stale`,
-    )
-    console.log(
-      `cards: ${diff.fresh.length} new · ${diff.stale.length} stale · ${diff.removed.length} removed`,
-    )
-    for (const id of [...diff.fresh, ...diff.stale]) {
-      const found = diff.live.get(id)
-      if (found)
-        console.log(`  ${diff.fresh.includes(id) ? "new  " : "stale"} ${id} ${found.card.title}`)
-    }
-    for (const id of diff.removed) console.log(`  removed ${id} ${ledger.cards[id]?.title ?? ""}`)
-  }
-  // A report, not a gate: the drift it prints is work for a person, and
-  // `figma:rules --check` is what fails on it. The drift job reads this same
-  // output, so a nonzero code here would only fail a job that must stay green.
-  return 0
 }

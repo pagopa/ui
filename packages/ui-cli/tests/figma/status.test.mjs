@@ -1,17 +1,17 @@
 import assert from "node:assert/strict"
 import { spawnSync } from "node:child_process"
 import fs from "node:fs"
-import os from "node:os"
 import path from "node:path"
 import { test } from "node:test"
 import { fileURLToPath } from "node:url"
 
-import { fixtureEnv } from "../../src/lib/paths.ts"
+import { fixtureEnvironment, fixtureTree } from "../helpers/cli.mjs"
 
 const script = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
 
 function fixture(files, env = {}) {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-figma-status-"))
+  const tree = fixtureTree({}, "pagopa-figma-status-")
+  const root = tree.root
   try {
     for (const [file, source] of Object.entries(files)) {
       const target = path.join(root, file)
@@ -21,10 +21,10 @@ function fixture(files, env = {}) {
     return spawnSync(process.execPath, [script, "figma", "status", "--json"], {
       cwd: root,
       encoding: "utf8",
-      env: fixtureEnv(root, { FIGMA_TOKEN: "", ...env }),
+      env: fixtureEnvironment(root, { PATH: "", FIGMA_TOKEN: "", ...env }),
     })
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    tree.dispose()
   }
 }
 

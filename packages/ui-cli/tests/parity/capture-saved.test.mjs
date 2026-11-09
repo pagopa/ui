@@ -1,16 +1,15 @@
+import { fixtureTree, runCli } from "../helpers/cli.mjs"
 import assert from "node:assert/strict"
-import { spawnSync } from "node:child_process"
 import fs from "node:fs"
-import os from "node:os"
 import path from "node:path"
 import { test } from "node:test"
 import { fileURLToPath } from "node:url"
 
-import { captureWave } from "../../src/parity/cli.ts"
-import { fixtureEnv, toolingPath } from "../../src/lib/paths.ts"
+import { captureWave } from "../../src/parity/capture.ts"
+import { workspaceAt } from "../helpers/cli.mjs"
+import { TOOLING_ROOT } from "../../src/adapters/workspace.ts"
 
-const script = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
-const source = toolingPath("tests/fixtures/figma-parity/snapshot-slice.json")
+const source = path.join(TOOLING_ROOT, "tests/fixtures/figma-parity/snapshot-slice.json")
 const evidence = fileURLToPath(
   new URL("../../../../docs/figma-parity/source.json.br", import.meta.url),
 )
@@ -39,35 +38,33 @@ const cases = [
 ]
 
 function fixture(entries = cases) {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-capture-saved-"))
+  const root = fixtureTree({}, "pagopa-capture-saved-").root
   const corpus = path.join(root, "cases.json")
   fs.writeFileSync(corpus, JSON.stringify(entries))
+  fs.mkdirSync(path.join(root, "src/catalog/figma"), { recursive: true })
+  fs.writeFileSync(
+    path.join(root, "src/catalog/figma/inventory.json"),
+    JSON.stringify({ fileKey: "fixture", components: [] }),
+  )
+  fs.copyFileSync(
+    path.join(TOOLING_ROOT, "../pagopa-ui/src/catalog/figma/device-policy.json"),
+    path.join(root, "src/catalog/figma/device-policy.json"),
+  )
   return { root, corpus, out: path.join(root, "output") }
 }
 
 function cli(f, args) {
-  return spawnSync(process.execPath, [script, "parity", "capture", ...args], {
-    encoding: "utf8",
-    env: fixtureEnv(f.root),
-  })
+  return runCli(["parity", "capture", ...args], { root: f.root })
 }
 
-function parsed(f, extra = []) {
+function options(f, extra = []) {
   return {
-    flags: new Map([
-      ["saved", true],
-      ["node", "1:1"],
-      ["cases", f.corpus],
-      ["input", source],
-      ["out", f.out],
-      ...extra,
-    ]),
-    subjects: [],
-    residues: [],
-    ignores: [],
-    fill: [],
-    click: [],
-    focus: [],
+    saved: true,
+    nodeId: "1:1",
+    casesFile: f.corpus,
+    input: source,
+    outDir: f.out,
+    ...Object.fromEntries(extra),
   }
 }
 
@@ -90,9 +87,9 @@ function result(spec, deltas = []) {
   }
 }
 
-test("the CLI lists every saved case, independently of the registry status", () => {
+test("the CLI lists every saved case, independently of the registry status", async () => {
   const f = fixture()
-  const run = cli(f, ["--saved", "--node", "1:1", "--cases", f.corpus, "--dry-run"])
+  const run = await cli(f, ["--saved", "--node", "1:1", "--cases", f.corpus, "--dry-run"])
   assert.equal(run.status, 0, run.stderr)
   assert.match(run.stdout, /first 1:1 control--one/)
   assert.match(run.stdout, /second 1:1 control--two/)
@@ -101,7 +98,7 @@ test("the CLI lists every saved case, independently of the registry status", () 
   assert.equal(fs.existsSync(f.out), false)
 })
 
-test("empty, unknown and invalid selections cannot look like successful reviews", () => {
+test("empty, unknown and invalid selections cannot look like successful reviews", async () => {
   const f = fixture()
   for (const args of [
     ["--saved", "--cases", f.corpus, "--dry-run"],
@@ -110,16 +107,16 @@ test("empty, unknown and invalid selections cannot look like successful reviews"
     ["--saved", "--node", "1:1", "--cases", f.corpus, "--limit", "0", "--dry-run"],
     ["--saved", "--node", "1:1", "--cases", f.corpus, "--status", "pending", "--dry-run"],
   ]) {
-    const run = cli(f, args)
+    const run = await cli(f, args)
     assert.equal(run.status, 2, run.stderr)
     assert.match(run.stderr, /error:/)
   }
   const empty = fixture([])
-  const run = cli(empty, ["--saved", "--node", "1:1", "--cases", empty.corpus, "--dry-run"])
+  const run = await cli(empty, ["--saved", "--node", "1:1", "--cases", empty.corpus, "--dry-run"])
   assert.equal(run.status, 2, run.stderr)
   assert.match(run.stderr, /no saved cases/)
 
-  const missingSource = cli(f, [
+  const missingSource = await cli(f, [
     "--saved",
     "--node",
     "1:1",
@@ -135,13 +132,13 @@ test("empty, unknown and invalid selections cannot look like successful reviews"
 test("capture reproduces every saved mapping and writes a distinct report for each case", async () => {
   const f = fixture()
   const seen = []
-  const code = await captureWave(parsed(f), {
+  const code = await captureWave(workspaceAt(f.root), options(f), {
     evaluate: async (spec) => {
       seen.push(spec)
       return result(spec)
     },
   })
-  assert.equal(code, 0)
+  assert.equal(code.code, 0)
   assert.deepEqual(
     seen.map((spec) => spec.id),
     ["first", "second"],
@@ -162,13 +159,13 @@ test("capture reproduces every saved mapping and writes a distinct report for ea
 test("the saved wave rejects unpinned evidence before evaluating any case", async () => {
   const f = fixture()
   let called = false
-  const code = await captureWave(parsed(f, [["input", evidence]]), {
+  const code = await captureWave(workspaceAt(f.root), options(f, [["input", evidence]]), {
     evaluate: async (spec) => {
       called = true
       return result(spec)
     },
   })
-  assert.equal(code, 2)
+  assert.equal(code.code, 2)
   assert.equal(called, false)
   assert.equal(fs.existsSync(f.out), false)
 })
@@ -190,13 +187,14 @@ test("saved selection honours device and limit in both listing and capture", asy
     "--limit",
     "1",
   ]
-  const list = cli(f, [...args, "--dry-run"])
+  const list = await cli(f, [...args, "--dry-run"])
   assert.equal(list.status, 0, list.stderr)
   assert.match(list.stdout, /first 1:1/)
   assert.doesNotMatch(list.stdout, /second|other/)
   const seen = []
   const code = await captureWave(
-    parsed(f, [
+    workspaceAt(f.root),
+    options(f, [
       ["device", "mobile"],
       ["limit", "1"],
     ]),
@@ -207,38 +205,47 @@ test("saved selection honours device and limit in both listing and capture", asy
       },
     },
   )
-  assert.equal(code, 0)
+  assert.equal(code.code, 0)
   assert.deepEqual(seen, ["first"])
 })
 
 test("saved capture fails on deltas, capture errors, missing stories and drafts", async () => {
   const f = fixture()
-  const deltas = await captureWave(parsed(f), {
+  const deltas = await captureWave(workspaceAt(f.root), options(f), {
     evaluate: async (spec) => result(spec, [{ path: "field.width" }]),
   })
-  assert.equal(deltas, 1)
+  assert.equal(deltas.code, 3)
 
-  const errors = await captureWave(parsed(f), {
+  const errors = await captureWave(workspaceAt(f.root), options(f), {
     evaluate: async () => {
       throw new Error("capture refused")
     },
   })
-  assert.equal(errors, 2)
+  assert.equal(errors.code, 2)
 
   const missing = fixture([{ ...cases[0], storyId: undefined }])
-  const listed = cli(missing, ["--saved", "--node", "1:1", "--cases", missing.corpus, "--dry-run"])
+  const listed = await cli(missing, [
+    "--saved",
+    "--node",
+    "1:1",
+    "--cases",
+    missing.corpus,
+    "--dry-run",
+  ])
   assert.equal(listed.status, 2, listed.stderr)
   assert.match(listed.stderr, /no storyId/)
-  const missingCode = await captureWave(parsed(missing), {
+  const missingCode = await captureWave(workspaceAt(missing.root), options(missing), {
     evaluate: async () => {
       throw new Error("a missing story must not be captured")
     },
   })
-  assert.equal(missingCode, 2)
+  assert.equal(missingCode.code, 2)
 
   const draft = fixture([{ ...cases[0], note: "draft — refine the mapping" }])
-  const draftCode = await captureWave(parsed(draft), { evaluate: async (spec) => result(spec) })
-  assert.equal(draftCode, 2)
+  const draftCode = await captureWave(workspaceAt(draft.root), options(draft), {
+    evaluate: async (spec) => result(spec),
+  })
+  assert.equal(draftCode.code, 2)
   const summary = JSON.parse(fs.readFileSync(path.join(draft.out, "summary.json"), "utf8"))
   assert.equal(summary.cases[0].draft, true)
 })

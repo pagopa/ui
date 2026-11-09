@@ -2,20 +2,20 @@ import assert from "node:assert/strict"
 import { spawnSync } from "node:child_process"
 import { createHash } from "node:crypto"
 import fs from "node:fs"
-import os from "node:os"
 import path from "node:path"
 import { test } from "node:test"
 import { fileURLToPath } from "node:url"
 import sharp from "sharp"
 
-import { fixtureEnv, toolingPath } from "../../src/lib/paths.ts"
+import { fixtureEnvironment, fixtureTree } from "../helpers/cli.mjs"
+import { TOOLING_ROOT } from "../../src/adapters/workspace.ts"
 
 const script = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
 
 function iconsArguments(args) {
-  if (args[0] === "--write") return ["assets", "icons", "write", ...args.slice(1)]
-  if (args[0] === "--check") return ["assets", "icons", "check", ...args.slice(1)]
-  return ["assets", "icons", ...args]
+  if (args[0] === "--write") return ["update", "icons", ...args.slice(1)]
+  if (args[0] === "--check") return ["check", "icons", ...args.slice(1)]
+  return ["check", "icons", ...args]
 }
 const blue = { r: 11 / 255, g: 62 / 255, b: 227 / 255, a: 1 }
 
@@ -47,8 +47,9 @@ const square = {
 }
 
 function fixture(t, document, localAsset = { rendering: "image" }, components = {}) {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-icons-"))
-  t.after(() => fs.rmSync(root, { recursive: true, force: true }))
+  const tree = fixtureTree({}, "pagopa-icons-")
+  const root = tree.root
+  t.after(() => tree.dispose())
   const files = {
     "src/catalog/figma/file.ts": 'export const FIGMA_FILE_KEY = "fixture"',
     "src/catalog/figma/device-policy.json": JSON.stringify(devicePolicy),
@@ -110,7 +111,7 @@ function fixture(t, document, localAsset = { rendering: "image" }, components = 
       spawnSync(
         process.execPath,
         ["--import", path.join(root, "no-network.mjs"), script, ...iconsArguments(args)],
-        { cwd: root, encoding: "utf8", env: fixtureEnv(root) },
+        { cwd: root, encoding: "utf8", env: fixtureEnvironment(root) },
       ),
   }
 }
@@ -626,10 +627,10 @@ test("formatted variant aliases remain valid evidence, but an alias cannot be re
   const written = run("--write", "--input", "live.json")
   assert.equal(written.status, 0, written.stderr)
   const file = path.join(root, "src/components/icons/icon-assets.ts")
-  const formatted = spawnSync(toolingPath("node_modules/.bin/oxfmt"), [file], {
+  const formatted = spawnSync(path.join(TOOLING_ROOT, "node_modules/.bin/oxfmt"), [file], {
     cwd: root,
     encoding: "utf8",
-    env: fixtureEnv(root),
+    env: fixtureEnvironment(root),
   })
   assert.equal(formatted.status, 0, formatted.stderr)
   const checked = run("--check", "--input", "live.json")
