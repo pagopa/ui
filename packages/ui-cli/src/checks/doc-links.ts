@@ -74,7 +74,9 @@ function report(
   index: number,
   message: string,
 ): void {
-  ctx.errors.push(`${label(ctx, file)}:${lineOf(text, index)}: ${message}`)
+  ctx.errors.push(
+    `${label(ctx, file)}:${lineOf(text, index)}: ${message} — fix the reference or the command, then run \`pnpm nx run pagopa-ui:docs\``,
+  )
 }
 
 function isLocal(target: string): boolean {

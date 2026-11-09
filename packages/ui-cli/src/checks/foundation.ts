@@ -287,12 +287,12 @@ export function evaluateFoundation(
     const current = counts[rule] ?? 0
     if (current > ceiling) {
       errors.push(
-        `${rule}: ${current} occurrences, the ceiling is ${ceiling} — use a foundation token or register an exception`,
+        `${rule}: ${current} occurrences, the ceiling is ${ceiling} — use a foundation token or register an exception in ${EXCEPTIONS_PATH}, then run \`pnpm nx run pagopa-ui:foundation:check\``,
       )
       for (const example of (examples[rule] ?? []).slice(0, 5)) errors.push(`  ${example}`)
     } else if (current < ceiling) {
       errors.push(
-        `${rule}: ${current} occurrences, the ceiling is ${ceiling} — lower the ceiling to ${current}`,
+        `${rule}: ${current} occurrences, the ceiling is ${ceiling} — lower the ceiling to ${current} in the foundation baseline and run \`pnpm nx run pagopa-ui:foundation:check\``,
       )
     }
   }

@@ -124,7 +124,9 @@ function validateCommittedContracts(
     if (inventory.schemaVersion !== 2) return
     for (const node of normalized) {
       if (byId.get(node.nodeId)?.contractFingerprint !== node.contractFingerprint) {
-        errors.push(`${INVENTORY_PATH}: contract fingerprint mismatch for ${node.nodeId}`)
+        errors.push(
+          `${INVENTORY_PATH}: contract fingerprint mismatch for ${node.nodeId} — the source contract changed, so re-read the node with \`pnpm ui-cli update inventory --triage\` and run \`pnpm nx run pagopa-ui:check:catalogue\``,
+        )
       }
     }
   } catch (error) {

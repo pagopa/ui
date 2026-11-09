@@ -96,6 +96,8 @@ export function validateRegistry(
   return errors
 }
 
+const CATALOGUE_GATE = "pnpm nx run pagopa-ui:check:catalogue"
+
 function validateRegistryEntry(
   workspace: Workspace,
   source: SourceModules,
@@ -111,7 +113,9 @@ function validateRegistryEntry(
   if (!VALID_STATUSES.has(entry.status))
     errors.push(`registry ${nodeId}: invalid status ${entry.status}`)
   if (!committedById.has(nodeId))
-    errors.push(`registry ${nodeId}: stale entry (node not in ${INVENTORY_PATH})`)
+    errors.push(
+      `registry ${nodeId}: stale entry (node not in ${INVENTORY_PATH}) — drop it or refresh the inventory, then run \`${CATALOGUE_GATE}\``,
+    )
   if (entry.status === "implemented" || entry.status === "mocked") {
     validateTarget(workspace, source, nodeId, entry, errors)
     if (entry.status === "implemented") {
@@ -144,15 +148,21 @@ function validateTarget(
   errors: string[],
 ): void {
   if (!entry.target?.module) {
-    errors.push(`registry ${nodeId}: ${entry.status} requires target.module`)
+    errors.push(
+      `registry ${nodeId}: ${entry.status} requires target.module — add the module that exports the component, then run \`${CATALOGUE_GATE}\``,
+    )
     return
   }
   if (!fs.existsSync(workspace.path(entry.target.module))) {
-    errors.push(`registry ${nodeId}: module not found ${entry.target.module}`)
+    errors.push(
+      `registry ${nodeId}: module not found ${entry.target.module} — fix target.module, then run \`${CATALOGUE_GATE}\``,
+    )
     return
   }
   if (!entry.target.export) {
-    errors.push(`registry ${nodeId}: ${entry.status} requires target.export`)
+    errors.push(
+      `registry ${nodeId}: ${entry.status} requires target.export — name the exported component, then run \`${CATALOGUE_GATE}\``,
+    )
     return
   }
   for (const pair of targetIdentities(entry.target)) {
@@ -163,7 +173,9 @@ function validateTarget(
     if (!fs.existsSync(workspace.path(pair.module)))
       errors.push(`registry ${nodeId}: module not found ${pair.module}`)
     else if (!exportNames(source, pair.module).has(pair.export))
-      errors.push(`registry ${nodeId}: export "${pair.export}" not found in ${pair.module}`)
+      errors.push(
+        `registry ${nodeId}: export "${pair.export}" not found in ${pair.module} — fix target.export, then run \`${CATALOGUE_GATE}\``,
+      )
   }
 }
 
@@ -173,7 +185,10 @@ function validateStoryTarget(
   entry: RegistryEntry,
   errors: string[],
 ): void {
-  if (!entry.target?.story) errors.push(`registry ${nodeId}: implemented requires target.story`)
+  if (!entry.target?.story)
+    errors.push(
+      `registry ${nodeId}: implemented requires target.story — add the story that renders the component, then run \`${CATALOGUE_GATE}\``,
+    )
   else if (!fs.existsSync(workspace.path(entry.target.story)))
     errors.push(`registry ${nodeId}: story not found ${entry.target.story}`)
 }
@@ -207,7 +222,9 @@ function validateDeclaredStoryExports(
       !stories.has(name) ||
       !identities.some(({ identity }) => stories.get(name)?.has(identity ?? ""))
     ) {
-      errors.push(`registry ${nodeId}: story export "${name}" does not render the mapped component`)
+      errors.push(
+        `registry ${nodeId}: story export "${name}" does not render the mapped component — render it or drop the export, then run \`${CATALOGUE_GATE}\``,
+      )
     }
     for (const identity of stories.get(name) ?? []) rendered.add(identity)
   }
@@ -239,11 +256,11 @@ function validateStoryEvidence(
     if (!allStoryImports.has(identity)) {
       if (!Object.hasOwn(evidenceExceptions, nodeId))
         errors.push(
-          `registry ${nodeId}: no story renders "${pair.export}" from ${pair.module} — add coverage or list it in ${EVIDENCE_EXCEPTIONS_PATH}`,
+          `registry ${nodeId}: no story renders "${pair.export}" from ${pair.module} — add coverage or list it in ${EVIDENCE_EXCEPTIONS_PATH}, then run \`${CATALOGUE_GATE}\``,
         )
     } else if (!verifiedInDeclared)
       errors.push(
-        `registry ${nodeId}: linked story ${entry.target?.story} does not render "${pair.export}" — update target.story`,
+        `registry ${nodeId}: linked story ${entry.target?.story} does not render "${pair.export}" — update target.story, then run \`${CATALOGUE_GATE}\``,
       )
   }
 }
@@ -276,7 +293,7 @@ function validateStoryDesign(
     const [nodeId] = nodeIds
     if (!(stories.get(name) ?? meta).has(nodeId))
       errors.push(
-        `registry ${nodeId}: story export "${name}" in ${file} must show the node in parameters.design`,
+        `registry ${nodeId}: story export "${name}" in ${file} must show the node in parameters.design — set parameters.design, then run \`${CATALOGUE_GATE}\``,
       )
   }
 }
@@ -353,7 +370,7 @@ export function validatePublicApi(
     .map(([name, identity]) => `${name} (${identity.split("#")[0]})`)
   if (unsourced.length)
     found.push(
-      `public exports without a Figma mapping (${unsourced.length}) — map them or list them in ${API_EXCEPTIONS_PATH}:\n${unsourced.map((line) => `  ${line}`).join("\n")}`,
+      `public exports without a Figma mapping (${unsourced.length}) — map them or list them in ${API_EXCEPTIONS_PATH}, then run \`${CATALOGUE_GATE}\`:\n${unsourced.map((line) => `  ${line}`).join("\n")}`,
     )
   for (const [name, reason] of Object.entries(exportExceptions)) {
     if (!reason) found.push(`${API_EXCEPTIONS_PATH}: ${name} requires a reason`)
