@@ -1,3 +1,13 @@
+## 0.1.6 (2026-11-09)
+
+### 🚀 Features
+
+- feat(pagopa-ui): ship the figma map, its command line and the consumer plugin ([#113](https://github.com/pagopa/ui/pull/113))
+
+### ❤️ Thank You
+
+- Danilo Spinelli @gunzip
+
 ## 0.1.5 (2026-11-06)
 
 ### 🩹 Fixes
