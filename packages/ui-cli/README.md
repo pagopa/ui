@@ -253,10 +253,15 @@ devices. `parity align` prints the exact check command for each declared device.
 without revealing it. Add `--require-token` to live-capable commands to fail
 with a usage error when no token can be resolved.
 
-`pnpm ui-cli figma brief --queue --json` returns all pending briefs, their
-implementation order, drift classes and devices. Use `--node <id>` for one
-brief; `--refresh` refreshes the rules and comments snapshots when their
-versions do not match the inventory pin.
+`pnpm ui-cli figma brief --queue` reads the delta in hand: the nodes the pinned
+snapshot change added, changed, renamed, moved or affected, in implementation
+order, capped at 60 lines. A scoped read names the pending nodes it omitted;
+`--full` reads the whole pending queue instead and `--limit <lines>` moves the
+cap. Without a `.figma/live-rest.json` snapshot there is no delta to scope to,
+so the read falls back to the pending queue and says so. `--json` adds a
+`scope` object with the kind, the omitted count, the truncated count and the
+cap. Use `--node <id>` for one brief; `--refresh` refreshes the rules and
+comments snapshots when their versions do not match the inventory pin.
 
 Catalogue drift and parity differences above tolerance return exit code 3;
 validation failures return 1 and missing inputs return 2.

@@ -53,8 +53,10 @@ artwork uses [artwork.md](artwork.md) after triage.
    **Done when** accepted inventory and production pending queue reflect the
    reported delta. A refresh is not approval.
 3. **Decide**, in the delta's `implementationOrder`.
-   Read the batched context with `pnpm ui-cli figma brief --queue --refresh`;
-   use `--node <id>` for a scoped node. Run
+   Read the batched context with `pnpm ui-cli figma brief --queue --refresh`:
+   it is scoped to this delta and names how many pending nodes it omitted, so
+   never widen it to `--full` to find the order. Use `--node <id>` for a single
+   node. Run
    `pnpm ui-cli parity align --node <id>` and inspect every declared device's
    source and render. Apply [review semantics](catalogue.md#review-semantics):
    implement → [new-from-figma.md](new-from-figma.md);

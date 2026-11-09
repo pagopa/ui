@@ -19,7 +19,8 @@ not this skill. Run interactive commands from the workspace root as
    request, [handoff.md](references/handoff.md).
    **Done when** the source route, freshness and requested node scope are known.
 2. **Context.** Read `pnpm ui-cli figma brief --node <nodeId>` before touching
-   a node; `--queue` batches pending briefs and their implementation order.
+   a node; `--queue` batches the delta's briefs in implementation order, names
+   what it omitted and caps its own length (`--full` for the whole queue).
    Use `--refresh` when rules/comments versions may differ from the pin
    ([rules.md](references/rules.md)). Census every touched page
    ([catalogue.md](references/catalogue.md#the-page-surface)).

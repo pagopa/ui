@@ -1,7 +1,12 @@
 import fs from "node:fs"
 
 import { declaredDevices, deviceAxes, type DeviceStats } from "./devices.ts"
-import { implementationOrder, type DeltaNode, type SnapshotDelta } from "./snapshot.ts"
+import {
+  deltaSelection,
+  implementationOrder,
+  type DeltaNode,
+  type SnapshotDelta,
+} from "./snapshot.ts"
 import { EVIDENCE_DIR, evidencePaths, loadManifest } from "../parity/evidence.ts"
 import { loadCaseFile } from "../parity/cases.ts"
 import type { Workspace } from "../adapters/workspace.ts"
@@ -251,13 +256,7 @@ export function renderCatalogueDelta(context: CatalogueRenderContext) {
     bulkByNode.get(node.nodeId)?.status ??
     bulkByPage.get(node.pageId)?.status ??
     "unaccounted"
-  const selected = new Set([
-    ...Object.entries(entries)
-      .filter(([, entry]) => entry.status === "pending")
-      .map(([id]) => id),
-    ...[...delta.added, ...delta.changed, ...delta.affected].map((node) => node.nodeId),
-  ])
-  for (const id of [...selected]) if (entries[id]?.status === "mocked") selected.delete(id)
+  const selected = deltaSelection(delta, entries)
   return {
     generatedAt: new Date().toISOString(),
     fileKey: inventory.fileKey,
