@@ -14,7 +14,7 @@ PAGOPA_UI_REPO="${PAGOPA_UI_REPO:-https://github.com/pagopa/ui.git}"
 # this skill calls, so a command the skill names cannot fail on a missing flag.
 # Re-pin it to the merge commit once `main` carries the node card and the JSON
 # writer that degrades without the formatter.
-PAGOPA_UI_REF="${PAGOPA_UI_REF:-03da281f297a19800077d451dcb3d313e5014771}"
+PAGOPA_UI_REF="${PAGOPA_UI_REF:-b0bdc306a467d33db2822641f87504226028c27b}"
 
 WORKSPACE=/workspace
 
@@ -79,6 +79,34 @@ cat >"$WORKSPACE/README.md" <<MD
 MD
 
 rm -f "$WORKSPACE/prepare.sh"
+
+# The scoped-queue task asks about a delta on three named nodes, and the live
+# Figma file has not moved on them: without a delta the task's own criterion
+# ("scoped, never widened") is unsatisfiable, because only `--full` can name the
+# nodes. The delta exists by construction instead — the committed inventory is
+# staled on exactly those nodes, so the live read the task pins reports them as
+# changed. The other two tasks name nodes this leaves alone.
+node --input-type=module -e '
+  import fs from "node:fs"
+  import { createHash } from "node:crypto"
+  const { compareSnapshots } = await import("./packages/ui-cli/src/figma/snapshot.ts")
+  const file = "packages/pagopa-ui/src/catalog/figma/inventory.json"
+  const seeded = ["760:7432", "127:1510", "1293:8394"]
+  const live = JSON.parse(fs.readFileSync(file, "utf8"))
+  const inventory = JSON.parse(fs.readFileSync(file, "utf8"))
+  for (const node of inventory.components) {
+    if (!seeded.includes(node.nodeId)) continue
+    node.designFingerprint = createHash("sha256").update(`stale:${node.nodeId}`).digest("hex")
+  }
+  const changed = compareSnapshots(inventory.components, live.components)
+    .changed.map((node) => node.nodeId)
+    .sort()
+  if (changed.join(", ") !== [...seeded].sort().join(", ")) {
+    console.error(`figma-to-code eval: the seeded delta is [${changed.join(", ")}], expected [${seeded.join(", ")}]. The inventory schema or the compare changed.`)
+    process.exit(1)
+  }
+  fs.writeFileSync(file, `${JSON.stringify(inventory, null, 2)}\n`)
+'
 
 # Fail fast: a broken workspace must break the image build, not the session.
 if ! pnpm ui-cli figma status >/dev/null; then
