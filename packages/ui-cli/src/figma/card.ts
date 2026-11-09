@@ -5,6 +5,7 @@
 import fs from "node:fs"
 
 import type { Workspace } from "../adapters/workspace.ts"
+import { CONTEXT_BUDGET_LIMITS } from "../checks/context-budget-limits.ts"
 import { readJson } from "../lib/json.ts"
 import { CASES_PATH, isDraftCase, loadCaseFile } from "../parity/cases.ts"
 import { EVIDENCE_DIR, evidencePaths, loadManifest } from "../parity/evidence.ts"
@@ -17,9 +18,9 @@ import { compareSnapshots, normalizeLive } from "./snapshot.ts"
 const DEVICE_POLICY_PATH = "src/catalog/figma/device-policy.json"
 const LIVE_SNAPSHOT_PATH = ".figma/live-rest.json"
 
-// The whole text card stays under the `card` ceiling of the context budget, with
-// room to spare so the check never measures a card one byte over.
-const CARD_BUDGET = 1500
+// One ceiling, the one the context budget declares: the card trims to it here
+// rather than to a smaller private number the check would never see.
+const CARD_BUDGET = CONTEXT_BUDGET_LIMITS.card
 const ITEM_LIMIT = 240
 const NOTE_LIMIT = 80
 const LABEL_WIDTH = 11
@@ -148,30 +149,38 @@ function namesNode(node: string): (line: string) => boolean {
   return (line) => pattern.test(line)
 }
 
+/** What the whole-workspace gates said, read once by the caller. */
+export interface NodeCardGates {
+  readonly devices: readonly string[]
+  /** `null` when the workspace has no rules ledger, which is not "no rule failed". */
+  readonly rules: readonly string[] | null
+}
+
+// Both gates walk the whole workspace, so a caller that builds several cards
+// reads them once and hands the same result to each.
+export function readNodeCardGates(workspace: Workspace): NodeCardGates {
+  return {
+    devices: checkDevices(workspace).problems,
+    rules: readLedger(workspace.root, false) ? checkRules(workspace, false).errors : null,
+  }
+}
+
 // The card is a verdict: every gate that already knows this node is wrong says
 // so here, prefixed with the gate that says it.
 function nodeVerdict(
-  workspace: Workspace,
   node: string,
   devices: NodeCardDevice[],
   cases: NodeCardCase[],
   status: string | null,
   hasTarget: boolean,
+  gates: NodeCardGates,
 ): string[] {
   const names = namesNode(node)
   const verdicts: string[] = []
   if (status === "implemented" && !hasTarget) verdicts.push("catalogue implemented with no target")
-  verdicts.push(
-    ...checkDevices(workspace)
-      .problems.filter(names)
-      .map((line) => `devices ${line}`),
-  )
-  if (readLedger(workspace.root, false)) {
-    verdicts.push(
-      ...checkRules(workspace, false)
-        .errors.filter(names)
-        .map((line) => `rules ${line}`),
-    )
+  verdicts.push(...gates.devices.filter(names).map((line) => `devices ${line}`))
+  if (gates.rules) {
+    verdicts.push(...gates.rules.filter(names).map((line) => `rules ${line}`))
   }
   for (const device of devices) {
     const covered = cases.some(
@@ -185,16 +194,18 @@ function nodeVerdict(
 export interface NodeCardOptions {
   /**
    * Read the gitignored `.figma/` exports the card can show: the open comment
-   * threads and the delta against the live file. The budget check turns it off
-   * so a laptop that has run `figma pull` measures the card CI measures.
+   * threads and the delta against the live file. The budget check measures the
+   * card both ways, so the ceiling covers what a session actually reads.
    */
   readonly local?: boolean
+  /** The gate results the verdict filters, read by the caller. */
+  readonly gates: NodeCardGates
 }
 
 export function buildNodeCard(
   workspace: Workspace,
   requested: string,
-  options: NodeCardOptions = {},
+  options: NodeCardOptions,
 ): NodeCard {
   const local = options.local ?? true
   const brief = buildBrief(workspace, requested)
@@ -232,12 +243,12 @@ export function buildNodeCard(
     requests: brief.designRequests,
     delta: local ? nodeDelta(workspace, brief.node) : null,
     verdict: nodeVerdict(
-      workspace,
       brief.node,
       devices,
       cases,
       brief.status,
       Boolean(brief.target),
+      options.gates,
     ),
     evidence: nodeEvidence(workspace, brief.node),
   }
@@ -288,7 +299,7 @@ function commentParts(card: NodeCard): string[] {
 }
 
 function deltaParts(card: NodeCard): string[] {
-  if (!card.delta) return ["(no live snapshot: figma pull to compare)"]
+  if (!card.delta) return ["(no live snapshot: run figma export to compare)"]
   const parts = [
     ...card.delta.variants.map((change) => `${change.nodeId} ${change.class}`),
     ...card.delta.changed,
@@ -323,6 +334,7 @@ function sections(card: NodeCard): CardSection[] {
   ]
 }
 
+const MARKER = "…"
 const byteLength = (text: string): number => Buffer.byteLength(text, "utf8")
 
 // The cut is a marker, never a silent drop: the last items of a section give way
@@ -331,7 +343,7 @@ function renderSections(sections: readonly CardSection[], dropped: readonly numb
   return sections.map((section, index) => {
     const cut = dropped[index]
     const parts = [...section.parts]
-    if (cut) parts.splice(parts.length - cut, cut, `… +${cut} more`)
+    if (cut) parts.splice(parts.length - cut, cut, `${MARKER} +${cut} more`)
     return `${section.label.padEnd(LABEL_WIDTH)}${parts.join(" · ")}`.trimEnd()
   })
 }
@@ -347,8 +359,10 @@ function trimToBudget(lines: string[], budget: number): string[] {
     }
     const content = trimmed[victim].slice(LABEL_WIDTH)
     if (!content) return trimmed
-    const keep = Math.max(0, content.length - Math.max(1, total - budget))
-    const next = keep > 0 ? `${content.slice(0, keep).trimEnd()}…` : ""
+    // The marker itself takes bytes: keeping the whole excess would leave the
+    // card over the ceiling by the marker's length.
+    const keep = Math.max(0, content.length - (total - budget) - byteLength(MARKER))
+    const next = keep > 0 ? `${content.slice(0, keep).trimEnd()}${MARKER}` : ""
     trimmed[victim] = `${trimmed[victim].slice(0, LABEL_WIDTH)}${next}`
   }
   return trimmed

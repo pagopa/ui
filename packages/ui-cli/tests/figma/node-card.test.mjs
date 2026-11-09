@@ -11,7 +11,7 @@ import { test } from "node:test"
 import { fileURLToPath } from "node:url"
 
 import { CONTEXT_BUDGET_LIMITS, measureContextBudget } from "../../src/checks/context-budget.ts"
-import { buildNodeCard, formatNodeCard } from "../../src/figma/card.ts"
+import { buildNodeCard, formatNodeCard, readNodeCardGates } from "../../src/figma/card.ts"
 import { readInventory } from "../../src/figma/brief.ts"
 import { fixtureTree, runCli, workspaceAt } from "../helpers/cli.mjs"
 
@@ -186,8 +186,14 @@ function catalogue(overrides = {}) {
   })
 }
 
+// The verdict filters gate results the caller read, so every card here hands
+// over the workspace's own: the card never walks the workspace itself.
+function nodeCard(workspace, node, options = {}) {
+  return buildNodeCard(workspace, node, { gates: readNodeCardGates(workspace), ...options })
+}
+
 function cardLines(fixture) {
-  return formatNodeCard(buildNodeCard(workspaceAt(fixture.root), "4:4"))
+  return formatNodeCard(nodeCard(workspaceAt(fixture.root), "4:4"))
 }
 
 test("the card renders one line per section from the committed catalogue", () => {
@@ -204,7 +210,7 @@ test("the card renders one line per section from the committed catalogue", () =>
       "rules      2 (1 pending) · I4:4;4:9 recorded · I4:4;4:10 pending · guide apps/storybook/src/guides/widget.md",
       "comments   (no snapshot: run figma comments --refresh)",
       "requests   docs/design-requests/2026-01-02-widget-width.md",
-      "delta      (no live snapshot: figma pull to compare)",
+      "delta      (no live snapshot: run figma export to compare)",
       "verdict    devices desktop has no reviewed case",
       "evidence   docs/figma-parity/references/widget-mobile.png",
       "note       Reviewed 2026-01-02: one composition at every device.",
@@ -271,7 +277,7 @@ test("--card without a node is a usage error and --card does not disturb the bri
 test("every section states its absence instead of vanishing", () => {
   const fixture = catalogue()
   try {
-    assert.deepEqual(formatNodeCard(buildNodeCard(workspaceAt(fixture.root), "5:5")), [
+    assert.deepEqual(formatNodeCard(nodeCard(workspaceAt(fixture.root), "5:5")), [
       "node       5:5 · Spinner",
       "page       • Components",
       "status     (no registry entry)",
@@ -282,7 +288,7 @@ test("every section states its absence instead of vanishing", () => {
       "rules      no rule targets this node",
       "comments   (no snapshot: run figma comments --refresh)",
       "requests   none",
-      "delta      (no live snapshot: figma pull to compare)",
+      "delta      (no live snapshot: run figma export to compare)",
       "verdict    no check names this node",
       "evidence   (no evidence: run figma evidence)",
       "note       (no registry note)",
@@ -332,9 +338,12 @@ test("a cut section carries a marker and the card stays under the ceiling", () =
     },
   })
   try {
-    const lines = formatNodeCard(buildNodeCard(workspaceAt(fixture.root), "4:4"))
+    const lines = formatNodeCard(nodeCard(workspaceAt(fixture.root), "4:4"))
     const text = lines.join("\n")
-    assert.ok(Buffer.byteLength(text, "utf8") <= 1536, `card is ${Buffer.byteLength(text)} bytes`)
+    assert.ok(
+      Buffer.byteLength(text, "utf8") <= CONTEXT_BUDGET_LIMITS.card,
+      `card is ${Buffer.byteLength(text)} bytes`,
+    )
     assert.match(text, /… \+\d+ more/)
     for (const label of [
       "node",
@@ -360,14 +369,11 @@ test("two runs on the same catalogue are byte-identical and carry no absolute pa
   const fixture = catalogue()
   try {
     const workspace = workspaceAt(fixture.root)
-    const first = formatNodeCard(buildNodeCard(workspace, "4:4"))
-    const second = formatNodeCard(buildNodeCard(workspaceAt(fixture.root), "4:4"))
+    const first = formatNodeCard(nodeCard(workspace, "4:4"))
+    const second = formatNodeCard(nodeCard(workspaceAt(fixture.root), "4:4"))
     assert.deepEqual(second, first)
     assert.ok(!first.join("\n").includes(fixture.root), "the card prints no absolute path")
-    assert.deepEqual(
-      buildNodeCard(workspaceAt(fixture.root), "4:4"),
-      buildNodeCard(workspaceAt(fixture.root), "4:4"),
-    )
+    assert.deepEqual(nodeCard(workspaceAt(fixture.root), "4:4"), nodeCard(workspace, "4:4"))
   } finally {
     fixture.dispose()
   }
@@ -394,6 +400,7 @@ test("the budget measures the card and ignores the gitignored exports", () => {
         ],
       },
       "src/catalog/figma/registry.json": { entries: {}, bulkRules: [] },
+      "src/catalog/figma/device-policy.json": policy,
     },
     "node-card-budget-",
   )
@@ -409,20 +416,27 @@ test("the budget measures the card and ignores the gitignored exports", () => {
       "rules      no rule targets this node",
       "comments   (no snapshot: run figma comments --refresh)",
       "requests   none",
-      "delta      (no live snapshot: figma pull to compare)",
+      "delta      (no live snapshot: run figma export to compare)",
       "verdict    no check names this node",
       "evidence   (no evidence: run figma evidence)",
       "note       (no registry note)",
     ].join("\n")
-    const card = (root) => {
-      const entry = measureContextBudget(workspaceAt(root), { routes: [] }).entries.find(
-        (candidate) => candidate.kind === "card",
+    const measured = (root, name) =>
+      measureContextBudget(workspaceAt(root), { routes: [] }).entries.find(
+        (candidate) => candidate.kind === "card" && candidate.name === name,
       )
-      return entry.bytes
-    }
-    const clean = card(fixture.root)
-    assert.equal(clean, Buffer.byteLength(expected, "utf8"))
-    assert.ok(clean <= 1536, `the measured card is ${clean} bytes`)
+    const clean = measured(fixture.root, "node card")
+    assert.ok(clean, "the deterministic card is measured")
+    assert.equal(clean.bytes, Buffer.byteLength(expected, "utf8"))
+    assert.ok(
+      clean.bytes <= CONTEXT_BUDGET_LIMITS.card,
+      `the measured card is ${clean.bytes} bytes`,
+    )
+    assert.equal(
+      measured(fixture.root, "node card with local comments and delta"),
+      undefined,
+      "no snapshot, no local card to measure",
+    )
 
     fs.mkdirSync(path.join(fixture.root, ".figma"), { recursive: true })
     fs.writeFileSync(
@@ -446,9 +460,13 @@ test("the budget measures the card and ignores the gitignored exports", () => {
     )
     fs.writeFileSync(
       path.join(fixture.root, ".figma", "live-rest.json"),
-      JSON.stringify({ nodes: { "4:4": { name: "Widget" } } }),
+      JSON.stringify({ nodes: {}, meta: { components: [], component_sets: [] } }),
     )
-    assert.equal(card(fixture.root), clean)
+    assert.equal(measured(fixture.root, "node card").bytes, clean.bytes)
+    const local = measured(fixture.root, "node card with local comments and delta")
+    assert.ok(local, "the card a session reads is measured once the snapshot exists")
+    assert.ok(local.bytes > clean.bytes, `local card is ${local.bytes} bytes`)
+    assert.ok(local.bytes <= CONTEXT_BUDGET_LIMITS.card, `the local card is ${local.bytes} bytes`)
   } finally {
     fixture.dispose()
   }
@@ -464,10 +482,11 @@ test("every node of the committed inventory fits the ceiling", { timeout: 300_00
     ...(component.variants ?? []).map((variant) => variant.nodeId),
   ])
   assert.ok(nodes.length > 0)
+  const gates = readNodeCardGates(workspace)
   const oversized = []
   for (const node of nodes) {
     const bytes = Buffer.byteLength(
-      formatNodeCard(buildNodeCard(workspace, node, { local: false })).join("\n"),
+      formatNodeCard(buildNodeCard(workspace, node, { local: false, gates })).join("\n"),
       "utf8",
     )
     if (bytes > CONTEXT_BUDGET_LIMITS.card) oversized.push(`${node}: ${bytes} bytes`)

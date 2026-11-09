@@ -15,7 +15,7 @@ import {
   synchronizeRules,
 } from "../figma/rules-workflow.ts"
 import { buildBrief, formatBrief } from "../figma/brief.ts"
-import { buildNodeCard, formatNodeCard } from "../figma/card.ts"
+import { buildNodeCard, formatNodeCard, readNodeCardGates } from "../figma/card.ts"
 import { refreshBrief } from "../figma/brief-workflow.ts"
 import { buildBriefQueue, formatBriefQueue } from "../figma/brief-queue.ts"
 import { commentsJson, commentsReport, formatComments } from "../figma/comments-workflow.ts"
@@ -220,7 +220,9 @@ async function runBrief(ctx: CliContext, args: BriefArgs): Promise<number> {
   }
   const requested = requireText(node, "--node <id> or --queue", "figma brief")
   if (card) {
-    const nodeCard = buildNodeCard(ctx.workspace(), requested)
+    const nodeCard = buildNodeCard(ctx.workspace(), requested, {
+      gates: readNodeCardGates(ctx.workspace()),
+    })
     if (json) printJson(ctx.io, nodeCard)
     else printLines(ctx.io, { out: formatNodeCard(nodeCard) })
     return EXIT.ok
