@@ -6,7 +6,8 @@
   "tags": ["type:lib", "scope:design-system"],
   "targets": {
     "build": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "outputs": ["{projectRoot}/dist", "{projectRoot}/figma-map.json"]
     },
     "typecheck": {
       "dependsOn": ["pagopa-ui-artwork:build", "pagopa-ui-tokens:build"]

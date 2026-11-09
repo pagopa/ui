@@ -59,10 +59,13 @@ test("a name the package keeps internal is readable but marked so", () => {
   assert.doesNotMatch(result.stdout, /exports: Button, IconButton/)
 })
 
-test("an internal name is still searchable, so a part can be recognised", () => {
+test("an internal name is still searchable, and the public renderer leads the row", () => {
   const result = run(["search", "iconbutton"])
   assert.equal(result.status, 0, result.stderr)
-  assert.match(result.stdout, /^1:2 {2}Button {2}→ IconButton — not importable {2}\[implemented\]/)
+  assert.match(
+    result.stdout,
+    /^1:2 {2}Button {2}→ Button \(\+ IconButton — not importable\) {2}\[implemented\]/,
+  )
 })
 
 test("a link to another file is refused instead of answered with a stranger's ids", () => {

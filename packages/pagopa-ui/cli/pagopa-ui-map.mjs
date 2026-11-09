@@ -51,6 +51,16 @@ function unexportedNames(node) {
   return node.unexported?.length ? `${node.unexported.join(", ")} — not importable` : undefined
 }
 
+// One search line is all a search result has, so it leads with what the agent
+// imports and appends the internal names after it. `formatNode` needs no such
+// compression: it has a line per kind of name.
+function nameSummary(node) {
+  const exported = node.exports?.length ? node.exports.join(", ") : undefined
+  const unexported = unexportedNames(node)
+  if (exported && unexported) return `${exported} (+ ${unexported})`
+  return exported ?? unexported ?? "—"
+}
+
 export function formatNode(nodeId, node) {
   const where = [node.type, node.page].filter(Boolean).join(", ")
   const lines = [
@@ -193,7 +203,7 @@ export function main(argv, map = loadMap()) {
         : `${rows
             .map(
               ({ nodeId, node }) =>
-                `${nodeId}  ${node.figma ?? "—"}  → ${unexportedNames(node) ?? nodeNames(node)}  [${node.status}]`,
+                `${nodeId}  ${node.figma ?? "—"}  → ${nameSummary(node)}  [${node.status}]`,
             )
             .join("\n")}\n`,
     )
