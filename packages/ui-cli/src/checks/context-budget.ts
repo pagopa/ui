@@ -1,50 +1,35 @@
 // The context budget: what a Figma session must read before it can work. Every
 // skill file, every declared route's transitive read set and every rendered
-// context carries a ceiling here, and the committed baseline holds only how many
-// entries are still over it, so the count can fall and never rise.
+// context carries a ceiling held in `context-budget-limits.ts`, and the committed
+// baseline holds only the ratchet — how many entries are still over their ceiling
+// and how many bytes the whole measurement takes — so both can fall and never rise.
 import fs from "node:fs"
 import path from "node:path"
 import { z } from "zod"
 
 import type { Workspace } from "../adapters/workspace.ts"
-import { buildNodeCard, formatNodeCard } from "../figma/card.ts"
+import { buildNodeCard, formatNodeCard, readNodeCardGates } from "../figma/card.ts"
 import { readInventory } from "../figma/brief.ts"
 import { readLedger } from "../figma/rules.ts"
 import { walkRelative } from "../lib/fs.ts"
 import { readJson } from "../lib/json.ts"
+import { CONTEXT_BUDGET_LIMITS, type ContextKind } from "./context-budget-limits.ts"
 import { report, type CheckReport } from "./report.ts"
 
 const NAME = "context budget"
 const LABEL = "data/context-budget.json"
+const GATE = "pnpm nx run pagopa-ui-cli:check:context-budget"
 
 export const CONTEXT_BUDGET_BASELINE_PATH = LABEL
 
-// The ceilings live here and never in the baseline: a limit a commit can raise
-// is not a limit. 1.5 KB is 1536 bytes, the size a card and an entry may reach.
-export const CONTEXT_BUDGET_LIMITS = {
-  entry: 1536,
-  file: 4096,
-  route: 8192,
-  card: 1536,
-  preamble: 1024,
-} as const
+export { CONTEXT_BUDGET_LIMITS, CONTEXT_KINDS, type ContextKind } from "./context-budget-limits.ts"
 
-export type ContextKind = keyof typeof CONTEXT_BUDGET_LIMITS
-
-export const CONTEXT_KINDS: readonly ContextKind[] = ["entry", "file", "route", "card", "preamble"]
-
-const CeilingsSchema = z.strictObject({
-  entry: z.number().int().positive(),
-  file: z.number().int().positive(),
-  route: z.number().int().positive(),
-  card: z.number().int().positive(),
-  preamble: z.number().int().positive(),
-})
-
+// The ratchet state, and only that: the ceilings are code, so a commit that
+// raises one edits `context-budget-limits.ts` and the test that pins it, never
+// this file.
 export const ContextBudgetBaselineSchema = z.strictObject({
-  ceilings: CeilingsSchema,
   overBudget: z.number().int().nonnegative(),
-  note: z.string().min(1),
+  totalBytes: z.number().int().nonnegative(),
 })
 
 export type ContextBudgetBaseline = z.infer<typeof ContextBudgetBaselineSchema>
@@ -61,7 +46,10 @@ export interface RouteDeclaration {
 export interface RenderedContext {
   readonly kind: "card" | "preamble"
   readonly name: string
-  readonly render: (workspace: Workspace) => string
+  /** `null` when the gitignored export this context needs is absent. */
+  readonly render: (workspace: Workspace) => string | null
+  /** Measured against its ceiling only where the export exists, and never in the total. */
+  readonly snapshot?: boolean
 }
 
 export interface BudgetEntry {
@@ -71,6 +59,8 @@ export interface BudgetEntry {
   readonly ceiling: number
   /** The files a route's total is made of. */
   readonly files?: number
+  /** A card a session reads only where the gitignored `.figma/` exports exist. */
+  readonly snapshot?: boolean
 }
 
 export interface ContextBudgetMeasurement {
@@ -141,8 +131,23 @@ export const CONTEXT_ROUTES: readonly RouteDeclaration[] = [
   },
 ]
 
+// The card is measured twice. The clean one is what CI renders and what pins the
+// bytes a clean checkout reads; the local one adds the comment threads and the
+// delta, which is what a session on a laptop actually reads, so the ceiling has
+// to cover it too. It is skipped where the gitignored `.figma/` exports are
+// absent, which is every clean checkout.
 export const RENDERED_CONTEXTS: readonly RenderedContext[] = [
-  { kind: "card", name: "node card", render: renderNodeCard },
+  {
+    kind: "card",
+    name: "node card",
+    render: (workspace) => renderNodeCard(workspace, false),
+  },
+  {
+    kind: "card",
+    name: "node card with local comments and delta",
+    render: (workspace) => renderNodeCard(workspace, true),
+    snapshot: true,
+  },
   { kind: "preamble", name: "workflow preamble", render: renderWorkflowPreamble },
 ]
 
@@ -226,10 +231,18 @@ function routeMeasurement(
   return { files: reachable, errors }
 }
 
-// The card is measured as a clean checkout renders it: the `.figma/` exports
-// that carry comments and the delta against the live file are gitignored, so
-// letting them in would make the budget differ between a laptop and CI.
-function renderNodeCard(workspace: Workspace): string {
+// The card a clean checkout renders carries no `.figma/` export: the exports
+// that hold comments and the delta against the live file are gitignored, so
+// letting them into the deterministic measurement would make the budget differ
+// between a laptop and CI. The local card measures them against the same ceiling.
+const CARD_SNAPSHOTS = [".figma/live-rest.json", ".figma/comments.json"]
+
+function hasCardSnapshot(workspace: Workspace): boolean {
+  return CARD_SNAPSHOTS.some((snapshot) => fs.existsSync(workspace.path(snapshot)))
+}
+
+function renderNodeCard(workspace: Workspace, local: boolean): string | null {
+  if (local && !hasCardSnapshot(workspace)) return null
   const inventory = readInventory(workspace)
   const ledger = readLedger(workspace.root, false)
   const counts = new Map<string, number>()
@@ -242,7 +255,8 @@ function renderNodeCard(workspace: Workspace): string {
   ])
   const node = nodes.sort((left, right) => (counts.get(right) ?? 0) - (counts.get(left) ?? 0))[0]
   if (!node) throw new Error("the inventory has no component to render a card for")
-  return formatNodeCard(buildNodeCard(workspace, node, { local: false })).join("\n")
+  const gates = readNodeCardGates(workspace)
+  return formatNodeCard(buildNodeCard(workspace, node, { local, gates })).join("\n")
 }
 
 // The preamble is one template literal: its source is the text every agent of
@@ -292,11 +306,13 @@ export function measureContextBudget(
   for (const context of options.contexts ?? RENDERED_CONTEXTS) {
     try {
       const rendered = context.render(workspace)
+      if (rendered === null) continue
       entries.push({
         kind: context.kind,
         name: context.name,
         bytes: Buffer.byteLength(rendered, "utf8"),
         ceiling: CONTEXT_BUDGET_LIMITS[context.kind],
+        ...(context.snapshot ? { snapshot: true } : {}),
       })
     } catch (error) {
       drift.push(`${context.kind} "${context.name}": ${message(error)}`)
@@ -306,30 +322,40 @@ export function measureContextBudget(
   return { entries, drift }
 }
 
-function ceilingErrors(baseline: ContextBudgetBaseline): string[] {
-  return CONTEXT_KINDS.filter(
-    (kind) => baseline.ceilings[kind] !== CONTEXT_BUDGET_LIMITS[kind],
-  ).map(
-    (kind) =>
-      `${LABEL}: the ${kind} ceiling is ${baseline.ceilings[kind]}, the limit is ${CONTEXT_BUDGET_LIMITS[kind]} — the ceilings cannot change`,
-  )
-}
+const totalBytes = (entries: readonly BudgetEntry[]): number =>
+  entries.reduce((total, entry) => total + (entry.snapshot ? 0 : entry.bytes), 0)
 
-// The ratchet: the count of entries past their ceiling must equal the baseline.
-// A new offender fails and names itself, and a fix asks to lower the baseline,
-// so the count only ever goes down.
+// The ratchet: the count of entries past their ceiling and the total the clean
+// checkout measures must equal the baseline. A new offender or a larger total
+// fails and names itself, and a fix asks to lower the baseline, so both only ever
+// go down. The total is what keeps the ratchet live at zero offenders: a byte
+// added anywhere still fails.
 function ratchetErrors(entries: readonly BudgetEntry[], baseline: ContextBudgetBaseline): string[] {
+  const errors: string[] = []
   const over = entries.filter(overBudget)
   if (over.length > baseline.overBudget) {
-    return [
-      `${LABEL}: ${over.length} entries are over budget, the baseline allows ${baseline.overBudget} — make the context fit instead of raising the count`,
+    errors.push(
+      `${LABEL}: ${over.length} entries are over budget, the baseline allows ${baseline.overBudget} — make the context fit instead of raising the count, then run \`${GATE}\``,
       ...over.map(overBudgetError),
-    ]
+    )
   }
   if (over.length < baseline.overBudget) {
-    return [`${LABEL}: ${over.length} entries are over budget, lower overBudget to ${over.length}`]
+    errors.push(
+      `${LABEL}: ${over.length} entries are over budget, lower overBudget to ${over.length} and run \`${GATE}\``,
+    )
   }
-  return []
+  const total = totalBytes(entries)
+  if (total > baseline.totalBytes) {
+    errors.push(
+      `${LABEL}: the measured context is ${total} bytes, the baseline allows ${baseline.totalBytes} — cut the context instead of raising the total, then run \`${GATE}\``,
+    )
+  }
+  if (total < baseline.totalBytes) {
+    errors.push(
+      `${LABEL}: the measured context is ${total} bytes, lower totalBytes to ${total} and run \`${GATE}\``,
+    )
+  }
+  return errors
 }
 
 function readBaseline(file: string): ContextBudgetBaseline | null {
@@ -345,13 +371,17 @@ export function checkContextBudget(
   const baseline = options.baseline ?? readBaseline(file)
   const { entries, drift } = measureContextBudget(workspace, options)
   const over = entries.filter(overBudget).length
-  const summary = `${entries.length} entries, ${over} over budget, the baseline allows ${baseline?.overBudget ?? "(none)"}`
+  const total = totalBytes(entries)
+  const allows = baseline
+    ? `${baseline.overBudget} over and ${baseline.totalBytes} bytes`
+    : "(none)"
+  const summary = `${entries.length} entries, ${over} over budget, ${total} bytes, the baseline allows ${allows}`
   const details = entries.map(row)
   if (options.report) return report(NAME, summary, [], { details })
   const problems = [
     ...(baseline
-      ? ceilingErrors(baseline)
-      : [`${LABEL}: missing — commit the count of over-budget entries`]),
+      ? []
+      : [`${LABEL}: missing — commit the ratchet state \`check context-budget --report\` prints`]),
     ...drift,
     ...(baseline ? ratchetErrors(entries, baseline) : []),
   ]

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict"
+import fs from "node:fs"
 import path from "node:path"
 import { test } from "node:test"
 import { fileURLToPath } from "node:url"
@@ -14,27 +15,37 @@ const SKILL = ".agents/skills/figma-to-code"
 const ROOT = `${SKILL}/SKILL.md`
 const reference = (name) => `${SKILL}/references/${name}.md`
 
+const totalOf = (entries) =>
+  entries.reduce((sum, entry) => sum + (entry.snapshot ? 0 : entry.bytes), 0)
+
 // The fixture holds the measured trees and the baseline only: the check reads
 // the workspace the fixture builds, so a route declaration and a rendered
-// context are passed in exactly as the command declares them.
+// context are passed in exactly as the command declares them. The baseline is
+// written from the measurement this tree produces, so a test states the ratchet
+// state it is about instead of every byte the fixture happens to hold: zero
+// offenders by default, the measured total, or what `options.baseline` says.
 function budget(files, options = {}) {
-  const tree = fixtureTree({ "data/baseline.json": baseline(0), ...files })
+  const tree = fixtureTree({ "data/baseline.json": {}, [ROOT]: "entry", ...files })
   try {
-    const result = checkContextBudget(workspaceAt(tree.root), {
-      baselineFile: path.join(tree.root, "data/baseline.json"),
-      routes: [],
-      contexts: [],
-      ...options,
-    })
-    return result
+    const workspace = workspaceAt(tree.root)
+    const { baseline: declared, ...measured } = { routes: [], contexts: [], ...options }
+    const measurement = measureContextBudget(workspace, measured)
+    const baselineFile = path.join(tree.root, "data/baseline.json")
+    fs.writeFileSync(
+      baselineFile,
+      JSON.stringify(
+        typeof declared === "function"
+          ? declared(measurement)
+          : (declared ?? { overBudget: 0, totalBytes: totalOf(measurement.entries) }),
+      ),
+    )
+    return checkContextBudget(workspace, { ...measured, baselineFile })
   } finally {
     tree.dispose()
   }
 }
 
-function baseline(overBudget, ceilings = CONTEXT_BUDGET_LIMITS) {
-  return { ceilings, overBudget, note: "fixture" }
-}
+const overCount = (measurement) => measurement.entries.filter((e) => e.bytes > e.ceiling).length
 
 const problems = (result) => result.problems.join("\n")
 const bytes = (count) => "x".repeat(count)
@@ -117,50 +128,103 @@ test("a declared file the links do not reach fails", () => {
 })
 
 test("a count below the baseline asks to lower it", () => {
-  const tree = fixtureTree({ "data/baseline.json": baseline(2), [ROOT]: "entry" })
-  try {
-    const result = checkContextBudget(workspaceAt(tree.root), {
-      baselineFile: path.join(tree.root, "data/baseline.json"),
-      routes: [],
-      contexts: [],
-    })
-    assert.match(
-      problems(result),
-      /data\/context-budget\.json: 0 entries are over budget, lower overBudget to 0/,
-    )
-  } finally {
-    tree.dispose()
-  }
+  const result = budget(
+    { [ROOT]: "entry" },
+    { baseline: (measurement) => ({ overBudget: 2, totalBytes: totalOf(measurement.entries) }) },
+  )
+  assert.match(
+    problems(result),
+    /data\/context-budget\.json: 0 entries are over budget, lower overBudget to 0 and run `pnpm nx run pagopa-ui-cli:check:context-budget`/,
+  )
 })
 
 test("a count equal to the baseline passes", () => {
-  const files = { [ROOT]: "entry", [reference("big")]: bytes(CONTEXT_BUDGET_LIMITS.file + 1024) }
-  const tree = fixtureTree({ "data/baseline.json": baseline(1), ...files })
-  try {
-    const result = checkContextBudget(workspaceAt(tree.root), {
-      baselineFile: path.join(tree.root, "data/baseline.json"),
-      routes: [],
-      contexts: [],
-    })
-    assert.deepEqual(result.problems, [])
-    assert.equal(result.details.length, 2)
-  } finally {
-    tree.dispose()
-  }
+  const result = budget(
+    { [ROOT]: "entry", [reference("big")]: bytes(CONTEXT_BUDGET_LIMITS.file + 1024) },
+    {
+      baseline: (measurement) => ({
+        overBudget: overCount(measurement),
+        totalBytes: totalOf(measurement.entries),
+      }),
+    },
+  )
+  assert.deepEqual(result.problems, [])
+  assert.equal(result.details.length, 2)
 })
 
-test("the baseline cannot loosen a ceiling", () => {
+// The ratchet has to be able to act at zero offenders too, or "lower the
+// baseline" is prose nothing can reach: the total is what a byte added anywhere
+// still fails.
+test("a total above the baseline fails and names the gate", () => {
+  const result = budget(
+    { [ROOT]: "entry" },
+    {
+      baseline: (measurement) => ({ overBudget: 0, totalBytes: totalOf(measurement.entries) - 1 }),
+    },
+  )
+  assert.match(
+    problems(result),
+    /data\/context-budget\.json: the measured context is 5 bytes, the baseline allows 4 — cut the context instead of raising the total, then run `pnpm nx run pagopa-ui-cli:check:context-budget`/,
+  )
+})
+
+test("a total below the baseline asks to lower it", () => {
+  const result = budget(
+    { [ROOT]: "entry" },
+    {
+      baseline: (measurement) => ({ overBudget: 0, totalBytes: totalOf(measurement.entries) + 1 }),
+    },
+  )
+  assert.match(
+    problems(result),
+    /data\/context-budget\.json: the measured context is 5 bytes, lower totalBytes to 5 and run `pnpm nx run pagopa-ui-cli:check:context-budget`/,
+  )
+})
+
+test("the total a session reads only where the export exists is not in the ratchet", () => {
+  const contexts = [
+    { kind: "card", name: "node card", render: () => "clean" },
+    {
+      kind: "card",
+      name: "node card with local comments and delta",
+      render: () => "local delta",
+      snapshot: true,
+    },
+  ]
+  const result = budget(
+    { [ROOT]: "entry" },
+    { contexts, baseline: () => ({ overBudget: 0, totalBytes: 5 + "entry".length }) },
+  )
+  assert.deepEqual(result.problems, [])
+  assert.match(result.summary, /3 entries, 0 over budget, 10 bytes/)
+})
+
+// The ceilings are code. This is what keeps them code: raising one has to edit
+// this test, in a diff a reviewer reads, rather than a JSON file the check would
+// agree with.
+test("each ceiling is pinned to its specified number", () => {
+  assert.equal(CONTEXT_BUDGET_LIMITS.entry, 1536, "a SKILL.md entry reads in 1.5 KB")
+  assert.equal(CONTEXT_BUDGET_LIMITS.file, 4096, "a reference file reads in 4 KB")
+  assert.equal(CONTEXT_BUDGET_LIMITS.route, 8192, "a route's whole read set reads in 8 KB")
+  assert.equal(CONTEXT_BUDGET_LIMITS.card, 1536, "the node card reads in 1.5 KB")
+  assert.equal(CONTEXT_BUDGET_LIMITS.preamble, 1024, "the workflow preamble reads in 1 KB")
+})
+
+test("the committed baseline holds the ratchet state and nothing else", () => {
   const tree = fixtureTree({
-    "data/baseline.json": baseline(0, { ...CONTEXT_BUDGET_LIMITS, file: 8 * 1024 }),
+    "data/baseline.json": { overBudget: 0, totalBytes: 5, note: "a note is not ratchet state" },
     [ROOT]: "entry",
   })
   try {
-    const result = checkContextBudget(workspaceAt(tree.root), {
-      baselineFile: path.join(tree.root, "data/baseline.json"),
-      routes: [],
-      contexts: [],
-    })
-    assert.match(problems(result), /the file ceiling is 8192, the limit is 4096/)
+    assert.throws(
+      () =>
+        checkContextBudget(workspaceAt(tree.root), {
+          baselineFile: path.join(tree.root, "data/baseline.json"),
+          routes: [],
+          contexts: [],
+        }),
+      /data\/baseline\.json: unknown key "note"/,
+    )
   } finally {
     tree.dispose()
   }
@@ -176,6 +240,7 @@ test("a rendered card over its ceiling fails and names it", () => {
     },
   )
   assert.match(problems(result), /card "node card": 1\.5 KB over the 1\.5 KB ceiling/)
+  assert.match(problems(result), /run `pnpm nx run pagopa-ui-cli:check:context-budget`/)
 })
 
 test("a rendered context that cannot be measured fails without a stack", () => {
@@ -211,7 +276,10 @@ test("the measurement names every entry and its ceiling", () => {
 test("the committed declaration matches the links and the committed baseline", () => {
   const result = checkContextBudget(workspaceAt(DESIGN_SYSTEM))
   assert.deepEqual(result.problems, [])
-  assert.match(result.summary, /over budget, the baseline allows \d+/)
+  assert.match(
+    result.summary,
+    /\d+ entries, \d+ over budget, \d+ bytes, the baseline allows \d+ over and \d+ bytes/,
+  )
 })
 
 test("--report never fails and prints the same rows", async () => {
