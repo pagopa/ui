@@ -30,7 +30,9 @@
     "skills",
     "plugin.json",
     "figma-map.json",
-    "README.md"
+    "README.md",
+    "!skills/*/evals",
+    "!skills/*/harbor"
   ],
   "sideEffects": [
     "**/*.css"

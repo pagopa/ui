@@ -7,9 +7,10 @@ This file adds what holds only for agents.
 
 ## Rules
 
-1. **Never read `.env`.** Never read, source or load it; Vite and Storybook
-   disable env-file loading on purpose. The CLI resolves Figma credentials
-   without exposing them; its source gate and fallback are in
+1. **Figma credentials come from the process environment.** `FIGMA_TOKEN`
+   resolves from the shell, then the macOS `figma-pat` keychain entry; Vite and
+   Storybook disable env-file loading on purpose. The source gate and fallback
+   are in
    [init](.agents/skills/figma-to-code/references/init.md#credentials-and-source-gate).
 2. **Green before commit**: [the green chain](./CONTRIBUTING.md#the-green-chain),
    run in full, through Nx. The chain checks formatting without writing it, so
@@ -24,32 +25,16 @@ This file adds what holds only for agents.
    pnpm nx release plan minor -p pagopa-ui -m "feat(autocomplete): …"
    ```
 
-   The plan message is the changelog entry: `nx release` renders
-   `packages/pagopa-ui/CHANGELOG.md` from it when the Version Packages pull
-   request regenerates, so the agent writes the plan and leaves the changelog to
-   the release run.
+   The plan message is the changelog entry, so write the plan and leave
+   `CHANGELOG.md` alone: `nx release` renders it when the Version Packages pull
+   request regenerates.
 
-4. **The package owns the code.** The design system is `packages/pagopa-ui`, its
-   generated artwork is `packages/artwork`, its design foundations are
-   `packages/tokens` and its checks and Figma tooling are
-   `packages/ui-cli`: agents run CLI commands as `pnpm ui-cli …`; use Nx targets
-   (`pnpm nx run <project>:<target>`) for gates and CI. Never use a path that
-   walks out of the project.
+4. **Stay inside the workspace.** Read and write only under the repository root;
+   the package layout is in [Composition](./CONTRIBUTING.md#composition).
 5. **English whatever the session language.** Documentation, code comments and
    pull request titles and descriptions are written in English even when the
    session runs in Italian. Italian stays only where the product renders it:
    component and story texts, and the UI examples quoted in a guide.
-6. **Storybook runs on `:6006`.** `pnpm nx run pagopa-ui-storybook:storybook`
-   starts it and prints `http://localhost:6006`. `PORT` moves it and
-   `STORYBOOK_URL` points the CLI at it, so concurrent sessions keep their own.
-
-## Figma sessions
-
-Invoke `figma-to-code` for source work: its sequence owns status, source gates,
-delta/triage, node briefs, page census, device parity and closing.
-Use `pnpm ui-cli … --help` for interactive command signatures; keep Nx for
-the workspace gates. Automation never replaces source/render inspection or
-the person's delivery permissions.
 
 ## Skills
 
@@ -60,10 +45,12 @@ when work touches a component with a design source.
   component, its props, texts, story, test and guide are written, and the
   definition of done of a component. Every component, with or without Figma.
 - [`figma-to-code`](.agents/skills/figma-to-code/SKILL.md) — the Figma workflow:
-  deltas, new nodes, alignment and parity, devices, tokens, icons, pictograms,
-  node reviews and questions for the design owner.
+  deltas, new nodes, alignment, parity and devices.
 - [`start-figma-to-code`](.agents/skills/start-figma-to-code/SKILL.md) — the
   user-invoked entrypoint that scopes an open drift pull request.
+- [`figma-to-ui`](packages/pagopa-ui/skills/figma-to-ui/SKILL.md) — the same
+  reading of the Figma library, shipped in the package for its consumers: a
+  frame's instances to the `@pagopa/ui` exports that render them.
 
 | Work                                                       | Skills                                                                                          |
 | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
@@ -73,27 +60,34 @@ when work touches a component with a design source.
 | A Figma delta, tokens, icons, pictograms                   | `figma-to-code`; `pagopa-ui-standards` for each component it touches                            |
 | A question for the design owner, opened or answered        | `figma-to-code`: the design request flow                                                        |
 
-## Workflows
+Both Figma skills are graded by harbor-bench evals: `evals/` holds the graded
+scenarios and `harbor/` the session that runs them, next to each skill. The run
+commands, the tokens they need and what fails fast are in
+[Skill evals](./CONTRIBUTING.md#skill-evals); an instruction an eval grades moves
+with its eval.
 
-[`figma-align`](.github/extensions/figma-align/extension.mjs) is a Copilot CLI
-dynamic workflow that runs a wave of Figma alignment through both skills. It
-runs the deterministic commands itself: status, delta plan and inventory triage,
-fresh rules/comments snapshots, the pending queue and `implementationOrder`,
-node briefs, the close-out checks
-(`check:catalogue`, `check:rules`, the parity wave) and the green chain read
-from [CONTRIBUTING.md](./CONTRIBUTING.md#the-green-chain). It analyses each node
-in parallel and read-only, then pauses so the person can approve or edit
-`packages/pagopa-ui/.figma/align/<runId>/decisions.json`. After resume, one
-writer works at a time; read-only verification may run alongside it, and the
-start/end/final context hash invalidates a result whenever the relevant source
-or case context changed. A stale pass gets one fresh re-verification; a missing
-result, failed retry or later change remains not verified. The workflow never
-commits.
-Start it only when the person asks:
+The reverse holds too: editing a skill, or a retrospective over agentic sessions
+(the `retro` skill), proposes the eval that pins the change or the finding. A
+proposal names the session it came from, the expectation that would have failed,
+and whether it is a guardrail or an end-to-end pass.
+
+## Figma sessions
+
+Invoke `figma-to-code` for source work: its sequence owns status, source gates,
+delta/triage, node briefs, page census, device parity and closing.
+`pnpm ui-cli … --help` carries the interactive command signatures; Nx carries
+the workspace gates. Automation never replaces source/render inspection or the
+person's delivery permissions.
+
+[`figma-align`](.github/extensions/figma-align/extension.mjs) runs a wave of that
+alignment as a Copilot CLI dynamic workflow: it analyses each node in parallel
+and read-only, pauses so the person can approve or edit
+`packages/pagopa-ui/.figma/align/<runId>/decisions.json`, then writes one node at
+a time and never commits. Start it only when the person asks:
 `run_dynamic_workflow { name: "figma-align", args: { waveSize: 3 } }`, or
-`{ nodes: ["<nodeId>"] }` for named nodes and `{ analyseOnly: true }` to get the
-decisions without changing files. The skills stay the source of every rule;
-the workflow only sequences them.
+`{ nodes: ["<nodeId>"] }` for named nodes and `{ analyseOnly: true }` for the
+decisions alone. The skills stay the source of every rule; the extension's
+header documents the phases and the close-out checks it runs.
 
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->

@@ -339,6 +339,9 @@ apps/storybook/visual/scope.json
 # Figma live exports (local, produced by the Figma MCP; never committed)
 .figma
 
+# harbor-bench skill evals: generated tasks, job runs and comparison reports
+.harbor
+
 # Editors not covered above
 .vscode/*
 !.vscode/extensions.json

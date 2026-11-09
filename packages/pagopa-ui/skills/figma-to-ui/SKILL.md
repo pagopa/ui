@@ -28,7 +28,7 @@ The package ships `figma-map.json`: one row per Figma node the design system imp
    | `pending`     | The node is decided and not built; ask instead of substituting. |
    | `excluded`    | The node is out of the library on purpose; the reason says why. |
 
-   The row's reason carries the instruction when the status is not `implemented`, usually the implemented component to render instead.
+   The row's reason carries the instruction when the status is not `implemented`, usually the implemented component to render instead. A `pending` or `excluded` part is answered in words, not in code: leave that part out, name its node, export and reason, and ask which way to go — in a non-interactive session the question sits in the reply that ends the turn. The question is about that part alone: the rest of the frame is still built.
 
 4. **Search when no row answers.** A part drawn as loose shapes has no mapping, and neither does a node the file never published. Search by the name you read in Figma:
 
