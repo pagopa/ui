@@ -66,7 +66,7 @@ export interface BudgetEntry {
   /** The files a route's total is made of. */
   readonly files?: number
   /** What the route reads once the routes it reads join in, deduplicated. */
-  readonly withBoundaries?: number
+  readonly withReads?: number
   /** A card a session reads only where the gitignored `.figma/` exports exist. */
   readonly snapshot?: boolean
 }
@@ -249,9 +249,9 @@ function overBudgetError(entry: BudgetEntry): string {
 function row(entry: BudgetEntry): string {
   const verdict = overBudget(entry) ? `over ${kilobytes(entry.ceiling)}` : "ok"
   const suffix =
-    entry.withBoundaries === undefined
+    entry.withReads === undefined || entry.withReads === entry.bytes
       ? ""
-      : `  (${kilobytes(entry.withBoundaries)} with its boundaries)`
+      : `  (${kilobytes(entry.withReads)} including the routes it reads)`
   return `${entry.kind.padEnd(9)}${labelled(entry).padEnd(72)}${kilobytes(entry.bytes).padStart(9)}  ${verdict}${suffix}`
 }
 
@@ -445,7 +445,7 @@ export function measureContextBudget(
       bytes: bytesOf(workspace, measured.files),
       ceiling: CONTEXT_BUDGET_LIMITS.route,
       files: measured.files.length,
-      withBoundaries: bytesOf(workspace, transitiveRouteFiles(routes, route.root)),
+      withReads: bytesOf(workspace, transitiveRouteFiles(routes, route.root)),
     })
   }
   // A file in no route is context no budget counts: a session reads it and the

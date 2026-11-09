@@ -164,7 +164,7 @@ test("a link to another route's root is allowed and not traversed", () => {
   assert.deepEqual(result.problems, [])
   assert.match(
     result.details.join("\n"),
-    /route\s+"entry route"\s+[\d.]+ KB\s+ok\s+\([\d.]+ KB with its boundaries\)/,
+    /route\s+"entry route"\s+[\d.]+ KB\s+ok\s+\([\d.]+ KB including the routes it reads\)/,
   )
 })
 
@@ -221,10 +221,21 @@ test("a route with no read edge reports its own bytes as the total", () => {
     const routes = [route([ROOT, reference("a")], "alone")]
     const measured = measureContextBudget(workspace, { routes, contexts: [] })
     const entry = measured.entries.find((candidate) => candidate.kind === "route")
-    assert.equal(entry.withBoundaries, entry.bytes)
+    assert.equal(entry.withReads, entry.bytes)
   } finally {
     tree.dispose()
   }
+})
+
+test("a route with no read edge prints no total beside its own", () => {
+  const result = budget(
+    { [ROOT]: "[a](references/a.md)", [reference("a")]: "a" },
+    {
+      routes: [route([ROOT, reference("a")], "alone")],
+    },
+  )
+  assert.deepEqual(result.problems, [])
+  assert.doesNotMatch(result.details.join("\n"), /including the routes it reads/)
 })
 
 test("a count below the baseline asks to lower it", () => {
