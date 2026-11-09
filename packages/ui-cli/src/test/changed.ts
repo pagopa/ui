@@ -16,8 +16,8 @@ const MARKERS = {
 
 type PassKind = keyof typeof MARKERS
 
-const OUTSIDE_GRAPH_PREFIXES = [".storybook/"]
-const OUTSIDE_GRAPH_DIRECTORIES = [".storybook"]
+const OUTSIDE_GRAPH_PREFIXES = [".storybook/", ".storybook-conditions/"]
+const OUTSIDE_GRAPH_DIRECTORIES = [".storybook", ".storybook-conditions"]
 const OUTSIDE_GRAPH_SUFFIXES = [".css"]
 
 function isOutsideGraph(file: string): boolean {
