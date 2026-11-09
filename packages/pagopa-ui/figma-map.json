@@ -1,0 +1,4023 @@
+{
+  "schemaVersion": 1,
+  "fileKey": "pvhsJpPGQbEwNLiyP7BOIw",
+  "syncedAt": "2026-11-05",
+  "nodes": {
+    "50:1700": {
+      "figma": "White Template",
+      "page": "• Safe Area",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PageSurface"
+      ],
+      "story": "components-content-pagesurface--playground"
+    },
+    "61:2786": {
+      "figma": "Divider",
+      "page": "• Divider ",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Separator"
+      ],
+      "story": "components-separator--playground"
+    },
+    "67:3964": {
+      "figma": "Overlay",
+      "page": "• Overlay",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "Overlay"
+      ],
+      "story": "components-overlays-overlay--playground"
+    },
+    "94:1982": {
+      "figma": "category",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "94:1997": {
+      "figma": "supervised_user_circle",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "94:2021": {
+      "figma": "person",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "94:2036": {
+      "figma": "mail",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "94:2057": {
+      "figma": "settings",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "94:2072": {
+      "figma": "vpn_key",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "94:2093": {
+      "figma": "view_sidebar",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "94:2106": {
+      "figma": "menu_book",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "95:680": {
+      "figma": "content_copy",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "95:1620": {
+      "figma": "edit",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "95:1691": {
+      "figma": "lock",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "96:621": {
+      "figma": "filter",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "96:628": {
+      "figma": "adf_scanner",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "96:668": {
+      "figma": "check_box",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "96:671": {
+      "figma": "radio_button",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "96:686": {
+      "figma": "visibility",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "96:708": {
+      "figma": "keep",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "96:722": {
+      "figma": "backspace",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:668": {
+      "figma": "close",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:675": {
+      "figma": "help",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:697": {
+      "figma": "add",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:704": {
+      "figma": "search",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:711": {
+      "figma": "mode_off_on",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:718": {
+      "figma": "block",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:737": {
+      "figma": "more_vert",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:738": {
+      "figma": "menu",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:871": {
+      "figma": "chevron",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:878": {
+      "figma": "history",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:919": {
+      "figma": "arrow",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:932": {
+      "figma": "logout",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:933": {
+      "figma": "login",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:952": {
+      "figma": "exit_to_app",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:965": {
+      "figma": "download",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:966": {
+      "figma": "upload",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:973": {
+      "figma": "ios_share",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:980": {
+      "figma": "share",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:987": {
+      "figma": "open_in_new",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:994": {
+      "figma": "cached",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:1001": {
+      "figma": "call_split",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:1016": {
+      "figma": "unfold",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:1065": {
+      "figma": "check_circle",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:1152": {
+      "figma": "info",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:1153": {
+      "figma": "warning",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:1154": {
+      "figma": "report",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:1155": {
+      "figma": "cancel",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:1158": {
+      "figma": "check",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:1162": {
+      "figma": "error",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:1252": {
+      "figma": "forum",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:1253": {
+      "figma": "chat",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:1254": {
+      "figma": "mark_email_unread",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:1257": {
+      "figma": "favorite",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:1258": {
+      "figma": "kid_star",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:1271": {
+      "figma": "inbox",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:1290": {
+      "figma": "attach_email",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:1297": {
+      "figma": "feedback",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:1300": {
+      "figma": "inventory_2",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "98:1351": {
+      "figma": "photo",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:616": {
+      "figma": "receipt_long",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:623": {
+      "figma": "folder",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:630": {
+      "figma": "news",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:637": {
+      "figma": "verified",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:644": {
+      "figma": "picture_as_pdf",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:666": {
+      "figma": "account_balance",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:673": {
+      "figma": "id_card",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:781": {
+      "figma": "Media logos",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2068": {
+      "figma": "hourglass_top",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2075": {
+      "figma": "schedule",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2082": {
+      "figma": "event",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2089": {
+      "figma": "gpp_bad",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2096": {
+      "figma": "verified_user",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2110": {
+      "figma": "privacy_tip",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2117": {
+      "figma": "notifications_active",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2124": {
+      "figma": "keyboard_hide",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2131": {
+      "figma": "call",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2138": {
+      "figma": "qr_code",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2145": {
+      "figma": "bug_report",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2152": {
+      "figma": "delete",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2159": {
+      "figma": "sell",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2166": {
+      "figma": "leaderboard",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2173": {
+      "figma": "wand_shine",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2180": {
+      "figma": "auto_awesome_mosaic",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2187": {
+      "figma": "bolt",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2194": {
+      "figma": "language",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2201": {
+      "figma": "fingerprint",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2208": {
+      "figma": "attach_file",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2215": {
+      "figma": "shopping_cart",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2222": {
+      "figma": "mobile_2",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2229": {
+      "figma": "emoji_objects",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2248": {
+      "figma": "touch_app",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2249": {
+      "figma": "swipe",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2250": {
+      "figma": "swipe_down",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2257": {
+      "figma": "dialpad",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2264": {
+      "figma": "code",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2271": {
+      "figma": "business_center",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2278": {
+      "figma": "theater_comedy",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2285": {
+      "figma": "flight_takeoff",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2292": {
+      "figma": "pedal_bike",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2299": {
+      "figma": "volunteer_activism",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2331": {
+      "figma": "near_me",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2338": {
+      "figma": "my_location",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2345": {
+      "figma": "location_on",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2381": {
+      "figma": "credit_card",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2388": {
+      "figma": "euro",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2395": {
+      "figma": "storefront",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2408": {
+      "figma": "account_balance_wallet",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2415": {
+      "figma": "payments",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "99:2422": {
+      "figma": "savings",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "105:2043": {
+      "figma": "Tag",
+      "page": "• Tag 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Tag"
+      ],
+      "story": "components-content-tag--all-statuses"
+    },
+    "108:1402": {
+      "figma": "Button",
+      "page": "• Button 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Button"
+      ],
+      "story": "components-button--figma-state-matrix"
+    },
+    "109:2455": {
+      "figma": "Spinner",
+      "page": "• Spinner 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Spinner"
+      ],
+      "story": "components-feedback-spinner--spinner-brand-variants"
+    },
+    "123:4498": {
+      "figma": "BlockButtons",
+      "page": "• Button 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "ButtonGroup"
+      ],
+      "story": "components-inputs-buttongroup--playground"
+    },
+    "123:7768": {
+      "figma": "Breadcrumbs",
+      "page": "• Breadcrumb 🟠",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Breadcrumb"
+      ],
+      "story": "components-navigation-breadcrumb--breadcrumb-extended"
+    },
+    "127:1510": {
+      "figma": "Pagination",
+      "page": "• Pagination",
+      "type": "COMPONENT_SET",
+      "status": "pending",
+      "exports": [
+        "Pagination"
+      ],
+      "story": "components-navigation-pagination--first-page"
+    },
+    "160:1344": {
+      "figma": "AvatarSmall",
+      "page": "• Avatar 🟠",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Avatar"
+      ],
+      "story": "components-content-avatar--source-sizes"
+    },
+    "160:1403": {
+      "figma": "AvatarBig",
+      "page": "• Avatar 🟠",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Avatar"
+      ],
+      "story": "components-content-avatar--source-sizes"
+    },
+    "180:3931": {
+      "figma": "ScrollToBottom",
+      "page": "• Scroll-to-Bottom",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "ScrollToBottom"
+      ],
+      "story": "components-feedback-scrolltobottom--playground"
+    },
+    "192:1208": {
+      "figma": "IconButton",
+      "page": "• Icon Button 🟢",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "Button"
+      ],
+      "story": "components-button--figma-icon-button"
+    },
+    "194:3654": {
+      "figma": "CheckboxSingleElement",
+      "page": "• Checkbox and Radio Button",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [],
+      "unexported": [
+        "Checkbox"
+      ],
+      "story": "components-checkbox--source-default"
+    },
+    "194:3661": {
+      "figma": "CheckboxWithLabel",
+      "page": "• Checkbox and Radio Button",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "CheckboxField"
+      ],
+      "story": "components-inputs-checkboxfield--source-default"
+    },
+    "194:3677": {
+      "figma": "RadioButtonSingleElement",
+      "page": "• Checkbox and Radio Button",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [],
+      "unexported": [
+        "RadioGroupItem"
+      ],
+      "story": "components-inputs-radiofield--radio-indicator-states"
+    },
+    "194:3700": {
+      "figma": "RadioButtonGroup",
+      "page": "• Checkbox and Radio Button",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "RadioField",
+        "RadioGroup"
+      ],
+      "story": "components-inputs-radiofield--rich-radio-options"
+    },
+    "194:3763": {
+      "figma": "CheckboxGroup",
+      "page": "• Checkbox and Radio Button",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "CheckboxField"
+      ],
+      "story": "components-inputs-checkboxfield--source-rich-selected"
+    },
+    "194:3841": {
+      "figma": "RadioButtonWithLabel",
+      "page": "• Checkbox and Radio Button",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "RadioField"
+      ],
+      "story": "components-inputs-radiofield--radio-indicator-states"
+    },
+    "197:1985": {
+      "figma": "Chip",
+      "page": "• Chip 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Chip"
+      ],
+      "story": "components-inputs-chip--chip-source-variant-matrix"
+    },
+    "198:828": {
+      "figma": "AuthenticationCodeInput",
+      "page": "• Authentication Code Input 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "AuthenticationCodeInput"
+      ],
+      "story": "components-inputs-authenticationcodeinput--source-frame"
+    },
+    "212:1899": {
+      "figma": "Alert",
+      "page": "• Alert 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Alert"
+      ],
+      "story": "components-alert--all-statuses"
+    },
+    "230:1317": {
+      "figma": "Tooltip",
+      "page": "• Tooltip",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Tooltip"
+      ],
+      "story": "components-overlays-tooltip--playground"
+    },
+    "232:1673": {
+      "figma": "IO logo",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "236:1311": {
+      "figma": "ProgressLoader",
+      "page": "• Progress loader",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "ProgressLoader"
+      ],
+      "story": "components-feedback-progressloader--figma-default"
+    },
+    "237:1307": {
+      "figma": "Spacing",
+      "page": "• Spacing",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Spacer"
+      ],
+      "story": "components-content-spacer--ladder"
+    },
+    "256:8579": {
+      "figma": "SPID",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "256:8580": {
+      "figma": "CIEID",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "256:8581": {
+      "figma": "CIE",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "256:8582": {
+      "figma": "pagoPA",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "261:6501": {
+      "figma": "Banner",
+      "page": "• Banner 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Banner"
+      ],
+      "story": "components-feedback-banner--dismissable"
+    },
+    "295:1360": {
+      "figma": "Switch",
+      "page": "• Switch",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "SwitchField"
+      ],
+      "story": "components-inputs-switchfield--source-start-placement"
+    },
+    "329:1629": {
+      "figma": "SavingMoney",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1642": {
+      "figma": "Simplify",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1648": {
+      "figma": "AlarmClock",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1650": {
+      "figma": "Completed",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1656": {
+      "figma": "UploadFile",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1668": {
+      "figma": "Email Validation",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1675": {
+      "figma": "Leggi",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1683": {
+      "figma": "Push",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1690": {
+      "figma": "FileCheck",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1701": {
+      "figma": "Flag",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1712": {
+      "figma": "Code",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1718": {
+      "figma": "Assistance",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1726": {
+      "figma": "Bell",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1733": {
+      "figma": "Envelope",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1739": {
+      "figma": "Institution",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1750": {
+      "figma": "User manual",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1757": {
+      "figma": "Safe Deposit",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1764": {
+      "figma": "Idea",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1770": {
+      "figma": "MultipleFiles",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1777": {
+      "figma": "News",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1786": {
+      "figma": "Sms",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1792": {
+      "figma": "Documentation",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1799": {
+      "figma": "Business",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1807": {
+      "figma": "ID Card",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1815": {
+      "figma": "Fingerprint",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1823": {
+      "figma": "Keypad",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1837": {
+      "figma": "Messages",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1844": {
+      "figma": "Direction",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1850": {
+      "figma": "Repository",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1856": {
+      "figma": "Security",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1862": {
+      "figma": "Sync",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1868": {
+      "figma": "Options",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1881": {
+      "figma": "PersonalFile",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1888": {
+      "figma": "MapPin",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1894": {
+      "figma": "Award",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1901": {
+      "figma": "School",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1910": {
+      "figma": "Badge",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1917": {
+      "figma": "OpenFolder",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1923": {
+      "figma": "LineChart",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1929": {
+      "figma": "History Doc",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1935": {
+      "figma": "Calendar",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1942": {
+      "figma": "Upload",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1949": {
+      "figma": "Citizen",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1959": {
+      "figma": "Desktop",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1965": {
+      "figma": "Cloud",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1971": {
+      "figma": "Graduation",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1977": {
+      "figma": "CalendarCheck",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1984": {
+      "figma": "Trash",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:1992": {
+      "figma": "Delega",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2000": {
+      "figma": "Access",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2006": {
+      "figma": "Inbox",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2012": {
+      "figma": "Wallet",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2019": {
+      "figma": "Quick",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2028": {
+      "figma": "SingleFile",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2035": {
+      "figma": "UserCheck",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2042": {
+      "figma": "Firma",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2049": {
+      "figma": "Building",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2058": {
+      "figma": "Euro",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2064": {
+      "figma": "Storage",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2071": {
+      "figma": "PieChart",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2077": {
+      "figma": "Home",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2083": {
+      "figma": "CreditCard",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2090": {
+      "figma": "Download",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2097": {
+      "figma": "Enterprise",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2105": {
+      "figma": "Bug",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2113": {
+      "figma": "Earth",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2120": {
+      "figma": "Message",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2127": {
+      "figma": "Image",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "329:2134": {
+      "figma": "Data Security",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "349:4683": {
+      "figma": "SwitchGroup",
+      "page": "• Switch",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "SwitchField"
+      ],
+      "story": "components-inputs-switchfield--source-switches"
+    },
+    "357:4970": {
+      "figma": "Snackbar",
+      "page": "• Snackbar 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Snackbar"
+      ],
+      "story": "components-feedback-snackbar--dismissable"
+    },
+    "360:797": {
+      "figma": "Badge",
+      "page": "• Badge",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Badge"
+      ],
+      "story": "components-badge--fidelity"
+    },
+    "382:7640": {
+      "figma": "Loghi PSP",
+      "page": "• Loghi PSP",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PaymentProviderLogos"
+      ],
+      "story": "components-content-paymentproviderlogos--fidelity"
+    },
+    "382:7813": {
+      "figma": "CheckoutModule",
+      "page": "• Boxed Module",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "CheckoutModule"
+      ],
+      "story": "components-composites-checkoutmodule--playground"
+    },
+    "392:4667": {
+      "figma": "SnackbarErrorCode",
+      "page": "• Snackbar 🟢",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "SnackbarErrorCode"
+      ],
+      "story": "components-feedback-snackbarerrorcode--playground"
+    },
+    "392:5291": {
+      "figma": "how_to_reg",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "403:4116": {
+      "figma": "ProductModule",
+      "page": "• Boxed Module",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "ProductModule"
+      ],
+      "story": "components-composites-productmodule--playground"
+    },
+    "422:16012": {
+      "figma": "InputChip",
+      "page": "• Chip 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "InputChip"
+      ],
+      "story": "components-inputs-inputchip--neutral-solid"
+    },
+    "529:6111": {
+      "figma": "TextField",
+      "page": "• Text Field",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "TextField"
+      ],
+      "story": "components-inputs-textfield--playground"
+    },
+    "602:9417": {
+      "figma": "Select",
+      "page": "• Select",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "MultiSelectField",
+        "SelectField"
+      ],
+      "story": "components-inputs-selectfield--source-frame"
+    },
+    "610:33637": {
+      "figma": "Scrollbar",
+      "page": "• Componenti nativi",
+      "type": "COMPONENT_SET",
+      "status": "excluded",
+      "exports": [],
+      "reason": "native OS chrome (status bar, webview, scrollbar) — not shipped by the library"
+    },
+    "616:3864": {
+      "figma": "DropDown",
+      "page": "• Drop Down",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Dropdown"
+      ],
+      "story": "components-inputs-dropdown--playground"
+    },
+    "731:20386": {
+      "figma": "IDModule",
+      "page": "• Identity Provider Module 🟠",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "IdentityProviderPicker"
+      ],
+      "story": "components-composites-identityproviderpicker--playground"
+    },
+    "733:22841": {
+      "figma": "OKState",
+      "page": "• OK, KO, Waiting state",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "SuccessState"
+      ],
+      "story": "components-feedback-successstate--playground"
+    },
+    "749:5695": {
+      "figma": "KOState",
+      "page": "• OK, KO, Waiting state",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "ErrorState"
+      ],
+      "story": "components-feedback-errorstate--source-mobile"
+    },
+    "749:5867": {
+      "figma": "WaitingState",
+      "page": "• OK, KO, Waiting state",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "WaitingState"
+      ],
+      "story": "components-feedback-waitingstate--source-frame"
+    },
+    "757:6288": {
+      "figma": "ProductCard&Image",
+      "page": "• Card 🟠",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "ProductCard"
+      ],
+      "story": "components-data-display-productcard--source-image"
+    },
+    "759:6399": {
+      "figma": "AccordionItem",
+      "page": "• Accordion 🟠",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Accordion"
+      ],
+      "story": "components-navigation-accordion--playground"
+    },
+    "760:7432": {
+      "figma": "Drag&Drop",
+      "page": "• Drag & Drop",
+      "type": "COMPONENT_SET",
+      "status": "pending",
+      "exports": [
+        "DragAndDrop"
+      ],
+      "story": "components-inputs-draganddrop--playground"
+    },
+    "808:6302": {
+      "figma": "CatalogueCard",
+      "page": "• Card 🟠",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "CatalogueCard"
+      ],
+      "story": "components-data-display-productcard--source-catalogue-card"
+    },
+    "824:8838": {
+      "figma": "Autocomplete",
+      "page": "• Autocomplete 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Autocomplete"
+      ],
+      "story": "components-inputs-autocomplete--playground"
+    },
+    "873:1241": {
+      "figma": "Maintenance",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "908:2234": {
+      "figma": "ListItem",
+      "page": "• List Item",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "ListItem"
+      ],
+      "story": "components-content-listitem--playground"
+    },
+    "920:4502": {
+      "figma": "FeatureList",
+      "page": "• Feature List",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "FeatureList"
+      ],
+      "story": "components-content-featurelist--playground"
+    },
+    "920:7219": {
+      "figma": "PinPoint",
+      "page": "• Pin point",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PinPoint"
+      ],
+      "story": "components-overlays-pinpoint--playground"
+    },
+    "1042:18133": {
+      "figma": "Dialog",
+      "page": "• Dialog",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Dialog"
+      ],
+      "story": "components-overlays-dialog--source-case"
+    },
+    "1101:3862": {
+      "figma": "contacts",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "1101:4296": {
+      "figma": "approval_delegation",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "1101:4422": {
+      "figma": "integration_instructions",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "1120:7458": {
+      "figma": "SideNav",
+      "page": "• Side nav 🟠",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "SideNav"
+      ],
+      "story": "components-navigation-sidenav--playground"
+    },
+    "1120:7621": {
+      "figma": "construction",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "1120:7638": {
+      "figma": "dns",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "1120:7821": {
+      "figma": "dashboard",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "1134:6812": {
+      "figma": "CameraViewElement",
+      "page": "• Camera view",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "CameraView"
+      ],
+      "story": "components-overlays-cameraview--playground"
+    },
+    "1137:8910": {
+      "figma": "TabGroup",
+      "page": "• Tab",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "Tabs"
+      ],
+      "story": "components-tabs--default"
+    },
+    "1154:4493": {
+      "figma": "Form Wizard Template",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "mocked",
+      "exports": [],
+      "unexported": [
+        "FormWizardTemplate"
+      ]
+    },
+    "1174:9780": {
+      "figma": "save",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "1278:6527": {
+      "figma": "Drawer",
+      "page": "• Drawer",
+      "type": "COMPONENT_SET",
+      "status": "pending",
+      "exports": [
+        "Drawer"
+      ],
+      "story": "components-overlays-drawer--source-desktop"
+    },
+    "1293:8394": {
+      "figma": "ButtonGroup",
+      "page": "• Button Group",
+      "type": "COMPONENT_SET",
+      "status": "pending",
+      "exports": [
+        "SegmentedControl"
+      ],
+      "story": "components-inputs-segmentedcontrol--playground"
+    },
+    "1298:5209": {
+      "figma": "Header",
+      "page": "• Header, Preheader ",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Header"
+      ],
+      "story": "components-navigation-header--playground"
+    },
+    "1298:5299": {
+      "figma": "Preheader",
+      "page": "• Header, Preheader ",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Preheader"
+      ],
+      "story": "components-navigation-preheader--with-actions"
+    },
+    "1311:12896": {
+      "figma": "table_chart",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "1314:10512": {
+      "figma": "Stepper",
+      "page": "• Stepper ",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Stepper"
+      ],
+      "story": "components-navigation-stepper--with-descriptions"
+    },
+    "1315:8596": {
+      "figma": "account_circle",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "1317:10404": {
+      "figma": "HeaderAlert",
+      "page": "• Alert 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "HeaderAlert"
+      ],
+      "story": "components-feedback-headeralert--source-case"
+    },
+    "1333:16408": {
+      "figma": "Timeline drawer",
+      "page": "• Timeline",
+      "type": "COMPONENT_SET",
+      "status": "pending",
+      "exports": [
+        "TimelineDrawer"
+      ]
+    },
+    "1344:40672": {
+      "figma": "TableCellRow",
+      "page": "• Table",
+      "type": "COMPONENT_SET",
+      "status": "pending",
+      "exports": [
+        "TableCellRow"
+      ],
+      "story": "components-data-display-table--cell-composition"
+    },
+    "1349:22020": {
+      "figma": "Table",
+      "page": "• Table",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Table"
+      ],
+      "story": "components-data-display-table--source-desktop"
+    },
+    "1360:20138": {
+      "figma": "Footer",
+      "page": "• Footer",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Footer"
+      ],
+      "story": "components-navigation-footer--playground"
+    },
+    "1360:23904": {
+      "figma": "Cookies",
+      "page": "• Footer",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Cookies"
+      ],
+      "story": "components-navigation-cookies--playground"
+    },
+    "1501:5288": {
+      "figma": "support",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "1501:5860": {
+      "figma": "Gravatar",
+      "page": "• Avatar 🟠",
+      "type": "COMPONENT",
+      "status": "excluded",
+      "exports": [],
+      "reason": "Initials-only content is composed through Avatar(initials), not a separate email-derived avatar or external Gravatar service. The misleading, unused email-inference alias was removed; richer Avatar source variants are reviewed through the shared Avatar composition."
+    },
+    "1509:25567": {
+      "figma": "confirmation_number",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "1566:29849": {
+      "figma": "SectionHeader",
+      "page": "• Section Header",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "SectionHeader"
+      ],
+      "story": "components-navigation-sectionheader--playground"
+    },
+    "1904:9589": {
+      "figma": "Feedback Page",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [],
+      "unexported": [
+        "FeedbackPage"
+      ],
+      "story": "components-templates-feedback-page--thank-you"
+    },
+    "1908:98740": {
+      "figma": "Terms of Use",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "mocked",
+      "exports": [],
+      "unexported": [
+        "TermsOfUse"
+      ]
+    },
+    "1909:98992": {
+      "figma": "Diaolog",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [],
+      "unexported": [
+        "DialogTemplate"
+      ],
+      "story": "components-templates-dialog--narrow-frame"
+    },
+    "1909:99033": {
+      "figma": "Security Code Dialog",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [],
+      "unexported": [
+        "SecurityCodeDialog"
+      ],
+      "story": "components-templates-security-code-dialog--narrow-frame"
+    },
+    "1931:112838": {
+      "figma": "Recap Default",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "mocked",
+      "exports": [],
+      "unexported": [
+        "RecapDefault"
+      ]
+    },
+    "1983:116988": {
+      "figma": "History Drawer",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "mocked",
+      "exports": [],
+      "unexported": [
+        "HistoryDrawer"
+      ]
+    },
+    "1983:116998": {
+      "figma": "Service Detail Drawer",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "mocked",
+      "exports": [],
+      "unexported": [
+        "ServiceDetailDrawer"
+      ]
+    },
+    "1992:127582": {
+      "figma": "Informative Drawer",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [],
+      "unexported": [
+        "InformativeDrawer"
+      ],
+      "story": "components-templates-informative-drawer--narrow-frame"
+    },
+    "1992:128990": {
+      "figma": "Error",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "1992:130380": {
+      "figma": "Search Drawer",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "mocked",
+      "exports": [],
+      "unexported": [
+        "SearchDrawer"
+      ]
+    },
+    "1992:147363": {
+      "figma": "Identity Provider Selector",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "mocked",
+      "exports": [],
+      "unexported": [
+        "IdentityProviderSelector"
+      ]
+    },
+    "2080:3319": {
+      "figma": "arrow_menu_close",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "2080:3320": {
+      "figma": "left_panel_close",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "2339:80916": {
+      "figma": "Log In",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [],
+      "unexported": [
+        "LogIn"
+      ],
+      "story": "components-templates-log-in--page"
+    },
+    "2776:74243": {
+      "figma": "Recap Default",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "mocked",
+      "exports": [],
+      "unexported": [
+        "RecapDefault"
+      ]
+    },
+    "2786:78783": {
+      "figma": "Form Template",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "mocked",
+      "exports": [],
+      "unexported": [
+        "FormTemplate"
+      ]
+    },
+    "2801:85126": {
+      "figma": "Object Detail",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "mocked",
+      "exports": [],
+      "unexported": [
+        "ObjectDetail"
+      ]
+    },
+    "2801:90017": {
+      "figma": "sort",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "2809:77828": {
+      "figma": "Filter Drawer",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "mocked",
+      "exports": [],
+      "unexported": [
+        "FilterDrawer"
+      ]
+    },
+    "2822:80432": {
+      "figma": "Homepage",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "mocked",
+      "exports": [],
+      "unexported": [
+        "Homepage"
+      ]
+    },
+    "2822:83244": {
+      "figma": "Edit Drawer",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "mocked",
+      "exports": [],
+      "unexported": [
+        "EditDrawer"
+      ]
+    },
+    "2827:30226": {
+      "figma": "Informativa Privacy",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "mocked",
+      "exports": [],
+      "unexported": [
+        "InformativaPrivacy"
+      ]
+    },
+    "2846:37569": {
+      "figma": "Dashboard",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "mocked",
+      "exports": [],
+      "unexported": [
+        "Dashboard"
+      ]
+    },
+    "2846:40095": {
+      "figma": "Multiple CTA Dashboard",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "mocked",
+      "exports": [],
+      "unexported": [
+        "MultipleCtaDashboard"
+      ]
+    },
+    "3228:36387": {
+      "figma": "List View",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "mocked",
+      "exports": [],
+      "unexported": [
+        "ListView"
+      ]
+    },
+    "3262:40787": {
+      "figma": "MenuDropDown",
+      "page": "• Drop Down",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "MenuDropdown"
+      ],
+      "story": "components-inputs-menudropdown--source-panel"
+    },
+    "3424:12354": {
+      "figma": "ButtonStickyBottom",
+      "page": "• Button 🟢",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "StickyButtonBar"
+      ],
+      "story": "components-inputs-stickybuttonbar--source-bar"
+    },
+    "3823:36774": {
+      "figma": "Template Email",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "mocked",
+      "exports": [],
+      "unexported": [
+        "TemplateEmail"
+      ]
+    },
+    "4834:42599": {
+      "figma": "Regole accessibilità",
+      "page": "• Componenti file",
+      "type": "COMPONENT",
+      "status": "excluded",
+      "exports": [],
+      "reason": "Figma file documentation/process components — not shipped by the library"
+    },
+    "7459:51329": {
+      "figma": "Smartphone validation",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "8049:39452": {
+      "figma": "DatePicker",
+      "page": "• Date picker ",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "DatePicker"
+      ],
+      "story": "components-inputs-datepicker--single-date-confirmation"
+    },
+    "8090:46352": {
+      "figma": "SkipToMainContent",
+      "page": "• Header, Preheader ",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "SkipToMainContent"
+      ],
+      "story": "components-navigation-skiptomaincontent--source-band"
+    },
+    "8702:266": {
+      "figma": "mark_email_read",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "8704:37763": {
+      "figma": "drafts",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "8704:37815": {
+      "figma": "flag",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "8712:443": {
+      "figma": "Mouse",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "8717:781": {
+      "figma": "SEND",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "8818:39878": {
+      "figma": "Image",
+      "page": "• Image",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Image"
+      ],
+      "story": "components-content-image--playground"
+    },
+    "8854:39311": {
+      "figma": "first_letter",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "8854:39312": {
+      "figma": "second_letter",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "8854:39315": {
+      "figma": "mobile_vibrate",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "8868:42628": {
+      "figma": "Status Bar",
+      "page": "• Componenti nativi",
+      "type": "COMPONENT_SET",
+      "status": "excluded",
+      "exports": [],
+      "reason": "native OS chrome (status bar, webview, scrollbar) — not shipped by the library"
+    },
+    "8868:42690": {
+      "figma": "Webview url",
+      "page": "• Componenti nativi",
+      "type": "COMPONENT_SET",
+      "status": "excluded",
+      "exports": [],
+      "reason": "native OS chrome (status bar, webview, scrollbar) — not shipped by the library"
+    },
+    "9082:974": {
+      "figma": "open_in_browser",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "9520:2537": {
+      "figma": "TableListItem",
+      "page": "• Table",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "TableListItem"
+      ],
+      "story": "components-data-display-tablelistitem--playground"
+    },
+    "9520:55438": {
+      "figma": "Table List View",
+      "page": "◆ KEY TEMPLATE",
+      "type": "COMPONENT_SET",
+      "status": "mocked",
+      "exports": [],
+      "unexported": [
+        "TableListView"
+      ]
+    },
+    "9584:66412": {
+      "figma": "send",
+      "page": "• Icon",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "9624:10625": {
+      "figma": "TableList",
+      "page": "• Table",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "TableList"
+      ],
+      "story": "components-data-display-tablelist--playground"
+    },
+    "9640:793": {
+      "figma": "gavel",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "9642:949": {
+      "figma": "no_accounts",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "9643:953": {
+      "figma": "grading",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "9643:960": {
+      "figma": "troubleshoot",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "9643:961": {
+      "figma": "search_check_2",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "9676:5408": {
+      "figma": ".Position/Top",
+      "page": "• Timeline",
+      "type": "COMPONENT",
+      "status": "excluded",
+      "exports": [],
+      "reason": "Internal first-event Timeline cursor layout, not shipped independently. Timeline owns list ordering and connector placement; the generic relative-div alias provided no source implementation."
+    },
+    "9676:5410": {
+      "figma": ".Position/Middle",
+      "page": "• Timeline",
+      "type": "COMPONENT",
+      "status": "excluded",
+      "exports": [],
+      "reason": "Internal middle-event Timeline cursor layout, not shipped independently. Timeline owns list ordering and connector placement; the generic relative-div alias provided no source implementation."
+    },
+    "9676:5420": {
+      "figma": ".Position/Bottom",
+      "page": "• Timeline",
+      "type": "COMPONENT",
+      "status": "excluded",
+      "exports": [],
+      "reason": "Internal final-event Timeline cursor layout, not shipped independently. Timeline owns list ordering and connector placement; the generic relative-div alias provided no source implementation."
+    },
+    "9676:5453": {
+      "figma": "Correction/Valid",
+      "page": "• Timeline",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "CorrectionTag"
+      ],
+      "story": "components-content-correctiontag--valid"
+    },
+    "9676:5455": {
+      "figma": "Correction/NotValid",
+      "page": "• Timeline",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "CorrectionTag"
+      ],
+      "story": "components-content-correctiontag--not-valid"
+    },
+    "9676:5633": {
+      "figma": "Microevento",
+      "page": "• Timeline",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "MicroEvent"
+      ],
+      "story": "components-data-display-microevent--playground"
+    },
+    "9698:58826": {
+      "figma": "ProgressKpiGroup",
+      "page": "• Card 🟠",
+      "type": "COMPONENT_SET",
+      "status": "excluded",
+      "exports": [],
+      "reason": "presentational grid wrapper — compose with CSS grid in app code"
+    },
+    "9790:9527": {
+      "figma": "mail_off",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "9833:26066": {
+      "figma": "local_post_office",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "9833:27244": {
+      "figma": "mail_shield",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "9866:4494": {
+      "figma": ".TimelineDot/Success",
+      "page": "• Timeline",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "Timeline"
+      ],
+      "story": "components-data-display-timeline--dot-success"
+    },
+    "9866:4497": {
+      "figma": ".TimelineDot/Error",
+      "page": "• Timeline",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "Timeline"
+      ],
+      "story": "components-data-display-timeline--dot-error"
+    },
+    "9866:4500": {
+      "figma": ".TimelineDot/Warning",
+      "page": "• Timeline",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "Timeline"
+      ],
+      "story": "components-data-display-timeline--dot-warning"
+    },
+    "9866:4503": {
+      "figma": ".TimelineDot/Info",
+      "page": "• Timeline",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "Timeline"
+      ],
+      "story": "components-data-display-timeline--dot-info"
+    },
+    "9876:42679": {
+      "figma": "online_address",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "9924:27038": {
+      "figma": "unsubscribe",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "9924:27054": {
+      "figma": "StatusTile",
+      "page": "• List Item",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "StatusTile"
+      ],
+      "story": "components-content-statustile--source-horizontal"
+    },
+    "9927:36954": {
+      "figma": "Popover",
+      "page": "• Popover 🚧",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Popover"
+      ],
+      "story": "components-overlays-popover--source-top"
+    },
+    "9977:21200": {
+      "figma": "check_indeterminate_small",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "9977:23980": {
+      "figma": "toggle_off",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "10169:11964": {
+      "figma": "CarouselStepper",
+      "page": "• Pagination",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "CarouselStepper"
+      ],
+      "story": "components-navigation-carouselstepper--playground"
+    },
+    "10192:41460": {
+      "figma": "AttachmentTile",
+      "page": "• Boxed Module",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "AttachmentModule"
+      ],
+      "story": "components-composites-attachmentmodule--source-available"
+    },
+    "10297:6918": {
+      "figma": "schedule_send",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "10444:14812": {
+      "figma": "local_laundry_service",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "10444:15263": {
+      "figma": "settings_remote",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "10585:80643": {
+      "figma": "TextArea",
+      "page": "• Text Field",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "TextareaField"
+      ],
+      "story": "components-inputs-textareafield--playground"
+    },
+    "11133:16142": {
+      "figma": "PaymentModule",
+      "page": "• Boxed Module",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PaymentModule"
+      ],
+      "story": "components-composites-paymentmodule--playground"
+    },
+    "11149:7765": {
+      "figma": "Missing element",
+      "page": "• Missing Element",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "EmptyState"
+      ],
+      "story": "components-feedback-emptystate--playground"
+    },
+    "11719:39455": {
+      "figma": "Hourglass",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "11719:39465": {
+      "figma": "Question",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "11731:39515": {
+      "figma": "In progress",
+      "page": "• Pictograms 🟢",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "PagoPAPictogram"
+      ]
+    },
+    "12133:82475": {
+      "figma": "ProgressKpiCard",
+      "page": "• Card 🟠",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "ProgressKpi"
+      ],
+      "story": "components-data-display-progresskpi--playground"
+    },
+    "12785:14427": {
+      "figma": "forward_to_inbox",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "12812:16248": {
+      "figma": "TimelineElement",
+      "page": "• Timeline",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Timeline"
+      ],
+      "story": "components-data-display-timeline--source-case"
+    },
+    "13211:26152": {
+      "figma": "Popper",
+      "page": "• Popper",
+      "type": "COMPONENT_SET",
+      "status": "implemented",
+      "exports": [
+        "Popper"
+      ],
+      "story": "components-overlays-popper--playground"
+    },
+    "13906:25597": {
+      "figma": "third_letter",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "14164:11363": {
+      "figma": "license",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "14241:48931": {
+      "figma": "mail_pec",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "14709:279": {
+      "figma": "mail_error",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "15901:18590": {
+      "figma": "school",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "15901:18591": {
+      "figma": "directions_subway",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    },
+    "15901:18592": {
+      "figma": "health_and_safety",
+      "page": "• Icon",
+      "type": "COMPONENT",
+      "status": "implemented",
+      "exports": [
+        "PagoPAIcon"
+      ],
+      "story": "foundations-icons-and-pictograms--catalogue"
+    }
+  },
+  "exports": {
+    "Accordion": [
+      "759:6399"
+    ],
+    "Alert": [
+      "212:1899"
+    ],
+    "AlertAction": [],
+    "AlertDescription": [],
+    "AlertTitle": [],
+    "AttachmentModule": [
+      "10192:41460"
+    ],
+    "AuthenticationCodeInput": [
+      "198:828"
+    ],
+    "Autocomplete": [
+      "824:8838"
+    ],
+    "Avatar": [
+      "160:1344",
+      "160:1403"
+    ],
+    "Badge": [
+      "360:797"
+    ],
+    "Banner": [
+      "261:6501"
+    ],
+    "Breadcrumb": [
+      "123:7768"
+    ],
+    "Button": [
+      "108:1402",
+      "192:1208"
+    ],
+    "ButtonGroup": [
+      "123:4498"
+    ],
+    "CameraView": [
+      "1134:6812"
+    ],
+    "Card": [],
+    "CardAction": [],
+    "CardContent": [],
+    "CardDescription": [],
+    "CardFooter": [],
+    "CardHeader": [],
+    "CardTitle": [],
+    "CarouselStepper": [
+      "10169:11964"
+    ],
+    "CatalogueCard": [
+      "808:6302"
+    ],
+    "CheckboxField": [
+      "194:3661",
+      "194:3763"
+    ],
+    "CheckboxGroup": [],
+    "CheckoutModule": [
+      "382:7813"
+    ],
+    "Chip": [
+      "197:1985"
+    ],
+    "Cookies": [
+      "1360:23904"
+    ],
+    "CorrectionTag": [
+      "9676:5453",
+      "9676:5455"
+    ],
+    "DatePicker": [
+      "8049:39452"
+    ],
+    "DatePickerField": [],
+    "Dialog": [
+      "1042:18133"
+    ],
+    "DownloadCard": [],
+    "DragAndDrop": [
+      "760:7432"
+    ],
+    "Drawer": [
+      "1278:6527"
+    ],
+    "Dropdown": [
+      "616:3864"
+    ],
+    "EmptyState": [
+      "11149:7765"
+    ],
+    "ErrorState": [
+      "749:5695"
+    ],
+    "ErrorSummary": [],
+    "FeatureList": [
+      "920:4502"
+    ],
+    "Footer": [
+      "1360:20138"
+    ],
+    "Header": [
+      "1298:5209"
+    ],
+    "HeaderAlert": [
+      "1317:10404"
+    ],
+    "IdentityProviderPicker": [
+      "731:20386"
+    ],
+    "Image": [
+      "8818:39878"
+    ],
+    "Input": [],
+    "InputChip": [
+      "422:16012"
+    ],
+    "Label": [],
+    "ListItem": [
+      "908:2234"
+    ],
+    "MenuDropdown": [
+      "3262:40787"
+    ],
+    "MicroEvent": [
+      "9676:5633"
+    ],
+    "MultiSelectField": [
+      "602:9417"
+    ],
+    "OrganizationModule": [],
+    "Overlay": [
+      "67:3964"
+    ],
+    "PageSurface": [
+      "50:1700"
+    ],
+    "Pagination": [
+      "127:1510"
+    ],
+    "PagoPAIcon": [
+      "94:1982",
+      "94:1997",
+      "94:2021",
+      "94:2036",
+      "94:2057",
+      "94:2072",
+      "94:2093",
+      "94:2106",
+      "95:680",
+      "95:1620",
+      "95:1691",
+      "96:621",
+      "96:628",
+      "96:668",
+      "96:671",
+      "96:686",
+      "96:708",
+      "96:722",
+      "98:668",
+      "98:675",
+      "98:697",
+      "98:704",
+      "98:711",
+      "98:718",
+      "98:737",
+      "98:738",
+      "98:871",
+      "98:878",
+      "98:919",
+      "98:932",
+      "98:933",
+      "98:952",
+      "98:965",
+      "98:966",
+      "98:973",
+      "98:980",
+      "98:987",
+      "98:994",
+      "98:1001",
+      "98:1016",
+      "98:1065",
+      "98:1152",
+      "98:1153",
+      "98:1154",
+      "98:1155",
+      "98:1158",
+      "98:1162",
+      "98:1252",
+      "98:1253",
+      "98:1254",
+      "98:1257",
+      "98:1258",
+      "98:1271",
+      "98:1290",
+      "98:1297",
+      "98:1300",
+      "98:1351",
+      "99:616",
+      "99:623",
+      "99:630",
+      "99:637",
+      "99:644",
+      "99:666",
+      "99:673",
+      "99:781",
+      "99:2068",
+      "99:2075",
+      "99:2082",
+      "99:2089",
+      "99:2096",
+      "99:2110",
+      "99:2117",
+      "99:2124",
+      "99:2131",
+      "99:2138",
+      "99:2145",
+      "99:2152",
+      "99:2159",
+      "99:2166",
+      "99:2173",
+      "99:2180",
+      "99:2187",
+      "99:2194",
+      "99:2201",
+      "99:2208",
+      "99:2215",
+      "99:2222",
+      "99:2229",
+      "99:2248",
+      "99:2249",
+      "99:2250",
+      "99:2257",
+      "99:2264",
+      "99:2271",
+      "99:2278",
+      "99:2285",
+      "99:2292",
+      "99:2299",
+      "99:2331",
+      "99:2338",
+      "99:2345",
+      "99:2381",
+      "99:2388",
+      "99:2395",
+      "99:2408",
+      "99:2415",
+      "99:2422",
+      "232:1673",
+      "256:8579",
+      "256:8580",
+      "256:8581",
+      "256:8582",
+      "392:5291",
+      "1101:3862",
+      "1101:4296",
+      "1101:4422",
+      "1120:7621",
+      "1120:7638",
+      "1120:7821",
+      "1174:9780",
+      "1311:12896",
+      "1315:8596",
+      "1501:5288",
+      "1509:25567",
+      "2080:3319",
+      "2080:3320",
+      "2801:90017",
+      "8702:266",
+      "8704:37763",
+      "8704:37815",
+      "8717:781",
+      "8854:39311",
+      "8854:39312",
+      "8854:39315",
+      "9082:974",
+      "9584:66412",
+      "9640:793",
+      "9642:949",
+      "9643:953",
+      "9643:960",
+      "9643:961",
+      "9790:9527",
+      "9833:26066",
+      "9833:27244",
+      "9876:42679",
+      "9924:27038",
+      "9977:21200",
+      "9977:23980",
+      "10297:6918",
+      "10444:14812",
+      "10444:15263",
+      "12785:14427",
+      "13906:25597",
+      "14164:11363",
+      "14241:48931",
+      "14709:279",
+      "15901:18590",
+      "15901:18591",
+      "15901:18592"
+    ],
+    "PagoPAPictogram": [
+      "329:1629",
+      "329:1642",
+      "329:1648",
+      "329:1650",
+      "329:1656",
+      "329:1668",
+      "329:1675",
+      "329:1683",
+      "329:1690",
+      "329:1701",
+      "329:1712",
+      "329:1718",
+      "329:1726",
+      "329:1733",
+      "329:1739",
+      "329:1750",
+      "329:1757",
+      "329:1764",
+      "329:1770",
+      "329:1777",
+      "329:1786",
+      "329:1792",
+      "329:1799",
+      "329:1807",
+      "329:1815",
+      "329:1823",
+      "329:1837",
+      "329:1844",
+      "329:1850",
+      "329:1856",
+      "329:1862",
+      "329:1868",
+      "329:1881",
+      "329:1888",
+      "329:1894",
+      "329:1901",
+      "329:1910",
+      "329:1917",
+      "329:1923",
+      "329:1929",
+      "329:1935",
+      "329:1942",
+      "329:1949",
+      "329:1959",
+      "329:1965",
+      "329:1971",
+      "329:1977",
+      "329:1984",
+      "329:1992",
+      "329:2000",
+      "329:2006",
+      "329:2012",
+      "329:2019",
+      "329:2028",
+      "329:2035",
+      "329:2042",
+      "329:2049",
+      "329:2058",
+      "329:2064",
+      "329:2071",
+      "329:2077",
+      "329:2083",
+      "329:2090",
+      "329:2097",
+      "329:2105",
+      "329:2113",
+      "329:2120",
+      "329:2127",
+      "329:2134",
+      "873:1241",
+      "1992:128990",
+      "7459:51329",
+      "8712:443",
+      "11719:39455",
+      "11719:39465",
+      "11731:39515"
+    ],
+    "PaymentModule": [
+      "11133:16142"
+    ],
+    "PaymentProviderLogos": [
+      "382:7640"
+    ],
+    "PinPoint": [
+      "920:7219"
+    ],
+    "Popover": [
+      "9927:36954"
+    ],
+    "Popper": [
+      "13211:26152"
+    ],
+    "Preheader": [
+      "1298:5299"
+    ],
+    "ProductCard": [
+      "757:6288"
+    ],
+    "ProductModule": [
+      "403:4116"
+    ],
+    "ProgressKpi": [
+      "12133:82475"
+    ],
+    "ProgressLoader": [
+      "236:1311"
+    ],
+    "RadioField": [
+      "194:3700",
+      "194:3841"
+    ],
+    "RadioGroup": [
+      "194:3700"
+    ],
+    "SafeArea": [],
+    "ScrollToBottom": [
+      "180:3931"
+    ],
+    "SectionHeader": [
+      "1566:29849"
+    ],
+    "SegmentedControl": [
+      "1293:8394"
+    ],
+    "SelectField": [
+      "602:9417"
+    ],
+    "Separator": [
+      "61:2786"
+    ],
+    "SideNav": [
+      "1120:7458"
+    ],
+    "SkipToMainContent": [
+      "8090:46352"
+    ],
+    "Snackbar": [
+      "357:4970"
+    ],
+    "SnackbarErrorCode": [
+      "392:4667"
+    ],
+    "Spacer": [
+      "237:1307"
+    ],
+    "Spinner": [
+      "109:2455"
+    ],
+    "StatusTile": [
+      "9924:27054"
+    ],
+    "Stepper": [
+      "1314:10512"
+    ],
+    "StickyButtonBar": [
+      "3424:12354"
+    ],
+    "SuccessState": [
+      "733:22841"
+    ],
+    "Switch": [],
+    "SwitchField": [
+      "295:1360",
+      "349:4683"
+    ],
+    "SwitchGroup": [],
+    "Table": [
+      "1349:22020"
+    ],
+    "TableCellRow": [
+      "1344:40672"
+    ],
+    "TableHeaderField": [],
+    "TableList": [
+      "9624:10625"
+    ],
+    "TableListField": [],
+    "TableListItem": [
+      "9520:2537"
+    ],
+    "Tabs": [
+      "1137:8910"
+    ],
+    "TabsContent": [],
+    "TabsList": [],
+    "TabsTrigger": [],
+    "Tag": [
+      "105:2043"
+    ],
+    "TextField": [
+      "529:6111"
+    ],
+    "Textarea": [],
+    "TextareaField": [
+      "10585:80643"
+    ],
+    "Timeline": [
+      "9866:4494",
+      "9866:4497",
+      "9866:4500",
+      "9866:4503",
+      "12812:16248"
+    ],
+    "TimelineDrawer": [
+      "1333:16408"
+    ],
+    "Tooltip": [
+      "230:1317"
+    ],
+    "UIProvider": [],
+    "WaitingState": [
+      "749:5867"
+    ],
+    "enMessages": [],
+    "iconNames": [],
+    "itMessages": [],
+    "pictogramNames": []
+  }
+}

@@ -1,6 +1,7 @@
 import { defineCommand, type CommandDef, type SubCommandsDef } from "citty"
 import path from "node:path"
 
+import { checkMap, updateMap } from "../figma/map.ts"
 import { checkStories, updateStories } from "../figma/stories.ts"
 import { formatDeviceReport, readDevices } from "../figma/devices.ts"
 import { buildStatusReport, formatStatusText } from "../figma/status.ts"
@@ -259,6 +260,22 @@ export function figmaCommands(ctx: CliContext): CommandDef {
       return result.errors.length ? EXIT.failure : EXIT.ok
     }),
   })
+  const map = defineCommand({
+    meta: {
+      name: "map",
+      description: "Write or check figma-map.json, the node-to-component map the package ships",
+    },
+    args: { write: { type: "boolean", default: false, description: "Write the map" } },
+    run: action(ctx, ({ write }) => {
+      if (write) {
+        ctx.io.out(updateMap(ctx.workspace()))
+        return EXIT.ok
+      }
+      const result = checkMap(ctx.workspace())
+      printLines(ctx.io, formatCheck(result))
+      return passed(result) ? EXIT.ok : EXIT.failure
+    }),
+  })
   const exportSnapshot = defineCommand({
     meta: { name: "export", description: "Write the read-only REST snapshot" },
     args: { input: inputArg, "require-token": requireTokenArg },
@@ -301,6 +318,7 @@ export function figmaCommands(ctx: CliContext): CommandDef {
       devices,
       export: exportSnapshot,
       pictograms,
+      map,
     },
   })
 }

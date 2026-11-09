@@ -54,6 +54,34 @@ packages. The artifact includes compiled CSS, text fonts with their licence,
 standalone icon and pictogram SVGs, and TypeScript declarations supporting
 Bundler and NodeNext resolution.
 
+## Design handoff for an agent
+
+The package ships the `figma-to-ui` skill, the `pagopa-ui-map` command and the
+`figma-map.json` both read, so an agent that receives a Figma layout can find the
+component that draws each part without reading the design system's internals.
+Installing `@pagopa/ui` installs all three, under the installed package:
+
+```text
+node_modules/@pagopa/ui/skills/figma-to-ui/SKILL.md   # the procedure
+node_modules/@pagopa/ui/cli/pagopa-ui-map.mjs         # one lookup per node
+node_modules/@pagopa/ui/figma-map.json                # the node-to-component map
+node_modules/@pagopa/ui/plugin.json                   # the Agent Plugin manifest
+```
+
+Point the agent at the skill and at the layout:
+
+> Use the `figma-to-ui` skill in `node_modules/@pagopa/ui/skills` to build this
+> layout with `@pagopa/ui`: `<Figma link>`
+
+An agent that reads its skills from a folder of its own takes a copy: copy
+`skills/figma-to-ui` into `.claude/skills`, `.github/skills` or the equivalent
+the agent scans. Tools that read the Agent Plugin manifest find `plugin.json` in
+the package, with the skill beside it, and need no other configuration.
+
+The `pagopa-ui-map` binary lands in `node_modules/.bin`, so `pnpm exec
+pagopa-ui-map resolve 194:3654` answers outside the skill too. Node 22.18 or
+later runs it.
+
 ## Compatibility
 
 - Scoped styles require CSS `@scope`: Chrome 118+, Safari 17.4+ or Firefox 128+.
@@ -66,9 +94,10 @@ Bundler and NodeNext resolution.
 ## Documentation
 
 The [package guide](./packages/pagopa-ui/README.md) covers router integration,
-Next.js App Router, languages and text overrides, and the public token
-exports. The [component guides](./apps/storybook/src/guides/) document
-individual components and their usage.
+Next.js App Router, languages and text overrides, the public token exports, and
+the Figma handoff in full. The [component
+guides](./apps/storybook/src/guides/) document individual components and their
+usage.
 
 ## Contributing
 

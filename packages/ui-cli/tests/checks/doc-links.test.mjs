@@ -146,6 +146,17 @@ test("the figma-to-code skill stays agnostic", () => {
   assert.match(result, /names the component Banner/)
 })
 
+test("the skill shipped to a consuming agent stays agnostic too", () => {
+  const result = problems(
+    check({
+      "skills/figma-to-ui/SKILL.md": "Node 123:4567 is drawn by Banner.",
+      "src/components/feedback/banner.tsx": "export function Banner() { return null }",
+    }),
+  )
+  assert.match(result, /names a node id 123:4567/)
+  assert.match(result, /names the component Banner/)
+})
+
 test("other skills may name components and the shadcn skill is skipped", () => {
   assert.deepEqual(
     check({

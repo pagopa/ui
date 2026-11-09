@@ -10,7 +10,7 @@ import { RegistrySchema, type Registry } from "../schemas/catalogue.ts"
 
 export const STORY_TITLES_PATH = "src/catalog/figma/story-titles.json"
 
-const StoryTitlesSchema = z.record(z.string(), z.string())
+export const StoryTitlesSchema = z.record(z.string(), z.string())
 
 export type StoryTitles = z.infer<typeof StoryTitlesSchema>
 

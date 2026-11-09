@@ -9,6 +9,7 @@ import { checkDocLinks } from "../checks/doc-links.ts"
 import { checkFoundation, measureFoundation } from "../checks/foundation.ts"
 import { checkImportLayers } from "../checks/import-layers.ts"
 import { checkLibrary } from "../checks/library.ts"
+import { checkPlugin } from "../checks/plugin.ts"
 import { checkPublicTokens } from "../checks/public-tokens.ts"
 import { formatCheck, passed, type CheckReport } from "../checks/report.ts"
 import { checkTextDefaults } from "../checks/text-defaults.ts"
@@ -63,6 +64,9 @@ export function checkCommands(
       ),
       library: gate("library", "Verify the packed artifact in an isolated app", () =>
         checkLibrary(ctx.workspace(), { env: ctx.env, log: ctx.io.out }),
+      ),
+      plugin: gate("plugin", "Check plugin.json, the shipped skills and the published files", () =>
+        checkPlugin(ctx.workspace()),
       ),
       "public-tokens": gate(
         "public-tokens",

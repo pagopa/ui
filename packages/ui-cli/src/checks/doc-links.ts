@@ -38,7 +38,9 @@ type DocsContext = {
   root: string
   TOOLING_ROOT: string
   workspace: string
-  SKILL: string
+  // Every skill directory that must stay agnostic: the maintainer skill in the
+  // workspace and the consumer skill the package ships.
+  SKILLS: string[]
   toolingInWorkspace: boolean
   options: DocLinksOptions
   errors: string[]
@@ -444,6 +446,7 @@ function markdownFiles(ctx: DocsContext): string[] {
     ...walkFiles(path.join(ctx.workspace, "apps/storybook/src/guides"), (file) =>
       file.endsWith(".md"),
     ),
+    ...walkFiles(path.join(ctx.root, "skills"), (file) => file.endsWith(".md")),
     ...walkFiles(path.join(ctx.workspace, "docs"), (file) => file.endsWith(".md")),
   ]
 }
@@ -473,10 +476,12 @@ function scriptFiles(ctx: DocsContext): string[] {
 
 function validateMarkdownFiles(context: DocsContext, files: string[]): string[] {
   const ctx = { ...context, errors: [] }
-  const names = fs.existsSync(ctx.SKILL) ? componentNames(ctx) : new Set<string>()
+  const skills = ctx.SKILLS.filter((dir) => fs.existsSync(dir))
+  const names = skills.length ? componentNames(ctx) : new Set<string>()
   for (const file of files) {
     const text = checkMarkdown(ctx, file)
-    if (file.startsWith(`${ctx.SKILL}${path.sep}`)) checkSkillAgnostic(ctx, file, text, names)
+    if (skills.some((dir) => file.startsWith(`${dir}${path.sep}`)))
+      checkSkillAgnostic(ctx, file, text, names)
   }
   return ctx.errors
 }
@@ -496,12 +501,12 @@ function validateScripts(context: DocsContext): string[] {
 
 export function checkDocLinks(workspaceTree: Workspace, options: DocLinksOptions): CheckReport {
   const { root, toolingRoot: TOOLING_ROOT, workspaceRoot: workspace } = workspaceTree
-  const SKILL = path.join(workspace, ".agents/skills/figma-to-code")
+  const SKILLS = [path.join(workspace, ".agents/skills/figma-to-code"), path.join(root, "skills")]
   const ctx: DocsContext = {
     root,
     TOOLING_ROOT,
     workspace,
-    SKILL,
+    SKILLS,
     options,
     toolingInWorkspace: TOOLING_ROOT.startsWith(`${workspace}${path.sep}`),
     errors: [],
