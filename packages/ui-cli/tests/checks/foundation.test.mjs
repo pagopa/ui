@@ -68,6 +68,9 @@ test("a value above the ceiling fails with the rule", () => {
         result.problems.join("\n"),
         /tailwind-text-size: 1 occurrences, the ceiling is 0/,
       )
+      // A migrated rule names the fix and the command that applies it.
+      assert.match(result.problems.join("\n"), /foundation token/)
+      assert.match(result.problems.join("\n"), /pnpm nx run pagopa-ui:foundation:check/)
     },
     { files: { "src/components/bad.tsx": 'export const bad = <p className="text-sm" />\n' } },
   )
@@ -82,6 +85,7 @@ test("a count below the ceiling asks to lower it", () => {
         result.problems.join("\n"),
         /tailwind-text-size: 0 occurrences, the ceiling is 1 — lower the ceiling to 0/,
       )
+      assert.match(result.problems.join("\n"), /pnpm nx run pagopa-ui:foundation:check/)
     },
     {
       baseline: { schemaVersion: 1, counts: { ...zeroCounts(), "tailwind-text-size": 1 } },

@@ -199,12 +199,31 @@ test("adding a variant to an existing identity is reported as changed", () => {
   )
 })
 
+test("a registry entry for an uncatalogued node names the fix and the gate", () => {
+  fixture(
+    ({ check }) => {
+      const result = check()
+      assert.equal(result.status, 1)
+      assert.match(result.stderr, /registry 9:9: stale entry/)
+      assert.match(result.stderr, /drop it or refresh the inventory/)
+      assert.match(result.stderr, /pnpm nx run pagopa-ui:check:catalogue/)
+    },
+    {
+      "src/catalog/figma/registry.json": JSON.stringify({
+        bulkRules: [],
+        entries: { "9:9": { status: "excluded", reason: "Fixture-only control" } },
+      }),
+    },
+  )
+})
+
 test("a type-only story import is not rendered implementation evidence", () => {
   fixture(
     ({ check }) => {
       const result = check()
       assert.equal(result.status, 1)
       assert.match(result.stderr, /no story renders "Control"/i)
+      assert.match(result.stderr, /pnpm nx run pagopa-ui:check:catalogue/)
     },
     {
       "src/catalog/figma/registry.json": JSON.stringify({
@@ -512,6 +531,7 @@ test("a public namesake cannot reuse another component's Figma mapping", () => {
       const result = check()
       assert.equal(result.status, 1)
       assert.match(result.stderr, /public exports without a Figma mapping.*Control/s)
+      assert.match(result.stderr, /pnpm nx run pagopa-ui:check:catalogue/)
     },
     {
       "src/catalog/figma/registry.json": JSON.stringify({
@@ -1890,7 +1910,7 @@ test("a hidden layer in one variant is reported as that device's change", () => 
         markdown,
         /A `Device` axis is part of the contract: inspect and render \*\*every\*\*/,
       )
-      assert.match(markdown, /figma-to-code\/references\/devices\.md/)
+      assert.match(markdown, /figma-to-code\/references\/devices\/scope\.md/)
     },
     {
       "src/catalog/figma/registry.json": JSON.stringify({
@@ -2010,6 +2030,8 @@ test("the hermetic check rejects a tampered canonical contract", () => {
     const result = check()
     assert.equal(result.status, 1)
     assert.match(result.stderr, /contract fingerprint/i)
+    assert.match(result.stderr, /pnpm ui-cli update inventory --triage/)
+    assert.match(result.stderr, /pnpm nx run pagopa-ui:check:catalogue/)
   })
 })
 

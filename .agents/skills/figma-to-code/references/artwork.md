@@ -19,7 +19,7 @@ manifest `nodeId`s: a source rename or page move never renames the API.
 2. **Regenerate** offline from the pinned snapshot:
    `pnpm ui-cli update icons --input <figma.snapshot>`.
 3. **Inspect** the regenerated SVGs and their manifest entries: the review
-   follows the [node-review.md](node-review.md) rules.
+   follows the `node-review.md` rules.
 4. `pnpm ui-cli check artwork` (icons and pictograms
    together). There is no icon font, text fallback or missing-glyph
    exception. Unchanged artwork may keep its pinned version; the check still

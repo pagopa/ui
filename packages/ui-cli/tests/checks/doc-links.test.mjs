@@ -53,6 +53,13 @@ test("a markdown link to a deleted document fails", () => {
   )
 })
 
+test("a broken document link names the command that reports it", () => {
+  assert.match(
+    problems(check({ "README.md": "[old](docs/reports/gone.md)" })),
+    /pnpm nx run pagopa-ui:docs/,
+  )
+})
+
 test("a code span naming a missing repository path fails", () => {
   assert.match(
     problems(check({ "CONTRIBUTING.md": "Edit `scripts/gone.mjs`.", "scripts/keep.mjs": "" })),

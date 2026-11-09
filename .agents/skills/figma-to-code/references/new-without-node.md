@@ -11,6 +11,6 @@ is outside this skill; this use case keeps the catalogue consistent with it.
    **Done when** `pnpm nx run pagopa-ui:check:catalogue` accepts the export surface.
 
 2. **Later coverage.** A component that a published set later covers enters
-   through [delta.md](delta.md).
+   through `delta.md`.
 
 3. **Close** with the closing steps of the skill.

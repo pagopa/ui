@@ -7,7 +7,7 @@
   a device axis on 52 sets, and nothing in the repository required a mobile
   composition to exist. The responsive-alignment plan that followed (RA1–RA9) is
   delivered; its guardrails `R1`–`R9`, cited below, now live in the
-  `figma-to-code` skill (`references/devices.md`, `references/parity-tooling.md`).
+  `figma-to-code` skill (`references/devices/scope.md`, `references/parity-tooling.md`).
 - **Related:** [ADR-0001](./0001-rework.md) (the review model the gate extends)
   and the parity hardening decision `D2` (the parity corpus is a work list, not a
   gate).
