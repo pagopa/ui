@@ -166,6 +166,50 @@ test("handoff checkout dry-run describes fetch, worktree and install without run
   }
 })
 
+test("handoff checkout gives each drift branch its own sibling worktree", () => {
+  const fixture = fixtureTree({}, "handoff-checkout-slug-")
+  try {
+    const workspace = workspaceAt(fixture.root)
+    const adapters = { gh: () => "", git: () => "", pnpm: () => "" }
+    const first = checkoutHandoff(workspace, openPr, true, adapters)
+    const second = checkoutHandoff(
+      workspace,
+      { ...openPr, number: 13, headRefName: "figma-drift/2026-12-01" },
+      true,
+      adapters,
+    )
+    assert.equal(first.path, path.resolve(fixture.root, "..", "pagopa-ui-drift-2026-11-08"))
+    assert.equal(second.path, path.resolve(fixture.root, "..", "pagopa-ui-drift-2026-12-01"))
+  } finally {
+    fixture.dispose()
+  }
+})
+
+test("handoff checkout reuses the worktree that already holds the branch", () => {
+  const fixture = fixtureTree({}, "handoff-checkout-reuse-")
+  try {
+    const workspace = workspaceAt(fixture.root)
+    const destination = path.resolve(fixture.root, "..", "pagopa-ui-drift-2026-11-08")
+    fs.mkdirSync(destination, { recursive: true })
+    fs.writeFileSync(path.join(destination, ".git"), "gitdir: /dev/null\n")
+    const commands = []
+    try {
+      const result = checkoutHandoff(workspace, openPr, false, {
+        gh: () => "",
+        git: (args) => commands.push(args),
+        pnpm: (args) => commands.push(args),
+      })
+      assert.equal(result.path, destination)
+      assert.equal(result.branch, openPr.headRefName)
+      assert.deepEqual(commands, [])
+    } finally {
+      fs.rmSync(destination, { recursive: true, force: true })
+    }
+  } finally {
+    fixture.dispose()
+  }
+})
+
 test("handoff brief follows the order in the included delta", () => {
   const fixture = fixtureTree({}, "handoff-brief-")
   try {

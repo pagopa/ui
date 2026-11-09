@@ -82,6 +82,13 @@ function resolveOpenDrift(workspace: Workspace, adapters: HandoffAdapters): Pull
   return selected
 }
 
+// Each drift branch gets its own sibling worktree, so sessions on different
+// drift pull requests never share a checkout.
+function driftWorktree(workspace: Workspace, headRefName: string): string {
+  const slug = headRefName.replace(/^figma-drift\//, "").replace(/[^a-zA-Z0-9]+/g, "-")
+  return path.resolve(workspace.workspaceRoot, "..", `pagopa-ui-drift-${slug}`)
+}
+
 export function checkoutHandoff(
   workspace: Workspace,
   pr: PullRequest,
@@ -90,9 +97,14 @@ export function checkoutHandoff(
 ): { path: string; branch: string; actions: string[]; dryRun: boolean } {
   if (!pr.headRefName.startsWith("figma-drift/"))
     throw new UsageError(`pull request ${pr.number} is not on a figma-drift branch`)
-  const destination = path.resolve(workspace.workspaceRoot, "..", "pagopa-ui-drift")
-  if (fs.existsSync(destination))
+  const destination = driftWorktree(workspace, pr.headRefName)
+  if (fs.existsSync(destination)) {
+    // One drift branch lives in one worktree: a concurrent session on the same
+    // branch reuses it, and git refuses a second checkout of the same branch.
+    if (fs.existsSync(path.join(destination, ".git")))
+      return { path: destination, branch: pr.headRefName, actions: [], dryRun }
     throw new UsageError(`worktree destination already exists: ${destination}`)
+  }
   const remote = `origin/${pr.headRefName}`
   const actions = [
     `git fetch origin ${pr.headRefName}`,
