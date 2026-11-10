@@ -210,19 +210,21 @@ export function handoffBrief(
     ? data.implementationOrder.filter((id): id is string => typeof id === "string")
     : null
   const byId = new Map(queue.items.map((item) => [item.nodeId, item]))
+  const queued = new Set(queue.implementationOrder)
   // The artifact is written by an earlier run and the queue is read now, so the
   // ids it names can be gone: renamed in the inventory, dropped from pending, or
   // renamed in a rebased PR. An order that resolves to nothing would print an
   // empty brief and look like a PR with no work, so fall back to the queue and
   // say which ids were dropped.
   const resolved = (artifactOrder ?? []).filter((id) => byId.has(id))
-  // Only an order the artifact wrote can be dropped by it: the queue's own order
-  // missing a node means the cap truncated it, which the queue reports itself.
+  // Only an order the artifact wrote can be dropped by it. An id the queue still
+  // orders but no longer carries was cut by the line cap, which the queue reports
+  // itself; an id neither names is the artifact's own stale entry.
   const order = resolved.length ? resolved : queue.implementationOrder
   return {
     pullRequest: pr,
     delta,
-    dropped: (artifactOrder ?? []).filter((id) => !byId.has(id)),
+    dropped: (artifactOrder ?? []).filter((id) => !byId.has(id) && !queued.has(id)),
     orderSource: resolved.length ? ("delta" as const) : ("queue" as const),
     queue: {
       scope: queue.scope,

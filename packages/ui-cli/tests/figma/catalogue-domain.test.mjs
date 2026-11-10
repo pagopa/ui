@@ -105,7 +105,35 @@ test("renewing a note keeps its open question and reports the text it discards",
   )
   assert.match(note, /Open design question: docs\/design-requests\/2026-01-02-ring\.md$/)
   assert.equal(notices.length, 1)
-  assert.match(notices[0], /^1:1 renewed: its note dropped "Depends on the card work" — /)
+  assert.match(notices[0], /^1:1 renewed: its note dropped "Depends on the card work\." — /)
+})
+
+test("a renewal reads pointers from the folder the config declares", () => {
+  const { note, notices } = renewNote(
+    {
+      ...baseFiles(),
+      "figma-to-code.yaml": "design:\n  requests: design/questions\n",
+    },
+    {
+      status: "implemented",
+      note: "Open design question: design/questions/2026-01-02-ring.md",
+    },
+    "catalogue-renew-folder-",
+  )
+  assert.match(note, /Open design question: design\/questions\/2026-01-02-ring\.md$/)
+  assert.deepEqual(notices, [])
+})
+
+test("a note that only quotes the renewal sentence keeps it as prose", () => {
+  const quoted = `Prior run said: ${"Figma delta 2026-01-01: review new/changed node or dependency before marking implemented"}`
+  const { notices } = renewNote(
+    baseFiles(),
+    { status: "implemented", note: quoted },
+    "catalogue-renew-quoted-",
+  )
+  assert.deepEqual(notices, [
+    `1:1 renewed: its note dropped "Prior run said: Figma delta 2026-01-01: review new/changed node or dependency before marking implemented" — carry anything still owed into the new note`,
+  ])
 })
 
 test("catalogue state loading reads the inventory and registry from the workspace", () => {

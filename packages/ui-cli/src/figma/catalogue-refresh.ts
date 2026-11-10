@@ -12,7 +12,7 @@ import {
   type Registry,
 } from "../schemas/catalogue.ts"
 import type { SnapshotDelta } from "./snapshot.ts"
-import { designPaths, readFigmaConfig, requestPointer } from "./config.ts"
+import { escapeRegExp, requestsFolder, requestPointer } from "./config.ts"
 import { keepsStatusOnDrift } from "./surface-decision.ts"
 import { deltaChangedNodes } from "./work-set.ts"
 import { loadPageSurface, PAGE_SURFACE_PATH } from "./surface.ts"
@@ -49,10 +49,17 @@ function dropKeys<T>(record: Record<string, T>, keys: Set<string>): Record<strin
   return Object.fromEntries(Object.entries(record).filter(([key]) => !keys.has(key)))
 }
 
-// The line a renewal writes, any date: a note that holds only this is the note
-// the previous renewal produced, so renewing again loses nothing.
-const RENEWAL_PREFIX =
-  /Figma delta \d{4}-\d{2}-\d{2}: review new\/changed node or dependency before marking implemented\.?/
+// The line a renewal writes. `renewedNote` writes it and the residue reader has
+// to recognise it, so both read the one sentence: a copy of it would drift and
+// start reporting the renewal's own line as prose the author wrote. Anchored,
+// because the sentence only means "a previous renewal wrote this" where a note
+// starts; a note that quotes it is saying something else.
+const RENEWAL_TAIL = "review new/changed node or dependency before marking implemented"
+const DATE_TOKEN = "@date@"
+const renewalLine = (date: string) => `Figma delta ${date}: ${RENEWAL_TAIL}`
+const RENEWAL_PREFIX = new RegExp(
+  `^\\s*${escapeRegExp(renewalLine(DATE_TOKEN)).replace(DATE_TOKEN, "\\d{4}-\\d{2}-\\d{2}")}`,
+)
 
 /**
  * The note a renewal writes: the boilerplate, plus the open design questions the
@@ -69,10 +76,13 @@ function renewedNote(
   const pointers = [...new Set(Array.from((previous ?? "").matchAll(pointer), (match) => match[0]))]
   const residue = (previous ?? "")
     .replace(pointer, " ")
-    .replace(RENEWAL_PREFIX, " ")
+    .replace(RENEWAL_PREFIX, "")
     .replace(/Open design question:\s*/i, " ")
-    .replace(/^[\s.,;:]+|[\s.,;:]+$/g, "")
     .replace(/\s+/g, " ")
+    // What the removals leave behind is separators, not the author's prose: the
+    // leading run goes, and whatever punctuation follows belongs to the words.
+    .replace(/^[.,;:\s]+/, "")
+    .trim()
   if (!pointers.length) return { note: boilerplate, residue }
   return {
     note: `${boilerplate}. Open design question: ${pointers.join(", ")}`,
@@ -105,11 +115,7 @@ function renewRegistry(registry: Registry, delta: SnapshotDelta, date: string, r
       )
       continue
     }
-    const { note, residue } = renewedNote(
-      previous?.note,
-      `Figma delta ${date}: review new/changed node or dependency before marking implemented`,
-      requests,
-    )
+    const { note, residue } = renewedNote(previous?.note, renewalLine(date), requests)
     if (residue) {
       notices.push(
         `${nodeId} renewed: its note dropped "${residue}" — carry anything still owed into the new note`,
@@ -230,7 +236,7 @@ export function prepareCatalogueRefresh(
     components: live,
   }
   const registry: Registry = structuredClone(previousRegistry)
-  const requests = designPaths(readFigmaConfig(workspace)).requests
+  const requests = requestsFolder(workspace)
   const { renewed, removed, notices } = renewRegistry(registry, delta, date, requests)
   const nextEvidenceExceptions = dropKeys(
     options.evidenceExceptions,

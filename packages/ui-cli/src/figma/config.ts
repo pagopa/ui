@@ -105,6 +105,11 @@ export function configList(config: FigmaToolConfig, key: string): string[] {
   return config.lists[key] ?? []
 }
 
+/** A literal string, ready to sit inside a `RegExp` source. */
+export function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+}
+
 /**
  * The pattern that finds a design-request pointer inside a registry note. Three
  * readers scanned notes for the same shape, each with its own copy of the
@@ -115,8 +120,17 @@ export function configList(config: FigmaToolConfig, key: string): string[] {
  * default would put a reader back on a path the config had moved away from.
  */
 export function requestPointer(folder: string): RegExp {
-  const escaped = folder.replace(/\/$/, "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+  const escaped = escapeRegExp(folder.replace(/\/$/, ""))
   return new RegExp(`\\b${escaped}/[\\w./-]+\\.md\\b`, "g")
+}
+
+/**
+ * The design-request folder this workspace resolves. Six readers each spelled
+ * `designPaths(readFigmaConfig(workspace)).requests`, which is one decision
+ * written six times; a reader that needs the folder asks for it here.
+ */
+export function requestsFolder(workspace: Workspace): string {
+  return designPaths(readFigmaConfig(workspace)).requests
 }
 
 export type DesignConfig = {

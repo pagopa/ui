@@ -17,7 +17,7 @@ import { fileKeyFromSource } from "./snapshot.ts"
 import { figmaToken, resolveFigmaToken, type FigmaTokenSource } from "../adapters/figma-token.ts"
 import { RULES_PATH, plan as planRules, readLedger, readRulesSnapshot } from "./rules.ts"
 import { COMMENTS_SNAPSHOT_PATH, readComments } from "./comments.ts"
-import { CONFIG_PATH, designPaths, readFigmaConfig, requestPointer } from "./config.ts"
+import { CONFIG_PATH, requestsFolder, requestPointer } from "./config.ts"
 import { readDesignRequestRecord } from "./design-request-record.ts"
 import { formatSurfaceLine, loadPageSurface, surfaceSummary, type SurfaceStats } from "./surface.ts"
 
@@ -116,7 +116,7 @@ function designRequests(workspace: Workspace): StatusReport["requests"] {
   const workspaceRootPath = workspace.workspaceRoot
   // The record folder is the one path the config calls workspace-relative, so it
   // is the one path read from it rather than from a literal here.
-  const requests = designPaths(readFigmaConfig(workspace)).requests
+  const requests = requestsFolder(workspace)
   const directory = [path.join(root, requests), path.join(workspaceRootPath, requests)].find(
     (candidate) => fs.existsSync(candidate),
   )
@@ -385,7 +385,7 @@ function registryStatus(
     error: null,
   }
   const pending: PendingRow[] = []
-  const requests = designPaths(readFigmaConfig(workspace)).requests
+  const requests = requestsFolder(workspace)
   try {
     const registry = readJson(workspace.path(REGISTRY_PATH), RegistrySchema)
     const pageRules = new Map(registry.bulkRules.map((rule) => [rule.pageId, rule]))

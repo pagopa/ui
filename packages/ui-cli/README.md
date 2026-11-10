@@ -92,8 +92,9 @@ available from the CLI:
   closes its issue. `open` input includes `slug`, `title`, `type`, `question`,
   `context`, `options`, `recommendation`, `ask`, and `when`; visual options
   also include the preview captures. Re-running `open` on a record that already
-  exists resumes it, and refuses when the input asks a different question than
-  the record's heading states.
+  exists resumes it; it refuses only when the record carries a `# ` heading that
+  states a different question than the input asks, so a record with no heading
+  resumes rather than blocking the run.
 - `pnpm ui-cli figma surface sync --page <pageId> --input <tree.json>` refreshes
   the identity census from a saved page tree; `--rest` reads it from Figma.
 

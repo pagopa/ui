@@ -271,6 +271,25 @@ test("handoff brief reports only the artifact ids the queue cannot carry as drop
   }
 })
 
+test("handoff brief leaves a cap-truncated node to the queue's own notice", () => {
+  const fixture = fixtureTree({}, "handoff-brief-cap-")
+  try {
+    // The cap keeps the order and drops the item, so the artifact naming the
+    // same id is naming work the queue knows about, not a stale entry.
+    const queue = {
+      implementationOrder: ["1:1", "2:2"],
+      items: [{ nodeId: "1:1", class: "pending", devices: [], brief: { node: "1:1" } }],
+    }
+    const result = handoffBrief(workspaceAt(fixture.root), { ...openPr, body: "" }, queue, {
+      implementationOrder: ["1:1", "2:2"],
+    })
+    assert.deepEqual(result.dropped, [])
+    assert.equal(result.orderSource, "delta")
+  } finally {
+    fixture.dispose()
+  }
+})
+
 test("handoff media dry-run leaves source and external systems untouched", async () => {
   const fixture = fixtureTree(mediaFiles, "handoff-media-dry-")
   const original = fs.readFileSync(
