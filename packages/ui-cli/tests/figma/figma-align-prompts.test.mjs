@@ -125,6 +125,22 @@ test("analysis, alignment, verification and the fix read the card path", () => {
   }
 })
 
+// The card is capped, so it names the full brief beside it rather than carrying
+// every thread and every rule body. A prompt that called the card the only
+// source made that detail unread and the cap a silent loss.
+test("every prompt reads the detail the card names", () => {
+  const prompts = {
+    analyse: workflow.analysePrompt(config, node),
+    align: workflow.alignPrompt(config, node, decision),
+    verify: workflow.verifyPrompt(config, node, alignment),
+    fix: workflow.fixPrompt(config, node, alignment, verification),
+  }
+  for (const [name, text] of Object.entries(prompts)) {
+    assert.match(text, /`detail` line names the full brief/, `${name} names the detail`)
+  }
+  assert.match(prompts.analyse, /then the detail file its `detail` line names/)
+})
+
 test("an absent card names the command that produces it", () => {
   const text = workflow.analysePrompt(config, { ...node, card: "", cardError: "no token" })
   assert.match(text, /MISSING CARD — the brief failed for 61:2786 \(no token\)/)

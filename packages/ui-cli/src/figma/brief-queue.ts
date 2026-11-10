@@ -75,10 +75,21 @@ function itemLines(item: BriefQueueItem): number {
   return formatBrief(item.brief).length + 2
 }
 
-function capItems(items: BriefQueueItem[], lineCap: number | null): BriefQueueItem[] {
+/**
+ * The cap bounds the whole rendered read, so the lines `formatBriefQueue` adds
+ * around the items — the implementation-order header and the notices — are paid
+ * before the first one. The truncation notice only exists once the cap drops a
+ * node, so the listing is computed without it and, when it fires, once more with
+ * its two lines: the second pass can only show fewer nodes, so it stays stable.
+ */
+function capItems(
+  items: BriefQueueItem[],
+  lineCap: number | null,
+  fixedLines: number,
+): BriefQueueItem[] {
   if (lineCap === null) return items
   const shown: BriefQueueItem[] = []
-  let lines = 0
+  let lines = fixedLines
   for (const item of items) {
     const cost = itemLines(item)
     if (lines + cost > lineCap) break
@@ -125,23 +136,41 @@ export function buildBriefQueue(workspace: Workspace, options: BriefQueueOptions
       brief: buildBrief(workspace, id, sources),
     }
   })
-  const capped = capItems(items, lineCap)
+  const inScopeIds = new Set(inScope)
+  const omitted = [...pending].filter((id) => !inScopeIds.has(id)).length
+  // The scope kind the read reports: `delta` only with a snapshot to scope to.
+  const scopeKind: BriefQueueKind = kind === "all" ? "all" : scoped ? "delta" : "pending"
+  const capped = capItems(items, lineCap, fixedQueueLines(scopeKind, omitted))
+  // The truncation notice is a fixed line the cap must also pay for: recompute
+  // the listing once when it fires, so the rendered read never exceeds the cap.
+  const withNotice =
+    lineCap !== null && capped.length < items.length
+      ? capItems(items, lineCap, fixedQueueLines(scopeKind, omitted) + 2)
+      : capped
   // The two counts describe disjoint sets, and each says only what is true: a
   // pending node the delta left out is *omitted*, a node the cap dropped is
   // *truncated* whether or not it is pending. Counting a cap-dropped pending
   // node as omitted would call a node in scope "outside this delta".
-  const printed = new Set(capped.map((item) => item.nodeId))
-  const inScopeIds = new Set(inScope)
+  const printed = new Set(withNotice.map((item) => item.nodeId))
   return {
     scope: {
-      kind: kind === "all" ? "all" : scoped ? "delta" : "pending",
-      omitted: [...pending].filter((id) => !inScopeIds.has(id)).length,
+      kind: scopeKind,
+      omitted,
       truncated: inScope.filter((id) => !printed.has(id)).length,
       lineCap,
     },
     implementationOrder: inScope,
-    items: capped,
+    items: withNotice,
   }
+}
+
+/** The lines `formatBriefQueue` renders before and after the items. */
+function fixedQueueLines(kind: BriefQueueKind, omitted: number): number {
+  return (
+    1 + // the implementation-order header
+    (kind === "pending" ? 2 : 0) + // the unscoped-fallback notice and its blank line
+    (omitted > 0 ? 2 : 0) // the omitted notice and its blank line
+  )
 }
 
 export function formatBriefQueue(queue: BriefQueue): string[] {

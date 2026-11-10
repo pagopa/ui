@@ -741,6 +741,7 @@ const cardRef = (node) =>
 function nodeContext(node) {
   return `Node ${node.nodeId} — ${node.name}
 - card: ${cardRef(node)}
+- detail: the card's \`detail\` line names the full brief it summarises, relative to the root its own \`.figma/\` path sits under; unless the line is the "(no detail written …)" placeholder, read that file too — the thread texts and the rule bodies live there.
 - registry status: ${node.status}
 - Figma page: ${node.pageName || "(not in the inventory)"}
 - target: ${JSON.stringify(node.target)}
@@ -756,7 +757,7 @@ TASK: analyse ONE node and propose its decision (figma-to-code delta.md step 3, 
 ${nodeContext(node)}
 
 Do:
-1. Read the card at ${cardRef(node)}: the registry entry and its binding note, every rule that targets the node with its disposition, the open comments and the design requests that cite it. The card is the only source of them: read it once and take every rule, disposition, comment and request from it, never from a second command. Read the target component, its story and its guide under apps/storybook/src/guides too. A \`pending\`, \`stale\` or \`conflict\` card is work, not a pass; an open comment the source answers is a decision, one it cannot answer is a design request.
+1. Read the card at ${cardRef(node)}, then the detail file its \`detail\` line names: the registry entry and its binding note, every rule that targets the node with its disposition and title, the open threads with their text and replies, and the design requests that cite it. Those two reads are the only source of them: take every rule, disposition, comment and request from them, never from a second command. Read the target component, its story and its guide under apps/storybook/src/guides too. A \`pending\`, \`stale\` or \`conflict\` card is work, not a pass; an open comment the source answers is a decision, one it cannot answer is a design request.
 2. Read the source of EVERY declared device: start with \`pnpm ui-cli parity align --node ${node.nodeId}\` (the work order), then \`node packages/ui-cli/src/cli.ts parity source ${node.nodeId} --depth 1\` (variants, device, box) and \`--compact --depth 3\` per device variant; \`--png\` or get_screenshot read-only when the anatomy is unclear. List each rendered dependency (instance-swap defaults included).
 3. List the committed cases with \`pnpm ui-cli parity capture --saved --node ${node.nodeId} --dry-run\` — it prints \`<caseId> <nodeId> <storyId>\` per saved case, and \`no saved cases\` is the answer when there are none — then reproduce each with \`pnpm ui-cli parity check --case <caseId>\`; for a device axis also \`--node ${node.nodeId} --devices\`. Record each exit code and the deltas. A draft case or a warning is not coverage. (\`parity:queue --node ${node.nodeId} --json\` lists registry targets per node, not case ids: never read it as the case list.)
 4. Pick exactly one decision:

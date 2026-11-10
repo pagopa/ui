@@ -658,6 +658,26 @@ export function rulesForNode(
   if (!entry) throw new UsageError(`${requested} is not a node of the inventory`)
   const scope = new Set([requested, entry.setName])
   for (const [id, node] of inventory) if (node.setName === entry.setName) scope.add(id)
+  return rulesInScope(ledger, snapshot, scope)
+}
+
+// A brief also reads the nodes the pinned inventory has not absorbed yet — the
+// delta's additions — and those have no set to widen to, so they scope to
+// themselves. The membership error stays where a node is named for the
+// inventory, never where it is read.
+export function rulesForUninventoriedNode(
+  ledger: RulesLedger,
+  snapshot: RulesSnapshot | null,
+  requested: string,
+): Array<RuleCard & { id: string; body?: string }> {
+  return rulesInScope(ledger, snapshot, new Set([requested]))
+}
+
+function rulesInScope(
+  ledger: RulesLedger,
+  snapshot: RulesSnapshot | null,
+  scope: Set<string>,
+): Array<RuleCard & { id: string; body?: string }> {
   const live = snapshot ? cardIndex(snapshot) : new Map()
   return Object.entries(ledger.cards)
     .filter(([id, card]) => card.targets.some((target) => scope.has(target)) || scope.has(id))

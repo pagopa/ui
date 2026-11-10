@@ -1,6 +1,6 @@
 ---
 name: pagopa-ui-standards
-description: Standards for every component, with or without a design source: placement and imports, the text contract that keeps every rendered or announced string overridable, props, stories, tests, lint disables and the definition of done. Use when creating or changing a component, prop, public surface, text, test, story or guide.
+description: "Standards for every component, with or without a design source: placement and imports, the text contract that keeps every rendered or announced string overridable, props, stories, tests, lint disables and the definition of done. Use when creating or changing a component, prop, public surface, text, test, story or guide."
 ---
 
 # Pagopa UI standards

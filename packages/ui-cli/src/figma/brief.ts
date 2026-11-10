@@ -12,7 +12,7 @@ import {
   type InventoryNode,
 } from "../schemas/catalogue.ts"
 import { readComments, threadsForNode } from "./comments.ts"
-import { readLedger, readRulesSnapshot, rulesForNode } from "./rules.ts"
+import { readLedger, readRulesSnapshot, rulesForNode, rulesForUninventoriedNode } from "./rules.ts"
 
 const INVENTORY_PATH = "src/catalog/figma/inventory.json"
 const REGISTRY_PATH = "src/catalog/figma/registry.json"
@@ -56,7 +56,12 @@ function designRequests(sources: BriefSources, nodeId: string): string[] {
     .sort()
 }
 
-export function componentForNode(inventory: Inventory, nodeId: string): InventoryNode | undefined {
+// `Pick` so the live side — an `InventoryNode[]` the file just produced — can ask
+// the same question as the committed inventory, without inventing a fileKey.
+export function componentForNode(
+  inventory: Pick<Inventory, "components">,
+  nodeId: string,
+): InventoryNode | undefined {
   return (
     inventory.components.find((entry) => entry.nodeId === nodeId) ??
     inventory.components.find((entry) =>
@@ -94,7 +99,11 @@ export function buildBrief(
   const component = componentForNode(inventory, requested)
   const identity = component?.nodeId ?? requested
   const entry = registry.entries[identity]
-  const rules = ledger ? rulesForNode(ledger, snapshot, workspace.root, requested) : []
+  const rules = ledger
+    ? component
+      ? rulesForNode(ledger, snapshot, workspace.root, identity)
+      : rulesForUninventoriedNode(ledger, snapshot, identity)
+    : []
   const openComments = comments
     ? threadsForNode(workspace, comments, requested, { openOnly: true })
     : []

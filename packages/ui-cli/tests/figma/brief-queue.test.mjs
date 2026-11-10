@@ -119,6 +119,48 @@ test("brief queue --json carries the scope, the omitted count and the cap", asyn
   }
 })
 
+// A node the delta added has no record in the pinned inventory yet, and the
+// scoped read exists to name exactly those: resolving it as an inventory node
+// threw, so the queue failed on the nodes it was asked to show.
+test("the queue reads a node the pinned inventory has not absorbed", async () => {
+  const ledger = {
+    schemaVersion: 1,
+    fileKey: "fixture",
+    cards: {
+      "I9:9;9:1": {
+        pageId: "1:0",
+        page: "Controls",
+        container: "9:9",
+        section: "Da commentare",
+        status: "Da fare",
+        title: "Spaziatura",
+        sourceHash: "0123456789abcdef",
+        targets: ["1:2"],
+        scope: "component",
+        disposition: "pending",
+      },
+    },
+  }
+  const fixture = fixtureTree(
+    { ...deltaFiles, "src/catalog/figma/rules.json": ledger },
+    "brief-queue-live-only-",
+  )
+  try {
+    const result = await runCli(["figma", "brief", "--queue"], { root: fixture.root })
+    assert.equal(result.status, 0, result.stderr)
+    assert.match(result.stdout, /^implementationOrder 1:1, 1:2, 1:3$/m)
+    // The pinned inventory has no name or page for it yet, and the brief says
+    // so rather than borrowing the live file's.
+    assert.match(result.stdout, /^node       1:2$/m)
+    // The node's rules are read too: scoping to the node itself still finds the
+    // card that targets it, which is what the brief must not lose.
+    assert.match(result.stdout, /^rules      1 \(1 pending\)$/m)
+    assert.match(result.stdout, /^ {2}pending +Spaziatura$/m)
+  } finally {
+    fixture.dispose()
+  }
+})
+
 const many = Array.from({ length: 30 }, (_, index) => control(`2:${index + 1}`, `Control ${index}`))
 const oversizedFiles = files([], many, [])
 
@@ -141,6 +183,27 @@ test("brief queue caps an oversized delta and says it was capped", async () => {
     assert.equal(raised.status, 0, raised.stderr)
     assert.doesNotMatch(raised.stdout, /truncated at/)
     assert.match(raised.stdout, /^node       2:30$/m)
+  } finally {
+    fixture.dispose()
+  }
+})
+
+// The cap bounds what a session reads, so the header and the notices it renders
+// are paid before the first node: counting only the nodes let the rendered read
+// run past --limit by exactly the lines around them.
+test("the line cap pays for the header and the notices", async () => {
+  const fixture = fixtureTree(oversizedFiles, "brief-queue-cap-fixed-")
+  try {
+    for (const limit of [20, 60]) {
+      const result = await runCli(["figma", "brief", "--queue", "--limit", String(limit)], {
+        root: fixture.root,
+      })
+      assert.equal(result.status, 0, result.stderr)
+      const lines = result.stdout.replace(/\n$/, "").split("\n")
+      assert.ok(lines.length <= limit, `--limit ${limit} rendered ${lines.length} lines`)
+      assert.match(result.stdout, /^implementationOrder /m)
+      assert.match(result.stdout, new RegExp(`^truncated at ${limit} lines: `, "m"))
+    }
   } finally {
     fixture.dispose()
   }

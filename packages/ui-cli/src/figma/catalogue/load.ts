@@ -32,7 +32,7 @@ import type { CatalogueOptions } from "../sync.ts"
 const EVIDENCE_EXCEPTIONS_PATH = "src/catalog/figma/evidence-exceptions.json"
 const API_EXCEPTIONS_PATH = "src/catalog/figma/api-exceptions.json"
 
-type CatalogueBase = {
+export type CatalogueBase = {
   inventory: Inventory
   registry: Registry
   committed: InventoryNode[]
@@ -84,7 +84,7 @@ export type CatalogueLoadResult = {
   err?: string[]
 }
 
-function loadCatalogueBase(workspace: Workspace): CatalogueBase | null {
+export function loadCatalogueBase(workspace: Workspace): CatalogueBase | null {
   const state = loadCatalogueState(workspace)
   const errors = [...state.errors]
   if (!state.inventory || !state.registry) return null

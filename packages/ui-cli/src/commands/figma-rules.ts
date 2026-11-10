@@ -1,3 +1,6 @@
+import fs from "node:fs"
+import path from "node:path"
+
 import { defineCommand, type SubCommandsDef } from "citty"
 import { RuleDispositionSchema } from "../schemas/rules.ts"
 import { readLedger, readRulesSnapshot } from "../figma/rules.ts"
@@ -14,8 +17,8 @@ import {
   rulesPlan,
   synchronizeRules,
 } from "../figma/rules-workflow.ts"
-import { buildBrief, formatBrief } from "../figma/brief.ts"
-import { buildNodeCard, formatNodeCard, readNodeCardGates } from "../figma/card.ts"
+import { buildBrief, formatBrief, type NodeBrief } from "../figma/brief.ts"
+import { buildNodeCard, CARD_DETAIL_DIR, formatNodeCard, readNodeCardGates } from "../figma/card.ts"
 import { refreshBrief } from "../figma/brief-workflow.ts"
 import { buildBriefQueue, formatBriefQueue } from "../figma/brief-queue.ts"
 import { commentsJson, commentsReport, formatComments } from "../figma/comments-workflow.ts"
@@ -24,6 +27,7 @@ import { UsageError } from "../lib/command.ts"
 import { integer, jsonArg, requireText } from "./args.ts"
 import { action, EXIT, printJson, printLines, type CliContext } from "./context.ts"
 import { requireToken, requireTokenArg } from "./token.ts"
+import type { Workspace } from "../adapters/workspace.ts"
 
 const stringArg = { type: "string" } as const
 const idArg = { type: "positional", required: true } as const
@@ -200,6 +204,24 @@ type BriefArgs = {
   "require-token": boolean
 }
 
+// The card's ceiling is what keeps it readable, not what makes it complete: the
+// brief it summarises is written beside it, so the thread texts and rule bodies
+// the ceiling trims stay one read away. A write that fails leaves the card
+// naming no detail rather than failing the read.
+function writeCardDetail(workspace: Workspace, brief: NodeBrief): string | null {
+  const file = workspace.path(`${CARD_DETAIL_DIR}/${brief.node.replace(/:/g, "-")}.txt`)
+  try {
+    fs.mkdirSync(path.dirname(file), { recursive: true })
+    fs.writeFileSync(
+      file,
+      `${formatBrief(brief, Boolean(readLedger(workspace.root, false))).join("\n")}\n`,
+    )
+  } catch {
+    return null
+  }
+  return path.relative(workspace.workspaceRoot, file).split(path.sep).join("/")
+}
+
 async function runBrief(ctx: CliContext, args: BriefArgs): Promise<number> {
   const { node, queue, card, full, limit, json, refresh } = args
   if (queue && node) throw new UsageError("choose --node or --queue")
@@ -219,15 +241,20 @@ async function runBrief(ctx: CliContext, args: BriefArgs): Promise<number> {
     return EXIT.ok
   }
   const requested = requireText(node, "--node <id> or --queue", "figma brief")
+  const result = buildBrief(ctx.workspace(), requested)
   if (card) {
+    // The card is capped, so the prose it summarises is written beside it: the
+    // thread texts and rule bodies are what a session acts on, and the card only
+    // names the file that holds them.
+    const detail = writeCardDetail(ctx.workspace(), result)
     const nodeCard = buildNodeCard(ctx.workspace(), requested, {
       gates: readNodeCardGates(ctx.workspace()),
+      detail,
     })
     if (json) printJson(ctx.io, nodeCard)
     else printLines(ctx.io, { out: formatNodeCard(nodeCard) })
     return EXIT.ok
   }
-  const result = buildBrief(ctx.workspace(), requested)
   if (json) printJson(ctx.io, result)
   else
     printLines(ctx.io, {
