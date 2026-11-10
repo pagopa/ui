@@ -13,6 +13,7 @@ import {
   loweredNoteLengthBaseline,
   type RegistryEntry,
 } from "../schemas/catalogue.ts"
+import { requiresReason, surfaceDecision } from "./surface-decision.ts"
 import { syncCatalogue } from "./sync.ts"
 
 const registryPath = "src/catalog/figma/registry.json"
@@ -80,10 +81,10 @@ export async function setRegistry(workspace: Workspace, options: RegistryOptions
   else if (!identity)
     warnings.push(`node ${node.nodeId} is missing from its censused page; page surface unchanged`)
   if (identity) {
-    const decision = entry.status === "implemented" ? "shipped" : entry.status
+    const decision = surfaceDecision(true, entry.status)
     const reason =
       options.reason ?? (entry.status === "excluded" ? entry.reason : entry.note) ?? identity.reason
-    if (decision !== "shipped" && !reason?.trim())
+    if (requiresReason(decision) && !reason?.trim())
       throw new UsageError(`${decision} surface decision requires a reason or note`)
     identity.decision = decision
     if (decision === "shipped") delete identity.reason

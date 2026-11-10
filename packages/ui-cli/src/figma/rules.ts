@@ -25,9 +25,12 @@ import {
   type ExtractedPage,
   type RuleCard,
   type RuleDisposition,
+  type RuleRequirement,
   type RulesLedger,
   type RulesSnapshot,
   ExtractedCardSchema,
+  RULE_DISPOSITIONS,
+  RULE_REQUIREMENT_MESSAGES,
   RuleCardSchema,
   RuleScopeSchema,
   RulesLedgerSchema,
@@ -437,6 +440,17 @@ export function plan(snapshot: RulesSnapshot, ledger: RulesLedger) {
   return { fresh, stale, removed, live }
 }
 
+// The CLI spelling of each requirement, so a missing field names the flag that
+// would have supplied it.
+const MARK_FLAGS: Partial<Record<RuleRequirement, string>> = {
+  titleEn: "--title-en <title>",
+  summary: "--summary <text>",
+  guide: "--guide <path>",
+  duplicateOf: "--duplicate-of <card id>",
+  reason: "--reason <text>",
+  request: "--request <docs/design-requests/…md>",
+}
+
 function normaliseTargets(root: string, values: string[]): string[] {
   const inventory = inventoryNodes(root)
   return [...new Set(values)].map((value) => {
@@ -499,11 +513,21 @@ export function mark(
     card.scope = parsedScope.data
   }
   card.provisionalTargets = card.targets.length === 0 && card.scope === "component"
-  if (options.disposition === "removed") card.removedAt = today()
-  if (options.disposition !== "pending") card.reviewedAt = today()
+  const machine = RULE_DISPOSITIONS[options.disposition]
+  if (machine.withdrawn) card.removedAt = today()
+  if (machine.reviewed) card.reviewedAt = today()
+  for (const requirement of machine.requires) {
+    if (card[requirement]) continue
+    const flag = MARK_FLAGS[requirement]
+    const article = /^[aeiou]/.test(options.disposition) ? "an" : "a"
+    throw new UsageError(
+      flag
+        ? `${article} ${options.disposition} rule needs ${flag}`
+        : `${options.disposition} rule: ${RULE_REQUIREMENT_MESSAGES[requirement]}`,
+    )
+  }
 
-  if (options.disposition === "imported") {
-    if (!card.guide) throw new UsageError("an imported rule needs --guide <path>")
+  if (card.guide) {
     const guideFile = path.join(workspaceRoot, card.guide)
     if (!fs.existsSync(guideFile)) throw new UsageError(`${card.guide} does not exist`)
     const text = fs.readFileSync(guideFile, "utf8")
@@ -602,6 +626,18 @@ export function check(
           }
         }
       }
+    }
+    // A component card that landed somewhere binds at least one node: without a
+    // target the imported rule reads as done while nothing renders it. A
+    // foundation card is the exception it exists for — it binds every component.
+    if (
+      card.scope === "component" &&
+      card.targets.length === 0 &&
+      (card.disposition === "imported" || card.disposition === "recorded")
+    ) {
+      errors.push(
+        `${id}: ${card.disposition} rule has no target — point it at the node it binds, then run \`${RULES_GATE}\``,
+      )
     }
     if (card.disposition === "duplicate" && !ledger.cards[card.duplicateOf ?? ""]) {
       errors.push(

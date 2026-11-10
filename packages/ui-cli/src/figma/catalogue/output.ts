@@ -1,4 +1,5 @@
-import { deltaSelection, implementationOrder, type SnapshotDelta } from "../snapshot.ts"
+import { implementationOrder, type SnapshotDelta } from "../snapshot.ts"
+import { deltaWorkSet } from "../work-set.ts"
 import type { DeviceStats } from "../devices.ts"
 import type {
   SurfacePending,
@@ -69,7 +70,7 @@ export function renderCataloguePlan(input: {
   deviceCoverage: unknown
 }): string {
   const snapshot = input.live ?? input.committed
-  const selected = deltaSelection(input.delta, input.entries)
+  const selected = new Set(deltaWorkSet(input.delta, input.entries).queue)
   const designRequest = /\bdocs\/design-requests\/[\w./-]+\.md\b/g
   const pending = Object.entries(input.entries)
     .filter(([, entry]) => entry.status === "pending")

@@ -71,7 +71,26 @@ test("a variant-only delta queues its parent for review", () => {
 import { catalogueExitCode } from "../../src/figma/catalogue/finish.ts"
 
 test("validation failures take precedence over drift", () => {
-  assert.equal(catalogueExitCode(["drift"], [], ["drift"]), 3)
-  assert.equal(catalogueExitCode(["drift"], ["invalid registry"], ["drift"]), 1)
-  assert.equal(catalogueExitCode(["invalid input", "drift"], [], ["drift"]), 1)
+  assert.equal(catalogueExitCode({ errors: [], validationErrors: [], driftErrors: ["drift"] }), 3)
+  assert.equal(
+    catalogueExitCode({
+      errors: [],
+      validationErrors: ["invalid registry"],
+      driftErrors: ["drift"],
+    }),
+    1,
+  )
+  assert.equal(
+    catalogueExitCode({ errors: ["invalid input"], validationErrors: [], driftErrors: ["drift"] }),
+    1,
+  )
+})
+
+// The exit code used to match the two lists by their text, so an error that
+// repeated a drift line was swallowed as drift and the run exited 3.
+test("an error whose text repeats a drift line is still a failure", () => {
+  assert.equal(
+    catalogueExitCode({ errors: ["drift"], validationErrors: [], driftErrors: ["drift"] }),
+    1,
+  )
 })

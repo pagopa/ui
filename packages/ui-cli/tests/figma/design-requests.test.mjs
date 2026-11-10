@@ -251,3 +251,180 @@ test("request close dry-run preserves the record and does not call gh", () => {
     fixture.dispose()
   }
 })
+
+const resumedRecord = `# How should the focus ring appear?
+
+- Type: design
+- Issue: https://github.com/acme/ui/issues/42
+- Status: open
+
+## Context
+
+The source does not specify the ring.
+
+## Options
+
+- A — Thin
+- B — Thick
+
+## Decision
+`
+
+test("request open resumes an existing open record instead of opening a second issue", () => {
+  const fixture = fixtureTree(
+    {
+      ...files,
+      "docs/design-requests/2026-11-08-button-focus-ring.md": resumedRecord,
+    },
+    "design-request-resume-",
+  )
+  let calls = 0
+  try {
+    const result = openDesignRequest(
+      workspaceAt(fixture.root),
+      path.join(fixture.root, "packages/ui-cli/request.json"),
+      "2026-11-08",
+      false,
+      () => {
+        calls++
+        return ""
+      },
+    )
+    assert.equal(calls, 0)
+    assert.equal(result.resumed, true)
+    assert.equal(result.issueUrl, "https://github.com/acme/ui/issues/42")
+    assert.doesNotMatch(result.actions.join("\n"), /gh issue create/)
+    assert.doesNotMatch(result.actions.join("\n"), /write docs\/design-requests/)
+    // The record keeps what the previous run wrote, decision placeholder included.
+    assert.equal(fs.readFileSync(path.join(fixture.root, result.path), "utf8"), resumedRecord)
+    // The writes the previous run may not have reached are redone.
+    const registry = JSON.parse(
+      fs.readFileSync(path.join(fixture.root, "src/catalog/figma/registry.json"), "utf8"),
+    )
+    assert.equal(registry.entries["4:4"].status, "pending")
+    assert.match(
+      registry.entries["4:4"].note,
+      /docs\/design-requests\/2026-11-08-button-focus-ring\.md/,
+    )
+  } finally {
+    fixture.dispose()
+  }
+})
+
+test("request open appends its registry pointer once however often it resumes", () => {
+  const fixture = fixtureTree(
+    {
+      ...files,
+      "docs/design-requests/2026-11-08-button-focus-ring.md": resumedRecord,
+    },
+    "design-request-resume-note-",
+  )
+  const input = path.join(fixture.root, "packages/ui-cli/request.json")
+  try {
+    openDesignRequest(workspaceAt(fixture.root), input, "2026-11-08", false, () => "")
+    openDesignRequest(workspaceAt(fixture.root), input, "2026-11-08", false, () => "")
+    const registry = JSON.parse(
+      fs.readFileSync(path.join(fixture.root, "src/catalog/figma/registry.json"), "utf8"),
+    )
+    const note = registry.entries["4:4"].note
+    assert.equal(note.match(/Design request:/g).length, 1)
+    assert.match(note, /^Existing residue\./)
+  } finally {
+    fixture.dispose()
+  }
+})
+
+test("request open dry-run on an existing record reports the resume and calls gh never", () => {
+  const fixture = fixtureTree(
+    {
+      ...files,
+      "docs/design-requests/2026-11-08-button-focus-ring.md": resumedRecord,
+    },
+    "design-request-resume-dry-",
+  )
+  let calls = 0
+  try {
+    const result = openDesignRequest(
+      workspaceAt(fixture.root),
+      path.join(fixture.root, "packages/ui-cli/request.json"),
+      "2026-11-08",
+      true,
+      () => {
+        calls++
+        return ""
+      },
+    )
+    assert.equal(calls, 0)
+    assert.equal(result.dryRun, true)
+    assert.equal(result.resumed, true)
+    assert.match(result.actions.join("\n"), /write registry note for 4:4/)
+  } finally {
+    fixture.dispose()
+  }
+})
+
+test("request open refuses a record that is no longer open", () => {
+  for (const [status, name] of [
+    ["answered", "answered"],
+    ["opne", "unreadable"],
+  ]) {
+    const fixture = fixtureTree(
+      {
+        ...files,
+        "docs/design-requests/2026-11-08-button-focus-ring.md": resumedRecord.replace(
+          "- Status: open",
+          `- Status: ${status}`,
+        ),
+      },
+      `design-request-refuse-${name}-`,
+    )
+    let calls = 0
+    try {
+      assert.throws(
+        () =>
+          openDesignRequest(
+            workspaceAt(fixture.root),
+            path.join(fixture.root, "packages/ui-cli/request.json"),
+            "2026-11-08",
+            false,
+            () => {
+              calls++
+              return ""
+            },
+          ),
+        new RegExp(`is ${name} — open a new slug`),
+      )
+      assert.equal(calls, 0)
+    } finally {
+      fixture.dispose()
+    }
+  }
+})
+
+test("request open refuses a record that names no issue", () => {
+  const fixture = fixtureTree(
+    {
+      ...files,
+      "docs/design-requests/2026-11-08-button-focus-ring.md": resumedRecord.replace(
+        "- Issue: https://github.com/acme/ui/issues/42\n",
+        "",
+      ),
+    },
+    "design-request-refuse-no-issue-",
+  )
+  try {
+    assert.throws(
+      () =>
+        openDesignRequest(
+          workspaceAt(fixture.root),
+          path.join(fixture.root, "packages/ui-cli/request.json"),
+          "2026-11-08",
+          false,
+          () => "",
+        ),
+      /names no issue/,
+    )
+  } finally {
+    fixture.dispose()
+  }
+})

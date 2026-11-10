@@ -1,12 +1,8 @@
 import fs from "node:fs"
 
 import { declaredDevices, deviceAxes, type DeviceStats } from "./devices.ts"
-import {
-  deltaSelection,
-  implementationOrder,
-  type DeltaNode,
-  type SnapshotDelta,
-} from "./snapshot.ts"
+import { implementationOrder, type DeltaNode, type SnapshotDelta } from "./snapshot.ts"
+import { deltaWorkSet } from "./work-set.ts"
 import { EVIDENCE_DIR, evidencePaths, loadManifest } from "../parity/evidence.ts"
 import { loadCaseFile } from "../parity/cases.ts"
 import type { Workspace } from "../adapters/workspace.ts"
@@ -256,7 +252,7 @@ export function renderCatalogueDelta(context: CatalogueRenderContext) {
     bulkByNode.get(node.nodeId)?.status ??
     bulkByPage.get(node.pageId)?.status ??
     "unaccounted"
-  const selected = deltaSelection(delta, entries)
+  const selected = new Set(deltaWorkSet(delta, entries).queue)
   return {
     generatedAt: new Date().toISOString(),
     fileKey: inventory.fileKey,

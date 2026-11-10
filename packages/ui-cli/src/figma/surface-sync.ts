@@ -2,6 +2,7 @@ import fs from "node:fs"
 import type { Workspace } from "../adapters/workspace.ts"
 import { fetchFilePages, fetchNodeTrees } from "./rest.ts"
 import { fileKeyFromSource } from "./snapshot.ts"
+import { surfaceDecision } from "./surface-decision.ts"
 import { readJson, writeJson } from "../lib/json.ts"
 import {
   PageSurfaceSchema,
@@ -102,16 +103,15 @@ function decisionFor(
     entry?.note ??
     registry.bulkRules.find((rule) => rule.pageId === pageId)?.reason ??
     registry.bulkRules.find((rule) => rule.pageId === pageId)?.note
-  if (status === "implemented") return { decision: "shipped", ...(reason ? { reason } : {}) }
-  if (status === "mocked" || status === "excluded" || status === "pending")
+  const decision = surfaceDecision(true, status)
+  if (decision === "pending" && !reason)
     return {
-      decision: status,
-      reason: reason ?? `Registry decision is ${status}; add its reviewed reason.`,
+      decision,
+      reason: status
+        ? `Registry decision is ${status}; add its reviewed reason.`
+        : "No registry entry or page bulk rule exists; review this published identity.",
     }
-  return {
-    decision: "pending",
-    reason: "No registry entry or page bulk rule exists; review this published identity.",
-  }
+  return { decision, ...(reason ? { reason } : {}) }
 }
 
 export function planSurfaceSync(

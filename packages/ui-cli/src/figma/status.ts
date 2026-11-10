@@ -17,13 +17,14 @@ import { fileKeyFromSource } from "./snapshot.ts"
 import { figmaToken, resolveFigmaToken, type FigmaTokenSource } from "../adapters/figma-token.ts"
 import { RULES_PATH, plan as planRules, readLedger, readRulesSnapshot } from "./rules.ts"
 import { COMMENTS_SNAPSHOT_PATH, readComments } from "./comments.ts"
+import { designPaths, readFigmaConfig } from "./config.ts"
+import { readDesignRequestRecord } from "./design-request-record.ts"
 import { formatSurfaceLine, loadPageSurface, surfaceSummary, type SurfaceStats } from "./surface.ts"
 
 const CONFIG_PATH = "figma-to-code.yaml"
 const INVENTORY_PATH = "src/catalog/figma/inventory.json"
 const REGISTRY_PATH = "src/catalog/figma/registry.json"
 const SNAPSHOT_PATH = ".figma/live-rest.json"
-const REQUESTS_PATH = "docs/design-requests"
 
 type Counts = {
   implemented: number
@@ -87,7 +88,16 @@ export type StatusReport = {
   }
   pending: PendingRow[]
   surface: { stats: SurfaceStats | null; error: string | null }
-  requests: { path: string | null; open: number; answered: number; files: string[] }
+  requests: {
+    path: string | null
+    open: number
+    answered: number
+    /** Records whose `- Status:` line is missing or says neither open nor answered. */
+    unreadable: string[]
+    files: string[]
+    /** The folder `figma-to-code.yaml` declares, whether or not it exists. */
+    declared: string
+  }
   live: LiveReport | null
   next: string
 }
@@ -102,53 +112,80 @@ function bytesLabel(bytes: number): string {
   return megabytes >= 1 ? `${megabytes.toFixed(1)} MB` : `${Math.round(bytes / 1024)} KB`
 }
 
-function requestState(file: string): "open" | "answered" {
-  const text = fs.readFileSync(file, "utf8")
-  const status = text.match(/^\s*-?\s*\**Status\**:\s*([A-Za-z]+)/im)?.[1] ?? "open"
-  return status.toLowerCase() === "open" ? "open" : "answered"
-}
-
 function designRequests(workspace: Workspace): StatusReport["requests"] {
   const root = workspace.root
   const workspaceRootPath = workspace.workspaceRoot
-  const directory = [
-    path.join(root, REQUESTS_PATH),
-    path.join(workspaceRootPath, REQUESTS_PATH),
-  ].find((candidate) => fs.existsSync(candidate))
-  if (!directory) return { path: null, open: 0, answered: 0, files: [] }
+  // The record folder is the one path the config calls workspace-relative, so it
+  // is the one path read from it rather than from a literal here.
+  const requests = designPaths(readFigmaConfig(workspace)).requests
+  const directory = [path.join(root, requests), path.join(workspaceRootPath, requests)].find(
+    (candidate) => fs.existsSync(candidate),
+  )
+  if (!directory)
+    return { path: null, open: 0, answered: 0, unreadable: [], files: [], declared: requests }
   const files = fs
     .readdirSync(directory)
     .filter((file) => file.endsWith(".md"))
     .sort()
-  const states = files.map((file) => requestState(path.join(directory, file)))
+  const records = files.map((file) =>
+    readDesignRequestRecord(fs.readFileSync(path.join(directory, file), "utf8")),
+  )
   return {
     path: relativeTo(workspaceRootPath, directory),
-    open: states.filter((state) => state === "open").length,
-    answered: states.filter((state) => state === "answered").length,
+    open: records.filter((record) => record.state === "open").length,
+    answered: records.filter((record) => record.state === "answered").length,
+    unreadable: files.filter((_, index) => records[index].state === "unreadable"),
     files,
+    declared: requests,
   }
 }
 
+/**
+ * The rungs a session climbs, in the order it must climb them: a rung is
+ * reachable only when every earlier one is satisfied, because each one is the
+ * precondition of the next read. The ladder used to stop at the token, the
+ * inventory and the file version, and then answer "nothing to align" while the
+ * rules were stale, the census owed decisions, a design request sat open and
+ * the registry carried a pending node: the report's own counters said work was
+ * waiting and `next` said there was none.
+ */
 function nextCommand(report: Omit<StatusReport, "next">): string {
-  if (!report.token.present) {
+  const run = (target: string): string => `pnpm nx run pagopa-ui-cli:${target}`
+  if (!report.token.present)
     return "export FIGMA_TOKEN in the shell that runs the session, then re-run figma:status -- --live"
-  }
-  if (report.inventory.error) {
+  if (report.inventory.error)
     return "restore the inventory or run figma:triage: the session report cannot read it"
-  }
-  if (report.live && !report.live.error) {
-    if (report.live.changedSinceInventory === false) {
-      return "nothing to align: the file has not changed since the inventory sync"
-    }
-    if (report.live.changedSinceInventory === true) {
-      return "pnpm nx run pagopa-ui-cli:figma:plan (the file changed since the inventory sync)"
-    }
-    return "pnpm nx run pagopa-ui-cli:figma:plan (the inventory records no file version yet)"
-  }
-  if (report.live?.error) {
-    return `fix the live read first: ${report.live.error}`
-  }
-  return "pnpm nx run pagopa-ui-cli:figma:status -- --live (ask the file whether it changed)"
+  if (report.registry.error)
+    return `restore the registry or run figma:triage: the session report cannot read it (${report.registry.error})`
+  if (report.live?.error) return `fix the live read first: ${report.live.error}`
+  if (!report.live)
+    return `${run("figma:status")} -- --live (ask the file whether it changed since the inventory sync)`
+  if (report.live.changedSinceInventory !== false)
+    return report.live.changedSinceInventory === true
+      ? `${run("figma:plan")} (the file changed since the inventory sync)`
+      : `${run("figma:plan")} (the inventory records no file version yet)`
+
+  // The file matches the inventory: what is left is inside the workspace, and
+  // every remaining rung is a counter this same report prints.
+  if (report.rules.error) return `restore the design-rules ledger: ${report.rules.error}`
+  if (report.rules.stale)
+    return `${run("figma:rules")} (${report.rules.stale} reviewed rule(s) trail the library export)`
+  if (report.surface.error) return `restore the page census: ${report.surface.error}`
+  const censused = report.surface.stats
+  if (censused && censused.pagesPublished && censused.pages !== censused.pagesPublished)
+    return `${run("figma:triage")} (the census covers ${censused.pages} of ${censused.pagesPublished} published page(s))`
+  if (censused?.pending)
+    return `${run("figma:triage")} (${censused.pending} censused identity(ies) still carry a pending decision)`
+  if (report.requests.unreadable.length)
+    return `set "- Status: open|answered" in ${report.requests.unreadable.join(", ")} — ${report.requests.path ?? report.requests.declared} records without a readable status are not counted`
+  if (report.requests.open)
+    return `answer the ${report.requests.open} open design request(s) in ${report.requests.path ?? report.requests.declared} before aligning their nodes`
+  if (report.comments.open)
+    return `${run("figma:comments")} (${report.comments.open} open Figma comment(s), ${report.comments.mappedOpen} on a mapped node)`
+  const owed = report.registry.pending + report.registry.unaccounted
+  if (owed)
+    return `${run("figma:brief")} --queue (${report.registry.pending} pending, ${report.registry.unaccounted} unaccounted)`
+  return "nothing to align: the file matches the inventory, the census is decided, the ledger is current and no node is pending"
 }
 
 function statusLine(name: string, value: string): string {
@@ -219,7 +256,7 @@ function formatStatusEvidence(report: StatusReport): string[] {
   lines.push(
     statusLine(
       "requests",
-      `${report.requests.open} open · ${report.requests.answered} answered${report.requests.path ? ` in ${report.requests.path}` : ""}`,
+      `${report.requests.open} open · ${report.requests.answered} answered${report.requests.unreadable.length ? ` · ${report.requests.unreadable.length} unreadable` : ""}${report.requests.path ? ` in ${report.requests.path}` : ""}`,
     ),
   )
   return lines

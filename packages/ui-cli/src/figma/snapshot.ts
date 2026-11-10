@@ -616,43 +616,6 @@ export function implementationFingerprint(root: InventoryNode, nodes: InventoryN
   return fingerprint([...sources.values()].sort((a, b) => a.nodeId.localeCompare(b.nodeId)))
 }
 
-/**
- * The nodes the current delta touched: what the design change reopened, in a
- * stable order. `removed` and `baseline` are excluded — the first has no node
- * to read, the second needs no work.
- */
-export function deltaChangeNodes(delta: SnapshotDelta): string[] {
-  return [
-    ...new Set(
-      [...delta.added, ...delta.changed, ...delta.renamed, ...delta.moved, ...delta.affected].map(
-        (node) => node.nodeId,
-      ),
-    ),
-  ]
-}
-
-/**
- * The nodes the current delta hands to the work queue: every pending registry
- * entry plus the nodes the delta added, changed or affected, minus the mocked
- * ones. Shared so `delta` and `plan` cannot disagree about the work set.
- */
-export function deltaSelection(
-  delta: SnapshotDelta | null,
-  entries: Registry["entries"],
-): Set<string> {
-  const selected = new Set(
-    Object.entries(entries)
-      .filter(([, entry]) => entry.status === "pending")
-      .map(([nodeId]) => nodeId),
-  )
-  if (delta)
-    for (const node of [...delta.added, ...delta.changed, ...delta.affected])
-      selected.add(node.nodeId)
-  for (const nodeId of [...selected])
-    if (entries[nodeId]?.status === "mocked") selected.delete(nodeId)
-  return selected
-}
-
 export function implementationOrder(nodes: InventoryNode[], selected: Set<string>): string[] {
   const byId = new Map(nodes.map((node) => [node.nodeId, node]))
   const ordered: string[] = []

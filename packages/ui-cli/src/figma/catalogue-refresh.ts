@@ -12,6 +12,8 @@ import {
   type Registry,
 } from "../schemas/catalogue.ts"
 import type { SnapshotDelta } from "./snapshot.ts"
+import { keepsStatusOnDrift } from "./surface-decision.ts"
+import { deltaChangedNodes } from "./work-set.ts"
 import { loadPageSurface, PAGE_SURFACE_PATH } from "./surface.ts"
 
 const REGISTRY_PATH = "src/catalog/figma/registry.json"
@@ -38,32 +40,62 @@ export interface CatalogueRefreshReport {
   pendingWrites: Map<string, unknown>
   reconciledSurface: PageSurface | null
   ratchet: Ratchet | null
+  /** What the refresh left alone, so the run reports it instead of dropping it. */
+  notices: string[]
 }
 
 function dropKeys<T>(record: Record<string, T>, keys: Set<string>): Record<string, T> {
   return Object.fromEntries(Object.entries(record).filter(([key]) => !keys.has(key)))
 }
 
+// The design-request file a note points at is the record `figma status` reads
+// back: renewing the note must not erase the pointer to it.
+const DESIGN_REQUEST_POINTER = /\bdocs\/design-requests\/[\w./-]+\.md\b/g
+
+function renewedNote(previous: string | undefined, boilerplate: string): string {
+  const pointers = [...new Set(previous?.match(DESIGN_REQUEST_POINTER) ?? [])]
+  if (!pointers.length) return boilerplate
+  return `${boilerplate}. Open design question: ${pointers.join(", ")}`
+}
+
 function renewRegistry(registry: Registry, delta: SnapshotDelta, date: string) {
   registry.entries ??= {}
   const renewed = new Set<string>()
   const removed = new Set<string>()
-  for (const node of [...delta.added, ...delta.changed, ...delta.affected]) {
-    const previous = registry.entries[node.nodeId]
+  const notices: string[] = []
+  const byId = new Map(
+    [...delta.added, ...delta.changed, ...delta.affected].map((n) => [n.nodeId, n]),
+  )
+  for (const nodeId of deltaChangedNodes(delta)) {
+    const node = byId.get(nodeId)
+    if (!node) continue
+    const previous = registry.entries[nodeId]
     const rule = registry.bulkRules?.find((item) => item.pageId === node.pageId)
-    if (previous?.status === "excluded" || (!previous && rule?.status === "excluded")) continue
-    if (previous?.status === "mocked") continue
-    if (previous && !VALID_STATUSES.has(previous.status)) continue
-    registry.entries[node.nodeId] = {
+    if (keepsStatusOnDrift(previous?.status, rule?.status)) {
+      notices.push(
+        `${nodeId} changed in Figma and keeps its ${previous?.status ?? rule?.status} status — review it by hand if the change invalidates that decision`,
+      )
+      continue
+    }
+    if (previous && !VALID_STATUSES.has(previous.status)) {
+      notices.push(
+        `${nodeId} changed in Figma and keeps its unreadable status "${previous.status}" — set one of implemented, mocked, excluded, pending`,
+      )
+      continue
+    }
+    registry.entries[nodeId] = {
       ...previous,
       status: "pending",
-      note: `Figma delta ${date}: review new/changed node or dependency before marking implemented`,
+      note: renewedNote(
+        previous?.note,
+        `Figma delta ${date}: review new/changed node or dependency before marking implemented`,
+      ),
     }
-    renewed.add(node.nodeId)
+    renewed.add(nodeId)
   }
   for (const node of delta.removed) removed.add(node.nodeId)
   registry.entries = dropKeys<Registry["entries"][string]>(registry.entries, removed)
-  return { renewed, removed }
+  return { renewed, removed, notices }
 }
 
 function reconcilePublishedIdentities(
@@ -173,7 +205,7 @@ export function prepareCatalogueRefresh(
     components: live,
   }
   const registry: Registry = structuredClone(previousRegistry)
-  const { renewed, removed } = renewRegistry(registry, delta, date)
+  const { renewed, removed, notices } = renewRegistry(registry, delta, date)
   const nextEvidenceExceptions = dropKeys(
     options.evidenceExceptions,
     new Set([...renewed, ...removed]),
@@ -200,5 +232,6 @@ export function prepareCatalogueRefresh(
     pendingWrites,
     reconciledSurface,
     ratchet,
+    notices,
   }
 }

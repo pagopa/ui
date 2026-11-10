@@ -6,6 +6,12 @@ import { runGh } from "../adapters/handoff.ts"
 import { readJson, writeJson, writeText } from "../lib/json.ts"
 import { UsageError } from "../lib/command.ts"
 import { InventorySchema, RegistrySchema, NOTE_LENGTH_LIMIT } from "../schemas/catalogue.ts"
+import {
+  answeredRecordSource,
+  openRecord,
+  readDesignRequestRecord,
+} from "./design-request-record.ts"
+import { designPaths, readFigmaConfig, type DesignConfig } from "./config.ts"
 import { markRule } from "./rules-workflow.ts"
 
 const OptionSchema = z.strictObject({
@@ -38,23 +44,10 @@ const InputSchema = z.strictObject({
 export type DesignRequestInput = z.infer<typeof InputSchema>
 export type IssueCommand = (args: string[], cwd: string) => string
 
-function designConfig(workspace: Workspace): {
-  requests: string
-  owners: string[]
-  preview: string
-  previewBranch: string
-} {
-  const file = workspace.path("figma-to-code.yaml")
-  const source = fs.readFileSync(file, "utf8")
-  const design = source.match(/^design:\s*\n((?:[ \t]+.*\n?)*)/m)?.[1] ?? ""
-  const requests = design.match(/^\s+requests:\s*([^\s#]+)/m)?.[1]
-  const ownersBlock = design.match(/^\s+owners:\s*\n((?:\s+-[^\n]*\n?)*)/m)?.[1] ?? ""
-  const owners = [...ownersBlock.matchAll(/^\s+-\s*([^\s#]+)/gm)].map((match) => match[1])
-  const previewBlock = design.match(/^\s+preview:\s*\n((?:\s{4,}.*\n?)*)/m)?.[1] ?? ""
-  const preview = previewBlock.match(/^\s+url:\s*([^\s#]+)/m)?.[1] ?? "none"
-  const previewBranch = previewBlock.match(/^\s+branch:\s*([^\s#]+)/m)?.[1] ?? ""
-  if (!requests) throw new UsageError("figma-to-code.yaml has no design.requests directory")
-  return { requests, owners, preview, previewBranch }
+function designConfig(workspace: Workspace): DesignConfig {
+  const config = designPaths(readFigmaConfig(workspace))
+  if (!config.requests) throw new UsageError("figma-to-code.yaml has no design.requests directory")
+  return config
 }
 
 function parseInput(source: string): DesignRequestInput {
@@ -199,26 +192,17 @@ function recordContent(
         )
         .join("\n")
     : ""
-  return [
-    `# ${input.title}`,
-    "",
-    `- Type: ${input.type}`,
-    `- Issue: ${issueUrl}`,
-    "- Status: open",
-    `- Decision owner: ${owners.map((owner) => `@${owner}`).join(", ") || "unassigned"}`,
-    `- Preview: ${input.visual ? previewStoryUrl(preview, input.slug, input.options[0]?.key ?? "a") : "none"}`,
-    "",
-    "## Context",
-    "",
-    input.context,
-    "",
-    "## Options",
-    "",
+  return openRecord({
+    title: input.title,
+    type: input.type,
+    issueUrl,
+    owners,
+    preview: input.visual
+      ? previewStoryUrl(preview, input.slug, input.options[0]?.key ?? "a")
+      : "none",
+    context: input.context,
     options,
-    "",
-    "## Decision",
-    "",
-  ].join("\n")
+  })
 }
 
 function recordPath(
@@ -250,7 +234,10 @@ function validateNode(
   if (entry?.status !== "pending")
     throw new UsageError(`${input.nodeId} must remain pending while its design request is open`)
   const pointer = `Design request: ${record}`
-  const note = [entry.note?.trim(), pointer].filter(Boolean).join("\n")
+  // A resumed run writes the same pointer again: appending it twice would grow
+  // the note every attempt and eventually cross the limit for no reason.
+  const existing = entry.note?.includes(pointer) ? entry.note.trim() : null
+  const note = existing ?? [entry.note?.trim(), pointer].filter(Boolean).join("\n")
   if (note.length > NOTE_LENGTH_LIMIT)
     throw new UsageError(
       `${input.nodeId} registry note would exceed ${NOTE_LENGTH_LIMIT} characters`,
@@ -268,12 +255,32 @@ export function openDesignRequest(
   day: string,
   dryRun: boolean,
   gh: IssueCommand = runGh,
-): { path: string; issueUrl: string | null; actions: string[]; dryRun: boolean } {
+): {
+  path: string
+  issueUrl: string | null
+  actions: string[]
+  dryRun: boolean
+  /** The record already existed: the run finished its writes instead of opening again. */
+  resumed: boolean
+} {
   const input = parseInput(fs.readFileSync(inputFile, "utf8"))
   const config = designConfig(workspace)
   const target = recordPath(workspace, config.requests, day, input.slug)
-  if (fs.existsSync(target.absolute))
-    throw new UsageError(`design request record already exists: ${target.relative}`)
+  // A run that died between `gh issue create` and its writes leaves the record
+  // behind with the issue URL in it. Refusing the record would strand that
+  // issue and a rerun would open a second one, so an open record resumes from
+  // the issue it names instead of starting over.
+  const existing = fs.existsSync(target.absolute)
+    ? readDesignRequestRecord(fs.readFileSync(target.absolute, "utf8"))
+    : null
+  if (existing && existing.state !== "open")
+    throw new UsageError(
+      `design request record ${target.relative} is ${existing.state} — open a new slug for a new question`,
+    )
+  if (existing && !existing.issueUrl)
+    throw new UsageError(
+      `design request record ${target.relative} names no issue — add its "- Issue:" line or delete it`,
+    )
   const node = validateNode(workspace, input, target.relative)
   if (input.rulesCard)
     markRule(workspace, {
@@ -293,20 +300,34 @@ export function openDesignRequest(
   for (const label of labels) create.push("--label", label)
   for (const owner of config.owners) create.push("--assignee", owner)
   const actions = [
-    `gh ${create.join(" ")}`,
-    `write ${target.relative}`,
+    ...(existing ? [] : [`gh ${create.join(" ")}`]),
+    ...(existing ? [] : [`write ${target.relative}`]),
     ...(node ? [`write registry note for ${input.nodeId}`] : []),
     ...(input.rulesCard
       ? [`mark rules card ${input.rulesCard} as conflict -> ${target.relative}`]
       : []),
   ]
-  if (dryRun) return { path: target.relative, issueUrl: null, actions, dryRun: true }
-  const output = gh(create, workspace.workspaceRoot)
-  const issueUrl = output.split(/\s+/).find((word) => /^https:\/\/[^\s]+\/issues\/\d+$/.test(word))
-  if (!issueUrl) throw new Error(`gh issue create did not return an issue URL: ${output}`)
-  const record = recordContent(input, issueUrl, config.owners, config.preview)
-  fs.mkdirSync(path.dirname(target.absolute), { recursive: true })
-  writeText(target.absolute, record)
+  if (dryRun)
+    return {
+      path: target.relative,
+      issueUrl: null,
+      actions,
+      dryRun: true,
+      resumed: Boolean(existing),
+    }
+  let issueUrl = existing?.issueUrl ?? null
+  if (!issueUrl) {
+    const output = gh(create, workspace.workspaceRoot)
+    issueUrl =
+      output.split(/\s+/).find((word) => /^https:\/\/[^\s]+\/issues\/\d+$/.test(word)) ?? null
+    if (!issueUrl) throw new Error(`gh issue create did not return an issue URL: ${output}`)
+  }
+  // Each step is idempotent on its own, so a resumed run finishes the writes a
+  // previous one did not reach.
+  if (!existing) {
+    fs.mkdirSync(path.dirname(target.absolute), { recursive: true })
+    writeText(target.absolute, recordContent(input, issueUrl, config.owners, config.preview))
+  }
   if (node) writeJson(node.registryFile, node.updated)
   if (input.rulesCard)
     markRule(workspace, {
@@ -314,7 +335,7 @@ export function openDesignRequest(
       disposition: "conflict",
       request: target.relative,
     })
-  return { path: target.relative, issueUrl, actions, dryRun: false }
+  return { path: target.relative, issueUrl, actions, dryRun: false, resumed: Boolean(existing) }
 }
 
 export function listDesignRequests(
@@ -341,15 +362,9 @@ export function listDesignRequests(
 }
 
 function answeredRecord(source: string, decision: string): { url: string; updated: string } {
-  const url = source.match(/^- Issue:\s*(https:\/\/\S+)/m)?.[1]
+  const url = readDesignRequestRecord(source).issueUrl
   if (!url) throw new UsageError("request record has no issue URL")
-  if (!/^- Status: open$/m.test(source)) throw new UsageError("request record is not open")
-  if (!/^## Decision\s*$/m.test(source))
-    throw new UsageError("request record has no Decision section")
-  const updated = source
-    .replace(/^- Status: open$/m, "- Status: answered")
-    .replace(/(^## Decision\s*\n\s*\n)[\s\S]*$/, `$1${decision.trim()}\n`)
-  return { url, updated }
+  return { url, updated: answeredRecordSource(source, decision) }
 }
 
 export function closeDesignRequest(

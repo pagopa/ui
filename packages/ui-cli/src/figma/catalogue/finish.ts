@@ -89,13 +89,27 @@ function writeDeltaFile(
   out.push(`delta: ${context.deltaPath}`)
 }
 
-export function catalogueExitCode(
-  errors: string[],
-  validationErrors: string[],
-  driftErrors: string[],
-): number {
-  if (validationErrors.length || errors.some((error) => !driftErrors.includes(error))) return 1
-  return driftErrors.length ? 3 : 0
+/**
+ * The exit code reads each origin on its own: drift is the one failure a pull
+ * request can absorb, and it is exit 3 only while nothing else failed. Matching
+ * the two lists by their text was the previous test, and any error whose text
+ * repeated a drift line passed as drift.
+ */
+export function catalogueExitCode(input: {
+  errors: string[]
+  validationErrors: string[]
+  driftErrors: string[]
+}): number {
+  if (input.errors.length || input.validationErrors.length) return 1
+  return input.driftErrors.length ? 3 : 0
+}
+
+/** The files the run asked to write, named even when the run refuses to write them. */
+function writeTargets(context: CatalogueContext): string[] {
+  const targets = [...context.pendingWrites.keys()]
+  if (context.prBodyPath && context.hasDrift) targets.push(context.prBodyPath)
+  if (context.deltaPath && context.live) targets.push(context.deltaPath)
+  return targets
 }
 
 export function finishCatalogue(
@@ -123,11 +137,15 @@ export function finishCatalogue(
         deviceCoverage: validation.deviceCoverage,
       }),
     )
-    err.push(...errors.map((error) => `error: ${error}`))
+    err.push(
+      ...errors.map((error) => `error: ${error}`),
+      ...context.driftErrors.map((error) => `error: ${error}`),
+    )
   } else {
     err.push(
       ...warnings.map((warning) => `warn: ${warning}`),
       ...errors.map((error) => `error: ${error}`),
+      ...context.driftErrors.map((error) => `error: ${error}`),
     )
     out.push(
       ...formatCatalogueSummary({
@@ -152,9 +170,19 @@ export function finishCatalogue(
     writePendingFiles(workspace.root, context, plan, out, err)
     writePullRequestBody(workspace, context, validation, out)
     writeDeltaFile(workspace, context, validation, out)
+  } else {
+    const targets = writeTargets(context)
+    if (targets.length)
+      err.push(
+        `not written: ${targets.join(", ")} — ${errors.length} error(s) block the run, fix them and rerun`,
+      )
   }
   return {
-    exitCode: catalogueExitCode(context.errors, validation.errors, context.driftErrors),
+    exitCode: catalogueExitCode({
+      errors: context.errors,
+      validationErrors: validation.errors,
+      driftErrors: context.driftErrors,
+    }),
     out,
     err,
   }

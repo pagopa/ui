@@ -66,6 +66,7 @@ import {
   type Registry,
 } from "../schemas/catalogue.ts"
 import type { ParityCase } from "../schemas/parity.ts"
+import { registryStatusFor, requiresReason } from "./surface-decision.ts"
 
 export const PAGE_SURFACE_PATH = "src/catalog/figma/page-surface.json"
 
@@ -181,40 +182,32 @@ function checkIdentityDecision(
   where: string,
 ): string[] {
   const errors: string[] = []
-  if (identity.decision === "unpublished") {
-    if (identity.inLibrary) {
+  const { decision, inLibrary } = identity
+  if (!inLibrary) {
+    if (decision !== "unpublished")
       errors.push(
-        `${where} is published and cannot be called unpublished — ` +
-          `give it shipped, mocked, excluded or pending`,
+        `${where} is ${decision} but not in the library — ` +
+          `an unpublished identity has no mapping, the decision is unpublished`,
       )
-    }
     return errors
   }
-  if (!identity.inLibrary) {
+  if (decision === "unpublished") {
     errors.push(
-      `${where} is ${identity.decision} but not in the library — ` +
-        `an unpublished identity has no mapping, the decision is unpublished`,
+      `${where} is published and cannot be called unpublished — ` +
+        `give it shipped, mocked, excluded or pending`,
     )
     return errors
   }
-  if (identity.decision === "shipped") {
-    if (status !== "implemented") {
-      errors.push(
-        `${where} is shipped but the registry says "${status ?? "unaccounted"}" — ` +
-          `the decision and the registry disagree`,
-      )
-    }
-    return errors
-  }
-  if (status !== identity.decision) {
+  const expected = registryStatusFor(decision)
+  if (status !== expected) {
     errors.push(
-      `${where} is ${identity.decision} but the registry says "${status ?? "unaccounted"}" — ` +
+      `${where} is ${decision} but the registry says "${status ?? "unaccounted"}" — ` +
         `the decision and the registry disagree`,
     )
   }
-  if (!identity.reason) {
+  if (requiresReason(decision) && !identity.reason) {
     errors.push(
-      `${where} is ${identity.decision} and requires a reason — the census is where the ` +
+      `${where} is ${decision} and requires a reason — the census is where the ` +
         `decision is written down`,
     )
   }
