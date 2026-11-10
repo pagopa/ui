@@ -20,6 +20,26 @@ test("writeJson emits the formatter's stable JSON layout", async () => {
   }
 })
 
+test("writeJson reports a formatter that is present and fails", () => {
+  const fixture = fixtureTree({}, "json-writer-")
+  try {
+    const config = path.join(fixture.root, "oxfmt.config.ts")
+    fs.writeFileSync(config, "export default {}\n")
+    const failing = path.join(fixture.root, "failing-formatter")
+    fs.writeFileSync(failing, "#!/bin/sh\nexit 1\n", { mode: 0o755 })
+
+    // An absent formatter is an absence and degrades; one that runs and fails is
+    // a defect, and the write must not hide it behind unformatted output.
+    assert.throws(
+      () =>
+        writeJson(path.join(fixture.root, "failing.json"), { a: 1 }, { binary: failing, config }),
+      /Command failed/,
+    )
+  } finally {
+    fixture.dispose()
+  }
+})
+
 test("writeJson emits parseable JSON when the formatter is absent", () => {
   const fixture = fixtureTree({}, "json-writer-")
   try {
