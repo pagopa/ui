@@ -24,6 +24,11 @@ export type DesignRequestRecord = {
 const STATUS_LINE = /^\s*-?\s*\**Status\**:[ \t]*(.*)$/m
 const ISSUE_LINE = /^\s*-?\s*\**Issue\**:[ \t]*(https:\/\/\S+)/m
 const DECISION_HEADING = /^## Decision[ \t]*$/m
+// With the `m` flag, `$` matches before `\r` and at the end of the record, so
+// the parser finds the heading in a CRLF record and in one that ends at the
+// heading. The writer captures that same heading plus the line ending after
+// it, so it fills the decision in the same forms rather than requiring an LF.
+const DECISION_SECTION = new RegExp(`(${DECISION_HEADING.source})(\\r?\\n|$)[\\s\\S]*$`, "m")
 
 export function readDesignRequestRecord(source: string): DesignRequestRecord {
   const issueUrl = source.match(ISSUE_LINE)?.[1] ?? null
@@ -32,7 +37,7 @@ export function readDesignRequestRecord(source: string): DesignRequestRecord {
   const state: RequestState = word === "open" || word === "answered" ? word : "unreadable"
   const heading = source.match(DECISION_HEADING)
   const body = heading?.index === undefined ? null : source.slice(heading.index + heading[0].length)
-  const decision = body === null ? null : body.replace(/^[ \t]*\n+/, "").trimEnd()
+  const decision = body === null ? null : body.replace(/^[ \t]*(?:\r?\n)+/, "").trimEnd()
   return { issueUrl, state, raw, decision }
 }
 
@@ -89,10 +94,12 @@ export function answeredRecordSource(source: string, decision: string): string {
       // `m` matters: without it `^` only matches at the start of the record, the
       // replacement never fires and the decision is silently dropped. The
       // callback matters too: as a replacement string, `$&`, `$1` and `$$` in
-      // the decision would be read as patterns and rewrite the answer.
-      .replace(
-        /(^## Decision[ \t]*\n)[\s\S]*$/m,
-        (_match, heading: string) => `${heading}\n${decision.trim()}\n`,
-      )
+      // the decision would be read as patterns and rewrite the answer. The
+      // line ending follows the heading, or the record when the heading is the
+      // last line, so a CRLF record stays CRLF.
+      .replace(DECISION_SECTION, (_match, heading: string, separator: string) => {
+        const lineEnding = separator || (source.includes("\r\n") ? "\r\n" : "\n")
+        return `${heading}${lineEnding}${lineEnding}${decision.trim()}${lineEnding}`
+      })
   )
 }

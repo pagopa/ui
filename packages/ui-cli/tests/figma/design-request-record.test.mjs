@@ -106,6 +106,22 @@ test("a decision containing replacement patterns is written literally", () => {
   assert.equal(parsed.decision, decision)
 })
 
+test("a CRLF record takes the decision and keeps its line endings", () => {
+  const source = record("- Status: open", "\n## Decision\n").replace(/\n/g, "\r\n")
+  const updated = answeredRecordSource(source, "Use 2px.\n")
+  assert.equal(readDesignRequestRecord(updated).state, "answered")
+  assert.equal(readDesignRequestRecord(updated).decision, "Use 2px.")
+  assert.match(updated, /## Decision\r\n\r\nUse 2px\.\r\n$/)
+  assert.doesNotMatch(updated, /(?<!\r)\n/)
+})
+
+test("a record ending at the Decision heading takes the decision", () => {
+  const updated = answeredRecordSource(record("- Status: open", "\n## Decision"), "Use 2px.")
+  const parsed = readDesignRequestRecord(updated)
+  assert.equal(parsed.state, "answered")
+  assert.equal(parsed.decision, "Use 2px.")
+})
+
 test("closing a record with no Decision section refuses rather than losing the answer", () => {
   assert.throws(
     () => answeredRecordSource(record("- Status: open"), "Use 2px."),
