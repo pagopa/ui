@@ -1,23 +1,23 @@
 import fs from "node:fs"
 import type { Workspace } from "../adapters/workspace.ts"
-import { loadDevicePolicy, loadInventory } from "../figma/devices.ts"
 import { UsageError } from "../lib/command.ts"
+import { committedFile, readDevicePolicy, readInventory } from "../records/committed.ts"
 import { buildCases } from "./cases.ts"
 
 export function devicePolicy(workspace: Workspace) {
-  return loadDevicePolicy(workspace.path("src/catalog/figma/device-policy.json"))
+  return readDevicePolicy(committedFile("device-policy", workspace.root))
 }
 export function inventoryNodes(workspace: Workspace) {
-  return loadInventory(workspace.path("src/catalog/figma/inventory.json")).components
+  return readInventory(committedFile("inventory", workspace.root)).components
 }
 export function inventoryFileKey(workspace: Workspace) {
-  return loadInventory(workspace.path("src/catalog/figma/inventory.json")).fileKey ?? ""
+  return readInventory(committedFile("inventory", workspace.root)).fileKey
 }
 export function inventoryNode(workspace: Workspace, nodeId: string) {
   return inventoryNodes(workspace).find((node) => node.nodeId === nodeId)
 }
 export function corpusPath(workspace: Workspace, file?: string) {
-  return workspace.path(file ?? "src/catalog/figma/parity-cases.json")
+  return file ? workspace.path(file) : committedFile("cases", workspace.root)
 }
 export function frameBaseline(workspace: Workspace): Record<string, string> {
   const file = workspace.path("src/catalog/figma/frame-baseline.json")

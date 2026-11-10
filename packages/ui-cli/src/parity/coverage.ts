@@ -4,16 +4,12 @@ import { isDeepStrictEqual } from "node:util"
 
 import type { Workspace } from "../adapters/workspace.ts"
 import { resolveProvenance } from "../figma/asset-provenance.ts"
-import { loadDevicePolicy } from "../figma/devices.ts"
 import { catalogueIndex } from "../figma/snapshot.ts"
 import { readJson } from "../lib/json.ts"
+import { committedFile, readDevicePolicy, readInventory } from "../records/committed.ts"
 import { IconManifestSchema, PictogramManifestSchema } from "../schemas/artwork.ts"
-import {
-  InventorySchema,
-  type BulkRule,
-  type InventoryNode,
-  type Registry,
-} from "../schemas/catalogue.ts"
+import type { BulkRule, InventoryNode, Registry } from "../schemas/catalogue.ts"
+import type { DevicePolicy } from "../schemas/devices.ts"
 import type { ParityCase } from "../schemas/parity.ts"
 import { deviceCoverage, isDraftCase, validateCaseFile } from "./cases.ts"
 import { checkEvidence, type EvidenceReport } from "./evidence.ts"
@@ -99,7 +95,7 @@ type PopulationOptions = {
   registry: Registry
   cases: ParityCase[]
   evidence?: EvidenceReport
-  policy?: ReturnType<typeof loadDevicePolicy>
+  policy?: DevicePolicy
   bulk?: BulkQualification[]
   statuses?: string[]
   fileKey?: string
@@ -131,7 +127,7 @@ export function coveragePopulations(
       cases,
       nodes,
     }),
-    policy = loadDevicePolicy(workspace.path("src/catalog/figma/device-policy.json")),
+    policy = readDevicePolicy(committedFile("device-policy", workspace.root)),
     bulk = [],
     statuses = ["implemented"],
     fileKey,
@@ -198,8 +194,7 @@ export function loadCoveragePopulations(
     ownershipError = error instanceof Error ? error.message : String(error)
   }
   const resolvedFileKey =
-    fileKey ??
-    InventorySchema.parse(readJson(workspace.path("src/catalog/figma/inventory.json"))).fileKey
+    fileKey ?? readInventory(committedFile("inventory", workspace.root)).fileKey
   const bulk = registry.bulkRules
     .filter((rule) => rule.status === "implemented")
     .map((rule) =>
@@ -311,7 +306,7 @@ function populationDevices(
   cases: ParityCase[],
   reviewed: ParityCase[],
   invalidIds: Set<string>,
-  policy: ReturnType<typeof loadDevicePolicy>,
+  policy: DevicePolicy,
   statuses: string[],
 ) {
   const entries: Registry["entries"] = {}

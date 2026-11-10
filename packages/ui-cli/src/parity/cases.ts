@@ -15,25 +15,23 @@ import {
   axisToken,
   deviceAxes,
   deviceOf,
-  loadDevicePolicy,
-  loadInventoryNodes as loadInventory,
   requiredDevices,
 } from "../figma/devices.ts"
 import { readJson, writeJson } from "../lib/json.ts"
+import {
+  committedFile,
+  forgetCommitted,
+  readCases,
+  readInventory,
+  readDevicePolicy,
+  readRegistry,
+} from "../records/committed.ts"
 import { createSourceModules } from "../lib/source-modules.ts"
 import { parseSchema } from "../lib/validate.ts"
-import {
-  RegistrySchema,
-  type InventoryNode,
-  type Registry,
-  type RegistryEntry,
-} from "../schemas/catalogue.ts"
-import { DeviceExceptionsSchema } from "../schemas/devices.ts"
-import { ParityCaseFileSchema, ParityCaseSchema, type ParityCase } from "../schemas/parity.ts"
+import type { InventoryNode, Registry, RegistryEntry } from "../schemas/catalogue.ts"
+import { DeviceExceptionsSchema, type DevicePolicy } from "../schemas/devices.ts"
+import { ParityCaseSchema, type ParityCase } from "../schemas/parity.ts"
 
-export const REGISTRY_PATH = "src/catalog/figma/registry.json"
-export const INVENTORY_PATH = "src/catalog/figma/inventory.json"
-export const CASES_PATH = "src/catalog/figma/parity-cases.json"
 export const DEVICE_EXCEPTIONS_PATH = "src/catalog/figma/device-exceptions.json"
 
 // A draft case is one `cases --sync` proposed: its selectors are copied from a
@@ -99,10 +97,6 @@ export function storyId(title: string, exportName: string): string {
   return `${slug(title)}--${exportSlug(exportName)}`
 }
 
-export function loadRegistry(file: string): Registry {
-  return parseSchema(RegistrySchema, readJson(file), file)
-}
-
 // One case per registry target: the identity, the declared story exports and
 // the Design-panel nodes each export shows. A target without a story (the
 // mocked templates before their wave, a node whose evidence is still missing)
@@ -125,7 +119,7 @@ export type CaseList = CaseRow[] & { missing: Array<{ nodeId: string; story: str
 export function buildCases(
   workspace: Workspace,
   {
-    registry = loadRegistry(workspace.path(REGISTRY_PATH)),
+    registry = readRegistry(committedFile("registry", workspace.root)),
     statuses = ["pending", "implemented"],
   }: { registry?: Registry; statuses?: string[] } = {},
 ): CaseList {
@@ -188,20 +182,6 @@ export function buildCases(
 }
 
 // ------------------------------------------------------- the reviewed corpus
-
-// The corpus is the committed record of *how* each variant was compared; the
-// registry stays the record of *what* the node maps to. Absent file, empty
-// corpus: the queue reports the coverage instead of failing.
-export function loadCaseFile(file: string): ParityCase[] {
-  if (!fs.existsSync(file)) return []
-  return parseSchema(ParityCaseFileSchema, readJson(file), file)
-}
-
-// The inventory as the corpus reads it: the full node records, because a case's
-// `device` must be checkable against the variants the node declares (RA3).
-export function loadInventoryNodes(file: string): InventoryNode[] {
-  return loadInventory(file)
-}
 
 // Fan-in: how many inventory components depend on a node. A fix in a shared
 // part lands before the components that contain it, so the queue can order the
@@ -276,7 +256,7 @@ export function saveCase(
   spec: Partial<ParityCase> & Pick<ParityCase, "nodeId">,
   { id }: { id?: string } = {},
 ): { file: string; entry: ParityCase; replaced: boolean; total: number } {
-  const cases = loadCaseFile(file)
+  const cases = [...(readCases(file) ?? [])]
   const entry = canonicalCase(spec, id)
   const index = cases.findIndex((item) => item.id === entry.id || caseKey(item) === caseKey(entry))
   if (index >= 0) cases[index] = entry
@@ -286,6 +266,7 @@ export function saveCase(
   )
   fs.mkdirSync(path.dirname(file), { recursive: true })
   writeJson(file, ordered)
+  forgetCommitted(file)
   return { file, entry, replaced: index >= 0, total: ordered.length }
 }
 
@@ -377,13 +358,13 @@ export function validateCaseFile(
   workspace: Workspace,
   cases: ParityCase[],
   {
-    registry = loadRegistry(workspace.path(REGISTRY_PATH)),
-    nodes = loadInventoryNodes(workspace.path(INVENTORY_PATH)),
-    policy = loadDevicePolicy(workspace.path("src/catalog/figma/device-policy.json")),
+    registry = readRegistry(committedFile("registry", workspace.root)),
+    nodes = readInventory(committedFile("inventory", workspace.root)).components,
+    policy = readDevicePolicy(committedFile("device-policy", workspace.root)),
   }: {
     registry?: Registry
     nodes?: Array<InventoryNode | string>
-    policy?: ReturnType<typeof loadDevicePolicy>
+    policy?: DevicePolicy
   } = {},
 ): { errors: string[]; warnings: string[] } {
   const errors: string[] = []
@@ -444,7 +425,7 @@ export function deviceCoverage({
   cases = [],
   statuses = ["implemented", "pending"],
 }: {
-  policy: ReturnType<typeof loadDevicePolicy>
+  policy: DevicePolicy
   nodes: InventoryNode[]
   registry: Registry
   cases?: ParityCase[]
@@ -522,7 +503,7 @@ export function syncProposals({
   nodeId,
   statuses = ["implemented", "pending"],
 }: {
-  policy: ReturnType<typeof loadDevicePolicy>
+  policy: DevicePolicy
   nodes: InventoryNode[]
   registry: Registry
   cases?: ParityCase[]
@@ -595,7 +576,7 @@ export function stateProposals({
   statuses = ["implemented", "pending"],
   coverage,
 }: {
-  policy: ReturnType<typeof loadDevicePolicy>
+  policy: DevicePolicy
   nodes: InventoryNode[]
   registry: Registry
   cases?: ParityCase[]
@@ -642,7 +623,7 @@ export function stateProposals({
 // `Breakpoint`, `Layout` or something else (`Property 1`). The token is what the
 // variant name carries, without the property key's `#id` suffix.
 function axisOfDevice(
-  policy: ReturnType<typeof loadDevicePolicy>,
+  policy: DevicePolicy,
   node: InventoryNode | undefined,
   device: string,
 ): string | undefined {
@@ -659,7 +640,7 @@ function validateEntry(
   entry: ParityCase,
   registry: Registry,
   byNode: Map<string, InventoryNode | undefined>,
-  policy: ReturnType<typeof loadDevicePolicy>,
+  policy: DevicePolicy,
   seen: Set<string>,
   errors: string[],
   warnings: string[],
@@ -688,7 +669,7 @@ function validateEntry(
 function validateDevice(
   entry: ParityCase,
   byNode: Map<string, InventoryNode | undefined>,
-  policy: ReturnType<typeof loadDevicePolicy>,
+  policy: DevicePolicy,
   fail: CaseFailure,
 ) {
   // The device dimension (RA3): the field names a canonical device the policy
@@ -815,7 +796,7 @@ function proposeDevicesForNode(
   nodeId: string | undefined,
   cases: ParityCase[],
   node: InventoryNode | undefined,
-  policy: ReturnType<typeof loadDevicePolicy>,
+  policy: DevicePolicy,
   proposals: CaseProposal[],
   skipped: ProposalSkip[],
 ) {
@@ -916,7 +897,7 @@ function proposeStatesForNode(
   node: InventoryNode | undefined,
   nodeId: string | undefined,
   wanted: Set<string>,
-  policy: ReturnType<typeof loadDevicePolicy>,
+  policy: DevicePolicy,
   cases: ParityCase[],
   deviceRows: Map<string, CoverageRow>,
   corpusIds: Map<string, ParityCase>,

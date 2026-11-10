@@ -6,9 +6,16 @@ import { UsageError } from "../lib/command.ts"
 // deltas, a Tailwind class hint for every delta that lands on a token, and the
 // next command. Nothing is written: saving a case stays `check --save-case`.
 import type { Workspace } from "../adapters/workspace.ts"
-import { loadDevicePolicy, requiredDevices } from "../figma/devices.ts"
+import { requiredDevices } from "../figma/devices.ts"
 import type { ParityCase } from "../schemas/parity.ts"
-import { isDraftCase, loadCaseFile, loadInventoryNodes, loadRegistry } from "./cases.ts"
+import {
+  committedFile,
+  readCases,
+  readDevicePolicy,
+  readInventory,
+  readRegistry,
+} from "../records/committed.ts"
+import { isDraftCase } from "./cases.ts"
 import { corpusPath } from "./context.ts"
 import {
   classify,
@@ -233,17 +240,17 @@ export function nextSteps(node: AlignNode): string[] {
 
 function loadNode(workspace: Workspace, options: AlignOptions): AlignNode {
   const { nodeId } = options
-  const inventory = loadInventoryNodes(workspace.path("src/catalog/figma/inventory.json")).find(
+  const inventory = readInventory(committedFile("inventory", workspace.root)).components.find(
     (node) => node.nodeId === nodeId,
   )
   if (!inventory) throw new UsageError(`${nodeId} is not in inventory.json`)
-  const entry = loadRegistry(workspace.path("src/catalog/figma/registry.json")).entries?.[nodeId]
+  const entry = readRegistry(committedFile("registry", workspace.root)).entries?.[nodeId]
   if (!entry) throw new UsageError(`${nodeId} is not in the registry`)
   const declared = requiredDevices(
-    loadDevicePolicy(workspace.path("src/catalog/figma/device-policy.json")),
+    readDevicePolicy(committedFile("device-policy", workspace.root)),
     inventory,
   )
-  const cases = loadCaseFile(corpusPath(workspace, options.casesFile)).filter(
+  const cases = (readCases(corpusPath(workspace, options.casesFile)) ?? []).filter(
     (item) => item.nodeId === nodeId,
   )
   const covered = declared.filter((device) =>
@@ -268,7 +275,7 @@ export async function align(
   deps: AlignDeps,
 ): Promise<ParityOutput> {
   const node = loadNode(workspace, options)
-  const cases = loadCaseFile(corpusPath(workspace, options.casesFile)).filter(
+  const cases = (readCases(corpusPath(workspace, options.casesFile)) ?? []).filter(
     (item) => item.nodeId === options.nodeId && !isDraftCase(item),
   )
   if (cases.length && !(await deps.storybook()))

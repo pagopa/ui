@@ -16,7 +16,7 @@ import {
   formatNodeCard,
   readNodeCardGates,
 } from "../../src/figma/card.ts"
-import { readInventory } from "../../src/figma/brief.ts"
+import { committedFile, readInventory } from "../../src/records/committed.ts"
 import { fixtureTree, runCli, workspaceAt } from "../helpers/cli.mjs"
 
 const DESIGN_SYSTEM = fileURLToPath(new URL("../../../pagopa-ui/", import.meta.url))
@@ -885,7 +885,7 @@ test("the device line reads the source width before the canonical one", () => {
 // on a fixture and not only on the node the budget check happens to pick.
 test("every node of the committed inventory fits the ceiling", { timeout: 300_000 }, () => {
   const workspace = workspaceAt(DESIGN_SYSTEM)
-  const inventory = readInventory(workspace)
+  const inventory = readInventory(committedFile("inventory", workspace.root))
   const nodes = inventory.components.flatMap((component) => [
     component.nodeId,
     ...(component.variants ?? []).map((variant) => variant.nodeId),
@@ -901,4 +901,22 @@ test("every node of the committed inventory fits the ceiling", { timeout: 300_00
     if (bytes > CARD_BUDGET) oversized.push(`${node}: ${bytes} bytes`)
   }
   assert.deepEqual(oversized, [])
+})
+
+// The gate that guards the registry used to read a registry it could not load
+// as "no problems": the loader returned null for any failure and the gate
+// mapped that null to []. An unreadable committed record is a gate line.
+test("an unreadable registry is a gate line, not an absence of problems", () => {
+  const corrupt = catalogue({ "src/catalog/figma/registry.json": { entries: { "4:4": {} } } })
+  const missing = catalogue({ "src/catalog/figma/registry.json": null })
+  try {
+    for (const fixture of [corrupt, missing]) {
+      const gates = readNodeCardGates(workspaceAt(fixture.root)).catalogue
+      assert.equal(gates.length, 1)
+      assert.match(gates[0], /^registry unreadable: .*registry\.json/)
+    }
+  } finally {
+    corrupt.dispose()
+    missing.dispose()
+  }
 })

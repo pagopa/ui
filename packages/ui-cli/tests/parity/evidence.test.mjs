@@ -18,7 +18,8 @@ import {
   loadSlice,
 } from "../../src/parity/evidence.ts"
 import { loadExport, resolveExport, sourceNode } from "../../src/parity/source.ts"
-import { caseVariant, loadCaseFile, loadInventoryNodes } from "../../src/parity/cases.ts"
+import { caseVariant } from "../../src/parity/cases.ts"
+import { readCases, readInventory } from "../../src/records/committed.ts"
 import { brotliJson } from "../../src/lib/json.ts"
 import { TOOLING_ROOT } from "../../src/adapters/workspace.ts"
 
@@ -377,8 +378,10 @@ test("loadExport reads the committed slice without normalizing the live export",
 
 test("every committed case resolves to a variant", () => {
   const designSystemRoot = path.resolve(TOOLING_ROOT, "../pagopa-ui")
-  const corpus = loadCaseFile(path.join(designSystemRoot, "src/catalog/figma/parity-cases.json"))
-  const nodes = loadInventoryNodes(path.join(designSystemRoot, "src/catalog/figma/inventory.json"))
+  const corpus = readCases(path.join(designSystemRoot, "src/catalog/figma/parity-cases.json")) ?? []
+  const nodes = readInventory(
+    path.join(designSystemRoot, "src/catalog/figma/inventory.json"),
+  ).components
   const byNode = new Map(nodes.map((item) => [item.nodeId, item]))
   const unresolved = corpus
     .filter((entry) => {

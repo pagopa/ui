@@ -15,11 +15,11 @@ import path from "node:path"
 import { z } from "zod"
 
 import type { Workspace } from "../adapters/workspace.ts"
-import { loadInventoryNodes } from "../figma/devices.ts"
 import { normalizeLive } from "../figma/snapshot.ts"
 import { UsageError } from "../lib/command.ts"
 import { decodeJsonBytes } from "../lib/json.ts"
 import { parseSchema } from "../lib/validate.ts"
+import { committedFile, readInventory } from "../records/committed.ts"
 import type { InventoryNode } from "../schemas/catalogue.ts"
 import { evidencePaths } from "./evidence.ts"
 
@@ -249,7 +249,7 @@ export function loadExport(workspace: Workspace, input?: string): Project {
   // path stays the normalizer's.
   const catalogue =
     raw.kind === "parity-source"
-      ? loadInventoryNodes(workspace.path("src/catalog/figma/inventory.json"))
+      ? readInventory(committedFile("inventory", workspace.root)).components
       : normalizeLive(raw, { workspace })
   const sourceSha256 = createHash("sha256").update(contents).digest("hex")
   return { file, origin, version: raw.version, sourceSha256, raw, catalogue }

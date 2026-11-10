@@ -6,7 +6,8 @@ import { createSourceModules } from "../lib/source-modules.ts"
 import { readJson, writeJson } from "../lib/json.ts"
 import { parseSchema } from "../lib/validate.ts"
 import { report, type CheckReport } from "../checks/report.ts"
-import { RegistrySchema, type Registry } from "../schemas/catalogue.ts"
+import type { Registry } from "../schemas/catalogue.ts"
+import { committedFile, readRegistry } from "../records/committed.ts"
 
 export const STORY_TITLES_PATH = "src/catalog/figma/story-titles.json"
 
@@ -50,11 +51,7 @@ export function staleStoryTitles(workspace: Workspace, registry: Registry): stri
 }
 
 export function checkStories(workspace: Workspace): CheckReport {
-  const registry = parseSchema(
-    RegistrySchema,
-    readJson(workspace.path("src/catalog/figma/registry.json")),
-    "src/catalog/figma/registry.json",
-  )
+  const registry = readRegistry(committedFile("registry", workspace.root))
   const file = workspace.path(STORY_TITLES_PATH)
   if (!fs.existsSync(file)) {
     return report("stories", `${STORY_TITLES_PATH} is missing`, [
@@ -72,11 +69,7 @@ export function checkStories(workspace: Workspace): CheckReport {
 }
 
 export function updateStories(workspace: Workspace): string {
-  const registry = parseSchema(
-    RegistrySchema,
-    readJson(workspace.path("src/catalog/figma/registry.json")),
-    "src/catalog/figma/registry.json",
-  )
+  const registry = readRegistry(committedFile("registry", workspace.root))
   const titles = storyTitles(workspace, registry)
   writeJson(workspace.path(STORY_TITLES_PATH), titles)
   return `${STORY_TITLES_PATH}: ${Object.keys(titles).length} stories written`

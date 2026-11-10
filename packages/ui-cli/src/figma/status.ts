@@ -9,9 +9,14 @@
 import fs from "node:fs"
 import path from "node:path"
 
-import { readJson } from "../lib/json.ts"
 import type { Workspace } from "../adapters/workspace.ts"
-import { InventorySchema, RegistrySchema, type Inventory } from "../schemas/catalogue.ts"
+import {
+  COMMITTED_FILES,
+  committedFile,
+  readInventory,
+  readRegistry,
+} from "../records/committed.ts"
+import type { Inventory } from "../schemas/catalogue.ts"
 import { fetchFileHeader } from "./rest.ts"
 import { fileKeyFromSource } from "./snapshot.ts"
 import { figmaToken, resolveFigmaToken, type FigmaTokenSource } from "../adapters/figma-token.ts"
@@ -29,8 +34,6 @@ import {
   type SurfaceUncensused,
 } from "./surface.ts"
 
-const INVENTORY_PATH = "src/catalog/figma/inventory.json"
-const REGISTRY_PATH = "src/catalog/figma/registry.json"
 const SNAPSHOT_PATH = ".figma/live-rest.json"
 
 type Counts = {
@@ -357,7 +360,7 @@ function inventoryStatus(workspace: Workspace): {
   inventory: Inventory | null
 } {
   let report: StatusReport["inventory"] = {
-    path: INVENTORY_PATH,
+    path: COMMITTED_FILES.inventory,
     syncedAt: null,
     fileVersion: null,
     lastModified: null,
@@ -368,7 +371,7 @@ function inventoryStatus(workspace: Workspace): {
   }
   let inventory: Inventory | null = null
   try {
-    inventory = readJson(workspace.path(INVENTORY_PATH), InventorySchema)
+    inventory = readInventory(committedFile("inventory", workspace.root))
     report = {
       ...report,
       syncedAt: inventory.syncedAt,
@@ -379,7 +382,7 @@ function inventoryStatus(workspace: Workspace): {
       sets: inventory.components.filter((node) => node.type === "COMPONENT_SET").length,
     }
   } catch (error) {
-    report.error = `${INVENTORY_PATH}: ${error instanceof Error ? error.message.split("\n")[0] : String(error)}`
+    report.error = error instanceof Error ? error.message.split("\n")[0] : String(error)
   }
   return { report, inventory }
 }
@@ -412,7 +415,7 @@ function registryStatus(
   pending: PendingRow[]
 } {
   let report: StatusReport["registry"] = {
-    path: REGISTRY_PATH,
+    path: COMMITTED_FILES.registry,
     implemented: 0,
     mocked: 0,
     pending: 0,
@@ -423,7 +426,7 @@ function registryStatus(
   const pending: PendingRow[] = []
   const requests = requestsFolder(workspace)
   try {
-    const registry = readJson(workspace.path(REGISTRY_PATH), RegistrySchema)
+    const registry = readRegistry(committedFile("registry", workspace.root))
     const pageRules = new Map(registry.bulkRules.map((rule) => [rule.pageId, rule]))
     const counts: Counts = { implemented: 0, mocked: 0, pending: 0, excluded: 0, unaccounted: 0 }
     for (const node of inventory?.components ?? []) {
@@ -448,7 +451,7 @@ function registryStatus(
     )
     report = { ...report, ...counts }
   } catch (error) {
-    report.error = `${REGISTRY_PATH}: ${error instanceof Error ? error.message.split("\n")[0] : String(error)}`
+    report.error = error instanceof Error ? error.message.split("\n")[0] : String(error)
   }
   return { report, pending }
 }

@@ -8,9 +8,9 @@ import fs from "node:fs"
 import { z } from "zod"
 
 import { readJson, writeJson } from "../lib/json.ts"
+import { committedFile, readInventory } from "../records/committed.ts"
 import type { Workspace } from "../adapters/workspace.ts"
 import { UsageError } from "../lib/command.ts"
-import { InventorySchema } from "../schemas/catalogue.ts"
 import {
   type CommentThread,
   type CommentsSnapshot,
@@ -20,7 +20,6 @@ import { fetchFileComments, fetchFileHeader, type FigmaComment } from "./rest.ts
 import { fileKeyOf } from "./rules.ts"
 
 export const COMMENTS_SNAPSHOT_PATH = ".figma/comments.json"
-const INVENTORY_PATH = "src/catalog/figma/inventory.json"
 const LIVE_SNAPSHOT_PATH = ".figma/live-rest.json"
 
 const LiveSnapshotSchema = z.looseObject({
@@ -28,7 +27,7 @@ const LiveSnapshotSchema = z.looseObject({
 })
 
 function pageIdOf(workspace: Workspace, nodeId: string): string | null {
-  const inventory = readJson(workspace.path(INVENTORY_PATH), InventorySchema)
+  const inventory = readInventory(committedFile("inventory", workspace.root))
   for (const component of inventory.components) {
     if (component.nodeId === nodeId) return component.pageId
     if ((component.variants ?? []).some((variant) => variant.nodeId === nodeId))
@@ -154,7 +153,7 @@ export function threadsForNode(
   requested: string,
   options: { openOnly?: boolean } = {},
 ): CommentThread[] {
-  const inventory = readJson(workspace.path(INVENTORY_PATH), InventorySchema)
+  const inventory = readInventory(committedFile("inventory", workspace.root))
   const scope = new Set<string>([requested])
   const pageId = pageIdOf(workspace, requested)
   for (const component of inventory.components) {

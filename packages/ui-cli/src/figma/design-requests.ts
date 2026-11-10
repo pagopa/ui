@@ -3,9 +3,15 @@ import path from "node:path"
 import { z } from "zod"
 import type { Workspace } from "../adapters/workspace.ts"
 import { runGh } from "../adapters/handoff.ts"
-import { readJson, writeJson, writeText } from "../lib/json.ts"
+import { writeJson, writeText } from "../lib/json.ts"
 import { UsageError } from "../lib/command.ts"
-import { InventorySchema, RegistrySchema, NOTE_LENGTH_LIMIT } from "../schemas/catalogue.ts"
+import { NOTE_LENGTH_LIMIT, type Registry } from "../schemas/catalogue.ts"
+import {
+  committedFile,
+  forgetCommitted,
+  readInventory,
+  readRegistry,
+} from "../records/committed.ts"
 import {
   answeredRecordSource,
   openRecord,
@@ -215,15 +221,15 @@ function validateNode(
   record: string,
 ): {
   registryFile: string
-  registry: ReturnType<typeof RegistrySchema.parse>
-  updated: ReturnType<typeof RegistrySchema.parse>
+  registry: Registry
+  updated: Registry
 } | null {
   if (!input.nodeId) return null
-  const inventory = readJson(workspace.path("src/catalog/figma/inventory.json"), InventorySchema)
+  const inventory = readInventory(committedFile("inventory", workspace.root))
   if (!inventory.components.some((node) => node.nodeId === input.nodeId))
     throw new UsageError(`${input.nodeId} is not in the inventory`)
-  const registryFile = workspace.path("src/catalog/figma/registry.json")
-  const registry = readJson(registryFile, RegistrySchema)
+  const registryFile = committedFile("registry", workspace.root)
+  const registry = readRegistry(registryFile)
   const entry = registry.entries[input.nodeId]
   if (entry?.status !== "pending")
     throw new UsageError(`${input.nodeId} must remain pending while its design request is open`)
@@ -306,7 +312,10 @@ export function openDesignRequest(
   if (!issueUrl) throw new Error(`gh issue create did not return an issue URL: ${output}`)
   fs.mkdirSync(path.dirname(target.absolute), { recursive: true })
   writeText(target.absolute, recordContent(input, issueUrl, config.owners, config.preview))
-  if (node) writeJson(node.registryFile, node.updated)
+  if (node) {
+    writeJson(node.registryFile, node.updated)
+    forgetCommitted(node.registryFile)
+  }
   if (input.rulesCard)
     markRule(workspace, {
       cardId: input.rulesCard,

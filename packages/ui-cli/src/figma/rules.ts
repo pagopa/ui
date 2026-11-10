@@ -18,7 +18,7 @@ import { sha256 } from "../lib/hash.ts"
 import { walkFiles } from "../lib/fs.ts"
 import type { Workspace } from "../adapters/workspace.ts"
 import { UsageError } from "../lib/command.ts"
-import { InventorySchema, RegistrySchema } from "../schemas/catalogue.ts"
+import { committedFile, readInventory, readRegistry } from "../records/committed.ts"
 import {
   type ExtractedCard,
   type ExtractedContainer,
@@ -40,8 +40,6 @@ import { fetchFilePages, fetchNodeTrees, type FigmaPage } from "./rest.ts"
 
 export const RULES_PATH = "src/catalog/figma/rules.json"
 export const RULES_SNAPSHOT_PATH = ".figma/rules.json"
-const INVENTORY_PATH = "src/catalog/figma/inventory.json"
-const REGISTRY_PATH = "src/catalog/figma/registry.json"
 const FILE_MODULE = "src/catalog/figma/file.ts"
 const GUIDES_DIR = "apps/storybook/src/guides"
 const PLACEHOLDER_TITLE = "Nome della regola"
@@ -140,7 +138,7 @@ export function fileKeyOf(root: string): string {
 }
 
 function inventoryNodes(root: string): Map<string, { pageId: string; setName: string }> {
-  const inventory = readJson(path.join(root, INVENTORY_PATH), InventorySchema)
+  const inventory = readInventory(committedFile("inventory", root))
   const nodes = new Map<string, { pageId: string; setName: string }>()
   for (const component of inventory.components) {
     nodes.set(component.nodeId, { pageId: component.pageId, setName: component.nodeId })
@@ -152,8 +150,8 @@ function inventoryNodes(root: string): Map<string, { pageId: string; setName: st
 }
 
 function implementedTargets(root: string, pageId: string): string[] {
-  const inventory = readJson(path.join(root, INVENTORY_PATH), InventorySchema)
-  const registry = readJson(path.join(root, REGISTRY_PATH), RegistrySchema)
+  const inventory = readInventory(committedFile("inventory", root))
+  const registry = readRegistry(committedFile("registry", root))
   return inventory.components
     .filter((component) => component.pageId === pageId)
     .filter((component) => registry.entries[component.nodeId]?.status === "implemented")

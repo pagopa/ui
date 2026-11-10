@@ -3,7 +3,8 @@ import { UsageError } from "../lib/command.ts"
 
 import type { Workspace } from "../adapters/workspace.ts"
 import type { ParityCase } from "../schemas/parity.ts"
-import { buildCases, fanInCounts, loadCaseFile, loadRegistry } from "./cases.ts"
+import { committedFile, readCases, readRegistry } from "../records/committed.ts"
+import { buildCases, fanInCounts } from "./cases.ts"
 import { formatCoverage, loadCoveragePopulations } from "./coverage.ts"
 
 import { corpusPath, inventoryFileKey, inventoryNodes, statusesFrom } from "./context.ts"
@@ -22,7 +23,7 @@ function printCoverage(
   const populations = loadCoveragePopulations(
     workspace,
     inventoryNodes(workspace),
-    loadRegistry(workspace.path("src/catalog/figma/registry.json")),
+    readRegistry(committedFile("registry", workspace.root)),
     corpus,
     statuses,
     undefined,
@@ -94,7 +95,7 @@ export function queue(workspace: Workspace, options: QueueOptions = {}): ParityO
     cases = filteredCases(cases, (item) => wanted.has(item.nodeId))
   }
   const path_ = corpusPath(workspace, options.casesFile)
-  const corpus = loadCaseFile(path_)
+  const corpus = readCases(path_) ?? []
   const mapped = new Set(corpus.map((entry) => entry.nodeId))
   if (options.coverage || options.uncovered) {
     return printCoverage(workspace, options, path_, corpus)

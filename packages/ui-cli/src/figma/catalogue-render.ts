@@ -4,10 +4,11 @@ import { declaredDevices, deviceAxes, type DeviceStats } from "./devices.ts"
 import { implementationOrder, type DeltaNode, type SnapshotDelta } from "./snapshot.ts"
 import { deltaWorkSet } from "./work-set.ts"
 import { EVIDENCE_DIR, evidencePaths, loadManifest } from "../parity/evidence.ts"
-import { loadCaseFile } from "../parity/cases.ts"
+import { committedFile, readCases } from "../records/committed.ts"
 import type { Workspace } from "../adapters/workspace.ts"
 import type { DevicePolicy } from "../schemas/devices.ts"
 import type { InventoryNode, Registry } from "../schemas/catalogue.ts"
+import type { ParityCase } from "../schemas/parity.ts"
 
 export interface CatalogueCoverageSummary {
   sets: number
@@ -98,10 +99,10 @@ function renderDevices(
 type NodeEvidence = { ids: string[]; links: Array<{ id: string; href: string }> }
 
 function evidenceReader(workspace: Workspace, evidenceBase?: string) {
-  let casesCache: ReturnType<typeof loadCaseFile> | undefined
+  let casesCache: ParityCase[] | undefined
   let manifestCache: ReturnType<typeof loadManifest> | null | undefined
   return (nodeId: string): NodeEvidence => {
-    casesCache ??= loadCaseFile(workspace.path("src/catalog/figma/parity-cases.json"))
+    casesCache ??= readCases(committedFile("cases", workspace.root)) ?? []
     const corpus = casesCache.filter((entry) => entry.nodeId === nodeId)
     if (!corpus.length) return { ids: [], links: [] }
     if (manifestCache === undefined) {

@@ -2,6 +2,7 @@ import fs from "node:fs"
 import path from "node:path"
 import type { Workspace } from "../../adapters/workspace.ts"
 import { writeJson } from "../../lib/json.ts"
+import { forgetCommitted } from "../../records/committed.ts"
 import type { CatalogueReport } from "../sync.ts"
 import { formatDeviceLine } from "../devices.ts"
 import { formatSurfaceLine } from "../surface.ts"
@@ -20,6 +21,7 @@ function writePendingFiles(
 ): void {
   for (const [file, data] of context.pendingWrites) {
     writeJson(path.join(root, file), data)
+    forgetCommitted(path.join(root, file))
     const line = `validated and written: ${file}`
     if (plan) err.push(line)
     else out.push(line)

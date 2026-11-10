@@ -44,7 +44,7 @@ function fixture(entries = cases) {
   fs.mkdirSync(path.join(root, "src/catalog/figma"), { recursive: true })
   fs.writeFileSync(
     path.join(root, "src/catalog/figma/inventory.json"),
-    JSON.stringify({ fileKey: "fixture", components: [] }),
+    JSON.stringify({ fileKey: "fixture", syncedAt: "2024-01-01T00:00:00Z", components: [] }),
   )
   fs.copyFileSync(
     path.join(TOOLING_ROOT, "../pagopa-ui/src/catalog/figma/device-policy.json"),

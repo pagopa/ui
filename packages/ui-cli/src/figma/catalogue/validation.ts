@@ -1,11 +1,11 @@
 import type { Workspace } from "../../adapters/workspace.ts"
 import { readJson } from "../../lib/json.ts"
+import { committedFile, readCases, readDevicePolicy } from "../../records/committed.ts"
 import { parseSchema } from "../../lib/validate.ts"
 import {
   DEVICE_EXCEPTIONS_PATH,
   deviceCoverage,
   isDraftCase,
-  loadCaseFile,
   loadDeviceExceptions,
   validateCaseFile,
 } from "../../parity/cases.ts"
@@ -19,7 +19,7 @@ import {
   type Registry,
 } from "../../schemas/catalogue.ts"
 import type { DevicePolicy } from "../../schemas/devices.ts"
-import { checkDevicePolicy, loadDevicePolicy, type DeviceStats } from "../devices.ts"
+import { checkDevicePolicy, type DeviceStats } from "../devices.ts"
 import { fileKeyFromSource } from "../snapshot.ts"
 import {
   checkPageSurface,
@@ -54,8 +54,6 @@ export type SurfaceValidation = ValidationResult & {
   uncensused: SurfaceUncensused[]
 }
 
-const DEVICE_POLICY_PATH = "src/catalog/figma/device-policy.json"
-
 function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error)
 }
@@ -86,7 +84,7 @@ export function validateDeviceVocabulary(
   nodes: InventoryNode[],
 ): DeviceValidation {
   try {
-    const policy = loadDevicePolicy(workspace.path(DEVICE_POLICY_PATH))
+    const policy = readDevicePolicy(committedFile("device-policy", workspace.root))
     const result = checkDevicePolicy(policy, nodes)
     return { policy, stats: result.stats, errors: result.errors, warnings: result.warnings }
   } catch (error) {
@@ -102,7 +100,7 @@ export function validateDeviceCases(
 ): { result: ValidationResult; stats: CaseStats | null } {
   if (!policy) return { result: { errors: [], warnings: [] }, stats: null }
   try {
-    const cases = loadCaseFile(workspace.path("src/catalog/figma/parity-cases.json"))
+    const cases = readCases(committedFile("cases", workspace.root)) ?? []
     const verdict = validateCaseFile(workspace, cases, { registry, nodes, policy })
     return {
       result: {
@@ -131,7 +129,7 @@ export function validatePageSurface(
 ): SurfaceValidation {
   try {
     const census = surface ?? loadPageSurface(workspace.path(PAGE_SURFACE_PATH))
-    const cases = policy ? loadCaseFile(workspace.path("src/catalog/figma/parity-cases.json")) : []
+    const cases = policy ? (readCases(committedFile("cases", workspace.root)) ?? []) : []
     const result = checkPageSurface(census, {
       nodes,
       registry,
@@ -183,7 +181,7 @@ export function validateDeviceCoverage(
   const errors: string[] = []
   const warnings: string[] = []
   try {
-    const cases = loadCaseFile(workspace.path("src/catalog/figma/parity-cases.json"))
+    const cases = readCases(committedFile("cases", workspace.root)) ?? []
     const exceptions = loadDeviceExceptions(workspace.path(DEVICE_EXCEPTIONS_PATH))
     const coverage = deviceCoverage({ policy, nodes, registry, cases, statuses: ["implemented"] })
     const byNode = new Map(coverage.all.map((row) => [row.nodeId, row]))

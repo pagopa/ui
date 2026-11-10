@@ -24,6 +24,10 @@ _Avoid_: frame, artboard, screen
 The published export of the Figma file. Publication is what puts a drawing in scope.
 _Avoid_: export (for the library), catalogue, design system
 
+**Committed records**:
+The documents the repository reviews in git — the inventory, the registry, the device vocabulary and the reviewed cases — each with one default path and one read posture. A live export passed by flag is not one of them.
+_Avoid_: catalogue, data files, fixtures
+
 **Inventory**:
 The committed record of the published nodes and their source facts at a pinned Figma version.
 _Avoid_: snapshot (for the committed record), catalogue
@@ -31,6 +35,10 @@ _Avoid_: snapshot (for the committed record), catalogue
 **Registry**:
 The per-node decision: status, implementation target, linked story and the binding note.
 _Avoid_: mapping, index
+
+**Record reader**:
+The one module a committed record is read through: it owns the default path, the parse posture, the error and the memory keyed by the resolved file.
+_Avoid_: loader, repository, catalogue store
 
 **Status**:
 The review state of a node: implemented, pending, excluded, or mocked.
@@ -55,6 +63,10 @@ _Avoid_: test, scenario, sample
 **Draft case**:
 A proposed case whose mapping has not been reviewed; it never counts as coverage.
 _Avoid_: proposal (when meaning coverage), pending case
+
+**Case corpus**:
+The reviewed cases read as one value, with the judgments they make — the registry keeps the decision, the corpus keeps the comparison.
+_Avoid_: case file (for the value), case list, catalogue
 
 **Coverage**:
 The declared devices of a node that a reviewed case covers.

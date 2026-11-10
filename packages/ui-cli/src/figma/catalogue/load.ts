@@ -17,7 +17,13 @@ import {
   NoteLengthBaselineSchema,
 } from "../../schemas/catalogue.ts"
 import { parseExceptions } from "./source.ts"
-import { loadCatalogueState, INVENTORY_PATH } from "../catalogue-state.ts"
+import { loadCatalogueState } from "../catalogue-state.ts"
+import {
+  COMMITTED_FILES,
+  committedFile,
+  readInventory,
+  readRegistry,
+} from "../../records/committed.ts"
 import {
   compareSnapshots,
   fileKeyFromSource,
@@ -85,12 +91,10 @@ export type CatalogueLoadResult = {
   err?: string[]
 }
 
-export function loadCatalogueBase(workspace: Workspace): CatalogueBase | null {
-  const state = loadCatalogueState(workspace)
-  const errors = [...state.errors]
-  if (!state.inventory || !state.registry) return null
-  const inventory = state.inventory
-  const registry = state.registry
+export function loadCatalogueBase(workspace: Workspace): CatalogueBase {
+  const errors: string[] = []
+  const inventory = readInventory(committedFile("inventory", workspace.root))
+  const registry = readRegistry(committedFile("registry", workspace.root))
   const committed = inventory.components
   validateCommittedContracts(workspace, inventory, committed, errors)
   const evidenceExceptions =
@@ -129,12 +133,14 @@ function validateCommittedContracts(
     for (const node of normalized) {
       if (byId.get(node.nodeId)?.contractFingerprint !== node.contractFingerprint) {
         errors.push(
-          `${INVENTORY_PATH}: contract fingerprint mismatch for ${node.nodeId} — the source contract changed, so re-read the node with \`pnpm ui-cli update inventory --triage\` and run \`pnpm nx run pagopa-ui:check:catalogue\``,
+          `${COMMITTED_FILES.inventory}: contract fingerprint mismatch for ${node.nodeId} — the source contract changed, so re-read the node with \`pnpm ui-cli update inventory --triage\` and run \`pnpm nx run pagopa-ui:check:catalogue\``,
         )
       }
     }
   } catch (error) {
-    errors.push(`${INVENTORY_PATH}: ${error instanceof Error ? error.message : String(error)}`)
+    errors.push(
+      `${COMMITTED_FILES.inventory}: ${error instanceof Error ? error.message : String(error)}`,
+    )
   }
 }
 
@@ -402,14 +408,6 @@ export async function loadCatalogue(
     }
   }
   const base = loadCatalogueBase(workspace)
-  if (!base) {
-    return {
-      context: null,
-      exitCode: 1,
-      out: [],
-      err: initial.errors.map((error) => `error: ${error}`),
-    }
-  }
   const snapshot = await liveSnapshot(
     workspace,
     options,

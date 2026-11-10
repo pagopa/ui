@@ -1,7 +1,6 @@
 import type { Workspace } from "../adapters/workspace.ts"
 import { UsageError } from "../lib/command.ts"
-import { readJson } from "../lib/json.ts"
-import { InventorySchema } from "../schemas/catalogue.ts"
+import { committedFile, readInventory } from "../records/committed.ts"
 import { readComments, refreshComments, threadsForNode } from "./comments.ts"
 import type { CommentsSnapshot } from "../schemas/rules.ts"
 
@@ -33,7 +32,7 @@ export async function commentsReport(
   if (!snapshot)
     throw new UsageError(".figma/comments.json is missing: run figma comments --refresh")
   if (!options.nodeId) return { snapshot, refreshed: false }
-  const inventory = readJson(workspace.path("src/catalog/figma/inventory.json"), InventorySchema)
+  const inventory = readInventory(committedFile("inventory", workspace.root))
   const component = inventory.components.find(
     (entry) =>
       entry.nodeId === options.nodeId ||

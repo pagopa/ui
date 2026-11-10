@@ -3,7 +3,8 @@ import type { Workspace } from "../adapters/workspace.ts"
 import { readJson } from "../lib/json.ts"
 import type { InventoryNode } from "../schemas/catalogue.ts"
 import type { DevicePolicy } from "../schemas/devices.ts"
-import { loadDevicePolicy, requiredDevices } from "./devices.ts"
+import { committedFile, readDevicePolicy } from "../records/committed.ts"
+import { requiredDevices } from "./devices.ts"
 import { buildBrief, formatBrief, readBriefSources, type NodeBrief } from "./brief.ts"
 import {
   compareSnapshots,
@@ -119,8 +120,8 @@ export function buildBriefQueue(workspace: Workspace, options: BriefQueueOptions
   // One read of everything a brief needs, and one of the device policy: a queue
   // of n nodes must not walk the workspace n times.
   const sources = readBriefSources(workspace)
-  const policyFile = workspace.path("src/catalog/figma/device-policy.json")
-  const policy = fs.existsSync(policyFile) ? loadDevicePolicy(policyFile) : null
+  const policyFile = committedFile("device-policy", workspace.root)
+  const policy = fs.existsSync(policyFile) ? readDevicePolicy(policyFile) : null
   const { inventory, registry } = sources
   const pending = new Set(
     Object.entries(registry.entries)

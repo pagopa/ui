@@ -17,7 +17,8 @@ import {
   type Registry,
 } from "../schemas/catalogue.ts"
 import { NodeIdSchema } from "../schemas/common.ts"
-import { loadDevicePolicy, variantDevice } from "./devices.ts"
+import { committedFile, readDevicePolicy } from "../records/committed.ts"
+import { variantDevice } from "./devices.ts"
 import type { DevicePolicy } from "../schemas/devices.ts"
 
 const AnyRecordSchema = z.record(z.string(), z.unknown())
@@ -432,7 +433,7 @@ export function normalizeLive(
   const policy =
     options.policy ??
     (options.workspace
-      ? loadDevicePolicy(options.workspace.path("src/catalog/figma/device-policy.json"))
+      ? readDevicePolicy(committedFile("device-policy", options.workspace.root))
       : undefined)
   if (!policy) throw new Error("normalizeLive needs a workspace or explicit device policy")
   let list: unknown[]

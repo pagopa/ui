@@ -23,5 +23,8 @@ export class CheckFailure extends Error {
 export function exitCodeOf(error: unknown): number {
   if (error instanceof UsageError) return error.exitCode
   if (error instanceof CheckFailure) return error.exitCode
+  // Everything else — a committed record that cannot be read included — is the
+  // repository's state, not a mistyped command: the run fails and names what it
+  // could not read. No flag repairs it, so it never exits 2.
   return 1
 }

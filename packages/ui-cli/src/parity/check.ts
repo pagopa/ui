@@ -2,7 +2,8 @@ import type { Workspace } from "../adapters/workspace.ts"
 import { requiredDevices } from "../figma/devices.ts"
 import { UsageError } from "../lib/command.ts"
 import type { ParityCase } from "../schemas/parity.ts"
-import { caseIdFor, findCase, loadCaseFile, saveCase } from "./cases.ts"
+import { readCases } from "../records/committed.ts"
+import { caseIdFor, findCase, saveCase } from "./cases.ts"
 import { formatResult } from "./diff.ts"
 import { checkCaseEvidence } from "./evidence.ts"
 import { capture as captureStory } from "./render.ts"
@@ -60,7 +61,7 @@ export async function check(
   let spec
   let caseEntry: ParityCase | undefined
   if (caseId) {
-    caseEntry = findCase(loadCaseFile(path_), String(caseId))
+    caseEntry = findCase(readCases(path_) ?? [], String(caseId))
     spec = specFromCase(caseEntry, options)
     if (!spec.storyId)
       throw new UsageError(`${caseId}: the case declares no storyId and none was passed`)
@@ -164,7 +165,7 @@ async function checkDevices(
   const out: string[] = []
   const err: string[] = []
   const path_ = corpusPath(workspace, options.casesFile)
-  const corpus = loadCaseFile(path_)
+  const corpus = readCases(path_) ?? []
   const inventory = inventoryNode(workspace, nodeId)
   if (!inventory) throw new UsageError(`${nodeId} is not in inventory.json`)
   const devices = requiredDevices(devicePolicy(workspace), inventory)

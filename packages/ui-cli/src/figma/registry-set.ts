@@ -3,8 +3,12 @@ import type { Workspace } from "../adapters/workspace.ts"
 import { CheckFailure, UsageError } from "../lib/command.ts"
 import { readJson, writeJson } from "../lib/json.ts"
 import {
-  InventorySchema,
-  RegistrySchema,
+  committedFile,
+  forgetCommitted,
+  readInventory,
+  readRegistry,
+} from "../records/committed.ts"
+import {
   RegistryEntrySchema,
   PageSurfaceSchema,
   NoteLengthBaselineSchema,
@@ -16,7 +20,6 @@ import {
 import { requiresReason, surfaceDecision } from "./surface-decision.ts"
 import { syncCatalogue } from "./sync.ts"
 
-const registryPath = "src/catalog/figma/registry.json"
 const surfacePath = "src/catalog/figma/page-surface.json"
 export type RegistryOptions = {
   nodeId: string
@@ -63,12 +66,14 @@ function buildEntry(old: RegistryEntry | undefined, options: RegistryOptions): R
 }
 
 export async function setRegistry(workspace: Workspace, options: RegistryOptions) {
-  const inventory = readJson(workspace.path("src/catalog/figma/inventory.json"), InventorySchema)
+  const inventory = readInventory(committedFile("inventory", workspace.root))
   const node = inventory.components.find((item) => item.nodeId === options.nodeId)
   if (!node) throw new UsageError(`${options.nodeId} is not in the inventory`)
   if (options.note && options.note.length > NOTE_LENGTH_LIMIT)
     throw new CheckFailure(`note exceeds ${NOTE_LENGTH_LIMIT} characters`)
-  const registry = readJson(workspace.path(registryPath), RegistrySchema)
+  const registryFile = committedFile("registry", workspace.root)
+  // A copy: the remembered read stays the file on disk until the write forgets it.
+  const registry = structuredClone(readRegistry(registryFile))
   const old = registry.entries[node.nodeId]
   const entry = buildEntry(old, options)
   registry.entries[node.nodeId] = entry
@@ -95,7 +100,8 @@ export async function setRegistry(workspace: Workspace, options: RegistryOptions
     ? loweredNoteLengthBaseline(registry, readJson(baselineFile, NoteLengthBaselineSchema))
     : null
   if (!options.dryRun) {
-    writeJson(workspace.path(registryPath), registry)
+    writeJson(registryFile, registry)
+    forgetCommitted(registryFile)
     if (identity && surface) writeJson(surfaceFile, surface)
     if (baseline) writeJson(baselineFile, baseline)
   }
