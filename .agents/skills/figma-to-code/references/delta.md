@@ -2,14 +2,16 @@
 
 ## Steps
 
-1. `pnpm ui-cli figma status` and `pnpm ui-cli figma plan` name what moved: added,
-   changed, removed, unmapped. A plan is evidence, not a decision.
+1. `pnpm ui-cli figma status` and `pnpm ui-cli figma plan` name what moved.
+   A plan is evidence, not a decision.
 2. `pnpm ui-cli figma brief --node <nodeId>`, or `--queue` for the delta's nodes
-   in dependency order. The queue names what it omitted; `--refresh` re-reads
-   rules and comments when their versions differ from the pin.
+   in dependency order. It is scoped to the delta and names what it omitted and
+   truncated. Report its `implementationOrder` and both counts; a higher
+   `--limit` reads more of the delta. `--refresh` when rules or comments moved
+   since the pin.
 3. Decide per node: implement, exclude with a reason, or leave pending with its
-   request or blocker. A judgement call the source does not answer is a design
-   request, not an invention.
+   request path or blocker. A judgement call the source does not answer is a
+   design request, not an invention.
 4. Write the catalogue: inventory, registry entry, guide, stories, exceptions.
    Statuses and what each one promises are in
    [catalogue/statuses.md](catalogue/statuses.md). A note states the residues the

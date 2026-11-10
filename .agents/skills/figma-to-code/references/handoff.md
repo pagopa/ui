@@ -27,10 +27,9 @@ requested node has its delta class, target, constraints and devices.
 ## Work
 
 Follow the handoff's `implementationOrder`, dependencies first, one node at a
-time. The decision procedure is `delta.md`, step 3.
-Use `pnpm ui-cli figma brief --queue --refresh` for the delta's own briefs —
-the read is scoped to it and names what it omitted; report that count and never
-widen it — and the node brief again when a node's context changes.
+time; `delta.md` holds the queue read and the decision procedure.
+Use `pnpm ui-cli figma brief --queue --refresh` for the delta's own briefs, and
+the node brief again when a node's context changes.
 
 Record decisions through `figma registry set`
 (`catalogue/statuses.md`). Cases, rules and guides travel
