@@ -256,9 +256,14 @@ devices. `parity align` prints the exact check command for each declared device.
 `pnpm ui-cli figma status` reports whether a token is available and its source,
 without revealing it. Add `--require-token` to live-capable commands to fail
 with a usage error when no token can be resolved. Its `nextCommand` names the
-next step the whole state asks for, not only the delta's: rules drift, the page
-census, unreadable records, open requests, open comments and unaccounted
-registry entries each take precedence over "nothing to align". `requests`
+next step the whole state asks for, not only the delta's: stale or pending
+rules, uncensused pages (named, from the inventory against the census),
+unreadable records, open requests, open comments, pending census identities,
+pending registry entries and unaccounted nodes each take precedence over
+"nothing to align". A pending census identity is routed to a review and
+`figma registry set`, never to `figma:triage`, which preserves the decision it
+reopens; unaccounted nodes are routed to `check:catalogue`, because the
+node-brief queue selects registry-pending entries only. `requests`
 counts the `open` records and lists the `unreadable` ones — a record whose
 `Status:` line no reader can parse — so a mistyped status is reported instead of
 being counted as answered.

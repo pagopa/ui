@@ -98,6 +98,14 @@ test("closing an open record rewrites the status and fills the decision", () => 
   assert.match(updated, /## Context\n\nThe card disagrees with the drawing\./)
 })
 
+test("a decision containing replacement patterns is written literally", () => {
+  const decision = "Keep $$ and $& and $1 in the example."
+  const updated = answeredRecordSource(record("- Status: open", "\n## Decision\n"), decision)
+  const parsed = readDesignRequestRecord(updated)
+  assert.equal(parsed.state, "answered")
+  assert.equal(parsed.decision, decision)
+})
+
 test("closing a record with no Decision section refuses rather than losing the answer", () => {
   assert.throws(
     () => answeredRecordSource(record("- Status: open"), "Use 2px."),
@@ -192,5 +200,15 @@ test("requestPointer finds the pointers under the folder it is given, and no oth
   assert.equal(
     requestPointer("docs/design-requests/").test("docs/design-requests/2026-11-08-ring.md"),
     true,
+  )
+  // A folder that starts with a non-word character still follows a space.
+  assert.equal(
+    requestPointer("./docs/questions").test("Design request: ./docs/questions/2026-11-08-ring.md"),
+    true,
+  )
+  // The same folder does not match inside a longer path.
+  assert.equal(
+    requestPointer("docs/design-requests").test("Design request: other/docs/design-requests/x.md"),
+    false,
   )
 })

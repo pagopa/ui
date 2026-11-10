@@ -527,7 +527,10 @@ export function mark(
     )
   }
 
-  if (card.guide) {
+  // A card keeps the guide of the disposition it came from: only the
+  // dispositions that need one validate it, like the imported-card gate in
+  // `check`.
+  if (machine.requires.includes("guide") && card.guide) {
     const guideFile = path.join(workspaceRoot, card.guide)
     if (!fs.existsSync(guideFile)) throw new UsageError(`${card.guide} does not exist`)
     const text = fs.readFileSync(guideFile, "utf8")

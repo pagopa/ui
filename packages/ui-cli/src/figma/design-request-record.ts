@@ -87,7 +87,12 @@ export function answeredRecordSource(source: string, decision: string): string {
     source
       .replace(STATUS_LINE, "- Status: answered")
       // `m` matters: without it `^` only matches at the start of the record, the
-      // replacement never fires and the decision is silently dropped.
-      .replace(/(^## Decision[ \t]*\n)[\s\S]*$/m, `$1\n${decision.trim()}\n`)
+      // replacement never fires and the decision is silently dropped. The
+      // callback matters too: as a replacement string, `$&`, `$1` and `$$` in
+      // the decision would be read as patterns and rewrite the answer.
+      .replace(
+        /(^## Decision[ \t]*\n)[\s\S]*$/m,
+        (_match, heading: string) => `${heading}\n${decision.trim()}\n`,
+      )
   )
 }

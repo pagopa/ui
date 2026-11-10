@@ -19,7 +19,15 @@ import { RULES_PATH, plan as planRules, readLedger, readRulesSnapshot } from "./
 import { COMMENTS_SNAPSHOT_PATH, readComments } from "./comments.ts"
 import { CONFIG_PATH, requestsFolder, requestPointer } from "./config.ts"
 import { readDesignRequestRecord } from "./design-request-record.ts"
-import { formatSurfaceLine, loadPageSurface, surfaceSummary, type SurfaceStats } from "./surface.ts"
+import {
+  PAGE_SURFACE_PATH,
+  formatSurfaceLine,
+  loadPageSurface,
+  surfaceSummary,
+  surfaceUncensused,
+  type SurfaceStats,
+  type SurfaceUncensused,
+} from "./surface.ts"
 
 const INVENTORY_PATH = "src/catalog/figma/inventory.json"
 const REGISTRY_PATH = "src/catalog/figma/registry.json"
@@ -86,7 +94,12 @@ export type StatusReport = {
     error: string | null
   }
   pending: PendingRow[]
-  surface: { stats: SurfaceStats | null; error: string | null }
+  surface: {
+    stats: SurfaceStats | null
+    /** Pages the inventory publishes on and the census never read. */
+    uncensused: SurfaceUncensused[]
+    error: string | null
+  }
   requests: {
     path: string | null
     open: number
@@ -147,9 +160,16 @@ function designRequests(workspace: Workspace): StatusReport["requests"] {
  * rules were stale, the census owed decisions, a design request sat open and
  * the registry carried a pending node: the report's own counters said work was
  * waiting and `next` said there was none.
+ *
+ * A rung names the command that moves its counter. Two counters are easy to
+ * mistake for `figma:triage`: the census coverage is read from the pages the
+ * inventory publishes on and `surface sync` writes, and a pending census
+ * identity is moved by the registry status (`registry set`), never by triage,
+ * which preserves the decision it reopens.
  */
-function nextCommand(report: Omit<StatusReport, "next">): string {
+export function nextCommand(report: Omit<StatusReport, "next">): string {
   const run = (target: string): string => `pnpm nx run pagopa-ui-cli:${target}`
+  const registrySet = "pnpm ui-cli figma registry set <nodeId> --status implemented|mocked|excluded"
   if (!report.token.present)
     return "export FIGMA_TOKEN in the shell that runs the session, then re-run figma:status -- --live"
   if (report.inventory.error)
@@ -169,22 +189,38 @@ function nextCommand(report: Omit<StatusReport, "next">): string {
   if (report.rules.error) return `restore the design-rules ledger: ${report.rules.error}`
   if (report.rules.stale)
     return `${run("figma:rules")} (${report.rules.stale} reviewed rule(s) trail the library export)`
+  if (report.rules.pending)
+    return `${run("figma:rules")} (${report.rules.pending} rule(s) still carry a pending disposition)`
   if (report.surface.error) return `restore the page census: ${report.surface.error}`
-  const censused = report.surface.stats
-  if (censused && censused.pagesPublished && censused.pages !== censused.pagesPublished)
-    return `${run("figma:triage")} (the census covers ${censused.pages} of ${censused.pagesPublished} published page(s))`
-  if (censused?.pending)
-    return `${run("figma:triage")} (${censused.pending} censused identity(ies) still carry a pending decision)`
+  const uncensused = report.surface.uncensused
+  if (uncensused.length) {
+    const named = uncensused
+      .slice(0, 3)
+      .map((page) => `${page.pageName || page.pageId} (${page.nodes})`)
+      .join(", ")
+    return (
+      `pnpm ui-cli figma surface sync --page <pageId> --rest ` +
+      `(${uncensused.length} published page(s) are not censused: ${named}${uncensused.length > 3 ? ", …" : ""})`
+    )
+  }
   if (report.requests.unreadable.length)
     return `set "- Status: open|answered" in ${report.requests.unreadable.join(", ")} — ${report.requests.path ?? report.requests.declared} records without a readable status are not counted`
   if (report.requests.open)
     return `answer the ${report.requests.open} open design request(s) in ${report.requests.path ?? report.requests.declared} before aligning their nodes`
   if (report.comments.open)
     return `${run("figma:comments")} (${report.comments.open} open Figma comment(s), ${report.comments.mappedOpen} on a mapped node)`
-  const owed = report.registry.pending + report.registry.unaccounted
-  if (owed)
-    return `${run("figma:brief")} --queue (${report.registry.pending} pending, ${report.registry.unaccounted} unaccounted)`
-  return "nothing to align: the file matches the inventory, the census is decided, the ledger is current and no node is pending"
+  const census = report.surface.stats
+  if (census?.pending) {
+    const review = report.registry.pending
+      ? `${run("figma:brief")} --queue`
+      : `${run("figma:brief")} --node <nodeId>`
+    return `${review}, then ${registrySet} (${census.pending} censused identity(ies) still carry a pending decision; figma:triage preserves it)`
+  }
+  if (report.registry.pending)
+    return `${run("figma:brief")} --queue (${report.registry.pending} pending node(s) need a brief)`
+  if (report.registry.unaccounted)
+    return `pnpm nx run pagopa-ui:check:catalogue (${report.registry.unaccounted} unaccounted node(s) need a registry entry: ${registrySet})`
+  return "nothing to align: the file matches the inventory, the census is decided, the ledger is current and no node is pending or unaccounted"
 }
 
 function statusLine(name: string, value: string): string {
@@ -521,16 +557,17 @@ function commentsStatus(
 
 function surfaceStatus(workspace: Workspace, inventory: Inventory | null): StatusReport["surface"] {
   try {
+    const surface = loadPageSurface(workspace.path(PAGE_SURFACE_PATH))
+    const nodes = inventory?.components ?? []
     return {
-      stats: surfaceSummary(
-        loadPageSurface(workspace.path("src/catalog/figma/page-surface.json")),
-        inventory?.components ?? [],
-      ),
+      stats: surfaceSummary(surface, nodes),
+      uncensused: surfaceUncensused(surface, nodes),
       error: null,
     }
   } catch (error) {
     return {
       stats: null,
+      uncensused: [],
       error: error instanceof Error ? error.message.split("\n")[0] : String(error),
     }
   }

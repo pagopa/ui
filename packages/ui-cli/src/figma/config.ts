@@ -101,5 +101,5 @@ export function escapeRegExp(value: string): string {
  */
 export function requestPointer(folder: string): RegExp {
   const escaped = escapeRegExp(folder.replace(/\/$/, ""))
-  return new RegExp(`\\b${escaped}/[\\w./-]+\\.md\\b`, "g")
+  return new RegExp(`(?<![\\w./-])${escaped}/[\\w./-]+\\.md\\b`, "g")
 }
