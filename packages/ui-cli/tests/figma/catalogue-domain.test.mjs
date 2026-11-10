@@ -53,6 +53,61 @@ function baseFiles() {
   }
 }
 
+// A one-node refresh of the fixture, so a note's fate is all the test reads.
+function renewNote(files, entry, prefix) {
+  const tree = fixtureTree(files, prefix)
+  try {
+    const workspace = workspaceAt(tree.root)
+    const liveNode = { ...node, name: "Control v2" }
+    const report = prepareCatalogueRefresh(workspace, {
+      inventory: loadCatalogueState(workspace).inventory,
+      registry: { entries: { "1:1": entry }, bulkRules: [] },
+      live: [liveNode],
+      delta: {
+        added: [],
+        removed: [],
+        changed: [liveNode],
+        changedVariants: [],
+        renamed: [],
+        moved: [],
+        baseline: [],
+        affected: [],
+      },
+      evidenceExceptions: {},
+      noteBaseline: null,
+    })
+    return { note: report.registry.entries["1:1"].note, notices: report.notices }
+  } finally {
+    tree.dispose()
+  }
+}
+
+test("renewing a note that holds only the renewal line loses nothing and says nothing", () => {
+  const previous =
+    "Figma delta 2026-01-01: review new/changed node or dependency before marking implemented"
+  const { note, notices } = renewNote(
+    baseFiles(),
+    { status: "implemented", note: previous },
+    "catalogue-renew-quiet-",
+  )
+  assert.match(note, /^Figma delta \d{4}-\d{2}-\d{2}:/)
+  assert.deepEqual(notices, [])
+})
+
+test("renewing a note keeps its open question and reports the text it discards", () => {
+  const { note, notices } = renewNote(
+    baseFiles(),
+    {
+      status: "implemented",
+      note: "Figma delta 2026-01-01: review new/changed node or dependency before marking implemented. Open design question: docs/design-requests/2026-01-02-ring.md. Depends on the card work.",
+    },
+    "catalogue-renew-residue-",
+  )
+  assert.match(note, /Open design question: docs\/design-requests\/2026-01-02-ring\.md$/)
+  assert.equal(notices.length, 1)
+  assert.match(notices[0], /^1:1 renewed: its note dropped "Depends on the card work" — /)
+})
+
 test("catalogue state loading reads the inventory and registry from the workspace", () => {
   const tree = fixtureTree(baseFiles(), "catalogue-state-")
   try {

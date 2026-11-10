@@ -14,6 +14,7 @@ import {
   designPaths,
   parseFigmaConfig,
   readFigmaConfig,
+  requestPointer,
 } from "../../src/figma/config.ts"
 
 // The test runs from packages/ui-cli, and the config lives in the design-system
@@ -175,4 +176,22 @@ test("a workspace with no config falls back on the default path", () => {
   } finally {
     fs.rmSync(root, { recursive: true, force: true })
   }
+})
+
+test("requestPointer finds the pointers under the folder it is given, and no others", () => {
+  const note =
+    "Open design question: docs/design-requests/2026-11-08-button-focus-ring.md. Also design/questions/2026-01-01-ring.md."
+  assert.deepEqual(
+    note.match(requestPointer("docs/design-requests"))?.map((match) => match),
+    ["docs/design-requests/2026-11-08-button-focus-ring.md"],
+  )
+  // A config that moved the requests moves every reader with it.
+  assert.deepEqual(note.match(requestPointer("design/questions")), [
+    "design/questions/2026-01-01-ring.md",
+  ])
+  // The trailing slash a config may carry does not double up.
+  assert.equal(
+    requestPointer("docs/design-requests/").test("docs/design-requests/2026-11-08-ring.md"),
+    true,
+  )
 })

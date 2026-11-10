@@ -91,7 +91,9 @@ available from the CLI:
   `close <record> --decision <text> --commit <sha>` records the answer and
   closes its issue. `open` input includes `slug`, `title`, `type`, `question`,
   `context`, `options`, `recommendation`, `ask`, and `when`; visual options
-  also include the preview captures.
+  also include the preview captures. Re-running `open` on a record that already
+  exists resumes it, and refuses when the input asks a different question than
+  the record's heading states.
 - `pnpm ui-cli figma surface sync --page <pageId> --input <tree.json>` refreshes
   the identity census from a saved page tree; `--rest` reads it from Figma.
 

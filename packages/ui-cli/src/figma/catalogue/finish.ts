@@ -6,6 +6,7 @@ import type { CatalogueReport } from "../sync.ts"
 import { formatDeviceLine } from "../devices.ts"
 import { formatSurfaceLine } from "../surface.ts"
 import { renderCatalogueDelta, renderCataloguePrBody } from "../catalogue-render.ts"
+import { designPaths, readFigmaConfig } from "../config.ts"
 import { formatCatalogueSummary, formatCoverageLine, renderCataloguePlan } from "./output.ts"
 import type { CatalogueContext } from "./context.ts"
 import type { CatalogueValidation } from "./validate.ts"
@@ -135,6 +136,7 @@ export function finishCatalogue(
         surfaceUncensused: validation.surfaceUncensused,
         deviceStats: validation.deviceStats,
         deviceCoverage: validation.deviceCoverage,
+        requests: designPaths(readFigmaConfig(workspace)).requests,
       }),
     )
     err.push(

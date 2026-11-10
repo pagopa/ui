@@ -110,8 +110,11 @@ export function configList(config: FigmaToolConfig, key: string): string[] {
  * readers scanned notes for the same shape, each with its own copy of the
  * folder, so a config that moved the requests left two of them scanning a path
  * that no longer exists.
+ *
+ * The folder is required for that reason: it belongs to `designPaths(...)` and a
+ * default would put a reader back on a path the config had moved away from.
  */
-export function requestPointer(folder: string = DEFAULT_REQUESTS_DIR): RegExp {
+export function requestPointer(folder: string): RegExp {
   const escaped = folder.replace(/\/$/, "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
   return new RegExp(`\\b${escaped}/[\\w./-]+\\.md\\b`, "g")
 }

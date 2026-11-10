@@ -11,7 +11,7 @@ import {
   openRecord,
   readDesignRequestRecord,
 } from "./design-request-record.ts"
-import { designPaths, readFigmaConfig, type DesignConfig } from "./config.ts"
+import { designPaths, readFigmaConfig } from "./config.ts"
 import { markRule } from "./rules-workflow.ts"
 
 const OptionSchema = z.strictObject({
@@ -43,10 +43,6 @@ const InputSchema = z.strictObject({
 
 export type DesignRequestInput = z.infer<typeof InputSchema>
 export type IssueCommand = (args: string[], cwd: string) => string
-
-function designConfig(workspace: Workspace): DesignConfig {
-  return designPaths(readFigmaConfig(workspace))
-}
 
 function parseInput(source: string): DesignRequestInput {
   const parsed = InputSchema.safeParse(JSON.parse(source))
@@ -262,7 +258,7 @@ export function openDesignRequest(
   resumed: boolean
 } {
   const input = parseInput(fs.readFileSync(inputFile, "utf8"))
-  const config = designConfig(workspace)
+  const config = designPaths(readFigmaConfig(workspace))
   const target = recordPath(workspace, config.requests, day, input.slug)
   // `gh issue create` runs before the record is written, so a run that dies
   // between the two leaves an issue with no record anywhere — nothing can
@@ -282,8 +278,10 @@ export function openDesignRequest(
     )
   // The record is the question, not a scratch file: a rerun whose input asks
   // something else would otherwise keep the old issue and write a note from the
-  // new input, leaving the two disagreeing about what is being asked.
-  if (existing && existing.title !== input.title)
+  // new input, leaving the two disagreeing about what is being asked. A record
+  // with no `# ` heading states no question to disagree with — an older or a
+  // hand-written record — so it resumes.
+  if (existing?.title && existing.title !== input.title)
     throw new UsageError(
       `design request record ${target.relative} asks "${existing.title}" — this input asks "${input.title}": edit the record, or open a new slug`,
     )

@@ -69,11 +69,13 @@ export function renderCataloguePlan(input: {
   surfaceUncensused: SurfaceUncensused[]
   deviceStats: DeviceStats | null
   deviceCoverage: unknown
+  /** The configured request folder: a note pointing elsewhere holds no pointer. */
+  requests: string
 }): string {
   const snapshot = input.live ?? input.committed
   const workSet = deltaWorkSet(input.delta, input.entries)
   const selected = new Set(workSet.queue)
-  const designRequest = requestPointer()
+  const designRequest = requestPointer(input.requests)
   const pending = Object.entries(input.entries)
     .filter(([, entry]) => entry.status === "pending")
     .map(([nodeId, entry]) => ({

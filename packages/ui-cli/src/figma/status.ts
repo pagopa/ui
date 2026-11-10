@@ -348,8 +348,14 @@ function inventoryStatus(workspace: Workspace): {
   return { report, inventory }
 }
 
-function pendingStatusRow(nodeId: string, name: string | null, target?: string, note?: string) {
-  const designRequest = requestPointer()
+function pendingStatusRow(
+  nodeId: string,
+  name: string | null,
+  requests: string,
+  target?: string,
+  note?: string,
+) {
+  const designRequest = requestPointer(requests)
   return {
     nodeId,
     name,
@@ -379,6 +385,7 @@ function registryStatus(
     error: null,
   }
   const pending: PendingRow[] = []
+  const requests = designPaths(readFigmaConfig(workspace)).requests
   try {
     const registry = readJson(workspace.path(REGISTRY_PATH), RegistrySchema)
     const pageRules = new Map(registry.bulkRules.map((rule) => [rule.pageId, rule]))
@@ -388,14 +395,16 @@ function registryStatus(
       const status = entry?.status ?? pageRules.get(node.pageId)?.status ?? "unaccounted"
       if (isCountedStatus(status)) counts[status] += 1
       if (status === "pending")
-        pending.push(pendingStatusRow(node.nodeId, node.name, entry?.target?.export, entry?.note))
+        pending.push(
+          pendingStatusRow(node.nodeId, node.name, requests, entry?.target?.export, entry?.note),
+        )
     }
     for (const [nodeId, entry] of Object.entries(registry.entries)) {
       if (
         entry.status === "pending" &&
         !inventory?.components.some((node) => node.nodeId === nodeId)
       ) {
-        pending.push(pendingStatusRow(nodeId, null, entry.target?.export, entry.note))
+        pending.push(pendingStatusRow(nodeId, null, requests, entry.target?.export, entry.note))
       }
     }
     pending.sort((left, right) =>

@@ -435,6 +435,36 @@ test("request open refuses a record that asks a different question", () => {
   }
 })
 
+test("request open resumes a record whose heading states no question", () => {
+  const untitled = resumedRecord.replace("# How should the focus ring appear?\n\n", "")
+  const fixture = fixtureTree(
+    {
+      ...files,
+      "docs/design-requests/2026-11-08-button-focus-ring.md": untitled,
+    },
+    "design-request-resume-untitled-",
+  )
+  let calls = 0
+  try {
+    const result = openDesignRequest(
+      workspaceAt(fixture.root),
+      path.join(fixture.root, "packages/ui-cli/request.json"),
+      "2026-11-08",
+      false,
+      () => {
+        calls++
+        return ""
+      },
+    )
+    // A record with no `# ` heading states nothing to disagree with, so the
+    // title guard has no evidence to refuse on and the run resumes.
+    assert.equal(calls, 0)
+    assert.equal(result.resumed, true)
+  } finally {
+    fixture.dispose()
+  }
+})
+
 test("request open refuses a record that names no issue", () => {
   const fixture = fixtureTree(
     {
