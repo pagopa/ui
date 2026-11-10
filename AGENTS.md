@@ -79,15 +79,11 @@ delta/triage, node briefs, page census, device parity and closing.
 the workspace gates. Automation never replaces source/render inspection or the
 person's delivery permissions.
 
-[`figma-align`](.github/extensions/figma-align/extension.mjs) runs a wave of that
-alignment as a Copilot CLI dynamic workflow: it analyses each node in parallel
-and read-only, pauses so the person can approve or edit
-`packages/pagopa-ui/.figma/align/<runId>/decisions.json`, then writes one node at
-a time and never commits. Start it only when the person asks:
-`run_dynamic_workflow { name: "figma-align", args: { waveSize: 3 } }`, or
-`{ nodes: ["<nodeId>"] }` for named nodes and `{ analyseOnly: true }` for the
-decisions alone. The skills stay the source of every rule; the extension's
-header documents the phases and the close-out checks it runs.
+For a drift pull request, start with `start-figma-to-code` (the
+`.github/prompts/start-figma-to-code.prompt.md` prompt names it): it resolves
+the open pull request, follows the shared handoff and aligns one node at a
+time, in the handoff's dependency order. The repository carries no
+orchestration layer: the session is the workflow.
 
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->
