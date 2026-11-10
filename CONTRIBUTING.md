@@ -458,10 +458,14 @@ pnpm nx run-many -p pagopa-ui -c=ci -t typecheck,fmt,lint,docs,check:catalogue,f
   pnpm nx run-many -p pagopa-ui-artwork,pagopa-ui-tokens,pagopa-ui-cli -c=ci -t typecheck,fmt,lint && \
   pnpm nx run pagopa-ui-artwork:test && pnpm nx run pagopa-ui-tokens:test && pnpm nx run pagopa-ui-cli:test && \
   pnpm nx run pagopa-ui-cli:check:rules && pnpm nx run pagopa-ui-cli:check:parity && \
-  pnpm nx run pagopa-ui-storybook:test:coverage && pnpm nx run pagopa-ui-storybook:test:stories && pnpm nx run pagopa-ui-storybook:build && pnpm nx run pagopa-ui:library:check
+  pnpm nx run pagopa-ui-storybook:test:coverage && pnpm nx run pagopa-ui-storybook:test:stories && pnpm nx run pagopa-ui-storybook:build && pnpm nx run pagopa-ui:library:check && \
+  pnpm nx format:check
 ```
 
 The `ci` configuration is the gate: `lint` and `fmt` check instead of writing.
+A project's `fmt` only reaches its own directory, so the chain ends with
+`nx format:check`, which formats the files no project owns — the workflows, the
+extensions and the tooling.
 `library:check` and the story passes need the Playwright browsers
 (`pnpm exec playwright install chromium firefox webkit`) and the built artifact;
 they are the slow end of the chain and run last. The `infra/` projects validate

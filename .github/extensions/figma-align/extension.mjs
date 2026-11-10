@@ -919,14 +919,19 @@ function checkpointProblems(edited, wave) {
     if (!nodeId) problems.push(`${where}: "nodeId" must be a non-empty string`)
     else counts.set(nodeId, (counts.get(nodeId) ?? 0) + 1)
     if (!DECISIONS.includes(entry.decision)) {
-      problems.push(`${label}: unknown decision ${JSON.stringify(entry.decision)} — use ${DECISIONS.join("|")}`)
+      problems.push(
+        `${label}: unknown decision ${JSON.stringify(entry.decision)} — use ${DECISIONS.join("|")}`,
+      )
     }
     if (entry.instructions !== undefined && typeof entry.instructions !== "string") {
-      problems.push(`${label}: "instructions" must be a string, not ${JSON.stringify(entry.instructions)}`)
+      problems.push(
+        `${label}: "instructions" must be a string, not ${JSON.stringify(entry.instructions)}`,
+      )
     }
   }
   for (const [nodeId, count] of counts) {
-    if (count > 1) problems.push(`${nodeId}: ${count} entries — a wave node takes exactly one decision`)
+    if (count > 1)
+      problems.push(`${nodeId}: ${count} entries — a wave node takes exactly one decision`)
   }
   for (const node of wave) {
     if (!counts.has(node.nodeId)) {
@@ -937,7 +942,8 @@ function checkpointProblems(edited, wave) {
   }
   const waveList = [...waved].join(", ")
   for (const nodeId of counts.keys()) {
-    if (!waved.has(nodeId)) problems.push(`${nodeId}: not in this wave (${waveList}) — remove the entry`)
+    if (!waved.has(nodeId))
+      problems.push(`${nodeId}: not in this wave (${waveList}) — remove the entry`)
   }
   return problems
 }
@@ -1074,9 +1080,7 @@ function skipProvenance(entry) {
 // rendering a line that reads like a verdict. The wording is what the report
 // always said; only the tag in front of it is new.
 function outcomeLines(node) {
-  const findings = node.findings?.length
-    ? `\n  - ${node.findings.join("\n  - ")}`
-    : ""
+  const findings = node.findings?.length ? `\n  - ${node.findings.join("\n  - ")}` : ""
   const notPassed = `- Independent verification: NOT passed${findings}\n- Case verdicts below are reported history, not a current verified result.`
   switch (node.outcome) {
     case "verified":
@@ -1709,7 +1713,13 @@ const figmaAlign = defineWorkflow({
         const proposals = wave.map((node, index) => {
           const analysis = analyses[index]
           return analysis
-            ? { ...analysis, nodeId: node.nodeId, name: node.name, proposedBy: "analysis", instructions: "" }
+            ? {
+                ...analysis,
+                nodeId: node.nodeId,
+                name: node.name,
+                proposedBy: "analysis",
+                instructions: "",
+              }
             : {
                 nodeId: node.nodeId,
                 name: node.name,
@@ -2025,75 +2035,53 @@ const figmaAlign = defineWorkflow({
         runId: ctx.runId,
         branch,
         wave: runWave,
-        nodes: refreshed.results.map((r, i) => {
-          if (r) {
-            const verdict = assessVerification({
-              nodeId: r.node.nodeId,
-              alignment: r.alignment,
-              verification: r.verification,
-              startContext: r.startContext,
-              endContext: r.endContext,
-              finalContext,
-              contextError: r.contextError ?? finalContextError,
-              writerFailure: r.writerFailure,
-              greenFixFailed,
-            })
-            return {
-              nodeId: r.node.nodeId,
-              name: r.node.name,
-              decision: r.decision.decision,
-              reason: r.decision.reason,
-              status: r.writerFailure ? "unknown" : (r.alignment?.status ?? "unknown"),
-              summary: r.alignment?.summary ?? "the writer returned no result",
-              cases:
-                (r.verification?.nodeId === r.node.nodeId && r.verification.cases) ||
-                r.alignment?.cases ||
-                [],
-              outcome: verdict.kind,
-              verified: verdict.verified,
-              findings: verdict.findings,
-              rules: r.alignment?.rules ?? r.decision.rules ?? [],
-              comments: r.alignment?.comments ?? r.decision.comments ?? [],
-              designRequest: r.alignment?.designRequest ?? "",
-              preview: r.alignment?.preview ?? "",
-              openPoints: r.alignment?.openPoints ?? [],
-              commands: r.alignment?.commands ?? [],
-              files: r.files,
+        nodes: refreshed.results
+          .map((r, i) => {
+            if (r) {
+              const verdict = assessVerification({
+                nodeId: r.node.nodeId,
+                alignment: r.alignment,
+                verification: r.verification,
+                startContext: r.startContext,
+                endContext: r.endContext,
+                finalContext,
+                contextError: r.contextError ?? finalContextError,
+                writerFailure: r.writerFailure,
+                greenFixFailed,
+              })
+              return {
+                nodeId: r.node.nodeId,
+                name: r.node.name,
+                decision: r.decision.decision,
+                reason: r.decision.reason,
+                status: r.writerFailure ? "unknown" : (r.alignment?.status ?? "unknown"),
+                summary: r.alignment?.summary ?? "the writer returned no result",
+                cases:
+                  (r.verification?.nodeId === r.node.nodeId && r.verification.cases) ||
+                  r.alignment?.cases ||
+                  [],
+                outcome: verdict.kind,
+                verified: verdict.verified,
+                findings: verdict.findings,
+                rules: r.alignment?.rules ?? r.decision.rules ?? [],
+                comments: r.alignment?.comments ?? r.decision.comments ?? [],
+                designRequest: r.alignment?.designRequest ?? "",
+                preview: r.alignment?.preview ?? "",
+                openPoints: r.alignment?.openPoints ?? [],
+                commands: r.alignment?.commands ?? [],
+                files: r.files,
+              }
             }
-          }
-          return {
-            nodeId: work[i].node.nodeId,
-            name: work[i].node.name,
-            decision: work[i].decision.decision,
-            reason: work[i].decision.reason,
-            summary: "",
-            status: "failed",
-            outcome: "not-reached",
-            verified: false,
-            findings: ["The pipeline failed before a verification result was available."],
-            rules: [],
-            comments: [],
-            designRequest: "",
-            preview: "",
-            openPoints: [],
-            commands: [],
-            files: [],
-          }
-        }).concat(
-          // A skip is an outcome too: it is reported, with where the proposal
-          // came from, instead of disappearing from the wave.
-          approved
-            .filter((entry) => entry.decision === "skip")
-            .map((entry) => ({
-              nodeId: entry.nodeId,
-              name: entry.name ?? entry.nodeId,
-              decision: entry.decision,
-              reason: entry.reason ?? "",
-              status: "skipped",
-              outcome: "skipped",
-              proposedBy: entry.proposedBy ?? "",
+            return {
+              nodeId: work[i].node.nodeId,
+              name: work[i].node.name,
+              decision: work[i].decision.decision,
+              reason: work[i].decision.reason,
+              summary: "",
+              status: "failed",
+              outcome: "not-reached",
               verified: false,
-              findings: [],
+              findings: ["The pipeline failed before a verification result was available."],
               rules: [],
               comments: [],
               designRequest: "",
@@ -2101,8 +2089,32 @@ const figmaAlign = defineWorkflow({
               openPoints: [],
               commands: [],
               files: [],
-            })),
-        ),
+            }
+          })
+          .concat(
+            // A skip is an outcome too: it is reported, with where the proposal
+            // came from, instead of disappearing from the wave.
+            approved
+              .filter((entry) => entry.decision === "skip")
+              .map((entry) => ({
+                nodeId: entry.nodeId,
+                name: entry.name ?? entry.nodeId,
+                decision: entry.decision,
+                reason: entry.reason ?? "",
+                status: "skipped",
+                outcome: "skipped",
+                proposedBy: entry.proposedBy ?? "",
+                verified: false,
+                findings: [],
+                rules: [],
+                comments: [],
+                designRequest: "",
+                preview: "",
+                openPoints: [],
+                commands: [],
+                files: [],
+              })),
+          ),
         skipped: approved.filter((d) => d.decision === "skip").map((d) => d.nodeId),
         commands,
         greenChain: green ? { code: green.code, log: green.logFile } : "not run",
