@@ -2,6 +2,7 @@ import type { Workspace } from "../../adapters/workspace.ts"
 import type { Registry } from "../../schemas/catalogue.ts"
 import type { DevicePolicy } from "../../schemas/devices.ts"
 import { fileKeyFromSource } from "../snapshot.ts"
+import { deltaTouchedNodes } from "../work-set.ts"
 import type { CatalogueBase } from "./load.ts"
 import { type CatalogueContext, type CatalogueSources, createCatalogueSources } from "./context.ts"
 import {
@@ -120,11 +121,9 @@ export function validateCatalogue(context: CatalogueContext): CatalogueValidatio
   const device = validateDeviceVocabulary(workspace, context.committed)
   errors.push(...device.errors)
   warnings.push(...device.warnings)
-  const deltaIds = new Set(
-    [...context.delta.added, ...context.delta.changed, ...context.delta.affected].map(
-      (node) => node.nodeId,
-    ),
-  )
+  // A renamed or moved node has no design change but its target still has to
+  // move with it, so the coverage counts everything the delta touched.
+  const deltaIds = new Set(context.delta ? deltaTouchedNodes(context.delta) : [])
   let deviceCoverage: CatalogueValidation["deviceCoverage"] = null
   if (device.policy) {
     const coverage = validateDeviceCoverage(

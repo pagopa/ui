@@ -19,7 +19,11 @@ evidence. Align on its head branch; the person pushes and merges.
    worktree is a blocker, not permission to delete it.
 4. `pnpm ui-cli figma handoff brief <pr> --json` batches the PR body, delta
    artifact and local pending briefs. Read both the PR order and the local
-   order; stale/absent artifact data must not silently change scope.
+   order; stale/absent artifact data must not silently change scope. The brief
+   reports which one it used: `orderSource` is `delta` when the artifact's
+   `implementationOrder` resolves and `queue` when the run fell back, and
+   `dropped` names the ids the artifact ordered that the queue no longer carries
+   — both mean the handoff's order is not the artifact's, so say so.
 
 **Done when** the correct branch is active, the source gate passes, and every
 requested node has its delta class, target, constraints and devices.

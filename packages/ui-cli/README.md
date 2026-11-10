@@ -82,7 +82,10 @@ available from the CLI:
 - `pnpm ui-cli figma handoff resolve [<pr|url|branch>]` resolves an open drift
   pull request; `checkout <pr>` creates a sibling worktree named for its branch,
   reusing the one that already holds it, and installs its dependencies;
-  `brief <pr>` reads its delta and ordered node briefs.
+  `brief <pr>` reads its delta and ordered node briefs; its `orderSource` says
+  whether the artifact's `implementationOrder` resolved (`delta`) or the run fell
+  back to the queue (`queue`), and `dropped` names the ids the artifact ordered
+  that the queue no longer carries.
 - `pnpm ui-cli figma handoff media --pr <n> --base <ref>` captures changed
   parity cases from local Storybook at `http://localhost:6006` (or
   `STORYBOOK_URL`), attaches before/after evidence and verifies the comment.
@@ -91,7 +94,8 @@ available from the CLI:
   `close <record> --decision <text> --commit <sha>` records the answer and
   closes its issue. `open` input includes `slug`, `title`, `type`, `question`,
   `context`, `options`, `recommendation`, `ask`, and `when`; visual options
-  also include the preview captures.
+  also include the preview captures. `open` refuses a record that already
+  exists, naming the issue it holds: edit that record, or open a new slug.
 - `pnpm ui-cli figma surface sync --page <pageId> --input <tree.json>` refreshes
   the identity census from a saved page tree; `--rest` reads it from Figma.
 
@@ -251,7 +255,18 @@ devices. `parity align` prints the exact check command for each declared device.
 
 `pnpm ui-cli figma status` reports whether a token is available and its source,
 without revealing it. Add `--require-token` to live-capable commands to fail
-with a usage error when no token can be resolved.
+with a usage error when no token can be resolved. Its `nextCommand` names the
+next step the whole state asks for, not only the delta's: stale or pending
+rules, uncensused pages (named, from the inventory against the census),
+unreadable records, open requests, open comments, pending census identities,
+pending registry entries and unaccounted nodes each take precedence over
+"nothing to align". A pending census identity is routed to a review and
+`figma registry set`, never to `figma:triage`, which preserves the decision it
+reopens; unaccounted nodes are routed to `check:catalogue`, because the
+node-brief queue selects registry-pending entries only. `requests`
+counts the `open` records and lists the `unreadable` ones — a record whose
+`Status:` line no reader can parse — so a mistyped status is reported instead of
+being counted as answered.
 
 `pnpm ui-cli figma brief --queue` reads the delta in hand: the nodes the pinned
 snapshot change added, changed, renamed, moved or affected, in implementation
@@ -277,7 +292,8 @@ and the `detail` line names the full brief the same command wrote to
 path, so two runs on the same catalogue are byte-identical.
 
 Catalogue drift and parity differences above tolerance return exit code 3;
-validation failures return 1 and missing inputs return 2.
+validation failures return 1 and missing inputs return 2. A catalogue run with
+both an error and drift exits 1: the error is graded first, whatever its text.
 
 `pnpm ui-cli figma registry set <nodeId> --status <status>` records a decision.
 Use `--module`, `--export`, `--story`, `--story-exports`, `--note` and

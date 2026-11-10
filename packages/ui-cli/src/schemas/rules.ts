@@ -27,6 +27,58 @@ export const RuleDispositionSchema = z.enum([
 ])
 export type RuleDisposition = z.infer<typeof RuleDispositionSchema>
 
+/** A field a disposition cannot be written without. */
+export type RuleRequirement =
+  | "titleEn"
+  | "summary"
+  | "guide"
+  | "duplicateOf"
+  | "reason"
+  | "request"
+  | "reviewedAt"
+  | "removedAt"
+
+/**
+ * The card's state machine, one row per disposition: what the card must carry,
+ * whether marking it stamps a review date, and whether it leaves the library. The
+ * schema and `rules mark` both read this table — they used to spell the
+ * requirements out on their own, so `mark` accepted cards the schema then
+ * rejected with a raw parser error.
+ */
+export const RULE_DISPOSITIONS: Record<
+  RuleDisposition,
+  {
+    requires: readonly RuleRequirement[]
+    reviewed: boolean
+    withdrawn: boolean
+  }
+> = {
+  pending: { requires: [], reviewed: false, withdrawn: false },
+  imported: {
+    requires: ["titleEn", "summary", "guide", "reviewedAt"],
+    reviewed: true,
+    withdrawn: false,
+  },
+  recorded: { requires: ["titleEn", "summary", "reviewedAt"], reviewed: true, withdrawn: false },
+  duplicate: { requires: ["titleEn", "duplicateOf", "summary"], reviewed: true, withdrawn: false },
+  "out-of-scope": { requires: ["titleEn", "reason"], reviewed: true, withdrawn: false },
+  deferred: { requires: ["titleEn", "reason"], reviewed: true, withdrawn: false },
+  conflict: { requires: ["titleEn", "request", "reviewedAt"], reviewed: true, withdrawn: false },
+  removed: { requires: ["titleEn", "removedAt"], reviewed: true, withdrawn: true },
+}
+
+/** What a requirement is called when it is missing, in the schema's words. */
+export const RULE_REQUIREMENT_MESSAGES: Record<RuleRequirement, string> = {
+  titleEn: "every reviewed rule needs an English title",
+  summary: "a reviewed rule needs a summary",
+  guide: "an imported rule needs a guide",
+  duplicateOf: "a duplicate names its canonical card",
+  reason: "the disposition needs a reason",
+  request: "a conflict names its design request",
+  reviewedAt: "a reviewed rule records its review date",
+  removedAt: "a removed rule records when it disappeared",
+}
+
 export const RuleScopeSchema = z.enum(["component", "foundation", "template", "product"])
 export type RuleScope = z.infer<typeof RuleScopeSchema>
 
@@ -68,30 +120,9 @@ export const RuleCardSchema = z
     if (card.scope === "component" && card.targets.length === 0 && !card.provisionalTargets) {
       fail("targets", "a component rule needs at least one target node")
     }
-    if (card.disposition === "pending") return
-    if (!card.titleEn) fail("titleEn", "every reviewed rule needs an English title")
-    if (card.disposition === "imported") {
-      if (!card.summary) fail("summary", "an imported rule needs a summary")
-      if (!card.guide) fail("guide", "an imported rule needs a guide")
-      if (!card.reviewedAt) fail("reviewedAt", "an imported rule needs a review date")
-    }
-    if (card.disposition === "recorded") {
-      if (!card.summary) fail("summary", "a recorded rule needs a summary")
-      if (!card.reviewedAt) fail("reviewedAt", "a recorded rule needs a review date")
-    }
-    if (card.disposition === "duplicate") {
-      if (!card.duplicateOf) fail("duplicateOf", "a duplicate names its canonical card")
-      if (!card.summary) fail("summary", "a duplicate keeps a summary")
-    }
-    if (card.disposition === "out-of-scope" || card.disposition === "deferred") {
-      if (!card.reason) fail("reason", `${card.disposition} rules need a reason`)
-    }
-    if (card.disposition === "conflict") {
-      if (!card.request) fail("request", "a conflict names its design request")
-      if (!card.reviewedAt) fail("reviewedAt", "a conflict needs a review date")
-    }
-    if (card.disposition === "removed" && !card.removedAt) {
-      fail("removedAt", "a removed rule records when it disappeared")
+    for (const requirement of RULE_DISPOSITIONS[card.disposition].requires) {
+      if (card[requirement]) continue
+      fail(requirement, RULE_REQUIREMENT_MESSAGES[requirement])
     }
   })
 

@@ -12,11 +12,11 @@ import {
   type InventoryNode,
 } from "../schemas/catalogue.ts"
 import { readComments, threadsForNode } from "./comments.ts"
+import { requestsFolder } from "./config.ts"
 import { readLedger, readRulesSnapshot, rulesForNode, rulesForUninventoriedNode } from "./rules.ts"
 
 const INVENTORY_PATH = "src/catalog/figma/inventory.json"
 const REGISTRY_PATH = "src/catalog/figma/registry.json"
-const REQUESTS_DIR = "docs/design-requests"
 
 export type NodeBrief = {
   node: string
@@ -41,7 +41,7 @@ export type NodeBrief = {
 }
 
 function requestFiles(workspace: Workspace): Array<{ path: string; text: string }> {
-  const directory = path.join(workspace.workspaceRoot, REQUESTS_DIR)
+  const directory = path.join(workspace.workspaceRoot, requestsFolder(workspace))
   return walkFiles(directory, (file) => file.endsWith(".md")).map((file) => ({
     path: path.relative(workspace.workspaceRoot, file).split(path.sep).join("/"),
     text: fs.readFileSync(file, "utf8"),

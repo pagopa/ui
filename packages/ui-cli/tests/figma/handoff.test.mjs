@@ -160,7 +160,9 @@ test("handoff checkout dry-run describes fetch, worktree and install without run
     })
     assert.equal(commands.length, 0)
     assert.equal(result.branch, openPr.headRefName)
-    assert.equal(result.actions.length, 3)
+    // The fresh checkout, the reuse a real run falls back to, and the install.
+    assert.equal(result.actions.length, 4)
+    assert.match(result.actions[2], /if figma-drift\/.* exists already/)
   } finally {
     fixture.dispose()
   }
@@ -225,6 +227,64 @@ test("handoff brief follows the order in the included delta", () => {
     })
     assert.deepEqual(result.queue.implementationOrder, ["2:2"])
     assert.equal(result.queue.items[0].brief.node, "2:2")
+  } finally {
+    fixture.dispose()
+  }
+})
+
+test("handoff brief sources its order from the queue when the artifact names none", () => {
+  const fixture = fixtureTree({}, "handoff-brief-queue-order-")
+  try {
+    const queue = {
+      implementationOrder: ["1:1", "2:2", "3:3"],
+      items: [
+        { nodeId: "1:1", class: "pending", devices: [], brief: { node: "1:1" } },
+        { nodeId: "2:2", class: "changed", devices: ["mobile"], brief: { node: "2:2" } },
+      ],
+    }
+    const result = handoffBrief(workspaceAt(fixture.root), { ...openPr, body: "" }, queue, {})
+    assert.equal(result.orderSource, "queue")
+    assert.deepEqual(result.queue.implementationOrder, ["1:1", "2:2", "3:3"])
+    // `3:3` is missing from the items because the queue cap truncated it, not
+    // because an artifact asked for a node that is gone.
+    assert.deepEqual(result.dropped, [])
+  } finally {
+    fixture.dispose()
+  }
+})
+
+test("handoff brief reports only the artifact ids the queue cannot carry as dropped", () => {
+  const fixture = fixtureTree({}, "handoff-brief-dropped-")
+  try {
+    const queue = {
+      implementationOrder: ["1:1"],
+      items: [{ nodeId: "1:1", class: "pending", devices: [], brief: { node: "1:1" } }],
+    }
+    const result = handoffBrief(workspaceAt(fixture.root), { ...openPr, body: "" }, queue, {
+      implementationOrder: ["1:1", "9:9"],
+    })
+    assert.equal(result.orderSource, "delta")
+    assert.deepEqual(result.queue.implementationOrder, ["1:1"])
+    assert.deepEqual(result.dropped, ["9:9"])
+  } finally {
+    fixture.dispose()
+  }
+})
+
+test("handoff brief leaves a cap-truncated node to the queue's own notice", () => {
+  const fixture = fixtureTree({}, "handoff-brief-cap-")
+  try {
+    // The cap keeps the order and drops the item, so the artifact naming the
+    // same id is naming work the queue knows about, not a stale entry.
+    const queue = {
+      implementationOrder: ["1:1", "2:2"],
+      items: [{ nodeId: "1:1", class: "pending", devices: [], brief: { node: "1:1" } }],
+    }
+    const result = handoffBrief(workspaceAt(fixture.root), { ...openPr, body: "" }, queue, {
+      implementationOrder: ["1:1", "2:2"],
+    })
+    assert.deepEqual(result.dropped, [])
+    assert.equal(result.orderSource, "delta")
   } finally {
     fixture.dispose()
   }

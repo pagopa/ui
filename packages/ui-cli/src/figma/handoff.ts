@@ -106,20 +106,51 @@ export function checkoutHandoff(
     throw new UsageError(`worktree destination already exists: ${destination}`)
   }
   const remote = `origin/${pr.headRefName}`
+  // `worktree add -b` fails on a branch that already exists, and a drift branch
+  // outlives the worktree that carried it: pruning a worktree or a crashed run
+  // leaves the branch behind. Reusing it checks out the local branch as it
+  // stands, drift included, instead of resetting it to the remote or failing
+  // raw; a local branch behind the pull request is the session's to fast-forward.
+  //
+  // A dry run runs no git, so it cannot tell which case it is in: it shows the
+  // fresh checkout and names the reuse the real run does when the branch is
+  // already there.
+  const exists = !dryRun && branchExists(workspace, pr.headRefName, adapters)
+  const create = exists
+    ? [`git worktree add ${destination} ${pr.headRefName}`, `# reused branch: ${pr.headRefName}`]
+    : [`git worktree add ${destination} -b ${pr.headRefName} ${remote}`]
   const actions = [
     `git fetch origin ${pr.headRefName}`,
-    `git worktree add ${destination} -b ${pr.headRefName} ${remote}`,
+    ...create,
+    ...(dryRun && !exists
+      ? [`# if ${pr.headRefName} exists already: git worktree add ${destination} ${pr.headRefName}`]
+      : []),
     `pnpm install (cwd ${destination})`,
   ]
   if (!dryRun) {
     adapters.git(["fetch", "origin", pr.headRefName], workspace.workspaceRoot)
-    adapters.git(
-      ["worktree", "add", destination, "-b", pr.headRefName, remote],
-      workspace.workspaceRoot,
-    )
+    if (exists) {
+      adapters.git(["worktree", "add", destination, pr.headRefName], workspace.workspaceRoot)
+    } else
+      adapters.git(
+        ["worktree", "add", destination, "-b", pr.headRefName, remote],
+        workspace.workspaceRoot,
+      )
     adapters.pnpm(["install"], destination)
   }
   return { path: destination, branch: pr.headRefName, actions, dryRun }
+}
+
+function branchExists(workspace: Workspace, branch: string, adapters: HandoffAdapters): boolean {
+  try {
+    return (
+      adapters
+        .git(["rev-parse", "--verify", "--quiet", `refs/heads/${branch}`], workspace.workspaceRoot)
+        .trim().length > 0
+    )
+  } catch {
+    return false
+  }
 }
 
 function embeddedDelta(body: string): unknown | null {
@@ -158,22 +189,43 @@ function object(value: unknown): Record<string, unknown> | null {
 export function handoffBrief(
   workspace: Workspace,
   pr: PullRequest,
-  queue: BriefQueue = buildBriefQueue(workspace, { scope: "all" }),
+  queue: BriefQueue = buildBriefQueue(workspace, { scope: "pending", lineCap: null }),
   suppliedDelta?: unknown,
-): { pullRequest: PullRequest; delta: unknown; queue: BriefQueue } {
+): {
+  pullRequest: PullRequest
+  delta: unknown
+  /** Ids the delta's `implementationOrder` named that the queue does not carry. */
+  dropped: string[]
+  /** `delta` when the artifact's order resolved, `queue` when it had to be ignored. */
+  orderSource: "delta" | "queue"
+  queue: BriefQueue
+} {
   const delta = suppliedDelta ?? savedDelta(workspace, pr.body)
   if (!delta)
     throw new UsageError(
       `pull request ${pr.number} has no readable delta.json artifact in its body or local .figma snapshots`,
     )
   const data = object(delta)
-  const order = Array.isArray(data?.implementationOrder)
+  const artifactOrder = Array.isArray(data?.implementationOrder)
     ? data.implementationOrder.filter((id): id is string => typeof id === "string")
-    : queue.implementationOrder
+    : null
   const byId = new Map(queue.items.map((item) => [item.nodeId, item]))
+  const queued = new Set(queue.implementationOrder)
+  // The artifact is written by an earlier run and the queue is read now, so the
+  // ids it names can be gone: renamed in the inventory, dropped from pending, or
+  // renamed in a rebased PR. An order that resolves to nothing would print an
+  // empty brief and look like a PR with no work, so fall back to the queue and
+  // say which ids were dropped.
+  const resolved = (artifactOrder ?? []).filter((id) => byId.has(id))
+  // Only an order the artifact wrote can be dropped by it. An id the queue still
+  // orders but no longer carries was cut by the line cap, which the queue reports
+  // itself; an id neither names is the artifact's own stale entry.
+  const order = resolved.length ? resolved : queue.implementationOrder
   return {
     pullRequest: pr,
     delta,
+    dropped: (artifactOrder ?? []).filter((id) => !byId.has(id) && !queued.has(id)),
+    orderSource: resolved.length ? ("delta" as const) : ("queue" as const),
     queue: {
       scope: queue.scope,
       implementationOrder: order,

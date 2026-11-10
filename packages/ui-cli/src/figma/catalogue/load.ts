@@ -26,6 +26,7 @@ import {
 } from "../snapshot.ts"
 import { fetchFigmaSnapshot, writeFigmaSnapshot, type FigmaSnapshot } from "../rest.ts"
 import { prepareCatalogueRefresh } from "../catalogue-refresh.ts"
+import { deltaHasChange } from "../work-set.ts"
 import { formatCatalogueDrift } from "./drift.ts"
 import type { CatalogueOptions } from "../sync.ts"
 
@@ -119,9 +120,12 @@ function validateCommittedContracts(
   errors: string[],
 ): void {
   const byId = new Map(committed.map((node) => [node.nodeId, node]))
+  // The guard runs before normalization: normalizing an older or newer schema
+  // would either fail on fields it does not have or compute fingerprints from a
+  // contract this reader does not know, and both read as a source change.
+  if (inventory.schemaVersion !== 2) return
   try {
     const normalized = normalizeLive(inventory, { workspace })
-    if (inventory.schemaVersion !== 2) return
     for (const node of normalized) {
       if (byId.get(node.nodeId)?.contractFingerprint !== node.contractFingerprint) {
         errors.push(
@@ -278,6 +282,7 @@ async function refreshCatalogue(
   ratchet: { from: number; to: number } | null
   reconciledSurface: PageSurface | null
   pendingWrites: Map<string, unknown>
+  notices: string[]
 }> {
   if (!live || !(writeRequested || (options.prBody && hasDrift))) {
     return {
@@ -288,6 +293,7 @@ async function refreshCatalogue(
       ratchet: null,
       reconciledSurface: null,
       pendingWrites: new Map(),
+      notices: [],
     }
   }
   const noteBaseline = parseExceptions(
@@ -314,6 +320,7 @@ async function refreshCatalogue(
     ratchet: refresh.ratchet,
     reconciledSurface: refresh.reconciledSurface,
     pendingWrites: refresh.pendingWrites,
+    notices: refresh.notices,
   }
 }
 
@@ -326,17 +333,7 @@ async function assembleCatalogueContext(
   validateLiveOptions(options, snapshot.live, base.errors)
   const delta = snapshotDelta(base.committed, snapshot.live, base.errors)
   const prBodyPath = options.prBody
-  const driftKeys: Array<keyof SnapshotDelta> = [
-    "added",
-    "removed",
-    "changed",
-    "renamed",
-    "moved",
-    "baseline",
-    "affected",
-    "changedVariants",
-  ]
-  const hasDrift = Boolean(snapshot.live) && driftKeys.some((key) => delta[key].length)
+  const hasDrift = Boolean(snapshot.live) && deltaHasChange(delta)
   const writeRequested =
     Boolean(options.write || options.triage) && !(prBodyPath && snapshot.live && !hasDrift)
   const refreshed = await refreshCatalogue(
@@ -351,6 +348,7 @@ async function assembleCatalogueContext(
     writeRequested,
     base.errors,
   )
+  base.warnings.push(...refreshed.notices)
   const drift = formatCatalogueDrift(
     delta,
     snapshot.live,
@@ -359,7 +357,6 @@ async function assembleCatalogueContext(
     Boolean(options.plan),
     hasDrift,
   )
-  base.errors.push(...drift.errors)
   return {
     context: {
       inventory: refreshed.inventory,

@@ -6,6 +6,12 @@ import { runGh } from "../adapters/handoff.ts"
 import { readJson, writeJson, writeText } from "../lib/json.ts"
 import { UsageError } from "../lib/command.ts"
 import { InventorySchema, RegistrySchema, NOTE_LENGTH_LIMIT } from "../schemas/catalogue.ts"
+import {
+  answeredRecordSource,
+  openRecord,
+  readDesignRequestRecord,
+} from "./design-request-record.ts"
+import { designPaths, readFigmaConfig } from "./config.ts"
 import { markRule } from "./rules-workflow.ts"
 
 const OptionSchema = z.strictObject({
@@ -37,25 +43,6 @@ const InputSchema = z.strictObject({
 
 export type DesignRequestInput = z.infer<typeof InputSchema>
 export type IssueCommand = (args: string[], cwd: string) => string
-
-function designConfig(workspace: Workspace): {
-  requests: string
-  owners: string[]
-  preview: string
-  previewBranch: string
-} {
-  const file = workspace.path("figma-to-code.yaml")
-  const source = fs.readFileSync(file, "utf8")
-  const design = source.match(/^design:\s*\n((?:[ \t]+.*\n?)*)/m)?.[1] ?? ""
-  const requests = design.match(/^\s+requests:\s*([^\s#]+)/m)?.[1]
-  const ownersBlock = design.match(/^\s+owners:\s*\n((?:\s+-[^\n]*\n?)*)/m)?.[1] ?? ""
-  const owners = [...ownersBlock.matchAll(/^\s+-\s*([^\s#]+)/gm)].map((match) => match[1])
-  const previewBlock = design.match(/^\s+preview:\s*\n((?:\s{4,}.*\n?)*)/m)?.[1] ?? ""
-  const preview = previewBlock.match(/^\s+url:\s*([^\s#]+)/m)?.[1] ?? "none"
-  const previewBranch = previewBlock.match(/^\s+branch:\s*([^\s#]+)/m)?.[1] ?? ""
-  if (!requests) throw new UsageError("figma-to-code.yaml has no design.requests directory")
-  return { requests, owners, preview, previewBranch }
-}
 
 function parseInput(source: string): DesignRequestInput {
   const parsed = InputSchema.safeParse(JSON.parse(source))
@@ -199,26 +186,17 @@ function recordContent(
         )
         .join("\n")
     : ""
-  return [
-    `# ${input.title}`,
-    "",
-    `- Type: ${input.type}`,
-    `- Issue: ${issueUrl}`,
-    "- Status: open",
-    `- Decision owner: ${owners.map((owner) => `@${owner}`).join(", ") || "unassigned"}`,
-    `- Preview: ${input.visual ? previewStoryUrl(preview, input.slug, input.options[0]?.key ?? "a") : "none"}`,
-    "",
-    "## Context",
-    "",
-    input.context,
-    "",
-    "## Options",
-    "",
+  return openRecord({
+    title: input.title,
+    type: input.type,
+    issueUrl,
+    owners,
+    preview: input.visual
+      ? previewStoryUrl(preview, input.slug, input.options[0]?.key ?? "a")
+      : "none",
+    context: input.context,
     options,
-    "",
-    "## Decision",
-    "",
-  ].join("\n")
+  })
 }
 
 function recordPath(
@@ -250,7 +228,11 @@ function validateNode(
   if (entry?.status !== "pending")
     throw new UsageError(`${input.nodeId} must remain pending while its design request is open`)
   const pointer = `Design request: ${record}`
-  const note = [entry.note?.trim(), pointer].filter(Boolean).join("\n")
+  // A reopened slug after a deleted record meets its own pointer again; appending
+  // it twice would grow the note for no reason.
+  const note = entry.note?.includes(pointer)
+    ? entry.note.trim()
+    : [entry.note?.trim(), pointer].filter(Boolean).join("\n")
   if (note.length > NOTE_LENGTH_LIMIT)
     throw new UsageError(
       `${input.nodeId} registry note would exceed ${NOTE_LENGTH_LIMIT} characters`,
@@ -268,12 +250,29 @@ export function openDesignRequest(
   day: string,
   dryRun: boolean,
   gh: IssueCommand = runGh,
-): { path: string; issueUrl: string | null; actions: string[]; dryRun: boolean } {
+): {
+  path: string
+  issueUrl: string | null
+  actions: string[]
+  dryRun: boolean
+} {
   const input = parseInput(fs.readFileSync(inputFile, "utf8"))
-  const config = designConfig(workspace)
+  const config = designPaths(readFigmaConfig(workspace))
   const target = recordPath(workspace, config.requests, day, input.slug)
-  if (fs.existsSync(target.absolute))
-    throw new UsageError(`design request record already exists: ${target.relative}`)
+  // A record that already exists is refused rather than rewritten: `gh issue
+  // create` would ask the same question a second time, and overwriting the note
+  // would leave the issue and the record disagreeing about what is being asked.
+  if (fs.existsSync(target.absolute)) {
+    const existing = readDesignRequestRecord(fs.readFileSync(target.absolute, "utf8"))
+    if (existing.state !== "open")
+      throw new UsageError(
+        `design request record ${target.relative} is ${existing.state} — open a new slug for a new question`,
+      )
+    const issue = existing.issueUrl ? ` (${existing.issueUrl})` : ""
+    throw new UsageError(
+      `design request record ${target.relative} already exists${issue} — edit it, or open a new slug`,
+    )
+  }
   const node = validateNode(workspace, input, target.relative)
   if (input.rulesCard)
     markRule(workspace, {
@@ -302,11 +301,11 @@ export function openDesignRequest(
   ]
   if (dryRun) return { path: target.relative, issueUrl: null, actions, dryRun: true }
   const output = gh(create, workspace.workspaceRoot)
-  const issueUrl = output.split(/\s+/).find((word) => /^https:\/\/[^\s]+\/issues\/\d+$/.test(word))
+  const issueUrl =
+    output.split(/\s+/).find((word) => /^https:\/\/[^\s]+\/issues\/\d+$/.test(word)) ?? null
   if (!issueUrl) throw new Error(`gh issue create did not return an issue URL: ${output}`)
-  const record = recordContent(input, issueUrl, config.owners, config.preview)
   fs.mkdirSync(path.dirname(target.absolute), { recursive: true })
-  writeText(target.absolute, record)
+  writeText(target.absolute, recordContent(input, issueUrl, config.owners, config.preview))
   if (node) writeJson(node.registryFile, node.updated)
   if (input.rulesCard)
     markRule(workspace, {
@@ -340,18 +339,6 @@ export function listDesignRequests(
   )
 }
 
-function answeredRecord(source: string, decision: string): { url: string; updated: string } {
-  const url = source.match(/^- Issue:\s*(https:\/\/\S+)/m)?.[1]
-  if (!url) throw new UsageError("request record has no issue URL")
-  if (!/^- Status: open$/m.test(source)) throw new UsageError("request record is not open")
-  if (!/^## Decision\s*$/m.test(source))
-    throw new UsageError("request record has no Decision section")
-  const updated = source
-    .replace(/^- Status: open$/m, "- Status: answered")
-    .replace(/(^## Decision\s*\n\s*\n)[\s\S]*$/, `$1${decision.trim()}\n`)
-  return { url, updated }
-}
-
 export function closeDesignRequest(
   workspace: Workspace,
   recordFile: string,
@@ -377,14 +364,18 @@ export function closeDesignRequest(
   if (relativePath.startsWith("..") || path.isAbsolute(relativePath))
     throw new UsageError("request record must be inside the workspace")
   const source = fs.readFileSync(absolute, "utf8")
-  const record = answeredRecord(source, decision)
-  const repo = record.url.match(/^(https:\/\/[^/]+\/[^/]+\/[^/]+)\/issues\/\d+$/)?.[1]
+  const url = readDesignRequestRecord(source).issueUrl
+  if (!url) throw new UsageError("request record has no issue URL")
+  const repo = url.match(/^(https:\/\/[^/]+\/[^/]+\/[^/]+)\/issues\/\d+$/)?.[1]
   if (!repo) throw new UsageError("request issue URL is not a GitHub issue URL")
+  // The writer refuses a record it cannot answer: an unreadable status, an
+  // answered one, or one with no `## Decision` to write into.
+  const updated = answeredRecordSource(source, decision)
   const commitUrl = `${repo}/commit/${commit}`
   const actions = [
-    `gh issue edit ${record.url} --remove-label status/needs-answer --add-label status/answered`,
-    `gh issue comment ${record.url} --body "Decision recorded in ${commitUrl}"`,
-    `gh issue close ${record.url}`,
+    `gh issue edit ${url} --remove-label status/needs-answer --add-label status/answered`,
+    `gh issue comment ${url} --body "Decision recorded in ${commitUrl}"`,
+    `gh issue close ${url}`,
     `write ${workspace.identity(absolute)}`,
   ]
   if (!dryRun) {
@@ -392,7 +383,7 @@ export function closeDesignRequest(
       [
         "issue",
         "edit",
-        record.url,
+        url,
         "--remove-label",
         "status/needs-answer",
         "--add-label",
@@ -401,14 +392,14 @@ export function closeDesignRequest(
       workspace.workspaceRoot,
     )
     gh(
-      ["issue", "comment", record.url, "--body", `Decision recorded in ${commitUrl}`],
+      ["issue", "comment", url, "--body", `Decision recorded in ${commitUrl}`],
       workspace.workspaceRoot,
     )
-    gh(["issue", "close", record.url], workspace.workspaceRoot)
-    writeText(absolute, record.updated)
+    gh(["issue", "close", url], workspace.workspaceRoot)
+    writeText(absolute, updated)
   }
   return {
-    issueUrl: record.url,
+    issueUrl: url,
     commitUrl,
     path: workspace.identity(absolute),
     actions,

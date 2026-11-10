@@ -80,12 +80,20 @@ function briefCommand(ctx: CliContext) {
       const result = handoffBrief(
         ctx.workspace(),
         pr,
-        buildBriefQueue(ctx.workspace(), { scope: "all" }),
+        buildBriefQueue(ctx.workspace(), { scope: "pending", lineCap: null }),
         supplied,
       )
       if (json) printJson(ctx.io, result)
       else {
         ctx.io.out(`#${pr.number} · ${pr.headRefName} · ${pr.url}`)
+        if (result.orderSource === "queue")
+          ctx.io.err(
+            `warning: the delta names no node the queue carries${result.dropped.length ? ` (${result.dropped.join(", ")})` : ""} — briefing the pending queue instead`,
+          )
+        else if (result.dropped.length)
+          ctx.io.err(
+            `warning: dropped ${result.dropped.length} delta id(s) the queue does not carry: ${result.dropped.join(", ")}`,
+          )
         printLines(ctx.io, { out: formatBriefQueue(result.queue) })
       }
       return EXIT.ok

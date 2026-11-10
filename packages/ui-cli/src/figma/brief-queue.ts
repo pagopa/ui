@@ -7,16 +7,21 @@ import { loadDevicePolicy, requiredDevices } from "./devices.ts"
 import { buildBrief, formatBrief, readBriefSources, type NodeBrief } from "./brief.ts"
 import {
   compareSnapshots,
-  deltaChangeNodes,
   implementationOrder,
   normalizeLive,
   type SnapshotDelta,
 } from "./snapshot.ts"
+import { deltaTouchedNodes } from "./work-set.ts"
 
 /** The default read is the delta in hand; the whole pending queue is opt-in. */
 export const DEFAULT_QUEUE_LINE_CAP = 60
 
-export type BriefQueueKind = "delta" | "pending" | "all"
+/**
+ * What the read scoped itself to. There are two work sets, not three: the delta
+ * in hand, and the pending queue the fallback and `--full` read. An uncapped
+ * pending read stays `pending` and says so through `lineCap: null`.
+ */
+export type BriefQueueKind = "delta" | "pending"
 
 /**
  * Why a delta read became the pending queue. Triage and the drift refresh
@@ -110,8 +115,7 @@ function capItems(
 
 export function buildBriefQueue(workspace: Workspace, options: BriefQueueOptions = {}): BriefQueue {
   const kind = options.scope ?? "delta"
-  const lineCap =
-    options.lineCap !== undefined ? options.lineCap : kind === "all" ? null : DEFAULT_QUEUE_LINE_CAP
+  const lineCap = options.lineCap !== undefined ? options.lineCap : DEFAULT_QUEUE_LINE_CAP
   // One read of everything a brief needs, and one of the device policy: a queue
   // of n nodes must not walk the workspace n times.
   const sources = readBriefSources(workspace)
@@ -133,7 +137,7 @@ export function buildBriefQueue(workspace: Workspace, options: BriefQueueOptions
   // while the queued nodes are still pending. Reading it would report no brief
   // and call the active nodes "outside this delta"; the pending queue is the
   // work set, and the fallback says why the read is not the delta.
-  const changeNodes = delta ? deltaChangeNodes(delta) : []
+  const changeNodes = delta ? deltaTouchedNodes(delta) : []
   const fallback: BriefQueueFallback | null =
     kind === "delta" && changeNodes.length === 0 ? (delta ? "empty-delta" : "no-snapshot") : null
   const nodes = new Map(live.map((node) => [node.nodeId, node]))
@@ -156,7 +160,7 @@ export function buildBriefQueue(workspace: Workspace, options: BriefQueueOptions
   const inScopeIds = new Set(inScope)
   const omitted = [...pending].filter((id) => !inScopeIds.has(id)).length
   // The scope kind the read reports: `delta` only with a change node to scope to.
-  const scopeKind: BriefQueueKind = kind === "all" ? "all" : scoped ? "delta" : "pending"
+  const scopeKind: BriefQueueKind = scoped ? "delta" : "pending"
   const capped = capItems(items, lineCap, fixedQueueLines(fallback, omitted))
   // The truncation notice is a fixed line the cap must also pay for: recompute
   // the listing once when it fires, so the rendered read never exceeds the cap.

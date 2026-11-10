@@ -12,6 +12,7 @@ import {
   componentRulesFirst,
   extractContainer,
   hasComponentRules,
+  mark,
   plan,
   sourceHash,
 } from "../../src/figma/rules.ts"
@@ -261,6 +262,40 @@ test("the component-rules block opens the guide", () => {
   assert.equal(componentRulesFirst(block), true)
   assert.equal(componentRulesFirst(`\n\n${block}`), true)
   assert.equal(componentRulesFirst(`Intro first.\n\n${block}`), false)
+})
+
+// `mark` spreads the card it finds, so an imported card keeps its guide when
+// it moves on. The new disposition does not need that guide, and nothing can
+// clear it, so a guide deleted or stripped of its block must not block the move.
+test("re-marking an imported card as recorded does not revalidate its guide", () => {
+  const guide = "apps/storybook/src/guides/button.md"
+  for (const files of [{}, { [guide]: "# Button\n" }]) {
+    const tree = fixtureTree(files, "pagopa-rules-mark-")
+    try {
+      const ledger = RulesLedgerSchema.parse({
+        schemaVersion: 1,
+        fileKey: "file",
+        cards: {
+          "I1:2;3:3": {
+            ...pending,
+            titleEn: "Spacing",
+            summary: "Keep 8px between buttons.",
+            disposition: "imported",
+            guide,
+            reviewedAt: "2026-10-20",
+          },
+        },
+      })
+      const marked = mark(ledger, snapshot, tree.root, tree.root, {
+        cardId: "I1:2;3:3",
+        disposition: "recorded",
+      })
+      assert.equal(marked.disposition, "recorded")
+      assert.equal(marked.guide, guide)
+    } finally {
+      tree.dispose()
+    }
+  }
 })
 
 const cli = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))

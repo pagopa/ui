@@ -251,3 +251,88 @@ test("request close dry-run preserves the record and does not call gh", () => {
     fixture.dispose()
   }
 })
+
+const existingRecord = `# How should the focus ring appear?
+
+- Type: design
+- Issue: https://github.com/acme/ui/issues/42
+- Status: open
+
+## Context
+
+The source does not specify the ring.
+
+## Options
+
+- A — Thin
+- B — Thick
+
+## Decision
+`
+
+test("request open refuses an existing record and names the issue it holds", () => {
+  const fixture = fixtureTree(
+    {
+      ...files,
+      "docs/design-requests/2026-11-08-button-focus-ring.md": existingRecord,
+    },
+    "design-request-exists-",
+  )
+  let calls = 0
+  try {
+    assert.throws(
+      () =>
+        openDesignRequest(
+          workspaceAt(fixture.root),
+          path.join(fixture.root, "packages/ui-cli/request.json"),
+          "2026-11-08",
+          false,
+          () => {
+            calls++
+            return ""
+          },
+        ),
+      /already exists \(https:\/\/github\.com\/acme\/ui\/issues\/42\) — edit it, or open a new slug/,
+    )
+    assert.equal(calls, 0)
+    assert.equal(
+      fs.readFileSync(
+        path.join(fixture.root, "docs/design-requests/2026-11-08-button-focus-ring.md"),
+        "utf8",
+      ),
+      existingRecord,
+    )
+  } finally {
+    fixture.dispose()
+  }
+})
+
+test("request open refuses an answered record by saying the slug is spent", () => {
+  const fixture = fixtureTree(
+    {
+      ...files,
+      "docs/design-requests/2026-11-08-button-focus-ring.md": existingRecord.replace(
+        "- Status: open",
+        "- Status: answered",
+      ),
+    },
+    "design-request-answered-",
+  )
+  try {
+    assert.throws(
+      () =>
+        openDesignRequest(
+          workspaceAt(fixture.root),
+          path.join(fixture.root, "packages/ui-cli/request.json"),
+          "2026-11-08",
+          true,
+          () => {
+            throw new Error("a spent slug must not reach gh")
+          },
+        ),
+      /is answered — open a new slug for a new question/,
+    )
+  } finally {
+    fixture.dispose()
+  }
+})

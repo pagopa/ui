@@ -233,7 +233,7 @@ async function runBrief(ctx: CliContext, args: BriefArgs): Promise<number> {
   if (refresh) await refreshBrief(ctx.workspace(), () => figmaToken(ctx.env))
   if (queue) {
     const result = buildBriefQueue(ctx.workspace(), {
-      scope: full ? "all" : "delta",
+      scope: full ? "pending" : "delta",
       lineCap: integer(limit, "--limit") ?? (full ? null : undefined),
     })
     if (json) printJson(ctx.io, result)

@@ -120,7 +120,7 @@ test("brief queue --json carries the scope, the omitted count and the cap", asyn
     assert.equal(full.status, 0, full.stderr)
     const whole = JSON.parse(full.stdout)
     assert.deepEqual(whole.scope, {
-      kind: "all",
+      kind: "pending",
       fallback: null,
       omitted: 0,
       truncated: 0,

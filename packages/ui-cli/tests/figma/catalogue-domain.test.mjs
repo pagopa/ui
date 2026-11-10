@@ -53,6 +53,90 @@ function baseFiles() {
   }
 }
 
+// A one-node refresh of the fixture, so a note's fate is all the test reads.
+function renewNote(files, entry, prefix) {
+  const tree = fixtureTree(files, prefix)
+  try {
+    const workspace = workspaceAt(tree.root)
+    const liveNode = { ...node, name: "Control v2" }
+    const report = prepareCatalogueRefresh(workspace, {
+      inventory: loadCatalogueState(workspace).inventory,
+      registry: { entries: { "1:1": entry }, bulkRules: [] },
+      live: [liveNode],
+      delta: {
+        added: [],
+        removed: [],
+        changed: [liveNode],
+        changedVariants: [],
+        renamed: [],
+        moved: [],
+        baseline: [],
+        affected: [],
+      },
+      evidenceExceptions: {},
+      noteBaseline: null,
+    })
+    return { note: report.registry.entries["1:1"].note, notices: report.notices }
+  } finally {
+    tree.dispose()
+  }
+}
+
+test("renewing a note that holds only the renewal line loses nothing and says nothing", () => {
+  const previous =
+    "Figma delta 2026-01-01: review new/changed node or dependency before marking implemented"
+  const { note, notices } = renewNote(
+    baseFiles(),
+    { status: "implemented", note: previous },
+    "catalogue-renew-quiet-",
+  )
+  assert.match(note, /^Figma delta \d{4}-\d{2}-\d{2}:/)
+  assert.deepEqual(notices, [])
+})
+
+test("renewing a note carries what the previous note said", () => {
+  const previous =
+    "Figma delta 2026-01-01: review new/changed node or dependency before marking implemented. Open design question: docs/design-requests/2026-01-02-ring.md. Depends on the card work."
+  const { note, notices } = renewNote(
+    baseFiles(),
+    { status: "implemented", note: previous },
+    "catalogue-renew-carries-",
+  )
+  assert.match(note, /^Figma delta \d{4}-\d{2}-\d{2}: review new\/changed node/)
+  assert.match(
+    note,
+    /Open design question: docs\/design-requests\/2026-01-02-ring\.md\. Depends on the card work\.$/,
+  )
+  assert.deepEqual(notices, [])
+})
+
+test("a note that quotes the renewal sentence keeps it as prose", () => {
+  const quoted = `Prior run said: ${"Figma delta 2026-01-01: review new/changed node or dependency before marking implemented"}`
+  const { note, notices } = renewNote(
+    baseFiles(),
+    { status: "implemented", note: quoted },
+    "catalogue-renew-quoted-",
+  )
+  assert.match(note, /\. Prior run said: Figma delta 2026-01-01: review new\/changed node/)
+  assert.deepEqual(notices, [])
+})
+
+test("a previous note too long to carry is cut at the limit and the cut is reported", () => {
+  const long = `Depends on the card work. ${"Ring stroke detail. ".repeat(40)}`
+  const { note, notices } = renewNote(
+    baseFiles(),
+    { status: "implemented", note: long },
+    "catalogue-renew-long-",
+  )
+  assert.equal(note.length <= 600, true)
+  assert.equal(notices.length, 1)
+  assert.match(
+    notices[0],
+    /^1:1 renewed: its previous note was too long to carry past 600 characters — it dropped "/,
+  )
+  assert.match(notices[0], /Ring stroke detail/)
+})
+
 test("catalogue state loading reads the inventory and registry from the workspace", () => {
   const tree = fixtureTree(baseFiles(), "catalogue-state-")
   try {

@@ -191,7 +191,8 @@ export function figmaCommands(ctx: CliContext): CommandDef {
         type: "string",
         default: ".figma/live-rest.json",
         valueHint: "file",
-        description: "Save the REST snapshot",
+        description:
+          "Save the REST snapshot (this is the pinned file `brief` and `status` read, so a plan saves it even though it only compares)",
       },
       json: jsonArg,
     },
