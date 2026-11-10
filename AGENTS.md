@@ -94,8 +94,9 @@ A stopped run says where it stands in
 reason and next step, written after the source gate answers and never a replay
 authority. An edited checkpoint is validated against the wave before any writer
 runs and every problem is reported at once; fix the file and resume the same run
-rather than restarting it. A node's outcome is one closed tag from `NODE_OUTCOMES`
-(the header lists them), so `completed` never stands for a green verdict.
+rather than restarting it. A node's outcome is one closed tag (`NODE_OUTCOMES`
+for the ones a verification decides, plus `not-reached` and `skipped`; the header
+lists them), so `completed` never stands for a green verdict.
 
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->

@@ -27,11 +27,12 @@
 //   non-string instruction — the file is never rewritten, and the run is resumed
 //   rather than restarted. A proposal carries `proposedBy`, so a skip the
 //   analysis produced after returning nothing is not read as a person's choice.
-// - Each node ends in one tag from `NODE_OUTCOMES` (verified, verification-failed,
-//   verification-missing, stale-context, writer-failed, fix-failed) plus
-//   `not-reached` and `skipped`; the report switches on it exhaustively and
-//   throws on anything else. The wording of a finding is never parsed to decide
-//   an outcome.
+// - Each node ends in one tag from `OUTCOMES`: the ones a verification decides
+//   (`NODE_OUTCOMES` in verification-context.mjs — verified, verification-failed,
+//   verification-missing, stale-context, writer-failed, fix-failed,
+//   green-fix-failed) plus this workflow's own `not-reached` and `skipped`. The
+//   report switches on it exhaustively and throws on anything else. The wording
+//   of a finding is never parsed to decide an outcome.
 //
 // `<run dir>/status.json` is a read-only projection of the last observation:
 // outcome (`running`, `awaiting-approval`, `analysis-only`, `completed`,
@@ -1088,8 +1089,10 @@ function outcomeLines(node) {
       return notPassed
     case "fix-failed":
       return notPassed
+    case "green-fix-failed":
+      return "- Independent verification: NOT passed\n  - The green-chain fix writer returned no result; this node was not verified."
     case "writer-failed":
-      return "- Independent verification: NOT passed\n  - The writer returned no result; this node was not verified."
+      return `- Independent verification: NOT passed\n  - The writer returned no usable result; this node was not verified.${findings}`
     case "not-reached":
       return "- Independent verification: NOT passed\n  - The pipeline failed before a verification result was available."
     case "skipped":
@@ -1102,7 +1105,7 @@ function outcomeLines(node) {
 function reportMarkdown(report, green) {
   const nodes = report.nodes
     .map((n) => {
-      const cases = n.cases ?? []
+      const cases = (n.cases ?? [])
         .map(
           (c) =>
             `| ${c.caseId} | ${c.device} | ${c.verdict} | ${
@@ -1658,7 +1661,13 @@ const figmaAlign = defineWorkflow({
         return nodes
       })
       if (!wave.length) {
-        ctx.log("Nothing to align: the selection has no pending, non-mocked node.")
+        const reason = "Nothing to align: the selection has no pending, non-mocked node."
+        ctx.log(reason)
+        projectStatus({
+          outcome: "completed",
+          reason,
+          nextStep: `Nothing was written. Review ${repoPath(registryPath)} and the queue, then start a run for the nodes you want.`,
+        })
         return { runId: ctx.runId, wave: [], message: "nothing to align" }
       }
       ctx.log(
@@ -2057,10 +2066,18 @@ const figmaAlign = defineWorkflow({
             name: work[i].node.name,
             decision: work[i].decision.decision,
             reason: work[i].decision.reason,
+            summary: "",
             status: "failed",
             outcome: "not-reached",
             verified: false,
             findings: ["The pipeline failed before a verification result was available."],
+            rules: [],
+            comments: [],
+            designRequest: "",
+            preview: "",
+            openPoints: [],
+            commands: [],
+            files: [],
           }
         }).concat(
           // A skip is an outcome too: it is reported, with where the proposal

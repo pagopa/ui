@@ -161,7 +161,7 @@ async function loadWorkflow(workspace, externals) {
   return module.figmaAlign
 }
 
-function fixture() {
+function fixture({ registryStatus = "pending" } = {}) {
   const workspace = virtualWorkspace()
   for (const tree of VERIFICATION_TREES) workspace.directory(tree)
   for (const path of VERIFICATION_FILES) workspace.write(path, `fixture:${path}`)
@@ -212,7 +212,7 @@ function fixture() {
       entries: Object.fromEntries(
         nodes.map((nodeId, index) => [
           nodeId,
-          { status: "pending", target: { export: index ? "Beta" : "Alpha" } },
+          { status: registryStatus, target: { export: index ? "Beta" : "Alpha" } },
         ]),
       ),
     }),
@@ -262,7 +262,16 @@ const verified = (nodeId, name) => ({
 // A run is one attempt at the production `run`: the workflow throws out of the
 // pause, exactly as the engine does, and the next attempt re-enters with the
 // durable step cache the first attempt filled.
-function session({ agents = {}, commands = {}, storybookAnswers = true, token = SENTINEL } = {}) {
+function session({
+  agents = {},
+  commands = {},
+  storybookAnswers = true,
+  token = SENTINEL,
+  registryStatus = "pending",
+  // The engine can drop a node's pipeline result; a run must report that node
+  // rather than lose it.
+  dropNode = null,
+} = {}) {
   const steps = new Map()
   // A pause is durable: the engine resumes past it, so only the first call
   // throws and the re-entered run continues where it stopped.
@@ -274,7 +283,7 @@ function session({ agents = {}, commands = {}, storybookAnswers = true, token = 
   if (token === null) delete process.env.FIGMA_TOKEN
   else process.env.FIGMA_TOKEN = token
   const calls = { agents: [], phases: [], paused: 0, checks: [] }
-  const { workspace, nodes } = fixture()
+  const { workspace, nodes } = fixture({ registryStatus })
   const plan = {
     implementationOrder: nodes,
     pending: nodes,
@@ -374,6 +383,10 @@ function session({ agents = {}, commands = {}, storybookAnswers = true, token = 
       pipeline: async (items, writer, verifier, fixer) => {
         const results = []
         for (const item of items) {
+          if (item.node.nodeId === dropNode) {
+            results.push(null)
+            continue
+          }
           const written = await writer(item, item)
           const measured = await verifier(written)
           results.push(fixer ? await fixer(measured) : measured)
@@ -562,10 +575,55 @@ test("the status projection records a completed wave with its per-node outcome",
     ],
   )
   assert.match(status.report, /run-1\/report\.md$/)
+  // The checks are the run's own record: a label and an exit code per command
+  // it actually ran, so a projection never claims a gate it skipped.
+  const gates = [
+    "fmt",
+    "check:catalogue",
+    "check:rules",
+    "check:devices",
+    "check:evidence",
+    "check:parity",
+  ]
   assert.deepEqual(
-    status.checks.map((check) => check.label),
-    status.checks.map((check) => check.label),
+    status.checks.map((check) => check.label).filter((label) => gates.includes(label)),
+    gates,
   )
+  assert.deepEqual([...new Set(status.checks.map((check) => check.code))], [0])
+})
+
+test("the report renders one row per case instead of the array it holds", async () => {
+  const run = session()
+  await run.start({ approval: "auto", greenChain: false })
+  const report = run.read("report.md")
+  assert.match(report, /\| Alpha-default-mobile \| mobile \| verified \|/)
+  assert.match(report, /\| Beta-default-mobile \| mobile \| verified \|/)
+  assert.equal(report.includes("[object Object]"), false)
+})
+
+test("a node the pipeline drops is reported, not lost", async () => {
+  const run = session({ dropNode: "1:2" })
+  await run.start({ approval: "auto", greenChain: false })
+  const report = run.read("report.md")
+  assert.match(report, /## Beta \(`1:2`\) — the pipeline dropped it/)
+  assert.match(report, /- Node outcome: not-reached/)
+  assert.match(report, /- Independent verification: NOT passed/)
+  const dropped = run.status().nodes.find((node) => node.nodeId === "1:2")
+  assert.equal(dropped.outcome, "not-reached")
+  assert.equal(dropped.verified, false)
+  // The other node is still reported: a dropped node cannot take the wave with it.
+  assert.equal(run.status().nodes.find((node) => node.nodeId === "1:1").verified, true)
+})
+
+test("an empty wave finishes as a completed run that did no work", async () => {
+  const run = session({ registryStatus: "mocked" })
+  const { result } = await run.start({ approval: "auto", greenChain: false })
+  assert.equal(result.message, "nothing to align")
+  const status = run.status()
+  assert.equal(status.outcome, "completed")
+  assert.match(status.reason, /no pending, non-mocked node/)
+  assert.deepEqual(status.nodes, [])
+  assert.equal(run.outDirExists(), true)
 })
 
 test("a run that stops on a failure says so and keeps the error", async () => {
@@ -668,4 +726,21 @@ test("an analysis that returns nothing proposes a skip that is not a person's ch
     ],
   )
   assert.match(run.read("report.md"), /proposed after the analysis returned no result/i)
+})
+
+test("a green-chain fix that returns nothing names its own failure, not a stale context", async () => {
+  const run = session({
+    agents: { "green-fix": () => null },
+    // The chain stays red across both attempts: the fix writer is the thing
+    // that failed, and the node's own context never moved.
+    commands: { "nx run-many": { code: 1, stdout: "boom", stderr: "boom" } },
+  })
+  await run.start({ approval: "auto", greenChain: true })
+  const status = run.status()
+  assert.deepEqual(
+    status.nodes.map((node) => node.outcome),
+    ["green-fix-failed", "green-fix-failed"],
+  )
+  assert.match(run.read("report.md"), /green-chain fix writer returned no result/i)
+  assert.match(run.read("report.md"), /- Node outcome: green-fix-failed/)
 })

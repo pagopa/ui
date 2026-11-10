@@ -255,6 +255,7 @@ export const NODE_OUTCOMES = [
   "stale-context",
   "writer-failed",
   "fix-failed",
+  "green-fix-failed",
 ]
 
 function outcomeKind({
@@ -271,13 +272,15 @@ function outcomeKind({
   if (!alignment || alignment.nodeId !== nodeId) return "writer-failed"
   if (writerFailure) return "fix-failed"
   if (!verification || verification.nodeId !== nodeId) return "verification-missing"
+  // A failed green-chain fix is its own failure: the node's context never
+  // moved, and calling it stale sends the person to re-read the wrong thing.
+  if (greenFixFailed) return "green-fix-failed"
   const context = [startContext, endContext, finalContext]
   if (
     contextError ||
     !context.every((value) => typeof value === "string" && value) ||
     startContext !== endContext ||
-    endContext !== finalContext ||
-    greenFixFailed
+    endContext !== finalContext
   ) {
     return "stale-context"
   }

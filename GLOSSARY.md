@@ -97,7 +97,7 @@ A recorded question that needs a design or development decision before the affec
 _Avoid_: issue (for the request itself)
 
 **Node outcome**:
-The closed tag a drift run reports for one node: verified, verification-failed, verification-missing, stale-context, writer-failed, fix-failed, not-reached or skipped. It is switched on exhaustively; no outcome is read out of the wording of a finding.
+The closed tag a drift run reports for one node: verified, verification-failed, verification-missing, stale-context, writer-failed, fix-failed, green-fix-failed, not-reached or skipped. `NODE_OUTCOMES` holds the ones a verification decides; `not-reached` (the pipeline stopped first) and `skipped` (the person, or the analysis, chose not to align it) are the workflow's own. It is switched on exhaustively; no outcome is read out of the wording of a finding.
 _Avoid_: result (for the tag), verdict (for the tag)
 
 **Run status**:
