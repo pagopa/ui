@@ -14,7 +14,7 @@ evidence. Align on its head branch; the person pushes and merges.
    Otherwise preview `pnpm ui-cli figma handoff checkout <pr> --dry-run --json`,
    then run it without `--dry-run` under the session's filesystem permissions.
    It fetches the head, creates a sibling worktree named for the branch and
-   installs dependencies; a worktree already holding that branch is reused.
+   installs dependencies.
    Continue in its reported path. A destination holding something other than a
    worktree is a blocker, not permission to delete it.
 4. `pnpm ui-cli figma handoff brief <pr> --json` batches the PR body, delta

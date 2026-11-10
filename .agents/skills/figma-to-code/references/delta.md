@@ -9,9 +9,9 @@
    truncated. Report its `implementationOrder` and both counts; a higher
    `--limit` reads more of the delta. `--refresh` when rules or comments moved
    since the pin.
-3. Decide per node: implement, exclude with a reason, or leave pending with its
-   request path or blocker. A judgement call the source does not answer is a
-   design request, not an invention.
+3. Decide per node: implement, exclude with a reason, or leave pending, naming
+   the design-request file it waits on or its blocker. A judgement call the
+   source does not answer is a design request, not an invention.
 4. Write the catalogue: inventory, registry entry, guide, stories, exceptions.
    Statuses and what each one promises are in
    [catalogue/statuses.md](catalogue/statuses.md). A note states the residues the
