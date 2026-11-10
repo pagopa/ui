@@ -11,7 +11,7 @@ const context = new URL(
   "../../../../.github/extensions/figma-align/verification-context.mjs",
   import.meta.url,
 )
-// The preamble ceiling of the context budget: every sub-agent pays this once,
+// The preamble ceiling: every sub-agent pays this once,
 // so the card carries invariants only and the task each prompt adds stays small.
 const PREAMBLE_CEILING = 1024
 const TASK_CEILING = 1280

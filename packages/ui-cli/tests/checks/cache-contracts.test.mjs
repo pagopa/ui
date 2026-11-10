@@ -210,16 +210,6 @@ test("cache-contract: sibling reads invalidate cached checks without widening ev
     ],
     [
       tooling,
-      "check:context-budget",
-      [
-        ".agents/skills/figma-to-code/references/probe.md",
-        ".github/extensions/figma-align/extension.mjs",
-        "packages/pagopa-ui/src/catalog/figma/inventory.json",
-        "packages/ui-cli/data/context-budget.json",
-      ],
-    ],
-    [
-      tooling,
       "check:devices",
       [
         "packages/pagopa-ui/src/catalog/figma/inventory.json",

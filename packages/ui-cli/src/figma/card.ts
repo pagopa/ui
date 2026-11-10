@@ -5,7 +5,6 @@
 import fs from "node:fs"
 
 import type { Workspace } from "../adapters/workspace.ts"
-import { CONTEXT_BUDGET_LIMITS } from "../checks/context-budget-limits.ts"
 import { readJson } from "../lib/json.ts"
 import { CASES_PATH, isDraftCase, loadCaseFile } from "../parity/cases.ts"
 import { EVIDENCE_DIR, evidencePaths, loadManifest } from "../parity/evidence.ts"
@@ -18,9 +17,10 @@ import { compareSnapshots, normalizeLive } from "./snapshot.ts"
 const DEVICE_POLICY_PATH = "src/catalog/figma/device-policy.json"
 const LIVE_SNAPSHOT_PATH = ".figma/live-rest.json"
 
-// One ceiling, the one the context budget declares: the card trims to it here
-// rather than to a smaller private number the check would never see.
-const CARD_BUDGET = CONTEXT_BUDGET_LIMITS.card
+// The card's ceiling. `formatNodeCard` trims to it, so a node's record never
+// costs more than this to read; `node-card.test.mjs` asserts every node of the
+// committed inventory fits it.
+export const CARD_BUDGET = 1536
 const ITEM_LIMIT = 240
 const NOTE_LIMIT = 80
 const LABEL_WIDTH = 11
@@ -194,8 +194,8 @@ function nodeVerdict(
 export interface NodeCardOptions {
   /**
    * Read the gitignored `.figma/` exports the card can show: the open comment
-   * threads and the delta against the live file. The budget check measures the
-   * card both ways, so the ceiling covers what a session actually reads.
+   * threads and the delta against the live file. The ceiling covers the card
+   * both ways, so it bounds what a session actually reads.
    */
   readonly local?: boolean
   /** The gate results the verdict filters, read by the caller. */

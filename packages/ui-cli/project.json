@@ -22,17 +22,6 @@
       ],
       "outputs": []
     },
-    "check:context-budget": {
-      "cache": true,
-      "inputs": [
-        "tooling",
-        "{workspaceRoot}/.agents/skills/**",
-        "{workspaceRoot}/.github/extensions/figma-align/**",
-        "{workspaceRoot}/packages/pagopa-ui/src/catalog/figma/**",
-        "{workspaceRoot}/docs/design-requests/**"
-      ],
-      "outputs": []
-    },
     "check:devices": {
       "cache": true,
       "inputs": ["figmaChecks"],

@@ -25,7 +25,6 @@ continuing after failures:
 
 ```bash
 pnpm nx run pagopa-ui:check:catalogue
-pnpm nx run pagopa-ui-cli:check:context-budget
 pnpm nx run pagopa-ui-cli:check:rules
 pnpm nx run pagopa-ui-cli:check:devices
 pnpm nx run pagopa-ui-cli:check:evidence

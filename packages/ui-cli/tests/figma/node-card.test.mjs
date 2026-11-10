@@ -1,17 +1,21 @@
 // The node card: one bounded record per node, rendered as text and as JSON.
 // The seams under test are the card's own output — the record `buildNodeCard`
-// returns, the text `formatNodeCard` renders and the bytes the budget check
-// measures — plus the `figma brief --card` command contract. Nothing here
-// reaches inside the builder: a refactor that keeps the rendered card identical
-// must keep these tests green.
+// returns, the text `formatNodeCard` renders and the bytes the ceiling allows —
+// plus the `figma brief --card` command contract. Nothing here reaches inside
+// the builder: a refactor that keeps the rendered card identical must keep
+// these tests green.
 import assert from "node:assert/strict"
 import fs from "node:fs"
 import path from "node:path"
 import { test } from "node:test"
 import { fileURLToPath } from "node:url"
 
-import { CONTEXT_BUDGET_LIMITS, measureContextBudget } from "../../src/checks/context-budget.ts"
-import { buildNodeCard, formatNodeCard, readNodeCardGates } from "../../src/figma/card.ts"
+import {
+  CARD_BUDGET,
+  buildNodeCard,
+  formatNodeCard,
+  readNodeCardGates,
+} from "../../src/figma/card.ts"
 import { readInventory } from "../../src/figma/brief.ts"
 import { fixtureTree, runCli, workspaceAt } from "../helpers/cli.mjs"
 
@@ -341,7 +345,7 @@ test("a cut section carries a marker and the card stays under the ceiling", () =
     const lines = formatNodeCard(nodeCard(workspaceAt(fixture.root), "4:4"))
     const text = lines.join("\n")
     assert.ok(
-      Buffer.byteLength(text, "utf8") <= CONTEXT_BUDGET_LIMITS.card,
+      Buffer.byteLength(text, "utf8") <= CARD_BUDGET,
       `card is ${Buffer.byteLength(text)} bytes`,
     )
     assert.match(text, /… \+\d+ more/)
@@ -379,10 +383,9 @@ test("two runs on the same catalogue are byte-identical and carry no absolute pa
   }
 })
 
-// The budget must measure the card, and must measure it as a clean checkout
-// renders it: `.figma/` holds gitignored exports, so a laptop that has run
-// `figma pull` or `figma comments --refresh` must measure the same bytes as CI.
-test("the budget measures the card and ignores the gitignored exports", () => {
+// A clean checkout renders the deterministic card; the gitignored `.figma/`
+// exports a laptop has pulled only add to it, and the ceiling covers both.
+test("the local exports add to the card and the ceiling covers both", () => {
   const fixture = fixtureTree(
     {
       "src/catalog/figma/inventory.json": {
@@ -421,22 +424,17 @@ test("the budget measures the card and ignores the gitignored exports", () => {
       "evidence   (no evidence: run figma evidence)",
       "note       (no registry note)",
     ].join("\n")
-    const measured = (root, name) =>
-      measureContextBudget(workspaceAt(root), { routes: [] }).entries.find(
-        (candidate) => candidate.kind === "card" && candidate.name === name,
-      )
-    const clean = measured(fixture.root, "node card")
-    assert.ok(clean, "the deterministic card is measured")
-    assert.equal(clean.bytes, Buffer.byteLength(expected, "utf8"))
+    const workspace = workspaceAt(fixture.root)
+    const gates = readNodeCardGates(workspace)
+    const card = (local) =>
+      formatNodeCard(buildNodeCard(workspace, "4:4", { local, gates })).join("\n")
+    const clean = card(false)
+    assert.equal(clean, expected)
     assert.ok(
-      clean.bytes <= CONTEXT_BUDGET_LIMITS.card,
-      `the measured card is ${clean.bytes} bytes`,
+      Buffer.byteLength(clean, "utf8") <= CARD_BUDGET,
+      `the card is ${Buffer.byteLength(clean, "utf8")} bytes`,
     )
-    assert.equal(
-      measured(fixture.root, "node card with local comments and delta"),
-      undefined,
-      "no snapshot, no local card to measure",
-    )
+    assert.equal(card(true), clean, "no exports pulled, nothing to add")
 
     fs.mkdirSync(path.join(fixture.root, ".figma"), { recursive: true })
     fs.writeFileSync(
@@ -462,11 +460,15 @@ test("the budget measures the card and ignores the gitignored exports", () => {
       path.join(fixture.root, ".figma", "live-rest.json"),
       JSON.stringify({ nodes: {}, meta: { components: [], component_sets: [] } }),
     )
-    assert.equal(measured(fixture.root, "node card").bytes, clean.bytes)
-    const local = measured(fixture.root, "node card with local comments and delta")
-    assert.ok(local, "the card a session reads is measured once the snapshot exists")
-    assert.ok(local.bytes > clean.bytes, `local card is ${local.bytes} bytes`)
-    assert.ok(local.bytes <= CONTEXT_BUDGET_LIMITS.card, `the local card is ${local.bytes} bytes`)
+    const local = card(true)
+    assert.ok(
+      Buffer.byteLength(local, "utf8") > Buffer.byteLength(clean, "utf8"),
+      `the local card is ${Buffer.byteLength(local, "utf8")} bytes`,
+    )
+    assert.ok(
+      Buffer.byteLength(local, "utf8") <= CARD_BUDGET,
+      `the local card is ${Buffer.byteLength(local, "utf8")} bytes`,
+    )
   } finally {
     fixture.dispose()
   }
@@ -489,7 +491,7 @@ test("every node of the committed inventory fits the ceiling", { timeout: 300_00
       formatNodeCard(buildNodeCard(workspace, node, { local: false, gates })).join("\n"),
       "utf8",
     )
-    if (bytes > CONTEXT_BUDGET_LIMITS.card) oversized.push(`${node}: ${bytes} bytes`)
+    if (bytes > CARD_BUDGET) oversized.push(`${node}: ${bytes} bytes`)
   }
   assert.deepEqual(oversized, [])
 })

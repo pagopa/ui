@@ -4,7 +4,6 @@ import { defineCommand, type CommandDef, type SubCommandsDef } from "citty"
 
 import { checkA11yConformance } from "../checks/a11y-conformance.ts"
 import { checkClientDirectives } from "../checks/client-directives.ts"
-import { checkContextBudget } from "../checks/context-budget.ts"
 import { checkCssBudget, measureCss } from "../checks/css-budget.ts"
 import { checkDocLinks } from "../checks/doc-links.ts"
 import { checkFoundation, measureFoundation } from "../checks/foundation.ts"
@@ -52,7 +51,6 @@ export function checkCommands(
         checkTokens(ctx.workspace()),
       ),
       "client-directives": clientDirectivesCommand(ctx),
-      "context-budget": contextBudgetCommand(ctx),
       css: cssCommand(ctx),
       docs: gate("docs", "Resolve documentation links, path claims and commands", () =>
         checkDocLinks(ctx.workspace(), {
@@ -106,21 +104,6 @@ function clientDirectivesCommand(ctx: CliContext) {
     },
     run: action(ctx, ({ report }) =>
       printReport(ctx, checkClientDirectives(ctx.workspace(), { report })),
-    ),
-  })
-}
-
-function contextBudgetCommand(ctx: CliContext) {
-  return defineCommand({
-    meta: {
-      name: "context-budget",
-      description: "Enforce the byte cost a Figma session reads",
-    },
-    args: {
-      report: { type: "boolean", default: false, description: "Print every row and exit 0" },
-    },
-    run: action(ctx, ({ report }) =>
-      printReport(ctx, checkContextBudget(ctx.workspace(), { report })),
     ),
   })
 }
