@@ -51,7 +51,6 @@
         "{workspaceRoot}/infra/**/project.json",
         "{workspaceRoot}/packages/tokens/src/**",
         "{workspaceRoot}/packages/artwork/src/**",
-        "{workspaceRoot}/.github/extensions/figma-align/**",
         "{workspaceRoot}/docs/figma-parity/**",
         "{workspaceRoot}/apps/storybook/src/**",
         "{workspaceRoot}/packages/pagopa-ui/src/**",

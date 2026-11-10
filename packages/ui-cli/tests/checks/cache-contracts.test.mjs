@@ -246,8 +246,6 @@ test("cache-contract: sibling reads invalidate cached checks without widening ev
         "packages/artwork/src/assets/figma-icons/manifest.json",
         "packages/pagopa-ui/project.json",
         "docs/figma-parity/manifest.json",
-        ".github/extensions/figma-align/verification-context.mjs",
-        ".github/extensions/figma-align/extension.mjs",
       ],
     ],
   ]
