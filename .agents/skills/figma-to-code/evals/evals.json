@@ -59,9 +59,11 @@
       "expected_output": "The session checks the edited checkpoint against the wave it belongs to and reports every problem at once — the duplicated node, the decision outside the vocabulary, the node outside the wave and the nodes with no entry — then names the fix and the resume, without rewriting the file or starting a writer.",
       "expectations": [
         "Compares `decisions.json` with the wave in `decisions.md` and names the duplicate entry for `1:1`, not only the first problem it meets.",
-        "Names the decision `refactor` as outside the six (`implement`, `review`, `map`, `exclude`, `design-request`, `skip`) and `2:7` as a node the wave does not contain.",
+        "Flags `refactor` as not a valid decision.",
+        "Names `2:7` as a node the wave does not contain.",
         "Names the wave nodes the file leaves without an entry (`1:2` and `2:9`).",
-        "Leaves `decisions.json` as it found it and starts no writer: the answer is the problem list, the fix and the resume that follows the edit."
+        "Leaves `decisions.json` as it found it and starts no writer.",
+        "Names the fix and the resume that follows the edit (`run_dynamic_workflow { resumeFromRunId: \"eval-checkpoint\" }`)."
       ],
       "files": []
     }

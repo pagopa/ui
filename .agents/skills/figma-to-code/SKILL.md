@@ -17,7 +17,8 @@ Figma is read-only: read it over REST or MCP where
    delta's briefs. [Statuses](references/catalogue/statuses.md); done when target,
    guide, constraints, rules, comments and devices are read.
 3. **Decide.** Automation orders and measures, never decides: implement, exclude,
-   or leave pending with a request.
+   or leave pending with a request. A run that stopped at its checkpoint is read
+   from its own projection — [stopped-run.md](references/stopped-run.md).
 4. **Close.** [definition-of-done.md](references/definition-of-done.md).
 
 ## Routes
