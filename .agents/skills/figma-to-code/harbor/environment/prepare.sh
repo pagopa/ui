@@ -80,18 +80,20 @@ MD
 
 rm -f "$WORKSPACE/prepare.sh"
 
-# The scoped-queue task asks about a delta on three named nodes, and the live
-# Figma file has not moved on them: without a delta the task's own criterion
+# The scoped-queue task asks about a delta on named nodes, and the live Figma
+# file has not moved on them: without a delta the task's own criterion
 # ("scoped, never widened") is unsatisfiable, because only `--full` can name the
 # nodes. The delta exists by construction instead — the committed inventory is
 # staled on exactly those nodes, so the live read the task pins reports them as
-# changed. The other two tasks name nodes this leaves alone.
+# changed. The two are chosen for a narrow dependency closure: their affected
+# nodes fit the read's line cap, so one scoped read carries every fact the task
+# asks for. The other two tasks name nodes this leaves alone.
 node --input-type=module -e '
   import fs from "node:fs"
   import { createHash } from "node:crypto"
   const { compareSnapshots } = await import("./packages/ui-cli/src/figma/snapshot.ts")
   const file = "packages/pagopa-ui/src/catalog/figma/inventory.json"
-  const seeded = ["760:7432", "127:1510", "1293:8394"]
+  const seeded = ["1293:8394", "1333:16408"]
   const live = JSON.parse(fs.readFileSync(file, "utf8"))
   const inventory = JSON.parse(fs.readFileSync(file, "utf8"))
   for (const node of inventory.components) {

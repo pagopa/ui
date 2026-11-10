@@ -29,12 +29,12 @@
     {
       "id": 2,
       "name": "scoped-queue-triage",
-      "prompt": "The Figma library changed on nodes `760:7432`, `127:1510` and `1293:8394`. Triage that delta in this repository and stop at the decisions: read the batched context once, then name the work order and the decision for each node. Do not implement and do not run the workspace gates.",
+      "prompt": "The Figma library changed on nodes `1293:8394` and `1333:16408`. Triage that delta in this repository and stop at the decisions: read the batched context once, then name the work order and the decision for each node. Do not implement and do not run the workspace gates.",
       "expected_output": "The session pins the live source, reads the delta's briefs once through the scoped `figma brief --queue` read, reports the queue's implementation order and what it omitted or truncated, and closes with one reasoned decision per node without writing code or Figma.",
       "expectations": [
         "Pins the live source before the queue read: `pnpm ui-cli figma status`, then `pnpm ui-cli figma plan`, which reads the live file over REST by default, so the queue is scoped to this delta.",
         "Reads the batched context once with `pnpm ui-cli figma brief --queue` — scoped, never widened to `--full` — instead of one `figma brief --node` read per node.",
-        "Names the queue's scope: its `implementationOrder` plus how many pending nodes it omitted or truncated, and reconciles that with the three nodes named in the request.",
+        "Names the queue's scope: its `implementationOrder` plus how many pending nodes it omitted or truncated, and reconciles that with the nodes named in the request.",
         "Closes with one decision per node — implement, excluded, or pending with the open question and its design request named — without writing to Figma and without running the workspace gates."
       ],
       "files": []
