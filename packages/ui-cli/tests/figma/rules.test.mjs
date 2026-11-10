@@ -233,8 +233,8 @@ test("a stale card points at show and mark, not refresh", () => {
       (error) => error.includes("I1:2;3:3") && error.includes("stale"),
     )
     assert.ok(stale, "the gate reports the stale card")
-    assert.match(stale, /`pnpm ui-cli figma rules show I1:2;3:3`/)
-    assert.match(stale, /`pnpm ui-cli figma rules mark I1:2;3:3 --disposition <disposition>`/)
+    assert.match(stale, /`pnpm ui-cli figma rules show 'I1:2;3:3'`/)
+    assert.match(stale, /`pnpm ui-cli figma rules mark 'I1:2;3:3' --disposition <disposition>`/)
     assert.doesNotMatch(stale, /rules refresh/)
   } finally {
     tree.dispose()

@@ -634,7 +634,7 @@ export function check(
       )
     for (const id of diff.stale)
       errors.push(
-        `${id}: source changed since the review (stale) — read the current text with \`pnpm ui-cli figma rules show ${id}\`, re-mark it with \`pnpm ui-cli figma rules mark ${id} --disposition <disposition>\`, then run \`${RULES_GATE}\``,
+        `${id}: source changed since the review (stale) — read the current text with \`pnpm ui-cli figma rules show '${id}'\`, re-mark it with \`pnpm ui-cli figma rules mark '${id}' --disposition <disposition>\`, then run \`${RULES_GATE}\``,
       )
     for (const id of diff.removed)
       errors.push(
