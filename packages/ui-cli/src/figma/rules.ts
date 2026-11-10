@@ -627,18 +627,6 @@ export function check(
         }
       }
     }
-    // A component card that landed somewhere binds at least one node: without a
-    // target the imported rule reads as done while nothing renders it. A
-    // foundation card is the exception it exists for — it binds every component.
-    if (
-      card.scope === "component" &&
-      card.targets.length === 0 &&
-      RULE_DISPOSITIONS[card.disposition].needsTarget
-    ) {
-      errors.push(
-        `${id}: ${card.disposition} rule has no target — point it at the node it binds, then run \`${RULES_GATE}\``,
-      )
-    }
     if (card.disposition === "duplicate" && !ledger.cards[card.duplicateOf ?? ""]) {
       errors.push(
         `${id}: duplicateOf ${card.duplicateOf} is not in the ledger — point it at a ledger card, then run \`${RULES_GATE}\``,

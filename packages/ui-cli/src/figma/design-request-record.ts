@@ -19,14 +19,11 @@ export type DesignRequestRecord = {
   raw: string | null
   /** The body under `## Decision`, or null when the record has no such section. */
   decision: string | null
-  /** The record's own title, so a resumed run can tell it is the same question. */
-  title: string | null
 }
 
 const STATUS_LINE = /^\s*-?\s*\**Status\**:[ \t]*(.*)$/m
 const ISSUE_LINE = /^\s*-?\s*\**Issue\**:[ \t]*(https:\/\/\S+)/m
 const DECISION_HEADING = /^## Decision[ \t]*$/m
-const TITLE_LINE = /^#[ \t]+(\S.*)$/m
 
 export function readDesignRequestRecord(source: string): DesignRequestRecord {
   const issueUrl = source.match(ISSUE_LINE)?.[1] ?? null
@@ -36,7 +33,7 @@ export function readDesignRequestRecord(source: string): DesignRequestRecord {
   const heading = source.match(DECISION_HEADING)
   const body = heading?.index === undefined ? null : source.slice(heading.index + heading[0].length)
   const decision = body === null ? null : body.replace(/^[ \t]*\n+/, "").trimEnd()
-  return { issueUrl, state, raw, decision, title: source.match(TITLE_LINE)?.[1]?.trim() ?? null }
+  return { issueUrl, state, raw, decision }
 }
 
 /** The record a design request is opened with. */

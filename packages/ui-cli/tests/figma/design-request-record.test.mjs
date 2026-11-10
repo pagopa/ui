@@ -10,7 +10,7 @@ import {
   readDesignRequestRecord,
 } from "../../src/figma/design-request-record.ts"
 import {
-  configPath,
+  DEFAULT_REQUESTS_DIR,
   designPaths,
   parseFigmaConfig,
   readFigmaConfig,
@@ -121,20 +121,11 @@ test("opening a record writes the status the parser reads back", () => {
   assert.match(source, /- Decision owner: @gunzip/)
 })
 
-// The config declares every path the skill reads, and these are the ones a
-// module still spells out. The parse is only worth reading if it resolves the
-// same strings, so the duplication is asserted rather than trusted.
-test("the config declares the paths the modules default to", () => {
-  const config = parseFigmaConfig(configSource())
-  assert.equal(configPath(config, "catalog.inventory", ""), "src/catalog/figma/inventory.json")
-  assert.equal(configPath(config, "catalog.registry", ""), "src/catalog/figma/registry.json")
-  assert.equal(configPath(config, "catalog.rules", ""), "src/catalog/figma/rules.json")
-  assert.equal(
-    configPath(config, "catalog.devicePolicy", ""),
-    "src/catalog/figma/device-policy.json",
-  )
-  assert.equal(configPath(config, "figma.snapshot", ""), ".figma/live-rest.json")
-  assert.deepEqual(designPaths(config), {
+// The config declares the design paths the readers resolve, and these are the
+// values the modules fall back on. The parse is only worth reading if it
+// resolves the same strings, so the duplication is asserted rather than trusted.
+test("the config resolves the design paths the readers use", () => {
+  assert.deepEqual(designPaths(parseFigmaConfig(configSource())), {
     requests: "docs/design-requests",
     owners: ["gunzip"],
     preview: "https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net",
@@ -147,32 +138,40 @@ test("the config parser refuses a broken document rather than reading a partial 
     () => parseFigmaConfig("figma:\n  snapshot: .figma/x.json\n\tbad: ["),
     /figma-to-code\.yaml/,
   )
-  assert.throws(() => parseFigmaConfig("- item\n"), /not a mapping/)
+  assert.throws(() => parseFigmaConfig("- item\n"), /figma-to-code\.yaml/)
+  assert.throws(() => parseFigmaConfig("design:\n  owners: gunzip\n"), /design\.owners/)
 })
 
-test("a nested key keeps its dotted path", () => {
+test("a nested key is read through the block it sits in", () => {
   const config = parseFigmaConfig("design:\n  preview:\n    url: a\n    branch: b\n  requests: c\n")
-  assert.equal(configPath(config, "design.preview.url", ""), "a")
-  assert.equal(configPath(config, "design.preview.branch", ""), "b")
-  assert.equal(configPath(config, "design.requests", ""), "c")
+  assert.deepEqual(designPaths(config), {
+    requests: "c",
+    owners: [],
+    preview: "a",
+    previewBranch: "b",
+  })
 })
 
 test("a list of scalars is read as a list", () => {
   const config = parseFigmaConfig("design:\n  owners:\n    - gunzip\n    - someone\n")
-  assert.deepEqual(config.lists["design.owners"], ["gunzip", "someone"])
+  assert.deepEqual(designPaths(config).owners, ["gunzip", "someone"])
 })
 
 test("a comment after a value is not part of it", () => {
-  const config = parseFigmaConfig("catalog:\n  inventory: src/x.json  # the inventory\n")
-  assert.equal(configPath(config, "catalog.inventory", ""), "src/x.json")
+  const config = parseFigmaConfig("design:\n  requests: docs/questions  # moved here\n")
+  assert.equal(designPaths(config).requests, "docs/questions")
 })
 
 test("a workspace with no config falls back on the default path", () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "ui-cli-config-"))
   try {
     const workspace = { root, workspaceRoot: root, path: (file) => path.join(root, file) }
-    assert.deepEqual(readFigmaConfig(workspace).values, {})
-    assert.equal(configPath(readFigmaConfig(workspace), "design.requests", "fallback"), "fallback")
+    assert.deepEqual(designPaths(readFigmaConfig(workspace)), {
+      requests: DEFAULT_REQUESTS_DIR,
+      owners: [],
+      preview: "none",
+      previewBranch: "",
+    })
   } finally {
     fs.rmSync(root, { recursive: true, force: true })
   }

@@ -40,16 +40,10 @@ export type RuleRequirement =
 
 /**
  * The card's state machine, one row per disposition: what the card must carry,
- * whether marking it stamps a review date, whether it leaves the library, and
- * whether it claims to bind nodes. The schema, `rules mark` and `rules check`
- * all read this table — they used to each spell the requirements out on their
- * own, so `mark` accepted cards the schema then rejected with a raw parser
- * error, and `check` graded a third time.
- *
- * `needsTarget` is the per-disposition half of the target rule: a component card
- * that claims to be implemented binds a node. The schema enforces the other
- * half, that every component card names a target at all, which holds whichever
- * disposition the card carries.
+ * whether marking it stamps a review date, and whether it leaves the library. The
+ * schema and `rules mark` both read this table — they used to spell the
+ * requirements out on their own, so `mark` accepted cards the schema then
+ * rejected with a raw parser error.
  */
 export const RULE_DISPOSITIONS: Record<
   RuleDisposition,
@@ -57,52 +51,20 @@ export const RULE_DISPOSITIONS: Record<
     requires: readonly RuleRequirement[]
     reviewed: boolean
     withdrawn: boolean
-    needsTarget: boolean
   }
 > = {
-  pending: { requires: [], reviewed: false, withdrawn: false, needsTarget: false },
+  pending: { requires: [], reviewed: false, withdrawn: false },
   imported: {
     requires: ["titleEn", "summary", "guide", "reviewedAt"],
     reviewed: true,
     withdrawn: false,
-    needsTarget: true,
   },
-  recorded: {
-    requires: ["titleEn", "summary", "reviewedAt"],
-    reviewed: true,
-    withdrawn: false,
-    needsTarget: true,
-  },
-  duplicate: {
-    requires: ["titleEn", "duplicateOf", "summary"],
-    reviewed: true,
-    withdrawn: false,
-    needsTarget: false,
-  },
-  "out-of-scope": {
-    requires: ["titleEn", "reason"],
-    reviewed: true,
-    withdrawn: false,
-    needsTarget: false,
-  },
-  deferred: {
-    requires: ["titleEn", "reason"],
-    reviewed: true,
-    withdrawn: false,
-    needsTarget: false,
-  },
-  conflict: {
-    requires: ["titleEn", "request", "reviewedAt"],
-    reviewed: true,
-    withdrawn: false,
-    needsTarget: false,
-  },
-  removed: {
-    requires: ["titleEn", "removedAt"],
-    reviewed: true,
-    withdrawn: true,
-    needsTarget: false,
-  },
+  recorded: { requires: ["titleEn", "summary", "reviewedAt"], reviewed: true, withdrawn: false },
+  duplicate: { requires: ["titleEn", "duplicateOf", "summary"], reviewed: true, withdrawn: false },
+  "out-of-scope": { requires: ["titleEn", "reason"], reviewed: true, withdrawn: false },
+  deferred: { requires: ["titleEn", "reason"], reviewed: true, withdrawn: false },
+  conflict: { requires: ["titleEn", "request", "reviewedAt"], reviewed: true, withdrawn: false },
+  removed: { requires: ["titleEn", "removedAt"], reviewed: true, withdrawn: true },
 }
 
 /** What a requirement is called when it is missing, in the schema's words. */

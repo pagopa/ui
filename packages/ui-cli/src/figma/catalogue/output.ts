@@ -73,8 +73,7 @@ export function renderCataloguePlan(input: {
   requests: string
 }): string {
   const snapshot = input.live ?? input.committed
-  const workSet = deltaWorkSet(input.delta, input.entries)
-  const selected = new Set(workSet.queue)
+  const selected = new Set(deltaWorkSet(input.delta, input.entries))
   const designRequest = requestPointer(input.requests)
   const pending = Object.entries(input.entries)
     .filter(([, entry]) => entry.status === "pending")
@@ -96,9 +95,6 @@ export function renderCataloguePlan(input: {
       ...delta,
       snapshotVersion: input.liveVersion ?? null,
       implementationOrder: implementationOrder(snapshot, selected),
-      // A mocked node the delta reopened is not work, but calling the read
-      // complete while the file changed would hide the decision it keeps.
-      withheld: workSet.withheld,
       pending,
       surfaceWaiting: input.surfaceWaiting,
       surfaceUnmirrored: input.surfaceUnmirrored,

@@ -6,13 +6,14 @@ import {
   NOTE_LENGTH_BASELINE_PATH,
   type Inventory,
   type InventoryNode,
+  NOTE_LENGTH_LIMIT,
   type NoteLengthBaseline,
   type PageSurface,
   type PageSurfacePage,
   type Registry,
 } from "../schemas/catalogue.ts"
 import type { SnapshotDelta } from "./snapshot.ts"
-import { escapeRegExp, requestsFolder, requestPointer } from "./config.ts"
+import { escapeRegExp } from "./config.ts"
 import { keepsStatusOnDrift } from "./surface-decision.ts"
 import { deltaChangedNodes } from "./work-set.ts"
 import { loadPageSurface, PAGE_SURFACE_PATH } from "./surface.ts"
@@ -49,48 +50,41 @@ function dropKeys<T>(record: Record<string, T>, keys: Set<string>): Record<strin
   return Object.fromEntries(Object.entries(record).filter(([key]) => !keys.has(key)))
 }
 
-// The line a renewal writes. `renewedNote` writes it and the residue reader has
-// to recognise it, so both read the one sentence: a copy of it would drift and
-// start reporting the renewal's own line as prose the author wrote. Anchored,
+// The line a renewal writes. A renewal reads a previous one back so repeated
+// renewals do not stack lines, and both read the one sentence: a copy would
+// drift and start carrying the renewal's own line forward as prose. Anchored,
 // because the sentence only means "a previous renewal wrote this" where a note
 // starts; a note that quotes it is saying something else.
 const RENEWAL_TAIL = "review new/changed node or dependency before marking implemented"
 const DATE_TOKEN = "@date@"
 const renewalLine = (date: string) => `Figma delta ${date}: ${RENEWAL_TAIL}`
 const RENEWAL_PREFIX = new RegExp(
-  `^\\s*${escapeRegExp(renewalLine(DATE_TOKEN)).replace(DATE_TOKEN, "\\d{4}-\\d{2}-\\d{2}")}`,
+  `^\\s*${escapeRegExp(renewalLine(DATE_TOKEN)).replace(DATE_TOKEN, "\\d{4}-\\d{2}-\\d{2}")}[.:]?\\s*`,
 )
 
 /**
- * The note a renewal writes: the boilerplate, plus the open design questions the
- * previous note pointed at. `residue` is whatever else the previous note said —
- * the registry's note states the current residues rather than the history, so
- * the rest is discarded, and the caller reports it instead of dropping it.
+ * The note a renewal writes: its own line, then what the previous note said, with
+ * a previous renewal line removed. The registry's note states the current
+ * residues rather than the history, but the words are the author's review and a
+ * renewal has no business discarding them: the length limit is the only thing
+ * that shortens the note, and what falls past it comes back to be reported.
  */
 function renewedNote(
   previous: string | undefined,
   boilerplate: string,
-  requests: string,
-): { note: string; residue: string } {
-  const pointer = requestPointer(requests)
-  const pointers = [...new Set(Array.from((previous ?? "").matchAll(pointer), (match) => match[0]))]
-  const residue = (previous ?? "")
-    .replace(pointer, " ")
-    .replace(RENEWAL_PREFIX, "")
-    .replace(/Open design question:\s*/i, " ")
-    .replace(/\s+/g, " ")
-    // What the removals leave behind is separators, not the author's prose: the
-    // leading run goes, and whatever punctuation follows belongs to the words.
-    .replace(/^[.,;:\s]+/, "")
-    .trim()
-  if (!pointers.length) return { note: boilerplate, residue }
-  return {
-    note: `${boilerplate}. Open design question: ${pointers.join(", ")}`,
-    residue,
-  }
+): { note: string; dropped: string | null } {
+  const carried = (previous ?? "").replace(RENEWAL_PREFIX, "").trim()
+  if (!carried) return { note: boilerplate, dropped: null }
+  const note = `${boilerplate}. ${carried}`
+  if (note.length <= NOTE_LENGTH_LIMIT) return { note, dropped: null }
+  const kept = carried
+    .slice(0, NOTE_LENGTH_LIMIT - boilerplate.length - 2)
+    .replace(/\s+\S*$/, "")
+    .trimEnd()
+  return { note: `${boilerplate}. ${kept}`, dropped: carried.slice(kept.length).trim() }
 }
 
-function renewRegistry(registry: Registry, delta: SnapshotDelta, date: string, requests: string) {
+function renewRegistry(registry: Registry, delta: SnapshotDelta, date: string) {
   registry.entries ??= {}
   const renewed = new Set<string>()
   const removed = new Set<string>()
@@ -115,12 +109,11 @@ function renewRegistry(registry: Registry, delta: SnapshotDelta, date: string, r
       )
       continue
     }
-    const { note, residue } = renewedNote(previous?.note, renewalLine(date), requests)
-    if (residue) {
+    const { note, dropped } = renewedNote(previous?.note, renewalLine(date))
+    if (dropped)
       notices.push(
-        `${nodeId} renewed: its note dropped "${residue}" — carry anything still owed into the new note`,
+        `${nodeId} renewed: its previous note was too long to carry past ${NOTE_LENGTH_LIMIT} characters — it dropped "${dropped}", carry anything still owed into the new note`,
       )
-    }
     registry.entries[nodeId] = { ...previous, status: "pending", note }
     renewed.add(nodeId)
   }
@@ -236,8 +229,7 @@ export function prepareCatalogueRefresh(
     components: live,
   }
   const registry: Registry = structuredClone(previousRegistry)
-  const requests = requestsFolder(workspace)
-  const { renewed, removed, notices } = renewRegistry(registry, delta, date, requests)
+  const { renewed, removed, notices } = renewRegistry(registry, delta, date)
   const nextEvidenceExceptions = dropKeys(
     options.evidenceExceptions,
     new Set([...renewed, ...removed]),

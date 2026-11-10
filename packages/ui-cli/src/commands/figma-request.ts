@@ -26,7 +26,7 @@ export function requestCommand(ctx: CliContext) {
       )
       if (json) printJson(ctx.io, report)
       else {
-        const verb = report.dryRun ? "would open" : report.resumed ? "resumed" : "opened"
+        const verb = report.dryRun ? "would open" : "opened"
         ctx.io.out(`${verb}: ${report.path}${report.issueUrl ? ` · ${report.issueUrl}` : ""}`)
         for (const planned of report.actions) ctx.io.out(`  ${planned}`)
       }

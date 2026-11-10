@@ -1,9 +1,11 @@
 import fs from "node:fs"
 
 import yaml from "js-yaml"
+import { z } from "zod"
 
 import type { Workspace } from "../adapters/workspace.ts"
 import { UsageError } from "../lib/command.ts"
+import { parseSchema } from "../lib/validate.ts"
 
 /**
  * `figma-to-code.yaml` is the one place the skill's paths are declared, and the
@@ -16,121 +18,43 @@ export const CONFIG_PATH = "figma-to-code.yaml"
 /** The design-request folder a checkout without the config keeps using. */
 export const DEFAULT_REQUESTS_DIR = "docs/design-requests"
 
-type Yaml = Record<string, unknown>
+// Only the keys a module reads. The file declares more, and a key every reader
+// defaults over is not a key anything resolves: reading it here would make the
+// config a second source of truth that no code consults.
+const FigmaConfigSchema = z.looseObject({
+  design: z
+    .looseObject({
+      requests: z.string().optional(),
+      owners: z.array(z.string()).optional(),
+      preview: z
+        .looseObject({ url: z.string().optional(), branch: z.string().optional() })
+        .optional(),
+    })
+    .optional(),
+})
 
-function isMapping(value: unknown): value is Yaml {
-  return typeof value === "object" && value !== null && !Array.isArray(value)
-}
+export type FigmaConfig = z.infer<typeof FigmaConfigSchema>
 
-/**
- * The file with its dotted keys flattened, so a caller asks for
- * `catalog.inventory` instead of walking a chain of possibly-missing objects.
- * A scalar where a block belongs (or the reverse) is an error, not a `null` the
- * caller reads as absent.
- */
-function flatten(
-  value: Yaml,
-  prefix: string,
-  values: Record<string, string>,
-  lists: Record<string, string[]>,
-): void {
-  for (const [key, entry] of Object.entries(value)) {
-    const dotted = prefix ? `${prefix}.${key}` : key
-    if (Array.isArray(entry)) {
-      lists[dotted] = entry.map((item) => {
-        if (typeof item !== "string")
-          throw new UsageError(`${CONFIG_PATH}: "${dotted}" holds a non-scalar item`)
-        return item
-      })
-      continue
-    }
-    if (typeof entry === "string") {
-      values[dotted] = entry
-      continue
-    }
-    if (typeof entry === "number" || typeof entry === "boolean") {
-      values[dotted] = String(entry)
-      continue
-    }
-    if (isMapping(entry)) {
-      flatten(entry, dotted, values, lists)
-      continue
-    }
-    if (entry === null || entry === undefined) continue
-    throw new UsageError(`${CONFIG_PATH}: "${dotted}" holds a value the readers cannot read`)
-  }
-}
-
-export type FigmaToolConfig = {
-  /** Every scalar by its dotted key, e.g. `catalog.inventory`. */
-  values: Record<string, string>
-  /** Every list by its dotted key, e.g. `design.owners`. */
-  lists: Record<string, string[]>
-}
-
-export function parseFigmaConfig(source: string): FigmaToolConfig {
-  let parsed: unknown
+export function parseFigmaConfig(source: string): FigmaConfig {
+  let loaded: unknown
   try {
-    parsed = yaml.load(source)
+    loaded = yaml.load(source)
   } catch (error) {
     throw new UsageError(
       `${CONFIG_PATH}: ${error instanceof Error ? error.message.split("\n")[0] : String(error)}`,
     )
   }
-  if (parsed === null || parsed === undefined) return { values: {}, lists: {} }
-  if (!isMapping(parsed)) throw new UsageError(`${CONFIG_PATH}: the file is not a mapping`)
-  const values: Record<string, string> = {}
-  const lists: Record<string, string[]> = {}
-  flatten(parsed, "", values, lists)
-  return { values, lists }
+  try {
+    return parseSchema(FigmaConfigSchema, loaded ?? {}, CONFIG_PATH)
+  } catch (error) {
+    throw new UsageError(error instanceof Error ? error.message : String(error))
+  }
 }
 
-export function readFigmaConfig(workspace: Workspace): FigmaToolConfig {
+export function readFigmaConfig(workspace: Workspace): FigmaConfig {
   const file = workspace.path(CONFIG_PATH)
-  if (!fs.existsSync(file)) return { values: {}, lists: {} }
+  if (!fs.existsSync(file)) return {}
   return parseFigmaConfig(fs.readFileSync(file, "utf8"))
-}
-
-/**
- * A path the config declares, with the default a checkout without the file keeps
- * using. The fallbacks are the values the modules used before the config was
- * read, so a workspace that carries the file and one that does not resolve the
- * same path.
- */
-export function configPath(config: FigmaToolConfig, key: string, fallback: string): string {
-  return config.values[key] || fallback
-}
-
-export function configList(config: FigmaToolConfig, key: string): string[] {
-  return config.lists[key] ?? []
-}
-
-/** A literal string, ready to sit inside a `RegExp` source. */
-export function escapeRegExp(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-}
-
-/**
- * The pattern that finds a design-request pointer inside a registry note. Three
- * readers scanned notes for the same shape, each with its own copy of the
- * folder, so a config that moved the requests left two of them scanning a path
- * that no longer exists.
- *
- * The folder is required for that reason: it belongs to `designPaths(...)` and a
- * default would put a reader back on a path the config had moved away from.
- */
-export function requestPointer(folder: string): RegExp {
-  const escaped = escapeRegExp(folder.replace(/\/$/, ""))
-  return new RegExp(`\\b${escaped}/[\\w./-]+\\.md\\b`, "g")
-}
-
-/**
- * The design-request folder this workspace resolves. Six readers each spelled
- * `designPaths(readFigmaConfig(workspace)).requests`, which is one decision
- * written six times; a reader that needs the folder asks for it here.
- */
-export function requestsFolder(workspace: Workspace): string {
-  return designPaths(readFigmaConfig(workspace)).requests
 }
 
 export type DesignConfig = {
@@ -140,11 +64,42 @@ export type DesignConfig = {
   previewBranch: string
 }
 
-export function designPaths(config: FigmaToolConfig): DesignConfig {
+/**
+ * The design paths every reader resolves. The fallbacks are the values the
+ * modules used before the config was read, so a workspace that carries the file
+ * and one that does not resolve the same path.
+ */
+export function designPaths(config: FigmaConfig): DesignConfig {
+  const design = config.design ?? {}
   return {
-    requests: configPath(config, "design.requests", DEFAULT_REQUESTS_DIR),
-    owners: configList(config, "design.owners"),
-    preview: configPath(config, "design.preview.url", "none"),
-    previewBranch: configPath(config, "design.preview.branch", ""),
+    requests: design.requests || DEFAULT_REQUESTS_DIR,
+    owners: design.owners ?? [],
+    preview: design.preview?.url || "none",
+    previewBranch: design.preview?.branch ?? "",
   }
+}
+
+/**
+ * The design-request folder this workspace resolves. Five readers each spelled
+ * the folder out, so a config that moved the requests left them scanning a path
+ * that no longer exists; a reader that needs the folder asks for it here.
+ */
+export function requestsFolder(workspace: Workspace): string {
+  return designPaths(readFigmaConfig(workspace)).requests
+}
+
+/** A literal string, ready to sit inside a `RegExp` source. */
+export function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+}
+
+/**
+ * The pattern that finds a design-request pointer inside a registry note.
+ *
+ * The folder is required: it belongs to `designPaths(...)` and a default would
+ * put a reader back on a path the config had moved away from.
+ */
+export function requestPointer(folder: string): RegExp {
+  const escaped = escapeRegExp(folder.replace(/\/$/, ""))
+  return new RegExp(`\\b${escaped}/[\\w./-]+\\.md\\b`, "g")
 }

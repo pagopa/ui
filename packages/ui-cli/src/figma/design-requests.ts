@@ -228,10 +228,11 @@ function validateNode(
   if (entry?.status !== "pending")
     throw new UsageError(`${input.nodeId} must remain pending while its design request is open`)
   const pointer = `Design request: ${record}`
-  // A resumed run writes the same pointer again: appending it twice would grow
-  // the note every attempt and eventually cross the limit for no reason.
-  const existing = entry.note?.includes(pointer) ? entry.note.trim() : null
-  const note = existing ?? [entry.note?.trim(), pointer].filter(Boolean).join("\n")
+  // A reopened slug after a deleted record meets its own pointer again; appending
+  // it twice would grow the note for no reason.
+  const note = entry.note?.includes(pointer)
+    ? entry.note.trim()
+    : [entry.note?.trim(), pointer].filter(Boolean).join("\n")
   if (note.length > NOTE_LENGTH_LIMIT)
     throw new UsageError(
       `${input.nodeId} registry note would exceed ${NOTE_LENGTH_LIMIT} characters`,
@@ -254,37 +255,24 @@ export function openDesignRequest(
   issueUrl: string | null
   actions: string[]
   dryRun: boolean
-  /** The record already existed: the run finished its writes instead of opening again. */
-  resumed: boolean
 } {
   const input = parseInput(fs.readFileSync(inputFile, "utf8"))
   const config = designPaths(readFigmaConfig(workspace))
   const target = recordPath(workspace, config.requests, day, input.slug)
-  // `gh issue create` runs before the record is written, so a run that dies
-  // between the two leaves an issue with no record anywhere — nothing can
-  // recover that one. A run that dies after the write leaves the record, and
-  // refusing it would strand the issue it names while a rerun opened a second;
-  // an open record therefore resumes from its issue instead of starting over.
-  const existing = fs.existsSync(target.absolute)
-    ? readDesignRequestRecord(fs.readFileSync(target.absolute, "utf8"))
-    : null
-  if (existing && existing.state !== "open")
+  // A record that already exists is refused rather than rewritten: `gh issue
+  // create` would ask the same question a second time, and overwriting the note
+  // would leave the issue and the record disagreeing about what is being asked.
+  if (fs.existsSync(target.absolute)) {
+    const existing = readDesignRequestRecord(fs.readFileSync(target.absolute, "utf8"))
+    if (existing.state !== "open")
+      throw new UsageError(
+        `design request record ${target.relative} is ${existing.state} — open a new slug for a new question`,
+      )
+    const issue = existing.issueUrl ? ` (${existing.issueUrl})` : ""
     throw new UsageError(
-      `design request record ${target.relative} is ${existing.state} — open a new slug for a new question`,
+      `design request record ${target.relative} already exists${issue} — edit it, or open a new slug`,
     )
-  if (existing && !existing.issueUrl)
-    throw new UsageError(
-      `design request record ${target.relative} names no issue — add its "- Issue:" line or delete it`,
-    )
-  // The record is the question, not a scratch file: a rerun whose input asks
-  // something else would otherwise keep the old issue and write a note from the
-  // new input, leaving the two disagreeing about what is being asked. A record
-  // with no `# ` heading states no question to disagree with — an older or a
-  // hand-written record — so it resumes.
-  if (existing?.title && existing.title !== input.title)
-    throw new UsageError(
-      `design request record ${target.relative} asks "${existing.title}" — this input asks "${input.title}": edit the record, or open a new slug`,
-    )
+  }
   const node = validateNode(workspace, input, target.relative)
   if (input.rulesCard)
     markRule(workspace, {
@@ -304,34 +292,20 @@ export function openDesignRequest(
   for (const label of labels) create.push("--label", label)
   for (const owner of config.owners) create.push("--assignee", owner)
   const actions = [
-    ...(existing ? [] : [`gh ${create.join(" ")}`]),
-    ...(existing ? [] : [`write ${target.relative}`]),
+    `gh ${create.join(" ")}`,
+    `write ${target.relative}`,
     ...(node ? [`write registry note for ${input.nodeId}`] : []),
     ...(input.rulesCard
       ? [`mark rules card ${input.rulesCard} as conflict -> ${target.relative}`]
       : []),
   ]
-  if (dryRun)
-    return {
-      path: target.relative,
-      issueUrl: null,
-      actions,
-      dryRun: true,
-      resumed: Boolean(existing),
-    }
-  let issueUrl = existing?.issueUrl ?? null
-  if (!issueUrl) {
-    const output = gh(create, workspace.workspaceRoot)
-    issueUrl =
-      output.split(/\s+/).find((word) => /^https:\/\/[^\s]+\/issues\/\d+$/.test(word)) ?? null
-    if (!issueUrl) throw new Error(`gh issue create did not return an issue URL: ${output}`)
-  }
-  // Each step is idempotent on its own, so a resumed run finishes the writes a
-  // previous one did not reach.
-  if (!existing) {
-    fs.mkdirSync(path.dirname(target.absolute), { recursive: true })
-    writeText(target.absolute, recordContent(input, issueUrl, config.owners, config.preview))
-  }
+  if (dryRun) return { path: target.relative, issueUrl: null, actions, dryRun: true }
+  const output = gh(create, workspace.workspaceRoot)
+  const issueUrl =
+    output.split(/\s+/).find((word) => /^https:\/\/[^\s]+\/issues\/\d+$/.test(word)) ?? null
+  if (!issueUrl) throw new Error(`gh issue create did not return an issue URL: ${output}`)
+  fs.mkdirSync(path.dirname(target.absolute), { recursive: true })
+  writeText(target.absolute, recordContent(input, issueUrl, config.owners, config.preview))
   if (node) writeJson(node.registryFile, node.updated)
   if (input.rulesCard)
     markRule(workspace, {
@@ -339,7 +313,7 @@ export function openDesignRequest(
       disposition: "conflict",
       request: target.relative,
     })
-  return { path: target.relative, issueUrl, actions, dryRun: false, resumed: Boolean(existing) }
+  return { path: target.relative, issueUrl, actions, dryRun: false }
 }
 
 export function listDesignRequests(

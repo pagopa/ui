@@ -252,7 +252,7 @@ export function renderCatalogueDelta(context: CatalogueRenderContext) {
     bulkByNode.get(node.nodeId)?.status ??
     bulkByPage.get(node.pageId)?.status ??
     "unaccounted"
-  const selected = new Set(deltaWorkSet(delta, entries).queue)
+  const selected = new Set(deltaWorkSet(delta, entries))
   return {
     generatedAt: new Date().toISOString(),
     fileKey: inventory.fileKey,
