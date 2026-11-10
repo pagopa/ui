@@ -822,7 +822,7 @@ ${nodeContext(node)}
 The writer reported: ${JSON.stringify(alignment)}
 
 Check (references/definition-of-done.md, visual-parity.md and rules.md):
-1. The card at ${cardRef(node)} closes the rules and carries the comments: no rule that targets the node is \`pending\` or \`stale\`; every imported rule is in the guide's first block under \`## Component Rules\`; each open comment is answered by the source or points at a design request. A design request has its record, issue URL, owner handles, preview links or a stated handoff for the preview work, and the conflicting card points at the record.
+1. The card at ${cardRef(node)} and the detail its \`detail\` line names are the pre-write snapshot: they carry the rule bodies and the thread texts, not the state to verify. Judge completion from the current records: the ledger \`${config.catalog.rules}\` (each card's \`disposition\`, \`title\` and \`targets\`), the consolidated snapshot \`.figma/rules.json\`, the registry \`${config.catalog.registry}\` (status, target, note) and the request records under \`${designConfig(config).requests}\`. Then: no rule that targets the node is \`pending\` or \`stale\`; every \`imported\` one is in the guide's first block under \`## Component Rules\`; each open comment is answered by the source or points at a design request. A design request has its record, issue URL, owner handles, preview links or a stated handoff for the preview work, and the conflicting card points at the record.
 2. \`pnpm ui-cli parity check --case <caseId>\` reproduces every case the node has — list them with \`pnpm ui-cli parity capture --saved --node ${node.nodeId} --dry-run\`, which prints \`<caseId> <nodeId> <storyId>\`; for a device axis \`--node ${node.nodeId} --devices\` shows a reviewed passing case per declared device or a reasoned device exception.
 3. Every residue has a reason; no inline [Npx] values or off-token colours in the touched component (token ladder); the story is framed at the source width with parameters.design = figmaEmbedUrl; the guide records the source mapping; props follow .agents/skills/pagopa-ui-standards/references/prop-conventions.md or the departure is in the note.
 4. The registry entry is consistent with the outcome: implemented has target.module/export/story/storyExports; pending names its blocker or design request; excluded has a reason.
@@ -842,7 +842,7 @@ Writer report: ${JSON.stringify(alignment)}
 Verification findings: ${JSON.stringify(verification.findings)}
 Case verdicts: ${JSON.stringify(verification.cases)}
 
-Fix each finding with the token ladder, re-run and re-save the affected cases (--save-case --note "reviewed: …"), re-read the card at ${cardRef(node)} and close any rule or comment finding through \`figma:rules mark\`, keep the registry consistent, then \`pnpm nx run pagopa-ui:check:catalogue\`. A finding you cannot close becomes a residue with its reason or a blocker in the registry note, never a silent pass.
+Fix each finding with the token ladder, re-run and re-save the affected cases (--save-case --note "reviewed: …"), re-read the card at ${cardRef(node)} and close any rule or comment finding through \`figma:rules mark\` — the card is the pre-write snapshot, and \`${config.catalog.rules}\` carries the disposition to mark now — keep the registry consistent, then \`pnpm nx run pagopa-ui:check:catalogue\`. A finding you cannot close becomes a residue with its reason or a blocker in the registry note, never a silent pass.
 
 Return the same JSON shape as the writer, updated.`
 }
@@ -1344,15 +1344,18 @@ const figmaAlign = defineWorkflow({
           ids = [...ordered, ...rest].slice(0, opts.waveSize)
         }
         // The card is the one bounded read every sub-agent of this node shares,
-        // so the brief runs once per node and never again.
+        // so the brief runs once per node and never again. Only exit 0 with a
+        // body is a card: the CLI reports a catalogue or ledger error on stderr
+        // and leaves stdout empty, so a blank read must reach the blocker.
         const cardOf = async (id) => {
           const path = join(outDir, "cards", `${id.replace(/:/g, "-")}.txt`)
           try {
             const { stdout } = await run(
               "pnpm",
               ["nx", "run", "pagopa-ui-cli:figma:brief", "--node", id, "--card"],
-              { signal, allowExit: [0, 1] },
+              { signal },
             )
+            if (!stdout.trim()) throw new Error("the brief exited 0 with no card on stdout")
             mkdirSync(dirname(path), { recursive: true })
             writeFileSync(path, stdout.endsWith("\n") ? stdout : `${stdout}\n`)
             return { card: path, cardError: "" }

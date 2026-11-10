@@ -139,6 +139,7 @@ export function formatBrief(report: NodeBrief, hasLedger = true): string[] {
   if (report.page) lines.push(`page       ${report.page}`)
   lines.push(`status     ${report.status ?? "(no registry entry)"}`)
   if (report.target) lines.push(`target     ${report.target.module} · ${report.target.export}`)
+  appendNote(lines, report.note)
   const guides = [...new Set(report.rules.map((rule) => rule.guide).filter(Boolean))]
   if (guides.length) lines.push(`guide      ${guides.join(", ")}`)
   if (hasLedger) appendRules(lines, report)
@@ -146,6 +147,16 @@ export function formatBrief(report: NodeBrief, hasLedger = true): string[] {
   appendComments(lines, report)
   appendRequests(lines, report)
   return lines
+}
+
+function appendNote(lines: string[], note: string | null): void {
+  if (!note) return
+  // The card clamps the registry note, so this is the only place it survives
+  // whole: the text is re-emitted verbatim, every line after the first indented
+  // under the label so a multi-line note stays one recoverable block.
+  const [head, ...rest] = note.replace(/\r\n/g, "\n").split("\n")
+  lines.push(`note       ${head}`)
+  for (const line of rest) lines.push(line === "" ? "" : `           ${line}`)
 }
 
 function appendRules(lines: string[], report: NodeBrief): void {

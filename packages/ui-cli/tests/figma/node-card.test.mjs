@@ -272,6 +272,34 @@ test("figma brief --card prints the card, --card --json prints the record", asyn
   }
 })
 
+// The card is the only artifact a session reads by default, so it clamps the
+// registry note; the detail written beside it is where the whole note — binding
+// constraints and residues included — has to survive.
+test("the detail keeps the registry note whole where the card clamps it", async () => {
+  const head = "Binding: keep 8px between buttons at every device."
+  const residue = "Residue from the 2025 review: ".repeat(8).trim()
+  const note = `${head}\n${residue}`
+  assert.ok(note.length > 240)
+  const fixture = catalogue({
+    "src/catalog/figma/registry.json": {
+      ...registry,
+      entries: { "4:4": { ...registry.entries["4:4"], note } },
+    },
+  })
+  try {
+    const text = await runCli(["figma", "brief", "--node", "4:4", "--card"], { root: fixture.root })
+    assert.equal(text.status, 0)
+    assert.ok(!text.stdout.includes(residue), "the card clamps the note")
+    assert.match(text.stdout, /^note {7}Binding: keep 8px.*…$/m)
+
+    const detail = fs.readFileSync(path.join(fixture.root, ".figma", "briefs", "4-4.txt"), "utf8")
+    assert.ok(detail.includes(`note       ${head}\n`), "the first line is the note verbatim")
+    assert.ok(detail.includes(`           ${residue}\n`), "the rest of the note stays indented")
+  } finally {
+    fixture.dispose()
+  }
+})
+
 test("--card without a node is a usage error and --card does not disturb the brief", async () => {
   const fixture = catalogue()
   try {

@@ -257,11 +257,15 @@ with a usage error when no token can be resolved.
 snapshot change added, changed, renamed, moved or affected, in implementation
 order, capped at 60 lines. A scoped read names the pending nodes it omitted;
 `--full` reads the whole pending queue instead and `--limit <lines>` moves the
-cap. Without a `.figma/live-rest.json` snapshot there is no delta to scope to,
-so the read falls back to the pending queue and says so. `--json` adds a
-`scope` object with the kind, the omitted count, the truncated count and the
-cap. Use `--node <id>` for one brief; `--refresh` refreshes the rules and
-comments snapshots when their versions do not match the inventory pin.
+cap. A delta read becomes the pending queue, and says so, when there is no
+`.figma/live-rest.json` snapshot to scope to and when that snapshot names no
+change node — triage and the drift refresh rewrite the inventory from it, so the
+comparison is empty while the queued nodes are still pending. `--json` adds a
+`scope` object with the kind, the `fallback` (`no-snapshot`, `empty-delta`, or
+`null` when the read is the delta it asked for), the omitted count, the
+truncated count and the cap. The counts and the cap hold in both fallbacks. Use
+`--node <id>` for one brief; `--refresh` refreshes the rules and comments
+snapshots when their versions do not match the inventory pin.
 
 `pnpm ui-cli figma brief --node <id> --card` prints the node card instead of
 the brief: one line per section, under 1.5 KB, every field derived from the

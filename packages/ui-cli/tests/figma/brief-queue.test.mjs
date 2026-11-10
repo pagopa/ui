@@ -1,6 +1,7 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
 import { fixtureTree, runCli } from "../helpers/cli.mjs"
+import { normalizeLive } from "../../src/figma/snapshot.ts"
 
 const devicePolicy = {
   axes: [],
@@ -100,7 +101,13 @@ test("brief queue --json carries the scope, the omitted count and the cap", asyn
     const scoped = await runCli(["figma", "brief", "--queue", "--json"], { root: fixture.root })
     assert.equal(scoped.status, 0, scoped.stderr)
     const queue = JSON.parse(scoped.stdout)
-    assert.deepEqual(queue.scope, { kind: "delta", omitted: 2, truncated: 0, lineCap: 60 })
+    assert.deepEqual(queue.scope, {
+      kind: "delta",
+      fallback: null,
+      omitted: 2,
+      truncated: 0,
+      lineCap: 60,
+    })
     assert.deepEqual(queue.implementationOrder, ["1:1", "1:2", "1:3"])
     assert.deepEqual(
       queue.items.map((item) => item.nodeId),
@@ -112,7 +119,13 @@ test("brief queue --json carries the scope, the omitted count and the cap", asyn
     })
     assert.equal(full.status, 0, full.stderr)
     const whole = JSON.parse(full.stdout)
-    assert.deepEqual(whole.scope, { kind: "all", omitted: 0, truncated: 0, lineCap: null })
+    assert.deepEqual(whole.scope, {
+      kind: "all",
+      fallback: null,
+      omitted: 0,
+      truncated: 0,
+      lineCap: null,
+    })
     assert.deepEqual(whole.implementationOrder, ["1:1", "1:2", "1:3", "1:4", "1:5"])
   } finally {
     fixture.dispose()
@@ -230,6 +243,7 @@ test("brief queue without a delta snapshot reads the pending queue and says so",
     assert.equal(json.status, 0, json.stderr)
     assert.deepEqual(JSON.parse(json.stdout).scope, {
       kind: "pending",
+      fallback: "no-snapshot",
       omitted: 0,
       truncated: 0,
       lineCap: 60,
@@ -267,6 +281,87 @@ test("the unscoped fallback counts the pending nodes the cap dropped", async () 
       ),
     )
     assert.doesNotMatch(text.stdout, /more pending node\(s\) outside this delta/)
+  } finally {
+    fixture.dispose()
+  }
+})
+
+// Triage rewrites the committed inventory from the saved snapshot, so the
+// comparison names no change node afterwards while the queued nodes are still
+// pending: the read must fall back to the pending queue and say why, instead of
+// printing no brief and calling the active nodes "outside this delta".
+const triaged = normalizeLive({ fileKey: "fixture", components: live }, { policy: devicePolicy })
+const triagedFiles = files(triaged, live, [pending("1:1"), pending("1:2"), pending("1:3")])
+
+test("a queue read after triage names the pending nodes, not an empty delta", async () => {
+  const fixture = fixtureTree(triagedFiles, "brief-queue-triaged-")
+  try {
+    const result = await runCli(["figma", "brief", "--queue"], { root: fixture.root })
+    assert.equal(result.status, 0, result.stderr)
+    assert.match(result.stdout, /^implementationOrder 1:1, 1:2, 1:3$/m)
+    for (const nodeId of ["1:1", "1:2", "1:3"])
+      assert.match(result.stdout, new RegExp(`^node       ${nodeId}\\b`, "m"))
+    assert.match(
+      result.stdout,
+      /^the saved snapshot names no change node to read \(already triaged, or nothing left to brief\): implementationOrder is the pending queue$/m,
+    )
+    assert.doesNotMatch(result.stdout, /no delta snapshot/)
+    assert.doesNotMatch(result.stdout, /more pending node\(s\) outside this delta/)
+
+    const json = await runCli(["figma", "brief", "--queue", "--json"], { root: fixture.root })
+    assert.equal(json.status, 0, json.stderr)
+    assert.deepEqual(JSON.parse(json.stdout).scope, {
+      kind: "pending",
+      fallback: "empty-delta",
+      omitted: 0,
+      truncated: 0,
+      lineCap: 60,
+    })
+  } finally {
+    fixture.dispose()
+  }
+})
+
+// Nodes queued before the delta stay in the fallback read, including one the
+// snapshot no longer carries: the cap bounds what it prints and counts the rest
+// as truncated, never as omitted or dropped.
+const triagedMany = normalizeLive(
+  { fileKey: "fixture", components: many },
+  { policy: devicePolicy },
+)
+const triagedManyFiles = files(triagedMany, many, [
+  ...many.map((node) => pending(node.nodeId)),
+  pending("9:9"),
+])
+
+test("the post-triage fallback keeps older pending nodes and caps them", async () => {
+  const fixture = fixtureTree(triagedManyFiles, "brief-queue-triaged-cap-")
+  try {
+    const json = await runCli(["figma", "brief", "--queue", "--json"], { root: fixture.root })
+    assert.equal(json.status, 0, json.stderr)
+    const queue = JSON.parse(json.stdout)
+    assert.equal(queue.scope.kind, "pending")
+    assert.equal(queue.scope.fallback, "empty-delta")
+    assert.equal(queue.scope.omitted, 0)
+    assert.equal(queue.implementationOrder.length, many.length + 1)
+    assert.equal(queue.implementationOrder.at(-1), "9:9")
+    assert.ok(queue.scope.truncated > 0, "the cap left nodes out")
+    assert.equal(queue.scope.truncated, queue.implementationOrder.length - queue.items.length)
+    const text = await runCli(["figma", "brief", "--queue"], { root: fixture.root })
+    assert.match(
+      text.stdout,
+      new RegExp(
+        `^truncated at ${queue.scope.lineCap} lines: ${queue.scope.truncated} more node\\(s\\) in scope not shown`,
+        "m",
+      ),
+    )
+
+    const raised = await runCli(["figma", "brief", "--queue", "--limit", "400"], {
+      root: fixture.root,
+    })
+    assert.equal(raised.status, 0, raised.stderr)
+    assert.doesNotMatch(raised.stdout, /truncated at/)
+    assert.match(raised.stdout, /^node       9:9$/m)
   } finally {
     fixture.dispose()
   }

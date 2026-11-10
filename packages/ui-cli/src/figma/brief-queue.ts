@@ -18,8 +18,17 @@ export const DEFAULT_QUEUE_LINE_CAP = 60
 
 export type BriefQueueKind = "delta" | "pending" | "all"
 
+/**
+ * Why a delta read became the pending queue. Triage and the drift refresh
+ * rewrite the committed inventory from the saved snapshot, so after them the
+ * comparison names no change node even though the queued nodes are pending.
+ */
+export type BriefQueueFallback = "no-snapshot" | "empty-delta"
+
 export type BriefQueueScope = {
   kind: BriefQueueKind
+  /** The fallback `kind` reports, `null` when the read is the scope it asked for. */
+  fallback: BriefQueueFallback | null
   /** Pending nodes the read did not print, whether out of scope or past the cap. */
   omitted: number
   /** Nodes the line cap dropped from the listing, the pending ones aside. */
@@ -119,11 +128,19 @@ export function buildBriefQueue(workspace: Workspace, options: BriefQueueOptions
     ? normalizeLive(readJson(snapshot), { workspace })
     : inventory.components
   const delta = fs.existsSync(snapshot) ? compareSnapshots(inventory.components, live) : null
+  // A delta is the right scope only while it names a node to read: after triage
+  // the inventory already holds the saved snapshot, so the comparison is empty
+  // while the queued nodes are still pending. Reading it would report no brief
+  // and call the active nodes "outside this delta"; the pending queue is the
+  // work set, and the fallback says why the read is not the delta.
+  const changeNodes = delta ? deltaChangeNodes(delta) : []
+  const fallback: BriefQueueFallback | null =
+    kind === "delta" && changeNodes.length === 0 ? (delta ? "empty-delta" : "no-snapshot") : null
   const nodes = new Map(live.map((node) => [node.nodeId, node]))
   for (const node of inventory.components) if (!nodes.has(node.nodeId)) nodes.set(node.nodeId, node)
   const all = [...nodes.values()]
-  const scoped = kind === "delta" && delta !== null
-  const selected = new Set(scoped ? deltaChangeNodes(delta) : pending)
+  const scoped = kind === "delta" && changeNodes.length > 0
+  const selected = new Set<string>(scoped ? changeNodes : pending)
   const inScope = implementationOrder(all, selected)
   const seen = new Set(inScope)
   inScope.push(...[...selected].filter((id) => !seen.has(id)).sort())
@@ -138,14 +155,14 @@ export function buildBriefQueue(workspace: Workspace, options: BriefQueueOptions
   })
   const inScopeIds = new Set(inScope)
   const omitted = [...pending].filter((id) => !inScopeIds.has(id)).length
-  // The scope kind the read reports: `delta` only with a snapshot to scope to.
+  // The scope kind the read reports: `delta` only with a change node to scope to.
   const scopeKind: BriefQueueKind = kind === "all" ? "all" : scoped ? "delta" : "pending"
-  const capped = capItems(items, lineCap, fixedQueueLines(scopeKind, omitted))
+  const capped = capItems(items, lineCap, fixedQueueLines(fallback, omitted))
   // The truncation notice is a fixed line the cap must also pay for: recompute
   // the listing once when it fires, so the rendered read never exceeds the cap.
   const withNotice =
     lineCap !== null && capped.length < items.length
-      ? capItems(items, lineCap, fixedQueueLines(scopeKind, omitted) + 2)
+      ? capItems(items, lineCap, fixedQueueLines(fallback, omitted) + 2)
       : capped
   // The two counts describe disjoint sets, and each says only what is true: a
   // pending node the delta left out is *omitted*, a node the cap dropped is
@@ -155,6 +172,7 @@ export function buildBriefQueue(workspace: Workspace, options: BriefQueueOptions
   return {
     scope: {
       kind: scopeKind,
+      fallback,
       omitted,
       truncated: inScope.filter((id) => !printed.has(id)).length,
       lineCap,
@@ -165,10 +183,10 @@ export function buildBriefQueue(workspace: Workspace, options: BriefQueueOptions
 }
 
 /** The lines `formatBriefQueue` renders before and after the items. */
-function fixedQueueLines(kind: BriefQueueKind, omitted: number): number {
+function fixedQueueLines(fallback: BriefQueueFallback | null, omitted: number): number {
   return (
     1 + // the implementation-order header
-    (kind === "pending" ? 2 : 0) + // the unscoped-fallback notice and its blank line
+    (fallback ? 2 : 0) + // the fallback notice and its blank line
     (omitted > 0 ? 2 : 0) // the omitted notice and its blank line
   )
 }
@@ -179,11 +197,16 @@ export function formatBriefQueue(queue: BriefQueue): string[] {
     lines.push(`\n${item.nodeId} · ${item.class} · devices ${item.devices.join(", ") || "none"}`)
     lines.push(...formatBrief(item.brief))
   }
-  const { kind, omitted, truncated, lineCap } = queue.scope
-  if (kind === "pending")
+  const { fallback, omitted, truncated, lineCap } = queue.scope
+  if (fallback === "no-snapshot")
     lines.push(
       "",
       "no delta snapshot (.figma/live-rest.json): this read is the unscoped pending queue, not the delta — run `pnpm ui-cli figma export` to scope it",
+    )
+  if (fallback === "empty-delta")
+    lines.push(
+      "",
+      "the saved snapshot names no change node to read (already triaged, or nothing left to brief): implementationOrder is the pending queue",
     )
   // State the omission; never sell the widening. The scoped read is the point,
   // so `--full` stays in `--help` instead of being advertised in the output.

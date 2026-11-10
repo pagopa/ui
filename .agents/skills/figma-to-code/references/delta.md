@@ -7,8 +7,12 @@
 2. `pnpm ui-cli figma brief --node <nodeId>`, or `--queue` for the delta's nodes
    in dependency order. It is scoped to the delta and names what it omitted and
    truncated. Report its `implementationOrder` and both counts, an omitted
-   node staying unread; a higher `--limit` reads more of the delta. `--refresh`
-   when rules or comments moved since the pin.
+   node staying unread; a higher `--limit` reads more of the delta. When the
+   inventory already holds the saved snapshot — triage, or the drift refresh,
+   ran before this read — the delta names no change node, so the read is the
+   pending queue and says so; `scope.fallback` reports `empty-delta` and the
+   counts and the cap still hold. `--refresh` when rules or comments moved
+   since the pin.
 3. Decide per node, dependents too: implement, exclude with a reason, or leave
    pending, naming the design-request file it waits on or its blocker. A
    judgement call the source does not answer is a design request, not an
