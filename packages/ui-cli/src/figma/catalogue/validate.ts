@@ -2,7 +2,8 @@ import type { Workspace } from "../../adapters/workspace.ts"
 import type { Registry } from "../../schemas/catalogue.ts"
 import type { DevicePolicy } from "../../schemas/devices.ts"
 import { fileKeyFromSource } from "../snapshot.ts"
-import type { CatalogueContext } from "./context.ts"
+import type { CatalogueBase } from "./load.ts"
+import { type CatalogueContext, type CatalogueSources, createCatalogueSources } from "./context.ts"
 import {
   type SurfacePending,
   type SurfaceStats,
@@ -51,7 +52,7 @@ export type CatalogueValidation = {
 
 function validateRegistryCatalogue(
   workspace: Workspace,
-  context: CatalogueContext,
+  context: CatalogueSources,
   errors: string[],
 ): {
   entries: Registry["entries"]
@@ -96,6 +97,16 @@ function validateRegistryCatalogue(
     ),
   )
   return { entries, bulk }
+}
+
+/**
+ * The registry's hermetic diagnostics: no live export, no delta, no writes. The
+ * node card runs this read on every brief, so it must stay off the network.
+ */
+export function catalogueDiagnostics(workspace: Workspace, base: CatalogueBase): string[] {
+  const errors = [...base.errors]
+  validateRegistryCatalogue(workspace, createCatalogueSources(workspace, base), errors)
+  return errors
 }
 
 export function validateCatalogue(context: CatalogueContext): CatalogueValidation {

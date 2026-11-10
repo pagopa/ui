@@ -537,6 +537,8 @@ export type CheckReport = {
   counts: Record<RuleDisposition | "stale", number>
 }
 
+const RULES_GATE = "pnpm nx run pagopa-ui-cli:check:rules"
+
 export function check(
   ledger: RulesLedger,
   snapshot: RulesSnapshot | null,
@@ -566,49 +568,78 @@ export function check(
   for (const [id, card] of Object.entries(ledger.cards)) {
     counts[card.disposition] += 1
     if (card.disposition === "pending" && strict) {
-      errors.push(`${id}: pending rule on ${card.titleEn ?? card.title}`)
+      errors.push(
+        `${id}: pending rule on ${card.titleEn ?? card.title} — import it into a guide, defer it or consolidate it, then run \`${RULES_GATE}\``,
+      )
     }
     for (const target of card.targets) {
-      if (!inventory.has(target)) errors.push(`${id}: unknown target ${target}`)
+      if (!inventory.has(target))
+        errors.push(
+          `${id}: unknown target ${target} — point the card at a node in the inventory, then run \`${RULES_GATE}\``,
+        )
     }
     if (card.disposition === "imported") {
-      if (!card.guide) errors.push(`${id}: imported rule has no guide`)
+      if (!card.guide)
+        errors.push(
+          `${id}: imported rule has no guide — add "guide" to the card, then run \`${RULES_GATE}\``,
+        )
       else {
         importedGuides.add(card.guide)
         if (!fs.existsSync(path.join(workspaceRoot, card.guide))) {
-          errors.push(`${id}: guide ${card.guide} does not exist`)
+          errors.push(
+            `${id}: guide ${card.guide} does not exist — write the guide or fix "guide", then run \`${RULES_GATE}\``,
+          )
         } else {
           const text = fs.readFileSync(path.join(workspaceRoot, card.guide), "utf8")
           if (!hasComponentRules(text)) {
-            errors.push(`${id}: guide ${card.guide} has no component-rules block`)
+            errors.push(
+              `${id}: guide ${card.guide} has no component-rules block — add the block, then run \`${RULES_GATE}\``,
+            )
           } else if (!componentRulesFirst(text)) {
-            errors.push(`${id}: guide ${card.guide} does not open with its component-rules block`)
+            errors.push(
+              `${id}: guide ${card.guide} does not open with its component-rules block — move the block to the top, then run \`${RULES_GATE}\``,
+            )
           }
         }
       }
     }
     if (card.disposition === "duplicate" && !ledger.cards[card.duplicateOf ?? ""]) {
-      errors.push(`${id}: duplicateOf ${card.duplicateOf} is not in the ledger`)
+      errors.push(
+        `${id}: duplicateOf ${card.duplicateOf} is not in the ledger — point it at a ledger card, then run \`${RULES_GATE}\``,
+      )
     }
     if (
       card.disposition === "conflict" &&
       card.request &&
       !fs.existsSync(path.join(workspaceRoot, card.request))
     ) {
-      errors.push(`${id}: design request ${card.request} does not exist`)
+      errors.push(
+        `${id}: design request ${card.request} does not exist — write it under docs/design-requests, then run \`${RULES_GATE}\``,
+      )
     }
   }
   for (const guide of guidesWithBlock) {
     if (!importedGuides.has(guide)) {
-      errors.push(`${guide}: component-rules block with no imported rule`)
+      errors.push(
+        `${guide}: component-rules block with no imported rule — import the card or drop the block, then run \`${RULES_GATE}\``,
+      )
     }
   }
 
   if (snapshot) {
     const diff = plan(snapshot, ledger)
-    for (const id of diff.fresh) errors.push(`${id}: consolidated card not in the ledger (new)`)
-    for (const id of diff.stale) errors.push(`${id}: source changed since the review (stale)`)
-    for (const id of diff.removed) errors.push(`${id}: card disappeared from Figma (run --sync)`)
+    for (const id of diff.fresh)
+      errors.push(
+        `${id}: consolidated card not in the ledger (new) — record it with \`pnpm ui-cli figma rules mark\`, then run \`${RULES_GATE}\``,
+      )
+    for (const id of diff.stale)
+      errors.push(
+        `${id}: source changed since the review (stale) — read the current text with \`pnpm ui-cli figma rules show '${id}'\`, re-mark it with \`pnpm ui-cli figma rules mark '${id}' --disposition <disposition>\`, then run \`${RULES_GATE}\``,
+      )
+    for (const id of diff.removed)
+      errors.push(
+        `${id}: card disappeared from Figma — run \`pnpm ui-cli figma rules sync\`, then \`${RULES_GATE}\``,
+      )
     counts.stale = diff.stale.length
   }
   return { errors, counts }
@@ -627,6 +658,26 @@ export function rulesForNode(
   if (!entry) throw new UsageError(`${requested} is not a node of the inventory`)
   const scope = new Set([requested, entry.setName])
   for (const [id, node] of inventory) if (node.setName === entry.setName) scope.add(id)
+  return rulesInScope(ledger, snapshot, scope)
+}
+
+// A brief also reads the nodes the pinned inventory has not absorbed yet — the
+// delta's additions — and those have no set to widen to, so they scope to
+// themselves. The membership error stays where a node is named for the
+// inventory, never where it is read.
+export function rulesForUninventoriedNode(
+  ledger: RulesLedger,
+  snapshot: RulesSnapshot | null,
+  requested: string,
+): Array<RuleCard & { id: string; body?: string }> {
+  return rulesInScope(ledger, snapshot, new Set([requested]))
+}
+
+function rulesInScope(
+  ledger: RulesLedger,
+  snapshot: RulesSnapshot | null,
+  scope: Set<string>,
+): Array<RuleCard & { id: string; body?: string }> {
   const live = snapshot ? cardIndex(snapshot) : new Map()
   return Object.entries(ledger.cards)
     .filter(([id, card]) => card.targets.some((target) => scope.has(target)) || scope.has(id))

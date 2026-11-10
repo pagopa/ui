@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url"
 import { fixtureEnvironment, fixtureTree } from "../helpers/cli.mjs"
 import { RulesLedgerSchema, RulesSnapshotSchema } from "../../src/schemas/rules.ts"
 import {
+  check,
   componentRulesFirst,
   extractContainer,
   hasComponentRules,
@@ -197,6 +198,47 @@ test("plan reports a card the ledger has not seen, a stale hash and a removed ca
     cards: { "I1:2;9:9": pending },
   })
   assert.deepEqual(plan(snapshot, missing).removed, ["I1:2;9:9"])
+})
+
+// `refresh` rewrites the snapshot; only `mark` re-stamps the ledger's
+// sourceHash, which is what the gate compares. The diagnostic has to say so, or
+// following it leaves the same failure in place.
+test("a stale card points at show and mark, not refresh", () => {
+  const tree = fixtureTree(
+    {
+      "src/catalog/figma/inventory.json": {
+        fileKey: "file",
+        syncedAt: "2026-10-21",
+        components: [
+          {
+            nodeId: "4:4",
+            name: "Button",
+            type: "COMPONENT",
+            pageId: "1:1",
+            pageName: "Page",
+          },
+        ],
+      },
+      "apps/storybook/src/guides/keep.md": "# Placeholder\n",
+    },
+    "pagopa-rules-check-",
+  )
+  try {
+    const ledger = RulesLedgerSchema.parse({
+      schemaVersion: 1,
+      fileKey: "file",
+      cards: { "I1:2;3:3": { ...pending, sourceHash: "0000000000000000" } },
+    })
+    const stale = check(ledger, snapshot, tree.root, tree.root, false).errors.find(
+      (error) => error.includes("I1:2;3:3") && error.includes("stale"),
+    )
+    assert.ok(stale, "the gate reports the stale card")
+    assert.match(stale, /`pnpm ui-cli figma rules show 'I1:2;3:3'`/)
+    assert.match(stale, /`pnpm ui-cli figma rules mark 'I1:2;3:3' --disposition <disposition>`/)
+    assert.doesNotMatch(stale, /rules refresh/)
+  } finally {
+    tree.dispose()
+  }
 })
 
 const block = [

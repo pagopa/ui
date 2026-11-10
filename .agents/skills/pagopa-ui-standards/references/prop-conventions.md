@@ -23,3 +23,21 @@ Every departure from this page is one line in the node's registry `note` when a
 source node backs the component, and one line in its guide when none does: what
 departs and why. A state the design asks for that no prop, attribute or content
 can reach is a finding to report, not an invented prop.
+
+## From a source node
+
+The node name stays the search key while the export carries the role: the
+component's JSDoc ends with `Figma: <node name> (node <id>)` and its story sets
+`parameters.docs.subtitle` to `Figma: <node name>`.
+
+| Property in the source | What to do | Example |
+| --- | --- | --- |
+| Instance swap or slot (`INSTANCE_SWAP`, `SLOT`) | One optional `ReactNode` slot; the caller owns the instance. | `icon?: ReactNode` |
+
+Every other source property follows the table above by role: a visibility flag
+(`Show …`, `Close`, `CTA`, `Title`) is that optional part, a device axis is the
+width, an interaction state is the native attribute, and a semantic or composite
+axis is the choice prop.
+
+A source variant that no prop, attribute or content can reach is a finding in
+the report, not an invented prop.

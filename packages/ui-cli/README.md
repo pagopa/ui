@@ -253,10 +253,28 @@ devices. `parity align` prints the exact check command for each declared device.
 without revealing it. Add `--require-token` to live-capable commands to fail
 with a usage error when no token can be resolved.
 
-`pnpm ui-cli figma brief --queue --json` returns all pending briefs, their
-implementation order, drift classes and devices. Use `--node <id>` for one
-brief; `--refresh` refreshes the rules and comments snapshots when their
-versions do not match the inventory pin.
+`pnpm ui-cli figma brief --queue` reads the delta in hand: the nodes the pinned
+snapshot change added, changed, renamed, moved or affected, in implementation
+order, capped at 60 lines. A scoped read names the pending nodes it omitted;
+`--full` reads the whole pending queue instead and `--limit <lines>` moves the
+cap. A delta read becomes the pending queue, and says so, when there is no
+`.figma/live-rest.json` snapshot to scope to and when that snapshot names no
+change node — triage and the drift refresh rewrite the inventory from it, so the
+comparison is empty while the queued nodes are still pending. `--json` adds a
+`scope` object with the kind, the `fallback` (`no-snapshot`, `empty-delta`, or
+`null` when the read is the delta it asked for), the omitted count, the
+truncated count and the cap. The counts and the cap hold in both fallbacks. Use
+`--node <id>` for one brief; `--refresh` refreshes the rules and comments
+snapshots when their versions do not match the inventory pin.
+
+`pnpm ui-cli figma brief --node <id> --card` prints the node card instead of
+the brief: one line per section, under 1.5 KB, every field derived from the
+catalogue the brief already reads, with `… +N more` where a section is cut.
+The open threads are printed with their text and the rules with their title,
+and the `detail` line names the full brief the same command wrote to
+`.figma/briefs/<id>.txt` — the ceiling summarises, it never hides.
+`--card --json` prints the same record. It carries no timestamp and no absolute
+path, so two runs on the same catalogue are byte-identical.
 
 Catalogue drift and parity differences above tolerance return exit code 3;
 validation failures return 1 and missing inputs return 2.
@@ -285,7 +303,7 @@ and reporting requirements live in the Figma skill's
 | `figma:rules`             | `figma rules <command>`                  | `refresh`   | `plan` reports changes, `refresh` reads the boxes, `mark` records a decision, and `node` or `show` reads rules.                                                                                                                                                                |
 | `check:rules`             | `check rules`                            | No          | Checks the ledger and guides strictly; `--no-strict` allows pending rules.                                                                                                                                                                                                     |
 | `figma:comments`          | `figma comments`                         | `--refresh` | The node comments: `--refresh` snapshots the threads, `--node` prints the threads of a node, `--open` keeps the unresolved ones.                                                                                                                                               |
-| `figma:brief`             | `figma brief --node <id>`                | No          | The implementation brief of a node: registry entry, rules, open comments and design requests, read offline from the local snapshots.                                                                                                                                           |
+| `figma:brief`             | `figma brief --node <id>`                | No          | The implementation brief of a node: registry entry, rules, open comments and design requests, read offline from the local snapshots. `--card` prints the bounded node card, in text or with `--json`, and writes the full brief it summarises to `.figma/briefs/<id>.txt`.     |
 | `parity:queue`            | `parity queue`                           | No          | The registry cases with their story ids and missing evidence; `--unmapped` prints the cases with no committed mapping.                                                                                                                                                         |
 | `parity:check`            | `parity check`                           | No          | Needs a source (the local snapshot, `--input`, or the committed evidence slice) and Storybook on `:6006`; exit 3 on deltas, 2 on missing evidence (including a refused capture or a slice that no longer matches the committed inventory). `--case <id>` runs a reviewed case. |
 | `parity:cases`            | `parity cases`                           | No          | Proposes the missing device cases and the variants no reviewed case points at (states and visual properties) from a sibling case; a proposal is a draft (`note`) until a wave replaces its note with the reviewed render.                                                      |

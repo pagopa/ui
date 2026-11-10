@@ -123,6 +123,8 @@ test("an unmapped value fails with the value and the axis in the message", () =>
   assert.match(errors[0], /value "Tablet XL" on axis "Device"/)
   assert.match(errors[0], /1:2/)
   assert.match(errors[0], /add it to an alias list in src\/catalog\/figma\/device-policy\.json/)
+  // A migrated rule names the fix and the command that applies it.
+  assert.match(errors[0], /pnpm nx run pagopa-ui-cli:check:devices/)
   assert.equal(unmapped.length, 1)
   assert.equal(unmapped[0].value, "Tablet XL")
   // The failure is an error, never a quiet alias or a warning.
@@ -146,6 +148,7 @@ test("a declared axis the inventory never uses fails; an unused alias only warns
   const { errors, warnings } = checkDevicePolicy(policy, nodes)
   assert.equal(errors.length, 1)
   assert.match(errors[0], /declares the axis "Breakpoint": the inventory never uses it/)
+  assert.match(errors[0], /pnpm nx run pagopa-ui-cli:check:devices/)
   const unused = unusedAliasWarnings(warnings)
     .map((warning) => warning.match(/the alias "([^"]+)"/)[1])
     .sort()
@@ -168,10 +171,12 @@ test("two devices claiming one alias fail", () => {
     },
   }
   const { errors } = checkDevicePolicy(clashing, [deviceSet("1:1", ["Desktop", "Mobile"])])
-  assert.ok(
-    errors.some((error) => /alias "Device5" is claimed by tablet and desktop/.test(error)),
-    errors.join("\n"),
+  const clash = errors.filter((error) =>
+    /alias "Device5" is claimed by tablet and desktop/.test(error),
   )
+  assert.equal(clash.length, 1, errors.join("\n"))
+  // The command belongs to that diagnostic, not to whichever error came first.
+  assert.match(clash[0], /pnpm nx run pagopa-ui-cli:check:devices/)
 })
 
 test("a device-like value on a non-device axis warns without failing", () => {

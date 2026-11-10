@@ -103,7 +103,7 @@ export function loadDevicePolicy(file: string): DevicePolicy {
   if (!fs.existsSync(file)) {
     throw new Error(
       `${file} is missing: the device vocabulary is committed next to registry.json ` +
-        `(see .agents/skills/figma-to-code/references/devices.md)`,
+        `(see .agents/skills/figma-to-code/references/devices/scope.md)`,
     )
   }
   let policy: unknown
@@ -400,7 +400,7 @@ function deviceVocabularyErrors(
   for (const axis of policy.axes) {
     if (!analysis.seenAxes.has(normalizeDeviceValue(axisToken(axis)))) {
       errors.push(
-        `the policy declares the axis "${axis}": the inventory never uses it — drop it from "axes" or map the values it declares`,
+        `the policy declares the axis "${axis}": the inventory never uses it — drop it from "axes" or map the values it declares, then run \`pnpm nx run pagopa-ui-cli:check:devices\``,
       )
     }
   }
@@ -409,7 +409,7 @@ function deviceVocabularyErrors(
   )
   for (const seen of unmapped) {
     errors.push(
-      `value "${seen.value}" on axis ${[...seen.axes].map((axis) => `"${axis}"`).join(", ")} (${seen.nodes.slice(0, 3).join(", ")}${seen.nodes.length > 3 ? ", …" : ""}) is not mapped — add it to an alias list in ${file}`,
+      `value "${seen.value}" on axis ${[...seen.axes].map((axis) => `"${axis}"`).join(", ")} (${seen.nodes.slice(0, 3).join(", ")}${seen.nodes.length > 3 ? ", …" : ""}) is not mapped — add it to an alias list in ${file}, then run \`pnpm nx run pagopa-ui-cli:check:devices\``,
     )
   }
   return { errors, unmapped }
@@ -448,7 +448,7 @@ export function checkDevicePolicy(
   const { duplicates } = deviceAliasIndex(policy)
   for (const duplicate of duplicates)
     errors.push(
-      `alias "${duplicate.value}" is claimed by ${duplicate.devices.join(" and ")} — one source value maps to one device`,
+      `alias "${duplicate.value}" is claimed by ${duplicate.devices.join(" and ")} — one source value maps to one device; drop the alias from one of them in ${DEVICE_POLICY_PATH} and run \`pnpm nx run pagopa-ui-cli:check:devices\``,
     )
   const analysis = inspectDeviceInventory(policy, nodes, ignored)
   const vocabulary = deviceVocabularyErrors(policy, analysis, file)

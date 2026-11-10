@@ -17,7 +17,7 @@ contract is green, and every exception carries a node and a reason.
    printed.
 4. Run `pnpm ui-cli check tokens`, `pnpm nx run pagopa-ui-cli:test` and
    `pnpm ui-cli check foundation`. Re-run parity for components whose token
-   value changed ([visual-parity.md](visual-parity.md)).
+   value changed (`visual-parity.md`).
 
 ## The ladder for a value
 
@@ -31,7 +31,7 @@ contract is green, and every exception carries a node and a reason.
   the stylesheet the config names.
 - A value that has no source and no clear owner is a registered exception with
   the node and the reason, and it enters a design request
-  ([design-request.md](design-request.md)). It is never absorbed silently.
+  (`design-request.md`). It is never absorbed silently.
 
 Local extensions are reviewed token-layer entries with source/reason, not
 inline pixel utilities or component overrides that hide a 1–2px difference.

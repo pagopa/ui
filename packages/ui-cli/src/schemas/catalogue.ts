@@ -197,18 +197,18 @@ export function longNoteErrors(
 ): string[] {
   if (baseline.maxLength !== NOTE_LENGTH_LIMIT) {
     return [
-      `${label}: maxLength is ${baseline.maxLength}, the limit is ${NOTE_LENGTH_LIMIT} — the limit cannot change`,
+      `${label}: maxLength is ${baseline.maxLength}, the limit is ${NOTE_LENGTH_LIMIT} — the limit cannot change; set maxLength to ${NOTE_LENGTH_LIMIT} and run \`pnpm nx run pagopa-ui:check:catalogue\``,
     ]
   }
   const long = longNotes(registry).length
   if (long > baseline.overLimit) {
     return [
-      `${label}: ${long} registry notes exceed ${NOTE_LENGTH_LIMIT} characters, the baseline allows ${baseline.overLimit} — a note states the current residues, not the history`,
+      `${label}: ${long} registry notes exceed ${NOTE_LENGTH_LIMIT} characters, the baseline allows ${baseline.overLimit} — a note states the current residues, not the history; shorten the note and run \`pnpm nx run pagopa-ui:check:catalogue\``,
     ]
   }
   if (long < baseline.overLimit) {
     return [
-      `${label}: ${long} registry notes exceed ${NOTE_LENGTH_LIMIT} characters, lower overLimit to ${long}`,
+      `${label}: ${long} registry notes exceed ${NOTE_LENGTH_LIMIT} characters, lower overLimit to ${long} and run \`pnpm nx run pagopa-ui:check:catalogue\``,
     ]
   }
   return []

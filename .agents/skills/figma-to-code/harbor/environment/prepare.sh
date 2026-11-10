@@ -10,7 +10,11 @@ set -euo pipefail
 NODE_VERSION="${NODE_VERSION:-24.14.1}"
 PNPM_VERSION="${PNPM_VERSION:-11.28.6}"
 PAGOPA_UI_REPO="${PAGOPA_UI_REPO:-https://github.com/pagopa/ui.git}"
-PAGOPA_UI_REF="${PAGOPA_UI_REF:-d533a8bba6274d8cdf508cc9192340a1976da30b}"
+# The ref the agent's workspace is cut from: it must already carry the `ui-cli`
+# this skill calls, so a command the skill names cannot fail on a missing flag.
+# Re-pin it to the merge commit once `main` carries the node card and the JSON
+# writer that degrades without the formatter.
+PAGOPA_UI_REF="${PAGOPA_UI_REF:-b0bdc306a467d33db2822641f87504226028c27b}"
 
 WORKSPACE=/workspace
 
@@ -76,10 +80,57 @@ MD
 
 rm -f "$WORKSPACE/prepare.sh"
 
+# The scoped-queue task asks about a delta on named nodes, and the live Figma
+# file has not moved on them: without a delta the task's own criterion
+# ("scoped, never widened") is unsatisfiable, because only `--full` can name the
+# nodes. The delta exists by construction instead — the committed inventory is
+# staled on exactly those nodes, so the live read the task pins reports them as
+# changed. The two are chosen for a narrow dependency closure: their affected
+# nodes fit the read's line cap, so one scoped read carries every fact the task
+# asks for. The other two tasks name nodes this leaves alone.
+node --input-type=module -e '
+  import fs from "node:fs"
+  import { createHash } from "node:crypto"
+  const { compareSnapshots } = await import("./packages/ui-cli/src/figma/snapshot.ts")
+  const file = "packages/pagopa-ui/src/catalog/figma/inventory.json"
+  const seeded = ["1293:8394", "1333:16408"]
+  const live = JSON.parse(fs.readFileSync(file, "utf8"))
+  const inventory = JSON.parse(fs.readFileSync(file, "utf8"))
+  for (const node of inventory.components) {
+    if (!seeded.includes(node.nodeId)) continue
+    node.designFingerprint = createHash("sha256").update(`stale:${node.nodeId}`).digest("hex")
+  }
+  const changed = compareSnapshots(inventory.components, live.components)
+    .changed.map((node) => node.nodeId)
+    .sort()
+  if (changed.join(", ") !== [...seeded].sort().join(", ")) {
+    console.error(`figma-to-code eval: the seeded delta is [${changed.join(", ")}], expected [${seeded.join(", ")}]. The inventory schema or the compare changed.`)
+    process.exit(1)
+  }
+  fs.writeFileSync(file, `${JSON.stringify(inventory, null, 2)}\n`)
+'
+
 # Fail fast: a broken workspace must break the image build, not the session.
 if ! pnpm ui-cli figma status >/dev/null; then
   echo "figma-to-code eval: 'pnpm ui-cli figma status' failed in the prepared" \
     "workspace. Check PAGOPA_UI_REF and the ui-cli dependency install above." >&2
+  exit 1
+fi
+
+# Every command that records state goes through the JSON writer, and `figma
+# status` never reaches it, so the writer gets its own check: it writes and
+# re-reads a scratch file. It needs no Figma token and leaves nothing behind.
+if ! node --input-type=module -e '
+  import fs from "node:fs"
+  const { writeJson } = await import("./packages/ui-cli/src/lib/json.ts")
+  const file = "packages/ui-cli/.writer-check.json"
+  writeJson(file, { ok: true })
+  const parsed = JSON.parse(fs.readFileSync(file, "utf8"))
+  fs.rmSync(file)
+  if (parsed.ok !== true) process.exit(1)
+' >/dev/null; then
+  echo "figma-to-code eval: the ui-cli JSON writer failed in the prepared" \
+    "workspace. A command that records state would fail mid-session." >&2
   exit 1
 fi
 

@@ -5,9 +5,14 @@ import path from "node:path"
 import type { Workspace } from "../adapters/workspace.ts"
 import { readJson } from "../lib/json.ts"
 import { walkFiles } from "../lib/fs.ts"
-import { InventorySchema, RegistrySchema } from "../schemas/catalogue.ts"
+import {
+  InventorySchema,
+  RegistrySchema,
+  type Inventory,
+  type InventoryNode,
+} from "../schemas/catalogue.ts"
 import { readComments, threadsForNode } from "./comments.ts"
-import { readLedger, readRulesSnapshot, rulesForNode } from "./rules.ts"
+import { readLedger, readRulesSnapshot, rulesForNode, rulesForUninventoriedNode } from "./rules.ts"
 
 const INVENTORY_PATH = "src/catalog/figma/inventory.json"
 const REGISTRY_PATH = "src/catalog/figma/registry.json"
@@ -35,19 +40,28 @@ export type NodeBrief = {
   commentsSnapshot: string | null
 }
 
-function designRequests(workspace: Workspace, nodeId: string): string[] {
-  const dashed = nodeId.replace(":", "-")
+function requestFiles(workspace: Workspace): Array<{ path: string; text: string }> {
   const directory = path.join(workspace.workspaceRoot, REQUESTS_DIR)
-  return walkFiles(directory, (file) => file.endsWith(".md"))
-    .filter((file) => {
-      const text = fs.readFileSync(file, "utf8")
-      return text.includes(nodeId) || text.includes(`node-id=${dashed}`)
-    })
-    .map((file) => path.relative(workspace.workspaceRoot, file).split(path.sep).join("/"))
+  return walkFiles(directory, (file) => file.endsWith(".md")).map((file) => ({
+    path: path.relative(workspace.workspaceRoot, file).split(path.sep).join("/"),
+    text: fs.readFileSync(file, "utf8"),
+  }))
+}
+
+function designRequests(sources: BriefSources, nodeId: string): string[] {
+  const dashed = nodeId.replace(":", "-")
+  return sources.requests
+    .filter((file) => file.text.includes(nodeId) || file.text.includes(`node-id=${dashed}`))
+    .map((file) => file.path)
     .sort()
 }
 
-function componentForNode(inventory: ReturnType<typeof readInventory>, nodeId: string) {
+// `Pick` so the live side — an `InventoryNode[]` the file just produced — can ask
+// the same question as the committed inventory, without inventing a fileKey.
+export function componentForNode(
+  inventory: Pick<Inventory, "components">,
+  nodeId: string,
+): InventoryNode | undefined {
   return (
     inventory.components.find((entry) => entry.nodeId === nodeId) ??
     inventory.components.find((entry) =>
@@ -56,20 +70,40 @@ function componentForNode(inventory: ReturnType<typeof readInventory>, nodeId: s
   )
 }
 
-function readInventory(workspace: Workspace) {
+export function readInventory(workspace: Workspace): Inventory {
   return readJson(workspace.path(INVENTORY_PATH), InventorySchema)
 }
 
-export function buildBrief(workspace: Workspace, requested: string): NodeBrief {
-  const inventory = readInventory(workspace)
-  const registry = readJson(workspace.path(REGISTRY_PATH), RegistrySchema)
+// Everything a brief reads from disk, so a caller that builds several briefs
+// reads the catalogue, the ledger, the comment snapshot and the design requests
+// once instead of once per node.
+export function readBriefSources(workspace: Workspace) {
+  return {
+    inventory: readInventory(workspace),
+    registry: readJson(workspace.path(REGISTRY_PATH), RegistrySchema),
+    ledger: readLedger(workspace.root, false),
+    snapshot: readRulesSnapshot(workspace.root, false),
+    comments: readComments(workspace),
+    requests: requestFiles(workspace),
+  }
+}
+
+export type BriefSources = ReturnType<typeof readBriefSources>
+
+export function buildBrief(
+  workspace: Workspace,
+  requested: string,
+  sources: BriefSources = readBriefSources(workspace),
+): NodeBrief {
+  const { inventory, registry, ledger, snapshot, comments } = sources
   const component = componentForNode(inventory, requested)
   const identity = component?.nodeId ?? requested
   const entry = registry.entries[identity]
-  const ledger = readLedger(workspace.root, false)
-  const snapshot = readRulesSnapshot(workspace.root, false)
-  const rules = ledger ? rulesForNode(ledger, snapshot, workspace.root, requested) : []
-  const comments = readComments(workspace)
+  const rules = ledger
+    ? component
+      ? rulesForNode(ledger, snapshot, workspace.root, identity)
+      : rulesForUninventoriedNode(ledger, snapshot, identity)
+    : []
   const openComments = comments
     ? threadsForNode(workspace, comments, requested, { openOnly: true })
     : []
@@ -91,12 +125,12 @@ export function buildBrief(workspace: Workspace, requested: string): NodeBrief {
       guide: rule.guide ?? null,
     })),
     openComments,
-    designRequests: designRequests(workspace, identity),
+    designRequests: designRequests(sources, identity),
     commentsSnapshot: comments?.fetchedAt ?? null,
   }
 }
 
-function compact(value: string): string {
+export function compact(value: string): string {
   return value.replace(/\s+/g, " ")
 }
 
@@ -105,6 +139,7 @@ export function formatBrief(report: NodeBrief, hasLedger = true): string[] {
   if (report.page) lines.push(`page       ${report.page}`)
   lines.push(`status     ${report.status ?? "(no registry entry)"}`)
   if (report.target) lines.push(`target     ${report.target.module} · ${report.target.export}`)
+  appendNote(lines, report.note)
   const guides = [...new Set(report.rules.map((rule) => rule.guide).filter(Boolean))]
   if (guides.length) lines.push(`guide      ${guides.join(", ")}`)
   if (hasLedger) appendRules(lines, report)
@@ -112,6 +147,16 @@ export function formatBrief(report: NodeBrief, hasLedger = true): string[] {
   appendComments(lines, report)
   appendRequests(lines, report)
   return lines
+}
+
+function appendNote(lines: string[], note: string | null): void {
+  if (!note) return
+  // The card clamps the registry note, so this is the only place it survives
+  // whole: the text is re-emitted verbatim, every line after the first indented
+  // under the label so a multi-line note stays one recoverable block.
+  const [head, ...rest] = note.replace(/\r\n/g, "\n").split("\n")
+  lines.push(`note       ${head}`)
+  for (const line of rest) lines.push(line === "" ? "" : `           ${line}`)
 }
 
 function appendRules(lines: string[], report: NodeBrief): void {

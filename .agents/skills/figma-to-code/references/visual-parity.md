@@ -2,175 +2,70 @@
 
 A component is aligned when **its rendered story matches the source variant**:
 same width, same state, same anatomy, same tokens, measured and seen. Reading the
-code, a green suite or a component-set thumbnail does not establish it.
-The commands are in [parity-tooling.md](parity-tooling.md); devices in
-[devices.md](devices.md).
+code, a green suite or a component-set thumbnail does not establish it. Commands,
+exit codes and result fields are in [parity-tooling.md](parity-tooling.md).
 
-## Inputs
+## Preflight
 
-- A current source: `figma.snapshot`, explicit input, or a valid committed
-  evidence slice ([parity-tooling.md](parity-tooling.md)). Refresh missing/stale
-  live evidence through [delta.md](delta.md); without usable evidence the run
-  exits 2.
+- A current source: the pinned snapshot, an explicit input, or a committed
+  evidence slice. Without usable evidence the run exits 2; refresh through the
+  delta route.
 - Storybook on `storybook.url`; start `pnpm nx run pagopa-ui-storybook:storybook`
-  when nothing answers. A concurrent session serves its own copy with
-  `PORT=6007 pnpm nx run pagopa-ui-storybook:storybook` and points the CLI at it
-  with `STORYBOOK_URL=http://localhost:6007`. A newly created source file may
-  need the stylesheet named by `tokens.stylesheet` touched to refresh the
-  Tailwind scan.
-- Take the next pending wave with
-  `pnpm ui-cli parity queue --next --size 3 --json`. For other requested scopes,
-  use queue's status/coverage filters. Read `pnpm ui-cli parity check --help`
-  once, at the start of the wave: the flag surface does not change per node.
-  List a node's case IDs with `pnpm ui-cli parity capture --saved
-  --node <id> --dry-run`.
-- The scope is the person's: by default a **wave** of three nodes, the highest in
-  `implementationOrder` first, each finished before the next. A named list or the
-  whole queue only when they say so. "Re-check everything mapped" is not a wave:
-  run `parity capture --saved --node <id>` for each mapped node, into a separate
-  `--out` directory per node, and only what moved enters the loop. "Mapping only"
-  calibrates and saves cases without touching components or the registry.
+  if nothing answers. A concurrent session serves its own copy with `PORT=6007`
+  and points the CLI at it with `STORYBOOK_URL=http://localhost:6007`. A new
+  source file may need `tokens.stylesheet` touched to refresh the Tailwind scan.
+- The scope is the person's: a **wave** of three nodes, highest in
+  `implementationOrder` first, each finished before the next. "Re-check
+  everything mapped" is not a wave: capture each mapped node into its own `--out`;
+  only what moved enters the loop.
 
-**Done when** the source evidence is current, Storybook answers, and the node ids are
-written down with the variants they capture and, for a device axis, the declared
-devices (one iteration each).
+**Done when** the evidence is current, Storybook answers, and the node ids are
+written down with their variants and declared devices.
 
 ## The loop (per node, per declared device)
 
-1. **Source numbers.** `pnpm ui-cli parity source <nodeId> --compact
-   --depth 3`, `--json` for the variant list. Anatomy questions:
-   `parity source <variant> --png` for the pinned source image (default
-   `.figma/parity/source/`), `parity render --tree` for the rendered boxes,
-   padding and gaps. Read the face from `fontPostScriptName`: the
-   REST `fontWeight` can say 500 for a Semibold face.
-   **Done when** the variant's geometry and type are written down.
-2. **First capture.** `pnpm ui-cli parity check` with `--state` (it names the
-   case id `<node>-<state>-<device>`), `--expect-state`, the source width, the
-   source artboard `--height`, and `--compare-offset` (plus `--compare-box
-   height` for text layers) with `--strict` on this first run. Strict is the only
-   check that catches a swapped stack whose sizes match, and the case is saved
-   strict-clean, so a loose pass only buys a second run.
-   Exit 2 is missing evidence, not a delta: fix
-   the width, viewport, height or state evidence and run again.
-   **Done when** the run reports a valid comparison (exit 0 or 3) and the `capture` block
-   reads devicePixelRatio 1, ruler 100px and the expected root width.
-3. **Compare both ways.** The images and the numbers (box, padding, gap, radius,
-   borders, fills, font size, line height, weight, colour, icon box). Tolerance
-   is 2px at the default font size; anything structural — a missing slot, a
-   label on the wrong edge, an off-token colour, the wrong face, a swapped stack —
-   is a delta however small the pixels. The root is the variant's outer box: map
-   the inner frames whose padding or gap drives the rhythm (the header rows, the
-   grid, the footer) as subjects, or record why the case leaves them out. Inspect
-   both the source and render at native size and with magnified crops of seams,
-   notches, pointers and other joined edges. A one-pixel discontinuity is a
-   visible delta even if the numeric comparison passes.
-4. **Close every delta**, one of three ways: a token-ladder fix in the
-   component; `--residue "path=reason"` for a deliberate adaptation;
-   `--ignore <path>` for a mapping artifact. A subject off on every edge is a
-   mapping defect: fix the case, not the component. **Three fix passes per
-   case**, then stop and report. Never accept a deviation because it looks
-   right.
-   **Done when** no delta is left unexplained; unresolved findings stay blocked.
-5. **Composition.** A clean strict result keeps the flags in the case. A strict
-   delta explained by a recorded adaptation leaves them off and saves a `note`
-   with the measurement. Anything else is a finding for the person. The
-   composition-order advisory is the only check that catches a swapped stack
-   whose sizes match: keep it on, or check the order by hand.
-   **Done when** the case enables the composition check or carries its note.
-6. **Save.** `--save-case` (and `--note "reviewed: …"`); the command line is
-   never the record.
-   **Done when** `pnpm ui-cli parity check --case <id>` reproduces the node.
+1. **Source numbers.** `parity source <nodeId> --compact --depth 3`, `--json` for
+   the variant list, `--png` for the pinned source image.
+2. **First capture.** Name the state, expect it, the source width, the artboard
+   height and the compare offset, with `--strict` on this first run: strict is the
+   only pass that catches a swapped stack whose sizes match. Exit 2 is missing
+   evidence, not a delta.
+3. **Compare both ways.** The numbers and the images, at native size and with
+   magnified crops of seams, notches and joined edges. Anything structural — a
+   missing slot, a wrong edge, an off-token colour, the wrong face, a swapped
+   stack — is a delta however small.
+4. **Close every delta**: a token-ladder fix in the component, `--residue
+   "<path>=<reason>"` for a deliberate adaptation, or `--ignore <path>` for a
+   mapping artifact; a subject off on every edge is a mapping defect. **Three fix
+   passes per case**, then stop and report. Never accept a deviation because it
+   looks right.
+5. **Save.** `--save-case --note "reviewed: …"`; the command line is never the
+   record; a `cases --sync` draft never counts as coverage. **Done when**
+   `parity check --case <id>` reproduces the node.
 
 ## Close the wave
 
-- Run `pnpm ui-cli parity capture --saved --node <id>
-  --out <dir>` for each node, then `pnpm ui-cli parity report
-  --dir <dir> --wave <date>-<node-id>-alignment` for each record, using a distinct
-  wave name per node.
-- Registry for the verified nodes only ([new-from-figma.md](new-from-figma.md)
-  step 6), then `pnpm nx run pagopa-ui:check:catalogue`.
+`parity capture --saved --node <id> --out <dir>` then `parity report --dir <dir>
+--wave <date>-<node-id>-alignment` per node, a distinct wave name each. Registry
+for the verified nodes only, then `pnpm nx run pagopa-ui:check:catalogue`.
 
-Per node, done means: the preflight passes; every delta is fixed, a residue or
-an ignore; `--strict` is clean or the note explains it; the case reproduces;
-every declared device has a case or a reasoned exception; the registry covers
-only verified nodes and `check:catalogue` is green.
+## What a reviewer decides
 
-Use the [token ladder](tokens.md#the-ladder-for-a-value) for every visual fix.
-
-## Traps
-
-### Typography
-
-- Resolve the source face with the
-  [type contract](tokens.md#the-component-class-contract).
-- A type-scale token carries its own weight: no weight override on top of it.
-- Widths measured under an old font substitute are history: re-measure, never
-  re-approve.
-
-### Targets and rhythm
-
-- **Expand, never inflate.** A source-exact visual box stays source-exact; the
-  44px target (48px for buttons) is an invisible `::after` built from existing
-  inset utilities (`after:absolute after:-inset-2.5` on a 24px box,
-  `after:-inset-y-3` on a 20–22px text line; grep `after:-inset` for the
-  pattern). `min-h-11` on a 24px row is drift, not accessibility.
-- Keep horizontal expansion out of scroll containers: it feeds `scrollWidth` and
-  fails reflow in WebKit and Firefox; a vertical `-inset-y-*` is usually enough.
-- Icon slots wrapping inline children are `flex` with a fixed size, or the line
-  box adds 4–7px.
-- A divider must not double the parent's bottom padding.
-
-### The story fixture is part of the contract
-
-- Frame the fixture at the exact source width with `max-w-full`. A
-  `min(52rem, …)` or `max-w-*` wrapper caps the capture; an inflated action in
-  the fixture reads as component drift.
-- When the forced width exceeds the viewport, use `layout: "fullscreen"`: the
-  centred `#storybook-root` shrinks and the preflight exits 2.
-- A story root holding only `position: fixed` content has no box: render it
-  fullscreen with a page-surface decorator.
-- Open portal overlays with `--click` on the trigger, not a `play()` that races
-  the probe; `[role="dialog"]` is the `--expect-state open` evidence.
-- Never put `\n` inside a JSX attribute string.
-- When fixture copy wraps differently from the mockup, record the height and
-  offset residues; do not change the copy to match.
-
-### Field labels: notch vs inset
-
-Source fields keep the label inside the control when empty and unfocused
-(centred for single-line fields, top-aligned for multi-line ones) and float it
-into the top-border notch when focused or filled. A label that stays inset while
-filled is a delta, not a variant.
-
-### Paint
-
-- Elevation comes only from the Figma shadow scale; the foundation check rejects
-  Tailwind shadows (`shadow-scale`).
-- Never apply a source group's 50% opacity to text; fade only the artwork.
-- Round source geometry to the nearest existing token and record the delta.
-- When a mockup hides or overflows its own layers, compare against the visible
-  composition and record a residue.
-- Before calling a source artwork missing, search the artwork catalogue under
-  every name.
-
-### Evidence
-
-- A whole-set screenshot is a contact sheet: scaled down, it cannot decide
-  typography or 1–2px geometry. Read the variant's numbers; crop or zoom when the
-  question is visual.
-- A saved render can predate the pin; the pinned export is the truth. Re-shoot
-  with `get_screenshot` when they disagree; the Design-panel thumbnail is never
-  evidence.
-- The numbers read geometry, paint and type, not text opacity: on a disabled or
-  muted state, read the render image; a faded title is a delta even when every
-  measured property matches.
-- Numeric parity and a full-page screenshot's pixel budget cannot prove a
-  small join is continuous. For a seam-sensitive fix, add a focused regression
-  against the rendered pixels that fails on the defect and checks both sides
-  and their border-colour endpoints, not just diagonal connectivity; include
-  the component's relevant variants and accessibility colour modes. Inspect
-  native and high-density renders as well as the source crop.
-
-The [completion report](definition-of-done.md#closing-and-delivery) includes
-story IDs, source/render images and numbers, and whether each case is verified,
-fixed or review-required. An alignment claim without that evidence is unverified.
+- **Evidence.** A whole-set screenshot is a contact sheet: scaled down it cannot
+  decide typography or 1–2px geometry. The pinned export is the truth; a saved
+  render can predate it and the Design-panel thumbnail is never evidence. Numbers
+  read geometry, paint and type, not text opacity: on a muted or disabled state
+  read the image, because a faded title is a delta even when every measured
+  property matches. For a seam-sensitive fix add a focused regression that fails
+  on the defect.
+- **Type and paint.** A type-scale token carries its own weight; widths measured
+  under an old font substitute are history. Elevation comes only from the Figma
+  shadow scale, and a group's 50% opacity fades artwork, never text. Expand, never
+  inflate: the 44px target is an invisible `::after`, never `min-h-11` on a 24px
+  row.
+- **The fixture is part of the contract.** Frame it at the exact source width with
+  `max-w-full`; a capped wrapper makes the capture lie. When fixture copy wraps
+  differently, record the height and offset residues, never change the copy.
+- **What a residue is.** A declared delta with a reason, visible and not blocking:
+  a deliberate adaptation, or a mockup that hides or overflows its own layers.
+  Anything a token or class could fix is a fix.

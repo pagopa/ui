@@ -1,0 +1,55 @@
+schema_version = "1.4"
+artifacts = [
+    { source = "/workspace", exclude = [
+        ".git",
+        "node_modules",
+        "vendor",
+        ".nx",
+        ".mise",
+        ".pnpm-store",
+        "dist",
+        "coverage",
+        "apps/storybook/visual/__screenshots__",
+    ] },
+    "/logs/agent/copilot-cli.jsonl",
+    "/logs/agent/trajectory.json",
+]
+
+[verifier]
+timeout_sec = 600.0
+collect = []
+environment_mode = "separate"
+
+[verifier.env]
+OPENAI_API_BASE = "https://api.githubcopilot.com"
+OPENAI_API_KEY = "${COPILOT_GITHUB_TOKEN}"
+LITELLM_DROP_PARAMS = "true"
+LITELLM_ROUTE_ALL_CHAT_OPENAI_TO_RESPONSES = "true"
+
+[agent]
+timeout_sec = 900.0
+
+[environment]
+network_mode = "public"
+build_timeout_sec = 900.0
+os = "linux"
+mcp_servers = []
+
+[environment.env]
+FIGMA_TOKEN = "${FIGMA_TOKEN}"
+
+[solution.env]
+
+[task]
+name = "pagopa/figma-to-code-2-scoped-queue-triage"
+description = "Pins the live source, reads the delta's briefs once through the scoped queue, reports its implementation order and what it omitted or truncated, and closes with one reasoned decision per node without writing code or Figma."
+version = "1.0.0"
+
+[metadata]
+difficulty = "medium"
+category = "skill-eval"
+tags = [
+    "figma-to-code",
+    "skill-eval",
+]
+estimated_duration_sec = 900

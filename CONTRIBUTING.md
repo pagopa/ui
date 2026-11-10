@@ -248,8 +248,11 @@ Both Figma skills carry graded sessions in the `evals.json` format
 [`.agents/skills/figma-to-code/evals`](./.agents/skills/figma-to-code/evals/evals.json),
 `figma-to-ui` in
 [`packages/pagopa-ui/skills/figma-to-ui/evals`](./packages/pagopa-ui/skills/figma-to-ui/evals/evals.json).
-Two evals each: one end-to-end pass over a single node or frame, and one
-guardrail that must stop and report instead of inventing a design. They grade
+Three evals for `figma-to-code` — an end-to-end pass over a single node, a
+guardrail that must stop and report instead of inventing a design, and a delta
+triage over two or three nodes that must read the batched context once instead
+of a brief per node — and two for `figma-to-ui`: the end-to-end pass over a
+frame and the guardrail. They grade
 the session — what the agent read, resolved and decided — not the diff, so a
 skill change is graded without building anything; they are the regression net
 for the skills' own instructions.
@@ -258,7 +261,7 @@ The `harbor/` directory next to each `evals/` builds that session for
 [harbor-bench](https://github.com/pagopa/dx/tree/main/apps/harbor-bench):
 `environment/prepare.sh` prepares the workspace at image build, one
 `<task>/task.toml` overlay per task sets the artifact excludes and the
-`FIGMA_TOKEN` of the live eval, and the generated verifier hands the judge a
+`FIGMA_TOKEN` of the live evals, and the generated verifier hands the judge a
 bounded packet of the workspace instead of the whole checkout. Neither `evals/` nor `harbor/`
 ships: the `files` list of `packages/pagopa-ui` excludes them.
 
@@ -280,9 +283,9 @@ FIGMA_TOKEN=… COPILOT_GITHUB_TOKEN=… "$HARBOR" run -c .harbor/code/config.ya
 ```
 
 `COPILOT_GITHUB_TOKEN` reaches the agent through `--ae` and the judge through
-the host environment. `FIGMA_TOKEN` stays in the host environment: the live
-task's `[environment.env]` entry forwards it to that task alone, so both
-guardrails and both `figma-to-ui` evals still start without one — an `--ae
+the host environment. `FIGMA_TOKEN` stays in the host environment: each live
+task's `[environment.env]` entry forwards it to that task alone, so the
+guardrails and every `figma-to-ui` eval still start without one — an `--ae
 FIGMA_TOKEN=…` would hand a token to every task and disarm the guardrail it
 grades.
 
@@ -295,9 +298,10 @@ against head skill — a local directory or a git source such as
 
 A session that cannot be graded does not start, and the failure names the fix:
 
-- `prepare.sh` ends with the command the skill depends on (`pnpm ui-cli figma
-  status`, `pagopa-ui-map resolve 61:2786`), so a broken image build stops the
-  run before an agent spends a turn on it.
+- `prepare.sh` ends with the commands the skill depends on (`pnpm ui-cli figma
+  status`, `pagopa-ui-map resolve 61:2786`) and writes a scratch file through
+  the JSON writer, so a broken image build — or a writer that cannot write —
+  stops the run before an agent spends a turn on it.
 - Without a token the live read reports `token missing — export FIGMA_TOKEN
   (file_content:read, library_content:read)`, which is also the stop the
   `figma-to-code` guardrail grades.

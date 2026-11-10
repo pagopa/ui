@@ -32,7 +32,7 @@ import type { CatalogueOptions } from "../sync.ts"
 const EVIDENCE_EXCEPTIONS_PATH = "src/catalog/figma/evidence-exceptions.json"
 const API_EXCEPTIONS_PATH = "src/catalog/figma/api-exceptions.json"
 
-type CatalogueBase = {
+export type CatalogueBase = {
   inventory: Inventory
   registry: Registry
   committed: InventoryNode[]
@@ -84,7 +84,7 @@ export type CatalogueLoadResult = {
   err?: string[]
 }
 
-function loadCatalogueBase(workspace: Workspace): CatalogueBase | null {
+export function loadCatalogueBase(workspace: Workspace): CatalogueBase | null {
   const state = loadCatalogueState(workspace)
   const errors = [...state.errors]
   if (!state.inventory || !state.registry) return null
@@ -124,7 +124,9 @@ function validateCommittedContracts(
     if (inventory.schemaVersion !== 2) return
     for (const node of normalized) {
       if (byId.get(node.nodeId)?.contractFingerprint !== node.contractFingerprint) {
-        errors.push(`${INVENTORY_PATH}: contract fingerprint mismatch for ${node.nodeId}`)
+        errors.push(
+          `${INVENTORY_PATH}: contract fingerprint mismatch for ${node.nodeId} — the source contract changed, so re-read the node with \`pnpm ui-cli update inventory --triage\` and run \`pnpm nx run pagopa-ui:check:catalogue\``,
+        )
       }
     }
   } catch (error) {

@@ -29,12 +29,16 @@ test("a note past the limit above the baseline fails", () => {
   const errors = longNoteErrors(registry([short, long]), baseline(0), "registry.json")
   assert.equal(errors.length, 1)
   assert.match(errors[0], /1 registry notes exceed 600 characters, the baseline allows 0/)
+  // A migrated rule names the fix and the command that applies it.
+  assert.match(errors[0], /shorten the note/)
+  assert.match(errors[0], /pnpm nx run pagopa-ui:check:catalogue/)
 })
 
 test("a count below the baseline asks to lower it", () => {
   const errors = longNoteErrors(registry([short]), baseline(90), "registry.json")
   assert.equal(errors.length, 1)
   assert.match(errors[0], /lower overLimit to 0/)
+  assert.match(errors[0], /pnpm nx run pagopa-ui:check:catalogue/)
 })
 
 test("a count equal to the baseline passes", () => {

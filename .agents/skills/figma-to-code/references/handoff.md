@@ -8,14 +8,13 @@ evidence. Align on its head branch; the person pushes and merges.
 1. `pnpm ui-cli figma handoff resolve <pr-or-url-or-branch> --json` identifies
    the open target. Without a reference it requires exactly one open drift pull
    request. A closed/merged or ambiguous target stops the handoff.
-2. Run status and the source gate in [init.md](init.md#credentials-and-source-gate)
-   before changing files. A missing token blocks only REST; Storybook is required
+2. Run status and the source gate in `init.md` before changing files. A missing token blocks only REST; Storybook is required
    for the render.
 3. If the active worktree is already on the resolved head branch, use it.
    Otherwise preview `pnpm ui-cli figma handoff checkout <pr> --dry-run --json`,
    then run it without `--dry-run` under the session's filesystem permissions.
    It fetches the head, creates a sibling worktree named for the branch and
-   installs dependencies; a worktree already holding that branch is reused.
+   installs dependencies.
    Continue in its reported path. A destination holding something other than a
    worktree is a blocker, not permission to delete it.
 4. `pnpm ui-cli figma handoff brief <pr> --json` batches the PR body, delta
@@ -28,15 +27,14 @@ requested node has its delta class, target, constraints and devices.
 ## Work
 
 Follow the handoff's `implementationOrder`, dependencies first, one node at a
-time. The decision procedure is [delta.md](delta.md#steps), step 3:
-implementation, review/mapping, exclusion or a pending request/blocker.
-Use `pnpm ui-cli figma brief --queue --refresh` for batched current context,
-and the node brief again when its context changes.
+time; `delta.md` holds the queue read and the decision procedure.
+Use `pnpm ui-cli figma brief --queue --refresh` for the delta's own briefs, and
+the node brief again when a node's context changes.
 
 Record decisions through `figma registry set`
-([catalogue.md](catalogue.md#review-semantics)). Cases, rules and guides travel
-with the implementation. Source/render inspection and the parity loop in
-[visual-parity.md](visual-parity.md) remain required; a draft is not coverage.
+(`catalogue/statuses.md`). Cases, rules and guides travel
+with the implementation. Source/render inspection and the parity loop in `visual-parity.md` remain
+required; a draft is not coverage.
 Changes to comparison tools, the public API, tokens or these instructions
 require an explicit decision; a mismatch alone is not permission to relax them.
 If commits were requested, keep one commit per node on this branch, with the

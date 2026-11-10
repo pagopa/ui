@@ -1,4 +1,4 @@
-import { implementationOrder, type SnapshotDelta } from "../snapshot.ts"
+import { deltaSelection, implementationOrder, type SnapshotDelta } from "../snapshot.ts"
 import type { DeviceStats } from "../devices.ts"
 import type {
   SurfacePending,
@@ -69,15 +69,7 @@ export function renderCataloguePlan(input: {
   deviceCoverage: unknown
 }): string {
   const snapshot = input.live ?? input.committed
-  const selected = new Set([
-    ...Object.entries(input.entries)
-      .filter(([, entry]) => entry.status === "pending")
-      .map(([id]) => id),
-    ...[...input.delta.added, ...input.delta.changed, ...input.delta.affected].map(
-      (node) => node.nodeId,
-    ),
-  ])
-  for (const id of [...selected]) if (input.entries[id]?.status === "mocked") selected.delete(id)
+  const selected = deltaSelection(input.delta, input.entries)
   const designRequest = /\bdocs\/design-requests\/[\w./-]+\.md\b/g
   const pending = Object.entries(input.entries)
     .filter(([, entry]) => entry.status === "pending")

@@ -33,20 +33,33 @@ export function brotliJson(value: unknown): Buffer {
   })
 }
 
-export function formatJson(value: unknown): string {
+export interface JsonFormatter {
+  readonly binary?: string
+  readonly config?: string
+}
+
+// The formatter is a development dependency, so an image that installs only the
+// runtime ones (the figma-to-code eval workspace) must still write JSON: a
+// missing binary or config degrades to plain two-space JSON, which every reader
+// of a written file can still parse. A formatter that is present and fails is a
+// defect, not an absence, so it throws instead of writing unformatted output
+// that only the format gate would report, far from the cause.
+export function formatJson(value: unknown, formatter: JsonFormatter = {}): string {
   const input = `${JSON.stringify(value, null, 2)}\n`
-  const formatter = fileURLToPath(new URL("../../node_modules/.bin/oxfmt", import.meta.url))
-  const config = fileURLToPath(new URL("../../../../oxfmt.config.ts", import.meta.url))
-  const formatted = execFileSync(formatter, ["--config", config, "--stdin-filepath", "data.json"], {
+  const binary =
+    formatter.binary ?? fileURLToPath(new URL("../../node_modules/.bin/oxfmt", import.meta.url))
+  const config =
+    formatter.config ?? fileURLToPath(new URL("../../../../oxfmt.config.ts", import.meta.url))
+  if (!fs.existsSync(binary) || !fs.existsSync(config)) return input
+  return execFileSync(binary, ["--config", config, "--stdin-filepath", "data.json"], {
     input,
     encoding: "utf8",
     maxBuffer: Math.max(Buffer.byteLength(input) * 2, 1024 * 1024),
   })
-  return formatted
 }
 
-export function writeJson(file: string, value: unknown): void {
-  writeText(file, formatJson(value))
+export function writeJson(file: string, value: unknown, formatter?: JsonFormatter): void {
+  writeText(file, formatJson(value, formatter))
 }
 
 // A write is visible either completely or not at all: a crash mid-write must

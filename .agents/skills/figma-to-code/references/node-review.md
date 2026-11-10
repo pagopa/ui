@@ -27,15 +27,15 @@ bulk re-approval.
 
 3. **Re-run the evidence.** `pnpm ui-cli parity check --node <id> --saved`
    runs every committed case and checks declared-device coverage. Capture missing cases
-   ([visual-parity.md](visual-parity.md)). A residue measured under conditions
+   with the parity route in `visual-parity.md`. A residue measured under conditions
    that no longer hold (an old font, a removed dependency) is re-measured, never
    re-approved.
    **Done when** every case reports a verdict.
 
-4. **Decide** using [catalogue review semantics](catalogue.md#review-semantics).
+4. **Decide** using [catalogue review semantics](catalogue/statuses.md#review-semantics).
    Record the result with `pnpm ui-cli figma registry set <id> --status <status>`
    and its evidence/reason flags. A design-owner blocker uses
-   [design-request.md](design-request.md).
+   `design-request.md`.
 
    A `mocked` demo keeps its status and note: a review is not a renewal. A
    mapping to an existing implementation needs that implementation to cover the
@@ -45,5 +45,5 @@ bulk re-approval.
    **Done when** the registry entry reflects the decision; a constraint or
    residue is in the note, and an open question names its design request.
 
-5. **Close** with [source alignment and delivery](definition-of-done.md),
+5. **Close** with source alignment and delivery (`definition-of-done.md`),
    including reviews that need no code change.
