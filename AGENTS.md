@@ -89,6 +89,14 @@ a time and never commits. Start it only when the person asks:
 decisions alone. The skills stay the source of every rule; the extension's
 header documents the phases and the close-out checks it runs.
 
+A stopped run says where it stands in
+`packages/pagopa-ui/.figma/align/<runId>/status.json`: outcome, phase, route,
+reason and next step, written after the source gate answers and never a replay
+authority. An edited checkpoint is validated against the wave before any writer
+runs and every problem is reported at once; fix the file and resume the same run
+rather than restarting it. A node's outcome is one closed tag from `NODE_OUTCOMES`
+(the header lists them), so `completed` never stands for a green verdict.
+
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->
 

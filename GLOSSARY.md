@@ -88,6 +88,26 @@ _Avoid_: sync (for the workflow), update
 The dependency-aware sequence in which queued nodes are reviewed.
 _Avoid_: queue (for the order), backlog
 
+**Alignment decision**:
+The chosen direction for one node in a drift run: implement, review, map, exclude, request design input, or skip.
+_Avoid_: outcome (for the chosen direction)
+
+**Design request**:
+A recorded question that needs a design or development decision before the affected node can be resolved.
+_Avoid_: issue (for the request itself)
+
+**Node outcome**:
+The closed tag a drift run reports for one node: verified, verification-failed, verification-missing, stale-context, writer-failed, fix-failed, not-reached or skipped. It is switched on exhaustively; no outcome is read out of the wording of a finding.
+_Avoid_: result (for the tag), verdict (for the tag)
+
+**Run status**:
+The git-ignored `status.json` a drift run writes beside its checkpoint once the source gate answers: outcome, phase, route, reason and next step.
+_Avoid_: state (for the file), journal (for the projection)
+
+**Projection**:
+A read-only summary of what a run last observed, written for a person to read and never replayed as the schedule.
+_Avoid_: state, source of truth
+
 **Handoff**:
 The review package of a drift run: the pull request, its body, the machine-readable delta, the run metrics and the evidence.
 _Avoid_: report, packet

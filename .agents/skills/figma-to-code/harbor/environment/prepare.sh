@@ -110,6 +110,211 @@ node --input-type=module -e '
   fs.writeFileSync(file, `${JSON.stringify(inventory, null, 2)}\n`)
 '
 
+# The two run-reading evals need a run to read, and a run is git-ignored output:
+# the image writes one. `eval-status` is a wave that stopped cleanly for approval;
+# `eval-checkpoint` is the same wave after a person edited the checkpoint by hand
+# and left four problems behind. Both are read-only fixtures — an eval that
+# rewrote one would be grading its own edit — and both use the vocabulary the
+# skill documents.
+align=packages/pagopa-ui/.figma/align
+mkdir -p "$align/eval-status" "$align/eval-checkpoint"
+
+cat >"$align/eval-status/decisions.json" <<JSON
+[
+  {
+    "nodeId": "1:1",
+    "name": "Accordion",
+    "decision": "implement",
+    "proposedBy": "analysis",
+    "reason": "The header spacing changed and the token ladder already carries the value.",
+    "devices": [],
+    "dependencies": [],
+    "existingCases": [],
+    "rules": [],
+    "comments": [],
+    "deltas": ["header padding 12 → 16"],
+    "plan": "move the header padding onto the space ladder",
+    "openQuestions": [],
+    "instructions": ""
+  },
+  {
+    "nodeId": "1:2",
+    "name": "Alert",
+    "decision": "implement",
+    "proposedBy": "analysis",
+    "reason": "A new dismissible variant has no case yet.",
+    "devices": [],
+    "dependencies": [],
+    "existingCases": [],
+    "rules": [],
+    "comments": [],
+    "deltas": ["new dismissible variant"],
+    "plan": "add the variant and one mobile case",
+    "openQuestions": [],
+    "instructions": ""
+  }
+]
+JSON
+
+cat >"$align/eval-status/decisions.md" <<'MD'
+# figma-align decisions — run eval-status
+
+Edit `decisions.json` beside this file: set `decision` to one of `implement`,
+`review`, `map`, `exclude`, `design-request`, `skip` and add `instructions` to
+steer the writer. Then resume the run
+(`run_dynamic_workflow { resumeFromRunId: "eval-status" }`).
+
+| Node | Name | Decision | Reason | Devices | Rules | Comments | Open questions |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `1:1` | Accordion | **implement** | The header spacing changed | — | 0 | 0 | 0 |
+| `1:2` | Alert | **implement** | A new dismissible variant | — | 0 | 0 | 0 |
+
+## Accordion (`1:1`) — implement
+
+The header spacing changed and the token ladder already carries the value.
+
+- Dependencies: none
+- Existing cases: none
+- Rules: none
+- Open comments: none
+- Deltas: header padding 12 → 16
+- Plan: move the header padding onto the space ladder
+- Open questions: none
+
+## Alert (`1:2`) — implement
+
+A new dismissible variant has no case yet.
+
+- Dependencies: none
+- Existing cases: none
+- Rules: none
+- Open comments: none
+- Deltas: new dismissible variant
+- Plan: add the variant and one mobile case
+- Open questions: none
+MD
+
+cat >"$align/eval-status/status.json" <<JSON
+{
+  "version": 1,
+  "runId": "eval-status",
+  "outcome": "awaiting-approval",
+  "observedAt": "2026-02-03T09:12:44.000Z",
+  "branch": "figma-alignment-2026-02-03",
+  "phase": "Decide",
+  "route": "REST",
+  "storybook": "http://localhost:6006",
+  "reason": "The wave stopped at its checkpoint: 2 nodes await a decision.",
+  "nextStep": "Edit packages/pagopa-ui/.figma/align/eval-status/decisions.json, then resume run eval-status.",
+  "decisionsFile": "packages/pagopa-ui/.figma/align/eval-status/decisions.json",
+  "nodes": [],
+  "checks": [],
+  "report": ""
+}
+JSON
+
+# The wave is 1:1, 1:2 and 2:9. The edited file duplicates 1:1, carries a
+# decision outside the six, names a node the wave does not contain and leaves
+# two wave nodes without an entry: four problems, not one.
+cat >"$align/eval-checkpoint/decisions.json" <<JSON
+[
+  {
+    "nodeId": "1:1",
+    "name": "Accordion",
+    "decision": "implement",
+    "proposedBy": "analysis",
+    "reason": "The header spacing changed.",
+    "instructions": ""
+  },
+  {
+    "nodeId": "1:1",
+    "name": "Accordion",
+    "decision": "review",
+    "proposedBy": "analysis",
+    "reason": "The header spacing changed.",
+    "instructions": ""
+  },
+  {
+    "nodeId": "2:7",
+    "name": "Banner",
+    "decision": "refactor",
+    "proposedBy": "analysis",
+    "reason": "Not a recorded decision.",
+    "instructions": ""
+  }
+]
+JSON
+
+cat >"$align/eval-checkpoint/decisions.md" <<'MD'
+# figma-align decisions — run eval-checkpoint
+
+Edit `decisions.json` beside this file: set `decision` to one of `implement`,
+`review`, `map`, `exclude`, `design-request`, `skip` and add `instructions` to
+steer the writer. Then resume the run
+(`run_dynamic_workflow { resumeFromRunId: "eval-checkpoint" }`).
+
+| Node | Name | Decision | Reason | Devices | Rules | Comments | Open questions |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `1:1` | Accordion | **implement** | The header spacing changed | — | 0 | 0 | 0 |
+| `1:2` | Alert | **implement** | A new dismissible variant | — | 0 | 0 | 0 |
+| `2:9` | Badge | **review** | The dot size is a design question | — | 1 | 0 | 0 |
+
+## Accordion (`1:1`) — implement
+
+The header spacing changed.
+
+- Dependencies: none
+- Existing cases: none
+- Rules: none
+- Open comments: none
+- Deltas: header padding 12 → 16
+- Plan: move the header padding onto the space ladder
+- Open questions: none
+
+## Alert (`1:2`) — implement
+
+A new dismissible variant has no case yet.
+
+- Dependencies: `1:1`
+- Existing cases: none
+- Rules: none
+- Open comments: none
+- Deltas: new dismissible variant
+- Plan: add the variant and one mobile case
+- Open questions: none
+
+## Badge (`2:9`) — review
+
+The dot size is a design question.
+
+- Dependencies: none
+- Existing cases: none
+- Rules: card-7 `undecided` "May the dot shrink below 8px?" → design-request
+- Open comments: none
+- Deltas: none
+- Plan: none — the rule is still open
+- Open questions: may the dot shrink below 8px?
+MD
+
+cat >"$align/eval-checkpoint/status.json" <<JSON
+{
+  "version": 1,
+  "runId": "eval-checkpoint",
+  "outcome": "awaiting-approval",
+  "observedAt": "2026-02-03T09:20:11.000Z",
+  "branch": "figma-alignment-2026-02-03",
+  "phase": "Decide",
+  "route": "REST",
+  "storybook": "http://localhost:6006",
+  "reason": "The wave stopped at its checkpoint: 3 nodes await a decision.",
+  "nextStep": "Edit packages/pagopa-ui/.figma/align/eval-checkpoint/decisions.json, then resume run eval-checkpoint.",
+  "decisionsFile": "packages/pagopa-ui/.figma/align/eval-checkpoint/decisions.json",
+  "nodes": [],
+  "checks": [],
+  "report": ""
+}
+JSON
+
 # Fail fast: a broken workspace must break the image build, not the session.
 if ! pnpm ui-cli figma status >/dev/null; then
   echo "figma-to-code eval: 'pnpm ui-cli figma status' failed in the prepared" \
@@ -131,6 +336,23 @@ if ! node --input-type=module -e '
 ' >/dev/null; then
   echo "figma-to-code eval: the ui-cli JSON writer failed in the prepared" \
     "workspace. A command that records state would fail mid-session." >&2
+  exit 1
+fi
+
+# The two run-reading evals grade a fixture, so a fixture that is missing or
+# unparseable must break the build rather than the session that reads it.
+if ! node --input-type=module -e '
+  import fs from "node:fs"
+  for (const run of ["eval-status", "eval-checkpoint"]) {
+    const dir = `packages/pagopa-ui/.figma/align/${run}`
+    const status = JSON.parse(fs.readFileSync(`${dir}/status.json`, "utf8"))
+    if (status.runId !== run || status.outcome !== "awaiting-approval") process.exit(1)
+    const decisions = JSON.parse(fs.readFileSync(`${dir}/decisions.json`, "utf8"))
+    if (!Array.isArray(decisions) || decisions.length === 0) process.exit(1)
+  }
+' >/dev/null; then
+  echo "figma-to-code eval: a run fixture under packages/pagopa-ui/.figma/align" \
+    "is missing, is not JSON, or does not record the outcome the eval reads." >&2
   exit 1
 fi
 

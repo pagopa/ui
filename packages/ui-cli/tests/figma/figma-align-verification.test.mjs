@@ -39,7 +39,11 @@ function sources() {
 }
 
 test("an unchanged verification context can pass", async () => {
-  assert.deepEqual(assessVerification(await proof(sources())), { verified: true, findings: [] })
+  assert.deepEqual(assessVerification(await proof(sources())), {
+    verified: true,
+    findings: [],
+    kind: "verified",
+  })
 })
 
 test("a later writer changing a shared dependency or case invalidates a pass", async () => {
@@ -623,7 +627,8 @@ test("the snapshot, commands and report fail closed without workflows or secret 
   const helperUrl = dataUrl(`
     export {
       assessVerification, collectVerification, contextSignature,
-      isIgnorableExcludedEntry, isSafeContextPath, isVerificationPath, reverifyStaleResults
+      isIgnorableExcludedEntry, isSafeContextPath, isVerificationPath, NODE_OUTCOMES,
+      reverifyStaleResults
     } from ${JSON.stringify(helper.href)};
     export const VERIFICATION_FILES = [];
     export const VERIFICATION_TREES = [".github/extensions/figma-align"];
@@ -678,6 +683,7 @@ test("the snapshot, commands and report fail closed without workflows or secret 
           decision: "review",
           summary: "Aligned",
           reason: "Changed",
+          outcome: "stale-context",
           verified: false,
           findings: ["Relevant source or case context changed after verification; repeat it."],
           cases: [],

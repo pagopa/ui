@@ -129,6 +129,9 @@ function designRequests(workspace: Workspace): StatusReport["requests"] {
   }
 }
 
+// Source and inventory only: this hint cannot see a running figma-align
+// workflow. A stopped run reports itself in its own status projection beside the
+// checkpoint (`<run dir>/status.json`); `figma:status` is not its reader.
 function nextCommand(report: Omit<StatusReport, "next">): string {
   if (!report.token.present) {
     return "export FIGMA_TOKEN in the shell that runs the session, then re-run figma:status -- --live"

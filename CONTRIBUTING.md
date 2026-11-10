@@ -248,11 +248,13 @@ Both Figma skills carry graded sessions in the `evals.json` format
 [`.agents/skills/figma-to-code/evals`](./.agents/skills/figma-to-code/evals/evals.json),
 `figma-to-ui` in
 [`packages/pagopa-ui/skills/figma-to-ui/evals`](./packages/pagopa-ui/skills/figma-to-ui/evals/evals.json).
-Three evals for `figma-to-code` — an end-to-end pass over a single node, a
-guardrail that must stop and report instead of inventing a design, and a delta
+Five evals for `figma-to-code` — an end-to-end pass over a single node, a
+guardrail that must stop and report instead of inventing a design, a delta
 triage over two or three nodes that must read the batched context once instead
-of a brief per node — and two for `figma-to-ui`: the end-to-end pass over a
-frame and the guardrail. They grade
+of a brief per node, and two that read a stopped run's own artifacts: the status
+projection beside the checkpoint, and a hand-edited checkpoint that must be
+reported problem by problem — and two for `figma-to-ui`: the end-to-end pass
+over a frame and the guardrail. They grade
 the session — what the agent read, resolved and decided — not the diff, so a
 skill change is graded without building anything; they are the regression net
 for the skills' own instructions.
@@ -305,6 +307,10 @@ A session that cannot be graded does not start, and the failure names the fix:
 - Without a token the live read reports `token missing — export FIGMA_TOKEN
   (file_content:read, library_content:read)`, which is also the stop the
   `figma-to-code` guardrail grades.
+- The two evals that read a stopped run grade a fixture, and `.figma` is
+  ignored, so `prepare.sh` writes the runs itself and then checks them: a
+  missing or unparseable `status.json` or `decisions.json` breaks the image
+  build, before a session reads a fixture that would grade the build's bug.
 - The workspace packet the verifier hands the judge is capped, so a checkout
   full of `node_modules` and screenshots cannot time the judge out.
 - A verifier that finds no judge credential writes `0` and a `reason.txt` naming

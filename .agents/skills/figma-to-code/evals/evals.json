@@ -38,6 +38,32 @@
         "Closes with one decision per node — implement, excluded, or pending with the open question and its design request named — without writing to Figma and without running the workspace gates."
       ],
       "files": []
+    },
+    {
+      "id": 3,
+      "name": "stopped-run-status",
+      "prompt": "The alignment run `eval-status` stopped at its checkpoint. Tell me where it stands and what I do next. Do not change any file and do not run the alignment.",
+      "expected_output": "The session reads the run's own artifacts — its status projection beside the checkpoint — and answers with the outcome the run recorded, the checkpoint it waits on and the resume that follows, without changing a file, rewriting the checkpoint or claiming the run is finished.",
+      "expectations": [
+        "Reads `packages/pagopa-ui/.figma/align/eval-status/status.json` and names its recorded `outcome` (`awaiting-approval`), not an outcome inferred from the branch or from a guess about progress.",
+        "Names the checkpoint path (`.../eval-status/decisions.json`) and the act that follows it — edit it if needed, then resume run `eval-status` — instead of starting a new run.",
+        "Treats the projection as a report of the last observation, not a verdict: it does not report the alignment as done, verified or green.",
+        "Changes no file, including the checkpoint, and runs no alignment, writer or workspace gate."
+      ],
+      "files": []
+    },
+    {
+      "id": 4,
+      "name": "checkpoint-problems",
+      "prompt": "I edited the checkpoint of run `eval-checkpoint` by hand before resuming it. Look at it and tell me whether the run can go on.",
+      "expected_output": "The session checks the edited checkpoint against the wave it belongs to and reports every problem at once — the duplicated node, the decision outside the vocabulary, the node outside the wave and the nodes with no entry — then names the fix and the resume, without rewriting the file or starting a writer.",
+      "expectations": [
+        "Compares `decisions.json` with the wave in `decisions.md` and names the duplicate entry for `1:1`, not only the first problem it meets.",
+        "Names the decision `refactor` as outside the six (`implement`, `review`, `map`, `exclude`, `design-request`, `skip`) and `2:7` as a node the wave does not contain.",
+        "Names the wave nodes the file leaves without an entry (`1:2` and `2:9`).",
+        "Leaves `decisions.json` as it found it and starts no writer: the answer is the problem list, the fix and the resume that follows the edit."
+      ],
+      "files": []
     }
   ]
 }

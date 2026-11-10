@@ -12,6 +12,39 @@
 // capture/report per node, the visual baseline preflight, green chain) → one
 // final re-verification of stale passes → report.
 //
+// Journal keys (`ctx.step`) are `<name>-v<n>` when the recorded value is the
+// run's own input — the plan, the queue, the wave, the approved decisions — and
+// `<name>:<runId>` when the step is bound to one run's side effect (the MCP gate,
+// the triage, the decisions file). Bumping the version or the run id is how a
+// shape change and a new run stay apart; the journal is the only schedule, so a
+// key that has been read once is never re-derived.
+//
+// Two outcomes are explicit rather than inferable:
+//
+// - The checkpoint (`decisions.json` beside `decisions.md`) is validated against
+//   the wave after the person edits it and before any writer runs. Every problem
+//   is reported at once — a dropped node, a duplicate, an unknown decision, a
+//   non-string instruction — the file is never rewritten, and the run is resumed
+//   rather than restarted. A proposal carries `proposedBy`, so a skip the
+//   analysis produced after returning nothing is not read as a person's choice.
+// - Each node ends in one tag from `NODE_OUTCOMES` (verified, verification-failed,
+//   verification-missing, stale-context, writer-failed, fix-failed) plus
+//   `not-reached` and `skipped`; the report switches on it exhaustively and
+//   throws on anything else. The wording of a finding is never parsed to decide
+//   an outcome.
+//
+// `<run dir>/status.json` is a read-only projection of the last observation:
+// outcome (`running`, `awaiting-approval`, `analysis-only`, `completed`,
+// `blocked`, `failed`, `cancelled`), phase, route, render, the reason and the
+// next step. It is written only after the source gate answers, and it is never
+// an authority a resume replays: the SDK journal stays the schedule, the pause
+// and the serialized writers. `completed` marks the end of the run, not a green
+// verdict. No credential, `.env` value or unsanitized output reaches it.
+//
+// Three fix passes per parity case (the skill's step 4) are not the same loop as
+// the one follow-up writer round `ctx.pipeline` allows per node: the first is a
+// person's iteration on a case, the second is this run's single recovery attempt.
+//
 // The token is the environment first and the macOS `figma-pat` keychain entry
 // second, and only its source is ever logged. It clears the live steps and
 // nothing else: a run without it reads Figma through the MCP, where the pinned
@@ -53,6 +86,7 @@ import {
   isIgnorableExcludedEntry,
   isSafeContextPath,
   isVerificationPath,
+  NODE_OUTCOMES,
   reverifyStaleResults,
   VERIFICATION_FILES,
   VERIFICATION_TREES,
@@ -860,6 +894,127 @@ ${logTail}
 Fix the cause: never weaken a check, add a lint disable the standards do not justify, or hand-edit a generated file (run its generator). A failure that predates the wave or needs a browser that cannot start: change nothing for it and say so. Re-run only the targets that failed.`
 }
 
+// ------------------------------------------------------------- checkpoint
+
+// The checkpoint is the person's answer to a whole wave, and every entry is a
+// claim about one node. A checkpoint that edits one decision is normal; one
+// that drops a node is not, and letting it through would silently shrink the
+// wave. All problems are collected so one correction pass is enough.
+function checkpointProblems(edited, wave) {
+  if (!Array.isArray(edited)) {
+    return ["the file must hold a JSON array with one entry per wave node"]
+  }
+  const problems = []
+  const waved = new Set(wave.map((node) => node.nodeId))
+  const counts = new Map()
+  for (const [index, entry] of edited.entries()) {
+    const where = `entry ${index + 1}`
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+      problems.push(`${where}: must be an object, not ${JSON.stringify(entry)}`)
+      continue
+    }
+    const nodeId = typeof entry.nodeId === "string" ? entry.nodeId.trim() : ""
+    const label = nodeId || where
+    if (!nodeId) problems.push(`${where}: "nodeId" must be a non-empty string`)
+    else counts.set(nodeId, (counts.get(nodeId) ?? 0) + 1)
+    if (!DECISIONS.includes(entry.decision)) {
+      problems.push(`${label}: unknown decision ${JSON.stringify(entry.decision)} — use ${DECISIONS.join("|")}`)
+    }
+    if (entry.instructions !== undefined && typeof entry.instructions !== "string") {
+      problems.push(`${label}: "instructions" must be a string, not ${JSON.stringify(entry.instructions)}`)
+    }
+  }
+  for (const [nodeId, count] of counts) {
+    if (count > 1) problems.push(`${nodeId}: ${count} entries — a wave node takes exactly one decision`)
+  }
+  for (const node of wave) {
+    if (!counts.has(node.nodeId)) {
+      problems.push(
+        `${node.nodeId} (${node.name}): no entry — a wave node takes exactly one decision; use "skip" to leave it for a later wave`,
+      )
+    }
+  }
+  const waveList = [...waved].join(", ")
+  for (const nodeId of counts.keys()) {
+    if (!waved.has(nodeId)) problems.push(`${nodeId}: not in this wave (${waveList}) — remove the entry`)
+  }
+  return problems
+}
+
+function approvedCheckpoint(edited, wave, runId) {
+  let parsed
+  try {
+    parsed = JSON.parse(edited)
+  } catch (error) {
+    throw new Error(
+      `decisions.json cannot be approved: not valid JSON (${error.message}). Fix it and resume run ${runId}.`,
+    )
+  }
+  const problems = checkpointProblems(parsed, wave)
+  if (problems.length) {
+    throw new Error(
+      `decisions.json cannot be approved: ${problems.length} ${
+        problems.length === 1 ? "problem" : "problems"
+      }. Fix it and resume run ${runId}:\n${problems.map((line) => `- ${line}`).join("\n")}`,
+    )
+  }
+  return parsed
+}
+
+// ------------------------------------------------------------- run status
+
+const STATUS_VERSION = 1
+const RUN_OUTCOMES = [
+  "running",
+  "awaiting-approval",
+  "analysis-only",
+  "completed",
+  "blocked",
+  "failed",
+  "cancelled",
+]
+
+// The report writes one of these per node and switches on it exhaustively: a
+// node's outcome is never inferred from the wording of a finding.
+const OUTCOMES = [...NODE_OUTCOMES, "not-reached", "skipped"]
+
+// The status file is a projection of what the run last observed, written beside
+// the checkpoint so a person can see where a run stands without reading a
+// journal. It is never replayed and never replaces the report: `completed` says
+// the run finished, not that every gate is green. No credential, no `.env` and
+// no command output reaches it — only the route, the render, the decisions file
+// and the exit codes the run already reports.
+function statusDocument(status) {
+  if (!RUN_OUTCOMES.includes(status.outcome)) {
+    throw new Error(`status: unknown outcome '${status.outcome}'`)
+  }
+  for (const node of status.nodes ?? []) {
+    if (!OUTCOMES.includes(node.outcome)) {
+      throw new Error(`status: unknown node outcome '${node.outcome}'`)
+    }
+  }
+  return `${JSON.stringify(
+    {
+      version: STATUS_VERSION,
+      runId: status.runId,
+      outcome: status.outcome,
+      observedAt: new Date().toISOString(),
+      branch: status.branch ?? "",
+      phase: status.phase ?? "",
+      route: status.route ?? "",
+      storybook: status.storybook || null,
+      reason: status.reason ?? "",
+      nextStep: status.nextStep ?? "",
+      decisionsFile: status.decisionsFile ?? "",
+      nodes: status.nodes ?? [],
+      checks: status.checks ?? [],
+      report: status.report ?? "",
+    },
+    null,
+    2,
+  )}\n`
+}
+
 // ---------------------------------------------------------------- markdown
 
 function decisionsMarkdown(runId, proposals) {
@@ -874,7 +1029,11 @@ function decisionsMarkdown(runId, proposals) {
     .map(
       (p) => `## ${p.name} (\`${p.nodeId}\`) — ${p.decision}
 
-${p.reason}
+${
+  p.proposedBy === "analysis-failure"
+    ? "> Proposed skip: the analysis returned no analysis result, so the run proposed a skip. That is not a person's choice — set `decision` yourself before resuming.\n\n"
+    : ""
+}${p.reason}
 
 - Dependencies: ${p.dependencies.join(", ") || "none"}
 - Existing cases: ${p.existingCases.map((c) => `${c.caseId} (exit ${c.exit}): ${c.summary}`).join("; ") || "none"}
@@ -899,16 +1058,51 @@ ${details}
 `
 }
 
+// Why a skip proposal exists, in the person's language: an analysis that never
+// answered proposes a skip, and naming that is not the same as claiming someone
+// chose it. A checkpoint written before provenance existed says so.
+function skipProvenance(entry) {
+  if (entry.proposedBy === "analysis-failure") {
+    return "skipped: proposed after the analysis returned no result (not a person's choice)"
+  }
+  if (entry.proposedBy === "analysis") return "skipped: the analysis proposed it"
+  return "skipped: no provenance recorded"
+}
+
+// Every node outcome is handled here, and an unknown one throws instead of
+// rendering a line that reads like a verdict. The wording is what the report
+// always said; only the tag in front of it is new.
+function outcomeLines(node) {
+  const findings = node.findings?.length
+    ? `\n  - ${node.findings.join("\n  - ")}`
+    : ""
+  const notPassed = `- Independent verification: NOT passed${findings}\n- Case verdicts below are reported history, not a current verified result.`
+  switch (node.outcome) {
+    case "verified":
+      return "- Independent verification: pass"
+    case "verification-failed":
+      return notPassed
+    case "verification-missing":
+      return notPassed
+    case "stale-context":
+      return notPassed
+    case "fix-failed":
+      return notPassed
+    case "writer-failed":
+      return "- Independent verification: NOT passed\n  - The writer returned no result; this node was not verified."
+    case "not-reached":
+      return "- Independent verification: NOT passed\n  - The pipeline failed before a verification result was available."
+    case "skipped":
+      return `- ${skipProvenance(node)}`
+    default:
+      throw new Error(`report: unhandled node outcome '${node.outcome}'`)
+  }
+}
+
 function reportMarkdown(report, green) {
   const nodes = report.nodes
     .map((n) => {
-      if (n.status === "failed") {
-        return `## ${n.name} (\`${n.nodeId}\`) — the pipeline dropped it
-
-- Independent verification: NOT passed
-  - The pipeline failed before a verification result was available.`
-      }
-      const cases = n.cases
+      const cases = n.cases ?? []
         .map(
           (c) =>
             `| ${c.caseId} | ${c.device} | ${c.verdict} | ${
@@ -916,18 +1110,19 @@ function reportMarkdown(report, green) {
             } |`,
         )
         .join("\n")
-      return `## ${n.name} (\`${n.nodeId}\`) — ${n.decision} → ${n.status}
+      const heading =
+        n.outcome === "not-reached"
+          ? `## ${n.name} (\`${n.nodeId}\`) — the pipeline dropped it`
+          : n.outcome === "skipped"
+            ? `## ${n.name} (\`${n.nodeId}\`) — skipped`
+            : `## ${n.name} (\`${n.nodeId}\`) — ${n.decision} → ${n.status}`
+      return `${heading}
 
-${n.summary}
+${n.summary ?? ""}
 
-- Reason: ${n.reason}
-- Independent verification: ${n.verified ? "pass" : "NOT passed"}${
-        n.findings.length ? `\n  - ${n.findings.join("\n  - ")}` : ""
-      }${
-        n.verified
-          ? ""
-          : "\n- Case verdicts below are reported history, not a current verified result."
-      }
+- Reason: ${n.reason ?? ""}
+- Node outcome: ${n.outcome}
+${outcomeLines(n)}
 - Rules: ${
         n.rules
           .map((r) => `${r.card} ${r.disposition}${r.guide ? ` (${r.guide})` : ""}`)
@@ -1030,12 +1225,56 @@ const figmaAlign = defineWorkflow({
       greenChain: args.greenChain !== false,
       startStorybook: args.startStorybook !== false,
     }
+    // A node is aligned once per run: two entries for the same id would split
+    // one decision across two writers and overwrite the same files twice.
+    const duplicates = [...new Set(opts.nodes.filter((id, i) => opts.nodes.indexOf(id) !== i))]
+    if (duplicates.length) {
+      throw new Error(
+        `args.nodes lists ${duplicates.join(", ")} twice: a node is aligned once per run. Remove the duplicate and start the run again.`,
+      )
+    }
     const { signal } = ctx
     // The decisions checkpoint lives beside the config it was written for: the
     // discovery may name another package, so the path is settled once inside
     // the preflight, which is also what creates the folder.
     let outDir = join(PACKAGE_DIR, ".figma/align", ctx.runId)
     let storybook = null
+    let phase = "Preflight"
+    let route = "unknown"
+    // Nothing below the source gate writes: a run that cannot read Figma reports
+    // through its error alone, so an unreadable path fails without an artifact.
+    let gated = false
+    let renderUrl = ""
+    let branchName = ""
+    let checkpointFile = ""
+    // A pause is not a failure: the engine throws out of `ctx.pause`, and the
+    // projection written before it already says the run waits for a person.
+    let pausing = false
+    const enter = (title) => {
+      phase = title
+      ctx.phase(title)
+    }
+    const projectStatus = ({ outcome, reason = "", nextStep = "", nodes = [], report = "" }) => {
+      if (!gated) return
+      mkdirSync(outDir, { recursive: true })
+      writeFileSync(
+        join(outDir, "status.json"),
+        statusDocument({
+          runId: ctx.runId,
+          outcome,
+          branch: branchName,
+          phase,
+          route,
+          storybook: renderUrl,
+          reason,
+          nextStep,
+          decisionsFile: checkpointFile ? repoPath(checkpointFile) : "",
+          nodes,
+          checks: commands,
+          report,
+        }),
+      )
+    }
 
     const ensureStorybook = async (config) => {
       const url = config.storybook.url
@@ -1079,10 +1318,9 @@ const figmaAlign = defineWorkflow({
 
     try {
       // ------------------------------------------------------------ preflight
-      ctx.phase("Preflight")
+      enter("Preflight")
       const config = readConfig()
       outDir = join(PACKAGE_DIR, ".figma/align", ctx.runId)
-      mkdirSync(outDir, { recursive: true })
       for (const key of ["figma", "catalog", "storybook", "design"]) {
         if (!config[key]) throw new Error(`figma-to-code.yaml: missing section '${key}'`)
       }
@@ -1096,6 +1334,7 @@ const figmaAlign = defineWorkflow({
       // writes: where the config is, and whether Figma answers at all.
       ctx.log(`Config: ${repoPath(CONFIG_FILE)}`)
       const token = tokenPreflight()
+      route = token.present ? "REST" : "MCP"
       ctx.log(`Token: ${token.source}`)
       ctx.log(
         token.present
@@ -1120,6 +1359,12 @@ const figmaAlign = defineWorkflow({
         )
       }
       ctx.log(`MCP gate: ${gate.call || "MCP"} answered`)
+      gated = true
+      renderUrl = config.storybook.url
+      projectStatus({
+        outcome: "running",
+        nextStep: "The run continues on its own; the report lands in report.md beside this file.",
+      })
 
       // The session report is the preflight: token state, pinned snapshot, the
       // drift against the inventory, the rules ledger, the comments and the
@@ -1158,11 +1403,12 @@ const figmaAlign = defineWorkflow({
       }
 
       const branch = (await run("git", ["branch", "--show-current"], { signal })).stdout.trim()
+      branchName = branch
       const dirty = (await run("git", ["status", "--porcelain"], { signal })).stdout.trim()
       ctx.log(`Branch ${branch || "(detached)"}${dirty ? " — working tree NOT clean" : ""}`)
 
       // ------------------------------------------------------------ delta
-      ctx.phase("Delta")
+      enter("Delta")
       if (opts.refresh) {
         // The MCP list discovers the roots a REST read cannot see, so it is
         // tried first and the workflow — never the agent — runs the export.
@@ -1423,7 +1669,7 @@ const figmaAlign = defineWorkflow({
       )
 
       // ------------------------------------------------------------ analyse
-      ctx.phase("Analyse")
+      enter("Analyse")
       const analysedUrl = await ensureStorybook(config)
       if (!analysedUrl) {
         ctx.log(
@@ -1445,18 +1691,23 @@ const figmaAlign = defineWorkflow({
       )
 
       // ------------------------------------------------------------ decide
-      ctx.phase("Decide")
+      enter("Decide")
       const decisionsFile = join(outDir, "decisions.json")
+      checkpointFile = decisionsFile
+      mkdirSync(outDir, { recursive: true })
       // Journaled so a resume never overwrites the person's edits.
       await ctx.step(`decisions-written:${ctx.runId}`, () => {
         const proposals = wave.map((node, index) => {
           const analysis = analyses[index]
           return analysis
-            ? { ...analysis, nodeId: node.nodeId, name: node.name, instructions: "" }
+            ? { ...analysis, nodeId: node.nodeId, name: node.name, proposedBy: "analysis", instructions: "" }
             : {
                 nodeId: node.nodeId,
                 name: node.name,
                 decision: "skip",
+                // Provenance, so a fallback skip is never read as a person's
+                // choice; the field is additive and an older checkpoint has none.
+                proposedBy: "analysis-failure",
                 reason: "the analysis returned no result",
                 devices: [],
                 dependencies: [],
@@ -1476,7 +1727,11 @@ const figmaAlign = defineWorkflow({
       ctx.log(`Decisions: ${join(outDir, "decisions.md")}`)
 
       if (opts.analyseOnly) {
-        ctx.phase("Report")
+        projectStatus({
+          outcome: "analysis-only",
+          nextStep: `Review ${repoPath(decisionsFile)}: nothing was written and no writer ran.`,
+        })
+        enter("Report")
         return {
           runId: ctx.runId,
           decisionsFile,
@@ -1484,23 +1739,24 @@ const figmaAlign = defineWorkflow({
         }
       }
       if (opts.approval === "pause") {
+        projectStatus({
+          outcome: "awaiting-approval",
+          nextStep: `Review ${repoPath(decisionsFile)} (decision: ${DECISIONS.join("|")}, optional "instructions"), then resume run ${ctx.runId}.`,
+        })
         ctx.log(
           `Paused: review ${decisionsFile} (decision: ${DECISIONS.join("|")}, optional "instructions"), then resume run ${ctx.runId}.`,
         )
+        pausing = true
         await ctx.pause("decisions-approved")
+        pausing = false
       }
 
-      const approved = await ctx.step("decisions-approved-v1", () => {
-        const edited = JSON.parse(readFileSync(decisionsFile, "utf8"))
-        for (const entry of edited) {
-          if (!DECISIONS.includes(entry.decision)) {
-            throw new Error(
-              `decisions.json: ${entry.nodeId} has an unknown decision '${entry.decision}'`,
-            )
-          }
-        }
-        return edited
-      })
+      // Validated against this wave, before any writer: a checkpoint is only
+      // recorded once it answers every node exactly once. A rejection writes
+      // nothing, so the person keeps their edits and resumes after fixing it.
+      const approved = await ctx.step("decisions-approved-v1", () =>
+        approvedCheckpoint(readFileSync(decisionsFile, "utf8"), wave, ctx.runId),
+      )
       const work = wave
         .map((node) => ({ node, decision: approved.find((d) => d.nodeId === node.nodeId) }))
         .filter(({ decision }) => decision && decision.decision !== "skip")
@@ -1509,7 +1765,7 @@ const figmaAlign = defineWorkflow({
       )
 
       // ------------------------------------------------------------ align
-      ctx.phase("Align")
+      enter("Align")
       // An exclusion or a design request has no render to compare: only the
       // decisions that save cases need Storybook.
       const renderDecisions = new Set(["implement", "review", "map"])
@@ -1618,7 +1874,7 @@ const figmaAlign = defineWorkflow({
       )
 
       // ------------------------------------------------------------ close
-      ctx.phase("Close")
+      enter("Close")
       // One wave per node: the report names the node it measures, and a single
       // comma-list capture would merge every node into a wave no reader can
       // attribute. An exclusion or a design request has no case to capture.
@@ -1727,7 +1983,7 @@ const figmaAlign = defineWorkflow({
       }
 
       // ------------------------------------------------------------ report
-      ctx.phase("Report")
+      enter("Report")
       let changedFiles = changedBetween({}, await captureChangedFiles())
       let finalContext
       let finalContextError
@@ -1784,6 +2040,7 @@ const figmaAlign = defineWorkflow({
                 (r.verification?.nodeId === r.node.nodeId && r.verification.cases) ||
                 r.alignment?.cases ||
                 [],
+              outcome: verdict.kind,
               verified: verdict.verified,
               findings: verdict.findings,
               rules: r.alignment?.rules ?? r.decision.rules ?? [],
@@ -1798,11 +2055,37 @@ const figmaAlign = defineWorkflow({
           return {
             nodeId: work[i].node.nodeId,
             name: work[i].node.name,
+            decision: work[i].decision.decision,
+            reason: work[i].decision.reason,
             status: "failed",
+            outcome: "not-reached",
             verified: false,
             findings: ["The pipeline failed before a verification result was available."],
           }
-        }),
+        }).concat(
+          // A skip is an outcome too: it is reported, with where the proposal
+          // came from, instead of disappearing from the wave.
+          approved
+            .filter((entry) => entry.decision === "skip")
+            .map((entry) => ({
+              nodeId: entry.nodeId,
+              name: entry.name ?? entry.nodeId,
+              decision: entry.decision,
+              reason: entry.reason ?? "",
+              status: "skipped",
+              outcome: "skipped",
+              proposedBy: entry.proposedBy ?? "",
+              verified: false,
+              findings: [],
+              rules: [],
+              comments: [],
+              designRequest: "",
+              preview: "",
+              openPoints: [],
+              commands: [],
+              files: [],
+            })),
+        ),
         skipped: approved.filter((d) => d.decision === "skip").map((d) => d.nodeId),
         commands,
         greenChain: green ? { code: green.code, log: green.logFile } : "not run",
@@ -1818,9 +2101,41 @@ const figmaAlign = defineWorkflow({
         }`,
       }
       const reportFile = join(outDir, "report.md")
+      mkdirSync(outDir, { recursive: true })
       writeFileSync(reportFile, reportMarkdown(report, green))
       ctx.log(`Report: ${reportFile}`)
+      // "completed" is the end of the run, not a green verdict: the per-node
+      // outcomes and the check exit codes are what the person reads next.
+      projectStatus({
+        outcome: "completed",
+        nodes: report.nodes.map((node) => ({
+          nodeId: node.nodeId,
+          outcome: node.outcome,
+          status: node.status,
+          verified: node.verified,
+          findings: node.findings.length,
+          proposedBy: node.proposedBy ?? "",
+        })),
+        report: repoPath(reportFile),
+        nextStep:
+          "Review the report and the diff: nothing was committed, and a check that is not exit 0 stays unverified.",
+      })
       return { ...report, reportFile }
+    } catch (error) {
+      if (pausing) throw error
+      const message = String(error?.message ?? error)
+      const [reason, ...rest] = message.split("\n")
+      const blocked =
+        signal.aborted ||
+        ["Preflight", "Delta", "Analyse", "Decide"].includes(phase) ||
+        /^(Storybook does not answer|MCP gate:|Snapshot refresh needs a token)/.test(message)
+      projectStatus({
+        outcome: signal.aborted ? "cancelled" : blocked ? "blocked" : "failed",
+        phase,
+        reason,
+        nextStep: rest.join("\n").trim() || `Resume run ${ctx.runId} once the cause is fixed.`,
+      })
+      throw error
     } finally {
       if (storybook?.pid) {
         try {

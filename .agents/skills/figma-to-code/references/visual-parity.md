@@ -38,7 +38,9 @@ written down with their variants and declared devices.
    "<path>=<reason>"` for a deliberate adaptation, or `--ignore <path>` for a
    mapping artifact; a subject off on every edge is a mapping defect. **Three fix
    passes per case**, then stop and report. Never accept a deviation because it
-   looks right.
+   looks right. These three passes belong to the person closing a case; an
+   orchestrated run's single follow-up writer round is a different loop and does
+   not raise this ceiling.
 5. **Save.** `--save-case --note "reviewed: …"`; the command line is never the
    record; a `cases --sync` draft never counts as coverage. **Done when**
    `parity check --case <id>` reproduces the node.

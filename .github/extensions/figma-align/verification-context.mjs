@@ -229,5 +229,57 @@ export function assessVerification({
   if (greenFixFailed) {
     findings.push("The green-chain fix writer returned no result; repeat verification.")
   }
-  return { verified: verification?.pass === true && findings.length === 0, findings }
+  return {
+    verified: verification?.pass === true && findings.length === 0,
+    findings,
+    kind: outcomeKind({
+      alignment,
+      verification,
+      nodeId,
+      startContext,
+      endContext,
+      finalContext,
+      contextError,
+      writerFailure,
+      greenFixFailed,
+    }),
+  }
+}
+
+// The one tag the report and the status projection switch on, so a node's
+// outcome is never inferred from a finding string.
+export const NODE_OUTCOMES = [
+  "verified",
+  "verification-failed",
+  "verification-missing",
+  "stale-context",
+  "writer-failed",
+  "fix-failed",
+]
+
+function outcomeKind({
+  alignment,
+  verification,
+  nodeId,
+  startContext,
+  endContext,
+  finalContext,
+  contextError,
+  writerFailure,
+  greenFixFailed,
+}) {
+  if (!alignment || alignment.nodeId !== nodeId) return "writer-failed"
+  if (writerFailure) return "fix-failed"
+  if (!verification || verification.nodeId !== nodeId) return "verification-missing"
+  const context = [startContext, endContext, finalContext]
+  if (
+    contextError ||
+    !context.every((value) => typeof value === "string" && value) ||
+    startContext !== endContext ||
+    endContext !== finalContext ||
+    greenFixFailed
+  ) {
+    return "stale-context"
+  }
+  return verification.pass === true ? "verified" : "verification-failed"
 }
