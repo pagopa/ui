@@ -20,7 +20,10 @@ export type DeltaWorkSet = {
 }
 
 // The delta keys that mean "the design changed": a rename or a move changes
-// where the node lives, not the drawing, so neither reopens an implementation.
+// where the node lives, not the drawing. These keys decide `deltaChangedNodes`,
+// which is what reopens an implementation and what a registry renewal grades.
+// `deltaTouchedNodes` below adds the renamed and moved nodes on top: the session
+// still carries their device target, but they cost no new review.
 const CHANGED_KEYS = ["added", "changed", "affected"] as const
 
 // Every key that makes the committed inventory stale. `baseline` and

@@ -17,11 +17,10 @@ import { fileKeyFromSource } from "./snapshot.ts"
 import { figmaToken, resolveFigmaToken, type FigmaTokenSource } from "../adapters/figma-token.ts"
 import { RULES_PATH, plan as planRules, readLedger, readRulesSnapshot } from "./rules.ts"
 import { COMMENTS_SNAPSHOT_PATH, readComments } from "./comments.ts"
-import { designPaths, readFigmaConfig } from "./config.ts"
+import { CONFIG_PATH, designPaths, readFigmaConfig, requestPointer } from "./config.ts"
 import { readDesignRequestRecord } from "./design-request-record.ts"
 import { formatSurfaceLine, loadPageSurface, surfaceSummary, type SurfaceStats } from "./surface.ts"
 
-const CONFIG_PATH = "figma-to-code.yaml"
 const INVENTORY_PATH = "src/catalog/figma/inventory.json"
 const REGISTRY_PATH = "src/catalog/figma/registry.json"
 const SNAPSHOT_PATH = ".figma/live-rest.json"
@@ -350,7 +349,7 @@ function inventoryStatus(workspace: Workspace): {
 }
 
 function pendingStatusRow(nodeId: string, name: string | null, target?: string, note?: string) {
-  const designRequest = /\bdocs\/design-requests\/[\w./-]+\.md\b/g
+  const designRequest = requestPointer()
   return {
     nodeId,
     name,

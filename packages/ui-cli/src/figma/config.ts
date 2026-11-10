@@ -13,6 +13,9 @@ import { UsageError } from "../lib/command.ts"
  */
 export const CONFIG_PATH = "figma-to-code.yaml"
 
+/** The design-request folder a checkout without the config keeps using. */
+export const DEFAULT_REQUESTS_DIR = "docs/design-requests"
+
 type Yaml = Record<string, unknown>
 
 function isMapping(value: unknown): value is Yaml {
@@ -102,6 +105,17 @@ export function configList(config: FigmaToolConfig, key: string): string[] {
   return config.lists[key] ?? []
 }
 
+/**
+ * The pattern that finds a design-request pointer inside a registry note. Three
+ * readers scanned notes for the same shape, each with its own copy of the
+ * folder, so a config that moved the requests left two of them scanning a path
+ * that no longer exists.
+ */
+export function requestPointer(folder: string = DEFAULT_REQUESTS_DIR): RegExp {
+  const escaped = folder.replace(/\/$/, "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+  return new RegExp(`\\b${escaped}/[\\w./-]+\\.md\\b`, "g")
+}
+
 export type DesignConfig = {
   requests: string
   owners: string[]
@@ -111,7 +125,7 @@ export type DesignConfig = {
 
 export function designPaths(config: FigmaToolConfig): DesignConfig {
   return {
-    requests: configPath(config, "design.requests", "docs/design-requests"),
+    requests: configPath(config, "design.requests", DEFAULT_REQUESTS_DIR),
     owners: configList(config, "design.owners"),
     preview: configPath(config, "design.preview.url", "none"),
     previewBranch: configPath(config, "design.preview.branch", ""),

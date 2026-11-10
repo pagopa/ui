@@ -106,18 +106,25 @@ export function checkoutHandoff(
     throw new UsageError(`worktree destination already exists: ${destination}`)
   }
   const remote = `origin/${pr.headRefName}`
-  const exists = !dryRun && branchExists(workspace, pr.headRefName, adapters)
   // `worktree add -b` fails on a branch that already exists, and a drift branch
   // outlives the worktree that carried it: pruning a worktree or a crashed run
-  // leaves the branch behind. Reusing it tracks the pull request's branch, which
-  // is what the session is here to push to; creating it would either fail raw or
-  // reset the drift the pull request already holds.
+  // leaves the branch behind. Reusing it checks out the local branch as it
+  // stands, drift included, instead of resetting it to the remote or failing
+  // raw; a local branch behind the pull request is the session's to fast-forward.
+  //
+  // A dry run runs no git, so it cannot tell which case it is in: it shows the
+  // fresh checkout and names the reuse the real run does when the branch is
+  // already there.
+  const exists = !dryRun && branchExists(workspace, pr.headRefName, adapters)
   const create = exists
     ? [`git worktree add ${destination} ${pr.headRefName}`, `# reused branch: ${pr.headRefName}`]
     : [`git worktree add ${destination} -b ${pr.headRefName} ${remote}`]
   const actions = [
     `git fetch origin ${pr.headRefName}`,
     ...create,
+    ...(dryRun && !exists
+      ? [`# if ${pr.headRefName} exists already: git worktree add ${destination} ${pr.headRefName}`]
+      : []),
     `pnpm install (cwd ${destination})`,
   ]
   if (!dryRun) {
@@ -199,9 +206,10 @@ export function handoffBrief(
       `pull request ${pr.number} has no readable delta.json artifact in its body or local .figma snapshots`,
     )
   const data = object(delta)
-  const requested = Array.isArray(data?.implementationOrder)
+  const artifactOrder = Array.isArray(data?.implementationOrder)
     ? data.implementationOrder.filter((id): id is string => typeof id === "string")
-    : queue.implementationOrder
+    : null
+  const requested = artifactOrder ?? queue.implementationOrder
   const byId = new Map(queue.items.map((item) => [item.nodeId, item]))
   // The artifact is written by an earlier run and the queue is read now, so the
   // ids it names can be gone: renamed in the inventory, dropped from pending, or
@@ -214,7 +222,9 @@ export function handoffBrief(
     pullRequest: pr,
     delta,
     dropped: requested.filter((id) => !byId.has(id)),
-    orderSource: resolved.length ? ("delta" as const) : ("queue" as const),
+    // The queue's own order is not the artifact's: an artifact that carries no
+    // `implementationOrder` was read from the queue in the first place.
+    orderSource: artifactOrder?.length && resolved.length ? ("delta" as const) : ("queue" as const),
     queue: {
       scope: queue.scope,
       implementationOrder: order,

@@ -160,7 +160,9 @@ test("handoff checkout dry-run describes fetch, worktree and install without run
     })
     assert.equal(commands.length, 0)
     assert.equal(result.branch, openPr.headRefName)
-    assert.equal(result.actions.length, 3)
+    // The fresh checkout, the reuse a real run falls back to, and the install.
+    assert.equal(result.actions.length, 4)
+    assert.match(result.actions[2], /if figma-drift\/.* exists already/)
   } finally {
     fixture.dispose()
   }

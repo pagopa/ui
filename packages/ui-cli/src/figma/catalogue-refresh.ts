@@ -12,6 +12,7 @@ import {
   type Registry,
 } from "../schemas/catalogue.ts"
 import type { SnapshotDelta } from "./snapshot.ts"
+import { requestPointer } from "./config.ts"
 import { keepsStatusOnDrift } from "./surface-decision.ts"
 import { deltaChangedNodes } from "./work-set.ts"
 import { loadPageSurface, PAGE_SURFACE_PATH } from "./surface.ts"
@@ -48,14 +49,27 @@ function dropKeys<T>(record: Record<string, T>, keys: Set<string>): Record<strin
   return Object.fromEntries(Object.entries(record).filter(([key]) => !keys.has(key)))
 }
 
-// The design-request file a note points at is the record `figma status` reads
-// back: renewing the note must not erase the pointer to it.
-const DESIGN_REQUEST_POINTER = /\bdocs\/design-requests\/[\w./-]+\.md\b/g
-
-function renewedNote(previous: string | undefined, boilerplate: string): string {
-  const pointers = [...new Set(previous?.match(DESIGN_REQUEST_POINTER) ?? [])]
-  if (!pointers.length) return boilerplate
-  return `${boilerplate}. Open design question: ${pointers.join(", ")}`
+/**
+ * The note a renewal writes: the boilerplate, plus the open design questions the
+ * previous note pointed at. `residue` is whatever else the previous note said —
+ * the registry's note states the current residues rather than the history, so
+ * the rest is discarded, and the caller reports it instead of dropping it.
+ */
+function renewedNote(
+  previous: string | undefined,
+  boilerplate: string,
+): { note: string; residue: string } {
+  const pointers = [...new Set(previous?.match(requestPointer()) ?? [])]
+  const residue = (previous ?? "")
+    .replace(requestPointer(), " ")
+    .replace(/Open design question:\s*/i, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+  if (!pointers.length) return { note: boilerplate, residue }
+  return {
+    note: `${boilerplate}. Open design question: ${pointers.join(", ")}`,
+    residue,
+  }
 }
 
 function renewRegistry(registry: Registry, delta: SnapshotDelta, date: string) {
@@ -83,14 +97,16 @@ function renewRegistry(registry: Registry, delta: SnapshotDelta, date: string) {
       )
       continue
     }
-    registry.entries[nodeId] = {
-      ...previous,
-      status: "pending",
-      note: renewedNote(
-        previous?.note,
-        `Figma delta ${date}: review new/changed node or dependency before marking implemented`,
-      ),
+    const { note, residue } = renewedNote(
+      previous?.note,
+      `Figma delta ${date}: review new/changed node or dependency before marking implemented`,
+    )
+    if (residue) {
+      notices.push(
+        `${nodeId} renewed: its note dropped "${residue}" — carry anything still owed into the new note`,
+      )
     }
+    registry.entries[nodeId] = { ...previous, status: "pending", note }
     renewed.add(nodeId)
   }
   for (const node of delta.removed) removed.add(node.nodeId)

@@ -39,11 +39,6 @@ export function requiresReason(decision: SurfaceDecision): boolean {
   return REASONED.has(decision)
 }
 
-/** Whether a registry status satisfies a census decision. */
-export function decisionAgrees(decision: SurfaceDecision, status: Status | string | null): boolean {
-  return status === registryStatusFor(decision)
-}
-
 /**
  * Which registry statuses keep their entry when the delta reopens it: a mocked
  * or excluded node is not work, and neither is a node whose bulk rule already

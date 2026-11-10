@@ -1,5 +1,6 @@
 import { implementationOrder, type SnapshotDelta } from "../snapshot.ts"
 import { deltaWorkSet } from "../work-set.ts"
+import { requestPointer } from "../config.ts"
 import type { DeviceStats } from "../devices.ts"
 import type {
   SurfacePending,
@@ -70,8 +71,9 @@ export function renderCataloguePlan(input: {
   deviceCoverage: unknown
 }): string {
   const snapshot = input.live ?? input.committed
-  const selected = new Set(deltaWorkSet(input.delta, input.entries).queue)
-  const designRequest = /\bdocs\/design-requests\/[\w./-]+\.md\b/g
+  const workSet = deltaWorkSet(input.delta, input.entries)
+  const selected = new Set(workSet.queue)
+  const designRequest = requestPointer()
   const pending = Object.entries(input.entries)
     .filter(([, entry]) => entry.status === "pending")
     .map(([nodeId, entry]) => ({
@@ -92,6 +94,9 @@ export function renderCataloguePlan(input: {
       ...delta,
       snapshotVersion: input.liveVersion ?? null,
       implementationOrder: implementationOrder(snapshot, selected),
+      // A mocked node the delta reopened is not work, but calling the read
+      // complete while the file changed would hide the decision it keeps.
+      withheld: workSet.withheld,
       pending,
       surfaceWaiting: input.surfaceWaiting,
       surfaceUnmirrored: input.surfaceUnmirrored,

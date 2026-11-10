@@ -45,9 +45,7 @@ export type DesignRequestInput = z.infer<typeof InputSchema>
 export type IssueCommand = (args: string[], cwd: string) => string
 
 function designConfig(workspace: Workspace): DesignConfig {
-  const config = designPaths(readFigmaConfig(workspace))
-  if (!config.requests) throw new UsageError("figma-to-code.yaml has no design.requests directory")
-  return config
+  return designPaths(readFigmaConfig(workspace))
 }
 
 function parseInput(source: string): DesignRequestInput {
@@ -266,10 +264,11 @@ export function openDesignRequest(
   const input = parseInput(fs.readFileSync(inputFile, "utf8"))
   const config = designConfig(workspace)
   const target = recordPath(workspace, config.requests, day, input.slug)
-  // A run that died between `gh issue create` and its writes leaves the record
-  // behind with the issue URL in it. Refusing the record would strand that
-  // issue and a rerun would open a second one, so an open record resumes from
-  // the issue it names instead of starting over.
+  // `gh issue create` runs before the record is written, so a run that dies
+  // between the two leaves an issue with no record anywhere — nothing can
+  // recover that one. A run that dies after the write leaves the record, and
+  // refusing it would strand the issue it names while a rerun opened a second;
+  // an open record therefore resumes from its issue instead of starting over.
   const existing = fs.existsSync(target.absolute)
     ? readDesignRequestRecord(fs.readFileSync(target.absolute, "utf8"))
     : null
@@ -280,6 +279,13 @@ export function openDesignRequest(
   if (existing && !existing.issueUrl)
     throw new UsageError(
       `design request record ${target.relative} names no issue — add its "- Issue:" line or delete it`,
+    )
+  // The record is the question, not a scratch file: a rerun whose input asks
+  // something else would otherwise keep the old issue and write a note from the
+  // new input, leaving the two disagreeing about what is being asked.
+  if (existing && existing.title !== input.title)
+    throw new UsageError(
+      `design request record ${target.relative} asks "${existing.title}" — this input asks "${input.title}": edit the record, or open a new slug`,
     )
   const node = validateNode(workspace, input, target.relative)
   if (input.rulesCard)
@@ -361,12 +367,6 @@ export function listDesignRequests(
   )
 }
 
-function answeredRecord(source: string, decision: string): { url: string; updated: string } {
-  const url = readDesignRequestRecord(source).issueUrl
-  if (!url) throw new UsageError("request record has no issue URL")
-  return { url, updated: answeredRecordSource(source, decision) }
-}
-
 export function closeDesignRequest(
   workspace: Workspace,
   recordFile: string,
@@ -392,14 +392,18 @@ export function closeDesignRequest(
   if (relativePath.startsWith("..") || path.isAbsolute(relativePath))
     throw new UsageError("request record must be inside the workspace")
   const source = fs.readFileSync(absolute, "utf8")
-  const record = answeredRecord(source, decision)
-  const repo = record.url.match(/^(https:\/\/[^/]+\/[^/]+\/[^/]+)\/issues\/\d+$/)?.[1]
+  const url = readDesignRequestRecord(source).issueUrl
+  if (!url) throw new UsageError("request record has no issue URL")
+  const repo = url.match(/^(https:\/\/[^/]+\/[^/]+\/[^/]+)\/issues\/\d+$/)?.[1]
   if (!repo) throw new UsageError("request issue URL is not a GitHub issue URL")
+  // The writer refuses a record it cannot answer: an unreadable status, an
+  // answered one, or one with no `## Decision` to write into.
+  const updated = answeredRecordSource(source, decision)
   const commitUrl = `${repo}/commit/${commit}`
   const actions = [
-    `gh issue edit ${record.url} --remove-label status/needs-answer --add-label status/answered`,
-    `gh issue comment ${record.url} --body "Decision recorded in ${commitUrl}"`,
-    `gh issue close ${record.url}`,
+    `gh issue edit ${url} --remove-label status/needs-answer --add-label status/answered`,
+    `gh issue comment ${url} --body "Decision recorded in ${commitUrl}"`,
+    `gh issue close ${url}`,
     `write ${workspace.identity(absolute)}`,
   ]
   if (!dryRun) {
@@ -407,7 +411,7 @@ export function closeDesignRequest(
       [
         "issue",
         "edit",
-        record.url,
+        url,
         "--remove-label",
         "status/needs-answer",
         "--add-label",
@@ -416,14 +420,14 @@ export function closeDesignRequest(
       workspace.workspaceRoot,
     )
     gh(
-      ["issue", "comment", record.url, "--body", `Decision recorded in ${commitUrl}`],
+      ["issue", "comment", url, "--body", `Decision recorded in ${commitUrl}`],
       workspace.workspaceRoot,
     )
-    gh(["issue", "close", record.url], workspace.workspaceRoot)
-    writeText(absolute, record.updated)
+    gh(["issue", "close", url], workspace.workspaceRoot)
+    writeText(absolute, updated)
   }
   return {
-    issueUrl: record.url,
+    issueUrl: url,
     commitUrl,
     path: workspace.identity(absolute),
     actions,

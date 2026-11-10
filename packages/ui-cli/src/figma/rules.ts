@@ -633,7 +633,7 @@ export function check(
     if (
       card.scope === "component" &&
       card.targets.length === 0 &&
-      (card.disposition === "imported" || card.disposition === "recorded")
+      RULE_DISPOSITIONS[card.disposition].needsTarget
     ) {
       errors.push(
         `${id}: ${card.disposition} rule has no target — point it at the node it binds, then run \`${RULES_GATE}\``,

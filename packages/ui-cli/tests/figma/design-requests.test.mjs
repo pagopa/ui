@@ -401,6 +401,40 @@ test("request open refuses a record that is no longer open", () => {
   }
 })
 
+test("request open refuses a record that asks a different question", () => {
+  const fixture = fixtureTree(
+    {
+      ...files,
+      "docs/design-requests/2026-11-08-button-focus-ring.md": resumedRecord,
+      "packages/ui-cli/request.json": {
+        ...files["packages/ui-cli/request.json"],
+        title: "How should the pressed ring appear?",
+      },
+    },
+    "design-request-refuse-title-",
+  )
+  let calls = 0
+  try {
+    assert.throws(
+      () =>
+        openDesignRequest(
+          workspaceAt(fixture.root),
+          path.join(fixture.root, "packages/ui-cli/request.json"),
+          "2026-11-08",
+          false,
+          () => {
+            calls++
+            return ""
+          },
+        ),
+      /asks "How should the focus ring appear\?" — this input asks "How should the pressed ring appear\?"/,
+    )
+    assert.equal(calls, 0)
+  } finally {
+    fixture.dispose()
+  }
+})
+
 test("request open refuses a record that names no issue", () => {
   const fixture = fixtureTree(
     {
