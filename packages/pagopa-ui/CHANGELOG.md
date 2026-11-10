@@ -1,3 +1,15 @@
+## 0.1.7 (2026-11-10)
+
+### 🩹 Fixes
+
+- docs(catalogue): point the page-surface note at the split reference ([#124](https://github.com/pagopa/ui/pull/124), [#118](https://github.com/pagopa/ui/issues/118), [#119](https://github.com/pagopa/ui/issues/119), [#120](https://github.com/pagopa/ui/issues/120), [#121](https://github.com/pagopa/ui/issues/121), [#122](https://github.com/pagopa/ui/issues/122), [#123](https://github.com/pagopa/ui/issues/123))
+- test(figma-to-ui): add harbor-bench evals and the pending/excluded reply rule ([#115](https://github.com/pagopa/ui/pull/115))
+- fix(figma-to-ui): an excluded row follows its recorded reason instead of being omitted ([#117](https://github.com/pagopa/ui/pull/117))
+
+### ❤️ Thank You
+
+- Danilo Spinelli @gunzip
+
 ## 0.1.6 (2026-11-09)
 
 ### 🚀 Features
