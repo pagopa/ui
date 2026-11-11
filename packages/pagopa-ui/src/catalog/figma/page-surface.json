@@ -1889,7 +1889,8 @@
           "name": "Switch",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped"
+          "decision": "pending",
+          "reason": "Figma delta 2026-11-11: queued by the drift refresh, the review decides"
         },
         {
           "nodeId": "349:4683",

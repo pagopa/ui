@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "fileKey": "pvhsJpPGQbEwNLiyP7BOIw",
-  "version": "2418407510373603717",
-  "capturedAt": "2026-11-05",
-  "sourceSha256": "f6b76e0da8477b20abfbd1156fe79e7c3e3e19dcaf034d86c9891d0d1fa08a6b",
+  "version": "2420579852725302786",
+  "capturedAt": "2026-11-11",
+  "sourceSha256": "a85a2ed3eac34768f1576fc91dc64d704c6193e57c8b0dabda9d6b012e20d8ee",
   "cases": {
     "50-1700-lg-desktop-desktop": {
       "png": "references/50-1700-lg-desktop-desktop.png",
@@ -976,69 +976,6 @@
       "designFingerprint": "c54f401d309c68c1eefa59351787d8cb6f44f4f27177e23e1dfba51c8619c16f",
       "width": 272,
       "height": 248
-    },
-    "295-1360-unchecked-enabled": {
-      "png": "references/295-1360-unchecked-enabled.png",
-      "sha256": "e4080c6f9c04008dd32ce3992f665d0af28d2f33c29a42d9e3568b867bfc824c",
-      "nodeId": "295:1360",
-      "variant": "295:1406",
-      "designFingerprint": "c650abc841c482805daaa8fab1be9b128dde94e261649a596474d1b5175768d7",
-      "width": 151,
-      "height": 44
-    },
-    "295-1360-unchecked-error": {
-      "png": "references/295-1360-unchecked-error.png",
-      "sha256": "627f424931a5f098d85a9aacbb26b6d8bfbc6e7077885dfcc239186f545a5f15",
-      "nodeId": "295:1360",
-      "variant": "295:1411",
-      "designFingerprint": "c556f63c9404878ee48cc943f83c0e13a3d21f931ded8fb6a18ea466825003f5",
-      "width": 151,
-      "height": 66
-    },
-    "295-1360-unchecked-disabled": {
-      "png": "references/295-1360-unchecked-disabled.png",
-      "sha256": "8fa8602ffce5b01c4537348206b56063dfcccd0187237a43f98f5690c8716ac4",
-      "nodeId": "295:1360",
-      "variant": "295:1424",
-      "designFingerprint": "010843a8b91f3a5fc829118e9d39f43dd7659b449acd066cfa8a2eb0f92c43c6",
-      "width": 151,
-      "height": 44
-    },
-    "295-1360-checked-enabled": {
-      "png": "references/295-1360-checked-enabled.png",
-      "sha256": "f57c61b82882acc03641945f9960dc705876bed0b3206ed3069e026099f7b92f",
-      "nodeId": "295:1360",
-      "variant": "295:1432",
-      "designFingerprint": "b14884293ee23072b9eed7700cf4aa2a49d8507754882a4b8a2d19215c823005",
-      "width": 151,
-      "height": 44
-    },
-    "295-1360-checked-disabled": {
-      "png": "references/295-1360-checked-disabled.png",
-      "sha256": "04a793efa173fc0056cc76aaa50eb33d0a54c09aab289fb7ba2d4f838ab9af43",
-      "nodeId": "295:1360",
-      "variant": "295:1440",
-      "designFingerprint": "1b3050facb5e8ae1496201d86c4c07f24d0eb15c2bcace58192f276cb4e3b341",
-      "width": 151,
-      "height": 44
-    },
-    "295-1360-unchecked-focused": {
-      "png": "references/295-1360-unchecked-focused.png",
-      "sha256": "2f89d97772ab5fa7f5870f2cfbd1964ee3fa2034d75381b670a26fc1a99aa888",
-      "nodeId": "295:1360",
-      "variant": "295:1466",
-      "designFingerprint": "0832e450450cf42223b957813feaa6a3e10ec7ae7a34dcee349b7e5be2be1e87",
-      "width": 151,
-      "height": 44
-    },
-    "295-1360-checked-focused": {
-      "png": "references/295-1360-checked-focused.png",
-      "sha256": "1ae08c616287f8d5dcb46c18885f353ad0956a17ed5cc405346e5a17e222a4cd",
-      "nodeId": "295:1360",
-      "variant": "295:1482",
-      "designFingerprint": "863d59995558dac54e97a81fc7c3fbf4edac0425b910b4a6b2999f9d0d5628a9",
-      "width": 151,
-      "height": 44
     },
     "349-4683-checked-available": {
       "png": "references/349-4683-checked-available.png",
@@ -2291,6 +2228,15 @@
       "width": 384,
       "height": 686
     },
+    "2339-80916-lgdesktop-desktop": {
+      "png": "references/2339-80916-lgdesktop-desktop.png",
+      "sha256": "d249b1a52302e8e6d983ba4b1f5d6d193ce0abab92968f17553ada2a47503247",
+      "nodeId": "2339:80916",
+      "variant": "2339:80914",
+      "designFingerprint": "ccd7557f8c516efbc084fa79f7e95206435b95baeb4c183af4685ca4b52ec467",
+      "width": 1200,
+      "height": 1446
+    },
     "2339-80916-md-desktop": {
       "png": "references/2339-80916-md-desktop.png",
       "sha256": "94fff07981e3aad1111b0a72bac54b736c1381b928b2c149151291fe0e33eac1",
@@ -2831,14 +2777,68 @@
       "width": 376,
       "height": 160
     },
-    "2339-80916-lgdesktop-desktop": {
-      "png": "references/2339-80916-lgdesktop-desktop.png",
-      "sha256": "d249b1a52302e8e6d983ba4b1f5d6d193ce0abab92968f17553ada2a47503247",
-      "nodeId": "2339:80916",
-      "variant": "2339:80914",
-      "designFingerprint": "ccd7557f8c516efbc084fa79f7e95206435b95baeb4c183af4685ca4b52ec467",
-      "width": 1200,
-      "height": 1446
+    "295-1360-unchecked-enabled": {
+      "png": "references/295-1360-unchecked-enabled.png",
+      "sha256": "b12049342b87b46bca7f933d886f710d49eeb7adfee40491002f08a7e03a12c8",
+      "nodeId": "295:1360",
+      "variant": "295:1406",
+      "designFingerprint": "de095ebb23fe7ca1a06148b69b04bf1c67c3d3c52f43ece7698ae0c3f0a49908",
+      "width": 151,
+      "height": 42
+    },
+    "295-1360-unchecked-error": {
+      "png": "references/295-1360-unchecked-error.png",
+      "sha256": "b2d8170b87eb0ca2f96feee18817fa8fbe6dd748170562786037d95bf21ee1a5",
+      "nodeId": "295:1360",
+      "variant": "295:1411",
+      "designFingerprint": "a89fba29c4f443944294b6e8a4a2b9d9751731ed26e205639915ddbd7a4a3702",
+      "width": 151,
+      "height": 64
+    },
+    "295-1360-unchecked-disabled": {
+      "png": "references/295-1360-unchecked-disabled.png",
+      "sha256": "f4f87905575766746f6632b06366ae8c83b161aec85c394d377092909e07b26f",
+      "nodeId": "295:1360",
+      "variant": "295:1424",
+      "designFingerprint": "dd99f5863e92c7582af10df6584d8348d4ba89d5b48b6c5a059e5f3d4df9a435",
+      "width": 151,
+      "height": 42
+    },
+    "295-1360-checked-enabled": {
+      "png": "references/295-1360-checked-enabled.png",
+      "sha256": "c57ae73b7bf8d6ee9ab5e85bef03ca9240248437d6b75147febd02b863eca238",
+      "nodeId": "295:1360",
+      "variant": "295:1432",
+      "designFingerprint": "a9a27fbb7c7be7a26adb5d83d0d9e57c99f98b7f9a228a3df58c332ebb675b08",
+      "width": 151,
+      "height": 42
+    },
+    "295-1360-checked-disabled": {
+      "png": "references/295-1360-checked-disabled.png",
+      "sha256": "325ae8fb6b9dd36567321cee694eef03a64004fe0bfae35017ce78b5c443eb9f",
+      "nodeId": "295:1360",
+      "variant": "295:1440",
+      "designFingerprint": "d68c9c44a00598e1ee1267089f31eafec4be50081c930af0b99301cd7fc0c70c",
+      "width": 151,
+      "height": 42
+    },
+    "295-1360-unchecked-focused": {
+      "png": "references/295-1360-unchecked-focused.png",
+      "sha256": "658e66daa346613678d403d095f6e63b46350917f5eccac453de653c64a4605d",
+      "nodeId": "295:1360",
+      "variant": "295:1466",
+      "designFingerprint": "e1ff0423882765faa71bc35434507a33e2dac971d392b6cac04a4c73814ed35a",
+      "width": 151,
+      "height": 42
+    },
+    "295-1360-checked-focused": {
+      "png": "references/295-1360-checked-focused.png",
+      "sha256": "d00e8018f341b65e02639195b34e6101a47a54c283b80e3c1ffdf306076d528b",
+      "nodeId": "295:1360",
+      "variant": "295:1482",
+      "designFingerprint": "6b9600f2d96331262ca0b49d6fe3b6eefb93e64e7ee1dd779cb3a6c49dba02b0",
+      "width": 151,
+      "height": 42
     }
   }
 }
