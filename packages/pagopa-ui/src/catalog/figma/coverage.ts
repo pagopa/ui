@@ -40,7 +40,7 @@ export const figmaCoverageGroups = Object.entries(
 
 // The reviewed case corpus as the story reads it: only the fields the join
 // needs. A draft case (`cases --sync`) never counts as coverage — the same R9
-// rule `packages/ui-cli/src/parity/cases.ts` applies, so the story's numbers agree
+// rule `packages/ui-cli/src/parity/corpus.ts` applies, so the story's numbers agree
 // with `pnpm ui-cli parity queue --coverage`.
 interface FigmaDeviceCase {
   nodeId: string

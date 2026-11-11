@@ -1,18 +1,11 @@
 import type { ParityCase } from "../schemas/parity.ts"
 
 import type { Workspace } from "../adapters/workspace.ts"
-import { readCases, readRegistry } from "../records/committed.ts"
-import { isDraftCase, validateCaseFile } from "./cases.ts"
+import { readCorpus } from "./corpus.ts"
 import { formatCoverage, loadCoveragePopulations } from "./coverage.ts"
 import { checkEvidence } from "./evidence.ts"
 
-import {
-  corpusPath,
-  devicePolicy,
-  frameBaseline,
-  inventoryFileKey,
-  inventoryNodes,
-} from "./context.ts"
+import { corpusPath, frameBaseline, inventoryFileKey } from "./context.ts"
 import { output, type ParityOutput } from "./output.ts"
 export function verify(
   workspace: Workspace,
@@ -21,14 +14,14 @@ export function verify(
   const out: string[] = []
   const err: string[] = []
   const path_ = corpusPath(workspace, options.casesFile)
-  const cases = readCases(workspace.root, options.casesFile) ?? []
-  const registry = readRegistry(workspace.root)
-  const nodes = inventoryNodes(workspace)
-  const policy = devicePolicy(workspace)
-  const corpus = validateCaseFile(workspace, cases, { registry, nodes, policy })
-  const errors = [...corpus.errors]
-  const warnings = [...corpus.warnings]
-  const drafts = cases.filter(isDraftCase).length
+  const corpus = readCorpus(workspace, options.casesFile)
+  const cases = corpus.cases
+  const registry = corpus.registry
+  const nodes = corpus.inventory
+  const verdict = corpus.validate()
+  const errors = [...verdict.errors]
+  const warnings = [...verdict.warnings]
+  const drafts = corpus.drafts.length
   verifyFrames(workspace, cases, errors, warnings)
   const evidence = checkEvidence({
     root: workspace.workspaceRoot,
@@ -44,7 +37,7 @@ export function verify(
     ["implemented"],
     evidence,
     inventoryFileKey(workspace),
-    corpus.errors,
+    verdict.errors,
   )
   coverageIssues(populations, evidence, errors, warnings)
   if (options.json) {

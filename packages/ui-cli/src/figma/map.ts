@@ -28,7 +28,7 @@ import type { Workspace } from "../adapters/workspace.ts"
 import { UsageError } from "../lib/command.ts"
 import { readJson, writeText } from "../lib/json.ts"
 import { parseSchema } from "../lib/validate.ts"
-import { storyId } from "../parity/cases.ts"
+import { storyId } from "../parity/corpus.ts"
 import { COMMITTED_FILES, readInventory, readRegistry } from "../records/committed.ts"
 import { report, type CheckReport } from "../checks/report.ts"
 import {

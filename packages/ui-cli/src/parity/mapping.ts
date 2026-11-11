@@ -1,6 +1,6 @@
 import { UsageError } from "../lib/command.ts"
 import type { ParityCase } from "../schemas/parity.ts"
-import type { CaseRow } from "./cases.ts"
+import type { CaseRow } from "./case-rows.ts"
 import type { CaseSpec, CheckOptions } from "./types.ts"
 
 export function caseFromOptions(known: CaseRow, options: CheckOptions): CaseSpec {

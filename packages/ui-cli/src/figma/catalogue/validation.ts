@@ -2,13 +2,8 @@ import type { Workspace } from "../../adapters/workspace.ts"
 import { readJson } from "../../lib/json.ts"
 import { readCases, readDevicePolicy } from "../../records/committed.ts"
 import { parseSchema } from "../../lib/validate.ts"
-import {
-  DEVICE_EXCEPTIONS_PATH,
-  deviceCoverage,
-  isDraftCase,
-  loadDeviceExceptions,
-  validateCaseFile,
-} from "../../parity/cases.ts"
+import { caseCorpus } from "../../parity/corpus.ts"
+import { DEVICE_EXCEPTIONS_PATH, loadDeviceExceptions } from "../../parity/device-exceptions.ts"
 import {
   longNoteErrors,
   NOTE_LENGTH_BASELINE_PATH,
@@ -101,7 +96,8 @@ export function validateDeviceCases(
   if (!policy) return { result: { errors: [], warnings: [] }, stats: null }
   try {
     const cases = readCases(workspace.root) ?? []
-    const verdict = validateCaseFile(workspace, cases, { registry, nodes, policy })
+    const corpus = caseCorpus({ workspace, cases, inventory: nodes, registry, policy })
+    const verdict = corpus.validate()
     return {
       result: {
         errors: verdict.errors.map((error) => `cases: ${error}`),
@@ -111,7 +107,7 @@ export function validateDeviceCases(
         cases: cases.length,
         errors: verdict.errors.length,
         warnings: verdict.warnings.length,
-        drafts: cases.filter(isDraftCase).length,
+        drafts: corpus.drafts.length,
       },
     }
   } catch (error) {
@@ -183,7 +179,9 @@ export function validateDeviceCoverage(
   try {
     const cases = readCases(workspace.root) ?? []
     const exceptions = loadDeviceExceptions(workspace.path(DEVICE_EXCEPTIONS_PATH))
-    const coverage = deviceCoverage({ policy, nodes, registry, cases, statuses: ["implemented"] })
+    const coverage = caseCorpus({ workspace, cases, inventory: nodes, registry, policy }).coverage({
+      statuses: ["implemented"],
+    })
     const byNode = new Map(coverage.all.map((row) => [row.nodeId, row]))
     validateCoverageExceptions(exceptions, byNode, errors)
     const uncovered = coverage.rows.filter(

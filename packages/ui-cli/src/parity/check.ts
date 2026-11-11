@@ -2,8 +2,8 @@ import type { Workspace } from "../adapters/workspace.ts"
 import { requiredDevices } from "../figma/devices.ts"
 import { UsageError } from "../lib/command.ts"
 import type { ParityCase } from "../schemas/parity.ts"
-import { readCases } from "../records/committed.ts"
-import { caseIdFor, findCase, saveCase } from "./cases.ts"
+import { saveCase } from "./case-writer.ts"
+import { caseIdFor, readCorpus, type CaseCorpus } from "./corpus.ts"
 import { formatResult } from "./diff.ts"
 import { checkCaseEvidence } from "./evidence.ts"
 import { capture as captureStory } from "./render.ts"
@@ -61,7 +61,7 @@ export async function check(
   let spec
   let caseEntry: ParityCase | undefined
   if (caseId) {
-    caseEntry = findCase(readCases(workspace.root, options.casesFile) ?? [], String(caseId))
+    caseEntry = readCorpus(workspace, options.casesFile).find(String(caseId))
     spec = specFromCase(caseEntry, options)
     if (!spec.storyId)
       throw new UsageError(`${caseId}: the case declares no storyId and none was passed`)
@@ -164,7 +164,7 @@ async function checkDevices(
   const { nodeId } = options
   const out: string[] = []
   const err: string[] = []
-  const corpus = readCases(workspace.root, options.casesFile) ?? []
+  const corpus = readCorpus(workspace, options.casesFile)
   const inventory = inventoryNode(workspace, nodeId)
   if (!inventory) throw new UsageError(`${nodeId} is not in inventory.json`)
   const devices = requiredDevices(devicePolicy(workspace), inventory)
@@ -184,7 +184,7 @@ async function checkDevices(
     out.push("evidence: bundle matches the committed inventory")
   const rows: DeviceRow[] = []
   for (const device of devices) {
-    const entry = corpus.find((item) => item.nodeId === nodeId && item.device === device)
+    const entry = corpus.of(nodeId).find((item) => item.device === device)
     if (!entry) {
       rows.push({ device, variant: "-", verdict: "missing-case", deltas: 0, responsive: "-" })
       continue
@@ -217,7 +217,7 @@ type DeviceRow = {
 
 function deviceEvidence(
   workspace: Workspace,
-  corpus: ParityCase[],
+  corpus: CaseCorpus,
   devices: string[],
   nodeId: string,
   inventory: NonNullable<ReturnType<typeof inventoryNode>>,
@@ -227,7 +227,7 @@ function deviceEvidence(
   return [
     ...new Set(
       devices.flatMap((device) => {
-        const entry = corpus.find((item) => item.nodeId === nodeId && item.device === device)
+        const entry = corpus.of(nodeId).find((item) => item.device === device)
         return entry
           ? checkCaseEvidence({
               root: workspace.workspaceRoot,

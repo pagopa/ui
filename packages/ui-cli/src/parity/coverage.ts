@@ -11,7 +11,7 @@ import { IconManifestSchema, PictogramManifestSchema } from "../schemas/artwork.
 import type { BulkRule, InventoryNode, Registry } from "../schemas/catalogue.ts"
 import type { DevicePolicy } from "../schemas/devices.ts"
 import type { ParityCase } from "../schemas/parity.ts"
-import { deviceCoverage, isDraftCase, validateCaseFile } from "./cases.ts"
+import { caseCorpus, isDraftCase } from "./corpus.ts"
 import { checkEvidence, type EvidenceReport } from "./evidence.ts"
 
 type BulkQualification = { pageId: string; nodeIds: string[]; errors: string[] }
@@ -144,13 +144,15 @@ export function coveragePopulations(
   const matchingFile = !fileKey || evidence.fileKey === fileKey
   const validEvidence = new Set(matchingFile ? evidence.verifiedCases : [])
   const validationErrors =
-    corpusErrors ?? validateCaseFile(workspace, cases, { nodes, registry, policy }).errors
+    corpusErrors ??
+    caseCorpus({ workspace, cases, inventory: nodes, registry, policy }).validate().errors
   const invalidIds = new Set(validationErrors.map((error) => error.split(": ")[0]))
   const reviewed = cases.filter(
     (entry) => !isDraftCase(entry) && validEvidence.has(entry.id) && !invalidIds.has(entry.id),
   )
   const rows = variantRows(ordinary, reviewed, evidence)
   const devices = populationDevices(
+    workspace,
     nodes,
     registry,
     resolved,
@@ -299,6 +301,7 @@ function variantRows(
 }
 
 function populationDevices(
+  workspace: Workspace,
   nodes: InventoryNode[],
   registry: Registry,
   resolved: ResolvedNode[],
@@ -314,17 +317,16 @@ function populationDevices(
       entries[node.nodeId] = { ...registry.entries[node.nodeId], status }
   }
   const effectiveRegistry = { ...registry, entries }
-  const devices = deviceCoverage({
-    nodes,
-    registry: effectiveRegistry,
+  return caseCorpus({
+    workspace,
     cases: [
       ...reviewed,
       ...cases.filter((entry) => isDraftCase(entry) && !invalidIds.has(entry.id)),
     ],
+    inventory: nodes,
+    registry: effectiveRegistry,
     policy,
-    statuses,
-  })
-  return devices
+  }).coverage({ statuses })
 }
 
 function bulkRows(bulk: BulkQualification[], registry: Registry, resolved: ResolvedNode[]) {

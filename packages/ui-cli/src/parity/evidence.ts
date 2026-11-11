@@ -30,8 +30,8 @@ import {
 import { parseSchema } from "../lib/validate.ts"
 import type { InventoryNode } from "../schemas/catalogue.ts"
 import type { ParityCase } from "../schemas/parity.ts"
-import { readCases, readInventory, readRegistry } from "../records/committed.ts"
-import { caseVariant, validateCaseFile, variantOfCase } from "./cases.ts"
+import { readCases, readDevicePolicy, readInventory, readRegistry } from "../records/committed.ts"
+import { caseCorpus, caseVariant, variantOfCase } from "./corpus.ts"
 
 export const EVIDENCE_DIR = "docs/figma-parity"
 export const SOURCE_PATH = `${EVIDENCE_DIR}/source.json.br`
@@ -759,7 +759,13 @@ async function prepareEvidence(
   const registry = readRegistry(dataRoot)
   // The corpus validator owns the schema: writing evidence for a broken corpus
   // would pin the wrong thing.
-  const validation = validateCaseFile(workspace, cases, { registry, nodes })
+  const validation = caseCorpus({
+    workspace,
+    cases,
+    inventory: nodes,
+    registry,
+    policy: readDevicePolicy(dataRoot),
+  }).validate()
   if (validation.errors.length) {
     for (const error of validation.errors) err.push(`error: ${error}`)
     return { code: 1, out, err }

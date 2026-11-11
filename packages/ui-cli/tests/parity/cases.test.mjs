@@ -3,24 +3,23 @@ import fs from "node:fs"
 import path from "node:path"
 import { test } from "node:test"
 
+import { canonicalCase, saveCase } from "../../src/parity/case-writer.ts"
 import {
-  canonicalCase,
+  caseCorpus,
   caseIdFor,
   caseKey,
-  deviceCoverage,
   DRAFT_NOTE,
-  fanInCounts,
-  findCase,
   isDraftCase,
-  saveCase,
-  stateProposals,
-  syncProposals,
-  validateCaseFile,
   variantOfCase,
-} from "../../src/parity/cases.ts"
+} from "../../src/parity/corpus.ts"
 import { caseFromOptions, specFromCase } from "../../src/parity/mapping.ts"
 import { fixtureTree, workspaceAt } from "../helpers/cli.mjs"
-import { readCases, readInventory, readRegistry } from "../../src/records/committed.ts"
+import {
+  readCases,
+  readDevicePolicy,
+  readInventory,
+  readRegistry,
+} from "../../src/records/committed.ts"
 import { coveragePopulations, formatCoverage, qualifyBulk } from "../../src/parity/coverage.ts"
 
 const workspace = workspaceAt(path.resolve(import.meta.dirname, "../../../pagopa-ui"))
@@ -349,16 +348,29 @@ test("bulk admission requires fresh manifests and complete per-glyph provenance"
 })
 
 function validate(cases) {
-  return validateCaseFile(workspace, cases, { registry, nodes: [node], policy })
+  return caseCorpus({ workspace, cases, inventory: [node], registry, policy }).validate()
+}
+
+// The fixture documents, assembled the way a command assembles them.
+function fixtureCorpus({ nodes, registry: fixtureRegistry = registry, cases }) {
+  return caseCorpus({ workspace, cases, inventory: nodes, registry: fixtureRegistry, policy })
+}
+
+// The committed records, read by name: what a command hands the corpus.
+function committedCorpus(cases) {
+  return caseCorpus({
+    workspace,
+    cases,
+    inventory: readInventory(workspace.root).components,
+    registry: readRegistry(workspace.root),
+    policy: readDevicePolicy(workspace.root),
+  })
 }
 
 test("the committed corpus is valid against the registry and the inventory", () => {
   const cases = readCases(workspace.root) ?? []
   assert.ok(cases.length > 0, "the corpus must not be empty")
-  const { errors, warnings } = validateCaseFile(workspace, cases, {
-    registry: readRegistry(workspace.root),
-    nodes: readInventory(workspace.root).components,
-  })
+  const { errors, warnings } = committedCorpus(cases).validate()
   assert.deepEqual(errors, [])
   assert.deepEqual(warnings, [])
 })
@@ -428,7 +440,7 @@ test("a saved case replaces the entry with the same identity", () => {
 
 test("an unknown case id fails with the known ids in the message", () => {
   assert.throws(
-    () => findCase([{ id: "529-6111-filled" }], "529-6111-empty"),
+    () => fixtureCorpus({ nodes: [], cases: [{ id: "529-6111-filled" }] }).find("529-6111-empty"),
     /no case with that id in the corpus \(known: 529-6111-filled\)/,
   )
 })
@@ -455,7 +467,7 @@ test("the validator rejects the mapping mistakes the corpus exists to prevent", 
       variant: "not-a-node",
     },
   ]
-  const { errors } = validateCaseFile(workspace, cases)
+  const { errors } = committedCorpus(cases).validate()
   const joined = errors.join("\n")
   assert.match(joined, /529-6111-filled: duplicate case id/)
   assert.match(joined, /subject Label text has no selector/)
@@ -469,7 +481,7 @@ test("the validator rejects the mapping mistakes the corpus exists to prevent", 
 })
 
 test("a story id outside the declared exports is an error", () => {
-  const { errors } = validateCaseFile(workspace, [
+  const { errors } = committedCorpus([
     {
       id: "529-6111-filled",
       nodeId: "529:6111",
@@ -477,7 +489,7 @@ test("a story id outside the declared exports is an error", () => {
       storyId: "components-inputs-textfield--not-declared",
       state: "filled",
     },
-  ])
+  ]).validate()
   assert.equal(errors.length, 1)
   assert.match(errors[0], /is not among the declared story exports of 529:6111/)
 })
@@ -587,11 +599,7 @@ test("the coverage join reports what each node declares against what it covers",
       state: "Mobile",
     },
   ]
-  const { rows, totals, omitted } = deviceCoverage({
-    policy,
-    nodes: [node],
-    registry,
-    cases,
+  const { rows, totals, omitted } = fixtureCorpus({ nodes: [node], cases }).coverage({
     statuses: ["implemented"],
   })
   assert.equal(omitted, 0)
@@ -611,13 +619,7 @@ test("the coverage join reports what each node declares against what it covers",
     },
   ])
   // The status filter reports the nodes it left out instead of hiding them.
-  const excluded = deviceCoverage({
-    policy,
-    nodes: [node],
-    registry,
-    cases,
-    statuses: ["pending"],
-  })
+  const excluded = fixtureCorpus({ nodes: [node], cases }).coverage({ statuses: ["pending"] })
   assert.equal(excluded.rows.length, 0)
   assert.equal(excluded.omitted, 1)
 })
@@ -640,11 +642,7 @@ test("a missing device case is proposed from the sibling the corpus has", () => 
       residues: [{ path: "field.box.height", reason: "the sibling's own residue is not copied" }],
     },
   ]
-  const { proposals, skipped } = syncProposals({
-    policy,
-    nodes: [node],
-    registry,
-    cases,
+  const { proposals, skipped } = fixtureCorpus({ nodes: [node], cases }).proposals({
     statuses: ["implemented"],
   })
   assert.deepEqual(skipped, [])
@@ -677,11 +675,7 @@ test("a missing device case is proposed from the sibling the corpus has", () => 
 
 test("a device-less sibling proposes every declared device", () => {
   const cases = [{ id: "1-1-case", nodeId: "1:1", export: "Control", storyId: "fixture--example" }]
-  const { proposals } = syncProposals({
-    policy,
-    nodes: [node],
-    registry,
-    cases,
+  const { proposals } = fixtureCorpus({ nodes: [node], cases }).proposals({
     statuses: ["implemented"],
   })
   assert.deepEqual(
@@ -693,11 +687,7 @@ test("a device-less sibling proposes every declared device", () => {
   )
   // An unexplored node (no sibling at all) is skipped with the reason, never
   // proposed from nothing.
-  const none = syncProposals({
-    policy,
-    nodes: [node],
-    registry,
-    cases: [],
+  const none = fixtureCorpus({ nodes: [node], cases: [] }).proposals({
     statuses: ["implemented"],
   })
   assert.deepEqual(none.proposals, [])
@@ -721,13 +711,11 @@ test("a variant no reviewed case points at is proposed as a state draft", () => 
       width: 1200,
     },
   ]
-  const { proposals, skipped } = stateProposals({
-    policy,
+  const { proposals, skipped } = fixtureCorpus({
     nodes: [panel],
     registry: panelRegistry,
     cases,
-    statuses: ["implemented"],
-  })
+  }).stateProposals({ statuses: ["implemented"] })
   // The covered device's other variants are proposed, pinned to their own node;
   // the missing device's variants wait for the device proposal that owns the
   // first capture at that width, and two records that share an identity collapse
@@ -766,13 +754,11 @@ test("a variant no reviewed case points at is proposed as a state draft", () => 
     },
   ])
   // No sibling, no proposal: the first case of a node needs the review.
-  const none = stateProposals({
-    policy,
+  const none = fixtureCorpus({
     nodes: [panel],
     registry: panelRegistry,
     cases: [],
-    statuses: ["implemented"],
-  })
+  }).stateProposals({ statuses: ["implemented"] })
   assert.deepEqual(none.proposals, [])
   assert.deepEqual(none.skipped, [{ nodeId: "2:1", reason: "no sibling case" }])
 })
@@ -795,23 +781,21 @@ test("a state draft saves through the canonical path and waits for the review", 
     ]),
   )
   const sync = () =>
-    syncProposals({
-      policy,
+    fixtureCorpus({
       nodes: [panel],
       registry: panelRegistry,
       cases: readCases(dir, "cases.json") ?? [],
-      statuses: ["implemented"],
-    })
+    }).proposals({ statuses: ["implemented"] })
   const saved = saveCase(file, sync().stateProposals[0])
   assert.equal(saved.entry.id, "2-1-strong-desktop")
   assert.equal(saved.entry.variant, "2:11")
   assert.equal(saved.replaced, false)
   assert.equal(isDraftCase(saved.entry), true)
-  const { errors } = validateCaseFile(workspace, [saved.entry], {
-    registry: panelRegistry,
+  const { errors } = fixtureCorpus({
     nodes: [panel],
-    policy,
-  })
+    registry: panelRegistry,
+    cases: [saved.entry],
+  }).validate()
   assert.deepEqual(errors, [])
   // The draft still waits for the reviewed render: the next run proposes it
   // again (replacing, not appending) and the variant stays unpointed.
@@ -828,13 +812,9 @@ test("a state draft saves through the canonical path and waits for the review", 
     item.id === saved.entry.id ? { ...item, note: "reviewed: the strong tone verified" } : item,
   )
   assert.ok(
-    !stateProposals({
-      policy,
-      nodes: [panel],
-      registry: panelRegistry,
-      cases: reviewed,
-      statuses: ["implemented"],
-    }).proposals.some((proposal) => proposal.variant === "2:11"),
+    !fixtureCorpus({ nodes: [panel], registry: panelRegistry, cases: reviewed })
+      .stateProposals({ statuses: ["implemented"] })
+      .proposals.some((proposal) => proposal.variant === "2:11"),
   )
   fs.rmSync(dir, { recursive: true, force: true })
 })
@@ -859,13 +839,11 @@ test("a proposal never takes the identity of a reviewed case", () => {
       note: "reviewed: an older spelling of the same identity",
     },
   ]
-  const { proposals, skipped } = stateProposals({
-    policy,
+  const { proposals, skipped } = fixtureCorpus({
     nodes: [panel],
     registry: panelRegistry,
     cases,
-    statuses: ["implemented"],
-  })
+  }).stateProposals({ statuses: ["implemented"] })
   assert.deepEqual(
     proposals.map((proposal) => proposal.variant),
     ["2:14"],
@@ -892,11 +870,7 @@ test("a draft case is not coverage until the reviewed render replaces its note",
     device: "mobile",
     note: "draft — refine the mapping",
   }
-  const coverage = deviceCoverage({
-    policy,
-    nodes: [node],
-    registry,
-    cases: [draft],
+  const coverage = fixtureCorpus({ nodes: [node], cases: [draft] }).coverage({
     statuses: ["implemented"],
   })
   assert.deepEqual(coverage.rows[0].covered, [])
@@ -905,11 +879,7 @@ test("a draft case is not coverage until the reviewed render replaces its note",
   assert.equal(coverage.totals.drafts, 1)
 
   const refined = { ...draft, note: "reviewed: the mobile card composition" }
-  const covered = deviceCoverage({
-    policy,
-    nodes: [node],
-    registry,
-    cases: [refined],
+  const covered = fixtureCorpus({ nodes: [node], cases: [refined] }).coverage({
     statuses: ["implemented"],
   })
   assert.deepEqual(covered.rows[0].covered, ["mobile"])
@@ -1039,7 +1009,7 @@ test("fan-in counts the inventory components that depend on a node", () => {
       ],
     },
   ]
-  const counts = fanInCounts(nodes)
+  const counts = fixtureCorpus({ nodes, cases: [] }).fanIn
   assert.equal(counts.get("1:1"), 2)
   assert.equal(counts.get("2:1"), undefined)
   assert.equal(counts.get("3:1"), undefined)

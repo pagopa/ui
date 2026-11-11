@@ -65,12 +65,20 @@ A proposed case whose mapping has not been reviewed; it never counts as coverage
 _Avoid_: proposal (when meaning coverage), pending case
 
 **Case corpus**:
-The reviewed cases read as one value, with the judgments they make — the registry keeps the decision, the corpus keeps the comparison.
-_Avoid_: case file (for the value), case list, catalogue
+The reviewed cases held as one value: its documents — the cases, the inventory, the registry and the device vocabulary, read the first time a judgment asks for them — are readonly properties, its judgments are methods over them (`of`, `reviewed`, `node`, `find`, `pointed`, `coverage`, `proposals`, `stateProposals`, `validate`), and `validate()` takes no arguments because the documents are already inside; it is `parity/corpus.ts`, and the registry keeps the decision while the corpus keeps the comparison.
+_Avoid_: case file (for the value), case list, cases module, catalogue
+
+**Case writer**:
+The module a reviewed decision is stored through: it turns a proposal into a committed case, keeps case identity, and forgets the record reader's memory after writing.
+_Avoid_: saver, case store, repository, corpus
 
 **Coverage**:
 The declared devices of a node that a reviewed case covers.
 _Avoid_: completeness
+
+**Device exception**:
+A written reason a node may stay implemented with a case missing for one of its declared devices; it is a burn-down list beside the corpus (`parity/device-exceptions.ts`), not a committed record and not a coverage claim.
+_Avoid_: residue, tolerance, waiver
 
 **Residue**:
 A measured difference accepted with a written reason; it stays visible and does not block.

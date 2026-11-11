@@ -1,6 +1,7 @@
 import type { Workspace } from "../adapters/workspace.ts"
 import { readCases, readRegistry } from "../records/committed.ts"
-import { saveCase, syncProposals } from "./cases.ts"
+import { saveCase } from "./case-writer.ts"
+import { caseCorpus } from "./corpus.ts"
 
 import { corpusPath, devicePolicy, inventoryNodes } from "./context.ts"
 import { output, type ParityOutput } from "./output.ts"
@@ -11,15 +12,14 @@ export function cases(
   const out: string[] = []
   const err: string[] = []
   const path_ = corpusPath(workspace, options.casesFile)
-  const corpus = readCases(workspace.root, options.casesFile) ?? []
   const nodeId = options.nodeId
-  const result = syncProposals({
-    cases: corpus,
-    nodeId,
-    nodes: inventoryNodes(workspace),
+  const result = caseCorpus({
+    workspace,
+    cases: readCases(workspace.root, options.casesFile) ?? [],
+    inventory: inventoryNodes(workspace),
     registry: readRegistry(workspace.root),
     policy: devicePolicy(workspace),
-  })
+  }).proposals({ nodeId })
   const dryRun = options.dryRun
   for (const proposal of result.proposals) {
     if (dryRun) {

@@ -1,12 +1,16 @@
-import { UsageError } from "../lib/command.ts"
-// Figma parity — registry cases.
+// Figma parity — the case corpus.
 //
-// Joins the reviewed registry (`registry.json`) with the story files it points
-// at: the case list the queue prints and the defaults `check` uses. Story ids
-// come from the Storybook slug of the story title plus the export name, the same
-// identity the iframe URL needs (`components-inputs-textfield--playground`).
+// The reviewed cases read as one value. `cases.json` is a document, and so are
+// the inventory it points into, the registry that declares the implementation
+// and the device vocabulary an entry may name: those four are the corpus's
+// properties, and every judgment they support is a method. A caller asks the
+// value instead of rebuilding an index beside it, and validation takes no
+// arguments because the value already holds what it validates against.
+//
+// Nothing here reads a file. `readCorpus` does, once per process, through the
+// committed-records reader; every other caller receives the value.
+
 import fs from "node:fs"
-import path from "node:path"
 
 import type { Workspace } from "../adapters/workspace.ts"
 import {
@@ -17,21 +21,12 @@ import {
   deviceOf,
   requiredDevices,
 } from "../figma/devices.ts"
-import { readJson, writeJson } from "../lib/json.ts"
-import {
-  forgetCommitted,
-  readCases,
-  readInventory,
-  readDevicePolicy,
-  readRegistry,
-} from "../records/committed.ts"
+import { UsageError } from "../lib/command.ts"
 import { createSourceModules } from "../lib/source-modules.ts"
-import { parseSchema } from "../lib/validate.ts"
+import { readCases, readDevicePolicy, readInventory, readRegistry } from "../records/committed.ts"
 import type { InventoryNode, Registry, RegistryEntry } from "../schemas/catalogue.ts"
-import { DeviceExceptionsSchema, type DevicePolicy } from "../schemas/devices.ts"
-import { ParityCaseSchema, type ParityCase } from "../schemas/parity.ts"
-
-export const DEVICE_EXCEPTIONS_PATH = "src/catalog/figma/device-exceptions.json"
+import type { DevicePolicy } from "../schemas/devices.ts"
+import type { ParityCase } from "../schemas/parity.ts"
 
 // A draft case is one `cases --sync` proposed: its selectors are copied from a
 // sibling and its note says the mapping still needs the reviewed render (RA6).
@@ -96,106 +91,6 @@ export function storyId(title: string, exportName: string): string {
   return `${slug(title)}--${exportSlug(exportName)}`
 }
 
-// One case per registry target: the identity, the declared story exports and
-// the Design-panel nodes each export shows. A target without a story (the
-// mocked templates before their wave, a node whose evidence is still missing)
-// is listed with an empty story set: that absence is the signal.
-export type CaseRow = {
-  nodeId: string
-  status: string
-  module: string
-  export: string
-  additionalTargets: Array<{ module: string; export: string }>
-  story: string | null
-  title: string | null
-  exports: string[]
-  storyIds: string[]
-  design: Record<string, string[] | undefined>
-}
-
-export type CaseList = CaseRow[] & { missing: Array<{ nodeId: string; story: string }> }
-
-export function buildCases(
-  workspace: Workspace,
-  {
-    registry = readRegistry(workspace.root),
-    statuses = ["pending", "implemented"],
-  }: { registry?: Registry; statuses?: string[] } = {},
-): CaseList {
-  const { storyTitle, storyDesignNodes } = createSourceModules(workspace)
-  const wanted = new Set(statuses)
-  const titles = new Map<string, string | undefined>()
-  const designs = new Map<string, ReturnType<typeof storyDesignNodes>>()
-  const cases: CaseRow[] = []
-  const missing: Array<{ nodeId: string; story: string }> = []
-  for (const [nodeId, entry] of Object.entries(registry.entries ?? {})) {
-    const target = entry.target
-    if (!target || !wanted.has(entry.status)) continue
-    if (!target.story) {
-      cases.push({
-        nodeId,
-        status: entry.status,
-        module: target.module,
-        export: target.export,
-        additionalTargets: target.additionalTargets ?? [],
-        story: null,
-        title: null,
-        exports: [],
-        storyIds: [],
-        design: {},
-      })
-      continue
-    }
-    const file = target.story
-    if (!fs.existsSync(workspace.path(file))) {
-      // A registry pointer to a deleted story is a dangling reference, not a
-      // silent skip: the queue reports it.
-      missing.push({ nodeId, story: file })
-      continue
-    }
-    if (!titles.has(file)) titles.set(file, storyTitle(file))
-    if (!designs.has(file)) designs.set(file, storyDesignNodes(file))
-    const title = titles.get(file)
-    if (!title) continue
-    const exports = target.storyExports ?? []
-    cases.push({
-      nodeId,
-      status: entry.status,
-      module: target.module,
-      export: target.export,
-      additionalTargets: target.additionalTargets ?? [],
-      story: file,
-      title,
-      exports,
-      storyIds: exports.map((name) => storyId(title, name)),
-      design: Object.fromEntries(
-        exports.map((name) => [
-          name,
-          [...(designs.get(file)?.stories.get(name) ?? designs.get(file)?.meta ?? new Set())],
-        ]),
-      ),
-    })
-  }
-  cases.sort((a, b) => a.nodeId.localeCompare(b.nodeId, undefined, { numeric: true }))
-  return Object.assign(cases, { missing })
-}
-
-// ------------------------------------------------------- the reviewed corpus
-
-// Fan-in: how many inventory components depend on a node. A fix in a shared
-// part lands before the components that contain it, so the queue can order the
-// work by reuse instead of by node id.
-export function fanInCounts(nodes: InventoryNode[]): Map<string, number> {
-  const counts = new Map<string, number>()
-  for (const node of nodes) {
-    for (const dependency of node.dependencies ?? []) {
-      if (dependency.external) continue
-      counts.set(dependency.nodeId, (counts.get(dependency.nodeId) ?? 0) + 1)
-    }
-  }
-  return counts
-}
-
 // `529:6111` + `filled` -> `529-6111-filled`: the same shape the wave evidence
 // files use, so a case id is greppable in `.figma/parity`. A device case carries
 // its device in the id (`529-6111-filled-mobile`): the reviewed corpus is read
@@ -213,60 +108,6 @@ export function caseIdFor(
 // entries — that is the point of the device dimension.
 export function caseKey(spec: Pick<ParityCase, "nodeId" | "state" | "variant" | "device">): string {
   return `${spec.nodeId}|${spec.variant ?? spec.state ?? ""}|${spec.device ?? ""}`
-}
-
-// Canonical field order, empty collections dropped: the writer and the reviewer
-// see the same file.
-export function canonicalCase(
-  spec: Partial<ParityCase> & Pick<ParityCase, "nodeId">,
-  id?: string,
-): ParityCase {
-  const entry: Record<string, unknown> = {}
-  const source: Record<string, unknown> = { ...spec }
-  for (const field of CASE_FIELDS) {
-    const value = field === "id" ? (id ?? spec.id ?? caseIdFor(spec)) : source[field]
-    if (value === undefined || value === null) continue
-    if (Array.isArray(value) && !value.length) continue
-    if (value === false) continue
-    entry[field] = value
-  }
-  return parseSchema(ParityCaseSchema, entry, "parity case")
-}
-
-export function findCase(cases: ParityCase[], id: string): ParityCase {
-  const entry = cases.find((item) => item.id === id)
-  if (!entry) {
-    const known = cases.map((item) => item.id).join(", ") || "none"
-    throw new UsageError(`${id}: no case with that id in the corpus (known: ${known})`)
-  }
-  return entry
-}
-
-// Appends or replaces one entry and writes the file back in canonical order.
-// A refined mapping must be saved through this path, never by hand-editing a
-// command line into the report (the pre-2026-10-15 way).
-//
-// The id is the corpus identity and the key is the comparison: a refinement
-// replaces on either. Without the id rule, gaining a `device` (or a `layoutScope`
-// with a device) would change the key and append a second entry under the same
-// id — the corpus must stay addressable by `--case <id>` (R5).
-export function saveCase(
-  file: string,
-  spec: Partial<ParityCase> & Pick<ParityCase, "nodeId">,
-  { id }: { id?: string } = {},
-): { file: string; entry: ParityCase; replaced: boolean; total: number } {
-  const cases = [...(readCases(path.dirname(file), path.basename(file)) ?? [])]
-  const entry = canonicalCase(spec, id)
-  const index = cases.findIndex((item) => item.id === entry.id || caseKey(item) === caseKey(entry))
-  if (index >= 0) cases[index] = entry
-  else cases.push(entry)
-  const ordered = [...cases].sort((a, b) =>
-    caseKey(a).localeCompare(caseKey(b), undefined, { numeric: true }),
-  )
-  fs.mkdirSync(path.dirname(file), { recursive: true })
-  writeJson(file, ordered)
-  forgetCommitted(file)
-  return { file, entry, replaced: index >= 0, total: ordered.length }
 }
 
 const SELECTOR = (value: unknown): boolean => typeof value === "string" && value.trim().length > 0
@@ -303,7 +144,9 @@ function stateMatches(name: string, tokens: string[]): boolean {
 
 // The variant record a case points at, when the inventory can decide it: an
 // explicit `variant` node id always resolves, a `state` selector only when
-// exactly one of the node's variants matches it.
+// exactly one of the node's variants matches it. It reads one node and one
+// entry and no document, so it stays a function: a corpus method here would
+// claim the node came from the corpus when the caller passes its own.
 export function variantOfCase(
   node: InventoryNode | undefined,
   entry: Pick<ParityCase, "variant" | "state"> | undefined,
@@ -348,51 +191,7 @@ export function caseVariant(
   return pool.find((variant) => stateMatches(variant.name, tokens)) ?? pool[0]
 }
 
-// Hermetic validation: no snapshot, no browser. The corpus may only reference
-// nodes the inventory knows and story exports the registry declares; when the
-// registry declares none (a node reviewed before the story exports were
-// recorded) the case carries the story id and the check warns instead of
-// failing.
-export function validateCaseFile(
-  workspace: Workspace,
-  cases: ParityCase[],
-  {
-    registry = readRegistry(workspace.root),
-    nodes = readInventory(workspace.root).components,
-    policy = readDevicePolicy(workspace.root),
-  }: {
-    registry?: Registry
-    nodes?: Array<InventoryNode | string>
-    policy?: DevicePolicy
-  } = {},
-): { errors: string[]; warnings: string[] } {
-  const errors: string[] = []
-  const warnings: string[] = []
-  const seen = new Set<string>()
-  const byNode = new Map<string, InventoryNode | undefined>()
-  for (const node of Array.isArray(nodes) ? nodes : [...nodes]) {
-    if (typeof node === "string") byNode.set(node, undefined)
-    else byNode.set(node.nodeId, node)
-  }
-  for (const entry of cases)
-    validateEntry(workspace, entry, registry, byNode, policy, seen, errors, warnings)
-  return { errors, warnings }
-}
-
-// The story ids a registry entry declares, resolved through the same join the
-// queue uses (the story title and the declared exports, cached per file).
-
-function registryStoryIds(workspace: Workspace, entry: RegistryEntry | undefined): string[] {
-  if (!entry?.target?.story || !entry?.target?.storyExports?.length) return []
-  const file = entry.target.story
-  const title = fs.existsSync(workspace.path(file))
-    ? createSourceModules(workspace).storyTitle(file)
-    : undefined
-  if (!title) return []
-  return entry.target.storyExports.map((name: string) => storyId(title, name))
-}
-
-// ------------------------------------------------------ device coverage (RA3)
+// ------------------------------------------------------------ device coverage
 
 // The device dimension of the queue: what each node declares against what the
 // reviewed corpus covers. It iterates the inventory and the registry, so a
@@ -417,229 +216,223 @@ export type DeviceCoverage = {
   totals: { nodes: number; declared: number; covered: number; missing: number; drafts: number }
 }
 
-export function deviceCoverage({
-  policy,
-  nodes,
-  registry,
-  cases = [],
-  statuses = ["implemented", "pending"],
-}: {
-  policy: DevicePolicy
-  nodes: InventoryNode[]
-  registry: Registry
-  cases?: ParityCase[]
-  statuses?: string[]
-}): DeviceCoverage {
-  const wanted = new Set(statuses)
-  const byNode = new Map(nodes.map((node) => [node.nodeId, node]))
-  const rows: CoverageRow[] = []
-  for (const [nodeId, entry] of Object.entries(registry.entries ?? {})) {
-    const node = byNode.get(nodeId)
-    if (!node) continue
-    const declared = requiredDevices(policy, node)
-    if (!declared.length) continue
-    const matching = (device: string): ParityCase[] =>
-      cases.filter((item) => item.nodeId === nodeId && item.device === device)
-    const covered = declared.filter((device) => matching(device).some((item) => !isDraftCase(item)))
-    const drafts = declared.flatMap((device) =>
-      matching(device)
-        .filter(isDraftCase)
-        .map((item) => item.id ?? ""),
-    )
-    const missing = declared.filter((device) => !covered.includes(device))
-    rows.push({
-      nodeId,
-      name: node.name,
-      status: entry.status,
-      export: entry.target?.export ?? null,
-      story: entry.target?.story ?? null,
-      declared,
-      covered,
-      missing,
-      drafts,
-    })
-  }
-  rows.sort((a, b) => a.nodeId.localeCompare(b.nodeId, undefined, { numeric: true }))
-  // `all` keeps every status: the exception rules need the nodes the coverage
-  // line does not count (a reasoned entry must name a node that really misses a
-  // device, whatever its status), the line and the gate read the filtered rows.
-  const all = rows
-  const filtered = rows.filter((row) => wanted.has(row.status))
-  return {
-    rows: filtered,
-    all,
-    omitted: rows.length - filtered.length,
-    totals: {
-      nodes: filtered.length,
-      declared: filtered.reduce((count, row) => count + row.declared.length, 0),
-      covered: filtered.reduce((count, row) => count + row.covered.length, 0),
-      missing: filtered.reduce((count, row) => count + row.missing.length, 0),
-      drafts: filtered.reduce((count, row) => count + row.drafts.length, 0),
-    },
-  }
-}
-
-// The reasoned exceptions (RA4): one node id per entry, a non-empty reason, and
-// nothing else. The file is a burn-down list: an entry whose node no longer
-// misses a device is an error, not a permission that lingers.
-export function loadDeviceExceptions(file: string): Record<string, string> {
-  if (!fs.existsSync(file)) return {}
-  return parseSchema(DeviceExceptionsSchema, readJson(file), file)
-}
-
-// ------------------------------------------------------- device case proposals
-
 // What `cases --sync` proposes (RA6): for a node that declares more devices than
 // the corpus covers and already has a sibling case, the missing device case —
 // the sibling's selector mapping over the device's own variant, at the variant's
 // own width. The mapping is a draft by construction (R9): the note says so, the
 // coverage ignores it, and the wave replaces both after the reviewed render.
-export function syncProposals({
-  policy,
-  nodes,
-  registry,
-  cases = [],
-  nodeId,
-  statuses = ["implemented", "pending"],
-}: {
-  policy: DevicePolicy
-  nodes: InventoryNode[]
-  registry: Registry
-  cases?: ParityCase[]
-  nodeId?: string
-  statuses?: string[]
-}) {
-  const coverage = deviceCoverage({ policy, nodes, registry, cases, statuses })
-  const byNode = new Map(nodes.map((node) => [node.nodeId, node]))
-  const proposals: CaseProposal[] = []
-  const skipped: Array<{ nodeId: string; variant?: string; missing?: string[]; reason: string }> =
-    []
-  for (const row of coverage.rows)
-    proposeDevicesForNode(row, nodeId, cases, byNode.get(row.nodeId), policy, proposals, skipped)
-  const states = stateProposals({ policy, nodes, registry, cases, nodeId, statuses, coverage })
-  return {
-    proposals,
-    skipped,
-    stateProposals: states.proposals,
-    stateSkipped: states.skipped,
-    coverage,
-  }
-}
-
-// ------------------------------------------------- state/property case proposals
-
-// The variants a non-draft case points at: the `variant` id when the case
-// carries one, else the `state` tokens applied to the variants the case's
-// device narrows to — the same reading `check` applies (`--device` narrows the
-// set, then `--state` picks one record). A draft points nowhere: it still waits
-// for the reviewed render, so it never silently shrinks the work list.
-export function pointedVariants(node: InventoryNode, cases: ParityCase[]): Set<string> {
-  const variants = node.variants ?? []
-  const pointed = new Set<string>()
-  for (const entry of cases) {
-    if (isDraftCase(entry)) continue
-    const pool = entry.device ? variants.filter((item) => item.device === entry.device) : variants
-    if (entry.variant) {
-      const match =
-        pool.find((item) => item.nodeId === entry.variant) ??
-        variants.find((item) => item.nodeId === entry.variant)
-      if (match) pointed.add(match.nodeId)
-      continue
-    }
-    if (!entry.state) continue
-    const tokens = String(entry?.state)
-      .split("|")
-      .map((token) => token.trim().toLowerCase())
-      .filter(Boolean)
-    const matches = pool.filter((item) => stateMatches(item.name, tokens))
-    if (matches.length === 1) pointed.add(matches[0].nodeId)
-  }
-  return pointed
-}
-
-// The companion of the device proposals: for a node whose corpus already has a
-// case, one draft per variant no reviewed case points at, so the states and the
-// visual properties of the set enter the burn-down like the devices. The draft
-// copies the sibling mapping and pins the variant, its device and its width; the
-// note keeps it out of the coverage (R9). A variant whose device still misses
-// its own case is left to the device proposal, which owns the first capture at
-// that width.
 export type CaseProposal = Partial<ParityCase> & Pick<ParityCase, "nodeId" | "export">
 
-export function stateProposals({
-  policy,
-  nodes,
-  registry,
-  cases = [],
-  nodeId,
-  statuses = ["implemented", "pending"],
-  coverage,
-}: {
-  policy: DevicePolicy
-  nodes: InventoryNode[]
-  registry: Registry
-  cases?: ParityCase[]
-  nodeId?: string
-  statuses?: string[]
-  coverage?: DeviceCoverage
-}): {
-  proposals: CaseProposal[]
-  skipped: Array<{ nodeId: string; variant?: string; missing?: string[]; reason: string }>
-} {
-  const wanted = new Set(statuses)
-  const byNode = new Map(nodes.map((item) => [item.nodeId, item]))
-  const deviceRows = new Map(
-    (coverage ?? deviceCoverage({ policy, nodes, registry, cases, statuses })).rows.map((row) => [
-      row.nodeId,
-      row,
-    ]),
-  )
-  const proposals: CaseProposal[] = []
-  const skipped: Array<{ nodeId: string; variant?: string; missing?: string[]; reason: string }> =
-    []
-  const proposedIds = new Set<string>()
-  const corpusIds = new Map(cases.map((item) => [item.id, item]))
-  for (const [id, entry] of Object.entries(registry.entries ?? {})) {
-    proposeStatesForNode(
-      id,
-      entry,
-      byNode.get(id),
-      nodeId,
-      wanted,
-      policy,
-      cases,
-      deviceRows,
-      corpusIds,
-      proposedIds,
-      proposals,
-      skipped,
-    )
-  }
-  return { proposals, skipped }
+export type CaseSkip = { nodeId: string; variant?: string; missing?: string[]; reason: string }
+
+export type CaseStateProposals = { proposals: CaseProposal[]; skipped: CaseSkip[] }
+
+export type CaseProposals = CaseStateProposals & {
+  stateProposals: CaseProposal[]
+  stateSkipped: CaseSkip[]
+  coverage: DeviceCoverage
 }
 
-// The axis a device came from on this set: the source may spell it `Device`,
-// `Breakpoint`, `Layout` or something else (`Property 1`). The token is what the
-// variant name carries, without the property key's `#id` suffix.
-function axisOfDevice(
-  policy: DevicePolicy,
-  node: InventoryNode | undefined,
-  device: string,
-): string | undefined {
-  if (!node) return undefined
-  for (const axis of deviceAxes(policy, node)) {
-    if (axis.values.some((item) => item.device === device)) return axis.token
+export type CaseValidation = { errors: string[]; warnings: string[] }
+
+// --------------------------------------------------------------- the value
+
+// The documents the corpus is read from: what a judgment may consult, and the
+// reason no judgment needs a path or a second argument.
+export type CorpusDocuments = {
+  /** The workspace whose story files the registry points at. */
+  readonly workspace: Workspace
+  /** `cases.json`, as read. */
+  readonly cases: ParityCase[]
+  /** The inventory's components: the nodes a case may name. */
+  readonly inventory: InventoryNode[]
+  /** `registry.json`: which node each case belongs to, which stories it declares. */
+  readonly registry: Registry
+  /** `device-policy.json`: the device vocabulary a case may name. */
+  readonly policy: DevicePolicy
+}
+
+export type CoverageOptions = { readonly statuses?: readonly string[] }
+export type ProposalOptions = CoverageOptions & { readonly nodeId?: string }
+export type StateProposalOptions = ProposalOptions & { readonly coverage?: DeviceCoverage }
+
+export type CaseCorpus = CorpusDocuments & {
+  /** The id index: what `--case <id>` resolves against. */
+  readonly byId: ReadonlyMap<string, ParityCase>
+  /** The node ids the corpus mentions: the mapped side of the queue. */
+  readonly nodeIds: ReadonlySet<string>
+  /** Every draft: proposed from a sibling, still waiting for the review, never coverage. */
+  readonly drafts: readonly ParityCase[]
+  /** Fan-in: how many inventory components depend on a node. */
+  readonly fanIn: ReadonlyMap<string, number>
+  /** The entries one node carries, in file order. */
+  of(nodeId: string): readonly ParityCase[]
+  /** The entries one node carries that count as coverage. */
+  reviewed(nodeId: string): readonly ParityCase[]
+  /** The inventory node, when the inventory has it. */
+  node(nodeId: string): InventoryNode | undefined
+  find(id: string): ParityCase
+  /** The variants the reviewed cases of a node point at. */
+  pointed(nodeId: string): ReadonlySet<string>
+  coverage(options?: CoverageOptions): DeviceCoverage
+  proposals(options?: ProposalOptions): CaseProposals
+  stateProposals(options?: StateProposalOptions): CaseStateProposals
+  validate(): CaseValidation
+}
+
+const NONE: readonly ParityCase[] = []
+
+function indexBy<T>(items: readonly T[], key: (item: T) => string | undefined): Map<string, T> {
+  const index = new Map<string, T>()
+  for (const item of items) {
+    const id = key(item)
+    if (id !== undefined && !index.has(id)) index.set(id, item)
   }
-  return undefined
+  return index
+}
+
+function groupByNode(cases: readonly ParityCase[], filter: (entry: ParityCase) => boolean) {
+  const groups = new Map<string, ParityCase[]>()
+  for (const entry of cases) {
+    if (!filter(entry)) continue
+    const group = groups.get(entry.nodeId)
+    if (group) group.push(entry)
+    else groups.set(entry.nodeId, [entry])
+  }
+  return groups
+}
+
+/**
+ * The corpus as one frozen value: the documents it holds, and the judgments it
+ * makes over them. Build it with `readCorpus` when the documents are on disk.
+ */
+export function caseCorpus(documents: CorpusDocuments): CaseCorpus {
+  const byNode = groupByNode(documents.cases, () => true)
+  const reviewedByNode = groupByNode(documents.cases, (entry) => !isDraftCase(entry))
+  const drafts = documents.cases.filter(isDraftCase)
+  const byId = indexBy(documents.cases, (entry) => entry.id)
+  // The documents are asked for when a judgment needs them, so a caller that
+  // only resolves an id does not read the registry, the inventory or the
+  // policy to reach the case it names.
+  let nodes: Map<string, InventoryNode> | undefined
+  let fanIn: Map<string, number> | undefined
+  const nodeAt = (nodeId: string) =>
+    (nodes ??= indexBy(documents.inventory, (node) => node.nodeId)).get(nodeId)
+  const corpus: CaseCorpus = {
+    get workspace() {
+      return documents.workspace
+    },
+    get cases() {
+      return documents.cases
+    },
+    get inventory() {
+      return documents.inventory
+    },
+    get registry() {
+      return documents.registry
+    },
+    get policy() {
+      return documents.policy
+    },
+    byId,
+    nodeIds: new Set(documents.cases.map((entry) => entry.nodeId)),
+    drafts,
+    get fanIn() {
+      return (fanIn ??= fanInCounts(documents.inventory))
+    },
+    of: (nodeId) => byNode.get(nodeId) ?? NONE,
+    reviewed: (nodeId) => reviewedByNode.get(nodeId) ?? NONE,
+    node: (nodeId) => nodeAt(nodeId),
+    find(id) {
+      const entry = byId.get(id)
+      if (entry) return entry
+      const known = [...byId.keys()].join(", ") || "none"
+      throw new UsageError(`${id}: no case with that id in the corpus (known: ${known})`)
+    },
+    pointed(nodeId) {
+      const node = nodeAt(nodeId)
+      return node ? pointedVariants(node, byNode.get(nodeId) ?? NONE) : new Set<string>()
+    },
+    coverage: (options) => coverageOf(corpus, options?.statuses),
+    proposals: (options) => proposalsOf(corpus, options),
+    stateProposals: (options) => stateProposalsOf(corpus, options),
+    validate: () => validateCorpus(corpus),
+  }
+  return Object.freeze(corpus)
+}
+
+/**
+ * The committed corpus: the four records, each read the first time a judgment
+ * asks for it. `readCorpus(workspace).find(id)` resolves an id without reading
+ * the registry that id lookup does not consult.
+ */
+export function readCorpus(workspace: Workspace, file?: string): CaseCorpus {
+  let cases: ParityCase[] | undefined
+  let inventory: InventoryNode[] | undefined
+  let registry: Registry | undefined
+  let policy: DevicePolicy | undefined
+  return caseCorpus({
+    workspace,
+    get cases() {
+      return (cases ??= readCases(workspace.root, file) ?? [])
+    },
+    get inventory() {
+      return (inventory ??= readInventory(workspace.root).components)
+    },
+    get registry() {
+      return (registry ??= readRegistry(workspace.root))
+    },
+    get policy() {
+      return (policy ??= readDevicePolicy(workspace.root))
+    },
+  })
+}
+
+// Fan-in: how many inventory components depend on a node. A fix in a shared
+// part lands before the components that contain it, so the queue can order the
+// work by reuse instead of by node id.
+function fanInCounts(nodes: readonly InventoryNode[]): Map<string, number> {
+  const counts = new Map<string, number>()
+  for (const node of nodes) {
+    for (const dependency of node.dependencies ?? []) {
+      if (dependency.external) continue
+      counts.set(dependency.nodeId, (counts.get(dependency.nodeId) ?? 0) + 1)
+    }
+  }
+  return counts
+}
+
+// ------------------------------------------------------------- validation
+
+// Hermetic validation: no snapshot, no browser. The corpus may only reference
+// nodes the inventory knows and story exports the registry declares; when the
+// registry declares none (a node reviewed before the story exports were
+// recorded) the case carries the story id and the check warns instead of
+// failing.
+function validateCorpus(corpus: CaseCorpus): CaseValidation {
+  const errors: string[] = []
+  const warnings: string[] = []
+  const seen = new Set<string>()
+  for (const entry of corpus.cases) validateEntry(corpus, entry, seen, errors, warnings)
+  return { errors, warnings }
+}
+
+// The story ids a registry entry declares, resolved through the same join the
+// queue uses (the story title and the declared exports, cached per file).
+function registryStoryIds(workspace: Workspace, entry: RegistryEntry | undefined): string[] {
+  if (!entry?.target?.story || !entry?.target?.storyExports?.length) return []
+  const file = entry.target.story
+  const title = fs.existsSync(workspace.path(file))
+    ? createSourceModules(workspace).storyTitle(file)
+    : undefined
+  if (!title) return []
+  return entry.target.storyExports.map((name: string) => storyId(title, name))
 }
 
 type CaseFailure = (message: string) => void
 function validateEntry(
-  workspace: Workspace,
+  corpus: CaseCorpus,
   entry: ParityCase,
-  registry: Registry,
-  byNode: Map<string, InventoryNode | undefined>,
-  policy: DevicePolicy,
   seen: Set<string>,
   errors: string[],
   warnings: string[],
@@ -652,7 +445,7 @@ function validateEntry(
   else if (seen.has(entry.id)) fail("duplicate case id")
   else seen.add(entry.id)
   if (!/^\d+:\d+$/.test(String(entry?.nodeId ?? ""))) fail("nodeId must look like 529:6111")
-  else if (!byNode.has(entry.nodeId)) fail(`${entry.nodeId} is not in inventory.json`)
+  else if (!corpus.node(entry.nodeId)) fail(`${entry.nodeId} is not in inventory.json`)
   if (!SELECTOR(entry?.export)) fail("export is required")
   if (entry?.storyId != null && !/^[a-z0-9-]+--[a-z0-9-]+$/.test(String(entry.storyId))) {
     fail("storyId must look like components-inputs-textfield--playground")
@@ -660,19 +453,15 @@ function validateEntry(
   if (entry?.variant != null && !/^\d+:\d+$/.test(String(entry.variant))) {
     fail("variant must be a node id")
   }
-  validateDevice(entry, byNode, policy, fail)
+  validateDevice(corpus, entry, fail)
   validateMapping(entry, fail)
-  validateRegistry(workspace, entry, registry, where, fail, warnings)
+  validateRegistry(corpus, entry, where, fail, warnings)
 }
 
-function validateDevice(
-  entry: ParityCase,
-  byNode: Map<string, InventoryNode | undefined>,
-  policy: DevicePolicy,
-  fail: CaseFailure,
-) {
+function validateDevice(corpus: CaseCorpus, entry: ParityCase, fail: CaseFailure) {
   // The device dimension (RA3): the field names a canonical device the policy
   // declares, and it cannot contradict the variant the case points at.
+  const policy = corpus.policy
   if (entry?.device != null) {
     const devices = Object.keys(policy?.devices ?? {})
     if (!SELECTOR(entry.device)) {
@@ -684,7 +473,7 @@ function validateDevice(
           (resolved !== UNKNOWN_DEVICE ? ` — it resolves to "${resolved}"` : ""),
       )
     } else {
-      const variant = variantOfCase(byNode.get(entry.nodeId), entry)
+      const variant = variantOfCase(corpus.node(entry.nodeId), entry)
       if (variant && variant.device && variant.device !== entry.device) {
         fail(
           `device "${entry.device}" contradicts the variant ${variant.nodeId} ` +
@@ -750,14 +539,13 @@ function validateMapping(entry: ParityCase, fail: CaseFailure) {
 }
 
 function validateRegistry(
-  workspace: Workspace,
+  corpus: CaseCorpus,
   entry: ParityCase,
-  registry: Registry,
   where: string,
   fail: CaseFailure,
   warnings: string[],
 ) {
-  const known = registry.entries?.[entry?.nodeId]
+  const known = corpus.registry.entries?.[entry?.nodeId]
   // `export` is the implementation the case covers (the registry target), the
   // `storyId` is the render surface. Both must agree with the registry where
   // it declares them; where it does not, the case is the only record and the
@@ -771,7 +559,7 @@ function validateRegistry(
       `export ${entry.export} is not the registry target nor an additionalTargets export of ${entry.nodeId} (${targetExports.join(", ")})`,
     )
   }
-  const declaredStories = registryStoryIds(workspace, known)
+  const declaredStories = registryStoryIds(corpus.workspace, known)
   if (declaredStories.length) {
     if (entry?.storyId && !declaredStories.includes(entry.storyId)) {
       fail(
@@ -789,19 +577,137 @@ function validateRegistry(
   if (!known) warnings.push(`${where}: no registry entry for ${entry?.nodeId}`)
 }
 
-type ProposalSkip = { nodeId: string; variant?: string; missing?: string[]; reason: string }
+// -------------------------------------------------------------- coverage
+
+// The corpus read per device: it iterates the registry and the inventory, and
+// asks itself for the entries each node carries, so no caller rebuilds that
+// index.
+function coverageOf(
+  corpus: CaseCorpus,
+  statuses: readonly string[] = ["implemented", "pending"],
+): DeviceCoverage {
+  const wanted = new Set(statuses)
+  const rows: CoverageRow[] = []
+  for (const [nodeId, entry] of Object.entries(corpus.registry.entries ?? {})) {
+    const node = corpus.node(nodeId)
+    if (!node) continue
+    const declared = requiredDevices(corpus.policy, node)
+    if (!declared.length) continue
+    const matching = (device: string): readonly ParityCase[] =>
+      corpus.of(nodeId).filter((item) => item.device === device)
+    const covered = declared.filter((device) => matching(device).some((item) => !isDraftCase(item)))
+    const drafts = declared.flatMap((device) =>
+      matching(device)
+        .filter(isDraftCase)
+        .map((item) => item.id ?? ""),
+    )
+    const missing = declared.filter((device) => !covered.includes(device))
+    rows.push({
+      nodeId,
+      name: node.name,
+      status: entry.status,
+      export: entry.target?.export ?? null,
+      story: entry.target?.story ?? null,
+      declared,
+      covered,
+      missing,
+      drafts,
+    })
+  }
+  rows.sort((a, b) => a.nodeId.localeCompare(b.nodeId, undefined, { numeric: true }))
+  // `all` keeps every status: the exception rules need the nodes the coverage
+  // line does not count (a reasoned entry must name a node that really misses a
+  // device, whatever its status), the line and the gate read the filtered rows.
+  const all = rows
+  const filtered = rows.filter((row) => wanted.has(row.status))
+  return {
+    rows: filtered,
+    all,
+    omitted: rows.length - filtered.length,
+    totals: {
+      nodes: filtered.length,
+      declared: filtered.reduce((count, row) => count + row.declared.length, 0),
+      covered: filtered.reduce((count, row) => count + row.covered.length, 0),
+      missing: filtered.reduce((count, row) => count + row.missing.length, 0),
+      drafts: filtered.reduce((count, row) => count + row.drafts.length, 0),
+    },
+  }
+}
+
+// ------------------------------------------------------- device proposals
+
+function proposalsOf(corpus: CaseCorpus, options: ProposalOptions = {}): CaseProposals {
+  const { nodeId, statuses = ["implemented", "pending"] } = options
+  const coverage = corpus.coverage({ statuses })
+  const proposals: CaseProposal[] = []
+  const skipped: CaseSkip[] = []
+  for (const row of coverage.rows) proposeDevicesForNode(row, nodeId, corpus, proposals, skipped)
+  const states = corpus.stateProposals({ nodeId, statuses, coverage })
+  return {
+    proposals,
+    skipped,
+    stateProposals: states.proposals,
+    stateSkipped: states.skipped,
+    coverage,
+  }
+}
+
+// The variants a non-draft case points at: the `variant` id when the case
+// carries one, else the `state` tokens applied to the variants the case's
+// device narrows to — the same reading `check` applies (`--device` narrows the
+// set, then `--state` picks one record). A draft points nowhere: it still waits
+// for the reviewed render, so it never silently shrinks the work list.
+function pointedVariants(node: InventoryNode, cases: readonly ParityCase[]): Set<string> {
+  const variants = node.variants ?? []
+  const pointed = new Set<string>()
+  for (const entry of cases) {
+    if (isDraftCase(entry)) continue
+    const pool = entry.device ? variants.filter((item) => item.device === entry.device) : variants
+    if (entry.variant) {
+      const match =
+        pool.find((item) => item.nodeId === entry.variant) ??
+        variants.find((item) => item.nodeId === entry.variant)
+      if (match) pointed.add(match.nodeId)
+      continue
+    }
+    if (!entry.state) continue
+    const tokens = String(entry?.state)
+      .split("|")
+      .map((token) => token.trim().toLowerCase())
+      .filter(Boolean)
+    const matches = pool.filter((item) => stateMatches(item.name, tokens))
+    if (matches.length === 1) pointed.add(matches[0].nodeId)
+  }
+  return pointed
+}
+
+// The axis a device came from on this set: the source may spell it `Device`,
+// `Breakpoint`, `Layout` or something else (`Property 1`). The token is what the
+// variant name carries, without the property key's `#id` suffix.
+function axisOfDevice(
+  policy: DevicePolicy,
+  node: InventoryNode | undefined,
+  device: string,
+): string | undefined {
+  if (!node) return undefined
+  for (const axis of deviceAxes(policy, node)) {
+    if (axis.values.some((item) => item.device === device)) return axis.token
+  }
+  return undefined
+}
+
 function proposeDevicesForNode(
   row: CoverageRow,
   nodeId: string | undefined,
-  cases: ParityCase[],
-  node: InventoryNode | undefined,
-  policy: DevicePolicy,
+  corpus: CaseCorpus,
   proposals: CaseProposal[],
-  skipped: ProposalSkip[],
+  skipped: CaseSkip[],
 ) {
   if (nodeId && row.nodeId !== nodeId) return
   if (!row.missing.length) return
-  const siblings = cases.filter((item) => item.nodeId === row.nodeId)
+  const policy = corpus.policy
+  const node = corpus.node(row.nodeId)
+  const siblings = corpus.of(row.nodeId)
   if (!siblings.length) {
     // Nothing to copy: the first case of a node needs the review, not a
     // template.
@@ -859,65 +765,69 @@ function deviceVariant(
   )[0]
 }
 
-function deviceProposal(
-  nodeId: string,
-  sibling: ParityCase,
-  device: string,
-  value: string | undefined,
-  width: number | undefined,
-  otherTokens: string[],
-): CaseProposal {
-  return {
-    nodeId,
-    export: sibling.export,
-    storyId: sibling.storyId,
-    state: [value ?? device, ...otherTokens].join("|"),
-    device,
-    ...(width ? { width, viewport: width } : {}),
-    ...(sibling.root ? { root: sibling.root } : {}),
-    ...(sibling.subjectRoot ? { subjectRoot: sibling.subjectRoot } : {}),
-    ...(sibling.offsetOrigin ? { offsetOrigin: sibling.offsetOrigin } : {}),
-    ...(sibling.subjects ? { subjects: { ...sibling.subjects } } : {}),
-    ...(sibling.compareOffset ? { compareOffset: true } : {}),
-    ...(sibling.compareBox ? { compareBox: sibling.compareBox } : {}),
-    ...(sibling.compareText ? { compareText: true } : {}),
-    ...(sibling.interactive ? { interactive: true } : {}),
-    ...(sibling.depth ? { depth: sibling.depth } : {}),
-    note: DRAFT_NOTE,
-  }
+// ------------------------------------------------- state/property proposals
+
+// The companion of the device proposals: for a node whose corpus already has a
+// case, one draft per variant no reviewed case points at, so the states and the
+// visual properties of the set enter the burn-down like the devices. The draft
+// copies the sibling mapping and pins the variant, its device and its width; the
+// note keeps it out of the coverage (R9). A variant whose device still misses
+// its own case is left to the device proposal, which owns the first capture at
+// that width.
+function stateProposalsOf(
+  corpus: CaseCorpus,
+  options: StateProposalOptions = {},
+): CaseStateProposals {
+  const { nodeId, statuses = ["implemented", "pending"], coverage } = options
+  const wanted = new Set(statuses)
+  const deviceRows = new Map(
+    (coverage ?? corpus.coverage({ statuses })).rows.map((row) => [row.nodeId, row]),
+  )
+  const proposals: CaseProposal[] = []
+  const skipped: CaseSkip[] = []
+  const proposedIds = new Set<string>()
+  for (const [id, entry] of Object.entries(corpus.registry.entries ?? {}))
+    proposeStatesForNode(
+      id,
+      entry,
+      nodeId,
+      wanted,
+      corpus,
+      deviceRows,
+      proposedIds,
+      proposals,
+      skipped,
+    )
+  return { proposals, skipped }
 }
 
-function axisName(name: string): string {
-  return axisToken(name).toLowerCase()
-}
 function proposeStatesForNode(
   id: string,
   entry: RegistryEntry,
-  node: InventoryNode | undefined,
   nodeId: string | undefined,
   wanted: Set<string>,
-  policy: DevicePolicy,
-  cases: ParityCase[],
+  corpus: CaseCorpus,
   deviceRows: Map<string, CoverageRow>,
-  corpusIds: Map<string, ParityCase>,
   proposedIds: Set<string>,
   proposals: CaseProposal[],
-  skipped: ProposalSkip[],
+  skipped: CaseSkip[],
 ) {
   if (nodeId && id !== nodeId) return
   if (!wanted.has(entry.status)) return
+  const node = corpus.node(id)
   if (!node) return
+  const policy = corpus.policy
   const deviceNames = new Set(deviceAxes(policy, node).map((axis) => axisName(axis.name)))
   const stateAxes = Object.entries(node.properties ?? {}).filter(
     ([name, definition]) => definition?.type === "VARIANT" && !deviceNames.has(axisName(name)),
   )
   if (!stateAxes.length) return
-  const siblings = cases.filter((item) => item.nodeId === id)
+  const siblings = corpus.of(id)
   if (!siblings.length) {
     skipped.push({ nodeId: id, reason: "no sibling case" })
     return
   }
-  const pointed = pointedVariants(node, siblings)
+  const pointed = corpus.pointed(id)
   const missingDevices = new Set(deviceRows.get(id)?.missing ?? [])
   const stateTokens = new Set(stateAxes.map(([name]) => axisName(name)))
   const sibling = siblings.find((item) => !isDraftCase(item)) ?? siblings[0]
@@ -929,7 +839,7 @@ function proposeStatesForNode(
       pointed,
       missingDevices,
       stateTokens,
-      corpusIds,
+      corpus,
       proposedIds,
       proposals,
       skipped,
@@ -940,13 +850,13 @@ function proposeStateVariant(
   id: string,
   variant: NonNullable<InventoryNode["variants"]>[number],
   sibling: ParityCase,
-  pointed: Set<string>,
+  pointed: ReadonlySet<string>,
   missingDevices: Set<string>,
   stateTokens: Set<string>,
-  corpusIds: Map<string, ParityCase>,
+  corpus: CaseCorpus,
   proposedIds: Set<string>,
   proposals: CaseProposal[],
-  skipped: ProposalSkip[],
+  skipped: CaseSkip[],
 ) {
   if (pointed.has(variant.nodeId)) return
   if (variant.device && missingDevices.has(variant.device)) {
@@ -967,7 +877,7 @@ function proposeStateVariant(
   // variants under the same identity (two records can share a state and a
   // device, e.g. two source spellings of the same canonical device).
   const identity = caseIdFor(spec)
-  const owner = corpusIds.get(identity)
+  const owner = corpus.byId.get(identity)
   if (proposedIds.has(identity)) {
     skipped.push({
       nodeId: id,
@@ -1015,4 +925,36 @@ function stateProposal(
     note: DRAFT_NOTE,
   }
   return spec
+}
+
+function deviceProposal(
+  nodeId: string,
+  sibling: ParityCase,
+  device: string,
+  value: string | undefined,
+  width: number | undefined,
+  otherTokens: string[],
+): CaseProposal {
+  return {
+    nodeId,
+    export: sibling.export,
+    storyId: sibling.storyId,
+    state: [value ?? device, ...otherTokens].join("|"),
+    device,
+    ...(width ? { width, viewport: width } : {}),
+    ...(sibling.root ? { root: sibling.root } : {}),
+    ...(sibling.subjectRoot ? { subjectRoot: sibling.subjectRoot } : {}),
+    ...(sibling.offsetOrigin ? { offsetOrigin: sibling.offsetOrigin } : {}),
+    ...(sibling.subjects ? { subjects: { ...sibling.subjects } } : {}),
+    ...(sibling.compareOffset ? { compareOffset: true } : {}),
+    ...(sibling.compareBox ? { compareBox: sibling.compareBox } : {}),
+    ...(sibling.compareText ? { compareText: true } : {}),
+    ...(sibling.interactive ? { interactive: true } : {}),
+    ...(sibling.depth ? { depth: sibling.depth } : {}),
+    note: DRAFT_NOTE,
+  }
+}
+
+function axisName(name: string): string {
+  return axisToken(name).toLowerCase()
 }

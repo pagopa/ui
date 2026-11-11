@@ -18,7 +18,7 @@ import {
   loadSlice,
 } from "../../src/parity/evidence.ts"
 import { loadExport, resolveExport, sourceNode } from "../../src/parity/source.ts"
-import { caseVariant } from "../../src/parity/cases.ts"
+import { caseVariant } from "../../src/parity/corpus.ts"
 import { readCases, readInventory } from "../../src/records/committed.ts"
 import { brotliJson } from "../../src/lib/json.ts"
 import { TOOLING_ROOT } from "../../src/adapters/workspace.ts"

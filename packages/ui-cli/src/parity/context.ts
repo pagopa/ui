@@ -2,7 +2,7 @@ import fs from "node:fs"
 import type { Workspace } from "../adapters/workspace.ts"
 import { UsageError } from "../lib/command.ts"
 import { committedFile, readDevicePolicy, readInventory } from "../records/committed.ts"
-import { buildCases } from "./cases.ts"
+import { buildCases } from "./case-rows.ts"
 
 export function devicePolicy(workspace: Workspace) {
   return readDevicePolicy(workspace.root)

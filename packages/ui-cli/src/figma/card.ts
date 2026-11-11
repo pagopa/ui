@@ -6,9 +6,15 @@ import fs from "node:fs"
 
 import type { Workspace } from "../adapters/workspace.ts"
 import { readJson } from "../lib/json.ts"
-import { isDraftCase } from "../parity/cases.ts"
+import { caseCorpus, isDraftCase } from "../parity/corpus.ts"
 import { EVIDENCE_DIR, evidencePaths, loadManifest } from "../parity/evidence.ts"
-import { committedFile, readCases, readDevicePolicy, readInventory } from "../records/committed.ts"
+import {
+  committedFile,
+  readCases,
+  readDevicePolicy,
+  readInventory,
+  readRegistry,
+} from "../records/committed.ts"
 import type { Inventory, InventoryNode } from "../schemas/catalogue.ts"
 import type { RuleDisposition } from "../schemas/rules.ts"
 import { buildBrief, compact, componentForNode, type NodeBrief } from "./brief.ts"
@@ -94,8 +100,14 @@ type CardSection = { label: string; parts: string[] }
 
 function nodeCases(workspace: Workspace, node: string): NodeCardCase[] {
   return (
-    (readCases(workspace.root) ?? [])
-      .filter((item) => item.nodeId === node)
+    caseCorpus({
+      workspace,
+      cases: readCases(workspace.root) ?? [],
+      inventory: readInventory(workspace.root).components,
+      registry: readRegistry(workspace.root),
+      policy: readDevicePolicy(workspace.root),
+    })
+      .of(node)
       .map((item) => ({
         id: item.id,
         device: item.device ?? "any",
