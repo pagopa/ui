@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "fileKey": "pvhsJpPGQbEwNLiyP7BOIw",
-  "syncedAt": "2026-11-05",
-  "fileVersion": "2418407510373603717",
-  "lastModified": "2026-11-05T16:00:25Z",
+  "syncedAt": "2026-11-11",
+  "fileVersion": "2420579852725302786",
+  "lastModified": "2026-11-11T12:08:21Z",
   "components": [
     {
       "nodeId": "50:1700",
@@ -5188,9 +5188,9 @@
           "device": null,
           "box": {
             "width": 150,
-            "height": 44
+            "height": 42
           },
-          "designFingerprint": "c650abc841c482805daaa8fab1be9b128dde94e261649a596474d1b5175768d7"
+          "designFingerprint": "de095ebb23fe7ca1a06148b69b04bf1c67c3d3c52f43ece7698ae0c3f0a49908"
         },
         {
           "nodeId": "295:1411",
@@ -5198,9 +5198,9 @@
           "device": null,
           "box": {
             "width": 150,
-            "height": 66
+            "height": 64
           },
-          "designFingerprint": "c556f63c9404878ee48cc943f83c0e13a3d21f931ded8fb6a18ea466825003f5"
+          "designFingerprint": "a89fba29c4f443944294b6e8a4a2b9d9751731ed26e205639915ddbd7a4a3702"
         },
         {
           "nodeId": "295:1424",
@@ -5208,9 +5208,9 @@
           "device": null,
           "box": {
             "width": 150,
-            "height": 44
+            "height": 42
           },
-          "designFingerprint": "010843a8b91f3a5fc829118e9d39f43dd7659b449acd066cfa8a2eb0f92c43c6"
+          "designFingerprint": "dd99f5863e92c7582af10df6584d8348d4ba89d5b48b6c5a059e5f3d4df9a435"
         },
         {
           "nodeId": "295:1432",
@@ -5218,9 +5218,9 @@
           "device": null,
           "box": {
             "width": 150,
-            "height": 44
+            "height": 42
           },
-          "designFingerprint": "b14884293ee23072b9eed7700cf4aa2a49d8507754882a4b8a2d19215c823005"
+          "designFingerprint": "a9a27fbb7c7be7a26adb5d83d0d9e57c99f98b7f9a228a3df58c332ebb675b08"
         },
         {
           "nodeId": "295:1440",
@@ -5228,9 +5228,9 @@
           "device": null,
           "box": {
             "width": 150,
-            "height": 44
+            "height": 42
           },
-          "designFingerprint": "1b3050facb5e8ae1496201d86c4c07f24d0eb15c2bcace58192f276cb4e3b341"
+          "designFingerprint": "d68c9c44a00598e1ee1267089f31eafec4be50081c930af0b99301cd7fc0c70c"
         },
         {
           "nodeId": "295:1461",
@@ -5238,9 +5238,9 @@
           "device": null,
           "box": {
             "width": 150,
-            "height": 44
+            "height": 42
           },
-          "designFingerprint": "35011cbb34b90f676c9100b0b286abbcb588d3e390596a5c2ca790f2dcc1f2d6"
+          "designFingerprint": "196dc26ee5694d6daf247d71ff38008e4ab48bb671024ec10f1e448639f550ab"
         },
         {
           "nodeId": "295:1466",
@@ -5248,9 +5248,9 @@
           "device": null,
           "box": {
             "width": 150,
-            "height": 44
+            "height": 42
           },
-          "designFingerprint": "0832e450450cf42223b957813feaa6a3e10ec7ae7a34dcee349b7e5be2be1e87"
+          "designFingerprint": "e1ff0423882765faa71bc35434507a33e2dac971d392b6cac04a4c73814ed35a"
         },
         {
           "nodeId": "295:1477",
@@ -5258,9 +5258,9 @@
           "device": null,
           "box": {
             "width": 150,
-            "height": 44
+            "height": 42
           },
-          "designFingerprint": "d106975416b80290f5d6d0642f85e4fd730edfeba17f223657230fb3be84f012"
+          "designFingerprint": "86c0c21be5065c025c3c86d004592945f22bc106cce812ed5082d90fe5bb8245"
         },
         {
           "nodeId": "295:1482",
@@ -5268,13 +5268,13 @@
           "device": null,
           "box": {
             "width": 150,
-            "height": 44
+            "height": 42
           },
-          "designFingerprint": "863d59995558dac54e97a81fc7c3fbf4edac0425b910b4a6b2999f9d0d5628a9"
+          "designFingerprint": "6b9600f2d96331262ca0b49d6fe3b6eefb93e64e7ee1dd779cb3a6c49dba02b0"
         }
       ],
       "contractFingerprint": "5bb602b5daec857ce08adfa19c5bc0591d20b020f764f83ad2d3305bcd9f27b0",
-      "designFingerprint": "eae92083149d2c00e6320c8d2dcc5c511c04dba6a066725c03d0c58ef27f3fa9"
+      "designFingerprint": "2ef49b5434f6915031ce29dbffed46341313c61f576c411640a1186f36beb326"
     },
     {
       "nodeId": "329:1629",
@@ -11599,7 +11599,7 @@
             "width": 320,
             "height": 2639
           },
-          "designFingerprint": "6e591ab2fbb4edee5d752d77f228e07a8ebcd029a37eebba2065261a82d10906"
+          "designFingerprint": "751ad9279aec9830aa77cf56970de0235d46a4bddc10a1d787b2560957796900"
         },
         {
           "nodeId": "1174:9822",
@@ -11609,7 +11609,7 @@
             "width": 600,
             "height": 2379
           },
-          "designFingerprint": "cf8d5415061bbfda223ed98a6160e96f5a987f37b0a4b08571a717175e4dc237"
+          "designFingerprint": "0f6be5b9d9250c6338195da2290d4202722342037982fd82bb475361da521ce9"
         },
         {
           "nodeId": "1174:10049",
@@ -11619,7 +11619,7 @@
             "width": 900,
             "height": 2114
           },
-          "designFingerprint": "d1fe4a65749eb87a86f262f224790a5692aef40345eede66571b3bc0d4326633"
+          "designFingerprint": "f60153f9cd45e04633eac98b087ef167098ecd17e99e6a2725b8de9648a49086"
         },
         {
           "nodeId": "1175:5127",
@@ -11629,7 +11629,7 @@
             "width": 1200,
             "height": 2076
           },
-          "designFingerprint": "94f0e1af2a1ecbe775b3de33fe23de602861de1ace4fc662e30f7f3e5bfde2b1"
+          "designFingerprint": "53554fc43b4fe569511314c12c899fd04f5bb975c615ad42d260ad4daa1c2087"
         },
         {
           "nodeId": "1175:5354",
@@ -11639,11 +11639,11 @@
             "width": 1536,
             "height": 2056
           },
-          "designFingerprint": "e1a36334b36bbcdf95a731bdf92439a18203a0662f7837a31aa0cfcb344be436"
+          "designFingerprint": "9ba04d24e8d49a4175d2b4cfd654543bb5a1eff1eb5f72d6050a474df0eb4dfa"
         }
       ],
       "contractFingerprint": "0d0f0d2115df8f2374382670230ff8c252ab7e494bd9013f677da84ddb8f6a79",
-      "designFingerprint": "e3726d560b2974c47686607708a5dd27f3d315f6128253d5652e45e0e86d7a96"
+      "designFingerprint": "e3a3b9806e6cfc7a393bb045010532eeb68e6df8ebbac42c58982a8658507eb6"
     },
     {
       "nodeId": "1174:9780",
@@ -13377,9 +13377,9 @@
           "device": "mobile",
           "box": {
             "width": 320,
-            "height": 1847
+            "height": 1841
           },
-          "designFingerprint": "56494f8e5f84b28b414891bf877738fceea42c37e77c63783de9482f2ec24296"
+          "designFingerprint": "d4146f0272ec989585844a5b95af1e96faf40ac84d468451d7be2b0d0997d19a"
         },
         {
           "nodeId": "1908:98700",
@@ -13387,9 +13387,9 @@
           "device": "tablet",
           "box": {
             "width": 600,
-            "height": 1703
+            "height": 1699
           },
-          "designFingerprint": "e12afb7dfe2200afb9807f981258384bec11f3b14badde08aa3ee25a7563c15f"
+          "designFingerprint": "f047f1b92d0c61440396c0bcd5bfe1bf1cce8ffd08b883236a8e484da2427f27"
         },
         {
           "nodeId": "1908:98710",
@@ -13397,9 +13397,9 @@
           "device": "desktop",
           "box": {
             "width": 900,
-            "height": 1076
+            "height": 1072
           },
-          "designFingerprint": "114721797de1af2923d310b9a4e779ff131c297f7b4cb8ddc9878438337b8bf9"
+          "designFingerprint": "3811164efb1bd2695692f16ca2c243d430fec4c362b5145aa86174a291b080f5"
         },
         {
           "nodeId": "1908:98720",
@@ -13407,9 +13407,9 @@
           "device": "desktop",
           "box": {
             "width": 1200,
-            "height": 1056
+            "height": 1052
           },
-          "designFingerprint": "c2d2dd2e7b76f4deb296dcc538633f6bb13c4ee4017f29f33947dd3fa24dc8d3"
+          "designFingerprint": "09256bc081344e1467351a692468bd2379433f99a2a6eeda3bd762691a8a6abc"
         },
         {
           "nodeId": "1908:98730",
@@ -13417,13 +13417,13 @@
           "device": "desktop",
           "box": {
             "width": 1536,
-            "height": 996
+            "height": 992
           },
-          "designFingerprint": "d6f331342dcdb064e378095d83a794710302ea01f4cc777f12e9e9da6386e111"
+          "designFingerprint": "b383d64815562b93c78aaf01613f44ca77986d6bfb5894812dab53c4c2d5f71d"
         }
       ],
       "contractFingerprint": "d2f97e9b0a5c1ba2bafe11840e6fa1a03cdfe2fc0b33acc360748a942a8221e7",
-      "designFingerprint": "5a9265ce7474bcbcc0529f25f99d39d4aa64d40d7cfbbfcdb430561d2373badf"
+      "designFingerprint": "4901593d413224fa2e63a72245047aaada3683cae39c8d0d8987aa05e03e99c8"
     },
     {
       "nodeId": "1909:98992",

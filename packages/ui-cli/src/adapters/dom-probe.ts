@@ -436,6 +436,7 @@ function captureState(
     : null
   const declaredHolds = () =>
     Boolean(
+      (expectState === "hover" && evidence?.includes(":hover") && declared) ||
       String(declared?.value ?? "").trim() ||
       (declared?.textContent ?? "").trim() ||
       declared?.getAttribute("aria-checked") === "true" ||

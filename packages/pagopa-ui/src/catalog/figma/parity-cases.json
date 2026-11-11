@@ -2099,14 +2099,14 @@
     "state": "unchecked enabled",
     "variant": "295:1406",
     "width": 150,
-    "height": 44,
+    "height": 42,
     "depth": 3,
     "root": ".source-start-default-off",
     "subjects": {
       "Label": "#storybook-root label[for=switch-start-default-off]"
     },
     "compareOffset": true,
-    "note": "reviewed: source Checked=False Enable=True Error=False Status=Default (295:1406, 150x44) against the FidelityStartStates control-before-copy row. Verified the 150x44 row, the 12px control-to-copy gap, the 16/22 Semibold #0e0f13 title at the row top, the 14/20 #555c70 description and the hidden helper. The source .Switch single element frame (58x38) rounds to the 56x44 native target (primitive native-target-token-rounding), which the row follows. Responsive clean."
+    "note": "reviewed: source Checked=False Enable=True Error=False Status=Default (295:1406, 150x42). The source switch frame is 58x38; the native 56x44 target makes the regular row 150x44. The 16/22 Semibold title and 14/20 description meet with no gap; the 40px track has an 8px gap to the copy. Responsive clean."
   },
   {
     "id": "295-1360-unchecked-error",
@@ -2116,14 +2116,14 @@
     "state": "unchecked error",
     "variant": "295:1411",
     "width": 150,
-    "height": 66,
+    "height": 64,
     "depth": 3,
     "root": ".source-start-error",
     "subjects": {
       "Label": "#storybook-root label[for=switch-start-error]"
     },
     "compareOffset": true,
-    "note": "reviewed: source Checked=False Enable=True Error=True Status=Default (295:1411, 150x66) against the FidelityStartStates error row. Verified the 150x66 row, the 12px control-to-copy gap, the 16/22 Semibold #0e0f13 title, the 14/20 #555c70 description and the 14/20 #d13333 helper line under the 44px control with its 16px report glyph. Responsive clean."
+    "note": "reviewed: source Checked=False Enable=True Error=True Status=Default (295:1411, 150x64). The 56x44 native target sits beside the exact 22px title, 20px description and 20px helper; the helper gap is 2px and the row is 150x64. The 16px report glyph and 14/20 #d13333 helper match. Responsive clean."
   },
   {
     "id": "295-1360-unchecked-disabled",
@@ -2133,7 +2133,7 @@
     "state": "unchecked disabled",
     "variant": "295:1424",
     "width": 150,
-    "height": 44,
+    "height": 42,
     "depth": 3,
     "root": ".source-start-disabled-off",
     "subjects": {
@@ -2146,7 +2146,7 @@
         "reason": "the library's documented family adaptation native-unavailable-state (CheckboxField 194:3661 records the same choice): disabled copy uses the muted-foreground token while the pinned source leaves the Label text at #0e0f13 and fades only the 50% Element artwork. The switch-choices guide records legible disabled copy as a deliberate adaptation."
       }
     ],
-    "note": "reviewed: source Checked=False Enable=False Error=False Status=Default (295:1424, 150x44) against the FidelityStartStates disabled row. Verified the 150x44 row, the 12px control-to-copy gap, the 16/22 Semibold title, the 14/20 description and the 50% Element artwork fade. The source .Switch single element frame (58x38) rounds to the 56x44 native target (primitive native-target-token-rounding). Residue: the library's documented family adaptation native-unavailable-state (CheckboxField 194:3661 records the same choice): disabled copy uses the muted-foreground token while the pinned source leaves the Label text at #0e0f13 and fades only the 50% Element artwork. The switch-choices guide records legible disabled copy as a deliberate adaptation."
+    "note": "reviewed: source Checked=False Enable=False Error=False Status=Default (295:1424, 150x42). The 56x44 native target makes the regular row 150x44; title and description keep their 22px/20px stack and the artwork fades to 50%. The documented native-unavailable-state disabled-copy color residue remains: the library keeps legible muted copy where the source fades only the artwork. Responsive clean."
   },
   {
     "id": "295-1360-checked-enabled",
@@ -2156,14 +2156,14 @@
     "state": "checked enabled",
     "variant": "295:1432",
     "width": 150,
-    "height": 44,
+    "height": 42,
     "depth": 3,
     "root": ".source-start-default-on",
     "subjects": {
       "Label": "#storybook-root label[for=switch-start-default-on]"
     },
     "compareOffset": true,
-    "note": "reviewed: source Checked=True Enable=True Error=False Status=Default (295:1432, 150x44) against the FidelityStartStates checked row. Verified the 150x44 row, the 12px control-to-copy gap, the 16/22 Semibold #0e0f13 title, the 14/20 #555c70 description and the selected #0b3ee3 track. The source .Switch single element frame (58x38) rounds to the 56x44 native target (primitive native-target-token-rounding), which the row follows. Responsive clean."
+    "note": "reviewed: source Checked=True Enable=True Error=False Status=Default (295:1432, 150x42). The source switch frame is 58x38; the native 56x44 target makes the regular row 150x44. The 16/22 title and 14/20 description meet with no gap; the 40px track has an 8px gap to the copy and the selected #0b3ee3 track matches. Responsive clean."
   },
   {
     "id": "295-1360-checked-disabled",
@@ -2173,7 +2173,7 @@
     "state": "checked disabled",
     "variant": "295:1440",
     "width": 150,
-    "height": 44,
+    "height": 42,
     "depth": 3,
     "root": ".source-start-disabled-on",
     "subjects": {
@@ -2186,7 +2186,28 @@
         "reason": "the library's documented family adaptation native-unavailable-state (CheckboxField 194:3661 records the same choice): disabled copy uses the muted-foreground token while the pinned source leaves the Label text at #0e0f13 and fades only the 50% Element artwork. The switch-choices guide records legible disabled copy as a deliberate adaptation."
       }
     ],
-    "note": "reviewed: source Checked=True Enable=False Error=False Status=Default (295:1440, 150x44) against the FidelityStartStates checked disabled row. Verified the 150x44 row, the 12px control-to-copy gap, the 16/22 Semibold title, the 14/20 description, the selected #0b3ee3 track and its 50% Element artwork fade. The source .Switch single element frame (58x38) rounds to the 56x44 native target (primitive native-target-token-rounding). Residue: the library's documented family adaptation native-unavailable-state (CheckboxField 194:3661 records the same choice): disabled copy uses the muted-foreground token while the pinned source leaves the Label text at #0e0f13 and fades only the 50% Element artwork. The switch-choices guide records legible disabled copy as a deliberate adaptation."
+    "note": "reviewed: source Checked=True Enable=False Error=False Status=Default (295:1440, 150x42). The 56x44 native target makes the regular row 150x44; the selected #0b3ee3 track and its 50% artwork fade match. The documented native-unavailable-state disabled-copy color residue remains for legible muted text. Responsive clean."
+  },
+  {
+    "id": "295-1360-unchecked-hover",
+    "nodeId": "295:1360",
+    "export": "SwitchField",
+    "storyId": "components-inputs-switchfield--fidelity-start-states",
+    "state": "unchecked hover",
+    "variant": "295:1461",
+    "width": 150,
+    "height": 42,
+    "depth": 3,
+    "root": ".source-start-hover-off",
+    "subjects": {
+      "Label": "#storybook-root label[for=switch-start-hover-off]",
+      "Hover area": "#storybook-root .source-start-hover-off [data-slot=switch-hover-halo]"
+    },
+    "compareOffset": true,
+    "expectState": "hover",
+    "stateEvidence": ".source-start-hover-off [data-slot=switch]:hover",
+    "ignores": ["Hover area.radius", "Hover area.background"],
+    "note": "reviewed: source Checked=False Enable=True Error=False Status=Hover (295:1461, 150x42), captured with the pointer on the switch. The native 56x44 target makes the rendered row 150x44; the 16/22 title and 14/20 description meet without a gap. The source 38px Hover area maps to the shared 40px halo (2px difference within tolerance), with an 8px track-to-copy gap. The pinned raster shows a translucent foreground wash while the source projection reports raw fill and radius; only Hover area.background and Hover area.radius are ignored as projection artifacts. Responsive clean."
   },
   {
     "id": "295-1360-unchecked-focused",
@@ -2196,7 +2217,7 @@
     "state": "unchecked focused",
     "variant": "295:1466",
     "width": 150,
-    "height": 44,
+    "height": 42,
     "depth": 3,
     "root": ".source-start-focus-off",
     "subjects": {
@@ -2206,7 +2227,28 @@
     "keepFocus": true,
     "compareOffset": true,
     "expectState": "focused",
-    "note": "reviewed: source Checked=False Enable=True Error=False Status=Focused (295:1466, 150x44) captured focused against the FidelityStartStates focused row. Verified the 150x44 row, the 12px control-to-copy gap, the 16/22 Semibold title and the 10px #555c70 focus dot on the track with the library's visible keyboard perimeter outside it (documented adaptation native-focus-target-token-rounding). Responsive clean."
+    "note": "reviewed: source Checked=False Enable=True Error=False Status=Focused (295:1466, 150x42), captured focused. The 56x44 native target makes the regular row 150x44; the 16/22 title and 14/20 description meet with no gap. The 10px #555c70 focus dot and visible keyboard perimeter follow the documented native-focus-target-token-rounding adaptation. Responsive clean."
+  },
+  {
+    "id": "295-1360-checked-hover",
+    "nodeId": "295:1360",
+    "export": "SwitchField",
+    "storyId": "components-inputs-switchfield--fidelity-start-states",
+    "state": "checked hover",
+    "variant": "295:1477",
+    "width": 150,
+    "height": 42,
+    "depth": 3,
+    "root": ".source-start-hover-on",
+    "subjects": {
+      "Label": "#storybook-root label[for=switch-start-hover-on]",
+      "Hover area": "#storybook-root .source-start-hover-on [data-slot=switch-hover-halo]"
+    },
+    "compareOffset": true,
+    "expectState": "hover",
+    "stateEvidence": ".source-start-hover-on [data-slot=switch]:hover",
+    "ignores": ["Hover area.radius", "Hover area.background"],
+    "note": "reviewed: source Checked=True Enable=True Error=False Status=Hover (295:1477, 150x42), captured with the pointer on the switch. The native 56x44 target makes the rendered row 150x44; the 16/22 title and 14/20 description meet without a gap. The source 40px Hover area maps to the shared 40px halo, with an 8px track-to-copy gap. The pinned raster shows a translucent primary wash while the source projection reports raw fill and radius; only Hover area.background and Hover area.radius are ignored as projection artifacts. Responsive clean."
   },
   {
     "id": "295-1360-checked-focused",
@@ -2216,7 +2258,7 @@
     "state": "checked focused",
     "variant": "295:1482",
     "width": 150,
-    "height": 44,
+    "height": 42,
     "depth": 3,
     "root": ".source-start-focus-on",
     "subjects": {
@@ -2226,7 +2268,7 @@
     "keepFocus": true,
     "compareOffset": true,
     "expectState": "focused",
-    "note": "reviewed: source Checked=True Enable=True Error=False Status=Focused (295:1482, 150x44) captured focused against the FidelityStartStates checked focused row. Verified the 150x44 row, the 12px control-to-copy gap, the 16/22 Semibold title and the 10px #0b3ee3 focus dot on the selected track with the library's visible keyboard perimeter outside it (documented adaptation checked-focus-target-token-rounding). Responsive clean."
+    "note": "reviewed: source Checked=True Enable=True Error=False Status=Focused (295:1482, 150x42), captured focused. The 56x44 native target makes the regular row 150x44; the 16/22 title and 14/20 description meet with no gap. The 10px #0b3ee3 focus dot and visible keyboard perimeter follow the documented checked-focus-target-token-rounding adaptation. Responsive clean."
   },
   {
     "id": "349-4683-checked-available",
