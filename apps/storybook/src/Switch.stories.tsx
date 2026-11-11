@@ -431,6 +431,7 @@ export const KeyboardFocusStates: Story = {
 }
 
 export const NarrowRichSource: Story = {
+  parameters: { design: { type: "figma", url: figmaEmbedUrl("349:4683") } },
   render: () => {
     const placements: ("start" | "end")[] = ["start", "end"]
     return (
