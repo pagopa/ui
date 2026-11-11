@@ -185,6 +185,8 @@ async function preparePage(page: Page, options: ReturnType<typeof normalizedCapt
     focus,
     blur,
     keepFocus,
+    expectState,
+    stateEvidence,
     baseUrl,
   } = options
   await page.emulateMedia({ reducedMotion: "reduce" })
@@ -224,8 +226,15 @@ async function preparePage(page: Page, options: ReturnType<typeof normalizedCapt
       if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
     })
   }
-  // Park the pointer: a hover left by the last click is part of the capture.
-  await page.mouse.move(0, 0)
+  const hoverTarget =
+    expectState === "hover" && stateEvidence?.endsWith(":hover")
+      ? stateEvidence.slice(0, -":hover".length)
+      : undefined
+  if (hoverTarget) {
+    await page.hover(hoverTarget)
+  } else {
+    await page.mouse.move(0, 0)
+  }
   await page.waitForTimeout(250)
   return frame
 }

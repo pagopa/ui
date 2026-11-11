@@ -977,6 +977,69 @@
       "width": 272,
       "height": 248
     },
+    "295-1360-unchecked-enabled": {
+      "png": "references/295-1360-unchecked-enabled.png",
+      "sha256": "b12049342b87b46bca7f933d886f710d49eeb7adfee40491002f08a7e03a12c8",
+      "nodeId": "295:1360",
+      "variant": "295:1406",
+      "designFingerprint": "de095ebb23fe7ca1a06148b69b04bf1c67c3d3c52f43ece7698ae0c3f0a49908",
+      "width": 151,
+      "height": 42
+    },
+    "295-1360-unchecked-error": {
+      "png": "references/295-1360-unchecked-error.png",
+      "sha256": "b2d8170b87eb0ca2f96feee18817fa8fbe6dd748170562786037d95bf21ee1a5",
+      "nodeId": "295:1360",
+      "variant": "295:1411",
+      "designFingerprint": "a89fba29c4f443944294b6e8a4a2b9d9751731ed26e205639915ddbd7a4a3702",
+      "width": 151,
+      "height": 64
+    },
+    "295-1360-unchecked-disabled": {
+      "png": "references/295-1360-unchecked-disabled.png",
+      "sha256": "f4f87905575766746f6632b06366ae8c83b161aec85c394d377092909e07b26f",
+      "nodeId": "295:1360",
+      "variant": "295:1424",
+      "designFingerprint": "dd99f5863e92c7582af10df6584d8348d4ba89d5b48b6c5a059e5f3d4df9a435",
+      "width": 151,
+      "height": 42
+    },
+    "295-1360-checked-enabled": {
+      "png": "references/295-1360-checked-enabled.png",
+      "sha256": "c57ae73b7bf8d6ee9ab5e85bef03ca9240248437d6b75147febd02b863eca238",
+      "nodeId": "295:1360",
+      "variant": "295:1432",
+      "designFingerprint": "a9a27fbb7c7be7a26adb5d83d0d9e57c99f98b7f9a228a3df58c332ebb675b08",
+      "width": 151,
+      "height": 42
+    },
+    "295-1360-checked-disabled": {
+      "png": "references/295-1360-checked-disabled.png",
+      "sha256": "325ae8fb6b9dd36567321cee694eef03a64004fe0bfae35017ce78b5c443eb9f",
+      "nodeId": "295:1360",
+      "variant": "295:1440",
+      "designFingerprint": "d68c9c44a00598e1ee1267089f31eafec4be50081c930af0b99301cd7fc0c70c",
+      "width": 151,
+      "height": 42
+    },
+    "295-1360-unchecked-focused": {
+      "png": "references/295-1360-unchecked-focused.png",
+      "sha256": "658e66daa346613678d403d095f6e63b46350917f5eccac453de653c64a4605d",
+      "nodeId": "295:1360",
+      "variant": "295:1466",
+      "designFingerprint": "e1ff0423882765faa71bc35434507a33e2dac971d392b6cac04a4c73814ed35a",
+      "width": 151,
+      "height": 42
+    },
+    "295-1360-checked-focused": {
+      "png": "references/295-1360-checked-focused.png",
+      "sha256": "d00e8018f341b65e02639195b34e6101a47a54c283b80e3c1ffdf306076d528b",
+      "nodeId": "295:1360",
+      "variant": "295:1482",
+      "designFingerprint": "6b9600f2d96331262ca0b49d6fe3b6eefb93e64e7ee1dd779cb3a6c49dba02b0",
+      "width": 151,
+      "height": 42
+    },
     "349-4683-checked-available": {
       "png": "references/349-4683-checked-available.png",
       "sha256": "b4a5bf96939a98a417ea482403bf58b62c6419df4df609f58f7bd2b223794f63",
@@ -2777,66 +2840,21 @@
       "width": 376,
       "height": 160
     },
-    "295-1360-unchecked-enabled": {
-      "png": "references/295-1360-unchecked-enabled.png",
-      "sha256": "b12049342b87b46bca7f933d886f710d49eeb7adfee40491002f08a7e03a12c8",
+    "295-1360-unchecked-hover": {
+      "png": "references/295-1360-unchecked-hover.png",
+      "sha256": "b04536b9b043777a28c32f04568df3087b2f1908359707a65ecd68db96778cab",
       "nodeId": "295:1360",
-      "variant": "295:1406",
-      "designFingerprint": "de095ebb23fe7ca1a06148b69b04bf1c67c3d3c52f43ece7698ae0c3f0a49908",
+      "variant": "295:1461",
+      "designFingerprint": "196dc26ee5694d6daf247d71ff38008e4ab48bb671024ec10f1e448639f550ab",
       "width": 151,
       "height": 42
     },
-    "295-1360-unchecked-error": {
-      "png": "references/295-1360-unchecked-error.png",
-      "sha256": "b2d8170b87eb0ca2f96feee18817fa8fbe6dd748170562786037d95bf21ee1a5",
+    "295-1360-checked-hover": {
+      "png": "references/295-1360-checked-hover.png",
+      "sha256": "b784c1df982057f2925b0a96e4aaa021df560b80a2247dbee50ec5254aa1834a",
       "nodeId": "295:1360",
-      "variant": "295:1411",
-      "designFingerprint": "a89fba29c4f443944294b6e8a4a2b9d9751731ed26e205639915ddbd7a4a3702",
-      "width": 151,
-      "height": 64
-    },
-    "295-1360-unchecked-disabled": {
-      "png": "references/295-1360-unchecked-disabled.png",
-      "sha256": "f4f87905575766746f6632b06366ae8c83b161aec85c394d377092909e07b26f",
-      "nodeId": "295:1360",
-      "variant": "295:1424",
-      "designFingerprint": "dd99f5863e92c7582af10df6584d8348d4ba89d5b48b6c5a059e5f3d4df9a435",
-      "width": 151,
-      "height": 42
-    },
-    "295-1360-checked-enabled": {
-      "png": "references/295-1360-checked-enabled.png",
-      "sha256": "c57ae73b7bf8d6ee9ab5e85bef03ca9240248437d6b75147febd02b863eca238",
-      "nodeId": "295:1360",
-      "variant": "295:1432",
-      "designFingerprint": "a9a27fbb7c7be7a26adb5d83d0d9e57c99f98b7f9a228a3df58c332ebb675b08",
-      "width": 151,
-      "height": 42
-    },
-    "295-1360-checked-disabled": {
-      "png": "references/295-1360-checked-disabled.png",
-      "sha256": "325ae8fb6b9dd36567321cee694eef03a64004fe0bfae35017ce78b5c443eb9f",
-      "nodeId": "295:1360",
-      "variant": "295:1440",
-      "designFingerprint": "d68c9c44a00598e1ee1267089f31eafec4be50081c930af0b99301cd7fc0c70c",
-      "width": 151,
-      "height": 42
-    },
-    "295-1360-unchecked-focused": {
-      "png": "references/295-1360-unchecked-focused.png",
-      "sha256": "658e66daa346613678d403d095f6e63b46350917f5eccac453de653c64a4605d",
-      "nodeId": "295:1360",
-      "variant": "295:1466",
-      "designFingerprint": "e1ff0423882765faa71bc35434507a33e2dac971d392b6cac04a4c73814ed35a",
-      "width": 151,
-      "height": 42
-    },
-    "295-1360-checked-focused": {
-      "png": "references/295-1360-checked-focused.png",
-      "sha256": "d00e8018f341b65e02639195b34e6101a47a54c283b80e3c1ffdf306076d528b",
-      "nodeId": "295:1360",
-      "variant": "295:1482",
-      "designFingerprint": "6b9600f2d96331262ca0b49d6fe3b6eefb93e64e7ee1dd779cb3a6c49dba02b0",
+      "variant": "295:1477",
+      "designFingerprint": "86c0c21be5065c025c3c86d004592945f22bc106cce812ed5082d90fe5bb8245",
       "width": 151,
       "height": 42
     }

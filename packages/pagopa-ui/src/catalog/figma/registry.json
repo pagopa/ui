@@ -1133,14 +1133,14 @@
       "note": "rendered by TemplateShell demo content; real implementation pending"
     },
     "295:1360": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/inputs/switch-field.tsx",
         "export": "SwitchField",
         "story": "apps/storybook/src/Switch.stories.tsx",
         "storyExports": ["SourceStartPlacement", "KeyboardFocusStates", "FidelityStartStates"]
       },
-      "note": "Figma delta 2026-11-11: review new/changed node or dependency before marking implemented. Reviewed 2026-10-22 (M5 wave): seven committed cases, one per principal state of the set, all 150 wide against `FidelityStartStates`' control-before-copy rows: Checked=False/True with Enable=True (295:1406, 295:1432), the two disabled variants (295:1424, 295:1440), the error variant (295:1411, 150x66) and the two focused variants (295:1466, 295:1482, captured focused). Verified: the 150x44 row, the 12px control-to-copy gap, the 16/22 Semibold #0e0f13 title, the 14/20 #555c70 description, the 50%"
+      "note": "Reviewed 2026-11-11: nine strict parity cases pass across Checked, Enable, Error and Status variants; responsive is clean. Source regular/error frames are 150x42/150x64; the 56x44 native target makes the regular row 150x44. Copy stays 16/22 title and 14/20 description, with no gap and an 8px track gap; the error helper starts 2px below. Disabled label color remains the documented contrast adaptation. Both Hover area subjects map to the translucent CSS halo; source background/radius projection is ignored after raster review (unchecked 38-to-40px halo is within tolerance)."
     },
     "3228:36387": {
       "status": "mocked",

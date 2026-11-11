@@ -580,7 +580,7 @@ export const SourceStartPlacement: Story = {
     const invalidRegion = canvas.getByRole("region", { name: "Preferenza con errore" })
     // The wrapped copy settles with the font: retry instead of asserting on a
     // first paint that may still measure the fallback metrics.
-    await waitFor(() => expect(invalidRegion.getBoundingClientRect().height).toBe(66))
+    await waitFor(() => expect(invalidRegion.getBoundingClientRect().height).toBe(64))
     await expect(invalid).toHaveAttribute("aria-invalid", "true")
     await expect(fieldError(invalidRegion)).toHaveTextContent("La conferma è obbligatoria.")
     const associated = (invalid.getAttribute("aria-describedby") ?? "")
@@ -747,8 +747,8 @@ export const FidelityStartStates: Story = {
   render: () => (
     <form aria-label="SwitchField control-before-copy source states" className="grid w-80 gap-4">
       {sourceStartStates.map((state) => (
-        // Source frame: 150x44 per variant (`295:1406`). The row carries the
-        // source width so a parity case compares the field at its own width.
+        // Source rows are 150x42 (64px with the 2px helper gap); the 44px
+        // native target is reserved separately from the copy stack.
         <div key={state.id} className="w-[150px] max-w-full">
           <SourceStartOption {...state} />
         </div>
@@ -769,8 +769,21 @@ export const FidelityStartStates: Story = {
       await expect(control.getBoundingClientRect().height).toBe(44)
       const row = canvasElement.querySelector<HTMLElement>(`.${state.caseClass}`)
       const title = row?.querySelector<HTMLElement>(`label[for="${state.id}"] > span.min-w-0`)
+      const description = row?.querySelector<HTMLElement>("p.text-caption.text-muted-foreground")
       const track = control.querySelector<HTMLElement>("[data-slot=switch-track]")
-      if (!title || !track) throw new Error("The source control and title geometry must render")
+      if (!row || !title || !description || !track) {
+        throw new Error("The source control and copy geometry must render")
+      }
+      const titleBox = title.getBoundingClientRect()
+      const descriptionBox = description.getBoundingClientRect()
+      await expect(titleBox.bottom).toBe(descriptionBox.top)
+      await expect(row.getBoundingClientRect().height).toBeGreaterThanOrEqual(44)
+      if (state.error) {
+        const helper = row.querySelector<HTMLElement>("[data-slot=field-error]")
+        if (!helper) throw new Error("The source helper geometry must render")
+        await expect(helper.getBoundingClientRect().top).toBe(descriptionBox.bottom + 2)
+        await expect(row.getBoundingClientRect().height).toBe(64)
+      }
       await expect(title.getBoundingClientRect().left).toBe(track.getBoundingClientRect().right + 8)
     }
 

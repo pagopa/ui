@@ -15,6 +15,13 @@ placement does not remount the control or reset its selection.
 />
 ```
 
+For source node `295:1360`, `Label` maps to `label`, `Checked` to the native
+checked value, `Enable=False` to `disabled`, and `Error=True` to the field error.
+`Status=Hover` and `Status=Focused` use native pointer and focus states, not
+additional props. The `.Switch single element` frame is 58x38; the start
+placement keeps the shared 56x44 native target separate from the 42px copy
+stack. `Hover area` is rendered by the switch's CSS halo.
+
 The `icon` slot is decorative and never changes the accessible name. The optional
 `learnMore` is an independent native link, not part of the toggle label; it keeps
 keyboard and new-tab behaviour and stays usable when the choice is disabled or
