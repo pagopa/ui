@@ -119,6 +119,12 @@ that writes a committed record and then reads it back in the same process must
 invalidate that record's entry. Writing the file is not enough: the reader will
 return the value it parsed earlier.
 
+The same sharing carries a second obligation: a record the reader hands out is
+shared, not a copy. A caller must not mutate it — the value it received is what
+the next read returns and what every other caller sees — so a writer that must
+change a record clones what it edits before it edits, which is why `saveCase`
+spreads the cases document before appending to it.
+
 The rule is not hypothetical: `parity cases` saves one case per proposal in a
 single process, and every save reads the corpus, appends and writes it. Without
 invalidation the second save would rewrite the corpus it read before the first

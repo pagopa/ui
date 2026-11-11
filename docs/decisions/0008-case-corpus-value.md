@@ -104,10 +104,13 @@ export type CaseCorpus = CorpusDocuments & {
 ```
 
 `CorpusDocuments` is the other half: the workspace, the cases, the inventory,
-the registry and the device vocabulary. The value is frozen. Its indexes —
-`byId`, the two node groupings, the inventory index, fan-in — are built once, in
-the constructor, and the methods close over them rather than reaching through
-`this`, so a method handed to a callback still works.
+the registry and the device vocabulary. The value is frozen and its indexes —
+`byId`, the two node groupings, the inventory index, fan-in — are typed
+read-only and built once, in the constructor; the methods close over them rather
+than reaching through `this`, so a method handed to a callback still works. The
+freeze is the object's, not a deep copy: the documents it holds are the ones it
+was handed — under `readCorpus`, the reader's shared references — so a caller
+must not mutate those any more than it may add to an index.
 
 A caller states its documents once: `caseCorpus(documents)` when it has the
 values, `readCorpus(workspace)` when it has a workspace.
@@ -199,9 +202,11 @@ inside the thing being invalidated.
 - The draft rule is decided in one place. Three filters that disagreed about
   whether a draft counts as coverage are now `reviewed`, and the disagreement is
   not expressible.
-- The corpus is frozen and its indexes are built eagerly from the cases; a caller
-  may not mutate a corpus, and adding a case means building a new one. The
-  writers already work that way — read, change, write.
+- The corpus is frozen, so adding a case means building a new one, and its
+  indexes are built eagerly from the cases. The freeze is the object's: the
+  documents and the collections behind the read-only index types are shared, so
+  a caller must not mutate them either. The writers already work that way — read,
+  change, write.
 - Importers lost their parameters: `coverage`, `proposals` and `validate` take
   options, not documents, so an importer that used to thread a registry through
   three layers now threads nothing.

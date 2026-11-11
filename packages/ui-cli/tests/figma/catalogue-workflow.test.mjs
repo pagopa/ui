@@ -113,6 +113,27 @@ test("the run door returns the plan report a caller prints", async () => {
   }
 })
 
+// RD4 at the boundary it promises: a corrupt committed record is the
+// repository's state, not a mistyped command, so the run exits 1 — never 2 —
+// and the diagnostic names the document and the reason a person repairs.
+test("a corrupt registry exits 1 and names the file and the reason", async () => {
+  const tree = fixtureTree(
+    {
+      ...files({ entries: {}, bulkRules: [], surprise: true }),
+      "live.json": JSON.stringify([node]),
+    },
+    "catalogue-corrupt-",
+  )
+  try {
+    const cli = await runCli(["figma", "plan", "--input", "live.json"], { root: tree.root })
+    assert.equal(cli.status, 1)
+    assert.match(cli.stderr, /src\/catalog\/figma\/registry\.json/)
+    assert.match(cli.stderr, /unknown key "surprise"/)
+  } finally {
+    tree.dispose()
+  }
+})
+
 test("the plan command prints exactly the report the run door returns", async () => {
   const tree = fixtureTree(
     { ...files(cleanRegistry), "live.json": JSON.stringify([node]) },
