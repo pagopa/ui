@@ -7,13 +7,13 @@ import {
   declaredDevices,
   deviceAxes,
   deviceOf,
-  loadDevicePolicy,
   normalizeDeviceValue,
   requiredDevices,
   validateDevicePolicy,
   variantDevice,
   variantsByDevice,
 } from "../../src/figma/devices.ts"
+import { readDevicePolicy } from "../../src/records/committed.ts"
 
 // The vocabulary the tests resolve against. It follows the shape of the
 // committed policy (`src/catalog/figma/device-policy.json`) without copying its
@@ -376,9 +376,7 @@ test("the device axes of a node are named or derived from their values", () => {
 })
 
 test("the committed policy covers the committed inventory", () => {
-  const committed = loadDevicePolicy(
-    path.resolve(import.meta.dirname, "../../../pagopa-ui/src/catalog/figma/device-policy.json"),
-  )
+  const committed = readDevicePolicy(path.resolve(import.meta.dirname, "../../../pagopa-ui"))
   assert.ok(committed.axes.length > 0)
   assert.ok(Object.keys(committed.devices).length >= 3)
 })

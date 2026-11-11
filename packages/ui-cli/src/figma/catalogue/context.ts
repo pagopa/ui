@@ -2,6 +2,7 @@ import type { Workspace } from "../../adapters/workspace.ts"
 import { createSourceModules } from "../../lib/source-modules.ts"
 import type { CatalogueLoadContext } from "./load.ts"
 import { collectPublicExports, storyImports, type SourceModules } from "./source.ts"
+import { validateCatalogue, type CatalogueValidation } from "./validate.ts"
 
 export type CatalogueContext = CatalogueLoadContext & {
   workspace: Workspace
@@ -9,7 +10,12 @@ export type CatalogueContext = CatalogueLoadContext & {
   publicExports: Map<string, string>
   storyImportsByFile: Map<string, Set<string>>
   allStoryImports: Set<string>
+  /** The verdict on this context, attached to what it was derived from. */
+  validation: CatalogueValidation
 }
+
+/** The context as the steps hand it on, before its verdict exists. */
+export type CatalogueCandidate = Omit<CatalogueContext, "validation">
 
 /** The workspace reads the registry, its stories and the public API share. */
 export type CatalogueSources = Pick<
@@ -52,5 +58,10 @@ export function createCatalogueContext(
   workspace: Workspace,
   loaded: CatalogueLoadContext,
 ): CatalogueContext {
-  return { ...loaded, workspace, ...createCatalogueSources(workspace, loaded) }
+  const candidate: CatalogueCandidate = {
+    ...loaded,
+    workspace,
+    ...createCatalogueSources(workspace, loaded),
+  }
+  return { ...candidate, validation: validateCatalogue(candidate) }
 }

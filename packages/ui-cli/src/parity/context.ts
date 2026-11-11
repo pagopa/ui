@@ -1,23 +1,27 @@
 import fs from "node:fs"
 import type { Workspace } from "../adapters/workspace.ts"
-import { loadDevicePolicy, loadInventory } from "../figma/devices.ts"
 import { UsageError } from "../lib/command.ts"
-import { buildCases } from "./cases.ts"
+import { committedFile, readDevicePolicy, readInventory } from "../records/committed.ts"
+import { buildCases } from "./case-rows.ts"
 
 export function devicePolicy(workspace: Workspace) {
-  return loadDevicePolicy(workspace.path("src/catalog/figma/device-policy.json"))
+  return readDevicePolicy(workspace.root)
 }
 export function inventoryNodes(workspace: Workspace) {
-  return loadInventory(workspace.path("src/catalog/figma/inventory.json")).components
+  return readInventory(workspace.root).components
 }
 export function inventoryFileKey(workspace: Workspace) {
-  return loadInventory(workspace.path("src/catalog/figma/inventory.json")).fileKey ?? ""
+  return readInventory(workspace.root).fileKey
 }
 export function inventoryNode(workspace: Workspace, nodeId: string) {
   return inventoryNodes(workspace).find((node) => node.nodeId === nodeId)
 }
+// The one place a `--cases` override becomes a file: an identity resolves
+// against the workspace (`packages/…` and `apps/…` under its root), and an
+// absolute path is taken as given. Every reader and writer of the corpus takes
+// this result, never the raw option, so a command reads the file it names.
 export function corpusPath(workspace: Workspace, file?: string) {
-  return workspace.path(file ?? "src/catalog/figma/parity-cases.json")
+  return file ? workspace.path(file) : committedFile("cases", workspace.root)
 }
 export function frameBaseline(workspace: Workspace): Record<string, string> {
   const file = workspace.path("src/catalog/figma/frame-baseline.json")

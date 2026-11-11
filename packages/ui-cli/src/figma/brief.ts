@@ -3,20 +3,12 @@ import fs from "node:fs"
 import path from "node:path"
 
 import type { Workspace } from "../adapters/workspace.ts"
-import { readJson } from "../lib/json.ts"
 import { walkFiles } from "../lib/fs.ts"
-import {
-  InventorySchema,
-  RegistrySchema,
-  type Inventory,
-  type InventoryNode,
-} from "../schemas/catalogue.ts"
+import { readInventory, readRegistry } from "../records/committed.ts"
+import type { Inventory, InventoryNode, Registry } from "../schemas/catalogue.ts"
 import { readComments, threadsForNode } from "./comments.ts"
 import { requestsFolder } from "./config.ts"
 import { readLedger, readRulesSnapshot, rulesForNode, rulesForUninventoriedNode } from "./rules.ts"
-
-const INVENTORY_PATH = "src/catalog/figma/inventory.json"
-const REGISTRY_PATH = "src/catalog/figma/registry.json"
 
 export type NodeBrief = {
   node: string
@@ -24,7 +16,7 @@ export type NodeBrief = {
   name: string | null
   page: string | null
   status: string | null
-  target: ReturnType<typeof RegistrySchema.parse>["entries"][string]["target"] | null
+  target: Registry["entries"][string]["target"] | null
   note: string | null
   rules: Array<{
     card: string
@@ -70,17 +62,13 @@ export function componentForNode(
   )
 }
 
-export function readInventory(workspace: Workspace): Inventory {
-  return readJson(workspace.path(INVENTORY_PATH), InventorySchema)
-}
-
 // Everything a brief reads from disk, so a caller that builds several briefs
 // reads the catalogue, the ledger, the comment snapshot and the design requests
 // once instead of once per node.
 export function readBriefSources(workspace: Workspace) {
   return {
-    inventory: readInventory(workspace),
-    registry: readJson(workspace.path(REGISTRY_PATH), RegistrySchema),
+    inventory: readInventory(workspace.root),
+    registry: readRegistry(workspace.root),
     ledger: readLedger(workspace.root, false),
     snapshot: readRulesSnapshot(workspace.root, false),
     comments: readComments(workspace),

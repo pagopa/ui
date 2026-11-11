@@ -4,18 +4,14 @@ import { isDeepStrictEqual } from "node:util"
 
 import type { Workspace } from "../adapters/workspace.ts"
 import { resolveProvenance } from "../figma/asset-provenance.ts"
-import { loadDevicePolicy } from "../figma/devices.ts"
 import { catalogueIndex } from "../figma/snapshot.ts"
 import { readJson } from "../lib/json.ts"
+import { readDevicePolicy, readInventory } from "../records/committed.ts"
 import { IconManifestSchema, PictogramManifestSchema } from "../schemas/artwork.ts"
-import {
-  InventorySchema,
-  type BulkRule,
-  type InventoryNode,
-  type Registry,
-} from "../schemas/catalogue.ts"
+import type { BulkRule, InventoryNode, Registry } from "../schemas/catalogue.ts"
+import type { DevicePolicy } from "../schemas/devices.ts"
 import type { ParityCase } from "../schemas/parity.ts"
-import { deviceCoverage, isDraftCase, validateCaseFile } from "./cases.ts"
+import { caseCorpus, isDraftCase } from "./corpus.ts"
 import { checkEvidence, type EvidenceReport } from "./evidence.ts"
 
 type BulkQualification = { pageId: string; nodeIds: string[]; errors: string[] }
@@ -99,7 +95,7 @@ type PopulationOptions = {
   registry: Registry
   cases: ParityCase[]
   evidence?: EvidenceReport
-  policy?: ReturnType<typeof loadDevicePolicy>
+  policy?: DevicePolicy
   bulk?: BulkQualification[]
   statuses?: string[]
   fileKey?: string
@@ -131,7 +127,7 @@ export function coveragePopulations(
       cases,
       nodes,
     }),
-    policy = loadDevicePolicy(workspace.path("src/catalog/figma/device-policy.json")),
+    policy = readDevicePolicy(workspace.root),
     bulk = [],
     statuses = ["implemented"],
     fileKey,
@@ -148,13 +144,15 @@ export function coveragePopulations(
   const matchingFile = !fileKey || evidence.fileKey === fileKey
   const validEvidence = new Set(matchingFile ? evidence.verifiedCases : [])
   const validationErrors =
-    corpusErrors ?? validateCaseFile(workspace, cases, { nodes, registry, policy }).errors
+    corpusErrors ??
+    caseCorpus({ workspace, cases, inventory: nodes, registry, policy }).validate().errors
   const invalidIds = new Set(validationErrors.map((error) => error.split(": ")[0]))
   const reviewed = cases.filter(
     (entry) => !isDraftCase(entry) && validEvidence.has(entry.id) && !invalidIds.has(entry.id),
   )
   const rows = variantRows(ordinary, reviewed, evidence)
   const devices = populationDevices(
+    workspace,
     nodes,
     registry,
     resolved,
@@ -197,9 +195,7 @@ export function loadCoveragePopulations(
   } catch (error) {
     ownershipError = error instanceof Error ? error.message : String(error)
   }
-  const resolvedFileKey =
-    fileKey ??
-    InventorySchema.parse(readJson(workspace.path("src/catalog/figma/inventory.json"))).fileKey
+  const resolvedFileKey = fileKey ?? readInventory(workspace.root).fileKey
   const bulk = registry.bulkRules
     .filter((rule) => rule.status === "implemented")
     .map((rule) =>
@@ -305,13 +301,14 @@ function variantRows(
 }
 
 function populationDevices(
+  workspace: Workspace,
   nodes: InventoryNode[],
   registry: Registry,
   resolved: ResolvedNode[],
   cases: ParityCase[],
   reviewed: ParityCase[],
   invalidIds: Set<string>,
-  policy: ReturnType<typeof loadDevicePolicy>,
+  policy: DevicePolicy,
   statuses: string[],
 ) {
   const entries: Registry["entries"] = {}
@@ -320,17 +317,16 @@ function populationDevices(
       entries[node.nodeId] = { ...registry.entries[node.nodeId], status }
   }
   const effectiveRegistry = { ...registry, entries }
-  const devices = deviceCoverage({
-    nodes,
-    registry: effectiveRegistry,
+  return caseCorpus({
+    workspace,
     cases: [
       ...reviewed,
       ...cases.filter((entry) => isDraftCase(entry) && !invalidIds.has(entry.id)),
     ],
+    inventory: nodes,
+    registry: effectiveRegistry,
     policy,
-    statuses,
-  })
-  return devices
+  }).coverage({ statuses })
 }
 
 function bulkRows(bulk: BulkQualification[], registry: Registry, resolved: ResolvedNode[]) {

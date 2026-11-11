@@ -28,11 +28,10 @@ import type { Workspace } from "../adapters/workspace.ts"
 import { UsageError } from "../lib/command.ts"
 import { readJson, writeText } from "../lib/json.ts"
 import { parseSchema } from "../lib/validate.ts"
-import { storyId } from "../parity/cases.ts"
+import { storyId } from "../parity/corpus.ts"
+import { COMMITTED_FILES, readInventory, readRegistry } from "../records/committed.ts"
 import { report, type CheckReport } from "../checks/report.ts"
 import {
-  InventorySchema,
-  RegistrySchema,
   type BulkRule,
   type Inventory,
   type InventoryNode,
@@ -45,8 +44,6 @@ import { STORY_TITLES_PATH, StoryTitlesSchema, type StoryTitles } from "./storie
 
 export const FIGMA_MAP_PATH = "figma-map.json"
 export const API_REPORT_PATH = "etc/pagopa-ui.api.md"
-const INVENTORY_PATH = "src/catalog/figma/inventory.json"
-const REGISTRY_PATH = "src/catalog/figma/registry.json"
 
 // The public surface is the API report, not the registry: a component the
 // package exports is what a consumer can render, whether or not Figma drew it.
@@ -218,8 +215,8 @@ function readRoot<T>(workspace: Workspace, schema: z.ZodType<T>, file: string): 
 // export and never a decision to reconcile by hand.
 export function currentMap(workspace: Workspace): FigmaMap {
   return figmaMap({
-    registry: readRoot(workspace, RegistrySchema, REGISTRY_PATH),
-    inventory: readRoot(workspace, InventorySchema, INVENTORY_PATH),
+    registry: readRegistry(workspace.root),
+    inventory: readInventory(workspace.root),
     titles: readRoot(workspace, StoryTitlesSchema, STORY_TITLES_PATH),
     values: publicValues(workspace),
   })
@@ -245,7 +242,7 @@ export function mapProblems(map: FigmaMap, inventory: Inventory, values: Set<str
   for (const name of values) if (!(name in map.exports)) problems.push(`${name} is not indexed`)
   for (const [nodeId, node] of Object.entries(map.nodes)) {
     if (node.status === "implemented" && !listed.has(nodeId))
-      problems.push(`${nodeId} is implemented but missing from ${INVENTORY_PATH}`)
+      problems.push(`${nodeId} is implemented but missing from ${COMMITTED_FILES.inventory}`)
     for (const name of node.exports) {
       if (!values.has(name))
         problems.push(`${nodeId} advertises ${name}, which @pagopa/ui does not export`)
@@ -277,11 +274,7 @@ export function updateMap(workspace: Workspace): string {
 // survives a run.
 export function checkMap(workspace: Workspace): CheckReport {
   const map = currentMap(workspace)
-  const problems = mapProblems(
-    map,
-    readRoot(workspace, InventorySchema, INVENTORY_PATH),
-    publicValues(workspace),
-  )
+  const problems = mapProblems(map, readInventory(workspace.root), publicValues(workspace))
   const file = workspace.path(FIGMA_MAP_PATH)
   if (!fs.existsSync(file)) {
     return report("figma map", `${FIGMA_MAP_PATH} is missing`, [

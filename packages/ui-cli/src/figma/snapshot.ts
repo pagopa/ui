@@ -17,7 +17,8 @@ import {
   type Registry,
 } from "../schemas/catalogue.ts"
 import { NodeIdSchema } from "../schemas/common.ts"
-import { loadDevicePolicy, variantDevice } from "./devices.ts"
+import { readDevicePolicy } from "../records/committed.ts"
+import { variantDevice } from "./devices.ts"
 import type { DevicePolicy } from "../schemas/devices.ts"
 
 const AnyRecordSchema = z.record(z.string(), z.unknown())
@@ -430,10 +431,7 @@ export function normalizeLive(
 ): InventoryNode[] {
   const raw = parseSchema(LiveExportSchema, rawValue, "unrecognized live export shape")
   const policy =
-    options.policy ??
-    (options.workspace
-      ? loadDevicePolicy(options.workspace.path("src/catalog/figma/device-policy.json"))
-      : undefined)
+    options.policy ?? (options.workspace ? readDevicePolicy(options.workspace.root) : undefined)
   if (!policy) throw new Error("normalizeLive needs a workspace or explicit device policy")
   let list: unknown[]
   if (Array.isArray(raw)) list = raw

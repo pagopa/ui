@@ -2,8 +2,9 @@ import { implementationOrder } from "../figma/snapshot.ts"
 import { UsageError } from "../lib/command.ts"
 
 import type { Workspace } from "../adapters/workspace.ts"
-import type { ParityCase } from "../schemas/parity.ts"
-import { buildCases, fanInCounts, loadCaseFile, loadRegistry } from "./cases.ts"
+import { readRegistry } from "../records/committed.ts"
+import { buildCases } from "./case-rows.ts"
+import { readCorpus, type CaseCorpus } from "./corpus.ts"
 import { formatCoverage, loadCoveragePopulations } from "./coverage.ts"
 
 import { corpusPath, inventoryFileKey, inventoryNodes, statusesFrom } from "./context.ts"
@@ -13,7 +14,7 @@ function printCoverage(
   workspace: Workspace,
   options: QueueOptions,
   path_: string,
-  corpus: ParityCase[],
+  corpus: CaseCorpus,
 ): ParityOutput {
   const out: string[] = []
   const err: string[] = []
@@ -22,8 +23,8 @@ function printCoverage(
   const populations = loadCoveragePopulations(
     workspace,
     inventoryNodes(workspace),
-    loadRegistry(workspace.path("src/catalog/figma/registry.json")),
-    corpus,
+    readRegistry(workspace.root),
+    [...corpus.cases],
     statuses,
     undefined,
     inventoryFileKey(workspace),
@@ -94,8 +95,8 @@ export function queue(workspace: Workspace, options: QueueOptions = {}): ParityO
     cases = filteredCases(cases, (item) => wanted.has(item.nodeId))
   }
   const path_ = corpusPath(workspace, options.casesFile)
-  const corpus = loadCaseFile(path_)
-  const mapped = new Set(corpus.map((entry) => entry.nodeId))
+  const corpus = readCorpus(workspace, path_)
+  const mapped = corpus.nodeIds
   if (options.coverage || options.uncovered) {
     return printCoverage(workspace, options, path_, corpus)
   }
@@ -105,7 +106,7 @@ export function queue(workspace: Workspace, options: QueueOptions = {}): ParityO
   }
   // Fan-in is a column and, with `--order fan-in`, the sort key; ties keep the
   // registry order (a stable sort), so the default walk is unchanged.
-  const fanIn = fanInCounts(inventoryNodes(workspace))
+  const fanIn = corpus.fanIn
   let rows = cases.map((item) => ({ ...item, fanIn: fanIn.get(item.nodeId) ?? 0 }))
   if (order === "fan-in") rows.sort((a, b) => b.fanIn - a.fanIn)
   let next: string[] | undefined
@@ -126,7 +127,7 @@ function queuedOutput(
   cases: ReturnType<typeof buildCases>,
   rows: Array<ReturnType<typeof buildCases>[number] & { fanIn: number }>,
   path_: string,
-  mapped: Set<string>,
+  mapped: ReadonlySet<string>,
   next?: string[],
 ): ParityOutput {
   const out: string[] = []

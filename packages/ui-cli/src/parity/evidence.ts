@@ -30,17 +30,8 @@ import {
 import { parseSchema } from "../lib/validate.ts"
 import type { InventoryNode } from "../schemas/catalogue.ts"
 import type { ParityCase } from "../schemas/parity.ts"
-import {
-  CASES_PATH,
-  INVENTORY_PATH,
-  REGISTRY_PATH,
-  caseVariant,
-  loadCaseFile,
-  loadInventoryNodes,
-  loadRegistry,
-  validateCaseFile,
-  variantOfCase,
-} from "./cases.ts"
+import { readCases, readDevicePolicy, readInventory, readRegistry } from "../records/committed.ts"
+import { caseCorpus, caseVariant, variantOfCase } from "./corpus.ts"
 
 export const EVIDENCE_DIR = "docs/figma-parity"
 export const SOURCE_PATH = `${EVIDENCE_DIR}/source.json.br`
@@ -451,8 +442,8 @@ export function checkEvidence({
   maxBytes = MAX_EVIDENCE_BYTES,
 }: EvidenceCheckOptions): EvidenceReport {
   const paths = evidencePaths(root)
-  const corpus = cases ?? loadCaseFile(path.join(dataRoot, CASES_PATH))
-  const inventory = nodes ?? loadInventoryNodes(path.join(dataRoot, INVENTORY_PATH))
+  const corpus = cases ?? readCases(dataRoot) ?? []
+  const inventory = nodes ?? readInventory(dataRoot).components
   const bundle = loadEvidenceForCheck(root)
   const errors = [...bundle.errors]
   const warnings: string[] = []
@@ -763,12 +754,18 @@ async function prepareEvidence(
     return { code: 1, out, err }
   }
   const paths = evidencePaths(root)
-  const cases = loadCaseFile(path.join(dataRoot, CASES_PATH))
-  const nodes = loadInventoryNodes(path.join(dataRoot, INVENTORY_PATH))
-  const registry = loadRegistry(path.join(dataRoot, REGISTRY_PATH))
+  const cases = readCases(dataRoot) ?? []
+  const nodes = readInventory(dataRoot).components
+  const registry = readRegistry(dataRoot)
   // The corpus validator owns the schema: writing evidence for a broken corpus
   // would pin the wrong thing.
-  const validation = validateCaseFile(workspace, cases, { registry, nodes })
+  const validation = caseCorpus({
+    workspace,
+    cases,
+    inventory: nodes,
+    registry,
+    policy: readDevicePolicy(dataRoot),
+  }).validate()
   if (validation.errors.length) {
     for (const error of validation.errors) err.push(`error: ${error}`)
     return { code: 1, out, err }

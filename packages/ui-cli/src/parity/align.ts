@@ -6,9 +6,10 @@ import { UsageError } from "../lib/command.ts"
 // deltas, a Tailwind class hint for every delta that lands on a token, and the
 // next command. Nothing is written: saving a case stays `check --save-case`.
 import type { Workspace } from "../adapters/workspace.ts"
-import { loadDevicePolicy, requiredDevices } from "../figma/devices.ts"
+import { requiredDevices } from "../figma/devices.ts"
 import type { ParityCase } from "../schemas/parity.ts"
-import { isDraftCase, loadCaseFile, loadInventoryNodes, loadRegistry } from "./cases.ts"
+import { readDevicePolicy, readInventory, readRegistry } from "../records/committed.ts"
+import { readCorpus, type CaseCorpus } from "./corpus.ts"
 import { corpusPath } from "./context.ts"
 import {
   classify,
@@ -231,23 +232,15 @@ export function nextSteps(node: AlignNode): string[] {
 
 // ------------------------------------------------------------------- loading
 
-function loadNode(workspace: Workspace, options: AlignOptions): AlignNode {
+function loadNode(workspace: Workspace, options: AlignOptions, corpus: CaseCorpus): AlignNode {
   const { nodeId } = options
-  const inventory = loadInventoryNodes(workspace.path("src/catalog/figma/inventory.json")).find(
-    (node) => node.nodeId === nodeId,
-  )
+  const inventory = readInventory(workspace.root).components.find((node) => node.nodeId === nodeId)
   if (!inventory) throw new UsageError(`${nodeId} is not in inventory.json`)
-  const entry = loadRegistry(workspace.path("src/catalog/figma/registry.json")).entries?.[nodeId]
+  const entry = readRegistry(workspace.root).entries?.[nodeId]
   if (!entry) throw new UsageError(`${nodeId} is not in the registry`)
-  const declared = requiredDevices(
-    loadDevicePolicy(workspace.path("src/catalog/figma/device-policy.json")),
-    inventory,
-  )
-  const cases = loadCaseFile(corpusPath(workspace, options.casesFile)).filter(
-    (item) => item.nodeId === nodeId,
-  )
+  const declared = requiredDevices(readDevicePolicy(workspace.root), inventory)
   const covered = declared.filter((device) =>
-    cases.some((item) => item.device === device && !isDraftCase(item)),
+    corpus.reviewed(nodeId).some((item) => item.device === device),
   )
   return {
     nodeId,
@@ -267,10 +260,9 @@ export async function align(
   options: AlignOptions,
   deps: AlignDeps,
 ): Promise<ParityOutput> {
-  const node = loadNode(workspace, options)
-  const cases = loadCaseFile(corpusPath(workspace, options.casesFile)).filter(
-    (item) => item.nodeId === options.nodeId && !isDraftCase(item),
-  )
+  const corpus = readCorpus(workspace, corpusPath(workspace, options.casesFile))
+  const node = loadNode(workspace, options, corpus)
+  const cases = corpus.reviewed(options.nodeId)
   if (cases.length && !(await deps.storybook()))
     return output(
       2,

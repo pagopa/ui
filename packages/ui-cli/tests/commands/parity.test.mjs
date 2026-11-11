@@ -1,4 +1,5 @@
 import assert from "node:assert/strict"
+import path from "node:path"
 import { test } from "node:test"
 import { runCli, fixtureTree } from "../helpers/cli.mjs"
 
@@ -78,6 +79,51 @@ for (const [name, args, message] of [
     }
   })
 }
+
+test("a workspace-relative --cases override resolves at the workspace, not the audited package", async () => {
+  // `packages/…` is an identity, so the file the command reads is the one it
+  // prints: resolving it beneath the design-system package would read the
+  // default corpus (empty) while naming the override.
+  const tree = fixtureTree({
+    "packages/pagopa-ui/src/catalog/figma/registry.json": { entries: {}, bulkRules: [] },
+    "packages/pagopa-ui/src/catalog/figma/inventory.json": {
+      fileKey: "fixture",
+      syncedAt: "2026-10-21",
+      components: [],
+    },
+    "packages/pagopa-ui/src/catalog/figma/device-policy.json": {
+      axes: ["Device"],
+      any: [],
+      devices: {
+        desktop: { canonicalWidth: 1200, defaultLayoutScope: "viewport", aliases: ["Desktop"] },
+      },
+    },
+    "packages/pagopa-ui/src/catalog/figma/parity-cases.json": [],
+    "packages/pagopa-ui/review/cases.json": [
+      {
+        id: "1-1-desktop-desktop",
+        nodeId: "1:1",
+        export: "Control",
+        state: "Desktop",
+        device: "desktop",
+        width: 1200,
+      },
+    ],
+  })
+  try {
+    const root = path.join(tree.root, "packages/pagopa-ui")
+    const result = await runCli(
+      ["parity", "queue", "--json", "--cases", "packages/pagopa-ui/review/cases.json"],
+      { root },
+    )
+    assert.equal(result.status, 0, result.stderr)
+    const queued = JSON.parse(result.stdout)
+    assert.equal(queued.corpus, path.join(root, "review/cases.json"))
+    assert.equal(queued.mapped, 1, "the override's case is the corpus the command reads")
+  } finally {
+    tree.dispose()
+  }
+})
 
 test("cases dry-run returns the literal empty proposal report", async () => {
   const f = emptyFixture()

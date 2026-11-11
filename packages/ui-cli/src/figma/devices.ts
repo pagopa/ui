@@ -21,18 +21,12 @@
 //
 // Usage:
 //   node src/cli.ts figma devices [--check] [--json]
-import fs from "node:fs"
-import { z } from "zod"
-
 import type { Workspace } from "../adapters/workspace.ts"
 import { report as checkReport, type CheckReport } from "../checks/report.ts"
-import { readJson } from "../lib/json.ts"
 import { parseSchema } from "../lib/validate.ts"
-import { InventoryNodeSchema, type InventoryNode } from "../schemas/catalogue.ts"
+import type { InventoryNode } from "../schemas/catalogue.ts"
 import { DevicePolicySchema, type DeviceDefinition, type DevicePolicy } from "../schemas/devices.ts"
-
-export const DEVICE_POLICY_PATH = "src/catalog/figma/device-policy.json"
-export const INVENTORY_PATH = "src/catalog/figma/inventory.json"
+import { COMMITTED_FILES, readDevicePolicy, readInventory } from "../records/committed.ts"
 import { ANY_DEVICE, UNKNOWN_DEVICE } from "../schemas/devices.ts"
 export { ANY_DEVICE, UNKNOWN_DEVICE }
 export const LAYOUT_SCOPES = ["viewport", "container"] as const
@@ -92,28 +86,8 @@ export function axisToken(name: unknown): string {
 // The shape is a Zod schema: the policy either parses or names the exact field
 // and reason. Cross-field rules (a note attached to an alias the device does
 // not declare) live in the schema too, so no caller re-implements them.
-export function validateDevicePolicy(
-  policy: unknown,
-  file: string = DEVICE_POLICY_PATH,
-): DevicePolicy {
+export function validateDevicePolicy(policy: unknown, file: string): DevicePolicy {
   return parseSchema(DevicePolicySchema, policy, file)
-}
-
-export function loadDevicePolicy(file: string): DevicePolicy {
-  if (!fs.existsSync(file)) {
-    throw new Error(
-      `${file} is missing: the device vocabulary is committed next to registry.json ` +
-        `(see .agents/skills/figma-to-code/references/devices/scope.md)`,
-    )
-  }
-  let policy: unknown
-  try {
-    policy = JSON.parse(fs.readFileSync(file, "utf8"))
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error)
-    throw new Error(`${file}: invalid JSON (${message})`)
-  }
-  return validateDevicePolicy(policy, file)
 }
 
 // alias (normalized) -> device key, plus the `any` values that resolve to no
@@ -436,7 +410,7 @@ function unusedDeviceAliases(
 export function checkDevicePolicy(
   policy: DevicePolicy,
   nodes: InventoryNode[],
-  { file = DEVICE_POLICY_PATH }: { file?: string } = {},
+  { file = COMMITTED_FILES["device-policy"] }: { file?: string } = {},
 ): {
   errors: string[]
   warnings: string[]
@@ -448,7 +422,7 @@ export function checkDevicePolicy(
   const { duplicates } = deviceAliasIndex(policy)
   for (const duplicate of duplicates)
     errors.push(
-      `alias "${duplicate.value}" is claimed by ${duplicate.devices.join(" and ")} — one source value maps to one device; drop the alias from one of them in ${DEVICE_POLICY_PATH} and run \`pnpm nx run pagopa-ui-cli:check:devices\``,
+      `alias "${duplicate.value}" is claimed by ${duplicate.devices.join(" and ")} — one source value maps to one device; drop the alias from one of them in ${COMMITTED_FILES["device-policy"]} and run \`pnpm nx run pagopa-ui-cli:check:devices\``,
     )
   const analysis = inspectDeviceInventory(policy, nodes, ignored)
   const vocabulary = deviceVocabularyErrors(policy, analysis, file)
@@ -518,25 +492,6 @@ export function formatDeviceLine(stats: DeviceStats): string {
   )
 }
 
-const InventoryFileSchema = z.looseObject({
-  fileKey: z.string().optional(),
-  components: z.array(InventoryNodeSchema).optional(),
-})
-
-export type InventoryFile = {
-  fileKey?: string
-  components: InventoryNode[]
-}
-
-export function loadInventory(file: string): InventoryFile {
-  const value = parseSchema(InventoryFileSchema, readJson(file), file)
-  return { fileKey: value.fileKey, components: value.components ?? [] }
-}
-
-export function loadInventoryNodes(file: string): InventoryNode[] {
-  return loadInventory(file).components
-}
-
 // ------------------------------------------------------------------------ reports
 
 export function formatDevices(policy: DevicePolicy, stats: DeviceStats): string[] {
@@ -572,9 +527,13 @@ export interface DeviceReport {
 }
 
 export function readDevices(workspace: Workspace): DeviceReport {
-  const policy = loadDevicePolicy(workspace.path(DEVICE_POLICY_PATH))
-  const nodes = loadInventoryNodes(workspace.path(INVENTORY_PATH))
-  return { policy: DEVICE_POLICY_PATH, ...checkDevicePolicy(policy, nodes), vocabulary: policy }
+  const policy = readDevicePolicy(workspace.root)
+  const nodes = readInventory(workspace.root).components
+  return {
+    policy: COMMITTED_FILES["device-policy"],
+    ...checkDevicePolicy(policy, nodes),
+    vocabulary: policy,
+  }
 }
 
 export function checkDevices(workspace: Workspace): CheckReport {

@@ -8,7 +8,8 @@ import { report, type CheckReport } from "../checks/report.ts"
 import { readJson } from "../lib/json.ts"
 import { parseSchema } from "../lib/validate.ts"
 import { IconManifestSchema, type IconManifestEntry } from "../schemas/artwork.ts"
-import { RegistrySchema, type LocalAsset, type Registry } from "../schemas/catalogue.ts"
+import type { LocalAsset, Registry } from "../schemas/catalogue.ts"
+import { committedFile, readRegistry } from "../records/committed.ts"
 import { resolveProvenance } from "./asset-provenance.ts"
 import { requireBulkRule, selectRuleNodes } from "./artwork/catalogue.ts"
 import { assertGeneratedModule, propertyKey } from "./artwork/generate-module.ts"
@@ -347,7 +348,7 @@ function loadIconContext(workspace: Workspace, input?: string): IconContext {
   const fileKey = figmaFileKey(workspace)
   const snapshot = parseSchema(
     SnapshotSchema,
-    readJson(input ?? workspace.path("src/catalog/figma/inventory.json")),
+    readJson(committedFile("inventory", workspace.root, input)),
     "icon snapshot",
   )
   if (
@@ -359,11 +360,7 @@ function loadIconContext(workspace: Workspace, input?: string): IconContext {
       "Local icons require the configured Figma file and a pinned version for full source exports",
     )
   }
-  const registry = parseSchema(
-    RegistrySchema,
-    readJson(workspace.path("src/catalog/figma/registry.json")),
-    "registry",
-  )
+  const registry = readRegistry(workspace.root)
   const policies = localAssets(registry)
   const rule = requireBulkRule(registry, "figmaIconNames", "Local icons")
   if (!/^\d+:\d+$/.test(rule.pageId))

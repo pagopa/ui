@@ -17,8 +17,8 @@ import { escapeRegExp } from "./config.ts"
 import { keepsStatusOnDrift } from "./surface-decision.ts"
 import { deltaChangedNodes } from "./work-set.ts"
 import { loadPageSurface, PAGE_SURFACE_PATH } from "./surface.ts"
+import { COMMITTED_FILES } from "../records/committed.ts"
 
-const REGISTRY_PATH = "src/catalog/figma/registry.json"
 const EVIDENCE_EXCEPTIONS_PATH = "src/catalog/figma/evidence-exceptions.json"
 const VALID_STATUSES = new Set(["implemented", "mocked", "excluded", "pending"])
 
@@ -235,8 +235,8 @@ export function prepareCatalogueRefresh(
     new Set([...renewed, ...removed]),
   )
   const pendingWrites = new Map<string, unknown>([
-    ["src/catalog/figma/inventory.json", inventory],
-    [REGISTRY_PATH, registry],
+    [COMMITTED_FILES.inventory, inventory],
+    [COMMITTED_FILES.registry, registry],
   ])
   const reconciledSurface = refreshPageSurface(workspace, inventory, renewed, date)
   if (reconciledSurface) pendingWrites.set(PAGE_SURFACE_PATH, reconciledSurface)

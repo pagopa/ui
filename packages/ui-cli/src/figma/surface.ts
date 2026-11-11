@@ -58,7 +58,7 @@
 import fs from "node:fs"
 
 import { readJson } from "../lib/json.ts"
-import { DEVICE_POLICY_PATH } from "./devices.ts"
+import { COMMITTED_FILES } from "../records/committed.ts"
 import {
   PageSurfaceSchema,
   type InventoryNode,
@@ -232,7 +232,7 @@ function checkCompositions(
     compositions.add(composition.nodeId)
     if (vocabulary && !vocabulary.has(composition.device)) {
       errors.push(
-        `${where}: device "${composition.device}" is not declared by ${DEVICE_POLICY_PATH} — ` +
+        `${where}: device "${composition.device}" is not declared by ${COMMITTED_FILES["device-policy"]} — ` +
           `the composition speaks the same vocabulary as the cases`,
       )
     }

@@ -9,6 +9,7 @@ import type {
   RegistryEntry,
 } from "../../schemas/catalogue.ts"
 import { parseSchema } from "../../lib/validate.ts"
+import { COMMITTED_FILES } from "../../records/committed.ts"
 import { catalogueIndex } from "../snapshot.ts"
 import {
   compareNames,
@@ -20,7 +21,6 @@ import {
   type SourceModules,
 } from "./source.ts"
 
-const INVENTORY_PATH = "src/catalog/figma/inventory.json"
 const ICONS_PATH = "src/components/icons/figma-inventory.ts"
 const EVIDENCE_EXCEPTIONS_PATH = "src/catalog/figma/evidence-exceptions.json"
 const API_EXCEPTIONS_PATH = "src/catalog/figma/api-exceptions.json"
@@ -128,7 +128,7 @@ function validateRegistryEntry(
     )
   if (!committedById.has(nodeId))
     errors.push(
-      `registry ${nodeId}: stale entry (node not in ${INVENTORY_PATH}) — drop it or refresh the inventory, then run \`${CATALOGUE_GATE}\``,
+      `registry ${nodeId}: stale entry (node not in ${COMMITTED_FILES.inventory}) — drop it or refresh the inventory, then run \`${CATALOGUE_GATE}\``,
     )
   if (entry.status === "implemented" || entry.status === "mocked") {
     validateTarget(workspace, source, nodeId, entry, errors)

@@ -5,10 +5,8 @@ import type { Workspace } from "../adapters/workspace.ts"
 import { runGh, runGit, type ExternalCommand } from "../adapters/handoff.ts"
 import type { MediaCaptureInput, MediaCaptureResult } from "../adapters/handoff-media.ts"
 import { captureHandoffFrame } from "../adapters/handoff-media.ts"
-import { readJson } from "../lib/json.ts"
-import { InventorySchema, RegistrySchema, type RegistryEntry } from "../schemas/catalogue.ts"
-import { loadCaseFile } from "../parity/cases.ts"
-import { corpusPath } from "../parity/context.ts"
+import type { RegistryEntry } from "../schemas/catalogue.ts"
+import { readCorpus } from "../parity/corpus.ts"
 import type { ParityCase } from "../schemas/parity.ts"
 import { UsageError } from "../lib/command.ts"
 
@@ -92,16 +90,14 @@ function planCases(
   git: ExternalCommand,
   sourcePaths: Set<string>,
 ): PlannedCase[] {
-  const registry = readJson(workspace.path("src/catalog/figma/registry.json"), RegistrySchema)
-  const inventory = readJson(workspace.path("src/catalog/figma/inventory.json"), InventorySchema)
-  const cases = loadCaseFile(corpusPath(workspace))
+  const corpus = readCorpus(workspace)
   const nodes = changedNodeIds(workspace, base, git, sourcePaths)
   const relevant = nodes.flatMap((nodeId) => {
-    if (!inventory.components.some((node) => node.nodeId === nodeId)) return []
-    const saved = cases.filter((entry) => entry.nodeId === nodeId && entry.storyId)
+    if (!corpus.node(nodeId)) return []
+    const saved = corpus.of(nodeId).filter((entry) => entry.storyId)
     return saved.map((parity) => ({
       nodeId,
-      entry: registry.entries[nodeId],
+      entry: corpus.registry.entries[nodeId],
       parity,
       before: "",
       after: "",
@@ -119,11 +115,13 @@ function changedNodeIds(
   sourcePaths: Set<string>,
 ): string[] {
   const cwd = workspace.workspaceRoot
-  const registryFile = "packages/pagopa-ui/src/catalog/figma/registry.json"
-  const casesFile = "packages/pagopa-ui/src/catalog/figma/parity-cases.json"
-  const oldRegistry = objectJson(git(["show", `${base}:${registryFile}`], cwd))
+  // The base side comes from a git object, so it is named at the workspace
+  // layout; the current side is a committed record and reads as one.
+  const registryObject = "packages/pagopa-ui/src/catalog/figma/registry.json"
+  const casesObject = "packages/pagopa-ui/src/catalog/figma/parity-cases.json"
+  const oldRegistry = objectJson(git(["show", `${base}:${registryObject}`], cwd))
   const oldEntries = objectJson(oldRegistry?.entries)
-  const currentRegistry = readJson(workspace.path(registryFile))
+  const currentRegistry = readCorpus(workspace).registry
   const currentEntries = objectJson(objectJson(currentRegistry)?.entries)
   const ids = new Set([...Object.keys(oldEntries ?? {}), ...Object.keys(currentEntries ?? {})])
   const changed = new Set<string>()
@@ -140,10 +138,9 @@ function changedNodeIds(
       }
     }
   }
-  const oldCases = parseCaseRows(git(["show", `${base}:${casesFile}`], cwd))
-  const currentCases = loadCaseFile(corpusPath(workspace))
+  const oldCases = parseCaseRows(git(["show", `${base}:${casesObject}`], cwd))
   const oldById = new Map(oldCases.map((entry) => [entry.id, entry]))
-  const currentById = new Map(currentCases.map((entry) => [entry.id, entry]))
+  const currentById = readCorpus(workspace).byId
   for (const id of new Set([...oldById.keys(), ...currentById.keys()])) {
     const before = oldById.get(id)
     const after = currentById.get(id)

@@ -6,19 +6,24 @@ import fs from "node:fs"
 
 import type { Workspace } from "../adapters/workspace.ts"
 import { readJson } from "../lib/json.ts"
-import { CASES_PATH, isDraftCase, loadCaseFile } from "../parity/cases.ts"
+import { caseCorpus, isDraftCase } from "../parity/corpus.ts"
 import { EVIDENCE_DIR, evidencePaths, loadManifest } from "../parity/evidence.ts"
+import {
+  committedFile,
+  readCases,
+  readDevicePolicy,
+  readInventory,
+  readRegistry,
+} from "../records/committed.ts"
 import type { Inventory, InventoryNode } from "../schemas/catalogue.ts"
 import type { RuleDisposition } from "../schemas/rules.ts"
-import { buildBrief, compact, componentForNode, readInventory, type NodeBrief } from "./brief.ts"
-import { loadCatalogueBase } from "./catalogue/load.ts"
-import { catalogueDiagnostics } from "./catalogue/validate.ts"
-import { canonicalWidth, checkDevices, declaredDevices, loadDevicePolicy } from "./devices.ts"
+import { buildBrief, compact, componentForNode, type NodeBrief } from "./brief.ts"
+import { readCatalogueDiagnostics } from "./catalogue/index.ts"
+import { canonicalWidth, checkDevices, declaredDevices } from "./devices.ts"
 import { readLedger, readRulesSnapshot, rulesForNode } from "./rules.ts"
 import { checkRules } from "./rules-workflow.ts"
 import { compareSnapshots, normalizeLive } from "./snapshot.ts"
 
-const DEVICE_POLICY_PATH = "src/catalog/figma/device-policy.json"
 const LIVE_SNAPSHOT_PATH = ".figma/live-rest.json"
 /** Where `--card` writes the full brief the card only summarises. */
 export const CARD_DETAIL_DIR = ".figma/briefs"
@@ -95,8 +100,14 @@ type CardSection = { label: string; parts: string[] }
 
 function nodeCases(workspace: Workspace, node: string): NodeCardCase[] {
   return (
-    loadCaseFile(workspace.path(CASES_PATH))
-      .filter((item) => item.nodeId === node)
+    caseCorpus({
+      workspace,
+      cases: readCases(workspace.root) ?? [],
+      inventory: readInventory(workspace.root).components,
+      registry: readRegistry(workspace.root),
+      policy: readDevicePolicy(workspace.root),
+    })
+      .of(node)
       .map((item) => ({
         id: item.id,
         device: item.device ?? "any",
@@ -162,7 +173,7 @@ function nodeComments(
 function nodeDelta(workspace: Workspace, node: string): NodeCard["delta"] {
   const file = workspace.path(LIVE_SNAPSHOT_PATH)
   if (!fs.existsSync(file)) return null
-  const inventory = readInventory(workspace)
+  const inventory = readInventory(workspace.root)
   const live = normalizeLive(readJson(file), { workspace })
   // The scope spans the accepted *and* the live variant ids: a variant the file
   // added has no accepted record, and it is the change a session most needs to
@@ -201,7 +212,7 @@ function fingerprintOf(entry: CardPin): string {
 function nodeEvidence(workspace: Workspace, node: string): NodeCard["evidence"] {
   const paths = evidencePaths(workspace.workspaceRoot)
   if (!fs.existsSync(paths.manifest)) return []
-  const inventory = readInventory(workspace)
+  const inventory = readInventory(workspace.root)
   const component = componentForNode(inventory, node)
   // A component without variants pins its own PNG, and its own fingerprint is the
   // one the manifest carries — the same reading `pinnedVariant` makes. Indexing
@@ -256,8 +267,7 @@ export function readNodeCardGates(workspace: Workspace): NodeCardGates {
 // rather than read as clean.
 function catalogueGate(workspace: Workspace): string[] {
   try {
-    const base = loadCatalogueBase(workspace)
-    return base ? catalogueDiagnostics(workspace, base) : []
+    return readCatalogueDiagnostics(workspace)
   } catch (error) {
     return [`registry unreadable: ${error instanceof Error ? error.message : String(error)}`]
   }
@@ -336,10 +346,10 @@ export function buildNodeCard(
 ): NodeCard {
   const local = options.local ?? true
   const brief = buildBrief(workspace, requested)
-  const inventory = readInventory(workspace)
+  const inventory = readInventory(workspace.root)
   const component = componentForNode(inventory, requested)
-  const policyFile = workspace.path(DEVICE_POLICY_PATH)
-  const policy = fs.existsSync(policyFile) ? loadDevicePolicy(policyFile) : null
+  const policyFile = committedFile("device-policy", workspace.root)
+  const policy = fs.existsSync(policyFile) ? readDevicePolicy(workspace.root) : null
   const cases = nodeCases(workspace, brief.node)
   const devices =
     policy && component

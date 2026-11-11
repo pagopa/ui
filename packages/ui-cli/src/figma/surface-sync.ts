@@ -4,20 +4,17 @@ import { fetchFilePages, fetchNodeTrees } from "./rest.ts"
 import { fileKeyFromSource } from "./snapshot.ts"
 import { surfaceDecision } from "./surface-decision.ts"
 import { readJson, writeJson } from "../lib/json.ts"
+import { readInventory, readRegistry } from "../records/committed.ts"
 import {
   PageSurfaceSchema,
-  InventorySchema,
-  RegistrySchema,
   type PageIdentity,
   type PageSurface,
   type PageSurfacePage,
 } from "../schemas/catalogue.ts"
-import type { CatalogueReport } from "./sync.ts"
-import { syncCatalogue } from "./sync.ts"
+import type { Registry } from "../schemas/catalogue.ts"
+import { syncCatalogue, type CatalogueReport } from "./catalogue/index.ts"
 
 const SURFACE_PATH = "src/catalog/figma/page-surface.json"
-const INVENTORY_PATH = "src/catalog/figma/inventory.json"
-const REGISTRY_PATH = "src/catalog/figma/registry.json"
 const DEFAULT_NOTE =
   "Read from the Figma page tree. Preserve reviewed composition decisions while refreshing the identity census."
 
@@ -93,7 +90,7 @@ function identitiesInTree(root: TreeNode): TreeNode[] {
 
 function decisionFor(
   nodeId: string,
-  registry: ReturnType<typeof RegistrySchema.parse>,
+  registry: Registry,
   pageId: string,
 ): { decision: PageIdentity["decision"]; reason?: string } {
   const entry = registry.entries[nodeId]
@@ -123,8 +120,8 @@ export function planSurfaceSync(
   const root = findTree(source, pageId)
   if (!root || root.type !== "CANVAS")
     throw new Error(`page tree input does not contain Figma page ${pageId}`)
-  const inventory = readJson(workspace.path(INVENTORY_PATH), InventorySchema)
-  const registry = readJson(workspace.path(REGISTRY_PATH), RegistrySchema)
+  const inventory = readInventory(workspace.root)
+  const registry = readRegistry(workspace.root)
   const file = workspace.path(SURFACE_PATH)
   const current = fs.existsSync(file)
     ? readJson(file, PageSurfaceSchema)

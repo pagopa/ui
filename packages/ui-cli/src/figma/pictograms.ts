@@ -12,7 +12,7 @@ import {
   type PictogramManifest,
   type PictogramManifestEntry,
 } from "../schemas/artwork.ts"
-import { RegistrySchema } from "../schemas/catalogue.ts"
+import { committedFile, readRegistry } from "../records/committed.ts"
 import { resolveProvenance } from "./asset-provenance.ts"
 import { requireBulkRule, selectRuleNodes } from "./artwork/catalogue.ts"
 import { assertGeneratedModule, propertyKey } from "./artwork/generate-module.ts"
@@ -97,7 +97,7 @@ type PictogramContext = ReturnType<typeof loadPictogramContext>
 function loadPictogramContext(workspace: Workspace, mode: PictogramMode, input?: string) {
   const snapshot = parseSchema(
     SnapshotSchema,
-    readJson(input ?? workspace.path("src/catalog/figma/inventory.json")),
+    readJson(committedFile("inventory", workspace.root, input)),
     "pictogram snapshot",
   )
   const fileKey = figmaFileKey(workspace)
@@ -109,11 +109,7 @@ function loadPictogramContext(workspace: Workspace, mode: PictogramMode, input?:
       "Pictogram export requires a full snapshot of the configured Figma file and version",
     )
   }
-  const registry = parseSchema(
-    RegistrySchema,
-    readJson(workspace.path("src/catalog/figma/registry.json")),
-    "registry",
-  )
+  const registry = readRegistry(workspace.root)
   const rule = requireBulkRule(registry, "figmaPictogramNames", "Pictograms")
   const manifestFile = path.join(workspace.artworkRoot, "src/assets/figma-pictograms/manifest.json")
   const publishedManifest = readManifest(manifestFile, PictogramManifestSchema)

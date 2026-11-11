@@ -4,7 +4,11 @@ import type { DevicePolicy } from "../../schemas/devices.ts"
 import { fileKeyFromSource } from "../snapshot.ts"
 import { deltaTouchedNodes } from "../work-set.ts"
 import type { CatalogueBase } from "./load.ts"
-import { type CatalogueContext, type CatalogueSources, createCatalogueSources } from "./context.ts"
+import {
+  type CatalogueCandidate,
+  type CatalogueSources,
+  createCatalogueSources,
+} from "./context.ts"
 import {
   type SurfacePending,
   type SurfaceStats,
@@ -101,16 +105,17 @@ function validateRegistryCatalogue(
 }
 
 /**
- * The registry's hermetic diagnostics: no live export, no delta, no writes. The
- * node card runs this read on every brief, so it must stay off the network.
+ * The registry's hermetic diagnostics: no live export, no delta, no writes. This
+ * is what the entry's read door returns, and it runs on every brief, so it must
+ * stay off the network.
  */
-export function catalogueDiagnostics(workspace: Workspace, base: CatalogueBase): string[] {
+export function registryDiagnostics(workspace: Workspace, base: CatalogueBase): string[] {
   const errors = [...base.errors]
   validateRegistryCatalogue(workspace, createCatalogueSources(workspace, base), errors)
   return errors
 }
 
-export function validateCatalogue(context: CatalogueContext): CatalogueValidation {
+export function validateCatalogue(context: CatalogueCandidate): CatalogueValidation {
   const workspace = context.workspace
   const errors: string[] = []
   const warnings: string[] = []

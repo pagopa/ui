@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 // Figma catalogue validation and refresh domain.
 //
 // Static checks (no network, run in CI):
@@ -27,12 +26,12 @@
 //   node src/cli.ts update inventory --rest --pr-body .figma/pr-body.md
 // The PR body is written only when the live snapshot has drift. The Figma side
 // is never written to; mappings stay in the repository, keyed by nodeId.
-import type { Workspace } from "../adapters/workspace.ts"
-import { loadCatalogue } from "./catalogue/load.ts"
-import { validateCatalogue } from "./catalogue/validate.ts"
-import { createCatalogueContext } from "./catalogue/context.ts"
-import { finishCatalogue } from "./catalogue/finish.ts"
-import type { PageSurface } from "../schemas/catalogue.ts"
+import type { Workspace } from "../../adapters/workspace.ts"
+import type { PageSurface } from "../../schemas/catalogue.ts"
+import { createCatalogueContext } from "./context.ts"
+import { finishCatalogue } from "./finish.ts"
+import { loadCatalogue, loadCatalogueBase } from "./load.ts"
+import { registryDiagnostics } from "./validate.ts"
 
 export interface CatalogueOptions {
   input?: string
@@ -54,6 +53,12 @@ export interface CatalogueReport {
   err: string[]
 }
 
+/**
+ * The workflow's run door: load the committed records and the live source,
+ * refresh what the run asks to refresh, validate the result and write the
+ * handoff. The steps' handoff stays internal, so a caller cannot assemble half
+ * a run and call it the workflow.
+ */
 export async function syncCatalogue(
   workspace: Workspace,
   options: CatalogueOptions = {},
@@ -63,6 +68,14 @@ export async function syncCatalogue(
     return { exitCode: loaded.exitCode ?? 1, out: loaded.out ?? [], err: loaded.err ?? [] }
   }
   const context = createCatalogueContext(workspace, loaded.context)
-  const validation = validateCatalogue(context)
-  return finishCatalogue(context, validation, Boolean(options.plan))
+  return finishCatalogue(context, Boolean(options.plan))
+}
+
+/**
+ * The workflow's read door: the registry's hermetic diagnostics, with no live
+ * export, no delta and no writes. The node card runs it on every brief, so it
+ * must stay off the network; an unreadable record throws.
+ */
+export function readCatalogueDiagnostics(workspace: Workspace): string[] {
+  return registryDiagnostics(workspace, loadCatalogueBase(workspace))
 }

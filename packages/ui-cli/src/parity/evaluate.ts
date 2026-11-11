@@ -4,7 +4,7 @@ import { UsageError } from "../lib/command.ts"
 import type { Workspace } from "../adapters/workspace.ts"
 import { requiredDevices, variantDevice } from "../figma/devices.ts"
 import { parseSchema } from "../lib/validate.ts"
-import { loadCaseFile } from "./cases.ts"
+import { readCases } from "../records/committed.ts"
 import { compare, compositionSignature, tokenIndex, type SourceSubject } from "./diff.ts"
 import { capture as captureStory, DEFAULT_ROOT, type CaptureOptions } from "./render.ts"
 import {
@@ -21,7 +21,7 @@ import {
   type VariantInfo,
 } from "./source.ts"
 
-import { corpusPath, devicePolicy, frameBaseline, inventoryNode } from "./context.ts"
+import { devicePolicy, frameBaseline, inventoryNode } from "./context.ts"
 import type { CaseReport, CaseSpec, Scope } from "./types.ts"
 const SCOPE_PROBES = [360, 1200]
 function deviceNarrowing(workspace: Workspace, spec: CaseSpec, node: RawNode): RawNode | undefined {
@@ -102,7 +102,7 @@ export function mappingGaps(root: SpecNode, mapped: string[]): string[] {
 function expectedFrames(workspace: Workspace, nodeId: string, storyId: string): number[] {
   return [
     ...new Set(
-      loadCaseFile(corpusPath(workspace))
+      (readCases(workspace.root) ?? [])
         .filter(
           (entry) =>
             entry.nodeId === nodeId &&
