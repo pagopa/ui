@@ -38,6 +38,11 @@ the generic predicates are `enabled`, `disabled`, `focused`, `filled`, `empty`,
 exists: the state is checked, never inferred. Always pass `--state`: it names the
 case.
 
+For pointer hover, set `--expect-state hover` and make `--state-evidence` end in
+`:hover`, for example `--state-evidence '#storybook-root .switch-control:hover'`.
+The Storybook adapter removes the suffix to hover the target; the DOM probe uses
+the full selector as state evidence.
+
 ## The case corpus
 
 `catalog.parityCases` records variants, states, devices, dimensions, scope,

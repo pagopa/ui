@@ -252,6 +252,8 @@ For a deterministic local wave, use `pnpm ui-cli parity queue --next --size 3
 `pnpm ui-cli parity check --node <id> --saved` reproduces every committed case,
 including multiple states on the same device, and refuses missing declared
 devices. `parity align` prints the exact check command for each declared device.
+Hover cases set `--expect-state hover` and end `--state-evidence` with `:hover`;
+see the [parity state-capture contract](../../.agents/skills/figma-to-code/references/parity-tooling.md#capturing-a-state).
 
 ### Figma workflow helpers
 
