@@ -364,7 +364,9 @@ export function caseCorpus(documents: CorpusDocuments): CaseCorpus {
 /**
  * The committed corpus: the four records, each read the first time a judgment
  * asks for it. `readCorpus(workspace).find(id)` resolves an id without reading
- * the registry that id lookup does not consult.
+ * the registry that id lookup does not consult. `file` is the resolved corpus
+ * file — a `--cases` override arrives through `corpusPath`, not as the raw
+ * option, because the reader resolves a path against the record root.
  */
 export function readCorpus(workspace: Workspace, file?: string): CaseCorpus {
   let cases: ParityCase[] | undefined

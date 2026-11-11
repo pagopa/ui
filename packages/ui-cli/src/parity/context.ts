@@ -16,6 +16,10 @@ export function inventoryFileKey(workspace: Workspace) {
 export function inventoryNode(workspace: Workspace, nodeId: string) {
   return inventoryNodes(workspace).find((node) => node.nodeId === nodeId)
 }
+// The one place a `--cases` override becomes a file: an identity resolves
+// against the workspace (`packages/…` and `apps/…` under its root), and an
+// absolute path is taken as given. Every reader and writer of the corpus takes
+// this result, never the raw option, so a command reads the file it names.
 export function corpusPath(workspace: Workspace, file?: string) {
   return file ? workspace.path(file) : committedFile("cases", workspace.root)
 }

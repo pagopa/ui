@@ -95,7 +95,7 @@ export function queue(workspace: Workspace, options: QueueOptions = {}): ParityO
     cases = filteredCases(cases, (item) => wanted.has(item.nodeId))
   }
   const path_ = corpusPath(workspace, options.casesFile)
-  const corpus = readCorpus(workspace, options.casesFile)
+  const corpus = readCorpus(workspace, path_)
   const mapped = corpus.nodeIds
   if (options.coverage || options.uncovered) {
     return printCoverage(workspace, options, path_, corpus)

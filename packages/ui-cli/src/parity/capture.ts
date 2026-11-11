@@ -12,7 +12,7 @@ import { isDraftCase } from "./corpus.ts"
 import { checkCaseEvidence } from "./evidence.ts"
 import { loadExport, type Project } from "./source.ts"
 
-import { inventoryNode, registryCase, statusesFrom } from "./context.ts"
+import { corpusPath, inventoryNode, registryCase, statusesFrom } from "./context.ts"
 import { evaluateCase } from "./evaluate.ts"
 import { responsiveCounts, responsiveSummary } from "./format.ts"
 import { specFromCase } from "./mapping.ts"
@@ -132,9 +132,9 @@ function selectWaveCases(workspace: Workspace, options: WaveOptions, limit: numb
       throw new UsageError("--limit needs a positive integer")
     }
     const device = options.device
-    const entries = (readCases(workspace.root, options.casesFile) ?? []).filter(
-      (entry) => entry.nodeId === nodeId && (!device || entry.device === device),
-    )
+    const entries = (
+      readCases(workspace.root, corpusPath(workspace, options.casesFile)) ?? []
+    ).filter((entry) => entry.nodeId === nodeId && (!device || entry.device === device))
     if (!entries.length) {
       throw new UsageError(`${nodeId}: no saved cases${device ? ` for device ${device}` : ""}`)
     }

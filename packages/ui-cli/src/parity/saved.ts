@@ -2,7 +2,7 @@ import type { Workspace } from "../adapters/workspace.ts"
 import { requiredDevices } from "../figma/devices.ts"
 import { UsageError } from "../lib/command.ts"
 import { readCases } from "../records/committed.ts"
-import { devicePolicy, inventoryNode } from "./context.ts"
+import { corpusPath, devicePolicy, inventoryNode } from "./context.ts"
 import { output, type ParityOutput } from "./output.ts"
 import type { CheckOptions } from "./types.ts"
 
@@ -13,7 +13,9 @@ export async function checkSaved(
 ): Promise<ParityOutput> {
   if (!options.nodeId || options.caseId)
     throw new UsageError("--saved needs one --node <id>, not --case")
-  const entries = (readCases(workspace.root, options.casesFile) ?? []).filter(
+  const entries = (
+    readCases(workspace.root, corpusPath(workspace, options.casesFile)) ?? []
+  ).filter(
     (entry) =>
       entry.nodeId === options.nodeId && (!options.device || entry.device === options.device),
   )

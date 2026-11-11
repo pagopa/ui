@@ -15,7 +15,7 @@ export function cases(
   const nodeId = options.nodeId
   const result = caseCorpus({
     workspace,
-    cases: readCases(workspace.root, options.casesFile) ?? [],
+    cases: readCases(workspace.root, path_) ?? [],
     inventory: inventoryNodes(workspace),
     registry: readRegistry(workspace.root),
     policy: devicePolicy(workspace),

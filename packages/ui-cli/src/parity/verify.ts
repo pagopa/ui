@@ -14,7 +14,7 @@ export function verify(
   const out: string[] = []
   const err: string[] = []
   const path_ = corpusPath(workspace, options.casesFile)
-  const corpus = readCorpus(workspace, options.casesFile)
+  const corpus = readCorpus(workspace, path_)
   const cases = corpus.cases
   const registry = corpus.registry
   const nodes = corpus.inventory

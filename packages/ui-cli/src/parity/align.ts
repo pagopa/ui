@@ -10,6 +10,7 @@ import { requiredDevices } from "../figma/devices.ts"
 import type { ParityCase } from "../schemas/parity.ts"
 import { readDevicePolicy, readInventory, readRegistry } from "../records/committed.ts"
 import { readCorpus, type CaseCorpus } from "./corpus.ts"
+import { corpusPath } from "./context.ts"
 import {
   classify,
   EMPTY_TOKEN_INDEX,
@@ -259,7 +260,7 @@ export async function align(
   options: AlignOptions,
   deps: AlignDeps,
 ): Promise<ParityOutput> {
-  const corpus = readCorpus(workspace, options.casesFile)
+  const corpus = readCorpus(workspace, corpusPath(workspace, options.casesFile))
   const node = loadNode(workspace, options, corpus)
   const cases = corpus.reviewed(options.nodeId)
   if (cases.length && !(await deps.storybook()))
