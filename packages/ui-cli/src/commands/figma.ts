@@ -5,7 +5,11 @@ import { checkMap, updateMap } from "../figma/map.ts"
 import { checkStories, updateStories } from "../figma/stories.ts"
 import { formatDeviceReport, readDevices } from "../figma/devices.ts"
 import { buildStatusReport, formatStatusText } from "../figma/status.ts"
-import { syncCatalogue, type CatalogueOptions, type CatalogueReport } from "../figma/sync.ts"
+import {
+  syncCatalogue,
+  type CatalogueOptions,
+  type CatalogueReport,
+} from "../figma/catalogue/index.ts"
 import { checkIcons, updateIcons } from "../figma/icons.ts"
 import { exportFigma } from "../figma/export.ts"
 import { checkPictograms, exportPictograms, updatePictograms } from "../figma/pictograms.ts"

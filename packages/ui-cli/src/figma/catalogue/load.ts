@@ -29,7 +29,7 @@ import { fetchFigmaSnapshot, writeFigmaSnapshot, type FigmaSnapshot } from "../r
 import { prepareCatalogueRefresh } from "../catalogue-refresh.ts"
 import { deltaHasChange } from "../work-set.ts"
 import { formatCatalogueDrift } from "./drift.ts"
-import type { CatalogueOptions } from "../sync.ts"
+import type { CatalogueOptions } from "./index.ts"
 
 const EVIDENCE_EXCEPTIONS_PATH = "src/catalog/figma/evidence-exceptions.json"
 const API_EXCEPTIONS_PATH = "src/catalog/figma/api-exceptions.json"

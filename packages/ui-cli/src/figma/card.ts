@@ -12,8 +12,7 @@ import { committedFile, readCases, readDevicePolicy, readInventory } from "../re
 import type { Inventory, InventoryNode } from "../schemas/catalogue.ts"
 import type { RuleDisposition } from "../schemas/rules.ts"
 import { buildBrief, compact, componentForNode, type NodeBrief } from "./brief.ts"
-import { loadCatalogueBase } from "./catalogue/load.ts"
-import { catalogueDiagnostics } from "./catalogue/validate.ts"
+import { readCatalogueDiagnostics } from "./catalogue/index.ts"
 import { canonicalWidth, checkDevices, declaredDevices } from "./devices.ts"
 import { readLedger, readRulesSnapshot, rulesForNode } from "./rules.ts"
 import { checkRules } from "./rules-workflow.ts"
@@ -256,7 +255,7 @@ export function readNodeCardGates(workspace: Workspace): NodeCardGates {
 // rather than read as clean.
 function catalogueGate(workspace: Workspace): string[] {
   try {
-    return catalogueDiagnostics(workspace, loadCatalogueBase(workspace))
+    return readCatalogueDiagnostics(workspace)
   } catch (error) {
     return [`registry unreadable: ${error instanceof Error ? error.message : String(error)}`]
   }

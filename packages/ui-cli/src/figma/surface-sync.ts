@@ -12,8 +12,7 @@ import {
   type PageSurfacePage,
 } from "../schemas/catalogue.ts"
 import type { Registry } from "../schemas/catalogue.ts"
-import type { CatalogueReport } from "./sync.ts"
-import { syncCatalogue } from "./sync.ts"
+import { syncCatalogue, type CatalogueReport } from "./catalogue/index.ts"
 
 const SURFACE_PATH = "src/catalog/figma/page-surface.json"
 const DEFAULT_NOTE =

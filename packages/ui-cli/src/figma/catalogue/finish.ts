@@ -3,14 +3,13 @@ import path from "node:path"
 import type { Workspace } from "../../adapters/workspace.ts"
 import { writeJson } from "../../lib/json.ts"
 import { forgetCommitted } from "../../records/committed.ts"
-import type { CatalogueReport } from "../sync.ts"
+import type { CatalogueReport } from "./index.ts"
 import { formatDeviceLine } from "../devices.ts"
 import { formatSurfaceLine } from "../surface.ts"
 import { renderCatalogueDelta, renderCataloguePrBody } from "../catalogue-render.ts"
 import { requestsFolder } from "../config.ts"
 import { formatCatalogueSummary, formatCoverageLine, renderCataloguePlan } from "./output.ts"
 import type { CatalogueContext } from "./context.ts"
-import type { CatalogueValidation } from "./validate.ts"
 
 function writePendingFiles(
   root: string,
@@ -31,10 +30,10 @@ function writePendingFiles(
 function writePullRequestBody(
   workspace: Workspace,
   context: CatalogueContext,
-  validation: CatalogueValidation,
   out: string[],
 ): void {
   if (!context.prBodyPath || !context.hasDrift) return
+  const validation = context.validation
   const file = path.resolve(workspace.root, context.prBodyPath)
   fs.mkdirSync(path.dirname(file), { recursive: true })
   fs.writeFileSync(
@@ -60,13 +59,9 @@ function writePullRequestBody(
   out.push(`pr body: ${context.prBodyPath}`)
 }
 
-function writeDeltaFile(
-  workspace: Workspace,
-  context: CatalogueContext,
-  validation: CatalogueValidation,
-  out: string[],
-): void {
+function writeDeltaFile(workspace: Workspace, context: CatalogueContext, out: string[]): void {
   if (!context.deltaPath || !context.live) return
+  const validation = context.validation
   const file = path.resolve(workspace.root, context.deltaPath)
   fs.mkdirSync(path.dirname(file), { recursive: true })
   writeJson(
@@ -115,11 +110,8 @@ function writeTargets(context: CatalogueContext): string[] {
   return targets
 }
 
-export function finishCatalogue(
-  context: CatalogueContext,
-  validation: CatalogueValidation,
-  plan: boolean,
-): CatalogueReport {
+export function finishCatalogue(context: CatalogueContext, plan: boolean): CatalogueReport {
+  const validation = context.validation
   const workspace = context.workspace
   const out = [...context.out]
   const err = [...context.err]
@@ -172,8 +164,8 @@ export function finishCatalogue(
   }
   if (!errors.length) {
     writePendingFiles(workspace.root, context, plan, out, err)
-    writePullRequestBody(workspace, context, validation, out)
-    writeDeltaFile(workspace, context, validation, out)
+    writePullRequestBody(workspace, context, out)
+    writeDeltaFile(workspace, context, out)
   } else {
     const targets = writeTargets(context)
     if (targets.length)

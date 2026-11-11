@@ -18,7 +18,7 @@ import {
   type RegistryEntry,
 } from "../schemas/catalogue.ts"
 import { requiresReason, surfaceDecision } from "./surface-decision.ts"
-import { syncCatalogue } from "./sync.ts"
+import { syncCatalogue } from "./catalogue/index.ts"
 
 const surfacePath = "src/catalog/figma/page-surface.json"
 export type RegistryOptions = {
