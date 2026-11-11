@@ -34,7 +34,7 @@ read. The consequences were not stylistic.
   name with different shapes.
 - **The errors were unreadable.** A corrupt record surfaced as
   `src/catalog/figma/registry.json: Expected string, received undefined` from a
-  bare `parseSchema`, with nothing naming the *record* a command failed to read
+  bare `parseSchema`, with nothing naming the _record_ a command failed to read
   or the file a caller had overridden.
 - **The absence was silent.** `loadCaseFile` returns `[]` when the case file is
   absent — correct, the file is legitimately optional — but the same shape was
@@ -169,12 +169,12 @@ card used to report.
 
 ## 5. Deferred decisions with triggers
 
-| Deferred                                                  | Trigger                                                                                                                              |
-| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| Writers move into the reader, and invalidation with them   | A second writer must remember `forgetCommitted`, or a writer is added that forgets it; RD3's rule is then paid twice and becomes a defect waiting                                        |
-| The workflow that resolves records across commands        | A second command needs a record's value transformed between reads, which is domain work and not a read                                |
-| The case corpus as one judged value                       | The validation that today re-reads cases per rule needs the judgments over the whole corpus, and building them per call starts to cost |
-| Records beyond the four (exceptions, baselines, surfaces)  | A fifth document is read by two modules with a copied path constant; it then joins the reader rather than gaining a sixth loader       |
+| Deferred                                                  | Trigger                                                                                                                                           |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Writers move into the reader, and invalidation with them  | A second writer must remember `forgetCommitted`, or a writer is added that forgets it; RD3's rule is then paid twice and becomes a defect waiting |
+| The workflow that resolves records across commands        | A second command needs a record's value transformed between reads, which is domain work and not a read                                            |
+| The case corpus as one judged value                       | The validation that today re-reads cases per rule needs the judgments over the whole corpus, and building them per call starts to cost            |
+| Records beyond the four (exceptions, baselines, surfaces) | A fifth document is read by two modules with a copied path constant; it then joins the reader rather than gaining a sixth loader                  |
 
 ## 6. Related
 
