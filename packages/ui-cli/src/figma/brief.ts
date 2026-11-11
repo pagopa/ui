@@ -4,7 +4,7 @@ import path from "node:path"
 
 import type { Workspace } from "../adapters/workspace.ts"
 import { walkFiles } from "../lib/fs.ts"
-import { committedFile, readInventory, readRegistry } from "../records/committed.ts"
+import { readInventory, readRegistry } from "../records/committed.ts"
 import type { Inventory, InventoryNode, Registry } from "../schemas/catalogue.ts"
 import { readComments, threadsForNode } from "./comments.ts"
 import { requestsFolder } from "./config.ts"
@@ -67,8 +67,8 @@ export function componentForNode(
 // once instead of once per node.
 export function readBriefSources(workspace: Workspace) {
   return {
-    inventory: readInventory(committedFile("inventory", workspace.root)),
-    registry: readRegistry(committedFile("registry", workspace.root)),
+    inventory: readInventory(workspace.root),
+    registry: readRegistry(workspace.root),
     ledger: readLedger(workspace.root, false),
     snapshot: readRulesSnapshot(workspace.root, false),
     comments: readComments(workspace),

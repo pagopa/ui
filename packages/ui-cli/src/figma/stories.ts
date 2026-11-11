@@ -7,7 +7,7 @@ import { readJson, writeJson } from "../lib/json.ts"
 import { parseSchema } from "../lib/validate.ts"
 import { report, type CheckReport } from "../checks/report.ts"
 import type { Registry } from "../schemas/catalogue.ts"
-import { committedFile, readRegistry } from "../records/committed.ts"
+import { readRegistry } from "../records/committed.ts"
 
 export const STORY_TITLES_PATH = "src/catalog/figma/story-titles.json"
 
@@ -51,7 +51,7 @@ export function staleStoryTitles(workspace: Workspace, registry: Registry): stri
 }
 
 export function checkStories(workspace: Workspace): CheckReport {
-  const registry = readRegistry(committedFile("registry", workspace.root))
+  const registry = readRegistry(workspace.root)
   const file = workspace.path(STORY_TITLES_PATH)
   if (!fs.existsSync(file)) {
     return report("stories", `${STORY_TITLES_PATH} is missing`, [
@@ -69,7 +69,7 @@ export function checkStories(workspace: Workspace): CheckReport {
 }
 
 export function updateStories(workspace: Workspace): string {
-  const registry = readRegistry(committedFile("registry", workspace.root))
+  const registry = readRegistry(workspace.root)
   const titles = storyTitles(workspace, registry)
   writeJson(workspace.path(STORY_TITLES_PATH), titles)
   return `${STORY_TITLES_PATH}: ${Object.keys(titles).length} stories written`

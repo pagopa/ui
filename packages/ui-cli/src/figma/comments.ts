@@ -8,7 +8,7 @@ import fs from "node:fs"
 import { z } from "zod"
 
 import { readJson, writeJson } from "../lib/json.ts"
-import { committedFile, readInventory } from "../records/committed.ts"
+import { readInventory } from "../records/committed.ts"
 import type { Workspace } from "../adapters/workspace.ts"
 import { UsageError } from "../lib/command.ts"
 import {
@@ -27,7 +27,7 @@ const LiveSnapshotSchema = z.looseObject({
 })
 
 function pageIdOf(workspace: Workspace, nodeId: string): string | null {
-  const inventory = readInventory(committedFile("inventory", workspace.root))
+  const inventory = readInventory(workspace.root)
   for (const component of inventory.components) {
     if (component.nodeId === nodeId) return component.pageId
     if ((component.variants ?? []).some((variant) => variant.nodeId === nodeId))
@@ -153,7 +153,7 @@ export function threadsForNode(
   requested: string,
   options: { openOnly?: boolean } = {},
 ): CommentThread[] {
-  const inventory = readInventory(committedFile("inventory", workspace.root))
+  const inventory = readInventory(workspace.root)
   const scope = new Set<string>([requested])
   const pageId = pageIdOf(workspace, requested)
   for (const component of inventory.components) {

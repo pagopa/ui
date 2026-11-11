@@ -225,11 +225,11 @@ function validateNode(
   updated: Registry
 } | null {
   if (!input.nodeId) return null
-  const inventory = readInventory(committedFile("inventory", workspace.root))
+  const inventory = readInventory(workspace.root)
   if (!inventory.components.some((node) => node.nodeId === input.nodeId))
     throw new UsageError(`${input.nodeId} is not in the inventory`)
   const registryFile = committedFile("registry", workspace.root)
-  const registry = readRegistry(registryFile)
+  const registry = readRegistry(workspace.root)
   const entry = registry.entries[input.nodeId]
   if (entry?.status !== "pending")
     throw new UsageError(`${input.nodeId} must remain pending while its design request is open`)

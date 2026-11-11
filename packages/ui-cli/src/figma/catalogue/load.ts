@@ -18,12 +18,7 @@ import {
 } from "../../schemas/catalogue.ts"
 import { parseExceptions } from "./source.ts"
 import { loadCatalogueState } from "../catalogue-state.ts"
-import {
-  COMMITTED_FILES,
-  committedFile,
-  readInventory,
-  readRegistry,
-} from "../../records/committed.ts"
+import { COMMITTED_FILES, readInventory, readRegistry } from "../../records/committed.ts"
 import {
   compareSnapshots,
   fileKeyFromSource,
@@ -93,8 +88,8 @@ export type CatalogueLoadResult = {
 
 export function loadCatalogueBase(workspace: Workspace): CatalogueBase {
   const errors: string[] = []
-  const inventory = readInventory(committedFile("inventory", workspace.root))
-  const registry = readRegistry(committedFile("registry", workspace.root))
+  const inventory = readInventory(workspace.root)
+  const registry = readRegistry(workspace.root)
   const committed = inventory.components
   validateCommittedContracts(workspace, inventory, committed, errors)
   const evidenceExceptions =

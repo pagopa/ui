@@ -24,7 +24,6 @@ import { readCases, readInventory, readRegistry } from "../../src/records/commit
 import { coveragePopulations, formatCoverage, qualifyBulk } from "../../src/parity/coverage.ts"
 
 const workspace = workspaceAt(path.resolve(import.meta.dirname, "../../../pagopa-ui"))
-const CORPUS = workspace.path("src/catalog/figma/parity-cases.json")
 function fixtureDirectory(prefix) {
   return fixtureTree({}, prefix).root
 }
@@ -354,19 +353,19 @@ function validate(cases) {
 }
 
 test("the committed corpus is valid against the registry and the inventory", () => {
-  const cases = readCases(CORPUS) ?? []
+  const cases = readCases(workspace.root) ?? []
   assert.ok(cases.length > 0, "the corpus must not be empty")
   const { errors, warnings } = validateCaseFile(workspace, cases, {
-    registry: readRegistry(workspace.path("src/catalog/figma/registry.json")),
-    nodes: readInventory(workspace.path("src/catalog/figma/inventory.json")).components,
+    registry: readRegistry(workspace.root),
+    nodes: readInventory(workspace.root).components,
   })
   assert.deepEqual(errors, [])
   assert.deepEqual(warnings, [])
 })
 
 test("every committed case names a story the registry declares", () => {
-  const registry = readRegistry(workspace.path("src/catalog/figma/registry.json"))
-  for (const entry of readCases(CORPUS) ?? []) {
+  const registry = readRegistry(workspace.root)
+  for (const entry of readCases(workspace.root) ?? []) {
     assert.match(entry.storyId, /^[a-z0-9-]+--[a-z0-9-]+$/, `${entry.id} story id`)
     const known = registry.entries[entry.nodeId]
     if (known?.target?.storyExports?.length) {
@@ -416,14 +415,14 @@ test("a saved case replaces the entry with the same identity", () => {
   assert.equal(saved.replaced, false)
   assert.equal(saved.entry.id, "529-6111-filled")
   assert.deepEqual(
-    (readCases(file) ?? []).map((entry) => entry.id),
+    (readCases(dir, "cases.json") ?? []).map((entry) => entry.id),
     ["529-6111-filled"],
   )
 
   const refined = saveCase(file, { ...first, root: "input", compareOffset: true })
   assert.equal(refined.replaced, true)
   assert.equal(refined.total, 1)
-  assert.equal((readCases(file) ?? [])[0].root, "input")
+  assert.equal((readCases(dir, "cases.json") ?? [])[0].root, "input")
   fs.rmSync(dir, { recursive: true, force: true })
 })
 
@@ -672,7 +671,7 @@ test("a missing device case is proposed from the sibling the corpus has", () => 
   const saved = saveCase(file, proposals[0])
   assert.equal(saved.entry.id, "1-1-mobile-mobile")
   assert.equal(saved.replaced, false)
-  assert.equal((readCases(file) ?? []).length, 2)
+  assert.equal((readCases(dir, "cases.json") ?? []).length, 2)
   fs.rmSync(dir, { recursive: true, force: true })
 })
 
@@ -800,7 +799,7 @@ test("a state draft saves through the canonical path and waits for the review", 
       policy,
       nodes: [panel],
       registry: panelRegistry,
-      cases: readCases(file) ?? [],
+      cases: readCases(dir, "cases.json") ?? [],
       statuses: ["implemented"],
     })
   const saved = saveCase(file, sync().stateProposals[0])
@@ -822,10 +821,10 @@ test("a state draft saves through the canonical path and waits for the review", 
     sync().stateProposals.find((proposal) => proposal.variant === "2:11"),
   )
   assert.equal(replaced.replaced, true)
-  assert.equal((readCases(file) ?? []).length, 2)
+  assert.equal((readCases(dir, "cases.json") ?? []).length, 2)
   // Once the note is the reviewed one, the variant is pointed and the run stops
   // proposing it.
-  const reviewed = (readCases(file) ?? []).map((item) =>
+  const reviewed = (readCases(dir, "cases.json") ?? []).map((item) =>
     item.id === saved.entry.id ? { ...item, note: "reviewed: the strong tone verified" } : item,
   )
   assert.ok(
@@ -951,7 +950,7 @@ test("refining a case with a device keeps its id and replaces the entry", () => 
   )
   assert.equal(saved.replaced, true)
   assert.equal(saved.total, 1)
-  const [entry] = readCases(file) ?? []
+  const [entry] = readCases(dir, "cases.json") ?? []
   assert.equal(entry.id, "749-5867-mobile")
   assert.equal(entry.device, "mobile")
   assert.equal(entry.layoutScope, "viewport")
@@ -988,7 +987,7 @@ test("--note replaces a draft note without losing the reviewed mapping", () => {
   fs.writeFileSync(file, JSON.stringify([draft]))
   const saved = saveCase(file, refined, { id: draft.id })
   assert.equal(saved.replaced, true)
-  const [entry] = readCases(file) ?? []
+  const [entry] = readCases(dir, "cases.json") ?? []
   assert.equal(entry.note, "reviewed: the mobile composition at 320")
   assert.equal(entry.root, '[data-slot="control"]')
   assert.equal(isDraftCase(entry), false)

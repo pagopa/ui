@@ -109,7 +109,7 @@ function loadPictogramContext(workspace: Workspace, mode: PictogramMode, input?:
       "Pictogram export requires a full snapshot of the configured Figma file and version",
     )
   }
-  const registry = readRegistry(committedFile("registry", workspace.root))
+  const registry = readRegistry(workspace.root)
   const rule = requireBulkRule(registry, "figmaPictogramNames", "Pictograms")
   const manifestFile = path.join(workspace.artworkRoot, "src/assets/figma-pictograms/manifest.json")
   const publishedManifest = readManifest(manifestFile, PictogramManifestSchema)

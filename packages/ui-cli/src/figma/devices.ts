@@ -26,12 +26,7 @@ import { report as checkReport, type CheckReport } from "../checks/report.ts"
 import { parseSchema } from "../lib/validate.ts"
 import type { InventoryNode } from "../schemas/catalogue.ts"
 import { DevicePolicySchema, type DeviceDefinition, type DevicePolicy } from "../schemas/devices.ts"
-import {
-  COMMITTED_FILES,
-  committedFile,
-  readDevicePolicy,
-  readInventory,
-} from "../records/committed.ts"
+import { COMMITTED_FILES, readDevicePolicy, readInventory } from "../records/committed.ts"
 import { ANY_DEVICE, UNKNOWN_DEVICE } from "../schemas/devices.ts"
 export { ANY_DEVICE, UNKNOWN_DEVICE }
 export const LAYOUT_SCOPES = ["viewport", "container"] as const
@@ -532,8 +527,8 @@ export interface DeviceReport {
 }
 
 export function readDevices(workspace: Workspace): DeviceReport {
-  const policy = readDevicePolicy(committedFile("device-policy", workspace.root))
-  const nodes = readInventory(committedFile("inventory", workspace.root)).components
+  const policy = readDevicePolicy(workspace.root)
+  const nodes = readInventory(workspace.root).components
   return {
     policy: COMMITTED_FILES["device-policy"],
     ...checkDevicePolicy(policy, nodes),

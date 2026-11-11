@@ -29,12 +29,7 @@ import { UsageError } from "../lib/command.ts"
 import { readJson, writeText } from "../lib/json.ts"
 import { parseSchema } from "../lib/validate.ts"
 import { storyId } from "../parity/cases.ts"
-import {
-  COMMITTED_FILES,
-  committedFile,
-  readInventory,
-  readRegistry,
-} from "../records/committed.ts"
+import { COMMITTED_FILES, readInventory, readRegistry } from "../records/committed.ts"
 import { report, type CheckReport } from "../checks/report.ts"
 import {
   type BulkRule,
@@ -220,8 +215,8 @@ function readRoot<T>(workspace: Workspace, schema: z.ZodType<T>, file: string): 
 // export and never a decision to reconcile by hand.
 export function currentMap(workspace: Workspace): FigmaMap {
   return figmaMap({
-    registry: readRegistry(committedFile("registry", workspace.root)),
-    inventory: readInventory(committedFile("inventory", workspace.root)),
+    registry: readRegistry(workspace.root),
+    inventory: readInventory(workspace.root),
     titles: readRoot(workspace, StoryTitlesSchema, STORY_TITLES_PATH),
     values: publicValues(workspace),
   })
@@ -279,11 +274,7 @@ export function updateMap(workspace: Workspace): string {
 // survives a run.
 export function checkMap(workspace: Workspace): CheckReport {
   const map = currentMap(workspace)
-  const problems = mapProblems(
-    map,
-    readInventory(committedFile("inventory", workspace.root)),
-    publicValues(workspace),
-  )
+  const problems = mapProblems(map, readInventory(workspace.root), publicValues(workspace))
   const file = workspace.path(FIGMA_MAP_PATH)
   if (!fs.existsSync(file)) {
     return report("figma map", `${FIGMA_MAP_PATH} is missing`, [

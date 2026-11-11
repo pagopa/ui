@@ -1,5 +1,5 @@
 import type { Workspace } from "../adapters/workspace.ts"
-import { committedFile, readCases, readRegistry } from "../records/committed.ts"
+import { readCases, readRegistry } from "../records/committed.ts"
 import { saveCase, syncProposals } from "./cases.ts"
 
 import { corpusPath, devicePolicy, inventoryNodes } from "./context.ts"
@@ -11,13 +11,13 @@ export function cases(
   const out: string[] = []
   const err: string[] = []
   const path_ = corpusPath(workspace, options.casesFile)
-  const corpus = readCases(path_) ?? []
+  const corpus = readCases(workspace.root, options.casesFile) ?? []
   const nodeId = options.nodeId
   const result = syncProposals({
     cases: corpus,
     nodeId,
     nodes: inventoryNodes(workspace),
-    registry: readRegistry(committedFile("registry", workspace.root)),
+    registry: readRegistry(workspace.root),
     policy: devicePolicy(workspace),
   })
   const dryRun = options.dryRun

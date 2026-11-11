@@ -19,7 +19,6 @@ import {
 } from "../figma/devices.ts"
 import { readJson, writeJson } from "../lib/json.ts"
 import {
-  committedFile,
   forgetCommitted,
   readCases,
   readInventory,
@@ -119,7 +118,7 @@ export type CaseList = CaseRow[] & { missing: Array<{ nodeId: string; story: str
 export function buildCases(
   workspace: Workspace,
   {
-    registry = readRegistry(committedFile("registry", workspace.root)),
+    registry = readRegistry(workspace.root),
     statuses = ["pending", "implemented"],
   }: { registry?: Registry; statuses?: string[] } = {},
 ): CaseList {
@@ -256,7 +255,7 @@ export function saveCase(
   spec: Partial<ParityCase> & Pick<ParityCase, "nodeId">,
   { id }: { id?: string } = {},
 ): { file: string; entry: ParityCase; replaced: boolean; total: number } {
-  const cases = [...(readCases(file) ?? [])]
+  const cases = [...(readCases(path.dirname(file), path.basename(file)) ?? [])]
   const entry = canonicalCase(spec, id)
   const index = cases.findIndex((item) => item.id === entry.id || caseKey(item) === caseKey(entry))
   if (index >= 0) cases[index] = entry
@@ -358,9 +357,9 @@ export function validateCaseFile(
   workspace: Workspace,
   cases: ParityCase[],
   {
-    registry = readRegistry(committedFile("registry", workspace.root)),
-    nodes = readInventory(committedFile("inventory", workspace.root)).components,
-    policy = readDevicePolicy(committedFile("device-policy", workspace.root)),
+    registry = readRegistry(workspace.root),
+    nodes = readInventory(workspace.root).components,
+    policy = readDevicePolicy(workspace.root),
   }: {
     registry?: Registry
     nodes?: Array<InventoryNode | string>

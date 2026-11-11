@@ -61,7 +61,7 @@ export async function check(
   let spec
   let caseEntry: ParityCase | undefined
   if (caseId) {
-    caseEntry = findCase(readCases(path_) ?? [], String(caseId))
+    caseEntry = findCase(readCases(workspace.root, options.casesFile) ?? [], String(caseId))
     spec = specFromCase(caseEntry, options)
     if (!spec.storyId)
       throw new UsageError(`${caseId}: the case declares no storyId and none was passed`)
@@ -164,8 +164,7 @@ async function checkDevices(
   const { nodeId } = options
   const out: string[] = []
   const err: string[] = []
-  const path_ = corpusPath(workspace, options.casesFile)
-  const corpus = readCases(path_) ?? []
+  const corpus = readCases(workspace.root, options.casesFile) ?? []
   const inventory = inventoryNode(workspace, nodeId)
   if (!inventory) throw new UsageError(`${nodeId} is not in inventory.json`)
   const devices = requiredDevices(devicePolicy(workspace), inventory)

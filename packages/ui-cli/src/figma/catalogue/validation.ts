@@ -1,6 +1,6 @@
 import type { Workspace } from "../../adapters/workspace.ts"
 import { readJson } from "../../lib/json.ts"
-import { committedFile, readCases, readDevicePolicy } from "../../records/committed.ts"
+import { readCases, readDevicePolicy } from "../../records/committed.ts"
 import { parseSchema } from "../../lib/validate.ts"
 import {
   DEVICE_EXCEPTIONS_PATH,
@@ -84,7 +84,7 @@ export function validateDeviceVocabulary(
   nodes: InventoryNode[],
 ): DeviceValidation {
   try {
-    const policy = readDevicePolicy(committedFile("device-policy", workspace.root))
+    const policy = readDevicePolicy(workspace.root)
     const result = checkDevicePolicy(policy, nodes)
     return { policy, stats: result.stats, errors: result.errors, warnings: result.warnings }
   } catch (error) {
@@ -100,7 +100,7 @@ export function validateDeviceCases(
 ): { result: ValidationResult; stats: CaseStats | null } {
   if (!policy) return { result: { errors: [], warnings: [] }, stats: null }
   try {
-    const cases = readCases(committedFile("cases", workspace.root)) ?? []
+    const cases = readCases(workspace.root) ?? []
     const verdict = validateCaseFile(workspace, cases, { registry, nodes, policy })
     return {
       result: {
@@ -129,7 +129,7 @@ export function validatePageSurface(
 ): SurfaceValidation {
   try {
     const census = surface ?? loadPageSurface(workspace.path(PAGE_SURFACE_PATH))
-    const cases = policy ? (readCases(committedFile("cases", workspace.root)) ?? []) : []
+    const cases = policy ? (readCases(workspace.root) ?? []) : []
     const result = checkPageSurface(census, {
       nodes,
       registry,
@@ -181,7 +181,7 @@ export function validateDeviceCoverage(
   const errors: string[] = []
   const warnings: string[] = []
   try {
-    const cases = readCases(committedFile("cases", workspace.root)) ?? []
+    const cases = readCases(workspace.root) ?? []
     const exceptions = loadDeviceExceptions(workspace.path(DEVICE_EXCEPTIONS_PATH))
     const coverage = deviceCoverage({ policy, nodes, registry, cases, statuses: ["implemented"] })
     const byNode = new Map(coverage.all.map((row) => [row.nodeId, row]))

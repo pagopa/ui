@@ -6,7 +6,7 @@ import type { Workspace } from "../adapters/workspace.ts"
 import { resolveProvenance } from "../figma/asset-provenance.ts"
 import { catalogueIndex } from "../figma/snapshot.ts"
 import { readJson } from "../lib/json.ts"
-import { committedFile, readDevicePolicy, readInventory } from "../records/committed.ts"
+import { readDevicePolicy, readInventory } from "../records/committed.ts"
 import { IconManifestSchema, PictogramManifestSchema } from "../schemas/artwork.ts"
 import type { BulkRule, InventoryNode, Registry } from "../schemas/catalogue.ts"
 import type { DevicePolicy } from "../schemas/devices.ts"
@@ -127,7 +127,7 @@ export function coveragePopulations(
       cases,
       nodes,
     }),
-    policy = readDevicePolicy(committedFile("device-policy", workspace.root)),
+    policy = readDevicePolicy(workspace.root),
     bulk = [],
     statuses = ["implemented"],
     fileKey,
@@ -193,8 +193,7 @@ export function loadCoveragePopulations(
   } catch (error) {
     ownershipError = error instanceof Error ? error.message : String(error)
   }
-  const resolvedFileKey =
-    fileKey ?? readInventory(committedFile("inventory", workspace.root)).fileKey
+  const resolvedFileKey = fileKey ?? readInventory(workspace.root).fileKey
   const bulk = registry.bulkRules
     .filter((rule) => rule.status === "implemented")
     .map((rule) =>

@@ -5,13 +5,13 @@ import { committedFile, readDevicePolicy, readInventory } from "../records/commi
 import { buildCases } from "./cases.ts"
 
 export function devicePolicy(workspace: Workspace) {
-  return readDevicePolicy(committedFile("device-policy", workspace.root))
+  return readDevicePolicy(workspace.root)
 }
 export function inventoryNodes(workspace: Workspace) {
-  return readInventory(committedFile("inventory", workspace.root)).components
+  return readInventory(workspace.root).components
 }
 export function inventoryFileKey(workspace: Workspace) {
-  return readInventory(committedFile("inventory", workspace.root)).fileKey
+  return readInventory(workspace.root).fileKey
 }
 export function inventoryNode(workspace: Workspace, nodeId: string) {
   return inventoryNodes(workspace).find((node) => node.nodeId === nodeId)

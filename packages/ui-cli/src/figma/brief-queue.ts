@@ -121,7 +121,7 @@ export function buildBriefQueue(workspace: Workspace, options: BriefQueueOptions
   // of n nodes must not walk the workspace n times.
   const sources = readBriefSources(workspace)
   const policyFile = committedFile("device-policy", workspace.root)
-  const policy = fs.existsSync(policyFile) ? readDevicePolicy(policyFile) : null
+  const policy = fs.existsSync(policyFile) ? readDevicePolicy(workspace.root) : null
   const { inventory, registry } = sources
   const pending = new Set(
     Object.entries(registry.entries)

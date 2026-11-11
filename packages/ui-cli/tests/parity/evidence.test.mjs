@@ -378,10 +378,8 @@ test("loadExport reads the committed slice without normalizing the live export",
 
 test("every committed case resolves to a variant", () => {
   const designSystemRoot = path.resolve(TOOLING_ROOT, "../pagopa-ui")
-  const corpus = readCases(path.join(designSystemRoot, "src/catalog/figma/parity-cases.json")) ?? []
-  const nodes = readInventory(
-    path.join(designSystemRoot, "src/catalog/figma/inventory.json"),
-  ).components
+  const corpus = readCases(designSystemRoot) ?? []
+  const nodes = readInventory(designSystemRoot).components
   const byNode = new Map(nodes.map((item) => [item.nodeId, item]))
   const unresolved = corpus
     .filter((entry) => {

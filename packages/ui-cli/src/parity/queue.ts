@@ -3,7 +3,7 @@ import { UsageError } from "../lib/command.ts"
 
 import type { Workspace } from "../adapters/workspace.ts"
 import type { ParityCase } from "../schemas/parity.ts"
-import { committedFile, readCases, readRegistry } from "../records/committed.ts"
+import { readCases, readRegistry } from "../records/committed.ts"
 import { buildCases, fanInCounts } from "./cases.ts"
 import { formatCoverage, loadCoveragePopulations } from "./coverage.ts"
 
@@ -23,7 +23,7 @@ function printCoverage(
   const populations = loadCoveragePopulations(
     workspace,
     inventoryNodes(workspace),
-    readRegistry(committedFile("registry", workspace.root)),
+    readRegistry(workspace.root),
     corpus,
     statuses,
     undefined,
@@ -95,7 +95,7 @@ export function queue(workspace: Workspace, options: QueueOptions = {}): ParityO
     cases = filteredCases(cases, (item) => wanted.has(item.nodeId))
   }
   const path_ = corpusPath(workspace, options.casesFile)
-  const corpus = readCases(path_) ?? []
+  const corpus = readCases(workspace.root, options.casesFile) ?? []
   const mapped = new Set(corpus.map((entry) => entry.nodeId))
   if (options.coverage || options.uncovered) {
     return printCoverage(workspace, options, path_, corpus)

@@ -10,12 +10,7 @@ import fs from "node:fs"
 import path from "node:path"
 
 import type { Workspace } from "../adapters/workspace.ts"
-import {
-  COMMITTED_FILES,
-  committedFile,
-  readInventory,
-  readRegistry,
-} from "../records/committed.ts"
+import { COMMITTED_FILES, readInventory, readRegistry } from "../records/committed.ts"
 import type { Inventory } from "../schemas/catalogue.ts"
 import { fetchFileHeader } from "./rest.ts"
 import { fileKeyFromSource } from "./snapshot.ts"
@@ -371,7 +366,7 @@ function inventoryStatus(workspace: Workspace): {
   }
   let inventory: Inventory | null = null
   try {
-    inventory = readInventory(committedFile("inventory", workspace.root))
+    inventory = readInventory(workspace.root)
     report = {
       ...report,
       syncedAt: inventory.syncedAt,
@@ -426,7 +421,7 @@ function registryStatus(
   const pending: PendingRow[] = []
   const requests = requestsFolder(workspace)
   try {
-    const registry = readRegistry(committedFile("registry", workspace.root))
+    const registry = readRegistry(workspace.root)
     const pageRules = new Map(registry.bulkRules.map((rule) => [rule.pageId, rule]))
     const counts: Counts = { implemented: 0, mocked: 0, pending: 0, excluded: 0, unaccounted: 0 }
     for (const node of inventory?.components ?? []) {

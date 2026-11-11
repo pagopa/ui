@@ -120,23 +120,37 @@ function read<T>(
   return parsed
 }
 
-export function readInventory(file: string): Inventory {
-  return read("inventory", memory.inventory, file, InventorySchema)
+// Each read names its record once and takes the root, so a caller never pairs a
+// record name with a path. The override is the record's path relative to that
+// root (or an absolute path), which is how the evidence bundle reads the same
+// documents from its own `dataRoot`.
+export function readInventory(root: string, file?: string): Inventory {
+  return read(
+    "inventory",
+    memory.inventory,
+    committedFile("inventory", root, file),
+    InventorySchema,
+  )
 }
 
-export function readRegistry(file: string): Registry {
-  return read("registry", memory.registry, file, RegistrySchema)
+export function readRegistry(root: string, file?: string): Registry {
+  return read("registry", memory.registry, committedFile("registry", root, file), RegistrySchema)
 }
 
-export function readDevicePolicy(file: string): DevicePolicy {
-  return read("device-policy", memory["device-policy"], file, DevicePolicySchema)
+export function readDevicePolicy(root: string, file?: string): DevicePolicy {
+  return read(
+    "device-policy",
+    memory["device-policy"],
+    committedFile("device-policy", root, file),
+    DevicePolicySchema,
+  )
 }
 
 // The one record that may legitimately be absent: a checkout without a reviewed
 // corpus is a valid state, and the callers report the resulting coverage instead
 // of failing. Every caller handles the `null`; an unreadable file still throws.
-export function readCases(file: string): ParityCase[] | null {
-  const key = path.resolve(file)
+export function readCases(root: string, file?: string): ParityCase[] | null {
+  const key = committedFile("cases", root, file)
   const cached = memory.cases.get(key)
   if (cached !== undefined) return cached
   let value: unknown

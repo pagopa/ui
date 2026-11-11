@@ -84,10 +84,14 @@ in one dimension only — paths, parsing, memory and errors — and derives noth
 The reader exports one function per record. Each returns the schema's type and
 nothing else: no index, no convenience accessor, no aggregate document object
 over the four files. The read is lazy per record, so a command that needs the
-registry never parses the inventory, and it accepts a per-record path override
-because the evidence bundle reads the same documents from a different root
-(`parity/evidence.ts`, whose `dataRoot` is a genuine second root — the override
-is why it exists, not a convenience).
+registry never parses the inventory, and it accepts a root plus a per-record
+path override because the evidence bundle reads the same documents from a
+different root (`parity/evidence.ts`, whose `dataRoot` is a genuine second root —
+the override is why it exists, not a convenience). The record's name is not an
+argument: each read is `readInventory(root, file?)` and its three siblings, so a
+caller states a root, never a record. The path form stays exported as
+`committedFile(record, root, file?)` for the writers, which need the file rather
+than its value, and for the callers that hand a path on.
 
 The memory is keyed by the resolved absolute path and scoped to the process. Two
 reads of the same file in one command return the identical value, which is what

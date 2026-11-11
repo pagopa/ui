@@ -16,7 +16,7 @@ import {
   formatNodeCard,
   readNodeCardGates,
 } from "../../src/figma/card.ts"
-import { committedFile, readInventory } from "../../src/records/committed.ts"
+import { readInventory } from "../../src/records/committed.ts"
 import { fixtureTree, runCli, workspaceAt } from "../helpers/cli.mjs"
 
 const DESIGN_SYSTEM = fileURLToPath(new URL("../../../pagopa-ui/", import.meta.url))
@@ -885,7 +885,7 @@ test("the device line reads the source width before the canonical one", () => {
 // on a fixture and not only on the node the budget check happens to pick.
 test("every node of the committed inventory fits the ceiling", { timeout: 300_000 }, () => {
   const workspace = workspaceAt(DESIGN_SYSTEM)
-  const inventory = readInventory(committedFile("inventory", workspace.root))
+  const inventory = readInventory(workspace.root)
   const nodes = inventory.components.flatMap((component) => [
     component.nodeId,
     ...(component.variants ?? []).map((variant) => variant.nodeId),

@@ -360,7 +360,7 @@ function loadIconContext(workspace: Workspace, input?: string): IconContext {
       "Local icons require the configured Figma file and a pinned version for full source exports",
     )
   }
-  const registry = readRegistry(committedFile("registry", workspace.root))
+  const registry = readRegistry(workspace.root)
   const policies = localAssets(registry)
   const rule = requireBulkRule(registry, "figmaIconNames", "Local icons")
   if (!/^\d+:\d+$/.test(rule.pageId))

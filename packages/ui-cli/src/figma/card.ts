@@ -95,7 +95,7 @@ type CardSection = { label: string; parts: string[] }
 
 function nodeCases(workspace: Workspace, node: string): NodeCardCase[] {
   return (
-    (readCases(committedFile("cases", workspace.root)) ?? [])
+    (readCases(workspace.root) ?? [])
       .filter((item) => item.nodeId === node)
       .map((item) => ({
         id: item.id,
@@ -162,7 +162,7 @@ function nodeComments(
 function nodeDelta(workspace: Workspace, node: string): NodeCard["delta"] {
   const file = workspace.path(LIVE_SNAPSHOT_PATH)
   if (!fs.existsSync(file)) return null
-  const inventory = readInventory(committedFile("inventory", workspace.root))
+  const inventory = readInventory(workspace.root)
   const live = normalizeLive(readJson(file), { workspace })
   // The scope spans the accepted *and* the live variant ids: a variant the file
   // added has no accepted record, and it is the change a session most needs to
@@ -201,7 +201,7 @@ function fingerprintOf(entry: CardPin): string {
 function nodeEvidence(workspace: Workspace, node: string): NodeCard["evidence"] {
   const paths = evidencePaths(workspace.workspaceRoot)
   if (!fs.existsSync(paths.manifest)) return []
-  const inventory = readInventory(committedFile("inventory", workspace.root))
+  const inventory = readInventory(workspace.root)
   const component = componentForNode(inventory, node)
   // A component without variants pins its own PNG, and its own fingerprint is the
   // one the manifest carries — the same reading `pinnedVariant` makes. Indexing
@@ -335,10 +335,10 @@ export function buildNodeCard(
 ): NodeCard {
   const local = options.local ?? true
   const brief = buildBrief(workspace, requested)
-  const inventory = readInventory(committedFile("inventory", workspace.root))
+  const inventory = readInventory(workspace.root)
   const component = componentForNode(inventory, requested)
   const policyFile = committedFile("device-policy", workspace.root)
-  const policy = fs.existsSync(policyFile) ? readDevicePolicy(policyFile) : null
+  const policy = fs.existsSync(policyFile) ? readDevicePolicy(workspace.root) : null
   const cases = nodeCases(workspace, brief.node)
   const devices =
     policy && component

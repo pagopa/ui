@@ -8,15 +8,8 @@ import { UsageError } from "../lib/command.ts"
 import type { Workspace } from "../adapters/workspace.ts"
 import { requiredDevices } from "../figma/devices.ts"
 import type { ParityCase } from "../schemas/parity.ts"
-import {
-  committedFile,
-  readCases,
-  readDevicePolicy,
-  readInventory,
-  readRegistry,
-} from "../records/committed.ts"
+import { readCases, readDevicePolicy, readInventory, readRegistry } from "../records/committed.ts"
 import { isDraftCase } from "./cases.ts"
-import { corpusPath } from "./context.ts"
 import {
   classify,
   EMPTY_TOKEN_INDEX,
@@ -240,17 +233,12 @@ export function nextSteps(node: AlignNode): string[] {
 
 function loadNode(workspace: Workspace, options: AlignOptions): AlignNode {
   const { nodeId } = options
-  const inventory = readInventory(committedFile("inventory", workspace.root)).components.find(
-    (node) => node.nodeId === nodeId,
-  )
+  const inventory = readInventory(workspace.root).components.find((node) => node.nodeId === nodeId)
   if (!inventory) throw new UsageError(`${nodeId} is not in inventory.json`)
-  const entry = readRegistry(committedFile("registry", workspace.root)).entries?.[nodeId]
+  const entry = readRegistry(workspace.root).entries?.[nodeId]
   if (!entry) throw new UsageError(`${nodeId} is not in the registry`)
-  const declared = requiredDevices(
-    readDevicePolicy(committedFile("device-policy", workspace.root)),
-    inventory,
-  )
-  const cases = (readCases(corpusPath(workspace, options.casesFile)) ?? []).filter(
+  const declared = requiredDevices(readDevicePolicy(workspace.root), inventory)
+  const cases = (readCases(workspace.root, options.casesFile) ?? []).filter(
     (item) => item.nodeId === nodeId,
   )
   const covered = declared.filter((device) =>
@@ -275,7 +263,7 @@ export async function align(
   deps: AlignDeps,
 ): Promise<ParityOutput> {
   const node = loadNode(workspace, options)
-  const cases = (readCases(corpusPath(workspace, options.casesFile)) ?? []).filter(
+  const cases = (readCases(workspace.root, options.casesFile) ?? []).filter(
     (item) => item.nodeId === options.nodeId && !isDraftCase(item),
   )
   if (cases.length && !(await deps.storybook()))

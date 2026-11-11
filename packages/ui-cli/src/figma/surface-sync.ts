@@ -4,7 +4,7 @@ import { fetchFilePages, fetchNodeTrees } from "./rest.ts"
 import { fileKeyFromSource } from "./snapshot.ts"
 import { surfaceDecision } from "./surface-decision.ts"
 import { readJson, writeJson } from "../lib/json.ts"
-import { committedFile, readInventory, readRegistry } from "../records/committed.ts"
+import { readInventory, readRegistry } from "../records/committed.ts"
 import {
   PageSurfaceSchema,
   type PageIdentity,
@@ -121,8 +121,8 @@ export function planSurfaceSync(
   const root = findTree(source, pageId)
   if (!root || root.type !== "CANVAS")
     throw new Error(`page tree input does not contain Figma page ${pageId}`)
-  const inventory = readInventory(committedFile("inventory", workspace.root))
-  const registry = readRegistry(committedFile("registry", workspace.root))
+  const inventory = readInventory(workspace.root)
+  const registry = readRegistry(workspace.root)
   const file = workspace.path(SURFACE_PATH)
   const current = fs.existsSync(file)
     ? readJson(file, PageSurfaceSchema)

@@ -6,8 +6,7 @@ import { runGh, runGit, type ExternalCommand } from "../adapters/handoff.ts"
 import type { MediaCaptureInput, MediaCaptureResult } from "../adapters/handoff-media.ts"
 import { captureHandoffFrame } from "../adapters/handoff-media.ts"
 import type { RegistryEntry } from "../schemas/catalogue.ts"
-import { committedFile, readCases, readInventory, readRegistry } from "../records/committed.ts"
-import { corpusPath } from "../parity/context.ts"
+import { readCases, readInventory, readRegistry } from "../records/committed.ts"
 import type { ParityCase } from "../schemas/parity.ts"
 import { UsageError } from "../lib/command.ts"
 
@@ -91,9 +90,9 @@ function planCases(
   git: ExternalCommand,
   sourcePaths: Set<string>,
 ): PlannedCase[] {
-  const registry = readRegistry(committedFile("registry", workspace.root))
-  const inventory = readInventory(committedFile("inventory", workspace.root))
-  const cases = readCases(corpusPath(workspace)) ?? []
+  const registry = readRegistry(workspace.root)
+  const inventory = readInventory(workspace.root)
+  const cases = readCases(workspace.root) ?? []
   const nodes = changedNodeIds(workspace, base, git, sourcePaths)
   const relevant = nodes.flatMap((nodeId) => {
     if (!inventory.components.some((node) => node.nodeId === nodeId)) return []
@@ -124,7 +123,7 @@ function changedNodeIds(
   const casesObject = "packages/pagopa-ui/src/catalog/figma/parity-cases.json"
   const oldRegistry = objectJson(git(["show", `${base}:${registryObject}`], cwd))
   const oldEntries = objectJson(oldRegistry?.entries)
-  const currentRegistry = readRegistry(committedFile("registry", workspace.root))
+  const currentRegistry = readRegistry(workspace.root)
   const currentEntries = objectJson(objectJson(currentRegistry)?.entries)
   const ids = new Set([...Object.keys(oldEntries ?? {}), ...Object.keys(currentEntries ?? {})])
   const changed = new Set<string>()
@@ -142,7 +141,7 @@ function changedNodeIds(
     }
   }
   const oldCases = parseCaseRows(git(["show", `${base}:${casesObject}`], cwd))
-  const currentCases = readCases(corpusPath(workspace)) ?? []
+  const currentCases = readCases(workspace.root) ?? []
   const oldById = new Map(oldCases.map((entry) => [entry.id, entry]))
   const currentById = new Map(currentCases.map((entry) => [entry.id, entry]))
   for (const id of new Set([...oldById.keys(), ...currentById.keys()])) {

@@ -24,5 +24,9 @@ export function loadCatalogueState(workspace: Workspace): CatalogueStateReport {
   }
   if (!fs.existsSync(registryFile)) errors.push(`missing ${COMMITTED_FILES.registry}`)
   if (errors.length) return { inventory: null, registry: null, errors }
-  return { inventory: readInventory(inventoryFile), registry: readRegistry(registryFile), errors }
+  return {
+    inventory: readInventory(workspace.root),
+    registry: readRegistry(workspace.root),
+    errors,
+  }
 }

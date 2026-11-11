@@ -66,14 +66,14 @@ function buildEntry(old: RegistryEntry | undefined, options: RegistryOptions): R
 }
 
 export async function setRegistry(workspace: Workspace, options: RegistryOptions) {
-  const inventory = readInventory(committedFile("inventory", workspace.root))
+  const inventory = readInventory(workspace.root)
   const node = inventory.components.find((item) => item.nodeId === options.nodeId)
   if (!node) throw new UsageError(`${options.nodeId} is not in the inventory`)
   if (options.note && options.note.length > NOTE_LENGTH_LIMIT)
     throw new CheckFailure(`note exceeds ${NOTE_LENGTH_LIMIT} characters`)
   const registryFile = committedFile("registry", workspace.root)
   // A copy: the remembered read stays the file on disk until the write forgets it.
-  const registry = structuredClone(readRegistry(registryFile))
+  const registry = structuredClone(readRegistry(workspace.root))
   const old = registry.entries[node.nodeId]
   const entry = buildEntry(old, options)
   registry.entries[node.nodeId] = entry

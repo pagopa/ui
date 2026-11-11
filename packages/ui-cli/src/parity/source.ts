@@ -19,7 +19,7 @@ import { normalizeLive } from "../figma/snapshot.ts"
 import { UsageError } from "../lib/command.ts"
 import { decodeJsonBytes } from "../lib/json.ts"
 import { parseSchema } from "../lib/validate.ts"
-import { committedFile, readInventory } from "../records/committed.ts"
+import { readInventory } from "../records/committed.ts"
 import type { InventoryNode } from "../schemas/catalogue.ts"
 import { evidencePaths } from "./evidence.ts"
 
@@ -249,7 +249,7 @@ export function loadExport(workspace: Workspace, input?: string): Project {
   // path stays the normalizer's.
   const catalogue =
     raw.kind === "parity-source"
-      ? readInventory(committedFile("inventory", workspace.root)).components
+      ? readInventory(workspace.root).components
       : normalizeLive(raw, { workspace })
   const sourceSha256 = createHash("sha256").update(contents).digest("hex")
   return { file, origin, version: raw.version, sourceSha256, raw, catalogue }

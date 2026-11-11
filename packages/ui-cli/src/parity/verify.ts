@@ -1,7 +1,7 @@
 import type { ParityCase } from "../schemas/parity.ts"
 
 import type { Workspace } from "../adapters/workspace.ts"
-import { committedFile, readCases, readRegistry } from "../records/committed.ts"
+import { readCases, readRegistry } from "../records/committed.ts"
 import { isDraftCase, validateCaseFile } from "./cases.ts"
 import { formatCoverage, loadCoveragePopulations } from "./coverage.ts"
 import { checkEvidence } from "./evidence.ts"
@@ -21,8 +21,8 @@ export function verify(
   const out: string[] = []
   const err: string[] = []
   const path_ = corpusPath(workspace, options.casesFile)
-  const cases = readCases(path_) ?? []
-  const registry = readRegistry(committedFile("registry", workspace.root))
+  const cases = readCases(workspace.root, options.casesFile) ?? []
+  const registry = readRegistry(workspace.root)
   const nodes = inventoryNodes(workspace)
   const policy = devicePolicy(workspace)
   const corpus = validateCaseFile(workspace, cases, { registry, nodes, policy })

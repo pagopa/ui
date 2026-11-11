@@ -376,9 +376,7 @@ test("the device axes of a node are named or derived from their values", () => {
 })
 
 test("the committed policy covers the committed inventory", () => {
-  const committed = readDevicePolicy(
-    path.resolve(import.meta.dirname, "../../../pagopa-ui/src/catalog/figma/device-policy.json"),
-  )
+  const committed = readDevicePolicy(path.resolve(import.meta.dirname, "../../../pagopa-ui"))
   assert.ok(committed.axes.length > 0)
   assert.ok(Object.keys(committed.devices).length >= 3)
 })

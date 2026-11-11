@@ -41,11 +41,8 @@ const policy = {
 test("a committed record is read from its default path", () => {
   const fixture = fixtureTree({ [INVENTORY]: inventory, [REGISTRY]: registry }, "records-default-")
   try {
-    assert.equal(readInventory(committedFile("inventory", fixture.root)).fileKey, "file")
-    assert.equal(
-      readRegistry(committedFile("registry", fixture.root)).entries["4:4"].status,
-      "excluded",
-    )
+    assert.equal(readInventory(fixture.root).fileKey, "file")
+    assert.equal(readRegistry(fixture.root).entries["4:4"].status, "excluded")
   } finally {
     fixture.dispose()
   }
@@ -57,11 +54,8 @@ test("a per-record override path wins over the default", () => {
     "records-override-",
   )
   try {
-    assert.equal(readInventory(committedFile("inventory", fixture.root)).fileKey, "file")
-    assert.equal(
-      readInventory(committedFile("inventory", fixture.root, "elsewhere/inventory.json")).fileKey,
-      "override",
-    )
+    assert.equal(readInventory(fixture.root).fileKey, "file")
+    assert.equal(readInventory(fixture.root, "elsewhere/inventory.json").fileKey, "override")
   } finally {
     fixture.dispose()
   }
@@ -70,23 +64,38 @@ test("a per-record override path wins over the default", () => {
 test("the same record read twice in one process is the identical value", () => {
   const fixture = fixtureTree({ [POLICY]: policy }, "records-memory-")
   try {
-    const first = readDevicePolicy(committedFile("device-policy", fixture.root))
+    const first = readDevicePolicy(fixture.root)
     // A second spelling of the same file: the memory is keyed by the resolved path.
-    const second = readDevicePolicy(
-      committedFile("device-policy", fixture.root, "src/catalog/figma/./device-policy.json"),
-    )
+    const second = readDevicePolicy(fixture.root, "src/catalog/figma/./device-policy.json")
     assert.equal(second, first)
   } finally {
     fixture.dispose()
   }
 })
 
+test("the same record under two roots is two reads, not one", () => {
+  const one = fixtureTree({ [INVENTORY]: inventory }, "records-roots-one-")
+  const other = fixtureTree(
+    { [INVENTORY]: { ...inventory, fileKey: "other" } },
+    "records-roots-other-",
+  )
+  try {
+    assert.equal(readInventory(one.root).fileKey, "file")
+    assert.equal(readInventory(other.root).fileKey, "other")
+    // Reading the second root must not have answered for the first.
+    assert.equal(readInventory(one.root).fileKey, "file")
+  } finally {
+    one.dispose()
+    other.dispose()
+  }
+})
+
 test("an optional record is null when its file is absent and its value when present", () => {
   const fixture = fixtureTree({}, "records-optional-")
   try {
-    assert.equal(readCases(committedFile("cases", fixture.root)), null)
+    assert.equal(readCases(fixture.root), null)
     fixture.write({ [CASES]: [] })
-    assert.deepEqual(readCases(committedFile("cases", fixture.root)), [])
+    assert.deepEqual(readCases(fixture.root), [])
   } finally {
     fixture.dispose()
   }
@@ -97,7 +106,7 @@ test("a required record that is absent raises the one error", () => {
   try {
     const file = committedFile("registry", fixture.root)
     assert.throws(
-      () => readRegistry(file),
+      () => readRegistry(fixture.root),
       (error) => {
         assert.ok(error instanceof CommittedRecordError)
         assert.equal(error.record, "registry")
@@ -116,7 +125,7 @@ test("a corrupt record raises the one error carrying the record, the file and th
   try {
     const file = committedFile("registry", fixture.root)
     assert.throws(
-      () => readRegistry(file),
+      () => readRegistry(fixture.root),
       (error) => {
         assert.ok(error instanceof CommittedRecordError)
         assert.equal(error.record, "registry")

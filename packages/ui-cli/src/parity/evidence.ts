@@ -30,7 +30,7 @@ import {
 import { parseSchema } from "../lib/validate.ts"
 import type { InventoryNode } from "../schemas/catalogue.ts"
 import type { ParityCase } from "../schemas/parity.ts"
-import { committedFile, readCases, readInventory, readRegistry } from "../records/committed.ts"
+import { readCases, readInventory, readRegistry } from "../records/committed.ts"
 import { caseVariant, validateCaseFile, variantOfCase } from "./cases.ts"
 
 export const EVIDENCE_DIR = "docs/figma-parity"
@@ -442,8 +442,8 @@ export function checkEvidence({
   maxBytes = MAX_EVIDENCE_BYTES,
 }: EvidenceCheckOptions): EvidenceReport {
   const paths = evidencePaths(root)
-  const corpus = cases ?? readCases(committedFile("cases", dataRoot)) ?? []
-  const inventory = nodes ?? readInventory(committedFile("inventory", dataRoot)).components
+  const corpus = cases ?? readCases(dataRoot) ?? []
+  const inventory = nodes ?? readInventory(dataRoot).components
   const bundle = loadEvidenceForCheck(root)
   const errors = [...bundle.errors]
   const warnings: string[] = []
@@ -754,9 +754,9 @@ async function prepareEvidence(
     return { code: 1, out, err }
   }
   const paths = evidencePaths(root)
-  const cases = readCases(committedFile("cases", dataRoot)) ?? []
-  const nodes = readInventory(committedFile("inventory", dataRoot)).components
-  const registry = readRegistry(committedFile("registry", dataRoot))
+  const cases = readCases(dataRoot) ?? []
+  const nodes = readInventory(dataRoot).components
+  const registry = readRegistry(dataRoot)
   // The corpus validator owns the schema: writing evidence for a broken corpus
   // would pin the wrong thing.
   const validation = validateCaseFile(workspace, cases, { registry, nodes })

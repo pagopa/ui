@@ -18,7 +18,7 @@ import { sha256 } from "../lib/hash.ts"
 import { walkFiles } from "../lib/fs.ts"
 import type { Workspace } from "../adapters/workspace.ts"
 import { UsageError } from "../lib/command.ts"
-import { committedFile, readInventory, readRegistry } from "../records/committed.ts"
+import { readInventory, readRegistry } from "../records/committed.ts"
 import {
   type ExtractedCard,
   type ExtractedContainer,
@@ -138,7 +138,7 @@ export function fileKeyOf(root: string): string {
 }
 
 function inventoryNodes(root: string): Map<string, { pageId: string; setName: string }> {
-  const inventory = readInventory(committedFile("inventory", root))
+  const inventory = readInventory(root)
   const nodes = new Map<string, { pageId: string; setName: string }>()
   for (const component of inventory.components) {
     nodes.set(component.nodeId, { pageId: component.pageId, setName: component.nodeId })
@@ -150,8 +150,8 @@ function inventoryNodes(root: string): Map<string, { pageId: string; setName: st
 }
 
 function implementedTargets(root: string, pageId: string): string[] {
-  const inventory = readInventory(committedFile("inventory", root))
-  const registry = readRegistry(committedFile("registry", root))
+  const inventory = readInventory(root)
+  const registry = readRegistry(root)
   return inventory.components
     .filter((component) => component.pageId === pageId)
     .filter((component) => registry.entries[component.nodeId]?.status === "implemented")
