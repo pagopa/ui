@@ -1,3 +1,13 @@
+## 0.1.8 (2026-11-11)
+
+### 🩹 Fixes
+
+- fix(switch-field): align source start-row geometry ([#135](https://github.com/pagopa/ui/pull/135))
+
+### ❤️ Thank You
+
+- gunzip
+
 ## 0.1.7 (2026-11-10)
 
 ### 🩹 Fixes
