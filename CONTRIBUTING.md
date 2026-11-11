@@ -492,11 +492,12 @@ long as the label stays: it is how a reviewer proves a risky change before the
 merge, and how the commit the update job pushed gets verified, since that commit
 is made with `GITHUB_TOKEN` and starts no run of its own.
 
-Run the same two steps locally:
+Run the same check locally as a fail-fast sequence; the browser starts only
+after the build and baseline preflight succeed:
 
 ```bash
-pnpm nx run pagopa-ui-storybook:build
-pnpm nx run pagopa-ui-cli:test:visual -- --since origin/main --out apps/storybook/visual/scope.json --check-baselines
+pnpm nx run pagopa-ui-storybook:build && \
+pnpm nx run pagopa-ui-cli:test:visual -- --since origin/main --out apps/storybook/visual/scope.json --check-baselines && \
 VISUAL_SCOPE=apps/storybook/visual/scope.json pnpm nx run pagopa-ui-storybook:test:visual
 ```
 
@@ -505,7 +506,9 @@ complete too. The file carries the mode as well: `stories` lists the ids to
 capture, `all` names none because the whole catalogue runs.
 `--check-baselines` lists missing or untracked Linux images for the selected
 stories before the browser starts; the update job omits it so it can create
-those images.
+those images. A nonzero preflight is a hard stop: do not run Playwright, which
+can create a snapshot when a baseline is missing. Use the pinned Linux container
+below for comparisons; create or update baselines only through `visual:update`.
 
 The comparison uses `threshold: 0` and a 32-pixel budget. Every counted pixel
 must match exactly; the budget absorbs Chromium's small border and text
