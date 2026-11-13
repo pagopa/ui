@@ -30,8 +30,8 @@ name: Figma drift
 # that pushes and opens the pull request gets write.
 on:
   schedule:
-    # Every Monday at 04:00 UTC
-    - cron: "0 4 * * 1"
+    # Every day at 02:00 UTC
+    - cron: "0 2 * * *"
   workflow_dispatch:
 
 concurrency:
