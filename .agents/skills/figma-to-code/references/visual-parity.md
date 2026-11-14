@@ -28,8 +28,9 @@ written down with their variants and declared devices.
    the variant list, `--png` for the pinned source image.
 2. **First capture.** Name the state, expect it, the source width, the artboard
    height and the compare offset, with `--strict` on this first run: strict is the
-   only pass that catches a swapped stack whose sizes match. Exit 2 is missing
-   evidence, not a delta.
+   only pass that catches a swapped stack whose sizes match. For pointer hover,
+   use the [`:hover` state-evidence contract](parity-tooling.md#capturing-a-state).
+   Exit 2 is missing evidence, not a delta.
 3. **Compare both ways.** The numbers and the images, at native size and with
    magnified crops of seams, notches and joined edges. Anything structural — a
    missing slot, a wrong edge, an off-token colour, the wrong face, a swapped
