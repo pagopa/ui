@@ -51,6 +51,10 @@ when work touches a component with a design source.
 - [`figma-to-ui`](packages/pagopa-ui/skills/figma-to-ui/SKILL.md) — the same
   reading of the Figma library, shipped in the package for its consumers: a
   frame's instances to the `@pagopa/ui` exports that render them.
+- [`modern-web-guidance`](.agents/skills/modern-web-guidance/SKILL.md) — Chrome's
+  web-platform guidance, retrieved by query before the code is written: HTML
+  semantics, CSS layout, animation and colour, client-side JavaScript,
+  accessibility, forms, overlays and Core Web Vitals.
 
 | Work                                                       | Skills                                                                                          |
 | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
@@ -59,6 +63,13 @@ when work touches a component with a design source.
 | A component with no node joining the public API            | both: `figma-to-code` adds the catalogue coverage                                               |
 | A Figma delta, tokens, icons, pictograms                   | `figma-to-code`; `pagopa-ui-standards` for each component it touches                            |
 | A question for the design owner, opened or answered        | `figma-to-code`: the design request flow                                                        |
+| HTML, CSS or client-side JavaScript behaviour              | `modern-web-guidance`, before the code is written                                               |
+
+Skills published outside the repository are installed with the `skills` CLI
+and pinned in [skills-lock.json](./skills-lock.json): `shadcn` for the
+primitives, `modern-web-guidance` for the platform itself. The latter answers
+from the package it names — `pnpx modern-web-guidance@latest search|retrieve`
+— so the session that uses it needs outbound network access.
 
 Both Figma skills are graded by harbor-bench evals: `evals/` holds the graded
 scenarios and `harbor/` the session that runs them, next to each skill. The run

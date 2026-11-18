@@ -48,7 +48,9 @@ type DocsContext = {
   graph: CommandGraph | null
 }
 
-const SKIPPED_SKILLS = new Set(["shadcn"])
+// Skills the `skills` CLI installs from a published repository: their documents
+// are the publisher's, so the repository's link and scope rules do not apply.
+const SKIPPED_SKILLS = new Set(["modern-web-guidance", "shadcn"])
 
 const LOCAL_PREFIXES = [".figma/", "node_modules/", "dist/", "coverage/"]
 

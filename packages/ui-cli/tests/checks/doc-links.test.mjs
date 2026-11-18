@@ -164,11 +164,12 @@ test("the skill shipped to a consuming agent stays agnostic too", () => {
   assert.match(result, /names the component Banner/)
 })
 
-test("other skills may name components and the shadcn skill is skipped", () => {
+test("other skills may name components and the installed third-party skills are skipped", () => {
   assert.deepEqual(
     check({
       ".agents/skills/other/SKILL.md": "Banner lives in `src/components/feedback/banner.tsx`.",
       ".agents/skills/shadcn/SKILL.md": "[x](missing.md)",
+      ".agents/skills/modern-web-guidance/SKILL.md": "[y](missing.md)",
       "src/components/feedback/banner.tsx": "export function Banner() { return null }",
     }).problems,
     [],
