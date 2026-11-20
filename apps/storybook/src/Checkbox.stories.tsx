@@ -79,6 +79,18 @@ export const SourceSelected: Story = {
   },
 }
 
+export const SourceFeedback: Story = {
+  tags: ["color-pinned"],
+  render: () => <Checkbox aria-label="Consenso" aria-invalid="true" />,
+  play: async ({ canvasElement }) => {
+    const checkbox = within(canvasElement).getByRole("checkbox", { name: "Consenso" })
+    // The source Status=Feedback glyph is the uncovered check_box in #D13333.
+    await expect(checkbox).toHaveAttribute("aria-invalid", "true")
+    await expect(checkbox).not.toBeChecked()
+    await expect(getComputedStyle(checkbox).color).toBe("rgb(209, 51, 51)")
+  },
+}
+
 export const SourceFocused: Story = {
   tags: ["color-pinned"],
   render: () => <Checkbox aria-label="Consenso" />,
