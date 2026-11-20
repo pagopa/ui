@@ -290,6 +290,65 @@ test("handoff brief leaves a cap-truncated node to the queue's own notice", () =
   }
 })
 
+test("handoff brief reports the artifact's identity and order, never its bytes", () => {
+  const fixture = fixtureTree({}, "handoff-brief-summary-")
+  try {
+    const queue = {
+      implementationOrder: ["1:1"],
+      items: [{ nodeId: "1:1", class: "pending", devices: [], brief: { node: "1:1" } }],
+    }
+    // A saved plan carries a whole snapshot beside the order: the brief must not
+    // re-expand it, or the JSON read passes the engine's maximum string length.
+    const artifact = {
+      implementationOrder: ["1:1"],
+      pending: Array.from({ length: 5000 }, (_, index) => ({
+        nodeId: `9:${index}`,
+        note: "x".repeat(200),
+      })),
+    }
+    const result = handoffBrief(workspaceAt(fixture.root), { ...openPr, body: "" }, queue, artifact)
+    assert.deepEqual(result.delta, {
+      source: "body",
+      path: null,
+      implementationOrder: ["1:1"],
+    })
+    assert.ok(JSON.stringify(result, null, 2).length < 10_000)
+  } finally {
+    fixture.dispose()
+  }
+})
+
+test("handoff brief names the local snapshot it read without embedding it", () => {
+  const fixture = fixtureTree(
+    {
+      ".figma/plan.json": {
+        implementationOrder: ["1:1"],
+        pending: Array.from({ length: 5000 }, (_, index) => ({
+          nodeId: `9:${index}`,
+          note: "x".repeat(200),
+        })),
+      },
+    },
+    "handoff-brief-plan-",
+  )
+  try {
+    const queue = {
+      implementationOrder: ["1:1"],
+      items: [{ nodeId: "1:1", class: "pending", devices: [], brief: { node: "1:1" } }],
+    }
+    const result = handoffBrief(workspaceAt(fixture.root), { ...openPr, body: "" }, queue)
+    assert.deepEqual(result.delta, {
+      source: "file",
+      path: ".figma/plan.json",
+      implementationOrder: ["1:1"],
+    })
+    assert.equal(result.orderSource, "delta")
+    assert.ok(JSON.stringify(result, null, 2).length < 10_000)
+  } finally {
+    fixture.dispose()
+  }
+})
+
 test("handoff media dry-run leaves source and external systems untouched", async () => {
   const fixture = fixtureTree(mediaFiles, "handoff-media-dry-")
   const original = fs.readFileSync(

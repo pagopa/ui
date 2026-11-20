@@ -73,7 +73,14 @@ test("figma handoff brief has an in-process CLI contract", async () => {
       external: ghExternal(calls),
     })
     assert.equal(result.status, 0, result.stderr)
-    assert.deepEqual(JSON.parse(result.stdout).queue.implementationOrder, ["4:4"])
+    const brief = JSON.parse(result.stdout)
+    assert.deepEqual(brief.queue.implementationOrder, ["4:4"])
+    // The JSON surface carries the artifact's identity and order, not its bytes.
+    assert.deepEqual(brief.delta, {
+      source: "body",
+      path: null,
+      implementationOrder: ["4:4"],
+    })
   } finally {
     fixture.dispose()
   }
