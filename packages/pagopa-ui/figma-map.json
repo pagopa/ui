@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "fileKey": "pvhsJpPGQbEwNLiyP7BOIw",
-  "syncedAt": "2026-11-11",
+  "syncedAt": "2026-11-20",
   "nodes": {
     "50:1700": {
       "figma": "White Template",
@@ -1264,7 +1264,7 @@
       "exports": [
         "RadioField"
       ],
-      "story": "components-inputs-radiofield--radio-indicator-states"
+      "story": "components-inputs-radiofield--radio-field-feedback"
     },
     "197:1985": {
       "figma": "Chip",

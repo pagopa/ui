@@ -152,7 +152,7 @@
         "story": "apps/storybook/src/Dialog.stories.tsx",
         "storyExports": ["SourceCase"]
       },
-      "note": "Reviewed 2026-10-16 (device burn-down wave 6, closing the 2026-10-14 delta): the modal panel — 600×290 on the Desktop device, 272×412 on the Mobile one (the 320 viewport minus the 24px pair), 16px radius, 24px padding, the source 24px panel gap, the 8px message stack (title on the 24/32 → 18/28 type tokens, the 16/22 description, the option row) and the 16px footer gap. Two cases, one per declared device, both viewport-scoped (verified: the width and both type/stack switches are media-query driven) and responsive-clean: desktop 1042:18132 (case 1042-18133-desktop-default-desktop, 600×290, every mapped offset exact) and mobile 1042:18134 (case 1042-18133-mobile-default-mobile, 272×412 at the 320 viewport, exact except the footer). The render exposed three token-ladder drifts, fixed in overlays/dialog.tsx: the popup was a block whose children carried the spacing (computed root gap 0 against the source 24) and is now the source's own model — a flex column on `gap-6` with the message stack as one 8px group; the description inherited 16/24 and is on the `text-body` token (16/22); the footer gap was 24 and is `gap-4` (16, the source 15/16). The `Type=Default` composition is the captured one (the set’s base type; the other Type variants are caller-owned bodies whose components carry their own alignment). Recorded adaptations: the option row’s source 8px gap lives on the inner label row in the DOM while the 2px field gap belongs to the message stack (the 1909:98992 reading, both cases) and the shared ghost action keeps its 48px native target and full-width mobile stack where the source’s mobile secondary is a 22px row (+26 on the footer and the panel, guides/actions.md). The story’s SourceCase carries the source sample and renders in the fullscreen layout (the centered body would shrink the forced root below a narrow viewport); the capture opens the panel with its own click on the trigger. The title is Bold (CSS 700) 24/32 on desktop and 18/28 on mobile. The modal backdrop is Color/Surface/Surface overlay #0e0f13 at 35% with no blur. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`."
+      "note": "2026-11-20 drift: only the Status override of the embedded ProductModule radio instances changed (Active to Selected). The panel geometry, the slots and the artwork are untouched and SourceCase keeps its recorded residues; nothing on the render moved."
     },
     "10444:14812": {
       "status": "implemented",
@@ -269,7 +269,7 @@
         "story": "apps/storybook/src/PaymentModule.stories.tsx",
         "storyExports": ["Playground", "ActionMobile", "Summary", "MultiPayment", "Loading"]
       },
-      "note": "Reviewed 2026-10-16 (device burn-down wave 6, closing the 2026-10-14 delta): the boxed payment module — 8px radius, the 1px --border stroke, white card, 16px padding, the source root gap 24 (mobile 16), the code 16/22 semibold, the 14/20 label + semibold value rows 6px apart on the desktop / 12 on the mobile, the 12/18 Han Purple suggestion and either the price column with its 16px tail gap (8 with the radio) or the Action buttons. The module now answers its own width through @container/payment-module (the source Layout axis is the module box: 560/270) instead of the max-sm viewport media queries — the wave's scope finding; the container scope is verified on every case. Five cases: desktop Default (11133-16142-desktop-default-desktop, the source 560x136), mobile Default (11133-16142-mobile-default-mobile, 270x194), desktop Action (11133-16142-desktop-action-desktop, 560x208), mobile Action (11133-16142-mobile-action-mobile, 270x274, the ActionMobile export) and desktop Multi-payment (11133-16142-desktop-multi-payment-desktop, 560x136); all responsive-clean. Component fixes: the root is the source model (a flex column on the 24px gap; the content row on 16px mobile / 24 desktop with @md:items-center), the suggestion icon slot is a 20px flex box (it added a phantom 5px line box: the row was 25 against the source 20), and the download action is the source 24px icon frame with the invisible 44px ::after target (the sibling ProductModule reading) instead of an inflated 44px box. Recorded adaptations: the source label frames are 22px tall with the 124px price detail overflowing them, so every tail is the in-flow detail (40 tall, the width following the widest line, 123.38 in the bundled font, against the source 24/108); the fixture's full object description wraps in the 236px mobile track where the mockups truncate their placeholder (the row 64 against 20); the shared ghost action keeps its 48px native target where the source mobile secondary is a 24px row; the source's desktop Action and Multi-payment frames exclude the 20px suggestion they draw (and overlap their button row), so those module heights follow the stacked content. Finding: the mobile Multi-payment frame (11134:16286) moves the radio into the code row (a 238x24 row, gap 16, the radio at x=230) and overlaps its own suggestion with the 68x22 price-only tail at 156 against the suggestion ending at 172 — a composition the library does not reproduce at any width (the radio stays with the price at every width, the desktop composition), so no mobile case is committed for that type.\n\nOpen design question: the status chip — docs/design-requests/2026-10-24-payment-module-status-chip.md (issue #36). The node stays implemented for the drawn layouts."
+      "note": "2026-11-20 drift: 11134:16328 (desktop multi-payment) and 11134:16333 (mobile) only renamed Radio button single element to RadioButtonSingleElement and their Status=Active override to Status=Selected. No layout or colour moved; the five mapped stories and their cases stand, the multi-payment fingerprint moving with the nested instance only."
     },
     "11149:7765": {
       "status": "implemented",
@@ -412,7 +412,7 @@
         "story": "apps/storybook/src/Pagination.stories.tsx",
         "storyExports": ["FirstPage", "SecondPage", "LastPage"]
       },
-      "note": "Pending until the Figma owner answers the compact-state, rows-per-page, edge-window and edge-arrow questions. The node stays pending under docs/design-requests/2026-10-21-pagination-order-axis.md."
+      "note": "2026-11-20 drift: the rows-per-page control is now an instance of the shared Select (48px) instead of a raw frame with .RowPerPageSelect, and .Rows per page is renamed .RowsPerPage; the page buttons are unchanged. The node stays pending until the compact-state, rows-per-page, edge-window and edge-arrow questions are answered: docs/design-requests/2026-10-21-pagination-order-axis.md."
     },
     "1278:6527": {
       "status": "pending",
@@ -422,7 +422,7 @@
         "story": "apps/storybook/src/Drawer.stories.tsx",
         "storyExports": ["SourceDesktop", "SourceMobile"]
       },
-      "note": "Reviewed devices: Desktop `1278:6528` (417x800) and Mobile `1278:6526` (320x646). Mobile matches; desktop uses the nearest 416px token (1px residue). The composition keeps a body description, 40px action gap, bottom sheet without a handle, 8px header gap and `shadow-32`. Pending shared width/mobile decision and unreviewed Service detail, Search, Filters and Sort dependencies; request: docs/design-requests/2026-10-21-timeline-drawer-width-and-mobile.md."
+      "note": "Reviewed desktop 1278:6528 (417x800) and mobile 1278:6526 (320x646): mobile matches, desktop uses the nearest 416px token (1px residue); body description, 40px action gap, bottom sheet without a handle, 8px header gap and shadow-32. The 2026-11-20 drift changed nothing in this tree. Pending the shared width/mobile decision and the unreviewed Service detail, Search, Filters and Sort dependencies: docs/design-requests/2026-10-21-timeline-drawer-width-and-mobile.md."
     },
     "12785:14427": {
       "status": "implemented",
@@ -553,7 +553,7 @@
           "Sorting"
         ]
       },
-      "note": "Reviewed 2026-11-05: desktop 1349-22020-default-desktop (852x852) and mobile 1349-22020-default-mobile (272x4013) verify with documented residues and clean container reflow. Desktop's first column follows auto layout instead of the source's seven fixed widths; mobile's 15-row fixture and 4px label gap make cards taller than the source, without clipping. Sorting is activated by the whole header label and arrow, as confirmed in the 2026-10-27 Figma thread."
+      "note": "2026-11-20 drift: the footer pagination became an instance of the shared Select, so the rows-per-page row is 48px where the raw .RowPerPageSelect frame was 46, and .Rows per page is renamed .RowsPerPage — desktop 852 to 854, mobile 4013 to 4015. The composition, the auto-layout first column, the 15-row mobile fixture and the sorting behaviour confirmed in the 2026-10-27 thread are unchanged; the two cases keep their recorded width and card residues."
     },
     "1360:20138": {
       "status": "implemented",
@@ -704,7 +704,7 @@
         "story": "apps/storybook/src/DialogTemplate.stories.tsx",
         "storyExports": ["NarrowFrame", "WideFrame"]
       },
-      "note": "Implemented 2026-10-15 from the pinned source set: the 650px artboard, the shared 35% overlay backdrop and the 16px panel (272x446 narrow / 600x290 wide) with 24px padding and the 24px body-to-actions gap; the body stacks title (18/28 narrow, 24/32 wide), description (16/22 grey-700) and the 56px option row on an 8px gap; the footer is a 16px-gap column narrow and a right-aligned 16px-gap row wide. The composition answers its own frame through container queries and the panel is not portaled (a page fragment, measurable by the parity tool). Device review 2026-10-16 (device burn-down wave 4): one case per declared device, all container-scoped and responsive-clean — mobile 1909:98989 (case 1909-98992-xs, the source 320: panel 272x446, the 18/28 narrow title and the stacked actions), tablet 1909:98990 (case 1909-98992-md, the source 900: panel 600x290, the 552px blocks, the option row 552x56 at 24/138 and the action row 552x48 at 24/218) and desktop 1909:98987 (case 1909-98992-lg-desktop, the source 1200: the same 600x290 panel — the desktop frames only widen the page). The container declaration is verified: the composition moves with the frame width and not with the viewport (the viewport probe reports `responsive.scope.viewport`). The `Checkbox with label.gap` residue (the source 8px option-row gap lives on the inner label row in the DOM) is carried by all three cases; the wide story now renders the page itself (`WideFrame` dropped its 900px wrapper) so the desktop device is captured in its own 1200 frame, while the narrow story keeps the 320 frame. The set's SM Tablet 600 frame draws the same 272x446 narrow panel as the mobile one; the tablet case captures the MD 900 wide frame."
+      "note": "2026-11-20 drift: no change of its own at the pinned version (0 nodes in the snapshot diff, no manifest case moved). The dialog panel composition, the three device cases and the Checkbox with label.gap residue stand unchanged."
     },
     "1909:99033": {
       "status": "implemented",
@@ -714,7 +714,7 @@
         "story": "apps/storybook/src/SecurityCodeDialog.stories.tsx",
         "storyExports": ["NarrowFrame", "WideFrame"]
       },
-      "note": "Implemented 2026-10-15 from the pinned source set: the shared dialog panel (272x570 narrow / 600x374 wide, 16px radius, 24px padding and gap) with the code block on the source 16px gap — the 167x50 code control and the 14/20 helper (three lines narrow, one wide). The source alert row is a hidden instance in every variant. Residues: the code field owns its label (6px gap) where the mockup keeps an external 16px row, so the block and the panel are 8px shorter; the reviewed field keeps 24px slots on an 8px gap against the source 11px slots on 16px (the outer frame matches, 169 vs 167). Device review 2026-10-16 (device burn-down wave 4): one case per declared device, all container-scoped and responsive-clean — mobile 1909:99034 (case 1909-99033-xs, the source 320: panel 272x570, the code block 224x164 with the three-line 14/20 helper), tablet 1909:99040 (case 1909-99033-md, the source 900: panel 600x374 and the code block 552x124 with the one-line helper) and desktop 1909:99045 (case 1909-99033-lg-desktop, the source 1200: the same 600x374 panel). All three carry the `Authentication code.box.height` and `field.box.height` residues (the field owns its label, so the block and the panel are 8px shorter) and keep the composition check off with the recorded note: a `--compare-offset` run confirms the same shift at 1200 (`Authentication code input.offset.top` 182 against 192, `Block buttons.offset.top` 294 against 302). The wide story now renders the page itself (`WideFrame` dropped its 900px wrapper) so the desktop device is captured in its own 1200 frame, and the container declaration is verified at every device."
+      "note": "2026-11-20 drift: no change of its own at the pinned version (0 nodes in the snapshot diff, no manifest case moved). The panel, the code block, the three device cases and the recorded box-height/offset residues stand unchanged."
     },
     "192:1208": {
       "status": "implemented",
@@ -740,9 +740,9 @@
         "module": "src/components/primitives/checkbox.tsx",
         "export": "Checkbox",
         "story": "apps/storybook/src/Checkbox.stories.tsx",
-        "storyExports": ["SourceDefault", "SourceSelected", "SourceFocused"]
+        "storyExports": ["SourceDefault", "SourceSelected", "SourceFeedback", "SourceFocused"]
       },
-      "note": "Adaptation `native-target-minimum`: the 24px source visual stays while the invisible native target expands to 44px (`after:-inset-2.5`). Adaptation `keyboard-focus-perimeter`: the library's visible keyboard focus perimeter is drawn outside the focused glyph; since 2026-10-24 the source red focus glyph is not painted (F-05, open request docs/design-requests/2026-10-24-checkbox-focus-state.md). Reviewed 2026-10-23: one case per source Status variant (194-3654-default, -selected, -focused), each 24×24 with the 24×24 check_box artwork at 0,0, composition clean under --strict; the selected case declares aria-checked on the control as its state evidence and the focused case captures the real keyboard focus (the perimeter sits outside the 24px box). Comment 2026-10-24 (F-05): removed `focus:data-unchecked:text-destructive`; the shared `focus-visible` perimeter stays and the red glyph stays on `aria-invalid`. The source `Status=Focused` variant paints #d13333, so the open question is recorded in docs/design-requests/2026-10-24-checkbox-focus-state.md; `Indeterminate` supports the select-all header. The node stays `implemented` for its three drawn variants."
+      "note": "2026-11-20 drift: Status=Focused (194:3659) is renamed Status=Feedback — the red uncovered glyph is the aria-invalid state, not focus — and a real Status=Focused (16548:43287) adds the blue check_box glyph plus a 22px 2px #3C65E9 perimeter. F-05 is answered: focus keeps the shared blue perimeter, red only under aria-invalid. Adaptations native-target-minimum (44px invisible target) and keyboard-focus-perimeter (outline outside the box, shared ring blue-500 instead of the source blue-400) hold. One case per Status: 194-3654-default, -selected, -feedback, -focused."
     },
     "194:3661": {
       "status": "implemented",
@@ -758,7 +758,7 @@
           "SourceFeedback"
         ]
       },
-      "note": "Adaptation `native-target-minimum`: the 24px checkbox artwork stays and only the native target expands to 44px. Adaptation `native-unavailable-state`: disabled uses the native disabled control and muted-foreground copy instead of the source 50% opacity over the whole field; only the shared checkbox artwork keeps its 50% disabled fade. Adaptation `keyboard-focus-perimeter`: visible keyboard focus is retained without replacing the source feedback state. Reviewed 2026-10-23: one case per source Status variant (194-3661-default, -default-disabled, -selected, -selected-disabled, -feedback) against the 320-wide fullscreen source fixtures, composition clean under --strict; the 320×56 field (16/0 padding), the 24×24 control at 0,16 and the 16/22 Semibold label at 32,16 match every variant, the 320×78 Feedback variant matches its 2px root gap, 32px helper inset and 14/20 #d13333 helper text. Residues: `field.gap` is the recorded mapping artifact for the 56-high variants (the source variant frame is both the field and the row, while the DOM keeps the source 8px row gap on the inner label and the wrapper 2px grid gap before the message block); `Checkbox label.font.color` in the default-disabled case records the native-unavailable-state adaptation (the source paints the whole field at 50% over #0e0f13, the library paints the muted-foreground token). The selected and selected-disabled cases declare aria-checked on the control as their state evidence because the filled predicate has no native checkbox branch."
+      "note": "2026-11-20 drift: the inner layer Checkbox single element is renamed CheckboxSingleElement in 194:3662 and 194:3674, and a focused row is added. Figma auto-named that row Status=Status6 (16548:43293): the drawn row is mapped as 194-3661-focused and the naming defect is filed in docs/design-requests/2026-11-20-checkbox-focused-variant-name.md. Status=Feedback (194:3674) stays the red glyph. Adaptations native-target-minimum, native-unavailable-state and keyboard-focus-perimeter hold. Six cases: default, default-disabled, selected, selected-disabled, feedback, focused."
     },
     "194:3677": {
       "status": "implemented",
@@ -768,7 +768,7 @@
         "story": "apps/storybook/src/RadioField.stories.tsx",
         "storyExports": ["RadioIndicatorStates"]
       },
-      "note": "Fresh Path C review at pinned source version 2409404974909792292: Default (194:3678), Active (194:3680), and Feedback error (194:3682) use the real 20px glyphs centered in 24px frames (2px inset per side); size-6 keeps the frame exact (0px delta). The 10px after:-inset-2.5 extension creates the accessible 44px hit target, with a solid external keyboard focus perimeter. Source #0E0F13/#0B3EE3/#D13333 map to foreground/primary/destructive tokens. The 64x152px sample artboard and 20px example spacing are not runtime sizing. Nearby 179px/243px RadioField skeleton widths remain content placeholders outside this indicator contract; no one-off sizing compensation was added. Committed cases 194-3677-default, 194-3677-active and 194-3677-feedback-error reproduce the 24x24 frames and the checked/error states; the 20px artwork is the shared radio_button icon, so the cases map the frame rather than the glyph. Targeted RadioField interaction/a11y and type checks pass. Manual zoom and screen-reader testing remain unverified."
+      "note": "2026-11-20 drift: Status=Active (194:3680) is renamed Status=Selected and Status=Focused (16548:42601) is added — the blue check_circle glyph with a 24px 2px #3C65E9 Ellipse perimeter inside the frame. Nothing else moved: the 20px glyph stays centred in the 24px frame (2px inset), the 44px target is the invisible after:-inset-2.5 expansion, and keyboard focus keeps the shared outside perimeter (keyboard-focus-perimeter, ring blue-500 against the source blue-400). Cases: 194-3677-default, -selected, -feedback-error, -focused."
     },
     "194:3700": {
       "status": "implemented",
@@ -784,7 +784,7 @@
           }
         ]
       },
-      "note": "The source node is a rich option, not the whole collection: RadioField with an end indicator supplies its decorative icon, description, feedback and four metadata-dependent skeleton layouts; RadioGroup supplies the named native collection. Reviewed all source states and the rendered matrix. Loading announces busy/unavailable and retains the real checked state instead of faking the source skeleton's unchecked indicator; disabled controls follow native submission exclusion. Re-reviewed the corrected notifications_active default-master edge 99:2117: the rich, loading and state-matrix stories already use its actual 24px source artwork and retain native keyboard/selection behavior. Parity reviewed at pinned source version 2412426961662147678 with nine committed cases: the five rich states (320x80, Error 320x104) match the 16px vertical padding, the 4px root gap and the Heading/Title/Description subjects, with strict composition clean; the four skeleton layouts (320x56/108) match the 8px root gap and the 44px description block, the 244px/180px placeholders against 243px/179px stay inside tolerance and the skeleton radii now use the radius 8 token. The single-child skeleton 16px gap is recorded as a mapping ignore."
+      "note": "2026-11-20 drift: only the embedded instances moved — 194:3706 and 194:3714 renamed Radio button single element to RadioButtonSingleElement and their Status=Active override became Status=Selected. No box, gap, artwork or colour changed, so the three mapped stories and their nine cases stand; the fingerprint of the selected cases moved with the nested instance rename only."
     },
     "194:3763": {
       "status": "implemented",
@@ -800,7 +800,7 @@
           "SourceRichError"
         ]
       },
-      "note": "The node is one rich option, not a group: reviewed and mapped to CheckboxField with the decorative 24px icon and the end indicator placement. The public CheckboxGroup fieldset remains a documented collection extension (api-exceptions.json), mirroring the 349:4683 → SwitchField decision. Adaptation `native-unavailable-state`: native checked/disabled semantics are preserved, only the icon and checkbox artwork fade, and the label and description stay legible on muted-foreground tokens instead of the source-wide 50% opacity. Adaptations `native-target-minimum` and `source-error-state` (44px native target around the 24px art; the error exposed through the native invalid state and an associated alert without replacing the red outline art) are stated in guides/checkbox-choices.md. Parity reviewed at pinned source version 2412426961662147678 with five committed cases (selected, unselected, selected-unavailable, unselected-unavailable and Error) at the 320px source width: the 320x80 / 320x104 root, the 16px vertical padding and the 4px root gap match, the Heading/Title/Description and error-row subjects are clean and the strict composition check passes."
+      "note": "2026-11-20 drift: queued through its CheckboxSingleElement dependency, this node has no change of its own at the pinned version (0 nodes in the snapshot diff). The five rich-option stories and their cases still render the documented compositions, so the mapping stands unchanged."
     },
     "194:3841": {
       "status": "implemented",
@@ -808,14 +808,9 @@
         "module": "src/components/inputs/radio-field.tsx",
         "export": "RadioField",
         "story": "apps/storybook/src/RadioField.stories.tsx",
-        "storyExports": [
-          "RadioIndicatorStates",
-          "RadioFieldFeedback",
-          "RadioSourceStateMatrix",
-          "FigmaStateMatrix"
-        ]
+        "storyExports": ["RadioFieldFeedback", "FigmaStateMatrix"]
       },
-      "note": "Reviewed Default/Selected/Feedback and both disabled source states. The enclosing native label has the source 24px indicator, 8px gap and 56px minimum row. Description/error/required state is associated with the actual control; feedback uses the source report glyph. Shared 20px feedback lines avoid the source's clipped 18px frame, and semantic disabled text retains stronger contrast than the source fade. The five source variants carry reviewed cases in FigmaStateMatrix against pinned version 2412426961662147678 at the source 320px option width (194-3841-default, 194-3841-default-disable, 194-3841-selected, 194-3841-selected-disabled, 194-3841-feedback); field.gap is ignored as the phantom gap of the DOM root that wraps indicator and label in one native label, and the source 18px feedback frame is not mapped because the shared caption line is 20px."
+      "note": "2026-11-20 drift: Status=Focused (16548:42584) is added — a 320x56 row, 16/16 padding, 8px gap and the 24px indicator at the Default position; the drift also left a stray Ellipse 6 (16548:42600, 24x24, 2px #3C65E9) overflowing it, filed in docs/design-requests/2026-11-20-checkbox-focused-variant-name.md and not mapped. Focus draws the library perimeter outside the frame (keyboard-focus-perimeter, ring blue-500 against the source blue-400). Story exports drop RadioIndicatorStates (194:3677) and RadioSourceStateMatrix (194:3700), which the gate skipped while two nodes claimed them."
     },
     "197:1985": {
       "status": "implemented",
@@ -874,7 +869,7 @@
         "story": "apps/storybook/src/InformativeDrawer.stories.tsx",
         "storyExports": ["NarrowFrame", "WideFrame"]
       },
-      "note": "Implemented 2026-10-15 from the pinned source set: the 320x650 bottom sheet (16px top corners, no drag handle in this composition) and the 417x800 square side panel from 600 up, both with the 35% surface overlay, 24px padding, the 40px Error pictogram row on a 16px gap, the 8px gap to the multi-paragraph description and the 40px gap before the action (full width on the sheet, intrinsic and right-aligned on the panel). Verified both frames; the sheet records one residue: the source text node carries 12px paragraph spacing on six paragraph breaks, and the same copy as six HTML paragraphs measures 4px taller. Device review 2026-10-16 (device burn-down wave 4): one case per declared device — mobile 1992:127583 (case 1992-127582-xs, the source 320: the 320x504 bottom sheet hugging the bottom edge with the 272px blocks, carrying the 4px copy residue), tablet 1992:127589 (case 1992-127582-md, the source 900: the 417x800 right panel with the 369px blocks, the 40px head, the 8px spacing and the 112x48 action, verified clean) and desktop 1992:127591 (case 1992-127582-lg-desktop, the source 1200: the same 417x800 panel at the 1200 edge, verified clean — the desktop frames only widen the page). The three cases declare no `layoutScope`: the edge and the panel geometry follow the caller's `direction` prop (the wide story passes `right`, the narrow one `bottom`), not an axis of the frame — the same reading the ButtonGroup orientation recorded — and the reason is recorded on every case. The wide story now renders the page itself (`WideFrame` dropped its 900px wrapper) so the desktop device is captured in its own 1200 frame."
+      "note": "2026-11-20 drift: no change of its own at the pinned version (0 nodes in the snapshot diff, no manifest case moved). The bottom sheet and side panel compositions, the three device cases and the 4px copy residue stand unchanged."
     },
     "1992:130380": {
       "status": "mocked",
@@ -1289,7 +1284,7 @@
           "StandaloneFormBehavior"
         ]
       },
-      "note": "Reviewed 2026-10-16 (device burn-down wave 5, closing the 2026-10-14 delta): the boxed product module — 8px radius, the 1px --border stroke, white card, 16px padding, the 44px Avatar small on the 12px avatar-to-copy gap, the 16/22 semibold title with its 24px Chip (8px apart on the desktop title row, 4px apart stacked on mobile), the 14/20 grey-700 description and either the 24px radio glyph or the 16/22 semibold ghost action (cached, 8px gap); mobile stacks title/chip/description (4px gaps) with the action below, the desktop row stays one band. Four cases, one per device and Type, all container-scoped (the composition follows the module's own width through @container/product-module, verified) and responsive-clean: desktop 560 radio (403-4116-desktop-radio-button-desktop, the source 78 card) and action (403-4116-desktop-action-desktop), mobile 272 radio (403-4116-mobile-radio-button-mobile, the source 106) and action (403-4116-mobile-action-mobile, the source 146). Recorded adaptations: the Chip pill radius (source 100 against rounded-full) and the ghost action's retained transparent 1px border with the label --border stroke inside the p-4 inset — the sibling 382:7813 border-in-padding and action-border readings; the radio keeps the source 24px glyph with the invisible 44px native target (the archived radio-hit-target/action-hit-target adaptations), and the action's visible box stays 24px with its own ::after expansion."
+      "note": "2026-11-20 drift: only the embedded radio instances moved — 403:4420 renamed Radio button single element to RadioButtonSingleElement and the Status=Active overrides on 403:4109/403:4420 became Status=Selected. No geometry, slot or artwork changed; the nine mapped stories and their cases stand, the radio-button fingerprints moving with the nested instance only."
     },
     "422:16012": {
       "status": "implemented",
@@ -2028,7 +2023,7 @@
           "EmptyCustomPictogram"
         ]
       },
-      "note": "Reviewed 2026-11-05: desktop 9624-10625-layout-desktop-desktop (852x568) and mobile 9624-10625-layout-mobile-mobile (272x1238) verify with documented residues and clean container reflow. The desktop fixture's four row titles wrap differently from the source placeholders; mobile's three-field rows with shared 48px actions are taller than the source cards. The Empty Device=Any story remains separate."
+      "note": "2026-11-20 drift: the embedded pagination footer is now a shared Select instance, so the rows-per-page row is 48px where the frame was 46 and .Rows per page is renamed .RowsPerPage — desktop 568 to 570, mobile 1238 to 1240. The row titles, the shared 48px actions and the separate Empty Device=Any story are unchanged; the cases keep their recorded title-wrap and footer residues."
     },
     "9640:793": {
       "status": "implemented",
