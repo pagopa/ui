@@ -165,18 +165,24 @@ function embeddedDelta(body: string): unknown | null {
   return null
 }
 
-/** A delta artifact as read, with the identity the brief reports instead of its bytes. */
-type DeltaArtifact = {
+/** Where the brief read the delta artifact it reports. */
+type DeltaIdentity = {
+  /** `body` when the pull request carried the artifact, `file` when a local snapshot did. */
   source: "body" | "file"
-  /** The local snapshot's workspace identity, `null` when the pull request body carried it. */
+  /** The snapshot's workspace identity, `null` when the pull request body carried it. */
   path: string | null
-  value: unknown
 }
+
+/** A delta artifact as read, with the identity the brief reports instead of its bytes. */
+type DeltaArtifact = DeltaIdentity & { value: unknown }
 
 function savedDelta(workspace: Workspace, body: string): DeltaArtifact | null {
   const inline = embeddedDelta(body)
   if (inline) return { source: "body", path: null, value: inline }
-  for (const candidate of [".figma/delta.json", ".figma/live-delta.json", ".figma/plan.json"]) {
+  // `.figma/plan.json` is deliberately absent: a catalogue plan orders the whole
+  // work set, not this pull request's delta, so reading it would scope the
+  // handoff on a file that was never the delta.
+  for (const candidate of [".figma/delta.json", ".figma/live-delta.json"]) {
     const file = workspace.path(candidate)
     if (!fs.existsSync(file)) continue
     try {
@@ -195,16 +201,13 @@ function object(value: unknown): Record<string, unknown> | null {
 }
 
 /**
- * What the brief reports about the artifact it read. A saved catalogue plan is
- * a whole snapshot — hundreds of megabytes on a live file — and re-expanding it
- * in the JSON output passes the engine's maximum string length, so the brief
- * carries the artifact's identity and order, never its bytes.
+ * What the brief reports about the artifact it read. A saved delta can be large
+ * — a live snapshot runs to hundreds of megabytes — and re-expanding it in the
+ * JSON output passes the engine's maximum string length, so the brief carries
+ * the artifact's identity and order, never its bytes. `null` when the pull
+ * request carries no delta artifact at all, and the order comes from the queue.
  */
-export type HandoffDelta = {
-  /** `body` when the pull request carried the artifact, `file` when a local snapshot did. */
-  source: "body" | "file"
-  /** The snapshot's workspace identity, `null` when the pull request body carried it. */
-  path: string | null
+export type HandoffDelta = DeltaIdentity & {
   /** The order the artifact itself named, stale ids included. */
   implementationOrder: string[]
 }
@@ -216,10 +219,11 @@ export function handoffBrief(
   suppliedDelta?: unknown,
 ): {
   pullRequest: PullRequest
-  delta: HandoffDelta
+  /** The artifact's identity and order, `null` when the pull request carries none. */
+  delta: HandoffDelta | null
   /** Ids the delta's `implementationOrder` named that the queue does not carry. */
   dropped: string[]
-  /** `delta` when the artifact's order resolved, `queue` when it had to be ignored. */
+  /** `delta` when the artifact's order resolved, `queue` when it was ignored or absent. */
   orderSource: "delta" | "queue"
   queue: BriefQueue
 } {
@@ -227,11 +231,7 @@ export function handoffBrief(
     suppliedDelta != null
       ? { source: "body" as const, path: null, value: suppliedDelta }
       : savedDelta(workspace, pr.body)
-  if (!artifact)
-    throw new UsageError(
-      `pull request ${pr.number} has no readable delta.json artifact in its body or local .figma snapshots`,
-    )
-  const data = object(artifact.value)
+  const data = object(artifact?.value)
   const artifactOrder = Array.isArray(data?.implementationOrder)
     ? data.implementationOrder.filter((id): id is string => typeof id === "string")
     : null
@@ -249,11 +249,13 @@ export function handoffBrief(
   const order = resolved.length ? resolved : queue.implementationOrder
   return {
     pullRequest: pr,
-    delta: {
-      source: artifact.source,
-      path: artifact.path,
-      implementationOrder: artifactOrder ?? [],
-    },
+    delta: artifact
+      ? {
+          source: artifact.source,
+          path: artifact.path,
+          implementationOrder: artifactOrder ?? [],
+        }
+      : null,
     dropped: (artifactOrder ?? []).filter((id) => !byId.has(id) && !queued.has(id)),
     orderSource: resolved.length ? ("delta" as const) : ("queue" as const),
     queue: {

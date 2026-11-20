@@ -25,10 +25,13 @@ evidence. Align on its head branch; the person pushes and merges.
    `dropped` names the ids the artifact ordered that the queue no longer carries
    — both mean the handoff's order is not the artifact's, so say so. Its `delta`
    field is the artifact's identity and order (`source`, `path`,
-   `implementationOrder`), never the artifact itself: the local fallback can be
-   a saved `.figma/plan.json` of the whole catalogue, and a brief that embedded
-   it could not be printed. If no artifact is readable at all, read the same
-   pending queue directly with `pnpm ui-cli figma brief --queue --full --json`
+   `implementationOrder`), never the artifact itself: a saved delta runs to
+   hundreds of megabytes, and a brief embedding it cannot be printed. Only
+   `.figma/delta.json` and `.figma/live-delta.json` count as a local delta;
+   `.figma/plan.json` is a catalogue plan, it orders the whole work set rather
+   than this pull request's, so it is never read and a plan-only tree reports
+   `delta: null` with the queue's order. When `delta` is `null`, read the same
+   pending briefs directly with `pnpm ui-cli figma brief --queue --full --json`
    and report that the order came from the queue, not a delta.
 
 **Done when** the correct branch is active, the source gate passes, and every

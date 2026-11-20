@@ -86,6 +86,45 @@ test("figma handoff brief has an in-process CLI contract", async () => {
   }
 })
 
+test("figma handoff brief prints past a saved plan it must not read", async () => {
+  const fixture = fixtureTree(
+    {
+      ...shared,
+      // The snapshot that made the JSON read die: a catalogue plan beside the
+      // queue, in a pull request that carries no artifact of its own.
+      ".figma/plan.json": {
+        implementationOrder: ["4:4"],
+        pending: Array.from({ length: 20_000 }, (_, index) => ({
+          nodeId: `9:${index}`,
+          note: "x".repeat(250),
+        })),
+      },
+    },
+    "cli-handoff-brief-plan-",
+  )
+  const calls = []
+  try {
+    const result = await runCli(["figma", "handoff", "brief", "12", "--json"], {
+      root: fixture.root,
+      external: {
+        ...ghExternal(calls),
+        gh: (args) => {
+          calls.push(args)
+          return JSON.stringify({ ...pr, body: "" })
+        },
+      },
+    })
+    assert.equal(result.status, 0, result.stderr)
+    const brief = JSON.parse(result.stdout)
+    assert.equal(brief.delta, null)
+    assert.equal(brief.orderSource, "queue")
+    assert.deepEqual(brief.queue.implementationOrder, ["4:4"])
+    assert.ok(result.stdout.length < 5_000)
+  } finally {
+    fixture.dispose()
+  }
+})
+
 test("figma handoff media dry-run has an in-process CLI contract", async () => {
   const fixture = fixtureTree(
     {
