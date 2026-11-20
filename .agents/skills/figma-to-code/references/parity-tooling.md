@@ -3,7 +3,8 @@
 Signatures come from `pnpm ui-cli parity <command> --help`. `align --node <id>`
 supplies the work order and the exact check lines per declared device. `check` and
 `source` read `--input`, else `figma.snapshot`, else the committed evidence slice;
-`check` and `capture` need Storybook (`STORYBOOK_URL=<url>`). `--saved` reproduces every
+`check` and `capture` need Storybook (`STORYBOOK_URL=<url>`, default
+`http://localhost:6006`). `--saved` reproduces every
 committed case and checks device coverage; `--devices` is no substitute for saved cases. The source reader is the only reader of the source; `check --screenshot
 <file>` renders to look at; trust `check` over the render module's `--root`
 (which forces `display:block`).

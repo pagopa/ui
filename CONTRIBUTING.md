@@ -436,19 +436,24 @@ release gate are where the whole catalogue is compared again.
 
 ## The green chain
 
-Green before commit; CI runs the same:
+Green before commit; CI runs the same, and the chain runs the two gates CI owns
+but Nx projects do not: `mise install --locked` fails when `mise.lock` no longer
+matches what `mise.toml` resolves, and `nx format:check` covers every tracked
+file, `docs/` and `mise.toml` included.
 
 ```bash
 pnpm nx run workspace:verify
 ```
 
 `-c fast` is the quick subset: it stops before the browser suites and the
-Storybook build, so it never replaces the full run before a commit.
+Storybook build, so it never replaces the full run before a commit. It runs the
+two gates too.
 
 What it runs:
 
 ```bash
-pnpm nx run-many -p pagopa-ui -c=ci -t typecheck,fmt,lint,docs,check:catalogue,foundation:check,layers:check,build,test && \
+mise install --locked node pnpm && pnpm nx format:check && \
+  pnpm nx run-many -p pagopa-ui -c=ci -t typecheck,fmt,lint,docs,check:catalogue,foundation:check,layers:check,build,test && \
   pnpm nx run-many -p pagopa-ui-artwork,pagopa-ui-tokens,pagopa-ui-cli -c=ci -t typecheck,fmt,lint && \
   pnpm nx run pagopa-ui-artwork:test && pnpm nx run pagopa-ui-tokens:test && pnpm nx run pagopa-ui-cli:test && \
   pnpm nx run pagopa-ui-cli:check:rules && pnpm nx run pagopa-ui-cli:check:parity && \
@@ -456,6 +461,9 @@ pnpm nx run-many -p pagopa-ui -c=ci -t typecheck,fmt,lint,docs,check:catalogue,f
 ```
 
 The `ci` configuration is the gate: `lint` and `fmt` check instead of writing.
+A lock the gate rejects is refreshed with `mise lock node pnpm`, which rewrites
+only the entries whose resolution moved; commit it with the `.mise/locks`
+directory it points at.
 `library:check` and the story passes need the Playwright browsers
 (`pnpm exec playwright install chromium firefox webkit`) and the built artifact;
 they are the slow end of the chain and run last. The `infra/` projects validate
