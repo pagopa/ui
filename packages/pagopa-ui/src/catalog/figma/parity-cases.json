@@ -931,12 +931,30 @@
     "note": "reviewed: source Status=Selected (194:3657, 24x24) against SourceSelected. Verified the 24x24 checked check_box artwork at 0,0 inside the 24x24 box; the selected state is evidenced by aria-checked=true on the control (the filled predicate has no native checkbox branch, so the case declares the control as its evidence). The 44px native target is the invisible after:-inset-2.5 expansion, the recorded native-target-minimum adaptation. Composition clean under --strict; responsive clean."
   },
   {
+    "id": "194-3654-feedback",
+    "nodeId": "194:3654",
+    "export": "Checkbox",
+    "storyId": "components-checkbox--source-feedback",
+    "state": "feedback",
+    "variant": "194:3659",
+    "width": 24,
+    "height": 24,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"checkbox\"]",
+    "subjects": {
+      "check_box": "#storybook-root [data-slot=\"checkbox\"] > span"
+    },
+    "compareOffset": true,
+    "expectState": "error",
+    "note": "reviewed: source Status=Feedback (194:3659, 24x24; renamed from Status=Focused by the 2026-11-20 drift) against SourceFeedback, the unchecked check_box glyph in #D13333 drawn from aria-invalid. Verified the 24x24 glyph at 0,0 and the 24x24 box; the 44px native target is the invisible after:-inset-2.5 expansion, the recorded native-target-minimum adaptation. Focus is not part of this variant: the source now paints focus separately. Responsive clean."
+  },
+  {
     "id": "194-3654-focused",
     "nodeId": "194:3654",
     "export": "Checkbox",
     "storyId": "components-checkbox--source-focused",
     "state": "focused",
-    "variant": "194:3659",
+    "variant": "16548:43287",
     "width": 24,
     "height": 24,
     "depth": 3,
@@ -948,7 +966,7 @@
     "keepFocus": true,
     "compareOffset": true,
     "expectState": "focused",
-    "note": "reviewed: source Status=Focused (194:3659, 24x24) against SourceFocused, captured with the real keyboard focus on the native control. Verified the 24x24 focused glyph at 0,0 and the 24x24 box; the library draws its visible keyboard focus perimeter outside the box (outline-offset 2), the recorded keyboard-focus-perimeter adaptation, so the box does not grow. Composition clean under --strict; responsive clean."
+    "note": "reviewed: source Status=Focused (16548:43287, added by the 2026-11-20 drift, 24x24) against SourceFocused, captured with the real keyboard focus on the native control. The source draws the blue check_box glyph inside the 24px box plus a 22x22 perimeter (radius 4, 2px #3C65E9) inside it; the library keeps its visible keyboard focus perimeter outside the box (outline-offset 2), the recorded keyboard-focus-perimeter adaptation, so the box does not grow and the 24x24 glyph stays at 0,0. The perimeter colour is the shared ring blue-500 (#0B3EE3) rather than the source blue-400 (#3C65E9): recorded residue of the shared focus token. Composition clean under --strict; responsive clean."
   },
   {
     "id": "194-3661-default",
@@ -962,13 +980,13 @@
     "depth": 3,
     "root": "#storybook-root [data-slot=\"checkbox-field\"]",
     "subjects": {
-      "Checkbox single element": "#storybook-root [data-slot=\"checkbox\"]",
+      "CheckboxSingleElement": "#storybook-root [data-slot=\"checkbox\"]",
       "Checkbox label": "#storybook-root [data-fidelity-part=\"label\"]"
     },
     "compareOffset": true,
     "expectState": "enabled",
     "ignores": ["gap"],
-    "note": "reviewed: source Status=Default (194:3662, 320x56) against SourceDefault at 320. Verified the 320x56 field (16/0 padding), the 24x24 checkbox at 0,16 and the 16/22 Semibold #0e0f13 label at 32,16; composition clean under --strict. field.gap is an ignored mapping artifact: the source variant frame is both the field and the row, while the DOM keeps the source 8px row gap on the inner label and the wrapper 2px grid gap before the message block. Responsive clean."
+    "note": "reviewed: source Status=Default (194:3662, 320x56) against SourceDefault at 320, after the 2026-11-20 drift renamed the inner layer Checkbox single element to CheckboxSingleElement. Verified the 320x56 field (16/0 padding), the 24x24 checkbox at 0,16 and the 16/22 Semibold #0e0f13 label at 32,16; composition clean under --strict. field.gap is an ignored mapping artifact: the source variant frame is both the field and the row, while the DOM keeps the source 8px row gap on the inner label and the wrapper 2px grid gap before the message block. Responsive clean."
   },
   {
     "id": "194-3661-default-disabled",
@@ -994,7 +1012,7 @@
       }
     ],
     "ignores": ["gap"],
-    "note": "reviewed: source Status=Default disable (194:3665, 320x56) against SourceDefaultDisabled. Verified the 320x56 field (16/0 padding), the 24x24 disabled checkbox at 0,16 and the 16/22 Semibold #555c70 label at 32,16 on the native disabled control. Residue Checkbox label.font.color records the native-unavailable-state adaptation: the source fades the whole field to 50% over #0e0f13, the library paints the muted-foreground token and the native disabled control. field.gap is the recorded mapping artifact (source variant frame vs the DOM row/wrapper split). Responsive clean."
+    "note": "reviewed: source Status=Default disable (194:3665, 320x56) against SourceDefaultDisabled. Verified the 320x56 field (16/0 padding), the 24x24 disabled checkbox at 0,16 and the 16/22 Semibold #555c70 label at 32,16 on the native disabled control. Residue Checkbox label.font.color records the native-unavailable-state adaptation: the source fades the whole field to 50% over #0e0f13, the library paints the muted-foreground token and the native disabled control. field.gap is the recorded mapping artifact (source variant frame vs the DOM row/wrapper split). Responsive clean. The 2026-11-20 drift renamed the inner instance only in Status=Default and Status=Feedback, so this variant still carries Checkbox single element and the subject key follows the layer that exists."
   },
   {
     "id": "194-3661-selected",
@@ -1015,7 +1033,7 @@
     "expectState": "filled",
     "stateEvidence": "#storybook-root [data-slot=\"checkbox\"]",
     "ignores": ["gap"],
-    "note": "reviewed: source Status=Selected (194:3668, 320x56) against SourceSelected. Verified the 320x56 field (16/0 padding), the 24x24 checked artwork at 0,16 and the 16/22 Semibold #0e0f13 label at 32,16; the selected state is evidenced by aria-checked=true on the control (the filled predicate has no native checkbox branch, so the case declares the control as its evidence). Composition clean under --strict; field.gap is the recorded mapping artifact (source variant frame vs the DOM row/wrapper split). Responsive clean."
+    "note": "reviewed: source Status=Selected (194:3668, 320x56) against SourceSelected. Verified the 320x56 field (16/0 padding), the 24x24 checked artwork at 0,16 and the 16/22 Semibold #0e0f13 label at 32,16; the selected state is evidenced by aria-checked=true on the control (the filled predicate has no native checkbox branch, so the case declares the control as its evidence). Composition clean under --strict; field.gap is the recorded mapping artifact (source variant frame vs the DOM row/wrapper split). Responsive clean. The 2026-11-20 drift renamed the inner instance only in Status=Default and Status=Feedback, so this variant still carries Checkbox single element and the subject key follows the layer that exists."
   },
   {
     "id": "194-3661-selected-disabled",
@@ -1050,14 +1068,36 @@
     "depth": 3,
     "root": "#storybook-root [data-slot=\"checkbox-field\"]",
     "subjects": {
-      "Checkbox single element": "#storybook-root [data-slot=\"checkbox\"]",
+      "CheckboxSingleElement": "#storybook-root [data-slot=\"checkbox\"]",
       "Checkbox label": "#storybook-root [data-fidelity-part=\"label\"]",
       "Frame 2087324382": "#storybook-root [data-slot=\"checkbox-field\"] > div",
       "Helper text": "#storybook-root [data-slot=\"field-error\"]"
     },
     "compareOffset": true,
     "expectState": "error",
-    "note": "reviewed: source Status=Feedback (194:3674, 320x78) against SourceFeedback at 320. Verified the 320x78 field (16/0 padding, 2px root gap), the 24x24 checkbox at 0,16, the 16/22 #0e0f13 label at 32,16, the 320x20 helper row at 0,42 (32px left inset, 16px report icon and 6px gap) and the 14/20 #d13333 helper text. Composition clean under --strict with no residue: the source variant root gap is the library wrapper gap (both 2) and the source helper frame maps to the message block. Responsive clean."
+    "note": "reviewed: source Status=Feedback (194:3674, 320x78) against SourceFeedback at 320, after the 2026-11-20 drift renamed the inner layer Checkbox single element to CheckboxSingleElement. Verified the 320x78 field (16/0 padding, 2px root gap), the 24x24 checkbox at 0,16, the 16/22 #0e0f13 label at 32,16, the 320x20 helper row at 0,42 (32px left inset, 16px report icon and 6px gap) and the 14/20 #d13333 helper text. Composition clean under --strict with no residue: the source variant root gap is the library wrapper gap (both 2) and the source helper frame maps to the message block. Responsive clean."
+  },
+  {
+    "id": "194-3661-focused",
+    "nodeId": "194:3661",
+    "export": "CheckboxField",
+    "storyId": "components-inputs-checkboxfield--source-default",
+    "state": "focused",
+    "variant": "16548:43293",
+    "width": 320,
+    "height": 56,
+    "depth": 3,
+    "root": "#storybook-root [data-slot=\"checkbox-field\"]",
+    "subjects": {
+      "CheckboxSingleElement": "#storybook-root [data-slot=\"checkbox\"]",
+      "Checkbox label": "#storybook-root [data-fidelity-part=\"label\"]"
+    },
+    "focus": ["#storybook-root [data-slot=\"checkbox\"]"],
+    "keepFocus": true,
+    "compareOffset": true,
+    "expectState": "focused",
+    "ignores": ["gap"],
+    "note": "reviewed: the 2026-11-20 drift added the focused row (16548:43293, 320x56, 8px gap, 16/16 padding) but Figma auto-named the variant Status=Status6: the source defect is recorded in docs/design-requests/2026-11-20-checkbox-focused-variant-name.md, while the drawn row is mapped here. Verified the 320x56 field, the 24x24 checkbox at 0,16 and the 16/22 Semibold label at 32,16, captured with the keyboard focus on the native control; the focus perimeter sits outside the box (keyboard-focus-perimeter) and keeps the shared ring blue-500 instead of the source blue-400. field.gap is an ignored mapping artifact, as in the default case."
   },
   {
     "id": "194-3677-default",
@@ -1074,11 +1114,11 @@
     "note": "reviewed: source 194:3678 default indicator. The 24px frame is the compared box; the 20px unchecked glyph rides inside it (2px inset per side), so the case maps the frame and leaves the artwork to the shared radio_button icon."
   },
   {
-    "id": "194-3677-active",
+    "id": "194-3677-selected",
     "nodeId": "194:3677",
     "export": "RadioGroupItem",
     "storyId": "components-inputs-radiofield--radio-indicator-states",
-    "state": "active",
+    "state": "selected",
     "variant": "194:3680",
     "width": 24,
     "height": 24,
@@ -1086,7 +1126,7 @@
     "root": "div.grid.w-full.gap-5 > span:nth-of-type(2)",
     "subjects": {},
     "expectState": "filled",
-    "note": "reviewed: source 194:3680 active indicator. 24px frame verified; the checked glyph carries the primary #0B3EE3 through the text-primary token, the filled state is asserted on the real radio."
+    "note": "reviewed: source Status=Selected (194:3680, renamed from Status=Active by the 2026-11-20 drift) selected indicator. 24px frame verified; the checked glyph carries the primary #0B3EE3 through the text-primary token, the filled state is asserted on the real radio."
   },
   {
     "id": "194-3677-feedback-error",
@@ -1102,6 +1142,23 @@
     "subjects": {},
     "expectState": "error",
     "note": "reviewed: source 194:3682 feedback-error indicator. 24px frame verified; the destructive ring uses the text-destructive token and the native aria-invalid state is asserted."
+  },
+  {
+    "id": "194-3677-focused",
+    "nodeId": "194:3677",
+    "export": "RadioGroupItem",
+    "storyId": "components-inputs-radiofield--radio-indicator-states",
+    "state": "focused",
+    "variant": "16548:42601",
+    "width": 24,
+    "height": 24,
+    "depth": 3,
+    "root": "div.grid.w-full.gap-5 > span:nth-of-type(1)",
+    "subjects": {},
+    "focus": ["div.grid.w-full.gap-5 > span:nth-of-type(1)"],
+    "keepFocus": true,
+    "expectState": "focused",
+    "note": "reviewed: source Status=Focused (16548:42601, added by the 2026-11-20 drift) against the first indicator of the source block, captured with the keyboard focus on the real radio. The source draws the blue check_circle glyph in the 24px frame plus a 24x24 Ellipse perimeter (2px #3C65E9) inside it; the library keeps the glyph centred (2px inset per side) and draws its focus perimeter outside the frame, the recorded keyboard-focus-perimeter adaptation. The perimeter colour is the shared ring blue-500 (#0B3EE3) rather than the source blue-400 (#3C65E9): recorded residue of the shared focus token."
   },
   {
     "id": "194-3700-selected",
@@ -1449,6 +1506,23 @@
     "root": "[data-fidelity-variant=\"194-3854\"] [data-slot=\"radio-group\"] > div",
     "subjects": {},
     "note": "reviewed: 2026-10-23 render of FigmaStateMatrix at 320 against pinned 194:3854 (Status=Feedback): outer box 320x76, padding 16/0/16/0, the 24px destructive indicator, 8px gap to the label and the source report glyph with the destructive helper text at the 32px inset; the inner 18px feedback frame is not mapped because the shared caption line is 20px (registry note: shared 20px feedback lines avoid the source clipped 18px frame)"
+  },
+  {
+    "id": "194-3841-focused",
+    "nodeId": "194:3841",
+    "export": "RadioField",
+    "storyId": "components-inputs-radiofield--figma-state-matrix",
+    "state": "Focused",
+    "variant": "16548:42584",
+    "width": 320,
+    "depth": 3,
+    "root": "[data-fidelity-variant=\"194-3842\"] [data-slot=\"radio-group\"] > div",
+    "subjects": {},
+    "focus": ["[data-fidelity-variant=\"194-3842\"] [data-slot=\"radio-group\"] input"],
+    "keepFocus": true,
+    "expectState": "focused",
+    "ignores": ["field.gap"],
+    "note": "reviewed: 2026-11-20 render of FigmaStateMatrix at 320 against the focused row the drift added (16548:42584, Status=Focused): outer box 320x56, padding 16/0/16/0, the 24px indicator and 8px gap to the Titillio-Semibold 16/22 label, captured with the keyboard focus on the real radio of the Default row. The library draws the focus perimeter outside the 24px frame (keyboard-focus-perimeter) in the shared ring blue-500 rather than the source blue-400. The drift also left a stray Ellipse 6 (16548:42600, 24x24, 2px #3C65E9) overflowing the row, reported in docs/design-requests/2026-11-20-checkbox-focused-variant-name.md; a duplicated shape is not mapped. field.gap is the phantom gap of the DOM root that wraps radio and label in one native label."
   },
   {
     "id": "197-1985-highlight-solid",
@@ -2982,7 +3056,7 @@
     "root": "[data-slot=\"product-module\"]",
     "subjects": {
       "Content group": "[data-slot=\"product-module-content\"]",
-      "Avatar small": "[data-slot=\"product-module-avatar\"]",
+      "AvatarSmall": "[data-slot=\"product-module-avatar\"]",
       "Content": "[data-slot=\"product-module-copy\"]",
       "Title": "[data-slot=\"product-module-title\"]",
       "Chip": "[data-slot=\"product-module-status\"] > *",
@@ -3000,7 +3074,8 @@
         "reason": "follows the Content group.box.width residue above (271.66 against the source 275)"
       }
     ],
-    "ignores": ["Chip.radius"]
+    "ignores": ["Chip.radius"],
+    "note": "reviewed: The 2026-11-20 drift renamed the nested ProductModule avatar instance Avatar small to AvatarSmall, so this subject key follows the nested instance the Action variant inlines."
   },
   {
     "id": "403-4116-desktop-radio-button-desktop",
@@ -3039,7 +3114,7 @@
     "root": "[data-slot=\"product-module\"]",
     "subjects": {
       "Content group": "[data-slot=\"product-module-content\"]",
-      "Avatar small": "[data-slot=\"product-module-avatar\"]",
+      "AvatarSmall": "[data-slot=\"product-module-avatar\"]",
       "Content": "[data-slot=\"product-module-copy\"]",
       "Title": "[data-slot=\"product-module-title\"]",
       "Chip": "[data-slot=\"product-module-status\"] > *",
@@ -3053,7 +3128,8 @@
         "reason": "the retained 1px --border stroke on both edges adds 2 (the label border-box track) and the stacked ghost action measures 26 against the source 24 (the shared transparent border +2): the card measures 150 against the source 146, the sibling 382:7813 reads the same retained border"
       }
     ],
-    "ignores": ["Chip.radius"]
+    "ignores": ["Chip.radius"],
+    "note": "reviewed: The 2026-11-20 drift renamed the nested ProductModule avatar instance Avatar small to AvatarSmall, so this subject key follows the nested instance the Action variant inlines."
   },
   {
     "id": "403-4116-mobile-radio-button-mobile",
@@ -4667,7 +4743,7 @@
       "Table header": "#storybook-root thead",
       ".TableHeaderSingleItem": "#storybook-root thead th:first-child",
       ".Table cell": "#storybook-root tbody tr:first-child > td:first-child",
-      "Pagination group": "#storybook-root section > div:last-child"
+      "Pagination": "#storybook-root section > div:last-child"
     },
     "compareOffset": true,
     "residues": [
@@ -4680,7 +4756,8 @@
         "reason": "follows the auto table layout above: the first cell measures 98.08 against the source 124.2"
       }
     ],
-    "ignores": [".TableHeaderSingleItem.gap", ".Table cell.gap", "Pagination group.gap"]
+    "ignores": [".TableHeaderSingleItem.gap", ".Table cell.gap", "Pagination.gap"],
+    "note": "reviewed: The 2026-11-20 drift renamed the outer footer layer Pagination group to Pagination (the shared Pagination instance, 836x48), so the subject key follows it; the nested .Pagination group stays 365x46 inside it."
   },
   {
     "id": "1349-22020-default-mobile",
@@ -4698,13 +4775,13 @@
       "Cell group": "#storybook-root tbody",
       "Table cell row": "#storybook-root tbody tr:first-child",
       ".Table cell": "#storybook-root tbody tr:first-child > td:first-child",
-      "Pagination group": "#storybook-root section > div:last-child"
+      "Pagination": "#storybook-root section > div:last-child"
     },
     "compareOffset": true,
     "residues": [
       {
         "path": "field.box.height",
-        "reason": "follows the 15-vs-8 card stack and the caller pager 44 against the source 46"
+        "reason": "follows the 15-vs-8 card stack and the caller pager 44 against the source 48 (the 2026-11-20 drift grew the rows-per-page row from 46 to the shared Select 48)"
       },
       {
         "path": "Cell group.box.height",
@@ -4731,11 +4808,12 @@
         "reason": "follows the retained visible sorting row: the first field starts 113 below the root against the source 16 (8 + the source card inset)"
       },
       {
-        "path": "Pagination group.offset.top",
+        "path": "Pagination.offset.top",
         "reason": "follows the 15-vs-8 card stack above (7582 against 3959)"
       }
     ],
-    "ignores": ["Table cell row.gap", ".Table cell.gap", "Pagination group.gap"]
+    "ignores": ["Table cell row.gap", ".Table cell.gap", "Pagination.gap"],
+    "note": "reviewed: The 2026-11-20 drift renamed the outer footer layer Pagination group to Pagination (the shared Pagination instance, 836x48), so the subject key follows it; the nested .Pagination group stays 365x46 inside it."
   },
   {
     "id": "1360-20138-true-desktop",
@@ -5960,7 +6038,7 @@
       },
       {
         "path": "field.box.height",
-        "reason": "follows the children.box.height residue (-10) and the caller footer 44 against the source 46"
+        "reason": "follows the children.box.height residue (-10) and the caller footer 44 against the source 48 (the 2026-11-20 drift grew the rows-per-page row from 46 to the shared Select 48)"
       },
       {
         "path": "Pagination.offset.top",
@@ -5993,7 +6071,7 @@
       },
       {
         "path": "field.box.height",
-        "reason": "follows the children.box.height residue (+104) and the caller footer 44 against the source 46"
+        "reason": "follows the children.box.height residue (+104) and the caller footer 44 against the source 48 (the 2026-11-20 drift grew the rows-per-page row from 46 to the shared Select 48)"
       },
       {
         "path": "Pagination.offset.top",
@@ -6554,7 +6632,7 @@
       "Description": "[data-slot=\"payment-module-metadata\"] > span:first-child",
       "Algoritmo": "[data-slot=\"payment-module-suggestion\"]",
       "Radio group": "[data-slot=\"payment-module-tail\"]",
-      "Radio button single element": "[data-slot=\"payment-module-tail\"] [role=\"radio\"]"
+      "RadioButtonSingleElement": "[data-slot=\"payment-module-tail\"] [role=\"radio\"]"
     },
     "residues": [
       {
@@ -6574,7 +6652,7 @@
         "reason": "the source label frame is 22px tall with the detail overflowing it (the group measures 24); the DOM stacks the detail in-flow (40 = 22 + 18)"
       }
     ],
-    "note": "Composition check off: the tail is the recorded 155.38x40 against the source Radio group 100x24 (the in-flow detail), so its left/top shift belongs to that chain. No mobile case is committed: the mobile Multi-payment frame moves the radio into the code row and overlaps its own suggestion (the wave finding)."
+    "note": "Composition check off: the tail is the recorded 155.38x40 against the source Radio group 100x24 (the in-flow detail), so its left/top shift belongs to that chain. No mobile case is committed: the mobile Multi-payment frame moves the radio into the code row and overlaps its own suggestion (the wave finding). The 2026-11-20 drift renamed the nested Radio button single element instance to RadioButtonSingleElement, so the subject key follows the nested instance."
   },
   {
     "id": "11133-16142-mobile-action-mobile",

@@ -145,14 +145,14 @@
       }
     },
     "1042:18133": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/overlays/dialog.tsx",
         "export": "Dialog",
         "story": "apps/storybook/src/Dialog.stories.tsx",
         "storyExports": ["SourceCase"]
       },
-      "note": "Figma delta 2026-11-20: review new/changed node or dependency before marking implemented. Reviewed 2026-10-16 (device burn-down wave 6, closing the 2026-10-14 delta): the modal panel — 600×290 on the Desktop device, 272×412 on the Mobile one (the 320 viewport minus the 24px pair), 16px radius, 24px padding, the source 24px panel gap, the 8px message stack (title on the 24/32 → 18/28 type tokens, the 16/22 description, the option row) and the 16px footer gap. Two cases, one per declared device, both viewport-scoped (verified: the width and both type/stack switches are media-query driven) and"
+      "note": "2026-11-20 drift: only the Status override of the embedded ProductModule radio instances changed (Active to Selected). The panel geometry, the slots and the artwork are untouched and SourceCase keeps its recorded residues; nothing on the render moved."
     },
     "10444:14812": {
       "status": "implemented",
@@ -262,14 +262,14 @@
       }
     },
     "11133:16142": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/composites/payment-module.tsx",
         "export": "PaymentModule",
         "story": "apps/storybook/src/PaymentModule.stories.tsx",
         "storyExports": ["Playground", "ActionMobile", "Summary", "MultiPayment", "Loading"]
       },
-      "note": "Figma delta 2026-11-20: review new/changed node or dependency before marking implemented. Reviewed 2026-10-16 (device burn-down wave 6, closing the 2026-10-14 delta): the boxed payment module — 8px radius, the 1px --border stroke, white card, 16px padding, the source root gap 24 (mobile 16), the code 16/22 semibold, the 14/20 label + semibold value rows 6px apart on the desktop / 12 on the mobile, the 12/18 Han Purple suggestion and either the price column with its 16px tail gap (8 with the radio) or the Action buttons. The module now answers its own width through @container/payment-module"
+      "note": "2026-11-20 drift: 11134:16328 (desktop multi-payment) and 11134:16333 (mobile) only renamed Radio button single element to RadioButtonSingleElement and their Status=Active override to Status=Selected. No layout or colour moved; the five mapped stories and their cases stand, the multi-payment fingerprint moving with the nested instance only."
     },
     "11149:7765": {
       "status": "implemented",
@@ -412,7 +412,7 @@
         "story": "apps/storybook/src/Pagination.stories.tsx",
         "storyExports": ["FirstPage", "SecondPage", "LastPage"]
       },
-      "note": "Figma delta 2026-11-20: review new/changed node or dependency before marking implemented. Pending until the Figma owner answers the compact-state, rows-per-page, edge-window and edge-arrow questions. The node stays pending under docs/design-requests/2026-10-21-pagination-order-axis.md."
+      "note": "2026-11-20 drift: the rows-per-page control is now an instance of the shared Select (48px) instead of a raw frame with .RowPerPageSelect, and .Rows per page is renamed .RowsPerPage; the page buttons are unchanged. The node stays pending until the compact-state, rows-per-page, edge-window and edge-arrow questions are answered: docs/design-requests/2026-10-21-pagination-order-axis.md."
     },
     "1278:6527": {
       "status": "pending",
@@ -422,7 +422,7 @@
         "story": "apps/storybook/src/Drawer.stories.tsx",
         "storyExports": ["SourceDesktop", "SourceMobile"]
       },
-      "note": "Figma delta 2026-11-20: review new/changed node or dependency before marking implemented. Reviewed devices: Desktop `1278:6528` (417x800) and Mobile `1278:6526` (320x646). Mobile matches; desktop uses the nearest 416px token (1px residue). The composition keeps a body description, 40px action gap, bottom sheet without a handle, 8px header gap and `shadow-32`. Pending shared width/mobile decision and unreviewed Service detail, Search, Filters and Sort dependencies; request: docs/design-requests/2026-10-21-timeline-drawer-width-and-mobile.md."
+      "note": "Reviewed desktop 1278:6528 (417x800) and mobile 1278:6526 (320x646): mobile matches, desktop uses the nearest 416px token (1px residue); body description, 40px action gap, bottom sheet without a handle, 8px header gap and shadow-32. The 2026-11-20 drift changed nothing in this tree. Pending the shared width/mobile decision and the unreviewed Service detail, Search, Filters and Sort dependencies: docs/design-requests/2026-10-21-timeline-drawer-width-and-mobile.md."
     },
     "12785:14427": {
       "status": "implemented",
@@ -540,7 +540,7 @@
       "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Wave 9 2026-10-16: stays pending with its measurements. The desktop device stays committed (`1344-40672-default-desktop`, `1344:40652`, 645x48: the cell 48 tall with `px-4` and the centred content, the first cell's link 16/22 600 primary; residues: the fixture draws two columns against the source sample's seven fixed cells 114/153/59/59/59/89/112, so the growing first column takes 380.45, and the single-child cell gap is a mapping ignore). The mobile device (`1337:75105`, 272x492) is the row as a card and that card composition is the Table's (`@container/table`): mapped against the Table's mobile render the case verifies (row 498 against 492, the standalone 272 against the table's inset 256, responsive clean), but `check:catalogue` refuses the mapping because the component has no card surface of its own and no honest `storyExports` entry can be declared for it - `SourceMobile` does not render `TableCellRow`, and the node's own export (`CellComposition`) renders the desktop cell row. Decided: the mobile case stays open; the card is covered by the Table's mobile case (`1349-22020-default-mobile`). Unblock: a dedicated story export that renders the row helper inside the card/`@container/table` context; then one mobile case. Design request: `docs/design-requests/2026-10-21-table-cell-row-mobile-card.md` (open); issue https://github.com/pagopa/ui/issues/38."
     },
     "1349:22020": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/data-display/table.tsx",
         "export": "Table",
@@ -553,7 +553,7 @@
           "Sorting"
         ]
       },
-      "note": "Figma delta 2026-11-20: review new/changed node or dependency before marking implemented. Reviewed 2026-11-05: desktop 1349-22020-default-desktop (852x852) and mobile 1349-22020-default-mobile (272x4013) verify with documented residues and clean container reflow. Desktop's first column follows auto layout instead of the source's seven fixed widths; mobile's 15-row fixture and 4px label gap make cards taller than the source, without clipping. Sorting is activated by the whole header label and arrow, as confirmed in the 2026-10-27 Figma thread."
+      "note": "2026-11-20 drift: the footer pagination became an instance of the shared Select, so the rows-per-page row is 48px where the raw .RowPerPageSelect frame was 46, and .Rows per page is renamed .RowsPerPage — desktop 852 to 854, mobile 4013 to 4015. The composition, the auto-layout first column, the 15-row mobile fixture and the sorting behaviour confirmed in the 2026-10-27 thread are unchanged; the two cases keep their recorded width and card residues."
     },
     "1360:20138": {
       "status": "implemented",
@@ -697,24 +697,24 @@
       "note": "rendered by TemplateShell demo content; real implementation pending"
     },
     "1909:98992": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "apps/storybook/src/templates/DialogTemplate.tsx",
         "export": "DialogTemplate",
         "story": "apps/storybook/src/DialogTemplate.stories.tsx",
         "storyExports": ["NarrowFrame", "WideFrame"]
       },
-      "note": "Figma delta 2026-11-20: review new/changed node or dependency before marking implemented. Implemented 2026-10-15 from the pinned source set: the 650px artboard, the shared 35% overlay backdrop and the 16px panel (272x446 narrow / 600x290 wide) with 24px padding and the 24px body-to-actions gap; the body stacks title (18/28 narrow, 24/32 wide), description (16/22 grey-700) and the 56px option row on an 8px gap; the footer is a 16px-gap column narrow and a right-aligned 16px-gap row wide. The composition answers its own frame through container queries and the panel is not portaled (a page"
+      "note": "2026-11-20 drift: no change of its own at the pinned version (0 nodes in the snapshot diff, no manifest case moved). The dialog panel composition, the three device cases and the Checkbox with label.gap residue stand unchanged."
     },
     "1909:99033": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "apps/storybook/src/templates/SecurityCodeDialog.tsx",
         "export": "SecurityCodeDialog",
         "story": "apps/storybook/src/SecurityCodeDialog.stories.tsx",
         "storyExports": ["NarrowFrame", "WideFrame"]
       },
-      "note": "Figma delta 2026-11-20: review new/changed node or dependency before marking implemented. Implemented 2026-10-15 from the pinned source set: the shared dialog panel (272x570 narrow / 600x374 wide, 16px radius, 24px padding and gap) with the code block on the source 16px gap — the 167x50 code control and the 14/20 helper (three lines narrow, one wide). The source alert row is a hidden instance in every variant. Residues: the code field owns its label (6px gap) where the mockup keeps an external 16px row, so the block and the panel are 8px shorter; the reviewed field keeps 24px slots on an 8px"
+      "note": "2026-11-20 drift: no change of its own at the pinned version (0 nodes in the snapshot diff, no manifest case moved). The panel, the code block, the three device cases and the recorded box-height/offset residues stand unchanged."
     },
     "192:1208": {
       "status": "implemented",
@@ -735,17 +735,17 @@
       "note": "rendered by TemplateShell demo content; real implementation pending"
     },
     "194:3654": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/primitives/checkbox.tsx",
         "export": "Checkbox",
         "story": "apps/storybook/src/Checkbox.stories.tsx",
-        "storyExports": ["SourceDefault", "SourceSelected", "SourceFocused"]
+        "storyExports": ["SourceDefault", "SourceSelected", "SourceFeedback", "SourceFocused"]
       },
-      "note": "Figma delta 2026-11-20: review new/changed node or dependency before marking implemented. Adaptation `native-target-minimum`: the 24px source visual stays while the invisible native target expands to 44px (`after:-inset-2.5`). Adaptation `keyboard-focus-perimeter`: the library's visible keyboard focus perimeter is drawn outside the focused glyph; since 2026-10-24 the source red focus glyph is not painted (F-05, open request docs/design-requests/2026-10-24-checkbox-focus-state.md). Reviewed 2026-10-23: one case per source Status variant (194-3654-default, -selected, -focused), each 24×24 with"
+      "note": "2026-11-20 drift: Status=Focused (194:3659) is renamed Status=Feedback — the red uncovered glyph is the aria-invalid state, not focus — and a real Status=Focused (16548:43287) adds the blue check_box glyph plus a 22px 2px #3C65E9 perimeter. F-05 is answered: focus keeps the shared blue perimeter, red only under aria-invalid. Adaptations native-target-minimum (44px invisible target) and keyboard-focus-perimeter (outline outside the box, shared ring blue-500 instead of the source blue-400) hold. One case per Status: 194-3654-default, -selected, -feedback, -focused."
     },
     "194:3661": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/inputs/checkbox-field.tsx",
         "export": "CheckboxField",
@@ -758,20 +758,20 @@
           "SourceFeedback"
         ]
       },
-      "note": "Figma delta 2026-11-20: review new/changed node or dependency before marking implemented. Adaptation `native-target-minimum`: the 24px checkbox artwork stays and only the native target expands to 44px. Adaptation `native-unavailable-state`: disabled uses the native disabled control and muted-foreground copy instead of the source 50% opacity over the whole field; only the shared checkbox artwork keeps its 50% disabled fade. Adaptation `keyboard-focus-perimeter`: visible keyboard focus is retained without replacing the source feedback state. Reviewed 2026-10-23: one case per source Status"
+      "note": "2026-11-20 drift: the inner layer Checkbox single element is renamed CheckboxSingleElement in 194:3662 and 194:3674, and a focused row is added. Figma auto-named that row Status=Status6 (16548:43293): the drawn row is mapped as 194-3661-focused and the naming defect is filed in docs/design-requests/2026-11-20-checkbox-focused-variant-name.md. Status=Feedback (194:3674) stays the red glyph. Adaptations native-target-minimum, native-unavailable-state and keyboard-focus-perimeter hold. Six cases: default, default-disabled, selected, selected-disabled, feedback, focused."
     },
     "194:3677": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/primitives/radio-group.tsx",
         "export": "RadioGroupItem",
         "story": "apps/storybook/src/RadioField.stories.tsx",
         "storyExports": ["RadioIndicatorStates"]
       },
-      "note": "Figma delta 2026-11-20: review new/changed node or dependency before marking implemented. Fresh Path C review at pinned source version 2409404974909792292: Default (194:3678), Active (194:3680), and Feedback error (194:3682) use the real 20px glyphs centered in 24px frames (2px inset per side); size-6 keeps the frame exact (0px delta). The 10px after:-inset-2.5 extension creates the accessible 44px hit target, with a solid external keyboard focus perimeter. Source #0E0F13/#0B3EE3/#D13333 map to foreground/primary/destructive tokens. The 64x152px sample artboard and 20px example spacing are"
+      "note": "2026-11-20 drift: Status=Active (194:3680) is renamed Status=Selected and Status=Focused (16548:42601) is added — the blue check_circle glyph with a 24px 2px #3C65E9 Ellipse perimeter inside the frame. Nothing else moved: the 20px glyph stays centred in the 24px frame (2px inset), the 44px target is the invisible after:-inset-2.5 expansion, and keyboard focus keeps the shared outside perimeter (keyboard-focus-perimeter, ring blue-500 against the source blue-400). Cases: 194-3677-default, -selected, -feedback-error, -focused."
     },
     "194:3700": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/inputs/radio-field.tsx",
         "export": "RadioField",
@@ -784,10 +784,10 @@
           }
         ]
       },
-      "note": "Figma delta 2026-11-20: review new/changed node or dependency before marking implemented. The source node is a rich option, not the whole collection: RadioField with an end indicator supplies its decorative icon, description, feedback and four metadata-dependent skeleton layouts; RadioGroup supplies the named native collection. Reviewed all source states and the rendered matrix. Loading announces busy/unavailable and retains the real checked state instead of faking the source skeleton's unchecked indicator; disabled controls follow native submission exclusion. Re-reviewed the corrected"
+      "note": "2026-11-20 drift: only the embedded instances moved — 194:3706 and 194:3714 renamed Radio button single element to RadioButtonSingleElement and their Status=Active override became Status=Selected. No box, gap, artwork or colour changed, so the three mapped stories and their nine cases stand; the fingerprint of the selected cases moved with the nested instance rename only."
     },
     "194:3763": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/inputs/checkbox-field.tsx",
         "export": "CheckboxField",
@@ -800,22 +800,17 @@
           "SourceRichError"
         ]
       },
-      "note": "Figma delta 2026-11-20: review new/changed node or dependency before marking implemented. The node is one rich option, not a group: reviewed and mapped to CheckboxField with the decorative 24px icon and the end indicator placement. The public CheckboxGroup fieldset remains a documented collection extension (api-exceptions.json), mirroring the 349:4683 → SwitchField decision. Adaptation `native-unavailable-state`: native checked/disabled semantics are preserved, only the icon and checkbox artwork fade, and the label and description stay legible on muted-foreground tokens instead of the"
+      "note": "2026-11-20 drift: queued through its CheckboxSingleElement dependency, this node has no change of its own at the pinned version (0 nodes in the snapshot diff). The five rich-option stories and their cases still render the documented compositions, so the mapping stands unchanged."
     },
     "194:3841": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/inputs/radio-field.tsx",
         "export": "RadioField",
         "story": "apps/storybook/src/RadioField.stories.tsx",
-        "storyExports": [
-          "RadioIndicatorStates",
-          "RadioFieldFeedback",
-          "RadioSourceStateMatrix",
-          "FigmaStateMatrix"
-        ]
+        "storyExports": ["RadioFieldFeedback", "FigmaStateMatrix"]
       },
-      "note": "Figma delta 2026-11-20: review new/changed node or dependency before marking implemented. Reviewed Default/Selected/Feedback and both disabled source states. The enclosing native label has the source 24px indicator, 8px gap and 56px minimum row. Description/error/required state is associated with the actual control; feedback uses the source report glyph. Shared 20px feedback lines avoid the source's clipped 18px frame, and semantic disabled text retains stronger contrast than the source fade. The five source variants carry reviewed cases in FigmaStateMatrix against pinned version"
+      "note": "2026-11-20 drift: Status=Focused (16548:42584) is added — a 320x56 row, 16/16 padding, 8px gap and the 24px indicator at the Default position; the drift also left a stray Ellipse 6 (16548:42600, 24x24, 2px #3C65E9) overflowing it, filed in docs/design-requests/2026-11-20-checkbox-focused-variant-name.md and not mapped. Focus draws the library perimeter outside the frame (keyboard-focus-perimeter, ring blue-500 against the source blue-400). Story exports drop RadioIndicatorStates (194:3677) and RadioSourceStateMatrix (194:3700), which the gate skipped while two nodes claimed them."
     },
     "197:1985": {
       "status": "implemented",
@@ -867,14 +862,14 @@
       "note": "rendered by TemplateShell demo content; real implementation pending"
     },
     "1992:127582": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "apps/storybook/src/templates/InformativeDrawer.tsx",
         "export": "InformativeDrawer",
         "story": "apps/storybook/src/InformativeDrawer.stories.tsx",
         "storyExports": ["NarrowFrame", "WideFrame"]
       },
-      "note": "Figma delta 2026-11-20: review new/changed node or dependency before marking implemented. Implemented 2026-10-15 from the pinned source set: the 320x650 bottom sheet (16px top corners, no drag handle in this composition) and the 417x800 square side panel from 600 up, both with the 35% surface overlay, 24px padding, the 40px Error pictogram row on a 16px gap, the 8px gap to the multi-paragraph description and the 40px gap before the action (full width on the sheet, intrinsic and right-aligned on the panel). Verified both frames; the sheet records one residue: the source text node carries 12px"
+      "note": "2026-11-20 drift: no change of its own at the pinned version (0 nodes in the snapshot diff, no manifest case moved). The bottom sheet and side panel compositions, the three device cases and the 4px copy residue stand unchanged."
     },
     "1992:130380": {
       "status": "mocked",
@@ -1272,7 +1267,7 @@
       }
     },
     "403:4116": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/composites/product-module.tsx",
         "export": "ProductModule",
@@ -1289,7 +1284,7 @@
           "StandaloneFormBehavior"
         ]
       },
-      "note": "Figma delta 2026-11-20: review new/changed node or dependency before marking implemented. Reviewed 2026-10-16 (device burn-down wave 5, closing the 2026-10-14 delta): the boxed product module — 8px radius, the 1px --border stroke, white card, 16px padding, the 44px Avatar small on the 12px avatar-to-copy gap, the 16/22 semibold title with its 24px Chip (8px apart on the desktop title row, 4px apart stacked on mobile), the 14/20 grey-700 description and either the 24px radio glyph or the 16/22 semibold ghost action (cached, 8px gap); mobile stacks title/chip/description (4px gaps) with the"
+      "note": "2026-11-20 drift: only the embedded radio instances moved — 403:4420 renamed Radio button single element to RadioButtonSingleElement and the Status=Active overrides on 403:4109/403:4420 became Status=Selected. No geometry, slot or artwork changed; the nine mapped stories and their cases stand, the radio-button fingerprints moving with the nested instance only."
     },
     "422:16012": {
       "status": "implemented",
@@ -2014,7 +2009,7 @@
       }
     },
     "9624:10625": {
-      "status": "pending",
+      "status": "implemented",
       "target": {
         "module": "src/components/data-display/table-list.tsx",
         "export": "TableList",
@@ -2028,7 +2023,7 @@
           "EmptyCustomPictogram"
         ]
       },
-      "note": "Figma delta 2026-11-20: review new/changed node or dependency before marking implemented. Reviewed 2026-11-05: desktop 9624-10625-layout-desktop-desktop (852x568) and mobile 9624-10625-layout-mobile-mobile (272x1238) verify with documented residues and clean container reflow. The desktop fixture's four row titles wrap differently from the source placeholders; mobile's three-field rows with shared 48px actions are taller than the source cards. The Empty Device=Any story remains separate."
+      "note": "2026-11-20 drift: the embedded pagination footer is now a shared Select instance, so the rows-per-page row is 48px where the frame was 46 and .Rows per page is renamed .RowsPerPage — desktop 568 to 570, mobile 1238 to 1240. The row titles, the shared 48px actions and the separate Empty Device=Any story are unchanged; the cases keep their recorded title-wrap and footer residues."
     },
     "9640:793": {
       "status": "implemented",

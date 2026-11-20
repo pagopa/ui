@@ -1583,7 +1583,7 @@
           "kind": "COMPONENT_SET",
           "inLibrary": true,
           "decision": "pending",
-          "reason": "Pending behind docs/design-requests/2026-10-21-pagination-order-axis.md: the `Order` axis mixes page positions (first page, second page and more, last page), so the set has no clean mapping yet."
+          "reason": "2026-11-20 drift: the rows-per-page control is now an instance of the shared Select (48px) instead of a raw frame with .RowPerPageSelect, and .Rows per page is renamed .RowsPerPage; the page buttons are unchanged. The node stays pending until the compact-state, rows-per-page, edge-window and edge-arrow questions are answered: docs/design-requests/2026-10-21-pagination-order-axis.md."
         },
         {
           "nodeId": "1503:9760",
@@ -1719,48 +1719,42 @@
           "name": "CheckboxSingleElement",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
+          "decision": "shipped"
         },
         {
           "nodeId": "194:3661",
           "name": "CheckboxWithLabel",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
+          "decision": "shipped"
         },
         {
           "nodeId": "194:3677",
           "name": "RadioButtonSingleElement",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
+          "decision": "shipped"
         },
         {
           "nodeId": "194:3700",
           "name": "RadioButtonGroup",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
+          "decision": "shipped"
         },
         {
           "nodeId": "194:3763",
           "name": "CheckboxGroup",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
+          "decision": "shipped"
         },
         {
           "nodeId": "194:3841",
           "name": "RadioButtonWithLabel",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
+          "decision": "shipped"
         }
       ],
       "compositions": []
@@ -1988,8 +1982,7 @@
           "name": "ProductModule",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
+          "decision": "shipped"
         },
         {
           "nodeId": "10192:41460",
@@ -2003,8 +1996,7 @@
           "name": "PaymentModule",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
+          "decision": "shipped"
         }
       ],
       "compositions": []
@@ -2318,8 +2310,7 @@
           "name": "Dialog",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
+          "decision": "shipped"
         }
       ],
       "compositions": []
@@ -2426,7 +2417,7 @@
           "kind": "COMPONENT_SET",
           "inLibrary": true,
           "decision": "pending",
-          "reason": "Pending: the desktop flow 1278:6528 (417x800) and the mobile one 1278:6526 (320x646) are reviewed, and the panel action geometry is still open."
+          "reason": "Reviewed desktop 1278:6528 (417x800) and mobile 1278:6526 (320x646): mobile matches, desktop uses the nearest 416px token (1px residue); body description, 40px action gap, bottom sheet without a handle, 8px header gap and shadow-32. The 2026-11-20 drift changed nothing in this tree. Pending the shared width/mobile decision and the unreviewed Service detail, Search, Filters and Sort dependencies: docs/design-requests/2026-10-21-timeline-drawer-width-and-mobile.md."
         },
         {
           "nodeId": "1294:14848",
@@ -2603,8 +2594,7 @@
           "name": "Table",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
+          "decision": "shipped"
         },
         {
           "nodeId": "9520:2537",
@@ -2626,8 +2616,7 @@
           "name": "TableList",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
+          "decision": "shipped"
         }
       ],
       "compositions": []
@@ -3388,16 +3377,14 @@
           "name": "Diaolog",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
+          "decision": "shipped"
         },
         {
           "nodeId": "1909:99033",
           "name": "Security Code Dialog",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
+          "decision": "shipped"
         },
         {
           "nodeId": "1931:112838",
@@ -3428,8 +3415,7 @@
           "name": "Informative Drawer",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "pending",
-          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
+          "decision": "shipped"
         },
         {
           "nodeId": "1992:130380",
