@@ -1719,42 +1719,48 @@
           "name": "CheckboxSingleElement",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped"
+          "decision": "pending",
+          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
         },
         {
           "nodeId": "194:3661",
           "name": "CheckboxWithLabel",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped"
+          "decision": "pending",
+          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
         },
         {
           "nodeId": "194:3677",
           "name": "RadioButtonSingleElement",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped"
+          "decision": "pending",
+          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
         },
         {
           "nodeId": "194:3700",
           "name": "RadioButtonGroup",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped"
+          "decision": "pending",
+          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
         },
         {
           "nodeId": "194:3763",
           "name": "CheckboxGroup",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped"
+          "decision": "pending",
+          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
         },
         {
           "nodeId": "194:3841",
           "name": "RadioButtonWithLabel",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped"
+          "decision": "pending",
+          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
         }
       ],
       "compositions": []
@@ -1982,7 +1988,8 @@
           "name": "ProductModule",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped"
+          "decision": "pending",
+          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
         },
         {
           "nodeId": "10192:41460",
@@ -1996,7 +2003,8 @@
           "name": "PaymentModule",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped"
+          "decision": "pending",
+          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
         }
       ],
       "compositions": []
@@ -2310,7 +2318,8 @@
           "name": "Dialog",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped"
+          "decision": "pending",
+          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
         }
       ],
       "compositions": []
@@ -2594,7 +2603,8 @@
           "name": "Table",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped"
+          "decision": "pending",
+          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
         },
         {
           "nodeId": "9520:2537",
@@ -2616,7 +2626,8 @@
           "name": "TableList",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped"
+          "decision": "pending",
+          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
         }
       ],
       "compositions": []
@@ -3377,14 +3388,16 @@
           "name": "Diaolog",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped"
+          "decision": "pending",
+          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
         },
         {
           "nodeId": "1909:99033",
           "name": "Security Code Dialog",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped"
+          "decision": "pending",
+          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
         },
         {
           "nodeId": "1931:112838",
@@ -3415,7 +3428,8 @@
           "name": "Informative Drawer",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped"
+          "decision": "pending",
+          "reason": "Figma delta 2026-11-20: queued by the drift refresh, the review decides"
         },
         {
           "nodeId": "1992:130380",
