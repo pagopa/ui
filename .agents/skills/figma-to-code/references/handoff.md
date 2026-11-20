@@ -23,7 +23,10 @@ evidence. Align on its head branch; the person pushes and merges.
    reports which one it used: `orderSource` is `delta` when the artifact's
    `implementationOrder` resolves and `queue` when the run fell back, and
    `dropped` names the ids the artifact ordered that the queue no longer carries
-   — both mean the handoff's order is not the artifact's, so say so.
+   — both mean the handoff's order is not the artifact's, so say so. A crash
+   (`error: Invalid string length`) is the artifact being echoed back, not a
+   broken read: `pnpm ui-cli figma brief --queue --full --json` carries the same
+   pending briefs, and issue #146 tracks the fix.
 
 **Done when** the correct branch is active, the source gate passes, and every
 requested node has its delta class, target, constraints and devices.
