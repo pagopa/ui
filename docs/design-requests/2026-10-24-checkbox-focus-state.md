@@ -16,11 +16,11 @@ the uncovered glyph red is renamed `Status=Feedback` (`194:3659`, glyph
 `#d13333`) — red is the invalid state, not focus — and a real `Status=Focused`
 is drawn next to it:
 
-| Set                    | Variant            | Node          | Drawing                                                                   |
-| ---------------------- | ------------------ | ------------- | ------------------------------------------------------------------------- |
-| `CheckboxSingleElement`| `Status=Feedback`  | `194:3659`    | `check_box` in `#D13333`, uncovered                                           |
-| `CheckboxSingleElement`| `Status=Focused`   | `16548:43287` | blue `check_box` plus a 22x22 perimeter, radius 4, 2px `#3C65E9` inside the 24px box |
-| `RadioButtonSingleElement` | `Status=Focused` | `16548:42601` | blue `check_circle` plus a 24x24 `Ellipse`, 2px `#3C65E9` inside the frame |
+| Set                        | Variant           | Node          | Drawing                                                                              |
+| -------------------------- | ----------------- | ------------- | ------------------------------------------------------------------------------------ |
+| `CheckboxSingleElement`    | `Status=Feedback` | `194:3659`    | `check_box` in `#D13333`, uncovered                                                  |
+| `CheckboxSingleElement`    | `Status=Focused`  | `16548:43287` | blue `check_box` plus a 22x22 perimeter, radius 4, 2px `#3C65E9` inside the 24px box |
+| `RadioButtonSingleElement` | `Status=Focused`  | `16548:42601` | blue `check_circle` plus a 24x24 `Ellipse`, 2px `#3C65E9` inside the frame           |
 
 The implementation already followed option A, so nothing changes: the shared
 `focus-visible` perimeter paints focus and `aria-invalid` paints the glyph red.
