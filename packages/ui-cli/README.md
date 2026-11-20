@@ -85,7 +85,11 @@ available from the CLI:
   `brief <pr>` reads its delta and ordered node briefs; its `orderSource` says
   whether the artifact's `implementationOrder` resolved (`delta`) or the run fell
   back to the queue (`queue`), and `dropped` names the ids the artifact ordered
-  that the queue no longer carries.
+  that the queue no longer carries. Its `delta` field is the artifact's identity
+  and order (`source`, `path`, `implementationOrder`), never its bytes, so a
+  large saved delta stays printable; only `.figma/delta.json` and
+  `.figma/live-delta.json` are read as a local delta, and `delta` is `null` —
+  the queue ordering the brief — when the pull request carries none.
 - `pnpm ui-cli figma handoff media --pr <n> --base <ref>` captures changed
   parity cases from local Storybook at `http://localhost:6006` (or
   `STORYBOOK_URL`), attaches before/after evidence and verifies the comment.

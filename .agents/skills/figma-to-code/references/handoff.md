@@ -23,10 +23,16 @@ evidence. Align on its head branch; the person pushes and merges.
    reports which one it used: `orderSource` is `delta` when the artifact's
    `implementationOrder` resolves and `queue` when the run fell back, and
    `dropped` names the ids the artifact ordered that the queue no longer carries
-   — both mean the handoff's order is not the artifact's, so say so. A crash
-   (`error: Invalid string length`) is the artifact being echoed back, not a
-   broken read: `pnpm ui-cli figma brief --queue --full --json` carries the same
-   pending briefs, and issue #146 tracks the fix.
+   — both mean the handoff's order is not the artifact's, so say so. Its `delta`
+   field is the artifact's identity and order (`source`, `path`,
+   `implementationOrder`), never the artifact itself: a saved delta runs to
+   hundreds of megabytes, and a brief embedding it cannot be printed. Only
+   `.figma/delta.json` and `.figma/live-delta.json` count as a local delta;
+   `.figma/plan.json` is a catalogue plan, it orders the whole work set rather
+   than this pull request's, so it is never read and a plan-only tree reports
+   `delta: null` with the queue's order. When `delta` is `null`, read the same
+   pending briefs directly with `pnpm ui-cli figma brief --queue --full --json`
+   and report that the order came from the queue, not a delta.
 
 **Done when** the correct branch is active, the source gate passes, and every
 requested node has its delta class, target, constraints and devices.

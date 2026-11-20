@@ -290,6 +290,108 @@ test("handoff brief leaves a cap-truncated node to the queue's own notice", () =
   }
 })
 
+test("handoff brief's JSON surface does not grow with the artifact it read", () => {
+  const fixture = fixtureTree({}, "handoff-brief-summary-")
+  try {
+    const queue = {
+      implementationOrder: ["1:1"],
+      items: [{ nodeId: "1:1", class: "pending", devices: [], brief: { node: "1:1" } }],
+    }
+    // A saved delta carries a whole snapshot beside the order. The brief must not
+    // re-expand it: the printed surface stays the same size whatever the snapshot
+    // holds, or the JSON read passes the engine's maximum string length.
+    const artifact = (entries) => ({
+      implementationOrder: ["1:1"],
+      pending: Array.from({ length: entries }, (_, index) => ({
+        nodeId: `9:${index}`,
+        note: "x".repeat(250),
+      })),
+    })
+    const huge = artifact(120_000)
+    const small = handoffBrief(
+      workspaceAt(fixture.root),
+      { ...openPr, body: "" },
+      queue,
+      artifact(10),
+    )
+    const result = handoffBrief(workspaceAt(fixture.root), { ...openPr, body: "" }, queue, huge)
+    assert.ok(JSON.stringify(huge).length > 20_000_000)
+    assert.deepEqual(result.delta, {
+      source: "body",
+      path: null,
+      implementationOrder: ["1:1"],
+    })
+    assert.equal(JSON.stringify(result, null, 2).length, JSON.stringify(small, null, 2).length)
+    assert.ok(JSON.stringify(result, null, 2).length < 1_000)
+  } finally {
+    fixture.dispose()
+  }
+})
+
+test("handoff brief names the local snapshot it read without embedding it", () => {
+  const fixture = fixtureTree(
+    {
+      ".figma/delta.json": {
+        implementationOrder: ["1:1"],
+        pending: Array.from({ length: 5000 }, (_, index) => ({
+          nodeId: `9:${index}`,
+          note: "x".repeat(200),
+        })),
+      },
+    },
+    "handoff-brief-file-",
+  )
+  try {
+    const queue = {
+      implementationOrder: ["1:1"],
+      items: [{ nodeId: "1:1", class: "pending", devices: [], brief: { node: "1:1" } }],
+    }
+    const result = handoffBrief(workspaceAt(fixture.root), { ...openPr, body: "" }, queue)
+    assert.deepEqual(result.delta, {
+      source: "file",
+      path: ".figma/delta.json",
+      implementationOrder: ["1:1"],
+    })
+    assert.equal(result.orderSource, "delta")
+    assert.ok(JSON.stringify(result, null, 2).length < 1_000)
+  } finally {
+    fixture.dispose()
+  }
+})
+
+test("handoff brief never orders itself by a saved catalogue plan", () => {
+  const fixture = fixtureTree(
+    {
+      ".figma/plan.json": {
+        implementationOrder: ["2:2", "1:1"],
+        pending: Array.from({ length: 5000 }, (_, index) => ({
+          nodeId: `9:${index}`,
+          note: "x".repeat(200),
+        })),
+      },
+    },
+    "handoff-brief-plan-",
+  )
+  try {
+    const queue = {
+      implementationOrder: ["1:1", "2:2"],
+      items: [
+        { nodeId: "1:1", class: "pending", devices: [], brief: { node: "1:1" } },
+        { nodeId: "2:2", class: "changed", devices: ["mobile"], brief: { node: "2:2" } },
+      ],
+    }
+    const result = handoffBrief(workspaceAt(fixture.root), { ...openPr, body: "" }, queue)
+    // A plan orders the whole catalogue's work set, not this pull request's delta.
+    assert.equal(result.delta, null)
+    assert.equal(result.orderSource, "queue")
+    assert.deepEqual(result.queue.implementationOrder, ["1:1", "2:2"])
+    assert.deepEqual(result.dropped, [])
+    assert.ok(JSON.stringify(result, null, 2).length < 1_000)
+  } finally {
+    fixture.dispose()
+  }
+})
+
 test("handoff media dry-run leaves source and external systems untouched", async () => {
   const fixture = fixtureTree(mediaFiles, "handoff-media-dry-")
   const original = fs.readFileSync(

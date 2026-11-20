@@ -86,7 +86,11 @@ function briefCommand(ctx: CliContext) {
       if (json) printJson(ctx.io, result)
       else {
         ctx.io.out(`#${pr.number} · ${pr.headRefName} · ${pr.url}`)
-        if (result.orderSource === "queue")
+        if (result.delta === null)
+          ctx.io.err(
+            "warning: the pull request carries no readable delta artifact — briefing the pending queue instead",
+          )
+        else if (result.orderSource === "queue")
           ctx.io.err(
             `warning: the delta names no node the queue carries${result.dropped.length ? ` (${result.dropped.join(", ")})` : ""} — briefing the pending queue instead`,
           )
