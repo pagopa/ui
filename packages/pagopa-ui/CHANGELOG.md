@@ -1,3 +1,13 @@
+## 0.1.9 (2026-11-20)
+
+### 🩹 Fixes
+
+- fix(figma-map): align the checkbox and radio variants with the 2026-11-20 drift ([#143](https://github.com/pagopa/ui/pull/143))
+
+### ❤️ Thank You
+
+- gunzip
+
 ## 0.1.8 (2026-11-11)
 
 ### 🩹 Fixes
