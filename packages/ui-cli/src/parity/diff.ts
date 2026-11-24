@@ -94,6 +94,7 @@ const TokenManifestSchema = z.looseObject({
     .record(
       z.string(),
       z.looseObject({
+        name: z.string().optional(),
         value: z.unknown().optional(),
         size: z.number().optional(),
         lineHeight: z.number().optional(),
@@ -158,7 +159,8 @@ export function tokenIndex(workspace: Workspace): TokenIndex {
     JSON.parse(fs.readFileSync(manifestPath, "utf8")),
     manifestPath,
   )
-  for (const [name, variable] of Object.entries(manifest.variables ?? {})) {
+  for (const [key, variable] of Object.entries(manifest.variables ?? {})) {
+    const name = variable.name ?? key
     const value = variable.value
     if (typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value)) {
       index.color.push({ name, value: Number.parseInt(value.slice(1), 16) })
@@ -213,17 +215,22 @@ export function classify(
   tolerance = TOLERANCE,
   pair: { lineHeight?: number } = {},
 ): Delta["token"] {
+  if (kind === "color") {
+    const hex = hexOfColor(value)
+    if (!hex || !/^#[0-9a-f]{6}$/i.test(hex)) return { kind: "inline" }
+    const target = Number.parseInt(hex.slice(1), 16)
+    const match = index.color.find((candidate) => candidate.value === target)
+    return match ? { kind: "token", name: match.name } : { kind: "inline" }
+  }
   if (typeof value !== "number" || Number.isNaN(value)) return { kind: "inline" }
   const candidates: TokenCandidate[] =
-    kind === "color"
-      ? []
-      : kind === "type"
-        ? index.type
-        : kind === "radius"
-          ? index.radius
-          : kind === "space"
-            ? index.space
-            : []
+    kind === "type"
+      ? index.type
+      : kind === "radius"
+        ? index.radius
+        : kind === "space"
+          ? index.space
+          : []
   let best: TokenCandidate | undefined
   let bestDelta = Number.POSITIVE_INFINITY
   let bestLine = Number.POSITIVE_INFINITY
@@ -502,20 +509,34 @@ export function classifyResults(
   const kept: Delta[] = []
   const recorded: Array<Delta & { reason: string }> = []
   const advisories: Delta[] = []
-  const kindOf = (path: string): "radius" | "space" | "type" => {
+  const kindOf = (path: string): "radius" | "space" | "color" | "type" => {
     if (path.includes("radius")) return "radius"
-    if (path.includes("offset.")) return "space"
+    if (path.endsWith(".background") || path.endsWith(".color")) return "color"
+    if (
+      path.includes("offset.") ||
+      path.includes(".padding") ||
+      path.endsWith(".gap") ||
+      path.includes(".box.") ||
+      path.endsWith(".border.width")
+    ) {
+      return "space"
+    }
     return "type"
   }
   for (const delta of deltas) {
     if (delta.severity === "ok") continue
     const reason = reasons.get(delta.path)
+    const kind = kindOf(delta.path)
     const token =
-      typeof delta.render === "number"
-        ? classify(index, kindOf(delta.path), delta.render, TOLERANCE, {
-            lineHeight: delta.lineHeight,
-          })
-        : undefined
+      kind === "color"
+        ? typeof delta.render === "string"
+          ? classify(index, "color", delta.render)
+          : undefined
+        : typeof delta.render === "number"
+          ? classify(index, kind, delta.render, TOLERANCE, {
+              lineHeight: delta.lineHeight,
+            })
+          : undefined
     const entry: Delta = { ...delta, ...(token ? { token } : {}) }
     if (reason) recorded.push({ ...entry, reason })
     else if (delta.severity === "advisory" && !strict) advisories.push(entry)

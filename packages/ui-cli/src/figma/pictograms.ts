@@ -296,13 +296,18 @@ function publishPictograms(
     assertGeneratedModule(sourceFile, source, "Generated pictogram module")
   } else {
     fs.mkdirSync(output, { recursive: true })
+    const written = new Set<string>()
     for (const entry of Object.values(manifest.entries)) {
       for (const background of ["light", "dark"] as const) {
         const variant = entry[background]
         const art = assets.get(variant.nodeId)
         if (!art) throw new Error(`Missing pictogram artwork for ${variant.nodeId}`)
         fs.writeFileSync(path.join(output, variant.file), art)
+        written.add(variant.file)
       }
+    }
+    for (const file of fs.readdirSync(output)) {
+      if (file.endsWith(".svg") && !written.has(file)) fs.unlinkSync(path.join(output, file))
     }
     writeManifest(path.join(output, "manifest.json"), manifest)
     if (mode === "write") {

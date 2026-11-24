@@ -128,10 +128,20 @@ function describeFailure(error: unknown): string {
   return typeof code === "string" && code ? `${message} (${code})` : message
 }
 
-// `Retry-After` is in seconds when Figma sends it; an unparsable value falls
-// back to the exponential wait, capped so one answer cannot park a job for long.
-function waitSeconds(attempt: number, retryAfter: string | null): number {
-  const declared = retryAfter === null ? Number.NaN : Number(retryAfter)
+// `Retry-After` is in seconds or an HTTP-date (RFC 9110) when Figma sends it;
+// an unparsable value falls back to the exponential wait, capped so one answer
+// cannot park a job for long.
+export function waitSeconds(attempt: number, retryAfter: string | null, now = Date.now()): number {
+  let declared = Number.NaN
+  if (retryAfter !== null) {
+    const numeric = Number(retryAfter)
+    if (Number.isFinite(numeric)) {
+      declared = numeric
+    } else {
+      const parsed = Date.parse(retryAfter)
+      if (Number.isFinite(parsed)) declared = Math.ceil((parsed - now) / 1000)
+    }
+  }
   const seconds = Number.isFinite(declared) && declared > 0 ? declared : 2 ** attempt
   return Math.min(seconds, 30)
 }
@@ -190,6 +200,49 @@ async function get<T>(endpoint: string, schema: z.ZodType<T>, token: string): Pr
   }
 }
 
+// CDN asset downloads (rendered SVGs and PNGs) never carry credentials, and
+// they share the same retry discipline as the API reader so a single dropped
+// socket or 5xx on one of fifty images does not fail the whole export.
+async function fetchAsset<T>(
+  id: string,
+  url: string,
+  readBody: (response: Response) => Promise<T>,
+): Promise<T> {
+  for (let attempt = 0; ; attempt += 1) {
+    let response: Response
+    try {
+      response = await fetch(url, {
+        method: "GET",
+        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+      })
+    } catch (error) {
+      const last = attempt >= MAX_TRANSPORT_ATTEMPTS - 1
+      if (!transportFailure(error) || last) {
+        throw new Error(`Figma asset ${id}: ${describeFailure(error)}`, { cause: error })
+      }
+      await wait(waitSeconds(attempt, null))
+      continue
+    }
+    if (response.ok) {
+      try {
+        return await readBody(response)
+      } catch (error) {
+        const last = attempt >= MAX_TRANSPORT_ATTEMPTS - 1
+        if (!transportFailure(error) || last) {
+          throw new Error(`Figma asset ${id}: ${describeFailure(error)}`, { cause: error })
+        }
+        await wait(waitSeconds(attempt, null))
+        continue
+      }
+    }
+    const retryable = response.status === 429 || response.status >= 500
+    if (!retryable || attempt >= MAX_HTTP_ATTEMPTS - 1) {
+      throw new Error(`Figma asset ${id}: HTTP ${response.status}`)
+    }
+    await wait(waitSeconds(attempt, response.headers?.get?.("retry-after") ?? null))
+  }
+}
+
 export async function fetchFigmaImages(
   fileKey: string,
   version: string,
@@ -214,12 +267,7 @@ export async function fetchFigmaImages(
         if (typeof url !== "string" || new URL(url).protocol !== "https:") {
           throw new Error(`Figma could not render variant ${id}`)
         }
-        const response = await fetch(url, {
-          method: "GET",
-          signal: AbortSignal.timeout(90_000),
-        })
-        if (!response.ok) throw new Error(`Figma asset ${id}: HTTP ${response.status}`)
-        assets.set(id, await response.text())
+        assets.set(id, await fetchAsset(id, url, (response) => response.text()))
       }),
     )
   }
@@ -251,12 +299,10 @@ export async function fetchFigmaImagesPng(
         if (typeof url !== "string" || new URL(url).protocol !== "https:") {
           throw new Error(`Figma could not render node ${id} as PNG`)
         }
-        const response = await fetch(url, {
-          method: "GET",
-          signal: AbortSignal.timeout(90_000),
-        })
-        if (!response.ok) throw new Error(`Figma asset ${id}: HTTP ${response.status}`)
-        assets.set(id, Buffer.from(await response.arrayBuffer()))
+        assets.set(
+          id,
+          await fetchAsset(id, url, async (response) => Buffer.from(await response.arrayBuffer())),
+        )
       }),
     )
   }

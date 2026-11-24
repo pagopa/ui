@@ -72,34 +72,34 @@ export function componentRulesFirst(text: string): boolean {
 
 // ------------------------------------------------------------------ helpers
 
-function record(value: unknown): Record<string, unknown> {
+function property(value: unknown, key: string): unknown {
   return value && typeof value === "object" && !Array.isArray(value)
-    ? Object.fromEntries(Object.entries(value))
-    : {}
+    ? Reflect.get(value, key)
+    : undefined
 }
 
-function children(node: unknown): Array<Record<string, unknown>> {
-  const value = record(node).children
-  return Array.isArray(value) ? value.map(record) : []
+function children(node: unknown): unknown[] {
+  const value = property(node, "children")
+  return Array.isArray(value) ? value : []
 }
 
 function text(node: unknown): string {
-  const value = record(node).characters
+  const value = property(node, "characters")
   return typeof value === "string" ? value : ""
 }
 
 function nodeId(node: unknown): string | null {
-  const value = record(node).id
+  const value = property(node, "id")
   return typeof value === "string" ? value : null
 }
 
 function nodeName(node: unknown): string {
-  const value = record(node).name
+  const value = property(node, "name")
   return typeof value === "string" ? value : ""
 }
 
 function nodeType(node: unknown): string {
-  const value = record(node).type
+  const value = property(node, "type")
   return typeof value === "string" ? value : ""
 }
 
@@ -348,19 +348,21 @@ export async function refresh(
   )
 
   const previous = readRulesSnapshot(root, false)
+  const scoped = Boolean(args.pageId || args.nodeId)
+  const partial = scoped ? !previous || Boolean(previous.partial) : false
   const merged: RulesSnapshot = {
     fileKey,
     version,
     fetchedAt: new Date().toISOString(),
-    pages:
-      args.pageId || args.nodeId
-        ? [
-            ...(previous?.pages ?? []).filter(
-              (page) => !selected.some((selectedPage) => selectedPage.id === page.pageId),
-            ),
-            ...extracted,
-          ].sort((left, right) => left.pageId.localeCompare(right.pageId))
-        : extracted,
+    ...(partial ? { partial: true } : {}),
+    pages: scoped
+      ? [
+          ...(previous?.pages ?? []).filter(
+            (page) => !selected.some((selectedPage) => selectedPage.id === page.pageId),
+          ),
+          ...extracted,
+        ].sort((left, right) => left.pageId.localeCompare(right.pageId))
+      : extracted,
   }
   writeRulesSnapshot(root, merged)
   return merged
@@ -431,8 +433,10 @@ export function plan(snapshot: RulesSnapshot, ledger: RulesLedger) {
       stale.push(id)
     }
   }
+  const coveredPages = snapshot.partial ? new Set(snapshot.pages.map((page) => page.pageId)) : null
   for (const [id, entry] of Object.entries(ledger.cards)) {
     if (live.has(id) || entry.disposition === "removed") continue
+    if (coveredPages && !coveredPages.has(entry.pageId)) continue
     removed.push(id)
   }
   return { fresh, stale, removed, live }
@@ -545,9 +549,11 @@ export function mark(
 
 export function sync(ledger: RulesLedger, snapshot: RulesSnapshot): number {
   const index = cardIndex(snapshot)
+  const coveredPages = snapshot.partial ? new Set(snapshot.pages.map((page) => page.pageId)) : null
   let removed = 0
   for (const [id, card] of Object.entries(ledger.cards)) {
     if (index.has(id) || card.disposition === "removed") continue
+    if (coveredPages && !coveredPages.has(card.pageId)) continue
     card.disposition = "removed"
     card.removedAt = today()
     removed += 1

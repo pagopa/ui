@@ -210,12 +210,13 @@ test("an unknown Nx target, project or root script fails", () => {
     check(
       projectTree({
         "CONTRIBUTING.md":
-          "Run `pnpm nx run alpha:deploy`, `pnpm nx run gamma:build` and `pnpm storybook`.",
+          "Run `pnpm nx run alpha:deploy`, `pnpm nx run gamma:build`, `pnpm run missing` and `pnpm storybook`.",
       }),
     ),
   )
   assert.match(result, /unknown Nx target alpha:deploy/)
   assert.match(result, /unknown Nx project gamma/)
+  assert.match(result, /unknown pnpm script missing/)
   assert.match(result, /unknown pnpm script storybook/)
 })
 

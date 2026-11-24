@@ -100,10 +100,27 @@ export function readComments(workspace: Workspace, required = false): CommentsSn
   const file = workspace.path(COMMENTS_SNAPSHOT_PATH)
   if (!fs.existsSync(file)) {
     if (required)
-      throw new UsageError(`${COMMENTS_SNAPSHOT_PATH} is missing: run figma:comments --refresh`)
+      throw new UsageError(
+        `${COMMENTS_SNAPSHOT_PATH} is missing: run pnpm ui-cli figma comments --refresh`,
+      )
     return null
   }
   return readJson(file, CommentsSnapshotSchema)
+}
+
+let cachedLiveSnapshot: {
+  key: string
+  data: z.infer<typeof LiveSnapshotSchema>
+} | null = null
+
+function readLiveSnapshot(file: string): z.infer<typeof LiveSnapshotSchema> | null {
+  if (!fs.existsSync(file)) return null
+  const stat = fs.statSync(file)
+  const key = `${file}:${stat.mtimeMs}:${stat.size}`
+  if (cachedLiveSnapshot?.key === key) return cachedLiveSnapshot.data
+  const data = readJson(file, LiveSnapshotSchema)
+  cachedLiveSnapshot = { key, data }
+  return data
 }
 
 // The published subtree of a node, when the pinned REST snapshot holds it.
@@ -111,29 +128,30 @@ export function readComments(workspace: Workspace, required = false): CommentsSn
 // a child of the set, not the set itself.
 function descendantsOf(workspace: Workspace, nodeId: string): Set<string> {
   const ids = new Set<string>()
-  const file = workspace.path(LIVE_SNAPSHOT_PATH)
-  if (!fs.existsSync(file)) return ids
-  const data = readJson(file, LiveSnapshotSchema)
-  function entryOf(value: unknown): Record<string, unknown> | null {
+  const data = readLiveSnapshot(workspace.path(LIVE_SNAPSHOT_PATH))
+  if (!data) return ids
+  function field(value: unknown, key: string): unknown {
     return value && typeof value === "object" && !Array.isArray(value)
-      ? Object.fromEntries(Object.entries(value))
-      : null
+      ? Reflect.get(value, key)
+      : undefined
   }
   function collect(node: unknown): void {
-    const entry = entryOf(node)
-    if (!entry) return
-    if (typeof entry.id === "string") ids.add(entry.id)
-    const children = Array.isArray(entry.children) ? entry.children : []
-    for (const child of children) collect(child)
+    const id = field(node, "id")
+    if (typeof id === "string") ids.add(id)
+    const children = field(node, "children")
+    if (Array.isArray(children)) {
+      for (const child of children) collect(child)
+    }
   }
   function find(node: unknown): unknown | null {
-    const entry = entryOf(node)
-    if (!entry) return null
-    if (entry.id === nodeId) return node
-    const children = Array.isArray(entry.children) ? entry.children : []
-    for (const child of children) {
-      const found = find(child)
-      if (found) return found
+    const id = field(node, "id")
+    if (id === nodeId) return node
+    const children = field(node, "children")
+    if (Array.isArray(children)) {
+      for (const child of children) {
+        const found = find(child)
+        if (found) return found
+      }
     }
     return null
   }

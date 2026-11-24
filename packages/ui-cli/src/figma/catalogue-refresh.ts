@@ -14,7 +14,7 @@ import {
 } from "../schemas/catalogue.ts"
 import type { SnapshotDelta } from "./snapshot.ts"
 import { escapeRegExp } from "./config.ts"
-import { keepsStatusOnDrift } from "./surface-decision.ts"
+import { keepsStatusOnDrift, requiresReason, surfaceDecision } from "./surface-decision.ts"
 import { deltaChangedNodes } from "./work-set.ts"
 import { loadPageSurface, PAGE_SURFACE_PATH } from "./surface.ts"
 import { COMMITTED_FILES } from "../records/committed.ts"
@@ -126,13 +126,20 @@ function reconcilePublishedIdentities(
   surface: PageSurface,
   pages: Map<string, PageSurfacePage>,
   published: Map<string, InventoryNode>,
+  removed: Set<string>,
 ) {
   const censused = new Map<string, PageSurfacePage>()
   let reconciled = false
   for (const page of surface.pages) {
     for (const identity of [...page.identities]) {
       const node = published.get(identity.nodeId)
-      if (!node) continue
+      if (!node) {
+        if (identity.inLibrary || removed.has(identity.nodeId)) {
+          page.identities = page.identities.filter((entry) => entry.nodeId !== identity.nodeId)
+          reconciled = true
+        }
+        continue
+      }
       const moved = node.pageId !== page.pageId
       const destination = pages.get(node.pageId)
       if (moved) {
@@ -159,6 +166,7 @@ function queueSurfaceIdentities(
   pages: Map<string, PageSurfacePage>,
   published: Map<string, InventoryNode>,
   censused: Map<string, PageSurfacePage>,
+  registry: Registry,
   renewed: Set<string>,
   reason: string,
 ): boolean {
@@ -167,15 +175,31 @@ function queueSurfaceIdentities(
     const page = censused.get(node.nodeId)
     if (!page) {
       const destination = pages.get(node.pageId)
-      if (!destination || !renewed.has(node.nodeId)) continue
-      destination.identities.push({
-        nodeId: node.nodeId,
-        name: node.name,
-        kind: node.type,
-        inLibrary: true,
-        decision: "pending",
-        reason,
-      })
+      if (!destination) continue
+      if (renewed.has(node.nodeId)) {
+        destination.identities.push({
+          nodeId: node.nodeId,
+          name: node.name,
+          kind: node.type,
+          inLibrary: true,
+          decision: "pending",
+          reason,
+        })
+      } else {
+        const entry = registry.entries[node.nodeId]
+        const rule = registry.bulkRules?.find((item) => item.pageId === node.pageId)
+        const status = entry?.status ?? rule?.status
+        const decision = surfaceDecision(true, status)
+        const entryReason = entry?.reason ?? entry?.note ?? rule?.reason ?? rule?.note ?? reason
+        destination.identities.push({
+          nodeId: node.nodeId,
+          name: node.name,
+          kind: node.type,
+          inLibrary: true,
+          decision,
+          ...(requiresReason(decision) ? { reason: entryReason } : {}),
+        })
+      }
       censused.set(node.nodeId, destination)
       reconciled = true
       continue
@@ -195,7 +219,9 @@ function queueSurfaceIdentities(
 function refreshPageSurface(
   workspace: Workspace,
   inventory: Inventory,
+  registry: Registry,
   renewed: Set<string>,
+  removed: Set<string>,
   date: string,
 ): PageSurface | null {
   const surfaceFile = workspace.path(PAGE_SURFACE_PATH)
@@ -203,11 +229,12 @@ function refreshPageSurface(
   const surface = loadPageSurface(surfaceFile)
   const pages = new Map(surface.pages.map((page) => [page.pageId, page]))
   const published = new Map(inventory.components.map((node) => [node.nodeId, node]))
-  const aligned = reconcilePublishedIdentities(surface, pages, published)
+  const aligned = reconcilePublishedIdentities(surface, pages, published, removed)
   const queued = queueSurfaceIdentities(
     pages,
     published,
     aligned.censused,
+    registry,
     renewed,
     `Figma delta ${date}: queued by the drift refresh, the review decides`,
   )
@@ -238,7 +265,14 @@ export function prepareCatalogueRefresh(
     [COMMITTED_FILES.inventory, inventory],
     [COMMITTED_FILES.registry, registry],
   ])
-  const reconciledSurface = refreshPageSurface(workspace, inventory, renewed, date)
+  const reconciledSurface = refreshPageSurface(
+    workspace,
+    inventory,
+    registry,
+    renewed,
+    removed,
+    date,
+  )
   if (reconciledSurface) pendingWrites.set(PAGE_SURFACE_PATH, reconciledSurface)
   pendingWrites.set(EVIDENCE_EXCEPTIONS_PATH, { storyEvidence: nextEvidenceExceptions })
   let ratchet: Ratchet | null = null

@@ -62,7 +62,9 @@ and update the guide bullet when it does not.
 `pnpm nx run pagopa-ui-cli:check:rules` is the gate: schema, mandatory fields,
 targets, guide blocks, duplicates and — with a local snapshot — `new`, `stale` and
 `removed` cards, rejecting the pending backlog by default. `--no-strict` inspects
-that backlog during migration; it is not the closing gate.
+that backlog during migration; it is not the closing gate. A scoped refresh
+(`--page` or `--node`) on a checkout without a full snapshot marks the snapshot
+partial and scopes `removed` checks and `figma rules sync` to the refreshed pages.
 
 ## Comments
 

@@ -614,11 +614,18 @@ function writeIconFiles(
   source: string,
 ): void {
   fs.mkdirSync(context.directory, { recursive: true })
+  const written = new Set<string>()
   for (const entry of Object.values(expected)) {
     for (const variant of Object.values(entry.variants)) {
       const art = rendered.get(variant.nodeId)
       if (!art) throw new Error(`Missing rendered icon ${variant.nodeId}`)
       fs.writeFileSync(path.join(context.directory, variant.file), art)
+      written.add(variant.file)
+    }
+  }
+  for (const file of fs.readdirSync(context.directory)) {
+    if (file.endsWith(".svg") && !written.has(file)) {
+      fs.unlinkSync(path.join(context.directory, file))
     }
   }
   writeManifest(context.manifestFile, manifest)

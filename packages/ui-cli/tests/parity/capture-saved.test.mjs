@@ -249,3 +249,44 @@ test("saved capture fails on deltas, capture errors, missing stories and drafts"
   const summary = JSON.parse(fs.readFileSync(path.join(draft.out, "summary.json"), "utf8"))
   assert.equal(summary.cases[0].draft, true)
 })
+
+test("--cases honors --node and --device filters and verifies parity-source evidence", async () => {
+  const f = fixture([
+    { ...cases[0], device: "mobile" },
+    { ...cases[1], device: "desktop" },
+    { ...cases[2], device: "mobile" },
+  ])
+  const listed = await cli(f, [
+    "--cases",
+    f.corpus,
+    "--node",
+    "1:1",
+    "--device",
+    "desktop",
+    "--dry-run",
+  ])
+  assert.equal(listed.status, 0, listed.stderr)
+  assert.match(listed.stdout, /1:1 control--two/)
+  assert.doesNotMatch(listed.stdout, /control--one|other--one/)
+  assert.match(listed.stdout, /1 case\(s\)/)
+
+  let called = false
+  const rejected = await captureWave(
+    workspaceAt(f.root),
+    {
+      casesFile: f.corpus,
+      nodeId: "1:1",
+      device: "desktop",
+      input: evidence,
+      outDir: f.out,
+    },
+    {
+      evaluate: async (spec) => {
+        called = true
+        return result(spec)
+      },
+    },
+  )
+  assert.equal(rejected.code, 2)
+  assert.equal(called, false)
+})

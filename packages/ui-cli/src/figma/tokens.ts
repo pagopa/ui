@@ -339,7 +339,7 @@ function parseFloat(raw: string, name: string): number {
 
 function parseTypography(raw: string, name: string): TypographyValue {
   const match =
-    /^Font\(\s*family:\s*"([^"]+)",\s*style:\s*([^,]+),\s*size:\s*(\d+),\s*weight:\s*(\d+),\s*lineHeight:\s*(\d+),\s*letterSpacing:\s*([\d.]+)\s*\)$/.exec(
+    /^Font\(\s*family:\s*"([^"]+)",\s*style:\s*([^,]+),\s*size:\s*([\d.]+),\s*weight:\s*(\d+),\s*lineHeight:\s*([\d.]+),\s*letterSpacing:\s*(-?[\d.]+)\s*\)$/.exec(
       raw.trim(),
     )
   if (!match) throw new Error(`${name}: unsupported typography value ${raw}`)
@@ -366,7 +366,7 @@ function parseEffect(raw: string, name: string): z.infer<typeof EffectValueSchem
     .filter(Boolean)
     .map((entry) => {
       const match =
-        /^Effect\(\s*type:\s*(\w+),\s*color:\s*(#[0-9a-fA-F]{6,8}),\s*offset:\s*\((-?\d+),\s*(-?\d+)\),\s*radius:\s*(\d+),\s*spread:\s*(-?\d+)\s*\)$/.exec(
+        /^Effect\(\s*type:\s*(\w+),\s*color:\s*(#[0-9a-fA-F]{6,8}),\s*offset:\s*\((-?[\d.]+),\s*(-?[\d.]+)\),\s*radius:\s*([\d.]+),\s*spread:\s*(-?[\d.]+)\s*\)$/.exec(
           entry,
         )
       if (!match) throw new Error(`${name}: unsupported effect value ${entry}`)
@@ -439,7 +439,7 @@ function cssValue(token: ManifestEntry): string {
     return EffectValueSchema.parse(token.value)
       .map(
         (effect) =>
-          `${effect.offset.x}px ${effect.offset.y}px ${effect.radius}px ${effect.spread}px ${effect.color}`,
+          `${effect.type === "INNER_SHADOW" ? "inset " : ""}${effect.offset.x}px ${effect.offset.y}px ${effect.radius}px ${effect.spread}px ${effect.color}`,
       )
       .join(", ")
   }

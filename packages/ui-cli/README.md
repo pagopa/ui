@@ -210,7 +210,7 @@ keeps the same preflight behavior as the other live Figma commands.
 Every module under `src/` is TypeScript and runs directly on Node's type
 stripping (`node src/cli.ts`), with no build step. The `node:test` specs and the
 Playwright spec stay `.mjs`: they are executable documentation of the CLI and
-are run as-is. `pnpm run typecheck` checks the tree
+are run as-is. `pnpm nx run pagopa-ui-cli:typecheck` checks the tree
 with `tsc`; the reviewed JSON shapes are Zod schemas under `src/schemas` rather
 than hand-written if-chains. Every source module, including the parity probe,
 diff and CLI, is typechecked with no `@ts-nocheck`.

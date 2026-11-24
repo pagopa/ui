@@ -3,6 +3,7 @@ import path from "node:path"
 import { test } from "node:test"
 
 import { caseCorpus, readCorpus } from "../../src/parity/corpus.ts"
+import { verify } from "../../src/parity/verify.ts"
 import { COMMITTED_FILES, forgetCommitted } from "../../src/records/committed.ts"
 import { fixtureTree, workspaceAt } from "../helpers/cli.mjs"
 
@@ -134,4 +135,98 @@ test("an unknown case id fails with the ids the corpus knows", () => {
     () => corpus.find("1-1-empty"),
     /no case with that id in the corpus \(known: 1-1-mobile-mobile, 1-1-desktop-desktop, 1-1-strong-desktop\)/,
   )
+})
+
+test("validateRegistry accepts additionalExports declared on the registry target", () => {
+  const withAdditional = {
+    entries: {
+      "1:1": {
+        status: "implemented",
+        target: {
+          module: "src/control.tsx",
+          export: "Control",
+          additionalExports: ["ControlGroup"],
+          story: "src/Control.stories.tsx",
+        },
+      },
+    },
+    bulkRules: [],
+  }
+  const corpus = caseCorpus({
+    workspace,
+    cases: [
+      {
+        id: "1-1-group",
+        nodeId: "1:1",
+        export: "ControlGroup",
+        device: "desktop",
+        state: "Desktop",
+      },
+    ],
+    inventory: [node],
+    registry: withAdditional,
+    policy,
+  })
+  assert.deepEqual(corpus.validate().errors, [])
+})
+
+test("verify honors device-exceptions.json for implemented nodes missing device cases", () => {
+  const inventoryNode = {
+    ...node,
+    variants: node.variants.map((variant, index) => ({
+      ...variant,
+      designFingerprint: String(index + 1).repeat(64),
+    })),
+  }
+  const baseFiles = {
+    "src/catalog/figma/inventory.json": {
+      fileKey: "fixture",
+      syncedAt: "2026-10-21",
+      components: [inventoryNode],
+    },
+    "src/catalog/figma/registry.json": {
+      entries: {
+        "1:1": {
+          status: "implemented",
+          target: {
+            module: "src/control.tsx",
+            export: "Control",
+            story: "src/Control.stories.tsx",
+          },
+        },
+      },
+      bulkRules: [],
+    },
+    "src/catalog/figma/device-policy.json": policy,
+    "src/catalog/figma/parity-cases.json": [],
+  }
+  const unexcepted = fixtureTree(baseFiles, "verify-device-unexcepted-")
+  const excepted = fixtureTree(
+    {
+      ...baseFiles,
+      "src/catalog/figma/device-exceptions.json": { "1:1": "tracked in burn-down" },
+    },
+    "verify-device-excepted-",
+  )
+  try {
+    const failed = verify(workspaceAt(unexcepted.root), { json: true })
+    const failedData = JSON.parse(failed.out[0])
+    assert.ok(
+      failedData.errors.some((error) => error.includes("1:1 (implemented) misses device case(s)")),
+    )
+
+    const warned = verify(workspaceAt(excepted.root), { json: true })
+    const warnedData = JSON.parse(warned.out[0])
+    assert.ok(
+      !warnedData.errors.some((error) => error.includes("1:1 (implemented) misses device case(s)")),
+      "excepted node should not raise a device coverage error",
+    )
+    assert.ok(
+      warnedData.warnings.some((warning) => warning.includes("excepted: tracked in burn-down")),
+      "excepted node should surface as a warning with its reason",
+    )
+  } finally {
+    unexcepted.dispose()
+    excepted.dispose()
+  }
 })

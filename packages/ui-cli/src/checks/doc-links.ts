@@ -64,7 +64,6 @@ const BUILT_IN = new Set([
   "list",
   "outdated",
   "remove",
-  "run",
   "update",
   "why",
 ])

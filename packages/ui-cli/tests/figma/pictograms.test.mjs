@@ -220,6 +220,23 @@ test("pictogram export renders individual variants at the pinned version using o
     )
     assert.equal(moved.status, 0, moved.stderr)
 
+    fs.writeFileSync(path.join(root, "src/assets/figma-pictograms/9-9.svg"), "<svg/>")
+    const cleaned = spawnSync(
+      process.execPath,
+      [script, ...pictogramArguments(["--write", "--input", "live.json"])],
+      {
+        cwd: root,
+        encoding: "utf8",
+        env: fixtureEnvironment(root),
+      },
+    )
+    assert.equal(cleaned.status, 0, cleaned.stderr)
+    assert.equal(
+      fs.existsSync(path.join(root, "src/assets/figma-pictograms/9-9.svg")),
+      false,
+      "orphan SVG files are removed on write",
+    )
+
     fs.appendFileSync(path.join(root, "src/assets/figma-pictograms/1-2.svg"), "tampered")
     const invalid = spawnSync(
       process.execPath,

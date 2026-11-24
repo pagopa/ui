@@ -185,7 +185,7 @@ export function captureChecks({
 
 export function rgbToHex(color: unknown): string | undefined {
   const source = typeof color === "string" ? color : ""
-  const match = /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/.exec(source)
+  const match = /rgba?\(\s*(\d+)[\s,]+(\d+)[\s,]+(\d+)/.exec(source)
   if (!match) return typeof color === "string" ? color : undefined
   return `#${[match[1], match[2], match[3]]
     .map((value) => Number(value).toString(16).padStart(2, "0"))

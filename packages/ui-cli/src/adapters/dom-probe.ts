@@ -21,6 +21,26 @@ declare global {
 }
 const round = (value: number): number => Math.round(value * 100) / 100
 
+function classNameOf(element: Element): string {
+  return typeof element.className === "string"
+    ? element.className
+    : (element.getAttribute?.("class") ?? "")
+}
+
+function borderOf(computed: CSSStyleDeclaration): { width: number; color: string } {
+  const sides: ReadonlyArray<[string, string]> = [
+    [computed.borderTopWidth, computed.borderTopColor],
+    [computed.borderBottomWidth, computed.borderBottomColor],
+    [computed.borderLeftWidth, computed.borderLeftColor],
+    [computed.borderRightWidth, computed.borderRightColor],
+  ]
+  for (const [width, color] of sides) {
+    const parsed = parseFloat(width) || 0
+    if (parsed > 0) return { width: round(parsed), color }
+  }
+  return { width: round(parseFloat(computed.borderTopWidth) || 0), color: computed.borderTopColor }
+}
+
 export function probeFunction(input: ProbeInput = {}) {
   return globalThis.__pagopaProbe(input)
 }
@@ -43,11 +63,7 @@ function probeDom(input: ProbeInput = {}) {
         tree.push({
           depth,
           tag: element.tagName.toLowerCase(),
-          className: String(element.className ?? "")
-            .split(/\s+/)
-            .filter(Boolean)
-            .slice(0, 3)
-            .join(" "),
+          className: classNameOf(element).split(/\s+/).filter(Boolean).slice(0, 3).join(" "),
           box: measured.box,
           at: measured.at,
           padding: measured.padding,
@@ -120,10 +136,7 @@ function style(element: Element | null, originSelector?: string) {
     rowGap: computed.rowGap === "normal" ? undefined : round(parseFloat(computed.rowGap)),
     columnGap: computed.columnGap === "normal" ? undefined : round(parseFloat(computed.columnGap)),
     radius: round(parseFloat(computed.borderTopLeftRadius)),
-    border: {
-      width: round(parseFloat(computed.borderTopWidth)),
-      color: computed.borderTopColor,
-    },
+    border: borderOf(computed),
     boxShadow: computed.boxShadow === "none" ? undefined : computed.boxShadow,
     background: computed.backgroundColor,
     color: computed.color,
@@ -153,7 +166,7 @@ function visibleTextOf(root: Element): number {
     if (!ownView) return
     const own = ownView.getComputedStyle(node)
     if (own.display === "none" || own.visibility === "hidden") return
-    if (/(^|\s|:)sr-only/.test(String(node.className ?? ""))) return
+    if (/(^|\s|:)sr-only/.test(classNameOf(node))) return
     for (const child of node.childNodes) walk(child)
   }
   walk(root)
@@ -162,7 +175,7 @@ function visibleTextOf(root: Element): number {
 
 function label(element: Element, seen: Map<string, number>): string {
   const own = element.getAttribute?.("data-slot")
-  const classes = String(element.className ?? "")
+  const classes = classNameOf(element)
     .split(/\s+/)
     .filter((name) => name && !name.includes("sr-only"))
     .slice(0, 2)
@@ -177,7 +190,7 @@ function label(element: Element, seen: Map<string, number>): string {
 function paints(element: Element, computed: CSSStyleDeclaration): boolean {
   if (computed.backgroundImage !== "none") return true
   if (!/rgba?\([^)]*,\s*0\)$/.test(computed.backgroundColor)) return true
-  if ((parseFloat(computed.borderTopWidth) || 0) > 0) return true
+  if (borderOf(computed).width > 0) return true
   return Boolean(element.textContent?.trim())
 }
 
@@ -216,7 +229,7 @@ function walkResponsive(
   if (computed.display === "none" || computed.visibility === "hidden") return
   if (computed.contentVisibility === "hidden") return
   if (computed.position === "fixed") return
-  if (/(^|\s|:)sr-only/.test(String(element.className ?? ""))) return
+  if (/(^|\s|:)sr-only/.test(classNameOf(element))) return
   if (element instanceof HTMLDetailsElement && !element.open) return
   const box = element.getBoundingClientRect()
   const selector = label(element, scan.seen)
@@ -272,13 +285,45 @@ function recordOverflow(
       y: Math.max(hiddenY, 0),
       before: before > 1 ? before : 0,
     })
-  } else if (!inside.clipped) {
-    recordClipping(element, computed, box, selector, ownDecoration, hiddenX, hiddenY, scan)
+  } else {
+    if (!inside.clipped) {
+      recordClipping(element, computed, box, selector, ownDecoration, hiddenX, hiddenY, scan)
+    }
+    recordTruncation(element, computed, selector, hiddenX, scan)
   }
   return {
     clipped:
-      inside.clipped || scrollsX || scrollsY || overflowX === "hidden" || overflowY === "hidden",
+      inside.clipped ||
+      scrollsX ||
+      scrollsY ||
+      overflowX === "hidden" ||
+      overflowY === "hidden" ||
+      overflowX === "clip" ||
+      overflowY === "clip",
     own: ownDecoration,
+  }
+}
+
+function recordTruncation(
+  element: Element,
+  computed: CSSStyleDeclaration,
+  selector: string,
+  hiddenX: number,
+  scan: ResponsiveScan,
+) {
+  const textLeaf = [...element.childNodes].some(
+    (node) => node.nodeType === 3 && (node.textContent ?? "").trim(),
+  )
+  if (
+    textLeaf &&
+    hiddenX > 1 &&
+    (computed.textOverflow === "ellipsis" || computed.whiteSpace === "nowrap")
+  ) {
+    scan.truncated.push({
+      selector,
+      hidden: round(hiddenX),
+      text: (element.textContent ?? "").trim().replace(/\s+/g, " ").slice(0, 60),
+    })
   }
 }
 
@@ -331,20 +376,6 @@ function recordClipping(
     if (Object.keys(outside).length && paints(element, computed) && !ownDecoration) {
       scan.escaped.push({ selector, edges: outside })
     }
-    const textLeaf = [...element.childNodes].some(
-      (node) => node.nodeType === 3 && (node.textContent ?? "").trim(),
-    )
-    if (
-      textLeaf &&
-      hiddenX > 1 &&
-      (computed.textOverflow === "ellipsis" || computed.whiteSpace === "nowrap")
-    ) {
-      scan.truncated.push({
-        selector,
-        hidden: round(hiddenX),
-        text: element.textContent.trim().replace(/\s+/g, " ").slice(0, 60),
-      })
-    }
   }
 }
 
@@ -356,7 +387,7 @@ function bandRows(root: Element) {
         const computed = view.getComputedStyle(child)
         if (computed.display === "none" || computed.visibility === "hidden") return false
         if (computed.position === "absolute" || computed.position === "fixed") return false
-        if (/(^|\s|:)sr-only/.test(String(child.className ?? ""))) return false
+        if (/(^|\s|:)sr-only/.test(classNameOf(child))) return false
         // A child with no box is not a line: an empty value slot in a flex
         // row is centred by `align-items` and must not read as a wrapped band.
         const box = child.getBoundingClientRect()
@@ -458,6 +489,8 @@ function captureState(
 export function probeScript(): string {
   const functions = [
     round,
+    classNameOf,
+    borderOf,
     style,
     visibleTextOf,
     label,
@@ -465,6 +498,7 @@ export function probeScript(): string {
     responsiveBlock,
     walkResponsive,
     recordOverflow,
+    recordTruncation,
     recordClipping,
     bandRows,
     probeDom,

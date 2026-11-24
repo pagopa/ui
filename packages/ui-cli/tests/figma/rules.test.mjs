@@ -15,6 +15,7 @@ import {
   mark,
   plan,
   sourceHash,
+  sync,
 } from "../../src/figma/rules.ts"
 
 // The `.Regole` container as Figma exports it: a frame holding two labelled
@@ -199,6 +200,28 @@ test("plan reports a card the ledger has not seen, a stale hash and a removed ca
     cards: { "I1:2;9:9": pending },
   })
   assert.deepEqual(plan(snapshot, missing).removed, ["I1:2;9:9"])
+})
+
+test("a partial snapshot scopes removal detection and sync to the pages it covers", () => {
+  const partialSnapshot = RulesSnapshotSchema.parse({
+    ...snapshot,
+    partial: true,
+  })
+  const ledger = RulesLedgerSchema.parse({
+    schemaVersion: 1,
+    fileKey: "file",
+    cards: {
+      "I1:2;3:3": pending,
+      "I1:2;9:9": { ...pending, pageId: "1:1" },
+      "I2:2;8:8": { ...pending, pageId: "2:2", page: "Other page", container: "2:2" },
+    },
+  })
+  const diff = plan(partialSnapshot, ledger)
+  assert.deepEqual(diff.removed, ["I1:2;9:9"])
+  const removed = sync(ledger, partialSnapshot)
+  assert.equal(removed, 1)
+  assert.equal(ledger.cards["I1:2;9:9"].disposition, "removed")
+  assert.equal(ledger.cards["I2:2;8:8"].disposition, "pending")
 })
 
 // `refresh` rewrites the snapshot; only `mark` re-stamps the ledger's

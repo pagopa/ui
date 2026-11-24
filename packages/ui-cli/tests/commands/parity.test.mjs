@@ -202,3 +202,31 @@ test("optional comparison values and repeated interactions retain citty argument
     f.dispose()
   }
 })
+
+test("parity report writes default docs/reports output at the workspace root", async () => {
+  const fs = await import("node:fs")
+  const tree = fixtureTree({
+    "pnpm-workspace.yaml": "packages:\n  - packages/*\n",
+    "packages/pagopa-ui/.figma/parity/summary.json": {
+      wave: "2026-11-24-fixture",
+      generatedAt: "2026-11-24T00:00:00Z",
+      counts: { verified: 0 },
+      cases: [],
+    },
+  })
+  try {
+    const root = path.join(tree.root, "packages/pagopa-ui")
+    const result = await runCli(["parity", "report"], { root })
+    assert.equal(result.status, 0, result.stderr)
+    assert.equal(
+      fs.existsSync(path.join(tree.root, "docs/reports/2026-11-24-fixture-figma-parity.md")),
+      true,
+    )
+    assert.equal(
+      fs.existsSync(path.join(root, "docs/reports/2026-11-24-fixture-figma-parity.md")),
+      false,
+    )
+  } finally {
+    tree.dispose()
+  }
+})

@@ -5,8 +5,10 @@ import {
   captureChecks,
   DISABLE_MOTION_CSS,
   formatProbeTree,
+  rgbToHex,
   SCHEMA_VERSION,
 } from "../../src/parity/render.ts"
+import { probeScript } from "../../src/adapters/dom-probe.ts"
 
 // The preflight is the A1 contract: a capture that is scaled, does not carry the
 // forced width or is not in the declared state is missing evidence (exit 2), not
@@ -109,5 +111,42 @@ test("the tree formatter prints one readable line per element", () => {
       "fieldset.flex.gap-2 310x448 @0,0 pad=0/0/0/0 gap=8",
       "  div 310x43 @0,44 pad=8/88/8/16 gap=0",
     ].join("\n"),
+  )
+})
+
+test("rgbToHex parses both legacy comma-separated and CSS Color 4 space-separated syntax", () => {
+  assert.equal(rgbToHex("rgb(11, 62, 227)"), "#0b3ee3")
+  assert.equal(rgbToHex("rgba(11, 62, 227, 0.5)"), "#0b3ee3")
+  assert.equal(rgbToHex("rgb(11 62 227)"), "#0b3ee3")
+  assert.equal(rgbToHex("rgb(11 62 227 / 0.5)"), "#0b3ee3")
+})
+
+test("probeScript bundles SVG className, multi-side border and decoupled truncation helpers", () => {
+  const script = probeScript()
+  assert.match(script, /function classNameOf/)
+  assert.match(script, /function borderOf/)
+  assert.match(script, /function recordTruncation/)
+  assert.match(script, /overflowX === "clip" \|\|\s+overflowY === "clip"/)
+  // Verify the serialized bundle parses cleanly and its helpers handle edge cases.
+  const helpers = new Function(`${script}; return { classNameOf, borderOf };`)()
+  assert.equal(
+    helpers.classNameOf({
+      className: { baseVal: "icon-svg" },
+      getAttribute: (name) => (name === "class" ? "icon-svg" : null),
+    }),
+    "icon-svg",
+  )
+  assert.deepEqual(
+    helpers.borderOf({
+      borderTopWidth: "0px",
+      borderTopColor: "rgb(0, 0, 0)",
+      borderBottomWidth: "1px",
+      borderBottomColor: "rgb(200, 200, 200)",
+      borderLeftWidth: "0px",
+      borderLeftColor: "rgb(0, 0, 0)",
+      borderRightWidth: "0px",
+      borderRightColor: "rgb(0, 0, 0)",
+    }),
+    { width: 1, color: "rgb(200, 200, 200)" },
   )
 })

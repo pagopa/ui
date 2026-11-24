@@ -325,14 +325,21 @@ function fillsOf(node: RawNode): SpecNode["fills"] {
 function textOf(node: RawNode): SpecNode["text"] {
   if (node.type !== "TEXT") return undefined
   const style = node.style ?? {}
+  const lineHeight =
+    style.lineHeightPx ??
+    (style.lineHeightPercentFontSize != null && style.fontSize != null
+      ? round2((style.lineHeightPercentFontSize / 100) * style.fontSize)
+      : undefined)
   return {
     characters: node.characters,
     fontSize: style.fontSize,
-    lineHeight: style.lineHeightPx ?? style.lineHeightPercentFontSize,
+    lineHeight,
     weight: style.fontWeight,
     cssWeight: cssWeight(style.fontWeight),
     styleName: style.fontPostScriptName ?? style.fontStyle,
-    color: hexOf((node.fills ?? []).find((paint) => paint.type === "SOLID")),
+    color: hexOf(
+      (node.fills ?? []).find((paint) => paint.visible !== false && paint.type === "SOLID"),
+    ),
   }
 }
 

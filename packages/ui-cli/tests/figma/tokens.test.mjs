@@ -425,3 +425,24 @@ test("foundation entries without a source note or reason fail the refresh", () =
     },
   )
 })
+
+test("typography and effect parsers accept decimals, negative letterSpacing and INNER_SHADOW", () => {
+  fixture(({ tokens, read, snapshot, write }) => {
+    write(
+      "snapshot.json",
+      snapshot({
+        ...snapshotData.variables,
+        "Headings/Hero":
+          'Font(family: "Titillio", style: Semibold, size: 32.5, weight: 500, lineHeight: 48.5, letterSpacing: -0.25)',
+        "Elevation/Inner":
+          "Effect(type: INNER_SHADOW, color: #002B551A, offset: (0, -1.5), radius: 2.5, spread: 0.5)",
+      }),
+    )
+    const written = tokens("--write", "--input", "snapshot.json")
+    assert.equal(written.status, 0, written.stderr)
+    const css = read("src/figma.generated.css")
+    assert.match(css, /--text-hero--letter-spacing: -0.25px;/)
+    assert.match(css, /--figma-elevation-inner: inset 0px -1.5px 2.5px 0.5px #002b551a;/)
+    assert.equal(tokens("--check").status, 0)
+  })
+})

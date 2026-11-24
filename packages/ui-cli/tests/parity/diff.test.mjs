@@ -532,3 +532,38 @@ test("a borderless render compares its inset ring as the source's inside stroke"
   const bordered = { width: 1, color: "rgb(1, 2, 3)" }
   assert.deepEqual(renderStroke({ ...render, border: bordered }), bordered)
 })
+
+test("spacing deltas classify against the space scale and color deltas resolve token names", () => {
+  const index = tokenIndex(workspace)
+  const sources = {
+    field: {
+      type: "FRAME",
+      box: { width: 200, height: 48 },
+      layout: { mode: "HORIZONTAL", gap: 8, padding: [16, 16, 16, 16] },
+      fills: ["#0b3ee3"],
+    },
+  }
+  const probe = {
+    subjects: {
+      field: {
+        box: { width: 200, height: 48 },
+        padding: [12, 16, 16, 16],
+        gap: 16,
+        columnGap: 16,
+        childCount: 2,
+        background: "rgb(244, 245, 248)",
+      },
+    },
+  }
+  const result = compare({ index, sources, probe })
+  const pad = result.deltas.find((item) => item.path === "field.padding.top")
+  assert.equal(pad?.token?.kind, "token")
+  assert.equal(pad?.token?.name, "space-3")
+  const gap = result.deltas.find((item) => item.path === "field.gap")
+  assert.equal(gap?.token?.kind, "token")
+  assert.equal(gap?.token?.name, "space-4")
+  const bg = result.deltas.find((item) => item.path === "field.background")
+  assert.equal(bg?.token?.kind, "token")
+  assert.match(bg?.token?.name ?? "", /^Color\//)
+  assert.equal(classify(index, "color", "#123456").kind, "inline")
+})
