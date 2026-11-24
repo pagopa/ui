@@ -114,11 +114,13 @@ test("the tree formatter prints one readable line per element", () => {
   )
 })
 
-test("rgbToHex parses both legacy comma-separated and CSS Color 4 space-separated syntax", () => {
+test("rgbToHex parses legacy comma-separated and CSS Color 4 syntax while preserving alpha", () => {
   assert.equal(rgbToHex("rgb(11, 62, 227)"), "#0b3ee3")
-  assert.equal(rgbToHex("rgba(11, 62, 227, 0.5)"), "#0b3ee3")
+  assert.equal(rgbToHex("rgba(11, 62, 227, 1)"), "#0b3ee3")
+  assert.equal(rgbToHex("rgba(11, 62, 227, 0.5)"), "#0b3ee380")
   assert.equal(rgbToHex("rgb(11 62 227)"), "#0b3ee3")
-  assert.equal(rgbToHex("rgb(11 62 227 / 0.5)"), "#0b3ee3")
+  assert.equal(rgbToHex("rgb(11 62 227 / 0.5)"), "#0b3ee380")
+  assert.equal(rgbToHex("rgb(14 15 19 / 35%)"), "#0e0f1359")
 })
 
 test("probeScript bundles SVG className, multi-side border and decoupled truncation helpers", () => {

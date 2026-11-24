@@ -18,3 +18,26 @@ export function loadDeviceExceptions(file: string): Record<string, string> {
   if (!fs.existsSync(file)) return {}
   return parseSchema(DeviceExceptionsSchema, readJson(file), file)
 }
+
+export function validateDeviceExceptions(
+  exceptions: Record<string, string>,
+  byNode: Map<string, { missing: string[] }>,
+  errors: string[],
+): void {
+  for (const [nodeId, reason] of Object.entries(exceptions)) {
+    if (typeof reason !== "string" || !reason.trim()) {
+      errors.push(`${DEVICE_EXCEPTIONS_PATH}: ${nodeId} requires a reason`)
+      continue
+    }
+    const row = byNode.get(nodeId)
+    if (!row) {
+      errors.push(
+        `${DEVICE_EXCEPTIONS_PATH}: ${nodeId} is not a registry entry with a device axis — remove the exception`,
+      )
+    } else if (!row.missing.length) {
+      errors.push(
+        `${DEVICE_EXCEPTIONS_PATH}: ${nodeId} covers every declared device — remove the exception`,
+      )
+    }
+  }
+}

@@ -116,6 +116,21 @@ test("the weight law and the paint reader stay in one place", () => {
     }),
     "#0b3ee3",
   )
+  assert.equal(
+    hexOf({
+      type: "SOLID",
+      color: { r: 14 / 255, g: 15 / 255, b: 19 / 255, a: 0.35 },
+    }),
+    "#0e0f1359",
+  )
+  assert.equal(
+    hexOf({
+      type: "SOLID",
+      opacity: 0.35,
+      color: { r: 14 / 255, g: 15 / 255, b: 19 / 255 },
+    }),
+    "#0e0f1359",
+  )
   assert.equal(hexOf({ type: "IMAGE" }), undefined)
 })
 

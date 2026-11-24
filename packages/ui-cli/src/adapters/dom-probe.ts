@@ -337,45 +337,43 @@ function recordClipping(
   hiddenY: number,
   scan: ResponsiveScan,
 ) {
-  {
-    if (
-      hiddenX > 1 &&
-      (computed.overflowX === "hidden" || computed.overflowX === "clip") &&
-      element.clientWidth > 0
-    ) {
-      scan.clipped.push({
-        selector,
-        axis: "x",
-        hidden: round(hiddenX),
-        client: element.clientWidth,
-      })
-    }
-    if (
-      hiddenY > 1 &&
-      (computed.overflowY === "hidden" || computed.overflowY === "clip") &&
-      element.clientHeight > 0
-    ) {
-      scan.clipped.push({
-        selector,
-        axis: "y",
-        hidden: round(hiddenY),
-        client: element.clientHeight,
-      })
-    }
-    const edges = {
-      left: round(scan.rootBox.left - box.left),
-      right: round(box.right - scan.rootBox.right),
-      top: round(scan.rootBox.top - box.top),
-      bottom: round(box.bottom - scan.rootBox.bottom),
-    }
-    const outside = Object.fromEntries(
-      Object.entries(edges)
-        .filter(([, value]) => value > 1)
-        .map(([key, value]) => [key, Math.round(value)]),
-    )
-    if (Object.keys(outside).length && paints(element, computed) && !ownDecoration) {
-      scan.escaped.push({ selector, edges: outside })
-    }
+  if (
+    hiddenX > 1 &&
+    (computed.overflowX === "hidden" || computed.overflowX === "clip") &&
+    element.clientWidth > 0
+  ) {
+    scan.clipped.push({
+      selector,
+      axis: "x",
+      hidden: round(hiddenX),
+      client: element.clientWidth,
+    })
+  }
+  if (
+    hiddenY > 1 &&
+    (computed.overflowY === "hidden" || computed.overflowY === "clip") &&
+    element.clientHeight > 0
+  ) {
+    scan.clipped.push({
+      selector,
+      axis: "y",
+      hidden: round(hiddenY),
+      client: element.clientHeight,
+    })
+  }
+  const edges = {
+    left: round(scan.rootBox.left - box.left),
+    right: round(box.right - scan.rootBox.right),
+    top: round(scan.rootBox.top - box.top),
+    bottom: round(box.bottom - scan.rootBox.bottom),
+  }
+  const outside = Object.fromEntries(
+    Object.entries(edges)
+      .filter(([, value]) => value > 1)
+      .map(([key, value]) => [key, Math.round(value)]),
+  )
+  if (Object.keys(outside).length && paints(element, computed) && !ownDecoration) {
+    scan.escaped.push({ selector, edges: outside })
   }
 }
 

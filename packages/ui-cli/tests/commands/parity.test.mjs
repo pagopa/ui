@@ -226,6 +226,11 @@ test("parity report writes default docs/reports output at the workspace root", a
       fs.existsSync(path.join(root, "docs/reports/2026-11-24-fixture-figma-parity.md")),
       false,
     )
+
+    const custom = await runCli(["parity", "report", "--out", "reports/custom.md"], { root })
+    assert.equal(custom.status, 0, custom.stderr)
+    assert.equal(fs.existsSync(path.join(root, "reports/custom.md")), true)
+    assert.equal(fs.existsSync(path.join(tree.root, "reports/custom.md")), false)
   } finally {
     tree.dispose()
   }

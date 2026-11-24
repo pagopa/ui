@@ -1,3 +1,5 @@
+import fs from "node:fs"
+import path from "node:path"
 import sharp from "sharp"
 
 export function xmlEscape(value: unknown): string {
@@ -48,4 +50,10 @@ export async function assertRenderedPixels(source: string, label: string): Promi
 export async function assertSvgDimensions(source: string, label: string): Promise<void> {
   const metadata = await sharp(Buffer.from(source)).metadata()
   if (!metadata.width || !metadata.height) throw new Error(`Invalid SVG for ${label}`)
+}
+
+export function pruneOrphanSvgs(directory: string, written: ReadonlySet<string>): void {
+  for (const file of fs.readdirSync(directory)) {
+    if (file.endsWith(".svg") && !written.has(file)) fs.unlinkSync(path.join(directory, file))
+  }
 }

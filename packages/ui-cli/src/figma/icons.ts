@@ -14,7 +14,12 @@ import { resolveProvenance } from "./asset-provenance.ts"
 import { requireBulkRule, selectRuleNodes } from "./artwork/catalogue.ts"
 import { assertGeneratedModule, propertyKey } from "./artwork/generate-module.ts"
 import { assertPinnedManifest, readManifest, writeManifest } from "./artwork/manifest.ts"
-import { assertRenderedPixels, assertStandaloneSvg, xmlEscape as xml } from "./artwork/svg.ts"
+import {
+  assertRenderedPixels,
+  assertStandaloneSvg,
+  pruneOrphanSvgs,
+  xmlEscape as xml,
+} from "./artwork/svg.ts"
 import { normalizeLive } from "./snapshot.ts"
 
 const SnapshotSchema = z.looseObject({
@@ -623,11 +628,7 @@ function writeIconFiles(
       written.add(variant.file)
     }
   }
-  for (const file of fs.readdirSync(context.directory)) {
-    if (file.endsWith(".svg") && !written.has(file)) {
-      fs.unlinkSync(path.join(context.directory, file))
-    }
-  }
+  pruneOrphanSvgs(context.directory, written)
   writeManifest(context.manifestFile, manifest)
   fs.mkdirSync(path.dirname(context.sourceFile), { recursive: true })
   fs.writeFileSync(context.sourceFile, source)

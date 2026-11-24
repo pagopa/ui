@@ -10,8 +10,10 @@ compare it with the source code of the audited package, `packages/pagopa-ui`.
 
 - Agents invoke CLI commands as `pnpm ui-cli …`; Nx targets remain the gates and
   CI entry points. The CLI reads the design system through an explicit root
-  (`PAGOPA_UI_ROOT`), never from the working directory. Every path inside a
-  command is relative to that root.
+  (`PAGOPA_UI_ROOT`), never from the working directory. Paths inside a command
+  are relative to that root, except the repository-level `docs/` defaults
+  (`docs/figma-parity`, `docs/design-requests`, and the default `parity report`
+  markdown output), which resolve at the workspace root.
 - Figma is read-only. Figma REST calls use GET requests only; tools never write
   to the Figma file.
 - `src/figma/rest.ts` handles Figma API reads. The handoff adapters also access

@@ -185,11 +185,18 @@ export function captureChecks({
 
 export function rgbToHex(color: unknown): string | undefined {
   const source = typeof color === "string" ? color : ""
-  const match = /rgba?\(\s*(\d+)[\s,]+(\d+)[\s,]+(\d+)/.exec(source)
+  const match = /rgba?\(\s*(\d+)[\s,]+(\d+)[\s,]+(\d+)(?:\s*(?:,|\/)\s*([\d.]+%?))?\s*\)/.exec(
+    source,
+  )
   if (!match) return typeof color === "string" ? color : undefined
-  return `#${[match[1], match[2], match[3]]
+  const rgb = [match[1], match[2], match[3]]
     .map((value) => Number(value).toString(16).padStart(2, "0"))
-    .join("")}`
+    .join("")
+  if (match[4] === undefined) return `#${rgb}`
+  const alphaValue = match[4].endsWith("%") ? Number(match[4].slice(0, -1)) / 100 : Number(match[4])
+  if (!Number.isFinite(alphaValue) || alphaValue >= 1) return `#${rgb}`
+  const alphaByte = Math.max(0, Math.min(255, Math.round(alphaValue * 255)))
+  return `#${rgb}${alphaByte.toString(16).padStart(2, "0")}`
 }
 
 export type CaptureOptions = {

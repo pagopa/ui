@@ -14,7 +14,7 @@ import {
 } from "../schemas/catalogue.ts"
 import type { SnapshotDelta } from "./snapshot.ts"
 import { escapeRegExp } from "./config.ts"
-import { keepsStatusOnDrift, requiresReason, surfaceDecision } from "./surface-decision.ts"
+import { censusDecisionFor, keepsStatusOnDrift } from "./surface-decision.ts"
 import { deltaChangedNodes } from "./work-set.ts"
 import { loadPageSurface, PAGE_SURFACE_PATH } from "./surface.ts"
 import { COMMITTED_FILES } from "../records/committed.ts"
@@ -134,7 +134,7 @@ function reconcilePublishedIdentities(
     for (const identity of [...page.identities]) {
       const node = published.get(identity.nodeId)
       if (!node) {
-        if (identity.inLibrary || removed.has(identity.nodeId)) {
+        if (removed.has(identity.nodeId)) {
           page.identities = page.identities.filter((entry) => entry.nodeId !== identity.nodeId)
           reconciled = true
         }
@@ -186,18 +186,12 @@ function queueSurfaceIdentities(
           reason,
         })
       } else {
-        const entry = registry.entries[node.nodeId]
-        const rule = registry.bulkRules?.find((item) => item.pageId === node.pageId)
-        const status = entry?.status ?? rule?.status
-        const decision = surfaceDecision(true, status)
-        const entryReason = entry?.reason ?? entry?.note ?? rule?.reason ?? rule?.note ?? reason
         destination.identities.push({
           nodeId: node.nodeId,
           name: node.name,
           kind: node.type,
           inLibrary: true,
-          decision,
-          ...(requiresReason(decision) ? { reason: entryReason } : {}),
+          ...censusDecisionFor(node.nodeId, registry, node.pageId, reason),
         })
       }
       censused.set(node.nodeId, destination)

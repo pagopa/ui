@@ -381,6 +381,11 @@ function checkCommand(
     if (first === "run") {
       const script = tokens[2]
       if (!script) continue
+      if (script === "--filter" || script === "-F") {
+        checkFilteredCommand(ctx, file, text, index, commands, [tokens[0], ...tokens.slice(2)])
+        continue
+      }
+      if (script.startsWith("-")) continue
       if (commands.rootScripts && !commands.rootScripts.has(script))
         report(ctx, file, text, index, `unknown pnpm script ${script}`)
       continue

@@ -3,7 +3,11 @@ import { readJson } from "../../lib/json.ts"
 import { readCases, readDevicePolicy } from "../../records/committed.ts"
 import { parseSchema } from "../../lib/validate.ts"
 import { caseCorpus } from "../../parity/corpus.ts"
-import { DEVICE_EXCEPTIONS_PATH, loadDeviceExceptions } from "../../parity/device-exceptions.ts"
+import {
+  DEVICE_EXCEPTIONS_PATH,
+  loadDeviceExceptions,
+  validateDeviceExceptions,
+} from "../../parity/device-exceptions.ts"
 import {
   longNoteErrors,
   NOTE_LENGTH_BASELINE_PATH,
@@ -183,7 +187,7 @@ export function validateDeviceCoverage(
       statuses: ["implemented"],
     })
     const byNode = new Map(coverage.all.map((row) => [row.nodeId, row]))
-    validateCoverageExceptions(exceptions, byNode, errors)
+    validateDeviceExceptions(exceptions, byNode, errors)
     const uncovered = coverage.rows.filter(
       (row) => row.missing.length && !Object.hasOwn(exceptions, row.nodeId),
     )
@@ -216,27 +220,5 @@ export function validateDeviceCoverage(
       warnings,
       stats: { sets: 0, covered: 0, missing: 0, drafts: 0, exceptions: 0 },
     }
-  }
-}
-
-function validateCoverageExceptions(
-  exceptions: Record<string, string>,
-  byNode: Map<string, { missing: string[] }>,
-  errors: string[],
-): void {
-  for (const [nodeId, reason] of Object.entries(exceptions)) {
-    if (typeof reason !== "string" || !reason.trim()) {
-      errors.push(`${DEVICE_EXCEPTIONS_PATH}: ${nodeId} requires a reason`)
-      continue
-    }
-    const row = byNode.get(nodeId)
-    if (!row)
-      errors.push(
-        `${DEVICE_EXCEPTIONS_PATH}: ${nodeId} is not a registry entry with a device axis — remove the exception`,
-      )
-    else if (!row.missing.length)
-      errors.push(
-        `${DEVICE_EXCEPTIONS_PATH}: ${nodeId} covers every declared device — remove the exception`,
-      )
   }
 }

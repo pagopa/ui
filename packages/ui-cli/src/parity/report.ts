@@ -101,11 +101,9 @@ export function report(
   const summary: Summary = JSON.parse(fs.readFileSync(summaryPath, "utf8"))
   const wave = String(options.wave ?? summary.wave)
   const outFile = String(options.outDir ?? `docs/reports/${wave}-figma-parity.md`)
-  const outPath = path.isAbsolute(outFile)
-    ? outFile
-    : outFile.startsWith("docs/")
-      ? path.join(workspace.workspaceRoot, outFile)
-      : workspace.path(outFile)
+  const outPath = options.outDir
+    ? workspace.path(outFile)
+    : path.join(workspace.workspaceRoot, outFile)
 
   const entries: SummaryEntry[] = summary.cases ?? []
   const lines = reportHeader(summary, wave, dir, entries)

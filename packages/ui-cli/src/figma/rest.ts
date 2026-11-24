@@ -2,6 +2,7 @@ import fs from "node:fs"
 import { randomUUID } from "node:crypto"
 import path from "node:path"
 import { z } from "zod"
+import { readField } from "../lib/object.ts"
 
 const DocumentSchema = z.looseObject({
   id: z.string(),
@@ -108,22 +109,18 @@ const TRANSIENT_CODES = new Set([
   "UND_ERR_SOCKET",
 ])
 
-function field(value: unknown, key: string): unknown {
-  return typeof value === "object" && value !== null ? Reflect.get(value, key) : undefined
-}
-
 function transportFailure(error: unknown): boolean {
-  const name = field(error, "name")
+  const name = readField(error, "name")
   if (name === "TimeoutError" || name === "AbortError") return true
-  const code = field(field(error, "cause"), "code")
+  const code = readField(readField(error, "cause"), "code")
   return typeof code === "string" && TRANSIENT_CODES.has(code)
 }
 
 function describeFailure(error: unknown): string {
-  if (field(error, "name") === "TimeoutError") {
+  if (readField(error, "name") === "TimeoutError") {
     return `timed out after ${REQUEST_TIMEOUT_MS / 1000} s`
   }
-  const code = field(field(error, "cause"), "code")
+  const code = readField(readField(error, "cause"), "code")
   const message = error instanceof Error ? error.message : String(error)
   return typeof code === "string" && code ? `${message} (${code})` : message
 }
@@ -131,7 +128,7 @@ function describeFailure(error: unknown): string {
 // `Retry-After` is in seconds or an HTTP-date (RFC 9110) when Figma sends it;
 // an unparsable value falls back to the exponential wait, capped so one answer
 // cannot park a job for long.
-export function waitSeconds(attempt: number, retryAfter: string | null, now = Date.now()): number {
+function waitSeconds(attempt: number, retryAfter: string | null, now = Date.now()): number {
   let declared = Number.NaN
   if (retryAfter !== null) {
     const numeric = Number(retryAfter)
@@ -150,20 +147,54 @@ function wait(seconds: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, seconds * 1000))
 }
 
-type Reply = { ok: true; data: unknown } | { ok: false; status: number; retryAfter: string | null }
+type Reply<T> = { ok: true; data: T } | { ok: false; status: number; retryAfter: string | null }
 
-async function read(url: string, token: string): Promise<Reply> {
+async function retryFetch<T>(
+  label: string,
+  request: () => Promise<Reply<T>>,
+  formatHttpError: (status: number, retryAfter: string | null) => string,
+): Promise<T> {
+  for (let attempt = 0; ; attempt += 1) {
+    let reply: Reply<T>
+    try {
+      reply = await request()
+    } catch (error) {
+      const last = attempt >= MAX_TRANSPORT_ATTEMPTS - 1
+      if (!transportFailure(error) || last) {
+        throw new Error(`${label}: ${describeFailure(error)}`, { cause: error })
+      }
+      await wait(waitSeconds(attempt, null))
+      continue
+    }
+    if (reply.ok) return reply.data
+    const retryable = reply.status === 429 || reply.status >= 500
+    if (!retryable || attempt >= MAX_HTTP_ATTEMPTS - 1) {
+      throw new Error(formatHttpError(reply.status, reply.retryAfter))
+    }
+    await wait(waitSeconds(attempt, reply.retryAfter))
+  }
+}
+
+async function read<T>(
+  url: string,
+  headers: Record<string, string> | undefined,
+  readBody: (response: Response) => Promise<T>,
+): Promise<Reply<T>> {
   const response = await fetch(url, {
     method: "GET",
-    headers: { "X-Figma-Token": token },
+    ...(headers ? { headers } : {}),
     signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
   })
   if (!response.ok) {
-    return { ok: false, status: response.status, retryAfter: response.headers.get("retry-after") }
+    return {
+      ok: false,
+      status: response.status,
+      retryAfter: response.headers?.get?.("retry-after") ?? null,
+    }
   }
   // The abort covers the body too: a response that stalls mid-stream rejects
   // here, so the caller retries it like any other transport failure.
-  return { ok: true, data: await response.json() }
+  return { ok: true, data: await readBody(response) }
 }
 
 async function get<T>(endpoint: string, schema: z.ZodType<T>, token: string): Promise<T> {
@@ -172,32 +203,15 @@ async function get<T>(endpoint: string, schema: z.ZodType<T>, token: string): Pr
   // and occasionally lets one request stall. Waiting and asking again is part
   // of the reader, not of every caller.
   const url = `https://api.figma.com/v1/${endpoint}`
-  for (let attempt = 0; ; attempt += 1) {
-    let reply: Reply
-    try {
-      reply = await read(url, token)
-    } catch (error) {
-      const last = attempt >= MAX_TRANSPORT_ATTEMPTS - 1
-      if (!transportFailure(error) || last) {
-        throw new Error(`Figma GET ${endpoint}: ${describeFailure(error)}`, { cause: error })
-      }
-      const seconds = waitSeconds(attempt, null)
-      await wait(seconds)
-      continue
-    }
-    if (reply.ok) {
-      const api = ApiResponseSchema.parse(reply.data)
-      if (api.error || api.err) throw new Error(`Figma GET ${endpoint}: API error`)
-      return schema.parse(reply.data)
-    }
-    const retryable = reply.status === 429 || reply.status >= 500
-    if (!retryable || attempt >= MAX_HTTP_ATTEMPTS - 1) {
-      throw new Error(
-        `Figma GET ${endpoint}: HTTP ${reply.status}${reply.retryAfter ? `; retry after ${reply.retryAfter} seconds` : ""}`,
-      )
-    }
-    await wait(waitSeconds(attempt, reply.retryAfter))
-  }
+  const data = await retryFetch(
+    `Figma GET ${endpoint}`,
+    () => read(url, { "X-Figma-Token": token }, (response) => response.json()),
+    (status, retryAfter) =>
+      `Figma GET ${endpoint}: HTTP ${status}${retryAfter ? `; retry after ${retryAfter} seconds` : ""}`,
+  )
+  const api = ApiResponseSchema.parse(data)
+  if (api.error || api.err) throw new Error(`Figma GET ${endpoint}: API error`)
+  return schema.parse(data)
 }
 
 // CDN asset downloads (rendered SVGs and PNGs) never carry credentials, and
@@ -208,39 +222,11 @@ async function fetchAsset<T>(
   url: string,
   readBody: (response: Response) => Promise<T>,
 ): Promise<T> {
-  for (let attempt = 0; ; attempt += 1) {
-    let response: Response
-    try {
-      response = await fetch(url, {
-        method: "GET",
-        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
-      })
-    } catch (error) {
-      const last = attempt >= MAX_TRANSPORT_ATTEMPTS - 1
-      if (!transportFailure(error) || last) {
-        throw new Error(`Figma asset ${id}: ${describeFailure(error)}`, { cause: error })
-      }
-      await wait(waitSeconds(attempt, null))
-      continue
-    }
-    if (response.ok) {
-      try {
-        return await readBody(response)
-      } catch (error) {
-        const last = attempt >= MAX_TRANSPORT_ATTEMPTS - 1
-        if (!transportFailure(error) || last) {
-          throw new Error(`Figma asset ${id}: ${describeFailure(error)}`, { cause: error })
-        }
-        await wait(waitSeconds(attempt, null))
-        continue
-      }
-    }
-    const retryable = response.status === 429 || response.status >= 500
-    if (!retryable || attempt >= MAX_HTTP_ATTEMPTS - 1) {
-      throw new Error(`Figma asset ${id}: HTTP ${response.status}`)
-    }
-    await wait(waitSeconds(attempt, response.headers?.get?.("retry-after") ?? null))
-  }
+  return retryFetch(
+    `Figma asset ${id}`,
+    () => read(url, undefined, readBody),
+    (status) => `Figma asset ${id}: HTTP ${status}`,
+  )
 }
 
 export async function fetchFigmaImages(

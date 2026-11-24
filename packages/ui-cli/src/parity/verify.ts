@@ -3,7 +3,11 @@ import type { ParityCase } from "../schemas/parity.ts"
 import type { Workspace } from "../adapters/workspace.ts"
 import { readCorpus } from "./corpus.ts"
 import { formatCoverage, loadCoveragePopulations } from "./coverage.ts"
-import { DEVICE_EXCEPTIONS_PATH, loadDeviceExceptions } from "./device-exceptions.ts"
+import {
+  DEVICE_EXCEPTIONS_PATH,
+  loadDeviceExceptions,
+  validateDeviceExceptions,
+} from "./device-exceptions.ts"
 import { checkEvidence } from "./evidence.ts"
 
 import { corpusPath, frameBaseline, inventoryFileKey } from "./context.ts"
@@ -41,6 +45,10 @@ export function verify(
     verdict.errors,
   )
   const deviceExceptions = loadDeviceExceptions(workspace.path(DEVICE_EXCEPTIONS_PATH))
+  const corpusDevices = new Map(
+    corpus.coverage({ statuses: ["implemented"] }).all.map((row) => [row.nodeId, row]),
+  )
+  validateDeviceExceptions(deviceExceptions, corpusDevices, errors)
   coverageIssues(populations, evidence, deviceExceptions, errors, warnings)
   if (options.json) {
     out.push(

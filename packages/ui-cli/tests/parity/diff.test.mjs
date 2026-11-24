@@ -566,4 +566,13 @@ test("spacing deltas classify against the space scale and color deltas resolve t
   assert.equal(bg?.token?.kind, "token")
   assert.match(bg?.token?.name ?? "", /^Color\//)
   assert.equal(classify(index, "color", "#123456").kind, "inline")
+
+  // Translucent 8-digit tokens (e.g. overlays and opacity ramps) match rgba()
+  // values without collapsing into opaque twins.
+  const overlay = classify(index, "color", "rgba(14, 15, 19, 0.35)")
+  assert.equal(overlay.kind, "token")
+  assert.equal(overlay.name, "Color/Surface/Surface overlay")
+  const opaqueBlack = classify(index, "color", "rgb(14, 15, 19)")
+  assert.equal(opaqueBlack.kind, "token")
+  assert.notEqual(opaqueBlack.name, "Color/Surface/Surface overlay")
 })

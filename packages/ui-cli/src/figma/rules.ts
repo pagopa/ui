@@ -14,6 +14,7 @@ import fs from "node:fs"
 import path from "node:path"
 
 import { readJson, writeJson } from "../lib/json.ts"
+import { readField } from "../lib/object.ts"
 import { sha256 } from "../lib/hash.ts"
 import { walkFiles } from "../lib/fs.ts"
 import type { Workspace } from "../adapters/workspace.ts"
@@ -72,34 +73,28 @@ export function componentRulesFirst(text: string): boolean {
 
 // ------------------------------------------------------------------ helpers
 
-function property(value: unknown, key: string): unknown {
-  return value && typeof value === "object" && !Array.isArray(value)
-    ? Reflect.get(value, key)
-    : undefined
-}
-
 function children(node: unknown): unknown[] {
-  const value = property(node, "children")
+  const value = readField(node, "children")
   return Array.isArray(value) ? value : []
 }
 
 function text(node: unknown): string {
-  const value = property(node, "characters")
+  const value = readField(node, "characters")
   return typeof value === "string" ? value : ""
 }
 
 function nodeId(node: unknown): string | null {
-  const value = property(node, "id")
+  const value = readField(node, "id")
   return typeof value === "string" ? value : null
 }
 
 function nodeName(node: unknown): string {
-  const value = property(node, "name")
+  const value = readField(node, "name")
   return typeof value === "string" ? value : ""
 }
 
 function nodeType(node: unknown): string {
-  const value = property(node, "type")
+  const value = readField(node, "type")
   return typeof value === "string" ? value : ""
 }
 
@@ -417,6 +412,10 @@ export function initLedger(snapshot: RulesSnapshot, ledger: RulesLedger, root: s
   return added
 }
 
+function coveredPagesOf(snapshot: RulesSnapshot): Set<string> | null {
+  return snapshot.partial ? new Set(snapshot.pages.map((page) => page.pageId)) : null
+}
+
 export function plan(snapshot: RulesSnapshot, ledger: RulesLedger) {
   const live = cardIndex(snapshot)
   const fresh: string[] = []
@@ -433,7 +432,7 @@ export function plan(snapshot: RulesSnapshot, ledger: RulesLedger) {
       stale.push(id)
     }
   }
-  const coveredPages = snapshot.partial ? new Set(snapshot.pages.map((page) => page.pageId)) : null
+  const coveredPages = coveredPagesOf(snapshot)
   for (const [id, entry] of Object.entries(ledger.cards)) {
     if (live.has(id) || entry.disposition === "removed") continue
     if (coveredPages && !coveredPages.has(entry.pageId)) continue
@@ -549,7 +548,7 @@ export function mark(
 
 export function sync(ledger: RulesLedger, snapshot: RulesSnapshot): number {
   const index = cardIndex(snapshot)
-  const coveredPages = snapshot.partial ? new Set(snapshot.pages.map((page) => page.pageId)) : null
+  const coveredPages = coveredPagesOf(snapshot)
   let removed = 0
   for (const [id, card] of Object.entries(ledger.cards)) {
     if (index.has(id) || card.disposition === "removed") continue

@@ -7,7 +7,6 @@ import {
   fetchFigmaImages,
   fetchFigmaNodeDocuments,
   fetchFileHeader,
-  waitSeconds,
   writeFigmaSnapshot,
 } from "../../src/figma/rest.ts"
 
@@ -264,11 +263,25 @@ test("the snapshot writer streams compact JSON and drops an absent lastModified"
   }
 })
 
-test("waitSeconds parses HTTP-date Retry-After headers and caps the delay", () => {
-  const now = Date.UTC(2026, 10, 1, 12, 0, 0)
-  assert.equal(waitSeconds(0, "Sun, 01 Nov 2026 12:00:07 GMT", now), 7)
-  assert.equal(waitSeconds(0, "Sun, 01 Nov 2026 12:05:00 GMT", now), 30)
-  assert.equal(waitSeconds(1, "not-a-date", now), 2)
+test("429 responses with HTTP-date Retry-After headers are retried", async () => {
+  let attempts = 0
+  await withFigmaFetch(
+    async () => {
+      attempts += 1
+      if (attempts === 1) {
+        return new Response("rate limited", {
+          status: 429,
+          headers: { "retry-after": new Date(Date.now() + 1000).toUTCString() },
+        })
+      }
+      return jsonResponse({ version })
+    },
+    async () => {
+      const header = await fetchFileHeader("fixture-file", "fixture-token")
+      assert.equal(header.version, version)
+      assert.equal(attempts, 2)
+    },
+  )
 })
 
 test("CDN image downloads retry transient 5xx responses without sending credentials", async () => {

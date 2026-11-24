@@ -208,6 +208,17 @@ test("verify honors device-exceptions.json for implemented nodes missing device 
     },
     "verify-device-excepted-",
   )
+  const stale = fixtureTree(
+    {
+      ...baseFiles,
+      "src/catalog/figma/parity-cases.json": cases.slice(0, 2),
+      "src/catalog/figma/device-exceptions.json": {
+        "1:1": "no longer missing any device",
+        "9:9": "unknown node",
+      },
+    },
+    "verify-device-stale-",
+  )
   try {
     const failed = verify(workspaceAt(unexcepted.root), { json: true })
     const failedData = JSON.parse(failed.out[0])
@@ -225,8 +236,22 @@ test("verify honors device-exceptions.json for implemented nodes missing device 
       warnedData.warnings.some((warning) => warning.includes("excepted: tracked in burn-down")),
       "excepted node should surface as a warning with its reason",
     )
+
+    const staleResult = verify(workspaceAt(stale.root), { json: true })
+    const staleData = JSON.parse(staleResult.out[0])
+    assert.ok(
+      staleData.errors.some((error) => error.includes("1:1 covers every declared device")),
+      "stale device exception must fail verify",
+    )
+    assert.ok(
+      staleData.errors.some((error) =>
+        error.includes("9:9 is not a registry entry with a device axis"),
+      ),
+      "unknown-node device exception must fail verify",
+    )
   } finally {
     unexcepted.dispose()
     excepted.dispose()
+    stale.dispose()
   }
 })

@@ -17,7 +17,7 @@ import { resolveProvenance } from "./asset-provenance.ts"
 import { requireBulkRule, selectRuleNodes } from "./artwork/catalogue.ts"
 import { assertGeneratedModule, propertyKey } from "./artwork/generate-module.ts"
 import { assertPinnedManifest, readManifest, writeManifest } from "./artwork/manifest.ts"
-import { assertStandaloneSvg, assertSvgDimensions } from "./artwork/svg.ts"
+import { assertStandaloneSvg, assertSvgDimensions, pruneOrphanSvgs } from "./artwork/svg.ts"
 import { fetchFigmaImages } from "./rest.ts"
 import { normalizeLive } from "./snapshot.ts"
 import { figmaToken, type KeychainRunner } from "../adapters/figma-token.ts"
@@ -306,9 +306,7 @@ function publishPictograms(
         written.add(variant.file)
       }
     }
-    for (const file of fs.readdirSync(output)) {
-      if (file.endsWith(".svg") && !written.has(file)) fs.unlinkSync(path.join(output, file))
-    }
+    pruneOrphanSvgs(output, written)
     writeManifest(path.join(output, "manifest.json"), manifest)
     if (mode === "write") {
       fs.mkdirSync(path.dirname(sourceFile), { recursive: true })

@@ -8,6 +8,7 @@ import fs from "node:fs"
 import { z } from "zod"
 
 import { readJson, writeJson } from "../lib/json.ts"
+import { readField } from "../lib/object.ts"
 import { readInventory } from "../records/committed.ts"
 import type { Workspace } from "../adapters/workspace.ts"
 import { UsageError } from "../lib/command.ts"
@@ -130,23 +131,18 @@ function descendantsOf(workspace: Workspace, nodeId: string): Set<string> {
   const ids = new Set<string>()
   const data = readLiveSnapshot(workspace.path(LIVE_SNAPSHOT_PATH))
   if (!data) return ids
-  function field(value: unknown, key: string): unknown {
-    return value && typeof value === "object" && !Array.isArray(value)
-      ? Reflect.get(value, key)
-      : undefined
-  }
   function collect(node: unknown): void {
-    const id = field(node, "id")
+    const id = readField(node, "id")
     if (typeof id === "string") ids.add(id)
-    const children = field(node, "children")
+    const children = readField(node, "children")
     if (Array.isArray(children)) {
       for (const child of children) collect(child)
     }
   }
   function find(node: unknown): unknown | null {
-    const id = field(node, "id")
+    const id = readField(node, "id")
     if (id === nodeId) return node
-    const children = field(node, "children")
+    const children = readField(node, "children")
     if (Array.isArray(children)) {
       for (const child of children) {
         const found = find(child)

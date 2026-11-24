@@ -8,7 +8,7 @@
 // entries keep their status. They disagreed on the edges — `unpublished` has no
 // registry status at all, and a `mocked` node has to keep its note.
 import type { Status } from "../schemas/common.ts"
-import type { SurfaceDecision } from "../schemas/catalogue.ts"
+import type { Registry, SurfaceDecision } from "../schemas/catalogue.ts"
 
 export type { SurfaceDecision }
 
@@ -46,4 +46,30 @@ export function requiresReason(decision: SurfaceDecision): boolean {
  */
 export function keepsStatusOnDrift(status: Status | string | undefined, rule?: Status | string) {
   return status === "mocked" || status === "excluded" || (!status && rule === "excluded")
+}
+
+/**
+ * Derive a published identity's census decision and written reason from the
+ * registry entry or its page bulk rule. One derivation shared by `surface sync`
+ * and the drift refresh so both apply the same precedence.
+ */
+export function censusDecisionFor(
+  nodeId: string,
+  registry: Registry,
+  pageId: string,
+  fallbackReason?: string,
+): { decision: SurfaceDecision; reason?: string } {
+  const entry = registry.entries[nodeId]
+  const rule = registry.bulkRules?.find((item) => item.pageId === pageId)
+  const status = entry?.status ?? rule?.status
+  const decision = surfaceDecision(true, status)
+  if (!requiresReason(decision)) return { decision }
+  const reason = entry?.reason ?? entry?.note ?? rule?.reason ?? rule?.note ?? fallbackReason
+  if (reason) return { decision, reason }
+  return {
+    decision,
+    reason: status
+      ? `Registry decision is ${status}; add its reviewed reason.`
+      : "No registry entry or page bulk rule exists; review this published identity.",
+  }
 }
