@@ -564,6 +564,18 @@ export async function fetchFilePages(fileKey: string, token: string): Promise<Fi
   }
 }
 
+async function forEachBatch<T>(
+  items: T[],
+  size: number,
+  visit: (batch: T[]) => Promise<void>,
+): Promise<void> {
+  const selected = [...new Set(items)]
+  for (let start = 0; start < selected.length; start += size) {
+    await visit(selected.slice(start, start + size))
+    if (start + size < selected.length) await new Promise((resolve) => setTimeout(resolve, 120))
+  }
+}
+
 // The raw document of each node, children included. The published-node reader
 // above stops at the direct children; the rules boxes need the whole card
 // subtree, so they get their own reader instead of a widened shared schema.
@@ -575,12 +587,10 @@ export async function fetchNodeTrees(
   depth = 10,
 ): Promise<Map<string, unknown>> {
   const documents = new Map<string, unknown>()
-  const selected = [...new Set(ids)]
   // A page read is a shallow list of children: many ids per request keep the
   // burst small. A card subtree is deep and heavy: a few ids at a time.
   const size = depth <= 2 ? 20 : 4
-  for (let start = 0; start < selected.length; start += size) {
-    const batch = selected.slice(start, start + size)
+  await forEachBatch(ids, size, async (batch) => {
     const query = new URLSearchParams({ ids: batch.join(","), version, depth: String(depth) })
     const data = await get(`files/${fileKey}/nodes?${query}`, NodeTreesSchema, token)
     for (const id of batch) {
@@ -588,8 +598,7 @@ export async function fetchNodeTrees(
       if (!record?.document) throw new Error(`Figma REST returned no document for ${id}`)
       documents.set(id, record.document)
     }
-    await new Promise((resolve) => setTimeout(resolve, 120))
-  }
+  })
   return documents
 }
 
@@ -599,21 +608,19 @@ const ExistingNodesSchema = z.looseObject({
     .optional(),
 })
 
+export type NodeExistence = "exists" | "deleted" | "unknown"
+
 // A pinned existence probe: a node that still exists answers with its
-// document, a node deleted from the file answers with a null document. The
-// read stays shallow because only existence matters, and it must not throw on
-// a missing document the way the page-tree reader does: "deleted" is an answer
-// here, not a failure.
-export async function fetchExistingNodeIds(
+// document, a node explicitly nulled by Figma answers as deleted, and an ID
+// omitted from the response stays unknown rather than being treated as deleted.
+export async function fetchNodeExistence(
   fileKey: string,
   version: string,
   ids: string[],
   token: string,
-): Promise<Set<string>> {
-  const existing = new Set<string>()
-  const selected = [...new Set(ids)]
-  for (let start = 0; start < selected.length; start += 50) {
-    const batch = selected.slice(start, start + 50)
+): Promise<Map<string, NodeExistence>> {
+  const existence = new Map<string, NodeExistence>()
+  await forEachBatch(ids, 50, async (batch) => {
     const query = new URLSearchParams({ ids: batch.join(","), version, depth: "1" })
     const data = await get(
       `files/${encodeURIComponent(fileKey)}/nodes?${query}`,
@@ -621,11 +628,18 @@ export async function fetchExistingNodeIds(
       token,
     )
     for (const id of batch) {
-      if (data.nodes?.[id]?.document) existing.add(id)
+      if (!data.nodes || !Object.hasOwn(data.nodes, id)) {
+        existence.set(id, "unknown")
+      } else if (data.nodes[id]?.document) {
+        existence.set(id, "exists")
+      } else if (data.nodes[id] === null || data.nodes[id]?.document === null) {
+        existence.set(id, "deleted")
+      } else {
+        existence.set(id, "unknown")
+      }
     }
-    if (start + 50 < selected.length) await new Promise((resolve) => setTimeout(resolve, 120))
-  }
-  return existing
+  })
+  return existence
 }
 
 export async function fetchFileComments(fileKey: string, token: string): Promise<FigmaComment[]> {

@@ -3,7 +3,9 @@ import { test } from "node:test"
 import { fixtureTree, workspaceAt } from "../helpers/cli.mjs"
 import {
   planSurfaceSync,
+  readSurfaceTrees,
   selectSurfacePages,
+  surfaceCompositionVerifier,
   syncPageSurface,
   syncPagesSurface,
 } from "../../src/figma/surface-sync.ts"
@@ -438,13 +440,14 @@ const deepCompositionFiles = {
         compositions: [
           { nodeId: "6:6", name: "Deleted board", device: "desktop", drawn: 1, mirrors: [] },
           { nodeId: "6:7", name: "Deep board", device: "mobile", drawn: 1, mirrors: [] },
+          { nodeId: "6:8", name: "Omitted board", device: "desktop", drawn: 1, mirrors: [] },
         ],
       },
     ],
   },
 }
 
-test("a pinned verifier separates a deleted composition from one beyond the read depth", async () => {
+test("a pinned verifier separates deleted compositions from existing or omitted ones", async () => {
   const fixture = fixtureTree(deepCompositionFiles, "surface-sync-verify-")
   const probes = []
   try {
@@ -455,20 +458,24 @@ test("a pinned verifier separates a deleted composition from one beyond the read
       dryRun: true,
       verify: async (nodeIds) => {
         probes.push(nodeIds)
-        return new Set(["6:7"])
+        return new Map([
+          ["6:6", "deleted"],
+          ["6:7", "exists"],
+          ["6:8", "unknown"],
+        ])
       },
       check: async () => ({ exitCode: 0, out: [], err: [] }),
     })
     const entry = result.pages[0]
-    // Both missing ids are probed together, before they are classified.
-    assert.deepEqual(probes, [["6:6", "6:7"]])
+    // All missing ids are probed together before they are classified.
+    assert.deepEqual(probes, [["6:6", "6:7", "6:8"]])
     assert.deepEqual(
       entry.staleCompositions.map((item) => item.nodeId),
       ["6:6"],
     )
     assert.deepEqual(
       entry.unverifiedCompositions.map((item) => item.nodeId),
-      ["6:7"],
+      ["6:7", "6:8"],
     )
     // The human-owned composition census is never rewritten by the sync.
     assert.deepEqual(
@@ -494,13 +501,110 @@ test("without a verifier every missing composition stays unverified", async () =
     assert.deepEqual(entry.staleCompositions, [])
     assert.deepEqual(
       entry.unverifiedCompositions.map((item) => item.nodeId),
-      ["6:6", "6:7"],
+      ["6:6", "6:7", "6:8"],
     )
     assert.deepEqual(
       result.surface.pages[0].compositions,
       deepCompositionFiles["src/catalog/figma/page-surface.json"].pages[0].compositions,
     )
   } finally {
+    fixture.dispose()
+  }
+})
+
+test("identitiesInTree still discovers a COMPONENT nested inside a plain COMPONENT", () => {
+  const nestedTree = {
+    id: "1:1",
+    name: "Components",
+    type: "CANVAS",
+    children: [
+      {
+        id: "4:4",
+        name: "Button",
+        type: "COMPONENT",
+        children: [{ id: "4:6", name: "InnerBadge", type: "COMPONENT" }],
+      },
+    ],
+  }
+  const fixture = fixtureTree(files, "surface-sync-nested-component-")
+  try {
+    const result = planSurfaceSync(workspaceAt(fixture.root), "1:1", nestedTree, "2026-02-02")
+    assert.deepEqual(
+      result.page.identities.map((identity) => identity.nodeId),
+      ["4:4", "4:6"],
+    )
+  } finally {
+    fixture.dispose()
+  }
+})
+
+test("readSurfaceTrees and surfaceCompositionVerifier batch REST reads at one pinned version", async () => {
+  const fixture = fixtureTree(files, "surface-sync-rest-")
+  const requests = []
+  const originalFetch = globalThis.fetch
+  globalThis.fetch = async (url) => {
+    const parsed = new URL(url)
+    requests.push(parsed)
+    if (parsed.pathname === "/v1/files/file-key") {
+      return new Response(
+        JSON.stringify({
+          version: "pin-99",
+          document: {
+            id: "0:0",
+            name: "Document",
+            children: [
+              { id: "1:1", name: "Components", type: "CANVAS" },
+              { id: "2:2", name: "Badges", type: "CANVAS" },
+            ],
+          },
+        }),
+        { status: 200 },
+      )
+    }
+    if (parsed.searchParams.get("depth") === "10") {
+      return new Response(
+        JSON.stringify({
+          nodes: {
+            "1:1": { document: { children: [{ id: "4:4", name: "Button", type: "COMPONENT" }] } },
+            "2:2": { document: { children: [] } },
+          },
+        }),
+        { status: 200 },
+      )
+    }
+    return new Response(
+      JSON.stringify({
+        nodes: {
+          "6:6": { document: null },
+          "6:7": { document: { id: "6:7" } },
+        },
+      }),
+      { status: 200 },
+    )
+  }
+  try {
+    const workspace = workspaceAt(fixture.root)
+    const read = await readSurfaceTrees(workspace, ["1:1", "2:2", "1:1"], { token: "tok" })
+    assert.equal(read.version, "pin-99")
+    assert.deepEqual([...read.trees.keys()], ["1:1", "2:2"])
+    assert.equal(requests.length, 2)
+    assert.equal(requests[1].searchParams.get("ids"), "1:1,2:2")
+    assert.equal(requests[1].searchParams.get("version"), "pin-99")
+
+    const verify = surfaceCompositionVerifier(workspace, { token: "tok", version: read.version })
+    const existence = await verify(["6:6", "6:7", "6:8"])
+    assert.equal(requests.length, 3)
+    assert.equal(requests[2].searchParams.get("version"), "pin-99")
+    assert.deepEqual(
+      [...existence.entries()],
+      [
+        ["6:6", "deleted"],
+        ["6:7", "exists"],
+        ["6:8", "unknown"],
+      ],
+    )
+  } finally {
+    globalThis.fetch = originalFetch
     fixture.dispose()
   }
 })

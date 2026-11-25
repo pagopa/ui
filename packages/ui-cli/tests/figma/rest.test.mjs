@@ -4,10 +4,10 @@ import path from "node:path"
 import { test } from "node:test"
 import { fixtureTree } from "../helpers/cli.mjs"
 import {
-  fetchExistingNodeIds,
   fetchFigmaImages,
   fetchFigmaNodeDocuments,
   fetchFileHeader,
+  fetchNodeExistence,
   writeFigmaSnapshot,
 } from "../../src/figma/rest.ts"
 
@@ -306,7 +306,7 @@ test("CDN image downloads retry transient 5xx responses without sending credenti
   )
 })
 
-test("existence probes keep only the ids whose document is present", async () => {
+test("existence probes separate present, deleted and omitted node ids", async () => {
   await withFigmaFetch(
     async (url, options) => {
       const request = new URL(url)
@@ -323,14 +323,21 @@ test("existence probes keep only the ids whose document is present", async () =>
       })
     },
     async () => {
-      const existing = await fetchExistingNodeIds(
+      const existence = await fetchNodeExistence(
         "fixture-file",
         version,
         [nodeId, "12:35", "12:36"],
         "fixture-token",
       )
-      // A null document is a deleted node, and an absent id is not an answer.
-      assert.deepEqual([...existing], [nodeId])
+      // An explicit null document is deleted; an omitted id stays unknown.
+      assert.deepEqual(
+        [...existence.entries()],
+        [
+          [nodeId, "exists"],
+          ["12:35", "deleted"],
+          ["12:36", "unknown"],
+        ],
+      )
     },
   )
 })
@@ -348,8 +355,9 @@ test("existence probes batch large id lists and pin every request", async () => 
       })
     },
     async () => {
-      const existing = await fetchExistingNodeIds("fixture-file", version, ids, "fixture-token")
-      assert.equal(existing.size, ids.length)
+      const existence = await fetchNodeExistence("fixture-file", version, ids, "fixture-token")
+      assert.equal(existence.size, ids.length)
+      for (const id of ids) assert.equal(existence.get(id), "exists")
       assert.equal(requests.length, 2)
       assert.equal(requests[0].searchParams.get("ids").split(",").length, 50)
       assert.equal(requests[1].searchParams.get("ids"), "2:50")

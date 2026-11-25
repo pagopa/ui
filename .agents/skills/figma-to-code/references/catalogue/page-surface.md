@@ -23,16 +23,17 @@ in batched REST reads. The input needs a structured CANVAS tree, not an XML
 or text description: when MCP provides only text, use REST or obtain a
 structured export. The writer reconciles identities and publication while
 preserving existing decisions and compositions, and reports unrecorded
-composition candidates (frames drawing published instances on the page, with
-drawn count and suggested device) plus compositions whose node the page-tree read
-did not find; inspect its check verdict. A missing composition is not evidence of
-a deletion: at the read depth a tree stops before deeply nested frames, so a live
-rest run confirms the id against the file and prints each one as either
-`! stale composition` (the node was deleted) or `~ unverified composition` (the
-node still exists, beyond the read depth or moved to another page). Verify every
-`~ unverified` entry in Figma before removing a reviewed composition, and treat
-`--input` runs, which cannot verify, as unverified only. Human review still
-accounts for every composition.
+composition candidates (frames drawing published identities belonging to the
+page, with drawn count and suggested device) plus compositions whose node the
+page-tree read did not find; inspect its check verdict. A missing composition is
+not evidence of a deletion: at the read depth a tree stops before deeply nested
+frames, so a live rest run confirms the id against the file and prints each one
+as either `! stale composition` (the node was deleted) or
+`~ unverified composition` (the node still exists, was beyond read depth, or
+its existence could not be confirmed). Verify every `~ unverified` entry in
+Figma before removing a reviewed composition, and treat `--input` runs, which
+cannot verify, as unverified only. Human review still accounts for every
+composition.
 
 One record per page:
 

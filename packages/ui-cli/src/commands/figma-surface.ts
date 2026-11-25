@@ -3,6 +3,7 @@ import path from "node:path"
 import { figmaToken } from "../adapters/figma-token.ts"
 import {
   currentSurface,
+  normalizePageIds,
   readSurfaceTrees,
   selectSurfacePages,
   surfaceCompositionVerifier,
@@ -14,17 +15,7 @@ import { action, EXIT, printJson, printLines, type CliContext } from "./context.
 import { requireToken, requireTokenArg } from "./token.ts"
 
 const stringArg = { type: "string" } as const
-
-function parsePageIds(raw: string | undefined): string[] {
-  if (!raw) return []
-  const ids = raw
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean)
-  // Deduplicate before the single-page decision: `--page 1:1,1:1` is one page,
-  // so it must keep the legacy single-page JSON shape.
-  return [...new Set(ids)]
-}
+const EMPTY_CATALOGUE_OK = { exitCode: EXIT.ok, out: [], err: [] }
 
 function formatPageDiff(ctx: CliContext, entry: PageSurfaceDiff, dryRun: boolean): void {
   ctx.io.out(`${dryRun ? "would update" : "updated"}: ${entry.page.pageId} ${entry.page.pageName}`)
@@ -79,7 +70,9 @@ export function surfaceCommand(ctx: CliContext) {
       json: { type: "boolean", default: false },
     },
     run: action(ctx, async (args) => {
-      const explicitPages = parsePageIds(args.page)
+      // Deduplicate before the single-page check: `--page 1:1,1:1` keeps the
+      // legacy single-page JSON shape.
+      const explicitPages = normalizePageIds(args.page ? args.page.split(",") : [])
       const scopeCount =
         Number(explicitPages.length > 0) + Number(args.uncensused) + Number(args.all)
       if (scopeCount === 0)
@@ -103,7 +96,7 @@ export function surfaceCommand(ctx: CliContext) {
             surface: currentSurface(workspace),
             pages: [],
             dryRun: args["dry-run"],
-            check: { exitCode: EXIT.ok, out: [], err: [] },
+            check: EMPTY_CATALOGUE_OK,
           })
         } else {
           ctx.io.out(

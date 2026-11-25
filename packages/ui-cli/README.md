@@ -108,10 +108,14 @@ available from the CLI:
   `--uncensused` targets every published page missing from `page-surface.json`,
   `--all` targets every published and censused page, and `--rest` reads the
   pages in batched REST reads from Figma. A missing composition is printed as
-  `! stale` only when a live read confirms the node left the file; a composition
-  the page-tree read did not reach is printed as `~ unverified` and must be
-  checked in Figma before its review is removed. `--input` cannot verify, so it
-  always reports `~ unverified`.
+  `! stale` only when a live read confirms the node was explicitly nulled/deleted;
+  a composition the page-tree read did not reach (or omitted from a response) is
+  printed as `~ unverified` and must be checked in Figma before its review is
+  removed. `--input` cannot verify, so it always reports `~ unverified`. With
+  `--json`, one unique explicit `--page` returns the single-page plan shape
+  (`page`, `added`, `removed`, `compositionCandidates`, `staleCompositions`,
+  `unverifiedCompositions`, `surface`, `dryRun`, `check`), while `--uncensused`,
+  `--all`, or multiple pages return `{ surface, pages, dryRun, check }`.
 
 Writers and external mutations accept `--dry-run` to print planned actions
 without applying them. Live REST reads use `FIGMA_TOKEN`; `--require-token`

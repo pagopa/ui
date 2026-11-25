@@ -28,6 +28,7 @@ import type { InventoryNode } from "../schemas/catalogue.ts"
 import { DevicePolicySchema, type DeviceDefinition, type DevicePolicy } from "../schemas/devices.ts"
 import { COMMITTED_FILES, readDevicePolicy, readInventory } from "../records/committed.ts"
 import { ANY_DEVICE, UNKNOWN_DEVICE } from "../schemas/devices.ts"
+import { escapeRegExp } from "./config.ts"
 export { ANY_DEVICE, UNKNOWN_DEVICE }
 export const LAYOUT_SCOPES = ["viewport", "container"] as const
 
@@ -563,4 +564,37 @@ export function formatDeviceReport(
       ...result.errors.map((error) => `error: ${error}`),
     ],
   }
+}
+
+/** Suggests a canonical device for an unmapped frame name or width from the committed policy. */
+export function inferDeviceFromFrame(
+  name: string,
+  width: number | undefined,
+  policy: DevicePolicy | null,
+): string | undefined {
+  if (!policy) return undefined
+  const entries = Object.entries(policy.devices)
+  const nameMatches: Array<{ device: string; length: number }> = []
+  for (const [device, spec] of entries) {
+    const terms = [device, ...(spec.aliases ?? [])]
+    for (const term of terms) {
+      const pattern = new RegExp(`(^|[^a-z0-9])${escapeRegExp(term)}([^a-z0-9]|$)`, "i")
+      if (pattern.test(name)) nameMatches.push({ device, length: term.length })
+    }
+  }
+  if (nameMatches.length) {
+    nameMatches.sort((a, b) => b.length - a.length)
+    return nameMatches[0]?.device
+  }
+  if (width === undefined || !entries.length) return undefined
+  let bestDevice: string | undefined
+  let bestDistance = Number.POSITIVE_INFINITY
+  for (const [device, spec] of entries) {
+    const distance = Math.abs(width - spec.canonicalWidth)
+    if (distance < bestDistance) {
+      bestDistance = distance
+      bestDevice = device
+    }
+  }
+  return bestDevice
 }

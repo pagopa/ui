@@ -393,3 +393,184 @@ test("figma surface sync reports an empty selection by scope", async () => {
     fixture.dispose()
   }
 })
+
+test("figma surface sync prints candidates, missing verdicts and non-empty multi-page JSON", async () => {
+  const fixture = fixtureTree(
+    {
+      "src/catalog/figma/file.ts": 'export const FIGMA_FILE_KEY = "file"\n',
+      "src/catalog/figma/inventory.json": {
+        fileKey: "file",
+        syncedAt: "2026-01-01",
+        components: [
+          { nodeId: "4:4", name: "Button", type: "COMPONENT", pageId: "1:1", pageName: "Page 1" },
+          { nodeId: "5:5", name: "Badge", type: "COMPONENT", pageId: "2:2", pageName: "Page 2" },
+        ],
+      },
+      "src/catalog/figma/registry.json": {
+        entries: {
+          "4:4": { status: "excluded", reason: "Fixture button" },
+          "5:5": { status: "excluded", reason: "Fixture badge" },
+        },
+        bulkRules: [],
+      },
+      "src/catalog/figma/page-surface.json": {
+        fileKey: "file",
+        readAt: "2026-01-01",
+        note: "Census.",
+        pages: [
+          {
+            pageId: "1:1",
+            pageName: "Page 1",
+            identities: [
+              {
+                nodeId: "4:4",
+                name: "Button",
+                kind: "COMPONENT",
+                inLibrary: true,
+                decision: "excluded",
+                reason: "Fixture button",
+              },
+            ],
+            compositions: [
+              { nodeId: "6:6", name: "Deleted board", device: "desktop", drawn: 1, mirrors: [] },
+              { nodeId: "6:7", name: "Deep board", device: "desktop", drawn: 1, mirrors: [] },
+            ],
+          },
+        ],
+      },
+      "multi.json": [
+        {
+          id: "1:1",
+          name: "Page 1",
+          type: "CANVAS",
+          children: [
+            { id: "4:4", name: "Button", type: "COMPONENT" },
+            {
+              id: "7:7",
+              name: "Checkout frame",
+              type: "FRAME",
+              absoluteBoundingBox: { x: 0, y: 0, width: 1200, height: 600 },
+              children: [{ id: "7:8", name: "Button", type: "INSTANCE", componentId: "4:4" }],
+            },
+          ],
+        },
+        {
+          id: "2:2",
+          name: "Page 2",
+          type: "CANVAS",
+          children: [{ id: "5:5", name: "Badge", type: "COMPONENT" }],
+        },
+      ],
+    },
+    "cli-surface-multi-",
+  )
+  const originalFetch = globalThis.fetch
+  try {
+    // Non-empty `--page 1:1,2:2 --json` returns multi-page `{ surface, pages, dryRun, check }`.
+    const multiJson = await runCli(
+      [
+        "figma",
+        "surface",
+        "sync",
+        "--page",
+        "1:1,2:2",
+        "--input",
+        "multi.json",
+        "--dry-run",
+        "--json",
+      ],
+      { root: fixture.root },
+    )
+    assert.equal(multiJson.status, 1, multiJson.stderr)
+    const parsedMulti = JSON.parse(multiJson.stdout)
+    assert.deepEqual(
+      parsedMulti.pages.map((entry) => entry.page.pageId),
+      ["1:1", "2:2"],
+    )
+    assert.equal("page" in parsedMulti, false)
+
+    // Non-empty `--uncensused --json` returns multi-page shape scoped to uncensused page 2:2.
+    const uncensusedJson = await runCli(
+      ["figma", "surface", "sync", "--uncensused", "--input", "multi.json", "--dry-run", "--json"],
+      { root: fixture.root },
+    )
+    assert.equal(uncensusedJson.status, 1, uncensusedJson.stderr)
+    const parsedUncensused = JSON.parse(uncensusedJson.stdout)
+    assert.deepEqual(
+      parsedUncensused.pages.map((entry) => entry.page.pageId),
+      ["2:2"],
+    )
+
+    // Text output with `--input` reports candidate and `~ unverified composition`.
+    const inputText = await runCli(
+      ["figma", "surface", "sync", "--page", "1:1", "--input", "multi.json", "--dry-run"],
+      { root: fixture.root },
+    )
+    assert.match(
+      inputText.stdout,
+      /\? composition candidate 7:7 Checkout frame \(drawn 1, 1200px\)/,
+    )
+    assert.match(inputText.stdout, /~ unverified composition 6:6 Deleted board/)
+    assert.match(inputText.stdout, /~ unverified composition 6:7 Deep board/)
+
+    // Live `--rest` output classifies deleted vs existing/omitted into `! stale` vs `~ unverified`.
+    globalThis.fetch = async (url) => {
+      const parsed = new URL(url)
+      if (parsed.pathname === "/v1/files/file") {
+        return new Response(
+          JSON.stringify({
+            version: "v2",
+            document: {
+              id: "0:0",
+              name: "Document",
+              children: [{ id: "1:1", name: "Page 1", type: "CANVAS" }],
+            },
+          }),
+          { status: 200 },
+        )
+      }
+      if (parsed.searchParams.get("depth") === "10") {
+        return new Response(
+          JSON.stringify({
+            nodes: {
+              "1:1": {
+                document: {
+                  children: [
+                    { id: "4:4", name: "Button", type: "COMPONENT" },
+                    {
+                      id: "7:7",
+                      name: "Checkout frame",
+                      type: "FRAME",
+                      absoluteBoundingBox: { x: 0, y: 0, width: 1200, height: 600 },
+                      children: [
+                        { id: "7:8", name: "Button", type: "INSTANCE", componentId: "4:4" },
+                      ],
+                    },
+                  ],
+                },
+              },
+            },
+          }),
+          { status: 200 },
+        )
+      }
+      return new Response(
+        JSON.stringify({
+          nodes: { "6:6": { document: null }, "6:7": { document: { id: "6:7" } } },
+        }),
+        { status: 200 },
+      )
+    }
+    const restText = await runCli(
+      ["figma", "surface", "sync", "--page", "1:1", "--rest", "--dry-run"],
+      { root: fixture.root, env: { FIGMA_TOKEN: "fixture-token" } },
+    )
+    assert.equal(restText.status, 1, restText.stderr)
+    assert.match(restText.stdout, /\? composition candidate 7:7 Checkout frame \(drawn 1, 1200px\)/)
+    assert.match(restText.stdout, /! stale composition 6:6 Deleted board \(deleted from file\)/)
+    assert.match(restText.stdout, /~ unverified composition 6:7 Deep board/)
+  } finally {
+    globalThis.fetch = originalFetch
+    fixture.dispose()
+  }
+})

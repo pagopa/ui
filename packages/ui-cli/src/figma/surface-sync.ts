@@ -1,8 +1,16 @@
 import fs from "node:fs"
 import type { Workspace } from "../adapters/workspace.ts"
-import { fetchExistingNodeIds, fetchFilePages, fetchNodeTrees } from "./rest.ts"
+import { fetchFilePages, fetchNodeExistence, fetchNodeTrees } from "./rest.ts"
 import { fileKeyFromSource } from "./snapshot.ts"
 import { surfaceUncensused } from "./surface.ts"
+import {
+  classifyMissingCompositions,
+  isIdentityNode,
+  scanPageCompositions,
+  type CompositionCandidate,
+  type CompositionVerifier,
+  type TreeNode,
+} from "./surface-compositions.ts"
 import { censusDecisionFor } from "./surface-decision.ts"
 import { readJson, writeJson } from "../lib/json.ts"
 import {
@@ -23,32 +31,19 @@ import {
 import type { DevicePolicy } from "../schemas/devices.ts"
 import { syncCatalogue, type CatalogueReport } from "./catalogue/index.ts"
 
+export type { CompositionCandidate, CompositionVerifier }
+export { scanPageCompositions }
+
 const SURFACE_PATH = "src/catalog/figma/page-surface.json"
 const DEFAULT_NOTE =
   "Read from the Figma page tree. Preserve reviewed composition decisions while refreshing the identity census."
-const RULES_BOX_NAMES = new Set([".Regole", "Regole"])
 
-type TreeNode = {
-  id: string
-  name: string
-  type: string
-  componentId?: string
-  width?: number
-  children?: TreeNode[]
-}
 type SurfaceCheck = (surface: PageSurface) => Promise<CatalogueReport>
 
-// Resolves which of these node ids still exist in the pinned file. A node that
-// sits deeper than the page-tree read depth is absent from the tree but
-// present here, so a missing id is only "deleted" when the file says so.
-export type CompositionVerifier = (nodeIds: string[]) => Promise<Set<string>>
-
-export type CompositionCandidate = {
-  nodeId: string
-  name: string
-  drawn: number
-  width?: number
-  suggestedDevice?: string
+type SyncContext = {
+  inventory: Inventory
+  registry: Registry
+  policy: DevicePolicy | null
 }
 
 export type PageSurfaceDiff = {
@@ -71,6 +66,18 @@ export type MultiSurfaceSyncPlan = {
   pages: PageSurfaceDiff[]
   dryRun: boolean
   check: CatalogueReport
+}
+
+export function normalizePageIds(values: Iterable<string>): string[] {
+  const normalized: string[] = []
+  const seen = new Set<string>()
+  for (const raw of values) {
+    const id = raw.trim()
+    if (!id || seen.has(id)) continue
+    seen.add(id)
+    normalized.push(id)
+  }
+  return normalized
 }
 
 function record(value: unknown): Record<string, unknown> | null {
@@ -131,10 +138,12 @@ function identitiesInTree(root: TreeNode): TreeNode[] {
   const seen = new Set<string>()
   const found: TreeNode[] = []
   const visit = (node: TreeNode): void => {
-    if (node.type === "COMPONENT" || node.type === "COMPONENT_SET") {
+    if (isIdentityNode(node)) {
       if (!seen.has(node.id)) found.push(node)
       seen.add(node.id)
-      return
+      // Variants sit directly inside a COMPONENT_SET; plain COMPONENT nodes do
+      // not own variants, so keep walking them for nested defined components.
+      if (node.type === "COMPONENT_SET") return
     }
     for (const child of node.children ?? []) visit(child)
   }
@@ -142,159 +151,13 @@ function identitiesInTree(root: TreeNode): TreeNode[] {
   return found
 }
 
-function collectNodeIds(root: TreeNode): Set<string> {
-  const ids = new Set<string>()
-  const visit = (node: TreeNode): void => {
-    ids.add(node.id)
-    for (const child of node.children ?? []) visit(child)
-  }
-  visit(root)
-  return ids
-}
-
-function publishedTargetIds(root: TreeNode, pageId: string, inventory: Inventory): Set<string> {
-  const targets = new Set<string>()
-  for (const node of inventory.components) {
-    if (node.pageId !== pageId) continue
-    targets.add(node.nodeId)
-    for (const variant of node.variants ?? []) targets.add(variant.nodeId)
-  }
-  const visit = (node: TreeNode): void => {
-    if (node.type === "COMPONENT_SET" && targets.has(node.id)) {
-      for (const child of node.children ?? []) {
-        if (child.type === "COMPONENT") targets.add(child.id)
-      }
-    }
-    for (const child of node.children ?? []) visit(child)
-  }
-  visit(root)
-  return targets
-}
-
-function countTargetInstances(
-  node: TreeNode,
-  targets: Set<string>,
-  existingIds: Set<string>,
-): number {
-  let count = 0
-  const visit = (current: TreeNode): void => {
-    if (existingIds.has(current.id)) return
-    if (current.type === "COMPONENT" || current.type === "COMPONENT_SET") return
-    if (current.type === "INSTANCE" && current.componentId && targets.has(current.componentId)) {
-      count += 1
-      return
-    }
-    for (const child of current.children ?? []) visit(child)
-  }
-  for (const child of node.children ?? []) visit(child)
-  return count
-}
-
-function escapePattern(text: string): string {
-  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-}
-
-function inferDevice(
-  name: string,
-  width: number | undefined,
-  policy: DevicePolicy | null,
-): string | undefined {
-  if (!policy) return undefined
-  const entries = Object.entries(policy.devices)
-  const nameMatches: Array<{ device: string; length: number }> = []
-  for (const [device, spec] of entries) {
-    const terms = [device, ...(spec.aliases ?? [])]
-    for (const term of terms) {
-      const pattern = new RegExp(`(^|[^a-z0-9])${escapePattern(term)}([^a-z0-9]|$)`, "i")
-      if (pattern.test(name)) nameMatches.push({ device, length: term.length })
-    }
-  }
-  if (nameMatches.length) {
-    nameMatches.sort((a, b) => b.length - a.length)
-    return nameMatches[0]?.device
-  }
-  if (width === undefined || !entries.length) return undefined
-  let bestDevice: string | undefined
-  let bestDistance = Number.POSITIVE_INFINITY
-  for (const [device, spec] of entries) {
-    const distance = Math.abs(width - spec.canonicalWidth)
-    if (distance < bestDistance) {
-      bestDistance = distance
-      bestDevice = device
-    }
-  }
-  return bestDevice
-}
-
-function compositionContainers(root: TreeNode): TreeNode[] {
-  const containers: TreeNode[] = []
-  const collect = (node: TreeNode): void => {
-    if (RULES_BOX_NAMES.has(node.name.trim())) return
-    if (node.type === "COMPONENT" || node.type === "COMPONENT_SET") return
-    if (node.type === "SECTION") {
-      for (const child of node.children ?? []) {
-        if (RULES_BOX_NAMES.has(child.name.trim())) continue
-        if (child.type === "FRAME" || child.type === "GROUP") containers.push(child)
-      }
-      return
-    }
-    if (node.type === "FRAME" || node.type === "GROUP") containers.push(node)
-  }
-  for (const child of root.children ?? []) collect(child)
-  return containers
-}
-
-export function scanPageCompositions(
-  root: TreeNode,
-  pageId: string,
-  inventory: Inventory,
-  existing: PageComposition[],
-  policy: DevicePolicy | null,
-): { compositionCandidates: CompositionCandidate[]; missingCompositions: PageComposition[] } {
-  const allIds = collectNodeIds(root)
-  const missingCompositions = existing.filter((composition) => !allIds.has(composition.nodeId))
-  const targets = publishedTargetIds(root, pageId, inventory)
-  if (!targets.size) return { compositionCandidates: [], missingCompositions }
-
-  const existingIds = new Set(existing.map((composition) => composition.nodeId))
-  const compositionCandidates: CompositionCandidate[] = []
-  for (const container of compositionContainers(root)) {
-    if (existingIds.has(container.id)) continue
-    const drawn = countTargetInstances(container, targets, existingIds)
-    if (drawn === 0) continue
-    const suggestedDevice = inferDevice(container.name, container.width, policy)
-    compositionCandidates.push({
-      nodeId: container.id,
-      name: container.name,
-      drawn,
-      ...(container.width !== undefined ? { width: Math.round(container.width) } : {}),
-      ...(suggestedDevice ? { suggestedDevice } : {}),
-    })
-  }
-  return { compositionCandidates, missingCompositions }
-}
-
-// A composition missing from the tree read is only confirmed deleted when the
-// pinned file no longer carries its node. Without a verifier (`--input`) the
-// question stays open: the read may be shallower than the node's nesting, or
-// the node may have moved to another page, and neither is a deletion.
-function classifyMissingCompositions(
-  missing: PageComposition[],
-  existing: Set<string> | null,
-): Pick<PageSurfaceDiff, "staleCompositions" | "unverifiedCompositions"> {
-  const staleCompositions: PageComposition[] = []
-  const unverifiedCompositions: PageComposition[] = []
-  for (const composition of missing) {
-    if (!existing || existing.has(composition.nodeId)) unverifiedCompositions.push(composition)
-    else staleCompositions.push(composition)
-  }
-  return { staleCompositions, unverifiedCompositions }
-}
-
-function readOptionalDevicePolicy(workspace: Workspace): DevicePolicy | null {
-  return fs.existsSync(workspace.path(COMMITTED_FILES["device-policy"]))
+function readSyncContext(workspace: Workspace): SyncContext {
+  const inventory = readInventory(workspace.root)
+  const registry = readRegistry(workspace.root)
+  const policy = fs.existsSync(workspace.path(COMMITTED_FILES["device-policy"]))
     ? readDevicePolicy(workspace.root)
     : null
+  return { inventory, registry, policy }
 }
 
 function loadCurrentSurface(workspace: Workspace, fileKey: string, readAt: string): PageSurface {
@@ -331,14 +194,13 @@ function planSurfaceSyncOn(
   pageId: string,
   source: unknown,
   readAt: string,
-  inventory: Inventory,
-  registry: Registry,
-  policy: DevicePolicy | null,
+  context: SyncContext,
 ): PageSurfacePlan {
   const root = findTree(source, pageId)
   if (!root || root.type !== "CANVAS")
     throw new Error(`page tree input does not contain Figma page ${pageId}`)
 
+  const { inventory, registry, policy } = context
   const oldPage = current.pages.find((page) => page.pageId === pageId)
   const oldById = new Map(
     (oldPage?.identities ?? []).map((identity) => [identity.nodeId, identity]),
@@ -404,11 +266,9 @@ export function planSurfaceSync(
   source: unknown,
   readAt: string,
 ): Omit<SurfaceSyncPlan, "dryRun" | "check"> {
-  const inventory = readInventory(workspace.root)
-  const registry = readRegistry(workspace.root)
-  const policy = readOptionalDevicePolicy(workspace)
-  const current = loadCurrentSurface(workspace, inventory.fileKey, readAt)
-  const plan = planSurfaceSyncOn(current, pageId, source, readAt, inventory, registry, policy)
+  const context = readSyncContext(workspace)
+  const current = loadCurrentSurface(workspace, context.inventory.fileKey, readAt)
+  const plan = planSurfaceSyncOn(current, pageId, source, readAt, context)
   return {
     surface: plan.surface,
     page: plan.page,
@@ -425,9 +285,8 @@ export function selectSurfacePages(
   workspace: Workspace,
   options: { pages?: string[]; uncensused?: boolean; all?: boolean },
 ): string[] {
-  if (options.pages?.length) {
-    return [...new Set(options.pages.map((id) => id.trim()).filter(Boolean))]
-  }
+  const explicit = options.pages ? normalizePageIds(options.pages) : []
+  if (explicit.length) return explicit
   const inventory = readInventory(workspace.root)
   const current = loadCurrentSurface(workspace, inventory.fileKey, SELECTION_READ_AT)
   if (options.uncensused) {
@@ -453,15 +312,13 @@ export async function syncPagesSurface(
     verify?: CompositionVerifier
   },
 ): Promise<MultiSurfaceSyncPlan> {
-  const inventory = readInventory(workspace.root)
-  const registry = readRegistry(workspace.root)
-  const policy = readOptionalDevicePolicy(workspace)
-  let surface = loadCurrentSurface(workspace, inventory.fileKey, options.now)
+  const context = readSyncContext(workspace)
+  let surface = loadCurrentSurface(workspace, context.inventory.fileKey, options.now)
   const plans: PageSurfacePlan[] = []
   for (const pageId of options.pageIds) {
     const tree = options.trees.get(pageId)
     if (!tree) throw new Error(`page tree input does not contain Figma page ${pageId}`)
-    const next = planSurfaceSyncOn(surface, pageId, tree, options.now, inventory, registry, policy)
+    const next = planSurfaceSyncOn(surface, pageId, tree, options.now, context)
     surface = next.surface
     plans.push(next)
   }
@@ -471,13 +328,13 @@ export async function syncPagesSurface(
   const missingIds = [
     ...new Set(plans.flatMap((plan) => plan.missingCompositions.map((item) => item.nodeId))),
   ]
-  const existing = options.verify && missingIds.length ? await options.verify(missingIds) : null
+  const probe = options.verify && missingIds.length ? await options.verify(missingIds) : null
   const pages: PageSurfaceDiff[] = plans.map((plan) => ({
     page: plan.page,
     added: plan.added,
     removed: plan.removed,
     compositionCandidates: plan.compositionCandidates,
-    ...classifyMissingCompositions(plan.missingCompositions, existing),
+    ...classifyMissingCompositions(plan.missingCompositions, probe),
   }))
   let check: CatalogueReport
   try {
@@ -524,7 +381,7 @@ export async function readSurfaceTrees(
   pageIds: string[],
   options: { input?: string; token?: string },
 ): Promise<{ trees: Map<string, unknown>; version?: string }> {
-  const uniqueIds = [...new Set(pageIds)]
+  const uniqueIds = normalizePageIds(pageIds)
   const trees = new Map<string, unknown>()
   if (!uniqueIds.length) return { trees }
   if (options.input) {
@@ -554,15 +411,6 @@ export async function readSurfaceTrees(
   return { trees, version: pages.version }
 }
 
-export async function readSurfaceTree(
-  workspace: Workspace,
-  pageId: string,
-  options: { input?: string; token?: string },
-): Promise<unknown> {
-  const { trees } = await readSurfaceTrees(workspace, [pageId], options)
-  return trees.get(pageId)
-}
-
 // Binds the existence probe to the version the page trees were read at, so the
 // stale verdict and the census describe the same snapshot of the file.
 export function surfaceCompositionVerifier(
@@ -571,5 +419,5 @@ export function surfaceCompositionVerifier(
 ): CompositionVerifier {
   const fileKey = fileKeyFromSource(workspace)
   if (!fileKey) throw new Error("cannot resolve the Figma file key from src/catalog/figma/file.ts")
-  return (nodeIds) => fetchExistingNodeIds(fileKey, options.version, nodeIds, options.token)
+  return (nodeIds) => fetchNodeExistence(fileKey, options.version, nodeIds, options.token)
 }
