@@ -65,10 +65,6 @@ targets, guide blocks, duplicates and — with a local snapshot — `new`, `stal
 that backlog during migration; it is not the closing gate. A scoped refresh
 (`--page` or `--node`) on a checkout without a full snapshot marks the snapshot
 partial and scopes `removed` checks and `figma rules sync` to the refreshed pages.
-The report says the snapshot is partial and names the gap: an empty `removed`
-count covers the refreshed pages only, and cards on untouched pages are not
-checked for removals until a full `figma rules refresh` runs. Never present a
-scoped `removed` count as a whole-file result.
 
 ## Comments
 
