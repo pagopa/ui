@@ -45,16 +45,7 @@ items, files touched, and every command with its exit code, distinguishing
 passed, failed, skipped and unavailable. A blocked gate is reported, not
 passed.
 
-A closing report carries the scope of what was read, not only what it found, so
-the person can see the edges of the evidence:
+Name the scope of every read the report rests on.
 
-- a pending decision names the design-request file it waits on, not its issue
-  number or its title alone;
-- a scoped `figma brief --queue` read reports its `implementationOrder` and both
-  counts — the nodes it omitted and the nodes it truncated — against the nodes
-  the request named;
-- a partial rules snapshot says that its `removed` count covers the refreshed
-  pages only and that a full `pnpm ui-cli figma rules refresh` is what checks the
-  rest;
-- a source stop carries the prerequisite, how to supply it and the command that
-  retries the read.
+A scoped rules refresh's report says the snapshot is partial and that only a full
+`pnpm ui-cli figma rules refresh` re-checks the pages it skipped.

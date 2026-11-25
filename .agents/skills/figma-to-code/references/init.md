@@ -27,11 +27,9 @@ without it.
 A stop for missing source names the prerequisite (`FIGMA_TOKEN` with
 `file_content:read` and `library_content:read`, or the MCP connection) and the
 command that surfaces it: `figma status --require-token` for the credential,
-`figma status --live` for REST, the failing MCP call for the other. The report
-carries the fix and the retry, not just the missing name: how the token is
-supplied (`export FIGMA_TOKEN=…` or the `figma-pat` keychain entry) followed by
-`pnpm ui-cli figma status --live`, or the MCP connection to restore. A stop that
-leaves the person to work out the command is an incomplete stop.
+`figma status --live` for REST, the failing MCP call for the other. Supplying it
+is `export FIGMA_TOKEN=…` or the `figma-pat` keychain entry; how the report
+closes is that fix followed by the command that re-reads.
 
 ## REST or MCP
 
