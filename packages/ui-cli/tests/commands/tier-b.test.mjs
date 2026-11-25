@@ -302,6 +302,20 @@ test("figma surface sync accepts a supplied page tree and supports dry-run", asy
       ).pages.length,
       0,
     )
+
+    const uncensused = await runCli(
+      ["figma", "surface", "sync", "--uncensused", "--input", "page.json", "--dry-run"],
+      { root: fixture.root },
+    )
+    assert.notEqual(uncensused.status, 2, uncensused.stderr)
+    assert.match(uncensused.stdout, /would update: 1:1 Page/)
+
+    const conflict = await runCli(
+      ["figma", "surface", "sync", "--page", "1:1", "--all", "--input", "page.json"],
+      { root: fixture.root },
+    )
+    assert.equal(conflict.status, 2)
+    assert.match(conflict.stderr, /choose only one of --page/)
   } finally {
     fixture.dispose()
   }

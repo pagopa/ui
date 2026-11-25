@@ -13,13 +13,20 @@ refresh identities:
 ```sh
 pnpm ui-cli figma surface sync --page <pageId> --input <page-tree> --dry-run --json
 pnpm ui-cli figma surface sync --page <pageId> --input <page-tree> --json
+pnpm ui-cli figma surface sync --uncensused --rest --dry-run
 ```
 
-Use `--rest` instead of `--input` for a live read with a token. The input needs a
-structured CANVAS tree, not an XML or text description: when MCP provides only
-text, use REST or obtain a structured export. The writer reconciles identities
-and publication, preserving existing decisions and compositions; inspect its
-check verdict. Human review still accounts for every composition.
+Use `--rest` instead of `--input` for a live read with a token. `--page` accepts
+one or comma-separated page IDs; `--uncensused` refreshes every published page
+missing from the census and `--all` refreshes every published and censused page
+in one batched REST read. The input needs a structured CANVAS tree, not an XML
+or text description: when MCP provides only text, use REST or obtain a
+structured export. The writer reconciles identities and publication while
+preserving existing decisions and compositions, and reports unrecorded
+composition candidates (frames drawing published instances on the page, with
+drawn count and suggested device) plus stale compositions whose node left the
+page tree; inspect its check verdict. Human review still accounts for every
+composition.
 
 One record per page:
 
