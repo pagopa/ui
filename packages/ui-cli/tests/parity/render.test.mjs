@@ -123,6 +123,14 @@ test("rgbToHex parses legacy comma-separated and CSS Color 4 syntax while preser
   assert.equal(rgbToHex("rgb(14 15 19 / 35%)"), "#0e0f1359")
 })
 
+test("rgbToHex parses decimal and percentage channels of the CSS Color 4 form", () => {
+  assert.equal(rgbToHex("rgb(10.5 20.4 30.6)"), "#0b141f")
+  assert.equal(rgbToHex("rgb(50% 25% 0%)"), "#804000")
+  assert.equal(rgbToHex("rgb(11 62 227 / 62.5%)"), "#0b3ee39f")
+  assert.equal(rgbToHex("rgb(11 62 227 / 0)"), "#0b3ee300")
+  assert.equal(rgbToHex("rgb(4.3% 24.3% 89%)"), "#0b3ee3")
+})
+
 test("probeScript bundles SVG className, multi-side border and decoupled truncation helpers", () => {
   const script = probeScript()
   assert.match(script, /function classNameOf/)

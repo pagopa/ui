@@ -183,20 +183,58 @@ export function captureChecks({
   return failures
 }
 
+// A CSS Color 4 channel is an integer or decimal number, optionally a
+// percentage: `rgb(11 62 227)`, `rgb(4.3% 24% 89%)`, `rgb(0 0 0 / 62.5%)`.
+const COLOR_NUMBER = /^(\d+(?:\.\d+)?)(%?)$/
+
+function channelByte(token: string): number | undefined {
+  const match = COLOR_NUMBER.exec(token)
+  if (!match) return undefined
+  const value = Number(match[1])
+  const channel = match[2] ? (value / 100) * 255 : value
+  if (!Number.isFinite(channel)) return undefined
+  return Math.max(0, Math.min(255, Math.round(channel)))
+}
+
+function alphaFraction(token: string): number | undefined {
+  const match = COLOR_NUMBER.exec(token)
+  if (!match) return undefined
+  const value = Number(match[1])
+  const alpha = match[2] ? value / 100 : value
+  if (!Number.isFinite(alpha)) return undefined
+  return Math.max(0, Math.min(1, alpha))
+}
+
 export function rgbToHex(color: unknown): string | undefined {
   const source = typeof color === "string" ? color : ""
-  const match = /rgba?\(\s*(\d+)[\s,]+(\d+)[\s,]+(\d+)(?:\s*(?:,|\/)\s*([\d.]+%?))?\s*\)/.exec(
-    source,
-  )
+  const match = /rgba?\(([^()]*)\)/i.exec(source)
   if (!match) return typeof color === "string" ? color : undefined
-  const rgb = [match[1], match[2], match[3]]
-    .map((value) => Number(value).toString(16).padStart(2, "0"))
-    .join("")
-  if (match[4] === undefined) return `#${rgb}`
-  const alphaValue = match[4].endsWith("%") ? Number(match[4].slice(0, -1)) / 100 : Number(match[4])
-  if (!Number.isFinite(alphaValue) || alphaValue >= 1) return `#${rgb}`
-  const alphaByte = Math.max(0, Math.min(255, Math.round(alphaValue * 255)))
-  return `#${rgb}${alphaByte.toString(16).padStart(2, "0")}`
+  // The legacy comma form carries alpha as a fourth channel; the CSS Color 4
+  // space form separates it with `/`.
+  const [channelsPart, alphaPart] = match[1].includes("/")
+    ? match[1].split("/").map((part) => part.trim())
+    : [match[1].trim(), undefined]
+  const channels = (
+    channelsPart.includes(",") ? channelsPart.split(",") : channelsPart.split(/\s+/)
+  )
+    .map((part) => part.trim())
+    .filter(Boolean)
+  const legacyAlpha = channels.length > 3 ? channels[3] : undefined
+  if (channels.length < 3) return source
+  const bytes: number[] = []
+  for (const token of channels.slice(0, 3)) {
+    const byte = channelByte(token)
+    if (byte === undefined) return source
+    bytes.push(byte)
+  }
+  const rgb = bytes.map((byte) => byte.toString(16).padStart(2, "0")).join("")
+  const alphaToken = alphaPart || legacyAlpha
+  if (!alphaToken) return `#${rgb}`
+  const alpha = alphaFraction(alphaToken)
+  if (alpha === undefined || alpha >= 1) return `#${rgb}`
+  return `#${rgb}${Math.round(alpha * 255)
+    .toString(16)
+    .padStart(2, "0")}`
 }
 
 export type CaptureOptions = {

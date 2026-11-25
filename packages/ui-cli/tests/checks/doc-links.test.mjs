@@ -199,7 +199,7 @@ test("commands naming an existing Nx target and a root script pass", () => {
   const result = check(
     projectTree({
       "AGENTS.md":
-        "Run `pnpm nx run alpha:build`, `pnpm nx run-many -p alpha,beta -t test`, `pnpm lint`, `pnpm run -r build` and `pnpm run --filter alpha build`.",
+        "Run `pnpm nx run alpha:build`, `pnpm nx run-many -p alpha,beta -t test`, `pnpm lint`, `pnpm run -r lint` and `pnpm run --filter alpha build`.",
     }),
   )
   assert.deepEqual(result.problems, [])
@@ -219,6 +219,33 @@ test("an unknown Nx target, project or root script fails", () => {
   assert.match(result, /unknown pnpm script missing/)
   assert.match(result, /unknown script deploy in alpha/)
   assert.match(result, /unknown pnpm script storybook/)
+})
+
+test("run flags keep validating the script they precede", () => {
+  assert.deepEqual(
+    check(
+      projectTree({
+        "AGENTS.md": "Run `pnpm run -r lint`, `pnpm -r lint` and `pnpm run --filter=alpha build`.",
+      }),
+    ).problems,
+    [],
+  )
+  const result = problems(
+    check(
+      projectTree({
+        "CONTRIBUTING.md": [
+          "Run `pnpm run -r deploy`",
+          "or `pnpm -r deploy`",
+          "or `pnpm run --recursive missing`",
+          "or `pnpm run --filter=alpha deploy`.",
+        ].join("\n"),
+      }),
+    ),
+  )
+  assert.equal(result.match(/unknown pnpm script deploy/g)?.length, 2)
+  assert.match(result, /unknown pnpm script missing/)
+  assert.match(result, /unknown script deploy in alpha/)
+  assert.doesNotMatch(result, /unknown pnpm script -r/)
 })
 
 test("run-many validates every project and target pair", () => {

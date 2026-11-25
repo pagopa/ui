@@ -68,6 +68,21 @@ const BUILT_IN = new Set([
   "why",
 ])
 
+// pnpm run flags that take no value: the script is still the first bare token.
+const RUN_FLAGS = new Set([
+  "-r",
+  "--recursive",
+  "-w",
+  "--workspace-root",
+  "--silent",
+  "--stream",
+  "--parallel",
+  "--aggregate-output",
+  "--no-bail",
+  "--no-sort",
+  "--if-present",
+])
+
 function report(
   ctx: DocsContext,
   file: string,
@@ -326,6 +341,49 @@ function checkNxCommand(
   }
 }
 
+// Validate the script of a `pnpm` invocation, whatever its shape: a bare
+// `pnpm <script>`, `pnpm run <script>`, and both behind the run flags (`-r`,
+// `--filter`) the docs use. A flag the graph cannot interpret stops the walk
+// rather than turning its value into a false "unknown script".
+function checkRunCommand(
+  ctx: DocsContext,
+  file: string,
+  text: string,
+  index: number,
+  commands: CommandGraph,
+  tokens: string[],
+  start: number,
+): void {
+  for (let position = start; position < tokens.length; position += 1) {
+    const token = tokens[position]
+    if (token === "--filter" || token === "-F") {
+      checkFilteredCommand(ctx, file, text, index, commands, [tokens[0], ...tokens.slice(position)])
+      return
+    }
+    const inlineFilter = /^(?:--filter|-F)=(.+)$/.exec(token)
+    if (inlineFilter) {
+      checkFilteredCommand(ctx, file, text, index, commands, [
+        tokens[0],
+        "--filter",
+        inlineFilter[1],
+        ...tokens.slice(position + 1),
+      ])
+      return
+    }
+    if (token.startsWith("-")) {
+      if (RUN_FLAGS.has(token)) continue
+      return
+    }
+    if (token === "nx") {
+      checkNxCommand(ctx, file, text, index, commands, [tokens[0], ...tokens.slice(position)])
+      return
+    }
+    if (commands.rootScripts && !commands.rootScripts.has(token))
+      report(ctx, file, text, index, `unknown pnpm script ${token}`)
+    return
+  }
+}
+
 function checkFilteredCommand(
   ctx: DocsContext,
   file: string,
@@ -370,29 +428,13 @@ function checkCommand(
       continue
     }
     const first = tokens[1]
-    if (!first || first.startsWith("-")) continue
-    if (first === "nx") {
-      // `nx affected`, `nx release`, `nx show` and the rest need a live graph
-      // or their own arguments: nothing static to validate.
-      checkNxCommand(ctx, file, text, index, commands, tokens)
-      continue
-    }
+    if (!first) continue
     if (BUILT_IN.has(first) || first === "ui-cli") continue
     if (first === "run") {
-      const script = tokens[2]
-      if (!script) continue
-      if (script === "--filter" || script === "-F") {
-        checkFilteredCommand(ctx, file, text, index, commands, [tokens[0], ...tokens.slice(2)])
-        continue
-      }
-      if (script.startsWith("-")) continue
-      if (commands.rootScripts && !commands.rootScripts.has(script))
-        report(ctx, file, text, index, `unknown pnpm script ${script}`)
+      checkRunCommand(ctx, file, text, index, commands, tokens, 2)
       continue
     }
-    if (!commands.rootScripts) continue
-    if (!commands.rootScripts.has(first))
-      report(ctx, file, text, index, `unknown pnpm script ${first}`)
+    checkRunCommand(ctx, file, text, index, commands, tokens, 1)
   }
 }
 

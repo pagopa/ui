@@ -11,7 +11,6 @@ import {
   type PageSurface,
   type PageSurfacePage,
 } from "../schemas/catalogue.ts"
-import type { Registry } from "../schemas/catalogue.ts"
 import { syncCatalogue, type CatalogueReport } from "./catalogue/index.ts"
 
 const SURFACE_PATH = "src/catalog/figma/page-surface.json"
@@ -88,14 +87,6 @@ function identitiesInTree(root: TreeNode): TreeNode[] {
   return found
 }
 
-function decisionFor(
-  nodeId: string,
-  registry: Registry,
-  pageId: string,
-): { decision: PageIdentity["decision"]; reason?: string } {
-  return censusDecisionFor(nodeId, registry, pageId)
-}
-
 export function planSurfaceSync(
   workspace: Workspace,
   pageId: string,
@@ -135,7 +126,7 @@ export function planSurfaceSync(
         decision: "unpublished",
         reason: "Not published in the library export; no implementation work is due.",
       }
-    const derived = decisionFor(node.id, registry, pageId)
+    const derived = censusDecisionFor(node.id, registry, pageId)
     return {
       nodeId: node.id,
       name: node.name,
