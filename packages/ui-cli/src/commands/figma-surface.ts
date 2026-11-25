@@ -2,6 +2,7 @@ import { defineCommand } from "citty"
 import path from "node:path"
 import { figmaToken } from "../adapters/figma-token.ts"
 import {
+  currentSurface,
   readSurfaceTrees,
   selectSurfacePages,
   surfaceCompositionVerifier,
@@ -16,10 +17,13 @@ const stringArg = { type: "string" } as const
 
 function parsePageIds(raw: string | undefined): string[] {
   if (!raw) return []
-  return raw
+  const ids = raw
     .split(",")
     .map((item) => item.trim())
     .filter(Boolean)
+  // Deduplicate before the single-page decision: `--page 1:1,1:1` is one page,
+  // so it must keep the legacy single-page JSON shape.
+  return [...new Set(ids)]
 }
 
 function formatPageDiff(ctx: CliContext, entry: PageSurfaceDiff, dryRun: boolean): void {
@@ -96,12 +100,17 @@ export function surfaceCommand(ctx: CliContext) {
       if (!pageIds.length) {
         if (args.json) {
           printJson(ctx.io, {
+            surface: currentSurface(workspace),
             pages: [],
             dryRun: args["dry-run"],
             check: { exitCode: EXIT.ok, out: [], err: [] },
           })
         } else {
-          ctx.io.out("surface: all published pages are already censused")
+          ctx.io.out(
+            args.uncensused
+              ? "surface: all published pages are already censused"
+              : "surface: no published or censused pages to refresh",
+          )
         }
         return EXIT.ok
       }

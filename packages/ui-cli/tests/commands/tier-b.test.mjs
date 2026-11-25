@@ -312,12 +312,83 @@ test("figma surface sync accepts a supplied page tree and supports dry-run", asy
     assert.equal(uncensused.status, 1, uncensused.stderr)
     assert.match(uncensused.stdout, /would update: 1:1 Page/)
 
+    const all = await runCli(
+      ["figma", "surface", "sync", "--all", "--input", "page.json", "--dry-run"],
+      { root: fixture.root },
+    )
+    assert.equal(all.status, 1, all.stderr)
+    assert.match(all.stdout, /would update: 1:1 Page/)
+
+    // One unique explicit page keeps the legacy single-page JSON shape.
+    const legacy = await runCli(
+      ["figma", "surface", "sync", "--page", "1:1,1:1", "--input", "page.json", "--json"],
+      { root: fixture.root },
+    )
+    assert.equal(legacy.status, 1, legacy.stderr)
+    const legacyPlan = JSON.parse(legacy.stdout)
+    assert.equal(legacyPlan.page.pageId, "1:1")
+    assert.equal("pages" in legacyPlan, false)
+
     const conflict = await runCli(
       ["figma", "surface", "sync", "--page", "1:1", "--all", "--input", "page.json"],
       { root: fixture.root },
     )
     assert.equal(conflict.status, 2)
     assert.match(conflict.stderr, /choose only one of --page/)
+  } finally {
+    fixture.dispose()
+  }
+})
+
+test("figma surface sync reports an empty selection by scope", async () => {
+  const fixture = fixtureTree(
+    {
+      "src/catalog/figma/file.ts": 'export const FIGMA_FILE_KEY = "file"\n',
+      "src/catalog/figma/inventory.json": {
+        fileKey: "file",
+        syncedAt: "2026-01-01",
+        components: [],
+      },
+      "src/catalog/figma/registry.json": { entries: {}, bulkRules: [] },
+      "src/catalog/figma/page-surface.json": {
+        fileKey: "file",
+        readAt: "2026-01-01",
+        note: "Census.",
+        pages: [],
+      },
+      "page.json": { id: "1:1", name: "Page", type: "CANVAS", children: [] },
+    },
+    "cli-surface-empty-",
+  )
+  try {
+    const uncensused = await runCli(
+      ["figma", "surface", "sync", "--uncensused", "--input", "page.json"],
+      { root: fixture.root },
+    )
+    assert.equal(uncensused.status, 0, uncensused.stderr)
+    assert.match(uncensused.stdout, /all published pages are already censused/)
+
+    const all = await runCli(["figma", "surface", "sync", "--all", "--input", "page.json"], {
+      root: fixture.root,
+    })
+    assert.equal(all.status, 0, all.stderr)
+    assert.match(all.stdout, /no published or censused pages to refresh/)
+    assert.doesNotMatch(all.stdout, /already censused/)
+
+    // The empty plan keeps the multi-page shape, including the loaded surface.
+    const json = await runCli(
+      ["figma", "surface", "sync", "--all", "--input", "page.json", "--json"],
+      { root: fixture.root },
+    )
+    assert.equal(json.status, 0, json.stderr)
+    const plan = JSON.parse(json.stdout)
+    assert.deepEqual(plan.pages, [])
+    assert.deepEqual(plan.surface, {
+      fileKey: "file",
+      readAt: "2026-01-01",
+      note: "Census.",
+      pages: [],
+    })
   } finally {
     fixture.dispose()
   }
