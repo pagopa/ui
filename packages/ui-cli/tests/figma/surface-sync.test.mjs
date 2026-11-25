@@ -1,14 +1,24 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
 import { fixtureTree, workspaceAt } from "../helpers/cli.mjs"
+import { inferDeviceFromFrame } from "../../src/figma/devices.ts"
 import {
-  planSurfaceSync,
   readSurfaceTrees,
   selectSurfacePages,
   surfaceCompositionVerifier,
-  syncPageSurface,
   syncPagesSurface,
 } from "../../src/figma/surface-sync.ts"
+
+async function planSinglePage(workspace, pageId, tree, now) {
+  const result = await syncPagesSurface(workspace, {
+    pageIds: [pageId],
+    trees: new Map([[pageId, tree]]),
+    now,
+    dryRun: true,
+    check: async () => ({ exitCode: 0, out: [], err: [] }),
+  })
+  return { ...result.pages[0], surface: result.surface }
+}
 
 const metadata = {
   id: "1:1",
@@ -82,10 +92,10 @@ const files = {
   },
 }
 
-test("surface sync preserves reviewed identities and compositions, adding tree identities", () => {
+test("surface sync preserves reviewed identities and compositions, adding tree identities", async () => {
   const fixture = fixtureTree(files, "surface-sync-plan-")
   try {
-    const result = planSurfaceSync(workspaceAt(fixture.root), "1:1", metadata, "2026-02-02")
+    const result = await planSinglePage(workspaceAt(fixture.root), "1:1", metadata, "2026-02-02")
     const page = result.surface.pages[0]
     assert.equal(page.pageName, "Components")
     assert.equal(page.identities[0].name, "Button")
@@ -105,10 +115,10 @@ test("surface sync preserves reviewed identities and compositions, adding tree i
   }
 })
 
-test("surface sync locates the requested page in an exported page array", () => {
+test("surface sync locates the requested page in an exported page array", async () => {
   const fixture = fixtureTree(files, "surface-sync-pages-")
   try {
-    const result = planSurfaceSync(
+    const result = await planSinglePage(
       workspaceAt(fixture.root),
       "1:1",
       [{ id: "2:2", name: "Other page", type: "CANVAS", children: [] }, metadata],
@@ -129,9 +139,9 @@ test("surface sync checks the candidate and writes only when not dry-running", a
   const workspace = workspaceAt(fixture.root)
   const checks = []
   try {
-    const dryRun = await syncPageSurface(workspace, {
-      pageId: "1:1",
-      tree: metadata,
+    const dryRun = await syncPagesSurface(workspace, {
+      pageIds: ["1:1"],
+      trees: new Map([["1:1", metadata]]),
       now: "2026-02-02",
       dryRun: true,
       check: async (surface) => {
@@ -151,9 +161,9 @@ test("surface sync checks the candidate and writes only when not dry-running", a
       1,
     )
 
-    const live = await syncPageSurface(workspace, {
-      pageId: "1:1",
-      tree: metadata,
+    const live = await syncPagesSurface(workspace, {
+      pageIds: ["1:1"],
+      trees: new Map([["1:1", metadata]]),
       now: "2026-02-02",
       dryRun: false,
       check: async () => ({ exitCode: 0, out: [], err: [] }),
@@ -171,7 +181,7 @@ test("surface sync checks the candidate and writes only when not dry-running", a
   }
 })
 
-test("surface sync discovers unrecorded composition candidates and reports missing compositions as unverified", () => {
+test("surface sync discovers unrecorded composition candidates and reports missing compositions as unverified", async () => {
   const devicePolicy = {
     axes: ["Device"],
     any: ["Any"],
@@ -227,7 +237,7 @@ test("surface sync discovers unrecorded composition candidates and reports missi
     "surface-sync-compositions-",
   )
   try {
-    const result = planSurfaceSync(
+    const result = await planSinglePage(
       workspaceAt(fixture.root),
       "1:1",
       treeWithCompositions,
@@ -326,7 +336,7 @@ test("selectSurfacePages and syncPagesSurface support --uncensused and --all mul
   }
 })
 
-test("surface sync keeps COMPONENT_SET variants out of identities and skips wrappers of recorded compositions", () => {
+test("surface sync keeps COMPONENT_SET variants out of identities and skips wrappers of recorded compositions", async () => {
   const tree = {
     id: "1:1",
     name: "Components",
@@ -386,7 +396,7 @@ test("surface sync keeps COMPONENT_SET variants out of identities and skips wrap
   }
   const fixture = fixtureTree(setFiles, "surface-sync-variants-wrapper-")
   try {
-    const result = planSurfaceSync(workspaceAt(fixture.root), "1:1", tree, "2026-02-02")
+    const result = await planSinglePage(workspaceAt(fixture.root), "1:1", tree, "2026-02-02")
     // Variants 4:41 and 4:51 must NOT appear as separate identities.
     assert.deepEqual(
       result.page.identities.map((identity) => [identity.nodeId, identity.kind]),
@@ -512,7 +522,7 @@ test("without a verifier every missing composition stays unverified", async () =
   }
 })
 
-test("identitiesInTree still discovers a COMPONENT nested inside a plain COMPONENT", () => {
+test("identitiesInTree still discovers a COMPONENT nested inside a plain COMPONENT", async () => {
   const nestedTree = {
     id: "1:1",
     name: "Components",
@@ -528,7 +538,7 @@ test("identitiesInTree still discovers a COMPONENT nested inside a plain COMPONE
   }
   const fixture = fixtureTree(files, "surface-sync-nested-component-")
   try {
-    const result = planSurfaceSync(workspaceAt(fixture.root), "1:1", nestedTree, "2026-02-02")
+    const result = await planSinglePage(workspaceAt(fixture.root), "1:1", nestedTree, "2026-02-02")
     assert.deepEqual(
       result.page.identities.map((identity) => identity.nodeId),
       ["4:4", "4:6"],
@@ -586,6 +596,7 @@ test("readSurfaceTrees and surfaceCompositionVerifier batch REST reads at one pi
     const workspace = workspaceAt(fixture.root)
     const read = await readSurfaceTrees(workspace, ["1:1", "2:2", "1:1"], { token: "tok" })
     assert.equal(read.version, "pin-99")
+    assert.deepEqual(read.missingPages, [])
     assert.deepEqual([...read.trees.keys()], ["1:1", "2:2"])
     assert.equal(requests.length, 2)
     assert.equal(requests[1].searchParams.get("ids"), "1:1,2:2")
@@ -607,4 +618,79 @@ test("readSurfaceTrees and surfaceCompositionVerifier batch REST reads at one pi
     globalThis.fetch = originalFetch
     fixture.dispose()
   }
+})
+
+test("readSurfaceTrees skips absent pages only when allowMissingPages is enabled", async () => {
+  const fixture = fixtureTree(files, "surface-sync-missing-pages-")
+  const requests = []
+  const originalFetch = globalThis.fetch
+  globalThis.fetch = async (url) => {
+    const parsed = new URL(url)
+    requests.push(parsed)
+    if (parsed.pathname === "/v1/files/file-key") {
+      return new Response(
+        JSON.stringify({
+          version: "pin-99",
+          document: {
+            id: "0:0",
+            name: "Document",
+            children: [{ id: "1:1", name: "Components", type: "CANVAS" }],
+          },
+        }),
+        { status: 200 },
+      )
+    }
+    return new Response(
+      JSON.stringify({
+        nodes: {
+          "1:1": { document: { children: [{ id: "4:4", name: "Button", type: "COMPONENT" }] } },
+        },
+      }),
+      { status: 200 },
+    )
+  }
+  try {
+    const workspace = workspaceAt(fixture.root)
+    await assert.rejects(
+      readSurfaceTrees(workspace, ["1:1", "9:9"], { token: "tok" }),
+      /Figma page 9:9 is not in the file/,
+    )
+
+    requests.length = 0
+    const partial = await readSurfaceTrees(workspace, ["1:1", "9:9"], {
+      token: "tok",
+      allowMissingPages: true,
+    })
+    assert.deepEqual([...partial.trees.keys()], ["1:1"])
+    assert.deepEqual(partial.missingPages, ["9:9"])
+    assert.equal(requests.length, 2)
+    assert.equal(requests[1].searchParams.get("ids"), "1:1")
+
+    requests.length = 0
+    const none = await readSurfaceTrees(workspace, ["9:9"], {
+      token: "tok",
+      allowMissingPages: true,
+    })
+    assert.equal(none.trees.size, 0)
+    assert.deepEqual(none.missingPages, ["9:9"])
+    assert.equal(requests.length, 1)
+  } finally {
+    globalThis.fetch = originalFetch
+    fixture.dispose()
+  }
+})
+
+test("inferDeviceFromFrame refuses to guess on equidistant width ties while keeping aliases", () => {
+  const devicePolicy = {
+    axes: ["Device"],
+    any: ["Any"],
+    devices: {
+      mobile: { canonicalWidth: 320, defaultLayoutScope: "viewport", aliases: ["Mobile"] },
+      tablet: { canonicalWidth: 600, defaultLayoutScope: "viewport", aliases: ["Tablet"] },
+      desktop: { canonicalWidth: 1200, defaultLayoutScope: "viewport", aliases: ["Desktop"] },
+    },
+  }
+  assert.equal(inferDeviceFromFrame("Board", 900, devicePolicy), undefined)
+  assert.equal(inferDeviceFromFrame("MD Tablet", 900, devicePolicy), "tablet")
+  assert.equal(inferDeviceFromFrame("Board", 1180, devicePolicy), "desktop")
 })

@@ -15,7 +15,7 @@ import { action, EXIT, printJson, printLines, type CliContext } from "./context.
 import { requireToken, requireTokenArg } from "./token.ts"
 
 const stringArg = { type: "string" } as const
-const EMPTY_CATALOGUE_OK = { exitCode: EXIT.ok, out: [], err: [] }
+const SKIPPED_CATALOGUE_CHECK = { exitCode: EXIT.ok, out: [], err: [] }
 
 function formatPageDiff(ctx: CliContext, entry: PageSurfaceDiff, dryRun: boolean): void {
   ctx.io.out(`${dryRun ? "would update" : "updated"}: ${entry.page.pageId} ${entry.page.pageName}`)
@@ -85,6 +85,7 @@ export function surfaceCommand(ctx: CliContext) {
       requireToken(ctx, args["require-token"])
 
       const workspace = ctx.workspace()
+      const now = ctx.now().toISOString().slice(0, 10)
       const pageIds = selectSurfacePages(workspace, {
         pages: explicitPages.length ? explicitPages : undefined,
         uncensused: args.uncensused,
@@ -93,10 +94,10 @@ export function surfaceCommand(ctx: CliContext) {
       if (!pageIds.length) {
         if (args.json) {
           printJson(ctx.io, {
-            surface: currentSurface(workspace),
+            surface: currentSurface(workspace, now),
             pages: [],
             dryRun: args["dry-run"],
-            check: EMPTY_CATALOGUE_OK,
+            check: SKIPPED_CATALOGUE_CHECK,
           })
         } else {
           ctx.io.out(
@@ -112,7 +113,30 @@ export function surfaceCommand(ctx: CliContext) {
       const read = await readSurfaceTrees(workspace, pageIds, {
         input: args.input ? path.resolve(ctx.cwd, args.input) : undefined,
         token,
+        allowMissingPages: args.all,
       })
+      const availableIds = [...read.trees.keys()]
+      if (!args.json) {
+        for (const missingId of read.missingPages) {
+          ctx.io.err(
+            `warn: page ${missingId} is in page-surface.json but not in the Figma file — skipped`,
+          )
+        }
+      }
+      if (!availableIds.length) {
+        if (args.json) {
+          printJson(ctx.io, {
+            surface: currentSurface(workspace, now),
+            pages: [],
+            ...(read.missingPages.length ? { missingPages: read.missingPages } : {}),
+            dryRun: args["dry-run"],
+            check: SKIPPED_CATALOGUE_CHECK,
+          })
+        } else {
+          ctx.io.out("surface: no readable pages to refresh")
+        }
+        return EXIT.ok
+      }
       // Only a live, pinned read can tell a deleted node from one the tree read
       // did not reach; `--input` carries no verifier and reports missing nodes
       // as unverified.
@@ -121,9 +145,9 @@ export function surfaceCommand(ctx: CliContext) {
           ? surfaceCompositionVerifier(workspace, { token, version: read.version })
           : undefined
       const result = await syncPagesSurface(workspace, {
-        pageIds,
+        pageIds: availableIds,
         trees: read.trees,
-        now: ctx.now().toISOString().slice(0, 10),
+        now,
         dryRun: args["dry-run"],
         verify,
       })
@@ -137,7 +161,10 @@ export function surfaceCommand(ctx: CliContext) {
             check: result.check,
           })
         } else {
-          printJson(ctx.io, result)
+          printJson(
+            ctx.io,
+            read.missingPages.length ? { ...result, missingPages: read.missingPages } : result,
+          )
         }
       } else {
         for (const entry of result.pages) formatPageDiff(ctx, entry, result.dryRun)

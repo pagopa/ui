@@ -589,12 +589,16 @@ export function inferDeviceFromFrame(
   if (width === undefined || !entries.length) return undefined
   let bestDevice: string | undefined
   let bestDistance = Number.POSITIVE_INFINITY
+  let tied = false
   for (const [device, spec] of entries) {
     const distance = Math.abs(width - spec.canonicalWidth)
     if (distance < bestDistance) {
       bestDistance = distance
       bestDevice = device
+      tied = false
+    } else if (distance === bestDistance) {
+      tied = true
     }
   }
-  return bestDevice
+  return tied ? undefined : bestDevice
 }

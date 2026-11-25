@@ -55,12 +55,6 @@ export type PageSurfaceDiff = {
   unverifiedCompositions: PageComposition[]
 }
 
-export type SurfaceSyncPlan = PageSurfaceDiff & {
-  surface: PageSurface
-  dryRun: boolean
-  check: CatalogueReport
-}
-
 export type MultiSurfaceSyncPlan = {
   surface: PageSurface
   pages: PageSurfaceDiff[]
@@ -160,24 +154,29 @@ function readSyncContext(workspace: Workspace): SyncContext {
   return { inventory, registry, policy }
 }
 
-function loadCurrentSurface(workspace: Workspace, fileKey: string, readAt: string): PageSurface {
+function readOptionalSurface(workspace: Workspace, fileKey: string): PageSurface | null {
   const file = workspace.path(SURFACE_PATH)
-  const current = fs.existsSync(file)
-    ? readJson(file, PageSurfaceSchema)
-    : { fileKey, readAt, note: DEFAULT_NOTE, pages: [] }
+  if (!fs.existsSync(file)) return null
+  const current = readJson(file, PageSurfaceSchema)
   if (current.fileKey !== fileKey)
     throw new Error(`page surface fileKey ${current.fileKey} does not match inventory ${fileKey}`)
   return current
 }
 
-// The census probe the selection shares with the sync, so a surface whose
-// `fileKey` disagrees with the inventory fails here with the same error instead
-// of being silently read from a stale file.
-const SELECTION_READ_AT = "1970-01-01"
+function loadCurrentSurface(workspace: Workspace, fileKey: string, readAt: string): PageSurface {
+  return (
+    readOptionalSurface(workspace, fileKey) ?? {
+      fileKey,
+      readAt,
+      note: DEFAULT_NOTE,
+      pages: [],
+    }
+  )
+}
 
-export function currentSurface(workspace: Workspace): PageSurface {
+export function currentSurface(workspace: Workspace, readAt: string): PageSurface {
   const inventory = readInventory(workspace.root)
-  return loadCurrentSurface(workspace, inventory.fileKey, SELECTION_READ_AT)
+  return loadCurrentSurface(workspace, inventory.fileKey, readAt)
 }
 
 type PageSurfacePlan = {
@@ -260,27 +259,6 @@ function planSurfaceSyncOn(
   }
 }
 
-export function planSurfaceSync(
-  workspace: Workspace,
-  pageId: string,
-  source: unknown,
-  readAt: string,
-): Omit<SurfaceSyncPlan, "dryRun" | "check"> {
-  const context = readSyncContext(workspace)
-  const current = loadCurrentSurface(workspace, context.inventory.fileKey, readAt)
-  const plan = planSurfaceSyncOn(current, pageId, source, readAt, context)
-  return {
-    surface: plan.surface,
-    page: plan.page,
-    added: plan.added,
-    removed: plan.removed,
-    compositionCandidates: plan.compositionCandidates,
-    // A supplied tree carries no way to tell a deleted node from one beyond the
-    // read depth, so every missing composition stays unverified.
-    ...classifyMissingCompositions(plan.missingCompositions, null),
-  }
-}
-
 export function selectSurfacePages(
   workspace: Workspace,
   options: { pages?: string[]; uncensused?: boolean; all?: boolean },
@@ -288,13 +266,19 @@ export function selectSurfacePages(
   const explicit = options.pages ? normalizePageIds(options.pages) : []
   if (explicit.length) return explicit
   const inventory = readInventory(workspace.root)
-  const current = loadCurrentSurface(workspace, inventory.fileKey, SELECTION_READ_AT)
+  const existing = readOptionalSurface(workspace, inventory.fileKey)
   if (options.uncensused) {
-    return surfaceUncensused(current, inventory.components).map((page) => page.pageId)
+    const surface = existing ?? {
+      fileKey: inventory.fileKey,
+      readAt: "",
+      note: DEFAULT_NOTE,
+      pages: [],
+    }
+    return surfaceUncensused(surface, inventory.components).map((page) => page.pageId)
   }
   if (options.all) {
     const ids = new Set<string>()
-    for (const page of current.pages) ids.add(page.pageId)
+    for (const page of existing?.pages ?? []) ids.add(page.pageId)
     for (const node of inventory.components) ids.add(node.pageId)
     return [...ids]
   }
@@ -352,63 +336,55 @@ export async function syncPagesSurface(
   return { surface, pages, dryRun: options.dryRun, check }
 }
 
-export async function syncPageSurface(
-  workspace: Workspace,
-  options: {
-    pageId: string
-    tree: unknown
-    now: string
-    dryRun: boolean
-    check?: SurfaceCheck
-    verify?: CompositionVerifier
-  },
-): Promise<SurfaceSyncPlan> {
-  const result = await syncPagesSurface(workspace, {
-    pageIds: [options.pageId],
-    trees: new Map([[options.pageId, options.tree]]),
-    now: options.now,
-    dryRun: options.dryRun,
-    check: options.check,
-    verify: options.verify,
-  })
-  const first = result.pages[0]
-  if (!first) throw new Error(`page tree input does not contain Figma page ${options.pageId}`)
-  return { ...first, surface: result.surface, dryRun: result.dryRun, check: result.check }
-}
-
 export async function readSurfaceTrees(
   workspace: Workspace,
   pageIds: string[],
-  options: { input?: string; token?: string },
-): Promise<{ trees: Map<string, unknown>; version?: string }> {
+  options: { input?: string; token?: string; allowMissingPages?: boolean },
+): Promise<{ trees: Map<string, unknown>; missingPages: string[]; version?: string }> {
   const uniqueIds = normalizePageIds(pageIds)
   const trees = new Map<string, unknown>()
-  if (!uniqueIds.length) return { trees }
+  const missingPages: string[] = []
+  if (!uniqueIds.length) return { trees, missingPages }
   if (options.input) {
     const value: unknown = JSON.parse(fs.readFileSync(options.input, "utf8"))
     for (const pageId of uniqueIds) {
-      if (!findTree(value, pageId)) throw new Error(`input does not contain page ${pageId}`)
+      if (!findTree(value, pageId)) {
+        if (options.allowMissingPages) {
+          missingPages.push(pageId)
+          continue
+        }
+        throw new Error(`input does not contain page ${pageId}`)
+      }
       trees.set(pageId, value)
     }
-    return { trees }
+    return { trees, missingPages }
   }
   if (!options.token) throw new Error("REST page reads require a resolved Figma token")
   const key = fileKeyFromSource(workspace)
   if (!key) throw new Error("cannot resolve the Figma file key from src/catalog/figma/file.ts")
   const pages = await fetchFilePages(key, options.token)
   const pageById = new Map(pages.pages.map((item) => [item.id, item]))
+  const availableIds: string[] = []
   for (const pageId of uniqueIds) {
-    if (!pageById.has(pageId)) throw new Error(`Figma page ${pageId} is not in the file`)
+    if (!pageById.has(pageId)) {
+      if (options.allowMissingPages) {
+        missingPages.push(pageId)
+        continue
+      }
+      throw new Error(`Figma page ${pageId} is not in the file`)
+    }
+    availableIds.push(pageId)
   }
-  const result = await fetchNodeTrees(key, pages.version, uniqueIds, options.token, 10)
-  for (const pageId of uniqueIds) {
+  if (!availableIds.length) return { trees, missingPages, version: pages.version }
+  const result = await fetchNodeTrees(key, pages.version, availableIds, options.token, 10)
+  for (const pageId of availableIds) {
     const tree = result.get(pageId)
     if (!tree) throw new Error(`Figma REST returned no page tree for ${pageId}`)
     const root = record(tree)
     const page = pageById.get(pageId)
     trees.set(pageId, { ...(root ?? {}), id: pageId, name: page?.name ?? pageId, type: "CANVAS" })
   }
-  return { trees, version: pages.version }
+  return { trees, missingPages, version: pages.version }
 }
 
 // Binds the existence probe to the version the page trees were read at, so the

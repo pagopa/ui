@@ -106,7 +106,8 @@ available from the CLI:
   the identity census and reports unrecorded composition candidates and missing
   compositions from a saved page tree; `--page` accepts comma-separated page IDs,
   `--uncensused` targets every published page missing from `page-surface.json`,
-  `--all` targets every published and censused page, and `--rest` reads the
+  `--all` targets every published and censused page (skipping censused pages
+  no longer present in Figma with a warning), and `--rest` reads the
   pages in batched REST reads from Figma. A missing composition is printed as
   `! stale` only when a live read confirms the node was explicitly nulled/deleted;
   a composition the page-tree read did not reach (or omitted from a response) is

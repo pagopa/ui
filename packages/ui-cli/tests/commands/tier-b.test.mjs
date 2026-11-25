@@ -574,3 +574,121 @@ test("figma surface sync prints candidates, missing verdicts and non-empty multi
     fixture.dispose()
   }
 })
+
+test("figma surface sync empty --all --json without page-surface.json uses ctx.now()", async () => {
+  const fixture = fixtureTree(
+    {
+      "src/catalog/figma/file.ts": 'export const FIGMA_FILE_KEY = "file"\n',
+      "src/catalog/figma/inventory.json": {
+        fileKey: "file",
+        syncedAt: "2026-01-01",
+        components: [],
+      },
+      "src/catalog/figma/registry.json": { entries: {}, bulkRules: [] },
+      "page.json": { id: "1:1", name: "Page", type: "CANVAS", children: [] },
+    },
+    "cli-surface-empty-missing-file-",
+  )
+  try {
+    const result = await runCli(
+      ["figma", "surface", "sync", "--all", "--input", "page.json", "--json"],
+      { root: fixture.root, now: () => new Date("2026-04-18T12:00:00Z") },
+    )
+    assert.equal(result.status, 0, result.stderr)
+    const payload = JSON.parse(result.stdout)
+    assert.deepEqual(payload.pages, [])
+    assert.equal(payload.surface.readAt, "2026-04-18")
+  } finally {
+    fixture.dispose()
+  }
+})
+
+test("figma surface sync --all --rest --dry-run warns and skips censused pages absent from Figma", async () => {
+  const fixture = fixtureTree(
+    {
+      "src/catalog/figma/file.ts": 'export const FIGMA_FILE_KEY = "file"\n',
+      "src/catalog/figma/inventory.json": {
+        fileKey: "file",
+        syncedAt: new Date().toISOString().slice(0, 10),
+        components: [
+          { nodeId: "4:4", name: "Button", type: "COMPONENT", pageId: "1:1", pageName: "Page 1" },
+        ],
+      },
+      "src/catalog/figma/registry.json": {
+        entries: { "4:4": { status: "excluded", reason: "Fixture button" } },
+        bulkRules: [],
+      },
+      "src/catalog/figma/evidence-exceptions.json": '{"storyEvidence":{}}',
+      "src/catalog/figma/api-exceptions.json": '{"modulePatterns":{},"exports":{}}',
+      "src/catalog/figma/device-policy.json": {
+        axes: [],
+        any: ["Any"],
+        devices: {
+          desktop: { canonicalWidth: 1200, defaultLayoutScope: "viewport", aliases: ["Desktop"] },
+        },
+      },
+      "src/catalog/figma/page-surface.json": {
+        fileKey: "file",
+        readAt: "2026-01-01",
+        note: "Census.",
+        pages: [
+          {
+            pageId: "9:9",
+            pageName: "Removed page",
+            identities: [],
+            compositions: [],
+          },
+        ],
+      },
+      "src/components/icons/figma-inventory.ts":
+        "export const figmaIconNames = [] as const\nexport const figmaPictogramNames = [] as const",
+      "src/stories/Fixture.stories.tsx": "export default { title: 'Fixture' }",
+      "src/pagopa-ui.ts": "",
+    },
+    "cli-surface-all-skip-missing-",
+  )
+  const originalFetch = globalThis.fetch
+  const requestedIds = []
+  globalThis.fetch = async (url) => {
+    const parsed = new URL(url)
+    if (parsed.pathname === "/v1/files/file") {
+      return new Response(
+        JSON.stringify({
+          version: "v3",
+          document: {
+            id: "0:0",
+            name: "Document",
+            children: [{ id: "1:1", name: "Page 1", type: "CANVAS" }],
+          },
+        }),
+        { status: 200 },
+      )
+    }
+    requestedIds.push(parsed.searchParams.get("ids"))
+    return new Response(
+      JSON.stringify({
+        nodes: {
+          "1:1": { document: { children: [{ id: "4:4", name: "Button", type: "COMPONENT" }] } },
+        },
+      }),
+      { status: 200 },
+    )
+  }
+  try {
+    const result = await runCli(["figma", "surface", "sync", "--all", "--rest", "--dry-run"], {
+      root: fixture.root,
+      env: { FIGMA_TOKEN: "fixture-token", PAGOPA_UI_STORIES_ROOT: "src/stories" },
+    })
+    assert.equal(result.status, 0, result.stderr)
+    assert.deepEqual(requestedIds, ["1:1"])
+    assert.match(
+      result.stderr,
+      /warn: page 9:9 is in page-surface\.json but not in the Figma file — skipped/,
+    )
+    assert.match(result.stdout, /would update: 1:1 Page 1/)
+    assert.match(result.stdout, /catalogue overall: pass \(0\)/)
+  } finally {
+    globalThis.fetch = originalFetch
+    fixture.dispose()
+  }
+})

@@ -603,9 +603,7 @@ export async function fetchNodeTrees(
 }
 
 const ExistingNodesSchema = z.looseObject({
-  nodes: z
-    .record(z.string(), z.looseObject({ document: z.unknown().nullish() }).nullish())
-    .optional(),
+  nodes: z.record(z.string(), z.looseObject({ document: z.unknown() }).nullish()).optional(),
 })
 
 export type NodeExistence = "exists" | "deleted" | "unknown"
@@ -620,6 +618,7 @@ export async function fetchNodeExistence(
   token: string,
 ): Promise<Map<string, NodeExistence>> {
   const existence = new Map<string, NodeExistence>()
+  // Shallow depth=1 existence probes stay small enough to batch 50 IDs per request.
   await forEachBatch(ids, 50, async (batch) => {
     const query = new URLSearchParams({ ids: batch.join(","), version, depth: "1" })
     const data = await get(
