@@ -16,7 +16,8 @@
 3. Decide per node, dependents too: implement, exclude with a reason, or leave
    pending, naming the design-request file it waits on or its blocker. A
    judgement call the source does not answer is a design request, not an
-   invention.
+   invention. A `mocked` dependent keeps its status and note: a review is not a
+   renewal.
 4. Write the catalogue: inventory, registry entry, guide, stories, exceptions.
    Statuses and what each one promises are in
    [catalogue/statuses.md](catalogue/statuses.md). A note states the node's

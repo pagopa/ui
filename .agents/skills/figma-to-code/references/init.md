@@ -27,7 +27,9 @@ without it.
 A stop for missing source names the prerequisite (`FIGMA_TOKEN` with
 `file_content:read` and `library_content:read`, or the MCP connection) and the
 command that surfaces it: `figma status --require-token` for the credential,
-`figma status --live` for REST, the failing MCP call for the other.
+`figma status --live` for REST, the failing MCP call for the other. Supplying it
+is `export FIGMA_TOKEN=…` or the `figma-pat` keychain entry; how the report
+closes is that fix followed by the command that re-reads.
 
 ## REST or MCP
 

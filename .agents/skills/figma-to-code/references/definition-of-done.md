@@ -44,3 +44,8 @@ Report each node's decision and reason, each device's verdict, residues, open
 items, files touched, and every command with its exit code, distinguishing
 passed, failed, skipped and unavailable. A blocked gate is reported, not
 passed.
+
+Name the scope of every read the report rests on.
+
+A scoped rules refresh's report says the snapshot is partial and that only a full
+`pnpm ui-cli figma rules refresh` re-checks the pages it skipped.
