@@ -554,11 +554,12 @@ function validateRegistry(
   // check warns instead of failing (decision D2: coverage stays a work list).
   const targetExports = [
     known?.target?.export,
+    ...(known?.target?.additionalExports ?? []),
     ...(known?.target?.additionalTargets ?? []).map((target) => target.export),
   ].filter(Boolean)
   if (entry?.export && targetExports.length && !targetExports.includes(entry.export)) {
     fail(
-      `export ${entry.export} is not the registry target nor an additionalTargets export of ${entry.nodeId} (${targetExports.join(", ")})`,
+      `export ${entry.export} is not the registry target, additionalExports or additionalTargets export of ${entry.nodeId} (${targetExports.join(", ")})`,
     )
   }
   const declaredStories = registryStoryIds(corpus.workspace, known)

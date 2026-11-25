@@ -3,6 +3,11 @@ import type { ParityCase } from "../schemas/parity.ts"
 import type { Workspace } from "../adapters/workspace.ts"
 import { readCorpus } from "./corpus.ts"
 import { formatCoverage, loadCoveragePopulations } from "./coverage.ts"
+import {
+  DEVICE_EXCEPTIONS_PATH,
+  loadDeviceExceptions,
+  validateDeviceExceptions,
+} from "./device-exceptions.ts"
 import { checkEvidence } from "./evidence.ts"
 
 import { corpusPath, frameBaseline, inventoryFileKey } from "./context.ts"
@@ -39,7 +44,12 @@ export function verify(
     inventoryFileKey(workspace),
     verdict.errors,
   )
-  coverageIssues(populations, evidence, errors, warnings)
+  const deviceExceptions = loadDeviceExceptions(workspace.path(DEVICE_EXCEPTIONS_PATH))
+  const corpusDevices = new Map(
+    corpus.coverage({ statuses: ["implemented"] }).all.map((row) => [row.nodeId, row]),
+  )
+  validateDeviceExceptions(deviceExceptions, corpusDevices, errors)
+  coverageIssues(populations, evidence, deviceExceptions, errors, warnings)
   if (options.json) {
     out.push(
       JSON.stringify(
@@ -113,6 +123,7 @@ function verifyFrames(
 function coverageIssues(
   populations: ReturnType<typeof loadCoveragePopulations>,
   evidence: ReturnType<typeof checkEvidence>,
+  deviceExceptions: Record<string, string>,
   errors: string[],
   warnings: string[],
 ) {
@@ -122,8 +133,11 @@ function coverageIssues(
   for (const row of populations.devices.all) {
     if (row.status !== "implemented" && row.status !== "pending") continue
     if (!row.missing.length) continue
-    const message = `${row.nodeId} (${row.status}) misses device case(s): ${row.missing.join(", ")}`
-    if (row.status === "implemented") errors.push(message)
+    const exception = deviceExceptions[row.nodeId]
+    const message = `${row.nodeId} (${row.status}) misses device case(s): ${row.missing.join(", ")}${
+      exception ? ` (excepted: ${exception})` : ""
+    }`
+    if (row.status === "implemented" && !exception) errors.push(message)
     else warnings.push(message)
   }
   for (const warning of evidence.warnings) warnings.push(`evidence: ${warning}`)

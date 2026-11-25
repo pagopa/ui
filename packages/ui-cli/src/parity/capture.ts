@@ -79,7 +79,7 @@ export async function captureWave(
     if (!saved) throw error
     throw new UsageError(error instanceof Error ? error.message : String(error))
   }
-  if (saved && project.raw.kind === "parity-source") {
+  if ((saved || Boolean(options.casesFile)) && project.raw.kind === "parity-source") {
     const errors = specs.flatMap((spec) =>
       checkCaseEvidence({
         root: workspace.workspaceRoot,
@@ -142,8 +142,17 @@ function selectWaveCases(workspace: Workspace, options: WaveOptions, limit: numb
     if (ids.size !== entries.length) throw new UsageError(`${nodeId}: duplicate saved case ids`)
     specs = entries.map((entry) => specFromCase(entry, options)).slice(0, limit)
   } else if (options.casesFile) {
-    specs = JSON.parse(fs.readFileSync(String(options.casesFile), "utf8"))
-    if (!Array.isArray(specs)) throw new UsageError(`${options.casesFile}: expected a case array`)
+    const loaded: unknown = JSON.parse(fs.readFileSync(String(options.casesFile), "utf8"))
+    if (!Array.isArray(loaded)) throw new UsageError(`${options.casesFile}: expected a case array`)
+    let filtered: CaseSpec[] = loaded
+    if (options.nodeId) {
+      const wanted = new Set(String(options.nodeId).split(","))
+      filtered = filtered.filter((item) => wanted.has(item.nodeId))
+    }
+    if (options.device) {
+      filtered = filtered.filter((item) => item.device === options.device)
+    }
+    specs = filtered.slice(0, limit)
   } else {
     let cases = [...buildCases(workspace, { statuses: statusesFrom(options.status) })]
     if (!options.includeCatalogue) {

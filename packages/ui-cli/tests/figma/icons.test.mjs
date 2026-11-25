@@ -163,6 +163,14 @@ test("local icon write preserves pinned source paths, paints and placement witho
   )
   const check = run("--check", "--input", "live.json")
   assert.equal(check.status, 0, check.stderr)
+  fs.writeFileSync(path.join(directory, "9-9.svg"), "<svg/>")
+  const cleaned = run("--write", "--input", "live.json")
+  assert.equal(cleaned.status, 0, cleaned.stderr)
+  assert.equal(
+    fs.existsSync(path.join(directory, "9-9.svg")),
+    false,
+    "orphan SVG files are removed on write",
+  )
   fs.appendFileSync(path.join(directory, variant.file), "tampered")
   const invalid = run("--check", "--input", "live.json")
   assert.equal(invalid.status, 1)

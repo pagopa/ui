@@ -30,7 +30,8 @@ export type SourceOrigin = "input" | "snapshot" | "evidence"
 type Paint = {
   type?: string
   visible?: boolean
-  color?: { r: number; g: number; b: number }
+  opacity?: number
+  color?: { r: number; g: number; b: number; a?: number }
 }
 
 type TextStyle = {
@@ -208,12 +209,14 @@ export function cssWeight(sourceWeight: number | undefined): number | undefined 
 
 export function hexOf(paint: Paint | undefined): string | undefined {
   if (!paint || paint.type !== "SOLID" || !paint.color) return undefined
-  const { r, g, b } = paint.color
+  const { r, g, b, a } = paint.color
   const channel = (value: number): string =>
-    Math.round(value * 255)
+    Math.max(0, Math.min(255, Math.round(value * 255)))
       .toString(16)
       .padStart(2, "0")
-  return `#${channel(r)}${channel(g)}${channel(b)}`
+  const alpha = (a ?? 1) * (paint.opacity ?? 1)
+  const suffix = alpha < 1 ? channel(alpha) : ""
+  return `#${channel(r)}${channel(g)}${channel(b)}${suffix}`
 }
 
 // The source a parity run reads, in order: an explicit `--input`, the local
@@ -325,14 +328,21 @@ function fillsOf(node: RawNode): SpecNode["fills"] {
 function textOf(node: RawNode): SpecNode["text"] {
   if (node.type !== "TEXT") return undefined
   const style = node.style ?? {}
+  const lineHeight =
+    style.lineHeightPx ??
+    (style.lineHeightPercentFontSize != null && style.fontSize != null
+      ? round2((style.lineHeightPercentFontSize / 100) * style.fontSize)
+      : undefined)
   return {
     characters: node.characters,
     fontSize: style.fontSize,
-    lineHeight: style.lineHeightPx ?? style.lineHeightPercentFontSize,
+    lineHeight,
     weight: style.fontWeight,
     cssWeight: cssWeight(style.fontWeight),
     styleName: style.fontPostScriptName ?? style.fontStyle,
-    color: hexOf((node.fills ?? []).find((paint) => paint.type === "SOLID")),
+    color: hexOf(
+      (node.fills ?? []).find((paint) => paint.visible !== false && paint.type === "SOLID"),
+    ),
   }
 }
 

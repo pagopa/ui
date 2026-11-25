@@ -17,7 +17,7 @@ import { resolveProvenance } from "./asset-provenance.ts"
 import { requireBulkRule, selectRuleNodes } from "./artwork/catalogue.ts"
 import { assertGeneratedModule, propertyKey } from "./artwork/generate-module.ts"
 import { assertPinnedManifest, readManifest, writeManifest } from "./artwork/manifest.ts"
-import { assertStandaloneSvg, assertSvgDimensions } from "./artwork/svg.ts"
+import { assertStandaloneSvg, assertSvgDimensions, pruneOrphanSvgs } from "./artwork/svg.ts"
 import { fetchFigmaImages } from "./rest.ts"
 import { normalizeLive } from "./snapshot.ts"
 import { figmaToken, type KeychainRunner } from "../adapters/figma-token.ts"
@@ -296,14 +296,17 @@ function publishPictograms(
     assertGeneratedModule(sourceFile, source, "Generated pictogram module")
   } else {
     fs.mkdirSync(output, { recursive: true })
+    const written = new Set<string>()
     for (const entry of Object.values(manifest.entries)) {
       for (const background of ["light", "dark"] as const) {
         const variant = entry[background]
         const art = assets.get(variant.nodeId)
         if (!art) throw new Error(`Missing pictogram artwork for ${variant.nodeId}`)
         fs.writeFileSync(path.join(output, variant.file), art)
+        written.add(variant.file)
       }
     }
+    pruneOrphanSvgs(output, written)
     writeManifest(path.join(output, "manifest.json"), manifest)
     if (mode === "write") {
       fs.mkdirSync(path.dirname(sourceFile), { recursive: true })

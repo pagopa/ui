@@ -2,7 +2,7 @@ import fs from "node:fs"
 import type { Workspace } from "../adapters/workspace.ts"
 import { fetchFilePages, fetchNodeTrees } from "./rest.ts"
 import { fileKeyFromSource } from "./snapshot.ts"
-import { surfaceDecision } from "./surface-decision.ts"
+import { censusDecisionFor } from "./surface-decision.ts"
 import { readJson, writeJson } from "../lib/json.ts"
 import { readInventory, readRegistry } from "../records/committed.ts"
 import {
@@ -11,7 +11,6 @@ import {
   type PageSurface,
   type PageSurfacePage,
 } from "../schemas/catalogue.ts"
-import type { Registry } from "../schemas/catalogue.ts"
 import { syncCatalogue, type CatalogueReport } from "./catalogue/index.ts"
 
 const SURFACE_PATH = "src/catalog/figma/page-surface.json"
@@ -88,29 +87,6 @@ function identitiesInTree(root: TreeNode): TreeNode[] {
   return found
 }
 
-function decisionFor(
-  nodeId: string,
-  registry: Registry,
-  pageId: string,
-): { decision: PageIdentity["decision"]; reason?: string } {
-  const entry = registry.entries[nodeId]
-  const status = entry?.status ?? registry.bulkRules.find((rule) => rule.pageId === pageId)?.status
-  const reason =
-    entry?.reason ??
-    entry?.note ??
-    registry.bulkRules.find((rule) => rule.pageId === pageId)?.reason ??
-    registry.bulkRules.find((rule) => rule.pageId === pageId)?.note
-  const decision = surfaceDecision(true, status)
-  if (decision === "pending" && !reason)
-    return {
-      decision,
-      reason: status
-        ? `Registry decision is ${status}; add its reviewed reason.`
-        : "No registry entry or page bulk rule exists; review this published identity.",
-    }
-  return { decision, ...(reason ? { reason } : {}) }
-}
-
 export function planSurfaceSync(
   workspace: Workspace,
   pageId: string,
@@ -150,7 +126,7 @@ export function planSurfaceSync(
         decision: "unpublished",
         reason: "Not published in the library export; no implementation work is due.",
       }
-    const derived = decisionFor(node.id, registry, pageId)
+    const derived = censusDecisionFor(node.id, registry, pageId)
     return {
       nodeId: node.id,
       name: node.name,

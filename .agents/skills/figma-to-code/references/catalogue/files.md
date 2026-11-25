@@ -55,8 +55,10 @@ skill. Its body and artifacts carry the delta classes, targets, device variants
 and work order; a skipped export is not alignment evidence.
 
 The run writes the census side of what it queued: each queued identity becomes
-`pending` with the delta's reason, and an identity the file published after its
-page was read joins as `pending`. The observations are the job's and the
-judgements the reviewer's, so a decision the run did not queue stays as reviewed.
-An identity whose node moved onto a page the census never read leaves the
-census: it is the next page read, not a row to invent.
+`pending` with the delta's reason, an identity the file published after its page
+was read joins with its registry or bulk-rule decision (`pending` when queued),
+and a published identity removed from the export leaves the census. The
+observations are the job's and the judgements the reviewer's, so a decision the
+run did not queue stays as reviewed. An identity whose node moved onto a page
+the census never read leaves the census: it is the next page read, not a row to
+invent.

@@ -165,6 +165,7 @@ export const RulesSnapshotSchema = z.strictObject({
   fileKey: NonEmptyStringSchema,
   version: PinnedVersionSchema,
   fetchedAt: NonEmptyStringSchema,
+  partial: z.boolean().optional(),
   pages: z.array(ExtractedPageSchema),
 })
 export type RulesSnapshot = z.infer<typeof RulesSnapshotSchema>

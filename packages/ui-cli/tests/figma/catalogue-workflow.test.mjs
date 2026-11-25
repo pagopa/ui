@@ -150,3 +150,139 @@ test("the plan command prints exactly the report the run door returns", async ()
     tree.dispose()
   }
 })
+
+test("triage removes deleted published identities and records bulk-excluded additions in the page census", async () => {
+  const excludedBulkNode = {
+    ...node,
+    nodeId: "2:2",
+    name: "New excluded helper",
+    pageId: "2:0",
+    pageName: "Excluded page",
+  }
+  const tree = fixtureTree(
+    {
+      ...files({
+        entries: { "1:1": { status: "excluded", reason: "Fixture-only control" } },
+        bulkRules: [{ pageId: "2:0", status: "excluded", reason: "Legacy scratch page" }],
+      }),
+      "src/catalog/figma/page-surface.json": {
+        fileKey: "fixture",
+        readAt: "2026-01-01",
+        note: "Fixture census.",
+        pages: [
+          {
+            pageId: "1:0",
+            pageName: "Controls",
+            identities: [
+              {
+                nodeId: "1:1",
+                name: "Control",
+                kind: "COMPONENT_SET",
+                inLibrary: true,
+                decision: "excluded",
+                reason: "Fixture-only control",
+              },
+              {
+                nodeId: "1:9",
+                name: "Local helper",
+                kind: "COMPONENT",
+                inLibrary: false,
+                decision: "unpublished",
+              },
+            ],
+            compositions: [],
+          },
+          {
+            pageId: "2:0",
+            pageName: "Excluded page",
+            identities: [],
+            compositions: [],
+          },
+        ],
+      },
+      "live.json": JSON.stringify([excludedBulkNode]),
+    },
+    "catalogue-surface-reconcile-",
+  )
+  try {
+    const ws = workspaceAt(tree.root)
+    const triaged = await syncCatalogue(ws, {
+      input: "live.json",
+      write: true,
+      triage: true,
+    })
+    assert.equal(triaged.exitCode, 0, triaged.err.join("\n"))
+    const fs = await import("node:fs")
+    const surface = JSON.parse(
+      fs.readFileSync(`${tree.root}/src/catalog/figma/page-surface.json`, "utf8"),
+    )
+    const controls = surface.pages.find((page) => page.pageId === "1:0")
+    assert.deepEqual(
+      controls.identities.map((entry) => entry.nodeId),
+      ["1:9"],
+      "removed published node is dropped while unpublished helper stays",
+    )
+    const excludedPage = surface.pages.find((page) => page.pageId === "2:0")
+    assert.equal(excludedPage.identities.length, 1)
+    assert.equal(excludedPage.identities[0].nodeId, "2:2")
+    assert.equal(excludedPage.identities[0].decision, "excluded")
+    assert.equal(excludedPage.identities[0].reason, "Legacy scratch page")
+    assert.deepEqual(readCatalogueDiagnostics(ws), [])
+  } finally {
+    tree.dispose()
+  }
+})
+
+test("triage does not silently drop inLibrary census identities outside delta.removed", async () => {
+  const tree = fixtureTree(
+    {
+      ...files(cleanRegistry),
+      "src/catalog/figma/page-surface.json": {
+        fileKey: "fixture",
+        readAt: "2026-01-01",
+        note: "Fixture census.",
+        pages: [
+          {
+            pageId: "1:0",
+            pageName: "Controls",
+            identities: [
+              {
+                nodeId: "1:1",
+                name: "Control",
+                kind: "COMPONENT_SET",
+                inLibrary: true,
+                decision: "excluded",
+                reason: "Fixture-only control",
+              },
+              {
+                nodeId: "1:8",
+                name: "Out-of-delta published helper",
+                kind: "COMPONENT",
+                inLibrary: true,
+                decision: "excluded",
+                reason: "Not present in committed inventory",
+              },
+            ],
+            compositions: [],
+          },
+        ],
+      },
+      "live.json": JSON.stringify([node]),
+    },
+    "catalogue-surface-guard-",
+  )
+  try {
+    const triaged = await syncCatalogue(workspaceAt(tree.root), {
+      input: "live.json",
+      write: true,
+      triage: true,
+    })
+    assert.equal(triaged.exitCode, 1)
+    assert.match(
+      triaged.err.join("\n"),
+      /1:8 Out-of-delta published helper is marked in the library but the inventory does not publish it/,
+    )
+  } finally {
+    tree.dispose()
+  }
+})

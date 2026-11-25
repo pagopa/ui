@@ -116,6 +116,21 @@ test("the weight law and the paint reader stay in one place", () => {
     }),
     "#0b3ee3",
   )
+  assert.equal(
+    hexOf({
+      type: "SOLID",
+      color: { r: 14 / 255, g: 15 / 255, b: 19 / 255, a: 0.35 },
+    }),
+    "#0e0f1359",
+  )
+  assert.equal(
+    hexOf({
+      type: "SOLID",
+      opacity: 0.35,
+      color: { r: 14 / 255, g: 15 / 255, b: 19 / 255 },
+    }),
+    "#0e0f1359",
+  )
   assert.equal(hexOf({ type: "IMAGE" }), undefined)
 })
 
@@ -158,4 +173,24 @@ test("the mapping gaps name the padded frames a root-only case does not compare"
   }
   assert.deepEqual(mappingGaps(tree, []), ["Row (1:3)", "Dates (1:4)"])
   assert.deepEqual(mappingGaps(tree, ["Dates"]), ["Row (1:3)"])
+})
+
+test("textOf converts lineHeightPercentFontSize to pixels and ignores hidden solid fills", () => {
+  const spec = nodeSpec({
+    id: "9:1",
+    name: "Label",
+    type: "TEXT",
+    characters: "Hello",
+    style: {
+      fontSize: 16,
+      lineHeightPercentFontSize: 150,
+      fontWeight: 500,
+    },
+    fills: [
+      { type: "SOLID", visible: false, color: { r: 1, g: 0, b: 0 } },
+      { type: "SOLID", visible: true, color: { r: 0, g: 0, b: 1 } },
+    ],
+  })
+  assert.equal(spec.text.lineHeight, 24)
+  assert.equal(spec.text.color, "#0000ff")
 })

@@ -4,6 +4,7 @@ import path from "node:path"
 import { test } from "node:test"
 import { fixtureTree } from "../helpers/cli.mjs"
 import {
+  fetchFigmaImages,
   fetchFigmaNodeDocuments,
   fetchFileHeader,
   writeFigmaSnapshot,
@@ -260,4 +261,46 @@ test("the snapshot writer streams compact JSON and drops an absent lastModified"
   } finally {
     tree.dispose()
   }
+})
+
+test("429 responses with HTTP-date Retry-After headers are retried", async () => {
+  let attempts = 0
+  await withFigmaFetch(
+    async () => {
+      attempts += 1
+      if (attempts === 1) {
+        return new Response("rate limited", {
+          status: 429,
+          headers: { "retry-after": new Date(Date.now() + 1000).toUTCString() },
+        })
+      }
+      return jsonResponse({ version })
+    },
+    async () => {
+      const header = await fetchFileHeader("fixture-file", "fixture-token")
+      assert.equal(header.version, version)
+      assert.equal(attempts, 2)
+    },
+  )
+})
+
+test("CDN image downloads retry transient 5xx responses without sending credentials", async () => {
+  let assetAttempts = 0
+  await withFigmaFetch(
+    async (input, options) => {
+      const url = new URL(input)
+      if (url.hostname === "api.figma.com") {
+        return jsonResponse({ images: { "12:34": "https://assets.figma.test/a.svg" } })
+      }
+      assert.equal(options.headers, undefined)
+      assetAttempts += 1
+      if (assetAttempts === 1) return new Response("unavailable", { status: 503 })
+      return new Response("<svg/>", { status: 200 })
+    },
+    async () => {
+      const assets = await fetchFigmaImages("fixture-file", version, ["12:34"], "fixture-token")
+      assert.equal(assets.get("12:34"), "<svg/>")
+      assert.equal(assetAttempts, 2)
+    },
+  )
 })

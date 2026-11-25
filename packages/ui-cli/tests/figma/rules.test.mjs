@@ -5,7 +5,7 @@ import path from "node:path"
 import { test } from "node:test"
 import { fileURLToPath } from "node:url"
 
-import { fixtureEnvironment, fixtureTree } from "../helpers/cli.mjs"
+import { fixtureEnvironment, fixtureTree, workspaceAt } from "../helpers/cli.mjs"
 import { RulesLedgerSchema, RulesSnapshotSchema } from "../../src/schemas/rules.ts"
 import {
   check,
@@ -14,7 +14,10 @@ import {
   hasComponentRules,
   mark,
   plan,
+  readRulesSnapshot,
+  refresh,
   sourceHash,
+  sync,
 } from "../../src/figma/rules.ts"
 
 // The `.Regole` container as Figma exports it: a frame holding two labelled
@@ -199,6 +202,111 @@ test("plan reports a card the ledger has not seen, a stale hash and a removed ca
     cards: { "I1:2;9:9": pending },
   })
   assert.deepEqual(plan(snapshot, missing).removed, ["I1:2;9:9"])
+})
+
+test("a partial snapshot scopes removal detection and sync to the pages it covers", () => {
+  const partialSnapshot = RulesSnapshotSchema.parse({
+    ...snapshot,
+    partial: true,
+  })
+  const ledger = RulesLedgerSchema.parse({
+    schemaVersion: 1,
+    fileKey: "file",
+    cards: {
+      "I1:2;3:3": pending,
+      "I1:2;9:9": { ...pending, pageId: "1:1" },
+      "I2:2;8:8": { ...pending, pageId: "2:2", page: "Other page", container: "2:2" },
+    },
+  })
+  const diff = plan(partialSnapshot, ledger)
+  assert.deepEqual(diff.removed, ["I1:2;9:9"])
+  const removed = sync(ledger, partialSnapshot)
+  assert.equal(removed, 1)
+  assert.equal(ledger.cards["I1:2;9:9"].disposition, "removed")
+  assert.equal(ledger.cards["I2:2;8:8"].disposition, "pending")
+})
+
+// A scoped refresh reads one page; the pages it did not read are unknown, not
+// empty. The snapshot says so until a full refresh covers the file.
+test("a scoped refresh with no prior snapshot stays partial, and a full refresh clears it", async () => {
+  const canvas = (id, name, containerId) => ({
+    id,
+    type: "CANVAS",
+    name,
+    children: [{ id: containerId, type: "INSTANCE", name: ".Regole", children: [] }],
+  })
+  const pages = {
+    "1:1": canvas("1:1", "Page", "1:2"),
+    "2:2": canvas("2:2", "Other page", "2:3"),
+  }
+  const containers = {
+    "1:2": {
+      id: "1:2",
+      type: "INSTANCE",
+      name: ".Regole",
+      children: [card("I1:2;3:3", "Spacing", "Keep 8px.", "Ok!")],
+    },
+    "2:3": {
+      id: "2:3",
+      type: "INSTANCE",
+      name: ".Regole",
+      children: [card("I2:3;4:4", "Radius", "Round the corners.", "Ok!")],
+    },
+  }
+  const tree = fixtureTree(
+    { "src/catalog/figma/file.ts": 'export const FIGMA_FILE_KEY = "fixture"\n' },
+    "pagopa-rules-refresh-",
+  )
+  const originalFetch = globalThis.fetch
+  globalThis.fetch = async (input) => {
+    const url = new URL(input)
+    if (url.pathname.endsWith("/nodes")) {
+      const depth = Number(url.searchParams.get("depth"))
+      const ids = url.searchParams.get("ids").split(",")
+      const documents = Object.fromEntries(
+        ids.map((id) => [id, { document: depth <= 2 ? pages[id] : containers[id] }]),
+      )
+      return Response.json({ nodes: documents })
+    }
+    return Response.json({
+      version: "7",
+      document: { id: "0:0", name: "Fixture", children: [pages["1:1"], pages["2:2"]] },
+    })
+  }
+  try {
+    const workspace = workspaceAt(tree.root)
+    const first = await refresh(workspace, "fixture-token", { pageId: "1:1" })
+    assert.equal(first.partial, true)
+    assert.deepEqual(
+      first.pages.map((page) => [page.pageId, page.containers[0].cards[0].nodeId]),
+      [["1:1", "I1:2;3:3"]],
+    )
+    assert.equal(readRulesSnapshot(tree.root).partial, true)
+
+    // A second scope merges into the first: the unread page is preserved and
+    // the snapshot stays partial.
+    const second = await refresh(workspace, "fixture-token", { pageId: "2:2" })
+    assert.equal(second.partial, true)
+    assert.deepEqual(
+      second.pages.map((page) => page.pageId),
+      ["1:1", "2:2"],
+    )
+
+    // A full refresh covers every page and drops the flag.
+    const full = await refresh(workspace, "fixture-token", {})
+    assert.equal(full.partial, undefined)
+    assert.deepEqual(
+      full.pages.map((page) => page.pageId),
+      ["1:1", "2:2"],
+    )
+    assert.deepEqual(
+      readRulesSnapshot(tree.root).pages.map((page) => page.pageId),
+      ["1:1", "2:2"],
+    )
+  } finally {
+    globalThis.fetch = originalFetch
+    tree.dispose()
+  }
 })
 
 // `refresh` rewrites the snapshot; only `mark` re-stamps the ledger's

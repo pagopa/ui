@@ -10,8 +10,10 @@ compare it with the source code of the audited package, `packages/pagopa-ui`.
 
 - Agents invoke CLI commands as `pnpm ui-cli …`; Nx targets remain the gates and
   CI entry points. The CLI reads the design system through an explicit root
-  (`PAGOPA_UI_ROOT`), never from the working directory. Every path inside a
-  command is relative to that root.
+  (`PAGOPA_UI_ROOT`), never from the working directory. Paths inside a command
+  are relative to that root, except the repository-level `docs/` defaults
+  (`docs/figma-parity`, `docs/design-requests`, and the default `parity report`
+  markdown output), which resolve at the workspace root.
 - Figma is read-only. Figma REST calls use GET requests only; tools never write
   to the Figma file.
 - `src/figma/rest.ts` handles Figma API reads. The handoff adapters also access
@@ -210,7 +212,7 @@ keeps the same preflight behavior as the other live Figma commands.
 Every module under `src/` is TypeScript and runs directly on Node's type
 stripping (`node src/cli.ts`), with no build step. The `node:test` specs and the
 Playwright spec stay `.mjs`: they are executable documentation of the CLI and
-are run as-is. `pnpm run typecheck` checks the tree
+are run as-is. `pnpm nx run pagopa-ui-cli:typecheck` checks the tree
 with `tsc`; the reviewed JSON shapes are Zod schemas under `src/schemas` rather
 than hand-written if-chains. Every source module, including the parity probe,
 diff and CLI, is typechecked with no `@ts-nocheck`.
