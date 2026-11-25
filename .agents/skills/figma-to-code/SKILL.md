@@ -18,7 +18,9 @@ Figma is read-only: read it over REST or MCP where
    guide, constraints, rules, comments and devices are read.
 3. **Decide.** Automation orders and measures, never decides: implement, exclude,
    or leave pending with a request.
-4. **Close.** [definition-of-done.md](references/definition-of-done.md).
+4. **Close.** [definition-of-done.md](references/definition-of-done.md): the
+   report carries each node's decision, the scope of what was read and the
+   gates' exit codes.
 
 ## Routes
 

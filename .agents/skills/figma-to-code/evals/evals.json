@@ -35,7 +35,7 @@
         "Pins the live source before the queue read: `pnpm ui-cli figma status`, then `pnpm ui-cli figma plan`, which reads the live file over REST by default, so the queue is scoped to this delta.",
         "Reads the batched context once with `pnpm ui-cli figma brief --queue` — scoped, never widened to `--full` — instead of one `figma brief --node` read per node.",
         "Names the queue's scope: its `implementationOrder` plus how many pending nodes it omitted or truncated, and reconciles that with the nodes named in the request.",
-        "Closes with one decision per node — implement, excluded, or pending with the open question and its design request named — without writing to Figma and without running the workspace gates."
+        "Closes with one decision per node — implement, excluded, pending with the open question and its design request named, or a `mocked` node keeping its status and note because a review is not a renewal — without writing to Figma and without running the workspace gates."
       ],
       "files": []
     },
