@@ -1493,6 +1493,7 @@ export interface TableColumn<Row> {
     // (undocumented)
     label: string;
     maxWidth?: string;
+    mono?: boolean;
     // (undocumented)
     render?: (value: Row[keyof Row], row: Row) => React_2.ReactNode;
     // (undocumented)

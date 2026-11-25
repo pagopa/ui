@@ -41,6 +41,8 @@ export interface TableColumn<Row> {
   truncate?: boolean
   /** Maximum width of a truncated cell, as a CSS length. @default "16rem" */
   maxWidth?: string
+  /** Renders the cell value in the source monospace face (DM Mono) for numeric data such as amounts, codes, IDs and quantities. */
+  mono?: boolean
 }
 
 const defaultTruncatedWidth = "16rem"
@@ -300,7 +302,10 @@ function Table<Row extends { id: React.Key }>({
                         headers={`${tableId}-column-${index}`}
                         role="cell"
                         label={column.label}
-                        className="@max-narrow/table:block"
+                        className={cn(
+                          "@max-narrow/table:block",
+                          column.mono && "font-mono text-mono",
+                        )}
                       >
                         {column.truncate ? (
                           <Tooltip

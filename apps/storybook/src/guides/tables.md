@@ -3,6 +3,9 @@
 ## Component Rules
 
 - Use the row list for flexible rows with long, wrapping content and low density; use the table for vertical comparison, sorting, filters and high density.
+- Render numeric values (amounts, codes, IDs, quantities) in DM Mono with `mono` so characters align vertically.
+- Keep the column label and sort arrow inside one clickable header control to widen the sorting target.
+- When results fit on a single page, hide page numbers and navigation arrows while keeping only the rows-per-page select visible.
 
 <!-- component-rules:end -->
 
@@ -28,7 +31,9 @@ descending.
 `TableColumn.truncate` constrains one column, draws the value with an ellipsis and
 opens the full value in a tooltip on hover and keyboard focus; `maxWidth` sets the
 column measure (16rem by default). The designer chooses which cells truncate, and
-the full value stays reachable without a mouse-only `title`.
+the full value stays reachable without a mouse-only `title`. `TableColumn.mono`
+renders numeric columns in DM Mono (`font-mono text-mono`), matching
+`TableListItem`.
 
 The selection contract keeps the row selection controlled: `selectable`,
 `selected`/`defaultSelected`, `onSelectionChange` and `selectionRowLabel`. The first
