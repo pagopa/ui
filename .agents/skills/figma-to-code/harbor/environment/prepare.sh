@@ -52,7 +52,7 @@ deps="$(mktemp -d)"
 (
   cd "$deps"
   npm init -y >/dev/null
-  npm install --silent --no-audit --no-fund citty@0.2.2 zod@4.6.7 oxc-parser@0.127.0 sharp@0.35.5
+  npm install --silent --no-audit --no-fund citty@0.2.2 zod@4.6.7 oxc-parser@0.127.0 sharp@0.35.5 js-yaml@4.1.1
 )
 cp -a "$deps/node_modules" "$WORKSPACE/packages/ui-cli/node_modules"
 rm -rf "$deps"
