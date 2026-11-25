@@ -1,3 +1,13 @@
+## 0.1.10 (2026-11-25)
+
+### 🚀 Features
+
+- feat(table): add mono column typography option and import Table Figma rules ([#152](https://github.com/pagopa/ui/pull/152))
+
+### ❤️ Thank You
+
+- Danilo Spinelli @gunzip
+
 ## 0.1.9 (2026-11-20)
 
 ### 🩹 Fixes
