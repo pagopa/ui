@@ -103,11 +103,15 @@ available from the CLI:
   also include the preview captures. `open` refuses a record that already
   exists, naming the issue it holds: edit that record, or open a new slug.
 - `pnpm ui-cli figma surface sync --page <pageId> --input <tree.json>` refreshes
-  the identity census and reports unrecorded composition candidates and stale
+  the identity census and reports unrecorded composition candidates and missing
   compositions from a saved page tree; `--page` accepts comma-separated page IDs,
   `--uncensused` targets every published page missing from `page-surface.json`,
   `--all` targets every published and censused page, and `--rest` reads the
-  pages in one batched request from Figma.
+  pages in batched REST reads from Figma. A missing composition is printed as
+  `! stale` only when a live read confirms the node left the file; a composition
+  the page-tree read did not reach is printed as `~ unverified` and must be
+  checked in Figma before its review is removed. `--input` cannot verify, so it
+  always reports `~ unverified`.
 
 Writers and external mutations accept `--dry-run` to print planned actions
 without applying them. Live REST reads use `FIGMA_TOKEN`; `--require-token`

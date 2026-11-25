@@ -19,14 +19,20 @@ pnpm ui-cli figma surface sync --uncensused --rest --dry-run
 Use `--rest` instead of `--input` for a live read with a token. `--page` accepts
 one or comma-separated page IDs; `--uncensused` refreshes every published page
 missing from the census and `--all` refreshes every published and censused page
-in one batched REST read. The input needs a structured CANVAS tree, not an XML
+in batched REST reads. The input needs a structured CANVAS tree, not an XML
 or text description: when MCP provides only text, use REST or obtain a
 structured export. The writer reconciles identities and publication while
 preserving existing decisions and compositions, and reports unrecorded
 composition candidates (frames drawing published instances on the page, with
-drawn count and suggested device) plus stale compositions whose node left the
-page tree; inspect its check verdict. Human review still accounts for every
-composition.
+drawn count and suggested device) plus compositions whose node the page-tree read
+did not find; inspect its check verdict. A missing composition is not evidence of
+a deletion: at the read depth a tree stops before deeply nested frames, so a live
+rest run confirms the id against the file and prints each one as either
+`! stale composition` (the node was deleted) or `~ unverified composition` (the
+node still exists, beyond the read depth or moved to another page). Verify every
+`~ unverified` entry in Figma before removing a reviewed composition, and treat
+`--input` runs, which cannot verify, as unverified only. Human review still
+accounts for every composition.
 
 One record per page:
 
