@@ -7,6 +7,7 @@ import {
   fetchFigmaImages,
   fetchFigmaNodeDocuments,
   fetchFileHeader,
+  fetchNodeExistence,
   writeFigmaSnapshot,
 } from "../../src/figma/rest.ts"
 
@@ -301,6 +302,66 @@ test("CDN image downloads retry transient 5xx responses without sending credenti
       const assets = await fetchFigmaImages("fixture-file", version, ["12:34"], "fixture-token")
       assert.equal(assets.get("12:34"), "<svg/>")
       assert.equal(assetAttempts, 2)
+    },
+  )
+})
+
+test("existence probes separate present, deleted and omitted node ids", async () => {
+  await withFigmaFetch(
+    async (url, options) => {
+      const request = new URL(url)
+      assert.equal(request.pathname, "/v1/files/fixture-file/nodes")
+      assert.equal(request.searchParams.get("ids"), "12:34,12:35,12:36")
+      assert.equal(request.searchParams.get("version"), version)
+      assert.equal(request.searchParams.get("depth"), "1")
+      assert.equal(options.headers["X-Figma-Token"], "fixture-token")
+      return jsonResponse({
+        nodes: {
+          [nodeId]: { document },
+          "12:35": { document: null },
+        },
+      })
+    },
+    async () => {
+      const existence = await fetchNodeExistence(
+        "fixture-file",
+        version,
+        [nodeId, "12:35", "12:36"],
+        "fixture-token",
+      )
+      // An explicit null document is deleted; an omitted id stays unknown.
+      assert.deepEqual(
+        [...existence.entries()],
+        [
+          [nodeId, "exists"],
+          ["12:35", "deleted"],
+          ["12:36", "unknown"],
+        ],
+      )
+    },
+  )
+})
+
+test("existence probes batch large id lists and pin every request", async () => {
+  const ids = Array.from({ length: 51 }, (_, index) => `2:${index}`)
+  const requests = []
+  await withFigmaFetch(
+    async (url) => {
+      const request = new URL(url)
+      requests.push(request)
+      const batch = request.searchParams.get("ids").split(",")
+      return jsonResponse({
+        nodes: Object.fromEntries(batch.map((id) => [id, { document: { ...document, id } }])),
+      })
+    },
+    async () => {
+      const existence = await fetchNodeExistence("fixture-file", version, ids, "fixture-token")
+      assert.equal(existence.size, ids.length)
+      for (const id of ids) assert.equal(existence.get(id), "exists")
+      assert.equal(requests.length, 2)
+      assert.equal(requests[0].searchParams.get("ids").split(",").length, 50)
+      assert.equal(requests[1].searchParams.get("ids"), "2:50")
+      for (const request of requests) assert.equal(request.searchParams.get("version"), version)
     },
   )
 })

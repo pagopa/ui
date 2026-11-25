@@ -292,7 +292,9 @@ test("figma surface sync accepts a supplied page tree and supports dry-run", asy
       ["figma", "surface", "sync", "--page", "1:1", "--input", "page.json", "--dry-run"],
       { root: fixture.root },
     )
-    assert.notEqual(result.status, 2, result.stderr)
+    // The fixture has no component sources, so the catalogue check fails and
+    // only the sync output under test is reported: the run exits 1, not 0.
+    assert.equal(result.status, 1, result.stderr)
     assert.match(result.stdout, /would update/)
     assert.equal(
       JSON.parse(
@@ -302,7 +304,437 @@ test("figma surface sync accepts a supplied page tree and supports dry-run", asy
       ).pages.length,
       0,
     )
+
+    const uncensused = await runCli(
+      ["figma", "surface", "sync", "--uncensused", "--input", "page.json", "--dry-run"],
+      { root: fixture.root },
+    )
+    assert.equal(uncensused.status, 1, uncensused.stderr)
+    assert.match(uncensused.stdout, /would update: 1:1 Page/)
+
+    const all = await runCli(
+      ["figma", "surface", "sync", "--all", "--input", "page.json", "--dry-run"],
+      { root: fixture.root },
+    )
+    assert.equal(all.status, 1, all.stderr)
+    assert.match(all.stdout, /would update: 1:1 Page/)
+
+    // One unique explicit page keeps the legacy single-page JSON shape.
+    const legacy = await runCli(
+      ["figma", "surface", "sync", "--page", "1:1,1:1", "--input", "page.json", "--json"],
+      { root: fixture.root },
+    )
+    assert.equal(legacy.status, 1, legacy.stderr)
+    const legacyPlan = JSON.parse(legacy.stdout)
+    assert.equal(legacyPlan.page.pageId, "1:1")
+    assert.equal("pages" in legacyPlan, false)
+
+    const conflict = await runCli(
+      ["figma", "surface", "sync", "--page", "1:1", "--all", "--input", "page.json"],
+      { root: fixture.root },
+    )
+    assert.equal(conflict.status, 2)
+    assert.match(conflict.stderr, /choose only one of --page/)
   } finally {
+    fixture.dispose()
+  }
+})
+
+test("figma surface sync reports an empty selection by scope", async () => {
+  const fixture = fixtureTree(
+    {
+      "src/catalog/figma/file.ts": 'export const FIGMA_FILE_KEY = "file"\n',
+      "src/catalog/figma/inventory.json": {
+        fileKey: "file",
+        syncedAt: "2026-01-01",
+        components: [],
+      },
+      "src/catalog/figma/registry.json": { entries: {}, bulkRules: [] },
+      "src/catalog/figma/page-surface.json": {
+        fileKey: "file",
+        readAt: "2026-01-01",
+        note: "Census.",
+        pages: [],
+      },
+      "page.json": { id: "1:1", name: "Page", type: "CANVAS", children: [] },
+    },
+    "cli-surface-empty-",
+  )
+  try {
+    const uncensused = await runCli(
+      ["figma", "surface", "sync", "--uncensused", "--input", "page.json"],
+      { root: fixture.root },
+    )
+    assert.equal(uncensused.status, 0, uncensused.stderr)
+    assert.match(uncensused.stdout, /all published pages are already censused/)
+
+    const all = await runCli(["figma", "surface", "sync", "--all", "--input", "page.json"], {
+      root: fixture.root,
+    })
+    assert.equal(all.status, 0, all.stderr)
+    assert.match(all.stdout, /no published or censused pages to refresh/)
+    assert.doesNotMatch(all.stdout, /already censused/)
+
+    // The empty plan keeps the multi-page shape, including the loaded surface.
+    const json = await runCli(
+      ["figma", "surface", "sync", "--all", "--input", "page.json", "--json"],
+      { root: fixture.root },
+    )
+    assert.equal(json.status, 0, json.stderr)
+    const plan = JSON.parse(json.stdout)
+    assert.deepEqual(plan.pages, [])
+    assert.equal(plan.check, null)
+    assert.deepEqual(plan.surface, {
+      fileKey: "file",
+      readAt: "2026-01-01",
+      note: "Census.",
+      pages: [],
+    })
+  } finally {
+    fixture.dispose()
+  }
+})
+
+test("figma surface sync prints candidates, missing verdicts and non-empty multi-page JSON", async () => {
+  const fixture = fixtureTree(
+    {
+      "src/catalog/figma/file.ts": 'export const FIGMA_FILE_KEY = "file"\n',
+      "src/catalog/figma/inventory.json": {
+        fileKey: "file",
+        syncedAt: "2026-01-01",
+        components: [
+          { nodeId: "4:4", name: "Button", type: "COMPONENT", pageId: "1:1", pageName: "Page 1" },
+          { nodeId: "5:5", name: "Badge", type: "COMPONENT", pageId: "2:2", pageName: "Page 2" },
+        ],
+      },
+      "src/catalog/figma/registry.json": {
+        entries: {
+          "4:4": { status: "excluded", reason: "Fixture button" },
+          "5:5": { status: "excluded", reason: "Fixture badge" },
+        },
+        bulkRules: [],
+      },
+      "src/catalog/figma/page-surface.json": {
+        fileKey: "file",
+        readAt: "2026-01-01",
+        note: "Census.",
+        pages: [
+          {
+            pageId: "1:1",
+            pageName: "Page 1",
+            identities: [
+              {
+                nodeId: "4:4",
+                name: "Button",
+                kind: "COMPONENT",
+                inLibrary: true,
+                decision: "excluded",
+                reason: "Fixture button",
+              },
+            ],
+            compositions: [
+              { nodeId: "6:6", name: "Deleted board", device: "desktop", drawn: 1, mirrors: [] },
+              { nodeId: "6:7", name: "Deep board", device: "desktop", drawn: 1, mirrors: [] },
+            ],
+          },
+        ],
+      },
+      "multi.json": [
+        {
+          id: "1:1",
+          name: "Page 1",
+          type: "CANVAS",
+          children: [
+            { id: "4:4", name: "Button", type: "COMPONENT" },
+            {
+              id: "7:7",
+              name: "Checkout frame",
+              type: "FRAME",
+              absoluteBoundingBox: { x: 0, y: 0, width: 1200, height: 600 },
+              children: [{ id: "7:8", name: "Button", type: "INSTANCE", componentId: "4:4" }],
+            },
+          ],
+        },
+        {
+          id: "2:2",
+          name: "Page 2",
+          type: "CANVAS",
+          children: [{ id: "5:5", name: "Badge", type: "COMPONENT" }],
+        },
+      ],
+    },
+    "cli-surface-multi-",
+  )
+  const originalFetch = globalThis.fetch
+  try {
+    // Non-empty `--page 1:1,2:2 --json` returns multi-page `{ surface, pages, dryRun, check }`.
+    const multiJson = await runCli(
+      [
+        "figma",
+        "surface",
+        "sync",
+        "--page",
+        "1:1,2:2",
+        "--input",
+        "multi.json",
+        "--dry-run",
+        "--json",
+      ],
+      { root: fixture.root },
+    )
+    assert.equal(multiJson.status, 1, multiJson.stderr)
+    const parsedMulti = JSON.parse(multiJson.stdout)
+    assert.deepEqual(
+      parsedMulti.pages.map((entry) => entry.page.pageId),
+      ["1:1", "2:2"],
+    )
+    assert.equal("page" in parsedMulti, false)
+
+    // Non-empty `--uncensused --json` returns multi-page shape scoped to uncensused page 2:2.
+    const uncensusedJson = await runCli(
+      ["figma", "surface", "sync", "--uncensused", "--input", "multi.json", "--dry-run", "--json"],
+      { root: fixture.root },
+    )
+    assert.equal(uncensusedJson.status, 1, uncensusedJson.stderr)
+    const parsedUncensused = JSON.parse(uncensusedJson.stdout)
+    assert.deepEqual(
+      parsedUncensused.pages.map((entry) => entry.page.pageId),
+      ["2:2"],
+    )
+
+    // Text output with `--input` reports candidate and `~ unverified composition`.
+    const inputText = await runCli(
+      ["figma", "surface", "sync", "--page", "1:1", "--input", "multi.json", "--dry-run"],
+      { root: fixture.root },
+    )
+    assert.match(
+      inputText.stdout,
+      /\? composition candidate 7:7 Checkout frame \(drawn 1, 1200px\)/,
+    )
+    assert.match(inputText.stdout, /~ unverified composition 6:6 Deleted board/)
+    assert.match(inputText.stdout, /~ unverified composition 6:7 Deep board/)
+
+    // Live `--rest` output classifies deleted vs existing/omitted into `! stale` vs `~ unverified`.
+    globalThis.fetch = async (url) => {
+      const parsed = new URL(url)
+      if (parsed.pathname === "/v1/files/file") {
+        return new Response(
+          JSON.stringify({
+            version: "v2",
+            document: {
+              id: "0:0",
+              name: "Document",
+              children: [{ id: "1:1", name: "Page 1", type: "CANVAS" }],
+            },
+          }),
+          { status: 200 },
+        )
+      }
+      if (parsed.searchParams.get("depth") === "10") {
+        return new Response(
+          JSON.stringify({
+            nodes: {
+              "1:1": {
+                document: {
+                  children: [
+                    { id: "4:4", name: "Button", type: "COMPONENT" },
+                    {
+                      id: "7:7",
+                      name: "Checkout frame",
+                      type: "FRAME",
+                      absoluteBoundingBox: { x: 0, y: 0, width: 1200, height: 600 },
+                      children: [
+                        { id: "7:8", name: "Button", type: "INSTANCE", componentId: "4:4" },
+                      ],
+                    },
+                  ],
+                },
+              },
+            },
+          }),
+          { status: 200 },
+        )
+      }
+      return new Response(
+        JSON.stringify({
+          nodes: { "6:6": { document: null }, "6:7": { document: { id: "6:7" } } },
+        }),
+        { status: 200 },
+      )
+    }
+    const restText = await runCli(
+      ["figma", "surface", "sync", "--page", "1:1", "--rest", "--dry-run"],
+      { root: fixture.root, env: { FIGMA_TOKEN: "fixture-token" } },
+    )
+    assert.equal(restText.status, 1, restText.stderr)
+    assert.match(restText.stdout, /\? composition candidate 7:7 Checkout frame \(drawn 1, 1200px\)/)
+    assert.match(restText.stdout, /! stale composition 6:6 Deleted board \(deleted from file\)/)
+    assert.match(restText.stdout, /~ unverified composition 6:7 Deep board/)
+  } finally {
+    globalThis.fetch = originalFetch
+    fixture.dispose()
+  }
+})
+
+test("figma surface sync empty --all --json without page-surface.json uses ctx.now()", async () => {
+  const fixture = fixtureTree(
+    {
+      "src/catalog/figma/file.ts": 'export const FIGMA_FILE_KEY = "file"\n',
+      "src/catalog/figma/inventory.json": {
+        fileKey: "file",
+        syncedAt: "2026-01-01",
+        components: [],
+      },
+      "src/catalog/figma/registry.json": { entries: {}, bulkRules: [] },
+      "page.json": { id: "1:1", name: "Page", type: "CANVAS", children: [] },
+    },
+    "cli-surface-empty-missing-file-",
+  )
+  try {
+    const result = await runCli(
+      ["figma", "surface", "sync", "--all", "--input", "page.json", "--json"],
+      { root: fixture.root, now: () => new Date("2026-04-18T12:00:00Z") },
+    )
+    assert.equal(result.status, 0, result.stderr)
+    const payload = JSON.parse(result.stdout)
+    assert.deepEqual(payload.pages, [])
+    assert.equal(payload.check, null)
+    assert.equal(payload.surface.readAt, "2026-04-18")
+  } finally {
+    fixture.dispose()
+  }
+})
+
+test("figma surface sync --all --rest --dry-run warns and skips censused pages absent from Figma", async () => {
+  const fixture = fixtureTree(
+    {
+      "src/catalog/figma/file.ts": 'export const FIGMA_FILE_KEY = "file"\n',
+      "src/catalog/figma/inventory.json": {
+        fileKey: "file",
+        syncedAt: new Date().toISOString().slice(0, 10),
+        components: [
+          { nodeId: "4:4", name: "Button", type: "COMPONENT", pageId: "1:1", pageName: "Page 1" },
+        ],
+      },
+      "src/catalog/figma/registry.json": {
+        entries: { "4:4": { status: "excluded", reason: "Fixture button" } },
+        bulkRules: [],
+      },
+      "src/catalog/figma/evidence-exceptions.json": '{"storyEvidence":{}}',
+      "src/catalog/figma/api-exceptions.json": '{"modulePatterns":{},"exports":{}}',
+      "src/catalog/figma/device-policy.json": {
+        axes: [],
+        any: ["Any"],
+        devices: {
+          desktop: { canonicalWidth: 1200, defaultLayoutScope: "viewport", aliases: ["Desktop"] },
+        },
+      },
+      "src/catalog/figma/page-surface.json": {
+        fileKey: "file",
+        readAt: "2026-01-01",
+        note: "Census.",
+        pages: [
+          {
+            pageId: "9:9",
+            pageName: "Removed page",
+            identities: [],
+            compositions: [],
+          },
+        ],
+      },
+      "src/components/icons/figma-inventory.ts":
+        "export const figmaIconNames = [] as const\nexport const figmaPictogramNames = [] as const",
+      "src/stories/Fixture.stories.tsx": "export default { title: 'Fixture' }",
+      "src/pagopa-ui.ts": "",
+    },
+    "cli-surface-all-skip-missing-",
+  )
+  const originalFetch = globalThis.fetch
+  const requestedIds = []
+  let filePages = [{ id: "1:1", name: "Page 1", type: "CANVAS" }]
+  globalThis.fetch = async (url) => {
+    const parsed = new URL(url)
+    if (parsed.pathname === "/v1/files/file") {
+      return new Response(
+        JSON.stringify({
+          version: "v3",
+          document: {
+            id: "0:0",
+            name: "Document",
+            children: filePages,
+          },
+        }),
+        { status: 200 },
+      )
+    }
+    requestedIds.push(parsed.searchParams.get("ids"))
+    return new Response(
+      JSON.stringify({
+        nodes: {
+          "1:1": { document: { children: [{ id: "4:4", name: "Button", type: "COMPONENT" }] } },
+        },
+      }),
+      { status: 200 },
+    )
+  }
+  try {
+    const result = await runCli(["figma", "surface", "sync", "--all", "--rest", "--dry-run"], {
+      root: fixture.root,
+      env: { FIGMA_TOKEN: "fixture-token", PAGOPA_UI_STORIES_ROOT: "src/stories" },
+    })
+    assert.equal(result.status, 0, result.stderr)
+    assert.deepEqual(requestedIds, ["1:1"])
+    assert.match(
+      result.stderr,
+      /warn: page 9:9 is in page-surface\.json but not in the Figma file — skipped/,
+    )
+    assert.match(result.stdout, /would update: 1:1 Page 1/)
+    assert.match(result.stdout, /catalogue overall: pass \(0\)/)
+
+    const jsonResult = await runCli(
+      ["figma", "surface", "sync", "--all", "--rest", "--dry-run", "--json"],
+      {
+        root: fixture.root,
+        env: { FIGMA_TOKEN: "fixture-token", PAGOPA_UI_STORIES_ROOT: "src/stories" },
+      },
+    )
+    assert.equal(jsonResult.status, 0, jsonResult.stderr)
+    assert.match(
+      jsonResult.stderr,
+      /warn: page 9:9 is in page-surface\.json but not in the Figma file — skipped/,
+    )
+    const jsonPayload = JSON.parse(jsonResult.stdout)
+    assert.deepEqual(jsonPayload.missingPages, ["9:9"])
+    assert.deepEqual(
+      jsonPayload.pages.map((entry) => entry.page.pageId),
+      ["1:1"],
+    )
+
+    filePages = []
+    requestedIds.length = 0
+    const noneResult = await runCli(
+      ["figma", "surface", "sync", "--all", "--rest", "--dry-run", "--json"],
+      {
+        root: fixture.root,
+        env: { FIGMA_TOKEN: "fixture-token", PAGOPA_UI_STORIES_ROOT: "src/stories" },
+      },
+    )
+    assert.equal(noneResult.status, 0, noneResult.stderr)
+    assert.deepEqual(requestedIds, [])
+    assert.match(
+      noneResult.stderr,
+      /warn: page 9:9 is in page-surface\.json but not in the Figma file — skipped/,
+    )
+    assert.match(
+      noneResult.stderr,
+      /warn: page 1:1 is in page-surface\.json but not in the Figma file — skipped/,
+    )
+    const nonePayload = JSON.parse(noneResult.stdout)
+    assert.deepEqual(nonePayload.pages, [])
+    assert.deepEqual(nonePayload.missingPages, ["9:9", "1:1"])
+    assert.equal(nonePayload.check, null)
+  } finally {
+    globalThis.fetch = originalFetch
     fixture.dispose()
   }
 })

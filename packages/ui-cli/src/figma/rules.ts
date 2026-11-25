@@ -39,6 +39,8 @@ import {
 } from "../schemas/rules.ts"
 import { fetchFilePages, fetchNodeTrees, type FigmaPage } from "./rest.ts"
 
+export const RULES_BOX_NAMES = new Set([".Regole", "Regole"])
+
 export const RULES_PATH = "src/catalog/figma/rules.json"
 export const RULES_SNAPSHOT_PATH = ".figma/rules.json"
 const FILE_MODULE = "src/catalog/figma/file.ts"
@@ -321,7 +323,7 @@ export async function refresh(
     containers.set(
       page.id,
       children(document)
-        .filter((child) => [".Regole", "Regole"].includes(nodeName(child).trim()))
+        .filter((child) => RULES_BOX_NAMES.has(nodeName(child).trim()))
         .map((child) => nodeId(child))
         .filter((id): id is string => Boolean(id)),
     )

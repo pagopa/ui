@@ -564,3 +564,51 @@ export function formatDeviceReport(
     ],
   }
 }
+
+/** Suggests a canonical device for an unmapped frame name or width from the committed policy. */
+export function inferDeviceFromFrame(
+  name: string,
+  width: number | undefined,
+  policy: DevicePolicy | null,
+): string | undefined {
+  if (!policy) return undefined
+  const entries = Object.entries(policy.devices)
+  const tokens = name.split(/[^a-z0-9]+/i).filter(Boolean)
+  const canonicalByKey = new Map(
+    Object.keys(policy.devices).map((device) => [normalizeDeviceValue(device), device]),
+  )
+  const nameMatches: Array<{ device: string; length: number }> = []
+  for (let start = 0; start < tokens.length; start++) {
+    let combined = ""
+    for (let end = start; end < tokens.length; end++) {
+      combined += normalizeDeviceValue(tokens[end])
+      const resolved = deviceOf(policy, combined)
+      if (resolved === ANY_DEVICE) continue
+      const device = resolved !== UNKNOWN_DEVICE ? resolved : canonicalByKey.get(combined)
+      if (device) nameMatches.push({ device, length: combined.length })
+    }
+  }
+  if (nameMatches.length) {
+    nameMatches.sort((a, b) => b.length - a.length)
+    const bestLength = nameMatches[0]?.length ?? 0
+    const topDevices = new Set(
+      nameMatches.filter((match) => match.length === bestLength).map((match) => match.device),
+    )
+    return topDevices.size === 1 ? [...topDevices][0] : undefined
+  }
+  if (width === undefined || !entries.length) return undefined
+  let bestDevice: string | undefined
+  let bestDistance = Number.POSITIVE_INFINITY
+  let tied = false
+  for (const [device, spec] of entries) {
+    const distance = Math.abs(width - spec.canonicalWidth)
+    if (distance < bestDistance) {
+      bestDistance = distance
+      bestDevice = device
+      tied = false
+    } else if (distance === bestDistance) {
+      tied = true
+    }
+  }
+  return tied ? undefined : bestDevice
+}
