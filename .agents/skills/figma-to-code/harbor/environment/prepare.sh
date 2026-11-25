@@ -11,10 +11,9 @@ NODE_VERSION="${NODE_VERSION:-24.14.1}"
 PNPM_VERSION="${PNPM_VERSION:-11.28.6}"
 PAGOPA_UI_REPO="${PAGOPA_UI_REPO:-https://github.com/pagopa/ui.git}"
 # The ref the agent's workspace is cut from: it must already carry the `ui-cli`
-# this skill calls, so a command the skill names cannot fail on a missing flag.
-# Re-pin it to the merge commit once `main` carries the node card and the JSON
-# writer that degrades without the formatter.
-PAGOPA_UI_REF="${PAGOPA_UI_REF:-b0bdc306a467d33db2822641f87504226028c27b}"
+# this skill calls, so a command the skill names cannot fail on a missing flag
+# or a fixed bug (such as census drift reconciliation and partial rules snapshots).
+PAGOPA_UI_REF="${PAGOPA_UI_REF:-8d2f49a76be49079dbdc86794a137359b12c5b57}"
 
 WORKSPACE=/workspace
 
@@ -108,6 +107,52 @@ node --input-type=module -e '
     process.exit(1)
   }
   fs.writeFileSync(file, `${JSON.stringify(inventory, null, 2)}\n`)
+
+  // Seed the offline export for the drift-census-reconciliation guardrail: one
+  // published leaf on a bulk-excluded page (`8868:42690`) removed and one new
+  // published set (`9999:1`) added on the same page. Stored under `.figma/` with
+  // a dedicated name so `figma status` / `figma plan` never auto-load it for
+  // the other tasks.
+  const removedId = "8868:42690"
+  const template = inventory.components.find((node) => node.nodeId === removedId)
+  if (!template) {
+    console.error(`figma-to-code eval: expected ${removedId} in inventory.json for drift-census-export.json`)
+    process.exit(1)
+  }
+  const added = {
+    ...template,
+    nodeId: "9999:1",
+    name: "Native Sheet",
+    key: "eval-native-sheet-key",
+    designFingerprint: createHash("sha256").update("eval:9999:1").digest("hex"),
+    ...(template.variants
+      ? {
+          variants: template.variants.map((variant, index) => ({
+            ...variant,
+            nodeId: `9999:${index + 2}`,
+            designFingerprint: createHash("sha256").update(`eval:9999:${index + 2}`).digest("hex"),
+          })),
+        }
+      : {}),
+  }
+  const driftComponents = [
+    ...inventory.components.filter((node) => node.nodeId !== removedId),
+    added,
+  ]
+  const driftDelta = compareSnapshots(inventory.components, driftComponents)
+  if (
+    driftDelta.added.map((node) => node.nodeId).join(",") !== "9999:1" ||
+    driftDelta.removed.map((node) => node.nodeId).join(",") !== removedId ||
+    driftDelta.changed.length !== 0
+  ) {
+    console.error("figma-to-code eval: unexpected drift-census-export.json delta")
+    process.exit(1)
+  }
+  fs.mkdirSync(".figma", { recursive: true })
+  fs.writeFileSync(
+    ".figma/drift-census-export.json",
+    `${JSON.stringify({ fileKey: inventory.fileKey, components: driftComponents }, null, 2)}\n`,
+  )
 '
 
 # Fail fast: a broken workspace must break the image build, not the session.
