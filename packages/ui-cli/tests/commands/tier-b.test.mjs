@@ -383,6 +383,7 @@ test("figma surface sync reports an empty selection by scope", async () => {
     assert.equal(json.status, 0, json.stderr)
     const plan = JSON.parse(json.stdout)
     assert.deepEqual(plan.pages, [])
+    assert.equal(plan.check, null)
     assert.deepEqual(plan.surface, {
       fileKey: "file",
       readAt: "2026-01-01",
@@ -597,6 +598,7 @@ test("figma surface sync empty --all --json without page-surface.json uses ctx.n
     assert.equal(result.status, 0, result.stderr)
     const payload = JSON.parse(result.stdout)
     assert.deepEqual(payload.pages, [])
+    assert.equal(payload.check, null)
     assert.equal(payload.surface.readAt, "2026-04-18")
   } finally {
     fixture.dispose()
@@ -649,6 +651,7 @@ test("figma surface sync --all --rest --dry-run warns and skips censused pages a
   )
   const originalFetch = globalThis.fetch
   const requestedIds = []
+  let filePages = [{ id: "1:1", name: "Page 1", type: "CANVAS" }]
   globalThis.fetch = async (url) => {
     const parsed = new URL(url)
     if (parsed.pathname === "/v1/files/file") {
@@ -658,7 +661,7 @@ test("figma surface sync --all --rest --dry-run warns and skips censused pages a
           document: {
             id: "0:0",
             name: "Document",
-            children: [{ id: "1:1", name: "Page 1", type: "CANVAS" }],
+            children: filePages,
           },
         }),
         { status: 200 },
@@ -687,6 +690,49 @@ test("figma surface sync --all --rest --dry-run warns and skips censused pages a
     )
     assert.match(result.stdout, /would update: 1:1 Page 1/)
     assert.match(result.stdout, /catalogue overall: pass \(0\)/)
+
+    const jsonResult = await runCli(
+      ["figma", "surface", "sync", "--all", "--rest", "--dry-run", "--json"],
+      {
+        root: fixture.root,
+        env: { FIGMA_TOKEN: "fixture-token", PAGOPA_UI_STORIES_ROOT: "src/stories" },
+      },
+    )
+    assert.equal(jsonResult.status, 0, jsonResult.stderr)
+    assert.match(
+      jsonResult.stderr,
+      /warn: page 9:9 is in page-surface\.json but not in the Figma file — skipped/,
+    )
+    const jsonPayload = JSON.parse(jsonResult.stdout)
+    assert.deepEqual(jsonPayload.missingPages, ["9:9"])
+    assert.deepEqual(
+      jsonPayload.pages.map((entry) => entry.page.pageId),
+      ["1:1"],
+    )
+
+    filePages = []
+    requestedIds.length = 0
+    const noneResult = await runCli(
+      ["figma", "surface", "sync", "--all", "--rest", "--dry-run", "--json"],
+      {
+        root: fixture.root,
+        env: { FIGMA_TOKEN: "fixture-token", PAGOPA_UI_STORIES_ROOT: "src/stories" },
+      },
+    )
+    assert.equal(noneResult.status, 0, noneResult.stderr)
+    assert.deepEqual(requestedIds, [])
+    assert.match(
+      noneResult.stderr,
+      /warn: page 9:9 is in page-surface\.json but not in the Figma file — skipped/,
+    )
+    assert.match(
+      noneResult.stderr,
+      /warn: page 1:1 is in page-surface\.json but not in the Figma file — skipped/,
+    )
+    const nonePayload = JSON.parse(noneResult.stdout)
+    assert.deepEqual(nonePayload.pages, [])
+    assert.deepEqual(nonePayload.missingPages, ["9:9", "1:1"])
+    assert.equal(nonePayload.check, null)
   } finally {
     globalThis.fetch = originalFetch
     fixture.dispose()

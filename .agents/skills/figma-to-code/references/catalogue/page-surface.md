@@ -18,8 +18,8 @@ pnpm ui-cli figma surface sync --uncensused --rest --dry-run
 
 Use `--rest` instead of `--input` for a live read with a token. `--page` accepts
 one or comma-separated page IDs; `--uncensused` refreshes every published page
-missing from the census and `--all` refreshes every published and censused page
-in batched REST reads. The input needs a structured CANVAS tree, not an XML
+missing from the census and `--all` refreshes every published and censused page,
+either in batched REST reads (`--rest`) or from a multi-page export (`--input`). The input needs a structured CANVAS tree, not an XML
 or text description: when MCP provides only text, use REST or obtain a
 structured export. The writer reconciles identities and publication while
 preserving existing decisions and compositions, and reports unrecorded

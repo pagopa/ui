@@ -592,7 +592,11 @@ export async function fetchNodeTrees(
   const size = depth <= 2 ? 20 : 4
   await forEachBatch(ids, size, async (batch) => {
     const query = new URLSearchParams({ ids: batch.join(","), version, depth: String(depth) })
-    const data = await get(`files/${fileKey}/nodes?${query}`, NodeTreesSchema, token)
+    const data = await get(
+      `files/${encodeURIComponent(fileKey)}/nodes?${query}`,
+      NodeTreesSchema,
+      token,
+    )
     for (const id of batch) {
       const record = data.nodes[id]
       if (!record?.document) throw new Error(`Figma REST returned no document for ${id}`)

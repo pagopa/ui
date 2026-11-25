@@ -31,9 +31,6 @@ import {
 import type { DevicePolicy } from "../schemas/devices.ts"
 import { syncCatalogue, type CatalogueReport } from "./catalogue/index.ts"
 
-export type { CompositionCandidate, CompositionVerifier }
-export { scanPageCompositions }
-
 const SURFACE_PATH = "src/catalog/figma/page-surface.json"
 const DEFAULT_NOTE =
   "Read from the Figma page tree. Preserve reviewed composition decisions while refreshing the identity census."
@@ -163,15 +160,12 @@ function readOptionalSurface(workspace: Workspace, fileKey: string): PageSurface
   return current
 }
 
+function emptySurface(fileKey: string, readAt: string): PageSurface {
+  return { fileKey, readAt, note: DEFAULT_NOTE, pages: [] }
+}
+
 function loadCurrentSurface(workspace: Workspace, fileKey: string, readAt: string): PageSurface {
-  return (
-    readOptionalSurface(workspace, fileKey) ?? {
-      fileKey,
-      readAt,
-      note: DEFAULT_NOTE,
-      pages: [],
-    }
-  )
+  return readOptionalSurface(workspace, fileKey) ?? emptySurface(fileKey, readAt)
 }
 
 export function currentSurface(workspace: Workspace, readAt: string): PageSurface {
@@ -268,13 +262,9 @@ export function selectSurfacePages(
   const inventory = readInventory(workspace.root)
   const existing = readOptionalSurface(workspace, inventory.fileKey)
   if (options.uncensused) {
-    const surface = existing ?? {
-      fileKey: inventory.fileKey,
-      readAt: "",
-      note: DEFAULT_NOTE,
-      pages: [],
-    }
-    return surfaceUncensused(surface, inventory.components).map((page) => page.pageId)
+    return surfaceUncensused(existing ?? { pages: [] }, inventory.components).map(
+      (page) => page.pageId,
+    )
   }
   if (options.all) {
     const ids = new Set<string>()

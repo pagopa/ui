@@ -11,11 +11,35 @@ import {
   type PageSurfaceDiff,
 } from "../figma/surface-sync.ts"
 import { UsageError } from "../lib/command.ts"
+import type { PageSurface } from "../schemas/catalogue.ts"
 import { action, EXIT, printJson, printLines, type CliContext } from "./context.ts"
 import { requireToken, requireTokenArg } from "./token.ts"
 
 const stringArg = { type: "string" } as const
-const SKIPPED_CATALOGUE_CHECK = { exitCode: EXIT.ok, out: [], err: [] }
+
+function emitEmptySelection(
+  ctx: CliContext,
+  options: {
+    json: boolean
+    dryRun: boolean
+    surface: PageSurface
+    message: string
+    missingPages?: string[]
+  },
+): number {
+  if (options.json) {
+    printJson(ctx.io, {
+      surface: options.surface,
+      pages: [],
+      ...(options.missingPages?.length ? { missingPages: options.missingPages } : {}),
+      dryRun: options.dryRun,
+      check: null,
+    })
+  } else {
+    ctx.io.out(options.message)
+  }
+  return EXIT.ok
+}
 
 function formatPageDiff(ctx: CliContext, entry: PageSurfaceDiff, dryRun: boolean): void {
   ctx.io.out(`${dryRun ? "would update" : "updated"}: ${entry.page.pageId} ${entry.page.pageName}`)
@@ -92,21 +116,14 @@ export function surfaceCommand(ctx: CliContext) {
         all: args.all,
       })
       if (!pageIds.length) {
-        if (args.json) {
-          printJson(ctx.io, {
-            surface: currentSurface(workspace, now),
-            pages: [],
-            dryRun: args["dry-run"],
-            check: SKIPPED_CATALOGUE_CHECK,
-          })
-        } else {
-          ctx.io.out(
-            args.uncensused
-              ? "surface: all published pages are already censused"
-              : "surface: no published or censused pages to refresh",
-          )
-        }
-        return EXIT.ok
+        return emitEmptySelection(ctx, {
+          json: args.json,
+          dryRun: args["dry-run"],
+          surface: currentSurface(workspace, now),
+          message: args.uncensused
+            ? "surface: all published pages are already censused"
+            : "surface: no published or censused pages to refresh",
+        })
       }
 
       const token = args.rest ? figmaToken(ctx.env) : undefined
@@ -116,26 +133,19 @@ export function surfaceCommand(ctx: CliContext) {
         allowMissingPages: args.all,
       })
       const availableIds = [...read.trees.keys()]
-      if (!args.json) {
-        for (const missingId of read.missingPages) {
-          ctx.io.err(
-            `warn: page ${missingId} is in page-surface.json but not in the Figma file — skipped`,
-          )
-        }
+      for (const missingId of read.missingPages) {
+        ctx.io.err(
+          `warn: page ${missingId} is in page-surface.json but not in the Figma file — skipped`,
+        )
       }
       if (!availableIds.length) {
-        if (args.json) {
-          printJson(ctx.io, {
-            surface: currentSurface(workspace, now),
-            pages: [],
-            ...(read.missingPages.length ? { missingPages: read.missingPages } : {}),
-            dryRun: args["dry-run"],
-            check: SKIPPED_CATALOGUE_CHECK,
-          })
-        } else {
-          ctx.io.out("surface: no readable pages to refresh")
-        }
-        return EXIT.ok
+        return emitEmptySelection(ctx, {
+          json: args.json,
+          dryRun: args["dry-run"],
+          surface: currentSurface(workspace, now),
+          message: "surface: no readable pages to refresh",
+          missingPages: read.missingPages,
+        })
       }
       // Only a live, pinned read can tell a deleted node from one the tree read
       // did not reach; `--input` carries no verifier and reports missing nodes

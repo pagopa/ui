@@ -116,7 +116,9 @@ available from the CLI:
   `--json`, one unique explicit `--page` returns the single-page plan shape
   (`page`, `added`, `removed`, `compositionCandidates`, `staleCompositions`,
   `unverifiedCompositions`, `surface`, `dryRun`, `check`), while `--uncensused`,
-  `--all`, or multiple pages return `{ surface, pages, dryRun, check }`.
+  `--all`, or multiple pages return `{ surface, pages, dryRun, check }` (with
+  `check: null` when no page is refreshed and an optional `missingPages` array
+  when `--all` skips censused pages absent from Figma).
 
 Writers and external mutations accept `--dry-run` to print planned actions
 without applying them. Live REST reads use `FIGMA_TOKEN`; `--require-token`

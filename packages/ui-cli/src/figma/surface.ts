@@ -353,7 +353,7 @@ export function checkPageSurface(surface: PageSurface, input: SurfaceCheckInput)
  * burn-down of a census that starts from the page a session opened.
  */
 export function surfaceUncensused(
-  surface: PageSurface,
+  surface: Pick<PageSurface, "pages">,
   nodes: InventoryNode[],
 ): SurfaceUncensused[] {
   const censused = new Set(surface.pages.map((page) => page.pageId))

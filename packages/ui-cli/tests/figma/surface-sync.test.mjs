@@ -680,17 +680,33 @@ test("readSurfaceTrees skips absent pages only when allowMissingPages is enabled
   }
 })
 
-test("inferDeviceFromFrame refuses to guess on equidistant width ties while keeping aliases", () => {
+test("inferDeviceFromFrame refuses to guess on equidistant width or name ties and ignores alias spacing", () => {
   const devicePolicy = {
     axes: ["Device"],
     any: ["Any"],
     devices: {
-      mobile: { canonicalWidth: 320, defaultLayoutScope: "viewport", aliases: ["Mobile"] },
+      mobile: {
+        canonicalWidth: 320,
+        defaultLayoutScope: "viewport",
+        aliases: ["Mobile", "XS Mobile"],
+      },
       tablet: { canonicalWidth: 600, defaultLayoutScope: "viewport", aliases: ["Tablet"] },
       desktop: { canonicalWidth: 1200, defaultLayoutScope: "viewport", aliases: ["Desktop"] },
     },
   }
   assert.equal(inferDeviceFromFrame("Board", 900, devicePolicy), undefined)
+  assert.equal(inferDeviceFromFrame("Mobile Tablet", 900, devicePolicy), undefined)
   assert.equal(inferDeviceFromFrame("MD Tablet", 900, devicePolicy), "tablet")
+  assert.equal(inferDeviceFromFrame("XSMobile frame", 900, devicePolicy), "mobile")
+  assert.equal(
+    inferDeviceFromFrame("XS Mobile frame", 900, {
+      ...devicePolicy,
+      devices: {
+        ...devicePolicy.devices,
+        mobile: { canonicalWidth: 320, defaultLayoutScope: "viewport", aliases: ["XSMobile"] },
+      },
+    }),
+    "mobile",
+  )
   assert.equal(inferDeviceFromFrame("Board", 1180, devicePolicy), "desktop")
 })
