@@ -292,7 +292,9 @@ test("figma surface sync accepts a supplied page tree and supports dry-run", asy
       ["figma", "surface", "sync", "--page", "1:1", "--input", "page.json", "--dry-run"],
       { root: fixture.root },
     )
-    assert.notEqual(result.status, 2, result.stderr)
+    // The fixture has no component sources, so the catalogue check fails and
+    // only the sync output under test is reported: the run exits 1, not 0.
+    assert.equal(result.status, 1, result.stderr)
     assert.match(result.stdout, /would update/)
     assert.equal(
       JSON.parse(
@@ -307,7 +309,7 @@ test("figma surface sync accepts a supplied page tree and supports dry-run", asy
       ["figma", "surface", "sync", "--uncensused", "--input", "page.json", "--dry-run"],
       { root: fixture.root },
     )
-    assert.notEqual(uncensused.status, 2, uncensused.stderr)
+    assert.equal(uncensused.status, 1, uncensused.stderr)
     assert.match(uncensused.stdout, /would update: 1:1 Page/)
 
     const conflict = await runCli(
