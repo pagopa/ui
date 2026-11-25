@@ -593,6 +593,41 @@ export async function fetchNodeTrees(
   return documents
 }
 
+const ExistingNodesSchema = z.looseObject({
+  nodes: z
+    .record(z.string(), z.looseObject({ document: z.unknown().nullish() }).nullish())
+    .optional(),
+})
+
+// A pinned existence probe: a node that still exists answers with its
+// document, a node deleted from the file answers with a null document. The
+// read stays shallow because only existence matters, and it must not throw on
+// a missing document the way the page-tree reader does: "deleted" is an answer
+// here, not a failure.
+export async function fetchExistingNodeIds(
+  fileKey: string,
+  version: string,
+  ids: string[],
+  token: string,
+): Promise<Set<string>> {
+  const existing = new Set<string>()
+  const selected = [...new Set(ids)]
+  for (let start = 0; start < selected.length; start += 50) {
+    const batch = selected.slice(start, start + 50)
+    const query = new URLSearchParams({ ids: batch.join(","), version, depth: "1" })
+    const data = await get(
+      `files/${encodeURIComponent(fileKey)}/nodes?${query}`,
+      ExistingNodesSchema,
+      token,
+    )
+    for (const id of batch) {
+      if (data.nodes?.[id]?.document) existing.add(id)
+    }
+    if (start + 50 < selected.length) await new Promise((resolve) => setTimeout(resolve, 120))
+  }
+  return existing
+}
+
 export async function fetchFileComments(fileKey: string, token: string): Promise<FigmaComment[]> {
   const data = await get(`files/${fileKey}/comments`, CommentsResponseSchema, token)
   return data.comments.map((comment) => ({

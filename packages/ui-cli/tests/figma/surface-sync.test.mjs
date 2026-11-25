@@ -169,7 +169,7 @@ test("surface sync checks the candidate and writes only when not dry-running", a
   }
 })
 
-test("surface sync discovers unrecorded composition candidates and flags stale compositions", () => {
+test("surface sync discovers unrecorded composition candidates and reports missing compositions as unverified", () => {
   const devicePolicy = {
     axes: ["Device"],
     any: ["Any"],
@@ -231,9 +231,11 @@ test("surface sync discovers unrecorded composition candidates and flags stale c
       treeWithCompositions,
       "2026-02-02",
     )
-    // Recorded composition 6:6 is no longer in treeWithCompositions -> flagged stale.
+    // Recorded composition 6:6 is no longer in treeWithCompositions. A supplied
+    // tree cannot tell deletion from a depth limit, so it stays unverified.
+    assert.deepEqual(result.staleCompositions, [])
     assert.deepEqual(
-      result.staleCompositions.map((item) => item.nodeId),
+      result.unverifiedCompositions.map((item) => item.nodeId),
       ["6:6"],
     )
     // .Regole is skipped; both frames inside SECTION are discovered with counts and devices.
@@ -402,6 +404,102 @@ test("surface sync keeps COMPONENT_SET variants out of identities and skips wrap
       },
     ])
     assert.deepEqual(result.staleCompositions, [])
+  } finally {
+    fixture.dispose()
+  }
+})
+
+const treeWithoutRecordedCompositions = {
+  id: "1:1",
+  name: "Components",
+  type: "CANVAS",
+  children: [{ id: "4:4", name: "Button", type: "COMPONENT" }],
+}
+
+const deepCompositionFiles = {
+  ...files,
+  "src/catalog/figma/page-surface.json": {
+    fileKey: "file-key",
+    readAt: "2026-01-01",
+    note: "Existing census note.",
+    pages: [
+      {
+        pageId: "1:1",
+        pageName: "Components",
+        identities: [
+          {
+            nodeId: "4:4",
+            name: "Button",
+            kind: "COMPONENT",
+            inLibrary: true,
+            decision: "shipped",
+          },
+        ],
+        compositions: [
+          { nodeId: "6:6", name: "Deleted board", device: "desktop", drawn: 1, mirrors: [] },
+          { nodeId: "6:7", name: "Deep board", device: "mobile", drawn: 1, mirrors: [] },
+        ],
+      },
+    ],
+  },
+}
+
+test("a pinned verifier separates a deleted composition from one beyond the read depth", async () => {
+  const fixture = fixtureTree(deepCompositionFiles, "surface-sync-verify-")
+  const probes = []
+  try {
+    const result = await syncPagesSurface(workspaceAt(fixture.root), {
+      pageIds: ["1:1"],
+      trees: new Map([["1:1", treeWithoutRecordedCompositions]]),
+      now: "2026-02-02",
+      dryRun: true,
+      verify: async (nodeIds) => {
+        probes.push(nodeIds)
+        return new Set(["6:7"])
+      },
+      check: async () => ({ exitCode: 0, out: [], err: [] }),
+    })
+    const entry = result.pages[0]
+    // Both missing ids are probed together, before they are classified.
+    assert.deepEqual(probes, [["6:6", "6:7"]])
+    assert.deepEqual(
+      entry.staleCompositions.map((item) => item.nodeId),
+      ["6:6"],
+    )
+    assert.deepEqual(
+      entry.unverifiedCompositions.map((item) => item.nodeId),
+      ["6:7"],
+    )
+    // The human-owned composition census is never rewritten by the sync.
+    assert.deepEqual(
+      result.surface.pages[0].compositions,
+      deepCompositionFiles["src/catalog/figma/page-surface.json"].pages[0].compositions,
+    )
+  } finally {
+    fixture.dispose()
+  }
+})
+
+test("without a verifier every missing composition stays unverified", async () => {
+  const fixture = fixtureTree(deepCompositionFiles, "surface-sync-unverified-")
+  try {
+    const result = await syncPagesSurface(workspaceAt(fixture.root), {
+      pageIds: ["1:1"],
+      trees: new Map([["1:1", treeWithoutRecordedCompositions]]),
+      now: "2026-02-02",
+      dryRun: true,
+      check: async () => ({ exitCode: 0, out: [], err: [] }),
+    })
+    const entry = result.pages[0]
+    assert.deepEqual(entry.staleCompositions, [])
+    assert.deepEqual(
+      entry.unverifiedCompositions.map((item) => item.nodeId),
+      ["6:6", "6:7"],
+    )
+    assert.deepEqual(
+      result.surface.pages[0].compositions,
+      deepCompositionFiles["src/catalog/figma/page-surface.json"].pages[0].compositions,
+    )
   } finally {
     fixture.dispose()
   }

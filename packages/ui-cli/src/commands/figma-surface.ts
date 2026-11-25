@@ -4,6 +4,7 @@ import { figmaToken } from "../adapters/figma-token.ts"
 import {
   readSurfaceTrees,
   selectSurfacePages,
+  surfaceCompositionVerifier,
   syncPagesSurface,
   type PageSurfaceDiff,
 } from "../figma/surface-sync.ts"
@@ -36,7 +37,12 @@ function formatPageDiff(ctx: CliContext, entry: PageSurfaceDiff, dryRun: boolean
     ctx.io.out(`  ? composition candidate ${candidate.nodeId} ${candidate.name} (${details})`)
   }
   for (const stale of entry.staleCompositions) {
-    ctx.io.out(`  ! stale composition ${stale.nodeId} ${stale.name} (missing from page tree)`)
+    ctx.io.out(`  ! stale composition ${stale.nodeId} ${stale.name} (deleted from file)`)
+  }
+  for (const unverified of entry.unverifiedCompositions) {
+    ctx.io.out(
+      `  ~ unverified composition ${unverified.nodeId} ${unverified.name} (not found in page tree read; check depth or page move)`,
+    )
   }
 }
 
@@ -101,15 +107,23 @@ export function surfaceCommand(ctx: CliContext) {
       }
 
       const token = args.rest ? figmaToken(ctx.env) : undefined
-      const trees = await readSurfaceTrees(workspace, pageIds, {
+      const read = await readSurfaceTrees(workspace, pageIds, {
         input: args.input ? path.resolve(ctx.cwd, args.input) : undefined,
         token,
       })
+      // Only a live, pinned read can tell a deleted node from one the tree read
+      // did not reach; `--input` carries no verifier and reports missing nodes
+      // as unverified.
+      const verify =
+        token && read.version
+          ? surfaceCompositionVerifier(workspace, { token, version: read.version })
+          : undefined
       const result = await syncPagesSurface(workspace, {
         pageIds,
-        trees,
+        trees: read.trees,
         now: ctx.now().toISOString().slice(0, 10),
         dryRun: args["dry-run"],
+        verify,
       })
       const singleExplicit = explicitPages.length === 1 && result.pages.length === 1
       if (args.json) {

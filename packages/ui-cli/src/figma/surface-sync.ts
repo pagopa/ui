@@ -1,6 +1,6 @@
 import fs from "node:fs"
 import type { Workspace } from "../adapters/workspace.ts"
-import { fetchFilePages, fetchNodeTrees } from "./rest.ts"
+import { fetchExistingNodeIds, fetchFilePages, fetchNodeTrees } from "./rest.ts"
 import { fileKeyFromSource } from "./snapshot.ts"
 import { surfaceUncensused } from "./surface.ts"
 import { censusDecisionFor } from "./surface-decision.ts"
@@ -38,6 +38,11 @@ type TreeNode = {
 }
 type SurfaceCheck = (surface: PageSurface) => Promise<CatalogueReport>
 
+// Resolves which of these node ids still exist in the pinned file. A node that
+// sits deeper than the page-tree read depth is absent from the tree but
+// present here, so a missing id is only "deleted" when the file says so.
+export type CompositionVerifier = (nodeIds: string[]) => Promise<Set<string>>
+
 export type CompositionCandidate = {
   nodeId: string
   name: string
@@ -52,6 +57,7 @@ export type PageSurfaceDiff = {
   removed: PageIdentity[]
   compositionCandidates: CompositionCandidate[]
   staleCompositions: PageComposition[]
+  unverifiedCompositions: PageComposition[]
 }
 
 export type SurfaceSyncPlan = PageSurfaceDiff & {
@@ -244,11 +250,11 @@ export function scanPageCompositions(
   inventory: Inventory,
   existing: PageComposition[],
   policy: DevicePolicy | null,
-): { compositionCandidates: CompositionCandidate[]; staleCompositions: PageComposition[] } {
+): { compositionCandidates: CompositionCandidate[]; missingCompositions: PageComposition[] } {
   const allIds = collectNodeIds(root)
-  const staleCompositions = existing.filter((composition) => !allIds.has(composition.nodeId))
+  const missingCompositions = existing.filter((composition) => !allIds.has(composition.nodeId))
   const targets = publishedTargetIds(root, pageId, inventory)
-  if (!targets.size) return { compositionCandidates: [], staleCompositions }
+  if (!targets.size) return { compositionCandidates: [], missingCompositions }
 
   const existingIds = new Set(existing.map((composition) => composition.nodeId))
   const compositionCandidates: CompositionCandidate[] = []
@@ -265,7 +271,24 @@ export function scanPageCompositions(
       ...(suggestedDevice ? { suggestedDevice } : {}),
     })
   }
-  return { compositionCandidates, staleCompositions }
+  return { compositionCandidates, missingCompositions }
+}
+
+// A composition missing from the tree read is only confirmed deleted when the
+// pinned file no longer carries its node. Without a verifier (`--input`) the
+// question stays open: the read may be shallower than the node's nesting, or
+// the node may have moved to another page, and neither is a deletion.
+function classifyMissingCompositions(
+  missing: PageComposition[],
+  existing: Set<string> | null,
+): Pick<PageSurfaceDiff, "staleCompositions" | "unverifiedCompositions"> {
+  const staleCompositions: PageComposition[] = []
+  const unverifiedCompositions: PageComposition[] = []
+  for (const composition of missing) {
+    if (!existing || existing.has(composition.nodeId)) unverifiedCompositions.push(composition)
+    else staleCompositions.push(composition)
+  }
+  return { staleCompositions, unverifiedCompositions }
 }
 
 function readOptionalDevicePolicy(workspace: Workspace): DevicePolicy | null {
@@ -284,6 +307,25 @@ function loadCurrentSurface(workspace: Workspace, fileKey: string, readAt: strin
   return current
 }
 
+// The census probe the selection shares with the sync, so a surface whose
+// `fileKey` disagrees with the inventory fails here with the same error instead
+// of being silently read from a stale file.
+const SELECTION_READ_AT = "1970-01-01"
+
+export function currentSurface(workspace: Workspace): PageSurface {
+  const inventory = readInventory(workspace.root)
+  return loadCurrentSurface(workspace, inventory.fileKey, SELECTION_READ_AT)
+}
+
+type PageSurfacePlan = {
+  surface: PageSurface
+  page: PageSurfacePage
+  added: PageIdentity[]
+  removed: PageIdentity[]
+  compositionCandidates: CompositionCandidate[]
+  missingCompositions: PageComposition[]
+}
+
 function planSurfaceSyncOn(
   current: PageSurface,
   pageId: string,
@@ -292,7 +334,7 @@ function planSurfaceSyncOn(
   inventory: Inventory,
   registry: Registry,
   policy: DevicePolicy | null,
-): PageSurfaceDiff & { surface: PageSurface } {
+): PageSurfacePlan {
   const root = findTree(source, pageId)
   if (!root || root.type !== "CANVAS")
     throw new Error(`page tree input does not contain Figma page ${pageId}`)
@@ -330,7 +372,7 @@ function planSurfaceSyncOn(
   const removed = (oldPage?.identities ?? []).filter((identity) => !present.has(identity.nodeId))
   const added = nextIdentities.filter((identity) => !oldById.has(identity.nodeId))
   const compositions = oldPage?.compositions ?? []
-  const { compositionCandidates, staleCompositions } = scanPageCompositions(
+  const { compositionCandidates, missingCompositions } = scanPageCompositions(
     root,
     pageId,
     inventory,
@@ -352,7 +394,7 @@ function planSurfaceSyncOn(
     added,
     removed,
     compositionCandidates,
-    staleCompositions,
+    missingCompositions,
   }
 }
 
@@ -366,7 +408,17 @@ export function planSurfaceSync(
   const registry = readRegistry(workspace.root)
   const policy = readOptionalDevicePolicy(workspace)
   const current = loadCurrentSurface(workspace, inventory.fileKey, readAt)
-  return planSurfaceSyncOn(current, pageId, source, readAt, inventory, registry, policy)
+  const plan = planSurfaceSyncOn(current, pageId, source, readAt, inventory, registry, policy)
+  return {
+    surface: plan.surface,
+    page: plan.page,
+    added: plan.added,
+    removed: plan.removed,
+    compositionCandidates: plan.compositionCandidates,
+    // A supplied tree carries no way to tell a deleted node from one beyond the
+    // read depth, so every missing composition stays unverified.
+    ...classifyMissingCompositions(plan.missingCompositions, null),
+  }
 }
 
 export function selectSurfacePages(
@@ -377,10 +429,7 @@ export function selectSurfacePages(
     return [...new Set(options.pages.map((id) => id.trim()).filter(Boolean))]
   }
   const inventory = readInventory(workspace.root)
-  const file = workspace.path(SURFACE_PATH)
-  const current = fs.existsSync(file)
-    ? readJson(file, PageSurfaceSchema)
-    : { fileKey: inventory.fileKey, readAt: "1970-01-01", note: DEFAULT_NOTE, pages: [] }
+  const current = loadCurrentSurface(workspace, inventory.fileKey, SELECTION_READ_AT)
   if (options.uncensused) {
     return surfaceUncensused(current, inventory.components).map((page) => page.pageId)
   }
@@ -401,26 +450,35 @@ export async function syncPagesSurface(
     now: string
     dryRun: boolean
     check?: SurfaceCheck
+    verify?: CompositionVerifier
   },
 ): Promise<MultiSurfaceSyncPlan> {
   const inventory = readInventory(workspace.root)
   const registry = readRegistry(workspace.root)
   const policy = readOptionalDevicePolicy(workspace)
   let surface = loadCurrentSurface(workspace, inventory.fileKey, options.now)
-  const pages: PageSurfaceDiff[] = []
+  const plans: PageSurfacePlan[] = []
   for (const pageId of options.pageIds) {
     const tree = options.trees.get(pageId)
     if (!tree) throw new Error(`page tree input does not contain Figma page ${pageId}`)
     const next = planSurfaceSyncOn(surface, pageId, tree, options.now, inventory, registry, policy)
     surface = next.surface
-    pages.push({
-      page: next.page,
-      added: next.added,
-      removed: next.removed,
-      compositionCandidates: next.compositionCandidates,
-      staleCompositions: next.staleCompositions,
-    })
+    plans.push(next)
   }
+  // One pinned existence read for every missing composition of the batch: the
+  // page-tree read is depth-limited, so only the file can tell a deletion from
+  // a node the read did not reach.
+  const missingIds = [
+    ...new Set(plans.flatMap((plan) => plan.missingCompositions.map((item) => item.nodeId))),
+  ]
+  const existing = options.verify && missingIds.length ? await options.verify(missingIds) : null
+  const pages: PageSurfaceDiff[] = plans.map((plan) => ({
+    page: plan.page,
+    added: plan.added,
+    removed: plan.removed,
+    compositionCandidates: plan.compositionCandidates,
+    ...classifyMissingCompositions(plan.missingCompositions, existing),
+  }))
   let check: CatalogueReport
   try {
     check = await (
@@ -445,6 +503,7 @@ export async function syncPageSurface(
     now: string
     dryRun: boolean
     check?: SurfaceCheck
+    verify?: CompositionVerifier
   },
 ): Promise<SurfaceSyncPlan> {
   const result = await syncPagesSurface(workspace, {
@@ -453,6 +512,7 @@ export async function syncPageSurface(
     now: options.now,
     dryRun: options.dryRun,
     check: options.check,
+    verify: options.verify,
   })
   const first = result.pages[0]
   if (!first) throw new Error(`page tree input does not contain Figma page ${options.pageId}`)
@@ -463,17 +523,17 @@ export async function readSurfaceTrees(
   workspace: Workspace,
   pageIds: string[],
   options: { input?: string; token?: string },
-): Promise<Map<string, unknown>> {
+): Promise<{ trees: Map<string, unknown>; version?: string }> {
   const uniqueIds = [...new Set(pageIds)]
   const trees = new Map<string, unknown>()
-  if (!uniqueIds.length) return trees
+  if (!uniqueIds.length) return { trees }
   if (options.input) {
     const value: unknown = JSON.parse(fs.readFileSync(options.input, "utf8"))
     for (const pageId of uniqueIds) {
       if (!findTree(value, pageId)) throw new Error(`input does not contain page ${pageId}`)
       trees.set(pageId, value)
     }
-    return trees
+    return { trees }
   }
   if (!options.token) throw new Error("REST page reads require a resolved Figma token")
   const key = fileKeyFromSource(workspace)
@@ -491,7 +551,7 @@ export async function readSurfaceTrees(
     const page = pageById.get(pageId)
     trees.set(pageId, { ...(root ?? {}), id: pageId, name: page?.name ?? pageId, type: "CANVAS" })
   }
-  return trees
+  return { trees, version: pages.version }
 }
 
 export async function readSurfaceTree(
@@ -499,6 +559,17 @@ export async function readSurfaceTree(
   pageId: string,
   options: { input?: string; token?: string },
 ): Promise<unknown> {
-  const trees = await readSurfaceTrees(workspace, [pageId], options)
+  const { trees } = await readSurfaceTrees(workspace, [pageId], options)
   return trees.get(pageId)
+}
+
+// Binds the existence probe to the version the page trees were read at, so the
+// stale verdict and the census describe the same snapshot of the file.
+export function surfaceCompositionVerifier(
+  workspace: Workspace,
+  options: { token: string; version: string },
+): CompositionVerifier {
+  const fileKey = fileKeyFromSource(workspace)
+  if (!fileKey) throw new Error("cannot resolve the Figma file key from src/catalog/figma/file.ts")
+  return (nodeIds) => fetchExistingNodeIds(fileKey, options.version, nodeIds, options.token)
 }
