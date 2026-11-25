@@ -37,9 +37,13 @@
       "inputs": ["figmaChecks"],
       "outputs": []
     },
+    "typecheck": {
+      "inputs": ["default", "{workspaceRoot}/.agents/skills/figma-to-code/harbor/environment/*.ts"]
+    },
     "test": {
       "inputs": [
         "default",
+        "{workspaceRoot}/.agents/skills/figma-to-code/harbor/environment/*.ts",
         "{workspaceRoot}/nx.json",
         "{workspaceRoot}/package.json",
         "{workspaceRoot}/pnpm-workspace.yaml",

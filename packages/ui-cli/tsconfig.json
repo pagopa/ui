@@ -6,7 +6,12 @@
     "lib": ["ES2023", "DOM"],
     "types": ["node"]
   },
-  "include": ["src", "tests", "playwright.config.ts"],
+  "include": [
+    "src",
+    "tests",
+    "playwright.config.ts",
+    "../../.agents/skills/figma-to-code/harbor/environment/*.ts"
+  ],
   "exclude": [
     "node_modules",
     "tests/fixtures/library-consumer",
