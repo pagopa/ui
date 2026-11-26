@@ -26,7 +26,7 @@
 | `references.reviews`           | Security / Privacy / Legal reviews          | N/A — reason                                                                                                                                                                 | No security, privacy or legal review is recorded in the repository: gaps tracked in `NFR-04`, `NFR-05`, `open.item-005`, `open.item-006` |
 | `references.dpia`              | DPIA / privacy review                       | N/A — confirmed: the library is client-side code with no collection, transmission or persistence of personal data                                                            | Formal confirmation from the controller is not recorded (`open.item-006`)                                                                |
 | `references.launch-review`     | Launch Readiness Review (separate Go/No-Go) | N/A — reason                                                                                                                                                                 | No LRR: the repository is declared experimental and not production-ready (`README.md`), so there is not yet a launch to authorise        |
-| `references.glossary`          | Business glossary (PRD/Confluence)          | `GLOSSARY.md`                                                                                                                                                                | Vocabulary of the Figma-alignment domain; the solution glossary lives in this DR/SRS                                                     |
+| `references.glossary`          | Business glossary (PRD/Confluence)          | `../GLOSSARY.md`                                                                                                                                                             | Vocabulary of the Figma-alignment and consumer design-system domains; the solution glossary lives in this DR/SRS                         |
 | `references.operations`        | Jira board / runbook / readiness artifacts  | `docs/figma-drift-handoff.md`, `docs/figma-drift-secrets.md`, `.github/workflows/*`                                                                                          | Drift and secrets runbooks exist; no linked Jira board                                                                                   |
 
 <!-- id: expected-outcome -->
@@ -307,7 +307,7 @@ preceding sections:
 - `docs/decisions/0001`–`0006` — the decisions the review reads: the review model, the deferred decisions, the artwork provenance, the device axis, the Nx monorepo and what parity coverage counts.
 - `docs/figma-drift-handoff.md`, `docs/figma-drift-secrets.md` — drift runbook and secrets management.
 - `docs/design-requests/` — 26 design requests with their answer.
-- `GLOSSARY.md` — operating vocabulary of the alignment domain.
+- `../GLOSSARY.md` — the map of the alignment and consumer vocabularies.
 
 <!-- id: open-questions -->
 
