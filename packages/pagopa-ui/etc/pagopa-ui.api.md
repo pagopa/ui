@@ -1135,15 +1135,20 @@ export function PinPoint(input: {
 export function Popover(input: PopoverProps): React_2.JSX.Element;
 
 // @public
-export interface PopoverProps {
+export interface PopoverProps extends Omit<React_2.ComponentProps<"div">, "title" | "children" | "className"> {
     align?: "start" | "center" | "end";
+    anchor?: HTMLElement | null | React_2.RefObject<HTMLElement | null>;
     arrowPosition?: "top" | "bottom";
     children: React_2.ReactNode;
+    className?: string;
     closeLabel?: string;
     defaultOpen?: boolean;
     label?: string;
     modal?: boolean;
-    trigger: React_2.ReactElement;
+    onOpenChange?: (open: boolean) => void;
+    open?: boolean;
+    ref?: React_2.Ref<HTMLDivElement>;
+    trigger?: React_2.ReactElement;
 }
 
 // @public (undocumented)
@@ -1647,13 +1652,15 @@ export function Timeline(input: {
 }): React_2.JSX.Element;
 
 // @public (undocumented)
-export function TimelineDrawer(input: {
-    trigger: React.ReactElement;
-    title?: string;
+export function TimelineDrawer(input: TimelineDrawerProps): JSX.Element;
+
+// @public
+export interface TimelineDrawerProps extends Omit<DrawerProps, "title" | "description" | "icon" | "children" | "footer"> {
     description?: string;
-    items: TimelineItem[];
     footer?: React.ReactNode;
-}): JSX.Element;
+    items: TimelineItem[];
+    title?: string;
+}
 
 // @public
 export interface TimelineEvent {
@@ -1722,11 +1729,17 @@ export type Tone = "info" | "success" | "warning" | "error";
 export function Tooltip(input: TooltipProps): React_2.JSX.Element;
 
 // @public
-export interface TooltipProps {
+export interface TooltipProps extends Omit<React_2.ComponentProps<"div">, "title" | "children" | "className"> {
+    anchor?: HTMLElement | null | React_2.RefObject<HTMLElement | null>;
     children: React_2.ReactNode;
+    className?: string;
+    defaultOpen?: boolean;
+    onOpenChange?: (open: boolean) => void;
+    open?: boolean;
+    ref?: React_2.Ref<HTMLDivElement>;
     showClose?: boolean;
     side?: "top" | "right" | "bottom" | "left";
-    trigger: React_2.ReactElement;
+    trigger?: React_2.ReactElement;
 }
 
 // @public

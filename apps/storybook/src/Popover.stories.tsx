@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import * as React from "react"
 import { expect, screen, userEvent, waitFor, within } from "storybook/test"
 
 import { Popover } from "@/components/overlays"
@@ -6,6 +7,8 @@ import { Button } from "@/components/primitives/button"
 import { Info } from "@/components/primitives/icons"
 import { PopoverTitle } from "@/components/primitives/popover"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
+
+import popoverGuide from "./guides/popover.md?raw"
 
 const meta = {
   title: "Components/Overlays/Popover",
@@ -22,8 +25,9 @@ const meta = {
   parameters: {
     docs: {
       description: {
-        component:
-          "Popover anchored to the trigger, with an accessible name, Escape to close and focus restore. The indicator follows the trigger when the popup is shifted to stay in the viewport.",
+        component: `Popover anchored to the trigger, with an accessible name, Escape to close and focus restore. The indicator follows the trigger when the popup is shifted to stay in the viewport.
+
+${popoverGuide}`,
       },
     },
   },
@@ -178,5 +182,163 @@ export const ShiftedIndicator: Story = {
     // The popup really is off-centre against the trigger, otherwise the
     // assertion above would hold for a centred arrow too.
     await expect(Math.abs(centre(popup) - triggerCentre)).toBeGreaterThan(40)
+  },
+}
+
+// A controlled popover: the caller owns the state, so the trigger, Escape and
+// the close button all land on the same handler.
+function ControlledHarness() {
+  const [open, setOpen] = React.useState(false)
+
+  return (
+    <>
+      <Popover
+        trigger={<Button variant="outline">Apri popover controllato</Button>}
+        open={open}
+        onOpenChange={setOpen}
+        label="Informazione controllata"
+      >
+        <PopoverTitle>Informazione controllata</PopoverTitle>
+        <p className="text-muted-foreground">Il pannello segue lo stato del componente.</p>
+      </Popover>
+      <p data-testid="controlled-state">Stato: {open ? "aperto" : "chiuso"}</p>
+    </>
+  )
+}
+
+export const Controlled: Story = {
+  render: () => <ControlledHarness />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const trigger = canvas.getByRole("button", { name: "Apri popover controllato" })
+    await expect(canvas.getByTestId("controlled-state")).toHaveTextContent("Stato: chiuso")
+
+    await userEvent.click(trigger)
+    const popover = await screen.findByRole("dialog", { name: "Informazione controllata" })
+    await waitFor(() => expect(popover).toBeVisible())
+    await expect(canvas.getByTestId("controlled-state")).toHaveTextContent("Stato: aperto")
+
+    await userEvent.keyboard("{Escape}")
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
+    await expect(canvas.getByTestId("controlled-state")).toHaveTextContent("Stato: chiuso")
+    await expect(trigger).toHaveFocus()
+  },
+}
+
+export const UncontrolledDefaultOpen: Story = {
+  args: {
+    trigger: <Button variant="outline">Apri popover non controllato</Button>,
+    defaultOpen: true,
+    label: "Informazione non controllata",
+    children: <p>Contenuto aperto dallo stato iniziale.</p>,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const panel = await screen.findByRole("dialog", { name: "Informazione non controllata" })
+    await waitFor(() => expect(panel).toBeVisible())
+
+    await userEvent.keyboard("{Escape}")
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
+
+    const trigger = canvas.getByRole("button", { name: "Apri popover non controllato" })
+    await userEvent.click(trigger)
+    await waitFor(() =>
+      expect(screen.getByRole("dialog", { name: "Informazione non controllata" })).toBeVisible(),
+    )
+    await userEvent.keyboard("{Escape}")
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
+    await expect(trigger).toHaveFocus()
+  },
+}
+
+function NoTriggerHarness() {
+  const [open, setOpen] = React.useState(false)
+  const anchor = React.useRef<HTMLButtonElement>(null)
+
+  return (
+    <>
+      <Button ref={anchor} onClick={() => setOpen(true)}>
+        Apri il popover dal controllo
+      </Button>
+      <p data-testid="no-trigger-state">Stato: {open ? "aperto" : "chiuso"}</p>
+      <Popover
+        anchor={anchor}
+        open={open}
+        onOpenChange={setOpen}
+        label="Popover senza elemento di apertura"
+      >
+        <p>Contenuto aperto dallo stato del componente.</p>
+      </Popover>
+    </>
+  )
+}
+
+export const WithoutTrigger: Story = {
+  render: () => <NoTriggerHarness />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+
+    await userEvent.click(canvas.getByRole("button", { name: "Apri il popover dal controllo" }))
+    const popover = await screen.findByRole("dialog", {
+      name: "Popover senza elemento di apertura",
+    })
+    await waitFor(() => expect(popover).toBeVisible())
+    await expect(canvas.getByTestId("no-trigger-state")).toHaveTextContent("Stato: aperto")
+
+    await userEvent.keyboard("{Escape}")
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
+    await expect(canvas.getByTestId("no-trigger-state")).toHaveTextContent("Stato: chiuso")
+  },
+}
+
+function PanelContractHarness() {
+  const [open, setOpen] = React.useState(false)
+  const [panel, setPanel] = React.useState<HTMLDivElement | null>(null)
+  const anchor = React.useRef<HTMLButtonElement>(null)
+
+  const forwarded = panel
+    ? `class=${panel.classList.contains("max-w-md") ? "inoltrata" : "assente"} attribute=${panel.dataset.contractSlot ?? "assente"}`
+    : "nessun pannello"
+
+  return (
+    <>
+      <Button ref={anchor} onClick={() => setOpen(!open)}>
+        Controlla il pannello
+      </Button>
+      <p data-testid="panel-contract">{forwarded}</p>
+      <Popover
+        ref={setPanel}
+        anchor={anchor}
+        open={open}
+        onOpenChange={setOpen}
+        label="Popover con contratto inoltrato"
+        className="max-w-md"
+        data-contract-slot="popover"
+      >
+        <p>Contenuto misurato dal consumatore.</p>
+      </Popover>
+    </>
+  )
+}
+
+export const PanelContract: Story = {
+  render: () => <PanelContractHarness />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const opener = canvas.getByRole("button", { name: "Controlla il pannello" })
+    await userEvent.click(opener)
+
+    const popover = await screen.findByRole("dialog", { name: "Popover con contratto inoltrato" })
+    await waitFor(() => expect(popover).toBeVisible())
+    await expect(canvas.getByTestId("panel-contract")).toHaveTextContent(
+      "class=inoltrata attribute=popover",
+    )
+
+    // Left open, the panel is wider than the reflow contract allows, so the
+    // story hands the page back closed.
+    await userEvent.keyboard("{Escape}")
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
+    await expect(opener).toHaveFocus()
   },
 }
