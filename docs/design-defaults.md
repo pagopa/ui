@@ -46,7 +46,7 @@ The aliases live in `packages/pagopa-ui/src/index.css` and point at the
 generated `--figma-color-status-*` and `--figma-color-icon-*` keys. A component
 consumes the role (`bg-error-soft`, `text-error-foreground`), never a step
 number and never a `--figma-*` name: that layer is internal and deprecated
-([ADR-0011](./decisions/0011-semantic-token-contract.md)).
+([ADR-0012](./decisions/0012-semantic-token-contract.md)).
 
 **Derivation when a step is missing.** When the family has no published pointer
 or pressed step, derive it with `color-mix` inside the same hue family and

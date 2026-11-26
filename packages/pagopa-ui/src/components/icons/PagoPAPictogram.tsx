@@ -33,7 +33,10 @@ function PagoPAPictogram({
   if (!asset) throw new Error(`Pictogram "${name}" has no Figma asset mapping`)
 
   return (
-    <figure className={cn("inline-grid justify-items-center gap-2 text-center", className)}>
+    <figure
+      data-slot="pictogram"
+      className={cn("inline-grid justify-items-center gap-2 text-center", className)}
+    >
       <img
         src={asset[background].url}
         data-figma-node-id={asset[background].nodeId}

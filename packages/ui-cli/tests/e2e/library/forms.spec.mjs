@@ -389,7 +389,14 @@ test("forms: the packed controls accept input, submit and keep their keyboard pe
   )
   const narrowSwitchControl = narrowSwitch.getByRole("switch")
   assert.equal((await narrowSwitchControl.boundingBox()).width, 56)
-  assert.equal((await narrowSwitchControl.boundingBox()).height, 44)
+  // Firefox derives the border box from app-unit-rounded quads, so a 44px
+  // target can arrive as 44.000061; the tolerance keeps the assertion strict
+  // against any real change while ignoring that float noise.
+  const narrowSwitchHeight = (await narrowSwitchControl.boundingBox()).height
+  assert.ok(
+    Math.abs(narrowSwitchHeight - 44) < 0.01,
+    `packed switch target is ${narrowSwitchHeight}px tall, expected 44`,
+  )
   // The link keeps its source 14/20 line box; the 44px pointer target comes
   // from the invisible ::after expansion, so the visual box is measured with it.
   const narrowSwitchLinkTarget = await narrowSwitch.getByRole("link").evaluate((element) => {

@@ -17,6 +17,7 @@ function SkipToMainContent({
 
   return (
     <a
+      data-slot="skip-link"
       href={`#${targetId}`}
       className="fixed top-0 left-1/2 z-[100] inline-flex w-max -translate-x-1/2 -translate-y-full rounded-xl border-2 border-skip-to-main-ring px-0.5 py-0.5 transition-transform focus:translate-y-0 motion-reduce:transition-none"
     >

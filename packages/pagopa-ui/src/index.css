@@ -11,6 +11,8 @@
    shipped component happens to use yet — and the artwork module does the same
    for its catalogue. The artifact is byte-identical to the pre-split one; the
    published scan narrows the demo surfaces in src/library.css. */
+@layer pagopa-ui.base, pagopa-ui.utilities;
+
 @import "tailwindcss/theme.css" theme(reference);
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -20,27 +22,226 @@
 @source "../../artwork/src";
 @source "../../tokens/src";
 
-/* Everything the library styles lives under a UIProvider root. Scope
-   proximity lets these unlayered rules win over equally specific host rules
-   without !important; host !important rules still win. Defaults precede the
-   utilities so a utility class always overrides them. */
-@scope (.pagopa-ui-root) {
-  @import "tailwindcss/preflight.css";
+/* Cascade layers, in place of the @scope this stylesheet used to carry: an
+   engine without @scope support dropped every library rule, so a component
+   rendered unstyled. Both layers are opened at the head of the artifact, before
+   any rule a host stylesheet contributes, so a layer the host declares in its
+   own stylesheet is ordered after them — a host layer therefore outranks the
+   library, and unlayered host CSS outranks every layer, which is how a caller
+   overrides a utility. Resets come before utilities so a utility class always
+   wins.
+   The resets reach the roots the library renders and nothing else: every
+   component root carries `data-slot`, and the portal root is the subtree
+   overlays mount into. Host markup inside a UIProvider keeps the browser's
+   own defaults, so a legacy page and a design-system page coexist on one
+   document. These rules are Tailwind's preflight, which the stylesheet used to
+   import inside the @scope, rewritten so each selector names the roots it may
+   reach; the two keep parity, so a page that upgrades does not move. The few
+   preflight rules whose browsers' own default is already the same value — the
+   monospace stack of code, kbd, samp and pre, small, sub and sup, the
+   multiple-select optgroup indents, Chrome's datalist marker — are left out,
+   as are the html rules the @scope could never reach: no literal enters this
+   file that no foundation token can express. */
+@layer pagopa-ui.base {
+  :where([data-slot], [data-pagopa-ui-portal-root]) {
+    &,
+    &::before,
+    &::after,
+    &::backdrop,
+    &::file-selector-button,
+    & *,
+    & *::before,
+    & *::after,
+    & *::backdrop,
+    & *::file-selector-button {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      border: 0 solid;
+      border-color: var(--pui-border);
+      outline-color: var(--pui-ring);
+    }
 
-  :scope,
-  :scope * {
-    border-color: var(--pui-border);
-    outline-color: var(--pui-ring);
-  }
+    @supports (color: color-mix(in lab, red, red)) {
+      &,
+      &::before,
+      &::after,
+      &::backdrop,
+      &::file-selector-button,
+      & *,
+      & *::before,
+      & *::after,
+      & *::backdrop,
+      & *::file-selector-button {
+        outline-color: color-mix(in oklab, var(--pui-ring) 50%, transparent);
+      }
+    }
 
-  @supports (color: color-mix(in lab, red, red)) {
-    :scope,
-    :scope * {
-      outline-color: color-mix(in oklab, var(--pui-ring) 50%, transparent);
+    &:where(h1, h2, h3, h4, h5, h6),
+    & :where(h1, h2, h3, h4, h5, h6) {
+      font-size: inherit;
+      font-weight: inherit;
+    }
+
+    &:where(a),
+    & :where(a) {
+      color: inherit;
+      text-decoration: inherit;
+    }
+
+    &:where(hr),
+    & :where(hr) {
+      height: 0;
+      color: inherit;
+      border-top-width: thin;
+    }
+
+    &:where(abbr[title]),
+    & :where(abbr[title]) {
+      text-decoration: underline dotted;
+    }
+
+    &:where(b, strong),
+    & :where(b, strong) {
+      font-weight: bolder;
+    }
+
+    &:where(progress),
+    & :where(progress) {
+      vertical-align: baseline;
+    }
+
+    &:where(summary),
+    & :where(summary) {
+      display: list-item;
+    }
+
+    &:where(ol, ul, menu),
+    & :where(ol, ul, menu) {
+      list-style: none;
+    }
+
+    &:where(table),
+    & :where(table) {
+      text-indent: 0;
+      border-color: inherit;
+      border-collapse: collapse;
+    }
+
+    &:where(img, svg, video, canvas, audio, iframe, embed, object),
+    & :where(img, svg, video, canvas, audio, iframe, embed, object) {
+      display: block;
+      vertical-align: middle;
+    }
+
+    &:where(img, video),
+    & :where(img, video) {
+      max-width: 100%;
+      height: auto;
+    }
+
+    &:where(button, input, select, optgroup, textarea, ::file-selector-button),
+    & :where(button, input, select, optgroup, textarea, ::file-selector-button) {
+      font: inherit;
+      font-feature-settings: inherit;
+      font-variation-settings: inherit;
+      letter-spacing: inherit;
+      color: inherit;
+      border-radius: 0;
+      background-color: transparent;
+      opacity: 1;
+    }
+
+    &::file-selector-button,
+    & ::file-selector-button {
+      margin-inline-end: var(--figma-spacing-4);
+    }
+
+    &:where(textarea),
+    & :where(textarea) {
+      resize: vertical;
+    }
+
+    &:where(input:is([type="button"], [type="reset"], [type="submit"])),
+    & :where(input:is([type="button"], [type="reset"], [type="submit"])) {
+      appearance: button;
+    }
+
+    &::-webkit-search-decoration,
+    & ::-webkit-search-decoration {
+      -webkit-appearance: none;
+    }
+
+    &::-webkit-date-and-time-value,
+    & ::-webkit-date-and-time-value {
+      min-height: 1lh;
+      text-align: inherit;
+    }
+
+    &::-webkit-datetime-edit,
+    & ::-webkit-datetime-edit {
+      display: inline-flex;
+      padding-block: 0;
+    }
+
+    &::-webkit-datetime-edit-fields-wrapper,
+    & ::-webkit-datetime-edit-fields-wrapper {
+      padding: 0;
+    }
+
+    &::-webkit-datetime-edit-year-field,
+    & ::-webkit-datetime-edit-year-field,
+    &::-webkit-datetime-edit-month-field,
+    & ::-webkit-datetime-edit-month-field,
+    &::-webkit-datetime-edit-day-field,
+    & ::-webkit-datetime-edit-day-field,
+    &::-webkit-datetime-edit-hour-field,
+    & ::-webkit-datetime-edit-hour-field,
+    &::-webkit-datetime-edit-minute-field,
+    & ::-webkit-datetime-edit-minute-field,
+    &::-webkit-datetime-edit-second-field,
+    & ::-webkit-datetime-edit-second-field,
+    &::-webkit-datetime-edit-millisecond-field,
+    & ::-webkit-datetime-edit-millisecond-field,
+    &::-webkit-datetime-edit-meridiem-field,
+    & ::-webkit-datetime-edit-meridiem-field {
+      padding-block: 0;
+    }
+
+    &::-webkit-inner-spin-button,
+    & ::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button,
+    & ::-webkit-outer-spin-button {
+      height: auto;
+    }
+
+    &::placeholder,
+    & ::placeholder {
+      opacity: 1;
+    }
+
+    @supports (not (-webkit-appearance: -apple-pay-button)) or (contain-intrinsic-size: 1px) {
+      &::placeholder,
+      & ::placeholder {
+        color: color-mix(in oklab, currentColor 50%, transparent);
+      }
+    }
+
+    &:where([hidden]:not([hidden="until-found"])),
+    & :where([hidden]:not([hidden="until-found"])) {
+      display: none !important;
+    }
+
+    &:-moz-ui-invalid,
+    & :-moz-ui-invalid {
+      box-shadow: none;
+    }
+
+    &:-moz-focusring,
+    & :-moz-focusring {
+      outline: auto;
     }
   }
-
-  @tailwind utilities;
 }
 
 /* The source Titillio family is bundled directly (src/assets/fonts/titillio).
@@ -84,12 +285,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  /* The public semantic contract (ADR-0011). Every custom property of this
-     block is published under the same name by `@pagopa/ui/tokens.css`, so the
-     vendor-neutral `--pui-*` namespace never carries a Figma name. Bound tokens
-     reference the generated foundations
-     (packages/tokens/src/figma.generated.css); locals without a published
-     variable are marked and tracked in packages/tokens/src/manifest.json. */
+  /* Semantic aliases. Bound tokens reference the generated Figma foundations
+     (packages/tokens/src/figma.generated.css); locals without a published variable are
+     marked and tracked in packages/tokens/src/manifest.json. */
   --pui-background: var(--figma-color-neutrals-white);
   --pui-foreground: var(--figma-color-neutrals-black);
   --pui-card: var(--figma-color-neutrals-white);
@@ -312,7 +510,13 @@
   --container-tablet-md: 56.25rem;
 }
 
-@scope (.pagopa-ui-root) {
+/* The overrides that must outrank a utility live at the end of the utilities
+   layer: the date editors WebKit never matches :focus-visible for, the reduced
+   motion contract and the forced-colors palette. They are not utilities, but a
+   layer of their own would only restate the order these rules already have. */
+@layer pagopa-ui.utilities {
+  @tailwind utilities;
+
   /* WebKit native editors do not match :focus-visible after keyboard tabbing. */
   input[data-slot="input"]:is(
       [type="date"],
@@ -339,9 +543,10 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    :scope *,
-    :scope *::before,
-    :scope *::after {
+    :where([data-slot], [data-pagopa-ui-portal-root]),
+    :where([data-slot], [data-pagopa-ui-portal-root]) *,
+    :where([data-slot], [data-pagopa-ui-portal-root]) *::before,
+    :where([data-slot], [data-pagopa-ui-portal-root]) *::after {
       scroll-behavior: auto !important;
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
@@ -379,7 +584,12 @@
       }
     }
 
-    :scope :focus-visible {
+    /* `:is()` rather than `:where()` on purpose: a component root carries a
+       `focus-visible:outline-ring` utility of equal specificity, and the
+       forced-colors perimeter must outrank it, as it did when `@scope`'s
+       pseudo-class supplied the weight. */
+    :is([data-slot], [data-pagopa-ui-portal-root]):focus-visible,
+    :is([data-slot], [data-pagopa-ui-portal-root]) :focus-visible {
       outline: var(--figma-spacing-2) solid CanvasText;
       outline-offset: var(--figma-spacing-2);
     }

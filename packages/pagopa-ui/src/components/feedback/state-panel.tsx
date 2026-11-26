@@ -45,6 +45,7 @@ function StatePanel({
 }: StateProps & { icon: React.ReactNode } & StatePanelLayoutProps) {
   return (
     <section
+      data-slot="state-panel"
       className={cn(
         "mx-auto flex max-w-xl flex-col items-center gap-6 bg-muted px-6 py-16 text-center",
         className,

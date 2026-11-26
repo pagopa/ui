@@ -85,7 +85,7 @@ function Header({ product, user, actions, className }: HeaderProps) {
   ) : null
 
   return (
-    <header className={cn("border-b bg-background", className)}>
+    <header data-slot="header" className={cn("border-b bg-background", className)}>
       {/* Mobile 320x77 and desktop 1200x103 share the bar: the source keeps a
           single row at both devices and only the identity collapses. */}
       <div className="mx-auto flex min-h-19 max-w-7xl items-center justify-between gap-2 px-6 py-4 tablet:min-h-(--pui-header-height) tablet:gap-6">

@@ -46,6 +46,7 @@ function IdentityProviderPickerRow({
   const Link = useLinkComponent()
   return (
     <Link
+      data-slot="identity-provider-picker"
       className={cn(
         "flex min-h-15 w-full items-center justify-between gap-3 rounded-lg bg-background p-4 text-left text-muted-foreground ring-1 ring-inset ring-border outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring forced-colors:ring-0 forced-colors:outline-1 forced-colors:outline-solid forced-colors:outline-[CanvasText]",
         className,

@@ -22,6 +22,7 @@ function ButtonGroup({
 
   return (
     <div
+      data-slot="button-group"
       role="group"
       aria-label={ariaLabel}
       data-orientation={orientation}
@@ -71,6 +72,7 @@ function SegmentedControl<T extends string>({
 
   return (
     <div
+      data-slot="segmented-control"
       role="group"
       aria-label={ariaLabel}
       className={cn(
@@ -124,6 +126,7 @@ function StickyButtonBar({
   const fade = variant === "fade"
   return (
     <div
+      data-slot="sticky-button-bar"
       role="region"
       aria-label={ariaLabel}
       data-position={position}

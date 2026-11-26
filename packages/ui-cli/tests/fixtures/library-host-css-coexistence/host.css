@@ -1,18 +1,36 @@
-body {
-  margin: 13px;
-  background: rgb(245 240 235);
+/* A Tailwind CSS v4 host: it declares its own layer order, and the packed
+   library stylesheet is prepended later, so the library layers are established
+   first and the host outranks them on every tie. */
+@layer host.theme, host.base, host.components, host.utilities;
+
+@layer host.base {
+  body {
+    margin: 13px;
+    background: rgb(245 240 235);
+  }
+
+  h1 {
+    font:
+      700 28px Georgia,
+      serif;
+  }
 }
 
-button {
+/* The same host still carries the legacy MUI Italia emotion output, which is
+   unlayered and therefore wins over every layer declared above. */
+.MuiTypography-root {
+  margin: 0;
+}
+
+.MuiButtonBase-root {
   background-color: transparent;
 }
 
-h1 {
-  font:
-    700 28px Georgia,
-    serif;
-}
-
-.p-6 {
-  padding: 5px;
+/* The same utility the library emits, with a different value: the host
+   declares its layers last, so this one wins on host markup and on library
+   components alike. */
+@layer host.utilities {
+  .p-6 {
+    padding: 5px;
+  }
 }

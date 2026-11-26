@@ -1,4 +1,4 @@
-# ADR-0011 — The public token contract is semantic: `--pui-*`, named for the role
+# ADR-0012 — The public token contract is semantic: `--pui-*`, named for the role
 
 - **Status:** Accepted — 2026-11-26.
 - **Date:** 2026-11-26

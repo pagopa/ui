@@ -24,6 +24,7 @@ function CheckboxGroup({
 
   return (
     <fieldset
+      data-slot="checkbox-group"
       aria-describedby={describedBy(ids, { description, error })}
       aria-invalid={Boolean(error) || undefined}
       className={cn("grid gap-3", className)}

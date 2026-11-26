@@ -37,7 +37,7 @@ function Preheader({
 
   const Link = useLinkComponent()
   return (
-    <div className="bg-background">
+    <div data-slot="preheader" className="bg-background">
       {/* Source band: 54px content + the 1px divider in every variant
           (1315:11011), regardless of whether an action button is present. */}
       <div className="mx-auto flex min-h-(--pui-preheader-height) max-w-7xl flex-wrap items-center justify-between gap-0 border-b px-6 py-1 tablet:gap-4">
