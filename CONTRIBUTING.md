@@ -63,7 +63,7 @@ workspace root. The paths below are inside `packages/pagopa-ui` unless they
 name another package.
 
 The design system uses TypeScript 6 — one compiler, the stable line, per
-[ADR-0009](./docs/decisions/0009-single-typescript-compiler.md) —, Tailwind CSS
+[ADR-0010](./docs/decisions/0010-single-typescript-compiler.md) —, Tailwind CSS
 v4 and Base UI primitives (shadcn wrappers), with Storybook as its documentation
 surface.
 

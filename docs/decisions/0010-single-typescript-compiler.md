@@ -1,4 +1,4 @@
-# ADR-0009 — One compiler: the stable TypeScript 6 line, and the preview alias is gone
+# ADR-0010 — One compiler: the stable TypeScript 6 line, and the preview alias is gone
 
 - **Status:** Accepted — 2026-11-26.
 - **Date:** 2026-11-26

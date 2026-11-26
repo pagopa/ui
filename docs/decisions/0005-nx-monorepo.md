@@ -72,7 +72,7 @@ later, independent step with its own trigger. Concretely:
    API so that `@nx/js/typescript` and every API-consuming tool keeps working.
    **Amended (2026-11-26):** the workspace declares one compiler instead of
    bridging two, and it is the stable TypeScript 6 line — see
-   [ADR-0009](./0009-single-typescript-compiler.md).
+   [ADR-0010](./0010-single-typescript-compiler.md).
 5. **Release through Nx.** Version plans (`pnpm nx release plan`) describe the
    change; the DX release manager opens the "Version Packages" pull request and
    tags the release. At the time of this decision, publication was deferred
