@@ -100,7 +100,8 @@ points Playwright at the copy.
 The `visual-update` job, its push, the `visual:update` and `visual:check` labels
 and the `labeled` trigger are gone. A baseline changes in the storage repository,
 through a pull request there, captured on the pinned image. The visual job only
-ever reads: `contents: read`.
+ever reads: `contents: read` for the checkout and the baselines clone, and
+`packages: read` for the registry install.
 
 ### RD5 — one runner owns the visual diff
 

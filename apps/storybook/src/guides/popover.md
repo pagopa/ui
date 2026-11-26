@@ -4,6 +4,10 @@ and defaults to `Informazioni`; `closeLabel` names the close button. The close
 button, Escape, an outside press and the trigger all close it, and the primitive
 returns focus to the trigger.
 
+`label` and `closeLabel` override the panel's and the close button's accessible
+names; `UIProvider` also supports overriding `messages.popover.label` and
+`messages.popover.closeLabel`.
+
 `arrowPosition` picks the edge carrying the indicator: `"top"` (the default)
 places the bubble below the trigger with the arrow pointing up, `"bottom"` above
 it. The arrow is placed by the positioning middleware, so it keeps pointing at

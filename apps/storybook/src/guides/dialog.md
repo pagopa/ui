@@ -3,6 +3,9 @@ the scroll lock, the outside press, the focus restoration and the backdrop fade
 come from the primitive. The title is the dialog's accessible name, `description`
 is supporting copy, `children` is the body and `footer` the action row.
 
+`closeLabel` overrides the close button's accessible name; `UIProvider` also
+supports overriding `messages.dialog.closeLabel`.
+
 ## Example
 
 ```tsx
