@@ -1,4 +1,4 @@
-# ADR-0011 — Numerical parity is an ephemeral diagnostic, not a committed corpus
+# ADR-0014 — Numerical parity is an ephemeral diagnostic, not a committed corpus
 
 - **Status:** Accepted — 2026-11-26.
 - **Date:** 2026-11-26

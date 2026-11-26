@@ -218,7 +218,7 @@ export function hexOf(paint: Paint | undefined): string | undefined {
 }
 
 // The source a parity run reads, in order: an explicit `--input`, the local
-// pinned snapshot. Nothing is committed for the source side (ADR-0011): a clone
+// pinned snapshot. Nothing is committed for the source side (ADR-0014): a clone
 // without `.figma/` asks for `--input` or re-exports.
 export function resolveExport(
   workspace: Workspace,

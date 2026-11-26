@@ -3713,6 +3713,7 @@
     "Dialog": [
       "1042:18133"
     ],
+    "DialogClose": [],
     "DownloadCard": [],
     "DragAndDrop": [
       "760:7432"
@@ -3720,6 +3721,7 @@
     "Drawer": [
       "1278:6527"
     ],
+    "DrawerClose": [],
     "Dropdown": [
       "616:3864"
     ],

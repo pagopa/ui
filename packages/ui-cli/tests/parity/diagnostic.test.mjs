@@ -1,4 +1,4 @@
-// The ephemeral numeric-parity diagnostic (ADR-0011).
+// The ephemeral numeric-parity diagnostic (ADR-0014).
 //
 // One registry target, its numeric source and its render, compared in a single
 // run. The run reports to the person who asked for it and returns: no case, no

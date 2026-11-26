@@ -29,7 +29,7 @@ export interface DialogTemplateProps {
 // dialog parts stay in that frame: Base UI requires a Portal, and the template
 // points it at the page element instead of the document body, so the panel is a
 // DOM descendant of the page (container queries apply) and both the reviewer
-// and a parity comparison measure it inside the frame.
+// and the parity capture measure it inside the frame.
 const PAGE_HEIGHT = "min-h-(--artboard-height)" // the source 650px artboard
 
 function DialogTemplate({

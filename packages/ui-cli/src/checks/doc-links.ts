@@ -152,6 +152,8 @@ function checkMarkdown(ctx: DocsContext, file: string): string {
   return text
 }
 
+const GENERATED_MARKER = /^\/\/ Generated .*do not edit\.$/m
+
 function componentNames(ctx: DocsContext) {
   const names = new Set<string>()
   for (const file of walkFiles(
@@ -159,6 +161,9 @@ function componentNames(ctx: DocsContext) {
     (name) => /\.tsx?$/.test(name) && !/\.test\./.test(name),
   )) {
     const source = fs.readFileSync(file, "utf8")
+    // Generated artwork exports one symbol per glyph identity, so a word like
+    // `Close` or `Small` there is an icon, not a component a skill may not name.
+    if (GENERATED_MARKER.test(source)) continue
     for (const match of source.matchAll(
       /export\s+(?:declare\s+)?(?:function|const|class|type|interface|enum)\s+([A-Z][A-Za-z0-9]+)/g,
     ))

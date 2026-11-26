@@ -28,3 +28,23 @@ scale from the `tablet-md` device step.
 `direction` stays caller-owned: the component does not choose a bottom sheet on
 mobile. The drag-handle pill appears only when the drawer opens from the bottom
 edge and is decorative.
+
+## Controlling the panel
+
+`open` with `onOpenChange` makes the drawer controlled; `defaultOpen` opens it
+initially when `open` is omitted. Both modes share one lifecycle: `onOpenChange`
+runs whenever the drawer asks to open or close, so a single handler answers the
+trigger, an outside press, Escape, the close button and a `DrawerClose`.
+
+`trigger` is optional. Omit it to open the panel from the caller's own state — an
+async handler that resolves before opening, a selection that fills the panel, a
+route. With no trigger there is no element to return focus to, so the drawer
+gives focus back to the element focused before it opened.
+
+`DrawerClose` is a button that closes the panel it sits in. Use it for the
+drawer's own actions, such as a cancel action in `footer`, where wiring the same
+`onOpenChange` by hand would repeat the close path.
+
+`ref`, `className` and the standard `div` attributes land on the panel, so the
+panel can be measured, styled and marked by the caller. `className` is merged
+with the panel's own classes; `direction` still owns the geometry of the edge.

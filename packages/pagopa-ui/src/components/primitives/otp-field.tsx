@@ -88,7 +88,7 @@ function OTPField({
           nextInput.focus()
         }}
         className={cn(
-          "cn-otp-field flex w-fit max-w-full min-w-0 items-center overflow-x-clip rounded-lg border border-otp-frame px-6 py-2 outline-none [overflow-clip-margin:var(--otp-clip-margin)] has-focus-visible:outline-2 has-focus-visible:outline-solid has-focus-visible:outline-offset-2 has-focus-visible:outline-ring has-disabled:opacity-50 has-aria-invalid:border-destructive has-aria-invalid:ring-1 has-aria-invalid:ring-inset has-aria-invalid:ring-destructive forced-colors:border-[CanvasText] forced-colors:has-aria-invalid:border-2 forced-colors:has-aria-invalid:ring-0 forced-colors:has-focus-visible:outline-[CanvasText]",
+          "cn-otp-field flex w-fit max-w-full min-w-0 items-center overflow-x-clip rounded-lg border border-otp-frame px-6 py-2 outline-none [overflow-clip-margin:var(--pui-otp-clip-margin)] has-focus-visible:outline-2 has-focus-visible:outline-solid has-focus-visible:outline-offset-2 has-focus-visible:outline-ring has-disabled:opacity-50 has-aria-invalid:border-destructive has-aria-invalid:ring-1 has-aria-invalid:ring-inset has-aria-invalid:ring-destructive forced-colors:border-[CanvasText] forced-colors:has-aria-invalid:border-2 forced-colors:has-aria-invalid:ring-0 forced-colors:has-focus-visible:outline-[CanvasText]",
           className,
         )}
         {...props}

@@ -39,6 +39,7 @@ function Cookies({
   // with the action block.
   const closeButton = onDismiss ? (
     <button
+      data-slot="cookies"
       type="button"
       aria-label={closeLabel}
       onClick={onDismiss}

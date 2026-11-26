@@ -1,200 +1,4 @@
 // Generated from pinned source geometry by packages/ui-cli/src/figma/icons.ts; keys are nodeIds.
-import asset_10297_6918 from "../../assets/figma-icons/10297-6918.svg?no-inline"
-import asset_10444_14812 from "../../assets/figma-icons/10444-14812.svg?no-inline"
-import asset_10444_15263 from "../../assets/figma-icons/10444-15263.svg?no-inline"
-import asset_1101_3862 from "../../assets/figma-icons/1101-3862.svg?no-inline"
-import asset_1101_4296 from "../../assets/figma-icons/1101-4296.svg?no-inline"
-import asset_1101_4422 from "../../assets/figma-icons/1101-4422.svg?no-inline"
-import asset_1120_7621 from "../../assets/figma-icons/1120-7621.svg?no-inline"
-import asset_1120_7638 from "../../assets/figma-icons/1120-7638.svg?no-inline"
-import asset_1120_7821 from "../../assets/figma-icons/1120-7821.svg?no-inline"
-import asset_1174_9780 from "../../assets/figma-icons/1174-9780.svg?no-inline"
-import asset_12785_14427 from "../../assets/figma-icons/12785-14427.svg?no-inline"
-import asset_1311_12896 from "../../assets/figma-icons/1311-12896.svg?no-inline"
-import asset_1315_8596 from "../../assets/figma-icons/1315-8596.svg?no-inline"
-import asset_13906_25597 from "../../assets/figma-icons/13906-25597.svg?no-inline"
-import asset_14164_11363 from "../../assets/figma-icons/14164-11363.svg?no-inline"
-import asset_14241_48931 from "../../assets/figma-icons/14241-48931.svg?no-inline"
-import asset_14709_279 from "../../assets/figma-icons/14709-279.svg?no-inline"
-import asset_1501_5288 from "../../assets/figma-icons/1501-5288.svg?no-inline"
-import asset_1509_25567 from "../../assets/figma-icons/1509-25567.svg?no-inline"
-import asset_15901_18590 from "../../assets/figma-icons/15901-18590.svg?no-inline"
-import asset_15901_18591 from "../../assets/figma-icons/15901-18591.svg?no-inline"
-import asset_15901_18592 from "../../assets/figma-icons/15901-18592.svg?no-inline"
-import asset_2080_3319 from "../../assets/figma-icons/2080-3319.svg?no-inline"
-import asset_2080_3320 from "../../assets/figma-icons/2080-3320.svg?no-inline"
-import asset_232_1672 from "../../assets/figma-icons/232-1672.svg?no-inline"
-import asset_232_1674 from "../../assets/figma-icons/232-1674.svg?no-inline"
-import asset_256_8579 from "../../assets/figma-icons/256-8579.svg?no-inline"
-import asset_256_8580 from "../../assets/figma-icons/256-8580.svg?no-inline"
-import asset_256_8581 from "../../assets/figma-icons/256-8581.svg?no-inline"
-import asset_256_8582 from "../../assets/figma-icons/256-8582.svg?no-inline"
-import asset_2801_90017 from "../../assets/figma-icons/2801-90017.svg?no-inline"
-import asset_392_5291 from "../../assets/figma-icons/392-5291.svg?no-inline"
-import asset_8702_266 from "../../assets/figma-icons/8702-266.svg?no-inline"
-import asset_8704_37763 from "../../assets/figma-icons/8704-37763.svg?no-inline"
-import asset_8704_37815 from "../../assets/figma-icons/8704-37815.svg?no-inline"
-import asset_8717_781 from "../../assets/figma-icons/8717-781.svg?no-inline"
-import asset_8854_39311 from "../../assets/figma-icons/8854-39311.svg?no-inline"
-import asset_8854_39312 from "../../assets/figma-icons/8854-39312.svg?no-inline"
-import asset_8854_39315 from "../../assets/figma-icons/8854-39315.svg?no-inline"
-import asset_9082_974 from "../../assets/figma-icons/9082-974.svg?no-inline"
-import asset_94_1980 from "../../assets/figma-icons/94-1980.svg?no-inline"
-import asset_94_1981 from "../../assets/figma-icons/94-1981.svg?no-inline"
-import asset_94_1995 from "../../assets/figma-icons/94-1995.svg?no-inline"
-import asset_94_1996 from "../../assets/figma-icons/94-1996.svg?no-inline"
-import asset_94_2016 from "../../assets/figma-icons/94-2016.svg?no-inline"
-import asset_94_2020 from "../../assets/figma-icons/94-2020.svg?no-inline"
-import asset_94_2034 from "../../assets/figma-icons/94-2034.svg?no-inline"
-import asset_94_2035 from "../../assets/figma-icons/94-2035.svg?no-inline"
-import asset_94_2055 from "../../assets/figma-icons/94-2055.svg?no-inline"
-import asset_94_2056 from "../../assets/figma-icons/94-2056.svg?no-inline"
-import asset_94_2070 from "../../assets/figma-icons/94-2070.svg?no-inline"
-import asset_94_2071 from "../../assets/figma-icons/94-2071.svg?no-inline"
-import asset_94_2091 from "../../assets/figma-icons/94-2091.svg?no-inline"
-import asset_94_2092 from "../../assets/figma-icons/94-2092.svg?no-inline"
-import asset_94_2106 from "../../assets/figma-icons/94-2106.svg?no-inline"
-import asset_95_1620 from "../../assets/figma-icons/95-1620.svg?no-inline"
-import asset_95_1689 from "../../assets/figma-icons/95-1689.svg?no-inline"
-import asset_95_1690 from "../../assets/figma-icons/95-1690.svg?no-inline"
-import asset_95_680 from "../../assets/figma-icons/95-680.svg?no-inline"
-import asset_9584_66408 from "../../assets/figma-icons/9584-66408.svg?no-inline"
-import asset_9584_66411 from "../../assets/figma-icons/9584-66411.svg?no-inline"
-import asset_95_1675 from "../../assets/figma-icons/95-1675.svg?no-inline"
-import asset_95_1676 from "../../assets/figma-icons/95-1676.svg?no-inline"
-import asset_96_628 from "../../assets/figma-icons/96-628.svg?no-inline"
-import asset_96_665 from "../../assets/figma-icons/96-665.svg?no-inline"
-import asset_96_666 from "../../assets/figma-icons/96-666.svg?no-inline"
-import asset_96_667 from "../../assets/figma-icons/96-667.svg?no-inline"
-import asset_96_669 from "../../assets/figma-icons/96-669.svg?no-inline"
-import asset_96_670 from "../../assets/figma-icons/96-670.svg?no-inline"
-import asset_96_684 from "../../assets/figma-icons/96-684.svg?no-inline"
-import asset_96_685 from "../../assets/figma-icons/96-685.svg?no-inline"
-import asset_96_699 from "../../assets/figma-icons/96-699.svg?no-inline"
-import asset_96_715 from "../../assets/figma-icons/96-715.svg?no-inline"
-import asset_96_722 from "../../assets/figma-icons/96-722.svg?no-inline"
-import asset_9640_793 from "../../assets/figma-icons/9640-793.svg?no-inline"
-import asset_9642_949 from "../../assets/figma-icons/9642-949.svg?no-inline"
-import asset_9643_953 from "../../assets/figma-icons/9643-953.svg?no-inline"
-import asset_9643_960 from "../../assets/figma-icons/9643-960.svg?no-inline"
-import asset_9643_961 from "../../assets/figma-icons/9643-961.svg?no-inline"
-import asset_9790_9527 from "../../assets/figma-icons/9790-9527.svg?no-inline"
-import asset_98_1001 from "../../assets/figma-icons/98-1001.svg?no-inline"
-import asset_98_1014 from "../../assets/figma-icons/98-1014.svg?no-inline"
-import asset_98_1015 from "../../assets/figma-icons/98-1015.svg?no-inline"
-import asset_98_1065 from "../../assets/figma-icons/98-1065.svg?no-inline"
-import asset_98_1114 from "../../assets/figma-icons/98-1114.svg?no-inline"
-import asset_98_1115 from "../../assets/figma-icons/98-1115.svg?no-inline"
-import asset_98_1153 from "../../assets/figma-icons/98-1153.svg?no-inline"
-import asset_98_1154 from "../../assets/figma-icons/98-1154.svg?no-inline"
-import asset_98_1155 from "../../assets/figma-icons/98-1155.svg?no-inline"
-import asset_98_1156 from "../../assets/figma-icons/98-1156.svg?no-inline"
-import asset_98_1157 from "../../assets/figma-icons/98-1157.svg?no-inline"
-import asset_98_1159 from "../../assets/figma-icons/98-1159.svg?no-inline"
-import asset_98_1160 from "../../assets/figma-icons/98-1160.svg?no-inline"
-import asset_98_1161 from "../../assets/figma-icons/98-1161.svg?no-inline"
-import asset_98_1252 from "../../assets/figma-icons/98-1252.svg?no-inline"
-import asset_98_1253 from "../../assets/figma-icons/98-1253.svg?no-inline"
-import asset_98_1254 from "../../assets/figma-icons/98-1254.svg?no-inline"
-import asset_98_1255 from "../../assets/figma-icons/98-1255.svg?no-inline"
-import asset_98_1256 from "../../assets/figma-icons/98-1256.svg?no-inline"
-import asset_98_1250 from "../../assets/figma-icons/98-1250.svg?no-inline"
-import asset_98_1251 from "../../assets/figma-icons/98-1251.svg?no-inline"
-import asset_98_1271 from "../../assets/figma-icons/98-1271.svg?no-inline"
-import asset_98_1290 from "../../assets/figma-icons/98-1290.svg?no-inline"
-import asset_98_1297 from "../../assets/figma-icons/98-1297.svg?no-inline"
-import asset_98_1298 from "../../assets/figma-icons/98-1298.svg?no-inline"
-import asset_98_1299 from "../../assets/figma-icons/98-1299.svg?no-inline"
-import asset_98_1351 from "../../assets/figma-icons/98-1351.svg?no-inline"
-import asset_98_666 from "../../assets/figma-icons/98-666.svg?no-inline"
-import asset_98_667 from "../../assets/figma-icons/98-667.svg?no-inline"
-import asset_98_675 from "../../assets/figma-icons/98-675.svg?no-inline"
-import asset_98_688 from "../../assets/figma-icons/98-688.svg?no-inline"
-import asset_98_689 from "../../assets/figma-icons/98-689.svg?no-inline"
-import asset_98_704 from "../../assets/figma-icons/98-704.svg?no-inline"
-import asset_98_711 from "../../assets/figma-icons/98-711.svg?no-inline"
-import asset_98_718 from "../../assets/figma-icons/98-718.svg?no-inline"
-import asset_98_737 from "../../assets/figma-icons/98-737.svg?no-inline"
-import asset_98_738 from "../../assets/figma-icons/98-738.svg?no-inline"
-import asset_98_867 from "../../assets/figma-icons/98-867.svg?no-inline"
-import asset_98_868 from "../../assets/figma-icons/98-868.svg?no-inline"
-import asset_98_869 from "../../assets/figma-icons/98-869.svg?no-inline"
-import asset_98_870 from "../../assets/figma-icons/98-870.svg?no-inline"
-import asset_98_878 from "../../assets/figma-icons/98-878.svg?no-inline"
-import asset_98_915 from "../../assets/figma-icons/98-915.svg?no-inline"
-import asset_98_916 from "../../assets/figma-icons/98-916.svg?no-inline"
-import asset_98_917 from "../../assets/figma-icons/98-917.svg?no-inline"
-import asset_98_918 from "../../assets/figma-icons/98-918.svg?no-inline"
-import asset_98_932 from "../../assets/figma-icons/98-932.svg?no-inline"
-import asset_98_933 from "../../assets/figma-icons/98-933.svg?no-inline"
-import asset_98_952 from "../../assets/figma-icons/98-952.svg?no-inline"
-import asset_98_965 from "../../assets/figma-icons/98-965.svg?no-inline"
-import asset_98_966 from "../../assets/figma-icons/98-966.svg?no-inline"
-import asset_98_973 from "../../assets/figma-icons/98-973.svg?no-inline"
-import asset_98_980 from "../../assets/figma-icons/98-980.svg?no-inline"
-import asset_98_987 from "../../assets/figma-icons/98-987.svg?no-inline"
-import asset_98_994 from "../../assets/figma-icons/98-994.svg?no-inline"
-import asset_9833_26066 from "../../assets/figma-icons/9833-26066.svg?no-inline"
-import asset_9833_27244 from "../../assets/figma-icons/9833-27244.svg?no-inline"
-import asset_9876_42679 from "../../assets/figma-icons/9876-42679.svg?no-inline"
-import asset_99_2068 from "../../assets/figma-icons/99-2068.svg?no-inline"
-import asset_99_2075 from "../../assets/figma-icons/99-2075.svg?no-inline"
-import asset_99_2082 from "../../assets/figma-icons/99-2082.svg?no-inline"
-import asset_99_2089 from "../../assets/figma-icons/99-2089.svg?no-inline"
-import asset_99_2096 from "../../assets/figma-icons/99-2096.svg?no-inline"
-import asset_99_2110 from "../../assets/figma-icons/99-2110.svg?no-inline"
-import asset_99_2117 from "../../assets/figma-icons/99-2117.svg?no-inline"
-import asset_99_2124 from "../../assets/figma-icons/99-2124.svg?no-inline"
-import asset_99_2131 from "../../assets/figma-icons/99-2131.svg?no-inline"
-import asset_99_2138 from "../../assets/figma-icons/99-2138.svg?no-inline"
-import asset_99_2145 from "../../assets/figma-icons/99-2145.svg?no-inline"
-import asset_99_2152 from "../../assets/figma-icons/99-2152.svg?no-inline"
-import asset_99_2159 from "../../assets/figma-icons/99-2159.svg?no-inline"
-import asset_99_2166 from "../../assets/figma-icons/99-2166.svg?no-inline"
-import asset_99_2173 from "../../assets/figma-icons/99-2173.svg?no-inline"
-import asset_99_2180 from "../../assets/figma-icons/99-2180.svg?no-inline"
-import asset_99_2187 from "../../assets/figma-icons/99-2187.svg?no-inline"
-import asset_99_2194 from "../../assets/figma-icons/99-2194.svg?no-inline"
-import asset_99_2201 from "../../assets/figma-icons/99-2201.svg?no-inline"
-import asset_99_2208 from "../../assets/figma-icons/99-2208.svg?no-inline"
-import asset_99_2215 from "../../assets/figma-icons/99-2215.svg?no-inline"
-import asset_99_2222 from "../../assets/figma-icons/99-2222.svg?no-inline"
-import asset_99_2229 from "../../assets/figma-icons/99-2229.svg?no-inline"
-import asset_99_2248 from "../../assets/figma-icons/99-2248.svg?no-inline"
-import asset_99_2249 from "../../assets/figma-icons/99-2249.svg?no-inline"
-import asset_99_2250 from "../../assets/figma-icons/99-2250.svg?no-inline"
-import asset_99_2257 from "../../assets/figma-icons/99-2257.svg?no-inline"
-import asset_99_2264 from "../../assets/figma-icons/99-2264.svg?no-inline"
-import asset_99_2271 from "../../assets/figma-icons/99-2271.svg?no-inline"
-import asset_99_2278 from "../../assets/figma-icons/99-2278.svg?no-inline"
-import asset_99_2285 from "../../assets/figma-icons/99-2285.svg?no-inline"
-import asset_99_2292 from "../../assets/figma-icons/99-2292.svg?no-inline"
-import asset_99_2299 from "../../assets/figma-icons/99-2299.svg?no-inline"
-import asset_99_2329 from "../../assets/figma-icons/99-2329.svg?no-inline"
-import asset_99_2330 from "../../assets/figma-icons/99-2330.svg?no-inline"
-import asset_99_2338 from "../../assets/figma-icons/99-2338.svg?no-inline"
-import asset_99_2345 from "../../assets/figma-icons/99-2345.svg?no-inline"
-import asset_99_2381 from "../../assets/figma-icons/99-2381.svg?no-inline"
-import asset_99_2388 from "../../assets/figma-icons/99-2388.svg?no-inline"
-import asset_99_2395 from "../../assets/figma-icons/99-2395.svg?no-inline"
-import asset_99_2408 from "../../assets/figma-icons/99-2408.svg?no-inline"
-import asset_99_2415 from "../../assets/figma-icons/99-2415.svg?no-inline"
-import asset_99_2422 from "../../assets/figma-icons/99-2422.svg?no-inline"
-import asset_99_614 from "../../assets/figma-icons/99-614.svg?no-inline"
-import asset_99_615 from "../../assets/figma-icons/99-615.svg?no-inline"
-import asset_99_623 from "../../assets/figma-icons/99-623.svg?no-inline"
-import asset_99_630 from "../../assets/figma-icons/99-630.svg?no-inline"
-import asset_99_637 from "../../assets/figma-icons/99-637.svg?no-inline"
-import asset_99_644 from "../../assets/figma-icons/99-644.svg?no-inline"
-import asset_99_666 from "../../assets/figma-icons/99-666.svg?no-inline"
-import asset_99_673 from "../../assets/figma-icons/99-673.svg?no-inline"
-import asset_99_777 from "../../assets/figma-icons/99-777.svg?no-inline"
-import asset_99_778 from "../../assets/figma-icons/99-778.svg?no-inline"
-import asset_99_779 from "../../assets/figma-icons/99-779.svg?no-inline"
-import asset_99_780 from "../../assets/figma-icons/99-780.svg?no-inline"
-import asset_9924_27038 from "../../assets/figma-icons/9924-27038.svg?no-inline"
-import asset_9977_21200 from "../../assets/figma-icons/9977-21200.svg?no-inline"
-import asset_9977_23980 from "../../assets/figma-icons/9977-23980.svg?no-inline"
 import type { FigmaIconName } from "./figma-inventory"
 
 export type IconAsset = {
@@ -202,7 +6,7 @@ export type IconAsset = {
   rendering: "image" | "mask"
   defaultVariantNodeId: string
   aliases: Partial<Record<string, string>>
-  variants: Record<string, { nodeId: string; url: string }>
+  variants: Record<string, { nodeId: string; file: string }>
 }
 
 export const iconAssets: Record<string, IconAsset> = {
@@ -211,168 +15,168 @@ export const iconAssets: Record<string, IconAsset> = {
     rendering: "mask",
     defaultVariantNodeId: "10297:6918",
     aliases: {},
-    variants: { "10297:6918": { nodeId: "10297:6918", url: asset_10297_6918 } },
+    variants: { "10297:6918": { nodeId: "10297:6918", file: "10297-6918.svg" } },
   },
   "10444:14812": {
     name: "local_laundry_service",
     rendering: "mask",
     defaultVariantNodeId: "10444:14812",
     aliases: {},
-    variants: { "10444:14812": { nodeId: "10444:14812", url: asset_10444_14812 } },
+    variants: { "10444:14812": { nodeId: "10444:14812", file: "10444-14812.svg" } },
   },
   "10444:15263": {
     name: "settings_remote",
     rendering: "mask",
     defaultVariantNodeId: "10444:15263",
     aliases: {},
-    variants: { "10444:15263": { nodeId: "10444:15263", url: asset_10444_15263 } },
+    variants: { "10444:15263": { nodeId: "10444:15263", file: "10444-15263.svg" } },
   },
   "1101:3862": {
     name: "contacts",
     rendering: "mask",
     defaultVariantNodeId: "1101:3862",
     aliases: {},
-    variants: { "1101:3862": { nodeId: "1101:3862", url: asset_1101_3862 } },
+    variants: { "1101:3862": { nodeId: "1101:3862", file: "1101-3862.svg" } },
   },
   "1101:4296": {
     name: "approval_delegation",
     rendering: "mask",
     defaultVariantNodeId: "1101:4296",
     aliases: {},
-    variants: { "1101:4296": { nodeId: "1101:4296", url: asset_1101_4296 } },
+    variants: { "1101:4296": { nodeId: "1101:4296", file: "1101-4296.svg" } },
   },
   "1101:4422": {
     name: "integration_instructions",
     rendering: "mask",
     defaultVariantNodeId: "1101:4422",
     aliases: {},
-    variants: { "1101:4422": { nodeId: "1101:4422", url: asset_1101_4422 } },
+    variants: { "1101:4422": { nodeId: "1101:4422", file: "1101-4422.svg" } },
   },
   "1120:7621": {
     name: "construction",
     rendering: "mask",
     defaultVariantNodeId: "1120:7621",
     aliases: {},
-    variants: { "1120:7621": { nodeId: "1120:7621", url: asset_1120_7621 } },
+    variants: { "1120:7621": { nodeId: "1120:7621", file: "1120-7621.svg" } },
   },
   "1120:7638": {
     name: "dns",
     rendering: "mask",
     defaultVariantNodeId: "1120:7638",
     aliases: {},
-    variants: { "1120:7638": { nodeId: "1120:7638", url: asset_1120_7638 } },
+    variants: { "1120:7638": { nodeId: "1120:7638", file: "1120-7638.svg" } },
   },
   "1120:7821": {
     name: "dashboard",
     rendering: "mask",
     defaultVariantNodeId: "1120:7821",
     aliases: {},
-    variants: { "1120:7821": { nodeId: "1120:7821", url: asset_1120_7821 } },
+    variants: { "1120:7821": { nodeId: "1120:7821", file: "1120-7821.svg" } },
   },
   "1174:9780": {
     name: "save",
     rendering: "mask",
     defaultVariantNodeId: "1174:9780",
     aliases: {},
-    variants: { "1174:9780": { nodeId: "1174:9780", url: asset_1174_9780 } },
+    variants: { "1174:9780": { nodeId: "1174:9780", file: "1174-9780.svg" } },
   },
   "12785:14427": {
     name: "forward_to_inbox",
     rendering: "mask",
     defaultVariantNodeId: "12785:14427",
     aliases: {},
-    variants: { "12785:14427": { nodeId: "12785:14427", url: asset_12785_14427 } },
+    variants: { "12785:14427": { nodeId: "12785:14427", file: "12785-14427.svg" } },
   },
   "1311:12896": {
     name: "table_chart",
     rendering: "mask",
     defaultVariantNodeId: "1311:12896",
     aliases: {},
-    variants: { "1311:12896": { nodeId: "1311:12896", url: asset_1311_12896 } },
+    variants: { "1311:12896": { nodeId: "1311:12896", file: "1311-12896.svg" } },
   },
   "1315:8596": {
     name: "account_circle",
     rendering: "mask",
     defaultVariantNodeId: "1315:8596",
     aliases: {},
-    variants: { "1315:8596": { nodeId: "1315:8596", url: asset_1315_8596 } },
+    variants: { "1315:8596": { nodeId: "1315:8596", file: "1315-8596.svg" } },
   },
   "13906:25597": {
     name: "third_letter",
     rendering: "mask",
     defaultVariantNodeId: "13906:25597",
     aliases: {},
-    variants: { "13906:25597": { nodeId: "13906:25597", url: asset_13906_25597 } },
+    variants: { "13906:25597": { nodeId: "13906:25597", file: "13906-25597.svg" } },
   },
   "14164:11363": {
     name: "license",
     rendering: "mask",
     defaultVariantNodeId: "14164:11363",
     aliases: {},
-    variants: { "14164:11363": { nodeId: "14164:11363", url: asset_14164_11363 } },
+    variants: { "14164:11363": { nodeId: "14164:11363", file: "14164-11363.svg" } },
   },
   "14241:48931": {
     name: "mail_pec",
     rendering: "mask",
     defaultVariantNodeId: "14241:48931",
     aliases: {},
-    variants: { "14241:48931": { nodeId: "14241:48931", url: asset_14241_48931 } },
+    variants: { "14241:48931": { nodeId: "14241:48931", file: "14241-48931.svg" } },
   },
   "14709:279": {
     name: "mail_error",
     rendering: "mask",
     defaultVariantNodeId: "14709:279",
     aliases: {},
-    variants: { "14709:279": { nodeId: "14709:279", url: asset_14709_279 } },
+    variants: { "14709:279": { nodeId: "14709:279", file: "14709-279.svg" } },
   },
   "1501:5288": {
     name: "support",
     rendering: "mask",
     defaultVariantNodeId: "1501:5288",
     aliases: {},
-    variants: { "1501:5288": { nodeId: "1501:5288", url: asset_1501_5288 } },
+    variants: { "1501:5288": { nodeId: "1501:5288", file: "1501-5288.svg" } },
   },
   "1509:25567": {
     name: "confirmation_number",
     rendering: "mask",
     defaultVariantNodeId: "1509:25567",
     aliases: {},
-    variants: { "1509:25567": { nodeId: "1509:25567", url: asset_1509_25567 } },
+    variants: { "1509:25567": { nodeId: "1509:25567", file: "1509-25567.svg" } },
   },
   "15901:18590": {
     name: "school",
     rendering: "mask",
     defaultVariantNodeId: "15901:18590",
     aliases: {},
-    variants: { "15901:18590": { nodeId: "15901:18590", url: asset_15901_18590 } },
+    variants: { "15901:18590": { nodeId: "15901:18590", file: "15901-18590.svg" } },
   },
   "15901:18591": {
     name: "directions_subway",
     rendering: "mask",
     defaultVariantNodeId: "15901:18591",
     aliases: {},
-    variants: { "15901:18591": { nodeId: "15901:18591", url: asset_15901_18591 } },
+    variants: { "15901:18591": { nodeId: "15901:18591", file: "15901-18591.svg" } },
   },
   "15901:18592": {
     name: "health_and_safety",
     rendering: "mask",
     defaultVariantNodeId: "15901:18592",
     aliases: {},
-    variants: { "15901:18592": { nodeId: "15901:18592", url: asset_15901_18592 } },
+    variants: { "15901:18592": { nodeId: "15901:18592", file: "15901-18592.svg" } },
   },
   "2080:3319": {
     name: "arrow_menu_close",
     rendering: "mask",
     defaultVariantNodeId: "2080:3319",
     aliases: {},
-    variants: { "2080:3319": { nodeId: "2080:3319", url: asset_2080_3319 } },
+    variants: { "2080:3319": { nodeId: "2080:3319", file: "2080-3319.svg" } },
   },
   "2080:3320": {
     name: "left_panel_close",
     rendering: "mask",
     defaultVariantNodeId: "2080:3320",
     aliases: {},
-    variants: { "2080:3320": { nodeId: "2080:3320", url: asset_2080_3320 } },
+    variants: { "2080:3320": { nodeId: "2080:3320", file: "2080-3320.svg" } },
   },
   "232:1673": {
     name: "IO logo",
@@ -380,8 +184,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "232:1672",
     aliases: { light: "232:1672", dark: "232:1674" },
     variants: {
-      "232:1672": { nodeId: "232:1672", url: asset_232_1672 },
-      "232:1674": { nodeId: "232:1674", url: asset_232_1674 },
+      "232:1672": { nodeId: "232:1672", file: "232-1672.svg" },
+      "232:1674": { nodeId: "232:1674", file: "232-1674.svg" },
     },
   },
   "256:8579": {
@@ -389,98 +193,98 @@ export const iconAssets: Record<string, IconAsset> = {
     rendering: "image",
     defaultVariantNodeId: "256:8579",
     aliases: {},
-    variants: { "256:8579": { nodeId: "256:8579", url: asset_256_8579 } },
+    variants: { "256:8579": { nodeId: "256:8579", file: "256-8579.svg" } },
   },
   "256:8580": {
     name: "CIEID",
     rendering: "image",
     defaultVariantNodeId: "256:8580",
     aliases: {},
-    variants: { "256:8580": { nodeId: "256:8580", url: asset_256_8580 } },
+    variants: { "256:8580": { nodeId: "256:8580", file: "256-8580.svg" } },
   },
   "256:8581": {
     name: "CIE",
     rendering: "image",
     defaultVariantNodeId: "256:8581",
     aliases: {},
-    variants: { "256:8581": { nodeId: "256:8581", url: asset_256_8581 } },
+    variants: { "256:8581": { nodeId: "256:8581", file: "256-8581.svg" } },
   },
   "256:8582": {
     name: "pagoPA",
     rendering: "image",
     defaultVariantNodeId: "256:8582",
     aliases: {},
-    variants: { "256:8582": { nodeId: "256:8582", url: asset_256_8582 } },
+    variants: { "256:8582": { nodeId: "256:8582", file: "256-8582.svg" } },
   },
   "2801:90017": {
     name: "sort",
     rendering: "mask",
     defaultVariantNodeId: "2801:90017",
     aliases: {},
-    variants: { "2801:90017": { nodeId: "2801:90017", url: asset_2801_90017 } },
+    variants: { "2801:90017": { nodeId: "2801:90017", file: "2801-90017.svg" } },
   },
   "392:5291": {
     name: "how_to_reg",
     rendering: "mask",
     defaultVariantNodeId: "392:5291",
     aliases: {},
-    variants: { "392:5291": { nodeId: "392:5291", url: asset_392_5291 } },
+    variants: { "392:5291": { nodeId: "392:5291", file: "392-5291.svg" } },
   },
   "8702:266": {
     name: "mark_email_read",
     rendering: "mask",
     defaultVariantNodeId: "8702:266",
     aliases: {},
-    variants: { "8702:266": { nodeId: "8702:266", url: asset_8702_266 } },
+    variants: { "8702:266": { nodeId: "8702:266", file: "8702-266.svg" } },
   },
   "8704:37763": {
     name: "drafts",
     rendering: "mask",
     defaultVariantNodeId: "8704:37763",
     aliases: {},
-    variants: { "8704:37763": { nodeId: "8704:37763", url: asset_8704_37763 } },
+    variants: { "8704:37763": { nodeId: "8704:37763", file: "8704-37763.svg" } },
   },
   "8704:37815": {
     name: "flag",
     rendering: "mask",
     defaultVariantNodeId: "8704:37815",
     aliases: {},
-    variants: { "8704:37815": { nodeId: "8704:37815", url: asset_8704_37815 } },
+    variants: { "8704:37815": { nodeId: "8704:37815", file: "8704-37815.svg" } },
   },
   "8717:781": {
     name: "SEND",
     rendering: "image",
     defaultVariantNodeId: "8717:781",
     aliases: {},
-    variants: { "8717:781": { nodeId: "8717:781", url: asset_8717_781 } },
+    variants: { "8717:781": { nodeId: "8717:781", file: "8717-781.svg" } },
   },
   "8854:39311": {
     name: "first_letter",
     rendering: "mask",
     defaultVariantNodeId: "8854:39311",
     aliases: {},
-    variants: { "8854:39311": { nodeId: "8854:39311", url: asset_8854_39311 } },
+    variants: { "8854:39311": { nodeId: "8854:39311", file: "8854-39311.svg" } },
   },
   "8854:39312": {
     name: "second_letter",
     rendering: "mask",
     defaultVariantNodeId: "8854:39312",
     aliases: {},
-    variants: { "8854:39312": { nodeId: "8854:39312", url: asset_8854_39312 } },
+    variants: { "8854:39312": { nodeId: "8854:39312", file: "8854-39312.svg" } },
   },
   "8854:39315": {
     name: "mobile_vibrate",
     rendering: "mask",
     defaultVariantNodeId: "8854:39315",
     aliases: {},
-    variants: { "8854:39315": { nodeId: "8854:39315", url: asset_8854_39315 } },
+    variants: { "8854:39315": { nodeId: "8854:39315", file: "8854-39315.svg" } },
   },
   "9082:974": {
     name: "open_in_browser",
     rendering: "mask",
     defaultVariantNodeId: "9082:974",
     aliases: {},
-    variants: { "9082:974": { nodeId: "9082:974", url: asset_9082_974 } },
+    variants: { "9082:974": { nodeId: "9082:974", file: "9082-974.svg" } },
   },
   "94:1982": {
     name: "category",
@@ -488,8 +292,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "94:1980",
     aliases: { unselected: "94:1980", selected: "94:1981" },
     variants: {
-      "94:1980": { nodeId: "94:1980", url: asset_94_1980 },
-      "94:1981": { nodeId: "94:1981", url: asset_94_1981 },
+      "94:1980": { nodeId: "94:1980", file: "94-1980.svg" },
+      "94:1981": { nodeId: "94:1981", file: "94-1981.svg" },
     },
   },
   "94:1997": {
@@ -498,8 +302,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "94:1996",
     aliases: { unselected: "94:1996", selected: "94:1995" },
     variants: {
-      "94:1995": { nodeId: "94:1995", url: asset_94_1995 },
-      "94:1996": { nodeId: "94:1996", url: asset_94_1996 },
+      "94:1995": { nodeId: "94:1995", file: "94-1995.svg" },
+      "94:1996": { nodeId: "94:1996", file: "94-1996.svg" },
     },
   },
   "94:2021": {
@@ -508,8 +312,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "94:2016",
     aliases: { unselected: "94:2016", selected: "94:2020" },
     variants: {
-      "94:2016": { nodeId: "94:2016", url: asset_94_2016 },
-      "94:2020": { nodeId: "94:2020", url: asset_94_2020 },
+      "94:2016": { nodeId: "94:2016", file: "94-2016.svg" },
+      "94:2020": { nodeId: "94:2020", file: "94-2020.svg" },
     },
   },
   "94:2036": {
@@ -518,8 +322,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "94:2034",
     aliases: { unselected: "94:2034", selected: "94:2035" },
     variants: {
-      "94:2034": { nodeId: "94:2034", url: asset_94_2034 },
-      "94:2035": { nodeId: "94:2035", url: asset_94_2035 },
+      "94:2034": { nodeId: "94:2034", file: "94-2034.svg" },
+      "94:2035": { nodeId: "94:2035", file: "94-2035.svg" },
     },
   },
   "94:2057": {
@@ -528,8 +332,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "94:2055",
     aliases: { unselected: "94:2055", selected: "94:2056" },
     variants: {
-      "94:2055": { nodeId: "94:2055", url: asset_94_2055 },
-      "94:2056": { nodeId: "94:2056", url: asset_94_2056 },
+      "94:2055": { nodeId: "94:2055", file: "94-2055.svg" },
+      "94:2056": { nodeId: "94:2056", file: "94-2056.svg" },
     },
   },
   "94:2072": {
@@ -538,8 +342,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "94:2071",
     aliases: { unselected: "94:2071", selected: "94:2070" },
     variants: {
-      "94:2070": { nodeId: "94:2070", url: asset_94_2070 },
-      "94:2071": { nodeId: "94:2071", url: asset_94_2071 },
+      "94:2070": { nodeId: "94:2070", file: "94-2070.svg" },
+      "94:2071": { nodeId: "94:2071", file: "94-2071.svg" },
     },
   },
   "94:2093": {
@@ -548,8 +352,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "94:2091",
     aliases: { unselected: "94:2091", selected: "94:2092" },
     variants: {
-      "94:2091": { nodeId: "94:2091", url: asset_94_2091 },
-      "94:2092": { nodeId: "94:2092", url: asset_94_2092 },
+      "94:2091": { nodeId: "94:2091", file: "94-2091.svg" },
+      "94:2092": { nodeId: "94:2092", file: "94-2092.svg" },
     },
   },
   "94:2106": {
@@ -557,14 +361,14 @@ export const iconAssets: Record<string, IconAsset> = {
     rendering: "mask",
     defaultVariantNodeId: "94:2106",
     aliases: {},
-    variants: { "94:2106": { nodeId: "94:2106", url: asset_94_2106 } },
+    variants: { "94:2106": { nodeId: "94:2106", file: "94-2106.svg" } },
   },
   "95:1620": {
     name: "edit",
     rendering: "mask",
     defaultVariantNodeId: "95:1620",
     aliases: {},
-    variants: { "95:1620": { nodeId: "95:1620", url: asset_95_1620 } },
+    variants: { "95:1620": { nodeId: "95:1620", file: "95-1620.svg" } },
   },
   "95:1691": {
     name: "lock",
@@ -572,8 +376,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "95:1689",
     aliases: { closed: "95:1689", open: "95:1690" },
     variants: {
-      "95:1689": { nodeId: "95:1689", url: asset_95_1689 },
-      "95:1690": { nodeId: "95:1690", url: asset_95_1690 },
+      "95:1689": { nodeId: "95:1689", file: "95-1689.svg" },
+      "95:1690": { nodeId: "95:1690", file: "95-1690.svg" },
     },
   },
   "95:680": {
@@ -581,7 +385,7 @@ export const iconAssets: Record<string, IconAsset> = {
     rendering: "mask",
     defaultVariantNodeId: "95:680",
     aliases: {},
-    variants: { "95:680": { nodeId: "95:680", url: asset_95_680 } },
+    variants: { "95:680": { nodeId: "95:680", file: "95-680.svg" } },
   },
   "9584:66412": {
     name: "send",
@@ -589,8 +393,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "9584:66408",
     aliases: { outlined: "9584:66411", filled: "9584:66408" },
     variants: {
-      "9584:66408": { nodeId: "9584:66408", url: asset_9584_66408 },
-      "9584:66411": { nodeId: "9584:66411", url: asset_9584_66411 },
+      "9584:66408": { nodeId: "9584:66408", file: "9584-66408.svg" },
+      "9584:66411": { nodeId: "9584:66411", file: "9584-66411.svg" },
     },
   },
   "96:621": {
@@ -599,8 +403,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "95:1676",
     aliases: { "filter-alt": "95:1676", tune: "95:1675" },
     variants: {
-      "95:1675": { nodeId: "95:1675", url: asset_95_1675 },
-      "95:1676": { nodeId: "95:1676", url: asset_95_1676 },
+      "95:1675": { nodeId: "95:1675", file: "95-1675.svg" },
+      "95:1676": { nodeId: "95:1676", file: "95-1676.svg" },
     },
   },
   "96:628": {
@@ -608,7 +412,7 @@ export const iconAssets: Record<string, IconAsset> = {
     rendering: "mask",
     defaultVariantNodeId: "96:628",
     aliases: {},
-    variants: { "96:628": { nodeId: "96:628", url: asset_96_628 } },
+    variants: { "96:628": { nodeId: "96:628", file: "96-628.svg" } },
   },
   "96:668": {
     name: "check_box",
@@ -616,9 +420,9 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "96:666",
     aliases: { unchecked: "96:666", checked: "96:667", indeterminate: "96:665" },
     variants: {
-      "96:665": { nodeId: "96:665", url: asset_96_665 },
-      "96:666": { nodeId: "96:666", url: asset_96_666 },
-      "96:667": { nodeId: "96:667", url: asset_96_667 },
+      "96:665": { nodeId: "96:665", file: "96-665.svg" },
+      "96:666": { nodeId: "96:666", file: "96-666.svg" },
+      "96:667": { nodeId: "96:667", file: "96-667.svg" },
     },
   },
   "96:671": {
@@ -627,8 +431,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "96:670",
     aliases: { unchecked: "96:670", checked: "96:669" },
     variants: {
-      "96:669": { nodeId: "96:669", url: asset_96_669 },
-      "96:670": { nodeId: "96:670", url: asset_96_670 },
+      "96:669": { nodeId: "96:669", file: "96-669.svg" },
+      "96:670": { nodeId: "96:670", file: "96-670.svg" },
     },
   },
   "96:686": {
@@ -637,8 +441,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "96:685",
     aliases: { visible: "96:685", hidden: "96:684" },
     variants: {
-      "96:684": { nodeId: "96:684", url: asset_96_684 },
-      "96:685": { nodeId: "96:685", url: asset_96_685 },
+      "96:684": { nodeId: "96:684", file: "96-684.svg" },
+      "96:685": { nodeId: "96:685", file: "96-685.svg" },
     },
   },
   "96:708": {
@@ -647,8 +451,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "96:699",
     aliases: { pinned: "96:699", unpinned: "96:715" },
     variants: {
-      "96:699": { nodeId: "96:699", url: asset_96_699 },
-      "96:715": { nodeId: "96:715", url: asset_96_715 },
+      "96:699": { nodeId: "96:699", file: "96-699.svg" },
+      "96:715": { nodeId: "96:715", file: "96-715.svg" },
     },
   },
   "96:722": {
@@ -656,56 +460,56 @@ export const iconAssets: Record<string, IconAsset> = {
     rendering: "mask",
     defaultVariantNodeId: "96:722",
     aliases: {},
-    variants: { "96:722": { nodeId: "96:722", url: asset_96_722 } },
+    variants: { "96:722": { nodeId: "96:722", file: "96-722.svg" } },
   },
   "9640:793": {
     name: "gavel",
     rendering: "mask",
     defaultVariantNodeId: "9640:793",
     aliases: {},
-    variants: { "9640:793": { nodeId: "9640:793", url: asset_9640_793 } },
+    variants: { "9640:793": { nodeId: "9640:793", file: "9640-793.svg" } },
   },
   "9642:949": {
     name: "no_accounts",
     rendering: "mask",
     defaultVariantNodeId: "9642:949",
     aliases: {},
-    variants: { "9642:949": { nodeId: "9642:949", url: asset_9642_949 } },
+    variants: { "9642:949": { nodeId: "9642:949", file: "9642-949.svg" } },
   },
   "9643:953": {
     name: "grading",
     rendering: "mask",
     defaultVariantNodeId: "9643:953",
     aliases: {},
-    variants: { "9643:953": { nodeId: "9643:953", url: asset_9643_953 } },
+    variants: { "9643:953": { nodeId: "9643:953", file: "9643-953.svg" } },
   },
   "9643:960": {
     name: "troubleshoot",
     rendering: "mask",
     defaultVariantNodeId: "9643:960",
     aliases: {},
-    variants: { "9643:960": { nodeId: "9643:960", url: asset_9643_960 } },
+    variants: { "9643:960": { nodeId: "9643:960", file: "9643-960.svg" } },
   },
   "9643:961": {
     name: "search_check_2",
     rendering: "mask",
     defaultVariantNodeId: "9643:961",
     aliases: {},
-    variants: { "9643:961": { nodeId: "9643:961", url: asset_9643_961 } },
+    variants: { "9643:961": { nodeId: "9643:961", file: "9643-961.svg" } },
   },
   "9790:9527": {
     name: "mail_off",
     rendering: "mask",
     defaultVariantNodeId: "9790:9527",
     aliases: {},
-    variants: { "9790:9527": { nodeId: "9790:9527", url: asset_9790_9527 } },
+    variants: { "9790:9527": { nodeId: "9790:9527", file: "9790-9527.svg" } },
   },
   "98:1001": {
     name: "call_split",
     rendering: "mask",
     defaultVariantNodeId: "98:1001",
     aliases: {},
-    variants: { "98:1001": { nodeId: "98:1001", url: asset_98_1001 } },
+    variants: { "98:1001": { nodeId: "98:1001", file: "98-1001.svg" } },
   },
   "98:1016": {
     name: "unfold",
@@ -713,8 +517,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "98:1014",
     aliases: { less: "98:1014", more: "98:1015" },
     variants: {
-      "98:1014": { nodeId: "98:1014", url: asset_98_1014 },
-      "98:1015": { nodeId: "98:1015", url: asset_98_1015 },
+      "98:1014": { nodeId: "98:1014", file: "98-1014.svg" },
+      "98:1015": { nodeId: "98:1015", file: "98-1015.svg" },
     },
   },
   "98:1065": {
@@ -722,7 +526,7 @@ export const iconAssets: Record<string, IconAsset> = {
     rendering: "mask",
     defaultVariantNodeId: "98:1065",
     aliases: {},
-    variants: { "98:1065": { nodeId: "98:1065", url: asset_98_1065 } },
+    variants: { "98:1065": { nodeId: "98:1065", file: "98-1065.svg" } },
   },
   "98:1152": {
     name: "info",
@@ -730,8 +534,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "98:1114",
     aliases: { outlined: "98:1114", filled: "98:1115" },
     variants: {
-      "98:1114": { nodeId: "98:1114", url: asset_98_1114 },
-      "98:1115": { nodeId: "98:1115", url: asset_98_1115 },
+      "98:1114": { nodeId: "98:1114", file: "98-1114.svg" },
+      "98:1115": { nodeId: "98:1115", file: "98-1115.svg" },
     },
   },
   "98:1153": {
@@ -739,21 +543,21 @@ export const iconAssets: Record<string, IconAsset> = {
     rendering: "mask",
     defaultVariantNodeId: "98:1153",
     aliases: {},
-    variants: { "98:1153": { nodeId: "98:1153", url: asset_98_1153 } },
+    variants: { "98:1153": { nodeId: "98:1153", file: "98-1153.svg" } },
   },
   "98:1154": {
     name: "report",
     rendering: "mask",
     defaultVariantNodeId: "98:1154",
     aliases: {},
-    variants: { "98:1154": { nodeId: "98:1154", url: asset_98_1154 } },
+    variants: { "98:1154": { nodeId: "98:1154", file: "98-1154.svg" } },
   },
   "98:1155": {
     name: "cancel",
     rendering: "mask",
     defaultVariantNodeId: "98:1155",
     aliases: {},
-    variants: { "98:1155": { nodeId: "98:1155", url: asset_98_1155 } },
+    variants: { "98:1155": { nodeId: "98:1155", file: "98-1155.svg" } },
   },
   "98:1158": {
     name: "check",
@@ -761,8 +565,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "98:1156",
     aliases: { big: "98:1156", small: "98:1157" },
     variants: {
-      "98:1156": { nodeId: "98:1156", url: asset_98_1156 },
-      "98:1157": { nodeId: "98:1157", url: asset_98_1157 },
+      "98:1156": { nodeId: "98:1156", file: "98-1156.svg" },
+      "98:1157": { nodeId: "98:1157", file: "98-1157.svg" },
     },
   },
   "98:1162": {
@@ -771,9 +575,9 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "98:1159",
     aliases: { outlined: "98:1159", filled: "98:1160", stroke: "98:1161" },
     variants: {
-      "98:1159": { nodeId: "98:1159", url: asset_98_1159 },
-      "98:1160": { nodeId: "98:1160", url: asset_98_1160 },
-      "98:1161": { nodeId: "98:1161", url: asset_98_1161 },
+      "98:1159": { nodeId: "98:1159", file: "98-1159.svg" },
+      "98:1160": { nodeId: "98:1160", file: "98-1160.svg" },
+      "98:1161": { nodeId: "98:1161", file: "98-1161.svg" },
     },
   },
   "98:1252": {
@@ -781,21 +585,21 @@ export const iconAssets: Record<string, IconAsset> = {
     rendering: "mask",
     defaultVariantNodeId: "98:1252",
     aliases: {},
-    variants: { "98:1252": { nodeId: "98:1252", url: asset_98_1252 } },
+    variants: { "98:1252": { nodeId: "98:1252", file: "98-1252.svg" } },
   },
   "98:1253": {
     name: "chat",
     rendering: "mask",
     defaultVariantNodeId: "98:1253",
     aliases: {},
-    variants: { "98:1253": { nodeId: "98:1253", url: asset_98_1253 } },
+    variants: { "98:1253": { nodeId: "98:1253", file: "98-1253.svg" } },
   },
   "98:1254": {
     name: "mark_email_unread",
     rendering: "mask",
     defaultVariantNodeId: "98:1254",
     aliases: {},
-    variants: { "98:1254": { nodeId: "98:1254", url: asset_98_1254 } },
+    variants: { "98:1254": { nodeId: "98:1254", file: "98-1254.svg" } },
   },
   "98:1257": {
     name: "favorite",
@@ -803,8 +607,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "98:1256",
     aliases: { unselected: "98:1256", selected: "98:1255" },
     variants: {
-      "98:1255": { nodeId: "98:1255", url: asset_98_1255 },
-      "98:1256": { nodeId: "98:1256", url: asset_98_1256 },
+      "98:1255": { nodeId: "98:1255", file: "98-1255.svg" },
+      "98:1256": { nodeId: "98:1256", file: "98-1256.svg" },
     },
   },
   "98:1258": {
@@ -813,8 +617,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "98:1250",
     aliases: { unselected: "98:1250", selected: "98:1251" },
     variants: {
-      "98:1250": { nodeId: "98:1250", url: asset_98_1250 },
-      "98:1251": { nodeId: "98:1251", url: asset_98_1251 },
+      "98:1250": { nodeId: "98:1250", file: "98-1250.svg" },
+      "98:1251": { nodeId: "98:1251", file: "98-1251.svg" },
     },
   },
   "98:1271": {
@@ -822,21 +626,21 @@ export const iconAssets: Record<string, IconAsset> = {
     rendering: "mask",
     defaultVariantNodeId: "98:1271",
     aliases: {},
-    variants: { "98:1271": { nodeId: "98:1271", url: asset_98_1271 } },
+    variants: { "98:1271": { nodeId: "98:1271", file: "98-1271.svg" } },
   },
   "98:1290": {
     name: "attach_email",
     rendering: "mask",
     defaultVariantNodeId: "98:1290",
     aliases: {},
-    variants: { "98:1290": { nodeId: "98:1290", url: asset_98_1290 } },
+    variants: { "98:1290": { nodeId: "98:1290", file: "98-1290.svg" } },
   },
   "98:1297": {
     name: "feedback",
     rendering: "mask",
     defaultVariantNodeId: "98:1297",
     aliases: {},
-    variants: { "98:1297": { nodeId: "98:1297", url: asset_98_1297 } },
+    variants: { "98:1297": { nodeId: "98:1297", file: "98-1297.svg" } },
   },
   "98:1300": {
     name: "inventory_2",
@@ -844,8 +648,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "98:1298",
     aliases: { outlined: "98:1298", filled: "98:1299" },
     variants: {
-      "98:1298": { nodeId: "98:1298", url: asset_98_1298 },
-      "98:1299": { nodeId: "98:1299", url: asset_98_1299 },
+      "98:1298": { nodeId: "98:1298", file: "98-1298.svg" },
+      "98:1299": { nodeId: "98:1299", file: "98-1299.svg" },
     },
   },
   "98:1351": {
@@ -853,7 +657,7 @@ export const iconAssets: Record<string, IconAsset> = {
     rendering: "mask",
     defaultVariantNodeId: "98:1351",
     aliases: {},
-    variants: { "98:1351": { nodeId: "98:1351", url: asset_98_1351 } },
+    variants: { "98:1351": { nodeId: "98:1351", file: "98-1351.svg" } },
   },
   "98:668": {
     name: "close",
@@ -861,8 +665,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "98:666",
     aliases: { big: "98:666", small: "98:667" },
     variants: {
-      "98:666": { nodeId: "98:666", url: asset_98_666 },
-      "98:667": { nodeId: "98:667", url: asset_98_667 },
+      "98:666": { nodeId: "98:666", file: "98-666.svg" },
+      "98:667": { nodeId: "98:667", file: "98-667.svg" },
     },
   },
   "98:675": {
@@ -870,7 +674,7 @@ export const iconAssets: Record<string, IconAsset> = {
     rendering: "mask",
     defaultVariantNodeId: "98:675",
     aliases: {},
-    variants: { "98:675": { nodeId: "98:675", url: asset_98_675 } },
+    variants: { "98:675": { nodeId: "98:675", file: "98-675.svg" } },
   },
   "98:697": {
     name: "add",
@@ -878,8 +682,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "98:689",
     aliases: { big: "98:689", small: "98:688" },
     variants: {
-      "98:688": { nodeId: "98:688", url: asset_98_688 },
-      "98:689": { nodeId: "98:689", url: asset_98_689 },
+      "98:688": { nodeId: "98:688", file: "98-688.svg" },
+      "98:689": { nodeId: "98:689", file: "98-689.svg" },
     },
   },
   "98:704": {
@@ -887,35 +691,35 @@ export const iconAssets: Record<string, IconAsset> = {
     rendering: "mask",
     defaultVariantNodeId: "98:704",
     aliases: {},
-    variants: { "98:704": { nodeId: "98:704", url: asset_98_704 } },
+    variants: { "98:704": { nodeId: "98:704", file: "98-704.svg" } },
   },
   "98:711": {
     name: "mode_off_on",
     rendering: "mask",
     defaultVariantNodeId: "98:711",
     aliases: {},
-    variants: { "98:711": { nodeId: "98:711", url: asset_98_711 } },
+    variants: { "98:711": { nodeId: "98:711", file: "98-711.svg" } },
   },
   "98:718": {
     name: "block",
     rendering: "mask",
     defaultVariantNodeId: "98:718",
     aliases: {},
-    variants: { "98:718": { nodeId: "98:718", url: asset_98_718 } },
+    variants: { "98:718": { nodeId: "98:718", file: "98-718.svg" } },
   },
   "98:737": {
     name: "more_vert",
     rendering: "mask",
     defaultVariantNodeId: "98:737",
     aliases: {},
-    variants: { "98:737": { nodeId: "98:737", url: asset_98_737 } },
+    variants: { "98:737": { nodeId: "98:737", file: "98-737.svg" } },
   },
   "98:738": {
     name: "menu",
     rendering: "mask",
     defaultVariantNodeId: "98:738",
     aliases: {},
-    variants: { "98:738": { nodeId: "98:738", url: asset_98_738 } },
+    variants: { "98:738": { nodeId: "98:738", file: "98-738.svg" } },
   },
   "98:871": {
     name: "chevron",
@@ -923,10 +727,10 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "98:868",
     aliases: { right: "98:868", left: "98:867", down: "98:870", up: "98:869" },
     variants: {
-      "98:867": { nodeId: "98:867", url: asset_98_867 },
-      "98:868": { nodeId: "98:868", url: asset_98_868 },
-      "98:869": { nodeId: "98:869", url: asset_98_869 },
-      "98:870": { nodeId: "98:870", url: asset_98_870 },
+      "98:867": { nodeId: "98:867", file: "98-867.svg" },
+      "98:868": { nodeId: "98:868", file: "98-868.svg" },
+      "98:869": { nodeId: "98:869", file: "98-869.svg" },
+      "98:870": { nodeId: "98:870", file: "98-870.svg" },
     },
   },
   "98:878": {
@@ -934,7 +738,7 @@ export const iconAssets: Record<string, IconAsset> = {
     rendering: "mask",
     defaultVariantNodeId: "98:878",
     aliases: {},
-    variants: { "98:878": { nodeId: "98:878", url: asset_98_878 } },
+    variants: { "98:878": { nodeId: "98:878", file: "98-878.svg" } },
   },
   "98:919": {
     name: "arrow",
@@ -942,10 +746,10 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "98:915",
     aliases: { right: "98:915", left: "98:916", down: "98:917", up: "98:918" },
     variants: {
-      "98:915": { nodeId: "98:915", url: asset_98_915 },
-      "98:916": { nodeId: "98:916", url: asset_98_916 },
-      "98:917": { nodeId: "98:917", url: asset_98_917 },
-      "98:918": { nodeId: "98:918", url: asset_98_918 },
+      "98:915": { nodeId: "98:915", file: "98-915.svg" },
+      "98:916": { nodeId: "98:916", file: "98-916.svg" },
+      "98:917": { nodeId: "98:917", file: "98-917.svg" },
+      "98:918": { nodeId: "98:918", file: "98-918.svg" },
     },
   },
   "98:932": {
@@ -953,315 +757,315 @@ export const iconAssets: Record<string, IconAsset> = {
     rendering: "mask",
     defaultVariantNodeId: "98:932",
     aliases: {},
-    variants: { "98:932": { nodeId: "98:932", url: asset_98_932 } },
+    variants: { "98:932": { nodeId: "98:932", file: "98-932.svg" } },
   },
   "98:933": {
     name: "login",
     rendering: "mask",
     defaultVariantNodeId: "98:933",
     aliases: {},
-    variants: { "98:933": { nodeId: "98:933", url: asset_98_933 } },
+    variants: { "98:933": { nodeId: "98:933", file: "98-933.svg" } },
   },
   "98:952": {
     name: "exit_to_app",
     rendering: "mask",
     defaultVariantNodeId: "98:952",
     aliases: {},
-    variants: { "98:952": { nodeId: "98:952", url: asset_98_952 } },
+    variants: { "98:952": { nodeId: "98:952", file: "98-952.svg" } },
   },
   "98:965": {
     name: "download",
     rendering: "mask",
     defaultVariantNodeId: "98:965",
     aliases: {},
-    variants: { "98:965": { nodeId: "98:965", url: asset_98_965 } },
+    variants: { "98:965": { nodeId: "98:965", file: "98-965.svg" } },
   },
   "98:966": {
     name: "upload",
     rendering: "mask",
     defaultVariantNodeId: "98:966",
     aliases: {},
-    variants: { "98:966": { nodeId: "98:966", url: asset_98_966 } },
+    variants: { "98:966": { nodeId: "98:966", file: "98-966.svg" } },
   },
   "98:973": {
     name: "ios_share",
     rendering: "mask",
     defaultVariantNodeId: "98:973",
     aliases: {},
-    variants: { "98:973": { nodeId: "98:973", url: asset_98_973 } },
+    variants: { "98:973": { nodeId: "98:973", file: "98-973.svg" } },
   },
   "98:980": {
     name: "share",
     rendering: "mask",
     defaultVariantNodeId: "98:980",
     aliases: {},
-    variants: { "98:980": { nodeId: "98:980", url: asset_98_980 } },
+    variants: { "98:980": { nodeId: "98:980", file: "98-980.svg" } },
   },
   "98:987": {
     name: "open_in_new",
     rendering: "mask",
     defaultVariantNodeId: "98:987",
     aliases: {},
-    variants: { "98:987": { nodeId: "98:987", url: asset_98_987 } },
+    variants: { "98:987": { nodeId: "98:987", file: "98-987.svg" } },
   },
   "98:994": {
     name: "cached",
     rendering: "mask",
     defaultVariantNodeId: "98:994",
     aliases: {},
-    variants: { "98:994": { nodeId: "98:994", url: asset_98_994 } },
+    variants: { "98:994": { nodeId: "98:994", file: "98-994.svg" } },
   },
   "9833:26066": {
     name: "local_post_office",
     rendering: "mask",
     defaultVariantNodeId: "9833:26066",
     aliases: {},
-    variants: { "9833:26066": { nodeId: "9833:26066", url: asset_9833_26066 } },
+    variants: { "9833:26066": { nodeId: "9833:26066", file: "9833-26066.svg" } },
   },
   "9833:27244": {
     name: "mail_shield",
     rendering: "mask",
     defaultVariantNodeId: "9833:27244",
     aliases: {},
-    variants: { "9833:27244": { nodeId: "9833:27244", url: asset_9833_27244 } },
+    variants: { "9833:27244": { nodeId: "9833:27244", file: "9833-27244.svg" } },
   },
   "9876:42679": {
     name: "online_address",
     rendering: "mask",
     defaultVariantNodeId: "9876:42679",
     aliases: {},
-    variants: { "9876:42679": { nodeId: "9876:42679", url: asset_9876_42679 } },
+    variants: { "9876:42679": { nodeId: "9876:42679", file: "9876-42679.svg" } },
   },
   "99:2068": {
     name: "hourglass_top",
     rendering: "mask",
     defaultVariantNodeId: "99:2068",
     aliases: {},
-    variants: { "99:2068": { nodeId: "99:2068", url: asset_99_2068 } },
+    variants: { "99:2068": { nodeId: "99:2068", file: "99-2068.svg" } },
   },
   "99:2075": {
     name: "schedule",
     rendering: "mask",
     defaultVariantNodeId: "99:2075",
     aliases: {},
-    variants: { "99:2075": { nodeId: "99:2075", url: asset_99_2075 } },
+    variants: { "99:2075": { nodeId: "99:2075", file: "99-2075.svg" } },
   },
   "99:2082": {
     name: "event",
     rendering: "mask",
     defaultVariantNodeId: "99:2082",
     aliases: {},
-    variants: { "99:2082": { nodeId: "99:2082", url: asset_99_2082 } },
+    variants: { "99:2082": { nodeId: "99:2082", file: "99-2082.svg" } },
   },
   "99:2089": {
     name: "gpp_bad",
     rendering: "mask",
     defaultVariantNodeId: "99:2089",
     aliases: {},
-    variants: { "99:2089": { nodeId: "99:2089", url: asset_99_2089 } },
+    variants: { "99:2089": { nodeId: "99:2089", file: "99-2089.svg" } },
   },
   "99:2096": {
     name: "verified_user",
     rendering: "mask",
     defaultVariantNodeId: "99:2096",
     aliases: {},
-    variants: { "99:2096": { nodeId: "99:2096", url: asset_99_2096 } },
+    variants: { "99:2096": { nodeId: "99:2096", file: "99-2096.svg" } },
   },
   "99:2110": {
     name: "privacy_tip",
     rendering: "mask",
     defaultVariantNodeId: "99:2110",
     aliases: {},
-    variants: { "99:2110": { nodeId: "99:2110", url: asset_99_2110 } },
+    variants: { "99:2110": { nodeId: "99:2110", file: "99-2110.svg" } },
   },
   "99:2117": {
     name: "notifications_active",
     rendering: "mask",
     defaultVariantNodeId: "99:2117",
     aliases: {},
-    variants: { "99:2117": { nodeId: "99:2117", url: asset_99_2117 } },
+    variants: { "99:2117": { nodeId: "99:2117", file: "99-2117.svg" } },
   },
   "99:2124": {
     name: "keyboard_hide",
     rendering: "mask",
     defaultVariantNodeId: "99:2124",
     aliases: {},
-    variants: { "99:2124": { nodeId: "99:2124", url: asset_99_2124 } },
+    variants: { "99:2124": { nodeId: "99:2124", file: "99-2124.svg" } },
   },
   "99:2131": {
     name: "call",
     rendering: "mask",
     defaultVariantNodeId: "99:2131",
     aliases: {},
-    variants: { "99:2131": { nodeId: "99:2131", url: asset_99_2131 } },
+    variants: { "99:2131": { nodeId: "99:2131", file: "99-2131.svg" } },
   },
   "99:2138": {
     name: "qr_code",
     rendering: "mask",
     defaultVariantNodeId: "99:2138",
     aliases: {},
-    variants: { "99:2138": { nodeId: "99:2138", url: asset_99_2138 } },
+    variants: { "99:2138": { nodeId: "99:2138", file: "99-2138.svg" } },
   },
   "99:2145": {
     name: "bug_report",
     rendering: "mask",
     defaultVariantNodeId: "99:2145",
     aliases: {},
-    variants: { "99:2145": { nodeId: "99:2145", url: asset_99_2145 } },
+    variants: { "99:2145": { nodeId: "99:2145", file: "99-2145.svg" } },
   },
   "99:2152": {
     name: "delete",
     rendering: "mask",
     defaultVariantNodeId: "99:2152",
     aliases: {},
-    variants: { "99:2152": { nodeId: "99:2152", url: asset_99_2152 } },
+    variants: { "99:2152": { nodeId: "99:2152", file: "99-2152.svg" } },
   },
   "99:2159": {
     name: "sell",
     rendering: "mask",
     defaultVariantNodeId: "99:2159",
     aliases: {},
-    variants: { "99:2159": { nodeId: "99:2159", url: asset_99_2159 } },
+    variants: { "99:2159": { nodeId: "99:2159", file: "99-2159.svg" } },
   },
   "99:2166": {
     name: "leaderboard",
     rendering: "mask",
     defaultVariantNodeId: "99:2166",
     aliases: {},
-    variants: { "99:2166": { nodeId: "99:2166", url: asset_99_2166 } },
+    variants: { "99:2166": { nodeId: "99:2166", file: "99-2166.svg" } },
   },
   "99:2173": {
     name: "wand_shine",
     rendering: "mask",
     defaultVariantNodeId: "99:2173",
     aliases: {},
-    variants: { "99:2173": { nodeId: "99:2173", url: asset_99_2173 } },
+    variants: { "99:2173": { nodeId: "99:2173", file: "99-2173.svg" } },
   },
   "99:2180": {
     name: "auto_awesome_mosaic",
     rendering: "mask",
     defaultVariantNodeId: "99:2180",
     aliases: {},
-    variants: { "99:2180": { nodeId: "99:2180", url: asset_99_2180 } },
+    variants: { "99:2180": { nodeId: "99:2180", file: "99-2180.svg" } },
   },
   "99:2187": {
     name: "bolt",
     rendering: "mask",
     defaultVariantNodeId: "99:2187",
     aliases: {},
-    variants: { "99:2187": { nodeId: "99:2187", url: asset_99_2187 } },
+    variants: { "99:2187": { nodeId: "99:2187", file: "99-2187.svg" } },
   },
   "99:2194": {
     name: "language",
     rendering: "mask",
     defaultVariantNodeId: "99:2194",
     aliases: {},
-    variants: { "99:2194": { nodeId: "99:2194", url: asset_99_2194 } },
+    variants: { "99:2194": { nodeId: "99:2194", file: "99-2194.svg" } },
   },
   "99:2201": {
     name: "fingerprint",
     rendering: "mask",
     defaultVariantNodeId: "99:2201",
     aliases: {},
-    variants: { "99:2201": { nodeId: "99:2201", url: asset_99_2201 } },
+    variants: { "99:2201": { nodeId: "99:2201", file: "99-2201.svg" } },
   },
   "99:2208": {
     name: "attach_file",
     rendering: "mask",
     defaultVariantNodeId: "99:2208",
     aliases: {},
-    variants: { "99:2208": { nodeId: "99:2208", url: asset_99_2208 } },
+    variants: { "99:2208": { nodeId: "99:2208", file: "99-2208.svg" } },
   },
   "99:2215": {
     name: "shopping_cart",
     rendering: "mask",
     defaultVariantNodeId: "99:2215",
     aliases: {},
-    variants: { "99:2215": { nodeId: "99:2215", url: asset_99_2215 } },
+    variants: { "99:2215": { nodeId: "99:2215", file: "99-2215.svg" } },
   },
   "99:2222": {
     name: "mobile_2",
     rendering: "mask",
     defaultVariantNodeId: "99:2222",
     aliases: {},
-    variants: { "99:2222": { nodeId: "99:2222", url: asset_99_2222 } },
+    variants: { "99:2222": { nodeId: "99:2222", file: "99-2222.svg" } },
   },
   "99:2229": {
     name: "emoji_objects",
     rendering: "mask",
     defaultVariantNodeId: "99:2229",
     aliases: {},
-    variants: { "99:2229": { nodeId: "99:2229", url: asset_99_2229 } },
+    variants: { "99:2229": { nodeId: "99:2229", file: "99-2229.svg" } },
   },
   "99:2248": {
     name: "touch_app",
     rendering: "mask",
     defaultVariantNodeId: "99:2248",
     aliases: {},
-    variants: { "99:2248": { nodeId: "99:2248", url: asset_99_2248 } },
+    variants: { "99:2248": { nodeId: "99:2248", file: "99-2248.svg" } },
   },
   "99:2249": {
     name: "swipe",
     rendering: "mask",
     defaultVariantNodeId: "99:2249",
     aliases: {},
-    variants: { "99:2249": { nodeId: "99:2249", url: asset_99_2249 } },
+    variants: { "99:2249": { nodeId: "99:2249", file: "99-2249.svg" } },
   },
   "99:2250": {
     name: "swipe_down",
     rendering: "mask",
     defaultVariantNodeId: "99:2250",
     aliases: {},
-    variants: { "99:2250": { nodeId: "99:2250", url: asset_99_2250 } },
+    variants: { "99:2250": { nodeId: "99:2250", file: "99-2250.svg" } },
   },
   "99:2257": {
     name: "dialpad",
     rendering: "mask",
     defaultVariantNodeId: "99:2257",
     aliases: {},
-    variants: { "99:2257": { nodeId: "99:2257", url: asset_99_2257 } },
+    variants: { "99:2257": { nodeId: "99:2257", file: "99-2257.svg" } },
   },
   "99:2264": {
     name: "code",
     rendering: "mask",
     defaultVariantNodeId: "99:2264",
     aliases: {},
-    variants: { "99:2264": { nodeId: "99:2264", url: asset_99_2264 } },
+    variants: { "99:2264": { nodeId: "99:2264", file: "99-2264.svg" } },
   },
   "99:2271": {
     name: "business_center",
     rendering: "mask",
     defaultVariantNodeId: "99:2271",
     aliases: {},
-    variants: { "99:2271": { nodeId: "99:2271", url: asset_99_2271 } },
+    variants: { "99:2271": { nodeId: "99:2271", file: "99-2271.svg" } },
   },
   "99:2278": {
     name: "theater_comedy",
     rendering: "mask",
     defaultVariantNodeId: "99:2278",
     aliases: {},
-    variants: { "99:2278": { nodeId: "99:2278", url: asset_99_2278 } },
+    variants: { "99:2278": { nodeId: "99:2278", file: "99-2278.svg" } },
   },
   "99:2285": {
     name: "flight_takeoff",
     rendering: "mask",
     defaultVariantNodeId: "99:2285",
     aliases: {},
-    variants: { "99:2285": { nodeId: "99:2285", url: asset_99_2285 } },
+    variants: { "99:2285": { nodeId: "99:2285", file: "99-2285.svg" } },
   },
   "99:2292": {
     name: "pedal_bike",
     rendering: "mask",
     defaultVariantNodeId: "99:2292",
     aliases: {},
-    variants: { "99:2292": { nodeId: "99:2292", url: asset_99_2292 } },
+    variants: { "99:2292": { nodeId: "99:2292", file: "99-2292.svg" } },
   },
   "99:2299": {
     name: "volunteer_activism",
     rendering: "mask",
     defaultVariantNodeId: "99:2299",
     aliases: {},
-    variants: { "99:2299": { nodeId: "99:2299", url: asset_99_2299 } },
+    variants: { "99:2299": { nodeId: "99:2299", file: "99-2299.svg" } },
   },
   "99:2331": {
     name: "near_me",
@@ -1269,8 +1073,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "99:2329",
     aliases: { filled: "99:2330", outlined: "99:2329" },
     variants: {
-      "99:2329": { nodeId: "99:2329", url: asset_99_2329 },
-      "99:2330": { nodeId: "99:2330", url: asset_99_2330 },
+      "99:2329": { nodeId: "99:2329", file: "99-2329.svg" },
+      "99:2330": { nodeId: "99:2330", file: "99-2330.svg" },
     },
   },
   "99:2338": {
@@ -1278,56 +1082,56 @@ export const iconAssets: Record<string, IconAsset> = {
     rendering: "mask",
     defaultVariantNodeId: "99:2338",
     aliases: {},
-    variants: { "99:2338": { nodeId: "99:2338", url: asset_99_2338 } },
+    variants: { "99:2338": { nodeId: "99:2338", file: "99-2338.svg" } },
   },
   "99:2345": {
     name: "location_on",
     rendering: "mask",
     defaultVariantNodeId: "99:2345",
     aliases: {},
-    variants: { "99:2345": { nodeId: "99:2345", url: asset_99_2345 } },
+    variants: { "99:2345": { nodeId: "99:2345", file: "99-2345.svg" } },
   },
   "99:2381": {
     name: "credit_card",
     rendering: "mask",
     defaultVariantNodeId: "99:2381",
     aliases: {},
-    variants: { "99:2381": { nodeId: "99:2381", url: asset_99_2381 } },
+    variants: { "99:2381": { nodeId: "99:2381", file: "99-2381.svg" } },
   },
   "99:2388": {
     name: "euro",
     rendering: "mask",
     defaultVariantNodeId: "99:2388",
     aliases: {},
-    variants: { "99:2388": { nodeId: "99:2388", url: asset_99_2388 } },
+    variants: { "99:2388": { nodeId: "99:2388", file: "99-2388.svg" } },
   },
   "99:2395": {
     name: "storefront",
     rendering: "mask",
     defaultVariantNodeId: "99:2395",
     aliases: {},
-    variants: { "99:2395": { nodeId: "99:2395", url: asset_99_2395 } },
+    variants: { "99:2395": { nodeId: "99:2395", file: "99-2395.svg" } },
   },
   "99:2408": {
     name: "account_balance_wallet",
     rendering: "mask",
     defaultVariantNodeId: "99:2408",
     aliases: {},
-    variants: { "99:2408": { nodeId: "99:2408", url: asset_99_2408 } },
+    variants: { "99:2408": { nodeId: "99:2408", file: "99-2408.svg" } },
   },
   "99:2415": {
     name: "payments",
     rendering: "mask",
     defaultVariantNodeId: "99:2415",
     aliases: {},
-    variants: { "99:2415": { nodeId: "99:2415", url: asset_99_2415 } },
+    variants: { "99:2415": { nodeId: "99:2415", file: "99-2415.svg" } },
   },
   "99:2422": {
     name: "savings",
     rendering: "mask",
     defaultVariantNodeId: "99:2422",
     aliases: {},
-    variants: { "99:2422": { nodeId: "99:2422", url: asset_99_2422 } },
+    variants: { "99:2422": { nodeId: "99:2422", file: "99-2422.svg" } },
   },
   "99:616": {
     name: "receipt_long",
@@ -1335,8 +1139,8 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "99:614",
     aliases: { active: "99:614", inactive: "99:615" },
     variants: {
-      "99:614": { nodeId: "99:614", url: asset_99_614 },
-      "99:615": { nodeId: "99:615", url: asset_99_615 },
+      "99:614": { nodeId: "99:614", file: "99-614.svg" },
+      "99:615": { nodeId: "99:615", file: "99-615.svg" },
     },
   },
   "99:623": {
@@ -1344,42 +1148,42 @@ export const iconAssets: Record<string, IconAsset> = {
     rendering: "mask",
     defaultVariantNodeId: "99:623",
     aliases: {},
-    variants: { "99:623": { nodeId: "99:623", url: asset_99_623 } },
+    variants: { "99:623": { nodeId: "99:623", file: "99-623.svg" } },
   },
   "99:630": {
     name: "news",
     rendering: "mask",
     defaultVariantNodeId: "99:630",
     aliases: {},
-    variants: { "99:630": { nodeId: "99:630", url: asset_99_630 } },
+    variants: { "99:630": { nodeId: "99:630", file: "99-630.svg" } },
   },
   "99:637": {
     name: "verified",
     rendering: "mask",
     defaultVariantNodeId: "99:637",
     aliases: {},
-    variants: { "99:637": { nodeId: "99:637", url: asset_99_637 } },
+    variants: { "99:637": { nodeId: "99:637", file: "99-637.svg" } },
   },
   "99:644": {
     name: "picture_as_pdf",
     rendering: "mask",
     defaultVariantNodeId: "99:644",
     aliases: {},
-    variants: { "99:644": { nodeId: "99:644", url: asset_99_644 } },
+    variants: { "99:644": { nodeId: "99:644", file: "99-644.svg" } },
   },
   "99:666": {
     name: "account_balance",
     rendering: "mask",
     defaultVariantNodeId: "99:666",
     aliases: {},
-    variants: { "99:666": { nodeId: "99:666", url: asset_99_666 } },
+    variants: { "99:666": { nodeId: "99:666", file: "99-666.svg" } },
   },
   "99:673": {
     name: "id_card",
     rendering: "mask",
     defaultVariantNodeId: "99:673",
     aliases: {},
-    variants: { "99:673": { nodeId: "99:673", url: asset_99_673 } },
+    variants: { "99:673": { nodeId: "99:673", file: "99-673.svg" } },
   },
   "99:781": {
     name: "Media logos",
@@ -1387,10 +1191,10 @@ export const iconAssets: Record<string, IconAsset> = {
     defaultVariantNodeId: "99:777",
     aliases: { instagram: "99:778", linkedin: "99:777", threads: "99:779", youtube: "99:780" },
     variants: {
-      "99:777": { nodeId: "99:777", url: asset_99_777 },
-      "99:778": { nodeId: "99:778", url: asset_99_778 },
-      "99:779": { nodeId: "99:779", url: asset_99_779 },
-      "99:780": { nodeId: "99:780", url: asset_99_780 },
+      "99:777": { nodeId: "99:777", file: "99-777.svg" },
+      "99:778": { nodeId: "99:778", file: "99-778.svg" },
+      "99:779": { nodeId: "99:779", file: "99-779.svg" },
+      "99:780": { nodeId: "99:780", file: "99-780.svg" },
     },
   },
   "9924:27038": {
@@ -1398,21 +1202,21 @@ export const iconAssets: Record<string, IconAsset> = {
     rendering: "mask",
     defaultVariantNodeId: "9924:27038",
     aliases: {},
-    variants: { "9924:27038": { nodeId: "9924:27038", url: asset_9924_27038 } },
+    variants: { "9924:27038": { nodeId: "9924:27038", file: "9924-27038.svg" } },
   },
   "9977:21200": {
     name: "check_indeterminate_small",
     rendering: "mask",
     defaultVariantNodeId: "9977:21200",
     aliases: {},
-    variants: { "9977:21200": { nodeId: "9977:21200", url: asset_9977_21200 } },
+    variants: { "9977:21200": { nodeId: "9977:21200", file: "9977-21200.svg" } },
   },
   "9977:23980": {
     name: "toggle_off",
     rendering: "mask",
     defaultVariantNodeId: "9977:23980",
     aliases: {},
-    variants: { "9977:23980": { nodeId: "9977:23980", url: asset_9977_23980 } },
+    variants: { "9977:23980": { nodeId: "9977:23980", file: "9977-23980.svg" } },
   },
 }
 

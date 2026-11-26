@@ -102,7 +102,11 @@ function PaymentProviderLogos(props: PaymentProviderLogosProps) {
   const label = labelProp ?? t.label
 
   return (
-    <ul aria-label={label} className={cn("flex flex-wrap items-center gap-4", className)}>
+    <ul
+      data-slot="payment-provider-logos"
+      aria-label={label}
+      className={cn("flex flex-wrap items-center gap-4", className)}
+    >
       {providers.map((provider) => (
         <li
           key={provider.name}

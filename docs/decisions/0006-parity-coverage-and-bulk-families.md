@@ -1,7 +1,7 @@
 # ADR-0006 — What parity coverage counts: the case population and the bulk families
 
 - **Status:** Accepted — 2026-10-30, amended 2026-11-26 by
-  [ADR-0011](./0011-ephemeral-parity-diagnostic.md) — the case population, the
+  [ADR-0014](./0014-ephemeral-parity-diagnostic.md) — the case population, the
   evidence bundle and its cap are retired; the bulk rule stands (§7).
 - **Date:** 2026-10-30
 - **Context:** a design review read the corpus as "87 of the 244 `implemented`
@@ -208,7 +208,7 @@ debt rather than as a silent assumption.
 
 ## 7. Amendment — the committed evidence bundle is retired (2026-11-26)
 
-[ADR-0011](./0011-ephemeral-parity-diagnostic.md) demotes numerical parity to a
+[ADR-0014](./0014-ephemeral-parity-diagnostic.md) demotes numerical parity to a
 stateless diagnostic. Three of the four decisions above are retired with it, and
 this section records which, so that a reader does not take a live instruction
 from a superseded paragraph.

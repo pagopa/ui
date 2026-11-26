@@ -46,7 +46,7 @@ function Breadcrumb({
   const compact = props.layout === "compact"
   const items = props.layout === "compact" ? [props.back] : props.items
   return (
-    <nav aria-label={ariaLabel} className={className}>
+    <nav data-slot="breadcrumb" aria-label={ariaLabel} className={className}>
       <ol className="flex min-w-0 flex-wrap items-center gap-1.5 text-body">
         {items.map((item, index) => {
           const current = !compact && index === items.length - 1

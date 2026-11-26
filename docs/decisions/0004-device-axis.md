@@ -1,7 +1,7 @@
 # ADR-0004 — The device axis: vocabulary, coverage and the delta-scoped gate
 
 - **Status:** Accepted — 2026-10-15, amended 2026-11-26 by
-  [ADR-0011](./0011-ephemeral-parity-diagnostic.md) — the case-per-device gate,
+  [ADR-0014](./0014-ephemeral-parity-diagnostic.md) — the case-per-device gate,
   the exceptions file and the burn-down commands are retired (§4); the
   vocabulary, the probe and the per-node loop stand.
 - **Date:** 2026-10-15
@@ -137,7 +137,7 @@ tooling.
 
 ## 4. Amendment — the gate retires with the corpus (2026-11-26)
 
-[ADR-0011](./0011-ephemeral-parity-diagnostic.md) makes numerical parity a
+[ADR-0014](./0014-ephemeral-parity-diagnostic.md) makes numerical parity a
 stateless diagnostic and deletes the case corpus, so the parts of this ADR that
 counted devices against cases go with it. What a reader should still take from
 this page is the axis itself.

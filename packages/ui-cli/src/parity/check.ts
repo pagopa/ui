@@ -4,7 +4,7 @@
 // and reports the deltas. It reads the pinned export and the rendered DOM and
 // writes nothing: no case is saved, no evidence bundle is refreshed, and a run
 // leaves the tree exactly as it found it. The corpus this command once wrote is
-// retired (ADR-0011), so a finding is reported to the person running it rather
+// retired (ADR-0014), so a finding is reported to the person running it rather
 // than accumulated in the repository.
 
 import type { Workspace } from "../adapters/workspace.ts"

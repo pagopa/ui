@@ -112,6 +112,26 @@ export type ArtifactContract = {
   stylesFile: string
   expectedIconVariants: number
   expectedIconVariantIds: string[]
+  expectedIconPaints: number
+}
+
+const GENERATED_ICONS = "src/components/icons/generated"
+
+// The per-node identifier namespace keeps masks unique, so a paint comparison
+// drops it. Two pinned variants can still repeat one geometry — a checked radio
+// repeats the check glyph — so the count is the number of distinct drawings,
+// which is what a packed artifact must reproduce.
+function sourceIconPaints(read: (file: string) => string, root: string): number {
+  const paints = new Set<string>()
+  for (const file of walkRelative(root, GENERATED_ICONS, (entry) => entry.endsWith(".tsx"))) {
+    for (const match of read(file).matchAll(
+      /data-figma-node-id="([^"]+)"[^>]*>([\s\S]*?)<\/svg>/g,
+    )) {
+      const prefix = match[1].toLowerCase().replace(/[^a-z0-9]+/g, "-")
+      paints.add(match[2].replaceAll(`${prefix}-`, ""))
+    }
+  }
+  return paints.size
 }
 
 export const GITHUB_PACKAGES_REGISTRY = "https://npm.pkg.github.com"
@@ -152,6 +172,22 @@ export function distributionProblems(
   return problems
 }
 
+// The Storybook preview sheet owns the demo geometry: the artboard heights, the
+// frame widths and the demo grid columns that only the templates and the
+// artboards read. A published stylesheet declaring one of them ships a value
+// only a demo frame resolves, so a consumer receives geometry it never renders.
+// The sheet is the reference, so a demo variable cannot return unnoticed.
+export function demoGeometryProblems(styles: string, previewStyles: string): string[] {
+  const owned = customProperties(previewStyles)
+  return [...customProperties(styles)].filter((name) => owned.has(name)).sort()
+}
+
+function customProperties(styles: string): Set<string> {
+  const names = new Set<string>()
+  for (const match of styles.matchAll(/(--[\w-]+)\s*:/g)) if (match[1]) names.add(match[1])
+  return names
+}
+
 export function verifyArtifactContract(workspace: Workspace): ArtifactContract {
   const { root } = workspace
   const at = (file: string): string => path.join(root, file)
@@ -173,6 +209,15 @@ export function verifyArtifactContract(workspace: Workspace): ArtifactContract {
     styles,
     /@(?:import|tailwind|theme|apply|source)\b/,
     "published CSS must not require Tailwind, shadcn or source imports",
+  )
+  const previewSheet = path.join(workspace.storiesRoot, "src/preview.css")
+  assert.deepEqual(
+    demoGeometryProblems(
+      styles,
+      fs.existsSync(previewSheet) ? fs.readFileSync(previewSheet, "utf8") : "",
+    ),
+    [],
+    "the published stylesheet must not declare demo or artboard geometry — it belongs in apps/storybook/src/preview.css",
   )
   const fontURLs = [...styles.matchAll(/url\(["']?([^"')\s]+)["']?\)/g)]
     .map((match) => match[1])
@@ -268,5 +313,8 @@ export function verifyArtifactContract(workspace: Workspace): ArtifactContract {
     "the runtime package must not install a second React or its styling/build toolchain",
   )
 
-  return { manifest, stylesFile, expectedIconVariants, expectedIconVariantIds }
+  const expectedIconPaints = sourceIconPaints((file) => fs.readFileSync(at(file), "utf8"), root)
+  assert.ok(expectedIconPaints > 0, "the compiled icon components must draw something")
+
+  return { manifest, stylesFile, expectedIconVariants, expectedIconVariantIds, expectedIconPaints }
 }

@@ -57,7 +57,7 @@ function Pagination({
   if (totalPages <= 1) return null
   const current = Math.min(Math.max(currentPage, 1), totalPages)
   return (
-    <div className={cn("@container/pagination min-w-0 flex-1", className)}>
+    <div data-slot="pagination" className={cn("@container/pagination min-w-0 flex-1", className)}>
       <div className="flex items-center gap-2">
         <nav aria-label={label} className="flex min-w-0 flex-1 items-center justify-center gap-2">
           <Button

@@ -24,7 +24,7 @@ function MicroEvent({
   className?: string
 }) {
   return (
-    <div className={cn("flex items-start py-2 pl-7", className)}>
+    <div data-slot="microevento" className={cn("flex items-start py-2 pl-7", className)}>
       <div className="flex min-w-0 flex-col gap-1">
         {invalid ? (
           <CorrectionTag label={label} status="not-valid" />

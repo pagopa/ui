@@ -26,13 +26,7 @@ import { useRender } from '@base-ui/react/use-render';
 import { VariantProps } from 'class-variance-authority';
 
 // @public (undocumented)
-export function Accordion(input: {
-    items: AccordionItemData[];
-    defaultValue?: string;
-    className?: string;
-    "aria-label"?: string;
-    loadingLabel?: string;
-}): React_2.JSX.Element;
+export function Accordion(input: AccordionProps): React_2.JSX.Element;
 
 // @public (undocumented)
 export interface AccordionItemData {
@@ -48,6 +42,19 @@ export interface AccordionItemData {
     skeleton?: boolean;
     // (undocumented)
     title: React_2.ReactNode;
+}
+
+// @public
+export interface AccordionProps extends Omit<React_2.ComponentProps<"div">, "children" | "className" | "aria-label"> {
+    "aria-label"?: string;
+    className?: string;
+    defaultValue?: string[];
+    items: AccordionItemData[];
+    loadingLabel?: string;
+    multiple?: boolean;
+    onValueChange?: (value: string[]) => void;
+    ref?: React_2.Ref<HTMLDivElement>;
+    value?: string[];
 }
 
 // Warning: (ae-forgotten-export) The symbol "alertVariants" needs to be exported by the entry point pagopa-ui.d.ts
@@ -342,13 +349,24 @@ export interface DatePickerRange {
 export function Dialog(input: DialogProps): React_2.JSX.Element;
 
 // @public
-export interface DialogProps {
+export function DialogClose(props: DialogCloseProps): React_2.JSX.Element;
+
+// @public
+export type DialogCloseProps = React_2.ComponentProps<typeof Button>;
+
+// @public
+export interface DialogProps extends Omit<React_2.ComponentProps<"div">, "title" | "children" | "className"> {
     children?: React_2.ReactNode;
+    className?: string;
     closeLabel?: string;
+    defaultOpen?: boolean;
     description?: string;
     footer?: React_2.ReactNode;
+    onOpenChange?: (open: boolean) => void;
+    open?: boolean;
+    ref?: React_2.Ref<HTMLDivElement>;
     title: string;
-    trigger: React_2.ReactElement;
+    trigger?: React_2.ReactElement;
 }
 
 // Warning: (ae-forgotten-export) The symbol "DownloadCardProps" needs to be exported by the entry point pagopa-ui.d.ts
@@ -396,8 +414,15 @@ export function DragAndDrop(input: Omit<FieldStateProps, "label"> & {
 export function Drawer(input: DrawerProps): React_2.JSX.Element;
 
 // @public
-export interface DrawerProps {
+export function DrawerClose(props: DrawerCloseProps): React_2.JSX.Element;
+
+// @public
+export type DrawerCloseProps = React_2.ComponentProps<typeof Button>;
+
+// @public
+export interface DrawerProps extends Omit<React_2.ComponentProps<"div">, "title" | "children" | "className"> {
     children?: React_2.ReactNode;
+    className?: string;
     closeLabel?: string;
     defaultOpen?: boolean;
     description?: React_2.ReactNode;
@@ -406,9 +431,12 @@ export interface DrawerProps {
     footerPlacement?: "pinned" | "flow";
     icon?: React_2.ReactNode;
     modal?: boolean;
+    onOpenChange?: (open: boolean) => void;
+    open?: boolean;
+    ref?: React_2.Ref<HTMLDivElement>;
     showHandle?: boolean;
     title: string;
-    trigger: React_2.ReactElement;
+    trigger?: React_2.ReactElement;
 }
 
 // @public
@@ -1042,7 +1070,7 @@ export function Pagination(input: {
 }): JSX.Element | null;
 
 // @public (undocumented)
-export function PagoPAIcon<Name extends FigmaIconName>(input: PagoPAIconProps<Name>): JSX.Element;
+export function PagoPAIcon<Name extends FigmaIconName>(input: PagoPAIconProps<Name>): JSX.Element | null;
 
 // @public
 export interface PagoPAIconProps<Name extends FigmaIconName = FigmaIconName> {
@@ -1107,15 +1135,20 @@ export function PinPoint(input: {
 export function Popover(input: PopoverProps): React_2.JSX.Element;
 
 // @public
-export interface PopoverProps {
+export interface PopoverProps extends Omit<React_2.ComponentProps<"div">, "title" | "children" | "className"> {
     align?: "start" | "center" | "end";
+    anchor?: HTMLElement | null | React_2.RefObject<HTMLElement | null>;
     arrowPosition?: "top" | "bottom";
     children: React_2.ReactNode;
+    className?: string;
     closeLabel?: string;
     defaultOpen?: boolean;
     label?: string;
     modal?: boolean;
-    trigger: React_2.ReactElement;
+    onOpenChange?: (open: boolean) => void;
+    open?: boolean;
+    ref?: React_2.Ref<HTMLDivElement>;
+    trigger?: React_2.ReactElement;
 }
 
 // @public (undocumented)
@@ -1619,13 +1652,15 @@ export function Timeline(input: {
 }): React_2.JSX.Element;
 
 // @public (undocumented)
-export function TimelineDrawer(input: {
-    trigger: React.ReactElement;
-    title?: string;
+export function TimelineDrawer(input: TimelineDrawerProps): JSX.Element;
+
+// @public
+export interface TimelineDrawerProps extends Omit<DrawerProps, "title" | "description" | "icon" | "children" | "footer"> {
     description?: string;
-    items: TimelineItem[];
     footer?: React.ReactNode;
-}): JSX.Element;
+    items: TimelineItem[];
+    title?: string;
+}
 
 // @public
 export interface TimelineEvent {
@@ -1694,11 +1729,17 @@ export type Tone = "info" | "success" | "warning" | "error";
 export function Tooltip(input: TooltipProps): React_2.JSX.Element;
 
 // @public
-export interface TooltipProps {
+export interface TooltipProps extends Omit<React_2.ComponentProps<"div">, "title" | "children" | "className"> {
+    anchor?: HTMLElement | null | React_2.RefObject<HTMLElement | null>;
     children: React_2.ReactNode;
+    className?: string;
+    defaultOpen?: boolean;
+    onOpenChange?: (open: boolean) => void;
+    open?: boolean;
+    ref?: React_2.Ref<HTMLDivElement>;
     showClose?: boolean;
     side?: "top" | "right" | "bottom" | "left";
-    trigger: React_2.ReactElement;
+    trigger?: React_2.ReactElement;
 }
 
 // @public

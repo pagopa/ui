@@ -29,6 +29,7 @@ compare it with the source code of the audited package, `packages/pagopa-ui`.
   `packages/artwork/src/assets/figma-icons/*`,
   `packages/artwork/src/assets/figma-pictograms/*`,
   `packages/artwork/src/components/icons/icon-assets.ts`,
+  `packages/pagopa-ui/src/components/icons/generated/*`,
   `packages/artwork/src/components/icons/pictogram-assets.ts` and
   `packages/artwork/src/components/icons/figma-inventory.ts`; the token
   generator owns `packages/tokens/src/manifest.json`, `packages/tokens/src/figma.generated.css`,
@@ -207,8 +208,9 @@ keeps the same preflight behavior as the other live Figma commands.
    identities, checksums and icon geometry must still match.
 6. **The design foundations.** `src/figma/tokens.ts` proves that the committed
    token manifest matches the generated CSS foundation layer and the
-   documentation inventory, and that every `var(--figma-*)` reference in
-   `src/index.css` resolves. Legacy namespaces are excluded with recorded
+   documentation inventory, that every `var(--pui-*)` reference in
+   `src/index.css` names a declaration of the semantic block, and that every
+   `var(--figma-*)` reference resolves. Legacy namespaces are excluded with recorded
    reasons; unknown namespaces fail the refresh, and an unresolved variable
    either gets a value or a reasoned exclusion — none can linger silently.
 7. **The component class contract.** `src/checks/foundation.ts` proves that

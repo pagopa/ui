@@ -114,6 +114,9 @@
     "Dialog": {
       "type": "Dialog and Drawer"
     },
+    "DialogClose": {
+      "type": "Button"
+    },
     "DownloadCard": {
       "type": "Content display"
     },
@@ -122,6 +125,9 @@
     },
     "Drawer": {
       "type": "Dialog and Drawer"
+    },
+    "DrawerClose": {
+      "type": "Button"
     },
     "Dropdown": {
       "type": "Combobox and Select"

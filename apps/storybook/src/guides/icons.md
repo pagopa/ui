@@ -6,10 +6,10 @@
 
 <!-- component-rules:end -->
 
-`PagoPAIcon` renders the pinned Figma artwork by name, with no icon font or
-raw-name fallback. Brand images preserve their owners' colours; monochrome masks
-inherit the surrounding semantic `currentColor` and the user's forced-colour
-foreground.
+`PagoPAIcon` renders the pinned Figma artwork inline, as an `svg` painted by its
+geometry, with no icon font and no image request. Brand artwork preserves its
+owners' colours; monochrome glyphs inherit the surrounding semantic
+`currentColor` and the user's forced-colour foreground.
 
 ```tsx
 <PagoPAIcon name="info" decorative={false} label="Informazioni" filled />
@@ -27,9 +27,19 @@ actual artwork. The white default artwork needs a dark, contrasting surface;
 `variant="dark"` selects alternate artwork, not a dark theme. Prefer
 `variant="filled"` or `variant="outlined"`: the `filled` boolean is deprecated.
 
-`PagoPAIcon` renders a `span` mask (or an `img` for brand artwork), not an inline
-`svg`, so `[&_svg]:size-*` selectors never match it: size it with the numeric
-`size` prop. Use `decorative` (the default) or `label` instead of `aria-hidden`.
+Every published identity is also one component per pinned variant on its own
+entry, so a named import carries no other icon artwork:
+
+```tsx
+import { Info } from "@pagopa/ui/icons" // the source default
+import { Info as InfoVariant } from "@pagopa/ui/icons/info" // keyed by source node id
+```
+
+`PagoPAIcon` renders an `svg`, so `[&_svg]:size-*` selectors match it; the numeric
+`size` prop sets both dimensions. Use `decorative` (the default) or `label`
+instead of `aria-hidden`. A name outside the published catalogue renders nothing,
+with a development warning, so a runtime string cannot fail the surface that
+hosts it; an unsupported `variant` of a published name still throws.
 
 ## Adding and replacing icons
 

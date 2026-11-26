@@ -1,7 +1,7 @@
 # ADR-0007 — The committed records are read through one reader, and it never writes
 
 - **Status:** Accepted — 2026-11-10, amended 2026-11-26 by
-  [ADR-0011](./0011-ephemeral-parity-diagnostic.md) — the reader owns three
+  [ADR-0014](./0014-ephemeral-parity-diagnostic.md) — the reader owns three
   records, not four (§7).
 - **Date:** 2026-11-10
 - **Context:** the four committed records — `inventory.json`, `registry.json`,
@@ -190,7 +190,7 @@ card used to report.
 
 ## 7. Amendment — the boundary holds, and it now surrounds three records (2026-11-26)
 
-[ADR-0011](./0011-ephemeral-parity-diagnostic.md) deletes the case corpus, so the
+[ADR-0014](./0014-ephemeral-parity-diagnostic.md) deletes the case corpus, so the
 fourth record this ADR was written around no longer exists. The boundary is
 unchanged and is what the migration left behind:
 

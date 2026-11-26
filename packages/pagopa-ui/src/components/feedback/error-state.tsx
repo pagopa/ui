@@ -65,14 +65,14 @@ function ErrorState({
   return (
     <StatePanel
       {...props}
-      actionsClassName="mx-auto w-full max-w-(--state-width) flex-col flex-nowrap items-center gap-6"
+      actionsClassName="mx-auto w-full max-w-(--pui-state-width) flex-col flex-nowrap items-center gap-6"
       className={cn("w-full max-w-none", className)}
-      contentClassName="w-full max-w-none tablet-md:max-w-(--state-width)"
+      contentClassName="w-full max-w-none tablet-md:max-w-(--pui-state-width)"
       extra={
         code ? (
           <div
             data-slot="ko-error-code-field"
-            className="flex min-h-12 w-full max-w-(--state-width) items-center gap-3 rounded-lg border border-border bg-background px-3 text-left"
+            className="flex min-h-12 w-full max-w-(--pui-state-width) items-center gap-3 rounded-lg border border-border bg-background px-3 text-left"
           >
             <span
               data-slot="ko-error-code-value"

@@ -27,7 +27,7 @@ section it sits in.
 | Artwork        | consumer        | [ADR-0003](docs/decisions/0003-artwork-provenance.md)                                                              |
 | Public surface | consumer        | [API report](packages/pagopa-ui/etc/pagopa-ui.api.md)                                                              |
 | Drift          | Figma alignment | [figma drift handoff](docs/figma-drift-handoff.md)                                                                 |
-| Parity         | Figma alignment | [ADR-0011](docs/decisions/0011-ephemeral-parity-diagnostic.md)                                                     |
+| Parity         | Figma alignment | [ADR-0014](docs/decisions/0014-ephemeral-parity-diagnostic.md)                                                     |
 
 ## Figma alignment
 
@@ -100,7 +100,7 @@ A measured difference accepted with a written reason; it stays visible and does 
 _Avoid_: exception, tolerance
 
 **Parity**:
-The numeric agreement between a source variant and its rendered story, plus the structural and responsive verdict. It is a diagnostic a session runs on a node, not a state the repository keeps ([ADR-0011](docs/decisions/0011-ephemeral-parity-diagnostic.md)).
+The numeric agreement between a source variant and its rendered story, plus the structural and responsive verdict. It is a diagnostic a session runs on a node, not a state the repository keeps ([ADR-0014](docs/decisions/0014-ephemeral-parity-diagnostic.md)).
 _Avoid_: pixel diff, fidelity score
 
 **Verification**:

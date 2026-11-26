@@ -1,5 +1,7 @@
-// The public token contract: the `--figma-*` custom properties the stylesheet
-// ships are public, and a rename or a removal is a breaking change. The
+// The public token contract: the `--pui-*` custom properties the stylesheet
+// ships are the semantic surface a host may override, and a rename or a removal
+// is a breaking change. The `--figma-*` primitives follow, internal and
+// generated, so the contract still shows an upstream rename of their names. The
 // committed list is the reviewed diff every release carries.
 import fs from "node:fs"
 import path from "node:path"
@@ -12,10 +14,14 @@ import { report, type CheckReport } from "./report.ts"
 const CONTRACT_PATH = "etc/tokens.txt"
 const TOKENS_CSS = "src/tokens.generated.css"
 const INVENTORY = "src/figma-tokens.generated.ts"
+const SEMANTIC_INVENTORY = "src/pui-tokens.generated.ts"
 
-const CSS_NAME = /^ {2}(--figma-[a-z0-9-]+):/gm
+const CSS_NAME = /^ {2}(--(?:pui|figma)-[a-z0-9-]+):/gm
 
-type Inventory = { figmaTokens: Array<{ cssName: string }> }
+type Inventory = {
+  figmaTokens?: Array<{ cssName: string }>
+  semanticTokens?: Array<{ cssName: string }>
+}
 
 export function cssTokenNames(source: string): string[] {
   return [...source.matchAll(CSS_NAME)].map((match) => match[1] ?? "").filter(Boolean)
@@ -29,14 +35,19 @@ export async function publicTokenNames(
 ): Promise<{ css: string[]; js: string[] }> {
   const cssFile = path.join(tokensRoot, TOKENS_CSS)
   const inventoryFile = path.join(tokensRoot, INVENTORY)
-  for (const file of [cssFile, inventoryFile]) {
+  const semanticFile = path.join(tokensRoot, SEMANTIC_INVENTORY)
+  for (const file of [cssFile, inventoryFile, semanticFile]) {
     if (!fs.existsSync(file)) {
       throw new Error(`missing ${file} — run "pnpm nx run pagopa-ui-tokens:check:tokens"`)
     }
   }
   const css = cssTokenNames(fs.readFileSync(cssFile, "utf8"))
   const inventory: Inventory = await import(pathToFileURL(inventoryFile).href)
-  return { css, js: inventory.figmaTokens.map((token) => `js:${token.cssName}`) }
+  const semantic: Inventory = await import(pathToFileURL(semanticFile).href)
+  const js = [...(semantic.semanticTokens ?? []), ...(inventory.figmaTokens ?? [])].map(
+    (token) => `js:${token.cssName}`,
+  )
+  return { css, js }
 }
 
 function contractNames(file: string): string[] {
