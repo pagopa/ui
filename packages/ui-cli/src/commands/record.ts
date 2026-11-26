@@ -1,10 +1,8 @@
 import { defineCommand } from "citty"
 
 import { record } from "../figma/record.ts"
+import { boolArg, stringArg } from "./args.ts"
 import { action, printJson, type CliContext } from "./context.ts"
-
-const stringArg = { type: "string" } as const
-const boolArg = { type: "boolean", default: false } as const
 
 function printRecord(ctx: CliContext, result: Awaited<ReturnType<typeof record>>): void {
   ctx.io.out(

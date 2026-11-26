@@ -24,12 +24,11 @@ import { buildBriefQueue, formatBriefQueue } from "../figma/brief-queue.ts"
 import { commentsJson, commentsReport, formatComments } from "../figma/comments-workflow.ts"
 import { figmaToken } from "../adapters/figma-token.ts"
 import { UsageError } from "../lib/command.ts"
-import { integer, jsonArg, requireText } from "./args.ts"
+import { integer, jsonArg, requireText, stringArg } from "./args.ts"
 import { action, EXIT, printJson, printLines, type CliContext } from "./context.ts"
 import { requireToken, requireTokenArg } from "./token.ts"
 import type { Workspace } from "../adapters/workspace.ts"
 
-const stringArg = { type: "string" } as const
 const idArg = { type: "positional", required: true } as const
 
 function rulesRefresh(ctx: CliContext) {

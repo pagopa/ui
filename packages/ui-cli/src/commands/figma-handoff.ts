@@ -7,11 +7,10 @@ import {
   type HandoffAdapters,
 } from "../figma/handoff.ts"
 import { buildBriefQueue, formatBriefQueue } from "../figma/brief-queue.ts"
-import { jsonArg, requireText } from "./args.ts"
+import { boolArg, jsonArg, requireText } from "./args.ts"
 import { action, EXIT, printJson, printLines, type CliContext } from "./context.ts"
 
 const referenceArg = { type: "positional", required: false } as const
-const boolArg = { type: "boolean", default: false } as const
 
 function handoffAdapters(ctx: CliContext): HandoffAdapters {
   return {

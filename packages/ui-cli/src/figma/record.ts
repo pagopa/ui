@@ -82,9 +82,10 @@ function restore(before: Map<string, Buffer | null>, write: typeof writeBytes): 
   }
 }
 
-// What the run actually changed: the generators rewrite every document they own,
-// so "exists" is not "wrote" and the bytes are the only witness.
-function changed(before: Map<string, Buffer | null>): string[] {
+// The documents whose bytes the run wrote, in write order: the generators
+// rewrite every document they own, so "exists" is not "wrote" and the bytes are
+// the only witness.
+function wroteFiles(before: Map<string, Buffer | null>): string[] {
   return [...before.keys()].filter((file) => {
     const then = before.get(file) ?? null
     const now = fs.existsSync(file) ? fs.readFileSync(file) : null
@@ -147,7 +148,7 @@ export async function record(
     before: registry.before,
     entry: registry.entry,
     warnings: registry.warnings,
-    artifacts: changed(before).map((file) => path.relative(workspace.root, file)),
+    artifacts: wroteFiles(before).map((file) => path.relative(workspace.root, file)),
     catalogue,
     residues,
     dryRun,

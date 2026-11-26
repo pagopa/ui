@@ -278,7 +278,7 @@ test("the storybook probe runs in the same invocation, and a silent one stops th
         diagnose: diagnoseWith(tree),
       },
     )
-    assert.equal(answered.storybook?.answers, true)
+    assert.deepEqual(answered.storybook, { url: "http://localhost:6006" })
     assert.match(answered.out.join("\n"), /storybook http:\/\/localhost:6006 answers/)
 
     let captured = false
