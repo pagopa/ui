@@ -4,9 +4,10 @@ import path from "node:path"
 import { compile } from "@tailwindcss/node"
 import { expect, test } from "vitest"
 
-import { collectCandidates, renderCandidates, spellings } from "./prefixed-candidates.ts"
+import { collectCandidates, prefixed, renderCandidates } from "./prefixed-candidates.ts"
 
 const packageRoot = path.resolve(import.meta.dirname, "..")
+const scanEntry = path.join(packageRoot, "src/scan.css")
 const libraryEntry = path.join(packageRoot, "src/library.css")
 const mirror = path.join(packageRoot, ".generated/prefixed-candidates.txt")
 
@@ -41,20 +42,22 @@ function classTokens(css: string) {
   return tokens
 }
 
+const prefix = "pui\\:"
+
+function asUrl(base: string, file: string) {
+  const url = path.relative(base, file).split(path.sep).join("/")
+  return url.startsWith(".") ? url : `./${url}`
+}
+
 async function buildSheet(css: string, candidates: string[]) {
   const sheet = await compile(css, { base: packageRoot, onDependency() {} })
   return sheet.build(candidates)
 }
 
-test("a candidate gets a bare and a prefixed spelling", () => {
-  expect(spellings("flex")).toEqual(["flex", "pui:flex"])
-  expect(spellings("pui:flex")).toEqual(["flex", "pui:flex"])
-  expect(spellings("pui:hover:flex")).toEqual(["hover:flex", "pui:hover:flex"])
-})
-
-test("the mirror lists every spelling once, sorted, with a trailing newline", () => {
+test("the mirror lists every candidate once, under the prefix", () => {
   const mirror = renderCandidates(["pui:flex", "flex", "", "hover:flex", "flex"])
-  expect(mirror).toBe("flex\nhover:flex\npui:flex\npui:hover:flex\n")
+  expect(mirror).toBe("pui:flex\npui:hover:flex\n")
+  expect(prefixed("pui:hover:flex")).toBe("pui:hover:flex")
 })
 
 test("a prefixed candidate compiles to what Tailwind's own prefix emits", async () => {
@@ -81,29 +84,36 @@ test("the prefix leaves a group marker on its own spelling", async () => {
   )
 })
 
-test("the published stylesheet doubles without losing a class", async () => {
+test("the published stylesheet declares each utility once, under the prefix", async () => {
   // The mirror is what the build writes, so the scan runs without it: the
   // candidates are the ones the real surface holds.
   fs.rmSync(mirror, { force: true })
-  const candidates = await collectCandidates(libraryEntry, packageRoot)
+  const candidates = await collectCandidates(scanEntry, packageRoot)
+  expect(candidates.length).toBeGreaterThan(1000)
 
-  const single = classTokens(await buildSheet(`@import "${libraryEntry}";`, candidates))
-  const prefixed = classTokens(
-    await buildSheet(
-      `@import "${libraryEntry}";`,
-      candidates.map((candidate) => spellings(candidate)[1]),
-    ),
-  )
-
-  // What the plugin produces: the mirror is written, then the surface is
-  // scanned again and the sheet built from what it found.
   fs.mkdirSync(path.dirname(mirror), { recursive: true })
   fs.writeFileSync(mirror, renderCandidates(candidates))
-  const mirrored = await collectCandidates(libraryEntry, packageRoot)
-  const doubled = classTokens(await buildSheet(`@import "${libraryEntry}";`, mirrored))
 
-  expect(prefixed.size).toBeGreaterThan(single.size * 0.95)
-  for (const token of new Set([...single, ...prefixed])) {
-    expect(doubled, `${token} lost`).toContain(token)
+  // What the build compiles: the narrowed entry scans the mirror and nothing
+  // else, so the source trees cannot put a bare utility back in the artifact.
+  // Custom-property names and separators reach the scanner from the sources
+  // that share a prefix with an excluded one; none of them emits a rule.
+  const mirrored = await collectCandidates(libraryEntry, packageRoot)
+  for (const utility of ["flex", "p-6", "bg-accent"]) {
+    expect(candidates).toContain(`pui:${utility}`)
+    expect(mirrored).not.toContain(utility)
   }
+
+  const compiled = await buildSheet(`@import "${asUrl(packageRoot, libraryEntry)}";`, mirrored)
+  const tokens = classTokens(compiled)
+  const prefixedTokens = [...tokens].filter((token) => token.startsWith(prefix))
+  expect(prefixedTokens.length).toBeGreaterThan(1000)
+
+  // A utility the mirror holds under the prefix never keeps a bare twin.
+  const bareTwins = [...tokens].filter(
+    (token) => !token.startsWith(prefix) && tokens.has(`${prefix}${token}`),
+  )
+  expect(bareTwins).toEqual([])
+  expect(tokens).not.toContain("flex")
+  expect(tokens).toContain(`pui${prefix.slice(3)}flex`)
 })

@@ -13,6 +13,7 @@ import { checkPlugin } from "../checks/plugin.ts"
 import { checkPublicTokens } from "../checks/public-tokens.ts"
 import { formatCheck, passed, type CheckReport } from "../checks/report.ts"
 import { checkTextDefaults } from "../checks/text-defaults.ts"
+import { checkUtilityPrefix } from "../checks/utility-prefix.ts"
 import { checkTokens } from "../figma/tokens.ts"
 import { integer, text } from "./args.ts"
 import { action, EXIT, printJson, printLines, type CliContext } from "./context.ts"
@@ -85,6 +86,11 @@ export function checkCommands(
           printReport(ctx, checkTextDefaults(ctx.workspace(), { max: integer(max, "--max") })),
         ),
       }),
+      "utility-prefix": gate(
+        "utility-prefix",
+        "Reject a utility class spelled without the pui: prefix",
+        () => checkUtilityPrefix(ctx.workspace()),
+      ),
       ...extra,
     },
   })

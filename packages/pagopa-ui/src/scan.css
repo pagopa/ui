@@ -1,0 +1,8 @@
+/* The candidate surface of the build: src/index.css plus every source tree the
+   package ships, minus the catalogue its Storybook documents. The build reads
+   it through packages/pagopa-ui/build/prefixed-candidates.ts, which lists each
+   candidate once, under the prefix, in .generated/prefixed-candidates.txt; the
+   published stylesheet (src/library.css) compiles that mirror and nothing else. */
+@import "./index.css";
+
+@source not "../src/catalog";

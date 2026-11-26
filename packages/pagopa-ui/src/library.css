@@ -1,12 +1,17 @@
-/* The published stylesheet: src/index.css with the scan narrowed to what the
-   library ships. Storybook keeps the dev-only surfaces through src/index.css;
-   the tarball must not carry the utilities only those surfaces reference,
-   because no shipped component can use them. Measured at ~16% of the artifact
-   (scripts/check-css-budget.mjs records the ceiling). The file is a build
-   entry (src/library-entry.ts) and serves no other consumer. */
+/* The published stylesheet: src/index.css compiled against the candidate mirror
+   and nothing else. The scan surface is src/scan.css, which the build reads with
+   packages/pagopa-ui/build/prefixed-candidates.ts; every candidate it finds is
+   listed once, under the `pui:` prefix, in .generated/prefixed-candidates.txt,
+   and this entry `@source`s that file (through src/index.css) alone. So a
+   utility is declared once and only under the prefix: the stylesheet cannot
+   carry a bare `.flex` a host Tailwind also emits, and the two coincide on a
+   page without either reaching the other's markup. The tarball also must not
+   carry the utilities only the demo surfaces reference — the stories live in
+   apps/storybook and the Figma catalogue in src/catalog — so the three source
+   trees the mirror is built from are excluded from the compilation. The file is
+   a build entry (src/library-entry.ts) and serves no other consumer. */
 @import "./index.css";
 
-/* Not part of the artifact: the demo screens and the Figma catalogue. The
-   stories live in apps/storybook and the Storybook preview module with them, so
-   they never enter this scan surface. */
-@source not "../src/catalog";
+@source not "../src";
+@source not "../../artwork/src";
+@source not "../../tokens/src";

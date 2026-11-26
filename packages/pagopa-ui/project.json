@@ -44,6 +44,7 @@
         "foundation:check",
         "tokens:public:check",
         "client:check",
+        "utility-prefix:check",
         "a11y:conformance:check",
         "pagopa-ui-cli:test",
         "pagopa-ui-tokens:test"
@@ -197,6 +198,12 @@
       "options": {
         "command": "node src/cli.ts check client-directives"
       }
+    },
+    "utility-prefix:check": {
+      "options": {
+        "command": "node src/cli.ts check utility-prefix"
+      },
+      "inputs": ["default", "tooling", "{workspaceRoot}/apps/storybook/src/**"]
     },
     "a11y:conformance:check": {
       "options": {
