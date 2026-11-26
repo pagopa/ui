@@ -14,6 +14,11 @@ import {
 
 test.use(consumerUse)
 
+// The packed library emits Tailwind utilities under its `pui:` prefix beside
+// the bare spelling, so a class selector names both until the contract step
+// (#164) settles on one.
+const SR_ONLY = '[class~="sr-only"], [class~="pui:sr-only"]'
+
 test("chrome: the packed breadcrumb, header and footer keep their landmarks and links", async ({
   page,
   browserName,
@@ -222,19 +227,19 @@ test("chrome: the packed breadcrumb, header and footer keep their landmarks and 
     "the packed preheader keeps one mobile row (the 54px source band plus the divider)",
   )
   assert.equal(
-    await chrome.evaluate((root) => {
+    await chrome.evaluate((root, srOnly) => {
       const bounds = root.getBoundingClientRect()
       return [...root.querySelectorAll("*")].every((element) => {
         // An `sr-only` subtree is a 1px clipped box by design: the box of its
         // children is not painted.
-        if (element.closest(".sr-only")) return true
+        if (element.closest(srOnly)) return true
         const box = element.getBoundingClientRect()
         const fixed = getComputedStyle(element).position === "fixed"
         return (
           fixed || box.width === 0 || (box.left >= bounds.left - 1 && box.right <= bounds.right + 1)
         )
       })
-    }),
+    }, SR_ONLY),
     true,
     "no packed chrome paints outside the mobile column",
   )
@@ -243,7 +248,7 @@ test("chrome: the packed breadcrumb, header and footer keep their landmarks and 
   assert.equal(
     Math.round(
       await profile
-        .locator("span.sr-only")
+        .locator(`span${SR_ONLY}`)
         .evaluate((element) => element.getBoundingClientRect().width),
     ),
     1,

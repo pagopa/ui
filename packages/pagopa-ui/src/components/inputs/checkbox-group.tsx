@@ -27,22 +27,22 @@ function CheckboxGroup({
       data-slot="checkbox-group"
       aria-describedby={describedBy(ids, { description, error })}
       aria-invalid={Boolean(error) || undefined}
-      className={cn("grid gap-3", className)}
+      className={cn("pui:grid pui:gap-3", className)}
       {...props}
     >
-      <legend className="text-label-sb">
+      <legend className="pui:text-label-sb">
         {legend}
         {required ? (
           <>
-            <span aria-hidden="true" className="ml-0.5 text-destructive">
+            <span aria-hidden="true" className="pui:ml-0.5 pui:text-destructive">
               *
             </span>
-            <span className="sr-only"> (obbligatorio)</span>
+            <span className="pui:sr-only"> (obbligatorio)</span>
           </>
         ) : null}
       </legend>
       <FieldMessages ids={ids} description={description} error={error} />
-      <div className="grid gap-1">{children}</div>
+      <div className="pui:grid pui:gap-1">{children}</div>
     </fieldset>
   )
 }

@@ -82,7 +82,7 @@ function PagoPAIcon<Name extends FigmaIconName>({
       aria-hidden={decorative || undefined}
       aria-label={decorative ? undefined : (label ?? name)}
       role={decorative ? undefined : "img"}
-      className={cn("pagopa-icon inline-block shrink-0 select-none", className)}
+      className={cn("pagopa-icon pui:inline-block pui:shrink-0 pui:select-none", className)}
       width={size}
       height={size}
     />

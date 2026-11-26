@@ -31,7 +31,7 @@ function Checkbox({
         if (!details.isCanceled && checked === undefined) setUncontrolledChecked(next)
       }}
       className={cn(
-        "group/checkbox peer relative flex size-6 shrink-0 items-center justify-center text-foreground outline-none after:absolute after:-inset-2.5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring data-disabled:cursor-not-allowed data-disabled:opacity-50 aria-invalid:text-destructive data-checked:text-primary aria-invalid:data-checked:text-primary",
+        "group/checkbox peer pui:relative pui:flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center pui:text-foreground pui:outline-none pui:after:absolute pui:after:-inset-2.5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring pui:data-disabled:cursor-not-allowed pui:data-disabled:opacity-50 pui:aria-invalid:text-destructive pui:data-checked:text-primary pui:aria-invalid:data-checked:text-primary",
         className,
       )}
       {...props}
@@ -39,16 +39,16 @@ function Checkbox({
       <PagoPAIcon
         name="check_box"
         variant="unchecked"
-        className="group-data-checked/checkbox:hidden group-data-indeterminate/checkbox:hidden"
+        className="pui:group-data-checked/checkbox:hidden pui:group-data-indeterminate/checkbox:hidden"
       />
       <PagoPAIcon
         name="check_box"
         variant="indeterminate"
-        className="hidden group-data-indeterminate/checkbox:block"
+        className="pui:hidden pui:group-data-indeterminate/checkbox:block"
       />
       <CheckboxPrimitive.Indicator
         data-slot="checkbox-indicator"
-        className="flex items-center justify-center data-unchecked:hidden data-indeterminate:hidden"
+        className="pui:flex pui:items-center pui:justify-center pui:data-unchecked:hidden pui:data-indeterminate:hidden"
       >
         <PagoPAIcon name="check_box" variant="checked" />
       </CheckboxPrimitive.Indicator>

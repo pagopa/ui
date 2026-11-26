@@ -38,7 +38,7 @@ function ScrollToBottom({
     <Button
       type="button"
       size="icon"
-      className={cn("size-14 rounded-full shadow-32", className)}
+      className={cn("pui:size-14 pui:rounded-full pui:shadow-32", className)}
       aria-label={label}
       onClick={() => {
         const element = target?.current
@@ -49,7 +49,7 @@ function ScrollToBottom({
         else window.scrollTo({ top: document.documentElement.scrollHeight, behavior })
       }}
     >
-      <PagoPAIcon name="arrow" variant="down" decorative className="size-6" />
+      <PagoPAIcon name="arrow" variant="down" decorative className="pui:size-6" />
     </Button>
   )
 }

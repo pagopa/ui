@@ -203,13 +203,13 @@ function Autocomplete(props: AutocompleteProps) {
       onInputValueChange={(next) => setInputValue(next)}
       onValueChange={(next) => commit(toSelection(next))}
     >
-      <div className={cn("grid min-w-0 gap-2", className)}>
-        <Combobox.InputGroup data-slot="autocomplete" className="relative min-w-0">
+      <div className={cn("pui:grid pui:min-w-0 pui:gap-2", className)}>
+        <Combobox.InputGroup data-slot="autocomplete" className="pui:relative pui:min-w-0">
           {leadingIcon ? (
             <span
               aria-hidden="true"
               data-slot="autocomplete-leading-icon"
-              className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-choice-icon [&_svg]:size-6"
+              className="pui:pointer-events-none pui:absolute pui:inset-y-0 pui:left-3 pui:flex pui:items-center pui:text-choice-icon pui:[&_svg]:size-6"
             >
               {leadingIcon}
             </span>
@@ -220,16 +220,18 @@ function Autocomplete(props: AutocompleteProps) {
             <div
               data-slot="autocomplete-multiple"
               className={cn(
-                "flex min-h-12 min-w-0 flex-nowrap items-center gap-2 rounded-lg border border-input bg-background py-2 pr-3 pl-3 transition-[color,background-color,border-color]",
-                leadingIcon && "pl-11",
-                focused && !error && "border-ring outline-2 outline-offset-1 outline-ring",
-                error && "border-destructive",
-                disabled && "bg-muted text-muted-foreground",
+                "pui:flex pui:min-h-12 pui:min-w-0 pui:flex-nowrap pui:items-center pui:gap-2 pui:rounded-lg pui:border pui:border-input pui:bg-background pui:py-2 pui:pr-3 pui:pl-3 pui:transition-[color,background-color,border-color]",
+                leadingIcon && "pui:pl-11",
+                focused &&
+                  !error &&
+                  "pui:border-ring pui:outline-2 pui:outline-offset-1 pui:outline-ring",
+                error && "pui:border-destructive",
+                disabled && "pui:bg-muted pui:text-muted-foreground",
               )}
             >
               <div
                 data-slot="autocomplete-multiple-chips"
-                className="flex min-w-0 shrink items-center gap-2 overflow-x-auto"
+                className="pui:flex pui:min-w-0 pui:shrink pui:items-center pui:gap-2 pui:overflow-x-auto"
               >
                 <Combobox.Value>
                   {(selectedValues: string[]) => {
@@ -238,12 +240,12 @@ function Autocomplete(props: AutocompleteProps) {
                       return (
                         <InputChip
                           data-slot="autocomplete-counter"
-                          className="shrink-0"
+                          className="pui:shrink-0"
                           removeLabel={clearAllLabel}
                           onRemove={disabled ? undefined : () => commit([])}
                         >
                           <span aria-hidden="true">{values.length}</span>
-                          <span className="sr-only">{counterLabel(values.length)}</span>
+                          <span className="pui:sr-only">{counterLabel(values.length)}</span>
                         </InputChip>
                       )
                     }
@@ -252,7 +254,7 @@ function Autocomplete(props: AutocompleteProps) {
                       return (
                         <InputChip
                           key={`${entry}-${index}`}
-                          className="max-w-full shrink-0"
+                          className="pui:max-w-full pui:shrink-0"
                           removeLabel={removeValueLabel(text)}
                           onRemove={
                             disabled
@@ -286,8 +288,8 @@ function Autocomplete(props: AutocompleteProps) {
                 render={
                   <Input
                     className={cn(
-                      "peer min-h-6 min-w-6 flex-1 border-0 bg-transparent p-0 text-label-sb focus-visible:outline-none",
-                      disabled && "bg-transparent text-muted-foreground",
+                      "peer pui:min-h-6 pui:min-w-6 pui:flex-1 pui:border-0 pui:bg-transparent pui:p-0 pui:text-label-sb pui:focus-visible:outline-none",
+                      disabled && "pui:bg-transparent pui:text-muted-foreground",
                     )}
                   />
                 }
@@ -296,19 +298,22 @@ function Autocomplete(props: AutocompleteProps) {
                 // The source `Active` row puts the `48x24 Action goup` after the
                 // chips and the caret target, inside the frame: a flex sibling
                 // keeps the row on the source's 12px inset.
-                <span data-slot="autocomplete-actions" className="flex shrink-0 items-center">
+                <span
+                  data-slot="autocomplete-actions"
+                  className="pui:flex pui:shrink-0 pui:items-center"
+                >
                   {showClear ? (
                     <Combobox.Clear
                       aria-label={clearLabel}
                       tabIndex={0}
-                      className="relative grid size-6 place-items-center rounded-sm text-foreground outline-none after:absolute after:-inset-2.5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-1 focus-visible:outline-ring"
+                      className="pui:relative pui:grid pui:size-6 pui:place-items-center pui:rounded-sm pui:text-foreground pui:outline-none pui:after:absolute pui:after:-inset-2.5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-1 pui:focus-visible:outline-ring"
                     >
                       <PagoPAIcon name="close" size={24} variant="small" aria-hidden="true" />
                     </Combobox.Clear>
                   ) : null}
                   <Combobox.Trigger
                     aria-label={open ? closeLabel : openLabel}
-                    className="relative grid size-6 place-items-center rounded-sm text-foreground outline-none after:absolute after:-inset-2.5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-1 focus-visible:outline-ring"
+                    className="pui:relative pui:grid pui:size-6 pui:place-items-center pui:rounded-sm pui:text-foreground pui:outline-none pui:after:absolute pui:after:-inset-2.5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-1 pui:focus-visible:outline-ring"
                   >
                     <PagoPAIcon
                       name="chevron"
@@ -328,7 +333,12 @@ function Autocomplete(props: AutocompleteProps) {
               aria-invalid={Boolean(error) || undefined}
               aria-describedby={describedBy(ids, { description, error, success })}
               render={
-                <Input className={cn("peer py-3 pr-10 text-label-sb", leadingIcon && "pl-11")} />
+                <Input
+                  className={cn(
+                    "peer pui:py-3 pui:pr-10 pui:text-label-sb",
+                    leadingIcon && "pui:pl-11",
+                  )}
+                />
               }
             />
           )}
@@ -351,7 +361,7 @@ function Autocomplete(props: AutocompleteProps) {
               variant="down"
               size={24}
               aria-hidden="true"
-              className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-foreground"
+              className="pui:pointer-events-none pui:absolute pui:top-1/2 pui:right-3 pui:-translate-y-1/2 pui:text-foreground"
             />
           ) : !multiple && showClear ? (
             // The source `Filled=True` state draws `close_small` instead of the
@@ -361,14 +371,14 @@ function Autocomplete(props: AutocompleteProps) {
             <Combobox.Clear
               aria-label={clearLabel}
               tabIndex={0}
-              className="absolute top-1/2 right-3 grid size-6 -translate-y-1/2 place-items-center rounded-sm text-foreground outline-none after:absolute after:-inset-2.5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-1 focus-visible:outline-ring"
+              className="pui:absolute pui:top-1/2 pui:right-3 pui:grid pui:size-6 pui:-translate-y-1/2 pui:place-items-center pui:rounded-sm pui:text-foreground pui:outline-none pui:after:absolute pui:after:-inset-2.5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-1 pui:focus-visible:outline-ring"
             >
               <PagoPAIcon name="close" size={24} variant="small" aria-hidden="true" />
             </Combobox.Clear>
           ) : multiple ? null : (
             <Combobox.Trigger
               aria-label={open ? closeLabel : openLabel}
-              className="absolute top-1/2 right-3 grid size-6 -translate-y-1/2 place-items-center rounded-sm text-foreground outline-none after:absolute after:-inset-2.5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-1 focus-visible:outline-ring"
+              className="pui:absolute pui:top-1/2 pui:right-3 pui:grid pui:size-6 pui:-translate-y-1/2 pui:place-items-center pui:rounded-sm pui:text-foreground pui:outline-none pui:after:absolute pui:after:-inset-2.5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-1 pui:focus-visible:outline-ring"
             >
               <PagoPAIcon
                 name="chevron"
@@ -380,32 +390,32 @@ function Autocomplete(props: AutocompleteProps) {
           )}
           {/* The live region stays mounted so the loading and selection
               announcements are not lost to a remount. */}
-          <Combobox.Status className="sr-only">{statusText}</Combobox.Status>
+          <Combobox.Status className="pui:sr-only">{statusText}</Combobox.Status>
         </Combobox.InputGroup>
         {/* Source helper inset: 14px (824:8846 `.HelperText` pad=14/1/14). */}
-        <div className="px-3.5">
+        <div className="pui:px-3.5">
           <FieldMessages ids={ids} description={description} error={error} success={success} />
         </div>
       </div>
       <Combobox.Portal container={portalHost}>
-        <Combobox.Positioner sideOffset={4} className="isolate">
-          <Combobox.Popup className="w-(--anchor-width) max-w-(--available-width) rounded-lg bg-popover text-popover-foreground shadow-16">
+        <Combobox.Positioner sideOffset={4} className="pui:isolate">
+          <Combobox.Popup className="pui:w-(--anchor-width) pui:max-w-(--available-width) pui:rounded-lg pui:bg-popover pui:text-popover-foreground pui:shadow-16">
             {/* The select-all row sits outside the listbox so it stays one
                 action row, never a menuitem that reads as an option. */}
             {multiple && selectAllLabel ? (
-              <div className="border-b border-border px-3 py-2">
+              <div className="pui:border-b pui:border-border pui:px-3 pui:py-2">
                 <button
                   type="button"
                   onClick={() =>
                     commit(allListedSelected ? [] : options.map((option) => option.value))
                   }
-                  className="flex w-full items-center gap-2 rounded-md text-left text-label-sb text-foreground outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring"
+                  className="pui:flex pui:w-full pui:items-center pui:gap-2 pui:rounded-md pui:text-left pui:text-label-sb pui:text-foreground pui:outline-none pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
                 >
                   <PagoPAIcon
                     name="check_box"
                     variant={allListedSelected ? "checked" : "unchecked"}
                     size={24}
-                    className={allListedSelected ? "text-primary" : "text-foreground"}
+                    className={allListedSelected ? "pui:text-primary" : "pui:text-foreground"}
                   />
                   {selectAllLabel}
                 </button>
@@ -417,18 +427,20 @@ function Autocomplete(props: AutocompleteProps) {
                 above every result list. */}
             <Combobox.Empty
               data-slot="combobox-empty"
-              className="text-label-mini text-muted-foreground"
+              className="pui:text-label-mini pui:text-muted-foreground"
             >
-              <span className="block px-3 py-3">{loading ? loadingLabel : emptyLabel}</span>
+              <span className="pui:block pui:px-3 pui:py-3">
+                {loading ? loadingLabel : emptyLabel}
+              </span>
             </Combobox.Empty>
             <Combobox.List
               aria-label={listName}
               aria-busy={loading || undefined}
               className={cn(
-                "max-h-60 overflow-auto overscroll-contain",
+                "pui:max-h-60 pui:overflow-auto pui:overscroll-contain",
                 options.some((option) => option.description || option.leading || option.chip)
-                  ? "p-0"
-                  : "p-1",
+                  ? "pui:p-0"
+                  : "pui:p-1",
               )}
             >
               {(option: AutocompleteOption) => (
@@ -441,8 +453,8 @@ function Autocomplete(props: AutocompleteProps) {
                       value={option.value}
                       disabled={option.disabled}
                       className={cn(
-                        "relative flex min-h-11 cursor-default items-center justify-between rounded-md px-3 py-2 outline-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50",
-                        multiple ? "pr-12" : "[&_svg]:size-5",
+                        "pui:relative pui:flex pui:min-h-11 pui:cursor-default pui:items-center pui:justify-between pui:rounded-md pui:px-3 pui:py-2 pui:outline-none pui:data-highlighted:bg-accent pui:data-highlighted:text-accent-foreground pui:data-disabled:pointer-events-none pui:data-disabled:opacity-50",
+                        multiple ? "pui:pr-12" : "pui:[&_svg]:size-5",
                         attributes.className,
                       )}
                     >
@@ -455,16 +467,16 @@ function Autocomplete(props: AutocompleteProps) {
                           render={(indicatorProps, { selected }) => (
                             <span
                               {...indicatorProps}
-                              className="pointer-events-none absolute top-3 right-4 flex size-6 items-center justify-center"
+                              className="pui:pointer-events-none pui:absolute pui:top-3 pui:right-4 pui:flex pui:size-6 pui:items-center pui:justify-center"
                             >
                               {selected ? (
-                                <span className="absolute inset-0.75 rounded-2 bg-primary-foreground" />
+                                <span className="pui:absolute pui:inset-0.75 pui:rounded-2 pui:bg-primary-foreground" />
                               ) : null}
                               <PagoPAIcon
                                 name="check_box"
                                 variant={selected ? "checked" : "unchecked"}
                                 size={24}
-                                className={cn("relative", selected && "text-primary")}
+                                className={cn("pui:relative", selected && "pui:text-primary")}
                               />
                             </span>
                           )}

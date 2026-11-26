@@ -32,10 +32,13 @@ function KpiBar({
       aria-valuemax={100}
       aria-valuenow={percentage}
       aria-label={t.valueLabel(percentage)}
-      className={cn("w-full overflow-hidden rounded-2xl bg-secondary", className)}
+      className={cn("pui:w-full pui:overflow-hidden pui:rounded-2xl pui:bg-secondary", className)}
     >
       <div
-        className={cn("h-full rounded-2xl", completed ? "bg-success" : "bg-primary")}
+        className={cn(
+          "pui:h-full pui:rounded-2xl",
+          completed ? "pui:bg-success" : "pui:bg-primary",
+        )}
         style={{ width: `${percentage}%` }}
       />
     </div>
@@ -54,10 +57,12 @@ function KpiFooter({
   locale: string
 }) {
   return (
-    <div data-slot="progress-kpi-footer" className="flex items-center gap-0.5">
-      <span className="text-body-sb text-foreground">{value.toLocaleString(locale)}</span>
-      <span className="text-label-mini text-foreground">/ {total.toLocaleString(locale)}</span>
-      {completed ? <PagoPAIcon name="check_circle" size={16} className="text-success" /> : null}
+    <div data-slot="progress-kpi-footer" className="pui:flex pui:items-center pui:gap-0.5">
+      <span className="pui:text-body-sb pui:text-foreground">{value.toLocaleString(locale)}</span>
+      <span className="pui:text-label-mini pui:text-foreground">
+        / {total.toLocaleString(locale)}
+      </span>
+      {completed ? <PagoPAIcon name="check_circle" size={16} className="pui:text-success" /> : null}
     </div>
   )
 }
@@ -94,38 +99,43 @@ function ProgressKpi({
     <section
       aria-label={label}
       data-slot="progress-kpi"
-      className="grid gap-3 rounded-3xl border bg-background p-6"
+      className="pui:grid pui:gap-3 pui:rounded-3xl pui:border pui:bg-background pui:p-6"
     >
-      <header data-slot="progress-kpi-header" className="flex items-center gap-2">
+      <header data-slot="progress-kpi-header" className="pui:flex pui:items-center pui:gap-2">
         {channel ? (
           <span
             aria-hidden="true"
             data-slot="progress-kpi-channel"
-            className="flex shrink-0 items-center justify-center text-choice-icon"
+            className="pui:flex pui:shrink-0 pui:items-center pui:justify-center pui:text-choice-icon"
           >
             {channel}
           </span>
         ) : null}
-        <span className="min-w-0 flex-1 text-label-sb text-muted-foreground">{label}</span>
+        <span className="pui:min-w-0 pui:flex-1 pui:text-label-sb pui:text-muted-foreground">
+          {label}
+        </span>
         {info ? (
           <span
             data-slot="progress-kpi-info"
-            className="flex shrink-0 items-center justify-center text-primary"
+            className="pui:flex pui:shrink-0 pui:items-center pui:justify-center pui:text-primary"
           >
             {info}
           </span>
         ) : null}
       </header>
-      <div data-slot="progress-kpi-body" className="grid gap-3">
-        <p data-slot="progress-kpi-percentage" className="text-title-xl-mobile text-foreground">
+      <div data-slot="progress-kpi-body" className="pui:grid pui:gap-3">
+        <p
+          data-slot="progress-kpi-percentage"
+          className="pui:text-title-xl-mobile pui:text-foreground"
+        >
           {t.valueLabel(percentage)}
         </p>
-        <div data-slot="progress-kpi-data" className="grid gap-2">
-          <KpiBar percentage={percentage} completed={completed} className="h-4" />
+        <div data-slot="progress-kpi-data" className="pui:grid pui:gap-2">
+          <KpiBar percentage={percentage} completed={completed} className="pui:h-4" />
           <KpiFooter value={value} total={total} completed={completed} locale={locale} />
         </div>
         {details?.length ? (
-          <div data-slot="progress-kpi-details" className="grid gap-2.5">
+          <div data-slot="progress-kpi-details" className="pui:grid pui:gap-2.5">
             {details.map((row, index) => {
               const rowTotal = row.total ?? 100
               const rowPercentage = Math.min(100, Math.round((row.value / rowTotal) * 100))
@@ -133,12 +143,16 @@ function ProgressKpi({
                 <div
                   key={`${row.label ?? "row"}-${index}`}
                   data-slot="progress-kpi-row"
-                  className="grid gap-2 py-2"
+                  className="pui:grid pui:gap-2 pui:py-2"
                 >
                   {row.label ? (
-                    <p className="text-caption-sb text-muted-foreground">{row.label}</p>
+                    <p className="pui:text-caption-sb pui:text-muted-foreground">{row.label}</p>
                   ) : null}
-                  <KpiBar percentage={rowPercentage} completed={row.completed} className="h-2" />
+                  <KpiBar
+                    percentage={rowPercentage}
+                    completed={row.completed}
+                    className="pui:h-2"
+                  />
                   <KpiFooter
                     value={row.value}
                     total={rowTotal}
@@ -151,7 +165,7 @@ function ProgressKpi({
           </div>
         ) : null}
       </div>
-      {detail ? <p className="text-label-mini text-muted-foreground">{detail}</p> : null}
+      {detail ? <p className="pui:text-label-mini pui:text-muted-foreground">{detail}</p> : null}
     </section>
   )
 }

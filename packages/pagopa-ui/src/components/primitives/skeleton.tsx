@@ -7,7 +7,7 @@ function Skeleton({ className, ...props }: ComponentProps<"span">) {
       aria-hidden="true"
       data-slot="skeleton"
       className={cn(
-        "block rounded-full bg-secondary motion-safe:animate-pulse forced-colors:border-2 forced-colors:border-dashed forced-colors:border-[CanvasText] forced-colors:bg-[Canvas] forced-colors:[forced-color-adjust:none]",
+        "pui:block pui:rounded-full pui:bg-secondary pui:motion-safe:animate-pulse pui:forced-colors:border-2 pui:forced-colors:border-dashed pui:forced-colors:border-[CanvasText] pui:forced-colors:bg-[Canvas] pui:forced-colors:[forced-color-adjust:none]",
         className,
       )}
       {...props}

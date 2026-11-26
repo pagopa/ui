@@ -88,7 +88,7 @@ function OTPField({
           nextInput.focus()
         }}
         className={cn(
-          "cn-otp-field flex w-fit max-w-full min-w-0 items-center overflow-x-clip rounded-lg border border-otp-frame px-6 py-2 outline-none [overflow-clip-margin:var(--pui-otp-clip-margin)] has-focus-visible:outline-2 has-focus-visible:outline-solid has-focus-visible:outline-offset-2 has-focus-visible:outline-ring has-disabled:opacity-50 has-aria-invalid:border-destructive has-aria-invalid:ring-1 has-aria-invalid:ring-inset has-aria-invalid:ring-destructive forced-colors:border-[CanvasText] forced-colors:has-aria-invalid:border-2 forced-colors:has-aria-invalid:ring-0 forced-colors:has-focus-visible:outline-[CanvasText]",
+          "cn-otp-field pui:flex pui:w-fit pui:max-w-full pui:min-w-0 pui:items-center pui:overflow-x-clip pui:rounded-lg pui:border pui:border-otp-frame pui:px-6 pui:py-2 pui:outline-none pui:[overflow-clip-margin:var(--pui-otp-clip-margin)] pui:has-focus-visible:outline-2 pui:has-focus-visible:outline-solid pui:has-focus-visible:outline-offset-2 pui:has-focus-visible:outline-ring pui:has-disabled:opacity-50 pui:has-aria-invalid:border-destructive pui:has-aria-invalid:ring-1 pui:has-aria-invalid:ring-inset pui:has-aria-invalid:ring-destructive pui:forced-colors:border-[CanvasText] pui:forced-colors:has-aria-invalid:border-2 pui:forced-colors:has-aria-invalid:ring-0 pui:forced-colors:has-focus-visible:outline-[CanvasText]",
           className,
         )}
         {...props}
@@ -101,7 +101,7 @@ function OTPFieldGroup({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="otp-field-group"
-      className={cn("flex min-w-0 items-center gap-4", className)}
+      className={cn("pui:flex pui:min-w-0 pui:items-center pui:gap-4", className)}
       {...props}
     />
   )
@@ -121,14 +121,14 @@ function OTPFieldSlot({
     <div
       data-slot="otp-field-slot"
       className={cn(
-        "relative flex h-8.5 w-2.75 shrink-0 items-start justify-center text-body-sb leading-6.5 text-foreground",
+        "pui:relative pui:flex pui:h-8.5 pui:w-2.75 pui:shrink-0 pui:items-start pui:justify-center pui:text-body-sb pui:leading-6.5 pui:text-foreground",
         className,
       )}
     >
       <OTPFieldPrimitive.Input
         ref={index === 0 ? firstInputRef : undefined}
         data-slot="otp-field-input"
-        className="peer absolute top-1/2 left-0 h-11 w-full min-w-0 -translate-y-1/2 bg-transparent p-0 opacity-0 outline-none"
+        className="peer pui:absolute pui:top-1/2 pui:left-0 pui:h-11 pui:w-full pui:min-w-0 pui:-translate-y-1/2 pui:bg-transparent pui:p-0 pui:opacity-0 pui:outline-none"
         // The slot renders Base UI's own slot state, so the glyph, the mask
         // marker and the cursor can never desynchronize from the real value.
         render={(inputProps, state) => (
@@ -138,18 +138,22 @@ function OTPFieldSlot({
               <span
                 data-slot="otp-field-mask"
                 aria-hidden="true"
-                className="pointer-events-none absolute top-3.5 left-0.5 size-2 rounded-full bg-foreground forced-colors:forced-color-adjust-none forced-colors:bg-[CanvasText]"
+                className="pui:pointer-events-none pui:absolute pui:top-3.5 pui:left-0.5 pui:size-2 pui:rounded-full pui:bg-foreground pui:forced-colors:forced-color-adjust-none pui:forced-colors:bg-[CanvasText]"
               />
             ) : null}
             {state.value !== "" && !mask ? (
-              <span data-slot="otp-field-glyph" aria-hidden="true" className="pointer-events-none">
+              <span
+                data-slot="otp-field-glyph"
+                aria-hidden="true"
+                className="pui:pointer-events-none"
+              >
                 {state.value}
               </span>
             ) : null}
             <span
               data-slot="otp-field-caret"
               aria-hidden="true"
-              className="pointer-events-none absolute top-2 left-1/2 hidden h-4 w-0.5 -translate-x-1/2 rounded-full bg-primary motion-safe:animate-caret-blink forced-colors:forced-color-adjust-none forced-colors:bg-[CanvasText] peer-[:focus:not([data-filled])]:block"
+              className="pui:pointer-events-none pui:absolute pui:top-2 pui:left-1/2 pui:hidden pui:h-4 pui:w-0.5 pui:-translate-x-1/2 pui:rounded-full pui:bg-primary pui:motion-safe:animate-caret-blink pui:forced-colors:forced-color-adjust-none pui:forced-colors:bg-[CanvasText] pui:peer-[:focus:not([data-filled])]:block"
             />
           </>
         )}
@@ -158,7 +162,7 @@ function OTPFieldSlot({
       <span
         data-slot="otp-field-underline"
         aria-hidden="true"
-        className="pointer-events-none absolute top-7 left-0 h-px w-full bg-muted-foreground forced-colors:forced-color-adjust-none forced-colors:bg-[CanvasText]"
+        className="pui:pointer-events-none pui:absolute pui:top-7 pui:left-0 pui:h-px pui:w-full pui:bg-muted-foreground pui:forced-colors:forced-color-adjust-none pui:forced-colors:bg-[CanvasText]"
       />
     </div>
   )
@@ -173,7 +177,10 @@ function OTPFieldSeparator({
   return (
     <OTPFieldPrimitive.Separator
       data-slot="otp-field-separator"
-      className={cn("flex items-center [&_svg:not([class*='size-'])]:size-4", className)}
+      className={cn(
+        "pui:flex pui:items-center pui:[&_svg:not([class*='size-'])]:size-4",
+        className,
+      )}
       {...props}
     >
       <MinusIcon />

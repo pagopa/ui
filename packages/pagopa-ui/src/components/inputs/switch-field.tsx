@@ -49,31 +49,31 @@ function SwitchField({
     <label
       htmlFor={ids.controlId}
       className={cn(
-        "flex min-w-0 cursor-pointer items-center gap-3 text-label-sb",
-        !start && "row-start-1 col-start-1",
-        (!start || !hasMessages) && "min-h-11",
-        controlsDisabled && "cursor-not-allowed text-muted-foreground",
+        "pui:flex pui:min-w-0 pui:cursor-pointer pui:items-center pui:gap-3 pui:text-label-sb",
+        !start && "pui:row-start-1 pui:col-start-1",
+        (!start || !hasMessages) && "pui:min-h-11",
+        controlsDisabled && "pui:cursor-not-allowed pui:text-muted-foreground",
       )}
     >
       {leadingIcon ? (
         <span
           aria-hidden="true"
           className={cn(
-            "flex size-6 shrink-0 items-center justify-center text-choice-icon [&>*]:size-6",
-            unavailable && "opacity-50 forced-colors:opacity-100",
+            "pui:flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center pui:text-choice-icon pui:[&>*]:size-6",
+            unavailable && "pui:opacity-50 pui:forced-colors:opacity-100",
           )}
         >
           {leadingIcon}
         </span>
       ) : null}
-      <span className="min-w-0 wrap-anywhere">
+      <span className="pui:min-w-0 pui:wrap-anywhere">
         {label}
         {required ? (
           <>
-            <span aria-hidden="true" className="ml-0.5 text-destructive">
+            <span aria-hidden="true" className="pui:ml-0.5 pui:text-destructive">
               *
             </span>
-            <span className="sr-only"> (obbligatorio)</span>
+            <span className="pui:sr-only"> (obbligatorio)</span>
           </>
         ) : null}
       </span>
@@ -88,13 +88,20 @@ function SwitchField({
       loading={loading}
       aria-invalid={Boolean(error) || undefined}
       aria-describedby={describedBy(ids, state, ariaDescribedBy)}
-      className={cn(start ? "absolute left-0 top-0" : "row-start-1 col-start-2")}
+      className={cn(
+        start ? "pui:absolute pui:left-0 pui:top-0" : "pui:row-start-1 pui:col-start-2",
+      )}
       {...props}
     />
   )
 
   const messagesElement = hasMessages ? (
-    <div className={cn("grid min-w-0", start ? "gap-0.5" : "row-start-2 col-span-2")}>
+    <div
+      className={cn(
+        "pui:grid pui:min-w-0",
+        start ? "pui:gap-0.5" : "pui:row-start-2 pui:col-span-2",
+      )}
+    >
       <FieldMessages ids={ids} {...state} />
     </div>
   ) : null
@@ -103,8 +110,8 @@ function SwitchField({
     <Link
       href={learnMore.href}
       className={cn(
-        "relative flex w-fit min-w-0 max-w-full items-center rounded-sm text-label-mini-sb text-primary underline underline-offset-2 after:absolute after:-inset-y-3 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring",
-        start ? "mt-1.5" : "col-span-2 mt-1",
+        "pui:relative pui:flex pui:w-fit pui:min-w-0 pui:max-w-full pui:items-center pui:rounded-sm pui:text-label-mini-sb pui:text-primary pui:underline pui:underline-offset-2 pui:after:absolute pui:after:-inset-y-3 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring",
+        start ? "pui:mt-1.5" : "pui:col-span-2 pui:mt-1",
       )}
     >
       {learnMore.label}
@@ -116,11 +123,11 @@ function SwitchField({
     <div
       data-slot="switch-field"
       data-availability={unavailable ? "no" : "yes"}
-      className={cn("grid min-w-0 wrap-anywhere", !start && "py-4", className)}
+      className={cn("pui:grid pui:min-w-0 pui:wrap-anywhere", !start && "pui:py-4", className)}
     >
       {start ? (
-        <div className="relative min-h-11 min-w-0">
-          <div className="grid min-w-0 pl-14">
+        <div className="pui:relative pui:min-h-11 pui:min-w-0">
+          <div className="pui:grid pui:min-w-0 pui:pl-14">
             {labelElement}
             {messagesElement}
             {learnMoreElement}
@@ -128,7 +135,7 @@ function SwitchField({
           {switchElement}
         </div>
       ) : (
-        <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3">
+        <div className="pui:grid pui:min-w-0 pui:grid-cols-[minmax(0,1fr)_auto] pui:items-center pui:gap-x-3">
           {labelElement}
           {switchElement}
           {messagesElement}

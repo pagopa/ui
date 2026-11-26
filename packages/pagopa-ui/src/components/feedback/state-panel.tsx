@@ -47,22 +47,28 @@ function StatePanel({
     <section
       data-slot="state-panel"
       className={cn(
-        "mx-auto flex max-w-xl flex-col items-center gap-6 bg-muted px-6 py-16 text-center",
+        "pui:mx-auto pui:flex pui:max-w-xl pui:flex-col pui:items-center pui:gap-6 pui:bg-muted pui:px-6 pui:py-16 pui:text-center",
         className,
       )}
     >
-      <div className={cn("flex flex-col items-center gap-6", contentClassName)}>
-        <div className="flex size-14 items-center justify-center">{icon}</div>
-        <div className={cn("flex flex-col items-center gap-6", messageClassName)}>
-          <Title className={cn("text-title-md-mobile tablet-md:text-title-md", titleClassName)}>
+      <div className={cn("pui:flex pui:flex-col pui:items-center pui:gap-6", contentClassName)}>
+        <div className="pui:flex pui:size-14 pui:items-center pui:justify-center">{icon}</div>
+        <div className={cn("pui:flex pui:flex-col pui:items-center pui:gap-6", messageClassName)}>
+          <Title
+            className={cn("pui:text-title-md-mobile pui:tablet-md:text-title-md", titleClassName)}
+          >
             {title}
           </Title>
-          {description && <p className="text-body text-muted-foreground">{description}</p>}
+          {description && <p className="pui:text-body pui:text-muted-foreground">{description}</p>}
         </div>
       </div>
       {extra}
       {actions && (
-        <div className={cn("flex flex-wrap justify-center gap-2", actionsClassName)}>{actions}</div>
+        <div
+          className={cn("pui:flex pui:flex-wrap pui:justify-center pui:gap-2", actionsClassName)}
+        >
+          {actions}
+        </div>
       )}
     </section>
   )

@@ -76,17 +76,17 @@ function TextField({
   return (
     <div
       className={cn(
-        "grid",
+        "pui:grid",
         nativePicker
-          ? "gap-2"
+          ? "pui:gap-2"
           : error
-            ? "gap-0.5"
+            ? "pui:gap-0.5"
             : disabled
-              ? "gap-3.5"
-              : "gap-2.5 has-[input:focus]:gap-3.5 has-[input:not(:placeholder-shown)]:gap-3.5",
+              ? "pui:gap-3.5"
+              : "pui:gap-2.5 pui:has-[input:focus]:gap-3.5 pui:has-[input:not(:placeholder-shown)]:gap-3.5",
       )}
     >
-      <div className="relative">
+      <div className="pui:relative">
         <Input
           ref={mergedInputRef}
           id={ids.controlId}
@@ -103,15 +103,15 @@ function TextField({
           value={value}
           defaultValue={defaultValue}
           className={cn(
-            "peer py-3 text-label-sb",
+            "peer pui:py-3 pui:text-label-sb",
             // The native editor keeps its browser-drawn value and hides the
             // empty placeholder text while the label rests (the label itself is
             // the placeholder then).
-            nativePicker && !filled && "not-focus:text-transparent",
+            nativePicker && !filled && "pui:not-focus:text-transparent",
             // The source frame insets the value 12px after a 24px leading icon
             // frame with an 8px gap (529:6102, 602:9439): 12 + 24 + 8 = 44.
-            leadingIcon && "pl-11",
-            (trailingIcon || success || error) && "pr-10",
+            leadingIcon && "pui:pl-11",
+            (trailingIcon || success || error) && "pui:pr-10",
             className,
           )}
           {...props}
@@ -129,8 +129,8 @@ function TextField({
           <span
             aria-hidden="true"
             className={cn(
-              "pointer-events-none absolute inset-y-0 left-3 flex items-center [&_svg]:size-6",
-              nativePicker ? "text-muted-foreground" : "text-choice-icon",
+              "pui:pointer-events-none pui:absolute pui:inset-y-0 pui:left-3 pui:flex pui:items-center pui:[&_svg]:size-6",
+              nativePicker ? "pui:text-muted-foreground" : "pui:text-choice-icon",
             )}
           >
             {leadingIcon}
@@ -139,28 +139,28 @@ function TextField({
         {trailingIcon ? (
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-muted-foreground [&_svg]:size-6"
+            className="pui:pointer-events-none pui:absolute pui:inset-y-0 pui:right-3 pui:flex pui:items-center pui:text-muted-foreground pui:[&_svg]:size-6"
           >
             {trailingIcon}
           </span>
         ) : success && !error ? (
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-success [&_svg]:size-5"
+            className="pui:pointer-events-none pui:absolute pui:inset-y-0 pui:right-3 pui:flex pui:items-center pui:text-success pui:[&_svg]:size-5"
           >
             <PagoPAIcon name="check_circle" />
           </span>
         ) : error ? (
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-destructive [&_svg]:size-5"
+            className="pui:pointer-events-none pui:absolute pui:inset-y-0 pui:right-3 pui:flex pui:items-center pui:text-destructive pui:[&_svg]:size-5"
           >
             <PagoPAIcon name="report" />
           </span>
         ) : null}
       </div>
       {hasMessages ? (
-        <div className={cn(!nativePicker && "px-3.5")}>
+        <div className={cn(!nativePicker && "pui:px-3.5")}>
           <FieldMessages
             ids={ids}
             description={description}
@@ -170,7 +170,7 @@ function TextField({
         </div>
       ) : null}
       {success && !error ? (
-        <p id={ids.successId} className="sr-only">
+        <p id={ids.successId} className="pui:sr-only">
           {success}
         </p>
       ) : null}
@@ -203,8 +203,8 @@ function TextareaField({
   const state = { description, error, success }
 
   return (
-    <div className="grid gap-0.5">
-      <div className="relative">
+    <div className="pui:grid pui:gap-0.5">
+      <div className="pui:relative">
         <Textarea
           id={ids.controlId}
           required={required}
@@ -212,7 +212,7 @@ function TextareaField({
           aria-invalid={Boolean(error) || undefined}
           aria-describedby={describedBy(ids, state, ariaDescribedBy)}
           placeholder=" "
-          className={cn("peer py-3 text-label-sb", className)}
+          className={cn("peer pui:py-3 pui:text-label-sb", className)}
           {...props}
         />
         <FloatingFieldLabel
@@ -223,29 +223,29 @@ function TextareaField({
           // The source textarea label is inset 12px from the frame (10585:80647)
           // instead of centring, and floats to the same notch once focused or
           // filled.
-          restingClassName="top-3 translate-y-0"
+          restingClassName="pui:top-3 pui:translate-y-0"
         />
         {success && !error ? (
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute top-3 right-3 flex items-center text-success [&_svg]:size-5"
+            className="pui:pointer-events-none pui:absolute pui:top-3 pui:right-3 pui:flex pui:items-center pui:text-success pui:[&_svg]:size-5"
           >
             <PagoPAIcon name="check_circle" />
           </span>
         ) : error ? (
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute top-3 right-3 flex items-center text-destructive [&_svg]:size-5"
+            className="pui:pointer-events-none pui:absolute pui:top-3 pui:right-3 pui:flex pui:items-center pui:text-destructive pui:[&_svg]:size-5"
           >
             <PagoPAIcon name="report" />
           </span>
         ) : null}
       </div>
-      <div className="px-3.5">
+      <div className="pui:px-3.5">
         <FieldMessages ids={ids} description={description} error={error} />
       </div>
       {success && !error ? (
-        <p id={ids.successId} className="sr-only">
+        <p id={ids.successId} className="pui:sr-only">
           {success}
         </p>
       ) : null}
@@ -292,7 +292,7 @@ function AuthenticationCodeInput({
   const invalid = Boolean(error) || undefined
 
   return (
-    <div className="grid min-w-0 gap-1.5 [overflow-wrap:anywhere]">
+    <div className="pui:grid pui:min-w-0 pui:gap-1.5 pui:[overflow-wrap:anywhere]">
       <FieldLabel
         htmlFor={ids.controlId}
         label={label}
@@ -300,13 +300,13 @@ function AuthenticationCodeInput({
         requiredLabel={requiredLabel}
         disabled={disabled}
       />
-      <div className="grid min-w-0 gap-0.5">
+      <div className="pui:grid pui:min-w-0 pui:gap-0.5">
         <OTPField
           id={ids.controlId}
           length={length}
           required={required}
           disabled={disabled}
-          className={cn("gap-2", className)}
+          className={cn("pui:gap-2", className)}
           {...props}
         >
           <OTPFieldGroup>
@@ -455,7 +455,7 @@ function DatePickerField({
       aria-invalid={Boolean(error) || undefined}
       aria-describedby={describedBy(ids, state)}
       className={cn(
-        "peer flex min-h-12 w-full items-center gap-2 rounded-lg border border-input bg-background px-3 py-2 text-left text-body transition-[color,background-color,border-color] outline-none select-none focus-visible:border-ring focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-1 focus-visible:outline-ring disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground aria-invalid:border-destructive aria-invalid:outline-destructive aria-expanded:border-2 aria-expanded:border-primary [&_svg]:pointer-events-none [&_svg]:shrink-0",
+        "peer pui:flex pui:min-h-12 pui:w-full pui:items-center pui:gap-2 pui:rounded-lg pui:border pui:border-input pui:bg-background pui:px-3 pui:py-2 pui:text-left pui:text-body pui:transition-[color,background-color,border-color] pui:outline-none pui:select-none pui:focus-visible:border-ring pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-1 pui:focus-visible:outline-ring pui:disabled:cursor-not-allowed pui:disabled:bg-muted pui:disabled:text-muted-foreground pui:aria-invalid:border-destructive pui:aria-invalid:outline-destructive pui:aria-expanded:border-2 pui:aria-expanded:border-primary pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0",
         className,
       )}
     >
@@ -464,12 +464,15 @@ function DatePickerField({
           data-slot="date-picker-field-leading-icon"
           aria-hidden="true"
           inert
-          className="pointer-events-none inline-flex size-6 shrink-0 items-center justify-center text-choice-icon"
+          className="pui:pointer-events-none pui:inline-flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center pui:text-choice-icon"
         >
           {leadingIcon}
         </span>
       ) : null}
-      <span data-slot="date-picker-field-value" className="flex-1 truncate text-label-sb">
+      <span
+        data-slot="date-picker-field-value"
+        className="pui:flex-1 pui:truncate pui:text-label-sb"
+      >
         {selected ? dateFieldFormat.format(selected) : null}
       </span>
       <PagoPAIcon
@@ -477,15 +480,19 @@ function DatePickerField({
         variant={open ? "up" : "down"}
         size={24}
         className={
-          disabled ? "text-muted-foreground" : open || error ? "text-primary" : "text-foreground"
+          disabled
+            ? "pui:text-muted-foreground"
+            : open || error
+              ? "pui:text-primary"
+              : "pui:text-foreground"
         }
       />
     </button>
   )
 
   return (
-    <div className={cn("grid", error ? "gap-0.5" : "gap-2")}>
-      <div className="relative">
+    <div className={cn("pui:grid", error ? "pui:gap-0.5" : "pui:gap-2")}>
+      <div className="pui:relative">
         {readOnly ? (
           // A read-only chooser keeps the committed value and its form control
           // but is not a popup trigger: no dialog semantics, no panel.
@@ -503,7 +510,7 @@ function DatePickerField({
               // no mount transition (which would delay visibility and the
               // unmount after Salva/Annulla) and no motion a reduced-motion
               // user would still see.
-              className="w-auto max-w-(--available-width) gap-0 bg-transparent p-0 shadow-none data-open:animate-none data-closed:animate-none"
+              className="pui:w-auto pui:max-w-(--available-width) pui:gap-0 pui:bg-transparent pui:p-0 pui:shadow-none pui:data-open:animate-none pui:data-closed:animate-none"
             >
               <DatePicker
                 value={selected}
@@ -549,11 +556,11 @@ function DatePickerField({
           onFocus={() => triggerRef.current?.focus()}
           tabIndex={-1}
           aria-hidden="true"
-          className="sr-only"
+          className="pui:sr-only"
         />
       </div>
       {description || error || success ? (
-        <div className="px-3.5">
+        <div className="pui:px-3.5">
           <FieldMessages ids={ids} {...state} />
         </div>
       ) : null}

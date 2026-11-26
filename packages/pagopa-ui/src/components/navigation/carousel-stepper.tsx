@@ -8,7 +8,7 @@ import { useMessages } from "@/lib/ui-provider"
 // target comes from the invisible vertical ::after expansion, so the row keeps
 // the source 8px height instead of inflating to the 44px target.
 const indicator =
-  "relative shrink-0 rounded-2xl transition-[width,height,background-color] motion-reduce:transition-none after:absolute after:inset-x-0 after:-inset-y-5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+  "pui:relative pui:shrink-0 pui:rounded-2xl pui:transition-[width,height,background-color] pui:motion-reduce:transition-none pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-5 pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
 
 function CarouselStepper({
   count,
@@ -45,7 +45,7 @@ function CarouselStepper({
       data-slot="carousel-stepper"
       role="group"
       aria-label={label}
-      className="flex items-center justify-center gap-2"
+      className="pui:flex pui:items-center pui:justify-center pui:gap-2"
     >
       {Array.from({ length: count }, (_, index) => (
         <button
@@ -78,7 +78,9 @@ function CarouselStepper({
           }}
           className={cn(
             indicator,
-            index === activeIndex ? "h-1 w-4 bg-primary" : "size-2 border border-input",
+            index === activeIndex
+              ? "pui:h-1 pui:w-4 pui:bg-primary"
+              : "pui:size-2 pui:border pui:border-input",
           )}
         />
       ))}

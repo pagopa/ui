@@ -5,15 +5,15 @@ import { Separator as SeparatorPrimitive } from "@base-ui/react/separator"
 import { cn } from "@/lib/cn"
 
 const verticalPaddingClasses = {
-  16: "py-4",
-  24: "py-6",
-  32: "py-8",
+  16: "pui:py-4",
+  24: "pui:py-6",
+  32: "pui:py-8",
 } as const
 
 const horizontalInsetClasses = {
-  16: "w-4",
-  24: "w-6",
-  32: "w-8",
+  16: "pui:w-4",
+  24: "pui:w-6",
+  32: "pui:w-8",
 } as const
 
 function Separator({
@@ -34,7 +34,7 @@ function Separator({
         data-slot="separator"
         data-separator-variant="with-text"
         className={cn(
-          "flex w-full items-center gap-2 text-label-mini text-muted-foreground",
+          "pui:flex pui:w-full pui:items-center pui:gap-2 pui:text-label-mini pui:text-muted-foreground",
           padding === 0 ? undefined : verticalPaddingClasses[padding],
           className,
         )}
@@ -43,7 +43,7 @@ function Separator({
           aria-hidden="true"
           data-separator-segment=""
           data-slot="separator-line-before"
-          className="h-px flex-1 bg-border"
+          className="pui:h-px pui:flex-1 pui:bg-border"
         />
         <span data-separator-segment="" data-slot="separator-label">
           {label}
@@ -52,7 +52,7 @@ function Separator({
           aria-hidden="true"
           data-separator-segment=""
           data-slot="separator-line-after"
-          className="h-px flex-1 bg-border"
+          className="pui:h-px pui:flex-1 pui:bg-border"
         />
       </div>
     )
@@ -63,7 +63,7 @@ function Separator({
       data-slot="separator"
       orientation={orientation}
       className={cn(
-        "shrink-0 bg-border data-horizontal:h-px data-horizontal:w-full data-vertical:w-px data-vertical:self-stretch",
+        "pui:shrink-0 pui:bg-border pui:data-horizontal:h-px pui:data-horizontal:w-full pui:data-vertical:w-px pui:data-vertical:self-stretch",
         padding === 0 && className,
       )}
       {...props}
@@ -74,23 +74,26 @@ function Separator({
     return <div className={cn(verticalPaddingClasses[padding], className)}>{line}</div>
   }
   return (
-    <div data-slot="separator-padding" className={cn("flex w-full items-center", className)}>
+    <div
+      data-slot="separator-padding"
+      className={cn("pui:flex pui:w-full pui:items-center", className)}
+    >
       <span
         aria-hidden="true"
         data-separator-segment=""
-        className={cn("h-px shrink-0", horizontalInsetClasses[padding])}
+        className={cn("pui:h-px pui:shrink-0", horizontalInsetClasses[padding])}
       />
       <SeparatorPrimitive
         data-slot="separator"
         data-separator-segment=""
         orientation={orientation}
-        className="min-w-0 flex-1 bg-border data-horizontal:h-px"
+        className="pui:min-w-0 pui:flex-1 pui:bg-border pui:data-horizontal:h-px"
         {...props}
       />
       <span
         aria-hidden="true"
         data-separator-segment=""
-        className={cn("h-px shrink-0", horizontalInsetClasses[padding])}
+        className={cn("pui:h-px pui:shrink-0", horizontalInsetClasses[padding])}
       />
     </div>
   )

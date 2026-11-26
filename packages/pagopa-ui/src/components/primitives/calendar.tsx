@@ -25,26 +25,26 @@ function Calendar({
       showOutsideDays={showOutsideDays}
       weekStartsOn={weekStartsOn}
       navLayout={navLayout}
-      className={cn("relative min-w-0 px-2 text-body", className)}
+      className={cn("pui:relative pui:min-w-0 pui:px-2 pui:text-body", className)}
       classNames={{
-        months: "flex flex-wrap gap-6",
-        month: "relative flex min-w-0 flex-1 flex-col gap-2",
+        months: "pui:flex pui:flex-wrap pui:gap-6",
+        month: "pui:relative pui:flex pui:min-w-0 pui:flex-1 pui:flex-col pui:gap-2",
         month_caption:
-          "-mx-2 flex items-center border-b border-secondary px-4 py-2 pr-22 text-body-big-sb",
+          "pui:-mx-2 pui:flex pui:items-center pui:border-b pui:border-secondary pui:px-4 pui:py-2 pui:pr-22 pui:text-body-big-sb",
         caption_label: "",
-        nav: "absolute top-2 right-2 flex items-center gap-1",
+        nav: "pui:absolute pui:top-2 pui:right-2 pui:flex pui:items-center pui:gap-1",
         button_previous:
-          "relative flex size-6 items-center justify-center rounded-md text-primary after:absolute after:-inset-2.5 after:content-[''] focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50",
+          "pui:relative pui:flex pui:size-6 pui:items-center pui:justify-center pui:rounded-md pui:text-primary pui:after:absolute pui:after:-inset-2.5 pui:after:content-[''] pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring pui:disabled:pointer-events-none pui:disabled:opacity-50",
         button_next:
-          "relative flex size-6 items-center justify-center rounded-md text-primary after:absolute after:-inset-2.5 after:content-[''] focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50",
-        month_grid: "w-full table-fixed border-collapse",
-        weekday: "pb-2 text-caption-sb text-muted-foreground",
-        day: "h-11 p-0 text-center",
+          "pui:relative pui:flex pui:size-6 pui:items-center pui:justify-center pui:rounded-md pui:text-primary pui:after:absolute pui:after:-inset-2.5 pui:after:content-[''] pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring pui:disabled:pointer-events-none pui:disabled:opacity-50",
+        month_grid: "pui:w-full pui:table-fixed pui:border-collapse",
+        weekday: "pui:pb-2 pui:text-caption-sb pui:text-muted-foreground",
+        day: "pui:h-11 pui:p-0 pui:text-center",
         day_button:
-          "relative flex h-11 w-full items-center justify-center rounded-full outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-1 focus-visible:outline-ring disabled:cursor-not-allowed",
-        hidden: "invisible",
-        outside: "text-muted-foreground",
-        footer: "sr-only",
+          "pui:relative pui:flex pui:h-11 pui:w-full pui:items-center pui:justify-center pui:rounded-full pui:outline-none pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-1 pui:focus-visible:outline-ring pui:disabled:cursor-not-allowed",
+        hidden: "pui:invisible",
+        outside: "pui:text-muted-foreground",
+        footer: "pui:sr-only",
         ...classNames,
       }}
       components={{
@@ -77,23 +77,23 @@ function CalendarDayButton({
         <span
           aria-hidden="true"
           className={cn(
-            "pointer-events-none absolute inset-y-1 bg-selection-soft forced-colors:bg-[Highlight] forced-colors:forced-color-adjust-none",
-            modifiers.range_start && "left-1/2 right-0",
-            modifiers.range_end && "left-0 right-1/2",
-            modifiers.range_middle && "inset-x-0",
+            "pui:pointer-events-none pui:absolute pui:inset-y-1 pui:bg-selection-soft pui:forced-colors:bg-[Highlight] pui:forced-colors:forced-color-adjust-none",
+            modifiers.range_start && "pui:left-1/2 pui:right-0",
+            modifiers.range_end && "pui:left-0 pui:right-1/2",
+            modifiers.range_middle && "pui:inset-x-0",
           )}
         />
       ) : null}
       <span
         className={cn(
-          "relative inline-flex aspect-square w-9 max-w-full items-center justify-center rounded-full border border-transparent",
+          "pui:relative pui:inline-flex pui:aspect-square pui:w-9 pui:max-w-full pui:items-center pui:justify-center pui:rounded-full pui:border pui:border-transparent",
           modifiers.selected && !modifiers.range_middle
-            ? "bg-primary text-body-sb text-primary-foreground forced-colors:bg-[Highlight] forced-colors:text-[HighlightText] forced-colors:forced-color-adjust-none"
-            : "text-foreground",
-          modifiers.today && !modifiers.selected && "border-primary text-primary",
+            ? "pui:bg-primary pui:text-body-sb pui:text-primary-foreground pui:forced-colors:bg-[Highlight] pui:forced-colors:text-[HighlightText] pui:forced-colors:forced-color-adjust-none"
+            : "pui:text-foreground",
+          modifiers.today && !modifiers.selected && "pui:border-primary pui:text-primary",
           modifiers.range_middle &&
-            "text-muted-foreground forced-colors:text-[HighlightText] forced-colors:forced-color-adjust-none",
-          modifiers.disabled && "text-muted-foreground",
+            "pui:text-muted-foreground pui:forced-colors:text-[HighlightText] pui:forced-colors:forced-color-adjust-none",
+          modifiers.disabled && "pui:text-muted-foreground",
         )}
       >
         {children}

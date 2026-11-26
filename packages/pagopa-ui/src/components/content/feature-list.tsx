@@ -29,42 +29,47 @@ function FeatureList({
 }) {
   const Link = useLinkComponent()
   return (
-    <ul data-slot="feature-list" className={cn("grid gap-4 tablet:grid-cols-2", className)}>
+    <ul
+      data-slot="feature-list"
+      className={cn("pui:grid pui:gap-4 pui:tablet:grid-cols-2", className)}
+    >
       {features.map((feature, index) => (
-        <li key={feature.title} data-slot="feature" className="flex gap-4">
+        <li key={feature.title} data-slot="feature" className="pui:flex pui:gap-4">
           {feature.pictogram ? (
             <span
               aria-hidden="true"
-              className="flex w-10 shrink-0 flex-col items-center justify-center"
+              className="pui:flex pui:w-10 pui:shrink-0 pui:flex-col pui:items-center pui:justify-center"
             >
               {feature.pictogram}
             </span>
           ) : feature.icon ? (
             <span
               aria-hidden="true"
-              className="flex shrink-0 items-center text-decorative-secondary [&>svg]:size-6"
+              className="pui:flex pui:shrink-0 pui:items-center pui:text-decorative-secondary pui:[&>svg]:size-6"
             >
               {feature.icon}
             </span>
           ) : numbered ? (
             <span
               aria-hidden="true"
-              className="flex w-6 shrink-0 items-center text-body-sb text-muted-foreground"
+              className="pui:flex pui:w-6 pui:shrink-0 pui:items-center pui:text-body-sb pui:text-muted-foreground"
             >
               {index + 1}.
             </span>
           ) : null}
-          <div className="grid min-w-0 gap-2">
-            <div className="grid gap-1">
-              <Title className="text-label-sb text-muted-foreground">{feature.title}</Title>
+          <div className="pui:grid pui:min-w-0 pui:gap-2">
+            <div className="pui:grid pui:gap-1">
+              <Title className="pui:text-label-sb pui:text-muted-foreground">{feature.title}</Title>
               {feature.description ? (
-                <p className="text-label-mini text-muted-foreground">{feature.description}</p>
+                <p className="pui:text-label-mini pui:text-muted-foreground">
+                  {feature.description}
+                </p>
               ) : null}
             </div>
             {feature.action ? (
               <Link
                 href={feature.action.href}
-                className="w-fit text-body-sb text-primary underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                className="pui:w-fit pui:text-body-sb pui:text-primary pui:underline pui:underline-offset-2 pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
               >
                 {feature.action.label}
               </Link>

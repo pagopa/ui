@@ -48,13 +48,13 @@ function ChoiceActionButton({
       variant="ghost"
       disabled={action.disabled}
       onClick={onAction}
-      className="min-h-12 w-full justify-start rounded-none"
+      className="pui:min-h-12 pui:w-full pui:justify-start pui:rounded-none"
     >
       {action.leading ? (
         <span
           aria-hidden="true"
           inert
-          className="pointer-events-none inline-flex shrink-0 [&>svg]:size-6!"
+          className="pui:pointer-events-none pui:inline-flex pui:shrink-0 pui:[&>svg]:size-6!"
         >
           {action.leading}
         </span>

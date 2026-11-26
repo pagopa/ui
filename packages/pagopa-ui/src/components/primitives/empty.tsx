@@ -6,7 +6,7 @@ function Empty({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="empty"
       className={cn(
-        "flex w-full min-w-0 flex-1 flex-col items-center justify-center gap-4 bg-background p-6 text-center text-balance",
+        "pui:flex pui:w-full pui:min-w-0 pui:flex-1 pui:flex-col pui:items-center pui:justify-center pui:gap-4 pui:bg-background pui:p-6 pui:text-center pui:text-balance",
         className,
       )}
       {...props}
@@ -18,19 +18,19 @@ function EmptyHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="empty-header"
-      className={cn("flex w-full flex-col items-center gap-2", className)}
+      className={cn("pui:flex pui:w-full pui:flex-col pui:items-center pui:gap-2", className)}
       {...props}
     />
   )
 }
 
 const emptyMediaVariants = cva(
-  "flex shrink-0 items-center justify-center [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  "pui:flex pui:shrink-0 pui:items-center pui:justify-center pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-transparent",
-        icon: "flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground [&_svg:not([class*='size-'])]:size-4",
+        default: "pui:bg-transparent",
+        icon: "pui:flex pui:size-8 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-lg pui:bg-muted pui:text-foreground pui:[&_svg:not([class*='size-'])]:size-4",
       },
     },
     defaultVariants: {
@@ -58,7 +58,7 @@ function EmptyTitle({ className, ...props }: React.ComponentProps<"p">) {
   return (
     <p
       data-slot="empty-title"
-      className={cn("text-label-sb text-muted-foreground", className)}
+      className={cn("pui:text-label-sb pui:text-muted-foreground", className)}
       {...props}
     />
   )
@@ -69,7 +69,7 @@ function EmptyDescription({ className, ...props }: React.ComponentProps<"p">) {
     <p
       data-slot="empty-description"
       className={cn(
-        "text-caption text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary",
+        "pui:text-caption pui:text-muted-foreground pui:[&>a]:underline pui:[&>a]:underline-offset-4 pui:[&>a:hover]:text-primary",
         className,
       )}
       {...props}
@@ -82,7 +82,7 @@ function EmptyContent({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="empty-content"
       className={cn(
-        "flex w-full max-w-sm min-w-0 flex-col items-center gap-2.5 text-caption text-balance",
+        "pui:flex pui:w-full pui:max-w-sm pui:min-w-0 pui:flex-col pui:items-center pui:gap-2.5 pui:text-caption pui:text-balance",
         className,
       )}
       {...props}

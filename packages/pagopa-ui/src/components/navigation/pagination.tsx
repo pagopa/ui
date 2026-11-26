@@ -14,9 +14,10 @@ import { pageRange } from "./pagination-utils"
 // Below the `tablet-md` container step (900px) the middle pages collapse to
 // previous, current and next; the step is the pagination region's own width,
 // not the viewport.
-const stepControl = "relative size-10 border-2 border-border after:absolute after:-inset-0.5"
+const stepControl =
+  "pui:relative pui:size-10 pui:border-2 pui:border-border pui:after:absolute pui:after:-inset-0.5"
 const pageControl =
-  "relative min-w-10 border-0 p-3 after:absolute after:-inset-x-0.5 after:inset-y-0"
+  "pui:relative pui:min-w-10 pui:border-0 pui:p-3 pui:after:absolute pui:after:-inset-x-0.5 pui:after:inset-y-0"
 
 function Pagination({
   currentPage,
@@ -57,9 +58,15 @@ function Pagination({
   if (totalPages <= 1) return null
   const current = Math.min(Math.max(currentPage, 1), totalPages)
   return (
-    <div data-slot="pagination" className={cn("@container/pagination min-w-0 flex-1", className)}>
-      <div className="flex items-center gap-2">
-        <nav aria-label={label} className="flex min-w-0 flex-1 items-center justify-center gap-2">
+    <div
+      data-slot="pagination"
+      className={cn("pui:@container/pagination pui:min-w-0 pui:flex-1", className)}
+    >
+      <div className="pui:flex pui:items-center pui:gap-2">
+        <nav
+          aria-label={label}
+          className="pui:flex pui:min-w-0 pui:flex-1 pui:items-center pui:justify-center pui:gap-2"
+        >
           <Button
             variant="ghost"
             size="icon"
@@ -75,11 +82,11 @@ function Pagination({
               <span
                 key={`ellipsis-${index}`}
                 aria-hidden="true"
-                className="grid size-10 shrink-0 place-items-center @max-tablet-md/pagination:hidden"
+                className="pui:grid pui:size-10 pui:shrink-0 pui:place-items-center pui:@max-tablet-md/pagination:hidden"
               >
-                <span className="flex items-center gap-0.5">
+                <span className="pui:flex pui:items-center pui:gap-0.5">
                   {[0, 1, 2].map((dot) => (
-                    <span key={dot} className="size-0.5 rounded-full bg-foreground" />
+                    <span key={dot} className="pui:size-0.5 pui:rounded-full pui:bg-foreground" />
                   ))}
                 </span>
               </span>
@@ -93,7 +100,7 @@ function Pagination({
                 onClick={() => onPageChange(page)}
                 className={cn(
                   pageControl,
-                  page !== current && "text-foreground @max-tablet-md/pagination:hidden",
+                  page !== current && "pui:text-foreground pui:@max-tablet-md/pagination:hidden",
                 )}
               >
                 {page}

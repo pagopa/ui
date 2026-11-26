@@ -36,7 +36,7 @@ type CatalogueCardProps = React.ComponentProps<"div"> & {
 // Button box (the source `Variant=Text` instance is a bare 22px line) and the
 // >=44px pointer target comes from the invisible ::after expansion.
 const actionClassName =
-  "relative min-h-0 shrink-0 border-0 px-0 text-body-sb after:absolute after:inset-x-0 after:-inset-y-3"
+  "pui:relative pui:min-h-0 pui:shrink-0 pui:border-0 pui:px-0 pui:text-body-sb pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-3"
 
 // The source stroke is INSIDE-aligned on the 360x236 frame and its 24px padding is
 // measured from the outer edge: the `ring-1` (the Card family's model for the same
@@ -60,25 +60,28 @@ function CatalogueCard({
     <div
       data-slot="catalogue-card"
       className={cn(
-        "flex w-full min-w-0 flex-col gap-6 rounded-lg bg-card p-6 text-foreground ring-1 ring-border",
+        "pui:flex pui:w-full pui:min-w-0 pui:flex-col pui:gap-6 pui:rounded-lg pui:bg-card pui:p-6 pui:text-foreground pui:ring-1 pui:ring-border",
         className,
       )}
       {...props}
     >
-      <div data-slot="catalogue-card-content" className="flex min-w-0 flex-col gap-3">
-        <div data-slot="catalogue-card-header" className="flex items-start gap-3">
+      <div
+        data-slot="catalogue-card-content"
+        className="pui:flex pui:min-w-0 pui:flex-col pui:gap-3"
+      >
+        <div data-slot="catalogue-card-header" className="pui:flex pui:items-start pui:gap-3">
           {avatar ? (
-            <span data-slot="catalogue-card-avatar" className="inline-flex shrink-0">
+            <span data-slot="catalogue-card-avatar" className="pui:inline-flex pui:shrink-0">
               {avatar}
             </span>
           ) : null}
-          <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-            {eyebrow ? <p className="text-label-mini-sb text-primary">{eyebrow}</p> : null}
-            <Title className="text-body-sb wrap-anywhere">{title}</Title>
+          <div className="pui:flex pui:min-w-0 pui:flex-1 pui:flex-col pui:gap-0.5">
+            {eyebrow ? <p className="pui:text-label-mini-sb pui:text-primary">{eyebrow}</p> : null}
+            <Title className="pui:text-body-sb pui:wrap-anywhere">{title}</Title>
             {organization ? (
               <p
                 data-slot="catalogue-card-organization"
-                className="text-body text-muted-foreground"
+                className="pui:text-body pui:text-muted-foreground"
               >
                 {organization}
               </p>
@@ -88,13 +91,13 @@ function CatalogueCard({
         {description ? (
           <p
             data-slot="catalogue-card-description"
-            className="min-w-0 text-body-small text-muted-foreground"
+            className="pui:min-w-0 pui:text-body-small pui:text-muted-foreground"
           >
             {description}
           </p>
         ) : null}
         {tags.length ? (
-          <ul data-slot="catalogue-card-tags" className="flex flex-wrap gap-2">
+          <ul data-slot="catalogue-card-tags" className="pui:flex pui:flex-wrap pui:gap-2">
             {tags.map((tag) => (
               <li key={tag}>
                 <InputChip>{tag}</InputChip>
@@ -107,12 +110,12 @@ function CatalogueCard({
       {actions.length || feedback.length ? (
         <div
           data-slot="catalogue-card-action"
-          className="flex min-h-6 items-center justify-between gap-6"
+          className="pui:flex pui:min-h-6 pui:items-center pui:justify-between pui:gap-6"
         >
           {actions.length ? (
             <div
               data-slot="catalogue-card-actions"
-              className="flex min-w-0 flex-1 items-center gap-6"
+              className="pui:flex pui:min-w-0 pui:flex-1 pui:items-center pui:gap-6"
             >
               {actions.map((action, index) =>
                 action.href !== undefined ? (
@@ -138,11 +141,14 @@ function CatalogueCard({
             </div>
           ) : null}
           {feedback.length ? (
-            <div data-slot="catalogue-card-feedback" className="flex shrink-0 items-center gap-6">
+            <div
+              data-slot="catalogue-card-feedback"
+              className="pui:flex pui:shrink-0 pui:items-center pui:gap-6"
+            >
               {feedback.map((icon, index) => (
                 <span
                   key={index}
-                  className="inline-flex size-6 shrink-0 items-center justify-center"
+                  className="pui:inline-flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center"
                 >
                   {icon}
                 </span>

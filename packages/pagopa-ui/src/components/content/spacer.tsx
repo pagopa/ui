@@ -6,13 +6,13 @@ import { cn } from "@/lib/cn"
 // Every step is the spacing-scale utility of the same pixel height, so a
 // recurring value can only enter through `packages/tokens/src/manifest.json`.
 const sizeClasses = {
-  4: "h-1",
-  8: "h-2",
-  16: "h-4",
-  24: "h-6",
-  32: "h-8",
-  40: "h-10",
-  48: "h-12",
+  4: "pui:h-1",
+  8: "pui:h-2",
+  16: "pui:h-4",
+  24: "pui:h-6",
+  32: "pui:h-8",
+  40: "pui:h-10",
+  48: "pui:h-12",
 } as const
 
 type SpacerSize = keyof typeof sizeClasses

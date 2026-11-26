@@ -11,9 +11,9 @@ type BannerHierarchy = "primary" | "secondary" | "tertiary"
 type BannerDirection = "horizontal" | "vertical"
 
 const bannerColors: Record<BannerColor, string> = {
-  white: "border-border bg-background",
-  primary: "border-selection-border bg-selection-soft",
-  grey: "border-border bg-muted",
+  white: "pui:border-border pui:bg-background",
+  primary: "pui:border-selection-border pui:bg-selection-soft",
+  grey: "pui:border-border pui:bg-muted",
 }
 
 interface BannerBaseProps {
@@ -75,14 +75,14 @@ function Banner({
   const tertiary = hierarchy === "tertiary"
   const titleClassName = cn(
     tertiary
-      ? "text-label-sb"
+      ? "pui:text-label-sb"
       : direction === "vertical"
-        ? "text-title-xs-mobile"
-        : "text-title-xs-mobile tablet-md:text-title-xs",
+        ? "pui:text-title-xs-mobile"
+        : "pui:text-title-xs-mobile pui:tablet-md:text-title-xs",
   )
   const descriptionClassName = cn(
-    "text-muted-foreground",
-    tertiary ? "text-label-mini" : "text-body",
+    "pui:text-muted-foreground",
+    tertiary ? "pui:text-label-mini" : "pui:text-body",
   )
 
   return (
@@ -91,11 +91,11 @@ function Banner({
       aria-label={title ? undefined : label}
       data-slot="banner"
       className={cn(
-        "relative w-full rounded-lg border p-4",
+        "pui:relative pui:w-full pui:rounded-lg pui:border pui:p-4",
         bannerColors[color],
-        primary && "flex gap-4",
-        secondary && "flex flex-col gap-2",
-        tertiary && "flex items-start gap-2",
+        primary && "pui:flex pui:gap-4",
+        secondary && "pui:flex pui:flex-col pui:gap-2",
+        tertiary && "pui:flex pui:items-start pui:gap-2",
         className,
       )}
     >
@@ -104,37 +104,40 @@ function Banner({
           <span
             aria-hidden="true"
             data-slot="banner-accent"
-            className="w-1 shrink-0 self-stretch rounded-full bg-primary"
+            className="pui:w-1 pui:shrink-0 pui:self-stretch pui:rounded-full pui:bg-primary"
           />
-          <div data-slot="banner-content" className="min-w-0 flex-1">
+          <div data-slot="banner-content" className="pui:min-w-0 pui:flex-1">
             {chip ? (
-              <div data-slot="banner-chip" className="flex">
+              <div data-slot="banner-chip" className="pui:flex">
                 {chip}
               </div>
             ) : null}
             {direction === "horizontal" ? (
               <div
                 className={cn(
-                  "grid min-w-0 grid-cols-[minmax(0,1fr)_auto] gap-x-8",
-                  chip && "mt-2",
+                  "pui:grid pui:min-w-0 pui:grid-cols-[minmax(0,1fr)_auto] pui:gap-x-8",
+                  chip && "pui:mt-2",
                 )}
               >
-                <div className="col-start-1 row-start-1 flex min-w-0 flex-col">
+                <div className="pui:col-start-1 pui:row-start-1 pui:flex pui:min-w-0 pui:flex-col">
                   {title ? (
-                    <Title data-slot="banner-title" className={cn(titleClassName, "min-w-0")}>
+                    <Title data-slot="banner-title" className={cn(titleClassName, "pui:min-w-0")}>
                       {title}
                     </Title>
                   ) : null}
                   {children ? (
                     <div
                       data-slot="banner-description"
-                      className={cn(descriptionClassName, title && "mt-2", "min-w-0")}
+                      className={cn(descriptionClassName, title && "pui:mt-2", "pui:min-w-0")}
                     >
                       {children}
                     </div>
                   ) : null}
                   {actions ? (
-                    <div data-slot="banner-actions" className="mt-4 flex flex-wrap gap-3">
+                    <div
+                      data-slot="banner-actions"
+                      className="pui:mt-4 pui:flex pui:flex-wrap pui:gap-3"
+                    >
                       {actions}
                     </div>
                   ) : null}
@@ -143,19 +146,19 @@ function Banner({
                   <span
                     aria-hidden="true"
                     data-slot="banner-pictogram"
-                    className="col-start-2 row-start-1 size-14 shrink-0 self-center translate-y-2 tablet-md:size-20"
+                    className="pui:col-start-2 pui:row-start-1 pui:size-14 pui:shrink-0 pui:self-center pui:translate-y-2 pui:tablet-md:size-20"
                   >
                     {pictogram}
                   </span>
                 ) : null}
               </div>
             ) : (
-              <div className={cn("flex min-w-0 flex-col", chip && "mt-2")}>
+              <div className={cn("pui:flex pui:min-w-0 pui:flex-col", chip && "pui:mt-2")}>
                 {title ? (
-                  <div className="flex min-w-0 items-start gap-4">
+                  <div className="pui:flex pui:min-w-0 pui:items-start pui:gap-4">
                     <Title
                       data-slot="banner-title"
-                      className={cn(titleClassName, "min-w-0 flex-1")}
+                      className={cn(titleClassName, "pui:min-w-0 pui:flex-1")}
                     >
                       {title}
                     </Title>
@@ -163,7 +166,7 @@ function Banner({
                       <span
                         aria-hidden="true"
                         data-slot="banner-pictogram"
-                        className="size-14 shrink-0"
+                        className="pui:size-14 pui:shrink-0"
                       >
                         {pictogram}
                       </span>
@@ -173,7 +176,7 @@ function Banner({
                   <span
                     aria-hidden="true"
                     data-slot="banner-pictogram"
-                    className="size-14 shrink-0"
+                    className="pui:size-14 pui:shrink-0"
                   >
                     {pictogram}
                   </span>
@@ -181,13 +184,16 @@ function Banner({
                 {children ? (
                   <div
                     data-slot="banner-description"
-                    className={cn(descriptionClassName, title && "mt-4", "min-w-0")}
+                    className={cn(descriptionClassName, title && "pui:mt-4", "pui:min-w-0")}
                   >
                     {children}
                   </div>
                 ) : null}
                 {actions ? (
-                  <div data-slot="banner-actions" className="mt-4 flex flex-wrap gap-3">
+                  <div
+                    data-slot="banner-actions"
+                    className="pui:mt-4 pui:flex pui:flex-wrap pui:gap-3"
+                  >
                     {actions}
                   </div>
                 ) : null}
@@ -197,9 +203,9 @@ function Banner({
         </>
       ) : null}
       {secondary ? (
-        <div data-slot="banner-content" className="flex min-w-0 flex-col gap-2">
+        <div data-slot="banner-content" className="pui:flex pui:min-w-0 pui:flex-col pui:gap-2">
           {title ? (
-            <div className={cn("min-w-0", onDismiss && "pr-12")}>
+            <div className={cn("pui:min-w-0", onDismiss && "pui:pr-12")}>
               <Title data-slot="banner-title" className={titleClassName}>
                 {title}
               </Title>
@@ -207,10 +213,10 @@ function Banner({
           ) : null}
           <div
             className={cn(
-              "flex min-w-0",
+              "pui:flex pui:min-w-0",
               direction === "horizontal"
-                ? "flex-col gap-4 tablet-md:flex-row tablet-md:items-center tablet-md:gap-8"
-                : "flex-col items-start gap-4",
+                ? "pui:flex-col pui:gap-4 pui:tablet-md:flex-row pui:tablet-md:items-center pui:tablet-md:gap-8"
+                : "pui:flex-col pui:items-start pui:gap-4",
             )}
           >
             {children ? (
@@ -218,16 +224,19 @@ function Banner({
                 data-slot="banner-description"
                 className={cn(
                   descriptionClassName,
-                  "min-w-0",
-                  direction === "vertical" && "w-full",
-                  direction === "horizontal" && "tablet-md:flex-1",
+                  "pui:min-w-0",
+                  direction === "vertical" && "pui:w-full",
+                  direction === "horizontal" && "pui:tablet-md:flex-1",
                 )}
               >
                 {children}
               </div>
             ) : null}
             {actions ? (
-              <div data-slot="banner-actions" className="flex shrink-0 flex-wrap gap-3">
+              <div
+                data-slot="banner-actions"
+                className="pui:flex pui:shrink-0 pui:flex-wrap pui:gap-3"
+              >
                 {actions}
               </div>
             ) : null}
@@ -237,18 +246,25 @@ function Banner({
       {tertiary ? (
         <>
           {icon ? (
-            <span aria-hidden="true" data-slot="banner-icon" className="size-6 shrink-0">
+            <span aria-hidden="true" data-slot="banner-icon" className="pui:size-6 pui:shrink-0">
               {icon}
             </span>
           ) : null}
           {pictogram ? (
-            <span aria-hidden="true" data-slot="banner-pictogram" className="size-10 shrink-0">
+            <span
+              aria-hidden="true"
+              data-slot="banner-pictogram"
+              className="pui:size-10 pui:shrink-0"
+            >
               {pictogram}
             </span>
           ) : null}
           <div
             data-slot="banner-content"
-            className={cn("flex min-w-0 flex-1 flex-col gap-1", onDismiss && "pr-8")}
+            className={cn(
+              "pui:flex pui:min-w-0 pui:flex-1 pui:flex-col pui:gap-1",
+              onDismiss && "pui:pr-8",
+            )}
           >
             {title ? (
               <Title data-slot="banner-title" className={titleClassName}>
@@ -261,7 +277,7 @@ function Banner({
               </div>
             ) : null}
             {actions ? (
-              <div data-slot="banner-actions" className="mt-2 flex flex-wrap gap-3">
+              <div data-slot="banner-actions" className="pui:mt-2 pui:flex pui:flex-wrap pui:gap-3">
                 {actions}
               </div>
             ) : null}
@@ -274,9 +290,9 @@ function Banner({
           aria-label={dismissLabel}
           onClick={onDismiss}
           data-slot="banner-dismiss"
-          className="absolute right-1 top-1 z-10 flex size-11 shrink-0 items-center justify-center rounded-full hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-current"
+          className="pui:absolute pui:right-1 pui:top-1 pui:z-10 pui:flex pui:size-11 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-full pui:hover:bg-foreground/5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-current"
         >
-          <X aria-hidden="true" className="size-4" />
+          <X aria-hidden="true" className="pui:size-4" />
         </button>
       ) : null}
     </section>

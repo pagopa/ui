@@ -41,26 +41,28 @@ function PinPoint({
       aria-pressed={active}
       onClick={() => onPressedChange?.(!active)}
       style={{ left: `${x}%`, top: `${y}%` }}
-      className="absolute grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full outline-none focus-visible:ring-4 focus-visible:ring-primary/30"
+      className="pui:absolute pui:grid pui:size-11 pui:-translate-x-1/2 pui:-translate-y-1/2 pui:place-items-center pui:rounded-full pui:outline-none pui:focus-visible:ring-4 pui:focus-visible:ring-primary/30"
     >
       {variant === "numbered" ? (
         <span
           data-slot="pin-point-numbered"
-          className="grid size-8 place-items-center bg-primary text-label-sb text-primary-foreground"
+          className="pui:grid pui:size-8 pui:place-items-center pui:bg-primary pui:text-label-sb pui:text-primary-foreground"
         >
           {children}
         </span>
       ) : (
         <span
           data-slot="pin-point-marker"
-          className={cn("relative block", active ? "w-12" : "w-8")}
+          className={cn("pui:relative pui:block", active ? "pui:w-12" : "pui:w-8")}
         >
           <svg
             aria-hidden="true"
             viewBox="12 11.3333 32 40.6667"
             className={cn(
-              "block h-auto w-full drop-shadow-elevation-6",
-              isPlaceholder ? "fill-destructive stroke-error-foreground" : "fill-primary",
+              "pui:block pui:h-auto pui:w-full pui:drop-shadow-elevation-6",
+              isPlaceholder
+                ? "pui:fill-destructive pui:stroke-error-foreground"
+                : "pui:fill-primary",
             )}
           >
             <path d={markerPath} />
@@ -69,14 +71,16 @@ function PinPoint({
                 cx="28"
                 cy="27.3333"
                 r="5.3333"
-                className={isPlaceholder ? "fill-error-foreground" : "fill-primary-foreground"}
+                className={
+                  isPlaceholder ? "pui:fill-error-foreground" : "pui:fill-primary-foreground"
+                }
               />
             )}
           </svg>
           {active && children ? (
             <span
               data-slot="pin-point-glyph"
-              className="absolute inset-x-0 top-0 grid aspect-square place-items-center text-primary-foreground [&_img]:size-7 [&_svg]:size-7"
+              className="pui:absolute pui:inset-x-0 pui:top-0 pui:grid pui:aspect-square pui:place-items-center pui:text-primary-foreground pui:[&_img]:size-7 pui:[&_svg]:size-7"
             >
               {children}
             </span>

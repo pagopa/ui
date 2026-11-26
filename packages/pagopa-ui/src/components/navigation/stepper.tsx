@@ -53,25 +53,25 @@ function StepIndicator({
   // (`Base Step Elements` / `Number` + `Background`); the slot is the row's
   // rhythm, so the DOM keeps it too.
   return (
-    <span className="relative z-10 flex size-6 shrink-0 items-center justify-center">
+    <span className="pui:relative pui:z-10 pui:flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center">
       {item.status === "complete" ? (
         <>
-          {labelled ? <span className="sr-only">{completedLabel} </span> : null}
-          <PagoPAIcon name="check_circle" aria-hidden="true" className="text-primary" />
+          {labelled ? <span className="pui:sr-only">{completedLabel} </span> : null}
+          <PagoPAIcon name="check_circle" aria-hidden="true" className="pui:text-primary" />
         </>
       ) : (
         <span
           className={cn(
-            "flex size-5 items-center justify-center rounded-full text-caption-sb",
+            "pui:flex pui:size-5 pui:items-center pui:justify-center pui:rounded-full pui:text-caption-sb",
             item.status === "current"
-              ? "bg-primary text-primary-foreground"
+              ? "pui:bg-primary pui:text-primary-foreground"
               : // The source pairs `muted-soft` with this disc: 3.66:1 on
                 // `border-strong`, below WCAG AA for the 12px number. The
                 // darker muted step reads the same and reaches 4.59:1.
-                "bg-border-strong text-muted-foreground",
+                "pui:bg-border-strong pui:text-muted-foreground",
           )}
         >
-          {labelled ? <span className="sr-only">{indicatorLabel(item.status)}</span> : null}
+          {labelled ? <span className="pui:sr-only">{indicatorLabel(item.status)}</span> : null}
           {index + 1}
         </span>
       )}
@@ -84,8 +84,8 @@ function Connector({ complete, className }: { complete: boolean; className?: str
     <span
       aria-hidden="true"
       className={cn(
-        "hidden h-1 flex-1 rounded-full tablet:block",
-        complete ? "bg-primary" : "bg-border-strong",
+        "pui:hidden pui:h-1 pui:flex-1 pui:rounded-full pui:tablet:block",
+        complete ? "pui:bg-primary" : "pui:bg-border-strong",
         className,
       )}
     />
@@ -114,22 +114,22 @@ function Stepper({
   const current = items.find((item) => item.status === "current") ?? items[0]
 
   return (
-    <div data-slot="stepper" className={cn("grid gap-4", className)}>
-      <div className="grid gap-4 tablet:hidden">
-        <div className="grid w-fit gap-0.5">
-          <p className="text-body-sb">{current?.label}</p>
+    <div data-slot="stepper" className={cn("pui:grid pui:gap-4", className)}>
+      <div className="pui:grid pui:gap-4 pui:tablet:hidden">
+        <div className="pui:grid pui:w-fit pui:gap-0.5">
+          <p className="pui:text-body-sb">{current?.label}</p>
           {current?.description ? (
-            <p className="text-body-small text-muted-foreground">{current.description}</p>
+            <p className="pui:text-body-small pui:text-muted-foreground">{current.description}</p>
           ) : null}
         </div>
-        <ol aria-label={navigationLabel} className="flex items-center gap-1">
+        <ol aria-label={navigationLabel} className="pui:flex pui:items-center pui:gap-1">
           {items.map((item, index) => (
             <React.Fragment key={`${item.label}-${index}`}>
               <li
                 aria-current={item.status === "current" ? "step" : undefined}
-                className="flex flex-none items-center"
+                className="pui:flex pui:flex-none pui:items-center"
               >
-                <span className="sr-only">
+                <span className="pui:sr-only">
                   {stepLabel({
                     index: index + 1,
                     total: items.length,
@@ -143,8 +143,8 @@ function Stepper({
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "h-1 flex-1 rounded-full",
-                    item.status === "complete" ? "bg-primary" : "bg-border-strong",
+                    "pui:h-1 pui:flex-1 pui:rounded-full",
+                    item.status === "complete" ? "pui:bg-primary" : "pui:bg-border-strong",
                   )}
                 />
               ) : null}
@@ -154,19 +154,19 @@ function Stepper({
       </div>
       <ol
         aria-label={navigationLabel}
-        className="hidden tablet:grid tablet:grid-cols-[repeat(var(--steps),minmax(0,1fr))]"
+        className="pui:hidden pui:tablet:grid pui:tablet:grid-cols-[repeat(var(--steps),minmax(0,1fr))]"
         style={stepperStyle}
       >
         {items.map((item, index) => (
           <li
             key={`${item.label}-${index}`}
             aria-current={item.status === "current" ? "step" : undefined}
-            className="relative flex min-w-0 items-start"
+            className="pui:relative pui:flex pui:min-w-0 pui:items-start"
           >
             {/* The source hugs the step to its copy and centres the marker over
                 it: the line then runs from the copy edge to the next step. */}
-            <div className="flex min-w-0 flex-col items-center gap-2">
-              <div className="flex w-full justify-center">
+            <div className="pui:flex pui:min-w-0 pui:flex-col pui:items-center pui:gap-2">
+              <div className="pui:flex pui:w-full pui:justify-center">
                 <StepIndicator
                   item={item}
                   index={index}
@@ -174,15 +174,17 @@ function Stepper({
                   indicatorLabel={indicatorLabel}
                 />
               </div>
-              <div className="grid min-w-0 max-w-full gap-0.5">
-                <p className="text-body-sb">{item.label}</p>
+              <div className="pui:grid pui:min-w-0 pui:max-w-full pui:gap-0.5">
+                <p className="pui:text-body-sb">{item.label}</p>
                 {item.description ? (
-                  <p className="text-body-small text-muted-foreground">{item.description}</p>
+                  <p className="pui:text-body-small pui:text-muted-foreground">
+                    {item.description}
+                  </p>
                 ) : null}
               </div>
             </div>
             {index < items.length - 1 ? (
-              <Connector complete={item.status === "complete"} className="mt-2.5" />
+              <Connector complete={item.status === "complete"} className="pui:mt-2.5" />
             ) : null}
           </li>
         ))}

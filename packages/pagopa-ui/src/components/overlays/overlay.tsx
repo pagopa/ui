@@ -28,16 +28,16 @@ function Overlay({
       role="status"
       aria-live="polite"
       className={cn(
-        "absolute inset-0 z-20 grid place-items-center overflow-hidden bg-overlay p-6 text-center text-inverse-foreground",
+        "pui:absolute pui:inset-0 pui:z-20 pui:grid pui:place-items-center pui:overflow-hidden pui:bg-overlay pui:p-6 pui:text-center pui:text-inverse-foreground",
         className,
       )}
     >
-      <span className="sr-only">{label}</span>
+      <span className="pui:sr-only">{label}</span>
       {children ||
         (showSpinner && (
           <span
             aria-hidden="true"
-            className="size-9 animate-spin rounded-full border-4 border-inverse-foreground/40 border-t-inverse-foreground motion-reduce:animate-none"
+            className="pui:size-9 pui:animate-spin pui:rounded-full pui:border-4 pui:border-inverse-foreground/40 pui:border-t-inverse-foreground pui:motion-reduce:animate-none"
           />
         ))}
     </div>

@@ -60,27 +60,27 @@ export interface TimelineItem {
 }
 
 const dotFills: Record<TimelineItemStatus, string> = {
-  default: "bg-decorative-secondary",
-  success: "bg-success",
-  error: "bg-destructive",
-  warning: "bg-warning",
-  info: "bg-info",
+  default: "pui:bg-decorative-secondary",
+  success: "pui:bg-success",
+  error: "pui:bg-destructive",
+  warning: "pui:bg-warning",
+  info: "pui:bg-info",
 }
 
 const statusCard: Record<TimelineItemStatus, string> = {
-  default: "border-border bg-background",
-  success: "border-success-foreground bg-success-soft",
-  error: "border-error-foreground bg-error-soft",
-  warning: "border-warning-foreground bg-warning-soft",
-  info: "border-info-foreground bg-info-soft",
+  default: "pui:border-border pui:bg-background",
+  success: "pui:border-success-foreground pui:bg-success-soft",
+  error: "pui:border-error-foreground pui:bg-error-soft",
+  warning: "pui:border-warning-foreground pui:bg-warning-soft",
+  info: "pui:border-info-foreground pui:bg-info-soft",
 }
 
 const statusText: Record<TimelineItemStatus, string> = {
-  default: "text-foreground",
-  success: "text-success-foreground",
-  error: "text-error-foreground",
-  warning: "text-warning-foreground",
-  info: "text-info-foreground",
+  default: "pui:text-foreground",
+  success: "pui:text-success-foreground",
+  error: "pui:text-error-foreground",
+  warning: "pui:text-warning-foreground",
+  info: "pui:text-info-foreground",
 }
 
 const statusIcons: Record<TimelineItemStatus, React.ReactElement> = {
@@ -100,23 +100,23 @@ function TimelineDot({
 }) {
   if (dot === "small") {
     return (
-      <span className="relative z-10 grid size-6 place-items-center">
-        <span className={cn("size-1.5 rounded-full", dotFills[status])} />
+      <span className="pui:relative pui:z-10 pui:grid pui:size-6 pui:place-items-center">
+        <span className={cn("pui:size-1.5 pui:rounded-full", dotFills[status])} />
       </span>
     )
   }
   if (dot === "outlined") {
     return (
-      <span className="relative z-10 grid size-6 place-items-center">
-        <span className="size-3 rounded-full border-2 border-decorative-secondary bg-background" />
+      <span className="pui:relative pui:z-10 pui:grid pui:size-6 pui:place-items-center">
+        <span className="pui:size-3 pui:rounded-full pui:border-2 pui:border-decorative-secondary pui:bg-background" />
       </span>
     )
   }
   return (
-    <span className="relative z-10 grid size-6 place-items-center">
+    <span className="pui:relative pui:z-10 pui:grid pui:size-6 pui:place-items-center">
       <span
         className={cn(
-          "size-3 rounded-full shadow-[0_0_0_6px_rgb(14_15_19/0.35)]",
+          "pui:size-3 pui:rounded-full pui:shadow-[0_0_0_6px_rgb(14_15_19/0.35)]",
           dotFills[status],
         )}
       />
@@ -126,12 +126,12 @@ function TimelineDot({
 
 function TimelineTimestamp({ month, day, time }: { month?: string; day?: string; time?: string }) {
   return (
-    <span className="flex w-10 shrink-0 flex-col gap-2">
-      <span className="flex flex-col">
-        {month ? <span className="text-body text-foreground">{month}</span> : null}
-        {day ? <span className="text-body-sb text-foreground">{day}</span> : null}
+    <span className="pui:flex pui:w-10 pui:shrink-0 pui:flex-col pui:gap-2">
+      <span className="pui:flex pui:flex-col">
+        {month ? <span className="pui:text-body pui:text-foreground">{month}</span> : null}
+        {day ? <span className="pui:text-body-sb pui:text-foreground">{day}</span> : null}
       </span>
-      {time ? <span className="text-label-mini text-muted-foreground">{time}</span> : null}
+      {time ? <span className="pui:text-label-mini pui:text-muted-foreground">{time}</span> : null}
     </span>
   )
 }
@@ -139,36 +139,38 @@ function TimelineTimestamp({ month, day, time }: { month?: string; day?: string;
 function TimelineTouchpointRow({ touchpoint }: { touchpoint: TimelineTouchpoint }) {
   const [open, setOpen] = React.useState(touchpoint.defaultOpen ?? false)
   return (
-    <div className="grid gap-2">
+    <div className="pui:grid pui:gap-2">
       <button
         type="button"
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
-        className="flex min-h-11 w-full items-center gap-2 rounded-sm text-left outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring"
+        className="pui:flex pui:min-h-11 pui:w-full pui:items-center pui:gap-2 pui:rounded-sm pui:text-left pui:outline-none pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
       >
         {touchpoint.icon ? (
           <span
             aria-hidden="true"
-            className="pointer-events-none shrink-0 [&_svg:not([class*='size-'])]:size-6"
+            className="pui:pointer-events-none pui:shrink-0 pui:[&_svg:not([class*='size-'])]:size-6"
           >
             {touchpoint.icon}
           </span>
         ) : null}
-        <span className="min-w-0 flex-1 text-label-mini text-foreground">{touchpoint.label}</span>
+        <span className="pui:min-w-0 pui:flex-1 pui:text-label-mini pui:text-foreground">
+          {touchpoint.label}
+        </span>
         {touchpoint.correction}
         <PagoPAIcon
           name="chevron"
           variant={open ? "up" : "down"}
-          className="size-6 shrink-0 text-primary"
+          className="pui:size-6 pui:shrink-0 pui:text-primary"
           aria-hidden="true"
         />
       </button>
       {open && touchpoint.events?.length ? (
-        <ul className="grid gap-2">
+        <ul className="pui:grid pui:gap-2">
           {touchpoint.events.map((event) => (
-            <li key={event.id} className="grid gap-1 py-2 pl-7">
-              {event.correction ? <span className="w-fit">{event.correction}</span> : null}
-              <p className="text-label-mini text-foreground">{event.description}</p>
+            <li key={event.id} className="pui:grid pui:gap-1 pui:py-2 pui:pl-7">
+              {event.correction ? <span className="pui:w-fit">{event.correction}</span> : null}
+              <p className="pui:text-label-mini pui:text-foreground">{event.description}</p>
             </li>
           ))}
         </ul>
@@ -186,7 +188,7 @@ function TimelineTouchpoints({
 }) {
   if (!touchpoints?.length && !recipients?.length) return null
   return (
-    <div className="grid gap-2">
+    <div className="pui:grid pui:gap-2">
       {touchpoints?.map((touchpoint, index) => (
         <React.Fragment key={touchpoint.id}>
           {index > 0 ? <Separator /> : null}
@@ -194,8 +196,10 @@ function TimelineTouchpoints({
         </React.Fragment>
       ))}
       {recipients?.map((recipient) => (
-        <div key={recipient.id} className="grid gap-2">
-          <p className="pl-6 text-label-mini text-muted-foreground">{recipient.label}</p>
+        <div key={recipient.id} className="pui:grid pui:gap-2">
+          <p className="pui:pl-6 pui:text-label-mini pui:text-muted-foreground">
+            {recipient.label}
+          </p>
           {recipient.touchpoints.map((touchpoint, index) => (
             <React.Fragment key={touchpoint.id}>
               {index > 0 ? <Separator /> : null}
@@ -228,22 +232,25 @@ function Timeline({
     // gap and the stacked header in the drawer-width frames. The container is
     // the query, so a timeline inside a 417px panel gets the drawer
     // composition without the caller choosing a device.
-    <ol aria-label={label} className="@container/timeline grid">
+    <ol aria-label={label} className="pui:@container/timeline pui:grid">
       {items.map((item, index) => {
         const status = item.status ?? "default"
         const last = index === items.length - 1
         return (
-          <li key={item.id} className="flex gap-2 pb-8 last:pb-0">
+          <li key={item.id} className="pui:flex pui:gap-2 pui:pb-8 pui:last:pb-0">
             {item.timestamp ? (
               <TimelineTimestamp {...item.timestamp} />
             ) : hasTimestamps ? (
-              <span aria-hidden="true" className="w-10 shrink-0" />
+              <span aria-hidden="true" className="pui:w-10 pui:shrink-0" />
             ) : null}
-            <span data-slot="timeline-cursor" className="relative flex w-6 shrink-0 justify-center">
+            <span
+              data-slot="timeline-cursor"
+              className="pui:relative pui:flex pui:w-6 pui:shrink-0 pui:justify-center"
+            >
               {last ? null : (
                 <span
                   aria-hidden="true"
-                  className="absolute top-6 -bottom-8 w-0.5 bg-decorative-secondary"
+                  className="pui:absolute pui:top-6 pui:-bottom-8 pui:w-0.5 pui:bg-decorative-secondary"
                 />
               )}
               <TimelineDot status={status} dot={item.dot ?? "filled"} />
@@ -251,27 +258,31 @@ function Timeline({
             {item.status ? (
               <div
                 className={cn(
-                  "flex min-w-0 flex-1 items-start gap-3 rounded-2xl border p-4 @max-tight/timeline:gap-2 @max-tight/timeline:p-2",
+                  "pui:flex pui:min-w-0 pui:flex-1 pui:items-start pui:gap-3 pui:rounded-2xl pui:border pui:p-4 pui:@max-tight/timeline:gap-2 pui:@max-tight/timeline:p-2",
                   statusCard[status],
                 )}
               >
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "flex size-6 shrink-0 items-center justify-center",
+                    "pui:flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center",
                     statusText[status],
                   )}
                 >
                   {item.icon ?? statusIcons[status]}
                 </span>
-                <div className={cn("grid min-w-0 flex-1 gap-1", statusText[status])}>
-                  <div className="flex flex-wrap items-center gap-3 @max-tight/timeline:flex-col @max-tight/timeline:items-start @max-tight/timeline:gap-1">
-                    <span className="text-body-sb">{item.title}</span>
+                <div
+                  className={cn("pui:grid pui:min-w-0 pui:flex-1 pui:gap-1", statusText[status])}
+                >
+                  <div className="pui:flex pui:flex-wrap pui:items-center pui:gap-3 pui:@max-tight/timeline:flex-col pui:@max-tight/timeline:items-start pui:@max-tight/timeline:gap-1">
+                    <span className="pui:text-body-sb">{item.title}</span>
                     {item.correction}
                   </div>
-                  {item.description ? <p className="text-label-mini">{item.description}</p> : null}
+                  {item.description ? (
+                    <p className="pui:text-label-mini">{item.description}</p>
+                  ) : null}
                   {item.time ? (
-                    <span className="text-caption leading-none uppercase text-muted-foreground">
+                    <span className="pui:text-caption pui:leading-none pui:uppercase pui:text-muted-foreground">
                       {item.time}
                     </span>
                   ) : null}
@@ -279,7 +290,7 @@ function Timeline({
                     // 4px between title and description, 12px between the
                     // title and the group when the description is absent
                     // (thread 1924385837, Elena 2026-10-09).
-                    <div className={cn(item.description ? "mt-1" : "mt-2")}>
+                    <div className={cn(item.description ? "pui:mt-1" : "pui:mt-2")}>
                       <TimelineTouchpoints
                         touchpoints={item.touchpoints}
                         recipients={item.recipients}
@@ -291,14 +302,14 @@ function Timeline({
             ) : (
               // No top padding: the cursor and the copy share the row top, so a
               // plain row lines up with a timestamped or carded one.
-              <div className="grid min-w-0 flex-1 gap-2 pb-6">
-                <div className="grid gap-1">
-                  <span className="text-label-mini-sb text-foreground">{item.title}</span>
+              <div className="pui:grid pui:min-w-0 pui:flex-1 pui:gap-2 pui:pb-6">
+                <div className="pui:grid pui:gap-1">
+                  <span className="pui:text-label-mini-sb pui:text-foreground">{item.title}</span>
                   {item.description ? (
-                    <p className="text-label-mini text-foreground">{item.description}</p>
+                    <p className="pui:text-label-mini pui:text-foreground">{item.description}</p>
                   ) : null}
                   {item.time ? (
-                    <span className="text-caption leading-none uppercase text-muted-foreground">
+                    <span className="pui:text-caption pui:leading-none pui:uppercase pui:text-muted-foreground">
                       {item.time}
                     </span>
                   ) : null}
@@ -306,7 +317,7 @@ function Timeline({
                 {item.touchpoints || item.recipients ? (
                   // 4px title/description and 12px title/group without one,
                   // mirroring the status card composition.
-                  <div className={cn(!item.description && "mt-1")}>
+                  <div className={cn(!item.description && "pui:mt-1")}>
                     <TimelineTouchpoints
                       touchpoints={item.touchpoints}
                       recipients={item.recipients}

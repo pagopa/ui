@@ -93,16 +93,25 @@ function Popover({
         aria-label={label}
         align={align}
         side={arrowPosition === "top" ? "bottom" : "top"}
-        className={cn("w-78 overflow-visible bg-transparent p-0 shadow-none", className)}
+        className={cn(
+          "pui:w-78 pui:overflow-visible pui:bg-transparent pui:p-0 pui:shadow-none",
+          className,
+        )}
         {...panelProps}
       >
-        <div data-slot="popover-frame" className="flex w-full flex-col items-center">
+        <div
+          data-slot="popover-frame"
+          className="pui:flex pui:w-full pui:flex-col pui:items-center"
+        >
           {arrowPosition === "top" ? (
-            <div className="relative flex h-5 w-full justify-center" aria-hidden="true">
+            <div
+              className="pui:relative pui:flex pui:h-5 pui:w-full pui:justify-center"
+              aria-hidden="true"
+            >
               {/* Placed by the middleware, not centred: when the popup is shifted
                   to stay in the viewport the arrow keeps pointing at the trigger. */}
-              <PopoverArrow className="absolute top-0 h-5 w-6 pt-1">
-                <svg viewBox="0 0 24 16" className="h-4 w-6">
+              <PopoverArrow className="pui:absolute pui:top-0 pui:h-5 pui:w-6 pui:pt-1">
+                <svg viewBox="0 0 24 16" className="pui:h-4 pui:w-6">
                   <path d="M12 0 24 16H0L12 0Z" fill="currentColor" />
                 </svg>
               </PopoverArrow>
@@ -110,19 +119,22 @@ function Popover({
           ) : null}
           <div
             data-slot="popover-card"
-            className="flex w-full items-start gap-1 rounded-lg bg-popover p-4 text-popover-foreground shadow-32"
+            className="pui:flex pui:w-full pui:items-start pui:gap-1 pui:rounded-lg pui:bg-popover pui:p-4 pui:text-popover-foreground pui:shadow-32"
           >
-            <div data-slot="popover-description" className="min-w-0 flex-1 text-body">
+            <div data-slot="popover-description" className="pui:min-w-0 pui:flex-1 pui:text-body">
               {children}
             </div>
             <PopoverClose aria-label={closeLabel}>
-              <X aria-hidden="true" className="size-2.5 text-primary" />
+              <X aria-hidden="true" className="pui:size-2.5 pui:text-primary" />
             </PopoverClose>
           </div>
           {arrowPosition === "bottom" ? (
-            <div className="relative flex h-5 w-full justify-center" aria-hidden="true">
-              <PopoverArrow className="absolute bottom-0 h-5 w-6 rotate-180 pt-1">
-                <svg viewBox="0 0 24 16" className="h-4 w-6">
+            <div
+              className="pui:relative pui:flex pui:h-5 pui:w-full pui:justify-center"
+              aria-hidden="true"
+            >
+              <PopoverArrow className="pui:absolute pui:bottom-0 pui:h-5 pui:w-6 pui:rotate-180 pui:pt-1">
+                <svg viewBox="0 0 24 16" className="pui:h-4 pui:w-6">
                   <path d="M12 0 24 16H0L12 0Z" fill="currentColor" />
                 </svg>
               </PopoverArrow>

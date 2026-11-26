@@ -18,7 +18,7 @@ function PopoverClose({ className, ...props }: PopoverPrimitive.Close.Props) {
     <PopoverPrimitive.Close
       data-slot="popover-close"
       className={cn(
-        "relative flex size-6 shrink-0 items-center justify-center rounded-md after:absolute after:-inset-2.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+        "pui:relative pui:flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-md pui:after:absolute pui:after:-inset-2.5 pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring",
         className,
       )}
       {...props}
@@ -48,12 +48,12 @@ function PopoverContent({
         alignOffset={alignOffset}
         side={side}
         sideOffset={sideOffset}
-        className="isolate z-50"
+        className="pui:isolate pui:z-50"
       >
         <PopoverPrimitive.Popup
           data-slot="popover-content"
           className={cn(
-            "z-50 flex w-78 origin-(--transform-origin) flex-col gap-1 rounded-lg bg-popover p-4 text-body text-popover-foreground shadow-32 outline-hidden duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+            "pui:z-50 pui:flex pui:w-78 pui:origin-(--transform-origin) pui:flex-col pui:gap-1 pui:rounded-lg pui:bg-popover pui:p-4 pui:text-body pui:text-popover-foreground pui:shadow-32 pui:outline-hidden pui:duration-100 pui:data-[side=bottom]:slide-in-from-top-2 pui:data-[side=inline-end]:slide-in-from-left-2 pui:data-[side=inline-start]:slide-in-from-right-2 pui:data-[side=left]:slide-in-from-right-2 pui:data-[side=right]:slide-in-from-left-2 pui:data-[side=top]:slide-in-from-bottom-2 pui:data-open:animate-in pui:data-open:fade-in-0 pui:data-open:zoom-in-95 pui:data-closed:animate-out pui:data-closed:fade-out-0 pui:data-closed:zoom-out-95",
             className,
           )}
           {...props}
@@ -82,7 +82,7 @@ function PopoverArrow({ className, ...props }: PopoverPrimitive.Arrow.Props) {
   return (
     <PopoverPrimitive.Arrow
       data-slot="popover-arrow"
-      className={cn("text-popover", className)}
+      className={cn("pui:text-popover", className)}
       {...props}
     />
   )
@@ -92,7 +92,7 @@ function PopoverHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="popover-header"
-      className={cn("flex flex-col gap-0.5 text-label-mini", className)}
+      className={cn("pui:flex pui:flex-col pui:gap-0.5 pui:text-label-mini", className)}
       {...props}
     />
   )
@@ -102,7 +102,7 @@ function PopoverTitle({ className, ...props }: PopoverPrimitive.Title.Props) {
   return (
     <PopoverPrimitive.Title
       data-slot="popover-title"
-      className={cn("text-body-sb", className)}
+      className={cn("pui:text-body-sb", className)}
       {...props}
     />
   )
@@ -112,7 +112,7 @@ function PopoverDescription({ className, ...props }: PopoverPrimitive.Descriptio
   return (
     <PopoverPrimitive.Description
       data-slot="popover-description"
-      className={cn("text-muted-foreground", className)}
+      className={cn("pui:text-muted-foreground", className)}
       {...props}
     />
   )

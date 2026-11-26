@@ -85,14 +85,18 @@ function MultiSelectField({
       variant={open ? "up" : "down"}
       size={24}
       className={
-        disabled ? "text-muted-foreground" : open || error ? "text-primary" : "text-foreground"
+        disabled
+          ? "pui:text-muted-foreground"
+          : open || error
+            ? "pui:text-primary"
+            : "pui:text-foreground"
       }
     />
   )
 
   return (
-    <div className={cn("grid", error ? "gap-0.5" : "gap-2", className)}>
-      <div className="relative">
+    <div className={cn("pui:grid", error ? "pui:gap-0.5" : "pui:gap-2", className)}>
+      <div className="pui:relative">
         <Select
           {...command.rootProps}
           multiple
@@ -125,19 +129,19 @@ function MultiSelectField({
               event.preventDefault()
               removeValue(orderedSelection[orderedSelection.length - 1].value)
             }}
-            className="peer relative aria-expanded:border-2 aria-expanded:border-primary [&>span[data-slot=select-value]]:flex [&>span[data-slot=select-value]]:min-w-0 [&>span[data-slot=select-value]]:flex-wrap [&>span[data-slot=select-value]]:overflow-visible [&>span[data-slot=select-value]]:whitespace-normal"
+            className="peer pui:relative pui:aria-expanded:border-2 pui:aria-expanded:border-primary pui:[&>span[data-slot=select-value]]:flex pui:[&>span[data-slot=select-value]]:min-w-0 pui:[&>span[data-slot=select-value]]:flex-wrap pui:[&>span[data-slot=select-value]]:overflow-visible pui:[&>span[data-slot=select-value]]:whitespace-normal"
           >
             {leadingIcon ? (
               <span
                 data-slot="select-field-leading-icon"
                 aria-hidden="true"
                 inert
-                className="pointer-events-none inline-flex size-6 shrink-0 items-center justify-center text-choice-icon"
+                className="pui:pointer-events-none pui:inline-flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center pui:text-choice-icon"
               >
                 {leadingIcon}
               </span>
             ) : null}
-            <SelectValue placeholder=" " className="gap-2">
+            <SelectValue placeholder=" " className="pui:gap-2">
               {(selected: string[]) =>
                 selected.length
                   ? options
@@ -178,7 +182,7 @@ function MultiSelectField({
               <SelectGroup
                 className={
                   options.some((option) => option.description || option.leading || option.chip)
-                    ? "p-0"
+                    ? "pui:p-0"
                     : undefined
                 }
               >
@@ -199,11 +203,11 @@ function MultiSelectField({
           leadingIcon={Boolean(leadingIcon)}
           focusDriven={false}
           placeholderValue={false}
-          className={open && filled ? "text-primary" : undefined}
+          className={open && filled ? "pui:text-primary" : undefined}
         />
       </div>
       {description || error || success ? (
-        <div className="px-3.5">
+        <div className="pui:px-3.5">
           <FieldMessages ids={ids} description={description} error={error} success={success} />
         </div>
       ) : null}

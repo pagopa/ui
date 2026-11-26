@@ -93,7 +93,7 @@ function PaymentProviderLogos(props: PaymentProviderLogosProps) {
         data-psp-brand={props.brand}
         src={logo.src}
         alt={props.alt ?? logo.alt}
-        className={cn("size-6 shrink-0", props.className)}
+        className={cn("pui:size-6 pui:shrink-0", props.className)}
       />
     )
   }
@@ -105,21 +105,21 @@ function PaymentProviderLogos(props: PaymentProviderLogosProps) {
     <ul
       data-slot="payment-provider-logos"
       aria-label={label}
-      className={cn("flex flex-wrap items-center gap-4", className)}
+      className={cn("pui:flex pui:flex-wrap pui:items-center pui:gap-4", className)}
     >
       {providers.map((provider) => (
         <li
           key={provider.name}
-          className="grid min-h-14 min-w-28 place-items-center rounded-lg border bg-background p-3"
+          className="pui:grid pui:min-h-14 pui:min-w-28 pui:place-items-center pui:rounded-lg pui:border pui:bg-background pui:p-3"
         >
           {provider.logo ? (
             <img
               src={provider.logo}
               alt={provider.name}
-              className="max-h-8 max-w-24 object-contain"
+              className="pui:max-h-8 pui:max-w-24 pui:object-contain"
             />
           ) : (
-            <span className="text-label-sb">{provider.name}</span>
+            <span className="pui:text-label-sb">{provider.name}</span>
           )}
         </li>
       ))}

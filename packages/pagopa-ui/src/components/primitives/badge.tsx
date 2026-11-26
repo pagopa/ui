@@ -6,17 +6,18 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/cn"
 
 const badgeVariants = cva(
-  "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-caption-sb whitespace-nowrap transition-all focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 [&>svg]:pointer-events-none [&>svg]:size-3!",
+  "group/badge pui:inline-flex pui:h-5 pui:w-fit pui:shrink-0 pui:items-center pui:justify-center pui:gap-1 pui:overflow-hidden pui:rounded-4xl pui:border pui:border-transparent pui:px-2 pui:py-0.5 pui:text-caption-sb pui:whitespace-nowrap pui:transition-all pui:focus-visible:border-ring pui:focus-visible:ring-3 pui:focus-visible:ring-ring/50 pui:has-data-[icon=inline-end]:pr-1.5 pui:has-data-[icon=inline-start]:pl-1.5 pui:aria-invalid:border-destructive pui:aria-invalid:ring-destructive/20 pui:[&>svg]:pointer-events-none pui:[&>svg]:size-3!",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
-        secondary: "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80",
+        default: "pui:bg-primary pui:text-primary-foreground pui:[a]:hover:bg-primary/80",
+        secondary: "pui:bg-secondary pui:text-secondary-foreground pui:[a]:hover:bg-secondary/80",
         destructive:
-          "bg-destructive/10 text-error-foreground focus-visible:ring-destructive/20 [a]:hover:bg-destructive/20",
-        outline: "border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground",
-        ghost: "hover:bg-muted hover:text-muted-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+          "pui:bg-destructive/10 pui:text-error-foreground pui:focus-visible:ring-destructive/20 pui:[a]:hover:bg-destructive/20",
+        outline:
+          "pui:border-border pui:text-foreground pui:[a]:hover:bg-muted pui:[a]:hover:text-muted-foreground",
+        ghost: "pui:hover:bg-muted pui:hover:text-muted-foreground",
+        link: "pui:text-primary pui:underline-offset-4 pui:hover:underline",
       },
     },
     defaultVariants: {
@@ -43,9 +44,9 @@ type BadgeProps = useRender.ComponentProps<"span"> &
 
 const badgeBackgroundRings: Record<BadgeBackground, string> = {
   transparent: "",
-  white: "ring-2 ring-background",
-  muted: "ring-2 ring-muted",
-  primary: "ring-2 ring-selection-soft",
+  white: "pui:ring-2 pui:ring-background",
+  muted: "pui:ring-2 pui:ring-muted",
+  primary: "pui:ring-2 pui:ring-selection-soft",
 }
 
 function Badge({
@@ -62,10 +63,10 @@ function Badge({
     background ?? (display === "sidenav-icon" ? (selected ? "primary" : "white") : "transparent")
   const ringClass =
     resolvedBackground === "transparent"
-      ? "forced-colors:ring-2 forced-colors:ring-[Canvas]"
+      ? "pui:forced-colors:ring-2 pui:forced-colors:ring-[Canvas]"
       : badgeBackgroundRings[resolvedBackground]
   const indicatorClassName = cn(
-    "size-2.5 shrink-0 rounded-full bg-primary ring-offset-0 forced-colors:forced-color-adjust-none forced-colors:bg-[Highlight] forced-colors:ring-[Canvas]",
+    "pui:size-2.5 pui:shrink-0 pui:rounded-full pui:bg-primary pui:ring-offset-0 pui:forced-colors:forced-color-adjust-none pui:forced-colors:bg-[Highlight] pui:forced-colors:ring-[Canvas]",
     ringClass,
   )
   const isDecorative = display === "plain" || display === "sidenav-icon"
@@ -75,7 +76,7 @@ function Badge({
     ) : display === "numbered" ? (
       <span
         data-slot="badge-indicator"
-        className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-label-mini-sb whitespace-nowrap text-primary-foreground forced-colors:forced-color-adjust-none forced-colors:bg-[Highlight] forced-colors:text-[HighlightText]"
+        className="pui:inline-flex pui:h-5 pui:min-w-5 pui:items-center pui:justify-center pui:rounded-full pui:bg-primary pui:px-1.5 pui:text-label-mini-sb pui:whitespace-nowrap pui:text-primary-foreground pui:forced-colors:forced-color-adjust-none pui:forced-colors:bg-[Highlight] pui:forced-colors:text-[HighlightText]"
       >
         <span data-slot="badge-count">{children}</span>
       </span>
@@ -86,16 +87,16 @@ function Badge({
         <span
           data-slot="badge-icon-art"
           className={cn(
-            "inline-flex size-6 shrink-0 items-center justify-center",
-            selected ? "text-primary" : "text-foreground",
-            "forced-colors:text-[CanvasText]",
+            "pui:inline-flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center",
+            selected ? "pui:text-primary" : "pui:text-foreground",
+            "pui:forced-colors:text-[CanvasText]",
           )}
         >
           {children}
         </span>
         <span
           data-slot="badge-indicator"
-          className={cn("absolute -top-1.5 -right-1.5", indicatorClassName)}
+          className={cn("pui:absolute pui:-top-1.5 pui:-right-1.5", indicatorClassName)}
         />
       </>
     )
@@ -110,10 +111,11 @@ function Badge({
       : {
           ...elementProps,
           className: cn(
-            "relative inline-flex shrink-0 items-center justify-center overflow-visible",
-            display === "plain" && (resolvedBackground === "transparent" ? "size-6" : "size-3.5"),
-            display === "numbered" && "size-6",
-            display === "sidenav-icon" && "size-6",
+            "pui:relative pui:inline-flex pui:shrink-0 pui:items-center pui:justify-center pui:overflow-visible",
+            display === "plain" &&
+              (resolvedBackground === "transparent" ? "pui:size-6" : "pui:size-3.5"),
+            display === "numbered" && "pui:size-6",
+            display === "sidenav-icon" && "pui:size-6",
             className,
           ),
           "aria-hidden": isDecorative

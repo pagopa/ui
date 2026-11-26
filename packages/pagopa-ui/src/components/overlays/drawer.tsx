@@ -101,26 +101,28 @@ function Drawer({
       {trigger ? <DrawerTrigger render={trigger} /> : null}
       <DrawerContent
         ref={ref}
-        className={cn(flow && "overflow-y-auto p-6", className)}
+        className={cn(flow && "pui:overflow-y-auto pui:p-6", className)}
         showHandle={showHandle}
         {...panelProps}
       >
-        <DrawerHeader className={flow ? "gap-2 p-0" : "gap-2 p-6"}>
-          <div data-slot="drawer-title-row" className="flex items-center gap-4">
+        <DrawerHeader className={flow ? "pui:gap-2 pui:p-0" : "pui:gap-2 pui:p-6"}>
+          <div data-slot="drawer-title-row" className="pui:flex pui:items-center pui:gap-4">
             {icon ? (
-              <span className="flex shrink-0 [&_img]:size-10 [&_svg]:size-10">{icon}</span>
+              <span className="pui:flex pui:shrink-0 pui:[&_img]:size-10 pui:[&_svg]:size-10">
+                {icon}
+              </span>
             ) : null}
             {/* The source title style is Titillio/600 (our 700 face): the
                 title token carries that weight over the primitive's base
                 (the InformativeDrawer reading). The desktop scale starts at
                 the 900px device step, so the title keeps the mobile scale
                 through the whole tablet range (600–899). */}
-            <DrawerTitle className="pr-10 text-title-xs-mobile tablet-md:text-title-xs">
+            <DrawerTitle className="pui:pr-10 pui:text-title-xs-mobile pui:tablet-md:text-title-xs">
               {title}
             </DrawerTitle>
           </div>
           {!flow && description ? (
-            <DrawerDescription className="text-body text-muted-foreground">
+            <DrawerDescription className="pui:text-body pui:text-muted-foreground">
               {description}
             </DrawerDescription>
           ) : null}
@@ -130,31 +132,33 @@ function Drawer({
                 aria-label={closeLabel}
                 variant="ghost"
                 size="icon"
-                className="absolute top-6 right-6 size-6 p-0 text-foreground after:absolute after:-inset-2.5"
+                className="pui:absolute pui:top-6 pui:right-6 pui:size-6 pui:p-0 pui:text-foreground pui:after:absolute pui:after:-inset-2.5"
               />
             }
           >
-            <X aria-hidden="true" className="size-3.5 text-foreground" />
+            <X aria-hidden="true" className="pui:size-3.5 pui:text-foreground" />
           </DrawerClosePrimitive>
         </DrawerHeader>
         {flow ? (
-          <div className="min-h-0 px-0 pt-2">
+          <div className="pui:min-h-0 pui:px-0 pui:pt-2">
             {description ? (
-              <DrawerDescription render={<div className="text-body text-muted-foreground" />}>
+              <DrawerDescription
+                render={<div className="pui:text-body pui:text-muted-foreground" />}
+              >
                 {description}
               </DrawerDescription>
             ) : null}
             {children}
           </div>
         ) : (
-          <div className="min-h-0 flex-1 overflow-y-auto p-6">{children}</div>
+          <div className="pui:min-h-0 pui:flex-1 pui:overflow-y-auto pui:p-6">{children}</div>
         )}
         {footer ? (
           <DrawerFooter
             className={
               flow
-                ? "mt-10 gap-6 p-0 [&>*]:w-full tablet:flex-row tablet:items-center tablet:justify-end tablet:[&>*]:w-auto"
-                : "gap-6 p-6 [&>*]:w-full tablet:flex-row tablet:items-center tablet:justify-end tablet:[&>*]:w-auto"
+                ? "pui:mt-10 pui:gap-6 pui:p-0 pui:[&>*]:w-full pui:tablet:flex-row pui:tablet:items-center pui:tablet:justify-end pui:tablet:[&>*]:w-auto"
+                : "pui:gap-6 pui:p-6 pui:[&>*]:w-full pui:tablet:flex-row pui:tablet:items-center pui:tablet:justify-end pui:tablet:[&>*]:w-auto"
             }
           >
             {footer}

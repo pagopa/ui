@@ -8,10 +8,10 @@
 export type Tone = "info" | "success" | "warning" | "error"
 
 export const toneStyles: Record<Tone, string> = {
-  info: "border-info-border bg-info-soft text-info-foreground",
-  success: "border-success-border bg-success-soft text-success-foreground",
-  warning: "border-warning-border bg-warning-soft text-warning-foreground",
-  error: "border-error-border bg-error-soft text-error-foreground",
+  info: "pui:border-info-border pui:bg-info-soft pui:text-info-foreground",
+  success: "pui:border-success-border pui:bg-success-soft pui:text-success-foreground",
+  warning: "pui:border-warning-border pui:bg-warning-soft pui:text-warning-foreground",
+  error: "pui:border-error-border pui:bg-error-soft pui:text-error-foreground",
 }
 
 export const statusIcons = {
