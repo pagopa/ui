@@ -217,8 +217,9 @@ keeps the same preflight behavior as the other live Figma commands.
    identities, checksums and icon geometry must still match.
 6. **The design foundations.** `src/figma/tokens.ts` proves that the committed
    token manifest matches the generated CSS foundation layer and the
-   documentation inventory, and that every `var(--figma-*)` reference in
-   `src/index.css` resolves. Legacy namespaces are excluded with recorded
+   documentation inventory, that every `var(--pui-*)` reference in
+   `src/index.css` names a declaration of the semantic block, and that every
+   `var(--figma-*)` reference resolves. Legacy namespaces are excluded with recorded
    reasons; unknown namespaces fail the refresh, and an unresolved variable
    either gets a value or a reasoned exclusion — none can linger silently.
 7. **The component class contract.** `src/checks/foundation.ts` proves that

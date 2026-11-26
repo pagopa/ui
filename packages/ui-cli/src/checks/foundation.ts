@@ -173,10 +173,20 @@ function spacingValue(token: string): number | null {
   return Math.round(Number(match[1]) * 4 * 100) / 100
 }
 
+// The semantic names are generated from the stylesheet, so the gate reads them
+// back from the committed emission rather than deriving them a second time.
+function emittedTokenNames(workspace: Workspace): string[] {
+  const file = path.join(workspace.tokensRoot, "src/tokens.generated.css")
+  if (!fs.existsSync(file)) return []
+  return [...fs.readFileSync(file, "utf8").matchAll(/^ {2}(--[a-z0-9-]+):/gm)].map(
+    (match) => match[1] ?? "",
+  )
+}
+
 export function measure(workspace: Workspace, manifest: FoundationManifest): Occurrence[] {
   const { parseSource } = createSourceModules(workspace)
   const spacing = allowedSpacing(manifest)
-  const knownTokens = new Set<string>()
+  const knownTokens = new Set<string>(emittedTokenNames(workspace))
   for (const entry of [
     ...Object.values(manifest.foundations),
     ...Object.values(manifest.variables ?? {}),

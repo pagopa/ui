@@ -9,12 +9,12 @@
    only what a shipped component renders, so these values live here; the demos
    still resolve them under the same UIProvider root. */
 .pagopa-ui-root {
-  --artboard-height-tall: 800px; /* Feedback Page, Informative Drawer (right) */
-  --login-width: 520px; /* LogIn frame, 32.5rem */
-  --drawer-width: 416px; /* Informative Drawer frame, 26rem */
-  --grid-aside: 20rem; /* demo grid aside column */
-  --grid-fields: 10rem; /* demo grid field column */
-  --grid-actions: 3rem; /* demo grid action column */
+  --pui-artboard-height-tall: 800px; /* Feedback Page, Informative Drawer (right) */
+  --pui-login-width: 520px; /* LogIn frame, 32.5rem */
+  --pui-drawer-width: 416px; /* Informative Drawer frame, 26rem */
+  --pui-grid-aside: 20rem; /* demo grid aside column */
+  --pui-grid-fields: 10rem; /* demo grid field column */
+  --pui-grid-actions: 3rem; /* demo grid action column */
 }
 
 @source "../src";

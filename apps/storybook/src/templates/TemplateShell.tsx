@@ -170,7 +170,7 @@ function DashboardBody({ config }: { config: TemplateConfig }) {
         <ProgressKpi label="Servizi attivi" value={12} total={16} />
         <ProgressKpi label="Richieste gestite" value={236} total={300} />
       </div>
-      <div className="grid gap-6 desktop:grid-cols-[1fr_var(--grid-aside)]">
+      <div className="grid gap-6 desktop:grid-cols-[1fr_var(--pui-grid-aside)]">
         <TableList
           label="Attività recenti"
           rows={[
@@ -273,7 +273,7 @@ function ListBody({ config, table = false }: { config: TemplateConfig; table?: b
       </label>
       {table ? (
         <div className="overflow-hidden rounded-xl border">
-          <div className="hidden grid-cols-[1fr_var(--grid-fields)_var(--grid-actions)] gap-4 bg-muted p-4 text-label-sb tablet:grid">
+          <div className="hidden grid-cols-[1fr_var(--pui-grid-fields)_var(--pui-grid-actions)] gap-4 bg-muted p-4 text-label-sb tablet:grid">
             <span>Elemento</span>
             <span>Stato</span>
             <span />
@@ -308,7 +308,7 @@ function ListBody({ config, table = false }: { config: TemplateConfig; table?: b
 
 function DetailBody({ config }: { config: TemplateConfig }) {
   return (
-    <div className="grid gap-8 desktop:grid-cols-[1fr_var(--grid-aside)]">
+    <div className="grid gap-8 desktop:grid-cols-[1fr_var(--pui-grid-aside)]">
       <article>
         <p className="text-label-sb text-primary">{config.eyebrow}</p>
         <h1 className="text-title-lg">{config.title}</h1>
@@ -357,7 +357,7 @@ function DrawerBody({ config }: { config: TemplateConfig }) {
       </div>
       <aside
         aria-label={config.title}
-        className="absolute inset-y-0 right-0 flex w-(--drawer-width) max-w-[88%] flex-col bg-background shadow-xl"
+        className="absolute inset-y-0 right-0 flex w-(--pui-drawer-width) max-w-[88%] flex-col bg-background shadow-xl"
       >
         <header className="border-b p-6">
           <p className="text-label-mini-sb text-primary">{config.eyebrow}</p>

@@ -20,6 +20,7 @@
       "import": "./dist/tokens.js"
     },
     "./tokens.css": "./dist/tokens.css",
+    "./tokens.dtcg.json": "./dist/tokens.dtcg.json",
     "./icons": {
       "types": "./dist/types/icons.d.ts",
       "import": "./dist/icons.js"
