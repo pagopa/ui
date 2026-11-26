@@ -22,19 +22,18 @@
 @source "../../artwork/src";
 @source "../../tokens/src";
 
-/* The internal prefix, during the migration: a component may spell a utility
-   the way a host class cannot collide with (`pui:flex`) while every spelling
-   already in the tree keeps resolving. Tailwind's own `prefix()` cannot carry
-   this, because it is one global switch: it emits one spelling only and it
-   renames every theme variable the artifact declares (`--font-sans` would become
-   `--pui-font-sans`), and it lives on the `@import "tailwindcss"` line this
-   stylesheet gets through shadcn. So the prefix
-   is a variant, and both spellings are emitted because the mirror below lists
-   them for every candidate the scan surface holds. The build writes the mirror
-   before Tailwind reads this file: packages/pagopa-ui/build/prefixed-candidates.ts
-   for the library and the same plugin for Storybook. docs/decisions/0012 removes
-   it: the contract step deletes this block and the mirror, and only then can the
-   stylesheet adopt the native prefix. */
+/* The internal prefix: a component spells a utility the way a host class cannot
+   collide with (`pui:flex`), and the published stylesheet declares it once,
+   under that spelling. Tailwind's own `prefix()` cannot carry this, because it
+   is one global switch: it renames every theme variable the artifact declares
+   (`--font-sans` would become `--pui-font-sans`), and it lives on the
+   `@import "tailwindcss"` line this stylesheet gets through shadcn. So the
+   prefix is a variant, and the mirror below is the surface the artifact
+   compiles: the build writes every candidate the source trees hold into it,
+   under the prefix, and src/library.css drops the source trees from the scan.
+   The Storybook surface keeps them, because a story and a Figma template name
+   utilities no shipped component does. docs/decisions/0016 supersedes the
+   doubled emission docs/decisions/0014 recorded. */
 @custom-variant pui (&);
 @source "../.generated/prefixed-candidates.txt";
 

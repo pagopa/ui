@@ -7,9 +7,11 @@ import type { Plugin } from "vite"
 
 /**
  * Tailwind emits one spelling of a utility: its `prefix()` option is a global
- * switch that renames the generated custom properties too. The migration needs
- * both spellings at once, so the prefix is a variant (`@custom-variant pui`)
- * applied to a mirror of candidates that is `@source`d next to the real ones.
+ * switch that renames the generated custom properties too. The library uses
+ * the prefix as a variant (`@custom-variant pui`) applied to a mirror of
+ * candidates, and the published stylesheet `@source`s only that mirror: every
+ * utility is declared once, under the prefix, so a host Tailwind that spells
+ * `flex` cannot reach the same class name.
  */
 export const PREFIX = "pui:"
 
@@ -17,16 +19,15 @@ function bare(candidate: string) {
   return candidate.startsWith(PREFIX) ? candidate.slice(PREFIX.length) : candidate
 }
 
-export function spellings(candidate: string): [string, string] {
-  const name = bare(candidate)
-  return [name, `${PREFIX}${name}`]
+export function prefixed(candidate: string) {
+  return `${PREFIX}${bare(candidate)}`
 }
 
 export function renderCandidates(candidates: Iterable<string>) {
   const names = new Set<string>()
   for (const candidate of candidates) {
     if (!candidate) continue
-    for (const name of spellings(candidate)) names.add(name)
+    names.add(prefixed(candidate))
   }
   return [...names]
     .sort()
@@ -50,7 +51,7 @@ export async function collectCandidates(entry: string, base: string) {
 export interface PrefixedCandidatesOptions {
   /** Absolute path of the CSS entry whose scan surface is mirrored. */
   entry: string
-  /** Absolute path of the mirror file the entry `@source`s. */
+  /** Absolute path of the mirror file the css entry `@source`s. */
   mirror: string
   /** Directory `tailwindcss` resolves from: the project the entry belongs to. */
   base: string
@@ -76,8 +77,9 @@ export function prefixedCandidates({ entry, mirror, base }: PrefixedCandidatesOp
     watchChange(id) {
       if (path.resolve(id) !== mirror) stale = true
     },
-    async transform(_code, id) {
-      if (!id.endsWith(".css") || id.startsWith(mirror)) return
+    async transform(code, id) {
+      if (!id.endsWith(".css") || path.resolve(id) === mirror) return
+      if (!code.includes("@source")) return
       if (stale) await write()
     },
   }

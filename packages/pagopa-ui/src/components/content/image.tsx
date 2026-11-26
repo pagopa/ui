@@ -25,16 +25,16 @@ function Image({
   const [failed, setFailed] = React.useState(false)
   const ratioClass =
     ratio === "square"
-      ? "aspect-square"
+      ? "pui:aspect-square"
       : ratio === "photo"
-        ? "aspect-[4/3]"
+        ? "pui:aspect-[4/3]"
         : ratio === "portrait"
-          ? "aspect-[3/4]"
+          ? "pui:aspect-[3/4]"
           : ratio === "cinema"
-            ? "aspect-[21/9]"
+            ? "pui:aspect-[21/9]"
             : ratio === "wide"
-              ? "aspect-[3/1]"
-              : "aspect-video"
+              ? "pui:aspect-[3/1]"
+              : "pui:aspect-video"
 
   if (failed || !props.src) {
     return (

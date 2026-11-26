@@ -107,7 +107,7 @@ function AccordionItem({
           top of the source's 50px header (24 icon + gap 12 + 24 chevron box,
           title/chip stacked with a 4px gap). The keyboard perimeter is the
           primitive's ring, so dropping the border keeps focus visible. */}
-      <AccordionTrigger className="pui:min-h-12 pui:gap-3 pui:border-0 pui:px-0 pui:py-0 pui:text-body-sb pui:hover:no-underline pui:aria-disabled:opacity-100 pui:data-disabled:opacity-100 data-disabled:[&_[data-slot=accordion-trigger-icon]]:text-choice-icon">
+      <AccordionTrigger className="pui:min-h-12 pui:gap-3 pui:border-0 pui:px-0 pui:py-0 pui:text-body-sb pui:hover:no-underline pui:aria-disabled:opacity-100 pui:data-disabled:opacity-100 pui:data-disabled:[&_[data-slot=accordion-trigger-icon]]:text-choice-icon">
         <span className="pui:flex pui:min-w-0 pui:flex-1 pui:items-start pui:gap-2">
           {item.icon ? (
             <span

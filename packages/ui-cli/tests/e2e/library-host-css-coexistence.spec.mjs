@@ -127,6 +127,28 @@ function layerBlock(css, name) {
   return assert.fail(`@layer ${name} is not closed`)
 }
 
+// The class names a rule block declares, unescaped (`.pui\:p-6` → `pui:p-6`).
+function classNames(body) {
+  const names = new Set()
+  for (const match of body.matchAll(/([^{}]*)\{/g)) {
+    const prelude = match[1].trim()
+    if (!prelude.startsWith(".")) continue
+    let name = ""
+    for (let index = 1; index < prelude.length; index += 1) {
+      const character = prelude[index]
+      if (character === "\\") {
+        name += prelude[index + 1]
+        index += 1
+        continue
+      }
+      if (" :.>#+~[*".includes(character)) break
+      name += character
+    }
+    if (name) names.add(name)
+  }
+  return names
+}
+
 // The built stylesheet must not depend on @scope: Firefox ESR and Safari before
 // 17.4 drop the whole block, which would render a component unstyled.
 async function countScopeRules(page) {
@@ -203,6 +225,18 @@ test("packed CSS leaves the host page alone and styles its own trees", async (t)
         "every component-root reset must be wrapped in :where()",
       )
     }
+    // Every utility is declared once, under the prefix. A host that ships a
+    // utility of the same name therefore reaches its own markup only, in any
+    // layer order; nothing in the artifact answers to the bare spelling.
+    assert.ok(
+      utilities.body.includes(".pui\\:p-6{"),
+      "the artifact declares a utility under the `pui:` prefix",
+    )
+    assert.deepEqual(
+      [...classNames(utilities.body)].filter((name) => !name.startsWith("pui:")).sort(),
+      ["loading-spinner-motion", "pagopa-icon"],
+      "only the library's own hand-written classes stay unprefixed in the utilities layer",
+    )
   })
 
   const work = path.join(consumerRoot, `.host-css-${randomUUID()}`)
@@ -288,6 +322,16 @@ test("packed CSS leaves the host page alone and styles its own trees", async (t)
             background: "rgb(255, 255, 255)",
             paddingTop: "24px",
           })
+          // The same-named utility in both worlds: the host's `.p-6` styles the
+          // host element it is written on, even inside the library's portal,
+          // while the library's own body keeps the padding of its `pui:p-6`.
+          assert.equal(
+            await page
+              .locator("#dialog-utility")
+              .evaluate((element) => getComputedStyle(element).paddingTop),
+            "5px",
+            "a host utility keeps its own value inside the library's tree",
+          )
           assert.deepEqual(errors, [])
         } finally {
           await browser.close()
