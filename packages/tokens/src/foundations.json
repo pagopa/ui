@@ -589,11 +589,7 @@
     },
     {
       "declaration": "--artboard-height: 650px",
-      "reason": "White Template artboard height (dialog, informative drawer). Demo geometry; removed when the demo artboards stop reading a library property."
-    },
-    {
-      "declaration": "--artboard-height-tall: 800px",
-      "reason": "Feedback Page and Informative Drawer artboard height. Demo geometry; removed with the demo artboards."
+      "reason": "White Template page surface height, read by the shipped PageSurface. Component geometry no published size foundation carries yet; requested as a foundation."
     },
     {
       "declaration": "--dialog-width: 600px",
@@ -604,24 +600,16 @@
       "reason": "Dialog mobile and LogIn frame width. Component geometry no published size foundation carries yet; requested as a foundation."
     },
     {
-      "declaration": "--login-width: 520px",
-      "reason": "LogIn page frame width. Component geometry no published size foundation carries yet; requested as a foundation."
-    },
-    {
-      "declaration": "--state-width: 368px",
-      "reason": "Waiting, Ok and Ko state frame width. Component geometry no published size foundation carries yet; requested as a foundation."
-    },
-    {
-      "declaration": "--drawer-width: 416px",
-      "reason": "Demo drawer frame width. Demo geometry; removed with the demo artboards."
-    },
-    {
       "declaration": "--drawer-width-wide: 417px",
       "reason": "Informative Drawer frame width. Component geometry no published size foundation carries yet; requested as a foundation."
     },
     {
       "declaration": "--id-module-width: 410px",
       "reason": "ID module width read from the 600px device step. Component geometry no published size foundation carries yet; requested as a foundation."
+    },
+    {
+      "declaration": "--state-width: 368px",
+      "reason": "Error, waiting and success state column width, read by the shipped state components. Component geometry no published size foundation carries yet; requested as a foundation."
     },
     {
       "declaration": "--camera-size: 376px",
@@ -637,7 +625,7 @@
     },
     {
       "declaration": "--overlay-width: 512px",
-      "reason": "Snackbar width and demo hero frame width. Component geometry no published size foundation carries yet; requested as a foundation."
+      "reason": "Snackbar width. Component geometry no published size foundation carries yet; requested as a foundation."
     },
     {
       "declaration": "--header-height: 102px",
@@ -654,18 +642,6 @@
     {
       "declaration": "--page-gutter-lg: 3rem",
       "reason": "Root-font-relative viewport fallback: the spacing foundations are px, so aliasing this would change zoom and host-font scaling."
-    },
-    {
-      "declaration": "--grid-aside: 20rem",
-      "reason": "Demo grid aside column. Demo geometry; removed with the demo artboards."
-    },
-    {
-      "declaration": "--grid-fields: 10rem",
-      "reason": "Demo grid field column. Demo geometry; removed with the demo artboards."
-    },
-    {
-      "declaration": "--grid-actions: 3rem",
-      "reason": "Demo grid action column. Demo geometry; removed with the demo artboards."
     },
     {
       "declaration": "--shadow-switch-knob: 0 1px 3px rgba(0, 43, 85, 0.1), 0 1px 1px rgba(0, 43, 85, 0.05), 0 2px 1px -1px rgba(0, 43, 85, 0.1)",
