@@ -209,6 +209,28 @@ test("other skills may name components and the installed third-party skills are 
   )
 })
 
+test("a generated icon identity is not a component a skill may not name", () => {
+  const marker =
+    "// Generated from pinned source geometry by packages/ui-cli/src/figma/icons.ts; do not edit."
+  assert.deepEqual(
+    check({
+      [`${SKILL}/SKILL.md`]: "Press Close to dismiss, then pick Small or Search.",
+      "src/components/icons/generated/index.ts":
+        `${marker}\nexport { default as Close } from "./close"\nexport { default as Small } from "./small"\nexport { default as Search } from "./search"`,
+    }).problems,
+    [],
+  )
+  assert.match(
+    problems(
+      check({
+        [`${SKILL}/SKILL.md`]: "Press Close to dismiss.",
+        "src/components/feedback/close.tsx": "export function Close() { return null }",
+      }),
+    ),
+    /names the component Close/,
+  )
+})
+
 test("a skill pinned in skills-lock.json needs the entrypoint it resolves to", () => {
   const lock = `{
   "version": 2,
