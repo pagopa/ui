@@ -233,7 +233,7 @@ function DropDownSkeleton() {
       {Array.from({ length: 4 }, (_, index) => (
         <React.Fragment key={index}>
           <div className="grid gap-1">
-            <span className="h-4 w-(--menu-skeleton-width) rounded-lg bg-border" />
+            <span className="h-4 w-(--pui-menu-skeleton-width) rounded-lg bg-border" />
             <span className="h-4 w-full rounded-lg bg-border" />
           </div>
           {index < 3 ? <Separator /> : null}
@@ -332,7 +332,7 @@ function Dropdown({
         className={cn(
           // Source panel has no outer padding: rows and Color/Border/Border fill
           // dividers run edge to edge (node 610:36297, 3262:40787).
-          "min-w-(--menu-width) p-0",
+          "min-w-(--pui-menu-width) p-0",
           loading && "overflow-y-clip",
         )}
       >
@@ -405,7 +405,7 @@ function MenuDropdown({
       >
         <EllipsisVertical aria-hidden="true" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-(--menu-width) p-0">
+      <DropdownMenuContent align="end" className="min-w-(--pui-menu-width) p-0">
         <MenuItems items={items} label={label} dividers tone="primary" />
       </DropdownMenuContent>
     </DropdownMenu>
