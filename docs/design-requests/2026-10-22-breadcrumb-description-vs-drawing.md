@@ -6,6 +6,7 @@
 - Issue: https://github.com/pagopa/ui/issues/41
 - Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-breadcrumb-description-vs-drawing--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-breadcrumb-description-vs-drawing--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-breadcrumb-description-vs-drawing--option-c
 - Status: open — the questions do not block the render; the node is
+- Ratified defaults: [docs/design-defaults.md](../design-defaults.md) — apply §2–§4 before asking; what they do not decide stays open here.
   `implemented` against the drawn variants and the answers may change it later
 - Decision owner: Figma design owner
 

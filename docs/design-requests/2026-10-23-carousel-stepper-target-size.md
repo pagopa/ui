@@ -6,6 +6,7 @@
 - Issue: https://github.com/pagopa/ui/issues/44
 - Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-carousel-stepper-target-size--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-carousel-stepper-target-size--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-carousel-stepper-target-size--option-c / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-carousel-stepper-target-size--option-d
 - Status: open — the question does not block the render; the node is
+- Ratified defaults: [docs/design-defaults.md](../design-defaults.md) — apply §2–§4 before asking; what they do not decide stays open here.
   `implemented` against the drawn composition and the answer may change it later
 - Decision owner: Figma design owner
 

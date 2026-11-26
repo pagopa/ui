@@ -6,6 +6,7 @@
 - Issue: https://github.com/pagopa/ui/issues/21
 - Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-button-group-spacing--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-button-group-spacing--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-button-group-spacing--option-c
 - Status: open — the code follows the rule (8px); the drawing shows 24px and
+- Ratified defaults: [docs/design-defaults.md](../design-defaults.md) — apply §2–§4 before asking; what they do not decide stays open here.
   the parity cases record the divergence
 - Decision owner: Figma design owner
 

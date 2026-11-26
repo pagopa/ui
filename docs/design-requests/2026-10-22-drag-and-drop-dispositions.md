@@ -3,6 +3,7 @@
 - Type: design
 - Issue: https://github.com/pagopa/ui/issues/42
 - Status: open — the node stays `pending`
+- Ratified defaults: [docs/design-defaults.md](../design-defaults.md) — apply §2–§4 before asking; what they do not decide stays open here.
 - Decision owner: @gunzip
 - Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-drag-and-drop-dispositions--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-drag-and-drop-dispositions--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-drag-and-drop-dispositions--option-c
 
