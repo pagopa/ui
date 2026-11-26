@@ -85,6 +85,9 @@ function PagoPAIcon<Name extends FigmaIconName>({
       className={cn("pagopa-icon inline-block shrink-0 select-none", className)}
       width={size}
       height={size}
+      // The glyph box is artwork, not text: a 200% root font must not grow it
+      // past the control that hosts it, so the size lands in px (WCAG reflow).
+      style={{ width: size, height: size }}
     />
   )
 }

@@ -281,7 +281,9 @@ export const LocalDefaults: Story = {
     )
     const feedback = canvas.getByRole("img", { name: "feedback" })
     await expect(feedback).toHaveAttribute("fill", "currentColor")
-    await expect(feedback).not.toHaveAttribute("style")
+    // The only inline style is the artwork box; the paint stays in the sheet.
+    await expect(feedback.style.backgroundColor).toBe("")
+    await expect(feedback.style.maskImage).toBe("")
     await expect(getComputedStyle(feedback).fill).toBe(getComputedStyle(feedback).color)
     await expect(canvasElement.querySelector(".material-symbols-outlined")).not.toBeInTheDocument()
     await expect(canvasElement.querySelectorAll("img")).toHaveLength(0)
