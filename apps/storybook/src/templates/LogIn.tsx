@@ -52,10 +52,10 @@ function LogIn({ title, description, alert, actions, terms, className }: LogInPr
           </p>
         ) : null}
       </div>
-      {alert ? <div className="w-full max-w-(--dialog-width-compact)">{alert}</div> : null}
+      {alert ? <div className="w-full max-w-(--pui-dialog-width-compact)">{alert}</div> : null}
       <div
         data-slot="login-module-actions"
-        className="flex w-full max-w-(--dialog-width-compact) flex-col gap-6"
+        className="flex w-full max-w-(--pui-dialog-width-compact) flex-col gap-6"
       >
         {actions}
       </div>
