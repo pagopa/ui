@@ -6,6 +6,7 @@ import * as React from "react"
 import { createRoot } from "react-dom/client"
 import avatarLogo from "./avatar-source-logo.png"
 import {
+  Accordion,
   Autocomplete,
   AuthenticationCodeInput,
   Avatar,
@@ -929,6 +930,53 @@ function ConsumerOverlays() {
   )
 }
 
+// The controlled disclosure: the caller owns the open sections, so URL state or
+// a form opens one, and the caller reads the root through the contract it
+// forwarded.
+function ConsumerDisclosure() {
+  const [value, setValue] = React.useState<string[]>(["uno"])
+  const [root, setRoot] = React.useState<HTMLDivElement | null>(null)
+  const contract = root
+    ? `${root.classList.contains("max-w-md") ? "classe" : "senza classe"}/${
+        root.dataset.disclosureContract ?? "senza attributo"
+      }`
+    : "nessun elemento"
+
+  return (
+    <section aria-label="Sezioni dal pacchetto" style={{ display: "grid", gap: 16 }}>
+      <Button id="consumer-disclosure-open" variant="outline" onClick={() => setValue(["due"])}>
+        Passa alla seconda domanda
+      </Button>
+      <output aria-label="Sezioni aperte">{value.length > 0 ? value.join(", ") : "nessuna"}</output>
+      <output aria-label="Contratto delle sezioni">{contract}</output>
+      <Accordion
+        ref={setRoot}
+        aria-label="Domande del pacchetto"
+        items={[
+          { id: "uno", title: "Come si paga?", content: "Con l'app oppure allo sportello." },
+          { id: "due", title: "Dove trovo la ricevuta?", content: "Nell'area riservata." },
+          { id: "tre", title: "Il pagamento è sicuro?", content: "I dati sono cifrati." },
+        ]}
+        value={value}
+        onValueChange={setValue}
+        className="max-w-md"
+        data-disclosure-contract="accordion"
+      />
+      <Accordion
+        aria-label="Sezioni aperte all'avvio"
+        items={[
+          { id: "a", title: "Prima sezione", content: "Prima risposta." },
+          { id: "b", title: "Seconda sezione", content: "Seconda risposta." },
+          { id: "c", title: "Terza sezione", content: "Terza risposta." },
+        ]}
+        defaultValue={["a", "b"]}
+        multiple
+        data-testid="consumer-disclosure-default"
+      />
+    </section>
+  )
+}
+
 function Consumer() {
   const [activations, setActivations] = React.useState(0)
   const [submitted, setSubmitted] = React.useState("")
@@ -1009,6 +1057,7 @@ function Consumer() {
         {submitted}
       </output>
       <ConsumerOverlays />
+      <ConsumerDisclosure />
       <Dialog
         trigger={
           <Button id="consumer-dialog-trigger" variant="outline">
