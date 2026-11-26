@@ -120,10 +120,7 @@ function prepareConsumer(context: ConsumerContext): void {
         devDependencies: {
           "@types/react": installedVersion("@types/react"),
           "@types/react-dom": installedVersion("@types/react-dom"),
-          // The workspace runs TypeScript 7 through the `@typescript/native`
-          // alias (the `typescript` name carries the TypeScript 6 API); the
-          // consumer needs the 7 compiler only, so it installs it directly.
-          typescript: `npm:typescript@${installedVersion("@typescript/native")}`,
+          typescript: installedVersion("typescript"),
           vite: installedVersion("vite"),
         },
       },
@@ -365,9 +362,8 @@ function prepareRscConsumer(context: ConsumerContext): string {
           "@types/react": installedVersion("@types/react"),
           "@types/react-dom": installedVersion("@types/react-dom"),
           // Next loads the TypeScript API from `lib/typescript.js`, which the
-          // workspace's native 7 alias does not publish: the fixture takes
-          // the 6 API package the workspace exposes under `typescript`.
-          typescript: `npm:@typescript/typescript6@${installedVersion("typescript")}`,
+          // workspace's single compiler publishes.
+          typescript: installedVersion("typescript"),
         },
       },
       null,

@@ -3,6 +3,7 @@
 - Type: design
 - Issue: https://github.com/pagopa/ui/issues/29
 - Status: open
+- Ratified defaults: [docs/design-defaults.md](../design-defaults.md) — apply §2–§4 before asking; what they do not decide stays open here.
 - Decision owner: @gunzip
 - Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-table-list-skeleton--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-table-list-skeleton--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-table-list-skeleton--option-c
 - Figma node: `9520:2537` (`TableListItem`)

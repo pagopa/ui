@@ -6,6 +6,7 @@
 - Issue: https://github.com/pagopa/ui/issues/43
 - Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-segmented-control-minimum-size--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-segmented-control-minimum-size--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-segmented-control-minimum-size--option-c
 - Status: open — the node stays `pending`
+- Ratified defaults: [docs/design-defaults.md](../design-defaults.md) — apply §2–§4 before asking; what they do not decide stays open here.
 - Decision owner: Figma design owner
 
 ## Context

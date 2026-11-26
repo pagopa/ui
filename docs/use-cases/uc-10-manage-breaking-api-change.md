@@ -2,7 +2,7 @@
 id: UC-10
 status: ready
 priority: Must
-parent_dr: design-review.md
+parent_dr: ../design-review.md
 ---
 
 # `UC-10`: Handle a change that breaks the public surface

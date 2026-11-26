@@ -2,7 +2,7 @@
 id: UC-05
 status: draft
 priority: Should
-parent_dr: design-review.md
+parent_dr: ../design-review.md
 ---
 
 # `UC-05`: Add an icon or a pictogram with its provenance

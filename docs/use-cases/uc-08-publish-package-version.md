@@ -2,7 +2,7 @@
 id: UC-08
 status: draft
 priority: Must
-parent_dr: design-review.md
+parent_dr: ../design-review.md
 ---
 
 # `UC-08`: Publish a new version of the package

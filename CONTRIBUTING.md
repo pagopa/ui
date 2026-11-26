@@ -62,8 +62,10 @@ foundations are `packages/tokens`; its checks and Figma tooling are
 workspace root. The paths below are inside `packages/pagopa-ui` unless they
 name another package.
 
-The design system uses TypeScript 7, Tailwind CSS v4 and Base UI primitives
-(shadcn wrappers), with Storybook as its documentation surface.
+The design system uses TypeScript 6 — one compiler, the stable line, per
+[ADR-0010](./docs/decisions/0010-single-typescript-compiler.md) —, Tailwind CSS
+v4 and Base UI primitives (shadcn wrappers), with Storybook as its documentation
+surface.
 
 - `src/components/primitives` — Base UI primitives; `icons` — the public icon
   and pictogram components, re-exporting the generated catalogue from
@@ -98,9 +100,13 @@ Its hosting target is Azure Static Web App.
 
 `infra/` holds the infrastructure as code for project resources and execution
 environments. `docs/` holds technical documentation, architecture,
-[ADRs](https://adr.github.io/), standards, reports and plans. Deferred decisions
-and their triggers are in [docs/decisions](./docs/decisions/). Consumer
-documentation belongs to the package README or to an application under `apps/`.
+[ADRs](https://adr.github.io/), standards, reports and plans;
+[docs/README.md](./docs/README.md) is its navigation surface, and every document
+of the tree is reachable from it. Deferred decisions and their triggers are in
+[docs/decisions](./docs/decisions/). Consumer documentation belongs to the
+package README or to an application under `apps/`. The [glossary
+map](./GLOSSARY.md) separates the Figma-alignment vocabulary from the consumer
+design-system one.
 
 ### Repository infrastructure
 

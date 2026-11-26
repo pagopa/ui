@@ -35,6 +35,11 @@ This file adds what holds only for agents.
    pull request titles and descriptions are written in English even when the
    session runs in Italian. Italian stays only where the product renders it:
    component and story texts, and the UI examples quoted in a guide.
+6. **Routine design defaults are ratified policy, not a request.** Derived state
+   colours, composite input-plus-icon spacing and the responsive layout rules
+   come from [docs/design-defaults.md](./docs/design-defaults.md) (the decision
+   is [ADR-0009](./docs/decisions/0009-ratified-design-defaults.md)); apply them
+   before opening a design request, and open one only for what they leave open.
 
 ## Skills
 

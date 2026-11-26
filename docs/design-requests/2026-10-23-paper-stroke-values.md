@@ -5,6 +5,7 @@
 - Issue: https://github.com/pagopa/ui/issues/47
 - Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-paper-stroke-values--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-paper-stroke-values--option-b
 - Status: open — the rule stays `conflict` until the values are confirmed
+- Ratified defaults: [docs/design-defaults.md](../design-defaults.md) — apply §2–§4 before asking; what they do not decide stays open here.
 - Decision owner: Figma design owner
 - Updated: 23 October 2026 — surfaced by the wave-4 rules import
 
