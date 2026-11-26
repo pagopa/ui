@@ -7,7 +7,9 @@ import { cn } from "@/lib/cn"
  *
  * Figma: White Template (node 50:1700)
  */
-function PageSurface({ className, ...props }: React.ComponentProps<"section">) {
+export type PageSurfaceProps = React.ComponentProps<"section">
+
+function PageSurface({ className, ...props }: PageSurfaceProps) {
   return (
     <section
       data-slot="white-template"

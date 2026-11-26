@@ -15,11 +15,7 @@ export interface BreadcrumbItem {
  *
  * Figma: Breadcrumbs (node 123:7768)
  */
-function Breadcrumb({
-  className,
-  "aria-label": ariaLabelProp,
-  ...props
-}: {
+export type BreadcrumbProps = {
   /** Additional classes for the navigation element. */
   className?: string
   /** Name of the navigation landmark. @default messages.breadcrumb.ariaLabel */
@@ -39,7 +35,9 @@ function Breadcrumb({
       back: { label: string; href: string }
       items?: never
     }
-)) {
+)
+
+function Breadcrumb({ className, "aria-label": ariaLabelProp, ...props }: BreadcrumbProps) {
   const t = useMessages("breadcrumb")
   const ariaLabel = ariaLabelProp ?? t.ariaLabel
   const Link = useLinkComponent()

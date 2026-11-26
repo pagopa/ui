@@ -215,4 +215,5 @@ function ListItem({
   )
 }
 
-export { ListItem, type ListItemSuggestion }
+export { ListItem }
+export type { ListItemProps, ListItemSuggestion }

@@ -380,7 +380,11 @@ scores the same.
    `nx release` carry it to the changelog and to the published package. An
    export change also updates the committed API report with
    `pnpm nx run pagopa-ui:api:update`; the `etc/pagopa-ui.api.md` diff is what
-   the pull request reviews, and `api:check` fails until it is committed.
+   the pull request reviews, and `api:check` fails until it is committed. The
+   report is not the only guard: `consumer:typecheck` compiles
+   `packages/pagopa-ui/consumer-fixture/` against `dist/types` alone, wrapping
+   every exported component with its own props type, so an export a consumer
+   cannot name breaks that task instead of the report.
 
 ## Git hooks
 

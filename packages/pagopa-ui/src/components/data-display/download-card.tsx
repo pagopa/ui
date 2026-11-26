@@ -50,3 +50,4 @@ function DownloadCard({
 }
 
 export { DownloadCard }
+export type { DownloadCardProps }

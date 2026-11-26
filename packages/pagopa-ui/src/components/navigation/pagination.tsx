@@ -18,16 +18,7 @@ const stepControl = "relative size-10 border-2 border-border after:absolute afte
 const pageControl =
   "relative min-w-10 border-0 p-3 after:absolute after:-inset-x-0.5 after:inset-y-0"
 
-function Pagination({
-  currentPage,
-  totalPages,
-  onPageChange,
-  className,
-  label: labelProp,
-  previousLabel: previousLabelProp,
-  nextLabel: nextLabelProp,
-  pageLabel: pageLabelProp,
-}: {
+export interface PaginationProps {
   currentPage: number
   totalPages: number
   onPageChange: (page: number) => void
@@ -43,7 +34,18 @@ function Pagination({
    * order and grammar stay translatable. @default messages.pagination.pageLabel
    */
   pageLabel?: (page: number) => string
-}) {
+}
+
+function Pagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+  className,
+  label: labelProp,
+  previousLabel: previousLabelProp,
+  nextLabel: nextLabelProp,
+  pageLabel: pageLabelProp,
+}: PaginationProps) {
   const t = useMessages("pagination")
   const label = labelProp ?? t.label
   const previousLabel = previousLabelProp ?? t.previousLabel

@@ -1,7 +1,9 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 
-function SafeArea({ className, ...props }: React.ComponentProps<"div">) {
+export type SafeAreaProps = React.ComponentProps<"div">
+
+function SafeArea({ className, ...props }: SafeAreaProps) {
   return (
     <div
       data-slot="safe-area"

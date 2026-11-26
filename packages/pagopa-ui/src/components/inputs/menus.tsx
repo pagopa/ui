@@ -21,7 +21,7 @@ import { Separator } from "@/components/primitives/separator"
 
 import { ItemRow, type ItemRowContent } from "./item-row"
 
-type DropDownItemBase = ItemRowContent & {
+export interface DropDownItemBase extends ItemRowContent {
   id: string
   icon?: LucideIcon
   destructive?: boolean
@@ -34,7 +34,7 @@ type DropDownItemBase = ItemRowContent & {
   leadingAlignment?: "center" | "label"
 }
 
-type MenuAction =
+export type MenuAction =
   | { onSelect: (checked?: boolean) => void; disabled?: boolean }
   | { disabled: true; onSelect?: never }
 
@@ -270,21 +270,7 @@ function DropDownEmpty({
  *
  * Figma: DropDown (node 616:3864)
  */
-function Dropdown({
-  triggerLabel,
-  items,
-  label,
-  back,
-  disabled,
-  loading = false,
-  multiselect = false,
-  dividers = true,
-  emptyTitle: emptyTitleProp,
-  emptyDescription,
-  backLabel: backLabelProp,
-  loadingLabel: loadingLabelProp,
-  className,
-}: {
+export interface DropdownProps {
   /** Visible label of the trigger button. */
   triggerLabel: React.ReactNode
   /** Ordinary rows; CTA/back rows keep their action semantics. */
@@ -311,7 +297,23 @@ function Dropdown({
   loadingLabel?: string
   /** ClassName applied to the trigger button. */
   className?: string
-}) {
+}
+
+function Dropdown({
+  triggerLabel,
+  items,
+  label,
+  back,
+  disabled,
+  loading = false,
+  multiselect = false,
+  dividers = true,
+  emptyTitle: emptyTitleProp,
+  emptyDescription,
+  backLabel: backLabelProp,
+  loadingLabel: loadingLabelProp,
+  className,
+}: DropdownProps) {
   const t = useMessages("dropdown")
   const emptyTitle = emptyTitleProp ?? t.emptyTitle
   const backLabel = backLabelProp ?? t.backLabel
@@ -382,18 +384,16 @@ function Dropdown({
  *
  * Figma: MenuDropDown (node 3262:40787)
  */
-function MenuDropdown({
-  accessibleLabel: accessibleLabelProp,
-  items,
-  label,
-}: {
+export interface MenuDropdownProps {
   /** Accessible name of the icon trigger. @default messages.menuDropdown.accessibleLabel */
   accessibleLabel?: string
   /** Rows of the menu, with the same item contract as `Dropdown`. */
   items: DropdownItem[]
   /** Accessible name of the popup list. */
   label?: string
-}) {
+}
+
+function MenuDropdown({ accessibleLabel: accessibleLabelProp, items, label }: MenuDropdownProps) {
   const t = useMessages("menuDropdown")
   const accessibleLabel = accessibleLabelProp ?? t.accessibleLabel
 
@@ -412,4 +412,5 @@ function MenuDropdown({
   )
 }
 
-export { Dropdown, MenuDropdown, type DropdownItem }
+export { Dropdown, MenuDropdown }
+export type { DropdownItem }

@@ -6,15 +6,7 @@ import { useMessages } from "@/lib/ui-provider"
 import { X } from "@/components/primitives/icons"
 import { Button } from "@/components/primitives/button"
 
-function Cookies({
-  children,
-  onAccept,
-  onReject,
-  onLearnMore,
-  onDismiss,
-  closeLabel: closeLabelProp,
-  label: labelProp,
-}: {
+export interface CookiesProps {
   /** Title and copy of the bar. */
   children: React.ReactNode
   /** Fired by the "Accetta tutti" action. */
@@ -29,7 +21,17 @@ function Cookies({
   closeLabel?: string
   /** Accessible name of the bar. @default messages.cookies.label */
   label?: string
-}) {
+}
+
+function Cookies({
+  children,
+  onAccept,
+  onReject,
+  onLearnMore,
+  onDismiss,
+  closeLabel: closeLabelProp,
+  label: labelProp,
+}: CookiesProps) {
   const t = useMessages("cookies")
   const closeLabel = closeLabelProp ?? t.closeLabel
   const label = labelProp ?? t.label

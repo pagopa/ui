@@ -15,12 +15,7 @@ import { Camera } from "@/components/primitives/icons"
  *
  * Figma: CameraViewElement (node 1134:6812)
  */
-function CameraView({
-  label: labelProp,
-  announcement: announcementProp,
-  children,
-  active = true,
-}: {
+export interface CameraViewProps {
   /** Announced instruction of the frame. @default messages.cameraView.label */
   label?: string
   /**
@@ -30,7 +25,14 @@ function CameraView({
   announcement?: (state: { label: string; active: boolean }) => string
   children?: React.ReactNode
   active?: boolean
-}) {
+}
+
+function CameraView({
+  label: labelProp,
+  announcement: announcementProp,
+  children,
+  active = true,
+}: CameraViewProps) {
   const t = useMessages("cameraView")
   const label = labelProp ?? t.label
   const announcement = announcementProp ?? t.announcement

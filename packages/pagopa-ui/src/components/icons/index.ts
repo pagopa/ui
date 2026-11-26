@@ -5,4 +5,5 @@ export {
   figmaPictogramNames as pictogramNames,
   type FigmaIconName,
   type FigmaPictogramName,
+  type IconVariantsByName,
 } from "pagopa-ui-artwork"

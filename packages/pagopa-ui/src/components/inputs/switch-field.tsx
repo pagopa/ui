@@ -9,6 +9,20 @@ import { Switch } from "@/components/primitives/switch"
 import { FieldMessages } from "./field"
 import { describedBy, useFieldIds, type ChoiceFieldProps } from "./field-utils"
 
+export type SwitchFieldProps = Omit<React.ComponentProps<typeof Switch>, "id"> &
+  ChoiceFieldProps & {
+    /** Busy state: keeps the real selection and follows disabled submission. */
+    loading?: boolean
+    /** Decorative icon (source rich option). */
+    leadingIcon?: React.ReactNode
+    /** Optional supporting link. */
+    learnMore?: { label: string; href: string }
+    /** Side of the indicator. @default "end" */
+    indicatorPlacement?: "start" | "end"
+    /** Source "availability no" state: never affects the choice. */
+    unavailable?: boolean
+  }
+
 function SwitchField({
   id,
   label,
@@ -25,19 +39,7 @@ function SwitchField({
   className,
   "aria-describedby": ariaDescribedBy,
   ...props
-}: Omit<React.ComponentProps<typeof Switch>, "id"> &
-  ChoiceFieldProps & {
-    /** Busy state: keeps the real selection and follows disabled submission. */
-    loading?: boolean
-    /** Decorative icon (source rich option). */
-    leadingIcon?: React.ReactNode
-    /** Optional supporting link. */
-    learnMore?: { label: string; href: string }
-    /** Side of the indicator. @default "end" */
-    indicatorPlacement?: "start" | "end"
-    /** Source "availability no" state: never affects the choice. */
-    unavailable?: boolean
-  }) {
+}: SwitchFieldProps) {
   const Link = useLinkComponent()
   const ids = useFieldIds(id)
   const state = { description, error, success }

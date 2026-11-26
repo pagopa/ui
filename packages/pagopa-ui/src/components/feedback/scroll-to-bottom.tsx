@@ -7,16 +7,14 @@ import { useMessages } from "@/lib/ui-provider"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Button } from "@/components/primitives/button"
 
-function ScrollToBottom({
-  target,
-  label: labelProp,
-  className,
-}: {
+export interface ScrollToBottomProps {
   target?: React.RefObject<HTMLElement | null>
   /** Accessible name of the scroll control. @default messages.scrollToBottom.label */
   label?: string
   className?: string
-}) {
+}
+
+function ScrollToBottom({ target, label: labelProp, className }: ScrollToBottomProps) {
   const t = useMessages("scrollToBottom")
   const label = labelProp ?? t.label
 

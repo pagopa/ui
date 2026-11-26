@@ -6,16 +6,12 @@ import { cn } from "@/lib/cn"
 import { FieldMessages } from "./field"
 import { useFieldIds } from "./field-utils"
 
-function SwitchGroup({
-  legend,
-  description,
-  className,
-  children,
-  ...props
-}: React.ComponentProps<"fieldset"> & {
+export type SwitchGroupProps = React.ComponentProps<"fieldset"> & {
   legend: React.ReactNode
   description?: React.ReactNode
-}) {
+}
+
+function SwitchGroup({ legend, description, className, children, ...props }: SwitchGroupProps) {
   const ids = useFieldIds()
 
   return (

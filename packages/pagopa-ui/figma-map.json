@@ -3641,7 +3641,10 @@
       "212:1899"
     ],
     "AlertAction": [],
+    "AlertContent": [],
+    "AlertCopy": [],
     "AlertDescription": [],
+    "AlertIcon": [],
     "AlertTitle": [],
     "AttachmentModule": [
       "10192:41460"
@@ -3747,6 +3750,8 @@
     "IdentityProviderPicker": [
       "731:20386"
     ],
+    "IdentityProviderPickerRow": [],
+    "IdentityProviderPickerView": [],
     "Image": [
       "8818:39878"
     ],
@@ -4152,9 +4157,14 @@
     "WaitingState": [
       "749:5867"
     ],
+    "alertContentVariants": [],
+    "alertVariants": [],
+    "badgeVariants": [],
+    "buttonVariants": [],
     "enMessages": [],
     "iconNames": [],
     "itMessages": [],
-    "pictogramNames": []
+    "pictogramNames": [],
+    "tabsListVariants": []
   }
 }

@@ -16,14 +16,7 @@ const statusIcons: Record<
   error: { name: "report", className: "text-destructive" },
 }
 
-function Tag({
-  status = "default",
-  icon,
-  iconLabel,
-  children,
-  className,
-  ...props
-}: React.ComponentProps<"span"> & {
+export type TagProps = React.ComponentProps<"span"> & {
   /** Source status; `counter` renders a numeric count without an icon. */
   status?: TagStatus
   /** Optional caller icon replacing the status artwork. */
@@ -35,7 +28,9 @@ function Tag({
    * the caller owns the language.
    */
   iconLabel?: string
-}) {
+}
+
+function Tag({ status = "default", icon, iconLabel, children, className, ...props }: TagProps) {
   const artwork = status === "counter" ? undefined : statusIcons[status]
   return (
     <span

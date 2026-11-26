@@ -6,8 +6,13 @@ import { useLocale, useMessages } from "@/lib/ui-provider"
 import { CalendarDays } from "@/components/primitives/icons"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import type { Calendar } from "@/components/primitives/calendar"
-import { OTPField, OTPFieldGroup, OTPFieldSlot } from "@/components/primitives/otp-field"
+import type { CalendarLocale } from "@/components/primitives/calendar"
+import {
+  OTPField,
+  OTPFieldGroup,
+  OTPFieldSlot,
+  type OTPFieldProps,
+} from "@/components/primitives/otp-field"
 import { Input } from "@/components/primitives/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/primitives/popover"
 import { Textarea } from "@/components/primitives/textarea"
@@ -255,7 +260,7 @@ function TextareaField({
 
 // The mask prop sets the native `type="password"` on the slots; it is not
 // cryptographic encryption. Defaults stay explicit (native label, 6 slots).
-type AuthenticationCodeInputProps = Omit<React.ComponentProps<typeof OTPField>, "length"> &
+type AuthenticationCodeInputProps = Omit<OTPFieldProps, "length"> &
   Omit<FieldStateProps, "label"> & {
     /** Visible label of the group and of the first slot. @default messages.authenticationCodeInput.label */
     label?: React.ReactNode
@@ -371,8 +376,8 @@ type DatePickerFieldProps = FieldStateProps & {
   today?: Date
   /** BCP 47 locale of the field's own formatting (trigger value, panel caption and footer). @default the provider locale, "it-IT" at the root */
   locale?: string
-  /** Day-grid locale of the shared Calendar (a react-day-picker `Locale`). @default the provider calendar locale, Italian at the root */
-  calendarLocale?: React.ComponentProps<typeof Calendar>["locale"]
+  /** Day-grid locale of the shared Calendar. @default the provider calendar locale, Italian at the root */
+  calendarLocale?: CalendarLocale
   /** Accessible name of the panel when `label` is not a plain string. @default messages.datePickerField.panelLabel */
   panelLabel?: string
   /**
@@ -562,3 +567,9 @@ function DatePickerField({
 }
 
 export { AuthenticationCodeInput, DatePickerField, TextareaField, TextField }
+export type {
+  AuthenticationCodeInputProps,
+  DatePickerFieldProps,
+  TextareaFieldProps,
+  TextFieldProps,
+}

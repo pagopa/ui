@@ -73,16 +73,7 @@ function FooterLinkRow({ link }: { link: FooterLink }) {
   )
 }
 
-function Footer({
-  brand: brandProp,
-  homeHref = "#",
-  links = [],
-  company = COMPANY_INFORMATION,
-  columns = [],
-  titleAs = "h2",
-  columnsLabel: columnsLabelProp,
-  className,
-}: {
+export interface FooterProps {
   /** Brand slot of the footer. @default messages.footer.brand */
   brand?: React.ReactNode
   /** Link target of the brand; the `#` placeholder keeps the source default. @default "#" */
@@ -99,7 +90,18 @@ function Footer({
   columnsLabel?: string
   /** ClassName applied to the footer element. */
   className?: string
-}) {
+}
+
+function Footer({
+  brand: brandProp,
+  homeHref = "#",
+  links = [],
+  company = COMPANY_INFORMATION,
+  columns = [],
+  titleAs = "h2",
+  columnsLabel: columnsLabelProp,
+  className,
+}: FooterProps) {
   const t = useMessages("footer")
   const brand = brandProp ?? t.brand
   const columnsLabel = columnsLabelProp ?? t.columnsLabel

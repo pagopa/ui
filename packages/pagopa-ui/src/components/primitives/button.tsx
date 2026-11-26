@@ -3,6 +3,8 @@
 import { Button as ButtonPrimitive } from "@base-ui/react/button"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/cn"
+
+import { type ElementProps } from "./props"
 import { SpinnerIndicator } from "./spinner-indicator"
 
 // Outlined strokes are inset rings so they sit inside the padding like the
@@ -52,6 +54,25 @@ const buttonVariants = cva(
   },
 )
 
+/** Props of the `Button`. */
+export type ButtonProps = ElementProps<"button"> &
+  VariantProps<typeof buttonVariants> & {
+    /** Shows a spinner and blocks interaction until the action resolves. @default false */
+    loading?: boolean
+    /** Renders the label as a placeholder bar while the content loads. @default false */
+    skeleton?: boolean
+    /**
+     * Whether replacing the element with `render` keeps native `<button>`
+     * behaviour. @default true
+     */
+    nativeButton?: boolean
+    /**
+     * Whether a disabled button stays in the tab order, so a busy action still
+     * announces itself. @default false
+     */
+    focusableWhenDisabled?: boolean
+  }
+
 function Button({
   className,
   variant = "default",
@@ -61,11 +82,7 @@ function Button({
   loading = false,
   skeleton = false,
   ...props
-}: ButtonPrimitive.Props &
-  VariantProps<typeof buttonVariants> & {
-    loading?: boolean
-    skeleton?: boolean
-  }) {
+}: ButtonProps) {
   const busy = loading || skeleton
   return (
     <ButtonPrimitive

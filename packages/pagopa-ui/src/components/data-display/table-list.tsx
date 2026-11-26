@@ -23,16 +23,7 @@ interface TableListEmptyState {
   pictogram?: React.ReactNode
 }
 
-function TableList<Row extends { id: React.Key }>({
-  label,
-  rows,
-  fields,
-  action,
-  actionFallbackLabel: actionFallbackLabelProp,
-  pagination,
-  emptyLabel: emptyLabelProp,
-  emptyState: emptyStateProp,
-}: {
+export interface TableListProps<Row extends { id: React.Key }> {
   /** Accessible name of the list region (source wrapper `aria-label`). */
   label: string
   rows: Row[]
@@ -48,7 +39,18 @@ function TableList<Row extends { id: React.Key }>({
   emptyState?: TableListEmptyState
   /** Announced text of an empty state with no visible copy. @default messages.tableList.emptyLabel */
   emptyLabel?: string
-}) {
+}
+
+function TableList<Row extends { id: React.Key }>({
+  label,
+  rows,
+  fields,
+  action,
+  actionFallbackLabel: actionFallbackLabelProp,
+  pagination,
+  emptyLabel: emptyLabelProp,
+  emptyState: emptyStateProp,
+}: TableListProps<Row>) {
   const t = useMessages("tableList")
   const actionFallbackLabel = actionFallbackLabelProp ?? t.actionFallbackLabel
   const emptyLabel = emptyLabelProp ?? t.emptyLabel

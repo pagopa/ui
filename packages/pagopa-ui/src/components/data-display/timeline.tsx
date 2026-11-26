@@ -208,14 +208,13 @@ function TimelineTouchpoints({
   )
 }
 
-function Timeline({
-  items,
-  label: labelProp,
-}: {
+export interface TimelineProps {
   items: TimelineItem[]
   /** Accessible name of the timeline list. @default messages.timeline.label */
   label?: string
-}) {
+}
+
+function Timeline({ items, label: labelProp }: TimelineProps) {
   const t = useMessages("timeline")
   const label = labelProp ?? t.label
   // A row without a timestamp still reserves the leading column when a sibling

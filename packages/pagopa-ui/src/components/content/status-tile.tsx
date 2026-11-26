@@ -1,6 +1,15 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 
+export type StatusTileProps = React.ComponentProps<"article"> & {
+  /** Optional channel artwork (source Channel-Wrapper). */
+  channel?: React.ReactNode
+  title: React.ReactNode
+  tag?: React.ReactNode
+  orientation?: "horizontal" | "vertical"
+  children?: React.ReactNode
+}
+
 function StatusTile({
   channel,
   title,
@@ -9,14 +18,7 @@ function StatusTile({
   children,
   className,
   ...props
-}: React.ComponentProps<"article"> & {
-  /** Optional channel artwork (source Channel-Wrapper). */
-  channel?: React.ReactNode
-  title: React.ReactNode
-  tag?: React.ReactNode
-  orientation?: "horizontal" | "vertical"
-  children?: React.ReactNode
-}) {
+}: StatusTileProps) {
   return (
     <article
       data-slot="status-tile"

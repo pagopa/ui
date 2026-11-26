@@ -28,7 +28,7 @@ const defaultSelectedLabel = (values: string[]) => `hai selezionato ${values.joi
 const toSelection = (value: string | string[] | null | undefined): string[] =>
   value === undefined || value === null ? [] : Array.isArray(value) ? value : value ? [value] : []
 
-type AutocompleteSharedProps = FieldStateProps & {
+export interface AutocompleteSharedProps extends FieldStateProps {
   id?: string
   options: AutocompleteOption[]
   name?: string
@@ -486,4 +486,5 @@ function Autocomplete(props: AutocompleteProps) {
   )
 }
 
-export { Autocomplete, type AutocompleteOption }
+export { Autocomplete }
+export type { AutocompleteOption, AutocompleteProps }

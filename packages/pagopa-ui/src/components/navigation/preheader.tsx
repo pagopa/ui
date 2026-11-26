@@ -13,13 +13,7 @@ export type PreheaderLink = Omit<NavItem, "badge" | "children" | "current"> & {
   avatar?: React.ReactNode
 }
 
-function Preheader({
-  institution: institutionProp,
-  homeHref = "#",
-  links = [],
-  actions,
-  linksLabel: linksLabelProp,
-}: {
+export interface PreheaderProps {
   /** Institution name; the link target follows `homeHref`. @default messages.preheader.institution */
   institution?: string
   /** Link target of the institution row; the `#` placeholder keeps the source default. @default "#" */
@@ -30,7 +24,15 @@ function Preheader({
   actions?: React.ReactNode
   /** Accessible name of the institutional links navigation. @default messages.preheader.linksLabel */
   linksLabel?: string
-}) {
+}
+
+function Preheader({
+  institution: institutionProp,
+  homeHref = "#",
+  links = [],
+  actions,
+  linksLabel: linksLabelProp,
+}: PreheaderProps) {
   const t = useMessages("preheader")
   const institution = institutionProp ?? t.institution
   const linksLabel = linksLabelProp ?? t.linksLabel

@@ -25,15 +25,7 @@ function hasCurrentItem(item: NavItem): boolean {
   return Boolean(item.current || item.children?.some(hasCurrentItem))
 }
 
-function SideNav({
-  title: titleProp,
-  items,
-  profile,
-  condensed = false,
-  expandLabel = defaultExpandLabel,
-  collapseLabel = defaultCollapseLabel,
-  className,
-}: {
+export interface SideNavProps {
   /** Accessible name of the section. @default messages.sideNav.title */
   title?: string
   items: NavItem[]
@@ -45,7 +37,17 @@ function SideNav({
   /** Accessible name of an open parent toggle, from its label. @default "Comprimi {label}" */
   collapseLabel?: (label: string) => string
   className?: string
-}) {
+}
+
+function SideNav({
+  title: titleProp,
+  items,
+  profile,
+  condensed = false,
+  expandLabel = defaultExpandLabel,
+  collapseLabel = defaultCollapseLabel,
+  className,
+}: SideNavProps) {
   const t = useMessages("sideNav")
   const title = titleProp ?? t.title
 

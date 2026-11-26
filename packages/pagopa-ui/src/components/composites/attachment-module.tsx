@@ -7,16 +7,7 @@ import { useMessages } from "@/lib/ui-provider"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Button } from "@/components/primitives/button"
 
-function AttachmentModule({
-  title,
-  description,
-  status,
-  onOpen,
-  onDownload,
-  downloadLabel: downloadLabelProp,
-  className,
-  ...props
-}: React.ComponentProps<"section"> & {
+export type AttachmentModuleProps = React.ComponentProps<"section"> & {
   /** File title; actionable when `onOpen` is set. */
   title: string
   description?: string
@@ -28,7 +19,18 @@ function AttachmentModule({
   onDownload?: () => void
   /** Accessible name of the download action. @default messages.attachmentModule.downloadLabel */
   downloadLabel?: string
-}) {
+}
+
+function AttachmentModule({
+  title,
+  description,
+  status,
+  onOpen,
+  onDownload,
+  downloadLabel: downloadLabelProp,
+  className,
+  ...props
+}: AttachmentModuleProps) {
   const t = useMessages("attachmentModule")
   const downloadLabel = downloadLabelProp ?? t.downloadLabel
 

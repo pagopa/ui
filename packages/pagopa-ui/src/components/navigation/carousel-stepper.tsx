@@ -10,13 +10,7 @@ import { useMessages } from "@/lib/ui-provider"
 const indicator =
   "relative shrink-0 rounded-2xl transition-[width,height,background-color] motion-reduce:transition-none after:absolute after:inset-x-0 after:-inset-y-5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
 
-function CarouselStepper({
-  count,
-  activeIndex,
-  onChange,
-  label: labelProp,
-  getControlLabel: getControlLabelProp,
-}: {
+export interface CarouselStepperProps {
   count: number
   activeIndex: number
   onChange: (index: number) => void
@@ -29,7 +23,15 @@ function CarouselStepper({
    * @default messages.carouselStepper.getControlLabel
    */
   getControlLabel?: (index: number, count: number) => string
-}) {
+}
+
+function CarouselStepper({
+  count,
+  activeIndex,
+  onChange,
+  label: labelProp,
+  getControlLabel: getControlLabelProp,
+}: CarouselStepperProps) {
   const t = useMessages("carouselStepper")
   const label = labelProp ?? t.label
   const getControlLabel = getControlLabelProp ?? t.getControlLabel

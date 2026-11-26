@@ -7,6 +7,24 @@ import { it } from "react-day-picker/locale"
 
 export type { DateRange } from "react-day-picker"
 
+/**
+ * Locale of the day grid, as the library names it.
+ *
+ * A `react-day-picker` locale (a `date-fns` `Locale`) stays assignable: the
+ * members below are the ones the grid reads, so a caller passes its own locale
+ * object without importing a third-party type.
+ */
+export interface CalendarLocale {
+  /** BCP 47 code of the locale, e.g. `"it-IT"`. */
+  code?: string
+  /** Week and first-week-day options of the grid. */
+  options?: {
+    weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6
+    /** Which week contains the first day of the year: the week of Jan 1, or the first full week. */
+    firstWeekContainsDate?: 1 | 4
+  }
+}
+
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 function Calendar({
