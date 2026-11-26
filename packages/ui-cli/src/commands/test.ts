@@ -39,6 +39,10 @@ function visualCommand(ctx: CliContext) {
       out: stringArg,
       json: booleanArg,
       "check-baselines": booleanArg,
+      "fetch-baselines": booleanArg,
+      engine: stringArg,
+      image: stringArg,
+      "baselines-repo": stringArg,
     },
     run: action(ctx, (args) =>
       printParity(
@@ -52,6 +56,13 @@ function visualCommand(ctx: CliContext) {
             out: text(args.out),
             json: args.json,
             checkBaselines: args["check-baselines"],
+            fetchBaselines: args["fetch-baselines"],
+            engine: text(args.engine) ?? text(ctx.env.VISUAL_BASELINE_ENGINE),
+            image: text(args.image) ?? text(ctx.env.VISUAL_BASELINE_IMAGE),
+            repository: text(args["baselines-repo"]) ?? text(ctx.env.VISUAL_BASELINES_REPO),
+            // Never a flag: a token on a command line is a token in the process
+            // list and in every shell history it went through.
+            token: text(ctx.env.VISUAL_BASELINES_TOKEN) ?? text(ctx.env.GITHUB_TOKEN),
           },
           testingAdapters(ctx.env),
         ),

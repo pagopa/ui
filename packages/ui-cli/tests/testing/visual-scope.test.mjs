@@ -6,6 +6,7 @@ import path from "node:path"
 import { test } from "node:test"
 
 import { testingAdapters } from "../../src/adapters/testing.ts"
+import { visualBaselineKey } from "../../src/testing/visual-baselines.ts"
 import { missingVisualBaselines, runVisual, visualScope } from "../../src/testing/visual.ts"
 import { UNSTABLE_VISUAL_STORIES } from "../../src/testing/visual-cases.ts"
 
@@ -342,10 +343,31 @@ test("an unreadable ref and a missing index are refusals, not empty runs", () =>
   assert.match(noTarget.stderr, /--since <ref> or --all/)
 })
 
+const IMAGE = `mcr.microsoft.com/playwright:v1.63.0-noble@sha256:${"a".repeat(64)}`
+
+// The key the written index resolves to, computed from the same bytes the run
+// reads: the tests never guess it.
+function keyOf(root, image = IMAGE) {
+  return visualBaselineKey({
+    manifest: fs.readFileSync(path.join(root, "apps/storybook/dist/index.json")),
+    image,
+  })
+}
+
+// A storage repository, committed, like `pagopa/ui-visual-baselines`.
+function storage(files) {
+  const tree = fixtureTree({}, "pagopa-visual-storage-")
+  for (const file of Object.keys(files)) write(tree.root, file, "png\n")
+  git(tree.root, ["init", "-q"])
+  commit(tree.root, "baselines")
+  return { root: tree.root, url: `file://${tree.root}` }
+}
+
 test("baseline preflight selects the same stories and widths as the visual suite", () => {
   const fixture = workspace()
   const scope = { mode: "all", changed: [] }
-  const missing = missingVisualBaselines(fixture.index, scope, fixture.roots.storiesRoot)
+  const snapshots = path.join(fixture.root, ".nx/visual-baselines/snapshots")
+  const missing = missingVisualBaselines(fixture.index, scope, snapshots)
   assert.equal(missing.length, 15)
   assert.deepEqual(
     missing
@@ -361,81 +383,155 @@ test("baseline preflight selects the same stories and widths as the visual suite
 
   for (const file of missing) write(fixture.root, path.relative(fixture.root, file), "")
   fs.rmSync(missing[0])
-  assert.deepEqual(missingVisualBaselines(fixture.index, scope, fixture.roots.storiesRoot), [
-    missing[0],
-  ])
+  assert.deepEqual(missingVisualBaselines(fixture.index, scope, snapshots), [missing[0]])
 })
 
 test("scoped, empty and unstable stories require only snapshots the suite will run", () => {
   const fixture = workspace()
+  const snapshots = path.join(fixture.root, ".nx/visual-baselines/snapshots")
   const scope = { mode: "stories", stories: ["components-card--plain"], changed: [] }
-  const missing = missingVisualBaselines(fixture.index, scope, fixture.roots.storiesRoot)
+  const missing = missingVisualBaselines(fixture.index, scope, snapshots)
   assert.equal(missing.length, 3)
   assert.ok(missing.every((file) => file.includes("components-card--plain")))
   assert.deepEqual(
-    missingVisualBaselines(
-      fixture.index,
-      { mode: "stories", stories: [], changed: [] },
-      fixture.roots.storiesRoot,
-    ),
+    missingVisualBaselines(fixture.index, { mode: "stories", stories: [], changed: [] }, snapshots),
     [],
   )
 
   UNSTABLE_VISUAL_STORIES.add("components-card--plain")
   try {
-    assert.deepEqual(missingVisualBaselines(fixture.index, scope, fixture.roots.storiesRoot), [])
+    assert.deepEqual(missingVisualBaselines(fixture.index, scope, snapshots), [])
   } finally {
     UNSTABLE_VISUAL_STORIES.delete("components-card--plain")
   }
 })
 
-test("the CLI fails before capture for missing scoped images but leaves update mode usable", () => {
+test("the CLI fetches the run's baselines from the storage and then passes the preflight", () => {
   const fixture = workspace()
   write(fixture.root, "apps/storybook/dist/index.json", JSON.stringify(fixture.index))
-  git(fixture.root, ["init", "-q"])
-  const base = commit(fixture.root, "base")
-  write(fixture.root, "packages/pagopa-ui/src/components/card.tsx", "export const Card = () => 1\n")
-
-  const args = { since: base, out: "scope.json" }
-  const checked = visual(fixture.root, { ...args, checkBaselines: true })
-  assert.equal(checked.status, 1, checked.stderr)
-  assert.match(checked.stderr, /3 scoped baseline\(s\) missing/)
-  assert.match(checked.stderr, /components-card--plain-320\.png/)
-  assert.doesNotMatch(checked.stderr, /components-button/)
-  assert.match(checked.stderr, /visual:update/)
-  assert.deepEqual(
-    JSON.parse(fs.readFileSync(path.join(fixture.root, "scope.json"), "utf8")).stories,
-    ["components-card--plain"],
+  const key = keyOf(fixture.root)
+  const store = storage(
+    Object.fromEntries(
+      [
+        "components-button--primary",
+        "components-button--secondary",
+        "components-card--plain",
+        "components-card--typed",
+        "components-logo--logo",
+      ].flatMap((story) =>
+        [320, 600, 1200].map((width) => [`${key.directory}/${story}-${width}.png`, ""]),
+      ),
+    ),
   )
 
-  const update = visual(fixture.root, args)
-  assert.equal(update.status, 0, update.stderr)
-  for (const width of [320, 600, 1200]) {
-    write(
-      fixture.root,
-      `apps/storybook/visual/__screenshots__/components-card--plain-${width}.png`,
-      "",
-    )
-  }
-  const untracked = visual(fixture.root, { ...args, checkBaselines: true })
-  assert.equal(untracked.status, 1, untracked.stderr)
-  assert.match(untracked.stderr, /3 scoped baseline\(s\) exist but are not tracked/)
-  git(fixture.root, ["add", "apps/storybook/visual/__screenshots__"])
-  const complete = visual(fixture.root, { ...args, checkBaselines: true, json: true })
-  assert.equal(complete.status, 0, complete.stderr)
-  assert.deepEqual(JSON.parse(complete.stdout).stories, ["components-card--plain"])
+  const fetched = visual(fixture.root, {
+    all: true,
+    fetchBaselines: true,
+    image: IMAGE,
+    repository: store.url,
+  })
+  assert.equal(fetched.status, 0, fetched.stderr)
+  assert.match(fetched.stdout, new RegExp(`\\[visual\\] baselines ${key.key} fetched from`))
+  assert.equal(
+    fs.existsSync(
+      path.join(fixture.root, ".nx/visual-baselines/snapshots", "components-card--plain-320.png"),
+    ),
+    true,
+  )
+
+  const checked = visual(fixture.root, {
+    all: true,
+    checkBaselines: true,
+    image: IMAGE,
+    repository: store.url,
+    json: true,
+  })
+  assert.equal(checked.status, 0, checked.stderr)
+  assert.deepEqual(JSON.parse(checked.stdout), { mode: "all", changed: [] })
+
+  // The same set, named without fetching again: the cache is the seam.
+  const cached = visual(fixture.root, { all: true, checkBaselines: true, image: IMAGE })
+  assert.equal(cached.status, 0, cached.stderr)
+  assert.match(cached.stdout, /scoped Linux baselines are present/)
 })
 
-test("the CI check uses preflight and the separate update job does not", () => {
-  const workflow = fs.readFileSync(
-    new URL("../../../../.github/workflows/visual.yml", import.meta.url),
-    "utf8",
-  )
-  const [check, update] = workflow.split("\n  visual-update:")
-  assert.match(check, /--since "\$BASE" --out "\$VISUAL_SCOPE" --check-baselines/)
-  assert.match(check, /--all --out "\$VISUAL_SCOPE" --check-baselines/)
-  assert.ok(update)
-  assert.doesNotMatch(update, /--check-baselines/)
+test("the preflight refuses before capture when no set is fetched for the key", () => {
+  const fixture = workspace()
+  write(fixture.root, "apps/storybook/dist/index.json", JSON.stringify(fixture.index))
+  const key = keyOf(fixture.root)
+
+  const result = visual(fixture.root, { all: true, checkBaselines: true, image: IMAGE })
+  assert.equal(result.status, 1, result.stderr)
+  assert.match(result.stderr, new RegExp(`no baselines are fetched for key ${key.key}`))
+  assert.match(result.stderr, /pagopa\/ui-visual-baselines/)
+  assert.match(result.stderr, /--fetch-baselines/)
+})
+
+test("the preflight refuses a set fetched for another key rather than comparing it", () => {
+  const fixture = workspace()
+  const index = write(fixture.root, "apps/storybook/dist/index.json", JSON.stringify(fixture.index))
+  const stale = keyOf(fixture.root)
+  const store = storage({ [`${stale.directory}/components-card--plain-320.png`]: "" })
+  const fetched = visual(fixture.root, {
+    all: true,
+    fetchBaselines: true,
+    image: IMAGE,
+    repository: store.url,
+  })
+  assert.equal(fetched.status, 0, fetched.stderr)
+
+  // The catalogue moved: the manifest the build produces hashes elsewhere.
+  fixture.index.entries["components-button--third"] = {
+    id: "components-button--third",
+    type: "story",
+    importPath: "./src/button.stories.tsx",
+  }
+  fs.writeFileSync(index, JSON.stringify(fixture.index))
+  const current = keyOf(fixture.root)
+  assert.notEqual(current.key, stale.key)
+
+  const result = visual(fixture.root, {
+    all: true,
+    checkBaselines: true,
+    image: IMAGE,
+    repository: store.url,
+  })
+  assert.equal(result.status, 1, result.stderr)
+  assert.match(result.stderr, new RegExp(`fetched baselines are for key ${stale.key}`))
+  assert.match(result.stderr, new RegExp(`this build resolves ${current.key}`))
+  assert.match(result.stderr, /--fetch-baselines/)
+})
+
+test("the preflight names the images a fetched set is missing", () => {
+  const fixture = workspace()
+  write(fixture.root, "apps/storybook/dist/index.json", JSON.stringify(fixture.index))
+  const key = keyOf(fixture.root)
+  const store = storage({
+    [`${key.directory}/components-card--plain-320.png`]: "",
+    [`${key.directory}/components-card--plain-600.png`]: "",
+  })
+
+  const result = visual(fixture.root, {
+    all: true,
+    fetchBaselines: true,
+    checkBaselines: true,
+    image: IMAGE,
+    repository: store.url,
+  })
+  assert.equal(result.status, 1, result.stderr)
+  assert.match(result.stderr, /13 scoped baseline\(s\) missing from/)
+  assert.match(result.stderr, /components-card--plain-1200\.png/)
+  assert.match(result.stderr, new RegExp(`set for key ${key.key} is incomplete`))
+  assert.match(result.stderr, /on Linux/)
+})
+
+test("a preflight without the renderer's image is a usage error, not a guess", () => {
+  const fixture = workspace()
+  write(fixture.root, "apps/storybook/dist/index.json", JSON.stringify(fixture.index))
+
+  const result = visual(fixture.root, { all: true, checkBaselines: true })
+  assert.equal(result.status, 2, result.stderr)
+  assert.match(result.stderr, /--image/)
 })
 
 test("the visual adapter returns the selected story ids as JSON", async () => {
