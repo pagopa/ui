@@ -39,6 +39,7 @@ one rather than editing it.
 | [ADR-0008](./decisions/0008-case-corpus-value.md)                 | The case corpus is one value: documents are properties, judgments are methods |
 | [ADR-0009](./decisions/0009-ratified-design-defaults.md)          | The system-level design defaults: ratified once, applied by every alignment   |
 | [ADR-0010](./decisions/0010-single-typescript-compiler.md)        | One stable TypeScript compiler for the whole workspace                        |
+| [ADR-0011](./decisions/0011-semantic-token-contract.md)           | The public token contract is semantic: `--pui-*`, named for the role           |
 
 ## Use cases
 

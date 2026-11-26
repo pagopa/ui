@@ -50,7 +50,7 @@ function Snackbar({
       data-slot="snackbar"
       data-tone={tone}
       className={cn(
-        "min-h-14 w-(--overlay-width) max-w-[calc(100vw-var(--page-gutter))] items-start rounded-lg border p-4 shadow-32",
+        "min-h-14 w-(--overlay-width) max-w-[calc(100vw-var(--pui-page-gutter))] items-start rounded-lg border p-4 shadow-32",
         hasFooter
           ? cn(
               "grid gap-4",

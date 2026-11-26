@@ -60,7 +60,7 @@ function TooltipContent({
               "z-50",
               isVerticalSide
                 ? "h-4 w-6 data-[side=bottom]:bottom-full data-[side=top]:top-full"
-                : "size-2.5 translate-y-[calc(-50%-var(--hairline))] rotate-45 rounded-2 bg-tooltip fill-tooltip data-[side=bottom]:top-1 data-[side=inline-end]:top-1/2! data-[side=inline-end]:-left-1 data-[side=inline-end]:-translate-y-1/2 data-[side=inline-start]:top-1/2! data-[side=inline-start]:-right-1 data-[side=inline-start]:-translate-y-1/2 data-[side=left]:top-1/2! data-[side=left]:-right-1 data-[side=left]:-translate-y-1/2 data-[side=right]:top-1/2! data-[side=right]:-left-1 data-[side=right]:-translate-y-1/2 data-[side=top]:-bottom-2.5 forced-colors:bg-[Canvas]",
+                : "size-2.5 translate-y-[calc(-50%-var(--pui-hairline))] rotate-45 rounded-2 bg-tooltip fill-tooltip data-[side=bottom]:top-1 data-[side=inline-end]:top-1/2! data-[side=inline-end]:-left-1 data-[side=inline-end]:-translate-y-1/2 data-[side=inline-start]:top-1/2! data-[side=inline-start]:-right-1 data-[side=inline-start]:-translate-y-1/2 data-[side=left]:top-1/2! data-[side=left]:-right-1 data-[side=left]:-translate-y-1/2 data-[side=right]:top-1/2! data-[side=right]:-left-1 data-[side=right]:-translate-y-1/2 data-[side=top]:-bottom-2.5 forced-colors:bg-[Canvas]",
             )}
           >
             {isVerticalSide ? (

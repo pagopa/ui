@@ -1,19 +1,30 @@
-The Figma Variables the library renders with are also a public contract: a page
-section next to the components can read the same colours, spacing, radius, shadow
-and z-index values instead of copying them.
+The values the library renders with are also a public contract: a page section
+next to the components can read the same colours, spacing, radius and shadow
+values instead of copying them. The contract is named for the role, not for the
+Figma variable behind it, so a rename upstream never moves it.
 
 ## What is public
 
-Two entries:
+Three entries:
 
-- `@pagopa/ui/styles.css` and `@pagopa/ui/tokens.css` declare the `--figma-*`
+- `@pagopa/ui/styles.css` and `@pagopa/ui/tokens.css` declare the `--pui-*`
   custom properties on `:root`.
-- `@pagopa/ui/tokens` exports the same values as typed data: `figmaTokens`,
-  `figmaTokenSource` and the `FigmaToken` and `FigmaTokenType` types.
+- `@pagopa/ui/tokens` exports the same values as typed data: `semanticTokens`,
+  the `SemanticToken` and `SemanticTokenType` types, and the `figmaTokens`,
+  `figmaTokenSource`, `FigmaToken` and `FigmaTokenType` inventory of the layer
+  below.
+- `@pagopa/ui/tokens.dtcg.json` is the same contract in Design Tokens Community
+  Group format, for the tools that read it.
 
-The Tailwind theme variables (`--color-*`, `--spacing-*`, `--text-*`, `--radius-*`,
-`--breakpoint-*`) are internal: they drive the components and change with the theme,
-so a consumer never reads them.
+Two layers are internal:
+
+- `--figma-*` custom properties are the build-time primitives the `--pui-*`
+  values are generated from. They keep the Figma names, so they are internal and
+  deprecated: read the semantic contract instead, and never override a
+  `--figma-*` property.
+- The Tailwind theme variables (`--color-*`, `--spacing-*`, `--text-*`,
+  `--radius-*`, `--breakpoint-*`) drive the components and change with the theme,
+  so a consumer never reads them.
 
 ## Loading the tokens
 
@@ -77,7 +88,7 @@ body portal. Server-rendered component markup remains in the provider root. The
 root is a singleton per document: every provider and React root on the page
 shares it, and it is not shadow-DOM or iframe aware.
 
-The public `--figma-*` token variables remain on `:root` so host pages can read
+The public `--pui-*` token variables remain on `:root` so host pages can read
 them without entering a component scope. The component stylesheet no longer
 resets the host body, headings or utilities. Applications that relied on those
 global resets must add their own page styles instead.
@@ -88,30 +99,30 @@ Read a property with `var()` like any other custom property:
 
 ```css
 .hero-band {
-  padding: var(--figma-spacing-24);
-  border-radius: var(--figma-radius-16);
-  color: var(--figma-color-neutrals-grey-850);
-  box-shadow: var(--figma-shadow-32);
-  z-index: var(--figma-z-10);
+  padding: var(--pui-page-gutter);
+  border-radius: var(--pui-radius);
+  color: var(--pui-foreground);
+  background: var(--pui-card);
+  border: var(--pui-hairline) solid var(--pui-border);
 }
 ```
 
 ## With TypeScript
 
-`figmaTokens` is the inventory of the same values, with the Figma name, the CSS name
-and the value. Filter it by `category` to build a picker, a table or a generated
-example:
+`semanticTokens` is the contract as data: the CSS name, the role name, the
+resolved value, the type, and the DTCG alias of the primitive it comes from.
+Filter it by `type` to build a picker, a table or a generated example:
 
 ```tsx
-import { figmaTokens } from "@pagopa/ui/tokens"
+import { semanticTokens } from "@pagopa/ui/tokens"
 
-const spacing = figmaTokens.filter((token) => token.category === "spacing")
+const colors = semanticTokens.filter((token) => token.type === "color")
 
-export function SpacingScale() {
+export function ColorScale() {
   return (
     <ul>
-      {spacing.map((token) => (
-        <li key={token.id}>
+      {colors.map((token) => (
+        <li key={token.cssName}>
           <code>{token.cssName}</code> — {token.value}
         </li>
       ))}
@@ -119,6 +130,9 @@ export function SpacingScale() {
   )
 }
 ```
+
+`figmaTokens` is the inventory of the primitive layer below, with the Figma name,
+the CSS name and the value, for a page that has to show where a value comes from.
 
 `figmaTokenSource` names the Figma file, the sync date and the export method of the
 inventory, so a page can state where its values come from. Typography entries carry
@@ -128,7 +142,7 @@ values.
 
 ## The contract is read-only
 
-The tokens are published values, not theme inputs: redefining a `--figma-*` property
+The tokens are published values, not theme inputs: redefining a `--pui-*` property
 to restyle the components is unsupported and breaks the guarantee that what the page
 renders and what the components render come from the same source. The supported
 application theme is light only.
@@ -143,7 +157,7 @@ inline `style` objects as well as utility strings. New literal lengths, colours,
 typography, opacity and motion defaults must use semantic or foundation
 references. Static local style bindings and literal fallbacks are checked too;
 caller values, computed percentages, zero resets and system colours remain valid.
-An unknown `--figma-*` or typography reference fails the check.
+An unknown `--pui-*`, `--figma-*` or typography reference fails the check.
 
 The declaration rules have a zero ceiling. The existing foundation exception
 file can register a file/value match with a source node and a reason; stale

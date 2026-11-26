@@ -12,6 +12,7 @@
     },
     "./figma.generated.css": "./src/figma.generated.css",
     "./tokens.generated.css": "./src/tokens.generated.css",
+    "./tokens.dtcg.generated.json": "./src/tokens.dtcg.generated.json",
     "./manifest.json": "./src/manifest.json"
   },
   "engines": {

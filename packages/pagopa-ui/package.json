@@ -19,7 +19,8 @@
       "types": "./dist/types/tokens.d.ts",
       "import": "./dist/tokens.js"
     },
-    "./tokens.css": "./dist/tokens.css"
+    "./tokens.css": "./dist/tokens.css",
+    "./tokens.dtcg.json": "./dist/tokens.dtcg.json"
   },
   "bin": {
     "pagopa-ui-map": "./cli/pagopa-ui-map.mjs"
