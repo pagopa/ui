@@ -43,12 +43,12 @@ function Image({
         data-slot="image"
         aria-label={alt || fallbackLabel}
         className={cn(
-          "grid place-items-center bg-han-purple-soft text-muted-foreground",
+          "pui:grid pui:place-items-center pui:bg-han-purple-soft pui:text-muted-foreground",
           ratioClass,
           className,
         )}
       >
-        <span className="flex items-center gap-2 text-label-mini">
+        <span className="pui:flex pui:items-center pui:gap-2 pui:text-label-mini">
           <PagoPAIcon name="photo" />
           {fallbackLabel}
         </span>
@@ -60,7 +60,7 @@ function Image({
     <img
       alt={alt}
       data-slot="image"
-      className={cn("w-full object-cover", ratioClass, className)}
+      className={cn("pui:w-full pui:object-cover", ratioClass, className)}
       onError={() => setFailed(true)}
       {...props}
     />

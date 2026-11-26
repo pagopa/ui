@@ -9,11 +9,11 @@ const statusIcons: Record<
   Exclude<TagStatus, "counter">,
   { name: React.ComponentProps<typeof PagoPAIcon>["name"]; filled?: boolean; className: string }
 > = {
-  default: { name: "kid_star", className: "text-primary" },
-  info: { name: "info", filled: true, className: "text-info" },
-  warning: { name: "warning", className: "text-warning" },
-  success: { name: "check_circle", className: "text-success" },
-  error: { name: "report", className: "text-destructive" },
+  default: { name: "kid_star", className: "pui:text-primary" },
+  info: { name: "info", filled: true, className: "pui:text-info" },
+  warning: { name: "warning", className: "pui:text-warning" },
+  success: { name: "check_circle", className: "pui:text-success" },
+  error: { name: "report", className: "pui:text-destructive" },
 }
 
 export type TagProps = React.ComponentProps<"span"> & {
@@ -38,7 +38,7 @@ function Tag({ status = "default", icon, iconLabel, children, className, ...prop
       data-slot="tag"
       data-status={status}
       className={cn(
-        "inline-flex min-h-8 w-fit items-center gap-1.5 rounded-md border border-border bg-background px-2 text-caption-sb text-muted-foreground uppercase",
+        "pui:inline-flex pui:min-h-8 pui:w-fit pui:items-center pui:gap-1.5 pui:rounded-md pui:border pui:border-border pui:bg-background pui:px-2 pui:text-caption-sb pui:text-muted-foreground pui:uppercase",
         className,
       )}
     >

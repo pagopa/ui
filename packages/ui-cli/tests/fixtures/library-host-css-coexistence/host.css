@@ -27,8 +27,9 @@
 }
 
 /* The same utility the library emits, with a different value: the host
-   declares its layers last, so this one wins on host markup and on library
-   components alike. */
+   declares its layers last, so this one wins on host markup. The library spells
+   its utilities under the `pui:` prefix, so this rule reaches the host's own
+   markup only and never a library component. */
 @layer host.utilities {
   .p-6 {
     padding: 5px;

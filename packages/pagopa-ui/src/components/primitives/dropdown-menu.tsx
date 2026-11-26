@@ -37,7 +37,7 @@ function DropdownMenuContent({
   return (
     <MenuPrimitive.Portal container={portalHost}>
       <MenuPrimitive.Positioner
-        className="isolate z-50 outline-none"
+        className="pui:isolate pui:z-50 pui:outline-none"
         align={align}
         alignOffset={alignOffset}
         side={side}
@@ -46,7 +46,7 @@ function DropdownMenuContent({
         <MenuPrimitive.Popup
           data-slot="dropdown-menu-content"
           className={cn(
-            "z-50 max-h-(--available-height) w-(--anchor-width) min-w-32 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-popover p-1 text-popover-foreground shadow-16 duration-100 outline-none data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:overflow-hidden data-closed:fade-out-0 data-closed:zoom-out-95",
+            "pui:z-50 pui:max-h-(--available-height) pui:w-(--anchor-width) pui:min-w-32 pui:origin-(--transform-origin) pui:overflow-x-hidden pui:overflow-y-auto pui:rounded-lg pui:bg-popover pui:p-1 pui:text-popover-foreground pui:shadow-16 pui:duration-100 pui:outline-none pui:data-[side=bottom]:slide-in-from-top-2 pui:data-[side=inline-end]:slide-in-from-left-2 pui:data-[side=inline-start]:slide-in-from-right-2 pui:data-[side=left]:slide-in-from-right-2 pui:data-[side=right]:slide-in-from-left-2 pui:data-[side=top]:slide-in-from-bottom-2 pui:data-open:animate-in pui:data-open:fade-in-0 pui:data-open:zoom-in-95 pui:data-closed:animate-out pui:data-closed:overflow-hidden pui:data-closed:fade-out-0 pui:data-closed:zoom-out-95",
             className,
           )}
           {...props}
@@ -71,7 +71,10 @@ function DropdownMenuLabel({
     <MenuPrimitive.GroupLabel
       data-slot="dropdown-menu-label"
       data-inset={inset}
-      className={cn("px-1.5 py-1 text-caption-sb text-muted-foreground data-inset:pl-7", className)}
+      className={cn(
+        "pui:px-1.5 pui:py-1 pui:text-caption-sb pui:text-muted-foreground pui:data-inset:pl-7",
+        className,
+      )}
       {...props}
     />
   )
@@ -92,7 +95,7 @@ function DropdownMenuItem({
       data-inset={inset}
       data-variant={variant}
       className={cn(
-        "group/dropdown-menu-item relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-label-mini focus:outline-hidden select-none focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-inset:pl-7 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-[variant=destructive]:*:[svg]:text-destructive",
+        "group/dropdown-menu-item pui:relative pui:flex pui:cursor-default pui:items-center pui:gap-1.5 pui:rounded-md pui:px-1.5 pui:py-1 pui:text-label-mini pui:focus:outline-hidden pui:select-none pui:focus:bg-accent pui:focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground pui:data-inset:pl-7 pui:data-[variant=destructive]:text-destructive pui:data-[variant=destructive]:focus:bg-destructive/10 pui:data-[variant=destructive]:focus:text-destructive pui:data-disabled:pointer-events-none pui:data-disabled:opacity-50 pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0 pui:[&_svg:not([class*='size-'])]:size-4 data-[variant=destructive]:*:[svg]:text-destructive",
         className,
       )}
       {...props}
@@ -117,13 +120,13 @@ function DropdownMenuSubTrigger({
       data-slot="dropdown-menu-sub-trigger"
       data-inset={inset}
       className={cn(
-        "flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-label-mini focus:outline-hidden select-none focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-inset:pl-7 data-popup-open:bg-accent data-popup-open:text-accent-foreground data-open:bg-accent data-open:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "pui:flex pui:cursor-default pui:items-center pui:gap-1.5 pui:rounded-md pui:px-1.5 pui:py-1 pui:text-label-mini pui:focus:outline-hidden pui:select-none pui:focus:bg-accent pui:focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground pui:data-inset:pl-7 pui:data-popup-open:bg-accent pui:data-popup-open:text-accent-foreground pui:data-open:bg-accent pui:data-open:text-accent-foreground pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0 pui:[&_svg:not([class*='size-'])]:size-4",
         className,
       )}
       {...props}
     >
       {children}
-      <PagoPAIcon name="chevron" className="ml-auto" />
+      <PagoPAIcon name="chevron" className="pui:ml-auto" />
     </MenuPrimitive.SubmenuTrigger>
   )
 }
@@ -139,7 +142,7 @@ function DropdownMenuSubContent({
   return (
     <DropdownMenuContent
       data-slot="dropdown-menu-sub-content"
-      className={cn("w-auto min-w-24", className)}
+      className={cn("pui:w-auto pui:min-w-24", className)}
       align={align}
       alignOffset={alignOffset}
       side={side}
@@ -167,7 +170,7 @@ function DropdownMenuCheckboxItem({
       data-slot="dropdown-menu-checkbox-item"
       data-inset={inset}
       className={cn(
-        "relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-label-mini focus:outline-hidden select-none focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground data-inset:pl-7 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "pui:relative pui:flex pui:cursor-default pui:items-center pui:gap-1.5 pui:rounded-md pui:py-1 pui:pr-8 pui:pl-1.5 pui:text-label-mini pui:focus:outline-hidden pui:select-none pui:focus:bg-accent pui:focus:text-accent-foreground focus:**:text-accent-foreground pui:data-inset:pl-7 pui:data-disabled:pointer-events-none pui:data-disabled:opacity-50 pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0 pui:[&_svg:not([class*='size-'])]:size-4",
         className,
       )}
       checked={checked}
@@ -175,7 +178,7 @@ function DropdownMenuCheckboxItem({
     >
       <span
         className={cn(
-          "pointer-events-none absolute right-2 flex items-center justify-center",
+          "pui:pointer-events-none pui:absolute pui:right-2 pui:flex pui:items-center pui:justify-center",
           indicatorClassName,
         )}
         data-slot="dropdown-menu-checkbox-item-indicator"
@@ -187,7 +190,7 @@ function DropdownMenuCheckboxItem({
               <span
                 {...indicatorProps}
                 className={cn(
-                  "inline-flex size-full items-center justify-center",
+                  "pui:inline-flex pui:size-full pui:items-center pui:justify-center",
                   indicatorProps.className,
                 )}
               >
@@ -223,13 +226,13 @@ function DropdownMenuRadioItem({
       data-slot="dropdown-menu-radio-item"
       data-inset={inset}
       className={cn(
-        "relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-label-mini focus:outline-hidden select-none focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground data-inset:pl-7 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "pui:relative pui:flex pui:cursor-default pui:items-center pui:gap-1.5 pui:rounded-md pui:py-1 pui:pr-8 pui:pl-1.5 pui:text-label-mini pui:focus:outline-hidden pui:select-none pui:focus:bg-accent pui:focus:text-accent-foreground focus:**:text-accent-foreground pui:data-inset:pl-7 pui:data-disabled:pointer-events-none pui:data-disabled:opacity-50 pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0 pui:[&_svg:not([class*='size-'])]:size-4",
         className,
       )}
       {...props}
     >
       <span
-        className="pointer-events-none absolute right-2 flex items-center justify-center"
+        className="pui:pointer-events-none pui:absolute pui:right-2 pui:flex pui:items-center pui:justify-center"
         data-slot="dropdown-menu-radio-item-indicator"
       >
         <MenuPrimitive.RadioItemIndicator>
@@ -245,7 +248,7 @@ function DropdownMenuSeparator({ className, ...props }: MenuPrimitive.Separator.
   return (
     <MenuPrimitive.Separator
       data-slot="dropdown-menu-separator"
-      className={cn("-mx-1 my-1 h-px bg-border", className)}
+      className={cn("pui:-mx-1 pui:my-1 pui:h-px pui:bg-border", className)}
       {...props}
     />
   )
@@ -256,7 +259,7 @@ function DropdownMenuShortcut({ className, ...props }: React.ComponentProps<"spa
     <span
       data-slot="dropdown-menu-shortcut"
       className={cn(
-        "ml-auto text-caption tracking-widest text-muted-foreground group-focus/dropdown-menu-item:text-accent-foreground",
+        "pui:ml-auto pui:text-caption pui:tracking-widest pui:text-muted-foreground pui:group-focus/dropdown-menu-item:text-accent-foreground",
         className,
       )}
       {...props}

@@ -37,26 +37,29 @@ function AttachmentModule({
   return (
     <section
       data-slot="attachment-module"
-      className={cn("flex items-center gap-4 rounded-lg bg-card p-4 ring-1 ring-border", className)}
+      className={cn(
+        "pui:flex pui:items-center pui:gap-4 pui:rounded-lg pui:bg-card pui:p-4 pui:ring-1 pui:ring-border",
+        className,
+      )}
       {...props}
     >
-      <div className="grid min-w-0 flex-1 gap-2">
+      <div className="pui:grid pui:min-w-0 pui:flex-1 pui:gap-2">
         {onOpen ? (
           <Button
             type="button"
             variant="link"
-            className="relative h-auto min-h-0 justify-start border-0 p-0 text-left text-body-sb after:absolute after:inset-x-0 after:-inset-y-3"
+            className="pui:relative pui:h-auto pui:min-h-0 pui:justify-start pui:border-0 pui:p-0 pui:text-left pui:text-body-sb pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-3"
             onClick={onOpen}
           >
             {title}
           </Button>
         ) : (
-          <p className="text-body-sb">{title}</p>
+          <p className="pui:text-body-sb">{title}</p>
         )}
         {description ? (
-          <p className="text-label-mini text-muted-foreground">{description}</p>
+          <p className="pui:text-label-mini pui:text-muted-foreground">{description}</p>
         ) : null}
-        {status ? <span className="w-fit">{status}</span> : null}
+        {status ? <span className="pui:w-fit">{status}</span> : null}
       </div>
       {onDownload ? (
         <Button
@@ -67,9 +70,9 @@ function AttachmentModule({
           onClick={onDownload}
           // Source action is a bare 24px glyph: the visible box stays 24px and
           // the >=44px pointer target comes from the invisible ::after expansion.
-          className="relative size-6 p-0 after:absolute after:-inset-2.5"
+          className="pui:relative pui:size-6 pui:p-0 pui:after:absolute pui:after:-inset-2.5"
         >
-          <PagoPAIcon name="download" className="size-6" />
+          <PagoPAIcon name="download" className="pui:size-6" />
         </Button>
       ) : null}
     </section>

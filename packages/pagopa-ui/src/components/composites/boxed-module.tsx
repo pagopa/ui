@@ -24,23 +24,27 @@ function BoxedModule({
   return (
     <section
       data-slot="boxed-module"
-      className={cn("rounded-lg border bg-card p-4", className)}
+      className={cn("pui:rounded-lg pui:border pui:bg-card pui:p-4", className)}
       {...props}
     >
-      <header className="flex items-start gap-3">
+      <header className="pui:flex pui:items-start pui:gap-3">
         {icon ? (
-          <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-accent text-primary">
+          <span className="pui:grid pui:size-10 pui:shrink-0 pui:place-items-center pui:rounded-lg pui:bg-accent pui:text-primary">
             {icon}
           </span>
         ) : null}
-        <div className="min-w-0 flex-1">
-          <Title className="text-body-big-sb">{title}</Title>
-          {description ? <p className="text-caption text-muted-foreground">{description}</p> : null}
+        <div className="pui:min-w-0 pui:flex-1">
+          <Title className="pui:text-body-big-sb">{title}</Title>
+          {description ? (
+            <p className="pui:text-caption pui:text-muted-foreground">{description}</p>
+          ) : null}
         </div>
       </header>
-      {children ? <div className="mt-4">{children}</div> : null}
+      {children ? <div className="pui:mt-4">{children}</div> : null}
       {actions ? (
-        <footer className="mt-5 flex flex-wrap justify-end gap-2 border-t pt-4">{actions}</footer>
+        <footer className="pui:mt-5 pui:flex pui:flex-wrap pui:justify-end pui:gap-2 pui:border-t pui:pt-4">
+          {actions}
+        </footer>
       ) : null}
     </section>
   )

@@ -86,7 +86,7 @@ export const Validation: Story = {
     await expect(email).toHaveAccessibleName("Email (obbligatorio)")
     const requiredWords = canvas.getByText("(obbligatorio)")
     await expect(requiredWords).toBeVisible()
-    await expect(requiredWords).not.toHaveClass("sr-only")
+    await expect(requiredWords).not.toHaveClass("pui:sr-only")
     await expect(canvas.getAllByText("(obbligatorio)")).toHaveLength(1)
     await expect(email).toHaveAttribute("aria-invalid", "true")
     await expect(email).toHaveAccessibleDescription("Inserisci un indirizzo email valido.")
@@ -98,9 +98,9 @@ export const Validation: Story = {
     if (!successId) throw new Error("Expected the success message to describe the input")
     const successMessage = canvasElement.ownerDocument.getElementById(successId)
     if (!successMessage) throw new Error("Expected the accessible success message")
-    await expect(successMessage).toHaveClass("sr-only")
+    await expect(successMessage).toHaveClass("pui:sr-only")
 
-    const successRoot = successInput.closest(".relative")?.parentElement
+    const successRoot = successInput.closest(".pui\\:relative")?.parentElement
     if (!successRoot) throw new Error("Expected the TextField root")
     await expect(successRoot.getBoundingClientRect().height).toBe(
       successInput.getBoundingClientRect().height,

@@ -44,16 +44,16 @@ function RadioField({
     <div
       data-slot="radio-field"
       className={cn(
-        "grid gap-0.5 py-4",
-        indicatorPlacement === "end" && "gap-1",
-        loading && description && "gap-2",
+        "pui:grid pui:gap-0.5 pui:py-4",
+        indicatorPlacement === "end" && "pui:gap-1",
+        loading && description && "pui:gap-2",
         className,
       )}
     >
       <label
         className={cn(
-          "flex min-h-6 cursor-pointer items-start gap-2",
-          unavailable && "cursor-not-allowed",
+          "pui:flex pui:min-h-6 pui:cursor-pointer pui:items-start pui:gap-2",
+          unavailable && "pui:cursor-not-allowed",
         )}
       >
         <RadioGroupItem
@@ -64,56 +64,61 @@ function RadioField({
           aria-busy={loading || undefined}
           aria-invalid={Boolean(error) || ariaInvalid || undefined}
           aria-describedby={describedBy(ids, state, ariaDescribedBy)}
-          className={cn(indicatorPlacement === "end" && "order-last")}
+          className={cn(indicatorPlacement === "end" && "pui:order-last")}
           {...props}
         />
-        <span className="flex min-h-6 min-w-0 flex-1 items-center gap-2">
+        <span className="pui:flex pui:min-h-6 pui:min-w-0 pui:flex-1 pui:items-center pui:gap-2">
           {leadingIcon ? (
             <span
               aria-hidden="true"
-              className="flex size-6 shrink-0 items-center justify-center text-choice-icon"
+              className="pui:flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center pui:text-choice-icon"
             >
-              {loading ? <Skeleton className="size-6 rounded" /> : leadingIcon}
+              {loading ? <Skeleton className="pui:size-6 pui:rounded" /> : leadingIcon}
             </span>
           ) : null}
           {loading ? (
             <Skeleton
               className={cn(
-                "h-4 max-w-full rounded-lg",
-                leadingIcon || description ? "w-45" : "w-61",
+                "pui:h-4 pui:max-w-full pui:rounded-lg",
+                leadingIcon || description ? "pui:w-45" : "pui:w-61",
               )}
             />
           ) : null}
           <span
             className={cn(
-              "min-w-0 text-label-sb",
-              unavailable && "text-muted-foreground",
-              loading && "sr-only",
+              "pui:min-w-0 pui:text-label-sb",
+              unavailable && "pui:text-muted-foreground",
+              loading && "pui:sr-only",
             )}
           >
             {label}
             {required ? (
               <>
-                <span aria-hidden="true" className="ml-0.5 text-destructive">
+                <span aria-hidden="true" className="pui:ml-0.5 pui:text-destructive">
                   *
                 </span>
-                <span className="sr-only"> (obbligatorio)</span>
+                <span className="pui:sr-only"> (obbligatorio)</span>
               </>
             ) : null}
           </span>
         </span>
       </label>
       {description || error || success ? (
-        <div className={cn("grid gap-0.5", indicatorPlacement === "start" ? "pl-8" : "gap-1")}>
+        <div
+          className={cn(
+            "pui:grid pui:gap-0.5",
+            indicatorPlacement === "start" ? "pui:pl-8" : "pui:gap-1",
+          )}
+        >
           {loading && description ? (
             <>
-              <p id={ids.descriptionId} className="sr-only">
+              <p id={ids.descriptionId} className="pui:sr-only">
                 {description}
               </p>
-              <span aria-hidden="true" className="grid gap-2.5">
-                <Skeleton className="h-2 w-full rounded-lg" />
-                <Skeleton className="h-2 w-full rounded-lg" />
-                <Skeleton className="h-2 w-full rounded-lg" />
+              <span aria-hidden="true" className="pui:grid pui:gap-2.5">
+                <Skeleton className="pui:h-2 pui:w-full pui:rounded-lg" />
+                <Skeleton className="pui:h-2 pui:w-full pui:rounded-lg" />
+                <Skeleton className="pui:h-2 pui:w-full pui:rounded-lg" />
               </span>
             </>
           ) : null}

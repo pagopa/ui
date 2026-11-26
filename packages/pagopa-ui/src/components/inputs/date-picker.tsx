@@ -145,7 +145,7 @@ function DatePicker(props: DatePickerProps) {
       aria-describedby={error ? ids.errorId : undefined}
       aria-labelledby={`${ids.controlId}-label`}
       className={cn(
-        "flex min-w-0 w-full max-w-85 flex-col gap-2 rounded-2xl bg-card shadow-32",
+        "pui:flex pui:min-w-0 pui:w-full pui:max-w-85 pui:flex-col pui:gap-2 pui:rounded-2xl pui:bg-card pui:shadow-32",
         className,
       )}
     >
@@ -156,11 +156,11 @@ function DatePicker(props: DatePickerProps) {
           in every engine. */}
       <div
         id={`${ids.controlId}-label`}
-        className="px-4 pt-4 text-label-mini text-muted-foreground"
+        className="pui:px-4 pui:pt-4 pui:text-label-mini pui:text-muted-foreground"
       >
         {label}
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="pui:flex pui:flex-col pui:gap-2">
         {props.mode === "range" ? (
           <Calendar
             {...calendarProps}
@@ -180,19 +180,19 @@ function DatePicker(props: DatePickerProps) {
           />
         )}
         {error ? (
-          <div className="px-4">
+          <div className="pui:px-4">
             <FieldMessages ids={ids} error={error} />
           </div>
         ) : null}
       </div>
       <Separator />
-      <div className="flex items-center justify-end gap-6 px-4 pt-2 pb-4">
+      <div className="pui:flex pui:items-center pui:justify-end pui:gap-6 pui:px-4 pui:pt-2 pui:pb-4">
         <Button
           type="button"
           variant="ghost"
           // Source action: a 16/22 text action 22px tall, not a 48px control.
           // The pointer target comes from the invisible ::after expansion.
-          className="relative min-h-0 border-0 px-0 py-0 after:absolute after:inset-x-0 after:-inset-y-3"
+          className="pui:relative pui:min-h-0 pui:border-0 pui:px-0 pui:py-0 pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-3"
           onClick={() => {
             setSelection({
               key: valueKey,
@@ -208,7 +208,7 @@ function DatePicker(props: DatePickerProps) {
         <Button
           type="button"
           variant="ghost"
-          className="relative min-h-0 border-0 px-0 py-0 after:absolute after:inset-x-0 after:-inset-y-3"
+          className="pui:relative pui:min-h-0 pui:border-0 pui:px-0 pui:py-0 pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-3"
           onClick={() => {
             if (!from) {
               reportError(missingDateError)

@@ -18,12 +18,12 @@ function SwitchGroup({ legend, description, className, children, ...props }: Swi
     <fieldset
       data-slot="switch-group"
       aria-describedby={description ? ids.descriptionId : undefined}
-      className={cn("grid gap-3", className)}
+      className={cn("pui:grid pui:gap-3", className)}
       {...props}
     >
-      <legend className="text-label-sb">{legend}</legend>
+      <legend className="pui:text-label-sb">{legend}</legend>
       <FieldMessages ids={ids} description={description} />
-      <div className="grid divide-y divide-border">{children}</div>
+      <div className="pui:grid pui:divide-y pui:divide-border">{children}</div>
     </fieldset>
   )
 }

@@ -20,16 +20,21 @@ export interface MicroEventProps {
 
 function MicroEvent({ title, time, invalid = true, label, className }: MicroEventProps) {
   return (
-    <div data-slot="microevento" className={cn("flex items-start py-2 pl-7", className)}>
-      <div className="flex min-w-0 flex-col gap-1">
+    <div
+      data-slot="microevento"
+      className={cn("pui:flex pui:items-start pui:py-2 pui:pl-7", className)}
+    >
+      <div className="pui:flex pui:min-w-0 pui:flex-col pui:gap-1">
         {invalid ? (
           <CorrectionTag label={label} status="not-valid" />
         ) : (
           <CorrectionTag label={label} status="valid" />
         )}
-        <p className="text-label-mini text-foreground break-words">{title}</p>
+        <p className="pui:text-label-mini pui:text-foreground pui:break-words">{title}</p>
         {time ? (
-          <span className="text-caption leading-none uppercase text-muted-foreground">{time}</span>
+          <span className="pui:text-caption pui:leading-none pui:uppercase pui:text-muted-foreground">
+            {time}
+          </span>
         ) : null}
       </div>
     </div>

@@ -814,7 +814,9 @@ function ConsumerResponsiveScopes() {
     >
       {/* The list is its own scroll area: wider than this column at 320 it must
           fall back to the start, or the centred overflow hides the first tab
-          off the unreachable left edge. */}
+          off the unreachable left edge. The overrides carry the library's
+          `pui:` prefix: a bare utility no longer wins over the prefixed
+          default the component owns. */}
       <div
         data-testid="consumer-scrollable-tabs"
         style={{ width: 240, maxWidth: "100%", minWidth: 0 }}
@@ -823,7 +825,7 @@ function ConsumerResponsiveScopes() {
           <TabsList
             variant="line"
             aria-label="Sezioni del servizio"
-            className="w-full overflow-x-auto"
+            className="pui:w-full pui:overflow-x-auto"
           >
             <TabsTrigger value="attivi">Attivi</TabsTrigger>
             <TabsTrigger value="archiviati">Archiviati</TabsTrigger>

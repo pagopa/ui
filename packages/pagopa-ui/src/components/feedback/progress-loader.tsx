@@ -29,10 +29,10 @@ function ProgressLoader({
 
   const normalized = value === undefined ? undefined : Math.min(100, Math.max(0, value))
   return (
-    <div className={showLabel ? "w-full" : "w-full px-6 py-5"}>
+    <div className={showLabel ? "pui:w-full" : "pui:w-full pui:px-6 pui:py-5"}>
       {showLabel && (
-        <div className="mb-2 flex items-center justify-between gap-4 text-label-mini">
-          <span className="text-label-mini-sb">{label}</span>
+        <div className="pui:mb-2 pui:flex pui:items-center pui:justify-between pui:gap-4 pui:text-label-mini">
+          <span className="pui:text-label-mini-sb">{label}</span>
           {showValue && normalized !== undefined && <span>{normalized}%</span>}
         </div>
       )}
@@ -43,22 +43,22 @@ function ProgressLoader({
           aria-valuemin={0}
           aria-valuemax={100}
           data-slot="progress"
-          className="relative h-1 w-full overflow-hidden rounded-full"
+          className="pui:relative pui:h-1 pui:w-full pui:overflow-hidden pui:rounded-full"
         >
           <span
             aria-hidden="true"
             data-slot="progress-track-leading"
-            className="absolute inset-y-0 left-0 w-2.5 rounded-l-full bg-secondary"
+            className="pui:absolute pui:inset-y-0 pui:left-0 pui:w-2.5 pui:rounded-l-full pui:bg-secondary"
           />
           <span
             aria-hidden="true"
             data-slot="progress-track"
-            className="absolute inset-y-0 left-2.5 right-0 rounded-r-full bg-secondary"
+            className="pui:absolute pui:inset-y-0 pui:left-2.5 pui:right-0 pui:rounded-r-full pui:bg-secondary"
           />
           <span
             aria-hidden="true"
             data-slot="progress-indicator"
-            className="absolute inset-y-0 left-2.5 w-8 animate-[pulse_1.4s_ease-in-out_infinite] rounded-full bg-primary motion-reduce:animate-none"
+            className="pui:absolute pui:inset-y-0 pui:left-2.5 pui:w-8 pui:animate-[pulse_1.4s_ease-in-out_infinite] pui:rounded-full pui:bg-primary pui:motion-reduce:animate-none"
           />
         </div>
       ) : (
@@ -66,7 +66,7 @@ function ProgressLoader({
           value={normalized}
           aria-label={label}
           aria-valuetext={`${normalized}%`}
-          className="h-1 rounded-l"
+          className="pui:h-1 pui:rounded-l"
         />
       )}
     </div>

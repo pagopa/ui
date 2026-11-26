@@ -233,7 +233,7 @@ function ForwardedContractHarness() {
   const [root, setRoot] = React.useState<HTMLDivElement | null>(null)
   const contract = root
     ? `classe=${root.classList.contains("pui:max-w-md") ? "inoltrata" : "assente"} ` +
-      `unione=${root.classList.contains("grid") ? "unita" : "persa"} ` +
+      `unione=${root.classList.contains("pui:grid") ? "unita" : "persa"} ` +
       `attributo=${root.dataset.contractSlot ?? "assente"}`
     : "nessun elemento"
 

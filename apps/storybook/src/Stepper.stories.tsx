@@ -86,7 +86,7 @@ export const StepContrast: Story = {
   play: async ({ canvasElement }) => {
     // Both device compositions are in the DOM: every upcoming disc is measured.
     const discs = [
-      ...canvasElement.querySelectorAll<HTMLElement>("span.rounded-full.bg-border-strong"),
+      ...canvasElement.querySelectorAll<HTMLElement>("span.pui\\:rounded-full.pui\\:bg-border-strong"),
     ]
     await expect(discs.length).toBeGreaterThan(0)
     for (const disc of discs) {

@@ -40,11 +40,11 @@ function CameraView({
   return (
     <figure
       data-slot="camera-view"
-      className="relative aspect-square w-(--pui-camera-size) max-w-full overflow-hidden rounded-2xl bg-overlay text-inverse-foreground"
+      className="pui:relative pui:aspect-square pui:w-(--pui-camera-size) pui:max-w-full pui:overflow-hidden pui:rounded-2xl pui:bg-overlay pui:text-inverse-foreground"
     >
-      <div className="absolute inset-0 grid place-items-center">
+      <div className="pui:absolute pui:inset-0 pui:grid pui:place-items-center">
         {children === undefined ? (
-          <PagoPAIcon name="photo" className="size-16 opacity-40" />
+          <PagoPAIcon name="photo" className="pui:size-16 pui:opacity-40" />
         ) : (
           children
         )}
@@ -52,18 +52,18 @@ function CameraView({
       <span
         aria-hidden="true"
         data-slot="camera-crop"
-        className="pointer-events-none absolute inset-[21.3%]"
+        className="pui:pointer-events-none pui:absolute pui:inset-[21.3%]"
       >
-        <span className="absolute top-0 left-0 size-11 rounded-tl-3xl border-t-4 border-l-4 border-inverse-foreground" />
-        <span className="absolute top-0 right-0 size-11 rounded-tr-3xl border-t-4 border-r-4 border-inverse-foreground" />
-        <span className="absolute bottom-0 left-0 size-11 rounded-bl-3xl border-b-4 border-l-4 border-inverse-foreground" />
-        <span className="absolute right-0 bottom-0 size-11 rounded-br-3xl border-r-4 border-b-4 border-inverse-foreground" />
+        <span className="pui:absolute pui:top-0 pui:left-0 pui:size-11 pui:rounded-tl-3xl pui:border-t-4 pui:border-l-4 pui:border-inverse-foreground" />
+        <span className="pui:absolute pui:top-0 pui:right-0 pui:size-11 pui:rounded-tr-3xl pui:border-t-4 pui:border-r-4 pui:border-inverse-foreground" />
+        <span className="pui:absolute pui:bottom-0 pui:left-0 pui:size-11 pui:rounded-bl-3xl pui:border-b-4 pui:border-l-4 pui:border-inverse-foreground" />
+        <span className="pui:absolute pui:right-0 pui:bottom-0 pui:size-11 pui:rounded-br-3xl pui:border-r-4 pui:border-b-4 pui:border-inverse-foreground" />
         {/* Source `Line 55` is 208px wide at x=84 of 376: 4px inside the 21.3% inset. */}
-        <span className="absolute top-1/2 right-1 left-1 h-1 -translate-y-1/2 rounded-full bg-inverse-foreground" />
+        <span className="pui:absolute pui:top-1/2 pui:right-1 pui:left-1 pui:h-1 pui:-translate-y-1/2 pui:rounded-full pui:bg-inverse-foreground" />
       </span>
       {/* The source frame paints no copy: the 35% scrim is not a legible
           surface for white text, so the instruction stays announced only. */}
-      <figcaption className="sr-only">{announcement({ label, active })}</figcaption>
+      <figcaption className="pui:sr-only">{announcement({ label, active })}</figcaption>
     </figure>
   )
 }

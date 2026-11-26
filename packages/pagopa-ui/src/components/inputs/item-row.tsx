@@ -40,8 +40,8 @@ export function ItemRow({
       id={chipId}
       inert
       className={cn(
-        "pointer-events-none inline-flex shrink-0 justify-self-start",
-        multiple && leading && "col-start-2",
+        "pui:pointer-events-none pui:inline-flex pui:shrink-0 pui:justify-self-start",
+        multiple && leading && "pui:col-start-2",
       )}
     >
       {chip}
@@ -53,14 +53,14 @@ export function ItemRow({
     "aria-describedby": details || undefined,
     className: cn(
       rich &&
-        "rounded-none py-3 pl-4 text-foreground focus:bg-selection-soft focus:text-foreground data-selected:bg-selection-soft data-highlighted:bg-selection-soft data-highlighted:text-foreground focus-visible:outline-2 focus-visible:outline-solid focus-visible:-outline-offset-2 focus-visible:outline-ring [&_[data-slot=item-row-leading]>svg]:size-6!",
+        "pui:rounded-none pui:py-3 pui:pl-4 pui:text-foreground pui:focus:bg-selection-soft pui:focus:text-foreground pui:data-selected:bg-selection-soft pui:data-highlighted:bg-selection-soft pui:data-highlighted:text-foreground pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:-outline-offset-2 pui:focus-visible:outline-ring pui:[&_[data-slot=item-row-leading]>svg]:size-6!",
     ),
     children: rich ? (
-      <span className="flex min-w-0 flex-1 items-center gap-2 whitespace-normal">
+      <span className="pui:flex pui:min-w-0 pui:flex-1 pui:items-center pui:gap-2 pui:whitespace-normal">
         <span
           className={cn(
-            "grid min-w-0 flex-1 gap-x-2 gap-y-1",
-            leading && "grid-cols-[auto_minmax(0,1fr)]",
+            "pui:grid pui:min-w-0 pui:flex-1 pui:gap-x-2 pui:gap-y-1",
+            leading && "pui:grid-cols-[auto_minmax(0,1fr)]",
           )}
         >
           {leading ? (
@@ -69,23 +69,26 @@ export function ItemRow({
               inert
               data-slot="item-row-leading"
               className={cn(
-                "pointer-events-none inline-flex shrink-0 items-center gap-2 self-center",
-                leadingAlignment === "label" && "h-lh self-start leading-[1.375]",
-                multiple && chip && leadingAlignment === "center" && "row-span-2",
+                "pui:pointer-events-none pui:inline-flex pui:shrink-0 pui:items-center pui:gap-2 pui:self-center",
+                leadingAlignment === "label" && "pui:h-lh pui:self-start pui:leading-[1.375]",
+                multiple && chip && leadingAlignment === "center" && "pui:row-span-2",
               )}
             >
               {leading}
             </span>
           ) : null}
-          <span className="flex min-w-0 flex-col gap-0.5">
-            <span data-slot="item-row-label" className="text-body-sb [overflow-wrap:anywhere]">
+          <span className="pui:flex pui:min-w-0 pui:flex-col pui:gap-0.5">
+            <span
+              data-slot="item-row-label"
+              className="pui:text-body-sb pui:[overflow-wrap:anywhere]"
+            >
               {label}
             </span>
             {description ? (
               <span
                 id={descriptionId}
                 data-slot="item-row-description"
-                className="text-label-mini text-muted-foreground [overflow-wrap:anywhere]"
+                className="pui:text-label-mini pui:text-muted-foreground pui:[overflow-wrap:anywhere]"
               >
                 {description}
               </span>

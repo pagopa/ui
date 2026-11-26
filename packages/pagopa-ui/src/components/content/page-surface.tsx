@@ -13,7 +13,10 @@ function PageSurface({ className, ...props }: PageSurfaceProps) {
   return (
     <section
       data-slot="white-template"
-      className={cn("min-h-(--pui-artboard-height) bg-background text-foreground", className)}
+      className={cn(
+        "pui:min-h-(--pui-artboard-height) pui:bg-background pui:text-foreground",
+        className,
+      )}
       {...props}
     />
   )

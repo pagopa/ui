@@ -46,14 +46,14 @@ function TooltipContent({
         alignOffset={alignOffset}
         side={side}
         sideOffset={sideOffset}
-        className="isolate z-50"
+        className="pui:isolate pui:z-50"
         data-slot="tooltip-positioner"
       >
         <TooltipPrimitive.Popup
           data-slot="tooltip-content"
           role="tooltip"
           className={cn(
-            "z-50 inline-flex w-fit max-w-78 origin-(--transform-origin) items-start gap-1 rounded-lg bg-tooltip p-4 text-label-mini text-inverse-foreground shadow-32 has-data-[slot=kbd]:pr-4 data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 **:data-[slot=kbd]:relative **:data-[slot=kbd]:isolate **:data-[slot=kbd]:z-50 **:data-[slot=kbd]:rounded-sm data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 motion-reduce:animate-none motion-reduce:transition-none forced-colors:border forced-colors:border-[CanvasText] forced-colors:bg-[Canvas] forced-colors:text-[CanvasText] forced-colors:shadow-none",
+            "pui:z-50 pui:inline-flex pui:w-fit pui:max-w-78 pui:origin-(--transform-origin) pui:items-start pui:gap-1 pui:rounded-lg pui:bg-tooltip pui:p-4 pui:text-label-mini pui:text-inverse-foreground pui:shadow-32 pui:has-data-[slot=kbd]:pr-4 pui:data-[side=bottom]:slide-in-from-top-2 pui:data-[side=inline-end]:slide-in-from-left-2 pui:data-[side=inline-start]:slide-in-from-right-2 pui:data-[side=left]:slide-in-from-right-2 pui:data-[side=right]:slide-in-from-left-2 pui:data-[side=top]:slide-in-from-bottom-2 pui:**:data-[slot=kbd]:relative pui:**:data-[slot=kbd]:isolate pui:**:data-[slot=kbd]:z-50 pui:**:data-[slot=kbd]:rounded-sm pui:data-[state=delayed-open]:animate-in pui:data-[state=delayed-open]:fade-in-0 pui:data-[state=delayed-open]:zoom-in-95 pui:data-open:animate-in pui:data-open:fade-in-0 pui:data-open:zoom-in-95 pui:data-closed:animate-out pui:data-closed:fade-out-0 pui:data-closed:zoom-out-95 pui:motion-reduce:animate-none pui:motion-reduce:transition-none pui:forced-colors:border pui:forced-colors:border-[CanvasText] pui:forced-colors:bg-[Canvas] pui:forced-colors:text-[CanvasText] pui:forced-colors:shadow-none",
             className,
           )}
           {...props}
@@ -62,20 +62,20 @@ function TooltipContent({
           <TooltipPrimitive.Arrow
             data-slot="tooltip-arrow"
             className={cn(
-              "z-50",
+              "pui:z-50",
               isVerticalSide
-                ? "h-4 w-6 data-[side=bottom]:bottom-full data-[side=top]:top-full"
-                : "size-2.5 translate-y-[calc(-50%-var(--pui-hairline))] rotate-45 rounded-2 bg-tooltip fill-tooltip data-[side=bottom]:top-1 data-[side=inline-end]:top-1/2! data-[side=inline-end]:-left-1 data-[side=inline-end]:-translate-y-1/2 data-[side=inline-start]:top-1/2! data-[side=inline-start]:-right-1 data-[side=inline-start]:-translate-y-1/2 data-[side=left]:top-1/2! data-[side=left]:-right-1 data-[side=left]:-translate-y-1/2 data-[side=right]:top-1/2! data-[side=right]:-left-1 data-[side=right]:-translate-y-1/2 data-[side=top]:-bottom-2.5 forced-colors:bg-[Canvas]",
+                ? "pui:h-4 pui:w-6 pui:data-[side=bottom]:bottom-full pui:data-[side=top]:top-full"
+                : "pui:size-2.5 pui:translate-y-[calc(-50%-var(--pui-hairline))] pui:rotate-45 pui:rounded-2 pui:bg-tooltip pui:fill-tooltip pui:data-[side=bottom]:top-1 pui:data-[side=inline-end]:top-1/2! pui:data-[side=inline-end]:-left-1 pui:data-[side=inline-end]:-translate-y-1/2 pui:data-[side=inline-start]:top-1/2! pui:data-[side=inline-start]:-right-1 pui:data-[side=inline-start]:-translate-y-1/2 pui:data-[side=left]:top-1/2! pui:data-[side=left]:-right-1 pui:data-[side=left]:-translate-y-1/2 pui:data-[side=right]:top-1/2! pui:data-[side=right]:-left-1 pui:data-[side=right]:-translate-y-1/2 pui:data-[side=top]:-bottom-2.5 pui:forced-colors:bg-[Canvas]",
             )}
           >
             {isVerticalSide ? (
               <svg
                 aria-hidden="true"
-                className="block size-full overflow-visible"
+                className="pui:block pui:size-full pui:overflow-visible"
                 viewBox="0 0 24 16"
               >
                 <path
-                  className="fill-tooltip forced-colors:forced-color-adjust-none forced-colors:fill-[Canvas]"
+                  className="pui:fill-tooltip pui:forced-colors:forced-color-adjust-none pui:forced-colors:fill-[Canvas]"
                   d={side === "top" ? arrowDirectionBottomPath : arrowDirectionTopPath}
                 />
               </svg>

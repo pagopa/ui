@@ -9,7 +9,7 @@ function Input({ className, type, ...props }: InputProps) {
       type={type}
       data-slot="input"
       className={cn(
-        "min-h-12 w-full min-w-0 rounded-lg border border-input bg-background px-3 py-3 text-label-sb text-foreground transition-[color,background-color,border-color] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-caption-sb file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-1 focus-visible:outline-ring disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground aria-invalid:border-destructive aria-invalid:outline-destructive",
+        "pui:min-h-12 pui:w-full pui:min-w-0 pui:rounded-lg pui:border pui:border-input pui:bg-background pui:px-3 pui:py-3 pui:text-label-sb pui:text-foreground pui:transition-[color,background-color,border-color] pui:outline-none pui:file:inline-flex pui:file:h-7 pui:file:border-0 pui:file:bg-transparent pui:file:text-caption-sb pui:file:text-foreground pui:placeholder:text-muted-foreground pui:focus-visible:border-ring pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-1 pui:focus-visible:outline-ring pui:disabled:pointer-events-none pui:disabled:cursor-not-allowed pui:disabled:bg-muted pui:disabled:text-muted-foreground pui:aria-invalid:border-destructive pui:aria-invalid:outline-destructive",
         className,
       )}
       {...props}

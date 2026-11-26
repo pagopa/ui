@@ -8,13 +8,13 @@ import { cn } from "@/lib/cn"
 type SpacerSize = 4 | 8 | 16 | 24 | 32 | 40 | 48
 
 const sizeClasses: Record<SpacerSize, string> = {
-  4: "h-1",
-  8: "h-2",
-  16: "h-4",
-  24: "h-6",
-  32: "h-8",
-  40: "h-10",
-  48: "h-12",
+  4: "pui:h-1",
+  8: "pui:h-2",
+  16: "pui:h-4",
+  24: "pui:h-6",
+  32: "pui:h-8",
+  40: "pui:h-10",
+  48: "pui:h-12",
 }
 
 /**

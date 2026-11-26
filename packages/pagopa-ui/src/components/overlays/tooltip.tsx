@@ -65,16 +65,16 @@ function Tooltip({
       <TooltipPrimitive open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
         {trigger ? <TooltipTrigger render={trigger} /> : null}
         <TooltipContent ref={ref} anchor={anchor} side={side} className={className} {...panelProps}>
-          <div data-slot="tooltip-description" className="min-w-0">
+          <div data-slot="tooltip-description" className="pui:min-w-0">
             {children}
           </div>
           {showClose ? (
             <span
               aria-hidden="true"
-              className="flex size-6 shrink-0 items-center justify-center"
+              className="pui:flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center"
               data-slot="tooltip-close-mark"
             >
-              <PagoPAIcon name="close" className="size-2.5" />
+              <PagoPAIcon name="close" className="pui:size-2.5" />
             </span>
           ) : null}
         </TooltipContent>

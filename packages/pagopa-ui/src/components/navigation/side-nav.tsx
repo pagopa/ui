@@ -55,31 +55,35 @@ function SideNav({
     <nav
       aria-label={title}
       data-condensed={condensed || undefined}
-      className={cn("w-full bg-background", condensed ? "tablet:w-18" : "tablet:w-75", className)}
+      className={cn(
+        "pui:w-full pui:bg-background",
+        condensed ? "pui:tablet:w-18" : "pui:tablet:w-75",
+        className,
+      )}
     >
       {/* Source `Condensed=True, Device=Mobile` (1519:2721): a 48px head with the
           menu icon, the section name and the bottom divider; the items below are
           full-bleed, as in the source's 320-wide panel. The condensed rail is a
           desktop composition: below `sm` the disclosure stays the same. */}
-      <details className="group tablet:hidden">
-        <summary className="flex min-h-12 cursor-pointer list-none items-center gap-2 border-b px-6 py-3 text-body-sb focus-visible:outline-2 focus-visible:outline-ring">
-          <PagoPAIcon name="menu" aria-hidden="true" className="shrink-0" />
-          <span className="min-w-0 flex-1 truncate">{title}</span>
+      <details className="group pui:tablet:hidden">
+        <summary className="pui:flex pui:min-h-12 pui:cursor-pointer pui:list-none pui:items-center pui:gap-2 pui:border-b pui:px-6 pui:py-3 pui:text-body-sb pui:focus-visible:outline-2 pui:focus-visible:outline-ring">
+          <PagoPAIcon name="menu" aria-hidden="true" className="pui:shrink-0" />
+          <span className="pui:min-w-0 pui:flex-1 pui:truncate">{title}</span>
           <PagoPAIcon
             name="chevron"
             variant="down"
-            className="shrink-0 transition-transform group-open:rotate-180 motion-reduce:transition-none"
+            className="pui:shrink-0 pui:transition-transform pui:group-open:rotate-180 pui:motion-reduce:transition-none"
           />
         </summary>
         <NavLinks items={items} profile={profile} />
       </details>
-      <div className="relative hidden tablet:block tablet:py-4">
+      <div className="pui:relative pui:hidden pui:tablet:block pui:tablet:py-4">
         <div
           className={cn(
-            "group/nav relative z-30 bg-background",
+            "group/nav pui:relative pui:z-30 pui:bg-background",
             condensed &&
-              "w-18 shadow-16 transition-[width] duration-150 focus-within:w-75 motion-reduce:transition-none",
-            condensed && expanded && "w-75",
+              "pui:w-18 pui:shadow-16 pui:transition-[width] pui:duration-150 pui:focus-within:w-75 pui:motion-reduce:transition-none",
+            condensed && expanded && "pui:w-75",
           )}
           data-slot="side-nav-panel"
           data-expanded={condensed && expanded ? "true" : undefined}
@@ -134,25 +138,27 @@ function NavLinks({
       {profile ? (
         <div
           className={cn(
-            "mt-6 grid gap-6 pb-2",
-            condensed && "group-data-[expanded=true]/nav:block",
+            "pui:mt-6 pui:grid pui:gap-6 pui:pb-2",
+            condensed && "pui:group-data-[expanded=true]/nav:block",
           )}
         >
-          <div className="flex items-center gap-3 px-6">
+          <div className="pui:flex pui:items-center pui:gap-3 pui:px-6">
             {profile.avatar}
             <div
               className={cn(
-                "flex min-w-0 flex-1 flex-col gap-0.5",
+                "pui:flex pui:min-w-0 pui:flex-1 pui:flex-col pui:gap-0.5",
                 condensed &&
-                  "sr-only group-data-[expanded=true]/nav:not-sr-only group-focus-within/nav:not-sr-only",
+                  "pui:sr-only pui:group-data-[expanded=true]/nav:not-sr-only pui:group-focus-within/nav:not-sr-only",
               )}
             >
-              <span className="text-label-mini text-muted-foreground">{profile.title}</span>
-              <span className="truncate text-body-big-sb text-foreground">{profile.name}</span>
+              <span className="pui:text-label-mini pui:text-muted-foreground">{profile.title}</span>
+              <span className="pui:truncate pui:text-body-big-sb pui:text-foreground">
+                {profile.name}
+              </span>
               {profile.action ? (
                 <Link
                   href={profile.action.href}
-                  className="w-fit text-label-mini text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                  className="pui:w-fit pui:text-label-mini pui:text-primary pui:underline-offset-4 pui:hover:underline pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
                 >
                   {profile.action.label}
                 </Link>
@@ -183,31 +189,34 @@ function NavRow({
   const hasChildren = Boolean(item.children?.length)
   const [open, setOpen] = React.useState(() => Boolean(item.children?.some(hasCurrentItem)))
   const labelsHidden = condensed
-    ? "sr-only group-data-[expanded=true]/nav:not-sr-only group-focus-within/nav:not-sr-only"
+    ? "pui:sr-only pui:group-data-[expanded=true]/nav:not-sr-only pui:group-focus-within/nav:not-sr-only"
     : undefined
 
   return (
     <li>
       <div
         className={cn(
-          "flex min-h-14 items-center border-r-4 border-transparent hover:bg-muted",
-          condensed && "justify-center",
-          item.current && "border-primary bg-selection-soft text-primary",
+          "pui:flex pui:min-h-14 pui:items-center pui:border-r-4 pui:border-transparent pui:hover:bg-muted",
+          condensed && "pui:justify-center",
+          item.current && "pui:border-primary pui:bg-selection-soft pui:text-primary",
         )}
       >
         <Link
           href={item.href}
           aria-current={item.current ? "page" : undefined}
           className={cn(
-            "flex min-h-14 min-w-0 flex-1 items-center gap-2 py-4 text-body-sb focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
-            nested ? "pr-6 pl-14" : "pr-5 pl-6",
-            "relative",
+            "pui:flex pui:min-h-14 pui:min-w-0 pui:flex-1 pui:items-center pui:gap-2 pui:py-4 pui:text-body-sb pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring",
+            nested ? "pui:pr-6 pui:pl-14" : "pui:pr-5 pui:pl-6",
+            "pui:relative",
             condensed &&
-              "justify-center px-0 group-data-[expanded=true]/nav:justify-start group-data-[expanded=true]/nav:pl-6 group-data-[expanded=true]/nav:pr-5 group-focus-within/nav:justify-start group-focus-within/nav:pl-6 group-focus-within/nav:pr-5",
+              "pui:justify-center pui:px-0 pui:group-data-[expanded=true]/nav:justify-start pui:group-data-[expanded=true]/nav:pl-6 pui:group-data-[expanded=true]/nav:pr-5 pui:group-focus-within/nav:justify-start pui:group-focus-within/nav:pl-6 pui:group-focus-within/nav:pr-5",
           )}
         >
           {item.icon ? (
-            <span aria-hidden="true" className="relative flex shrink-0 items-center [&>svg]:size-6">
+            <span
+              aria-hidden="true"
+              className="pui:relative pui:flex pui:shrink-0 pui:items-center pui:[&>svg]:size-6"
+            >
               {item.icon}
               {condensed && item.badgeCount != null ? (
                 // Source: the numeric badge becomes a compact dot on the
@@ -216,12 +225,14 @@ function NavRow({
                   display="sidenav-icon"
                   selected={item.current}
                   aria-hidden="true"
-                  className="absolute -top-1.5 -right-1.5 size-3"
+                  className="pui:absolute pui:-top-1.5 pui:-right-1.5 pui:size-3"
                 />
               ) : null}
             </span>
           ) : null}
-          <span className={cn("min-w-0 flex-1 break-words", labelsHidden)}>{item.label}</span>
+          <span className={cn("pui:min-w-0 pui:flex-1 pui:break-words", labelsHidden)}>
+            {item.label}
+          </span>
           {item.badgeCount != null ? (
             condensed ? (
               <>
@@ -230,25 +241,25 @@ function NavRow({
                     display="sidenav-icon"
                     selected={item.current}
                     aria-hidden="true"
-                    className="absolute top-2 right-3 size-3"
+                    className="pui:absolute pui:top-2 pui:right-3 pui:size-3"
                   />
                 )}
-                <span className="sr-only">{item.badgeLabel ?? String(item.badgeCount)}</span>
+                <span className="pui:sr-only">{item.badgeLabel ?? String(item.badgeCount)}</span>
               </>
             ) : (
-              <span className="shrink-0">
+              <span className="pui:shrink-0">
                 <Badge display="numbered">{item.badgeCount}</Badge>
               </span>
             )
           ) : item.badge ? (
-            <span className={cn("shrink-0", condensed && labelsHidden)}>{item.badge}</span>
+            <span className={cn("pui:shrink-0", condensed && labelsHidden)}>{item.badge}</span>
           ) : null}
           {item.chip ? (
             <span
               className={cn(
-                "shrink-0",
+                "pui:shrink-0",
                 condensed &&
-                  "hidden group-data-[expanded=true]/nav:block group-focus-within/nav:block",
+                  "pui:hidden pui:group-data-[expanded=true]/nav:block pui:group-focus-within/nav:block",
               )}
             >
               {item.chip}
@@ -265,7 +276,7 @@ function NavRow({
               // `not-sr-only` resets width and height to auto, which would shrink
               // the toggle to its 20px icon and break the 24px target minimum: the
               // minimums keep the 44px box in both rail states.
-              "mr-1 grid min-h-11 min-w-11 shrink-0 place-items-center rounded-sm outline-none hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring",
+              "pui:mr-1 pui:grid pui:min-h-11 pui:min-w-11 pui:shrink-0 pui:place-items-center pui:rounded-sm pui:outline-none pui:hover:bg-foreground/5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring",
               condensed && labelsHidden,
             )}
           >
@@ -273,8 +284,8 @@ function NavRow({
               name="chevron"
               variant="down"
               className={cn(
-                "size-5 transition-transform motion-reduce:transition-none",
-                open && "rotate-180",
+                "pui:size-5 pui:transition-transform pui:motion-reduce:transition-none",
+                open && "pui:rotate-180",
               )}
             />
           </button>
@@ -283,7 +294,8 @@ function NavRow({
       {hasChildren && open ? (
         <div
           className={cn(
-            condensed && "hidden group-data-[expanded=true]/nav:block group-focus-within/nav:block",
+            condensed &&
+              "pui:hidden pui:group-data-[expanded=true]/nav:block pui:group-focus-within/nav:block",
           )}
         >
           <NavLinks

@@ -148,19 +148,19 @@ function Table<Row extends { id: React.Key }>({
     <section
       data-slot="table-composite"
       aria-label={caption}
-      className="@container/table flex min-w-0 flex-col gap-2 rounded-lg bg-secondary p-2"
+      className="pui:@container/table pui:flex pui:min-w-0 pui:flex-col pui:gap-2 pui:rounded-lg pui:bg-secondary pui:p-2"
     >
       {title || description || actions ? (
-        <header className="flex flex-wrap items-start justify-between gap-4">
+        <header className="pui:flex pui:flex-wrap pui:items-start pui:justify-between pui:gap-4">
           {title || description ? (
-            <div className="min-w-0">
+            <div className="pui:min-w-0">
               {title ? (
-                <Heading as={titleAs} className="text-h4">
+                <Heading as={titleAs} className="pui:text-h4">
                   {title}
                 </Heading>
               ) : null}
               {description ? (
-                <p id={descriptionId} className="text-caption text-muted-foreground">
+                <p id={descriptionId} className="pui:text-caption pui:text-muted-foreground">
                   {description}
                 </p>
               ) : null}
@@ -176,16 +176,16 @@ function Table<Row extends { id: React.Key }>({
               <PagoPAPictogram name="Message" size={56} />
             </EmptyMedia>
             {emptyState.title || emptyState.description ? (
-              <div className="flex w-full flex-col gap-0.5">
+              <div className="pui:flex pui:w-full pui:flex-col pui:gap-0.5">
                 {emptyState.title ? (
-                  <EmptyTitle className="text-muted-soft">{emptyState.title}</EmptyTitle>
+                  <EmptyTitle className="pui:text-muted-soft">{emptyState.title}</EmptyTitle>
                 ) : null}
                 {emptyState.description ? (
                   <EmptyDescription>{emptyState.description}</EmptyDescription>
                 ) : null}
               </div>
             ) : (
-              <span className="sr-only">{emptyLabel}</span>
+              <span className="pui:sr-only">{emptyLabel}</span>
             )}
           </EmptyHeader>
           {emptyState.actions ? <EmptyContent>{emptyState.actions}</EmptyContent> : null}
@@ -197,19 +197,19 @@ function Table<Row extends { id: React.Key }>({
           variant="data"
           aria-label={caption}
           aria-describedby={description ? descriptionId : undefined}
-          className="@max-narrow/table:block"
+          className="pui:@max-narrow/table:block"
         >
-          <TableCaption className={cn(captionHidden && "sr-only")}>{caption}</TableCaption>
+          <TableCaption className={cn(captionHidden && "pui:sr-only")}>{caption}</TableCaption>
           <TableHeader
             role="rowgroup"
             className={cn(
-              showHeaderOnMobile ? "@max-narrow/table:block" : "@max-narrow/table:sr-only",
+              showHeaderOnMobile ? "pui:@max-narrow/table:block" : "pui:@max-narrow/table:sr-only",
             )}
           >
             <TableRow
               role="row"
               className={cn(
-                showHeaderOnMobile && "@max-narrow/table:flex @max-narrow/table:flex-wrap",
+                showHeaderOnMobile && "pui:@max-narrow/table:flex pui:@max-narrow/table:flex-wrap",
               )}
             >
               {selectable ? (
@@ -217,7 +217,7 @@ function Table<Row extends { id: React.Key }>({
                   id={`${tableId}-selection`}
                   role="columnheader"
                   scope="col"
-                  className="pr-0"
+                  className="pui:pr-0"
                 >
                   <Checkbox
                     checked={allSelected}
@@ -238,7 +238,7 @@ function Table<Row extends { id: React.Key }>({
                   aria-label={column.label}
                   sort={column.sort}
                   className={cn(
-                    !column.sort && (hasSorting || selectable) && "@max-narrow/table:sr-only",
+                    !column.sort && (hasSorting || selectable) && "pui:@max-narrow/table:sr-only",
                   )}
                 >
                   {column.label}
@@ -249,14 +249,14 @@ function Table<Row extends { id: React.Key }>({
                   id={`${tableId}-actions`}
                   role="columnheader"
                   scope="col"
-                  className="@max-narrow/table:sr-only"
+                  className="pui:@max-narrow/table:sr-only"
                 >
-                  <span className="sr-only">{actionsLabel}</span>
+                  <span className="pui:sr-only">{actionsLabel}</span>
                 </TableHeaderField>
               ) : null}
             </TableRow>
           </TableHeader>
-          <TableBody role="rowgroup" className="@max-narrow/table:block">
+          <TableBody role="rowgroup" className="pui:@max-narrow/table:block">
             {rows.map((row) => {
               const isSelected = selectedSet.has(row.id)
               return (
@@ -265,15 +265,15 @@ function Table<Row extends { id: React.Key }>({
                   role="row"
                   aria-selected={selectable ? isSelected : undefined}
                   data-state={isSelected ? "selected" : undefined}
-                  className="@max-narrow/table:flex @max-narrow/table:flex-col @max-narrow/table:gap-0 @max-narrow/table:py-2"
+                  className="pui:@max-narrow/table:flex pui:@max-narrow/table:flex-col pui:@max-narrow/table:gap-0 pui:@max-narrow/table:py-2"
                 >
                   {selectable ? (
                     <TableCell
                       role="cell"
-                      className="@max-narrow/table:block @max-narrow/table:pb-2"
+                      className="pui:@max-narrow/table:block pui:@max-narrow/table:pb-2"
                       headers={`${tableId}-selection`}
                     >
-                      <div className="flex items-center gap-2">
+                      <div className="pui:flex pui:items-center pui:gap-2">
                         <Checkbox
                           checked={isSelected}
                           onCheckedChange={(checked) =>
@@ -289,7 +289,7 @@ function Table<Row extends { id: React.Key }>({
                           <span
                             role="img"
                             aria-label={notificationLabel}
-                            className="size-2 shrink-0 rounded-full bg-primary"
+                            className="pui:size-2 pui:shrink-0 pui:rounded-full pui:bg-primary"
                           />
                         ) : null}
                       </div>
@@ -306,8 +306,8 @@ function Table<Row extends { id: React.Key }>({
                         role="cell"
                         label={column.label}
                         className={cn(
-                          "@max-narrow/table:block",
-                          column.mono && "font-mono text-mono",
+                          "pui:@max-narrow/table:block",
+                          column.mono && "pui:font-mono pui:text-mono",
                         )}
                       >
                         {column.truncate ? (
@@ -320,7 +320,7 @@ function Table<Row extends { id: React.Key }>({
                               // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- focus reveals the full value
                               <span
                                 tabIndex={0}
-                                className="block truncate outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                                className="pui:block pui:truncate pui:outline-none pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
                                 style={{ maxWidth: column.maxWidth ?? defaultTruncatedWidth }}
                               >
                                 {value}
@@ -340,9 +340,11 @@ function Table<Row extends { id: React.Key }>({
                       role="cell"
                       data-actions
                       headers={`${tableId}-actions`}
-                      className="@max-narrow/table:mt-2 @max-narrow/table:block"
+                      className="pui:@max-narrow/table:mt-2 pui:@max-narrow/table:block"
                     >
-                      <div className="flex items-center justify-end gap-2">{rowActions(row)}</div>
+                      <div className="pui:flex pui:items-center pui:justify-end pui:gap-2">
+                        {rowActions(row)}
+                      </div>
                     </TableCell>
                   ) : null}
                 </TableRow>

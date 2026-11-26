@@ -11,11 +11,11 @@ function TableListField({ children, label, ...props }: TableListFieldProps) {
         <>
           <span
             aria-hidden="true"
-            className="hidden text-label-mini text-muted-foreground @max-narrow/table:mb-1 @max-narrow/table:block"
+            className="pui:hidden pui:text-label-mini pui:text-muted-foreground pui:@max-narrow/table:mb-1 pui:@max-narrow/table:block"
           >
             {label}
           </span>
-          <div className="min-w-0 wrap-anywhere whitespace-normal">{children}</div>
+          <div className="pui:min-w-0 pui:wrap-anywhere pui:whitespace-normal">{children}</div>
         </>
       ) : (
         children

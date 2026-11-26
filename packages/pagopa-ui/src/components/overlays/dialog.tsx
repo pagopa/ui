@@ -69,21 +69,21 @@ function Dialog({
     <DialogPrimitive.Root open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
       {trigger ? <DialogPrimitive.Trigger render={trigger} /> : null}
       <DialogPrimitive.Portal container={portalHost}>
-        <DialogPrimitive.Backdrop className="fixed inset-0 z-50 bg-overlay transition-opacity data-starting-style:opacity-0 data-ending-style:opacity-0" />
+        <DialogPrimitive.Backdrop className="pui:fixed pui:inset-0 pui:z-50 pui:bg-overlay pui:transition-opacity pui:data-starting-style:opacity-0 pui:data-ending-style:opacity-0" />
         <DialogPrimitive.Popup
           ref={ref}
           className={cn(
-            "fixed top-1/2 left-1/2 z-50 flex max-h-[85vh] w-(--pui-dialog-width) max-w-[calc(100vw-var(--pui-page-gutter-lg))] -translate-x-1/2 -translate-y-1/2 flex-col gap-6 overflow-auto rounded-xl bg-background p-6 shadow-32 outline-none transition-opacity data-starting-style:opacity-0 data-ending-style:opacity-0",
+            "pui:fixed pui:top-1/2 pui:left-1/2 pui:z-50 pui:flex pui:max-h-[85vh] pui:w-(--pui-dialog-width) pui:max-w-[calc(100vw-var(--pui-page-gutter-lg))] pui:-translate-x-1/2 pui:-translate-y-1/2 pui:flex-col pui:gap-6 pui:overflow-auto pui:rounded-xl pui:bg-background pui:p-6 pui:shadow-32 pui:outline-none pui:transition-opacity pui:data-starting-style:opacity-0 pui:data-ending-style:opacity-0",
             className,
           )}
           {...panelProps}
         >
-          <div className="flex flex-col gap-2">
-            <DialogPrimitive.Title className="pr-10 text-title-xs-mobile tablet-md:text-title-xs">
+          <div className="pui:flex pui:flex-col pui:gap-2">
+            <DialogPrimitive.Title className="pui:pr-10 pui:text-title-xs-mobile pui:tablet-md:text-title-xs">
               {title}
             </DialogPrimitive.Title>
             {description ? (
-              <DialogPrimitive.Description className="text-body text-muted-foreground">
+              <DialogPrimitive.Description className="pui:text-body pui:text-muted-foreground">
                 {description}
               </DialogPrimitive.Description>
             ) : null}
@@ -92,7 +92,7 @@ function Dialog({
           {footer ? (
             <div
               data-slot="dialog-footer"
-              className="flex flex-col-reverse gap-4 [&>*]:w-full tablet:flex-row tablet:flex-wrap tablet:justify-end tablet:[&>*]:w-auto"
+              className="pui:flex pui:flex-col-reverse pui:gap-4 pui:[&>*]:w-full pui:tablet:flex-row pui:tablet:flex-wrap pui:tablet:justify-end pui:tablet:[&>*]:w-auto"
             >
               {footer}
             </div>
@@ -103,7 +103,7 @@ function Dialog({
                 aria-label={closeLabel}
                 variant="ghost"
                 size="icon"
-                className="absolute top-3.5 right-3.5"
+                className="pui:absolute pui:top-3.5 pui:right-3.5"
               />
             }
           >

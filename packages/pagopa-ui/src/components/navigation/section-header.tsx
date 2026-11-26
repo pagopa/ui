@@ -6,9 +6,9 @@ import type { HeadingTag } from "@/components/primitives/heading"
 const levelStyles = {
   // The source L1 style is Titillio-Bold (cssWeight 700): the type-scale token
   // carries that weight, an explicit `font-semibold` is the wrong face.
-  1: "text-title-xs-mobile tablet-md:text-title-xs",
-  2: "text-body-sb",
-  3: "text-label-mini-sb leading-[1.2] uppercase text-muted-foreground",
+  1: "pui:text-title-xs-mobile pui:tablet-md:text-title-xs",
+  2: "pui:text-body-sb",
+  3: "pui:text-label-mini-sb pui:leading-[1.2] pui:uppercase pui:text-muted-foreground",
 } as const
 
 export interface SectionHeaderProps {
@@ -38,25 +38,32 @@ function SectionHeader({
   return (
     <div
       data-slot="section-header"
-      className={cn("flex min-w-0 items-center justify-between gap-4", className)}
+      className={cn(
+        "pui:flex pui:min-w-0 pui:items-center pui:justify-between pui:gap-4",
+        className,
+      )}
     >
-      <div className="flex min-w-0 flex-1 items-start gap-2 tablet:items-center">
+      <div className="pui:flex pui:min-w-0 pui:flex-1 pui:items-start pui:gap-2 pui:tablet:items-center">
         {icon ? (
           <span
             aria-hidden="true"
-            className="flex shrink-0 items-center text-choice-icon [&>svg]:size-6"
+            className="pui:flex pui:shrink-0 pui:items-center pui:text-choice-icon pui:[&>svg]:size-6"
           >
             {icon}
           </span>
         ) : null}
         {/* The source groups the title with the chip: one row on desktop,
             stacked under the title on the narrow grid, FILL grow=1 in both. */}
-        <div className="flex min-w-0 flex-1 flex-col items-start gap-1 tablet:flex-row tablet:items-center tablet:gap-2.5">
-          <Title className={cn("min-w-0", levelStyles[level])}>{title}</Title>
-          {status ? <span className="shrink-0">{status}</span> : null}
+        <div className="pui:flex pui:min-w-0 pui:flex-1 pui:flex-col pui:items-start pui:gap-1 pui:tablet:flex-row pui:tablet:items-center pui:tablet:gap-2.5">
+          <Title className={cn("pui:min-w-0", levelStyles[level])}>{title}</Title>
+          {status ? <span className="pui:shrink-0">{status}</span> : null}
         </div>
       </div>
-      {actions ? <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div> : null}
+      {actions ? (
+        <div className="pui:flex pui:shrink-0 pui:flex-wrap pui:items-center pui:gap-2">
+          {actions}
+        </div>
+      ) : null}
     </div>
   )
 }

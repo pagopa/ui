@@ -90,7 +90,7 @@ function Switch({
         if (!details.isCanceled && checked === undefined) setUncontrolledChecked(next)
       }}
       className={cn(
-        "peer group/switch relative isolate inline-flex h-11 shrink-0 items-center justify-center rounded-full outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring aria-invalid:focus-visible:outline-destructive data-[size=default]:w-14 data-[size=sm]:w-11 data-disabled:cursor-not-allowed",
+        "peer group/switch pui:relative pui:isolate pui:inline-flex pui:h-11 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-full pui:outline-none pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring pui:aria-invalid:focus-visible:outline-destructive pui:data-[size=default]:w-14 pui:data-[size=sm]:w-11 pui:data-disabled:cursor-not-allowed",
         className,
       )}
       {...props}
@@ -101,26 +101,26 @@ function Switch({
         <span
           data-slot="switch-track"
           aria-hidden="true"
-          className="pointer-events-none rounded-full bg-switch-unchecked transition-colors group-data-[size=default]/switch:h-6 group-data-[size=default]/switch:w-10 group-data-[size=default]/switch:p-0.5 group-data-[size=sm]/switch:h-3.5 group-data-[size=sm]/switch:w-6 group-data-[size=sm]/switch:p-px group-data-checked/switch:bg-primary group-data-disabled/switch:opacity-50 forced-colors:forced-color-adjust-none forced-colors:bg-[CanvasText] forced-colors:group-data-checked/switch:bg-[Highlight]"
+          className="pui:pointer-events-none pui:rounded-full pui:bg-switch-unchecked pui:transition-colors pui:group-data-[size=default]/switch:h-6 pui:group-data-[size=default]/switch:w-10 pui:group-data-[size=default]/switch:p-0.5 pui:group-data-[size=sm]/switch:h-3.5 pui:group-data-[size=sm]/switch:w-6 pui:group-data-[size=sm]/switch:p-px pui:group-data-checked/switch:bg-primary pui:group-data-disabled/switch:opacity-50 pui:forced-colors:forced-color-adjust-none pui:forced-colors:bg-[CanvasText] pui:forced-colors:group-data-checked/switch:bg-[Highlight]"
         >
           <SwitchPrimitive.Thumb
             data-slot="switch-thumb"
-            className="relative isolate block bg-transparent transition-transform group-data-[size=default]/switch:size-5 group-data-[size=sm]/switch:size-3 group-data-[size=default]/switch:data-checked:translate-x-4 group-data-[size=sm]/switch:data-checked:translate-x-2.5 data-unchecked:translate-x-0"
+            className="pui:relative pui:isolate pui:block pui:bg-transparent pui:transition-transform pui:group-data-[size=default]/switch:size-5 pui:group-data-[size=sm]/switch:size-3 pui:group-data-[size=default]/switch:data-checked:translate-x-4 pui:group-data-[size=sm]/switch:data-checked:translate-x-2.5 pui:data-unchecked:translate-x-0"
           >
             <span
               aria-hidden="true"
               data-slot="switch-hover-halo"
-              className="pointer-events-none absolute top-1/2 left-1/2 z-0 size-8 -translate-1/2 rounded-full bg-foreground/8 opacity-0 group-data-[size=default]/switch:size-10 group-hover/switch:opacity-100 group-data-disabled/switch:hidden group-data-checked/switch:bg-primary/8 forced-colors:hidden"
+              className="pui:pointer-events-none pui:absolute pui:top-1/2 pui:left-1/2 pui:z-0 pui:size-8 pui:-translate-1/2 pui:rounded-full pui:bg-foreground/8 pui:opacity-0 pui:group-data-[size=default]/switch:size-10 pui:group-hover/switch:opacity-100 pui:group-data-disabled/switch:hidden pui:group-data-checked/switch:bg-primary/8 pui:forced-colors:hidden"
             />
             <span
               aria-hidden="true"
               data-slot="switch-thumb-surface"
-              className="absolute inset-0 z-10 rounded-full bg-switch-knob shadow-switch-knob forced-colors:bg-[Canvas] forced-colors:shadow-none forced-colors:group-data-checked/switch:bg-[HighlightText]"
+              className="pui:absolute pui:inset-0 pui:z-10 pui:rounded-full pui:bg-switch-knob pui:shadow-switch-knob pui:forced-colors:bg-[Canvas] pui:forced-colors:shadow-none pui:forced-colors:group-data-checked/switch:bg-[HighlightText]"
             />
             <span
               aria-hidden="true"
               data-slot="switch-focus-dot"
-              className="pointer-events-none absolute top-1/2 left-1/2 z-20 size-1.5 -translate-1/2 rounded-full bg-switch-unchecked opacity-0 group-data-[size=default]/switch:size-2.5 group-focus-visible/switch:opacity-100 group-data-checked/switch:bg-primary forced-colors:bg-[CanvasText] forced-colors:group-data-checked/switch:bg-[Highlight]"
+              className="pui:pointer-events-none pui:absolute pui:top-1/2 pui:left-1/2 pui:z-20 pui:size-1.5 pui:-translate-1/2 pui:rounded-full pui:bg-switch-unchecked pui:opacity-0 pui:group-data-[size=default]/switch:size-2.5 pui:group-focus-visible/switch:opacity-100 pui:group-data-checked/switch:bg-primary pui:forced-colors:bg-[CanvasText] pui:forced-colors:group-data-checked/switch:bg-[Highlight]"
             />
           </SwitchPrimitive.Thumb>
         </span>

@@ -101,7 +101,7 @@ function ProductModule({
   const visibleChips =
     chips ??
     (statusText ? (
-      <Chip size="compact" variant="default" appearance="solid" className="shrink-0">
+      <Chip size="compact" variant="default" appearance="solid" className="pui:shrink-0">
         <span data-slot="product-module-status-label">{statusText}</span>
       </Chip>
     ) : null)
@@ -113,31 +113,35 @@ function ProductModule({
   const content = (
     <div
       data-slot="product-module-content"
-      className="flex w-full min-w-0 flex-1 items-center gap-3"
+      className="pui:flex pui:w-full pui:min-w-0 pui:flex-1 pui:items-center pui:gap-3"
     >
       {visibleAvatar ? (
         <span
           data-slot="product-module-avatar"
           aria-hidden={legacy || undefined}
-          className="inline-flex shrink-0"
+          className="pui:inline-flex pui:shrink-0"
         >
           {visibleAvatar}
         </span>
       ) : null}
       <div
         data-slot="product-module-copy"
-        className="grid min-w-0 flex-1 gap-1 @min-compact/product-module:gap-0.5"
+        className="pui:grid pui:min-w-0 pui:flex-1 pui:gap-1 pui:@min-compact/product-module:gap-0.5"
       >
-        <div className="flex flex-col items-start gap-1 @min-compact/product-module:flex-row @min-compact/product-module:items-center @min-compact/product-module:gap-2">
+        <div className="pui:flex pui:flex-col pui:items-start pui:gap-1 pui:@min-compact/product-module:flex-row pui:@min-compact/product-module:items-center pui:@min-compact/product-module:gap-2">
           <span
             id={titleId}
             data-slot="product-module-title"
-            className="min-w-0 break-words text-body-sb text-foreground"
+            className="pui:min-w-0 pui:break-words pui:text-body-sb pui:text-foreground"
           >
             {title ?? name}
           </span>
           {visibleChips ? (
-            <span id={statusId} data-slot="product-module-status" className="inline-flex shrink-0">
+            <span
+              id={statusId}
+              data-slot="product-module-status"
+              className="pui:inline-flex pui:shrink-0"
+            >
               {visibleChips}
             </span>
           ) : null}
@@ -146,7 +150,7 @@ function ProductModule({
           <p
             id={descriptionId}
             data-slot="product-module-description"
-            className="min-w-0 break-words text-label-mini text-muted-foreground"
+            className="pui:min-w-0 pui:break-words pui:text-label-mini pui:text-muted-foreground"
           >
             {description}
           </p>
@@ -157,12 +161,12 @@ function ProductModule({
 
   if (variant !== "radio") {
     return (
-      <div className="@container/product-module w-full min-w-0">
+      <div className="pui:@container/product-module pui:w-full pui:min-w-0">
         <div
           data-slot="product-module"
           data-variant={variant}
           className={cn(
-            "flex w-full min-w-0 flex-col items-start gap-4 rounded-lg border border-border bg-card p-4 @min-compact/product-module:flex-row @min-compact/product-module:items-center",
+            "pui:flex pui:w-full pui:min-w-0 pui:flex-col pui:items-start pui:gap-4 pui:rounded-lg pui:border pui:border-border pui:bg-card pui:p-4 pui:@min-compact/product-module:flex-row pui:@min-compact/product-module:items-center",
             className,
           )}
           {...props}
@@ -177,13 +181,13 @@ function ProductModule({
               onClick={legacy ? onOpen : action?.onClick}
               // Source action is a 24px hug: the visible box stays 24px and the
               // >=44px pointer target comes from the invisible ::after expansion.
-              className="relative min-h-0 gap-2 px-0 after:absolute after:inset-x-0 after:-inset-y-2.5"
+              className="pui:relative pui:min-h-0 pui:gap-2 pui:px-0 pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-2.5"
             >
               <span data-product-module-action-label>{legacy ? actionLabel : action?.label}</span>
               <span
                 data-product-module-action-icon
                 aria-hidden={legacy || undefined}
-                className="inline-flex size-6 shrink-0 items-center justify-center"
+                className="pui:inline-flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center"
               >
                 {actionIcon ?? <PagoPAIcon name="cached" size={24} />}
               </span>
@@ -199,8 +203,8 @@ function ProductModule({
       data-slot="product-module"
       data-variant="radio"
       className={cn(
-        "flex w-full min-w-0 items-center gap-4 rounded-lg border border-border bg-card p-4",
-        disabled ? "cursor-not-allowed" : "cursor-pointer",
+        "pui:flex pui:w-full pui:min-w-0 pui:items-center pui:gap-4 pui:rounded-lg pui:border pui:border-border pui:bg-card pui:p-4",
+        disabled ? "pui:cursor-not-allowed" : "pui:cursor-pointer",
         className,
       )}
     >
@@ -223,7 +227,7 @@ function ProductModule({
         onValueChange={() => onSelect(true)}
         name={selectName}
         disabled={disabled}
-        className="@container/product-module w-full min-w-0"
+        className="pui:@container/product-module pui:w-full pui:min-w-0"
         {...props}
       >
         {row}
@@ -232,7 +236,7 @@ function ProductModule({
   }
 
   return (
-    <div className="@container/product-module w-full min-w-0" {...props}>
+    <div className="pui:@container/product-module pui:w-full pui:min-w-0" {...props}>
       {row}
     </div>
   )

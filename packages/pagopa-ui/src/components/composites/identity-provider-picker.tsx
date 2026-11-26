@@ -48,7 +48,7 @@ function IdentityProviderPickerRow({
     <Link
       data-slot="identity-provider-picker"
       className={cn(
-        "flex min-h-15 w-full items-center justify-between gap-3 rounded-lg bg-background p-4 text-left text-muted-foreground ring-1 ring-inset ring-border outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring forced-colors:ring-0 forced-colors:outline-1 forced-colors:outline-solid forced-colors:outline-[CanvasText]",
+        "pui:flex pui:min-h-15 pui:w-full pui:items-center pui:justify-between pui:gap-3 pui:rounded-lg pui:bg-background pui:p-4 pui:text-left pui:text-muted-foreground pui:ring-1 pui:ring-inset pui:ring-border pui:outline-none pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring pui:forced-colors:ring-0 pui:forced-colors:outline-1 pui:forced-colors:outline-solid pui:forced-colors:outline-[CanvasText]",
         className,
       )}
       data-id-module-provider={id}
@@ -58,14 +58,14 @@ function IdentityProviderPickerRow({
       target={target}
     >
       <span
-        className="min-w-0 text-caption-sb leading-4 text-muted-foreground"
+        className="pui:min-w-0 pui:text-caption-sb pui:leading-4 pui:text-muted-foreground"
         data-id-module-provider-label="true"
       >
         {label}
       </span>
       <span
         aria-hidden="true"
-        className="flex h-7 w-29 shrink-0 items-center justify-center"
+        className="pui:flex pui:h-7 pui:w-29 pui:shrink-0 pui:items-center pui:justify-center"
         data-id-module-provider-logo="true"
       >
         {logo}
@@ -91,7 +91,7 @@ function IdentityProviderPickerView({
       // The source draws the module 410 wide from the tablet device step up
       // (731:20387); below 600 it takes the available width.
       className={cn(
-        "w-full max-w-full bg-background text-foreground tablet:w-(--pui-id-module-width)",
+        "pui:w-full pui:max-w-full pui:bg-background pui:text-foreground pui:tablet:w-(--pui-id-module-width)",
         className,
       )}
       data-id-module="true"
@@ -99,16 +99,16 @@ function IdentityProviderPickerView({
     >
       <header
         className={cn(
-          "flex items-center gap-6 px-6",
-          device === "desktop" ? "min-h-20 py-4" : "min-h-19 py-4",
+          "pui:flex pui:items-center pui:gap-6 pui:px-6",
+          device === "desktop" ? "pui:min-h-20 pui:py-4" : "pui:min-h-19 pui:py-4",
         )}
         data-id-module-header="true"
       >
         <Heading
           as={titleAs}
           className={cn(
-            "min-w-0 flex-1",
-            device === "desktop" ? "text-title-xs" : "text-title-xs-mobile",
+            "pui:min-w-0 pui:flex-1",
+            device === "desktop" ? "pui:text-title-xs" : "pui:text-title-xs-mobile",
           )}
           data-id-module-title="true"
           id={titleId}
@@ -117,7 +117,7 @@ function IdentityProviderPickerView({
         </Heading>
         <Button
           aria-label={closeLabel}
-          className="shrink-0 justify-end text-foreground hover:bg-transparent hover:text-foreground"
+          className="pui:shrink-0 pui:justify-end pui:text-foreground pui:hover:bg-transparent pui:hover:text-foreground"
           data-id-module-close="true"
           onClick={onClose}
           size="icon"
@@ -128,11 +128,11 @@ function IdentityProviderPickerView({
         </Button>
       </header>
       <ul
-        className="m-0 flex w-full list-none flex-col gap-2 px-6 pb-6"
+        className="pui:m-0 pui:flex pui:w-full pui:list-none pui:flex-col pui:gap-2 pui:px-6 pui:pb-6"
         data-id-module-providers="true"
       >
         {providers.map((provider) => (
-          <li className="min-w-0" key={provider.id}>
+          <li className="pui:min-w-0" key={provider.id}>
             <IdentityProviderPickerRow {...provider} />
           </li>
         ))}

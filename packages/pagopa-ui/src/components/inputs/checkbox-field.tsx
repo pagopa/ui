@@ -39,12 +39,16 @@ function CheckboxField({
   return (
     <div
       data-slot="checkbox-field"
-      className={cn("grid py-4", indicatorPlacement === "end" ? "gap-1" : "gap-0.5", className)}
+      className={cn(
+        "pui:grid pui:py-4",
+        indicatorPlacement === "end" ? "pui:gap-1" : "pui:gap-0.5",
+        className,
+      )}
     >
       <label
         className={cn(
-          "flex min-h-6 cursor-pointer items-start gap-2",
-          disabled && "cursor-not-allowed",
+          "pui:flex pui:min-h-6 pui:cursor-pointer pui:items-start pui:gap-2",
+          disabled && "pui:cursor-not-allowed",
         )}
       >
         <Checkbox
@@ -55,16 +59,19 @@ function CheckboxField({
           defaultChecked={defaultChecked}
           aria-invalid={Boolean(error) || undefined}
           aria-describedby={describedBy(ids, state, ariaDescribedBy)}
-          className={cn(indicatorPlacement === "end" && "order-last")}
+          className={cn(indicatorPlacement === "end" && "pui:order-last")}
           {...props}
         />
-        <span data-fidelity-part="copy" className="flex min-h-6 min-w-0 flex-1 items-start gap-2">
+        <span
+          data-fidelity-part="copy"
+          className="pui:flex pui:min-h-6 pui:min-w-0 pui:flex-1 pui:items-start pui:gap-2"
+        >
           {leadingIcon ? (
             <span
               aria-hidden="true"
               className={cn(
-                "flex size-6 shrink-0 items-center justify-center text-choice-icon [&>svg]:size-6",
-                disabled && "opacity-50",
+                "pui:flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center pui:text-choice-icon pui:[&>svg]:size-6",
+                disabled && "pui:opacity-50",
               )}
             >
               {leadingIcon}
@@ -72,22 +79,27 @@ function CheckboxField({
           ) : null}
           <span
             data-fidelity-part="label"
-            className={cn("pt-0.5 text-label-sb", disabled && "text-muted-foreground")}
+            className={cn("pui:pt-0.5 pui:text-label-sb", disabled && "pui:text-muted-foreground")}
           >
             {label}
             {required ? (
               <>
-                <span aria-hidden="true" className="ml-0.5 text-destructive">
+                <span aria-hidden="true" className="pui:ml-0.5 pui:text-destructive">
                   *
                 </span>
-                <span className="sr-only"> (obbligatorio)</span>
+                <span className="pui:sr-only"> (obbligatorio)</span>
               </>
             ) : null}
           </span>
         </span>
       </label>
       {hasMessages ? (
-        <div className={cn("flex flex-col gap-1", indicatorPlacement === "end" ? "" : "pl-8")}>
+        <div
+          className={cn(
+            "pui:flex pui:flex-col pui:gap-1",
+            indicatorPlacement === "end" ? "" : "pui:pl-8",
+          )}
+        >
           <FieldMessages ids={ids} {...state} />
         </div>
       ) : null}

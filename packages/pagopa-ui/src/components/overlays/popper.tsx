@@ -28,10 +28,10 @@ interface PopperProps {
 }
 
 const pointerColors: Record<Tone, string> = {
-  info: "fill-info-soft stroke-info-border",
-  success: "fill-success-soft stroke-success-border",
-  warning: "fill-warning-soft stroke-warning-border",
-  error: "fill-error-soft stroke-error-border",
+  info: "pui:fill-info-soft pui:stroke-info-border",
+  success: "pui:fill-success-soft pui:stroke-success-border",
+  warning: "pui:fill-warning-soft pui:stroke-warning-border",
+  error: "pui:fill-error-soft pui:stroke-error-border",
 }
 
 const ringColors: Record<Tone, string> = {
@@ -42,9 +42,9 @@ const ringColors: Record<Tone, string> = {
 }
 
 const pointerAlignment: Record<PopperPointer, string> = {
-  left: "justify-start pl-6",
+  left: "pui:justify-start pui:pl-6",
   center: "justify-center",
-  right: "justify-end pr-6",
+  right: "pui:justify-end pui:pr-6",
 }
 
 function Popper({
@@ -64,38 +64,50 @@ function Popper({
       data-slot="popper"
       data-tone={tone}
       data-pointer={pointer}
-      className={cn("w-full", className)}
+      className={cn("pui:w-full", className)}
     >
       <div
         aria-hidden="true"
         data-slot="popper-pointer-track"
-        className={cn("relative z-10 flex h-5", pointerAlignment[pointer])}
+        className={cn("pui:relative pui:z-10 pui:flex pui:h-5", pointerAlignment[pointer])}
       >
-        <div data-slot="popper-pointer" className="relative h-5 w-6 pt-1">
+        <div data-slot="popper-pointer" className="pui:relative pui:h-5 pui:w-6 pui:pt-1">
           <svg
             viewBox="0 0 24 16"
             className={cn(
-              "h-4 w-6 forced-colors:fill-[Canvas] forced-colors:stroke-[CanvasText]",
+              "pui:h-4 pui:w-6 pui:forced-colors:fill-[Canvas] pui:forced-colors:stroke-[CanvasText]",
               pointerColors[tone],
             )}
           >
             <path d="M.5 16 9.5 2.5a3 3 0 0 1 5 0L23.5 16" strokeWidth="1" />
           </svg>
-          <span className={cn("absolute inset-x-px -bottom-px z-10 h-px", toneStyles[tone])} />
+          <span
+            className={cn(
+              "pui:absolute pui:inset-x-px pui:-bottom-px pui:z-10 pui:h-px",
+              toneStyles[tone],
+            )}
+          />
         </div>
       </div>
       <div
         data-slot="popper-card"
         className={cn(
-          "flex w-full items-start gap-2 rounded-lg p-4 shadow-32 ring-1 ring-inset forced-colors:shadow-none forced-colors:outline-1 forced-colors:outline-solid forced-colors:outline-[CanvasText]",
+          "pui:flex pui:w-full pui:items-start pui:gap-2 pui:rounded-lg pui:p-4 pui:shadow-32 pui:ring-1 pui:ring-inset pui:forced-colors:shadow-none pui:forced-colors:outline-1 pui:forced-colors:outline-solid pui:forced-colors:outline-[CanvasText]",
           toneStyles[tone],
           ringColors[tone],
         )}
       >
-        <span data-slot="popper-icon" className="grid size-6 shrink-0 place-items-center">
+        <span
+          data-slot="popper-icon"
+          className="pui:grid pui:size-6 pui:shrink-0 pui:place-items-center"
+        >
           <PagoPAIcon name={statusIcons[tone]} {...(tone === "info" ? { filled: true } : {})} />
         </span>
-        <div id={id} data-slot="popper-message" className="min-w-0 flex-1 break-words text-body">
+        <div
+          id={id}
+          data-slot="popper-message"
+          className="pui:min-w-0 pui:flex-1 pui:break-words pui:text-body"
+        >
           {children}
         </div>
         <button
@@ -103,9 +115,9 @@ function Popper({
           aria-label={dismissLabel}
           onClick={onDismiss}
           data-slot="popper-dismiss"
-          className="relative grid size-6 shrink-0 place-items-center rounded-md text-foreground after:absolute after:-inset-2.5 hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-current"
+          className="pui:relative pui:grid pui:size-6 pui:shrink-0 pui:place-items-center pui:rounded-md pui:text-foreground pui:after:absolute pui:after:-inset-2.5 pui:hover:bg-foreground/5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-current"
         >
-          <PagoPAIcon name="close" className="size-5" />
+          <PagoPAIcon name="close" className="pui:size-5" />
         </button>
       </div>
     </div>

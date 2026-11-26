@@ -45,29 +45,29 @@ function Breadcrumb({ className, "aria-label": ariaLabelProp, ...props }: Breadc
   const items = props.layout === "compact" ? [props.back] : props.items
   return (
     <nav data-slot="breadcrumb" aria-label={ariaLabel} className={className}>
-      <ol className="flex min-w-0 flex-wrap items-center gap-1.5 text-body">
+      <ol className="pui:flex pui:min-w-0 pui:flex-wrap pui:items-center pui:gap-1.5 pui:text-body">
         {items.map((item, index) => {
           const current = !compact && index === items.length - 1
           return (
             <li
               key={`${item.label}-${index}`}
-              className="flex min-w-0 max-w-full items-center gap-1.5"
+              className="pui:flex pui:min-w-0 pui:max-w-full pui:items-center pui:gap-1.5"
             >
               {index > 0 ? (
                 <PagoPAIcon
                   name="chevron"
                   variant="right"
                   size={16}
-                  className="breadcrumb-separator text-foreground opacity-80"
+                  className="breadcrumb-separator pui:text-foreground pui:opacity-80"
                 />
               ) : null}
               {!current && item.href ? (
                 <Link
                   href={item.href}
                   className={cn(
-                    "relative inline-flex min-w-0 items-center gap-1 rounded-sm text-body-sb text-foreground underline-offset-4 [overflow-wrap:anywhere] after:absolute after:inset-x-0 hover:text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                    "pui:relative pui:inline-flex pui:min-w-0 pui:items-center pui:gap-1 pui:rounded-sm pui:text-body-sb pui:text-foreground pui:underline-offset-4 pui:[overflow-wrap:anywhere] pui:after:absolute pui:after:inset-x-0 pui:hover:text-primary pui:hover:underline pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring",
                     // Invisible 44px target over the source row: 22 + 2 × 12 (Extended), 24 + 2 × 10 (Compact).
-                    compact ? "after:-inset-y-2.5" : "after:-inset-y-3",
+                    compact ? "pui:after:-inset-y-2.5" : "pui:after:-inset-y-3",
                   )}
                 >
                   {compact ? (
@@ -79,8 +79,8 @@ function Breadcrumb({ className, "aria-label": ariaLabelProp, ...props }: Breadc
                 <span
                   aria-current={current ? "page" : undefined}
                   className={cn(
-                    "inline-flex min-w-0 items-center [overflow-wrap:anywhere]",
-                    current ? "text-muted-foreground" : "text-body-sb text-foreground",
+                    "pui:inline-flex pui:min-w-0 pui:items-center pui:[overflow-wrap:anywhere]",
+                    current ? "pui:text-muted-foreground" : "pui:text-body-sb pui:text-foreground",
                   )}
                 >
                   {item.label}

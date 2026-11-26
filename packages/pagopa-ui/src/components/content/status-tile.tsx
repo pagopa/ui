@@ -23,31 +23,31 @@ function StatusTile({
     <article
       data-slot="status-tile"
       className={cn(
-        "grid gap-2 rounded-lg bg-background p-4 ring-1 ring-inset ring-border forced-colors:ring-0 forced-colors:outline-1 forced-colors:outline-solid forced-colors:outline-[CanvasText]",
+        "pui:grid pui:gap-2 pui:rounded-lg pui:bg-background pui:p-4 pui:ring-1 pui:ring-inset pui:ring-border pui:forced-colors:ring-0 pui:forced-colors:outline-1 pui:forced-colors:outline-solid pui:forced-colors:outline-[CanvasText]",
         className,
       )}
       {...props}
     >
       <div
         className={cn(
-          "flex gap-2",
+          "pui:flex pui:gap-2",
           orientation === "vertical"
-            ? "flex-col items-start"
-            : "flex-wrap items-center justify-between",
+            ? "pui:flex-col pui:items-start"
+            : "pui:flex-wrap pui:items-center pui:justify-between",
         )}
       >
-        <span className="flex min-w-0 items-center gap-2">
+        <span className="pui:flex pui:min-w-0 pui:items-center pui:gap-2">
           {channel ? (
-            <span aria-hidden="true" className="flex shrink-0 [&>svg]:size-6">
+            <span aria-hidden="true" className="pui:flex pui:shrink-0 pui:[&>svg]:size-6">
               {channel}
             </span>
           ) : null}
-          <span className="text-label-sb text-foreground">{title}</span>
+          <span className="pui:text-label-sb pui:text-foreground">{title}</span>
         </span>
         {tag}
       </div>
       {children ? (
-        <p className="text-label-mini text-muted-foreground break-words">{children}</p>
+        <p className="pui:text-label-mini pui:text-muted-foreground pui:break-words">{children}</p>
       ) : null}
     </article>
   )

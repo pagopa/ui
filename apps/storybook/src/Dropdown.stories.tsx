@@ -212,7 +212,7 @@ export const SingleSelect: Story = {
     await userEvent.click(canvas.getByRole("button", { name: /Servizio/ }))
     const reopened = await screen.findByRole("menu")
     await expect(within(reopened).getByRole("menuitem", { name: "Scuola" })).toHaveClass(
-      "bg-accent",
+      "pui:bg-accent",
     )
   },
 }

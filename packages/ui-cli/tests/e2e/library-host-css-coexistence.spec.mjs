@@ -278,13 +278,15 @@ test("packed CSS leaves the host page alone and styles its own trees", async (t)
               paddingTop: style.paddingTop,
             }
           })
-          // The host layers are declared after the library ones, so the host's
-          // `.p-6` also wins on the dialog body: the library never outranks a
-          // host layer, which is the price of not restyling the host.
+          // The host declares its layers after the library ones, but its bare
+          // `.p-6` no longer names the utility a library component carries: the
+          // dialog body keeps the library's own padding, which is exactly the
+          // collision the prefix removes. The host's `.p-6` still wins on host
+          // markup, measured above.
           assert.deepEqual(popup, {
             inPortalRoot: true,
             background: "rgb(255, 255, 255)",
-            paddingTop: "5px",
+            paddingTop: "24px",
           })
           assert.deepEqual(errors, [])
         } finally {

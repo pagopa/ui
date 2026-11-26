@@ -780,8 +780,8 @@ export const FidelityStartStates: Story = {
       await expect(control.getBoundingClientRect().width).toBe(56)
       await expect(control.getBoundingClientRect().height).toBe(44)
       const row = canvasElement.querySelector<HTMLElement>(`.${state.caseClass}`)
-      const title = row?.querySelector<HTMLElement>(`label[for="${state.id}"] > span.min-w-0`)
-      const description = row?.querySelector<HTMLElement>("p.text-caption.text-muted-foreground")
+      const title = row?.querySelector<HTMLElement>(`label[for="${state.id}"] > span.pui\\:min-w-0`)
+      const description = row?.querySelector<HTMLElement>("p.pui\\:text-caption.pui\\:text-muted-foreground")
       const track = control.querySelector<HTMLElement>("[data-slot=switch-track]")
       if (!row || !title || !description || !track) {
         throw new Error("The source control and copy geometry must render")

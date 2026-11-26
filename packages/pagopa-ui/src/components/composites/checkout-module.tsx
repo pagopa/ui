@@ -117,32 +117,38 @@ function CheckoutModule({
       : (suggestion ?? (legacy ? { label: legacySuggestion } : undefined))
 
   return (
-    <div className="@container w-full min-w-0">
+    <div className="pui:@container pui:w-full pui:min-w-0">
       <section
         aria-label={busy ? heading : undefined}
         aria-labelledby={busy ? undefined : headingId}
         aria-busy={busy || undefined}
         data-slot="checkout-module"
         className={cn(
-          "flex w-full flex-col gap-3 rounded-lg border border-border bg-card p-4 @min-panel:flex-row @min-panel:items-center @min-panel:gap-4",
+          "pui:flex pui:w-full pui:flex-col pui:gap-3 pui:rounded-lg pui:border pui:border-border pui:bg-card pui:p-4 pui:@min-panel:flex-row pui:@min-panel:items-center pui:@min-panel:gap-4",
           className,
         )}
         {...props}
       >
         {busy ? (
-          <div data-slot="checkout-skeleton-layout" className="flex w-full flex-col gap-1 py-1.5">
-            <div data-slot="checkout-skeleton" className="flex w-full flex-col gap-1">
+          <div
+            data-slot="checkout-skeleton-layout"
+            className="pui:flex pui:w-full pui:flex-col pui:gap-1 pui:py-1.5"
+          >
+            <div
+              data-slot="checkout-skeleton"
+              className="pui:flex pui:w-full pui:flex-col pui:gap-1"
+            >
               <Skeleton
                 data-slot="checkout-skeleton-title"
-                className="h-6 w-60 max-w-full rounded-4 bg-muted motion-safe:animate-none"
+                className="pui:h-6 pui:w-60 pui:max-w-full pui:rounded-4 pui:bg-muted pui:motion-safe:animate-none"
               />
               <Skeleton
                 data-slot="checkout-skeleton-description"
-                className="h-4 w-89 max-w-full rounded-4 bg-muted motion-safe:animate-none"
+                className="pui:h-4 pui:w-89 pui:max-w-full pui:rounded-4 pui:bg-muted pui:motion-safe:animate-none"
               />
               <Skeleton
                 data-slot="checkout-skeleton-recommendation"
-                className="h-4 w-42 max-w-full rounded-4 bg-muted motion-safe:animate-none"
+                className="pui:h-4 pui:w-42 pui:max-w-full pui:rounded-4 pui:bg-muted pui:motion-safe:animate-none"
               />
             </div>
           </div>
@@ -150,26 +156,36 @@ function CheckoutModule({
           <>
             <div
               data-slot="checkout-content"
-              className={cn("flex min-w-0 flex-1 items-center", Boolean(visibleBrand) && "gap-3")}
+              className={cn(
+                "pui:flex pui:min-w-0 pui:flex-1 pui:items-center",
+                Boolean(visibleBrand) && "pui:gap-3",
+              )}
             >
               {visibleBrand ? (
-                <span data-slot="checkout-brand" className="inline-flex shrink-0">
+                <span data-slot="checkout-brand" className="pui:inline-flex pui:shrink-0">
                   {visibleBrand}
                 </span>
               ) : null}
               <div
                 data-slot="checkout-main"
-                className="flex min-w-0 flex-1 flex-col gap-2 @min-panel:flex-row @min-panel:items-center @min-panel:gap-4"
+                className="pui:flex pui:min-w-0 pui:flex-1 pui:flex-col pui:gap-2 pui:@min-panel:flex-row pui:@min-panel:items-center pui:@min-panel:gap-4"
               >
-                <div data-slot="checkout-body" className="flex min-w-0 flex-1 flex-col gap-2">
-                  <div className="flex min-w-0 flex-col gap-0.5">
-                    <Heading as={titleAs} id={headingId} className="break-words text-body-sb">
+                <div
+                  data-slot="checkout-body"
+                  className="pui:flex pui:min-w-0 pui:flex-1 pui:flex-col pui:gap-2"
+                >
+                  <div className="pui:flex pui:min-w-0 pui:flex-col pui:gap-0.5">
+                    <Heading
+                      as={titleAs}
+                      id={headingId}
+                      className="pui:break-words pui:text-body-sb"
+                    >
                       {heading}
                     </Heading>
                     {showDescription && descriptionText ? (
                       <p
                         data-slot="checkout-description"
-                        className="break-words text-label-mini text-muted-foreground"
+                        className="pui:break-words pui:text-label-mini pui:text-muted-foreground"
                       >
                         {descriptionText}
                       </p>
@@ -178,16 +194,16 @@ function CheckoutModule({
                   {showSuggestion && recommendation ? (
                     <p
                       data-slot="checkout-recommendation"
-                      className="flex min-w-0 flex-wrap items-center gap-1 text-caption-sb text-han-purple"
+                      className="pui:flex pui:min-w-0 pui:flex-wrap pui:items-center pui:gap-1 pui:text-caption-sb pui:text-han-purple"
                     >
                       <span
                         data-slot="checkout-recommendation-icon"
                         aria-hidden="true"
-                        className="flex size-5 shrink-0 items-center justify-center"
+                        className="pui:flex pui:size-5 pui:shrink-0 pui:items-center pui:justify-center"
                       >
                         {recommendation.icon ?? <PagoPAIcon name="emoji_objects" size={20} />}
                       </span>
-                      <span data-slot="checkout-recommendation-text" className="break-words">
+                      <span data-slot="checkout-recommendation-text" className="pui:break-words">
                         {recommendation.label}
                       </span>
                     </p>
@@ -195,18 +211,20 @@ function CheckoutModule({
                   {amount || noticeCode ? (
                     <dl
                       data-slot="checkout-legacy-details"
-                      className="grid gap-3 @min-panel:grid-cols-2"
+                      className="pui:grid pui:gap-3 pui:@min-panel:grid-cols-2"
                     >
                       {amount ? (
                         <div>
-                          <dt className="text-caption text-muted-foreground">Importo</dt>
-                          <dd className="break-words text-title-xs">{amount}</dd>
+                          <dt className="pui:text-caption pui:text-muted-foreground">Importo</dt>
+                          <dd className="pui:break-words pui:text-title-xs">{amount}</dd>
                         </div>
                       ) : null}
                       {noticeCode ? (
                         <div>
-                          <dt className="text-caption text-muted-foreground">{noticeCodeLabel}</dt>
-                          <dd className="break-words text-body-sb">{noticeCode}</dd>
+                          <dt className="pui:text-caption pui:text-muted-foreground">
+                            {noticeCodeLabel}
+                          </dt>
+                          <dd className="pui:break-words pui:text-body-sb">{noticeCode}</dd>
                         </div>
                       ) : null}
                     </dl>
@@ -215,7 +233,7 @@ function CheckoutModule({
                 {visibleAction ? (
                   <div
                     data-slot="checkout-action"
-                    className="ml-0 self-start @min-panel:ml-auto @min-panel:self-center"
+                    className="pui:ml-0 pui:self-start pui:@min-panel:ml-auto pui:@min-panel:self-center"
                   >
                     <Button
                       type="button"
@@ -223,7 +241,7 @@ function CheckoutModule({
                       disabled={!action}
                       // Source action is a 16/22 text button: the visible line
                       // stays 22px, the >=44px target is the invisible ::after.
-                      className="relative min-h-0 justify-start px-0 text-body-sb after:absolute after:inset-x-0 after:-inset-y-3"
+                      className="pui:relative pui:min-h-0 pui:justify-start pui:px-0 pui:text-body-sb pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-3"
                       onClick={action}
                     >
                       {actionName}

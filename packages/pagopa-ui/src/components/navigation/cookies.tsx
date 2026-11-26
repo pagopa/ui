@@ -45,7 +45,7 @@ function Cookies({
       type="button"
       aria-label={closeLabel}
       onClick={onDismiss}
-      className="flex size-11 shrink-0 items-center justify-center rounded-md hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      className="pui:flex pui:size-11 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-md pui:hover:bg-muted pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
     >
       <PagoPAIcon name="close" />
     </button>
@@ -54,13 +54,15 @@ function Cookies({
   return (
     <section
       aria-label={label}
-      className="fixed inset-x-3 bottom-3 z-50 mx-auto flex max-w-4xl flex-col gap-8 bg-background p-6 shadow-32 desktop:flex-row desktop:flex-nowrap desktop:items-center"
+      className="pui:fixed pui:inset-x-3 pui:bottom-3 pui:z-50 pui:mx-auto pui:flex pui:max-w-4xl pui:flex-col pui:gap-8 pui:bg-background pui:p-6 pui:shadow-32 pui:desktop:flex-row pui:desktop:flex-nowrap pui:desktop:items-center"
     >
-      <div className="flex min-w-0 flex-1 items-start justify-between gap-4 tablet:gap-6 desktop:items-center">
-        <p className="min-w-0 flex-1 text-label-mini text-muted-foreground">{children}</p>
-        {closeButton ? <span className="desktop:hidden">{closeButton}</span> : null}
+      <div className="pui:flex pui:min-w-0 pui:flex-1 pui:items-start pui:justify-between pui:gap-4 pui:tablet:gap-6 pui:desktop:items-center">
+        <p className="pui:min-w-0 pui:flex-1 pui:text-label-mini pui:text-muted-foreground">
+          {children}
+        </p>
+        {closeButton ? <span className="pui:desktop:hidden">{closeButton}</span> : null}
       </div>
-      <div className="flex flex-col gap-6 max-tablet:w-full tablet:flex-row tablet:flex-wrap tablet:items-center">
+      <div className="pui:flex pui:flex-col pui:gap-6 pui:max-tablet:w-full pui:tablet:flex-row pui:tablet:flex-wrap pui:tablet:items-center">
         {onLearnMore ? (
           <Button
             variant="ghost"
@@ -69,19 +71,19 @@ function Cookies({
             // (the source `Button block` aligns its children to the centre).
             // The 44px pointer target comes from the invisible ::after
             // expansion, not the visible box.
-            className="relative min-h-0 px-0 py-0 after:absolute after:inset-x-0 after:-inset-y-3 max-tablet:self-center"
+            className="pui:relative pui:min-h-0 pui:px-0 pui:py-0 pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-3 pui:max-tablet:self-center"
             onClick={onLearnMore}
           >
             Scopri di più
           </Button>
         ) : null}
-        <Button className="max-tablet:w-full" onClick={onReject}>
+        <Button className="pui:max-tablet:w-full" onClick={onReject}>
           Rifiuta tutti
         </Button>
-        <Button className="max-tablet:w-full" onClick={onAccept}>
+        <Button className="pui:max-tablet:w-full" onClick={onAccept}>
           Accetta tutti
         </Button>
-        {closeButton ? <span className="hidden desktop:block">{closeButton}</span> : null}
+        {closeButton ? <span className="pui:hidden pui:desktop:block">{closeButton}</span> : null}
       </div>
     </section>
   )

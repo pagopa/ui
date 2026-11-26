@@ -47,31 +47,34 @@ function AccordionSkeleton({
     <div
       data-slot="accordion-skeleton"
       aria-busy="true"
-      className={cn("rounded-lg border bg-background px-6 py-6", "border-border")}
+      className={cn(
+        "pui:rounded-lg pui:border pui:bg-background pui:px-6 pui:py-6",
+        "pui:border-border",
+      )}
     >
-      <span className="sr-only">{label}</span>
-      <div aria-hidden="true" className="flex items-start justify-between gap-3">
-        <span className="flex min-w-0 flex-1 items-start gap-2">
+      <span className="pui:sr-only">{label}</span>
+      <div aria-hidden="true" className="pui:flex pui:items-start pui:justify-between pui:gap-3">
+        <span className="pui:flex pui:min-w-0 pui:flex-1 pui:items-start pui:gap-2">
           {item.icon ? (
-            <span className="flex size-6 shrink-0 items-center justify-center text-choice-icon [&>svg]:size-6">
+            <span className="pui:flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center pui:text-choice-icon pui:[&>svg]:size-6">
               {item.icon}
             </span>
           ) : null}
-          <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
-            <span className="min-w-0 text-body-sb">{item.title}</span>
+          <span className="pui:flex pui:min-w-0 pui:flex-1 pui:flex-col pui:items-start pui:gap-1">
+            <span className="pui:min-w-0 pui:text-body-sb">{item.title}</span>
             {item.chip}
           </span>
         </span>
-        <ChevronUp className="size-6 shrink-0 text-choice-icon" />
+        <ChevronUp className="pui:size-6 pui:shrink-0 pui:text-choice-icon" />
       </div>
-      <div aria-hidden="true" className="mt-8">
+      <div aria-hidden="true" className="pui:mt-8">
         {Array.from({ length: SKELETON_ROWS }, (_, index) => (
           <div key={index}>
-            {index > 0 ? <div className="h-px bg-border" /> : null}
-            <div className="flex flex-col gap-3 py-3">
-              <div className="flex flex-col gap-1.5">
-                <span className="h-5.5 w-25 rounded-full bg-secondary" />
-                <span className="h-4 w-50 rounded-lg bg-secondary" />
+            {index > 0 ? <div className="pui:h-px pui:bg-border" /> : null}
+            <div className="pui:flex pui:flex-col pui:gap-3 pui:py-3">
+              <div className="pui:flex pui:flex-col pui:gap-1.5">
+                <span className="pui:h-5.5 pui:w-25 pui:rounded-full pui:bg-secondary" />
+                <span className="pui:h-4 pui:w-50 pui:rounded-lg pui:bg-secondary" />
               </div>
             </div>
           </div>
@@ -96,7 +99,7 @@ function AccordionItem({
       value={item.id}
       disabled={item.disabled}
       className={cn(
-        "rounded-lg border bg-background px-6 py-6 data-disabled:bg-secondary",
+        "pui:rounded-lg pui:border pui:bg-background pui:px-6 pui:py-6 pui:data-disabled:bg-secondary",
         className,
       )}
     >
@@ -104,25 +107,25 @@ function AccordionItem({
           top of the source's 50px header (24 icon + gap 12 + 24 chevron box,
           title/chip stacked with a 4px gap). The keyboard perimeter is the
           primitive's ring, so dropping the border keeps focus visible. */}
-      <AccordionTrigger className="min-h-12 gap-3 border-0 px-0 py-0 text-body-sb hover:no-underline aria-disabled:opacity-100 data-disabled:opacity-100 data-disabled:[&_[data-slot=accordion-trigger-icon]]:text-choice-icon">
-        <span className="flex min-w-0 flex-1 items-start gap-2">
+      <AccordionTrigger className="pui:min-h-12 pui:gap-3 pui:border-0 pui:px-0 pui:py-0 pui:text-body-sb pui:hover:no-underline pui:aria-disabled:opacity-100 pui:data-disabled:opacity-100 data-disabled:[&_[data-slot=accordion-trigger-icon]]:text-choice-icon">
+        <span className="pui:flex pui:min-w-0 pui:flex-1 pui:items-start pui:gap-2">
           {item.icon ? (
             <span
               aria-hidden="true"
-              className="flex size-6 shrink-0 items-center justify-center text-choice-icon [&>svg]:size-6"
+              className="pui:flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center pui:text-choice-icon pui:[&>svg]:size-6"
             >
               {item.icon}
             </span>
           ) : null}
-          <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
-            <span className="min-w-0">{item.title}</span>
+          <span className="pui:flex pui:min-w-0 pui:flex-1 pui:flex-col pui:items-start pui:gap-1">
+            <span className="pui:min-w-0">{item.title}</span>
             {item.chip}
           </span>
         </span>
       </AccordionTrigger>
-      <AccordionContent className="pb-0 text-body text-muted-foreground">
-        {item.description ? <div className="mt-2">{item.description}</div> : null}
-        <div className={cn(item.description ? "mt-8" : "mt-2")}>{item.content}</div>
+      <AccordionContent className="pui:pb-0 pui:text-body pui:text-muted-foreground">
+        {item.description ? <div className="pui:mt-2">{item.description}</div> : null}
+        <div className={cn(item.description ? "pui:mt-8" : "pui:mt-2")}>{item.content}</div>
       </AccordionContent>
     </AccordionItemPrimitive>
   )
@@ -184,7 +187,7 @@ function Accordion({
       onValueChange={onValueChange}
       multiple={multiple}
       aria-label={ariaLabel}
-      className={cn("grid gap-3", className)}
+      className={cn("pui:grid pui:gap-3", className)}
       {...rootProps}
     >
       {items.map((item) => (
