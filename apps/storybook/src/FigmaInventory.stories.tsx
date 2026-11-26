@@ -32,14 +32,9 @@ Refresh the snapshot with \`pnpm nx run pagopa-ui-cli:figma:plan\` and \`pnpm nx
 export default meta
 type Story = StoryObj<typeof meta>
 
+// The generated inventory (355 cards) is a 1168x31,472 page on desktop; the play
+// function below is what proves it, and it runs in the browser suite.
 export const PublishedComponents: Story = {
-  parameters: {
-    // The generated inventory (355 cards) exceeds Chromatic's 25,000,000px
-    // capture cap at every configured viewport (1168x31,472 on desktop).
-    // Chromatic skips the snapshot and its interaction run; the browser suite
-    // still runs the play function below.
-    chromatic: { disableSnapshot: true },
-  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 

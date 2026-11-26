@@ -50,9 +50,8 @@ export const Playground: Story = {
 }
 
 export const NestedAndProfile: Story = {
-  // The play function reads the navigation links, which the narrow layout hides
-  // behind the drawer trigger: Chromatic captures and plays it at desktop only.
-  parameters: { chromatic: { viewports: [1200] } },
+  // The fixture pins the desktop width: the play function reads the navigation
+  // links, which the narrow layout hides behind the drawer trigger.
   args: {
     items: [
       {
@@ -156,7 +155,6 @@ export const Condensed: Story = {
   // the overlay does not move the page, not a 320 product surface.
   parameters: {
     layout: "fullscreen",
-    chromatic: { viewports: [1440] },
     a11yContract: { reflow: false },
   },
   render: () => <CondensedPage width={1440} />,
@@ -198,10 +196,10 @@ export const Condensed: Story = {
 
 export const CondensedMobile: Story = {
   // The source `Condensed=True, Device=Mobile` composition (`1519:2721`): the
-  // declaration head and the full-bleed items at 320. The story is a Chromatic
-  // surface; the JS suite runs at the default viewport, where the desktop rail
-  // is the rendered composition.
-  parameters: { layout: "fullscreen", chromatic: { viewports: [320] } },
+  // declaration head and the full-bleed items at 320, the width the fixture
+  // pins. The JS suite runs at the default viewport, where the desktop rail is
+  // the rendered composition.
+  parameters: { layout: "fullscreen" },
   render: () => (
     <div style={{ width: 320 }} className="pui:min-h-[32rem]">
       <SideNav

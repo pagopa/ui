@@ -43,6 +43,7 @@ one rather than editing it.
 | [ADR-0013](./decisions/0013-semantic-token-contract.md)           | The public token contract is semantic: `--pui-*`, named for the role        |
 | [ADR-0015](./decisions/0014-utility-prefix.md)                    | Utilities ship under an internal prefix, in both spellings                  |
 | [ADR-0015](./decisions/0015-ephemeral-parity-diagnostic.md)       | Numerical parity is an ephemeral diagnostic, not a committed corpus         |
+| [ADR-0017](./decisions/0017-visual-baselines-outside-git.md)      | Visual baselines live outside git, keyed by the build                       |
 
 ## Use cases
 

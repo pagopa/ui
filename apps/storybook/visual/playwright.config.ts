@@ -2,8 +2,9 @@ import { defineConfig } from "@playwright/test"
 
 const port = process.env.VISUAL_PORT ?? 6201
 const baseURL = `http://localhost:${port}`
-// Baselines live next to the suite; a host run can point VISUAL_SNAPSHOT_DIR
-// elsewhere, because only Linux baselines are committed.
+// Baselines live outside the repository, in pagopa/ui-visual-baselines: a run
+// points VISUAL_SNAPSHOT_DIR at the set it fetched. The default names the
+// directory a capture would leave behind, which is never a commit.
 const snapshots = process.env.VISUAL_SNAPSHOT_DIR ?? "{testDir}/__screenshots__"
 
 export default defineConfig({
