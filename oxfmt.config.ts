@@ -25,6 +25,9 @@ export default defineConfig({
     // a formatter rewriting it would break that check rather than format a
     // source file.
     "packages/pagopa-ui/figma-map.json",
+    // Compiled from the pinned artwork and compared structurally against it:
+    // the formatter would only add whitespace the comparator would then flag.
+    "packages/pagopa-ui/src/components/icons/generated/",
     "pnpm-lock.yaml",
     "pnpm-*.yaml",
     "public/",

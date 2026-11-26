@@ -1641,38 +1641,34 @@ test("the packed artifact behaves as documented", async ({ browserName, context,
     "every published source icon variant must render in the installed package",
   )
   const localIdentities = []
-  const localURLs = []
+  const localPaints = []
   for (const icon of localIcons) {
-    const asset = await icon.evaluate(async (element) => {
-      const style = getComputedStyle(element)
-      let image = element
-      if (!(image instanceof HTMLImageElement)) {
-        const match = style.maskImage.match(/^url\(["']?(.*?)["']?\)$/)
-        if (!match) throw new Error("Local symbol has no source mask")
-        image = new Image()
-        image.src = match[1]
-      }
-      await image.decode()
+    const asset = await icon.evaluate((element) => {
+      const nodeId = element.getAttribute("data-figma-node-id") ?? ""
+      const prefix = nodeId.toLowerCase().replace(/[^a-z0-9]+/g, "-")
       const bounds = element.getBoundingClientRect()
       return {
-        id: element.getAttribute("data-figma-node-id"),
-        url: image.currentSrc,
-        naturalWidth: image.naturalWidth,
-        naturalHeight: image.naturalHeight,
+        id: nodeId,
+        tag: element.tagName.toLowerCase(),
+        viewBox: element.getAttribute("viewBox"),
+        maskImage: getComputedStyle(element).maskImage,
+        drawings: element.childElementCount,
+        images: element.querySelectorAll("img").length,
+        // The per-icon id namespace keeps masks unique; drop it to compare geometry.
+        paint: element.innerHTML.replaceAll(`${prefix}-`, ""),
         width: bounds.width,
         height: bounds.height,
       }
     })
-    assert.equal(asset.naturalWidth, 24, "packed local artwork did not decode at its source width")
-    assert.equal(
-      asset.naturalHeight,
-      24,
-      "packed local artwork did not decode at its source height",
-    )
+    assert.equal(asset.tag, "svg", "packed local symbols must paint inline")
+    assert.equal(asset.viewBox, "0 0 24 24", "packed local symbols must keep their source frame")
+    assert.equal(asset.maskImage, "none", "packed local symbols must not paint through a mask")
+    assert.equal(asset.images, 0, "packed local symbols must not request their artwork")
+    assert.ok(asset.drawings > 0, `packed local symbol lost its drawing: ${asset.id}`)
     assert.equal(asset.width, 24)
     assert.equal(asset.height, 24)
     localIdentities.push(asset.id)
-    localURLs.push(asset.url)
+    localPaints.push(asset.paint)
   }
   const expectedIconVariantIds = (process.env.EXPECTED_ICON_VARIANT_IDS ?? "")
     .split(",")
@@ -1688,10 +1684,15 @@ test("the packed artifact behaves as documented", async ({ browserName, context,
     expectedIconVariantIds,
     "packed local artwork lost a source variant identity",
   )
+  const expectedIconPaints = Number(process.env.EXPECTED_ICON_PAINTS)
+  assert.ok(
+    Number.isInteger(expectedIconPaints) && expectedIconPaints > 0,
+    "EXPECTED_ICON_PAINTS must come from the compiled icon components",
+  )
   assert.equal(
-    new Set(localURLs).size,
-    expectedIconVariants,
-    "distinct source variants must not share a fallback asset",
+    new Set(localPaints).size,
+    expectedIconPaints,
+    "the packed artifact must draw every source geometry exactly as the package compiles it",
   )
   await page.emulateMedia({ forcedColors: "active", reducedMotion: "reduce" })
   assert.equal(
@@ -1716,7 +1717,7 @@ test("the packed artifact behaves as documented", async ({ browserName, context,
       probe.remove()
       return {
         color: style.color,
-        background: style.backgroundColor,
+        fill: style.fill,
         systemText,
         systemCanvas,
         systemHighlightText,
@@ -1742,7 +1743,7 @@ test("the packed artifact behaves as documented", async ({ browserName, context,
     )
   }
   assert.equal(
-    forcedMask.background,
+    forcedMask.fill,
     forcedMask.color,
     "forced colors must not erase the local symbol's currentColor fill",
   )

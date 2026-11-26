@@ -149,9 +149,14 @@ function prepareConsumer(context: ConsumerContext): void {
   }
 }
 
-function packedImportAssertions(packageSpecifier: string, tokensSpecifier: string): string {
+function packedImportAssertions(
+  packageSpecifier: string,
+  tokensSpecifier: string,
+  iconsSpecifier: string,
+): string {
   return `import * as mod from ${packageSpecifier}
   import * as tokens from ${tokensSpecifier}
+  import * as icons from ${iconsSpecifier}
   import * as React from "react"
   import { createRequire } from "node:module"
   import assert from "node:assert/strict"
@@ -173,11 +178,28 @@ function packedImportAssertions(packageSpecifier: string, tokensSpecifier: strin
     /choose filled or variant, not both/,
     "conflicting state selectors must fail explicitly",
   )
-  assert.throws(
-    () => renderToString(React.createElement(mod.PagoPAIcon, { name: "not-a-published-icon" })),
-    /has no published source artwork/,
-    "untyped consumers must not get a raw-name fallback",
+  assert.equal(
+    renderToString(React.createElement(mod.PagoPAIcon, { name: "not-a-published-icon" })),
+    "",
+    "an unknown icon name must render nothing instead of failing the surface that hosts it",
   )
+  const packedIcon = renderToString(
+    React.createElement(mod.PagoPAIcon, { name: "info", decorative: false, label: "Informazioni" }),
+  )
+  assert.match(packedIcon, /^<svg/, "packed icons must paint inline, not through an image request")
+  assert.doesNotMatch(packedIcon, /<img/)
+  assert.match(packedIcon, /viewBox="0 0 24 24"/)
+  assert.match(packedIcon, /fill="currentColor"/)
+  assert.match(packedIcon, /data-figma-node-id="/)
+  assert.match(packedIcon, /role="img"/)
+  assert.match(packedIcon, /aria-label="Informazioni"/)
+  const packedSubpathIcon = renderToString(React.createElement(icons.Info, { width: 32 }))
+  assert.match(
+    packedSubpathIcon,
+    /^<svg[^>]*width="32"/,
+    "the icons subpath must publish one tree-shakeable component per identity",
+  )
+  assert.match(packedSubpathIcon, /data-figma-node-id="/)
   assert.throws(
     () => renderToString(React.createElement(mod.ProductCard, {
       title: "Conflicting action",
@@ -240,6 +262,7 @@ function readPackedImport(context: ConsumerContext): z.infer<typeof ImportedPack
   } = context
   const packageSpecifier = JSON.stringify(packageName)
   const tokensSpecifier = JSON.stringify(`${packageName}/tokens`)
+  const iconsSpecifier = JSON.stringify(`${packageName}/icons`)
   return parseSchema(
     ImportedPackageSchema,
     JSON.parse(
@@ -248,7 +271,8 @@ function readPackedImport(context: ConsumerContext): z.infer<typeof ImportedPack
         [
           "--input-type=module",
           "-e",
-          packedImportAssertions(packageSpecifier, tokensSpecifier) + packedImportResult,
+          packedImportAssertions(packageSpecifier, tokensSpecifier, iconsSpecifier) +
+            packedImportResult,
         ],
         consumer,
       ),
@@ -439,6 +463,7 @@ async function verifyBrowsers(
   nextServer: Awaited<ReturnType<typeof startNextServer>>,
   expectedIconVariants: number,
   expectedIconVariantIds: string[],
+  expectedIconPaints: number,
 ): Promise<string> {
   const {
     runner: { stream },
@@ -463,6 +488,7 @@ async function verifyBrowsers(
         NEXT_CONSUMER_URL: nextServer.url,
         EXPECTED_ICON_VARIANTS: String(expectedIconVariants),
         EXPECTED_ICON_VARIANT_IDS: expectedIconVariantIds.join(","),
+        EXPECTED_ICON_PAINTS: String(expectedIconPaints),
       },
     )
   } catch (error) {
@@ -519,8 +545,8 @@ export async function checkLibrary(
   const { root, toolingRoot } = workspace
   const missing = missingArtifacts(root)
   if (missing.length) return report("library", "the built artifact", missing)
-  const { manifest, expectedIconVariants, expectedIconVariantIds } =
-    verifyArtifactContract(workspace)
+  const contract = verifyArtifactContract(workspace)
+  const { manifest, expectedIconVariants, expectedIconVariantIds } = contract
   const audited = createRequire(path.join(root, "package.json"))
   const tooling = createRequire(path.join(toolingRoot, "package.json"))
   const { preview } = await import(pathToFileURL(audited.resolve("vite")).href)
@@ -556,6 +582,7 @@ export async function checkLibrary(
       nextServer,
       expectedIconVariants,
       expectedIconVariantIds,
+      contract.expectedIconPaints,
     )
     const exportCount = imported.exports.length
     const summary = `isolated tarball, ${exportCount} exports, strict types, shared React, native forms, responsive Table/sorting/paging, mobile chrome bands/one-row header/no clipped actions, viewport and container device scopes (narrow-column module, scrollable-list first item, segmented fit), calendar confirmation/ranges, explicit Breadcrumb navigation, source ProductCard/native links/actions/reflow, source OTP/password/paste/native-length/reset/system-color paint, source Avatar/native images/selection/non-color statuses/unoccluded initials/font preferences/system-color paint, keyboard/focus, standalone CSS/fonts/artwork and host-style coexistence, Next.js App Router request-time SSR/hydration, provider messages and client routing in${engines}`

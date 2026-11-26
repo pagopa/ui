@@ -50,6 +50,7 @@ export default defineConfig(() => ({
     lib: {
       entry: {
         "library-entry": path.resolve(dirname, "src/library-entry.ts"),
+        icons: path.resolve(dirname, "src/icons.ts"),
         tokens: path.resolve(dirname, "src/tokens.ts"),
       },
       formats: ["es"],

@@ -56,6 +56,9 @@ const COMPONENTS = "src/components"
 // package, and follow the same token-first rules.
 const TEMPLATES = "apps/storybook/src/templates"
 const ROOTS = [COMPONENTS, TEMPLATES]
+// Compiled from the pinned Figma artwork: the mask fills and the `url(#…)` ids
+// are the source's, so a token rule cannot own them.
+const DERIVED = ["src/components/icons/generated/"]
 
 export const RULES = {
   "arbitrary-length": /\[[^[\]]*?\d+(?:\.\d+)?(?:px|rem)\b[^[\]]*?\]/g,
@@ -200,6 +203,7 @@ export function measure(workspace: Workspace, manifest: FoundationManifest): Occ
         root,
         path.relative(absolute, file).split(path.sep).join("/"),
       )
+      if (DERIVED.some((prefix) => identity.startsWith(prefix))) continue
       const { source, literals, program } = stringLiterals(parseSource, file)
       occurrences.push(...inlineStyleOccurrences(program, source, identity, knownTokens))
       for (const literal of literals) {

@@ -20,6 +20,7 @@ import {
   pruneOrphanSvgs,
   xmlEscape as xml,
 } from "./artwork/svg.ts"
+import { svgToJsx } from "./artwork/svg-jsx.ts"
 import { normalizeLive } from "./snapshot.ts"
 
 const SnapshotSchema = z.looseObject({
@@ -344,6 +345,7 @@ type IconContext = {
   policies: Record<string, LocalAsset>
   provenanceByNode: Map<string, IconManifestEntry["provenance"]>
   directory: string
+  componentsDirectory: string
   sourceFile: string
   manifestFile: string
   previousManifest: z.infer<typeof IconManifestSchema> | undefined
@@ -382,6 +384,7 @@ function loadIconContext(workspace: Workspace, input?: string): IconContext {
     throw new Error("Every published icon identity must have a local source asset policy")
   }
   const directory = path.join(workspace.artworkRoot, "src/assets/figma-icons")
+  const componentsDirectory = path.join(workspace.root, "src/components/icons/generated")
   const sourceFile = path.join(workspace.artworkRoot, "src/components/icons/icon-assets.ts")
   const manifestFile = path.join(directory, "manifest.json")
   const previousManifest = readManifest(manifestFile, IconManifestSchema)
@@ -393,6 +396,7 @@ function loadIconContext(workspace: Workspace, input?: string): IconContext {
     policies,
     provenanceByNode,
     directory,
+    componentsDirectory,
     sourceFile,
     manifestFile,
     previousManifest,
@@ -505,7 +509,8 @@ async function verifyIconSources(
   manifest: z.infer<typeof IconManifestSchema> | undefined,
   directory: string,
   rendered: Map<string, string>,
-): Promise<void> {
+): Promise<Map<string, string>> {
+  const sources = new Map<string, string>()
   if (mode === "check") {
     if (!manifest)
       throw new Error(
@@ -523,12 +528,14 @@ async function verifyIconSources(
           ? fs.readFileSync(path.join(directory, variant.file), "utf8")
           : rendered.get(variantId)
       if (!source) throw new Error(`Missing local icon artwork for ${variantId}`)
+      sources.set(variantId, source)
       assertStandaloneSvg(source, variantId)
       verifyIconVariant(id, variantId, variant, source, manifest, rendered)
       await assertRenderedPixels(source, variantId)
       variant.sha256 = sha256(source)
     }
   }
+  return sources
 }
 
 function verifyIconManifestEntry(
@@ -581,17 +588,14 @@ function verifyIconVariant(
 }
 
 function generateIconModule(expected: Record<string, IconManifestEntry>): string {
-  const imports: string[] = []
   const declarations: string[] = []
   const byName: string[] = []
   const variantsByType: string[] = []
   for (const [id, entry] of Object.entries(expected).sort(([a], [b]) => a.localeCompare(b))) {
     const variants: string[] = []
     for (const variant of Object.values(entry.variants)) {
-      const variable = `asset_${variant.nodeId.replace(":", "_")}`
-      imports.push(`import ${variable} from "../../assets/figma-icons/${variant.file}?no-inline"`)
       variants.push(
-        `${JSON.stringify(variant.nodeId)}: { nodeId: ${JSON.stringify(variant.nodeId)}, url: ${variable} }`,
+        `${JSON.stringify(variant.nodeId)}: { nodeId: ${JSON.stringify(variant.nodeId)}, file: ${JSON.stringify(variant.file)} }`,
       )
     }
     const aliases = Object.entries(entry.aliases).map(
@@ -608,7 +612,171 @@ function generateIconModule(expected: Record<string, IconManifestEntry>): string
   }
   byName.sort()
   variantsByType.sort()
-  return `// Generated from pinned source geometry by packages/ui-cli/src/figma/icons.ts; keys are nodeIds.\n${imports.join("\n")}\nimport type { FigmaIconName } from "./figma-inventory"\n\nexport type IconAsset = {\n  name: FigmaIconName\n  rendering: "image" | "mask"\n  defaultVariantNodeId: string\n  aliases: Partial<Record<string, string>>\n  variants: Record<string, { nodeId: string; url: string }>\n}\n\nexport const iconAssets: Record<string, IconAsset> = {\n${declarations.join(",\n")}\n}\n\n/** Public-name index of the node-keyed catalogue; exhaustive by construction. */\nexport const iconAssetsByName = {\n${byName.join(",\n")}\n} as const satisfies Record<FigmaIconName, IconAsset>\n\n/** Variant aliases published by each icon (\`never\` when the identity has none). */\nexport type IconVariantsByName = {\n${variantsByType.join("\n")}\n}\n`
+  return `// Generated from pinned source geometry by packages/ui-cli/src/figma/icons.ts; keys are nodeIds.\nimport type { FigmaIconName } from "./figma-inventory"\n\nexport type IconAsset = {\n  name: FigmaIconName\n  rendering: "image" | "mask"\n  defaultVariantNodeId: string\n  aliases: Partial<Record<string, string>>\n  variants: Record<string, { nodeId: string; file: string }>\n}\n\nexport const iconAssets: Record<string, IconAsset> = {\n${declarations.join(",\n")}\n}\n\n/** Public-name index of the node-keyed catalogue; exhaustive by construction. */\nexport const iconAssetsByName = {\n${byName.join(",\n")}\n} as const satisfies Record<FigmaIconName, IconAsset>\n\n/** Variant aliases published by each icon (\`never\` when the identity has none). */\nexport type IconVariantsByName = {\n${variantsByType.join("\n")}\n}\n`
+}
+
+const GENERATED_MARKER =
+  "// Generated from pinned source geometry by packages/ui-cli/src/figma/icons.ts; do not edit."
+
+function camelName(value: string): string {
+  const [first, ...rest] = value.split("-")
+  return `${first ?? ""}${rest.map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join("")}`
+}
+
+function pascalName(value: string): string {
+  return value
+    .split(/[^A-Za-z0-9]+/)
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join("")
+}
+
+function kebabName(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+}
+
+type IconComponentPlan = {
+  slug: string
+  exportName: string
+  name: string
+  variants: { nodeId: string; exportName: string; alias: string | undefined }[]
+}
+
+function uniqueName(base: string, taken: Set<string>): string {
+  let candidate = base
+  for (let index = 2; taken.has(candidate); index += 1) candidate = `${base}${index}`
+  taken.add(candidate)
+  return candidate
+}
+
+function iconComponentPlans(expected: Record<string, IconManifestEntry>): IconComponentPlan[] {
+  const slugs = new Set<string>()
+  const exports = new Set<string>()
+  return Object.keys(expected)
+    .sort()
+    .map((id) => {
+      const entry = expected[id]
+      if (!entry) throw new Error(`Missing local icon entry for ${id}`)
+      // Preferences decide which alias names a variant; the first decides it.
+      const aliasByNode = new Map<string, string>()
+      for (const [alias, nodeId] of Object.entries(entry.aliases).sort(([a], [b]) =>
+        a.localeCompare(b),
+      )) {
+        if (!aliasByNode.has(nodeId)) aliasByNode.set(nodeId, alias)
+      }
+      // The default variant owns `Default`, which the module also exports.
+      const variantNames = new Set<string>()
+      const variants = Object.keys(entry.variants)
+        .sort()
+        .map((nodeId) => {
+          const alias = aliasByNode.get(nodeId)
+          const base =
+            nodeId === entry.defaultVariantNodeId
+              ? uniqueName("Default", variantNames)
+              : uniqueName(pascalName(alias ?? `variant ${nodeId}`), variantNames)
+          return { nodeId, exportName: base, alias }
+        })
+      return {
+        slug: uniqueName(kebabName(entry.name), slugs),
+        exportName: uniqueName(pascalName(entry.name), exports),
+        name: entry.name,
+        variants,
+      }
+    })
+}
+
+function iconComponentModule(
+  entry: IconManifestEntry,
+  plan: IconComponentPlan,
+  sources: Map<string, string>,
+): string {
+  const components = plan.variants.map(({ nodeId, exportName, alias }) => {
+    const source = sources.get(nodeId)
+    if (!source) throw new Error(`Missing local icon artwork for ${nodeId}`)
+    const element = svgToJsx(source, {
+      monochrome: entry.rendering !== "image",
+      idPrefix: `${kebabName(nodeId)}-`,
+      suffix: `data-figma-node-id="${nodeId}" {...props}`,
+    })
+    const description = alias ? `the \`${alias}\` variant` : "the default variant"
+    return `/** Source \`${nodeId}\`: ${description}. */\nexport function ${exportName}(props: SVGProps<SVGSVGElement>) {\n  return (\n    ${element}\n  )\n}`
+  })
+  const variants = plan.variants
+    .map(({ nodeId, exportName }) => `  "${nodeId}": ${exportName},`)
+    .join("\n")
+  const fallback =
+    plan.variants.find((variant) => variant.nodeId === entry.defaultVariantNodeId) ??
+    plan.variants[0]
+  return `${GENERATED_MARKER}\nimport type { SVGProps } from "react"\n\nimport type { IconVariantComponents } from "./types"\n\n// \`${plan.name}\` as inline SVG: one component per pinned variant, so a bundle\n// that imports one of them carries no other icon artwork.\n${components.join("\n\n")}\n\n/** Every pinned variant of \`${plan.name}\`, keyed by source node id. */\nexport const variants: IconVariantComponents = {\n${variants}\n}\n\nexport default ${fallback?.exportName ?? plan.exportName}\n`
+}
+
+function generateIconComponents(
+  expected: Record<string, IconManifestEntry>,
+  sources: Map<string, string>,
+): Map<string, string> {
+  const plans = iconComponentPlans(expected)
+  const files = new Map<string, string>()
+  files.set(
+    "types.ts",
+    `${GENERATED_MARKER}\nimport type { ReactElement, SVGProps } from "react"\n\n/** One pinned variant of a published icon, painted with \`currentColor\`. */\nexport type IconComponent = (props: SVGProps<SVGSVGElement>) => ReactElement\n\n/** The pinned variants of one published icon, keyed by source node id. */\nexport type IconVariantComponents = Record<string, IconComponent>\n`,
+  )
+  // The binding is a module identifier, not a display name: a slug that spells a
+  // reserved word (`delete`, `switch`) takes a suffix so the module still parses.
+  const bindings = new Map(plans.map((plan) => [plan.slug, `${camelName(plan.slug)}Variants`]))
+  const registry = plans.map(
+    (plan) => `import { variants as ${bindings.get(plan.slug)} } from "./${plan.slug}"`,
+  )
+  const entries = plans.map((plan) => `  ${propertyKey(plan.name)}: ${bindings.get(plan.slug)},`)
+  files.set(
+    "registry.ts",
+    `${GENERATED_MARKER}\nimport type { FigmaIconName } from "pagopa-ui-artwork"\n\nimport type { IconVariantComponents } from "./types"\n${registry.join("\n")}\n\n/**\n * Every published icon variant, by public name and pinned source node id. It is\n * the only module that imports the whole family: \`@pagopa/ui/icons\` exposes the\n * named components, so a consumer importing one of them ships one component.\n */\nexport const iconVariantsByName: Record<FigmaIconName, IconVariantComponents> = {\n${entries.join("\n")}\n}\n`,
+  )
+  files.set(
+    "index.ts",
+    `${GENERATED_MARKER}\n${plans
+      .map((plan) => `export { default as ${plan.exportName} } from "./${plan.slug}"`)
+      .join("\n")}\n\nexport type { IconComponent, IconVariantComponents } from "./types"\n`,
+  )
+  for (const plan of plans) {
+    const entry = Object.entries(expected).find(([, value]) => value.name === plan.name)
+    if (!entry) throw new Error(`Missing local icon entry for ${plan.name}`)
+    files.set(`${plan.slug}.tsx`, iconComponentModule(entry[1], plan, sources))
+  }
+  return files
+}
+
+function writeGeneratedIconFiles(context: IconContext, files: Map<string, string>): void {
+  const written = new Set<string>()
+  fs.mkdirSync(context.componentsDirectory, { recursive: true })
+  for (const [file, source] of files) {
+    const target = path.join(context.componentsDirectory, file)
+    fs.writeFileSync(target, source)
+    written.add(path.resolve(target))
+  }
+  for (const entry of fs.readdirSync(context.componentsDirectory, { withFileTypes: true })) {
+    const target = path.join(context.componentsDirectory, entry.name)
+    if (entry.isFile() && !written.has(path.resolve(target))) fs.rmSync(target)
+  }
+}
+
+function assertGeneratedIconFiles(context: IconContext, files: Map<string, string>): void {
+  for (const [file, source] of files) {
+    const target = path.join(context.componentsDirectory, file)
+    if (!fs.existsSync(target))
+      throw new Error(
+        `Missing local icon component ${file}; run "ui-cli update icons --input <snapshot>"`,
+      )
+    assertGeneratedModule(target, source, `Local icon component ${file}`)
+  }
+  for (const file of fs.readdirSync(context.componentsDirectory)) {
+    if (!files.has(file))
+      throw new Error(
+        `Stale local icon component ${file}; run "ui-cli update icons --input <snapshot>"`,
+      )
+  }
 }
 
 function writeIconFiles(
@@ -642,16 +810,21 @@ async function runIcons(
   const context = loadIconContext(workspace, input)
   const { expected, rendered } = expectedIconEntries(context, mode)
   const manifest = mode === "check" ? context.previousManifest : undefined
-  await verifyIconSources(mode, expected, manifest, context.directory, rendered)
+  const sources = await verifyIconSources(mode, expected, manifest, context.directory, rendered)
   const outputManifest = manifest ?? {
     fileKey: context.fileKey,
     version: context.snapshot.version ?? "",
     entries: expected,
   }
   const source = generateIconModule(expected)
-  if (mode === "check")
+  const components = generateIconComponents(expected, sources)
+  if (mode === "check") {
     assertGeneratedModule(context.sourceFile, source, "Generated local icon module")
-  else writeIconFiles(context, outputManifest, expected, rendered, source)
+    assertGeneratedIconFiles(context, components)
+  } else {
+    writeIconFiles(context, outputManifest, expected, rendered, source)
+    writeGeneratedIconFiles(context, components)
+  }
   const variants = Object.values(expected).reduce(
     (count, entry) => count + Object.keys(entry.variants).length,
     0,

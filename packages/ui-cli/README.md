@@ -30,6 +30,7 @@ compare it with the source code of the audited package, `packages/pagopa-ui`.
   `packages/artwork/src/assets/figma-icons/*`,
   `packages/artwork/src/assets/figma-pictograms/*`,
   `packages/artwork/src/components/icons/icon-assets.ts`,
+  `packages/pagopa-ui/src/components/icons/generated/*`,
   `packages/artwork/src/components/icons/pictogram-assets.ts` and
   `packages/artwork/src/components/icons/figma-inventory.ts`; the token
   generator owns `packages/tokens/src/manifest.json`, `packages/tokens/src/figma.generated.css`,

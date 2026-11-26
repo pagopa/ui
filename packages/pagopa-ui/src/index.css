@@ -355,7 +355,7 @@
       background-color: Highlight;
       color: HighlightText;
 
-      .pagopa-icon-mask {
+      .pagopa-icon {
         color: HighlightText;
       }
     }
@@ -379,25 +379,28 @@
       outline-offset: var(--figma-spacing-2);
     }
 
-    .pagopa-icon-mask {
+    /* The artwork paints with `currentColor`, so the inherited colour is the
+       one forced colours must preserve. */
+    .pagopa-icon {
+      forced-color-adjust: preserve-parent-color;
       color: inherit;
     }
 
     @supports not (forced-color-adjust: preserve-parent-color) {
-      .pagopa-icon-mask {
+      .pagopa-icon {
         forced-color-adjust: none;
         color: CanvasText;
       }
 
-      button .pagopa-icon-mask {
+      button .pagopa-icon {
         color: ButtonText;
       }
 
-      a:any-link .pagopa-icon-mask {
+      a:any-link .pagopa-icon {
         color: LinkText;
       }
 
-      a:visited .pagopa-icon-mask {
+      a:visited .pagopa-icon {
         color: VisitedText;
       }
     }
