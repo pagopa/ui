@@ -59,11 +59,11 @@ function DialogTemplate({
               // The mockup shows the resting state: the panel takes the open
               // focus instead of painting a ring on the first control.
               initialFocus={() => popupRef.current}
-              className="relative z-10 flex w-full max-w-(--pui-dialog-width-compact) flex-col gap-6 overflow-auto rounded-xl bg-background p-6 shadow-32 outline-none @3xl/dialog-page:max-w-(--pui-dialog-width)"
+              className="relative z-10 flex w-full max-w-(--pui-dialog-width-compact) flex-col gap-6 overflow-auto rounded-xl bg-background p-6 shadow-32 outline-none @min-page/dialog-page:max-w-(--pui-dialog-width)"
             >
               <div className="flex flex-col gap-2">
                 <div className="flex items-start gap-4">
-                  <Dialog.Title className="min-w-0 flex-1 text-title-xs-mobile @3xl/dialog-page:text-title-xs">
+                  <Dialog.Title className="min-w-0 flex-1 text-title-xs-mobile @min-page/dialog-page:text-title-xs">
                     {title}
                   </Dialog.Title>
                   <Dialog.Close
@@ -84,7 +84,7 @@ function DialogTemplate({
               {actions ? (
                 <div
                   data-slot="dialog-template-actions"
-                  className="flex flex-col-reverse gap-4 @3xl/dialog-page:flex-row @3xl/dialog-page:justify-end"
+                  className="flex flex-col-reverse gap-4 @min-page/dialog-page:flex-row @min-page/dialog-page:justify-end"
                 >
                   {actions}
                 </div>

@@ -33,7 +33,7 @@ const alertContentVariants = cva(
       direction: {
         vertical: "grid-cols-1 gap-y-4",
         horizontal:
-          "grid-cols-1 gap-y-4 @md/alert:grid-cols-[minmax(0,1fr)_auto] @md/alert:items-center @md/alert:gap-x-16 @md/alert:gap-y-0",
+          "grid-cols-1 gap-y-4 @min-compact/alert:grid-cols-[minmax(0,1fr)_auto] @min-compact/alert:items-center @min-compact/alert:gap-x-16 @min-compact/alert:gap-y-0",
       },
     },
     defaultVariants: {
