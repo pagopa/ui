@@ -82,10 +82,6 @@ export const RULES = {
   // spares `@md/alert:` container queries and any hyphenated token such as
   // `text-sm:` or `max-w-screen-sm:`.
   "default-breakpoint": /(?<![@\w-])(?:max-)?(?:sm|md|lg|xl|2xl):/g,
-  // Device typography pairs; frozen until a responsive type decision exists.
-  "mobile-text-class": /\btext-[a-z0-9-]+-mobile\b/g,
-  // Container sizes not backed by a Figma container token; frozen.
-  "default-container-query": /@(?:3xs|2xs|xs|sm|md|lg|xl|[2-7]xl)(?:\/[a-z-]+)?:/g,
 } as const
 
 export type RuleName = keyof typeof RULES

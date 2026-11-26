@@ -11,7 +11,7 @@ const meta = {
   title: "Components/Content/ListItem",
   component: ListItem,
   args: {
-    leading: <PagoPAIcon name="photo" className="text-(--figma-color-neutrals-grey-300)" />,
+    leading: <PagoPAIcon name="photo" className="pui:text-(--figma-color-neutrals-grey-300)" />,
     description: "Pagamento TARI 2025",
     value: "Accertamento 00016/2025",
   },
@@ -57,7 +57,7 @@ export const Playground: Story = {
   // of the source anatomy, and the 320px frame is `w-80` instead of the viewport.
   args: {
     chip: <Chip size="compact">Default</Chip>,
-    className: "w-80 max-w-full",
+    className: "pui:w-80 pui:max-w-full",
     onPress: () => undefined,
   },
   play: async ({ canvasElement }) => {
@@ -120,7 +120,7 @@ export const Transactional: Story = {
   args: {
     variant: "transactional",
     leading: (
-      <span className="grid size-11 place-items-center rounded-lg border">
+      <span className="pui:grid pui:size-11 pui:place-items-center pui:rounded-lg pui:border">
         <PagoPAIcon name="credit_card" />
       </span>
     ),
@@ -136,7 +136,7 @@ export const WithSuggestion: Story = {
   args: {
     variant: "transactional",
     leading: (
-      <span className="grid size-11 place-items-center rounded-lg border">
+      <span className="pui:grid pui:size-11 pui:place-items-center pui:rounded-lg pui:border">
         <PagoPAIcon name="credit_card" />
       </span>
     ),
@@ -160,7 +160,7 @@ export const Amount: Story = {
 export const ErrorState: Story = {
   args: {
     variant: "error",
-    leading: <PagoPAIcon name="report" className="text-destructive" />,
+    leading: <PagoPAIcon name="report" className="pui:text-destructive" />,
     value: "Avviso non trovato",
     description: undefined,
     helperText: "Controlla il codice avviso e riprova.",

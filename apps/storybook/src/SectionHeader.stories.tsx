@@ -66,7 +66,7 @@ export const Levels: Story = {
   // Reflow exemption: fixture pinned at the source width, not a product surface.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <div className="grid w-[min(42rem,calc(100vw-2rem))] gap-8">
+    <div className="pui:grid pui:w-[min(42rem,calc(100vw-2rem))] pui:gap-8">
       <SectionHeader
         level={1}
         icon={<PagoPAIcon name="credit_card" />}

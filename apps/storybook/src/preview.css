@@ -2,6 +2,16 @@
    plus the stories, the guides and this application's Storybook configuration.
    The package stylesheet scans the design system and the data packages; the
    published artifact narrows that surface in packages/pagopa-ui/src/library.css. */
+/* The demo surface only: the package stylesheet resets a component by its own
+   root (`[data-slot]`), which is what a host can coexist with. The stories also
+   write plain markup — a `<figure>`, a `<ul>`, a heading — that must measure
+   like the design rather than like the browser's defaults, so the documentation
+   surface takes the preflight the artifact deliberately leaves out. The layer
+   order is declared here so the preflight sits under both library layers: a
+   `border` utility still outranks the reset that zeroes the width. */
+@layer base, pagopa-ui.base, pagopa-ui.utilities;
+
+@import "tailwindcss/preflight.css" layer(base);
 @import "../../../packages/pagopa-ui/src/index.css";
 
 /* Demo geometry: the artboard heights, the frame widths and the grid columns

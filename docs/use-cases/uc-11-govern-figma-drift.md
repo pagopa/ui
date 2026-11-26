@@ -71,7 +71,7 @@ parent_dr: ../design-review.md
 - `AC-02`: When the drift is empty, no pull request is opened. - Evidence: `.github/workflows/figma-drift.yml`
 - `AC-03`: Every run with drift opens a single review pull request. - Evidence: `.github/workflows/figma-drift.yml`
 - `AC-04`: The review diff contains only the drift and the formatted regenerated data. - Evidence: `.github/workflows/figma-drift.yml` (formatting step)
-- `AC-05`: The rules ledger stays a reviewed change and not a generated one. - Evidence: `pnpm nx run pagopa-ui-cli:figma:rules -- plan`; `pnpm nx run pagopa-ui-cli:check:rules`
+- `AC-05`: The rules ledger stays a reviewed change and not a generated one. - Evidence: `pnpm nx run pagopa-ui-cli:figma:rules -- plan`; `pnpm nx run pagopa-ui-cli:check:rules --strict`
 - `AC-06`: The regenerated data passes every check that reads it. - Evidence: `pnpm nx run pagopa-ui:check:catalogue`; `pnpm nx run pagopa-ui-cli:check:rules`
 - `AC-07`: A person without a Figma token can read the drift state. - Evidence: `pnpm nx run pagopa-ui-cli:figma:status`
 

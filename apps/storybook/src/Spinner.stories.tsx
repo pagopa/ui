@@ -36,7 +36,7 @@ export const Sizes: Story = {
   // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <div className="flex items-center gap-8">
+    <div className="pui:flex pui:items-center pui:gap-8">
       <Spinner size="sm" label="Caricamento piccolo" />
       <Spinner label="Caricamento medio" />
       <Spinner size="lg" label="Caricamento grande" />
@@ -46,7 +46,7 @@ export const Sizes: Story = {
 
 export const ContrastSurface: Story = {
   render: () => (
-    <div className="w-fit rounded-lg bg-primary p-4">
+    <div className="pui:w-fit pui:rounded-lg pui:bg-primary pui:p-4">
       <Spinner variant="contrast" label="Caricamento su sfondo primario" />
     </div>
   ),
@@ -55,14 +55,17 @@ export const ContrastSurface: Story = {
 export const SpinnerBrandVariants: Story = {
   tags: ["color-pinned"],
   render: () => (
-    <div className="grid gap-4">
+    <div className="pui:grid pui:gap-4">
       <div data-testid="primary-spinner" aria-busy="true">
         <Spinner label="Caricamento principale" />
       </div>
-      <div data-testid="contrast-spinner-surface" className="w-fit rounded-lg bg-primary p-4">
+      <div
+        data-testid="contrast-spinner-surface"
+        className="pui:w-fit pui:rounded-lg pui:bg-primary pui:p-4"
+      >
         <Spinner variant="contrast" />
       </div>
-      <div data-testid="spinner-size-extensions" className="flex items-center gap-4">
+      <div data-testid="spinner-size-extensions" className="pui:flex pui:items-center pui:gap-4">
         <Spinner size="sm" />
         <Spinner size="lg" />
       </div>

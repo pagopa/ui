@@ -22,7 +22,7 @@ type BannerSourceArgs = Pick<
 function SourceBannerAction({ hierarchy }: Pick<BannerSourceArgs, "hierarchy">) {
   if (hierarchy === "secondary") {
     return (
-      <Button type="button" variant="default" className="min-h-12 px-6">
+      <Button type="button" variant="default" className="pui:min-h-12 pui:px-6">
         Vai all’iniziativa
       </Button>
     )
@@ -33,7 +33,7 @@ function SourceBannerAction({ hierarchy }: Pick<BannerSourceArgs, "hierarchy">) 
       <Button
         type="button"
         variant="ghost"
-        className="relative min-h-0 px-0 py-0 after:absolute after:inset-x-0 after:-inset-y-3"
+        className="pui:relative pui:min-h-0 pui:px-0 pui:py-0 pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-3"
       >
         Vai all’iniziativa
       </Button>
@@ -44,7 +44,7 @@ function SourceBannerAction({ hierarchy }: Pick<BannerSourceArgs, "hierarchy">) 
     <Button
       type="button"
       variant="link"
-      className="relative min-h-0 w-full justify-start px-0 py-0 after:absolute after:inset-x-0 after:-inset-y-3"
+      className="pui:relative pui:min-h-0 pui:w-full pui:justify-start pui:px-0 pui:py-0 pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-3"
     >
       Scopri di più
     </Button>
@@ -85,7 +85,7 @@ function SourceBannerCase({
       }
       icon={
         tertiary && color !== "grey" ? (
-          <PagoPAIcon name="emoji_objects" size={24} className="text-choice-icon" />
+          <PagoPAIcon name="emoji_objects" size={24} className="pui:text-choice-icon" />
         ) : undefined
       }
       pictogram={
@@ -147,7 +147,7 @@ export const Playground: Story = {
   // framed at `w-213` (852px) with the source close, chip, pictogram and action
   // per hierarchy instead of a bare title/body at the viewport width.
   render: (args) => (
-    <div className="w-213 max-w-full">
+    <div className="pui:w-213 pui:max-w-full">
       <SourceBannerCase
         color={args.color}
         hierarchy={args.hierarchy}
@@ -164,7 +164,7 @@ export const SourceHierarchies: Story = {
   // Reflow exemption: fixture pinned at the source width, not a product surface.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <div className="grid w-full gap-4">
+    <div className="pui:grid pui:w-full pui:gap-4">
       <SourceBannerCase color="white" hierarchy="primary" direction="horizontal" />
       <SourceBannerCase color="white" hierarchy="secondary" direction="horizontal" />
       <SourceBannerCase color="white" hierarchy="tertiary" direction="vertical" />
@@ -223,7 +223,7 @@ function DismissableBanner() {
           type="button"
           variant="default"
           size="sm"
-          className="min-h-12 px-6 text-label-mini font-semibold"
+          className="pui:min-h-12 pui:px-6 pui:text-label-mini pui:font-semibold"
         >
           Scopri di più
         </Button>
@@ -247,13 +247,13 @@ export const WithoutTitle: Story = {
   // The source `Title` boolean allows a banner with no heading; the region is
   // named by `label` instead of an empty heading.
   render: () => (
-    <div className="w-213 max-w-full">
+    <div className="pui:w-213 pui:max-w-full">
       <Banner
         color="white"
         hierarchy="secondary"
         label="Nuova comunicazione"
         actions={
-          <Button type="button" variant="default" size="sm" className="min-h-12 px-6">
+          <Button type="button" variant="default" size="sm" className="pui:min-h-12 pui:px-6">
             Scopri di più
           </Button>
         }

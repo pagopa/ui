@@ -311,18 +311,23 @@ export function rulesCommands(ctx: CliContext): SubCommandsDef {
 export function rulesCheckCommand(ctx: CliContext) {
   return defineCommand({
     meta: { name: "rules", description: "Check the rules ledger" },
-    args: { strict: { type: "boolean", default: true }, json: jsonArg },
+    args: {
+      strict: {
+        type: "boolean",
+        default: false,
+        description: "Fail on cards behind Figma instead of reporting them",
+      },
+      json: jsonArg,
+    },
     run: action(ctx, ({ strict, json }) => {
       const workspace = ctx.workspace()
       const result = checkRules(workspace, strict)
       if (json) printJson(ctx.io, result)
       else
-        printLines(ctx.io, {
-          [result.errors.length ? "err" : "out"]: formatRulesCheck(
-            result,
-            Boolean(readRulesSnapshot(workspace.root, false)),
-          ),
-        })
+        printLines(
+          ctx.io,
+          formatRulesCheck(result, Boolean(readRulesSnapshot(workspace.root, false))),
+        )
       return result.errors.length ? EXIT.failure : EXIT.ok
     }),
   })

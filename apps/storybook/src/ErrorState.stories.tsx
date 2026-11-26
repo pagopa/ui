@@ -56,7 +56,7 @@ const sourceArgs = {
           the invisible ::after expansion, so the column keeps the source rhythm. */}
       <Button
         variant="link"
-        className="relative min-h-0 px-0 after:absolute after:inset-x-0 after:-inset-y-3"
+        className="pui:relative pui:min-h-0 pui:px-0 pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-3"
       >
         Contatta l’assistenza
       </Button>

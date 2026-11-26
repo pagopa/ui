@@ -13,7 +13,7 @@ is clipped to the containing surface.
 ## Example
 
 ```tsx
-<section className="relative">
+<section className="pui:relative">
   <PaymentForm />
   <Overlay visible={isPaying} label="Pagamento in corso" />
 </section>

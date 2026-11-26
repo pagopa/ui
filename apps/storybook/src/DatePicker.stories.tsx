@@ -31,7 +31,7 @@ type Story = StoryObj<typeof meta>
 function SingleDateExample() {
   const [value, setValue] = useState(new Date(2026, 4, 11))
   return (
-    <div className="grid w-[310px] max-w-full gap-4">
+    <div className="pui:grid pui:w-[310px] pui:max-w-full pui:gap-4">
       <DatePicker value={value} onConfirm={setValue} onCancel={fn()} />
       <output aria-label="Data confermata">
         {value.toLocaleDateString("it-IT", {
@@ -123,7 +123,7 @@ function RangeDateExample() {
   })
 
   return (
-    <div className="grid w-[310px] max-w-full gap-4">
+    <div className="pui:grid pui:w-[310px] pui:max-w-full pui:gap-4">
       <DatePicker
         mode="range"
         label="Seleziona intervallo"
@@ -165,7 +165,7 @@ function ControlledDateExample() {
   const [value, setValue] = useState<Date | undefined>(new Date(2026, 4, 11))
   const [action, setAction] = useState("")
   return (
-    <div className="grid w-[310px] max-w-full gap-4">
+    <div className="pui:grid pui:w-[310px] pui:max-w-full pui:gap-4">
       <DatePicker
         value={value}
         today={new Date(2026, 4, 11)}
@@ -229,7 +229,7 @@ export const RangeValidation: Story = {
   render: () => (
     <DatePicker
       mode="range"
-      className="w-[310px] max-w-full"
+      className="pui:w-[310px] pui:max-w-full"
       today={new Date(2026, 4, 11)}
       onConfirm={confirmRange}
       onCancel={cancelRange}
@@ -313,8 +313,8 @@ function CalendarStatesExample() {
     to: new Date(2026, 4, 15),
   })
   return (
-    <div className="flex flex-wrap gap-6">
-      <fieldset className="min-w-0 w-85 max-w-full">
+    <div className="pui:flex pui:flex-wrap pui:gap-6">
+      <fieldset className="pui:min-w-0 pui:w-85 pui:max-w-full">
         <legend>Stati singoli</legend>
         <Calendar
           mode="single"
@@ -325,7 +325,7 @@ function CalendarStatesExample() {
           defaultMonth={date}
         />
       </fieldset>
-      <fieldset className="min-w-0 w-85 max-w-full">
+      <fieldset className="pui:min-w-0 pui:w-85 pui:max-w-full">
         <legend>Stati intervallo</legend>
         <Calendar
           mode="range"
@@ -439,7 +439,7 @@ export const FieldStates: Story = {
     design: { type: "figma", url: figmaEmbedUrl("8049:39452") },
   },
   render: () => (
-    <div className="grid w-[min(28rem,calc(100vw-2rem))] gap-6">
+    <div className="pui:grid pui:w-[min(28rem,calc(100vw-2rem))] pui:gap-6">
       <DatePickerField label="Data vuota" today={new Date(2026, 4, 11)} />
       <DatePickerField
         label="Data confermata"
@@ -516,7 +516,7 @@ export const FieldNativeForm: Story = {
   render: () => (
     <form
       aria-label="Appuntamento"
-      className="grid w-[min(28rem,calc(100vw-2rem))] gap-4"
+      className="pui:grid pui:w-[min(28rem,calc(100vw-2rem))] pui:gap-4"
       onSubmit={(event) => {
         event.preventDefault()
         submitDate(new FormData(event.currentTarget).get("appointment"))

@@ -1,11 +1,8 @@
 import type { Workspace } from "../../adapters/workspace.ts"
-import { readJson } from "../../lib/json.ts"
 import { readDevicePolicy } from "../../records/committed.ts"
-import { parseSchema } from "../../lib/validate.ts"
 import {
-  longNoteErrors,
-  NOTE_LENGTH_BASELINE_PATH,
-  NoteLengthBaselineSchema,
+  NOTE_LENGTH_LIMIT,
+  registryNotes,
   type Inventory,
   type InventoryNode,
   type PageSurface,
@@ -108,16 +105,14 @@ export function validatePageSurface(
   }
 }
 
-export function validateNoteBaseline(workspace: Workspace, registry: Registry): string[] {
-  try {
-    const baseline = parseSchema(
-      NoteLengthBaselineSchema,
-      readJson(workspace.path(NOTE_LENGTH_BASELINE_PATH)),
-      NOTE_LENGTH_BASELINE_PATH,
-    )
-    return longNoteErrors(registry, baseline, NOTE_LENGTH_BASELINE_PATH)
-  } catch (error) {
-    if (error instanceof Error && error.message.includes("ENOENT")) return []
-    return [`${NOTE_LENGTH_BASELINE_PATH}: ${errorMessage(error)}`]
-  }
+// The limit is what a writer is held to, not what a branch is: a note already
+// past it is reported once, with its count, so the residue stays visible without
+// stopping the commit that carries it.
+export function noteLengthWarnings(registry: Registry): string[] {
+  const notes = registryNotes(registry)
+  const long = notes.filter((note) => note.length > NOTE_LENGTH_LIMIT).length
+  if (long === 0) return []
+  return [
+    `${long} of ${notes.length} registry notes exceed ${NOTE_LENGTH_LIMIT} characters — shorten them with \`pnpm ui-cli figma registry set\`; the limit only refuses new ones`,
+  ]
 }

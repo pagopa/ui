@@ -14,7 +14,6 @@ export interface CatalogueRenderContext {
   live: InventoryNode[] | null
   committed: InventoryNode[]
   liveVersion?: string
-  ratchet: { from: number; to: number } | null
   devicePolicy: DevicePolicy | null
   deviceStats: DeviceStats | null
   bulkByNode: Map<string, { status?: string }>
@@ -84,7 +83,7 @@ function renderDevices(
   return lines
 }
 
-function reviewInstructions(ratchet: CatalogueRenderContext["ratchet"]): string[] {
+function reviewInstructions(): string[] {
   return [
     "",
     "## Instructions — review",
@@ -94,12 +93,6 @@ function reviewInstructions(ratchet: CatalogueRenderContext["ratchet"]): string[
     '1. still matches the source → set `status: "implemented"`;',
     "2. must change → update the component and its story in this PR, then set `implemented`;",
     "3. out of scope → set `excluded` with a reason.",
-    ...(ratchet
-      ? [
-          "",
-          `This refresh replaced the queued notes with the pending stub, so \`overLimit\` in \`src/catalog/figma/note-length-baseline.json\` ratcheted from ${ratchet.from} to ${ratchet.to}: a re-reviewed note stays under 600 characters, and the baseline is never raised.`,
-        ]
-      : []),
     "",
     "## Instructions — agent handoff",
     "",
@@ -216,7 +209,7 @@ function renderDriftNode(
 }
 
 export function renderCataloguePrBody(context: CatalogueRenderContext): string {
-  const { inventory, delta, ratchet } = context
+  const { inventory, delta } = context
   const date = new Date().toISOString().slice(0, 10)
   const changedVariants = new Map(
     delta.changedVariants.map((change) => [change.nodeId, change.class]),
@@ -241,7 +234,7 @@ export function renderCataloguePrBody(context: CatalogueRenderContext): string {
       "",
       `By page: ${[...pages].map(([page, count]) => `${page} (${count})`).join(" · ")}`,
     )
-  lines.push(...reviewInstructions(ratchet))
+  lines.push(...reviewInstructions())
   for (const [key, label] of classes) {
     const nodes = delta[key]
     if (!nodes.length) continue

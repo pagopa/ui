@@ -42,7 +42,7 @@ export const NotValid: Story = {
 export const ValidSource: Story = {
   parameters: { layout: "fullscreen", a11yContract: { reflow: false } },
   render: () => (
-    <div data-fidelity-variant="default" className="w-[166px]">
+    <div data-fidelity-variant="default" className="pui:w-[166px]">
       <CorrectionTag status="valid" />
     </div>
   ),
@@ -58,7 +58,7 @@ export const NotValidSource: Story = {
     design: { type: "figma", url: figmaEmbedUrl("9676:5455") },
   },
   render: () => (
-    <div data-fidelity-variant="default" className="w-[162px]">
+    <div data-fidelity-variant="default" className="pui:w-[162px]">
       <CorrectionTag status="not-valid" />
     </div>
   ),

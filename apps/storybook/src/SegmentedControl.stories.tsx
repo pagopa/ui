@@ -67,8 +67,8 @@ export const Playground: Story = {
 export const LongLabels: Story = {
   parameters: { layout: "fullscreen" },
   render: (args) => (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="min-w-0" style={{ width: 320, maxWidth: "100%" }}>
+    <div className="pui:flex pui:min-h-screen pui:items-center pui:justify-center">
+      <div className="pui:min-w-0" style={{ width: 320, maxWidth: "100%" }}>
         <ControlledSegmentedControl {...args} />
       </div>
     </div>

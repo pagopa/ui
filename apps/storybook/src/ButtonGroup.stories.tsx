@@ -136,10 +136,10 @@ export const DestructivePair: Story = {
 }
 
 const renderFidelityMatrix = () => (
-  <div className="grid justify-items-start gap-8">
+  <div className="pui:grid pui:justify-items-start pui:gap-8">
     <ButtonGroup
       aria-label="Azione singola"
-      className="w-fit"
+      className="pui:w-fit"
       data-fidelity-variant={fidelityVariant("123:4499")}
       orientation="vertical"
     >
@@ -148,40 +148,43 @@ const renderFidelityMatrix = () => (
 
     <ButtonGroup
       aria-label="Azioni impilate"
-      className="w-[312px] items-center"
+      className="pui:w-[312px] pui:items-center"
       data-fidelity-variant={fidelityVariant("123:4501")}
       orientation="vertical"
     >
-      <FidelityAction nodeId="123:4502" label="Primary" variant="default" className="w-full" />
+      <FidelityAction nodeId="123:4502" label="Primary" variant="default" className="pui:w-full" />
       <FidelityAction nodeId="123:4503" label="Action" variant="ghost" />
     </ButtonGroup>
 
     <ButtonGroup
       aria-label="Azioni mobile"
-      className="w-[312px] items-start"
+      className="pui:w-[312px] pui:items-start"
       data-fidelity-variant={fidelityVariant("123:4504")}
       orientation="vertical"
     >
       <FidelityAction nodeId="123:4507" label="Tertiary" variant="ghost" />
-      <div className="flex w-full gap-6" data-fidelity-subgroup={fidelityVariant("123:4504")}>
+      <div
+        className="pui:flex pui:w-full pui:gap-6"
+        data-fidelity-subgroup={fidelityVariant("123:4504")}
+      >
         <FidelityAction
           nodeId="123:4506"
           label="Secondary"
           variant="outline"
-          className="min-w-0 flex-1"
+          className="pui:min-w-0 pui:flex-1"
         />
         <FidelityAction
           nodeId="123:4505"
           label="Primary"
           variant="default"
-          className="min-w-0 flex-1"
+          className="pui:min-w-0 pui:flex-1"
         />
       </div>
     </ButtonGroup>
 
     <ButtonGroup
       aria-label="Azioni inline"
-      className="w-fit items-center"
+      className="pui:w-fit pui:items-center"
       data-fidelity-variant={fidelityVariant("123:4508")}
       orientation="horizontal"
     >
@@ -193,13 +196,13 @@ const renderFidelityMatrix = () => (
 
     <ButtonGroup
       aria-label="Azioni desktop"
-      className="w-[560px] items-center"
+      className="pui:w-[560px] pui:items-center"
       data-fidelity-variant={fidelityVariant("2939:34214")}
       orientation="horizontal"
     >
       <FidelityAction nodeId="2939:34215" label="Tertiary" variant="ghost" />
       <div
-        className="ml-auto flex flex-1 justify-end gap-6"
+        className="pui:ml-auto pui:flex pui:flex-1 pui:justify-end pui:gap-6"
         data-fidelity-subgroup={fidelityVariant("2939:34216")}
       >
         <FidelityAction nodeId="2939:34218" label="Secondary" variant="outline" />
@@ -209,23 +212,23 @@ const renderFidelityMatrix = () => (
 
     <ButtonGroup
       aria-label="Azioni desktop secondarie"
-      className="w-[560px] items-center"
+      className="pui:w-[560px] pui:items-center"
       data-fidelity-variant={fidelityVariant("2939:34947")}
       orientation="horizontal"
     >
       <FidelityAction nodeId="2939:34958" label="Secondary" variant="outline" />
       <div
-        className="ml-auto flex flex-1 justify-end"
+        className="pui:ml-auto pui:flex pui:flex-1 pui:justify-end"
         data-fidelity-subgroup={fidelityVariant("2939:34949")}
       >
         <FidelityAction nodeId="2939:34951" label="Primary" variant="default" />
       </div>
     </ButtonGroup>
 
-    <div className="w-40">
+    <div className="pui:w-40">
       <ButtonGroup
         aria-label="Azioni con larghezza ridotta"
-        className="w-full"
+        className="pui:w-full"
         data-fidelity-reflow
         orientation="horizontal"
       >

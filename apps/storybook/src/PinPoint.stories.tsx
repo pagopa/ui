@@ -35,7 +35,7 @@ type Story = StoryObj<typeof meta>
 
 function MapSurface({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative min-h-72 w-[min(32rem,calc(100vw-2rem))] rounded-xl bg-blue-50">
+    <div className="pui:relative pui:min-h-72 pui:w-[min(32rem,calc(100vw-2rem))] pui:rounded-xl pui:bg-blue-50">
       {children}
     </div>
   )
@@ -72,7 +72,7 @@ export const PinPointSelection: Story = {
 // The source set frames every variant in the same 48x61 box and draws no map
 // surface around it: the fixture is that frame alone.
 function SourceFrame({ children }: { children: React.ReactNode }) {
-  return <div className="relative h-[61px] w-12 bg-white">{children}</div>
+  return <div className="pui:relative pui:h-[61px] pui:w-12 pui:bg-white">{children}</div>
 }
 
 export const SourceDefault: Story = {

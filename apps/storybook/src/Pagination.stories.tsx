@@ -13,7 +13,7 @@ const selectEmptyPage = fn()
 // would otherwise collapse it: give the examples a real content width, capped
 // by the canvas so a narrow viewport never pushes it past the root.
 const contentWidth: Decorator = (Story) => (
-  <div className="w-[min(48rem,calc(100vw-2rem))] max-w-full">
+  <div className="pui:w-[min(48rem,calc(100vw-2rem))] pui:max-w-full">
     <Story />
   </div>
 )
@@ -21,7 +21,7 @@ const contentWidth: Decorator = (Story) => (
 // The page-position variants are 836 wide in the source: frame them at that
 // width so the capture compares the same box.
 const sourceFrame: Decorator = (Story) => (
-  <div className="w-[836px] max-w-full">
+  <div className="pui:w-[836px] pui:max-w-full">
     <Story />
   </div>
 )
@@ -90,7 +90,7 @@ export const LastPage: Story = {
 function InteractivePagination() {
   const [page, setPage] = React.useState(4)
   return (
-    <div className="grid gap-3">
+    <div className="pui:grid pui:gap-3">
       <Pagination currentPage={page} totalPages={12} onPageChange={setPage} />
       <output>Pagina selezionata: {page}</output>
     </div>
@@ -113,15 +113,15 @@ export const Interactive: Story = {
 // story, so the threshold is proven side by side.
 export const CollapseWidth: Story = {
   render: () => (
-    <div className="grid w-full grid-cols-1 gap-6">
+    <div className="pui:grid pui:w-full pui:grid-cols-1 pui:gap-6">
       {[
-        { width: 899, className: "w-[899px]" },
-        { width: 900, className: "w-[900px]" },
+        { width: 899, className: "pui:w-[899px]" },
+        { width: 900, className: "pui:w-[900px]" },
       ].map((region) => (
         <div
           key={region.width}
           data-pagination-width={region.width}
-          className={`max-w-full ${region.className}`}
+          className={`pui:max-w-full ${region.className}`}
         >
           <Pagination
             currentPage={4}
@@ -164,7 +164,7 @@ export const CollapseWidth: Story = {
 // One page has nothing to move through: the control renders nothing at all.
 export const SinglePage: Story = {
   render: () => (
-    <div className="grid gap-3">
+    <div className="pui:grid pui:gap-3">
       <p>Solo una pagina: il controllo non compare.</p>
       <Pagination currentPage={1} totalPages={1} onPageChange={selectEmptyPage} />
     </div>
@@ -179,7 +179,7 @@ export const SinglePage: Story = {
 
 export const PaginationEmpty: Story = {
   render: () => (
-    <div className="grid gap-3">
+    <div className="pui:grid pui:gap-3">
       <p>Nessun risultato: il controllo non compare.</p>
       <Pagination currentPage={1} totalPages={0} onPageChange={selectEmptyPage} />
     </div>

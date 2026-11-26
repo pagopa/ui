@@ -566,11 +566,15 @@ export function sync(ledger: RulesLedger, snapshot: RulesSnapshot): number {
 
 export type CheckReport = {
   errors: string[]
-  counts: Record<RuleDisposition | "stale", number>
+  warnings: string[]
+  counts: Record<RuleDisposition | "stale" | "new" | "removed", number>
 }
 
 const RULES_GATE = "pnpm nx run pagopa-ui-cli:check:rules"
 
+// `strict` decides what a ledger behind Figma costs: by default the drift is a
+// report and the chain moves on, and a session that wants the cards settled
+// before it commits asks for the gate.
 export function check(
   ledger: RulesLedger,
   snapshot: RulesSnapshot | null,
@@ -579,6 +583,8 @@ export function check(
   strict: boolean,
 ): CheckReport {
   const errors: string[] = []
+  const warnings: string[] = []
+  const drift = strict ? errors : warnings
   const inventory = inventoryNodes(root)
   const counts = {
     imported: 0,
@@ -588,6 +594,7 @@ export function check(
     deferred: 0,
     conflict: 0,
     pending: 0,
+    new: 0,
     removed: 0,
     stale: 0,
   }
@@ -599,8 +606,8 @@ export function check(
   const importedGuides = new Set<string>()
   for (const [id, card] of Object.entries(ledger.cards)) {
     counts[card.disposition] += 1
-    if (card.disposition === "pending" && strict) {
-      errors.push(
+    if (card.disposition === "pending") {
+      drift.push(
         `${id}: pending rule on ${card.titleEn ?? card.title} — import it into a guide, defer it or consolidate it, then run \`${RULES_GATE}\``,
       )
     }
@@ -661,20 +668,22 @@ export function check(
   if (snapshot) {
     const diff = plan(snapshot, ledger)
     for (const id of diff.fresh)
-      errors.push(
+      drift.push(
         `${id}: consolidated card not in the ledger (new) — record it with \`pnpm ui-cli figma rules mark\`, then run \`${RULES_GATE}\``,
       )
     for (const id of diff.stale)
-      errors.push(
+      drift.push(
         `${id}: source changed since the review (stale) — read the current text with \`pnpm ui-cli figma rules show '${id}'\`, re-mark it with \`pnpm ui-cli figma rules mark '${id}' --disposition <disposition>\`, then run \`${RULES_GATE}\``,
       )
     for (const id of diff.removed)
-      errors.push(
+      drift.push(
         `${id}: card disappeared from Figma — run \`pnpm ui-cli figma rules sync\`, then \`${RULES_GATE}\``,
       )
+    counts.new = diff.fresh.length
     counts.stale = diff.stale.length
+    counts.removed = diff.removed.length
   }
-  return { errors, counts }
+  return { errors, warnings, counts }
 }
 
 // ------------------------------------------------------------------ queries

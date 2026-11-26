@@ -91,33 +91,33 @@ const sourceParagraph =
 function SourceDescription() {
   return (
     <>
-      <p className="mb-3 text-body">{sourceParagraph}</p>
-      <p className="mb-3 text-body">{sourceParagraph}</p>
+      <p className="pui:mb-3 pui:text-body">{sourceParagraph}</p>
+      <p className="pui:mb-3 pui:text-body">{sourceParagraph}</p>
       <a
         data-slot="drawer-source-link"
-        className="font-semibold text-primary underline"
+        className="pui:font-semibold pui:text-primary pui:underline"
         href="#manuale"
       >
         Dubbi? Vai al manuale
       </a>
-      <p className="mt-5 text-body">{sourceParagraph}</p>
+      <p className="pui:mt-5 pui:text-body">{sourceParagraph}</p>
     </>
   )
 }
 
 function SourceFrame({ direction }: { direction: "bottom" | "right" }) {
   return (
-    <div className="min-h-screen w-full">
+    <div className="pui:min-h-screen pui:w-full">
       <Drawer
         trigger={
-          <Button className="sr-only" tabIndex={-1} aria-hidden="true">
+          <Button className="pui:sr-only" tabIndex={-1} aria-hidden="true">
             Apri pannello sorgente
           </Button>
         }
         title="Drawer title"
         description={<SourceDescription />}
-        icon={<PagoPAIcon name="flag" size={40} className="text-primary" />}
-        footer={<Button className="w-full tablet:w-auto">Primary</Button>}
+        icon={<PagoPAIcon name="flag" size={40} className="pui:text-primary" />}
+        footer={<Button className="pui:w-full pui:tablet:w-auto">Primary</Button>}
         footerPlacement="flow"
         showHandle={false}
         direction={direction}
@@ -306,7 +306,7 @@ function PanelContractHarness() {
   const [panel, setPanel] = React.useState<HTMLDivElement | null>(null)
 
   const forwarded = panel
-    ? `class=${panel.classList.contains("w-80") ? "inoltrata" : "assente"} attribute=${panel.dataset.contractSlot ?? "assente"}`
+    ? `class=${panel.classList.contains("pui:w-80") ? "inoltrata" : "assente"} attribute=${panel.dataset.contractSlot ?? "assente"}`
     : "nessun pannello"
 
   return (
@@ -317,7 +317,7 @@ function PanelContractHarness() {
         open={open}
         onOpenChange={setOpen}
         title="Pannello con contratto inoltrato"
-        className="w-80"
+        className="pui:w-80"
         data-contract-slot="drawer"
         direction="bottom"
       />

@@ -44,9 +44,9 @@ function Brand() {
   return (
     <a
       href="#main-content"
-      className="flex items-center gap-2 text-body-sb text-primary focus-visible:outline-2"
+      className="pui:flex pui:items-center pui:gap-2 pui:text-body-sb pui:text-primary pui:focus-visible:outline-2"
     >
-      <span className="grid size-8 place-items-center rounded-full bg-primary text-label-mini text-primary-foreground">
+      <span className="pui:grid pui:size-8 pui:place-items-center pui:rounded-full pui:bg-primary pui:text-label-mini pui:text-primary-foreground">
         p
       </span>
       pagoPA
@@ -56,13 +56,13 @@ function Brand() {
 
 function AppHeader({ compact = false }: { compact?: boolean }) {
   return (
-    <header className="border-b bg-background">
-      <div className="mx-auto flex min-h-16 max-w-7xl items-center gap-4 px-4 tablet:px-6 desktop:px-8">
+    <header className="pui:border-b pui:bg-background">
+      <div className="pui:mx-auto pui:flex pui:min-h-16 pui:max-w-7xl pui:items-center pui:gap-4 pui:px-4 pui:tablet:px-6 pui:desktop:px-8">
         <Brand />
         {!compact ? (
           <nav
             aria-label="Navigazione principale"
-            className="ml-auto hidden items-center gap-1 tablet-md:flex"
+            className="pui:ml-auto pui:hidden pui:items-center pui:gap-1 pui:tablet-md:flex"
           >
             <Button variant="ghost">
               <PagoPAIcon name="account_balance" aria-hidden="true" />
@@ -74,14 +74,14 @@ function AppHeader({ compact = false }: { compact?: boolean }) {
             </Button>
           </nav>
         ) : null}
-        <div className="ml-auto flex items-center gap-1 tablet-md:ml-0">
+        <div className="pui:ml-auto pui:flex pui:items-center pui:gap-1 pui:tablet-md:ml-0">
           <Button variant="ghost" size="icon" aria-label="Notifiche">
             <PagoPAIcon name="notifications_active" aria-hidden="true" />
           </Button>
           <Button variant="ghost" size="icon" aria-label="Profilo">
             <PagoPAIcon name="person" aria-hidden="true" />
           </Button>
-          <Button variant="ghost" size="icon" aria-label="Menu" className="tablet-md:hidden">
+          <Button variant="ghost" size="icon" aria-label="Menu" className="pui:tablet-md:hidden">
             <PagoPAIcon name="menu" aria-hidden="true" />
           </Button>
         </div>
@@ -92,7 +92,7 @@ function AppHeader({ compact = false }: { compact?: boolean }) {
 
 function Actions({ config }: { config: TemplateConfig }) {
   return (
-    <div className="flex flex-wrap gap-3">
+    <div className="pui:flex pui:flex-wrap pui:gap-3">
       {config.primaryAction ? (
         <Button>
           {config.primaryAction}
@@ -107,18 +107,20 @@ function Actions({ config }: { config: TemplateConfig }) {
 function LandingBody({ config }: { config: TemplateConfig }) {
   return (
     <>
-      <section className="grid items-center gap-8 py-8 tablet-md:grid-cols-2 tablet-md:py-16">
+      <section className="pui:grid pui:items-center pui:gap-8 pui:py-8 pui:tablet-md:grid-cols-2 pui:tablet-md:py-16">
         <div>
           <InputChip>{config.eyebrow || "Servizi pubblici digitali"}</InputChip>
-          <h1 className="mt-5 text-title-lg tablet:text-title-xxl">{config.title}</h1>
-          <p className="mt-4 max-w-xl text-body text-muted-foreground">{config.description}</p>
-          <div className="mt-6">
+          <h1 className="pui:mt-5 pui:text-title-lg pui:tablet:text-title-xxl">{config.title}</h1>
+          <p className="pui:mt-4 pui:max-w-xl pui:text-body pui:text-muted-foreground">
+            {config.description}
+          </p>
+          <div className="pui:mt-6">
             <Actions config={config} />
           </div>
         </div>
-        <div className="min-h-72 rounded-3xl bg-gradient-to-br from-primary to-brand-cyan p-8 text-primary-foreground">
-          <p className="text-label-mini-sb uppercase">In evidenza</p>
-          <p className="mt-20 text-title-sm">Semplice, sicuro, accessibile.</p>
+        <div className="pui:min-h-72 pui:rounded-3xl pui:bg-gradient-to-br pui:from-primary pui:to-brand-cyan pui:p-8 pui:text-primary-foreground">
+          <p className="pui:text-label-mini-sb pui:uppercase">In evidenza</p>
+          <p className="pui:mt-20 pui:text-title-sm">Semplice, sicuro, accessibile.</p>
         </div>
       </section>
       <FeatureList
@@ -140,7 +142,7 @@ function LandingBody({ config }: { config: TemplateConfig }) {
             icon: <PagoPAIcon name="check_circle" />,
           },
         ]}
-        className="py-8 tablet-md:grid-cols-3"
+        className="pui:py-8 pui:tablet-md:grid-cols-3"
       />
     </>
   )
@@ -149,20 +151,20 @@ function LandingBody({ config }: { config: TemplateConfig }) {
 function DashboardBody({ config }: { config: TemplateConfig }) {
   return (
     <>
-      <div className="flex flex-wrap items-end justify-between gap-4">
+      <div className="pui:flex pui:flex-wrap pui:items-end pui:justify-between pui:gap-4">
         <div>
-          <p className="text-label-sb text-primary">{config.eyebrow}</p>
-          <h1 className="text-title-sm">{config.title}</h1>
-          <p className="text-muted-foreground">{config.description}</p>
+          <p className="pui:text-label-sb pui:text-primary">{config.eyebrow}</p>
+          <h1 className="pui:text-title-sm">{config.title}</h1>
+          <p className="pui:text-muted-foreground">{config.description}</p>
         </div>
         <Actions config={config} />
       </div>
-      <div className="grid gap-4 tablet:grid-cols-2 desktop:grid-cols-3">
+      <div className="pui:grid pui:gap-4 pui:tablet:grid-cols-2 pui:desktop:grid-cols-3">
         <ProgressKpi label="Pagamenti completati" value={84} detail="Ultimi 30 giorni" />
         <ProgressKpi label="Servizi attivi" value={12} total={16} />
         <ProgressKpi label="Richieste gestite" value={236} total={300} />
       </div>
-      <div className="grid gap-6 desktop:grid-cols-[1fr_var(--pui-grid-aside)]">
+      <div className="pui:grid pui:gap-6 pui:desktop:grid-cols-[1fr_var(--pui-grid-aside)]">
         <TableList
           label="Attività recenti"
           rows={[
@@ -182,32 +184,36 @@ function DashboardBody({ config }: { config: TemplateConfig }) {
 
 function FormBody({ config, wizard = false }: { config: TemplateConfig; wizard?: boolean }) {
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="pui:mx-auto pui:max-w-3xl">
       {wizard ? (
-        <div className="mb-6">
-          <div className="flex justify-between text-label-mini">
+        <div className="pui:mb-6">
+          <div className="pui:flex pui:justify-between pui:text-label-mini">
             <span>Passaggio 2 di 4</span>
             <span>50%</span>
           </div>
-          <Progress value={50} aria-label="Avanzamento del modulo: 50%" className="mt-2 h-2" />
+          <Progress
+            value={50}
+            aria-label="Avanzamento del modulo: 50%"
+            className="pui:mt-2 pui:h-2"
+          />
         </div>
       ) : null}
-      <p className="text-label-sb text-primary">{config.eyebrow}</p>
-      <h1 className="text-title-sm">{config.title}</h1>
-      <p className="mt-2 text-muted-foreground">{config.description}</p>
-      <form className="mt-8 space-y-6" onSubmit={(event) => event.preventDefault()}>
-        <label className="grid gap-2 text-label-sb">
+      <p className="pui:text-label-sb pui:text-primary">{config.eyebrow}</p>
+      <h1 className="pui:text-title-sm">{config.title}</h1>
+      <p className="pui:mt-2 pui:text-muted-foreground">{config.description}</p>
+      <form className="pui:mt-8 pui:space-y-6" onSubmit={(event) => event.preventDefault()}>
+        <label className="pui:grid pui:gap-2 pui:text-label-sb">
           Nome e cognome
           <Input name="name" autoComplete="name" placeholder="Mario Rossi" />
         </label>
-        <label className="grid gap-2 text-label-sb">
+        <label className="pui:grid pui:gap-2 pui:text-label-sb">
           Email
           <Input name="email" type="email" autoComplete="email" placeholder="nome@esempio.it" />
         </label>
-        <fieldset className="rounded-xl border p-4">
-          <legend className="px-2 text-label-sb">Preferenze</legend>
-          <label className="flex min-h-11 items-center gap-3">
-            <input type="checkbox" className="size-5" /> Ricevi aggiornamenti sul servizio
+        <fieldset className="pui:rounded-xl pui:border pui:p-4">
+          <legend className="pui:px-2 pui:text-label-sb">Preferenze</legend>
+          <label className="pui:flex pui:min-h-11 pui:items-center pui:gap-3">
+            <input type="checkbox" className="pui:size-5" /> Ricevi aggiornamenti sul servizio
           </label>
         </fieldset>
         <Actions config={config} />
@@ -218,24 +224,27 @@ function FormBody({ config, wizard = false }: { config: TemplateConfig; wizard?:
 
 function AuthBody({ config }: { config: TemplateConfig }) {
   return (
-    <div className="mx-auto grid max-w-5xl overflow-hidden rounded-2xl border bg-card shadow-sm tablet-md:grid-cols-2">
-      <div className="bg-primary p-8 text-primary-foreground tablet-md:p-12">
+    <div className="pui:mx-auto pui:grid pui:max-w-5xl pui:overflow-hidden pui:rounded-2xl pui:border pui:bg-card pui:shadow-1 pui:tablet-md:grid-cols-2">
+      <div className="pui:bg-primary pui:p-8 pui:text-primary-foreground pui:tablet-md:p-12">
         <Brand />
-        <h1 className="mt-16 text-title-lg">{config.title}</h1>
-        <p className="mt-4 text-primary-foreground/85">{config.description}</p>
+        <h1 className="pui:mt-16 pui:text-title-lg">{config.title}</h1>
+        <p className="pui:mt-4 pui:text-primary-foreground/85">{config.description}</p>
       </div>
-      <form className="space-y-5 p-8 tablet-md:p-12" onSubmit={(event) => event.preventDefault()}>
-        <h2 className="text-title-xs">Accedi al servizio</h2>
-        <label className="grid gap-2 text-label-sb">
+      <form
+        className="pui:space-y-5 pui:p-8 pui:tablet-md:p-12"
+        onSubmit={(event) => event.preventDefault()}
+      >
+        <h2 className="pui:text-title-xs">Accedi al servizio</h2>
+        <label className="pui:grid pui:gap-2 pui:text-label-sb">
           Email
           <Input type="email" autoComplete="email" />
         </label>
-        <label className="grid gap-2 text-label-sb">
+        <label className="pui:grid pui:gap-2 pui:text-label-sb">
           Password
           <Input type="password" autoComplete="current-password" />
         </label>
-        <Button className="w-full">Accedi</Button>
-        <Button variant="outline" className="w-full">
+        <Button className="pui:w-full">Accedi</Button>
+        <Button variant="outline" className="pui:w-full">
           Entra con SPID
         </Button>
       </form>
@@ -251,25 +260,25 @@ function ListBody({ config, table = false }: { config: TemplateConfig; table?: b
   ]
   return (
     <>
-      <div className="flex flex-wrap items-end justify-between gap-4">
+      <div className="pui:flex pui:flex-wrap pui:items-end pui:justify-between pui:gap-4">
         <div>
-          <h1 className="text-title-sm">{config.title}</h1>
-          <p className="text-muted-foreground">{config.description}</p>
+          <h1 className="pui:text-title-sm">{config.title}</h1>
+          <p className="pui:text-muted-foreground">{config.description}</p>
         </div>
         <Actions config={config} />
       </div>
-      <label className="relative block max-w-xl">
-        <span className="sr-only">Cerca</span>
+      <label className="pui:relative pui:block pui:max-w-xl">
+        <span className="pui:sr-only">Cerca</span>
         <PagoPAIcon
           name="search"
           aria-hidden="true"
-          className="absolute top-3 left-3 size-5 text-muted-foreground"
+          className="pui:absolute pui:top-3 pui:left-3 pui:size-5 pui:text-muted-foreground"
         />
-        <Input className="pl-10" placeholder="Cerca per nome o identificativo" type="search" />
+        <Input className="pui:pl-10" placeholder="Cerca per nome o identificativo" type="search" />
       </label>
       {table ? (
-        <div className="overflow-hidden rounded-xl border">
-          <div className="hidden grid-cols-[1fr_var(--pui-grid-fields)_var(--pui-grid-actions)] gap-4 bg-muted p-4 text-label-sb tablet:grid">
+        <div className="pui:overflow-hidden pui:rounded-xl pui:border">
+          <div className="pui:hidden pui:grid-cols-[1fr_var(--pui-grid-fields)_var(--pui-grid-actions)] pui:gap-4 pui:bg-muted pui:p-4 pui:text-label-sb pui:tablet:grid">
             <span>Elemento</span>
             <span>Stato</span>
             <span />
@@ -304,27 +313,27 @@ function ListBody({ config, table = false }: { config: TemplateConfig; table?: b
 
 function DetailBody({ config }: { config: TemplateConfig }) {
   return (
-    <div className="grid gap-8 desktop:grid-cols-[1fr_var(--pui-grid-aside)]">
+    <div className="pui:grid pui:gap-8 pui:desktop:grid-cols-[1fr_var(--pui-grid-aside)]">
       <article>
-        <p className="text-label-sb text-primary">{config.eyebrow}</p>
-        <h1 className="text-title-lg">{config.title}</h1>
-        <p className="mt-3 text-body text-muted-foreground">{config.description}</p>
-        <div className="mt-8 rounded-xl border p-6">
-          <h2 className="text-h4">Dettagli</h2>
-          <dl className="mt-4 grid gap-4 tablet:grid-cols-2">
+        <p className="pui:text-label-sb pui:text-primary">{config.eyebrow}</p>
+        <h1 className="pui:text-title-lg">{config.title}</h1>
+        <p className="pui:mt-3 pui:text-body pui:text-muted-foreground">{config.description}</p>
+        <div className="pui:mt-8 pui:rounded-xl pui:border pui:p-6">
+          <h2 className="pui:text-h4">Dettagli</h2>
+          <dl className="pui:mt-4 pui:grid pui:gap-4 pui:tablet:grid-cols-2">
             <div>
-              <dt className="text-label-mini text-muted-foreground">Identificativo</dt>
-              <dd className="text-body-sb">PPA-2026-00421</dd>
+              <dt className="pui:text-label-mini pui:text-muted-foreground">Identificativo</dt>
+              <dd className="pui:text-body-sb">PPA-2026-00421</dd>
             </div>
             <div>
-              <dt className="text-label-mini text-muted-foreground">Stato</dt>
+              <dt className="pui:text-label-mini pui:text-muted-foreground">Stato</dt>
               <dd>
                 <Tag status="success">Attivo</Tag>
               </dd>
             </div>
           </dl>
         </div>
-        <div className="mt-8">
+        <div className="pui:mt-8">
           <Timeline
             items={[
               { id: 1, title: "Richiesta inviata", dot: "outlined" },
@@ -334,9 +343,9 @@ function DetailBody({ config }: { config: TemplateConfig }) {
           />
         </div>
       </article>
-      <aside aria-label="Azioni" className="h-fit rounded-xl border p-5">
-        <h2 className="text-label-sb">Azioni disponibili</h2>
-        <div className="mt-4">
+      <aside aria-label="Azioni" className="pui:h-fit pui:rounded-xl pui:border pui:p-5">
+        <h2 className="pui:text-label-sb">Azioni disponibili</h2>
+        <div className="pui:mt-4">
           <Actions config={config} />
         </div>
       </aside>
@@ -346,26 +355,26 @@ function DetailBody({ config }: { config: TemplateConfig }) {
 
 function DrawerBody({ config }: { config: TemplateConfig }) {
   return (
-    <div className="relative min-h-128 overflow-hidden rounded-xl border bg-muted">
-      <div className="p-8 opacity-60">
-        <h1 className="text-title-sm">Contenuto della pagina</h1>
-        <p className="mt-2">Il pannello mantiene visibile il contesto sottostante.</p>
+    <div className="pui:relative pui:min-h-128 pui:overflow-hidden pui:rounded-xl pui:border pui:bg-muted">
+      <div className="pui:p-8 pui:opacity-60">
+        <h1 className="pui:text-title-sm">Contenuto della pagina</h1>
+        <p className="pui:mt-2">Il pannello mantiene visibile il contesto sottostante.</p>
       </div>
       <aside
         aria-label={config.title}
-        className="absolute inset-y-0 right-0 flex w-(--pui-drawer-width) max-w-[88%] flex-col bg-background shadow-xl"
+        className="pui:absolute pui:inset-y-0 pui:right-0 pui:flex pui:w-(--pui-drawer-width) pui:max-w-[88%] pui:flex-col pui:bg-background pui:shadow-32"
       >
-        <header className="border-b p-6">
-          <p className="text-label-mini-sb text-primary">{config.eyebrow}</p>
-          <h1 className="text-title-xs">{config.title}</h1>
-          <p className="text-muted-foreground">{config.description}</p>
+        <header className="pui:border-b pui:p-6">
+          <p className="pui:text-label-mini-sb pui:text-primary">{config.eyebrow}</p>
+          <h1 className="pui:text-title-xs">{config.title}</h1>
+          <p className="pui:text-muted-foreground">{config.description}</p>
         </header>
-        <div className="flex-1 space-y-4 overflow-auto p-6">
+        <div className="pui:flex-1 pui:space-y-4 pui:overflow-auto pui:p-6">
           <ListItem value="Prima opzione" chevron />
           <ListItem value="Seconda opzione" chevron />
           <ListItem value="Terza opzione" chevron />
         </div>
-        <footer className="border-t p-6">
+        <footer className="pui:border-t pui:p-6">
           <Actions config={config} />
         </footer>
       </aside>
@@ -375,19 +384,22 @@ function DrawerBody({ config }: { config: TemplateConfig }) {
 
 function RecapBody({ config }: { config: TemplateConfig }) {
   return (
-    <div className="mx-auto max-w-3xl">
-      <PagoPAIcon name="check_circle" aria-hidden="true" className="size-14 text-success" />
-      <h1 className="mt-4 text-title-lg">{config.title}</h1>
-      <p className="mt-2 text-body text-muted-foreground">{config.description}</p>
-      <dl className="my-8 rounded-xl border">
+    <div className="pui:mx-auto pui:max-w-3xl">
+      <PagoPAIcon name="check_circle" aria-hidden="true" className="pui:size-14 pui:text-success" />
+      <h1 className="pui:mt-4 pui:text-title-lg">{config.title}</h1>
+      <p className="pui:mt-2 pui:text-body pui:text-muted-foreground">{config.description}</p>
+      <dl className="pui:my-8 pui:rounded-xl pui:border">
         {[
           ["Servizio", "Pagamento spontaneo"],
           ["Importo", "€ 42,00"],
           ["Identificativo", "PPA-2026-00421"],
         ].map(([term, value]) => (
-          <div key={term} className="grid grid-cols-2 gap-4 border-b p-4 last:border-0">
-            <dt className="text-muted-foreground">{term}</dt>
-            <dd className="text-right text-body-sb">{value}</dd>
+          <div
+            key={term}
+            className="pui:grid pui:grid-cols-2 pui:gap-4 pui:border-b pui:p-4 pui:last:border-0"
+          >
+            <dt className="pui:text-muted-foreground">{term}</dt>
+            <dd className="pui:text-right pui:text-body-sb">{value}</dd>
           </div>
         ))}
       </dl>
@@ -398,15 +410,17 @@ function RecapBody({ config }: { config: TemplateConfig }) {
 
 function LegalBody({ config }: { config: TemplateConfig }) {
   return (
-    <article className="mx-auto max-w-3xl">
-      <p className="text-label-mini-sb text-primary">Ultimo aggiornamento: 5 ottobre 2026</p>
-      <h1 className="mt-2 text-title-lg">{config.title}</h1>
-      <p className="mt-4 text-body text-muted-foreground">{config.description}</p>
+    <article className="pui:mx-auto pui:max-w-3xl">
+      <p className="pui:text-label-mini-sb pui:text-primary">
+        Ultimo aggiornamento: 5 ottobre 2026
+      </p>
+      <h1 className="pui:mt-2 pui:text-title-lg">{config.title}</h1>
+      <p className="pui:mt-4 pui:text-body pui:text-muted-foreground">{config.description}</p>
       {["Ambito di applicazione", "Trattamento dei dati", "Diritti delle persone", "Contatti"].map(
         (heading) => (
-          <section key={heading} className="mt-8">
-            <h2 className="text-title-xs">{heading}</h2>
-            <p className="mt-2 leading-7">
+          <section key={heading} className="pui:mt-8">
+            <h2 className="pui:text-title-xs">{heading}</h2>
+            <p className="pui:mt-2 pui:leading-7">
               Questa sezione descrive in modo chiaro le condizioni applicabili e le modalità con cui
               il servizio tutela dati, diritti e trasparenza.
             </p>
@@ -419,19 +433,19 @@ function LegalBody({ config }: { config: TemplateConfig }) {
 
 function EmailBody({ config }: { config: TemplateConfig }) {
   return (
-    <div className="mx-auto max-w-2xl rounded-xl border bg-background shadow-sm">
-      <div className="border-b p-6">
+    <div className="pui:mx-auto pui:max-w-2xl pui:rounded-xl pui:border pui:bg-background pui:shadow-1">
+      <div className="pui:border-b pui:p-6">
         <Brand />
       </div>
-      <div className="p-6 tablet:p-10">
-        <p className="text-label-mini-sb text-primary">{config.eyebrow}</p>
-        <h1 className="mt-2 text-title-sm">{config.title}</h1>
-        <p className="mt-4 text-body">{config.description}</p>
-        <div className="mt-8">
+      <div className="pui:p-6 pui:tablet:p-10">
+        <p className="pui:text-label-mini-sb pui:text-primary">{config.eyebrow}</p>
+        <h1 className="pui:mt-2 pui:text-title-sm">{config.title}</h1>
+        <p className="pui:mt-4 pui:text-body">{config.description}</p>
+        <div className="pui:mt-8">
           <Actions config={config} />
         </div>
       </div>
-      <div className="bg-muted p-6 text-label-mini text-muted-foreground">
+      <div className="pui:bg-muted pui:p-6 pui:text-label-mini pui:text-muted-foreground">
         Messaggio automatico di pagoPA · Non rispondere a questa email.
       </div>
     </div>
@@ -440,13 +454,13 @@ function EmailBody({ config }: { config: TemplateConfig }) {
 
 function FeedbackBody({ config }: { config: TemplateConfig }) {
   return (
-    <div className="mx-auto max-w-2xl text-center">
-      <span className="mx-auto grid size-20 place-items-center rounded-full bg-success-soft text-success">
-        <PagoPAIcon name="check_circle" aria-hidden="true" className="size-11" />
+    <div className="pui:mx-auto pui:max-w-2xl pui:text-center">
+      <span className="pui:mx-auto pui:grid pui:size-20 pui:place-items-center pui:rounded-full pui:bg-success-soft pui:text-success">
+        <PagoPAIcon name="check_circle" aria-hidden="true" className="pui:size-11" />
       </span>
-      <h1 className="mt-6 text-title-lg">{config.title}</h1>
-      <p className="mt-3 text-body text-muted-foreground">{config.description}</p>
-      <div className="mt-8 flex justify-center">
+      <h1 className="pui:mt-6 pui:text-title-lg">{config.title}</h1>
+      <p className="pui:mt-3 pui:text-body pui:text-muted-foreground">{config.description}</p>
+      <div className="pui:mt-8 pui:flex pui:justify-center">
         <Actions config={config} />
       </div>
     </div>
@@ -462,10 +476,10 @@ export function TemplateShell({
 }) {
   const standalone = config.kind === "auth" || config.kind === "email"
   return (
-    <div className={cn("min-h-152 bg-background text-foreground", className)}>
+    <div className={cn("pui:min-h-152 pui:bg-background pui:text-foreground", className)}>
       <a
         href="#main-content"
-        className="fixed top-2 left-2 z-[100] -translate-y-20 rounded bg-primary px-4 py-2 text-primary-foreground focus:translate-y-0"
+        className="pui:fixed pui:top-2 pui:left-2 pui:z-[100] pui:-translate-y-20 pui:rounded pui:bg-primary pui:px-4 pui:py-2 pui:text-primary-foreground pui:focus:translate-y-0"
       >
         Vai al contenuto
       </a>
@@ -473,8 +487,8 @@ export function TemplateShell({
       <main
         id="main-content"
         className={cn(
-          "mx-auto max-w-7xl space-y-8 px-4 py-8 tablet:px-6 desktop:px-8",
-          standalone && "py-10",
+          "pui:mx-auto pui:max-w-7xl pui:space-y-8 pui:px-4 pui:py-8 pui:tablet:px-6 pui:desktop:px-8",
+          standalone && "pui:py-10",
         )}
       >
         {config.kind === "landing" ? <LandingBody config={config} /> : null}
@@ -493,10 +507,10 @@ export function TemplateShell({
         {config.kind === "feedback" ? <FeedbackBody config={config} /> : null}
       </main>
       {!standalone ? (
-        <footer className="mt-10 border-t bg-muted">
-          <div className="mx-auto flex max-w-7xl flex-wrap justify-between gap-4 px-4 py-8 tablet:px-6 desktop:px-8">
+        <footer className="pui:mt-10 pui:border-t pui:bg-muted">
+          <div className="pui:mx-auto pui:flex pui:max-w-7xl pui:flex-wrap pui:justify-between pui:gap-4 pui:px-4 pui:py-8 pui:tablet:px-6 pui:desktop:px-8">
             <Brand />
-            <p className="text-label-mini text-muted-foreground">© 2026 PagoPA S.p.A.</p>
+            <p className="pui:text-label-mini pui:text-muted-foreground">© 2026 PagoPA S.p.A.</p>
           </div>
         </footer>
       ) : null}

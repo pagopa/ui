@@ -9,13 +9,7 @@ import type {
   PageSurface,
   Registry,
 } from "../../schemas/catalogue.ts"
-import {
-  ApiExceptionsSchema,
-  EvidenceExceptionsSchema,
-  longNoteErrors,
-  NOTE_LENGTH_BASELINE_PATH,
-  NoteLengthBaselineSchema,
-} from "../../schemas/catalogue.ts"
+import { ApiExceptionsSchema, EvidenceExceptionsSchema } from "../../schemas/catalogue.ts"
 import { parseExceptions } from "./source.ts"
 import { loadCatalogueState } from "../catalogue-state.ts"
 import { COMMITTED_FILES, readInventory, readRegistry } from "../../records/committed.ts"
@@ -82,7 +76,6 @@ export type CatalogueLoadContext = {
   live: InventoryNode[] | null
   liveVersion?: string
   liveLastModified?: string
-  ratchet: { from: number; to: number } | null
   reconciledSurface: PageSurface | null
   delta: SnapshotDelta
   deltaPath?: string
@@ -116,14 +109,6 @@ export function loadCatalogueBase(workspace: Workspace): CatalogueBase {
     ApiExceptionsSchema,
     errors,
   ) ?? { modulePatterns: {}, exports: {} }
-  const noteBaseline = parseExceptions(
-    workspace,
-    NOTE_LENGTH_BASELINE_PATH,
-    NoteLengthBaselineSchema,
-    errors,
-  )
-  if (noteBaseline)
-    errors.push(...longNoteErrors(registry, noteBaseline, NOTE_LENGTH_BASELINE_PATH))
   return { inventory, registry, committed, evidenceExceptions, apiExceptions, errors, warnings: [] }
 }
 
@@ -286,13 +271,11 @@ async function refreshCatalogue(
   delta: SnapshotDelta,
   hasDrift: boolean,
   writeRequested: boolean,
-  errors: string[],
 ): Promise<{
   inventory: Inventory
   registry: Registry
   committed: InventoryNode[]
   evidenceExceptions: Record<string, string>
-  ratchet: { from: number; to: number } | null
   reconciledSurface: PageSurface | null
   pendingWrites: Map<string, unknown>
   notices: string[]
@@ -303,18 +286,11 @@ async function refreshCatalogue(
       registry: base.registry,
       committed: base.committed,
       evidenceExceptions: base.evidenceExceptions,
-      ratchet: null,
       reconciledSurface: null,
       pendingWrites: new Map(),
       notices: [],
     }
   }
-  const noteBaseline = parseExceptions(
-    workspace,
-    NOTE_LENGTH_BASELINE_PATH,
-    NoteLengthBaselineSchema,
-    errors,
-  )
   const refresh = prepareCatalogueRefresh(workspace, {
     inventory: base.inventory,
     registry: base.registry,
@@ -323,14 +299,12 @@ async function refreshCatalogue(
     liveVersion: version,
     liveLastModified: lastModified,
     evidenceExceptions: base.evidenceExceptions,
-    noteBaseline,
   })
   return {
     inventory: refresh.inventory,
     registry: refresh.registry,
     committed: refresh.inventory.components,
     evidenceExceptions: refresh.evidenceExceptions,
-    ratchet: refresh.ratchet,
     reconciledSurface: refresh.reconciledSurface,
     pendingWrites: refresh.pendingWrites,
     notices: refresh.notices,
@@ -391,7 +365,6 @@ async function assembleCatalogueContext(
     delta,
     hasDrift,
     writeRequested,
-    base.errors,
   )
   base.warnings.push(...refreshed.notices)
   const drift = formatCatalogueDrift(
@@ -423,7 +396,6 @@ async function assembleCatalogueContext(
       live: snapshot.live,
       liveVersion: snapshot.version,
       liveLastModified: snapshot.lastModified,
-      ratchet: refreshed.ratchet,
       reconciledSurface: options.surface ?? refreshed.reconciledSurface,
       delta,
       deltaPath: options.delta,

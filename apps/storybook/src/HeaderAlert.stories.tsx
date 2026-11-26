@@ -60,9 +60,9 @@ function SourceUnitAction() {
     <Button
       type="button"
       variant="ghost"
-      className="relative min-h-0 px-0 py-0 after:absolute after:inset-x-0 after:-inset-y-3"
+      className="pui:relative pui:min-h-0 pui:px-0 pui:py-0 pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-3"
     >
-      <PagoPAIcon name="cached" size={24} className="shrink-0" />
+      <PagoPAIcon name="cached" size={24} className="pui:shrink-0" />
       <span>Cambia unità</span>
     </Button>
   )

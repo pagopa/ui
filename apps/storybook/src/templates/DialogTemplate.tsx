@@ -30,7 +30,7 @@ export interface DialogTemplateProps {
 // points it at the page element instead of the document body, so the panel is a
 // DOM descendant of the page (container queries apply) and both the reviewer
 // and the parity capture measure it inside the frame.
-const PAGE_HEIGHT = "min-h-(--pui-artboard-height)" // the source 650px artboard
+const PAGE_HEIGHT = "pui:min-h-(--pui-artboard-height)" // the source 650px artboard
 
 function DialogTemplate({
   title,
@@ -49,32 +49,32 @@ function DialogTemplate({
     <Dialog.Root open={open} modal>
       <div
         ref={setPage}
-        className={`@container/dialog-page relative grid ${PAGE_HEIGHT} place-items-center bg-background px-6 py-6 ${className ?? ""}`}
+        className={`pui:@container/dialog-page pui:relative pui:grid ${PAGE_HEIGHT} pui:place-items-center pui:bg-background pui:px-6 pui:py-6 ${className ?? ""}`}
       >
         {page ? (
           <Dialog.Portal container={page}>
-            <Dialog.Backdrop className="absolute inset-0 bg-overlay" />
+            <Dialog.Backdrop className="pui:absolute pui:inset-0 pui:bg-overlay" />
             <Dialog.Popup
               ref={popupRef}
               // The mockup shows the resting state: the panel takes the open
               // focus instead of painting a ring on the first control.
               initialFocus={() => popupRef.current}
-              className="relative z-10 flex w-full max-w-(--pui-dialog-width-compact) flex-col gap-6 overflow-auto rounded-xl bg-background p-6 shadow-32 outline-none @3xl/dialog-page:max-w-(--pui-dialog-width)"
+              className="pui:relative pui:z-10 pui:flex pui:w-full pui:max-w-(--pui-dialog-width-compact) pui:flex-col pui:gap-6 pui:overflow-auto pui:rounded-xl pui:bg-background pui:p-6 pui:shadow-32 pui:outline-none pui:@min-page/dialog-page:max-w-(--pui-dialog-width)"
             >
-              <div className="flex flex-col gap-2">
-                <div className="flex items-start gap-4">
-                  <Dialog.Title className="min-w-0 flex-1 text-title-xs-mobile @3xl/dialog-page:text-title-xs">
+              <div className="pui:flex pui:flex-col pui:gap-2">
+                <div className="pui:flex pui:items-start pui:gap-4">
+                  <Dialog.Title className="pui:min-w-0 pui:flex-1 pui:text-title-xs-mobile pui:@min-page/dialog-page:text-title-xs">
                     {title}
                   </Dialog.Title>
                   <Dialog.Close
                     aria-label="Chiudi finestra"
-                    className="relative inline-flex size-6 shrink-0 items-center justify-center rounded-sm text-foreground outline-none after:absolute after:-inset-2.5 hover:bg-accent active:bg-accent-active focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring"
+                    className="pui:relative pui:inline-flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-sm pui:text-foreground pui:outline-none pui:after:absolute pui:after:-inset-2.5 pui:hover:bg-accent pui:active:bg-accent-active pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
                   >
                     <PagoPAIcon name="close" size={24} />
                   </Dialog.Close>
                 </div>
                 {description ? (
-                  <Dialog.Description className="text-body text-muted-foreground">
+                  <Dialog.Description className="pui:text-body pui:text-muted-foreground">
                     {description}
                   </Dialog.Description>
                 ) : null}
@@ -84,7 +84,7 @@ function DialogTemplate({
               {actions ? (
                 <div
                   data-slot="dialog-template-actions"
-                  className="flex flex-col-reverse gap-4 @3xl/dialog-page:flex-row @3xl/dialog-page:justify-end"
+                  className="pui:flex pui:flex-col-reverse pui:gap-4 pui:@min-page/dialog-page:flex-row pui:@min-page/dialog-page:justify-end"
                 >
                   {actions}
                 </div>

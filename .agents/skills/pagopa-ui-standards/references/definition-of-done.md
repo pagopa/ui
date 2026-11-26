@@ -15,7 +15,10 @@ runtime cycle or computed path fails, a type-only cycle passes.
       templates. Nothing under `src/components` imports `apps/storybook/src` or
       `src/catalog`; templates may import any layer through `@/…`.
 - [ ] `@base-ui/react` and `react-day-picker` only in `primitives`; no icon
-      package is a runtime dependency — glyphs come from the artwork pipeline;
+      package from any layer — `lucide-react`, `@tabler/icons-react`,
+      `@heroicons/react`, `@radix-ui/react-icons`, `react-icons`,
+      `@phosphor-icons/react`, `@iconify`, `@mui/icons-material`,
+      `@fortawesome` — because glyphs come from the artwork pipeline;
       `cn` only from `@/lib/cn`.
 - [ ] Removed layers stay removed: `atoms`, `molecules`, `organisms`,
       `figma-primitives`, `ui`, `screens`, `templates`.

@@ -277,10 +277,20 @@
   --figma-breakpoint-sm: 600px;
   /* Foundations/breakpoint-xl */
   --figma-breakpoint-xl: 1536px;
+  /* Foundations/container-compact */
+  --figma-container-compact: 448px;
   /* Foundations/container-narrow */
   --figma-container-narrow: 640px;
+  /* Foundations/container-page */
+  --figma-container-page: 768px;
+  /* Foundations/container-panel */
+  --figma-container-panel: 512px;
   /* Foundations/container-tight */
   --figma-container-tight: 432px;
+  /* Foundations/container-wide */
+  --figma-container-wide: 896px;
+  /* Foundations/container-wider */
+  --figma-container-wider: 1152px;
   /* Foundations/radius-0 */
   --figma-radius-0: 0px;
   /* Foundations/radius-16 */
@@ -327,14 +337,20 @@
   --figma-spacing-20: 20px;
   /* Foundations/spacing-24 */
   --figma-spacing-24: 24px;
+  /* Foundations/spacing-28 */
+  --figma-spacing-28: 28px;
   /* Foundations/spacing-3 */
   --figma-spacing-3: 3px;
   /* Foundations/spacing-32 */
   --figma-spacing-32: 32px;
+  /* Foundations/spacing-36 */
+  --figma-spacing-36: 36px;
   /* Foundations/spacing-4 */
   --figma-spacing-4: 4px;
   /* Foundations/spacing-40 */
   --figma-spacing-40: 40px;
+  /* Foundations/spacing-44 */
+  --figma-spacing-44: 44px;
   /* Foundations/spacing-48 */
   --figma-spacing-48: 48px;
   /* Foundations/spacing-56 */
@@ -347,6 +363,8 @@
   --figma-spacing-8: 8px;
   /* Foundations/spacing-80 */
   --figma-spacing-80: 80px;
+  /* Foundations/spacing-88 */
+  --figma-spacing-88: 88px;
   /* Foundations/z-0 */
   --figma-z-0: 0;
   /* Foundations/z-10 */

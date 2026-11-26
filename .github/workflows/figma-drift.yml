@@ -9,8 +9,8 @@ name: Figma drift
 # merge is the review record (docs/decisions/0001-rework.md); the pending queue
 # is the visible signal. The refreshed JSON is formatted before the commit so the
 # review diff carries only the drift. Queuing a node replaces its reviewed note
-# with the pending stub, so the same refresh lowers the note-length ratchet that
-# `check:catalogue` reads: the diff carries that move with the drift that caused it.
+# with the pending stub and regenerates the derived story-title map, so the same
+# refresh carries both with the drift that caused them.
 #
 # The job produces a reproducible handoff: delta.json, run.json and the body are
 # uploaded as artifacts (never `.figma/`), and the branch guard refuses to
@@ -169,7 +169,7 @@ jobs:
             src/catalog/figma/registry.json \
             src/catalog/figma/page-surface.json \
             src/catalog/figma/evidence-exceptions.json \
-            src/catalog/figma/note-length-baseline.json
+            src/catalog/figma/story-titles.json
           # Absent when the run found no token drift: then there is nothing to
           # format and nothing to commit.
           if [ -f docs/figma-drift/token-drift.json ]; then
@@ -210,7 +210,7 @@ jobs:
             packages/pagopa-ui/src/catalog/figma/registry.json \
             packages/pagopa-ui/src/catalog/figma/page-surface.json \
             packages/pagopa-ui/src/catalog/figma/evidence-exceptions.json \
-            packages/pagopa-ui/src/catalog/figma/note-length-baseline.json \
+            packages/pagopa-ui/src/catalog/figma/story-titles.json \
             docs/figma-drift
           if git diff --cached --quiet; then
             echo "no change to commit"

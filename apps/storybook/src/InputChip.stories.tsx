@@ -31,7 +31,7 @@ type Story = StoryObj<typeof meta>
 
 export const Playground: Story = {
   render: (args) => (
-    <div className="flex flex-wrap gap-3">
+    <div className="pui:flex pui:flex-wrap pui:gap-3">
       <InputChip {...args} />
       <InputChip>Commercio</InputChip>
     </div>
@@ -47,7 +47,7 @@ export const NeutralSolid: Story = {
     onRemove: fn(),
   },
   render: (args) => (
-    <div data-fidelity-variant="422-16019" className="w-[93px]">
+    <div data-fidelity-variant="422-16019" className="pui:w-[93px]">
       <InputChip {...args} />
     </div>
   ),

@@ -14,7 +14,7 @@ contains it, with `variant="default"`, `"numbered"` (the ordinal is `children`) 
 ## Example
 
 ```tsx
-<div className="relative h-96">
+<div className="pui:relative pui:h-96">
   <MapSurface />
   <PinPoint label="Sede del Comune" x={38} y={54} />
   <PinPoint label="Sportello" x={62} y={41} variant="numbered">

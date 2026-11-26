@@ -40,9 +40,11 @@ function SecurityCodeDialog({
       open={open}
       className={className}
       blocks={
-        <div data-slot="security-code-block" className="flex flex-col gap-4">
+        <div data-slot="security-code-block" className="pui:flex pui:flex-col pui:gap-4">
           {code}
-          {helper ? <p className="text-label-mini text-muted-foreground">{helper}</p> : null}
+          {helper ? (
+            <p className="pui:text-label-mini pui:text-muted-foreground">{helper}</p>
+          ) : null}
         </div>
       }
       actions={actions}

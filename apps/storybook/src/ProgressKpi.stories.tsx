@@ -64,7 +64,7 @@ export const ZeroTotal: Story = {
 
 export const States: Story = {
   render: () => (
-    <div className="grid w-[min(36rem,calc(100vw-2rem))] gap-4 tablet:grid-cols-2">
+    <div className="pui:grid pui:w-[min(36rem,calc(100vw-2rem))] pui:gap-4 pui:tablet:grid-cols-2">
       <ProgressKpi label="Inviate" value={51} total={69} channel={<PagoPAIcon name="send" />} />
       <ProgressKpi label="Consegnate" value={69} total={69} completed />
       <ProgressKpi
@@ -85,7 +85,7 @@ export const States: Story = {
 // instead of a grid track growing to the fixed width at 200% text.
 function SourceCard({ variant, children }: { variant: string; children: React.ReactNode }) {
   return (
-    <div data-fidelity-variant={variant} className="w-50.5 max-w-full">
+    <div data-fidelity-variant={variant} className="pui:w-50.5 pui:max-w-full">
       {children}
     </div>
   )
