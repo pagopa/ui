@@ -6,15 +6,7 @@ import fs from "node:fs"
 
 import type { Workspace } from "../adapters/workspace.ts"
 import { readJson } from "../lib/json.ts"
-import { caseCorpus, isDraftCase } from "../parity/corpus.ts"
-import { EVIDENCE_DIR, evidencePaths, loadManifest } from "../parity/evidence.ts"
-import {
-  committedFile,
-  readCases,
-  readDevicePolicy,
-  readInventory,
-  readRegistry,
-} from "../records/committed.ts"
+import { committedFile, readDevicePolicy, readInventory } from "../records/committed.ts"
 import type { Inventory, InventoryNode } from "../schemas/catalogue.ts"
 import type { RuleDisposition } from "../schemas/rules.ts"
 import { buildBrief, compact, componentForNode, type NodeBrief } from "./brief.ts"
@@ -39,15 +31,6 @@ const LABEL_WIDTH = 11
 
 export type NodeCardDevice = { device: string; width: number | null }
 
-export type NodeCardCase = {
-  id: string
-  device: string
-  width: number | null
-  layoutScope: string
-  verdict: "reviewed" | "draft"
-  note: string | null
-}
-
 export type NodeCardThread = {
   /** The layer the thread is pinned to; `null` when Figma anchored it to nothing. */
   anchor: string | null
@@ -68,7 +51,6 @@ export type NodeCard = {
   storyExports: string[]
   note: string | null
   devices: NodeCardDevice[]
-  cases: NodeCardCase[]
   rules: {
     total: number
     pending: number
@@ -87,7 +69,6 @@ export type NodeCard = {
   /** `null` when the pinned export is absent, which is not "no change". */
   delta: { variants: Array<{ nodeId: string; class: string }>; changed: string[] } | null
   verdict: string[]
-  evidence: Array<{ path: string; stale: boolean }>
   /**
    * The path of the full brief written next to the card, or `null` when the
    * caller did not write one. The card names it so a session can read the
@@ -97,35 +78,6 @@ export type NodeCard = {
 }
 
 type CardSection = { label: string; parts: string[] }
-
-function nodeCases(workspace: Workspace, node: string): NodeCardCase[] {
-  return (
-    caseCorpus({
-      workspace,
-      cases: readCases(workspace.root) ?? [],
-      inventory: readInventory(workspace.root).components,
-      registry: readRegistry(workspace.root),
-      policy: readDevicePolicy(workspace.root),
-    })
-      .of(node)
-      .map((item) => ({
-        id: item.id,
-        device: item.device ?? "any",
-        width: item.width ?? item.viewport ?? null,
-        layoutScope: item.layoutScope ?? "viewport",
-        verdict: isDraftCase(item) ? ("draft" as const) : ("reviewed" as const),
-        note: item.note ? compact(item.note) : null,
-      }))
-      // Narrowest capture first, the order the device policy declares: the card
-      // must not depend on the order the case file happens to list them in.
-      .sort(
-        (left, right) =>
-          (left.width ?? 0) - (right.width ?? 0) ||
-          left.device.localeCompare(right.device) ||
-          left.id.localeCompare(right.id),
-      )
-  )
-}
 
 // Only a reviewed card settles a thread: `imported` and `recorded` are the two
 // dispositions that put an answer in the source. A deferred, conflicting,
@@ -197,45 +149,6 @@ function nodeDelta(workspace: Workspace, node: string): NodeCard["delta"] {
 }
 
 /** What a manifest entry can pin: a variant, or a component without variants. */
-type CardPin = InventoryNode | NonNullable<InventoryNode["variants"]>[number]
-
-// The fingerprint a pin is compared against: the variant's own, the component's
-// design fingerprint, its contract fingerprint, or the marker a missing one gets.
-function fingerprintOf(entry: CardPin): string {
-  const design = entry.designFingerprint
-  if (design) return design
-  return (
-    ("contractFingerprint" in entry ? entry.contractFingerprint : undefined) ?? "unfingerprinted"
-  )
-}
-
-function nodeEvidence(workspace: Workspace, node: string): NodeCard["evidence"] {
-  const paths = evidencePaths(workspace.workspaceRoot)
-  if (!fs.existsSync(paths.manifest)) return []
-  const inventory = readInventory(workspace.root)
-  const component = componentForNode(inventory, node)
-  // A component without variants pins its own PNG, and its own fingerprint is the
-  // one the manifest carries — the same reading `pinnedVariant` makes. Indexing
-  // only the variants reported that pin as stale on every read.
-  const pinned: CardPin[] = component
-    ? component.variants?.length
-      ? component.variants
-      : [component]
-    : []
-  const fingerprints = new Map(pinned.map((entry) => [entry.nodeId, fingerprintOf(entry)]))
-  const scope = new Set([node, ...fingerprints.keys()])
-  return Object.entries(loadManifest(paths.manifest).cases)
-    .filter(([, entry]) => scope.has(entry.nodeId))
-    .map(([, entry]) => ({
-      path: `${EVIDENCE_DIR}/${entry.png}`,
-      // The pin is the case's own variant, or the component itself when the case
-      // names none: the manifest records the same choice `check` made.
-      stale:
-        fingerprints.get(entry.variant ?? component?.nodeId ?? node) !== entry.designFingerprint,
-    }))
-    .sort((left, right) => left.path.localeCompare(right.path))
-}
-
 function namesNode(node: string): (line: string) => boolean {
   const pattern = new RegExp(`(^|[^0-9])${node.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![0-9])`)
   return (line) => pattern.test(line)
@@ -279,8 +192,6 @@ function nodeVerdict(
   node: string,
   cards: readonly { card: string }[],
   guides: readonly string[],
-  devices: NodeCardDevice[],
-  cases: NodeCardCase[],
   status: string | null,
   hasTarget: boolean,
   gates: NodeCardGates,
@@ -301,26 +212,14 @@ function nodeVerdict(
   if (gates.rules) {
     verdicts.push(...gates.rules.filter(owns).map((line) => `rules ${line}`))
   }
-  for (const device of devices) {
-    const covered = cases.some(
-      (item) => item.device === device.device && item.verdict === "reviewed",
-    )
-    if (!covered) verdicts.push(`devices ${device.device} has no reviewed case`)
-  }
   return [...new Set(verdicts)].sort()
 }
 
 // The width the source declares for a device: the variant's own box, else the
 // width a case captured, else the policy's canonical width. The canonical width
 // is the policy's default, not a measurement of this component, so it comes last.
-function sourceWidth(
-  component: InventoryNode,
-  device: string,
-  cases: readonly NodeCardCase[],
-): number | null {
-  const box = (component.variants ?? []).find((variant) => variant.device === device)?.box?.width
-  if (box !== undefined) return box
-  return cases.find((item) => item.device === device && item.width !== null)?.width ?? null
+function sourceWidth(component: InventoryNode, device: string): number | null {
+  return (component.variants ?? []).find((variant) => variant.device === device)?.box?.width ?? null
 }
 
 export interface NodeCardOptions {
@@ -350,12 +249,11 @@ export function buildNodeCard(
   const component = componentForNode(inventory, requested)
   const policyFile = committedFile("device-policy", workspace.root)
   const policy = fs.existsSync(policyFile) ? readDevicePolicy(workspace.root) : null
-  const cases = nodeCases(workspace, brief.node)
   const devices =
     policy && component
       ? declaredDevices(policy, component).map((device) => ({
           device,
-          width: sourceWidth(component, device, cases) ?? canonicalWidth(policy, device) ?? null,
+          width: sourceWidth(component, device) ?? canonicalWidth(policy, device) ?? null,
         }))
       : []
   return {
@@ -369,7 +267,6 @@ export function buildNodeCard(
     storyExports: brief.target?.storyExports ?? [],
     note: brief.note,
     devices,
-    cases,
     rules: {
       total: brief.rules.length,
       pending: brief.rules.filter((rule) => rule.disposition === "pending").length,
@@ -387,13 +284,10 @@ export function buildNodeCard(
       brief.node,
       brief.rules.map((rule) => ({ card: rule.card })),
       [...new Set(brief.rules.flatMap((rule) => (rule.guide ? [rule.guide] : [])))],
-      devices,
-      cases,
       brief.status,
       Boolean(brief.target),
       options.gates,
     ),
-    evidence: nodeEvidence(workspace, brief.node),
     detail: options.detail ?? null,
   }
 }
@@ -413,14 +307,6 @@ function deviceParts(card: NodeCard): string[] {
   return card.devices.map((device) =>
     device.width === null ? device.device : `${device.device} ${device.width}`,
   )
-}
-
-function caseParts(card: NodeCard): string[] {
-  if (!card.cases.length) return ["(no parity case)"]
-  return card.cases.map((item) => {
-    const head = `${item.device} ${item.width ?? "?"} ${item.layoutScope} ${item.verdict}`
-    return item.note ? `${head} — ${clampItem(item.note, NOTE_LIMIT)}` : head
-  })
 }
 
 function ruleParts(card: NodeCard): string[] {
@@ -461,11 +347,6 @@ function deltaParts(card: NodeCard): string[] {
   return parts.length ? parts : ["no change since the accepted version"]
 }
 
-function evidenceParts(card: NodeCard): string[] {
-  if (!card.evidence.length) return ["(no evidence: run figma evidence)"]
-  return card.evidence.map((entry) => (entry.stale ? `${entry.path} (stale)` : entry.path))
-}
-
 function sections(card: NodeCard): CardSection[] {
   return [
     { label: "node", parts: [card.name ? `${card.node} · ${card.name}` : card.node] },
@@ -477,13 +358,11 @@ function sections(card: NodeCard): CardSection[] {
     },
     { label: "story", parts: [storyLine(card)] },
     { label: "devices", parts: deviceParts(card) },
-    { label: "cases", parts: caseParts(card) },
     { label: "rules", parts: ruleParts(card) },
     { label: "comments", parts: commentParts(card) },
     { label: "requests", parts: card.requests.length ? card.requests : ["none"] },
     { label: "delta", parts: deltaParts(card) },
     { label: "verdict", parts: card.verdict.length ? card.verdict : ["no check names this node"] },
-    { label: "evidence", parts: evidenceParts(card) },
     { label: "note", parts: [card.note ? clampItem(card.note) : "(no registry note)"] },
     {
       label: "detail",

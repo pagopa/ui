@@ -2,7 +2,7 @@
 
 - Type: design
 - Issue: https://github.com/pagopa/ui/issues/40
-- Status: answered 12 November 2026 — Option A, the node stays `pending` until its parity capture
+- Status: answered 12 November 2026 — Option A, the node stays `pending` until it is compared on its declared devices
 - Decision owner: @gunzip
 - Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-autocomplete-multiselect--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-autocomplete-multiselect--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-autocomplete-multiselect--option-c
 

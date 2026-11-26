@@ -7,19 +7,18 @@ exit codes and result fields are in [parity-tooling.md](parity-tooling.md).
 
 ## Preflight
 
-- A current source: the pinned snapshot, an explicit input, or a committed
-  evidence slice. Without usable evidence the run exits 2; refresh through the
-  delta route.
+- A current source: the pinned snapshot or an explicit input. Without one the
+  run exits 2; refresh through the delta route.
 - Storybook on `storybook.url`; start `pnpm nx run pagopa-ui-storybook:storybook`
   if nothing answers. A concurrent session serves its own copy with `PORT=6007`
   and points the CLI at it with `STORYBOOK_URL=http://localhost:6007`. A new
   source file may need `tokens.stylesheet` touched to refresh the Tailwind scan.
 - The scope is the person's: a **wave** of three nodes, highest in
   `implementationOrder` first, each finished before the next. "Re-check
-  everything mapped" is not a wave: capture each mapped node into its own `--out`;
-  only what moved enters the loop.
+  everything mapped" is not a wave, and nothing is accumulated: each run reads
+  the source and the render in front of it.
 
-**Done when** the evidence is current, Storybook answers, and the node ids are
+**Done when** the source is current, Storybook answers, and the node ids are
 written down with their variants and declared devices.
 
 ## The loop (per node, per declared device)
@@ -34,21 +33,25 @@ written down with their variants and declared devices.
 3. **Compare both ways.** The numbers and the images, at native size and with
    magnified crops of seams, notches and joined edges. Anything structural — a
    missing slot, a wrong edge, an off-token colour, the wrong face, a swapped
-   stack — is a delta however small.
+   stack — is a delta however small. `--screenshot <file>` renders the state you
+   are looking at; keep it outside the tree, since nothing about a run is
+   committed.
 4. **Close every delta**: a token-ladder fix in the component, `--residue
    "<path>=<reason>"` for a deliberate adaptation, or `--ignore <path>` for a
    mapping artifact; a subject off on every edge is a mapping defect. **Three fix
-   passes per case**, then stop and report. Never accept a deviation because it
+   passes per story and device**, then stop and report. Never accept a deviation because it
    looks right.
-5. **Save.** `--save-case --note "reviewed: …"`; the command line is never the
-   record; a `cases --sync` draft never counts as coverage. **Done when**
-   `parity check --case <id>` reproduces the node.
+5. **Read it twice.** Re-run `check` after the last fix, with the same state,
+   width and device as the first run: the second pass is what you report, not the
+   command line you first typed. **Done when** the closing run shows no
+   unexplained delta, and the residues it still prints each carry a reason.
 
 ## Close the wave
 
-`parity capture --saved --node <id> --out <dir>` then `parity report --dir <dir>
---wave <date>-<node-id>-alignment` per node, a distinct wave name each. Registry
-for the verified nodes only, then `pnpm nx run pagopa-ui:check:catalogue`.
+Registry for the verified nodes only, then `pnpm nx run pagopa-ui:check:catalogue`.
+Carry the closing run's numbers into the report — residues with their reasons,
+the device each node was measured on — because the session ends and the numbers
+do not outlive it.
 
 ## What a reviewer decides
 

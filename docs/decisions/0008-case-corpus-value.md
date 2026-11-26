@@ -1,6 +1,10 @@
 # ADR-0008 — The case corpus is one value: documents are properties, judgments are methods
 
-- **Status:** Accepted — 2026-11-11.
+- **Status:** Superseded — 2026-11-26 by
+  [ADR-0015](./0015-ephemeral-parity-diagnostic.md). The value this ADR made one
+  (`parity/cases.ts`, the corpus as documents-plus-judgments) no longer exists:
+  the corpus is deleted rather than refactored, so nothing here instructs a
+  reader. Kept for the reasoning.
 - **Date:** 2026-11-11
 - **Context:** `parity/cases.ts` had become the package's largest module — around
   a thousand lines, thirty-three exports — because it was three modules wearing

@@ -73,7 +73,7 @@ surface.
 - `src/components/{inputs,navigation,feedback,content,data-display,composites,overlays}`
   — the families.
 - `src/pagopa-ui.ts` — the public entry point.
-- `src/catalog/figma` — inventory, registry, story titles, parity cases, device policy,
+- `src/catalog/figma` — inventory, registry, story titles, device policy,
   exceptions.
 - `src/index.css` — the semantic aliases and the stylesheet entry; `src/library.css`
   — the published scan surface of the stylesheet, whose size
@@ -168,7 +168,8 @@ Use `pnpm nx show projects` to list projects and
   (`dist/` inside `apps/storybook`) out of the stories the application carries.
 - `pnpm ui-cli parity check`,
   `pnpm ui-cli figma devices`
-  — parity tools, see the
+  — the parity diagnostic — it compares a node's numeric source with its story
+  and records nothing — and the device policy, see the
   [`figma-to-code`](./.agents/skills/figma-to-code/SKILL.md) skill.
 
 ### Workspace commands
@@ -243,7 +244,7 @@ a guide, with or without Figma:
 > Re-review node `<nodeId>`: compare the story with the current source, fix what
 > drifted, and tell me the decision and the residues.
 
-> Run a parity wave on the next three pending nodes.
+> Run a parity check on the next three pending nodes.
 
 Every session ends with a report — the decision per node, the residues and their
 reasons, the commands with their results — and stops before commit, push or pull
@@ -524,7 +525,7 @@ What the graph holds:
   `lint:check`, `docs`, `check:catalogue`, `foundation:check`, `layers:check`,
   `build`, `test`; `pagopa-ui-artwork`, `pagopa-ui-tokens` and `pagopa-ui-cli`
   `typecheck`, `format:check`, `lint:check`, `test`; and `pagopa-ui-cli`
-  `check:rules`, `check:parity`.
+  `check:rules`.
 
 `lint:check` and `format:check` are the gate: `lint` and `fmt` write, the
 `:check` variants report, which is what the `ci` configuration CI uses resolves

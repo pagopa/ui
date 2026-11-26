@@ -3,9 +3,9 @@
 Satisfied for each touched node before the green chain. The checks own the
 predicates; this list owns the order.
 
-- [ ] The rendered story matches the source at its width and state; every declared
-      device has its case.
-- [ ] The story is the parity capture surface: source width, real states,
+- [ ] The rendered story matches the source at its width and state, on every
+      declared device.
+- [ ] The story is the comparison surface: source width, real states,
       `parameters.design` built with `figmaEmbedUrl`, every `storyExports` entry
       showing the node, not the variant.
 - [ ] The guide records which source property drives which prop, attribute or
@@ -27,15 +27,14 @@ continuing after failures:
 pnpm nx run pagopa-ui:check:catalogue
 pnpm nx run pagopa-ui-cli:check:rules
 pnpm nx run pagopa-ui-cli:check:devices
-pnpm nx run pagopa-ui-cli:check:evidence
-pnpm nx run pagopa-ui-cli:check:parity
 pnpm nx run pagopa-ui:docs
 pnpm nx run workspace:verify
 ```
 
-With Storybook answering, run `pnpm ui-cli parity check --node <nodeId> --saved`
-for **each** touched node. Nx gates reuse unchanged inputs; browser runs are
-fresh.
+With Storybook answering, run `pnpm ui-cli parity check --node <nodeId> --device
+<device>` for **each** touched node on **each** device the inventory declares.
+Nothing is stored between runs, so the comparison is this session's and Nx
+reuses nothing: the numbers are read now or not at all.
 
 **Push and pull request stay with the person.** Keep stories, registry, inventory
 and exception changes with the implementation.

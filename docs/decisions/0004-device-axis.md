@@ -1,6 +1,9 @@
 # ADR-0004 — The device axis: vocabulary, coverage and the delta-scoped gate
 
-- **Status:** Accepted — 2026-10-15.
+- **Status:** Accepted — 2026-10-15, amended 2026-11-26 by
+  [ADR-0015](./0015-ephemeral-parity-diagnostic.md) — the case-per-device gate,
+  the exceptions file and the burn-down commands are retired (§4); the
+  vocabulary, the probe and the per-node loop stand.
 - **Date:** 2026-10-15
 - **Context:** a 2026-10-15 hand-made mobile review found that the daily
   alignment flow compared the desktop variant only, while the inventory declares
@@ -131,3 +134,34 @@ tooling.
   stays a work list entry, and the scope is per case and verified.
 - A device case cannot be a story: the fast loop stays at one viewport (`RD4`)
   and the device verdict lives where the viewport can be set.
+
+## 4. Amendment — the gate retires with the corpus (2026-11-26)
+
+[ADR-0015](./0015-ephemeral-parity-diagnostic.md) makes numerical parity a
+stateless diagnostic and deletes the case corpus, so the parts of this ADR that
+counted devices against cases go with it. What a reader should still take from
+this page is the axis itself.
+
+- **RD1 is retired.** There is no case-per-device gate, no
+  `device-exceptions.json` and no `parity:cases --sync`: `check:catalogue` no
+  longer reads a case file, and a node cannot owe a comparison it does not store.
+  The device dimension survives as a **review instruction** — a node whose set
+  declares an axis is compared on each declared device in the session that
+  aligns it — and as the inventory's own frames.
+- **The burn-down is gone with the work list.** `parity:queue --uncovered`,
+  `parity:cases --sync` and `parity:check --devices` are deleted commands. The
+  per-node loop that replaces them is `parity check --node <id> --device <name>`,
+  run on demand, and the sweep of every declared device is that same command run
+  once per device rather than with one `--device`.
+- **RD2, the probe and R8 stand unchanged.** `device-policy.json` still holds the
+  vocabulary and no component name, the responsive verdict still reports
+  `clipped`, `escaped`, `truncated` and the band deltas per device, and R8's
+  point now reads only the inventory and the registry: the corpus is no longer a
+  third enumeration because it no longer exists.
+- **The consequence that named a coverage line changes.** `check:catalogue`
+  keeps the vocabulary line and drops the corpus counts: the
+  `devices: <n> implemented sets · covered · missing · exceptions` line is now
+  `devices: <n> sets with an axis · declared <n> · aliases resolved <n>/<n> ·
+  unmapped <n>`, the coverage report it used to append is deleted, and the
+  `Foundations/Figma inventory` story reports each implemented set's declared
+  devices from the inventory instead of a case count.

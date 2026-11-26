@@ -484,7 +484,7 @@ function deviceWarnings(
   return { messages, errors, unused }
 }
 
-// The one line `check:catalogue` prints (RA1; RA4 appends its coverage line).
+// The one line `check:catalogue` prints (RA1).
 export function formatDeviceLine(stats: DeviceStats): string {
   return (
     `devices: ${stats.sets} sets with an axis · declared ${stats.declared} · ` +
