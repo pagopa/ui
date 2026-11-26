@@ -338,13 +338,18 @@ test("a stale card points at show and mark, not refresh", () => {
       fileKey: "file",
       cards: { "I1:2;3:3": { ...pending, sourceHash: "0000000000000000" } },
     })
-    const stale = check(ledger, snapshot, tree.root, tree.root, false).errors.find(
-      (error) => error.includes("I1:2;3:3") && error.includes("stale"),
+    const informational = check(ledger, snapshot, tree.root, tree.root, false)
+    const stale = informational.warnings.find(
+      (warning) => warning.includes("I1:2;3:3") && warning.includes("stale"),
     )
-    assert.ok(stale, "the gate reports the stale card")
+    assert.ok(stale, "the report names the stale card")
+    assert.deepEqual(informational.errors, [], "drift alone is not a failure")
     assert.match(stale, /`pnpm ui-cli figma rules show 'I1:2;3:3'`/)
     assert.match(stale, /`pnpm ui-cli figma rules mark 'I1:2;3:3' --disposition <disposition>`/)
     assert.doesNotMatch(stale, /rules refresh/)
+    // A session that wants the card settled before it commits asks for the gate.
+    const strict = check(ledger, snapshot, tree.root, tree.root, true)
+    assert.ok(strict.errors.includes(stale), "strict turns the report back into a gate")
   } finally {
     tree.dispose()
   }
@@ -433,6 +438,50 @@ function runPlan({ ledger }) {
     tree.dispose()
   }
 }
+
+function runRulesCheck(ledger, flags = []) {
+  const tree = fixtureTree(
+    {
+      ".figma/rules.json": snapshot,
+      "src/catalog/figma/rules.json": ledger,
+      "src/catalog/figma/inventory.json": {
+        fileKey: "file",
+        syncedAt: "2026-10-21",
+        components: [
+          { nodeId: "4:4", name: "Button", type: "COMPONENT", pageId: "1:1", pageName: "Page" },
+        ],
+      },
+    },
+    "pagopa-rules-check-cli-",
+  )
+  try {
+    return spawnSync(process.execPath, [cli, "check", "rules", ...flags], {
+      cwd: tree.root,
+      encoding: "utf8",
+      env: fixtureEnvironment(tree.root),
+    })
+  } finally {
+    tree.dispose()
+  }
+}
+
+// `.Regole` drift is information: the green chain reports it and moves on, and
+// only the session that asks for the gate makes it fail.
+test("the rules check reports drift and exits 0", () => {
+  const behind = RulesLedgerSchema.parse({
+    schemaVersion: 1,
+    fileKey: "file",
+    cards: {
+      "I1:2;3:3": { ...pending, sourceHash: "0000000000000000" },
+      "I1:2;9:9": pending,
+    },
+  })
+  const result = runRulesCheck(behind)
+  assert.equal(result.status, 0, result.stderr)
+  assert.match(result.stderr, /I1:2;3:3: source changed since the review \(stale\)/)
+  assert.match(result.stderr, /I1:2;9:9: card disappeared from Figma/)
+  assert.equal(runRulesCheck(behind, ["--strict"]).status, 1)
+})
 
 test("rules --plan reports a new card and exits 0", () => {
   const empty = RulesLedgerSchema.parse({ schemaVersion: 1, fileKey: "file", cards: {} })

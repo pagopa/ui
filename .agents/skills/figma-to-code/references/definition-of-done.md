@@ -25,11 +25,15 @@ continuing after failures:
 
 ```bash
 pnpm nx run pagopa-ui:check:catalogue
-pnpm nx run pagopa-ui-cli:check:rules
 pnpm nx run pagopa-ui-cli:check:devices
 pnpm nx run pagopa-ui:docs
 pnpm nx run workspace:verify
 ```
+
+`pnpm nx run pagopa-ui-cli:check:rules` reports the `.Regole` drift and exits 0:
+the pending, `new`, `stale` and `removed` cards it prints are findings of the
+node, reported and not counted as a failure. `--strict` fails on that drift, for
+the caller that wants the ledger closed rather than reported.
 
 With Storybook answering, run `pnpm ui-cli parity check --node <nodeId> --device
 <device>` for **each** touched node on **each** device the inventory declares.

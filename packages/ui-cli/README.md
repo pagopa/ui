@@ -158,7 +158,7 @@ keeps the same preflight behavior as the other live Figma commands.
 | `tests/checks/story-taxonomy.test.mjs` | Regression tests | Enforces the Storybook taxonomy: every meta title is `Foundations/*` or a known `Components/<section>/*`, and the retired `Screens/*`, `Templates/*` and `Alignment/*` sections stay retired, keeping taxonomy changes explicit.                                                                                                                                                                           |
 | `tests/parity/*.test.mjs`              | Regression tests | Covers the parity rules (tolerance, weight law, targets, classification, composition) and the ephemeral contract of the diagnostic against fixtures, with no snapshot and no browser, so the comparison stays fast and deterministic to verify.                                                                                                                                                            |
 | `src/catalog/figma/device-policy.json` | Reviewed data    | Defines the device vocabulary: the axes that mean "device", canonical devices with aliases, widths and default layout scopes, and values meaning "no device axis". It holds no component name, file or path, so scripts and agents resolve devices consistently without node-specific rules.                                                                                                               |
-| `src/catalog/figma/rules.json`         | Reviewed data    | The English record of every consolidated `.Regole` card: verbatim Italian title, English title and summary, source hash, targets, disposition and review date. `figma:rules` writes it, `check:rules` validates it, and the guide's `## Component Rules` block carries the consumer-facing subset with no source reference.                                                                                |
+| `src/catalog/figma/rules.json`         | Reviewed data    | The English record of every consolidated `.Regole` card: verbatim Italian title, English title and summary, source hash, targets, disposition and review date. `figma:rules` writes it, `check:rules` reports it, and the guide's `## Component Rules` block carries the consumer-facing subset with no source reference.                                                                                  |
 | `tests/figma/pictograms.test.mjs`      | Regression tests | Covers pictogram export against a mock Figma API, so export behavior can be checked without live network access.                                                                                                                                                                                                                                                                                           |
 | `tests/figma/rules.test.mjs`           | Regression tests | Covers the `.Regole` card extraction (sections, status, placeholder, unfiled card), the source hash and the plan diff, and the component-rules block markers, so a rules-box change is either reviewed or reported as drift.                                                                                                                                                                               |
 | `tests/figma/tokens.test.mjs`          | Regression tests | Covers token curation, generation and check failure modes against fixtures, ensuring changes cannot silently desynchronize token identities, CSS and documentation.                                                                                                                                                                                                                                        |
@@ -318,8 +318,8 @@ both an error and drift exits 1: the error is graded first, whatever its text.
 
 `pnpm ui-cli figma registry set <nodeId> --status <status>` records a decision.
 Use `--module`, `--export`, `--story`, `--story-exports`, `--note` and
-`--reason` for its evidence. `--dry-run --json` previews the registry, census
-and ratchet edits without writing. A real edit runs the catalogue check and
+`--reason` for its evidence. `--dry-run --json` previews the registry and
+census edits without writing. A real edit runs the catalogue check and
 returns its overall verdict.
 
 `figma close` has been removed: closing orchestration belongs to the caller.
@@ -338,7 +338,7 @@ and reporting requirements live in the Figma skill's
 | `update:inventory`        | `update inventory`                       | Yes         | Refreshes the inventory and queues the delta. Equal to triage.                                                                                                                                                                                                             |
 | `figma:triage`            | `figma triage`                           | Yes         | Refreshes the inventory and queues the delta. Equal to update.                                                                                                                                                                                                             |
 | `figma:rules`             | `figma rules <command>`                  | `refresh`   | `plan` reports changes, `refresh` reads the boxes, `mark` records a decision, and `node` or `show` reads rules.                                                                                                                                                            |
-| `check:rules`             | `check rules`                            | No          | Checks the ledger and guides strictly; `--no-strict` allows pending rules.                                                                                                                                                                                                 |
+| `check:rules`             | `check rules`                            | No          | Reports the ledger and guide drift and exits 0; `--strict` fails on it instead.                                                                                                                                                                                            |
 | `figma:comments`          | `figma comments`                         | `--refresh` | The node comments: `--refresh` snapshots the threads, `--node` prints the threads of a node, `--open` keeps the unresolved ones.                                                                                                                                           |
 | `figma:brief`             | `figma brief --node <id>`                | No          | The implementation brief of a node: registry entry, rules, open comments and design requests, read offline from the local snapshots. `--card` prints the bounded node card, in text or with `--json`, and writes the full brief it summarises to `.figma/briefs/<id>.txt`. |
 | `parity:source`           | `parity source`                          | No          | Prints the pinned numeric spec of one node: geometry, layout, paint and type, resolved against the device policy.                                                                                                                                                          |
@@ -535,11 +535,9 @@ repository, under review in a pull request.
   review or assistive-technology tests.
 - The files `evidence-exceptions.json` and `api-exceptions.json` are burn-down
   lists. They must shrink. A new entry needs a reason.
-- `check:catalogue` counts the registry notes longer than 600 characters against
-  `src/catalog/figma/note-length-baseline.json` in both directions: a new long
-  note fails, and a count below the baseline asks to lower `overLimit`. The
-  drift refresh lowers it when the `pending` stub shortens a reviewed note;
-  nothing raises it.
+- `figma registry set` refuses a note longer than 600 characters, and
+  `check:catalogue` reports how many committed notes are already past it. There
+  is no baseline file: the limit holds the writer, never the branch.
 - `check:catalogue` warns when the inventory is older than 30 days.
 - Storybook and `library:check` need Playwright Chromium, Firefox and WebKit. Run
   `pnpm exec playwright install chromium firefox webkit` one time.

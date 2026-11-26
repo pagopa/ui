@@ -11,10 +11,7 @@ import {
 import {
   RegistryEntrySchema,
   PageSurfaceSchema,
-  NoteLengthBaselineSchema,
-  NOTE_LENGTH_BASELINE_PATH,
   NOTE_LENGTH_LIMIT,
-  loweredNoteLengthBaseline,
   type RegistryEntry,
 } from "../schemas/catalogue.ts"
 import { requiresReason, surfaceDecision } from "./surface-decision.ts"
@@ -95,15 +92,10 @@ export async function setRegistry(workspace: Workspace, options: RegistryOptions
     if (decision === "shipped") delete identity.reason
     else identity.reason = reason
   }
-  const baselineFile = workspace.path(NOTE_LENGTH_BASELINE_PATH)
-  const baseline = fs.existsSync(baselineFile)
-    ? loweredNoteLengthBaseline(registry, readJson(baselineFile, NoteLengthBaselineSchema))
-    : null
   if (!options.dryRun) {
     writeJson(registryFile, registry)
     forgetCommitted(registryFile)
     if (identity && surface) writeJson(surfaceFile, surface)
-    if (baseline) writeJson(baselineFile, baseline)
   }
   const check = options.dryRun
     ? null
@@ -117,7 +109,6 @@ export async function setRegistry(workspace: Workspace, options: RegistryOptions
     before: old ?? null,
     entry,
     surface: identity ?? null,
-    baseline,
     warnings,
     dryRun: options.dryRun,
     check,

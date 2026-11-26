@@ -77,7 +77,6 @@ const STATIC = [
   "pagopa-ui-cli:format:check",
   "pagopa-ui-cli:lint:check",
   "pagopa-ui-cli:test",
-  "pagopa-ui-cli:check:rules",
 ]
 
 const BROWSER = [
@@ -86,6 +85,15 @@ const BROWSER = [
   "pagopa-ui-storybook:build",
   "pagopa-ui:library:check",
 ]
+
+// The rules card drift is reported, never gated: an informational report cannot
+// hold the chain, so it stays on demand and nothing schedules it.
+test("verify-chain: the rules report is not a chain gate", async () => {
+  const fast = project("workspace").targets.verify.configurations?.fast
+  const scheduledTasks = await scheduled(chain(fast))
+  assert.ok(!scheduledTasks.includes("pagopa-ui-cli:check:rules"))
+  assert.ok(project("pagopa-ui-cli").targets["check:rules"], "the report stays available")
+})
 
 test("verify-chain: the full chain schedules every gate the sequence ran", async () => {
   const verify = project("workspace").targets.verify
