@@ -1,22 +1,10 @@
-import fs from "node:fs"
-
 import { declaredDevices, deviceAxes, type DeviceStats } from "./devices.ts"
 import { implementationOrder, type DeltaNode, type SnapshotDelta } from "./snapshot.ts"
 import { deltaWorkSet } from "./work-set.ts"
-import { EVIDENCE_DIR, evidencePaths, loadManifest } from "../parity/evidence.ts"
-import { readCorpus, type CaseCorpus } from "../parity/corpus.ts"
 import type { Workspace } from "../adapters/workspace.ts"
 import type { DevicePolicy } from "../schemas/devices.ts"
 import type { InventoryNode, Registry } from "../schemas/catalogue.ts"
 import type { TokenDrift } from "./tokens.ts"
-
-export interface CatalogueCoverageSummary {
-  sets: number
-  covered: number
-  missing: number
-  drafts: number
-  exceptions: number
-}
 
 export interface CatalogueRenderContext {
   workspace: Workspace
@@ -27,10 +15,8 @@ export interface CatalogueRenderContext {
   committed: InventoryNode[]
   liveVersion?: string
   ratchet: { from: number; to: number } | null
-  evidenceBase?: string
   devicePolicy: DevicePolicy | null
   deviceStats: DeviceStats | null
-  deviceCoverage: CatalogueCoverageSummary | null
   bulkByNode: Map<string, { status?: string }>
   bulkByPage: Map<string, { status?: string }>
   entries: Registry["entries"]
@@ -96,31 +82,6 @@ function renderDevices(
       : "  - no device declared: one composition at every width",
   )
   return lines
-}
-
-type NodeEvidence = { ids: string[]; links: Array<{ id: string; href: string }> }
-
-function evidenceReader(workspace: Workspace, evidenceBase?: string) {
-  let caseCorpus: CaseCorpus | undefined
-  let manifestCache: ReturnType<typeof loadManifest> | null | undefined
-  return (nodeId: string): NodeEvidence => {
-    caseCorpus ??= readCorpus(workspace)
-    const corpus = caseCorpus.of(nodeId)
-    if (!corpus.length) return { ids: [], links: [] }
-    if (manifestCache === undefined) {
-      const manifestPath = evidencePaths(workspace.workspaceRoot).manifest
-      manifestCache = fs.existsSync(manifestPath) ? loadManifest(manifestPath) : null
-    }
-    const links = evidenceBase
-      ? corpus.flatMap((entry) => {
-          const record = manifestCache?.cases?.[entry.id]
-          return record
-            ? [{ id: entry.id, href: `${evidenceBase}/${EVIDENCE_DIR}/${record.png}` }]
-            : []
-        })
-      : []
-    return { ids: corpus.map((entry) => entry.id), links }
-  }
 }
 
 function reviewInstructions(ratchet: CatalogueRenderContext["ratchet"]): string[] {
@@ -233,7 +194,6 @@ function renderDriftNode(
   node: DeltaNode,
   key: DeltaKey,
   changedVariants: Map<string, string>,
-  evidence: NodeEvidence,
 ): string[] {
   const { registry, inventory } = context
   const lines: string[] = []
@@ -252,22 +212,11 @@ function renderDriftNode(
   )
   if (key !== "removed")
     lines.push(...renderDevices(inventory.fileKey, context.devicePolicy, node, changedVariants))
-  if (evidence.ids.length) {
-    lines.push(`- evidence: ${evidence.ids.map((id) => `\`${id}\``).join(" · ")}`)
-    if (evidence.links.length) {
-      lines.push(
-        `  - references: ${evidence.links.map((item) => `[${item.id}](${item.href})`).join(" · ")}`,
-      )
-    }
-    lines.push(
-      "  - attach the local render after `parity check --case <id> --screenshot <file>`; CI never embeds a component image.",
-    )
-  }
   return [...lines, ""]
 }
 
 export function renderCataloguePrBody(context: CatalogueRenderContext): string {
-  const { workspace, inventory, delta, ratchet, evidenceBase } = context
+  const { inventory, delta, ratchet } = context
   const date = new Date().toISOString().slice(0, 10)
   const changedVariants = new Map(
     delta.changedVariants.map((change) => [change.nodeId, change.class]),
@@ -276,7 +225,6 @@ export function renderCataloguePrBody(context: CatalogueRenderContext): string {
   for (const [key] of classes) {
     for (const node of delta[key]) pages.set(node.pageName, (pages.get(node.pageName) ?? 0) + 1)
   }
-  const evidenceFor = evidenceReader(workspace, evidenceBase)
   const lines = [
     `# Figma drift — ${date}`,
     "",
@@ -299,7 +247,7 @@ export function renderCataloguePrBody(context: CatalogueRenderContext): string {
     if (!nodes.length) continue
     lines.push(`## ${label}`, "")
     for (const node of nodes) {
-      lines.push(...renderDriftNode(context, node, key, changedVariants, evidenceFor(node.nodeId)))
+      lines.push(...renderDriftNode(context, node, key, changedVariants))
     }
   }
   lines.push(...renderTokenDrift(context.tokenDrift))
@@ -353,6 +301,5 @@ export function renderCatalogueDelta(context: CatalogueRenderContext) {
     })),
     implementationOrder: implementationOrder(live ?? committed, selected),
     devices: context.deviceStats,
-    coverage: context.deviceCoverage,
   }
 }

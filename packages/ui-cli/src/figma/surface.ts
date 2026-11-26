@@ -31,9 +31,8 @@
 //     (published and deliberately not implemented) or `pending` (published,
 //     mapped, and waiting).
 //   * every composition the page draws — the frame that composes the mapped
-//     implementation, with the device it is drawn at and the parity cases that
-//     measure it. An empty `mirrors` list with a reason is a written statement
-//     that the source draws a composition nothing measures.
+//     implementation, with the device it is drawn at and how many times the
+//     implementation appears in it.
 //
 // What the gate enforces, so the census cannot go stale or polite:
 //
@@ -49,8 +48,6 @@
 //     the decision for every node of its page that carries no entry of its own,
 //     the same fallback the rest of the inventory accounting uses. Every
 //     decision other than `unpublished` and `shipped` carries a reason;
-//   * a composition's cases exist in the case corpus, measure an identity on
-//     that page, and are measured on the device the composition is drawn at.
 //
 // It cannot see the Figma side: adding a component to a page without re-reading
 // the page tree leaves the census short, and the skill makes the re-read the
@@ -65,7 +62,6 @@ import {
   type PageSurface,
   type Registry,
 } from "../schemas/catalogue.ts"
-import type { ParityCase } from "../schemas/parity.ts"
 import { registryStatusFor, requiresReason } from "./surface-decision.ts"
 
 export const PAGE_SURFACE_PATH = "src/catalog/figma/page-surface.json"
@@ -78,7 +74,6 @@ export type SurfaceStats = {
   unpublished: number
   pending: number
   compositions: number
-  mirrored: number
 }
 
 /** A page the inventory publishes on and the census never read. */
@@ -101,16 +96,6 @@ export type SurfacePending = {
   reason: string
 }
 
-export type SurfaceUnmirrored = {
-  nodeId: string
-  page: string
-  pageName: string
-  name: string
-  device: string
-  drawn: number
-  reason: string
-}
-
 export function loadPageSurface(file: string): PageSurface {
   if (!fs.existsSync(file)) {
     throw new Error(
@@ -126,7 +111,6 @@ type SurfaceIdentity = SurfacePage["identities"][number]
 type SurfaceCheckInput = {
   nodes: InventoryNode[]
   registry: Registry
-  cases: ParityCase[]
   fileKey: string
   devices?: Iterable<string>
   label?: string
@@ -136,7 +120,6 @@ type SurfaceContext = {
   entries: Registry["entries"]
   byNode: Map<string, InventoryNode>
   bulkByPage: Map<string, string>
-  caseById: Map<string, ParityCase>
   vocabulary: Set<string> | null
   label: string
 }
@@ -214,12 +197,8 @@ function checkIdentityDecision(
   return errors
 }
 
-function checkCompositions(
-  page: SurfacePage,
-  identities: Set<string>,
-  context: SurfaceContext,
-): string[] {
-  const { label, vocabulary, caseById } = context
+function checkCompositions(page: SurfacePage, context: SurfaceContext): string[] {
+  const { label, vocabulary } = context
   const at = `${label}: page ${page.pageId}`
   const errors: string[] = []
   const compositions = new Set<string>()
@@ -235,30 +214,6 @@ function checkCompositions(
         `${where}: device "${composition.device}" is not declared by ${COMMITTED_FILES["device-policy"]} — ` +
           `the composition speaks the same vocabulary as the cases`,
       )
-    }
-    if (!composition.mirrors.length && !composition.reason) {
-      errors.push(
-        `${where} measures nothing and requires a reason — a composition the source draws ` +
-          `and no case measures is a decision, not an omission`,
-      )
-    }
-    for (const id of composition.mirrors) {
-      const entry = caseById.get(id)
-      if (!entry) {
-        errors.push(`${where}: case ${id} is not in the case corpus`)
-        continue
-      }
-      if (!identities.has(entry.nodeId)) {
-        errors.push(
-          `${where}: case ${id} measures ${entry.nodeId}, which is not an identity on page ${page.pageId}`,
-        )
-      }
-      if (entry.device && entry.device !== composition.device) {
-        errors.push(
-          `${where}: case ${id} is a ${entry.device} case but the composition is drawn at ` +
-            `${composition.device} — a case must measure the frame it claims`,
-        )
-      }
     }
   }
   return errors
@@ -288,7 +243,7 @@ function checkCensusedPage(page: SurfacePage, context: SurfaceContext): string[]
         `re-read the page tree and record the decision it got`,
     )
   }
-  return [...errors, ...checkCompositions(page, identities, context)]
+  return [...errors, ...checkCompositions(page, context)]
 }
 
 function surfaceWarnings(surface: PageSurface, nodes: InventoryNode[], label: string): string[] {
@@ -314,7 +269,7 @@ function surfaceWarnings(surface: PageSurface, nodes: InventoryNode[], label: st
 }
 
 export function checkPageSurface(surface: PageSurface, input: SurfaceCheckInput): SurfaceResult {
-  const { nodes, registry, cases, fileKey, devices, label = PAGE_SURFACE_PATH } = input
+  const { nodes, registry, fileKey, devices, label = PAGE_SURFACE_PATH } = input
   const errors: string[] = []
   if (surface.fileKey !== fileKey) {
     errors.push(`${label}: fileKey ${surface.fileKey} is not the inventory file ${fileKey}`)
@@ -328,7 +283,6 @@ export function checkPageSurface(surface: PageSurface, input: SurfaceCheckInput)
     entries: registry.entries ?? {},
     byNode: new Map(nodes.map((node) => [node.nodeId, node])),
     bulkByPage,
-    caseById: new Map(cases.map((entry) => [entry.id, entry])),
     vocabulary: devices ? new Set(devices) : null,
     label,
   }
@@ -383,23 +337,6 @@ export function surfacePending(surface: PageSurface): SurfacePending[] {
     .sort((left, right) => left.nodeId.localeCompare(right.nodeId))
 }
 
-/** Compositions the source draws that no parity case measures. */
-export function surfaceUnmirrored(surface: PageSurface): SurfaceUnmirrored[] {
-  return surface.pages.flatMap((page) =>
-    page.compositions
-      .filter((composition) => !composition.mirrors.length)
-      .map((composition) => ({
-        nodeId: composition.nodeId,
-        page: page.pageId,
-        pageName: page.pageName,
-        name: composition.name,
-        device: composition.device,
-        drawn: composition.drawn,
-        reason: composition.reason ?? "",
-      })),
-  )
-}
-
 /** What the census holds, counted without asking the inventory anything. */
 export function surfaceSummary(surface: PageSurface, nodes?: InventoryNode[]): SurfaceStats {
   const stats = emptyStats()
@@ -412,10 +349,7 @@ export function surfaceSummary(surface: PageSurface, nodes?: InventoryNode[]): S
       else stats.unpublished++
       if (identity.decision === "pending") stats.pending++
     }
-    for (const composition of page.compositions) {
-      stats.compositions++
-      stats.mirrored += composition.mirrors.length
-    }
+    stats.compositions += page.compositions.length
   }
   return stats
 }
@@ -429,7 +363,6 @@ export function emptyStats(): SurfaceStats {
     unpublished: 0,
     pending: 0,
     compositions: 0,
-    mirrored: 0,
   }
 }
 
@@ -440,7 +373,6 @@ export function formatSurfaceLine(stats: SurfaceStats): string {
   return (
     `surface: ${pages} · ${stats.identities} identities ` +
     `(${stats.inLibrary} in the library, ${stats.unpublished} not) · ` +
-    `${stats.pending} pending · ${stats.compositions} composition(s) · ` +
-    `${stats.mirrored} case mirror(s)`
+    `${stats.pending} pending · ${stats.compositions} composition(s)`
   )
 }

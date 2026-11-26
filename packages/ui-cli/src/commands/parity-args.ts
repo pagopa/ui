@@ -1,14 +1,12 @@
 import type { ParsedArgs } from "citty"
 import { UsageError } from "../lib/command.ts"
-import type { CheckOptions } from "../parity/types.ts"
+import type { DiagnoseOptions } from "../parity/types.ts"
 import { acceptsOptionalValue, repeated, text } from "./args.ts"
 
 export const stringArg = { type: "string" } as const
 export const booleanArg = { type: "boolean" } as const
 export const caseArgs = {
   node: stringArg,
-  case: stringArg,
-  cases: stringArg,
   input: stringArg,
   state: stringArg,
   variant: stringArg,
@@ -33,8 +31,6 @@ export const caseArgs = {
   "compare-offset": { ...booleanArg, optionalValues: true },
   interactive: booleanArg,
   strict: booleanArg,
-  "save-case": booleanArg,
-  note: stringArg,
   residue: stringArg,
   ignore: stringArg,
   viewport: stringArg,
@@ -43,8 +39,6 @@ export const caseArgs = {
   depth: stringArg,
   notes: booleanArg,
   json: booleanArg,
-  devices: booleanArg,
-  saved: booleanArg,
 } as const
 
 export function pairs(values: string[]): Array<[string, string]> {
@@ -71,12 +65,10 @@ function scope(value: unknown): "viewport" | "container" | undefined {
 export function caseOptions(
   args: ParsedArgs<typeof caseArgs>,
   raw: readonly string[],
-): CheckOptions {
+): DiagnoseOptions {
   const subjects = pairs(repeated(raw, "subject"))
   return {
     nodeId: text(args.node),
-    caseId: text(args.case),
-    casesFile: text(args.cases),
     input: text(args.input),
     state: text(args.state),
     variant: text(args.variant),
@@ -116,14 +108,10 @@ export function caseOptions(
     stateEvidence: text(args["state-evidence"]),
     interactive: args.interactive || undefined,
     strict: args.strict || undefined,
-    note: text(args.note),
     depth: number(args.depth, "--depth"),
     screenshot: text(args.screenshot),
-    saveCase: args["save-case"] || undefined,
     notes: args.notes || undefined,
     json: args.json || undefined,
-    devices: args.devices || undefined,
-    saved: args.saved || undefined,
   }
 }
 

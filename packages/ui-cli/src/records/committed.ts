@@ -1,5 +1,5 @@
-// The committed records: the four documents the repository reviews in git —
-// the inventory, the registry, the device vocabulary and the reviewed cases.
+// The committed records: the three documents the repository reviews in git —
+// the inventory, the registry and the device vocabulary.
 // One module owns their default paths, their parse posture, their error and a
 // process-scoped memory keyed by the resolved file, so no other module reads one
 // from disk or keeps a copy of where it lives. Reads only: the writers stay with
@@ -17,16 +17,14 @@ import {
   type Registry,
 } from "../schemas/catalogue.ts"
 import { DevicePolicySchema, type DevicePolicy } from "../schemas/devices.ts"
-import { ParityCaseFileSchema, type ParityCase } from "../schemas/parity.ts"
 
-export type CommittedRecord = "inventory" | "registry" | "device-policy" | "cases"
+export type CommittedRecord = "inventory" | "registry" | "device-policy"
 
 /** Where each record lives, package-relative to the audited root. */
 export const COMMITTED_FILES: Readonly<Record<CommittedRecord, string>> = {
   inventory: "src/catalog/figma/inventory.json",
   registry: "src/catalog/figma/registry.json",
   "device-policy": "src/catalog/figma/device-policy.json",
-  cases: "src/catalog/figma/parity-cases.json",
 }
 
 // The one error a committed record raises: which record, which file, and why.
@@ -66,7 +64,6 @@ const memory = {
   inventory: new Map<string, Inventory>(),
   registry: new Map<string, Registry>(),
   "device-policy": new Map<string, DevicePolicy>(),
-  cases: new Map<string, ParityCase[]>(),
 }
 
 // The one way to drop a remembered read, and the writer's obligation: a command
@@ -122,8 +119,8 @@ function read<T>(
 
 // Each read names its record once and takes the root, so a caller never pairs a
 // record name with a path. The override is the record's path relative to that
-// root (or an absolute path), which is how the evidence bundle reads the same
-// documents from its own `dataRoot`.
+// root (or an absolute path), which is how a test reads the same documents from
+// its own fixture root.
 export function readInventory(root: string, file?: string): Inventory {
   return read(
     "inventory",
@@ -144,23 +141,4 @@ export function readDevicePolicy(root: string, file?: string): DevicePolicy {
     committedFile("device-policy", root, file),
     DevicePolicySchema,
   )
-}
-
-// The one record that may legitimately be absent: a checkout without a reviewed
-// corpus is a valid state, and the callers report the resulting coverage instead
-// of failing. Every caller handles the `null`; an unreadable file still throws.
-export function readCases(root: string, file?: string): ParityCase[] | null {
-  const key = committedFile("cases", root, file)
-  const cached = memory.cases.get(key)
-  if (cached !== undefined) return cached
-  let value: unknown
-  try {
-    value = readJson(key)
-  } catch (error) {
-    if (isMissing(error)) return null
-    throw new CommittedRecordError("cases", key, reasonOf(error))
-  }
-  const parsed = parse("cases", key, ParityCaseFileSchema, value)
-  memory.cases.set(key, parsed)
-  return parsed
 }

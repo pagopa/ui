@@ -86,7 +86,6 @@ export type CatalogueLoadContext = {
   reconciledSurface: PageSurface | null
   delta: SnapshotDelta
   deltaPath?: string
-  evidenceBase?: string
   prBodyPath?: string
   /** The live variables against the committed manifest, when the run read them. */
   tokenDrift: TokenDrift | null
@@ -256,9 +255,6 @@ function validateLiveOptions(
   live: InventoryNode[] | null,
   errors: string[],
 ): void {
-  const evidenceBase = options.evidenceBase?.replace(/\/+$/, "")
-  if (evidenceBase && !/^https:\/\//.test(evidenceBase))
-    errors.push("--evidence-base must be an https URL")
   if (options.delta && !live)
     errors.push("--delta needs a live source: pass --input <file> or --rest")
 }
@@ -431,7 +427,6 @@ async function assembleCatalogueContext(
       reconciledSurface: options.surface ?? refreshed.reconciledSurface,
       delta,
       deltaPath: options.delta,
-      evidenceBase: options.evidenceBase?.replace(/\/+$/, ""),
       prBodyPath,
       tokenDrift,
       tokenDriftPath: options.tokenDrift,

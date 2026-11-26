@@ -142,9 +142,10 @@ itself (`references/visual-parity.md`).
   in a report (removed in the F0 cleanup) and the component guides plus the
   registry notes remain the primary record;
   their re-verification belongs to the parity loop per node, not to the file.
-- **Trigger (reopen):** the parity tool (`scripts/figma-parity`) needs a machine-readable
-  case list. It must then adopt a regenerated corpus derived from
-  `registry.json` and the component stories — not a resurrected workbench file.
+- **Trigger (reopen):** a parity tool needs a machine-readable case list. The
+  diagnostic derives one from `registry.json` and the story options on demand
+  (`ui-cli parity check`), so that derivation is the answer — never a resurrected
+  workbench file.
 - **Impact:** `visual-contracts.json` is deleted; the adaptation ids it carried
   stay binding until their component is re-verified, exactly as the registry
   notes and guides already state.

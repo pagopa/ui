@@ -2,19 +2,13 @@ import type { Workspace } from "../../adapters/workspace.ts"
 import type { Registry } from "../../schemas/catalogue.ts"
 import type { DevicePolicy } from "../../schemas/devices.ts"
 import { fileKeyFromSource } from "../snapshot.ts"
-import { deltaTouchedNodes } from "../work-set.ts"
 import type { CatalogueBase } from "./load.ts"
 import {
   type CatalogueCandidate,
   type CatalogueSources,
   createCatalogueSources,
 } from "./context.ts"
-import {
-  type SurfacePending,
-  type SurfaceStats,
-  type SurfaceUncensused,
-  type SurfaceUnmirrored,
-} from "../surface.ts"
+import { type SurfacePending, type SurfaceStats, type SurfaceUncensused } from "../surface.ts"
 import { type DeviceStats } from "../devices.ts"
 import { staleStoryTitles } from "../stories.ts"
 import {
@@ -25,8 +19,6 @@ import {
   findUnaccountedNodes,
 } from "./registry-validation.ts"
 import {
-  validateDeviceCases,
-  validateDeviceCoverage,
   validateDeviceVocabulary,
   validateInventoryMetadata,
   validatePageSurface,
@@ -41,17 +33,8 @@ export type CatalogueValidation = {
   bulkByNode: ReturnType<typeof validateBulkRules>["bulkByNode"]
   devicePolicy: DevicePolicy | null
   deviceStats: DeviceStats | null
-  deviceCoverage: {
-    sets: number
-    covered: number
-    missing: number
-    drafts: number
-    exceptions: number
-  } | null
-  caseStats: { cases: number; errors: number; warnings: number; drafts: number } | null
   surfaceStats: SurfaceStats | null
   surfaceWaiting: SurfacePending[]
-  surfaceUnmirrored: SurfaceUnmirrored[]
   surfaceUncensused: SurfaceUncensused[]
 }
 
@@ -126,25 +109,6 @@ export function validateCatalogue(context: CatalogueCandidate): CatalogueValidat
   const device = validateDeviceVocabulary(workspace, context.committed)
   errors.push(...device.errors)
   warnings.push(...device.warnings)
-  // A renamed or moved node has no design change but its target still has to
-  // move with it, so the coverage counts everything the delta touched.
-  const deltaIds = new Set(context.delta ? deltaTouchedNodes(context.delta) : [])
-  let deviceCoverage: CatalogueValidation["deviceCoverage"] = null
-  if (device.policy) {
-    const coverage = validateDeviceCoverage(
-      workspace,
-      device.policy,
-      context.committed,
-      context.registry,
-      deltaIds,
-    )
-    errors.push(...coverage.errors)
-    warnings.push(...coverage.warnings)
-    deviceCoverage = coverage.stats
-  }
-  const cases = validateDeviceCases(workspace, device.policy, context.registry, context.committed)
-  errors.push(...cases.result.errors)
-  warnings.push(...cases.result.warnings)
   const surface = validatePageSurface(
     workspace,
     context.reconciledSurface,
@@ -165,11 +129,8 @@ export function validateCatalogue(context: CatalogueCandidate): CatalogueValidat
     bulkByNode: bulk.bulkByNode,
     devicePolicy: device.policy,
     deviceStats: device.stats,
-    deviceCoverage,
-    caseStats: cases.stats,
     surfaceStats: surface.stats,
     surfaceWaiting: surface.waiting,
-    surfaceUnmirrored: surface.unmirrored,
     surfaceUncensused: surface.uncensused,
   }
 }

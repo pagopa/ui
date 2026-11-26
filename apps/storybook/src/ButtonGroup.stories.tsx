@@ -68,7 +68,7 @@ function FidelityAction({
 // The source `BlockButtons` variants space their actions 24px apart, while the
 // imported component rule asks for 8px in both orientations (123:3565;52:896).
 // The component paints the rule; these fixtures therefore assert 8px and the
-// parity cases record the 16px divergence per subject. The two `2 Button group`
+// registry notes record the 16px divergence per subject. The two `2 Button group`
 // frames below are the source's own inner compositions (caller markup), so they
 // keep the drawn 24px.
 const fidelityStates = [

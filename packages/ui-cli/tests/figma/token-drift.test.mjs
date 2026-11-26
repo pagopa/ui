@@ -244,7 +244,7 @@ import path from "node:path"
 import { fixtureTree, workspaceAt } from "../helpers/cli.mjs"
 import { syncCatalogue } from "../../src/figma/catalogue/index.ts"
 
-const TOKEN_DRIFT_PATH = "docs/figma-parity/token-drift.json"
+const TOKEN_DRIFT_PATH = "docs/figma-drift/token-drift.json"
 
 const devicePolicy = {
   axes: [],
@@ -376,7 +376,7 @@ test("a run that finds only variable drift still opens the review change", async
 test("a read that matches the manifest leaves no review change behind", async () => {
   const { tree, workspace } = catalogueFixture()
   try {
-    fs.mkdirSync(path.join(tree.root, "docs/figma-parity"), { recursive: true })
+    fs.mkdirSync(path.join(tree.root, "docs/figma-drift"), { recursive: true })
     fs.writeFileSync(path.join(tree.root, TOKEN_DRIFT_PATH), '{"stale":true}\n')
     const report = await withFigmaFetch(
       async () =>

@@ -19,3 +19,5 @@
 
 @source "../src";
 @source "../.storybook";
+/* The candidate mirror the utility-prefix build writes, as in the package. */
+@source "../.generated/prefixed-candidates.txt";

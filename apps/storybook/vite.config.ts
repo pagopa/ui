@@ -7,6 +7,8 @@ import { storybookTest } from "@storybook/addon-vitest/vitest-plugin"
 import { playwright } from "@vitest/browser-playwright"
 import { defineConfig } from "vite"
 
+import { prefixedCandidates } from "../../packages/pagopa-ui/build/prefixed-candidates.ts"
+
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 // The stories document the design system, so the alias and the coverage
 // surface point at the package they document.
@@ -37,7 +39,15 @@ function conditionInstances(
 export default defineConfig(({ mode }) => ({
   base: "./",
   envDir: false,
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    prefixedCandidates({
+      base: dirname,
+      entry: path.resolve(dirname, "src/preview.css"),
+      mirror: path.resolve(dirname, ".generated/prefixed-candidates.txt"),
+    }),
+    react(),
+    tailwindcss(),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(packageRoot, "src"),
