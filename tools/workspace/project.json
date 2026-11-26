@@ -38,6 +38,7 @@
         "pagopa-ui:foundation:check",
         "pagopa-ui:layers:check",
         "pagopa-ui:utility-prefix:check",
+        "pagopa-ui:consumer-dx:check",
         "pagopa-ui:build",
         "pagopa-ui:test",
         "pagopa-ui-artwork:typecheck",

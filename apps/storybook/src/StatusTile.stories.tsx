@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { StatusTile, Tag } from "@/components/content"
+import { StatusTile } from "@/components/content/status-tile"
+import { Tag } from "@/components/content/tag"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 import statusTileGuide from "./guides/status-tile.md?raw"

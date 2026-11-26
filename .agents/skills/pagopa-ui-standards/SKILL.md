@@ -6,7 +6,7 @@ description: "Standards for every component, with or without a design source: pl
 # Pagopa UI standards
 
 - [definition-of-done.md](references/definition-of-done.md) — what a component
-  proves.
+  proves, the consumer DX gate included.
 - [prop-conventions.md](references/prop-conventions.md) — naming: how a part,
   state or choice becomes a prop.
 - Storybook's offline CLI, `pnpm --filter pagopa-ui-storybook exec storybook

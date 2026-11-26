@@ -28,6 +28,7 @@
     "layers:check": "node src/cli.ts check layers",
     "foundation:check": "node src/cli.ts check foundation",
     "client:check": "node src/cli.ts check client-directives",
+    "consumer:dx:check": "node src/cli.ts check consumer-dx",
     "a11y:conformance:check": "node src/cli.ts check a11y",
     "docs:check": "node src/cli.ts check docs",
     "css:check": "node src/cli.ts check css",

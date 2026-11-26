@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { WaitingState } from "@/components/feedback"
+import { WaitingState } from "@/components/feedback/waiting-state"
 import { Button } from "@/components/primitives/button"
 
 // Source frame (`749:5867`, variants `749:5865`/`749:5866`): the contained

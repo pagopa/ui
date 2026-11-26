@@ -179,7 +179,9 @@ keeps the same preflight behavior as the other live Figma commands.
    `molecules`, `organisms`, `figma-primitives`, `ui` and the retired `screens`.
    It rejects a direct `cn`
    import outside `src/lib/cn.ts`, where the merge tables know the generated
-   type scale.
+   type scale. It rejects a family barrel — `@/components/<family>` — in a
+   story: a story names the module that declares the component, so a change to
+   one component reaches only its own stories.
 2. **The story taxonomy.** The taxonomy test proves that every library story
    still lives under `Foundations/*` or `Components/<section>/*`, so a
    prototype or fidelity section cannot be added under a new top-level title

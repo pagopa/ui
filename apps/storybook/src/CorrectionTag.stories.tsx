@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { CorrectionTag } from "@/components/content"
+import { CorrectionTag } from "@/components/content/correction-tag"
 
 import correctionsGuide from "./guides/corrections.md?raw"
 

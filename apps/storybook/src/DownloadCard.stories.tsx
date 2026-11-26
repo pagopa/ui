@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
-import { DownloadCard } from "@/components/data-display"
+import { DownloadCard } from "@/components/data-display/download-card"
 
 const meta = {
   title: "Components/Data display/DownloadCard",

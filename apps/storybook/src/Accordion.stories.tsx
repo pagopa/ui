@@ -5,7 +5,7 @@ import { expect, userEvent, within } from "storybook/test"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Chip } from "@/components/inputs/chips"
-import { Accordion } from "@/components/navigation"
+import { Accordion } from "@/components/navigation/accordion"
 import { Button } from "@/components/primitives/button"
 
 import accordionGuide from "./guides/accordion.md?raw"

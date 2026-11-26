@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { ButtonGroup, StickyButtonBar } from "@/components/inputs"
+import { ButtonGroup, StickyButtonBar } from "@/components/inputs/actions"
 import { Button } from "@/components/primitives/button"
 
 const meta = {

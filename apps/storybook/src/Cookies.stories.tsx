@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { Cookies } from "@/components/navigation"
+import { Cookies } from "@/components/navigation/cookies"
 
 const meta = {
   title: "Components/Navigation/Cookies",

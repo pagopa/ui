@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, within } from "storybook/test"
 
-import { TextareaField } from "@/components/inputs"
+import { TextareaField } from "@/components/inputs/text-fields"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import fieldsGuide from "./guides/fields.md?raw"

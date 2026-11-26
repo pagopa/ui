@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, fn, screen, userEvent, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { Autocomplete } from "@/components/inputs"
+import { Autocomplete } from "@/components/inputs/autocomplete"
 
 import fieldsGuide from "./guides/fields.md?raw"
 

@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "note": "Reasoned exemptions from the consumer DX contract (`ui-cli check consumer-dx`). Each entry waives one rule for one component and states why. An entry that stops matching a real defect fails the check as a stale exception, so the list can only shrink by fixing the component.",
+  "exceptions": [
+    {
+      "component": "SegmentedControl",
+      "rule": "parity",
+      "reason": "Controlled only by design: `value` and `onValueChange` are required, so the page always owns the selection and an uncontrolled default has no caller yet. Waived until a consumer needs to mount it with an initial segment."
+    },
+    {
+      "component": "SegmentedControl",
+      "rule": "ref",
+      "reason": "The group renders a plain `div` and its props type declares no `ref`, so a consumer cannot focus or measure it. Fixing it means typing the group as a host element; tracked outside this contract wave."
+    },
+    {
+      "component": "SegmentedControl",
+      "rule": "attributes",
+      "reason": "`SegmentedControlProps` is a closed interface that inherits no host type and destructures no rest, so `id`, `data-*` and `aria-*` are rejected. Same fix as `ref`: extend the host element the group renders."
+    },
+    {
+      "component": "Autocomplete",
+      "rule": "ref",
+      "reason": "The field types its props as a closed interface and exposes no `ref`; focusing the input from the page needs a ref it does not offer yet."
+    },
+    {
+      "component": "Autocomplete",
+      "rule": "attributes",
+      "reason": "`AutocompleteProps` extends no host type and the component spreads no rest, so standard attributes never reach an element."
+    },
+    {
+      "component": "SelectField",
+      "rule": "ref",
+      "reason": "`SelectFieldProps` extends `FieldStateProps` only, so it carries no `ref` and the trigger cannot be focused from the page."
+    },
+    {
+      "component": "SelectField",
+      "rule": "attributes",
+      "reason": "`SelectFieldProps` extends `FieldStateProps` only and the component spreads no rest, so `id` and `data-*` reach no element."
+    },
+    {
+      "component": "MultiSelectField",
+      "rule": "ref",
+      "reason": "`MultiSelectFieldProps` extends `FieldStateProps` only, so it carries no `ref` and the trigger cannot be focused from the page."
+    },
+    {
+      "component": "MultiSelectField",
+      "rule": "attributes",
+      "reason": "`MultiSelectFieldProps` extends `FieldStateProps` only and the component spreads no rest, so `id` and `data-*` reach no element."
+    },
+    {
+      "component": "DatePickerField",
+      "rule": "ref",
+      "reason": "`DatePickerFieldProps` is `FieldStateProps` intersected with its own members, so it carries no `ref` and the trigger cannot be focused from the page."
+    },
+    {
+      "component": "DatePickerField",
+      "rule": "attributes",
+      "reason": "`DatePickerFieldProps` inherits no host type, so standard attributes are rejected by the type even where the component spreads a rest."
+    }
+  ]
+}

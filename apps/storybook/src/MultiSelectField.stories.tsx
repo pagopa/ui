@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, screen, userEvent, waitFor, within } from "storybook/test"
 
-import { MultiSelectField } from "@/components/inputs"
+import { MultiSelectField } from "@/components/inputs/multi-select-field"
 
 const serviceOptions = [
   { value: "tributi", label: "Tributi locali" },

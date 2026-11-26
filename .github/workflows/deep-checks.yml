@@ -4,11 +4,18 @@ name: Deep checks
 # unit project. The suites that need a browser run here, in three parallel jobs:
 # the story project with the v8 coverage gates and the accessibility conditions
 # on Chromium, the WebKit pass on the stories alone, and the packed artifact
-# consumer. A pull request proves those three on Chromium; the nightly run adds
-# Firefox and is the only place where the engines meet, for the stories and the
-# packed artifact alike. Same checks, split by engine so the wait is the longest
-# job instead of their sum; the full story pass splits again into four shards,
-# so that longest job is a quarter of the catalogue.
+# consumer. A pull request proves those three, each on the engine it owns; the
+# nightly run adds Firefox and is the only place where the engines meet, for the
+# stories and the packed artifact alike. Same checks, split by engine so the wait
+# is the longest job instead of their sum; the full story pass splits again into
+# four shards, so that longest job is a quarter of the catalogue.
+#
+# A pull request proves its own diff, not the repository. The storybook project
+# is the whole catalogue, so an affected task would be the whole suite: the
+# WebKit pass narrows to the story files the diff reaches (`--changed` against
+# the tip of the base branch), and a diff that reaches none runs nothing. The
+# nightly keeps the selection off: it is where the stories no pull request
+# proved surface, so it re-proves every one of them, on both engines.
 #
 # The merge is not a change either. Everything landing on `main` reached it
 # through a pull request that ran these jobs on the same diff, so a push to
@@ -144,11 +151,16 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           browsers: ${{ steps.engines.outputs.browsers }}
 
-      - name: Stories in WebKit (affected)
+      # The project is the whole catalogue, so an affected task would be the
+      # whole suite: `--changed` is what narrows it to the story files the
+      # diff reaches, and it says so when the diff reaches none.
+      - name: Stories in WebKit (the diff's files)
         if: github.event_name == 'pull_request'
         env:
+          # The tip of the base branch: the stories the diff can move.
+          BASE: ${{ github.event.pull_request.base.sha }}
           NX_PROFILE: .nx/ci-metrics/stories.json
-        run: pnpm nx affected -t test:webkit -- --shard=${{ matrix.shard }}/${{ strategy.job-total }}
+        run: pnpm nx affected -t test:webkit -- --changed="$BASE" --shard=${{ matrix.shard }}/${{ strategy.job-total }}
 
       - name: Stories in Firefox and WebKit (everything)
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'

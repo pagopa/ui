@@ -3,7 +3,7 @@ import { expect, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { Footer, type FooterColumn, type FooterLink } from "@/components/navigation"
+import { Footer, type FooterColumn, type FooterLink } from "@/components/navigation/footer"
 import { Button } from "@/components/primitives/button"
 
 const links: FooterLink[] = [

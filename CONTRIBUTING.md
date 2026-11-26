@@ -446,16 +446,17 @@ project in its area as affected. Projects with a `Dockerfile` are inferred by
   plan warning. The app's `build` runs here too, so the documentation is proven
   to build on every pull request that touches the package.
 - `deep-checks.yml` — the suites that need a browser, in three parallel jobs: the
-  coverage gates on Chromium, the WebKit pass and the packed artifact consumer. On
-  pull requests for the affected projects, where WebKit is the extra engine;
-  nightly on everything, which adds Firefox and splits the story pass into four
-  shards. Draft pull requests are skipped until they are ready for review. A
-  merge to `main` runs nothing: the diff it carries is the one the pull request
-  already proved, and the nightly is the whole-repository pass.
-- `visual.yml` — the visual regression on the whole catalogue: the nightly and
-  the **Version Packages** pull request, so a publish is never gated on a scoped
-  guess. `visual:update` captures a diff's images, `visual:check` opts a pull
-  request into the comparison.
+  coverage gates on Chromium, the WebKit pass and the packed artifact consumer.
+  On pull requests for the affected projects, where WebKit is the extra engine
+  and the story pass runs only the story files the diff reaches; nightly on
+  everything, which adds Firefox and splits the story pass into four shards.
+  Draft pull requests are skipped until they are ready for review. A merge to
+  `main` runs nothing: the diff it carries is the one the pull request already
+  proved, and the nightly is the whole-repository pass.
+- `visual.yml` — the visual regression on the stories a pull request's diff
+  reaches, and on the whole catalogue every night and on the **Version Packages**
+  pull request, so a publish is never gated on a scoped guess. `visual:update`
+  captures a diff's images, `visual:check` re-runs the comparison on demand.
 - `figma-drift.yml` — the weekly drift snapshot, component and token, and its
   review pull request.
 - `release.yaml` — the DX release manager, on `main`.
@@ -481,18 +482,18 @@ produced it, so the release skips the code review, the story preview and the
 deep checks. A skipped job reports `skipped`, which merges cleanly; a
 path-filtered workflow would leave a required check pending instead.
 
-The visual regression is the one check that runs there, because that pull
-request is the last moment before `@pagopa/ui` is published: it captures the
-whole catalogue, at every width, against the committed Linux baselines. A
+The visual regression runs there in full, because that pull request is the last
+moment before `@pagopa/ui` is published: it captures the whole catalogue, at
+every width, against the committed Linux baselines, where an ordinary pull
+request captures only the stories its diff reaches. A
 baseline the nightly or this gate rejects is repaired by its own pull request
 with the `visual:update` label; merging it updates the **Version Packages** pull
 request, whose synchronisation runs the gate again on the new images.
 
 Merging a release therefore starts the release and the production Storybook
-deploy, not seven runs at once. A hand-written pull request runs everything but
-the visual regression: only the `nx-release/` branch is exempt from the other
-checks, and the visual gate belongs to it — or to a pull request carrying
-`visual:check`.
+deploy, not seven runs at once. A hand-written pull request runs everything:
+only the `nx-release/` branch is exempt from the other checks, and its scoped
+visual pass is the whole catalogue.
 
 No merge to `main` runs the deep checks or the visual regression: a merge
 carries the diff its pull request already proved, and the nightly schedules are
@@ -558,17 +559,26 @@ tagged `no-visual`, and compares each image with the baselines in
 in the Playwright container `mcr.microsoft.com/playwright:v1.63.0-noble`, by the
 workflow itself: never commit one produced on macOS.
 
-The gate runs nightly at 04:00 UTC and on the **Version Packages** pull request,
-both times on the whole catalogue: a story nothing captured surfaces a day after
-it reached `main`, and a publish never rests on a scoped guess. `--all` names
-that capture and skips the walk.
+A pull request compares the stories its own diff can move, so a regression
+surfaces where it was introduced instead of a day later. The gate runs nightly
+at 04:00 UTC and on the **Version Packages** pull request, both times on the
+whole catalogue: a story nothing captured surfaces a day after it reached
+`main`, and a publish never rests on a scoped guess. `--all` names that capture
+and skips the walk. A diff that reaches no story leaves an empty scope, and that
+run passes with nothing to capture rather than falling back to the catalogue.
 
 A change owns its images. `ui-cli test visual` reads the built Storybook index,
 walks the imports each story reaches — the story file, what it imports, the
 shared preview and the stylesheets behind it — and writes the story ids to
 `scope.json` in `apps/storybook/visual/`, which the spec reads through
 `VISUAL_SCOPE`. A change to a component the walk reaches names the stories that
-render it; a change to a file no story imports names none. The same walk widens
+render it; a change to a file no story imports names none. That precision rests
+on the shape of the imports: a story imports the module that declares the
+component, never its family barrel, which the layer check refuses. Touching
+`packages/pagopa-ui/src/components/navigation/accordion.tsx` and running
+`pnpm nx run pagopa-ui-storybook:test:changed -- --since HEAD` selects
+`Accordion.stories.tsx` and `AccessibilityTexts.stories.tsx` — the two stories
+that import it — and no other story. The same walk widens
 to the whole catalogue for anything that can move every screenshot without an
 import edge: `packages/tokens`, `packages/artwork`, the design-system `assets`,
 the storybook manifests and lockfile, the visual harness itself, and any deleted
@@ -576,10 +586,10 @@ source. The `visual:update` label runs that walk and commits the images it names
 to the head branch, so a pull request that adds or moves a story carries its
 baselines and leaves the other images' bytes alone.
 
-The `visual:check` label runs the same comparison on any pull request, for as
-long as the label stays: it is how a reviewer proves a risky change before the
-merge, and how the commit the update job pushed gets verified, since that commit
-is made with `GITHUB_TOKEN` and starts no run of its own.
+The `visual:check` label re-runs the same comparison on any pull request, for
+as long as the label stays: it is how a reviewer asks for it again, and how the
+commit the update job pushed gets verified, since that commit is made with
+`GITHUB_TOKEN` and starts no run of its own.
 
 Run the same check locally as a fail-fast sequence; the browser starts only
 after the build and baseline preflight succeed:

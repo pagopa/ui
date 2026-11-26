@@ -252,3 +252,60 @@ test("check layers prints the import-layer report name and verdict", async () =>
     tree.dispose()
   }
 })
+
+test("a story cannot import a family barrel instead of a component module", () => {
+  const result = check({
+    "src/components/content/index.ts": 'export * from "./tag"',
+    "src/components/content/tag.tsx": "export const Tag = () => null",
+    "apps/storybook/src/tag.stories.tsx":
+      'import { Tag } from "@/components/content"\nexport const Default = () => Tag()',
+  })
+  hasProblem(result, /apps\/storybook\/src\/tag\.stories\.tsx: .*"@\/components\/content"/)
+})
+
+test("the barrel rule follows the family index whether or not the path names it", () => {
+  for (const specifier of ["@/components/content", "@/components/content/index"]) {
+    hasProblem(
+      check({
+        "src/components/content/index.ts": 'export * from "./tag"',
+        "src/components/content/tag.tsx": "export const Tag = () => null",
+        "apps/storybook/src/tag.stories.tsx": `import { Tag } from "${specifier}"`,
+      }),
+      /family barrel/,
+    )
+  }
+})
+
+test("a story importing a component module is allowed", () => {
+  assert.deepEqual(
+    check({
+      "src/components/content/index.ts": 'export * from "./tag"',
+      "src/components/content/tag.tsx": "export const Tag = () => null",
+      "apps/storybook/src/tag.stories.tsx":
+        'import { Tag } from "@/components/content/tag"\nexport const Default = () => Tag()',
+    }).problems,
+    [],
+  )
+})
+
+test("the library keeps composing through its family barrels", () => {
+  assert.deepEqual(
+    check({
+      "src/components/content/index.ts": 'export * from "./tag"',
+      "src/components/content/tag.tsx": "export const Tag = () => null",
+      "src/components/feedback/index.ts": 'export { Tag } from "../content"',
+    }).problems,
+    [],
+  )
+})
+
+test("a directory without an index is not a barrel", () => {
+  assert.deepEqual(
+    check({
+      "src/components/primitives/button.tsx": "export const Button = () => null",
+      "apps/storybook/src/button.stories.tsx":
+        'import { Button } from "@/components/primitives/button"\nexport const Default = () => Button()',
+    }).problems,
+    [],
+  )
+})

@@ -4,6 +4,7 @@ import { defineCommand, type CommandDef, type SubCommandsDef } from "citty"
 
 import { checkA11yConformance } from "../checks/a11y-conformance.ts"
 import { checkClientDirectives } from "../checks/client-directives.ts"
+import { checkConsumerDx } from "../checks/consumer-dx.ts"
 import { checkCssBudget, measureCss } from "../checks/css-budget.ts"
 import { checkDocLinks } from "../checks/doc-links.ts"
 import { checkFoundation, measureFoundation } from "../checks/foundation.ts"
@@ -51,6 +52,11 @@ export function checkCommands(
         checkTokens(ctx.workspace()),
       ),
       "client-directives": clientDirectivesCommand(ctx),
+      "consumer-dx": gate(
+        "consumer-dx",
+        "Enforce the consumer DX contract on the public components",
+        () => checkConsumerDx(ctx.workspace()),
+      ),
       css: cssCommand(ctx),
       docs: gate("docs", "Resolve documentation links, path claims and commands", () =>
         checkDocLinks(ctx.workspace(), {

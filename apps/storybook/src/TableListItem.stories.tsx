@@ -2,9 +2,9 @@ import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
-import { TableListItem, type TableListItemField } from "@/components/data-display"
+import { TableListItem, type TableListItemField } from "@/components/data-display/table-list-item"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { Chip } from "@/components/inputs"
+import { Chip } from "@/components/inputs/chips"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import tablesGuide from "./guides/tables.md?raw"

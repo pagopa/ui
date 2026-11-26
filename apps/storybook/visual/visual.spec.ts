@@ -50,15 +50,19 @@ function storyScope(): Set<string> | null {
   return scope.mode === "stories" ? new Set(scope.stories ?? []) : null
 }
 
+// Which run this is, in the log: a scoped one states both ends, and an empty
+// scope says so rather than leaving a run that captured nothing unexplained.
+function scopeLine(scope: Set<string> | null, stories: string[]): string {
+  if (scope === null) return `visual: the complete catalogue, ${stories.length} stories`
+  if (stories.length === 0) return "visual: the diff moves no story, nothing to capture"
+  return `visual: ${stories.length} stories of the diff's scope`
+}
+
 const scope = storyScope()
 
 const stories = selectedVisualStories(index.entries, scope)
 
-console.log(
-  scope === null
-    ? `visual: the complete catalogue, ${stories.length} stories`
-    : `visual: ${stories.length} stories of the diff's scope`,
-)
+console.log(scopeLine(scope, stories))
 
 for (const story of stories) {
   test.describe(story, () => {

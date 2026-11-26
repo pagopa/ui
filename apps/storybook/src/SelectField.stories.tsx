@@ -3,7 +3,10 @@ import { expect, screen, userEvent, waitFor, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { Autocomplete, DatePickerField, MultiSelectField, SelectField } from "@/components/inputs"
+import { Autocomplete } from "@/components/inputs/autocomplete"
+import { DatePickerField } from "@/components/inputs/text-fields"
+import { MultiSelectField } from "@/components/inputs/multi-select-field"
+import { SelectField } from "@/components/inputs/select-field"
 
 const municipalities = [
   { value: "roma", label: "Roma" },

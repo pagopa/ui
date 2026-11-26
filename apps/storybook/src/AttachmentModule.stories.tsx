@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { AttachmentModule } from "@/components/composites"
-import { Tag } from "@/components/content"
+import { AttachmentModule } from "@/components/composites/attachment-module"
+import { Tag } from "@/components/content/tag"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 import attachmentModuleGuide from "./guides/attachment-module.md?raw"

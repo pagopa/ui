@@ -14,6 +14,10 @@ runtime cycle or computed path fails, a type-only cycle passes.
 - [ ] Imports point down only: `primitives`/`icons` ← families ← stories and
       templates. Nothing under `src/components` imports `apps/storybook/src` or
       `src/catalog`; templates may import any layer through `@/…`.
+- [ ] A story imports each component from the module that declares it
+      (`@/components/<family>/<module>`), never from a family barrel
+      (`@/components/<family>`): a barrel would put every story of the family on
+      the path of one changed component.
 - [ ] `@base-ui/react` and `react-day-picker` only in `primitives`; no icon
       package from any layer — `lucide-react`, `@tabler/icons-react`,
       `@heroicons/react`, `@radix-ui/react-icons`, `react-icons`,
@@ -40,6 +44,39 @@ runtime cycle or computed path fails, a type-only cycle passes.
       is exported from its family `index.ts` and `src/pagopa-ui.ts`; helpers,
       demos and no-op aliases stay out. The surface is frozen until the first
       publication. Then semver applies.
+
+## Consumer DX
+
+`pnpm nx run pagopa-ui:consumer-dx:check` judges every public component that
+owns state. Its rules are the ones a DOM element gives a page for free, and a
+defect fails the check by name: parity, `className`, `ref`, attributes, props
+type. An exemption is a reasoned entry in
+`packages/pagopa-ui/src/consumer-dx-exceptions.json`; once the component is
+fixed the entry no longer matches and the check reports it as stale, so the
+list only shrinks.
+
+- [ ] Controlled and uncontrolled are one component: the prop that carries the
+      state (`open`, `value`, `checked`, `selected`, `expanded`) comes with its
+      change callback and its `default…` sibling, so a page can own the state or
+      let the component own it without changing its JSX.
+- [ ] The props type extends the host element it renders — or
+      `ElementProps<tag>` from `primitives/props` — so `id`, `data-*`, `aria-*`
+      and the event handlers a page already writes are accepted and reach an
+      element. No closed interface that swallows them.
+- [ ] `className` is accepted, merged through `cn` after the component's own
+      classes, and applied to the element the page expects to style.
+- [ ] `ref` reaches that element, or the trigger a page has to focus, and is
+      typed by the element, so `ref.current` is the DOM node and not `unknown`.
+- [ ] The props type is exported from its module and from `src/pagopa-ui.ts`
+      under the component's name, so a consumer wrapping the component in their
+      own component types its props without re-deriving them.
+- [ ] Host CSS coexists. A consumer's own stylesheet restyles the component by
+      setting a `--pui-*` custom property or overriding one class, without
+      `!important` and without matching the component's internal structure:
+      every colour, spacing, radius and type value reads a custom property, and
+      every utility class carries the `pui:` prefix inside its cascade layer, so
+      neither side has to out-specify the other. When the host runs Tailwind
+      with its own preflight, a component still renders inside its own reset.
 
 ## Behaviour and accessibility
 

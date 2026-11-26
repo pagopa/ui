@@ -293,6 +293,27 @@ test("the diff against a ref becomes the scope file the runner reads", () => {
   assert.match(result.stdout, /1 of 5 stories/)
 })
 
+test("a diff that reaches no story names none and captures nothing", () => {
+  const fixture = workspace()
+  write(fixture.root, "apps/storybook/dist/index.json", JSON.stringify(fixture.index))
+  git(fixture.root, ["init", "-q"])
+  const base = commit(fixture.root, "base")
+  write(fixture.root, "README.md", "A document no story renders.\n")
+
+  const result = visual(fixture.root, { since: base, out: "scope.json", checkBaselines: true })
+  assert.equal(result.status, 0, result.stderr)
+
+  // Zero of the index, not the whole catalogue: an empty scope is a pass with
+  // nothing to capture, and the preflight has nothing to check either.
+  assert.match(result.stdout, /\[visual\] 0 of \d+ stories are affected by 1 changed path\(s\)/)
+  assert.match(result.stdout, /\[visual\] scoped Linux baselines are present/)
+  assert.deepEqual(JSON.parse(fs.readFileSync(path.join(fixture.root, "scope.json"), "utf8")), {
+    mode: "stories",
+    stories: [],
+    changed: ["README.md"],
+  })
+})
+
 test("`--all` names no story and needs no diff", () => {
   const fixture = workspace()
   write(fixture.root, "apps/storybook/dist/index.json", JSON.stringify(fixture.index))

@@ -3,14 +3,15 @@ import type { ComponentProps } from "react"
 import { cn } from "@/lib/cn"
 import { expect, waitFor } from "storybook/test"
 
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
 import {
   type FigmaIconName,
-  iconNames,
-  pictogramNames,
-  PagoPAIcon,
-  PagoPAPictogram,
-} from "@/components/icons"
-import { iconManifest, pictogramManifest } from "pagopa-ui-artwork"
+  figmaIconNames as iconNames,
+  figmaPictogramNames as pictogramNames,
+  iconManifest,
+  pictogramManifest,
+} from "pagopa-ui-artwork"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import registry from "@/catalog/figma/registry.json"
 
