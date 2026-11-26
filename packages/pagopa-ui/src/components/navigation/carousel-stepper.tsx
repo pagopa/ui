@@ -41,7 +41,12 @@ function CarouselStepper({
     refs.current[next]?.focus()
   }
   return (
-    <div role="group" aria-label={label} className="flex items-center justify-center gap-2">
+    <div
+      data-slot="carousel-stepper"
+      role="group"
+      aria-label={label}
+      className="flex items-center justify-center gap-2"
+    >
       {Array.from({ length: count }, (_, index) => (
         <button
           key={index}

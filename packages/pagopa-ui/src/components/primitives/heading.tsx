@@ -10,7 +10,7 @@ function Heading({
   as: Tag = "h2",
   ...props
 }: React.HTMLAttributes<HTMLHeadingElement> & { as?: HeadingTag }) {
-  return React.createElement(Tag, props)
+  return React.createElement(Tag, { "data-slot": "heading", ...props })
 }
 
 export { Heading, type HeadingTag }

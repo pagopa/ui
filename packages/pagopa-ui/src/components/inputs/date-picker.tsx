@@ -139,6 +139,7 @@ function DatePicker(props: DatePickerProps) {
 
   return (
     <fieldset
+      data-slot="date-picker"
       ref={root}
       aria-invalid={Boolean(error) || undefined}
       aria-describedby={error ? ids.errorId : undefined}

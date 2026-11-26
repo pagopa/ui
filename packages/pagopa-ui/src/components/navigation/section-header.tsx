@@ -34,7 +34,10 @@ function SectionHeader({
   className?: string
 }) {
   return (
-    <div className={cn("flex min-w-0 items-center justify-between gap-4", className)}>
+    <div
+      data-slot="section-header"
+      className={cn("flex min-w-0 items-center justify-between gap-4", className)}
+    >
       <div className="flex min-w-0 flex-1 items-start gap-2 tablet:items-center">
         {icon ? (
           <span

@@ -114,6 +114,7 @@ function SwitchField({
   // Keep the 44px target out of the 42px source copy stack.
   return (
     <div
+      data-slot="switch-field"
       data-availability={unavailable ? "no" : "yes"}
       className={cn("grid min-w-0 wrap-anywhere", !start && "py-4", className)}
     >

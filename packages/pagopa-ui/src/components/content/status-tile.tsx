@@ -19,6 +19,7 @@ function StatusTile({
 }) {
   return (
     <article
+      data-slot="status-tile"
       className={cn(
         "grid gap-2 rounded-lg bg-background p-4 ring-1 ring-inset ring-border forced-colors:ring-0 forced-colors:outline-1 forced-colors:outline-solid forced-colors:outline-[CanvasText]",
         className,

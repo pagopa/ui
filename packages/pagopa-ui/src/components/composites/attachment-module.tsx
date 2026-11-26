@@ -34,6 +34,7 @@ function AttachmentModule({
 
   return (
     <section
+      data-slot="attachment-module"
       className={cn("flex items-center gap-4 rounded-lg bg-card p-4 ring-1 ring-border", className)}
       {...props}
     >

@@ -114,7 +114,7 @@ function Stepper({
   const current = items.find((item) => item.status === "current") ?? items[0]
 
   return (
-    <div className={cn("grid gap-4", className)}>
+    <div data-slot="stepper" className={cn("grid gap-4", className)}>
       <div className="grid gap-4 tablet:hidden">
         <div className="grid w-fit gap-0.5">
           <p className="text-body-sb">{current?.label}</p>

@@ -25,7 +25,7 @@ function DownloadCard({
     throw new TypeError("DownloadCard href must not be empty")
   }
   return (
-    <div className="flex items-center gap-3 rounded-xl border p-4">
+    <div data-slot="download-card" className="flex items-center gap-3 rounded-xl border p-4">
       <ImageIcon aria-hidden="true" className="text-primary" />
       <div className="min-w-0 flex-1">
         <p className="truncate text-body-sb">{fileName}</p>
