@@ -3,11 +3,12 @@
 import * as React from "react"
 
 import { useMessages } from "@/lib/ui-provider"
+import { cn } from "@/lib/cn"
 import { X } from "@/components/primitives/icons"
 import { Button } from "@/components/primitives/button"
 import {
   Drawer as DrawerPrimitive,
-  DrawerClose,
+  DrawerClose as DrawerClosePrimitive,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
@@ -16,10 +17,29 @@ import {
   DrawerTrigger,
 } from "@/components/primitives/drawer"
 
-/** Props of {@link Drawer}. The trigger element owns opening and focus return. */
-interface DrawerProps {
-  /** Element that opens the drawer (`render` target of the trigger). */
-  trigger: React.ReactElement
+/**
+ * Props of {@link Drawer}. The controlled (`open` + `onOpenChange`) and
+ * uncontrolled (`defaultOpen`) modes share one lifecycle; `ref`, `className`
+ * and the standard HTML attributes of a `div` land on the panel.
+ */
+interface DrawerProps extends Omit<
+  React.ComponentProps<"div">,
+  "title" | "children" | "className"
+> {
+  /**
+   * Element that opens the drawer (`render` target of the trigger) and gets the
+   * focus back when the drawer closes. Omit it to open from `open` only.
+   */
+  trigger?: React.ReactElement
+  /** Whether the drawer is open; pair it with `onOpenChange`. */
+  open?: boolean
+  /** Opens the drawer initially when `open` is omitted. */
+  defaultOpen?: boolean
+  /**
+   * Runs when the drawer asks to open or close: the trigger, an outside press,
+   * Escape, the close button or a {@link DrawerClose}.
+   */
+  onOpenChange?: (open: boolean) => void
   /** Drawer title; also the drawer's accessible name. */
   title: string
   /** Optional supporting copy. */
@@ -36,16 +56,21 @@ interface DrawerProps {
   showHandle?: boolean
   /** Edge the panel slides from. @default "right" */
   direction?: "top" | "right" | "bottom" | "left"
-  /** Opens the panel initially. */
-  defaultOpen?: boolean
   /** Controls whether the open panel blocks interaction with the page. */
   modal?: boolean
   /** Accessible name of the close button. @default messages.drawer.closeLabel */
   closeLabel?: string
+  /** Classes of the panel, merged with the panel's own. */
+  className?: string
+  /** The panel element. */
+  ref?: React.Ref<HTMLDivElement>
 }
 
 function Drawer({
   trigger,
+  open,
+  defaultOpen,
+  onOpenChange,
   title,
   description,
   icon,
@@ -54,9 +79,11 @@ function Drawer({
   footerPlacement = "pinned",
   showHandle,
   direction = "right",
-  defaultOpen,
   modal,
   closeLabel: closeLabelProp,
+  className,
+  ref,
+  ...panelProps
 }: DrawerProps) {
   const t = useMessages("drawer")
   const closeLabel = closeLabelProp ?? t.closeLabel
@@ -64,9 +91,20 @@ function Drawer({
   const flow = footerPlacement === "flow"
 
   return (
-    <DrawerPrimitive direction={direction} defaultOpen={defaultOpen} modal={modal}>
-      <DrawerTrigger render={trigger} />
-      <DrawerContent className={flow ? "overflow-y-auto p-6" : undefined} showHandle={showHandle}>
+    <DrawerPrimitive
+      direction={direction}
+      open={open}
+      defaultOpen={defaultOpen}
+      onOpenChange={onOpenChange}
+      modal={modal}
+    >
+      {trigger ? <DrawerTrigger render={trigger} /> : null}
+      <DrawerContent
+        ref={ref}
+        className={cn(flow && "overflow-y-auto p-6", className)}
+        showHandle={showHandle}
+        {...panelProps}
+      >
         <DrawerHeader className={flow ? "gap-2 p-0" : "gap-2 p-6"}>
           <div data-slot="drawer-title-row" className="flex items-center gap-4">
             {icon ? (
@@ -86,7 +124,7 @@ function Drawer({
               {description}
             </DrawerDescription>
           ) : null}
-          <DrawerClose
+          <DrawerClosePrimitive
             render={
               <Button
                 aria-label={closeLabel}
@@ -97,7 +135,7 @@ function Drawer({
             }
           >
             <X aria-hidden="true" className="size-3.5 text-foreground" />
-          </DrawerClose>
+          </DrawerClosePrimitive>
         </DrawerHeader>
         {flow ? (
           <div className="min-h-0 px-0 pt-2">
@@ -127,4 +165,15 @@ function Drawer({
   )
 }
 
-export { Drawer, type DrawerProps }
+/** Props of {@link DrawerClose}: the caller's button, as a close action. */
+type DrawerCloseProps = React.ComponentProps<typeof Button>
+
+/**
+ * A drawer close action: renders the caller's button and closes the panel it
+ * sits in, so a footer action closes the drawer from inside the composition.
+ */
+function DrawerClose(props: DrawerCloseProps) {
+  return <DrawerClosePrimitive render={<Button {...props} />} />
+}
+
+export { Drawer, DrawerClose, type DrawerProps, type DrawerCloseProps }

@@ -17,7 +17,9 @@ import {
   DatePicker,
   DatePickerField,
   Dialog,
+  DialogClose,
   Drawer,
+  DrawerClose,
   iconNames,
   Image,
   InputChip,
@@ -863,6 +865,72 @@ function ConsumerResponsiveScopes() {
   )
 }
 
+// The controlled lifecycle of the packed overlays: an async handler decides
+// when the panel opens, a close action inside the panel closes it, and the
+// caller reads the panel through the contract it forwarded.
+function ConsumerOverlays() {
+  const [dialogOpen, setDialogOpen] = React.useState(false)
+  const [drawerOpen, setDrawerOpen] = React.useState(false)
+  const [loading, setLoading] = React.useState(false)
+  const [panel, setPanel] = React.useState<HTMLDivElement | null>(null)
+
+  async function openDialog() {
+    setLoading(true)
+    await new Promise((resolve) => setTimeout(resolve, 60))
+    setLoading(false)
+    setDialogOpen(true)
+  }
+
+  const contract = panel
+    ? `${panel.classList.contains("max-w-md") ? "classe" : "senza classe"}/${panel.dataset.panelContract ?? "senza attributo"}`
+    : "nessun pannello"
+
+  return (
+    <section aria-label="Pannelli controllati" style={{ display: "grid", gap: 16 }}>
+      <Button
+        id="consumer-controlled-dialog-open"
+        variant="outline"
+        onClick={openDialog}
+        loading={loading}
+      >
+        Apri il dialogo controllato
+      </Button>
+      <Button
+        id="consumer-controlled-drawer-open"
+        variant="outline"
+        onClick={() => setDrawerOpen(true)}
+      >
+        Apri il pannello controllato
+      </Button>
+      <output aria-label="Stato del dialogo">{dialogOpen ? "aperto" : "chiuso"}</output>
+      <output aria-label="Stato del pannello">{drawerOpen ? "aperto" : "chiuso"}</output>
+      <output aria-label="Contratto del pannello">{contract}</output>
+      <Dialog
+        ref={setPanel}
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        title="Dialogo controllato"
+        description="Il pacchetto installato segue lo stato del consumatore."
+        className="max-w-md"
+        data-panel-contract="dialog"
+        footer={<DialogClose variant="outline">Chiudi dal piè di pagina</DialogClose>}
+      >
+        <p>Corpo del dialogo controllato.</p>
+      </Dialog>
+      <Drawer
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+        title="Pannello controllato"
+        description="Il pacchetto installato segue lo stato del consumatore."
+        direction="bottom"
+        footer={<DrawerClose variant="outline">Chiudi il pannello</DrawerClose>}
+      >
+        <p>Corpo del pannello controllato.</p>
+      </Drawer>
+    </section>
+  )
+}
+
 function Consumer() {
   const [activations, setActivations] = React.useState(0)
   const [submitted, setSubmitted] = React.useState("")
@@ -942,6 +1010,7 @@ function Consumer() {
       <output aria-label="Dati inviati" style={{ overflowWrap: "anywhere" }}>
         {submitted}
       </output>
+      <ConsumerOverlays />
       <Dialog
         trigger={
           <Button id="consumer-dialog-trigger" variant="outline">
