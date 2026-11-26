@@ -13,6 +13,10 @@
 //
 // A `pnpm ui-cli …` command is resolved against the CLI's own tree: the
 // subcommands and every `--flag` it names must exist.
+//
+// The documentation tree has one entry point on each side: the root
+// `GLOSSARY.md` map is a root document like the other two, and
+// `docs/README.md` links every section and top-level document of the tree.
 import fs from "node:fs"
 import path from "node:path"
 
@@ -484,6 +488,7 @@ function markdownFiles(ctx: DocsContext): string[] {
       path.join(ctx.workspace, "AGENTS.md"),
       path.join(ctx.workspace, "CONTRIBUTING.md"),
       path.join(ctx.workspace, "README.md"),
+      path.join(ctx.workspace, "GLOSSARY.md"),
       path.join(ctx.root, "CHANGELOG.md"),
       ...(ctx.toolingInWorkspace ? [path.join(ctx.TOOLING_ROOT, "README.md")] : []),
     ].filter((file) => fs.existsSync(file)),
@@ -536,6 +541,38 @@ function validateMarkdownFiles(context: DocsContext, files: string[]): string[] 
   return ctx.errors
 }
 
+// The docs tree has one navigation surface: `docs/README.md` links every
+// section directory and every top-level document, so a reader reaches any of
+// them from one place. What a section holds is the section's own business.
+function validateDocsIndex(context: DocsContext): string[] {
+  const ctx = { ...context, errors: [] }
+  const index = path.join(ctx.workspace, "docs/README.md")
+  if (!fs.existsSync(index)) return ctx.errors
+  const text = fs.readFileSync(index, "utf8")
+  const linked = new Set<string>()
+  for (const match of text.matchAll(/\[[^\]]*\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g)) {
+    const target = match[1]
+    if (/^[a-z]+:/i.test(target) || target.startsWith("#")) continue
+    const clean = decodeURI(target.replace(/[#?].*$/, ""))
+    linked.add(toPosix(path.resolve(path.dirname(index), clean)))
+  }
+  const docs = path.join(ctx.workspace, "docs")
+  for (const entry of fs.readdirSync(docs, { withFileTypes: true })) {
+    if (entry.name === "README.md") continue
+    if (!entry.isDirectory() && !entry.name.endsWith(".md")) continue
+    const full = path.join(docs, entry.name)
+    if (linked.has(toPosix(full))) continue
+    report(
+      ctx,
+      index,
+      text,
+      0,
+      `${toPosix(path.relative(ctx.workspace, full))} is not linked from docs/README.md — the docs tree has one navigation surface`,
+    )
+  }
+  return ctx.errors
+}
+
 function validateConfig(context: DocsContext): string[] {
   const ctx = { ...context, errors: [] }
   checkConfig(ctx, path.join(ctx.root, "figma-to-code.yaml"))
@@ -566,6 +603,7 @@ export function checkDocLinks(workspaceTree: Workspace, options: DocLinksOptions
   const markdown = markdownFiles(ctx)
   const errors = [
     ...validateMarkdownFiles(ctx, markdown),
+    ...validateDocsIndex(ctx),
     ...validateConfig(ctx),
     ...validateScripts(ctx),
   ]

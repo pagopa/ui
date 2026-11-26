@@ -98,9 +98,13 @@ Its hosting target is Azure Static Web App.
 
 `infra/` holds the infrastructure as code for project resources and execution
 environments. `docs/` holds technical documentation, architecture,
-[ADRs](https://adr.github.io/), standards, reports and plans. Deferred decisions
-and their triggers are in [docs/decisions](./docs/decisions/). Consumer
-documentation belongs to the package README or to an application under `apps/`.
+[ADRs](https://adr.github.io/), standards, reports and plans;
+[docs/README.md](./docs/README.md) is its navigation surface, and every document
+of the tree is reachable from it. Deferred decisions and their triggers are in
+[docs/decisions](./docs/decisions/). Consumer documentation belongs to the
+package README or to an application under `apps/`. The [glossary
+map](./GLOSSARY.md) separates the Figma-alignment vocabulary from the consumer
+design-system one.
 
 ### Repository infrastructure
 
