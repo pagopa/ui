@@ -215,7 +215,7 @@ function DragAndDrop({
   )
 
   return (
-    <div className="grid gap-1.5">
+    <div data-slot="drag-and-drop" className="grid gap-1.5">
       <FieldLabel
         htmlFor={ids.controlId}
         label={label}

@@ -52,6 +52,7 @@ function TableListItem({
   const actionIcon = <PagoPAIcon name="arrow" variant="right" />
   return (
     <li
+      data-slot="table-list-item"
       className={cn("@container/list-item rounded-lg border bg-background", className)}
       {...props}
     >

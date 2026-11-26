@@ -20,6 +20,7 @@ function SwitchGroup({
 
   return (
     <fieldset
+      data-slot="switch-group"
       aria-describedby={description ? ids.descriptionId : undefined}
       className={cn("grid gap-3", className)}
       {...props}

@@ -67,6 +67,7 @@ function PagoPAIcon<Name extends FigmaIconName>({
   if (asset.rendering === "image") {
     return (
       <img
+        data-slot="icon"
         src={source.url}
         data-figma-node-id={source.nodeId}
         alt={decorative ? "" : (label ?? name)}
@@ -79,6 +80,7 @@ function PagoPAIcon<Name extends FigmaIconName>({
 
   return (
     <span
+      data-slot="icon"
       data-figma-node-id={source.nodeId}
       aria-hidden={decorative || undefined}
       aria-label={decorative ? undefined : (label ?? name)}

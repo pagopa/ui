@@ -22,7 +22,11 @@ function BoxedModule({
   ...props
 }: BoxedModuleProps) {
   return (
-    <section className={cn("rounded-lg border bg-card p-4", className)} {...props}>
+    <section
+      data-slot="boxed-module"
+      className={cn("rounded-lg border bg-card p-4", className)}
+      {...props}
+    >
       <header className="flex items-start gap-3">
         {icon ? (
           <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-accent text-primary">

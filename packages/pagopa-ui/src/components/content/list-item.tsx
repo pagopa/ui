@@ -209,7 +209,7 @@ function ListItem({
   }
 
   return (
-    <div className={classes} {...props}>
+    <div data-slot="list-item" className={classes} {...props}>
       {row}
     </div>
   )

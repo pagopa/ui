@@ -36,10 +36,10 @@ export function App() {
 }
 ```
 
-The provider renders the scope root the stylesheet is written against; a
-component tree outside it is unstyled. Scoped styles require `@scope` support:
-Chrome 118+, Safari 17.4+ or Firefox 128+. There is no fallback, so older
-browsers render the components unstyled.
+The provider renders the root the token variables are published on; a component
+tree outside it is unstyled. The stylesheet encapsulates with CSS cascade layers
+and `:where()` rather than `@scope`, so it needs nothing beyond layer support:
+Chrome 99+, Safari 15.4+ or Firefox 97+.
 
 React and ReactDOM are peer dependencies. The package ships compiled CSS,
 fonts, artwork, and TypeScript declarations; consumers do not need Tailwind,

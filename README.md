@@ -84,8 +84,9 @@ later runs it.
 
 ## Compatibility
 
-- Scoped styles require CSS `@scope`: Chrome 118+, Safari 17.4+ or Firefox 128+.
-  Older browsers render the components unstyled; there is no fallback.
+- The stylesheet encapsulates with CSS cascade layers and `:where()`, not
+  `@scope`, so it applies wherever layers do: Chrome 99+, Safari 15.4+ or
+  Firefox 97+, including Firefox ESR and Safari 15.4–17.3.
 - The application theme is **light only**. Dark pictogram variants are artwork,
   not dark application support.
 - Default texts are Italian and overridable through component props or
