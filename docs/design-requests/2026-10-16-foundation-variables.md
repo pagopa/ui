@@ -2,7 +2,7 @@
 
 - Type: design
 - Issue: https://github.com/pagopa/ui/issues/46
-- Status: open
+- Status: open — answered in part by docs/design-defaults.md, remainder re-scoped to #193
 - Decision owner: @gunzip
 - Preview: not applicable — the question is a set of token values, not a visual choice; the issue carries the tables
 
@@ -102,3 +102,31 @@ should it be published or replaced?
 3. Confirm the two container values (640 and 432 px).
 4. Decide the future of the exceptions listed: fix in Figma or publish the
    value.
+
+## Decision
+
+Answered in part by the ratified policy, 26 November 2026; the remainder is
+re-scoped to [#193](https://github.com/pagopa/ui/issues/193).
+
+[`docs/design-defaults.md`](../design-defaults.md) decides the three questions
+the tokens already carried:
+
+- **§3 — the recurring spacings are a published scale.** 1, 2, 3, 4, 6, 8, 10,
+  12, 14, 16, 20, 24, 32, 40, 48, 56, 64, 80 and 132 px are the scale, with 12,
+  2, 6 and 10 confirmed as the recurring values. The 44 px text field with a
+  leading icon is a **composition** — 12 padding + 24 icon + 8 gap — not a single
+  value, and the icon-to-text gap is 8 px (6 px only where the source frames use
+  it).
+- **§4.1 — the device scale is 600 / 900 / 1200 / 1536 px**, published as
+  `--figma-breakpoint-*`; 1920 px belongs to the XXL variant of the White
+  Template only and is not a component breakpoint.
+- **§4.2 — the two container values are ratified**: 640 px for Table,
+  TableListItem and Pagination, 432 px for Timeline.
+
+What the policy does **not** decide is re-scoped, unchanged, to
+[#193](https://github.com/pagopa/ui/issues/193): the radii scale, the dimension
+scale (icons and control heights), the z-index scale, the 18 px regular weight
+the library does not carry, and the `Color/Icon/Disabled icon` key with no public
+asset.
+
+Open points: the five items in #193; everything else asked here is answered.

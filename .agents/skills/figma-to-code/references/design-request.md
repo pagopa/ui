@@ -7,11 +7,20 @@ answer is implemented and reviewed.
 
 ## Decide whether to ask
 
-Read the source and the existing requests first. Ask about an unowned value, an
-undrawn behaviour or state, a contradictory device composition, an API or shared
-component decision, an ambiguous rule. A question the source answers becomes a
-registry decision, not an issue, even when a person supplied it; one with no node
-still owes its preview, captures, issue and record, but no registry pointer.
+Read the source and the existing requests first, then the ratified design
+defaults (`design-defaults.md`: derived state colours, composite
+input-plus-icon spacing, responsive layout rules). Ask about an
+unowned value, an undrawn behaviour or state, a contradictory device
+composition, an API or shared component decision, an ambiguous rule. A question
+the source answers becomes a registry decision, not an issue, even when a person
+supplied it; one with no node still owes its preview, captures, issue and
+record, but no registry pointer.
+
+A question the ratified defaults answer is not a request: apply the rule — a
+derived state colour, a composite input-plus-icon spacing, a layout switch, a
+reflow or text-spacing condition — and cite `design-defaults.md` in the
+alignment's notes. When the defaults answer only part of it, apply that part and
+open a request for the remainder, quoting the section that stops short.
 
 ## Prepare the question
 
