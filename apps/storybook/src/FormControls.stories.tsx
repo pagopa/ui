@@ -468,7 +468,7 @@ export const CancelledChoiceChanges: Story = {
 function ControlledChoiceForm() {
   const [accept, setAccept] = React.useState(false)
   const [updates, setUpdates] = React.useState(true)
-  const [contact, setContact] = React.useState("email")
+  const [contact, setContact] = React.useState<string | null>("email")
   const [code, setCode] = React.useState("")
   return (
     <form aria-label="Preferenze controllate" className="pui:grid pui:max-w-md pui:gap-4">
