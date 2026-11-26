@@ -45,7 +45,12 @@ compare it with the source code of the audited package, `packages/pagopa-ui`.
 - `packages/tokens/src/foundations.json` is hand-maintained, reviewed data: the
   foundation entries without a single published variable (spacing steps, sizes,
   breakpoints, container thresholds, z-index steps, radius extensions, effect
-  styles), each with its source and, for a local extension, the reason.
+  styles), each with its source and, for a local extension, the reason. Its
+  `stylesheet` list declares, one `declaration` (`property: value`) and `reason`
+  at a time, the literals of `packages/pagopa-ui/src/index.css`: a hardcoded
+  colour or an unbacked pixel dimension in that stylesheet fails the foundation
+  check unless this list carries exactly that value, and so does a declaration
+  the stylesheet no longer holds.
 - `packages/tokens/src/foundation-baseline.json` is the ceiling of the foundation lint
   and can only go down; `packages/tokens/src/foundation-exceptions.json` is its reasoned
   burn-down list (`rule`, `file`, `match`, `nodeId`, `reason`). A stale
@@ -138,7 +143,7 @@ keeps the same preflight behavior as the other live Figma commands.
 | `src/checks/doc-links.ts`                  | Check            | Resolves the links and path claims in the agent documentation, the guides, `figma-to-code.yaml` and the script/workflow citations; keeps the `figma-to-code` skill free of project component names, Figma node ids and `docs/` references, so instructions stay actionable without coupling the skill to this repository.                                                                                  |
 | `src/checks/library.ts`                    | Check            | Packs the library, installs the tarball in a temporary application and drives the Playwright specs against it, proving consumers can use the packed artifact rather than only the source tree.                                                                                                                                                                                                             |
 | `src/checks/library-artifact.ts`           | Shared module    | Defines the static artifact contract (CSS, fonts, licenses, dependency boundaries, export lists) used by `src/checks/library.ts` before the consumer install, catching packaging defects before browser tests.                                                                                                                                                                                             |
-| `tests/e2e/library.spec.mjs`               | Playwright spec  | Runs the complete browser sequence per engine (SSR, native forms, overlays, forced colors, artwork, reflow), one project per engine and one retry, covering real browser behavior that static checks cannot prove.                                                                                                                                                                                         |
+| `tests/e2e/library/`                       | Playwright specs | Runs the packed artifact's browser domains (SSR and hydration, native forms, overlays, forced colors and artwork, responsive reflow) one spec per domain, so a failure names the domain that broke while every assertion and the artifact verdict stay the same. Each spec boots the consumer on its own page, which is why they run in parallel: one project per engine and one retry.                    |
 | `src/checks/css-budget.ts`                 | Check            | Enforces the published stylesheet budget recorded in `data/css-budget.json` (raw bytes, gzip level 9, brotli): growth fails, a ceiling ahead of the artifact only warns, and `update css` records the size you accept without ever raising a ceiling, preventing unreviewed payload growth.                                                                                                                |
 | `src/build/prepare-types.ts`               | Build step       | Rewrites the specifiers in the emitted `.d.ts` files to produce alias-free ESM, so consumers can resolve the package declarations without this repository's TypeScript aliases. Runs inside `pnpm nx run pagopa-ui:build`.                                                                                                                                                                                 |
 | `src/figma/catalogue/index.ts`             | Check and tool   | Validates the catalogue, reports live drift, refreshes the inventory, queues the delta and renders the drift PR body, making Figma/source mismatches explicit and reviewable instead of silent.                                                                                                                                                                                                            |
@@ -428,12 +433,15 @@ run does not move it. Each command records its own baseline under
   where Firefox joins the engines. A merge to `main` starts nothing: the pull
   request it came from already ran them on the same diff.
 - **Each Monday at 04:00 UTC.** `.github/workflows/figma-drift.yml` runs
-  `pnpm ui-cli update inventory --rest --save .figma/live-rest.json --prBody .figma/pr-body.md --delta .figma/delta.json`.
+  `pnpm ui-cli update inventory --rest --save .figma/live-rest.json --prBody .figma/pr-body.md --delta .figma/delta.json --tokens --tokenDrift docs/figma-parity/token-drift.json`.
   The job needs the read-only `FIGMA_TOKEN` secret and fails when it is missing.
-  With drift it refreshes the inventory and the evidence bundle and opens one
-  review pull request with the job's `GITHUB_TOKEN`, whose runs wait for the
-  reviewer's approval, uploading `delta.json`, `run.json` and the body as
-  artifacts; without drift it leaves the tree untouched and opens nothing. The
+  One read answers both halves of the drift: the component delta and the
+  variables compared with the pinned manifest, so a run whose only drift is a
+  token still opens the pull request and records it beside the evidence bundle,
+  in the `token-drift.json` the `docs/figma-parity` directory holds. With drift
+  it refreshes the inventory and the evidence bundle and opens one review pull
+  request with the job's `GITHUB_TOKEN`, whose runs wait for the reviewer's
+  approval, uploading `delta.json`, `run.json` and the body as artifacts; without drift it leaves the tree untouched and opens nothing. The
   branch guard refuses to force-push a branch whose head is not the bot's
   commit. The merge is the review record.
 

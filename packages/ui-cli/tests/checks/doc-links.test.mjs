@@ -106,8 +106,41 @@ test("the docs gate accepts optional comparison values and still checks followin
 
 test("historical documents are checked on links only", () => {
   assert.deepEqual(
-    check({ "docs/plans/next.md": "Will add `scripts/future.mjs`.", "scripts/keep.mjs": "" })
-      .problems,
+    check({
+      "docs/README.md": "[Plans](plans/)",
+      "docs/plans/next.md": "Will add `scripts/future.mjs`.",
+      "scripts/keep.mjs": "",
+    }).problems,
+    [],
+  )
+})
+
+test("the root glossary map is audited like the other root documents", () => {
+  assert.match(
+    problems(check({ "GLOSSARY.md": "[Term](docs/vocabulary/gone.md)" })),
+    /GLOSSARY\.md:1: missing link docs\/vocabulary\/gone\.md/,
+  )
+})
+
+test("the docs index is the one surface that links every section and document", () => {
+  assert.match(
+    problems(
+      check({
+        "docs/README.md": "[ADRs](decisions/)",
+        "docs/decisions/0001-rework.md": "",
+        "docs/reports/quarterly.md": "",
+      }),
+    ),
+    /docs\/reports is not linked from docs\/README\.md/,
+  )
+  assert.deepEqual(
+    check({
+      "docs/README.md":
+        "[ADRs](decisions/)\n[Reports](reports/)\n[Handoff](figma-drift-handoff.md)",
+      "docs/decisions/0001-rework.md": "",
+      "docs/reports/quarterly.md": "",
+      "docs/figma-drift-handoff.md": "",
+    }).problems,
     [],
   )
 })
@@ -173,6 +206,27 @@ test("other skills may name components and the installed third-party skills are 
       "src/components/feedback/banner.tsx": "export function Banner() { return null }",
     }).problems,
     [],
+  )
+})
+
+test("a skill pinned in skills-lock.json needs the entrypoint it resolves to", () => {
+  const lock = `{
+  "version": 2,
+  "skills": {
+    "shadcn": { "source": "shadcn/ui", "skillPath": "skills/shadcn/SKILL.md" }
+  }
+}
+`
+  assert.deepEqual(
+    check({
+      "skills-lock.json": lock,
+      ".agents/skills/shadcn/SKILL.md": "# shadcn\n",
+    }).problems,
+    [],
+  )
+  assert.match(
+    problems(check({ "skills-lock.json": lock })),
+    /skills-lock\.json:4: shadcn is pinned in skills-lock\.json but \.agents\/skills\/shadcn\/SKILL\.md is missing/,
   )
 })
 

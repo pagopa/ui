@@ -8,6 +8,7 @@ import { readCorpus, type CaseCorpus } from "../parity/corpus.ts"
 import type { Workspace } from "../adapters/workspace.ts"
 import type { DevicePolicy } from "../schemas/devices.ts"
 import type { InventoryNode, Registry } from "../schemas/catalogue.ts"
+import type { TokenDrift } from "./tokens.ts"
 
 export interface CatalogueCoverageSummary {
   sets: number
@@ -33,6 +34,8 @@ export interface CatalogueRenderContext {
   bulkByNode: Map<string, { status?: string }>
   bulkByPage: Map<string, { status?: string }>
   entries: Registry["entries"]
+  /** The variables the same run read, when the run asked for them. */
+  tokenDrift?: TokenDrift | null
 }
 
 type DeltaKey = "added" | "changed" | "renamed" | "moved" | "removed" | "affected" | "baseline"
@@ -155,6 +158,76 @@ function reviewInstructions(ratchet: CatalogueRenderContext["ratchet"]): string[
   ]
 }
 
+const valueOf = (value: unknown): string =>
+  typeof value === "string" ? value : JSON.stringify(value ?? null)
+
+/** The token half of the summary: named only when the run read the variables. */
+function tokenSummary(drift: TokenDrift | null | undefined): string[] {
+  if (!drift) return []
+  const total =
+    drift.added.length +
+    drift.changed.length +
+    drift.renamed.length +
+    drift.removed.length +
+    drift.unmapped.length +
+    drift.unreadable.length
+  return [`- Tokens: ${total}`]
+}
+
+/**
+ * The variables the same run compared with `packages/tokens/src/manifest.json`.
+ * A variable nobody curated is `unmapped` rather than silence: it is drift the
+ * review has to see, and the run never fails the scheduled job over it.
+ */
+function renderTokenDrift(drift: TokenDrift | null | undefined): string[] {
+  if (!drift) return []
+  const lines: string[] = ["## Token drift", ""]
+  const entries = [
+    ...drift.added.map(
+      (entry) => `- added: \`${entry.name}\` (\`${entry.id}\`) = ${valueOf(entry.value)}`,
+    ),
+    ...drift.changed.map(
+      (change) => `- changed: \`${change.name}\` ${valueOf(change.from)} → ${valueOf(change.to)}`,
+    ),
+    ...drift.renamed.map(
+      (rename) => `- renamed: \`${rename.from}\` → \`${rename.to}\` (id \`${rename.id}\`)`,
+    ),
+    ...drift.removed.map((entry) => `- removed: \`${entry.name}\` (id \`${entry.id}\`)`),
+    ...drift.unmapped.map((name) => `- unmapped: \`${name}\` — outside every curated namespace`),
+    ...drift.unreadable.map((line) => `- unreadable: ${line}`),
+  ]
+  if (!entries.length) return [...lines, "None: the variables match the committed manifest.", ""]
+  return [
+    ...lines,
+    "Compared with `packages/tokens/src/manifest.json`; `update tokens` pins the values once the review accepts them.",
+    "",
+    ...entries,
+    "",
+  ]
+}
+
+/** The record the review branch carries: what moved, one vector at a time. */
+export function renderTokenDriftRecord(drift: TokenDrift, fileKey: string) {
+  return {
+    generatedAt: new Date().toISOString(),
+    fileKey,
+    counts: {
+      added: drift.added.length,
+      changed: drift.changed.length,
+      renamed: drift.renamed.length,
+      removed: drift.removed.length,
+      unmapped: drift.unmapped.length,
+      unreadable: drift.unreadable.length,
+    },
+    added: drift.added,
+    changed: drift.changed,
+    renamed: drift.renamed,
+    removed: drift.removed,
+    unmapped: drift.unmapped,
+    unreadable: drift.unreadable,
+  }
+}
+
 function renderDriftNode(
   context: CatalogueRenderContext,
   node: DeltaNode,
@@ -213,6 +286,7 @@ export function renderCataloguePrBody(context: CatalogueRenderContext): string {
     "## Summary",
     "",
     ...classes.map(([key, label]) => `- ${label}: ${delta[key].length}`),
+    ...tokenSummary(context.tokenDrift),
   ]
   if (pages.size)
     lines.push(
@@ -228,6 +302,7 @@ export function renderCataloguePrBody(context: CatalogueRenderContext): string {
       lines.push(...renderDriftNode(context, node, key, changedVariants, evidenceFor(node.nodeId)))
     }
   }
+  lines.push(...renderTokenDrift(context.tokenDrift))
   lines.push(
     "## Artifacts",
     "",

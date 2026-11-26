@@ -1,9 +1,13 @@
 name: Figma drift
 
-# Scheduled drift detection: refresh the pinned inventory, the offline evidence
-# and the review payload, then open one review pull request. The merge is the
-# review record (docs/decisions/0001-rework.md); the pending queue is the
-# visible signal. The refreshed JSON is formatted before the commit so the
+# Scheduled drift detection, weekly on Monday 04:00 UTC: one run reads the file
+# once and reports both halves of the design source — the component inventory
+# and the design tokens — then refreshes the pinned inventory, the offline
+# evidence and the review payload, and opens one review pull request. A run that
+# finds only token drift still opens it: the token record under
+# `docs/figma-parity/` is the committed change the pull request carries. The
+# merge is the review record (docs/decisions/0001-rework.md); the pending queue
+# is the visible signal. The refreshed JSON is formatted before the commit so the
 # review diff carries only the drift. Queuing a node replaces its reviewed note
 # with the pending stub, so the same refresh lowers the note-length ratchet that
 # `check:catalogue` reads: the diff carries that move with the drift that caused it.
@@ -30,8 +34,10 @@ name: Figma drift
 # that pushes and opens the pull request gets write.
 on:
   schedule:
-    # Every day at 02:00 UTC
-    - cron: "0 2 * * *"
+    # Every Monday at 04:00 UTC. The cadence is the one the repository
+    # documents (docs/figma-drift-handoff.md, CONTRIBUTING.md): a daily run made
+    # more review pull requests than there was drift to review.
+    - cron: "0 4 * * 1"
   workflow_dispatch:
 
 concurrency:
@@ -96,17 +102,24 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Detect drift and refresh the review payload
+      - name: Detect component and token drift and refresh the review payload
         env:
           FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
           PAGOPA_UI_ROOT: ../pagopa-ui
         run: |
           branch="figma-drift/$(date -u +%Y-%m-%d)"
+          # One read, two halves: the component delta and the token delta are
+          # reported by this run, and either one writes the pull request body.
+          # `--tokens` reads the published variables; a token that cannot read
+          # them (see docs/figma-drift-secrets.md) is reported as unavailable
+          # instead of failing the component half.
           pnpm --filter pagopa-ui-cli exec node src/cli.ts update inventory \
             --rest \
             --save .figma/live-rest.json \
             --pr-body .figma/pr-body.md \
             --delta .figma/delta.json \
+            --tokens \
+            --token-drift docs/figma-parity/token-drift.json \
             --evidence-base "https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${branch}"
 
       # The `.Regole` boxes and the comments are outside the design
@@ -168,6 +181,11 @@ jobs:
             src/catalog/figma/evidence-exceptions.json \
             src/catalog/figma/note-length-baseline.json
           pnpm exec oxfmt docs/figma-parity/manifest.json
+          # Absent when the run found no token drift: then there is nothing to
+          # format and nothing to commit.
+          if [ -f docs/figma-parity/token-drift.json ]; then
+            pnpm exec oxfmt docs/figma-parity/token-drift.json
+          fi
 
       - name: Open the review pull request
         if: hashFiles('packages/pagopa-ui/.figma/pr-body.md') != ''

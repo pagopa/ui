@@ -25,9 +25,22 @@ import {
   normalizeLive,
   type SnapshotDelta,
 } from "../snapshot.ts"
-import { fetchFigmaSnapshot, writeFigmaSnapshot, type FigmaSnapshot } from "../rest.ts"
+import {
+  fetchFigmaSnapshot,
+  fetchLocalVariables,
+  writeFigmaSnapshot,
+  type FigmaSnapshot,
+} from "../rest.ts"
 import { prepareCatalogueRefresh } from "../catalogue-refresh.ts"
 import { deltaHasChange } from "../work-set.ts"
+import {
+  compareTokenDrift,
+  formatTokenDrift,
+  messageOf,
+  readTokenManifest,
+  tokenDriftCount,
+  type TokenDrift,
+} from "../tokens.ts"
 import { formatCatalogueDrift } from "./drift.ts"
 import type { CatalogueOptions } from "./index.ts"
 
@@ -75,6 +88,9 @@ export type CatalogueLoadContext = {
   deltaPath?: string
   evidenceBase?: string
   prBodyPath?: string
+  /** The live variables against the committed manifest, when the run read them. */
+  tokenDrift: TokenDrift | null
+  tokenDriftPath?: string
   hasDrift: boolean
   writeRequested: boolean
 }
@@ -325,6 +341,35 @@ async function refreshCatalogue(
   }
 }
 
+/**
+ * The second half of one detection: the variables the same file publishes,
+ * compared with the committed token manifest. Drift is reported, never raised —
+ * a read the token cannot make (an Enterprise-only endpoint, a missing scope)
+ * is one line in the run, so the component half still reports and still opens
+ * the review change.
+ */
+async function readTokenDrift(
+  workspace: Workspace,
+  options: CatalogueOptions,
+  out: string[],
+): Promise<TokenDrift | null> {
+  // `loadCatalogue` already refuses a variable read with no token; the narrow
+  // keeps the fetcher's signature honest.
+  const token = options.token
+  if (!options.tokens || !token) return null
+  const manifest = readTokenManifest(workspace)
+  if (!manifest) {
+    out.push("token drift: none — no token manifest is pinned yet")
+    return null
+  }
+  try {
+    return compareTokenDrift(manifest, await fetchLocalVariables(manifest.fileKey, token))
+  } catch (error) {
+    out.push(`token drift: unavailable — ${messageOf(error)}`)
+    return null
+  }
+}
+
 async function assembleCatalogueContext(
   workspace: Workspace,
   options: CatalogueOptions,
@@ -334,7 +379,10 @@ async function assembleCatalogueContext(
   validateLiveOptions(options, snapshot.live, base.errors)
   const delta = snapshotDelta(base.committed, snapshot.live, base.errors)
   const prBodyPath = options.prBody
-  const hasDrift = Boolean(snapshot.live) && deltaHasChange(delta)
+  const tokenLines: string[] = []
+  const tokenDrift = await readTokenDrift(workspace, options, tokenLines)
+  const tokenHasDrift = tokenDrift ? tokenDriftCount(tokenDrift) > 0 : false
+  const hasDrift = (Boolean(snapshot.live) && deltaHasChange(delta)) || tokenHasDrift
   const writeRequested =
     Boolean(options.write || options.triage) && !(prBodyPath && snapshot.live && !hasDrift)
   const refreshed = await refreshCatalogue(
@@ -368,7 +416,12 @@ async function assembleCatalogueContext(
       errors: base.errors,
       driftErrors: drift.errors,
       warnings: base.warnings,
-      out: [...snapshot.out, ...drift.lines],
+      out: [
+        ...snapshot.out,
+        ...drift.lines,
+        ...tokenLines,
+        ...(tokenDrift ? formatTokenDrift(tokenDrift) : []),
+      ],
       err: snapshot.err,
       pendingWrites: refreshed.pendingWrites,
       live: snapshot.live,
@@ -380,6 +433,8 @@ async function assembleCatalogueContext(
       deltaPath: options.delta,
       evidenceBase: options.evidenceBase?.replace(/\/+$/, ""),
       prBodyPath,
+      tokenDrift,
+      tokenDriftPath: options.tokenDrift,
       hasDrift,
       writeRequested,
     },
@@ -392,6 +447,9 @@ export async function loadCatalogue(
 ): Promise<CatalogueLoadResult> {
   if (options.rest && !options.token) {
     throw new Error("REST catalogue reads require a resolved Figma token")
+  }
+  if (options.tokens && !options.token) {
+    throw new Error("a live variable read requires a resolved Figma token")
   }
   const initial = loadCatalogueState(workspace)
   if (!initial.inventory || !initial.registry) {

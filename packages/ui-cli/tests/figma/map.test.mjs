@@ -19,6 +19,10 @@ const inventory = {
       type: "COMPONENT_SET",
       pageId: "0:1",
       pageName: "Components",
+      properties: {
+        Size: { type: "VARIANT", defaultValue: "Medium", variantOptions: ["Small", "Medium"] },
+        Type: { type: "VARIANT", defaultValue: "Filled", variantOptions: ["Filled", "Outlined"] },
+      },
     },
     // A glyph on an artwork page, decided by the page rule rather than by an
     // entry of its own.
@@ -50,6 +54,10 @@ const registry = {
         story: "apps/storybook/src/Button.stories.tsx",
         storyExports: ["Playground"],
         additionalExports: ["IconButton"],
+        props: {
+          Size: { prop: "size", values: { Small: "sm", Medium: "md" } },
+          Type: { prop: "variant" },
+        },
       },
     },
     "1:3": { status: "excluded", reason: "A decoration no component draws" },
@@ -144,6 +152,15 @@ test("--write maps each node to its export, its story and the file it names", as
     // The registry names it, the package does not export it: readable in the
     // row, never an import a consumer could write.
     unexported: ["IconButton"],
+    // The variant-to-prop mapping the registry declares for the export, with the
+    // version of its shape so a reader can refuse one it does not know.
+    propsMap: {
+      version: 1,
+      props: {
+        Type: { prop: "variant" },
+        Size: { prop: "size", values: { Small: "sm", Medium: "md" } },
+      },
+    },
     story: "components-button--playground",
   })
   assert.deepEqual(map.nodes["1:3"], {
@@ -242,6 +259,44 @@ test("a node no rule and no entry decided is a catalogue gap, not a guess", asyn
   assert.match(result.stderr, /1:6 has no registry decision/)
 })
 
+test("a node whose variants have no declared mapping gets a row without one", async () => {
+  const entry = { ...registry.entries["1:2"] }
+  const files = tree({
+    "src/catalog/figma/registry.json": JSON.stringify({
+      ...registry,
+      entries: {
+        ...registry.entries,
+        "1:2": { ...entry, target: { ...entry.target, props: undefined } },
+      },
+    }),
+  })
+  const { map } = await generate(files)
+  assert.equal("propsMap" in map.nodes["1:2"], false)
+})
+
+test("a mapping the snapshot no longer backs is a catalogue gap, not a silent row", async () => {
+  const entry = registry.entries["1:2"]
+  const withProps = (props) =>
+    tree({
+      "src/catalog/figma/registry.json": JSON.stringify({
+        ...registry,
+        entries: { ...registry.entries, "1:2": { ...entry, target: { ...entry.target, props } } },
+      }),
+    })
+  const unknownProperty = await run([], withProps({ Colour: { prop: "color" } }))
+  assert.equal(unknownProperty.status, 2)
+  assert.match(
+    unknownProperty.stderr,
+    /1:2 maps "Colour", which the inventory does not declare as a variant/,
+  )
+  const unknownOption = await run(
+    [],
+    withProps({ Size: { prop: "size", values: { Large: "lg" } } }),
+  )
+  assert.equal(unknownOption.status, 2)
+  assert.match(unknownOption.stderr, /1:2 maps "Size=Large", which is not one of its variants/)
+})
+
 // The invariants guard the artifact a consumer reads, so each one is fed the
 // broken map it exists to catch rather than a broken input the generator would
 // have fixed.
@@ -260,6 +315,21 @@ function problemsAfter(mutate, listed = inventory) {
 
 test("an intact map has no problem", () => {
   assert.deepEqual(mapProblems(intactMap(), inventory, values), [])
+})
+
+test("a mapping a row declares but the snapshot does not still carry is a problem", () => {
+  assert.deepEqual(
+    problemsAfter((map) => {
+      map.nodes["1:2"].propsMap.props.Colour = { prop: "color" }
+    }),
+    ['1:2 maps "Colour", which the inventory does not declare as a variant'],
+  )
+  assert.deepEqual(
+    problemsAfter((map) => {
+      map.nodes["1:2"].propsMap.props.Size.values = { Small: "sm", Large: "lg" }
+    }),
+    ['1:2 maps "Size=Large", which is not one of its variants'],
+  )
 })
 
 test("every invariant names the row it caught", () => {

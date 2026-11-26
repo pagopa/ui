@@ -5,8 +5,13 @@ import { writeJson } from "../../lib/json.ts"
 import { forgetCommitted } from "../../records/committed.ts"
 import type { CatalogueReport } from "./index.ts"
 import { formatDeviceLine } from "../devices.ts"
+import { tokenDriftCount } from "../tokens.ts"
 import { formatSurfaceLine } from "../surface.ts"
-import { renderCatalogueDelta, renderCataloguePrBody } from "../catalogue-render.ts"
+import {
+  renderCatalogueDelta,
+  renderCataloguePrBody,
+  renderTokenDriftRecord,
+} from "../catalogue-render.ts"
 import { requestsFolder } from "../config.ts"
 import { formatCatalogueSummary, formatCoverageLine, renderCataloguePlan } from "./output.ts"
 import type { CatalogueContext } from "./context.ts"
@@ -54,6 +59,7 @@ function writePullRequestBody(
       bulkByNode: validation.bulkByNode,
       bulkByPage: validation.bulkByPage,
       entries: validation.entries,
+      tokenDrift: context.tokenDrift,
     })}\n`,
   )
   out.push(`pr body: ${context.prBodyPath}`)
@@ -88,6 +94,26 @@ function writeDeltaFile(workspace: Workspace, context: CatalogueContext, out: st
 }
 
 /**
+ * The token drift is what the review reads and what the branch carries: a run
+ * that finds none removes the record, so a drift that has been fixed leaves no
+ * stale page behind and the next run has nothing to commit. The record sits
+ * beside the pinned evidence bundle at the workspace root, not inside the
+ * audited package.
+ */
+function writeTokenDrift(context: CatalogueContext, out: string[]): void {
+  if (!context.tokenDriftPath || !context.tokenDrift) return
+  const file = path.resolve(context.workspace.workspaceRoot, context.tokenDriftPath)
+  if (!tokenDriftCount(context.tokenDrift)) {
+    fs.rmSync(file, { force: true })
+    return
+  }
+  fs.mkdirSync(path.dirname(file), { recursive: true })
+  writeJson(file, renderTokenDriftRecord(context.tokenDrift, context.inventory.fileKey))
+  forgetCommitted(file)
+  out.push(`token drift: ${context.tokenDriftPath}`)
+}
+
+/**
  * The exit code reads each origin on its own: drift is the one failure a pull
  * request can absorb, and it is exit 3 only while nothing else failed. Matching
  * the two lists by their text was the previous test, and any error whose text
@@ -106,6 +132,8 @@ export function catalogueExitCode(input: {
 function writeTargets(context: CatalogueContext): string[] {
   const targets = [...context.pendingWrites.keys()]
   if (context.prBodyPath && context.hasDrift) targets.push(context.prBodyPath)
+  if (context.tokenDriftPath && context.tokenDrift && tokenDriftCount(context.tokenDrift) > 0)
+    targets.push(context.tokenDriftPath)
   if (context.deltaPath && context.live) targets.push(context.deltaPath)
   return targets
 }
@@ -166,6 +194,7 @@ export function finishCatalogue(context: CatalogueContext, plan: boolean): Catal
     writePendingFiles(workspace.root, context, plan, out, err)
     writePullRequestBody(workspace, context, out)
     writeDeltaFile(workspace, context, out)
+    writeTokenDrift(context, out)
   } else {
     const targets = writeTargets(context)
     if (targets.length)
