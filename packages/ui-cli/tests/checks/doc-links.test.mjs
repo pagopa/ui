@@ -106,8 +106,41 @@ test("the docs gate accepts optional comparison values and still checks followin
 
 test("historical documents are checked on links only", () => {
   assert.deepEqual(
-    check({ "docs/plans/next.md": "Will add `scripts/future.mjs`.", "scripts/keep.mjs": "" })
-      .problems,
+    check({
+      "docs/README.md": "[Plans](plans/)",
+      "docs/plans/next.md": "Will add `scripts/future.mjs`.",
+      "scripts/keep.mjs": "",
+    }).problems,
+    [],
+  )
+})
+
+test("the root glossary map is audited like the other root documents", () => {
+  assert.match(
+    problems(check({ "GLOSSARY.md": "[Term](docs/vocabulary/gone.md)" })),
+    /GLOSSARY\.md:1: missing link docs\/vocabulary\/gone\.md/,
+  )
+})
+
+test("the docs index is the one surface that links every section and document", () => {
+  assert.match(
+    problems(
+      check({
+        "docs/README.md": "[ADRs](decisions/)",
+        "docs/decisions/0001-rework.md": "",
+        "docs/reports/quarterly.md": "",
+      }),
+    ),
+    /docs\/reports is not linked from docs\/README\.md/,
+  )
+  assert.deepEqual(
+    check({
+      "docs/README.md":
+        "[ADRs](decisions/)\n[Reports](reports/)\n[Handoff](figma-drift-handoff.md)",
+      "docs/decisions/0001-rework.md": "",
+      "docs/reports/quarterly.md": "",
+      "docs/figma-drift-handoff.md": "",
+    }).problems,
     [],
   )
 })

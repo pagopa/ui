@@ -2,7 +2,7 @@
 id: UC-04
 status: ready
 priority: Must
-parent_dr: design-review.md
+parent_dr: ../design-review.md
 ---
 
 # `UC-04`: Update the tokens from the Figma variables

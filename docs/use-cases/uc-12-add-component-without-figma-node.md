@@ -2,7 +2,7 @@
 id: UC-12
 status: ready
 priority: Should
-parent_dr: design-review.md
+parent_dr: ../design-review.md
 ---
 
 # `UC-12`: Add a public component without a Figma node

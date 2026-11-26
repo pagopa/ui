@@ -2,7 +2,7 @@
 id: UC-01
 status: ready
 priority: Must
-parent_dr: design-review.md
+parent_dr: ../design-review.md
 ---
 
 # `UC-01`: Implement a public component from a Figma node

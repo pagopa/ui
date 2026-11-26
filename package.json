@@ -18,8 +18,7 @@
     "@pagopa/nx-docker": "gh:^0.1.8",
     "@pagopa/nx-terraform": "gh:^0.5.13",
     "nx": "23.3.0",
-    "@typescript/native": "npm:typescript@^7.0.2",
     "oxfmt": "^0.73.0",
-    "typescript": "npm:@typescript/typescript6@^6.0.2"
+    "typescript": "^6.0.2"
   }
 }

@@ -2,7 +2,7 @@
 id: UC-11
 status: ready
 priority: Must
-parent_dr: design-review.md
+parent_dr: ../design-review.md
 ---
 
 # `UC-11`: Govern the weekly drift of the Figma library

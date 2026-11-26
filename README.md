@@ -100,7 +100,9 @@ The [package guide](./packages/pagopa-ui/README.md) covers router integration,
 Next.js App Router, languages and text overrides, the public token exports, and
 the Figma handoff in full. The [component
 guides](./apps/storybook/src/guides/) document individual components and their
-usage.
+usage. The [documentation tree](./docs/README.md) indexes the technical
+documents, and the [glossary map](./GLOSSARY.md) the two vocabularies they
+use.
 
 ## Contributing
 
