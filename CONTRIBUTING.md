@@ -397,7 +397,8 @@ project in its area as affected. Projects with a `Dockerfile` are inferred by
   the **Version Packages** pull request, so a publish is never gated on a scoped
   guess. `visual:update` captures a diff's images, `visual:check` opts a pull
   request into the comparison.
-- `figma-drift.yml` — the weekly drift snapshot and its review pull request.
+- `figma-drift.yml` — the weekly drift snapshot, component and token, and its
+  review pull request.
 - `release.yaml` — the DX release manager, on `main`.
 
 Deep checks and visual regression attach seven-day `nx-profile-*` artifacts,

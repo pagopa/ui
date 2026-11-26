@@ -36,7 +36,8 @@ on:
   # No `push` trigger: a merge to `main` carries the diff these jobs already
   # proved on the pull request. The nightly below is the whole-repository pass.
   schedule:
-    # Every day at 03:00 UTC, an hour before the Figma drift check
+    # Every day at 03:00 UTC: the weekly drift check (Mondays at 04:00) reads
+    # what this pass proved the day it runs
     - cron: "0 3 * * *"
   workflow_dispatch:
 
