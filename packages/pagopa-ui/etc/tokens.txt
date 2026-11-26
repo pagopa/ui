@@ -130,7 +130,6 @@
 --pui-accent-active
 --pui-accent-foreground
 --pui-artboard-height
---pui-artboard-height-tall
 --pui-avatar-frame
 --pui-avatar-icon-surface
 --pui-avatar-inverse-foreground
@@ -157,16 +156,12 @@
 --pui-dialog-width
 --pui-dialog-width-compact
 --pui-dragging-surface
---pui-drawer-width
 --pui-drawer-width-wide
 --pui-drop-target
 --pui-error-border
 --pui-error-foreground
 --pui-error-soft
 --pui-foreground
---pui-grid-actions
---pui-grid-aside
---pui-grid-fields
 --pui-hairline
 --pui-han-purple
 --pui-han-purple-soft
@@ -178,7 +173,6 @@
 --pui-info-soft
 --pui-input
 --pui-inverse-foreground
---pui-login-width
 --pui-menu-skeleton-width
 --pui-menu-width
 --pui-muted
@@ -352,7 +346,6 @@ js:--pui-accent
 js:--pui-accent-active
 js:--pui-accent-foreground
 js:--pui-artboard-height
-js:--pui-artboard-height-tall
 js:--pui-avatar-frame
 js:--pui-avatar-icon-surface
 js:--pui-avatar-inverse-foreground
@@ -379,16 +372,12 @@ js:--pui-destructive-hover
 js:--pui-dialog-width
 js:--pui-dialog-width-compact
 js:--pui-dragging-surface
-js:--pui-drawer-width
 js:--pui-drawer-width-wide
 js:--pui-drop-target
 js:--pui-error-border
 js:--pui-error-foreground
 js:--pui-error-soft
 js:--pui-foreground
-js:--pui-grid-actions
-js:--pui-grid-aside
-js:--pui-grid-fields
 js:--pui-hairline
 js:--pui-han-purple
 js:--pui-han-purple-soft
@@ -400,7 +389,6 @@ js:--pui-info-foreground
 js:--pui-info-soft
 js:--pui-input
 js:--pui-inverse-foreground
-js:--pui-login-width
 js:--pui-menu-skeleton-width
 js:--pui-menu-width
 js:--pui-muted

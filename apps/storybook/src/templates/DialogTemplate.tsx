@@ -30,7 +30,7 @@ export interface DialogTemplateProps {
 // points it at the page element instead of the document body, so the panel is a
 // DOM descendant of the page (container queries apply) and both the reviewer
 // and the parity capture measure it inside the frame.
-const PAGE_HEIGHT = "min-h-(--artboard-height)" // the source 650px artboard
+const PAGE_HEIGHT = "min-h-(--pui-artboard-height)" // the source 650px artboard
 
 function DialogTemplate({
   title,

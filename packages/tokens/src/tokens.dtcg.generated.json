@@ -475,10 +475,6 @@
       "$type": "dimension",
       "$value": "650px"
     },
-    "artboard-height-tall": {
-      "$type": "dimension",
-      "$value": "800px"
-    },
     "dialog-width": {
       "$type": "dimension",
       "$value": "600px"
@@ -487,18 +483,6 @@
       "$type": "dimension",
       "$value": "272px"
     },
-    "login-width": {
-      "$type": "dimension",
-      "$value": "520px"
-    },
-    "state-width": {
-      "$type": "dimension",
-      "$value": "368px"
-    },
-    "drawer-width": {
-      "$type": "dimension",
-      "$value": "416px"
-    },
     "drawer-width-wide": {
       "$type": "dimension",
       "$value": "417px"
@@ -506,6 +490,10 @@
     "id-module-width": {
       "$type": "dimension",
       "$value": "410px"
+    },
+    "state-width": {
+      "$type": "dimension",
+      "$value": "368px"
     },
     "camera-size": {
       "$type": "dimension",
@@ -546,18 +534,6 @@
     "otp-clip-margin": {
       "$type": "dimension",
       "$value": "{primitives.spacing-4}"
-    },
-    "grid-aside": {
-      "$type": "dimension",
-      "$value": "20rem"
-    },
-    "grid-fields": {
-      "$type": "dimension",
-      "$value": "10rem"
-    },
-    "grid-actions": {
-      "$type": "dimension",
-      "$value": "3rem"
     }
   }
 }

@@ -76,14 +76,11 @@
   --pui-skip-to-main-ring: #6d8bee;
   --pui-radius: 8px;
   --pui-artboard-height: 650px;
-  --pui-artboard-height-tall: 800px;
   --pui-dialog-width: 600px;
   --pui-dialog-width-compact: 272px;
-  --pui-login-width: 520px;
-  --pui-state-width: 368px;
-  --pui-drawer-width: 416px;
   --pui-drawer-width-wide: 417px;
   --pui-id-module-width: 410px;
+  --pui-state-width: 368px;
   --pui-camera-size: 376px;
   --pui-menu-width: 274px;
   --pui-menu-skeleton-width: 106px;
@@ -94,9 +91,6 @@
   --pui-page-gutter-lg: 3rem;
   --pui-hairline: 2px;
   --pui-otp-clip-margin: 4px;
-  --pui-grid-aside: 20rem;
-  --pui-grid-fields: 10rem;
-  --pui-grid-actions: 3rem;
 }
 
 /* Internal Figma primitives (internal, deprecated): the build-time layer the --pui-*

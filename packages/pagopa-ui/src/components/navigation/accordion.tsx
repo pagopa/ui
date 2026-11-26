@@ -128,30 +128,64 @@ function AccordionItem({
   )
 }
 
-function Accordion({
-  items,
-  defaultValue,
-  className,
-  "aria-label": ariaLabelProp,
-  loadingLabel: loadingLabelProp,
-}: {
+/**
+ * Props of {@link Accordion}. The controlled (`value` + `onValueChange`) and
+ * uncontrolled (`defaultValue`) modes share one lifecycle; `ref`, `className`
+ * and the standard HTML attributes of a `div` land on the root.
+ */
+interface AccordionProps extends Omit<
+  React.ComponentProps<"div">,
+  "children" | "className" | "aria-label"
+> {
+  /** The sections, in display order. */
   items: AccordionItemData[]
-  defaultValue?: string
+  /** Ids of the open sections; the caller owns them. */
+  value?: string[]
+  /** Ids of the sections open at mount when `value` is omitted. */
+  defaultValue?: string[]
+  /**
+   * Runs when a header asks to open or close its section: a click, Enter or
+   * Space, with the ids of the sections open afterwards.
+   */
+  onValueChange?: (value: string[]) => void
+  /** Whether several sections stay open at the same time. @default false */
+  multiple?: boolean
+  /** Classes of the root, merged with the root's own. */
   className?: string
   /** Name of the accordion landmark. @default messages.accordion.ariaLabel */
   "aria-label"?: string
   /** Announced text of a loading item. @default messages.accordion.loadingLabel */
   loadingLabel?: string
-}) {
+  /** The root element. */
+  ref?: React.Ref<HTMLDivElement>
+}
+
+function Accordion({
+  items,
+  value,
+  defaultValue,
+  onValueChange,
+  multiple,
+  className,
+  "aria-label": ariaLabelProp,
+  loadingLabel: loadingLabelProp,
+  ref,
+  ...rootProps
+}: AccordionProps) {
   const t = useMessages("accordion")
   const ariaLabel = ariaLabelProp ?? t.ariaLabel
   const loadingLabel = loadingLabelProp ?? t.loadingLabel
 
   return (
     <AccordionPrimitive
-      defaultValue={defaultValue ? [defaultValue] : undefined}
+      ref={ref}
+      value={value}
+      defaultValue={defaultValue}
+      onValueChange={onValueChange}
+      multiple={multiple}
       aria-label={ariaLabel}
       className={cn("grid gap-3", className)}
+      {...rootProps}
     >
       {items.map((item) => (
         <AccordionItem key={item.id} item={item} loadingLabel={loadingLabel} />
@@ -160,4 +194,4 @@ function Accordion({
   )
 }
 
-export { Accordion }
+export { Accordion, type AccordionProps }

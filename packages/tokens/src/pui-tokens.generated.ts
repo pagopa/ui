@@ -523,13 +523,6 @@ export const semanticTokens: SemanticToken[] = [
     dtcg: "650px",
   },
   {
-    cssName: "--pui-artboard-height-tall",
-    name: "artboard-height-tall",
-    type: "dimension",
-    value: "800px",
-    dtcg: "800px",
-  },
-  {
     cssName: "--pui-dialog-width",
     name: "dialog-width",
     type: "dimension",
@@ -544,27 +537,6 @@ export const semanticTokens: SemanticToken[] = [
     dtcg: "272px",
   },
   {
-    cssName: "--pui-login-width",
-    name: "login-width",
-    type: "dimension",
-    value: "520px",
-    dtcg: "520px",
-  },
-  {
-    cssName: "--pui-state-width",
-    name: "state-width",
-    type: "dimension",
-    value: "368px",
-    dtcg: "368px",
-  },
-  {
-    cssName: "--pui-drawer-width",
-    name: "drawer-width",
-    type: "dimension",
-    value: "416px",
-    dtcg: "416px",
-  },
-  {
     cssName: "--pui-drawer-width-wide",
     name: "drawer-width-wide",
     type: "dimension",
@@ -577,6 +549,13 @@ export const semanticTokens: SemanticToken[] = [
     type: "dimension",
     value: "410px",
     dtcg: "410px",
+  },
+  {
+    cssName: "--pui-state-width",
+    name: "state-width",
+    type: "dimension",
+    value: "368px",
+    dtcg: "368px",
   },
   {
     cssName: "--pui-camera-size",
@@ -647,26 +626,5 @@ export const semanticTokens: SemanticToken[] = [
     type: "dimension",
     value: "4px",
     dtcg: "{primitives.spacing-4}",
-  },
-  {
-    cssName: "--pui-grid-aside",
-    name: "grid-aside",
-    type: "dimension",
-    value: "20rem",
-    dtcg: "20rem",
-  },
-  {
-    cssName: "--pui-grid-fields",
-    name: "grid-fields",
-    type: "dimension",
-    value: "10rem",
-    dtcg: "10rem",
-  },
-  {
-    cssName: "--pui-grid-actions",
-    name: "grid-actions",
-    type: "dimension",
-    value: "3rem",
-    dtcg: "3rem",
   },
 ]

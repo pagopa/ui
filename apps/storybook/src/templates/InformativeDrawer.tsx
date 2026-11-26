@@ -32,8 +32,8 @@ export interface InformativeDrawerProps {
 // uses (the library Drawer maps it to the swipe gesture and the panel
 // geometry); the frame height follows the same choice.
 const FRAME_HEIGHT = {
-  bottom: "min-h-(--artboard-height)",
-  right: "min-h-(--artboard-height-tall)",
+  bottom: "min-h-(--pui-artboard-height)",
+  right: "min-h-(--pui-artboard-height-tall)",
 } // 650 / 800
 
 // The source title style is Titillio/600 (our 700 face): the title token
