@@ -16,7 +16,20 @@ const REMOVED_LAYERS = new Set([
 ])
 const LIBRARY_BOUNDARY = ["src/catalog"]
 // Third-party runtimes are imported only from the primitives layer.
-const THIRD_PARTY = ["@base-ui/react", "react-day-picker", "lucide-react"]
+const THIRD_PARTY = ["@base-ui/react", "react-day-picker"]
+// No layer may bring a second icon runtime: every glyph comes from the artwork
+// pipeline. A bare scope such as "@iconify" refuses the whole scope.
+const ICON_PACKAGES = [
+  "lucide-react",
+  "@tabler/icons-react",
+  "@heroicons/react",
+  "@radix-ui/react-icons",
+  "@phosphor-icons/react",
+  "@iconify",
+  "@mui/icons-material",
+  "@fortawesome",
+  "react-icons",
+]
 const FAMILIES = [
   "inputs",
   "navigation",
@@ -29,6 +42,10 @@ const FAMILIES = [
 const LOWER_LAYERS = ["primitives", "icons", ...FAMILIES]
 
 type Dependency = { target: string; runtime: boolean }
+
+function findPackage(specifier: string, packages: string[]): string | undefined {
+  return packages.find((name) => specifier === name || specifier.startsWith(`${name}/`))
+}
 
 function category(file: string): string {
   const parts = file.split("/")
@@ -84,9 +101,13 @@ export function checkImportLayers(workspace: Workspace): CheckReport {
       if ((specifier === "cn" || specifier.startsWith("cn/")) && file !== "src/lib/cn.ts") {
         errors.push(`${file}: import the configured cn from "@/lib/cn" instead of "${specifier}"`)
       }
-      const dependency = THIRD_PARTY.find(
-        (name) => specifier === name || specifier.startsWith(`${name}/`),
-      )
+      const icon = findPackage(specifier, ICON_PACKAGES)
+      if (icon) {
+        errors.push(
+          `${file}: the icon package "${icon}" is not allowed: glyphs come from the artwork pipeline`,
+        )
+      }
+      const dependency = findPackage(specifier, THIRD_PARTY)
       if (dependency && file.startsWith("src/components/")) {
         const layer = category(file)
         if (layer !== "primitives") {
