@@ -2,7 +2,7 @@
 
 - Type: design
 - Issue: https://github.com/pagopa/ui/issues/45
-- Status: open
+- Status: answered
 - Decision owner: @gunzip
 - Preview: not applicable — the request spans 34 component families and has no two-option composition; the issue lists every family
 
@@ -264,3 +264,22 @@ solution.
 For every group: fix the layout, or document the exception with the reason.
 **Total number of requests: 75**, across 34 groups. Every request corresponds to
 removing the `reflow: false` flag from the exempted story.
+
+## Decision
+
+Answered on 26 November 2026 by the ratified policy,
+[design-defaults.md](../design-defaults.md) — commit
+[4c8e494](https://github.com/pagopa/ui/commit/4c8e494).
+
+Reflow at 320 px is fixed, not exempted: §4.3 ratifies the WCAG 1.4.10
+two-dimension rule and §4.4 the text-spacing and 200% conditions, and
+`apps/storybook/src/support/a11y-contract.ts` already encodes those values. A
+component whose `reflow: false` flag contradicts the policy is carrying debt,
+not an exemption.
+
+The debt is re-scoped, unchanged, to
+[#192](https://github.com/pagopa/ui/issues/192): remove the flag from each of
+the 75 stories listed above, group by group, and delete its entry here.
+
+Open points: the 75 flags in #192; no story keeps an exemption the policy
+overturns.

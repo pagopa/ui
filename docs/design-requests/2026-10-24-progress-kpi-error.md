@@ -3,6 +3,7 @@
 - Type: design
 - Issue: https://github.com/pagopa/ui/issues/30
 - Status: open
+- Ratified defaults: [docs/design-defaults.md](../design-defaults.md) — apply §2–§4 before asking; what they do not decide stays open here.
 - Decision owner: @gunzip
 - Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-progress-kpi-error--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-progress-kpi-error--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-progress-kpi-error--option-c
 - Figma node: `9612:3997` (`.ProgressKpiBody`); public card `12133:82475`

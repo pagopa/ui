@@ -5,6 +5,7 @@
 - Issue: https://github.com/pagopa/ui/issues/37
 - Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-pagination-order-axis--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-pagination-order-axis--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-pagination-order-axis--option-c
 - Status: open — the node stays `pending`
+- Ratified defaults: [docs/design-defaults.md](../design-defaults.md) — apply §2–§4 before asking; what they do not decide stays open here.
 - Decision owner: Figma design owner
 - Updated: 22 October 2026 — questions 5 to 7 added after the source review;
   the element sizes and the narrow-canvas overflow are fixed (see "Already fixed").
