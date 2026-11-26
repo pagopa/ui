@@ -35,10 +35,13 @@ export interface ClassToken {
   readonly line: number
 }
 
+function isNode(value: unknown): value is AstNode {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false
+  return "type" in value && typeof value.type === "string"
+}
+
 function asNode(value: unknown): AstNode | undefined {
-  if (!value || typeof value !== "object" || Array.isArray(value)) return undefined
-  const candidate = value as AstNode
-  return typeof candidate.type === "string" ? candidate : undefined
+  return isNode(value) ? value : undefined
 }
 
 function asNodes(value: unknown): AstNode[] {
@@ -78,7 +81,7 @@ function isClassToken(token: string): boolean {
  * The `const` initializers a class position may name, keyed by name. Only a
  * name declared once in the file resolves: a shadowed one would be a guess.
  */
-function declarationsOf(program: AstNode): Map<string, unknown> {
+function declarationsOf(root: unknown): Map<string, unknown> {
   const found = new Map<string, unknown>()
   const ambiguous = new Set<string>()
   const walk = (current: AstNode) => {
@@ -98,7 +101,8 @@ function declarationsOf(program: AstNode): Map<string, unknown> {
       for (const child of asNodes(value)) walk(child)
     }
   }
-  walk(program)
+  const program = asNode(root)
+  if (program) walk(program)
   return found
 }
 
@@ -111,7 +115,7 @@ export function classTokens(file: string, source: string): ClassToken[] {
   if (parsed.errors.length) {
     throw new Error(parsed.errors.map((error) => error.message).join("; "))
   }
-  const declarations = declarationsOf(parsed.program as AstNode)
+  const declarations = declarationsOf(parsed.program)
   const line = lineOf(source)
   const found: ClassToken[] = []
 
@@ -192,30 +196,9 @@ export function classTokens(file: string, source: string): ClassToken[] {
       for (const child of asNodes(value)) walk(child)
     }
   }
-  walk(parsed.program as AstNode)
+  const program = asNode(parsed.program)
+  if (program) walk(program)
   return found
-}
-
-/** The class names a stylesheet carries, unescaped (`.pui\:flex` → `pui:flex`). */
-function classNames(css: string): Set<string> {
-  const names = new Set<string>()
-  for (const match of css.matchAll(/([^{}]*)\{/g)) {
-    const prelude = match[1].trim()
-    if (!prelude.startsWith(".")) continue
-    let name = ""
-    for (let index = 1; index < prelude.length; index += 1) {
-      const character = prelude[index]
-      if (character === "\\") {
-        name += prelude[index + 1]
-        index += 1
-        continue
-      }
-      if (" :.>#+~[*".includes(character)) break
-      name += character
-    }
-    if (name) names.add(name)
-  }
-  return names
 }
 
 type CompiledSheet = { build(candidates: string[]): string }
@@ -234,10 +217,9 @@ type Sheet = CompiledSheet
 async function compileEntry(entry: string): Promise<Sheet> {
   const require = createRequire(path.join(path.dirname(entry), "entry.css"))
   const resolved = require.resolve("@tailwindcss/node")
-  const loaded = (await import(pathToFileURL(resolved).href)) as {
-    compile?: Compile
-    default?: { compile?: Compile }
-  }
+  const loaded: { compile?: Compile; default?: { compile?: Compile } } = await import(
+    pathToFileURL(resolved).href
+  )
   const compile = loaded.compile ?? loaded.default?.compile
   if (!compile) throw new Error(`${resolved}: no compile export`)
   const base = path.dirname(entry)
@@ -303,7 +285,7 @@ export async function checkUtilityPrefix(
       found = classTokens(file, fs.readFileSync(file, "utf8"))
     } catch (error) {
       return report("utility prefix", `${files.length} file(s)`, [
-        `${identity}: ${(error as Error).message}`,
+        `${identity}: ${error instanceof Error ? error.message : String(error)}`,
       ])
     }
     for (const token of found) {
