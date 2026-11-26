@@ -433,12 +433,15 @@ run does not move it. Each command records its own baseline under
   where Firefox joins the engines. A merge to `main` starts nothing: the pull
   request it came from already ran them on the same diff.
 - **Each Monday at 04:00 UTC.** `.github/workflows/figma-drift.yml` runs
-  `pnpm ui-cli update inventory --rest --save .figma/live-rest.json --prBody .figma/pr-body.md --delta .figma/delta.json`.
+  `pnpm ui-cli update inventory --rest --save .figma/live-rest.json --prBody .figma/pr-body.md --delta .figma/delta.json --tokens --tokenDrift docs/figma-parity/token-drift.json`.
   The job needs the read-only `FIGMA_TOKEN` secret and fails when it is missing.
-  With drift it refreshes the inventory and the evidence bundle and opens one
-  review pull request with the job's `GITHUB_TOKEN`, whose runs wait for the
-  reviewer's approval, uploading `delta.json`, `run.json` and the body as
-  artifacts; without drift it leaves the tree untouched and opens nothing. The
+  One read answers both halves of the drift: the component delta and the
+  variables compared with the pinned manifest, so a run whose only drift is a
+  token still opens the pull request and records it beside the evidence bundle,
+  in the `token-drift.json` the `docs/figma-parity` directory holds. With drift
+  it refreshes the inventory and the evidence bundle and opens one review pull
+  request with the job's `GITHUB_TOKEN`, whose runs wait for the reviewer's
+  approval, uploading `delta.json`, `run.json` and the body as artifacts; without drift it leaves the tree untouched and opens nothing. The
   branch guard refuses to force-push a branch whose head is not the bot's
   commit. The merge is the review record.
 
