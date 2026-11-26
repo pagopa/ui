@@ -35,7 +35,7 @@ function LogIn({ title, description, alert, actions, terms, className }: LogInPr
     >
       <div
         data-slot="login-module-text"
-        className="flex w-full flex-col gap-2 text-center tablet-md:max-w-(--login-width)"
+        className="flex w-full flex-col gap-2 text-center tablet-md:max-w-(--pui-login-width)"
       >
         <h1 data-slot="login-module-title" className="text-title-lg-mobile tablet-md:text-title-lg">
           {title}
@@ -52,17 +52,17 @@ function LogIn({ title, description, alert, actions, terms, className }: LogInPr
           </p>
         ) : null}
       </div>
-      {alert ? <div className="w-full max-w-(--dialog-width-compact)">{alert}</div> : null}
+      {alert ? <div className="w-full max-w-(--pui-dialog-width-compact)">{alert}</div> : null}
       <div
         data-slot="login-module-actions"
-        className="flex w-full max-w-(--dialog-width-compact) flex-col gap-6"
+        className="flex w-full max-w-(--pui-dialog-width-compact) flex-col gap-6"
       >
         {actions}
       </div>
       {terms ? (
         <div
           data-slot="login-module-terms"
-          className="flex w-full flex-col gap-4 text-center tablet-md:max-w-(--login-width)"
+          className="flex w-full flex-col gap-4 text-center tablet-md:max-w-(--pui-login-width)"
         >
           <Separator />
           <p data-slot="login-module-terms-text" className="text-body text-muted-foreground">

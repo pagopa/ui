@@ -35,6 +35,8 @@ export default defineConfig(() => ({
           // The public token block on its own, for a consumer that renders
           // beside the library without loading the component stylesheet.
           ["tokens.css", "../tokens/src/tokens.generated.css"],
+          // The same contract in DTCG format, for the tools that read it.
+          ["tokens.dtcg.json", "../tokens/src/tokens.dtcg.generated.json"],
         ] as const) {
           this.emitFile({
             type: "asset",
@@ -56,6 +58,7 @@ export default defineConfig(() => ({
     lib: {
       entry: {
         "library-entry": path.resolve(dirname, "src/library-entry.ts"),
+        icons: path.resolve(dirname, "src/icons.ts"),
         tokens: path.resolve(dirname, "src/tokens.ts"),
       },
       formats: ["es"],

@@ -53,12 +53,18 @@ shadcn, or the repository's build aliases.
 
 ## Tokens
 
-The `--figma-*` custom properties in `styles.css` are the public token
-contract: a section that renders beside the components reads the same colours,
-spacing, radius and shadows. `@pagopa/ui/tokens` exports them as typed data,
-and `@pagopa/ui/tokens.css` ships the block alone for a page that does not load
-the component stylesheet. The values are read-only; a rename is a breaking
-change listed in the changelog. See the
+The `--pui-*` custom properties in `styles.css` are the public token contract:
+a section that renders beside the components reads the same colours, spacing,
+radius and shadows. They are named for the design role, not for the Figma
+variable behind them, so a rename upstream never moves them. The `--figma-*`
+custom properties beside them are the internal, deprecated build-time layer the
+`--pui-*` values are generated from.
+
+`@pagopa/ui/tokens` exports the contract as typed data (`semanticTokens`),
+`@pagopa/ui/tokens.css` ships the block alone for a page that does not load the
+component stylesheet, and `@pagopa/ui/tokens.dtcg.json` is the same contract in
+Design Tokens Community Group format. The values are read-only; a rename is a
+breaking change listed in the changelog. See the
 [tokens guide](../../apps/storybook/src/guides/tokens.md) for the loading
 options and the two examples.
 

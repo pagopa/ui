@@ -146,7 +146,7 @@ function AvatarFace({
           data-avatar-state={loading ? "loading" : selected ? "selected" : undefined}
           className={cn(
             avatarSizes[size],
-            size === "compact" && "rounded-[calc(var(--radius)*8/11)]",
+            size === "compact" && "rounded-[calc(var(--pui-radius)*8/11)]",
             imageFit === "contain" && "bg-card",
             (icon || tone === "inverse") &&
               "[&:has([data-slot=avatar-fallback])]:bg-transparent [&:has([data-slot=avatar-fallback])]:after:border-0",

@@ -11,7 +11,7 @@ function PageSurface({ className, ...props }: React.ComponentProps<"section">) {
   return (
     <section
       data-slot="white-template"
-      className={cn("min-h-(--artboard-height) bg-background text-foreground", className)}
+      className={cn("min-h-(--pui-artboard-height) bg-background text-foreground", className)}
       {...props}
     />
   )

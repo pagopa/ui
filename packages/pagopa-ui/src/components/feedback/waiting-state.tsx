@@ -7,9 +7,9 @@ function WaitingState({ className, ...props }: StateProps) {
   return (
     <StatePanel
       {...props}
-      actionsClassName="mx-auto w-full max-w-(--state-width) flex-col flex-nowrap items-center gap-6"
+      actionsClassName="mx-auto w-full max-w-(--pui-state-width) flex-col flex-nowrap items-center gap-6"
       className={cn("w-full max-w-none", className)}
-      contentClassName="w-full max-w-none tablet-md:max-w-(--state-width)"
+      contentClassName="w-full max-w-none tablet-md:max-w-(--pui-state-width)"
       icon={
         <div aria-hidden="true">
           <PagoPAPictogram

@@ -2,9 +2,12 @@ import { cn } from "@/lib/cn"
 
 import { type FigmaIconName, iconAssetsByName, type IconVariantsByName } from "pagopa-ui-artwork"
 
-// O(1) public-name index; Map.get keeps the explicit error for untyped callers
-// (plain JS consumers can still pass a name outside the union).
+import { iconVariantsByName } from "./generated/registry"
+
+// O(1) public-name indices; Map.get keeps the explicit fallback for untyped
+// callers (plain JS consumers can still pass a name outside the union).
 const assetsByName = new Map(Object.entries(iconAssetsByName))
+const componentsByName = new Map(Object.entries(iconVariantsByName))
 
 /**
  * Props of the source icon. `name` selects the pinned artwork and narrows
@@ -52,7 +55,17 @@ function PagoPAIcon<Name extends FigmaIconName>({
   }
 
   const asset = assetsByName.get(name)
-  if (!asset) throw new Error(`Icon "${name}" has no published source artwork`)
+  const components = asset ? componentsByName.get(name) : undefined
+  // A name built at runtime may miss the published set: the icon renders
+  // nothing rather than failing the whole surface that hosts it.
+  if (!asset || !components) {
+    if (import.meta.env.DEV) {
+      console.warn(
+        `PagoPAIcon: "${String(name)}" has no published source artwork; rendering nothing.`,
+      )
+    }
+    return null
+  }
   if (filled !== undefined && variant !== undefined) {
     throw new Error(`Icon "${name}": choose filled or variant, not both`)
   }
@@ -61,41 +74,17 @@ function PagoPAIcon<Name extends FigmaIconName>({
   }
   const selection = filled === undefined ? variant : filled ? "filled" : "outlined"
   const variantId = selection === undefined ? asset.defaultVariantNodeId : asset.aliases[selection]
-  const source = variantId ? asset.variants[variantId] : undefined
-  if (!source)
+  const SourceIcon = variantId ? components[variantId] : undefined
+  if (!variantId || !SourceIcon)
     throw new Error(`Icon "${name}" has no source asset for variant "${selection ?? "default"}"`)
-  if (asset.rendering === "image") {
-    return (
-      <img
-        data-slot="icon"
-        src={source.url}
-        data-figma-node-id={source.nodeId}
-        alt={decorative ? "" : (label ?? name)}
-        aria-hidden={decorative || undefined}
-        className={cn("inline-block shrink-0 select-none object-contain", className)}
-        style={{ width: size, height: size }}
-      />
-    )
-  }
-
   return (
-    <span
-      data-slot="icon"
-      data-figma-node-id={source.nodeId}
+    <SourceIcon
       aria-hidden={decorative || undefined}
       aria-label={decorative ? undefined : (label ?? name)}
       role={decorative ? undefined : "img"}
-      className={cn("pagopa-icon-mask inline-block shrink-0 select-none", className)}
-      style={{
-        width: size,
-        height: size,
-        backgroundColor: "currentColor",
-        forcedColorAdjust: "preserve-parent-color",
-        maskImage: `url("${source.url}")`,
-        maskPosition: "center",
-        maskRepeat: "no-repeat",
-        maskSize: "contain",
-      }}
+      className={cn("pagopa-icon inline-block shrink-0 select-none", className)}
+      width={size}
+      height={size}
     />
   )
 }
