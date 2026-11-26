@@ -1,12 +1,10 @@
 `Popover` is a small panel anchored to what it explains: an information icon, a
 truncated cell, an action that needs one more sentence. `label` names the panel
-and defaults to `Informazioni`; `closeLabel` names the close button. The close
-button, Escape, an outside press and the trigger all close it, and the primitive
-returns focus to the trigger.
-
-`label` and `closeLabel` override the panel's and the close button's accessible
-names; `UIProvider` also supports overriding `messages.popover.label` and
-`messages.popover.closeLabel`.
+and defaults to `Informazioni`; `closeLabel` names the close button. Both are
+text props, so `UIProvider` also overrides them globally, through
+`messages.popover.label` and `messages.popover.closeLabel`. The close button,
+Escape, an outside press and the trigger all close it, and the primitive returns
+focus to the trigger.
 
 `arrowPosition` picks the edge carrying the indicator: `"top"` (the default)
 places the bubble below the trigger with the arrow pointing up, `"bottom"` above
