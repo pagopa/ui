@@ -54,7 +54,7 @@ export const BreadcrumbExtended: Story = {
     design: { type: "figma", url: figmaEmbedUrl("123:7768") },
   },
   render: () => (
-    <div className="grid gap-4">
+    <div className="pui:grid pui:gap-4">
       <Breadcrumb
         items={[
           { label: "Home", href: "#breadcrumb-home" },
@@ -109,7 +109,7 @@ export const BreadcrumbCompact: Story = {
     design: { type: "figma", url: figmaEmbedUrl("123:7768") },
   },
   render: () => (
-    <div className="grid gap-4">
+    <div className="pui:grid pui:gap-4">
       <Breadcrumb
         layout="compact"
         back={{ label: "Torna ai servizi", href: "#explicit-breadcrumb-parent" }}
@@ -201,7 +201,7 @@ export const BreadcrumbFidelity: Story = {
     design: { type: "figma", url: figmaEmbedUrl("123:7768") },
   },
   render: () => (
-    <div className="grid gap-4">
+    <div className="pui:grid pui:gap-4">
       <div data-fidelity-variant="123-7769">
         <Breadcrumb
           items={[{ label: "Link", href: "#breadcrumb-source-parent" }, { label: "Current" }]}

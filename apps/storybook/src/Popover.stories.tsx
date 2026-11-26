@@ -18,7 +18,7 @@ const meta = {
     children: (
       <>
         <PopoverTitle>Informazione contestuale</PopoverTitle>
-        <p className="text-muted-foreground">Contenuto collegato al trigger.</p>
+        <p className="pui:text-muted-foreground">Contenuto collegato al trigger.</p>
       </>
     ),
   },
@@ -92,18 +92,18 @@ export const OpenKeyboardAudit: Story = {
 
 function SourceFrame({ arrowPosition }: { arrowPosition: "top" | "bottom" }) {
   return (
-    <div className="relative min-h-screen w-full">
+    <div className="pui:relative pui:min-h-screen pui:w-full">
       <Popover
         trigger={
           <Button
             variant="ghost"
             size="icon"
             aria-label="Apri popover informativo"
-            className={`absolute left-1/2 size-6 p-0 after:absolute after:-inset-2.5 ${
-              arrowPosition === "top" ? "top-0" : "bottom-0"
+            className={`pui:absolute pui:left-1/2 pui:size-6 pui:p-0 pui:after:absolute pui:after:-inset-2.5 ${
+              arrowPosition === "top" ? "pui:top-0" : "pui:bottom-0"
             }`}
           >
-            <Info aria-hidden="true" className="size-6" />
+            <Info aria-hidden="true" className="pui:size-6" />
           </Button>
         }
         defaultOpen
@@ -141,16 +141,16 @@ export const ShiftedIndicator: Story = {
   // shifted back inside the viewport, and the arrow still points at the
   // trigger instead of the popup centre.
   render: () => (
-    <div className="relative min-h-screen w-full">
+    <div className="pui:relative pui:min-h-screen pui:w-full">
       <Popover
         trigger={
           <Button
             variant="ghost"
             size="icon"
             aria-label="Apri popover informativo"
-            className="absolute top-24 right-24 size-6 p-0 after:absolute after:-inset-2.5"
+            className="pui:absolute pui:top-24 pui:right-24 pui:size-6 pui:p-0 pui:after:absolute pui:after:-inset-2.5"
           >
-            <Info aria-hidden="true" className="size-6" />
+            <Info aria-hidden="true" className="pui:size-6" />
           </Button>
         }
         defaultOpen
@@ -199,7 +199,7 @@ function ControlledHarness() {
         label="Informazione controllata"
       >
         <PopoverTitle>Informazione controllata</PopoverTitle>
-        <p className="text-muted-foreground">Il pannello segue lo stato del componente.</p>
+        <p className="pui:text-muted-foreground">Il pannello segue lo stato del componente.</p>
       </Popover>
       <p data-testid="controlled-state">Stato: {open ? "aperto" : "chiuso"}</p>
     </>
@@ -298,7 +298,7 @@ function PanelContractHarness() {
   const anchor = React.useRef<HTMLButtonElement>(null)
 
   const forwarded = panel
-    ? `class=${panel.classList.contains("max-w-md") ? "inoltrata" : "assente"} attribute=${panel.dataset.contractSlot ?? "assente"}`
+    ? `class=${panel.classList.contains("pui:max-w-md") ? "inoltrata" : "assente"} attribute=${panel.dataset.contractSlot ?? "assente"}`
     : "nessun pannello"
 
   return (
@@ -313,7 +313,7 @@ function PanelContractHarness() {
         open={open}
         onOpenChange={setOpen}
         label="Popover con contratto inoltrato"
-        className="max-w-md"
+        className="pui:max-w-md"
         data-contract-slot="popover"
       >
         <p>Contenuto misurato dal consumatore.</p>

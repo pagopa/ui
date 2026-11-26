@@ -173,7 +173,7 @@ export const PaginatedMobile: Story = {
 function EmptyCampaigns() {
   const [configured, setConfigured] = React.useState(false)
   return (
-    <div className="w-[min(53.25rem,calc(100vw-2rem))] max-w-full">
+    <div className="pui:w-[min(53.25rem,calc(100vw-2rem))] pui:max-w-full">
       <TableList
         label="Campagne"
         rows={[]}

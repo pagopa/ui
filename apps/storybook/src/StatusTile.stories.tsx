@@ -41,7 +41,7 @@ export const Orientations: Story = {
   // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <div className="grid w-[min(36rem,calc(100vw-2rem))] gap-3">
+    <div className="pui:grid pui:w-[min(36rem,calc(100vw-2rem))] pui:gap-3">
       <StatusTile
         channel={<PagoPAIcon name="mark_email_read" />}
         title="Piattaforma pagoPA"
@@ -65,7 +65,7 @@ export const Orientations: Story = {
 // column width. Each capture is its own export so the root maps the variant
 // alone, framed at the source width.
 const sourceTile = (orientation: "horizontal" | "vertical") => () => (
-  <div data-fidelity-variant={orientation} className="w-[312px]">
+  <div data-fidelity-variant={orientation} className="pui:w-[312px]">
     <StatusTile orientation={orientation} {...meta.args} />
   </div>
 )

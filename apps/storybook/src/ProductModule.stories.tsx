@@ -57,7 +57,7 @@ const renderRadio =
   (device: "desktop" | "mobile") => (args: React.ComponentProps<typeof ProductModule>) => (
     <SourceFrame nodeId="403:4116" device={device}>
       <RadioGroup
-        className="min-w-0"
+        className="pui:min-w-0"
         legend="Prodotti disponibili"
         name="products"
         defaultValue={args.value}
@@ -101,13 +101,13 @@ export const ActionMobile: Story = {
 
 export const RadioFormBehavior: Story = {
   render: (args) => (
-    <div className="w-screen min-w-0 max-w-full">
-      <form aria-label="Selezione prodotto" className="grid w-full min-w-0 gap-3">
-        <RadioGroup className="min-w-0" legend="Prodotti" name="products" defaultValue="first">
+    <div className="pui:w-screen pui:min-w-0 pui:max-w-full">
+      <form aria-label="Selezione prodotto" className="pui:grid pui:w-full pui:min-w-0 pui:gap-3">
+        <RadioGroup className="pui:min-w-0" legend="Prodotti" name="products" defaultValue="first">
           <ProductModule {...args} value="first" />
           <ProductModule {...args} title={undefined} name="Second product" value="second" />
         </RadioGroup>
-        <div className="flex flex-wrap gap-2">
+        <div className="pui:flex pui:flex-wrap pui:gap-2">
           <Button type="submit" size="sm">
             Conferma
           </Button>
@@ -142,7 +142,7 @@ export const RadioFormBehavior: Story = {
 function SelectableProducts() {
   const [selected, setSelected] = React.useState("spontanei")
   return (
-    <div className="grid gap-3">
+    <div className="pui:grid pui:gap-3">
       <ProductModule
         avatar={<Avatar size="small" alt="Pagamenti spontanei" initials="SP" />}
         title="Pagamenti spontanei"
@@ -225,7 +225,7 @@ export const ReadOnly: Story = {
 function StandaloneProductForm() {
   const [selected, setSelected] = React.useState(false)
   return (
-    <form aria-label="Prodotto indipendente" className="grid gap-3">
+    <form aria-label="Prodotto indipendente" className="pui:grid pui:gap-3">
       <ProductModule
         title="Pagamenti spontanei"
         selected={selected}

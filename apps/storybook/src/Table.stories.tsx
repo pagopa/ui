@@ -67,7 +67,7 @@ export const Mobile: Story = {
             key: "service",
             label: "Servizio",
             render: () => (
-              <a href="/pagamenti/tari" className="block">
+              <a href="/pagamenti/tari" className="pui:block">
                 TARI
               </a>
             ),
@@ -122,7 +122,7 @@ function ControlledTable() {
             : [{ id: "mensa", service: "Mensa scolastica", amount: "18,50 euro" }]
         }
         pagination={
-          <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="pui:flex pui:flex-wrap pui:items-center pui:justify-between pui:gap-4">
             <SelectField
               label="Righe per pagina"
               value={pageSize}
@@ -276,7 +276,10 @@ function PaymentActions() {
             key: "service",
             label: "Servizio",
             render: () => (
-              <a href="/pagamenti/tari" className="text-primary underline underline-offset-4">
+              <a
+                href="/pagamenti/tari"
+                className="pui:text-primary pui:underline pui:underline-offset-4"
+              >
                 TARI
               </a>
             ),
@@ -433,24 +436,27 @@ function SourceTable() {
       key: "reference",
       label: "ID",
       render: (value, row) => (
-        <div className="flex min-w-0 items-center gap-2">
+        <div className="pui:flex pui:min-w-0 pui:items-center pui:gap-2">
           {row.id.endsWith("-0") ? (
             <span
               role="img"
               aria-label="Non letta"
-              className="size-2 shrink-0 rounded-full bg-primary"
+              className="pui:size-2 pui:shrink-0 pui:rounded-full pui:bg-primary"
             />
           ) : null}
           {row.id.endsWith("-0") ? (
-            <a href={`#notifica-${row.id}`} className="text-primary underline underline-offset-4">
+            <a
+              href={`#notifica-${row.id}`}
+              className="pui:text-primary pui:underline pui:underline-offset-4"
+            >
               {value}
             </a>
           ) : (
-            <span className="font-mono">{value}</span>
+            <span className="pui:font-mono">{value}</span>
           )}
           <Paperclip
             aria-hidden="true"
-            className="ml-auto hidden size-5 shrink-0 text-primary @max-[40rem]/table:block"
+            className="pui:ml-auto pui:hidden pui:size-5 pui:shrink-0 pui:text-primary pui:@max-[40rem]/table:block"
           />
         </div>
       ),
@@ -462,8 +468,11 @@ function SourceTable() {
       key: "label",
       label: "Category",
       render: (value) => (
-        <span className="inline-flex items-center gap-1">
-          <TagIcon aria-hidden="true" className="hidden size-4 @max-[40rem]/table:block" />
+        <span className="pui:inline-flex pui:items-center pui:gap-1">
+          <TagIcon
+            aria-hidden="true"
+            className="pui:hidden pui:size-4 pui:@max-[40rem]/table:block"
+          />
           {value}
         </span>
       ),
@@ -599,7 +608,7 @@ export const SourceMobile: Story = {
 
 export const EmptyOptions: Story = {
   render: () => (
-    <div className="flex max-w-3xl flex-col gap-4">
+    <div className="pui:flex pui:max-w-3xl pui:flex-col pui:gap-4">
       <Table
         caption="Solo descrizione"
         rows={[]}
@@ -661,7 +670,7 @@ function PublicCells() {
         <TableBody>
           <TableCellRow
             header={
-              <a href="#mensa" className="text-primary underline underline-offset-4">
+              <a href="#mensa" className="pui:text-primary pui:underline pui:underline-offset-4">
                 Mensa scolastica
               </a>
             }

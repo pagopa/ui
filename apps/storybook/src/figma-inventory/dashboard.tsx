@@ -72,24 +72,24 @@ function FigmaMark({ className }: { className?: string }) {
 
 const statusTone: Record<RegistryStatus, { badge: string; dot: string }> = {
   implemented: {
-    badge: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
-    dot: "bg-emerald-500",
+    badge: "pui:bg-emerald-50 pui:text-emerald-700 pui:ring-emerald-600/20",
+    dot: "pui:bg-emerald-500",
   },
   pending: {
-    badge: "bg-sky-50 text-sky-700 ring-sky-600/20",
-    dot: "bg-sky-500",
+    badge: "pui:bg-sky-50 pui:text-sky-700 pui:ring-sky-600/20",
+    dot: "pui:bg-sky-500",
   },
   mocked: {
-    badge: "bg-amber-50 text-amber-700 ring-amber-600/20",
-    dot: "bg-amber-500",
+    badge: "pui:bg-amber-50 pui:text-amber-700 pui:ring-amber-600/20",
+    dot: "pui:bg-amber-500",
   },
   excluded: {
-    badge: "bg-slate-100 text-slate-600 ring-slate-500/20",
-    dot: "bg-slate-400",
+    badge: "pui:bg-slate-100 pui:text-slate-600 pui:ring-slate-500/20",
+    dot: "pui:bg-slate-400",
   },
   unaccounted: {
-    badge: "bg-rose-50 text-rose-700 ring-rose-600/20",
-    dot: "bg-rose-500",
+    badge: "pui:bg-rose-50 pui:text-rose-700 pui:ring-rose-600/20",
+    dot: "pui:bg-rose-500",
   },
 }
 
@@ -106,12 +106,12 @@ function StatusBadge({
   return (
     <span
       className={cn(
-        "inline-flex shrink-0 items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium whitespace-nowrap ring-1 ring-inset",
+        "pui:inline-flex pui:shrink-0 pui:items-center pui:gap-1.5 pui:rounded-full pui:px-2 pui:py-0.5 pui:text-[11px] pui:font-medium pui:whitespace-nowrap pui:ring-1 pui:ring-inset",
         tone.badge,
         className,
       )}
     >
-      <span aria-hidden="true" className={cn("size-1.5 rounded-full", tone.dot)} />
+      <span aria-hidden="true" className={cn("pui:size-1.5 pui:rounded-full", tone.dot)} />
       {label ?? statusLabel(status)}
     </span>
   )
@@ -121,18 +121,18 @@ function AreaBadge({ area, className }: { area: string; className?: string }) {
   return (
     <span
       className={cn(
-        "inline-flex shrink-0 items-center gap-1.5 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium whitespace-nowrap text-slate-700 ring-1 ring-slate-500/20 ring-inset",
+        "pui:inline-flex pui:shrink-0 pui:items-center pui:gap-1.5 pui:rounded-full pui:bg-slate-100 pui:px-2 pui:py-0.5 pui:text-[11px] pui:font-medium pui:whitespace-nowrap pui:text-slate-700 pui:ring-1 pui:ring-slate-500/20 pui:ring-inset",
         className,
       )}
     >
-      <span aria-hidden="true" className="size-1.5 rounded-full bg-slate-400" />
+      <span aria-hidden="true" className="pui:size-1.5 pui:rounded-full pui:bg-slate-400" />
       {area}
     </span>
   )
 }
 
 function focusRing() {
-  return "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+  return "pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-indigo-600"
 }
 
 // -------------------------------------------------------------- copy action
@@ -185,18 +185,18 @@ function CopyButton({
       onClick={copy}
       aria-label={copied ? `${label} copied` : `Copy ${label}`}
       className={cn(
-        "inline-flex shrink-0 items-center justify-center gap-1.5 rounded-md text-[11px] font-medium transition",
-        "text-slate-500 hover:bg-slate-100 hover:text-slate-800",
-        compact ? "size-6" : "px-2 py-1",
+        "pui:inline-flex pui:shrink-0 pui:items-center pui:justify-center pui:gap-1.5 pui:rounded-md pui:text-[11px] pui:font-medium pui:transition",
+        "pui:text-slate-500 pui:hover:bg-slate-100 pui:hover:text-slate-800",
+        compact ? "pui:size-6" : "pui:px-2 pui:py-1",
         focusRing(),
         className,
       )}
       title={copied ? "Copied" : "Copy"}
     >
       {copied ? (
-        <Check aria-hidden="true" className="size-3.5 text-emerald-600" />
+        <Check aria-hidden="true" className="pui:size-3.5 pui:text-emerald-600" />
       ) : (
-        <Copy aria-hidden="true" className="size-3.5" />
+        <Copy aria-hidden="true" className="pui:size-3.5" />
       )}
       {compact ? null : <span>{copied ? "Copied" : "Copy"}</span>}
     </button>
@@ -243,7 +243,7 @@ function ResyncControl() {
   const command = "pnpm nx run pagopa-ui-cli:figma:plan\npnpm nx run pagopa-ui-cli:figma:triage"
 
   return (
-    <div ref={wrapper} className="relative min-w-0">
+    <div ref={wrapper} className="pui:relative pui:min-w-0">
       <button
         ref={trigger}
         type="button"
@@ -251,24 +251,26 @@ function ResyncControl() {
         aria-controls="figma-resync-panel"
         onClick={() => setOpen((value) => !value)}
         className={cn(
-          "inline-flex max-w-full items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-center text-xs font-semibold text-white shadow-sm transition hover:bg-indigo-500 active:bg-indigo-700",
+          "pui:inline-flex pui:max-w-full pui:items-center pui:gap-1.5 pui:rounded-lg pui:bg-indigo-600 pui:px-3 pui:py-1.5 pui:text-center pui:text-xs pui:font-semibold pui:text-white pui:shadow-sm pui:transition pui:hover:bg-indigo-500 pui:active:bg-indigo-700",
           focusRing(),
         )}
       >
-        <RefreshCw aria-hidden="true" className="size-3.5" />
+        <RefreshCw aria-hidden="true" className="pui:size-3.5" />
         Re-sync Figma
       </button>
       {open ? (
         <div
           id="figma-resync-panel"
-          className="absolute top-full right-0 z-50 mt-2 w-[min(23rem,calc(100vw-2rem))] rounded-xl border border-slate-200 bg-white p-4 text-left shadow-xl"
+          className="pui:absolute pui:top-full pui:right-0 pui:z-50 pui:mt-2 pui:w-[min(23rem,calc(100vw-2rem))] pui:rounded-xl pui:border pui:border-slate-200 pui:bg-white pui:p-4 pui:text-left pui:shadow-xl"
         >
-          <div className="flex items-start justify-between gap-3">
+          <div className="pui:flex pui:items-start pui:justify-between pui:gap-3">
             <div>
-              <p className="text-sm font-semibold text-slate-900">Refresh the snapshot</p>
-              <p className="mt-1 text-xs leading-relaxed text-slate-500">
+              <p className="pui:text-sm pui:font-semibold pui:text-slate-900">
+                Refresh the snapshot
+              </p>
+              <p className="pui:mt-1 pui:text-xs pui:leading-relaxed pui:text-slate-500">
                 This page reads committed JSON. Refresh the inventory locally, review the delta,
-                then reload. The commands need <code className="font-mono">FIGMA_TOKEN</code>.
+                then reload. The commands need <code className="pui:font-mono">FIGMA_TOKEN</code>.
               </p>
             </div>
             <button
@@ -276,34 +278,37 @@ function ResyncControl() {
               onClick={close}
               aria-label="Close sync panel"
               className={cn(
-                "-mt-1 -mr-1 inline-flex size-6 shrink-0 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-700",
+                "pui:-mt-1 pui:-mr-1 pui:inline-flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-md pui:text-slate-500 pui:hover:bg-slate-100 pui:hover:text-slate-700",
                 focusRing(),
               )}
             >
-              <X aria-hidden="true" className="size-3.5" />
+              <X aria-hidden="true" className="pui:size-3.5" />
             </button>
           </div>
-          <div className="mt-3 flex items-start gap-2 rounded-lg border border-slate-200 bg-slate-50 p-2.5">
-            <Terminal aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-slate-500" />
-            <code className="min-w-0 flex-1 font-mono text-[10.5px] leading-relaxed break-all whitespace-pre-wrap text-slate-700">
+          <div className="pui:mt-3 pui:flex pui:items-start pui:gap-2 pui:rounded-lg pui:border pui:border-slate-200 pui:bg-slate-50 pui:p-2.5">
+            <Terminal
+              aria-hidden="true"
+              className="pui:mt-0.5 pui:size-3.5 pui:shrink-0 pui:text-slate-500"
+            />
+            <code className="pui:min-w-0 pui:flex-1 pui:font-mono pui:text-[10.5px] pui:leading-relaxed pui:break-all pui:whitespace-pre-wrap pui:text-slate-700">
               {command}
             </code>
             <CopyButton value={command} label="sync command" compact />
           </div>
-          <div className="mt-3 flex items-center justify-between">
+          <div className="pui:mt-3 pui:flex pui:items-center pui:justify-between">
             <a
               href={inventoryMeta.figmaUrl}
               target="_blank"
               rel="noreferrer"
               className={cn(
-                "inline-flex items-center gap-1 text-[11px] font-medium text-indigo-600 hover:text-indigo-700 hover:underline",
+                "pui:inline-flex pui:items-center pui:gap-1 pui:text-[11px] pui:font-medium pui:text-indigo-600 pui:hover:text-indigo-700 pui:hover:underline",
                 focusRing(),
               )}
             >
               Open the Figma file
-              <ArrowUpRight aria-hidden="true" className="size-3" />
+              <ArrowUpRight aria-hidden="true" className="pui:size-3" />
             </a>
-            <span className="font-mono text-[10px] text-slate-500">
+            <span className="pui:font-mono pui:text-[10px] pui:text-slate-500">
               {formatDate(inventoryMeta.syncedAt)}
             </span>
           </div>
@@ -315,27 +320,29 @@ function ResyncControl() {
 
 function Header() {
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/85 backdrop-blur">
-      <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-2 px-4 py-2.5 tablet:px-6 desktop:px-8">
-        <div className="flex min-w-0 items-center gap-3">
+    <header className="pui:sticky pui:top-0 pui:z-30 pui:border-b pui:border-slate-200 pui:bg-white/85 pui:backdrop-blur">
+      <div className="pui:mx-auto pui:flex pui:max-w-[1400px] pui:flex-wrap pui:items-center pui:justify-between pui:gap-2 pui:px-4 pui:py-2.5 pui:tablet:px-6 pui:desktop:px-8">
+        <div className="pui:flex pui:min-w-0 pui:items-center pui:gap-3">
           <span
             aria-hidden="true"
-            className="flex size-8 shrink-0 items-center justify-center rounded-lg text-white shadow-sm"
+            className="pui:flex pui:size-8 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-lg pui:text-white pui:shadow-sm"
             style={{ backgroundImage: "linear-gradient(135deg, #6366f1, #7c3aed)" }}
           >
-            <Layers className="size-4" />
+            <Layers className="pui:size-4" />
           </span>
-          <div className="min-w-0 leading-tight">
-            <p className="truncate text-[13px] font-semibold text-slate-900">PagoPA UI</p>
-            <p className="truncate text-[11px] text-slate-500">
-              <span className="tablet:hidden">Figma inventory</span>
-              <span className="hidden tablet:inline">Design system · Figma inventory</span>
+          <div className="pui:min-w-0 pui:leading-tight">
+            <p className="pui:truncate pui:text-[13px] pui:font-semibold pui:text-slate-900">
+              PagoPA UI
+            </p>
+            <p className="pui:truncate pui:text-[11px] pui:text-slate-500">
+              <span className="pui:tablet:hidden">Figma inventory</span>
+              <span className="pui:hidden pui:tablet:inline">Design system · Figma inventory</span>
             </p>
           </div>
         </div>
-        <div className="flex min-w-0 items-center gap-2">
-          <span className="hidden items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] text-slate-600 tablet:inline-flex">
-            <span aria-hidden="true" className="size-1.5 rounded-full bg-emerald-500" />
+        <div className="pui:flex pui:min-w-0 pui:items-center pui:gap-2">
+          <span className="pui:hidden pui:items-center pui:gap-1.5 pui:rounded-full pui:border pui:border-slate-200 pui:bg-slate-50 pui:px-2.5 pui:py-1 pui:text-[11px] pui:text-slate-600 pui:tablet:inline-flex">
+            <span aria-hidden="true" className="pui:size-1.5 pui:rounded-full pui:bg-emerald-500" />
             Snapshot {formatDate(inventoryMeta.syncedAt)}
           </span>
           <ResyncControl />
@@ -357,9 +364,14 @@ function ProgressBar({
   barClassName?: string
 }) {
   return (
-    <div className={cn("h-1.5 overflow-hidden rounded-full bg-slate-100", className)}>
+    <div
+      className={cn("pui:h-1.5 pui:overflow-hidden pui:rounded-full pui:bg-slate-100", className)}
+    >
       <div
-        className={cn("h-full rounded-full bg-indigo-500 transition-[width]", barClassName)}
+        className={cn(
+          "pui:h-full pui:rounded-full pui:bg-indigo-500 pui:transition-[width]",
+          barClassName,
+        )}
         style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
       />
     </div>
@@ -382,25 +394,25 @@ function KpiCard({
   children?: React.ReactNode
 }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-      <div className="flex items-start justify-between gap-3">
-        <p className="text-[11px] font-semibold tracking-[0.14em] text-slate-500 uppercase">
+    <div className="pui:rounded-2xl pui:border pui:border-slate-200 pui:bg-white pui:p-4 pui:shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+      <div className="pui:flex pui:items-start pui:justify-between pui:gap-3">
+        <p className="pui:text-[11px] pui:font-semibold pui:tracking-[0.14em] pui:text-slate-500 pui:uppercase">
           {label}
         </p>
         <span
           aria-hidden="true"
           className={cn(
-            "flex size-7 shrink-0 items-center justify-center rounded-lg",
+            "pui:flex pui:size-7 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-lg",
             iconClassName,
           )}
         >
           {icon}
         </span>
       </div>
-      <p className="mt-3 text-2xl font-semibold tracking-tight text-slate-900 tabular-nums">
+      <p className="pui:mt-3 pui:text-2xl pui:font-semibold pui:tracking-tight pui:text-slate-900 pui:tabular-nums">
         {value}
       </p>
-      <div className="mt-1 text-xs leading-relaxed text-slate-500">{detail}</div>
+      <div className="pui:mt-1 pui:text-xs pui:leading-relaxed pui:text-slate-500">{detail}</div>
       {children}
     </div>
   )
@@ -408,7 +420,7 @@ function KpiCard({
 
 function Kpis() {
   return (
-    <div className="mt-6 grid gap-3 tablet:grid-cols-2 desktop:grid-cols-4">
+    <div className="pui:mt-6 pui:grid pui:gap-3 pui:tablet:grid-cols-2 pui:desktop:grid-cols-4">
       <KpiCard
         label="Total components"
         value={formatNumber(totals.total)}
@@ -417,8 +429,8 @@ function Kpis() {
             {formatNumber(totals.pages)} Figma pages · {formatNumber(AREAS.length)} areas
           </>
         }
-        icon={<Layers className="size-4" />}
-        iconClassName="bg-indigo-50 text-indigo-600"
+        icon={<Layers className="pui:size-4" />}
+        iconClassName="pui:bg-indigo-50 pui:text-indigo-600"
       />
       <KpiCard
         label="Sync coverage"
@@ -428,10 +440,10 @@ function Kpis() {
             {formatNumber(totals.implemented)} implemented · {formatNumber(totals.notShipped)} open
           </>
         }
-        icon={<CheckCircle2 className="size-4" />}
-        iconClassName="bg-emerald-50 text-emerald-600"
+        icon={<CheckCircle2 className="pui:size-4" />}
+        iconClassName="pui:bg-emerald-50 pui:text-emerald-600"
       >
-        <ProgressBar value={syncPercent} className="mt-3" barClassName="bg-emerald-500" />
+        <ProgressBar value={syncPercent} className="pui:mt-3" barClassName="pui:bg-emerald-500" />
       </KpiCard>
       <KpiCard
         label="Not shipped"
@@ -441,8 +453,8 @@ function Kpis() {
             {formatNumber(totals.mocked)} mocked · {formatNumber(totals.pending)} pending
           </>
         }
-        icon={<CircleAlert className="size-4" />}
-        iconClassName="bg-amber-50 text-amber-600"
+        icon={<CircleAlert className="pui:size-4" />}
+        iconClassName="pui:bg-amber-50 pui:text-amber-600"
       />
       <KpiCard
         label="Active variants"
@@ -453,8 +465,8 @@ function Kpis() {
             declared device frames
           </>
         }
-        icon={<ScanSearch className="size-4" />}
-        iconClassName="bg-violet-50 text-violet-600"
+        icon={<ScanSearch className="pui:size-4" />}
+        iconClassName="pui:bg-violet-50 pui:text-violet-600"
       />
     </div>
   )
@@ -462,15 +474,15 @@ function Kpis() {
 
 function HealthStrip() {
   return (
-    <div className="mt-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+    <div className="pui:mt-3 pui:rounded-2xl pui:border pui:border-slate-200 pui:bg-white pui:px-4 pui:py-3 pui:shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
       {unaccountedCount > 0 ? (
-        <p className="flex items-center gap-2 text-[11px] text-amber-700">
-          <CircleAlert aria-hidden="true" className="size-3.5 shrink-0" />
+        <p className="pui:flex pui:items-center pui:gap-2 pui:text-[11px] pui:text-amber-700">
+          <CircleAlert aria-hidden="true" className="pui:size-3.5 pui:shrink-0" />
           {unaccountedCount} published nodes have no registry entry yet.
         </p>
       ) : (
-        <p className="flex items-center gap-2 text-[11px] text-emerald-700">
-          <CheckCircle2 aria-hidden="true" className="size-3.5 shrink-0" />
+        <p className="pui:flex pui:items-center pui:gap-2 pui:text-[11px] pui:text-emerald-700">
+          <CheckCircle2 aria-hidden="true" className="pui:size-3.5 pui:shrink-0" />
           Every published node is covered by a registry entry or a page rule.
         </p>
       )}
@@ -495,13 +507,13 @@ function SearchField({
       : "Ctrl K"
 
   return (
-    <div className="relative w-full min-w-0 tablet:w-auto tablet:flex-1">
-      <label className="sr-only" htmlFor="registry-search">
+    <div className="pui:relative pui:w-full pui:min-w-0 pui:tablet:w-auto pui:tablet:flex-1">
+      <label className="pui:sr-only" htmlFor="registry-search">
         Search components
       </label>
       <Search
         aria-hidden="true"
-        className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-500"
+        className="pui:pointer-events-none pui:absolute pui:top-1/2 pui:left-3 pui:size-4 pui:-translate-y-1/2 pui:text-slate-500"
       />
       <input
         ref={inputRef}
@@ -520,9 +532,9 @@ function SearchField({
         spellCheck={false}
         aria-keyshortcuts="Meta+K Control+K"
         className={cn(
-          "h-9 w-full rounded-lg border border-slate-200 bg-white pr-16 pl-9 text-sm text-slate-900 shadow-[0_1px_1px_rgba(15,23,42,0.03)] transition",
-          "placeholder:text-slate-600 hover:border-slate-300 focus:border-indigo-300 focus:ring-4 focus:ring-indigo-500/10 focus:outline-none",
-          "[&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none",
+          "pui:h-9 pui:w-full pui:rounded-lg pui:border pui:border-slate-200 pui:bg-white pui:pr-16 pui:pl-9 pui:text-sm pui:text-slate-900 pui:shadow-[0_1px_1px_rgba(15,23,42,0.03)] pui:transition",
+          "pui:placeholder:text-slate-600 pui:hover:border-slate-300 pui:focus:border-indigo-300 pui:focus:ring-4 pui:focus:ring-indigo-500/10 pui:focus:outline-none",
+          "pui:[&::-webkit-search-cancel-button]:appearance-none pui:[&::-webkit-search-decoration]:appearance-none",
         )}
       />
       {value ? (
@@ -534,18 +546,18 @@ function SearchField({
           }}
           aria-label="Clear search"
           className={cn(
-            "absolute top-1/2 right-2 inline-flex size-6 -translate-y-1/2 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-700",
+            "pui:absolute pui:top-1/2 pui:right-2 pui:inline-flex pui:size-6 pui:-translate-y-1/2 pui:items-center pui:justify-center pui:rounded-md pui:text-slate-500 pui:hover:bg-slate-100 pui:hover:text-slate-700",
             focusRing(),
           )}
         >
-          <X aria-hidden="true" className="size-3.5" />
+          <X aria-hidden="true" className="pui:size-3.5" />
         </button>
       ) : (
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute top-1/2 right-2.5 flex -translate-y-1/2 items-center gap-1 rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 font-sans text-[10px] font-medium text-slate-500"
+          className="pui:pointer-events-none pui:absolute pui:top-1/2 pui:right-2.5 pui:flex pui:-translate-y-1/2 pui:items-center pui:gap-1 pui:rounded pui:border pui:border-slate-200 pui:bg-slate-50 pui:px-1.5 pui:py-0.5 pui:font-sans pui:text-[10px] pui:font-medium pui:text-slate-500"
         >
-          <Keyboard className="size-3" />
+          <Keyboard className="pui:size-3" />
           {shortcut}
         </span>
       )}
@@ -573,10 +585,10 @@ function FilterChip({
       onClick={onClick}
       title={title}
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium transition",
+        "pui:inline-flex pui:items-center pui:gap-1.5 pui:rounded-full pui:border pui:px-2.5 pui:py-1 pui:text-[11px] pui:font-medium pui:transition",
         active
-          ? "border-slate-900 bg-slate-900 text-white shadow-sm"
-          : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900",
+          ? "pui:border-slate-900 pui:bg-slate-900 pui:text-white pui:shadow-sm"
+          : "pui:border-slate-200 pui:bg-white pui:text-slate-600 pui:hover:border-slate-300 pui:hover:bg-slate-50 pui:hover:text-slate-900",
         focusRing(),
         className,
       )}
@@ -587,7 +599,9 @@ function FilterChip({
 }
 
 function CountPill({ value }: { value: number }) {
-  return <span className="font-mono text-[10px] tabular-nums">{formatNumber(value)}</span>
+  return (
+    <span className="pui:font-mono pui:text-[10px] pui:tabular-nums">{formatNumber(value)}</span>
+  )
 }
 
 function areaOption(value: string) {
@@ -602,12 +616,12 @@ function AreaField({
   onChange: (value: string | "all") => void
 }) {
   return (
-    <div className="relative w-full shrink-0 desktop:w-56">
+    <div className="pui:relative pui:w-full pui:shrink-0 pui:desktop:w-56">
       <select
         aria-label="Filter by area"
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="h-9 w-full appearance-none rounded-lg border border-slate-200 bg-white pr-8 pl-3 text-[11px] font-medium text-slate-600 transition hover:border-slate-300 focus:border-indigo-300 focus:ring-4 focus:ring-indigo-500/10 focus:outline-none"
+        className="pui:h-9 pui:w-full pui:appearance-none pui:rounded-lg pui:border pui:border-slate-200 pui:bg-white pui:pr-8 pui:pl-3 pui:text-[11px] pui:font-medium pui:text-slate-600 pui:transition pui:hover:border-slate-300 pui:focus:border-indigo-300 pui:focus:ring-4 pui:focus:ring-indigo-500/10 pui:focus:outline-none"
       >
         <option value="all">All areas</option>
         {AREAS.map((area) => (
@@ -618,7 +632,7 @@ function AreaField({
       </select>
       <ChevronDown
         aria-hidden="true"
-        className="pointer-events-none absolute top-1/2 right-2.5 size-3.5 -translate-y-1/2 text-slate-500"
+        className="pui:pointer-events-none pui:absolute pui:top-1/2 pui:right-2.5 pui:size-3.5 pui:-translate-y-1/2 pui:text-slate-500"
       />
     </div>
   )
@@ -634,11 +648,11 @@ function StatusFilters({
   return (
     <fieldset
       aria-label="Filter by status"
-      className="m-0 flex min-w-0 flex-wrap items-center gap-1.5 border-0 p-0"
+      className="pui:m-0 pui:flex pui:min-w-0 pui:flex-wrap pui:items-center pui:gap-1.5 pui:border-0 pui:p-0"
     >
       <span
         aria-hidden="true"
-        className="mr-1 text-[10px] font-semibold tracking-[0.12em] text-slate-500 uppercase"
+        className="pui:mr-1 pui:text-[10px] pui:font-semibold pui:tracking-[0.12em] pui:text-slate-500 pui:uppercase"
       >
         Status
       </span>
@@ -651,11 +665,13 @@ function StatusFilters({
           key={status}
           active={value === status}
           onClick={() => onChange(value === status ? "all" : status)}
-          className={value === status ? `${statusTone[status].badge} ring-1 ring-inset` : undefined}
+          className={
+            value === status ? `${statusTone[status].badge} pui:ring-1 pui:ring-inset` : undefined
+          }
         >
           <span
             aria-hidden="true"
-            className={cn("size-1.5 rounded-full", statusTone[status].dot)}
+            className={cn("pui:size-1.5 pui:rounded-full", statusTone[status].dot)}
           />
           {statusLabel(status)}
           <CountPill value={statusCounts[status]} />
@@ -675,7 +691,7 @@ function ViewToggle({
   return (
     <fieldset
       aria-label="View mode"
-      className="m-0 inline-flex min-w-0 shrink-0 items-center gap-0.5 rounded-lg border border-slate-200 bg-slate-50 p-0.5"
+      className="pui:m-0 pui:inline-flex pui:min-w-0 pui:shrink-0 pui:items-center pui:gap-0.5 pui:rounded-lg pui:border pui:border-slate-200 pui:bg-slate-50 pui:p-0.5"
     >
       <button
         type="button"
@@ -683,15 +699,15 @@ function ViewToggle({
         aria-label="Grid view"
         onClick={() => onChange("grid")}
         className={cn(
-          "inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-medium transition",
+          "pui:inline-flex pui:items-center pui:gap-1.5 pui:rounded-md pui:px-2 pui:py-1 pui:text-[11px] pui:font-medium pui:transition",
           view === "grid"
-            ? "bg-white text-slate-900 shadow-sm"
-            : "text-slate-500 hover:text-slate-800",
+            ? "pui:bg-white pui:text-slate-900 pui:shadow-sm"
+            : "pui:text-slate-500 pui:hover:text-slate-800",
           focusRing(),
         )}
       >
-        <LayoutGrid aria-hidden="true" className="size-3.5" />
-        <span className="hidden tablet:inline">Grid</span>
+        <LayoutGrid aria-hidden="true" className="pui:size-3.5" />
+        <span className="pui:hidden pui:tablet:inline">Grid</span>
       </button>
       <button
         type="button"
@@ -699,15 +715,15 @@ function ViewToggle({
         aria-label="Table view"
         onClick={() => onChange("table")}
         className={cn(
-          "inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-medium transition",
+          "pui:inline-flex pui:items-center pui:gap-1.5 pui:rounded-md pui:px-2 pui:py-1 pui:text-[11px] pui:font-medium pui:transition",
           view === "table"
-            ? "bg-white text-slate-900 shadow-sm"
-            : "text-slate-500 hover:text-slate-800",
+            ? "pui:bg-white pui:text-slate-900 pui:shadow-sm"
+            : "pui:text-slate-500 pui:hover:text-slate-800",
           focusRing(),
         )}
       >
-        <Table2 aria-hidden="true" className="size-3.5" />
-        <span className="hidden tablet:inline">Table</span>
+        <Table2 aria-hidden="true" className="pui:size-3.5" />
+        <span className="pui:hidden pui:tablet:inline">Table</span>
       </button>
     </fieldset>
   )
@@ -719,7 +735,7 @@ function isSortKey(value: string): value is SortKey {
 
 function SortField({ value, onChange }: { value: SortKey; onChange: (value: SortKey) => void }) {
   return (
-    <div className="relative ml-auto shrink-0 tablet:ml-0">
+    <div className="pui:relative pui:ml-auto pui:shrink-0 pui:tablet:ml-0">
       <select
         aria-label="Sort components"
         value={value}
@@ -727,7 +743,7 @@ function SortField({ value, onChange }: { value: SortKey; onChange: (value: Sort
           if (isSortKey(event.target.value)) onChange(event.target.value)
         }}
         className={cn(
-          "h-9 appearance-none rounded-lg border border-slate-200 bg-white pr-8 pl-3 text-[11px] font-medium text-slate-600 transition hover:border-slate-300 focus:border-indigo-300 focus:ring-4 focus:ring-indigo-500/10 focus:outline-none",
+          "pui:h-9 pui:appearance-none pui:rounded-lg pui:border pui:border-slate-200 pui:bg-white pui:pr-8 pui:pl-3 pui:text-[11px] pui:font-medium pui:text-slate-600 pui:transition pui:hover:border-slate-300 pui:focus:border-indigo-300 pui:focus:ring-4 pui:focus:ring-indigo-500/10 pui:focus:outline-none",
         )}
       >
         {SORT_OPTIONS.map((option) => (
@@ -738,7 +754,7 @@ function SortField({ value, onChange }: { value: SortKey; onChange: (value: Sort
       </select>
       <ChevronDown
         aria-hidden="true"
-        className="pointer-events-none absolute top-1/2 right-2.5 size-3.5 -translate-y-1/2 text-slate-500"
+        className="pui:pointer-events-none pui:absolute pui:top-1/2 pui:right-2.5 pui:size-3.5 pui:-translate-y-1/2 pui:text-slate-500"
       />
     </div>
   )
@@ -763,15 +779,15 @@ function PreviewArt({ item }: { item: RegistryItem }) {
 
   if (shape === 0) {
     return (
-      <div className="grid grid-cols-4 gap-1.5">
+      <div className="pui:grid pui:grid-cols-4 pui:gap-1.5">
         {Array.from({ length: 8 }, (_, index) => (
           <span
             key={index}
             className={cn(
-              "size-7 rounded-md border shadow-[0_1px_1px_rgba(15,23,42,0.04)]",
+              "pui:size-7 pui:rounded-md pui:border pui:shadow-[0_1px_1px_rgba(15,23,42,0.04)]",
               index === seed % 8
-                ? "border-indigo-200 bg-indigo-100/80"
-                : "border-slate-200 bg-white",
+                ? "pui:border-indigo-200 pui:bg-indigo-100/80"
+                : "pui:border-slate-200 pui:bg-white",
             )}
           />
         ))}
@@ -781,15 +797,15 @@ function PreviewArt({ item }: { item: RegistryItem }) {
 
   if (shape === 1) {
     return (
-      <div className="flex w-full flex-col items-center gap-2.5">
+      <div className="pui:flex pui:w-full pui:flex-col pui:items-center pui:gap-2.5">
         <div
-          className="flex h-9 items-center justify-center gap-2 rounded-full border border-indigo-200 bg-white shadow-sm"
+          className="pui:flex pui:h-9 pui:items-center pui:justify-center pui:gap-2 pui:rounded-full pui:border pui:border-indigo-200 pui:bg-white pui:shadow-sm"
           style={{ width: `${width}%` }}
         >
-          <span aria-hidden="true" className="size-2 rounded-full bg-indigo-400/80" />
-          <span className="h-1.5 w-10 rounded-full bg-indigo-100" />
+          <span aria-hidden="true" className="pui:size-2 pui:rounded-full pui:bg-indigo-400/80" />
+          <span className="pui:h-1.5 pui:w-10 pui:rounded-full pui:bg-indigo-100" />
         </div>
-        <span className="h-1.5 w-24 rounded-full bg-slate-200" />
+        <span className="pui:h-1.5 pui:w-24 pui:rounded-full pui:bg-slate-200" />
       </div>
     )
   }
@@ -797,20 +813,20 @@ function PreviewArt({ item }: { item: RegistryItem }) {
   if (shape === 2) {
     return (
       <div
-        className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm"
+        className="pui:rounded-xl pui:border pui:border-slate-200 pui:bg-white pui:p-3 pui:shadow-sm"
         style={{ width: `${Math.min(78, width + 12)}%` }}
       >
-        <div className="flex items-center gap-2">
-          <span aria-hidden="true" className="size-5 rounded-md bg-indigo-100" />
-          <span className="h-1.5 w-16 rounded-full bg-slate-300" />
+        <div className="pui:flex pui:items-center pui:gap-2">
+          <span aria-hidden="true" className="pui:size-5 pui:rounded-md pui:bg-indigo-100" />
+          <span className="pui:h-1.5 pui:w-16 pui:rounded-full pui:bg-slate-300" />
         </div>
-        <div className="mt-3 space-y-1.5">
-          <span className="block h-1.5 w-full rounded-full bg-slate-100" />
-          <span className="block h-1.5 w-4/5 rounded-full bg-slate-100" />
+        <div className="pui:mt-3 pui:space-y-1.5">
+          <span className="pui:block pui:h-1.5 pui:w-full pui:rounded-full pui:bg-slate-100" />
+          <span className="pui:block pui:h-1.5 pui:w-4/5 pui:rounded-full pui:bg-slate-100" />
         </div>
-        <div className="mt-3 flex items-center justify-between">
-          <span className="h-1.5 w-10 rounded-full bg-slate-200" />
-          <span className="h-5 w-14 rounded-full bg-indigo-500/80" />
+        <div className="pui:mt-3 pui:flex pui:items-center pui:justify-between">
+          <span className="pui:h-1.5 pui:w-10 pui:rounded-full pui:bg-slate-200" />
+          <span className="pui:h-5 pui:w-14 pui:rounded-full pui:bg-indigo-500/80" />
         </div>
       </div>
     )
@@ -818,20 +834,20 @@ function PreviewArt({ item }: { item: RegistryItem }) {
 
   return (
     <div
-      className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"
+      className="pui:overflow-hidden pui:rounded-lg pui:border pui:border-slate-200 pui:bg-white pui:shadow-sm"
       style={{ width: `${Math.min(82, width + 14)}%` }}
     >
-      <div className="flex items-center gap-1 border-b border-slate-100 bg-slate-50/80 px-2.5 py-1.5">
-        <span aria-hidden="true" className="size-1.5 rounded-full bg-slate-300" />
-        <span aria-hidden="true" className="size-1.5 rounded-full bg-slate-300" />
-        <span aria-hidden="true" className="size-1.5 rounded-full bg-slate-300" />
-        <span className="ml-2 h-1.5 w-16 rounded-full bg-slate-200" />
+      <div className="pui:flex pui:items-center pui:gap-1 pui:border-b pui:border-slate-100 pui:bg-slate-50/80 pui:px-2.5 pui:py-1.5">
+        <span aria-hidden="true" className="pui:size-1.5 pui:rounded-full pui:bg-slate-300" />
+        <span aria-hidden="true" className="pui:size-1.5 pui:rounded-full pui:bg-slate-300" />
+        <span aria-hidden="true" className="pui:size-1.5 pui:rounded-full pui:bg-slate-300" />
+        <span className="pui:ml-2 pui:h-1.5 pui:w-16 pui:rounded-full pui:bg-slate-200" />
       </div>
-      <div className="grid grid-cols-3 gap-1.5 p-2.5">
-        <span className="col-span-3 h-6 rounded-md bg-indigo-500/10" />
-        <span className="h-9 rounded-md bg-slate-100" />
-        <span className="h-9 rounded-md bg-slate-100" />
-        <span className="h-9 rounded-md bg-indigo-100/70" />
+      <div className="pui:grid pui:grid-cols-3 pui:gap-1.5 pui:p-2.5">
+        <span className="pui:col-span-3 pui:h-6 pui:rounded-md pui:bg-indigo-500/10" />
+        <span className="pui:h-9 pui:rounded-md pui:bg-slate-100" />
+        <span className="pui:h-9 pui:rounded-md pui:bg-slate-100" />
+        <span className="pui:h-9 pui:rounded-md pui:bg-indigo-100/70" />
       </div>
     </div>
   )
@@ -841,29 +857,29 @@ function ComponentPreview({ item }: { item: RegistryItem }) {
   return (
     <div
       aria-hidden="true"
-      className="relative h-[132px] overflow-hidden border-b border-slate-100 bg-slate-50/70"
+      className="pui:relative pui:h-[132px] pui:overflow-hidden pui:border-b pui:border-slate-100 pui:bg-slate-50/70"
     >
       <div
-        className="absolute inset-0 opacity-50"
+        className="pui:absolute pui:inset-0 pui:opacity-50"
         style={{
           backgroundImage:
             "radial-gradient(circle at 1px 1px, rgb(148 163 184 / 0.35) 1px, transparent 0)",
           backgroundSize: "14px 14px",
         }}
       />
-      <div className="absolute inset-0 flex items-center justify-center p-5 transition-transform duration-300 motion-safe:group-hover:scale-[1.03]">
+      <div className="pui:absolute pui:inset-0 pui:flex pui:items-center pui:justify-center pui:p-5 pui:transition-transform pui:duration-300 pui:motion-safe:group-hover:scale-[1.03]">
         <PreviewArt item={item} />
       </div>
-      <span className="absolute top-2.5 left-2.5 rounded-md border border-slate-200 bg-white/90 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">
+      <span className="pui:absolute pui:top-2.5 pui:left-2.5 pui:rounded-md pui:border pui:border-slate-200 pui:bg-white/90 pui:px-1.5 pui:py-0.5 pui:text-[10px] pui:font-medium pui:text-slate-500">
         {item.area}
       </span>
       {item.box ? (
-        <span className="absolute right-2.5 bottom-2.5 rounded-md border border-slate-200 bg-white/90 px-1.5 py-0.5 font-mono text-[10px] text-slate-500">
+        <span className="pui:absolute pui:right-2.5 pui:bottom-2.5 pui:rounded-md pui:border pui:border-slate-200 pui:bg-white/90 pui:px-1.5 pui:py-0.5 pui:font-mono pui:text-[10px] pui:text-slate-500">
           {item.box.width} × {item.box.height}
         </span>
       ) : null}
-      <span className="absolute top-2.5 right-2.5 flex size-6 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 opacity-0 shadow-sm transition group-hover:opacity-100 group-focus-visible:opacity-100">
-        <ArrowUpRight className="size-3.5" />
+      <span className="pui:absolute pui:top-2.5 pui:right-2.5 pui:flex pui:size-6 pui:items-center pui:justify-center pui:rounded-full pui:border pui:border-slate-200 pui:bg-white pui:text-slate-500 pui:opacity-0 pui:shadow-sm pui:transition pui:group-hover:opacity-100 pui:group-focus-visible:opacity-100">
+        <ArrowUpRight className="pui:size-3.5" />
       </span>
     </div>
   )
@@ -888,7 +904,7 @@ function ExternalIconLink({
       aria-label={label}
       title={label}
       className={cn(
-        "inline-flex size-7 items-center justify-center rounded-md text-slate-500 transition hover:bg-slate-100 hover:text-slate-700",
+        "pui:inline-flex pui:size-7 pui:items-center pui:justify-center pui:rounded-md pui:text-slate-500 pui:transition pui:hover:bg-slate-100 pui:hover:text-slate-700",
         focusRing(),
       )}
     >
@@ -904,41 +920,41 @@ function RegistryCard({ item, onInspect }: { item: RegistryItem; onInspect: () =
   return (
     <article
       data-node-id={item.nodeId}
-      className="group relative flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition duration-200 hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-500/5"
+      className="group pui:relative pui:flex pui:flex-col pui:overflow-hidden pui:rounded-xl pui:border pui:border-slate-200 pui:bg-white pui:shadow-[0_1px_2px_rgba(15,23,42,0.04)] pui:transition pui:duration-200 pui:hover:-translate-y-0.5 pui:hover:border-indigo-200 pui:hover:shadow-lg pui:hover:shadow-indigo-500/5"
     >
       <button
         type="button"
         onClick={onInspect}
         aria-label={`Inspect ${item.name}`}
-        className="block w-full text-left focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-indigo-600"
+        className="pui:block pui:w-full pui:text-left pui:focus-visible:outline-2 pui:focus-visible:outline-offset-[-2px] pui:focus-visible:outline-indigo-600"
       >
         <ComponentPreview item={item} />
-        <div className="space-y-2 px-4 pt-3.5 pb-3">
-          <div className="flex items-start justify-between gap-2">
-            <div className="min-w-0">
-              <p className="truncate text-[10px] font-semibold tracking-[0.12em] text-slate-500 uppercase">
+        <div className="pui:space-y-2 pui:px-4 pui:pt-3.5 pui:pb-3">
+          <div className="pui:flex pui:items-start pui:justify-between pui:gap-2">
+            <div className="pui:min-w-0">
+              <p className="pui:truncate pui:text-[10px] pui:font-semibold pui:tracking-[0.12em] pui:text-slate-500 pui:uppercase">
                 {item.pageLabel}
               </p>
-              <span className="mt-1 block truncate text-[15px] font-semibold text-slate-900">
+              <span className="pui:mt-1 pui:block pui:truncate pui:text-[15px] pui:font-semibold pui:text-slate-900">
                 {item.name}
               </span>
-              <span className="mt-0.5 block truncate font-mono text-[10.5px] text-slate-500">
+              <span className="pui:mt-0.5 pui:block pui:truncate pui:font-mono pui:text-[10.5px] pui:text-slate-500">
                 {item.moduleFile ?? "Unmapped"} · {item.exportName ?? "No export"}
               </span>
             </div>
             <StatusBadge status={item.status} />
           </div>
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10.5px] text-slate-500">
-            <span className="font-medium text-slate-600 tabular-nums">
+          <div className="pui:flex pui:flex-wrap pui:items-center pui:gap-x-2 pui:gap-y-1 pui:text-[10.5px] pui:text-slate-500">
+            <span className="pui:font-medium pui:text-slate-600 pui:tabular-nums">
               {formatNumber(item.variantCount)} variants
             </span>
-            <span aria-hidden="true" className="text-slate-300">
+            <span aria-hidden="true" className="pui:text-slate-300">
               ·
             </span>
-            <span className="font-mono">{item.nodeId}</span>
+            <span className="pui:font-mono">{item.nodeId}</span>
             {showDevices ? (
               <>
-                <span aria-hidden="true" className="text-slate-300">
+                <span aria-hidden="true" className="pui:text-slate-300">
                   ·
                 </span>
                 <span data-slot="device-frames">devices {item.devices.join(", ")}</span>
@@ -947,21 +963,21 @@ function RegistryCard({ item, onInspect }: { item: RegistryItem; onInspect: () =
           </div>
         </div>
       </button>
-      <div className="mt-auto flex items-center justify-between gap-2 border-t border-slate-100 px-3 py-2">
+      <div className="pui:mt-auto pui:flex pui:items-center pui:justify-between pui:gap-2 pui:border-t pui:border-slate-100 pui:px-3 pui:py-2">
         <button
           type="button"
           onClick={onInspect}
           className={cn(
-            "inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-medium text-indigo-600 transition hover:bg-indigo-50 hover:text-indigo-700",
+            "pui:inline-flex pui:items-center pui:gap-1 pui:rounded-md pui:px-2 pui:py-1 pui:text-[11px] pui:font-medium pui:text-indigo-600 pui:transition pui:hover:bg-indigo-50 pui:hover:text-indigo-700",
             focusRing(),
           )}
         >
           Inspect
-          <ArrowRight aria-hidden="true" className="size-3" />
+          <ArrowRight aria-hidden="true" className="pui:size-3" />
         </button>
-        <div className="flex items-center gap-0.5">
+        <div className="pui:flex pui:items-center pui:gap-0.5">
           <ExternalIconLink href={item.figmaUrl} label={`${item.name} in Figma`}>
-            <FigmaMark className="h-3.5 w-2.5" />
+            <FigmaMark className="pui:h-3.5 pui:w-2.5" />
           </ExternalIconLink>
           {item.storyUrl ? (
             <a
@@ -971,18 +987,18 @@ function RegistryCard({ item, onInspect }: { item: RegistryItem; onInspect: () =
               aria-label={`${item.name} in Storybook`}
               title={`${item.name} in Storybook`}
               className={cn(
-                "inline-flex size-7 items-center justify-center rounded-md text-slate-500 transition hover:bg-slate-100 hover:text-slate-700",
+                "pui:inline-flex pui:size-7 pui:items-center pui:justify-center pui:rounded-md pui:text-slate-500 pui:transition pui:hover:bg-slate-100 pui:hover:text-slate-700",
                 focusRing(),
               )}
             >
-              <BookOpen aria-hidden="true" className="size-3.5" />
+              <BookOpen aria-hidden="true" className="pui:size-3.5" />
             </a>
           ) : (
             <span
               title="No Storybook page mapped"
-              className="inline-flex size-7 items-center justify-center rounded-md text-slate-300"
+              className="pui:inline-flex pui:size-7 pui:items-center pui:justify-center pui:rounded-md pui:text-slate-300"
             >
-              <BookOpen aria-hidden="true" className="size-3.5" />
+              <BookOpen aria-hidden="true" className="pui:size-3.5" />
             </span>
           )}
         </div>
@@ -995,9 +1011,9 @@ function RegistryCard({ item, onInspect }: { item: RegistryItem; onInspect: () =
 
 function KeyValue({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="flex items-baseline justify-between gap-3 py-1.5">
-      <dt className="text-[11px] text-slate-500">{label}</dt>
-      <dd className="text-right text-[11px] font-medium text-slate-700">{value}</dd>
+    <div className="pui:flex pui:items-baseline pui:justify-between pui:gap-3 pui:py-1.5">
+      <dt className="pui:text-[11px] pui:text-slate-500">{label}</dt>
+      <dd className="pui:text-right pui:text-[11px] pui:font-medium pui:text-slate-700">{value}</dd>
     </div>
   )
 }
@@ -1010,38 +1026,38 @@ function RegistryTable({
   onInspect: (item: RegistryItem) => void
 }) {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[900px] border-collapse text-left">
-        <caption className="sr-only">Published components registry</caption>
+    <div className="pui:overflow-x-auto">
+      <table className="pui:w-full pui:min-w-[900px] pui:border-collapse pui:text-left">
+        <caption className="pui:sr-only">Published components registry</caption>
         <thead>
-          <tr className="border-b border-slate-200 bg-slate-50/80 text-[10px] font-semibold tracking-[0.12em] text-slate-600 uppercase">
-            <th scope="col" className="px-4 py-2.5">
+          <tr className="pui:border-b pui:border-slate-200 pui:bg-slate-50/80 pui:text-[10px] pui:font-semibold pui:tracking-[0.12em] pui:text-slate-600 pui:uppercase">
+            <th scope="col" className="pui:px-4 pui:py-2.5">
               Component
             </th>
-            <th scope="col" className="px-3 py-2.5">
+            <th scope="col" className="pui:px-3 pui:py-2.5">
               Area
             </th>
-            <th scope="col" className="px-3 py-2.5">
+            <th scope="col" className="pui:px-3 pui:py-2.5">
               Status
             </th>
-            <th scope="col" className="px-3 py-2.5 text-right">
+            <th scope="col" className="pui:px-3 pui:py-2.5 pui:text-right">
               Variants
             </th>
-            <th scope="col" className="px-3 py-2.5">
+            <th scope="col" className="pui:px-3 pui:py-2.5">
               Figma v
             </th>
-            <th scope="col" className="px-3 py-2.5">
+            <th scope="col" className="pui:px-3 pui:py-2.5">
               Code v
             </th>
-            <th scope="col" className="px-3 py-2.5">
+            <th scope="col" className="pui:px-3 pui:py-2.5">
               Devices
             </th>
-            <th scope="col" className="px-3 py-2.5 text-right">
+            <th scope="col" className="pui:px-3 pui:py-2.5 pui:text-right">
               Actions
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100">
+        <tbody className="pui:divide-y pui:divide-slate-100">
           {items.map((item) => (
             <tr
               key={item.id}
@@ -1050,92 +1066,92 @@ function RegistryTable({
                 if (event.target instanceof Element && event.target.closest("a,button")) return
                 onInspect(item)
               }}
-              className="group transition hover:bg-slate-50/80"
+              className="group pui:transition pui:hover:bg-slate-50/80"
             >
-              <td className="px-4 py-2.5">
+              <td className="pui:px-4 pui:py-2.5">
                 <button
                   type="button"
                   onClick={() => onInspect(item)}
                   className={cn(
-                    "block max-w-[18rem] truncate rounded-sm text-left text-[12.5px] font-medium text-slate-900 hover:text-indigo-700",
+                    "pui:block pui:max-w-[18rem] pui:truncate pui:rounded-sm pui:text-left pui:text-[12.5px] pui:font-medium pui:text-slate-900 pui:hover:text-indigo-700",
                     focusRing(),
                   )}
                 >
                   {item.name}
                 </button>
-                <span className="mt-0.5 block truncate font-mono text-[10px] text-slate-500">
+                <span className="pui:mt-0.5 pui:block pui:truncate pui:font-mono pui:text-[10px] pui:text-slate-500">
                   {item.moduleFile ?? item.pageLabel} · {item.nodeId}
                 </span>
               </td>
-              <td className="px-3 py-2.5">
+              <td className="pui:px-3 pui:py-2.5">
                 <AreaBadge area={item.area} />
               </td>
-              <td className="px-3 py-2.5">
+              <td className="pui:px-3 pui:py-2.5">
                 <StatusBadge status={item.status} />
               </td>
-              <td className="px-3 py-2.5 text-right">
-                <span className="text-[12px] font-medium text-slate-700 tabular-nums">
+              <td className="pui:px-3 pui:py-2.5 pui:text-right">
+                <span className="pui:text-[12px] pui:font-medium pui:text-slate-700 pui:tabular-nums">
                   {formatNumber(item.variantCount)}
                 </span>
-                <span className="mt-0.5 block text-[10px] text-slate-500">
+                <span className="pui:mt-0.5 pui:block pui:text-[10px] pui:text-slate-500">
                   {item.variantAxes.length} axes
                 </span>
               </td>
-              <td className="px-3 py-2.5">
+              <td className="pui:px-3 pui:py-2.5">
                 <span
-                  className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[10px] text-slate-600"
+                  className="pui:rounded pui:bg-slate-100 pui:px-1.5 pui:py-0.5 pui:font-mono pui:text-[10px] pui:text-slate-600"
                   title={item.designFingerprint}
                 >
                   {shortFingerprint(item.designFingerprint)}
                 </span>
               </td>
-              <td className="px-3 py-2.5">
+              <td className="pui:px-3 pui:py-2.5">
                 <span
-                  className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[10px] text-slate-600"
+                  className="pui:rounded pui:bg-slate-100 pui:px-1.5 pui:py-0.5 pui:font-mono pui:text-[10px] pui:text-slate-600"
                   title={item.contractFingerprint}
                 >
                   {shortFingerprint(item.contractFingerprint)}
                 </span>
               </td>
-              <td className="px-3 py-2.5">
+              <td className="pui:px-3 pui:py-2.5">
                 {item.devices.length ? (
                   <span
-                    className="block max-w-[9rem] truncate font-mono text-[10.5px] text-slate-600"
+                    className="pui:block pui:max-w-[9rem] pui:truncate pui:font-mono pui:text-[10.5px] pui:text-slate-600"
                     title={item.devices.join(", ")}
                   >
                     {item.devices.join(", ")}
                   </span>
                 ) : (
-                  <span className="text-[11px] text-slate-300">—</span>
+                  <span className="pui:text-[11px] pui:text-slate-300">—</span>
                 )}
               </td>
-              <td className="px-3 py-2.5">
-                <div className="flex items-center justify-end gap-0.5">
+              <td className="pui:px-3 pui:py-2.5">
+                <div className="pui:flex pui:items-center pui:justify-end pui:gap-0.5">
                   <button
                     type="button"
                     onClick={() => onInspect(item)}
                     aria-label={`Inspect ${item.name}`}
                     title="Inspect"
                     className={cn(
-                      "inline-flex size-7 items-center justify-center rounded-md text-slate-500 transition hover:bg-indigo-50 hover:text-indigo-600",
+                      "pui:inline-flex pui:size-7 pui:items-center pui:justify-center pui:rounded-md pui:text-slate-500 pui:transition pui:hover:bg-indigo-50 pui:hover:text-indigo-600",
                       focusRing(),
                     )}
                   >
-                    <ScanSearch aria-hidden="true" className="size-3.5" />
+                    <ScanSearch aria-hidden="true" className="pui:size-3.5" />
                   </button>
                   <ExternalIconLink href={item.figmaUrl} label={`${item.name} in Figma`}>
-                    <FigmaMark className="h-3.5 w-2.5" />
+                    <FigmaMark className="pui:h-3.5 pui:w-2.5" />
                   </ExternalIconLink>
                   {item.storyUrl ? (
                     <ExternalIconLink href={item.storyUrl} label={`${item.name} in Storybook`}>
-                      <BookOpen aria-hidden="true" className="size-3.5" />
+                      <BookOpen aria-hidden="true" className="pui:size-3.5" />
                     </ExternalIconLink>
                   ) : (
                     <span
                       title="No Storybook page mapped"
-                      className="inline-flex size-7 items-center justify-center rounded-md text-slate-300"
+                      className="pui:inline-flex pui:size-7 pui:items-center pui:justify-center pui:rounded-md pui:text-slate-300"
                     >
-                      <BookOpen aria-hidden="true" className="size-3.5" />
+                      <BookOpen aria-hidden="true" className="pui:size-3.5" />
                     </span>
                   )}
                 </div>
@@ -1179,31 +1195,33 @@ function Pagination({
   onChange: (page: number) => void
 }) {
   return (
-    <div className="flex flex-col gap-3 tablet:flex-row tablet:items-center tablet:justify-between">
-      <p className="text-[11px] text-slate-500">
-        Showing <span className="font-medium text-slate-700 tabular-nums">{from}</span>–
-        <span className="font-medium text-slate-700 tabular-nums">{to}</span> of{" "}
-        <span className="font-medium text-slate-700 tabular-nums">{formatNumber(total)}</span>
+    <div className="pui:flex pui:flex-col pui:gap-3 pui:tablet:flex-row pui:tablet:items-center pui:tablet:justify-between">
+      <p className="pui:text-[11px] pui:text-slate-500">
+        Showing <span className="pui:font-medium pui:text-slate-700 pui:tabular-nums">{from}</span>–
+        <span className="pui:font-medium pui:text-slate-700 pui:tabular-nums">{to}</span> of{" "}
+        <span className="pui:font-medium pui:text-slate-700 pui:tabular-nums">
+          {formatNumber(total)}
+        </span>
       </p>
-      <div className="flex items-center gap-1">
+      <div className="pui:flex pui:items-center pui:gap-1">
         <button
           type="button"
           onClick={() => onChange(page - 1)}
           disabled={page === 1}
           aria-label="Previous page"
           className={cn(
-            "inline-flex size-7 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-800 disabled:cursor-not-allowed disabled:opacity-40",
+            "pui:inline-flex pui:size-7 pui:items-center pui:justify-center pui:rounded-md pui:border pui:border-slate-200 pui:bg-white pui:text-slate-500 pui:transition pui:hover:bg-slate-50 pui:hover:text-slate-800 pui:disabled:cursor-not-allowed pui:disabled:opacity-40",
             focusRing(),
           )}
         >
-          <ChevronLeft aria-hidden="true" className="size-3.5" />
+          <ChevronLeft aria-hidden="true" className="pui:size-3.5" />
         </button>
         {pageWindow(page, totalPages).map((candidate, index) =>
           candidate === "gap" ? (
             <span
               key={`gap-${index}`}
               aria-hidden="true"
-              className="px-1 text-[11px] text-slate-500"
+              className="pui:px-1 pui:text-[11px] pui:text-slate-500"
             >
               …
             </span>
@@ -1215,10 +1233,10 @@ function Pagination({
               aria-label={`Page ${candidate}`}
               aria-current={candidate === page ? "page" : undefined}
               className={cn(
-                "inline-flex size-7 items-center justify-center rounded-md border text-[11px] font-medium tabular-nums transition",
+                "pui:inline-flex pui:size-7 pui:items-center pui:justify-center pui:rounded-md pui:border pui:text-[11px] pui:font-medium pui:tabular-nums pui:transition",
                 candidate === page
-                  ? "border-indigo-600 bg-indigo-600 text-white"
-                  : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900",
+                  ? "pui:border-indigo-600 pui:bg-indigo-600 pui:text-white"
+                  : "pui:border-slate-200 pui:bg-white pui:text-slate-600 pui:hover:bg-slate-50 pui:hover:text-slate-900",
                 focusRing(),
               )}
             >
@@ -1232,11 +1250,11 @@ function Pagination({
           disabled={page === totalPages}
           aria-label="Next page"
           className={cn(
-            "inline-flex size-7 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-800 disabled:cursor-not-allowed disabled:opacity-40",
+            "pui:inline-flex pui:size-7 pui:items-center pui:justify-center pui:rounded-md pui:border pui:border-slate-200 pui:bg-white pui:text-slate-500 pui:transition pui:hover:bg-slate-50 pui:hover:text-slate-800 pui:disabled:cursor-not-allowed pui:disabled:opacity-40",
             focusRing(),
           )}
         >
-          <ChevronRight aria-hidden="true" className="size-3.5" />
+          <ChevronRight aria-hidden="true" className="pui:size-3.5" />
         </button>
       </div>
     </div>
@@ -1257,33 +1275,33 @@ const INSPECTOR_TABS: {
     id: "overview",
     label: "Overview",
     shortLabel: "Overview",
-    icon: <ScanSearch className="size-3.5" />,
+    icon: <ScanSearch className="pui:size-3.5" />,
   },
   {
     id: "diff",
     label: "Version diff",
     shortLabel: "Version diff",
-    icon: <Code2 className="size-3.5" />,
+    icon: <Code2 className="pui:size-3.5" />,
   },
   {
     id: "handoff",
     label: "Handoff & links",
     shortLabel: "Handoff",
-    icon: <ArrowUpRight className="size-3.5" />,
+    icon: <ArrowUpRight className="pui:size-3.5" />,
   },
 ]
 
 function OverviewPanel({ item }: { item: RegistryItem }) {
   return (
-    <div className="space-y-6">
+    <div className="pui:space-y-6">
       <section aria-labelledby="inspector-facts">
         <h3
           id="inspector-facts"
-          className="text-[10px] font-semibold tracking-[0.14em] text-slate-500 uppercase"
+          className="pui:text-[10px] pui:font-semibold pui:tracking-[0.14em] pui:text-slate-500 pui:uppercase"
         >
           Registry facts
         </h3>
-        <dl className="mt-2 divide-y divide-slate-100 rounded-xl border border-slate-200 bg-white px-3">
+        <dl className="pui:mt-2 pui:divide-y pui:divide-slate-100 pui:rounded-xl pui:border pui:border-slate-200 pui:bg-white pui:px-3">
           <KeyValue label="Figma page" value={item.pageLabel} />
           <KeyValue label="Area" value={item.area} />
           <KeyValue
@@ -1306,35 +1324,39 @@ function OverviewPanel({ item }: { item: RegistryItem }) {
       </section>
 
       <section aria-labelledby="inspector-axes">
-        <div className="flex items-baseline justify-between gap-3">
+        <div className="pui:flex pui:items-baseline pui:justify-between pui:gap-3">
           <h3
             id="inspector-axes"
-            className="text-[10px] font-semibold tracking-[0.14em] text-slate-500 uppercase"
+            className="pui:text-[10px] pui:font-semibold pui:tracking-[0.14em] pui:text-slate-500 pui:uppercase"
           >
             Variant axes
           </h3>
-          <span className="text-[10px] text-slate-500">{item.variantAxes.length} total</span>
+          <span className="pui:text-[10px] pui:text-slate-500">
+            {item.variantAxes.length} total
+          </span>
         </div>
         {item.variantAxes.length ? (
-          <div className="mt-2 space-y-2">
+          <div className="pui:mt-2 pui:space-y-2">
             {item.variantAxes.map((axis) => (
               <div
                 key={axis.name}
-                className="rounded-lg border border-slate-200 bg-white px-3 py-2.5"
+                className="pui:rounded-lg pui:border pui:border-slate-200 pui:bg-white pui:px-3 pui:py-2.5"
               >
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-[11px] font-medium text-slate-700">{axis.name}</p>
-                  <span className="font-mono text-[9.5px] text-slate-500">{axis.type}</span>
+                <div className="pui:flex pui:items-center pui:justify-between pui:gap-2">
+                  <p className="pui:text-[11px] pui:font-medium pui:text-slate-700">{axis.name}</p>
+                  <span className="pui:font-mono pui:text-[9.5px] pui:text-slate-500">
+                    {axis.type}
+                  </span>
                 </div>
-                <div className="mt-2 flex flex-wrap gap-1">
+                <div className="pui:mt-2 pui:flex pui:flex-wrap pui:gap-1">
                   {axis.options.map((option) => (
                     <span
                       key={option}
                       className={cn(
-                        "rounded px-1.5 py-0.5 font-mono text-[9.5px] ring-1 ring-inset",
+                        "pui:rounded pui:px-1.5 pui:py-0.5 pui:font-mono pui:text-[9.5px] pui:ring-1 pui:ring-inset",
                         option === axis.defaultValue
-                          ? "bg-indigo-50 text-indigo-700 ring-indigo-600/20"
-                          : "bg-slate-50 text-slate-500 ring-slate-200",
+                          ? "pui:bg-indigo-50 pui:text-indigo-700 pui:ring-indigo-600/20"
+                          : "pui:bg-slate-50 pui:text-slate-500 pui:ring-slate-200",
                       )}
                       title={option === axis.defaultValue ? "Default value" : undefined}
                     >
@@ -1346,24 +1368,24 @@ function OverviewPanel({ item }: { item: RegistryItem }) {
             ))}
           </div>
         ) : (
-          <p className="mt-2 rounded-lg border border-dashed border-slate-200 px-3 py-3 text-[11px] text-slate-500">
+          <p className="pui:mt-2 pui:rounded-lg pui:border pui:border-dashed pui:border-slate-200 pui:px-3 pui:py-3 pui:text-[11px] pui:text-slate-500">
             This source has no variant axis.
           </p>
         )}
       </section>
 
       {item.note ? (
-        <details className="group rounded-xl border border-slate-200 bg-white px-3 py-2.5">
-          <summary className="cursor-pointer list-none text-[11px] font-medium text-slate-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-            <span className="inline-flex items-center gap-1.5">
+        <details className="group pui:rounded-xl pui:border pui:border-slate-200 pui:bg-white pui:px-3 pui:py-2.5">
+          <summary className="pui:cursor-pointer pui:list-none pui:text-[11px] pui:font-medium pui:text-slate-700 pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-indigo-600">
+            <span className="pui:inline-flex pui:items-center pui:gap-1.5">
               <ChevronRight
                 aria-hidden="true"
-                className="size-3.5 text-slate-500 transition group-open:rotate-90"
+                className="pui:size-3.5 pui:text-slate-500 pui:transition pui:group-open:rotate-90"
               />
               Registry note
             </span>
           </summary>
-          <p className="mt-2 border-t border-slate-100 pt-2 text-[11px] leading-relaxed whitespace-pre-line text-slate-600">
+          <p className="pui:mt-2 pui:border-t pui:border-slate-100 pui:pt-2 pui:text-[11px] pui:leading-relaxed pui:whitespace-pre-line pui:text-slate-600">
             {item.note}
           </p>
         </details>
@@ -1386,28 +1408,28 @@ function VersionCard({
   rows: { label: string; value: React.ReactNode }[]
 }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-3.5">
-      <div className="flex items-center gap-2">
+    <div className="pui:rounded-xl pui:border pui:border-slate-200 pui:bg-white pui:p-3.5">
+      <div className="pui:flex pui:items-center pui:gap-2">
         <span
           aria-hidden="true"
-          className="flex size-7 items-center justify-center rounded-lg bg-slate-100 text-slate-600"
+          className="pui:flex pui:size-7 pui:items-center pui:justify-center pui:rounded-lg pui:bg-slate-100 pui:text-slate-600"
         >
           {icon}
         </span>
-        <div className="min-w-0">
-          <p className="text-[9.5px] font-semibold tracking-[0.12em] text-slate-500 uppercase">
+        <div className="pui:min-w-0">
+          <p className="pui:text-[9.5px] pui:font-semibold pui:tracking-[0.12em] pui:text-slate-500 pui:uppercase">
             {eyebrow}
           </p>
-          <p className="truncate text-[11px] font-medium text-slate-700">{title}</p>
+          <p className="pui:truncate pui:text-[11px] pui:font-medium pui:text-slate-700">{title}</p>
         </div>
       </div>
-      <div className="mt-3 flex items-center gap-1.5 rounded-lg bg-slate-50 px-2 py-1.5">
-        <code className="min-w-0 flex-1 truncate font-mono text-[10.5px] text-slate-600">
+      <div className="pui:mt-3 pui:flex pui:items-center pui:gap-1.5 pui:rounded-lg pui:bg-slate-50 pui:px-2 pui:py-1.5">
+        <code className="pui:min-w-0 pui:flex-1 pui:truncate pui:font-mono pui:text-[10.5px] pui:text-slate-600">
           {fingerprint}
         </code>
         <CopyButton value={fingerprint} label={`${eyebrow} fingerprint`} compact />
       </div>
-      <dl className="mt-2 divide-y divide-slate-100">
+      <dl className="pui:mt-2 pui:divide-y pui:divide-slate-100">
         {rows.map((row) => (
           <KeyValue key={row.label} label={row.label} value={row.value} />
         ))}
@@ -1420,21 +1442,21 @@ function VersionPanel({ item }: { item: RegistryItem }) {
   const alignment = alignmentOf(item)
 
   return (
-    <div className="space-y-4">
+    <div className="pui:space-y-4">
       <div
         className={cn(
-          "flex flex-wrap items-center gap-2 rounded-xl border px-3 py-2.5 text-[11px]",
+          "pui:flex pui:flex-wrap pui:items-center pui:gap-2 pui:rounded-xl pui:border pui:px-3 pui:py-2.5 pui:text-[11px]",
           alignment.id === "aligned"
-            ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-            : "border-slate-200 bg-slate-50 text-slate-600",
+            ? "pui:border-emerald-200 pui:bg-emerald-50 pui:text-emerald-700"
+            : "pui:border-slate-200 pui:bg-slate-50 pui:text-slate-600",
         )}
       >
         {alignment.id === "aligned" ? (
-          <CheckCircle2 aria-hidden="true" className="size-3.5 shrink-0" />
+          <CheckCircle2 aria-hidden="true" className="pui:size-3.5 pui:shrink-0" />
         ) : (
-          <CircleAlert aria-hidden="true" className="size-3.5 shrink-0" />
+          <CircleAlert aria-hidden="true" className="pui:size-3.5 pui:shrink-0" />
         )}
-        <span className="font-medium">{alignment.label}</span>
+        <span className="pui:font-medium">{alignment.label}</span>
         <span>
           {item.status === "implemented"
             ? "Canvas and contract are both recorded for this node."
@@ -1442,14 +1464,14 @@ function VersionPanel({ item }: { item: RegistryItem }) {
         </span>
       </div>
 
-      <div className="grid gap-2 tablet:grid-cols-2">
+      <div className="pui:grid pui:gap-2 pui:tablet:grid-cols-2">
         <VersionCard
           eyebrow="Figma canvas"
-          icon={<FigmaMark className="h-3.5 w-2.5" />}
+          icon={<FigmaMark className="pui:h-3.5 pui:w-2.5" />}
           title={`${item.variantCount} variant records`}
           fingerprint={item.designFingerprint}
           rows={[
-            { label: "Node", value: <span className="font-mono">{item.nodeId}</span> },
+            { label: "Node", value: <span className="pui:font-mono">{item.nodeId}</span> },
             { label: "Type", value: item.type === "COMPONENT_SET" ? "Component set" : "Component" },
             {
               label: "Devices",
@@ -1459,13 +1481,13 @@ function VersionPanel({ item }: { item: RegistryItem }) {
         />
         <VersionCard
           eyebrow="Code contract"
-          icon={<FileCode2 className="size-3.5" />}
+          icon={<FileCode2 className="pui:size-3.5" />}
           title={item.exportName ?? "No export mapped"}
           fingerprint={item.contractFingerprint}
           rows={[
             {
               label: "Module",
-              value: <span className="font-mono">{item.moduleFile ?? "Unmapped"}</span>,
+              value: <span className="pui:font-mono">{item.moduleFile ?? "Unmapped"}</span>,
             },
             {
               label: "Story exports",
@@ -1480,19 +1502,19 @@ function VersionPanel({ item }: { item: RegistryItem }) {
 
 function Snippet({ label, code, copyLabel }: { label: string; code: string; copyLabel: string }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-slate-900 p-3">
-      <div className="flex items-center justify-between gap-2">
-        <p className="text-[9.5px] font-semibold tracking-[0.12em] text-slate-500 uppercase">
+    <div className="pui:rounded-xl pui:border pui:border-slate-200 pui:bg-slate-900 pui:p-3">
+      <div className="pui:flex pui:items-center pui:justify-between pui:gap-2">
+        <p className="pui:text-[9.5px] pui:font-semibold pui:tracking-[0.12em] pui:text-slate-500 pui:uppercase">
           {label}
         </p>
         <CopyButton
           value={code}
           label={copyLabel}
           compact
-          className="text-slate-500 hover:bg-white/10 hover:text-white"
+          className="pui:text-slate-500 pui:hover:bg-white/10 pui:hover:text-white"
         />
       </div>
-      <pre className="mt-2 overflow-x-auto font-mono text-[11px] leading-relaxed text-slate-100">
+      <pre className="pui:mt-2 pui:overflow-x-auto pui:font-mono pui:text-[11px] pui:leading-relaxed pui:text-slate-100">
         <code>{code}</code>
       </pre>
     </div>
@@ -1509,22 +1531,22 @@ function HandoffPanel({ item }: { item: RegistryItem }) {
   const usageCode = item.exportName ? `<${item.exportName} />` : "// See the registry note"
 
   return (
-    <div className="space-y-4">
+    <div className="pui:space-y-4">
       <section aria-labelledby="inspector-snippets">
         <h3
           id="inspector-snippets"
-          className="text-[10px] font-semibold tracking-[0.14em] text-slate-500 uppercase"
+          className="pui:text-[10px] pui:font-semibold pui:tracking-[0.14em] pui:text-slate-500 pui:uppercase"
         >
           Copy-ready snippets
         </h3>
-        <div className="mt-2 space-y-2">
+        <div className="pui:mt-2 pui:space-y-2">
           <Snippet label="Import" code={importCode} copyLabel="import snippet" />
           <Snippet label="Usage" code={usageCode} copyLabel="usage snippet" />
         </div>
         {!packageExport ? (
-          <p className="mt-2 rounded-lg border border-dashed border-slate-200 px-3 py-2 text-[10.5px] leading-relaxed text-slate-500">
+          <p className="pui:mt-2 pui:rounded-lg pui:border pui:border-dashed pui:border-slate-200 pui:px-3 pui:py-2 pui:text-[10.5px] pui:leading-relaxed pui:text-slate-500">
             This node maps to a Storybook template rather than a package entry: there is no
-            <code className="mx-1 font-mono">@pagopa/ui</code> import to copy.
+            <code className="pui:mx-1 pui:font-mono">@pagopa/ui</code> import to copy.
           </p>
         ) : null}
       </section>
@@ -1532,28 +1554,31 @@ function HandoffPanel({ item }: { item: RegistryItem }) {
       <section aria-labelledby="inspector-links">
         <h3
           id="inspector-links"
-          className="text-[10px] font-semibold tracking-[0.14em] text-slate-500 uppercase"
+          className="pui:text-[10px] pui:font-semibold pui:tracking-[0.14em] pui:text-slate-500 pui:uppercase"
         >
           Quick links
         </h3>
-        <div className="mt-2 divide-y divide-slate-100 overflow-hidden rounded-xl border border-slate-200 bg-white">
+        <div className="pui:mt-2 pui:divide-y pui:divide-slate-100 pui:overflow-hidden pui:rounded-xl pui:border pui:border-slate-200 pui:bg-white">
           <a
             href={item.figmaUrl}
             target="_blank"
             rel="noreferrer"
             className={cn(
-              "flex items-center gap-2.5 px-3 py-2.5 text-[11px] text-slate-700 transition hover:bg-slate-50",
+              "pui:flex pui:items-center pui:gap-2.5 pui:px-3 pui:py-2.5 pui:text-[11px] pui:text-slate-700 pui:transition pui:hover:bg-slate-50",
               focusRing(),
             )}
           >
-            <FigmaMark className="h-3.5 w-2.5 shrink-0" />
-            <span className="min-w-0 flex-1">
-              <span className="block font-medium">Open the Figma node</span>
-              <span className="block truncate font-mono text-[10px] text-slate-500">
+            <FigmaMark className="pui:h-3.5 pui:w-2.5 pui:shrink-0" />
+            <span className="pui:min-w-0 pui:flex-1">
+              <span className="pui:block pui:font-medium">Open the Figma node</span>
+              <span className="pui:block pui:truncate pui:font-mono pui:text-[10px] pui:text-slate-500">
                 {item.nodeId}
               </span>
             </span>
-            <ExternalLink aria-hidden="true" className="size-3.5 shrink-0 text-slate-500" />
+            <ExternalLink
+              aria-hidden="true"
+              className="pui:size-3.5 pui:shrink-0 pui:text-slate-500"
+            />
           </a>
           {item.storyUrl ? (
             <a
@@ -1561,21 +1586,29 @@ function HandoffPanel({ item }: { item: RegistryItem }) {
               target="_blank"
               rel="noreferrer"
               className={cn(
-                "flex items-center gap-2.5 px-3 py-2.5 text-[11px] text-slate-700 transition hover:bg-slate-50",
+                "pui:flex pui:items-center pui:gap-2.5 pui:px-3 pui:py-2.5 pui:text-[11px] pui:text-slate-700 pui:transition pui:hover:bg-slate-50",
                 focusRing(),
               )}
             >
-              <BookOpen aria-hidden="true" className="size-3.5 shrink-0 text-slate-500" />
-              <span className="min-w-0 flex-1">
-                <span className="block font-medium">Open the Storybook page</span>
-                <span className="block truncate text-[10px] text-slate-500">{item.storyTitle}</span>
+              <BookOpen
+                aria-hidden="true"
+                className="pui:size-3.5 pui:shrink-0 pui:text-slate-500"
+              />
+              <span className="pui:min-w-0 pui:flex-1">
+                <span className="pui:block pui:font-medium">Open the Storybook page</span>
+                <span className="pui:block pui:truncate pui:text-[10px] pui:text-slate-500">
+                  {item.storyTitle}
+                </span>
               </span>
-              <ExternalLink aria-hidden="true" className="size-3.5 shrink-0 text-slate-500" />
+              <ExternalLink
+                aria-hidden="true"
+                className="pui:size-3.5 pui:shrink-0 pui:text-slate-500"
+              />
             </a>
           ) : (
-            <div className="flex items-center gap-2.5 px-3 py-2.5 text-[11px] text-slate-500">
-              <BookOpen aria-hidden="true" className="size-3.5 shrink-0" />
-              <span className="flex-1">No Storybook page mapped for this node.</span>
+            <div className="pui:flex pui:items-center pui:gap-2.5 pui:px-3 pui:py-2.5 pui:text-[11px] pui:text-slate-500">
+              <BookOpen aria-hidden="true" className="pui:size-3.5 pui:shrink-0" />
+              <span className="pui:flex-1">No Storybook page mapped for this node.</span>
             </div>
           )}
           {item.sourceUrl ? (
@@ -1584,18 +1617,24 @@ function HandoffPanel({ item }: { item: RegistryItem }) {
               target="_blank"
               rel="noreferrer"
               className={cn(
-                "flex items-center gap-2.5 px-3 py-2.5 text-[11px] text-slate-700 transition hover:bg-slate-50",
+                "pui:flex pui:items-center pui:gap-2.5 pui:px-3 pui:py-2.5 pui:text-[11px] pui:text-slate-700 pui:transition pui:hover:bg-slate-50",
                 focusRing(),
               )}
             >
-              <FileCode2 aria-hidden="true" className="size-3.5 shrink-0 text-slate-500" />
-              <span className="min-w-0 flex-1">
-                <span className="block font-medium">Read the implementation</span>
-                <span className="block truncate font-mono text-[10px] text-slate-500">
+              <FileCode2
+                aria-hidden="true"
+                className="pui:size-3.5 pui:shrink-0 pui:text-slate-500"
+              />
+              <span className="pui:min-w-0 pui:flex-1">
+                <span className="pui:block pui:font-medium">Read the implementation</span>
+                <span className="pui:block pui:truncate pui:font-mono pui:text-[10px] pui:text-slate-500">
                   {item.module}
                 </span>
               </span>
-              <ExternalLink aria-hidden="true" className="size-3.5 shrink-0 text-slate-500" />
+              <ExternalLink
+                aria-hidden="true"
+                className="pui:size-3.5 pui:shrink-0 pui:text-slate-500"
+              />
             </a>
           ) : null}
         </div>
@@ -1605,15 +1644,15 @@ function HandoffPanel({ item }: { item: RegistryItem }) {
         <section aria-labelledby="inspector-story-exports">
           <h3
             id="inspector-story-exports"
-            className="text-[10px] font-semibold tracking-[0.14em] text-slate-500 uppercase"
+            className="pui:text-[10px] pui:font-semibold pui:tracking-[0.14em] pui:text-slate-500 pui:uppercase"
           >
             Story exports
           </h3>
-          <div className="mt-2 flex flex-wrap gap-1">
+          <div className="pui:mt-2 pui:flex pui:flex-wrap pui:gap-1">
             {item.storyExports.map((story) => (
               <span
                 key={story}
-                className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[9.5px] text-slate-600"
+                className="pui:rounded pui:bg-slate-100 pui:px-1.5 pui:py-0.5 pui:font-mono pui:text-[9.5px] pui:text-slate-600"
               >
                 {story}
               </span>
@@ -1622,7 +1661,7 @@ function HandoffPanel({ item }: { item: RegistryItem }) {
         </section>
       ) : null}
 
-      <p className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-[10.5px] leading-relaxed text-slate-500">
+      <p className="pui:rounded-xl pui:border pui:border-slate-200 pui:bg-slate-50 pui:px-3 pui:py-2.5 pui:text-[10.5px] pui:leading-relaxed pui:text-slate-500">
         The story is the source of truth for props and visual states. The registry maps the Figma
         node to its public export; the fingerprints prove both sides were captured.
       </p>
@@ -1632,19 +1671,19 @@ function HandoffPanel({ item }: { item: RegistryItem }) {
 
 function InspectorFooter({ item }: { item: RegistryItem }) {
   return (
-    <footer className="flex shrink-0 items-center gap-2 border-t border-slate-200 bg-slate-50/70 px-5 py-3">
+    <footer className="pui:flex pui:shrink-0 pui:items-center pui:gap-2 pui:border-t pui:border-slate-200 pui:bg-slate-50/70 pui:px-5 pui:py-3">
       <a
         href={item.figmaUrl}
         target="_blank"
         rel="noreferrer"
         className={cn(
-          "inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-2 text-[11px] font-semibold text-white shadow-sm transition hover:bg-indigo-500 active:bg-indigo-700",
+          "pui:inline-flex pui:flex-1 pui:items-center pui:justify-center pui:gap-1.5 pui:rounded-lg pui:bg-indigo-600 pui:px-3 pui:py-2 pui:text-[11px] pui:font-semibold pui:text-white pui:shadow-sm pui:transition pui:hover:bg-indigo-500 pui:active:bg-indigo-700",
           focusRing(),
         )}
       >
-        <FigmaMark className="h-3 w-2.5" />
+        <FigmaMark className="pui:h-3 pui:w-2.5" />
         Open in Figma
-        <ExternalLink aria-hidden="true" className="size-3" />
+        <ExternalLink aria-hidden="true" className="pui:size-3" />
       </a>
       {item.storyUrl ? (
         <a
@@ -1652,16 +1691,16 @@ function InspectorFooter({ item }: { item: RegistryItem }) {
           target="_blank"
           rel="noreferrer"
           className={cn(
-            "inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-[11px] font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-900",
+            "pui:inline-flex pui:flex-1 pui:items-center pui:justify-center pui:gap-1.5 pui:rounded-lg pui:border pui:border-slate-200 pui:bg-white pui:px-3 pui:py-2 pui:text-[11px] pui:font-semibold pui:text-slate-700 pui:transition pui:hover:bg-slate-50 pui:hover:text-slate-900",
             focusRing(),
           )}
         >
-          <BookOpen aria-hidden="true" className="size-3.5" />
+          <BookOpen aria-hidden="true" className="pui:size-3.5" />
           Storybook
-          <ExternalLink aria-hidden="true" className="size-3" />
+          <ExternalLink aria-hidden="true" className="pui:size-3" />
         </a>
       ) : (
-        <span className="inline-flex flex-1 items-center justify-center rounded-lg border border-dashed border-slate-200 px-3 py-2 text-[11px] text-slate-500">
+        <span className="pui:inline-flex pui:flex-1 pui:items-center pui:justify-center pui:rounded-lg pui:border pui:border-dashed pui:border-slate-200 pui:px-3 pui:py-2 pui:text-[11px] pui:text-slate-500">
           No story mapped
         </span>
       )}
@@ -1723,7 +1762,7 @@ function Inspector({ item, onClose }: { item: RegistryItem | null; onClose: () =
       onKeyDown={(event) => {
         if (event.key === "Escape") dialogRef.current?.close()
       }}
-      className="figma-inspector fixed inset-y-0 right-0 left-auto m-0 h-dvh max-h-dvh w-full max-w-[34rem] overflow-hidden border-l border-slate-200 bg-white p-0 text-slate-900 shadow-2xl"
+      className="figma-inspector pui:fixed pui:inset-y-0 pui:right-0 pui:left-auto pui:m-0 pui:h-dvh pui:max-h-dvh pui:w-full pui:max-w-[34rem] pui:overflow-hidden pui:border-l pui:border-slate-200 pui:bg-white pui:p-0 pui:text-slate-900 pui:shadow-2xl"
     >
       <style>{`
         .figma-inspector::backdrop {
@@ -1749,40 +1788,40 @@ function Inspector({ item, onClose }: { item: RegistryItem | null; onClose: () =
         }
       `}</style>
       {item ? (
-        <div className="flex h-full min-h-0 flex-col">
-          <header className="shrink-0 border-b border-slate-200 bg-white px-5 pt-5">
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0">
-                <p className="flex flex-wrap items-center gap-1.5 text-[10px] font-semibold tracking-[0.14em] text-indigo-600 uppercase">
+        <div className="pui:flex pui:h-full pui:min-h-0 pui:flex-col">
+          <header className="pui:shrink-0 pui:border-b pui:border-slate-200 pui:bg-white pui:px-5 pui:pt-5">
+            <div className="pui:flex pui:items-start pui:justify-between pui:gap-4">
+              <div className="pui:min-w-0">
+                <p className="pui:flex pui:flex-wrap pui:items-center pui:gap-1.5 pui:text-[10px] pui:font-semibold pui:tracking-[0.14em] pui:text-indigo-600 pui:uppercase">
                   <span>{item.area}</span>
-                  <span aria-hidden="true" className="text-slate-300">
+                  <span aria-hidden="true" className="pui:text-slate-300">
                     /
                   </span>
-                  <span className="text-slate-500">{item.pageLabel}</span>
+                  <span className="pui:text-slate-500">{item.pageLabel}</span>
                 </p>
                 <h2
                   id="figma-inspector-title"
-                  className="mt-1.5 pr-2 text-xl font-semibold tracking-tight break-words text-slate-900"
+                  className="pui:mt-1.5 pui:pr-2 pui:text-xl pui:font-semibold pui:tracking-tight pui:break-words pui:text-slate-900"
                 >
                   {item.name}
                 </h2>
-                <p className="mt-1 flex flex-wrap items-center gap-1.5 font-mono text-[10.5px] text-slate-500">
+                <p className="pui:mt-1 pui:flex pui:flex-wrap pui:items-center pui:gap-1.5 pui:font-mono pui:text-[10.5px] pui:text-slate-500">
                   <span>{item.exportName ?? "No export"}</span>
-                  <span aria-hidden="true" className="text-slate-300">
+                  <span aria-hidden="true" className="pui:text-slate-300">
                     ·
                   </span>
                   <span>{item.type === "COMPONENT_SET" ? "Component set" : "Component"}</span>
-                  <span aria-hidden="true" className="text-slate-300">
+                  <span aria-hidden="true" className="pui:text-slate-300">
                     ·
                   </span>
                   <span>{item.nodeId}</span>
                 </p>
-                <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+                <div className="pui:mt-2.5 pui:flex pui:flex-wrap pui:items-center pui:gap-1.5">
                   <StatusBadge status={item.status} />
                   {item.devices.map((device) => (
                     <span
                       key={device}
-                      className="rounded-full bg-slate-100 px-2 py-0.5 font-mono text-[10px] text-slate-500"
+                      className="pui:rounded-full pui:bg-slate-100 pui:px-2 pui:py-0.5 pui:font-mono pui:text-[10px] pui:text-slate-500"
                     >
                       {device}
                     </span>
@@ -1794,14 +1833,18 @@ function Inspector({ item, onClose }: { item: RegistryItem | null; onClose: () =
                 onClick={() => dialogRef.current?.close()}
                 aria-label="Close inspector"
                 className={cn(
-                  "inline-flex size-7 shrink-0 items-center justify-center rounded-md text-slate-500 transition hover:bg-slate-100 hover:text-slate-700",
+                  "pui:inline-flex pui:size-7 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-md pui:text-slate-500 pui:transition pui:hover:bg-slate-100 pui:hover:text-slate-700",
                   focusRing(),
                 )}
               >
-                <X aria-hidden="true" className="size-4" />
+                <X aria-hidden="true" className="pui:size-4" />
               </button>
             </div>
-            <div role="tablist" aria-label="Component details" className="mt-4 flex gap-1">
+            <div
+              role="tablist"
+              aria-label="Component details"
+              className="pui:mt-4 pui:flex pui:gap-1"
+            >
               {INSPECTOR_TABS.map((candidate, index) => (
                 <button
                   key={candidate.id}
@@ -1817,16 +1860,16 @@ function Inspector({ item, onClose }: { item: RegistryItem | null; onClose: () =
                   onClick={() => setTab(candidate.id)}
                   onKeyDown={(event) => onTabKeyDown(event, index)}
                   className={cn(
-                    "-mb-px inline-flex items-center gap-1.5 border-b-2 px-2.5 py-2 text-[11px] font-medium transition",
+                    "pui:-mb-px pui:inline-flex pui:items-center pui:gap-1.5 pui:border-b-2 pui:px-2.5 pui:py-2 pui:text-[11px] pui:font-medium pui:transition",
                     tab === candidate.id
-                      ? "border-indigo-600 text-indigo-700"
-                      : "border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-800",
+                      ? "pui:border-indigo-600 pui:text-indigo-700"
+                      : "pui:border-transparent pui:text-slate-500 pui:hover:border-slate-300 pui:hover:text-slate-800",
                     focusRing(),
                   )}
                 >
                   <span aria-hidden="true">{candidate.icon}</span>
-                  <span className="tablet:hidden">{candidate.shortLabel}</span>
-                  <span className="hidden tablet:inline">{candidate.label}</span>
+                  <span className="pui:tablet:hidden">{candidate.shortLabel}</span>
+                  <span className="pui:hidden pui:tablet:inline">{candidate.label}</span>
                 </button>
               ))}
             </div>
@@ -1837,7 +1880,7 @@ function Inspector({ item, onClose }: { item: RegistryItem | null; onClose: () =
             role="tabpanel"
             aria-labelledby={`inspector-tab-${tab}`}
             tabIndex={0}
-            className="min-h-0 flex-1 overflow-y-auto px-5 py-5 focus:outline-none"
+            className="pui:min-h-0 pui:flex-1 pui:overflow-y-auto pui:px-5 pui:py-5 pui:focus:outline-none"
           >
             {tab === "overview" ? <OverviewPanel item={item} /> : null}
             {tab === "diff" ? <VersionPanel item={item} /> : null}
@@ -1855,27 +1898,27 @@ function Inspector({ item, onClose }: { item: RegistryItem | null; onClose: () =
 
 function EmptyState({ onClear }: { onClear: () => void }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50/50 px-6 py-16 text-center">
+    <div className="pui:flex pui:flex-col pui:items-center pui:justify-center pui:rounded-xl pui:border pui:border-dashed pui:border-slate-200 pui:bg-slate-50/50 pui:px-6 pui:py-16 pui:text-center">
       <span
         aria-hidden="true"
-        className="flex size-11 items-center justify-center rounded-full bg-white text-slate-500 ring-1 ring-slate-200"
+        className="pui:flex pui:size-11 pui:items-center pui:justify-center pui:rounded-full pui:bg-white pui:text-slate-500 pui:ring-1 pui:ring-slate-200"
       >
-        <Search className="size-5" />
+        <Search className="pui:size-5" />
       </span>
-      <p className="mt-3 text-sm font-medium text-slate-800">No components match</p>
-      <p className="mt-1 max-w-sm text-xs leading-relaxed text-slate-500">
+      <p className="pui:mt-3 pui:text-sm pui:font-medium pui:text-slate-800">No components match</p>
+      <p className="pui:mt-1 pui:max-w-sm pui:text-xs pui:leading-relaxed pui:text-slate-500">
         Try a different term, or clear the filters to see the whole published inventory.
       </p>
       <button
         type="button"
         onClick={onClear}
         className={cn(
-          "mt-4 inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-medium text-slate-700 transition hover:bg-slate-50",
+          "pui:mt-4 pui:inline-flex pui:items-center pui:gap-1.5 pui:rounded-lg pui:border pui:border-slate-200 pui:bg-white pui:px-3 pui:py-1.5 pui:text-[11px] pui:font-medium pui:text-slate-700 pui:transition pui:hover:bg-slate-50",
           focusRing(),
         )}
       >
         Clear filters
-        <X aria-hidden="true" className="size-3" />
+        <X aria-hidden="true" className="pui:size-3" />
       </button>
     </div>
   )
@@ -1886,35 +1929,38 @@ function EmptyState({ onClear }: { onClear: () => void }) {
 function PageHero() {
   return (
     <section aria-labelledby="page-title">
-      <div className="flex flex-wrap items-start justify-between gap-5">
-        <div className="min-w-0 max-w-2xl">
-          <p className="inline-flex items-center gap-1.5 rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-1 text-[10px] font-semibold tracking-[0.12em] text-indigo-700 uppercase">
-            <span aria-hidden="true" className="size-1.5 rounded-full bg-indigo-500" />
+      <div className="pui:flex pui:flex-wrap pui:items-start pui:justify-between pui:gap-5">
+        <div className="pui:min-w-0 pui:max-w-2xl">
+          <p className="pui:inline-flex pui:items-center pui:gap-1.5 pui:rounded-full pui:border pui:border-indigo-200 pui:bg-indigo-50 pui:px-2.5 pui:py-1 pui:text-[10px] pui:font-semibold pui:tracking-[0.12em] pui:text-indigo-700 pui:uppercase">
+            <span aria-hidden="true" className="pui:size-1.5 pui:rounded-full pui:bg-indigo-500" />
             Design system · Inventory
           </p>
           <h1
             id="page-title"
-            className="mt-3 text-3xl font-semibold tracking-tight break-words text-slate-900 tablet:text-4xl"
+            className="pui:mt-3 pui:text-3xl pui:font-semibold pui:tracking-tight pui:break-words pui:text-slate-900 pui:tablet:text-4xl"
           >
             Published components
           </h1>
-          <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-500">
+          <p className="pui:mt-2 pui:max-w-xl pui:text-sm pui:leading-relaxed pui:text-slate-500">
             Every published Figma node, its registry status, the variant matrix and the code
             contract that ships it. Built for the people who ship the code.
           </p>
         </div>
-        <div className="flex min-w-0 flex-wrap items-center gap-1.5 text-[11px]">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-slate-600">
-            <RefreshCw aria-hidden="true" className="size-3 text-slate-500" />
+        <div className="pui:flex pui:min-w-0 pui:flex-wrap pui:items-center pui:gap-1.5 pui:text-[11px]">
+          <span className="pui:inline-flex pui:items-center pui:gap-1.5 pui:rounded-full pui:border pui:border-slate-200 pui:bg-white pui:px-2.5 pui:py-1 pui:text-slate-600">
+            <RefreshCw aria-hidden="true" className="pui:size-3 pui:text-slate-500" />
             Snapshot {formatDate(inventoryMeta.syncedAt)}
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-slate-600">
-            <Layers aria-hidden="true" className="size-3 text-slate-500" />
+          <span className="pui:inline-flex pui:items-center pui:gap-1.5 pui:rounded-full pui:border pui:border-slate-200 pui:bg-white pui:px-2.5 pui:py-1 pui:text-slate-600">
+            <Layers aria-hidden="true" className="pui:size-3 pui:text-slate-500" />
             {formatNumber(totals.pages)} pages
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-slate-600">
-            <span aria-hidden="true" className="size-1.5 rounded-full bg-slate-300" />
-            File <span className="font-mono text-[10px]">{inventoryMeta.fileKey.slice(0, 7)}…</span>
+          <span className="pui:inline-flex pui:items-center pui:gap-1.5 pui:rounded-full pui:border pui:border-slate-200 pui:bg-white pui:px-2.5 pui:py-1 pui:text-slate-600">
+            <span aria-hidden="true" className="pui:size-1.5 pui:rounded-full pui:bg-slate-300" />
+            File{" "}
+            <span className="pui:font-mono pui:text-[10px]">
+              {inventoryMeta.fileKey.slice(0, 7)}…
+            </span>
           </span>
         </div>
       </div>
@@ -1927,50 +1973,52 @@ function PageHero() {
 
 function PageFooter() {
   return (
-    <footer className="mt-8 flex flex-col gap-3 border-t border-slate-200 pt-5 text-[11px] text-slate-500 tablet:flex-row tablet:items-center tablet:justify-between">
-      <p className="max-w-xl leading-relaxed">
+    <footer className="pui:mt-8 pui:flex pui:flex-col pui:gap-3 pui:border-t pui:border-slate-200 pui:pt-5 pui:text-[11px] pui:text-slate-500 pui:tablet:flex-row pui:tablet:items-center pui:tablet:justify-between">
+      <p className="pui:max-w-xl pui:leading-relaxed">
         Snapshot generated from the Figma REST API on{" "}
-        <span className="font-medium text-slate-700">{formatDate(inventoryMeta.syncedAt)}</span>.
-        This page reads committed JSON; it never calls Figma at runtime.
+        <span className="pui:font-medium pui:text-slate-700">
+          {formatDate(inventoryMeta.syncedAt)}
+        </span>
+        . This page reads committed JSON; it never calls Figma at runtime.
       </p>
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="pui:flex pui:flex-wrap pui:items-center pui:gap-3">
         <a
           href={inventoryMeta.figmaUrl}
           target="_blank"
           rel="noreferrer"
           className={cn(
-            "inline-flex items-center gap-1 rounded-sm font-medium text-slate-600 hover:text-indigo-700 hover:underline",
+            "pui:inline-flex pui:items-center pui:gap-1 pui:rounded-sm pui:font-medium pui:text-slate-600 pui:hover:text-indigo-700 pui:hover:underline",
             focusRing(),
           )}
         >
           Figma file
-          <ExternalLink aria-hidden="true" className="size-3" />
+          <ExternalLink aria-hidden="true" className="pui:size-3" />
         </a>
         <a
           href="https://github.com/pagopa/ui/blob/main/packages/pagopa-ui/src/catalog/figma/registry.json"
           target="_blank"
           rel="noreferrer"
           className={cn(
-            "inline-flex items-center gap-1 rounded-sm font-medium text-slate-600 hover:text-indigo-700 hover:underline",
+            "pui:inline-flex pui:items-center pui:gap-1 pui:rounded-sm pui:font-medium pui:text-slate-600 pui:hover:text-indigo-700 pui:hover:underline",
             focusRing(),
           )}
         >
           Registry JSON
-          <ExternalLink aria-hidden="true" className="size-3" />
+          <ExternalLink aria-hidden="true" className="pui:size-3" />
         </a>
         <a
           href="https://github.com/pagopa/ui/blob/main/.github/CODEOWNERS"
           target="_blank"
           rel="noreferrer"
           className={cn(
-            "inline-flex items-center gap-1 rounded-sm font-medium text-slate-600 hover:text-indigo-700 hover:underline",
+            "pui:inline-flex pui:items-center pui:gap-1 pui:rounded-sm pui:font-medium pui:text-slate-600 pui:hover:text-indigo-700 pui:hover:underline",
             focusRing(),
           )}
         >
           Code owners
-          <ExternalLink aria-hidden="true" className="size-3" />
+          <ExternalLink aria-hidden="true" className="pui:size-3" />
         </a>
-        <span className="font-mono text-[10px] text-slate-600">
+        <span className="pui:font-mono pui:text-[10px] pui:text-slate-600">
           {STATUSES.map((status) => `${statusLabel(status)} ${statusCounts[status]}`).join(" · ")}
         </span>
       </div>
@@ -2054,7 +2102,7 @@ export function FigmaInventoryDashboard() {
 
   return (
     <div
-      className="min-h-dvh bg-slate-50 text-slate-900 antialiased"
+      className="pui:min-h-dvh pui:bg-slate-50 pui:text-slate-900 pui:antialiased"
       style={{
         fontFamily:
           'Inter, "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif',
@@ -2062,28 +2110,31 @@ export function FigmaInventoryDashboard() {
     >
       <Header />
 
-      <main className="mx-auto max-w-[1400px] px-4 py-7 tablet:px-6 tablet:py-9 desktop:px-8">
+      <main className="pui:mx-auto pui:max-w-[1400px] pui:px-4 pui:py-7 pui:tablet:px-6 pui:tablet:py-9 pui:desktop:px-8">
         <PageHero />
 
         <section
           aria-labelledby="registry-title"
-          className="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
+          className="pui:mt-8 pui:overflow-hidden pui:rounded-2xl pui:border pui:border-slate-200 pui:bg-white pui:shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
         >
-          <div className="border-b border-slate-200 p-4 tablet:p-5">
-            <div className="flex flex-wrap items-end justify-between gap-3">
+          <div className="pui:border-b pui:border-slate-200 pui:p-4 pui:tablet:p-5">
+            <div className="pui:flex pui:flex-wrap pui:items-end pui:justify-between pui:gap-3">
               <div>
-                <h2 id="registry-title" className="text-base font-semibold text-slate-900">
+                <h2
+                  id="registry-title"
+                  className="pui:text-base pui:font-semibold pui:text-slate-900"
+                >
                   Component registry
                 </h2>
-                <p className="mt-0.5 text-xs text-slate-500">
+                <p className="pui:mt-0.5 pui:text-xs pui:text-slate-500">
                   Browse the inventory, inspect the variants and compare the canvas with the code
                   contract.
                 </p>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="pui:flex pui:items-center pui:gap-2">
                 <p
                   aria-live="polite"
-                  className="text-[11px] font-medium text-slate-500 tabular-nums"
+                  className="pui:text-[11px] pui:font-medium pui:text-slate-500 pui:tabular-nums"
                 >
                   {registryLabel}
                 </p>
@@ -2092,10 +2143,10 @@ export function FigmaInventoryDashboard() {
                   onClick={clearFilters}
                   disabled={!hasFilters}
                   className={cn(
-                    "rounded-md px-2 py-1 text-[11px] font-medium transition",
+                    "pui:rounded-md pui:px-2 pui:py-1 pui:text-[11px] pui:font-medium pui:transition",
                     hasFilters
-                      ? "text-indigo-600 hover:bg-indigo-50 hover:text-indigo-700"
-                      : "cursor-not-allowed text-slate-300",
+                      ? "pui:text-indigo-600 pui:hover:bg-indigo-50 pui:hover:text-indigo-700"
+                      : "pui:cursor-not-allowed pui:text-slate-300",
                     focusRing(),
                   )}
                 >
@@ -2104,25 +2155,25 @@ export function FigmaInventoryDashboard() {
               </div>
             </div>
 
-            <div className="mt-4 flex flex-wrap items-center gap-2">
+            <div className="pui:mt-4 pui:flex pui:flex-wrap pui:items-center pui:gap-2">
               <SearchField value={query} onChange={changeQuery} inputRef={searchRef} />
               <ViewToggle view={view} onChange={changeView} />
               <SortField value={sort} onChange={changeSort} />
             </div>
 
-            <div className="mt-3 flex flex-col gap-2 border-t border-slate-100 pt-3 desktop:flex-row desktop:items-center desktop:gap-4">
+            <div className="pui:mt-3 pui:flex pui:flex-col pui:gap-2 pui:border-t pui:border-slate-100 pui:pt-3 pui:desktop:flex-row pui:desktop:items-center pui:desktop:gap-4">
               <AreaField value={area} onChange={changeArea} />
               <StatusFilters value={status} onChange={changeStatus} />
             </div>
           </div>
 
-          <div className={view === "grid" ? "p-4 tablet:p-5" : "p-0"}>
+          <div className={view === "grid" ? "pui:p-4 pui:tablet:p-5" : "pui:p-0"}>
             {visible.length === 0 ? (
-              <div className="p-4 tablet:p-5">
+              <div className="pui:p-4 pui:tablet:p-5">
                 <EmptyState onClear={clearFilters} />
               </div>
             ) : view === "grid" ? (
-              <div className="grid gap-3 tablet:grid-cols-2 desktop:grid-cols-3 desktop-xxl:grid-cols-4">
+              <div className="pui:grid pui:gap-3 pui:tablet:grid-cols-2 pui:desktop:grid-cols-3 pui:desktop-xxl:grid-cols-4">
                 {visible.map((item) => (
                   <RegistryCard
                     key={item.id}
@@ -2137,7 +2188,7 @@ export function FigmaInventoryDashboard() {
           </div>
 
           {sorted.length > 0 ? (
-            <div className="border-t border-slate-200 px-4 py-3 tablet:px-5">
+            <div className="pui:border-t pui:border-slate-200 pui:px-4 pui:py-3 pui:tablet:px-5">
               <Pagination
                 page={currentPage}
                 totalPages={totalPages}

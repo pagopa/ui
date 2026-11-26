@@ -79,7 +79,7 @@ export const SourcePanel: Story = {
     ],
   },
   render: (args) => (
-    <div className="w-[274px] max-w-full">
+    <div className="pui:w-[274px] pui:max-w-full">
       <MenuDropdown {...args} />
     </div>
   ),

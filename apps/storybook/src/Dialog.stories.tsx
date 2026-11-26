@@ -366,7 +366,7 @@ function PanelContractHarness() {
   const [panel, setPanel] = React.useState<HTMLDivElement | null>(null)
 
   const forwarded = panel
-    ? `class=${panel.classList.contains("max-w-md") ? "inoltrata" : "assente"} attribute=${panel.dataset.contractSlot ?? "assente"}`
+    ? `class=${panel.classList.contains("pui:max-w-md") ? "inoltrata" : "assente"} attribute=${panel.dataset.contractSlot ?? "assente"}`
     : "nessun pannello"
 
   return (
@@ -377,7 +377,7 @@ function PanelContractHarness() {
         open={open}
         onOpenChange={setOpen}
         title="Pannello con contratto inoltrato"
-        className="max-w-md"
+        className="pui:max-w-md"
         data-contract-slot="dialog"
         footer={<DialogClose variant="outline">Chiudi</DialogClose>}
       />

@@ -53,8 +53,8 @@ export const SourceCase: Story = {
   },
   parameters: { layout: "fullscreen" },
   render: (args) => (
-    <div className="flex w-full justify-start">
-      <div className="w-[280px] [&>*]:w-full">
+    <div className="pui:flex pui:w-full pui:justify-start">
+      <div className="pui:w-[280px] pui:[&>*]:w-full">
         <SnackbarErrorCode {...args} />
       </div>
     </div>

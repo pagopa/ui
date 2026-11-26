@@ -33,9 +33,9 @@ export const SourceBand: Story = {
   tags: ["color-pinned"],
   parameters: { layout: "fullscreen" },
   render: () => (
-    <div className="min-h-screen bg-background">
+    <div className="pui:min-h-screen pui:bg-background">
       <SkipToMainContent />
-      <main id="main-content" tabIndex={-1} className="p-6">
+      <main id="main-content" tabIndex={-1} className="pui:p-6">
         <p>Usa Tab per portare il focus sul link di salto.</p>
       </main>
     </div>
@@ -44,9 +44,9 @@ export const SourceBand: Story = {
 
 export const Playground: Story = {
   render: () => (
-    <div className="min-h-40">
+    <div className="pui:min-h-40">
       <SkipToMainContent />
-      <main id="main-content" tabIndex={-1} className="p-6">
+      <main id="main-content" tabIndex={-1} className="pui:p-6">
         <p>Usa Tab per portare il focus sul link di salto.</p>
       </main>
     </div>

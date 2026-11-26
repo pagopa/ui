@@ -385,7 +385,7 @@ function SourcePanel({ mode }: { mode: SourcePanelMode }) {
       leading: <PagoPAIcon name="location_on" size={16} />,
       chip: (
         <Chip variant="warning" size="compact" data-slot="chip">
-          <span data-slot="chip-label" className="font-medium">
+          <span data-slot="chip-label" className="pui:font-medium">
             Warning
           </span>
         </Chip>
@@ -413,15 +413,15 @@ function SourcePanel({ mode }: { mode: SourcePanelMode }) {
     {
       id: "location",
       label: "Usa posizione attuale",
-      leading: <PagoPAIcon name="my_location" size={24} className="text-primary" />,
+      leading: <PagoPAIcon name="my_location" size={24} className="pui:text-primary" />,
       type: "cta",
       onSelect: () => undefined,
     },
     ...options,
   ]
   return (
-    <div className="w-[274px] max-w-full">
-      <Dropdown triggerLabel="Open options" className="w-full" items={items} />
+    <div className="pui:w-[274px] pui:max-w-full">
+      <Dropdown triggerLabel="Open options" className="pui:w-full" items={items} />
     </div>
   )
 }
@@ -454,10 +454,10 @@ export const SourcePanelMultiselectAll: Story = {
 export const SourcePanelEmpty: Story = {
   tags: ["color-pinned"],
   render: () => (
-    <div className="w-[274px] max-w-full">
+    <div className="pui:w-[274px] pui:max-w-full">
       <Dropdown
         triggerLabel="Open options"
-        className="w-full"
+        className="pui:w-full"
         items={[]}
         emptyTitle="Non ci sono corrispondenze da mostrare"
         emptyDescription="Controlla i dati inseriti oppure inserisci un altro indirizzo o città."
@@ -469,8 +469,8 @@ export const SourcePanelEmpty: Story = {
 export const SourcePanelSkeleton: Story = {
   tags: ["color-pinned"],
   render: () => (
-    <div className="w-[274px] max-w-full">
-      <Dropdown triggerLabel="Open options" className="w-full" items={[]} loading />
+    <div className="pui:w-[274px] pui:max-w-full">
+      <Dropdown triggerLabel="Open options" className="pui:w-full" items={[]} loading />
     </div>
   ),
 }

@@ -12,7 +12,7 @@ const sourceActions = (
   <>
     <Button type="button">Esci</Button>
     <a
-      className="relative inline-flex min-h-0 max-w-full items-center justify-center px-0 text-center text-base leading-[1.375] font-semibold text-primary whitespace-normal [overflow-wrap:anywhere] underline-offset-4 outline-none hover:underline focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring after:absolute after:inset-x-0 after:-inset-y-3"
+      className="pui:relative pui:inline-flex pui:min-h-0 pui:max-w-full pui:items-center pui:justify-center pui:px-0 pui:text-center pui:text-base pui:leading-[1.375] pui:font-semibold pui:text-primary pui:whitespace-normal pui:[overflow-wrap:anywhere] pui:underline-offset-4 pui:outline-none pui:hover:underline pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-3"
       href="mailto:assistenza@example.com"
     >
       Contatta l’assistenza

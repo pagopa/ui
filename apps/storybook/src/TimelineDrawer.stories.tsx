@@ -136,7 +136,7 @@ function PanelContractHarness() {
       <Button onClick={() => setOpen(true)}>Controlla il pannello</Button>
       <p data-testid="panel-contract">
         {panel
-          ? `class=${panel.classList.contains("max-w-lg") ? "inoltrata" : "assente"} attribute=${panel.dataset.contractSlot ?? "assente"}`
+          ? `class=${panel.classList.contains("pui:max-w-lg") ? "inoltrata" : "assente"} attribute=${panel.dataset.contractSlot ?? "assente"}`
           : "nessun pannello"}
       </p>
       <TimelineDrawer
@@ -145,7 +145,7 @@ function PanelContractHarness() {
         open={open}
         onOpenChange={setOpen}
         title="Cronologia della pratica"
-        className="max-w-lg"
+        className="pui:max-w-lg"
         data-contract-slot="timeline-drawer"
       />
     </>

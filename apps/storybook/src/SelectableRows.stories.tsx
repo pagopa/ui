@@ -48,7 +48,7 @@ function NativeSourceChoice() {
   const [submitted, setSubmitted] = React.useState("")
   return (
     <form
-      className="grid w-[274px] max-w-full gap-4"
+      className="pui:grid pui:w-[274px] pui:max-w-full pui:gap-4"
       onSubmit={(event) => {
         event.preventDefault()
         setSubmitted(String(new FormData(event.currentTarget).get("city") ?? ""))
@@ -105,7 +105,7 @@ function NativeSourceChoices() {
   const [submitted, setSubmitted] = React.useState("")
   return (
     <form
-      className="grid w-[274px] max-w-full gap-4"
+      className="pui:grid pui:w-[274px] pui:max-w-full pui:gap-4"
       onSubmit={(event) => {
         event.preventDefault()
         setSubmitted(
@@ -179,7 +179,7 @@ function NativeSourceAutocomplete() {
   const [submitted, setSubmitted] = React.useState("")
   return (
     <form
-      className="grid w-[274px] max-w-full gap-4"
+      className="pui:grid pui:w-[274px] pui:max-w-full pui:gap-4"
       onSubmit={(event) => {
         event.preventDefault()
         setSubmitted(String(new FormData(event.currentTarget).get("city") ?? ""))
@@ -232,7 +232,7 @@ function NativeSourceActionMenus() {
   ]
   return (
     <form
-      className="grid w-[274px] max-w-full gap-4"
+      className="pui:grid pui:w-[274px] pui:max-w-full pui:gap-4"
       onSubmit={(event) => {
         event.preventDefault()
         setSubmitted(true)
@@ -291,7 +291,7 @@ function SourceChoiceCommand({
   return (
     <>
       <form
-        className="grid w-[274px] max-w-full gap-4"
+        className="pui:grid pui:w-[274px] pui:max-w-full pui:gap-4"
         onSubmit={(event) => {
           event.preventDefault()
           setSubmitCount((count) => count + 1)
@@ -325,8 +325,8 @@ function SourceChoiceCommand({
       </form>
       <DialogPrimitive.Root open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogPrimitive.Portal container={portalHost}>
-          <DialogPrimitive.Backdrop className="fixed inset-0 z-40 bg-black/45" />
-          <DialogPrimitive.Popup className="fixed top-1/2 left-1/2 z-50 grid -translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg bg-background p-6 shadow-lg">
+          <DialogPrimitive.Backdrop className="pui:fixed pui:inset-0 pui:z-40 pui:bg-black/45" />
+          <DialogPrimitive.Popup className="pui:fixed pui:top-1/2 pui:left-1/2 pui:z-50 pui:grid pui:-translate-x-1/2 pui:-translate-y-1/2 pui:gap-4 pui:rounded-lg pui:bg-background pui:p-6 pui:shadow-lg">
             <DialogPrimitive.Title>Comando completato</DialogPrimitive.Title>
             <Button type="button">Continua nel dialog</Button>
           </DialogPrimitive.Popup>
@@ -480,7 +480,7 @@ function SourceMultiChoiceCommand({
   return (
     <>
       <form
-        className="grid w-[274px] max-w-full gap-4"
+        className="pui:grid pui:w-[274px] pui:max-w-full pui:gap-4"
         aria-label="Comuni con comando"
         onSubmit={(event) => {
           event.preventDefault()
@@ -516,8 +516,8 @@ function SourceMultiChoiceCommand({
       </form>
       <DialogPrimitive.Root open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogPrimitive.Portal container={portalHost}>
-          <DialogPrimitive.Backdrop className="fixed inset-0 z-40 bg-black/45" />
-          <DialogPrimitive.Popup className="fixed top-1/2 left-1/2 z-50 grid -translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg bg-background p-6 shadow-lg">
+          <DialogPrimitive.Backdrop className="pui:fixed pui:inset-0 pui:z-40 pui:bg-black/45" />
+          <DialogPrimitive.Popup className="pui:fixed pui:top-1/2 pui:left-1/2 pui:z-50 pui:grid pui:-translate-x-1/2 pui:-translate-y-1/2 pui:gap-4 pui:rounded-lg pui:bg-background pui:p-6 pui:shadow-lg">
             <DialogPrimitive.Title>Comando dei comuni completato</DialogPrimitive.Title>
             <Button type="button">Continua con i comuni</Button>
           </DialogPrimitive.Popup>

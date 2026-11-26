@@ -48,7 +48,7 @@ export const Playground: Story = { parameters: { a11yContract: { reflow: false }
 
 export const Indicators: Story = {
   render: () => (
-    <div className="grid w-[min(42rem,calc(100vw-2rem))] gap-8">
+    <div className="pui:grid pui:w-[min(42rem,calc(100vw-2rem))] pui:gap-8">
       <FeatureList
         features={[
           {

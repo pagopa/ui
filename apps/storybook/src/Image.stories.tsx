@@ -44,7 +44,7 @@ export const Playground: Story = {}
 
 export const Ratios: Story = {
   render: () => (
-    <div className="grid w-[min(36rem,calc(100vw-2rem))] gap-4">
+    <div className="pui:grid pui:w-[min(36rem,calc(100vw-2rem))] pui:gap-4">
       <Image ratio="square" alt="Quadrata" src={placeholder} />
       <Image ratio="video" alt="Video" src={placeholder} />
       <Image ratio="wide" alt="Panoramica" src={placeholder} />

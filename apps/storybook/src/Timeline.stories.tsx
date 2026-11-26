@@ -239,7 +239,7 @@ export const Multidestinatario: Story = {
 // cursor node, and each renders a single-item timeline so the cursor is alone:
 // a last item carries no rail, and the source `Rectangle 777` stub is that rail.
 const cursorFixture = (nodeId: string, status: TimelineItemStatus, label: string) => () => (
-  <div data-fidelity-variant={nodeId.replace(":", "-")} className="w-[320px]">
+  <div data-fidelity-variant={nodeId.replace(":", "-")} className="pui:w-[320px]">
     <Timeline items={[{ id: status, title: label, status }]} />
   </div>
 )

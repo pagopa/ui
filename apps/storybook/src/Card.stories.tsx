@@ -20,20 +20,20 @@ interface ServiceCardProps {
 
 function ServiceCard({ size, variant }: ServiceCardProps) {
   return (
-    <Card size={size} variant={variant} className="w-[min(24rem,calc(100vw-2rem))]">
+    <Card size={size} variant={variant} className="pui:w-[min(24rem,calc(100vw-2rem))]">
       <CardHeader>
-        <CardTitle className="text-xl">Pagamenti verso la PA</CardTitle>
+        <CardTitle className="pui:text-xl">Pagamenti verso la PA</CardTitle>
         <CardDescription>Gestisci avvisi, ricevute e metodi di pagamento.</CardDescription>
         <CardAction>
           <Badge variant="secondary">Attivo</Badge>
         </CardAction>
       </CardHeader>
       <CardContent>
-        <p className="text-body">
+        <p className="pui:text-body">
           Accedi ai servizi di pagamento digitali in modo semplice e sicuro.
         </p>
       </CardContent>
-      <CardFooter className="justify-end bg-muted">
+      <CardFooter className="pui:justify-end pui:bg-muted">
         <Button variant="ghost">
           Apri il servizio
           <ArrowRight aria-hidden="true" />

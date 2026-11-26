@@ -65,7 +65,7 @@ function sourceLogo(src: string) {
   return (
     <img
       alt=""
-      className="block max-h-full max-w-full object-contain"
+      className="pui:block pui:max-h-full pui:max-w-full pui:object-contain"
       height={28}
       src={src}
       width={115}
@@ -143,7 +143,7 @@ export const SingleProvider: Story = {
     design: { type: "figma", url: figmaEmbedUrl("731:20386") },
   },
   render: () => (
-    <div className="w-80 px-1">
+    <div className="pui:w-80 pui:px-1">
       <IdentityProviderPicker.Provider {...providerOptions[0]} />
     </div>
   ),

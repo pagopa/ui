@@ -56,7 +56,7 @@ type Story = StoryObj<typeof meta>
 // Source frame: 274x48 (`602:9418`). The story carries the source width.
 export const Playground: Story = {
   render: (args) => (
-    <div className="w-68 max-w-full">
+    <div className="pui:w-68 pui:max-w-full">
       <SelectField {...args} />
     </div>
   ),
@@ -77,7 +77,7 @@ export const SelectionControls: Story = {
   // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <div className="grid max-w-xl gap-6">
+    <div className="pui:grid pui:max-w-xl pui:gap-6">
       <Autocomplete label="Comune di residenza" options={municipalities} />
       <SelectField label="Tipologia" options={serviceOptions} />
       <MultiSelectField label="Categorie" options={serviceOptions} defaultValue={["mobilita"]} />
@@ -149,7 +149,7 @@ export const SelectionControls: Story = {
 // decorative leading icon (`account_balance`, 24px) and its chevron.
 export const SourceFrame: Story = {
   render: () => (
-    <div className="grid w-68 max-w-full gap-6">
+    <div className="pui:grid pui:w-68 pui:max-w-full pui:gap-6">
       <SelectField
         id="source-select"
         label="Label text"
@@ -176,7 +176,7 @@ export const SourceFrame: Story = {
 // the state it needs from this fixture instead of one story per variant.
 export const SourceStates: Story = {
   render: () => (
-    <div className="grid w-68 max-w-full gap-6">
+    <div className="pui:grid pui:w-68 pui:max-w-full pui:gap-6">
       <SelectField
         id="source-states-empty"
         label="Label text"

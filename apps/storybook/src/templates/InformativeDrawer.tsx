@@ -32,8 +32,8 @@ export interface InformativeDrawerProps {
 // uses (the library Drawer maps it to the swipe gesture and the panel
 // geometry); the frame height follows the same choice.
 const FRAME_HEIGHT = {
-  bottom: "min-h-(--pui-artboard-height)",
-  right: "min-h-(--pui-artboard-height-tall)",
+  bottom: "pui:min-h-(--pui-artboard-height)",
+  right: "pui:min-h-(--pui-artboard-height-tall)",
 } // 650 / 800
 
 // The source title style is Titillio/600 (our 700 face): the title token
@@ -51,7 +51,7 @@ function InformativeDrawer({
   return (
     <Drawer direction={direction} open={open} modal>
       <div
-        className={`relative grid ${FRAME_HEIGHT[direction]} place-items-end bg-background ${className ?? ""}`}
+        className={`pui:relative pui:grid ${FRAME_HEIGHT[direction]} pui:place-items-end pui:bg-background ${className ?? ""}`}
       >
         <DrawerContent
           // The source side panel is 417px wide (the reviewed component's 384px
@@ -59,44 +59,44 @@ function InformativeDrawer({
           // no drag handle.
           className={
             side
-              ? "w-full tablet:max-w-(--pui-drawer-width-wide) [&>[data-slot=drawer-handle]]:hidden"
-              : "[&>[data-slot=drawer-handle]]:hidden"
+              ? "pui:w-full pui:tablet:max-w-(--pui-drawer-width-wide) pui:[&>[data-slot=drawer-handle]]:hidden"
+              : "pui:[&>[data-slot=drawer-handle]]:hidden"
           }
         >
           <div
             data-slot="drawer-template-body"
-            className="flex min-h-0 flex-1 flex-col overflow-y-auto p-6"
+            className="pui:flex pui:min-h-0 pui:flex-1 pui:flex-col pui:overflow-y-auto pui:p-6"
           >
-            <div data-slot="drawer-template-head" className="flex items-start gap-4">
+            <div data-slot="drawer-template-head" className="pui:flex pui:items-start pui:gap-4">
               {icon ? (
                 <span
                   aria-hidden="true"
-                  className="flex size-10 shrink-0 items-center justify-center [&_figure]:block [&_figure]:gap-0 [&_img]:size-10"
+                  className="pui:flex pui:size-10 pui:shrink-0 pui:items-center pui:justify-center pui:[&_figure]:block pui:[&_figure]:gap-0 pui:[&_img]:size-10"
                 >
                   {icon}
                 </span>
               ) : null}
               {/* The source title style is Titillio/600 (our 700 face): the
                   title token carries that weight over the primitive's base. */}
-              <div className="min-w-0 flex-1">
-                <DrawerTitle className={side ? "text-title-xs" : "text-title-xs-mobile"}>
+              <div className="pui:min-w-0 pui:flex-1">
+                <DrawerTitle className={side ? "pui:text-title-xs" : "pui:text-title-xs-mobile"}>
                   {title}
                 </DrawerTitle>
               </div>
               <DrawerClose
                 aria-label="Chiudi pannello"
-                className="relative inline-flex size-6 shrink-0 items-center justify-center rounded-sm text-foreground outline-none after:absolute after:-inset-2.5 hover:bg-accent active:bg-accent-active focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring"
+                className="pui:relative pui:inline-flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-sm pui:text-foreground pui:outline-none pui:after:absolute pui:after:-inset-2.5 pui:hover:bg-accent pui:active:bg-accent-active pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
               >
                 <PagoPAIcon name="close" size={24} />
               </DrawerClose>
             </div>
-            <DrawerDescription className="mt-2 text-body text-muted-foreground">
+            <DrawerDescription className="pui:mt-2 pui:text-body pui:text-muted-foreground">
               {description}
             </DrawerDescription>
             {actions ? (
               <div
                 data-slot="drawer-template-actions"
-                className={`mt-10 flex gap-2 ${side ? "justify-end" : "flex-col [&>*]:w-full"}`}
+                className={`pui:mt-10 pui:flex pui:gap-2 ${side ? "pui:justify-end" : "pui:flex-col pui:[&>*]:w-full"}`}
               >
                 {actions}
               </div>

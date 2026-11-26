@@ -14,7 +14,7 @@ const meta = {
       label: "SEND - Servizio Notifiche Digitali",
       href: "#",
       logo: (
-        <span className="grid size-10 place-items-center rounded-lg bg-primary text-lg font-bold text-white">
+        <span className="pui:grid pui:size-10 pui:place-items-center pui:rounded-lg pui:bg-primary pui:text-lg pui:font-bold pui:text-white">
           S
         </span>
       ),
