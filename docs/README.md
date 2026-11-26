@@ -14,6 +14,7 @@ a page of this tree.
 | Section                                         | Holds                                                                                  | Start here                                                                                |
 | ----------------------------------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | [Decisions](./decisions/)                       | The architecture decision records, each with its context, decision and consequences    | [ADR-0001](./decisions/0001-rework.md)                                                    |
+| [Design defaults](./design-defaults.md)         | The ratified system-level defaults an alignment applies before it asks a question      | [design-defaults.md](./design-defaults.md)                                                |
 | [Design requests](./design-requests/)           | The questions opened to the design owner and the answers recorded against them         | [2026-10-16 — foundation variables](./design-requests/2026-10-16-foundation-variables.md) |
 | [Use cases](./use-cases/)                       | One page per use case, `UC-01` to `UC-12`, with actors, flows and acceptance checks    | [Design review](./design-review.md)                                                       |
 | [Design review](./design-review.md)             | The DR/SRS of the design system: outcome, solution design, requirements and open items | [Design review](./design-review.md)                                                       |
@@ -36,6 +37,7 @@ one rather than editing it.
 | [ADR-0006](./decisions/0006-parity-coverage-and-bulk-families.md) | What parity coverage counts: the case population and the bulk families        |
 | [ADR-0007](./decisions/0007-committed-records-reader.md)          | The committed records are read through one reader, and it never writes        |
 | [ADR-0008](./decisions/0008-case-corpus-value.md)                 | The case corpus is one value: documents are properties, judgments are methods |
+| [ADR-0009](./decisions/0009-ratified-design-defaults.md)          | The system-level design defaults: ratified once, applied by every alignment   |
 
 ## Use cases
 
