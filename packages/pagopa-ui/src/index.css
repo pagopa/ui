@@ -25,9 +25,10 @@
 /* The internal prefix, during the migration: a component may spell a utility
    the way a host class cannot collide with (`pui:flex`) while every spelling
    already in the tree keeps resolving. Tailwind's own `prefix()` cannot carry
-   this, because it is one global switch: it renames the generated custom
-   properties too (`--color-primary` would become `--pui-color-primary`, a
-   public token of this package) and it emits one spelling only. So the prefix
+   this, because it is one global switch: it emits one spelling only and it
+   renames every theme variable the artifact declares (`--font-sans` would become
+   `--pui-font-sans`), and it lives on the `@import "tailwindcss"` line this
+   stylesheet gets through shadcn. So the prefix
    is a variant, and both spellings are emitted because the mirror below lists
    them for every candidate the scan surface holds. The build writes the mirror
    before Tailwind reads this file: packages/pagopa-ui/build/prefixed-candidates.ts
