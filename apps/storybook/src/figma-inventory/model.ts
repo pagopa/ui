@@ -98,8 +98,12 @@ const deviceOrder = Object.keys(devicePolicyData.devices)
 
 function declaredDevicesOf(node: FigmaCoverageRow["node"]): string[] {
   const declared = [
-    ...new Set((node.variants ?? []).map((variant) => variant.device).filter(Boolean)),
-  ] as string[]
+    ...new Set(
+      (node.variants ?? [])
+        .map((variant) => variant.device)
+        .filter((device): device is string => Boolean(device)),
+    ),
+  ]
   return declared.sort((left, right) => deviceOrder.indexOf(left) - deviceOrder.indexOf(right))
 }
 

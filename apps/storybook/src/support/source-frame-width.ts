@@ -11,16 +11,17 @@ interface InventoryVariant {
   box: { width: number; height: number } | null
 }
 
+const inventory: { components: { nodeId: string; variants?: InventoryVariant[] }[] } = inventoryData
+const policy: { devices: Record<string, { canonicalWidth: number }> } = devicePolicyData
+
 const variants = new Map<string, InventoryVariant[]>(
-  (inventoryData as { components: { nodeId: string; variants?: InventoryVariant[] }[] }).components
+  inventory.components
     .filter((node) => node.variants?.length)
     .map((node) => [node.nodeId, node.variants ?? []]),
 )
 
 const canonicalWidths: Record<string, number> = Object.fromEntries(
-  Object.entries(
-    (devicePolicyData as { devices: Record<string, { canonicalWidth: number }> }).devices,
-  ).map(([device, policy]) => [device, policy.canonicalWidth]),
+  Object.entries(policy.devices).map(([device, entry]) => [device, entry.canonicalWidth]),
 )
 
 // The marker the capture reads: `data-source-frame` carries the drawn width, so
