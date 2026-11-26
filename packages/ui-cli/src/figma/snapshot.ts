@@ -134,6 +134,9 @@ const isRestExport = (value: unknown): value is RestExport => isSchema(RestExpor
 const isInventoryExport = (value: unknown): value is InventoryExport =>
   isSchema(InventoryExportSchema, value)
 
+/** Figma file keys are bare tokens: a separator in one makes it a URL someone else chose. */
+const FILE_KEY = /^[A-Za-z0-9_-]+$/
+
 export function fileKeyFromSource(workspace: Workspace): string {
   const file = "src/catalog/figma/file.ts"
   const declarations = createSourceModules(workspace)
@@ -154,6 +157,11 @@ export function fileKeyFromSource(workspace: Workspace): string {
     !initializer.value
   ) {
     throw new Error(`${file} must export a literal FIGMA_FILE_KEY`)
+  }
+  // The key is interpolated into every request path, so a value carrying a
+  // separator is not a key: it is a URL someone else chose.
+  if (!FILE_KEY.test(initializer.value)) {
+    throw new Error(`${file}: FIGMA_FILE_KEY is not a bare Figma file key: ${initializer.value}`)
   }
   return initializer.value
 }

@@ -11,6 +11,7 @@ import { test } from "node:test"
 import { check } from "../../src/parity/check.ts"
 import { loadExport, nodeSpec } from "../../src/parity/source.ts"
 import { fixtureTree, runCli, workspaceAt } from "../helpers/cli.mjs"
+import { snapshot } from "../helpers/snapshot.mjs"
 
 const REPOSITORY = path.resolve(import.meta.dirname, "../../../..")
 
@@ -113,19 +114,6 @@ function probe(tree, edit = (render) => render) {
     childCount: spec.children?.length ?? 0,
   }
   return { storyId: "fixture--playground", subjects: { field: edit(render) } }
-}
-
-function snapshot(root) {
-  const entries = []
-  const walk = (directory) => {
-    for (const name of fs.readdirSync(directory).sort()) {
-      const absolute = path.join(directory, name)
-      if (fs.statSync(absolute).isDirectory()) walk(absolute)
-      else entries.push(`${path.relative(root, absolute)}\0${fs.readFileSync(absolute, "utf8")}`)
-    }
-  }
-  walk(root)
-  return entries
 }
 
 test("a render that matches the source passes and writes no state", async () => {

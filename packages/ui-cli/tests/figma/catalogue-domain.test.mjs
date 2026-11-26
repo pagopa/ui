@@ -245,7 +245,7 @@ test("catalogue CLI preserves success, failure and usage contracts", async () =>
       env: { PAGOPA_UI_STORIES_ROOT: "src/catalog/figma" },
     })
     assert.equal(result.status, 0, result.stderr)
-    assert.match(result.stdout, /^inventory: 1 nodes \\| excluded 1/m)
+    assert.match(result.stdout, /^inventory: 1 nodes \| excluded 1/m)
     assert.match(result.stderr, /warn: inventory snapshot is \d+ days old/)
   } finally {
     valid.dispose()

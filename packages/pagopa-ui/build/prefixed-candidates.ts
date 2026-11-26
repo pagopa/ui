@@ -57,13 +57,26 @@ export interface PrefixedCandidatesOptions {
   base: string
 }
 
+function isMissing(error: unknown): boolean {
+  return typeof error === "object" && error !== null && "code" in error && error.code === "ENOENT"
+}
+
+function currentMirror(mirror: string): string | null {
+  try {
+    return fs.readFileSync(mirror, "utf8")
+  } catch (error) {
+    if (!isMissing(error)) throw error
+    return null
+  }
+}
+
 export function prefixedCandidates({ entry, mirror, base }: PrefixedCandidatesOptions): Plugin {
   let stale = true
 
   async function write() {
     stale = false
     const content = renderCandidates(await collectCandidates(entry, base))
-    if (fs.existsSync(mirror) && fs.readFileSync(mirror, "utf8") === content) return
+    if (currentMirror(mirror) === content) return
     fs.mkdirSync(path.dirname(mirror), { recursive: true })
     fs.writeFileSync(mirror, content)
   }

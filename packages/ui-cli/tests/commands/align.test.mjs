@@ -5,14 +5,13 @@
 // replaced them: one call answers every preflight question, then compares, and
 // writes nothing, so a second run on the same tree says the same thing.
 import assert from "node:assert/strict"
-import fs from "node:fs"
-import path from "node:path"
 import { test } from "node:test"
 
 import { align } from "../../src/figma/align.ts"
 import { check } from "../../src/parity/check.ts"
 import { loadExport, nodeSpec } from "../../src/parity/source.ts"
 import { fixtureTree, runCli, workspaceAt } from "../helpers/cli.mjs"
+import { snapshot } from "../helpers/snapshot.mjs"
 
 const source = {
   id: "1:1",
@@ -140,19 +139,6 @@ function probe(tree, edit = (render) => render) {
 function diagnoseWith(tree, edit) {
   return (workspace, options) =>
     check(workspace, options, { capture: async () => probe(tree, edit) })
-}
-
-function snapshot(root) {
-  const entries = []
-  const walk = (directory) => {
-    for (const name of fs.readdirSync(directory).sort()) {
-      const absolute = path.join(directory, name)
-      if (fs.statSync(absolute).isDirectory()) walk(absolute)
-      else entries.push(`${path.relative(root, absolute)}\0${fs.readFileSync(absolute, "utf8")}`)
-    }
-  }
-  walk(root)
-  return entries
 }
 
 test("one invocation answers the preflight and the comparison, and writes nothing", async () => {

@@ -12,6 +12,7 @@ import { test } from "node:test"
 
 import { record } from "../../src/figma/record.ts"
 import { fixtureTree, runCli, workspaceAt } from "../helpers/cli.mjs"
+import { snapshot } from "../helpers/snapshot.mjs"
 
 const STORIES_ROOT = "apps/storybook/src"
 const ENV = { PAGOPA_UI_STORIES_ROOT: STORIES_ROOT }
@@ -140,19 +141,6 @@ function workspaceOf(tree) {
 
 function read(tree, file) {
   return fs.readFileSync(path.join(tree.root, file), "utf8")
-}
-
-function snapshot(root) {
-  const entries = []
-  const walk = (directory) => {
-    for (const name of fs.readdirSync(directory).sort()) {
-      const absolute = path.join(directory, name)
-      if (fs.statSync(absolute).isDirectory()) walk(absolute)
-      else entries.push(`${path.relative(root, absolute)}\0${fs.readFileSync(absolute, "utf8")}`)
-    }
-  }
-  walk(root)
-  return entries
 }
 
 test("one run writes the registry, the surface, the titles and the map", async () => {
