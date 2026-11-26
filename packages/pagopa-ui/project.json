@@ -44,6 +44,7 @@
         "foundation:check",
         "tokens:public:check",
         "client:check",
+        "consumer-dx:check",
         "a11y:conformance:check",
         "pagopa-ui-cli:test",
         "pagopa-ui-tokens:test"
@@ -196,6 +197,11 @@
     "client:check": {
       "options": {
         "command": "node src/cli.ts check client-directives"
+      }
+    },
+    "consumer-dx:check": {
+      "options": {
+        "command": "node src/cli.ts check consumer-dx"
       }
     },
     "a11y:conformance:check": {
