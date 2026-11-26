@@ -21,7 +21,21 @@
       "exports": [
         "Separator"
       ],
-      "story": "components-separator--playground"
+      "story": "components-separator--playground",
+      "propsMap": {
+        "version": 1,
+        "props": {
+          "Padding": {
+            "prop": "padding",
+            "values": {
+              "0": 0,
+              "16": 16,
+              "24": 24,
+              "32": 32
+            }
+          }
+        }
+      }
     },
     "67:3964": {
       "figma": "Overlay",
@@ -1111,7 +1125,23 @@
       "exports": [
         "Tag"
       ],
-      "story": "components-content-tag--all-statuses"
+      "story": "components-content-tag--all-statuses",
+      "propsMap": {
+        "version": 1,
+        "props": {
+          "Status": {
+            "prop": "status",
+            "values": {
+              "Counter": "counter",
+              "Default": "default",
+              "Error": "error",
+              "Info": "info",
+              "Success": "success",
+              "Warning": "warning"
+            }
+          }
+        }
+      }
     },
     "108:1402": {
       "figma": "Button",
@@ -1121,7 +1151,26 @@
       "exports": [
         "Button"
       ],
-      "story": "components-button--figma-state-matrix"
+      "story": "components-button--figma-state-matrix",
+      "propsMap": {
+        "version": 1,
+        "props": {
+          "Variant": {
+            "prop": "variant",
+            "values": {
+              "Contained": "default",
+              "Contained contrast": "contrast",
+              "Contained error": "destructive",
+              "Outlined": "outline",
+              "Outlined contrast": "outline-contrast",
+              "Outlined error": "outline-destructive",
+              "Text": "ghost",
+              "Text contrast": "ghost-contrast",
+              "Text error": "ghost-destructive"
+            }
+          }
+        }
+      }
     },
     "109:2455": {
       "figma": "Spinner",
@@ -1131,7 +1180,19 @@
       "exports": [
         "Spinner"
       ],
-      "story": "components-feedback-spinner--spinner-brand-variants"
+      "story": "components-feedback-spinner--spinner-brand-variants",
+      "propsMap": {
+        "version": 1,
+        "props": {
+          "Brand": {
+            "prop": "variant",
+            "values": {
+              "Contrast": "contrast",
+              "Primary": "primary"
+            }
+          }
+        }
+      }
     },
     "123:4498": {
       "figma": "BlockButtons",
@@ -1274,7 +1335,31 @@
       "exports": [
         "Chip"
       ],
-      "story": "components-inputs-chip--chip-source-variant-matrix"
+      "story": "components-inputs-chip--chip-source-variant-matrix",
+      "propsMap": {
+        "version": 1,
+        "props": {
+          "Type": {
+            "prop": "variant",
+            "values": {
+              "Default": "default",
+              "Error": "error",
+              "Highlight": "highlight",
+              "Informative": "informative",
+              "Neutral": "neutral",
+              "Success": "success",
+              "Warning": "warning"
+            }
+          },
+          "Style": {
+            "prop": "appearance",
+            "values": {
+              "Solid": "solid",
+              "Outline": "outline"
+            }
+          }
+        }
+      }
     },
     "198:828": {
       "figma": "AuthenticationCodeInput",
@@ -1294,7 +1379,28 @@
       "exports": [
         "Alert"
       ],
-      "story": "components-alert--all-statuses"
+      "story": "components-alert--all-statuses",
+      "propsMap": {
+        "version": 1,
+        "props": {
+          "Severity": {
+            "prop": "variant",
+            "values": {
+              "Error": "destructive",
+              "Info": "info",
+              "Success": "success",
+              "Warning": "warning"
+            }
+          },
+          "Direction": {
+            "prop": "direction",
+            "values": {
+              "Horizontal": "horizontal",
+              "Vertical": "vertical"
+            }
+          }
+        }
+      }
     },
     "230:1317": {
       "figma": "Tooltip",
@@ -2045,7 +2151,36 @@
       "exports": [
         "Badge"
       ],
-      "story": "components-badge--fidelity"
+      "story": "components-badge--fidelity",
+      "propsMap": {
+        "version": 1,
+        "props": {
+          "Property": {
+            "prop": "display",
+            "values": {
+              "Numbered": "numbered",
+              "Plain": "plain",
+              "Sidenav icon": "sidenav-icon"
+            }
+          },
+          "Selected": {
+            "prop": "selected",
+            "values": {
+              "False": false,
+              "True": true
+            }
+          },
+          "Background": {
+            "prop": "background",
+            "values": {
+              "Grey 50": "muted",
+              "Primary": "primary",
+              "Transparent": "transparent",
+              "White": "white"
+            }
+          }
+        }
+      }
     },
     "382:7640": {
       "figma": "Loghi PSP",
