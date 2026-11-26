@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "note": "Ceiling of the published stylesheet (dist/styles.css): raw bytes, gzip level 9 and brotli. Growth fails; a drop wider than the slack is recorded with `pnpm ui-cli update css`; raising a ceiling is a reviewed edit of this file with its reason.",
+  "note": "Ceiling of the published stylesheet (dist/styles.css): raw bytes, gzip level 9 and brotli. Growth fails; a drop wider than the slack is recorded with `pnpm ui-cli update css`; raising a ceiling is a reviewed edit of this file with its reason. Raised for the doubled emission the utility prefix adds (spec 158, #161): every utility ships as an unprefixed and a `pui:`-prefixed class until the contract step (#164) removes one spelling. The artifact measured raw 135347 / gzip 21532 / brotli 17864 before the prefix; #164 brings it back to that size and lowers these ceilings with it.",
   "metrics": {
-    "raw": 200000,
-    "gzip": 30000,
-    "brotli": 20000
+    "raw": 244200,
+    "gzip": 36376,
+    "brotli": 23463
   }
 }

@@ -22,6 +22,21 @@
 @source "../../artwork/src";
 @source "../../tokens/src";
 
+/* The internal prefix, during the migration: a component may spell a utility
+   the way a host class cannot collide with (`pui:flex`) while every spelling
+   already in the tree keeps resolving. Tailwind's own `prefix()` cannot carry
+   this, because it is one global switch: it renames the generated custom
+   properties too (`--color-primary` would become `--pui-color-primary`, a
+   public token of this package) and it emits one spelling only. So the prefix
+   is a variant, and both spellings are emitted because the mirror below lists
+   them for every candidate the scan surface holds. The build writes the mirror
+   before Tailwind reads this file: packages/pagopa-ui/build/prefixed-candidates.ts
+   for the library and the same plugin for Storybook. docs/decisions/0012 removes
+   it: the contract step deletes this block and the mirror, and only then can the
+   stylesheet adopt the native prefix. */
+@custom-variant pui (&);
+@source "../.generated/prefixed-candidates.txt";
+
 /* Cascade layers, in place of the @scope this stylesheet used to carry: an
    engine without @scope support dropped every library rule, so a component
    rendered unstyled. Both layers are opened at the head of the artifact, before
