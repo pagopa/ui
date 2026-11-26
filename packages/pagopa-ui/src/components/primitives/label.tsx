@@ -1,7 +1,9 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 
-function Label({ className, ...props }: React.ComponentProps<"label">) {
+export type LabelProps = React.ComponentProps<"label">
+
+function Label({ className, ...props }: LabelProps) {
   return (
     // Generic wrapper: association is the caller's responsibility (htmlFor or
     // wrapping the control). Base UI has no Label primitive; see .migration/label.md.

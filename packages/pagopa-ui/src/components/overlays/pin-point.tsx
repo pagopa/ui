@@ -8,15 +8,7 @@ import { cn } from "@/lib/cn"
 const markerPath =
   "M44 27.3333C44 40.1699 28 52 28 52C28 52 12 40.1699 12 27.3333C12 18.4968 19.1634 11.3333 28 11.3333C36.8366 11.3333 44 18.4968 44 27.3333Z"
 
-function PinPoint({
-  label,
-  x = 50,
-  y = 50,
-  active,
-  variant = "default",
-  children,
-  onPressedChange,
-}: {
+export interface PinPointProps {
   /** Accessible name of the marker. */
   label: string
   /** Horizontal position on the map, as a percentage. @default 50 */
@@ -31,7 +23,17 @@ function PinPoint({
   children?: React.ReactNode
   /** Fired with the next pressed state when the marker is activated. */
   onPressedChange?: (pressed: boolean) => void
-}) {
+}
+
+function PinPoint({
+  label,
+  x = 50,
+  y = 50,
+  active,
+  variant = "default",
+  children,
+  onPressedChange,
+}: PinPointProps) {
   const isPlaceholder = variant === "placeholder"
   return (
     <button

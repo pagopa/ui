@@ -14,7 +14,7 @@ export type DeepPartial<T> = {
       : T[K]
 }
 
-type StepperStatus = "complete" | "current" | "upcoming" | undefined
+export type StepperStatus = "complete" | "current" | "upcoming" | undefined
 
 export interface Messages {
   // composites

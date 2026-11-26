@@ -4,14 +4,16 @@ import * as React from "react"
 
 import { useMessages } from "@/lib/ui-provider"
 
-function SkipToMainContent({
-  targetId = "main-content",
-  children: childrenProp,
-}: {
+export interface SkipToMainContentProps {
   targetId?: string
   /** Link text of the skip control. @default messages.skipToMainContent.children */
   children?: React.ReactNode
-}) {
+}
+
+function SkipToMainContent({
+  targetId = "main-content",
+  children: childrenProp,
+}: SkipToMainContentProps) {
   const t = useMessages("skipToMainContent")
   const children = childrenProp ?? t.children
 

@@ -24,44 +24,7 @@ function replaceInputFiles(input: HTMLInputElement, next: File[]) {
   }
 }
 
-function DragAndDrop({
-  id,
-  label: labelProp,
-  description,
-  error,
-  success,
-  required,
-  requiredLabel,
-  disabled,
-  accept,
-  multiple,
-  name,
-  className,
-  onFilesChange,
-  loading = false,
-  onCancel,
-  failed = false,
-  onRetry,
-  variant = "file",
-  preview,
-  helper,
-  loadingLabel: loadingLabelProp,
-  loadingText: loadingTextProp,
-  filesLabel: filesLabelProp,
-  failedText: failedTextProp,
-  disabledText: disabledTextProp,
-  draggingText: draggingTextProp,
-  idleText: idleTextProp,
-  selectionHint = (multiple) => (multiple ? "Puoi selezionare più file" : "Seleziona un file"),
-  uploadLabel: uploadLabelProp,
-  uploadLogoLabel: uploadLogoLabelProp,
-  cancelLabel: cancelLabelProp,
-  retryLabel: retryLabelProp,
-  fileMeta: fileMetaProp,
-  removeFileLabel: removeFileLabelProp,
-  singleFileError: singleFileErrorProp,
-  invalidFormatError: invalidFormatErrorProp,
-}: Omit<FieldStateProps, "label"> & {
+export interface DragAndDropProps extends Omit<FieldStateProps, "label"> {
   id?: string
   /** Visible field label. @default messages.dragAndDrop.label */
   label?: React.ReactNode
@@ -118,7 +81,46 @@ function DragAndDrop({
   singleFileError?: string
   /** Validation message for a rejected format, from the file name. @default messages.dragAndDrop.invalidFormatError */
   invalidFormatError?: (fileName: string) => string
-}) {
+}
+
+function DragAndDrop({
+  id,
+  label: labelProp,
+  description,
+  error,
+  success,
+  required,
+  requiredLabel,
+  disabled,
+  accept,
+  multiple,
+  name,
+  className,
+  onFilesChange,
+  loading = false,
+  onCancel,
+  failed = false,
+  onRetry,
+  variant = "file",
+  preview,
+  helper,
+  loadingLabel: loadingLabelProp,
+  loadingText: loadingTextProp,
+  filesLabel: filesLabelProp,
+  failedText: failedTextProp,
+  disabledText: disabledTextProp,
+  draggingText: draggingTextProp,
+  idleText: idleTextProp,
+  selectionHint = (multiple) => (multiple ? "Puoi selezionare più file" : "Seleziona un file"),
+  uploadLabel: uploadLabelProp,
+  uploadLogoLabel: uploadLogoLabelProp,
+  cancelLabel: cancelLabelProp,
+  retryLabel: retryLabelProp,
+  fileMeta: fileMetaProp,
+  removeFileLabel: removeFileLabelProp,
+  singleFileError: singleFileErrorProp,
+  invalidFormatError: invalidFormatErrorProp,
+}: DragAndDropProps) {
   const t = useMessages("dragAndDrop")
   const label = labelProp ?? t.label
   const loadingLabel = loadingLabelProp ?? t.loadingLabel

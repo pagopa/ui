@@ -7,7 +7,49 @@ import { cn } from "@/lib/cn"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
+import { type ChangeEventDetails, type ElementProps } from "./props"
 import { useFormReset, useInputRef } from "./form-control-utils"
+
+/** Props of the `RadioGroup`. */
+export type RadioGroupProps = ElementProps<"div"> & {
+  /** Whether every item ignores interaction. @default false */
+  disabled?: boolean
+  /** Whether the user may not change the selection. @default false */
+  readOnly?: boolean
+  /** Whether a selection is required before submitting the form. @default false */
+  required?: boolean
+  /** Names the value in the submitted form. */
+  name?: string
+  /** Id of the form that owns the inputs. */
+  form?: string
+  /** The selected item. Use with `onValueChange`. */
+  value?: string | null
+  /** The item selected at first render. Use without `value`. */
+  defaultValue?: string | null
+  /** Access to the group's hidden `<input>`. */
+  inputRef?: React.Ref<HTMLInputElement>
+  /** Called when the selection changes. */
+  onValueChange?: (value: string | null, details: ChangeEventDetails) => void
+}
+
+/** Props of one item of a `RadioGroup`. */
+export type RadioGroupItemProps = ElementProps<"span"> & {
+  /** The value this item contributes to the group. */
+  value: string
+  /** Whether the item ignores interaction. @default false */
+  disabled?: boolean
+  /** Whether the user may not change this item. @default false */
+  readOnly?: boolean
+  /** Whether selecting this item is required before submitting the form. @default false */
+  required?: boolean
+  /** Access to the item's hidden `<input>`. */
+  inputRef?: React.Ref<HTMLInputElement>
+  /**
+   * Whether replacing the element with `render` keeps native `<button>`
+   * behaviour. @default false
+   */
+  nativeButton?: boolean
+}
 
 function RadioGroup({
   className,
@@ -16,7 +58,7 @@ function RadioGroup({
   onValueChange,
   inputRef: externalInputRef,
   ...props
-}: RadioGroupPrimitive.Props) {
+}: RadioGroupProps) {
   const { inputRef, mergedInputRef } = useInputRef(externalInputRef)
   const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue ?? null)
   useFormReset(inputRef, () => {
@@ -38,11 +80,7 @@ function RadioGroup({
   )
 }
 
-function RadioGroupItem({
-  className,
-  inputRef: externalInputRef,
-  ...props
-}: RadioPrimitive.Root.Props) {
+function RadioGroupItem({ className, inputRef: externalInputRef, ...props }: RadioGroupItemProps) {
   const { inputRef, mergedInputRef } = useInputRef(externalInputRef)
   useFormReset(inputRef)
 

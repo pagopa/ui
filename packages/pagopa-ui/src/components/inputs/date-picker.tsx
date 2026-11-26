@@ -1,9 +1,9 @@
 "use client"
 
-import { useRef, useState, type ComponentProps } from "react"
+import { useRef, useState } from "react"
 import { cn } from "@/lib/cn"
 import { useLocale, useMessages } from "@/lib/ui-provider"
-import type { DateRange } from "@/components/primitives/calendar"
+import type { CalendarLocale, DateRange } from "@/components/primitives/calendar"
 
 import { Button } from "@/components/primitives/button"
 import { Calendar } from "@/components/primitives/calendar"
@@ -25,7 +25,7 @@ type DatePickerProps = {
   /** BCP 47 locale of the panel's own formatting (weekday names, footer, caption). @default the provider locale, "it-IT" at the root */
   locale?: string
   /** Day-grid locale of the shared Calendar (a react-day-picker `Locale`). @default the provider calendar locale, Italian at the root */
-  calendarLocale?: ComponentProps<typeof Calendar>["locale"]
+  calendarLocale?: CalendarLocale
   /**
    * Complete footer line of the panel, from the formatted date: the caller
    * owns the phrase. @default messages.datePicker.selectionText

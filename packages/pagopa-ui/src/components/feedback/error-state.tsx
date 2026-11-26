@@ -15,16 +15,7 @@ import { StatePanel, type StateProps } from "./state-panel"
  *
  * Figma: KOState (node 749:5695)
  */
-function ErrorState({
-  code,
-  codeLabel: codeLabelProp,
-  copyLabel: copyLabelProp,
-  copiedLabel: copiedLabelProp,
-  copyErrorLabel: copyErrorLabelProp,
-  onCopy,
-  className,
-  ...props
-}: Omit<StateProps, "extra"> & {
+export type ErrorStateProps = Omit<StateProps, "extra"> & {
   /** Error code of the state, shown in a copyable row. */
   code?: string
   /** Label of the code row; drives the copy button's accessible name. @default messages.errorState.codeLabel */
@@ -37,7 +28,18 @@ function ErrorState({
   copyErrorLabel?: string
   /** Called only after a successful clipboard write. */
   onCopy?: () => void
-}) {
+}
+
+function ErrorState({
+  code,
+  codeLabel: codeLabelProp,
+  copyLabel: copyLabelProp,
+  copiedLabel: copiedLabelProp,
+  copyErrorLabel: copyErrorLabelProp,
+  onCopy,
+  className,
+  ...props
+}: ErrorStateProps) {
   const t = useMessages("errorState")
   const codeLabel = codeLabelProp ?? t.codeLabel
   const copyLabel = copyLabelProp ?? t.copyLabel

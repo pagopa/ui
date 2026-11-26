@@ -29,7 +29,7 @@ export interface IdentityProviderPickerProps {
   className?: string
 }
 
-type IdentityProviderPickerRowProps = IdentityProviderPickerOption & {
+export interface IdentityProviderPickerRowProps extends IdentityProviderPickerOption {
   className?: string
 }
 
@@ -151,4 +151,4 @@ const IdentityProviderPicker = Object.assign(IdentityProviderPickerView, {
   Provider: IdentityProviderPickerRow,
 })
 
-export { IdentityProviderPicker }
+export { IdentityProviderPicker, IdentityProviderPickerRow, IdentityProviderPickerView }

@@ -9,36 +9,25 @@ import { Button } from "@/components/primitives/button"
 import { RadioGroup, RadioGroupItem } from "@/components/primitives/radio-group"
 import { Skeleton } from "@/components/primitives/skeleton"
 
-interface PaymentMetadataRow {
+export interface PaymentMetadataRow {
   label: string
   value: React.ReactNode
 }
 
-interface PaymentSuggestion {
+export interface PaymentSuggestion {
   label: string
   icon?: React.ReactNode
 }
 
-interface PaymentPrice {
+export interface PaymentPrice {
   amount: string
   detail?: string
 }
 
-function PaymentModule({
-  code,
-  metadata = [],
-  suggestion,
-  price,
-  onDownload,
-  downloadLabel: downloadLabelProp,
-  selected = false,
-  onSelect,
-  selectName,
-  actions,
-  loading = false,
-  className,
-  ...props
-}: Omit<React.ComponentProps<"div">, "onSelect"> & {
+export type PaymentModuleProps = Omit<
+  React.ComponentProps<"div">,
+  "defaultChecked" | "defaultValue" | "onSelect"
+> & {
   /** Payment code (IUV). */
   code: string
   /** Labelled rows; values accept ReactNode, e.g. chips. */
@@ -60,7 +49,23 @@ function PaymentModule({
   actions?: React.ReactNode
   /** Skeleton state: placeholders replace the content. */
   loading?: boolean
-}) {
+}
+
+function PaymentModule({
+  code,
+  metadata = [],
+  suggestion,
+  price,
+  onDownload,
+  downloadLabel: downloadLabelProp,
+  selected = false,
+  onSelect,
+  selectName,
+  actions,
+  loading = false,
+  className,
+  ...props
+}: PaymentModuleProps) {
   const t = useMessages("paymentModule")
   const downloadLabel = downloadLabelProp ?? t.downloadLabel
 

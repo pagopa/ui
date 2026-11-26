@@ -23,7 +23,7 @@ type TableListItemAction = { label?: string; ariaLabel?: string } & (
   | { href?: never; onPress: () => void }
 )
 
-type TableListItemProps = Omit<React.ComponentProps<"li">, "onClick"> & {
+export type TableListItemProps = Omit<React.ComponentProps<"li">, "onClick"> & {
   /** Labelled values composing the row; the first one is the flexible field. */
   fields: TableListItemField[]
   /**
@@ -32,6 +32,8 @@ type TableListItemProps = Omit<React.ComponentProps<"li">, "onClick"> & {
    * repeated row actions their own context ("Apri Titolo campagna").
    */
   action?: TableListItemAction
+  /** Text of an action row that carries no label. @default messages.tableListItem.actionFallbackLabel */
+  actionFallbackLabel?: string
 }
 
 function TableListItem({
@@ -40,10 +42,7 @@ function TableListItem({
   actionFallbackLabel: actionFallbackLabelProp,
   className,
   ...props
-}: TableListItemProps & {
-  /** Text of an action row that carries no label. @default messages.tableListItem.actionFallbackLabel */
-  actionFallbackLabel?: string
-}) {
+}: TableListItemProps) {
   const t = useMessages("tableListItem")
   const actionFallbackLabel = actionFallbackLabelProp ?? t.actionFallbackLabel
 
@@ -125,4 +124,5 @@ function TableListItem({
   )
 }
 
-export { TableListItem, type TableListItemAction, type TableListItemField }
+export { TableListItem }
+export type { TableListItemAction, TableListItemField }

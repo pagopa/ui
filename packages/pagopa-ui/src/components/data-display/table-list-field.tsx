@@ -2,11 +2,9 @@ import * as React from "react"
 
 import { TableCell } from "@/components/primitives/table"
 
-function TableListField({
-  children,
-  label,
-  ...props
-}: React.ComponentProps<typeof TableCell> & { label?: string }) {
+type TableListFieldProps = React.ComponentProps<"td"> & { label?: string }
+
+function TableListField({ children, label, ...props }: TableListFieldProps) {
   return (
     <TableCell {...props}>
       {label ? (
@@ -27,3 +25,4 @@ function TableListField({
 }
 
 export { TableListField }
+export type { TableListFieldProps }

@@ -47,29 +47,7 @@ export interface TableColumn<Row> {
 
 const defaultTruncatedWidth = "16rem"
 
-function Table<Row extends { id: React.Key }>({
-  caption,
-  captionHidden = false,
-  title,
-  titleAs = "h2",
-  description,
-  actions,
-  columns,
-  rows,
-  rowActions,
-  selectable = false,
-  selected,
-  defaultSelected,
-  onSelectionChange,
-  selectionLabel: selectionLabelProp,
-  selectionRowLabel,
-  notification,
-  notificationLabel: notificationLabelProp,
-  pagination,
-  actionsLabel: actionsLabelProp,
-  emptyLabel: emptyLabelProp,
-  emptyState: emptyStateProp,
-}: {
+export interface TableProps<Row extends { id: React.Key }> {
   caption: string
   captionHidden?: boolean
   title?: string
@@ -107,7 +85,31 @@ function Table<Row extends { id: React.Key }>({
     description?: string
     actions?: React.ReactNode
   }
-}) {
+}
+
+function Table<Row extends { id: React.Key }>({
+  caption,
+  captionHidden = false,
+  title,
+  titleAs = "h2",
+  description,
+  actions,
+  columns,
+  rows,
+  rowActions,
+  selectable = false,
+  selected,
+  defaultSelected,
+  onSelectionChange,
+  selectionLabel: selectionLabelProp,
+  selectionRowLabel,
+  notification,
+  notificationLabel: notificationLabelProp,
+  pagination,
+  actionsLabel: actionsLabelProp,
+  emptyLabel: emptyLabelProp,
+  emptyState: emptyStateProp,
+}: TableProps<Row>) {
   const t = useMessages("table")
   const selectionLabel = selectionLabelProp ?? t.selectionLabel
   const notificationLabel = notificationLabelProp ?? t.notificationLabel

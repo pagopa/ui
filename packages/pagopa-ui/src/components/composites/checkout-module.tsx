@@ -237,3 +237,4 @@ function CheckoutModule({
 }
 
 export { CheckoutModule }
+export type { CheckoutModuleProps, CheckoutSuggestion }

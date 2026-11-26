@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import type { DayPickerLocale } from "react-day-picker"
+import type { CalendarLocale } from "@/components/primitives/calendar"
 import { it } from "react-day-picker/locale"
 
 import { itMessages } from "./messages/it"
@@ -27,7 +27,7 @@ interface UIProviderProps {
    * Calendar locale of the tree. @default the Italian locale of the calendar
    * primitive
    */
-  calendarLocale?: DayPickerLocale
+  calendarLocale?: CalendarLocale
   children: React.ReactNode
 }
 
@@ -35,7 +35,7 @@ interface UIContextValue {
   linkComponent: React.ElementType<LinkComponentProps>
   locale: string
   messages: Messages
-  calendarLocale: DayPickerLocale
+  calendarLocale: CalendarLocale
 }
 
 const UIContext = React.createContext<UIContextValue>({
@@ -120,7 +120,7 @@ function useMessages<K extends keyof Messages>(key: K): Messages[K] {
 }
 
 /** The locale of the tree, from the nearest provider. @default "it-IT" */
-function useLocale(): { locale: string; calendarLocale: DayPickerLocale } {
+function useLocale(): { locale: string; calendarLocale: CalendarLocale } {
   const { locale, calendarLocale } = React.useContext(UIContext)
   return React.useMemo(() => ({ locale, calendarLocale }), [locale, calendarLocale])
 }

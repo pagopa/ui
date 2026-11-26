@@ -23,7 +23,7 @@ import {
   type SelectOption,
 } from "./select-parts"
 
-type MultiSelectFieldProps = FieldStateProps & {
+export interface MultiSelectFieldProps extends FieldStateProps {
   /** Id applied to the trigger, so an external label can target it; generated when omitted. */
   id?: string
   /** Options of the listbox; the trigger renders a removable chip per selection. */

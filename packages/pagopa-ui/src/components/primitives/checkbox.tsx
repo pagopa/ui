@@ -5,7 +5,43 @@ import { Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox"
 import { cn } from "@/lib/cn"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
+import { type ChangeEventDetails, type ElementProps } from "./props"
 import { useFormReset, useInputRef } from "./form-control-utils"
+
+/** Props of the `Checkbox`. */
+export type CheckboxProps = ElementProps<"span"> & {
+  /** Whether the box is checked. Use with `onCheckedChange`. */
+  checked?: boolean
+  /** Whether the box starts checked. Use without `checked`. @default false */
+  defaultChecked?: boolean
+  /** Whether the box ignores interaction. @default false */
+  disabled?: boolean
+  /** Whether the user may not change the value. @default false */
+  readOnly?: boolean
+  /** Whether a value is required before submitting the form. @default false */
+  required?: boolean
+  /** Renders the mixed state, for a group of children partially selected. */
+  indeterminate?: boolean
+  /** Names the value in the submitted form. */
+  name?: string
+  /** Id of the form that owns the input. */
+  form?: string
+  /** Value submitted when the box is checked. */
+  value?: string
+  /** Value submitted when the box is unchecked. */
+  uncheckedValue?: string
+  /** Access to the hidden `<input>`. */
+  inputRef?: React.Ref<HTMLInputElement>
+  /** Whether the box belongs to a parent box that owns the group state. @default false */
+  parent?: boolean
+  /**
+   * Whether replacing the element with `render` keeps native `<button>`
+   * behaviour. @default false
+   */
+  nativeButton?: boolean
+  /** Called when the box is checked or unchecked. */
+  onCheckedChange?: (checked: boolean, details: ChangeEventDetails) => void
+}
 
 function Checkbox({
   className,
@@ -14,7 +50,7 @@ function Checkbox({
   onCheckedChange,
   inputRef: externalInputRef,
   ...props
-}: CheckboxPrimitive.Root.Props) {
+}: CheckboxProps) {
   const { inputRef, mergedInputRef } = useInputRef(externalInputRef)
   const [uncontrolledChecked, setUncontrolledChecked] = React.useState(defaultChecked)
   useFormReset(inputRef, () => {

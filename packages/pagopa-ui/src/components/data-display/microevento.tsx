@@ -9,20 +9,16 @@ import { CorrectionTag } from "@/components/content"
  *
  * Figma: Microevento (node 9676:5633)
  */
-function MicroEvent({
-  title,
-  time,
-  invalid = true,
-  label,
-  className,
-}: {
+export interface MicroEventProps {
   title: React.ReactNode
   time?: string
   /** Source correction slot: warning "EVENTO NON VALIDO" or success "EVENTO RETTIFICATO". */
   invalid?: boolean
   label?: string
   className?: string
-}) {
+}
+
+function MicroEvent({ title, time, invalid = true, label, className }: MicroEventProps) {
   return (
     <div data-slot="microevento" className={cn("flex items-start py-2 pl-7", className)}>
       <div className="flex min-w-0 flex-col gap-1">

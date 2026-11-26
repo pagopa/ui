@@ -128,3 +128,4 @@ function PaymentProviderLogos(props: PaymentProviderLogosProps) {
 }
 
 export { PaymentProviderLogos }
+export type { PaymentProviderLogosProps, PspBrand }

@@ -11,15 +11,7 @@ const levelStyles = {
   3: "text-label-mini-sb leading-[1.2] uppercase text-muted-foreground",
 } as const
 
-function SectionHeader({
-  icon,
-  title,
-  status,
-  actions,
-  level = 1,
-  titleAs: Title = "h2",
-  className,
-}: {
+export interface SectionHeaderProps {
   /** Decorative icon (source "Decorative icon"). */
   icon?: React.ReactNode
   title: React.ReactNode
@@ -32,7 +24,17 @@ function SectionHeader({
   /** Heading element of the title. The page owns its single `h1`. */
   titleAs?: HeadingTag
   className?: string
-}) {
+}
+
+function SectionHeader({
+  icon,
+  title,
+  status,
+  actions,
+  level = 1,
+  titleAs: Title = "h2",
+  className,
+}: SectionHeaderProps) {
   return (
     <div
       data-slot="section-header"

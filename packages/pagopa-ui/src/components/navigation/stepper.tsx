@@ -92,6 +92,8 @@ function Connector({ complete, className }: { complete: boolean; className?: str
   )
 }
 
+export type StepperProps = { items: StepperItem[]; className?: string } & StepperLabels
+
 function Stepper({
   items,
   className,
@@ -100,7 +102,7 @@ function Stepper({
   statusLabel: statusLabelProp,
   indicatorLabel: indicatorLabelProp,
   stepLabel: stepLabelProp,
-}: { items: StepperItem[]; className?: string } & StepperLabels) {
+}: StepperProps) {
   const t = useMessages("stepper")
   const navigationLabel = navigationLabelProp ?? t.navigationLabel
   const completedLabel = completedLabelProp ?? t.completedLabel
@@ -192,3 +194,4 @@ function Stepper({
 }
 
 export { Stepper }
+export type { StepperLabels }
