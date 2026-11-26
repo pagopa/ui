@@ -2,7 +2,7 @@
 
 - Type: design
 - Issue: https://github.com/pagopa/ui/issues/45
-- Status: open — answered by docs/design-defaults.md §4, closing
+- Status: answered
 - Decision owner: @gunzip
 - Preview: not applicable — the request spans 34 component families and has no two-option composition; the issue lists every family
 
@@ -267,21 +267,19 @@ removing the `reflow: false` flag from the exempted story.
 
 ## Decision
 
-Answered by the ratified policy, 26 November 2026. The decision owner ratified
-the condition once instead of thirty-four times:
-[`docs/design-defaults.md`](../design-defaults.md) §4 — every component reflows
-at 320 px CSS width with no horizontal scrolling of the page, and with
-`line-height: 1.5`, `letter-spacing: 0.12em`, `word-spacing: 0.16em` and text at
-200% it neither clips, overlaps nor scrolls sideways at the same width. Only
-content that requires two dimensions — data tables, images, maps, video — keeps
-the technical exception of WCAG 1.4.10, stated next to the story.
+Answered on 26 November 2026 by the ratified policy,
+[design-defaults.md](../design-defaults.md) — commit
+[4c8e494](https://github.com/pagopa/ui/commit/4c8e494).
 
-So the answer per family is no longer a decision: where the family fails, the
-layout follows §4.3/§4.4 (wrap, `min-w-0`, a scroll container for the wide part,
-content-sized text boxes); where the wide part is one of the four exceptions, the
-exception is documented. The `reflow: false` flag is **not** a ratified
-exception: it is debt, and [#192](https://github.com/pagopa/ui/issues/192) tracks
-removing it family by family and deleting each entry from this record.
+Reflow at 320 px is fixed, not exempted: §4.3 ratifies the WCAG 1.4.10
+two-dimension rule and §4.4 the text-spacing and 200% conditions, and
+`apps/storybook/src/support/a11y-contract.ts` already encodes those values. A
+component whose `reflow: false` flag contradicts the policy is carrying debt,
+not an exemption.
 
-Open points: the flag removal is engineering work with no design question left
-(see #192); this request is answered.
+The debt is re-scoped, unchanged, to
+[#192](https://github.com/pagopa/ui/issues/192): remove the flag from each of
+the 75 stories listed above, group by group, and delete its entry here.
+
+Open points: the 75 flags in #192; no story keeps an exemption the policy
+overturns.

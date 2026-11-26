@@ -2,7 +2,7 @@
 
 - Type: design
 - Issue: https://github.com/pagopa/ui/issues/46
-- Status: open — answered in part by docs/design-defaults.md, remainder re-scoped to #193
+- Status: answered
 - Decision owner: @gunzip
 - Preview: not applicable — the question is a set of token values, not a visual choice; the issue carries the tables
 
@@ -105,11 +105,12 @@ should it be published or replaced?
 
 ## Decision
 
-Answered in part by the ratified policy, 26 November 2026; the remainder is
+Answered in part on 26 November 2026 by the ratified policy,
+[design-defaults.md](../design-defaults.md) — commit
+[4c8e494](https://github.com/pagopa/ui/commit/4c8e494). The remainder is
 re-scoped to [#193](https://github.com/pagopa/ui/issues/193).
 
-[`docs/design-defaults.md`](../design-defaults.md) decides the three questions
-the tokens already carried:
+The policy decides the three questions the tokens already carried:
 
 - **§3 — the recurring spacings are a published scale.** 1, 2, 3, 4, 6, 8, 10,
   12, 14, 16, 20, 24, 32, 40, 48, 56, 64, 80 and 132 px are the scale, with 12,
@@ -123,10 +124,12 @@ the tokens already carried:
 - **§4.2 — the two container values are ratified**: 640 px for Table,
   TableListItem and Pagination, 432 px for Timeline.
 
-What the policy does **not** decide is re-scoped, unchanged, to
-[#193](https://github.com/pagopa/ui/issues/193): the radii scale, the dimension
-scale (icons and control heights), the z-index scale, the 18 px regular weight
-the library does not carry, and the `Color/Icon/Disabled icon` key with no public
-asset.
+They stay derived read-only from the library: no Figma variables are written.
 
-Open points: the five items in #193; everything else asked here is answered.
+What the policy does **not** decide is re-scoped, unchanged, to
+[#193](https://github.com/pagopa/ui/issues/193): publishing the values as Figma
+variables, the radii scale, the dimension scale (icons and control heights), the
+z-index scale, the 18 px regular weight the library does not carry, and the
+`Color/Icon/Disabled icon` key with no public asset.
+
+Open points: the items in #193; everything else asked here is answered.
