@@ -19,3 +19,15 @@ Every rendered and announced string is consumer-owned: the list name defaults to
 `Cronologia` and is replaceable through `label`, the titles, descriptions,
 timestamps and touchpoint labels are content, and each accordion row announces its
 own `aria-expanded`.
+
+## Timeline drawer
+
+`TimelineDrawer` composes the drawer with this timeline: the panel carries the
+source pictogram, `title` (default `Cronologia`), `description`, the events and the
+optional `footer`, and reads `TimelineItem[]` from `items`.
+
+The panel keeps the drawer's lifecycle. `open` with `onOpenChange` makes it
+controlled, `defaultOpen` opens it initially when `open` is omitted, and
+`trigger` is optional so the panel can open from the caller's own state. `ref`,
+`className` and the standard `div` attributes land on the panel, merged with the
+panel's own classes.

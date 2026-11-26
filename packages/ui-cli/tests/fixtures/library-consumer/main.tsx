@@ -47,6 +47,8 @@ import {
   TabsList,
   TabsTrigger,
   TextareaField,
+  TimelineDrawer,
+  Tooltip,
   type DatePickerRange,
   UIProvider,
 } from "__PAGOPA_UI_PACKAGE__"
@@ -871,7 +873,14 @@ function ConsumerOverlays() {
   const [dialogOpen, setDialogOpen] = React.useState(false)
   const [drawerOpen, setDrawerOpen] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
+  const [popoverOpen, setPopoverOpen] = React.useState(false)
+  const [tooltipOpen, setTooltipOpen] = React.useState(false)
+  const [timelineOpen, setTimelineOpen] = React.useState(false)
   const [panel, setPanel] = React.useState<HTMLDivElement | null>(null)
+  const [popoverPanel, setPopoverPanel] = React.useState<HTMLDivElement | null>(null)
+  const [tooltipBubble, setTooltipBubble] = React.useState<HTMLDivElement | null>(null)
+  const [timelinePanel, setTimelinePanel] = React.useState<HTMLDivElement | null>(null)
+  const tooltipAnchor = React.useRef<HTMLButtonElement>(null)
 
   async function openDialog() {
     setLoading(true)
@@ -880,9 +889,14 @@ function ConsumerOverlays() {
     setDialogOpen(true)
   }
 
-  const contract = panel
-    ? `${panel.classList.contains("max-w-md") ? "classe" : "senza classe"}/${panel.dataset.panelContract ?? "senza attributo"}`
-    : "nessun pannello"
+  // Every panel reads the same way: the class the caller set and the standard
+  // attribute it forwarded, or the absence of a panel to read.
+  const panelContract = (element: HTMLDivElement | null) =>
+    element
+      ? `${element.classList.contains("max-w-md") ? "classe" : "senza classe"}/${element.dataset.panelContract ?? "senza attributo"}`
+      : "nessun pannello"
+
+  const contract = panelContract(panel)
 
   return (
     <section aria-label="Pannelli controllati" style={{ display: "grid", gap: 16 }}>
@@ -901,9 +915,37 @@ function ConsumerOverlays() {
       >
         Apri il pannello controllato
       </Button>
+      <Button
+        id="consumer-controlled-popover-open"
+        variant="outline"
+        onClick={() => setPopoverOpen(true)}
+      >
+        Apri il popover controllato
+      </Button>
+      <Button
+        ref={tooltipAnchor}
+        id="consumer-controlled-tooltip-open"
+        variant="outline"
+        onClick={() => setTooltipOpen(true)}
+      >
+        Mostra il suggerimento controllato
+      </Button>
+      <Button
+        id="consumer-controlled-timeline-open"
+        variant="outline"
+        onClick={() => setTimelineOpen(true)}
+      >
+        Apri la cronologia controllata
+      </Button>
       <output aria-label="Stato del dialogo">{dialogOpen ? "aperto" : "chiuso"}</output>
       <output aria-label="Stato del pannello">{drawerOpen ? "aperto" : "chiuso"}</output>
+      <output aria-label="Stato del popover">{popoverOpen ? "aperto" : "chiuso"}</output>
+      <output aria-label="Stato del suggerimento">{tooltipOpen ? "aperto" : "chiuso"}</output>
+      <output aria-label="Stato della cronologia">{timelineOpen ? "aperto" : "chiuso"}</output>
       <output aria-label="Contratto del pannello">{contract}</output>
+      <output aria-label="Contratto del popover">{panelContract(popoverPanel)}</output>
+      <output aria-label="Contratto del suggerimento">{panelContract(tooltipBubble)}</output>
+      <output aria-label="Contratto della cronologia">{panelContract(timelinePanel)}</output>
       <Dialog
         ref={setPanel}
         open={dialogOpen}
@@ -926,6 +968,38 @@ function ConsumerOverlays() {
       >
         <p>Corpo del pannello controllato.</p>
       </Drawer>
+      <Popover
+        ref={setPopoverPanel}
+        open={popoverOpen}
+        onOpenChange={setPopoverOpen}
+        label="Popover controllato"
+        className="max-w-md"
+        data-panel-contract="popover"
+      >
+        <p>Dettagli contestuali controllati.</p>
+      </Popover>
+      <Tooltip
+        ref={setTooltipBubble}
+        anchor={tooltipAnchor}
+        open={tooltipOpen}
+        onOpenChange={setTooltipOpen}
+        className="max-w-md"
+        data-panel-contract="tooltip"
+      >
+        Suggerimento controllato dal consumatore
+      </Tooltip>
+      <TimelineDrawer
+        ref={setTimelinePanel}
+        open={timelineOpen}
+        onOpenChange={setTimelineOpen}
+        title="Cronologia controllata"
+        items={[
+          { id: "created", title: "Creazione", dot: "outlined" },
+          { id: "reviewed", title: "Revisione", dot: "filled" },
+        ]}
+        className="max-w-md"
+        data-panel-contract="timeline-drawer"
+      />
     </section>
   )
 }
