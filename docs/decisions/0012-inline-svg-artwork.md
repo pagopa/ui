@@ -1,4 +1,4 @@
-# ADR-0011 — Icons are inline SVG components, and an unknown name renders nothing
+# ADR-0012 — Icons are inline SVG components, and an unknown name renders nothing
 
 - **Status:** Accepted — 2026-12-02.
 - **Date:** 2026-12-02
