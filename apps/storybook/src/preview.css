@@ -14,6 +14,21 @@
 @import "tailwindcss/preflight.css" layer(base);
 @import "../../../packages/pagopa-ui/src/index.css";
 
+/* The demo surface's forced-colors perimeter, the twin of the one the package
+   stylesheet paints inside a component: forced colours erase every authored
+   colour, so the outline is the one cue a focus can paint. It is unlayered on
+   purpose. The package rule can sit in `pagopa-ui.base` because no component
+   pairs it with an `outline-none`; a story that writes plain markup does, and
+   an authored utility outranks any layer above it, so the demo surface's
+   guarantee has to outrank the utilities instead. */
+@media (forced-colors: active) {
+  [data-pagopa-ui-root]:focus-visible,
+  [data-pagopa-ui-root] :focus-visible {
+    outline: var(--figma-spacing-2) solid CanvasText;
+    outline-offset: var(--figma-spacing-2);
+  }
+}
+
 /* Demo geometry: the artboard heights, the frame widths and the grid columns
    only the templates and the artboards read. A consumer's styles.css declares
    only what a shipped component renders, so these values live here; the demos
