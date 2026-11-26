@@ -58,6 +58,8 @@ function catalogueOptions(
     prBody?: string
     delta?: string
     evidenceBase?: string
+    tokens?: boolean
+    tokenDrift?: string
   },
 ): CatalogueOptions {
   const rest = Boolean(args.rest)
@@ -72,6 +74,8 @@ function catalogueOptions(
     prBody: args.prBody,
     delta: args.delta,
     evidenceBase: args.evidenceBase,
+    tokens: args.tokens,
+    tokenDrift: args.tokenDrift,
     ...(rest ? { token: figmaToken(ctx.env) } : {}),
   }
 }
@@ -351,6 +355,12 @@ export function artworkUpdateCommands(ctx: CliContext): SubCommandsDef {
         prBody: { ...inputArg, description: "Write the drift pull request body" },
         delta: { ...inputArg, description: "Write the machine-readable delta" },
         evidenceBase: { type: "string", valueHint: "url", description: "Evidence link base URL" },
+        tokens: {
+          type: "boolean",
+          default: false,
+          description: "Compare the live variables with the committed token manifest",
+        },
+        tokenDrift: { ...inputArg, description: "Write the token drift record" },
       },
       run: action(ctx, async (args) => {
         requireToken(ctx, args["require-token"])

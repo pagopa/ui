@@ -25,12 +25,17 @@ function selectedEngines() {
 // Consumer specs for the packed artifact: src/checks/library.ts builds and serves
 // the isolated application and passes its URL through CONSUMER_URL, so the
 // config only declares the engine projects and the runner policy. One retry
-// absorbs load-related flakiness of the long native-flow sequence.
+// absorbs load-related flakiness of the long native-flow sequences. The specs
+// are split by domain and independent of each other, so they run in parallel and
+// a failure names the domain that broke instead of the whole artifact.
 export default defineConfig({
   testDir: "tests/e2e",
-  testMatch: "library.spec.mjs",
-  fullyParallel: false,
-  workers: 1,
+  testMatch: "library/*.spec.mjs",
+  fullyParallel: true,
+  // Each spec boots the packed artifact on its own page, so the engine spends
+  // its parallelism on the domains rather than on waiting: CI holds it to two
+  // workers per engine, a local run keeps the runner default.
+  workers: process.env.CI ? 2 : undefined,
   retries: 1,
   // The native flow runs for two to three minutes on a cold engine, so the
   // budget sits above the slowest browser: a slow runner must fail an

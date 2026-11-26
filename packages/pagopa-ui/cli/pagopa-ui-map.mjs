@@ -61,11 +61,28 @@ function nameSummary(node) {
   return exported ?? unexported ?? "—"
 }
 
+// The Figma variant properties translated to the React props they become, one
+// line each and aligned under the other rows: the consumer writes a component
+// from this, so an option the prop spells differently is translated and the one
+// it does not is named as the value it passes through.
+function propsLines(node) {
+  const props = node.propsMap?.props
+  if (!props) return []
+  return Object.entries(props).map(([name, entry], index) => {
+    const values = Object.entries(entry.values ?? {})
+    const translated = values.length
+      ? `: ${values.map(([option, value]) => `${option}=${value}`).join(", ")}`
+      : ""
+    return `${index === 0 ? "  props:   " : "           "}${name} → ${entry.prop}${translated}`
+  })
+}
+
 export function formatNode(nodeId, node) {
   const where = [node.type, node.page].filter(Boolean).join(", ")
   const lines = [
     `${nodeId}  ${node.figma ?? "(unnamed in the file)"}${where ? `  (${where})` : ""}`,
     `  exports: ${nodeNames(node)}`,
+    ...propsLines(node),
     `  status:  ${node.status}${node.reason ? ` — ${node.reason}` : ""}`,
   ]
   const unexported = unexportedNames(node)
