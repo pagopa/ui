@@ -4,5 +4,18 @@
    published artifact narrows that surface in packages/pagopa-ui/src/library.css. */
 @import "../../../packages/pagopa-ui/src/index.css";
 
+/* Demo geometry: the artboard heights, the frame widths and the grid columns
+   only the templates and the artboards read. A consumer's styles.css declares
+   only what a shipped component renders, so these values live here; the demos
+   still resolve them under the same UIProvider root. */
+.pagopa-ui-root {
+  --artboard-height-tall: 800px; /* Feedback Page, Informative Drawer (right) */
+  --login-width: 520px; /* LogIn frame, 32.5rem */
+  --drawer-width: 416px; /* Informative Drawer frame, 26rem */
+  --grid-aside: 20rem; /* demo grid aside column */
+  --grid-fields: 10rem; /* demo grid field column */
+  --grid-actions: 3rem; /* demo grid action column */
+}
+
 @source "../src";
 @source "../.storybook";

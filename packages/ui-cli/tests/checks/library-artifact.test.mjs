@@ -1,7 +1,7 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
 
-import { distributionProblems } from "../../src/checks/library-artifact.ts"
+import { demoGeometryProblems, distributionProblems } from "../../src/checks/library-artifact.ts"
 
 const MIT = `MIT License
 
@@ -54,4 +54,30 @@ test("a missing or non-MIT LICENSE is a problem in both locations", () => {
     "missing LICENSE at the repository root",
     "the LICENSE at the package is not the MIT text",
   ])
+})
+
+const DEMO_PREVIEW = `.pagopa-ui-root {
+  --artboard-height-tall: 800px;
+  --login-width: 520px;
+  --grid-aside: 20rem;
+}`
+
+test("a demo custom property declared by the preview sheet cannot reach the published CSS", () => {
+  const published = `.pagopa-ui-root {
+  --dialog-width: 600px;
+  --artboard-height-tall: 800px;
+}`
+  assert.deepEqual(demoGeometryProblems(published, DEMO_PREVIEW), ["--artboard-height-tall"])
+})
+
+test("component geometry the preview sheet never declares is not demo", () => {
+  const published = `.pagopa-ui-root {
+  --dialog-width: 600px;
+  --camera-size: 376px;
+}`
+  assert.deepEqual(demoGeometryProblems(published, DEMO_PREVIEW), [])
+})
+
+test("a preview sheet with no geometry of its own leaves the published CSS alone", () => {
+  assert.deepEqual(demoGeometryProblems(".pagopa-ui-root { --dialog-width: 600px; }", ""), [])
 })
