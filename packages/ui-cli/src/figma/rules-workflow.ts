@@ -168,16 +168,23 @@ export function formatRulesPlan(report: RulesPlanReport): string[] {
   return lines
 }
 
-export function formatRulesCheck(report: CheckReport, hasSnapshot: boolean): string[] {
-  if (report.errors.length)
-    return [
-      `rules:check: ${report.errors.length} problem(s)`,
-      ...report.errors.map((error) => `  ${error}`),
-    ]
+export function formatRulesCheck(
+  report: CheckReport,
+  hasSnapshot: boolean,
+): { out: string[]; err: string[] } {
   const total = Object.values(report.counts).reduce((sum, value) => sum + value, 0)
-  return [
-    `rules:check: ok (${total} cards, ${report.counts.pending} pending${hasSnapshot ? ", snapshot compared" : ", no snapshot"})`,
-  ]
+  const err = report.warnings.map((warning) => `  ${warning}`)
+  if (report.errors.length) {
+    err.unshift(`rules:check: ${report.errors.length} problem(s)`)
+    err.push(...report.errors.map((error) => `  ${error}`))
+    return { out: [], err }
+  }
+  return {
+    out: [
+      `rules:check: ok (${total} cards · ${report.counts.pending} pending · ${report.counts.new} new · ${report.counts.stale} stale · ${report.counts.removed} removed · ${hasSnapshot ? "snapshot compared" : "no snapshot"})`,
+    ],
+    err,
+  }
 }
 
 import {

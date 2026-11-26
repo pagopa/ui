@@ -23,7 +23,7 @@
    [catalogue/statuses.md](catalogue/statuses.md). A note states the node's
    residues, never the change's history.
 5. Run the gates in [definition-of-done.md](definition-of-done.md). A failing gate
-   is a fix, not a baseline bump: every ratchet only descends.
+   is a fix, not a baseline bump.
 
 ## What the checks own
 

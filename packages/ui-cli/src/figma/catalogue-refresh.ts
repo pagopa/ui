@@ -2,12 +2,9 @@ import fs from "node:fs"
 
 import type { Workspace } from "../adapters/workspace.ts"
 import {
-  loweredNoteLengthBaseline,
-  NOTE_LENGTH_BASELINE_PATH,
+  NOTE_LENGTH_LIMIT,
   type Inventory,
   type InventoryNode,
-  NOTE_LENGTH_LIMIT,
-  type NoteLengthBaseline,
   type PageSurface,
   type PageSurfacePage,
   type Registry,
@@ -18,11 +15,10 @@ import { censusDecisionFor, keepsStatusOnDrift } from "./surface-decision.ts"
 import { deltaChangedNodes } from "./work-set.ts"
 import { loadPageSurface, PAGE_SURFACE_PATH } from "./surface.ts"
 import { COMMITTED_FILES } from "../records/committed.ts"
+import { STORY_TITLES_PATH, storyTitles } from "./stories.ts"
 
 const EVIDENCE_EXCEPTIONS_PATH = "src/catalog/figma/evidence-exceptions.json"
 const VALID_STATUSES = new Set(["implemented", "mocked", "excluded", "pending"])
-
-type Ratchet = { from: number; to: number }
 
 export interface CatalogueRefreshOptions {
   inventory: Inventory
@@ -32,7 +28,6 @@ export interface CatalogueRefreshOptions {
   liveVersion?: string
   liveLastModified?: string
   evidenceExceptions: Record<string, string>
-  noteBaseline: NoteLengthBaseline | null
 }
 
 export interface CatalogueRefreshReport {
@@ -41,7 +36,6 @@ export interface CatalogueRefreshReport {
   evidenceExceptions: Record<string, string>
   pendingWrites: Map<string, unknown>
   reconciledSurface: PageSurface | null
-  ratchet: Ratchet | null
   /** What the refresh left alone, so the run reports it instead of dropping it. */
   notices: string[]
 }
@@ -269,21 +263,16 @@ export function prepareCatalogueRefresh(
   )
   if (reconciledSurface) pendingWrites.set(PAGE_SURFACE_PATH, reconciledSurface)
   pendingWrites.set(EVIDENCE_EXCEPTIONS_PATH, { storyEvidence: nextEvidenceExceptions })
-  let ratchet: Ratchet | null = null
-  if (options.noteBaseline) {
-    const lowered = loweredNoteLengthBaseline(registry, options.noteBaseline)
-    if (lowered) {
-      ratchet = { from: options.noteBaseline.overLimit, to: lowered.overLimit }
-      pendingWrites.set(NOTE_LENGTH_BASELINE_PATH, lowered)
-    }
-  }
+  // The Storybook titles are derived from the stories the registry links, so the
+  // write that moves the registry regenerates them: no one refreshes the map by
+  // hand and a title can never fall behind the story it names.
+  pendingWrites.set(STORY_TITLES_PATH, storyTitles(workspace, registry))
   return {
     inventory,
     registry,
     evidenceExceptions: nextEvidenceExceptions,
     pendingWrites,
     reconciledSurface,
-    ratchet,
     notices,
   }
 }

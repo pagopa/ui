@@ -59,10 +59,11 @@ block or does not open with it. For a `stale` card, `figma rules show <cardId>`
 prints the current text: re-mark it with the same English when the meaning holds,
 and update the guide bullet when it does not.
 
-`pnpm nx run pagopa-ui-cli:check:rules` is the gate: schema, mandatory fields,
-targets, guide blocks, duplicates and — with a local snapshot — `new`, `stale` and
-`removed` cards, rejecting the pending backlog by default. `--no-strict` inspects
-that backlog during migration; it is not the closing gate. A scoped refresh
+`pnpm nx run pagopa-ui-cli:check:rules` reports: schema, mandatory fields,
+targets, guide blocks and duplicates fail it, while the card drift — with a local
+snapshot, `new`, `stale` and `removed` cards, and the pending backlog — is printed
+as a warning. `--strict` turns that drift into the failure, for the caller that
+wants the ledger closed rather than reported. A scoped refresh
 (`--page` or `--node`) on a checkout without a full snapshot marks the snapshot
 partial and scopes `removed` checks and `figma rules sync` to the refreshed pages.
 

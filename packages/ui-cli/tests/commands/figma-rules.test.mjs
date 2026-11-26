@@ -114,14 +114,16 @@ test("comments and rule views keep their JSON contracts", async () =>
     assert.deepEqual(JSON.parse(plan.stdout).new, [])
   }))
 
-test("rules strict gate can be relaxed without suppressing its counts", async () =>
+// The card drift is a report: the default run says what is behind and exits 0,
+// `--strict` is the caller that wants it to fail, and neither loses the counts.
+test("rules drift is reported by default and fails under --strict", async () =>
   usingFixture(async (root) => {
-    const strict = await runCli(["check", "rules", "--json"], { root })
-    const relaxed = await runCli(["check", "rules", "--no-strict", "--json"], { root })
-    assert.equal(strict.status, 1, strict.stderr)
-    const reported = JSON.parse(strict.stdout).errors.join("\n")
+    const relaxed = await runCli(["check", "rules", "--json"], { root })
+    const strict = await runCli(["check", "rules", "--strict", "--json"], { root })
+    assert.equal(relaxed.status, 0, relaxed.stderr)
+    const reported = JSON.parse(relaxed.stdout).warnings.join("\n")
     assert.match(reported, /pending rule on Spacing/)
     assert.match(reported, /pnpm nx run pagopa-ui-cli:check:rules/)
-    assert.equal(relaxed.status, 0, relaxed.stderr)
-    assert.equal(JSON.parse(relaxed.stdout).counts.pending, 1)
+    assert.equal(strict.status, 1, strict.stderr)
+    assert.equal(JSON.parse(strict.stdout).counts.pending, 1)
   }))

@@ -124,8 +124,8 @@ function fixture(run, overrides = {}) {
                 : ["check", "catalogue"]
         return invoke(command, forwarded)
       },
-      // The command the drift pull request runs: `update inventory / check catalogue` plus the
-      // note-length ratchet, so a fixture sees the same gate as CI.
+      // The command the drift pull request runs: `update inventory / check catalogue`,
+      // so a fixture sees the same reads as CI.
       checkCatalogue: (...args) =>
         spawnSync(process.execPath, [script, "check", "catalogue", ...args], {
           cwd: root,
@@ -270,6 +270,9 @@ test("nested stories provide evidence only when they render the mapped implement
   )
 })
 
+// The map is derived output: the refresh regenerates it with the store, so the
+// drift pull request carries it and no one refreshes it by hand. A title that
+// moved behind a hand edit is a warning, not a blocked branch.
 test("the story titles map follows the stories the registry links", () => {
   fixture(
     ({ root, check, write }) => {
@@ -298,8 +301,8 @@ test("the story titles map follows the stories the registry links", () => {
         'import { Control } from "@/components/primitives/control"\nexport default { title: "Renamed" }\nexport const Example = { render: () => <Control /> }',
       )
       const stale = check()
-      assert.equal(stale.status, 1)
-      assert.match(stale.stderr, /stale title for src\/stories\/Fixture\.stories\.tsx/)
+      assert.equal(stale.status, 0, stale.stderr)
+      assert.match(stale.stderr, /warn: .*stale title for src\/stories\/Fixture\.stories\.tsx/)
     },
     {
       "src/catalog/figma/registry.json": JSON.stringify({
@@ -543,23 +546,15 @@ test("a public namesake cannot reuse another component's Figma mapping", () => {
   )
 })
 
-test("a queued node lowers the note-length ratchet in the same write", () => {
-  // The stub that replaces a reviewed note is shorter than it, so the count of
-  // long notes drops with the queue. Without the baseline move, `check:catalogue`
-  // fails on the branch the job itself generated.
+// The note ceiling is a writer guard, not a baseline: a note already past it is
+// counted on the report and the branch stays committable.
+test("a note past the limit is reported, not gated", () => {
   const reviewedNote = `Reviewed 2026-10-20: ${"the source insets 28px and the card keeps a 1px stroke. ".repeat(20)}`
   fixture(
-    ({ check, checkCatalogue, read }) => {
-      const refresh = check("--triage", "--input", "live.json")
-      assert.equal(refresh.status, 0, refresh.stderr)
-      const entry = JSON.parse(read("src/catalog/figma/registry.json")).entries["1:1"]
-      assert.equal(entry.status, "pending")
-      assert.match(entry.note, /review new\/changed node or dependency/)
-      const baseline = JSON.parse(read("src/catalog/figma/note-length-baseline.json"))
-      assert.equal(baseline.maxLength, 600)
-      assert.equal(baseline.overLimit, 0)
-      const hermetic = checkCatalogue()
-      assert.equal(hermetic.status, 0, hermetic.stderr)
+    ({ checkCatalogue }) => {
+      const result = checkCatalogue()
+      assert.equal(result.status, 0, result.stderr)
+      assert.match(result.stderr, /1 of 1 registry notes exceed 600 characters/)
     },
     {
       "src/catalog/figma/registry.json": JSON.stringify({
@@ -577,10 +572,37 @@ test("a queued node lowers the note-length ratchet in the same write", () => {
           },
         },
       }),
-      "src/catalog/figma/note-length-baseline.json": JSON.stringify({
-        maxLength: 600,
-        overLimit: 1,
-        note: "fixture",
+      "src/components/primitives/control.tsx":
+        "export function Control() { return <button>Control</button> }",
+      "src/stories/Fixture.stories.tsx":
+        'import { Control } from "@/components/primitives/control"\nimport { figmaEmbedUrl } from "@/catalog/figma/file"\nexport default { title: "Fixture", component: Control, parameters: { design: { type: "figma", url: figmaEmbedUrl("1:1") } } }\nexport const Example = {}',
+    },
+  )
+})
+
+test("a drift refresh regenerates the story titles map", () => {
+  fixture(
+    ({ check, read }) => {
+      const refresh = check("--triage", "--input", "live.json")
+      assert.equal(refresh.status, 0, refresh.stderr)
+      assert.deepEqual(JSON.parse(read("src/catalog/figma/story-titles.json")), {
+        "src/stories/Fixture.stories.tsx": "Fixture",
+      })
+    },
+    {
+      "src/catalog/figma/registry.json": JSON.stringify({
+        bulkRules: [],
+        entries: {
+          "1:1": {
+            status: "implemented",
+            target: {
+              module: "src/components/primitives/control.tsx",
+              export: "Control",
+              story: "src/stories/Fixture.stories.tsx",
+              storyExports: ["Example"],
+            },
+          },
+        },
       }),
       "src/components/primitives/control.tsx":
         "export function Control() { return <button>Control</button> }",

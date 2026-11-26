@@ -152,11 +152,12 @@ Use `pnpm nx show projects` to list projects and
   CSS and TypeScript (`check:tokens`, hung under `test`).
 - `pnpm nx run pagopa-ui-cli:test` — the `node --test`
   suites of the tooling and of its fixtures.
-- `pnpm nx run pagopa-ui:check:catalogue` — hermetic catalogue check;
-  `foundation:check` — the component class contract. The artwork and the tokens
-  validate themselves: `pagopa-ui-artwork:test` and `pagopa-ui-tokens:test`.
-  `pagopa-ui:update:stories` refreshes the committed Storybook titles the
-  inventory story links read; `check:catalogue` fails when they are stale.
+- `pnpm nx run pagopa-ui:check:catalogue` — hermetic catalogue check, which
+  warns when the committed Storybook titles the inventory story links read are
+  behind: the drift refresh regenerates them and `pagopa-ui:update:stories` does
+  it on demand; `foundation:check` — the component class contract. The artwork
+  and the tokens validate themselves: `pagopa-ui-artwork:test` and
+  `pagopa-ui-tokens:test`.
 - `pnpm nx run pagopa-ui:layers:check` — the import layers of the
   [`pagopa-ui-standards`](./.agents/skills/pagopa-ui-standards/references/definition-of-done.md)
   definition of done; `pnpm nx run pagopa-ui:docs` — document links and the
@@ -524,8 +525,9 @@ What the graph holds:
   `workspace:check:format`; `pagopa-ui` `typecheck`, `format:check`,
   `lint:check`, `docs`, `check:catalogue`, `foundation:check`, `layers:check`,
   `build`, `test`; `pagopa-ui-artwork`, `pagopa-ui-tokens` and `pagopa-ui-cli`
-  `typecheck`, `format:check`, `lint:check`, `test`; and `pagopa-ui-cli`
-  `check:rules`.
+  `typecheck`, `format:check`, `lint:check`, `test`. The `.Regole` card report
+  (`pagopa-ui-cli:check:rules`) is not a gate: it prints the drift and exits 0,
+  and `--strict` is the caller that wants it to fail.
 
 `lint:check` and `format:check` are the gate: `lint` and `fmt` write, the
 `:check` variants report, which is what the `ci` configuration CI uses resolves
