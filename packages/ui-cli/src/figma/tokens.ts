@@ -244,7 +244,7 @@ export function updateTokens(workspace: Workspace, input: string): string {
   return [result.message, ...result.details.map((line) => `  ${line}`)].join("\n")
 }
 
-function messageOf(error: unknown): string {
+export function messageOf(error: unknown): string {
   return error instanceof Error ? error.message : String(error)
 }
 
@@ -1308,4 +1308,134 @@ function styleReferences(paths: TokenPaths): string[] {
     throw new Error(`${paths.styles}: missing the generated tokens import`)
   }
   return [...new Set([...source.matchAll(/var\((--figma-[a-z0-9-]+)/g)].map((match) => match[1]))]
+}
+
+// ---------------------------------------------------------------- drift --
+
+export type TokenDriftEntry = { id: string; name: string; type: string; value: unknown }
+export type TokenDriftChange = { id: string; name: string; from: unknown; to: unknown }
+export type TokenDriftRename = { id: string; from: string; to: string }
+
+export type TokenDrift = {
+  added: TokenDriftEntry[]
+  changed: TokenDriftChange[]
+  renamed: TokenDriftRename[]
+  removed: { id: string; name: string }[]
+  /** Names outside the canonical namespaces: a live variable nobody curated. */
+  unmapped: string[]
+  /** Values the manifest cannot express, with the reason the curation gave. */
+  unreadable: string[]
+}
+
+/** The committed manifest, or nothing when the package has not pinned one yet. */
+export function readTokenManifest(workspace: Workspace): Manifest | null {
+  const file = tokenPaths(workspace).manifest
+  if (!fs.existsSync(file)) return null
+  return parseSchema(TokenManifestSchema, readJson(file), file)
+}
+
+const sameTokenValue = (a: unknown, b: unknown): boolean =>
+  JSON.stringify(a ?? null) === JSON.stringify(b ?? null)
+
+/**
+ * The variables a live read carries, compared with the committed manifest
+ * through the same curation `update tokens` runs: the exclusion patterns and
+ * the canonical namespaces decide what is a token, the id — not the name —
+ * decides identity, and a rename keeps the id and the css name. An entry lands
+ * in one vector: a renamed variable is not also reported as changed, because
+ * the next run compares its value under the new name.
+ */
+export function compareTokenDrift(manifest: Manifest | null, snapshot: TokenSnapshot): TokenDrift {
+  const committed = manifest?.variables ?? {}
+  const byId = new Map<string, PriorToken>()
+  const byName = new Map<string, PriorToken>()
+  for (const [id, entry] of Object.entries(committed)) {
+    byId.set(id, entry)
+    byName.set(entry.name, entry)
+  }
+  const state = emptyCuration()
+  const unreadable: string[] = []
+  for (const [name, raw] of Object.entries(snapshot.variables ?? {})) {
+    try {
+      curateVariable(name, raw, snapshot.ids ?? {}, byId, byName, state)
+    } catch (error) {
+      unreadable.push(`${name}: ${messageOf(error)}`)
+    }
+  }
+  const live = state.variables
+  const liveNames = new Set(Object.values(live).map((entry) => entry.name))
+  const added: TokenDriftEntry[] = []
+  const changed: TokenDriftChange[] = []
+  const renamed: TokenDriftRename[] = []
+  for (const [id, entry] of Object.entries(live)) {
+    // A live read without a published key falls back to `local:<name>`; the
+    // committed name is what says the two are the same variable.
+    const prior = committed[id] ?? byName.get(entry.name)
+    if (!prior) {
+      added.push({ id, name: entry.name, type: entry.type, value: entry.value })
+      continue
+    }
+    if (prior.name !== entry.name) {
+      renamed.push({ id: prior.id ?? id, from: prior.name, to: entry.name })
+      continue
+    }
+    if (prior.type !== entry.type || !sameTokenValue(prior.value, entry.value))
+      changed.push({ id: prior.id ?? id, name: entry.name, from: prior.value, to: entry.value })
+  }
+  const liveIds = new Set(Object.keys(live))
+  const removed = Object.entries(committed)
+    .filter(([id, entry]) => !liveIds.has(id) && !liveNames.has(entry.name))
+    .map(([id, entry]) => ({ id, name: entry.name }))
+  const sortBy = <T>(entries: T[], label: (entry: T) => string): T[] =>
+    [...entries].sort((a, b) => label(a).localeCompare(label(b)))
+  return {
+    added: sortBy(added, (entry) => entry.name),
+    changed: sortBy(changed, (entry) => entry.name),
+    renamed: sortBy(renamed, (entry) => entry.from),
+    removed: sortBy(removed, (entry) => entry.name),
+    unmapped: [...state.unmapped].sort(),
+    unreadable: [...unreadable].sort(),
+  }
+}
+
+export function tokenDriftCount(drift: TokenDrift): number {
+  return (
+    drift.added.length +
+    drift.changed.length +
+    drift.renamed.length +
+    drift.removed.length +
+    drift.unmapped.length +
+    drift.unreadable.length
+  )
+}
+
+const describeValue = (value: unknown): string =>
+  typeof value === "string" ? value : JSON.stringify(value ?? null)
+
+/** The run's report: one count line, then one line per variable that moved. */
+export function formatTokenDrift(drift: TokenDrift): string[] {
+  if (!tokenDriftCount(drift))
+    return ["token drift: none — the variables match the committed manifest"]
+  const counts = [
+    ["added", drift.added.length],
+    ["changed", drift.changed.length],
+    ["renamed", drift.renamed.length],
+    ["removed", drift.removed.length],
+  ]
+    .filter(([, count]) => count)
+    .map(([label, count]) => `${count} ${label}`)
+    .join(", ")
+  const lines = [`token drift: ${counts}`]
+  for (const entry of drift.added)
+    lines.push(`  added ${entry.name} (${entry.id}) = ${describeValue(entry.value)}`)
+  for (const change of drift.changed)
+    lines.push(
+      `  changed ${change.name}: ${describeValue(change.from)} -> ${describeValue(change.to)}`,
+    )
+  for (const rename of drift.renamed)
+    lines.push(`  renamed ${rename.from} -> ${rename.to} (${rename.id})`)
+  for (const entry of drift.removed) lines.push(`  removed ${entry.name} (${entry.id})`)
+  if (drift.unmapped.length) lines.push(`  unmapped: ${drift.unmapped.join(", ")}`)
+  if (drift.unreadable.length) lines.push(`  unreadable: ${drift.unreadable.join(", ")}`)
+  return lines
 }

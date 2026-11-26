@@ -386,6 +386,18 @@ function prepareRscConsumer(context: ConsumerContext): string {
   return rsc
 }
 
+const TSC_BINS = ["typescript/bin/tsc", "typescript/bin/tsc6"]
+
+/** The compiler entry point the installed TypeScript ships; the name moved between releases. */
+function resolveTsc(rscRequire: NodeJS.Require): string {
+  for (const candidate of TSC_BINS) {
+    try {
+      return rscRequire.resolve(candidate)
+    } catch {}
+  }
+  assert.fail(`the consumer TypeScript ships none of ${TSC_BINS.join(", ")}`)
+}
+
 function buildRscConsumer(
   context: ConsumerContext,
   rsc: string,
@@ -404,7 +416,7 @@ function buildRscConsumer(
     JSON.parse(fs.readFileSync(path.join(rsc, "tsconfig.json"), "utf8")),
     "Next consumer TypeScript configuration",
   )
-  run(nodeExecutable, [rscRequire.resolve("typescript/bin/tsc6"), "-p", "tsconfig.json"], rsc)
+  run(nodeExecutable, [resolveTsc(rscRequire), "-p", "tsconfig.json"], rsc)
 }
 
 type PreviewServer = {

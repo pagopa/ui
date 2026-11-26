@@ -8,6 +8,7 @@ import {
   StatusSchema,
 } from "./common.ts"
 import { ProvenanceOverridesSchema, ProvenanceSchema } from "./provenance.ts"
+import { PropsMapEntrySchema } from "./map.ts"
 
 // ---------------------------------------------------------------- properties
 
@@ -106,6 +107,10 @@ export const TargetSchema = z.strictObject({
       }),
     )
     .optional(),
+  // The Figma variant properties of the node, keyed by the Figma property name:
+  // the generator stamps the shape version into the map it ships, so the
+  // catalogue declares the mapping only.
+  props: z.record(NonEmptyStringSchema, PropsMapEntrySchema).optional(),
 })
 
 export const LocalAssetSchema = z.strictObject({
