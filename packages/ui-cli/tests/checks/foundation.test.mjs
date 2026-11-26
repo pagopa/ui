@@ -330,14 +330,12 @@ test("a Tailwind breakpoint variant counts, the Figma ones do not", () => {
       assert.deepEqual(result.problems, [])
     },
     {
-      // `@md/alert:` is a default container query: it proves the breakpoint
-      // rule's lookbehind, and it is exempted here so this fixture isolates one
-      // rule.
-      baseline: { schemaVersion: 1, counts: { ...zeroCounts(), "default-container-query": 1 } },
+      // `@min-compact/alert:` is a container query: it proves the breakpoint
+      // rule's lookbehind.
       files: {
         "src/components/figma.tsx": [
           'export const figma = <div className="tablet:flex max-w-screen-sm" />',
-          'export const container = <div className="@md/alert:flex" />',
+          'export const container = <div className="@min-compact/alert:flex" />',
           'export const state = <div className="data-[state=open]:flex" />',
           "",
         ].join("\n"),
@@ -346,13 +344,13 @@ test("a Tailwind breakpoint variant counts, the Figma ones do not", () => {
   )
 })
 
-test("a mobile typography pair counts, the plain scale classes do not", () => {
+test("the published mobile typography tokens are token usage, the scale classes are not", () => {
+  // The `Heading/* • Mobile` styles are published text tokens, so a component
+  // reads them like any other type token. The rule retired with the tokens.
   fixture(
     ({ run }) => {
       const result = run()
-      assert.ok(result.problems.length > 0)
-      assert.match(result.problems.join("\n"), /mobile-text-class: 2 occurrences, the ceiling is 0/)
-      assert.match(result.problems.join("\n"), /text-title-lg-mobile/)
+      assert.deepEqual(result.problems, [])
     },
     {
       files: {
@@ -364,32 +362,31 @@ test("a mobile typography pair counts, the plain scale classes do not", () => {
   fixture(
     ({ run }) => {
       const result = run()
-      assert.deepEqual(result.problems, [])
+      assert.ok(result.problems.length > 0)
+      assert.match(
+        result.problems.join("\n"),
+        /tailwind-text-size: 1 occurrences, the ceiling is 0/,
+      )
+      assert.match(result.problems.join("\n"), /text-lg/)
     },
     {
-      files: {
-        "src/components/titles.tsx":
-          'export const titles = <h2 className="text-title-lg text-body" />\n',
-      },
+      files: { "src/components/titles.tsx": 'export const titles = <h2 className="text-lg" />\n' },
     },
   )
 })
 
-test("a default container size counts, a Figma viewport variant does not", () => {
+test("a container query reads its published step, the declaration alone passes", () => {
+  // Every step these queries read is a `container` foundation entry, so a
+  // container variant is token usage; the rule retired with the tokens.
   fixture(
     ({ run }) => {
       const result = run()
-      assert.ok(result.problems.length > 0)
-      assert.match(
-        result.problems.join("\n"),
-        /default-container-query: 3 occurrences, the ceiling is 0/,
-      )
-      assert.match(result.problems.join("\n"), /@4xl\/footer:/)
+      assert.deepEqual(result.problems, [])
     },
     {
       files: {
         "src/components/containers.tsx":
-          'export const containers = <div className="@sm:flex @md/alert:grid @4xl/footer:grid" />\n',
+          'export const containers = <div className="@container @min-compact/alert:grid @min-wide/footer:grid" />\n',
       },
     },
   )

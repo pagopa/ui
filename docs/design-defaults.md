@@ -121,19 +121,44 @@ composition needs, but a switch that follows a Figma device variant reads the
 `--figma-breakpoint-*` token, and the alignment states which of the two axes the
 variant belongs to ([ADR-0004](./decisions/0004-device-axis.md)).
 
+**Responsive typography.** The library publishes a `• Mobile` build of every
+heading step (`Heading/XS…XXL title • Mobile`), so a responsive title is two
+published text tokens rather than one token resized by a Tailwind size class:
+the mobile token applies from 320 px and the device variant swaps it at the
+breakpoint that owns the pair, `text-title-xs-mobile tablet-md:text-title-xs`.
+The swap is a device decision ([ADR-0004](./decisions/0004-device-axis.md)), so
+the pair names one axis and the alignment records it.
+
 ### 4.2 Container switches
 
-Two container-query values are ratified, because they describe a component's own
-box rather than the viewport:
+A container switch measures a component's own box, not the viewport, so each one
+reads a published `container` foundation step rather than a Tailwind step or a
+literal. Every step a component queries is a token:
 
-| Components                       | Container width |
-| -------------------------------- | --------------: |
-| Table, TableListItem, Pagination |          640 px |
-| Timeline                         |          432 px |
+| Step      |  Width | Components                             | Source                |
+| --------- | -----: | -------------------------------------- | --------------------- |
+| `tight`   | 432 px | Timeline, TableListItem                | ratified here         |
+| `narrow`  | 640 px | Table, Pagination                      | ratified here         |
+| `compact` | 448 px | Alert, PaymentModule, ProductModule    | local extension       |
+| `panel`   | 512 px | CheckoutModule                         | local extension       |
+| `page`    | 768 px | the Dialog page template               | local extension       |
+| `wide`    | 896 px | Footer, link-column grid               | local extension       |
+| `wider`   | 1152 px| Footer, side padding                   | local extension       |
 
-They are recorded in the token manifest (`default-container-query`: 34
-occurrences at ratification) and read through the container-query layer, not
-duplicated as literals.
+A query names the step and, where the component declares a named container, its
+own box: `@min-wide/footer:` reads `--container-wide` on the `footer` container.
+`@container` alone scopes the switch to the nearest container, so a component
+that queries an unnamed container writes the step alone (`@min-panel:`).
+
+The two ratified steps are the widths §4.2 already named. A **local extension**
+is a width the components already switched at, published so that a query is
+token usage instead of a Tailwind step: it is derived read-only from the code,
+none of it is a Figma variable, and each foundation entry carries
+`source.kind: code` and the reason it is a local extension. The five extension
+steps are part of the request in
+[2026-11-26-foundation-remainder.md](./design-requests/2026-11-26-foundation-remainder.md);
+until design answers, a component reads them and does not add an eighth. A new
+step is a request, not a new literal.
 
 ### 4.3 Reflow (WCAG 1.4.10)
 

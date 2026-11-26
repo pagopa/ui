@@ -255,7 +255,7 @@ const languageColumns: FooterColumn[] = [
 export const TitleOnlyColumn: Story = {
   args: { links: [], columns: languageColumns },
   parameters: {
-    // The column grid and the tail rule start at the `@4xl/footer` container
+    // The column grid and the tail rule start at the `@min-wide/footer` container
     // width, so the story pins the desktop width the defect was reported at.
     chromatic: { viewports: [1200] },
   },

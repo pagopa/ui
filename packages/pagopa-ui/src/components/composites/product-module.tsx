@@ -121,9 +121,9 @@ function ProductModule({
       ) : null}
       <div
         data-slot="product-module-copy"
-        className="grid min-w-0 flex-1 gap-1 @md/product-module:gap-0.5"
+        className="grid min-w-0 flex-1 gap-1 @min-compact/product-module:gap-0.5"
       >
-        <div className="flex flex-col items-start gap-1 @md/product-module:flex-row @md/product-module:items-center @md/product-module:gap-2">
+        <div className="flex flex-col items-start gap-1 @min-compact/product-module:flex-row @min-compact/product-module:items-center @min-compact/product-module:gap-2">
           <span
             id={titleId}
             data-slot="product-module-title"
@@ -157,7 +157,7 @@ function ProductModule({
           data-slot="product-module"
           data-variant={variant}
           className={cn(
-            "flex w-full min-w-0 flex-col items-start gap-4 rounded-lg border border-border bg-card p-4 @md/product-module:flex-row @md/product-module:items-center",
+            "flex w-full min-w-0 flex-col items-start gap-4 rounded-lg border border-border bg-card p-4 @min-compact/product-module:flex-row @min-compact/product-module:items-center",
             className,
           )}
           {...props}

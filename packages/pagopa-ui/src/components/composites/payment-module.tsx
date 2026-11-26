@@ -72,10 +72,10 @@ function PaymentModule({
     </div>
   ) : (
     <>
-      <div className="flex min-w-0 flex-1 flex-col gap-4 @md/payment-module:flex-row @md/payment-module:items-center @md/payment-module:gap-6">
+      <div className="flex min-w-0 flex-1 flex-col gap-4 @min-compact/payment-module:flex-row @min-compact/payment-module:items-center @min-compact/payment-module:gap-6">
         <div
           data-slot="payment-module-info"
-          className="grid min-w-0 flex-1 gap-3 @md/payment-module:gap-1.5"
+          className="grid min-w-0 flex-1 gap-3 @min-compact/payment-module:gap-1.5"
         >
           <p data-slot="payment-module-code" className="text-body-sb">
             {code}
