@@ -1,8 +1,8 @@
-// The source frame: a story a parity case targets draws its composition at the
-// width the source draws it in — the page column, the drawer panel, the band —
-// so the Storybook render, the visual snapshot and the verified capture are one
-// composition. `parity capture` forces the width it measures, so a story
-// without a frame collapses for every reader while the capture still passes.
+// The source frame: a story that renders a whole source composition draws it at
+// the width the source draws it in — the page column, the drawer panel, the band
+// — so the Storybook render and the parity diagnostic are one composition. The
+// diagnostic forces the width it measures, so a story without a frame collapses
+// for every reader while the comparison still passes.
 import { SOURCE_FRAME_ATTRIBUTE, sourceFrameWidth } from "./source-frame-width"
 
 // `layout: "fullscreen"` alone gives the page width, which is the column only

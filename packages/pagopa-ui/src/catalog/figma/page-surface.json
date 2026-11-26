@@ -230,7 +230,6 @@
           "name": "Frame 2087324448",
           "device": "desktop",
           "drawn": 4,
-          "mirrors": [],
           "reason": "The desktop page 10981:11294 draws four TimelineElement at 852 in an 852 column, 136, 136, 116 and 116 high. No case measures the stack: the desktop case measures the set's own variant box (848) and no story frames four rows in a column, so the 136-to-116 difference between a full row and the last two is measured nowhere."
         },
         {
@@ -238,7 +237,6 @@
           "name": "Frame 2087324448",
           "device": "mobile",
           "drawn": 4,
-          "mirrors": [],
           "reason": "The mobile page 10981:11795 draws four TimelineElement at 304 inside a 320 page, 8px inset, 248, 248, 178 and 146 high. The mobile case measures 417 — the drawer's desktop panel — and the SourceCase story renders device=\"desktop\", so no case measures the 304 the mobile page draws."
         },
         {
@@ -246,7 +244,6 @@
           "name": "XS Mobile",
           "device": "mobile",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The drawer at the XS breakpoint: a 320 backdrop holding Timeline drawer at 320x1914. The drawer is pending and no story builds it; this frame is the only place the 320 width is drawn, and the registry note asks about a bottom sheet instead."
         },
         {
@@ -254,7 +251,6 @@
           "name": "SM Tablet",
           "device": "tablet",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The drawer from SM up: a 600 backdrop holding Timeline drawer at 417, the width the MD, LG and XL frames draw too. That 417 is what the case labelled mobile measures, which is why it is not a mobile measurement."
         },
         {
@@ -262,7 +258,6 @@
           "name": "MD Tablet",
           "device": "tablet",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The MD board of the drawer's first row: a 900x1706 backdrop holding Timeline drawer at 417. The drawer carries no case — it is pending in the registry — so nothing here is measured."
         },
         {
@@ -270,7 +265,6 @@
           "name": "LG Desktop",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The LG board of the drawer's first row: a 1200x1706 backdrop holding Timeline drawer at 417 in the same 1706 canvas. The drawer is pending, so no case measures it."
         },
         {
@@ -278,7 +272,6 @@
           "name": "XL Desktop",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The XL board of the drawer's first row: a 1536x1706 backdrop holding Timeline drawer at 417. The drawer is pending, so no case measures it."
         },
         {
@@ -286,7 +279,6 @@
           "name": "XS Mobile",
           "device": "mobile",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The XS board of the drawer's second row: a 320x650 backdrop holding Timeline drawer at 320 across a 1284 drawer height. The drawer is pending, so no case measures it."
         },
         {
@@ -294,7 +286,6 @@
           "name": "SM Tablet",
           "device": "tablet",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The SM board of the drawer's second row: a 600x1320 backdrop holding Timeline drawer at 417. The drawer is pending, so no case measures it."
         },
         {
@@ -302,7 +293,6 @@
           "name": "MD Tablet",
           "device": "tablet",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The MD board of the drawer's second row: a 900x1320 backdrop holding Timeline drawer at 417. The drawer is pending, so no case measures it."
         },
         {
@@ -310,7 +300,6 @@
           "name": "LG Desktop",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The LG board of the drawer's second row: a 1200x1320 backdrop holding Timeline drawer at 417. The drawer is pending, so no case measures it."
         },
         {
@@ -318,7 +307,6 @@
           "name": "XL Desktop",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The XL board of the drawer's second row: a 1536x1320 backdrop holding Timeline drawer at 417. The drawer is pending, so no case measures it."
         }
       ]
@@ -341,7 +329,6 @@
           "name": "Overlay",
           "device": "mobile",
           "drawn": 1,
-          "mirrors": ["67-3964-default"],
           "reason": "The 320 board draws one Overlay at 320x568, the scrim the component is, and the case 67-3964-default captures that same 320x568 box: the drawing is measured."
         },
         {
@@ -349,7 +336,6 @@
           "name": "Overlay",
           "device": "tablet",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 600 board draws the same scrim at 600x800. The scrim has no content and no radius, so the only thing the larger box changes is its size, and the corpus captures 320 only: the 600 drawing is measured nowhere."
         },
         {
@@ -357,7 +343,6 @@
           "name": "Overlay",
           "device": "tablet",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The MD 900 board draws the same scrim at 900x800, and the corpus holds no 900 capture: the drawing is measured nowhere."
         },
         {
@@ -365,7 +350,6 @@
           "name": "Overlay",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The LG 1200 board draws the same scrim at 1200x800, and the corpus holds no 1200 capture: the drawing is measured nowhere."
         },
         {
@@ -373,7 +357,6 @@
           "name": "Overlay",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The XL 1536 board draws the same scrim at 1536x800, and the corpus holds no 1536 capture: the drawing is measured nowhere."
         }
       ]
@@ -396,7 +379,6 @@
           "name": "360",
           "device": "mobile",
           "drawn": 1,
-          "mirrors": ["61-2786-line"],
           "reason": "Group 2 draws one divider full width in a 320x568 board (at y 283.5), and the case 61-2786-line measures the Padding=0, Type=Line variant at its 320x1 box: the drawing is measured, and the padded and With text variants are measured by their own cases."
         },
         {
@@ -404,7 +386,6 @@
           "name": "375",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": [],
           "reason": "Group 1 draws one divider full width in a 1536x812 board, and the frame is named 375 while it measures 1536. The corpus has no 1536 capture and the divider is a 100%-width line, so the width the page draws is measured nowhere."
         }
       ]
@@ -1730,7 +1711,6 @@
           "name": "White template",
           "device": "mobile",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The mobile white template 320x650 draws the 56x56 button in the page corner. No case measures the template: 180-3931-default measures the button itself at 56, not the 320 page that places it."
         },
         {
@@ -1738,7 +1718,6 @@
           "name": "White template",
           "device": "tablet",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The tablet white template 900x650 draws the same 56px button. The button declares no device axis, so no case can measure the 900 placement."
         }
       ]
@@ -1761,7 +1740,6 @@
           "name": "Group 1072",
           "device": "tablet",
           "drawn": 1,
-          "mirrors": [],
           "reason": "A 900x568 board composing the 44x44 icon button beside its label. 192-1208-icon measures the 44x44 button, and Button declares no device axis, so the 900 board is an arrangement no case frames."
         },
         {
@@ -1769,7 +1747,6 @@
           "name": "Group 1073",
           "device": "tablet",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The second 900x568 arrangement of the same icon button and label (Group 1073); unmirrored for the same reason as Group 1072."
         }
       ]
@@ -1997,8 +1974,7 @@
           "nodeId": "525:4644",
           "name": "SnackbarErrorCode",
           "device": "mobile",
-          "drawn": 1,
-          "mirrors": ["392-4667-default"]
+          "drawn": 1
         }
       ]
     },
@@ -2180,7 +2156,6 @@
           "name": "SM Tablet",
           "device": "tablet",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 600x962 board draws IDModule at 410x912. The module cases measure 410 on a desktop viewport and 320 on mobile, so this tablet canvas is unmeasured."
         },
         {
@@ -2188,7 +2163,6 @@
           "name": "MD Tablet",
           "device": "tablet",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 900x962 board draws IDModule at 600x912. The module cases measure 410 and 320, so nothing measures this board."
         },
         {
@@ -2196,7 +2170,6 @@
           "name": "LG Desktop",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 1200x962 board draws IDModule at 600x912. The module cases measure 410 and 320, so nothing measures this board."
         },
         {
@@ -2204,7 +2177,6 @@
           "name": "XL Desktop",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 1536x962 board draws IDModule at 600x912. The module cases measure 410 and 320, so nothing measures this board."
         },
         {
@@ -2212,7 +2184,6 @@
           "name": "Identity Provider Selector",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 1200x962 selector frame draws one IDModule at 600x912 beside the provider list. The module cases measure 410 and 320, so the selector is unmeasured."
         }
       ]
@@ -2309,7 +2280,6 @@
           "name": "Area Riservata",
           "device": "desktop",
           "drawn": 4,
-          "mirrors": [],
           "reason": "The 1200x1775 area page draws four ProductCard&Image at 268x441 in its grid. The card cases measure the card alone at 272 (757-6288) and 202 (12133-82475), never this page."
         },
         {
@@ -2317,7 +2287,6 @@
           "name": "Drawer KPI",
           "device": "desktop",
           "drawn": 7,
-          "mirrors": [],
           "reason": "The 1200x1942 page opens the KPI drawer over a 1200 backdrop and draws seven ProgressKpiCard at 369 (six 369x190, one 369x362). The card cases measure 202, so the drawer is unmeasured."
         },
         {
@@ -2325,7 +2294,6 @@
           "name": "Area Riservata",
           "device": "tablet",
           "drawn": 4,
-          "mirrors": [],
           "reason": "The 900x943 page draws four ProductCard&Image at 273x437. The card cases measure 272 and 202, not this board's 273."
         },
         {
@@ -2333,7 +2301,6 @@
           "name": "Area Riservata",
           "device": "mobile",
           "drawn": 4,
-          "mirrors": [],
           "reason": "The 320x3253 page draws four ProductCard&Image at 272x437 as a single column. The mobile card case measures the card root at 272, not the page that lays four of them out."
         },
         {
@@ -2341,7 +2308,6 @@
           "name": "Area Riservata",
           "device": "tablet",
           "drawn": 4,
-          "mirrors": [],
           "reason": "The 600x3061 page draws four ProductCard&Image at 552x414, the card spanning the 600 canvas. No case measures the card at 552."
         },
         {
@@ -2349,7 +2315,6 @@
           "name": "Area Riservata",
           "device": "desktop",
           "drawn": 4,
-          "mirrors": [],
           "reason": "The 1200x1569 page draws four ProductCard&Image at 373x419. The card cases measure 272 and 202, not this board's 373."
         },
         {
@@ -2357,7 +2322,6 @@
           "name": "Area Riservata",
           "device": "desktop",
           "drawn": 4,
-          "mirrors": [],
           "reason": "The 1536x800 page draws four ProductCard&Image at 485x419. No case measures the card at 485."
         },
         {
@@ -2365,7 +2329,6 @@
           "name": "Homepage - Campagne / Dettaglio campagna",
           "device": "mobile",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 320x650 campaign detail page draws a 320x246 ProgressKpiGroup holding four ProgressKpiCard at 207 plus a tooltip. The KPI cases measure the 202 card, not this group."
         },
         {
@@ -2373,7 +2336,6 @@
           "name": "Homepage - Campagne / Dettaglio campagna",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 1200x1553 campaign detail page draws a 852x190 ProgressKpiGroup holding four ProgressKpiCard at 201. The KPI cases measure the 202 card, not this group."
         }
       ]
@@ -2541,7 +2503,6 @@
           "name": "Checkout",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 1280x864 checkout screen draws the 376x378 camera view in its frame. 1134-6812-default measures the view at 376, and the page that places it in a checkout is measured nowhere."
         }
       ]
@@ -2572,7 +2533,6 @@
           "name": "List View / Row hover",
           "device": "mobile",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 320-wide list view board draws the tab list above a 5001-tall page. 1137-8910-default measures the seven tabs at 658, and the mobile page that stacks them is measured nowhere."
         },
         {
@@ -2580,7 +2540,6 @@
           "name": "List View / Row hover",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 1200-wide list view board draws the same tab list over a 1486-tall page; the desktop placement is measured nowhere for the same reason."
         }
       ]
@@ -2680,7 +2639,6 @@
           "name": "Group 26",
           "device": "mobile",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 320x4773 mobile page group draws the skip-to-main band above the header. 8090-46352-focused measures the 320x40 band on its own, not the tall page group that places it."
         },
         {
@@ -2688,7 +2646,6 @@
           "name": "Group 25",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 1200x1598 desktop page group draws the same band and header; no case measures the desktop page."
         },
         {
@@ -2696,7 +2653,6 @@
           "name": "Group 15",
           "device": "mobile",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 320x650 board draws Preheader at 320x57 above the white template. Its 320 case keeps the composition check off (the Privacy Policy row reads 8 against the source 17), so the board is not mirrored."
         },
         {
@@ -2704,7 +2660,6 @@
           "name": "Group 16",
           "device": "tablet",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 600x650 board draws Preheader at 600x57. The Preheader cases read 320 and 1200, so nothing measures the 600 band."
         },
         {
@@ -2712,7 +2667,6 @@
           "name": "Group 18",
           "device": "tablet",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 900x650 board draws Preheader at 900x56. The Preheader cases read 320 and 1200, so nothing measures the 900 band."
         },
         {
@@ -2720,7 +2674,6 @@
           "name": "Group 17",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 1200x650 board draws Preheader at 1200x56. Its desktop case keeps the composition check off (Privacy Policy and Actions offsets), so the board is not mirrored."
         },
         {
@@ -2728,7 +2681,6 @@
           "name": "Group 19",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 1536x650 board draws Preheader at 1536x56. No case goes past 1200, so nothing measures the 1536 band."
         },
         {
@@ -2736,7 +2688,6 @@
           "name": "Group 20",
           "device": "mobile",
           "drawn": 2,
-          "mirrors": [],
           "reason": "The 320x650 board stacks Header at 320x77 under Preheader at 320x57 on the white template. The two cases measure each band alone at 320, never the pair, so the board is not mirrored."
         },
         {
@@ -2744,7 +2695,6 @@
           "name": "Group 21",
           "device": "tablet",
           "drawn": 2,
-          "mirrors": [],
           "reason": "The 600x650 board stacks Header at 600x77 under Preheader at 600x57. No case measures either band at 600, nor the pair."
         },
         {
@@ -2752,7 +2702,6 @@
           "name": "Group 22",
           "device": "tablet",
           "drawn": 2,
-          "mirrors": [],
           "reason": "The 900x650 board stacks Header at 900x81 under Preheader at 900x56. No case measures either band at 900, nor the pair."
         },
         {
@@ -2760,7 +2709,6 @@
           "name": "Group 23",
           "device": "desktop",
           "drawn": 2,
-          "mirrors": [],
           "reason": "The 1200x650 board stacks Header at 1200x81 under Preheader at 1200x56. The cases measure each band alone, never the two together."
         },
         {
@@ -2768,7 +2716,6 @@
           "name": "Group 24",
           "device": "desktop",
           "drawn": 2,
-          "mirrors": [],
           "reason": "The 1536x650 board stacks Header at 1536x81 under Preheader at 1536x56. No case goes past 1200, so neither band is measured here."
         }
       ]
@@ -2823,7 +2770,6 @@
           "name": "MD Tablet / Wizard",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": [],
           "reason": "Named MD Tablet, the frame is 1200 wide and draws Stepper at 708x54 above the wizard form and its buttons, under Preheader and Header. The wizard case keeps its composition check off — the fixture draws three steps where this page draws seven — so the page is unmeasured."
         },
         {
@@ -2831,7 +2777,6 @@
           "name": "XS Mobile / Wizard",
           "device": "mobile",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 320x650 wizard page draws Stepper at 272x84 in the mobile column, above the form and buttons. Its mobile case keeps the composition check off — three fixture steps against this page's seven — so the page is unmeasured."
         }
       ]
@@ -2929,7 +2874,6 @@
           "name": "Group 445",
           "device": "mobile",
           "drawn": 1,
-          "mirrors": ["1360-20138-true-mobile"],
           "reason": "The 320x650 board draws Footer at 320x450 on the white template; the mobile case measures that band at 320."
         },
         {
@@ -2937,7 +2881,6 @@
           "name": "Group 446",
           "device": "tablet",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 600x657 board draws Footer at 600x390. The Footer cases read 320, 900 and 1200, so nothing measures the 600 band."
         },
         {
@@ -2945,7 +2888,6 @@
           "name": "Group 449",
           "device": "tablet",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 900x650 board draws Footer at 900x182. Its tablet case keeps the composition check off (the mockup draws 24-tall link and logo nodes), so the board is not mirrored."
         },
         {
@@ -2953,7 +2895,6 @@
           "name": "Group 447",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": ["1360-20138-true-desktop"],
           "reason": "The 1200x650 board draws Footer at 1200x170 on the white template; the desktop case measures that band at 1200."
         },
         {
@@ -2961,7 +2902,6 @@
           "name": "Group 448",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 1536x650 board draws Footer at 1536x150. The Footer cases stop at 1200, so nothing measures the 1536 band."
         },
         {
@@ -2969,7 +2909,6 @@
           "name": "Group 453",
           "device": "mobile",
           "drawn": 1,
-          "mirrors": ["1360-23904-mobile-mobile"],
           "reason": "The 320x650 board draws Cookies at 320x646 on the white template; the mobile case measures that band at 320."
         },
         {
@@ -2977,7 +2916,6 @@
           "name": "Group 454",
           "device": "tablet",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 600x650 board draws Cookies at 600x288. The Cookies cases read 320, 900 and 1200, so nothing measures the 600 band."
         },
         {
@@ -2985,7 +2923,6 @@
           "name": "Group 450",
           "device": "tablet",
           "drawn": 1,
-          "mirrors": ["1360-23904-tablet-tablet"],
           "reason": "The 900x650 board draws Cookies at 900x228; the tablet case measures that band at 900."
         },
         {
@@ -2993,7 +2930,6 @@
           "name": "Group 452",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": ["1360-23904-desktop-desktop"],
           "reason": "The 1200x658 board draws Cookies at 1200x188; the desktop case measures that band at 1200."
         },
         {
@@ -3001,7 +2937,6 @@
           "name": "Group 451",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 1536x650 board draws Cookies at 1536x128. The Cookies cases stop at 1200, so nothing measures the 1536 band."
         }
       ]
@@ -3045,8 +2980,7 @@
           "nodeId": "8244:3320",
           "name": "DatePicker",
           "device": "mobile",
-          "drawn": 1,
-          "mirrors": ["8049-39452-single-date"]
+          "drawn": 1
         }
       ]
     },
@@ -3110,7 +3044,6 @@
           "name": "2",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 1200x1058 page draws a 312x96 Popper over a list row. No case measures its page placement."
         },
         {
@@ -3118,7 +3051,6 @@
           "name": "Posizione",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 1200x1058 page draws a 312x96 Popper over a list row. No case measures its page placement."
         },
         {
@@ -3126,7 +3058,6 @@
           "name": "4",
           "device": "desktop",
           "drawn": 1,
-          "mirrors": [],
           "reason": "The 1200x1058 page draws a 312x96 Popper over the page content. No case measures its page placement."
         }
       ]

@@ -72,20 +72,15 @@ test("brief refresh requires a token before touching snapshots", async () => {
   }
 })
 
-test("token preflight covers live image commands", async () => {
+test("token preflight covers the live image command", async () => {
   const fixture = fixtureTree(files, "tier-images-")
   try {
-    for (const argv of [
-      ["parity", "source", "4:4", "--png", "--require-token"],
-      ["update", "evidence", "--require-token"],
-    ]) {
-      const result = await runCli(argv, {
-        root: fixture.root,
-        env: { FIGMA_TOKEN: "invalid token" },
-      })
-      assert.equal(result.status, 2, result.stderr)
-      assert.match(result.stderr, /FIGMA_TOKEN/)
-    }
+    const result = await runCli(["parity", "source", "4:4", "--png", "--require-token"], {
+      root: fixture.root,
+      env: { FIGMA_TOKEN: "invalid token" },
+    })
+    assert.equal(result.status, 2, result.stderr)
+    assert.match(result.stderr, /FIGMA_TOKEN/)
   } finally {
     fixture.dispose()
   }

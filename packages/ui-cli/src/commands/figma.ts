@@ -57,7 +57,6 @@ function catalogueOptions(
     save?: string
     prBody?: string
     delta?: string
-    evidenceBase?: string
     tokens?: boolean
     tokenDrift?: string
   },
@@ -73,7 +72,6 @@ function catalogueOptions(
     save: args.save,
     prBody: args.prBody,
     delta: args.delta,
-    evidenceBase: args.evidenceBase,
     tokens: args.tokens,
     tokenDrift: args.tokenDrift,
     ...(rest ? { token: figmaToken(ctx.env) } : {}),
@@ -229,7 +227,6 @@ export function figmaCommands(ctx: CliContext): CommandDef {
       save: { type: "string", valueHint: "file", description: "Save the REST snapshot" },
       prBody: { ...inputArg, description: "Write the drift pull request body" },
       delta: { ...inputArg, description: "Write the machine-readable delta" },
-      evidenceBase: { type: "string", valueHint: "url", description: "Evidence link base URL" },
     },
     run: action(ctx, async (args) => {
       requireToken(ctx, args["require-token"])
@@ -241,7 +238,6 @@ export function figmaCommands(ctx: CliContext): CommandDef {
           catalogueOptions(ctx, {
             ...args,
             prBody: args.prBody,
-            evidenceBase: args.evidenceBase,
             write: true,
             triage: true,
           }),
@@ -354,7 +350,6 @@ export function artworkUpdateCommands(ctx: CliContext): SubCommandsDef {
         save: { type: "string", valueHint: "file", description: "Save the REST snapshot" },
         prBody: { ...inputArg, description: "Write the drift pull request body" },
         delta: { ...inputArg, description: "Write the machine-readable delta" },
-        evidenceBase: { type: "string", valueHint: "url", description: "Evidence link base URL" },
         tokens: {
           type: "boolean",
           default: false,
@@ -372,7 +367,6 @@ export function artworkUpdateCommands(ctx: CliContext): SubCommandsDef {
             catalogueOptions(ctx, {
               ...args,
               prBody: args.prBody,
-              evidenceBase: args.evidenceBase,
               write: true,
             }),
           ),

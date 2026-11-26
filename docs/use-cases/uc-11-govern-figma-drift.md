@@ -32,7 +32,7 @@ parent_dr: ../design-review.md
 1. The system synchronises the Figma library and compares the file version with the committed inventory.
 2. The system produces the drift plan, the review body and the run artifacts.
 3. The system updates the rules and the comments and reports their difference in the run record.
-4. The system regenerates the evidence bundle and verifies its consistency.
+4. The system verifies that the regenerated data is consistent with itself: the catalogue, the rules and the census checks it just ran.
 5. The system formats the updated data and opens a single review pull request.
 6. The maintainer reads the diff, which contains only the drift, and decides node by node.
 7. The merge of the pull request is the record of the design approval.
@@ -72,7 +72,7 @@ parent_dr: ../design-review.md
 - `AC-03`: Every run with drift opens a single review pull request. - Evidence: `.github/workflows/figma-drift.yml`
 - `AC-04`: The review diff contains only the drift and the formatted regenerated data. - Evidence: `.github/workflows/figma-drift.yml` (formatting step)
 - `AC-05`: The rules ledger stays a reviewed change and not a generated one. - Evidence: `pnpm nx run pagopa-ui-cli:figma:rules -- plan`; `pnpm nx run pagopa-ui-cli:check:rules`
-- `AC-06`: The regenerated check evidence passes its own verification. - Evidence: `pnpm ui-cli check evidence`; `pnpm ui-cli check parity`
+- `AC-06`: The regenerated data passes every check that reads it. - Evidence: `pnpm nx run pagopa-ui:check:catalogue`; `pnpm nx run pagopa-ui-cli:check:rules`
 - `AC-07`: A person without a Figma token can read the drift state. - Evidence: `pnpm nx run pagopa-ui-cli:figma:status`
 
 **Tracking events**:
@@ -90,7 +90,7 @@ sequenceDiagram
   participant REPO as Repository
   actor M as Design system maintainer
   CI->>FIG: synchronisation and file version
-  CI->>CI: drift plan, rules, comments, evidence
+  CI->>CI: drift plan, rules, comments, checks
   CI->>REPO: review pull request
   M->>REPO: diff reading and decision
   M->>REPO: merge as the record of the approval

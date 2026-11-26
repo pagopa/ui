@@ -1,6 +1,6 @@
 ---
 name: figma-to-code
-description: Figma alignment for React components, device variants, tokens and artwork. Use for a delta or drift handoff, a node-backed component, API coverage without a node, parity evidence, or design-owner questions.
+description: Figma alignment for React components, device variants, tokens and artwork. Use for a delta or drift handoff, a node-backed component, API coverage without a node, a parity comparison, or design-owner questions.
 ---
 
 # Figma to code

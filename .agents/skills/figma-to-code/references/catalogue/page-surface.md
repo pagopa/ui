@@ -49,16 +49,14 @@ One record per page:
   not so that it gets built: the day it is published the export grows, the
   mirror fails, and the decision becomes due.
 - **compositions**, one row per frame the page draws with the implementation
-  inside it: the `device` it is drawn at, how many times the implementation is
-  `drawn`, and the parity cases that `mirror` it. A case mirrors a composition
-  only if it measures that frame at that device; a composition with no case
-  carries a `reason` saying what stays unmeasured and why.
+  inside it: the `device` it is drawn at, and how many times the implementation
+  is `drawn`. A composition that stays unmeasured carries a `reason` saying what
+  is not drawn and why; nothing is recorded per composition that a run could
+  keep current.
 
 `pnpm nx run pagopa-ui:check:catalogue` decides whether the census agrees with the
-inventory and the registry, whether each composition's cases exist and measure it
-at its declared device, and whether every published page is censused; an unread
-page waits in `surfaceUncensused` with its published node count. The check cannot
-discover unexported additions to a live page: re-read the tree each time the
-session touches it. `pnpm ui-cli figma plan` adds `surfaceWaiting`,
-`surfaceUnmirrored` and `surfaceUncensused` instead of hiding them behind the
-delta.
+inventory and the registry, and whether every published page is censused; an
+unread page waits in `surfaceUncensused` with its published node count. The check
+cannot discover unexported additions to a live page: re-read the tree each time
+the session touches it. `pnpm ui-cli figma plan` adds `surfaceWaiting` and
+`surfaceUncensused` instead of hiding them behind the delta.

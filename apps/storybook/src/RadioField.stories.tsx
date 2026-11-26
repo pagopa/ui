@@ -292,7 +292,7 @@ export const RadioLoadingStates: Story = {
 }
 
 // The five variants of the source option set (`194:3841`), each rendered at the
-// source 320 width with the source state, so parity captures one row per variant.
+// source 320 width with the source state, so a comparison measures one row per variant.
 export const FigmaStateMatrix: Story = {
   tags: ["color-pinned"],
   parameters: {

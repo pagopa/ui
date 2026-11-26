@@ -53,8 +53,8 @@ that the rule now contradicts.
   elevation. The theme comment and the registry notes already say this.
 - **B — follow the rule.** Tooltip and popover move to `Shadow 16`; snackbar,
   cookies and scroll-to-bottom move to `Shadow 1` (or the source elevation you
-  name). The parity cases and the registry notes that assert `shadow-32` change
-  with them.
+  name). The registry notes that assert `shadow-32` change with them, and every
+  node they cover is compared again.
 - **C — split.** Dialog, drawer and snackbar keep Shadow 32; tooltip, popover
   and scroll-to-bottom drop to Shadow 16; cookies keep the banner elevation, if
   the source draws one.

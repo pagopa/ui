@@ -1,12 +1,39 @@
-import type { ParityCase } from "../schemas/parity.ts"
 import type { Delta } from "./diff.ts"
-export type CaseSpec = Partial<ParityCase> & {
+
+// The comparison the ephemeral diagnostic runs: a source variant, the story
+// that renders it and the mapping between the two. It is built per run from the
+// registry target and the command line — it is never stored or read back.
+export type CaseSpec = {
   nodeId: string
   export: string
   storyId: string
-  id?: string
-  screenshot?: string
+  state?: string
+  device?: string
+  layoutScope?: "viewport" | "container"
+  variant?: string
+  width?: number
+  viewport?: number
+  height?: number
+  depth?: number
+  root?: string
+  subjectRoot?: string
+  offsetOrigin?: string
+  subjects?: Record<string, string>
+  residues?: Array<{ path: string; reason: string }>
+  ignores?: string[]
+  fill?: Array<[string, string]>
+  click?: string[]
+  focus?: string[]
+  blur?: boolean
+  keepFocus?: boolean
+  compareText?: boolean
+  compareBox?: "height" | "full"
+  compareOffset?: boolean | string
+  expectState?: string
+  stateEvidence?: string
+  interactive?: boolean
   strict?: boolean
+  screenshot?: string
 }
 export type CaseReport = {
   nodeId: string
@@ -39,34 +66,9 @@ export type Scope = {
   widthTarget: string | undefined
 }
 
-export type CheckOptions = Omit<Partial<CaseSpec>, "nodeId"> & {
+export type DiagnoseOptions = Partial<CaseSpec> & {
   nodeId?: string
-  caseId?: string
-  casesFile?: string
   input?: string
-  devices?: boolean
-  saved?: boolean
-  saveCase?: boolean
   notes?: boolean
   json?: boolean
-}
-export type QueueOptions = {
-  status?: string
-  nodeId?: string
-  casesFile?: string
-  order?: string
-  unmapped?: boolean
-  coverage?: boolean
-  uncovered?: boolean
-  json?: boolean
-  next?: boolean
-  size?: number
-}
-export type WaveOptions = CheckOptions & {
-  status?: string
-  includeCatalogue?: boolean
-  limit?: number
-  dryRun?: boolean
-  outDir?: string
-  wave?: string
 }

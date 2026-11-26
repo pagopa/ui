@@ -9,7 +9,6 @@ import { updateTokens } from "../figma/tokens.ts"
 import { text } from "./args.ts"
 import { budgetArg } from "./check.ts"
 import { action, EXIT, type CliContext } from "./context.ts"
-import { evidenceUpdate } from "./parity-gates.ts"
 
 export function updateCommands(ctx: CliContext, extra: SubCommandsDef = {}): CommandDef {
   return defineCommand({
@@ -45,7 +44,6 @@ export function updateCommands(ctx: CliContext, extra: SubCommandsDef = {}): Com
           return EXIT.ok
         }),
       }),
-      evidence: evidenceUpdate(ctx),
       ...extra,
     },
   })

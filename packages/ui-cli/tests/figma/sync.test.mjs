@@ -160,21 +160,6 @@ function fixture(run, overrides = {}) {
   }
 }
 
-test("a malformed case fails the catalogue gate with its id", () => {
-  fixture(
-    ({ check }) => {
-      const result = check()
-      assert.equal(result.status, 1)
-      assert.match(result.stderr, /cases: bad-case: device "watch" is not a device key/)
-    },
-    {
-      "src/catalog/figma/parity-cases.json": JSON.stringify([
-        { id: "bad-case", nodeId: "1:1", export: "Control", device: "watch" },
-      ]),
-    },
-  )
-})
-
 test("adding a variant to an existing identity is reported as changed", () => {
   fixture(
     ({ check }) => {
@@ -2055,190 +2040,6 @@ test("invalid property defaults and dependency identities are never persisted", 
   }
 })
 
-// RA4: the device coverage line and the delta-scoped gate. A node in the delta
-// cannot stay `implemented` without one case per declared device, or a reasoned
-// exception; the historical entries are the work list, not a failure.
-const deviceTarget = {
-  module: "src/components/primitives/control.tsx",
-  export: "Control",
-  story: "src/stories/Fixture.stories.tsx",
-  storyExports: ["Example"],
-}
-
-function deviceFixture(overrides = {}) {
-  return {
-    "src/catalog/figma/inventory.json": JSON.stringify({
-      fileKey: "fixture",
-      syncedAt: new Date().toISOString().slice(0, 10),
-      components: [],
-    }),
-    "src/catalog/figma/registry.json": JSON.stringify({
-      bulkRules: [],
-      entries: { "1:1": { status: "implemented", target: deviceTarget } },
-    }),
-    "src/components/primitives/control.tsx":
-      "export function Control() { return <button>Control</button> }",
-    "src/stories/Fixture.stories.tsx":
-      'import { Control } from "@/components/primitives/control"\nimport { figmaEmbedUrl } from "@/catalog/figma/file"\nexport default { title: "Fixture", component: Control, parameters: { design: { type: "figma", url: figmaEmbedUrl("1:1") } } }\nexport const Example = {}',
-    "live.json": JSON.stringify([deviceNode(true)]),
-    ...overrides,
-  }
-}
-
-const implementedRegistry = (extra = {}) =>
-  JSON.stringify({
-    bulkRules: [],
-    entries: { "1:1": { status: "implemented", target: deviceTarget }, ...extra },
-  })
-
-// The baseline the tests start from: the refreshed inventory, the node closed as
-// implemented, and the desktop case the review already saved.
-function deviceBaseline({ check, write }, cases) {
-  const baseline = check("--write", "--input", "live.json")
-  assert.equal(baseline.status, 0, baseline.stderr)
-  write("src/catalog/figma/registry.json", implementedRegistry())
-  if (cases) write("src/catalog/figma/parity-cases.json", JSON.stringify(cases))
-  return baseline
-}
-
-test("an implemented node in the delta cannot close without its device cases", () => {
-  fixture(({ check, read, write }) => {
-    deviceBaseline({ check, write }, [
-      {
-        id: "1-1-desktop",
-        nodeId: "1:1",
-        export: "Control",
-        storyId: "fixture--example",
-        state: "Desktop",
-        device: "desktop",
-      },
-    ])
-    const inventory = JSON.parse(read("src/catalog/figma/inventory.json"))
-    assert.deepEqual(
-      inventory.components[0].variants.map((variant) => variant.device),
-      ["desktop", "mobile"],
-    )
-
-    // The source changes under the node. It is still `implemented` and the
-    // mobile composition has no reviewed case: the delta cannot close.
-    write("live.json", JSON.stringify([deviceNode(false)]))
-    const gated = check("--plan", "--input", "live.json")
-    assert.equal(gated.status, 1)
-    assert.match(gated.stderr, /device coverage: 1:1 is in the delta/)
-    assert.match(gated.stderr, /without a case for mobile/)
-    assert.match(gated.stderr, /device-exceptions\.json/)
-    assert.deepEqual(JSON.parse(gated.stdout).deviceCoverage, {
-      sets: 1,
-      covered: 1,
-      missing: 1,
-      drafts: 0,
-      exceptions: 0,
-    })
-
-    // A reasoned exception silences the gate (the drift itself still fails
-    // the reported run, which is the pre-existing behaviour).
-    write("src/catalog/figma/device-exceptions.json", JSON.stringify({ "1:1": "burn-down" }))
-    const excepted = check("--plan", "--input", "live.json")
-    assert.doesNotMatch(excepted.stderr, /device coverage: 1:1 is in the delta/)
-    assert.deepEqual(JSON.parse(excepted.stdout).deviceCoverage, {
-      sets: 1,
-      covered: 1,
-      missing: 1,
-      drafts: 0,
-      exceptions: 1,
-    })
-    const reported = check("--input", "live.json")
-    assert.match(
-      reported.stdout,
-      /devices: 1 implemented sets · covered 1 · missing 1 · exceptions 1/,
-    )
-    assert.match(reported.stdout, /exceptions: story evidence 0 · unmapped exports 0 · device 1/)
-  }, deviceFixture())
-})
-
-test("the triage queues the node instead: the automation is never blocked", () => {
-  fixture(({ check, read, write }) => {
-    deviceBaseline({ check, write }, [
-      {
-        id: "1-1-desktop",
-        nodeId: "1:1",
-        export: "Control",
-        storyId: "fixture--example",
-        device: "desktop",
-      },
-    ])
-    write("live.json", JSON.stringify([deviceNode(false)]))
-    const triaged = check("--triage", "--input", "live.json")
-    assert.equal(triaged.status, 0, triaged.stderr)
-    const registry = JSON.parse(read("src/catalog/figma/registry.json"))
-    assert.equal(registry.entries["1:1"].status, "pending")
-    // The queued node is not an implemented one: the coverage line counts the
-    // sets that need cases, not the review queue.
-    const hermetic = check("--plan")
-    assert.equal(hermetic.status, 0, hermetic.stderr)
-    assert.deepEqual(JSON.parse(hermetic.stdout).deviceCoverage, {
-      sets: 0,
-      covered: 0,
-      missing: 0,
-      drafts: 0,
-      exceptions: 0,
-    })
-  }, deviceFixture())
-})
-
-test("the historical burn-down warns once and never fails the tree", () => {
-  fixture(({ check, write }) => {
-    deviceBaseline({ check, write })
-    const result = check()
-    assert.equal(result.status, 0, result.stderr)
-    assert.match(
-      result.stderr,
-      /warn: device coverage: 1 implemented node\(s\) miss 2 device case\(s\)/,
-    )
-    assert.match(
-      result.stdout,
-      /devices: 1 implemented sets · covered 0 · missing 2 · exceptions 0/,
-    )
-  }, deviceFixture())
-})
-
-test("the exception list is validated: empty reasons, stale and unknown entries fail", () => {
-  const bothCases = [
-    {
-      id: "1-1-desktop",
-      nodeId: "1:1",
-      export: "Control",
-      storyId: "fixture--example",
-      device: "desktop",
-    },
-    {
-      id: "1-1-mobile",
-      nodeId: "1:1",
-      export: "Control",
-      storyId: "fixture--example",
-      device: "mobile",
-    },
-  ]
-  const expectations = [
-    [{ "1:1": "" }, /1:1 requires a reason/],
-    [{ "1:1": "   " }, /1:1 requires a reason/],
-    [
-      { "1:1": "now covered", "9:9": "unknown node" },
-      /9:9 is not a registry entry with a device axis/,
-    ],
-    [{ "1:1": "now covered" }, /1:1 covers every declared device — remove the exception/],
-  ]
-  for (const [entries, pattern] of expectations) {
-    fixture(({ check, write }) => {
-      deviceBaseline({ check, write }, bothCases)
-      write("src/catalog/figma/device-exceptions.json", JSON.stringify(entries))
-      const result = check()
-      assert.equal(result.status, 1, JSON.stringify(entries))
-      assert.match(result.stderr, pattern)
-    }, deviceFixture())
-  }
-})
-
 test("--delta writes the machine-readable delta next to the review body", () => {
   fixture(
     ({ check, read }) => {
@@ -2257,7 +2058,6 @@ test("--delta writes the machine-readable delta next to the review body", () => 
       assert.equal(delta.nodes.changed[0].change, "properties or dependencies")
       assert.deepEqual(delta.implementationOrder, ["1:1"])
       assert.ok(delta.devices)
-      assert.ok(delta.coverage)
     },
     {
       "src/catalog/figma/registry.json": JSON.stringify({
@@ -2298,49 +2098,19 @@ test("--delta without a live source fails instead of writing an empty delta", ()
   })
 })
 
-test("the review body lists the case evidence, the artifacts and the handoff", () => {
+test("the review body lists the artifacts and the handoff", () => {
   fixture(
-    ({ check, read, write }) => {
-      const args = [
-        "--pr-body",
-        "pr-body.md",
-        "--input",
-        "live.json",
-        "--evidence-base",
-        "https://example.test/figma-drift/2026-10-21",
-      ]
-      const inventory = read("src/catalog/figma/inventory.json")
-      const result = check(...args)
+    ({ check, read }) => {
+      const result = check("--pr-body", "pr-body.md", "--input", "live.json")
       assert.equal(result.status, 0, result.stderr)
       const body = read("pr-body.md")
-      assert.match(body, /- evidence: `case-one`/)
-      assert.match(
-        body,
-        /https:\/\/example\.test\/figma-drift\/2026-10-21\/docs\/figma-parity\/references\/case-one\.png/,
-      )
-      assert.match(
-        body,
-        /attach the local render after `parity check --case <id> --screenshot <file>`/,
-      )
       assert.match(body, /## Artifacts/)
       assert.match(body, /`delta\.json`/)
       assert.match(body, /`run\.json`/)
       assert.match(body, /## Handoff and metrics/)
       assert.match(body, /docs\/figma-drift-handoff\.md/)
       assert.doesNotMatch(body, /!\[/)
-
-      const manifest = read("docs/figma-parity/manifest.json")
-      write("src/catalog/figma/inventory.json", inventory)
-      write("docs/figma-parity/manifest.json", "not JSON")
-      const invalidManifest = check(...args)
-      assert.notEqual(invalidManifest.status, 0)
-      assert.match(invalidManifest.stderr, /Unexpected token/)
-      write("src/catalog/figma/inventory.json", inventory)
-      write("docs/figma-parity/manifest.json", manifest)
-      write("src/catalog/figma/parity-cases.json", "not JSON")
-      const invalidCases = check(...args)
-      assert.notEqual(invalidCases.status, 0)
-      assert.match(invalidCases.stderr, /Unexpected token/)
+      assert.doesNotMatch(body, /evidence/)
     },
     {
       "src/catalog/figma/registry.json": JSON.stringify({
@@ -2361,27 +2131,6 @@ test("the review body lists the case evidence, the artifacts and the handoff", (
         "export function Control() { return <button>Control</button> }",
       "src/stories/Fixture.stories.tsx":
         'import { Control } from "@/components/primitives/control"\nimport { figmaEmbedUrl } from "@/catalog/figma/file"\nexport default { title: "Fixture", component: Control, parameters: { design: { type: "figma", url: figmaEmbedUrl("1:1") } } }\nexport const Example = {}',
-      "src/catalog/figma/parity-cases.json": JSON.stringify([
-        { id: "case-one", nodeId: "1:1", export: "Control", storyId: "fixture--example" },
-      ]),
-      "docs/figma-parity/manifest.json": JSON.stringify({
-        schemaVersion: 2,
-        fileKey: "fixture",
-        version: "v1",
-        capturedAt: "2026-10-21",
-        sourceSha256: "c".repeat(64),
-        cases: {
-          "case-one": {
-            png: "references/case-one.png",
-            sha256: "a".repeat(64),
-            nodeId: "1:1",
-            variant: "1:10",
-            designFingerprint: "b".repeat(64),
-            width: 100,
-            height: 40,
-          },
-        },
-      }),
       "live.json": JSON.stringify([
         {
           ...node,

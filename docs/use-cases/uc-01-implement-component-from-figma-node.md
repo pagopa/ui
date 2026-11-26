@@ -17,7 +17,7 @@ parent_dr: ../design-review.md
 
 **Service Blueprint step**: N/A — confirmed: no service blueprint (see `open.item-019` of the parent DR).
 
-**Domain entities**: Figma node, Registry entry, Variant, Component, Family, Story, Guide, Parity case, Parity coverage, Token, Text contract, Green chain
+**Domain entities**: Figma node, Registry entry, Variant, Component, Family, Story, Guide, Parity diagnostic, Token, Text contract, Green chain
 
 **Trigger**: The maintainer asks to implement node `<nodeId>` as a public component, or the node enters a delta's work queue.
 
@@ -34,7 +34,7 @@ parent_dr: ../design-review.md
 3. The system creates the component in the documented family, with classes derived from the tokens and no arbitrary values.
 4. The system adds the story with the variant controls and the declared accessibility contract.
 5. The system adds the tests of the behaviour and of the text contract, with the messages in Italian and in English.
-6. The system records the parity case for every variant verified on the declared device.
+6. The maintainer runs the parity diagnostic on the node and the declared device and reads the residues it reports; nothing is written.
 7. The system updates the public API report with the added export.
 8. The system runs the green chain; if it is green, the maintainer opens the pull request and the reviewer merges it.
 
@@ -51,13 +51,13 @@ parent_dr: ../design-review.md
 - `E4`: The story does not satisfy the accessibility contract -> Error: `A11Y_CONTRACT_FAILED`
 - `E5`: The component imports from a layer that is not allowed -> Error: `LAYER_VIOLATION`
 - `E6`: The export was added without regenerating the API report -> Error: `API_REPORT_STALE`
-- `E7`: A variant received no parity case -> Error: `PARITY_CASE_UNRECORDED`
+- `E7`: The diagnostic reports residues the drawing does not justify -> Error: `PARITY_RESIDUE_UNEXPLAINED`
 
 **Postconditions**:
 
 - The component is exported from the public entry point and appears in the API report.
 - The catalogue contains an `implemented` registry entry for the node, with the review date.
-- Every declared variant has at least one recorded parity case and the node counts as covered.
+- The parity diagnostic has been read for every declared variant on the declared device, and the session ended with no unexplained residue.
 - The Storybook catalogue shows at least one story of the component and the guide that cites it.
 
 **Errors**:
@@ -68,13 +68,13 @@ parent_dr: ../design-review.md
 - `A11Y_CONTRACT_FAILED`: the story breaks the accessibility contract -> the component is not complete and the check fails, naming the story and the rule broken.
 - `LAYER_VIOLATION`: import from a forbidden layer -> the boundary check fails and the pull request cannot be merged.
 - `API_REPORT_STALE`: API report different from the exported surface -> the API check fails until the report is regenerated and committed.
-- `PARITY_CASE_UNRECORDED`: variant implemented without a parity case -> the node stays outside coverage and the residue is visible in the parity report.
+- `PARITY_RESIDUE_UNEXPLAINED`: a residue the drawing does not justify -> the component is not complete; either the implementation is corrected or the design owner is asked, and the diagnostic is re-run.
 
 **Acceptance checks**:
 
 - `AC-01`: The node's brief has been read and no `pending` rule targets it before the first write. - Evidence: `pnpm nx run pagopa-ui-cli:figma:brief --node <nodeId>`; `pnpm nx run pagopa-ui-cli:check:rules`
 - `AC-02`: The component is exported from `src/pagopa-ui.ts` and appears in the committed API report. - Evidence: `packages/pagopa-ui/etc/pagopa-ui.api.md`; `pnpm nx run pagopa-ui:api:check`
-- `AC-03`: Every variant the node declares has at least one reviewed parity case. - Evidence: `packages/pagopa-ui/src/catalog/figma/parity-cases.json`; `pnpm ui-cli check parity`
+- `AC-03`: Every variant the node declares compares without an unexplained residue against the node's numeric source. - Evidence: `pnpm ui-cli parity check --node <nodeId> --device <device>`
 - `AC-04`: The registry reports the node as `implemented` with the review date. - Evidence: `packages/pagopa-ui/src/catalog/figma/registry.json`; `pnpm nx run pagopa-ui:check:catalogue`
 - `AC-05`: At least one story of the component exists and the accessibility contract passes. - Evidence: `pnpm nx run pagopa-ui-storybook:test:stories`
 - `AC-06`: Every text the component renders or announces can be overridden by the consumer and has an Italian and an English value. - Evidence: `packages/pagopa-ui/src/lib/ui-provider/`; text contract tests
@@ -101,8 +101,8 @@ sequenceDiagram
   M->>CLI: figma:brief --node <nodeId>
   CLI->>CAT: reads registry, rules, comments
   CAT-->>M: the node's brief
-  M->>LIB: component, story, tests, parity case
-  LIB->>CAT: registry implemented, parity case
+  M->>LIB: component, story, tests
+  LIB->>CAT: registry implemented
   M->>CI: green chain
   CI-->>M: outcome
 ```
@@ -110,13 +110,13 @@ sequenceDiagram
 - Service Blueprint: N/A — confirmed (see `open.item-019` of the parent DR).
 - Figma: library `pvhsJpPGQbEwNLiyP7BOIw`, node `<nodeId>`.
 - DR components: `solution.components.item-001`, `solution.components.item-004`, `solution.components.item-005`, `solution.components.item-006`
-- Endpoint / OpenAPI / AsyncAPI / Data Contract: `contracts.item-001` (public surface), `contracts.item-004` (inventory), `contracts.item-005` (registry), `contracts.item-006` (parity cases), `contracts.item-009` (text contract)
+- Endpoint / OpenAPI / AsyncAPI / Data Contract: `contracts.item-001` (public surface), `contracts.item-004` (inventory), `contracts.item-005` (registry), `contracts.item-009` (text contract)
 - Validation evidence: `pnpm nx run workspace:verify`; `packages/ui-cli/data/css-budget.json`
 
 ## Open questions and propagation
 
-| ID           | Type              | Item                                                                                                                                       | Impact / blocker                                                                    | Owner | Resolution / link |
-| ------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- | ----- | ----------------- |
-| `uc-open-01` | question          | Does a rule in `pending` status that targets the node block the implementation, or is the node implemented and the rule closed afterwards? | Determines whether the node enters the main flow or must wait for a design decision | TBD   | TBD               |
-| `uc-open-02` | proposed decision | Is the parity case recorded per variant or per combination of axes?                                                                        | Changes the number of cases produced and the granularity of the proof               | TBD   | TBD               |
-| `uc-open-03` | assumption        | A node in `mocked` status reuses the existing registry entry (flow `A1`)                                                                   | If wrong, the registry accumulates duplicate entries for the same node              | TBD   | TBD               |
+| ID           | Type       | Item                                                                                                                                       | Impact / blocker                                                                    | Owner | Resolution / link |
+| ------------ | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- | ----- | ----------------- |
+| `uc-open-01` | question   | Does a rule in `pending` status that targets the node block the implementation, or is the node implemented and the rule closed afterwards? | Determines whether the node enters the main flow or must wait for a design decision | TBD   | TBD               |
+| `uc-open-02` | decision   | Is the alignment checked per variant or per combination of axes?                                                                           | Settled: the diagnostic runs per node and per declared device, and records nothing  | TBD   | ADR-0011          |
+| `uc-open-03` | assumption | A node in `mocked` status reuses the existing registry entry (flow `A1`)                                                                   | If wrong, the registry accumulates duplicate entries for the same node              | TBD   | TBD               |

@@ -13,7 +13,7 @@ import {
   renderTokenDriftRecord,
 } from "../catalogue-render.ts"
 import { requestsFolder } from "../config.ts"
-import { formatCatalogueSummary, formatCoverageLine, renderCataloguePlan } from "./output.ts"
+import { formatCatalogueSummary, renderCataloguePlan } from "./output.ts"
 import type { CatalogueContext } from "./context.ts"
 
 function writePendingFiles(
@@ -52,10 +52,8 @@ function writePullRequestBody(
       committed: context.committed,
       liveVersion: context.liveVersion,
       ratchet: context.ratchet,
-      evidenceBase: context.evidenceBase,
       devicePolicy: validation.devicePolicy,
       deviceStats: validation.deviceStats,
-      deviceCoverage: validation.deviceCoverage,
       bulkByNode: validation.bulkByNode,
       bulkByPage: validation.bulkByPage,
       entries: validation.entries,
@@ -81,10 +79,8 @@ function writeDeltaFile(workspace: Workspace, context: CatalogueContext, out: st
       committed: context.committed,
       liveVersion: context.liveVersion,
       ratchet: context.ratchet,
-      evidenceBase: context.evidenceBase,
       devicePolicy: validation.devicePolicy,
       deviceStats: validation.deviceStats,
-      deviceCoverage: validation.deviceCoverage,
       bulkByNode: validation.bulkByNode,
       bulkByPage: validation.bulkByPage,
       entries: validation.entries,
@@ -97,8 +93,7 @@ function writeDeltaFile(workspace: Workspace, context: CatalogueContext, out: st
  * The token drift is what the review reads and what the branch carries: a run
  * that finds none removes the record, so a drift that has been fixed leaves no
  * stale page behind and the next run has nothing to commit. The record sits
- * beside the pinned evidence bundle at the workspace root, not inside the
- * audited package.
+ * beside the drift delta at the workspace root, not inside the audited package.
  */
 function writeTokenDrift(context: CatalogueContext, out: string[]): void {
   if (!context.tokenDriftPath || !context.tokenDrift) return
@@ -154,10 +149,8 @@ export function finishCatalogue(context: CatalogueContext, plan: boolean): Catal
         entries: validation.entries,
         liveVersion: context.liveVersion,
         surfaceWaiting: validation.surfaceWaiting,
-        surfaceUnmirrored: validation.surfaceUnmirrored,
         surfaceUncensused: validation.surfaceUncensused,
         deviceStats: validation.deviceStats,
-        deviceCoverage: validation.deviceCoverage,
         requests: requestsFolder(workspace),
       }),
     )
@@ -179,14 +172,10 @@ export function finishCatalogue(context: CatalogueContext, plan: boolean): Catal
         bulkByPage: validation.bulkByPage,
         evidenceExceptions: context.evidenceExceptions,
         apiExceptions: context.apiExceptions,
-        deviceCoverage: validation.deviceCoverage,
         deviceStats: validation.deviceStats,
         formatDeviceLine,
-        formatCoverageLine,
-        coverage: validation.deviceCoverage,
         surfaceStats: validation.surfaceStats,
         formatSurfaceLine,
-        caseStats: validation.caseStats,
       }),
     )
   }

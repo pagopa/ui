@@ -17,7 +17,7 @@ parent_dr: ../design-review.md
 
 **Service Blueprint step**: N/A — confirmed: no service blueprint (see `open.item-019` of the parent DR).
 
-**Domain entities**: Delta, Figma node, Registry entry, Variant, Device, Parity case, Parity coverage, Bulk rule, Work order, Green chain
+**Domain entities**: Delta, Figma node, Registry entry, Variant, Device, Parity diagnostic, Bulk rule, Work order, Green chain
 
 **Trigger**: Figma changed compared with the committed snapshot, or a weekly drift pull request is open.
 
@@ -33,7 +33,7 @@ parent_dr: ../design-review.md
 2. The system produces the delta plan: changed nodes, kind of change, fingerprint before and after, residue of uncensused surface.
 3. The system triages the nodes and computes the work order from the dependencies.
 4. For every node in the queue the system prints the brief and applies the decision: align, record as a reasoned exclusion, or open a design request.
-5. The system aligns the component, updates the story and records the parity cases on the device involved.
+5. The system aligns the component, updates the story and compares the node against its drawing on every declared device; the residues it leaves are this session's, restated in the registry note rather than stored anywhere.
 6. The system closes the delta queue and verifies that every node has a recorded decision.
 7. The system runs the green chain; the maintainer merges the drift pull request, which for drift is also the act of design approval.
 
@@ -48,14 +48,14 @@ parent_dr: ../design-review.md
 - `E1`: No usable previous snapshot exists -> Error: `BASELINE_SNAPSHOT_MISSING`
 - `E2`: The file changed during the read and the fingerprints are not comparable -> Error: `SNAPSHOT_UNSTABLE`
 - `E3`: A node in the queue has no recorded decision -> Error: `NODE_DECISION_MISSING`
-- `E4`: The rendering diverges between devices with no recorded exception -> Error: `DEVICE_DIVERGENCE_UNRECORDED`
-- `E5`: A node changes but stays covered by an unreviewed parity case -> Error: `PARITY_EVIDENCE_STALE`
+- `E4`: The rendering diverges between devices with no declared reason -> Error: `DEVICE_DIVERGENCE_UNRECORDED`
+- `E5`: A residue measured before the change is still quoted as current -> Error: `PARITY_RESIDUE_STALE`
 
 **Postconditions**:
 
 - The committed snapshot matches the file version that was worked.
 - Every node of the delta has a recorded decision: aligned, excluded with a reason, or pending with an open design request.
-- Parity coverage includes the nodes aligned in the delta.
+- The nodes aligned in the delta were compared per declared device, and their residues restated rather than quoted from before the change.
 - The drift pull request contains only the work of the delta and its description lists the nodes and the decisions.
 
 **Errors**:
@@ -63,16 +63,16 @@ parent_dr: ../design-review.md
 - `BASELINE_SNAPSHOT_MISSING`: the starting snapshot is missing -> the plan is not produced and no file is modified.
 - `SNAPSHOT_UNSTABLE`: the file changed between two reads -> the work stops and asks for a fresh read, so as not to align to a version already superseded.
 - `NODE_DECISION_MISSING`: the queue contains a node without a decision -> the queue cannot be closed and the pull request stays incomplete.
-- `DEVICE_DIVERGENCE_UNRECORDED`: the mobile rendering diverges with no exception -> the device check fails and the divergence cannot pass silently.
-- `PARITY_EVIDENCE_STALE`: the parity case refers to a previous variant -> the node does not count as covered until the case is realigned.
+- `DEVICE_DIVERGENCE_UNRECORDED`: the mobile rendering diverges with no reason the device policy and the registry note account for -> the device check fails and the divergence cannot pass silently.
+- `PARITY_RESIDUE_STALE`: a residue was measured under conditions that no longer hold -> the node does not count as reviewed until a fresh comparison measures it again.
 
 **Acceptance checks**:
 
 - `AC-01`: The delta plan lists every changed node with the kind of change and the fingerprints before and after. - Evidence: `pnpm nx run pagopa-ui-cli:figma:plan`
 - `AC-02`: The work order respects the dependencies: no dependent node precedes the node it depends on. - Evidence: `pnpm nx run pagopa-ui-cli:figma:triage`
 - `AC-03`: Every node of the queue has a recorded decision before the close. - Evidence: `pnpm nx run pagopa-ui-cli:figma:status`
-- `AC-04`: Divergences between devices are allowed only if they appear in the list of reasoned exceptions. - Evidence: `packages/pagopa-ui/src/catalog/figma/device-exceptions.json`; `pnpm nx run pagopa-ui-cli:figma:devices`
-- `AC-05`: The aligned nodes have parity cases reviewed after the change. - Evidence: `pnpm ui-cli check parity`
+- `AC-04`: Divergences between devices are allowed only when the device policy declares them and the registry note explains them. - Evidence: `packages/pagopa-ui/src/catalog/figma/device-policy.json`; `pnpm nx run pagopa-ui-cli:check:devices`
+- `AC-05`: Every aligned node is compared per declared device after the change, with each remaining residue restated. - Evidence: `pnpm ui-cli parity check --node <nodeId> --device <device>`
 - `AC-06`: The catalogue check is green after the alignment. - Evidence: `pnpm nx run pagopa-ui:check:catalogue`
 - `AC-07`: The full green chain is green before the commit. - Evidence: `pnpm nx run workspace:verify`
 - `AC-08`: With no starting snapshot, the system returns `BASELINE_SNAPSHOT_MISSING` and modifies no file. - Evidence: `ui-cli` tests on the synchronisation command
@@ -97,17 +97,17 @@ sequenceDiagram
   CLI-->>M: queue and work order
   loop every node in the queue
     M->>CLI: figma:brief --node <nodeId>
-    M->>LIB: alignment + parity cases
+    M->>LIB: alignment + per-device comparison
   end
-  LIB->>CAT: snapshot and coverage updated
+  LIB->>CAT: snapshot updated
   M->>M: merge of the drift pull request (design approval)
 ```
 
 - Service Blueprint: N/A — confirmed (see `open.item-019` of the parent DR).
 - Figma: library `pvhsJpPGQbEwNLiyP7BOIw`, version of the current snapshot.
 - DR components: `solution.components.item-001`, `solution.components.item-005`, `solution.components.item-004`
-- Endpoint / OpenAPI / AsyncAPI / Data Contract: `contracts.item-004`, `contracts.item-005`, `contracts.item-006`, `contracts.item-007`, `contracts.item-008`
-- Validation evidence: `pnpm ui-cli check parity`; `docs/figma-drift-handoff.md`
+- Endpoint / OpenAPI / AsyncAPI / Data Contract: `contracts.item-004`, `contracts.item-005`, `contracts.item-007`, `contracts.item-008`
+- Validation evidence: `pnpm ui-cli parity check`; `docs/figma-drift-handoff.md`
 
 ## Open questions and propagation
 

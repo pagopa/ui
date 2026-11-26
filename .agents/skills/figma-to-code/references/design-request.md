@@ -75,8 +75,8 @@ remains pending. Reuse an open request rather than duplicating it.
 Sessions start on the person's request; nothing polls.
 `pnpm ui-cli figma request list --waiting` (`--answered`) shows the queue. Read
 the answer, implement it, update the guide and rule dispositions, and
-review the node's source and render cases. Remove the review story, retaining the
-captures, and update the index. With the implementation committed:
+compare the node's source against its render, per declared device. Remove the
+review story, retaining the captures, and update the index. With the implementation committed:
 
 ```sh
 pnpm ui-cli figma request close <record> --decision "<answer>" --commit <sha> \

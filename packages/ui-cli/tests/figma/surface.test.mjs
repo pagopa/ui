@@ -7,7 +7,6 @@ import {
   surfacePending,
   surfaceSummary,
   surfaceUncensused,
-  surfaceUnmirrored,
 } from "../../src/figma/surface.ts"
 
 const FILE_KEY = "pvhsJpPGQbEwNLiyP7BOIw"
@@ -41,48 +40,40 @@ function identity(nodeId, decision, extra = {}) {
 }
 
 function composition(nodeId, extra = {}) {
-  return { nodeId, name: "Frame", device: "desktop", drawn: 1, mirrors: [], ...extra }
+  return { nodeId, name: "Frame", device: "desktop", drawn: 1, ...extra }
 }
 
 function run(
   data,
-  {
-    nodes = [],
-    entries = {},
-    bulkRules = [],
-    cases = [],
-    devices = ["mobile", "tablet", "desktop"],
-  } = {},
+  { nodes = [], entries = {}, bulkRules = [], devices = ["mobile", "tablet", "desktop"] } = {},
 ) {
   return checkPageSurface(data, {
     nodes,
     registry: { entries, bulkRules },
-    cases,
     fileKey: FILE_KEY,
     devices,
   })
 }
 
-test("a census that mirrors the inventory passes", () => {
+test("a census that covers the inventory passes", () => {
   const result = run(
     surface({
       identities: [
         identity("12812:16248", "shipped"),
         identity("1333:16408", "pending", { reason: "a design request is open" }),
       ],
-      compositions: [composition("10981:11318", { device: "desktop", mirrors: ["case-1"] })],
+      compositions: [composition("10981:11318", { device: "desktop", drawn: 2 })],
     }),
     {
       nodes: [inventory("12812:16248"), inventory("1333:16408", { name: "TimelineElement" })],
       entries: { "12812:16248": { status: "implemented" }, "1333:16408": { status: "pending" } },
-      cases: [{ id: "case-1", nodeId: "12812:16248", device: "desktop" }],
     },
   )
   assert.deepEqual(result.errors, [])
   assert.equal(result.stats.identities, 2)
   assert.equal(result.stats.inLibrary, 2)
   assert.equal(result.stats.pending, 1)
-  assert.equal(result.stats.mirrored, 1)
+  assert.equal(result.stats.compositions, 1)
 })
 
 test("an unpublished drawing is out of scope and needs no reason", () => {
@@ -209,51 +200,7 @@ test("the census names the file it was read from", () => {
   assert.match(result.errors[0], /is not the inventory file/)
 })
 
-test("a composition that measures nothing needs a written reason", () => {
-  const unexcused = run(surface({ compositions: [composition("10981:11318", { drawn: 4 })] }))
-  assert.match(unexcused.errors[0], /measures nothing and requires a reason/)
-  const excused = run(
-    surface({ compositions: [composition("10981:11318", { reason: "no case" })] }),
-  )
-  assert.deepEqual(excused.errors, [])
-  assert.equal(surfaceUnmirrored(surface({ compositions: [composition("10981:11318")] })).length, 1)
-})
-
-test("a composition's cases must exist, measure an identity on the page and share its device", () => {
-  const identities = [identity("12812:16248", "shipped")]
-  const entries = { "12812:16248": { status: "implemented" } }
-  const nodes = [inventory("12812:16248")]
-
-  const unknown = run(
-    surface({ identities, compositions: [composition("f:1", { mirrors: ["nope"] })] }),
-    {
-      nodes,
-      entries,
-    },
-  )
-  assert.match(unknown.errors[0], /case nope is not in the case corpus/)
-
-  const offPage = run(
-    surface({ identities, compositions: [composition("f:1", { mirrors: ["c"] })] }),
-    {
-      nodes,
-      entries,
-      cases: [{ id: "c", nodeId: "999:999", device: "desktop" }],
-    },
-  )
-  assert.match(offPage.errors[0], /measures 999:999, which is not an identity on page/)
-
-  const wrongDevice = run(
-    surface({
-      identities,
-      compositions: [composition("f:1", { device: "mobile", mirrors: ["c"] })],
-    }),
-    { nodes, entries, cases: [{ id: "c", nodeId: "12812:16248", device: "desktop" }] },
-  )
-  assert.match(wrongDevice.errors[0], /is a desktop case but the composition is drawn at mobile/)
-})
-
-test("a composition speaks the device vocabulary of the case corpus", () => {
+test("a composition speaks the device vocabulary of the policy", () => {
   const result = run(
     surface({ compositions: [composition("f:1", { device: "phablet", reason: "x" })] }),
   )

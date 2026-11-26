@@ -78,7 +78,6 @@ const STATIC = [
   "pagopa-ui-cli:lint:check",
   "pagopa-ui-cli:test",
   "pagopa-ui-cli:check:rules",
-  "pagopa-ui-cli:check:parity",
 ]
 
 const BROWSER = [

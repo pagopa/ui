@@ -27,7 +27,7 @@ section it sits in.
 | Artwork        | consumer        | [ADR-0003](docs/decisions/0003-artwork-provenance.md)                                                              |
 | Public surface | consumer        | [API report](packages/pagopa-ui/etc/pagopa-ui.api.md)                                                              |
 | Drift          | Figma alignment | [figma drift handoff](docs/figma-drift-handoff.md)                                                                 |
-| Parity         | Figma alignment | [figma parity](docs/figma-parity/README.md)                                                                        |
+| Parity         | Figma alignment | [ADR-0011](docs/decisions/0011-ephemeral-parity-diagnostic.md)                                                     |
 
 ## Figma alignment
 
@@ -88,43 +88,23 @@ The reading of one page tree, recorded as that page's census. It is the unit of 
 _Avoid_: page scan, page crawl
 
 **Case**:
-A reviewed, reproducible comparison between one source variant and one story: selectors, width, state, residues and a note.
-_Avoid_: test, scenario, sample
-
-**Draft case**:
-A proposed case whose mapping has not been reviewed; it never counts as coverage.
-_Avoid_: proposal (when meaning coverage), pending case
-
-**Case corpus**:
-The reviewed cases held as one value: its documents — the cases, the inventory, the registry and the device vocabulary, read the first time a judgment asks for them — are readonly properties, its judgments are methods over them (`of`, `reviewed`, `node`, `find`, `pointed`, `coverage`, `proposals`, `stateProposals`, `validate`), and `validate()` takes no arguments because the documents are already inside; it is `packages/ui-cli/src/parity/corpus.ts`, and the registry keeps the decision while the corpus keeps the comparison.
-_Avoid_: case file (for the value), case list, cases module, catalogue
-
-**Case writer**:
-The module a reviewed decision is stored through: it turns a proposal into a committed case, keeps case identity, and forgets the record reader's memory after writing.
-_Avoid_: saver, case store, repository, corpus
+An on-demand comparison between one source variant and one story: selectors, width, state and the residues it reports. It is derived from the registry and the command line, never stored.
+_Avoid_: test, scenario, sample, committed case
 
 **Coverage**:
-The declared devices of a node that a reviewed case covers.
-_Avoid_: completeness
-
-**Device exception**:
-A written reason a node may stay implemented with a case missing for one of its declared devices; it is a burn-down list beside the corpus (`packages/ui-cli/src/parity/device-exceptions.ts`), not a committed record and not a coverage claim.
-_Avoid_: residue, tolerance, waiver
+The declared devices of a set that its story renders; it is a property the inventory reads from the device policy, not a count of reviewed comparisons.
+_Avoid_: completeness, case coverage
 
 **Residue**:
 A measured difference accepted with a written reason; it stays visible and does not block.
 _Avoid_: exception, tolerance
 
 **Parity**:
-The numeric agreement between a source variant and its rendered story, plus the structural and responsive verdict.
+The numeric agreement between a source variant and its rendered story, plus the structural and responsive verdict. It is a diagnostic a session runs on a node, not a state the repository keeps ([ADR-0011](docs/decisions/0011-ephemeral-parity-diagnostic.md)).
 _Avoid_: pixel diff, fidelity score
 
-**Evidence bundle**:
-The committed, generated set of source documents, pinned Figma images and their manifest that lets a clone read the source side without the live snapshot or a token.
-_Avoid_: snapshot (for the bundle), assets
-
 **Verification**:
-The hermetic verdict over the case corpus, the device coverage and the evidence bundle, with no snapshot, browser or network.
+The hermetic verdict `check:catalogue`, `check:artwork` and `check:rules` reach from the committed records, with no snapshot, browser or network.
 _Avoid_: evidence (as a synonym), test run
 
 **Delta**:

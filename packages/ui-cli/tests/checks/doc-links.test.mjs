@@ -95,7 +95,7 @@ test("the docs gate accepts optional comparison values and still checks followin
     "--compare-offset .origin",
     "--compare-box full --compare-offset .origin",
   ]) {
-    const command = `pnpm ui-cli parity check --case demo ${options}`
+    const command = `pnpm ui-cli parity check --node 1:1 ${options}`
     assert.deepEqual(check({ "CONTRIBUTING.md": `\`${command}\`` }).problems, [])
     assert.match(
       problems(check({ "CONTRIBUTING.md": `\`${command} --typo\`` })),
