@@ -335,6 +335,58 @@ function compileConsumer(context: ConsumerContext): void {
   )
 }
 
+// A consumer that imports one icon must receive one icon: the per-module
+// build is what makes that boundary a bundler fact, so the assertion reads the
+// tree-shaken output instead of the module graph.
+async function verifyTreeShakenIconBundle(
+  context: ConsumerContext,
+  audited: NodeRequire,
+  slug: string,
+): Promise<void> {
+  const generated = path.join(context.root, "src/components/icons/generated", `${slug}.tsx`)
+  const nodeIds = (code: string): string[] =>
+    [...code.matchAll(/["']?data-figma-node-id["']?\s*[:=]\s*["']([^"']+)["']/g)].map(
+      (match) => match[1],
+    )
+  const identityIds = new Set(nodeIds(fs.readFileSync(generated, "utf8")))
+  assert.ok(identityIds.size > 0, `the generated ${slug} module lost its source provenance`)
+  const entry = path.join(context.consumer, "icon-entry.tsx")
+  fs.writeFileSync(
+    entry,
+    `import Icon from "${context.packageName}/icons/${slug}"\n\nconsole.log(Icon)\n`,
+  )
+  const { build } = await import(pathToFileURL(audited.resolve("vite")).href)
+  const built = await build({
+    root: context.consumer,
+    configFile: false,
+    envDir: false,
+    logLevel: "silent",
+    build: {
+      write: false,
+      minify: false,
+      rollupOptions: { input: entry, external: [/^react($|\/)/] },
+    },
+  })
+  const results = Array.isArray(built) ? built : "output" in built ? [built] : []
+  const code = results
+    .flatMap((result) => result.output)
+    .map((output) => (output.type === "chunk" ? output.code : ""))
+    .join("\n")
+  const packed = nodeIds(code)
+  assert.ok(packed.length > 0, "the tree-shaken bundle lost the imported icon")
+  assert.match(code, /viewBox["']?\s*[:=]/, "the tree-shaken bundle lost the source frame")
+  assert.deepEqual(
+    packed.filter((id) => !identityIds.has(id)),
+    [],
+    "importing one source icon must not bundle another identity's artwork",
+  )
+  assert.doesNotMatch(
+    code,
+    /\.svg|data:image\/svg|mask-image/,
+    "packed icons must draw their geometry instead of requesting artwork",
+  )
+}
+
 async function verifyHostStyles(context: ConsumerContext, options: LibraryOptions): Promise<void> {
   const {
     consumer,
@@ -564,6 +616,7 @@ export async function checkLibrary(
     const imported = readPackedImport(context)
     validatePackedImport(imported)
     compileConsumer(context)
+    await verifyTreeShakenIconBundle(context, audited, "feedback")
     await verifyHostStyles(context, options)
     const rsc = prepareRscConsumer(context)
     buildRscConsumer(context, rsc, consumerEnv)
@@ -585,7 +638,7 @@ export async function checkLibrary(
       contract.expectedIconPaints,
     )
     const exportCount = imported.exports.length
-    const summary = `isolated tarball, ${exportCount} exports, strict types, shared React, native forms, responsive Table/sorting/paging, mobile chrome bands/one-row header/no clipped actions, viewport and container device scopes (narrow-column module, scrollable-list first item, segmented fit), calendar confirmation/ranges, explicit Breadcrumb navigation, source ProductCard/native links/actions/reflow, source OTP/password/paste/native-length/reset/system-color paint, source Avatar/native images/selection/non-color statuses/unoccluded initials/font preferences/system-color paint, keyboard/focus, standalone CSS/fonts/artwork and host-style coexistence, Next.js App Router request-time SSR/hydration, provider messages and client routing in${engines}`
+    const summary = `isolated tarball, ${exportCount} exports, strict types, shared React, native forms, responsive Table/sorting/paging, mobile chrome bands/one-row header/no clipped actions, viewport and container device scopes (narrow-column module, scrollable-list first item, segmented fit), calendar confirmation/ranges, explicit Breadcrumb navigation, source ProductCard/native links/actions/reflow, source OTP/password/paste/native-length/reset/system-color paint, source Avatar/native images/selection/non-color statuses/unoccluded initials/font preferences/system-color paint, keyboard/focus, standalone CSS/fonts/artwork, single-icon tree-shaken bundles and host-style coexistence, Next.js App Router request-time SSR/hydration, provider messages and client routing in${engines}`
     return report("library", summary, [])
   } finally {
     try {
