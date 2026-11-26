@@ -26,13 +26,7 @@ import { useRender } from '@base-ui/react/use-render';
 import { VariantProps } from 'class-variance-authority';
 
 // @public (undocumented)
-export function Accordion(input: {
-    items: AccordionItemData[];
-    defaultValue?: string;
-    className?: string;
-    "aria-label"?: string;
-    loadingLabel?: string;
-}): React_2.JSX.Element;
+export function Accordion(input: AccordionProps): React_2.JSX.Element;
 
 // @public (undocumented)
 export interface AccordionItemData {
@@ -48,6 +42,19 @@ export interface AccordionItemData {
     skeleton?: boolean;
     // (undocumented)
     title: React_2.ReactNode;
+}
+
+// @public
+export interface AccordionProps extends Omit<React_2.ComponentProps<"div">, "children" | "className" | "aria-label"> {
+    "aria-label"?: string;
+    className?: string;
+    defaultValue?: string[];
+    items: AccordionItemData[];
+    loadingLabel?: string;
+    multiple?: boolean;
+    onValueChange?: (value: string[]) => void;
+    ref?: React_2.Ref<HTMLDivElement>;
+    value?: string[];
 }
 
 // Warning: (ae-forgotten-export) The symbol "alertVariants" needs to be exported by the entry point pagopa-ui.d.ts

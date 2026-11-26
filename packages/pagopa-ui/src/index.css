@@ -177,31 +177,27 @@
   ); /* Color/Blue/300 — the source SkipToMainContent 2px stroke around the dark pill */
   --radius: var(--figma-radius-8);
 
-  /* Component and page geometry read from the source frames and artboards.
-     The generated layer carries the shared foundation; these component-scoped
-     extensions stay local and are recorded in the design request. */
-  --artboard-height: 650px; /* White Template, Dialog, Informative Drawer */
-  --artboard-height-tall: 800px; /* Feedback Page, Informative Drawer (right) */
+  /* Component geometry read from the source frames: what a shipped component
+     renders. The generated layer carries the shared foundation; these
+     component-scoped extensions stay local and are recorded in the design
+     request. The demo artboard geometry lives in apps/storybook/src/preview.css,
+     so a consumer receives no geometry for a frame it never renders. */
+  --artboard-height: 650px; /* White Template page surface, 40.625rem */
   --dialog-width: 600px; /* Dialog desktop, 37.5rem */
   --dialog-width-compact: 272px; /* Dialog mobile and LogIn, 17rem */
-  --login-width: 520px; /* LogIn, 32.5rem */
-  --state-width: 368px; /* Waiting, Ok and Ko states, 23rem */
-  --drawer-width: 416px; /* demo drawer, 26rem */
   --drawer-width-wide: 417px; /* Informative Drawer, 26.0625rem */
   --id-module-width: 410px; /* ID module from the 600px device step, 25.625rem */
+  --state-width: 368px; /* Error, waiting and success state columns, 23rem */
   --camera-size: 376px; /* camera viewfinder, 23.5rem */
   --menu-width: 274px; /* menu minimum, 17.125rem */
   --menu-skeleton-width: 106px; /* menu skeleton, 6.625rem */
-  --overlay-width: 512px; /* Snackbar and demo hero, 32rem */
+  --overlay-width: 512px; /* Snackbar, 32rem */
   --header-height: 102px; /* Header desktop, 6.375rem */
   --preheader-height: 55px; /* Preheader, 3.4375rem */
   --page-gutter: 2rem; /* Snackbar viewport fallback */
   --page-gutter-lg: 3rem; /* Dialog viewport fallback */
   --hairline: var(--figma-spacing-2); /* tooltip arrow offset, spinner mask inset */
   --otp-clip-margin: var(--figma-spacing-4); /* OTP field overflow clip */
-  --grid-aside: 20rem; /* demo grid aside column */
-  --grid-fields: 10rem; /* demo grid field column */
-  --grid-actions: 3rem; /* demo grid action column */
 }
 
 @theme inline {

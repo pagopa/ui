@@ -175,3 +175,63 @@ test("overlays: the packed dialog, drawer, popover and menu trap and restore foc
   )
   assert.deepEqual(errors, [], "packed application logged browser errors")
 })
+
+test("disclosure: the packed accordion follows the value it is given", async ({ page }) => {
+  const { errors } = await openConsumer(page)
+  const contract = page.locator('[data-disclosure-contract="accordion"]')
+  const first = contract.getByRole("button", { name: "Come si paga?" })
+  const second = contract.getByRole("button", { name: "Dove trovo la ricevuta?" })
+  const openSections = page.locator('output[aria-label="Sezioni aperte"]')
+  // The header label and its announced state, read from the tree the engine built.
+  const settled = (label, state) =>
+    page.waitForFunction(
+      ([text, expected]) =>
+        [...document.querySelectorAll("button[aria-expanded]")].some(
+          (button) =>
+            button.textContent?.includes(text) && button.getAttribute("aria-expanded") === expected,
+        ),
+      [label, state],
+    )
+
+  assert.equal(await first.getAttribute("aria-expanded"), "true")
+  assert.equal(await second.getAttribute("aria-expanded"), "false")
+
+  // A caller update, not a click, moves the open section.
+  await page.locator("#consumer-disclosure-open").click()
+  await settled("Dove trovo la ricevuta?", "true")
+  assert.equal(await first.getAttribute("aria-expanded"), "false")
+  assert.equal(
+    await openSections.textContent(),
+    "due",
+    "the packed accordion ignored its value prop",
+  )
+  assert.equal(
+    await page.locator('output[aria-label="Contratto delle sezioni"]').textContent(),
+    "classe/accordion",
+    "the packed accordion root did not receive ref, className and the standard attribute",
+  )
+
+  await second.click()
+  await settled("Dove trovo la ricevuta?", "false")
+  assert.equal(
+    await openSections.textContent(),
+    "nessuna",
+    "the packed accordion header did not reach onValueChange",
+  )
+
+  // Uncontrolled in the installed package: two sections open at mount, and a
+  // third opening without closing them, since `multiple` allows it.
+  const uncontrolled = page.locator('[data-testid="consumer-disclosure-default"]')
+  const sectionA = uncontrolled.getByRole("button", { name: "Prima sezione" })
+  const sectionB = uncontrolled.getByRole("button", { name: "Seconda sezione" })
+  const sectionC = uncontrolled.getByRole("button", { name: "Terza sezione" })
+  assert.equal(await sectionA.getAttribute("aria-expanded"), "true")
+  assert.equal(await sectionB.getAttribute("aria-expanded"), "true")
+  assert.equal(await sectionC.getAttribute("aria-expanded"), "false")
+  await sectionC.click()
+  await settled("Terza sezione", "true")
+  assert.equal(await sectionA.getAttribute("aria-expanded"), "true", "a kept section closed")
+  assert.equal(await sectionB.getAttribute("aria-expanded"), "true", "a kept section closed")
+
+  assert.deepEqual(errors, [], "packed application logged browser errors")
+})
