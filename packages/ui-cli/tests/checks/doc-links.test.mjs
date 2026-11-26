@@ -209,6 +209,27 @@ test("other skills may name components and the installed third-party skills are 
   )
 })
 
+test("a skill pinned in skills-lock.json needs the entrypoint it resolves to", () => {
+  const lock = `{
+  "version": 2,
+  "skills": {
+    "shadcn": { "source": "shadcn/ui", "skillPath": "skills/shadcn/SKILL.md" }
+  }
+}
+`
+  assert.deepEqual(
+    check({
+      "skills-lock.json": lock,
+      ".agents/skills/shadcn/SKILL.md": "# shadcn\n",
+    }).problems,
+    [],
+  )
+  assert.match(
+    problems(check({ "skills-lock.json": lock })),
+    /skills-lock\.json:4: shadcn is pinned in skills-lock\.json but \.agents\/skills\/shadcn\/SKILL\.md is missing/,
+  )
+})
+
 const fakeNx = `#!/bin/sh
 case "$1 $2" in
   "show projects") printf '["alpha","beta"]\\n' ;;
