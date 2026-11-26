@@ -1,12 +1,32 @@
 import { z } from "zod"
 
-import { NodeIdSchema, StatusSchema } from "./common.ts"
+import { NodeIdSchema, NonEmptyStringSchema, StatusSchema } from "./common.ts"
 
 // The consumer map: the one artifact a consuming agent reads to learn which
 // React component renders a Figma node. It is generated from the catalogue and
 // ships inside the package, so the schema is also the contract with the
 // `pagopa-ui-map` command line that reads it: a key this file does not declare
 // is a mistake on one side of the boundary, not a gap to tolerate.
+
+// One Figma variant property translated to the React prop that carries it. The
+// catalogue declares these per node in the same compact form; `values` is
+// omitted when the option names are already the prop values, and the option
+// values keep their JSON type so a consumer writes `selected={true}` and
+// `padding={16}` from the map instead of a string it has to coerce.
+export const PropsMapEntrySchema = z.strictObject({
+  prop: NonEmptyStringSchema,
+  values: z.record(NonEmptyStringSchema, z.union([z.string(), z.number(), z.boolean()])).optional(),
+})
+
+// The version of the mapping shape. It travels in the artifact, not in the
+// catalogue: the registry declares the map and the generator stamps the version
+// it emitted, so a consumer can refuse a shape it does not know.
+export const PROPS_MAP_VERSION = 1
+
+export const PropsMapSchema = z.strictObject({
+  version: z.literal(PROPS_MAP_VERSION),
+  props: z.record(NonEmptyStringSchema, PropsMapEntrySchema),
+})
 
 export const MapNodeSchema = z.strictObject({
   // The Figma side, omitted when the pinned snapshot no longer lists the node
@@ -25,6 +45,11 @@ export const MapNodeSchema = z.strictObject({
   // The Storybook id of the story that draws it (`<title>--<export>`), so the
   // consumer opens the reference implementation instead of guessing its shape.
   story: z.string().optional(),
+  // The Figma variant properties of the node, each with the React prop it
+  // becomes, so a consumer renders the API instead of guessing a prop name or
+  // an option spelling from the layer. A node whose variants have no mapping
+  // omits the field: absent is "not declared", never "no variants".
+  propsMap: PropsMapSchema.optional(),
   // Why the node is not a component: the reviewed reason of an excluded entry.
   reason: z.string().optional(),
 })
@@ -44,3 +69,5 @@ export const FigmaMapSchema = z.strictObject({
 
 export type MapNode = z.infer<typeof MapNodeSchema>
 export type FigmaMap = z.infer<typeof FigmaMapSchema>
+export type PropsMap = z.infer<typeof PropsMapSchema>
+export type PropsMapEntry = z.infer<typeof PropsMapEntrySchema>

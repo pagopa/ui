@@ -1,10 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import * as React from "react"
 import { expect, screen, userEvent, waitFor, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { CheckboxField } from "@/components/inputs"
-import { Dialog } from "@/components/overlays"
+import { Dialog, DialogClose } from "@/components/overlays"
 import { Button } from "@/components/primitives/button"
+import { Input } from "@/components/primitives/input"
+
+import dialogGuide from "./guides/dialog.md?raw"
 
 // The source sample of set `1042:18133` (`Device=Desktop|Mobile, Type=Default`):
 // the title, the copy, the option row and the two actions. The copy is
@@ -31,8 +35,7 @@ const meta = {
     design: { type: "figma", url: figmaEmbedUrl("1042:18133") },
     docs: {
       description: {
-        component:
-          "Modal dialog with a focus trap, Escape to close and focus restore to the trigger.",
+        component: `Modal dialog with a focus trap, Escape to close and focus restore to the trigger.\n\n${dialogGuide}`,
       },
     },
   },
@@ -101,5 +104,295 @@ export const SourceCase: Story = {
         <Button>Primary</Button>
       </>
     ),
+  },
+}
+
+const urlStateHash = "#dialog-riepilogo"
+
+// A controlled overlay: the caller owns the state, so an async handler, a form
+// submission and the URL can each decide when the panel opens.
+function AsyncOpenHarness() {
+  const [open, setOpen] = React.useState(false)
+  const [loading, setLoading] = React.useState(false)
+
+  async function handleOpen() {
+    setLoading(true)
+    await new Promise((resolve) => setTimeout(resolve, 60))
+    setLoading(false)
+    setOpen(true)
+  }
+
+  return (
+    <>
+      <Button onClick={handleOpen} loading={loading}>
+        Apri dopo la richiesta
+      </Button>
+      <p data-testid="async-state">Stato: {open ? "aperto" : "chiuso"}</p>
+      <Dialog
+        open={open}
+        onOpenChange={setOpen}
+        title="Riepilogo della pratica"
+        description="La richiesta è terminata e la pratica è pronta."
+        footer={<Button>Conferma</Button>}
+      />
+    </>
+  )
+}
+
+export const ControlledAsync: Story = {
+  render: () => <AsyncOpenHarness />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole("button", { name: "Apri dopo la richiesta" }))
+
+    const dialog = await screen.findByRole("dialog", { name: "Riepilogo della pratica" })
+    await waitFor(() => expect(dialog).toBeVisible())
+    await expect(canvas.getByTestId("async-state")).toHaveTextContent("Stato: aperto")
+
+    await userEvent.keyboard("{Escape}")
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
+    await expect(canvas.getByTestId("async-state")).toHaveTextContent("Stato: chiuso")
+  },
+}
+
+function FormSubmitHarness() {
+  const [open, setOpen] = React.useState(false)
+  const [practice, setPractice] = React.useState("")
+
+  return (
+    <>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault()
+          setOpen(true)
+        }}
+      >
+        <label htmlFor="dialog-practice">Numero pratica</label>
+        <Input
+          id="dialog-practice"
+          value={practice}
+          onChange={(event) => setPractice(event.target.value)}
+        />
+        <Button type="submit">Apri riepilogo</Button>
+      </form>
+      <Dialog
+        open={open}
+        onOpenChange={setOpen}
+        title="Riepilogo della pratica"
+        description={`Pratica ${practice || "senza numero"}`}
+        footer={<Button>Conferma</Button>}
+      />
+    </>
+  )
+}
+
+export const ControlledFormSubmit: Story = {
+  render: () => <FormSubmitHarness />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.type(canvas.getByLabelText("Numero pratica"), "2026-17")
+    await userEvent.click(canvas.getByRole("button", { name: "Apri riepilogo" }))
+
+    const dialog = await screen.findByRole("dialog", { name: "Riepilogo della pratica" })
+    await waitFor(() => expect(dialog).toBeVisible())
+    await expect(dialog).toHaveAccessibleDescription("Pratica 2026-17")
+
+    await userEvent.keyboard("{Escape}")
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
+    await expect(canvas.getByLabelText("Numero pratica")).toHaveValue("2026-17")
+  },
+}
+
+function UrlStateHarness() {
+  const [open, setOpen] = React.useState(false)
+
+  React.useEffect(() => {
+    const sync = () => setOpen(window.location.hash === urlStateHash)
+    sync()
+    window.addEventListener("hashchange", sync)
+    return () => window.removeEventListener("hashchange", sync)
+  }, [])
+
+  return (
+    <>
+      {/* The consumer router owns the navigation: it updates the address and
+          lets the browser stay on the page. */}
+      <a
+        href={urlStateHash}
+        onClick={(event) => {
+          event.preventDefault()
+          window.location.hash = urlStateHash
+        }}
+      >
+        Collegamento al riepilogo
+      </a>
+      <p data-testid="url-state">Stato: {open ? "aperto" : "chiuso"}</p>
+      <Dialog
+        open={open}
+        onOpenChange={(next) => {
+          setOpen(next)
+          if (!next) window.history.replaceState(null, "", window.location.href.split("#")[0])
+        }}
+        title="Riepilogo dal collegamento"
+        description="Il pannello segue l'indirizzo della pagina."
+      />
+    </>
+  )
+}
+
+export const ControlledUrlState: Story = {
+  render: () => <UrlStateHarness />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const originalUrl = window.location.href
+    try {
+      await userEvent.click(canvas.getByRole("link", { name: "Collegamento al riepilogo" }))
+
+      const dialog = await screen.findByRole("dialog", { name: "Riepilogo dal collegamento" })
+      await waitFor(() => expect(dialog).toBeVisible())
+      await expect(canvas.getByTestId("url-state")).toHaveTextContent("Stato: aperto")
+
+      await userEvent.keyboard("{Escape}")
+      await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
+      await expect(canvas.getByTestId("url-state")).toHaveTextContent("Stato: chiuso")
+      await expect(window.location.hash).toBe("")
+    } finally {
+      window.history.replaceState(null, "", originalUrl)
+    }
+  },
+}
+
+export const UncontrolledDefaultOpen: Story = {
+  args: {
+    trigger: <Button>Apri dialog non controllato</Button>,
+    title: "Dialogo non controllato",
+    defaultOpen: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const panel = await screen.findByRole("dialog", { name: "Dialogo non controllato" })
+    await waitFor(() => expect(panel).toBeVisible())
+
+    await userEvent.keyboard("{Escape}")
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
+
+    const trigger = canvas.getByRole("button", { name: "Apri dialog non controllato" })
+    await userEvent.click(trigger)
+    await waitFor(() =>
+      expect(screen.getByRole("dialog", { name: "Dialogo non controllato" })).toBeVisible(),
+    )
+    await userEvent.keyboard("{Escape}")
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
+    await expect(trigger).toHaveFocus()
+  },
+}
+
+function NoTriggerHarness() {
+  const [open, setOpen] = React.useState(false)
+
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>Apri dal controllo</Button>
+      <p data-testid="no-trigger-state">Stato: {open ? "aperto" : "chiuso"}</p>
+      <Dialog
+        open={open}
+        onOpenChange={setOpen}
+        title="Pannello senza elemento di apertura"
+        description="Il pannello si apre dallo stato del componente."
+      />
+    </>
+  )
+}
+
+export const WithoutTrigger: Story = {
+  render: () => <NoTriggerHarness />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+
+    await userEvent.click(canvas.getByRole("button", { name: "Apri dal controllo" }))
+    const dialog = await screen.findByRole("dialog", {
+      name: "Pannello senza elemento di apertura",
+    })
+    await waitFor(() => expect(dialog).toBeVisible())
+    await expect(canvas.getByTestId("no-trigger-state")).toHaveTextContent("Stato: aperto")
+
+    await userEvent.keyboard("{Escape}")
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
+    await expect(canvas.getByTestId("no-trigger-state")).toHaveTextContent("Stato: chiuso")
+  },
+}
+
+function FooterCloseHarness() {
+  const [open, setOpen] = React.useState(true)
+  const [confirmed, setConfirmed] = React.useState(false)
+
+  return (
+    <>
+      <p data-testid="footer-close-state">
+        Stato: {open ? "aperto" : "chiuso"}
+        {confirmed ? " e confermato" : ""}
+      </p>
+      <Dialog
+        open={open}
+        onOpenChange={setOpen}
+        title="Conferma operazione"
+        footer={
+          <>
+            <DialogClose variant="outline">Annulla</DialogClose>
+            <Button onClick={() => setConfirmed(true)}>Conferma</Button>
+          </>
+        }
+      />
+    </>
+  )
+}
+
+export const FooterCloseAction: Story = {
+  render: () => <FooterCloseHarness />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const dialog = await screen.findByRole("dialog", { name: "Conferma operazione" })
+    await waitFor(() => expect(dialog).toBeVisible())
+
+    await userEvent.click(within(dialog).getByRole("button", { name: "Annulla" }))
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
+    await expect(canvas.getByTestId("footer-close-state")).toHaveTextContent("Stato: chiuso")
+  },
+}
+
+function PanelContractHarness() {
+  const [open, setOpen] = React.useState(true)
+  const [panel, setPanel] = React.useState<HTMLDivElement | null>(null)
+
+  const forwarded = panel
+    ? `class=${panel.classList.contains("max-w-md") ? "inoltrata" : "assente"} attribute=${panel.dataset.contractSlot ?? "assente"}`
+    : "nessun pannello"
+
+  return (
+    <>
+      <p data-testid="panel-contract">{forwarded}</p>
+      <Dialog
+        ref={setPanel}
+        open={open}
+        onOpenChange={setOpen}
+        title="Pannello con contratto inoltrato"
+        className="max-w-md"
+        data-contract-slot="dialog"
+        footer={<DialogClose variant="outline">Chiudi</DialogClose>}
+      />
+    </>
+  )
+}
+
+export const PanelContract: Story = {
+  render: () => <PanelContractHarness />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const dialog = await screen.findByRole("dialog", { name: "Pannello con contratto inoltrato" })
+    await waitFor(() => expect(dialog).toBeVisible())
+    await expect(canvas.getByTestId("panel-contract")).toHaveTextContent(
+      "class=inoltrata attribute=dialog",
+    )
   },
 }

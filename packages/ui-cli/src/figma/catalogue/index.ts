@@ -22,9 +22,10 @@
 // Mocked demos retain their status and note and are not queued. Merging the
 // drift PR is the review record.
 //
-// PR mode for the scheduled drift job:
-//   node src/cli.ts update inventory --rest --pr-body .figma/pr-body.md
-// The PR body is written only when the live snapshot has drift. The Figma side
+// PR mode for the scheduled drift job, component and token drift in one run:
+//   node src/cli.ts update inventory --rest --pr-body .figma/pr-body.md \
+//     --delta .figma/delta.json --tokens --token-drift docs/figma-parity/token-drift.json
+// The PR body is written only when one of the two halves has drift. The Figma side
 // is never written to; mappings stay in the repository, keyed by nodeId.
 import type { Workspace } from "../../adapters/workspace.ts"
 import type { PageSurface } from "../../schemas/catalogue.ts"
@@ -43,6 +44,10 @@ export interface CatalogueOptions {
   save?: string
   delta?: string
   evidenceBase?: string
+  /** Read the live variable values too: one run reports component and token drift. */
+  tokens?: boolean
+  /** Write the token drift record the review change carries. */
+  tokenDrift?: string
   token?: string
   surface?: PageSurface
 }

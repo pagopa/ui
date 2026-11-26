@@ -62,8 +62,10 @@ foundations are `packages/tokens`; its checks and Figma tooling are
 workspace root. The paths below are inside `packages/pagopa-ui` unless they
 name another package.
 
-The design system uses TypeScript 7, Tailwind CSS v4 and Base UI primitives
-(shadcn wrappers), with Storybook as its documentation surface.
+The design system uses TypeScript 6 — one compiler, the stable line, per
+[ADR-0010](./docs/decisions/0010-single-typescript-compiler.md) —, Tailwind CSS
+v4 and Base UI primitives (shadcn wrappers), with Storybook as its documentation
+surface.
 
 - `src/components/primitives` — Base UI primitives; `icons` — the public icon
   and pictogram components, re-exporting the generated catalogue from
@@ -98,9 +100,13 @@ Its hosting target is Azure Static Web App.
 
 `infra/` holds the infrastructure as code for project resources and execution
 environments. `docs/` holds technical documentation, architecture,
-[ADRs](https://adr.github.io/), standards, reports and plans. Deferred decisions
-and their triggers are in [docs/decisions](./docs/decisions/). Consumer
-documentation belongs to the package README or to an application under `apps/`.
+[ADRs](https://adr.github.io/), standards, reports and plans;
+[docs/README.md](./docs/README.md) is its navigation surface, and every document
+of the tree is reachable from it. Deferred decisions and their triggers are in
+[docs/decisions](./docs/decisions/). Consumer documentation belongs to the
+package README or to an application under `apps/`. The [glossary
+map](./GLOSSARY.md) separates the Figma-alignment vocabulary from the consumer
+design-system one.
 
 ### Repository infrastructure
 
@@ -132,7 +138,9 @@ Use `pnpm nx show projects` to list projects and
 - `pnpm nx run pagopa-ui-storybook:test:stories` — the stories in Firefox and WebKit;
   `pnpm nx run pagopa-ui-storybook:test:webkit` — the stories in WebKit alone, the pass a
   pull request runs; `pnpm nx run pagopa-ui-storybook:test:coverage` — the stories in
-  Chromium with v8 coverage and the gates.
+  Chromium with v8 coverage and the gates. Every one of them takes
+  `-- --shard=<index>/<count>`, which runs one slice of the collected story
+  files: the nightly workflow spreads the full pass over four runners.
 - `pnpm nx run pagopa-ui-storybook:test:changed` — only the tests affected since the last
   successful run of the same command; for iterating, the chain stays the gate
   ([baseline](./packages/ui-cli/README.md#the-changed-only-test-loop)).
@@ -240,6 +248,47 @@ a guide, with or without Figma:
 Every session ends with a report — the decision per node, the residues and their
 reasons, the commands with their results — and stops before commit, push or pull
 request unless you ask for them.
+
+## Third-party skills
+
+Two skills come from publishers outside this repository — `modern-web-guidance`
+for the platform itself, `shadcn` for the primitives. Each is committed as a
+thin `SKILL.md` entrypoint and nothing else: the corpus it delegates to (36k
+lines of guides, rule files and assets) stays out of the tree.
+
+[`skills-lock.json`](./skills-lock.json) pins both — the source repository, the
+commit and a content hash over the pinned tree — and one command restores them
+and verifies them against that pin:
+
+```bash
+pnpm skills:restore
+```
+
+It downloads the pinned copies into `.agents/skills/`, fails instead of
+rewriting the lockfile when a hash disagrees (`--frozen-lockfile`), and puts the
+two entrypoints back so the tree stays consistent. Restored files are
+gitignored: `git status` stays quiet whether or not the corpus is on disk. To
+look without restoring, `npx -y skills@1.9.0 list` reports what is installed,
+`npx -y skills@1.9.0 list --json` each skill's status, and
+`npx -y skills@1.9.0 experimental_install --dry-run` what a restore would do.
+
+The entrypoints delegate, so they work with nothing restored:
+`modern-web-guidance` reads its corpus through
+`pnpx modern-web-guidance@latest search|retrieve`, `shadcn` reads its live
+documentation through `npx shadcn@latest docs`. Both need outbound network
+access. They are also the repository's own text, so `skills list` reports the
+pinned skills as `modified`: the hash pins the publisher's tree, not the
+entrypoint. `npx -y skills@1.9.0 update <name> -p` moves the pin to a newer
+commit and rewrites the lockfile — re-apply the entrypoint on top and commit
+both.
+
+What stays vendored, and why the lockfile cannot retrieve it:
+
+| Skill                                                                | Why it stays                                                                                                                                                                  |
+| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pagopa-ui-standards`, `figma-to-code`, `start-figma-to-code`        | written here; there is no upstream to pin                                                                                                                                     |
+| `figma-to-ui`, in `packages/pagopa-ui/skills/`                       | written here and shipped in the package for its consumers; there is no upstream to pin                                                                                        |
+| the `nx-*` and `link-workspace-packages` skills in `.github/skills/` | generated by `pnpm nx configure-ai-agents` from the Nx plugins in `nx.json`; the `skills` CLI installs from an agentskills repository, so it cannot retrieve generator output |
 
 ## Skill evals
 
@@ -359,14 +408,18 @@ and the changelog entry; merging that one tags the release.
 The design-system package is `@pagopa/ui` and publishes to GitHub Packages
 (`https://npm.pkg.github.com`), not npmjs. Nx infers its
 `nx-release-publish` target from the non-private package manifest, while
-`project.json` pins that target to GitHub Packages. `release.yaml` supplies the
-GitHub token with `packages: write`. The normal release flow publishes only
-after a version plan is merged; `workflow_dispatch` is an explicit recovery
-path that publishes all projects with a publish target.
+`project.json` pins that target to GitHub Packages. The package is MIT licensed
+and carries `publishConfig.access: "public"`; the same
+`release.yaml` job publishes with the repository's own `GITHUB_TOKEN` — no
+additional secret — under a `packages: write` permission. The normal release
+flow publishes only after a version plan is merged; `workflow_dispatch` is an
+explicit recovery path that publishes all projects with a publish target.
 
 Package visibility and consumer access are managed in GitHub Packages.
-The first publication is still pending; consumer installation is documented in
-the [root README](./README.md#install).
+A public GitHub Packages package still requires an authenticated install, so
+consumers need the `.npmrc` and token documented in the
+[root README](./README.md#install).
+The first publication is still pending.
 
 ## CI
 
@@ -389,15 +442,16 @@ project in its area as affected. Projects with a `Dockerfile` are inferred by
 - `deep-checks.yml` — the suites that need a browser, in three parallel jobs: the
   coverage gates on Chromium, the WebKit pass and the packed artifact consumer. On
   pull requests for the affected projects, where WebKit is the extra engine;
-  nightly on everything, which adds Firefox. Draft pull requests are skipped
-  until they are ready for review. A merge to `main` runs nothing: the diff it
-  carries is the one the pull request already proved, and the nightly is the
-  whole-repository pass.
+  nightly on everything, which adds Firefox and splits the story pass into four
+  shards. Draft pull requests are skipped until they are ready for review. A
+  merge to `main` runs nothing: the diff it carries is the one the pull request
+  already proved, and the nightly is the whole-repository pass.
 - `visual.yml` — the visual regression on the whole catalogue: the nightly and
   the **Version Packages** pull request, so a publish is never gated on a scoped
   guess. `visual:update` captures a diff's images, `visual:check` opts a pull
   request into the comparison.
-- `figma-drift.yml` — the weekly drift snapshot and its review pull request.
+- `figma-drift.yml` — the weekly drift snapshot, component and token, and its
+  review pull request.
 - `release.yaml` — the DX release manager, on `main`.
 
 Deep checks and visual regression attach seven-day `nx-profile-*` artifacts,
@@ -406,8 +460,11 @@ including on failed runs. Their Chrome-trace JSON records each Nx task's duratio
 An affected run with no tasks is an empty sample, not a speed improvement.
 Compare runs with the same event, engine and non-empty scope, alongside GitHub's
 setup/job timings, before changing parallelism. No coverage threshold, engine,
-scope fallback or baseline review is relaxed by this instrumentation; sharding
-remains an experiment, not an assumed win.
+scope fallback or baseline review is relaxed by this instrumentation. The story
+shards are the one parallelism the workflows assume: four of them for the whole
+catalogue and one for a pull request, where the affected files already fit one
+runner and a shard no file reaches would be an empty run. Whether four is the
+right count is what those timings answer.
 
 ### The release pull request
 
@@ -439,31 +496,45 @@ release gate are where the whole catalogue is compared again.
 
 ## The green chain
 
-Green before commit; CI runs the same, and the chain runs the two gates CI owns
-but Nx projects do not: `mise install --locked` fails when `mise.lock` no longer
-matches what `mise.toml` resolves, and `nx format:check` covers every tracked
-file, `docs/` and `mise.toml` included.
+Green before commit; CI runs the same. The chain is one Nx task graph: every
+gate is an Nx target, `workspace:verify` names the whole graph, and Nx schedules
+what the dependencies allow in parallel and replays what it has already cached.
 
 ```bash
 pnpm nx run workspace:verify
 ```
 
 `-c fast` is the quick subset: it stops before the browser suites and the
-Storybook build, so it never replaces the full run before a commit. It runs the
-two gates too.
+Storybook build, so it never replaces the full run before a commit.
 
-What it runs:
+Two gates are not Nx projects, and the chain keeps them anyway.
+`mise install --locked node pnpm` opens it as a plain command — a toolchain pin
+that could be replayed from a cache would prove nothing — and fails when
+`mise.lock` no longer matches what `mise.toml` resolves.
+`workspace:check:format` wraps `nx format:check`, which covers every tracked
+file, `docs/` and `mise.toml` included.
 
-```bash
-mise install --locked node pnpm && pnpm nx format:check && \
-  pnpm nx run-many -p pagopa-ui -c=ci -t typecheck,fmt,lint,docs,check:catalogue,foundation:check,layers:check,build,test && \
-  pnpm nx run-many -p pagopa-ui-artwork,pagopa-ui-tokens,pagopa-ui-cli -c=ci -t typecheck,fmt,lint && \
-  pnpm nx run pagopa-ui-artwork:test && pnpm nx run pagopa-ui-tokens:test && pnpm nx run pagopa-ui-cli:test && \
-  pnpm nx run pagopa-ui-cli:check:rules && pnpm nx run pagopa-ui-cli:check:parity && \
-  pnpm nx run pagopa-ui-storybook:test:coverage && pnpm nx run pagopa-ui-storybook:test:stories && pnpm nx run pagopa-ui-storybook:build && pnpm nx run pagopa-ui:library:check
-```
+What the graph holds:
 
-The `ci` configuration is the gate: `lint` and `fmt` check instead of writing.
+- `workspace:verify-full` — the whole chain: `workspace:verify-fast` plus the
+  browser tail, `pagopa-ui-storybook:build`, `test:coverage`, `test:stories` and
+  `pagopa-ui:library:check`;
+- `workspace:verify-fast` — the static half, gate by gate:
+  `workspace:check:format`; `pagopa-ui` `typecheck`, `format:check`,
+  `lint:check`, `docs`, `check:catalogue`, `foundation:check`, `layers:check`,
+  `build`, `test`; `pagopa-ui-artwork`, `pagopa-ui-tokens` and `pagopa-ui-cli`
+  `typecheck`, `format:check`, `lint:check`, `test`; and `pagopa-ui-cli`
+  `check:rules`, `check:parity`.
+
+`lint:check` and `format:check` are the gate: `lint` and `fmt` write, the
+`:check` variants report, which is what the `ci` configuration CI uses resolves
+to. `pagopa-ui:test` pulls the checks that package owns — `api:check`,
+`figma:map:check`, `a11y:conformance:check` and the rest — through its
+`dependsOn`, so each runs once, wherever in the graph it is needed. A gate is
+added by adding a `dependsOn` entry to `tools/workspace/project.json`;
+`packages/ui-cli/tests/checks/verify-chain.test.mjs` reads the task graph and
+fails when one leaves it.
+
 A lock the gate rejects is refreshed with `mise lock node pnpm`, which rewrites
 only the entries whose resolution moved; commit it with the `.mise/locks`
 directory it points at.

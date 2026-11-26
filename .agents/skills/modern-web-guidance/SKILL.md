@@ -10,6 +10,13 @@ description: |
 
 Search and retrieve standardized modern web best practices at the **start** of implementing or updating any web UI, CSS layout/animation, or client-side JS logic (dates/timezones, sanitization, performance, accessibility, UX fixes) before writing ad-hoc solutions or adding dependencies.
 
+> **Adapted entrypoint.** The guidance corpus — the `guides/` tree, ~36k lines —
+> is not committed: `search` and `retrieve` read it from the
+> `modern-web-guidance` package. [`skills-lock.json`](../../skills-lock.json)
+> pins the publisher's copy (commit and content hash) and
+> `pnpm skills:restore` puts it back under `.agents/skills/` when you need the
+> guides on disk.
+
 ## Primary Workflow
 
 ### Step 1. Search Use Cases

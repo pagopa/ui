@@ -60,6 +60,9 @@ when work touches a component with a design source.
   web-platform guidance, retrieved by query before the code is written: HTML
   semantics, CSS layout, animation and colour, client-side JavaScript,
   accessibility, forms, overlays and Core Web Vitals.
+- [`shadcn`](.agents/skills/shadcn/SKILL.md) — the primitives behind the
+  components: registry, presets, theming and the rules a composed interface
+  follows.
 
 | Work                                                       | Skills                                                                                          |
 | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
@@ -70,11 +73,16 @@ when work touches a component with a design source.
 | A question for the design owner, opened or answered        | `figma-to-code`: the design request flow                                                        |
 | HTML, CSS or client-side JavaScript behaviour              | `modern-web-guidance`, before the code is written                                               |
 
-Skills published outside the repository are installed with the `skills` CLI
-and pinned in [skills-lock.json](./skills-lock.json): `shadcn` for the
-primitives, `modern-web-guidance` for the platform itself. The latter answers
-from the package it names — `pnpx modern-web-guidance@latest search|retrieve`
-— so the session that uses it needs outbound network access.
+Skills published outside the repository are committed as a thin `SKILL.md`
+entrypoint only — `shadcn` for the primitives, `modern-web-guidance` for the
+platform itself — and pinned in [skills-lock.json](./skills-lock.json) by
+source, commit and content hash. `pnpm skills:restore` puts the pinned copies
+back under `.agents/skills/` and verifies them against that hash; neither
+entrypoint needs it, because each answers from the CLI it names
+(`pnpx modern-web-guidance@latest search|retrieve`, `npx shadcn@latest docs`),
+so the session that uses one needs outbound network access. What stays vendored,
+and why, is in
+[Third-party skills](./CONTRIBUTING.md#third-party-skills).
 
 Both Figma skills are graded by harbor-bench evals: `evals/` holds the graded
 scenarios and `harbor/` the session that runs them, next to each skill. The run

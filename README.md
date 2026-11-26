@@ -11,7 +11,10 @@ with a compiled stylesheet and bundled text fonts.
 ## Install
 
 The first package release is pending. Once released, `@pagopa/ui` will be
-available through **GitHub Packages**, not npmjs.
+available through **GitHub Packages**, not npmjs. The package is public — MIT
+licensed, readable by anyone — but GitHub Packages still requires an
+authenticated request even for a public package: an install without the
+`.npmrc` and token below fails with `401 Unauthorized`.
 
 Configure the `@pagopa` scope in your application's `.npmrc` and authenticate
 with a GitHub classic personal access token with `read:packages`. Keep the token
@@ -23,7 +26,7 @@ in the `NODE_AUTH_TOKEN` environment variable, not in a committed file:
 ```
 
 Install the package alongside React and ReactDOM in the supported peer range
-(`^19.2.0`):
+(`^19.0.0`):
 
 ```bash
 pnpm add @pagopa/ui
@@ -98,10 +101,16 @@ The [package guide](./packages/pagopa-ui/README.md) covers router integration,
 Next.js App Router, languages and text overrides, the public token exports, and
 the Figma handoff in full. The [component
 guides](./apps/storybook/src/guides/) document individual components and their
-usage.
+usage. The [documentation tree](./docs/README.md) indexes the technical
+documents, and the [glossary map](./GLOSSARY.md) the two vocabularies they
+use.
 
 ## Contributing
 
 For working on the design system itself, see
 [CONTRIBUTING.md](./CONTRIBUTING.md): repository setup, architecture, agent
 workflow, checks and releases.
+
+## Licence
+
+PagoPA UI is released under the [MIT licence](./LICENSE).

@@ -98,6 +98,10 @@ export const FORBIDDEN_EXPORTS = [
 
 const PackageManifestSchema = z.looseObject({
   name: z.string(),
+  license: z.string().optional(),
+  publishConfig: z
+    .looseObject({ access: z.string().optional(), registry: z.string().optional() })
+    .optional(),
   exports: z.record(z.string(), z.union([z.string(), z.record(z.string(), z.string())])),
   peerDependencies: z.record(z.string(), z.string()).optional(),
   dependencies: z.record(z.string(), z.string()).optional(),
@@ -108,6 +112,60 @@ export type ArtifactContract = {
   stylesFile: string
   expectedIconVariants: number
   expectedIconVariantIds: string[]
+}
+
+export const GITHUB_PACKAGES_REGISTRY = "https://npm.pkg.github.com"
+export const REACT_PEER_RANGE = "^19.0.0"
+
+export type LicenceFiles = {
+  /** The `LICENSE` text at the repository root, or null when the file is absent. */
+  root: string | null
+  /** The `LICENSE` text shipped by the package, or null when the file is absent. */
+  package: string | null
+}
+
+// The distribution contract of the published package: the licence it declares
+// in its manifests, the registry and visibility it publishes to, and the peer
+// range its consumers can meet.
+export function distributionProblems(
+  manifest: z.infer<typeof PackageManifestSchema>,
+  licences: LicenceFiles,
+): string[] {
+  const problems: string[] = []
+  if (manifest.license !== "MIT")
+    problems.push(`license is ${JSON.stringify(manifest.license)}, expected "MIT"`)
+  if (manifest.publishConfig?.access !== "public")
+    problems.push('publishConfig.access must be "public"')
+  if (manifest.publishConfig?.registry !== GITHUB_PACKAGES_REGISTRY)
+    problems.push(`publishConfig.registry must be ${GITHUB_PACKAGES_REGISTRY}`)
+  for (const name of ["react", "react-dom"] as const)
+    if (manifest.peerDependencies?.[name] !== REACT_PEER_RANGE)
+      problems.push(`${name} peer must be ${REACT_PEER_RANGE}`)
+  for (const [where, text] of [
+    ["repository root", licences.root],
+    ["package", licences.package],
+  ] as const) {
+    if (!text) problems.push(`missing LICENSE at the ${where}`)
+    else if (!/^MIT License\b/.test(text))
+      problems.push(`the LICENSE at the ${where} is not the MIT text`)
+  }
+  return problems
+}
+
+// The Storybook preview sheet owns the demo geometry: the artboard heights, the
+// frame widths and the demo grid columns that only the templates and the
+// artboards read. A published stylesheet declaring one of them ships a value
+// only a demo frame resolves, so a consumer receives geometry it never renders.
+// The sheet is the reference, so a demo variable cannot return unnoticed.
+export function demoGeometryProblems(styles: string, previewStyles: string): string[] {
+  const owned = customProperties(previewStyles)
+  return [...customProperties(styles)].filter((name) => owned.has(name)).sort()
+}
+
+function customProperties(styles: string): Set<string> {
+  const names = new Set<string>()
+  for (const match of styles.matchAll(/(--[\w-]+)\s*:/g)) if (match[1]) names.add(match[1])
+  return names
 }
 
 export function verifyArtifactContract(workspace: Workspace): ArtifactContract {
@@ -131,6 +189,15 @@ export function verifyArtifactContract(workspace: Workspace): ArtifactContract {
     styles,
     /@(?:import|tailwind|theme|apply|source)\b/,
     "published CSS must not require Tailwind, shadcn or source imports",
+  )
+  const previewSheet = path.join(workspace.storiesRoot, "src/preview.css")
+  assert.deepEqual(
+    demoGeometryProblems(
+      styles,
+      fs.existsSync(previewSheet) ? fs.readFileSync(previewSheet, "utf8") : "",
+    ),
+    [],
+    "the published stylesheet must not declare demo or artboard geometry — it belongs in apps/storybook/src/preview.css",
   )
   const fontURLs = [...styles.matchAll(/url\(["']?([^"')\s]+)["']?\)/g)]
     .map((match) => match[1])
@@ -182,6 +249,16 @@ export function verifyArtifactContract(workspace: Workspace): ArtifactContract {
   assert.ok(
     manifest.peerDependencies?.react && manifest.peerDependencies?.["react-dom"],
     "React and ReactDOM must be shared with the consuming application",
+  )
+  const licence = (file: string): string | null =>
+    fs.existsSync(at(file)) ? fs.readFileSync(at(file), "utf8") : null
+  assert.deepEqual(
+    distributionProblems(manifest, {
+      root: licence(path.join("..", "..", "LICENSE")),
+      package: licence("LICENSE"),
+    }),
+    [],
+    "the package must publish MIT from GitHub Packages on the React 19 peer range",
   )
 
   // The per-module build must publish the directive of every client module:

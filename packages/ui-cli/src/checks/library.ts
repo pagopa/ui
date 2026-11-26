@@ -120,10 +120,7 @@ function prepareConsumer(context: ConsumerContext): void {
         devDependencies: {
           "@types/react": installedVersion("@types/react"),
           "@types/react-dom": installedVersion("@types/react-dom"),
-          // The workspace runs TypeScript 7 through the `@typescript/native`
-          // alias (the `typescript` name carries the TypeScript 6 API); the
-          // consumer needs the 7 compiler only, so it installs it directly.
-          typescript: `npm:typescript@${installedVersion("@typescript/native")}`,
+          typescript: installedVersion("typescript"),
           vite: installedVersion("vite"),
         },
       },
@@ -365,9 +362,8 @@ function prepareRscConsumer(context: ConsumerContext): string {
           "@types/react": installedVersion("@types/react"),
           "@types/react-dom": installedVersion("@types/react-dom"),
           // Next loads the TypeScript API from `lib/typescript.js`, which the
-          // workspace's native 7 alias does not publish: the fixture takes
-          // the 6 API package the workspace exposes under `typescript`.
-          typescript: `npm:@typescript/typescript6@${installedVersion("typescript")}`,
+          // workspace's single compiler publishes.
+          typescript: installedVersion("typescript"),
         },
       },
       null,
@@ -390,6 +386,18 @@ function prepareRscConsumer(context: ConsumerContext): string {
   return rsc
 }
 
+const TSC_BINS = ["typescript/bin/tsc", "typescript/bin/tsc6"]
+
+/** The compiler entry point the installed TypeScript ships; the name moved between releases. */
+function resolveTsc(rscRequire: NodeJS.Require): string {
+  for (const candidate of TSC_BINS) {
+    try {
+      return rscRequire.resolve(candidate)
+    } catch {}
+  }
+  assert.fail(`the consumer TypeScript ships none of ${TSC_BINS.join(", ")}`)
+}
+
 function buildRscConsumer(
   context: ConsumerContext,
   rsc: string,
@@ -408,7 +416,7 @@ function buildRscConsumer(
     JSON.parse(fs.readFileSync(path.join(rsc, "tsconfig.json"), "utf8")),
     "Next consumer TypeScript configuration",
   )
-  run(nodeExecutable, [rscRequire.resolve("typescript/bin/tsc6"), "-p", "tsconfig.json"], rsc)
+  run(nodeExecutable, [resolveTsc(rscRequire), "-p", "tsconfig.json"], rsc)
 }
 
 type PreviewServer = {
