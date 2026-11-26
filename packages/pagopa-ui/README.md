@@ -6,6 +6,11 @@ is pending.
 
 ## Install
 
+The package is public and MIT licensed, and it is published through GitHub
+Packages at `https://npm.pkg.github.com` (not the npm registry). GitHub Packages
+still requires an authenticated request even for a public package: skipping the
+`.npmrc` and token below makes the install fail with `401 Unauthorized`.
+
 Configure the `@pagopa` scope in your `.npmrc` and authenticate with a GitHub
 classic personal access token that has `read:packages`. Store the token in an
 environment variable instead of committing it:
@@ -15,7 +20,8 @@ environment variable instead of committing it:
 //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
 ```
 
-After a version is released, install the package alongside React and ReactDOM:
+After a version is released, install the package alongside React and ReactDOM in
+the supported peer range (`^19.0.0`):
 
 ```sh
 pnpm add @pagopa/ui
@@ -166,3 +172,8 @@ or build the part.
 procedure that turns a layout into components: it says how a status is read, what
 to do when a part has no row, and when a part is a gap in the design system
 rather than something to build.
+
+## Licence
+
+`@pagopa/ui` is released under the [MIT licence](../../LICENSE), and the same
+`LICENSE` file ships inside the published package.

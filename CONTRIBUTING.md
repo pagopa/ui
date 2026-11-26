@@ -359,14 +359,18 @@ and the changelog entry; merging that one tags the release.
 The design-system package is `@pagopa/ui` and publishes to GitHub Packages
 (`https://npm.pkg.github.com`), not npmjs. Nx infers its
 `nx-release-publish` target from the non-private package manifest, while
-`project.json` pins that target to GitHub Packages. `release.yaml` supplies the
-GitHub token with `packages: write`. The normal release flow publishes only
-after a version plan is merged; `workflow_dispatch` is an explicit recovery
-path that publishes all projects with a publish target.
+`project.json` pins that target to GitHub Packages. The package is MIT licensed
+and carries `publishConfig.access: "public"`; the same
+`release.yaml` job publishes with the repository's own `GITHUB_TOKEN` — no
+additional secret — under a `packages: write` permission. The normal release
+flow publishes only after a version plan is merged; `workflow_dispatch` is an
+explicit recovery path that publishes all projects with a publish target.
 
 Package visibility and consumer access are managed in GitHub Packages.
-The first publication is still pending; consumer installation is documented in
-the [root README](./README.md#install).
+A public GitHub Packages package still requires an authenticated install, so
+consumers need the `.npmrc` and token documented in the
+[root README](./README.md#install).
+The first publication is still pending.
 
 ## CI
 

@@ -2,7 +2,7 @@
   "name": "pagopa-ui-tokens",
   "private": true,
   "description": "The design foundations of the PagoPA design system",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "version": "0.0.0",
   "type": "module",
   "exports": {
