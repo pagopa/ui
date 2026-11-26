@@ -5,7 +5,6 @@ import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { X } from "@/components/primitives/icons"
 
 import { statusIcons, toneStyles, type Tone } from "./tones"
 
@@ -110,7 +109,7 @@ function Snackbar({
           )}
         >
           <span data-slot="snackbar-close-icon" className="grid size-6 place-items-center">
-            <X aria-hidden="true" className="size-5" />
+            <PagoPAIcon name="close" className="size-5" />
           </span>
         </button>
       )}

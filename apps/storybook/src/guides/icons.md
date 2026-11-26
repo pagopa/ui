@@ -45,17 +45,21 @@ hosts it; an unsupported `variant` of a published name still throws.
 
 Only source glyphs join the catalogue. A missing icon is requested from design,
 because the Figma library is read-only from this repository, and it follows the same
-Material Symbols settings as the rest of the catalogue. Until the source exists, a
-gap is covered with a `lucide-react` glyph inside a primitive, or inside a private
-component with a reasoned API exception; never invent a source mapping.
+Material Symbols settings as the rest of the catalogue; never invent a source
+mapping. No module of the library imports an icon from a third-party package: a
+component that needs a glyph renders `PagoPAIcon`, or a generated variant component
+when it has to hand the geometry to another primitive.
 
-The current gaps are `Building2`, `Camera`, `Cookie`, `FileText` and `TrendingUp`
-(no source artwork) and the neutral sort `ArrowUpDown`, `ChevronsUpDown` and
-`XCircle` (no resolved source equivalent). Field success uses `CheckCircle2` while
-the source glyph is `check_circle`. Source glyphs are already used where they exist:
-the field error `report`, the `HeaderAlert` and `Alert` tones, and the `Button`
-loading spinner. `DropdownItem.icon` exposes the lucide `LucideIcon` type in the
-public declarations, so replacing it is a breaking change.
+Four identities have no pinned counterpart and use the closest source glyph instead:
+`Camera` is `photo` (the `CameraView` placeholder), `Building2` is
+`account_balance` (the organization module and the account tabs), `FileText` is
+`receipt_long` (the document tab) and the neutral sort `ArrowUpDown` is `unfold`.
+Every other affordance the library renders is the source glyph itself: `chevron`
+for the directional state, `close`, `check`, `check_circle` for field success,
+`report` for field error, `warning` and `info` for the `HeaderAlert` and `Alert`
+tones, the `Button` loading spinner, and `check_indeterminate_small` for the
+`OTPField` separator. `DropdownItem.icon` takes the pipeline's `IconComponent`, so a
+row leads with any pinned variant component.
 
 ## Provenance and licence
 

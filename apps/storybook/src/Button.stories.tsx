@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import type { ComponentProps } from "react"
-import { ArrowRight, Star } from "lucide-react"
+
 import { expect, fn, userEvent, within } from "storybook/test"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+
 import { Button } from "@/components/primitives/button"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
@@ -461,15 +462,15 @@ export const WithIcons: Story = {
   render: () => (
     <div className="flex flex-wrap gap-4">
       <Button>
-        <Star aria-hidden="true" />
+        <PagoPAIcon name="kid_star" aria-hidden="true" />
         Preferiti
       </Button>
       <Button variant="outline">
         Continua
-        <ArrowRight aria-hidden="true" />
+        <PagoPAIcon name="arrow" aria-hidden="true" />
       </Button>
       <Button size="icon" aria-label="Aggiungi ai preferiti">
-        <Star aria-hidden="true" />
+        <PagoPAIcon name="kid_star" aria-hidden="true" />
       </Button>
     </div>
   ),

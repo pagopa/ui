@@ -1,7 +1,6 @@
 import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, screen, userEvent, waitFor, within } from "storybook/test"
-import { Paperclip, Tag as TagIcon } from "lucide-react"
 
 import {
   Table,
@@ -10,6 +9,8 @@ import {
   TableListField,
   type TableColumn,
 } from "@/components/data-display"
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+
 import { MenuDropdown, SelectField, Chip } from "@/components/inputs"
 import { Pagination } from "@/components/navigation"
 import { Button } from "@/components/primitives/button"
@@ -448,7 +449,8 @@ function SourceTable() {
           ) : (
             <span className="font-mono">{value}</span>
           )}
-          <Paperclip
+          <PagoPAIcon
+            name="attach_file"
             aria-hidden="true"
             className="ml-auto hidden size-5 shrink-0 text-primary @max-[40rem]/table:block"
           />
@@ -463,7 +465,11 @@ function SourceTable() {
       label: "Category",
       render: (value) => (
         <span className="inline-flex items-center gap-1">
-          <TagIcon aria-hidden="true" className="hidden size-4 @max-[40rem]/table:block" />
+          <PagoPAIcon
+            name="sell"
+            aria-hidden="true"
+            className="hidden size-4 @max-[40rem]/table:block"
+          />
           {value}
         </span>
       ),

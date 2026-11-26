@@ -3,7 +3,6 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
-import { X } from "@/components/primitives/icons"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 type ChipVariant =
@@ -103,7 +102,7 @@ function Chip({
           aria-label={removeLabel ?? t.removeLabel(chipLabel)}
           className="relative -my-0.5 inline-grid size-6 shrink-0 place-items-center rounded-full text-current outline-none after:absolute after:-inset-2.5 hover:bg-foreground/10 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-1 focus-visible:outline-ring"
         >
-          <X aria-hidden="true" className="size-5" />
+          <PagoPAIcon name="close" className="size-5" />
         </button>
       ) : null}
     </span>

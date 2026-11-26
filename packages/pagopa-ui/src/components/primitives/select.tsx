@@ -4,7 +4,6 @@ import * as React from "react"
 import { Select as SelectPrimitive } from "@base-ui/react/select"
 import { usePortalHost } from "@/lib/ui-provider"
 import { cn } from "@/lib/cn"
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "./icons"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
@@ -53,7 +52,13 @@ function SelectTrigger({
       {children}
       <SelectPrimitive.Icon
         render={
-          icon ?? <ChevronDownIcon className="pointer-events-none size-4 text-muted-foreground" />
+          icon ?? (
+            <PagoPAIcon
+              name="chevron"
+              variant="down"
+              className="pointer-events-none size-4 text-muted-foreground"
+            />
+          )
         }
       />
     </SelectPrimitive.Trigger>
@@ -166,7 +171,7 @@ function SelectItem({
                 />
               </>
             ) : (
-              <CheckIcon className="pointer-events-none" />
+              <PagoPAIcon name="check" className="pointer-events-none" />
             )}
           </span>
         )}
@@ -198,7 +203,7 @@ function SelectScrollUpButton({
       )}
       {...props}
     >
-      <ChevronUpIcon />
+      <PagoPAIcon name="chevron" variant="up" />
     </SelectPrimitive.ScrollUpArrow>
   )
 }
@@ -216,7 +221,7 @@ function SelectScrollDownButton({
       )}
       {...props}
     >
-      <ChevronDownIcon />
+      <PagoPAIcon name="chevron" variant="down" />
     </SelectPrimitive.ScrollDownArrow>
   )
 }

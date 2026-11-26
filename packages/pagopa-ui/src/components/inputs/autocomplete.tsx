@@ -4,7 +4,6 @@ import * as React from "react"
 import { Combobox } from "@/components/primitives/combobox"
 import { cn } from "@/lib/cn"
 import { useMessages, usePortalHost } from "@/lib/ui-provider"
-import { Check } from "@/components/primitives/icons"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 import { Input } from "@/components/primitives/input"
@@ -471,7 +470,7 @@ function Autocomplete(props: AutocompleteProps) {
                         />
                       ) : (
                         <Combobox.ItemIndicator>
-                          <Check aria-hidden="true" />
+                          <PagoPAIcon name="check" />
                         </Combobox.ItemIndicator>
                       )}
                     </Combobox.Item>

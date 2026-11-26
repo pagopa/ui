@@ -5,7 +5,6 @@ import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { X } from "@/components/primitives/icons"
 
 import { toneStyles, type Tone } from "./tones"
 
@@ -96,7 +95,7 @@ function HeaderAlert({
             onClick={onDismiss}
             className="flex size-10 items-center justify-center rounded-md focus-visible:outline-2 focus-visible:outline-current"
           >
-            <X aria-hidden="true" className="size-5" />
+            <PagoPAIcon name="close" className="size-5" />
           </button>
         )}
       </div>

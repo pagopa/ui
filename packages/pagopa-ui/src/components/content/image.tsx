@@ -4,7 +4,7 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { ImageIcon } from "@/components/primitives/icons"
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 type ImageProps = React.ComponentProps<"img"> & {
   ratio?: "square" | "video" | "photo" | "portrait" | "cinema" | "wide"
@@ -49,7 +49,7 @@ function Image({
         )}
       >
         <span className="flex items-center gap-2 text-label-mini">
-          <ImageIcon aria-hidden="true" />
+          <PagoPAIcon name="photo" />
           {fallbackLabel}
         </span>
       </div>

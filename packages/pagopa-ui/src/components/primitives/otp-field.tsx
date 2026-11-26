@@ -15,7 +15,7 @@
 import * as React from "react"
 import { OTPField as OTPFieldPrimitive } from "@base-ui/react/otp-field"
 import { cn } from "@/lib/cn"
-import { MinusIcon } from "./icons"
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 import { useFormReset, useInputRef } from "./form-control-utils"
 
@@ -176,7 +176,7 @@ function OTPFieldSeparator({
       className={cn("flex items-center [&_svg:not([class*='size-'])]:size-4", className)}
       {...props}
     >
-      <MinusIcon />
+      <PagoPAIcon name="check_indeterminate_small" />
     </OTPFieldPrimitive.Separator>
   )
 }

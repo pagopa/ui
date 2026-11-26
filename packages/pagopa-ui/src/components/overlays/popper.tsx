@@ -4,7 +4,6 @@ import * as React from "react"
 
 import { statusIcons, toneStyles, type Tone } from "@/components/feedback/tones"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { X } from "@/components/primitives/icons"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
@@ -106,7 +105,7 @@ function Popper({
           data-slot="popper-dismiss"
           className="relative grid size-6 shrink-0 place-items-center rounded-md text-foreground after:absolute after:-inset-2.5 hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-current"
         >
-          <X aria-hidden="true" className="size-5" />
+          <PagoPAIcon name="close" className="size-5" />
         </button>
       </div>
     </div>

@@ -10,7 +10,7 @@ import {
   AccordionItem as AccordionItemPrimitive,
   AccordionTrigger,
 } from "@/components/primitives/accordion"
-import { ChevronUpIcon } from "@/components/primitives/icons"
+import { Up as ChevronUp } from "@/components/icons/generated/chevron"
 
 export interface AccordionItemData {
   id: string
@@ -62,7 +62,7 @@ function AccordionSkeleton({
             {item.chip}
           </span>
         </span>
-        <ChevronUpIcon className="size-6 shrink-0 text-choice-icon" />
+        <ChevronUp className="size-6 shrink-0 text-choice-icon" />
       </div>
       <div aria-hidden="true" className="mt-8">
         {Array.from({ length: SKELETON_ROWS }, (_, index) => (

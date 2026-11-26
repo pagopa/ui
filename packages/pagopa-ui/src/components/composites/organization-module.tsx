@@ -1,6 +1,6 @@
 import * as React from "react"
 
-import { Building2 } from "@/components/primitives/icons"
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 import { BoxedModule } from "./boxed-module"
 
@@ -17,7 +17,7 @@ function OrganizationModule({
   children?: React.ReactNode
 }) {
   return (
-    <BoxedModule title={name} description={fiscalCode} icon={<Building2 aria-hidden="true" />}>
+    <BoxedModule title={name} description={fiscalCode} icon={<PagoPAIcon name="account_balance" />}>
       {children}
     </BoxedModule>
   )
