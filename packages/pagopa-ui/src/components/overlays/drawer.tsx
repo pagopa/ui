@@ -4,7 +4,7 @@ import * as React from "react"
 
 import { useMessages } from "@/lib/ui-provider"
 import { cn } from "@/lib/cn"
-import { X } from "@/components/primitives/icons"
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Button } from "@/components/primitives/button"
 import {
   Drawer as DrawerPrimitive,
@@ -134,7 +134,7 @@ function Drawer({
               />
             }
           >
-            <X aria-hidden="true" className="size-3.5 text-foreground" />
+            <PagoPAIcon name="close" className="size-3.5 text-foreground" />
           </DrawerClosePrimitive>
         </DrawerHeader>
         {flow ? (

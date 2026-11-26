@@ -4,7 +4,6 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useLinkComponent, useMessages } from "@/lib/ui-provider"
 
-import { ChevronDown } from "@/components/primitives/icons"
 import { Badge } from "@/components/primitives/badge"
 import { Separator } from "@/components/primitives/separator"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
@@ -64,8 +63,9 @@ function SideNav({
         <summary className="flex min-h-12 cursor-pointer list-none items-center gap-2 border-b px-6 py-3 text-body-sb focus-visible:outline-2 focus-visible:outline-ring">
           <PagoPAIcon name="menu" aria-hidden="true" className="shrink-0" />
           <span className="min-w-0 flex-1 truncate">{title}</span>
-          <ChevronDown
-            aria-hidden="true"
+          <PagoPAIcon
+            name="chevron"
+            variant="down"
             className="shrink-0 transition-transform group-open:rotate-180 motion-reduce:transition-none"
           />
         </summary>
@@ -267,8 +267,9 @@ function NavRow({
               condensed && labelsHidden,
             )}
           >
-            <ChevronDown
-              aria-hidden="true"
+            <PagoPAIcon
+              name="chevron"
+              variant="down"
               className={cn(
                 "size-5 transition-transform motion-reduce:transition-none",
                 open && "rotate-180",

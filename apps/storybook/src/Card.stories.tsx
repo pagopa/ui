@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { ArrowRight } from "lucide-react"
+
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 import { Badge } from "@/components/primitives/badge"
 import { Button } from "@/components/primitives/button"
@@ -36,7 +37,7 @@ function ServiceCard({ size, variant }: ServiceCardProps) {
       <CardFooter className="justify-end bg-muted">
         <Button variant="ghost">
           Apri il servizio
-          <ArrowRight aria-hidden="true" />
+          <PagoPAIcon name="arrow" aria-hidden="true" />
         </Button>
       </CardFooter>
     </Card>

@@ -2,9 +2,9 @@
 
 - **Status:** Accepted — deferrals recorded on 2026-10-12; the Titillio entry
   added and resolved on 2026-10-14; the distribution entry (§8) resolved on
-  2026-11-26.
+  2026-11-26; the lucide entry (§3) resolved on 2026-11-26.
 - **Date:** 2026-10-12 (Titillio entry: 2026-10-14; distribution entry:
-  2026-11-26)
+  2026-11-26; lucide entry: 2026-11-26)
 - **Related:** [ADR-0001](./0001-rework.md) — the rework whose boundaries produced these deferrals.
 
 ## 1. Context
@@ -40,10 +40,21 @@ single private package with layered `src/` directories.
   release flow; the import-layer contract becomes cross-package dependency
   rules.
 
-## 3. lucide → `PagoPAIcon` replacement
+## 3. lucide → `PagoPAIcon` replacement — resolved 2026-11-26
 
-**Decision deferred:** replacing the remaining `lucide-react` icons with the
-published `PagoPAIcon` catalogue.
+**Resolved 2026-11-26:** option (c), drop lucide entirely. Every icon a shipped
+component renders now resolves from the artwork pipeline: `primitives/icons.ts`
+is deleted, the modules that imported it render `PagoPAIcon` or a generated
+variant component, and `lucide-react` left the `packages/pagopa-ui` and
+`apps/storybook` manifests and the lockfile. Four identities have no pinned
+counterpart and use the closest source glyph, recorded in the icon guide:
+`Camera` → `photo`, `Building2` → `account_balance`, `FileText` →
+`receipt_long` and the neutral sort `ArrowUpDown` → `unfold`. `DropdownItem.icon`
+no longer exposes the lucide `LucideIcon` type — it takes the pipeline's
+`IconComponent` — which is the breaking change the deferral anticipated.
+
+**Decision deferred (2026-10-12):** replacing the remaining `lucide-react` icons
+with the published `PagoPAIcon` catalogue.
 
 - **Current state:** lucide is confined to `src/components/primitives` through
   `primitives/icons.ts`; the public components expose `PagoPAIcon`.

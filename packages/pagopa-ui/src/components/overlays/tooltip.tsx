@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { X } from "@/components/primitives/icons"
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import {
   Tooltip as TooltipPrimitive,
   TooltipContent,
@@ -74,7 +74,7 @@ function Tooltip({
               className="flex size-6 shrink-0 items-center justify-center"
               data-slot="tooltip-close-mark"
             >
-              <X className="size-2.5" strokeWidth={2} />
+              <PagoPAIcon name="close" className="size-2.5" />
             </span>
           ) : null}
         </TooltipContent>

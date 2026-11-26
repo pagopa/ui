@@ -1,15 +1,7 @@
 "use client"
 
-import {
-  ArrowRight,
-  Bell,
-  CheckCircle2,
-  Home,
-  LayoutDashboard,
-  Menu,
-  Search,
-  UserRound,
-} from "lucide-react"
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+
 import { cn } from "@/lib/cn"
 
 import { FeatureList, ListItem, StatusTile, Tag } from "@/components/content"
@@ -73,24 +65,24 @@ function AppHeader({ compact = false }: { compact?: boolean }) {
             className="ml-auto hidden items-center gap-1 tablet-md:flex"
           >
             <Button variant="ghost">
-              <Home aria-hidden="true" />
+              <PagoPAIcon name="account_balance" aria-hidden="true" />
               Home
             </Button>
             <Button variant="ghost">
-              <LayoutDashboard aria-hidden="true" />
+              <PagoPAIcon name="dashboard" aria-hidden="true" />
               Servizi
             </Button>
           </nav>
         ) : null}
         <div className="ml-auto flex items-center gap-1 tablet-md:ml-0">
           <Button variant="ghost" size="icon" aria-label="Notifiche">
-            <Bell aria-hidden="true" />
+            <PagoPAIcon name="notifications_active" aria-hidden="true" />
           </Button>
           <Button variant="ghost" size="icon" aria-label="Profilo">
-            <UserRound aria-hidden="true" />
+            <PagoPAIcon name="person" aria-hidden="true" />
           </Button>
           <Button variant="ghost" size="icon" aria-label="Menu" className="tablet-md:hidden">
-            <Menu aria-hidden="true" />
+            <PagoPAIcon name="menu" aria-hidden="true" />
           </Button>
         </div>
       </div>
@@ -104,7 +96,7 @@ function Actions({ config }: { config: TemplateConfig }) {
       {config.primaryAction ? (
         <Button>
           {config.primaryAction}
-          <ArrowRight aria-hidden="true" />
+          <PagoPAIcon name="arrow" aria-hidden="true" />
         </Button>
       ) : null}
       {config.secondaryAction ? <Button variant="outline">{config.secondaryAction}</Button> : null}
@@ -135,17 +127,17 @@ function LandingBody({ config }: { config: TemplateConfig }) {
           {
             title: "Pagamenti sicuri",
             description: "Paga online verso la Pubblica Amministrazione.",
-            icon: <CheckCircle2 />,
+            icon: <PagoPAIcon name="check_circle" />,
           },
           {
             title: "Servizi accessibili",
             description: "Esperienze progettate per tutte le persone.",
-            icon: <CheckCircle2 />,
+            icon: <PagoPAIcon name="check_circle" />,
           },
           {
             title: "Dati sotto controllo",
             description: "Consulta ricevute e stato delle operazioni.",
-            icon: <CheckCircle2 />,
+            icon: <PagoPAIcon name="check_circle" />,
           },
         ]}
         className="py-8 tablet-md:grid-cols-3"
@@ -268,7 +260,11 @@ function ListBody({ config, table = false }: { config: TemplateConfig; table?: b
       </div>
       <label className="relative block max-w-xl">
         <span className="sr-only">Cerca</span>
-        <Search aria-hidden="true" className="absolute top-3 left-3 size-5 text-muted-foreground" />
+        <PagoPAIcon
+          name="search"
+          aria-hidden="true"
+          className="absolute top-3 left-3 size-5 text-muted-foreground"
+        />
         <Input className="pl-10" placeholder="Cerca per nome o identificativo" type="search" />
       </label>
       {table ? (
@@ -380,7 +376,7 @@ function DrawerBody({ config }: { config: TemplateConfig }) {
 function RecapBody({ config }: { config: TemplateConfig }) {
   return (
     <div className="mx-auto max-w-3xl">
-      <CheckCircle2 aria-hidden="true" className="size-14 text-success" />
+      <PagoPAIcon name="check_circle" aria-hidden="true" className="size-14 text-success" />
       <h1 className="mt-4 text-title-lg">{config.title}</h1>
       <p className="mt-2 text-body text-muted-foreground">{config.description}</p>
       <dl className="my-8 rounded-xl border">
@@ -446,7 +442,7 @@ function FeedbackBody({ config }: { config: TemplateConfig }) {
   return (
     <div className="mx-auto max-w-2xl text-center">
       <span className="mx-auto grid size-20 place-items-center rounded-full bg-success-soft text-success">
-        <CheckCircle2 aria-hidden="true" className="size-11" />
+        <PagoPAIcon name="check_circle" aria-hidden="true" className="size-11" />
       </span>
       <h1 className="mt-6 text-title-lg">{config.title}</h1>
       <p className="mt-3 text-body text-muted-foreground">{config.description}</p>

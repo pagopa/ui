@@ -4,7 +4,7 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { X } from "@/components/primitives/icons"
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 type BannerColor = "white" | "primary" | "grey"
 type BannerHierarchy = "primary" | "secondary" | "tertiary"
@@ -276,7 +276,7 @@ function Banner({
           data-slot="banner-dismiss"
           className="absolute right-1 top-1 z-10 flex size-11 shrink-0 items-center justify-center rounded-full hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-current"
         >
-          <X aria-hidden="true" className="size-4" />
+          <PagoPAIcon name="close" className="size-4" />
         </button>
       ) : null}
     </section>
