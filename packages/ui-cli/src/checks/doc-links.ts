@@ -52,8 +52,10 @@ type DocsContext = {
   graph: CommandGraph | null
 }
 
-// Skills the `skills` CLI installs from a published repository: their documents
-// are the publisher's, so the repository's link and scope rules do not apply.
+// Skills the `skills` CLI restores from a published repository: the `SKILL.md`
+// is an adapted entrypoint and the pinned copy beside it (`pnpm skills:restore`)
+// is the publisher's, so the repository's link and scope rules do not apply to
+// the directory — and a restored tree must not turn the gate red.
 const SKIPPED_SKILLS = new Set(["modern-web-guidance", "shadcn"])
 
 const LOCAL_PREFIXES = [".figma/", "node_modules/", "dist/", "coverage/"]
@@ -573,6 +575,37 @@ function validateDocsIndex(context: DocsContext): string[] {
   return ctx.errors
 }
 
+// A third-party skill is committed as a thin entrypoint: `skills-lock.json`
+// pins the publisher's copy, `.agents/skills/<name>/SKILL.md` is the file the
+// invocation resolves to, and everything else in the directory is restored on
+// demand and gitignored. Losing the entrypoint loses the capability, so the
+// lock and the tree must name the same skills.
+function validatePinnedSkills(context: DocsContext): string[] {
+  const ctx = { ...context, errors: [] }
+  const lock = path.join(ctx.workspace, "skills-lock.json")
+  if (!fs.existsSync(lock)) return ctx.errors
+  const text = fs.readFileSync(lock, "utf8")
+  let pinned: Record<string, unknown>
+  try {
+    pinned = JSON.parse(text).skills ?? {}
+  } catch {
+    report(ctx, lock, text, 0, "the lockfile does not parse, so the pinned skills cannot resolve")
+    return ctx.errors
+  }
+  for (const name of Object.keys(pinned)) {
+    const entrypoint = `.agents/skills/${name}/SKILL.md`
+    if (exists(ctx, entrypoint)) continue
+    report(
+      ctx,
+      lock,
+      text,
+      Math.max(text.indexOf(`"${name}"`), 0),
+      `${name} is pinned in skills-lock.json but ${entrypoint} is missing`,
+    )
+  }
+  return ctx.errors
+}
+
 function validateConfig(context: DocsContext): string[] {
   const ctx = { ...context, errors: [] }
   checkConfig(ctx, path.join(ctx.root, "figma-to-code.yaml"))
@@ -604,6 +637,7 @@ export function checkDocLinks(workspaceTree: Workspace, options: DocLinksOptions
   const errors = [
     ...validateMarkdownFiles(ctx, markdown),
     ...validateDocsIndex(ctx),
+    ...validatePinnedSkills(ctx),
     ...validateConfig(ctx),
     ...validateScripts(ctx),
   ]
