@@ -17,14 +17,23 @@ export const consumerUse = { viewport: { width: 1024, height: 900 }, reducedMoti
 // and the spec has to name it in seconds instead of spending its whole budget.
 export const NEW_TAB_TIMEOUT = 15_000
 
+// The restriction the two helpers below share: outside macOS, WebKit opens no
+// new tab at all.
+const webkitNewTabNeedsMacOS = (browserName) =>
+  browserName === "webkit" && process.platform !== "darwin"
+
 export function opensNewTabInBrowser(browserName) {
-  return browserName !== "webkit" || process.platform === "darwin"
+  return !webkitNewTabNeedsMacOS(browserName)
 }
 
 export function newTabClickOptions(browserName) {
-  return browserName === "webkit" || (browserName === "chromium" && process.platform === "darwin")
-    ? { modifiers: ["Meta"] }
-    : { button: "middle" }
+  // The modifier click is what opens a tab on WebKit — including the Linux run
+  // the caller skips — and on Chromium for macOS; everywhere else a middle
+  // click opens it.
+  const opensWithMeta =
+    webkitNewTabNeedsMacOS(browserName) ||
+    (process.platform === "darwin" && (browserName === "webkit" || browserName === "chromium"))
+  return opensWithMeta ? { modifiers: ["Meta"] } : { button: "middle" }
 }
 
 // Every domain starts from the same served application and keeps listening for

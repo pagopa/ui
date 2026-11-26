@@ -38,8 +38,8 @@ export type AlignDeps = {
 
 export type AlignResult = {
   plan: AlignPlan
-  /** Whether the Storybook probe ran and what it said; absent when not asked. */
-  storybook?: { url: string; answers: boolean }
+  /** The Storybook the probe answered, when asked; absent when not asked. */
+  storybook?: { url: string }
   diagnostic: ParityOutput
   out: string[]
   err: string[]
@@ -75,10 +75,7 @@ export function planAlignment(workspace: Workspace, options: DiagnoseOptions): A
   }
 }
 
-export function formatAlign(
-  plan: AlignPlan,
-  storybook?: { url: string; answers: boolean },
-): string[] {
+export function formatAlign(plan: AlignPlan, storybook?: { url: string }): string[] {
   const out = [
     `${plan.nodeId} "${plan.name}" · ${plan.page} · ${plan.status}`,
     `story ${plan.storyId} · ${plan.export}`,
@@ -86,8 +83,7 @@ export function formatAlign(
       ? `devices ${plan.devices.join(", ")} (${plan.devices.length} declared)`
       : "devices none declared",
   ]
-  if (storybook)
-    out.push(`storybook ${storybook.url} ${storybook.answers ? "answers" : "is silent"}`)
+  if (storybook) out.push(`storybook ${storybook.url} answers`)
   return out
 }
 
@@ -104,7 +100,7 @@ export async function align(
       throw new UsageError(
         `${plan.storyId}: ${deps.storybookUrl} does not answer — start Storybook, then rerun align`,
       )
-    storybook = { url: deps.storybookUrl, answers }
+    storybook = { url: deps.storybookUrl }
   }
   const diagnostic = await (deps.diagnose ?? check)(workspace, { ...options, nodeId: plan.nodeId })
   return {

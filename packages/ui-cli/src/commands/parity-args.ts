@@ -1,10 +1,10 @@
 import type { ParsedArgs } from "citty"
 import { UsageError } from "../lib/command.ts"
 import type { DiagnoseOptions } from "../parity/types.ts"
-import { acceptsOptionalValue, repeated, text } from "./args.ts"
+import { acceptsOptionalValue, booleanArg, repeated, stringArg, text } from "./args.ts"
 
-export const stringArg = { type: "string" } as const
-export const booleanArg = { type: "boolean" } as const
+export { booleanArg, stringArg }
+
 export const caseArgs = {
   node: stringArg,
   input: stringArg,

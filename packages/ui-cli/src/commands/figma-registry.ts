@@ -1,9 +1,7 @@
 import { defineCommand } from "citty"
 import { setRegistry } from "../figma/registry-set.ts"
+import { boolArg, stringArg } from "./args.ts"
 import { action, printJson, type CliContext } from "./context.ts"
-
-const stringArg = { type: "string" } as const
-const boolArg = { type: "boolean", default: false } as const
 
 export function registryCommand(ctx: CliContext) {
   const set = defineCommand({
