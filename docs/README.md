@@ -42,6 +42,7 @@ one rather than editing it.
 | [ADR-0011](./decisions/0011-css-cascade-layers.md)                | The stylesheet encapsulates with cascade layers, not `@scope`                 |
 | [ADR-0012](./decisions/0012-inline-svg-artwork.md)                | Icons are inline SVG components, and an unknown name renders nothing          |
 | [ADR-0013](./decisions/0013-semantic-token-contract.md)           | The public token contract is semantic: `--pui-*`, named for the role          |
+| [ADR-0014](./decisions/0014-utility-prefix.md)                    | Utilities ship under an internal prefix, in both spellings                    |
 
 ## Use cases
 

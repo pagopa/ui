@@ -1,4 +1,4 @@
-# ADR-0012 — Utilities ship under an internal prefix, in both spellings while the tree migrates
+# ADR-0014 — Utilities ship under an internal prefix, in both spellings while the tree migrates
 
 - **Status:** Accepted — 2026-12-04, temporary: the contract step of the same
   spec removes it.
