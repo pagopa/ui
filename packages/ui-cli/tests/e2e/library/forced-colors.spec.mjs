@@ -66,7 +66,7 @@ test("forced colors: the packed components keep their paint and focus perimeter"
       probe.remove()
       return {
         color: style.color,
-        background: style.backgroundColor,
+        fill: style.fill,
         systemText,
         systemCanvas,
         systemHighlightText,
@@ -92,7 +92,7 @@ test("forced colors: the packed components keep their paint and focus perimeter"
     )
   }
   assert.equal(
-    forcedMask.background,
+    forcedMask.fill,
     forcedMask.color,
     "forced colors must not erase the local symbol's currentColor fill",
   )
