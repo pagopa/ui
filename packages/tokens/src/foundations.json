@@ -553,5 +553,139 @@
         "note": "Shadow 16 effect style (menu and dropdown elevation)"
       }
     }
-  }
+  },
+  "stylesheet": [
+    {
+      "declaration": "line-height: 1.5",
+      "reason": "Host typography: the root line box stays the CSS default ratio; Body sets a 22/16 line-height that would change every inherited line a caller renders."
+    },
+    {
+      "declaration": "--destructive-hover: #aa2828",
+      "reason": "Local extension: the destructive pointer step between Error 600 and Error 850. No Figma pressed variable is reachable; requested to design."
+    },
+    {
+      "declaration": "--primary-active: #072582",
+      "reason": "Local extension: the primary pressed step between Blue 600 and Blue 850. No Figma pressed variable is reachable; requested to design."
+    },
+    {
+      "declaration": "--navy: #061b49",
+      "reason": "Local extension: brand surface outside the Figma collections; retired when the design owner publishes it as a variable (ADR-0001 §9)."
+    },
+    {
+      "declaration": "--navy-deep: #17213c",
+      "reason": "Local extension: brand surface outside the Figma collections; retired when the design owner publishes it as a variable (ADR-0001 §9)."
+    },
+    {
+      "declaration": "--brand-cyan: #00a7e1",
+      "reason": "Local extension: brand accent outside the Figma collections; retired when the design owner publishes it as a variable (ADR-0001 §9)."
+    },
+    {
+      "declaration": "--avatar-frame: rgb(14 15 19 / 6%)",
+      "reason": "Local extension: the avatar contrast ring has no Figma source; requested to design."
+    },
+    {
+      "declaration": "--avatar-icon-surface: rgb(255 255 255 / 20%)",
+      "reason": "Local extension: the icon surface on inverse artwork has no Figma source; requested to design."
+    },
+    {
+      "declaration": "--artboard-height: 650px",
+      "reason": "White Template artboard height (dialog, informative drawer). Demo geometry; removed when the demo artboards stop reading a library property."
+    },
+    {
+      "declaration": "--artboard-height-tall: 800px",
+      "reason": "Feedback Page and Informative Drawer artboard height. Demo geometry; removed with the demo artboards."
+    },
+    {
+      "declaration": "--dialog-width: 600px",
+      "reason": "Dialog desktop frame width. Component geometry no published size foundation carries yet; requested as a foundation."
+    },
+    {
+      "declaration": "--dialog-width-compact: 272px",
+      "reason": "Dialog mobile and LogIn frame width. Component geometry no published size foundation carries yet; requested as a foundation."
+    },
+    {
+      "declaration": "--login-width: 520px",
+      "reason": "LogIn page frame width. Component geometry no published size foundation carries yet; requested as a foundation."
+    },
+    {
+      "declaration": "--state-width: 368px",
+      "reason": "Waiting, Ok and Ko state frame width. Component geometry no published size foundation carries yet; requested as a foundation."
+    },
+    {
+      "declaration": "--drawer-width: 416px",
+      "reason": "Demo drawer frame width. Demo geometry; removed with the demo artboards."
+    },
+    {
+      "declaration": "--drawer-width-wide: 417px",
+      "reason": "Informative Drawer frame width. Component geometry no published size foundation carries yet; requested as a foundation."
+    },
+    {
+      "declaration": "--id-module-width: 410px",
+      "reason": "ID module width read from the 600px device step. Component geometry no published size foundation carries yet; requested as a foundation."
+    },
+    {
+      "declaration": "--camera-size: 376px",
+      "reason": "Camera viewfinder frame size. Component geometry no published size foundation carries yet; requested as a foundation."
+    },
+    {
+      "declaration": "--menu-width: 274px",
+      "reason": "Menu minimum width from the source frame. Component geometry no published size foundation carries yet; requested as a foundation."
+    },
+    {
+      "declaration": "--menu-skeleton-width: 106px",
+      "reason": "Menu skeleton width from the source frame. Component geometry no published size foundation carries yet; requested as a foundation."
+    },
+    {
+      "declaration": "--overlay-width: 512px",
+      "reason": "Snackbar width and demo hero frame width. Component geometry no published size foundation carries yet; requested as a foundation."
+    },
+    {
+      "declaration": "--header-height: 102px",
+      "reason": "Header desktop frame height. Component geometry no published size foundation carries yet; requested as a foundation."
+    },
+    {
+      "declaration": "--preheader-height: 55px",
+      "reason": "Preheader frame height. Component geometry no published size foundation carries yet; requested as a foundation."
+    },
+    {
+      "declaration": "--page-gutter: 2rem",
+      "reason": "Root-font-relative viewport fallback: the spacing foundations are px, so aliasing this would change zoom and host-font scaling."
+    },
+    {
+      "declaration": "--page-gutter-lg: 3rem",
+      "reason": "Root-font-relative viewport fallback: the spacing foundations are px, so aliasing this would change zoom and host-font scaling."
+    },
+    {
+      "declaration": "--grid-aside: 20rem",
+      "reason": "Demo grid aside column. Demo geometry; removed with the demo artboards."
+    },
+    {
+      "declaration": "--grid-fields: 10rem",
+      "reason": "Demo grid field column. Demo geometry; removed with the demo artboards."
+    },
+    {
+      "declaration": "--grid-actions: 3rem",
+      "reason": "Demo grid action column. Demo geometry; removed with the demo artboards."
+    },
+    {
+      "declaration": "--shadow-switch-knob: 0 1px 3px rgba(0, 43, 85, 0.1), 0 1px 1px rgba(0, 43, 85, 0.05), 0 2px 1px -1px rgba(0, 43, 85, 0.1)",
+      "reason": "The switch knob needs decimal alpha, which is not byte-identical to the published hex alpha; requested as an effect foundation."
+    },
+    {
+      "declaration": "--drop-shadow-elevation-6: 0 1px 18px #002b551a, 0 6px 10px #002b550d, 0 3px 5px -1px #002b551a",
+      "reason": "SVG filters take the Elevation/6 layers as a drop-shadow, not as the published box-shadow effect."
+    },
+    {
+      "declaration": "--container-tablet-md: 56.25rem",
+      "reason": "Container query conditions cannot resolve var(), so the 900px device step repeats as the literal the generated layer publishes."
+    },
+    {
+      "declaration": "animation-duration: 0.01ms",
+      "reason": "Reduced-motion policy: every animation stops without removing the frame it settled on."
+    },
+    {
+      "declaration": "animation-duration: 1s",
+      "reason": "Reduced-motion policy: the loading spinner keeps one second so it still reads as motion."
+    }
+  ]
 }
