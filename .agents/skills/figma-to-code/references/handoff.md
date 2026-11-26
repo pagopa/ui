@@ -44,10 +44,10 @@ time; `delta.md` holds the queue read and the decision procedure.
 Use `pnpm ui-cli figma brief --queue --refresh` for the delta's own briefs, and
 the node brief again when a node's context changes.
 
-Record decisions through `figma registry set`
-(`catalogue/statuses.md`). Cases, rules and guides travel
-with the implementation. Source/render inspection and the parity loop in `visual-parity.md` remain
-required; a draft is not coverage.
+Record decisions through `record` (`catalogue/statuses.md`), one atomic run per
+node. Cases, rules and guides travel with the implementation. Source/render
+inspection and the alignment loop in `visual-parity.md` remain required
+([commands](commands.md)); a draft is not coverage.
 Changes to comparison tools, the public API, tokens or these instructions
 require an explicit decision; a mismatch alone is not permission to relax them.
 If commits were requested, keep one commit per node on this branch, with the

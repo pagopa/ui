@@ -72,8 +72,8 @@ parent_dr: ../design-review.md
 - `AC-02`: The work order respects the dependencies: no dependent node precedes the node it depends on. - Evidence: `pnpm nx run pagopa-ui-cli:figma:triage`
 - `AC-03`: Every node of the queue has a recorded decision before the close. - Evidence: `pnpm nx run pagopa-ui-cli:figma:status`
 - `AC-04`: Divergences between devices are allowed only when the device policy declares them and the registry note explains them. - Evidence: `packages/pagopa-ui/src/catalog/figma/device-policy.json`; `pnpm nx run pagopa-ui-cli:check:devices`
-- `AC-05`: Every aligned node is compared per declared device after the change, with each remaining residue restated. - Evidence: `pnpm ui-cli parity check --node <nodeId> --device <device>`
-- `AC-06`: The catalogue check is green after the alignment. - Evidence: `pnpm nx run pagopa-ui:check:catalogue`
+- `AC-05`: Every aligned node is compared per declared device after the change, with each remaining residue restated. - Evidence: `pnpm ui-cli align <nodeId> --device <device>`, one run per declared device
+- `AC-06`: The catalogue check is green after the alignment, and the closing write applied all of its documents or none. - Evidence: `pnpm ui-cli record <nodeId> --status <status>` (its exit code is the catalogue verdict); `pnpm nx run pagopa-ui:check:catalogue`
 - `AC-07`: The full green chain is green before the commit. - Evidence: `pnpm nx run workspace:verify`
 - `AC-08`: With no starting snapshot, the system returns `BASELINE_SNAPSHOT_MISSING` and modifies no file. - Evidence: `ui-cli` tests on the synchronisation command
 
@@ -107,7 +107,7 @@ sequenceDiagram
 - Figma: library `pvhsJpPGQbEwNLiyP7BOIw`, version of the current snapshot.
 - DR components: `solution.components.item-001`, `solution.components.item-005`, `solution.components.item-004`
 - Endpoint / OpenAPI / AsyncAPI / Data Contract: `contracts.item-004`, `contracts.item-005`, `contracts.item-007`, `contracts.item-008`
-- Validation evidence: `pnpm ui-cli parity check`; `docs/figma-drift-handoff.md`
+- Validation evidence: `pnpm ui-cli align <nodeId> --device <device>`; `pnpm ui-cli record <nodeId> --status <status>`; `docs/figma-drift-handoff.md`
 
 ## Open questions and propagation
 

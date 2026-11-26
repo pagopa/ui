@@ -47,22 +47,22 @@ component with no node needs only its catalogue coverage
    **Done when** the story renders in Storybook, the a11y suite passes and the
    guide/ledger satisfy source alignment (`definition-of-done.md`).
 
-5. **Parity.** The loop in `visual-parity.md`, for every variant the stories
-   expose and every declared device: `pnpm ui-cli parity check --node <id>
-   --device <name>`, one run per device, nothing saved.
+5. **Align.** The loop in `visual-parity.md`, for every variant the stories
+   expose and every declared device: `pnpm ui-cli align <nodeId> --device <name>`,
+   one run per device, nothing saved ([commands.md](commands.md)).
    **Done when** every declared device has a run whose result you can restate,
    and every delta is fixed, a reasoned residue or a mapping artifact.
 
-6. **Registry.** Use `pnpm ui-cli figma registry set <nodeId> --status implemented`
-   with the target and note flags in
-   `catalogue/statuses.md`. Several implementations of a
-   set still require an in-place `additionalExports` edit. Export it
-   publicly when it is a production component. Run `pnpm nx run pagopa-ui:check:catalogue`.
+6. **Record.** Use `pnpm ui-cli record <nodeId> --status implemented` with the
+   target flags and the note in `catalogue/statuses.md`: one atomic run writes the
+   registry, the page surface and the generated documents, and reports the
+   catalogue verdict. Several implementations of a set still require an in-place
+   `additionalExports` edit. Export it publicly when it is a production component.
    An open point for the design owner is a design request
    (`design-request.md`); the node stays `pending` and the
    request is named in the note.
-   **Done when** the node is `implemented` with a green device coverage line, or
-   `pending` with its design request named.
+   **Done when** the node is `implemented` with the catalogue verdict its own run
+   reported, or `pending` with its design request named.
 
 7. **Close** with the source-alignment checklist in
    `definition-of-done.md` and the closing steps of the

@@ -53,7 +53,7 @@ The request input follows the schema in
 [design-requests.ts](../../../../packages/ui-cli/src/figma/design-requests.ts):
 the authored question, context, options and recommendation, visual options
 carrying existing capture URLs. It is not a second status record. For a node
-request, first record `pending` and its blocker with `figma registry set`.
+request, first record `pending` and its blocker with `record`.
 
 ```sh
 pnpm ui-cli figma request open --input <request-input> --dry-run --json

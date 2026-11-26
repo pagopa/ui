@@ -6,7 +6,9 @@ compares the two. Nothing is written — no case, no bundle, no baseline — so 
 verdict belongs to the session that asked for it and a later session must ask
 again. `check` and `source` read `--input`, else `figma.snapshot`; `check` and
 `render` need Storybook (`STORYBOOK_URL=<url>`, default `http://localhost:6006`).
-`--node <id> --device <name>` narrows a run to one declared device. The source
+`--node <id> --device <name>` narrows a run to one declared device, and
+`align` is the same comparison preceded by the preflight a node needs
+([commands](commands.md)). The source
 reader is the only reader of the source; `check --screenshot <file>` renders to
 look at; trust `check` over the render module's `--root` (which forces
 `display:block`).

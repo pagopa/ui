@@ -5,10 +5,11 @@
    values carry no device axis.
 2. **Read each device's tree** at `--depth 3` or with `get_screenshot`: which
    layers disappear, which sizes and gaps change, one band or a stack.
-3. **Compare per device**, one run each: `pnpm ui-cli parity check --node <id>
-   --device <name>` resolves the declared width and viewport together, then
-   refining its story, state and subjects. Name `--device` or `--variant`
-   explicitly; without one you are measuring the frame the story happens to draw.
+3. **Compare per device**, one run each: `pnpm ui-cli align <nodeId> --device
+   <name>` reads the target and the declared devices, resolves the declared width
+   and viewport together, then refines its story, state and subjects
+   ([commands](../commands.md)). Name `--device` or `--variant` explicitly;
+   without one you are measuring the frame the story happens to draw.
 4. **Diff device by device**: a layer hidden on one device is not a delta on
    another.
 5. **Close each device on its own terms.** A declared device is compared once per

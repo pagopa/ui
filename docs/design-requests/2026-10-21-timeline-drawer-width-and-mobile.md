@@ -90,7 +90,8 @@ header gap of 8, so a shared header change would reopen that node.
 ## Unblock
 
 After the decisions: update the component and the `SourceDesktop`/`SourceMobile`
-stories, compare the node on each declared device with `pnpm ui-cli parity check
---node <nodeId> --device <device>`, update the registry note and set
-`implemented` only when both devices close. If the decisions go against the
+stories, compare the node on each declared device with
+`pnpm ui-cli align <nodeId> --device <device>`, then write the note and
+`implemented` with `pnpm ui-cli record <nodeId> --status implemented` only when
+both devices close. If the decisions go against the
 source, record the residue and its reason in the registry note.

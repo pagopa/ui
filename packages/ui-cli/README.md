@@ -77,7 +77,7 @@ The cache contracts cover the standard workspace paths and default arguments.
 Use the direct CLI for alternate roots or an external `--input` file;
 those files are outside the default Nx input sets.
 Direct CLI invocations are uncached. Live reads, writers and browser captures
-remain fresh, including each node's `parity check --node <id> --device <device>`.
+remain fresh, including each node's `align <node> --device <device>`.
 
 ### Operations
 
@@ -142,6 +142,8 @@ keeps the same preflight behavior as the other live Figma commands.
 | `src/checks/css-budget.ts`             | Check            | Enforces the published stylesheet budget recorded in `data/css-budget.json` (raw bytes, gzip level 9, brotli): growth fails, a ceiling ahead of the artifact only warns, and `update css` records the size you accept without ever raising a ceiling, preventing unreviewed payload growth.                                                                                                                |
 | `src/build/prepare-types.ts`           | Build step       | Rewrites the specifiers in the emitted `.d.ts` files to produce alias-free ESM, so consumers can resolve the package declarations without this repository's TypeScript aliases. Runs inside `pnpm nx run pagopa-ui:build`.                                                                                                                                                                                 |
 | `src/figma/catalogue/index.ts`         | Check and tool   | Validates the catalogue, reports live drift, refreshes the inventory, queues the delta and renders the drift PR body, making Figma/source mismatches explicit and reviewable instead of silent.                                                                                                                                                                                                            |
+| `src/figma/align.ts`                   | Tool             | Runs a node's preflight, its Storybook probe and the comparison in one invocation and writes nothing, so target, devices and residues are read in a single call and a second run on the same tree says the same thing.                                                                                                                                                                                     |
+| `src/figma/record.ts`                  | Tool             | Writes one node's decision and every document it entails — registry, page surface, note baseline, story titles, consumer map — atomically: a failed step restores every snapshotted byte, so a run applies all of them or none and the re-run starts from the same place.                                                                                                                                  |
 | `src/figma/export.ts`                  | Tool             | Joins the MCP inventory with the REST data and writes one pinned snapshot to `.figma/live-rest.json`, so sync can work from reproducible evidence instead of querying Figma for every check.                                                                                                                                                                                                               |
 | `src/figma/pictograms.ts`              | Tool and check   | Exports the pictogram variants, writes the asset manifest and validates the committed artwork, keeping published variants reproducible and catching drift before it reaches consumers.                                                                                                                                                                                                                     |
 | `src/figma/tokens.ts`                  | Tool and check   | Curates a pinned variable snapshot into the committed token manifest; keys every token by its published Figma id, so a rename is a delta; merges the reviewed foundation entries and generates and validates the CSS foundation layer and the documentation inventory, keeping token identity and published styles aligned.                                                                                |
@@ -156,6 +158,7 @@ keeps the same preflight behavior as the other live Figma commands.
 | `tests/checks/css-budget.test.mjs`     | Regression tests | Covers the budget ceiling, slack, missing metric and `update css` ratchet, protecting the rule that accepted size changes cannot silently raise the budget.                                                                                                                                                                                                                                                |
 | `tests/checks/doc-links.test.mjs`      | Regression tests | Covers link, path-claim and skill-agnosticism rules against temporary trees, so the documentation gate catches regressions without depending on repository state.                                                                                                                                                                                                                                          |
 | `tests/checks/story-taxonomy.test.mjs` | Regression tests | Enforces the Storybook taxonomy: every meta title is `Foundations/*` or a known `Components/<section>/*`, and the retired `Screens/*`, `Templates/*` and `Alignment/*` sections stay retired, keeping taxonomy changes explicit.                                                                                                                                                                           |
+| `tests/commands/*.test.mjs`            | Regression tests | Covers `align` and `record` against fixtures: one invocation does the whole preflight or the whole write, a re-run on an unchanged tree writes the same bytes, `--dry-run` writes nothing, an injected failure restores the tree byte for byte, and a rejected entry exits before any document changes.                                                                                                    |
 | `tests/parity/*.test.mjs`              | Regression tests | Covers the parity rules (tolerance, weight law, targets, classification, composition) and the ephemeral contract of the diagnostic against fixtures, with no snapshot and no browser, so the comparison stays fast and deterministic to verify.                                                                                                                                                            |
 | `src/catalog/figma/device-policy.json` | Reviewed data    | Defines the device vocabulary: the axes that mean "device", canonical devices with aliases, widths and default layout scopes, and values meaning "no device axis". It holds no component name, file or path, so scripts and agents resolve devices consistently without node-specific rules.                                                                                                               |
 | `src/catalog/figma/rules.json`         | Reviewed data    | The English record of every consolidated `.Regole` card: verbatim Italian title, English title and summary, source hash, targets, disposition and review date. `figma:rules` writes it, `check:rules` reports it, and the guide's `## Component Rules` block carries the consumer-facing subset with no source reference.                                                                                  |
@@ -199,8 +202,8 @@ keeps the same preflight behavior as the other live Figma commands.
    (`devices: <n> sets with an axis · declared <n> · aliases resolved <n>/<n> ·
    unmapped <n>`), and fails only on a value it cannot resolve: no node owes a
    comparison the repository does not store. The per-node comparison is
-   `pnpm ui-cli parity check --node <id> --device <name>`, run in the session
-   that draws or aligns the node.
+   `pnpm ui-cli align <node> --device <name>`, run in the session that draws or
+   aligns the node.
 5. **The artwork.** The icon check and the pictogram check prove that each public
    alias maps to a real source identity with pinned export provenance. Names
    remain stable through source renames and page moves. A newer metadata-only
@@ -246,6 +249,8 @@ pnpm ui-cli --help
 pnpm ui-cli check --help
 pnpm ui-cli check catalogue --help
 pnpm ui-cli parity check --help
+pnpm ui-cli align --help
+pnpm ui-cli record --help
 ```
 
 Nx targets remain the gates and CI entry points. A direct call is always
@@ -265,12 +270,41 @@ change directories nor parse argv. Browser/DOM capture, pinned image requests
 and test-runner processes live in `src/adapters/` and are injectable in tests.
 The changed-only and visual-scope domains live in `src/testing/`.
 
-`pnpm ui-cli parity check --node <id> --device <name>` is the whole loop: it
-prints the residues for one node on one declared device and writes nothing, so
-there is no wave to select and no case to reproduce — the work order comes from
-the delta plan and a node is compared when it is drawn or aligned. Hover states
+`pnpm ui-cli align <node> --device <name>` is the whole loop: it prints the
+residues for one node on one declared device and writes nothing, so there is no
+wave to select and no case to reproduce — the work order comes from the delta
+plan and a node is compared when it is drawn or aligned. Hover states
 set `--expect-state hover` and end `--state-evidence` with `:hover`; see the
 [parity state-capture contract](../../.agents/skills/figma-to-code/references/parity-tooling.md#capturing-a-state).
+
+### Alignment and recording
+
+A node's bookkeeping is two invocations. `src/figma/align.ts` and
+`src/figma/record.ts` hold the sequences; `src/commands/align.ts` and
+`src/commands/record.ts` are their citty adapters. Both take their dependencies
+as arguments, so the fixture suites drive them without a browser or a network.
+
+`pnpm ui-cli align <node>` runs everything a comparison needs before and after
+the capture, in the order that fails fastest: the node in the inventory (a node
+the inventory does not hold stops the run and names the refresh), the registry
+target and the story the case captures, the declared devices, the Storybook
+probe when `STORYBOOK_URL` is set (a silent storybook stops the run before a
+browser is opened), then the diagnostic itself. It prints the plan and the
+residues and writes nothing, so a second run on the same tree says the same
+thing and there is nothing to resume. Exit codes are the diagnostic's: `3` on
+residues, `2` on a refused capture, a silent storybook or a usage error.
+
+`pnpm ui-cli record <node> --status <status>` writes the decision and every
+document it entails — registry, page surface, note baseline, story titles,
+consumer map — in one atomic run, then regenerates the catalogue and reports
+what the written documents still say. The registry update is computed first
+with nothing written, so a rejected entry exits `2` before any document
+changes; `--dry-run` stops there and prints the transition. A step that throws
+restores every snapshotted byte, so a failed run leaves the tree as it found it
+— there is no half-recorded node to repair, and the re-run starts from the same
+place. The generators are deterministic, so a second run on an unchanged tree
+prints `unchanged:` and writes the same bytes. The exit code is the catalogue's,
+`1` when it or a leftover residue failed, else `0`.
 
 ### Figma workflow helpers
 
@@ -282,7 +316,7 @@ rules, uncensused pages (named, from the inventory against the census),
 unreadable records, open requests, open comments, pending census identities,
 pending registry entries and unaccounted nodes each take precedence over
 "nothing to align". A pending census identity is routed to a review and
-`figma registry set`, never to `figma:triage`, which preserves the decision it
+`record`, never to `figma:triage`, which preserves the decision it
 reopens; unaccounted nodes are routed to `check:catalogue`, because the
 node-brief queue selects registry-pending entries only. `requests`
 counts the `open` records and lists the `unreadable` ones — a record whose
@@ -316,11 +350,14 @@ Catalogue drift and parity differences above tolerance return exit code 3;
 validation failures return 1 and missing inputs return 2. A catalogue run with
 both an error and drift exits 1: the error is graded first, whatever its text.
 
-`pnpm ui-cli figma registry set <nodeId> --status <status>` records a decision.
-Use `--module`, `--export`, `--story`, `--story-exports`, `--note` and
-`--reason` for its evidence. `--dry-run --json` previews the registry and
-census edits without writing. A real edit runs the catalogue check and
-returns its overall verdict.
+`pnpm ui-cli record <node> --status <status>` records a decision. Use
+`--module`, `--export`, `--story`, `--story-exports`, `--note` and `--reason`
+for its evidence. `--dry-run --json` previews the registry, page-surface and
+consumer-map edits without writing. A real edit writes the registry, the page
+surface and the consumer map in one atomic run, then regenerates the catalogue
+and returns its overall verdict: a step that throws restores every snapshotted
+byte, so a failed run leaves the tree as it found it and a re-run starts from
+the same place.
 
 `figma close` has been removed: closing orchestration belongs to the caller.
 Run the local gates through Nx, each touched node's diagnostic through the CLI,
