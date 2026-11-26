@@ -44,6 +44,7 @@ one rather than editing it.
 | [ADR-0014](./decisions/0014-utility-prefix.md)                    | Utilities ship under an internal prefix, in both spellings (superseded)     |
 | [ADR-0015](./decisions/0015-ephemeral-parity-diagnostic.md)       | Numerical parity is an ephemeral diagnostic, not a committed corpus         |
 | [ADR-0016](./decisions/0016-utility-prefix-single-spelling.md)    | A utility is declared once, under the `pui:` prefix                         |
+| [ADR-0017](./decisions/0017-visual-baselines-outside-git.md)      | Visual baselines live outside git, keyed by the build                       |
 
 ## Use cases
 

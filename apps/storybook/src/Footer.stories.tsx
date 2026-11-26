@@ -127,8 +127,7 @@ export const LoggedUserFalseDesktop: Story = {
       },
     },
     // The story is the Desktop source variant and its play function asserts the
-    // four-column geometry; Chromatic captures and plays it at that width only.
-    chromatic: { viewports: [1200] },
+    // four-column geometry: the fixture pins that width.
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -257,7 +256,6 @@ export const TitleOnlyColumn: Story = {
   parameters: {
     // The column grid and the tail rule start at the `@min-wide/footer` container
     // width, so the story pins the desktop width the defect was reported at.
-    chromatic: { viewports: [1200] },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)

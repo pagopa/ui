@@ -66,10 +66,9 @@ export const SourceProduct: Story = {
   // Reflow exemption: fixture pinned at the source width, not a product surface.
   parameters: {
     a11yContract: { reflow: false },
-    // The play function asserts the desktop type scale (24/32) and spacing; at
-    // the mobile modes the card renders the 18/28 step, so Chromatic captures
-    // and plays this fixture at the desktop width only.
-    chromatic: { viewports: [1200] },
+    // The fixture pins the desktop width: the play function asserts the desktop
+    // type scale (24/32) and spacing, while the mobile modes render the 18/28
+    // step.
   },
   tags: ["color-pinned"],
   // The text-only source set (`757:10713`) was unpublished in the 2026-10-14

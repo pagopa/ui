@@ -1,5 +1,12 @@
-# Visual regression: every story at 320, 600 and 1200 px, compared to the
-# Linux baselines committed under apps/storybook/visual/__screenshots__.
+# Visual regression: every story at 320, 600 and 1200 px, compared to the Linux
+# baselines stored outside this repository, in `pagopa/ui-visual-baselines`.
+#
+# The baselines are keyed by what decides a rendering: the hash of the built
+# Storybook index, the browser engine and the pinned Playwright image. A run
+# fetches the set its key names, shallowly, into `.nx/visual-baselines` and
+# compares against it; a set that is absent or was captured for another key fails
+# the run before anything is captured, and names the key it looked for. Nothing
+# is ever committed back here: `git` carries no image.
 #
 # What a run captures follows the event. An ordinary pull request captures the
 # stories its own diff can move: the stories import the module that declares
@@ -14,29 +21,19 @@
 # to capture and says so: it is neither a silent skip nor a fall back to the
 # catalogue.
 #
-# A change still owns its images. `ui-cli test visual` walks the imports a diff
-# reaches and writes the story ids the spec keeps; the `visual:update` label
-# runs the same walk and commits those images to the head branch, so a change
-# that adds or moves a story carries its baselines and leaves every other
-# baseline's bytes alone. The `visual:check` label re-runs the scoped comparison
-# on demand: it is how the baselines the update job pushed get verified, since a
-# commit made with GITHUB_TOKEN starts no run.
-# A baseline the nightly or the release gate rejects is repaired on `main`
-# through its own pull request with the `visual:update` label; merging it updates
-# the Version Packages pull request, whose synchronisation runs this gate again
-# on the new images.
-# Baselines are never produced on macOS: use the Playwright container as in
-# CONTRIBUTING.md.
+# A change that moves pixels owns new images, and they live in the storage
+# repository: capture them on the pinned image as CONTRIBUTING.md describes and
+# push them there under the key the run prints. Baselines are never produced on
+# macOS: the suite refuses to run without a fetched Linux set.
 name: Visual regression
 
 on:
   pull_request:
     # `synchronize` is what re-checks the Version Packages pull request every
-    # time a version plan moves it; `labeled` is the update mode of the
-    # baselines and the re-run a reviewer asks for. `ready_for_review` is not
-    # here: the release pull request is never a draft, and a draft pull request
-    # that becomes ready is proved by the push that made it.
-    types: [opened, synchronize, reopened, labeled]
+    # time a version plan moves it. `ready_for_review` is not here: the release
+    # pull request is never a draft, and a draft pull request that becomes ready
+    # is proved by the push that made it.
+    types: [opened, synchronize, reopened]
   # No `push` trigger: a merge to `main` carries the diff a pull request already
   # proved. The nightly below is the whole-catalogue pass.
   schedule:
@@ -55,16 +52,11 @@ jobs:
     name: Visual regression
     # Every pull request proves the diff it carries, scoped in the step below:
     # the release pull request and the nightly widen that to the whole
-    # catalogue, not a second job. The `visual:update` label belongs to the job
-    # below, which writes the baselines instead of comparing them, so this one
-    # reports `skipped` there.
-    # The review pull request (`design.preview.branch` in the figma-to-code
-    # config) adds review stories only: they carry `no-visual`, never merge and
-    # exist for the preview deploy. Its run would re-check the unchanged library
-    # and fail on stories that have no baseline, so the job reports `skipped`.
-    if: >-
-      github.head_ref != 'feedback/previews' &&
-      !(github.event_name == 'pull_request' && github.event.label.name == 'visual:update' && github.event.pull_request.head.repo.full_name == github.repository)
+    # catalogue. The review pull request (`design.preview.branch` in the
+    # figma-to-code config) adds review stories only: they carry `no-visual`,
+    # never merge and exist for the preview deploy. Its run would re-check the
+    # unchanged library, so the job reports `skipped`.
+    if: github.head_ref != 'feedback/previews'
     runs-on: ubuntu-24.04
     container:
       image: mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27
@@ -72,6 +64,14 @@ jobs:
     permissions:
       contents: read
       packages: read
+    env:
+      # The renderer the baselines were captured by, and the key names it. Keep
+      # the digest in step with the container image above: a run in another image
+      # renders other pixels, so it looks for a key storage does not have yet.
+      VISUAL_BASELINE_IMAGE: mcr.microsoft.com/playwright@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27
+      # Where the fetch writes and where the spec reads. It sits outside every
+      # package: `.nx` is ignored and no checkout fetches it.
+      VISUAL_SNAPSHOT_DIR: ${{ github.workspace }}/.nx/visual-baselines/snapshots
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
@@ -97,6 +97,24 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build the Storybook
+        env:
+          NX_PROFILE: .nx/ci-metrics/build.json
+        # The index names the stories and the files that define them, so the
+        # build comes before the fetch: its bytes are the first segment of the
+        # baseline key. `test:visual` reuses the same build.
+        run: pnpm nx run pagopa-ui-storybook:build
+
+      - name: Fetch the visual baselines
+        env:
+          # Reads the baselines repository; this job only ever reads its own.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Shallow, sparse and outside the tree: the run keeps one key's PNGs, not
+        # a history. A missing set for this key fails here, with the key named.
+        run: |
+          git config --system --add safe.directory "$GITHUB_WORKSPACE" 2>/dev/null || true
+          pnpm nx run pagopa-ui-cli:test:visual -- --fetch-baselines
+
       - name: Scope the run
         env:
           # The tip of the base branch: the three-dot diff is the pull
@@ -110,9 +128,6 @@ jobs:
           # temporary HOME: without this, every `git` call here refuses to read
           # the repository and the diff cannot be computed.
           git config --system --add safe.directory "$GITHUB_WORKSPACE" 2>/dev/null || true
-          # The index names the stories and the files that define them, so the
-          # build comes first and `test:visual` reuses it.
-          NX_PROFILE=.nx/ci-metrics/build.json pnpm nx run pagopa-ui-storybook:build
           case "$HEAD_REF" in
             # The nightly, a manual run and the release pull request capture the
             # catalogue. The release diff carries the version, the changelog and
@@ -162,116 +177,3 @@ jobs:
             apps/storybook/visual/playwright-report
           retention-days: 7
           if-no-files-found: ignore
-
-  visual-update:
-    name: Visual regression (update baselines)
-    # Write access is granted to this job alone, and only for a label on a
-    # branch of this repository: a fork cannot push its baselines here.
-    if: >-
-      github.event_name == 'pull_request' &&
-      github.event.label.name == 'visual:update' &&
-      github.event.pull_request.head.repo.full_name == github.repository &&
-      github.event.pull_request.draft == false &&
-      !startsWith(github.head_ref || '', 'nx-release/') &&
-      github.head_ref != 'feedback/previews'
-    runs-on: ubuntu-24.04
-    container:
-      image: mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27
-      options: --ipc=host
-    permissions:
-      contents: write
-      packages: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          fetch-depth: 0
-          # The token reaches only the push command below, through its remote.
-          persist-credentials: false
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
-        with:
-          node-version-file: .node-version
-          cache: pnpm
-
-      - name: Setup npm registry
-        uses: pagopa/dx/actions/setup-npm-registry@ee2cd05d1129c09ddddddfa6704e6436f13639ea # ee2cd05c (2026-10-23)
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      # The same scope the check job runs, so the label rewrites only the
-      # baselines the pull request can move. A change that widens to `all` still
-      # recaptures everything. `fetch-depth: 0` above already holds the base
-      # branch, so `--since` resolves without a fetch of its own.
-      - name: Scope the update
-        env:
-          # The tip of the base branch: the three-dot diff is the pull
-          # request's own change, whatever `main` moved in the meantime.
-          BASE: ${{ github.event.pull_request.base.sha }}
-          VISUAL_SCOPE: apps/storybook/visual/scope.json
-        run: |
-          git config --system --add safe.directory "$GITHUB_WORKSPACE" 2>/dev/null || true
-          # The index names the stories and the files that define them, so the
-          # build comes first and the update reuses it.
-          NX_PROFILE=.nx/ci-metrics/build.json pnpm nx run pagopa-ui-storybook:build
-          NX_PROFILE=.nx/ci-metrics/scope.json pnpm nx run pagopa-ui-cli:test:visual -- --since "$BASE" --out "$VISUAL_SCOPE"
-
-      - name: Write the baselines
-        timeout-minutes: 60
-        env:
-          VISUAL_SCOPE: apps/storybook/visual/scope.json
-          NX_PROFILE: .nx/ci-metrics/visual.json
-        # A change that moves no story (`--pass-with-no-tests`) leaves the job
-        # green with nothing to commit.
-        run: pnpm nx run pagopa-ui-storybook:test:visual:update -- --pass-with-no-tests
-
-      - name: Upload task timings and scope
-        if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: nx-profile-visual-update-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            .nx/ci-metrics/build.json
-            .nx/ci-metrics/scope.json
-            .nx/ci-metrics/visual.json
-            apps/storybook/visual/scope.json
-          include-hidden-files: true
-          retention-days: 7
-          if-no-files-found: ignore
-
-      - name: Commit the baselines
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
-        run: |
-          git config --system --add safe.directory "$GITHUB_WORKSPACE" 2>/dev/null || true
-          git config user.name "github-actions[bot]"
-          git config user.email "41898812+github-actions[bot]@users.noreply.github.com"
-          git add apps/storybook/visual/__screenshots__
-          if git diff --cached --quiet; then
-            echo "The baselines are unchanged: nothing to commit."
-            exit 0
-          fi
-          git commit -m "test(visual): update baselines"
-          # Checkout persists no credentials: the push carries the token
-          # explicitly, like the Figma drift job pushes its branch.
-          git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:$PR_HEAD_REF"
-      # A GITHUB_TOKEN commit does not trigger a run, and an ordinary pull
-      # request carries no visual check, so this notice is what points at the
-      # label that verifies the images it just pushed.
-      - name: Ask for the verifying run
-        if: always()
-        env:
-          # The ref reaches the shell through the environment: a branch name
-          # interpolated into the script would be a command injection sink.
-          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
-        run: |
-          echo "::notice::The baselines are committed to ${PR_HEAD_REF}. Add the 'visual:check' label, or dispatch this workflow on the branch, so the comparison verifies the new baselines."

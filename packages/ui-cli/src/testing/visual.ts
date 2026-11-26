@@ -17,6 +17,15 @@ import { readJson, writeJson } from "../lib/json.ts"
 import { parseSource, sourceDependencies } from "../lib/source-modules.ts"
 import { output, type ParityOutput } from "../parity/output.ts"
 import {
+  BaselineError,
+  BASELINES_REPOSITORY,
+  fetchVisualBaselines,
+  storedVisualBaselines,
+  visualBaselineKey,
+  type StoredVisualBaselines,
+  type VisualBaselineKey,
+} from "./visual-baselines.ts"
+import {
   isVisualStory,
   selectedVisualStories,
   UNSTABLE_VISUAL_STORIES,
@@ -101,7 +110,17 @@ export type VisualOptions = {
   index?: string
   out?: string
   json?: boolean
+  // Fail before capture unless the fetched Linux baselines for the run's key are
+  // complete. The key needs `image`: a check that cannot name the renderer
+  // cannot certify the set.
   checkBaselines?: boolean
+  // Fetch the baselines for the run's key from the storage repository. Stands
+  // alone: the fetch needs the built index, not a diff.
+  fetchBaselines?: boolean
+  engine?: string
+  image?: string
+  repository?: string
+  token?: string
 }
 
 function isFile(file: string): boolean {
@@ -255,26 +274,33 @@ export function visualScope(
   }
 }
 
+function scopedStories(index: StoryIndex, scope: VisualScope): string[] {
+  const selected = scope.mode === "stories" ? new Set(scope.stories ?? []) : null
+  return selectedVisualStories(index.entries, selected).filter(
+    (id) => !UNSTABLE_VISUAL_STORIES.has(id),
+  )
+}
+
 function requiredVisualBaselines(
   index: StoryIndex,
   scope: VisualScope,
-  storiesRoot: string,
+  snapshots: string,
 ): string[] {
-  const selected = scope.mode === "stories" ? new Set(scope.stories ?? []) : null
-  const directory = path.join(storiesRoot, "visual", "__screenshots__")
-  return selectedVisualStories(index.entries, selected)
-    .filter((id) => !UNSTABLE_VISUAL_STORIES.has(id))
-    .flatMap((id) =>
-      VISUAL_WIDTHS.map((width) => path.join(directory, visualSnapshotName(id, width))),
-    )
+  return snapshotsOf(scopedStories(index, scope), snapshots)
+}
+
+function snapshotsOf(stories: string[], snapshots: string): string[] {
+  return stories.flatMap((id) =>
+    VISUAL_WIDTHS.map((width) => path.join(snapshots, visualSnapshotName(id, width))),
+  )
 }
 
 export function missingVisualBaselines(
   index: StoryIndex,
   scope: VisualScope,
-  storiesRoot: string,
+  snapshots: string,
 ): string[] {
-  return requiredVisualBaselines(index, scope, storiesRoot).filter(baselineMissing)
+  return requiredVisualBaselines(index, scope, snapshots).filter(baselineMissing)
 }
 
 function baselineMissing(file: string): boolean {
@@ -290,20 +316,26 @@ function git(adapters: TestingAdapters, args: string[], workspace: string): stri
     .filter((file) => file !== "")
 }
 
-function untrackedBaselines(
-  adapters: TestingAdapters,
-  files: string[],
-  workspace: string,
-  storiesRoot: string,
-): string[] {
-  if (!files.length) return []
-  const directory = identityOf(path.join(storiesRoot, "visual", "__screenshots__"), workspace)
-  const result = adapters.git(workspace, ["ls-files", "--cached", "-z", "--", directory])
-  if (result.status !== 0) {
-    throw new Error(`cannot inspect tracked visual baselines: ${result.stderr.trim()}`)
+// The key the run's baselines are stored under: the built index, the engine and
+// the renderer's image. `--image` is required because a key that leaves the
+// renderer out would compare Linux pixels with whatever draws them now.
+function baselineKeyOf(options: VisualOptions, indexFile: string): VisualBaselineKey {
+  const image = options.image?.trim()
+  if (!image) {
+    throw new BaselineError(
+      `error: pass --image <playwright image> so the baseline key names the renderer ` +
+        `(the workflow passes the container it runs in)`,
+    )
   }
-  const tracked = new Set(result.stdout.split("\0"))
-  return files.filter((file) => !tracked.has(identityOf(file, workspace)))
+  return visualBaselineKey({
+    manifest: fs.readFileSync(indexFile),
+    engine: options.engine,
+    image,
+  })
+}
+
+function baselinesRepository(options: VisualOptions): string {
+  return options.repository?.trim() || BASELINES_REPOSITORY
 }
 
 function changedPaths(
@@ -339,7 +371,9 @@ export function runVisual(
 ): ParityOutput {
   const out: string[] = []
   const err: string[] = []
-  if (!options.all && !options.since) throw new UsageError("pass --since <ref> or --all")
+  if (!options.all && !options.since && !options.fetchBaselines) {
+    throw new UsageError("pass --since <ref> or --all")
+  }
   const workspace = tree.workspaceRoot
   const designSystem = tree.path("src")
   const storiesRoot = tree.storiesRoot
@@ -352,11 +386,32 @@ export function runVisual(
   }
   const index = readJson(indexFile, StoryIndexSchema)
 
-  let scope: VisualScope
+  let key: VisualBaselineKey | undefined
+  const baselineKey = (): VisualBaselineKey => (key ??= baselineKeyOf(options, indexFile))
+  const repository = baselinesRepository(options)
+
+  if (options.fetchBaselines) {
+    try {
+      const fetched = fetchVisualBaselines({
+        workspace,
+        key: baselineKey(),
+        repository: options.repository,
+        token: options.token,
+        git: adapters.git,
+      })
+      out.push(`[visual] baselines ${fetched.key} fetched from ${fetched.repository}`)
+    } catch (error) {
+      if (!(error instanceof BaselineError)) throw error
+      err.push(error.message)
+      return output(2, out, err)
+    }
+  }
+
+  let scope: VisualScope | undefined
   if (options.all) {
     scope = { mode: "all", changed: [] }
-  } else {
-    const since: string = options.since ?? ""
+  } else if (options.since) {
+    const since: string = options.since
     const changed = changedPaths(adapters, since, workspace)
     if (changed === null) {
       err.push(`error: cannot diff ${since} against HEAD`)
@@ -365,49 +420,75 @@ export function runVisual(
     scope = visualScope(changed, index, { storiesRoot, designSystem, workspace })
   }
 
-  if (options.out) {
-    writeJson(path.resolve(workspace, options.out), scope)
+  if (scope) {
+    if (options.out) {
+      writeJson(path.resolve(workspace, options.out), scope)
+    }
+    if (options.json) {
+      out.push(JSON.stringify(scope, null, 2))
+    } else if (scope.mode === "all") {
+      const why = scope.reason ? ` (${scope.reason})` : ""
+      out.push(`[visual] every story${why}: the change can move any screenshot`)
+    } else {
+      const total = [...visualStories(index, storiesRoot).values()].reduce(
+        (count, ids) => count + ids.length,
+        0,
+      )
+      out.push(
+        `[visual] ${scope.stories?.length ?? 0} of ${total} stories are affected by ${scope.changed.length} changed path(s)`,
+      )
+    }
   }
-  if (options.json) {
-    out.push(JSON.stringify(scope, null, 2))
-  } else if (scope.mode === "all") {
-    const why = scope.reason ? ` (${scope.reason})` : ""
-    out.push(`[visual] every story${why}: the change can move any screenshot`)
-  } else {
-    const total = [...visualStories(index, storiesRoot).values()].reduce(
-      (count, ids) => count + ids.length,
-      0,
-    )
-    out.push(
-      `[visual] ${scope.stories?.length ?? 0} of ${total} stories are affected by ${scope.changed.length} changed path(s)`,
-    )
-  }
+
   if (options.checkBaselines) {
-    const required = requiredVisualBaselines(index, scope, storiesRoot)
-    const missing = required.filter(baselineMissing)
-    const missingSet = new Set(missing)
-    const untracked = untrackedBaselines(
-      adapters,
-      required.filter((file) => !missingSet.has(file)),
-      workspace,
-      storiesRoot,
-    )
-    if (missing.length || untracked.length) {
-      if (missing.length) {
-        err.push(`[visual] ${missing.length} scoped baseline(s) missing:`)
-        for (const file of missing) err.push(`  ${identityOf(file, workspace)}`)
+    if (!scope) throw new UsageError("--check-baselines needs --since <ref> or --all")
+    const stories = scopedStories(index, scope)
+    if (!stories.length) {
+      // Nothing is compared, so no set is needed: an empty scope is a pass.
+      if (!options.json) {
+        out.push("[visual] scoped Linux baselines are present (the scope captures no story)")
       }
-      if (untracked.length) {
-        err.push(`[visual] ${untracked.length} scoped baseline(s) exist but are not tracked:`)
-        for (const file of untracked) err.push(`  ${identityOf(file, workspace)}`)
-        err.push("[visual] Stage and commit Linux baselines before pushing.")
+      return output(0, out, err, scope)
+    }
+    let stored: StoredVisualBaselines
+    let expected: VisualBaselineKey
+    try {
+      expected = baselineKey()
+      const fetched = storedVisualBaselines(workspace)
+      if (!fetched) {
+        err.push(
+          `[visual] no baselines are fetched for key ${expected.key}: ` +
+            `run --fetch-baselines to fetch the set from ${repository}`,
+        )
+        return output(1, out, err)
       }
+      if (fetched.key !== expected.key) {
+        err.push(
+          `[visual] the fetched baselines are for key ${fetched.key}, but this build resolves ${expected.key}: ` +
+            `the index, the engine or the image moved. Run --fetch-baselines to fetch the set for this key from ${repository}.`,
+        )
+        return output(1, out, err)
+      }
+      stored = fetched
+    } catch (error) {
+      if (!(error instanceof BaselineError)) throw error
+      err.push(error.message)
+      return output(2, out, err)
+    }
+
+    const missing = snapshotsOf(stories, stored.snapshots).filter(baselineMissing)
+    if (missing.length) {
       err.push(
-        "[visual] For a pull request, use the visual:update label to create Linux baselines, review them, then remove the label and re-run the check.",
+        `[visual] ${missing.length} scoped baseline(s) missing from ${repository} at ${expected.directory}:`,
+      )
+      for (const file of missing) err.push(`  ${path.relative(stored.snapshots, file)}`)
+      err.push(
+        `[visual] The set for key ${expected.key} is incomplete: capture it on Linux, on a branch of ${repository}, and push it there. ` +
+          "A macOS run never captures a baseline.",
       )
       return output(1, out, err)
     }
-    if (!options.json) out.push("[visual] scoped Linux baselines are present")
+    if (!options.json) out.push(`[visual] scoped Linux baselines are present (${expected.key})`)
   }
   return output(0, out, err, scope)
 }

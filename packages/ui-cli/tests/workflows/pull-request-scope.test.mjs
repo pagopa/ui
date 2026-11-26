@@ -52,7 +52,9 @@ test("an ordinary pull request is what the visual gate runs for", () => {
 
 test("the release pull request and the nightly keep the whole catalogue", () => {
   const job = jobRunning(visualWorkflow, "pagopa-ui-storybook:test:visual")
-  const scope = stepRunning(job, "pagopa-ui-cli:test:visual")
+  // The scope step is the one that writes the scope; the fetch that precedes it
+  // runs through the same command, so the flag is what names this step.
+  const scope = stepRunning(job, "--out")
 
   // The empty HEAD_REF is the scheduled and the dispatched run; `nx-release/*`
   // is the Version Packages pull request. Both capture everything.

@@ -455,8 +455,8 @@ project in its area as affected. Projects with a `Dockerfile` are inferred by
   proved, and the nightly is the whole-repository pass.
 - `visual.yml` — the visual regression on the stories a pull request's diff
   reaches, and on the whole catalogue every night and on the **Version Packages**
-  pull request, so a publish is never gated on a scoped guess. `visual:update`
-  captures a diff's images, `visual:check` re-runs the comparison on demand.
+  pull request, so a publish is never gated on a scoped guess. The baselines it
+  compares are fetched from `pagopa/ui-visual-baselines`, keyed by the build.
 - `figma-drift.yml` — the weekly drift snapshot, component and token, and its
   review pull request.
 - `release.yaml` — the DX release manager, on `main`.
@@ -484,11 +484,11 @@ path-filtered workflow would leave a required check pending instead.
 
 The visual regression runs there in full, because that pull request is the last
 moment before `@pagopa/ui` is published: it captures the whole catalogue, at
-every width, against the committed Linux baselines, where an ordinary pull
+every width, against the fetched Linux baselines, where an ordinary pull
 request captures only the stories its diff reaches. A
-baseline the nightly or this gate rejects is repaired by its own pull request
-with the `visual:update` label; merging it updates the **Version Packages** pull
-request, whose synchronisation runs the gate again on the new images.
+baseline the nightly or this gate rejects is repaired on its own branch of
+`pagopa/ui-visual-baselines`, pushed as a pull request there; the next run reads
+the new key, and the **Version Packages** pull request is gated again on it.
 
 Merging a release therefore starts the release and the production Storybook
 deploy, not seven runs at once. A hand-written pull request runs everything:
@@ -498,8 +498,8 @@ visual pass is the whole catalogue.
 No merge to `main` runs the deep checks or the visual regression: a merge
 carries the diff its pull request already proved, and the nightly schedules are
 what re-prove the whole repository. For the visual gate the proof a change
-carries is the baselines it commits with `visual:update`; the nightly and the
-release gate are where the whole catalogue is compared again.
+carries is the baseline set its key names; the nightly and the release gate are
+where the whole catalogue is compared again.
 
 ## The green chain
 
@@ -554,10 +554,23 @@ in CI, where `mise deps` has initialized their toolchain.
 ### Visual regression
 
 `visual.yml` captures every story at 320, 600 and 1200 px, except the ones
-tagged `no-visual`, and compares each image with the baselines in
-`apps/storybook/visual/__screenshots__`. Baselines are produced only on Linux,
-in the Playwright container `mcr.microsoft.com/playwright:v1.63.0-noble`, by the
-workflow itself: never commit one produced on macOS.
+tagged `no-visual`, and compares each image with the Linux baselines stored
+outside this repository, in `pagopa/ui-visual-baselines`. Nothing in the
+`__screenshots__` directory beside the visual suite is tracked, and `.git`
+carries no image: the run fetches the one set it needs, shallowly, into a cache
+directory of its own outside every package.
+
+A set is keyed by what decides a rendering: the hash of the built Storybook
+index (`apps/storybook/dist/index.json`), the browser engine and the digest of
+the pinned Playwright image. That key is a path in the storage repository,
+`baselines/<manifest-hash>/<engine>/<image-digest>/`, and `--fetch-baselines`
+prints the one it resolved. A set captured for another key is another rendering,
+so the run reads another directory rather than comparing across keys: an index
+byte, an engine or an image that moves asks storage for a set nobody captured
+yet, and the preflight fails naming the key and the repository. Baselines are
+produced only on Linux, in the Playwright container
+`mcr.microsoft.com/playwright:v1.63.0-noble`: a run without the fetched set
+refuses rather than capturing one, and a macOS capture is never a baseline.
 
 A pull request compares the stories its own diff can move, so a regression
 surfaces where it was introduced instead of a day later. The gate runs nightly
@@ -582,45 +595,54 @@ that import it — and no other story. The same walk widens
 to the whole catalogue for anything that can move every screenshot without an
 import edge: `packages/tokens`, `packages/artwork`, the design-system `assets`,
 the storybook manifests and lockfile, the visual harness itself, and any deleted
-source. The `visual:update` label runs that walk and commits the images it names
-to the head branch, so a pull request that adds or moves a story carries its
-baselines and leaves the other images' bytes alone.
-
-The `visual:check` label re-runs the same comparison on any pull request, for
-as long as the label stays: it is how a reviewer asks for it again, and how the
-commit the update job pushed gets verified, since that commit is made with
-`GITHUB_TOKEN` and starts no run of its own.
+source. `--check-baselines` is what turns that walk into a verdict: it fails when
+a scoped story has no image in the fetched set, listing the files and the key.
 
 Run the same check locally as a fail-fast sequence; the browser starts only
-after the build and baseline preflight succeed:
+after the build, the fetch and the preflight succeed:
 
 ```bash
-pnpm nx run pagopa-ui-storybook:build && \
-pnpm nx run pagopa-ui-cli:test:visual -- --since origin/main --out apps/storybook/visual/scope.json --check-baselines && \
-VISUAL_SCOPE=apps/storybook/visual/scope.json pnpm nx run pagopa-ui-storybook:test:visual
+export VISUAL_BASELINE_IMAGE=mcr.microsoft.com/playwright@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27
+pnpm nx run pagopa-ui-storybook:build
+pnpm nx run pagopa-ui-cli:test:visual -- --fetch-baselines
+pnpm nx run pagopa-ui-cli:test:visual -- --since origin/main --out apps/storybook/visual/scope.json --check-baselines
+VISUAL_SCOPE=apps/storybook/visual/scope.json \
+VISUAL_SNAPSHOT_DIR="$PWD/.nx/visual-baselines/snapshots" \
+  pnpm nx run pagopa-ui-storybook:test:visual
 ```
+
+`--fetch-baselines` clones the storage repository with `--depth 1`, a blobless
+filter and a sparse checkout, copies the one key's images into the `snapshots`
+directory of that cache and stops: no history, nothing inside the tree,
+nothing to fetch at the next checkout. It authenticates with `GITHUB_TOKEN` — or
+`VISUAL_BASELINES_TOKEN` — and never with an argument, which would put the token
+in the process list. `--image` or `VISUAL_BASELINE_IMAGE` is required: without
+it there is no key to ask for.
 
 `--all` skips the walk and names no story; without `VISUAL_SCOPE` the suite is
 complete too. The file carries the mode as well: `stories` lists the ids to
-capture, `all` names none because the whole catalogue runs.
-`--check-baselines` lists missing or untracked Linux images for the selected
-stories before the browser starts; the update job omits it so it can create
-those images. A nonzero preflight is a hard stop: do not run Playwright, which
-can create a snapshot when a baseline is missing. Use the pinned Linux container
-below for comparisons; create or update baselines only through `visual:update`.
+capture, `all` names none because the whole catalogue runs. A nonzero preflight is
+a hard stop: do not run Playwright, which can create a snapshot when a baseline
+is missing.
 
 The comparison uses `threshold: 0` and a 32-pixel budget. Every counted pixel
 must match exactly; the budget absorbs Chromium's small border and text
 rasterisation drift (about 0.01% of a 320x900 capture) without hiding a surface
 or layout change. A failure above the budget is a finding, not noise.
 
-To accept a visual change, add the `visual:update` label to the pull request.
-The workflow commits the new images to its head branch; review a sample, then
-add `visual:check` so the gate compares the committed images. The same
-comparison runs locally with Docker and the same image:
+To accept a visual change, capture on the pinned image into the fetched
+directory and push those images to the storage repository, under the key the run
+printed:
 
 ```bash
 docker run --rm --ipc=host -v "$PWD":/work -w /work/apps/storybook \
+  -e VISUAL_SNAPSHOT_DIR=/work/.nx/visual-baselines/snapshots \
   mcr.microsoft.com/playwright:v1.63.0-noble \
-  pnpm exec playwright test -c visual/playwright.config.ts
+  pnpm exec playwright test -c visual/playwright.config.ts --update-snapshots=all
 ```
+
+Then commit the images under `baselines/<key>/` in a clone of
+`pagopa/ui-visual-baselines` and open a pull request there: that repository is
+the only place a baseline changes, this one reads it read-only with the run's
+`GITHUB_TOKEN`, and a merged set is what the next run of the gate compares
+against.

@@ -174,10 +174,9 @@ export const NavigationTexts: Story = {
   // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
   parameters: {
     a11yContract: { reflow: false },
-    // The play function reads the wide layout: below the 900px collapse step the
-    // page buttons it queries are hidden, so Chromatic captures and plays this
-    // fixture at the desktop width only.
-    chromatic: { viewports: [1200] },
+    // The fixture pins the desktop width: the play function reads the wide
+    // layout, and below the 900px collapse step the page buttons it queries are
+    // hidden.
   },
   render: () => (
     <div className="pui:grid pui:max-w-5xl pui:gap-6">
