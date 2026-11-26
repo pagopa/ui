@@ -5,7 +5,7 @@
 // source one.
 //
 // The browser provider owns that pointer: hovering the page body parks it in an
-// empty place (see the parity capture, which parks it for the same reason). The
+// empty place (see the parity comparison, which parks it for the same reason). The
 // module only exists inside the interaction runner; in the interactive
 // Storybook there is no pointer to move and the call is a no-op.
 export async function parkPointer() {

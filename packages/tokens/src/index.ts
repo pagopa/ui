@@ -10,3 +10,6 @@ export {
   type FigmaTokenType,
 } from "./figma-tokens.generated"
 export { figmaTextClasses } from "./figma-text-classes.generated"
+// The public contract: the semantic roles a host styles against. They are named
+// for the role, so a Figma variable rename never reaches them.
+export { semanticTokens, type SemanticToken, type SemanticTokenType } from "./pui-tokens.generated"

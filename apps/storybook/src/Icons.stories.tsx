@@ -22,6 +22,19 @@ function cataloguePageId(namesExport: string) {
   return rule.pageId
 }
 
+// Every published icon paints its pinned geometry inline; this returns that
+// drawing without the per-icon id namespace that keeps its masks unique.
+function iconPaint(icon: Element): string {
+  if (!(icon instanceof SVGSVGElement))
+    throw new Error("Every published icon must render an inline SVG")
+  if (getComputedStyle(icon).maskImage !== "none")
+    throw new Error("Icons must paint inline, not through a CSS mask")
+  const nodeId = icon.dataset.figmaNodeId
+  if (!nodeId) throw new Error("Every published icon must carry its pinned source identity")
+  const prefix = nodeId.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+  return icon.innerHTML.replaceAll(`${prefix}-`, "")
+}
+
 const iconCatalogue = new Map(
   Object.values(iconManifest.entries).map((entry) => [entry.name, entry] as const),
 )
@@ -181,15 +194,11 @@ export const Catalogue: Story = {
     await expect(section.querySelector(".material-symbols-outlined")).not.toBeInTheDocument()
     for (const icon of icons) {
       await expect(icon).toHaveAttribute("data-figma-node-id")
-      const image = icon instanceof HTMLImageElement ? icon : new Image()
-      if (!(icon instanceof HTMLImageElement)) {
-        const source = getComputedStyle(icon).maskImage.match(/^url\(["']?(.*?)["']?\)$/)?.[1]
-        if (!source) throw new Error("Every published icon must render genuine source artwork")
-        image.src = source
-      }
-      await image.decode()
-      await expect(image.naturalWidth).toBe(24)
-      await expect(image.naturalHeight).toBe(24)
+      await expect(icon).toHaveAttribute("viewBox", "0 0 24 24")
+      expect(
+        iconPaint(icon),
+        `raw-name fallback for ${icon.getAttribute("data-figma-node-id")}`,
+      ).not.toBe("")
     }
     await waitFor(() => {
       for (const icon of icons) {
@@ -265,24 +274,18 @@ export const LocalDefaults: Story = {
       await expect(bounds.width).toBe(24)
       await expect(bounds.height).toBe(24)
     }
-    const send = canvas.getByRole("img", { name: "SEND" })
-    // The production build rewrites the asset to `8717-781-<hash>.svg`, the dev
-    // server keeps the `?no-inline` query: match the pinned node id and accept
-    // both, so the assertion does not depend on the delivery transform.
-    await expect(send).toHaveAttribute("src", expect.stringMatching(/8717-781[-\w]*\.svg(?:\?|$)/))
+    // The brand logo keeps its source paints; the glyphs inherit the text colour.
+    await expect(canvas.getByRole("img", { name: "SEND" })).toHaveAttribute(
+      "data-figma-node-id",
+      "8717:781",
+    )
     const feedback = canvas.getByRole("img", { name: "feedback" })
-    await expect(getComputedStyle(feedback).maskImage).not.toBe("none")
-    await expect(getComputedStyle(feedback).backgroundColor).toBe(getComputedStyle(feedback).color)
+    await expect(feedback).toHaveAttribute("fill", "currentColor")
+    await expect(feedback).not.toHaveAttribute("style")
+    await expect(getComputedStyle(feedback).fill).toBe(getComputedStyle(feedback).color)
     await expect(canvasElement.querySelector(".material-symbols-outlined")).not.toBeInTheDocument()
-    const images = canvasElement.querySelectorAll("img")
-    await expect(images).toHaveLength(7)
-    await waitFor(() => {
-      for (const image of images) {
-        expect(image.complete).toBe(true)
-        expect(image.naturalWidth).toBe(24)
-        expect(image.naturalHeight).toBe(24)
-      }
-    })
+    await expect(canvasElement.querySelectorAll("img")).toHaveLength(0)
+    await expect(canvasElement.querySelectorAll("svg[data-figma-node-id]")).toHaveLength(13)
     await expect(canvas.getByRole("img", { name: "Media logos" })).toHaveAttribute(
       "data-figma-node-id",
       "99:777",
@@ -308,11 +311,9 @@ export const LocalVariants: Story = {
     </main>
   ),
   play: async ({ canvas, canvasElement }) => {
-    await expect(canvas.getAllByRole("img")).toHaveLength(6)
-    const images = canvasElement.querySelectorAll("img")
-    await expect(images).toHaveLength(6)
-    await expect(new Set([...images].map((image) => image.src)).size).toBe(6)
-    await expect([...images].map((image) => image.dataset.figmaNodeId).sort()).toEqual([
+    const icons = canvas.getAllByRole("img")
+    await expect(icons).toHaveLength(6)
+    await expect(icons.map((icon) => icon.getAttribute("data-figma-node-id")).sort()).toEqual([
       "232:1672",
       "232:1674",
       "99:777",
@@ -320,13 +321,8 @@ export const LocalVariants: Story = {
       "99:779",
       "99:780",
     ])
-    await waitFor(() => {
-      for (const image of images) {
-        expect(image.complete).toBe(true)
-        expect(image.naturalWidth).toBe(24)
-        expect(image.naturalHeight).toBe(24)
-      }
-    })
+    await expect(new Set(icons.map(iconPaint)).size).toBe(6)
+    await expect(canvasElement.querySelectorAll("img")).toHaveLength(0)
   },
 }
 
@@ -371,19 +367,13 @@ export const DirectionalVariants: Story = {
         "98:1015",
       ].sort(),
     )
-    const urls = new Set<string>()
+    const paints = new Set<string>()
     for (const icon of icons) {
       await expect(icon.textContent).toBe("")
-      const source = getComputedStyle(icon).maskImage.match(/^url\(["']?(.*?)["']?\)$/)?.[1]
-      if (!source) throw new Error("Missing source mask for a direction or state variant")
-      const image = new Image()
-      image.src = source
-      await image.decode()
-      await expect(image.naturalWidth).toBe(24)
-      await expect(image.naturalHeight).toBe(24)
-      urls.add(source)
+      await expect(icon).toHaveAttribute("viewBox", "0 0 24 24")
+      paints.add(iconPaint(icon))
     }
-    await expect(urls.size).toBe(12)
+    await expect(paints.size).toBe(12)
   },
 }
 
@@ -421,9 +411,7 @@ export const SourceFilled: Story = {
       const outlined = canvas.getByRole("img", { name: `${icon.name} outlined` })
       await expect(filled).toHaveAttribute("data-figma-node-id", icon.filledId)
       await expect(outlined).toHaveAttribute("data-figma-node-id", icon.outlinedId)
-      await expect(getComputedStyle(filled).maskImage).not.toBe(
-        getComputedStyle(outlined).maskImage,
-      )
+      await expect(iconPaint(filled)).not.toBe(iconPaint(outlined))
     }
   },
 }
@@ -510,19 +498,13 @@ export const StateVariants: Story = {
   ),
   play: async ({ canvas }) => {
     await expect(canvas.getAllByRole("img")).toHaveLength(48)
-    const urls = new Set<string>()
+    const paints = new Set<string>()
     for (const { name, variant, nodeId } of stateIcons) {
       const icon = canvas.getByRole("img", { name: `${name} ${variant}` })
       await expect(icon).toHaveAttribute("data-figma-node-id", nodeId)
-      const source = getComputedStyle(icon).maskImage.match(/^url\(["']?(.*?)["']?\)$/)?.[1]
-      if (!source) throw new Error("Missing actual source artwork for an icon state")
-      const image = new Image()
-      image.src = source
-      await image.decode()
-      await expect(image.naturalWidth).toBe(24)
-      await expect(image.naturalHeight).toBe(24)
-      urls.add(source)
+      await expect(icon).toHaveAttribute("viewBox", "0 0 24 24")
+      paints.add(iconPaint(icon))
     }
-    await expect(urls.size).toBe(48)
+    await expect(paints.size).toBe(48)
   },
 }

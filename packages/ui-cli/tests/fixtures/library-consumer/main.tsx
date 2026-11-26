@@ -52,6 +52,8 @@ import {
   type DatePickerRange,
   UIProvider,
 } from "__PAGOPA_UI_PACKAGE__"
+import { Feedback as EntryFeedback } from "__PAGOPA_UI_PACKAGE__/icons"
+import Feedback from "__PAGOPA_UI_PACKAGE__/icons/feedback"
 import "__PAGOPA_UI_PACKAGE__/styles.css"
 
 const sourceIconVariants = [
@@ -1181,6 +1183,12 @@ function Consumer() {
           color: "var(--primary)",
         }}
       >
+        {/* The icon family ships on its own entry, so a consumer that names one
+            icon bundles that component and no other artwork. */}
+        <div style={{ display: "flex", gap: 8, color: "var(--primary)" }}>
+          <Feedback aria-hidden width={24} height={24} />
+          <EntryFeedback aria-hidden width={24} height={24} />
+        </div>
         {iconCases.map(({ name, variant }) => (
           <div
             key={`${name}-${variant ?? "default"}`}

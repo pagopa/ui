@@ -40,7 +40,7 @@ function CameraView({
   return (
     <figure
       data-slot="camera-view"
-      className="relative aspect-square w-(--camera-size) max-w-full overflow-hidden rounded-2xl bg-overlay text-inverse-foreground"
+      className="relative aspect-square w-(--pui-camera-size) max-w-full overflow-hidden rounded-2xl bg-overlay text-inverse-foreground"
     >
       <div className="absolute inset-0 grid place-items-center">
         {children === undefined ? (

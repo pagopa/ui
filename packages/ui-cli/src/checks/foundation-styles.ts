@@ -157,7 +157,7 @@ function checkValue(
 ): Occurrence[] {
   const { property, value, start, context } = declaration
   const occurrences: Occurrence[] = []
-  for (const match of value.matchAll(/var\(\s*(--(?:figma|text)-[\w-]+)/g)) {
+  for (const match of value.matchAll(/var\(\s*(--(?:pui|figma|text)-[\w-]+)/g)) {
     if (!knownTokens.has(match[1])) {
       occurrences.push(occurrence("unknown-foundation", file, source, start, match[1]))
     }

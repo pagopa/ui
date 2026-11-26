@@ -395,7 +395,7 @@ function SelectableIdentity() {
 }
 
 // The eight variants of the small source set (`160:1344`), each rendered at the
-// source size so parity captures one frame per variant.
+// source size so a comparison measures one frame per variant.
 export const FigmaSmallStates: Story = {
   tags: ["color-pinned"],
   parameters: {

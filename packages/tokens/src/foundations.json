@@ -560,87 +560,87 @@
       "reason": "Host typography: the root line box stays the CSS default ratio; Body sets a 22/16 line-height that would change every inherited line a caller renders."
     },
     {
-      "declaration": "--destructive-hover: #aa2828",
+      "declaration": "--pui-destructive-hover: #aa2828",
       "reason": "Local extension: the destructive pointer step between Error 600 and Error 850. No Figma pressed variable is reachable; requested to design."
     },
     {
-      "declaration": "--primary-active: #072582",
+      "declaration": "--pui-primary-active: #072582",
       "reason": "Local extension: the primary pressed step between Blue 600 and Blue 850. No Figma pressed variable is reachable; requested to design."
     },
     {
-      "declaration": "--navy: #061b49",
+      "declaration": "--pui-navy: #061b49",
       "reason": "Local extension: brand surface outside the Figma collections; retired when the design owner publishes it as a variable (ADR-0001 §9)."
     },
     {
-      "declaration": "--navy-deep: #17213c",
+      "declaration": "--pui-navy-deep: #17213c",
       "reason": "Local extension: brand surface outside the Figma collections; retired when the design owner publishes it as a variable (ADR-0001 §9)."
     },
     {
-      "declaration": "--brand-cyan: #00a7e1",
+      "declaration": "--pui-brand-cyan: #00a7e1",
       "reason": "Local extension: brand accent outside the Figma collections; retired when the design owner publishes it as a variable (ADR-0001 §9)."
     },
     {
-      "declaration": "--avatar-frame: rgb(14 15 19 / 6%)",
+      "declaration": "--pui-avatar-frame: rgb(14 15 19 / 6%)",
       "reason": "Local extension: the avatar contrast ring has no Figma source; requested to design."
     },
     {
-      "declaration": "--avatar-icon-surface: rgb(255 255 255 / 20%)",
+      "declaration": "--pui-avatar-icon-surface: rgb(255 255 255 / 20%)",
       "reason": "Local extension: the icon surface on inverse artwork has no Figma source; requested to design."
     },
     {
-      "declaration": "--artboard-height: 650px",
+      "declaration": "--pui-artboard-height: 650px",
       "reason": "White Template page surface height, read by the shipped PageSurface. Component geometry no published size foundation carries yet; requested as a foundation."
     },
     {
-      "declaration": "--dialog-width: 600px",
+      "declaration": "--pui-dialog-width: 600px",
       "reason": "Dialog desktop frame width. Component geometry no published size foundation carries yet; requested as a foundation."
     },
     {
-      "declaration": "--dialog-width-compact: 272px",
+      "declaration": "--pui-dialog-width-compact: 272px",
       "reason": "Dialog mobile and LogIn frame width. Component geometry no published size foundation carries yet; requested as a foundation."
     },
     {
-      "declaration": "--drawer-width-wide: 417px",
+      "declaration": "--pui-drawer-width-wide: 417px",
       "reason": "Informative Drawer frame width. Component geometry no published size foundation carries yet; requested as a foundation."
     },
     {
-      "declaration": "--id-module-width: 410px",
+      "declaration": "--pui-id-module-width: 410px",
       "reason": "ID module width read from the 600px device step. Component geometry no published size foundation carries yet; requested as a foundation."
     },
     {
-      "declaration": "--state-width: 368px",
+      "declaration": "--pui-state-width: 368px",
       "reason": "Error, waiting and success state column width, read by the shipped state components. Component geometry no published size foundation carries yet; requested as a foundation."
     },
     {
-      "declaration": "--camera-size: 376px",
+      "declaration": "--pui-camera-size: 376px",
       "reason": "Camera viewfinder frame size. Component geometry no published size foundation carries yet; requested as a foundation."
     },
     {
-      "declaration": "--menu-width: 274px",
+      "declaration": "--pui-menu-width: 274px",
       "reason": "Menu minimum width from the source frame. Component geometry no published size foundation carries yet; requested as a foundation."
     },
     {
-      "declaration": "--menu-skeleton-width: 106px",
+      "declaration": "--pui-menu-skeleton-width: 106px",
       "reason": "Menu skeleton width from the source frame. Component geometry no published size foundation carries yet; requested as a foundation."
     },
     {
-      "declaration": "--overlay-width: 512px",
+      "declaration": "--pui-overlay-width: 512px",
       "reason": "Snackbar width. Component geometry no published size foundation carries yet; requested as a foundation."
     },
     {
-      "declaration": "--header-height: 102px",
+      "declaration": "--pui-header-height: 102px",
       "reason": "Header desktop frame height. Component geometry no published size foundation carries yet; requested as a foundation."
     },
     {
-      "declaration": "--preheader-height: 55px",
+      "declaration": "--pui-preheader-height: 55px",
       "reason": "Preheader frame height. Component geometry no published size foundation carries yet; requested as a foundation."
     },
     {
-      "declaration": "--page-gutter: 2rem",
+      "declaration": "--pui-page-gutter: 2rem",
       "reason": "Root-font-relative viewport fallback: the spacing foundations are px, so aliasing this would change zoom and host-font scaling."
     },
     {
-      "declaration": "--page-gutter-lg: 3rem",
+      "declaration": "--pui-page-gutter-lg: 3rem",
       "reason": "Root-font-relative viewport fallback: the spacing foundations are px, so aliasing this would change zoom and host-font scaling."
     },
     {

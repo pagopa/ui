@@ -1756,7 +1756,7 @@ export interface PaginationProps {
 }
 
 // @public (undocumented)
-export function PagoPAIcon<Name extends FigmaIconName>(input: PagoPAIconProps<Name>): JSX.Element;
+export function PagoPAIcon<Name extends FigmaIconName>(input: PagoPAIconProps<Name>): JSX.Element | null;
 
 // @public
 export interface PagoPAIconProps<Name extends FigmaIconName = FigmaIconName> {

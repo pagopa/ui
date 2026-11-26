@@ -255,7 +255,7 @@ export type ApiExceptions = z.infer<typeof ApiExceptionsSchema>
 // So the record holds, per page read from the page tree (the Figma MCP
 // `get_metadata` call on the page node, which sees unpublished frames and
 // symbols), every identity drawn on it with the decision the library gives it,
-// and every composition with the parity cases that measure it.
+// and every composition the page draws.
 //
 // The census mirrors the inventory both ways, so the two cannot drift apart
 // silently, and `inLibrary` is the hinge: an identity marked in the library must
@@ -284,7 +284,6 @@ export const PageCompositionSchema = z.strictObject({
   // How many times the mapped implementation is drawn in the frame: a stack of
   // four elements is one composition, not four.
   drawn: z.number().int().positive(),
-  mirrors: z.array(NonEmptyStringSchema),
   reason: NonEmptyStringSchema.optional(),
 })
 

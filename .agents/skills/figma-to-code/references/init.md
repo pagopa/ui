@@ -6,8 +6,8 @@ Use the config path from `pnpm ui-cli figma status`, or find it with
 `git ls-files '*figma-to-code.yaml'`. Read the file; never copy its paths or
 defaults into instructions. Paths are relative to its folder, except
 `design.requests`, which is workspace-relative. If absent, discover the existing
-inventory, registry, case corpus, policies, page surface, rules, artwork and
-token manifests, propose a config beside the package it describes, and agree the
+inventory, registry, policies, page surface, rules, artwork and token manifests,
+propose a config beside the package it describes, and agree the
 paths with the person, then check them with `pnpm nx run pagopa-ui:docs`.
 
 ## Credentials and source gate

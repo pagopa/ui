@@ -23,7 +23,7 @@ export function SpinnerIndicator({
     >
       <span
         data-slot="spinner-ring"
-        className="absolute inset-0 rounded-full [background-image:conic-gradient(from_195.255deg,currentColor_253.089deg,transparent_253.125deg,currentColor_360deg)] [mask-image:radial-gradient(farthest-side,transparent_calc(100%_-_var(--hairline)),black_0)]"
+        className="absolute inset-0 rounded-full [background-image:conic-gradient(from_195.255deg,currentColor_253.089deg,transparent_253.125deg,currentColor_360deg)] [mask-image:radial-gradient(farthest-side,transparent_calc(100%_-_var(--pui-hairline)),black_0)]"
       />
       <svg
         aria-hidden="true"

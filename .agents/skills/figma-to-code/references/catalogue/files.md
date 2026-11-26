@@ -4,22 +4,21 @@
 | --- | --- | --- |
 | `catalog.inventory` | identities, canonical contracts, design fingerprints, dependency edges | `pnpm ui-cli update inventory --triage` |
 | `catalog.registry` | decision per `nodeId`, `pageId` bulk rules, targets, rendered stories, per-node `note` | `figma registry set`; unsupported fields reviewed in place |
-| `catalog.parityCases` | the reviewed case per compared variant and device | `parity check --save-case` |
 | `catalog.devicePolicy` | the device vocabulary: axes, canonical devices, aliases, widths, default scopes | by hand; never a component name or path |
-| `catalog.deviceExceptions` | `<nodeId>: <reason>` for a node whose declared devices have no case yet | by hand, must shrink |
-| `catalog.pageSurface` | page identities and decisions, compositions and their cases ([page surface](page-surface.md)) | `figma surface sync` for identities; compositions by hand |
+| `catalog.pageSurface` | page identities and decisions, and the compositions each page draws ([page surface](page-surface.md)) | `figma surface sync` for identities; compositions by hand |
 | `catalog.apiExceptions` | public exports with no source mapping: a deliberate extension, not a source-alignment claim | by hand, each with a reason, must shrink |
 | `catalog.evidenceExceptions` | story-evidence exceptions | by hand, each with a reason, must shrink |
 | `figma.fileModule` | the file key and the URL builders | rarely |
 | `catalog.inventoryStory` | the rendered join of inventory and registry | its generator |
 | `artwork.*`, `tokens.manifest`, `tokens.generatedCss` | generated artwork, runtime maps, tokens | their generator only |
 
-Generated files are owned by their writers. Use `figma registry set` and
-`parity check --save-case` for decisions and cases, then review the diff;
-unsupported registry fields (bulk rules, artwork metadata, `additionalExports`)
-still need a surgical in-place edit. `.figma/` is gitignored and can exceed
-100 MB: never commit the snapshot, the renders or the probes. The parity tools
-never write under `src/` except the case corpus through `--save-case`.
+Generated files are owned by their writers. Use `figma registry set` for
+decisions, then review the diff; unsupported registry fields (bulk rules,
+artwork metadata, `additionalExports`) still need a surgical in-place edit.
+`.figma/` is gitignored and can exceed 100 MB: never commit the snapshot, the
+renders or the probes. The parity diagnostic writes nothing at all — no run
+leaves a file under `src/` or anywhere else — so a comparison that should change
+the tree is a change to the registry, made through its own command.
 
 `catalog.registry` is the only status source: no workbench, packet, ledger or
 approval file beside it, and no hand-written component list anywhere else.

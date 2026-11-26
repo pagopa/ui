@@ -112,6 +112,26 @@ export type ArtifactContract = {
   stylesFile: string
   expectedIconVariants: number
   expectedIconVariantIds: string[]
+  expectedIconPaints: number
+}
+
+const GENERATED_ICONS = "src/components/icons/generated"
+
+// The per-node identifier namespace keeps masks unique, so a paint comparison
+// drops it. Two pinned variants can still repeat one geometry — a checked radio
+// repeats the check glyph — so the count is the number of distinct drawings,
+// which is what a packed artifact must reproduce.
+function sourceIconPaints(read: (file: string) => string, root: string): number {
+  const paints = new Set<string>()
+  for (const file of walkRelative(root, GENERATED_ICONS, (entry) => entry.endsWith(".tsx"))) {
+    for (const match of read(file).matchAll(
+      /data-figma-node-id="([^"]+)"[^>]*>([\s\S]*?)<\/svg>/g,
+    )) {
+      const prefix = match[1].toLowerCase().replace(/[^a-z0-9]+/g, "-")
+      paints.add(match[2].replaceAll(`${prefix}-`, ""))
+    }
+  }
+  return paints.size
 }
 
 export const GITHUB_PACKAGES_REGISTRY = "https://npm.pkg.github.com"
@@ -293,5 +313,8 @@ export function verifyArtifactContract(workspace: Workspace): ArtifactContract {
     "the runtime package must not install a second React or its styling/build toolchain",
   )
 
-  return { manifest, stylesFile, expectedIconVariants, expectedIconVariantIds }
+  const expectedIconPaints = sourceIconPaints((file) => fs.readFileSync(at(file), "utf8"), root)
+  assert.ok(expectedIconPaints > 0, "the compiled icon components must draw something")
+
+  return { manifest, stylesFile, expectedIconVariants, expectedIconVariantIds, expectedIconPaints }
 }

@@ -278,9 +278,9 @@ export async function fetchFigmaImages(
   return assets
 }
 
-// The pinned PNG of each node, at scale 1: the review image of a parity case.
-// The version is explicit, so the picture belongs to the same source pin as the
-// numbers the case compares.
+// The pinned PNG of each node, at scale 1: the review image of a diagnostic
+// run. The version is explicit, so the picture belongs to the same source pin as
+// the numbers the run compares.
 export async function fetchFigmaImagesPng(
   fileKey: string,
   version: string,

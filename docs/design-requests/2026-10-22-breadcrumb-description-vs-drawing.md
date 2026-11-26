@@ -42,7 +42,7 @@ does not show in the same way.
 ## Why it matters
 
 Nothing is blocked today: the component follows the drawing, which is what the
-parity cases compare. If the description is the intended behaviour, the
+comparison measures. If the description is the intended behaviour, the
 library has to change: the current page would turn bold and darker, a path
 longer than five ancestors would collapse, and the Compact layout would become
 an automatic responsive mode instead of an explicit choice. Guessing any of

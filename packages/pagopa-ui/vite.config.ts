@@ -6,6 +6,7 @@ import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 import { fileURLToPath } from "node:url"
 import manifest from "./package.json" with { type: "json" }
+import { prefixedCandidates } from "./build/prefixed-candidates.ts"
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const externalPackages = Object.keys({ ...manifest.dependencies, ...manifest.peerDependencies })
@@ -17,6 +18,11 @@ export default defineConfig(() => ({
   envDir: false,
   optimizeDeps: { include: ["@base-ui/react/combobox"] },
   plugins: [
+    prefixedCandidates({
+      base: dirname,
+      entry: path.resolve(dirname, "src/library.css"),
+      mirror: path.resolve(dirname, ".generated/prefixed-candidates.txt"),
+    }),
     react(),
     tailwindcss(),
     {
@@ -29,6 +35,8 @@ export default defineConfig(() => ({
           // The public token block on its own, for a consumer that renders
           // beside the library without loading the component stylesheet.
           ["tokens.css", "../tokens/src/tokens.generated.css"],
+          // The same contract in DTCG format, for the tools that read it.
+          ["tokens.dtcg.json", "../tokens/src/tokens.dtcg.generated.json"],
         ] as const) {
           this.emitFile({
             type: "asset",
@@ -50,6 +58,7 @@ export default defineConfig(() => ({
     lib: {
       entry: {
         "library-entry": path.resolve(dirname, "src/library-entry.ts"),
+        icons: path.resolve(dirname, "src/icons.ts"),
         tokens: path.resolve(dirname, "src/tokens.ts"),
       },
       formats: ["es"],
@@ -74,7 +83,7 @@ export default defineConfig(() => ({
         extends: true,
         test: {
           name: "unit",
-          include: ["src/**/*.unit.test.ts"],
+          include: ["src/**/*.unit.test.ts", "build/**/*.unit.test.ts"],
           environment: "node",
         },
       },

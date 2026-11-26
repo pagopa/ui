@@ -56,6 +56,9 @@ const COMPONENTS = "src/components"
 // package, and follow the same token-first rules.
 const TEMPLATES = "apps/storybook/src/templates"
 const ROOTS = [COMPONENTS, TEMPLATES]
+// Compiled from the pinned Figma artwork: the mask fills and the `url(#…)` ids
+// are the source's, so a token rule cannot own them.
+const DERIVED = ["src/components/icons/generated/"]
 
 export const RULES = {
   "arbitrary-length": /\[[^[\]]*?\d+(?:\.\d+)?(?:px|rem)\b[^[\]]*?\]/g,
@@ -170,10 +173,20 @@ function spacingValue(token: string): number | null {
   return Math.round(Number(match[1]) * 4 * 100) / 100
 }
 
+// The semantic names are generated from the stylesheet, so the gate reads them
+// back from the committed emission rather than deriving them a second time.
+function emittedTokenNames(workspace: Workspace): string[] {
+  const file = path.join(workspace.tokensRoot, "src/tokens.generated.css")
+  if (!fs.existsSync(file)) return []
+  return [...fs.readFileSync(file, "utf8").matchAll(/^ {2}(--[a-z0-9-]+):/gm)].map(
+    (match) => match[1] ?? "",
+  )
+}
+
 export function measure(workspace: Workspace, manifest: FoundationManifest): Occurrence[] {
   const { parseSource } = createSourceModules(workspace)
   const spacing = allowedSpacing(manifest)
-  const knownTokens = new Set<string>()
+  const knownTokens = new Set<string>(emittedTokenNames(workspace))
   for (const entry of [
     ...Object.values(manifest.foundations),
     ...Object.values(manifest.variables ?? {}),
@@ -200,6 +213,7 @@ export function measure(workspace: Workspace, manifest: FoundationManifest): Occ
         root,
         path.relative(absolute, file).split(path.sep).join("/"),
       )
+      if (DERIVED.some((prefix) => identity.startsWith(prefix))) continue
       const { source, literals, program } = stringLiterals(parseSource, file)
       occurrences.push(...inlineStyleOccurrences(program, source, identity, knownTokens))
       for (const literal of literals) {

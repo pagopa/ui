@@ -91,7 +91,7 @@ function IdentityProviderPickerView({
       // The source draws the module 410 wide from the tablet device step up
       // (731:20387); below 600 it takes the available width.
       className={cn(
-        "w-full max-w-full bg-background text-foreground tablet:w-(--id-module-width)",
+        "w-full max-w-full bg-background text-foreground tablet:w-(--pui-id-module-width)",
         className,
       )}
       data-id-module="true"

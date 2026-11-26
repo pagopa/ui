@@ -33,19 +33,20 @@ published status base token, using the four roles the semantic layer already
 publishes for every state family (`success`, `warning`, `info`, `error`, and the
 `destructive` action):
 
-| Role          | Derivation                     | Example token        |
-| ------------- | ------------------------------ | -------------------- |
-| solid surface | the family's 600 step          | `--destructive`      |
-| soft surface  | the family's 100 step          | `--error-soft`       |
-| border        | the family's 400 step          | `--error-border`     |
-| text on soft  | the family's 850 step          | `--error-foreground` |
-| icon on soft  | the family's icon key          | `--success`          |
-| hover step    | the next published darker step | `--primary-hover`    |
+| Role          | Derivation                     | Example token            |
+| ------------- | ------------------------------ | ------------------------ |
+| solid surface | the family's 600 step          | `--pui-destructive`      |
+| soft surface  | the family's 100 step          | `--pui-error-soft`       |
+| border        | the family's 400 step          | `--pui-error-border`     |
+| text on soft  | the family's 850 step          | `--pui-error-foreground` |
+| icon on soft  | the family's icon key          | `--pui-success`          |
+| hover step    | the next published darker step | `--pui-primary-hover`    |
 
 The aliases live in `packages/pagopa-ui/src/index.css` and point at the
 generated `--figma-color-status-*` and `--figma-color-icon-*` keys. A component
 consumes the role (`bg-error-soft`, `text-error-foreground`), never a step
-number.
+number and never a `--figma-*` name: that layer is internal and deprecated
+([ADR-0013](./decisions/0013-semantic-token-contract.md)).
 
 **Derivation when a step is missing.** When the family has no published pointer
 or pressed step, derive it with `color-mix` inside the same hue family and
@@ -83,9 +84,10 @@ number:
 | item row, leading icon | 8 gap + 24 icon              |        — |
 
 The composition is written as utilities or as a local geometry token when it is
-reused, and each part reads the published spacing scale
-(`--figma-spacing-*`: 1, 2, 3, 4, 6, 8, 10, 12, 14, 16, 20, 24, 32, 40, 48, 56,
-64, 80, 132).
+reused, and each part reads the published spacing scale (1, 2, 3, 4, 6, 8, 10,
+12, 14, 16, 20, 24, 32, 40, 48, 56, 64, 80, 132; the primitive names behind it
+are `--figma-spacing-*`, internal, so a component reads a utility or a
+`--pui-*` token).
 
 **Icon-to-text gap.** 8 px (`--figma-spacing-8`) is the default. 6 px
 (`--figma-spacing-6`) is allowed only where the source frames use it — dense
@@ -109,7 +111,8 @@ exception recorded in the manifest, not a silent literal.
 ### 4.1 Which breakpoints a layout reads
 
 The device scale is ratified as **600 / 900 / 1200 / 1536 px**
-(`--figma-breakpoint-sm`, `-md`, `-lg`, `-xl`); 1920 px belongs to the XXL
+(`--figma-breakpoint-sm`, `-md`, `-lg`, `-xl`, the internal primitive names);
+1920 px belongs to the XXL
 variant of the White Template only and is not a component breakpoint.
 
 A component that switches its own layout uses the published device scale. The

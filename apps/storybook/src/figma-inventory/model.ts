@@ -1,17 +1,12 @@
 // Read-only view model behind the "Figma inventory" dashboard.
 //
 // It is a pure projection of committed files: the generated inventory, the
-// hand-maintained registry, the parity case corpus and the generated story
-// title map. Areas and status filters are derived from those files at startup,
-// so a new component, folder or registry status never needs a dashboard edit.
-// Nothing calls Figma at runtime.
-import parityCasesData from "@/catalog/figma/parity-cases.json"
-import {
-  figmaCoverage,
-  figmaDeviceCoverage,
-  figmaDeviceCoverageCounts,
-  type FigmaCoverageRow,
-} from "@/catalog/figma/coverage"
+// hand-maintained registry, the device policy and the generated story title map.
+// Areas and status filters are derived from those files at startup, so a new
+// component, folder or registry status never needs a dashboard edit. Nothing
+// calls Figma at runtime.
+import { figmaCoverage, type FigmaCoverageRow } from "@/catalog/figma/coverage"
+import devicePolicyData from "@/catalog/figma/device-policy.json"
 import { FIGMA_DESIGN_URL, figmaNodeUrl } from "@/catalog/figma/file"
 import {
   figmaInventoryMeta,
@@ -95,26 +90,21 @@ function storyUrlFor(target: FigmaTarget | undefined) {
   return `${import.meta.env.BASE_URL}?path=/${path}`
 }
 
-// ------------------------------------------------------------- parity cases
+// ----------------------------------------------------------- devices (RA9)
 
-interface ParityCase {
-  nodeId: string
-  note?: string
-}
+// The policy's own device order (`mobile, tablet, desktop`), so a set lists the
+// devices the source declares in the order the policy names them.
+const deviceOrder = Object.keys(devicePolicyData.devices)
 
-const parityCases: ParityCase[] = parityCasesData.map((entry) => ({
-  nodeId: entry.nodeId,
-  note: entry.note,
-}))
-
-const caseCountByNode = new Map<string, { committed: number; draft: number }>()
-for (const entry of parityCases) {
-  const draft =
-    typeof entry.note === "string" && entry.note.trim().toLowerCase().startsWith("draft")
-  const counts = caseCountByNode.get(entry.nodeId) ?? { committed: 0, draft: 0 }
-  if (draft) counts.draft += 1
-  else counts.committed += 1
-  caseCountByNode.set(entry.nodeId, counts)
+function declaredDevicesOf(node: FigmaCoverageRow["node"]): string[] {
+  const declared = [
+    ...new Set(
+      (node.variants ?? [])
+        .map((variant) => variant.device)
+        .filter((device): device is string => Boolean(device)),
+    ),
+  ]
+  return declared.sort((left, right) => deviceOrder.indexOf(left) - deviceOrder.indexOf(right))
 }
 
 // ------------------------------------------------------------------- entries
@@ -150,8 +140,6 @@ export interface RegistryItem {
   variantCount: number
   variantAxes: VariantAxis[]
   devices: string[]
-  deviceCoverage: { declared: string[]; covered: string[]; missing: string[] } | null
-  caseCount: { committed: number; draft: number }
   box: { width: number; height: number } | null
   dependencies: number
   externalDependencies: number
@@ -221,7 +209,6 @@ function buildItem(row: FigmaCoverageRow): RegistryItem {
   const { node, status, entry, rule } = row
   const target = entry?.target
   const module = target?.module ?? null
-  const deviceCoverage = figmaDeviceCoverage.get(node.nodeId) ?? null
   const dependencies = dependencyCounts(node)
 
   const item: RegistryItem = {
@@ -247,9 +234,7 @@ function buildItem(row: FigmaCoverageRow): RegistryItem {
     contractFingerprint: node.contractFingerprint ?? "",
     variantCount: node.variants?.length ?? 0,
     variantAxes: variantAxesOf(node),
-    devices: deviceCoverage?.declared ?? [],
-    deviceCoverage,
-    caseCount: caseCountByNode.get(node.nodeId) ?? { committed: 0, draft: 0 },
+    devices: declaredDevicesOf(node),
     box: node.variants?.[0]?.box ?? null,
     ...dependencies,
     note: entry?.note ?? entry?.reason ?? rule?.reason ?? null,
@@ -298,15 +283,12 @@ export const totals = {
   notShipped: statusCounts.mocked + statusCounts.pending + statusCounts.unaccounted,
   variants: sum(registryItems.map((item) => item.variantCount)),
   sets: registryItems.filter((item) => item.variantCount > 0).length,
-  deviceVariants: sum(registryItems.map((item) => item.deviceCoverage?.declared.length ?? 0)),
-  cases: sum(registryItems.map((item) => item.caseCount.committed)),
-  draftCases: sum(registryItems.map((item) => item.caseCount.draft)),
+  deviceVariants: sum(registryItems.map((item) => item.devices.length)),
 }
 
 export const syncPercent = totals.total === 0 ? 0 : (totals.implemented / totals.total) * 100
 export const unaccountedCount = statusCounts.unaccounted
 
-export const deviceTotals = figmaDeviceCoverageCounts
 export const inventoryMeta = {
   fileKey: figmaInventoryMeta.fileKey,
   syncedAt: figmaInventoryMeta.syncedAt,
@@ -387,7 +369,5 @@ export function alignmentOf(item: RegistryItem) {
   if (item.status === "excluded") return { id: "excluded", label: "Excluded by registry" } as const
   if (item.status === "unaccounted") return { id: "unmapped", label: "No registry entry" } as const
   if (item.status === "pending") return { id: "pending", label: "Pending implementation" } as const
-  if (item.deviceCoverage && item.deviceCoverage.missing.length > 0)
-    return { id: "partial", label: "Partial device coverage" } as const
   return { id: "aligned", label: "Aligned" } as const
 }

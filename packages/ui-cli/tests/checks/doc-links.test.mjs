@@ -95,7 +95,7 @@ test("the docs gate accepts optional comparison values and still checks followin
     "--compare-offset .origin",
     "--compare-box full --compare-offset .origin",
   ]) {
-    const command = `pnpm ui-cli parity check --case demo ${options}`
+    const command = `pnpm ui-cli parity check --node 1:1 ${options}`
     assert.deepEqual(check({ "CONTRIBUTING.md": `\`${command}\`` }).problems, [])
     assert.match(
       problems(check({ "CONTRIBUTING.md": `\`${command} --typo\`` })),
@@ -206,6 +206,27 @@ test("other skills may name components and the installed third-party skills are 
       "src/components/feedback/banner.tsx": "export function Banner() { return null }",
     }).problems,
     [],
+  )
+})
+
+test("a generated icon identity is not a component a skill may not name", () => {
+  const marker =
+    "// Generated from pinned source geometry by packages/ui-cli/src/figma/icons.ts; do not edit."
+  assert.deepEqual(
+    check({
+      [`${SKILL}/SKILL.md`]: "Press Close to dismiss, then pick Small or Search.",
+      "src/components/icons/generated/index.ts": `${marker}\nexport { default as Close } from "./close"\nexport { default as Small } from "./small"\nexport { default as Search } from "./search"`,
+    }).problems,
+    [],
+  )
+  assert.match(
+    problems(
+      check({
+        [`${SKILL}/SKILL.md`]: "Press Close to dismiss.",
+        "src/components/feedback/close.tsx": "export function Close() { return null }",
+      }),
+    ),
+    /names the component Close/,
   )
 })
 
