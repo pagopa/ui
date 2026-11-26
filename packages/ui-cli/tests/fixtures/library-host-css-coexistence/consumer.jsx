@@ -39,6 +39,9 @@ function Consumer() {
         closeLabel="Close dialog"
       >
         <p>Dialog content</p>
+        <div id="dialog-utility" className="p-6">
+          Dialog utility box
+        </div>
       </Dialog>
     </UIProvider>
   )

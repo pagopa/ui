@@ -13,14 +13,15 @@ const externalPackages = Object.keys({ ...manifest.dependencies, ...manifest.pee
 
 // The library build and the unit project. The stories and their browser
 // projects live in apps/storybook, which documents this package.
-export default defineConfig(() => ({
+export default defineConfig(({ command }) => ({
   base: "./",
+  root: command === "build" ? path.resolve(dirname, ".generated") : dirname,
   envDir: false,
   optimizeDeps: { include: ["@base-ui/react/combobox"] },
   plugins: [
     prefixedCandidates({
       base: dirname,
-      entry: path.resolve(dirname, "src/library.css"),
+      entry: path.resolve(dirname, "src/scan.css"),
       mirror: path.resolve(dirname, ".generated/prefixed-candidates.txt"),
     }),
     react(),
@@ -53,6 +54,8 @@ export default defineConfig(() => ({
     },
   },
   build: {
+    outDir: path.resolve(dirname, "dist"),
+    emptyOutDir: true,
     assetsDir: "",
     // The build entry adds CSS; declarations come from the CSS-free public entry.
     lib: {
