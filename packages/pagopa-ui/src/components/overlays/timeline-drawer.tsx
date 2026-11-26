@@ -4,31 +4,42 @@ import { useMessages } from "@/lib/ui-provider"
 import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
 import { Timeline, type TimelineItem } from "@/components/data-display"
 
-import { Drawer } from "./drawer"
+import { Drawer, type DrawerProps } from "./drawer"
+
+/**
+ * Props of {@link TimelineDrawer}. It keeps {@link Drawer}'s lifecycle — the
+ * controlled (`open` + `onOpenChange`) and uncontrolled (`defaultOpen`) modes,
+ * the optional `trigger`, `ref`, `className` and the standard HTML attributes
+ * of the panel — and owns only the timeline it shows.
+ */
+interface TimelineDrawerProps extends Omit<
+  DrawerProps,
+  "title" | "description" | "icon" | "children" | "footer"
+> {
+  /** Panel title; also the panel's accessible name. @default messages.timelineDrawer.title */
+  title?: string
+  /** Supporting copy of the panel. @default messages.timelineDrawer.description */
+  description?: string
+  /** Events to show, in the order the source lists them. */
+  items: TimelineItem[]
+  /** Source footer slot (for example the "download all receipts" action). */
+  footer?: React.ReactNode
+}
 
 function TimelineDrawer({
-  trigger,
   title: titleProp,
   description: descriptionProp,
   items,
   footer,
-}: {
-  trigger: React.ReactElement
-  /** Panel title. @default messages.timelineDrawer.title */
-  title?: string
-  /** Supporting copy of the panel. @default messages.timelineDrawer.description */
-  description?: string
-  items: TimelineItem[]
-  /** Source footer slot (for example the "download all receipts" action). */
-  footer?: React.ReactNode
-}) {
+  ...drawerProps
+}: TimelineDrawerProps) {
   const t = useMessages("timelineDrawer")
   const title = titleProp ?? t.title
   const description = descriptionProp ?? t.description
 
   return (
     <Drawer
-      trigger={trigger}
+      {...drawerProps}
       title={title}
       description={description}
       icon={<PagoPAPictogram name="History Doc" size={40} />}
@@ -39,4 +50,4 @@ function TimelineDrawer({
   )
 }
 
-export { TimelineDrawer }
+export { TimelineDrawer, type TimelineDrawerProps }

@@ -3,6 +3,7 @@
 import * as React from "react"
 
 import { useMessages } from "@/lib/ui-provider"
+import { cn } from "@/lib/cn"
 import {
   PopoverArrow,
   PopoverClose,
@@ -12,48 +13,88 @@ import {
 } from "@/components/primitives/popover"
 import { X } from "@/components/primitives/icons"
 
-/** Props of {@link Popover}. The trigger element owns opening and focus. */
-interface PopoverProps {
-  /** Element that opens the popover (`render` target of the trigger). */
-  trigger: React.ReactElement
+/**
+ * Props of {@link Popover}. The controlled (`open` + `onOpenChange`) and
+ * uncontrolled (`defaultOpen`) modes share one lifecycle; `ref`, `className`
+ * and the standard HTML attributes of a `div` land on the panel.
+ */
+interface PopoverProps extends Omit<
+  React.ComponentProps<"div">,
+  "title" | "children" | "className"
+> {
+  /**
+   * Element that opens the popover (`render` target of the trigger) and gets
+   * the focus back when it closes. Omit it to open from `open` only.
+   */
+  trigger?: React.ReactElement
+  /** Whether the popover is open; pair it with `onOpenChange`. */
+  open?: boolean
+  /** Opens the popover initially when `open` is omitted. */
+  defaultOpen?: boolean
+  /**
+   * Runs when the popover asks to open or close: the trigger, an outside press,
+   * Escape or the close button.
+   */
+  onOpenChange?: (open: boolean) => void
   /** Popover content. */
   children: React.ReactNode
+  /**
+   * Element the panel points at when `trigger` is omitted, so a popover opened
+   * from `open` only still knows where to place itself.
+   */
+  anchor?: HTMLElement | null | React.RefObject<HTMLElement | null>
   /** Horizontal alignment against the trigger. @default "center" */
   align?: "start" | "center" | "end"
   /** Edge of the popover that carries its indicator. @default "top" */
   arrowPosition?: "top" | "bottom"
-  /** Starts open; useful for controlled source-frame stories. */
-  defaultOpen?: boolean
   /** Allows interaction with the page while the popover is open. */
   modal?: boolean
   /** Accessible name of the panel. @default messages.popover.label */
   label?: string
   /** Accessible name of the close button. @default messages.popover.closeLabel */
   closeLabel?: string
+  /** Classes of the panel, merged with the panel's own. */
+  className?: string
+  /** The panel element. */
+  ref?: React.Ref<HTMLDivElement>
 }
 
 function Popover({
   trigger,
+  open,
+  defaultOpen,
+  onOpenChange,
   children,
+  anchor,
   align = "center",
   arrowPosition = "top",
-  defaultOpen,
   modal,
   label: labelProp,
   closeLabel: closeLabelProp,
+  className,
+  ref,
+  ...panelProps
 }: PopoverProps) {
   const t = useMessages("popover")
   const label = labelProp ?? t.label
   const closeLabel = closeLabelProp ?? t.closeLabel
 
   return (
-    <PopoverPrimitive defaultOpen={defaultOpen} modal={modal}>
-      <PopoverTrigger render={trigger} />
+    <PopoverPrimitive
+      open={open}
+      defaultOpen={defaultOpen}
+      onOpenChange={onOpenChange}
+      modal={modal}
+    >
+      {trigger ? <PopoverTrigger render={trigger} /> : null}
       <PopoverContent
+        ref={ref}
+        anchor={anchor}
         aria-label={label}
         align={align}
         side={arrowPosition === "top" ? "bottom" : "top"}
-        className="w-78 overflow-visible bg-transparent p-0 shadow-none"
+        className={cn("w-78 overflow-visible bg-transparent p-0 shadow-none", className)}
+        {...panelProps}
       >
         <div data-slot="popover-frame" className="flex w-full flex-col items-center">
           {arrowPosition === "top" ? (

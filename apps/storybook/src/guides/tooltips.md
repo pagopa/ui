@@ -18,3 +18,18 @@ width-capped, so a long string wraps instead of stretching it.
 
 `showClose` is visual only: the source declares no interaction, so the close mark
 stays `aria-hidden` and the tooltip contains no action.
+
+## Controlling the bubble
+
+`open` with `onOpenChange` makes the tooltip controlled; `defaultOpen` opens it
+initially when `open` is omitted. Both modes share one lifecycle: `onOpenChange`
+runs whenever the tooltip asks to open or close, so a single handler answers
+hover, focus and Escape.
+
+`trigger` is optional. Omit it to show the hint from the caller's own state, and
+pass `anchor` — the element the bubble points at — so a bubble opened from `open`
+only still knows where to place itself.
+
+`ref`, `className` and the standard `div` attributes land on the bubble, so it
+can be measured, styled and marked by the caller. `className` is merged with the
+bubble's own classes, and the width cap still applies.

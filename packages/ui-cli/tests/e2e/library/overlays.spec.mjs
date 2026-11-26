@@ -131,6 +131,81 @@ test("overlays: the packed dialog, drawer, popover and menu trap and restore foc
     "the packed drawer dismissal did not reach onOpenChange",
   )
 
+  const popoverState = page.locator('output[aria-label="Stato del popover"]')
+  assert.equal(await popoverState.textContent(), "chiuso")
+  await page.getByRole("button", { name: "Apri il popover controllato" }).click()
+  const controlledPopover = page.getByRole("dialog", { name: "Popover controllato" })
+  await controlledPopover.waitFor()
+  assert.equal(
+    await popoverState.textContent(),
+    "aperto",
+    "the packed popover ignored its open prop",
+  )
+  assert.equal(
+    await page.locator('output[aria-label="Contratto del popover"]').textContent(),
+    "classe/popover",
+    "the packed popover panel did not receive ref, className and the standard attribute",
+  )
+  await page.keyboard.press("Escape")
+  await controlledPopover.waitFor({ state: "hidden" })
+  assert.equal(
+    await popoverState.textContent(),
+    "chiuso",
+    "the packed popover dismissal did not reach onOpenChange",
+  )
+
+  const tooltipState = page.locator('output[aria-label="Stato del suggerimento"]')
+  assert.equal(await tooltipState.textContent(), "chiuso")
+  await page.getByRole("button", { name: "Mostra il suggerimento controllato" }).click()
+  const controlledTooltip = page.getByRole("tooltip")
+  await controlledTooltip.waitFor()
+  assert.equal(
+    await controlledTooltip.textContent(),
+    "Suggerimento controllato dal consumatore",
+    "the packed tooltip did not render without a trigger",
+  )
+  assert.equal(
+    await tooltipState.textContent(),
+    "aperto",
+    "the packed tooltip ignored its open prop",
+  )
+  assert.equal(
+    await page.locator('output[aria-label="Contratto del suggerimento"]').textContent(),
+    "classe/tooltip",
+    "the packed tooltip bubble did not receive ref, className and the standard attribute",
+  )
+  await page.keyboard.press("Escape")
+  await controlledTooltip.waitFor({ state: "hidden" })
+  assert.equal(
+    await tooltipState.textContent(),
+    "chiuso",
+    "the packed tooltip dismissal did not reach onOpenChange",
+  )
+
+  const timelineState = page.locator('output[aria-label="Stato della cronologia"]')
+  assert.equal(await timelineState.textContent(), "chiuso")
+  await page.getByRole("button", { name: "Apri la cronologia controllata" }).click()
+  const controlledTimeline = page.getByRole("dialog", { name: "Cronologia controllata" })
+  await controlledTimeline.waitFor()
+  assert.equal(
+    await timelineState.textContent(),
+    "aperto",
+    "the packed timeline drawer ignored its open prop",
+  )
+  await controlledTimeline.getByText("Revisione").waitFor()
+  assert.equal(
+    await page.locator('output[aria-label="Contratto della cronologia"]').textContent(),
+    "classe/timeline-drawer",
+    "the packed timeline panel did not receive ref, className and the standard attribute",
+  )
+  await page.keyboard.press("Escape")
+  await controlledTimeline.waitFor({ state: "hidden" })
+  assert.equal(
+    await timelineState.textContent(),
+    "chiuso",
+    "the packed timeline drawer dismissal did not reach onOpenChange",
+  )
+
   const popoverTrigger = page.getByRole("button", { name: "Apri dettagli" })
   await popoverTrigger.focus()
   await page.keyboard.press("Enter")
