@@ -3,9 +3,10 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { PaymentModule } from "@/components/composites"
+import { PaymentModule } from "@/components/composites/payment-module"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { ButtonGroup, Chip } from "@/components/inputs"
+import { ButtonGroup } from "@/components/inputs/actions"
+import { Chip } from "@/components/inputs/chips"
 import { Button } from "@/components/primitives/button"
 
 import { SourceFrame } from "./support/source-frame"

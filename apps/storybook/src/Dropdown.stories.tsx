@@ -6,8 +6,9 @@ import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Default as ContentCopyIcon } from "@/components/icons/generated/content-copy"
 import { Default as DeleteIcon } from "@/components/icons/generated/delete"
 
-import { Avatar } from "@/components/content"
-import { Chip, Dropdown, type DropdownItem } from "@/components/inputs"
+import { Avatar } from "@/components/content/avatar"
+import { Chip } from "@/components/inputs/chips"
+import { Dropdown, type DropdownItem } from "@/components/inputs/menus"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,

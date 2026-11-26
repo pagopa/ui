@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
-import { CheckboxField, CheckboxGroup } from "@/components/inputs"
+import { CheckboxField } from "@/components/inputs/checkbox-field"
+import { CheckboxGroup } from "@/components/inputs/checkbox-group"
 
 const meta = {
   title: "Components/Inputs/CheckboxGroup",

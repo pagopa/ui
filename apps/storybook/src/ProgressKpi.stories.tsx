@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { ProgressKpi } from "@/components/data-display"
+import { ProgressKpi } from "@/components/data-display/progress-kpi"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 import progressKpiGuide from "./guides/progress-kpi.md?raw"

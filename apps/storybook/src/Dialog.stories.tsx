@@ -3,8 +3,8 @@ import * as React from "react"
 import { expect, screen, userEvent, waitFor, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { CheckboxField } from "@/components/inputs"
-import { Dialog, DialogClose } from "@/components/overlays"
+import { CheckboxField } from "@/components/inputs/checkbox-field"
+import { Dialog, DialogClose } from "@/components/overlays/dialog"
 import { Button } from "@/components/primitives/button"
 import { Input } from "@/components/primitives/input"
 

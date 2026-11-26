@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { Stepper } from "@/components/navigation"
+import { Stepper } from "@/components/navigation/stepper"
 
 const meta = {
   title: "Components/Navigation/Stepper",

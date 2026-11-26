@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { FeatureList } from "@/components/content"
+import { FeatureList } from "@/components/content/feature-list"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
 

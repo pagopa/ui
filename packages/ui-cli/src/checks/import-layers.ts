@@ -1,7 +1,9 @@
 // Import layer contract (documented in
 // .agents/skills/pagopa-ui-standards/references/definition-of-done.md).
+import path from "node:path"
+
 import type { Workspace } from "../adapters/workspace.ts"
-import { walkRelative } from "../lib/fs.ts"
+import { walkFiles, walkRelative } from "../lib/fs.ts"
 import { createSourceModules } from "../lib/source-modules.ts"
 import { report, type CheckReport } from "./report.ts"
 
@@ -40,6 +42,9 @@ const FAMILIES = [
   "overlays",
 ]
 const LOWER_LAYERS = ["primitives", "icons", ...FAMILIES]
+// A story names the module that declares the component: a family barrel would
+// put its change on the path of every story in the family.
+const FAMILY_BARREL = /^src\/components\/[^/]+\/index\.tsx?$/
 
 type Dependency = { target: string; runtime: boolean }
 
@@ -131,6 +136,27 @@ export function checkImportLayers(workspace: Workspace): CheckReport {
     for (const edge of graph.get(file) ?? []) inspect(edge.target)
   }
 
+  const stories = walkFiles(path.join(workspace.storiesRoot, "src"), (file) =>
+    /\.(ts|tsx)$/.test(file),
+  ).map((file) => workspace.identity(file))
+  for (const file of stories) {
+    let dependencies
+    try {
+      dependencies = sourceDependencies(file, parseSource(file))
+    } catch (error) {
+      errors.push(error instanceof Error ? error.message : String(error))
+      continue
+    }
+    for (const { specifier } of dependencies) {
+      const target = resolveSource(specifier, file)
+      if (target && FAMILY_BARREL.test(target)) {
+        errors.push(
+          `${file}: a story must import from a component module, not the family barrel "${specifier}"`,
+        )
+      }
+    }
+  }
+
   const visited = new Set<string>()
   const active: string[] = []
   function visit(file: string): void {
@@ -149,5 +175,5 @@ export function checkImportLayers(workspace: Workspace): CheckReport {
   }
   for (const file of graph.keys()) visit(file)
 
-  return report("import layers", `${graph.size} modules`, errors)
+  return report("import layers", `${graph.size} modules, ${stories.length} stories`, errors)
 }

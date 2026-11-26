@@ -2,10 +2,11 @@ import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
-import { TableList, type TableListItemField } from "@/components/data-display"
+import { TableList } from "@/components/data-display/table-list"
+import { type TableListItemField } from "@/components/data-display/table-list-item"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
-import { Pagination } from "@/components/navigation"
+import { Pagination } from "@/components/navigation/pagination"
 import { Button } from "@/components/primitives/button"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 

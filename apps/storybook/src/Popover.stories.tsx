@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import * as React from "react"
 import { expect, screen, userEvent, waitFor, within } from "storybook/test"
 
-import { Popover } from "@/components/overlays"
+import { Popover } from "@/components/overlays/popover"
 import { Button } from "@/components/primitives/button"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { PopoverTitle } from "@/components/primitives/popover"

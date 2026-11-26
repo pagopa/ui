@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
-import { Avatar, ListItem } from "@/components/content"
+import { Avatar } from "@/components/content/avatar"
+import { ListItem } from "@/components/content/list-item"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { Chip } from "@/components/inputs"
+import { Chip } from "@/components/inputs/chips"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import listItemGuide from "./guides/list-items.md?raw"
 

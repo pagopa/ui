@@ -3,15 +3,12 @@ import { Dialog as DialogPrimitive } from "@base-ui/react/dialog"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, screen, userEvent, waitFor, within } from "storybook/test"
 
-import { Avatar } from "@/components/content"
-import {
-  Autocomplete,
-  Chip,
-  Dropdown,
-  MenuDropdown,
-  MultiSelectField,
-  SelectField,
-} from "@/components/inputs"
+import { Avatar } from "@/components/content/avatar"
+import { Autocomplete } from "@/components/inputs/autocomplete"
+import { Chip } from "@/components/inputs/chips"
+import { Dropdown, MenuDropdown } from "@/components/inputs/menus"
+import { MultiSelectField } from "@/components/inputs/multi-select-field"
+import { SelectField } from "@/components/inputs/select-field"
 import { Button } from "@/components/primitives/button"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { usePortalHost } from "@/lib/ui-provider"

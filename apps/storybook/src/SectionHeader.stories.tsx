@@ -4,7 +4,7 @@ import { expect, within } from "storybook/test"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Chip } from "@/components/inputs/chips"
-import { SectionHeader } from "@/components/navigation"
+import { SectionHeader } from "@/components/navigation/section-header"
 import { Button } from "@/components/primitives/button"
 
 import sectionHeaderGuide from "./guides/section-header.md?raw"

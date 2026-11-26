@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { PinPoint } from "@/components/overlays"
+import { PinPoint } from "@/components/overlays/pin-point"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import pinPointGuide from "./guides/pin-point.md?raw"

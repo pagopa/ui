@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { MicroEvent } from "@/components/data-display"
+import { MicroEvent } from "@/components/data-display/microevento"
 
 import microeventoGuide from "./guides/microevento.md?raw"
 

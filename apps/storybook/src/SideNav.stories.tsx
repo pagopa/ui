@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, waitFor, within } from "storybook/test"
 
-import { Avatar, Tag } from "@/components/content"
+import { Avatar } from "@/components/content/avatar"
+import { Tag } from "@/components/content/tag"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { SideNav } from "@/components/navigation"
+import { SideNav } from "@/components/navigation/side-nav"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import sideNavGuide from "./guides/side-nav.md?raw"
