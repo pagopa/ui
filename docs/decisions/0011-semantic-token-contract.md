@@ -146,7 +146,7 @@ any projection fails `ui-cli check tokens`.
 - The block grows by hand as the first place a new role appears. That is the
   cost of one source of truth, and it is paid where the change is reviewed
   anyway.
-- `etc/tokens.txt` grew from the primitives alone to the primitives and the 94
+- `etc/tokens.txt` grew from the primitives alone to the primitives and the 88
   semantic roles, `js:` entries included.
 
 ## 5. Deferred decisions with triggers
