@@ -79,7 +79,10 @@ const STATIC = [
   "pagopa-ui-cli:test",
 ]
 
-const BROWSER = [
+// The tail verify-fast stops before: the Storybook app's own gates, browser
+// suites included.
+const TAIL = [
+  "pagopa-ui-storybook:typecheck",
   "pagopa-ui-storybook:test:coverage",
   "pagopa-ui-storybook:test:stories",
   "pagopa-ui-storybook:build",
@@ -99,7 +102,7 @@ test("verify-chain: the full chain schedules every gate the sequence ran", async
   const verify = project("workspace").targets.verify
   assert.equal(verify.cache, false, "the toolchain pin cannot be a cached task")
   const scheduledTasks = await scheduled(chain(verify.options))
-  for (const gate of [...STATIC, ...BROWSER]) {
+  for (const gate of [...STATIC, ...TAIL]) {
     assert.ok(scheduledTasks.includes(gate), `the full chain dropped ${gate}`)
   }
   assert.ok(scheduledTasks.includes("workspace:verify-full"), "the aggregate must run a task")
@@ -112,7 +115,7 @@ test("verify-chain: the fast chain schedules the static gates without browsers",
   for (const gate of STATIC) {
     assert.ok(scheduledTasks.includes(gate), `the fast chain dropped ${gate}`)
   }
-  for (const gate of BROWSER) {
+  for (const gate of TAIL) {
     assert.ok(!scheduledTasks.includes(gate), `the fast chain must not run ${gate}`)
   }
 })

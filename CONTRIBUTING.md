@@ -524,8 +524,8 @@ file, `docs/` and `mise.toml` included.
 What the graph holds:
 
 - `workspace:verify-full` — the whole chain: `workspace:verify-fast` plus the
-  browser tail, `pagopa-ui-storybook:build`, `test:coverage`, `test:stories` and
-  `pagopa-ui:library:check`;
+  Storybook tail, `pagopa-ui-storybook:typecheck`, `build`, `test:coverage`,
+  `test:stories` and `pagopa-ui:library:check`;
 - `workspace:verify-fast` — the static half, gate by gate:
   `workspace:check:format`; `pagopa-ui` `typecheck`, `format:check`,
   `lint:check`, `docs`, `check:catalogue`, `foundation:check`, `layers:check`,

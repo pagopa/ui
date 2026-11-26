@@ -21,6 +21,7 @@
     "verify-full": {
       "dependsOn": [
         "verify-fast",
+        "pagopa-ui-storybook:typecheck",
         "pagopa-ui-storybook:test:coverage",
         "pagopa-ui-storybook:test:stories",
         "pagopa-ui-storybook:build",
