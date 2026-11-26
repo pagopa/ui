@@ -2,7 +2,7 @@
 id: UC-03
 status: ready
 priority: Must
-parent_dr: design-review.md
+parent_dr: ../design-review.md
 ---
 
 # `UC-03`: Census a Figma page and update its surface

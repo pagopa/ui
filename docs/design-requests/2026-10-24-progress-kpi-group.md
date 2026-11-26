@@ -7,6 +7,7 @@
 - Issue: https://github.com/pagopa/ui/issues/22
 - Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-progress-kpi-group--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-progress-kpi-group--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-progress-kpi-group--option-c
 - Status: open — the card is implemented and the rule is in
+- Ratified defaults: [docs/design-defaults.md](../design-defaults.md) — apply §2–§4 before asking; what they do not decide stays open here.
   `apps/storybook/src/guides/progress-kpi.md`; the group has no implementation
   and the set is `excluded`
 - Decision owner: Figma design owner, plus the person for a new public export

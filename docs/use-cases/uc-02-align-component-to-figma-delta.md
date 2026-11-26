@@ -2,7 +2,7 @@
 id: UC-02
 status: ready
 priority: Must
-parent_dr: design-review.md
+parent_dr: ../design-review.md
 ---
 
 # `UC-02`: Align a component to a Figma delta

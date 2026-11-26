@@ -5,6 +5,7 @@
 - Issue: https://github.com/pagopa/ui/issues/20
 - Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-shadow-32--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-shadow-32--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-shadow-32--option-c
 - Status: open — the rule and the implementation disagree; the components keep
+- Ratified defaults: [docs/design-defaults.md](../design-defaults.md) — apply §2–§4 before asking; what they do not decide stays open here.
   the current elevation until the answer is recorded
 - Decision owner: Figma design owner
 

@@ -2,7 +2,7 @@
 id: UC-09
 status: draft
 priority: Should
-parent_dr: design-review.md
+parent_dr: ../design-review.md
 ---
 
 # `UC-09`: Publish the stories catalogue

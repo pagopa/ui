@@ -17,7 +17,10 @@ Figma is read-only: read it over REST or MCP where
    delta's briefs. [Statuses](references/catalogue/statuses.md); done when target,
    guide, constraints, rules, comments and devices are read.
 3. **Decide.** Automation orders and measures, never decides: implement, exclude,
-   or leave pending with a request.
+   or leave pending with a request. The ratified design defaults
+   (`design-defaults.md`) answer the routine choices — a derived state colour, a
+   composite input-plus-icon spacing, a layout switch, a reflow condition —
+   before a request is opened.
 4. **Close.** [definition-of-done.md](references/definition-of-done.md): every
    decision, every read's scope, every gate's exit code.
 

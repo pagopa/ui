@@ -62,8 +62,10 @@ foundations are `packages/tokens`; its checks and Figma tooling are
 workspace root. The paths below are inside `packages/pagopa-ui` unless they
 name another package.
 
-The design system uses TypeScript 7, Tailwind CSS v4 and Base UI primitives
-(shadcn wrappers), with Storybook as its documentation surface.
+The design system uses TypeScript 6 — one compiler, the stable line, per
+[ADR-0010](./docs/decisions/0010-single-typescript-compiler.md) —, Tailwind CSS
+v4 and Base UI primitives (shadcn wrappers), with Storybook as its documentation
+surface.
 
 - `src/components/primitives` — Base UI primitives; `icons` — the public icon
   and pictogram components, re-exporting the generated catalogue from
@@ -98,9 +100,13 @@ Its hosting target is Azure Static Web App.
 
 `infra/` holds the infrastructure as code for project resources and execution
 environments. `docs/` holds technical documentation, architecture,
-[ADRs](https://adr.github.io/), standards, reports and plans. Deferred decisions
-and their triggers are in [docs/decisions](./docs/decisions/). Consumer
-documentation belongs to the package README or to an application under `apps/`.
+[ADRs](https://adr.github.io/), standards, reports and plans;
+[docs/README.md](./docs/README.md) is its navigation surface, and every document
+of the tree is reachable from it. Deferred decisions and their triggers are in
+[docs/decisions](./docs/decisions/). Consumer documentation belongs to the
+package README or to an application under `apps/`. The [glossary
+map](./GLOSSARY.md) separates the Figma-alignment vocabulary from the consumer
+design-system one.
 
 ### Repository infrastructure
 
@@ -132,7 +138,9 @@ Use `pnpm nx show projects` to list projects and
 - `pnpm nx run pagopa-ui-storybook:test:stories` — the stories in Firefox and WebKit;
   `pnpm nx run pagopa-ui-storybook:test:webkit` — the stories in WebKit alone, the pass a
   pull request runs; `pnpm nx run pagopa-ui-storybook:test:coverage` — the stories in
-  Chromium with v8 coverage and the gates.
+  Chromium with v8 coverage and the gates. Every one of them takes
+  `-- --shard=<index>/<count>`, which runs one slice of the collected story
+  files: the nightly workflow spreads the full pass over four runners.
 - `pnpm nx run pagopa-ui-storybook:test:changed` — only the tests affected since the last
   successful run of the same command; for iterating, the chain stays the gate
   ([baseline](./packages/ui-cli/README.md#the-changed-only-test-loop)).
@@ -389,10 +397,10 @@ project in its area as affected. Projects with a `Dockerfile` are inferred by
 - `deep-checks.yml` — the suites that need a browser, in three parallel jobs: the
   coverage gates on Chromium, the WebKit pass and the packed artifact consumer. On
   pull requests for the affected projects, where WebKit is the extra engine;
-  nightly on everything, which adds Firefox. Draft pull requests are skipped
-  until they are ready for review. A merge to `main` runs nothing: the diff it
-  carries is the one the pull request already proved, and the nightly is the
-  whole-repository pass.
+  nightly on everything, which adds Firefox and splits the story pass into four
+  shards. Draft pull requests are skipped until they are ready for review. A
+  merge to `main` runs nothing: the diff it carries is the one the pull request
+  already proved, and the nightly is the whole-repository pass.
 - `visual.yml` — the visual regression on the whole catalogue: the nightly and
   the **Version Packages** pull request, so a publish is never gated on a scoped
   guess. `visual:update` captures a diff's images, `visual:check` opts a pull
@@ -406,8 +414,11 @@ including on failed runs. Their Chrome-trace JSON records each Nx task's duratio
 An affected run with no tasks is an empty sample, not a speed improvement.
 Compare runs with the same event, engine and non-empty scope, alongside GitHub's
 setup/job timings, before changing parallelism. No coverage threshold, engine,
-scope fallback or baseline review is relaxed by this instrumentation; sharding
-remains an experiment, not an assumed win.
+scope fallback or baseline review is relaxed by this instrumentation. The story
+shards are the one parallelism the workflows assume: four of them for the whole
+catalogue and one for a pull request, where the affected files already fit one
+runner and a shard no file reaches would be an empty run. Whether four is the
+right count is what those timings answer.
 
 ### The release pull request
 
