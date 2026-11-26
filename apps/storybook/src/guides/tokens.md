@@ -53,22 +53,35 @@ export function App() {
 }
 ```
 
-`UIProvider` renders a `display: contents` scope root, so it adds no layout box.
+`UIProvider` renders a `display: contents` root, so it adds no layout box.
 Direct component use outside the provider is no longer styled; move each
 standalone component tree beneath one during migration. The provider keeps the
 existing message, locale and link configuration.
 
-The scope relies on CSS `@scope`: Chrome 118+, Safari 17.4+ or Firefox 128+.
-There is no fallback. On an older browser the utilities and preflight do not
-apply at all, so components render unstyled rather than losing isolation only.
+The stylesheet needs no `@scope`: it encapsulates with CSS cascade layers,
+`@layer pagopa-ui.base, pagopa-ui.utilities`, plus zero-specificity `:where()`
+root selectors. Any browser with layer support renders it as designed — Chrome
+99+, Safari 15.4+, Firefox 97+ — including Firefox ESR and Safari below 17.4.
 
-Library rules are scoped to `.pagopa-ui-root` without `!important`: scope
-proximity lets them win over host rules of equal specificity, such as a host
-`button` reset or a `.p-6` utility. The same proximity means a host class of
-equal specificity does not override a library utility on the same element: use
-an inline `style`, a more specific selector, or a rule inside
-`@scope (.pagopa-ui-root)`. Host rules marked `!important` still win; scope such
-rules away from library trees.
+Precedence against the host is the ordinary cascade, in this order:
+
+1. **A host rule marked `!important`** wins over every layer.
+2. **Unlayered host CSS** wins over every layer, so a plain `.p-6` or a `button`
+   reset in your own stylesheet overrides the library's utility of the same name
+   with no `!important` and no wrapper.
+3. **A host cascade layer** wins over both library layers, because the library
+   opens its layers at the head of the document and yours are ordered after
+   them. A host `.p-6 { padding: 5px }` inside `@layer host.utilities` therefore
+   also overrides the library's `.p-6`, including on a dialog body.
+4. **The library layers**, `pagopa-ui.utilities` over `pagopa-ui.base`, with the
+   base resets written at zero specificity so a class of yours still overrides
+   one.
+
+The resets reach the components and nothing else: they apply inside the roots
+the library renders — every component root carries `data-slot`, and overlays
+mount into a `data-pagopa-ui-portal-root` subtree — so legacy markup you render
+inside `UIProvider` keeps the browser's own margins, list markers and
+`content-box` box model.
 
 Library overlays render in one shared, library-owned root appended to
 `document.body` on first use, with or without a provider, and never capture
@@ -78,7 +91,7 @@ root is a singleton per document: every provider and React root on the page
 shares it, and it is not shadow-DOM or iframe aware.
 
 The public `--figma-*` token variables remain on `:root` so host pages can read
-them without entering a component scope. The component stylesheet no longer
+them without entering a component tree. The component stylesheet no longer
 resets the host body, headings or utilities. Applications that relied on those
 global resets must add their own page styles instead.
 

@@ -56,7 +56,7 @@ function TableList<Row extends { id: React.Key }>({
 
   if (!rows.length) {
     return (
-      <section aria-label={label} className="flex flex-col gap-8">
+      <section data-slot="table-list" aria-label={label} className="flex flex-col gap-8">
         <Empty role="status" className="rounded-lg border">
           <EmptyHeader>
             <EmptyMedia aria-hidden="true">

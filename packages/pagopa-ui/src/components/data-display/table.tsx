@@ -144,6 +144,7 @@ function Table<Row extends { id: React.Key }>({
 
   return (
     <section
+      data-slot="table-composite"
       aria-label={caption}
       className="@container/table flex min-w-0 flex-col gap-2 rounded-lg bg-secondary p-2"
     >
