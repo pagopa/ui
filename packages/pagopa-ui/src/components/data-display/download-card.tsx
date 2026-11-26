@@ -1,6 +1,6 @@
 "use client"
 
-import { Download, ImageIcon } from "@/components/primitives/icons"
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Button, buttonVariants } from "@/components/primitives/button"
 import { useLinkComponent, useMessages } from "@/lib/ui-provider"
 
@@ -29,7 +29,7 @@ function DownloadCard({
       data-slot="download-card"
       className="pui:flex pui:items-center pui:gap-3 pui:rounded-xl pui:border pui:p-4"
     >
-      <ImageIcon aria-hidden="true" className="pui:text-primary" />
+      <PagoPAIcon name="photo" className="pui:text-primary" />
       <div className="pui:min-w-0 pui:flex-1">
         <p className="pui:truncate pui:text-body-sb">{fileName}</p>
         {meta ? <p className="pui:text-caption pui:text-muted-foreground">{meta}</p> : null}
@@ -41,11 +41,11 @@ function DownloadCard({
           href={href}
           download={fileName}
         >
-          <Download aria-hidden="true" />
+          <PagoPAIcon name="download" />
         </Link>
       ) : onDownload ? (
         <Button size="icon" variant="ghost" aria-label={downloadLabel} onClick={onDownload}>
-          <Download aria-hidden="true" />
+          <PagoPAIcon name="download" />
         </Button>
       ) : null}
     </div>

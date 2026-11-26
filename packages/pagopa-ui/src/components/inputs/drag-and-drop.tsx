@@ -3,7 +3,6 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
-import { FileUp, X } from "@/components/primitives/icons"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Button, buttonVariants } from "@/components/primitives/button"
@@ -291,8 +290,8 @@ function DragAndDrop({
             </div>
           ) : (
             <div className="pui:pointer-events-none pui:grid pui:justify-items-center pui:gap-2">
-              <FileUp
-                aria-hidden="true"
+              <PagoPAIcon
+                name="upload"
                 className={cn(
                   "pui:size-6",
                   disabled ? "pui:text-muted-foreground" : "pui:text-foreground",
@@ -355,7 +354,7 @@ function DragAndDrop({
                 onClick={() => removeFile(file)}
                 className="pui:relative pui:grid pui:size-6 pui:shrink-0 pui:place-items-center pui:rounded-full pui:text-foreground pui:after:absolute pui:after:-inset-2.5 pui:hover:bg-muted pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
               >
-                <X aria-hidden="true" className="pui:size-3.5" />
+                <PagoPAIcon name="close" className="pui:size-3.5" />
               </button>
             </li>
           ))}

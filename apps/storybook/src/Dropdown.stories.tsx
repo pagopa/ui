@@ -2,10 +2,11 @@ import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, fn, screen, userEvent, waitFor, within } from "storybook/test"
 
-import { Copy, Trash2 } from "lucide-react"
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Default as ContentCopyIcon } from "@/components/icons/generated/content-copy"
+import { Default as DeleteIcon } from "@/components/icons/generated/delete"
 
 import { Avatar } from "@/components/content"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Chip, Dropdown, type DropdownItem } from "@/components/inputs"
 import {
   DropdownMenu,
@@ -53,11 +54,11 @@ const meta = {
   args: {
     triggerLabel: "Gestisci",
     items: [
-      { id: "copy", label: "Copia", icon: Copy, onSelect: copyMenuItem },
+      { id: "copy", label: "Copia", icon: ContentCopyIcon, onSelect: copyMenuItem },
       {
         id: "delete",
         label: "Elimina",
-        icon: Trash2,
+        icon: DeleteIcon,
         destructive: true,
         onSelect: deleteMenuItem,
       },

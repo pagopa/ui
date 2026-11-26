@@ -5,7 +5,6 @@ import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { X } from "@/components/primitives/icons"
 
 import { toneStyles, type Tone } from "./tones"
 
@@ -102,7 +101,7 @@ function HeaderAlert({
             onClick={onDismiss}
             className="pui:flex pui:size-10 pui:items-center pui:justify-center pui:rounded-md pui:focus-visible:outline-2 pui:focus-visible:outline-current"
           >
-            <X aria-hidden="true" className="pui:size-5" />
+            <PagoPAIcon name="close" className="pui:size-5" />
           </button>
         )}
       </div>

@@ -59,7 +59,7 @@
    as are the html rules the @scope could never reach: no literal enters this
    file that no foundation token can express. */
 @layer pagopa-ui.base {
-  :where([data-slot], [data-pagopa-ui-portal-root]) {
+  :where([data-pagopa-ui-root], [data-slot], [data-pagopa-ui-portal-root]) {
     &,
     &::before,
     &::after,
@@ -559,10 +559,10 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    :where([data-slot], [data-pagopa-ui-portal-root]),
-    :where([data-slot], [data-pagopa-ui-portal-root]) *,
-    :where([data-slot], [data-pagopa-ui-portal-root]) *::before,
-    :where([data-slot], [data-pagopa-ui-portal-root]) *::after {
+    :where([data-pagopa-ui-root], [data-slot], [data-pagopa-ui-portal-root]),
+    :where([data-pagopa-ui-root], [data-slot], [data-pagopa-ui-portal-root]) *,
+    :where([data-pagopa-ui-root], [data-slot], [data-pagopa-ui-portal-root]) *::before,
+    :where([data-pagopa-ui-root], [data-slot], [data-pagopa-ui-portal-root]) *::after {
       scroll-behavior: auto !important;
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
@@ -604,8 +604,8 @@
        `focus-visible:outline-ring` utility of equal specificity, and the
        forced-colors perimeter must outrank it, as it did when `@scope`'s
        pseudo-class supplied the weight. */
-    :is([data-slot], [data-pagopa-ui-portal-root]):focus-visible,
-    :is([data-slot], [data-pagopa-ui-portal-root]) :focus-visible {
+    :is([data-pagopa-ui-root], [data-slot], [data-pagopa-ui-portal-root]):focus-visible,
+    :is([data-pagopa-ui-root], [data-slot], [data-pagopa-ui-portal-root]) :focus-visible {
       outline: var(--figma-spacing-2) solid CanvasText;
       outline-offset: var(--figma-spacing-2);
     }

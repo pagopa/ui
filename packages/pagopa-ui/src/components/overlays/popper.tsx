@@ -4,7 +4,6 @@ import * as React from "react"
 
 import { statusIcons, toneStyles, type Tone } from "@/components/feedback/tones"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { X } from "@/components/primitives/icons"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
@@ -29,23 +28,23 @@ interface PopperProps {
 }
 
 const pointerColors: Record<Tone, string> = {
-  info: "pui:fill-info-soft pui:stroke-info-border",
-  success: "pui:fill-success-soft pui:stroke-success-border",
-  warning: "pui:fill-warning-soft pui:stroke-warning-border",
-  error: "pui:fill-error-soft pui:stroke-error-border",
+  info: "fill-info-soft stroke-info-border",
+  success: "fill-success-soft stroke-success-border",
+  warning: "fill-warning-soft stroke-warning-border",
+  error: "fill-error-soft stroke-error-border",
 }
 
 const ringColors: Record<Tone, string> = {
-  info: "pui:ring-info-border",
-  success: "pui:ring-success-border",
-  warning: "pui:ring-warning-border",
-  error: "pui:ring-error-border",
+  info: "ring-info-border",
+  success: "ring-success-border",
+  warning: "ring-warning-border",
+  error: "ring-error-border",
 }
 
 const pointerAlignment: Record<PopperPointer, string> = {
-  left: "pui:justify-start pui:pl-6",
-  center: "pui:justify-center",
-  right: "pui:justify-end pui:pr-6",
+  left: "justify-start pl-6",
+  center: "justify-center",
+  right: "justify-end pr-6",
 }
 
 function Popper({
@@ -118,7 +117,7 @@ function Popper({
           data-slot="popper-dismiss"
           className="pui:relative pui:grid pui:size-6 pui:shrink-0 pui:place-items-center pui:rounded-md pui:text-foreground pui:after:absolute pui:after:-inset-2.5 pui:hover:bg-foreground/5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-current"
         >
-          <X aria-hidden="true" className="pui:size-5" />
+          <PagoPAIcon name="close" className="pui:size-5" />
         </button>
       </div>
     </div>

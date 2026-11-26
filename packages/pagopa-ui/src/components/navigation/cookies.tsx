@@ -3,7 +3,7 @@
 import * as React from "react"
 
 import { useMessages } from "@/lib/ui-provider"
-import { X } from "@/components/primitives/icons"
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Button } from "@/components/primitives/button"
 
 function Cookies({
@@ -45,7 +45,7 @@ function Cookies({
       onClick={onDismiss}
       className="pui:flex pui:size-11 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-md pui:hover:bg-muted pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
     >
-      <X aria-hidden="true" />
+      <PagoPAIcon name="close" />
     </button>
   ) : null
 

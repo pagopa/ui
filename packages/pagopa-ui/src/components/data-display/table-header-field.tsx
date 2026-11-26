@@ -3,7 +3,6 @@
 import * as React from "react"
 
 import { useMessages } from "@/lib/ui-provider"
-import { ArrowUpDown } from "@/components/primitives/icons"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { TableHead } from "@/components/primitives/table"
 
@@ -29,7 +28,7 @@ function TableHeaderField({
         >
           {children}
           {sort.direction === "none" ? (
-            <ArrowUpDown aria-hidden="true" className="pui:size-6 pui:shrink-0" />
+            <PagoPAIcon name="unfold" className="pui:size-6 pui:shrink-0" />
           ) : (
             <PagoPAIcon name="arrow" variant={sort.direction === "ascending" ? "up" : "down"} />
           )}

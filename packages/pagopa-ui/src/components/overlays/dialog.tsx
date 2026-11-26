@@ -4,7 +4,7 @@ import * as React from "react"
 
 import { useMessages, usePortalHost } from "@/lib/ui-provider"
 import { cn } from "@/lib/cn"
-import { X } from "@/components/primitives/icons"
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Button } from "@/components/primitives/button"
 import { Dialog as DialogPrimitive } from "@/components/primitives/dialog"
 
@@ -107,7 +107,7 @@ function Dialog({
               />
             }
           >
-            <X aria-hidden="true" />
+            <PagoPAIcon name="close" />
           </DialogPrimitive.Close>
         </DialogPrimitive.Popup>
       </DialogPrimitive.Portal>

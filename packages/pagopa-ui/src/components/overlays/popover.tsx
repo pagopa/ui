@@ -11,7 +11,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/primitives/popover"
-import { X } from "@/components/primitives/icons"
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 /**
  * Props of {@link Popover}. The controlled (`open` + `onOpenChange`) and
@@ -125,7 +125,7 @@ function Popover({
               {children}
             </div>
             <PopoverClose aria-label={closeLabel}>
-              <X aria-hidden="true" className="pui:size-2.5 pui:text-primary" />
+              <PagoPAIcon name="close" className="pui:size-2.5 pui:text-primary" />
             </PopoverClose>
           </div>
           {arrowPosition === "bottom" ? (

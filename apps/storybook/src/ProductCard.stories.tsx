@@ -454,7 +454,7 @@ export const SourceCatalogueCard: Story = {
     }
     const child = (parent: HTMLElement, selector: string) => {
       const element = parent.querySelector(selector)
-      if (!(element instanceof HTMLElement)) throw new Error(`missing ${selector}`)
+      if (!(element instanceof Element)) throw new Error(`missing ${selector}`)
       return element
     }
 
@@ -537,13 +537,13 @@ export const SourceCatalogueCard: Story = {
       feedback[0].getBoundingClientRect().right + 24,
     )
     for (const icon of feedback) {
-      const glyph = child(icon, "span")
+      const glyph = child(icon, "svg")
       await expect(icon.getBoundingClientRect().width).toBe(24)
       await expect(icon.getBoundingClientRect().height).toBe(24)
       // The source instance is a 24px box whose artwork is the source 16x16/15x11 glyph.
       await expect(glyph.getBoundingClientRect().width).toBe(24)
       await expect(glyph.getBoundingClientRect().height).toBe(24)
-      await expect(getComputedStyle(glyph).backgroundColor).toBe("rgb(11, 62, 227)")
+      await expect(getComputedStyle(glyph).color).toBe("rgb(11, 62, 227)")
     }
 
     join.focus()

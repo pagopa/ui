@@ -14,7 +14,8 @@ runtime cycle or computed path fails, a type-only cycle passes.
 - [ ] Imports point down only: `primitives`/`icons` ← families ← stories and
       templates. Nothing under `src/components` imports `apps/storybook/src` or
       `src/catalog`; templates may import any layer through `@/…`.
-- [ ] `@base-ui/react`, `react-day-picker`, `lucide-react` only in `primitives`;
+- [ ] `@base-ui/react` and `react-day-picker` only in `primitives`; no icon
+      package is a runtime dependency — glyphs come from the artwork pipeline;
       `cn` only from `@/lib/cn`.
 - [ ] Removed layers stay removed: `atoms`, `molecules`, `organisms`,
       `figma-primitives`, `ui`, `screens`, `templates`.

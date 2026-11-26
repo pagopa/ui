@@ -1,11 +1,11 @@
 "use client"
 
 import * as React from "react"
-import { ChevronDown, EllipsisVertical, type LucideIcon } from "@/components/primitives/icons"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import type { IconComponent } from "@/components/icons/generated/types"
 import { Button } from "@/components/primitives/button"
 import {
   DropdownMenu,
@@ -23,7 +23,8 @@ import { ItemRow, type ItemRowContent } from "./item-row"
 
 type DropDownItemBase = ItemRowContent & {
   id: string
-  icon?: LucideIcon
+  /** Rendered as the row leading glyph; any pinned variant component fits. */
+  icon?: IconComponent
   destructive?: boolean
   separatorBefore?: boolean
   /** Source Level=Second: nested row. */
@@ -330,7 +331,7 @@ function Dropdown({
         }
       >
         {triggerLabel}
-        <ChevronDown aria-hidden="true" />
+        <PagoPAIcon name="chevron" variant="down" />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         className={cn(
@@ -410,7 +411,7 @@ function MenuDropdown({
       <DropdownMenuTrigger
         render={<Button type="button" variant="ghost" size="icon" aria-label={accessibleLabel} />}
       >
-        <EllipsisVertical aria-hidden="true" />
+        <PagoPAIcon name="more_vert" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="pui:min-w-(--pui-menu-width) pui:p-0">
         <MenuItems items={items} label={label} dividers tone="primary" />

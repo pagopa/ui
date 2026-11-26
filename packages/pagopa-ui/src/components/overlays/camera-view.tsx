@@ -3,7 +3,7 @@
 import * as React from "react"
 
 import { useMessages } from "@/lib/ui-provider"
-import { Camera } from "@/components/primitives/icons"
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 // Source "CameraViewElement" (1134:6812): a 376×378 Color/Surface/Surface
 // overlay scrim at radius 16, four 44px corner brackets (4px stroke, 24px
@@ -42,7 +42,7 @@ function CameraView({
     >
       <div className="pui:absolute pui:inset-0 pui:grid pui:place-items-center">
         {children === undefined ? (
-          <Camera aria-hidden="true" className="pui:size-16 pui:opacity-40" />
+          <PagoPAIcon name="photo" className="pui:size-16 pui:opacity-40" />
         ) : (
           children
         )}

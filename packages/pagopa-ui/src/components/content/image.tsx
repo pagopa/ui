@@ -4,7 +4,7 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { ImageIcon } from "@/components/primitives/icons"
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 type ImageProps = React.ComponentProps<"img"> & {
   ratio?: "square" | "video" | "photo" | "portrait" | "cinema" | "wide"
@@ -25,16 +25,16 @@ function Image({
   const [failed, setFailed] = React.useState(false)
   const ratioClass =
     ratio === "square"
-      ? "pui:aspect-square"
+      ? "aspect-square"
       : ratio === "photo"
-        ? "pui:aspect-[4/3]"
+        ? "aspect-[4/3]"
         : ratio === "portrait"
-          ? "pui:aspect-[3/4]"
+          ? "aspect-[3/4]"
           : ratio === "cinema"
-            ? "pui:aspect-[21/9]"
+            ? "aspect-[21/9]"
             : ratio === "wide"
-              ? "pui:aspect-[3/1]"
-              : "pui:aspect-video"
+              ? "aspect-[3/1]"
+              : "aspect-video"
 
   if (failed || !props.src) {
     return (
@@ -49,7 +49,7 @@ function Image({
         )}
       >
         <span className="pui:flex pui:items-center pui:gap-2 pui:text-label-mini">
-          <ImageIcon aria-hidden="true" />
+          <PagoPAIcon name="photo" />
           {fallbackLabel}
         </span>
       </div>

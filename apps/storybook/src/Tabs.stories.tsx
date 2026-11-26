@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
-import { Building2, FileText, UserRound } from "lucide-react"
+
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/primitives/tabs"
 
 import tabsGuide from "./guides/tabs.md?raw"
@@ -21,15 +21,15 @@ function AccountTabs({ orientation }: AccountTabsProps) {
     >
       <TabsList variant="line" aria-label="Sezioni del profilo" className="w-full overflow-x-auto">
         <TabsTrigger value="profile">
-          <UserRound aria-hidden="true" />
+          <PagoPAIcon name="person" aria-hidden="true" />
           Profilo
         </TabsTrigger>
         <TabsTrigger value="organization">
-          <Building2 aria-hidden="true" />
+          <PagoPAIcon name="account_balance" aria-hidden="true" />
           Ente
         </TabsTrigger>
         <TabsTrigger value="documents">
-          <FileText aria-hidden="true" />
+          <PagoPAIcon name="receipt_long" aria-hidden="true" />
           Documenti
         </TabsTrigger>
       </TabsList>

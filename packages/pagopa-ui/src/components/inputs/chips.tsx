@@ -3,7 +3,6 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
-import { X } from "@/components/primitives/icons"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 type ChipVariant =
@@ -20,37 +19,36 @@ type ChipAppearance = "solid" | "outline"
 
 const chipStyles: Record<ChipVariant, Record<ChipAppearance, string>> = {
   default: {
-    solid: "pui:border-0 pui:bg-chip-primary-soft pui:text-chip-primary-foreground",
-    outline: "pui:border-chip-default-outline pui:bg-transparent pui:text-chip-default-outline",
+    solid: "border-0 bg-chip-primary-soft text-chip-primary-foreground",
+    outline: "border-chip-default-outline bg-transparent text-chip-default-outline",
   },
   error: {
-    solid: "pui:border-0 pui:bg-error-soft pui:text-error-foreground",
-    outline: "pui:border-destructive pui:bg-transparent pui:text-destructive",
+    solid: "border-0 bg-error-soft text-error-foreground",
+    outline: "border-destructive bg-transparent text-destructive",
   },
   highlight: {
-    solid: "pui:border-0 pui:bg-chip-highlight-soft pui:text-chip-highlight-foreground",
-    outline:
-      "pui:border-chip-highlight-foreground pui:bg-transparent pui:text-chip-highlight-foreground",
+    solid: "border-0 bg-chip-highlight-soft text-chip-highlight-foreground",
+    outline: "border-chip-highlight-foreground bg-transparent text-chip-highlight-foreground",
   },
   informative: {
-    solid: "pui:border-0 pui:bg-info-soft pui:text-info-foreground",
-    outline: "pui:border-info-foreground pui:bg-transparent pui:text-info-foreground",
+    solid: "border-0 bg-info-soft text-info-foreground",
+    outline: "border-info-foreground bg-transparent text-info-foreground",
   },
   neutral: {
-    solid: "pui:border-0 pui:bg-secondary pui:text-secondary-foreground",
-    outline: "pui:border-foreground pui:bg-transparent pui:text-foreground",
+    solid: "border-0 bg-secondary text-secondary-foreground",
+    outline: "border-foreground bg-transparent text-foreground",
   },
   primary: {
-    solid: "pui:border-primary pui:bg-accent pui:text-primary",
-    outline: "pui:border-primary pui:bg-transparent pui:text-primary",
+    solid: "border-primary bg-accent text-primary",
+    outline: "border-primary bg-transparent text-primary",
   },
   success: {
-    solid: "pui:border-0 pui:bg-success-soft pui:text-success-foreground",
-    outline: "pui:border-success-foreground pui:bg-transparent pui:text-success-foreground",
+    solid: "border-0 bg-success-soft text-success-foreground",
+    outline: "border-success-foreground bg-transparent text-success-foreground",
   },
   warning: {
-    solid: "pui:border-0 pui:bg-warning-soft pui:text-warning-foreground",
-    outline: "pui:border-warning-foreground pui:bg-transparent pui:text-warning-foreground",
+    solid: "border-0 bg-warning-soft text-warning-foreground",
+    outline: "border-warning-foreground bg-transparent text-warning-foreground",
   },
 }
 
@@ -77,7 +75,7 @@ function Chip({
 }) {
   const variantClassName =
     size === "compact" && variant === "primary" && appearance === "solid"
-      ? "pui:border-transparent pui:bg-chip-primary-soft pui:text-chip-primary-foreground"
+      ? "border-transparent bg-chip-primary-soft text-chip-primary-foreground"
       : chipStyles[variant][appearance]
   const t = useMessages("chip")
   const chipLabel = typeof children === "string" ? children : undefined
@@ -106,7 +104,7 @@ function Chip({
           aria-label={removeLabel ?? t.removeLabel(chipLabel)}
           className="pui:relative pui:-my-0.5 pui:inline-grid pui:size-6 pui:shrink-0 pui:place-items-center pui:rounded-full pui:text-current pui:outline-none pui:after:absolute pui:after:-inset-2.5 pui:hover:bg-foreground/10 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-1 pui:focus-visible:outline-ring"
         >
-          <X aria-hidden="true" className="pui:size-5" />
+          <PagoPAIcon name="close" className="pui:size-5" />
         </button>
       ) : null}
     </span>

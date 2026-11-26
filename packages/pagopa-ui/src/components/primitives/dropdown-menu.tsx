@@ -3,7 +3,7 @@
 import { Menu as MenuPrimitive } from "@base-ui/react/menu"
 import { usePortalHost } from "@/lib/ui-provider"
 import { cn } from "@/lib/cn"
-import { CheckIcon, ChevronRightIcon } from "./icons"
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 function DropdownMenu({ ...props }: MenuPrimitive.Root.Props) {
   return <MenuPrimitive.Root data-slot="dropdown-menu" {...props} />
@@ -95,7 +95,7 @@ function DropdownMenuItem({
       data-inset={inset}
       data-variant={variant}
       className={cn(
-        "group/dropdown-menu-item pui:relative pui:flex pui:cursor-default pui:items-center pui:gap-1.5 pui:rounded-md pui:px-1.5 pui:py-1 pui:text-label-mini pui:focus:outline-hidden pui:select-none pui:focus:bg-accent pui:focus:text-accent-foreground pui:not-data-[variant=destructive]:focus:**:text-accent-foreground pui:data-inset:pl-7 pui:data-[variant=destructive]:text-destructive pui:data-[variant=destructive]:focus:bg-destructive/10 pui:data-[variant=destructive]:focus:text-destructive pui:data-disabled:pointer-events-none pui:data-disabled:opacity-50 pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0 pui:[&_svg:not([class*='size-'])]:size-4 pui:data-[variant=destructive]:*:[svg]:text-destructive",
+        "group/dropdown-menu-item pui:relative pui:flex pui:cursor-default pui:items-center pui:gap-1.5 pui:rounded-md pui:px-1.5 pui:py-1 pui:text-label-mini pui:focus:outline-hidden pui:select-none pui:focus:bg-accent pui:focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground pui:data-inset:pl-7 pui:data-[variant=destructive]:text-destructive pui:data-[variant=destructive]:focus:bg-destructive/10 pui:data-[variant=destructive]:focus:text-destructive pui:data-disabled:pointer-events-none pui:data-disabled:opacity-50 pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0 pui:[&_svg:not([class*='size-'])]:size-4 data-[variant=destructive]:*:[svg]:text-destructive",
         className,
       )}
       {...props}
@@ -120,13 +120,13 @@ function DropdownMenuSubTrigger({
       data-slot="dropdown-menu-sub-trigger"
       data-inset={inset}
       className={cn(
-        "pui:flex pui:cursor-default pui:items-center pui:gap-1.5 pui:rounded-md pui:px-1.5 pui:py-1 pui:text-label-mini pui:focus:outline-hidden pui:select-none pui:focus:bg-accent pui:focus:text-accent-foreground pui:not-data-[variant=destructive]:focus:**:text-accent-foreground pui:data-inset:pl-7 pui:data-popup-open:bg-accent pui:data-popup-open:text-accent-foreground pui:data-open:bg-accent pui:data-open:text-accent-foreground pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0 pui:[&_svg:not([class*='size-'])]:size-4",
+        "pui:flex pui:cursor-default pui:items-center pui:gap-1.5 pui:rounded-md pui:px-1.5 pui:py-1 pui:text-label-mini pui:focus:outline-hidden pui:select-none pui:focus:bg-accent pui:focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground pui:data-inset:pl-7 pui:data-popup-open:bg-accent pui:data-popup-open:text-accent-foreground pui:data-open:bg-accent pui:data-open:text-accent-foreground pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0 pui:[&_svg:not([class*='size-'])]:size-4",
         className,
       )}
       {...props}
     >
       {children}
-      <ChevronRightIcon className="pui:ml-auto" />
+      <PagoPAIcon name="chevron" className="pui:ml-auto" />
     </MenuPrimitive.SubmenuTrigger>
   )
 }
@@ -170,7 +170,7 @@ function DropdownMenuCheckboxItem({
       data-slot="dropdown-menu-checkbox-item"
       data-inset={inset}
       className={cn(
-        "pui:relative pui:flex pui:cursor-default pui:items-center pui:gap-1.5 pui:rounded-md pui:py-1 pui:pr-8 pui:pl-1.5 pui:text-label-mini pui:focus:outline-hidden pui:select-none pui:focus:bg-accent pui:focus:text-accent-foreground pui:focus:**:text-accent-foreground pui:data-inset:pl-7 pui:data-disabled:pointer-events-none pui:data-disabled:opacity-50 pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0 pui:[&_svg:not([class*='size-'])]:size-4",
+        "pui:relative pui:flex pui:cursor-default pui:items-center pui:gap-1.5 pui:rounded-md pui:py-1 pui:pr-8 pui:pl-1.5 pui:text-label-mini pui:focus:outline-hidden pui:select-none pui:focus:bg-accent pui:focus:text-accent-foreground focus:**:text-accent-foreground pui:data-inset:pl-7 pui:data-disabled:pointer-events-none pui:data-disabled:opacity-50 pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0 pui:[&_svg:not([class*='size-'])]:size-4",
         className,
       )}
       checked={checked}
@@ -200,7 +200,7 @@ function DropdownMenuCheckboxItem({
           />
         ) : (
           <MenuPrimitive.CheckboxItemIndicator>
-            {indicator ?? <CheckIcon />}
+            {indicator ?? <PagoPAIcon name="check" />}
           </MenuPrimitive.CheckboxItemIndicator>
         )}
       </span>
@@ -226,7 +226,7 @@ function DropdownMenuRadioItem({
       data-slot="dropdown-menu-radio-item"
       data-inset={inset}
       className={cn(
-        "pui:relative pui:flex pui:cursor-default pui:items-center pui:gap-1.5 pui:rounded-md pui:py-1 pui:pr-8 pui:pl-1.5 pui:text-label-mini pui:focus:outline-hidden pui:select-none pui:focus:bg-accent pui:focus:text-accent-foreground pui:focus:**:text-accent-foreground pui:data-inset:pl-7 pui:data-disabled:pointer-events-none pui:data-disabled:opacity-50 pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0 pui:[&_svg:not([class*='size-'])]:size-4",
+        "pui:relative pui:flex pui:cursor-default pui:items-center pui:gap-1.5 pui:rounded-md pui:py-1 pui:pr-8 pui:pl-1.5 pui:text-label-mini pui:focus:outline-hidden pui:select-none pui:focus:bg-accent pui:focus:text-accent-foreground focus:**:text-accent-foreground pui:data-inset:pl-7 pui:data-disabled:pointer-events-none pui:data-disabled:opacity-50 pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0 pui:[&_svg:not([class*='size-'])]:size-4",
         className,
       )}
       {...props}
@@ -236,7 +236,7 @@ function DropdownMenuRadioItem({
         data-slot="dropdown-menu-radio-item-indicator"
       >
         <MenuPrimitive.RadioItemIndicator>
-          <CheckIcon />
+          <PagoPAIcon name="check" />
         </MenuPrimitive.RadioItemIndicator>
       </span>
       {children}

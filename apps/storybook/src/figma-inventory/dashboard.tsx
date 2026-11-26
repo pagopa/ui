@@ -1,28 +1,6 @@
-import {
-  ArrowRight,
-  ArrowUpRight,
-  BookOpen,
-  Check,
-  CheckCircle2,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  CircleAlert,
-  Code2,
-  Copy,
-  ExternalLink,
-  FileCode2,
-  Keyboard,
-  Layers,
-  LayoutGrid,
-  RefreshCw,
-  Search,
-  Table2,
-  Terminal,
-  X,
-  ScanSearch,
-} from "lucide-react"
 import * as React from "react"
+
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 import { cn } from "@/lib/cn"
 
@@ -194,9 +172,9 @@ function CopyButton({
       title={copied ? "Copied" : "Copy"}
     >
       {copied ? (
-        <Check aria-hidden="true" className="size-3.5 text-emerald-600" />
+        <PagoPAIcon name="check" aria-hidden="true" className="size-3.5 text-emerald-600" />
       ) : (
-        <Copy aria-hidden="true" className="size-3.5" />
+        <PagoPAIcon name="content_copy" aria-hidden="true" className="size-3.5" />
       )}
       {compact ? null : <span>{copied ? "Copied" : "Copy"}</span>}
     </button>
@@ -255,7 +233,7 @@ function ResyncControl() {
           focusRing(),
         )}
       >
-        <RefreshCw aria-hidden="true" className="size-3.5" />
+        <PagoPAIcon name="cached" aria-hidden="true" className="size-3.5" />
         Re-sync Figma
       </button>
       {open ? (
@@ -280,11 +258,15 @@ function ResyncControl() {
                 focusRing(),
               )}
             >
-              <X aria-hidden="true" className="size-3.5" />
+              <PagoPAIcon name="close" aria-hidden="true" className="size-3.5" />
             </button>
           </div>
           <div className="mt-3 flex items-start gap-2 rounded-lg border border-slate-200 bg-slate-50 p-2.5">
-            <Terminal aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-slate-500" />
+            <PagoPAIcon
+              name="code"
+              aria-hidden="true"
+              className="mt-0.5 size-3.5 shrink-0 text-slate-500"
+            />
             <code className="min-w-0 flex-1 font-mono text-[10.5px] leading-relaxed break-all whitespace-pre-wrap text-slate-700">
               {command}
             </code>
@@ -301,7 +283,7 @@ function ResyncControl() {
               )}
             >
               Open the Figma file
-              <ArrowUpRight aria-hidden="true" className="size-3" />
+              <PagoPAIcon name="open_in_new" aria-hidden="true" className="size-3" />
             </a>
             <span className="font-mono text-[10px] text-slate-500">
               {formatDate(inventoryMeta.syncedAt)}
@@ -323,7 +305,7 @@ function Header() {
             className="flex size-8 shrink-0 items-center justify-center rounded-lg text-white shadow-sm"
             style={{ backgroundImage: "linear-gradient(135deg, #6366f1, #7c3aed)" }}
           >
-            <Layers className="size-4" />
+            <PagoPAIcon name="dashboard" className="size-4" />
           </span>
           <div className="min-w-0 leading-tight">
             <p className="truncate text-[13px] font-semibold text-slate-900">PagoPA UI</p>
@@ -417,7 +399,7 @@ function Kpis() {
             {formatNumber(totals.pages)} Figma pages · {formatNumber(AREAS.length)} areas
           </>
         }
-        icon={<Layers className="size-4" />}
+        icon={<PagoPAIcon name="dashboard" className="size-4" />}
         iconClassName="bg-indigo-50 text-indigo-600"
       />
       <KpiCard
@@ -428,7 +410,7 @@ function Kpis() {
             {formatNumber(totals.implemented)} implemented · {formatNumber(totals.notShipped)} open
           </>
         }
-        icon={<CheckCircle2 className="size-4" />}
+        icon={<PagoPAIcon name="check_circle" className="size-4" />}
         iconClassName="bg-emerald-50 text-emerald-600"
       >
         <ProgressBar value={syncPercent} className="mt-3" barClassName="bg-emerald-500" />
@@ -441,7 +423,7 @@ function Kpis() {
             {formatNumber(totals.mocked)} mocked · {formatNumber(totals.pending)} pending
           </>
         }
-        icon={<CircleAlert className="size-4" />}
+        icon={<PagoPAIcon name="warning" className="size-4" />}
         iconClassName="bg-amber-50 text-amber-600"
       />
       <KpiCard
@@ -453,7 +435,7 @@ function Kpis() {
             declared device frames
           </>
         }
-        icon={<ScanSearch className="size-4" />}
+        icon={<PagoPAIcon name="troubleshoot" className="size-4" />}
         iconClassName="bg-violet-50 text-violet-600"
       />
     </div>
@@ -465,12 +447,12 @@ function HealthStrip() {
     <div className="mt-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
       {unaccountedCount > 0 ? (
         <p className="flex items-center gap-2 text-[11px] text-amber-700">
-          <CircleAlert aria-hidden="true" className="size-3.5 shrink-0" />
+          <PagoPAIcon name="warning" aria-hidden="true" className="size-3.5 shrink-0" />
           {unaccountedCount} published nodes have no registry entry yet.
         </p>
       ) : (
         <p className="flex items-center gap-2 text-[11px] text-emerald-700">
-          <CheckCircle2 aria-hidden="true" className="size-3.5 shrink-0" />
+          <PagoPAIcon name="check_circle" aria-hidden="true" className="size-3.5 shrink-0" />
           Every published node is covered by a registry entry or a page rule.
         </p>
       )}
@@ -499,7 +481,8 @@ function SearchField({
       <label className="sr-only" htmlFor="registry-search">
         Search components
       </label>
-      <Search
+      <PagoPAIcon
+        name="search"
         aria-hidden="true"
         className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-500"
       />
@@ -538,14 +521,14 @@ function SearchField({
             focusRing(),
           )}
         >
-          <X aria-hidden="true" className="size-3.5" />
+          <PagoPAIcon name="close" aria-hidden="true" className="size-3.5" />
         </button>
       ) : (
         <span
           aria-hidden="true"
           className="pointer-events-none absolute top-1/2 right-2.5 flex -translate-y-1/2 items-center gap-1 rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 font-sans text-[10px] font-medium text-slate-500"
         >
-          <Keyboard className="size-3" />
+          <PagoPAIcon name="keyboard_hide" className="size-3" />
           {shortcut}
         </span>
       )}
@@ -616,7 +599,9 @@ function AreaField({
           </option>
         ))}
       </select>
-      <ChevronDown
+      <PagoPAIcon
+        name="chevron"
+        variant="down"
         aria-hidden="true"
         className="pointer-events-none absolute top-1/2 right-2.5 size-3.5 -translate-y-1/2 text-slate-500"
       />
@@ -690,7 +675,7 @@ function ViewToggle({
           focusRing(),
         )}
       >
-        <LayoutGrid aria-hidden="true" className="size-3.5" />
+        <PagoPAIcon name="dashboard" aria-hidden="true" className="size-3.5" />
         <span className="hidden tablet:inline">Grid</span>
       </button>
       <button
@@ -706,7 +691,7 @@ function ViewToggle({
           focusRing(),
         )}
       >
-        <Table2 aria-hidden="true" className="size-3.5" />
+        <PagoPAIcon name="table_chart" aria-hidden="true" className="size-3.5" />
         <span className="hidden tablet:inline">Table</span>
       </button>
     </fieldset>
@@ -736,7 +721,9 @@ function SortField({ value, onChange }: { value: SortKey; onChange: (value: Sort
           </option>
         ))}
       </select>
-      <ChevronDown
+      <PagoPAIcon
+        name="chevron"
+        variant="down"
         aria-hidden="true"
         className="pointer-events-none absolute top-1/2 right-2.5 size-3.5 -translate-y-1/2 text-slate-500"
       />
@@ -863,7 +850,7 @@ function ComponentPreview({ item }: { item: RegistryItem }) {
         </span>
       ) : null}
       <span className="absolute top-2.5 right-2.5 flex size-6 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 opacity-0 shadow-sm transition group-hover:opacity-100 group-focus-visible:opacity-100">
-        <ArrowUpRight className="size-3.5" />
+        <PagoPAIcon name="open_in_new" className="size-3.5" />
       </span>
     </div>
   )
@@ -957,7 +944,7 @@ function RegistryCard({ item, onInspect }: { item: RegistryItem; onInspect: () =
           )}
         >
           Inspect
-          <ArrowRight aria-hidden="true" className="size-3" />
+          <PagoPAIcon name="arrow" aria-hidden="true" className="size-3" />
         </button>
         <div className="flex items-center gap-0.5">
           <ExternalIconLink href={item.figmaUrl} label={`${item.name} in Figma`}>
@@ -975,14 +962,14 @@ function RegistryCard({ item, onInspect }: { item: RegistryItem; onInspect: () =
                 focusRing(),
               )}
             >
-              <BookOpen aria-hidden="true" className="size-3.5" />
+              <PagoPAIcon name="menu_book" aria-hidden="true" className="size-3.5" />
             </a>
           ) : (
             <span
               title="No Storybook page mapped"
               className="inline-flex size-7 items-center justify-center rounded-md text-slate-300"
             >
-              <BookOpen aria-hidden="true" className="size-3.5" />
+              <PagoPAIcon name="menu_book" aria-hidden="true" className="size-3.5" />
             </span>
           )}
         </div>
@@ -1121,21 +1108,21 @@ function RegistryTable({
                       focusRing(),
                     )}
                   >
-                    <ScanSearch aria-hidden="true" className="size-3.5" />
+                    <PagoPAIcon name="troubleshoot" aria-hidden="true" className="size-3.5" />
                   </button>
                   <ExternalIconLink href={item.figmaUrl} label={`${item.name} in Figma`}>
                     <FigmaMark className="h-3.5 w-2.5" />
                   </ExternalIconLink>
                   {item.storyUrl ? (
                     <ExternalIconLink href={item.storyUrl} label={`${item.name} in Storybook`}>
-                      <BookOpen aria-hidden="true" className="size-3.5" />
+                      <PagoPAIcon name="menu_book" aria-hidden="true" className="size-3.5" />
                     </ExternalIconLink>
                   ) : (
                     <span
                       title="No Storybook page mapped"
                       className="inline-flex size-7 items-center justify-center rounded-md text-slate-300"
                     >
-                      <BookOpen aria-hidden="true" className="size-3.5" />
+                      <PagoPAIcon name="menu_book" aria-hidden="true" className="size-3.5" />
                     </span>
                   )}
                 </div>
@@ -1196,7 +1183,7 @@ function Pagination({
             focusRing(),
           )}
         >
-          <ChevronLeft aria-hidden="true" className="size-3.5" />
+          <PagoPAIcon name="chevron" variant="left" aria-hidden="true" className="size-3.5" />
         </button>
         {pageWindow(page, totalPages).map((candidate, index) =>
           candidate === "gap" ? (
@@ -1236,7 +1223,7 @@ function Pagination({
             focusRing(),
           )}
         >
-          <ChevronRight aria-hidden="true" className="size-3.5" />
+          <PagoPAIcon name="chevron" aria-hidden="true" className="size-3.5" />
         </button>
       </div>
     </div>
@@ -1257,19 +1244,19 @@ const INSPECTOR_TABS: {
     id: "overview",
     label: "Overview",
     shortLabel: "Overview",
-    icon: <ScanSearch className="size-3.5" />,
+    icon: <PagoPAIcon name="troubleshoot" className="size-3.5" />,
   },
   {
     id: "diff",
     label: "Version diff",
     shortLabel: "Version diff",
-    icon: <Code2 className="size-3.5" />,
+    icon: <PagoPAIcon name="code" className="size-3.5" />,
   },
   {
     id: "handoff",
     label: "Handoff & links",
     shortLabel: "Handoff",
-    icon: <ArrowUpRight className="size-3.5" />,
+    icon: <PagoPAIcon name="open_in_new" className="size-3.5" />,
   },
 ]
 
@@ -1356,7 +1343,8 @@ function OverviewPanel({ item }: { item: RegistryItem }) {
         <details className="group rounded-xl border border-slate-200 bg-white px-3 py-2.5">
           <summary className="cursor-pointer list-none text-[11px] font-medium text-slate-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
             <span className="inline-flex items-center gap-1.5">
-              <ChevronRight
+              <PagoPAIcon
+                name="chevron"
                 aria-hidden="true"
                 className="size-3.5 text-slate-500 transition group-open:rotate-90"
               />
@@ -1430,9 +1418,9 @@ function VersionPanel({ item }: { item: RegistryItem }) {
         )}
       >
         {alignment.id === "aligned" ? (
-          <CheckCircle2 aria-hidden="true" className="size-3.5 shrink-0" />
+          <PagoPAIcon name="check_circle" aria-hidden="true" className="size-3.5 shrink-0" />
         ) : (
-          <CircleAlert aria-hidden="true" className="size-3.5 shrink-0" />
+          <PagoPAIcon name="warning" aria-hidden="true" className="size-3.5 shrink-0" />
         )}
         <span className="font-medium">{alignment.label}</span>
         <span>
@@ -1459,7 +1447,7 @@ function VersionPanel({ item }: { item: RegistryItem }) {
         />
         <VersionCard
           eyebrow="Code contract"
-          icon={<FileCode2 className="size-3.5" />}
+          icon={<PagoPAIcon name="code" className="size-3.5" />}
           title={item.exportName ?? "No export mapped"}
           fingerprint={item.contractFingerprint}
           rows={[
@@ -1553,7 +1541,11 @@ function HandoffPanel({ item }: { item: RegistryItem }) {
                 {item.nodeId}
               </span>
             </span>
-            <ExternalLink aria-hidden="true" className="size-3.5 shrink-0 text-slate-500" />
+            <PagoPAIcon
+              name="open_in_new"
+              aria-hidden="true"
+              className="size-3.5 shrink-0 text-slate-500"
+            />
           </a>
           {item.storyUrl ? (
             <a
@@ -1565,16 +1557,24 @@ function HandoffPanel({ item }: { item: RegistryItem }) {
                 focusRing(),
               )}
             >
-              <BookOpen aria-hidden="true" className="size-3.5 shrink-0 text-slate-500" />
+              <PagoPAIcon
+                name="menu_book"
+                aria-hidden="true"
+                className="size-3.5 shrink-0 text-slate-500"
+              />
               <span className="min-w-0 flex-1">
                 <span className="block font-medium">Open the Storybook page</span>
                 <span className="block truncate text-[10px] text-slate-500">{item.storyTitle}</span>
               </span>
-              <ExternalLink aria-hidden="true" className="size-3.5 shrink-0 text-slate-500" />
+              <PagoPAIcon
+                name="open_in_new"
+                aria-hidden="true"
+                className="size-3.5 shrink-0 text-slate-500"
+              />
             </a>
           ) : (
             <div className="flex items-center gap-2.5 px-3 py-2.5 text-[11px] text-slate-500">
-              <BookOpen aria-hidden="true" className="size-3.5 shrink-0" />
+              <PagoPAIcon name="menu_book" aria-hidden="true" className="size-3.5 shrink-0" />
               <span className="flex-1">No Storybook page mapped for this node.</span>
             </div>
           )}
@@ -1588,14 +1588,22 @@ function HandoffPanel({ item }: { item: RegistryItem }) {
                 focusRing(),
               )}
             >
-              <FileCode2 aria-hidden="true" className="size-3.5 shrink-0 text-slate-500" />
+              <PagoPAIcon
+                name="code"
+                aria-hidden="true"
+                className="size-3.5 shrink-0 text-slate-500"
+              />
               <span className="min-w-0 flex-1">
                 <span className="block font-medium">Read the implementation</span>
                 <span className="block truncate font-mono text-[10px] text-slate-500">
                   {item.module}
                 </span>
               </span>
-              <ExternalLink aria-hidden="true" className="size-3.5 shrink-0 text-slate-500" />
+              <PagoPAIcon
+                name="open_in_new"
+                aria-hidden="true"
+                className="size-3.5 shrink-0 text-slate-500"
+              />
             </a>
           ) : null}
         </div>
@@ -1644,7 +1652,7 @@ function InspectorFooter({ item }: { item: RegistryItem }) {
       >
         <FigmaMark className="h-3 w-2.5" />
         Open in Figma
-        <ExternalLink aria-hidden="true" className="size-3" />
+        <PagoPAIcon name="open_in_new" aria-hidden="true" className="size-3" />
       </a>
       {item.storyUrl ? (
         <a
@@ -1656,9 +1664,9 @@ function InspectorFooter({ item }: { item: RegistryItem }) {
             focusRing(),
           )}
         >
-          <BookOpen aria-hidden="true" className="size-3.5" />
+          <PagoPAIcon name="menu_book" aria-hidden="true" className="size-3.5" />
           Storybook
-          <ExternalLink aria-hidden="true" className="size-3" />
+          <PagoPAIcon name="open_in_new" aria-hidden="true" className="size-3" />
         </a>
       ) : (
         <span className="inline-flex flex-1 items-center justify-center rounded-lg border border-dashed border-slate-200 px-3 py-2 text-[11px] text-slate-500">
@@ -1798,7 +1806,7 @@ function Inspector({ item, onClose }: { item: RegistryItem | null; onClose: () =
                   focusRing(),
                 )}
               >
-                <X aria-hidden="true" className="size-4" />
+                <PagoPAIcon name="close" aria-hidden="true" className="size-4" />
               </button>
             </div>
             <div role="tablist" aria-label="Component details" className="mt-4 flex gap-1">
@@ -1860,7 +1868,7 @@ function EmptyState({ onClear }: { onClear: () => void }) {
         aria-hidden="true"
         className="flex size-11 items-center justify-center rounded-full bg-white text-slate-500 ring-1 ring-slate-200"
       >
-        <Search className="size-5" />
+        <PagoPAIcon name="search" className="size-5" />
       </span>
       <p className="mt-3 text-sm font-medium text-slate-800">No components match</p>
       <p className="mt-1 max-w-sm text-xs leading-relaxed text-slate-500">
@@ -1875,7 +1883,7 @@ function EmptyState({ onClear }: { onClear: () => void }) {
         )}
       >
         Clear filters
-        <X aria-hidden="true" className="size-3" />
+        <PagoPAIcon name="close" aria-hidden="true" className="size-3" />
       </button>
     </div>
   )
@@ -1905,11 +1913,11 @@ function PageHero() {
         </div>
         <div className="flex min-w-0 flex-wrap items-center gap-1.5 text-[11px]">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-slate-600">
-            <RefreshCw aria-hidden="true" className="size-3 text-slate-500" />
+            <PagoPAIcon name="cached" aria-hidden="true" className="size-3 text-slate-500" />
             Snapshot {formatDate(inventoryMeta.syncedAt)}
           </span>
           <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-slate-600">
-            <Layers aria-hidden="true" className="size-3 text-slate-500" />
+            <PagoPAIcon name="dashboard" aria-hidden="true" className="size-3 text-slate-500" />
             {formatNumber(totals.pages)} pages
           </span>
           <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-slate-600">
@@ -1944,7 +1952,7 @@ function PageFooter() {
           )}
         >
           Figma file
-          <ExternalLink aria-hidden="true" className="size-3" />
+          <PagoPAIcon name="open_in_new" aria-hidden="true" className="size-3" />
         </a>
         <a
           href="https://github.com/pagopa/ui/blob/main/packages/pagopa-ui/src/catalog/figma/registry.json"
@@ -1956,7 +1964,7 @@ function PageFooter() {
           )}
         >
           Registry JSON
-          <ExternalLink aria-hidden="true" className="size-3" />
+          <PagoPAIcon name="open_in_new" aria-hidden="true" className="size-3" />
         </a>
         <a
           href="https://github.com/pagopa/ui/blob/main/.github/CODEOWNERS"
@@ -1968,7 +1976,7 @@ function PageFooter() {
           )}
         >
           Code owners
-          <ExternalLink aria-hidden="true" className="size-3" />
+          <PagoPAIcon name="open_in_new" aria-hidden="true" className="size-3" />
         </a>
         <span className="font-mono text-[10px] text-slate-600">
           {STATUSES.map((status) => `${statusLabel(status)} ${statusCounts[status]}`).join(" · ")}

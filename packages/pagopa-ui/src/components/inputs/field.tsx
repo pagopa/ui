@@ -3,7 +3,6 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
-import { CheckCircle2 } from "@/components/primitives/icons"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { useFieldIds, type FieldStateProps } from "./field-utils"
@@ -176,7 +175,7 @@ function FieldMessages({
           id={ids.successId}
           className="pui:flex pui:items-start pui:gap-1.5 pui:text-caption pui:text-success"
         >
-          <CheckCircle2 aria-hidden="true" className="pui:mt-0.5 pui:size-4 pui:shrink-0" />
+          <PagoPAIcon name="check_circle" className="pui:mt-0.5 pui:size-4 pui:shrink-0" />
           {success}
         </p>
       ) : null}

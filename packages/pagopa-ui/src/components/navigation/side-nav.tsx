@@ -4,7 +4,6 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useLinkComponent, useMessages } from "@/lib/ui-provider"
 
-import { ChevronDown } from "@/components/primitives/icons"
 import { Badge } from "@/components/primitives/badge"
 import { Separator } from "@/components/primitives/separator"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
@@ -68,8 +67,9 @@ function SideNav({
         <summary className="pui:flex pui:min-h-12 pui:cursor-pointer pui:list-none pui:items-center pui:gap-2 pui:border-b pui:px-6 pui:py-3 pui:text-body-sb pui:focus-visible:outline-2 pui:focus-visible:outline-ring">
           <PagoPAIcon name="menu" aria-hidden="true" className="pui:shrink-0" />
           <span className="pui:min-w-0 pui:flex-1 pui:truncate">{title}</span>
-          <ChevronDown
-            aria-hidden="true"
+          <PagoPAIcon
+            name="chevron"
+            variant="down"
             className="pui:shrink-0 pui:transition-transform pui:group-open:rotate-180 pui:motion-reduce:transition-none"
           />
         </summary>
@@ -187,7 +187,7 @@ function NavRow({
   const hasChildren = Boolean(item.children?.length)
   const [open, setOpen] = React.useState(() => Boolean(item.children?.some(hasCurrentItem)))
   const labelsHidden = condensed
-    ? "pui:sr-only pui:group-data-[expanded=true]/nav:not-sr-only pui:group-focus-within/nav:not-sr-only"
+    ? "sr-only group-data-[expanded=true]/nav:not-sr-only group-focus-within/nav:not-sr-only"
     : undefined
 
   return (
@@ -278,8 +278,9 @@ function NavRow({
               condensed && labelsHidden,
             )}
           >
-            <ChevronDown
-              aria-hidden="true"
+            <PagoPAIcon
+              name="chevron"
+              variant="down"
               className={cn(
                 "pui:size-5 pui:transition-transform pui:motion-reduce:transition-none",
                 open && "pui:rotate-180",

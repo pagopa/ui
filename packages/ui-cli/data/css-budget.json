@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "note": "Ceiling of the published stylesheet (dist/styles.css): raw bytes, gzip level 9 and brotli. Growth fails; a drop wider than the slack is recorded with `pnpm ui-cli update css`; raising a ceiling is a reviewed edit of this file with its reason. Raised for the doubled emission the utility prefix adds (spec 158, #161): every utility ships as an unprefixed and a `pui:`-prefixed class until the contract step (#164) removes one spelling. The artifact measured raw 137016 / gzip 21662 / brotli 17943 with the prefix block of `src/index.css` removed, on the same tree; #164 brings it back to that size and lowers these ceilings with it.",
+  "note": "Ceiling of the published stylesheet (dist/styles.css): raw bytes, gzip level 9 and brotli. Growth fails; a drop wider than the slack is recorded with `pnpm ui-cli update css`; raising a ceiling is a reviewed edit of this file with its reason. Raised for the doubled emission the utility prefix adds (spec 158, #161): every utility ships as an unprefixed and a `pui:`-prefixed class until the contract step (#164) removes one spelling. Raised again by 2112 raw bytes (spec 158, ADR-0012/ADR-0014 story and E2E parity): `[data-pagopa-ui-root]` joined every `:where(...)` and `:is(...)` list in `src/index.css` so preflight, reduced-motion and the forced-colors ring reach markup whose only ancestor is the app root; the nested `&, &::before, &::after` reset multiplies each widened list by the selectors it expands to, so one attribute per list costs bytes per generated selector. The artifact measured raw 137016 / gzip 21662 / brotli 17943 with the prefix block of `src/index.css` removed, on the same tree; #164 brings it back to that size and lowers these ceilings with it.",
   "metrics": {
-    "raw": 246961,
-    "gzip": 36530,
-    "brotli": 23652
+    "raw": 249073,
+    "gzip": 36587,
+    "brotli": 23553
   }
 }

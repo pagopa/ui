@@ -4,7 +4,6 @@ import * as React from "react"
 import { Select as SelectPrimitive } from "@base-ui/react/select"
 import { usePortalHost } from "@/lib/ui-provider"
 import { cn } from "@/lib/cn"
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "./icons"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
@@ -45,7 +44,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "pui:flex pui:w-full pui:items-center pui:justify-between pui:gap-2 pui:rounded-lg pui:border pui:border-input pui:bg-background pui:px-3 pui:py-2 pui:text-body pui:whitespace-nowrap pui:transition-[color,background-color,border-color] pui:outline-none pui:select-none pui:focus-visible:border-ring pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-1 pui:focus-visible:outline-ring pui:disabled:cursor-not-allowed pui:disabled:bg-muted pui:disabled:text-muted-foreground pui:aria-invalid:border-destructive pui:aria-invalid:outline-destructive pui:data-placeholder:text-muted-foreground pui:data-[size=default]:min-h-12 pui:data-[size=sm]:min-h-10 pui:*:data-[slot=select-value]:line-clamp-1 pui:*:data-[slot=select-value]:flex pui:*:data-[slot=select-value]:items-center pui:*:data-[slot=select-value]:gap-2 pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0 pui:[&_svg:not([class*='size-'])]:size-5",
+        "pui:flex pui:w-full pui:items-center pui:justify-between pui:gap-2 pui:rounded-lg pui:border pui:border-input pui:bg-background pui:px-3 pui:py-2 pui:text-body pui:whitespace-nowrap pui:transition-[color,background-color,border-color] pui:outline-none pui:select-none pui:focus-visible:border-ring pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-1 pui:focus-visible:outline-ring pui:disabled:cursor-not-allowed pui:disabled:bg-muted pui:disabled:text-muted-foreground pui:aria-invalid:border-destructive pui:aria-invalid:outline-destructive pui:data-placeholder:text-muted-foreground pui:data-[size=default]:min-h-12 pui:data-[size=sm]:min-h-10 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0 pui:[&_svg:not([class*='size-'])]:size-5",
         className,
       )}
       {...props}
@@ -54,7 +53,11 @@ function SelectTrigger({
       <SelectPrimitive.Icon
         render={
           icon ?? (
-            <ChevronDownIcon className="pui:pointer-events-none pui:size-4 pui:text-muted-foreground" />
+            <PagoPAIcon
+              name="chevron"
+              variant="down"
+              className="pui:pointer-events-none pui:size-4 pui:text-muted-foreground"
+            />
           )
         }
       />
@@ -168,7 +171,7 @@ function SelectItem({
                 />
               </>
             ) : (
-              <CheckIcon className="pui:pointer-events-none" />
+              <PagoPAIcon name="check" className="pui:pointer-events-none" />
             )}
           </span>
         )}
@@ -200,7 +203,7 @@ function SelectScrollUpButton({
       )}
       {...props}
     >
-      <ChevronUpIcon />
+      <PagoPAIcon name="chevron" variant="up" />
     </SelectPrimitive.ScrollUpArrow>
   )
 }
@@ -218,7 +221,7 @@ function SelectScrollDownButton({
       )}
       {...props}
     >
-      <ChevronDownIcon />
+      <PagoPAIcon name="chevron" variant="down" />
     </SelectPrimitive.ScrollDownArrow>
   )
 }

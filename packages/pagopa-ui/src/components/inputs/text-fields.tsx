@@ -3,7 +3,6 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useLocale, useMessages } from "@/lib/ui-provider"
-import { CalendarDays } from "@/components/primitives/icons"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import type { Calendar } from "@/components/primitives/calendar"
@@ -421,7 +420,7 @@ function DatePickerField({
   cancelLabel,
   confirmLabel,
   className,
-  leadingIcon = <CalendarDays />,
+  leadingIcon = <PagoPAIcon name="event" />,
 }: DatePickerFieldProps) {
   const t = useMessages("datePickerField")
   const { locale: providerLocale, calendarLocale: providerCalendarLocale } = useLocale()

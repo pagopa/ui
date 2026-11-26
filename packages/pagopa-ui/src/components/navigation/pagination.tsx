@@ -3,7 +3,7 @@
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { ChevronLeft, ChevronRight } from "@/components/primitives/icons"
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Button } from "@/components/primitives/button"
 
 import { pageRange } from "./pagination-utils"
@@ -75,7 +75,7 @@ function Pagination({
             aria-label={previousLabel}
             className={stepControl}
           >
-            <ChevronLeft aria-hidden="true" />
+            <PagoPAIcon name="chevron" variant="left" />
           </Button>
           {pageRange(current, totalPages).map((page, index) =>
             page === "ellipsis" ? (
@@ -115,7 +115,7 @@ function Pagination({
             aria-label={nextLabel}
             className={stepControl}
           >
-            <ChevronRight aria-hidden="true" />
+            <PagoPAIcon name="chevron" />
           </Button>
         </nav>
       </div>

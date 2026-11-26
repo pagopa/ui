@@ -4,16 +4,16 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { X } from "@/components/primitives/icons"
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 type BannerColor = "white" | "primary" | "grey"
 type BannerHierarchy = "primary" | "secondary" | "tertiary"
 type BannerDirection = "horizontal" | "vertical"
 
 const bannerColors: Record<BannerColor, string> = {
-  white: "pui:border-border pui:bg-background",
-  primary: "pui:border-selection-border pui:bg-selection-soft",
-  grey: "pui:border-border pui:bg-muted",
+  white: "border-border bg-background",
+  primary: "border-selection-border bg-selection-soft",
+  grey: "border-border bg-muted",
 }
 
 interface BannerBaseProps {
@@ -292,7 +292,7 @@ function Banner({
           data-slot="banner-dismiss"
           className="pui:absolute pui:right-1 pui:top-1 pui:z-10 pui:flex pui:size-11 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-full pui:hover:bg-foreground/5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-current"
         >
-          <X aria-hidden="true" className="pui:size-4" />
+          <PagoPAIcon name="close" className="pui:size-4" />
         </button>
       ) : null}
     </section>
