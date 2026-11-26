@@ -215,8 +215,7 @@ test("a generated icon identity is not a component a skill may not name", () => 
   assert.deepEqual(
     check({
       [`${SKILL}/SKILL.md`]: "Press Close to dismiss, then pick Small or Search.",
-      "src/components/icons/generated/index.ts":
-        `${marker}\nexport { default as Close } from "./close"\nexport { default as Small } from "./small"\nexport { default as Search } from "./search"`,
+      "src/components/icons/generated/index.ts": `${marker}\nexport { default as Close } from "./close"\nexport { default as Small } from "./small"\nexport { default as Search } from "./search"`,
     }).problems,
     [],
   )
