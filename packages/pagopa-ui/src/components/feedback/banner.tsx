@@ -16,7 +16,7 @@ const bannerColors: Record<BannerColor, string> = {
   grey: "border-border bg-muted",
 }
 
-interface BannerBaseProps {
+export interface BannerBaseProps {
   color?: BannerColor
   hierarchy?: BannerHierarchy
   direction?: BannerDirection
@@ -283,4 +283,5 @@ function Banner({
   )
 }
 
-export { Banner, type BannerColor, type BannerDirection, type BannerHierarchy }
+export { Banner }
+export type { BannerColor, BannerDirection, BannerHierarchy, BannerProps }

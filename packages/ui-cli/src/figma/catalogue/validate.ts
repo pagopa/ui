@@ -19,6 +19,7 @@ import {
   findUnaccountedNodes,
 } from "./registry-validation.ts"
 import {
+  noteLengthWarnings,
   validateDeviceVocabulary,
   validateInventoryMetadata,
   validatePageSurface,
@@ -72,7 +73,6 @@ function validateRegistryCatalogue(
   errors.push(
     ...findUnaccountedNodes(context.committed, context.registry, bulk.bulkByPage, bulk.bulkByNode),
   )
-  errors.push(...staleStoryTitles(workspace, context.registry))
   errors.push(
     ...validateIconNames(
       workspace,
@@ -120,6 +120,8 @@ export function validateCatalogue(context: CatalogueCandidate): CatalogueValidat
   errors.push(...surface.errors)
   warnings.push(...surface.warnings)
   const { entries, bulk } = validateRegistryCatalogue(workspace, context, errors)
+  warnings.push(...noteLengthWarnings(context.registry))
+  warnings.push(...staleStoryTitles(workspace, context.registry))
   return {
     errors,
     warnings,

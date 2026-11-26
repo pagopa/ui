@@ -3,10 +3,20 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 
-import { RadioGroup as RadioGroupPrimitive } from "@/components/primitives/radio-group"
+import {
+  RadioGroup as RadioGroupPrimitive,
+  type RadioGroupProps as RadioGroupPrimitiveProps,
+} from "@/components/primitives/radio-group"
 
 import { FieldMessages } from "./field"
 import { describedBy, useFieldIds } from "./field-utils"
+
+type RadioGroupFieldProps = RadioGroupPrimitiveProps & {
+  legend: React.ReactNode
+  description?: React.ReactNode
+  error?: React.ReactNode
+  required?: boolean
+}
 
 function RadioGroup({
   legend,
@@ -16,12 +26,7 @@ function RadioGroup({
   className,
   children,
   ...props
-}: React.ComponentProps<typeof RadioGroupPrimitive> & {
-  legend: React.ReactNode
-  description?: React.ReactNode
-  error?: React.ReactNode
-  required?: boolean
-}) {
+}: RadioGroupFieldProps) {
   const ids = useFieldIds()
 
   return (
@@ -56,3 +61,4 @@ function RadioGroup({
 }
 
 export { RadioGroup }
+export type { RadioGroupFieldProps }

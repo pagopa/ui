@@ -73,16 +73,7 @@ function FooterLinkRow({ link }: { link: FooterLink }) {
   )
 }
 
-function Footer({
-  brand: brandProp,
-  homeHref = "#",
-  links = [],
-  company = COMPANY_INFORMATION,
-  columns = [],
-  titleAs = "h2",
-  columnsLabel: columnsLabelProp,
-  className,
-}: {
+export interface FooterProps {
   /** Brand slot of the footer. @default messages.footer.brand */
   brand?: React.ReactNode
   /** Link target of the brand; the `#` placeholder keeps the source default. @default "#" */
@@ -99,7 +90,18 @@ function Footer({
   columnsLabel?: string
   /** ClassName applied to the footer element. */
   className?: string
-}) {
+}
+
+function Footer({
+  brand: brandProp,
+  homeHref = "#",
+  links = [],
+  company = COMPANY_INFORMATION,
+  columns = [],
+  titleAs = "h2",
+  columnsLabel: columnsLabelProp,
+  className,
+}: FooterProps) {
   const t = useMessages("footer")
   const brand = brandProp ?? t.brand
   const columnsLabel = columnsLabelProp ?? t.columnsLabel
@@ -138,7 +140,7 @@ function Footer({
         <div className="@container/footer">
           <nav
             aria-label={columnsLabel}
-            className="mx-auto flex max-w-7xl flex-col gap-10 px-6 py-6 @4xl/footer:grid @4xl/footer:grid-cols-4 @4xl/footer:gap-6 @4xl/footer:py-16 @6xl/footer:px-33"
+            className="mx-auto flex max-w-7xl flex-col gap-10 px-6 py-6 @min-wide/footer:grid @min-wide/footer:grid-cols-4 @min-wide/footer:gap-6 @min-wide/footer:py-16 @min-wider/footer:px-33"
           >
             {columns.map((column, index) => (
               <div
@@ -201,7 +203,7 @@ function Footer({
                   className={cn(
                     "empty:hidden",
                     column.social?.length || column.links?.length
-                      ? "mt-6 @4xl/footer:mt-auto @4xl/footer:pt-4"
+                      ? "mt-6 @min-wide/footer:mt-auto @min-wide/footer:pt-4"
                       : "mt-0",
                   )}
                 >

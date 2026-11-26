@@ -4,6 +4,8 @@ import * as React from "react"
 import { Separator as SeparatorPrimitive } from "@base-ui/react/separator"
 import { cn } from "@/lib/cn"
 
+import { type ElementProps } from "./props"
+
 const verticalPaddingClasses = {
   16: "py-4",
   24: "py-6",
@@ -16,18 +18,23 @@ const horizontalInsetClasses = {
   32: "w-8",
 } as const
 
+/** Props of the `Separator`. */
+export type SeparatorProps = ElementProps<"div"> & {
+  /** Direction of the line. @default "horizontal" */
+  orientation?: "horizontal" | "vertical"
+  /** Optional label; renders the source "With text" divider. */
+  label?: React.ReactNode
+  /** Source spacing steps; `0` keeps the plain line. @default 0 */
+  padding?: 0 | 16 | 24 | 32
+}
+
 function Separator({
   className,
   orientation = "horizontal",
   label,
   padding = 0,
   ...props
-}: SeparatorPrimitive.Props & {
-  /** Optional label; renders the source "With text" divider. */
-  label?: React.ReactNode
-  /** Source spacing steps; `0` keeps the plain line. */
-  padding?: 0 | 16 | 24 | 32
-}) {
+}: SeparatorProps) {
   if (label !== undefined) {
     return (
       <div

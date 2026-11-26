@@ -5,7 +5,9 @@ import { cn } from "@/lib/cn"
 // the block paints nothing, carries no role and is hidden from assistive tech.
 // Every step is the spacing-scale utility of the same pixel height, so a
 // recurring value can only enter through `packages/tokens/src/manifest.json`.
-const sizeClasses = {
+type SpacerSize = 4 | 8 | 16 | 24 | 32 | 40 | 48
+
+const sizeClasses: Record<SpacerSize, string> = {
   4: "h-1",
   8: "h-2",
   16: "h-4",
@@ -13,9 +15,7 @@ const sizeClasses = {
   32: "h-8",
   40: "h-10",
   48: "h-12",
-} as const
-
-type SpacerSize = keyof typeof sizeClasses
+}
 
 /**
  * Invisible vertical spacer: a step of the spacing scale as an empty block with
@@ -23,7 +23,12 @@ type SpacerSize = keyof typeof sizeClasses
  *
  * Figma: Spacing (node 237:1307)
  */
-function Spacer({ size = 4, className }: { size?: SpacerSize; className?: string }) {
+export interface SpacerProps {
+  size?: SpacerSize
+  className?: string
+}
+
+function Spacer({ size = 4, className }: SpacerProps) {
   return <div aria-hidden="true" data-slot="spacing" className={cn(sizeClasses[size], className)} />
 }
 

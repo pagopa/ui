@@ -34,6 +34,7 @@
     "test": {
       "dependsOn": [
         "api:check",
+        "consumer:typecheck",
         "check:catalogue",
         "figma:map:check",
         "plugin:check",
@@ -67,6 +68,21 @@
     "api:update": {
       "dependsOn": ["build"],
       "cache": false
+    },
+    "consumer:typecheck": {
+      "dependsOn": ["build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p tsconfig.consumer.json",
+        "cwd": "{projectRoot}"
+      },
+      "inputs": [
+        "default",
+        {
+          "dependentTasksOutputFiles": "**/*.d.ts"
+        }
+      ],
+      "cache": true
     },
     "docs": {
       "executor": "nx:run-commands",

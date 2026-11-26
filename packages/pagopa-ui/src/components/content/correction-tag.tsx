@@ -11,10 +11,7 @@ import { Tag } from "./tag"
  * Figma: Correction/Valid (node 9676:5453)
  * Figma: Correction/NotValid (node 9676:5455)
  */
-function CorrectionTag({
-  status,
-  label: labelProp,
-}: {
+export interface CorrectionTagProps {
   /** Correction outcome: rettificato (`valid`) or non valido (`not-valid`). */
   status: "valid" | "not-valid"
   /**
@@ -22,7 +19,9 @@ function CorrectionTag({
    * messages.correctionTag.notValidLabel on `not-valid`
    */
   label?: string
-}) {
+}
+
+function CorrectionTag({ status, label: labelProp }: CorrectionTagProps) {
   const t = useMessages("correctionTag")
   const label = labelProp ?? (status === "valid" ? t.validLabel : t.notValidLabel)
   return <Tag status={status === "valid" ? "success" : "warning"}>{label}</Tag>

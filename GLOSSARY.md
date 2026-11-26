@@ -104,7 +104,7 @@ The numeric agreement between a source variant and its rendered story, plus the 
 _Avoid_: pixel diff, fidelity score
 
 **Verification**:
-The hermetic verdict `check:catalogue`, `check:artwork` and `check:rules` reach from the committed records, with no snapshot, browser or network.
+The hermetic verdict `check:catalogue`, `check:artwork` and `check:devices` reach from the committed records, with no snapshot, browser or network.
 _Avoid_: evidence (as a synonym), test run
 
 **Delta**:

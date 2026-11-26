@@ -4,25 +4,14 @@
 
 ```ts
 
-import { Button as Button_2 } from '@base-ui/react/button';
-import { Checkbox as Checkbox_2 } from '@base-ui/react/checkbox';
 import { ClassProp } from 'class-variance-authority/types';
 import { ComponentProps } from 'react';
-import { DayPicker } from 'react-day-picker';
-import type { DayPickerLocale } from 'react-day-picker';
 import { JSX } from 'react';
 import { JSXElementConstructor } from 'react';
-import { OTPField as OTPField_2 } from '@base-ui/react/otp-field';
-import { Radio } from '@base-ui/react/radio';
-import { RadioGroup as RadioGroup_3 } from '@base-ui/react/radio-group';
 import * as React_2 from 'react';
 import { ReactElement } from 'react';
 import { ReactNode } from 'react';
-import { Separator as Separator_2 } from '@base-ui/react/separator';
 import type { SVGProps } from 'react';
-import { Switch as Switch_2 } from '@base-ui/react/switch';
-import { Tabs as Tabs_2 } from '@base-ui/react/tabs';
-import { useRender } from '@base-ui/react/use-render';
 import { VariantProps } from 'class-variance-authority';
 
 // @public (undocumented)
@@ -57,49 +46,137 @@ export interface AccordionProps extends Omit<React_2.ComponentProps<"div">, "chi
     value?: string[];
 }
 
-// Warning: (ae-forgotten-export) The symbol "alertVariants" needs to be exported by the entry point pagopa-ui.d.ts
-//
 // @public (undocumented)
-export function Alert(input: React_2.ComponentProps<"div"> & VariantProps<typeof alertVariants> & {
+export function Alert(input: AlertProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export function AlertAction(input: AlertActionProps): React_2.JSX.Element;
+
+// @public
+export type AlertActionProps = React_2.ComponentProps<"div">;
+
+// @public (undocumented)
+export function AlertContent(input: AlertContentProps): React_2.JSX.Element;
+
+// @public
+export type AlertContentProps = React_2.ComponentProps<"div">;
+
+// @public (undocumented)
+export const alertContentVariants: (props?: ({
+    direction?: "horizontal" | "vertical" | null | undefined;
+} & ClassProp) | undefined) => string;
+
+// @public (undocumented)
+export function AlertCopy(input: AlertCopyProps): React_2.JSX.Element;
+
+// @public
+export type AlertCopyProps = React_2.ComponentProps<"div">;
+
+// @public (undocumented)
+export function AlertDescription(input: AlertDescriptionProps): React_2.JSX.Element;
+
+// @public
+export type AlertDescriptionProps = React_2.ComponentProps<"div">;
+
+// @public (undocumented)
+export type AlertDirection = "vertical" | "horizontal";
+
+// @public (undocumented)
+export function AlertIcon(input: AlertIconProps): React_2.JSX.Element;
+
+// @public
+export type AlertIconProps = React_2.ComponentProps<"span">;
+
+// @public (undocumented)
+export type AlertProps = React_2.ComponentProps<"div"> & VariantProps<typeof alertVariants> & {
     direction?: AlertDirection;
-}): React_2.JSX.Element;
+};
 
 // @public (undocumented)
-export function AlertAction(input: React_2.ComponentProps<"div">): React_2.JSX.Element;
+export function AlertTitle(input: AlertTitleProps): React_2.JSX.Element;
+
+// @public
+export type AlertTitleProps = React_2.ComponentProps<"div">;
 
 // @public (undocumented)
-export function AlertDescription(input: React_2.ComponentProps<"div">): React_2.JSX.Element;
+export const alertVariants: (props?: ({
+    variant?: "info" | "warning" | "default" | "success" | "destructive" | null | undefined;
+} & ClassProp) | undefined) => string;
 
 // @public (undocumented)
-export function AlertTitle(input: React_2.ComponentProps<"div">): React_2.JSX.Element;
+export function AttachmentModule(input: AttachmentModuleProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export function AttachmentModule(input: React_2.ComponentProps<"section"> & {
+export type AttachmentModuleProps = React_2.ComponentProps<"section"> & {
     title: string;
     description?: string;
     status?: React_2.ReactNode;
     onOpen?: () => void;
     onDownload?: () => void;
     downloadLabel?: string;
-}): React_2.JSX.Element;
+};
 
-// Warning: (ae-forgotten-export) The symbol "AuthenticationCodeInputProps" needs to be exported by the entry point pagopa-ui.d.ts
-//
 // @public (undocumented)
 export function AuthenticationCodeInput(input: AuthenticationCodeInputProps): React_2.JSX.Element;
 
-// Warning: (ae-forgotten-export) The symbol "AutocompleteProps" needs to be exported by the entry point pagopa-ui.d.ts
-//
+// @public (undocumented)
+export type AuthenticationCodeInputProps = Omit<OTPFieldProps, "length"> & Omit<FieldStateProps, "label"> & {
+    label?: React_2.ReactNode;
+    length?: number;
+    slotLabel?: (slot: {
+        index: number;
+        total: number;
+    }) => string;
+};
+
 // @public (undocumented)
 export function Autocomplete(props: AutocompleteProps): React_2.JSX.Element;
 
-// Warning: (ae-forgotten-export) The symbol "ItemRowContent" needs to be exported by the entry point pagopa-ui.d.ts
-//
 // @public (undocumented)
 export type AutocompleteOption = ItemRowContent & {
     value: string;
     disabled?: boolean;
 };
+
+// @public (undocumented)
+export type AutocompleteProps = AutocompleteSharedProps & ({
+    multiple?: false;
+    value?: string;
+    defaultValue?: string;
+    onValueChange?: (value: string) => void;
+} | {
+    multiple: true;
+    multipleDisplay?: "chips" | "counter";
+    value?: string[];
+    defaultValue?: string[];
+    onValueChange?: (value: string[]) => void;
+});
+
+// @public (undocumented)
+export interface AutocompleteSharedProps extends FieldStateProps {
+    // (undocumented)
+    className?: string;
+    clearAllLabel?: string;
+    clearLabel?: string;
+    closeLabel?: string;
+    counterLabel?: (count: number) => string;
+    emptyLabel?: string;
+    // (undocumented)
+    id?: string;
+    leadingIcon?: React_2.ReactNode;
+    listLabel?: (label: string) => string;
+    loading?: boolean;
+    loadingLabel?: string;
+    // (undocumented)
+    name?: string;
+    openLabel?: string;
+    // (undocumented)
+    options: AutocompleteOption[];
+    placeholder?: string;
+    removeValueLabel?: (value: string) => string;
+    selectAllLabel?: string;
+    selectedLabel?: (values: string[]) => string;
+}
 
 // @public (undocumented)
 export function Avatar(input: AvatarProps): React_2.JSX.Element;
@@ -126,15 +203,54 @@ export type AvatarProps = AvatarIdentity & {
     className?: string;
 };
 
-// Warning: (ae-forgotten-export) The symbol "BadgeProps" needs to be exported by the entry point pagopa-ui.d.ts
-//
 // @public (undocumented)
 export function Badge(input: BadgeProps): ReactElement<unknown, string | JSXElementConstructor<any>>;
 
-// Warning: (ae-forgotten-export) The symbol "BannerProps" needs to be exported by the entry point pagopa-ui.d.ts
-//
+// @public (undocumented)
+export type BadgeBackground = "transparent" | "white" | "muted" | "primary";
+
+// @public (undocumented)
+export type BadgeDisplay = "label" | "numbered" | "plain" | "sidenav-icon";
+
+// @public (undocumented)
+export type BadgeProps = ElementProps<"span"> & VariantProps<typeof badgeVariants> & {
+    background?: BadgeBackground;
+    display?: BadgeDisplay;
+    selected?: boolean;
+};
+
+// @public (undocumented)
+export const badgeVariants: (props?: ({
+    variant?: "link" | "default" | "outline" | "secondary" | "ghost" | "destructive" | null | undefined;
+} & ClassProp) | undefined) => string;
+
 // @public (undocumented)
 export function Banner(input: BannerProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export interface BannerBaseProps {
+    // (undocumented)
+    actions?: React_2.ReactNode;
+    // (undocumented)
+    children?: React_2.ReactNode;
+    chip?: React_2.ReactNode;
+    // (undocumented)
+    className?: string;
+    // (undocumented)
+    color?: BannerColor;
+    // (undocumented)
+    direction?: BannerDirection;
+    dismissLabel?: string;
+    // (undocumented)
+    hierarchy?: BannerHierarchy;
+    icon?: React_2.ReactNode;
+    // (undocumented)
+    onDismiss?: () => void;
+    pictogram?: React_2.ReactNode;
+    title?: React_2.ReactNode;
+    // (undocumented)
+    titleAs?: "h2" | "h3" | "h4";
+}
 
 // @public (undocumented)
 export type BannerColor = "white" | "primary" | "grey";
@@ -145,8 +261,28 @@ export type BannerDirection = "horizontal" | "vertical";
 // @public (undocumented)
 export type BannerHierarchy = "primary" | "secondary" | "tertiary";
 
+// @public (undocumented)
+export type BannerProps = BannerBaseProps & ({
+    title: React_2.ReactNode;
+    label?: string;
+} | {
+    title?: undefined;
+    label: string;
+});
+
+// @public (undocumented)
+export function Breadcrumb(input: BreadcrumbProps): JSX.Element;
+
+// @public (undocumented)
+export interface BreadcrumbItem {
+    // (undocumented)
+    href?: string;
+    // (undocumented)
+    label: string;
+}
+
 // @public
-export function Breadcrumb(input: {
+export type BreadcrumbProps = {
     className?: string;
     "aria-label"?: string;
 } & ({
@@ -160,23 +296,10 @@ export function Breadcrumb(input: {
         href: string;
     };
     items?: never;
-})): JSX.Element;
+});
 
 // @public (undocumented)
-export interface BreadcrumbItem {
-    // (undocumented)
-    href?: string;
-    // (undocumented)
-    label: string;
-}
-
-// Warning: (ae-forgotten-export) The symbol "buttonVariants" needs to be exported by the entry point pagopa-ui.d.ts
-//
-// @public (undocumented)
-export function Button(input: Button_2.Props & VariantProps<typeof buttonVariants> & {
-    loading?: boolean;
-    skeleton?: boolean;
-}): JSX.Element;
+export function Button(input: ButtonProps): JSX.Element;
 
 // @public (undocumented)
 export function ButtonGroup(input: ButtonGroupProps): React_2.JSX.Element;
@@ -187,48 +310,103 @@ export type ButtonGroupProps = React_2.ComponentProps<"div"> & {
 };
 
 // @public
-export function CameraView(input: {
-    label?: string;
+export type ButtonProps = ElementProps<"button"> & VariantProps<typeof buttonVariants> & {
+    loading?: boolean;
+    skeleton?: boolean;
+    nativeButton?: boolean;
+    focusableWhenDisabled?: boolean;
+};
+
+// @public (undocumented)
+export const buttonVariants: (props?: ({
+    variant?: "link" | "default" | "outline" | "contrast" | "secondary" | "ghost" | "destructive" | "outline-destructive" | "ghost-destructive" | "outline-contrast" | "ghost-contrast" | null | undefined;
+    size?: "default" | "sm" | "lg" | "xs" | "icon" | "icon-xs" | "icon-sm" | "icon-lg" | null | undefined;
+} & ClassProp) | undefined) => string;
+
+// @public
+export interface CalendarLocale {
+    code?: string;
+    options?: {
+        weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+        firstWeekContainsDate?: 1 | 4;
+    };
+}
+
+// @public (undocumented)
+export function CameraView(input: CameraViewProps): React_2.JSX.Element;
+
+// @public
+export interface CameraViewProps {
+    // (undocumented)
+    active?: boolean;
     announcement?: (state: {
         label: string;
         active: boolean;
     }) => string;
+    // (undocumented)
     children?: React_2.ReactNode;
-    active?: boolean;
-}): React_2.JSX.Element;
+    label?: string;
+}
 
 // @public (undocumented)
-export function Card(input: React_2.ComponentProps<"div"> & {
+export function Card(input: CardProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export function CardAction(input: CardActionProps): React_2.JSX.Element;
+
+// @public
+export type CardActionProps = React_2.ComponentProps<"div">;
+
+// @public (undocumented)
+export function CardContent(input: CardContentProps): React_2.JSX.Element;
+
+// @public
+export type CardContentProps = React_2.ComponentProps<"div">;
+
+// @public (undocumented)
+export function CardDescription(input: CardDescriptionProps): React_2.JSX.Element;
+
+// @public
+export type CardDescriptionProps = React_2.ComponentProps<"div">;
+
+// @public (undocumented)
+export function CardFooter(input: CardFooterProps): React_2.JSX.Element;
+
+// @public
+export type CardFooterProps = React_2.ComponentProps<"div">;
+
+// @public (undocumented)
+export function CardHeader(input: CardHeaderProps): React_2.JSX.Element;
+
+// @public
+export type CardHeaderProps = React_2.ComponentProps<"div">;
+
+// @public (undocumented)
+export type CardProps = React_2.ComponentProps<"div"> & {
     size?: "default" | "sm";
     variant?: "default" | "product" | "product-image";
-}): React_2.JSX.Element;
+};
 
 // @public (undocumented)
-export function CardAction(input: React_2.ComponentProps<"div">): React_2.JSX.Element;
+export function CardTitle(input: CardTitleProps): React_2.ReactElement<unknown, string | React_2.JSXElementConstructor<any>>;
+
+// @public
+export type CardTitleProps = ElementProps<"div">;
 
 // @public (undocumented)
-export function CardContent(input: React_2.ComponentProps<"div">): React_2.JSX.Element;
+export function CarouselStepper(input: CarouselStepperProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export function CardDescription(input: React_2.ComponentProps<"div">): React_2.JSX.Element;
-
-// @public (undocumented)
-export function CardFooter(input: React_2.ComponentProps<"div">): React_2.JSX.Element;
-
-// @public (undocumented)
-export function CardHeader(input: React_2.ComponentProps<"div">): React_2.JSX.Element;
-
-// @public (undocumented)
-export function CardTitle(input: useRender.ComponentProps<"div">): React_2.ReactElement<unknown, string | React_2.JSXElementConstructor<any>>;
-
-// @public (undocumented)
-export function CarouselStepper(input: {
-    count: number;
+export interface CarouselStepperProps {
+    // (undocumented)
     activeIndex: number;
-    onChange: (index: number) => void;
-    label?: string;
+    // (undocumented)
+    count: number;
     getControlLabel?: (index: number, count: number) => string;
-}): React_2.JSX.Element;
+    label?: string;
+    // (undocumented)
+    onChange: (index: number) => void;
+}
 
 // @public (undocumented)
 export function CatalogueCard(input: CatalogueCardProps): React_2.JSX.Element;
@@ -257,61 +435,181 @@ export type CatalogueCardProps = React_2.ComponentProps<"div"> & {
     tags?: string[];
 };
 
-// Warning: (ae-forgotten-export) The symbol "Checkbox" needs to be exported by the entry point pagopa-ui.d.ts
-// Warning: (ae-forgotten-export) The symbol "ChoiceFieldProps" needs to be exported by the entry point pagopa-ui.d.ts
-//
-// @public (undocumented)
-export function CheckboxField(input: Omit<React_2.ComponentProps<typeof Checkbox>, "id"> & ChoiceFieldProps & {
-    leadingIcon?: React_2.ReactNode;
-    indicatorPlacement?: "start" | "end";
-}): React_2.JSX.Element;
+// @public
+export interface ChangeEventDetails {
+    allowPropagation: () => void;
+    cancel: () => void;
+    event: Event;
+    isCanceled: boolean;
+    isPropagationAllowed: boolean;
+    reason: string;
+    trigger: Element | undefined;
+}
 
 // @public (undocumented)
-export function CheckboxGroup(input: React_2.ComponentProps<"fieldset"> & {
+export function CheckboxField(input: CheckboxFieldProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export type CheckboxFieldProps = Omit<CheckboxProps, "id"> & ChoiceFieldProps & {
+    leadingIcon?: React_2.ReactNode;
+    indicatorPlacement?: "start" | "end";
+};
+
+// @public (undocumented)
+export function CheckboxGroup(input: CheckboxGroupProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export type CheckboxGroupProps = React_2.ComponentProps<"fieldset"> & {
     legend: React_2.ReactNode;
     description?: React_2.ReactNode;
     error?: React_2.ReactNode;
     required?: boolean;
-}): React_2.JSX.Element;
+};
 
-// Warning: (ae-forgotten-export) The symbol "CheckoutModuleProps" needs to be exported by the entry point pagopa-ui.d.ts
-//
+// @public
+export type CheckboxProps = ElementProps<"span"> & {
+    checked?: boolean;
+    defaultChecked?: boolean;
+    disabled?: boolean;
+    readOnly?: boolean;
+    required?: boolean;
+    indeterminate?: boolean;
+    name?: string;
+    form?: string;
+    value?: string;
+    uncheckedValue?: string;
+    inputRef?: React_2.Ref<HTMLInputElement>;
+    parent?: boolean;
+    nativeButton?: boolean;
+    onCheckedChange?: (checked: boolean, details: ChangeEventDetails) => void;
+};
+
 // @public (undocumented)
 export function CheckoutModule(input: CheckoutModuleProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export function Chip(input: React_2.ComponentProps<"span"> & {
+export type CheckoutModuleProps = React_2.ComponentProps<"section"> & {
+    brand?: React_2.ReactNode;
+    title?: string;
+    titleAs?: HeadingTag;
+    description?: string;
+    suggestion?: CheckoutSuggestion | string;
+    actionLabel?: string;
+    onAction?: () => void;
+    loading?: boolean;
+    amount?: string;
+    creditor?: string;
+    noticeCode?: string;
+    noticeCodeLabel?: string;
+    legacyTitle?: string;
+    legacyDescription?: string;
+    legacySuggestion?: string;
+    continueLabel?: string;
+    editLabel?: string;
+    onContinue?: () => void;
+    onEdit?: () => void;
+    showButton?: boolean;
+    showDescription?: boolean;
+    showLogo?: boolean;
+    showSuggestion?: boolean;
+    skeleton?: boolean;
+};
+
+// @public (undocumented)
+export interface CheckoutSuggestion {
+    // (undocumented)
+    icon?: React_2.ReactNode;
+    // (undocumented)
+    label: string;
+}
+
+// @public (undocumented)
+export function Chip(input: ChipProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export type ChipAppearance = "solid" | "outline";
+
+// @public (undocumented)
+export type ChipProps = React_2.ComponentProps<"span"> & {
     onRemove?: () => void;
     removeLabel?: string;
     variant?: ChipVariant;
     appearance?: ChipAppearance;
     size?: "default" | "compact";
-}): React_2.JSX.Element;
+};
 
 // @public (undocumented)
-export function Cookies(input: {
-    children: React_2.ReactNode;
-    onAccept: () => void;
-    onReject: () => void;
-    onLearnMore?: () => void;
-    onDismiss?: () => void;
-    closeLabel?: string;
-    label?: string;
-}): React_2.JSX.Element;
+export type ChipVariant = "default" | "error" | "highlight" | "informative" | "neutral" | "primary" | "success" | "warning";
+
+// @public (undocumented)
+export interface ChoiceAction {
+    // (undocumented)
+    disabled?: boolean;
+    // (undocumented)
+    label: string;
+    // (undocumented)
+    leading?: React_2.ReactNode;
+    // (undocumented)
+    onAction: () => void;
+}
 
 // @public
-export function CorrectionTag(input: {
-    status: "valid" | "not-valid";
+export type ChoiceFieldProps = Omit<FieldStateProps, "label"> & {
+    label: React_2.ReactNode;
+    id?: string;
+    className?: string;
+};
+
+// @public (undocumented)
+export function Cookies(input: CookiesProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export interface CookiesProps {
+    children: React_2.ReactNode;
+    closeLabel?: string;
     label?: string;
-}): JSX.Element;
+    onAccept: () => void;
+    onDismiss?: () => void;
+    onLearnMore?: () => void;
+    onReject: () => void;
+}
+
+// @public (undocumented)
+export function CorrectionTag(input: CorrectionTagProps): JSX.Element;
+
+// @public
+export interface CorrectionTagProps {
+    label?: string;
+    status: "valid" | "not-valid";
+}
 
 // @public (undocumented)
 export function DatePicker(props: DatePickerProps): JSX.Element;
 
-// Warning: (ae-forgotten-export) The symbol "DatePickerFieldProps" needs to be exported by the entry point pagopa-ui.d.ts
-//
 // @public (undocumented)
 export function DatePickerField(input: DatePickerFieldProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export type DatePickerFieldProps = FieldStateProps & {
+    id?: string;
+    readOnly?: boolean;
+    name?: string;
+    value?: string;
+    defaultValue?: string;
+    onValueChange?: (value: string) => void;
+    today?: Date;
+    locale?: string;
+    calendarLocale?: CalendarLocale;
+    panelLabel?: string;
+    selectionText?: (formattedDate: string) => string;
+    emptySelectionText?: string;
+    missingDateError?: string;
+    missingEndDateError?: string;
+    cancelLabel?: string;
+    confirmLabel?: string;
+    className?: string;
+    leadingIcon?: React_2.ReactNode;
+};
 
 // @public (undocumented)
 export type DatePickerProps = {
@@ -320,7 +618,7 @@ export type DatePickerProps = {
     today?: Date;
     className?: string;
     locale?: string;
-    calendarLocale?: ComponentProps<typeof Calendar>["locale"];
+    calendarLocale?: CalendarLocale;
     selectionText?: (formattedDate: string) => string;
     emptySelectionText?: string;
     missingDateError?: string;
@@ -346,6 +644,11 @@ export interface DatePickerRange {
 }
 
 // @public (undocumented)
+export type DeepPartial<T> = {
+    [K in keyof T]?: T[K] extends (...args: never[]) => string ? T[K] : T[K] extends object ? DeepPartial<T[K]> : T[K];
+};
+
+// @public (undocumented)
 export function Dialog(input: DialogProps): React_2.JSX.Element;
 
 // @public
@@ -369,46 +672,68 @@ export interface DialogProps extends Omit<React_2.ComponentProps<"div">, "title"
     trigger?: React_2.ReactElement;
 }
 
-// Warning: (ae-forgotten-export) The symbol "DownloadCardProps" needs to be exported by the entry point pagopa-ui.d.ts
-//
 // @public (undocumented)
 export function DownloadCard(input: DownloadCardProps): JSX.Element;
 
-// Warning: (ae-forgotten-export) The symbol "FieldStateProps" needs to be exported by the entry point pagopa-ui.d.ts
-//
 // @public (undocumented)
-export function DragAndDrop(input: Omit<FieldStateProps, "label"> & {
-    id?: string;
-    label?: React_2.ReactNode;
+export type DownloadCardProps = {
+    fileName: string;
+    meta?: string;
+    downloadLabel?: (fileName: string) => string;
+} & ({
+    href: string;
+    onDownload?: never;
+} | {
+    href?: never;
+    onDownload?: () => void;
+});
+
+// @public (undocumented)
+export function DragAndDrop(input: DragAndDropProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export interface DragAndDropProps extends Omit<FieldStateProps, "label"> {
+    // (undocumented)
     accept?: string;
-    multiple?: boolean;
-    name?: string;
+    cancelLabel?: string;
+    // (undocumented)
     className?: string;
-    onFilesChange?: (files: File[]) => void;
-    loading?: boolean;
-    onCancel?: () => void;
-    failed?: boolean;
-    onRetry?: () => void;
-    variant?: "file" | "avatar";
-    preview?: React_2.ReactNode;
-    helper?: React_2.ReactNode;
-    loadingLabel?: string;
-    loadingText?: string;
-    filesLabel?: string;
-    failedText?: string;
     disabledText?: string;
     draggingText?: string;
+    failed?: boolean;
+    failedText?: string;
+    fileMeta?: (file: File) => string;
+    filesLabel?: string;
+    // (undocumented)
+    helper?: React_2.ReactNode;
+    // (undocumented)
+    id?: string;
     idleText?: string;
+    invalidFormatError?: (fileName: string) => string;
+    label?: React_2.ReactNode;
+    loading?: boolean;
+    loadingLabel?: string;
+    loadingText?: string;
+    // (undocumented)
+    multiple?: boolean;
+    // (undocumented)
+    name?: string;
+    // (undocumented)
+    onCancel?: () => void;
+    // (undocumented)
+    onFilesChange?: (files: File[]) => void;
+    // (undocumented)
+    onRetry?: () => void;
+    // (undocumented)
+    preview?: React_2.ReactNode;
+    removeFileLabel?: (fileName: string) => string;
+    retryLabel?: string;
     selectionHint?: (multiple: boolean) => string;
+    singleFileError?: string;
     uploadLabel?: string;
     uploadLogoLabel?: string;
-    cancelLabel?: string;
-    retryLabel?: string;
-    fileMeta?: (file: File) => string;
-    removeFileLabel?: (fileName: string) => string;
-    singleFileError?: string;
-    invalidFormatError?: (fileName: string) => string;
-}): React_2.JSX.Element;
+    variant?: "file" | "avatar";
+}
 
 // @public (undocumented)
 export function Drawer(input: DrawerProps): React_2.JSX.Element;
@@ -439,29 +764,9 @@ export interface DrawerProps extends Omit<React_2.ComponentProps<"div">, "title"
     trigger?: React_2.ReactElement;
 }
 
-// @public
-export function Dropdown(input: {
-    triggerLabel: React_2.ReactNode;
-    items: DropdownItem[];
-    label?: string;
-    back?: {
-        label?: string;
-        onSelect: () => void;
-    };
-    disabled?: boolean;
-    loading?: boolean;
-    multiselect?: boolean;
-    dividers?: boolean;
-    emptyTitle?: React_2.ReactNode;
-    emptyDescription?: React_2.ReactNode;
-    backLabel?: string;
-    loadingLabel?: string;
-    className?: string;
-}): React_2.JSX.Element;
+// @public (undocumented)
+export function Dropdown(input: DropdownProps): React_2.JSX.Element;
 
-// Warning: (ae-forgotten-export) The symbol "DropDownItemBase" needs to be exported by the entry point pagopa-ui.d.ts
-// Warning: (ae-forgotten-export) The symbol "MenuAction" needs to be exported by the entry point pagopa-ui.d.ts
-//
 // @public (undocumented)
 export type DropdownItem = (DropDownItemBase & {
     type?: "default";
@@ -488,34 +793,87 @@ export type DropdownItem = (DropDownItemBase & {
 } & MenuAction);
 
 // @public (undocumented)
-export function EmptyState(input: Omit<StateProps, "extra"> & {
+export interface DropDownItemBase extends ItemRowContent {
+    // (undocumented)
+    destructive?: boolean;
+    icon?: IconComponent;
+    // (undocumented)
+    id: string;
+    indent?: boolean;
+    // (undocumented)
+    leadingAlignment?: "center" | "label";
+    // (undocumented)
+    level?: "first" | "second";
+    selected?: boolean;
+    // (undocumented)
+    separatorBefore?: boolean;
+}
+
+// @public
+export interface DropdownProps {
+    back?: {
+        label?: string;
+        onSelect: () => void;
+    };
+    backLabel?: string;
+    className?: string;
+    disabled?: boolean;
+    dividers?: boolean;
+    emptyDescription?: React_2.ReactNode;
+    emptyTitle?: React_2.ReactNode;
+    items: DropdownItem[];
+    label?: string;
+    loading?: boolean;
+    loadingLabel?: string;
+    multiselect?: boolean;
+    triggerLabel: React_2.ReactNode;
+}
+
+// @public
+export type ElementProps<Tag extends keyof React_2.JSX.IntrinsicElements> = Omit<React_2.ComponentPropsWithRef<Tag>, "className" | "color" | "defaultValue" | "defaultChecked" | "style"> & {
+    className?: string;
+    render?: React_2.ReactElement<Record<string, unknown>>;
+    style?: React_2.CSSProperties;
+};
+
+// @public (undocumented)
+export function EmptyState(input: EmptyStateProps): JSX.Element;
+
+// @public (undocumented)
+export type EmptyStateProps = Omit<StateProps, "extra"> & {
     icon?: ReactNode;
-}): JSX.Element;
+};
 
 // @public (undocumented)
 export const enMessages: Messages;
 
+// @public (undocumented)
+export function ErrorState(input: ErrorStateProps): React_2.JSX.Element;
+
 // @public
-export function ErrorState(input: Omit<StateProps, "extra"> & {
+export type ErrorStateProps = Omit<StateProps, "extra"> & {
     code?: string;
     codeLabel?: string;
     copyLabel?: (codeLabel: string) => string;
     copiedLabel?: string;
     copyErrorLabel?: string;
     onCopy?: () => void;
-}): React_2.JSX.Element;
+};
 
 // @public (undocumented)
-export function ErrorSummary(input: {
-    errors: ErrorSummaryItem[];
-    title?: React_2.ReactNode;
-    className?: string;
-}): React_2.JSX.Element | null;
+export function ErrorSummary(input: ErrorSummaryProps): React_2.JSX.Element | null;
 
 // @public
 export interface ErrorSummaryItem {
     fieldId: string;
     message: React_2.ReactNode;
+}
+
+// @public (undocumented)
+export interface ErrorSummaryProps {
+    className?: string;
+    errors: ErrorSummaryItem[];
+    title?: React_2.ReactNode;
 }
 
 // @public (undocumented)
@@ -533,12 +891,29 @@ export interface Feature {
 }
 
 // @public (undocumented)
-export function FeatureList(input: {
+export function FeatureList(input: FeatureListProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export interface FeatureListProps {
+    // (undocumented)
+    className?: string;
+    // (undocumented)
     features: Feature[];
     numbered?: boolean;
-    className?: string;
+    // (undocumented)
     titleAs?: "h2" | "h3";
-}): React_2.JSX.Element;
+}
+
+// @public
+export interface FieldStateProps {
+    description?: React_2.ReactNode;
+    disabled?: boolean;
+    error?: React_2.ReactNode;
+    label: React_2.ReactNode;
+    required?: boolean;
+    requiredLabel?: string;
+    success?: React_2.ReactNode;
+}
 
 // @public (undocumented)
 export type FigmaIconName = (typeof iconNames)[number];
@@ -547,16 +922,7 @@ export type FigmaIconName = (typeof iconNames)[number];
 export type FigmaPictogramName = (typeof pictogramNames)[number];
 
 // @public (undocumented)
-export function Footer(input: {
-    brand?: React_2.ReactNode;
-    homeHref?: string;
-    links?: FooterLink[];
-    company?: React_2.ReactNode;
-    columns?: FooterColumn[];
-    titleAs?: HeadingTag;
-    columnsLabel?: string;
-    className?: string;
-}): React_2.JSX.Element;
+export function Footer(input: FooterProps): React_2.JSX.Element;
 
 // @public (undocumented)
 export interface FooterColumn {
@@ -573,6 +939,18 @@ export type FooterLink = Omit<NavItem, "badge" | "children"> & {
 };
 
 // @public (undocumented)
+export interface FooterProps {
+    brand?: React_2.ReactNode;
+    className?: string;
+    columns?: FooterColumn[];
+    columnsLabel?: string;
+    company?: React_2.ReactNode;
+    homeHref?: string;
+    links?: FooterLink[];
+    titleAs?: HeadingTag;
+}
+
+// @public (undocumented)
 export interface FooterSocialLink {
     // (undocumented)
     href: string;
@@ -580,6 +958,12 @@ export interface FooterSocialLink {
     icon: React_2.ReactNode;
     // (undocumented)
     label: string;
+}
+
+// @public
+export interface GenericEventDetails {
+    event: Event;
+    reason: string;
 }
 
 // @public (undocumented)
@@ -618,11 +1002,178 @@ export interface HeaderProps {
     };
 }
 
+// @public
+export type HeadingTag = "h2" | "h3" | "h4" | "h5" | "h6";
+
+// @public
+export type IconComponent = (props: SVGProps<SVGSVGElement>) => ReactElement;
+
 // @public (undocumented)
 export const iconNames: readonly ["CIE", "CIEID", "IO logo", "Media logos", "SEND", "SPID", "account_balance", "account_balance_wallet", "account_circle", "add", "adf_scanner", "approval_delegation", "arrow", "arrow_menu_close", "attach_email", "attach_file", "auto_awesome_mosaic", "backspace", "block", "bolt", "bug_report", "business_center", "cached", "call", "call_split", "cancel", "category", "chat", "check", "check_box", "check_circle", "check_indeterminate_small", "chevron", "close", "code", "confirmation_number", "construction", "contacts", "content_copy", "credit_card", "dashboard", "delete", "dialpad", "directions_subway", "dns", "download", "drafts", "edit", "emoji_objects", "error", "euro", "event", "exit_to_app", "favorite", "feedback", "filter", "fingerprint", "first_letter", "flag", "flight_takeoff", "folder", "forum", "forward_to_inbox", "gavel", "gpp_bad", "grading", "health_and_safety", "help", "history", "hourglass_top", "how_to_reg", "id_card", "inbox", "info", "integration_instructions", "inventory_2", "ios_share", "keep", "keyboard_hide", "kid_star", "language", "leaderboard", "left_panel_close", "license", "local_laundry_service", "local_post_office", "location_on", "lock", "login", "logout", "mail", "mail_error", "mail_off", "mail_pec", "mail_shield", "mark_email_read", "mark_email_unread", "menu", "menu_book", "mobile_2", "mobile_vibrate", "mode_off_on", "more_vert", "my_location", "near_me", "news", "no_accounts", "notifications_active", "online_address", "open_in_browser", "open_in_new", "pagoPA", "payments", "pedal_bike", "person", "photo", "picture_as_pdf", "privacy_tip", "qr_code", "radio_button", "receipt_long", "report", "save", "savings", "schedule", "schedule_send", "school", "search", "search_check_2", "second_letter", "sell", "send", "settings", "settings_remote", "share", "shopping_cart", "sort", "storefront", "supervised_user_circle", "support", "swipe", "swipe_down", "table_chart", "theater_comedy", "third_letter", "toggle_off", "touch_app", "troubleshoot", "unfold", "unsubscribe", "upload", "verified", "verified_user", "view_sidebar", "visibility", "volunteer_activism", "vpn_key", "wand_shine", "warning"];
 
-// Warning: (ae-forgotten-export) The symbol "IdentityProviderPickerView" needs to be exported by the entry point pagopa-ui.d.ts
-//
+// @public
+export type IconVariantsByName = {
+    "IO logo": "dark" | "light";
+    "Media logos": "instagram" | "linkedin" | "threads" | "youtube";
+    CIE: never;
+    CIEID: never;
+    SEND: never;
+    SPID: never;
+    account_balance: never;
+    account_balance_wallet: never;
+    account_circle: never;
+    add: "big" | "small";
+    adf_scanner: never;
+    approval_delegation: never;
+    arrow: "down" | "left" | "right" | "up";
+    arrow_menu_close: never;
+    attach_email: never;
+    attach_file: never;
+    auto_awesome_mosaic: never;
+    backspace: never;
+    block: never;
+    bolt: never;
+    bug_report: never;
+    business_center: never;
+    cached: never;
+    call: never;
+    call_split: never;
+    cancel: never;
+    category: "selected" | "unselected";
+    chat: never;
+    check: "big" | "small";
+    check_box: "checked" | "indeterminate" | "unchecked";
+    check_circle: never;
+    check_indeterminate_small: never;
+    chevron: "down" | "left" | "right" | "up";
+    close: "big" | "small";
+    code: never;
+    confirmation_number: never;
+    construction: never;
+    contacts: never;
+    content_copy: never;
+    credit_card: never;
+    dashboard: never;
+    delete: never;
+    dialpad: never;
+    directions_subway: never;
+    dns: never;
+    download: never;
+    drafts: never;
+    edit: never;
+    emoji_objects: never;
+    error: "filled" | "outlined" | "stroke";
+    euro: never;
+    event: never;
+    exit_to_app: never;
+    favorite: "selected" | "unselected";
+    feedback: never;
+    filter: "filter-alt" | "tune";
+    fingerprint: never;
+    first_letter: never;
+    flag: never;
+    flight_takeoff: never;
+    folder: never;
+    forum: never;
+    forward_to_inbox: never;
+    gavel: never;
+    gpp_bad: never;
+    grading: never;
+    health_and_safety: never;
+    help: never;
+    history: never;
+    hourglass_top: never;
+    how_to_reg: never;
+    id_card: never;
+    inbox: never;
+    info: "filled" | "outlined";
+    integration_instructions: never;
+    inventory_2: "filled" | "outlined";
+    ios_share: never;
+    keep: "pinned" | "unpinned";
+    keyboard_hide: never;
+    kid_star: "selected" | "unselected";
+    language: never;
+    leaderboard: never;
+    left_panel_close: never;
+    license: never;
+    local_laundry_service: never;
+    local_post_office: never;
+    location_on: never;
+    lock: "closed" | "open";
+    login: never;
+    logout: never;
+    mail: "selected" | "unselected";
+    mail_error: never;
+    mail_off: never;
+    mail_pec: never;
+    mail_shield: never;
+    mark_email_read: never;
+    mark_email_unread: never;
+    menu: never;
+    menu_book: never;
+    mobile_2: never;
+    mobile_vibrate: never;
+    mode_off_on: never;
+    more_vert: never;
+    my_location: never;
+    near_me: "filled" | "outlined";
+    news: never;
+    no_accounts: never;
+    notifications_active: never;
+    online_address: never;
+    open_in_browser: never;
+    open_in_new: never;
+    pagoPA: never;
+    payments: never;
+    pedal_bike: never;
+    person: "selected" | "unselected";
+    photo: never;
+    picture_as_pdf: never;
+    privacy_tip: never;
+    qr_code: never;
+    radio_button: "checked" | "unchecked";
+    receipt_long: "active" | "inactive";
+    report: never;
+    save: never;
+    savings: never;
+    schedule: never;
+    schedule_send: never;
+    school: never;
+    search: never;
+    search_check_2: never;
+    second_letter: never;
+    sell: never;
+    send: "filled" | "outlined";
+    settings: "selected" | "unselected";
+    settings_remote: never;
+    share: never;
+    shopping_cart: never;
+    sort: never;
+    storefront: never;
+    supervised_user_circle: "selected" | "unselected";
+    support: never;
+    swipe: never;
+    swipe_down: never;
+    table_chart: never;
+    theater_comedy: never;
+    third_letter: never;
+    toggle_off: never;
+    touch_app: never;
+    troubleshoot: never;
+    unfold: "less" | "more";
+    unsubscribe: never;
+    upload: never;
+    verified: never;
+    verified_user: never;
+    view_sidebar: "selected" | "unselected";
+    visibility: "hidden" | "visible";
+    volunteer_activism: never;
+    vpn_key: "selected" | "unselected";
+    wand_shine: never;
+    warning: never;
+};
+
 // @public
 export const IdentityProviderPicker: typeof IdentityProviderPickerView & {
     Provider: typeof IdentityProviderPickerRow;
@@ -663,27 +1214,64 @@ export interface IdentityProviderPickerProps {
     titleAs?: HeadingTag;
 }
 
-// Warning: (ae-forgotten-export) The symbol "ImageProps" needs to be exported by the entry point pagopa-ui.d.ts
-//
+// @public (undocumented)
+export function IdentityProviderPickerRow(input: IdentityProviderPickerRowProps): JSX.Element;
+
+// @public (undocumented)
+export interface IdentityProviderPickerRowProps extends IdentityProviderPickerOption {
+    // (undocumented)
+    className?: string;
+}
+
+// @public (undocumented)
+export function IdentityProviderPickerView(input: IdentityProviderPickerProps): JSX.Element;
+
 // @public (undocumented)
 function Image_2(input: ImageProps): React_2.JSX.Element;
 export { Image_2 as Image }
 
 // @public (undocumented)
-export function Input(input: React_2.ComponentProps<"input">): React_2.JSX.Element;
+export type ImageProps = React_2.ComponentProps<"img"> & {
+    ratio?: "square" | "video" | "photo" | "portrait" | "cinema" | "wide";
+    fallbackLabel?: string;
+};
 
 // @public (undocumented)
-export function InputChip(input: React_2.ComponentProps<"span"> & {
+export function Input(input: InputProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export function InputChip(input: InputChipProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export type InputChipProps = React_2.ComponentProps<"span"> & {
     onRemove?: () => void;
     removeLabel?: string;
     pointerRemove?: boolean;
-}): React_2.JSX.Element;
+};
+
+// @public (undocumented)
+export type InputProps = React_2.ComponentProps<"input">;
+
+// @public (undocumented)
+export interface ItemRowContent {
+    // (undocumented)
+    chip?: React_2.ReactNode;
+    // (undocumented)
+    description?: string;
+    // (undocumented)
+    label: string;
+    // (undocumented)
+    leading?: React_2.ReactNode;
+}
 
 // @public (undocumented)
 export const itMessages: Messages;
 
 // @public (undocumented)
-export function Label(input: React_2.ComponentProps<"label">): React_2.JSX.Element;
+export function Label(input: LabelProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export type LabelProps = React_2.ComponentProps<"label">;
 
 // @public (undocumented)
 export type LinkComponentProps = React_2.AnchorHTMLAttributes<HTMLAnchorElement> & {
@@ -691,10 +1279,37 @@ export type LinkComponentProps = React_2.AnchorHTMLAttributes<HTMLAnchorElement>
     ref?: React_2.Ref<HTMLAnchorElement>;
 };
 
-// Warning: (ae-forgotten-export) The symbol "ListItemProps" needs to be exported by the entry point pagopa-ui.d.ts
-//
 // @public (undocumented)
 export function ListItem(input: ListItemProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export interface ListItemProps {
+    // (undocumented)
+    "aria-label"?: string;
+    // (undocumented)
+    "data-testid"?: string;
+    action?: {
+        label: string;
+        onPress?: () => void;
+    };
+    amount?: string;
+    chevron?: boolean;
+    chip?: React_2.ReactNode;
+    // (undocumented)
+    className?: string;
+    description?: string;
+    helperText?: string;
+    href?: string;
+    // (undocumented)
+    id?: string;
+    leading?: React_2.ReactNode;
+    loading?: boolean;
+    onPress?: () => void;
+    suggestion?: ListItemSuggestion;
+    trailingIcon?: React_2.ReactNode;
+    value?: string;
+    variant?: "informative" | "link" | "actionable" | "transactional" | "amount" | "error" | "skeleton";
+}
 
 // @public (undocumented)
 export interface ListItemSuggestion {
@@ -704,12 +1319,24 @@ export interface ListItemSuggestion {
     label: string;
 }
 
+// @public (undocumented)
+export type MenuAction = {
+    onSelect: (checked?: boolean) => void;
+    disabled?: boolean;
+} | {
+    disabled: true;
+    onSelect?: never;
+};
+
+// @public (undocumented)
+export function MenuDropdown(input: MenuDropdownProps): React_2.JSX.Element;
+
 // @public
-export function MenuDropdown(input: {
+export interface MenuDropdownProps {
     accessibleLabel?: string;
     items: DropdownItem[];
     label?: string;
-}): React_2.JSX.Element;
+}
 
 // @public (undocumented)
 export interface Messages {
@@ -1006,19 +1633,37 @@ export interface Messages {
     };
 }
 
-// @public
-export function MicroEvent(input: {
-    title: React_2.ReactNode;
-    time?: string;
-    invalid?: boolean;
-    label?: string;
-    className?: string;
-}): React_2.JSX.Element;
+// @public (undocumented)
+export function MicroEvent(input: MicroEventProps): React_2.JSX.Element;
 
-// Warning: (ae-forgotten-export) The symbol "MultiSelectFieldProps" needs to be exported by the entry point pagopa-ui.d.ts
-//
+// @public
+export interface MicroEventProps {
+    // (undocumented)
+    className?: string;
+    invalid?: boolean;
+    // (undocumented)
+    label?: string;
+    // (undocumented)
+    time?: string;
+    // (undocumented)
+    title: React_2.ReactNode;
+}
+
 // @public (undocumented)
 export function MultiSelectField(input: MultiSelectFieldProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export interface MultiSelectFieldProps extends FieldStateProps {
+    action?: ChoiceAction;
+    className?: string;
+    defaultValue?: string[];
+    id?: string;
+    leadingIcon?: React_2.ReactNode;
+    name?: string;
+    onValueChange?: (value: string[]) => void;
+    options: SelectOption[];
+    value?: string[];
+}
 
 // @public (undocumented)
 export interface NavItem {
@@ -1039,35 +1684,78 @@ export interface NavItem {
 }
 
 // @public (undocumented)
-export function OrganizationModule(input: {
-    name: string;
-    fiscalCode?: string;
-    children?: React_2.ReactNode;
-}): React_2.JSX.Element;
+export function OrganizationModule(input: OrganizationModuleProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export function Overlay(input: {
-    visible: boolean;
-    label?: string;
+export interface OrganizationModuleProps {
     children?: React_2.ReactNode;
-    showSpinner?: boolean;
+    fiscalCode?: string;
+    name: string;
+}
+
+// @public (undocumented)
+export type OTPFieldProps = Omit<ElementProps<"div">, "defaultValue" | "onChange" | "ref" | "value"> & {
+    id?: string;
+    autoComplete?: string;
+    form?: string;
+    length: number;
+    autoSubmit?: boolean;
+    mask?: boolean;
+    inputMode?: React_2.HTMLAttributes<HTMLInputElement>["inputMode"];
+    validationType?: "numeric" | "alpha" | "alphanumeric" | "none";
+    normalizeValue?: (value: string) => string;
+    required?: boolean;
+    disabled?: boolean;
+    readOnly?: boolean;
+    name?: string;
+    value?: string;
+    defaultValue?: string;
+    onValueChange?: (value: string, details: ChangeEventDetails) => void;
+    onValueInvalid?: (value: string, details: GenericEventDetails) => void;
+    onValueComplete?: (value: string, details: GenericEventDetails) => void;
+    ref?: React_2.Ref<HTMLInputElement>;
+};
+
+// @public (undocumented)
+export function Overlay(input: OverlayProps): React_2.JSX.Element | null;
+
+// @public (undocumented)
+export interface OverlayProps {
+    // (undocumented)
+    children?: React_2.ReactNode;
+    // (undocumented)
     className?: string;
-}): React_2.JSX.Element | null;
+    label?: string;
+    // (undocumented)
+    showSpinner?: boolean;
+    // (undocumented)
+    visible: boolean;
+}
+
+// @public (undocumented)
+export function PageSurface(input: PageSurfaceProps): React_2.JSX.Element;
 
 // @public
-export function PageSurface(input: React_2.ComponentProps<"section">): React_2.JSX.Element;
+export type PageSurfaceProps = React_2.ComponentProps<"section">;
 
 // @public (undocumented)
-export function Pagination(input: {
-    currentPage: number;
-    totalPages: number;
-    onPageChange: (page: number) => void;
+export function Pagination(input: PaginationProps): JSX.Element | null;
+
+// @public (undocumented)
+export interface PaginationProps {
+    // (undocumented)
     className?: string;
+    // (undocumented)
+    currentPage: number;
     label?: string;
-    previousLabel?: string;
     nextLabel?: string;
+    // (undocumented)
+    onPageChange: (page: number) => void;
     pageLabel?: (page: number) => string;
-}): JSX.Element | null;
+    previousLabel?: string;
+    // (undocumented)
+    totalPages: number;
+}
 
 // @public (undocumented)
 export function PagoPAIcon<Name extends FigmaIconName>(input: PagoPAIconProps<Name>): JSX.Element | null;
@@ -1081,7 +1769,6 @@ export interface PagoPAIconProps<Name extends FigmaIconName = FigmaIconName> {
     label?: string;
     name: Name;
     size?: number;
-    // Warning: (ae-forgotten-export) The symbol "IconVariantsByName" needs to be exported by the entry point pagopa-ui.d.ts
     variant?: IconVariantsByName[Name];
 }
 
@@ -1098,7 +1785,18 @@ export interface PagoPAPictogramProps {
 }
 
 // @public (undocumented)
-export function PaymentModule(input: Omit<React_2.ComponentProps<"div">, "onSelect"> & {
+export interface PaymentMetadataRow {
+    // (undocumented)
+    label: string;
+    // (undocumented)
+    value: React_2.ReactNode;
+}
+
+// @public (undocumented)
+export function PaymentModule(input: PaymentModuleProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export type PaymentModuleProps = Omit<React_2.ComponentProps<"div">, "defaultChecked" | "defaultValue" | "onSelect"> & {
     code: string;
     metadata?: PaymentMetadataRow[];
     suggestion?: PaymentSuggestion;
@@ -1110,26 +1808,61 @@ export function PaymentModule(input: Omit<React_2.ComponentProps<"div">, "onSele
     selectName?: string;
     actions?: React_2.ReactNode;
     loading?: boolean;
-}): React_2.JSX.Element;
+};
 
-// Warning: (ae-forgotten-export) The symbol "PaymentProviderLogosProps" needs to be exported by the entry point pagopa-ui.d.ts
-//
+// @public (undocumented)
+export interface PaymentPrice {
+    // (undocumented)
+    amount: string;
+    // (undocumented)
+    detail?: string;
+}
+
 // @public
 export function PaymentProviderLogos(props: PaymentProviderLogosProps): JSX.Element;
+
+// @public (undocumented)
+export type PaymentProviderLogosProps = {
+    brand: PspBrand;
+    alt?: string;
+    className?: string;
+    providers?: never;
+    label?: never;
+} | {
+    providers: {
+        name: string;
+        logo?: string;
+    }[];
+    label?: string;
+    className?: string;
+    brand?: never;
+    alt?: never;
+};
+
+// @public (undocumented)
+export interface PaymentSuggestion {
+    // (undocumented)
+    icon?: React_2.ReactNode;
+    // (undocumented)
+    label: string;
+}
 
 // @public (undocumented)
 export const pictogramNames: readonly ["Access", "AlarmClock", "Assistance", "Award", "Badge", "Bell", "Bug", "Building", "Business", "Calendar", "CalendarCheck", "Citizen", "Cloud", "Code", "Completed", "CreditCard", "Data Security", "Delega", "Desktop", "Direction", "Documentation", "Download", "Earth", "Email Validation", "Enterprise", "Envelope", "Error", "Euro", "FileCheck", "Fingerprint", "Firma", "Flag", "Graduation", "History Doc", "Home", "Hourglass", "ID Card", "Idea", "Image", "In progress", "Inbox", "Institution", "Keypad", "Leggi", "LineChart", "Maintenance", "MapPin", "Message", "Messages", "Mouse", "MultipleFiles", "News", "OpenFolder", "Options", "PersonalFile", "PieChart", "Push", "Question", "Quick", "Repository", "Safe Deposit", "SavingMoney", "School", "Security", "Simplify", "SingleFile", "Smartphone validation", "Sms", "Storage", "Sync", "Trash", "Upload", "UploadFile", "User manual", "UserCheck", "Wallet"];
 
 // @public (undocumented)
-export function PinPoint(input: {
+export function PinPoint(input: PinPointProps): JSX.Element;
+
+// @public (undocumented)
+export interface PinPointProps {
+    active?: boolean;
+    children?: React.ReactNode;
     label: string;
+    onPressedChange?: (pressed: boolean) => void;
+    variant?: "default" | "numbered" | "placeholder";
     x?: number;
     y?: number;
-    active?: boolean;
-    variant?: "default" | "numbered" | "placeholder";
-    children?: React.ReactNode;
-    onPressedChange?: (pressed: boolean) => void;
-}): JSX.Element;
+}
 
 // @public (undocumented)
 export function Popover(input: PopoverProps): React_2.JSX.Element;
@@ -1169,19 +1902,22 @@ export interface PopperProps {
 }
 
 // @public (undocumented)
-export function Preheader(input: {
-    institution?: string;
-    homeHref?: string;
-    links?: PreheaderLink[];
-    actions?: React_2.ReactNode;
-    linksLabel?: string;
-}): React_2.JSX.Element;
+export function Preheader(input: PreheaderProps): React_2.JSX.Element;
 
 // @public (undocumented)
 export type PreheaderLink = Omit<NavItem, "badge" | "children" | "current"> & {
     icon?: React_2.ReactNode;
     avatar?: React_2.ReactNode;
 };
+
+// @public (undocumented)
+export interface PreheaderProps {
+    actions?: React_2.ReactNode;
+    homeHref?: string;
+    institution?: string;
+    links?: PreheaderLink[];
+    linksLabel?: string;
+}
 
 // @public (undocumented)
 export interface ProductAction {
@@ -1214,23 +1950,52 @@ export type ProductCardProps = Omit<React_2.ComponentProps<typeof Card>, "varian
     onAction?: () => void;
 });
 
-// Warning: (ae-forgotten-export) The symbol "ProductModuleProps" needs to be exported by the entry point pagopa-ui.d.ts
-//
 // @public (undocumented)
 export function ProductModule(input: ProductModuleProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export function ProgressKpi(input: {
-    label: string;
-    value: number;
-    total?: number;
+export type ProductModuleProps = Omit<React_2.ComponentProps<"div">, "defaultChecked" | "defaultValue" | "onSelect" | "title"> & {
+    avatar?: React_2.ReactNode;
+    chips?: React_2.ReactNode;
+    description?: string;
+    selected?: boolean;
+    onSelect?: (selected: boolean) => void;
+    selectName?: string;
+    action?: ProductAction;
+    status?: string;
+    legacyStatusLabel?: string;
+    value?: string;
+    variant?: "radio" | "action";
+    actionLabel?: string;
+    onOpen?: () => void;
+    disabled?: boolean;
+} & ({
+    title: string;
+    name?: never;
+} | {
+    name: string;
+    title?: never;
+});
+
+// @public (undocumented)
+export function ProgressKpi(input: ProgressKpiProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export interface ProgressKpiProps {
     channel?: React_2.ReactNode;
-    info?: React_2.ReactNode;
+    // (undocumented)
     completed?: boolean;
-    details?: ProgressKpiRow[];
     detail?: string;
+    details?: ProgressKpiRow[];
+    info?: React_2.ReactNode;
+    // (undocumented)
+    label: string;
     locale?: string;
-}): React_2.JSX.Element;
+    // (undocumented)
+    total?: number;
+    // (undocumented)
+    value: number;
+}
 
 // @public (undocumented)
 export interface ProgressKpiRow {
@@ -1255,45 +2020,86 @@ export interface ProgressLoaderProps {
     value?: number;
 }
 
-// Warning: (ae-forgotten-export) The symbol "RadioGroupItem" needs to be exported by the entry point pagopa-ui.d.ts
-//
 // @public (undocumented)
-export function RadioField(input: React_2.ComponentProps<typeof RadioGroupItem> & ChoiceFieldProps & {
+export type PspBrand = "mastercard" | "maestro" | "visa" | "amex" | "diners" | "discover" | "jcb" | "unionpay" | "bancomat-pay" | "pagobancomat" | "apple-pay" | "paypal" | "satispay" | "mybank" | "app-postepay" | "vpay";
+
+// @public (undocumented)
+export function RadioField(input: RadioFieldProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export type RadioFieldProps = RadioGroupItemProps & ChoiceFieldProps & {
     leadingIcon?: React_2.ReactNode;
     indicatorPlacement?: "start" | "end";
     loading?: boolean;
-}): React_2.JSX.Element;
+};
 
-// Warning: (ae-forgotten-export) The symbol "RadioGroup_2" needs to be exported by the entry point pagopa-ui.d.ts
-//
 // @public (undocumented)
-export function RadioGroup(input: React_2.ComponentProps<typeof RadioGroup_2> & {
+export function RadioGroup(input: RadioGroupFieldProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export type RadioGroupFieldProps = RadioGroupProps & {
     legend: React_2.ReactNode;
     description?: React_2.ReactNode;
     error?: React_2.ReactNode;
     required?: boolean;
-}): React_2.JSX.Element;
+};
+
+// @public
+export type RadioGroupItemProps = ElementProps<"span"> & {
+    value: string;
+    disabled?: boolean;
+    readOnly?: boolean;
+    required?: boolean;
+    inputRef?: React_2.Ref<HTMLInputElement>;
+    nativeButton?: boolean;
+};
+
+// @public
+export type RadioGroupProps = ElementProps<"div"> & {
+    disabled?: boolean;
+    readOnly?: boolean;
+    required?: boolean;
+    name?: string;
+    form?: string;
+    value?: string | null;
+    defaultValue?: string | null;
+    inputRef?: React_2.Ref<HTMLInputElement>;
+    onValueChange?: (value: string | null, details: ChangeEventDetails) => void;
+};
 
 // @public (undocumented)
-export function SafeArea(input: React_2.ComponentProps<"div">): React_2.JSX.Element;
+export function SafeArea(input: SafeAreaProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export function ScrollToBottom(input: {
-    target?: React_2.RefObject<HTMLElement | null>;
+export type SafeAreaProps = React_2.ComponentProps<"div">;
+
+// @public (undocumented)
+export function ScrollToBottom(input: ScrollToBottomProps): React_2.JSX.Element | null;
+
+// @public (undocumented)
+export interface ScrollToBottomProps {
+    // (undocumented)
+    className?: string;
     label?: string;
-    className?: string;
-}): React_2.JSX.Element | null;
+    // (undocumented)
+    target?: React_2.RefObject<HTMLElement | null>;
+}
 
 // @public (undocumented)
-export function SectionHeader(input: {
-    icon?: React_2.ReactNode;
-    title: React_2.ReactNode;
-    status?: React_2.ReactNode;
+export function SectionHeader(input: SectionHeaderProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export interface SectionHeaderProps {
     actions?: React_2.ReactNode;
-    level?: 1 | 2 | 3;
-    titleAs?: HeadingTag;
+    // (undocumented)
     className?: string;
-}): React_2.JSX.Element;
+    icon?: React_2.ReactNode;
+    level?: 1 | 2 | 3;
+    status?: React_2.ReactNode;
+    // (undocumented)
+    title: React_2.ReactNode;
+    titleAs?: HeadingTag;
+}
 
 // @public (undocumented)
 export function SegmentedControl<T extends string>(input: SegmentedControlProps<T>): React_2.JSX.Element;
@@ -1314,10 +2120,21 @@ export interface SegmentedControlProps<T extends string> {
     value: T;
 }
 
-// Warning: (ae-forgotten-export) The symbol "SelectFieldProps" needs to be exported by the entry point pagopa-ui.d.ts
-//
 // @public (undocumented)
 export function SelectField(input: SelectFieldProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export interface SelectFieldProps extends FieldStateProps {
+    action?: ChoiceAction;
+    className?: string;
+    defaultValue?: string;
+    id?: string;
+    leadingIcon?: React_2.ReactNode;
+    name?: string;
+    onValueChange?: (value: string) => void;
+    options: SelectOption[];
+    value?: string;
+}
 
 // @public (undocumented)
 export type SelectOption = ItemRowContent & {
@@ -1326,21 +2143,17 @@ export type SelectOption = ItemRowContent & {
 };
 
 // @public (undocumented)
-export function Separator(input: Separator_2.Props & {
+export function Separator(input: SeparatorProps): React_2.JSX.Element;
+
+// @public
+export type SeparatorProps = ElementProps<"div"> & {
+    orientation?: "horizontal" | "vertical";
     label?: React_2.ReactNode;
     padding?: 0 | 16 | 24 | 32;
-}): React_2.JSX.Element;
+};
 
 // @public (undocumented)
-export function SideNav(input: {
-    title?: string;
-    items: NavItem[];
-    profile?: SideNavProfile;
-    condensed?: boolean;
-    expandLabel?: (label: string) => string;
-    collapseLabel?: (label: string) => string;
-    className?: string;
-}): React_2.JSX.Element;
+export function SideNav(input: SideNavProps): React_2.JSX.Element;
 
 // @public (undocumented)
 export interface SideNavProfile {
@@ -1355,24 +2168,48 @@ export interface SideNavProfile {
 }
 
 // @public (undocumented)
-export function SkipToMainContent(input: {
-    targetId?: string;
+export interface SideNavProps {
+    // (undocumented)
+    className?: string;
+    collapseLabel?: (label: string) => string;
+    condensed?: boolean;
+    expandLabel?: (label: string) => string;
+    // (undocumented)
+    items: NavItem[];
+    // (undocumented)
+    profile?: SideNavProfile;
+    title?: string;
+}
+
+// @public (undocumented)
+export function SkipToMainContent(input: SkipToMainContentProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export interface SkipToMainContentProps {
     children?: React_2.ReactNode;
-}): React_2.JSX.Element;
+    // (undocumented)
+    targetId?: string;
+}
 
 // @public (undocumented)
 export function Snackbar(input: SnackbarProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export function SnackbarErrorCode(input: {
-    message?: React_2.ReactNode;
-    description?: React_2.ReactNode;
+export function SnackbarErrorCode(input: SnackbarErrorCodeProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export interface SnackbarErrorCodeProps {
+    // (undocumented)
     code: string;
-    onDismiss?: () => void;
-    copyLabel?: string;
     copiedLabel?: string;
     copyErrorLabel?: string;
-}): React_2.JSX.Element;
+    copyLabel?: string;
+    // (undocumented)
+    description?: React_2.ReactNode;
+    message?: React_2.ReactNode;
+    // (undocumented)
+    onDismiss?: () => void;
+}
 
 // @public
 export interface SnackbarProps {
@@ -1386,16 +2223,19 @@ export interface SnackbarProps {
     tone?: Tone;
 }
 
-// @public
-export function Spacer(input: {
-    size?: SpacerSize;
-    className?: string;
-}): JSX.Element;
-
-// Warning: (ae-forgotten-export) The symbol "sizeClasses" needs to be exported by the entry point pagopa-ui.d.ts
-//
 // @public (undocumented)
-export type SpacerSize = keyof typeof sizeClasses;
+export function Spacer(input: SpacerProps): JSX.Element;
+
+// @public
+export interface SpacerProps {
+    // (undocumented)
+    className?: string;
+    // (undocumented)
+    size?: SpacerSize;
+}
+
+// @public (undocumented)
+export type SpacerSize = 4 | 8 | 16 | 24 | 32 | 40 | 48;
 
 // @public (undocumented)
 export function Spinner(input: SpinnerProps): JSX.Element;
@@ -1419,21 +2259,19 @@ export interface StateProps {
 }
 
 // @public (undocumented)
-export function StatusTile(input: React_2.ComponentProps<"article"> & {
+export function StatusTile(input: StatusTileProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export type StatusTileProps = React_2.ComponentProps<"article"> & {
     channel?: React_2.ReactNode;
     title: React_2.ReactNode;
     tag?: React_2.ReactNode;
     orientation?: "horizontal" | "vertical";
     children?: React_2.ReactNode;
-}): React_2.JSX.Element;
+};
 
-// Warning: (ae-forgotten-export) The symbol "StepperLabels" needs to be exported by the entry point pagopa-ui.d.ts
-//
 // @public (undocumented)
-export function Stepper(input: {
-    items: StepperItem[];
-    className?: string;
-} & StepperLabels): React_2.JSX.Element;
+export function Stepper(input: StepperProps): React_2.JSX.Element;
 
 // @public (undocumented)
 export interface StepperItem {
@@ -1444,6 +2282,29 @@ export interface StepperItem {
     // (undocumented)
     status?: "complete" | "current" | "upcoming";
 }
+
+// @public (undocumented)
+export interface StepperLabels {
+    completedLabel?: string;
+    indicatorLabel?: (status: StepperItem["status"]) => string;
+    navigationLabel?: string;
+    statusLabel?: (status: StepperItem["status"]) => string;
+    stepLabel?: (step: {
+        index: number;
+        total: number;
+        label: string;
+        status?: StepperItem["status"];
+    }) => string;
+}
+
+// @public (undocumented)
+export type StepperProps = {
+    items: StepperItem[];
+    className?: string;
+} & StepperLabels;
+
+// @public (undocumented)
+export type StepperStatus = "complete" | "current" | "upcoming" | undefined;
 
 // @public (undocumented)
 export function StickyButtonBar(input: StickyButtonBarProps): React_2.JSX.Element;
@@ -1458,13 +2319,13 @@ export type StickyButtonBarProps = React_2.ComponentProps<"div"> & {
 export function SuccessState(input: StateProps): JSX.Element;
 
 // @public (undocumented)
-export function Switch(input: Switch_2.Root.Props & {
-    size?: "sm" | "default";
-    loading?: boolean;
-}): React_2.JSX.Element;
+export function Switch(input: SwitchProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export function SwitchField(input: Omit<React_2.ComponentProps<typeof Switch>, "id"> & ChoiceFieldProps & {
+export function SwitchField(input: SwitchFieldProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export type SwitchFieldProps = Omit<React_2.ComponentProps<typeof Switch>, "id"> & ChoiceFieldProps & {
     loading?: boolean;
     leadingIcon?: React_2.ReactNode;
     learnMore?: {
@@ -1473,51 +2334,52 @@ export function SwitchField(input: Omit<React_2.ComponentProps<typeof Switch>, "
     };
     indicatorPlacement?: "start" | "end";
     unavailable?: boolean;
-}): React_2.JSX.Element;
+};
 
 // @public (undocumented)
-export function SwitchGroup(input: React_2.ComponentProps<"fieldset"> & {
+export function SwitchGroup(input: SwitchGroupProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export type SwitchGroupProps = React_2.ComponentProps<"fieldset"> & {
     legend: React_2.ReactNode;
     description?: React_2.ReactNode;
-}): React_2.JSX.Element;
+};
+
+// @public
+export type SwitchProps = ElementProps<"span"> & {
+    size?: "sm" | "default";
+    loading?: boolean;
+    checked?: boolean;
+    defaultChecked?: boolean;
+    disabled?: boolean;
+    readOnly?: boolean;
+    required?: boolean;
+    name?: string;
+    form?: string;
+    value?: string;
+    uncheckedValue?: string;
+    inputRef?: React_2.Ref<HTMLInputElement>;
+    nativeButton?: boolean;
+    onCheckedChange?: (checked: boolean, details: ChangeEventDetails) => void;
+};
 
 // @public (undocumented)
 export function Table<Row extends {
     id: React_2.Key;
-}>(input: {
-    caption: string;
-    captionHidden?: boolean;
-    title?: string;
-    titleAs?: HeadingTag;
-    description?: string;
-    actions?: React_2.ReactNode;
-    columns: TableColumn<Row>[];
-    rows: Row[];
-    rowActions?: (row: Row) => React_2.ReactNode;
-    selectable?: boolean;
-    selected?: React_2.Key[];
-    defaultSelected?: React_2.Key[];
-    onSelectionChange?: (selected: React_2.Key[]) => void;
-    selectionLabel?: string;
-    selectionRowLabel?: (row: Row) => string;
-    notification?: (row: Row) => boolean;
-    notificationLabel?: string;
-    actionsLabel?: string;
-    emptyLabel?: string;
-    pagination?: React_2.ReactNode;
-    emptyState?: {
-        title?: string;
-        description?: string;
-        actions?: React_2.ReactNode;
-    };
-}): React_2.JSX.Element;
+}>(input: TableProps<Row>): React_2.JSX.Element;
 
 // @public (undocumented)
-export function TableCellRow(input: {
+export function TableCellRow(input: TableCellRowProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export interface TableCellRowProps {
+    // (undocumented)
     cells: React_2.ReactNode[];
-    header?: React_2.ReactNode;
+    // (undocumented)
     className?: string;
-}): React_2.JSX.Element;
+    // (undocumented)
+    header?: React_2.ReactNode;
+}
 
 // @public (undocumented)
 export interface TableColumn<Row> {
@@ -1534,26 +2396,18 @@ export interface TableColumn<Row> {
     truncate?: boolean;
 }
 
-// Warning: (ae-forgotten-export) The symbol "TableHead" needs to be exported by the entry point pagopa-ui.d.ts
-//
 // @public (undocumented)
-export function TableHeaderField(input: React_2.ComponentProps<typeof TableHead> & {
+export function TableHeaderField(input: TableHeaderFieldProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export type TableHeaderFieldProps = React_2.ComponentProps<"th"> & {
     sort?: TableSort;
-}): React_2.JSX.Element;
+};
 
 // @public (undocumented)
 export function TableList<Row extends {
     id: React_2.Key;
-}>(input: {
-    label: string;
-    rows: Row[];
-    fields: (row: Row) => TableListItemField[];
-    action?: (row: Row) => TableListItemAction | undefined;
-    actionFallbackLabel?: string;
-    pagination?: React_2.ReactNode;
-    emptyState?: TableListEmptyState;
-    emptyLabel?: string;
-}): React_2.JSX.Element;
+}>(input: TableListProps<Row>): React_2.JSX.Element;
 
 // @public (undocumented)
 export interface TableListEmptyState {
@@ -1566,19 +2420,16 @@ export interface TableListEmptyState {
     title?: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "TableCell" needs to be exported by the entry point pagopa-ui.d.ts
-//
 // @public (undocumented)
-export function TableListField(input: React_2.ComponentProps<typeof TableCell> & {
-    label?: string;
-}): React_2.JSX.Element;
+export function TableListField(input: TableListFieldProps): React_2.JSX.Element;
 
-// Warning: (ae-forgotten-export) The symbol "TableListItemProps" needs to be exported by the entry point pagopa-ui.d.ts
-//
 // @public (undocumented)
-export function TableListItem(input: TableListItemProps & {
-    actionFallbackLabel?: string;
-}): React_2.JSX.Element;
+export type TableListFieldProps = React_2.ComponentProps<"td"> & {
+    label?: string;
+};
+
+// @public (undocumented)
+export function TableListItem(input: TableListItemProps): React_2.JSX.Element;
 
 // @public (undocumented)
 export type TableListItemAction = {
@@ -1601,6 +2452,68 @@ export interface TableListItemField {
 }
 
 // @public (undocumented)
+export type TableListItemProps = Omit<React_2.ComponentProps<"li">, "onClick"> & {
+    fields: TableListItemField[];
+    action?: TableListItemAction;
+    actionFallbackLabel?: string;
+};
+
+// @public (undocumented)
+export interface TableListProps<Row extends {
+    id: React_2.Key;
+}> {
+    action?: (row: Row) => TableListItemAction | undefined;
+    actionFallbackLabel?: string;
+    emptyLabel?: string;
+    emptyState?: TableListEmptyState;
+    fields: (row: Row) => TableListItemField[];
+    label: string;
+    pagination?: React_2.ReactNode;
+    // (undocumented)
+    rows: Row[];
+}
+
+// @public (undocumented)
+export interface TableProps<Row extends {
+    id: React_2.Key;
+}> {
+    // (undocumented)
+    actions?: React_2.ReactNode;
+    actionsLabel?: string;
+    // (undocumented)
+    caption: string;
+    // (undocumented)
+    captionHidden?: boolean;
+    // (undocumented)
+    columns: TableColumn<Row>[];
+    defaultSelected?: React_2.Key[];
+    // (undocumented)
+    description?: string;
+    emptyLabel?: string;
+    emptyState?: {
+        title?: string;
+        description?: string;
+        actions?: React_2.ReactNode;
+    };
+    notification?: (row: Row) => boolean;
+    notificationLabel?: string;
+    onSelectionChange?: (selected: React_2.Key[]) => void;
+    // (undocumented)
+    pagination?: React_2.ReactNode;
+    // (undocumented)
+    rowActions?: (row: Row) => React_2.ReactNode;
+    // (undocumented)
+    rows: Row[];
+    selectable?: boolean;
+    selected?: React_2.Key[];
+    selectionLabel?: string;
+    selectionRowLabel?: (row: Row) => string;
+    // (undocumented)
+    title?: string;
+    titleAs?: HeadingTag;
+}
+
+// @public (undocumented)
 export interface TableSort {
     // (undocumented)
     direction: "ascending" | "descending" | "none";
@@ -1609,47 +2522,88 @@ export interface TableSort {
 }
 
 // @public (undocumented)
-export function Tabs(input: Tabs_2.Root.Props): JSX.Element;
+export function Tabs(input: TabsProps): JSX.Element;
 
 // @public (undocumented)
-export function TabsContent(input: Tabs_2.Panel.Props): JSX.Element;
+export function TabsContent(input: TabsContentProps): JSX.Element;
 
-// Warning: (ae-forgotten-export) The symbol "tabsListVariants" needs to be exported by the entry point pagopa-ui.d.ts
-//
-// @public (undocumented)
-export function TabsList(input: Tabs_2.List.Props & VariantProps<typeof tabsListVariants>): JSX.Element;
-
-// @public (undocumented)
-export function TabsTrigger(input: Tabs_2.Tab.Props): JSX.Element;
+// @public
+export type TabsContentProps = ElementProps<"div"> & {
+    value: TabsValue;
+    keepMounted?: boolean;
+};
 
 // @public (undocumented)
-export function Tag(input: React_2.ComponentProps<"span"> & {
+export function TabsList(input: TabsListProps): JSX.Element;
+
+// @public
+export type TabsListProps = ElementProps<"div"> & VariantProps<typeof tabsListVariants> & {
+    activateOnFocus?: boolean;
+    loopFocus?: boolean;
+};
+
+// @public (undocumented)
+export const tabsListVariants: (props?: ({
+    variant?: "default" | "line" | null | undefined;
+} & ClassProp) | undefined) => string;
+
+// @public
+export type TabsProps = ElementProps<"div"> & {
+    value?: TabsValue;
+    defaultValue?: TabsValue;
+    orientation?: "horizontal" | "vertical";
+    onValueChange?: (value: TabsValue, details: ChangeEventDetails) => void;
+};
+
+// @public (undocumented)
+export function TabsTrigger(input: TabsTriggerProps): JSX.Element;
+
+// @public
+export type TabsTriggerProps = ElementProps<"button"> & {
+    value: TabsValue;
+    disabled?: boolean;
+    nativeButton?: boolean;
+};
+
+// @public
+export type TabsValue = string | number | null;
+
+// @public (undocumented)
+export function Tag(input: TagProps): React_2.JSX.Element;
+
+// @public (undocumented)
+export type TagProps = React_2.ComponentProps<"span"> & {
     status?: TagStatus;
     icon?: React_2.ReactNode;
     iconLabel?: string;
-}): React_2.JSX.Element;
+};
 
 // @public (undocumented)
 export type TagStatus = "default" | "info" | "warning" | "success" | "error" | "counter";
 
 // @public (undocumented)
-export function Textarea(input: React_2.ComponentProps<"textarea">): React_2.JSX.Element;
+export function Textarea(input: TextareaProps): React_2.JSX.Element;
 
-// Warning: (ae-forgotten-export) The symbol "TextareaFieldProps" needs to be exported by the entry point pagopa-ui.d.ts
-//
 // @public
 export function TextareaField(input: TextareaFieldProps): React_2.JSX.Element;
 
-// Warning: (ae-forgotten-export) The symbol "TextFieldProps" needs to be exported by the entry point pagopa-ui.d.ts
-//
+// @public (undocumented)
+export type TextareaFieldProps = React_2.ComponentProps<typeof Textarea> & FieldStateProps;
+
+// @public (undocumented)
+export type TextareaProps = React_2.ComponentProps<"textarea">;
+
 // @public (undocumented)
 export function TextField(input: TextFieldProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export function Timeline(input: {
-    items: TimelineItem[];
-    label?: string;
-}): React_2.JSX.Element;
+export type TextFieldProps = Omit<React_2.ComponentProps<typeof Input>, "size" | "placeholder"> & FieldStateProps & {
+    leadingIcon?: React_2.ReactNode;
+    trailingIcon?: React_2.ReactNode;
+};
+
+// @public (undocumented)
+export function Timeline(input: TimelineProps): React_2.JSX.Element;
 
 // @public (undocumented)
 export function TimelineDrawer(input: TimelineDrawerProps): JSX.Element;
@@ -1697,6 +2651,13 @@ export interface TimelineItem {
 
 // @public (undocumented)
 export type TimelineItemStatus = "default" | "success" | "error" | "warning" | "info";
+
+// @public (undocumented)
+export interface TimelineProps {
+    // (undocumented)
+    items: TimelineItem[];
+    label?: string;
+}
 
 // @public
 export interface TimelineRecipient {
@@ -1747,30 +2708,16 @@ export function UIProvider(input: UIProviderProps): React_2.JSX.Element;
 
 // @public (undocumented)
 export interface UIProviderProps {
-    calendarLocale?: DayPickerLocale;
+    calendarLocale?: CalendarLocale;
     // (undocumented)
     children: React_2.ReactNode;
     linkComponent?: React_2.ElementType<LinkComponentProps>;
     locale?: string;
-    // Warning: (ae-forgotten-export) The symbol "DeepPartial" needs to be exported by the entry point pagopa-ui.d.ts
     messages?: DeepPartial<Messages>;
 }
 
 // @public (undocumented)
 export function WaitingState(input: StateProps): JSX.Element;
-
-// Warnings were encountered during analysis:
-//
-// dist/types/components/composites/identity-provider-picker.d.ts:34:5 - (ae-forgotten-export) The symbol "IdentityProviderPickerRow" needs to be exported by the entry point pagopa-ui.d.ts
-// dist/types/components/composites/payment-module.d.ts:18:5 - (ae-forgotten-export) The symbol "PaymentMetadataRow" needs to be exported by the entry point pagopa-ui.d.ts
-// dist/types/components/composites/payment-module.d.ts:20:5 - (ae-forgotten-export) The symbol "PaymentSuggestion" needs to be exported by the entry point pagopa-ui.d.ts
-// dist/types/components/composites/payment-module.d.ts:22:5 - (ae-forgotten-export) The symbol "PaymentPrice" needs to be exported by the entry point pagopa-ui.d.ts
-// dist/types/components/inputs/chips.d.ts:10:5 - (ae-forgotten-export) The symbol "ChipVariant" needs to be exported by the entry point pagopa-ui.d.ts
-// dist/types/components/inputs/chips.d.ts:12:5 - (ae-forgotten-export) The symbol "ChipAppearance" needs to be exported by the entry point pagopa-ui.d.ts
-// dist/types/components/inputs/date-picker.d.ts:16:5 - (ae-forgotten-export) The symbol "Calendar" needs to be exported by the entry point pagopa-ui.d.ts
-// dist/types/components/navigation/footer.d.ts:36:5 - (ae-forgotten-export) The symbol "HeadingTag" needs to be exported by the entry point pagopa-ui.d.ts
-// dist/types/components/primitives/alert.d.ts:12:5 - (ae-forgotten-export) The symbol "AlertDirection" needs to be exported by the entry point pagopa-ui.d.ts
-// dist/types/lib/ui-provider/messages/types.d.ts:208:9 - (ae-forgotten-export) The symbol "StepperStatus" needs to be exported by the entry point pagopa-ui.d.ts
 
 // (No @packageDocumentation comment for this package)
 

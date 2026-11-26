@@ -4,7 +4,24 @@ import { Tabs as TabsPrimitive } from "@base-ui/react/tabs"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/cn"
 
-function Tabs({ className, orientation = "horizontal", ...props }: TabsPrimitive.Root.Props) {
+import { type ChangeEventDetails, type ElementProps } from "./props"
+
+/** The value that identifies a tab and its panel. */
+export type TabsValue = string | number | null
+
+/** Props of the `Tabs` root. */
+export type TabsProps = ElementProps<"div"> & {
+  /** The active tab. Use with `onValueChange`; `null` leaves none active. */
+  value?: TabsValue
+  /** The tab active at first render. Use without `value`. @default 0 */
+  defaultValue?: TabsValue
+  /** Layout flow the tabs follow. @default "horizontal" */
+  orientation?: "horizontal" | "vertical"
+  /** Called when the active tab changes. */
+  onValueChange?: (value: TabsValue, details: ChangeEventDetails) => void
+}
+
+function Tabs({ className, orientation = "horizontal", ...props }: TabsProps) {
   return (
     <TabsPrimitive.Root
       data-slot="tabs"
@@ -33,11 +50,16 @@ const tabsListVariants = cva(
   },
 )
 
-function TabsList({
-  className,
-  variant = "default",
-  ...props
-}: TabsPrimitive.List.Props & VariantProps<typeof tabsListVariants>) {
+/** Props of `TabsList`. */
+export type TabsListProps = ElementProps<"div"> &
+  VariantProps<typeof tabsListVariants> & {
+    /** Whether arrow keys change the active tab as focus moves. @default false */
+    activateOnFocus?: boolean
+    /** Whether arrow keys wrap around at the ends of the list. @default true */
+    loopFocus?: boolean
+  }
+
+function TabsList({ className, variant = "default", ...props }: TabsListProps) {
   return (
     <TabsPrimitive.List
       data-slot="tabs-list"
@@ -48,7 +70,20 @@ function TabsList({
   )
 }
 
-function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
+/** Props of `TabsTrigger`. */
+export type TabsTriggerProps = ElementProps<"button"> & {
+  /** The value this trigger activates. */
+  value: TabsValue
+  /** Whether the trigger ignores interaction. @default false */
+  disabled?: boolean
+  /**
+   * Whether replacing the element with `render` keeps native `<button>`
+   * behaviour. @default true
+   */
+  nativeButton?: boolean
+}
+
+function TabsTrigger({ className, ...props }: TabsTriggerProps) {
   return (
     <TabsPrimitive.Tab
       data-slot="tabs-trigger"
@@ -65,7 +100,15 @@ function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
   )
 }
 
-function TabsContent({ className, ...props }: TabsPrimitive.Panel.Props) {
+/** Props of `TabsContent`, the panel of one tab. */
+export type TabsContentProps = ElementProps<"div"> & {
+  /** The value of the tab this panel belongs to. */
+  value: TabsValue
+  /** Whether the panel stays in the DOM while hidden. @default false */
+  keepMounted?: boolean
+}
+
+function TabsContent({ className, ...props }: TabsContentProps) {
   return (
     <TabsPrimitive.Panel
       data-slot="tabs-content"
@@ -75,4 +118,4 @@ function TabsContent({ className, ...props }: TabsPrimitive.Panel.Props) {
   )
 }
 
-export { Tabs, TabsList, TabsTrigger, TabsContent }
+export { Tabs, TabsList, TabsTrigger, TabsContent, tabsListVariants }

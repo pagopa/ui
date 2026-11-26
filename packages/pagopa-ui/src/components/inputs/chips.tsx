@@ -52,16 +52,7 @@ const chipStyles: Record<ChipVariant, Record<ChipAppearance, string>> = {
   },
 }
 
-function Chip({
-  className,
-  children,
-  onRemove,
-  removeLabel,
-  variant = "default",
-  appearance = "solid",
-  size = "default",
-  ...props
-}: React.ComponentProps<"span"> & {
+export type ChipProps = React.ComponentProps<"span"> & {
   /** Adds the source remove control; without it the chip is a static label. */
   onRemove?: () => void
   /** Accessible name of the remove control. @default messages.chip.removeLabel */
@@ -72,7 +63,18 @@ function Chip({
   appearance?: ChipAppearance
   /** Size step of the chip. @default "default" */
   size?: "default" | "compact"
-}) {
+}
+
+function Chip({
+  className,
+  children,
+  onRemove,
+  removeLabel,
+  variant = "default",
+  appearance = "solid",
+  size = "default",
+  ...props
+}: ChipProps) {
   const variantClassName =
     size === "compact" && variant === "primary" && appearance === "solid"
       ? "border-transparent bg-chip-primary-soft text-chip-primary-foreground"
@@ -109,14 +111,7 @@ function Chip({
   )
 }
 
-function InputChip({
-  className,
-  children,
-  onRemove,
-  removeLabel,
-  pointerRemove = false,
-  ...props
-}: React.ComponentProps<"span"> & {
+export type InputChipProps = React.ComponentProps<"span"> & {
   /** Removes the chip; with `pointerRemove` it is the pointer-only control. */
   onRemove?: () => void
   /** Accessible name of the remove button. @default messages.chip.removeLabel */
@@ -127,7 +122,16 @@ function InputChip({
    * technology keeps the option toggle; pointer users get the chip control.
    */
   pointerRemove?: boolean
-}) {
+}
+
+function InputChip({
+  className,
+  children,
+  onRemove,
+  removeLabel,
+  pointerRemove = false,
+  ...props
+}: InputChipProps) {
   const label = typeof children === "string" ? children : undefined
   const t = useMessages("chip")
   const trailing = onRemove || pointerRemove
@@ -175,3 +179,4 @@ function InputChip({
 }
 
 export { Chip, InputChip }
+export type { ChipAppearance, ChipVariant }

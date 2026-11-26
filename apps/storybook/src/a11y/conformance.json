@@ -24,7 +24,16 @@
     "AlertAction": {
       "type": "Notifications and alerts"
     },
+    "AlertContent": {
+      "type": "Notifications and alerts"
+    },
+    "AlertCopy": {
+      "type": "Notifications and alerts"
+    },
     "AlertDescription": {
+      "type": "Notifications and alerts"
+    },
+    "AlertIcon": {
       "type": "Notifications and alerts"
     },
     "AlertTitle": {
@@ -154,6 +163,12 @@
       "type": "Notifications and alerts"
     },
     "IdentityProviderPicker": {
+      "type": "Choice group"
+    },
+    "IdentityProviderPickerRow": {
+      "type": "Choice group"
+    },
+    "IdentityProviderPickerView": {
       "type": "Choice group"
     },
     "Input": {

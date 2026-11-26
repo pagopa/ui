@@ -3,11 +3,21 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 
-import { RadioGroupItem } from "@/components/primitives/radio-group"
+import { RadioGroupItem, type RadioGroupItemProps } from "@/components/primitives/radio-group"
 import { Skeleton } from "@/components/primitives/skeleton"
 
 import { FieldMessages } from "./field"
 import { describedBy, useFieldIds, type ChoiceFieldProps } from "./field-utils"
+
+type RadioFieldProps = RadioGroupItemProps &
+  ChoiceFieldProps & {
+    /** Decorative icon (source rich option). */
+    leadingIcon?: React.ReactNode
+    /** Side of the indicator. @default "start" */
+    indicatorPlacement?: "start" | "end"
+    /** Busy state: keeps the real selection, announces it and shows placeholders. */
+    loading?: boolean
+  }
 
 function RadioField({
   id,
@@ -25,15 +35,7 @@ function RadioField({
   "aria-describedby": ariaDescribedBy,
   "aria-invalid": ariaInvalid,
   ...props
-}: React.ComponentProps<typeof RadioGroupItem> &
-  ChoiceFieldProps & {
-    /** Decorative icon (source rich option). */
-    leadingIcon?: React.ReactNode
-    /** Side of the indicator. @default "start" */
-    indicatorPlacement?: "start" | "end"
-    /** Busy state: keeps the real selection, announces it and shows placeholders. */
-    loading?: boolean
-  }) {
+}: RadioFieldProps) {
   const ids = useFieldIds(id)
   const state = { description, error, success }
   const unavailable = disabled || loading
@@ -128,3 +130,4 @@ function RadioField({
 }
 
 export { RadioField }
+export type { RadioFieldProps }

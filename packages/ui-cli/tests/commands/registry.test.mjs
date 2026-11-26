@@ -80,7 +80,7 @@ test("registry rejects unknown nodes and long notes", async () => {
   }
 })
 
-test("registry writes the decision and surface and lowers the note ratchet", async () => {
+test("registry writes the decision and the surface", async () => {
   const { readFileSync } = await import("node:fs")
   const { join } = await import("node:path")
   const fixture = fixtureTree(
@@ -88,11 +88,6 @@ test("registry writes the decision and surface and lowers the note ratchet", asy
       ...files,
       "src/catalog/figma/registry.json": {
         entries: { "4:4": { status: "pending", note: "x".repeat(601) } },
-      },
-      "src/catalog/figma/note-length-baseline.json": {
-        maxLength: 600,
-        overLimit: 1,
-        note: "Existing",
       },
     },
     "registry-write-",
@@ -122,7 +117,6 @@ test("registry writes the decision and surface and lowers the note ratchet", asy
       read("src/catalog/figma/page-surface.json").pages[0].identities[0].decision,
       "excluded",
     )
-    assert.equal(read("src/catalog/figma/note-length-baseline.json").overLimit, 0)
   } finally {
     fixture.dispose()
   }

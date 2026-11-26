@@ -3,10 +3,18 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 
-import { Checkbox } from "@/components/primitives/checkbox"
+import { Checkbox, type CheckboxProps } from "@/components/primitives/checkbox"
 
 import { FieldMessages } from "./field"
 import { describedBy, useFieldIds, type ChoiceFieldProps } from "./field-utils"
+
+type CheckboxFieldProps = Omit<CheckboxProps, "id"> &
+  ChoiceFieldProps & {
+    /** Decorative icon (source rich option). */
+    leadingIcon?: React.ReactNode
+    /** Side of the indicator. @default "start" */
+    indicatorPlacement?: "start" | "end"
+  }
 
 function CheckboxField({
   id,
@@ -23,13 +31,7 @@ function CheckboxField({
   className,
   "aria-describedby": ariaDescribedBy,
   ...props
-}: Omit<React.ComponentProps<typeof Checkbox>, "id"> &
-  ChoiceFieldProps & {
-    /** Decorative icon (source rich option). */
-    leadingIcon?: React.ReactNode
-    /** Side of the indicator. @default "start" */
-    indicatorPlacement?: "start" | "end"
-  }) {
+}: CheckboxFieldProps) {
   const ids = useFieldIds(id)
   const state = { description, error, success }
   const hasMessages = Boolean(description || error || success)
@@ -94,3 +96,4 @@ function CheckboxField({
 }
 
 export { CheckboxField }
+export type { CheckboxFieldProps }

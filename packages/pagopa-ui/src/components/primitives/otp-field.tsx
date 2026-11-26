@@ -18,6 +18,7 @@ import { cn } from "@/lib/cn"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 import { useFormReset, useInputRef } from "./form-control-utils"
+import type { ChangeEventDetails, ElementProps, GenericEventDetails } from "./props"
 
 interface OTPFieldConfig {
   mask: boolean
@@ -32,6 +33,47 @@ function useOTPFieldConfig() {
   return config
 }
 
+type OTPFieldProps = Omit<ElementProps<"div">, "defaultValue" | "onChange" | "ref" | "value"> & {
+  /** The id of the first input; the following ones derive from it. */
+  id?: string
+  /** `autocomplete` of the first slot and of the hidden validation input. @default "one-time-code" */
+  autoComplete?: string
+  /** The form the hidden input belongs to. */
+  form?: string
+  /** The number of slots. */
+  length: number
+  /** Submits the owning form when the value becomes complete. @default false */
+  autoSubmit?: boolean
+  /** Masks the entered characters. @default false */
+  mask?: boolean
+  /** `inputmode` of the slot inputs and of the hidden validation input. */
+  inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"]
+  /** The characters the field accepts. @default "numeric" */
+  validationType?: "numeric" | "alpha" | "alphanumeric" | "none"
+  /** Normalizes the value after the whitespace and `validationType` filtering. */
+  normalizeValue?: (value: string) => string
+  /** Whether the user must fill the field before submitting. @default false */
+  required?: boolean
+  /** Whether the field ignores user interaction. @default false */
+  disabled?: boolean
+  /** Whether the user cannot change the value. @default false */
+  readOnly?: boolean
+  /** The name the value is submitted with. */
+  name?: string
+  /** The controlled value. */
+  value?: string
+  /** The value of the uncontrolled field. @default "" */
+  defaultValue?: string
+  /** Called when the value changes. */
+  onValueChange?: (value: string, details: ChangeEventDetails) => void
+  /** Called when the entered text carries characters the field rejects. */
+  onValueInvalid?: (value: string, details: GenericEventDetails) => void
+  /** Called when the value becomes complete. */
+  onValueComplete?: (value: string, details: GenericEventDetails) => void
+  /** The first slot input. */
+  ref?: React.Ref<HTMLInputElement>
+}
+
 function OTPField({
   className,
   value,
@@ -43,10 +85,7 @@ function OTPField({
   onMouseDown,
   ref: externalRef,
   ...props
-}: Omit<React.ComponentProps<typeof OTPFieldPrimitive.Root>, "ref"> & {
-  className?: string
-  ref?: React.Ref<HTMLInputElement>
-}) {
+}: OTPFieldProps) {
   const initialValue = typeof defaultValue === "string" ? defaultValue : ""
   const [uncontrolledValue, setUncontrolledValue] = React.useState(initialValue)
   // The public ref stays the first slot input (the native control the caller
@@ -182,3 +221,4 @@ function OTPFieldSeparator({
 }
 
 export { OTPField, OTPFieldGroup, OTPFieldSlot, OTPFieldSeparator }
+export type { OTPFieldProps }

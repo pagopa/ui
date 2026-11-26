@@ -72,7 +72,7 @@ parent_dr: ../design-review.md
 
 **Acceptance checks**:
 
-- `AC-01`: The node's brief has been read and no `pending` rule targets it before the first write. - Evidence: `pnpm nx run pagopa-ui-cli:figma:brief --node <nodeId>`; `pnpm nx run pagopa-ui-cli:check:rules`
+- `AC-01`: The node's brief has been read and no `pending` rule targets it before the first write. - Evidence: `pnpm nx run pagopa-ui-cli:figma:brief --node <nodeId>`; `pnpm nx run pagopa-ui-cli:check:rules --strict`
 - `AC-02`: The component is exported from `src/pagopa-ui.ts` and appears in the committed API report. - Evidence: `packages/pagopa-ui/etc/pagopa-ui.api.md`; `pnpm nx run pagopa-ui:api:check`
 - `AC-03`: Every variant the node declares compares without an unexplained residue against the node's numeric source. - Evidence: `pnpm ui-cli parity check --node <nodeId> --device <device>`
 - `AC-04`: The registry reports the node as `implemented` with the review date. - Evidence: `packages/pagopa-ui/src/catalog/figma/registry.json`; `pnpm nx run pagopa-ui:check:catalogue`

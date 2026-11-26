@@ -11,11 +11,11 @@ interface TableSort {
   onChange: () => void
 }
 
-function TableHeaderField({
-  children,
-  sort,
-  ...props
-}: React.ComponentProps<typeof TableHead> & { sort?: TableSort }) {
+type TableHeaderFieldProps = React.ComponentProps<"th"> & {
+  sort?: TableSort
+}
+
+function TableHeaderField({ children, sort, ...props }: TableHeaderFieldProps) {
   const t = useMessages("table")
   return (
     <TableHead scope="col" aria-sort={sort?.direction} {...props}>
@@ -40,4 +40,5 @@ function TableHeaderField({
   )
 }
 
-export { TableHeaderField, type TableSort }
+export { TableHeaderField }
+export type { TableHeaderFieldProps, TableSort }

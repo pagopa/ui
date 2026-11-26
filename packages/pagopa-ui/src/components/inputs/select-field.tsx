@@ -24,7 +24,7 @@ import {
 
 export type { SelectOption } from "./select-parts"
 
-type SelectFieldProps = FieldStateProps & {
+export interface SelectFieldProps extends FieldStateProps {
   /** Id applied to the trigger, so an external label can target it; generated when omitted. */
   id?: string
   /** Options rendered in the listbox. */

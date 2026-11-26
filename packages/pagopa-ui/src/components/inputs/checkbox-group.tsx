@@ -6,6 +6,13 @@ import { cn } from "@/lib/cn"
 import { FieldMessages } from "./field"
 import { describedBy, useFieldIds } from "./field-utils"
 
+export type CheckboxGroupProps = React.ComponentProps<"fieldset"> & {
+  legend: React.ReactNode
+  description?: React.ReactNode
+  error?: React.ReactNode
+  required?: boolean
+}
+
 function CheckboxGroup({
   legend,
   description,
@@ -14,12 +21,7 @@ function CheckboxGroup({
   className,
   children,
   ...props
-}: React.ComponentProps<"fieldset"> & {
-  legend: React.ReactNode
-  description?: React.ReactNode
-  error?: React.ReactNode
-  required?: boolean
-}) {
+}: CheckboxGroupProps) {
   const ids = useFieldIds()
 
   return (

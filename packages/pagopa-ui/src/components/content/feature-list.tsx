@@ -15,18 +15,20 @@ export interface Feature {
   action?: { label: string; href: string }
 }
 
-function FeatureList({
-  features,
-  numbered = false,
-  className,
-  titleAs: Title = "h3",
-}: {
+export interface FeatureListProps {
   features: Feature[]
   /** Numeric markers instead of icons. */
   numbered?: boolean
   className?: string
   titleAs?: "h2" | "h3"
-}) {
+}
+
+function FeatureList({
+  features,
+  numbered = false,
+  className,
+  titleAs: Title = "h3",
+}: FeatureListProps) {
   const Link = useLinkComponent()
   return (
     <ul data-slot="feature-list" className={cn("grid gap-4 tablet:grid-cols-2", className)}>

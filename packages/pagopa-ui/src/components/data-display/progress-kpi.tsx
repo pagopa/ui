@@ -62,17 +62,7 @@ function KpiFooter({
   )
 }
 
-function ProgressKpi({
-  label,
-  value,
-  total = 100,
-  channel,
-  info,
-  completed = false,
-  details,
-  detail,
-  locale = "it-IT",
-}: {
+export interface ProgressKpiProps {
   label: string
   value: number
   total?: number
@@ -87,7 +77,19 @@ function ProgressKpi({
   detail?: string
   /** BCP 47 locale of the number formatting. @default "it-IT" */
   locale?: string
-}) {
+}
+
+function ProgressKpi({
+  label,
+  value,
+  total = 100,
+  channel,
+  info,
+  completed = false,
+  details,
+  detail,
+  locale = "it-IT",
+}: ProgressKpiProps) {
   const t = useMessages("progressKpi")
   const percentage = progressPercentage(value, total)
   return (

@@ -124,7 +124,7 @@ function CheckoutModule({
         aria-busy={busy || undefined}
         data-slot="checkout-module"
         className={cn(
-          "flex w-full flex-col gap-3 rounded-lg border border-border bg-card p-4 @lg:flex-row @lg:items-center @lg:gap-4",
+          "flex w-full flex-col gap-3 rounded-lg border border-border bg-card p-4 @min-panel:flex-row @min-panel:items-center @min-panel:gap-4",
           className,
         )}
         {...props}
@@ -159,7 +159,7 @@ function CheckoutModule({
               ) : null}
               <div
                 data-slot="checkout-main"
-                className="flex min-w-0 flex-1 flex-col gap-2 @lg:flex-row @lg:items-center @lg:gap-4"
+                className="flex min-w-0 flex-1 flex-col gap-2 @min-panel:flex-row @min-panel:items-center @min-panel:gap-4"
               >
                 <div data-slot="checkout-body" className="flex min-w-0 flex-1 flex-col gap-2">
                   <div className="flex min-w-0 flex-col gap-0.5">
@@ -193,7 +193,10 @@ function CheckoutModule({
                     </p>
                   ) : null}
                   {amount || noticeCode ? (
-                    <dl data-slot="checkout-legacy-details" className="grid gap-3 @lg:grid-cols-2">
+                    <dl
+                      data-slot="checkout-legacy-details"
+                      className="grid gap-3 @min-panel:grid-cols-2"
+                    >
                       {amount ? (
                         <div>
                           <dt className="text-caption text-muted-foreground">Importo</dt>
@@ -212,7 +215,7 @@ function CheckoutModule({
                 {visibleAction ? (
                   <div
                     data-slot="checkout-action"
-                    className="ml-0 self-start @lg:ml-auto @lg:self-center"
+                    className="ml-0 self-start @min-panel:ml-auto @min-panel:self-center"
                   >
                     <Button
                       type="button"
@@ -237,3 +240,4 @@ function CheckoutModule({
 }
 
 export { CheckoutModule }
+export type { CheckoutModuleProps, CheckoutSuggestion }

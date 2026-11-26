@@ -7,15 +7,7 @@ import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 import { Snackbar } from "./snackbar"
 
-function SnackbarErrorCode({
-  message: messageProp,
-  description,
-  code,
-  onDismiss,
-  copyLabel: copyLabelProp,
-  copiedLabel: copiedLabelProp,
-  copyErrorLabel: copyErrorLabelProp,
-}: {
+export interface SnackbarErrorCodeProps {
   /** Visible error message. @default messages.snackbarErrorCode.message */
   message?: React.ReactNode
   description?: React.ReactNode
@@ -27,7 +19,17 @@ function SnackbarErrorCode({
   copiedLabel?: string
   /** Announced text when the clipboard write fails. @default messages.snackbarErrorCode.copyErrorLabel */
   copyErrorLabel?: string
-}) {
+}
+
+function SnackbarErrorCode({
+  message: messageProp,
+  description,
+  code,
+  onDismiss,
+  copyLabel: copyLabelProp,
+  copiedLabel: copiedLabelProp,
+  copyErrorLabel: copyErrorLabelProp,
+}: SnackbarErrorCodeProps) {
   const t = useMessages("snackbarErrorCode")
   const message = messageProp ?? t.message
   const copyLabel = copyLabelProp ?? t.copyLabel

@@ -218,7 +218,7 @@ function FormBody({ config, wizard = false }: { config: TemplateConfig; wizard?:
 
 function AuthBody({ config }: { config: TemplateConfig }) {
   return (
-    <div className="mx-auto grid max-w-5xl overflow-hidden rounded-2xl border bg-card shadow-sm tablet-md:grid-cols-2">
+    <div className="mx-auto grid max-w-5xl overflow-hidden rounded-2xl border bg-card shadow-1 tablet-md:grid-cols-2">
       <div className="bg-primary p-8 text-primary-foreground tablet-md:p-12">
         <Brand />
         <h1 className="mt-16 text-title-lg">{config.title}</h1>
@@ -353,7 +353,7 @@ function DrawerBody({ config }: { config: TemplateConfig }) {
       </div>
       <aside
         aria-label={config.title}
-        className="absolute inset-y-0 right-0 flex w-(--pui-drawer-width) max-w-[88%] flex-col bg-background shadow-xl"
+        className="absolute inset-y-0 right-0 flex w-(--pui-drawer-width) max-w-[88%] flex-col bg-background shadow-32"
       >
         <header className="border-b p-6">
           <p className="text-label-mini-sb text-primary">{config.eyebrow}</p>
@@ -419,7 +419,7 @@ function LegalBody({ config }: { config: TemplateConfig }) {
 
 function EmailBody({ config }: { config: TemplateConfig }) {
   return (
-    <div className="mx-auto max-w-2xl rounded-xl border bg-background shadow-sm">
+    <div className="mx-auto max-w-2xl rounded-xl border bg-background shadow-1">
       <div className="border-b p-6">
         <Brand />
       </div>

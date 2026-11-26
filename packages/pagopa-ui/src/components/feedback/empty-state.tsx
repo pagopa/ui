@@ -4,6 +4,11 @@ import { cn } from "@/lib/cn"
 
 import type { StateProps } from "./state-panel"
 
+export type EmptyStateProps = Omit<StateProps, "extra"> & {
+  /** Optional pictogram of the state. */
+  icon?: ReactNode
+}
+
 function EmptyState({
   title,
   description,
@@ -11,10 +16,7 @@ function EmptyState({
   icon,
   titleAs: Title = "h2",
   className,
-}: Omit<StateProps, "extra"> & {
-  /** Optional pictogram of the state. */
-  icon?: ReactNode
-}) {
+}: EmptyStateProps) {
   return (
     <section
       className={cn(

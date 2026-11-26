@@ -4,8 +4,44 @@ import * as React from "react"
 import { Switch as SwitchPrimitive } from "@base-ui/react/switch"
 import { cn } from "@/lib/cn"
 
+import { type ChangeEventDetails, type ElementProps } from "./props"
 import { useFormReset, useInputRef } from "./form-control-utils"
 import { SpinnerIndicator } from "./spinner-indicator"
+
+/** Props of the `Switch`. */
+export type SwitchProps = ElementProps<"span"> & {
+  /** Track and thumb size, from the source component set. @default "default" */
+  size?: "sm" | "default"
+  /** Shows a spinner in place of the track and blocks interaction. @default false */
+  loading?: boolean
+  /** Whether the switch is on. Use with `onCheckedChange`. */
+  checked?: boolean
+  /** Whether the switch starts on. Use without `checked`. @default false */
+  defaultChecked?: boolean
+  /** Whether the switch ignores interaction. @default false */
+  disabled?: boolean
+  /** Whether the user may not change the value. @default false */
+  readOnly?: boolean
+  /** Whether a value is required before submitting the form. @default false */
+  required?: boolean
+  /** Names the value in the submitted form. */
+  name?: string
+  /** Id of the form that owns the input. */
+  form?: string
+  /** Value submitted when the switch is on. */
+  value?: string
+  /** Value submitted when the switch is off. */
+  uncheckedValue?: string
+  /** Access to the hidden `<input>`. */
+  inputRef?: React.Ref<HTMLInputElement>
+  /**
+   * Whether replacing the element with `render` keeps native `<button>`
+   * behaviour. @default false
+   */
+  nativeButton?: boolean
+  /** Called when the switch is turned on or off. */
+  onCheckedChange?: (checked: boolean, details: ChangeEventDetails) => void
+}
 
 function Switch({
   className,
@@ -17,10 +53,7 @@ function Switch({
   onCheckedChange,
   inputRef: externalInputRef,
   ...props
-}: SwitchPrimitive.Root.Props & {
-  size?: "sm" | "default"
-  loading?: boolean
-}) {
+}: SwitchProps) {
   const { inputRef, mergedInputRef } = useInputRef(externalInputRef)
   const [uncontrolledChecked, setUncontrolledChecked] = React.useState(defaultChecked)
   useFormReset(inputRef, () => {

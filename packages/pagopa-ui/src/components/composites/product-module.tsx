@@ -15,7 +15,10 @@ interface ProductAction {
   onClick?: () => void
 }
 
-type ProductModuleProps = Omit<React.ComponentProps<"div">, "onSelect" | "title"> & {
+type ProductModuleProps = Omit<
+  React.ComponentProps<"div">,
+  "defaultChecked" | "defaultValue" | "onSelect" | "title"
+> & {
   /** Optional artwork; the legacy composition falls back to a placeholder avatar. */
   avatar?: React.ReactNode
   /** Optional status chips; the legacy composition derives them from `status`. */
@@ -104,6 +107,8 @@ function ProductModule({
     ) : null)
   const labelledBy = visibleChips ? `${titleId} ${statusId}` : titleId
   const actionIcon = legacy ? undefined : action?.icon
+  // The props union guarantees a name outside the standalone form.
+  const radioValue = standalone ? "selected" : (value ?? name)
 
   const content = (
     <div
@@ -121,9 +126,9 @@ function ProductModule({
       ) : null}
       <div
         data-slot="product-module-copy"
-        className="grid min-w-0 flex-1 gap-1 @md/product-module:gap-0.5"
+        className="grid min-w-0 flex-1 gap-1 @min-compact/product-module:gap-0.5"
       >
-        <div className="flex flex-col items-start gap-1 @md/product-module:flex-row @md/product-module:items-center @md/product-module:gap-2">
+        <div className="flex flex-col items-start gap-1 @min-compact/product-module:flex-row @min-compact/product-module:items-center @min-compact/product-module:gap-2">
           <span
             id={titleId}
             data-slot="product-module-title"
@@ -157,7 +162,7 @@ function ProductModule({
           data-slot="product-module"
           data-variant={variant}
           className={cn(
-            "flex w-full min-w-0 flex-col items-start gap-4 rounded-lg border border-border bg-card p-4 @md/product-module:flex-row @md/product-module:items-center",
+            "flex w-full min-w-0 flex-col items-start gap-4 rounded-lg border border-border bg-card p-4 @min-compact/product-module:flex-row @min-compact/product-module:items-center",
             className,
           )}
           {...props}
@@ -200,12 +205,14 @@ function ProductModule({
       )}
     >
       {content}
-      <RadioGroupItem
-        value={standalone ? "selected" : (value ?? name)}
-        disabled={disabled}
-        aria-labelledby={labelledBy}
-        aria-describedby={description ? descriptionId : undefined}
-      />
+      {radioValue === undefined ? null : (
+        <RadioGroupItem
+          value={radioValue}
+          disabled={disabled}
+          aria-labelledby={labelledBy}
+          aria-describedby={description ? descriptionId : undefined}
+        />
+      )}
     </label>
   )
 
@@ -231,4 +238,5 @@ function ProductModule({
   )
 }
 
-export { ProductModule, type ProductAction }
+export { ProductModule }
+export type { ProductAction, ProductModuleProps }

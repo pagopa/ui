@@ -33,7 +33,7 @@ const alertContentVariants = cva(
       direction: {
         vertical: "grid-cols-1 gap-y-4",
         horizontal:
-          "grid-cols-1 gap-y-4 @md/alert:grid-cols-[minmax(0,1fr)_auto] @md/alert:items-center @md/alert:gap-x-16 @md/alert:gap-y-0",
+          "grid-cols-1 gap-y-4 @min-compact/alert:grid-cols-[minmax(0,1fr)_auto] @min-compact/alert:items-center @min-compact/alert:gap-x-16 @min-compact/alert:gap-y-0",
       },
     },
     defaultVariants: {
@@ -42,19 +42,29 @@ const alertContentVariants = cva(
   },
 )
 
-function Alert({
-  className,
-  variant,
-  direction = "vertical",
-  ...props
-}: React.ComponentProps<"div"> &
+export type AlertProps = React.ComponentProps<"div"> &
   VariantProps<typeof alertVariants> & {
     /**
      * `horizontal` places the action beside the copy.
      * @default "vertical"
      */
     direction?: AlertDirection
-  }) {
+  }
+
+/** Props of the alert icon slot. */
+export type AlertIconProps = React.ComponentProps<"span">
+/** Props of the alert content slot. */
+export type AlertContentProps = React.ComponentProps<"div">
+/** Props of the alert copy slot. */
+export type AlertCopyProps = React.ComponentProps<"div">
+/** Props of the alert title. */
+export type AlertTitleProps = React.ComponentProps<"div">
+/** Props of the alert description. */
+export type AlertDescriptionProps = React.ComponentProps<"div">
+/** Props of the alert action slot. */
+export type AlertActionProps = React.ComponentProps<"div">
+
+function Alert({ className, variant, direction = "vertical", ...props }: AlertProps) {
   return (
     <alertDirectionContext.Provider value={direction}>
       <div
@@ -68,7 +78,7 @@ function Alert({
   )
 }
 
-function AlertIcon({ className, ...props }: React.ComponentProps<"span">) {
+function AlertIcon({ className, ...props }: AlertIconProps) {
   return (
     <span
       data-slot="alert-icon"
@@ -78,7 +88,7 @@ function AlertIcon({ className, ...props }: React.ComponentProps<"span">) {
   )
 }
 
-function AlertContent({ className, ...props }: React.ComponentProps<"div">) {
+function AlertContent({ className, ...props }: AlertContentProps) {
   const direction = React.useContext(alertDirectionContext)
   return (
     <div
@@ -90,7 +100,7 @@ function AlertContent({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-function AlertCopy({ className, ...props }: React.ComponentProps<"div">) {
+function AlertCopy({ className, ...props }: AlertCopyProps) {
   return (
     <div
       data-slot="alert-copy"
@@ -100,7 +110,7 @@ function AlertCopy({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
+function AlertTitle({ className, ...props }: AlertTitleProps) {
   return (
     <div
       data-slot="alert-title"
@@ -113,7 +123,7 @@ function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-function AlertDescription({ className, ...props }: React.ComponentProps<"div">) {
+function AlertDescription({ className, ...props }: AlertDescriptionProps) {
   return (
     <div
       data-slot="alert-description"
@@ -126,7 +136,7 @@ function AlertDescription({ className, ...props }: React.ComponentProps<"div">) 
   )
 }
 
-function AlertAction({ className, ...props }: React.ComponentProps<"div">) {
+function AlertAction({ className, ...props }: AlertActionProps) {
   return (
     <div
       data-slot="alert-action"
@@ -139,4 +149,15 @@ function AlertAction({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-export { Alert, AlertIcon, AlertContent, AlertCopy, AlertTitle, AlertDescription, AlertAction }
+export {
+  Alert,
+  AlertAction,
+  AlertContent,
+  AlertCopy,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
+  alertContentVariants,
+  alertVariants,
+}
+export type { AlertDirection }

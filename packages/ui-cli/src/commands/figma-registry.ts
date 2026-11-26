@@ -45,7 +45,6 @@ export function registryCommand(ctx: CliContext) {
                 before: report.before,
                 after: report.entry,
                 surface: report.surface,
-                baseline: report.baseline,
               },
               null,
               2,

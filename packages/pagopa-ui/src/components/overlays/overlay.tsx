@@ -4,20 +4,22 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-function Overlay({
-  visible,
-  label: labelProp,
-  children,
-  showSpinner = true,
-  className,
-}: {
+export interface OverlayProps {
   visible: boolean
   /** Announced loading text. @default messages.overlay.label */
   label?: string
   children?: React.ReactNode
   showSpinner?: boolean
   className?: string
-}) {
+}
+
+function Overlay({
+  visible,
+  label: labelProp,
+  children,
+  showSpinner = true,
+  className,
+}: OverlayProps) {
   const t = useMessages("overlay")
   const label = labelProp ?? t.label
 
