@@ -1,6 +1,6 @@
 {
   "fileKey": "pvhsJpPGQbEwNLiyP7BOIw",
-  "readAt": "2026-10-28",
+  "readAt": "2026-11-26",
   "note": "Read from the Figma page tree at the pinned file version, not from the library export: the export lists published nodes only, so the rows marked inLibrary: false exist nowhere else. One row per component and component set drawn on the page with the decision the library gives it (a registry bulk rule is the decision for a node of its page that carries no entry of its own), and one row per composition the page draws with the cases that measure it. A drawing that was never published is out of the implementation scope, so its decision is `unpublished` and no work follows; publishing it is what opens the decision, and the inLibrary mirror in `check:catalogue` is what makes that fail loudly. See .agents/skills/figma-to-code/references/catalogue/page-surface.md.",
   "pages": [
     {
@@ -22,6 +22,38 @@
           "inLibrary": false,
           "decision": "unpublished",
           "reason": "Fifteen cursors: Variant Filled|Outlined x Color Neutral|Primary|Secondary|Error|Warning|Info|Success x Size Big|Small (Small only for Filled and Neutral, 24x24 each). Not published — the four .TimelineDot/* that ship are standalone components, not variants of this set."
+        },
+        {
+          "nodeId": "1333:16408",
+          "name": "Timeline drawer",
+          "kind": "COMPONENT_SET",
+          "inLibrary": true,
+          "decision": "pending",
+          "reason": "Desktop 417x2294, Mobile 320x2136. The registry entry is pending behind docs/design-requests/2026-10-21-timeline-drawer-width-and-mobile.md: the mobile variant is drawn 320 wide while the open question asks whether it is a bottom sheet, and no story builds it."
+        },
+        {
+          "nodeId": "1334:17210",
+          "name": ".Time stamps",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "One variant, Direction=Vertical, 39x72: the timestamps as their own column. Not published; the element prints the timestamp inside the row."
+        },
+        {
+          "nodeId": "1336:16029",
+          "name": ".Timeline single item",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "Seven variants at 417 wide: On top event, Between event, Bottom event, Icon between event, Icon on top event, Show more event (417x72), Minor event (417x90). Not published."
+        },
+        {
+          "nodeId": "9676:5633",
+          "name": "Microevento",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped",
+          "reason": "MicroEvent in the registry, rendered by the timeline stories."
         },
         {
           "nodeId": "9676:5408",
@@ -78,14 +110,6 @@
           "inLibrary": true,
           "decision": "shipped",
           "reason": "CorrectionTag in the registry, rendered by the timeline stories."
-        },
-        {
-          "nodeId": "9676:5633",
-          "name": "Microevento",
-          "kind": "COMPONENT",
-          "inLibrary": true,
-          "decision": "shipped",
-          "reason": "MicroEvent in the registry, rendered by the timeline stories."
         },
         {
           "nodeId": "9866:4489",
@@ -192,28 +216,12 @@
           "reason": "Timeline in the registry, drawn by the SourceCase story on both devices."
         },
         {
-          "nodeId": "1333:16408",
-          "name": "Timeline drawer",
-          "kind": "COMPONENT_SET",
-          "inLibrary": true,
-          "decision": "pending",
-          "reason": "Desktop 417x2294, Mobile 320x2136. The registry entry is pending behind docs/design-requests/2026-10-21-timeline-drawer-width-and-mobile.md: the mobile variant is drawn 320 wide while the open question asks whether it is a bottom sheet, and no story builds it."
-        },
-        {
-          "nodeId": "1334:17210",
-          "name": ".Time stamps",
+          "nodeId": "15529:7836",
+          "name": ".accordion-collapse-expand",
           "kind": "COMPONENT_SET",
           "inLibrary": false,
           "decision": "unpublished",
-          "reason": "One variant, Direction=Vertical, 39x72: the timestamps as their own column. Not published; the element prints the timestamp inside the row."
-        },
-        {
-          "nodeId": "1336:16029",
-          "name": ".Timeline single item",
-          "kind": "COMPONENT_SET",
-          "inLibrary": false,
-          "decision": "unpublished",
-          "reason": "Seven variants at 417 wide: On top event, Between event, Bottom event, Icon between event, Icon on top event, Show more event (417x72), Minor event (417x90). Not published."
+          "reason": "Not published in the library export; no implementation work is due."
         }
       ],
       "compositions": [
@@ -1570,6 +1578,21 @@
       "pageName": "• Pagination",
       "identities": [
         {
+          "nodeId": "10169:11956",
+          "name": ".CarouselStepperSingleElement",
+          "kind": "COMPONENT_SET",
+          "inLibrary": false,
+          "decision": "unpublished",
+          "reason": "One carousel step glyph. Not published: Pagination draws its own step markers."
+        },
+        {
+          "nodeId": "10169:11964",
+          "name": "CarouselStepper",
+          "kind": "COMPONENT",
+          "inLibrary": true,
+          "decision": "shipped"
+        },
+        {
           "nodeId": "126:4982",
           "name": ".PaginationSingleElement",
           "kind": "COMPONENT_SET",
@@ -1586,35 +1609,12 @@
           "reason": "2026-11-20 drift: the rows-per-page control is now an instance of the shared Select (48px) instead of a raw frame with .RowPerPageSelect, and .Rows per page is renamed .RowsPerPage; the page buttons are unchanged. The node stays pending until the compact-state, rows-per-page, edge-window and edge-arrow questions are answered: docs/design-requests/2026-10-21-pagination-order-axis.md."
         },
         {
-          "nodeId": "1503:9760",
-          "name": ".RowPerPageSelect",
-          "kind": "COMPONENT",
-          "inLibrary": false,
-          "decision": "unpublished",
-          "reason": "The rows-per-page select field. Not published: the published Pagination covers the order question, and this control waits with it."
-        },
-        {
           "nodeId": "1504:9763",
           "name": ".RowsPerPage",
           "kind": "COMPONENT_SET",
           "inLibrary": false,
           "decision": "unpublished",
           "reason": "The rows-per-page option list. Not published: same control as 1503:9760, drawn beside it."
-        },
-        {
-          "nodeId": "10169:11956",
-          "name": ".CarouselStepperSingleElement",
-          "kind": "COMPONENT_SET",
-          "inLibrary": false,
-          "decision": "unpublished",
-          "reason": "One carousel step glyph. Not published: Pagination draws its own step markers."
-        },
-        {
-          "nodeId": "10169:11964",
-          "name": "CarouselStepper",
-          "kind": "COMPONENT",
-          "inLibrary": true,
-          "decision": "shipped"
         }
       ],
       "compositions": []
