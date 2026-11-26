@@ -62,8 +62,10 @@ foundations are `packages/tokens`; its checks and Figma tooling are
 workspace root. The paths below are inside `packages/pagopa-ui` unless they
 name another package.
 
-The design system uses TypeScript 7, Tailwind CSS v4 and Base UI primitives
-(shadcn wrappers), with Storybook as its documentation surface.
+The design system uses TypeScript 6 — one compiler, the stable line, per
+[ADR-0010](./docs/decisions/0010-single-typescript-compiler.md) —, Tailwind CSS
+v4 and Base UI primitives (shadcn wrappers), with Storybook as its documentation
+surface.
 
 - `src/components/primitives` — Base UI primitives; `icons` — the public icon
   and pictogram components, re-exporting the generated catalogue from
