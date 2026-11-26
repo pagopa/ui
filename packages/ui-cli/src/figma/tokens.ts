@@ -551,7 +551,7 @@ export function emitRootCss(manifest: Manifest): string {
 
 // The public tokens are the custom properties of the UI root, published under
 // one vendor-neutral namespace so a Figma rename can never move them: the
-// declaration, not the Figma variable name, is the contract (ADR-0011). The
+// declaration, not the Figma variable name, is the contract (ADR-0012). The
 // block is the stylesheet's own, so the Figma references it carries stay
 // validated against the manifest and the published value is generated from
 // them rather than typed twice.
