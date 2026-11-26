@@ -12,8 +12,9 @@ PNPM_VERSION="${PNPM_VERSION:-11.28.6}"
 PAGOPA_UI_REPO="${PAGOPA_UI_REPO:-https://github.com/pagopa/ui.git}"
 # The ref the agent's workspace is cut from: it must already carry the `ui-cli`
 # this skill calls, so a command the skill names cannot fail on a missing flag
-# or a fixed bug (such as census drift reconciliation and partial rules snapshots).
-PAGOPA_UI_REF="${PAGOPA_UI_REF:-8d2f49a76be49079dbdc86794a137359b12c5b57}"
+# or a fixed bug (such as census drift reconciliation, partial rules snapshots,
+# and batched surface sync with composition verification).
+PAGOPA_UI_REF="${PAGOPA_UI_REF:-8505a0dbadfa668a0cc44392dad5ba37d151dd68}"
 
 WORKSPACE=/workspace
 

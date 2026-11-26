@@ -64,6 +64,19 @@
         "Leaves cards on untouched pages in `src/catalog/figma/rules.json` intact — never deleting them as removed and never editing `rules.json` by hand — and never writes to Figma."
       ],
       "files": []
+    },
+    {
+      "id": 5,
+      "name": "surface-census-batch-and-composition-review",
+      "prompt": "The local multi-page Figma export at `.figma/surface-sync-export.json` covers pages `1:23` and `61:2777`. Refresh both pages' identity census in one batched CLI command, verify the catalogue check, and report what changed — including any unrecorded composition candidates and any missing compositions. Do not edit `page-surface.json` by hand and do not run the full workspace gates.",
+      "expected_output": "The session refreshes pages `1:23` and `61:2777` in one batched `pnpm ui-cli figma surface sync --page 1:23,61:2777 --input .figma/surface-sync-export.json` run, reports that `9998:1` (`.ScrimHelper`, `unpublished`) was added on `1:23` while `61:2777` stayed unchanged (no `COMPONENT_SET` variant added), surfaces candidate `9998:2` (`XS Mobile scrim`, suggested `mobile`) for human review without auto-adding it to `page.compositions`, keeps `~ unverified composition` `68:2288` intact in `page-surface.json` (flagging it to check in Figma rather than deleting it as stale), confirms `catalogue overall: pass (0)`, and never writes to Figma.",
+      "expectations": [
+        "Refreshes both pages in one batched CLI call (`pnpm ui-cli figma surface sync --page 1:23,61:2777 --input .figma/surface-sync-export.json`, optionally after `--dry-run`) instead of editing `page-surface.json` by hand.",
+        "Reports that `9998:1` (`.ScrimHelper`) joined page `1:23` as `unpublished`, page `61:2777` remained unchanged (without adding `COMPONENT_SET` variants), and the catalogue check passed.",
+        "Surfaces unrecorded composition candidate `9998:2` (`XS Mobile scrim`, drawn 1, 320px, suggested `mobile`) for human review without auto-adding it to `page.compositions` in `page-surface.json`.",
+        "Treats missing composition `68:2288` as `~ unverified composition` (because an `--input` run cannot confirm deletion), keeps `68:2288` intact in `page-surface.json`, advises checking it in Figma instead of removing it as `! stale`, never writes to Figma, and does not run the full workspace gates."
+      ],
+      "files": []
     }
   ]
 }

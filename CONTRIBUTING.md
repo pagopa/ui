@@ -248,12 +248,13 @@ Both Figma skills carry graded sessions in the `evals.json` format
 [`.agents/skills/figma-to-code/evals`](./.agents/skills/figma-to-code/evals/evals.json),
 `figma-to-ui` in
 [`packages/pagopa-ui/skills/figma-to-ui/evals`](./packages/pagopa-ui/skills/figma-to-ui/evals/evals.json).
-Five evals for `figma-to-code` — an end-to-end pass over a single node, a
+Six evals for `figma-to-code` — an end-to-end pass over a single node, a
 guardrail that must stop and report instead of inventing a design, a delta
 triage over two or three nodes that must read the batched context once instead
 of a brief per node, a drift census reconciliation guardrail over an offline
-export, and a scoped rules-refresh guardrail that keeps untouched pages intact
-on a partial snapshot — and two for `figma-to-ui`: the end-to-end pass over a
+export, a scoped rules-refresh guardrail that keeps untouched pages intact on a
+partial snapshot, and a batched page-surface sync guardrail covering composition
+candidates and unverified missing compositions — and two for `figma-to-ui`: the end-to-end pass over a
 frame and the guardrail. They grade
 the session — what the agent read, resolved and decided — not the diff, so a
 skill change is graded without building anything; they are the regression net
