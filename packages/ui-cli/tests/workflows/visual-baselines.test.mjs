@@ -110,6 +110,24 @@ test("no job writes a baseline back into the checkout", () => {
   assert.doesNotMatch(workflow, /visual:update|visual:check/)
 })
 
+test("a comparison never writes a baseline, and only the update target captures", () => {
+  const config = read("apps/storybook/visual/playwright.config.ts")
+  assert.match(config, /updateSnapshots: "none"/, "the comparison would write its own baseline")
+
+  const pkg = JSON.parse(read("apps/storybook/package.json"))
+  assert.equal(
+    pkg.scripts["test:visual"],
+    "playwright test -c visual/playwright.config.ts",
+    "the comparison passes the update flag",
+  )
+  // The CLI flag outranks the config value: the update target still captures.
+  assert.match(
+    pkg.scripts["test:visual:update"],
+    /--update-snapshots=all$/,
+    "the only capture no longer overrides the config",
+  )
+})
+
 test("one runner owns the visual diff", () => {
   assert.equal(
     exists(".github/workflows/chromatic.yml"),

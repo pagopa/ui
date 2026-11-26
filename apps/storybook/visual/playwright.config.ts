@@ -16,6 +16,8 @@ export default defineConfig({
   retries: 0,
   reporter: process.env.CI ? [["list"], ["html", { open: "never" }]] : [["list"]],
   snapshotPathTemplate: `${snapshots}/{arg}{ext}`,
+  // The comparison never writes; only test:visual:update captures, via --update-snapshots=all.
+  updateSnapshots: "none",
   expect: {
     toHaveScreenshot: {
       // Chromium rasterisation moves a handful of border or text pixels between
