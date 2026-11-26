@@ -103,9 +103,18 @@ export const TokenSnapshotSchema = z.looseObject({
   unresolved: z.record(z.string(), z.unknown()).optional(),
 })
 
+// The literals the semantic stylesheet may keep, keyed by the declaration they
+// are, not by property alone: two `animation-duration` values are two decisions.
+export const StylesheetDeclarationSchema = z.strictObject({
+  declaration: NonEmptyStringSchema,
+  reason: NonEmptyStringSchema,
+})
+
 export const FoundationsFileSchema = z.strictObject({
   schemaVersion: z.literal(1),
+  note: z.string().optional(),
   entries: z.record(z.string(), FoundationEntrySchema),
+  stylesheet: z.array(StylesheetDeclarationSchema).optional(),
 })
 
 export const FoundationBaselineSchema = z.strictObject({
