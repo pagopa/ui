@@ -21,6 +21,14 @@ const map = {
       exports: ["Button"],
       // A name the registry uses for the row and the package keeps internal.
       unexported: ["IconButton"],
+      // The variant-to-prop mapping the catalogue declares for the export.
+      propsMap: {
+        version: 1,
+        props: {
+          Size: { prop: "size", values: { Small: "sm", Medium: "md" } },
+          Type: { prop: "variant" },
+        },
+      },
       story: "components-button--playground",
     },
     "1:3": { status: "excluded", exports: [], reason: "A decoration no component draws" },
@@ -51,6 +59,29 @@ test("resolve answers with the exports, the status and the story of one node", (
   assert.match(result.stdout, /exports: Button/)
   assert.match(result.stdout, /status: {2}implemented/)
   assert.match(result.stdout, /story: {3}components-button--playground/)
+})
+
+test("resolve carries the variant-to-prop mapping the catalogue declared", () => {
+  const result = run(["resolve", "1:2"])
+  assert.equal(result.status, 0, result.stderr)
+  // One line per Figma property, aligned under the other rows: the option it
+  // spells differently is translated, the one it does not passes through.
+  assert.match(result.stdout, /props: {3}Size → size: Small=sm, Medium=md\n/)
+  assert.match(result.stdout, /\n {11}Type → variant\n/)
+  // --json hands the same row to a program, mapping included.
+  assert.deepEqual(JSON.parse(run(["resolve", "1:2", "--json"]).stdout).node.propsMap, {
+    version: 1,
+    props: {
+      Size: { prop: "size", values: { Small: "sm", Medium: "md" } },
+      Type: { prop: "variant" },
+    },
+  })
+})
+
+test("a node with no declared mapping resolves as it did before", () => {
+  const result = run(["resolve", "1:3"])
+  assert.equal(result.status, 0, result.stderr)
+  assert.doesNotMatch(result.stdout, /props:/)
 })
 
 test("a name the package keeps internal is readable but marked so", () => {
