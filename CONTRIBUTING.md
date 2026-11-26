@@ -439,31 +439,45 @@ release gate are where the whole catalogue is compared again.
 
 ## The green chain
 
-Green before commit; CI runs the same, and the chain runs the two gates CI owns
-but Nx projects do not: `mise install --locked` fails when `mise.lock` no longer
-matches what `mise.toml` resolves, and `nx format:check` covers every tracked
-file, `docs/` and `mise.toml` included.
+Green before commit; CI runs the same. The chain is one Nx task graph: every
+gate is an Nx target, `workspace:verify` names the whole graph, and Nx schedules
+what the dependencies allow in parallel and replays what it has already cached.
 
 ```bash
 pnpm nx run workspace:verify
 ```
 
 `-c fast` is the quick subset: it stops before the browser suites and the
-Storybook build, so it never replaces the full run before a commit. It runs the
-two gates too.
+Storybook build, so it never replaces the full run before a commit.
 
-What it runs:
+Two gates are not Nx projects, and the chain keeps them anyway.
+`mise install --locked node pnpm` opens it as a plain command — a toolchain pin
+that could be replayed from a cache would prove nothing — and fails when
+`mise.lock` no longer matches what `mise.toml` resolves.
+`workspace:check:format` wraps `nx format:check`, which covers every tracked
+file, `docs/` and `mise.toml` included.
 
-```bash
-mise install --locked node pnpm && pnpm nx format:check && \
-  pnpm nx run-many -p pagopa-ui -c=ci -t typecheck,fmt,lint,docs,check:catalogue,foundation:check,layers:check,build,test && \
-  pnpm nx run-many -p pagopa-ui-artwork,pagopa-ui-tokens,pagopa-ui-cli -c=ci -t typecheck,fmt,lint && \
-  pnpm nx run pagopa-ui-artwork:test && pnpm nx run pagopa-ui-tokens:test && pnpm nx run pagopa-ui-cli:test && \
-  pnpm nx run pagopa-ui-cli:check:rules && pnpm nx run pagopa-ui-cli:check:parity && \
-  pnpm nx run pagopa-ui-storybook:test:coverage && pnpm nx run pagopa-ui-storybook:test:stories && pnpm nx run pagopa-ui-storybook:build && pnpm nx run pagopa-ui:library:check
-```
+What the graph holds:
 
-The `ci` configuration is the gate: `lint` and `fmt` check instead of writing.
+- `workspace:verify-full` — the whole chain: `workspace:verify-fast` plus the
+  browser tail, `pagopa-ui-storybook:build`, `test:coverage`, `test:stories` and
+  `pagopa-ui:library:check`;
+- `workspace:verify-fast` — the static half, gate by gate:
+  `workspace:check:format`; `pagopa-ui` `typecheck`, `format:check`,
+  `lint:check`, `docs`, `check:catalogue`, `foundation:check`, `layers:check`,
+  `build`, `test`; `pagopa-ui-artwork`, `pagopa-ui-tokens` and `pagopa-ui-cli`
+  `typecheck`, `format:check`, `lint:check`, `test`; and `pagopa-ui-cli`
+  `check:rules`, `check:parity`.
+
+`lint:check` and `format:check` are the gate: `lint` and `fmt` write, the
+`:check` variants report, which is what the `ci` configuration CI uses resolves
+to. `pagopa-ui:test` pulls the checks that package owns — `api:check`,
+`figma:map:check`, `a11y:conformance:check` and the rest — through its
+`dependsOn`, so each runs once, wherever in the graph it is needed. A gate is
+added by adding a `dependsOn` entry to `tools/workspace/project.json`;
+`packages/ui-cli/tests/checks/verify-chain.test.mjs` reads the task graph and
+fails when one leaves it.
+
 A lock the gate rejects is refreshed with `mise lock node pnpm`, which rewrites
 only the entries whose resolution moved; commit it with the `.mise/locks`
 directory it points at.
