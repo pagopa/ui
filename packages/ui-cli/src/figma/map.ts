@@ -39,7 +39,13 @@ import {
   type RegistryEntry,
   type Target,
 } from "../schemas/catalogue.ts"
-import { FigmaMapSchema, type FigmaMap, type MapNode } from "../schemas/map.ts"
+import {
+  FigmaMapSchema,
+  PROPS_MAP_VERSION,
+  type FigmaMap,
+  type MapNode,
+  type PropsMap,
+} from "../schemas/map.ts"
 import { STORY_TITLES_PATH, StoryTitlesSchema, type StoryTitles } from "./stories.ts"
 
 export const FIGMA_MAP_PATH = "figma-map.json"
@@ -115,6 +121,7 @@ type Decision = {
   status: RegistryEntry["status"]
   names: string[]
   story?: string
+  propsMap?: PropsMap
   reason?: string
 }
 
@@ -134,10 +141,12 @@ function nodeDecision(
   const entry = registry.entries[nodeId]
   if (entry) {
     const story = storyFor(entry.target, titles)
+    const propsMap = declaredPropsMap(entry.target)
     return {
       status: entry.status,
       names: targetExports(entry.target),
       ...(story ? { story } : {}),
+      ...(propsMap ? { propsMap } : {}),
       ...(entry.reason ? { reason: entry.reason } : {}),
     }
   }
@@ -163,6 +172,35 @@ export type MapSources = {
   values: Set<string>
 }
 
+// The mapping is JSX a consumer writes blind, so the snapshot must still declare
+// every property and option it names: a mapping that outlived the file it was
+// written against is caught here, where the disagreement is still readable.
+export function propsMapProblems(
+  nodeId: string,
+  propsMap: PropsMap,
+  node: InventoryNode | undefined,
+): string[] {
+  if (!node) return []
+  const problems: string[] = []
+  for (const [name, entry] of Object.entries(propsMap.props)) {
+    const property = node.properties?.[name]
+    if (property?.type !== "VARIANT") {
+      problems.push(`${nodeId} maps "${name}", which the inventory does not declare as a variant`)
+      continue
+    }
+    for (const option of Object.keys(entry.values ?? {}))
+      if (!property.variantOptions.includes(option))
+        problems.push(`${nodeId} maps "${name}=${option}", which is not one of its variants`)
+  }
+  return problems
+}
+
+// The catalogue declares the mapping without its version: the generator stamps
+// the one it emits, so no registry entry can claim a shape it does not have.
+function declaredPropsMap(target: Target | undefined): PropsMap | undefined {
+  return target?.props ? { version: PROPS_MAP_VERSION, props: target.props } : undefined
+}
+
 export function figmaMap({ registry, inventory, titles, values }: MapSources): FigmaMap {
   const listed = new Map(inventory.components.map((node) => [node.nodeId, node]))
   const nodeIds = [...new Set([...listed.keys(), ...Object.keys(registry.entries)])].sort(
@@ -177,12 +215,17 @@ export function figmaMap({ registry, inventory, titles, values }: MapSources): F
     // a consumer could write.
     const exports = decision.names.filter((name) => values.has(name))
     const unexported = decision.names.filter((name) => !values.has(name))
+    if (decision.propsMap) {
+      const problems = propsMapProblems(nodeId, decision.propsMap, node)
+      if (problems.length) throw new UsageError(problems.join("\n"))
+    }
     nodes[nodeId] = {
       ...(node ? { figma: node.name, page: node.pageName, type: node.type } : {}),
       status: decision.status,
       exports,
       ...(unexported.length ? { unexported } : {}),
       ...(decision.story ? { story: decision.story } : {}),
+      ...(decision.propsMap ? { propsMap: decision.propsMap } : {}),
       ...(decision.reason ? { reason: decision.reason } : {}),
     }
   }
@@ -239,10 +282,13 @@ function summary(map: FigmaMap): string {
 export function mapProblems(map: FigmaMap, inventory: Inventory, values: Set<string>): string[] {
   const problems: string[] = []
   const listed = new Set(inventory.components.map((node) => node.nodeId))
+  const nodesById = new Map(inventory.components.map((node) => [node.nodeId, node]))
   for (const name of values) if (!(name in map.exports)) problems.push(`${name} is not indexed`)
   for (const [nodeId, node] of Object.entries(map.nodes)) {
     if (node.status === "implemented" && !listed.has(nodeId))
       problems.push(`${nodeId} is implemented but missing from ${COMMITTED_FILES.inventory}`)
+    if (node.propsMap)
+      problems.push(...propsMapProblems(nodeId, node.propsMap, nodesById.get(nodeId)))
     for (const name of node.exports) {
       if (!values.has(name))
         problems.push(`${nodeId} advertises ${name}, which @pagopa/ui does not export`)

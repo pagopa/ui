@@ -13,9 +13,15 @@ import { createSourceModules, type SourceModules } from "../lib/source-modules.t
 import {
   FoundationBaselineSchema,
   FoundationExceptionsSchema,
+  FoundationsFileSchema,
   type FoundationException,
 } from "../schemas/tokens.ts"
-import { cssStyleOccurrences, inlineStyleOccurrences, STYLE_RULES } from "./foundation-styles.ts"
+import {
+  cssStyleOccurrences,
+  declarationToken,
+  inlineStyleOccurrences,
+  STYLE_RULES,
+} from "./foundation-styles.ts"
 import { report, type CheckReport } from "./report.ts"
 
 const FoundationManifestSchema = z.looseObject({
@@ -38,9 +44,13 @@ type FoundationManifest = z.infer<typeof FoundationManifestSchema>
 const MANIFEST = "src/manifest.json"
 const BASELINE = "src/foundation-baseline.json"
 const EXCEPTIONS = "src/foundation-exceptions.json"
+const FOUNDATIONS = "src/foundations.json"
 const MANIFEST_PATH = `packages/tokens/${MANIFEST}`
 const BASELINE_PATH = `packages/tokens/${BASELINE}`
 const EXCEPTIONS_PATH = `packages/tokens/${EXCEPTIONS}`
+const FOUNDATIONS_PATH = `packages/tokens/${FOUNDATIONS}`
+// The stylesheet that declares the semantic tokens, relative to the package.
+const SEMANTIC_STYLESHEET = "src/index.css"
 const COMPONENTS = "src/components"
 // The Figma page templates live in the Storybook application, outside the
 // package, and follow the same token-first rules.
@@ -307,6 +317,37 @@ function readManifest(workspace: Workspace): FoundationManifest {
   )
 }
 
+// The semantic stylesheet is the token boundary: a literal colour or dimension
+// there is a reviewed decision, not a local. Foundations records the ones that
+// stay, and a declaration that stops matching fails like a stale exception.
+function readStylesheetDeclarations(workspace: Workspace): Map<string, string> {
+  const file = path.join(workspace.tokensRoot, FOUNDATIONS)
+  if (!fs.existsSync(file)) return new Map()
+  const { stylesheet = [] } = parseSchema(FoundationsFileSchema, readJson(file), FOUNDATIONS_PATH)
+  return new Map(stylesheet.map((entry) => [declarationToken(entry.declaration), entry.reason]))
+}
+
+function applyStylesheetDeclarations(
+  occurrences: Occurrence[],
+  declared: Map<string, string>,
+): { occurrences: Occurrence[]; errors: string[] } {
+  const matched = new Set<string>()
+  const kept = occurrences.filter((occurrence) => {
+    const key = `${occurrence.rule}|${occurrence.file}|${occurrence.token}`
+    if (!key.startsWith(`visual-constant|${SEMANTIC_STYLESHEET}|`)) return true
+    if (!declared.has(occurrence.token)) return true
+    matched.add(occurrence.token)
+    return false
+  })
+  const errors = [...declared.keys()]
+    .filter((token) => !matched.has(token))
+    .map(
+      (token) =>
+        `${FOUNDATIONS_PATH}: stale stylesheet declaration "${token}" — remove it, or restore the value in packages/pagopa-ui/${SEMANTIC_STYLESHEET}`,
+    )
+  return { occurrences: kept, errors }
+}
+
 function readExceptions(workspace: Workspace): z.infer<typeof FoundationExceptionsSchema> {
   const file = path.join(workspace.tokensRoot, EXCEPTIONS)
   if (!fs.existsSync(file)) return { schemaVersion: 1, exceptions: [] }
@@ -319,7 +360,11 @@ export function measureFoundation(workspace: Workspace): {
   counts: Record<string, number>
   raw: Record<string, number>
 } {
-  const occurrences = measure(workspace, readManifest(workspace))
+  const measured = applyStylesheetDeclarations(
+    measure(workspace, readManifest(workspace)),
+    readStylesheetDeclarations(workspace),
+  )
+  const occurrences = measured.occurrences
   const used = new Set(readExceptions(workspace).exceptions.map(exceptionKey))
   const counts: Record<string, number> = Object.fromEntries(ALL_RULES.map((rule) => [rule, 0]))
   const raw: Record<string, number> = Object.fromEntries(ALL_RULES.map((rule) => [rule, 0]))
@@ -332,17 +377,23 @@ export function measureFoundation(workspace: Workspace): {
 }
 
 export function checkFoundation(workspace: Workspace): CheckReport {
-  const occurrences = measure(workspace, readManifest(workspace))
+  const measured = applyStylesheetDeclarations(
+    measure(workspace, readManifest(workspace)),
+    readStylesheetDeclarations(workspace),
+  )
   const baseline = parseSchema(
     FoundationBaselineSchema,
     readJson(path.join(workspace.tokensRoot, BASELINE)),
     BASELINE_PATH,
   )
   const { errors, counts, exceptions } = evaluateFoundation(
-    occurrences,
+    measured.occurrences,
     baseline,
     readExceptions(workspace),
   )
   const total = Object.values(counts).reduce((sum, count) => sum + count, 0)
-  return report("foundation", `${total} occurrences, ${exceptions} registered exceptions`, errors)
+  return report("foundation", `${total} occurrences, ${exceptions} registered exceptions`, [
+    ...errors,
+    ...measured.errors,
+  ])
 }

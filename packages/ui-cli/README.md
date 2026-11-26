@@ -45,7 +45,12 @@ compare it with the source code of the audited package, `packages/pagopa-ui`.
 - `packages/tokens/src/foundations.json` is hand-maintained, reviewed data: the
   foundation entries without a single published variable (spacing steps, sizes,
   breakpoints, container thresholds, z-index steps, radius extensions, effect
-  styles), each with its source and, for a local extension, the reason.
+  styles), each with its source and, for a local extension, the reason. Its
+  `stylesheet` list declares, one `declaration` (`property: value`) and `reason`
+  at a time, the literals of `packages/pagopa-ui/src/index.css`: a hardcoded
+  colour or an unbacked pixel dimension in that stylesheet fails the foundation
+  check unless this list carries exactly that value, and so does a declaration
+  the stylesheet no longer holds.
 - `packages/tokens/src/foundation-baseline.json` is the ceiling of the foundation lint
   and can only go down; `packages/tokens/src/foundation-exceptions.json` is its reasoned
   burn-down list (`rule`, `file`, `match`, `nodeId`, `reason`). A stale
