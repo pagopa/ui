@@ -5,7 +5,10 @@ import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { Alert, AlertDescription } from "@/components/primitives/alert"
 import { Button } from "@/components/primitives/button"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { Breadcrumb, Footer, Header, Preheader } from "@/components/navigation"
+import { Breadcrumb } from "@/components/navigation/breadcrumb"
+import { Footer } from "@/components/navigation/footer"
+import { Header } from "@/components/navigation/header"
+import { Preheader } from "@/components/navigation/preheader"
 import { LogIn } from "./templates/LogIn"
 
 // The source composition of set `2339:80916`: the application chrome around the

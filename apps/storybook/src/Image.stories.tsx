@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect } from "storybook/test"
 
-import { Image } from "@/components/content"
+import { Image } from "@/components/content/image"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import imageGuide from "./guides/image.md?raw"

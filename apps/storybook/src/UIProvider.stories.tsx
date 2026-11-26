@@ -3,11 +3,11 @@ import * as React from "react"
 import { enUS } from "react-day-picker/locale"
 import { expect, fn, screen, userEvent, waitFor, within } from "storybook/test"
 
-import { DatePicker } from "@/components/inputs"
+import { DatePicker } from "@/components/inputs/date-picker"
 import { Breadcrumb } from "@/components/navigation/breadcrumb"
 import { Footer } from "@/components/navigation/footer"
 import { Pagination } from "@/components/navigation/pagination"
-import { Dialog } from "@/components/overlays"
+import { Dialog } from "@/components/overlays/dialog"
 import { Button } from "@/components/primitives/button"
 import { UIProvider, enMessages, itMessages, type LinkComponentProps } from "@/lib/ui-provider"
 

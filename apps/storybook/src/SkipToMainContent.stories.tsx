@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { SkipToMainContent } from "@/components/navigation"
+import { SkipToMainContent } from "@/components/navigation/skip-to-main-content"
 
 const meta = {
   title: "Components/Navigation/SkipToMainContent",

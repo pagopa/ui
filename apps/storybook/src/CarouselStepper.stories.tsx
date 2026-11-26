@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, fn, userEvent, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { CarouselStepper } from "@/components/navigation"
+import { CarouselStepper } from "@/components/navigation/carousel-stepper"
 
 import carouselStepperGuide from "./guides/carousel-stepper.md?raw"
 

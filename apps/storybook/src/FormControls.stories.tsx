@@ -2,24 +2,23 @@ import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, fn, screen, userEvent, waitFor, within } from "storybook/test"
 
+import { Autocomplete } from "@/components/inputs/autocomplete"
 import {
-  Autocomplete,
   AuthenticationCodeInput,
-  CheckboxField,
-  Chip,
-  DatePicker,
   DatePickerField,
-  DragAndDrop,
-  ErrorSummary,
-  InputChip,
-  MultiSelectField,
-  RadioField,
-  RadioGroup,
-  SelectField,
-  SwitchField,
   TextareaField,
   TextField,
-} from "@/components/inputs"
+} from "@/components/inputs/text-fields"
+import { CheckboxField } from "@/components/inputs/checkbox-field"
+import { Chip, InputChip } from "@/components/inputs/chips"
+import { DatePicker } from "@/components/inputs/date-picker"
+import { DragAndDrop } from "@/components/inputs/drag-and-drop"
+import { ErrorSummary } from "@/components/inputs/error-summary"
+import { MultiSelectField } from "@/components/inputs/multi-select-field"
+import { RadioField } from "@/components/inputs/radio-field"
+import { RadioGroup } from "@/components/inputs/radio-group"
+import { SelectField } from "@/components/inputs/select-field"
+import { SwitchField } from "@/components/inputs/switch-field"
 import { Button } from "@/components/primitives/button"
 import { Checkbox } from "@/components/primitives/checkbox"
 import { Label } from "@/components/primitives/label"

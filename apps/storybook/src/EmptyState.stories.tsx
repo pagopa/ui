@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, within } from "storybook/test"
 
-import { EmptyState } from "@/components/feedback"
+import { EmptyState } from "@/components/feedback/empty-state"
 import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
 import { Button } from "@/components/primitives/button"
 import { figmaEmbedUrl } from "@/catalog/figma/file"

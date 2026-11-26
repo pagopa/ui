@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import * as React from "react"
 import { expect, screen, userEvent, waitFor, within } from "storybook/test"
 
-import { TimelineDrawer } from "@/components/overlays"
+import { TimelineDrawer } from "@/components/overlays/timeline-drawer"
 import { Button } from "@/components/primitives/button"
 
 const meta = {

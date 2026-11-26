@@ -2,17 +2,16 @@ import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, screen, userEvent, waitFor, within } from "storybook/test"
 
-import {
-  Table,
-  TableCellRow,
-  TableHeaderField,
-  TableListField,
-  type TableColumn,
-} from "@/components/data-display"
+import { Table, type TableColumn } from "@/components/data-display/table"
+import { TableCellRow } from "@/components/data-display/table-cell-row"
+import { TableHeaderField } from "@/components/data-display/table-header-field"
+import { TableListField } from "@/components/data-display/table-list-field"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
-import { MenuDropdown, SelectField, Chip } from "@/components/inputs"
-import { Pagination } from "@/components/navigation"
+import { MenuDropdown } from "@/components/inputs/menus"
+import { SelectField } from "@/components/inputs/select-field"
+import { Chip } from "@/components/inputs/chips"
+import { Pagination } from "@/components/navigation/pagination"
 import { Button } from "@/components/primitives/button"
 import {
   Table as TablePrimitive,

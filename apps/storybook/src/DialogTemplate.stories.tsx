@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { CheckboxField } from "@/components/inputs"
+import { CheckboxField } from "@/components/inputs/checkbox-field"
 import { Button } from "@/components/primitives/button"
 import { SourceFrame } from "./support/source-frame"
 import { DialogTemplate } from "./templates/DialogTemplate"

@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { Avatar } from "@/components/content"
-import { Header } from "@/components/navigation"
+import { Avatar } from "@/components/content/avatar"
+import { Header } from "@/components/navigation/header"
 import { Button } from "@/components/primitives/button"
 
 const meta = {

@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { CorrectionTag } from "@/components/content"
-import { Timeline, type TimelineItemStatus } from "@/components/data-display"
+import { CorrectionTag } from "@/components/content/correction-tag"
+import { Timeline, type TimelineItemStatus } from "@/components/data-display/timeline"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
 import timelineGuide from "./guides/timeline.md?raw"

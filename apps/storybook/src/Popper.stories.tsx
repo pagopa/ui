@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { Popper, type PopperPointer, type PopperProps } from "@/components/overlays"
+import { Popper, type PopperPointer, type PopperProps } from "@/components/overlays/popper"
 import { UIProvider } from "@/lib/ui-provider"
 import popperGuide from "./guides/popper.md?raw"
 

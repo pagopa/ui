@@ -2,7 +2,7 @@ import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
-import { SegmentedControl } from "@/components/inputs"
+import { SegmentedControl } from "@/components/inputs/actions"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import segmentedControlsGuide from "./guides/segmented-controls.md?raw"

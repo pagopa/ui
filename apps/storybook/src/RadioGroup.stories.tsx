@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
-import { RadioField, RadioGroup } from "@/components/inputs"
+import { RadioField } from "@/components/inputs/radio-field"
+import { RadioGroup } from "@/components/inputs/radio-group"
 
 import radioGuide from "./guides/radio-choices.md?raw"
 

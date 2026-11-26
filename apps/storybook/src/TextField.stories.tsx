@@ -3,7 +3,7 @@ import { expect, within } from "storybook/test"
 
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 
-import { TextField } from "@/components/inputs"
+import { TextField } from "@/components/inputs/text-fields"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import fieldsGuide from "./guides/fields.md?raw"

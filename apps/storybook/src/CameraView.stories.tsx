@@ -1,7 +1,7 @@
 import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
-import { CameraView } from "@/components/overlays"
+import { CameraView } from "@/components/overlays/camera-view"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import cameraViewElementGuide from "./guides/camera-view-element.md?raw"

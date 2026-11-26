@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { Spacer, type SpacerSize } from "@/components/content"
+import { Spacer, type SpacerSize } from "@/components/content/spacer"
 
 import spacingGuide from "./guides/spacing.md?raw"
 

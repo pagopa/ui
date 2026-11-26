@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import * as React from "react"
 import { expect, screen, userEvent, waitFor, within } from "storybook/test"
 
-import { Drawer, DrawerClose } from "@/components/overlays"
+import { Drawer, DrawerClose } from "@/components/overlays/drawer"
 import { Button } from "@/components/primitives/button"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { figmaEmbedUrl } from "@/catalog/figma/file"

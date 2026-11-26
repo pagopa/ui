@@ -5,7 +5,7 @@ import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Default as CancelIcon } from "@/components/icons/generated/cancel"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { MenuDropdown } from "@/components/inputs"
+import { MenuDropdown } from "@/components/inputs/menus"
 
 const notifyMenuItem = fn()
 const documentsMenuItem = fn()

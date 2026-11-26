@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { Preheader } from "@/components/navigation"
+import { Preheader } from "@/components/navigation/preheader"
 import { Button } from "@/components/primitives/button"
 
 const meta = {

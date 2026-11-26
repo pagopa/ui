@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { Stepper } from "@/components/navigation"
+import { Stepper } from "@/components/navigation/stepper"
 
 const meta = {
   title: "Components/Navigation/Stepper",
@@ -86,7 +86,9 @@ export const StepContrast: Story = {
   play: async ({ canvasElement }) => {
     // Both device compositions are in the DOM: every upcoming disc is measured.
     const discs = [
-      ...canvasElement.querySelectorAll<HTMLElement>("span.pui\\:rounded-full.pui\\:bg-border-strong"),
+      ...canvasElement.querySelectorAll<HTMLElement>(
+        "span.pui\\:rounded-full.pui\\:bg-border-strong",
+      ),
     ]
     await expect(discs.length).toBeGreaterThan(0)
     for (const disc of discs) {

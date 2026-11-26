@@ -3,7 +3,7 @@ import type { Decorator, Meta, StoryObj } from "@storybook/react-vite"
 import { expect, fn, userEvent, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { Pagination } from "@/components/navigation"
+import { Pagination } from "@/components/navigation/pagination"
 
 import paginationGuide from "./guides/pagination.md?raw"
 

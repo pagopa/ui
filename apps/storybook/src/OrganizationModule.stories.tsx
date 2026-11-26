@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, within } from "storybook/test"
 
-import { OrganizationModule } from "@/components/composites"
-import { StatusTile, Tag } from "@/components/content"
+import { OrganizationModule } from "@/components/composites/organization-module"
+import { StatusTile } from "@/components/content/status-tile"
+import { Tag } from "@/components/content/tag"
 
 const meta = {
   title: "Components/Composites/OrganizationModule",

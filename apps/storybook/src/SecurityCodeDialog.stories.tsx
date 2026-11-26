@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { AuthenticationCodeInput } from "@/components/inputs"
+import { AuthenticationCodeInput } from "@/components/inputs/text-fields"
 import { Button } from "@/components/primitives/button"
 import { SourceFrame } from "./support/source-frame"
 import { SecurityCodeDialog } from "./templates/SecurityCodeDialog"

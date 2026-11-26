@@ -14,6 +14,10 @@ runtime cycle or computed path fails, a type-only cycle passes.
 - [ ] Imports point down only: `primitives`/`icons` ← families ← stories and
       templates. Nothing under `src/components` imports `apps/storybook/src` or
       `src/catalog`; templates may import any layer through `@/…`.
+- [ ] A story imports each component from the module that declares it
+      (`@/components/<family>/<module>`), never from a family barrel
+      (`@/components/<family>`): a barrel would put every story of the family on
+      the path of one changed component.
 - [ ] `@base-ui/react` and `react-day-picker` only in `primitives`; no icon
       package from any layer — `lucide-react`, `@tabler/icons-react`,
       `@heroicons/react`, `@radix-ui/react-icons`, `react-icons`,
