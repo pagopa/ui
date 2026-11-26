@@ -1,7 +1,7 @@
 {
   "name": "@pagopa/ui",
   "description": "PagoPA Web Design System",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "version": "0.1.10",
   "type": "module",
   "repository": {
@@ -30,10 +30,15 @@
     "skills",
     "plugin.json",
     "figma-map.json",
+    "LICENSE",
     "README.md",
     "!skills/*/evals",
     "!skills/*/harbor"
   ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
+  },
   "sideEffects": [
     "**/*.css"
   ],
@@ -60,8 +65,8 @@
     "react-day-picker": "^10.0.2"
   },
   "peerDependencies": {
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.59.4",

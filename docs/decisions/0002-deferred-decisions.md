@@ -1,8 +1,10 @@
 # ADR-0002 — Deferred decisions with triggers
 
 - **Status:** Accepted — deferrals recorded on 2026-10-12; the Titillio entry
-  added and resolved on 2026-10-14.
-- **Date:** 2026-10-12 (Titillio entry: 2026-10-14)
+  added and resolved on 2026-10-14; the distribution entry (§8) resolved on
+  2026-11-26.
+- **Date:** 2026-10-12 (Titillio entry: 2026-10-14; distribution entry:
+  2026-11-26)
 - **Related:** [ADR-0001](./0001-rework.md) — the rework whose boundaries produced these deferrals.
 
 ## 1. Context
@@ -147,7 +149,54 @@ itself (`references/visual-parity.md`).
   stay binding until their component is re-verified, exactly as the registry
   notes and guides already state.
 
-## 8. Consequences
+## 8. Distribution — licence, registry and peer range — resolved 2026-11-26
+
+**Decision:** `@pagopa/ui` is released under the MIT licence and published to
+GitHub Packages (`https://npm.pkg.github.com`) under the `@pagopa` scope with
+`publishConfig.access: "public"`. The React peer range is `^19.0.0`.
+
+**Resolved 2026-11-26** (pagopa/ui#158, #169): the first publication was the
+trigger of §4, and it forced three answers the repository had left open —
+the manifest declared `UNLICENSED` and no `LICENSE` file existed.
+
+- **Licence — MIT.** A single licence, not a dual arrangement. The root
+  `LICENSE` is the repository's, an identical copy ships inside the package
+  (`files` includes it, so consumers receive it), and every manifest that
+  declares a licence declares `MIT`. The licence covers the source; the bundled
+  fonts keep their own OFL text in `dist/licenses/`, which the artifact
+  contract already checks.
+- **Registry — GitHub Packages, npmjs dropped.** The package is consumed by
+  internal PagoPA applications, which already reach GitHub Packages with a
+  GitHub identity and need no second account; npmjs would add a separate
+  publisher credential, org policy and provenance chain for no consumer. The
+  `nx-release-publish` target is pinned in `packages/pagopa-ui/project.json`
+  and the manifest's `publishConfig.registry` says the same, so a plain
+  `npm publish` cannot land on npmjs by accident.
+- **Authentication — the repository's own `GITHUB_TOKEN`.** `release.yaml`
+  publishes with `${{ github.token }}` under a `packages: write` permission, so
+  the release needs no additional secret to maintain or rotate.
+- **Peer range — `^19.0.0`.** React 18 is rejected, not supported: the
+  components use React 19 APIs and rendering, so a `^18` consumer would fail at
+  runtime rather than at install. `^19.0.0` admits every React 19 minor while
+  keeping the floor honest.
+
+**Accepted trade-off:** GitHub Packages requires an authenticated request even
+for a public package, so "a public package needs no private-registry token"
+does not hold here. A consumer still configures the `@pagopa` scope in
+`.npmrc` and presents a token with `read:packages`; both READMEs say so plainly
+instead of promising a token-free install. The alternative — npmjs, where a
+public package installs anonymously — was dropped for the credential and policy
+reasons above.
+
+**No migration:** the package has no installed base, so no consumer needs to
+move a peer range or a registry.
+
+**Impact when triggered:** `packages/pagopa-ui/package.json` (licence,
+`publishConfig`, peers, `files`), the root and package `LICENSE`,
+`packages/pagopa-ui/plugin.json`, `packages/ui-cli/src/checks/library-artifact.ts`
+(the distribution contract the `library:check` gate asserts), and the READMEs.
+
+## 9. Consequences
 
 - Each trigger is an explicit entry condition: when it appears, the decision
   reopens here rather than inside an implementation PR.
