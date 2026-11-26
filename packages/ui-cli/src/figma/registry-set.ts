@@ -20,7 +20,8 @@ import {
 import { requiresReason, surfaceDecision } from "./surface-decision.ts"
 import { syncCatalogue } from "./catalogue/index.ts"
 
-const surfacePath = "src/catalog/figma/page-surface.json"
+/** The censused pages the identity decision is written to. */
+export const SURFACE_PATH = "src/catalog/figma/page-surface.json"
 export type RegistryOptions = {
   nodeId: string
   status: string
@@ -78,7 +79,7 @@ export async function setRegistry(workspace: Workspace, options: RegistryOptions
   const entry = buildEntry(old, options)
   registry.entries[node.nodeId] = entry
   const warnings: string[] = []
-  const surfaceFile = workspace.path(surfacePath)
+  const surfaceFile = workspace.path(SURFACE_PATH)
   const surface = fs.existsSync(surfaceFile) ? readJson(surfaceFile, PageSurfaceSchema) : null
   const page = surface?.pages.find((item) => item.pageId === node.pageId)
   const identity = page?.identities.find((item) => item.nodeId === node.nodeId)

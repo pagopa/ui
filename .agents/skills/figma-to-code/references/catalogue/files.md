@@ -3,17 +3,18 @@
 | Config key | Role | Edited by |
 | --- | --- | --- |
 | `catalog.inventory` | identities, canonical contracts, design fingerprints, dependency edges | `pnpm ui-cli update inventory --triage` |
-| `catalog.registry` | decision per `nodeId`, `pageId` bulk rules, targets, rendered stories, per-node `note` | `figma registry set`; unsupported fields reviewed in place |
+| `catalog.registry` | decision per `nodeId`, `pageId` bulk rules, targets, rendered stories, per-node `note` | `record`; unsupported fields reviewed in place |
 | `catalog.devicePolicy` | the device vocabulary: axes, canonical devices, aliases, widths, default scopes | by hand; never a component name or path |
-| `catalog.pageSurface` | page identities and decisions, and the compositions each page draws ([page surface](page-surface.md)) | `figma surface sync` for identities; compositions by hand |
+| `catalog.pageSurface` | page identities and decisions, and the compositions each page draws ([page surface](page-surface.md)) | `record` for decisions, `figma surface sync` for identities; compositions by hand |
 | `catalog.apiExceptions` | public exports with no source mapping: a deliberate extension, not a source-alignment claim | by hand, each with a reason, must shrink |
 | `catalog.evidenceExceptions` | story-evidence exceptions | by hand, each with a reason, must shrink |
 | `figma.fileModule` | the file key and the URL builders | rarely |
 | `catalog.inventoryStory` | the rendered join of inventory and registry | its generator |
 | `artwork.*`, `tokens.manifest`, `tokens.generatedCss` | generated artwork, runtime maps, tokens | their generator only |
 
-Generated files are owned by their writers. Use `figma registry set` for
-decisions, then review the diff; unsupported registry fields (bulk rules,
+Generated files are owned by their writers. Use `record` for decisions: one run
+writes the registry and every document it entails, or none of them, so review its
+diff; unsupported registry fields (bulk rules,
 artwork metadata, `additionalExports`) still need a surgical in-place edit.
 `.figma/` is gitignored and can exceed 100 MB: never commit the snapshot, the
 renders or the probes. The parity diagnostic writes nothing at all — no run

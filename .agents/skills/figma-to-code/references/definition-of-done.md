@@ -31,10 +31,14 @@ pnpm nx run pagopa-ui:docs
 pnpm nx run workspace:verify
 ```
 
-With Storybook answering, run `pnpm ui-cli parity check --node <nodeId> --device
-<device>` for **each** touched node on **each** device the inventory declares.
-Nothing is stored between runs, so the comparison is this session's and Nx
-reuses nothing: the numbers are read now or not at all.
+With Storybook answering, run `pnpm ui-cli align <nodeId> --device <device>` for
+**each** touched node on **each** device the inventory declares: one run reads the
+target, the story and the declared devices, probes Storybook and compares
+([commands.md](commands.md)). Nothing is stored between runs, so the comparison
+is this session's and Nx reuses nothing: the numbers are read now or not at all.
+Write the decision and its documents with
+`pnpm ui-cli record <nodeId> --status <status>`, which is atomic and idempotent,
+and report the run that closed the node, not the one you first typed.
 
 **Push and pull request stay with the person.** Keep stories, registry, inventory
 and exception changes with the implementation.

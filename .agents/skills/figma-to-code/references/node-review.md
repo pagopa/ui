@@ -23,19 +23,21 @@ bulk re-approval.
    change: the source the change touches.
    **Done when** the source variants to compare are listed.
 
-3. **Compare again, per declared device.** `pnpm ui-cli parity check --node <id>
-   --device <name>` for each device the inventory declares, following the parity
-   route in `visual-parity.md`. Nothing was stored to re-run: the comparison is
-   this session's pin against this session's render, and a residue the note
-   recorded under conditions that no longer hold (an old font, a removed
-   dependency) is re-measured, never re-approved.
+3. **Align, per declared device.** `pnpm ui-cli align <nodeId> --device <name>`
+   for each device the inventory declares: one run reads the target, the story and
+   the devices, probes Storybook and compares, following the parity route in
+   `visual-parity.md` ([commands.md](commands.md)). Nothing was stored to re-run:
+   the comparison is this session's pin against this session's render, and a
+   residue the note recorded under conditions that no longer hold (an old font, a
+   removed dependency) is re-measured, never re-approved.
    **Done when** every declared device reports a verdict and each remaining
    residue has a reason you can restate.
 
 4. **Decide** using [catalogue review semantics](catalogue/statuses.md#review-semantics).
-   Record the result with `pnpm ui-cli figma registry set <id> --status <status>`
-   and its evidence/reason flags. A design-owner blocker uses
-   `design-request.md`.
+   Record the result with `pnpm ui-cli record <nodeId> --status <status>` and its
+   target, note and reason flags: one run writes the registry entry, the page
+   surface and the generated documents, or none of them
+   ([commands.md](commands.md)). A design-owner blocker uses `design-request.md`.
 
    A `mocked` demo keeps its status and note: a review is not a renewal. A
    mapping to an existing implementation needs that implementation to cover the

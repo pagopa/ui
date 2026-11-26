@@ -23,13 +23,19 @@ written down with their variants and declared devices.
 
 ## The loop (per node, per declared device)
 
+One command, `align`, once the target and the declared devices are known
+([commands](commands.md)).
+
 1. **Source numbers.** `parity source <nodeId> --compact --depth 3`, `--json` for
    the variant list, `--png` for the pinned source image.
-2. **First capture.** Name the state, expect it, the source width, the artboard
-   height and the compare offset, with `--strict` on this first run: strict is the
-   only pass that catches a swapped stack whose sizes match. For pointer hover,
-   use the [`:hover` state-evidence contract](parity-tooling.md#capturing-a-state).
-   Exit 2 is missing evidence, not a delta.
+2. **First capture.** `align <nodeId> --device <name> --state <state>` with
+   `--expect-state`, `--width` and `--strict` on this first run: strict is the
+   only pass that catches a swapped stack whose sizes match. The run reports the
+   target, the story and the devices it read before it captures, so a wrong story
+   or a missing device costs a message and not a browser session. For pointer
+   hover, use the [`:hover` state-evidence contract](parity-tooling.md#capturing-a-state).
+   Exit 2 is a run to fix — no evidence, a silent Storybook, a node outside the
+   inventory — not a delta.
 3. **Compare both ways.** The numbers and the images, at native size and with
    magnified crops of seams, notches and joined edges. Anything structural — a
    missing slot, a wrong edge, an off-token colour, the wrong face, a swapped
@@ -41,17 +47,19 @@ written down with their variants and declared devices.
    mapping artifact; a subject off on every edge is a mapping defect. **Three fix
    passes per story and device**, then stop and report. Never accept a deviation because it
    looks right.
-5. **Read it twice.** Re-run `check` after the last fix, with the same state,
+5. **Read it twice.** Re-run `align` after the last fix, with the same state,
    width and device as the first run: the second pass is what you report, not the
-   command line you first typed. **Done when** the closing run shows no
+   command line you first typed. The run writes nothing, so this second pass is
+   the only record of the first. **Done when** the closing run shows no
    unexplained delta, and the residues it still prints each carry a reason.
 
 ## Close the wave
 
-Registry for the verified nodes only, then `pnpm nx run pagopa-ui:check:catalogue`.
-Carry the closing run's numbers into the report — residues with their reasons,
-the device each node was measured on — because the session ends and the numbers
-do not outlive it.
+`pnpm ui-cli record` for the verified nodes only: the registry entry and every
+document it entails, in one atomic run that is idempotent, so repeating it is how
+you confirm the tree already says what you meant. Carry the closing run's numbers
+into the report — residues with their reasons, the device each node was measured
+on — because the session ends and the numbers do not outlive it.
 
 ## What a reviewer decides
 
