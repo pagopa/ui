@@ -41,7 +41,7 @@ type Story = StoryObj<typeof meta>
 // preview a human opens is the source frame, not a fit-content box.
 export const Playground: Story = {
   render: (args) => (
-    <div className="w-68 max-w-full">
+    <div className="pui:w-68 pui:max-w-full">
       <TextField {...args} />
     </div>
   ),
@@ -57,7 +57,7 @@ export const WithTrailingIcon: Story = {
 
 export const Validation: Story = {
   render: () => (
-    <div className="grid max-w-xl gap-6">
+    <div className="pui:grid pui:max-w-xl pui:gap-6">
       <TextField
         label="Cerca una pratica"
         leadingIcon={<PagoPAIcon name="search" />}
@@ -150,9 +150,9 @@ export const FigmaStateMatrix: Story = {
     design: { type: "figma", url: figmaEmbedUrl("529:6111") },
   },
   render: () => (
-    <div className="grid gap-6">
+    <div className="pui:grid pui:gap-6">
       {sourceFieldStates.map((state) => (
-        <div key={state.id} className="w-[274px] max-w-full">
+        <div key={state.id} className="pui:w-[274px] pui:max-w-full">
           <TextField
             id={state.id}
             data-fidelity-state={state.id}

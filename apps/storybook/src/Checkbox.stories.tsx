@@ -29,7 +29,7 @@ export const Playground: Story = {
     defaultChecked: { control: "boolean" },
   },
   render: ({ defaultChecked, disabled }) => (
-    <div className="flex items-center gap-3">
+    <div className="pui:flex pui:items-center pui:gap-3">
       <Checkbox id="consent" defaultChecked={defaultChecked} disabled={disabled} />
       <Label htmlFor="consent">Accetto i termini del servizio</Label>
     </div>
@@ -44,7 +44,7 @@ export const Playground: Story = {
 
 export const CheckedByDefault: Story = {
   render: () => (
-    <div className="flex items-center gap-3">
+    <div className="pui:flex pui:items-center pui:gap-3">
       <Checkbox id="prechecked" defaultChecked />
       <Label htmlFor="prechecked">Consenso facoltativo</Label>
     </div>
@@ -53,7 +53,7 @@ export const CheckedByDefault: Story = {
 
 export const Disabled: Story = {
   render: () => (
-    <div className="flex items-center gap-3">
+    <div className="pui:flex pui:items-center pui:gap-3">
       <Checkbox id="unavailable" disabled />
       <Label htmlFor="unavailable">Opzione non disponibile</Label>
     </div>

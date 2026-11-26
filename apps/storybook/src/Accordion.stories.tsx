@@ -141,8 +141,8 @@ function ControlledValueHarness() {
   const [changes, setChanges] = React.useState(0)
 
   return (
-    <div className="grid gap-3">
-      <div className="flex flex-wrap gap-2">
+    <div className="pui:grid pui:gap-3">
+      <div className="pui:flex pui:flex-wrap pui:gap-2">
         <Button variant="outline" onClick={() => setValue(["two"])}>
           Apri la seconda sezione
         </Button>
@@ -232,19 +232,19 @@ export const UncontrolledMultiple: Story = {
 function ForwardedContractHarness() {
   const [root, setRoot] = React.useState<HTMLDivElement | null>(null)
   const contract = root
-    ? `classe=${root.classList.contains("max-w-md") ? "inoltrata" : "assente"} ` +
+    ? `classe=${root.classList.contains("pui:max-w-md") ? "inoltrata" : "assente"} ` +
       `unione=${root.classList.contains("grid") ? "unita" : "persa"} ` +
       `attributo=${root.dataset.contractSlot ?? "assente"}`
     : "nessun elemento"
 
   return (
-    <div className="grid gap-3">
+    <div className="pui:grid pui:gap-3">
       <output data-testid="root-contract">{contract}</output>
       <Accordion
         ref={setRoot}
         items={items}
         defaultValue={["one"]}
-        className="max-w-md"
+        className="pui:max-w-md"
         data-contract-slot="accordion"
       />
     </div>
@@ -275,7 +275,7 @@ const sourceHeader = () => ({
   ),
 })
 
-const sourceItemWidth = "w-[580px] max-w-full"
+const sourceItemWidth = "pui:w-[580px] pui:max-w-full"
 
 export const FidelityClosed: Story = {
   tags: ["color-pinned"],

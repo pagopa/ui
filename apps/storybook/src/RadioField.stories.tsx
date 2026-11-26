@@ -44,7 +44,11 @@ type Story = StoryObj<typeof meta>
 export const Playground: Story = {
   render: (args) => (
     // Source option frame: 320 wide (`194:3842`).
-    <RadioGroup legend="Metodo di contatto" defaultValue="email" className="w-80 max-w-full">
+    <RadioGroup
+      legend="Metodo di contatto"
+      defaultValue="email"
+      className="pui:w-80 pui:max-w-full"
+    >
       <RadioField {...args} />
       <RadioField value="office" label="Sportello" />
     </RadioGroup>
@@ -62,7 +66,7 @@ export const RichRadioOptions: Story = {
       legend="Ricezione dei documenti"
       name="delivery"
       defaultValue="office"
-      className="w-80 max-w-full"
+      className="pui:w-80 pui:max-w-full"
     >
       <RadioField
         value="email"
@@ -114,7 +118,7 @@ export const RadioIndicatorStates: Story = {
     design: { type: "figma", url: figmaEmbedUrl("194:3677") },
   },
   render: () => (
-    <div className="grid max-w-xl gap-6">
+    <div className="pui:grid pui:max-w-xl pui:gap-6">
       <RadioGroup legend="Canale di contatto" defaultValue="email" name="contact">
         <RadioField value="email" label="Email" />
         <RadioField value="office" label="Sportello" />
@@ -126,7 +130,7 @@ export const RadioIndicatorStates: Story = {
       <RadioGroupPrimitive
         aria-label="Indicatori radio sorgente"
         defaultValue="active"
-        className="gap-5"
+        className="pui:gap-5"
       >
         <RadioGroupItem value="default" aria-label="Indicatore predefinito" />
         <RadioGroupItem value="active" aria-label="Indicatore attivo" />
@@ -168,7 +172,12 @@ export const RadioIndicatorStates: Story = {
 export const RadioFieldFeedback: Story = {
   parameters: { design: { type: "figma", url: figmaEmbedUrl("194:3841") } },
   render: () => (
-    <RadioGroup legend="Canale con verifica" name="delivery" required className="w-80 max-w-full">
+    <RadioGroup
+      legend="Canale con verifica"
+      name="delivery"
+      required
+      className="pui:w-80 pui:max-w-full"
+    >
       <RadioField
         value="email"
         label="Posta elettronica"
@@ -223,7 +232,7 @@ export const RadioLoadingStates: Story = {
 
     return (
       <form
-        className="grid w-80 max-w-full gap-4"
+        className="pui:grid pui:w-80 pui:max-w-full pui:gap-4"
         onSubmit={(event) => {
           event.preventDefault()
           setSubmitted(String(new FormData(event.currentTarget).get("delivery") ?? "nessuno"))
@@ -303,28 +312,28 @@ export const FigmaStateMatrix: Story = {
     design: { type: "figma", url: figmaEmbedUrl("194:3841") },
   },
   render: () => (
-    <div className="grid w-max gap-4 p-4">
-      <div data-fidelity-variant="194-3842" className="w-80 max-w-full">
+    <div className="pui:grid pui:w-max pui:gap-4 pui:p-4">
+      <div data-fidelity-variant="194-3842" className="pui:w-80 pui:max-w-full">
         <RadioGroupPrimitive aria-label="Default" defaultValue="contact">
           <RadioField value="contact" label="Canale di contatto" />
         </RadioGroupPrimitive>
       </div>
-      <div data-fidelity-variant="194-3845" className="w-80 max-w-full">
+      <div data-fidelity-variant="194-3845" className="pui:w-80 pui:max-w-full">
         <RadioGroupPrimitive aria-label="Default disabilitato" defaultValue="contact" disabled>
           <RadioField value="contact" label="Canale di contatto" disabled />
         </RadioGroupPrimitive>
       </div>
-      <div data-fidelity-variant="194-3848" className="w-80 max-w-full">
+      <div data-fidelity-variant="194-3848" className="pui:w-80 pui:max-w-full">
         <RadioGroupPrimitive aria-label="Selezionato" defaultValue="contact">
           <RadioField value="contact" label="Canale di contatto" />
         </RadioGroupPrimitive>
       </div>
-      <div data-fidelity-variant="194-3851" className="w-80 max-w-full">
+      <div data-fidelity-variant="194-3851" className="pui:w-80 pui:max-w-full">
         <RadioGroupPrimitive aria-label="Selezionato disabilitato" defaultValue="contact" disabled>
           <RadioField value="contact" label="Canale di contatto" disabled />
         </RadioGroupPrimitive>
       </div>
-      <div data-fidelity-variant="194-3854" className="w-80 max-w-full">
+      <div data-fidelity-variant="194-3854" className="pui:w-80 pui:max-w-full">
         <RadioGroupPrimitive aria-label="Feedback">
           <RadioField value="contact" label="Canale di contatto" error="Seleziona un canale." />
         </RadioGroupPrimitive>
@@ -377,14 +386,14 @@ export const RadioSourceStateMatrix: Story = {
     const placements: ("start" | "end")[] = ["start", "end"]
 
     return (
-      <div className="flex flex-wrap items-start gap-6">
+      <div className="pui:flex pui:flex-wrap pui:items-start pui:gap-6">
         {states.flatMap((state) =>
           placements.map((placement) => (
             <RadioGroup
               key={`${state.label}-${placement}`}
               legend={`${state.label} · ${placement}`}
               defaultValue={state.selected ? "contact" : undefined}
-              className="w-80 max-w-full"
+              className="pui:w-80 pui:max-w-full"
             >
               <RadioField
                 value="contact"
@@ -405,7 +414,7 @@ export const RadioSourceStateMatrix: Story = {
             key={state.label}
             legend={`Skeleton · ${state.label}`}
             defaultValue={state.selected ? "loading" : undefined}
-            className="w-80 max-w-full"
+            className="pui:w-80 pui:max-w-full"
           >
             <RadioField
               value="loading"

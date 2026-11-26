@@ -67,7 +67,7 @@ export const NestedAndProfile: Story = {
         badgeCount: 2,
         badgeLabel: "2 pagamenti",
         chip: (
-          <Tag status="info" className="normal-case">
+          <Tag status="info" className="pui:normal-case">
             Novità
           </Tag>
         ),
@@ -113,7 +113,7 @@ const condensedItems = [
     badgeCount: 2,
     badgeLabel: "2 pagamenti",
     chip: (
-      <Tag status="info" className="normal-case">
+      <Tag status="info" className="pui:normal-case">
         Novità
       </Tag>
     ),
@@ -131,19 +131,19 @@ const condensedItems = [
 
 function CondensedPage({ width }: { width: number }) {
   return (
-    <div style={{ width }} className="flex min-h-[32rem] items-stretch">
+    <div style={{ width }} className="pui:flex pui:min-h-[32rem] pui:items-stretch">
       <SideNav
         condensed
         title="Pagamenti"
         items={condensedItems}
-        className="shrink-0 border-r"
+        className="pui:shrink-0 pui:border-r"
         profile={{
           title: "Stai operando come",
           name: "Comune di Roma",
           avatar: <Avatar alt="Comune di Roma" initials="CR" size="compact" />,
         }}
       />
-      <main data-testid="page-content" className="min-w-0 flex-1 p-6">
+      <main data-testid="page-content" className="pui:min-w-0 pui:flex-1 pui:p-6">
         <p>Contenuto della pagina</p>
       </main>
     </div>
@@ -202,7 +202,7 @@ export const CondensedMobile: Story = {
   // is the rendered composition.
   parameters: { layout: "fullscreen", chromatic: { viewports: [320] } },
   render: () => (
-    <div style={{ width: 320 }} className="min-h-[32rem]">
+    <div style={{ width: 320 }} className="pui:min-h-[32rem]">
       <SideNav
         condensed
         title="Pagamenti"
@@ -213,7 +213,7 @@ export const CondensedMobile: Story = {
           avatar: <Avatar alt="Comune di Roma" initials="CR" size="compact" />,
         }}
       />
-      <main data-testid="page-content" className="p-6">
+      <main data-testid="page-content" className="pui:p-6">
         <p>Contenuto della pagina</p>
       </main>
     </div>

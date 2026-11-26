@@ -121,7 +121,7 @@ export const NoticeLabels: Story = {
   // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <div className="grid max-w-xl gap-4">
+    <div className="pui:grid pui:max-w-xl pui:gap-4">
       <Banner title="Avviso su misura" onDismiss={() => undefined} dismissLabel="Nascondi avviso">
         Copy dell'avviso.
       </Banner>
@@ -180,7 +180,7 @@ export const NavigationTexts: Story = {
     chromatic: { viewports: [1200] },
   },
   render: () => (
-    <div className="grid max-w-5xl gap-6">
+    <div className="pui:grid pui:max-w-5xl pui:gap-6">
       <Pagination
         currentPage={1}
         totalPages={3}
@@ -236,7 +236,7 @@ export const FieldTexts: Story = {
   // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <div className="grid max-w-md gap-6">
+    <div className="pui:grid pui:max-w-md pui:gap-6">
       <TextField label="Nome" required requiredLabel="(campo obbligatorio)" />
       <AuthenticationCodeInput
         name="code"
@@ -337,7 +337,7 @@ export const ContentAnnouncements: Story = {
   // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <div className="grid max-w-xl gap-6">
+    <div className="pui:grid pui:max-w-xl pui:gap-6">
       <Avatar
         alt="Profilo"
         initials="OR"
@@ -369,7 +369,7 @@ export const ContentAnnouncements: Story = {
         legacySuggestion="Perché sei già socio"
         continueLabel="Prosegui su misura"
       />
-      <ul className="list-none">
+      <ul className="pui:list-none">
         <TableListItem
           fields={[{ label: "Servizio", value: "TARI" }]}
           action={{ onPress: () => undefined }}
@@ -406,7 +406,7 @@ export const OverlayAnnouncements: Story = {
   // Reflow exemption: fixture pinned at the source width, not a product surface.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <div className="grid max-w-xl gap-6">
+    <div className="pui:grid pui:max-w-xl pui:gap-6">
       <CameraView
         label="Inquadra il QR"
         active={false}

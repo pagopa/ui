@@ -25,32 +25,32 @@ type Story = StoryObj<typeof meta>
 
 export const Playground: Story = {
   render: () => (
-    <div className="w-[min(28rem,calc(100vw-2rem))]">
-      <p className="font-semibold">Sezione precedente</p>
-      <Separator className="my-6" />
-      <p className="font-semibold">Sezione successiva</p>
+    <div className="pui:w-[min(28rem,calc(100vw-2rem))]">
+      <p className="pui:font-semibold">Sezione precedente</p>
+      <Separator className="pui:my-6" />
+      <p className="pui:font-semibold">Sezione successiva</p>
     </div>
   ),
 }
 
 export const Padded: Story = {
   render: () => (
-    <div className="w-[min(28rem,calc(100vw-2rem))]">
-      <p className="font-semibold">Prima riga</p>
+    <div className="pui:w-[min(28rem,calc(100vw-2rem))]">
+      <p className="pui:font-semibold">Prima riga</p>
       <Separator padding={24} />
-      <p className="font-semibold">Dopo 24px</p>
+      <p className="pui:font-semibold">Dopo 24px</p>
       <Separator padding={32} />
-      <p className="font-semibold">Dopo 32px</p>
+      <p className="pui:font-semibold">Dopo 32px</p>
     </div>
   ),
 }
 
 export const WithText: Story = {
   render: () => (
-    <div className="w-[min(28rem,calc(100vw-2rem))]">
-      <p className="font-semibold">Accedi con SPID</p>
-      <Separator label="oppure" className="my-4" />
-      <p className="font-semibold">Accedi con CIE</p>
+    <div className="pui:w-[min(28rem,calc(100vw-2rem))]">
+      <p className="pui:font-semibold">Accedi con SPID</p>
+      <Separator label="oppure" className="pui:my-4" />
+      <p className="pui:font-semibold">Accedi con CIE</p>
     </div>
   ),
 }
@@ -60,7 +60,7 @@ const fidelityVariant = (nodeId: string) => nodeId.replace(":", "-")
 export const Fidelity: Story = {
   parameters: { layout: "fullscreen" },
   render: () => (
-    <div id="separator-fidelity" className="grid w-[320px] gap-6">
+    <div id="separator-fidelity" className="pui:grid pui:w-[320px] pui:gap-6">
       <div data-fidelity-variant={fidelityVariant("61:2787")}>
         <Separator />
       </div>

@@ -50,8 +50,8 @@ export const Unavailable: Story = {
     status: (
       <Tag
         status="default"
-        icon={<PagoPAIcon name="block" size={16} className="text-muted-foreground" />}
-        className="h-6 px-2"
+        icon={<PagoPAIcon name="block" size={16} className="pui:text-muted-foreground" />}
+        className="pui:h-6 pui:px-2"
       >
         non disponibile
       </Tag>
@@ -112,8 +112,8 @@ export const SourceUnavailable: Story = {
         status={
           <Tag
             status="default"
-            icon={<PagoPAIcon name="block" size={16} className="text-muted-foreground" />}
-            className="h-6 px-2"
+            icon={<PagoPAIcon name="block" size={16} className="pui:text-muted-foreground" />}
+            className="pui:h-6 pui:px-2"
           >
             non disponibile
           </Tag>

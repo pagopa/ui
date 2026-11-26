@@ -212,7 +212,7 @@ const sourceBoxWidths: {
 const fidelityVariant = (nodeId: string) => nodeId.replace(":", "-")
 const actionLabel = () => <span data-fidelity-label>Action</span>
 const kidStar = () => (
-  <span data-fidelity-icon className="inline-flex shrink-0">
+  <span data-fidelity-icon className="pui:inline-flex pui:shrink-0">
     <PagoPAIcon name="kid_star" />
   </span>
 )
@@ -235,15 +235,15 @@ export const FigmaStateMatrix: Story = {
     design: { type: "figma", url: figmaEmbedUrl("108:1402") },
   },
   render: () => (
-    <div className="grid w-max gap-4">
+    <div className="pui:grid pui:w-max pui:gap-4">
       {figmaAppearances.map((appearance) => (
         <div
           key={appearance.id}
           data-fidelity-appearance={appearance.id}
           className={
             appearance.onBrand
-              ? "flex gap-4 rounded-lg bg-navy p-4"
-              : "flex gap-4 rounded-lg bg-background p-4"
+              ? "pui:flex pui:gap-4 pui:rounded-lg pui:bg-navy pui:p-4"
+              : "pui:flex pui:gap-4 pui:rounded-lg pui:bg-background pui:p-4"
           }
         >
           <Button
@@ -411,7 +411,7 @@ export const FigmaIconButton: Story = {
       size="icon"
       aria-label="Apri menu"
     >
-      <span data-fidelity-icon className="inline-flex shrink-0">
+      <span data-fidelity-icon className="pui:inline-flex pui:shrink-0">
         <PagoPAIcon name="menu" />
       </span>
     </Button>
@@ -448,7 +448,7 @@ export const LightThemeOnly: Story = {
 
 export const Variants: Story = {
   render: () => (
-    <div className="flex flex-wrap items-center gap-4">
+    <div className="pui:flex pui:flex-wrap pui:items-center pui:gap-4">
       <Button>Azione primaria</Button>
       <Button variant="outline">Azione secondaria</Button>
       <Button variant="ghost">Azione testuale</Button>
@@ -460,7 +460,7 @@ export const Variants: Story = {
 export const WithIcons: Story = {
   parameters: { design: { type: "figma", url: figmaEmbedUrl("108:1402") } },
   render: () => (
-    <div className="flex flex-wrap gap-4">
+    <div className="pui:flex pui:flex-wrap pui:gap-4">
       <Button>
         <PagoPAIcon name="kid_star" aria-hidden="true" />
         Preferiti
@@ -539,7 +539,7 @@ export const OnBrand: Story = {
 export const FontPreferenceReflow: Story = {
   parameters: { design: { type: "figma", url: figmaEmbedUrl("108:1402") } },
   render: () => (
-    <div className="grid w-[240px] min-w-0 justify-items-start">
+    <div className="pui:grid pui:w-[240px] pui:min-w-0 pui:justify-items-start">
       <Button variant="outline">Prima dell'Avatar</Button>
     </div>
   ),

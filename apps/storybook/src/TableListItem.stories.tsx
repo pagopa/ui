@@ -46,7 +46,7 @@ type Story = StoryObj<typeof meta>
 
 export const Playground: Story = {
   render: (args) => (
-    <ul className="w-[min(53.25rem,calc(100vw-2rem))]">
+    <ul className="pui:w-[min(53.25rem,calc(100vw-2rem))]">
       <TableListItem {...args} action={{ label: "Apri", href: "/campagne/000000000" }} />
     </ul>
   ),
@@ -54,7 +54,7 @@ export const Playground: Story = {
 
 export const WrappingTitle: Story = {
   render: (args) => (
-    <ul className="flex w-[min(53.25rem,calc(100vw-2rem))] flex-col gap-4">
+    <ul className="pui:flex pui:w-[min(53.25rem,calc(100vw-2rem))] pui:flex-col pui:gap-4">
       <TableListItem
         {...args}
         fields={[
@@ -82,7 +82,7 @@ export const WrappingTitle: Story = {
 function OpenableRow() {
   const [opened, setOpened] = React.useState("")
   return (
-    <div className="w-[min(53.25rem,calc(100vw-2rem))]">
+    <div className="pui:w-[min(53.25rem,calc(100vw-2rem))]">
       <ul>
         <TableListItem
           fields={campaignFields}
@@ -105,7 +105,7 @@ export const OpenAction: Story = {
 
 export const StaticRow: Story = {
   render: (args) => (
-    <ul className="w-[min(53.25rem,calc(100vw-2rem))]">
+    <ul className="pui:w-[min(53.25rem,calc(100vw-2rem))]">
       <TableListItem {...args} />
     </ul>
   ),

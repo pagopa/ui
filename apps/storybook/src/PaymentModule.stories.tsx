@@ -62,7 +62,7 @@ export const Playground: Story = {
       <ButtonGroup aria-label="Azioni del pagamento">
         <Button type="button" variant="ghost">
           Scarica documento
-          <PagoPAIcon name="download" className="size-6" />
+          <PagoPAIcon name="download" className="pui:size-6" />
         </Button>
         <Button type="button">Paga 744,00 €</Button>
       </ButtonGroup>
@@ -91,11 +91,11 @@ export const ActionMobile: Story = {
   args: {
     suggestion: { label: "Sei già cliente" },
     actions: (
-      <ButtonGroup aria-label="Azioni del pagamento" orientation="vertical" className="w-full">
+      <ButtonGroup aria-label="Azioni del pagamento" orientation="vertical" className="pui:w-full">
         <Button type="button">Paga 744,00 €</Button>
         <Button type="button" variant="ghost">
           Scarica documento
-          <PagoPAIcon name="download" className="size-6" />
+          <PagoPAIcon name="download" className="pui:size-6" />
         </Button>
       </ButtonGroup>
     ),

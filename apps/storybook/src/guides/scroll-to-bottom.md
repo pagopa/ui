@@ -14,7 +14,7 @@ region or of the page.
 ```tsx
 const target = useRef<HTMLDivElement>(null)
 
-<div ref={target} className="h-64 overflow-auto">
+<div ref={target} className="pui:h-64 pui:overflow-auto">
   {/* long content */}
 </div>
 <ScrollToBottom target={target} label="Vai in fondo" />

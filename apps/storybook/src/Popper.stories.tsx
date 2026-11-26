@@ -47,7 +47,7 @@ function ValidationExample({
 
   return (
     <form
-      className="grid w-full max-w-78 gap-4"
+      className="pui:grid pui:w-full pui:max-w-78 pui:gap-4"
       onSubmit={(event) => {
         event.preventDefault()
         const isInvalid = !value.trim()
@@ -55,12 +55,12 @@ function ValidationExample({
         setVisible(isInvalid)
       }}
     >
-      <div className="relative">
+      <div className="pui:relative">
         <label htmlFor="popper-search">Ricerca</label>
         <input
           ref={inputRef}
           id="popper-search"
-          className="block min-h-11 w-full rounded-md border px-3"
+          className="pui:block pui:min-h-11 pui:w-full pui:rounded-md pui:border pui:px-3"
           value={value}
           aria-invalid={invalid || undefined}
           aria-describedby={visible ? "popper-help popper-validation" : "popper-help"}
@@ -76,7 +76,7 @@ function ValidationExample({
         {visible ? (
           <Popper
             id="popper-validation"
-            className="absolute left-0 top-full z-10"
+            className="pui:absolute pui:left-0 pui:top-full pui:z-10"
             dismissLabel={dismissLabel}
             tone={tone}
             pointer={pointer}
@@ -89,7 +89,7 @@ function ValidationExample({
           </Popper>
         ) : null}
       </div>
-      <button type="submit" className="min-h-11 rounded-md border px-4">
+      <button type="submit" className="pui:min-h-11 pui:rounded-md pui:border pui:px-4">
         Avvia ricerca
       </button>
     </form>
@@ -147,7 +147,7 @@ function sourceVariant(tone: NonNullable<PopperProps["tone"]>, pointer: PopperPo
   return {
     args: { tone, pointer },
     render: (args) => (
-      <div className="w-78 max-w-full">
+      <div className="pui:w-78 pui:max-w-full">
         <Popper {...args} />
       </div>
     ),
@@ -241,7 +241,7 @@ export const SourceSuccessRight = sourceVariant("success", "right")
 
 export const SourceVariants: Story = {
   render: () => (
-    <div className="grid w-max grid-cols-4 gap-5">
+    <div className="pui:grid pui:w-max pui:grid-cols-4 pui:gap-5">
       {pointers.flatMap((pointer) =>
         tones.map((tone) => (
           <Popper
@@ -250,7 +250,7 @@ export const SourceVariants: Story = {
             tone={tone}
             pointer={pointer}
             onDismiss={() => undefined}
-            className="w-78"
+            className="pui:w-78"
           >
             Inserisci un valore per iniziare la ricerca
           </Popper>

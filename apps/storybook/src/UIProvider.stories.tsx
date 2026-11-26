@@ -48,7 +48,7 @@ export const RouterLinkStory: Story = {
   name: "RouterLink",
   render: () => (
     <UIProvider linkComponent={RouterLink}>
-      <div className="grid gap-8">
+      <div className="pui:grid pui:gap-8">
         <Breadcrumb
           items={[
             { label: "Home", href: "/" },
@@ -96,7 +96,7 @@ export const English: Story = {
   name: "English",
   render: () => (
     <UIProvider locale="en-US" messages={enMessages} calendarLocale={enUS}>
-      <div className="grid gap-8">
+      <div className="pui:grid pui:gap-8">
         <Dialog trigger={<Button>Open dialog</Button>} title="Payment details">
           <Pagination currentPage={2} totalPages={5} onPageChange={fn()} />
         </Dialog>

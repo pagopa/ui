@@ -102,7 +102,7 @@ function DropDownFidelityFixture({ variant }: { variant: string }) {
   const [checked, setChecked] = React.useState(configuration.checked)
   const leading =
     configuration.type === "cta" ? (
-      <PagoPAIcon name="my_location" size={24} className="text-primary" />
+      <PagoPAIcon name="my_location" size={24} className="pui:text-primary" />
     ) : configuration.product ? (
       <Avatar alt="Account" size="compact" />
     ) : configuration.level === "second" ? null : (
@@ -110,7 +110,7 @@ function DropDownFidelityFixture({ variant }: { variant: string }) {
     )
   const chip = (
     <Chip variant="warning" size="compact" data-slot="chip">
-      <span data-slot="chip-label" className="font-medium">
+      <span data-slot="chip-label" className="pui:font-medium">
         Warning
       </span>
     </Chip>
@@ -156,7 +156,7 @@ function DropDownFidelityFixture({ variant }: { variant: string }) {
 
   return (
     <div style={{ width: 274 }}>
-      <Dropdown triggerLabel="Open options" className="w-full" items={items} />
+      <Dropdown triggerLabel="Open options" className="pui:w-full" items={items} />
     </div>
   )
 }

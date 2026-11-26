@@ -36,7 +36,7 @@ type Story = StoryObj<typeof meta>
 // Source dropzone frame: 272x236 with a 24px-inset helper (`760:7433`).
 export const Playground: Story = {
   render: (args) => (
-    <div className="w-68 max-w-full">
+    <div className="pui:w-68 pui:max-w-full">
       <DragAndDrop {...args} />
     </div>
   ),

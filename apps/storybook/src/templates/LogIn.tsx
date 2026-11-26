@@ -29,15 +29,18 @@ function LogIn({ title, description, alert, actions, terms, className }: LogInPr
     <div
       data-slot="login-module"
       className={cn(
-        "flex flex-col items-center gap-10 px-6 py-16 tablet-md:px-10 tablet-md:py-20",
+        "pui:flex pui:flex-col pui:items-center pui:gap-10 pui:px-6 pui:py-16 pui:tablet-md:px-10 pui:tablet-md:py-20",
         className,
       )}
     >
       <div
         data-slot="login-module-text"
-        className="flex w-full flex-col gap-2 text-center tablet-md:max-w-(--pui-login-width)"
+        className="pui:flex pui:w-full pui:flex-col pui:gap-2 pui:text-center pui:tablet-md:max-w-(--pui-login-width)"
       >
-        <h1 data-slot="login-module-title" className="text-title-lg-mobile tablet-md:text-title-lg">
+        <h1
+          data-slot="login-module-title"
+          className="pui:text-title-lg-mobile pui:tablet-md:text-title-lg"
+        >
           {title}
         </h1>
         {/* The source description is 18/26 Regular; the file publishes only the
@@ -46,26 +49,31 @@ function LogIn({ title, description, alert, actions, terms, className }: LogInPr
         {description ? (
           <p
             data-slot="login-module-description"
-            className="text-body-big-sb font-normal text-muted-foreground"
+            className="pui:text-body-big-sb pui:font-normal pui:text-muted-foreground"
           >
             {description}
           </p>
         ) : null}
       </div>
-      {alert ? <div className="w-full max-w-(--pui-dialog-width-compact)">{alert}</div> : null}
+      {alert ? (
+        <div className="pui:w-full pui:max-w-(--pui-dialog-width-compact)">{alert}</div>
+      ) : null}
       <div
         data-slot="login-module-actions"
-        className="flex w-full max-w-(--pui-dialog-width-compact) flex-col gap-6"
+        className="pui:flex pui:w-full pui:max-w-(--pui-dialog-width-compact) pui:flex-col pui:gap-6"
       >
         {actions}
       </div>
       {terms ? (
         <div
           data-slot="login-module-terms"
-          className="flex w-full flex-col gap-4 text-center tablet-md:max-w-(--pui-login-width)"
+          className="pui:flex pui:w-full pui:flex-col pui:gap-4 pui:text-center pui:tablet-md:max-w-(--pui-login-width)"
         >
           <Separator />
-          <p data-slot="login-module-terms-text" className="text-body text-muted-foreground">
+          <p
+            data-slot="login-module-terms-text"
+            className="pui:text-body pui:text-muted-foreground"
+          >
             {terms}
           </p>
         </div>

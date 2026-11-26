@@ -14,7 +14,7 @@ import { LogIn } from "./templates/LogIn"
 const helpLink = (
   <a
     href="/spid-e-cie"
-    className="rounded-sm font-semibold text-primary underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+    className="pui:rounded-sm pui:font-semibold pui:text-primary pui:underline pui:underline-offset-2 pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
   >
     Scopri di più
   </a>
@@ -23,7 +23,7 @@ const helpLink = (
 const termsLink = (
   <a
     href="/termini"
-    className="rounded-sm font-semibold text-primary underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+    className="pui:rounded-sm pui:font-semibold pui:text-primary pui:underline pui:underline-offset-2 pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
   >
     Termini e condizioni d’uso
   </a>
@@ -36,7 +36,7 @@ const sourceAlert = (
     <span
       data-slot="alert-icon"
       aria-hidden="true"
-      className="flex size-6 items-center justify-center"
+      className="pui:flex pui:size-6 pui:items-center pui:justify-center"
     >
       <PagoPAIcon name="warning" />
     </span>
@@ -51,7 +51,7 @@ const sourceTerms = (
     Accedendo accetti i {termsLink} del servizio e confermi di avere letto l’{" "}
     <a
       href="/privacy"
-      className="rounded-sm font-semibold text-primary underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      className="pui:rounded-sm pui:font-semibold pui:text-primary pui:underline pui:underline-offset-2 pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
     >
       Informativa Privacy
     </a>
@@ -61,8 +61,11 @@ const sourceTerms = (
 
 function ProviderButton({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <Button type="button" className="w-full">
-      <span aria-hidden="true" className="flex size-6 shrink-0 items-center justify-center">
+    <Button type="button" className="pui:w-full">
+      <span
+        aria-hidden="true"
+        className="pui:flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center"
+      >
         {icon}
       </span>
       {label}
@@ -72,14 +75,17 @@ function ProviderButton({ icon, label }: { icon: React.ReactNode; label: string 
 
 function SourcePage() {
   return (
-    <div data-slot="login-page" className="flex min-h-[80rem] flex-col bg-background">
+    <div
+      data-slot="login-page"
+      className="pui:flex pui:min-h-[80rem] pui:flex-col pui:bg-background"
+    >
       <Preheader
         institution="PagoPA S.p.A."
         links={[{ label: "Assistenza", href: "#assistenza" }]}
       />
       <Header product={{ label: "Nome del prodotto", href: "#prodotto" }} />
       <Breadcrumb layout="compact" back={{ label: "Back", href: "#indietro" }} />
-      <main className="flex-1">
+      <main className="pui:flex-1">
         <LogIn
           title="Accedi all’Area Riservata"
           description="Lo spazio dedicato agli enti che utilizzano i prodotti di PagoPA."
@@ -88,7 +94,7 @@ function SourcePage() {
             <>
               <ProviderButton icon={<PagoPAIcon name="SPID" />} label="Entra con SPID" />
               <ProviderButton icon={<PagoPAIcon name="CIEID" />} label="Entra con CIE" />
-              <p className="text-center text-body">Non hai SPID o CIE? {helpLink}</p>
+              <p className="pui:text-center pui:text-body">Non hai SPID o CIE? {helpLink}</p>
             </>
           }
           terms={sourceTerms}
@@ -175,7 +181,7 @@ export const Module: Story = {
   parameters: { a11yContract: { reflow: false } },
   name: "Module (desktop frame)",
   render: () => (
-    <div className="w-[56.25rem] max-w-full">
+    <div className="pui:w-[56.25rem] pui:max-w-full">
       <LogIn
         title="Accedi all’Area Riservata"
         description="Lo spazio dedicato agli enti che utilizzano i prodotti di PagoPA."
@@ -184,7 +190,7 @@ export const Module: Story = {
           <>
             <ProviderButton icon={<PagoPAIcon name="SPID" />} label="Entra con SPID" />
             <ProviderButton icon={<PagoPAIcon name="CIEID" />} label="Entra con CIE" />
-            <p className="text-center text-body">Non hai SPID o CIE? {helpLink}</p>
+            <p className="pui:text-center pui:text-body">Non hai SPID o CIE? {helpLink}</p>
           </>
         }
         terms={sourceTerms}

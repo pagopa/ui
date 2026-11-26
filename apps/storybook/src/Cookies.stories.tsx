@@ -27,7 +27,7 @@ const meta = {
     // the story root needs a box (a fixed-only body leaves it zero tall, which
     // the capture preflight reads as missing).
     (Story) => (
-      <div className="min-h-dvh bg-muted/40">
+      <div className="pui:min-h-dvh pui:bg-muted/40">
         <Story />
       </div>
     ),

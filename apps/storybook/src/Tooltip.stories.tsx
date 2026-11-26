@@ -57,7 +57,7 @@ export const Playground: Story = {
 
 export const Sides: Story = {
   render: () => (
-    <div className="flex flex-wrap gap-6 p-12">
+    <div className="pui:flex pui:flex-wrap pui:gap-6 pui:p-12">
       {(["top", "right", "bottom", "left"] as const).map((side) => (
         <Tooltip key={side} side={side} trigger={<Button variant="outline">{side}</Button>}>
           Suggerimento su {side}
@@ -71,7 +71,7 @@ const sourceDescription = "Descrizione di approfondimento su più righe più rig
 
 function SourceTooltip({ side }: { side: "top" | "bottom" }) {
   return (
-    <div className="grid min-h-60 place-items-center p-6">
+    <div className="pui:grid pui:min-h-60 pui:place-items-center pui:p-6">
       <Tooltip
         side={side}
         trigger={
@@ -204,7 +204,7 @@ function PanelContractHarness() {
   const anchor = React.useRef<HTMLButtonElement>(null)
 
   const forwarded = panel
-    ? `class=${panel.classList.contains("max-w-md") ? "inoltrata" : "assente"} attribute=${panel.dataset.contractSlot ?? "assente"}`
+    ? `class=${panel.classList.contains("pui:max-w-md") ? "inoltrata" : "assente"} attribute=${panel.dataset.contractSlot ?? "assente"}`
     : "nessun pannello"
 
   return (
@@ -218,7 +218,7 @@ function PanelContractHarness() {
         anchor={anchor}
         open={open}
         onOpenChange={setOpen}
-        className="max-w-md"
+        className="pui:max-w-md"
         data-contract-slot="tooltip"
       >
         Suggerimento misurato dal consumatore

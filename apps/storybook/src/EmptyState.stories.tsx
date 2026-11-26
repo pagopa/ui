@@ -19,7 +19,7 @@ function SourceAction({ children }: { children: React.ReactNode }) {
     <Button
       type="button"
       variant="link"
-      className="relative min-h-0 px-0 after:absolute after:inset-x-0 after:-inset-y-3"
+      className="pui:relative pui:min-h-0 pui:px-0 pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-3"
     >
       {children}
     </Button>
@@ -55,7 +55,7 @@ export const Playground: Story = {
   // The fixture carries the source frame (832px = `w-208`) and the source state:
   // pictogram + action, not a bare title/subtitle pair at the viewport width.
   args: { icon: sourceIcon, actions: <SourceAction>Inizia ora</SourceAction> },
-  render: (args) => <EmptyState {...args} className="w-208 max-w-full" />,
+  render: (args) => <EmptyState {...args} className="pui:w-208 pui:max-w-full" />,
 }
 
 export const WithAction: Story = {
@@ -75,7 +75,7 @@ export const Fidelity: Story = {
         description="Subtitle"
         icon={sourceIcon}
         actions={<SourceAction>Action</SourceAction>}
-        className="w-208 max-w-full"
+        className="pui:w-208 pui:max-w-full"
       />
     </div>
   ),

@@ -21,7 +21,7 @@ function SourceDrawer({ direction }: { direction: "bottom" | "right" }) {
       description={
         // The source text node separates its lines with paragraph breaks, each
         // one carrying the 12px paragraph spacing: the copy keeps that shape.
-        <span className="flex flex-col gap-3">
+        <span className="pui:flex pui:flex-col pui:gap-3">
           <span>
             Ciao, ti segnaliamo che la tua richiesta di attivazione del servizio è stata respinta
             poiché la descrizione del servizio inserita non rispetta le indicazioni presenti nel
@@ -30,7 +30,7 @@ function SourceDrawer({ direction }: { direction: "bottom" | "right" }) {
           <span>
             <a
               href="/manuale-servizi"
-              className="rounded-sm font-semibold text-primary underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+              className="pui:rounded-sm pui:font-semibold pui:text-primary pui:underline pui:underline-offset-2 pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
             >
               Dubbi? Vai al manuale
             </a>
@@ -73,7 +73,7 @@ type Story = StoryObj<typeof meta>
 export const NarrowFrame: Story = {
   name: "Narrow frame (320)",
   render: () => (
-    <div className="w-80 max-w-full">
+    <div className="pui:w-80 pui:max-w-full">
       <SourceDrawer direction="bottom" />
     </div>
   ),

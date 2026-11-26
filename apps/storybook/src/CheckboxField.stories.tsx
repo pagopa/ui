@@ -15,7 +15,7 @@ const fidelityParameters = { layout: "fullscreen" } as const
 const meta = {
   title: "Components/Inputs/CheckboxField",
   component: CheckboxField,
-  args: { label: "Comunicazioni di servizio", className: "w-80 max-w-full" },
+  args: { label: "Comunicazioni di servizio", className: "pui:w-80 pui:max-w-full" },
   argTypes: {
     description: { control: "text" },
     error: { control: "text" },
