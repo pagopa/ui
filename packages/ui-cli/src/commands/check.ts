@@ -16,7 +16,6 @@ import { checkTextDefaults } from "../checks/text-defaults.ts"
 import { checkTokens } from "../figma/tokens.ts"
 import { integer, text } from "./args.ts"
 import { action, EXIT, printJson, printLines, type CliContext } from "./context.ts"
-import { evidenceGate, parityGate } from "./parity-gates.ts"
 import { unresolvedCliTokens } from "./resolve.ts"
 
 export const budgetArg = {
@@ -86,8 +85,6 @@ export function checkCommands(
           printReport(ctx, checkTextDefaults(ctx.workspace(), { max: integer(max, "--max") })),
         ),
       }),
-      parity: parityGate(ctx),
-      evidence: evidenceGate(ctx),
       ...extra,
     },
   })

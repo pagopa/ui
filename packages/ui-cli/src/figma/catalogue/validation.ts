@@ -1,13 +1,7 @@
 import type { Workspace } from "../../adapters/workspace.ts"
 import { readJson } from "../../lib/json.ts"
-import { readCases, readDevicePolicy } from "../../records/committed.ts"
+import { readDevicePolicy } from "../../records/committed.ts"
 import { parseSchema } from "../../lib/validate.ts"
-import { caseCorpus } from "../../parity/corpus.ts"
-import {
-  DEVICE_EXCEPTIONS_PATH,
-  loadDeviceExceptions,
-  validateDeviceExceptions,
-} from "../../parity/device-exceptions.ts"
 import {
   longNoteErrors,
   NOTE_LENGTH_BASELINE_PATH,
@@ -26,11 +20,9 @@ import {
   PAGE_SURFACE_PATH,
   surfacePending,
   surfaceUncensused,
-  surfaceUnmirrored,
   type SurfacePending,
   type SurfaceStats,
   type SurfaceUncensused,
-  type SurfaceUnmirrored,
 } from "../surface.ts"
 
 export type ValidationResult = { errors: string[]; warnings: string[] }
@@ -38,18 +30,9 @@ export type DeviceValidation = ValidationResult & {
   policy: DevicePolicy | null
   stats: DeviceStats | null
 }
-export type CoverageStats = {
-  sets: number
-  covered: number
-  missing: number
-  drafts: number
-  exceptions: number
-}
-export type CaseStats = { cases: number; errors: number; warnings: number; drafts: number }
 export type SurfaceValidation = ValidationResult & {
   stats: SurfaceStats | null
   waiting: SurfacePending[]
-  unmirrored: SurfaceUnmirrored[]
   uncensused: SurfaceUncensused[]
 }
 
@@ -91,34 +74,6 @@ export function validateDeviceVocabulary(
   }
 }
 
-export function validateDeviceCases(
-  workspace: Workspace,
-  policy: DevicePolicy | null,
-  registry: Registry,
-  nodes: InventoryNode[],
-): { result: ValidationResult; stats: CaseStats | null } {
-  if (!policy) return { result: { errors: [], warnings: [] }, stats: null }
-  try {
-    const cases = readCases(workspace.root) ?? []
-    const corpus = caseCorpus({ workspace, cases, inventory: nodes, registry, policy })
-    const verdict = corpus.validate()
-    return {
-      result: {
-        errors: verdict.errors.map((error) => `cases: ${error}`),
-        warnings: verdict.warnings.map((warning) => `cases: ${warning}`),
-      },
-      stats: {
-        cases: cases.length,
-        errors: verdict.errors.length,
-        warnings: verdict.warnings.length,
-        drafts: corpus.drafts.length,
-      },
-    }
-  } catch (error) {
-    return { result: { errors: [errorMessage(error)], warnings: [] }, stats: null }
-  }
-}
-
 export function validatePageSurface(
   workspace: Workspace,
   surface: PageSurface | null,
@@ -129,11 +84,9 @@ export function validatePageSurface(
 ): SurfaceValidation {
   try {
     const census = surface ?? loadPageSurface(workspace.path(PAGE_SURFACE_PATH))
-    const cases = policy ? (readCases(workspace.root) ?? []) : []
     const result = checkPageSurface(census, {
       nodes,
       registry,
-      cases,
       fileKey: fileKey ?? "",
       devices: Object.keys(policy?.devices ?? {}),
     })
@@ -142,7 +95,6 @@ export function validatePageSurface(
       warnings: result.warnings,
       stats: result.stats,
       waiting: surfacePending(census),
-      unmirrored: surfaceUnmirrored(census),
       uncensused: surfaceUncensused(census, nodes),
     }
   } catch (error) {
@@ -151,7 +103,6 @@ export function validatePageSurface(
       warnings: [],
       stats: null,
       waiting: [],
-      unmirrored: [],
       uncensused: [],
     }
   }
@@ -168,57 +119,5 @@ export function validateNoteBaseline(workspace: Workspace, registry: Registry): 
   } catch (error) {
     if (error instanceof Error && error.message.includes("ENOENT")) return []
     return [`${NOTE_LENGTH_BASELINE_PATH}: ${errorMessage(error)}`]
-  }
-}
-
-export function validateDeviceCoverage(
-  workspace: Workspace,
-  policy: DevicePolicy,
-  nodes: InventoryNode[],
-  registry: Registry,
-  deltaIds: Set<string>,
-): { errors: string[]; warnings: string[]; stats: CoverageStats } {
-  const errors: string[] = []
-  const warnings: string[] = []
-  try {
-    const cases = readCases(workspace.root) ?? []
-    const exceptions = loadDeviceExceptions(workspace.path(DEVICE_EXCEPTIONS_PATH))
-    const coverage = caseCorpus({ workspace, cases, inventory: nodes, registry, policy }).coverage({
-      statuses: ["implemented"],
-    })
-    const byNode = new Map(coverage.all.map((row) => [row.nodeId, row]))
-    validateDeviceExceptions(exceptions, byNode, errors)
-    const uncovered = coverage.rows.filter(
-      (row) => row.missing.length && !Object.hasOwn(exceptions, row.nodeId),
-    )
-    for (const row of uncovered) {
-      if (deltaIds.has(row.nodeId))
-        errors.push(
-          `device coverage: ${row.nodeId} is in the delta and stays implemented without a case for ${row.missing.join(", ")} — save one case per declared device or add a reasoned entry to ${DEVICE_EXCEPTIONS_PATH}`,
-        )
-    }
-    const historical = uncovered.filter((row) => !deltaIds.has(row.nodeId))
-    if (historical.length)
-      warnings.push(
-        `device coverage: ${historical.length} implemented node(s) miss ${historical.reduce((count, row) => count + row.missing.length, 0)} device case(s) — the burn-down work list is \`pnpm nx run pagopa-ui-cli:parity:queue --uncovered\``,
-      )
-    return {
-      errors,
-      warnings,
-      stats: {
-        sets: coverage.rows.length,
-        covered: coverage.totals.covered,
-        missing: coverage.totals.missing,
-        drafts: coverage.totals.drafts,
-        exceptions: Object.keys(exceptions).length,
-      },
-    }
-  } catch (error) {
-    errors.push(errorMessage(error))
-    return {
-      errors,
-      warnings,
-      stats: { sets: 0, covered: 0, missing: 0, drafts: 0, exceptions: 0 },
-    }
   }
 }

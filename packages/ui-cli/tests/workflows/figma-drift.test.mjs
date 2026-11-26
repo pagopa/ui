@@ -37,7 +37,7 @@ test("one step reports component drift and token drift together", () => {
   const [step] = detect
   assert.match(step.run, /--pr-body \.figma\/pr-body\.md/)
   assert.match(step.run, /--tokens/)
-  assert.match(step.run, /--token-drift docs\/figma-parity\/token-drift\.json/)
+  assert.match(step.run, /--token-drift docs\/figma-drift\/token-drift\.json/)
   assert.equal(step.env.FIGMA_TOKEN, "${{ secrets.FIGMA_TOKEN }}")
   // One job: no second, parallel drift detection to keep in step.
   assert.deepEqual(Object.keys(workflow.jobs), ["drift"])
@@ -49,5 +49,5 @@ test("one step reports component drift and token drift together", () => {
 test("a token-only drift still reaches the pull request", () => {
   const open = steps().find((step) => step.run?.includes("gh pr create"))
   assert.match(open.if, /\.figma\/pr-body\.md/)
-  assert.match(open.run, /git add[\s\S]*docs\/figma-parity/)
+  assert.match(open.run, /git add[\s\S]*docs\/figma-drift/)
 })

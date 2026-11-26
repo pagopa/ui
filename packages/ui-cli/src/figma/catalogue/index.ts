@@ -24,7 +24,7 @@
 //
 // PR mode for the scheduled drift job, component and token drift in one run:
 //   node src/cli.ts update inventory --rest --pr-body .figma/pr-body.md \
-//     --delta .figma/delta.json --tokens --token-drift docs/figma-parity/token-drift.json
+//     --delta .figma/delta.json --tokens --token-drift docs/figma-drift/token-drift.json
 // The PR body is written only when one of the two halves has drift. The Figma side
 // is never written to; mappings stay in the repository, keyed by nodeId.
 import type { Workspace } from "../../adapters/workspace.ts"
@@ -43,7 +43,6 @@ export interface CatalogueOptions {
   prBody?: string
   save?: string
   delta?: string
-  evidenceBase?: string
   /** Read the live variable values too: one run reports component and token drift. */
   tokens?: boolean
   /** Write the token drift record the review change carries. */

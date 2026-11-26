@@ -4,7 +4,6 @@ import { UsageError } from "../lib/command.ts"
 import type { Workspace } from "../adapters/workspace.ts"
 import { requiredDevices, variantDevice } from "../figma/devices.ts"
 import { parseSchema } from "../lib/validate.ts"
-import { readCases } from "../records/committed.ts"
 import { compare, compositionSignature, tokenIndex, type SourceSubject } from "./diff.ts"
 import { capture as captureStory, DEFAULT_ROOT, type CaptureOptions } from "./render.ts"
 import {
@@ -21,7 +20,7 @@ import {
   type VariantInfo,
 } from "./source.ts"
 
-import { devicePolicy, frameBaseline, inventoryNode } from "./context.ts"
+import { devicePolicy, inventoryNode } from "./context.ts"
 import type { CaseReport, CaseSpec, Scope } from "./types.ts"
 const SCOPE_PROBES = [360, 1200]
 function deviceNarrowing(workspace: Workspace, spec: CaseSpec, node: RawNode): RawNode | undefined {
@@ -99,25 +98,6 @@ export function mappingGaps(root: SpecNode, mapped: string[]): string[] {
   return [...new Set(found)]
 }
 
-function expectedFrames(workspace: Workspace, nodeId: string, storyId: string): number[] {
-  return [
-    ...new Set(
-      (readCases(workspace.root) ?? [])
-        .filter(
-          (entry) =>
-            entry.nodeId === nodeId &&
-            entry.storyId === storyId &&
-            entry.layoutScope === "container",
-        )
-        .map((entry) => Number(entry.width))
-        .filter((width) => Number.isFinite(width) && width > 0),
-    ),
-  ]
-}
-function frameWaiver(workspace: Workspace, storyId: string) {
-  return storyId in frameBaseline(workspace)
-}
-
 // One case: the source variant, the story, the subject mapping and the stated
 // residues in, the classified report and the probe out.
 const CaptureInfoSchema = z.looseObject({
@@ -127,14 +107,6 @@ const CaptureInfoSchema = z.looseObject({
   focus: z.string().optional(),
   offsetOrigin: z.string().optional(),
   state: z.looseObject({ state: z.string().optional(), ok: z.boolean().optional() }).optional(),
-})
-
-// The source frame the story drew, as the capture reports it (only a waived
-// story reaches the caller with `ok: false`).
-const SourceFrameReportSchema = z.looseObject({
-  ok: z.boolean(),
-  expected: z.array(z.number()),
-  waived: z.boolean().optional(),
 })
 
 export async function evaluateCase(
@@ -161,14 +133,7 @@ export async function evaluateCase(
   const baseOptions = captureOptions(spec, rootWidth, selectors)
   // The story owes the frame on the base capture only: the scope probes force
   // another element on purpose and would read a frame they just moved.
-  const frames = expectedFrames(workspace, spec.nodeId, spec.storyId)
-  const probe = await capture({
-    ...baseOptions,
-    ...(frames.length
-      ? { expectFrames: frames, frameWaiver: frameWaiver(workspace, spec.storyId) }
-      : {}),
-  })
-  err.push(...frameWarnings(spec, probe))
+  const probe = await capture(baseOptions)
   const scope = await captureScope(spec, probe, baseOptions, capture)
   const ignored = (spec.ignores ?? []).map((path_: string) => ({
     path: path_,
@@ -329,18 +294,4 @@ async function captureScope(
   }
 
   return scope
-}
-
-function frameWarnings(spec: CaseSpec, probe: Record<string, unknown>): string[] {
-  const err: string[] = []
-  // Only a waived story reaches here without a frame: the reader is told which
-  // story still renders another composition than the one the capture measures.
-  const frame = SourceFrameReportSchema.safeParse(probe.frame)
-  if (frame.success && !frame.data.ok) {
-    err.push(
-      `warn: ${spec.storyId} does not draw its source frame at ${frame.data.expected.join(" or ")}px ` +
-        `(src/catalog/figma/frame-baseline.json): the Storybook render is not the captured composition`,
-    )
-  }
-  return err
 }

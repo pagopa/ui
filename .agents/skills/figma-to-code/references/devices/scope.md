@@ -1,4 +1,4 @@
-# Two scopes, declared per case and verified
+# Two scopes, declared per comparison and measured
 
 - **viewport** — the page width decides: a surface used once per page and
   spanning it (chrome bands, full-width panels, page-level states). Media queries
@@ -19,11 +19,12 @@ a wide page → container; then a source mobile variant describes the narrow
 container, not the page. A full-width page is `viewport` even if the container
 probe also moves.
 
-`parity check` verifies the declaration: a `viewport` case must change when only
-the viewport changes, a `container` case when only the root width changes at a
-fixed viewport. A mismatch is a `responsive.scope.*` finding. Do not declare
-`layoutScope` when a prop (orientation, direction, device) picks the composition
-or when every device draws one composition; write the reason in the case note.
+`parity check` measures the declaration: a `viewport` comparison must change
+when only the viewport changes, a `container` one when only the root width
+changes at a fixed viewport. A mismatch is a `responsive.scope.*` finding. Do
+not declare `layoutScope` when a prop (orientation, direction, device) picks the
+composition or when every device draws one composition; write the reason in the
+run's note.
 
 ## Two judgement calls the checks cannot make
 
@@ -34,7 +35,7 @@ a container-scoped module that reads the viewport collapses inside a wide card.
 
 **The tablet device has no exact frame width.** A source tablet frame is drawn at
 its design width, which need not coincide with the token breakpoint. Decide per
-case — viewport for a page surface, container for a module — and record the choice
-in the registry note or the case. With several tablet frames, take the one nearest
+component — viewport for a page surface, container for a module — and record the
+choice in the registry note. With several tablet frames, take the one nearest
 the midpoint above `tablet` and skip frames that exercise the same branch. Never
 add a breakpoint for a variant nobody renders.

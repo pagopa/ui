@@ -8,7 +8,6 @@ import {
   alignmentOf,
   AREAS,
   areaCounts,
-  deviceTotals,
   filterRegistryItems,
   formatDate,
   formatNumber,
@@ -444,36 +443,8 @@ function Kpis() {
 }
 
 function HealthStrip() {
-  const devicePercent =
-    deviceTotals.declared === 0 ? 100 : (deviceTotals.covered / deviceTotals.declared) * 100
   return (
-    <div className="mt-3 flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.04)] desktop:flex-row desktop:items-center desktop:justify-between">
-      <div className="flex min-w-0 items-center gap-3">
-        <span
-          aria-hidden="true"
-          className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-violet-50 text-violet-600"
-        >
-          <PagoPAIcon name="settings_remote" className="size-4" />
-        </span>
-        <div className="min-w-0">
-          <p className="text-xs font-medium text-slate-700">
-            Device parity{" "}
-            <span className="font-mono text-[11px] text-slate-500">
-              {deviceTotals.covered}/{deviceTotals.declared}
-            </span>{" "}
-            cases covered
-          </p>
-          <p className="text-[11px] text-slate-500">
-            {deviceTotals.missing} missing across {deviceTotals.nodes} sets with a device axis ·{" "}
-            <span className="font-mono">{formatNumber(totals.cases)}</span> committed parity cases
-          </p>
-          <ProgressBar
-            value={devicePercent}
-            className="mt-2 h-1 w-44 max-w-full"
-            barClassName="bg-violet-500"
-          />
-        </div>
-      </div>
+    <div className="mt-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
       {unaccountedCount > 0 ? (
         <p className="flex items-center gap-2 text-[11px] text-amber-700">
           <PagoPAIcon name="warning" aria-hidden="true" className="size-3.5 shrink-0" />
@@ -957,7 +928,7 @@ function RegistryCard({ item, onInspect }: { item: RegistryItem; onInspect: () =
                 <span aria-hidden="true" className="text-slate-300">
                   ·
                 </span>
-                <span data-slot="device-coverage">devices {item.devices.join(", ")}</span>
+                <span data-slot="device-frames">devices {item.devices.join(", ")}</span>
               </>
             ) : null}
           </div>
@@ -1315,10 +1286,6 @@ function OverviewPanel({ item }: { item: RegistryItem }) {
             value={`${item.dependencies}${item.externalDependencies ? ` · ${item.externalDependencies} external` : ""}`}
           />
           <KeyValue
-            label="Parity cases"
-            value={`${item.caseCount.committed}${item.caseCount.draft ? ` · ${item.caseCount.draft} draft` : ""}`}
-          />
-          <KeyValue
             label="Registry coverage"
             value={item.entry ? "Direct entry" : item.rule ? "Page rule" : "Unmapped"}
           />
@@ -1439,13 +1406,6 @@ function VersionCard({
 
 function VersionPanel({ item }: { item: RegistryItem }) {
   const alignment = alignmentOf(item)
-  const coverage = item.deviceCoverage
-  const comparable = item.status === "implemented" || item.status === "pending"
-  const devicePercent = coverage
-    ? coverage.declared.length === 0
-      ? 100
-      : (coverage.covered.length / coverage.declared.length) * 100
-    : 100
 
   return (
     <div className="space-y-4">
@@ -1454,9 +1414,7 @@ function VersionPanel({ item }: { item: RegistryItem }) {
           "flex flex-wrap items-center gap-2 rounded-xl border px-3 py-2.5 text-[11px]",
           alignment.id === "aligned"
             ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-            : alignment.id === "partial"
-              ? "border-amber-200 bg-amber-50 text-amber-700"
-              : "border-slate-200 bg-slate-50 text-slate-600",
+            : "border-slate-200 bg-slate-50 text-slate-600",
         )}
       >
         {alignment.id === "aligned" ? (
@@ -1501,91 +1459,9 @@ function VersionPanel({ item }: { item: RegistryItem }) {
               label: "Story exports",
               value: item.storyExports.length ? item.storyExports.length : "—",
             },
-            {
-              label: "Parity cases",
-              value: `${item.caseCount.committed}${item.caseCount.draft ? ` + ${item.caseCount.draft} draft` : ""}`,
-            },
           ]}
         />
       </div>
-
-      <section
-        aria-labelledby="inspector-parity"
-        className="rounded-xl border border-slate-200 bg-white p-3.5"
-      >
-        <h3
-          id="inspector-parity"
-          className="text-[10px] font-semibold tracking-[0.14em] text-slate-500 uppercase"
-        >
-          Device parity
-        </h3>
-        {coverage && coverage.declared.length ? (
-          comparable ? (
-            <>
-              <p className="mt-2 text-[11px] text-slate-600">
-                <span className="font-mono text-slate-700">
-                  {coverage.covered.length}/{coverage.declared.length}
-                </span>{" "}
-                declared devices have a committed case.
-              </p>
-              <ProgressBar
-                value={devicePercent}
-                className="mt-2"
-                barClassName={coverage.missing.length ? "bg-amber-500" : "bg-emerald-500"}
-              />
-              <div className="mt-2 flex flex-wrap gap-1">
-                {coverage.declared.map((device) => {
-                  const missing = coverage.missing.includes(device)
-                  return (
-                    <span
-                      key={device}
-                      className={cn(
-                        "rounded px-1.5 py-0.5 font-mono text-[9.5px] ring-1 ring-inset",
-                        missing
-                          ? "bg-amber-50 text-amber-700 ring-amber-600/20"
-                          : "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
-                      )}
-                    >
-                      {device}
-                      {missing ? " · missing" : " · covered"}
-                    </span>
-                  )
-                })}
-              </div>
-              {coverage.missing.length ? (
-                <p className="mt-2 text-[10.5px] text-slate-500">
-                  Burn-down command:{" "}
-                  <code className="font-mono text-slate-700">
-                    pnpm ui-cli parity queue --uncovered
-                  </code>
-                </p>
-              ) : null}
-            </>
-          ) : (
-            <>
-              <p className="mt-2 text-[11px] leading-relaxed text-slate-600">
-                The source declares {coverage.declared.join(", ")}. No parity case is expected while
-                the registry status is{" "}
-                <span className="font-medium text-slate-800">{item.status}</span>.
-              </p>
-              <div className="mt-2 flex flex-wrap gap-1">
-                {coverage.declared.map((device) => (
-                  <span
-                    key={device}
-                    className="rounded bg-slate-50 px-1.5 py-0.5 font-mono text-[9.5px] text-slate-600 ring-1 ring-slate-200 ring-inset"
-                  >
-                    {device}
-                  </span>
-                ))}
-              </div>
-            </>
-          )
-        ) : (
-          <p className="mt-2 text-[11px] text-slate-500">
-            No device axis is declared for this source, so no device case is expected.
-          </p>
-        )}
-      </section>
     </div>
   )
 }
@@ -2031,8 +1907,8 @@ function PageHero() {
             Published components
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-500">
-            Every published Figma node, its registry status, the variant matrix and the parity cases
-            that prove it. Built for the people who ship the code.
+            Every published Figma node, its registry status, the variant matrix and the code
+            contract that ships it. Built for the people who ship the code.
           </p>
         </div>
         <div className="flex min-w-0 flex-wrap items-center gap-1.5 text-[11px]">

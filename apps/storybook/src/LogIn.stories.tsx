@@ -161,7 +161,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 // The page is responsive through the library chrome (viewport breakpoints), so
-// one story shows it: the parity capture reproduces each device frame with its
+// one story shows it: a parity comparison reproduces each device frame with its
 // own viewport and artboard height.
 export const Page: Story = {
   // Reflow exemption: fixture pinned at the source width, not a product surface.
