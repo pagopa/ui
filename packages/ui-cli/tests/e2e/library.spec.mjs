@@ -1258,6 +1258,47 @@ test("the packed artifact behaves as documented", async ({ browserName, context,
   await drawer.waitFor({ state: "hidden" })
   await page.waitForFunction(() => document.activeElement?.id === "consumer-drawer-trigger")
 
+  // The open panel marks the page behind it `aria-hidden`, so the caller's
+  // state readouts are read by attribute rather than through the a11y tree.
+  const dialogState = page.locator('output[aria-label="Stato del dialogo"]')
+  assert.equal(await dialogState.textContent(), "chiuso")
+  await page.getByRole("button", { name: "Apri il dialogo controllato" }).click()
+  const controlledDialog = page.getByRole("dialog", { name: "Dialogo controllato" })
+  await controlledDialog.waitFor()
+  await page.waitForFunction(() =>
+    document.querySelector('[role="dialog"]')?.contains(document.activeElement),
+  )
+  assert.equal(await dialogState.textContent(), "aperto", "the packed dialog ignored its open prop")
+  assert.equal(
+    await page.locator('output[aria-label="Contratto del pannello"]').textContent(),
+    "classe/dialog",
+    "the packed dialog panel did not receive ref, className and the standard attribute",
+  )
+  await controlledDialog.getByRole("button", { name: "Chiudi dal piè di pagina" }).click()
+  await controlledDialog.waitFor({ state: "hidden" })
+  assert.equal(
+    await dialogState.textContent(),
+    "chiuso",
+    "the packed dialog close action did not reach onOpenChange",
+  )
+
+  const drawerState = page.locator('output[aria-label="Stato del pannello"]')
+  assert.equal(await drawerState.textContent(), "chiuso")
+  await page.getByRole("button", { name: "Apri il pannello controllato" }).click()
+  const controlledDrawer = page.getByRole("dialog", { name: "Pannello controllato" })
+  await controlledDrawer.waitFor()
+  await page.waitForFunction(() =>
+    document.querySelector('[role="dialog"]')?.contains(document.activeElement),
+  )
+  assert.equal(await drawerState.textContent(), "aperto", "the packed drawer ignored its open prop")
+  await page.keyboard.press("Escape")
+  await controlledDrawer.waitFor({ state: "hidden" })
+  assert.equal(
+    await drawerState.textContent(),
+    "chiuso",
+    "the packed drawer dismissal did not reach onOpenChange",
+  )
+
   const popoverTrigger = page.getByRole("button", { name: "Apri dettagli" })
   await popoverTrigger.focus()
   await page.keyboard.press("Enter")
