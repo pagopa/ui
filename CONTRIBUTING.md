@@ -568,7 +568,13 @@ walks the imports each story reaches — the story file, what it imports, the
 shared preview and the stylesheets behind it — and writes the story ids to
 `scope.json` in `apps/storybook/visual/`, which the spec reads through
 `VISUAL_SCOPE`. A change to a component the walk reaches names the stories that
-render it; a change to a file no story imports names none. The same walk widens
+render it; a change to a file no story imports names none. That precision rests
+on the shape of the imports: a story imports the module that declares the
+component, never its family barrel, which the layer check refuses. Touching
+`packages/pagopa-ui/src/components/navigation/accordion.tsx` and running
+`pnpm nx run pagopa-ui-storybook:test:changed -- --since HEAD` selects
+`Accordion.stories.tsx` and `AccessibilityTexts.stories.tsx` — the two stories
+that import it — and no other story. The same walk widens
 to the whole catalogue for anything that can move every screenshot without an
 import edge: `packages/tokens`, `packages/artwork`, the design-system `assets`,
 the storybook manifests and lockfile, the visual harness itself, and any deleted
