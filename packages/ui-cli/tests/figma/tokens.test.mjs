@@ -233,14 +233,13 @@ test("the public semantic contract is emitted on :root, typed and as DTCG", () =
     assert.match(inventory, /cssName: "--pui-primary"/)
     assert.match(inventory, /type: "color"/)
     const dtcg = JSON.parse(read("src/tokens.dtcg.generated.json"))
-    assert.deepEqual(dtcg.pui.primary, { $type: "color", $value: "{primitives.color-blue-500}" })
-    assert.deepEqual(dtcg.pui.border, {
-      $type: "color",
-      $value: "{primitives.color-neutrals-grey-100}",
-    })
-    assert.deepEqual(dtcg.primitives["color-blue-500"], { $type: "color", $value: "#0b3ee3" })
-    assert.deepEqual(dtcg.primitives["spacing-12"], { $type: "dimension", $value: "12px" })
-    assert.equal(dtcg.primitives["radius-8"], undefined, "an unreferenced primitive stays out")
+    // The projection carries the value the CSS publishes, never an alias into
+    // the build-time primitive layer (ADR-0013 RD1, RD2).
+    assert.deepEqual(dtcg.pui.primary, { $type: "color", $value: "#0b3ee3" })
+    assert.deepEqual(dtcg.pui.border, { $type: "color", $value: "#e8ebf1" })
+    assert.deepEqual(dtcg.pui.gutter, { $type: "dimension", $value: "12px" })
+    assert.equal(dtcg.primitives, undefined, "the build-time layer is not published")
+    for (const value of Object.values(dtcg.pui)) assert.doesNotMatch(value.$value, /^\{/)
     assert.equal(tokens("--check").status, 0)
   })
 })

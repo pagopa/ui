@@ -63,9 +63,10 @@ each one with its literal, so the stylesheet a consumer loads declares none.
 `@pagopa/ui/tokens` exports the contract as typed data (`semanticTokens`),
 `@pagopa/ui/tokens.css` ships the block alone for a page that does not load the
 component stylesheet, and `@pagopa/ui/tokens.dtcg.json` is the same contract in
-Design Tokens Community Group format. The `--pui-*` properties are the override
-surface: setting one on a root above the components restyles them. A rename is a
-breaking change listed in the changelog. See the
+Design Tokens Community Group format, every `$value` the value the stylesheet
+declares. The `--pui-*` properties are the override surface: setting one on a
+root above the components restyles them. A rename is a breaking change listed in
+the changelog. See the
 [tokens guide](../../apps/storybook/src/guides/tokens.md) for the loading
 options and the two examples.
 

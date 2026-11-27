@@ -15,7 +15,8 @@ Three entries:
 - `@pagopa/ui/tokens` exports the same values as typed data: `semanticTokens`
   and the `SemanticToken` and `SemanticTokenType` types.
 - `@pagopa/ui/tokens.dtcg.json` is the same contract in Design Tokens Community
-  Group format, for the tools that read it.
+  Group format, for the tools that read it: every `$value` is the value the
+  stylesheet publishes, so a reader resolves no alias.
 
 Two layers are internal:
 
@@ -130,8 +131,8 @@ Read a property with `var()` like any other custom property:
 ## With TypeScript
 
 `semanticTokens` is the contract as data: the CSS name, the role name, the
-resolved value, the type, and the DTCG alias of the primitive it comes from.
-Filter it by `type` to build a picker, a table or a generated example:
+resolved value and the type. Filter it by `type` to build a picker, a table or
+a generated example:
 
 ```tsx
 import { semanticTokens } from "@pagopa/ui/tokens"
@@ -151,9 +152,10 @@ export function ColorScale() {
 }
 ```
 
-Each token also carries `dtcg`, the alias of the primitive it comes from, so a
-page can state where a value originates without the primitive inventory: that
-inventory is build-time data and no entrypoint exports it.
+A token carries no pointer to the primitive behind it: that layer is build-time
+data, and the value it resolves to is the whole of what the contract publishes.
+A page that states where a value originates reads the manifest in the repository,
+not a property of the contract.
 
 ## The contract is the override surface
 

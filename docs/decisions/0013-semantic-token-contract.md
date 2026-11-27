@@ -1,6 +1,7 @@
 # ADR-0013 — The public token contract is semantic: `--pui-*`, named for the role
 
-- **Status:** Accepted — 2026-11-26.
+- **Status:** Accepted — 2026-11-26. Revised 2026-11-27: RD5 records the three
+  sentences of #174 this record supersedes.
 - **Date:** 2026-11-26
 - **Context:** the published token contract was the Figma Variables verbatim. A
   host page read `--figma-color-blue-500` or `--figma-spacing-24`, names the
@@ -79,10 +80,10 @@ reads that block and emits one contract in three projections:
   (`semanticTokens`, `SemanticToken`, `SemanticTokenType`), re-exported by
   `@pagopa/ui/tokens`.
 - `packages/tokens/src/tokens.dtcg.generated.json` — the same contract in Design
-  Tokens Community Group format, published as `@pagopa/ui/tokens.dtcg.json`:
-  the `pui` group carries `$type` and `$value`, and its values are `{alias}`
-  references into a `primitives` group that holds only the entries the contract
-  actually references.
+  Tokens Community Group format, published as `@pagopa/ui/tokens.dtcg.json`: the
+  `pui` group carries `$type` and `$value`, and every `$value` is the value the
+  stylesheet publishes. The file stands alone — no reader resolves an alias and
+  no name in it comes from Figma.
 
 ### RD1 — the stylesheet is the naming authority
 
@@ -96,8 +97,9 @@ and no `--pui-*` value.
 
 The type of a role is derived, not declared: a colour primitive makes a `color`,
 an effect makes a `shadow`, anything else a `dimension`; a role that only
-carries a `var()` takes the type of its target. A new DTCG type is a change to
-`DTCG_TYPES` in the generator, not a field in the stylesheet.
+carries a `var()` takes the type of its target. The derivation is
+`semanticType` in the generator, and both typed projections carry its result: a
+new DTCG type is a change there, not a field in the stylesheet.
 
 ### RD2 — `--figma-*` is build-time only, internal and never published
 
@@ -137,6 +139,36 @@ any projection fails `ui-cli check tokens`.
 - The foundation gate reads the emitted contract back (`emittedTokenNames`) so
   the names a component may reference are the published ones, not a second
   derivation.
+
+### RD5 — the three sentences of #174 this record supersedes
+
+#174 was decided on 2026-11-26, before the implementation found the shape. Three
+of its sentences describe something the tree deliberately does not do, and this
+record is the one that binds:
+
+- "--figma-*: stays emitted but marked internal and deprecated." RD2 retires the
+  layer from every published artifact instead, so nothing is left to deprecate. A
+  namespace a host can still read is a second public vocabulary, and RD1 exists
+  because the contract has one; the names stay where the generation needs them,
+  in `packages/tokens/src/manifest.json`.
+- "A DTCG JSON projection of the semantic contract is published from
+  `@pagopa/ui/tokens`." It is published beside the module, as
+  `@pagopa/ui/tokens.dtcg.json`. Inlining the object in the module would load the
+  JSON on every import of `semanticTokens`, require the consumer's bundler to
+  accept JSON modules, and fight the module's own `types` entry. Same package,
+  same data, no bundler contract added.
+- "Semantic contract only, with `{alias}` references to the primitive layer." The
+  projection carries the resolved value instead, and no `primitives` group. The
+  alias form published the build-time layer RD2 keeps out of every artifact, it
+  mixed 65 aliased roles with the 23 the generator already had to resolve (a
+  `color-mix` has no alias form), and it made a reader depend on a vocabulary the
+  record promises it never needs. With one value per role, the three projections
+  say the same thing: `--pui-primary`, `semanticTokens[].value` and
+  `pui.primary.$value` are one string, and the §4 consequence holds literally.
+
+The surface this costs is provenance: a reader no longer learns which primitive a
+role derives from. That graph is build-time data, it stays in the manifest the
+generator reads, and it was never a contract.
 
 ## 4. Consequences
 

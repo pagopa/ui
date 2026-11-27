@@ -576,10 +576,11 @@ export type SemanticToken = {
   /** The role the name carries, without the namespace. */
   name: string
   type: SemanticTokenType
-  /** The value the contract publishes, resolved through the manifest. */
+  /**
+   * The value the contract publishes, resolved through the manifest, and the
+   * one the DTCG projection carries: the three projections say the same thing.
+   */
   value: string
-  /** The vendor-neutral value the DTCG projection carries. */
-  dtcg: string
 }
 
 export function semanticTokens(
@@ -615,7 +616,6 @@ export function semanticTokens(
       name: rule.property.slice(SEMANTIC_PREFIX.length),
       type: semanticType(declaration, primitives),
       value: resolveMix(resolved, rule.property),
-      dtcg: dtcgValue(declaration, resolved, rule.property),
     }
   })
 }
@@ -654,15 +654,6 @@ function resolvedValue(
 // wherever it is loaded, DTCG can express it, and a consumer needs no
 // `color-mix` support to read one opaque surface.
 const MIX = /color-mix\(\s*in srgb\s*,\s*([^,()]+?)\s*,\s*([^,()]+?)\s*\)/g
-
-function dtcgValue(value: string, resolved: string, cssName: string): string {
-  // DTCG has no expression for a mix: the projection carries the colour it
-  // computes, the same opaque value the CSS contract publishes.
-  if (value.includes("color-mix(")) return resolveMix(resolved, cssName)
-  return value
-    .replace(/var\(\s*--figma-([a-z0-9-]+)\s*\)/g, "{primitives.$1}")
-    .replace(/var\(\s*--pui-([a-z0-9-]+)\s*\)/g, "{pui.$1}")
-}
 
 interface MixOperand {
   channels: number[]
@@ -721,7 +712,7 @@ function tokenContract(
     files: [
       [paths.tokensCss, emitContractCss(tokens)],
       [paths.semanticInventory, emitSemanticInventory(tokens)],
-      [paths.dtcg, formatJson(emitDtcg(manifest, tokens))],
+      [paths.dtcg, formatJson(emitDtcg(tokens))],
     ],
   }
 }
@@ -754,7 +745,6 @@ export function emitSemanticInventory(tokens: SemanticToken[]): string {
     "  name: string",
     "  type: SemanticTokenType",
     "  value: string",
-    "  dtcg: string",
     "}",
     "",
     "export const semanticTokens: SemanticToken[] = [",
@@ -765,44 +755,26 @@ export function emitSemanticInventory(tokens: SemanticToken[]): string {
     lines.push(`    name: ${JSON.stringify(token.name)},`)
     lines.push(`    type: ${JSON.stringify(token.type)},`)
     lines.push(`    value: ${JSON.stringify(token.value)},`)
-    lines.push(`    dtcg: ${JSON.stringify(token.dtcg)},`)
     lines.push("  },")
   }
   lines.push("]", "")
   return lines.join("\n")
 }
 
-export function emitDtcg(manifest: Manifest, tokens: SemanticToken[]): unknown {
+// The projection carries the semantic contract alone: every `$value` is the
+// value the CSS projection publishes, so a host that reads the file needs no
+// alias resolution and no vocabulary but the role names (ADR-0013 §3, RD1).
+export function emitDtcg(tokens: SemanticToken[]): unknown {
   const pui: Record<string, { $type: string; $value: string }> = {}
-  for (const token of tokens) pui[token.name] = { $type: token.type, $value: token.dtcg }
-  const primitives: Record<string, { $type: string; $value: string }> = {}
-  const rows = new Map(
-    allEntries(manifest).map((entry) => [`--${entryCssName(entry)}`, entry] as const),
-  )
-  for (const token of tokens) {
-    for (const match of token.dtcg.matchAll(/\{primitives\.([a-z0-9-]+)\}/g)) {
-      const entry = rows.get(`--figma-${match[1]}`)
-      if (!entry) throw new Error(`${token.cssName}: no primitive ${match[1]} to publish`)
-      primitives[match[1]] = {
-        $type: DTCG_TYPES[entry.type],
-        $value: cssValue(entry),
-      }
-    }
-  }
-  return { $description: DTCG_DESCRIPTION, primitives, pui }
-}
-
-const DTCG_TYPES: Record<string, string> = {
-  COLOR: "color",
-  FLOAT: "dimension",
-  EFFECT: "shadow",
-  TYPOGRAPHY: "typography",
+  for (const token of tokens) pui[token.name] = { $type: token.type, $value: token.value }
+  return { $description: DTCG_DESCRIPTION, pui }
 }
 
 const DTCG_DESCRIPTION =
   "The pagopa/ui token contract in Design Tokens Community Group format. " +
-  "`pui` is the public semantic layer, `primitives` the internal Figma-backed " +
-  "values it resolves to."
+  "Every entry is a published `--pui-*` role with the value it declares; " +
+  "the primitive layer a role is derived from is build-time only and is not " +
+  "part of this file."
 
 function emitCss(manifest: Manifest): string {
   const entries = allEntries(manifest)

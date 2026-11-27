@@ -1,235 +1,53 @@
 {
-  "$description": "The pagopa/ui token contract in Design Tokens Community Group format. `pui` is the public semantic layer, `primitives` the internal Figma-backed values it resolves to.",
-  "primitives": {
-    "color-neutrals-white": {
-      "$type": "color",
-      "$value": "#ffffff"
-    },
-    "color-neutrals-black": {
-      "$type": "color",
-      "$value": "#0e0f13"
-    },
-    "color-blue-500": {
-      "$type": "color",
-      "$value": "#0b3ee3"
-    },
-    "color-neutrals-grey-100": {
-      "$type": "color",
-      "$value": "#e8ebf1"
-    },
-    "color-neutrals-grey-50": {
-      "$type": "color",
-      "$value": "#f4f5f8"
-    },
-    "color-neutrals-grey-700": {
-      "$type": "color",
-      "$value": "#555c70"
-    },
-    "color-status-error-600": {
-      "$type": "color",
-      "$value": "#d13333"
-    },
-    "color-blue-600": {
-      "$type": "color",
-      "$value": "#0932b6"
-    },
-    "color-neutrals-grey-200": {
-      "$type": "color",
-      "$value": "#d2d6e3"
-    },
-    "color-border-fill": {
-      "$type": "color",
-      "$value": "#e8ebf1"
-    },
-    "color-neutrals-grey-650": {
-      "$type": "color",
-      "$value": "#636b82"
-    },
-    "color-neutrals-grey-300": {
-      "$type": "color",
-      "$value": "#bbc2d6"
-    },
-    "color-icon-decorative-secondary": {
-      "$type": "color",
-      "$value": "#bbc2d6"
-    },
-    "color-surface-overlay": {
-      "$type": "color",
-      "$value": "#0e0f1359"
-    },
-    "color-neutrals-grey-850": {
-      "$type": "color",
-      "$value": "#2b2e38"
-    },
-    "color-icon-success-icon": {
-      "$type": "color",
-      "$value": "#427940"
-    },
-    "color-status-success-100": {
-      "$type": "color",
-      "$value": "#e1f4e1"
-    },
-    "color-status-success-400": {
-      "$type": "color",
-      "$value": "#89d188"
-    },
-    "color-status-success-850": {
-      "$type": "color",
-      "$value": "#224021"
-    },
-    "color-icon-warning-icon": {
-      "$type": "color",
-      "$value": "#a5822a"
-    },
-    "color-status-warning-100": {
-      "$type": "color",
-      "$value": "#fff5da"
-    },
-    "color-status-warning-400": {
-      "$type": "color",
-      "$value": "#ffd56b"
-    },
-    "color-status-warning-850": {
-      "$type": "color",
-      "$value": "#614c15"
-    },
-    "color-icon-info-icon": {
-      "$type": "color",
-      "$value": "#418daf"
-    },
-    "color-status-info-100": {
-      "$type": "color",
-      "$value": "#e1f5fe"
-    },
-    "color-status-info-400": {
-      "$type": "color",
-      "$value": "#89d9fc"
-    },
-    "color-status-info-850": {
-      "$type": "color",
-      "$value": "#215c76"
-    },
-    "color-status-error-100": {
-      "$type": "color",
-      "$value": "#ffd9d9"
-    },
-    "color-status-error-400": {
-      "$type": "color",
-      "$value": "#ff6666"
-    },
-    "color-status-error-850": {
-      "$type": "color",
-      "$value": "#5d1313"
-    },
-    "color-chip-default-filled": {
-      "$type": "color",
-      "$value": "#e7ecfc"
-    },
-    "color-chip-default-filled-text": {
-      "$type": "color",
-      "$value": "#031344"
-    },
-    "color-chip-default-outline": {
-      "$type": "color",
-      "$value": "#0932b6"
-    },
-    "color-chip-highlighted-filled": {
-      "$type": "color",
-      "$value": "#dbf9fa"
-    },
-    "color-chip-highlighted-filled-text": {
-      "$type": "color",
-      "$value": "#003b3d"
-    },
-    "color-blue-50": {
-      "$type": "color",
-      "$value": "#e7ecfc"
-    },
-    "color-blue-100": {
-      "$type": "color",
-      "$value": "#ced8f9"
-    },
-    "color-neutrals-grey-450": {
-      "$type": "color",
-      "$value": "#99a3c1"
-    },
-    "color-han-purple-han-purple-500": {
-      "$type": "color",
-      "$value": "#5517e3"
-    },
-    "color-han-purple-han-purple-100": {
-      "$type": "color",
-      "$value": "#ddd1f9"
-    },
-    "color-blue-300": {
-      "$type": "color",
-      "$value": "#6d8bee"
-    },
-    "color-opacity-blue-500-40": {
-      "$type": "color",
-      "$value": "#0b3ee333"
-    },
-    "radius-8": {
-      "$type": "dimension",
-      "$value": "8px"
-    },
-    "spacing-2": {
-      "$type": "dimension",
-      "$value": "2px"
-    },
-    "spacing-4": {
-      "$type": "dimension",
-      "$value": "4px"
-    }
-  },
+  "$description": "The pagopa/ui token contract in Design Tokens Community Group format. Every entry is a published `--pui-*` role with the value it declares; the primitive layer a role is derived from is build-time only and is not part of this file.",
   "pui": {
     "background": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-white}"
+      "$value": "#ffffff"
     },
     "foreground": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-black}"
+      "$value": "#0e0f13"
     },
     "card": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-white}"
+      "$value": "#ffffff"
     },
     "card-foreground": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-black}"
+      "$value": "#0e0f13"
     },
     "popover": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-white}"
+      "$value": "#ffffff"
     },
     "popover-foreground": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-black}"
+      "$value": "#0e0f13"
     },
     "primary": {
       "$type": "color",
-      "$value": "{primitives.color-blue-500}"
+      "$value": "#0b3ee3"
     },
     "primary-foreground": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-white}"
+      "$value": "#ffffff"
     },
     "secondary": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-grey-100}"
+      "$value": "#e8ebf1"
     },
     "secondary-foreground": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-black}"
+      "$value": "#0e0f13"
     },
     "muted": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-grey-50}"
+      "$value": "#f4f5f8"
     },
     "muted-foreground": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-grey-700}"
+      "$value": "#555c70"
     },
     "accent": {
       "$type": "color",
@@ -237,23 +55,23 @@
     },
     "accent-foreground": {
       "$type": "color",
-      "$value": "{primitives.color-blue-500}"
+      "$value": "#0b3ee3"
     },
     "destructive": {
       "$type": "color",
-      "$value": "{primitives.color-status-error-600}"
+      "$value": "#d13333"
     },
     "destructive-foreground": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-white}"
+      "$value": "#ffffff"
     },
     "contrast": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-white}"
+      "$value": "#ffffff"
     },
     "contrast-foreground": {
       "$type": "color",
-      "$value": "{primitives.color-blue-500}"
+      "$value": "#0b3ee3"
     },
     "destructive-hover": {
       "$type": "color",
@@ -261,7 +79,7 @@
     },
     "primary-hover": {
       "$type": "color",
-      "$value": "{primitives.color-blue-600}"
+      "$value": "#0932b6"
     },
     "primary-active": {
       "$type": "color",
@@ -273,7 +91,7 @@
     },
     "secondary-hover": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-grey-200}"
+      "$value": "#d2d6e3"
     },
     "navy": {
       "$type": "color",
@@ -289,23 +107,23 @@
     },
     "border": {
       "$type": "color",
-      "$value": "{primitives.color-border-fill}"
+      "$value": "#e8ebf1"
     },
     "border-strong": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-grey-200}"
+      "$value": "#d2d6e3"
     },
     "input": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-grey-650}"
+      "$value": "#636b82"
     },
     "ring": {
       "$type": "color",
-      "$value": "{primitives.color-blue-500}"
+      "$value": "#0b3ee3"
     },
     "otp-frame": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-grey-650}"
+      "$value": "#636b82"
     },
     "avatar-frame": {
       "$type": "color",
@@ -313,7 +131,7 @@
     },
     "avatar-placeholder": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-grey-300}"
+      "$value": "#bbc2d6"
     },
     "avatar-icon-surface": {
       "$type": "color",
@@ -321,155 +139,155 @@
     },
     "avatar-inverse-foreground": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-white}"
+      "$value": "#ffffff"
     },
     "switch-unchecked": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-grey-700}"
+      "$value": "#555c70"
     },
     "switch-knob": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-white}"
+      "$value": "#ffffff"
     },
     "choice-icon": {
       "$type": "color",
-      "$value": "{primitives.color-icon-decorative-secondary}"
+      "$value": "#bbc2d6"
     },
     "overlay": {
       "$type": "color",
-      "$value": "{primitives.color-surface-overlay}"
+      "$value": "#0e0f1359"
     },
     "tooltip": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-grey-850}"
+      "$value": "#2b2e38"
     },
     "success": {
       "$type": "color",
-      "$value": "{primitives.color-icon-success-icon}"
+      "$value": "#427940"
     },
     "success-soft": {
       "$type": "color",
-      "$value": "{primitives.color-status-success-100}"
+      "$value": "#e1f4e1"
     },
     "success-border": {
       "$type": "color",
-      "$value": "{primitives.color-status-success-400}"
+      "$value": "#89d188"
     },
     "success-foreground": {
       "$type": "color",
-      "$value": "{primitives.color-status-success-850}"
+      "$value": "#224021"
     },
     "warning": {
       "$type": "color",
-      "$value": "{primitives.color-icon-warning-icon}"
+      "$value": "#a5822a"
     },
     "warning-soft": {
       "$type": "color",
-      "$value": "{primitives.color-status-warning-100}"
+      "$value": "#fff5da"
     },
     "warning-border": {
       "$type": "color",
-      "$value": "{primitives.color-status-warning-400}"
+      "$value": "#ffd56b"
     },
     "warning-foreground": {
       "$type": "color",
-      "$value": "{primitives.color-status-warning-850}"
+      "$value": "#614c15"
     },
     "info": {
       "$type": "color",
-      "$value": "{primitives.color-icon-info-icon}"
+      "$value": "#418daf"
     },
     "info-soft": {
       "$type": "color",
-      "$value": "{primitives.color-status-info-100}"
+      "$value": "#e1f5fe"
     },
     "info-border": {
       "$type": "color",
-      "$value": "{primitives.color-status-info-400}"
+      "$value": "#89d9fc"
     },
     "info-foreground": {
       "$type": "color",
-      "$value": "{primitives.color-status-info-850}"
+      "$value": "#215c76"
     },
     "error-soft": {
       "$type": "color",
-      "$value": "{primitives.color-status-error-100}"
+      "$value": "#ffd9d9"
     },
     "error-border": {
       "$type": "color",
-      "$value": "{primitives.color-status-error-400}"
+      "$value": "#ff6666"
     },
     "error-foreground": {
       "$type": "color",
-      "$value": "{primitives.color-status-error-850}"
+      "$value": "#5d1313"
     },
     "chip-primary-soft": {
       "$type": "color",
-      "$value": "{primitives.color-chip-default-filled}"
+      "$value": "#e7ecfc"
     },
     "chip-primary-foreground": {
       "$type": "color",
-      "$value": "{primitives.color-chip-default-filled-text}"
+      "$value": "#031344"
     },
     "chip-default-outline": {
       "$type": "color",
-      "$value": "{primitives.color-chip-default-outline}"
+      "$value": "#0932b6"
     },
     "chip-highlight-soft": {
       "$type": "color",
-      "$value": "{primitives.color-chip-highlighted-filled}"
+      "$value": "#dbf9fa"
     },
     "chip-highlight-foreground": {
       "$type": "color",
-      "$value": "{primitives.color-chip-highlighted-filled-text}"
+      "$value": "#003b3d"
     },
     "selection-soft": {
       "$type": "color",
-      "$value": "{primitives.color-blue-50}"
+      "$value": "#e7ecfc"
     },
     "selection-border": {
       "$type": "color",
-      "$value": "{primitives.color-blue-100}"
+      "$value": "#ced8f9"
     },
     "muted-soft": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-grey-650}"
+      "$value": "#636b82"
     },
     "skeleton-strong": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-grey-450}"
+      "$value": "#99a3c1"
     },
     "decorative-secondary": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-grey-300}"
+      "$value": "#bbc2d6"
     },
     "han-purple": {
       "$type": "color",
-      "$value": "{primitives.color-han-purple-han-purple-500}"
+      "$value": "#5517e3"
     },
     "han-purple-soft": {
       "$type": "color",
-      "$value": "{primitives.color-han-purple-han-purple-100}"
+      "$value": "#ddd1f9"
     },
     "drop-target": {
       "$type": "color",
-      "$value": "{primitives.color-blue-300}"
+      "$value": "#6d8bee"
     },
     "dragging-surface": {
       "$type": "color",
-      "$value": "{primitives.color-opacity-blue-500-40}"
+      "$value": "#0b3ee333"
     },
     "inverse-foreground": {
       "$type": "color",
-      "$value": "{primitives.color-neutrals-white}"
+      "$value": "#ffffff"
     },
     "skip-to-main-ring": {
       "$type": "color",
-      "$value": "{primitives.color-blue-300}"
+      "$value": "#6d8bee"
     },
     "radius": {
       "$type": "dimension",
-      "$value": "{primitives.radius-8}"
+      "$value": "8px"
     },
     "artboard-height": {
       "$type": "dimension",
@@ -529,11 +347,11 @@
     },
     "hairline": {
       "$type": "dimension",
-      "$value": "{primitives.spacing-2}"
+      "$value": "2px"
     },
     "otp-clip-margin": {
       "$type": "dimension",
-      "$value": "{primitives.spacing-4}"
+      "$value": "4px"
     }
   }
 }
