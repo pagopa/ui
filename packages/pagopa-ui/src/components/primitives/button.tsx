@@ -11,7 +11,7 @@ import { SpinnerIndicator } from "./spinner-indicator"
 // source's inside stroke. Forced colors drops box shadows, so a real border
 // keeps every button's edge visible there.
 const buttonVariants = cva(
-  "group/button pui:inline-flex pui:min-w-0 pui:max-w-full pui:shrink-0 pui:items-center pui:justify-center pui:rounded-lg pui:border-transparent pui:bg-clip-padding pui:text-button pui:whitespace-normal pui:[overflow-wrap:anywhere] pui:transition-[color,background-color,border-color] pui:outline-none pui:select-none pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring pui:disabled:pointer-events-none pui:disabled:opacity-50 pui:aria-invalid:border-destructive pui:aria-invalid:inset-ring-destructive pui:forced-colors:border pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0 pui:[&_svg:not([class*='size-'])]:size-5",
+  "group/button pui:inline-flex pui:min-w-0 pui:max-w-full pui:shrink-0 pui:items-center pui:justify-center pui:rounded-lg pui:border-transparent pui:bg-clip-padding pui:text-button pui:whitespace-normal pui:[overflow-wrap:anywhere] pui:transition-[color,background-color,border-color] pui:outline-none pui:select-none pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring pui:disabled:pointer-events-none pui:disabled:opacity-50 pui:aria-invalid:border-destructive pui:aria-invalid:inset-ring-destructive pui:forced-colors:border pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0 pui:[&_svg:not(.pagopa-icon)]:size-5",
   {
     variants: {
       variant: {
@@ -38,13 +38,13 @@ const buttonVariants = cva(
         link: "pui:border pui:px-4 pui:text-primary pui:underline-offset-4 pui:hover:underline",
       },
       size: {
-        default: "pui:min-h-12 pui:gap-2 pui:[&_svg:not([class*='size-'])]:size-6",
+        default: "pui:min-h-12 pui:gap-2 pui:[&_svg:not(.pagopa-icon)]:size-6",
         xs: "pui:min-h-8 pui:gap-1 pui:px-3 pui:text-label-mini-sb",
         sm: "pui:min-h-10 pui:gap-1.5 pui:px-3.5 pui:text-label-mini-sb",
         lg: "pui:min-h-12 pui:gap-2 pui:px-6 pui:text-body-big-sb",
-        icon: "pui:size-11 pui:p-0 pui:[&_svg:not([class*='size-'])]:size-6",
+        icon: "pui:size-11 pui:p-0 pui:[&_svg:not(.pagopa-icon)]:size-6",
         "icon-xs":
-          "pui:size-6 pui:rounded-md pui:in-data-[slot=button-group]:rounded-lg pui:[&_svg:not([class*='size-'])]:size-3",
+          "pui:size-6 pui:rounded-md pui:in-data-[slot=button-group]:rounded-lg pui:[&_svg:not(.pagopa-icon)]:size-3",
         "icon-sm": "pui:size-7 pui:rounded-md pui:in-data-[slot=button-group]:rounded-lg",
         "icon-lg": "pui:size-12",
       },

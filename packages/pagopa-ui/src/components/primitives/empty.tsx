@@ -30,7 +30,7 @@ const emptyMediaVariants = cva(
     variants: {
       variant: {
         default: "pui:bg-transparent",
-        icon: "pui:flex pui:size-8 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-lg pui:bg-muted pui:text-foreground pui:[&_svg:not([class*='size-'])]:size-4",
+        icon: "pui:flex pui:size-8 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-lg pui:bg-muted pui:text-foreground pui:[&_svg:not(.pagopa-icon)]:size-4",
       },
     },
     defaultVariants: {

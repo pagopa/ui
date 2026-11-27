@@ -158,7 +158,7 @@ function TimelineTouchpointRow({ touchpoint }: { touchpoint: TimelineTouchpoint 
         {touchpoint.icon ? (
           <span
             aria-hidden="true"
-            className="pui:pointer-events-none pui:shrink-0 pui:[&_svg:not([class*='size-'])]:size-6"
+            className="pui:pointer-events-none pui:shrink-0 pui:[&_svg:not(.pagopa-icon)]:size-6"
           >
             {touchpoint.icon}
           </span>

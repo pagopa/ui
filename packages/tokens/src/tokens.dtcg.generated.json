@@ -233,7 +233,7 @@
     },
     "accent": {
       "$type": "color",
-      "$value": "color-mix(in srgb, {primitives.color-blue-500} 8%, {primitives.color-neutrals-white})"
+      "$value": "#ebf0fd"
     },
     "accent-foreground": {
       "$type": "color",
@@ -269,7 +269,7 @@
     },
     "accent-active": {
       "$type": "color",
-      "$value": "color-mix(in srgb, {primitives.color-blue-500} 20%, {primitives.color-neutrals-white})"
+      "$value": "#ced8f9"
     },
     "secondary-hover": {
       "$type": "color",

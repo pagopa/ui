@@ -74,7 +74,7 @@ function TableListItem({
               {field.icon ? (
                 <span
                   aria-hidden="true"
-                  className="pui:pointer-events-none pui:shrink-0 pui:text-choice-icon pui:[&_svg:not([class*='size-'])]:size-6"
+                  className="pui:pointer-events-none pui:shrink-0 pui:text-choice-icon pui:[&_svg:not(.pagopa-icon)]:size-6"
                 >
                   {field.icon}
                 </span>

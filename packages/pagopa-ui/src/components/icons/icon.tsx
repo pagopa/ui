@@ -40,13 +40,21 @@ function Icon({
   label,
   size = 24,
   source: Source,
-  style,
   ...props
 }: IconProps) {
   if (!decorative && !label && import.meta.env.DEV) {
     console.warn("Icon: pass `label` when `decorative` is false.")
   }
 
+  // The glyph box is artwork, not text: a 200% root font must not grow it past
+  // the control that hosts it (WCAG reflow), so the size lands in the
+  // `width`/`height` presentation attributes, which stay in px because the
+  // source artwork ships a `viewBox` and no intrinsic ratio of its own. They
+  // are attributes and not inline styles on purpose: a class wins over a
+  // presentation attribute, so `className="pui:size-*"` still resizes the icon
+  // and `style` reaches the element exactly as the caller wrote it. The
+  // `pagopa-icon` class is the hook a host uses to leave library glyphs out of
+  // its own `svg:not(.pagopa-icon)` defaults.
   return (
     <Source
       {...props}
@@ -56,9 +64,6 @@ function Icon({
       className={cn("pagopa-icon pui:inline-block pui:shrink-0 pui:select-none", className)}
       width={size}
       height={size}
-      // The glyph box is artwork, not text: a 200% root font must not grow it
-      // past the control that hosts it, so the size lands in px (WCAG reflow).
-      style={{ ...style, width: size, height: size }}
     />
   )
 }

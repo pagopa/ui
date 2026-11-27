@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/cn"
 
 const alertVariants = cva(
-  "pui:@container/alert group/alert pui:relative pui:grid pui:w-full pui:min-w-0 pui:grid-cols-1 pui:gap-1 pui:rounded-lg pui:border pui:p-4 pui:text-left pui:text-body pui:has-[>svg]:grid-cols-[auto_minmax(0,1fr)] pui:has-[>svg]:gap-x-2 pui:has-[>[data-slot=alert-icon]]:grid-cols-[auto_minmax(0,1fr)] pui:has-[>[data-slot=alert-icon]]:gap-x-2 pui:*:[svg]:row-span-2 pui:*:[svg]:translate-y-0.5 pui:*:[svg]:text-current pui:*:[svg:not([class*='size-'])]:size-6 pui:[&>[data-slot=alert-action]]:mt-3",
+  "pui:@container/alert group/alert pui:relative pui:grid pui:w-full pui:min-w-0 pui:grid-cols-1 pui:gap-1 pui:rounded-lg pui:border pui:p-4 pui:text-left pui:text-body pui:has-[>svg]:grid-cols-[auto_minmax(0,1fr)] pui:has-[>svg]:gap-x-2 pui:has-[>[data-slot=alert-icon]]:grid-cols-[auto_minmax(0,1fr)] pui:has-[>[data-slot=alert-icon]]:gap-x-2 pui:*:[svg]:row-span-2 pui:*:[svg]:translate-y-0.5 pui:*:[svg]:text-current pui:*:[svg:not(.pagopa-icon)]:size-6 pui:[&>[data-slot=alert-action]]:mt-3",
   {
     variants: {
       variant: {

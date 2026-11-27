@@ -198,11 +198,21 @@ function createReader(workspace: Workspace) {
       if (declared?.type === "FunctionDeclaration" && declaredName) {
         index.functions.set(declaredName, declared)
       }
-      // A variable declaration holds its declarators: `export const A = …, B = …`.
-      if (declaration?.type === "VariableDeclaration") {
-        for (const declarator of nodes(declaration.declarations)) {
+      // A variable declaration holds its declarators, exported or not:
+      // `export const A = …, B = …` wraps them, a bare `const Field = …` does not.
+      // A component can be that binding — `const Field = (props) => …` carries its
+      // own parameters and body, so it indexes as a function too, or every arrow
+      // component escapes the contract.
+      const variable = asNode(statement.type === "VariableDeclaration" ? statement : declared)
+      if (variable?.type === "VariableDeclaration") {
+        for (const declarator of nodes(variable.declarations)) {
           const name = keyName(declarator.id)
-          if (name) index.exportedLocals.add(name)
+          if (!name) continue
+          if (declaration) index.exportedLocals.add(name)
+          const value = asNode(declarator.init)
+          if (value?.type === "ArrowFunctionExpression" || value?.type === "FunctionExpression") {
+            index.functions.set(name, value)
+          }
         }
       }
       if (declaration && declaredName) index.exportedLocals.add(declaredName)
@@ -417,7 +427,37 @@ function createReader(workspace: Workspace) {
     return publicNames
   }
 
-  return { module, surface, capabilitiesOf, declarationOf }
+  // The names the entry barrel exports, keyed by the module that declares them:
+  // a consumer writes `import type { DialogProps } from "@pagopa/ui"`, so a type
+  // its own module exports and the barrel drops is still a type nobody can name.
+  // Inline `export interface`/`export type` count too — real ESM exports them
+  // through a star re-export, even though no specifier spells the name out.
+  let publicTypes: Set<string> | null = null
+  function publicTypeNames(): Set<string> {
+    if (publicTypes) return publicTypes
+    const names = new Set<string>()
+    const visited = new Set<string>()
+    const walkBarrel = (file: string): void => {
+      if (visited.has(file)) return
+      visited.add(file)
+      const current = module(file)
+      for (const specifier of current.all) {
+        const target = sources.resolveSource(specifier, file)
+        if (target) walkBarrel(target)
+      }
+      for (const local of current.exportedLocals) names.add(`${file}\u0000${local}`)
+      for (const entry of current.named) {
+        if (!entry.local) continue
+        const target = entry.from ? sources.resolveSource(entry.from, file) : file
+        if (target) names.add(`${target}\u0000${entry.local}`)
+      }
+    }
+    walkBarrel(ENTRY)
+    publicTypes = names
+    return names
+  }
+
+  return { module, surface, publicTypeNames, capabilitiesOf, declarationOf }
 }
 
 type Reader = ReturnType<typeof createReader>
@@ -485,14 +525,20 @@ export function componentFindings(
   )
   if (!stateful) return { stateful, findings }
 
-  if (!current.exportedLocals.has(typeName)) {
-    add("props type", `${typeName} is not exported, so a consumer cannot type their wrapper`)
+  if (!reader.publicTypeNames().has(`${props.file}\u0000${typeName}`)) {
+    add(
+      "props type",
+      `${typeName} is not exported from ${ENTRY}, so a consumer cannot type their wrapper`,
+    )
   }
 
   const used = new Set<string>()
   let spread = false
   walk(body, (node) => {
-    if (node.type === "JSXSpreadAttribute" || node.type === "SpreadElement") spread = true
+    // Only a JSX spread hands the element the props a component declares. An
+    // array or object spread inside the body — `<List items={[...items]} />` —
+    // carries nothing to the host element and must not paper over the checks.
+    if (node.type === "JSXSpreadAttribute") spread = true
     if (typeof node.name === "string") used.add(node.name)
   })
 

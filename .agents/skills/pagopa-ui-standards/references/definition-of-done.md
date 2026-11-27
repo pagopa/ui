@@ -65,6 +65,13 @@ list only shrinks.
       element. No closed interface that swallows them.
 - [ ] `className` is accepted, merged through `cn` after the component's own
       classes, and applied to the element the page expects to style.
+- [ ] The box of a glyph is written by `Icon`, not by a rule:
+      `size` lands in the `width` and `height` presentation attributes, never in
+      an inline `style`, so `className="pui:size-*"` overrides it the way any
+      class overrides a presentation attribute. A component that sizes the icons
+      in its own DOM leaves the library glyphs out of the selector —
+      `svg:not(.pagopa-icon)` — so a default never overrules the `size` a call
+      site states.
 - [ ] `ref` reaches that element, or the trigger a page has to focus, and is
       typed by the element, so `ref.current` is the DOM node and not `unknown`.
 - [ ] The props type is exported from its module and from `src/pagopa-ui.ts`

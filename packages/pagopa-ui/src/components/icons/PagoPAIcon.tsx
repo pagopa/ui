@@ -1,3 +1,5 @@
+import type { SVGProps } from "react"
+
 import { type FigmaIconName, iconAssetsByName, type IconVariantsByName } from "pagopa-ui-artwork"
 
 import { Icon } from "./icon"
@@ -20,10 +22,15 @@ const componentsByName = new Map(Object.entries(iconVariantsByName))
  * `name` outside the published catalogue — speak in development only. The
  * library build folds their guard away, so the published package resolves a
  * runtime name that misses the catalogue silently, by rendering nothing.
+ *
+ * It carries the `Icon` surface: `className`, `ref`, `style` and every other
+ * `<svg>` attribute reach the rendered element, so a caller can size, style or
+ * measure the icon the way it would any other glyph.
  */
-interface PagoPAIconProps<Name extends FigmaIconName = FigmaIconName> {
-  /** ClassName merged onto the rendered icon. */
-  className?: string
+interface PagoPAIconProps<Name extends FigmaIconName = FigmaIconName> extends Omit<
+  SVGProps<SVGSVGElement>,
+  "children" | "height" | "width"
+> {
   /**
    * Renders the icon as decoration (`aria-hidden`) so an adjacent label owns
    * the accessible name. Set `false` with `label` when the icon is meaningful.
@@ -50,13 +57,13 @@ interface PagoPAIconProps<Name extends FigmaIconName = FigmaIconName> {
 }
 
 function PagoPAIcon<Name extends FigmaIconName>({
-  className,
   decorative = true,
   filled,
   label,
   name,
   size = 24,
   variant,
+  ...props
 }: PagoPAIconProps<Name>) {
   if (!decorative && !label) {
     if (import.meta.env.DEV) {
@@ -91,11 +98,11 @@ function PagoPAIcon<Name extends FigmaIconName>({
     throw new Error(`Icon "${name}" has no source asset for variant "${selection ?? "default"}"`)
   return (
     <Icon
-      source={SourceIcon}
-      className={className}
+      {...props}
       decorative={decorative}
       label={label ?? name}
       size={size}
+      source={SourceIcon}
     />
   )
 }

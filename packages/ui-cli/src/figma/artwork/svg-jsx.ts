@@ -71,7 +71,11 @@ export function svgToJsx(source: string, options: SvgJsxOptions): string {
   const body = text.slice(open[0].length, close)
   // The mask definitions keep their source paint; everything that paints the
   // symbol itself becomes the inherited text colour.
-  const defs = body.lastIndexOf("</defs>") + "</defs>".length
+  // No `<defs>` means the whole body paints the symbol: the boundary falls at
+  // its start, so every paint in it is repainted. `lastIndexOf` misses at `-1`,
+  // never at `-1 + 7`.
+  const closing = body.lastIndexOf("</defs>")
+  const defs = closing < 0 ? 0 : closing + "</defs>".length
   const paint = options.monochrome
     ? body.slice(0, defs) + body.slice(defs).replace(PAINT, 'fill="currentColor"')
     : body

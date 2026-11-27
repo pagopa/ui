@@ -217,10 +217,7 @@ function OTPFieldSeparator({
   return (
     <OTPFieldPrimitive.Separator
       data-slot="otp-field-separator"
-      className={cn(
-        "pui:flex pui:items-center pui:[&_svg:not([class*='size-'])]:size-4",
-        className,
-      )}
+      className={cn("pui:flex pui:items-center pui:[&_svg:not(.pagopa-icon)]:size-4", className)}
       {...props}
     >
       <Icon source={CheckIndeterminateSmallIcon} />

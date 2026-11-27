@@ -609,12 +609,13 @@ export function semanticTokens(
     if (seen.has(rule.property)) throw new Error(`${file}: ${rule.property} is declared twice`)
     seen.add(rule.property)
     const declaration = normalizeValue(rule.value)
+    const resolved = resolvedValue(declaration, primitives, rule.property)
     return {
       cssName: rule.property,
       name: rule.property.slice(SEMANTIC_PREFIX.length),
       type: semanticType(declaration, primitives),
-      value: resolvedValue(declaration, primitives, rule.property),
-      dtcg: dtcgValue(declaration),
+      value: resolveMix(resolved, rule.property),
+      dtcg: dtcgValue(declaration, resolved, rule.property),
     }
   })
 }
@@ -647,10 +648,60 @@ function resolvedValue(
   })
 }
 
-function dtcgValue(value: string): string {
+// `color-mix(in srgb, A 8%, B)` composites A over B in gamma-encoded sRGB, which
+// is what the browser paints. A token published to a host page carries the
+// colour it computes, never the computation: the contract reads the same
+// wherever it is loaded, DTCG can express it, and a consumer needs no
+// `color-mix` support to read one opaque surface.
+const MIX = /color-mix\(\s*in srgb\s*,\s*([^,()]+?)\s*,\s*([^,()]+?)\s*\)/g
+
+function dtcgValue(value: string, resolved: string, cssName: string): string {
+  // DTCG has no expression for a mix: the projection carries the colour it
+  // computes, the same opaque value the CSS contract publishes.
+  if (value.includes("color-mix(")) return resolveMix(resolved, cssName)
   return value
     .replace(/var\(\s*--figma-([a-z0-9-]+)\s*\)/g, "{primitives.$1}")
     .replace(/var\(\s*--pui-([a-z0-9-]+)\s*\)/g, "{pui.$1}")
+}
+
+interface MixOperand {
+  channels: number[]
+  weight: number | null
+}
+
+function mixOperand(text: string, cssName: string): MixOperand {
+  const match = /^(#[0-9a-f]{6})\s*(?:(\d+(?:\.\d+)?)%)?$/i.exec(text.trim())
+  if (!match) {
+    throw new Error(
+      `${cssName}: only an opaque hex colour composites in srgb, not "${text.trim()}" — ` +
+        "publish the colour the mix computes",
+    )
+  }
+  return {
+    channels: [1, 3, 5].map((offset) => Number.parseInt(match[1].slice(offset, offset + 2), 16)),
+    weight: match[2] === undefined ? null : Number(match[2]) / 100,
+  }
+}
+
+// One side omits its percentage and takes the remainder; both omit it and the
+// mix is even; both carry one and CSS normalises them to their sum.
+function mixShare(first: MixOperand, second: MixOperand): number {
+  if (first.weight === null) return second.weight === null ? 0.5 : 1 - second.weight
+  if (second.weight === null) return first.weight
+  const total = first.weight + second.weight
+  return total === 0 ? 0.5 : first.weight / total
+}
+
+function resolveMix(value: string, cssName: string): string {
+  return value.replace(MIX, (_, first: string, second: string) => {
+    const a = mixOperand(first, cssName)
+    const b = mixOperand(second, cssName)
+    const share = mixShare(a, b)
+    const channels = a.channels.map((channel, index) =>
+      Math.round(channel * share + b.channels[index] * (1 - share)),
+    )
+    return `#${channels.map((channel) => channel.toString(16).padStart(2, "0")).join("")}`
+  })
 }
 
 // A value that is nothing but a reference has no type of its own: the token it

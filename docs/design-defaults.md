@@ -56,8 +56,8 @@ extension: the shipped value is opaque and names its two endpoints in a comment.
 the same wherever it is loaded and the value survives into the DTCG file:
 
 ```css
---primary-active: #072582; /* local extension: pressed step between Blue 600 and Blue 850 */
---destructive-hover: #aa2828; /* local extension: pointer step between Error 600 and Error 850 */
+--pui-primary-active: #072582; /* local extension: pressed step between Blue 600 and Blue 850 */
+--pui-destructive-hover: #aa2828; /* local extension: pointer step between Error 600 and Error 850 */
 ```
 
 Both current extensions are of this kind, and both are debt: when the palette
@@ -70,7 +70,8 @@ pairing that fails is a bug in the role mapping, not a reason to add a step.
 **Opaque, not translucent.** A state surface is composited to an opaque value
 over the page background rather than left as alpha, so text and icons stay
 legible when the component is placed on a dark or brand caller surface (the
-`--accent` and `--accent-active` precedent).
+`--pui-accent` and `--pui-accent-active` precedent: the stylesheet mixes Blue 500
+at 8% and 20% over white, and the published token carries the mix it computes).
 
 **Out of scope.** A state family with no published status base token is not
 derived: it is a request, because deriving it would invent a hue.

@@ -314,6 +314,43 @@ test("a declaration outside the public namespace fails the refresh", () => {
   })
 })
 
+test("a color-mix is published as the colour it computes", () => {
+  fixture(({ tokens, read, write }) => {
+    write(
+      "src/index.css",
+      read("src/index.css").replace(
+        "  --pui-primary:",
+        "  --pui-accent: color-mix(in srgb, var(--figma-color-blue-500) 8%, #ffffff);\n  --pui-primary:",
+      ),
+    )
+    const write2 = tokens("--write", "--input", "snapshot.json")
+    assert.equal(write2.status, 0, write2.stderr)
+    // 8% of #0b3ee3 over white, composited in gamma-encoded sRGB.
+    assert.match(read("src/tokens.generated.css"), /^ {2}--pui-accent: #ebf0fd;$/m)
+    const dtcg = JSON.parse(read("src/tokens.dtcg.generated.json"))
+    assert.deepEqual(dtcg.pui.accent, { $type: "color", $value: "#ebf0fd" })
+    assert.equal(tokens("--check").status, 0)
+  })
+})
+
+test("a mix of an operand the generator cannot resolve fails the refresh", () => {
+  fixture(({ tokens, read, write }) => {
+    write(
+      "src/index.css",
+      read("src/index.css").replace(
+        "  --pui-primary:",
+        "  --pui-accent: color-mix(in srgb, white 8%, #ffffff);\n  --pui-primary:",
+      ),
+    )
+    const result = tokens("--write", "--input", "snapshot.json")
+    assert.notEqual(result.status, 0)
+    assert.match(
+      result.stderr,
+      /--pui-accent: only an opaque hex colour composites in srgb, not "white 8%"/,
+    )
+  })
+})
+
 test("a snapshot without ids carries the previous ids over by name", () => {
   fixture(({ tokens, read, write }) => {
     assert.equal(tokens("--write", "--input", "snapshot.json").status, 0)

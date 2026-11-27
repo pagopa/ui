@@ -88,7 +88,7 @@ export default defineConfig(({ command }) => ({
         extends: true,
         test: {
           name: "unit",
-          include: ["src/**/*.unit.test.ts", "build/**/*.unit.test.ts"],
+          include: ["src/**/*.unit.test.ts", "src/**/*.unit.test.tsx", "build/**/*.unit.test.ts"],
           environment: "node",
         },
       },

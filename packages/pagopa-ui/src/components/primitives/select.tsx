@@ -50,7 +50,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "pui:flex pui:w-full pui:items-center pui:justify-between pui:gap-2 pui:rounded-lg pui:border pui:border-input pui:bg-background pui:px-3 pui:py-2 pui:text-body pui:whitespace-nowrap pui:transition-[color,background-color,border-color] pui:outline-none pui:select-none pui:focus-visible:border-ring pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-1 pui:focus-visible:outline-ring pui:disabled:cursor-not-allowed pui:disabled:bg-muted pui:disabled:text-muted-foreground pui:aria-invalid:border-destructive pui:aria-invalid:outline-destructive pui:data-placeholder:text-muted-foreground pui:data-[size=default]:min-h-12 pui:data-[size=sm]:min-h-10 pui:*:data-[slot=select-value]:line-clamp-1 pui:*:data-[slot=select-value]:flex pui:*:data-[slot=select-value]:items-center pui:*:data-[slot=select-value]:gap-2 pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0 pui:[&_svg:not([class*='size-'])]:size-5",
+        "pui:flex pui:w-full pui:items-center pui:justify-between pui:gap-2 pui:rounded-lg pui:border pui:border-input pui:bg-background pui:px-3 pui:py-2 pui:text-body pui:whitespace-nowrap pui:transition-[color,background-color,border-color] pui:outline-none pui:select-none pui:focus-visible:border-ring pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-1 pui:focus-visible:outline-ring pui:disabled:cursor-not-allowed pui:disabled:bg-muted pui:disabled:text-muted-foreground pui:aria-invalid:border-destructive pui:aria-invalid:outline-destructive pui:data-placeholder:text-muted-foreground pui:data-[size=default]:min-h-12 pui:data-[size=sm]:min-h-10 pui:*:data-[slot=select-value]:line-clamp-1 pui:*:data-[slot=select-value]:flex pui:*:data-[slot=select-value]:items-center pui:*:data-[slot=select-value]:gap-2 pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0 pui:[&_svg:not(.pagopa-icon)]:size-5",
         className,
       )}
       {...props}
@@ -145,7 +145,7 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "pui:relative pui:flex pui:min-h-11 pui:w-full pui:cursor-default pui:items-center pui:gap-2 pui:rounded-md pui:py-2 pui:pr-9 pui:pl-3 pui:text-body pui:focus:outline-hidden pui:select-none pui:focus:bg-accent pui:focus:text-accent-foreground pui:data-disabled:pointer-events-none pui:data-disabled:opacity-50 pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0 pui:[&_svg:not([class*='size-'])]:size-4",
+        "pui:relative pui:flex pui:min-h-11 pui:w-full pui:cursor-default pui:items-center pui:gap-2 pui:rounded-md pui:py-2 pui:pr-9 pui:pl-3 pui:text-body pui:focus:outline-hidden pui:select-none pui:focus:bg-accent pui:focus:text-accent-foreground pui:data-disabled:pointer-events-none pui:data-disabled:opacity-50 pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0 pui:[&_svg:not(.pagopa-icon)]:size-4",
         multiple && "pui:pr-12",
         className,
       )}
@@ -202,7 +202,7 @@ function SelectScrollUpButton({
     <SelectPrimitive.ScrollUpArrow
       data-slot="select-scroll-up-button"
       className={cn(
-        "pui:top-0 pui:z-10 pui:flex pui:w-full pui:cursor-default pui:items-center pui:justify-center pui:bg-popover pui:py-1 pui:[&_svg:not([class*='size-'])]:size-4",
+        "pui:top-0 pui:z-10 pui:flex pui:w-full pui:cursor-default pui:items-center pui:justify-center pui:bg-popover pui:py-1 pui:[&_svg:not(.pagopa-icon)]:size-4",
         className,
       )}
       {...props}
@@ -220,7 +220,7 @@ function SelectScrollDownButton({
     <SelectPrimitive.ScrollDownArrow
       data-slot="select-scroll-down-button"
       className={cn(
-        "pui:bottom-0 pui:z-10 pui:flex pui:w-full pui:cursor-default pui:items-center pui:justify-center pui:bg-popover pui:py-1 pui:[&_svg:not([class*='size-'])]:size-4",
+        "pui:bottom-0 pui:z-10 pui:flex pui:w-full pui:cursor-default pui:items-center pui:justify-center pui:bg-popover pui:py-1 pui:[&_svg:not(.pagopa-icon)]:size-4",
         className,
       )}
       {...props}

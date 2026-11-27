@@ -130,7 +130,7 @@ function ListItem({
       {leading ? (
         <span
           aria-hidden="true"
-          className="pui:pointer-events-none pui:inline-flex pui:shrink-0 pui:items-center pui:[&_svg:not([class*='size-'])]:size-6"
+          className="pui:pointer-events-none pui:inline-flex pui:shrink-0 pui:items-center pui:[&_svg:not(.pagopa-icon)]:size-6"
         >
           {leading}
         </span>
@@ -182,7 +182,7 @@ function ListItem({
       {trailingIcon ? (
         <span
           aria-hidden="true"
-          className="pui:pointer-events-none pui:shrink-0 pui:text-primary pui:[&_svg:not([class*='size-'])]:size-6"
+          className="pui:pointer-events-none pui:shrink-0 pui:text-primary pui:[&_svg:not(.pagopa-icon)]:size-6"
         >
           {trailingIcon}
         </span>

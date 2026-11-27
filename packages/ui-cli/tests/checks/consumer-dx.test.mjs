@@ -126,11 +126,74 @@ test("a declared className or ref that reaches no element fails", () => {
   hasProblem(result, /dialog\.tsx: Dialog: ref is declared but never forwarded/)
 })
 
+test("a props type its own module exports but the entry barrel drops fails", () => {
+  hasProblem(
+    check({
+      "src/pagopa-ui.ts": `export { Dialog } from "./components/dialog"\n`,
+      "src/components/dialog.tsx": dialog(),
+    }),
+    /dialog\.tsx: Dialog: DialogProps is not exported from src\/pagopa-ui\.ts/,
+  )
+})
+
 test("a props type the module does not export fails", () => {
   hasProblem(
     check(tree(dialog({ exported: false }))),
-    /dialog\.tsx: Dialog: DialogProps is not exported/,
+    /dialog\.tsx: Dialog: DialogProps is not exported from src\/pagopa-ui\.ts/,
   )
+})
+
+test("an arrow component is read like a declaration", () => {
+  const source = `"use client"
+
+import * as React from "react"
+
+interface DialogProps extends Omit<React.ComponentProps<"div">, "className"> {
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+  className?: string
+  ref?: React.Ref<HTMLDivElement>
+}
+
+const Dialog = ({ className, onOpenChange, open, ref, ...props }: DialogProps) => {
+  React.useEffect(() => onOpenChange?.(open ?? false), [open, onOpenChange])
+  return <div className={className} ref={ref} {...props} />
+}
+
+export { Dialog, type DialogProps }
+`
+  const result = check(tree(source))
+  hasProblem(result, /dialog\.tsx: Dialog: open pairs with onOpenChange but no defaultOpen/)
+  assert.equal(result.summary, "1 stateful component(s), 0 exempt")
+})
+
+test("an array or object spread does not stand in for a JSX prop spread", () => {
+  const source = `"use client"
+
+import * as React from "react"
+
+interface ListProps extends Omit<React.ComponentProps<"ul">, "className"> {
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+  className?: string
+  ref?: React.Ref<HTMLUListElement>
+  items: string[]
+}
+
+function List({ className, items, onOpenChange, open, ref }: ListProps) {
+  const rows = [...items]
+  React.useEffect(() => onOpenChange?.(open ?? false), [open, onOpenChange])
+  return <ul>{rows.map((row) => <li key={row}>{row}</li>)}</ul>
+}
+
+export { List, type ListProps }
+`
+  const result = check({
+    "src/pagopa-ui.ts": `export * from "./components/list"\n`,
+    "src/components/list.tsx": source,
+  })
+  hasProblem(result, /list\.tsx: List: className is declared but never applied/)
+  hasProblem(result, /list\.tsx: List: ref is declared but never forwarded/)
 })
 
 test("a component outside the public surface is not checked", () => {

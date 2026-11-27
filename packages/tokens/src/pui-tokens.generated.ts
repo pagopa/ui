@@ -99,8 +99,8 @@ export const semanticTokens: SemanticToken[] = [
     cssName: "--pui-accent",
     name: "accent",
     type: "color",
-    value: "color-mix(in srgb, #0b3ee3 8%, #ffffff)",
-    dtcg: "color-mix(in srgb, {primitives.color-blue-500} 8%, {primitives.color-neutrals-white})",
+    value: "#ebf0fd",
+    dtcg: "#ebf0fd",
   },
   {
     cssName: "--pui-accent-foreground",
@@ -162,8 +162,8 @@ export const semanticTokens: SemanticToken[] = [
     cssName: "--pui-accent-active",
     name: "accent-active",
     type: "color",
-    value: "color-mix(in srgb, #0b3ee3 20%, #ffffff)",
-    dtcg: "color-mix(in srgb, {primitives.color-blue-500} 20%, {primitives.color-neutrals-white})",
+    value: "#ced8f9",
+    dtcg: "#ced8f9",
   },
   {
     cssName: "--pui-secondary-hover",
