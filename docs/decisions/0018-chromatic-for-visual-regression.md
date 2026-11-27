@@ -170,8 +170,10 @@ one that turns the dashboard into a gate.
   the nightly and the release pull request capture all of them. Under that
   budget Chromatic limits the build rather than failing it: it publishes the
   Storybook, runs no test, and the job stays green. The plan therefore has to
-  cover one full catalogue a day before the nightly means anything, and a green
-  limited build is indistinguishable from a clean one in the pull request.
+  cover one full catalogue a day before the nightly means anything. A step after
+  the CLI reads its log for that answer and raises a warning annotation and a
+  summary line, so a limited build is distinguishable from a clean one in the
+  pull request while still proving nothing about the diff.
 - The play functions travel with the catalogue: Chromatic runs them as
   interaction tests and fails the build on one, which `--exit-zero-on-changes`
   does not cover. The first live run (2026-11-27) reported 20 from ten stories —

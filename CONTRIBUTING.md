@@ -607,8 +607,10 @@ what was accepted. Nothing is stored in this repository — no image, no
 The capture is what the plan sells, and a full build is 544 stories at three
 widths. Under the plan's limit Chromatic limits the build instead of failing it:
 the Storybook publishes, no test runs and the job is green while comparing
-nothing, so the run's notice is the only signal that the plan no longer covers
-the catalogue.
+nothing. The step after the CLI reads its log for that answer and raises a
+warning annotation and a summary line, so a green check that proved nothing says
+so on the pull request instead of looking like a clean one — but the plan still
+has to cover the catalogue before the run means anything.
 
 The build also runs the stories' `play` functions as interaction tests, and one
 of those failing fails the build even with `exitZeroOnChanges`. `test:stories`
