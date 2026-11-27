@@ -1,5 +1,5 @@
 import { renderToStaticMarkup } from "react-dom/server"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 
 import type { FigmaIconName } from "pagopa-ui-artwork"
 
@@ -49,5 +49,37 @@ describe("PagoPAIcon host contract", () => {
     expect(html).toContain('data-testid="glyph"')
     expect(html).toContain("pointer-events:none")
     expect(html).toContain("probe")
+  })
+})
+
+describe("PagoPAIcon unknown input", () => {
+  const withWarning = (render: () => string) => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
+    const html = render()
+    // `mockRestore` drops the recorded calls, so read them before restoring.
+    const messages = warn.mock.calls.map(([message]) => String(message))
+    warn.mockRestore()
+    return { html, messages }
+  }
+
+  it("renders nothing and warns when the name misses the catalogue", () => {
+    const { html, messages } = withWarning(() =>
+      markup(
+        // A name built at runtime reaches the component as a plain string.
+        // @ts-expect-error — the public union cannot express it.
+        <PagoPAIcon name="not-a-published-icon" />,
+      ),
+    )
+    expect(html).toBe("")
+    expect(messages.some((message) => message.includes("not-a-published-icon"))).toBe(true)
+  })
+
+  it("throws when the variant is not published, as the packed check pins", () => {
+    expect(() =>
+      markup(
+        // @ts-expect-error — the public union cannot express a runtime variant.
+        <PagoPAIcon name="check" variant="missing" />,
+      ),
+    ).toThrow(/has no source asset for variant "missing"/)
   })
 })

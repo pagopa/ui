@@ -10,6 +10,15 @@ import { iconVariantsByName } from "./generated/registry"
 const assetsByName = new Map(Object.entries(iconAssetsByName))
 const componentsByName = new Map(Object.entries(iconVariantsByName))
 
+// The library build folds `import.meta.env.DEV` to `false`, so the published
+// package would resolve a runtime name that misses the catalogue silently.
+// `process.env.NODE_ENV` is the form a consumer bundler still resolves:
+// development keeps the diagnostics, production drops the branch. It is
+// declared here because the package types carry no Node globals.
+declare const process: { env: { NODE_ENV?: string } }
+
+const isDevelopment = process.env.NODE_ENV !== "production"
+
 /**
  * The runtime icon resolver: `name` selects the pinned artwork at render time.
  *
@@ -19,9 +28,13 @@ const componentsByName = new Map(Object.entries(iconVariantsByName))
  * by name, such as the Storybook gallery.
  *
  * Its two diagnostics — a `decorative={false}` call with no `label`, and a
- * `name` outside the published catalogue — speak in development only. The
- * library build folds their guard away, so the published package resolves a
- * runtime name that misses the catalogue silently, by rendering nothing.
+ * `name` outside the published catalogue — speak in development only, and the
+ * name one renders nothing rather than failing the surface that hosts it. The
+ * guard reads `process.env.NODE_ENV` rather than `import.meta.env.DEV`, because
+ * the library build folds the latter to `false`: the published package would
+ * then never warn, while a consumer bundler still resolves the former and drops
+ * the branch it builds for production. An unsupported `variant` is a typed
+ * misuse and throws, as `library:check` pins for the packed package.
  *
  * It carries the `Icon` surface: `className`, `ref`, `style` and every other
  * `<svg>` attribute reach the rendered element, so a caller can size, style or
@@ -66,7 +79,7 @@ function PagoPAIcon<Name extends FigmaIconName>({
   ...props
 }: PagoPAIconProps<Name>) {
   if (!decorative && !label) {
-    if (import.meta.env.DEV) {
+    if (isDevelopment) {
       console.warn(
         "PagoPAIcon: pass `label` when `decorative` is false; falling back to the icon name.",
       )
@@ -78,7 +91,7 @@ function PagoPAIcon<Name extends FigmaIconName>({
   // A name built at runtime may miss the published set: the icon renders
   // nothing rather than failing the whole surface that hosts it.
   if (!asset || !components) {
-    if (import.meta.env.DEV) {
+    if (isDevelopment) {
       console.warn(
         `PagoPAIcon: "${String(name)}" has no published source artwork; rendering nothing.`,
       )

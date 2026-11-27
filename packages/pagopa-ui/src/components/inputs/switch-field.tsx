@@ -61,7 +61,7 @@ function SwitchField({
         <span
           aria-hidden="true"
           className={cn(
-            "pui:flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center pui:text-choice-icon pui:[&>*]:size-6",
+            "pui:flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center pui:text-choice-icon pui:[&>svg:not(.pagopa-icon)]:size-6",
             unavailable && "pui:opacity-50 pui:forced-colors:opacity-100",
           )}
         >

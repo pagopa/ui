@@ -4,6 +4,7 @@ import { expect, screen, userEvent, waitFor, within } from "storybook/test"
 
 import { TimelineDrawer } from "@/components/overlays/timeline-drawer"
 import { Button } from "@/components/primitives/button"
+import timelineGuide from "./guides/timeline.md?raw"
 
 const meta = {
   title: "Components/Overlays/TimelineDrawer",
@@ -19,8 +20,9 @@ const meta = {
   parameters: {
     docs: {
       description: {
-        component:
-          "Side panel with the event timeline: it composes Drawer and Timeline, keeps a real title and invents no states.",
+        component: `Side panel with the event timeline: it composes Drawer and Timeline, keeps a real title and invents no states.
+
+${timelineGuide}`,
       },
     },
   },
