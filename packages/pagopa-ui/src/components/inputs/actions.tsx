@@ -47,28 +47,46 @@ interface SegmentedControlItem<T extends string> {
   label: string
 }
 
-/** Props of {@link SegmentedControl}. */
-interface SegmentedControlProps<T extends string> {
+/**
+ * Props of {@link SegmentedControl}. The controlled (`value`) and uncontrolled
+ * (`defaultValue`) modes share one lifecycle; `ref`, `className` and the
+ * standard HTML attributes of a `div` land on the group.
+ */
+interface SegmentedControlProps<T extends string> extends Omit<
+  React.ComponentProps<"div">,
+  "aria-label" | "children" | "className"
+> {
   /** Segments, in order. */
   items: SegmentedControlItem<T>[]
-  /** Selected value (controlled only). */
-  value: T
+  /** Selected value, when the page owns the selection. */
+  value?: T
+  /** Segment selected at mount, when `value` is omitted. */
+  defaultValue?: T
   /** Called with the value of the pressed segment. */
-  onValueChange: (value: T) => void
+  onValueChange?: (value: T) => void
   /** Accessible name of the group. @default messages.segmentedControl.ariaLabel */
   "aria-label"?: string
+  /** Classes of the group, merged with the group's own. */
   className?: string
 }
 
 function SegmentedControl<T extends string>({
   items,
   value,
+  defaultValue,
   onValueChange,
   "aria-label": ariaLabelProp,
   className,
+  ...props
 }: SegmentedControlProps<T>) {
   const t = useMessages("segmentedControl")
   const ariaLabel = ariaLabelProp ?? t.ariaLabel
+  const [internalValue, setInternalValue] = React.useState<T | null>(defaultValue ?? null)
+  const currentValue = value === undefined ? internalValue : value
+  const select = (next: T) => {
+    if (value === undefined) setInternalValue(next)
+    onValueChange?.(next)
+  }
 
   return (
     <div
@@ -80,15 +98,16 @@ function SegmentedControl<T extends string>({
         "pui:inline-flex pui:max-w-full pui:min-h-16 pui:flex-wrap pui:items-center pui:gap-2 pui:rounded-[var(--spacing-8)] pui:border pui:bg-muted pui:p-2",
         className,
       )}
+      {...props}
     >
       {items.map((item) => {
-        const selected = item.value === value
+        const selected = item.value === currentValue
         return (
           <button
             key={item.value}
             type="button"
             aria-pressed={selected}
-            onClick={() => onValueChange(item.value)}
+            onClick={() => select(item.value)}
             className={cn(
               "pui:min-h-12 pui:min-w-0 pui:max-w-full pui:basis-[min-content] pui:grow pui:rounded-full pui:px-6 pui:max-tablet:px-4 pui:text-label-sb pui:whitespace-normal pui:break-words pui:transition-colors pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring",
               selected

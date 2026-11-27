@@ -1,6 +1,6 @@
 import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { expect, userEvent, within } from "storybook/test"
+import { expect, fn, userEvent, within } from "storybook/test"
 
 import { SegmentedControl } from "@/components/inputs/actions"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
@@ -61,6 +61,58 @@ export const Playground: Story = {
       "true",
     )
     await expect(active).toHaveAttribute("aria-pressed", "false")
+  },
+}
+
+const reportChange = fn()
+
+function UncontrolledExample() {
+  const ref = React.useRef<HTMLDivElement>(null)
+  return (
+    <div className="pui:grid pui:w-68 pui:max-w-full pui:gap-2">
+      <SegmentedControl
+        ref={ref}
+        // The group is not a tab stop of its own; the ref makes it a
+        // programmatic focus target, as a consumer would.
+        tabIndex={-1}
+        className="pui:min-w-0"
+        data-testid="stato"
+        aria-label="Filtro stato"
+        items={options}
+        defaultValue="attivi"
+        onValueChange={reportChange}
+      />
+      <button type="button" onClick={() => ref.current?.focus()}>
+        Vai al gruppo
+      </button>
+    </div>
+  )
+}
+
+export const Uncontrolled: Story = {
+  render: () => <UncontrolledExample />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const group = canvas.getByRole("group", { name: "Filtro stato" })
+    await expect(group).toHaveAttribute("data-testid", "stato")
+    await expect(group).toHaveClass("pui:min-w-0")
+    await expect(canvas.getByRole("button", { name: "Attivi" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    )
+    reportChange.mockClear()
+    await userEvent.click(canvas.getByRole("button", { name: "Tutti" }))
+    await expect(canvas.getByRole("button", { name: "Tutti" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    )
+    await expect(canvas.getByRole("button", { name: "Attivi" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    )
+    await expect(reportChange).toHaveBeenLastCalledWith("tutti")
+    await userEvent.click(canvas.getByRole("button", { name: "Vai al gruppo" }))
+    await expect(group).toHaveFocus()
   },
 }
 

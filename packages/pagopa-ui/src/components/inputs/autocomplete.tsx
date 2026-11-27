@@ -18,7 +18,13 @@ import { Input } from "@/components/primitives/input"
 
 import { InputChip } from "./chips"
 import { FieldMessages, FloatingFieldLabel } from "./field"
-import { describedBy, useFieldIds, useFormReset, type FieldStateProps } from "./field-utils"
+import {
+  describedBy,
+  useFieldIds,
+  useFormReset,
+  useInputRef,
+  type FieldStateProps,
+} from "./field-utils"
 import { ItemRow, type ItemRowContent } from "./item-row"
 
 type AutocompleteOption = ItemRowContent & {
@@ -35,7 +41,15 @@ const defaultSelectedLabel = (values: string[]) => `hai selezionato ${values.joi
 const toSelection = (value: string | string[] | null | undefined): string[] =>
   value === undefined || value === null ? [] : Array.isArray(value) ? value : value ? [value] : []
 
-export interface AutocompleteSharedProps extends FieldStateProps {
+/**
+ * Props shared by both modes of {@link Autocomplete}. `ref` points at the text
+ * input while `className` and the standard HTML attributes of a `div` land on
+ * the field's root.
+ */
+export interface AutocompleteSharedProps
+  extends Omit<React.ComponentProps<"div">, "children" | "className" | "ref">, FieldStateProps {
+  /** Ref to the text input, so a consumer can focus it or read it back. */
+  ref?: React.Ref<HTMLInputElement>
   id?: string
   options: AutocompleteOption[]
   name?: string
@@ -70,6 +84,13 @@ export interface AutocompleteSharedProps extends FieldStateProps {
    * draws it, and it is drawn only when this is passed.
    */
   selectAllLabel?: string
+  /**
+   * Draws every value as its own removable chip, or collapses two or more into
+   * a count badge that carries the clear control; only the multiple field
+   * draws it.
+   * @default "chips"
+   */
+  multipleDisplay?: "chips" | "counter"
   className?: string
 }
 
@@ -85,12 +106,6 @@ type AutocompleteProps = AutocompleteSharedProps &
     | {
         /** Keeps several values as chips, the source Multiselect and counter types. */
         multiple: true
-        /**
-         * Draws every value as its own removable chip, or collapses two or more
-         * into a count badge that carries the clear control.
-         * @default "chips"
-         */
-        multipleDisplay?: "chips" | "counter"
         value?: string[]
         defaultValue?: string[]
         onValueChange?: (value: string[]) => void
@@ -99,7 +114,9 @@ type AutocompleteProps = AutocompleteSharedProps &
 
 function Autocomplete(props: AutocompleteProps) {
   // The union stays whole on `props` so `multiple` discriminates the value and
-  // the change callback at the call site.
+  // the change callback at the call site; both the callback and
+  // `multipleDisplay` leave the host spread below so only DOM attributes reach
+  // the root.
   const {
     id,
     label,
@@ -107,6 +124,8 @@ function Autocomplete(props: AutocompleteProps) {
     multiple = false,
     value,
     defaultValue,
+    onValueChange: _onValueChange,
+    multipleDisplay,
     description,
     error,
     success,
@@ -128,7 +147,10 @@ function Autocomplete(props: AutocompleteProps) {
     loadingLabel: loadingLabelProp,
     placeholder,
     selectAllLabel,
+    "aria-describedby": ariaDescribedBy,
     className,
+    ref,
+    ...rootProps
   } = props
   const t = useMessages("autocomplete")
   const emptyLabel = emptyLabelProp ?? t.emptyLabel
@@ -142,7 +164,7 @@ function Autocomplete(props: AutocompleteProps) {
 
   const ids = useFieldIds(id)
   const portalHost = usePortalHost()
-  const inputRef = React.useRef<HTMLInputElement>(null)
+  const { inputRef, mergedInputRef } = useInputRef(ref)
   const [internalSelection, setInternalSelection] = React.useState(() => toSelection(defaultValue))
   const [inputValue, setInputValue] = React.useState(
     typeof defaultValue === "string" ? defaultValue : "",
@@ -187,8 +209,7 @@ function Autocomplete(props: AutocompleteProps) {
   // removable pill per value, `Type=Multiselect counter` collapses two or more
   // values into a badge whose own control clears them all (824:8872,
   // 11073:2423). A single value is never a count of one, so it keeps its name.
-  const collapsed =
-    props.multiple && (props.multipleDisplay ?? "chips") === "counter" && selection.length > 1
+  const collapsed = multiple && (multipleDisplay ?? "chips") === "counter" && selection.length > 1
   // The badge carries the clear control, so the action group is the arrow alone
   // there and `[clear][chevron]` everywhere else.
   const showClear = multiple ? selection.length > 0 && !collapsed : filled
@@ -210,7 +231,7 @@ function Autocomplete(props: AutocompleteProps) {
       onInputValueChange={(next) => setInputValue(next)}
       onValueChange={(next) => commit(toSelection(next))}
     >
-      <div className={cn("pui:grid pui:min-w-0 pui:gap-2", className)}>
+      <div className={cn("pui:grid pui:min-w-0 pui:gap-2", className)} {...rootProps}>
         <Combobox.InputGroup data-slot="autocomplete" className="pui:relative pui:min-w-0">
           {leadingIcon ? (
             <span
@@ -277,11 +298,15 @@ function Autocomplete(props: AutocompleteProps) {
                 </Combobox.Value>
               </div>
               <Combobox.Input
-                ref={inputRef}
+                ref={mergedInputRef}
                 id={ids.controlId}
                 placeholder={placeholder ?? " "}
                 aria-invalid={Boolean(error) || undefined}
-                aria-describedby={describedBy(ids, { description, error, success })}
+                aria-describedby={describedBy(
+                  ids,
+                  { description, error, success },
+                  ariaDescribedBy,
+                )}
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
                 onKeyDown={(event) => {
@@ -333,11 +358,11 @@ function Autocomplete(props: AutocompleteProps) {
             </div>
           ) : (
             <Combobox.Input
-              ref={inputRef}
+              ref={mergedInputRef}
               id={ids.controlId}
               placeholder={placeholder ?? " "}
               aria-invalid={Boolean(error) || undefined}
-              aria-describedby={describedBy(ids, { description, error, success })}
+              aria-describedby={describedBy(ids, { description, error, success }, ariaDescribedBy)}
               render={
                 <Input
                   className={cn(

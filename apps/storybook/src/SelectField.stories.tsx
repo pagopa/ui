@@ -1,3 +1,4 @@
+import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, screen, userEvent, waitFor, within } from "storybook/test"
 
@@ -209,4 +210,43 @@ export const SourceStates: Story = {
       />
     </div>
   ),
+}
+
+function FocusableSelectField() {
+  const ref = React.useRef<HTMLButtonElement>(null)
+  return (
+    <div className="pui:grid pui:w-68 pui:max-w-full pui:gap-2">
+      <p id="provincia-note">La provincia di residenza, non quella di nascita.</p>
+      <SelectField
+        ref={ref}
+        className="pui:min-w-0"
+        data-testid="provincia"
+        aria-describedby="provincia-note"
+        label="Provincia"
+        options={[
+          { value: "rm", label: "Roma" },
+          { value: "mi", label: "Milano" },
+        ]}
+      />
+      <button type="button" onClick={() => ref.current?.focus()}>
+        Vai al campo
+      </button>
+    </div>
+  )
+}
+
+export const HostAttributes: Story = {
+  render: () => <FocusableSelectField />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByTestId("provincia")).toHaveClass("pui:min-w-0")
+    const trigger = canvas.getByRole("combobox", { name: /Provincia/ })
+    // The caller's description joins the field's own, on the control.
+    await expect(trigger).toHaveAttribute(
+      "aria-describedby",
+      expect.stringMatching(/provincia-note/),
+    )
+    await userEvent.click(canvas.getByRole("button", { name: "Vai al campo" }))
+    await expect(trigger).toHaveFocus()
+  },
 }

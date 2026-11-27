@@ -12,7 +12,10 @@ array-valued selection in the named form control.
 
 Both fields show a decorative `account_balance` icon by default; replace it with
 `leadingIcon` or hide it with `leadingIcon={null}`. Caller-supplied icons are inert
-and hidden from assistive technology. An empty select keeps its full-size label
+and hidden from assistive technology. `ref` points at the trigger, and `className`
+and the standard attributes of a `div` land on the field's root, so the caller can
+focus, measure, style or mark the field; `className` is merged with the root grid
+rather than replacing it. An empty select keeps its full-size label
 while open, and the label floats only when a value is selected. A disabled required
 field keeps native required semantics but omits the visible required marker,
 matching the source disabled state.

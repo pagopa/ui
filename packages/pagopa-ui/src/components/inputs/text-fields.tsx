@@ -359,50 +359,59 @@ function toLocalIsoDate(date: Date) {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
 }
 
-// The field's committed value is a local ISO date (`YYYY-MM-DD`) carried by a
-// named form control; `onValueChange` mirrors the committed value, not the
-// calendar's in-progress draft.
-type DatePickerFieldProps = FieldStateProps & {
-  /** Id applied to the trigger, so an external label can target it; generated when omitted. */
-  id?: string
-  /** Keeps the value and the form control without opening the panel. */
-  readOnly?: boolean
-  /** Name of the hidden native field that owns the form value. */
-  name?: string
-  /** Controlled ISO (`YYYY-MM-DD`) value. */
-  value?: string
-  /** Initial ISO (`YYYY-MM-DD`) value for the uncontrolled field. @default "" */
-  defaultValue?: string
-  /** Called with the committed ISO value after Salva. */
-  onValueChange?: (value: string) => void
-  /** Reference day highlighted as today in the panel. */
-  today?: Date
-  /** BCP 47 locale of the field's own formatting (trigger value, panel caption and footer). @default the provider locale, "it-IT" at the root */
-  locale?: string
-  /** Day-grid locale of the shared Calendar. @default the provider calendar locale, Italian at the root */
-  calendarLocale?: CalendarLocale
-  /** Accessible name of the panel when `label` is not a plain string. @default messages.datePickerField.panelLabel */
-  panelLabel?: string
-  /**
-   * Complete footer line of the panel, from the formatted date: the caller
-   * owns the phrase. @default built-in Italian "Selezione: {date}"
-   */
-  selectionText?: (formattedDate: string) => string
-  /** Panel footer line with nothing selected. @default "Nessuna data selezionata" */
-  emptySelectionText?: string
-  /** Validation message of a single date confirmed empty. @default "Seleziona una data prima di salvare." */
-  missingDateError?: string
-  /** Validation message of an unfinished range. @default "Seleziona la data di fine prima di salvare." */
-  missingEndDateError?: string
-  /** Panel cancel action text. @default "Annulla" */
-  cancelLabel?: string
-  /** Panel confirm action text. @default "Salva" */
-  confirmLabel?: string
-  /** ClassName applied to the field's root grid. */
-  className?: string
-  /** Icon shown with the value; pass `null` to remove the default icon. */
-  leadingIcon?: React.ReactNode
-}
+/**
+ * Props of {@link DatePickerField}. `ref` points at the trigger while
+ * `className` and the standard HTML attributes of a `div` land on the field's
+ * root.
+ *
+ * The field's committed value is a local ISO date (`YYYY-MM-DD`) carried by a
+ * named form control; `onValueChange` mirrors the committed value, not the
+ * calendar's in-progress draft.
+ */
+type DatePickerFieldProps = FieldStateProps &
+  Omit<React.ComponentProps<"div">, "children" | "className" | "ref"> & {
+    /** Ref to the trigger, so a consumer can focus it or read it back. */
+    ref?: React.Ref<HTMLButtonElement>
+    /** Id applied to the trigger, so an external label can target it; generated when omitted. */
+    id?: string
+    /** Keeps the value and the form control without opening the panel. */
+    readOnly?: boolean
+    /** Name of the hidden native field that owns the form value. */
+    name?: string
+    /** Controlled ISO (`YYYY-MM-DD`) value. */
+    value?: string
+    /** Initial ISO (`YYYY-MM-DD`) value for the uncontrolled field. @default "" */
+    defaultValue?: string
+    /** Called with the committed ISO value after Salva. */
+    onValueChange?: (value: string) => void
+    /** Reference day highlighted as today in the panel. */
+    today?: Date
+    /** BCP 47 locale of the field's own formatting (trigger value, panel caption and footer). @default the provider locale, "it-IT" at the root */
+    locale?: string
+    /** Day-grid locale of the shared Calendar. @default the provider calendar locale, Italian at the root */
+    calendarLocale?: CalendarLocale
+    /** Accessible name of the panel when `label` is not a plain string. @default messages.datePickerField.panelLabel */
+    panelLabel?: string
+    /**
+     * Complete footer line of the panel, from the formatted date: the caller
+     * owns the phrase. @default built-in Italian "Selezione: {date}"
+     */
+    selectionText?: (formattedDate: string) => string
+    /** Panel footer line with nothing selected. @default "Nessuna data selezionata" */
+    emptySelectionText?: string
+    /** Validation message of a single date confirmed empty. @default "Seleziona una data prima di salvare." */
+    missingDateError?: string
+    /** Validation message of an unfinished range. @default "Seleziona la data di fine prima di salvare." */
+    missingEndDateError?: string
+    /** Panel cancel action text. @default "Annulla" */
+    cancelLabel?: string
+    /** Panel confirm action text. @default "Salva" */
+    confirmLabel?: string
+    /** ClassName applied to the field's root grid. */
+    className?: string
+    /** Icon shown with the value; pass `null` to remove the default icon. */
+    leadingIcon?: React.ReactNode
+  }
 
 function DatePickerField({
   id,
@@ -428,8 +437,11 @@ function DatePickerField({
   missingEndDateError,
   cancelLabel,
   confirmLabel,
+  "aria-describedby": ariaDescribedBy,
   className,
+  ref,
   leadingIcon = <Icon source={EventIcon} />,
+  ...rootProps
 }: DatePickerFieldProps) {
   const t = useMessages("datePickerField")
   const { locale: providerLocale, calendarLocale: providerCalendarLocale } = useLocale()
@@ -440,7 +452,8 @@ function DatePickerField({
   const ids = useFieldIds(id)
   const state = { description, error, success }
   const dateFieldFormat = React.useMemo(() => new Intl.DateTimeFormat(locale, ISO_DAY), [locale])
-  const triggerRef = React.useRef<HTMLButtonElement>(null)
+  const { inputRef: triggerRef, mergedInputRef: mergedTriggerRef } =
+    useInputRef<HTMLButtonElement>(ref)
   const [internalValue, setInternalValue] = React.useState(defaultValue)
   const [open, setOpen] = React.useState(false)
   useFormReset(triggerRef, () => {
@@ -453,7 +466,7 @@ function DatePickerField({
     <button
       type="button"
       id={ids.controlId}
-      ref={triggerRef}
+      ref={mergedTriggerRef}
       disabled={disabled}
       aria-labelledby={`${ids.controlId}-label`}
       // The invalid state is the field's contract and the outline selector
@@ -461,11 +474,8 @@ function DatePickerField({
       // attribute rule does not model.
       // oxlint-disable-next-line jsx-a11y/role-supports-aria-props -- field state on the dialog trigger
       aria-invalid={Boolean(error) || undefined}
-      aria-describedby={describedBy(ids, state)}
-      className={cn(
-        "peer pui:flex pui:min-h-12 pui:w-full pui:items-center pui:gap-2 pui:rounded-lg pui:border pui:border-input pui:bg-background pui:px-3 pui:py-2 pui:text-left pui:text-body pui:transition-[color,background-color,border-color] pui:outline-none pui:select-none pui:focus-visible:border-ring pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-1 pui:focus-visible:outline-ring pui:disabled:cursor-not-allowed pui:disabled:bg-muted pui:disabled:text-muted-foreground pui:aria-invalid:border-destructive pui:aria-invalid:outline-destructive pui:aria-expanded:border-2 pui:aria-expanded:border-primary pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0",
-        className,
-      )}
+      aria-describedby={describedBy(ids, state, ariaDescribedBy)}
+      className="peer pui:flex pui:min-h-12 pui:w-full pui:items-center pui:gap-2 pui:rounded-lg pui:border pui:border-input pui:bg-background pui:px-3 pui:py-2 pui:text-left pui:text-body pui:transition-[color,background-color,border-color] pui:outline-none pui:select-none pui:focus-visible:border-ring pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-1 pui:focus-visible:outline-ring pui:disabled:cursor-not-allowed pui:disabled:bg-muted pui:disabled:text-muted-foreground pui:aria-invalid:border-destructive pui:aria-invalid:outline-destructive pui:aria-expanded:border-2 pui:aria-expanded:border-primary pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0"
     >
       {leadingIcon ? (
         <span
@@ -498,7 +508,7 @@ function DatePickerField({
   )
 
   return (
-    <div className={cn("pui:grid", error ? "pui:gap-0.5" : "pui:gap-2")}>
+    <div className={cn("pui:grid", error ? "pui:gap-0.5" : "pui:gap-2", className)} {...rootProps}>
       <div className="pui:relative">
         {readOnly ? (
           // A read-only chooser keeps the committed value and its form control

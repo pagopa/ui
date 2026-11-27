@@ -146,14 +146,13 @@ export type AutocompleteProps = AutocompleteSharedProps & ({
     onValueChange?: (value: string) => void;
 } | {
     multiple: true;
-    multipleDisplay?: "chips" | "counter";
     value?: string[];
     defaultValue?: string[];
     onValueChange?: (value: string[]) => void;
 });
 
-// @public (undocumented)
-export interface AutocompleteSharedProps extends FieldStateProps {
+// @public
+export interface AutocompleteSharedProps extends Omit<React_2.ComponentProps<"div">, "children" | "className" | "ref">, FieldStateProps {
     // (undocumented)
     className?: string;
     clearAllLabel?: string;
@@ -167,12 +166,14 @@ export interface AutocompleteSharedProps extends FieldStateProps {
     listLabel?: (label: string) => string;
     loading?: boolean;
     loadingLabel?: string;
+    multipleDisplay?: "chips" | "counter";
     // (undocumented)
     name?: string;
     openLabel?: string;
     // (undocumented)
     options: AutocompleteOption[];
     placeholder?: string;
+    ref?: React_2.Ref<HTMLInputElement>;
     removeValueLabel?: (value: string) => string;
     selectAllLabel?: string;
     selectedLabel?: (values: string[]) => string;
@@ -589,8 +590,9 @@ export function DatePicker(props: DatePickerProps): JSX.Element;
 // @public (undocumented)
 export function DatePickerField(input: DatePickerFieldProps): React_2.JSX.Element;
 
-// @public (undocumented)
-export type DatePickerFieldProps = FieldStateProps & {
+// @public
+export type DatePickerFieldProps = FieldStateProps & Omit<React_2.ComponentProps<"div">, "children" | "className" | "ref"> & {
+    ref?: React_2.Ref<HTMLButtonElement>;
     id?: string;
     readOnly?: boolean;
     name?: string;
@@ -1652,8 +1654,8 @@ export interface MicroEventProps {
 // @public (undocumented)
 export function MultiSelectField(input: MultiSelectFieldProps): React_2.JSX.Element;
 
-// @public (undocumented)
-export interface MultiSelectFieldProps extends FieldStateProps {
+// @public
+export interface MultiSelectFieldProps extends Omit<React_2.ComponentProps<"div">, "children" | "className" | "ref">, FieldStateProps {
     action?: ChoiceAction;
     className?: string;
     defaultValue?: string[];
@@ -1662,6 +1664,7 @@ export interface MultiSelectFieldProps extends FieldStateProps {
     name?: string;
     onValueChange?: (value: string[]) => void;
     options: SelectOption[];
+    ref?: React_2.Ref<HTMLButtonElement>;
     value?: string[];
 }
 
@@ -2110,20 +2113,20 @@ export interface SegmentedControlItem<T extends string> {
 }
 
 // @public
-export interface SegmentedControlProps<T extends string> {
+export interface SegmentedControlProps<T extends string> extends Omit<React_2.ComponentProps<"div">, "aria-label" | "children" | "className"> {
     "aria-label"?: string;
-    // (undocumented)
     className?: string;
+    defaultValue?: T;
     items: SegmentedControlItem<T>[];
-    onValueChange: (value: T) => void;
-    value: T;
+    onValueChange?: (value: T) => void;
+    value?: T;
 }
 
 // @public (undocumented)
 export function SelectField(input: SelectFieldProps): React_2.JSX.Element;
 
-// @public (undocumented)
-export interface SelectFieldProps extends FieldStateProps {
+// @public
+export interface SelectFieldProps extends Omit<React_2.ComponentProps<"div">, "children" | "className" | "ref">, FieldStateProps {
     action?: ChoiceAction;
     className?: string;
     defaultValue?: string;
@@ -2132,6 +2135,7 @@ export interface SelectFieldProps extends FieldStateProps {
     name?: string;
     onValueChange?: (value: string) => void;
     options: SelectOption[];
+    ref?: React_2.Ref<HTMLButtonElement>;
     value?: string;
 }
 

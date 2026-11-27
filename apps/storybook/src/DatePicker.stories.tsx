@@ -1,4 +1,4 @@
-import { useState } from "react"
+import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, fn, screen, userEvent, waitFor, within } from "storybook/test"
 import type { DateRange } from "react-day-picker"
@@ -30,7 +30,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 function SingleDateExample() {
-  const [value, setValue] = useState(new Date(2026, 4, 11))
+  const [value, setValue] = React.useState(new Date(2026, 4, 11))
   return (
     <div className="pui:grid pui:w-[310px] pui:max-w-full pui:gap-4">
       <DatePicker value={value} onConfirm={setValue} onCancel={fn()} />
@@ -116,7 +116,7 @@ export const SingleDateConfirmation: Story = {
 }
 
 function RangeDateExample() {
-  const [value, setValue] = useState<{ from: Date; to: Date }>()
+  const [value, setValue] = React.useState<{ from: Date; to: Date }>()
   const format = new Intl.DateTimeFormat("it-IT", {
     day: "2-digit",
     month: "2-digit",
@@ -163,8 +163,8 @@ export const RangeDateConfirmation: Story = {
 }
 
 function ControlledDateExample() {
-  const [value, setValue] = useState<Date | undefined>(new Date(2026, 4, 11))
-  const [action, setAction] = useState("")
+  const [value, setValue] = React.useState<Date | undefined>(new Date(2026, 4, 11))
+  const [action, setAction] = React.useState("")
   return (
     <div className="pui:grid pui:w-[310px] pui:max-w-full pui:gap-4">
       <DatePicker
@@ -308,8 +308,8 @@ export const KeyboardNavigation: Story = {
 }
 
 function CalendarStatesExample() {
-  const [date, setDate] = useState(new Date(2026, 4, 14))
-  const [range, setRange] = useState<DateRange | undefined>({
+  const [date, setDate] = React.useState(new Date(2026, 4, 14))
+  const [range, setRange] = React.useState<DateRange | undefined>({
     from: new Date(2026, 4, 12),
     to: new Date(2026, 4, 15),
   })
@@ -551,5 +551,45 @@ export const FieldNativeForm: Story = {
     await userEvent.click(canvas.getByRole("button", { name: "Ripristina data" }))
     await waitFor(() => expect(field).not.toHaveTextContent("12 mag 2026"))
     await expect(form.checkValidity()).toBe(false)
+  },
+}
+
+function FocusableDatePickerField() {
+  const ref = React.useRef<HTMLButtonElement>(null)
+  return (
+    <div className="pui:grid pui:w-68 pui:max-w-full pui:gap-2">
+      <p id="appuntamento-note">La data viene confermata dal pulsante Salva.</p>
+      <DatePickerField
+        ref={ref}
+        className="pui:min-w-0 pui:bg-muted"
+        data-testid="appuntamento"
+        aria-describedby="appuntamento-note"
+        label="Data dell'appuntamento"
+        today={new Date(2026, 4, 11)}
+      />
+      <button type="button" onClick={() => ref.current?.focus()}>
+        Vai al campo
+      </button>
+    </div>
+  )
+}
+
+export const FieldHostAttributes: Story = {
+  name: "Campo: attributi dell'host",
+  render: () => <FocusableDatePickerField />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const root = canvas.getByTestId("appuntamento")
+    // `className` lands on the field's root grid, not on the trigger.
+    await expect(root).toHaveClass("pui:bg-muted")
+    const trigger = canvas.getByRole("button", { name: /Data dell'appuntamento/ })
+    await expect(trigger).not.toHaveClass("pui:bg-muted")
+    // The caller's description joins the field's own, on the trigger.
+    await expect(trigger).toHaveAttribute(
+      "aria-describedby",
+      expect.stringMatching(/appuntamento-note/),
+    )
+    await userEvent.click(canvas.getByRole("button", { name: "Vai al campo" }))
+    await expect(trigger).toHaveFocus()
   },
 }

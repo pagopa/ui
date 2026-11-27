@@ -1,3 +1,4 @@
+import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, fn, screen, userEvent, within } from "storybook/test"
 
@@ -281,6 +282,13 @@ export const MultiselectCounter: Story = {
     const actions = () => [
       ...canvasElement.querySelectorAll('[data-slot="autocomplete-actions"] button'),
     ]
+    // Component-only props leave the host spread: only DOM attributes reach the
+    // root, so neither the callback nor the display mode lands on it.
+    const inputGroup = canvasElement.querySelector('[data-slot="autocomplete"]')
+    const root = inputGroup?.parentElement
+    if (!(root instanceof HTMLElement)) throw new Error("Expected the field root")
+    await expect(root).not.toHaveAttribute("multipledisplay")
+    await expect(root).not.toHaveAttribute("onvaluechange")
 
     await userEvent.click(field)
     await userEvent.type(field, "rom")
@@ -432,5 +440,38 @@ export const MultiselectOverridableTexts: Story = {
     await expect(canvas.getByText("Erogatori scelti: Roma")).toBeInTheDocument()
     await userEvent.keyboard("{Escape}")
     await expect(canvas.getByRole("button", { name: "Cancella l'erogatore" })).toBeVisible()
+  },
+}
+
+function FocusableAutocomplete() {
+  const ref = React.useRef<HTMLInputElement>(null)
+  return (
+    <div className="pui:grid pui:w-68 pui:max-w-full pui:gap-2">
+      <p id="comune-note">Scrivi almeno tre lettere per restringere la lista.</p>
+      <Autocomplete
+        ref={ref}
+        className="pui:min-w-0"
+        data-testid="comune"
+        aria-describedby="comune-note"
+        label="Comune"
+        options={municipalities}
+      />
+      <button type="button" onClick={() => ref.current?.focus()}>
+        Vai al campo
+      </button>
+    </div>
+  )
+}
+
+export const HostAttributes: Story = {
+  render: () => <FocusableAutocomplete />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByTestId("comune")).toHaveClass("pui:min-w-0")
+    const input = canvas.getByRole("combobox", { name: /Comune/ })
+    // The caller's description joins the field's own, on the input.
+    await expect(input).toHaveAttribute("aria-describedby", expect.stringMatching(/comune-note/))
+    await userEvent.click(canvas.getByRole("button", { name: "Vai al campo" }))
+    await expect(input).toHaveFocus()
   },
 }

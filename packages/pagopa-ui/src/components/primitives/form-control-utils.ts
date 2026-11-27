@@ -10,10 +10,14 @@ import {
   type RefObject,
 } from "react"
 
-function useInputRef(externalRef?: Ref<HTMLInputElement>) {
-  const inputRef = useRef<HTMLInputElement>(null)
+/**
+ * Merges the consumer's `ref` with the ref of the control the field owns, so
+ * both point at the same element: an input, or the button trigger of a picker.
+ */
+function useInputRef<T extends HTMLElement = HTMLInputElement>(externalRef?: Ref<T>) {
+  const inputRef = useRef<T>(null)
   const mergedInputRef = useCallback(
-    (input: HTMLInputElement | null) => {
+    (input: T | null) => {
       inputRef.current = input
       if (typeof externalRef === "function") {
         const cleanup = externalRef(input)
