@@ -330,14 +330,22 @@ dist-ssr
 storybook-static
 test-results/
 playwright-report/
-apps/storybook/visual/test-results/
-apps/storybook/visual/playwright-report/
-# The story scope `ui-cli test visual` writes for the run
-apps/storybook/visual/scope.json
+# What the Chromatic CLI writes beside the directory it ran in
+chromatic-diagnostics.json
+chromatic.log
+# The candidate mirror the utility-prefix build writes for Tailwind to read
+.generated/
 *.local
 
 # Figma live exports (local, produced by the Figma MCP; never committed)
 .figma
+
+# Third-party skills: only the thin entrypoint is committed, and the pinned
+# copies come back with `pnpm skills:restore` (skills-lock.json holds the pin).
+.agents/skills/modern-web-guidance/*
+!.agents/skills/modern-web-guidance/SKILL.md
+.agents/skills/shadcn/*
+!.agents/skills/shadcn/SKILL.md
 
 # harbor-bench skill evals: generated tasks, job runs and comparison reports
 .harbor

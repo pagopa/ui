@@ -4,7 +4,8 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useLinkComponent, useMessages } from "@/lib/ui-provider"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as ArrowRightIcon } from "@/components/icons/generated/arrow"
 import { Button, buttonVariants } from "@/components/primitives/button"
 
 interface TableListItemField {
@@ -23,7 +24,7 @@ type TableListItemAction = { label?: string; ariaLabel?: string } & (
   | { href?: never; onPress: () => void }
 )
 
-type TableListItemProps = Omit<React.ComponentProps<"li">, "onClick"> & {
+export type TableListItemProps = Omit<React.ComponentProps<"li">, "onClick"> & {
   /** Labelled values composing the row; the first one is the flexible field. */
   fields: TableListItemField[]
   /**
@@ -32,6 +33,8 @@ type TableListItemProps = Omit<React.ComponentProps<"li">, "onClick"> & {
    * repeated row actions their own context ("Apri Titolo campagna").
    */
   action?: TableListItemAction
+  /** Text of an action row that carries no label. @default messages.tableListItem.actionFallbackLabel */
+  actionFallbackLabel?: string
 }
 
 function TableListItem({
@@ -40,51 +43,54 @@ function TableListItem({
   actionFallbackLabel: actionFallbackLabelProp,
   className,
   ...props
-}: TableListItemProps & {
-  /** Text of an action row that carries no label. @default messages.tableListItem.actionFallbackLabel */
-  actionFallbackLabel?: string
-}) {
+}: TableListItemProps) {
   const t = useMessages("tableListItem")
   const actionFallbackLabel = actionFallbackLabelProp ?? t.actionFallbackLabel
 
   const Link = useLinkComponent()
   const actionLabel = action?.label ?? actionFallbackLabel
-  const actionIcon = <PagoPAIcon name="arrow" variant="right" />
+  const actionIcon = <Icon source={ArrowRightIcon} />
   return (
     <li
-      className={cn("@container/list-item rounded-lg border bg-background", className)}
+      data-slot="table-list-item"
+      className={cn(
+        "pui:@container/list-item pui:rounded-lg pui:border pui:bg-background",
+        className,
+      )}
       {...props}
     >
-      <div className="flex w-full flex-col gap-4 p-6 @min-narrow/list-item:flex-row @min-narrow/list-item:items-center @min-narrow/list-item:gap-20">
-        <div className="flex min-w-0 flex-1 flex-col gap-4 @min-narrow/list-item:flex-row @min-narrow/list-item:items-start @min-narrow/list-item:gap-20">
+      <div className="pui:flex pui:w-full pui:flex-col pui:gap-4 pui:p-6 pui:@min-narrow/list-item:flex-row pui:@min-narrow/list-item:items-center pui:@min-narrow/list-item:gap-20">
+        <div className="pui:flex pui:min-w-0 pui:flex-1 pui:flex-col pui:gap-4 pui:@min-narrow/list-item:flex-row pui:@min-narrow/list-item:items-start pui:@min-narrow/list-item:gap-20">
           {fields.map((field, index) => (
             <div
               key={index}
               className={cn(
-                "flex min-w-0 items-center gap-2",
-                index === 0 ? "@min-narrow/list-item:flex-1" : "@min-narrow/list-item:shrink-0",
+                "pui:flex pui:min-w-0 pui:items-center pui:gap-2",
+                index === 0
+                  ? "pui:@min-narrow/list-item:flex-1"
+                  : "pui:@min-narrow/list-item:shrink-0",
               )}
             >
               {field.icon ? (
                 <span
                   aria-hidden="true"
-                  className="pointer-events-none shrink-0 text-choice-icon [&_svg:not([class*='size-'])]:size-6"
+                  className="pui:pointer-events-none pui:shrink-0 pui:text-choice-icon pui:[&_svg:not(.pagopa-icon)]:size-6"
                 >
                   {field.icon}
                 </span>
               ) : null}
-              <span className="grid min-w-0 gap-1">
+              <span className="pui:grid pui:min-w-0 pui:gap-1">
                 {field.label ? (
-                  <span className="text-body-small wrap-anywhere text-muted-foreground">
+                  <span className="pui:text-body-small pui:wrap-anywhere pui:text-muted-foreground">
                     {field.label}
                   </span>
                 ) : null}
                 <span
                   className={cn(
-                    "wrap-anywhere",
+                    "pui:wrap-anywhere",
                     field.mono
-                      ? "font-mono text-mono text-foreground"
-                      : "text-body-sb text-foreground",
+                      ? "pui:font-mono pui:text-mono pui:text-foreground"
+                      : "pui:text-body-sb pui:text-foreground",
                   )}
                 >
                   {field.value}
@@ -100,7 +106,7 @@ function TableListItem({
               aria-label={action.ariaLabel}
               className={cn(
                 buttonVariants({ variant: "ghost" }),
-                "self-end px-0 @min-narrow/list-item:self-auto",
+                "pui:self-end pui:px-0 pui:@min-narrow/list-item:self-auto",
               )}
             >
               {actionLabel}
@@ -111,7 +117,7 @@ function TableListItem({
               type="button"
               variant="ghost"
               aria-label={action.ariaLabel}
-              className="self-end px-0 @min-narrow/list-item:self-auto"
+              className="pui:self-end pui:px-0 pui:@min-narrow/list-item:self-auto"
               onClick={action.onPress}
             >
               {actionLabel}
@@ -124,4 +130,5 @@ function TableListItem({
   )
 }
 
-export { TableListItem, type TableListItemAction, type TableListItemField }
+export { TableListItem }
+export type { TableListItemAction, TableListItemField }

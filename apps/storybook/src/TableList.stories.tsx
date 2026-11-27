@@ -2,10 +2,12 @@ import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
-import { TableList, type TableListItemField } from "@/components/data-display"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { TableList } from "@/components/data-display/table-list"
+import { type TableListItemField } from "@/components/data-display/table-list-item"
+import { Icon } from "@/components/icons/icon"
+import { Default as MailIcon } from "@/components/icons/generated/mail"
 import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
-import { Pagination } from "@/components/navigation"
+import { Pagination } from "@/components/navigation/pagination"
 import { Button } from "@/components/primitives/button"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
@@ -73,7 +75,7 @@ function campaignFields(row: CampaignRow): TableListItemField[] {
       label: "Comunicazioni",
       value: row.messages,
       mono: true,
-      icon: <PagoPAIcon name="mail" />,
+      icon: <Icon source={MailIcon} />,
     },
   ]
 }
@@ -173,7 +175,7 @@ export const PaginatedMobile: Story = {
 function EmptyCampaigns() {
   const [configured, setConfigured] = React.useState(false)
   return (
-    <div className="w-[min(53.25rem,calc(100vw-2rem))] max-w-full">
+    <div className="pui:w-[min(53.25rem,calc(100vw-2rem))] pui:max-w-full">
       <TableList
         label="Campagne"
         rows={[]}

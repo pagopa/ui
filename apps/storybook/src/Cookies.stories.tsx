@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { Cookies } from "@/components/navigation"
+import { Cookies } from "@/components/navigation/cookies"
 
 const meta = {
   title: "Components/Navigation/Cookies",
@@ -27,7 +27,7 @@ const meta = {
     // the story root needs a box (a fixed-only body leaves it zero tall, which
     // the capture preflight reads as missing).
     (Story) => (
-      <div className="min-h-dvh bg-muted/40">
+      <div className="pui:min-h-dvh pui:bg-muted/40">
         <Story />
       </div>
     ),

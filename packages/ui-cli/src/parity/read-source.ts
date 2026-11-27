@@ -13,6 +13,14 @@ export type SourceOptions = {
   json?: boolean
   png?: string | boolean
 }
+
+/** The eight bytes every PNG starts with; anything else is not the artwork asked for. */
+const PNG_SIGNATURE = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]
+
+function isPng(buffer: Buffer): boolean {
+  return buffer.subarray(0, PNG_SIGNATURE.length).equals(Buffer.from(PNG_SIGNATURE))
+}
+
 export async function readSource(
   workspace: Workspace,
   options: SourceOptions,
@@ -35,6 +43,7 @@ export async function readSource(
       throw new UsageError("--png needs the pinned export's fileKey and version")
     const buffer = (await images(fileKey, version, [node.id])).get(node.id)
     if (!buffer) throw new UsageError(`Figma rendered no PNG for ${node.id}`)
+    if (!isPng(buffer)) throw new UsageError(`Figma answered ${node.id} without a PNG payload`)
     fs.mkdirSync(path.dirname(file), { recursive: true })
     fs.writeFileSync(file, buffer)
     err.push(`png: ${file} (version ${version})`)

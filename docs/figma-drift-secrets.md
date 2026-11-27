@@ -1,23 +1,26 @@
-# Figma drift and Chromatic secrets
+# Figma drift secrets
 
-The two tokens are **GitHub environment secrets of `app-dev-ci`**, the
-environment the drift and Chromatic jobs declare. They are created and rotated
-out of band: the value lives in the common Key Vault, the GitHub environment
-secret is a copy of it, and Terraform manages neither.
+`FIGMA_TOKEN` is a **GitHub environment secret of `app-dev-ci`**, the
+environment the drift job declares. It is created and rotated out of band: the
+value lives in the common Key Vault, the GitHub environment secret is a copy of
+it, and Terraform manages neither.
 
 The drift pull request needs no third token: it pushes and opens with the job's
 `GITHUB_TOKEN` (see [The drift pull request](#the-drift-pull-request)).
+`CHROMATIC_PROJECT_TOKEN` is the second one, and the visual diff is opt-in
+through it: the run is green and reports a notice while it is absent (see
+[`CHROMATIC_PROJECT_TOKEN`](#chromatic_project_token)).
 
 No agent inserts, prints or reads a secret, and no Terraform `data` source reads
 a Key Vault secret value. The tools read the process environment only.
 
 ## Secrets
 
-| GitHub environment secret | Key Vault secret             | Used by                             | Scopes / permissions                                                                  | Failure mode                                                                                                                       |
-| ------------------------- | ---------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `FIGMA_TOKEN`             | `ui-figma-token`             | `figma-drift.yml`, live local steps | `file_content:read`, `library_content:read` (read-only)                               | The drift preflight fails explicitly; live local steps stop and use the evidence slice.                                            |
-| `CHROMATIC_PROJECT_TOKEN` | `ui-chromatic-project-token` | `chromatic.yml`                     | the Chromatic project token for this repository                                       | The opt-in job skips with a notice; no pull request is blocked.                                                                    |
-| `GITHUB_TOKEN`            | —                            | every workflow, `figma-drift.yml`   | provided by Actions; the drift job declares `contents: write`, `pull-requests: write` | `pnpm install` cannot resolve the DX packages from GitHub Packages; the drift job cannot push its branch or open the pull request. |
+| GitHub environment secret | Key Vault secret             | Used by                             | Scopes / permissions                                                                  | Failure mode                                                                                                                                                                      |
+| ------------------------- | ---------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `FIGMA_TOKEN`             | `ui-figma-token`             | `figma-drift.yml`, live local steps | `file_content:read`, `library_content:read`, `file_variables:read` (read-only)        | The drift preflight fails explicitly; a token without the variables scope reports token drift as unavailable; live local steps stop and compare against the pinned snapshot only. |
+| `CHROMATIC_PROJECT_TOKEN` | `ui-chromatic-project-token` | `chromatic.yml`                     | the Chromatic project token for this repository                                       | The opt-in job reports a notice and stops; no pull request is blocked.                                                                                                            |
+| `GITHUB_TOKEN`            | —                            | every workflow, `figma-drift.yml`   | provided by Actions; the drift job declares `contents: write`, `pull-requests: write` | `pnpm install` cannot resolve the DX packages from GitHub Packages; the drift job cannot push its branch or open the pull request.                                                |
 
 The registry token is the `GITHUB_TOKEN` passed to
 `pagopa/dx/actions/setup-npm-registry`; add a dedicated `NODE_AUTH_TOKEN` only
@@ -47,9 +50,9 @@ apply leaves both the Key Vault and the GitHub secrets untouched: the
 
 ### `FIGMA_TOKEN`
 
-1. In Figma, create a personal access token with `file_content:read` and
-   `library_content:read`. Do not grant a write scope: the repository is
-   read-only against the design file.
+1. In Figma, create a personal access token with `file_content:read`,
+   `library_content:read` and `file_variables:read`. Do not grant a write scope:
+   the repository is read-only against the design file.
 2. Set it as the `ui-figma-token` Key Vault secret.
 3. Copy it into the `FIGMA_TOKEN` environment secret of `app-dev-ci`.
 4. To rotate it, create a new token, update the Key Vault secret and copy it
@@ -58,20 +61,29 @@ apply leaves both the Key Vault and the GitHub secrets untouched: the
 The drift job preflights it and fails with an explicit message when it is
 missing; a skipped check cannot certify alignment.
 
+`file_variables:read` is what the weekly run's token half reads: `GET
+/v1/files/:key/variables/local` is the only endpoint that returns the variable
+values with their stable ids, and Figma serves it to Enterprise plans only. The
+drift step therefore treats an unreadable variable list as a reported line
+(`token drift: unavailable — …`) and never as a failed run: the component half
+still reports and still opens the review pull request. The token is still worth
+the scope — the day the plan or the endpoint changes, the same run starts
+detecting, and `update tokens --input` keeps pinning values from a snapshot in
+the meantime.
+
 ### `CHROMATIC_PROJECT_TOKEN`
 
 1. Create the project in Chromatic and link it to this repository.
 2. Copy the project token from **Manage → Configure → Project token**.
 3. Set it as the `ui-chromatic-project-token` Key Vault secret and copy it into
    `CHROMATIC_PROJECT_TOKEN` of `app-dev-ci`.
-4. Create the `chromatic` label on the repository: adding that label to a pull
-   request is the opt-in trigger.
-5. To rotate it, generate a new token in Chromatic, update the Key Vault secret
+4. To rotate it, generate a new token in Chromatic, update the Key Vault secret
    and copy it again.
 
-The label is `chromatic`. A normal pull request runs nothing; a labelled one
-runs the baseline. The job is not a required check, and a missing token is a
-skip with a notice, never a red build.
+There is no label and no repository setting to create: the workflow is already
+in place and reads the secret on every run. While it is missing, the job is
+green and reports `CHROMATIC_PROJECT_TOKEN is missing` as a notice; the day the
+secret exists the same run starts comparing ([Visual regression](../CONTRIBUTING.md#visual-regression)).
 
 ## The drift pull request
 

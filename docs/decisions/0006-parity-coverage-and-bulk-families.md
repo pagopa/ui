@@ -1,6 +1,8 @@
 # ADR-0006 — What parity coverage counts: the case population and the bulk families
 
-- **Status:** Accepted — 2026-10-30.
+- **Status:** Accepted — 2026-10-30, amended 2026-11-26 by
+  [ADR-0015](./0015-ephemeral-parity-diagnostic.md) — the case population, the
+  evidence bundle and its cap are retired; the bulk rule stands (§7).
 - **Date:** 2026-10-30
 - **Context:** a design review read the corpus as "87 of the 244 `implemented`
   nodes", a ratio that mixes two populations and makes a complete component
@@ -203,3 +205,40 @@ debt rather than as a silent assumption.
   printed numbers.
 - `packages/ui-cli/src/parity/cases.ts` — `deviceCoverage`, and the R9 rule that
   no draft case counts.
+
+## 7. Amendment — the committed evidence bundle is retired (2026-11-26)
+
+[ADR-0015](./0015-ephemeral-parity-diagnostic.md) demotes numerical parity to a
+stateless diagnostic. Three of the four decisions above are retired with it, and
+this section records which, so that a reader does not take a live instruction
+from a superseded paragraph.
+
+- **The bundle and its cap are gone.** `docs/figma-parity/` — the manifest, the
+  compressed source slice and the pinned PNGs of the 302 cases — is deleted, and
+  `MAX_EVIDENCE_BYTES` with it. The 10 MB budget that shaped §1 had no other
+  reader: it was the price of committing a capture, and no capture is committed
+  any more. A node's evidence is now the residue `ui-cli parity check` prints in
+  the session that compared it, which costs nothing to keep because nothing is
+  kept.
+- **RD1's denominator is retired.** The
+  `cases 87/88 · bulk 232 · devices 66/66` line measured a population that no
+  longer exists, so it is not printed. Nothing counts a case; a component's
+  coverage question is answered by the diagnostic on the node in front of the
+  reviewer.
+- **RD2's exception file is gone with the corpus it excused.**
+  `device-exceptions.json` and `parity-cases.json` are deleted; a family is
+  admitted by its bulk rule alone, and the three things RD2 requires of a bulk
+  rule — `namesExport`, `assetManifest`, `provenance` per glyph — are unchanged
+  and still verified by `check:catalogue` and `check:artwork`. This is the part
+  of the ADR that still governs the icon and pictogram pages.
+- **RD3's gate is retired.** `check:catalogue` no longer counts a device against
+  a case, because there is no case to count. The delta gate it kept now has
+  nothing to fail on: the family proof above is what remains of it.
+- **RD4 is moot.** The 12-glyph sample existed to spend bundle headroom; with no
+  bundle, a glyph's parity is an on-demand run like any other node's, and the
+  selector it waited for is no longer a prerequisite.
+
+The metric that replaced all of this is the one the section 1 table already
+implied: the bulk families are covered by their rule and their manifests, and
+every other node is covered per session, on demand. The `bulk` vocabulary and the
+`accountFor` fallback in `registry.ts` stay exactly as RD2 describes them.

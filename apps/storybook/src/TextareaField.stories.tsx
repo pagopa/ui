@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, within } from "storybook/test"
 
-import { TextareaField } from "@/components/inputs"
+import { TextareaField } from "@/components/inputs/text-fields"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import fieldsGuide from "./guides/fields.md?raw"
@@ -31,7 +31,7 @@ type Story = StoryObj<typeof meta>
 // Source frame: 274x92 (`10585:80644`). The story carries the source width.
 export const Playground: Story = {
   render: (args) => (
-    <div className="w-68 max-w-full">
+    <div className="pui:w-68 pui:max-w-full">
       <TextareaField {...args} />
     </div>
   ),
@@ -78,9 +78,9 @@ export const FigmaStateMatrix: Story = {
     design: { type: "figma", url: figmaEmbedUrl("10585:80643") },
   },
   render: () => (
-    <div className="grid gap-6">
+    <div className="pui:grid pui:gap-6">
       {sourceAreaStates.map((state) => (
-        <div key={state.id} className="w-[274px] max-w-full">
+        <div key={state.id} className="pui:w-[274px] pui:max-w-full">
           <TextareaField
             id={state.id}
             data-fidelity-state={state.id}

@@ -2,11 +2,16 @@ import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, fn, screen, userEvent, waitFor, within } from "storybook/test"
 
-import { Copy, Trash2 } from "lucide-react"
+import { Icon } from "@/components/icons/icon"
+import { Checked as CheckBoxCheckedIcon } from "@/components/icons/generated/check-box"
+import { Default as LocationOnIcon } from "@/components/icons/generated/location-on"
+import { Default as MyLocationIcon } from "@/components/icons/generated/my-location"
+import { Default as ContentCopyIcon } from "@/components/icons/generated/content-copy"
+import { Default as DeleteIcon } from "@/components/icons/generated/delete"
 
-import { Avatar } from "@/components/content"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { Chip, Dropdown, type DropdownItem } from "@/components/inputs"
+import { Avatar } from "@/components/content/avatar"
+import { Chip } from "@/components/inputs/chips"
+import { Dropdown, type DropdownItem } from "@/components/inputs/menus"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -53,11 +58,11 @@ const meta = {
   args: {
     triggerLabel: "Gestisci",
     items: [
-      { id: "copy", label: "Copia", icon: Copy, onSelect: copyMenuItem },
+      { id: "copy", label: "Copia", icon: ContentCopyIcon, onSelect: copyMenuItem },
       {
         id: "delete",
         label: "Elimina",
-        icon: Trash2,
+        icon: DeleteIcon,
         destructive: true,
         onSelect: deleteMenuItem,
       },
@@ -211,7 +216,7 @@ export const SingleSelect: Story = {
     await userEvent.click(canvas.getByRole("button", { name: /Servizio/ }))
     const reopened = await screen.findByRole("menu")
     await expect(within(reopened).getByRole("menuitem", { name: "Scuola" })).toHaveClass(
-      "bg-accent",
+      "pui:bg-accent",
     )
   },
 }
@@ -255,7 +260,7 @@ function MultiselectServices() {
 }
 
 export const Multiselect: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   tags: ["color-pinned"],
   render: () => <MultiselectServices />,
@@ -355,7 +360,7 @@ function StaticIndicatorExample() {
             onCheckedChange={setChecked}
             indicator={
               <span data-static-indicator aria-hidden="true">
-                <PagoPAIcon name="check_box" variant="checked" />
+                <Icon source={CheckBoxCheckedIcon} />
               </span>
             }
           >
@@ -382,10 +387,10 @@ function SourcePanel({ mode }: { mode: SourcePanelMode }) {
       id: `option-${index}`,
       label: "Value",
       description: "Description",
-      leading: <PagoPAIcon name="location_on" size={16} />,
+      leading: <Icon source={LocationOnIcon} size={16} />,
       chip: (
         <Chip variant="warning" size="compact" data-slot="chip">
-          <span data-slot="chip-label" className="font-medium">
+          <span data-slot="chip-label" className="pui:font-medium">
             Warning
           </span>
         </Chip>
@@ -413,15 +418,15 @@ function SourcePanel({ mode }: { mode: SourcePanelMode }) {
     {
       id: "location",
       label: "Usa posizione attuale",
-      leading: <PagoPAIcon name="my_location" size={24} className="text-primary" />,
+      leading: <Icon source={MyLocationIcon} size={24} className="pui:text-primary" />,
       type: "cta",
       onSelect: () => undefined,
     },
     ...options,
   ]
   return (
-    <div className="w-[274px] max-w-full">
-      <Dropdown triggerLabel="Open options" className="w-full" items={items} />
+    <div className="pui:w-[274px] pui:max-w-full">
+      <Dropdown triggerLabel="Open options" className="pui:w-full" items={items} />
     </div>
   )
 }
@@ -454,10 +459,10 @@ export const SourcePanelMultiselectAll: Story = {
 export const SourcePanelEmpty: Story = {
   tags: ["color-pinned"],
   render: () => (
-    <div className="w-[274px] max-w-full">
+    <div className="pui:w-[274px] pui:max-w-full">
       <Dropdown
         triggerLabel="Open options"
-        className="w-full"
+        className="pui:w-full"
         items={[]}
         emptyTitle="Non ci sono corrispondenze da mostrare"
         emptyDescription="Controlla i dati inseriti oppure inserisci un altro indirizzo o città."
@@ -469,14 +474,14 @@ export const SourcePanelEmpty: Story = {
 export const SourcePanelSkeleton: Story = {
   tags: ["color-pinned"],
   render: () => (
-    <div className="w-[274px] max-w-full">
-      <Dropdown triggerLabel="Open options" className="w-full" items={[]} loading />
+    <div className="pui:w-[274px] pui:max-w-full">
+      <Dropdown triggerLabel="Open options" className="pui:w-full" items={[]} loading />
     </div>
   ),
 }
 
 export const StaticIndicator: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => <StaticIndicatorExample />,
   play: async ({ canvasElement }) => {

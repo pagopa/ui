@@ -5,9 +5,55 @@ import { Radio as RadioPrimitive } from "@base-ui/react/radio"
 import { RadioGroup as RadioGroupPrimitive } from "@base-ui/react/radio-group"
 import { cn } from "@/lib/cn"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import {
+  Default as RadioButtonUncheckedIcon,
+  Checked as RadioButtonCheckedIcon,
+} from "@/components/icons/generated/radio-button"
 
+import { type ChangeEventDetails, type ElementProps } from "./props"
 import { useFormReset, useInputRef } from "./form-control-utils"
+
+/** Props of the `RadioGroup`. */
+export type RadioGroupProps = ElementProps<"div"> & {
+  /** Whether every item ignores interaction. @default false */
+  disabled?: boolean
+  /** Whether the user may not change the selection. @default false */
+  readOnly?: boolean
+  /** Whether a selection is required before submitting the form. @default false */
+  required?: boolean
+  /** Names the value in the submitted form. */
+  name?: string
+  /** Id of the form that owns the inputs. */
+  form?: string
+  /** The selected item. Use with `onValueChange`. */
+  value?: string | null
+  /** The item selected at first render. Use without `value`. */
+  defaultValue?: string | null
+  /** Access to the group's hidden `<input>`. */
+  inputRef?: React.Ref<HTMLInputElement>
+  /** Called when the selection changes. */
+  onValueChange?: (value: string | null, details: ChangeEventDetails) => void
+}
+
+/** Props of one item of a `RadioGroup`. */
+export type RadioGroupItemProps = ElementProps<"span"> & {
+  /** The value this item contributes to the group. */
+  value: string
+  /** Whether the item ignores interaction. @default false */
+  disabled?: boolean
+  /** Whether the user may not change this item. @default false */
+  readOnly?: boolean
+  /** Whether selecting this item is required before submitting the form. @default false */
+  required?: boolean
+  /** Access to the item's hidden `<input>`. */
+  inputRef?: React.Ref<HTMLInputElement>
+  /**
+   * Whether replacing the element with `render` keeps native `<button>`
+   * behaviour. @default false
+   */
+  nativeButton?: boolean
+}
 
 function RadioGroup({
   className,
@@ -16,7 +62,7 @@ function RadioGroup({
   onValueChange,
   inputRef: externalInputRef,
   ...props
-}: RadioGroupPrimitive.Props) {
+}: RadioGroupProps) {
   const { inputRef, mergedInputRef } = useInputRef(externalInputRef)
   const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue ?? null)
   useFormReset(inputRef, () => {
@@ -32,17 +78,13 @@ function RadioGroup({
         onValueChange?.(next, details)
         if (!details.isCanceled && value === undefined) setUncontrolledValue(next)
       }}
-      className={cn("grid w-full gap-2", className)}
+      className={cn("pui:grid pui:w-full pui:gap-2", className)}
       {...props}
     />
   )
 }
 
-function RadioGroupItem({
-  className,
-  inputRef: externalInputRef,
-  ...props
-}: RadioPrimitive.Root.Props) {
+function RadioGroupItem({ className, inputRef: externalInputRef, ...props }: RadioGroupItemProps) {
   const { inputRef, mergedInputRef } = useInputRef(externalInputRef)
   useFormReset(inputRef)
 
@@ -51,21 +93,20 @@ function RadioGroupItem({
       data-slot="radio-group-item"
       inputRef={mergedInputRef}
       className={cn(
-        "group/radio-group-item peer relative flex size-6 shrink-0 items-center justify-center rounded-full text-foreground outline-none after:absolute after:-inset-2.5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring data-disabled:cursor-not-allowed data-disabled:opacity-50 aria-invalid:text-destructive data-checked:text-primary aria-invalid:data-checked:text-primary",
+        "group/radio-group-item peer pui:relative pui:flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-full pui:text-foreground pui:outline-none pui:after:absolute pui:after:-inset-2.5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring pui:data-disabled:cursor-not-allowed pui:data-disabled:opacity-50 pui:aria-invalid:text-destructive pui:data-checked:text-primary pui:aria-invalid:data-checked:text-primary",
         className,
       )}
       {...props}
     >
-      <PagoPAIcon
-        name="radio_button"
-        variant="unchecked"
-        className="group-data-checked/radio-group-item:hidden"
+      <Icon
+        source={RadioButtonUncheckedIcon}
+        className="pui:group-data-checked/radio-group-item:hidden"
       />
       <RadioPrimitive.Indicator
         data-slot="radio-group-indicator"
-        className="flex items-center justify-center data-unchecked:hidden"
+        className="pui:flex pui:items-center pui:justify-center pui:data-unchecked:hidden"
       >
-        <PagoPAIcon name="radio_button" variant="checked" />
+        <Icon source={RadioButtonCheckedIcon} />
       </RadioPrimitive.Indicator>
     </RadioPrimitive.Root>
   )

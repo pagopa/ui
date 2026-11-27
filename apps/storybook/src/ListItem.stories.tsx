@@ -1,9 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
-import { Avatar, ListItem } from "@/components/content"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { Chip } from "@/components/inputs"
+import { Avatar } from "@/components/content/avatar"
+import { ListItem } from "@/components/content/list-item"
+import { Icon } from "@/components/icons/icon"
+import { Default as ContentCopyIcon } from "@/components/icons/generated/content-copy"
+import { Default as CreditCardIcon } from "@/components/icons/generated/credit-card"
+import { Default as PhotoIcon } from "@/components/icons/generated/photo"
+import { Default as ReportIcon } from "@/components/icons/generated/report"
+import { Chip } from "@/components/inputs/chips"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import listItemGuide from "./guides/list-items.md?raw"
 
@@ -11,7 +16,7 @@ const meta = {
   title: "Components/Content/ListItem",
   component: ListItem,
   args: {
-    leading: <PagoPAIcon name="photo" className="text-(--figma-color-neutrals-grey-300)" />,
+    leading: <Icon source={PhotoIcon} className="pui:text-decorative-secondary" />,
     description: "Pagamento TARI 2025",
     value: "Accertamento 00016/2025",
   },
@@ -51,13 +56,13 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Playground: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   // The fixture carries the source row (`897:18749`, 320×96): the row chip is part
   // of the source anatomy, and the 320px frame is `w-80` instead of the viewport.
   args: {
     chip: <Chip size="compact">Default</Chip>,
-    className: "w-80 max-w-full",
+    className: "pui:w-80 pui:max-w-full",
     onPress: () => undefined,
   },
   play: async ({ canvasElement }) => {
@@ -67,7 +72,7 @@ export const Playground: Story = {
 }
 
 export const WithAvatar: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: {
     leading: <Avatar size="small" alt="Comune di Milano" initials="CM" />,
@@ -77,7 +82,7 @@ export const WithAvatar: Story = {
 }
 
 export const LinkWithAvatar: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: {
     variant: "link",
@@ -93,7 +98,7 @@ export const LinkWithAvatar: Story = {
 }
 
 export const Link: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: { variant: "link", href: "#servizio" },
   play: async ({ canvasElement }) => {
@@ -105,23 +110,23 @@ export const Link: Story = {
 }
 
 export const Actionable: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: {
     variant: "actionable",
-    trailingIcon: <PagoPAIcon name="content_copy" />,
+    trailingIcon: <Icon source={ContentCopyIcon} />,
     chip: <Chip size="compact">Default</Chip>,
   },
 }
 
 export const Transactional: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: {
     variant: "transactional",
     leading: (
-      <span className="grid size-11 place-items-center rounded-lg border">
-        <PagoPAIcon name="credit_card" />
+      <span className="pui:grid pui:size-11 pui:place-items-center pui:rounded-lg pui:border">
+        <Icon source={CreditCardIcon} />
       </span>
     ),
     value: "Carta •••• 4532",
@@ -131,13 +136,13 @@ export const Transactional: Story = {
 }
 
 export const WithSuggestion: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: {
     variant: "transactional",
     leading: (
-      <span className="grid size-11 place-items-center rounded-lg border">
-        <PagoPAIcon name="credit_card" />
+      <span className="pui:grid pui:size-11 pui:place-items-center pui:rounded-lg pui:border">
+        <Icon source={CreditCardIcon} />
       </span>
     ),
     value: "Carta •••• 4532",
@@ -160,7 +165,7 @@ export const Amount: Story = {
 export const ErrorState: Story = {
   args: {
     variant: "error",
-    leading: <PagoPAIcon name="report" className="text-destructive" />,
+    leading: <Icon source={ReportIcon} className="pui:text-destructive" />,
     value: "Avviso non trovato",
     description: undefined,
     helperText: "Controlla il codice avviso e riprova.",
@@ -169,7 +174,7 @@ export const ErrorState: Story = {
 }
 
 export const WithAction: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: {
     chip: <Chip size="compact">Default</Chip>,
@@ -182,7 +187,7 @@ export const WithAction: Story = {
 }
 
 export const Loading: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: { loading: true, value: undefined, description: undefined },
   play: async ({ canvasElement }) => {

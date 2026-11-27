@@ -1,8 +1,39 @@
-# Figma alignment
+# Glossary map
+
+The repository speaks two vocabularies and a term belongs to exactly one of
+them: **Figma alignment**, the domain that reads the source library and proves
+that the code matches it, and the **consumer design system**, the package an
+application installs and renders. They meet in this file, which stays the single
+entry point for both, and they do not overlap: a `Node` is not a `Component`, a
+`Variant` is not a `Prop`, a Figma variable is not a `Token`.
+
+## Map
+
+| Vocabulary             | Read by                                      | Canonical source                                                                                                                                                                                                                 |
+| ---------------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Figma alignment        | the maintainer and the agent aligning a node | [Figma alignment](#figma-alignment), below; the committed records in `packages/pagopa-ui/src/catalog/figma/`; the procedure in [figma-to-code](.agents/skills/figma-to-code/SKILL.md)                                            |
+| Consumer design system | the application team adopting `@pagopa/ui`   | [Consumer design system](#consumer-design-system), below; the package guide in [packages/pagopa-ui/README.md](packages/pagopa-ui/README.md); the standards in [pagopa-ui-standards](.agents/skills/pagopa-ui-standards/SKILL.md) |
+
+Where the detail of a term outgrows one entry, the document that owns it is its
+source of truth and the map points there; every other term is owned by the
+section it sits in.
+
+| Term           | Vocabulary      | Canonical source                                                                                                   |
+| -------------- | --------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Prop naming    | consumer        | [prop conventions](.agents/skills/pagopa-ui-standards/references/prop-conventions.md)                              |
+| Text contract  | consumer        | [pagopa-ui-standards](.agents/skills/pagopa-ui-standards/SKILL.md)                                                 |
+| Story          | consumer        | [story contracts](.agents/skills/pagopa-ui-standards/references/story-contracts.md)                                |
+| Token          | consumer        | [tokens guide](apps/storybook/src/guides/tokens.md), [foundations guide](apps/storybook/src/guides/foundations.md) |
+| Artwork        | consumer        | [ADR-0003](docs/decisions/0003-artwork-provenance.md)                                                              |
+| Public surface | consumer        | [API report](packages/pagopa-ui/etc/pagopa-ui.api.md)                                                              |
+| Drift          | Figma alignment | [figma drift handoff](docs/figma-drift-handoff.md)                                                                 |
+| Parity         | Figma alignment | [ADR-0015](docs/decisions/0015-ephemeral-parity-diagnostic.md)                                                     |
+
+## Figma alignment
 
 The vocabulary of the domain that keeps the React design system aligned with its Figma library: the source library, the reviewed comparisons and the records that prove them.
 
-## Language
+### Language
 
 **Node**:
 A published Figma component or component set, identified by `nodeId`.
@@ -57,43 +88,23 @@ The reading of one page tree, recorded as that page's census. It is the unit of 
 _Avoid_: page scan, page crawl
 
 **Case**:
-A reviewed, reproducible comparison between one source variant and one story: selectors, width, state, residues and a note.
-_Avoid_: test, scenario, sample
-
-**Draft case**:
-A proposed case whose mapping has not been reviewed; it never counts as coverage.
-_Avoid_: proposal (when meaning coverage), pending case
-
-**Case corpus**:
-The reviewed cases held as one value: its documents — the cases, the inventory, the registry and the device vocabulary, read the first time a judgment asks for them — are readonly properties, its judgments are methods over them (`of`, `reviewed`, `node`, `find`, `pointed`, `coverage`, `proposals`, `stateProposals`, `validate`), and `validate()` takes no arguments because the documents are already inside; it is `parity/corpus.ts`, and the registry keeps the decision while the corpus keeps the comparison.
-_Avoid_: case file (for the value), case list, cases module, catalogue
-
-**Case writer**:
-The module a reviewed decision is stored through: it turns a proposal into a committed case, keeps case identity, and forgets the record reader's memory after writing.
-_Avoid_: saver, case store, repository, corpus
+An on-demand comparison between one source variant and one story: selectors, width, state and the residues it reports. It is derived from the registry and the command line, never stored.
+_Avoid_: test, scenario, sample, committed case
 
 **Coverage**:
-The declared devices of a node that a reviewed case covers.
-_Avoid_: completeness
-
-**Device exception**:
-A written reason a node may stay implemented with a case missing for one of its declared devices; it is a burn-down list beside the corpus (`parity/device-exceptions.ts`), not a committed record and not a coverage claim.
-_Avoid_: residue, tolerance, waiver
+The declared devices of a set that its story renders; it is a property the inventory reads from the device policy, not a count of reviewed comparisons.
+_Avoid_: completeness, case coverage
 
 **Residue**:
 A measured difference accepted with a written reason; it stays visible and does not block.
 _Avoid_: exception, tolerance
 
 **Parity**:
-The numeric agreement between a source variant and its rendered story, plus the structural and responsive verdict.
+The numeric agreement between a source variant and its rendered story, plus the structural and responsive verdict. It is a diagnostic a session runs on a node, not a state the repository keeps ([ADR-0015](docs/decisions/0015-ephemeral-parity-diagnostic.md)).
 _Avoid_: pixel diff, fidelity score
 
-**Evidence bundle**:
-The committed, generated set of source documents, pinned Figma images and their manifest that lets a clone read the source side without the live snapshot or a token.
-_Avoid_: snapshot (for the bundle), assets
-
 **Verification**:
-The hermetic verdict over the case corpus, the device coverage and the evidence bundle, with no snapshot, browser or network.
+The hermetic verdict `check:catalogue`, `check:artwork` and `check:devices` reach from the committed records, with no snapshot, browser or network.
 _Avoid_: evidence (as a synonym), test run
 
 **Delta**:
@@ -115,3 +126,64 @@ _Avoid_: report, packet
 **Gate**:
 A check whose failure blocks the change; warnings are not gates.
 _Avoid_: check (when meaning gate)
+
+## Consumer design system
+
+The vocabulary of the package an application installs: what it imports, what it
+overrides and where it reads the rules.
+
+### Language
+
+**Component**:
+The exported React unit a consumer imports and renders. In the Figma vocabulary
+the drawing it implements is a node.
+_Avoid_: node (for the package side), widget, element
+
+**Consumer**:
+The application team that installs `@pagopa/ui` and owns the product the
+component appears in.
+_Avoid_: user, client
+
+**Prop**:
+A public option of a component, named by the prop conventions: what the consumer
+sets, never an internal implementation detail.
+_Avoid_: attribute, parameter, option
+
+**Controlled and uncontrolled**:
+Who owns a stateful value: the consumer through a prop and its change handler,
+or the component itself, which then exposes a default.
+_Avoid_: controlled mode, managed state
+
+**Text contract**:
+The rule that every string a component renders or announces is a public,
+overridable prop with a default; where the sentence depends on data, the
+consumer receives the data and returns the sentence.
+_Avoid_: copy, labels, i18n
+
+**Token**:
+A public CSS custom property the package exports and the consumer applies; the
+Figma side of it is a variable.
+_Avoid_: variable (for the public token), design token (as a synonym), theme value
+
+**Artwork**:
+The icons and pictograms the package ships as components, each with its
+provenance and licence recorded.
+_Avoid_: asset, graphic, image
+
+**Story**:
+The Storybook example that shows one state of a component and proves it renders.
+_Avoid_: example, demo, sample
+
+**Guide**:
+The Markdown page, beside the stories, that documents a component or a
+foundation for the consumer.
+_Avoid_: documentation, doc page
+
+**Catalogue**:
+The published Storybook build the guides and the stories are served from.
+_Avoid_: documentation site, portal
+
+**Public surface**:
+The exports, props, texts and tokens the package promises to keep, declared in
+the API report.
+_Avoid_: API, contract (as a synonym)

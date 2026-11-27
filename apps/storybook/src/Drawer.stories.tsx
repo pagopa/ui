@@ -1,9 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import * as React from "react"
 import { expect, screen, userEvent, waitFor, within } from "storybook/test"
 
-import { Drawer } from "@/components/overlays"
+import { Drawer, DrawerClose } from "@/components/overlays/drawer"
 import { Button } from "@/components/primitives/button"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as FlagIcon } from "@/components/icons/generated/flag"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import drawerGuide from "./guides/drawer.md?raw"
@@ -17,6 +19,23 @@ const meta = {
     description: "Riepilogo della transazione.",
     children: <p>Importo: 24,00 €</p>,
     footer: <Button>Continua</Button>,
+  },
+  // The layout switches and the initial state are controls; the trigger, the
+  // icon, the body and the actions row are nodes, and `open` alone would pin the
+  // panel shut because the story carries no handler to close it.
+  argTypes: {
+    trigger: { control: false },
+    icon: { control: false },
+    children: { control: false },
+    footer: { control: false },
+    open: { control: false },
+    onOpenChange: { control: false },
+    defaultOpen: { control: "boolean" },
+    footerPlacement: { control: "select", options: ["pinned", "flow"] },
+    showHandle: { control: "boolean" },
+    direction: { control: "select", options: ["top", "right", "bottom", "left"] },
+    modal: { control: "boolean" },
+    closeLabel: { control: "text" },
   },
   parameters: {
     docs: {
@@ -90,33 +109,33 @@ const sourceParagraph =
 function SourceDescription() {
   return (
     <>
-      <p className="mb-3 text-body">{sourceParagraph}</p>
-      <p className="mb-3 text-body">{sourceParagraph}</p>
+      <p className="pui:mb-3 pui:text-body">{sourceParagraph}</p>
+      <p className="pui:mb-3 pui:text-body">{sourceParagraph}</p>
       <a
         data-slot="drawer-source-link"
-        className="font-semibold text-primary underline"
+        className="pui:font-semibold pui:text-primary pui:underline"
         href="#manuale"
       >
         Dubbi? Vai al manuale
       </a>
-      <p className="mt-5 text-body">{sourceParagraph}</p>
+      <p className="pui:mt-5 pui:text-body">{sourceParagraph}</p>
     </>
   )
 }
 
 function SourceFrame({ direction }: { direction: "bottom" | "right" }) {
   return (
-    <div className="min-h-screen w-full">
+    <div className="pui:min-h-screen pui:w-full">
       <Drawer
         trigger={
-          <Button className="sr-only" tabIndex={-1} aria-hidden="true">
+          <Button className="pui:sr-only" tabIndex={-1} aria-hidden="true">
             Apri pannello sorgente
           </Button>
         }
         title="Drawer title"
         description={<SourceDescription />}
-        icon={<PagoPAIcon name="flag" size={40} className="text-primary" />}
-        footer={<Button className="w-full tablet:w-auto">Primary</Button>}
+        icon={<Icon source={FlagIcon} size={40} className="pui:text-primary" />}
+        footer={<Button className="pui:w-full pui:tablet:w-auto">Primary</Button>}
         footerPlacement="flow"
         showHandle={false}
         direction={direction}
@@ -184,5 +203,154 @@ export const TitleScale: Story = {
     } finally {
       await applyViewport(previous.width, previous.height)
     }
+  },
+}
+
+// A controlled drawer: the panel follows the caller's state, an async handler
+// decides when it opens and a close action in the footer closes it.
+function ControlledHarness() {
+  const [open, setOpen] = React.useState(false)
+  const [loading, setLoading] = React.useState(false)
+
+  async function handleOpen() {
+    setLoading(true)
+    await new Promise((resolve) => setTimeout(resolve, 60))
+    setLoading(false)
+    setOpen(true)
+  }
+
+  return (
+    <>
+      <Button variant="outline" onClick={handleOpen} loading={loading}>
+        Apri dopo la richiesta
+      </Button>
+      <p data-testid="controlled-state">Stato: {open ? "aperto" : "chiuso"}</p>
+      <Drawer
+        open={open}
+        onOpenChange={setOpen}
+        title="Dettagli della pratica"
+        description="Il pannello segue lo stato del componente."
+        direction="bottom"
+        footer={<DrawerClose variant="outline">Chiudi dal piè di pagina</DrawerClose>}
+      >
+        <p>Importo: 24,00 €</p>
+      </Drawer>
+    </>
+  )
+}
+
+export const Controlled: Story = {
+  render: () => <ControlledHarness />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole("button", { name: "Apri dopo la richiesta" }))
+
+    const drawer = await screen.findByRole("dialog", { name: "Dettagli della pratica" })
+    await waitFor(() => expect(drawer).toBeVisible())
+    await expect(canvas.getByTestId("controlled-state")).toHaveTextContent("Stato: aperto")
+
+    await userEvent.click(within(drawer).getByRole("button", { name: "Chiudi dal piè di pagina" }))
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
+    await expect(canvas.getByTestId("controlled-state")).toHaveTextContent("Stato: chiuso")
+  },
+}
+
+export const UncontrolledDefaultOpen: Story = {
+  args: {
+    trigger: <Button variant="outline">Apri pannello non controllato</Button>,
+    title: "Pannello non controllato",
+    defaultOpen: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const panel = await screen.findByRole("dialog", { name: "Pannello non controllato" })
+    await waitFor(() => expect(panel).toBeVisible())
+
+    await userEvent.keyboard("{Escape}")
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
+
+    const trigger = canvas.getByRole("button", { name: "Apri pannello non controllato" })
+    await userEvent.click(trigger)
+    await waitFor(() =>
+      expect(screen.getByRole("dialog", { name: "Pannello non controllato" })).toBeVisible(),
+    )
+    await userEvent.keyboard("{Escape}")
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
+    await expect(trigger).toHaveFocus()
+  },
+}
+
+function NoTriggerHarness() {
+  const [open, setOpen] = React.useState(false)
+
+  return (
+    <>
+      <Button variant="outline" onClick={() => setOpen(true)}>
+        Apri dal controllo
+      </Button>
+      <p data-testid="no-trigger-state">Stato: {open ? "aperto" : "chiuso"}</p>
+      <Drawer
+        open={open}
+        onOpenChange={setOpen}
+        title="Pannello senza elemento di apertura"
+        description="Il pannello si apre dallo stato del componente."
+        direction="bottom"
+      />
+    </>
+  )
+}
+
+export const WithoutTrigger: Story = {
+  render: () => <NoTriggerHarness />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+
+    await userEvent.click(canvas.getByRole("button", { name: "Apri dal controllo" }))
+    const drawer = await screen.findByRole("dialog", {
+      name: "Pannello senza elemento di apertura",
+    })
+    await waitFor(() => expect(drawer).toBeVisible())
+    await expect(canvas.getByTestId("no-trigger-state")).toHaveTextContent("Stato: aperto")
+
+    await userEvent.keyboard("{Escape}")
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
+    await expect(canvas.getByTestId("no-trigger-state")).toHaveTextContent("Stato: chiuso")
+  },
+}
+
+function PanelContractHarness() {
+  const [open, setOpen] = React.useState(true)
+  const [panel, setPanel] = React.useState<HTMLDivElement | null>(null)
+
+  const forwarded = panel
+    ? `class=${panel.classList.contains("pui:w-80") ? "inoltrata" : "assente"} attribute=${panel.dataset.contractSlot ?? "assente"}`
+    : "nessun pannello"
+
+  return (
+    <>
+      <p data-testid="panel-contract">{forwarded}</p>
+      <Drawer
+        ref={setPanel}
+        open={open}
+        onOpenChange={setOpen}
+        title="Pannello con contratto inoltrato"
+        className="pui:w-80"
+        data-contract-slot="drawer"
+        direction="bottom"
+      />
+    </>
+  )
+}
+
+export const PanelContract: Story = {
+  render: () => <PanelContractHarness />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const drawer = await screen.findByRole("dialog", { name: "Pannello con contratto inoltrato" })
+    await waitFor(() => expect(drawer).toBeVisible())
+    await expect(canvas.getByTestId("panel-contract")).toHaveTextContent(
+      "class=inoltrata attribute=drawer",
+    )
   },
 }

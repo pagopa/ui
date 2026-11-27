@@ -5,10 +5,15 @@ import { writeJson } from "../../lib/json.ts"
 import { forgetCommitted } from "../../records/committed.ts"
 import type { CatalogueReport } from "./index.ts"
 import { formatDeviceLine } from "../devices.ts"
+import { tokenDriftCount } from "../tokens.ts"
 import { formatSurfaceLine } from "../surface.ts"
-import { renderCatalogueDelta, renderCataloguePrBody } from "../catalogue-render.ts"
+import {
+  renderCatalogueDelta,
+  renderCataloguePrBody,
+  renderTokenDriftRecord,
+} from "../catalogue-render.ts"
 import { requestsFolder } from "../config.ts"
-import { formatCatalogueSummary, formatCoverageLine, renderCataloguePlan } from "./output.ts"
+import { formatCatalogueSummary, renderCataloguePlan } from "./output.ts"
 import type { CatalogueContext } from "./context.ts"
 
 function writePendingFiles(
@@ -46,14 +51,12 @@ function writePullRequestBody(
       live: context.live,
       committed: context.committed,
       liveVersion: context.liveVersion,
-      ratchet: context.ratchet,
-      evidenceBase: context.evidenceBase,
       devicePolicy: validation.devicePolicy,
       deviceStats: validation.deviceStats,
-      deviceCoverage: validation.deviceCoverage,
       bulkByNode: validation.bulkByNode,
       bulkByPage: validation.bulkByPage,
       entries: validation.entries,
+      tokenDrift: context.tokenDrift,
     })}\n`,
   )
   out.push(`pr body: ${context.prBodyPath}`)
@@ -74,17 +77,33 @@ function writeDeltaFile(workspace: Workspace, context: CatalogueContext, out: st
       live: context.live,
       committed: context.committed,
       liveVersion: context.liveVersion,
-      ratchet: context.ratchet,
-      evidenceBase: context.evidenceBase,
       devicePolicy: validation.devicePolicy,
       deviceStats: validation.deviceStats,
-      deviceCoverage: validation.deviceCoverage,
       bulkByNode: validation.bulkByNode,
       bulkByPage: validation.bulkByPage,
       entries: validation.entries,
     }),
   )
   out.push(`delta: ${context.deltaPath}`)
+}
+
+/**
+ * The token drift is what the review reads and what the branch carries: a run
+ * that finds none removes the record, so a drift that has been fixed leaves no
+ * stale page behind and the next run has nothing to commit. The record sits
+ * beside the drift delta at the workspace root, not inside the audited package.
+ */
+function writeTokenDrift(context: CatalogueContext, out: string[]): void {
+  if (!context.tokenDriftPath || !context.tokenDrift) return
+  const file = path.resolve(context.workspace.workspaceRoot, context.tokenDriftPath)
+  if (!tokenDriftCount(context.tokenDrift)) {
+    fs.rmSync(file, { force: true })
+    return
+  }
+  fs.mkdirSync(path.dirname(file), { recursive: true })
+  writeJson(file, renderTokenDriftRecord(context.tokenDrift, context.inventory.fileKey))
+  forgetCommitted(file)
+  out.push(`token drift: ${context.tokenDriftPath}`)
 }
 
 /**
@@ -106,6 +125,8 @@ export function catalogueExitCode(input: {
 function writeTargets(context: CatalogueContext): string[] {
   const targets = [...context.pendingWrites.keys()]
   if (context.prBodyPath && context.hasDrift) targets.push(context.prBodyPath)
+  if (context.tokenDriftPath && context.tokenDrift && tokenDriftCount(context.tokenDrift) > 0)
+    targets.push(context.tokenDriftPath)
   if (context.deltaPath && context.live) targets.push(context.deltaPath)
   return targets
 }
@@ -126,10 +147,8 @@ export function finishCatalogue(context: CatalogueContext, plan: boolean): Catal
         entries: validation.entries,
         liveVersion: context.liveVersion,
         surfaceWaiting: validation.surfaceWaiting,
-        surfaceUnmirrored: validation.surfaceUnmirrored,
         surfaceUncensused: validation.surfaceUncensused,
         deviceStats: validation.deviceStats,
-        deviceCoverage: validation.deviceCoverage,
         requests: requestsFolder(workspace),
       }),
     )
@@ -151,14 +170,10 @@ export function finishCatalogue(context: CatalogueContext, plan: boolean): Catal
         bulkByPage: validation.bulkByPage,
         evidenceExceptions: context.evidenceExceptions,
         apiExceptions: context.apiExceptions,
-        deviceCoverage: validation.deviceCoverage,
         deviceStats: validation.deviceStats,
         formatDeviceLine,
-        formatCoverageLine,
-        coverage: validation.deviceCoverage,
         surfaceStats: validation.surfaceStats,
         formatSurfaceLine,
-        caseStats: validation.caseStats,
       }),
     )
   }
@@ -166,6 +181,7 @@ export function finishCatalogue(context: CatalogueContext, plan: boolean): Catal
     writePendingFiles(workspace.root, context, plan, out, err)
     writePullRequestBody(workspace, context, out)
     writeDeltaFile(workspace, context, out)
+    writeTokenDrift(context, out)
   } else {
     const targets = writeTargets(context)
     if (targets.length)

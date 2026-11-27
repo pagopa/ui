@@ -42,10 +42,10 @@ function visibleCarets(frame: HTMLElement) {
 }
 
 export const MaskedNativeCode: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <form aria-label="Verifica riservata" className="grid max-w-sm gap-4">
+    <form aria-label="Verifica riservata" className="pui:grid pui:max-w-sm pui:gap-4">
       <AuthenticationCodeInput
         label="Codice riservato"
         name="code"
@@ -98,7 +98,7 @@ export const SourceFrame: Story = {
   parameters: { a11yContract: { reflow: false } },
   tags: ["color-pinned"],
   render: () => (
-    <div className="grid max-w-sm gap-6">
+    <div className="pui:grid pui:max-w-sm pui:gap-6">
       <AuthenticationCodeInput label="Codice vuoto" length={5} />
       <AuthenticationCodeInput label="Codice compilato" length={5} defaultValue="57391" />
     </div>
@@ -141,7 +141,7 @@ export const KeyboardSourceCursor: Story = {
   parameters: { a11yContract: { reflow: false } },
   tags: ["color-pinned"],
   render: () => (
-    <form aria-label="Verifica da tastiera" className="grid max-w-sm gap-4">
+    <form aria-label="Verifica da tastiera" className="pui:grid pui:max-w-sm pui:gap-4">
       <Button>Prima del codice</Button>
       <AuthenticationCodeInput label="Codice con cursore" length={5} />
       <Button>Dopo il codice</Button>
@@ -192,7 +192,7 @@ export const SourceErrorDescription: Story = {
     design: { type: "figma", url: figmaEmbedUrl("198:828") },
   },
   render: () => (
-    <form aria-label="Verifica non riuscita" className="grid max-w-sm gap-4">
+    <form aria-label="Verifica non riuscita" className="pui:grid pui:max-w-sm pui:gap-4">
       <p id="source-code-policy">Richiedi un nuovo codice prima di riprovare.</p>
       <AuthenticationCodeInput
         label="Codice scaduto"
@@ -234,12 +234,12 @@ export const SourceErrorDescription: Story = {
 
 export const NarrowSourceCode: Story = {
   parameters: {
-    // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+    // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
     a11yContract: { reflow: false },
     design: { type: "figma", url: figmaEmbedUrl("198:828") },
   },
   render: () => (
-    <form aria-label="Verifica su contenitore stretto" className="w-60 max-w-full">
+    <form aria-label="Verifica su contenitore stretto" className="pui:w-60 pui:max-w-full">
       <AuthenticationCodeInput
         label="CodiceDiAutenticazioneDellaRichiestaConIdentificativoMoltoLungo"
         description="DescrizioneDelCodiceDiAutenticazioneConUnaParolaMoltoLungaDaNonTagliare"
@@ -272,12 +272,12 @@ export const NarrowSourceCode: Story = {
 
 export const MaskedNativePaste: Story = {
   parameters: {
-    // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+    // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
     a11yContract: { reflow: false },
     design: { type: "figma", url: figmaEmbedUrl("198:828") },
   },
   render: () => (
-    <form aria-label="Verifica da codice copiato" className="grid max-w-sm gap-4">
+    <form aria-label="Verifica da codice copiato" className="pui:grid pui:max-w-sm pui:gap-4">
       <AuthenticationCodeInput
         label="Codice da incollare"
         name="code"
@@ -312,12 +312,12 @@ export const MaskedNativePaste: Story = {
 
 export const SlotLabelsAndFramePress: Story = {
   parameters: {
-    // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+    // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
     a11yContract: { reflow: false },
     design: { type: "figma", url: figmaEmbedUrl("198:828") },
   },
   render: () => (
-    <div className="grid max-w-sm gap-6">
+    <div className="pui:grid pui:max-w-sm pui:gap-6">
       <AuthenticationCodeInput label="Codice con etichette" length={5} defaultValue="57" />
     </div>
   ),

@@ -1,9 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, within } from "storybook/test"
 
-import { Search, UserRound } from "lucide-react"
+import { Icon } from "@/components/icons/icon"
+import { Default as PersonIcon } from "@/components/icons/generated/person"
+import { Default as SearchIcon } from "@/components/icons/generated/search"
 
-import { TextField } from "@/components/inputs"
+import { TextField } from "@/components/inputs/text-fields"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import fieldsGuide from "./guides/fields.md?raw"
@@ -41,26 +43,26 @@ type Story = StoryObj<typeof meta>
 // preview a human opens is the source frame, not a fit-content box.
 export const Playground: Story = {
   render: (args) => (
-    <div className="w-68 max-w-full">
+    <div className="pui:w-68 pui:max-w-full">
       <TextField {...args} />
     </div>
   ),
 }
 
 export const WithIcons: Story = {
-  args: { leadingIcon: <Search /> },
+  args: { leadingIcon: <Icon source={SearchIcon} /> },
 }
 
 export const WithTrailingIcon: Story = {
-  args: { trailingIcon: <UserRound />, defaultValue: "RSSMRA80A01H501" },
+  args: { trailingIcon: <Icon source={PersonIcon} />, defaultValue: "RSSMRA80A01H501" },
 }
 
 export const Validation: Story = {
   render: () => (
-    <div className="grid max-w-xl gap-6">
+    <div className="pui:grid pui:max-w-xl pui:gap-6">
       <TextField
         label="Cerca una pratica"
-        leadingIcon={<Search />}
+        leadingIcon={<Icon source={SearchIcon} />}
         description="La ricerca non distingue tra maiuscole e minuscole."
       />
       <TextField
@@ -86,7 +88,7 @@ export const Validation: Story = {
     await expect(email).toHaveAccessibleName("Email (obbligatorio)")
     const requiredWords = canvas.getByText("(obbligatorio)")
     await expect(requiredWords).toBeVisible()
-    await expect(requiredWords).not.toHaveClass("sr-only")
+    await expect(requiredWords).not.toHaveClass("pui:sr-only")
     await expect(canvas.getAllByText("(obbligatorio)")).toHaveLength(1)
     await expect(email).toHaveAttribute("aria-invalid", "true")
     await expect(email).toHaveAccessibleDescription("Inserisci un indirizzo email valido.")
@@ -98,9 +100,9 @@ export const Validation: Story = {
     if (!successId) throw new Error("Expected the success message to describe the input")
     const successMessage = canvasElement.ownerDocument.getElementById(successId)
     if (!successMessage) throw new Error("Expected the accessible success message")
-    await expect(successMessage).toHaveClass("sr-only")
+    await expect(successMessage).toHaveClass("pui:sr-only")
 
-    const successRoot = successInput.closest(".relative")?.parentElement
+    const successRoot = successInput.closest(".pui\\:relative")?.parentElement
     if (!successRoot) throw new Error("Expected the TextField root")
     await expect(successRoot.getBoundingClientRect().height).toBe(
       successInput.getBoundingClientRect().height,
@@ -150,9 +152,9 @@ export const FigmaStateMatrix: Story = {
     design: { type: "figma", url: figmaEmbedUrl("529:6111") },
   },
   render: () => (
-    <div className="grid gap-6">
+    <div className="pui:grid pui:gap-6">
       {sourceFieldStates.map((state) => (
-        <div key={state.id} className="w-[274px] max-w-full">
+        <div key={state.id} className="pui:w-[274px] pui:max-w-full">
           <TextField
             id={state.id}
             data-fidelity-state={state.id}

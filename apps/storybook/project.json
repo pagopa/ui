@@ -57,11 +57,7 @@
       },
       "cache": false
     },
-    "test:visual": {
-      "dependsOn": ["build"],
-      "cache": false
-    },
-    "test:visual:update": {
+    "chromatic": {
       "dependsOn": ["build"],
       "cache": false
     },

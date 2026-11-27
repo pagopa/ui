@@ -15,6 +15,15 @@ function check(files) {
 
 const hasProblem = (result, pattern) => assert.match(result.problems.join("\n"), pattern)
 
+function hasIconProblem(result, specifier) {
+  assert.ok(
+    result.problems.some(
+      (problem) => problem.includes(`"${specifier}"`) && /artwork pipeline/.test(problem),
+    ),
+    result.problems.join("\n"),
+  )
+}
+
 test("library imports cannot consume catalog data through an alias", () => {
   hasProblem(
     check({
@@ -162,7 +171,7 @@ test("the configured cn engine is the only entry point for class merging", () =>
 })
 
 test("third-party runtimes stay inside the primitives layer", () => {
-  for (const specifier of ["@base-ui/react/checkbox", "react-day-picker", "lucide-react"]) {
+  for (const specifier of ["@base-ui/react/checkbox", "react-day-picker"]) {
     hasProblem(
       check({
         "src/components/inputs/control.tsx": `import { Marker } from "${specifier}"\nexport const Control = () => Marker`,
@@ -180,9 +189,44 @@ test("third-party runtimes stay inside the primitives layer", () => {
   hasProblem(
     check({
       "src/components/templates/demo.tsx":
-        'import { X } from "lucide-react"\nexport const Demo = () => X',
+        'import { Marker } from "react-day-picker"\nexport const Demo = () => Marker',
     }),
     /removed layer must not exist/,
+  )
+})
+
+test("a third-party icon package is refused from every layer", () => {
+  const packages = [
+    ["lucide-react", "lucide-react"],
+    ["@tabler/icons-react", "@tabler/icons-react"],
+    ["@heroicons/react", "@heroicons/react/24/outline"],
+    ["@radix-ui/react-icons", "@radix-ui/react-icons"],
+    ["react-icons", "react-icons/fi"],
+    ["@phosphor-icons/react", "@phosphor-icons/react"],
+    ["@iconify", "@iconify/react"],
+    ["@mui/icons-material", "@mui/icons-material/Checkbox"],
+    ["@fortawesome", "@fortawesome/react-fontawesome"],
+  ]
+  for (const layer of ["primitives", "icons", "inputs", "overlays"]) {
+    for (const [name, specifier] of packages) {
+      hasIconProblem(
+        check({
+          [`src/components/${layer}/control.tsx`]: `import { Marker } from "${specifier}"\nexport const Control = () => Marker`,
+        }),
+        name,
+      )
+    }
+  }
+  hasIconProblem(
+    check({ "src/lib/glyphs.ts": 'export { Marker } from "lucide-react"' }),
+    "lucide-react",
+  )
+  assert.deepEqual(
+    check({
+      "src/components/primitives/control.tsx":
+        'import { Checkbox } from "@base-ui/react/checkbox"\nexport const Control = () => Checkbox',
+    }).problems,
+    [],
   )
 })
 
@@ -207,4 +251,61 @@ test("check layers prints the import-layer report name and verdict", async () =>
   } finally {
     tree.dispose()
   }
+})
+
+test("a story cannot import a family barrel instead of a component module", () => {
+  const result = check({
+    "src/components/content/index.ts": 'export * from "./tag"',
+    "src/components/content/tag.tsx": "export const Tag = () => null",
+    "apps/storybook/src/tag.stories.tsx":
+      'import { Tag } from "@/components/content"\nexport const Default = () => Tag()',
+  })
+  hasProblem(result, /apps\/storybook\/src\/tag\.stories\.tsx: .*"@\/components\/content"/)
+})
+
+test("the barrel rule follows the family index whether or not the path names it", () => {
+  for (const specifier of ["@/components/content", "@/components/content/index"]) {
+    hasProblem(
+      check({
+        "src/components/content/index.ts": 'export * from "./tag"',
+        "src/components/content/tag.tsx": "export const Tag = () => null",
+        "apps/storybook/src/tag.stories.tsx": `import { Tag } from "${specifier}"`,
+      }),
+      /family barrel/,
+    )
+  }
+})
+
+test("a story importing a component module is allowed", () => {
+  assert.deepEqual(
+    check({
+      "src/components/content/index.ts": 'export * from "./tag"',
+      "src/components/content/tag.tsx": "export const Tag = () => null",
+      "apps/storybook/src/tag.stories.tsx":
+        'import { Tag } from "@/components/content/tag"\nexport const Default = () => Tag()',
+    }).problems,
+    [],
+  )
+})
+
+test("the library keeps composing through its family barrels", () => {
+  assert.deepEqual(
+    check({
+      "src/components/content/index.ts": 'export * from "./tag"',
+      "src/components/content/tag.tsx": "export const Tag = () => null",
+      "src/components/feedback/index.ts": 'export { Tag } from "../content"',
+    }).problems,
+    [],
+  )
+})
+
+test("a directory without an index is not a barrel", () => {
+  assert.deepEqual(
+    check({
+      "src/components/primitives/button.tsx": "export const Button = () => null",
+      "apps/storybook/src/button.stories.tsx":
+        'import { Button } from "@/components/primitives/button"\nexport const Default = () => Button()',
+    }).problems,
+    [],
+  )
 })

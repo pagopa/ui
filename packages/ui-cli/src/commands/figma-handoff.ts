@@ -7,13 +7,10 @@ import {
   type HandoffAdapters,
 } from "../figma/handoff.ts"
 import { buildBriefQueue, formatBriefQueue } from "../figma/brief-queue.ts"
-import { UsageError } from "../lib/command.ts"
-import { createHandoffMedia, handoffMediaAdapters } from "../figma/handoff-media.ts"
-import { integer, jsonArg, requireText } from "./args.ts"
+import { boolArg, jsonArg, requireText } from "./args.ts"
 import { action, EXIT, printJson, printLines, type CliContext } from "./context.ts"
 
 const referenceArg = { type: "positional", required: false } as const
-const boolArg = { type: "boolean", default: false } as const
 
 function handoffAdapters(ctx: CliContext): HandoffAdapters {
   return {
@@ -105,45 +102,6 @@ function briefCommand(ctx: CliContext) {
   })
 }
 
-function mediaCommand(ctx: CliContext) {
-  return defineCommand({
-    meta: { name: "media", description: "Capture and attach before/after render evidence" },
-    args: {
-      pr: { type: "string", required: true },
-      base: { type: "string", required: true },
-      "dry-run": boolArg,
-      json: jsonArg,
-    },
-    run: action(ctx, async ({ pr: value, base, "dry-run": dryRun, json }) => {
-      const pr = resolveHandoff(
-        ctx.workspace(),
-        requireText(value, "--pr", "handoff media"),
-        handoffAdapters(ctx),
-      )
-      const number = integer(String(pr.number), "--pr")
-      if (number === undefined) throw new UsageError("--pr must be a positive number")
-      const result = await createHandoffMedia(
-        ctx.workspace(),
-        {
-          pr: number,
-          base: requireText(base, "--base", "handoff media"),
-          baseUrl: ctx.env.STORYBOOK_URL ?? "http://localhost:6006",
-          dryRun,
-        },
-        { ...handoffMediaAdapters, git: ctx.external.git, gh: ctx.external.gh },
-      )
-      if (json) printJson(ctx.io, result)
-      else {
-        ctx.io.out(
-          `${result.dryRun ? "would attach" : "attached"}: ${result.moved} moved case(s) across ${result.cases} capture(s)`,
-        )
-        for (const planned of result.actions) ctx.io.out(`  ${planned}`)
-      }
-      return EXIT.ok
-    }),
-  })
-}
-
 export function handoffCommand(ctx: CliContext) {
   return defineCommand({
     meta: { name: "handoff" },
@@ -151,7 +109,6 @@ export function handoffCommand(ctx: CliContext) {
       resolve: resolveCommand(ctx),
       checkout: checkoutCommand(ctx),
       brief: briefCommand(ctx),
-      media: mediaCommand(ctx),
     },
   })
 }

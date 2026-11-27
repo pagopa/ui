@@ -2,7 +2,8 @@ import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as NotificationsActiveIcon } from "@/components/icons/generated/notifications-active"
 import { RadioField } from "@/components/inputs/radio-field"
 import { RadioGroup } from "@/components/inputs/radio-group"
 import { Button } from "@/components/primitives/button"
@@ -44,7 +45,11 @@ type Story = StoryObj<typeof meta>
 export const Playground: Story = {
   render: (args) => (
     // Source option frame: 320 wide (`194:3842`).
-    <RadioGroup legend="Metodo di contatto" defaultValue="email" className="w-80 max-w-full">
+    <RadioGroup
+      legend="Metodo di contatto"
+      defaultValue="email"
+      className="pui:w-80 pui:max-w-full"
+    >
       <RadioField {...args} />
       <RadioField value="office" label="Sportello" />
     </RadioGroup>
@@ -53,7 +58,7 @@ export const Playground: Story = {
 
 export const RichRadioOptions: Story = {
   parameters: {
-    // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+    // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
     a11yContract: { reflow: false },
     design: { type: "figma", url: figmaEmbedUrl("194:3700") },
   },
@@ -62,13 +67,13 @@ export const RichRadioOptions: Story = {
       legend="Ricezione dei documenti"
       name="delivery"
       defaultValue="office"
-      className="w-80 max-w-full"
+      className="pui:w-80 pui:max-w-full"
     >
       <RadioField
         value="email"
         label="Email"
         leadingIcon={
-          <PagoPAIcon name="notifications_active" decorative={false} label="Icona promemoria" />
+          <Icon source={NotificationsActiveIcon} decorative={false} label="Icona promemoria" />
         }
         indicatorPlacement="end"
         description="Ricevi i documenti via email."
@@ -114,7 +119,7 @@ export const RadioIndicatorStates: Story = {
     design: { type: "figma", url: figmaEmbedUrl("194:3677") },
   },
   render: () => (
-    <div className="grid max-w-xl gap-6">
+    <div className="pui:grid pui:max-w-xl pui:gap-6">
       <RadioGroup legend="Canale di contatto" defaultValue="email" name="contact">
         <RadioField value="email" label="Email" />
         <RadioField value="office" label="Sportello" />
@@ -126,7 +131,7 @@ export const RadioIndicatorStates: Story = {
       <RadioGroupPrimitive
         aria-label="Indicatori radio sorgente"
         defaultValue="active"
-        className="gap-5"
+        className="pui:gap-5"
       >
         <RadioGroupItem value="default" aria-label="Indicatore predefinito" />
         <RadioGroupItem value="active" aria-label="Indicatore attivo" />
@@ -168,7 +173,12 @@ export const RadioIndicatorStates: Story = {
 export const RadioFieldFeedback: Story = {
   parameters: { design: { type: "figma", url: figmaEmbedUrl("194:3841") } },
   render: () => (
-    <RadioGroup legend="Canale con verifica" name="delivery" required className="w-80 max-w-full">
+    <RadioGroup
+      legend="Canale con verifica"
+      name="delivery"
+      required
+      className="pui:w-80 pui:max-w-full"
+    >
       <RadioField
         value="email"
         label="Posta elettronica"
@@ -212,18 +222,18 @@ export const RadioFieldFeedback: Story = {
 
 export const RadioLoadingStates: Story = {
   parameters: {
-    // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+    // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
     a11yContract: { reflow: false },
     design: { type: "figma", url: figmaEmbedUrl("194:3700") },
   },
   render: function RadioLoadingForm() {
     const [loading, setLoading] = React.useState(true)
     const [submitted, setSubmitted] = React.useState("")
-    const icon = <PagoPAIcon name="notifications_active" />
+    const icon = <Icon source={NotificationsActiveIcon} />
 
     return (
       <form
-        className="grid w-80 max-w-full gap-4"
+        className="pui:grid pui:w-80 pui:max-w-full pui:gap-4"
         onSubmit={(event) => {
           event.preventDefault()
           setSubmitted(String(new FormData(event.currentTarget).get("delivery") ?? "nessuno"))
@@ -292,7 +302,7 @@ export const RadioLoadingStates: Story = {
 }
 
 // The five variants of the source option set (`194:3841`), each rendered at the
-// source 320 width with the source state, so parity captures one row per variant.
+// source 320 width with the source state, so a comparison measures one row per variant.
 export const FigmaStateMatrix: Story = {
   tags: ["color-pinned"],
   parameters: {
@@ -303,28 +313,28 @@ export const FigmaStateMatrix: Story = {
     design: { type: "figma", url: figmaEmbedUrl("194:3841") },
   },
   render: () => (
-    <div className="grid w-max gap-4 p-4">
-      <div data-fidelity-variant="194-3842" className="w-80 max-w-full">
+    <div className="pui:grid pui:w-max pui:gap-4 pui:p-4">
+      <div data-fidelity-variant="194-3842" className="pui:w-80 pui:max-w-full">
         <RadioGroupPrimitive aria-label="Default" defaultValue="contact">
           <RadioField value="contact" label="Canale di contatto" />
         </RadioGroupPrimitive>
       </div>
-      <div data-fidelity-variant="194-3845" className="w-80 max-w-full">
+      <div data-fidelity-variant="194-3845" className="pui:w-80 pui:max-w-full">
         <RadioGroupPrimitive aria-label="Default disabilitato" defaultValue="contact" disabled>
           <RadioField value="contact" label="Canale di contatto" disabled />
         </RadioGroupPrimitive>
       </div>
-      <div data-fidelity-variant="194-3848" className="w-80 max-w-full">
+      <div data-fidelity-variant="194-3848" className="pui:w-80 pui:max-w-full">
         <RadioGroupPrimitive aria-label="Selezionato" defaultValue="contact">
           <RadioField value="contact" label="Canale di contatto" />
         </RadioGroupPrimitive>
       </div>
-      <div data-fidelity-variant="194-3851" className="w-80 max-w-full">
+      <div data-fidelity-variant="194-3851" className="pui:w-80 pui:max-w-full">
         <RadioGroupPrimitive aria-label="Selezionato disabilitato" defaultValue="contact" disabled>
           <RadioField value="contact" label="Canale di contatto" disabled />
         </RadioGroupPrimitive>
       </div>
-      <div data-fidelity-variant="194-3854" className="w-80 max-w-full">
+      <div data-fidelity-variant="194-3854" className="pui:w-80 pui:max-w-full">
         <RadioGroupPrimitive aria-label="Feedback">
           <RadioField value="contact" label="Canale di contatto" error="Seleziona un canale." />
         </RadioGroupPrimitive>
@@ -345,7 +355,7 @@ export const FigmaStateMatrix: Story = {
 }
 
 export const RadioSourceStateMatrix: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: {
     a11yContract: { reflow: false },
     design: { type: "figma", url: figmaEmbedUrl("194:3700") },
@@ -377,21 +387,21 @@ export const RadioSourceStateMatrix: Story = {
     const placements: ("start" | "end")[] = ["start", "end"]
 
     return (
-      <div className="flex flex-wrap items-start gap-6">
+      <div className="pui:flex pui:flex-wrap pui:items-start pui:gap-6">
         {states.flatMap((state) =>
           placements.map((placement) => (
             <RadioGroup
               key={`${state.label}-${placement}`}
               legend={`${state.label} · ${placement}`}
               defaultValue={state.selected ? "contact" : undefined}
-              className="w-80 max-w-full"
+              className="pui:w-80 pui:max-w-full"
             >
               <RadioField
                 value="contact"
                 label="Canale di contatto"
                 indicatorPlacement={placement}
                 leadingIcon={
-                  placement === "end" ? <PagoPAIcon name="notifications_active" /> : undefined
+                  placement === "end" ? <Icon source={NotificationsActiveIcon} /> : undefined
                 }
                 description={placement === "end" ? "Testo descrittivo." : undefined}
                 disabled={state.disabled}
@@ -405,13 +415,13 @@ export const RadioSourceStateMatrix: Story = {
             key={state.label}
             legend={`Skeleton · ${state.label}`}
             defaultValue={state.selected ? "loading" : undefined}
-            className="w-80 max-w-full"
+            className="pui:w-80 pui:max-w-full"
           >
             <RadioField
               value="loading"
               label="Canale in caricamento"
               leadingIcon={
-                state.leadingIcon ? <PagoPAIcon name="notifications_active" /> : undefined
+                state.leadingIcon ? <Icon source={NotificationsActiveIcon} /> : undefined
               }
               description={state.description ? "Informazioni sul canale." : undefined}
               indicatorPlacement="end"

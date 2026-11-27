@@ -4,11 +4,12 @@ A published set that declares a device axis draws one composition per device. Th
 alignment covers every declared device, each read from its own variant and
 captured at that variant's width; the mobile composition is never inferred from
 the desktop one. Nothing here is keyed by a component: the devices come from the
-set's axis, the width from the variant's box, the technique from the case.
+set's axis, the width from the variant's box, the technique from the
+declaration the comparison measures.
 
 `catalog.devicePolicy` maps every declared axis value (`Desktop`, `MDDesktop`,
 `XS Mobile`, `Device5`, …) to `mobile`, `tablet`, `desktop`, or `any` (one
-composition everywhere, no case needed). An axis is a device axis by its values,
+composition everywhere, no comparison needed). An axis is a device axis by its values,
 not its name. The policy is vocabulary only: never a component name, path or
 decision.
 

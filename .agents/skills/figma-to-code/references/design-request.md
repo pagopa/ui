@@ -7,11 +7,20 @@ answer is implemented and reviewed.
 
 ## Decide whether to ask
 
-Read the source and the existing requests first. Ask about an unowned value, an
-undrawn behaviour or state, a contradictory device composition, an API or shared
-component decision, an ambiguous rule. A question the source answers becomes a
-registry decision, not an issue, even when a person supplied it; one with no node
-still owes its preview, captures, issue and record, but no registry pointer.
+Read the source and the existing requests first, then the ratified design
+defaults (`design-defaults.md`: derived state colours, composite
+input-plus-icon spacing, responsive layout rules). Ask about an
+unowned value, an undrawn behaviour or state, a contradictory device
+composition, an API or shared component decision, an ambiguous rule. A question
+the source answers becomes a registry decision, not an issue, even when a person
+supplied it; one with no node still owes its preview, captures, issue and
+record, but no registry pointer.
+
+A question the ratified defaults answer is not a request: apply the rule — a
+derived state colour, a composite input-plus-icon spacing, a layout switch, a
+reflow or text-spacing condition — and cite `design-defaults.md` in the
+alignment's notes. When the defaults answer only part of it, apply that part and
+open a request for the remainder, quoting the section that stops short.
 
 ## Prepare the question
 
@@ -20,7 +29,7 @@ implementation detail in collapsed context. Every issue carries one decision and
 a recommendation; a new question gets its own linked issue.
 
 For a visual question, prepare a standalone `Reviews/<slug>` story on
-`design.preview.branch` tagged `['!dev', '!test', '!autodocs', 'no-visual']`,
+`design.preview.branch` tagged `['!dev', '!test', '!autodocs']`,
 showing at least two options side by side at 320 and 1200. One open, unmerged
 review pull request owns the stable preview and its body indexes slug → issue
 URL; closing it breaks the preview. Competing implementations appear as
@@ -44,7 +53,7 @@ The request input follows the schema in
 [design-requests.ts](../../../../packages/ui-cli/src/figma/design-requests.ts):
 the authored question, context, options and recommendation, visual options
 carrying existing capture URLs. It is not a second status record. For a node
-request, first record `pending` and its blocker with `figma registry set`.
+request, first record `pending` and its blocker with `record`.
 
 ```sh
 pnpm ui-cli figma request open --input <request-input> --dry-run --json
@@ -66,8 +75,8 @@ remains pending. Reuse an open request rather than duplicating it.
 Sessions start on the person's request; nothing polls.
 `pnpm ui-cli figma request list --waiting` (`--answered`) shows the queue. Read
 the answer, implement it, update the guide and rule dispositions, and
-review the node's source and render cases. Remove the review story, retaining the
-captures, and update the index. With the implementation committed:
+compare the node's source against its render, per declared device. Remove the
+review story, retaining the captures, and update the index. With the implementation committed:
 
 ```sh
 pnpm ui-cli figma request close <record> --decision "<answer>" --commit <sha> \

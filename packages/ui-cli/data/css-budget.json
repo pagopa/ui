@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "note": "Ceiling of the published stylesheet (dist/styles.css): raw bytes, gzip level 9 and brotli. Growth fails; a drop wider than the slack is recorded with `pnpm ui-cli update css`; raising a ceiling is a reviewed edit of this file with its reason.",
+  "note": "Ceiling of the published stylesheet (dist/styles.css): raw bytes, gzip level 9 and brotli. Growth fails; a drop wider than the slack is recorded with `pnpm ui-cli update css`; raising a ceiling is a reviewed edit of this file with its reason. Lowered when the artifact dropped to a single spelling (spec 158, #164): every utility is declared once, as its `pui:` class, and no longer also as a bare twin, so the sheet is 103353 raw bytes smaller than the doubled emission it replaces. Raised by 40 raw bytes (gzip and brotli both shrank) when the token contract moved into `@layer pagopa-ui.base` behind `:where(.pagopa-ui-root)`: the wrapper and the zero-specificity selector are the bytes, and the layer is what lets a host layer override a `--pui-*` value. Raised by 119 raw bytes (gzip and brotli both shrank) when the components stopped sizing the library glyphs in their own DOM: `:not(.pagopa-icon)` on 36 host selectors absolves a call site's `size` from a component default, and the pseudo-class is the bytes (spec 158, #170).",
   "metrics": {
-    "raw": 200000,
-    "gzip": 30000,
-    "brotli": 20000
+    "raw": 136430,
+    "gzip": 20869,
+    "brotli": 17025
   }
 }

@@ -9,7 +9,7 @@ function Progress({ className, value, ...props }: ProgressPrimitive.Root.Props) 
       value={value}
       data-slot="progress"
       className={cn(
-        "relative flex h-1 w-full items-center overflow-x-hidden rounded-full bg-secondary",
+        "pui:relative pui:flex pui:h-1 pui:w-full pui:items-center pui:overflow-x-hidden pui:rounded-full pui:bg-secondary",
         className,
       )}
       {...props}
@@ -24,7 +24,7 @@ function Progress({ className, value, ...props }: ProgressPrimitive.Root.Props) 
 function ProgressTrack({ className, ...props }: ProgressPrimitive.Track.Props) {
   return (
     <ProgressPrimitive.Track
-      className={cn("h-full w-full", className)}
+      className={cn("pui:h-full pui:w-full", className)}
       data-slot="progress-track"
       {...props}
     />
@@ -35,7 +35,7 @@ function ProgressIndicator({ className, ...props }: ProgressPrimitive.Indicator.
   return (
     <ProgressPrimitive.Indicator
       data-slot="progress-indicator"
-      className={cn("h-full bg-primary transition-all", className)}
+      className={cn("pui:h-full pui:bg-primary pui:transition-all", className)}
       {...props}
     />
   )

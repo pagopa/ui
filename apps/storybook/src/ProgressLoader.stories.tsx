@@ -47,7 +47,7 @@ export const Indeterminate: Story = {
 
 export const Matrix: Story = {
   render: () => (
-    <div className="grid w-[min(28rem,calc(100vw-2rem))] gap-6">
+    <div className="pui:grid pui:w-[min(28rem,calc(100vw-2rem))] pui:gap-6">
       <ProgressLoader value={25} label="Caricamento dati" />
       <ProgressLoader value={68} label="Invio documenti" />
       <ProgressLoader value={100} label="Completato" showValue={false} />

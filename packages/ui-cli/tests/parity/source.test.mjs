@@ -1,3 +1,5 @@
+import fs from "node:fs"
+import os from "node:os"
 import path from "node:path"
 import { workspaceAt } from "../helpers/cli.mjs"
 import assert from "node:assert/strict"
@@ -16,6 +18,7 @@ import {
   variantsOf,
 } from "../../src/parity/source.ts"
 import { TOOLING_ROOT } from "../../src/adapters/workspace.ts"
+import { readSource } from "../../src/parity/read-source.ts"
 
 const workspace = workspaceAt(path.resolve(import.meta.dirname, "../../../pagopa-ui"))
 const FIXTURE = path.join(TOOLING_ROOT, "tests/fixtures/figma-parity/snapshot-slice.json")
@@ -28,6 +31,37 @@ test("the pinned slice loads through the shared live normalizer", () => {
     "749:5867",
   ])
   assert.equal(documentIndex(project).size, 61)
+})
+
+const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])
+
+test("--png writes the artwork it asked for and refuses a payload that is not a PNG", async () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "pagopa-ui-png-"))
+  const kept = path.join(directory, "source.png")
+  const refused = path.join(directory, "refused.png")
+  const images = (payload) => async () => new Map([["749:5865", payload]])
+  try {
+    const art = Buffer.concat([PNG_SIGNATURE, Buffer.from("art")])
+    const written = await readSource(
+      workspace,
+      { nodeId: "749-5865", input: FIXTURE, png: kept },
+      images(art),
+    )
+    assert.equal(written.code, 0, written.err.join("\n"))
+    assert.deepEqual(fs.readFileSync(kept), art)
+
+    await assert.rejects(
+      readSource(
+        workspace,
+        { nodeId: "749-5865", input: FIXTURE, png: refused },
+        images(Buffer.from("<html>not art</html>")),
+      ),
+      /without a PNG payload/,
+    )
+    assert.equal(fs.existsSync(refused), false, "nothing lands in the tree")
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true })
+  }
 })
 
 test("the source spec carries the geometry, layout and type a diff needs", () => {

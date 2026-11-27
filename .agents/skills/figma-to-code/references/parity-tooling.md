@@ -1,21 +1,25 @@
 # Parity tooling
 
-Signatures come from `pnpm ui-cli parity <command> --help`. `align --node <id>`
-supplies the work order and the exact check lines per declared device. `check` and
-`source` read `--input`, else `figma.snapshot`, else the committed evidence slice;
-`check` and `capture` need Storybook (`STORYBOOK_URL=<url>`, default
-`http://localhost:6006`). `--saved` reproduces every
-committed case and checks device coverage; `--devices` is no substitute for saved cases. The source reader is the only reader of the source; `check --screenshot
-<file>` renders to look at; trust `check` over the render module's `--root`
-(which forces `display:block`).
+Signatures come from `pnpm ui-cli parity <command> --help`. Three verbs, no
+fourth: `source` prints a node's pinned spec, `render` probes one story, `check`
+compares the two. Nothing is written — no case, no bundle, no baseline — so the
+verdict belongs to the session that asked for it and a later session must ask
+again. `check` and `source` read `--input`, else `figma.snapshot`; `check` and
+`render` need Storybook (`STORYBOOK_URL=<url>`, default `http://localhost:6006`).
+`--node <id> --device <name>` narrows a run to one declared device, and
+`align` is the same comparison preceded by the preflight a node needs
+([commands](commands.md)). The source
+reader is the only reader of the source; `check --screenshot <file>` renders to
+look at; trust `check` over the render module's `--root` (which forces
+`display:block`).
 
 ## Exit codes
 
 `0` pass (declared residues may remain) · `1` violation · `2` cannot run (usage,
-missing input or evidence, stale slice, refused capture) · `3` reconciliation
-required. Missing evidence is never a pass, and an aggregate code certifies no
-row. The default profile is the reviewed one: mapped deltas and residues decide,
-composition evidence is an `advisory`; `--strict` promotes advisories.
+missing input, refused capture) · `3` reconciliation required. A refused capture
+is never a pass, and an aggregate code certifies no row. The default profile is
+the reviewed one: mapped deltas and residues decide, composition evidence is an
+`advisory`; `--strict` promotes advisories.
 
 ## Reading the result
 
@@ -27,6 +31,10 @@ verified|NOT confirmed`; `residues` are declared deltas with a reason; `capture`
 reports devicePixelRatio, the ruler, forced root width, kept focus and offset
 origin. Text compares only with `--compare-text`: the fixture owns its copy.
 
+Read `deltas` as a question, not a verdict — a difference can be the
+implementation being wrong or the source having moved. Report the numbers you
+saw to whoever reviews the change: they exist only in your session.
+
 ## Capturing a state
 
 Hardened before any number: motion off, caret and scrollbars hidden, fonts
@@ -37,24 +45,20 @@ minimum is 320. `--expect-state <state>` exits 2 when the story does not show it
 the generic predicates are `enabled`, `disabled`, `focused`, `filled`, `empty`,
 `open`, `error`, else `--state-evidence <selector>`. No Figma-label → prop map
 exists: the state is checked, never inferred. Always pass `--state`: it names the
-case.
+state being compared.
 
 For pointer hover, set `--expect-state hover` and make `--state-evidence` end in
 `:hover`, for example `--state-evidence '#storybook-root .switch-control:hover'`.
 The Storybook adapter removes the suffix to hover the target; the DOM probe uses
 the full selector as state evidence.
 
-## The case corpus
+## Devices
 
-`catalog.parityCases` records variants, states, devices, dimensions, scope,
-selectors and residues. `--save-case` owns the formatted write;
-reproduce IDs with `--case`. `pnpm nx run pagopa-ui-cli:check:parity` validates
-corpus, coverage and evidence hermetically, `check:evidence` the bundle alone;
-neither substitutes for capturing a story. Refresh with `pnpm ui-cli update
-evidence --input <snapshot>`. `cases --sync` proposes one draft per missing device
-and per unpointed variant from a sibling; a draft never counts as coverage until
-`--save-case --note "reviewed: …"` replaces it; a node with no reviewed case
-starts with one manual `check --node`, and a `--node` case takes `--note`.
+A node whose set declares a device axis is compared once per declared device:
+`--device <name>` resolves through the device vocabulary and sets the width and
+the viewport together, so the same story is measured at the declared width
+rather than at a width you chose. Without `--device` the run measures the
+story's own frame and reports the responsive bands.
 
 ## Case mapping
 
@@ -70,7 +74,10 @@ offset only; `--compare-box height` adds its height, `full` its width.
 
 ## What does not exist
 
-No PNG pixel diff or percentage budget — the gate is 2px per property plus
-structural deltas; no workbench, packets or approval files; no `refs` or pixel
-baselines, so re-run `check` after a change. Tools write under `src/` only for
-`--save-case`. Device requirements are in `references/devices/vocabulary.md`.
+No case file, no evidence slice, no manifest, no pinned image, no cap, no
+`--save-case`, no `--saved`, no `--case`, no queue and no proposal flow: a
+comparison leaves the tree as it found it, and `check` cannot be silenced by
+writing a file. No PNG pixel diff or percentage budget either — the comparison
+is 2px per property plus structural deltas, so a render-to-render regression is
+the visual suite's question, not this one. Device requirements are in
+`references/devices/vocabulary.md`.

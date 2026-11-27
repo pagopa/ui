@@ -2,9 +2,10 @@ import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
-import { TableListItem, type TableListItemField } from "@/components/data-display"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { Chip } from "@/components/inputs"
+import { TableListItem, type TableListItemField } from "@/components/data-display/table-list-item"
+import { Icon } from "@/components/icons/icon"
+import { Default as MailIcon } from "@/components/icons/generated/mail"
+import { Chip } from "@/components/inputs/chips"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import tablesGuide from "./guides/tables.md?raw"
@@ -16,7 +17,7 @@ const campaignFields: TableListItemField[] = [
     label: "Comunicazioni",
     value: "000000000",
     mono: true,
-    icon: <PagoPAIcon name="mail" />,
+    icon: <Icon source={MailIcon} />,
   },
   { label: "Stato", value: <Chip size="compact">Default</Chip> },
 ]
@@ -46,7 +47,7 @@ type Story = StoryObj<typeof meta>
 
 export const Playground: Story = {
   render: (args) => (
-    <ul className="w-[min(53.25rem,calc(100vw-2rem))]">
+    <ul className="pui:w-[min(53.25rem,calc(100vw-2rem))]">
       <TableListItem {...args} action={{ label: "Apri", href: "/campagne/000000000" }} />
     </ul>
   ),
@@ -54,7 +55,7 @@ export const Playground: Story = {
 
 export const WrappingTitle: Story = {
   render: (args) => (
-    <ul className="flex w-[min(53.25rem,calc(100vw-2rem))] flex-col gap-4">
+    <ul className="pui:flex pui:w-[min(53.25rem,calc(100vw-2rem))] pui:flex-col pui:gap-4">
       <TableListItem
         {...args}
         fields={[
@@ -82,7 +83,7 @@ export const WrappingTitle: Story = {
 function OpenableRow() {
   const [opened, setOpened] = React.useState("")
   return (
-    <div className="w-[min(53.25rem,calc(100vw-2rem))]">
+    <div className="pui:w-[min(53.25rem,calc(100vw-2rem))]">
       <ul>
         <TableListItem
           fields={campaignFields}
@@ -105,7 +106,7 @@ export const OpenAction: Story = {
 
 export const StaticRow: Story = {
   render: (args) => (
-    <ul className="w-[min(53.25rem,calc(100vw-2rem))]">
+    <ul className="pui:w-[min(53.25rem,calc(100vw-2rem))]">
       <TableListItem {...args} />
     </ul>
   ),

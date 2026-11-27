@@ -6,19 +6,28 @@ import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 import { fileURLToPath } from "node:url"
 import manifest from "./package.json" with { type: "json" }
+import { prefixedCandidates } from "./build/prefixed-candidates.ts"
+import { resolvedPrimitives } from "./build/resolved-primitives.ts"
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const externalPackages = Object.keys({ ...manifest.dependencies, ...manifest.peerDependencies })
 
 // The library build and the unit project. The stories and their browser
 // projects live in apps/storybook, which documents this package.
-export default defineConfig(() => ({
+export default defineConfig(({ command }) => ({
   base: "./",
+  root: command === "build" ? path.resolve(dirname, ".generated") : dirname,
   envDir: false,
   optimizeDeps: { include: ["@base-ui/react/combobox"] },
   plugins: [
+    prefixedCandidates({
+      base: dirname,
+      entry: path.resolve(dirname, "src/scan.css"),
+      mirror: path.resolve(dirname, ".generated/prefixed-candidates.txt"),
+    }),
     react(),
     tailwindcss(),
+    resolvedPrimitives(),
     {
       name: "bundled-font-licenses",
       apply: "build",
@@ -29,6 +38,8 @@ export default defineConfig(() => ({
           // The public token block on its own, for a consumer that renders
           // beside the library without loading the component stylesheet.
           ["tokens.css", "../tokens/src/tokens.generated.css"],
+          // The same contract in DTCG format, for the tools that read it.
+          ["tokens.dtcg.json", "../tokens/src/tokens.dtcg.generated.json"],
         ] as const) {
           this.emitFile({
             type: "asset",
@@ -45,11 +56,14 @@ export default defineConfig(() => ({
     },
   },
   build: {
+    outDir: path.resolve(dirname, "dist"),
+    emptyOutDir: true,
     assetsDir: "",
     // The build entry adds CSS; declarations come from the CSS-free public entry.
     lib: {
       entry: {
         "library-entry": path.resolve(dirname, "src/library-entry.ts"),
+        icons: path.resolve(dirname, "src/icons.ts"),
         tokens: path.resolve(dirname, "src/tokens.ts"),
       },
       formats: ["es"],
@@ -74,7 +88,7 @@ export default defineConfig(() => ({
         extends: true,
         test: {
           name: "unit",
-          include: ["src/**/*.unit.test.ts"],
+          include: ["src/**/*.unit.test.ts", "src/**/*.unit.test.tsx", "build/**/*.unit.test.ts"],
           environment: "node",
         },
       },

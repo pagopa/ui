@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, fn, screen, userEvent, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { Autocomplete } from "@/components/inputs"
+import { Autocomplete } from "@/components/inputs/autocomplete"
 
 import fieldsGuide from "./guides/fields.md?raw"
 
@@ -42,7 +42,7 @@ type Story = StoryObj<typeof meta>
 // Source frame: 272x48 (`824:8839`). The story carries the source width.
 export const Playground: Story = {
   render: (args) => (
-    <div className="w-68 max-w-full">
+    <div className="pui:w-68 pui:max-w-full">
       <Autocomplete {...args} />
     </div>
   ),
@@ -63,7 +63,7 @@ export const Playground: Story = {
 export const Fidelity: Story = {
   args: { multiple: true, label: "Erogatori", required: true, description: undefined },
   render: ({ label, options, description, required }) => (
-    <div className="grid w-68 max-w-full gap-6">
+    <div className="pui:grid pui:w-68 pui:max-w-full pui:gap-6">
       <div data-fidelity-variant="824-8872">
         <Autocomplete
           multiple
@@ -112,7 +112,7 @@ export const Fidelity: Story = {
 export const ClearControl: Story = {
   args: { defaultValue: "milano" },
   render: (args) => (
-    <div className="w-68 max-w-full">
+    <div className="pui:w-68 pui:max-w-full">
       <Autocomplete {...args} />
     </div>
   ),
@@ -141,7 +141,7 @@ export const OverridableTexts: Story = {
     selectedLabel: (values) => `Comune scelto: ${values.join(" / ")}`,
   },
   render: (args) => (
-    <div className="w-68 max-w-full">
+    <div className="pui:w-68 pui:max-w-full">
       <Autocomplete {...args} />
     </div>
   ),
@@ -169,7 +169,7 @@ export const OverridableTexts: Story = {
 export const Loading: Story = {
   args: { options: [], loading: true },
   render: (args) => (
-    <div className="w-68 max-w-full">
+    <div className="pui:w-68 pui:max-w-full">
       <Autocomplete {...args} />
     </div>
   ),
@@ -197,7 +197,7 @@ export const AutocompleteDisabledOptions: Story = {
         { value: "milano", label: "Milano", disabled: true },
       ]}
       onValueChange={selectUnavailableCity}
-      className="max-w-md"
+      className="pui:max-w-md"
     />
   ),
   play: async ({ canvasElement }) => {
@@ -221,7 +221,7 @@ const collapseCities = fn()
 export const Multiselect: Story = {
   args: { multiple: true, onValueChange: pickCities, label: "Erogatori" },
   render: (args) => (
-    <div className="w-68 max-w-full">
+    <div className="pui:w-68 pui:max-w-full">
       <Autocomplete {...args} />
     </div>
   ),
@@ -269,7 +269,7 @@ export const MultiselectCounter: Story = {
     label: "Erogatori",
   },
   render: (args) => (
-    <div className="w-68 max-w-full">
+    <div className="pui:w-68 pui:max-w-full">
       <Autocomplete {...args} />
     </div>
   ),
@@ -313,7 +313,7 @@ export const MultiselectClearAll: Story = {
     label: "Erogatori",
   },
   render: (args) => (
-    <div className="w-68 max-w-full">
+    <div className="pui:w-68 pui:max-w-full">
       <Autocomplete {...args} />
     </div>
   ),
@@ -332,7 +332,7 @@ export const MultiselectClearAll: Story = {
 export const MultiselectBackspace: Story = {
   args: { multiple: true, defaultValue: ["roma"], label: "Erogatori" },
   render: (args) => (
-    <div className="w-68 max-w-full">
+    <div className="pui:w-68 pui:max-w-full">
       <Autocomplete {...args} />
     </div>
   ),
@@ -358,7 +358,7 @@ export const MultiselectSelectAll: Story = {
     selectAllLabel: "Seleziona tutti",
   },
   render: (args) => (
-    <div className="w-68 max-w-full">
+    <div className="pui:w-68 pui:max-w-full">
       <Autocomplete {...args} />
     </div>
   ),
@@ -384,7 +384,7 @@ export const MultiselectRemoveValue: Story = {
     onValueChange: removeCity,
   },
   render: (args) => (
-    <div className="w-68 max-w-full">
+    <div className="pui:w-68 pui:max-w-full">
       <Autocomplete {...args} />
     </div>
   ),
@@ -414,7 +414,7 @@ export const MultiselectOverridableTexts: Story = {
     selectAllLabel: "Scegli tutti",
   },
   render: (args) => (
-    <div className="w-68 max-w-full">
+    <div className="pui:w-68 pui:max-w-full">
       <Autocomplete {...args} />
     </div>
   ),

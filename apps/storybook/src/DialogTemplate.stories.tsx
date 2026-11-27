@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { CheckboxField } from "@/components/inputs"
+import { CheckboxField } from "@/components/inputs/checkbox-field"
 import { Button } from "@/components/primitives/button"
 import { SourceFrame } from "./support/source-frame"
 import { DialogTemplate } from "./templates/DialogTemplate"
@@ -22,7 +22,7 @@ function SecondaryAction() {
   return (
     <button
       type="button"
-      className="relative inline-flex min-h-0 items-center justify-center text-center text-base leading-[1.375] font-semibold text-primary whitespace-normal [overflow-wrap:anywhere] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring after:absolute after:inset-x-0 after:-inset-y-3"
+      className="pui:relative pui:inline-flex pui:min-h-0 pui:items-center pui:justify-center pui:text-center pui:text-base pui:leading-[1.375] pui:font-semibold pui:text-primary pui:whitespace-normal pui:[overflow-wrap:anywhere] pui:underline-offset-4 pui:hover:underline pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-3"
     >
       Secondary
     </button>

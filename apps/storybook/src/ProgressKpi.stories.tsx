@@ -2,8 +2,10 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { ProgressKpi } from "@/components/data-display"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { ProgressKpi } from "@/components/data-display/progress-kpi"
+import { Icon } from "@/components/icons/icon"
+import { Default as InfoIcon } from "@/components/icons/generated/info"
+import { Default as Send2Icon } from "@/components/icons/generated/send2"
 
 import progressKpiGuide from "./guides/progress-kpi.md?raw"
 
@@ -14,8 +16,8 @@ const meta = {
     label: "Obiettivo mensile",
     value: 72,
     detail: "72 operazioni su 100",
-    channel: <PagoPAIcon name="send" />,
-    info: <PagoPAIcon name="info" />,
+    channel: <Icon source={Send2Icon} />,
+    info: <Icon source={InfoIcon} />,
   },
   argTypes: {
     value: { control: { type: "number", min: 0 } },
@@ -64,14 +66,14 @@ export const ZeroTotal: Story = {
 
 export const States: Story = {
   render: () => (
-    <div className="grid w-[min(36rem,calc(100vw-2rem))] gap-4 tablet:grid-cols-2">
-      <ProgressKpi label="Inviate" value={51} total={69} channel={<PagoPAIcon name="send" />} />
+    <div className="pui:grid pui:w-[min(36rem,calc(100vw-2rem))] pui:gap-4 pui:tablet:grid-cols-2">
+      <ProgressKpi label="Inviate" value={51} total={69} channel={<Icon source={Send2Icon} />} />
       <ProgressKpi label="Consegnate" value={69} total={69} completed />
       <ProgressKpi
         label="Servizi attivi"
         value={51}
         total={69}
-        channel={<PagoPAIcon name="send" />}
+        channel={<Icon source={Send2Icon} />}
         details={[
           { label: "Email", value: 6, total: 11 },
           { label: "PEC", value: 3, total: 11 },
@@ -85,7 +87,7 @@ export const States: Story = {
 // instead of a grid track growing to the fixed width at 200% text.
 function SourceCard({ variant, children }: { variant: string; children: React.ReactNode }) {
   return (
-    <div data-fidelity-variant={variant} className="w-50.5 max-w-full">
+    <div data-fidelity-variant={variant} className="pui:w-50.5 pui:max-w-full">
       {children}
     </div>
   )
@@ -103,8 +105,8 @@ export const FidelityDefault: Story = {
         label="Inviate "
         value={51}
         total={100}
-        channel={<PagoPAIcon name="send" />}
-        info={<PagoPAIcon name="info" />}
+        channel={<Icon source={Send2Icon} />}
+        info={<Icon source={InfoIcon} />}
       />
     </SourceCard>
   ),
@@ -173,8 +175,8 @@ export const FidelityMulti: Story = {
         label="Inviate "
         value={51}
         total={100}
-        channel={<PagoPAIcon name="send" />}
-        info={<PagoPAIcon name="info" />}
+        channel={<Icon source={Send2Icon} />}
+        info={<Icon source={InfoIcon} />}
         details={[{ label: "Label", value: 6, total: 11 }]}
       />
     </SourceCard>

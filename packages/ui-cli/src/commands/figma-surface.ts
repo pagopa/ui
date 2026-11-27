@@ -12,10 +12,9 @@ import {
 } from "../figma/surface-sync.ts"
 import { UsageError } from "../lib/command.ts"
 import type { PageSurface } from "../schemas/catalogue.ts"
+import { stringArg } from "./args.ts"
 import { action, EXIT, printJson, printLines, type CliContext } from "./context.ts"
 import { requireToken, requireTokenArg } from "./token.ts"
-
-const stringArg = { type: "string" } as const
 
 function emitEmptySelection(
   ctx: CliContext,

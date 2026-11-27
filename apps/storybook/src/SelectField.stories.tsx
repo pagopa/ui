@@ -2,8 +2,12 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, screen, userEvent, waitFor, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { Autocomplete, DatePickerField, MultiSelectField, SelectField } from "@/components/inputs"
+import { Icon } from "@/components/icons/icon"
+import { Default as AccountBalanceIcon } from "@/components/icons/generated/account-balance"
+import { Autocomplete } from "@/components/inputs/autocomplete"
+import { DatePickerField } from "@/components/inputs/text-fields"
+import { MultiSelectField } from "@/components/inputs/multi-select-field"
+import { SelectField } from "@/components/inputs/select-field"
 
 const municipalities = [
   { value: "roma", label: "Roma" },
@@ -56,7 +60,7 @@ type Story = StoryObj<typeof meta>
 // Source frame: 274x48 (`602:9418`). The story carries the source width.
 export const Playground: Story = {
   render: (args) => (
-    <div className="w-68 max-w-full">
+    <div className="pui:w-68 pui:max-w-full">
       <SelectField {...args} />
     </div>
   ),
@@ -74,10 +78,10 @@ export const WithValidation: Story = {
 }
 
 export const SelectionControls: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <div className="grid max-w-xl gap-6">
+    <div className="pui:grid pui:max-w-xl pui:gap-6">
       <Autocomplete label="Comune di residenza" options={municipalities} />
       <SelectField label="Tipologia" options={serviceOptions} />
       <MultiSelectField label="Categorie" options={serviceOptions} defaultValue={["mobilita"]} />
@@ -149,11 +153,11 @@ export const SelectionControls: Story = {
 // decorative leading icon (`account_balance`, 24px) and its chevron.
 export const SourceFrame: Story = {
   render: () => (
-    <div className="grid w-68 max-w-full gap-6">
+    <div className="pui:grid pui:w-68 pui:max-w-full pui:gap-6">
       <SelectField
         id="source-select"
         label="Label text"
-        leadingIcon={<PagoPAIcon name="account_balance" />}
+        leadingIcon={<Icon source={AccountBalanceIcon} />}
         options={[{ value: "value", label: "Value" }]}
         required
       />
@@ -176,7 +180,7 @@ export const SourceFrame: Story = {
 // the state it needs from this fixture instead of one story per variant.
 export const SourceStates: Story = {
   render: () => (
-    <div className="grid w-68 max-w-full gap-6">
+    <div className="pui:grid pui:w-68 pui:max-w-full pui:gap-6">
       <SelectField
         id="source-states-empty"
         label="Label text"

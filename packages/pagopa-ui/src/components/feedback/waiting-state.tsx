@@ -7,21 +7,21 @@ function WaitingState({ className, ...props }: StateProps) {
   return (
     <StatePanel
       {...props}
-      actionsClassName="mx-auto w-full max-w-(--state-width) flex-col flex-nowrap items-center gap-6"
-      className={cn("w-full max-w-none", className)}
-      contentClassName="w-full max-w-none tablet-md:max-w-(--state-width)"
+      actionsClassName="pui:mx-auto pui:w-full pui:max-w-(--pui-state-width) pui:flex-col pui:flex-nowrap pui:items-center pui:gap-6"
+      className={cn("pui:w-full pui:max-w-none", className)}
+      contentClassName="pui:w-full pui:max-w-none pui:tablet-md:max-w-(--pui-state-width)"
       icon={
         <div aria-hidden="true">
           <PagoPAPictogram
             background="light"
-            className="grid size-14 place-items-center"
+            className="pui:grid pui:size-14 pui:place-items-center"
             name="AlarmClock"
             size={56}
           />
         </div>
       }
-      messageClassName="w-full items-stretch gap-2"
-      titleClassName="mx-auto max-w-none tablet-md:max-w-xs"
+      messageClassName="pui:w-full pui:items-stretch pui:gap-2"
+      titleClassName="pui:mx-auto pui:max-w-none pui:tablet-md:max-w-xs"
     />
   )
 }

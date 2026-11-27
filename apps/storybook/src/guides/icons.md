@@ -6,10 +6,10 @@
 
 <!-- component-rules:end -->
 
-`PagoPAIcon` renders the pinned Figma artwork by name, with no icon font or
-raw-name fallback. Brand images preserve their owners' colours; monochrome masks
-inherit the surrounding semantic `currentColor` and the user's forced-colour
-foreground.
+`PagoPAIcon` renders the pinned Figma artwork inline, as an `svg` painted by its
+geometry, with no icon font and no image request. Brand artwork preserves its
+owners' colours; monochrome glyphs inherit the surrounding semantic
+`currentColor` and the user's forced-colour foreground.
 
 ```tsx
 <PagoPAIcon name="info" decorative={false} label="Informazioni" filled />
@@ -27,25 +27,50 @@ actual artwork. The white default artwork needs a dark, contrasting surface;
 `variant="dark"` selects alternate artwork, not a dark theme. Prefer
 `variant="filled"` or `variant="outlined"`: the `filled` boolean is deprecated.
 
-`PagoPAIcon` renders a `span` mask (or an `img` for brand artwork), not an inline
-`svg`, so `[&_svg]:size-*` selectors never match it: size it with the numeric
-`size` prop. Use `decorative` (the default) or `label` instead of `aria-hidden`.
+Every published identity is also one component per pinned variant on its own
+entry, so an import from that entry carries no other icon artwork. `@pagopa/ui/icons`
+itself exports the generated glyph components and nothing that resolves a runtime
+name; the resolvers (`PagoPAIcon`, `PagoPAPictogram`) and the name unions
+(`iconNames`, `pictogramNames`, `FigmaIconName`, `FigmaPictogramName`) are served
+by `@pagopa/ui`:
+
+```tsx
+import Info from "@pagopa/ui/icons/info" // the `outlined` source variant
+import { Filled as InfoFilled } from "@pagopa/ui/icons/info" // the same identity, filled
+import { variants as infoVariants } from "@pagopa/ui/icons/info" // keyed by source node id
+```
+
+`PagoPAIcon` renders an `svg`, so `[&_svg]:size-*` selectors match it; the numeric
+`size` prop sets both dimensions. Use `decorative` (the default) or `label`
+instead of `aria-hidden`. A name outside the published catalogue renders nothing,
+so a runtime string cannot fail the surface that hosts it; an unsupported
+`variant` of a published name still throws. Both the missing-name and the
+missing-label diagnostics speak in development only: the library build folds
+their guard away, so the published package renders nothing for an unknown name
+without a warning.
 
 ## Adding and replacing icons
 
 Only source glyphs join the catalogue. A missing icon is requested from design,
 because the Figma library is read-only from this repository, and it follows the same
-Material Symbols settings as the rest of the catalogue. Until the source exists, a
-gap is covered with a `lucide-react` glyph inside a primitive, or inside a private
-component with a reasoned API exception; never invent a source mapping.
+Material Symbols settings as the rest of the catalogue; never invent a source
+mapping. No module of the library imports an icon from a third-party package:
+a shipped component imports the generated glyph module it renders — or the
+pinned variant component, when it has to hand the geometry to another primitive
+— so its bundle carries those glyphs and nothing else. `PagoPAIcon` is the
+resolver for a surface that enumerates the catalogue by name, such as the
+Storybook gallery; a shipped component never reaches for it.
 
-The current gaps are `Building2`, `Camera`, `Cookie`, `FileText` and `TrendingUp`
-(no source artwork) and the neutral sort `ArrowUpDown`, `ChevronsUpDown` and
-`XCircle` (no resolved source equivalent). Field success uses `CheckCircle2` while
-the source glyph is `check_circle`. Source glyphs are already used where they exist:
-the field error `report`, the `HeaderAlert` and `Alert` tones, and the `Button`
-loading spinner. `DropdownItem.icon` exposes the lucide `LucideIcon` type in the
-public declarations, so replacing it is a breaking change.
+Four identities have no pinned counterpart and use the closest source glyph instead:
+`Camera` is `photo` (the `CameraView` placeholder), `Building2` is
+`account_balance` (the organization module and the account tabs), `FileText` is
+`receipt_long` (the document tab) and the neutral sort `ArrowUpDown` is `unfold`.
+Every other affordance the library renders is the source glyph itself: `chevron`
+for the directional state, `close`, `check`, `check_circle` for field success,
+`report` for field error, `warning` and `info` for the `HeaderAlert` and `Alert`
+tones, the `Button` loading spinner, and `check_indeterminate_small` for the
+`OTPField` separator. `DropdownItem.icon` takes the pipeline's `IconComponent`, so a
+row leads with any pinned variant component.
 
 ## Provenance and licence
 

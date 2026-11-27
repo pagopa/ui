@@ -87,6 +87,8 @@ const snapshotData = {
   },
 }
 
+const contractOf = (css) => css.slice(0, css.indexOf("/* Internal Figma primitives"))
+
 function fixture(run, overrides = {}) {
   const tree = fixtureTree({}, "pagopa-tokens-")
   const root = tree.root
@@ -94,11 +96,11 @@ function fixture(run, overrides = {}) {
     "src/catalog/figma/file.ts": 'export const FIGMA_FILE_KEY = "fixture"\n',
     "src/index.css": [
       '@import "pagopa-ui-tokens/figma.generated.css";',
-      ":root {",
-      "  --primary: var(--figma-color-blue-500);",
-      "  --border: var(--figma-color-neutrals-grey-100);",
-      "  --shadow-16: var(--figma-shadow-16);",
-      "  --spacing-3: var(--figma-spacing-12);",
+      ".pagopa-ui-root {",
+      "  --pui-primary: var(--figma-color-blue-500);",
+      "  --pui-border: var(--figma-color-neutrals-grey-100);",
+      "  --pui-shadow: var(--figma-shadow-16);",
+      "  --pui-gutter: var(--figma-spacing-12);",
       "}",
       "",
     ].join("\n"),
@@ -164,11 +166,12 @@ test("write keys the manifest by the published id and emits the foundation theme
     assert.match(css, /--radius-8: var\(--figma-radius-8\);/)
     assert.match(read("src/figma-text-classes.generated.ts"), /figmaTextClasses/)
     const rootCss = read("src/tokens.generated.css")
-    assert.ok(
-      css.startsWith(rootCss),
-      "the standalone tokens stylesheet is the :root block of the full stylesheet",
-    )
     assert.doesNotMatch(rootCss, /@theme/, "the Tailwind theme stays out of the public tokens")
+    assert.doesNotMatch(
+      rootCss.slice(0, rootCss.indexOf("/* Internal Figma primitives")),
+      /--figma-/,
+      "the public contract names no Figma token",
+    )
     const inventory = read("src/figma-tokens.generated.ts")
     assert.match(inventory, /id: "key-blue-500"/)
     assert.match(inventory, /category: "spacing"/)
@@ -213,6 +216,137 @@ test("a rename keeps the id, the css name and the alias", () => {
     assert.match(css, /--figma-color-blue-500: #0b3ee3;/)
     assert.match(css, /--text-hero: 2rem;/)
     assert.equal(tokens("--check").status, 0)
+  })
+})
+
+test("the public semantic contract is emitted on :root, typed and as DTCG", () => {
+  fixture(({ tokens, read }) => {
+    const write = tokens("--write", "--input", "snapshot.json")
+    assert.equal(write.status, 0, write.stderr)
+    const rootCss = read("src/tokens.generated.css")
+    assert.match(rootCss, /^:root \{\n {2}--pui-primary: #0b3ee3;$/m)
+    assert.match(rootCss, /^ {2}--pui-border: #e8ebf1;$/m)
+    assert.match(rootCss, /^ {2}--pui-shadow: 0px 4px 16px 0px #0e0f131a;$/m)
+    const contract = rootCss.slice(0, rootCss.indexOf("/* Internal Figma primitives"))
+    assert.doesNotMatch(contract, /--figma-/, "the contract resolves the primitive layer")
+    const inventory = read("src/pui-tokens.generated.ts")
+    assert.match(inventory, /cssName: "--pui-primary"/)
+    assert.match(inventory, /type: "color"/)
+    const dtcg = JSON.parse(read("src/tokens.dtcg.generated.json"))
+    // The projection carries the value the CSS publishes, never an alias into
+    // the build-time primitive layer (ADR-0013 RD1, RD2).
+    assert.deepEqual(dtcg.pui.primary, { $type: "color", $value: "#0b3ee3" })
+    assert.deepEqual(dtcg.pui.border, { $type: "color", $value: "#e8ebf1" })
+    assert.deepEqual(dtcg.pui.gutter, { $type: "dimension", $value: "12px" })
+    assert.equal(dtcg.primitives, undefined, "the build-time layer is not published")
+    for (const value of Object.values(dtcg.pui)) assert.doesNotMatch(value.$value, /^\{/)
+    assert.equal(tokens("--check").status, 0)
+  })
+})
+
+test("the semantic contract is read from the layered, :where()-wrapped root", () => {
+  fixture(({ tokens, read, write }) => {
+    assert.equal(tokens("--write", "--input", "snapshot.json").status, 0)
+    const contract = contractOf(read("src/tokens.generated.css"))
+    write(
+      "src/index.css",
+      [
+        '@import "pagopa-ui-tokens/figma.generated.css";',
+        "@layer pagopa-ui.base {",
+        "  :where(.pagopa-ui-root) {",
+        "    --pui-primary: var(--figma-color-blue-500);",
+        "    --pui-border: var(--figma-color-neutrals-grey-100);",
+        "    --pui-shadow: var(--figma-shadow-16);",
+        "    --pui-gutter: var(--figma-spacing-12);",
+        "  }",
+        "}",
+        "",
+      ].join("\n"),
+    )
+    const check = tokens("--check")
+    assert.equal(check.status, 0, check.stderr)
+    assert.equal(contractOf(read("src/tokens.generated.css")), contract)
+  })
+})
+
+test("a Figma rename changes no public semantic name or value", () => {
+  fixture(({ tokens, read, write }) => {
+    assert.equal(tokens("--write", "--input", "snapshot.json").status, 0)
+    const before = {
+      css: read("src/tokens.generated.css"),
+      inventory: read("src/pui-tokens.generated.ts"),
+      dtcg: read("src/tokens.dtcg.generated.json"),
+    }
+    const renamed = { ...snapshotData.variables, "Color/Blue/Blue 500 · vivid": "#0b3ee3" }
+    delete renamed["Color/Blue/Blue 500"]
+    write(
+      "snapshot.json",
+      JSON.stringify({
+        ...snapshotData,
+        variables: renamed,
+        ids: { "Color/Blue/Blue 500 · vivid": blueId, "Headings/Hero": heroId },
+      }),
+    )
+    const second = tokens("--write", "--input", "snapshot.json")
+    assert.equal(second.status, 0, second.stderr)
+    assert.equal(contractOf(read("src/tokens.generated.css")), contractOf(before.css))
+    assert.equal(read("src/pui-tokens.generated.ts"), before.inventory)
+    assert.equal(read("src/tokens.dtcg.generated.json"), before.dtcg)
+    assert.equal(tokens("--check").status, 0)
+  })
+})
+
+test("a declaration outside the public namespace fails the refresh", () => {
+  fixture(({ tokens, read, write }) => {
+    assert.equal(tokens("--write", "--input", "snapshot.json").status, 0)
+    write(
+      "src/index.css",
+      read("src/index.css").replace(
+        "  --pui-primary:",
+        "  --mystery: var(--figma-color-blue-500);\n  --pui-primary:",
+      ),
+    )
+    const result = tokens("--check")
+    assert.notEqual(result.status, 0)
+    assert.match(result.stderr, /--mystery/)
+    assert.match(result.stderr, /--pui-\* only/)
+  })
+})
+
+test("a color-mix is published as the colour it computes", () => {
+  fixture(({ tokens, read, write }) => {
+    write(
+      "src/index.css",
+      read("src/index.css").replace(
+        "  --pui-primary:",
+        "  --pui-accent: color-mix(in srgb, var(--figma-color-blue-500) 8%, #ffffff);\n  --pui-primary:",
+      ),
+    )
+    const write2 = tokens("--write", "--input", "snapshot.json")
+    assert.equal(write2.status, 0, write2.stderr)
+    // 8% of #0b3ee3 over white, composited in gamma-encoded sRGB.
+    assert.match(read("src/tokens.generated.css"), /^ {2}--pui-accent: #ebf0fd;$/m)
+    const dtcg = JSON.parse(read("src/tokens.dtcg.generated.json"))
+    assert.deepEqual(dtcg.pui.accent, { $type: "color", $value: "#ebf0fd" })
+    assert.equal(tokens("--check").status, 0)
+  })
+})
+
+test("a mix of an operand the generator cannot resolve fails the refresh", () => {
+  fixture(({ tokens, read, write }) => {
+    write(
+      "src/index.css",
+      read("src/index.css").replace(
+        "  --pui-primary:",
+        "  --pui-accent: color-mix(in srgb, white 8%, #ffffff);\n  --pui-primary:",
+      ),
+    )
+    const result = tokens("--write", "--input", "snapshot.json")
+    assert.notEqual(result.status, 0)
+    assert.match(
+      result.stderr,
+      /--pui-accent: only an opaque hex colour composites in srgb, not "white 8%"/,
+    )
   })
 })
 
@@ -278,12 +412,15 @@ test("check fails when the generated css is tampered with", () => {
 })
 
 test("check fails when a semantic reference has no generated variable", () => {
-  fixture(({ tokens, write }) => {
+  fixture(({ tokens, read, write }) => {
+    assert.equal(tokens("--write", "--input", "snapshot.json").status, 0)
     write(
       "src/index.css",
-      '@import "pagopa-ui-tokens/figma.generated.css";\n:root { --broken: var(--figma-color-missing-100); }\n',
+      read("src/index.css").replace(
+        "  --pui-primary:",
+        "  --pui-broken: var(--figma-color-missing-100);\n  --pui-primary:",
+      ),
     )
-    assert.equal(tokens("--write", "--input", "snapshot.json").status, 0)
     const check = tokens("--check")
     assert.notEqual(check.status, 0)
     assert.match(check.stderr, /--figma-color-missing-100/)
@@ -294,7 +431,7 @@ test("check fails when a foundation reference has no generated variable", () => 
   fixture(({ tokens, write }) => {
     write(
       "src/index.css",
-      '@import "pagopa-ui-tokens/figma.generated.css";\n:root { --shadow-16: var(--figma-shadow-missing); }\n',
+      '@import "pagopa-ui-tokens/figma.generated.css";\n.pagopa-ui-root { --pui-primary: var(--figma-color-blue-500); }\n:root { --shadow-16: var(--figma-shadow-missing); }\n',
     )
     assert.equal(tokens("--write", "--input", "snapshot.json").status, 0)
     const check = tokens("--check")
@@ -304,8 +441,8 @@ test("check fails when a foundation reference has no generated variable", () => 
 })
 
 test("check fails when the stylesheet does not import the generated layer", () => {
-  fixture(({ tokens, write }) => {
-    write("src/index.css", ":root { --primary: var(--figma-color-blue-500); }\n")
+  fixture(({ tokens, read, write }) => {
+    write("src/index.css", read("src/index.css").replace(/^@import .*\n/, ""))
     assert.equal(tokens("--write", "--input", "snapshot.json").status, 0)
     const check = tokens("--check")
     assert.notEqual(check.status, 0)

@@ -33,8 +33,10 @@ export const Playground: Story = {
   // The veil announces the wait through its own status region.
   tags: ["live-region"],
   render: (args) => (
-    <div className="relative min-h-64 w-[min(32rem,calc(100vw-2rem))] rounded-xl border bg-muted">
-      <div className="p-6 text-muted-foreground">Contenuto che resta visibile sotto il velo.</div>
+    <div className="pui:relative pui:min-h-64 pui:w-[min(32rem,calc(100vw-2rem))] pui:rounded-xl pui:border pui:bg-muted">
+      <div className="pui:p-6 pui:text-muted-foreground">
+        Contenuto che resta visibile sotto il velo.
+      </div>
       <Overlay {...args} />
     </div>
   ),
@@ -48,7 +50,7 @@ export const Fidelity: Story = {
   args: { visible: true, showSpinner: false },
   parameters: { layout: "fullscreen" },
   render: (args) => (
-    <div id="overlay-fidelity" className="relative h-[568px] w-[320px] bg-white">
+    <div id="overlay-fidelity" className="pui:relative pui:h-[568px] pui:w-[320px] pui:bg-white">
       <Overlay {...args} />
     </div>
   ),

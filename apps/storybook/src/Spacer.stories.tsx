@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { Spacer, type SpacerSize } from "@/components/content"
+import { Spacer, type SpacerSize } from "@/components/content/spacer"
 
 import spacingGuide from "./guides/spacing.md?raw"
 
@@ -36,16 +36,20 @@ type Story = StoryObj<typeof meta>
 export const Ladder: Story = {
   tags: ["color-pinned"],
   render: () => (
-    <div className="bg-secondary p-6">
-      <figure className="mx-auto flex w-full max-w-md flex-col gap-3 rounded-lg bg-background p-6">
-        <figcaption className="text-label-sb text-foreground">Scala di spaziatura</figcaption>
+    <div className="pui:bg-secondary pui:p-6">
+      <figure className="pui:mx-auto pui:flex pui:w-full pui:max-w-md pui:flex-col pui:gap-3 pui:rounded-lg pui:bg-background pui:p-6">
+        <figcaption className="pui:text-label-sb pui:text-foreground">
+          Scala di spaziatura
+        </figcaption>
         {steps.map((step) => (
-          <div key={step} className="flex items-center gap-3">
-            <span className="w-12 text-right text-label-mini text-muted-foreground">{step}px</span>
-            <div className="flex-1">
-              <div className="border-t border-dashed border-border-strong" />
+          <div key={step} className="pui:flex pui:items-center pui:gap-3">
+            <span className="pui:w-12 pui:text-right pui:text-label-mini pui:text-muted-foreground">
+              {step}px
+            </span>
+            <div className="pui:flex-1">
+              <div className="pui:border-t pui:border-dashed pui:border-border-strong" />
               <Spacer size={step} />
-              <div className="border-t border-dashed border-border-strong" />
+              <div className="pui:border-t pui:border-dashed pui:border-border-strong" />
             </div>
           </div>
         ))}

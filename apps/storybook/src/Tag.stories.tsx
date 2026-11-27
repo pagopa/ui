@@ -36,7 +36,7 @@ export const Playground: Story = {}
 export const AllStatuses: Story = {
   parameters: { layout: "fullscreen" },
   render: () => (
-    <div id="tag-all-statuses" className="flex flex-wrap gap-2">
+    <div id="tag-all-statuses" className="pui:flex pui:flex-wrap pui:gap-2">
       <Tag status="default">default</Tag>
       <Tag status="info">info</Tag>
       <Tag status="warning">warning</Tag>
@@ -61,7 +61,7 @@ const fidelityVariants = [
 export const Fidelity: Story = {
   parameters: { layout: "fullscreen" },
   render: () => (
-    <div id="tag-fidelity" className="grid w-[320px] justify-items-start gap-4">
+    <div id="tag-fidelity" className="pui:grid pui:w-[320px] pui:justify-items-start pui:gap-4">
       {fidelityVariants.map((variant) => (
         <div key={variant.nodeId} data-fidelity-variant={fidelityVariant(variant.nodeId)}>
           <Tag status={variant.status}>{variant.label}</Tag>
@@ -73,7 +73,7 @@ export const Fidelity: Story = {
 
 export const NamedStatusIcon: Story = {
   render: () => (
-    <div className="flex flex-wrap gap-2">
+    <div className="pui:flex pui:flex-wrap pui:gap-2">
       <Tag status="warning" iconLabel="Stato: avviso">
         warning
       </Tag>
@@ -91,7 +91,7 @@ export const NamedStatusIcon: Story = {
 
 export const CounterHasNoIcon: Story = {
   render: () => (
-    <div className="flex flex-wrap gap-2">
+    <div className="pui:flex pui:flex-wrap pui:gap-2">
       <Tag status="counter" iconLabel="Stato: nuova notifica">
         +1
       </Tag>

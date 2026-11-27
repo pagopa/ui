@@ -1,29 +1,29 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
+import { Filled as InfoFilledIcon } from "@/components/icons/generated/info"
+import { Default as KidStarIcon } from "@/components/icons/generated/kid-star"
+import { Default as ReportIcon } from "@/components/icons/generated/report"
+import { Default as WarningIcon } from "@/components/icons/generated/warning"
+import { Icon, type IconSource } from "@/components/icons/icon"
 
 type TagStatus = "default" | "info" | "warning" | "success" | "error" | "counter"
 
+// The status artwork as component references: a tag imports the five status
+// glyphs it can render, not the whole pinned set.
 const statusIcons: Record<
   Exclude<TagStatus, "counter">,
-  { name: React.ComponentProps<typeof PagoPAIcon>["name"]; filled?: boolean; className: string }
+  { source: IconSource; className: string }
 > = {
-  default: { name: "kid_star", className: "text-primary" },
-  info: { name: "info", filled: true, className: "text-info" },
-  warning: { name: "warning", className: "text-warning" },
-  success: { name: "check_circle", className: "text-success" },
-  error: { name: "report", className: "text-destructive" },
+  default: { source: KidStarIcon, className: "pui:text-primary" },
+  info: { source: InfoFilledIcon, className: "pui:text-info" },
+  warning: { source: WarningIcon, className: "pui:text-warning" },
+  success: { source: CheckCircleIcon, className: "pui:text-success" },
+  error: { source: ReportIcon, className: "pui:text-destructive" },
 }
 
-function Tag({
-  status = "default",
-  icon,
-  iconLabel,
-  children,
-  className,
-  ...props
-}: React.ComponentProps<"span"> & {
+export type TagProps = React.ComponentProps<"span"> & {
   /** Source status; `counter` renders a numeric count without an icon. */
   status?: TagStatus
   /** Optional caller icon replacing the status artwork. */
@@ -35,7 +35,9 @@ function Tag({
    * the caller owns the language.
    */
   iconLabel?: string
-}) {
+}
+
+function Tag({ status = "default", icon, iconLabel, children, className, ...props }: TagProps) {
   const artwork = status === "counter" ? undefined : statusIcons[status]
   return (
     <span
@@ -43,19 +45,18 @@ function Tag({
       data-slot="tag"
       data-status={status}
       className={cn(
-        "inline-flex min-h-8 w-fit items-center gap-1.5 rounded-md border border-border bg-background px-2 text-caption-sb text-muted-foreground uppercase",
+        "pui:inline-flex pui:min-h-8 pui:w-fit pui:items-center pui:gap-1.5 pui:rounded-md pui:border pui:border-border pui:bg-background pui:px-2 pui:text-caption-sb pui:text-muted-foreground pui:uppercase",
         className,
       )}
     >
       {artwork
         ? (icon ?? (
-            <PagoPAIcon
-              name={artwork.name}
-              filled={artwork.filled}
+            <Icon
+              source={artwork.source}
               size={16}
               className={artwork.className}
               decorative={!iconLabel}
-              label={iconLabel}
+              label={iconLabel ?? ""}
             />
           ))
         : null}

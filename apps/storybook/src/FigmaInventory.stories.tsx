@@ -14,32 +14,27 @@ const meta = {
   title: "Foundations/Figma inventory",
   component: FigmaInventory,
   parameters: {
+    // A catalogue of other stories: it changes whenever any of them does.
+    chromatic: { disableSnapshot: true },
     layout: "fullscreen",
     docs: {
       description: {
-        component: `Every published Figma node with its registry status, variant matrix and parity cases, rendered as a filterable dashboard with an inspector drawer.
+        component: `Every published Figma node with its registry status, variant matrix and code contract, rendered as a filterable dashboard with an inspector drawer.
 
-The data is committed: \`inventory.json\` (generated), \`registry.json\` (reviewed), \`parity-cases.json\` (the case corpus) and \`story-titles.json\`. The **Area** filter is derived from the registry target module folder; the status filter uses the registry's own statuses. There is no per-component mapping to maintain: a new folder or status appears from the data. Nothing on the page calls Figma at runtime.
+The data is committed: \`inventory.json\` (generated), \`registry.json\` (reviewed) and \`story-titles.json\`. The **Area** filter is derived from the registry target module folder; the status filter uses the registry's own statuses. There is no per-component mapping to maintain: a new folder or status appears from the data. Nothing on the page calls Figma at runtime.
 
 Refresh the snapshot with \`pnpm nx run pagopa-ui-cli:figma:plan\` and \`pnpm nx run pagopa-ui-cli:figma:triage\`, then review the delta.`,
       },
     },
   },
-  // A catalogue of other stories: it changes whenever any of them does.
-  tags: ["no-visual"],
 } satisfies Meta<typeof FigmaInventory>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
+// The generated inventory (355 cards) is a 1168x31,472 page on desktop; the play
+// function below is what proves it, and it runs in the browser suite.
 export const PublishedComponents: Story = {
-  parameters: {
-    // The generated inventory (355 cards) exceeds Chromatic's 25,000,000px
-    // capture cap at every configured viewport (1168x31,472 on desktop).
-    // Chromatic skips the snapshot and its interaction run; the browser suite
-    // still runs the play function below.
-    chromatic: { disableSnapshot: true },
-  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
@@ -55,7 +50,7 @@ export const PublishedComponents: Story = {
     await expect(canvas.getByText(/Every published node is covered/)).toBeVisible()
 
     // Search lands on a node that is not on the first page: a mocked demo that
-    // shows its raw registry status, no device column (a mock needs no case)
+    // shows its raw registry status, no device frames (a mock declares none)
     // and no Storybook page (it maps none).
     const search = canvas.getByRole("searchbox", { name: "Search components" })
     await userEvent.type(search, "Form Wizard")
@@ -65,7 +60,7 @@ export const PublishedComponents: Story = {
     await expect(
       within(demo).getByText(/TemplateComponents\.tsx · FormWizardTemplate/),
     ).toBeVisible()
-    expect(demo.querySelector('[data-slot="device-coverage"]')).toBeNull()
+    expect(demo.querySelector('[data-slot="device-frames"]')).toBeNull()
     expect(within(demo).queryByRole("link", { name: /Storybook/ })).toBeNull()
 
     // The inspector opens as a modal dialog, exposes the three tabs and

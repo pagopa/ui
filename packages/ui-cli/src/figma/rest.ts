@@ -69,6 +69,24 @@ const ApiResponseSchema = z.looseObject({
   err: z.unknown().optional(),
 })
 
+const LocalVariableSchema = z.looseObject({
+  id: z.string(),
+  name: z.string(),
+  key: z.string().optional(),
+  variableCollectionId: z.string(),
+  resolvedType: z.string(),
+  valuesByMode: z.record(z.string(), z.unknown()),
+})
+
+const LocalVariablesResponseSchema = z.looseObject({
+  meta: z.looseObject({
+    variableCollections: z
+      .record(z.string(), z.looseObject({ defaultModeId: z.string().optional() }))
+      .optional(),
+    variables: z.record(z.string(), LocalVariableSchema).optional(),
+  }),
+})
+
 export type FigmaDocument = z.infer<typeof DocumentSchema>
 export type PublishedNode = z.infer<typeof PublishedNodeSchema>
 export type FigmaFileHeader = { version: string; lastModified?: string }
@@ -260,9 +278,9 @@ export async function fetchFigmaImages(
   return assets
 }
 
-// The pinned PNG of each node, at scale 1: the review image of a parity case.
-// The version is explicit, so the picture belongs to the same source pin as the
-// numbers the case compares.
+// The pinned PNG of each node, at scale 1: the review image of a diagnostic
+// run. The version is explicit, so the picture belongs to the same source pin as
+// the numbers the run compares.
 export async function fetchFigmaImagesPng(
   fileKey: string,
   version: string,
@@ -657,4 +675,91 @@ export async function fetchFileComments(fileKey: string, token: string): Promise
     message: comment.message,
     order: comment.order_id ?? "",
   }))
+}
+
+// The variables a design system calls tokens: a text or boolean variable has no
+// value form in the manifest, so it is not one.
+type LocalVariable = z.infer<typeof LocalVariableSchema>
+const TOKEN_VARIABLE_TYPES = new Set(["COLOR", "FLOAT"])
+
+function record(value: unknown): Record<string, unknown> | null {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
+    ? Object.fromEntries(Object.entries(value))
+    : null
+}
+
+function colorValue(rgb: Record<string, unknown>): string | null {
+  const channel = (name: string, fallback: number): number | null => {
+    const raw = rgb[name]
+    const value = typeof raw === "number" ? raw : fallback
+    if (!Number.isFinite(value) || value < 0 || value > 1) return null
+    return Math.round(value * 255)
+  }
+  const [r, g, b, a] = [
+    channel("r", Number.NaN),
+    channel("g", Number.NaN),
+    channel("b", Number.NaN),
+    channel("a", 1),
+  ]
+  if (r === null || g === null || b === null || a === null) return null
+  const hex = (value: number): string => value.toString(16).padStart(2, "0")
+  const alpha = a === 255 ? "" : hex(a)
+  return `#${hex(r)}${hex(g)}${hex(b)}${alpha}`
+}
+
+export type FigmaVariables = {
+  fileKey: string
+  variables: Record<string, string>
+  ids: Record<string, string | { key: string; kind: "variable" }>
+}
+
+/**
+ * The local variables in the manifest's textual form — `#rrggbb` for a colour,
+ * the number as text for a float — so a live read is curated and compared with
+ * exactly the pipeline `update tokens` runs. Aliases resolve to the value they
+ * point at; a variable the manifest cannot express is left out rather than
+ * reported as drift.
+ */
+export async function fetchLocalVariables(fileKey: string, token: string): Promise<FigmaVariables> {
+  const data = await get(`files/${fileKey}/variables/local`, LocalVariablesResponseSchema, token)
+  const collections = data.meta.variableCollections ?? {}
+  const byId = data.meta.variables ?? {}
+
+  const modeValue = (variable: LocalVariable): unknown => {
+    const mode =
+      collections[variable.variableCollectionId]?.defaultModeId ??
+      Object.keys(variable.valuesByMode)[0]
+    return mode === undefined ? undefined : variable.valuesByMode[mode]
+  }
+  const resolve = (variable: LocalVariable, seen: Set<string>): unknown => {
+    if (seen.has(variable.id) || seen.size > 8) return undefined
+    const value = modeValue(variable)
+    const entry = record(value)
+    if (!entry || entry.type !== "VARIABLE_ALIAS" || typeof entry.id !== "string") return value
+    const target = byId[entry.id]
+    return target ? resolve(target, new Set([...seen, variable.id])) : undefined
+  }
+  const textual = (variable: LocalVariable): string | null => {
+    const value = resolve(variable, new Set())
+    if (variable.resolvedType === "COLOR") {
+      const rgb = record(value)
+      return rgb ? colorValue(rgb) : null
+    }
+    if (typeof value === "number" && Number.isFinite(value)) return String(value)
+    return null
+  }
+
+  const byName = new Map<string, LocalVariable>()
+  for (const variable of Object.values(byId)) byName.set(variable.name, variable)
+  const variables: FigmaVariables["variables"] = {}
+  const ids: FigmaVariables["ids"] = {}
+  for (const name of [...byName.keys()].sort()) {
+    const variable = byName.get(name)
+    if (!variable || !TOKEN_VARIABLE_TYPES.has(variable.resolvedType)) continue
+    const value = textual(variable)
+    if (value === null) continue
+    variables[name] = value
+    ids[name] = variable.key?.trim() ? { key: variable.key, kind: "variable" } : `local:${name}`
+  }
+  return { fileKey, variables, ids }
 }

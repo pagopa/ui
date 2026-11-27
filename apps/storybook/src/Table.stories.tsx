@@ -1,17 +1,19 @@
 import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, screen, userEvent, waitFor, within } from "storybook/test"
-import { Paperclip, Tag as TagIcon } from "lucide-react"
 
-import {
-  Table,
-  TableCellRow,
-  TableHeaderField,
-  TableListField,
-  type TableColumn,
-} from "@/components/data-display"
-import { MenuDropdown, SelectField, Chip } from "@/components/inputs"
-import { Pagination } from "@/components/navigation"
+import { Table, type TableColumn } from "@/components/data-display/table"
+import { TableCellRow } from "@/components/data-display/table-cell-row"
+import { TableHeaderField } from "@/components/data-display/table-header-field"
+import { TableListField } from "@/components/data-display/table-list-field"
+import { Icon } from "@/components/icons/icon"
+import { Default as AttachFileIcon } from "@/components/icons/generated/attach-file"
+import { Default as SellIcon } from "@/components/icons/generated/sell"
+
+import { MenuDropdown } from "@/components/inputs/menus"
+import { SelectField } from "@/components/inputs/select-field"
+import { Chip } from "@/components/inputs/chips"
+import { Pagination } from "@/components/navigation/pagination"
 import { Button } from "@/components/primitives/button"
 import {
   Table as TablePrimitive,
@@ -67,7 +69,7 @@ export const Mobile: Story = {
             key: "service",
             label: "Servizio",
             render: () => (
-              <a href="/pagamenti/tari" className="block">
+              <a href="/pagamenti/tari" className="pui:block">
                 TARI
               </a>
             ),
@@ -122,7 +124,7 @@ function ControlledTable() {
             : [{ id: "mensa", service: "Mensa scolastica", amount: "18,50 euro" }]
         }
         pagination={
-          <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="pui:flex pui:flex-wrap pui:items-center pui:justify-between pui:gap-4">
             <SelectField
               label="Righe per pagina"
               value={pageSize}
@@ -145,7 +147,7 @@ function ControlledTable() {
 }
 
 export const WithControls: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => <ControlledTable />,
   play: async ({ canvasElement }) => {
@@ -194,9 +196,8 @@ function EmptyNotifications() {
 
 export const EmptyWithAction: Story = {
   parameters: {
-    // The play function asserts the source empty-state height, which depends on
-    // the desktop text wrap; Chromatic captures and plays it at that width only.
-    chromatic: { viewports: [1200] },
+    // The fixture pins the desktop width: the play function asserts the source
+    // empty-state height, which depends on the desktop text wrap.
   },
   render: () => <EmptyNotifications />,
   play: async ({ canvasElement }) => {
@@ -276,7 +277,10 @@ function PaymentActions() {
             key: "service",
             label: "Servizio",
             render: () => (
-              <a href="/pagamenti/tari" className="text-primary underline underline-offset-4">
+              <a
+                href="/pagamenti/tari"
+                className="pui:text-primary pui:underline pui:underline-offset-4"
+              >
                 TARI
               </a>
             ),
@@ -433,24 +437,29 @@ function SourceTable() {
       key: "reference",
       label: "ID",
       render: (value, row) => (
-        <div className="flex min-w-0 items-center gap-2">
+        <div className="pui:flex pui:min-w-0 pui:items-center pui:gap-2">
           {row.id.endsWith("-0") ? (
             <span
               role="img"
               aria-label="Non letta"
-              className="size-2 shrink-0 rounded-full bg-primary"
+              className="pui:size-2 pui:shrink-0 pui:rounded-full pui:bg-primary"
             />
           ) : null}
           {row.id.endsWith("-0") ? (
-            <a href={`#notifica-${row.id}`} className="text-primary underline underline-offset-4">
+            <a
+              href={`#notifica-${row.id}`}
+              className="pui:text-primary pui:underline pui:underline-offset-4"
+            >
               {value}
             </a>
           ) : (
-            <span className="font-mono">{value}</span>
+            <span className="pui:font-mono">{value}</span>
           )}
-          <Paperclip
+          <Icon
+            source={AttachFileIcon}
+
             aria-hidden="true"
-            className="ml-auto hidden size-5 shrink-0 text-primary @max-[40rem]/table:block"
+            className="pui:ml-auto pui:hidden pui:size-5 pui:shrink-0 pui:text-primary pui:@max-[40rem]/table:block"
           />
         </div>
       ),
@@ -462,8 +471,13 @@ function SourceTable() {
       key: "label",
       label: "Category",
       render: (value) => (
-        <span className="inline-flex items-center gap-1">
-          <TagIcon aria-hidden="true" className="hidden size-4 @max-[40rem]/table:block" />
+        <span className="pui:inline-flex pui:items-center pui:gap-1">
+          <Icon
+            source={SellIcon}
+
+            aria-hidden="true"
+            className="pui:hidden pui:size-4 pui:@max-[40rem]/table:block"
+          />
           {value}
         </span>
       ),
@@ -599,7 +613,7 @@ export const SourceMobile: Story = {
 
 export const EmptyOptions: Story = {
   render: () => (
-    <div className="flex max-w-3xl flex-col gap-4">
+    <div className="pui:flex pui:max-w-3xl pui:flex-col pui:gap-4">
       <Table
         caption="Solo descrizione"
         rows={[]}
@@ -661,7 +675,7 @@ function PublicCells() {
         <TableBody>
           <TableCellRow
             header={
-              <a href="#mensa" className="text-primary underline underline-offset-4">
+              <a href="#mensa" className="pui:text-primary pui:underline pui:underline-offset-4">
                 Mensa scolastica
               </a>
             }

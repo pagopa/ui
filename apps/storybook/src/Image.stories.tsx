@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect } from "storybook/test"
 
-import { Image } from "@/components/content"
+import { Image } from "@/components/content/image"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import imageGuide from "./guides/image.md?raw"
@@ -44,7 +44,7 @@ export const Playground: Story = {}
 
 export const Ratios: Story = {
   render: () => (
-    <div className="grid w-[min(36rem,calc(100vw-2rem))] gap-4">
+    <div className="pui:grid pui:w-[min(36rem,calc(100vw-2rem))] pui:gap-4">
       <Image ratio="square" alt="Quadrata" src={placeholder} />
       <Image ratio="video" alt="Video" src={placeholder} />
       <Image ratio="wide" alt="Panoramica" src={placeholder} />

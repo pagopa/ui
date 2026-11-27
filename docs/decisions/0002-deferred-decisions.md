@@ -1,8 +1,10 @@
 # ADR-0002 — Deferred decisions with triggers
 
 - **Status:** Accepted — deferrals recorded on 2026-10-12; the Titillio entry
-  added and resolved on 2026-10-14.
-- **Date:** 2026-10-12 (Titillio entry: 2026-10-14)
+  added and resolved on 2026-10-14; the distribution entry (§8) resolved on
+  2026-11-26; the lucide entry (§3) resolved on 2026-11-26.
+- **Date:** 2026-10-12 (Titillio entry: 2026-10-14; distribution entry:
+  2026-11-26; lucide entry: 2026-11-26)
 - **Related:** [ADR-0001](./0001-rework.md) — the rework whose boundaries produced these deferrals.
 
 ## 1. Context
@@ -38,10 +40,21 @@ single private package with layered `src/` directories.
   release flow; the import-layer contract becomes cross-package dependency
   rules.
 
-## 3. lucide → `PagoPAIcon` replacement
+## 3. lucide → `PagoPAIcon` replacement — resolved 2026-11-26
 
-**Decision deferred:** replacing the remaining `lucide-react` icons with the
-published `PagoPAIcon` catalogue.
+**Resolved 2026-11-26:** option (c), drop lucide entirely. Every icon a shipped
+component renders now resolves from the artwork pipeline: `primitives/icons.ts`
+is deleted, the modules that imported it render `PagoPAIcon` or a generated
+variant component, and `lucide-react` left the `packages/pagopa-ui` and
+`apps/storybook` manifests and the lockfile. Four identities have no pinned
+counterpart and use the closest source glyph, recorded in the icon guide:
+`Camera` → `photo`, `Building2` → `account_balance`, `FileText` →
+`receipt_long` and the neutral sort `ArrowUpDown` → `unfold`. `DropdownItem.icon`
+no longer exposes the lucide `LucideIcon` type — it takes the pipeline's
+`IconComponent` — which is the breaking change the deferral anticipated.
+
+**Decision deferred (2026-10-12):** replacing the remaining `lucide-react` icons
+with the published `PagoPAIcon` catalogue.
 
 - **Current state:** lucide is confined to `src/components/primitives` through
   `primitives/icons.ts`; the public components expose `PagoPAIcon`.
@@ -140,14 +153,62 @@ itself (`references/visual-parity.md`).
   in a report (removed in the F0 cleanup) and the component guides plus the
   registry notes remain the primary record;
   their re-verification belongs to the parity loop per node, not to the file.
-- **Trigger (reopen):** the parity tool (`scripts/figma-parity`) needs a machine-readable
-  case list. It must then adopt a regenerated corpus derived from
-  `registry.json` and the component stories — not a resurrected workbench file.
+- **Trigger (reopen):** a parity tool needs a machine-readable case list. The
+  diagnostic derives one from `registry.json` and the story options on demand
+  (`ui-cli parity check`), so that derivation is the answer — never a resurrected
+  workbench file.
 - **Impact:** `visual-contracts.json` is deleted; the adaptation ids it carried
   stay binding until their component is re-verified, exactly as the registry
   notes and guides already state.
 
-## 8. Consequences
+## 8. Distribution — licence, registry and peer range — resolved 2026-11-26
+
+**Decision:** `@pagopa/ui` is released under the MIT licence and published to
+GitHub Packages (`https://npm.pkg.github.com`) under the `@pagopa` scope with
+`publishConfig.access: "public"`. The React peer range is `^19.0.0`.
+
+**Resolved 2026-11-26** (pagopa/ui#158, #169): the first publication was the
+trigger of §4, and it forced three answers the repository had left open —
+the manifest declared `UNLICENSED` and no `LICENSE` file existed.
+
+- **Licence — MIT.** A single licence, not a dual arrangement. The root
+  `LICENSE` is the repository's, an identical copy ships inside the package
+  (`files` includes it, so consumers receive it), and every manifest that
+  declares a licence declares `MIT`. The licence covers the source; the bundled
+  fonts keep their own OFL text in `dist/licenses/`, which the artifact
+  contract already checks.
+- **Registry — GitHub Packages, npmjs dropped.** The package is consumed by
+  internal PagoPA applications, which already reach GitHub Packages with a
+  GitHub identity and need no second account; npmjs would add a separate
+  publisher credential, org policy and provenance chain for no consumer. The
+  `nx-release-publish` target is pinned in `packages/pagopa-ui/project.json`
+  and the manifest's `publishConfig.registry` says the same, so a plain
+  `npm publish` cannot land on npmjs by accident.
+- **Authentication — the repository's own `GITHUB_TOKEN`.** `release.yaml`
+  publishes with `${{ github.token }}` under a `packages: write` permission, so
+  the release needs no additional secret to maintain or rotate.
+- **Peer range — `^19.0.0`.** React 18 is rejected, not supported: the
+  components use React 19 APIs and rendering, so a `^18` consumer would fail at
+  runtime rather than at install. `^19.0.0` admits every React 19 minor while
+  keeping the floor honest.
+
+**Accepted trade-off:** GitHub Packages requires an authenticated request even
+for a public package, so "a public package needs no private-registry token"
+does not hold here. A consumer still configures the `@pagopa` scope in
+`.npmrc` and presents a token with `read:packages`; both READMEs say so plainly
+instead of promising a token-free install. The alternative — npmjs, where a
+public package installs anonymously — was dropped for the credential and policy
+reasons above.
+
+**No migration:** the package has no installed base, so no consumer needs to
+move a peer range or a registry.
+
+**Impact when triggered:** `packages/pagopa-ui/package.json` (licence,
+`publishConfig`, peers, `files`), the root and package `LICENSE`,
+`packages/pagopa-ui/plugin.json`, `packages/ui-cli/src/checks/library-artifact.ts`
+(the distribution contract the `library:check` gate asserts), and the READMEs.
+
+## 9. Consequences
 
 - Each trigger is an explicit entry condition: when it appears, the decision
   reopens here rather than inside an implementation PR.

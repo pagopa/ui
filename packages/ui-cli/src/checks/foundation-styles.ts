@@ -36,52 +36,7 @@ const COLOUR_KEYWORDS = new Set([
   "visitedtext",
 ])
 
-// Exact pre-existing local extensions, not a licence for new values. Retire
-// source geometry when its published token exists; retire colour/effect locals
-// when the design owner resolves ADR-0001 §9 and the foundation design request.
-const LOCAL_VALUES: Record<string, string> = {
-  "--destructive-hover": "#aa2828",
-  "--primary-active": "#072582",
-  "--navy": "#061b49",
-  "--navy-deep": "#17213c",
-  "--brand-cyan": "#00a7e1",
-  "--avatar-frame": "rgb(14 15 19 / 6%)",
-  "--avatar-icon-surface": "rgb(255 255 255 / 20%)",
-  "--artboard-height": "650px",
-  "--artboard-height-tall": "800px",
-  "--dialog-width": "600px",
-  "--dialog-width-compact": "272px",
-  "--login-width": "520px",
-  "--state-width": "368px",
-  "--drawer-width": "416px",
-  "--drawer-width-wide": "417px",
-  "--id-module-width": "410px",
-  "--camera-size": "376px",
-  "--menu-width": "274px",
-  "--menu-skeleton-width": "106px",
-  "--overlay-width": "512px",
-  "--header-height": "102px",
-  "--preheader-height": "55px",
-  // These are root-font-relative layout values; the spacing foundations are
-  // px, so aliasing them would change zoom/host-font scaling.
-  "--page-gutter": "2rem",
-  "--page-gutter-lg": "3rem",
-  "--grid-aside": "20rem",
-  "--grid-fields": "10rem",
-  "--grid-actions": "3rem",
-  // Container query conditions cannot resolve var(); keep the recorded 900px
-  // device step until Tailwind can lower a foundation reference to a literal.
-  "--container-tablet-md": "56.25rem",
-  // Decimal alpha here is not byte-identical to the published hex alpha.
-  "--shadow-switch-knob":
-    "0 1px 3px rgba(0, 43, 85, 0.1), 0 1px 1px rgba(0, 43, 85, 0.05), 0 2px 1px -1px rgba(0, 43, 85, 0.1)",
-  // SVG filters need the existing effect representation, not box-shadow.
-  "--drop-shadow-elevation-6":
-    "0 1px 18px #002b551a, 0 6px 10px #002b550d, 0 3px 5px -1px #002b551a",
-  "--font-sans": '"Titillio", Arial, sans-serif',
-}
-
-const normalize = (value: string): string =>
+export const normalizeValue = (value: string): string =>
   value.replace(/\s+/g, " ").replace(/\(\s+/g, "(").replace(/\s+\)/g, ")").trim()
 
 // Comments/strings and function arguments can contain CSS delimiters. Keep
@@ -116,7 +71,7 @@ export function cssDeclarations(source: string): Declaration[] {
     else if (char === "(" || char === "[") depth += 1
     else if (char === ")" || char === "]") depth -= 1
     else if (!depth && char === "{") {
-      contexts.push(normalize(text.slice(start, index)))
+      contexts.push(normalizeValue(text.slice(start, index)))
       start = index + 1
     } else if (!depth && (char === ";" || char === "}")) {
       declaration(index)
@@ -173,6 +128,16 @@ function visualConstant(property: string, value: string | number): boolean {
   return false
 }
 
+// The token a reviewed declaration has to match: the property and the same
+// normalized value the scanner reports.
+export function declarationToken(declaration: string): string {
+  const separator = declaration.indexOf(":")
+  if (separator < 1) return normalizeValue(declaration)
+  const property = declaration.slice(0, separator).trim()
+  const value = declaration.slice(separator + 1).replace(/\s*!important\s*$/, "")
+  return `${property}: ${normalizeValue(value)}`
+}
+
 function occurrence(
   rule: string,
   file: string,
@@ -192,35 +157,16 @@ function checkValue(
 ): Occurrence[] {
   const { property, value, start, context } = declaration
   const occurrences: Occurrence[] = []
-  for (const match of value.matchAll(/var\(\s*(--(?:figma|text)-[\w-]+)/g)) {
+  for (const match of value.matchAll(/var\(\s*(--(?:pui|figma|text)-[\w-]+)/g)) {
     if (!knownTokens.has(match[1])) {
       occurrences.push(occurrence("unknown-foundation", file, source, start, match[1]))
     }
   }
   if (css && /@font-face\b/.test(context)) return occurrences
-  const clean = normalize(value.replace(/\s*!important\s*$/, ""))
+  const clean = normalizeValue(value.replace(/\s*!important\s*$/, ""))
   // Inline hex literals already belong to the utility scanner's hex rule and
   // its registered exceptions. Do not charge the same literal twice.
   if (!css && /^#[\da-f]{3,8}$/i.test(clean)) return occurrences
-  if (css && file === "src/index.css") {
-    const themeContext = /^(?:--shadow-|--drop-shadow-|--font-|--container-)/.test(property)
-    const rootContext = [":root", ".pagopa-ui-root"].includes(context)
-    if (
-      (themeContext ? context === "@theme inline" : rootContext) &&
-      LOCAL_VALUES[property] === clean
-    )
-      return occurrences
-    // Existing host minimum/root typography and accessibility motion policy:
-    // replacing the root line-height with Body's 22/16 would change behavior.
-    if (rootContext && property === "line-height" && clean === "1.5") return occurrences
-    if (context === "body" && property === "min-width" && clean === "320px") return occurrences
-    if (
-      /prefers-reduced-motion: reduce/.test(context) &&
-      property === "animation-duration" &&
-      ["0.01ms", "1s"].includes(clean)
-    )
-      return occurrences
-  }
   if (visualConstant(property, clean)) {
     occurrences.push(occurrence("visual-constant", file, source, start, `${property}: ${clean}`))
   }

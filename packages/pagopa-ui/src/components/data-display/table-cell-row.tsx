@@ -2,15 +2,13 @@ import * as React from "react"
 
 import { TableCell, TableHead, TableRow } from "@/components/primitives/table"
 
-function TableCellRow({
-  cells,
-  header,
-  className,
-}: {
+export interface TableCellRowProps {
   cells: React.ReactNode[]
   header?: React.ReactNode
   className?: string
-}) {
+}
+
+function TableCellRow({ cells, header, className }: TableCellRowProps) {
   return (
     <TableRow className={className}>
       {cells.map((cell, index) =>

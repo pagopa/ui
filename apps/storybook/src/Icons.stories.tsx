@@ -3,14 +3,18 @@ import type { ComponentProps } from "react"
 import { cn } from "@/lib/cn"
 import { expect, waitFor } from "storybook/test"
 
+// The gallery is the one page that reads the runtime registry by name: every
+// shipped component imports the glyph modules it renders, so `PagoPAIcon` here
+// enumerates the pinned set without dragging it into a consumer bundle.
+import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
 import {
   type FigmaIconName,
-  iconNames,
-  pictogramNames,
-  PagoPAIcon,
-  PagoPAPictogram,
-} from "@/components/icons"
-import { iconManifest, pictogramManifest } from "pagopa-ui-artwork"
+  figmaIconNames as iconNames,
+  figmaPictogramNames as pictogramNames,
+  iconManifest,
+  pictogramManifest,
+} from "pagopa-ui-artwork"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import registry from "@/catalog/figma/registry.json"
 
@@ -20,6 +24,19 @@ function cataloguePageId(namesExport: string) {
   const rule = catalogueRules.find((entry) => entry.namesExport === namesExport)
   if (!rule?.pageId) throw new Error(`Missing registry bulk rule for ${namesExport}`)
   return rule.pageId
+}
+
+// Every published icon paints its pinned geometry inline; this returns that
+// drawing without the per-icon id namespace that keeps its masks unique.
+function iconPaint(icon: Element): string {
+  if (!(icon instanceof SVGSVGElement))
+    throw new Error("Every published icon must render an inline SVG")
+  if (getComputedStyle(icon).maskImage !== "none")
+    throw new Error("Icons must paint inline, not through a CSS mask")
+  const nodeId = icon.dataset.figmaNodeId
+  if (!nodeId) throw new Error("Every published icon must carry its pinned source identity")
+  const prefix = nodeId.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+  return icon.innerHTML.replaceAll(`${prefix}-`, "")
 }
 
 const iconCatalogue = new Map(
@@ -34,36 +51,39 @@ const pictogramProvenance = Object.values(pictogramManifest.entries)[0]?.provena
 
 function IconCatalogue() {
   return (
-    <main className="w-[min(76rem,calc(100vw-2rem))] space-y-12 p-6">
+    <main className="pui:w-[min(76rem,calc(100vw-2rem))] pui:space-y-12 pui:p-6">
       <section aria-labelledby="icons-title">
-        <h1 id="icons-title" className="text-hero">
+        <h1 id="icons-title" className="pui:text-hero">
           Icone pubblicate
         </h1>
-        <p className="text-muted-foreground">
+        <p className="pui:text-muted-foreground">
           {iconNames.length} nomi sincronizzati da Figma:{" "}
           {iconOriginCounts["material-symbols"] ?? 0} glifi Material Symbols (Rounded, weight 400,
           fill off, grade normal, 24dp — Apache-2.0), {iconOriginCounts.brand ?? 0} marchi di brand
           riprodotti nei colori sorgente e {iconOriginCounts.custom ?? 0} glifi PagoPA.
         </p>
-        <div className="mt-6 grid grid-cols-2 gap-3 tablet:grid-cols-3 tablet-md:grid-cols-5 desktop:grid-cols-7">
+        <div className="pui:mt-6 pui:grid pui:grid-cols-2 pui:gap-3 pui:tablet:grid-cols-3 pui:tablet-md:grid-cols-5 pui:desktop:grid-cols-7">
           {iconNames.map((name) => {
             const asset = iconCatalogue.get(name)
             return (
               <div
                 key={name}
-                className="grid min-h-24 place-items-center gap-2 rounded-lg border p-3"
+                className="pui:grid pui:min-h-24 pui:place-items-center pui:gap-2 pui:rounded-lg pui:border pui:p-3"
               >
                 <span
                   className={cn(
-                    "inline-flex",
-                    name === "IO logo" && "rounded-sm bg-navy p-1 forced-color-adjust-none",
+                    "pui:inline-flex",
+                    name === "IO logo" &&
+                      "pui:rounded-sm pui:bg-navy pui:p-1 pui:forced-color-adjust-none",
                   )}
                 >
                   <PagoPAIcon name={name} size={28} />
                 </span>
-                <code className="max-w-full break-all text-center text-xs">{name}</code>
+                <code className="pui:max-w-full pui:break-all pui:text-center pui:text-xs">
+                  {name}
+                </code>
                 {asset && asset.provenance.origin !== "material-symbols" ? (
-                  <span className="rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-wide text-muted-foreground">
+                  <span className="pui:rounded-full pui:border pui:px-2 pui:py-0.5 pui:text-[10px] pui:uppercase pui:tracking-wide pui:text-muted-foreground">
                     {asset.provenance.origin}
                   </span>
                 ) : null}
@@ -76,20 +96,23 @@ function IconCatalogue() {
       <section aria-labelledby="pictograms-title">
         {/* 26/34: the Figma Headings/H2 scale is not captured in the pinned
             variable snapshot yet; map it to text-h3 only after the refresh. */}
-        <h2 id="pictograms-title" className="text-[1.625rem] font-semibold leading-[2.125rem]">
+        <h2
+          id="pictograms-title"
+          className="pui:text-[1.625rem] pui:font-semibold pui:leading-[2.125rem]"
+        >
           Pittogrammi
         </h2>
-        <p className="text-muted-foreground">
+        <p className="pui:text-muted-foreground">
           {pictogramNames.length} concetti esposti tramite una API tipizzata.
         </p>
         {pictogramProvenance ? (
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="pui:mt-1 pui:text-sm pui:text-muted-foreground">
             Fonte: {pictogramProvenance.provider}
             {pictogramProvenance.sourceUrl ? (
               <>
                 {" — "}
                 <a
-                  className="underline"
+                  className="pui:underline"
                   href={pictogramProvenance.sourceUrl}
                   target="_blank"
                   rel="noreferrer"
@@ -102,7 +125,7 @@ function IconCatalogue() {
             {pictogramProvenance.license}
           </p>
         ) : null}
-        <div className="mt-6 grid grid-cols-2 gap-6 tablet:grid-cols-3 tablet-md:grid-cols-5">
+        <div className="pui:mt-6 pui:grid pui:grid-cols-2 pui:gap-6 pui:tablet:grid-cols-3 pui:tablet-md:grid-cols-5">
           {pictogramNames.map((name) => (
             <PagoPAPictogram key={name} name={name} label={name} />
           ))}
@@ -140,11 +163,11 @@ export const PictogramVariants: Story = {
     design: { type: "figma", url: figmaEmbedUrl(cataloguePageId("figmaPictogramNames")) },
   },
   render: () => (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="pui:grid pui:grid-cols-2 pui:gap-4">
       {pictogramNames.map((name) => (
-        <div key={name} className="flex gap-4">
+        <div key={name} className="pui:flex pui:gap-4">
           <PagoPAPictogram name={name} label={`${name} Light`} background="light" />
-          <div className="rounded-lg bg-navy p-2 text-white">
+          <div className="pui:rounded-lg pui:bg-navy pui:p-2 pui:text-white">
             <PagoPAPictogram name={name} label={`${name} Dark`} background="dark" />
           </div>
         </div>
@@ -181,15 +204,11 @@ export const Catalogue: Story = {
     await expect(section.querySelector(".material-symbols-outlined")).not.toBeInTheDocument()
     for (const icon of icons) {
       await expect(icon).toHaveAttribute("data-figma-node-id")
-      const image = icon instanceof HTMLImageElement ? icon : new Image()
-      if (!(icon instanceof HTMLImageElement)) {
-        const source = getComputedStyle(icon).maskImage.match(/^url\(["']?(.*?)["']?\)$/)?.[1]
-        if (!source) throw new Error("Every published icon must render genuine source artwork")
-        image.src = source
-      }
-      await image.decode()
-      await expect(image.naturalWidth).toBe(24)
-      await expect(image.naturalHeight).toBe(24)
+      await expect(icon).toHaveAttribute("viewBox", "0 0 24 24")
+      expect(
+        iconPaint(icon),
+        `raw-name fallback for ${icon.getAttribute("data-figma-node-id")}`,
+      ).not.toBe("")
     }
     await waitFor(() => {
       for (const icon of icons) {
@@ -227,7 +246,7 @@ export const Catalogue: Story = {
 
 export const LocalDefaults: Story = {
   render: () => (
-    <main className="grid grid-cols-2 gap-4 p-4 text-primary tablet:grid-cols-4">
+    <main className="pui:grid pui:grid-cols-2 pui:gap-4 pui:p-4 pui:text-primary pui:tablet:grid-cols-4">
       {(
         [
           "feedback",
@@ -248,8 +267,8 @@ export const LocalDefaults: Story = {
         <div
           key={name}
           className={cn(
-            "flex min-h-20 items-center justify-center rounded-lg border p-4",
-            name === "IO logo" && "bg-navy forced-color-adjust-none",
+            "pui:flex pui:min-h-20 pui:items-center pui:justify-center pui:rounded-lg pui:border pui:p-4",
+            name === "IO logo" && "pui:bg-navy pui:forced-color-adjust-none",
           )}
         >
           <PagoPAIcon name={name} decorative={false} label={name} />
@@ -265,24 +284,20 @@ export const LocalDefaults: Story = {
       await expect(bounds.width).toBe(24)
       await expect(bounds.height).toBe(24)
     }
-    const send = canvas.getByRole("img", { name: "SEND" })
-    // The production build rewrites the asset to `8717-781-<hash>.svg`, the dev
-    // server keeps the `?no-inline` query: match the pinned node id and accept
-    // both, so the assertion does not depend on the delivery transform.
-    await expect(send).toHaveAttribute("src", expect.stringMatching(/8717-781[-\w]*\.svg(?:\?|$)/))
+    // The brand logo keeps its source paints; the glyphs inherit the text colour.
+    await expect(canvas.getByRole("img", { name: "SEND" })).toHaveAttribute(
+      "data-figma-node-id",
+      "8717:781",
+    )
     const feedback = canvas.getByRole("img", { name: "feedback" })
-    await expect(getComputedStyle(feedback).maskImage).not.toBe("none")
-    await expect(getComputedStyle(feedback).backgroundColor).toBe(getComputedStyle(feedback).color)
+    await expect(feedback).toHaveAttribute("fill", "currentColor")
+    // The only inline style is the artwork box; the paint stays in the sheet.
+    await expect(feedback.style.backgroundColor).toBe("")
+    await expect(feedback.style.maskImage).toBe("")
+    await expect(getComputedStyle(feedback).fill).toBe(getComputedStyle(feedback).color)
     await expect(canvasElement.querySelector(".material-symbols-outlined")).not.toBeInTheDocument()
-    const images = canvasElement.querySelectorAll("img")
-    await expect(images).toHaveLength(7)
-    await waitFor(() => {
-      for (const image of images) {
-        expect(image.complete).toBe(true)
-        expect(image.naturalWidth).toBe(24)
-        expect(image.naturalHeight).toBe(24)
-      }
-    })
+    await expect(canvasElement.querySelectorAll("img")).toHaveLength(0)
+    await expect(canvasElement.querySelectorAll("svg[data-figma-node-id]")).toHaveLength(13)
     await expect(canvas.getByRole("img", { name: "Media logos" })).toHaveAttribute(
       "data-figma-node-id",
       "99:777",
@@ -296,23 +311,21 @@ export const LocalDefaults: Story = {
 
 export const LocalVariants: Story = {
   render: () => (
-    <main className="grid grid-cols-2 gap-4 p-4 tablet:grid-cols-3">
+    <main className="pui:grid pui:grid-cols-2 pui:gap-4 pui:p-4 pui:tablet:grid-cols-3">
       <PagoPAIcon name="Media logos" variant="instagram" decorative={false} label="Instagram" />
       <PagoPAIcon name="Media logos" variant="linkedin" decorative={false} label="LinkedIn" />
       <PagoPAIcon name="Media logos" variant="threads" decorative={false} label="Threads" />
       <PagoPAIcon name="Media logos" variant="youtube" decorative={false} label="Youtube" />
-      <div className="rounded-lg bg-navy p-4 forced-color-adjust-none">
+      <div className="pui:rounded-lg pui:bg-navy pui:p-4 pui:forced-color-adjust-none">
         <PagoPAIcon name="IO logo" variant="light" decorative={false} label="IO Light" />
       </div>
       <PagoPAIcon name="IO logo" variant="dark" decorative={false} label="IO Dark" />
     </main>
   ),
   play: async ({ canvas, canvasElement }) => {
-    await expect(canvas.getAllByRole("img")).toHaveLength(6)
-    const images = canvasElement.querySelectorAll("img")
-    await expect(images).toHaveLength(6)
-    await expect(new Set([...images].map((image) => image.src)).size).toBe(6)
-    await expect([...images].map((image) => image.dataset.figmaNodeId).sort()).toEqual([
+    const icons = canvas.getAllByRole("img")
+    await expect(icons).toHaveLength(6)
+    await expect(icons.map((icon) => icon.getAttribute("data-figma-node-id")).sort()).toEqual([
       "232:1672",
       "232:1674",
       "99:777",
@@ -320,19 +333,14 @@ export const LocalVariants: Story = {
       "99:779",
       "99:780",
     ])
-    await waitFor(() => {
-      for (const image of images) {
-        expect(image.complete).toBe(true)
-        expect(image.naturalWidth).toBe(24)
-        expect(image.naturalHeight).toBe(24)
-      }
-    })
+    await expect(new Set(icons.map(iconPaint)).size).toBe(6)
+    await expect(canvasElement.querySelectorAll("img")).toHaveLength(0)
   },
 }
 
 export const DirectionalVariants: Story = {
   render: () => (
-    <main className="grid grid-cols-4 gap-4 p-4 text-primary">
+    <main className="pui:grid pui:grid-cols-4 pui:gap-4 pui:p-4 pui:text-primary">
       <PagoPAIcon name="arrow" variant="right" decorative={false} label="Freccia destra" />
       <PagoPAIcon name="arrow" variant="left" decorative={false} label="Freccia sinistra" />
       <PagoPAIcon name="arrow" variant="down" decorative={false} label="Freccia in basso" />
@@ -371,19 +379,13 @@ export const DirectionalVariants: Story = {
         "98:1015",
       ].sort(),
     )
-    const urls = new Set<string>()
+    const paints = new Set<string>()
     for (const icon of icons) {
       await expect(icon.textContent).toBe("")
-      const source = getComputedStyle(icon).maskImage.match(/^url\(["']?(.*?)["']?\)$/)?.[1]
-      if (!source) throw new Error("Missing source mask for a direction or state variant")
-      const image = new Image()
-      image.src = source
-      await image.decode()
-      await expect(image.naturalWidth).toBe(24)
-      await expect(image.naturalHeight).toBe(24)
-      urls.add(source)
+      await expect(icon).toHaveAttribute("viewBox", "0 0 24 24")
+      paints.add(iconPaint(icon))
     }
-    await expect(urls.size).toBe(12)
+    await expect(paints.size).toBe(12)
   },
 }
 
@@ -399,9 +401,9 @@ export const SourceFilled: Story = {
   // Reflow exemption: fixture pinned at the source width, not a product surface.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <main className="grid gap-6 p-4 text-primary">
+    <main className="pui:grid pui:gap-6 pui:p-4 pui:text-primary">
       {filledIcons.map(({ name }) => (
-        <div key={name} className="flex items-center gap-6">
+        <div key={name} className="pui:flex pui:items-center pui:gap-6">
           <code>{name}</code>
           <PagoPAIcon name={name} decorative={false} label={`${name} default`} />
           <PagoPAIcon name={name} filled decorative={false} label={`${name} filled`} />
@@ -421,9 +423,7 @@ export const SourceFilled: Story = {
       const outlined = canvas.getByRole("img", { name: `${icon.name} outlined` })
       await expect(filled).toHaveAttribute("data-figma-node-id", icon.filledId)
       await expect(outlined).toHaveAttribute("data-figma-node-id", icon.outlinedId)
-      await expect(getComputedStyle(filled).maskImage).not.toBe(
-        getComputedStyle(outlined).maskImage,
-      )
+      await expect(iconPaint(filled)).not.toBe(iconPaint(outlined))
     }
   },
 }
@@ -487,11 +487,11 @@ export const StateVariants: Story = {
   // Reflow exemption: fixture pinned at the source width, not a product surface.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <main className="grid grid-cols-2 gap-4 p-4 tablet:grid-cols-4">
+    <main className="pui:grid pui:grid-cols-2 pui:gap-4 pui:p-4 pui:tablet:grid-cols-4">
       {stateIcons.map(({ name, variant }) => (
         <figure
           key={`${name}-${variant}`}
-          className="grid justify-items-center gap-2 rounded-lg border p-4"
+          className="pui:grid pui:justify-items-center pui:gap-2 pui:rounded-lg pui:border pui:p-4"
         >
           <PagoPAIcon
             name={name}
@@ -499,7 +499,7 @@ export const StateVariants: Story = {
             decorative={false}
             label={`${name} ${variant}`}
           />
-          <figcaption className="text-center text-xs">
+          <figcaption className="pui:text-center pui:text-xs">
             <code>
               {name} {variant}
             </code>
@@ -510,19 +510,13 @@ export const StateVariants: Story = {
   ),
   play: async ({ canvas }) => {
     await expect(canvas.getAllByRole("img")).toHaveLength(48)
-    const urls = new Set<string>()
+    const paints = new Set<string>()
     for (const { name, variant, nodeId } of stateIcons) {
       const icon = canvas.getByRole("img", { name: `${name} ${variant}` })
       await expect(icon).toHaveAttribute("data-figma-node-id", nodeId)
-      const source = getComputedStyle(icon).maskImage.match(/^url\(["']?(.*?)["']?\)$/)?.[1]
-      if (!source) throw new Error("Missing actual source artwork for an icon state")
-      const image = new Image()
-      image.src = source
-      await image.decode()
-      await expect(image.naturalWidth).toBe(24)
-      await expect(image.naturalHeight).toBe(24)
-      urls.add(source)
+      await expect(icon).toHaveAttribute("viewBox", "0 0 24 24")
+      paints.add(iconPaint(icon))
     }
-    await expect(urls.size).toBe(48)
+    await expect(paints.size).toBe(48)
   },
 }

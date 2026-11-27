@@ -7,6 +7,8 @@ import { storybookTest } from "@storybook/addon-vitest/vitest-plugin"
 import { playwright } from "@vitest/browser-playwright"
 import { defineConfig } from "vite"
 
+import { prefixedCandidates } from "../../packages/pagopa-ui/build/prefixed-candidates.ts"
+
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 // The stories document the design system, so the alias and the coverage
 // surface point at the package they document.
@@ -37,7 +39,15 @@ function conditionInstances(
 export default defineConfig(({ mode }) => ({
   base: "./",
   envDir: false,
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    prefixedCandidates({
+      base: dirname,
+      entry: path.resolve(dirname, "src/preview.css"),
+      mirror: path.resolve(dirname, ".generated/prefixed-candidates.txt"),
+    }),
+    react(),
+    tailwindcss(),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(packageRoot, "src"),
@@ -53,37 +63,40 @@ export default defineConfig(({ mode }) => ({
       exclude: ["**/*.stories.*"],
       // Ratchet policy: thresholds follow current coverage with a small margin
       // and never go down. Raise them as new stories land (see CONTRIBUTING).
+      // A per-file gate matches the path relative to this app, so each one
+      // steps back to the workspace root first: a gate no file reaches protects
+      // nothing, and the module it names goes ungated.
       thresholds: {
         statements: 90,
         branches: 83,
         functions: 90,
         lines: 90,
-        "**/src/components/inputs/{autocomplete,select-field,drag-and-drop}.tsx": {
+        "../../**/src/components/inputs/{autocomplete,select-field,drag-and-drop}.tsx": {
           perFile: true,
           statements: 90,
           branches: 80,
           functions: 90,
           lines: 90,
         },
-        "**/src/components/inputs/field-utils.ts": {
+        "../../**/src/components/inputs/field-utils.ts": {
           statements: 100,
           branches: 85,
           functions: 100,
           lines: 100,
         },
-        "**/src/components/primitives/form-control-utils.ts": {
+        "../../**/src/components/primitives/form-control-utils.ts": {
           statements: 100,
           branches: 85,
           functions: 100,
           lines: 100,
         },
-        "**/src/components/primitives/button.tsx": {
+        "../../**/src/components/primitives/button.tsx": {
           statements: 95,
           branches: 90,
           functions: 100,
           lines: 95,
         },
-        "**/src/components/{inputs/date-picker,ui/calendar}.tsx": {
+        "../../**/src/components/{inputs/date-picker,primitives/calendar}.tsx": {
           perFile: true,
           statements: 95,
           branches: 90,

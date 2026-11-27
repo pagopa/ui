@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, fn, userEvent, within } from "storybook/test"
 
-import { Avatar } from "@/components/content"
-import { DragAndDrop } from "@/components/inputs"
+import { Avatar } from "@/components/content/avatar"
+import { DragAndDrop } from "@/components/inputs/drag-and-drop"
 
 const meta = {
   title: "Components/Inputs/DragAndDrop",
@@ -36,7 +36,7 @@ type Story = StoryObj<typeof meta>
 // Source dropzone frame: 272x236 with a 24px-inset helper (`760:7433`).
 export const Playground: Story = {
   render: (args) => (
-    <div className="w-68 max-w-full">
+    <div className="pui:w-68 pui:max-w-full">
       <DragAndDrop {...args} />
     </div>
   ),
@@ -63,7 +63,7 @@ export const Multiple: Story = {
 }
 
 export const Processing: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: { loading: true, onCancel: fn() },
   play: async ({ canvasElement, args }) => {
@@ -75,7 +75,7 @@ export const Processing: Story = {
 }
 
 export const Failed: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: {
     failed: true,

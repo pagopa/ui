@@ -16,20 +16,20 @@ export function SpinnerIndicator({
       data-slot={dataSlot}
       aria-hidden="true"
       className={cn(
-        "pointer-events-none relative block size-6 shrink-0 animate-spin loading-spinner-motion text-primary forced-colors:forced-color-adjust-none forced-colors:text-[CanvasText]",
-        variant === "contrast" && "text-contrast",
+        "pui:pointer-events-none pui:relative pui:block pui:size-6 pui:shrink-0 pui:animate-spin loading-spinner-motion pui:text-primary pui:forced-colors:forced-color-adjust-none pui:forced-colors:text-[CanvasText]",
+        variant === "contrast" && "pui:text-contrast",
         className,
       )}
     >
       <span
         data-slot="spinner-ring"
-        className="absolute inset-0 rounded-full [background-image:conic-gradient(from_195.255deg,currentColor_253.089deg,transparent_253.125deg,currentColor_360deg)] [mask-image:radial-gradient(farthest-side,transparent_calc(100%_-_var(--hairline)),black_0)]"
+        className="pui:absolute pui:inset-0 pui:rounded-full pui:[background-image:conic-gradient(from_195.255deg,currentColor_253.089deg,transparent_253.125deg,currentColor_360deg)] pui:[mask-image:radial-gradient(farthest-side,transparent_calc(100%_-_var(--pui-hairline)),black_0)]"
       />
       <svg
         aria-hidden="true"
         focusable="false"
         viewBox="0 0 24 24"
-        className="absolute inset-0 size-full"
+        className="pui:absolute pui:inset-0 pui:size-full"
       >
         <path
           data-figma-node-id="5966:24996"

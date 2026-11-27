@@ -4,41 +4,32 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as DownloadIcon } from "@/components/icons/generated/download"
+import { Default as HowToRegIcon } from "@/components/icons/generated/how-to-reg"
 import { Button } from "@/components/primitives/button"
 import { RadioGroup, RadioGroupItem } from "@/components/primitives/radio-group"
 import { Skeleton } from "@/components/primitives/skeleton"
 
-interface PaymentMetadataRow {
+export interface PaymentMetadataRow {
   label: string
   value: React.ReactNode
 }
 
-interface PaymentSuggestion {
+export interface PaymentSuggestion {
   label: string
   icon?: React.ReactNode
 }
 
-interface PaymentPrice {
+export interface PaymentPrice {
   amount: string
   detail?: string
 }
 
-function PaymentModule({
-  code,
-  metadata = [],
-  suggestion,
-  price,
-  onDownload,
-  downloadLabel: downloadLabelProp,
-  selected = false,
-  onSelect,
-  selectName,
-  actions,
-  loading = false,
-  className,
-  ...props
-}: Omit<React.ComponentProps<"div">, "onSelect"> & {
+export type PaymentModuleProps = Omit<
+  React.ComponentProps<"div">,
+  "defaultChecked" | "defaultValue" | "onSelect"
+> & {
   /** Payment code (IUV). */
   code: string
   /** Labelled rows; values accept ReactNode, e.g. chips. */
@@ -60,43 +51,62 @@ function PaymentModule({
   actions?: React.ReactNode
   /** Skeleton state: placeholders replace the content. */
   loading?: boolean
-}) {
+}
+
+function PaymentModule({
+  code,
+  metadata = [],
+  suggestion,
+  price,
+  onDownload,
+  downloadLabel: downloadLabelProp,
+  selected = false,
+  onSelect,
+  selectName,
+  actions,
+  loading = false,
+  className,
+  ...props
+}: PaymentModuleProps) {
   const t = useMessages("paymentModule")
   const downloadLabel = downloadLabelProp ?? t.downloadLabel
 
   const content = loading ? (
-    <div className="grid gap-1">
-      <Skeleton className="h-6 w-60 max-w-full rounded-4 bg-muted" />
-      <Skeleton className="h-4 w-89 max-w-full rounded-4 bg-muted" />
-      <Skeleton className="h-4 w-42 max-w-full rounded-4 bg-muted" />
+    <div className="pui:grid pui:gap-1">
+      <Skeleton className="pui:h-6 pui:w-60 pui:max-w-full pui:rounded-4 pui:bg-muted" />
+      <Skeleton className="pui:h-4 pui:w-89 pui:max-w-full pui:rounded-4 pui:bg-muted" />
+      <Skeleton className="pui:h-4 pui:w-42 pui:max-w-full pui:rounded-4 pui:bg-muted" />
     </div>
   ) : (
     <>
-      <div className="flex min-w-0 flex-1 flex-col gap-4 @md/payment-module:flex-row @md/payment-module:items-center @md/payment-module:gap-6">
+      <div className="pui:flex pui:min-w-0 pui:flex-1 pui:flex-col pui:gap-4 pui:@min-compact/payment-module:flex-row pui:@min-compact/payment-module:items-center pui:@min-compact/payment-module:gap-6">
         <div
           data-slot="payment-module-info"
-          className="grid min-w-0 flex-1 gap-3 @md/payment-module:gap-1.5"
+          className="pui:grid pui:min-w-0 pui:flex-1 pui:gap-3 pui:@min-compact/payment-module:gap-1.5"
         >
-          <p data-slot="payment-module-code" className="text-body-sb">
+          <p data-slot="payment-module-code" className="pui:text-body-sb">
             {code}
           </p>
           {metadata.map((row) => (
             <p
               key={row.label}
               data-slot="payment-module-metadata"
-              className="flex flex-wrap items-center gap-1 text-label-mini text-muted-foreground"
+              className="pui:flex pui:flex-wrap pui:items-center pui:gap-1 pui:text-label-mini pui:text-muted-foreground"
             >
               <span>{row.label}</span>
-              <span className="text-label-mini-sb">{row.value}</span>
+              <span className="pui:text-label-mini-sb">{row.value}</span>
             </p>
           ))}
           {suggestion ? (
             <p
               data-slot="payment-module-suggestion"
-              className="flex items-center gap-1 text-caption-sb text-han-purple"
+              className="pui:flex pui:items-center pui:gap-1 pui:text-caption-sb pui:text-han-purple"
             >
-              <span aria-hidden="true" className="flex size-5 shrink-0 items-center justify-center">
-                {suggestion.icon ?? <PagoPAIcon name="how_to_reg" size={20} />}
+              <span
+                aria-hidden="true"
+                className="pui:flex pui:size-5 pui:shrink-0 pui:items-center pui:justify-center"
+              >
+                {suggestion.icon ?? <Icon source={HowToRegIcon} size={20} />}
               </span>
               {suggestion.label}
             </p>
@@ -105,13 +115,18 @@ function PaymentModule({
         {price || onDownload || onSelect ? (
           <span
             data-slot="payment-module-tail"
-            className={cn("flex shrink-0 items-center justify-end", onSelect ? "gap-2" : "gap-4")}
+            className={cn(
+              "pui:flex pui:shrink-0 pui:items-center pui:justify-end",
+              onSelect ? "pui:gap-2" : "pui:gap-4",
+            )}
           >
             {price ? (
-              <span className="grid text-right">
-                <span className="text-body-sb text-primary">{price.amount}</span>
+              <span className="pui:grid pui:text-right">
+                <span className="pui:text-body-sb pui:text-primary">{price.amount}</span>
                 {price.detail ? (
-                  <span className="text-caption-sb text-muted-foreground">{price.detail}</span>
+                  <span className="pui:text-caption-sb pui:text-muted-foreground">
+                    {price.detail}
+                  </span>
                 ) : null}
               </span>
             ) : null}
@@ -124,17 +139,22 @@ function PaymentModule({
                 onClick={onDownload}
                 // Source action is a 24px icon frame: the visible box stays 24px
                 // and the >=44px pointer target is the invisible ::after.
-                className="relative size-6 min-h-0 px-0 after:absolute after:-inset-2.5"
+                className="pui:relative pui:size-6 pui:min-h-0 pui:px-0 pui:after:absolute pui:after:-inset-2.5"
               >
-                <PagoPAIcon name="download" className="size-6" />
+                <Icon source={DownloadIcon} className="pui:size-6" />
               </Button>
             ) : null}
-            {onSelect ? <RadioGroupItem value="selected" className="shrink-0 self-center" /> : null}
+            {onSelect ? (
+              <RadioGroupItem value="selected" className="pui:shrink-0 pui:self-center" />
+            ) : null}
           </span>
         ) : null}
       </div>
       {actions ? (
-        <div data-slot="payment-module-actions" className="flex flex-wrap justify-end gap-6">
+        <div
+          data-slot="payment-module-actions"
+          className="pui:flex pui:flex-wrap pui:justify-end pui:gap-6"
+        >
           {actions}
         </div>
       ) : null}
@@ -143,30 +163,30 @@ function PaymentModule({
 
   if (onSelect) {
     return (
-      <div className="@container/payment-module w-full min-w-0">
+      <div className="pui:@container/payment-module pui:w-full pui:min-w-0">
         <RadioGroup
           data-slot="payment-module"
           value={selected ? "selected" : null}
           onValueChange={() => onSelect(true)}
           name={selectName}
           className={cn(
-            "flex w-full min-w-0 flex-col gap-6 rounded-lg border border-border bg-card p-4",
+            "pui:flex pui:w-full pui:min-w-0 pui:flex-col pui:gap-6 pui:rounded-lg pui:border pui:border-border pui:bg-card pui:p-4",
             className,
           )}
           {...props}
         >
-          <label className="block">{content}</label>
+          <label className="pui:block">{content}</label>
         </RadioGroup>
       </div>
     )
   }
 
   return (
-    <div className="@container/payment-module w-full min-w-0">
+    <div className="pui:@container/payment-module pui:w-full pui:min-w-0">
       <div
         data-slot="payment-module"
         className={cn(
-          "flex w-full min-w-0 flex-col gap-6 rounded-lg border border-border bg-card p-4",
+          "pui:flex pui:w-full pui:min-w-0 pui:flex-col pui:gap-6 pui:rounded-lg pui:border pui:border-border pui:bg-card pui:p-4",
           className,
         )}
         {...props}

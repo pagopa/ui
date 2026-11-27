@@ -74,7 +74,7 @@ test("repeated flags keep every value in order", () => {
 })
 
 test("a numeric flag without a value is a usage error, not its default", async () => {
-  const result = await runCli(["parity", "queue", "--next", "--size"])
+  const result = await runCli(["parity", "source", "4:4", "--depth"])
   assert.equal(result.status, 2)
-  assert.match(result.stderr, /--size.*integer/)
+  assert.match(result.stderr, /--depth.*integer/)
 })

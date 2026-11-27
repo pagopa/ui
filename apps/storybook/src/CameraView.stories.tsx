@@ -1,7 +1,7 @@
 import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
-import { CameraView } from "@/components/overlays"
+import { CameraView } from "@/components/overlays/camera-view"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import cameraViewElementGuide from "./guides/camera-view-element.md?raw"
@@ -33,8 +33,8 @@ export const Inactive: Story = {
   args: { active: false, label: "Fotocamera disattivata" },
 }
 
-const cameraStyle: React.CSSProperties & { "--camera-size": string } = {
-  "--camera-size": "376px",
+const cameraStyle: React.CSSProperties & { "--pui-camera-size": string } = {
+  "--pui-camera-size": "376px",
 }
 
 export const Fidelity: Story = {

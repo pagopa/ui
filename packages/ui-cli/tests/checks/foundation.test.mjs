@@ -11,6 +11,10 @@ function zeroCounts() {
   return Object.fromEntries(Object.keys(RULES).map((rule) => [rule, 0]))
 }
 
+function stylesheetDeclarations(stylesheet) {
+  return JSON.stringify({ schemaVersion: 1, entries: {}, stylesheet })
+}
+
 function fixture(run, { files = {}, baseline, exceptions } = {}) {
   const sources = {
     "pnpm-workspace.yaml": "packages: []\n",
@@ -326,14 +330,12 @@ test("a Tailwind breakpoint variant counts, the Figma ones do not", () => {
       assert.deepEqual(result.problems, [])
     },
     {
-      // `@md/alert:` is a default container query: it proves the breakpoint
-      // rule's lookbehind, and it is exempted here so this fixture isolates one
-      // rule.
-      baseline: { schemaVersion: 1, counts: { ...zeroCounts(), "default-container-query": 1 } },
+      // `@min-compact/alert:` is a container query: it proves the breakpoint
+      // rule's lookbehind.
       files: {
         "src/components/figma.tsx": [
           'export const figma = <div className="tablet:flex max-w-screen-sm" />',
-          'export const container = <div className="@md/alert:flex" />',
+          'export const container = <div className="@min-compact/alert:flex" />',
           'export const state = <div className="data-[state=open]:flex" />',
           "",
         ].join("\n"),
@@ -342,13 +344,13 @@ test("a Tailwind breakpoint variant counts, the Figma ones do not", () => {
   )
 })
 
-test("a mobile typography pair counts, the plain scale classes do not", () => {
+test("the published mobile typography tokens are token usage, the scale classes are not", () => {
+  // The `Heading/* • Mobile` styles are published text tokens, so a component
+  // reads them like any other type token. The rule retired with the tokens.
   fixture(
     ({ run }) => {
       const result = run()
-      assert.ok(result.problems.length > 0)
-      assert.match(result.problems.join("\n"), /mobile-text-class: 2 occurrences, the ceiling is 0/)
-      assert.match(result.problems.join("\n"), /text-title-lg-mobile/)
+      assert.deepEqual(result.problems, [])
     },
     {
       files: {
@@ -360,32 +362,31 @@ test("a mobile typography pair counts, the plain scale classes do not", () => {
   fixture(
     ({ run }) => {
       const result = run()
-      assert.deepEqual(result.problems, [])
+      assert.ok(result.problems.length > 0)
+      assert.match(
+        result.problems.join("\n"),
+        /tailwind-text-size: 1 occurrences, the ceiling is 0/,
+      )
+      assert.match(result.problems.join("\n"), /text-lg/)
     },
     {
-      files: {
-        "src/components/titles.tsx":
-          'export const titles = <h2 className="text-title-lg text-body" />\n',
-      },
+      files: { "src/components/titles.tsx": 'export const titles = <h2 className="text-lg" />\n' },
     },
   )
 })
 
-test("a default container size counts, a Figma viewport variant does not", () => {
+test("a container query reads its published step, the declaration alone passes", () => {
+  // Every step these queries read is a `container` foundation entry, so a
+  // container variant is token usage; the rule retired with the tokens.
   fixture(
     ({ run }) => {
       const result = run()
-      assert.ok(result.problems.length > 0)
-      assert.match(
-        result.problems.join("\n"),
-        /default-container-query: 3 occurrences, the ceiling is 0/,
-      )
-      assert.match(result.problems.join("\n"), /@4xl\/footer:/)
+      assert.deepEqual(result.problems, [])
     },
     {
       files: {
         "src/components/containers.tsx":
-          'export const containers = <div className="@sm:flex @md/alert:grid @4xl/footer:grid" />\n',
+          'export const containers = <div className="@container @min-compact/alert:grid @min-wide/footer:grid" />\n',
       },
     },
   )
@@ -579,33 +580,87 @@ test("the existing caller-overridable table fallback is pinned, not a general wi
   }
 })
 
-test("established local CSS extensions are exact and limited to the owning stylesheet", () => {
+test("the semantic stylesheet fails on a hardcoded colour and an unbacked dimension", () => {
   fixture(
     ({ run }) => {
-      const result = run()
-      assert.deepEqual(result.problems, [])
+      const text = run().problems.join("\n")
+      assert.match(text, /visual-constant: 2 occurrences/)
+      assert.match(text, /src\/index\.css:1: --navy: #061b49/)
+      assert.match(text, /src\/index\.css:1: --dialog-width: 601px/)
     },
     {
       files: {
-        "src/index.css":
-          ":root { --navy: #061b49; } .pagopa-ui-root { --dialog-width: 600px; line-height: 1.5; }",
+        "src/index.css": ":root { --navy: #061b49; } .pagopa-ui-root { --dialog-width: 601px; }",
       },
     },
   )
-  for (const files of [
-    { "src/index.css": ":root { --navy: #061b48; }" },
-    { "src/components/other.css": ":root { --navy: #061b49; }" },
-    { "src/index.css": ".copied { --navy: #061b49; }" },
-  ]) {
-    fixture(
-      ({ run }) => {
-        const result = run()
-        assert.ok(result.problems.length > 0)
-        assert.match(result.problems.join("\n"), /visual-constant: 1 occurrences/)
+})
+
+test("a semantic-stylesheet literal the foundations manifest declares passes", () => {
+  const stylesheet = ":root { --navy: #061b49; } .pagopa-ui-root { --dialog-width: 601px; }"
+  fixture(
+    ({ run }) => {
+      assert.deepEqual(run().problems, [])
+      // A declared value is backed, so it is not a measured occurrence either.
+      assert.equal(run("--measure").raw["visual-constant"], 0)
+    },
+    {
+      files: {
+        "src/index.css": stylesheet,
+        "src/foundations.json": stylesheetDeclarations([
+          { declaration: "--navy: #061b49", reason: "brand navy outside the collections" },
+          { declaration: "--dialog-width: 601px", reason: "Dialog desktop frame width" },
+        ]),
       },
-      { files },
-    )
-  }
+    },
+  )
+  fixture(
+    ({ run }) => {
+      const text = run().problems.join("\n")
+      assert.match(text, /visual-constant: 1 occurrences/)
+      assert.match(text, /--brand-cyan: #00a7e1/)
+    },
+    {
+      files: {
+        "src/index.css": ":root { --navy: #061b49; --brand-cyan: #00a7e1; }",
+        "src/foundations.json": stylesheetDeclarations([
+          { declaration: "--navy: #061b49", reason: "brand navy outside the collections" },
+        ]),
+      },
+    },
+  )
+})
+
+test("a stylesheet declaration backs one exact value of the semantic stylesheet only", () => {
+  const navy = { declaration: "--navy: #061b49", reason: "brand navy outside the collections" }
+  fixture(
+    ({ run }) => {
+      const text = run().problems.join("\n")
+      assert.match(text, /visual-constant: 1 occurrences/)
+      assert.match(text, /--navy: #ffffff/)
+      assert.match(text, /stale stylesheet declaration "--navy: #061b49"/)
+    },
+    {
+      files: {
+        "src/index.css": ":root { --navy: #ffffff; }",
+        "src/foundations.json": stylesheetDeclarations([navy]),
+      },
+    },
+  )
+  fixture(
+    ({ run }) => {
+      const text = run().problems.join("\n")
+      assert.match(text, /visual-constant: 1 occurrences/)
+      assert.match(text, /src\/components\/copied\.css:1: --navy: #061b49/)
+    },
+    {
+      files: {
+        "src/index.css": ":root { --navy: #061b49; }",
+        "src/components/copied.css": ":root { --navy: #061b49; }",
+        "src/foundations.json": stylesheetDeclarations([navy]),
+      },
+    },
+  )
 })
 
 test("new declaration rules are zero-ceiling gates and support existing reasoned exception machinery", () => {

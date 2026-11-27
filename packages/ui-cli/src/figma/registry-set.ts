@@ -11,16 +11,14 @@ import {
 import {
   RegistryEntrySchema,
   PageSurfaceSchema,
-  NoteLengthBaselineSchema,
-  NOTE_LENGTH_BASELINE_PATH,
   NOTE_LENGTH_LIMIT,
-  loweredNoteLengthBaseline,
   type RegistryEntry,
 } from "../schemas/catalogue.ts"
 import { requiresReason, surfaceDecision } from "./surface-decision.ts"
 import { syncCatalogue } from "./catalogue/index.ts"
 
-const surfacePath = "src/catalog/figma/page-surface.json"
+/** The censused pages the identity decision is written to. */
+export const SURFACE_PATH = "src/catalog/figma/page-surface.json"
 export type RegistryOptions = {
   nodeId: string
   status: string
@@ -78,7 +76,7 @@ export async function setRegistry(workspace: Workspace, options: RegistryOptions
   const entry = buildEntry(old, options)
   registry.entries[node.nodeId] = entry
   const warnings: string[] = []
-  const surfaceFile = workspace.path(surfacePath)
+  const surfaceFile = workspace.path(SURFACE_PATH)
   const surface = fs.existsSync(surfaceFile) ? readJson(surfaceFile, PageSurfaceSchema) : null
   const page = surface?.pages.find((item) => item.pageId === node.pageId)
   const identity = page?.identities.find((item) => item.nodeId === node.nodeId)
@@ -95,15 +93,10 @@ export async function setRegistry(workspace: Workspace, options: RegistryOptions
     if (decision === "shipped") delete identity.reason
     else identity.reason = reason
   }
-  const baselineFile = workspace.path(NOTE_LENGTH_BASELINE_PATH)
-  const baseline = fs.existsSync(baselineFile)
-    ? loweredNoteLengthBaseline(registry, readJson(baselineFile, NoteLengthBaselineSchema))
-    : null
   if (!options.dryRun) {
     writeJson(registryFile, registry)
     forgetCommitted(registryFile)
     if (identity && surface) writeJson(surfaceFile, surface)
-    if (baseline) writeJson(baselineFile, baseline)
   }
   const check = options.dryRun
     ? null
@@ -117,7 +110,6 @@ export async function setRegistry(workspace: Workspace, options: RegistryOptions
     before: old ?? null,
     entry,
     surface: identity ?? null,
-    baseline,
     warnings,
     dryRun: options.dryRun,
     check,

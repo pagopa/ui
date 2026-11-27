@@ -3,6 +3,7 @@
 // reaches the environment, the workspace and the output.
 import { defineCommand, renderUsage, runCommand, type CommandDef } from "citty"
 
+import { alignCommand } from "./align.ts"
 import { buildCommands } from "./build.ts"
 import { checkCommands } from "./check.ts"
 import { EXIT, type CliContext } from "./context.ts"
@@ -14,6 +15,7 @@ import {
 } from "./figma.ts"
 import { rulesCheckCommand } from "./figma-rules.ts"
 import { parityCommands } from "./parity.ts"
+import { recordCommand } from "./record.ts"
 import { testCommands } from "./test.ts"
 import { updateCommands } from "./update.ts"
 
@@ -34,6 +36,8 @@ export function createCli(ctx: CliContext): CommandDef {
       build: buildCommands(ctx),
       figma: figmaCommands(ctx),
       parity: parityCommands(ctx),
+      align: alignCommand(ctx),
+      record: recordCommand(ctx),
       test: testCommands(ctx),
     },
   })

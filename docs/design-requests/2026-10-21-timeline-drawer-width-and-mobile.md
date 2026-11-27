@@ -3,6 +3,7 @@
 - Type: design
 - Issue: https://github.com/pagopa/ui/issues/39
 - Status: open — the node stays `pending`
+- Ratified defaults: [docs/design-defaults.md](../design-defaults.md) — apply §2–§4 before asking; what they do not decide stays open here.
 - Decision owner: @gunzip
 - Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-timeline-drawer-width-and-mobile--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-timeline-drawer-width-and-mobile--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-timeline-drawer-width-and-mobile--option-c
 
@@ -89,7 +90,8 @@ header gap of 8, so a shared header change would reopen that node.
 ## Unblock
 
 After the decisions: update the component and the `SourceDesktop`/`SourceMobile`
-stories, capture one case per device, save them with `--save-case`, update the
-registry note and set `implemented` only when both cases verify. If the
-decisions go against the source, record the residue and its reason in the case
-and in the registry note.
+stories, compare the node on each declared device with
+`pnpm ui-cli align <nodeId> --device <device>`, then write the note and
+`implemented` with `pnpm ui-cli record <nodeId> --status implemented` only when
+both devices close. If the decisions go against the
+source, record the residue and its reason in the registry note.

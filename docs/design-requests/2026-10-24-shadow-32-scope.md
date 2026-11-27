@@ -5,6 +5,7 @@
 - Issue: https://github.com/pagopa/ui/issues/20
 - Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-shadow-32--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-shadow-32--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-shadow-32--option-c
 - Status: open — the rule and the implementation disagree; the components keep
+- Ratified defaults: [docs/design-defaults.md](../design-defaults.md) — apply §2–§4 before asking; what they do not decide stays open here.
   the current elevation until the answer is recorded
 - Decision owner: Figma design owner
 
@@ -52,8 +53,8 @@ that the rule now contradicts.
   elevation. The theme comment and the registry notes already say this.
 - **B — follow the rule.** Tooltip and popover move to `Shadow 16`; snackbar,
   cookies and scroll-to-bottom move to `Shadow 1` (or the source elevation you
-  name). The parity cases and the registry notes that assert `shadow-32` change
-  with them.
+  name). The registry notes that assert `shadow-32` change with them, and every
+  node they cover is compared again.
 - **C — split.** Dialog, drawer and snackbar keep Shadow 32; tooltip, popover
   and scroll-to-bottom drop to Shadow 16; cookies keep the banner elevation, if
   the source draws one.

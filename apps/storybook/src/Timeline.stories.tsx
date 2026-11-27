@@ -2,9 +2,13 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { CorrectionTag } from "@/components/content"
-import { Timeline, type TimelineItemStatus } from "@/components/data-display"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { CorrectionTag } from "@/components/content/correction-tag"
+import { Timeline, type TimelineItemStatus } from "@/components/data-display/timeline"
+import { Icon } from "@/components/icons/icon"
+import { Default as MailIcon } from "@/components/icons/generated/mail"
+import { Default as MarkEmailReadIcon } from "@/components/icons/generated/mark-email-read"
+import { Default as SecondLetterIcon } from "@/components/icons/generated/second-letter"
+import { Default as TroubleshootIcon } from "@/components/icons/generated/troubleshoot"
 
 import timelineGuide from "./guides/timeline.md?raw"
 import { SourceFrame } from "./support/source-frame"
@@ -73,7 +77,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Playground: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -86,7 +90,7 @@ export const Playground: Story = {
 }
 
 export const PlainItems: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: {
     items: [
@@ -124,7 +128,7 @@ export const PlainItems: Story = {
 }
 
 export const Touchpoints: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: {
     label: "Touchpoint della notifica",
@@ -133,19 +137,19 @@ export const Touchpoints: Story = {
         id: "validation",
         title: "Notifica in validazione",
         status: "default",
-        icon: <PagoPAIcon name="troubleshoot" size={24} />,
+        icon: <Icon source={TroubleshootIcon} size={24} />,
         correction: <CorrectionTag status="valid" />,
         touchpoints: [
           {
             id: "digital",
             label: "Prima comunicazione digitale",
-            icon: <PagoPAIcon name="mark_email_read" size={24} />,
+            icon: <Icon source={MarkEmailReadIcon} size={24} />,
             correction: <CorrectionTag status="valid" />,
           },
           {
             id: "paper",
             label: "Seconda {Raccomandata A/R}",
-            icon: <PagoPAIcon name="second_letter" size={24} />,
+            icon: <Icon source={SecondLetterIcon} size={24} />,
             defaultOpen: true,
             events: [
               {
@@ -162,7 +166,7 @@ export const Touchpoints: Story = {
           {
             id: "analog",
             label: "Invio analogico",
-            icon: <PagoPAIcon name="mail" size={24} />,
+            icon: <Icon source={MailIcon} size={24} />,
           },
         ],
       },
@@ -182,7 +186,7 @@ export const Touchpoints: Story = {
 }
 
 export const Multidestinatario: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: {
     label: "Touchpoint per destinatario",
@@ -191,7 +195,7 @@ export const Multidestinatario: Story = {
         id: "multi",
         title: "Notifica in validazione",
         status: "default",
-        icon: <PagoPAIcon name="troubleshoot" size={24} />,
+        icon: <Icon source={TroubleshootIcon} size={24} />,
         correction: <CorrectionTag status="valid" />,
         recipients: [
           {
@@ -201,12 +205,12 @@ export const Multidestinatario: Story = {
               {
                 id: "mario-digital",
                 label: "Prima comunicazione digitale",
-                icon: <PagoPAIcon name="mark_email_read" size={24} />,
+                icon: <Icon source={MarkEmailReadIcon} size={24} />,
               },
               {
                 id: "mario-paper",
                 label: "Seconda {Raccomandata A/R}",
-                icon: <PagoPAIcon name="second_letter" size={24} />,
+                icon: <Icon source={SecondLetterIcon} size={24} />,
               },
             ],
           },
@@ -217,7 +221,7 @@ export const Multidestinatario: Story = {
               {
                 id: "ente-digital",
                 label: "Prima comunicazione digitale",
-                icon: <PagoPAIcon name="mark_email_read" size={24} />,
+                icon: <Icon source={MarkEmailReadIcon} size={24} />,
                 correction: <CorrectionTag status="valid" />,
               },
             ],
@@ -239,13 +243,13 @@ export const Multidestinatario: Story = {
 // cursor node, and each renders a single-item timeline so the cursor is alone:
 // a last item carries no rail, and the source `Rectangle 777` stub is that rail.
 const cursorFixture = (nodeId: string, status: TimelineItemStatus, label: string) => () => (
-  <div data-fidelity-variant={nodeId.replace(":", "-")} className="w-[320px]">
+  <div data-fidelity-variant={nodeId.replace(":", "-")} className="pui:w-[320px]">
     <Timeline items={[{ id: status, title: label, status }]} />
   </div>
 )
 
 export const DotSuccess: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: {
     layout: "fullscreen",
     a11yContract: { reflow: false },
@@ -255,7 +259,7 @@ export const DotSuccess: Story = {
 }
 
 export const DotError: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: {
     layout: "fullscreen",
     a11yContract: { reflow: false },
@@ -265,7 +269,7 @@ export const DotError: Story = {
 }
 
 export const DotWarning: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: {
     layout: "fullscreen",
     a11yContract: { reflow: false },
@@ -275,7 +279,7 @@ export const DotWarning: Story = {
 }
 
 export const DotInfo: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: {
     layout: "fullscreen",
     a11yContract: { reflow: false },

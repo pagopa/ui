@@ -1,4 +1,5 @@
 {
-  "onlyChanged": true,
-  "buildScriptName": "build"
+  "storybookBuildDir": "dist",
+  "storybookBaseDir": "apps/storybook",
+  "exitZeroOnChanges": true
 }

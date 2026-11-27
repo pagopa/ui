@@ -3,13 +3,14 @@
 - Type: design
 - Issue: https://github.com/pagopa/ui/issues/76
 - Status: open — the node stays `implemented`; the choice changes the overflow only
+- Ratified defaults: [docs/design-defaults.md](../design-defaults.md) — apply §2–§4 before asking; what they do not decide stays open here.
 - Decision owner: @gunzip
 - Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-autocomplete-multiselect-overflow--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-autocomplete-multiselect-overflow--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-autocomplete-multiselect-overflow--option-c
 
 Date: 28 October 2026. Origin: open point 4 of
 [the multiselect request](./2026-10-22-autocomplete-multiselect.md), node
 `824:8838`. Figma was not modified: the measurements below come from the pinned
-inventory and the parity cases of the two filled multiselect variants.
+inventory and a comparison of the two filled multiselect variants.
 
 The node stays `implemented`; this request is named in its registry note. The
 implementation is
@@ -17,8 +18,9 @@ implementation is
 the review story is
 `apps/storybook/src/reviews/autocomplete-multiselect-overflow.stories.tsx` on
 the review pull request (it never merges, so it is not linked as a path), and
-the evidence is the two `824-8838-*` parity cases in
-[parity-cases.json](../../packages/pagopa-ui/src/catalog/figma/parity-cases.json).
+the evidence is the two `824-8838-*` filled variants in
+[inventory.json](../../packages/pagopa-ui/src/catalog/figma/inventory.json), measured
+at the source frame.
 
 ## Why
 
@@ -73,7 +75,7 @@ changes `multipleDisplay`'s default for the chips display, and nothing else.
 ## When
 
 Does not block the release. The field ships with A today; the answer only changes
-the overflow, so the node needs no new parity capture unless the answer is C.
+the overflow, so the node needs no new comparison unless the answer is C.
 
 ## What is already fixed
 

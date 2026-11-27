@@ -43,7 +43,7 @@ export const WithAction: Story = {
     title: "Operazione completata",
     message: "Elemento spostato nel cestino.",
     action: (
-      <Button variant="ghost" size="sm" className="min-h-11 min-w-11">
+      <Button variant="ghost" size="sm" className="pui:min-h-11 pui:min-w-11">
         Annulla
       </Button>
     ),
@@ -82,7 +82,7 @@ function DismissableSnackbar() {
       message="Preferenze salvate correttamente."
       onDismiss={() => setVisible(false)}
       action={
-        <Button variant="ghost" size="sm" className="min-h-11 min-w-11">
+        <Button variant="ghost" size="sm" className="pui:min-h-11 pui:min-w-11">
           Annulla
         </Button>
       }
@@ -118,12 +118,12 @@ const fidelityVariants = [
 export const Fidelity: Story = {
   parameters: { layout: "fullscreen" },
   render: () => (
-    <div id="snackbar-fidelity" className="grid justify-items-start gap-4">
+    <div id="snackbar-fidelity" className="pui:grid pui:justify-items-start pui:gap-4">
       {fidelityVariants.map((variant) => (
         <div
           key={variant.nodeId}
           data-fidelity-variant={fidelityVariant(variant.nodeId)}
-          className="w-[280px] [&>*]:w-full"
+          className="pui:w-[280px] pui:[&>*]:w-full"
         >
           <Snackbar
             tone={variant.tone}

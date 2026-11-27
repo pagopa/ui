@@ -22,13 +22,14 @@ function ButtonGroup({
 
   return (
     <div
+      data-slot="button-group"
       role="group"
       aria-label={ariaLabel}
       data-orientation={orientation}
       className={cn(
-        "flex w-fit max-w-full gap-2",
-        "data-[orientation=vertical]:flex-col",
-        "data-[orientation=horizontal]:flex-row data-[orientation=horizontal]:flex-wrap",
+        "pui:flex pui:w-fit pui:max-w-full pui:gap-2",
+        "pui:data-[orientation=vertical]:flex-col",
+        "pui:data-[orientation=horizontal]:flex-row pui:data-[orientation=horizontal]:flex-wrap",
         className,
       )}
       {...props}
@@ -71,11 +72,12 @@ function SegmentedControl<T extends string>({
 
   return (
     <div
+      data-slot="segmented-control"
       role="group"
       aria-label={ariaLabel}
       className={cn(
         // The source pill's radius is half its minimum height; cap it there when rows wrap.
-        "inline-flex max-w-full min-h-16 flex-wrap items-center gap-2 rounded-[var(--spacing-8)] border bg-muted p-2",
+        "pui:inline-flex pui:max-w-full pui:min-h-16 pui:flex-wrap pui:items-center pui:gap-2 pui:rounded-[var(--spacing-8)] pui:border pui:bg-muted pui:p-2",
         className,
       )}
     >
@@ -88,10 +90,10 @@ function SegmentedControl<T extends string>({
             aria-pressed={selected}
             onClick={() => onValueChange(item.value)}
             className={cn(
-              "min-h-12 min-w-0 max-w-full basis-[min-content] grow rounded-full px-6 max-tablet:px-4 text-label-sb whitespace-normal break-words transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+              "pui:min-h-12 pui:min-w-0 pui:max-w-full pui:basis-[min-content] pui:grow pui:rounded-full pui:px-6 pui:max-tablet:px-4 pui:text-label-sb pui:whitespace-normal pui:break-words pui:transition-colors pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring",
               selected
-                ? "bg-primary text-primary-foreground"
-                : "text-foreground hover:bg-foreground/5",
+                ? "pui:bg-primary pui:text-primary-foreground"
+                : "pui:text-foreground pui:hover:bg-foreground/5",
             )}
           >
             {item.label}
@@ -124,18 +126,19 @@ function StickyButtonBar({
   const fade = variant === "fade"
   return (
     <div
+      data-slot="sticky-button-bar"
       role="region"
       aria-label={ariaLabel}
       data-position={position}
       data-variant={variant}
       className={cn(
-        "sticky z-30 -mx-4 px-6",
+        "pui:sticky pui:z-30 pui:-mx-4 pui:px-6",
         fade
-          ? "gap-2 bg-linear-to-b from-transparent to-background pt-0 pb-6"
-          : "bg-background py-6",
-        !fade && "data-[position=bottom]:bottom-0 data-[position=bottom]:border-t",
-        !fade && "data-[position=top]:top-0 data-[position=top]:border-b",
-        fade && "data-[position=bottom]:bottom-0 data-[position=top]:top-0",
+          ? "pui:gap-2 pui:bg-linear-to-b pui:from-transparent pui:to-background pui:pt-0 pui:pb-6"
+          : "pui:bg-background pui:py-6",
+        !fade && "pui:data-[position=bottom]:bottom-0 pui:data-[position=bottom]:border-t",
+        !fade && "pui:data-[position=top]:top-0 pui:data-[position=top]:border-b",
+        fade && "pui:data-[position=bottom]:bottom-0 pui:data-[position=top]:top-0",
         className,
       )}
       {...props}

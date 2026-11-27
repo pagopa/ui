@@ -4,7 +4,9 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as AccountBalanceIcon } from "@/components/icons/generated/account-balance"
+import { Default as CheckIcon } from "@/components/icons/generated/check"
 import {
   Avatar as AvatarPrimitive,
   AvatarFallback,
@@ -54,10 +56,10 @@ type AvatarProps = AvatarIdentity & {
 }
 
 const avatarSizes = {
-  compact: "size-8",
-  small: "size-11",
-  medium: "size-12",
-  large: "size-16",
+  compact: "pui:size-8",
+  small: "pui:size-11",
+  medium: "pui:size-12",
+  large: "pui:size-16",
 }
 
 function Avatar({
@@ -76,14 +78,14 @@ function Avatar({
   return (
     <span
       data-slot={secondary ? "avatar-pair" : "avatar-identity"}
-      className={cn("relative inline-flex shrink-0", avatarSizes[size], className)}
+      className={cn("pui:relative pui:inline-flex pui:shrink-0", avatarSizes[size], className)}
     >
       <AvatarFace
         {...props}
         selectedLabel={selectedLabel}
         size={size}
         compact={Boolean(secondary)}
-        className={secondary ? "z-10 origin-top-left scale-[calc(7/11)]" : undefined}
+        className={secondary ? "pui:z-10 pui:origin-top-left pui:scale-[calc(7/11)]" : undefined}
       />
       {secondary ? (
         <AvatarFace
@@ -92,7 +94,7 @@ function Avatar({
           size={size}
           compact
           overlapped
-          className="absolute inset-0 origin-bottom-right scale-[calc(7/11)]"
+          className="pui:absolute pui:inset-0 pui:origin-bottom-right pui:scale-[calc(7/11)]"
         />
       ) : null}
       {status ? (
@@ -102,15 +104,15 @@ function Avatar({
             data-status={status}
             aria-hidden="true"
             className={cn(
-              "pointer-events-none absolute right-0 bottom-0 z-20 size-3 border-2 border-background",
-              secondary && "right-[calc(100%*4/11)] bottom-[calc(100%*4/11)]",
-              status === "online" && "rounded-full bg-success",
+              "pui:pointer-events-none pui:absolute pui:right-0 pui:bottom-0 pui:z-20 pui:size-3 pui:border-2 pui:border-background",
+              secondary && "pui:right-[calc(100%*4/11)] pui:bottom-[calc(100%*4/11)]",
+              status === "online" && "pui:rounded-full pui:bg-success",
               status === "offline" &&
-                "rounded-full bg-background after:absolute after:inset-0 after:rounded-full after:border-2 after:border-muted-foreground",
-              status === "busy" && "rounded-2 bg-destructive",
+                "pui:rounded-full pui:bg-background pui:after:absolute pui:after:inset-0 pui:after:rounded-full pui:after:border-2 pui:after:border-muted-foreground",
+              status === "busy" && "pui:rounded-2 pui:bg-destructive",
             )}
           />
-          <span className="sr-only">{statusLabel(status)}</span>
+          <span className="pui:sr-only">{statusLabel(status)}</span>
         </>
       ) : null}
     </span>
@@ -140,24 +142,29 @@ function AvatarFace({
 
   const iconSize = size === "large" ? 32 : size === "compact" ? 16 : 24
   return (
-    <span className={cn("relative inline-flex", className)}>
-      <span role="img" aria-label={alt} aria-busy={loading || undefined} className="inline-flex">
+    <span className={cn("pui:relative pui:inline-flex", className)}>
+      <span
+        role="img"
+        aria-label={alt}
+        aria-busy={loading || undefined}
+        className="pui:inline-flex"
+      >
         <AvatarPrimitive
           data-avatar-state={loading ? "loading" : selected ? "selected" : undefined}
           className={cn(
             avatarSizes[size],
-            size === "compact" && "rounded-[calc(var(--radius)*8/11)]",
-            imageFit === "contain" && "bg-card",
+            size === "compact" && "pui:rounded-[calc(var(--pui-radius)*8/11)]",
+            imageFit === "contain" && "pui:bg-card",
             (icon || tone === "inverse") &&
-              "[&:has([data-slot=avatar-fallback])]:bg-transparent [&:has([data-slot=avatar-fallback])]:after:border-0",
-            selected && "bg-primary text-primary-foreground after:border-0",
-            loading && "bg-transparent after:border-0",
+              "pui:[&:has([data-slot=avatar-fallback])]:bg-transparent pui:[&:has([data-slot=avatar-fallback])]:after:border-0",
+            selected && "pui:bg-primary pui:text-primary-foreground pui:after:border-0",
+            loading && "pui:bg-transparent pui:after:border-0",
           )}
         >
           {loading ? (
-            <Skeleton className="col-start-1 row-start-1 size-full rounded-[inherit]" />
+            <Skeleton className="pui:col-start-1 pui:row-start-1 pui:size-full pui:rounded-[inherit]" />
           ) : selected ? (
-            <PagoPAIcon name="check" size={iconSize} />
+            <Icon source={CheckIcon} size={iconSize} />
           ) : (
             <>
               {src ? (
@@ -167,14 +174,14 @@ function AvatarFace({
                   className={
                     imageFit === "contain"
                       ? cn(
-                          "m-auto rounded-none object-contain",
+                          "pui:m-auto pui:rounded-none pui:object-contain",
                           size === "large"
-                            ? "size-12"
+                            ? "pui:size-12"
                             : size === "compact"
-                              ? "size-6"
+                              ? "pui:size-6"
                               : size === "small"
-                                ? "size-8"
-                                : "size-9",
+                                ? "pui:size-8"
+                                : "pui:size-9",
                         )
                       : undefined
                   }
@@ -182,36 +189,38 @@ function AvatarFace({
               ) : null}
               <AvatarFallback
                 className={cn(
-                  "text-caption-sb",
-                  compact && "text-h3",
-                  initials && overlapped && !icon && "items-end leading-none",
+                  "pui:text-caption-sb",
+                  compact && "pui:text-h3",
+                  initials && overlapped && !icon && "pui:items-end pui:leading-none",
                   icon || tone === "inverse"
                     ? cn(
-                        "bg-avatar-icon-surface",
-                        tone === "inverse" ? "text-avatar-inverse-foreground" : "text-foreground",
+                        "pui:bg-avatar-icon-surface",
+                        tone === "inverse"
+                          ? "pui:text-avatar-inverse-foreground"
+                          : "pui:text-foreground",
                       )
                     : initials
-                      ? "bg-accent text-primary"
-                      : "bg-muted text-avatar-placeholder",
+                      ? "pui:bg-accent pui:text-primary"
+                      : "pui:bg-muted pui:text-avatar-placeholder",
                 )}
               >
                 {icon ? (
                   <span
                     aria-hidden="true"
                     inert
-                    className="flex size-1/2 items-center justify-center [&>*]:max-h-full [&>*]:max-w-full [&>svg]:size-full"
+                    className="pui:flex pui:size-1/2 pui:items-center pui:justify-center pui:[&>*]:max-h-full pui:[&>*]:max-w-full pui:[&>svg:not(.pagopa-icon)]:size-full"
                   >
                     {icon}
                   </span>
                 ) : (
-                  initials || <PagoPAIcon name="account_balance" size={iconSize} />
+                  initials || <Icon source={AccountBalanceIcon} size={iconSize} />
                 )}
               </AvatarFallback>
             </>
           )}
         </AvatarPrimitive>
       </span>
-      {selected ? <span className="sr-only">{selectedLabel}</span> : null}
+      {selected ? <span className="pui:sr-only">{selectedLabel}</span> : null}
     </span>
   )
 }

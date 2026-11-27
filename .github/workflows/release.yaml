@@ -59,6 +59,9 @@ jobs:
         id: node-setup
         uses: pagopa/dx/.github/actions/node-setup@ee2cd05d1129c09ddddddfa6704e6436f13639ea # ee2cd05c (2026-10-23)
 
+      # The publish path authenticates to GitHub Packages with the repository's
+      # own `GITHUB_TOKEN` and the `packages: write` permission above — no
+      # additional secret. The App token is for git, tags and pull requests.
       - name: Setup npm registry
         uses: pagopa/dx/actions/setup-npm-registry@ee2cd05d1129c09ddddddfa6704e6436f13639ea # ee2cd05c (2026-10-23)
         with:

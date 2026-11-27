@@ -29,7 +29,7 @@ describe("Table rules alignment", () => {
     )
 
     expect(html).toContain('<td data-slot="table-cell"')
-    expect(html).toMatch(/class="[^"]*font-mono text-mono[^"]*"[^>]*>.*?42,00 €/)
+    expect(html).toMatch(/class="[^"]*pui:font-mono pui:text-mono[^"]*"[^>]*>.*?42,00 €/)
     expect(html).not.toMatch(/class="[^"]*font-mono[^"]*"[^>]*><span[^>]*>Servizio<\/span>/)
   })
 

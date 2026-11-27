@@ -3,7 +3,9 @@
 import * as React from "react"
 
 import { cn } from "@/lib/cn"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as AccountBalanceIcon } from "@/components/icons/generated/account-balance"
+import { Down as ChevronDownIcon, Up as ChevronUpIcon } from "@/components/icons/generated/chevron"
 import {
   Select,
   SelectContent,
@@ -24,7 +26,7 @@ import {
 
 export type { SelectOption } from "./select-parts"
 
-type SelectFieldProps = FieldStateProps & {
+export interface SelectFieldProps extends FieldStateProps {
   /** Id applied to the trigger, so an external label can target it; generated when omitted. */
   id?: string
   /** Options rendered in the listbox. */
@@ -60,7 +62,7 @@ function SelectField({
   defaultValue,
   onValueChange,
   action,
-  leadingIcon = <PagoPAIcon name="account_balance" size={24} />,
+  leadingIcon = <Icon source={AccountBalanceIcon} size={24} />,
   className,
 }: SelectFieldProps) {
   const ids = useFieldIds(id)
@@ -76,19 +78,22 @@ function SelectField({
   const currentValue = value === undefined ? internalValue : value
   const filled = currentValue != null
   const triggerIcon = (
-    <PagoPAIcon
-      name="chevron"
-      variant={open ? "up" : "down"}
+    <Icon
+      source={open ? ChevronUpIcon : ChevronDownIcon}
       size={24}
       className={
-        disabled ? "text-muted-foreground" : open || error ? "text-primary" : "text-foreground"
+        disabled
+          ? "pui:text-muted-foreground"
+          : open || error
+            ? "pui:text-primary"
+            : "pui:text-foreground"
       }
     />
   )
 
   return (
-    <div className={cn("grid", error ? "gap-0.5" : "gap-2", className)}>
-      <div className="relative">
+    <div className={cn("pui:grid", error ? "pui:gap-0.5" : "pui:gap-2", className)}>
+      <div className="pui:relative">
         <Select
           {...command.rootProps}
           name={name}
@@ -111,19 +116,19 @@ function SelectField({
             icon={triggerIcon}
             aria-invalid={Boolean(error) || undefined}
             aria-describedby={describedBy(ids, state)}
-            className="peer relative aria-expanded:border-2 aria-expanded:border-primary"
+            className="peer pui:relative pui:aria-expanded:border-2 pui:aria-expanded:border-primary"
           >
             {leadingIcon ? (
               <span
                 data-slot="select-field-leading-icon"
                 aria-hidden="true"
                 inert
-                className="pointer-events-none inline-flex size-6 shrink-0 items-center justify-center text-choice-icon"
+                className="pui:pointer-events-none pui:inline-flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center pui:text-choice-icon"
               >
                 {leadingIcon}
               </span>
             ) : null}
-            <SelectValue placeholder=" " className="text-label-sb" />
+            <SelectValue placeholder=" " className="pui:text-label-sb" />
           </SelectTrigger>
           {command.closeComplete ? null : (
             <SelectContent
@@ -145,7 +150,7 @@ function SelectField({
               <SelectGroup
                 className={
                   options.some((option) => option.description || option.leading || option.chip)
-                    ? "p-0"
+                    ? "pui:p-0"
                     : undefined
                 }
               >
@@ -166,11 +171,11 @@ function SelectField({
           leadingIcon={Boolean(leadingIcon)}
           focusDriven={false}
           placeholderValue={false}
-          className={open && filled ? "text-primary" : undefined}
+          className={open && filled ? "pui:text-primary" : undefined}
         />
       </div>
       {description || error || success ? (
-        <div className="px-3.5">
+        <div className="pui:px-3.5">
           <FieldMessages ids={ids} {...state} />
         </div>
       ) : null}

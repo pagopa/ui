@@ -3,9 +3,12 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
-import { FileUp, X } from "@/components/primitives/icons"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
+import { Default as CloseIcon } from "@/components/icons/generated/close"
+import { Default as ErrorOutlinedIcon } from "@/components/icons/generated/error"
+import { Default as UploadIcon } from "@/components/icons/generated/upload"
 import { Button, buttonVariants } from "@/components/primitives/button"
 import { Progress } from "@/components/primitives/progress"
 
@@ -25,44 +28,7 @@ function replaceInputFiles(input: HTMLInputElement, next: File[]) {
   }
 }
 
-function DragAndDrop({
-  id,
-  label: labelProp,
-  description,
-  error,
-  success,
-  required,
-  requiredLabel,
-  disabled,
-  accept,
-  multiple,
-  name,
-  className,
-  onFilesChange,
-  loading = false,
-  onCancel,
-  failed = false,
-  onRetry,
-  variant = "file",
-  preview,
-  helper,
-  loadingLabel: loadingLabelProp,
-  loadingText: loadingTextProp,
-  filesLabel: filesLabelProp,
-  failedText: failedTextProp,
-  disabledText: disabledTextProp,
-  draggingText: draggingTextProp,
-  idleText: idleTextProp,
-  selectionHint = (multiple) => (multiple ? "Puoi selezionare più file" : "Seleziona un file"),
-  uploadLabel: uploadLabelProp,
-  uploadLogoLabel: uploadLogoLabelProp,
-  cancelLabel: cancelLabelProp,
-  retryLabel: retryLabelProp,
-  fileMeta: fileMetaProp,
-  removeFileLabel: removeFileLabelProp,
-  singleFileError: singleFileErrorProp,
-  invalidFormatError: invalidFormatErrorProp,
-}: Omit<FieldStateProps, "label"> & {
+export interface DragAndDropProps extends Omit<FieldStateProps, "label"> {
   id?: string
   /** Visible field label. @default messages.dragAndDrop.label */
   label?: React.ReactNode
@@ -119,7 +85,46 @@ function DragAndDrop({
   singleFileError?: string
   /** Validation message for a rejected format, from the file name. @default messages.dragAndDrop.invalidFormatError */
   invalidFormatError?: (fileName: string) => string
-}) {
+}
+
+function DragAndDrop({
+  id,
+  label: labelProp,
+  description,
+  error,
+  success,
+  required,
+  requiredLabel,
+  disabled,
+  accept,
+  multiple,
+  name,
+  className,
+  onFilesChange,
+  loading = false,
+  onCancel,
+  failed = false,
+  onRetry,
+  variant = "file",
+  preview,
+  helper,
+  loadingLabel: loadingLabelProp,
+  loadingText: loadingTextProp,
+  filesLabel: filesLabelProp,
+  failedText: failedTextProp,
+  disabledText: disabledTextProp,
+  draggingText: draggingTextProp,
+  idleText: idleTextProp,
+  selectionHint = (multiple) => (multiple ? "Puoi selezionare più file" : "Seleziona un file"),
+  uploadLabel: uploadLabelProp,
+  uploadLogoLabel: uploadLogoLabelProp,
+  cancelLabel: cancelLabelProp,
+  retryLabel: retryLabelProp,
+  fileMeta: fileMetaProp,
+  removeFileLabel: removeFileLabelProp,
+  singleFileError: singleFileErrorProp,
+  invalidFormatError: invalidFormatErrorProp,
+}: DragAndDropProps) {
   const t = useMessages("dragAndDrop")
   const label = labelProp ?? t.label
   const loadingLabel = loadingLabelProp ?? t.loadingLabel
@@ -210,12 +215,12 @@ function DragAndDrop({
       aria-invalid={Boolean(state.error) || undefined}
       aria-describedby={describedBy(ids, state)}
       onChange={(event) => updateFiles(event.currentTarget)}
-      className="absolute inset-0 size-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
+      className="pui:absolute pui:inset-0 pui:size-full pui:cursor-pointer pui:opacity-0 pui:disabled:cursor-not-allowed"
     />
   )
 
   return (
-    <div className="grid gap-1.5">
+    <div data-slot="drag-and-drop" className="pui:grid pui:gap-1.5">
       <FieldLabel
         htmlFor={ids.controlId}
         label={label}
@@ -226,28 +231,30 @@ function DragAndDrop({
       {variant === "avatar" ? (
         <div
           className={cn(
-            "relative grid justify-items-center gap-4 rounded-lg border border-secondary bg-muted p-6 text-center focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ring",
+            "pui:relative pui:grid pui:justify-items-center pui:gap-4 pui:rounded-lg pui:border pui:border-secondary pui:bg-muted pui:p-6 pui:text-center pui:focus-within:outline-2 pui:focus-within:outline-offset-2 pui:focus-within:outline-ring",
             className,
           )}
         >
           {!loading ? input : null}
           {preview ? <div aria-hidden={loading || undefined}>{preview}</div> : null}
-          <span className={cn(buttonVariants({ variant: "default" }), "pointer-events-none")}>
+          <span className={cn(buttonVariants({ variant: "default" }), "pui:pointer-events-none")}>
             {uploadLogoLabel}
           </span>
-          {helper ? <span className="text-caption-sb text-muted-foreground">{helper}</span> : null}
+          {helper ? (
+            <span className="pui:text-caption-sb pui:text-muted-foreground">{helper}</span>
+          ) : null}
         </div>
       ) : (
         <div
           data-dragging={dragging}
           data-status={loading ? "processing" : failed || state.error ? "failed" : "default"}
           className={cn(
-            "group relative grid min-h-24 place-items-center rounded-lg border border-drop-target bg-accent p-6 text-center",
-            "focus-within:border-ring focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ring",
-            "data-[dragging=true]:bg-dragging-surface",
-            disabled && "cursor-not-allowed",
-            (failed || state.error) && "border-error-border bg-error-soft",
-            loading && "gap-6 border-secondary bg-background",
+            "group pui:relative pui:grid pui:min-h-24 pui:place-items-center pui:rounded-lg pui:border pui:border-drop-target pui:bg-accent pui:p-6 pui:text-center",
+            "pui:focus-within:border-ring pui:focus-within:outline-2 pui:focus-within:outline-offset-2 pui:focus-within:outline-ring",
+            "pui:data-[dragging=true]:bg-dragging-surface",
+            disabled && "pui:cursor-not-allowed",
+            (failed || state.error) && "pui:border-error-border pui:bg-error-soft",
+            loading && "pui:gap-6 pui:border-secondary pui:bg-background",
             className,
           )}
           onDragEnter={(event) => {
@@ -273,38 +280,45 @@ function DragAndDrop({
         >
           {!loading && !failed ? input : null}
           {loading ? (
-            <div className="pointer-events-none grid w-full justify-items-center gap-4">
-              <p className="text-body-sb">{loadingText}</p>
-              <Progress value={null} className="h-1" aria-label={loadingLabel} />
+            <div className="pui:pointer-events-none pui:grid pui:w-full pui:justify-items-center pui:gap-4">
+              <p className="pui:text-body-sb">{loadingText}</p>
+              <Progress value={null} className="pui:h-1" aria-label={loadingLabel} />
             </div>
           ) : failed ? (
-            <div className="pointer-events-none grid justify-items-center gap-2">
-              <PagoPAIcon name="error" filled={false} size={24} className="text-error-foreground" />
-              <span className="text-body-sb">{failedText}</span>
+            <div className="pui:pointer-events-none pui:grid pui:justify-items-center pui:gap-2">
+              <Icon source={ErrorOutlinedIcon} size={24} className="pui:text-error-foreground" />
+              <span className="pui:text-body-sb">{failedText}</span>
             </div>
           ) : (
-            <div className="pointer-events-none grid justify-items-center gap-2">
-              <FileUp
-                aria-hidden="true"
-                className={cn("size-6", disabled ? "text-muted-foreground" : "text-foreground")}
+            <div className="pui:pointer-events-none pui:grid pui:justify-items-center pui:gap-2">
+              <Icon
+                source={UploadIcon}
+
+                className={cn(
+                  "pui:size-6",
+                  disabled ? "pui:text-muted-foreground" : "pui:text-foreground",
+                )}
               />
-              <div className="grid justify-items-center gap-6">
-                <div className="grid gap-1">
+              <div className="pui:grid pui:justify-items-center pui:gap-6">
+                <div className="pui:grid pui:gap-1">
                   <span
                     className={cn(
-                      "text-body-sb",
-                      disabled ? "text-muted-foreground" : "text-foreground",
+                      "pui:text-body-sb",
+                      disabled ? "pui:text-muted-foreground" : "pui:text-foreground",
                     )}
                   >
                     {disabled ? disabledText : dragging ? draggingText : idleText}
                   </span>
-                  <span className="text-caption-sb text-muted-foreground">
+                  <span className="pui:text-caption-sb pui:text-muted-foreground">
                     {selectionHint(Boolean(multiple))}
                   </span>
                 </div>
                 {disabled || dragging ? null : (
                   <span
-                    className={cn(buttonVariants({ variant: "default" }), "pointer-events-none")}
+                    className={cn(
+                      buttonVariants({ variant: "default" }),
+                      "pui:pointer-events-none",
+                    )}
                   >
                     {uploadLabel}
                   </span>
@@ -313,42 +327,42 @@ function DragAndDrop({
             </div>
           )}
           {loading && onCancel ? (
-            <Button variant="outline" className="pointer-events-auto" onClick={onCancel}>
+            <Button variant="outline" className="pui:pointer-events-auto" onClick={onCancel}>
               {cancelLabel}
             </Button>
           ) : null}
           {failed && onRetry ? (
-            <Button variant="destructive" className="pointer-events-auto" onClick={onRetry}>
+            <Button variant="destructive" className="pui:pointer-events-auto" onClick={onRetry}>
               {retryLabel}
             </Button>
           ) : null}
         </div>
       )}
       {files.length ? (
-        <ul aria-label={filesLabel} className="grid gap-2">
+        <ul aria-label={filesLabel} className="pui:grid pui:gap-2">
           {files.map((file) => (
             <li
               key={`${file.name}-${file.lastModified}`}
-              className="flex items-start gap-2.5 rounded-lg border border-secondary bg-background p-6"
+              className="pui:flex pui:items-start pui:gap-2.5 pui:rounded-lg pui:border pui:border-secondary pui:bg-background pui:p-6"
             >
-              <PagoPAIcon name="check_circle" size={24} className="shrink-0 text-success" />
-              <div className="grid min-w-0 flex-1 gap-1">
-                <p className="truncate text-body-sb break-all">{file.name}</p>
-                <p className="text-label-mini text-muted-foreground">{fileMeta(file)}</p>
+              <Icon source={CheckCircleIcon} size={24} className="pui:shrink-0 pui:text-success" />
+              <div className="pui:grid pui:min-w-0 pui:flex-1 pui:gap-1">
+                <p className="pui:truncate pui:text-body-sb pui:break-all">{file.name}</p>
+                <p className="pui:text-label-mini pui:text-muted-foreground">{fileMeta(file)}</p>
               </div>
               <button
                 type="button"
                 aria-label={removeFileLabel(file.name)}
                 onClick={() => removeFile(file)}
-                className="relative grid size-6 shrink-0 place-items-center rounded-full text-foreground after:absolute after:-inset-2.5 hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                className="pui:relative pui:grid pui:size-6 pui:shrink-0 pui:place-items-center pui:rounded-full pui:text-foreground pui:after:absolute pui:after:-inset-2.5 pui:hover:bg-muted pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
               >
-                <X aria-hidden="true" className="size-3.5" />
+                <Icon source={CloseIcon} className="pui:size-3.5" />
               </button>
             </li>
           ))}
         </ul>
       ) : null}
-      <div className="px-6">
+      <div className="pui:px-6">
         <FieldMessages ids={ids} {...state} />
       </div>
     </div>

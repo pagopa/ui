@@ -9,36 +9,58 @@
       "options": {
         "cwd": "{workspaceRoot}",
         "parallel": false,
-        "commands": [
-          "mise install --locked node pnpm",
-          "pnpm nx format:check",
-          "pnpm nx run-many -p pagopa-ui -c=ci -t typecheck,fmt,lint,docs,check:catalogue,foundation:check,layers:check,build,test",
-          "pnpm nx run-many -p pagopa-ui-artwork,pagopa-ui-tokens,pagopa-ui-cli -c=ci -t typecheck,fmt,lint",
-          "pnpm nx run pagopa-ui-artwork:test",
-          "pnpm nx run pagopa-ui-tokens:test",
-          "pnpm nx run pagopa-ui-cli:test",
-          "pnpm nx run pagopa-ui-cli:check:rules",
-          "pnpm nx run pagopa-ui-cli:check:parity",
-          "pnpm nx run pagopa-ui-storybook:test:coverage",
-          "pnpm nx run pagopa-ui-storybook:test:stories",
-          "pnpm nx run pagopa-ui-storybook:build",
-          "pnpm nx run pagopa-ui:library:check"
-        ]
+        "commands": ["mise install --locked node pnpm", "pnpm nx run workspace:verify-full"]
       },
       "configurations": {
         "fast": {
-          "commands": [
-            "mise install --locked node pnpm",
-            "pnpm nx format:check",
-            "pnpm nx run-many -p pagopa-ui -c=ci -t typecheck,fmt,lint,docs,check:catalogue,foundation:check,layers:check,build,test",
-            "pnpm nx run-many -p pagopa-ui-artwork,pagopa-ui-tokens,pagopa-ui-cli -c=ci -t typecheck,fmt,lint",
-            "pnpm nx run pagopa-ui-artwork:test",
-            "pnpm nx run pagopa-ui-tokens:test",
-            "pnpm nx run pagopa-ui-cli:test",
-            "pnpm nx run pagopa-ui-cli:check:rules",
-            "pnpm nx run pagopa-ui-cli:check:parity"
-          ]
+          "commands": ["mise install --locked node pnpm", "pnpm nx run workspace:verify-fast"]
         }
+      },
+      "cache": false
+    },
+    "verify-full": {
+      "dependsOn": [
+        "verify-fast",
+        "pagopa-ui-storybook:typecheck",
+        "pagopa-ui-storybook:test:coverage",
+        "pagopa-ui-storybook:test:stories",
+        "pagopa-ui-storybook:build",
+        "pagopa-ui:library:check"
+      ]
+    },
+    "verify-fast": {
+      "dependsOn": [
+        "check:format",
+        "pagopa-ui:typecheck",
+        "pagopa-ui:format:check",
+        "pagopa-ui:lint:check",
+        "pagopa-ui:docs",
+        "pagopa-ui:check:catalogue",
+        "pagopa-ui:foundation:check",
+        "pagopa-ui:layers:check",
+        "pagopa-ui:utility-prefix:check",
+        "pagopa-ui:consumer-dx:check",
+        "pagopa-ui:build",
+        "pagopa-ui:test",
+        "pagopa-ui-artwork:typecheck",
+        "pagopa-ui-artwork:format:check",
+        "pagopa-ui-artwork:lint:check",
+        "pagopa-ui-artwork:test",
+        "pagopa-ui-tokens:typecheck",
+        "pagopa-ui-tokens:format:check",
+        "pagopa-ui-tokens:lint:check",
+        "pagopa-ui-tokens:test",
+        "pagopa-ui-cli:typecheck",
+        "pagopa-ui-cli:format:check",
+        "pagopa-ui-cli:lint:check",
+        "pagopa-ui-cli:test"
+      ]
+    },
+    "check:format": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{workspaceRoot}",
+        "command": "pnpm nx format:check"
       },
       "cache": false
     }

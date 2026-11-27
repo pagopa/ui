@@ -24,7 +24,16 @@
     "AlertAction": {
       "type": "Notifications and alerts"
     },
+    "AlertContent": {
+      "type": "Notifications and alerts"
+    },
+    "AlertCopy": {
+      "type": "Notifications and alerts"
+    },
     "AlertDescription": {
+      "type": "Notifications and alerts"
+    },
+    "AlertIcon": {
       "type": "Notifications and alerts"
     },
     "AlertTitle": {
@@ -114,6 +123,9 @@
     "Dialog": {
       "type": "Dialog and Drawer"
     },
+    "DialogClose": {
+      "type": "Button"
+    },
     "DownloadCard": {
       "type": "Content display"
     },
@@ -122,6 +134,9 @@
     },
     "Drawer": {
       "type": "Dialog and Drawer"
+    },
+    "DrawerClose": {
+      "type": "Button"
     },
     "Dropdown": {
       "type": "Combobox and Select"
@@ -148,6 +163,12 @@
       "type": "Notifications and alerts"
     },
     "IdentityProviderPicker": {
+      "type": "Choice group"
+    },
+    "IdentityProviderPickerRow": {
+      "type": "Choice group"
+    },
+    "IdentityProviderPickerView": {
       "type": "Choice group"
     },
     "Input": {

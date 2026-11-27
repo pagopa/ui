@@ -3,8 +3,9 @@
 import * as React from "react"
 
 import { useMessages } from "@/lib/ui-provider"
-import { ArrowUpDown } from "@/components/primitives/icons"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Down as ArrowDownIcon, Up as ArrowUpIcon } from "@/components/icons/generated/arrow"
+import { Default as UnfoldIcon } from "@/components/icons/generated/unfold"
 import { TableHead } from "@/components/primitives/table"
 
 interface TableSort {
@@ -12,11 +13,11 @@ interface TableSort {
   onChange: () => void
 }
 
-function TableHeaderField({
-  children,
-  sort,
-  ...props
-}: React.ComponentProps<typeof TableHead> & { sort?: TableSort }) {
+type TableHeaderFieldProps = React.ComponentProps<"th"> & {
+  sort?: TableSort
+}
+
+function TableHeaderField({ children, sort, ...props }: TableHeaderFieldProps) {
   const t = useMessages("table")
   return (
     <TableHead scope="col" aria-sort={sort?.direction} {...props}>
@@ -25,13 +26,13 @@ function TableHeaderField({
           type="button"
           aria-label={typeof children === "string" ? t.sortLabel(children) : undefined}
           onClick={sort.onChange}
-          className="inline-flex min-h-11 items-center gap-2 rounded-sm text-left whitespace-normal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          className="pui:inline-flex pui:min-h-11 pui:items-center pui:gap-2 pui:rounded-sm pui:text-left pui:whitespace-normal pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
         >
           {children}
           {sort.direction === "none" ? (
-            <ArrowUpDown aria-hidden="true" className="size-6 shrink-0" />
+            <Icon source={UnfoldIcon} className="pui:size-6 pui:shrink-0" />
           ) : (
-            <PagoPAIcon name="arrow" variant={sort.direction === "ascending" ? "up" : "down"} />
+            <Icon source={sort.direction === "ascending" ? ArrowUpIcon : ArrowDownIcon} />
           )}
         </button>
       ) : (
@@ -41,4 +42,5 @@ function TableHeaderField({
   )
 }
 
-export { TableHeaderField, type TableSort }
+export { TableHeaderField }
+export type { TableHeaderFieldProps, TableSort }

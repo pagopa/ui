@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { Avatar } from "@/components/content"
-import { Header } from "@/components/navigation"
+import { Avatar } from "@/components/content/avatar"
+import { Header } from "@/components/navigation/header"
 import { Button } from "@/components/primitives/button"
 
 const meta = {
@@ -14,7 +14,7 @@ const meta = {
       label: "SEND - Servizio Notifiche Digitali",
       href: "#",
       logo: (
-        <span className="grid size-10 place-items-center rounded-lg bg-primary text-lg font-bold text-white">
+        <span className="pui:grid pui:size-10 pui:place-items-center pui:rounded-lg pui:bg-primary pui:text-lg pui:font-bold pui:text-white">
           S
         </span>
       ),
@@ -64,7 +64,7 @@ export const Playground: Story = {
 }
 
 export const WithActions: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: {
     actions: <Button>Accedi</Button>,

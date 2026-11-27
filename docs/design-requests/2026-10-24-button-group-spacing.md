@@ -6,7 +6,8 @@
 - Issue: https://github.com/pagopa/ui/issues/21
 - Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-button-group-spacing--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-button-group-spacing--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-button-group-spacing--option-c
 - Status: open — the code follows the rule (8px); the drawing shows 24px and
-  the parity cases record the divergence
+- Ratified defaults: [docs/design-defaults.md](../design-defaults.md) — apply §2–§4 before asking; what they do not decide stays open here.
+  the registry notes record the divergence
 - Decision owner: Figma design owner
 
 ## Context
@@ -18,8 +19,9 @@ the actions: the gap is visible in `123:4501`, `123:4504`, `123:4508`,
 
 `ButtonGroup` now uses `gap-2` (8px) for every child count, as the rule asks.
 Before this change it used 8px only for a single child and 24px for two or
-more — which matched the drawing but contradicted the rule. The parity cases
-that compose the source record the 16px divergence as residues:
+more — which matched the drawing but contradicted the rule. The comparison that
+composed the source recorded the 16px divergence as residues, one per story and
+device:
 
 - `123-4498-mobile-mobile`: `2 Button group.offset.top`
 - `123-4498-3-true-desktop`: `2 Button group.offset.left`

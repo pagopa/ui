@@ -6,11 +6,8 @@ import {
   openDesignRequest,
 } from "../figma/design-requests.ts"
 import { UsageError } from "../lib/command.ts"
-import { requireText } from "./args.ts"
+import { boolArg, requireText, stringArg } from "./args.ts"
 import { action, EXIT, printJson, type CliContext } from "./context.ts"
-
-const stringArg = { type: "string" } as const
-const boolArg = { type: "boolean", default: false } as const
 
 export function requestCommand(ctx: CliContext) {
   const open = defineCommand({
