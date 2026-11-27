@@ -316,9 +316,6 @@ terraform.rc
 
 .nx/cache
 .nx/ci-metrics
-# The visual baselines `ui-cli test visual --fetch-baselines` reads: a shallow
-# clone of pagopa/ui-visual-baselines, one key's images, never a history.
-.nx/visual-baselines
 .nx/workspace-data
 .nx/migrate-runs
 .nx/polygraph
@@ -333,13 +330,6 @@ dist-ssr
 storybook-static
 test-results/
 playwright-report/
-apps/storybook/visual/test-results/
-apps/storybook/visual/playwright-report/
-# The story scope `ui-cli test visual` writes for the run
-apps/storybook/visual/scope.json
-# The Linux baselines live in pagopa/ui-visual-baselines: a local capture leaves
-# a mismatch here, and a mismatch is never a commit.
-apps/storybook/visual/__screenshots__/
 # The candidate mirror the utility-prefix build writes for Tailwind to read
 .generated/
 *.local

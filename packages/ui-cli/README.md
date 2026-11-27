@@ -273,7 +273,7 @@ by operation (`source`, `render`, `check`, `read-source`). Shared `context`,
 `evaluate` and `format` modules receive an explicit `Workspace`; they neither
 change directories nor parse argv. Browser/DOM capture, pinned image requests
 and test-runner processes live in `src/adapters/` and are injectable in tests.
-The changed-only and visual-scope domains live in `src/testing/`.
+The changed-only domain lives in `src/testing/`.
 
 `pnpm ui-cli align <node> --device <name>` is the whole loop: it prints the
 residues for one node on one declared device and writes nothing, so there is no
@@ -400,7 +400,6 @@ and reporting requirements live in the Figma skill's
 | `test`                    | `node --test "tests/**/*.test.mjs"`      | No          | Runs the CLI regressions.                                                                                                                                                                                                                                                  |
 | `test:changed`            | `test changed`                           | No          | The fast pass (Firefox and WebKit) on the affected test files only.                                                                                                                                                                                                        |
 | `test:coverage:changed`   | `test changed --coverage`                | No          | The Chromium/v8 coverage pass on the affected test files; the report covers the changed files.                                                                                                                                                                             |
-| `test:visual`             | `test visual`                            | No          | The stories a diff can move, read from the built Storybook index and written as the scope `VISUAL_SCOPE` hands to the Playwright suite; `--all` skips the walk.                                                                                                            |
 
 Task names follow the command surface: read-only gates are `check:<contract>`
 (`check:tokens`, `check:icons`, `check:pictograms`, `check:artwork`) or

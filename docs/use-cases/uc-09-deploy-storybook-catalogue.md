@@ -70,7 +70,7 @@ parent_dr: ../design-review.md
 - `AC-03`: Closing a pull request deletes the related preview environment. - Evidence: `.github/workflows/release-storybook.yaml` (types `closed`)
 - `AC-04`: The release pull request produces no preview. - Evidence: `.github/workflows/release-storybook.yaml`
 - `AC-05`: The published deployment contains the guides of the icons and of the pictograms. - Evidence: `apps/storybook/src/guides/icons.md`, `apps/storybook/src/guides/pictograms.md`; `pnpm nx run pagopa-ui:docs`
-- `AC-06`: The published catalogue does not expose review stories beyond the life of their pull request. - Evidence: `.github/workflows/release-storybook.yaml`; `apps/storybook` (stories marked `!test` and `no-visual`)
+- `AC-06`: The published catalogue does not expose review stories beyond the life of their pull request. - Evidence: `.github/workflows/release-storybook.yaml`; `apps/storybook` (stories marked `!test` on the review branch)
 
 **Tracking events**:
 

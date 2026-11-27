@@ -14,6 +14,8 @@ const meta = {
   title: "Foundations/Figma inventory",
   component: FigmaInventory,
   parameters: {
+    // A catalogue of other stories: it changes whenever any of them does.
+    chromatic: { disableSnapshot: true },
     layout: "fullscreen",
     docs: {
       description: {
@@ -25,8 +27,6 @@ Refresh the snapshot with \`pnpm nx run pagopa-ui-cli:figma:plan\` and \`pnpm nx
       },
     },
   },
-  // A catalogue of other stories: it changes whenever any of them does.
-  tags: ["no-visual"],
 } satisfies Meta<typeof FigmaInventory>
 
 export default meta

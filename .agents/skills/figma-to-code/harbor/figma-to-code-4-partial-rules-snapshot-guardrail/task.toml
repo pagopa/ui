@@ -9,7 +9,6 @@ artifacts = [
         ".pnpm-store",
         "dist",
         "coverage",
-        "apps/storybook/visual/__screenshots__",
     ] },
     "/logs/agent/copilot-cli.jsonl",
     "/logs/agent/trajectory.json",

@@ -29,7 +29,7 @@ implementation detail in collapsed context. Every issue carries one decision and
 a recommendation; a new question gets its own linked issue.
 
 For a visual question, prepare a standalone `Reviews/<slug>` story on
-`design.preview.branch` tagged `['!dev', '!test', '!autodocs', 'no-visual']`,
+`design.preview.branch` tagged `['!dev', '!test', '!autodocs']`,
 showing at least two options side by side at 320 and 1200. One open, unmerged
 review pull request owns the stable preview and its body indexes slug → issue
 URL; closing it breaks the preview. Competing implementations appear as

@@ -1,6 +1,8 @@
 # ADR-0017 — Visual baselines live outside git, keyed by the build
 
-- **Status:** Accepted — 2026-11-26.
+- **Status:** Superseded by
+  [ADR-0018](./0018-chromatic-for-visual-regression.md) — 2026-11-27. Kept for
+  the reasoning; the runner, the storage and the capture it decides are gone.
 - **Date:** 2026-11-26
 - **Context:** the visual regression compared 1551 PNG baselines committed under
   `apps/storybook/visual/__screenshots__`: 28 MB on disk against a 109 MiB pack,

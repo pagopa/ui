@@ -33,9 +33,9 @@ name: Deep checks
 # and the next steps (per-task timings).
 #
 # The review pull request (`design.preview.branch` in the figma-to-code config)
-# adds review stories only. They are tagged `!test` and `no-visual`, they never
-# merge, and the branch exists for its preview deploy: the browser suites would
-# re-check the unchanged library, so every job reports `skipped` there.
+# adds review stories only. They are tagged `!test`, they never merge, and the
+# branch exists for its preview deploy: the browser suites would re-check the
+# unchanged library, so every job reports `skipped` there.
 on:
   pull_request:
     # `ready_for_review` is what turns a skipped draft into a checked pull

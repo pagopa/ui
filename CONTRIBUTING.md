@@ -37,7 +37,7 @@ in `mise.toml`/`mise.lock`; only the `infra/` projects need them.
    pnpm nx run-many -t build
    ```
 
-4. Start the documentation and visual-check surface:
+4. Start the documentation surface:
 
    ```bash
    pnpm nx run pagopa-ui-storybook:storybook
@@ -453,21 +453,22 @@ project in its area as affected. Projects with a `Dockerfile` are inferred by
   Draft pull requests are skipped until they are ready for review. A merge to
   `main` runs nothing: the diff it carries is the one the pull request already
   proved, and the nightly is the whole-repository pass.
-- `visual.yml` — the visual regression on the stories a pull request's diff
-  reaches, and on the whole catalogue every night and on the **Version Packages**
-  pull request, so a publish is never gated on a scoped guess. The baselines it
-  compares are fetched from `pagopa/ui-visual-baselines`, keyed by the build.
+- `chromatic.yml` — the visual diff, run by Chromatic. It is opt-in through the
+  `CHROMATIC_PROJECT_TOKEN` secret: the first step publishes whether the token
+  exists and every later step is conditional on it, so without one the job is
+  green and says so in a notice. See [Visual regression](#visual-regression).
 - `figma-drift.yml` — the weekly drift snapshot, component and token, and its
   review pull request.
 - `release.yaml` — the DX release manager, on `main`.
 
-Deep checks and visual regression attach seven-day `nx-profile-*` artifacts,
-including on failed runs. Their Chrome-trace JSON records each Nx task's duration
-(`dur` in microseconds) and status; visual artifacts also carry the actual scope.
-An affected run with no tasks is an empty sample, not a speed improvement.
-Compare runs with the same event, engine and non-empty scope, alongside GitHub's
-setup/job timings, before changing parallelism. No coverage threshold, engine,
-scope fallback or baseline review is relaxed by this instrumentation. The story
+Deep checks attach seven-day `nx-profile-*` artifacts, including on failed runs,
+and the Chromatic run attaches the one its Storybook build wrote. Their
+Chrome-trace JSON records each Nx task's duration (`dur` in microseconds) and
+status. An affected run with no tasks is an empty sample, not a speed
+improvement. Compare runs with the same event, engine and non-empty scope,
+alongside GitHub's setup/job timings, before changing parallelism. No coverage
+threshold, engine, scope fallback or baseline review is relaxed by this
+instrumentation. The story
 shards are the one parallelism the workflows assume: four of them for the whole
 catalogue and one for a pull request, where the affected files already fit one
 runner and a shard no file reaches would be an empty run. Whether four is the
@@ -482,24 +483,23 @@ produced it, so the release skips the code review, the story preview and the
 deep checks. A skipped job reports `skipped`, which merges cleanly; a
 path-filtered workflow would leave a required check pending instead.
 
-The visual regression runs there in full, because that pull request is the last
-moment before `@pagopa/ui` is published: it captures the whole catalogue, at
-every width, against the fetched Linux baselines, where an ordinary pull
-request captures only the stories its diff reaches. A
-baseline the nightly or this gate rejects is repaired on its own branch of
-`pagopa/ui-visual-baselines`, pushed as a pull request there; the next run reads
-the new key, and the **Version Packages** pull request is gated again on it.
+The visual diff runs there in full, because that pull request is the last moment
+before `@pagopa/ui` is published: it compares the whole catalogue, at every
+width, where an ordinary pull request asks Chromatic for the stories its diff
+reaches. A diff the nightly or this pass finds is accepted in the Chromatic
+dashboard, and the pass that reports after the acceptance is the one that proves
+the fix.
 
 Merging a release therefore starts the release and the production Storybook
 deploy, not seven runs at once. A hand-written pull request runs everything:
-only the `nx-release/` branch is exempt from the other checks, and its scoped
-visual pass is the whole catalogue.
+only the `nx-release/` branch is exempt from the other checks, and its visual
+pass is the whole catalogue.
 
-No merge to `main` runs the deep checks or the visual regression: a merge
-carries the diff its pull request already proved, and the nightly schedules are
-what re-prove the whole repository. For the visual gate the proof a change
-carries is the baseline set its key names; the nightly and the release gate are
-where the whole catalogue is compared again.
+No merge to `main` runs the deep checks or the visual diff: a merge carries the
+diff its pull request already proved, and the nightly schedules are what re-prove
+the whole repository. For the visual diff the proof a change carries is the
+comparison its pull request reported; the nightly and the release pass are where
+the whole catalogue is compared again.
 
 ## The green chain
 
@@ -553,96 +553,43 @@ in CI, where `mise deps` has initialized their toolchain.
 
 ### Visual regression
 
-`visual.yml` captures every story at 320, 600 and 1200 px, except the ones
-tagged `no-visual`, and compares each image with the Linux baselines stored
-outside this repository, in `pagopa/ui-visual-baselines`. Nothing in the
-`__screenshots__` directory beside the visual suite is tracked, and `.git`
-carries no image: the run fetches the one set it needs, shallowly, into a cache
-directory of its own outside every package.
+Chromatic renders every story at 320, 600 and 1200 px — the widths
+`apps/storybook/.storybook/preview.tsx` declares — compares them with the last
+build on the base branch, and keeps the history, the review and the accept step
+in its dashboard. The decision and its reasons are
+[ADR-0018](./docs/decisions/0018-chromatic-for-visual-regression.md); this
+section is how to use it.
 
-A set is keyed by what decides a rendering: the hash of the built Storybook
-index (`apps/storybook/dist/index.json`), the browser engine and the digest of
-the pinned Playwright image. That key is a path in the storage repository,
-`baselines/<manifest-hash>/<engine>/<image-digest>/`, and `--fetch-baselines`
-prints the one it resolved. A set captured for another key is another rendering,
-so the run reads another directory rather than comparing across keys: an index
-byte, an engine or an image that moves asks storage for a set nobody captured
-yet, and the preflight fails naming the key and the repository. Baselines are
-produced only on Linux, in the Playwright container
-`mcr.microsoft.com/playwright:v1.63.0-noble`: a run without the fetched set
-refuses rather than capturing one, and a macOS capture is never a baseline.
-
-A pull request compares the stories its own diff can move, so a regression
-surfaces where it was introduced instead of a day later. The gate runs nightly
-at 04:00 UTC and on the **Version Packages** pull request, both times on the
-whole catalogue: a story nothing captured surfaces a day after it reached
-`main`, and a publish never rests on a scoped guess. `--all` names that capture
-and skips the walk. A diff that reaches no story leaves an empty scope, and that
-run passes with nothing to capture rather than falling back to the catalogue.
-
-A change owns its images. `ui-cli test visual` reads the built Storybook index,
-walks the imports each story reaches — the story file, what it imports, the
-shared preview and the stylesheets behind it — and writes the story ids to
-`scope.json` in `apps/storybook/visual/`, which the spec reads through
-`VISUAL_SCOPE`. A change to a component the walk reaches names the stories that
-render it; a change to a file no story imports names none. That precision rests
-on the shape of the imports: a story imports the module that declares the
-component, never its family barrel, which the layer check refuses. Touching
-`packages/pagopa-ui/src/components/navigation/accordion.tsx` and running
-`pnpm nx run pagopa-ui-storybook:test:changed -- --since HEAD` selects
-`Accordion.stories.tsx` and `AccessibilityTexts.stories.tsx` — the two stories
-that import it — and no other story. The same walk widens
-to the whole catalogue for anything that can move every screenshot without an
-import edge: `packages/tokens`, `packages/artwork`, the design-system `assets`,
-the storybook manifests and lockfile, the visual harness itself, and any deleted
-source. `--check-baselines` is what turns that walk into a verdict: it fails when
-a scoped story has no image in the fetched set, listing the files and the key.
-
-Run the same check locally as a fail-fast sequence; the browser starts only
-after the build, the fetch and the preflight succeed:
+The integration is opt-in through the `CHROMATIC_PROJECT_TOKEN` environment
+secret of `app-dev-ci` ([Figma drift secrets](./docs/figma-drift-secrets.md) has
+the create and rotate steps). The workflow stays in place and its first step
+publishes whether the token exists: without one the job is green and says so in
+a notice, and the day the secret is created the same run starts comparing with
+nothing else to change. Run it locally with the token in the environment:
 
 ```bash
-export VISUAL_BASELINE_IMAGE=mcr.microsoft.com/playwright@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27
 pnpm nx run pagopa-ui-storybook:build
-pnpm nx run pagopa-ui-cli:test:visual -- --fetch-baselines
-pnpm nx run pagopa-ui-cli:test:visual -- --since origin/main --out apps/storybook/visual/scope.json --check-baselines
-VISUAL_SCOPE=apps/storybook/visual/scope.json \
-VISUAL_SNAPSHOT_DIR="$PWD/.nx/visual-baselines/snapshots" \
-  pnpm nx run pagopa-ui-storybook:test:visual
+CHROMATIC_PROJECT_TOKEN=… pnpm nx run pagopa-ui-storybook:chromatic -- --only-changed
 ```
 
-`--fetch-baselines` clones the storage repository with `--depth 1`, a blobless
-filter and a sparse checkout, copies the one key's images into the `snapshots`
-directory of that cache and stops: no history, nothing inside the tree,
-nothing to fetch at the next checkout. It authenticates with `GITHUB_TOKEN` — or
-`VISUAL_BASELINES_TOKEN` — and never with an argument, which would put the token
-in the process list. `--image` or `VISUAL_BASELINE_IMAGE` is required: without
-it there is no key to ask for.
+What a run compares follows the event. An ordinary pull request passes
+`--only-changed`, and Chromatic's TurboSnap traces the changed files through the
+built Storybook index to the stories they reach — the scope walk this repository
+used to own. The nightly at 04:00 UTC, a manual dispatch and the **Version
+Packages** pull request compare every story, because those are the passes where a
+story nothing else proved has to surface and the publish is the last moment to
+notice. The first run of a project captures everything and becomes the baseline
+the next one traces against.
 
-`--all` skips the walk and names no story; without `VISUAL_SCOPE` the suite is
-complete too. The file carries the mode as well: `stories` lists the ids to
-capture, `all` names none because the whole catalogue runs. A nonzero preflight is
-a hard stop: do not run Playwright, which can create a snapshot when a baseline
-is missing.
+The comparison reports, it does not gate: `exitZeroOnChanges` in
+`apps/storybook/chromatic.config.json` keeps a non-empty diff green and the
+verdict in the dashboard. To accept a change, open its build in the dashboard
+and accept the changed stories; the next build of the branch compares against
+what was accepted. Nothing is stored in this repository — no image, no
+`__screenshots__`, no baseline key.
 
-The comparison uses `threshold: 0` and a 32-pixel budget. Every counted pixel
-must match exactly; the budget absorbs Chromium's small border and text
-rasterisation drift (about 0.01% of a 320x900 capture) without hiding a surface
-or layout change. A failure above the budget is a finding, not noise.
-
-To accept a visual change, capture on the pinned image into the fetched
-directory and push those images to the storage repository, under the key the run
-printed:
-
-```bash
-docker run --rm --ipc=host -v "$PWD":/work -w /work/apps/storybook \
-  -e VISUAL_SNAPSHOT_DIR=/work/.nx/visual-baselines/snapshots \
-  mcr.microsoft.com/playwright:v1.63.0-noble \
-  pnpm exec playwright test -c visual/playwright.config.ts --update-snapshots=all
-```
-
-Then commit the images under `baselines/<key>/` in a clone of
-`pagopa/ui-visual-baselines` and open a pull request there: that repository is
-the only place a baseline changes, this one reads it read-only with the run's
-`GITHUB_TOKEN`, and a merged set is what the next run of the gate compares
-against.
+Two catalogues change whenever everything else does, so they are exempt by
+parameter rather than by a tag: `Foundations/Tokens` and the Figma inventory
+declare `parameters.chromatic.disableSnapshot`. The review stories under
+`Reviews/` are not compared either: they live on `design.preview.branch`, and
+the workflow skips that head ref.

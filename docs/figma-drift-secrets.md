@@ -6,20 +6,21 @@ value lives in the common Key Vault, the GitHub environment secret is a copy of
 it, and Terraform manages neither.
 
 The drift pull request needs no third token: it pushes and opens with the job's
-`GITHUB_TOKEN` (see [The drift pull request](#the-drift-pull-request)). The
-visual regression gate needs no token of its own either: it reads the baselines
-with the same `GITHUB_TOKEN` (see
-[The visual baselines](#the-visual-baselines)).
+`GITHUB_TOKEN` (see [The drift pull request](#the-drift-pull-request)).
+`CHROMATIC_PROJECT_TOKEN` is the second one, and the visual diff is opt-in
+through it: the run is green and reports a notice while it is absent (see
+[`CHROMATIC_PROJECT_TOKEN`](#chromatic_project_token)).
 
 No agent inserts, prints or reads a secret, and no Terraform `data` source reads
 a Key Vault secret value. The tools read the process environment only.
 
 ## Secrets
 
-| GitHub environment secret | Key Vault secret | Used by                             | Scopes / permissions                                                                  | Failure mode                                                                                                                                                                      |
-| ------------------------- | ---------------- | ----------------------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `FIGMA_TOKEN`             | `ui-figma-token` | `figma-drift.yml`, live local steps | `file_content:read`, `library_content:read`, `file_variables:read` (read-only)        | The drift preflight fails explicitly; a token without the variables scope reports token drift as unavailable; live local steps stop and compare against the pinned snapshot only. |
-| `GITHUB_TOKEN`            | —                | every workflow, `figma-drift.yml`   | provided by Actions; the drift job declares `contents: write`, `pull-requests: write` | `pnpm install` cannot resolve the DX packages from GitHub Packages; the drift job cannot push its branch or open the pull request; the visual job cannot read its baselines.      |
+| GitHub environment secret | Key Vault secret             | Used by                             | Scopes / permissions                                                                  | Failure mode                                                                                                                                                                      |
+| ------------------------- | ---------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `FIGMA_TOKEN`             | `ui-figma-token`             | `figma-drift.yml`, live local steps | `file_content:read`, `library_content:read`, `file_variables:read` (read-only)        | The drift preflight fails explicitly; a token without the variables scope reports token drift as unavailable; live local steps stop and compare against the pinned snapshot only. |
+| `CHROMATIC_PROJECT_TOKEN` | `ui-chromatic-project-token` | `chromatic.yml`                     | the Chromatic project token for this repository                                       | The opt-in job reports a notice and stops; no pull request is blocked.                                                                                                            |
+| `GITHUB_TOKEN`            | —                            | every workflow, `figma-drift.yml`   | provided by Actions; the drift job declares `contents: write`, `pull-requests: write` | `pnpm install` cannot resolve the DX packages from GitHub Packages; the drift job cannot push its branch or open the pull request.                                                |
 
 The registry token is the `GITHUB_TOKEN` passed to
 `pagopa/dx/actions/setup-npm-registry`; add a dedicated `NODE_AUTH_TOKEN` only
@@ -27,7 +28,7 @@ if the organisation requires it.
 
 The bootstrap module also sets `ARM_CLIENT_ID` and `ARM_SUBSCRIPTION_ID` as
 environment secrets of `app-dev-ci` and `ARM_TENANT_ID` as a repository secret;
-the drift and visual jobs do not use them.
+the drift and Chromatic jobs do not use them.
 
 ## Create and rotate
 
@@ -39,6 +40,9 @@ once:
 az keyvault secret show --vault-name <common-vault> --name ui-figma-token \
   --query value -o tsv | gh secret set FIGMA_TOKEN --env app-dev-ci
 ```
+
+The same shape applies to `ui-chromatic-project-token` →
+`CHROMATIC_PROJECT_TOKEN`.
 
 The `app-dev-ci` environment is created by `infra/repository`. A bootstrapper
 apply leaves both the Key Vault and the GitHub secrets untouched: the
@@ -67,23 +71,19 @@ the scope — the day the plan or the endpoint changes, the same run starts
 detecting, and `update tokens --input` keeps pinning values from a snapshot in
 the meantime.
 
-## The visual baselines
+### `CHROMATIC_PROJECT_TOKEN`
 
-The PNG baselines the visual regression compares live in a repository of their
-own, `pagopa/ui-visual-baselines`, and no secret guards them: that repository is
-readable, and the visual job reads it with the `GITHUB_TOKEN` Actions already
-gives it (`contents: read` on its own repository is enough for a public one).
-Nothing to create, nothing to rotate.
+1. Create the project in Chromatic and link it to this repository.
+2. Copy the project token from **Manage → Configure → Project token**.
+3. Set it as the `ui-chromatic-project-token` Key Vault secret and copy it into
+   `CHROMATIC_PROJECT_TOKEN` of `app-dev-ci`.
+4. To rotate it, generate a new token in Chromatic, update the Key Vault secret
+   and copy it again.
 
-A set is keyed by the hash of the built Storybook index, the browser engine and
-the pinned Playwright image digest, and `baselines/<manifest-hash>/<engine>/<image-digest>/`
-is its directory there. `ui-cli test visual --fetch-baselines` clones the
-repository `--depth 1` with a blobless filter and a sparse checkout, copies the
-one key's images to `.nx/visual-baselines/snapshots` and stops: the project's
-checkout never carries a baseline, and no `git fetch` grows with them. A key the
-repository has no set for fails the preflight with the key and the repository
-named, which is the signal to capture that set on the pinned Linux image — never
-on macOS — and push it there.
+There is no label and no repository setting to create: the workflow is already
+in place and reads the secret on every run. While it is missing, the job is
+green and reports `CHROMATIC_PROJECT_TOKEN is missing` as a notice; the day the
+secret exists the same run starts comparing ([Visual regression](../CONTRIBUTING.md#visual-regression)).
 
 ## The drift pull request
 

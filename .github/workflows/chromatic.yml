@@ -1,0 +1,171 @@
+# The visual diff, run by Chromatic (ADR-0018): it renders every story at the
+# widths the preview declares, compares them with the last build on the base
+# branch and keeps the history and the accept step in its dashboard.
+#
+# The integration is opt-in through one secret. The first step reads
+# `CHROMATIC_PROJECT_TOKEN` and publishes whether it is present; every later
+# step is conditional on it. Without the token this job is green and says so in
+# a notice — it is not a skipped check and not a red one, so it can stay in the
+# workflow while the project has no subscription, and the day the token exists
+# the same run starts comparing with nothing else to change.
+#
+# What a run compares follows the event. An ordinary pull request asks for
+# TurboSnap (`--only-changed`): Chromatic traces the changed files through the
+# built Storybook index to the stories they reach, which is the scope walk this
+# repository used to own. The nightly, a manual dispatch and the "Version
+# Packages" pull request compare every story, because those are the passes where
+# a story nothing else proved has to surface and the publish is the last moment
+# to notice. `fetch-depth: 0` is TurboSnap's: it reads the git history to compute
+# the changed files, and the first run of a project captures everything and
+# becomes the baseline the next one traces against.
+#
+# The comparison reports, it does not gate: `--exit-zero-on-changes` keeps a
+# non-empty diff green and the verdict in the dashboard, so this workflow cannot
+# become an accidental merge gate. CONTRIBUTING.md §Visual regression says how a
+# change is accepted; ADR-0018 §5 holds the trigger for making it a gate.
+name: Chromatic
+
+on:
+  pull_request:
+    # `ready_for_review` is what turns a skipped draft into a compared pull
+    # request; `synchronize` re-compares every push the release pull request
+    # receives from a version plan.
+    types: [opened, synchronize, reopened, ready_for_review]
+  # No `push` trigger: a merge to `main` carries the diff a pull request already
+  # compared. The nightly below is the whole-catalogue pass.
+  schedule:
+    # Every day at 04:00 UTC, an hour after the deep checks: this is where a
+    # story nothing compared surfaces, a day after it reached `main`.
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  chromatic:
+    name: Visual regression
+    # The review pull request (`design.preview.branch` in the figma-to-code
+    # config) adds review stories only: they never merge and exist for the
+    # preview deploy, so its run would re-compare the unchanged library. A draft
+    # is not compared either, and the project token never reaches a fork: the
+    # environment secret is not exposed to one.
+    if: >-
+      github.head_ref != 'feedback/previews' &&
+      (github.event_name != 'pull_request' ||
+       (github.event.pull_request.draft == false &&
+        github.event.pull_request.head.repo.full_name == github.repository))
+    runs-on: ubuntu-24.04
+    # CHROMATIC_PROJECT_TOKEN is a GitHub environment secret of app-dev-ci,
+    # copied from the common Key Vault secret. Nothing creates it automatically:
+    # see docs/figma-drift-secrets.md.
+    environment: app-dev-ci
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - name: Check the project token
+        id: token
+        env:
+          CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+        run: |
+          if [ -z "$CHROMATIC_PROJECT_TOKEN" ]; then
+            echo "::notice::CHROMATIC_PROJECT_TOKEN is missing: the visual diff is skipped."
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout
+        if: steps.token.outputs.present == 'true'
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          # TurboSnap computes the changed files from the history.
+          fetch-depth: 0
+          # The build runs pull request code: no persisted credentials near it.
+          persist-credentials: false
+
+      - name: Setup pnpm
+        if: steps.token.outputs.present == 'true'
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+
+      - name: Setup Node.js
+        if: steps.token.outputs.present == 'true'
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      # DX packages come from GitHub Packages through pnpm's built-in `gh:`
+      # alias. Pass the token explicitly; the action writes authentication to a
+      # temporary npm config for this job.
+      - name: Setup npm registry
+        if: steps.token.outputs.present == 'true'
+        uses: pagopa/dx/actions/setup-npm-registry@ee2cd05d1129c09ddddddfa6704e6436f13639ea # ee2cd05c (2026-10-23)
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        if: steps.token.outputs.present == 'true'
+        run: pnpm install --frozen-lockfile
+
+      - name: Build the Storybook
+        if: steps.token.outputs.present == 'true'
+        env:
+          NX_PROFILE: .nx/ci-metrics/build.json
+        # The same artifact the deploy publishes: Chromatic uploads it, it does
+        # not build its own copy.
+        run: pnpm nx run pagopa-ui-storybook:build
+
+      - name: Resolve the scope
+        if: steps.token.outputs.present == 'true'
+        id: scope
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          # HEAD_REF is empty on the scheduled and the manual run. A pull
+          # request executes here as the runner user while the checkout is
+          # owned by another one: without this, `git` refuses to read the
+          # repository and TurboSnap cannot compute its diff.
+          git config --system --add safe.directory "$GITHUB_WORKSPACE" 2>/dev/null || true
+          case "$HEAD_REF" in
+            # The nightly, a manual run and the release pull request compare the
+            # whole catalogue. The release diff carries the version, the
+            # changelog and the consumed version plan, so it moves no story;
+            # what it guards is the publish, and a publish answers to every
+            # story.
+            nx-release/*|"")
+              echo "scope=all" >> "$GITHUB_OUTPUT"
+              ;;
+            # Every other pull request: the stories its own diff reaches.
+            *)
+              echo "scope=changed" >> "$GITHUB_OUTPUT"
+              ;;
+          esac
+
+      - name: Chromatic
+        if: steps.token.outputs.present == 'true'
+        timeout-minutes: 60
+        env:
+          # The CLI reads the token from the environment. Never `--project-token`:
+          # an argument is a token in the process list.
+          CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+        # `apps/storybook/chromatic.config.json` names the build directory and
+        # `exit-zero-on-changes`; only the scope belongs to the event.
+        run: |
+          flags=(--ci)
+          if [ "${{ steps.scope.outputs.scope }}" = "changed" ]; then
+            flags+=(--only-changed)
+          fi
+          pnpm nx run pagopa-ui-storybook:chromatic -- "${flags[@]}"
+
+      - name: Upload task timings
+        if: always() && steps.token.outputs.present == 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: nx-profile-visual-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .nx/ci-metrics/build.json
+          include-hidden-files: true
+          retention-days: 7
+          if-no-files-found: ignore

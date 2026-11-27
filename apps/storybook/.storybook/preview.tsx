@@ -55,6 +55,11 @@ const preview: Preview = {
       },
     },
     layout: "centered",
+    chromatic: {
+      // The two breakpoints the responsive contract states, plus the desktop
+      // reference (ADR-0004). Chromatic's default set would add none of them.
+      viewports: [320, 600, 1200],
+    },
     controls: {
       // Controls panel: every control open with its description and default
       // value, required props first; color/date values pick the right control.
