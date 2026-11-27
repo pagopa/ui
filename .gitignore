@@ -330,9 +330,9 @@ dist-ssr
 storybook-static
 test-results/
 playwright-report/
-# What the Chromatic CLI writes beside the project after a run
-apps/storybook/chromatic-diagnostics.json
-apps/storybook/chromatic.log
+# What the Chromatic CLI writes beside the directory it ran in
+chromatic-diagnostics.json
+chromatic.log
 # The candidate mirror the utility-prefix build writes for Tailwind to read
 .generated/
 *.local
