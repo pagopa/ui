@@ -24,7 +24,11 @@ const step = (name) => {
   return found
 }
 const PROBE = "Check the project token"
-const gated = job.steps.filter((candidate) => candidate.name !== PROBE)
+const REPORT = "Report the Chromatic errors"
+const UPLOAD = "Upload the Chromatic report"
+// The steps that spend the token. The two report steps read the file the CLI
+// wrote and never reach Chromatic, so they carry their own conditions below.
+const gated = job.steps.filter((candidate) => ![PROBE, REPORT, UPLOAD].includes(candidate.name))
 
 test("a missing token leaves the run green and says so", () => {
   const probe = step(PROBE)
@@ -52,6 +56,34 @@ test("the probe runs first, and every step that spends the token waits for it", 
   const ui = step("Chromatic")
   assert.equal(ui.env.CHROMATIC_PROJECT_TOKEN, "${{ secrets.CHROMATIC_PROJECT_TOKEN }}")
   assert.doesNotMatch(ui.run, /--project-token/)
+})
+
+test("a failed build says why, and the report outlives the run", () => {
+  const report = step(REPORT)
+  // Only a red build reads the report, and only when the build was one the
+  // token would have paid for: without the token there are no errors to read.
+  assert.equal(report.if, "failure() && steps.token.outputs.present == 'true'")
+  // The CLI prints the report's name, not its directory, so the step searches
+  // the workspace instead of guessing the path the earlier attempts guessed at.
+  assert.match(report.run, /find "\$GITHUB_WORKSPACE"/)
+  assert.match(report.run, /-name 'chromatic-diagnostics\.json'/)
+  assert.match(report.run, /-name node_modules -o -name \.git/)
+  assert.match(report.run, /path=\$report.*>> "\$GITHUB_OUTPUT"/)
+  assert.match(report.run, /cat "\$report"/)
+  // A report the CLI did not write is a warning: the failure above it is
+  // already the one that has to be read.
+  assert.match(report.run, /::warning::/)
+  assert.match(report.run, /exit 0/)
+
+  const upload = step(UPLOAD)
+  // `always()` because the report step only runs on a failed build, and the
+  // artifact is what a later run is compared against.
+  assert.equal(upload.if, "always() && steps.report.outputs.path != ''")
+  assert.equal(upload.with.path, "${{ steps.report.outputs.path }}")
+  assert.match(upload.with.name, /chromatic-report-/)
+  // The report holds rendered output: it expires with the rest of the evidence.
+  assert.equal(upload.with["retention-days"], 7)
+  assert.ok(names.indexOf(REPORT) < names.indexOf(UPLOAD))
 })
 
 test("the scope follows the event: an ordinary pull request asks for TurboSnap", () => {

@@ -159,15 +159,40 @@ one that turns the dashboard into a gate.
   capture; the Firefox and WebKit story passes in `deep-checks.yml` keep proving
   behaviour on the other engines, but no engine other than Chromatic's compares
   pixels.
+- A capture is what the subscription sells. The snapshotted stories — 544 of the
+  546, at the three widths ADR-0004 keeps — are 1 632 per full build, and both
+  the nightly and the release pull request capture all of them. Under that
+  budget Chromatic limits the build rather than failing it: it publishes the
+  Storybook, runs no test, and the job stays green. The plan therefore has to
+  cover one full catalogue a day before the nightly means anything, and a green
+  limited build is indistinguishable from a clean one in the pull request.
+- The play functions travel with the catalogue: Chromatic runs them as
+  interaction tests and fails the build on one, which `--exit-zero-on-changes`
+  does not cover. The first live run (2026-11-27) reported 20 from ten stories —
+  `Accessibility/Navigation Texts`, `Table/Empty With Action`,
+  `Table/Truncated Cells`, `ProductCard/Source Product`,
+  `Autocomplete/Multiselect Overridable Texts`,
+  `SelectableRows/Choice Command Surfaces Callback Errors`,
+  `Footer/Logged User False Desktop`, `Pagination/Collapse Width`,
+  `SideNav/Nested And Profile` and `SideNav/Condensed` — several of them only at
+  320 and 600 px, and the reason is the width rather than the engine: a fixture
+  whose play function reads the wide layout has always rendered at the viewport
+  the story set, and `test:stories` never asked it for another one. Chromatic
+  runs the same play at all three widths, so the desktop-shaped ones fail where
+  the layout it queries collapses — `Accessibility/Navigation Texts` says as
+  much in a comment and pins no viewport. Until the fixtures pin the width they
+  assert in, the check is red on stories the repository already proves
+  elsewhere; §5 holds the decision.
 
 ## 5. Deferred decisions with triggers
 
-| Deferred                                | Trigger                                                                                                                              |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| Making the Chromatic check required     | The token exists and a run has been green for a week; `--exit-zero-on-changes` is what has to go first, in the same change           |
-| A `diffThreshold` per family of stories | A run reports renderer noise on text-heavy stories that the reviewers learn to ignore; the parameter is per story, so it lands there |
-| Comparing on a second engine            | A regression proves invisible on Chromatic's renderer; no flag exists today, so the trigger is a second visual service, not a flag   |
-| A Chromatic project per release channel | A pre-release channel needs its own baseline history rather than sharing one                                                         |
+| Deferred                                | Trigger                                                                                                                                                                                                                   |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Making the Chromatic check required     | The token exists and a run has been green for a week; `--exit-zero-on-changes` is what has to go first, in the same change                                                                                                |
+| Whether the build judges the plays      | The 20 interaction failures above are triaged: each fixture pins the width its play asserts, `parameters.chromatic.disableSnapshot` takes the story out, or the run stops owning a judgement `test:stories` already makes |
+| A `diffThreshold` per family of stories | A run reports renderer noise on text-heavy stories that the reviewers learn to ignore; the parameter is per story, so it lands there                                                                                      |
+| Comparing on a second engine            | A regression proves invisible on Chromatic's renderer; no flag exists today, so the trigger is a second visual service, not a flag                                                                                        |
+| A Chromatic project per release channel | A pre-release channel needs its own baseline history rather than sharing one                                                                                                                                              |
 
 ## 6. Related
 

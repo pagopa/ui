@@ -588,6 +588,17 @@ and accept the changed stories; the next build of the branch compares against
 what was accepted. Nothing is stored in this repository — no image, no
 `__screenshots__`, no baseline key.
 
+The capture is what the plan sells, and a full build is 544 stories at three
+widths. Under the plan's limit Chromatic limits the build instead of failing it:
+the Storybook publishes, no test runs and the job is green while comparing
+nothing, so the run's notice is the only signal that the plan no longer covers
+the catalogue.
+
+The build also runs the stories' `play` functions as interaction tests, and one
+of those failing fails the build even with `exitZeroOnChanges`. `test:stories`
+runs the same plays in two engines, so a story that fails only here is read in
+the interaction report before it is treated as a regression.
+
 Two catalogues change whenever everything else does, so they are exempt by
 parameter rather than by a tag: `Foundations/Tokens` and the Figma inventory
 declare `parameters.chromatic.disableSnapshot`. The review stories under

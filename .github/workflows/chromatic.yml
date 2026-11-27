@@ -19,10 +19,16 @@
 # the changed files, and the first run of a project captures everything and
 # becomes the baseline the next one traces against.
 #
+# Chromatic bills per capture. A plan that no longer covers a full catalogue
+# limits the build rather than failing it: the Storybook publishes, no test runs
+# and this job is green while comparing nothing. The run's notice says so.
+#
 # The comparison reports, it does not gate: `--exit-zero-on-changes` keeps a
 # non-empty diff green and the verdict in the dashboard, so this workflow cannot
-# become an accidental merge gate. CONTRIBUTING.md §Visual regression says how a
-# change is accepted; ADR-0018 §5 holds the trigger for making it a gate.
+# become an accidental merge gate. The build still judges the stories' `play`
+# functions as interaction tests, and one of those failing fails it. CONTRIBUTING.md
+# §Visual regression says how a change is accepted; ADR-0018 §5 holds the
+# trigger for making it a gate and for deciding whether the plays belong here.
 name: Chromatic
 
 on:
@@ -168,8 +174,10 @@ jobs:
         id: report
         if: failure() && steps.token.outputs.present == 'true'
         run: |
-          report=$(find "$GITHUB_WORKSPACE" -maxdepth 3 -name 'chromatic-diagnostics.json' \
-            -not -path '*/node_modules/*' | head -1)
+          # The CLI names the report relative to wherever it decided to write it,
+          # and the run log does not say where that is: search the workspace.
+          report=$(find "$GITHUB_WORKSPACE" \( -name node_modules -o -name .git \) -prune \
+            -o -type f -name 'chromatic-diagnostics.json' -print -quit)
           if [ -z "$report" ]; then
             echo "::warning::The Chromatic report was not written: read the errors in the dashboard."
             exit 0
