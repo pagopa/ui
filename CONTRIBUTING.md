@@ -479,9 +479,11 @@ right count is what those timings answer.
 The **Version Packages** pull request and the commit it lands on `main` are not
 changes: they carry the version, the changelog and the consumed version plan,
 and nothing else. The code being published was proven on the pull request that
-produced it, so the release skips the code review, the story preview and the
-deep checks. A skipped job reports `skipped`, which merges cleanly; a
-path-filtered workflow would leave a required check pending instead.
+produced it, so the release skips the code review and the story preview: a
+skipped job reports `skipped`, which merges cleanly where a path-filtered
+workflow would leave a required check pending instead. It does not skip the deep
+checks, which run there at the whole-catalogue scope of the nightly, because
+what the release guards is the publish and a publish answers to every story.
 
 The visual diff runs there in full, because that pull request is the last moment
 before `@pagopa/ui` is published: it compares the whole catalogue, at every
@@ -492,8 +494,8 @@ the fix.
 
 Merging a release therefore starts the release and the production Storybook
 deploy, not seven runs at once. A hand-written pull request runs everything:
-only the `nx-release/` branch is exempt from the other checks, and its visual
-pass is the whole catalogue.
+only the `nx-release/` branch skips the code review and the story preview, and
+its deep checks and visual pass take the whole catalogue.
 
 No merge to `main` runs the deep checks or the visual diff: a merge carries the
 diff its pull request already proved, and the nightly schedules are what re-prove

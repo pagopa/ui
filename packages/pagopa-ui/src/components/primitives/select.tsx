@@ -171,11 +171,12 @@ function SelectItem({
                 ) : null}
                 <Icon
                   source={selected ? CheckBoxCheckedIcon : CheckBoxIcon}
+                  size={24}
                   className={cn("pui:relative", selected && "pui:text-primary")}
                 />
               </>
             ) : (
-              <Icon source={CheckIcon} className="pui:pointer-events-none" />
+              <Icon source={CheckIcon} size={16} className="pui:pointer-events-none" />
             )}
           </span>
         )}
@@ -207,7 +208,7 @@ function SelectScrollUpButton({
       )}
       {...props}
     >
-      <Icon source={ChevronUpIcon} />
+      <Icon source={ChevronUpIcon} size={16} />
     </SelectPrimitive.ScrollUpArrow>
   )
 }
@@ -225,7 +226,7 @@ function SelectScrollDownButton({
       )}
       {...props}
     >
-      <Icon source={ChevronDownIcon} />
+      <Icon source={ChevronDownIcon} size={16} />
     </SelectPrimitive.ScrollDownArrow>
   )
 }

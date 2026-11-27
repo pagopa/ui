@@ -47,7 +47,7 @@ function SectionHeader({
         {icon ? (
           <span
             aria-hidden="true"
-            className="pui:flex pui:shrink-0 pui:items-center pui:text-choice-icon pui:[&>svg]:size-6"
+            className="pui:flex pui:shrink-0 pui:items-center pui:text-choice-icon pui:[&>svg:not(.pagopa-icon)]:size-6"
           >
             {icon}
           </span>

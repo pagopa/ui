@@ -67,7 +67,7 @@ function Preheader({
                         <span
                           aria-hidden="true"
                           className={cn(
-                            "pui:flex pui:shrink-0 pui:items-center pui:[&>svg]:size-6",
+                            "pui:flex pui:shrink-0 pui:items-center pui:[&>svg:not(.pagopa-icon)]:size-6",
                             link.avatar && "pui:max-tablet:hidden",
                           )}
                         >

@@ -54,7 +54,7 @@ function ChoiceActionButton({
         <span
           aria-hidden="true"
           inert
-          className="pui:pointer-events-none pui:inline-flex pui:shrink-0 pui:[&>svg]:size-6!"
+          className="pui:pointer-events-none pui:inline-flex pui:shrink-0 pui:[&>svg:not(.pagopa-icon)]:size-6!"
         >
           {action.leading}
         </span>

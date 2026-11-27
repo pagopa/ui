@@ -208,7 +208,7 @@ function AvatarFace({
                   <span
                     aria-hidden="true"
                     inert
-                    className="pui:flex pui:size-1/2 pui:items-center pui:justify-center pui:[&>*]:max-h-full pui:[&>*]:max-w-full pui:[&>svg]:size-full"
+                    className="pui:flex pui:size-1/2 pui:items-center pui:justify-center pui:[&>*]:max-h-full pui:[&>*]:max-w-full pui:[&>svg:not(.pagopa-icon)]:size-full"
                   >
                     {icon}
                   </span>

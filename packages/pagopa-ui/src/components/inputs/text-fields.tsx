@@ -137,7 +137,7 @@ function TextField({
           <span
             aria-hidden="true"
             className={cn(
-              "pui:pointer-events-none pui:absolute pui:inset-y-0 pui:left-3 pui:flex pui:items-center pui:[&_svg]:size-6",
+              "pui:pointer-events-none pui:absolute pui:inset-y-0 pui:left-3 pui:flex pui:items-center pui:[&_svg:not(.pagopa-icon)]:size-6",
               nativePicker ? "pui:text-muted-foreground" : "pui:text-choice-icon",
             )}
           >
@@ -147,23 +147,23 @@ function TextField({
         {trailingIcon ? (
           <span
             aria-hidden="true"
-            className="pui:pointer-events-none pui:absolute pui:inset-y-0 pui:right-3 pui:flex pui:items-center pui:text-muted-foreground pui:[&_svg]:size-6"
+            className="pui:pointer-events-none pui:absolute pui:inset-y-0 pui:right-3 pui:flex pui:items-center pui:text-muted-foreground pui:[&_svg:not(.pagopa-icon)]:size-6"
           >
             {trailingIcon}
           </span>
         ) : success && !error ? (
           <span
             aria-hidden="true"
-            className="pui:pointer-events-none pui:absolute pui:inset-y-0 pui:right-3 pui:flex pui:items-center pui:text-success pui:[&_svg]:size-5"
+            className="pui:pointer-events-none pui:absolute pui:inset-y-0 pui:right-3 pui:flex pui:items-center pui:text-success pui:[&_svg:not(.pagopa-icon)]:size-5"
           >
-            <Icon source={CheckCircleIcon} />
+            <Icon source={CheckCircleIcon} size={20} />
           </span>
         ) : error ? (
           <span
             aria-hidden="true"
-            className="pui:pointer-events-none pui:absolute pui:inset-y-0 pui:right-3 pui:flex pui:items-center pui:text-destructive pui:[&_svg]:size-5"
+            className="pui:pointer-events-none pui:absolute pui:inset-y-0 pui:right-3 pui:flex pui:items-center pui:text-destructive pui:[&_svg:not(.pagopa-icon)]:size-5"
           >
-            <Icon source={ReportIcon} />
+            <Icon source={ReportIcon} size={20} />
           </span>
         ) : null}
       </div>
@@ -236,16 +236,16 @@ function TextareaField({
         {success && !error ? (
           <span
             aria-hidden="true"
-            className="pui:pointer-events-none pui:absolute pui:top-3 pui:right-3 pui:flex pui:items-center pui:text-success pui:[&_svg]:size-5"
+            className="pui:pointer-events-none pui:absolute pui:top-3 pui:right-3 pui:flex pui:items-center pui:text-success pui:[&_svg:not(.pagopa-icon)]:size-5"
           >
-            <Icon source={CheckCircleIcon} />
+            <Icon source={CheckCircleIcon} size={20} />
           </span>
         ) : error ? (
           <span
             aria-hidden="true"
-            className="pui:pointer-events-none pui:absolute pui:top-3 pui:right-3 pui:flex pui:items-center pui:text-destructive pui:[&_svg]:size-5"
+            className="pui:pointer-events-none pui:absolute pui:top-3 pui:right-3 pui:flex pui:items-center pui:text-destructive pui:[&_svg:not(.pagopa-icon)]:size-5"
           >
-            <Icon source={ReportIcon} />
+            <Icon source={ReportIcon} size={20} />
           </span>
         ) : null}
       </div>

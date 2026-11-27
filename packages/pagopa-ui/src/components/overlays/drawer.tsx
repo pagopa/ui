@@ -109,7 +109,7 @@ function Drawer({
         <DrawerHeader className={flow ? "pui:gap-2 pui:p-0" : "pui:gap-2 pui:p-6"}>
           <div data-slot="drawer-title-row" className="pui:flex pui:items-center pui:gap-4">
             {icon ? (
-              <span className="pui:flex pui:shrink-0 pui:[&_img]:size-10 pui:[&_svg]:size-10">
+              <span className="pui:flex pui:shrink-0 pui:[&_img]:size-10 pui:[&_svg:not(.pagopa-icon)]:size-10">
                 {icon}
               </span>
             ) : null}

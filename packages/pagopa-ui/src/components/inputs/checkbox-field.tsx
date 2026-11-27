@@ -70,7 +70,7 @@ function CheckboxField({
             <span
               aria-hidden="true"
               className={cn(
-                "pui:flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center pui:text-choice-icon pui:[&>svg]:size-6",
+                "pui:flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center pui:text-choice-icon pui:[&>svg:not(.pagopa-icon)]:size-6",
                 disabled && "pui:opacity-50",
               )}
             >

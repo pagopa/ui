@@ -8,7 +8,7 @@ import { cn } from "@/lib/cn"
 import type { ElementProps } from "./props"
 
 const badgeVariants = cva(
-  "group/badge pui:inline-flex pui:h-5 pui:w-fit pui:shrink-0 pui:items-center pui:justify-center pui:gap-1 pui:overflow-hidden pui:rounded-4xl pui:border pui:border-transparent pui:px-2 pui:py-0.5 pui:text-caption-sb pui:whitespace-nowrap pui:transition-all pui:focus-visible:border-ring pui:focus-visible:ring-3 pui:focus-visible:ring-ring/50 pui:has-data-[icon=inline-end]:pr-1.5 pui:has-data-[icon=inline-start]:pl-1.5 pui:aria-invalid:border-destructive pui:aria-invalid:ring-destructive/20 pui:[&>svg]:pointer-events-none pui:[&>svg]:size-3!",
+  "group/badge pui:inline-flex pui:h-5 pui:w-fit pui:shrink-0 pui:items-center pui:justify-center pui:gap-1 pui:overflow-hidden pui:rounded-4xl pui:border pui:border-transparent pui:px-2 pui:py-0.5 pui:text-caption-sb pui:whitespace-nowrap pui:transition-all pui:focus-visible:border-ring pui:focus-visible:ring-3 pui:focus-visible:ring-ring/50 pui:has-data-[icon=inline-end]:pr-1.5 pui:has-data-[icon=inline-start]:pl-1.5 pui:aria-invalid:border-destructive pui:aria-invalid:ring-destructive/20 pui:[&>svg:not(.pagopa-icon)]:pointer-events-none pui:[&>svg:not(.pagopa-icon)]:size-3!",
   {
     variants: {
       variant: {

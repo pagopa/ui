@@ -38,7 +38,10 @@ function StatusTile({
       >
         <span className="pui:flex pui:min-w-0 pui:items-center pui:gap-2">
           {channel ? (
-            <span aria-hidden="true" className="pui:flex pui:shrink-0 pui:[&>svg]:size-6">
+            <span
+              aria-hidden="true"
+              className="pui:flex pui:shrink-0 pui:[&>svg:not(.pagopa-icon)]:size-6"
+            >
               {channel}
             </span>
           ) : null}

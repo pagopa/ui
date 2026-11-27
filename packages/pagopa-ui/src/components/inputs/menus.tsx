@@ -176,7 +176,7 @@ function MenuItems({
                   sourceAligned &&
                     item.type !== "cta" &&
                     (item.icon || item.leadingAlignment === "label") &&
-                    "pui:[&_[data-slot=item-row-leading]>svg]:size-4!",
+                    "pui:[&_[data-slot=item-row-leading]>svg:not(.pagopa-icon)]:size-4!",
                   sourceAligned &&
                     item.type !== "cta" &&
                     "pui:focus:[&_[data-slot=chip]]:text-warning-foreground pui:focus:[&_[data-slot=chip]_*]:text-warning-foreground pui:data-highlighted:[&_[data-slot=chip]]:text-warning-foreground pui:data-highlighted:[&_[data-slot=chip]_*]:text-warning-foreground pui:focus:[&_[data-slot=avatar-identity]_*]:text-foreground pui:data-highlighted:[&_[data-slot=avatar-identity]_*]:text-foreground",
@@ -341,7 +341,7 @@ function Dropdown({
         }
       >
         {triggerLabel}
-        <Icon source={ChevronDownIcon} />
+        <Icon source={ChevronDownIcon} size={20} />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         className={cn(
@@ -366,9 +366,9 @@ function Dropdown({
               <DropdownMenuGroup>
                 <DropdownMenuItem
                   onClick={back.onSelect}
-                  className="pui:min-h-12 pui:gap-2 pui:rounded-none pui:px-4 pui:py-3 pui:text-body pui:text-primary pui:[&_svg]:size-6"
+                  className="pui:min-h-12 pui:gap-2 pui:rounded-none pui:px-4 pui:py-3 pui:text-body pui:text-primary pui:[&_svg:not(.pagopa-icon)]:size-6"
                 >
-                  <Icon source={ArrowLeftIcon} />
+                  <Icon source={ArrowLeftIcon} size={24} />
                   {back.label ?? backLabel}
                 </DropdownMenuItem>
               </DropdownMenuGroup>
@@ -420,7 +420,7 @@ function MenuDropdown({ accessibleLabel: accessibleLabelProp, items, label }: Me
       <DropdownMenuTrigger
         render={<Button type="button" variant="ghost" size="icon" aria-label={accessibleLabel} />}
       >
-        <Icon source={MoreVertIcon} />
+        <Icon source={MoreVertIcon} size={20} />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="pui:min-w-(--pui-menu-width) pui:p-0">
         <MenuItems items={items} label={label} dividers tone="primary" />

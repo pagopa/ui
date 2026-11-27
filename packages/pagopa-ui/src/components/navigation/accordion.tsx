@@ -11,6 +11,7 @@ import {
   AccordionTrigger,
 } from "@/components/primitives/accordion"
 import { Up as ChevronUp } from "@/components/icons/generated/chevron"
+import { Icon } from "@/components/icons/icon"
 
 export interface AccordionItemData {
   id: string
@@ -56,7 +57,7 @@ function AccordionSkeleton({
       <div aria-hidden="true" className="pui:flex pui:items-start pui:justify-between pui:gap-3">
         <span className="pui:flex pui:min-w-0 pui:flex-1 pui:items-start pui:gap-2">
           {item.icon ? (
-            <span className="pui:flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center pui:text-choice-icon pui:[&>svg]:size-6">
+            <span className="pui:flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center pui:text-choice-icon pui:[&>svg:not(.pagopa-icon)]:size-6">
               {item.icon}
             </span>
           ) : null}
@@ -65,7 +66,7 @@ function AccordionSkeleton({
             {item.chip}
           </span>
         </span>
-        <ChevronUp className="pui:size-6 pui:shrink-0 pui:text-choice-icon" />
+        <Icon source={ChevronUp} size={24} className="pui:text-choice-icon" />
       </div>
       <div aria-hidden="true" className="pui:mt-8">
         {Array.from({ length: SKELETON_ROWS }, (_, index) => (
@@ -112,7 +113,7 @@ function AccordionItem({
           {item.icon ? (
             <span
               aria-hidden="true"
-              className="pui:flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center pui:text-choice-icon pui:[&>svg]:size-6"
+              className="pui:flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center pui:text-choice-icon pui:[&>svg:not(.pagopa-icon)]:size-6"
             >
               {item.icon}
             </span>

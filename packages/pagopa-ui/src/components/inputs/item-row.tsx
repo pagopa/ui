@@ -53,7 +53,7 @@ export function ItemRow({
     "aria-describedby": details || undefined,
     className: cn(
       rich &&
-        "pui:rounded-none pui:py-3 pui:pl-4 pui:text-foreground pui:focus:bg-selection-soft pui:focus:text-foreground pui:data-selected:bg-selection-soft pui:data-highlighted:bg-selection-soft pui:data-highlighted:text-foreground pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:-outline-offset-2 pui:focus-visible:outline-ring pui:[&_[data-slot=item-row-leading]>svg]:size-6!",
+        "pui:rounded-none pui:py-3 pui:pl-4 pui:text-foreground pui:focus:bg-selection-soft pui:focus:text-foreground pui:data-selected:bg-selection-soft pui:data-highlighted:bg-selection-soft pui:data-highlighted:text-foreground pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:-outline-offset-2 pui:focus-visible:outline-ring pui:[&_[data-slot=item-row-leading]>svg:not(.pagopa-icon)]:size-6!",
     ),
     children: rich ? (
       <span className="pui:flex pui:min-w-0 pui:flex-1 pui:items-center pui:gap-2 pui:whitespace-normal">

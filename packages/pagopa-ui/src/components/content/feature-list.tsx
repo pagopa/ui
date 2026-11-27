@@ -47,7 +47,7 @@ function FeatureList({
           ) : feature.icon ? (
             <span
               aria-hidden="true"
-              className="pui:flex pui:shrink-0 pui:items-center pui:text-decorative-secondary pui:[&>svg]:size-6"
+              className="pui:flex pui:shrink-0 pui:items-center pui:text-decorative-secondary pui:[&>svg:not(.pagopa-icon)]:size-6"
             >
               {feature.icon}
             </span>

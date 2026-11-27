@@ -57,8 +57,8 @@ function AvatarBadge({ className, ...props }: React.ComponentProps<"span">) {
       className={cn(
         "pui:absolute pui:right-0 pui:bottom-0 pui:z-10 pui:inline-flex pui:items-center pui:justify-center pui:rounded-full pui:bg-primary pui:text-primary-foreground pui:bg-blend-color pui:ring-2 pui:ring-background pui:select-none",
         "pui:group-data-[size=sm]/avatar:size-2 pui:group-data-[size=sm]/avatar:[&>svg]:hidden",
-        "pui:group-data-[size=default]/avatar:size-2.5 pui:group-data-[size=default]/avatar:[&>svg]:size-2",
-        "pui:group-data-[size=lg]/avatar:size-3 pui:group-data-[size=lg]/avatar:[&>svg]:size-2",
+        "pui:group-data-[size=default]/avatar:size-2.5 pui:group-data-[size=default]/avatar:[&>svg:not(.pagopa-icon)]:size-2",
+        "pui:group-data-[size=lg]/avatar:size-3 pui:group-data-[size=lg]/avatar:[&>svg:not(.pagopa-icon)]:size-2",
         className,
       )}
       {...props}
@@ -84,7 +84,7 @@ function AvatarGroupCount({ className, ...props }: React.ComponentProps<"div">) 
     <div
       data-slot="avatar-group-count"
       className={cn(
-        "pui:relative pui:flex pui:size-8 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-full pui:bg-muted pui:text-label-mini pui:text-muted-foreground pui:ring-2 pui:ring-background pui:group-has-data-[size=lg]/avatar-group:size-10 pui:group-has-data-[size=sm]/avatar-group:size-6 pui:[&>svg]:size-4 pui:group-has-data-[size=lg]/avatar-group:[&>svg]:size-5 pui:group-has-data-[size=sm]/avatar-group:[&>svg]:size-3",
+        "pui:relative pui:flex pui:size-8 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-full pui:bg-muted pui:text-label-mini pui:text-muted-foreground pui:ring-2 pui:ring-background pui:group-has-data-[size=lg]/avatar-group:size-10 pui:group-has-data-[size=sm]/avatar-group:size-6 pui:[&>svg:not(.pagopa-icon)]:size-4 pui:group-has-data-[size=lg]/avatar-group:[&>svg:not(.pagopa-icon)]:size-5 pui:group-has-data-[size=sm]/avatar-group:[&>svg:not(.pagopa-icon)]:size-3",
         className,
       )}
       {...props}

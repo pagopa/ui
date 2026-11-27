@@ -216,7 +216,7 @@ function NavRow({
           {item.icon ? (
             <span
               aria-hidden="true"
-              className="pui:relative pui:flex pui:shrink-0 pui:items-center pui:[&>svg]:size-6"
+              className="pui:relative pui:flex pui:shrink-0 pui:items-center pui:[&>svg:not(.pagopa-icon)]:size-6"
             >
               {item.icon}
               {condensed && item.badgeCount != null ? (

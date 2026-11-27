@@ -61,7 +61,7 @@ function FooterLinkRow({ link }: { link: FooterLink }) {
       {link.icon ? (
         <span
           aria-hidden="true"
-          className="pui:flex pui:shrink-0 pui:items-center pui:[&>svg]:size-6"
+          className="pui:flex pui:shrink-0 pui:items-center pui:[&>svg:not(.pagopa-icon)]:size-6"
         >
           {link.icon}
         </span>
@@ -70,7 +70,7 @@ function FooterLinkRow({ link }: { link: FooterLink }) {
       {link.trailing ? (
         <span
           aria-hidden="true"
-          className="pui:flex pui:shrink-0 pui:items-center pui:[&>svg]:size-6"
+          className="pui:flex pui:shrink-0 pui:items-center pui:[&>svg:not(.pagopa-icon)]:size-6"
         >
           {link.trailing}
         </span>
@@ -184,7 +184,7 @@ function Footer({
                         >
                           <span
                             aria-hidden="true"
-                            className="pui:flex pui:shrink-0 pui:items-center pui:[&>svg]:size-6"
+                            className="pui:flex pui:shrink-0 pui:items-center pui:[&>svg:not(.pagopa-icon)]:size-6"
                           >
                             {social.icon}
                           </span>

@@ -82,7 +82,7 @@ function PinPoint({
           {active && children ? (
             <span
               data-slot="pin-point-glyph"
-              className="pui:absolute pui:inset-x-0 pui:top-0 pui:grid pui:aspect-square pui:place-items-center pui:text-primary-foreground pui:[&_img]:size-7 pui:[&_svg]:size-7"
+              className="pui:absolute pui:inset-x-0 pui:top-0 pui:grid pui:aspect-square pui:place-items-center pui:text-primary-foreground pui:[&_img]:size-7 pui:[&_svg:not(.pagopa-icon)]:size-7"
             >
               {children}
             </span>

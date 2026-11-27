@@ -220,7 +220,7 @@ function OTPFieldSeparator({
       className={cn("pui:flex pui:items-center pui:[&_svg:not(.pagopa-icon)]:size-4", className)}
       {...props}
     >
-      <Icon source={CheckIndeterminateSmallIcon} />
+      <Icon source={CheckIndeterminateSmallIcon} size={16} />
     </OTPFieldPrimitive.Separator>
   )
 }

@@ -216,7 +216,7 @@ function Autocomplete(props: AutocompleteProps) {
             <span
               aria-hidden="true"
               data-slot="autocomplete-leading-icon"
-              className="pui:pointer-events-none pui:absolute pui:inset-y-0 pui:left-3 pui:flex pui:items-center pui:text-choice-icon pui:[&_svg]:size-6"
+              className="pui:pointer-events-none pui:absolute pui:inset-y-0 pui:left-3 pui:flex pui:items-center pui:text-choice-icon pui:[&_svg:not(.pagopa-icon)]:size-6"
             >
               {leadingIcon}
             </span>
@@ -453,7 +453,7 @@ function Autocomplete(props: AutocompleteProps) {
                       disabled={option.disabled}
                       className={cn(
                         "pui:relative pui:flex pui:min-h-11 pui:cursor-default pui:items-center pui:justify-between pui:rounded-md pui:px-3 pui:py-2 pui:outline-none pui:data-highlighted:bg-accent pui:data-highlighted:text-accent-foreground pui:data-disabled:pointer-events-none pui:data-disabled:opacity-50",
-                        multiple ? "pui:pr-12" : "pui:[&_svg]:size-5",
+                        multiple ? "pui:pr-12" : "pui:[&_svg:not(.pagopa-icon)]:size-5",
                         attributes.className,
                       )}
                     >
@@ -481,7 +481,7 @@ function Autocomplete(props: AutocompleteProps) {
                         />
                       ) : (
                         <Combobox.ItemIndicator>
-                          <Icon source={CheckIcon} />
+                          <Icon source={CheckIcon} size={20} />
                         </Combobox.ItemIndicator>
                       )}
                     </Combobox.Item>
