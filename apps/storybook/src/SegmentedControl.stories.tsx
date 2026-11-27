@@ -64,6 +64,36 @@ export const Playground: Story = {
   },
 }
 
+export const Uncontrolled: Story = {
+  render: ({ items, defaultValue, ...args }) => (
+    <SegmentedControl {...args} items={items} defaultValue={defaultValue} data-testid="stato" />
+  ),
+  args: {
+    items: options,
+    value: undefined,
+    defaultValue: "attivi",
+    "aria-label": "Filtro stato",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const group = canvas.getByRole("group", { name: "Filtro stato" })
+    await expect(group).toHaveAttribute("data-testid", "stato")
+    await expect(canvas.getByRole("button", { name: "Attivi" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    )
+    await userEvent.click(canvas.getByRole("button", { name: "Tutti" }))
+    await expect(canvas.getByRole("button", { name: "Tutti" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    )
+    await expect(canvas.getByRole("button", { name: "Attivi" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    )
+  },
+}
+
 export const LongLabels: Story = {
   parameters: { layout: "fullscreen" },
   render: (args) => (

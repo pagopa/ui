@@ -3,6 +3,11 @@ selected segment carries `aria-pressed` and the primary fill. The caller owns th
 segments and their labels in `items`, and the control reports the chosen
 `value`.
 
+`value` is optional: `defaultValue` seeds a selection the control then owns
+itself, and `onValueChange` reports every change in both shapes. `ref` points at
+the group, and `className` and the standard attributes of a `div` land on it, so
+the caller can focus, measure, style or mark the surface.
+
 The selected segment takes the inverse label colour; the others keep the
 foreground colour and a soft hover. Long and translated labels wrap inside their
 segment, including unbroken words. When the choices cannot fit side by side,

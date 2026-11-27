@@ -18,7 +18,13 @@ import { Input } from "@/components/primitives/input"
 
 import { InputChip } from "./chips"
 import { FieldMessages, FloatingFieldLabel } from "./field"
-import { describedBy, useFieldIds, useFormReset, type FieldStateProps } from "./field-utils"
+import {
+  describedBy,
+  useFieldIds,
+  useFormReset,
+  useInputRef,
+  type FieldStateProps,
+} from "./field-utils"
 import { ItemRow, type ItemRowContent } from "./item-row"
 
 type AutocompleteOption = ItemRowContent & {
@@ -35,7 +41,15 @@ const defaultSelectedLabel = (values: string[]) => `hai selezionato ${values.joi
 const toSelection = (value: string | string[] | null | undefined): string[] =>
   value === undefined || value === null ? [] : Array.isArray(value) ? value : value ? [value] : []
 
-export interface AutocompleteSharedProps extends FieldStateProps {
+/**
+ * Props shared by both modes of {@link Autocomplete}. `ref` points at the text
+ * input while `className` and the standard HTML attributes of a `div` land on
+ * the field's root.
+ */
+export interface AutocompleteSharedProps
+  extends Omit<React.ComponentProps<"div">, "children" | "className" | "ref">, FieldStateProps {
+  /** Ref to the text input, so a consumer can focus it or read it back. */
+  ref?: React.Ref<HTMLInputElement>
   id?: string
   options: AutocompleteOption[]
   name?: string
@@ -128,7 +142,10 @@ function Autocomplete(props: AutocompleteProps) {
     loadingLabel: loadingLabelProp,
     placeholder,
     selectAllLabel,
+    "aria-describedby": ariaDescribedBy,
     className,
+    ref,
+    ...rootProps
   } = props
   const t = useMessages("autocomplete")
   const emptyLabel = emptyLabelProp ?? t.emptyLabel
@@ -142,7 +159,7 @@ function Autocomplete(props: AutocompleteProps) {
 
   const ids = useFieldIds(id)
   const portalHost = usePortalHost()
-  const inputRef = React.useRef<HTMLInputElement>(null)
+  const { inputRef, mergedInputRef } = useInputRef(ref)
   const [internalSelection, setInternalSelection] = React.useState(() => toSelection(defaultValue))
   const [inputValue, setInputValue] = React.useState(
     typeof defaultValue === "string" ? defaultValue : "",
@@ -210,7 +227,7 @@ function Autocomplete(props: AutocompleteProps) {
       onInputValueChange={(next) => setInputValue(next)}
       onValueChange={(next) => commit(toSelection(next))}
     >
-      <div className={cn("pui:grid pui:min-w-0 pui:gap-2", className)}>
+      <div className={cn("pui:grid pui:min-w-0 pui:gap-2", className)} {...rootProps}>
         <Combobox.InputGroup data-slot="autocomplete" className="pui:relative pui:min-w-0">
           {leadingIcon ? (
             <span
@@ -277,11 +294,15 @@ function Autocomplete(props: AutocompleteProps) {
                 </Combobox.Value>
               </div>
               <Combobox.Input
-                ref={inputRef}
+                ref={mergedInputRef}
                 id={ids.controlId}
                 placeholder={placeholder ?? " "}
                 aria-invalid={Boolean(error) || undefined}
-                aria-describedby={describedBy(ids, { description, error, success })}
+                aria-describedby={describedBy(
+                  ids,
+                  { description, error, success },
+                  ariaDescribedBy,
+                )}
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
                 onKeyDown={(event) => {
@@ -333,11 +354,11 @@ function Autocomplete(props: AutocompleteProps) {
             </div>
           ) : (
             <Combobox.Input
-              ref={inputRef}
+              ref={mergedInputRef}
               id={ids.controlId}
               placeholder={placeholder ?? " "}
               aria-invalid={Boolean(error) || undefined}
-              aria-describedby={describedBy(ids, { description, error, success })}
+              aria-describedby={describedBy(ids, { description, error, success }, ariaDescribedBy)}
               render={
                 <Input
                   className={cn(

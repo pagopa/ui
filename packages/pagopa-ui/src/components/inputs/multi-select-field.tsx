@@ -16,7 +16,13 @@ import {
 
 import { InputChip } from "./chips"
 import { FieldMessages, FloatingFieldLabel } from "./field"
-import { describedBy, useFieldIds, useFormReset, type FieldStateProps } from "./field-utils"
+import {
+  describedBy,
+  useFieldIds,
+  useFormReset,
+  useInputRef,
+  type FieldStateProps,
+} from "./field-utils"
 import { useChoiceAction, type ChoiceAction } from "./choice-action"
 import {
   ChoiceActionButton,
@@ -25,7 +31,15 @@ import {
   type SelectOption,
 } from "./select-parts"
 
-export interface MultiSelectFieldProps extends FieldStateProps {
+/**
+ * Props of {@link MultiSelectField}. `ref` points at the trigger while
+ * `className` and the standard HTML attributes of a `div` land on the field's
+ * root.
+ */
+export interface MultiSelectFieldProps
+  extends Omit<React.ComponentProps<"div">, "children" | "className" | "ref">, FieldStateProps {
+  /** Ref to the trigger, so a consumer can focus it or read it back. */
+  ref?: React.Ref<HTMLButtonElement>
   /** Id applied to the trigger, so an external label can target it; generated when omitted. */
   id?: string
   /** Options of the listbox; the trigger renders a removable chip per selection. */
@@ -62,12 +76,16 @@ function MultiSelectField({
   name,
   action,
   leadingIcon = <Icon source={AccountBalanceIcon} size={24} />,
+  "aria-describedby": ariaDescribedBy,
   className,
+  ref,
+  ...props
 }: MultiSelectFieldProps) {
   const ids = useFieldIds(id)
   const [internalValue, setInternalValue] = React.useState(defaultValue)
   const [open, setOpen] = React.useState(false)
-  const triggerRef = React.useRef<HTMLButtonElement>(null)
+  const { inputRef: triggerRef, mergedInputRef: mergedTriggerRef } =
+    useInputRef<HTMLButtonElement>(ref)
   const actionButtonRef = React.useRef<HTMLButtonElement>(null)
   const command = useChoiceAction(action, actionButtonRef)
   useFormReset(triggerRef, () => {
@@ -96,7 +114,7 @@ function MultiSelectField({
   )
 
   return (
-    <div className={cn("pui:grid", error ? "pui:gap-0.5" : "pui:gap-2", className)}>
+    <div className={cn("pui:grid", error ? "pui:gap-0.5" : "pui:gap-2", className)} {...props}>
       <div className="pui:relative">
         <Select
           {...command.rootProps}
@@ -116,11 +134,11 @@ function MultiSelectField({
           }}
         >
           <SelectTrigger
-            ref={triggerRef}
+            ref={mergedTriggerRef}
             id={ids.controlId}
             icon={triggerIcon}
             aria-invalid={Boolean(error) || undefined}
-            aria-describedby={describedBy(ids, { description, error, success })}
+            aria-describedby={describedBy(ids, { description, error, success }, ariaDescribedBy)}
             onKeyDown={(event) => {
               // Keyboard parity for the pointer-only chip control: the last
               // visible selection is removed with Backspace/Delete while the

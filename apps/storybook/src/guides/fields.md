@@ -32,7 +32,9 @@ reads them once, and the native `required` attribute still carries the constrain
 `leadingIcon` keeps the default decorative `account_balance` artwork and accepts a
 caller's node (pass `null` to remove it). A filled enabled field shows the clear
 control and a disabled filled field keeps the arrow. The clear control keeps focus on
-the input after it empties the field.
+the input after it empties the field. `ref` points at the input, and `className` and
+the standard attributes of a `div` land on the field's root, so the caller can focus,
+measure, style or mark the field.
 
 The announced strings are consumer-owned: `clearLabel` (`Svuota campo`),
 `openLabel`/`closeLabel` (`apri lista` / `chiudi lista`), `listLabel` from the field

@@ -1,3 +1,4 @@
+import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, fn, screen, userEvent, within } from "storybook/test"
 
@@ -432,5 +433,33 @@ export const MultiselectOverridableTexts: Story = {
     await expect(canvas.getByText("Erogatori scelti: Roma")).toBeInTheDocument()
     await userEvent.keyboard("{Escape}")
     await expect(canvas.getByRole("button", { name: "Cancella l'erogatore" })).toBeVisible()
+  },
+}
+
+function FocusableAutocomplete() {
+  const ref = React.useRef<HTMLInputElement>(null)
+  return (
+    <div className="pui:grid pui:w-68 pui:max-w-full pui:gap-2">
+      <Autocomplete
+        ref={ref}
+        className="pui:min-w-0"
+        data-testid="comune"
+        label="Comune"
+        options={municipalities}
+      />
+      <button type="button" onClick={() => ref.current?.focus()}>
+        Vai al campo
+      </button>
+    </div>
+  )
+}
+
+export const HostAttributes: Story = {
+  render: () => <FocusableAutocomplete />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByTestId("comune")).toHaveClass("pui:min-w-0")
+    await userEvent.click(canvas.getByRole("button", { name: "Vai al campo" }))
+    await expect(canvas.getByRole("combobox", { name: /Comune/ })).toHaveFocus()
   },
 }

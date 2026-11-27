@@ -15,7 +15,13 @@ import {
 } from "@/components/primitives/select"
 
 import { FieldMessages, FloatingFieldLabel } from "./field"
-import { describedBy, useFieldIds, useFormReset, type FieldStateProps } from "./field-utils"
+import {
+  describedBy,
+  useFieldIds,
+  useFormReset,
+  useInputRef,
+  type FieldStateProps,
+} from "./field-utils"
 import { useChoiceAction, type ChoiceAction } from "./choice-action"
 import {
   ChoiceActionButton,
@@ -26,7 +32,14 @@ import {
 
 export type { SelectOption } from "./select-parts"
 
-export interface SelectFieldProps extends FieldStateProps {
+/**
+ * Props of {@link SelectField}. `ref` points at the trigger while `className`
+ * and the standard HTML attributes of a `div` land on the field's root.
+ */
+export interface SelectFieldProps
+  extends Omit<React.ComponentProps<"div">, "children" | "className" | "ref">, FieldStateProps {
+  /** Ref to the trigger, so a consumer can focus it or read it back. */
+  ref?: React.Ref<HTMLButtonElement>
   /** Id applied to the trigger, so an external label can target it; generated when omitted. */
   id?: string
   /** Options rendered in the listbox. */
@@ -63,10 +76,14 @@ function SelectField({
   onValueChange,
   action,
   leadingIcon = <Icon source={AccountBalanceIcon} size={24} />,
+  "aria-describedby": ariaDescribedBy,
   className,
+  ref,
+  ...props
 }: SelectFieldProps) {
   const ids = useFieldIds(id)
-  const triggerRef = React.useRef<HTMLButtonElement>(null)
+  const { inputRef: triggerRef, mergedInputRef: mergedTriggerRef } =
+    useInputRef<HTMLButtonElement>(ref)
   const actionButtonRef = React.useRef<HTMLButtonElement>(null)
   const [internalValue, setInternalValue] = React.useState<string | null>(defaultValue ?? null)
   const [open, setOpen] = React.useState(false)
@@ -92,7 +109,7 @@ function SelectField({
   )
 
   return (
-    <div className={cn("pui:grid", error ? "pui:gap-0.5" : "pui:gap-2", className)}>
+    <div className={cn("pui:grid", error ? "pui:gap-0.5" : "pui:gap-2", className)} {...props}>
       <div className="pui:relative">
         <Select
           {...command.rootProps}
@@ -111,11 +128,11 @@ function SelectField({
           }}
         >
           <SelectTrigger
-            ref={triggerRef}
+            ref={mergedTriggerRef}
             id={ids.controlId}
             icon={triggerIcon}
             aria-invalid={Boolean(error) || undefined}
-            aria-describedby={describedBy(ids, state)}
+            aria-describedby={describedBy(ids, state, ariaDescribedBy)}
             className="peer pui:relative pui:aria-expanded:border-2 pui:aria-expanded:border-primary"
           >
             {leadingIcon ? (
