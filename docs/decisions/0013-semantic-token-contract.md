@@ -72,9 +72,9 @@ value is the primitive it resolves to. `packages/ui-cli/src/figma/tokens.ts`
 reads that block and emits one contract in three projections:
 
 - `packages/tokens/src/tokens.generated.css` — `@pagopa/ui/tokens.css`: the
-  `--pui-*` roles on `:root` with their resolved values, then the internal
-  `--figma-*` primitives on a second `:root`. The contract stands alone: a host
-  reading it does not need the primitive layer.
+  `--pui-*` roles on `:root` with their resolved values, and nothing else. The
+  contract stands alone: the primitive layer is not emitted, because the values
+  reach the file already resolved.
 - `packages/tokens/src/pui-tokens.generated.ts` — the same list as typed data
   (`semanticTokens`, `SemanticToken`, `SemanticTokenType`), re-exported by
   `@pagopa/ui/tokens`.
@@ -99,17 +99,24 @@ an effect makes a `shadow`, anything else a `dimension`; a role that only
 carries a `var()` takes the type of its target. A new DTCG type is a change to
 `DTCG_TYPES` in the generator, not a field in the stylesheet.
 
-### RD2 — `--figma-*` stays emitted, internal and deprecated
+### RD2 — `--figma-*` is build-time only, internal and never published
 
 The primitive layer keeps its Figma names, because that is what makes the
-regeneration mechanical, and it stays in the published stylesheet, because the
-contract is generated from it and a host may read a primitive the contract does
-not name yet. It is documented as internal and deprecated in the tokens guide,
-the package README and this record, and `packages/ui-cli/src/checks/foundation.ts`
-fails a component that references one (`raw-figma-variable`): library code reads
-the role the contract names.
+regeneration mechanical, and it stays in the repository, because the contract is
+generated from it and re-running the generator needs the names. It is no longer
+part of any published artifact: the library build resolves every
+`var(--figma-*)` in the stylesheet to the literal it names and drops the
+declarations, so `@pagopa/ui/styles.css` and `@pagopa/ui/tokens.css` carry the
+`--pui-*`, Tailwind theme and typography namespaces only. The plugin is
+`packages/pagopa-ui/build/resolved-primitives.ts`; a primitive that is
+referenced and never declared, or a cycle between primitives, fails the build.
 
-Retiring the layer is a later decision, with the trigger in §5.
+The layer is documented as internal and build-time in the tokens guide, the
+package README and this record, `packages/ui-cli/src/checks/foundation.ts` fails
+a component that references one (`raw-figma-variable`), and the artifact check
+fails a shipped stylesheet carrying a `--figma-*` name.
+
+This retires the layer the §5 trigger deferred.
 
 ### RD3 — one read, three projections, no second source
 
@@ -124,9 +131,9 @@ any projection fails `ui-cli check tokens`.
   refresh: a role cannot enter the contract unaudited (`--pui-* only`).
 - A `var(--pui-*)` the block does not declare fails the token refresh: the
   stylesheet cannot reference a role the contract does not carry.
-- `packages/pagopa-ui/etc/tokens.txt` records the public surface, both
-  namespaces, as CSS names and as typed names; the public-token check fails on a
-  removal or a rename as a breaking change.
+- `packages/pagopa-ui/etc/tokens.txt` records the published surface, the
+  `--pui-*` names as CSS names and as typed names; the public-token check fails
+  on a removal or a rename as a breaking change.
 - The foundation gate reads the emitted contract back (`emittedTokenNames`) so
   the names a component may reference are the published ones, not a second
   derivation.
@@ -140,19 +147,24 @@ any projection fails `ui-cli check tokens`.
   same contract in a format Style Dictionary and similar tools read, with no
   Figma vocabulary in it.
 - This is a breaking change of the published contract — every `--figma-*` name
-  a host read is now internal. It ships without a migration guide and without a
-  codemod: the package has no installed consumers yet, and the first release
-  after this record is the first one to carry the contract.
+  a host reads leaves the stylesheet. It ships without a migration guide and
+  without a codemod: the package has no installed consumers yet, and the first
+  release after this record is the first one to carry the contract.
 - The block grows by hand as the first place a new role appears. That is the
   cost of one source of truth, and it is paid where the change is reviewed
   anyway.
-- `etc/tokens.txt` grew from the primitives alone to the primitives and the 88
-  semantic roles, `js:` entries included.
+- `etc/tokens.txt` records the 88 semantic roles alone, `js:` entries included:
+  the primitives left the surface when the build began resolving them.
+- The stylesheet a consumer downloads shrank by the primitive block, and the
+  names it can read are the ones the contract names.
 
 ## 5. Deferred decisions with triggers
 
-| Deferred                                            | Trigger                                                                                                                  |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| Remove the `--figma-*` layer from the published CSS | Every role names a literal or a contract-level value, or a tool in the repository reads the primitives at build time     |
-| Publish the contract as a themed surface            | A second theme is ratified; today the contract is one light theme, and dark mode would make `--pui-*` the theme's output |
-| Give the DTCG file a version field                  | A consumer reads the file and needs to tell one projection from the next without diffing it                              |
+| Deferred                                 | Trigger                                                                                                                  |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Publish the contract as a themed surface | A second theme is ratified; today the contract is one light theme, and dark mode would make `--pui-*` the theme's output |
+| Give the DTCG file a version field       | A consumer reads the file and needs to tell one projection from the next without diffing it                              |
+
+The `--figma-*` removal this section used to defer has been made: the trigger
+("a tool in the repository reads the primitives at build time") fired, and RD2
+records the build-time resolution that replaced the published layer.

@@ -7,6 +7,7 @@ import { defineConfig } from "vite"
 import { fileURLToPath } from "node:url"
 import manifest from "./package.json" with { type: "json" }
 import { prefixedCandidates } from "./build/prefixed-candidates.ts"
+import { resolvedPrimitives } from "./build/resolved-primitives.ts"
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const externalPackages = Object.keys({ ...manifest.dependencies, ...manifest.peerDependencies })
@@ -26,6 +27,7 @@ export default defineConfig(({ command }) => ({
     }),
     react(),
     tailwindcss(),
+    resolvedPrimitives(),
     {
       name: "bundled-font-licenses",
       apply: "build",

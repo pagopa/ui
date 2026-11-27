@@ -57,8 +57,8 @@ The `--pui-*` custom properties in `styles.css` are the public token contract:
 a section that renders beside the components reads the same colours, spacing,
 radius and shadows. They are named for the design role, not for the Figma
 variable behind them, so a rename upstream never moves them. The `--figma-*`
-custom properties beside them are the internal, deprecated build-time layer the
-`--pui-*` values are generated from.
+primitives a role resolves to are build-time only: the library build replaces
+each one with its literal, so the stylesheet a consumer loads declares none.
 
 `@pagopa/ui/tokens` exports the contract as typed data (`semanticTokens`),
 `@pagopa/ui/tokens.css` ships the block alone for a page that does not load the

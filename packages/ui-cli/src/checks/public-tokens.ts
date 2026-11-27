@@ -1,8 +1,10 @@
 // The public token contract: the `--pui-*` custom properties the stylesheet
 // ships are the semantic surface a host may override, and a rename or a removal
-// is a breaking change. The `--figma-*` primitives follow, internal and
-// generated, so the contract still shows an upstream rename of their names. The
-// committed list is the reviewed diff every release carries.
+// is a breaking change. The `text-*` text styles follow, the other public
+// spelling a host reads. The `--figma-*` primitives stay out: they are the
+// internal layer the build resolves (ADR-0013 RD2), so an upstream rename of
+// their names is not a consumer diff. The committed list is the reviewed diff
+// every release carries.
 import fs from "node:fs"
 import path from "node:path"
 import { pathToFileURL } from "node:url"
@@ -41,12 +43,14 @@ export async function publicTokenNames(
       throw new Error(`missing ${file} — run "pnpm nx run pagopa-ui-tokens:check:tokens"`)
     }
   }
-  const css = cssTokenNames(fs.readFileSync(cssFile, "utf8"))
+  const css = cssTokenNames(fs.readFileSync(cssFile, "utf8")).filter(
+    (name) => !name.startsWith("--figma-"),
+  )
   const inventory: Inventory = await import(pathToFileURL(inventoryFile).href)
   const semantic: Inventory = await import(pathToFileURL(semanticFile).href)
-  const js = [...(semantic.semanticTokens ?? []), ...(inventory.figmaTokens ?? [])].map(
-    (token) => `js:${token.cssName}`,
-  )
+  const js = [...(semantic.semanticTokens ?? []), ...(inventory.figmaTokens ?? [])]
+    .filter((token) => !token.cssName.startsWith("--figma-"))
+    .map((token) => `js:${token.cssName}`)
   return { css, js }
 }
 

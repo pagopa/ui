@@ -12,16 +12,16 @@ Three entries:
 - `@pagopa/ui/tokens` exports the same values as typed data: `semanticTokens`,
   the `SemanticToken` and `SemanticTokenType` types, and the `figmaTokens`,
   `figmaTokenSource`, `FigmaToken` and `FigmaTokenType` inventory of the layer
-  below.
+  the contract is generated from.
 - `@pagopa/ui/tokens.dtcg.json` is the same contract in Design Tokens Community
   Group format, for the tools that read it.
 
 Two layers are internal:
 
 - `--figma-*` custom properties are the build-time primitives the `--pui-*`
-  values are generated from. They keep the Figma names, so they are internal and
-  deprecated: read the semantic contract instead, and never override a
-  `--figma-*` property.
+  values are generated from. They keep the Figma names and are resolved to their
+  literals when the package is built, so no stylesheet ships one: a host reads
+  the semantic contract instead, and there is no `--figma-*` property to set.
 - The Tailwind theme variables (`--color-*`, `--spacing-*`, `--text-*`,
   `--radius-*`, `--breakpoint-*`) drive the components and change with the theme,
   so a consumer never reads them.
@@ -163,9 +163,10 @@ above the components restyles them with no `!important` and no internal selector
 renamed or removed token is a breaking change and reaches the package changelog with
 a `minor` version plan.
 
-The `--figma-*` custom properties beside them are the internal, deprecated build-time
-layer the `--pui-*` values are generated from. They carry no compatibility promise and
-a host must neither read nor set them. The supported application theme is light only.
+The `--figma-*` custom properties are the internal build-time layer the `--pui-*`
+values are generated from. The build resolves each one to the literal it names, so
+the shipped stylesheets declare none of them: there is no property to read and no
+property to set. The supported application theme is light only.
 
 ## Maintaining library defaults
 
@@ -174,7 +175,9 @@ inline `style` objects as well as utility strings. New literal lengths, colours,
 typography, opacity and motion defaults must use semantic or foundation
 references. Static local style bindings and literal fallbacks are checked too;
 caller values, computed percentages, zero resets and system colours remain valid.
-An unknown `--pui-*`, `--figma-*` or typography reference fails the check.
+An unknown `--pui-*` or typography reference fails the check, and a component
+that references a `--figma-*` primitive fails it too: a component reads the role
+the contract names, and only `index.css` writes the primitive a role resolves to.
 
 The declaration rules have a zero ceiling. The existing foundation exception
 file can register a file/value match with a source node and a reason; stale

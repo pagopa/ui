@@ -215,9 +215,12 @@ keeps the same preflight behavior as the other live Figma commands.
    token manifest matches the generated CSS foundation layer and the
    documentation inventory, that every `var(--pui-*)` reference in
    `src/index.css` names a declaration of the semantic block, and that every
-   `var(--figma-*)` reference resolves. Legacy namespaces are excluded with recorded
-   reasons; unknown namespaces fail the refresh, and an unresolved variable
-   either gets a value or a reasoned exclusion — none can linger silently.
+   `var(--figma-*)` reference resolves. The projections it emits carry the
+   contract alone: the primitives are build-time input, and the library build
+   replaces each reference with its literal. Legacy namespaces are excluded with
+   recorded reasons; unknown namespaces fail the refresh, and an unresolved
+   variable either gets a value or a reasoned exclusion — none can linger
+   silently.
 7. **The component class contract.** `src/checks/foundation.ts` proves that
    `src/components` consumes the token scale: no arbitrary px/rem values, no
    default Tailwind text sizes or standalone font weights, no raw

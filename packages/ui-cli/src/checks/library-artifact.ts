@@ -210,6 +210,18 @@ export function verifyArtifactContract(workspace: Workspace): ArtifactContract {
     /@(?:import|tailwind|theme|apply|source)\b/,
     "published CSS must not require Tailwind, shadcn or source imports",
   )
+  // ADR-0013 RD2: the Figma primitive layer is the build-time input of the
+  // --pui-* contract, not part of it. The build resolves every reference, so a
+  // primitive that reaches either stylesheet is a resolution that stopped
+  // working, not a value to document.
+  for (const file of ["dist/styles.css", "dist/tokens.css"]) {
+    assert.ok(fs.existsSync(at(file)), `missing ${file} — the public stylesheets must ship`)
+    assert.doesNotMatch(
+      fs.readFileSync(at(file), "utf8"),
+      /--figma-/,
+      `${file}: the internal Figma primitive layer must not reach the published CSS`,
+    )
+  }
   const previewSheet = path.join(workspace.storiesRoot, "src/preview.css")
   assert.deepEqual(
     demoGeometryProblems(

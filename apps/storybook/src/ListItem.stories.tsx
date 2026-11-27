@@ -16,7 +16,7 @@ const meta = {
   title: "Components/Content/ListItem",
   component: ListItem,
   args: {
-    leading: <Icon source={PhotoIcon} className="pui:text-(--figma-color-neutrals-grey-300)" />,
+    leading: <Icon source={PhotoIcon} className="pui:text-decorative-secondary" />,
     description: "Pagamento TARI 2025",
     value: "Accertamento 00016/2025",
   },
