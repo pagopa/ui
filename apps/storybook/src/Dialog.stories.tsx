@@ -31,6 +31,18 @@ const meta = {
       </>
     ),
   },
+  // Text, close label and the initial state are controls; the trigger, the body
+  // and the actions row are nodes, and `open` alone would pin the panel shut
+  // because the story carries no handler to close it.
+  argTypes: {
+    trigger: { control: false },
+    children: { control: false },
+    footer: { control: false },
+    open: { control: false },
+    onOpenChange: { control: false },
+    defaultOpen: { control: "boolean" },
+    closeLabel: { control: "text" },
+  },
   parameters: {
     design: { type: "figma", url: figmaEmbedUrl("1042:18133") },
     docs: {

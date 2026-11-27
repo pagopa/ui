@@ -172,20 +172,42 @@ export function distributionProblems(
   return problems
 }
 
-// The Storybook preview sheet owns the demo geometry: the artboard heights, the
-// frame widths and the demo grid columns that only the templates and the
-// artboards read. A published stylesheet declaring one of them ships a value
-// only a demo frame resolves, so a consumer receives geometry it never renders.
-// The sheet is the reference, so a demo variable cannot return unnoticed.
-export function demoGeometryProblems(styles: string, previewStyles: string): string[] {
-  const owned = customProperties(previewStyles)
-  return [...customProperties(styles)].filter((name) => owned.has(name)).sort()
+// The demo surface owns the geometry: the artboard heights, the frame widths
+// and the demo grid columns that only the templates and the artboards read. A
+// published stylesheet declaring one of them ships a value no shipped component
+// resolves, so a consumer receives geometry it never renders.
+//
+// The reference is the source that reads the value, not the sheet that declares
+// it: a demo variable still declared in `index.css` never reached
+// `preview.css`, and comparing the two sheets alone let it pass. A property is
+// demo geometry when the demo sources name it and no library source does, which
+// is the rule `demoGeometryProblems` enforces — the move to the preview sheet is
+// then the fix, not the detection.
+export function demoGeometryProblems(
+  styles: string,
+  sources: { demo: string[]; library: string[] },
+): string[] {
+  const named = (texts: string[], name: string): boolean =>
+    texts.some((text) => text.includes(name))
+  return [...customProperties(styles)]
+    .filter((name) => named(sources.demo, name) && !named(sources.library, name))
+    .sort()
 }
 
 function customProperties(styles: string): Set<string> {
   const names = new Set<string>()
   for (const match of styles.matchAll(/(--[\w-]+)\s*:/g)) if (match[1]) names.add(match[1])
   return names
+}
+
+// The source text a check reads when it asks who resolves a custom property: a
+// stylesheet or a module carries the `var(--…)` reference or the `w-(--…)`
+// utility, and prose does not, so a guide mentioning a name cannot suppress a
+// finding.
+function readSources(root: string, directory: string): string[] {
+  return walkRelative(root, directory, (file) => /\.(?:css|ts|tsx)$/.test(file)).map((file) =>
+    fs.readFileSync(path.join(root, file), "utf8"),
+  )
 }
 
 export function verifyArtifactContract(workspace: Workspace): ArtifactContract {
@@ -222,12 +244,11 @@ export function verifyArtifactContract(workspace: Workspace): ArtifactContract {
       `${file}: the internal Figma primitive layer must not reach the published CSS`,
     )
   }
-  const previewSheet = path.join(workspace.storiesRoot, "src/preview.css")
   assert.deepEqual(
-    demoGeometryProblems(
-      styles,
-      fs.existsSync(previewSheet) ? fs.readFileSync(previewSheet, "utf8") : "",
-    ),
+    demoGeometryProblems(styles, {
+      demo: readSources(workspace.storiesRoot, "src"),
+      library: readSources(root, "src/components"),
+    }),
     [],
     "the published stylesheet must not declare demo or artboard geometry — it belongs in apps/storybook/src/preview.css",
   )

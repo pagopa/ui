@@ -26,7 +26,10 @@
 #
 # Chromatic bills per capture. A plan that no longer covers a full catalogue
 # limits the build rather than failing it: the Storybook publishes, no test runs
-# and this job is green while comparing nothing. The run's notice says so.
+# and this job is green while comparing nothing. The run still has to say so, so
+# a step after the CLI reads its log and raises a warning annotation and a
+# summary line on every limited build — the run cannot prove a visual diff it
+# never captured, and staying silent was the risk.
 #
 # The comparison reports, it does not gate: `--exit-zero-on-changes` keeps a
 # non-empty diff green and the verdict in the dashboard, so this workflow cannot
@@ -165,11 +168,36 @@ jobs:
         # `apps/storybook/chromatic.config.json` names the build directory and
         # `exit-zero-on-changes`; only the scope belongs to the event.
         run: |
+          # `tee` would report its own status and hide a failing CLI.
+          set -o pipefail
           flags=(--ci)
           if [ "${{ steps.scope.outputs.scope }}" = "changed" ]; then
             flags+=(--only-changed)
           fi
-          pnpm nx run pagopa-ui-storybook:chromatic -- "${flags[@]}"
+          # The log feeds the guard below: a plan that no longer covers the
+          # catalogue publishes the build, captures nothing and exits 0.
+          pnpm nx run pagopa-ui-storybook:chromatic -- "${flags[@]}" 2>&1 \
+            | tee "$RUNNER_TEMP/chromatic.log"
+
+      # A build limited by the plan publishes the Storybook, runs no test and
+      # exits 0: the job is green and nothing was compared. The report-only
+      # contract keeps it non-blocking, so the run says it out loud instead —
+      # a warning annotation and a summary line, both readable from the pull
+      # request without opening the dashboard.
+      - name: Alert when the build compared nothing
+        if: always() && steps.token.outputs.present == 'true'
+        run: |
+          log="$RUNNER_TEMP/chromatic.log"
+          [ -f "$log" ] || exit 0
+          reason=$(grep -ohE 'Billed snapshot limit reached|Build limited|Payment required' "$log" | head -1)
+          [ -n "$reason" ] || exit 0
+          echo "::warning title=Chromatic compared nothing::The build reported \"$reason\": no story was captured, so this run proved nothing about the visual diff."
+          {
+            echo "### Chromatic compared nothing"
+            echo
+            echo "The build reported **$reason**. No story was captured and the visual"
+            echo "diff proved nothing on this run, which is why it stayed green."
+          } >> "$GITHUB_STEP_SUMMARY"
 
       # A build that reports component errors names the failing stories only in
       # its dashboard and in the report the CLI writes beside the directory it

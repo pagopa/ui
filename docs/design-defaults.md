@@ -45,7 +45,8 @@ publishes for every state family (`success`, `warning`, `info`, `error`, and the
 The aliases live in `packages/pagopa-ui/src/index.css` and point at the
 generated `--figma-color-status-*` and `--figma-color-icon-*` keys. A component
 consumes the role (`bg-error-soft`, `text-error-foreground`), never a step
-number and never a `--figma-*` name: that layer is internal and deprecated
+number and never a `--figma-*` name: that layer is build-only and the published
+artifacts strip it, so `--figma-*` resolves in the repository and nowhere else
 ([ADR-0013](./decisions/0013-semantic-token-contract.md)).
 
 **Derivation when a step is missing.** When the family publishes no pointer or

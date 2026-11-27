@@ -67,7 +67,9 @@ test("a demo custom property declared by the preview sheet cannot reach the publ
   --dialog-width: 600px;
   --artboard-height-tall: 800px;
 }`
-  assert.deepEqual(demoGeometryProblems(published, DEMO_PREVIEW), ["--artboard-height-tall"])
+  assert.deepEqual(demoGeometryProblems(published, { demo: [DEMO_PREVIEW], library: [] }), [
+    "--artboard-height-tall",
+  ])
 })
 
 test("component geometry the preview sheet never declares is not demo", () => {
@@ -75,9 +77,38 @@ test("component geometry the preview sheet never declares is not demo", () => {
   --dialog-width: 600px;
   --pui-camera-size: 376px;
 }`
-  assert.deepEqual(demoGeometryProblems(published, DEMO_PREVIEW), [])
+  assert.deepEqual(demoGeometryProblems(published, { demo: [DEMO_PREVIEW], library: [] }), [])
 })
 
 test("a preview sheet with no geometry of its own leaves the published CSS alone", () => {
-  assert.deepEqual(demoGeometryProblems(".pagopa-ui-root { --dialog-width: 600px; }", ""), [])
+  assert.deepEqual(
+    demoGeometryProblems(".pagopa-ui-root { --dialog-width: 600px; }", { demo: [""], library: [] }),
+    [],
+  )
+})
+
+// The regression #159 shipped: the variable was only ever read by a template,
+// so it never reached the preview sheet and a sheet-to-sheet comparison had
+// nothing to match.
+test("a demo template reading a published property that no component reads is demo geometry", () => {
+  const published = `.pagopa-ui-root {
+  --pui-dialog-width: 600px;
+  --pui-dialog-width-compact: 272px;
+}`
+  const template = `<div className="pui:max-w-(--pui-dialog-width-compact)" />`
+  const component = `<div className="pui:w-(--pui-dialog-width)" />`
+  assert.deepEqual(demoGeometryProblems(published, { demo: [template], library: [component] }), [
+    "--pui-dialog-width-compact",
+  ])
+})
+
+test("a property both a component and a demo read stays published", () => {
+  const published = `.pagopa-ui-root { --pui-artboard-height: 650px; }`
+  assert.deepEqual(
+    demoGeometryProblems(published, {
+      demo: ['<div className="pui:min-h-(--pui-artboard-height)" />'],
+      library: ['<div className="pui:min-h-(--pui-artboard-height)" />'],
+    }),
+    [],
+  )
 })

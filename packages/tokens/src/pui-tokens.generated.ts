@@ -455,18 +455,6 @@ export const semanticTokens: SemanticToken[] = [
     value: "600px",
   },
   {
-    cssName: "--pui-dialog-width-compact",
-    name: "dialog-width-compact",
-    type: "dimension",
-    value: "272px",
-  },
-  {
-    cssName: "--pui-drawer-width-wide",
-    name: "drawer-width-wide",
-    type: "dimension",
-    value: "417px",
-  },
-  {
     cssName: "--pui-id-module-width",
     name: "id-module-width",
     type: "dimension",

@@ -35,19 +35,38 @@ content, and each accordion row announces its own `aria-expanded`.
 ## Timeline drawer
 
 `TimelineDrawer` composes the drawer with this timeline: the panel carries the
-source pictogram, `title` (default `Cronologia`), `description`, the events and the
-optional `footer`, and reads `TimelineItem[]` from `items`.
+source pictogram, `title`, `description`, the events and the optional `footer`,
+and reads `TimelineItem[]` from `items`. `title` also names the panel, so it is
+the accessible name of the dialog.
 
-It inherits the drawer's text props unchanged, so `closeLabel` names the close
-button (default `messages.drawer.closeLabel`, `Chiudi` under the default Italian
-dictionary):
+Its three strings are props with dictionary defaults: `title`
+(`messages.timelineDrawer.title`, `Cronologia`), `description`
+(`messages.timelineDrawer.description`, `Eventi in ordine cronologico`) and
+`closeLabel` (`messages.drawer.closeLabel`, `Chiudi`), under the default Italian
+dictionary.
 
 ```tsx
+// Per instance.
 <TimelineDrawer
   trigger={<Button>Apri la cronologia</Button>}
   items={events}
+  title="Storico della pratica"
+  description="Le lavorazioni dell'ultimo anno"
   closeLabel="Chiudi la cronologia"
 />
+
+// Once for every timeline drawer in the tree.
+<UIProvider
+  messages={{
+    timelineDrawer: {
+      title: "Cronologia della pratica",
+      description: "Eventi della pratica",
+    },
+    drawer: { closeLabel: "Chiudi il pannello" },
+  }}
+>
+  <AppContent />
+</UIProvider>
 ```
 
 The panel keeps the drawer's lifecycle. `open` with `onOpenChange` makes it

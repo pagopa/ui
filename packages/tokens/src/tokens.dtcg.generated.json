@@ -297,14 +297,6 @@
       "$type": "dimension",
       "$value": "600px"
     },
-    "dialog-width-compact": {
-      "$type": "dimension",
-      "$value": "272px"
-    },
-    "drawer-width-wide": {
-      "$type": "dimension",
-      "$value": "417px"
-    },
     "id-module-width": {
       "$type": "dimension",
       "$value": "410px"

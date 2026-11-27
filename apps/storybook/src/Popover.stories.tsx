@@ -23,6 +23,22 @@ const meta = {
       </>
     ),
   },
+  // The placement and the initial state are controls; the trigger, the content
+  // and the anchor are nodes, and `open` alone would pin the panel open because
+  // the story carries no handler to close it.
+  argTypes: {
+    trigger: { control: false },
+    children: { control: false },
+    anchor: { control: false },
+    open: { control: false },
+    onOpenChange: { control: false },
+    defaultOpen: { control: "boolean" },
+    align: { control: "select", options: ["start", "center", "end"] },
+    arrowPosition: { control: "select", options: ["top", "bottom"] },
+    modal: { control: "boolean" },
+    label: { control: "text" },
+    closeLabel: { control: "text" },
+  },
   parameters: {
     docs: {
       description: {

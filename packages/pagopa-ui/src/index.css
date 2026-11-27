@@ -411,8 +411,6 @@
        so a consumer receives no geometry for a frame it never renders. */
     --pui-artboard-height: 650px; /* White Template page surface, 40.625rem */
     --pui-dialog-width: 600px; /* Dialog desktop, 37.5rem */
-    --pui-dialog-width-compact: 272px; /* Dialog mobile and LogIn, 17rem */
-    --pui-drawer-width-wide: 417px; /* Informative Drawer, 26.0625rem */
     --pui-id-module-width: 410px; /* ID module from the 600px device step, 25.625rem */
     --pui-state-width: 368px; /* Error, waiting and success state columns, 23rem */
     --pui-camera-size: 376px; /* camera viewfinder, 23.5rem */

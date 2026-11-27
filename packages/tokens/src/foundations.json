@@ -717,14 +717,6 @@
       "reason": "Dialog desktop frame width. Component geometry no published size foundation carries yet; requested as a foundation."
     },
     {
-      "declaration": "--pui-dialog-width-compact: 272px",
-      "reason": "Dialog mobile and LogIn frame width. Component geometry no published size foundation carries yet; requested as a foundation."
-    },
-    {
-      "declaration": "--pui-drawer-width-wide: 417px",
-      "reason": "Informative Drawer frame width. Component geometry no published size foundation carries yet; requested as a foundation."
-    },
-    {
       "declaration": "--pui-id-module-width: 410px",
       "reason": "ID module width read from the 600px device step. Component geometry no published size foundation carries yet; requested as a foundation."
     },

@@ -37,6 +37,8 @@
   --pui-artboard-height-tall: 800px; /* Feedback Page, Informative Drawer (right) */
   --pui-login-width: 520px; /* LogIn frame, 32.5rem */
   --pui-drawer-width: 416px; /* Informative Drawer frame, 26rem */
+  --pui-dialog-width-compact: 272px; /* Dialog mobile and LogIn, 17rem */
+  --pui-drawer-width-wide: 417px; /* Informative Drawer, 26.0625rem */
   --pui-grid-aside: 20rem; /* demo grid aside column */
   --pui-grid-fields: 10rem; /* demo grid field column */
   --pui-grid-actions: 3rem; /* demo grid action column */

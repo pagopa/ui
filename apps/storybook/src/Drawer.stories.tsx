@@ -20,6 +20,23 @@ const meta = {
     children: <p>Importo: 24,00 €</p>,
     footer: <Button>Continua</Button>,
   },
+  // The layout switches and the initial state are controls; the trigger, the
+  // icon, the body and the actions row are nodes, and `open` alone would pin the
+  // panel shut because the story carries no handler to close it.
+  argTypes: {
+    trigger: { control: false },
+    icon: { control: false },
+    children: { control: false },
+    footer: { control: false },
+    open: { control: false },
+    onOpenChange: { control: false },
+    defaultOpen: { control: "boolean" },
+    footerPlacement: { control: "select", options: ["pinned", "flow"] },
+    showHandle: { control: "boolean" },
+    direction: { control: "select", options: ["top", "right", "bottom", "left"] },
+    modal: { control: "boolean" },
+    closeLabel: { control: "text" },
+  },
   parameters: {
     docs: {
       description: {

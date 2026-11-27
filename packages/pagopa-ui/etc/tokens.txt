@@ -26,9 +26,7 @@
 --pui-destructive-foreground
 --pui-destructive-hover
 --pui-dialog-width
---pui-dialog-width-compact
 --pui-dragging-surface
---pui-drawer-width-wide
 --pui-drop-target
 --pui-error-border
 --pui-error-foreground
@@ -114,9 +112,7 @@ js:--pui-destructive
 js:--pui-destructive-foreground
 js:--pui-destructive-hover
 js:--pui-dialog-width
-js:--pui-dialog-width-compact
 js:--pui-dragging-surface
-js:--pui-drawer-width-wide
 js:--pui-drop-target
 js:--pui-error-border
 js:--pui-error-foreground
