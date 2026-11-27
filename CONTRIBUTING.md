@@ -579,7 +579,8 @@ used to own. The nightly at 04:00 UTC, a manual dispatch and the **Version
 Packages** pull request compare every story, because those are the passes where a
 story nothing else proved has to surface and the publish is the last moment to
 notice. The first run of a project captures everything and becomes the baseline
-the next one traces against.
+the next one traces against; TurboSnap itself needs ten builds from CI before it
+traces anything, so `--only-changed` captures the whole catalogue until then.
 
 The comparison reports, it does not gate: `exitZeroOnChanges` in
 `apps/storybook/chromatic.config.json` keeps a non-empty diff green and the
@@ -597,7 +598,11 @@ the catalogue.
 The build also runs the stories' `play` functions as interaction tests, and one
 of those failing fails the build even with `exitZeroOnChanges`. `test:stories`
 runs the same plays in two engines, so a story that fails only here is read in
-the interaction report before it is treated as a regression.
+the interaction report before it is treated as a regression — and the report is
+the only place the message appears, since the dashboard needs a sign-in while
+the published Storybook does not. The first live build named ten stories that
+`test:stories` passes at 320 and at 414 px, on both engines; ADR-0018 §5 holds
+the decision, and no flag exists to make the build ignore only the plays.
 
 Two catalogues change whenever everything else does, so they are exempt by
 parameter rather than by a tag: `Foundations/Tokens` and the Figma inventory

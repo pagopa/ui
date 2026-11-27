@@ -17,7 +17,9 @@
 # a story nothing else proved has to surface and the publish is the last moment
 # to notice. `fetch-depth: 0` is TurboSnap's: it reads the git history to compute
 # the changed files, and the first run of a project captures everything and
-# becomes the baseline the next one traces against.
+# becomes the baseline the next one traces against. TurboSnap itself needs ten
+# builds from CI before it traces anything, so `--only-changed` captures the
+# whole catalogue until then.
 #
 # Chromatic bills per capture. A plan that no longer covers a full catalogue
 # limits the build rather than failing it: the Storybook publishes, no test runs

@@ -174,25 +174,30 @@ one that turns the dashboard into a gate.
   `Autocomplete/Multiselect Overridable Texts`,
   `SelectableRows/Choice Command Surfaces Callback Errors`,
   `Footer/Logged User False Desktop`, `Pagination/Collapse Width`,
-  `SideNav/Nested And Profile` and `SideNav/Condensed` — several of them only at
-  320 and 600 px, and the reason is the width rather than the engine: a fixture
-  whose play function reads the wide layout has always rendered at the viewport
-  the story set, and `test:stories` never asked it for another one. Chromatic
-  runs the same play at all three widths, so the desktop-shaped ones fail where
-  the layout it queries collapses — `Accessibility/Navigation Texts` says as
-  much in a comment and pins no viewport. Until the fixtures pin the width they
-  assert in, the check is red on stories the repository already proves
-  elsewhere; §5 holds the decision.
+  `SideNav/Nested And Profile` and `SideNav/Condensed`.
+- The cause is not established, and the two explanations the shapes suggested
+  are ruled out. The width is not it: the same ten stories, run with the browser
+  viewport forced to 320 px and to the runner's default 414 px, pass on Chromium
+  and on WebKit. Uncaught browser errors are not it either: the only story that
+  raises one is `Choice Command Surfaces Callback Errors`, deliberately, since a
+  callback is what it surfaces. `test:stories` already proves all ten, so a
+  green pull request and a red build disagree about the same stories; §5 holds
+  the decision, and a run under the plan's limit captures nothing, so it also
+  runs no play and hides the question.
+- TurboSnap needs ten builds from CI before it traces anything, which the first
+  live run reported alongside the failures. Until then `--only-changed` is
+  inert: every pull request captures the whole catalogue, ten full builds before
+  the flag starts saving the captures it was chosen for.
 
 ## 5. Deferred decisions with triggers
 
-| Deferred                                | Trigger                                                                                                                                                                                                                   |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Making the Chromatic check required     | The token exists and a run has been green for a week; `--exit-zero-on-changes` is what has to go first, in the same change                                                                                                |
-| Whether the build judges the plays      | The 20 interaction failures above are triaged: each fixture pins the width its play asserts, `parameters.chromatic.disableSnapshot` takes the story out, or the run stops owning a judgement `test:stories` already makes |
-| A `diffThreshold` per family of stories | A run reports renderer noise on text-heavy stories that the reviewers learn to ignore; the parameter is per story, so it lands there                                                                                      |
-| Comparing on a second engine            | A regression proves invisible on Chromatic's renderer; no flag exists today, so the trigger is a second visual service, not a flag                                                                                        |
-| A Chromatic project per release channel | A pre-release channel needs its own baseline history rather than sharing one                                                                                                                                              |
+| Deferred                                | Trigger                                                                                                                                                                                                                                                  |
+| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Making the Chromatic check required     | The token exists and a run has been green for a week; `--exit-zero-on-changes` is what has to go first, in the same change                                                                                                                               |
+| Whether the build judges the plays      | The interaction report is read against the ten stories it names: reproduce the condition Chromatic's runner adds, take those stories out of the capture, or leave the judgement to `test:stories`. A limited build answers nothing — no capture, no play |
+| A `diffThreshold` per family of stories | A run reports renderer noise on text-heavy stories that the reviewers learn to ignore; the parameter is per story, so it lands there                                                                                                                     |
+| Comparing on a second engine            | A regression proves invisible on Chromatic's renderer; no flag exists today, so the trigger is a second visual service, not a flag                                                                                                                       |
+| A Chromatic project per release channel | A pre-release channel needs its own baseline history rather than sharing one                                                                                                                                                                             |
 
 ## 6. Related
 
