@@ -216,10 +216,12 @@ function FocusableSelectField() {
   const ref = React.useRef<HTMLButtonElement>(null)
   return (
     <div className="pui:grid pui:w-68 pui:max-w-full pui:gap-2">
+      <p id="provincia-note">La provincia di residenza, non quella di nascita.</p>
       <SelectField
         ref={ref}
         className="pui:min-w-0"
         data-testid="provincia"
+        aria-describedby="provincia-note"
         label="Provincia"
         options={[
           { value: "rm", label: "Roma" },
@@ -238,7 +240,13 @@ export const HostAttributes: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.getByTestId("provincia")).toHaveClass("pui:min-w-0")
+    const trigger = canvas.getByRole("combobox", { name: /Provincia/ })
+    // The caller's description joins the field's own, on the control.
+    await expect(trigger).toHaveAttribute(
+      "aria-describedby",
+      expect.stringMatching(/provincia-note/),
+    )
     await userEvent.click(canvas.getByRole("button", { name: "Vai al campo" }))
-    await expect(canvas.getByRole("combobox", { name: /Provincia/ })).toHaveFocus()
+    await expect(trigger).toHaveFocus()
   },
 }

@@ -84,6 +84,13 @@ export interface AutocompleteSharedProps
    * draws it, and it is drawn only when this is passed.
    */
   selectAllLabel?: string
+  /**
+   * Draws every value as its own removable chip, or collapses two or more into
+   * a count badge that carries the clear control; only the multiple field
+   * draws it.
+   * @default "chips"
+   */
+  multipleDisplay?: "chips" | "counter"
   className?: string
 }
 
@@ -99,12 +106,6 @@ type AutocompleteProps = AutocompleteSharedProps &
     | {
         /** Keeps several values as chips, the source Multiselect and counter types. */
         multiple: true
-        /**
-         * Draws every value as its own removable chip, or collapses two or more
-         * into a count badge that carries the clear control.
-         * @default "chips"
-         */
-        multipleDisplay?: "chips" | "counter"
         value?: string[]
         defaultValue?: string[]
         onValueChange?: (value: string[]) => void
@@ -113,7 +114,9 @@ type AutocompleteProps = AutocompleteSharedProps &
 
 function Autocomplete(props: AutocompleteProps) {
   // The union stays whole on `props` so `multiple` discriminates the value and
-  // the change callback at the call site.
+  // the change callback at the call site; both the callback and
+  // `multipleDisplay` leave the host spread below so only DOM attributes reach
+  // the root.
   const {
     id,
     label,
@@ -121,6 +124,8 @@ function Autocomplete(props: AutocompleteProps) {
     multiple = false,
     value,
     defaultValue,
+    onValueChange: _onValueChange,
+    multipleDisplay,
     description,
     error,
     success,
@@ -204,8 +209,7 @@ function Autocomplete(props: AutocompleteProps) {
   // removable pill per value, `Type=Multiselect counter` collapses two or more
   // values into a badge whose own control clears them all (824:8872,
   // 11073:2423). A single value is never a count of one, so it keeps its name.
-  const collapsed =
-    props.multiple && (props.multipleDisplay ?? "chips") === "counter" && selection.length > 1
+  const collapsed = multiple && (multipleDisplay ?? "chips") === "counter" && selection.length > 1
   // The badge carries the clear control, so the action group is the arrow alone
   // there and `[clear][chevron]` everywhere else.
   const showClear = multiple ? selection.length > 0 && !collapsed : filled

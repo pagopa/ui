@@ -146,7 +146,6 @@ export type AutocompleteProps = AutocompleteSharedProps & ({
     onValueChange?: (value: string) => void;
 } | {
     multiple: true;
-    multipleDisplay?: "chips" | "counter";
     value?: string[];
     defaultValue?: string[];
     onValueChange?: (value: string[]) => void;
@@ -167,6 +166,7 @@ export interface AutocompleteSharedProps extends Omit<React_2.ComponentProps<"di
     listLabel?: (label: string) => string;
     loading?: boolean;
     loadingLabel?: string;
+    multipleDisplay?: "chips" | "counter";
     // (undocumented)
     name?: string;
     openLabel?: string;
