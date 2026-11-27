@@ -3,14 +3,19 @@ the scroll lock, the outside press, the focus restoration and the backdrop fade
 come from the primitive. The title is the dialog's accessible name, `description`
 is supporting copy, `children` is the body and `footer` the action row.
 
-`closeLabel` overrides the close button's accessible name; `UIProvider` also
-supports overriding `messages.dialog.closeLabel`.
+`closeLabel` overrides the close button's accessible name (default
+`messages.dialog.closeLabel`), so `UIProvider` can also set it once for the whole
+application. The title names the panel; there is no separate `ariaLabel`.
 
 ## Example
 
 ```tsx
 // Uncontrolled: the dialog owns its state.
-<Dialog trigger={<Button>Apri</Button>} title="Conferma operazione" />
+<Dialog
+  trigger={<Button>Apri</Button>}
+  title="Conferma operazione"
+  closeLabel="Chiudi la finestra"
+/>
 
 // Controlled: the caller decides when it opens.
 const [open, setOpen] = React.useState(false)

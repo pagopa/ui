@@ -223,10 +223,16 @@ solution.
 
 29. **Accordion** — `components-navigation-accordion--loading`,
     `components-navigation-accordion--playground`,
-    `components-navigation-accordion--with-disabled-item`.
+    `components-navigation-accordion--with-disabled-item`,
+    `components-navigation-accordion--controlled-value`,
+    `components-navigation-accordion--uncontrolled-multiple`,
+    `components-navigation-accordion--forwarded-contract`.
     Criteria: 1.4.10, 1.4.12, 1.4.4.
     What we ask: fix the layout so it holds up at 320 px and with 200% text, or
-    document the exception.
+    document the exception. The last three are the parity stories added with the
+    controlled/uncontrolled contract: they render the same panel as the
+    playground, driven by caller state, by `multiple`, and through a forwarded
+    ref and `className`, and they are measured under the same condition.
 
 30. **Header** — `components-navigation-header--with-actions`.
     Criteria: 1.4.10, 1.4.12, 1.4.4.

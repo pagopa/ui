@@ -35,15 +35,15 @@ const pointerColors: Record<Tone, string> = {
 }
 
 const ringColors: Record<Tone, string> = {
-  info: "ring-info-border",
-  success: "ring-success-border",
-  warning: "ring-warning-border",
-  error: "ring-error-border",
+  info: "pui:ring-info-border",
+  success: "pui:ring-success-border",
+  warning: "pui:ring-warning-border",
+  error: "pui:ring-error-border",
 }
 
 const pointerAlignment: Record<PopperPointer, string> = {
   left: "pui:justify-start pui:pl-6",
-  center: "justify-center",
+  center: "pui:justify-center",
   right: "pui:justify-end pui:pr-6",
 }
 

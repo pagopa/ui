@@ -78,12 +78,14 @@ Precedence against the host is the ordinary cascade, in this order:
 
 1. **A host rule marked `!important`** wins over every layer.
 2. **Unlayered host CSS** wins over every layer, so a plain `.p-6` or a `button`
-   reset in your own stylesheet overrides the library's utility of the same name
-   with no `!important` and no wrapper.
+   reset in your own stylesheet overrides a library rule on the same element
+   with no `!important` and no wrapper. There is no same-name utility to collide
+   with: the library ships only `.pui\:p-6`, never a bare twin, so your `.p-6`
+   and its `.pui\:p-6` sit beside each other and yours wins.
 3. **A host cascade layer** wins over both library layers, because the library
    opens its layers at the head of the document and yours are ordered after
    them. A host `.p-6 { padding: 5px }` inside `@layer host.utilities` therefore
-   also overrides the library's `.p-6`, including on a dialog body.
+   also overrides the library's `.pui\:p-6`, including on a dialog body.
 4. **The library layers**, `pagopa-ui.utilities` over `pagopa-ui.base`, with the
    base resets written at zero specificity so a class of yours still overrides
    one.
@@ -153,15 +155,17 @@ inventory, so a page can state where its values come from. Typography entries ca
 their `fontSize`, `lineHeight`, `fontWeight` and `letterSpacing` are the resolved
 values.
 
-## The contract is read-only
+## The contract is the override surface
 
-The tokens are published values, not theme inputs: redefining a `--pui-*` property
-to restyle the components is unsupported and breaks the guarantee that what the page
-renders and what the components render come from the same source. The supported
-application theme is light only.
+The `--pui-*` properties are the published, host-overridable surface: every colour,
+spacing, radius and type value a component renders reads one, so setting it on a root
+above the components restyles them with no `!important` and no internal selector. A
+renamed or removed token is a breaking change and reaches the package changelog with
+a `minor` version plan.
 
-A renamed or removed token is a breaking change and reaches the package changelog
-with a `minor` version plan.
+The `--figma-*` custom properties beside them are the internal, deprecated build-time
+layer the `--pui-*` values are generated from. They carry no compatibility promise and
+a host must neither read nor set them. The supported application theme is light only.
 
 ## Maintaining library defaults
 

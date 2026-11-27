@@ -126,11 +126,15 @@ export function classTokens(file: string, source: string): ClassToken[] {
   }
 
   // Everything a class position can hold: a literal, a template, a conditional
-  // or logical list, an array, a class-name call, and the `const` it names.
-  const classList = (value: unknown, reached: Set<string>): void => {
+  // or logical list, an array, an object map, a class-name call, and the `const`
+  // it names. `objectValues` says whether an object literal here holds classes
+  // in its values: true for a `cn(...)` argument or a resolved `const`, false
+  // for the options of a variant API, where `buttonVariants({ variant })` names
+  // a variant rather than a class.
+  const classList = (value: unknown, reached: Set<string>, objectValues = true): void => {
     const current = asNode(value)
     if (!current) {
-      for (const child of asNodes(value)) classList(child, reached)
+      for (const child of asNodes(value)) classList(child, reached, objectValues)
       return
     }
     switch (current.type) {
@@ -145,33 +149,60 @@ export function classTokens(file: string, source: string): ClassToken[] {
         }
         return
       case "ConditionalExpression":
-        classList(current.consequent, reached)
-        classList(current.alternate, reached)
+        classList(current.consequent, reached, objectValues)
+        classList(current.alternate, reached, objectValues)
         return
       case "LogicalExpression":
       case "BinaryExpression":
-        classList(current.left, reached)
-        classList(current.right, reached)
+        classList(current.left, reached, objectValues)
+        classList(current.right, reached, objectValues)
         return
       case "ArrayExpression":
-        classList(current.elements, reached)
+        classList(current.elements, reached, objectValues)
         return
-      case "CallExpression":
-        classList(current.arguments, reached)
+      case "ObjectExpression":
+        // A class map (`Record<Tone, string>`) holds one class list per value,
+        // and a member access resolves one entry with a runtime key: every value
+        // is a class position. The key is not — it is the map's own vocabulary,
+        // and a `cva` variant named `outline` is not the `outline` utility.
+        if (!objectValues) return
+        for (const property of asNodes(current.properties)) {
+          const entry = asNode(property)
+          if (!entry) continue
+          classList(entry.value ?? entry.argument, reached)
+        }
         return
+      case "MemberExpression": {
+        // `colors[tone]` names one entry of a map with a runtime key, so the
+        // map's own initializer is the class list that has to be checked.
+        const object = asNode(current.object)
+        const name = text(object?.name)
+        const initializer =
+          object?.type === "Identifier" && name ? declarations.get(name) : undefined
+        if (!name || initializer === undefined || reached.has(name)) return
+        reached.add(name)
+        classList(initializer, reached, objectValues)
+        reached.delete(name)
+        return
+      }
+      case "CallExpression": {
+        const callee = text(asNode(current.callee)?.name)
+        classList(current.arguments, reached, callee !== undefined && CLASS_CALLS.has(callee))
+        return
+      }
       case "JSXExpressionContainer":
       case "ParenthesizedExpression":
       case "TSAsExpression":
       case "TSSatisfiesExpression":
       case "TSNonNullExpression":
-        classList(current.expression, reached)
+        classList(current.expression, reached, objectValues)
         return
       case "Identifier": {
         const name = text(current.name)
         const initializer = name ? declarations.get(name) : undefined
         if (!name || initializer === undefined || reached.has(name)) return
         reached.add(name)
-        classList(initializer, reached)
+        classList(initializer, reached, objectValues)
         reached.delete(name)
         return
       }

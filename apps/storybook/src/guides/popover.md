@@ -28,8 +28,8 @@ const [open, setOpen] = React.useState(false)
   open={open}
   onOpenChange={setOpen}
   label="Informazione contestuale"
+  closeLabel="Chiudi il pannello"
 >
-  <PopoverTitle>Informazione contestuale</PopoverTitle>
   Il pannello segue lo stato del componente.
 </Popover>
 ```

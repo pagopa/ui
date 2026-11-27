@@ -25,6 +25,29 @@ const LIBRARY_ONLY = `export function Card() {
   return <div className={cn("pui:rounded-lg", "bg-accent")} />
 }
 `
+// The map is the shape `popper.tsx` uses: a `Record` read with a runtime key,
+// so the entry the class comes from is only reachable through the map.
+const CLASS_MAP = `const toneRing: Record<Tone, string> = {
+  info: "ring-info-border",
+  error: "ring-error-border",
+}
+
+const alignment: Record<Align, string> = {
+  center: "justify-center",
+  left: "pui:justify-start",
+}
+
+export function Popper({ tone }: { tone: Tone }) {
+  return <div className={cn("pui:rounded-lg", toneRing[tone], alignment["center"])} />
+}
+`
+// `outline` is both a `cva` variant and a utility: in the options of a variant
+// API it names the variant, so it is not a class position.
+const VARIANT_OPTIONS = `export function Action({ image }: { image: boolean }) {
+  const actionVariant = image ? "outline" : "pui:ghost"
+  return <button className={cn(buttonVariants({ variant: actionVariant }), "pui:h-full")} />
+}
+`
 // A marker names a group, a hand-written rule belongs to the entry, and an
 // invented token compiles to nothing: none of them is a utility. A theme
 // utility is: `shimmer` is one, so spelling it bare is a problem.
@@ -64,6 +87,20 @@ test("a class list held in a variable is a class position too", async () => {
     'src/components/frame.tsx:1: unprefixed utility "aspect-square" (write "pui:aspect-square")',
     'src/components/frame.tsx:1: unprefixed utility "aspect-video" (write "pui:aspect-video")',
   ])
+})
+
+test("a class map read through a member expression is a class position too", async () => {
+  const result = await check({ "src/components/popper.tsx": CLASS_MAP })
+  assert.deepEqual(result.problems, [
+    'src/components/popper.tsx:2: unprefixed utility "ring-info-border" (write "pui:ring-info-border")',
+    'src/components/popper.tsx:3: unprefixed utility "ring-error-border" (write "pui:ring-error-border")',
+    'src/components/popper.tsx:7: unprefixed utility "justify-center" (write "pui:justify-center")',
+  ])
+})
+
+test("a variant API's options name a variant, not a class", async () => {
+  const result = await check({ "src/components/card.tsx": VARIANT_OPTIONS })
+  assert.deepEqual(result.problems, [])
 })
 
 test("the utilities are the library's, not a default theme's", async () => {
