@@ -6,7 +6,9 @@ import { useLinkComponent, useMessages } from "@/lib/ui-provider"
 
 import { Badge } from "@/components/primitives/badge"
 import { Separator } from "@/components/primitives/separator"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Down as ChevronDownIcon } from "@/components/icons/generated/chevron"
+import { Default as MenuIcon } from "@/components/icons/generated/menu"
 
 import type { NavItem } from "./nav-item"
 
@@ -67,11 +69,10 @@ function SideNav({
           desktop composition: below `sm` the disclosure stays the same. */}
       <details className="group pui:tablet:hidden">
         <summary className="pui:flex pui:min-h-12 pui:cursor-pointer pui:list-none pui:items-center pui:gap-2 pui:border-b pui:px-6 pui:py-3 pui:text-body-sb pui:focus-visible:outline-2 pui:focus-visible:outline-ring">
-          <PagoPAIcon name="menu" aria-hidden="true" className="pui:shrink-0" />
+          <Icon source={MenuIcon} aria-hidden="true" className="pui:shrink-0" />
           <span className="pui:min-w-0 pui:flex-1 pui:truncate">{title}</span>
-          <PagoPAIcon
-            name="chevron"
-            variant="down"
+          <Icon
+            source={ChevronDownIcon}
             className="pui:shrink-0 pui:transition-transform pui:group-open:rotate-180 pui:motion-reduce:transition-none"
           />
         </summary>
@@ -280,9 +281,8 @@ function NavRow({
               condensed && labelsHidden,
             )}
           >
-            <PagoPAIcon
-              name="chevron"
-              variant="down"
+            <Icon
+              source={ChevronDownIcon}
               className={cn(
                 "pui:size-5 pui:transition-transform pui:motion-reduce:transition-none",
                 open && "pui:rotate-180",

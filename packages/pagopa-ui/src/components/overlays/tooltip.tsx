@@ -2,7 +2,8 @@
 
 import * as React from "react"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as CloseIcon } from "@/components/icons/generated/close"
 import {
   Tooltip as TooltipPrimitive,
   TooltipContent,
@@ -74,7 +75,7 @@ function Tooltip({
               className="pui:flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center"
               data-slot="tooltip-close-mark"
             >
-              <PagoPAIcon name="close" className="pui:size-2.5" />
+              <Icon source={CloseIcon} className="pui:size-2.5" />
             </span>
           ) : null}
         </TooltipContent>

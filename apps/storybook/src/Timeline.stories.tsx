@@ -4,7 +4,11 @@ import { expect, userEvent, within } from "storybook/test"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { CorrectionTag } from "@/components/content/correction-tag"
 import { Timeline, type TimelineItemStatus } from "@/components/data-display/timeline"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as MailIcon } from "@/components/icons/generated/mail"
+import { Default as MarkEmailReadIcon } from "@/components/icons/generated/mark-email-read"
+import { Default as SecondLetterIcon } from "@/components/icons/generated/second-letter"
+import { Default as TroubleshootIcon } from "@/components/icons/generated/troubleshoot"
 
 import timelineGuide from "./guides/timeline.md?raw"
 import { SourceFrame } from "./support/source-frame"
@@ -133,19 +137,19 @@ export const Touchpoints: Story = {
         id: "validation",
         title: "Notifica in validazione",
         status: "default",
-        icon: <PagoPAIcon name="troubleshoot" size={24} />,
+        icon: <Icon source={TroubleshootIcon} size={24} />,
         correction: <CorrectionTag status="valid" />,
         touchpoints: [
           {
             id: "digital",
             label: "Prima comunicazione digitale",
-            icon: <PagoPAIcon name="mark_email_read" size={24} />,
+            icon: <Icon source={MarkEmailReadIcon} size={24} />,
             correction: <CorrectionTag status="valid" />,
           },
           {
             id: "paper",
             label: "Seconda {Raccomandata A/R}",
-            icon: <PagoPAIcon name="second_letter" size={24} />,
+            icon: <Icon source={SecondLetterIcon} size={24} />,
             defaultOpen: true,
             events: [
               {
@@ -162,7 +166,7 @@ export const Touchpoints: Story = {
           {
             id: "analog",
             label: "Invio analogico",
-            icon: <PagoPAIcon name="mail" size={24} />,
+            icon: <Icon source={MailIcon} size={24} />,
           },
         ],
       },
@@ -191,7 +195,7 @@ export const Multidestinatario: Story = {
         id: "multi",
         title: "Notifica in validazione",
         status: "default",
-        icon: <PagoPAIcon name="troubleshoot" size={24} />,
+        icon: <Icon source={TroubleshootIcon} size={24} />,
         correction: <CorrectionTag status="valid" />,
         recipients: [
           {
@@ -201,12 +205,12 @@ export const Multidestinatario: Story = {
               {
                 id: "mario-digital",
                 label: "Prima comunicazione digitale",
-                icon: <PagoPAIcon name="mark_email_read" size={24} />,
+                icon: <Icon source={MarkEmailReadIcon} size={24} />,
               },
               {
                 id: "mario-paper",
                 label: "Seconda {Raccomandata A/R}",
-                icon: <PagoPAIcon name="second_letter" size={24} />,
+                icon: <Icon source={SecondLetterIcon} size={24} />,
               },
             ],
           },
@@ -217,7 +221,7 @@ export const Multidestinatario: Story = {
               {
                 id: "ente-digital",
                 label: "Prima comunicazione digitale",
-                icon: <PagoPAIcon name="mark_email_read" size={24} />,
+                icon: <Icon source={MarkEmailReadIcon} size={24} />,
                 correction: <CorrectionTag status="valid" />,
               },
             ],

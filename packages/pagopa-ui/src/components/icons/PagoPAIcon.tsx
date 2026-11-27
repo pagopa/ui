@@ -1,7 +1,6 @@
-import { cn } from "@/lib/cn"
-
 import { type FigmaIconName, iconAssetsByName, type IconVariantsByName } from "pagopa-ui-artwork"
 
+import { Icon } from "./icon"
 import { iconVariantsByName } from "./generated/registry"
 
 // O(1) public-name indices; Map.get keeps the explicit fallback for untyped
@@ -10,8 +9,12 @@ const assetsByName = new Map(Object.entries(iconAssetsByName))
 const componentsByName = new Map(Object.entries(iconVariantsByName))
 
 /**
- * Props of the source icon. `name` selects the pinned artwork and narrows
- * `variant` to the variants that identity actually publishes.
+ * The runtime icon resolver: `name` selects the pinned artwork at render time.
+ *
+ * Shipped components do not use it: each imports the glyph modules it renders,
+ * so a bundle carries its glyphs and nothing else. The registry this resolver
+ * needs is therefore paid for only by a surface that enumerates the catalogue
+ * by name, such as the Storybook gallery.
  */
 interface PagoPAIconProps<Name extends FigmaIconName = FigmaIconName> {
   /** ClassName merged onto the rendered icon. */
@@ -78,16 +81,12 @@ function PagoPAIcon<Name extends FigmaIconName>({
   if (!variantId || !SourceIcon)
     throw new Error(`Icon "${name}" has no source asset for variant "${selection ?? "default"}"`)
   return (
-    <SourceIcon
-      aria-hidden={decorative || undefined}
-      aria-label={decorative ? undefined : (label ?? name)}
-      role={decorative ? undefined : "img"}
-      className={cn("pagopa-icon pui:inline-block pui:shrink-0 pui:select-none", className)}
-      width={size}
-      height={size}
-      // The glyph box is artwork, not text: a 200% root font must not grow it
-      // past the control that hosts it, so the size lands in px (WCAG reflow).
-      style={{ width: size, height: size }}
+    <Icon
+      source={SourceIcon}
+      className={className}
+      decorative={decorative}
+      label={label ?? name}
+      size={size}
     />
   )
 }

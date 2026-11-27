@@ -2,7 +2,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
 import { CheckboxField } from "@/components/inputs/checkbox-field"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as PrivacyTipIcon } from "@/components/icons/generated/privacy-tip"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import checkboxGuide from "./guides/checkbox-choices.md?raw"
@@ -64,7 +65,7 @@ export const RichOption: Story = {
   args: {
     label: "Consenso al trattamento dei dati",
     description: "I dati sono trattati secondo l'informativa privacy.",
-    leadingIcon: <PagoPAIcon name="privacy_tip" />,
+    leadingIcon: <Icon source={PrivacyTipIcon} />,
     indicatorPlacement: "end",
   },
   play: async ({ canvasElement }) => {
@@ -129,7 +130,7 @@ export const SourceRichSelected: Story = {
   args: {
     label: figmaLabel,
     description: figmaDescription,
-    leadingIcon: <PagoPAIcon name="privacy_tip" />,
+    leadingIcon: <Icon source={PrivacyTipIcon} />,
     indicatorPlacement: "end",
     defaultChecked: true,
   },
@@ -148,7 +149,7 @@ export const SourceRichSelectedUnavailable: Story = {
   args: {
     label: figmaLabel,
     description: figmaDescription,
-    leadingIcon: <PagoPAIcon name="privacy_tip" />,
+    leadingIcon: <Icon source={PrivacyTipIcon} />,
     indicatorPlacement: "end",
     defaultChecked: true,
     disabled: true,
@@ -172,7 +173,7 @@ export const SourceRichDefault: Story = {
   args: {
     label: figmaLabel,
     description: figmaDescription,
-    leadingIcon: <PagoPAIcon name="privacy_tip" />,
+    leadingIcon: <Icon source={PrivacyTipIcon} />,
     indicatorPlacement: "end",
   },
   // Reflow exemption: fixture pinned at the source width, not a product surface.
@@ -192,7 +193,7 @@ export const SourceRichDefaultUnavailable: Story = {
   args: {
     label: figmaLabel,
     description: figmaDescription,
-    leadingIcon: <PagoPAIcon name="privacy_tip" />,
+    leadingIcon: <Icon source={PrivacyTipIcon} />,
     indicatorPlacement: "end",
     disabled: true,
   },
@@ -216,7 +217,7 @@ export const SourceRichError: Story = {
     label: figmaLabel,
     description: figmaDescription,
     error: "Helper text",
-    leadingIcon: <PagoPAIcon name="privacy_tip" />,
+    leadingIcon: <Icon source={PrivacyTipIcon} />,
     indicatorPlacement: "end",
   },
   // Reflow exemption: fixture pinned at the source width, not a product surface.

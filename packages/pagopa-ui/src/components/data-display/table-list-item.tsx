@@ -4,7 +4,8 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useLinkComponent, useMessages } from "@/lib/ui-provider"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as ArrowRightIcon } from "@/components/icons/generated/arrow"
 import { Button, buttonVariants } from "@/components/primitives/button"
 
 interface TableListItemField {
@@ -48,7 +49,7 @@ function TableListItem({
 
   const Link = useLinkComponent()
   const actionLabel = action?.label ?? actionFallbackLabel
-  const actionIcon = <PagoPAIcon name="arrow" variant="right" />
+  const actionIcon = <Icon source={ArrowRightIcon} />
   return (
     <li
       data-slot="table-list-item"

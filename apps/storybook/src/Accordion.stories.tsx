@@ -3,7 +3,8 @@ import * as React from "react"
 import { expect, userEvent, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as PhotoIcon } from "@/components/icons/generated/photo"
 import { Chip } from "@/components/inputs/chips"
 import { Accordion } from "@/components/navigation/accordion"
 import { Button } from "@/components/primitives/button"
@@ -13,7 +14,7 @@ import accordionGuide from "./guides/accordion.md?raw"
 const items = [
   {
     id: "one",
-    icon: <PagoPAIcon name="photo" />,
+    icon: <Icon source={PhotoIcon} />,
     title: "Come posso pagare?",
     chip: (
       <Chip variant="neutral" size="compact">
@@ -25,14 +26,14 @@ const items = [
   },
   {
     id: "two",
-    icon: <PagoPAIcon name="photo" />,
+    icon: <Icon source={PhotoIcon} />,
     title: "Dove trovo la ricevuta?",
     description: "La ricevuta viene inviata all'indirizzo email indicato durante il pagamento.",
     content: "La trovi anche nello storico dei pagamenti della tua area riservata.",
   },
   {
     id: "three",
-    icon: <PagoPAIcon name="photo" />,
+    icon: <Icon source={PhotoIcon} />,
     title: "Il pagamento è sicuro?",
     chip: (
       <Chip variant="neutral" size="compact">
@@ -93,7 +94,7 @@ export const WithDisabledItem: Story = {
       ...items,
       {
         id: "four",
-        icon: <PagoPAIcon name="photo" />,
+        icon: <Icon source={PhotoIcon} />,
         title: "Sezione non disponibile",
         chip: (
           <Chip variant="neutral" size="compact">
@@ -114,7 +115,7 @@ export const Loading: Story = {
     items: [
       {
         id: "loading",
-        icon: <PagoPAIcon name="photo" />,
+        icon: <Icon source={PhotoIcon} />,
         title: "Come posso pagare?",
         chip: (
           <Chip variant="neutral" size="compact">
@@ -266,7 +267,7 @@ export const ForwardedContract: Story = {
 // The four source states of AccordionItem (759:6399), captured one per story so
 // the root is the single item the source draws at its 580 width.
 const sourceHeader = () => ({
-  icon: <PagoPAIcon name="photo" />,
+  icon: <Icon source={PhotoIcon} />,
   title: "Accordion heading",
   chip: (
     <Chip variant="neutral" size="compact">

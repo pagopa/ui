@@ -3,7 +3,9 @@
 import * as React from "react"
 
 import { cn } from "@/lib/cn"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as AccountBalanceIcon } from "@/components/icons/generated/account-balance"
+import { Down as ChevronDownIcon, Up as ChevronUpIcon } from "@/components/icons/generated/chevron"
 import {
   Select,
   SelectContent,
@@ -60,7 +62,7 @@ function SelectField({
   defaultValue,
   onValueChange,
   action,
-  leadingIcon = <PagoPAIcon name="account_balance" size={24} />,
+  leadingIcon = <Icon source={AccountBalanceIcon} size={24} />,
   className,
 }: SelectFieldProps) {
   const ids = useFieldIds(id)
@@ -76,9 +78,8 @@ function SelectField({
   const currentValue = value === undefined ? internalValue : value
   const filled = currentValue != null
   const triggerIcon = (
-    <PagoPAIcon
-      name="chevron"
-      variant={open ? "up" : "down"}
+    <Icon
+      source={open ? ChevronUpIcon : ChevronDownIcon}
       size={24}
       className={
         disabled

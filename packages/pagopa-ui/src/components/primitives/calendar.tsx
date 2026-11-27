@@ -25,7 +25,20 @@ export interface CalendarLocale {
   }
 }
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import {
+  Default as ChevronIcon,
+  Down as ChevronDownIcon,
+  Left as ChevronLeftIcon,
+  Up as ChevronUpIcon,
+} from "@/components/icons/generated/chevron"
+
+const chevronByOrientation = {
+  down: ChevronDownIcon,
+  left: ChevronLeftIcon,
+  right: ChevronIcon,
+  up: ChevronUpIcon,
+} as const
 
 function Calendar({
   className,
@@ -69,7 +82,7 @@ function Calendar({
         // Month paging is a widget control, not a page navigation landmark.
         Nav: (navProps) => <Nav {...navProps} role="presentation" aria-label={undefined} />,
         Chevron: ({ orientation, className: iconClassName }) => (
-          <PagoPAIcon name="chevron" variant={orientation ?? "down"} className={iconClassName} />
+          <Icon source={chevronByOrientation[orientation ?? "down"]} className={iconClassName} />
         ),
         DayButton: CalendarDayButton,
         ...components,

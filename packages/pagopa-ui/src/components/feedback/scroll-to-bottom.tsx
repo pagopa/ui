@@ -4,7 +4,8 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Down as ArrowDownIcon } from "@/components/icons/generated/arrow"
 import { Button } from "@/components/primitives/button"
 
 export interface ScrollToBottomProps {
@@ -47,7 +48,7 @@ function ScrollToBottom({ target, label: labelProp, className }: ScrollToBottomP
         else window.scrollTo({ top: document.documentElement.scrollHeight, behavior })
       }}
     >
-      <PagoPAIcon name="arrow" variant="down" decorative className="pui:size-6" />
+      <Icon source={ArrowDownIcon} decorative className="pui:size-6" />
     </Button>
   )
 }

@@ -1,7 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, fn, userEvent, within } from "storybook/test"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
+import { Filled as InfoFilledIcon } from "@/components/icons/generated/info"
+import { Default as ReportIcon } from "@/components/icons/generated/report"
+import { Default as WarningIcon } from "@/components/icons/generated/warning"
+import { Icon } from "@/components/icons/icon"
 import {
   Alert,
   AlertAction,
@@ -28,10 +32,10 @@ const severityByVariant: Record<AlertVariant, AlertSeverity> = {
 }
 
 const iconBySeverity = {
-  error: "report",
-  warning: "warning",
-  info: "info",
-  success: "check_circle",
+  error: ReportIcon,
+  warning: WarningIcon,
+  info: InfoFilledIcon,
+  success: CheckCircleIcon,
 } as const
 
 const sourceAlerts = [
@@ -76,10 +80,7 @@ function SourceAlert({
       data-testid={testId}
     >
       <AlertIcon data-testid={testId ? `${testId}-icon` : undefined}>
-        <PagoPAIcon
-          name={iconBySeverity[severity]}
-          {...(severity === "info" ? { filled: true } : {})}
-        />
+        <Icon source={iconBySeverity[severity]} />
       </AlertIcon>
       <AlertContent>
         <AlertCopy data-testid={testId ? `${testId}-copy` : undefined}>

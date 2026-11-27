@@ -4,7 +4,8 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as CloseIcon } from "@/components/icons/generated/close"
 
 type BannerColor = "white" | "primary" | "grey"
 type BannerHierarchy = "primary" | "secondary" | "tertiary"
@@ -292,7 +293,7 @@ function Banner({
           data-slot="banner-dismiss"
           className="pui:absolute pui:right-1 pui:top-1 pui:z-10 pui:flex pui:size-11 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-full pui:hover:bg-foreground/5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-current"
         >
-          <PagoPAIcon name="close" className="pui:size-4" />
+          <Icon source={CloseIcon} className="pui:size-4" />
         </button>
       ) : null}
     </section>

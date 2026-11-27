@@ -3,6 +3,9 @@ import type { ComponentProps } from "react"
 import { cn } from "@/lib/cn"
 import { expect, waitFor } from "storybook/test"
 
+// The gallery is the one page that reads the runtime registry by name: every
+// shipped component imports the glyph modules it renders, so `PagoPAIcon` here
+// enumerates the pinned set without dragging it into a consumer bundle.
 import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
 import {

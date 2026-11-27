@@ -3,7 +3,8 @@
 import * as React from "react"
 
 import { statusIcons, toneStyles, type Tone } from "@/components/feedback/tones"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as CloseIcon } from "@/components/icons/generated/close"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
@@ -101,7 +102,7 @@ function Popper({
           data-slot="popper-icon"
           className="pui:grid pui:size-6 pui:shrink-0 pui:place-items-center"
         >
-          <PagoPAIcon name={statusIcons[tone]} {...(tone === "info" ? { filled: true } : {})} />
+          <Icon source={statusIcons[tone]} />
         </span>
         <div
           id={id}
@@ -117,7 +118,7 @@ function Popper({
           data-slot="popper-dismiss"
           className="pui:relative pui:grid pui:size-6 pui:shrink-0 pui:place-items-center pui:rounded-md pui:text-foreground pui:after:absolute pui:after:-inset-2.5 pui:hover:bg-foreground/5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-current"
         >
-          <PagoPAIcon name="close" className="pui:size-5" />
+          <Icon source={CloseIcon} className="pui:size-5" />
         </button>
       </div>
     </div>

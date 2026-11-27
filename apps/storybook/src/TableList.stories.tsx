@@ -4,7 +4,8 @@ import { expect, userEvent, within } from "storybook/test"
 
 import { TableList } from "@/components/data-display/table-list"
 import { type TableListItemField } from "@/components/data-display/table-list-item"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as MailIcon } from "@/components/icons/generated/mail"
 import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
 import { Pagination } from "@/components/navigation/pagination"
 import { Button } from "@/components/primitives/button"
@@ -74,7 +75,7 @@ function campaignFields(row: CampaignRow): TableListItemField[] {
       label: "Comunicazioni",
       value: row.messages,
       mono: true,
-      icon: <PagoPAIcon name="mail" />,
+      icon: <Icon source={MailIcon} />,
     },
   ]
 }

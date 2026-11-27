@@ -4,7 +4,9 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as DownloadIcon } from "@/components/icons/generated/download"
+import { Default as HowToRegIcon } from "@/components/icons/generated/how-to-reg"
 import { Button } from "@/components/primitives/button"
 import { RadioGroup, RadioGroupItem } from "@/components/primitives/radio-group"
 import { Skeleton } from "@/components/primitives/skeleton"
@@ -104,7 +106,7 @@ function PaymentModule({
                 aria-hidden="true"
                 className="pui:flex pui:size-5 pui:shrink-0 pui:items-center pui:justify-center"
               >
-                {suggestion.icon ?? <PagoPAIcon name="how_to_reg" size={20} />}
+                {suggestion.icon ?? <Icon source={HowToRegIcon} size={20} />}
               </span>
               {suggestion.label}
             </p>
@@ -139,7 +141,7 @@ function PaymentModule({
                 // and the >=44px pointer target is the invisible ::after.
                 className="pui:relative pui:size-6 pui:min-h-0 pui:px-0 pui:after:absolute pui:after:-inset-2.5"
               >
-                <PagoPAIcon name="download" className="pui:size-6" />
+                <Icon source={DownloadIcon} className="pui:size-6" />
               </Button>
             ) : null}
             {onSelect ? (

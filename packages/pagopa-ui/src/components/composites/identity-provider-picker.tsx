@@ -2,7 +2,8 @@
 
 import { useId, type ComponentProps, type ReactNode } from "react"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as CloseIcon } from "@/components/icons/generated/close"
 import { Button } from "@/components/primitives/button"
 import { Heading, type HeadingTag } from "@/components/primitives/heading"
 import { cn } from "@/lib/cn"
@@ -124,7 +125,7 @@ function IdentityProviderPickerView({
           type="button"
           variant="ghost"
         >
-          <PagoPAIcon name="close" size={24} />
+          <Icon source={CloseIcon} size={24} />
         </Button>
       </header>
       <ul

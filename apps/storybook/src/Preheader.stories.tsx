@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as MenuBookIcon } from "@/components/icons/generated/menu-book"
+import { Default as SupportIcon } from "@/components/icons/generated/support"
 import { Preheader } from "@/components/navigation/preheader"
 import { Button } from "@/components/primitives/button"
 
@@ -37,8 +39,8 @@ export const Playground: Story = {}
 export const WithActions: Story = {
   args: {
     links: [
-      { label: "Manuale operativo", href: "#manuale", icon: <PagoPAIcon name="menu_book" /> },
-      { label: "Assistenza", href: "#assistenza", icon: <PagoPAIcon name="support" /> },
+      { label: "Manuale operativo", href: "#manuale", icon: <Icon source={MenuBookIcon} /> },
+      { label: "Assistenza", href: "#assistenza", icon: <Icon source={SupportIcon} /> },
     ],
     actions: <Button>Accedi</Button>,
   },

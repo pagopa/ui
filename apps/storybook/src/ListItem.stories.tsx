@@ -3,7 +3,11 @@ import { expect, userEvent, within } from "storybook/test"
 
 import { Avatar } from "@/components/content/avatar"
 import { ListItem } from "@/components/content/list-item"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as ContentCopyIcon } from "@/components/icons/generated/content-copy"
+import { Default as CreditCardIcon } from "@/components/icons/generated/credit-card"
+import { Default as PhotoIcon } from "@/components/icons/generated/photo"
+import { Default as ReportIcon } from "@/components/icons/generated/report"
 import { Chip } from "@/components/inputs/chips"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import listItemGuide from "./guides/list-items.md?raw"
@@ -12,7 +16,7 @@ const meta = {
   title: "Components/Content/ListItem",
   component: ListItem,
   args: {
-    leading: <PagoPAIcon name="photo" className="pui:text-(--figma-color-neutrals-grey-300)" />,
+    leading: <Icon source={PhotoIcon} className="pui:text-(--figma-color-neutrals-grey-300)" />,
     description: "Pagamento TARI 2025",
     value: "Accertamento 00016/2025",
   },
@@ -110,7 +114,7 @@ export const Actionable: Story = {
   parameters: { a11yContract: { reflow: false } },
   args: {
     variant: "actionable",
-    trailingIcon: <PagoPAIcon name="content_copy" />,
+    trailingIcon: <Icon source={ContentCopyIcon} />,
     chip: <Chip size="compact">Default</Chip>,
   },
 }
@@ -122,7 +126,7 @@ export const Transactional: Story = {
     variant: "transactional",
     leading: (
       <span className="pui:grid pui:size-11 pui:place-items-center pui:rounded-lg pui:border">
-        <PagoPAIcon name="credit_card" />
+        <Icon source={CreditCardIcon} />
       </span>
     ),
     value: "Carta •••• 4532",
@@ -138,7 +142,7 @@ export const WithSuggestion: Story = {
     variant: "transactional",
     leading: (
       <span className="pui:grid pui:size-11 pui:place-items-center pui:rounded-lg pui:border">
-        <PagoPAIcon name="credit_card" />
+        <Icon source={CreditCardIcon} />
       </span>
     ),
     value: "Carta •••• 4532",
@@ -161,7 +165,7 @@ export const Amount: Story = {
 export const ErrorState: Story = {
   args: {
     variant: "error",
-    leading: <PagoPAIcon name="report" className="pui:text-destructive" />,
+    leading: <Icon source={ReportIcon} className="pui:text-destructive" />,
     value: "Avviso non trovato",
     description: undefined,
     helperText: "Controlla il codice avviso e riprova.",

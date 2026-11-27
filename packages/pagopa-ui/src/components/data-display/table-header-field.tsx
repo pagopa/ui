@@ -3,7 +3,9 @@
 import * as React from "react"
 
 import { useMessages } from "@/lib/ui-provider"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Down as ArrowDownIcon, Up as ArrowUpIcon } from "@/components/icons/generated/arrow"
+import { Default as UnfoldIcon } from "@/components/icons/generated/unfold"
 import { TableHead } from "@/components/primitives/table"
 
 interface TableSort {
@@ -28,9 +30,9 @@ function TableHeaderField({ children, sort, ...props }: TableHeaderFieldProps) {
         >
           {children}
           {sort.direction === "none" ? (
-            <PagoPAIcon name="unfold" className="pui:size-6 pui:shrink-0" />
+            <Icon source={UnfoldIcon} className="pui:size-6 pui:shrink-0" />
           ) : (
-            <PagoPAIcon name="arrow" variant={sort.direction === "ascending" ? "up" : "down"} />
+            <Icon source={sort.direction === "ascending" ? ArrowUpIcon : ArrowDownIcon} />
           )}
         </button>
       ) : (

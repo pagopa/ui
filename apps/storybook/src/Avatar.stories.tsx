@@ -5,7 +5,8 @@ import { expect, userEvent, waitFor, within } from "storybook/test"
 import productLogo from "@/assets/storybook/1526-6505.png"
 import coverPhoto from "@/assets/storybook/757-6293.jpeg"
 import { Avatar } from "@/components/content/avatar"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as TheaterComedyIcon } from "@/components/icons/generated/theater-comedy"
 import { Button } from "@/components/primitives/button"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
@@ -256,13 +257,13 @@ export const SourceIcons: Story = {
       <Avatar
         alt="Servizio culturale"
         size="large"
-        icon={<PagoPAIcon name="theater_comedy" size={32} />}
+        icon={<Icon source={TheaterComedyIcon} size={32} />}
       />
       <div className="pui:rounded-lg pui:bg-navy pui:p-4">
         <Avatar
           alt="Servizio culturale su superficie scura"
           size="large"
-          icon={<PagoPAIcon name="theater_comedy" size={32} />}
+          icon={<Icon source={TheaterComedyIcon} size={32} />}
           tone="inverse"
         />
       </div>
@@ -301,7 +302,7 @@ export const DecorativeIconSlot: Story = {
         size="large"
         icon={
           <a href="#avatar-service-destination">
-            <PagoPAIcon name="theater_comedy" size={32} />
+            <Icon source={TheaterComedyIcon} size={32} />
           </a>
         }
       />
@@ -329,7 +330,7 @@ function RecoveringIconIdentity() {
           alt="Servizio con icona alternativa"
           src={available ? productLogo : "data:image/png;base64,invalid"}
           imageFit="contain"
-          icon={<PagoPAIcon name="theater_comedy" size={32} />}
+          icon={<Icon source={TheaterComedyIcon} size={32} />}
           tone="inverse"
           size="large"
         />
@@ -464,14 +465,14 @@ export const FigmaBigStates: Story = {
         <Avatar
           alt="Servizio culturale"
           size="large"
-          icon={<PagoPAIcon name="theater_comedy" size={32} />}
+          icon={<Icon source={TheaterComedyIcon} size={32} />}
         />
       </div>
       <div data-fidelity-variant="160-1412" className="pui:rounded-lg pui:bg-navy pui:p-4">
         <Avatar
           alt="Servizio culturale su superficie scura"
           size="large"
-          icon={<PagoPAIcon name="theater_comedy" size={32} />}
+          icon={<Icon source={TheaterComedyIcon} size={32} />}
           tone="inverse"
         />
       </div>

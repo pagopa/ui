@@ -1,6 +1,26 @@
 import * as React from "react"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as ArrowIcon } from "@/components/icons/generated/arrow"
+import { Default as CachedIcon } from "@/components/icons/generated/cached"
+import { Default as CheckIcon } from "@/components/icons/generated/check"
+import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
+import {
+  Default as ChevronIcon,
+  Down as ChevronDownIcon,
+  Left as ChevronLeftIcon,
+} from "@/components/icons/generated/chevron"
+import { Default as CloseIcon } from "@/components/icons/generated/close"
+import { Default as CodeIcon } from "@/components/icons/generated/code"
+import { Default as ContentCopyIcon } from "@/components/icons/generated/content-copy"
+import { Default as DashboardIcon } from "@/components/icons/generated/dashboard"
+import { Default as KeyboardHideIcon } from "@/components/icons/generated/keyboard-hide"
+import { Default as MenuBookIcon } from "@/components/icons/generated/menu-book"
+import { Default as OpenInNewIcon } from "@/components/icons/generated/open-in-new"
+import { Default as SearchIcon } from "@/components/icons/generated/search"
+import { Default as TableChartIcon } from "@/components/icons/generated/table-chart"
+import { Default as TroubleshootIcon } from "@/components/icons/generated/troubleshoot"
+import { Default as WarningIcon } from "@/components/icons/generated/warning"
 
 import { cn } from "@/lib/cn"
 
@@ -172,9 +192,9 @@ function CopyButton({
       title={copied ? "Copied" : "Copy"}
     >
       {copied ? (
-        <PagoPAIcon name="check" aria-hidden="true" className="pui:size-3.5 pui:text-emerald-600" />
+        <Icon source={CheckIcon} aria-hidden="true" className="pui:size-3.5 pui:text-emerald-600" />
       ) : (
-        <PagoPAIcon name="content_copy" aria-hidden="true" className="pui:size-3.5" />
+        <Icon source={ContentCopyIcon} aria-hidden="true" className="pui:size-3.5" />
       )}
       {compact ? null : <span>{copied ? "Copied" : "Copy"}</span>}
     </button>
@@ -233,7 +253,7 @@ function ResyncControl() {
           focusRing(),
         )}
       >
-        <PagoPAIcon name="cached" aria-hidden="true" className="pui:size-3.5" />
+        <Icon source={CachedIcon} aria-hidden="true" className="pui:size-3.5" />
         Re-sync Figma
       </button>
       {open ? (
@@ -260,12 +280,13 @@ function ResyncControl() {
                 focusRing(),
               )}
             >
-              <PagoPAIcon name="close" aria-hidden="true" className="pui:size-3.5" />
+              <Icon source={CloseIcon} aria-hidden="true" className="pui:size-3.5" />
             </button>
           </div>
           <div className="pui:mt-3 pui:flex pui:items-start pui:gap-2 pui:rounded-lg pui:border pui:border-slate-200 pui:bg-slate-50 pui:p-2.5">
-            <PagoPAIcon
-              name="code"
+            <Icon
+              source={CodeIcon}
+
               aria-hidden="true"
               className="pui:mt-0.5 pui:size-3.5 pui:shrink-0 pui:text-slate-500"
             />
@@ -285,7 +306,7 @@ function ResyncControl() {
               )}
             >
               Open the Figma file
-              <PagoPAIcon name="open_in_new" aria-hidden="true" className="pui:size-3" />
+              <Icon source={OpenInNewIcon} aria-hidden="true" className="pui:size-3" />
             </a>
             <span className="pui:font-mono pui:text-[10px] pui:text-slate-500">
               {formatDate(inventoryMeta.syncedAt)}
@@ -307,7 +328,7 @@ function Header() {
             className="pui:flex pui:size-8 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-lg pui:text-white pui:shadow-sm"
             style={{ backgroundImage: "linear-gradient(135deg, #6366f1, #7c3aed)" }}
           >
-            <PagoPAIcon name="dashboard" className="pui:size-4" />
+            <Icon source={DashboardIcon} className="pui:size-4" />
           </span>
           <div className="pui:min-w-0 pui:leading-tight">
             <p className="pui:truncate pui:text-[13px] pui:font-semibold pui:text-slate-900">
@@ -408,7 +429,7 @@ function Kpis() {
             {formatNumber(totals.pages)} Figma pages · {formatNumber(AREAS.length)} areas
           </>
         }
-        icon={<PagoPAIcon name="dashboard" className="pui:size-4" />}
+        icon={<Icon source={DashboardIcon} className="pui:size-4" />}
         iconClassName="bg-indigo-50 text-indigo-600"
       />
       <KpiCard
@@ -419,7 +440,7 @@ function Kpis() {
             {formatNumber(totals.implemented)} implemented · {formatNumber(totals.notShipped)} open
           </>
         }
-        icon={<PagoPAIcon name="check_circle" className="pui:size-4" />}
+        icon={<Icon source={CheckCircleIcon} className="pui:size-4" />}
         iconClassName="bg-emerald-50 text-emerald-600"
       >
         <ProgressBar value={syncPercent} className="pui:mt-3" barClassName="pui:bg-emerald-500" />
@@ -432,7 +453,7 @@ function Kpis() {
             {formatNumber(totals.mocked)} mocked · {formatNumber(totals.pending)} pending
           </>
         }
-        icon={<PagoPAIcon name="warning" className="pui:size-4" />}
+        icon={<Icon source={WarningIcon} className="pui:size-4" />}
         iconClassName="bg-amber-50 text-amber-600"
       />
       <KpiCard
@@ -444,7 +465,7 @@ function Kpis() {
             declared device frames
           </>
         }
-        icon={<PagoPAIcon name="troubleshoot" className="pui:size-4" />}
+        icon={<Icon source={TroubleshootIcon} className="pui:size-4" />}
         iconClassName="bg-violet-50 text-violet-600"
       />
     </div>
@@ -456,13 +477,14 @@ function HealthStrip() {
     <div className="pui:mt-3 pui:rounded-2xl pui:border pui:border-slate-200 pui:bg-white pui:px-4 pui:py-3 pui:shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
       {unaccountedCount > 0 ? (
         <p className="pui:flex pui:items-center pui:gap-2 pui:text-[11px] pui:text-amber-700">
-          <PagoPAIcon name="warning" aria-hidden="true" className="pui:size-3.5 pui:shrink-0" />
+          <Icon source={WarningIcon} aria-hidden="true" className="pui:size-3.5 pui:shrink-0" />
           {unaccountedCount} published nodes have no registry entry yet.
         </p>
       ) : (
         <p className="pui:flex pui:items-center pui:gap-2 pui:text-[11px] pui:text-emerald-700">
-          <PagoPAIcon
-            name="check_circle"
+          <Icon
+            source={CheckCircleIcon}
+
             aria-hidden="true"
             className="pui:size-3.5 pui:shrink-0"
           />
@@ -494,8 +516,9 @@ function SearchField({
       <label className="pui:sr-only" htmlFor="registry-search">
         Search components
       </label>
-      <PagoPAIcon
-        name="search"
+      <Icon
+        source={SearchIcon}
+
         aria-hidden="true"
         className="pui:pointer-events-none pui:absolute pui:top-1/2 pui:left-3 pui:size-4 pui:-translate-y-1/2 pui:text-slate-500"
       />
@@ -534,14 +557,14 @@ function SearchField({
             focusRing(),
           )}
         >
-          <PagoPAIcon name="close" aria-hidden="true" className="pui:size-3.5" />
+          <Icon source={CloseIcon} aria-hidden="true" className="pui:size-3.5" />
         </button>
       ) : (
         <span
           aria-hidden="true"
           className="pui:pointer-events-none pui:absolute pui:top-1/2 pui:right-2.5 pui:flex pui:-translate-y-1/2 pui:items-center pui:gap-1 pui:rounded pui:border pui:border-slate-200 pui:bg-slate-50 pui:px-1.5 pui:py-0.5 pui:font-sans pui:text-[10px] pui:font-medium pui:text-slate-500"
         >
-          <PagoPAIcon name="keyboard_hide" className="pui:size-3" />
+          <Icon source={KeyboardHideIcon} className="pui:size-3" />
           {shortcut}
         </span>
       )}
@@ -614,9 +637,8 @@ function AreaField({
           </option>
         ))}
       </select>
-      <PagoPAIcon
-        name="chevron"
-        variant="down"
+      <Icon
+        source={ChevronDownIcon}
         aria-hidden="true"
         className="pui:pointer-events-none pui:absolute pui:top-1/2 pui:right-2.5 pui:size-3.5 pui:-translate-y-1/2 pui:text-slate-500"
       />
@@ -692,7 +714,7 @@ function ViewToggle({
           focusRing(),
         )}
       >
-        <PagoPAIcon name="dashboard" aria-hidden="true" className="pui:size-3.5" />
+        <Icon source={DashboardIcon} aria-hidden="true" className="pui:size-3.5" />
         <span className="pui:hidden pui:tablet:inline">Grid</span>
       </button>
       <button
@@ -708,7 +730,7 @@ function ViewToggle({
           focusRing(),
         )}
       >
-        <PagoPAIcon name="table_chart" aria-hidden="true" className="pui:size-3.5" />
+        <Icon source={TableChartIcon} aria-hidden="true" className="pui:size-3.5" />
         <span className="pui:hidden pui:tablet:inline">Table</span>
       </button>
     </fieldset>
@@ -738,9 +760,8 @@ function SortField({ value, onChange }: { value: SortKey; onChange: (value: Sort
           </option>
         ))}
       </select>
-      <PagoPAIcon
-        name="chevron"
-        variant="down"
+      <Icon
+        source={ChevronDownIcon}
         aria-hidden="true"
         className="pui:pointer-events-none pui:absolute pui:top-1/2 pui:right-2.5 pui:size-3.5 pui:-translate-y-1/2 pui:text-slate-500"
       />
@@ -867,7 +888,7 @@ function ComponentPreview({ item }: { item: RegistryItem }) {
         </span>
       ) : null}
       <span className="pui:absolute pui:top-2.5 pui:right-2.5 pui:flex pui:size-6 pui:items-center pui:justify-center pui:rounded-full pui:border pui:border-slate-200 pui:bg-white pui:text-slate-500 pui:opacity-0 pui:shadow-sm pui:transition pui:group-hover:opacity-100 pui:group-focus-visible:opacity-100">
-        <PagoPAIcon name="open_in_new" className="pui:size-3.5" />
+        <Icon source={OpenInNewIcon} className="pui:size-3.5" />
       </span>
     </div>
   )
@@ -961,7 +982,7 @@ function RegistryCard({ item, onInspect }: { item: RegistryItem; onInspect: () =
           )}
         >
           Inspect
-          <PagoPAIcon name="arrow" aria-hidden="true" className="pui:size-3" />
+          <Icon source={ArrowIcon} aria-hidden="true" className="pui:size-3" />
         </button>
         <div className="pui:flex pui:items-center pui:gap-0.5">
           <ExternalIconLink href={item.figmaUrl} label={`${item.name} in Figma`}>
@@ -979,14 +1000,14 @@ function RegistryCard({ item, onInspect }: { item: RegistryItem; onInspect: () =
                 focusRing(),
               )}
             >
-              <PagoPAIcon name="menu_book" aria-hidden="true" className="pui:size-3.5" />
+              <Icon source={MenuBookIcon} aria-hidden="true" className="pui:size-3.5" />
             </a>
           ) : (
             <span
               title="No Storybook page mapped"
               className="pui:inline-flex pui:size-7 pui:items-center pui:justify-center pui:rounded-md pui:text-slate-300"
             >
-              <PagoPAIcon name="menu_book" aria-hidden="true" className="pui:size-3.5" />
+              <Icon source={MenuBookIcon} aria-hidden="true" className="pui:size-3.5" />
             </span>
           )}
         </div>
@@ -1125,21 +1146,21 @@ function RegistryTable({
                       focusRing(),
                     )}
                   >
-                    <PagoPAIcon name="troubleshoot" aria-hidden="true" className="pui:size-3.5" />
+                    <Icon source={TroubleshootIcon} aria-hidden="true" className="pui:size-3.5" />
                   </button>
                   <ExternalIconLink href={item.figmaUrl} label={`${item.name} in Figma`}>
                     <FigmaMark className="pui:h-3.5 pui:w-2.5" />
                   </ExternalIconLink>
                   {item.storyUrl ? (
                     <ExternalIconLink href={item.storyUrl} label={`${item.name} in Storybook`}>
-                      <PagoPAIcon name="menu_book" aria-hidden="true" className="pui:size-3.5" />
+                      <Icon source={MenuBookIcon} aria-hidden="true" className="pui:size-3.5" />
                     </ExternalIconLink>
                   ) : (
                     <span
                       title="No Storybook page mapped"
                       className="pui:inline-flex pui:size-7 pui:items-center pui:justify-center pui:rounded-md pui:text-slate-300"
                     >
-                      <PagoPAIcon name="menu_book" aria-hidden="true" className="pui:size-3.5" />
+                      <Icon source={MenuBookIcon} aria-hidden="true" className="pui:size-3.5" />
                     </span>
                   )}
                 </div>
@@ -1202,7 +1223,7 @@ function Pagination({
             focusRing(),
           )}
         >
-          <PagoPAIcon name="chevron" variant="left" aria-hidden="true" className="pui:size-3.5" />
+          <Icon source={ChevronLeftIcon} aria-hidden="true" className="pui:size-3.5" />
         </button>
         {pageWindow(page, totalPages).map((candidate, index) =>
           candidate === "gap" ? (
@@ -1242,7 +1263,7 @@ function Pagination({
             focusRing(),
           )}
         >
-          <PagoPAIcon name="chevron" aria-hidden="true" className="pui:size-3.5" />
+          <Icon source={ChevronIcon} aria-hidden="true" className="pui:size-3.5" />
         </button>
       </div>
     </div>
@@ -1263,19 +1284,19 @@ const INSPECTOR_TABS: {
     id: "overview",
     label: "Overview",
     shortLabel: "Overview",
-    icon: <PagoPAIcon name="troubleshoot" className="pui:size-3.5" />,
+    icon: <Icon source={TroubleshootIcon} className="pui:size-3.5" />,
   },
   {
     id: "diff",
     label: "Version diff",
     shortLabel: "Version diff",
-    icon: <PagoPAIcon name="code" className="pui:size-3.5" />,
+    icon: <Icon source={CodeIcon} className="pui:size-3.5" />,
   },
   {
     id: "handoff",
     label: "Handoff & links",
     shortLabel: "Handoff",
-    icon: <PagoPAIcon name="open_in_new" className="pui:size-3.5" />,
+    icon: <Icon source={OpenInNewIcon} className="pui:size-3.5" />,
   },
 ]
 
@@ -1366,8 +1387,9 @@ function OverviewPanel({ item }: { item: RegistryItem }) {
         <details className="group pui:rounded-xl pui:border pui:border-slate-200 pui:bg-white pui:px-3 pui:py-2.5">
           <summary className="pui:cursor-pointer pui:list-none pui:text-[11px] pui:font-medium pui:text-slate-700 pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-indigo-600">
             <span className="pui:inline-flex pui:items-center pui:gap-1.5">
-              <PagoPAIcon
-                name="chevron"
+              <Icon
+                source={ChevronIcon}
+
                 aria-hidden="true"
                 className="pui:size-3.5 pui:text-slate-500 pui:transition pui:group-open:rotate-90"
               />
@@ -1441,13 +1463,14 @@ function VersionPanel({ item }: { item: RegistryItem }) {
         )}
       >
         {alignment.id === "aligned" ? (
-          <PagoPAIcon
-            name="check_circle"
+          <Icon
+            source={CheckCircleIcon}
+
             aria-hidden="true"
             className="pui:size-3.5 pui:shrink-0"
           />
         ) : (
-          <PagoPAIcon name="warning" aria-hidden="true" className="pui:size-3.5 pui:shrink-0" />
+          <Icon source={WarningIcon} aria-hidden="true" className="pui:size-3.5 pui:shrink-0" />
         )}
         <span className="pui:font-medium">{alignment.label}</span>
         <span>
@@ -1474,7 +1497,7 @@ function VersionPanel({ item }: { item: RegistryItem }) {
         />
         <VersionCard
           eyebrow="Code contract"
-          icon={<PagoPAIcon name="code" className="pui:size-3.5" />}
+          icon={<Icon source={CodeIcon} className="pui:size-3.5" />}
           title={item.exportName ?? "No export mapped"}
           fingerprint={item.contractFingerprint}
           rows={[
@@ -1568,8 +1591,9 @@ function HandoffPanel({ item }: { item: RegistryItem }) {
                 {item.nodeId}
               </span>
             </span>
-            <PagoPAIcon
-              name="open_in_new"
+            <Icon
+              source={OpenInNewIcon}
+
               aria-hidden="true"
               className="pui:size-3.5 pui:shrink-0 pui:text-slate-500"
             />
@@ -1584,8 +1608,9 @@ function HandoffPanel({ item }: { item: RegistryItem }) {
                 focusRing(),
               )}
             >
-              <PagoPAIcon
-                name="menu_book"
+              <Icon
+                source={MenuBookIcon}
+
                 aria-hidden="true"
                 className="pui:size-3.5 pui:shrink-0 pui:text-slate-500"
               />
@@ -1595,16 +1620,18 @@ function HandoffPanel({ item }: { item: RegistryItem }) {
                   {item.storyTitle}
                 </span>
               </span>
-              <PagoPAIcon
-                name="open_in_new"
+              <Icon
+                source={OpenInNewIcon}
+
                 aria-hidden="true"
                 className="pui:size-3.5 pui:shrink-0 pui:text-slate-500"
               />
             </a>
           ) : (
             <div className="pui:flex pui:items-center pui:gap-2.5 pui:px-3 pui:py-2.5 pui:text-[11px] pui:text-slate-500">
-              <PagoPAIcon
-                name="menu_book"
+              <Icon
+                source={MenuBookIcon}
+
                 aria-hidden="true"
                 className="pui:size-3.5 pui:shrink-0"
               />
@@ -1621,8 +1648,9 @@ function HandoffPanel({ item }: { item: RegistryItem }) {
                 focusRing(),
               )}
             >
-              <PagoPAIcon
-                name="code"
+              <Icon
+                source={CodeIcon}
+
                 aria-hidden="true"
                 className="pui:size-3.5 pui:shrink-0 pui:text-slate-500"
               />
@@ -1632,8 +1660,9 @@ function HandoffPanel({ item }: { item: RegistryItem }) {
                   {item.module}
                 </span>
               </span>
-              <PagoPAIcon
-                name="open_in_new"
+              <Icon
+                source={OpenInNewIcon}
+
                 aria-hidden="true"
                 className="pui:size-3.5 pui:shrink-0 pui:text-slate-500"
               />
@@ -1685,7 +1714,7 @@ function InspectorFooter({ item }: { item: RegistryItem }) {
       >
         <FigmaMark className="pui:h-3 pui:w-2.5" />
         Open in Figma
-        <PagoPAIcon name="open_in_new" aria-hidden="true" className="pui:size-3" />
+        <Icon source={OpenInNewIcon} aria-hidden="true" className="pui:size-3" />
       </a>
       {item.storyUrl ? (
         <a
@@ -1697,9 +1726,9 @@ function InspectorFooter({ item }: { item: RegistryItem }) {
             focusRing(),
           )}
         >
-          <PagoPAIcon name="menu_book" aria-hidden="true" className="pui:size-3.5" />
+          <Icon source={MenuBookIcon} aria-hidden="true" className="pui:size-3.5" />
           Storybook
-          <PagoPAIcon name="open_in_new" aria-hidden="true" className="pui:size-3" />
+          <Icon source={OpenInNewIcon} aria-hidden="true" className="pui:size-3" />
         </a>
       ) : (
         <span className="pui:inline-flex pui:flex-1 pui:items-center pui:justify-center pui:rounded-lg pui:border pui:border-dashed pui:border-slate-200 pui:px-3 pui:py-2 pui:text-[11px] pui:text-slate-500">
@@ -1839,7 +1868,7 @@ function Inspector({ item, onClose }: { item: RegistryItem | null; onClose: () =
                   focusRing(),
                 )}
               >
-                <PagoPAIcon name="close" aria-hidden="true" className="pui:size-4" />
+                <Icon source={CloseIcon} aria-hidden="true" className="pui:size-4" />
               </button>
             </div>
             <div
@@ -1905,7 +1934,7 @@ function EmptyState({ onClear }: { onClear: () => void }) {
         aria-hidden="true"
         className="pui:flex pui:size-11 pui:items-center pui:justify-center pui:rounded-full pui:bg-white pui:text-slate-500 pui:ring-1 pui:ring-slate-200"
       >
-        <PagoPAIcon name="search" className="pui:size-5" />
+        <Icon source={SearchIcon} className="pui:size-5" />
       </span>
       <p className="pui:mt-3 pui:text-sm pui:font-medium pui:text-slate-800">No components match</p>
       <p className="pui:mt-1 pui:max-w-sm pui:text-xs pui:leading-relaxed pui:text-slate-500">
@@ -1920,7 +1949,7 @@ function EmptyState({ onClear }: { onClear: () => void }) {
         )}
       >
         Clear filters
-        <PagoPAIcon name="close" aria-hidden="true" className="pui:size-3" />
+        <Icon source={CloseIcon} aria-hidden="true" className="pui:size-3" />
       </button>
     </div>
   )
@@ -1950,16 +1979,18 @@ function PageHero() {
         </div>
         <div className="pui:flex pui:min-w-0 pui:flex-wrap pui:items-center pui:gap-1.5 pui:text-[11px]">
           <span className="pui:inline-flex pui:items-center pui:gap-1.5 pui:rounded-full pui:border pui:border-slate-200 pui:bg-white pui:px-2.5 pui:py-1 pui:text-slate-600">
-            <PagoPAIcon
-              name="cached"
+            <Icon
+              source={CachedIcon}
+
               aria-hidden="true"
               className="pui:size-3 pui:text-slate-500"
             />
             Snapshot {formatDate(inventoryMeta.syncedAt)}
           </span>
           <span className="pui:inline-flex pui:items-center pui:gap-1.5 pui:rounded-full pui:border pui:border-slate-200 pui:bg-white pui:px-2.5 pui:py-1 pui:text-slate-600">
-            <PagoPAIcon
-              name="dashboard"
+            <Icon
+              source={DashboardIcon}
+
               aria-hidden="true"
               className="pui:size-3 pui:text-slate-500"
             />
@@ -2002,7 +2033,7 @@ function PageFooter() {
           )}
         >
           Figma file
-          <PagoPAIcon name="open_in_new" aria-hidden="true" className="pui:size-3" />
+          <Icon source={OpenInNewIcon} aria-hidden="true" className="pui:size-3" />
         </a>
         <a
           href="https://github.com/pagopa/ui/blob/main/packages/pagopa-ui/src/catalog/figma/registry.json"
@@ -2014,7 +2045,7 @@ function PageFooter() {
           )}
         >
           Registry JSON
-          <PagoPAIcon name="open_in_new" aria-hidden="true" className="pui:size-3" />
+          <Icon source={OpenInNewIcon} aria-hidden="true" className="pui:size-3" />
         </a>
         <a
           href="https://github.com/pagopa/ui/blob/main/.github/CODEOWNERS"
@@ -2026,7 +2057,7 @@ function PageFooter() {
           )}
         >
           Code owners
-          <PagoPAIcon name="open_in_new" aria-hidden="true" className="pui:size-3" />
+          <Icon source={OpenInNewIcon} aria-hidden="true" className="pui:size-3" />
         </a>
         <span className="pui:font-mono pui:text-[10px] pui:text-slate-600">
           {STATUSES.map((status) => `${statusLabel(status)} ${statusCounts[status]}`).join(" · ")}

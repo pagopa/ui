@@ -1,6 +1,7 @@
 import * as React from "react"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as AccountBalanceIcon } from "@/components/icons/generated/account-balance"
 
 import { BoxedModule } from "./boxed-module"
 
@@ -15,7 +16,7 @@ export interface OrganizationModuleProps {
 
 function OrganizationModule({ name, fiscalCode, children }: OrganizationModuleProps) {
   return (
-    <BoxedModule title={name} description={fiscalCode} icon={<PagoPAIcon name="account_balance" />}>
+    <BoxedModule title={name} description={fiscalCode} icon={<Icon source={AccountBalanceIcon} />}>
       {children}
     </BoxedModule>
   )

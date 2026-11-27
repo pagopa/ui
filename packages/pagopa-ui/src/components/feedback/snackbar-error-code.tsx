@@ -3,7 +3,8 @@
 import * as React from "react"
 
 import { useMessages } from "@/lib/ui-provider"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as ContentCopyIcon } from "@/components/icons/generated/content-copy"
 
 import { Snackbar } from "./snackbar"
 
@@ -78,7 +79,7 @@ function SnackbarErrorCode({
               data-slot="snackbar-error-code-copy"
               className="pui:relative pui:grid pui:size-6 pui:shrink-0 pui:place-items-center pui:rounded-md pui:p-0 pui:text-primary pui:after:absolute pui:after:-inset-2.5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
             >
-              <PagoPAIcon name="content_copy" />
+              <Icon source={ContentCopyIcon} />
             </button>
           </div>
           <output aria-live="polite" className="pui:sr-only">

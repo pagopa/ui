@@ -2,7 +2,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, fn, userEvent, within } from "storybook/test"
 
 import { CheckoutModule } from "@/components/composites/checkout-module"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as CreditCardIcon } from "@/components/icons/generated/credit-card"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import { SourceFrame } from "./support/source-frame"
@@ -148,7 +149,7 @@ export const NativeBehavior: Story = {
 
 export const Branded: Story = {
   args: {
-    brand: <PagoPAIcon name="credit_card" size={24} />,
+    brand: <Icon source={CreditCardIcon} size={24} />,
     title: "Carta di credito o debito",
     description: "Visa •••• 4532",
     suggestion: { label: "Suggerito perché sei già cliente" },

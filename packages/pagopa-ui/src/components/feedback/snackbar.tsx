@@ -4,7 +4,8 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as CloseIcon } from "@/components/icons/generated/close"
 
 import { statusIcons, toneStyles, type Tone } from "./tones"
 
@@ -75,7 +76,7 @@ function Snackbar({
           data-slot="snackbar-icon"
           className="pui:grid pui:size-6 pui:shrink-0 pui:place-items-center pui:text-current"
         >
-          <PagoPAIcon name={statusIcons[tone]} {...(tone === "info" ? { filled: true } : {})} />
+          <Icon source={statusIcons[tone]} />
         </span>
         <div className="pui:grid pui:min-w-0 pui:flex-1 pui:grid-cols-1 pui:gap-y-1">
           {title != null && (
@@ -115,7 +116,7 @@ function Snackbar({
             data-slot="snackbar-close-icon"
             className="pui:grid pui:size-6 pui:place-items-center"
           >
-            <PagoPAIcon name="close" className="pui:size-5" />
+            <Icon source={CloseIcon} className="pui:size-5" />
           </span>
         </button>
       )}

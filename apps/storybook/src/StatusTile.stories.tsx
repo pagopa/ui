@@ -3,7 +3,10 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { StatusTile } from "@/components/content/status-tile"
 import { Tag } from "@/components/content/tag"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as MarkEmailReadIcon } from "@/components/icons/generated/mark-email-read"
+import { Default as NotificationsActiveIcon } from "@/components/icons/generated/notifications-active"
+import { Default as SendIcon } from "@/components/icons/generated/send"
 
 import statusTileGuide from "./guides/status-tile.md?raw"
 
@@ -11,7 +14,7 @@ const meta = {
   title: "Components/Content/StatusTile",
   component: StatusTile,
   args: {
-    channel: <PagoPAIcon name="SEND" />,
+    channel: <Icon source={SendIcon} />,
     title: "SEND",
     tag: <Tag status="default">In attesa</Tag>,
     children: "Invio previsto dopo la validazione della comunicazione.",
@@ -44,7 +47,7 @@ export const Orientations: Story = {
   render: () => (
     <div className="pui:grid pui:w-[min(36rem,calc(100vw-2rem))] pui:gap-3">
       <StatusTile
-        channel={<PagoPAIcon name="mark_email_read" />}
+        channel={<Icon source={MarkEmailReadIcon} />}
         title="Piattaforma pagoPA"
         tag={<Tag status="success">Attivo</Tag>}
       >
@@ -52,7 +55,7 @@ export const Orientations: Story = {
       </StatusTile>
       <StatusTile
         orientation="vertical"
-        channel={<PagoPAIcon name="notifications_active" />}
+        channel={<Icon source={NotificationsActiveIcon} />}
         title="Piattaforma Notifiche"
         tag={<Tag status="warning">Limitato</Tag>}
       >

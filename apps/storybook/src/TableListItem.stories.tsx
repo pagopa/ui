@@ -3,7 +3,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
 import { TableListItem, type TableListItemField } from "@/components/data-display/table-list-item"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as MailIcon } from "@/components/icons/generated/mail"
 import { Chip } from "@/components/inputs/chips"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
@@ -16,7 +17,7 @@ const campaignFields: TableListItemField[] = [
     label: "Comunicazioni",
     value: "000000000",
     mono: true,
-    icon: <PagoPAIcon name="mail" />,
+    icon: <Icon source={MailIcon} />,
   },
   { label: "Stato", value: <Chip size="compact">Default</Chip> },
 ]

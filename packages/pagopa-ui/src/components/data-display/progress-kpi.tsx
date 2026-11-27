@@ -4,7 +4,8 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
 
 import { progressPercentage } from "./progress-kpi-utils"
 
@@ -62,7 +63,7 @@ function KpiFooter({
       <span className="pui:text-label-mini pui:text-foreground">
         / {total.toLocaleString(locale)}
       </span>
-      {completed ? <PagoPAIcon name="check_circle" size={16} className="pui:text-success" /> : null}
+      {completed ? <Icon source={CheckCircleIcon} size={16} className="pui:text-success" /> : null}
     </div>
   )
 }

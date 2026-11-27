@@ -2,7 +2,8 @@
 
 import * as React from "react"
 import { PaymentProviderLogos } from "@/components/content/payment-provider-logos"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as EmojiObjectsIcon } from "@/components/icons/generated/emoji-objects"
 import { Button } from "@/components/primitives/button"
 import { Heading, type HeadingTag } from "@/components/primitives/heading"
 import { Skeleton } from "@/components/primitives/skeleton"
@@ -201,7 +202,7 @@ function CheckoutModule({
                         aria-hidden="true"
                         className="pui:flex pui:size-5 pui:shrink-0 pui:items-center pui:justify-center"
                       >
-                        {recommendation.icon ?? <PagoPAIcon name="emoji_objects" size={20} />}
+                        {recommendation.icon ?? <Icon source={EmojiObjectsIcon} size={20} />}
                       </span>
                       <span data-slot="checkout-recommendation-text" className="pui:break-words">
                         {recommendation.label}

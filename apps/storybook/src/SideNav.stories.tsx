@@ -3,7 +3,12 @@ import { expect, userEvent, waitFor, within } from "storybook/test"
 
 import { Avatar } from "@/components/content/avatar"
 import { Tag } from "@/components/content/tag"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as CreditCardIcon } from "@/components/icons/generated/credit-card"
+import { Default as DashboardIcon } from "@/components/icons/generated/dashboard"
+import { Default as PaymentsIcon } from "@/components/icons/generated/payments"
+import { Default as ReceiptLongIcon } from "@/components/icons/generated/receipt-long"
+import { Default as SupportIcon } from "@/components/icons/generated/support"
 import { SideNav } from "@/components/navigation/side-nav"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
@@ -58,12 +63,12 @@ export const NestedAndProfile: Story = {
         label: "Panoramica",
         href: "#",
         current: true,
-        icon: <PagoPAIcon name="dashboard" />,
+        icon: <Icon source={DashboardIcon} />,
       },
       {
         label: "Pagamenti",
         href: "#pagamenti",
-        icon: <PagoPAIcon name="credit_card" />,
+        icon: <Icon source={CreditCardIcon} />,
         badgeCount: 2,
         badgeLabel: "2 pagamenti",
         chip: (
@@ -79,7 +84,7 @@ export const NestedAndProfile: Story = {
       {
         label: "Assistenza",
         href: "#assistenza",
-        icon: <PagoPAIcon name="support" />,
+        icon: <Icon source={SupportIcon} />,
       },
     ],
     profile: {
@@ -104,12 +109,12 @@ const condensedItems = [
   {
     label: "Panoramica",
     href: "#",
-    icon: <PagoPAIcon name="dashboard" />,
+    icon: <Icon source={DashboardIcon} />,
   },
   {
     label: "Pagamenti",
     href: "#pagamenti",
-    icon: <PagoPAIcon name="credit_card" />,
+    icon: <Icon source={CreditCardIcon} />,
     badgeCount: 2,
     badgeLabel: "2 pagamenti",
     chip: (
@@ -118,14 +123,14 @@ const condensedItems = [
       </Tag>
     ),
     children: [
-      { label: "PagoPA", href: "#pagopa", current: true, icon: <PagoPAIcon name="payments" /> },
-      { label: "F24", href: "#f24", icon: <PagoPAIcon name="receipt_long" /> },
+      { label: "PagoPA", href: "#pagopa", current: true, icon: <Icon source={PaymentsIcon} /> },
+      { label: "F24", href: "#f24", icon: <Icon source={ReceiptLongIcon} /> },
     ],
   },
   {
     label: "Assistenza",
     href: "#assistenza",
-    icon: <PagoPAIcon name="support" />,
+    icon: <Icon source={SupportIcon} />,
   },
 ]
 

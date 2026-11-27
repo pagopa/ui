@@ -4,7 +4,9 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
+import { Default as ReportIcon } from "@/components/icons/generated/report"
 import { useFieldIds, type FieldStateProps } from "./field-utils"
 
 // The source label is a HUG container whose children are counter-axis centred
@@ -166,7 +168,7 @@ function FieldMessages({
             errorIcon && "pui:flex pui:items-start pui:gap-1.5",
           )}
         >
-          {errorIcon ? <PagoPAIcon name="report" size={16} className="pui:mt-0.5" /> : null}
+          {errorIcon ? <Icon source={ReportIcon} size={16} className="pui:mt-0.5" /> : null}
           {error}
         </p>
       ) : null}
@@ -175,7 +177,7 @@ function FieldMessages({
           id={ids.successId}
           className="pui:flex pui:items-start pui:gap-1.5 pui:text-caption pui:text-success"
         >
-          <PagoPAIcon name="check_circle" className="pui:mt-0.5 pui:size-4 pui:shrink-0" />
+          <Icon source={CheckCircleIcon} className="pui:mt-0.5 pui:size-4 pui:shrink-0" />
           {success}
         </p>
       ) : null}

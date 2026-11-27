@@ -4,7 +4,8 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useLinkComponent, useMessages } from "@/lib/ui-provider"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as ArrowRightIcon } from "@/components/icons/generated/arrow"
 import { Button, buttonVariants } from "@/components/primitives/button"
 import {
   Card,
@@ -85,7 +86,7 @@ function ProductCard({
   const actionContent = (
     <>
       {actionLabel}
-      {!image ? <PagoPAIcon name="arrow" variant="right" /> : null}
+      {!image ? <Icon source={ArrowRightIcon} /> : null}
     </>
   )
   return (

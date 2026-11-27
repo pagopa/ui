@@ -3,7 +3,8 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as CloseIcon, Small as CloseSmallIcon } from "@/components/icons/generated/close"
 
 type ChipVariant =
   | "default"
@@ -107,7 +108,7 @@ function Chip({
           aria-label={removeLabel ?? t.removeLabel(chipLabel)}
           className="pui:relative pui:-my-0.5 pui:inline-grid pui:size-6 pui:shrink-0 pui:place-items-center pui:rounded-full pui:text-current pui:outline-none pui:after:absolute pui:after:-inset-2.5 pui:hover:bg-foreground/10 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-1 pui:focus-visible:outline-ring"
         >
-          <PagoPAIcon name="close" className="pui:size-5" />
+          <Icon source={CloseIcon} className="pui:size-5" />
         </button>
       ) : null}
     </span>
@@ -138,7 +139,7 @@ function InputChip({
   const label = typeof children === "string" ? children : undefined
   const t = useMessages("chip")
   const trailing = onRemove || pointerRemove
-  const removeGlyph = <PagoPAIcon name="close" size={24} variant="small" />
+  const removeGlyph = <Icon source={CloseSmallIcon} size={24} />
   return (
     <span
       className={cn(

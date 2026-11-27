@@ -3,7 +3,9 @@
 import { Menu as MenuPrimitive } from "@base-ui/react/menu"
 import { usePortalHost } from "@/lib/ui-provider"
 import { cn } from "@/lib/cn"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as CheckIcon } from "@/components/icons/generated/check"
+import { Default as ChevronIcon } from "@/components/icons/generated/chevron"
 
 function DropdownMenu({ ...props }: MenuPrimitive.Root.Props) {
   return <MenuPrimitive.Root data-slot="dropdown-menu" {...props} />
@@ -126,7 +128,7 @@ function DropdownMenuSubTrigger({
       {...props}
     >
       {children}
-      <PagoPAIcon name="chevron" className="pui:ml-auto" />
+      <Icon source={ChevronIcon} className="pui:ml-auto" />
     </MenuPrimitive.SubmenuTrigger>
   )
 }
@@ -200,7 +202,7 @@ function DropdownMenuCheckboxItem({
           />
         ) : (
           <MenuPrimitive.CheckboxItemIndicator>
-            {indicator ?? <PagoPAIcon name="check" />}
+            {indicator ?? <Icon source={CheckIcon} />}
           </MenuPrimitive.CheckboxItemIndicator>
         )}
       </span>
@@ -236,7 +238,7 @@ function DropdownMenuRadioItem({
         data-slot="dropdown-menu-radio-item-indicator"
       >
         <MenuPrimitive.RadioItemIndicator>
-          <PagoPAIcon name="check" />
+          <Icon source={CheckIcon} />
         </MenuPrimitive.RadioItemIndicator>
       </span>
       {children}

@@ -1,19 +1,26 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
+import { Filled as InfoFilledIcon } from "@/components/icons/generated/info"
+import { Default as KidStarIcon } from "@/components/icons/generated/kid-star"
+import { Default as ReportIcon } from "@/components/icons/generated/report"
+import { Default as WarningIcon } from "@/components/icons/generated/warning"
+import { Icon, type IconSource } from "@/components/icons/icon"
 
 type TagStatus = "default" | "info" | "warning" | "success" | "error" | "counter"
 
+// The status artwork as component references: a tag imports the five status
+// glyphs it can render, not the whole pinned set.
 const statusIcons: Record<
   Exclude<TagStatus, "counter">,
-  { name: React.ComponentProps<typeof PagoPAIcon>["name"]; filled?: boolean; className: string }
+  { source: IconSource; className: string }
 > = {
-  default: { name: "kid_star", className: "pui:text-primary" },
-  info: { name: "info", filled: true, className: "pui:text-info" },
-  warning: { name: "warning", className: "pui:text-warning" },
-  success: { name: "check_circle", className: "pui:text-success" },
-  error: { name: "report", className: "pui:text-destructive" },
+  default: { source: KidStarIcon, className: "pui:text-primary" },
+  info: { source: InfoFilledIcon, className: "pui:text-info" },
+  warning: { source: WarningIcon, className: "pui:text-warning" },
+  success: { source: CheckCircleIcon, className: "pui:text-success" },
+  error: { source: ReportIcon, className: "pui:text-destructive" },
 }
 
 export type TagProps = React.ComponentProps<"span"> & {
@@ -44,13 +51,12 @@ function Tag({ status = "default", icon, iconLabel, children, className, ...prop
     >
       {artwork
         ? (icon ?? (
-            <PagoPAIcon
-              name={artwork.name}
-              filled={artwork.filled}
+            <Icon
+              source={artwork.source}
               size={16}
               className={artwork.className}
               decorative={!iconLabel}
-              label={iconLabel}
+              label={iconLabel ?? ""}
             />
           ))
         : null}

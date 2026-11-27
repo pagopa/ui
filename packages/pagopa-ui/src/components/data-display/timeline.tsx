@@ -4,7 +4,16 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
+import {
+  Default as ChevronDownIcon,
+  Up as ChevronUpIcon,
+} from "@/components/icons/generated/chevron"
+import { Default as GavelIcon } from "@/components/icons/generated/gavel"
+import { Default as InfoIcon } from "@/components/icons/generated/info"
+import { Default as ReportIcon } from "@/components/icons/generated/report"
+import { Default as WarningIcon } from "@/components/icons/generated/warning"
 import { Separator } from "@/components/primitives/separator"
 
 export type TimelineItemStatus = "default" | "success" | "error" | "warning" | "info"
@@ -84,11 +93,11 @@ const statusText: Record<TimelineItemStatus, string> = {
 }
 
 const statusIcons: Record<TimelineItemStatus, React.ReactElement> = {
-  default: <PagoPAIcon name="gavel" size={24} />,
-  success: <PagoPAIcon name="check_circle" size={24} />,
-  error: <PagoPAIcon name="report" size={24} />,
-  warning: <PagoPAIcon name="warning" size={24} />,
-  info: <PagoPAIcon name="info" size={24} />,
+  default: <Icon source={GavelIcon} size={24} />,
+  success: <Icon source={CheckCircleIcon} size={24} />,
+  error: <Icon source={ReportIcon} size={24} />,
+  warning: <Icon source={WarningIcon} size={24} />,
+  info: <Icon source={InfoIcon} size={24} />,
 }
 
 function TimelineDot({
@@ -158,9 +167,8 @@ function TimelineTouchpointRow({ touchpoint }: { touchpoint: TimelineTouchpoint 
           {touchpoint.label}
         </span>
         {touchpoint.correction}
-        <PagoPAIcon
-          name="chevron"
-          variant={open ? "up" : "down"}
+        <Icon
+          source={open ? ChevronUpIcon : ChevronDownIcon}
           className="pui:size-6 pui:shrink-0 pui:text-primary"
           aria-hidden="true"
         />

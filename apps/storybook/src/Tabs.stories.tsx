@@ -1,7 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as AccountBalanceIcon } from "@/components/icons/generated/account-balance"
+import { Default as KidStarIcon } from "@/components/icons/generated/kid-star"
+import { Default as PersonIcon } from "@/components/icons/generated/person"
+import { Default as ReceiptLongIcon } from "@/components/icons/generated/receipt-long"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/primitives/tabs"
@@ -25,15 +29,15 @@ function AccountTabs({ orientation }: AccountTabsProps) {
         className="pui:w-full pui:overflow-x-auto"
       >
         <TabsTrigger value="profile">
-          <PagoPAIcon name="person" aria-hidden="true" />
+          <Icon source={PersonIcon} aria-hidden="true" />
           Profilo
         </TabsTrigger>
         <TabsTrigger value="organization">
-          <PagoPAIcon name="account_balance" aria-hidden="true" />
+          <Icon source={AccountBalanceIcon} aria-hidden="true" />
           Ente
         </TabsTrigger>
         <TabsTrigger value="documents">
-          <PagoPAIcon name="receipt_long" aria-hidden="true" />
+          <Icon source={ReceiptLongIcon} aria-hidden="true" />
           Documenti
         </TabsTrigger>
       </TabsList>
@@ -114,7 +118,7 @@ export const FidelityTabs: Story = {
         >
           {fidelityTabs.map((value) => (
             <TabsTrigger key={value} value={value}>
-              <PagoPAIcon name="kid_star" />
+              <Icon source={KidStarIcon} />
               Tab
             </TabsTrigger>
           ))}

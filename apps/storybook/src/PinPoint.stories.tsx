@@ -2,7 +2,8 @@ import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as StorefrontIcon } from "@/components/icons/generated/storefront"
 import { PinPoint } from "@/components/overlays/pin-point"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
@@ -109,7 +110,7 @@ export const SourceSelected: Story = {
   render: () => (
     <SourceFrame>
       <PinPoint label="Sede del Comune" active>
-        <PagoPAIcon name="storefront" size={28} />
+        <Icon source={StorefrontIcon} size={28} />
       </PinPoint>
     </SourceFrame>
   ),

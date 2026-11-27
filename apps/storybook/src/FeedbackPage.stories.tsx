@@ -6,7 +6,11 @@ import { Avatar } from "@/components/content/avatar"
 import { ErrorState } from "@/components/feedback/error-state"
 import { SuccessState } from "@/components/feedback/success-state"
 import { WaitingState } from "@/components/feedback/waiting-state"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as AccountCircleIcon } from "@/components/icons/generated/account-circle"
+import { Down as ChevronDownIcon } from "@/components/icons/generated/chevron"
+import { Default as MenuBookIcon } from "@/components/icons/generated/menu-book"
+import { Default as SupportIcon } from "@/components/icons/generated/support"
 import { Footer } from "@/components/navigation/footer"
 import { Header } from "@/components/navigation/header"
 import { Preheader } from "@/components/navigation/preheader"
@@ -45,15 +49,15 @@ function SourceChrome({ children }: { children: ReactNode }) {
             {
               label: "Manuale operativo",
               href: "#manuale",
-              icon: <PagoPAIcon name="menu_book" />,
+              icon: <Icon source={MenuBookIcon} />,
             },
-            { label: "Assistenza", href: "#assistenza", icon: <PagoPAIcon name="support" /> },
+            { label: "Assistenza", href: "#assistenza", icon: <Icon source={SupportIcon} /> },
             // Source `User` row: the account icon and the name on desktop, the
             // 32px Gravatar on mobile.
             {
               label: "Mario Rossi",
               href: "#utente",
-              icon: <PagoPAIcon name="account_circle" />,
+              icon: <Icon source={AccountCircleIcon} />,
               avatar: <Avatar size="compact" initials="MR" alt="Mario Rossi" />,
             },
           ]}
@@ -73,7 +77,7 @@ function SourceChrome({ children }: { children: ReactNode }) {
             {
               label: "Italiano",
               href: "#lingua",
-              trailing: <PagoPAIcon name="chevron" variant="down" />,
+              trailing: <Icon source={ChevronDownIcon} />,
             },
           ]}
         />

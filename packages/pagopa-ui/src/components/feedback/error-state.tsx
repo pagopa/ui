@@ -2,7 +2,8 @@
 
 import * as React from "react"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as ContentCopyIcon } from "@/components/icons/generated/content-copy"
 import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
@@ -89,7 +90,7 @@ function ErrorState({
               data-slot="ko-error-code-copy"
               className="pui:grid pui:size-11 pui:shrink-0 pui:place-items-center pui:rounded-md pui:text-primary pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
             >
-              <PagoPAIcon name="content_copy" />
+              <Icon source={ContentCopyIcon} />
             </button>
             <output aria-live="polite" className="pui:sr-only">
               {copyState === "copied" ? copiedLabel : ""}

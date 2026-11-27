@@ -4,7 +4,8 @@ import { expect, userEvent, within } from "storybook/test"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { AttachmentModule } from "@/components/composites/attachment-module"
 import { Tag } from "@/components/content/tag"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as BlockIcon } from "@/components/icons/generated/block"
 
 import attachmentModuleGuide from "./guides/attachment-module.md?raw"
 
@@ -50,7 +51,7 @@ export const Unavailable: Story = {
     status: (
       <Tag
         status="default"
-        icon={<PagoPAIcon name="block" size={16} className="pui:text-muted-foreground" />}
+        icon={<Icon source={BlockIcon} size={16} className="pui:text-muted-foreground" />}
         className="pui:h-6 pui:px-2"
       >
         non disponibile
@@ -112,7 +113,7 @@ export const SourceUnavailable: Story = {
         status={
           <Tag
             status="default"
-            icon={<PagoPAIcon name="block" size={16} className="pui:text-muted-foreground" />}
+            icon={<Icon source={BlockIcon} size={16} className="pui:text-muted-foreground" />}
             className="pui:h-6 pui:px-2"
           >
             non disponibile

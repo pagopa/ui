@@ -2,7 +2,8 @@ import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as NotificationsActiveIcon } from "@/components/icons/generated/notifications-active"
 import { RadioField } from "@/components/inputs/radio-field"
 import { RadioGroup } from "@/components/inputs/radio-group"
 import { Button } from "@/components/primitives/button"
@@ -72,7 +73,7 @@ export const RichRadioOptions: Story = {
         value="email"
         label="Email"
         leadingIcon={
-          <PagoPAIcon name="notifications_active" decorative={false} label="Icona promemoria" />
+          <Icon source={NotificationsActiveIcon} decorative={false} label="Icona promemoria" />
         }
         indicatorPlacement="end"
         description="Ricevi i documenti via email."
@@ -228,7 +229,7 @@ export const RadioLoadingStates: Story = {
   render: function RadioLoadingForm() {
     const [loading, setLoading] = React.useState(true)
     const [submitted, setSubmitted] = React.useState("")
-    const icon = <PagoPAIcon name="notifications_active" />
+    const icon = <Icon source={NotificationsActiveIcon} />
 
     return (
       <form
@@ -400,7 +401,7 @@ export const RadioSourceStateMatrix: Story = {
                 label="Canale di contatto"
                 indicatorPlacement={placement}
                 leadingIcon={
-                  placement === "end" ? <PagoPAIcon name="notifications_active" /> : undefined
+                  placement === "end" ? <Icon source={NotificationsActiveIcon} /> : undefined
                 }
                 description={placement === "end" ? "Testo descrittivo." : undefined}
                 disabled={state.disabled}
@@ -420,7 +421,7 @@ export const RadioSourceStateMatrix: Story = {
               value="loading"
               label="Canale in caricamento"
               leadingIcon={
-                state.leadingIcon ? <PagoPAIcon name="notifications_active" /> : undefined
+                state.leadingIcon ? <Icon source={NotificationsActiveIcon} /> : undefined
               }
               description={state.description ? "Informazioni sul canale." : undefined}
               indicatorPlacement="end"

@@ -15,7 +15,8 @@
 import * as React from "react"
 import { OTPField as OTPFieldPrimitive } from "@base-ui/react/otp-field"
 import { cn } from "@/lib/cn"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as CheckIndeterminateSmallIcon } from "@/components/icons/generated/check-indeterminate-small"
 
 import { useFormReset, useInputRef } from "./form-control-utils"
 import type { ChangeEventDetails, ElementProps, GenericEventDetails } from "./props"
@@ -222,7 +223,7 @@ function OTPFieldSeparator({
       )}
       {...props}
     >
-      <PagoPAIcon name="check_indeterminate_small" />
+      <Icon source={CheckIndeterminateSmallIcon} />
     </OTPFieldPrimitive.Separator>
   )
 }

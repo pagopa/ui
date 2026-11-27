@@ -4,7 +4,8 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useLinkComponent } from "@/lib/ui-provider"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Down as ChevronDownIcon } from "@/components/icons/generated/chevron"
 
 /** Props of {@link Header}. The identity slots are data, not children. */
 interface HeaderProps {
@@ -52,9 +53,8 @@ function Header({ product, user, actions, className }: HeaderProps) {
           Source `Logo=False`: the chevron is `Icon/Neutral` on mobile (1298:5148)
           and `primary` on desktop (1298:5227). */}
       {product.logo ? null : (
-        <PagoPAIcon
-          name="chevron"
-          variant="down"
+        <Icon
+          source={ChevronDownIcon}
           className="pui:shrink-0 pui:text-foreground pui:tablet:text-primary"
         />
       )}
@@ -80,9 +80,8 @@ function Header({ product, user, actions, className }: HeaderProps) {
           </span>
         ) : null}
       </span>
-      <PagoPAIcon
-        name="chevron"
-        variant="down"
+      <Icon
+        source={ChevronDownIcon}
         className="pui:hidden pui:shrink-0 pui:text-foreground pui:tablet:block"
       />
     </>

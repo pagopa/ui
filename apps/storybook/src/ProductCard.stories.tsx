@@ -9,7 +9,10 @@ import { Avatar } from "@/components/content/avatar"
 import { Image } from "@/components/content/image"
 import { CatalogueCard } from "@/components/data-display/catalogue-card"
 import { ProductCard } from "@/components/data-display/product-card"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as CheckBigIcon } from "@/components/icons/generated/check"
+import { Dark as IoLogoDarkIcon } from "@/components/icons/generated/io-logo"
+import { Selected as PersonSelectedIcon } from "@/components/icons/generated/person"
 import { Chip } from "@/components/inputs/chips"
 
 import productCardsGuide from "./guides/product-cards.md?raw"
@@ -110,15 +113,7 @@ export const LogoAndChip: Story = {
         data-testid="product"
         title="Nome prodotto"
         titleAs="h2"
-        logo={
-          <PagoPAIcon
-            name="IO logo"
-            variant="dark"
-            decorative={false}
-            label="Logo di IO"
-            size={48}
-          />
-        }
+        logo={<Icon source={IoLogoDarkIcon} decorative={false} label="Logo di IO" size={48} />}
         chip={
           <Chip data-testid="premium" size="compact" variant="highlight">
             Premium
@@ -424,20 +419,8 @@ function SourceCatalogue() {
           { label: "Iscriviti", onPress: () => setJoined(true) },
         ]}
         feedback={[
-          <PagoPAIcon
-            key="person"
-            name="person"
-            variant="selected"
-            size={24}
-            className="pui:text-primary"
-          />,
-          <PagoPAIcon
-            key="check"
-            name="check"
-            variant="big"
-            size={24}
-            className="pui:text-primary"
-          />,
+          <Icon source={PersonSelectedIcon} key="person" size={24} className="pui:text-primary" />,
+          <Icon source={CheckBigIcon} key="check" size={24} className="pui:text-primary" />,
         ]}
       />
       <output>{joined ? "Iscrizione inviata" : ""}</output>
@@ -584,13 +567,7 @@ export const CatalogueCardSlots: Story = {
         title="Servizio con solo indicatori"
         organization="Comune di Milano"
         feedback={[
-          <PagoPAIcon
-            key="check"
-            name="check"
-            variant="big"
-            size={24}
-            className="pui:text-primary"
-          />,
+          <Icon source={CheckBigIcon} key="check" size={24} className="pui:text-primary" />,
         ]}
       />
     </div>

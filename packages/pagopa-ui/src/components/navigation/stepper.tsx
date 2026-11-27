@@ -3,7 +3,8 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
 
 export interface StepperItem {
   label: string
@@ -57,7 +58,7 @@ function StepIndicator({
       {item.status === "complete" ? (
         <>
           {labelled ? <span className="pui:sr-only">{completedLabel} </span> : null}
-          <PagoPAIcon name="check_circle" aria-hidden="true" className="pui:text-primary" />
+          <Icon source={CheckCircleIcon} aria-hidden="true" className="pui:text-primary" />
         </>
       ) : (
         <span

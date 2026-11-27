@@ -3,7 +3,10 @@ import type { ComponentProps } from "react"
 
 import { expect, fn, userEvent, within } from "storybook/test"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as ArrowIcon } from "@/components/icons/generated/arrow"
+import { Default as KidStarIcon } from "@/components/icons/generated/kid-star"
+import { Default as MenuIcon } from "@/components/icons/generated/menu"
 
 import { Button } from "@/components/primitives/button"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
@@ -213,7 +216,7 @@ const fidelityVariant = (nodeId: string) => nodeId.replace(":", "-")
 const actionLabel = () => <span data-fidelity-label>Action</span>
 const kidStar = () => (
   <span data-fidelity-icon className="pui:inline-flex pui:shrink-0">
-    <PagoPAIcon name="kid_star" />
+    <Icon source={KidStarIcon} />
   </span>
 )
 
@@ -412,7 +415,7 @@ export const FigmaIconButton: Story = {
       aria-label="Apri menu"
     >
       <span data-fidelity-icon className="pui:inline-flex pui:shrink-0">
-        <PagoPAIcon name="menu" />
+        <Icon source={MenuIcon} />
       </span>
     </Button>
   ),
@@ -462,15 +465,15 @@ export const WithIcons: Story = {
   render: () => (
     <div className="pui:flex pui:flex-wrap pui:gap-4">
       <Button>
-        <PagoPAIcon name="kid_star" aria-hidden="true" />
+        <Icon source={KidStarIcon} aria-hidden="true" />
         Preferiti
       </Button>
       <Button variant="outline">
         Continua
-        <PagoPAIcon name="arrow" aria-hidden="true" />
+        <Icon source={ArrowIcon} aria-hidden="true" />
       </Button>
       <Button size="icon" aria-label="Aggiungi ai preferiti">
-        <PagoPAIcon name="kid_star" aria-hidden="true" />
+        <Icon source={KidStarIcon} aria-hidden="true" />
       </Button>
     </div>
   ),

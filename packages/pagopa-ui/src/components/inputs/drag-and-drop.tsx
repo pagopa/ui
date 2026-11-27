@@ -4,7 +4,11 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
+import { Default as CloseIcon } from "@/components/icons/generated/close"
+import { Default as ErrorOutlinedIcon } from "@/components/icons/generated/error"
+import { Default as UploadIcon } from "@/components/icons/generated/upload"
 import { Button, buttonVariants } from "@/components/primitives/button"
 import { Progress } from "@/components/primitives/progress"
 
@@ -282,18 +286,14 @@ function DragAndDrop({
             </div>
           ) : failed ? (
             <div className="pui:pointer-events-none pui:grid pui:justify-items-center pui:gap-2">
-              <PagoPAIcon
-                name="error"
-                filled={false}
-                size={24}
-                className="pui:text-error-foreground"
-              />
+              <Icon source={ErrorOutlinedIcon} size={24} className="pui:text-error-foreground" />
               <span className="pui:text-body-sb">{failedText}</span>
             </div>
           ) : (
             <div className="pui:pointer-events-none pui:grid pui:justify-items-center pui:gap-2">
-              <PagoPAIcon
-                name="upload"
+              <Icon
+                source={UploadIcon}
+
                 className={cn(
                   "pui:size-6",
                   disabled ? "pui:text-muted-foreground" : "pui:text-foreground",
@@ -345,7 +345,7 @@ function DragAndDrop({
               key={`${file.name}-${file.lastModified}`}
               className="pui:flex pui:items-start pui:gap-2.5 pui:rounded-lg pui:border pui:border-secondary pui:bg-background pui:p-6"
             >
-              <PagoPAIcon name="check_circle" size={24} className="pui:shrink-0 pui:text-success" />
+              <Icon source={CheckCircleIcon} size={24} className="pui:shrink-0 pui:text-success" />
               <div className="pui:grid pui:min-w-0 pui:flex-1 pui:gap-1">
                 <p className="pui:truncate pui:text-body-sb pui:break-all">{file.name}</p>
                 <p className="pui:text-label-mini pui:text-muted-foreground">{fileMeta(file)}</p>
@@ -356,7 +356,7 @@ function DragAndDrop({
                 onClick={() => removeFile(file)}
                 className="pui:relative pui:grid pui:size-6 pui:shrink-0 pui:place-items-center pui:rounded-full pui:text-foreground pui:after:absolute pui:after:-inset-2.5 pui:hover:bg-muted pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
               >
-                <PagoPAIcon name="close" className="pui:size-3.5" />
+                <Icon source={CloseIcon} className="pui:size-3.5" />
               </button>
             </li>
           ))}

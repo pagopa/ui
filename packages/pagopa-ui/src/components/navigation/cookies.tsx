@@ -3,7 +3,8 @@
 import * as React from "react"
 
 import { useMessages } from "@/lib/ui-provider"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as CloseIcon } from "@/components/icons/generated/close"
 import { Button } from "@/components/primitives/button"
 
 export interface CookiesProps {
@@ -47,7 +48,7 @@ function Cookies({
       onClick={onDismiss}
       className="pui:flex pui:size-11 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-md pui:hover:bg-muted pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
     >
-      <PagoPAIcon name="close" />
+      <Icon source={CloseIcon} />
     </button>
   ) : null
 

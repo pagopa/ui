@@ -2,7 +2,9 @@
 
 import { cn } from "@/lib/cn"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Left as ArrowLeftIcon } from "@/components/icons/generated/arrow"
+import { Default as ChevronRightIcon } from "@/components/icons/generated/chevron"
 import { useLinkComponent, useMessages } from "@/lib/ui-provider"
 
 export interface BreadcrumbItem {
@@ -54,9 +56,8 @@ function Breadcrumb({ className, "aria-label": ariaLabelProp, ...props }: Breadc
               className="pui:flex pui:min-w-0 pui:max-w-full pui:items-center pui:gap-1.5"
             >
               {index > 0 ? (
-                <PagoPAIcon
-                  name="chevron"
-                  variant="right"
+                <Icon
+                  source={ChevronRightIcon}
                   size={16}
                   className="breadcrumb-separator pui:text-foreground pui:opacity-80"
                 />
@@ -71,7 +72,7 @@ function Breadcrumb({ className, "aria-label": ariaLabelProp, ...props }: Breadc
                   )}
                 >
                   {compact ? (
-                    <PagoPAIcon name="arrow" variant="left" className="breadcrumb-back-icon" />
+                    <Icon source={ArrowLeftIcon} className="breadcrumb-back-icon" />
                   ) : null}
                   {item.label}
                 </Link>

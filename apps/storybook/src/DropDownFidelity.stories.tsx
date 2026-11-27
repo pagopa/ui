@@ -2,7 +2,9 @@ import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { Avatar } from "@/components/content/avatar"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as LocationOnIcon } from "@/components/icons/generated/location-on"
+import { Default as MyLocationIcon } from "@/components/icons/generated/my-location"
 import { Chip } from "@/components/inputs/chips"
 import { Dropdown, type DropdownItem } from "@/components/inputs/menus"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
@@ -102,11 +104,11 @@ function DropDownFidelityFixture({ variant }: { variant: string }) {
   const [checked, setChecked] = React.useState(configuration.checked)
   const leading =
     configuration.type === "cta" ? (
-      <PagoPAIcon name="my_location" size={24} className="pui:text-primary" />
+      <Icon source={MyLocationIcon} size={24} className="pui:text-primary" />
     ) : configuration.product ? (
       <Avatar alt="Account" size="compact" />
     ) : configuration.level === "second" ? null : (
-      <PagoPAIcon name="location_on" size={16} />
+      <Icon source={LocationOnIcon} size={16} />
     )
   const chip = (
     <Chip variant="warning" size="compact" data-slot="chip">

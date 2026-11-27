@@ -6,7 +6,9 @@ import { Table, type TableColumn } from "@/components/data-display/table"
 import { TableCellRow } from "@/components/data-display/table-cell-row"
 import { TableHeaderField } from "@/components/data-display/table-header-field"
 import { TableListField } from "@/components/data-display/table-list-field"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as AttachFileIcon } from "@/components/icons/generated/attach-file"
+import { Default as SellIcon } from "@/components/icons/generated/sell"
 
 import { MenuDropdown } from "@/components/inputs/menus"
 import { SelectField } from "@/components/inputs/select-field"
@@ -453,8 +455,9 @@ function SourceTable() {
           ) : (
             <span className="pui:font-mono">{value}</span>
           )}
-          <PagoPAIcon
-            name="attach_file"
+          <Icon
+            source={AttachFileIcon}
+
             aria-hidden="true"
             className="pui:ml-auto pui:hidden pui:size-5 pui:shrink-0 pui:text-primary pui:@max-[40rem]/table:block"
           />
@@ -469,8 +472,9 @@ function SourceTable() {
       label: "Category",
       render: (value) => (
         <span className="pui:inline-flex pui:items-center pui:gap-1">
-          <PagoPAIcon
-            name="sell"
+          <Icon
+            source={SellIcon}
+
             aria-hidden="true"
             className="pui:hidden pui:size-4 pui:@max-[40rem]/table:block"
           />

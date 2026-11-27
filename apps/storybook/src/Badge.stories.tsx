@@ -1,6 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import {
+  Selected as MailSelectedIcon,
+  Default as MailUnselectedIcon,
+} from "@/components/icons/generated/mail"
 import { Badge } from "@/components/primitives/badge"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
@@ -65,13 +69,13 @@ export const Fidelity: Story = {
           selected
           background="primary"
         >
-          <PagoPAIcon name="mail" variant="selected" size={24} className="pui:size-6" />
+          <Icon source={MailSelectedIcon} size={24} className="pui:size-6" />
         </Badge>
       </div>
       <div className="pui:flex pui:min-h-11 pui:items-center pui:gap-4">
         <span className="pui:text-sm">Sidenav icon · unselected</span>
         <Badge data-fidelity-case="sidenav-unselected" display="sidenav-icon" background="white">
-          <PagoPAIcon name="mail" variant="unselected" size={24} className="pui:size-6" />
+          <Icon source={MailUnselectedIcon} size={24} className="pui:size-6" />
         </Badge>
       </div>
       <div className="pui:flex pui:min-h-11 pui:items-center pui:gap-4">

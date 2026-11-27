@@ -4,7 +4,8 @@ import { expect, screen, userEvent, waitFor, within } from "storybook/test"
 
 import { Popover } from "@/components/overlays/popover"
 import { Button } from "@/components/primitives/button"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as InfoIcon } from "@/components/icons/generated/info"
 import { PopoverTitle } from "@/components/primitives/popover"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
@@ -103,7 +104,7 @@ function SourceFrame({ arrowPosition }: { arrowPosition: "top" | "bottom" }) {
               arrowPosition === "top" ? "pui:top-0" : "pui:bottom-0"
             }`}
           >
-            <PagoPAIcon name="info" className="pui:size-6" />
+            <Icon source={InfoIcon} className="pui:size-6" />
           </Button>
         }
         defaultOpen
@@ -150,7 +151,7 @@ export const ShiftedIndicator: Story = {
             aria-label="Apri popover informativo"
             className="pui:absolute pui:top-24 pui:right-24 pui:size-6 pui:p-0 pui:after:absolute pui:after:-inset-2.5"
           >
-            <PagoPAIcon name="info" className="pui:size-6" />
+            <Icon source={InfoIcon} className="pui:size-6" />
           </Button>
         }
         defaultOpen

@@ -5,7 +5,11 @@ import { Radio as RadioPrimitive } from "@base-ui/react/radio"
 import { RadioGroup as RadioGroupPrimitive } from "@base-ui/react/radio-group"
 import { cn } from "@/lib/cn"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import {
+  Default as RadioButtonUncheckedIcon,
+  Checked as RadioButtonCheckedIcon,
+} from "@/components/icons/generated/radio-button"
 
 import { type ChangeEventDetails, type ElementProps } from "./props"
 import { useFormReset, useInputRef } from "./form-control-utils"
@@ -94,16 +98,15 @@ function RadioGroupItem({ className, inputRef: externalInputRef, ...props }: Rad
       )}
       {...props}
     >
-      <PagoPAIcon
-        name="radio_button"
-        variant="unchecked"
+      <Icon
+        source={RadioButtonUncheckedIcon}
         className="pui:group-data-checked/radio-group-item:hidden"
       />
       <RadioPrimitive.Indicator
         data-slot="radio-group-indicator"
         className="pui:flex pui:items-center pui:justify-center pui:data-unchecked:hidden"
       >
-        <PagoPAIcon name="radio_button" variant="checked" />
+        <Icon source={RadioButtonCheckedIcon} />
       </RadioPrimitive.Indicator>
     </RadioPrimitive.Root>
   )

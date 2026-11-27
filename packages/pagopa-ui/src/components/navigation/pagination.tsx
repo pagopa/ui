@@ -3,7 +3,11 @@
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import {
+  Left as ChevronLeftIcon,
+  Default as ChevronIcon,
+} from "@/components/icons/generated/chevron"
 import { Button } from "@/components/primitives/button"
 
 import { pageRange } from "./pagination-utils"
@@ -77,7 +81,7 @@ function Pagination({
             aria-label={previousLabel}
             className={stepControl}
           >
-            <PagoPAIcon name="chevron" variant="left" />
+            <Icon source={ChevronLeftIcon} />
           </Button>
           {pageRange(current, totalPages).map((page, index) =>
             page === "ellipsis" ? (
@@ -117,7 +121,7 @@ function Pagination({
             aria-label={nextLabel}
             className={stepControl}
           >
-            <PagoPAIcon name="chevron" />
+            <Icon source={ChevronIcon} />
           </Button>
         </nav>
       </div>

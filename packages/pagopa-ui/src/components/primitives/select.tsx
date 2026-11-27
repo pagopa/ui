@@ -5,7 +5,13 @@ import { Select as SelectPrimitive } from "@base-ui/react/select"
 import { usePortalHost } from "@/lib/ui-provider"
 import { cn } from "@/lib/cn"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as CheckIcon } from "@/components/icons/generated/check"
+import {
+  Checked as CheckBoxCheckedIcon,
+  Default as CheckBoxIcon,
+} from "@/components/icons/generated/check-box"
+import { Down as ChevronDownIcon, Up as ChevronUpIcon } from "@/components/icons/generated/chevron"
 
 const Select = SelectPrimitive.Root
 
@@ -53,9 +59,8 @@ function SelectTrigger({
       <SelectPrimitive.Icon
         render={
           icon ?? (
-            <PagoPAIcon
-              name="chevron"
-              variant="down"
+            <Icon
+              source={ChevronDownIcon}
               className="pui:pointer-events-none pui:size-4 pui:text-muted-foreground"
             />
           )
@@ -164,14 +169,13 @@ function SelectItem({
                 {selected ? (
                   <span className="pui:absolute pui:inset-0.75 pui:rounded-2 pui:bg-primary-foreground" />
                 ) : null}
-                <PagoPAIcon
-                  name="check_box"
-                  variant={selected ? "checked" : "unchecked"}
+                <Icon
+                  source={selected ? CheckBoxCheckedIcon : CheckBoxIcon}
                   className={cn("pui:relative", selected && "pui:text-primary")}
                 />
               </>
             ) : (
-              <PagoPAIcon name="check" className="pui:pointer-events-none" />
+              <Icon source={CheckIcon} className="pui:pointer-events-none" />
             )}
           </span>
         )}
@@ -203,7 +207,7 @@ function SelectScrollUpButton({
       )}
       {...props}
     >
-      <PagoPAIcon name="chevron" variant="up" />
+      <Icon source={ChevronUpIcon} />
     </SelectPrimitive.ScrollUpArrow>
   )
 }
@@ -221,7 +225,7 @@ function SelectScrollDownButton({
       )}
       {...props}
     >
-      <PagoPAIcon name="chevron" variant="down" />
+      <Icon source={ChevronDownIcon} />
     </SelectPrimitive.ScrollDownArrow>
   )
 }

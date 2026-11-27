@@ -2,7 +2,15 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Down as ChevronDownIcon } from "@/components/icons/generated/chevron"
+import { Default as LanguageIcon } from "@/components/icons/generated/language"
+import {
+  Default as MediaLogosLinkedinIcon,
+  Instagram as MediaLogosInstagramIcon,
+  Threads as MediaLogosThreadsIcon,
+  Youtube as MediaLogosYoutubeIcon,
+} from "@/components/icons/generated/media-logos"
 import { Footer, type FooterColumn, type FooterLink } from "@/components/navigation/footer"
 import { Button } from "@/components/primitives/button"
 
@@ -13,7 +21,7 @@ const links: FooterLink[] = [
   { label: "Accessibilità", href: "#" },
   // Source `Translation` (1360:12618/12599): the label followed by the 24px
   // chevron, so the row is the source 24px (20px text rows keep the ::after).
-  { label: "Italiano", href: "#", trailing: <PagoPAIcon name="chevron" variant="down" /> },
+  { label: "Italiano", href: "#", trailing: <Icon source={ChevronDownIcon} /> },
 ]
 
 // Source copy of `Logged user=False, Device=Desktop` (1360:12667): column 1 has
@@ -57,18 +65,18 @@ const columns: FooterColumn[] = [
   {
     title: "SEGUICI SU",
     social: [
-      { label: "LinkedIn", href: "#", icon: <PagoPAIcon name="Media logos" variant="linkedin" /> },
+      { label: "LinkedIn", href: "#", icon: <Icon source={MediaLogosLinkedinIcon} /> },
       {
         label: "Instagram",
         href: "#",
-        icon: <PagoPAIcon name="Media logos" variant="instagram" />,
+        icon: <Icon source={MediaLogosInstagramIcon} />,
       },
-      { label: "Threads", href: "#", icon: <PagoPAIcon name="Media logos" variant="threads" /> },
-      { label: "YouTube", href: "#", icon: <PagoPAIcon name="Media logos" variant="youtube" /> },
+      { label: "Threads", href: "#", icon: <Icon source={MediaLogosThreadsIcon} /> },
+      { label: "YouTube", href: "#", icon: <Icon source={MediaLogosYoutubeIcon} /> },
     ],
     links: [
       { label: "Accessibilità", href: "#" },
-      { label: "Italiano", href: "#", trailing: <PagoPAIcon name="chevron" variant="down" /> },
+      { label: "Italiano", href: "#", trailing: <Icon source={ChevronDownIcon} /> },
     ],
   },
 ]
@@ -244,7 +252,7 @@ const languageColumns: FooterColumn[] = [
     title: "LINGUA",
     end: (
       <Button variant="link" size="sm">
-        <PagoPAIcon name="language" size={20} />
+        <Icon source={LanguageIcon} size={20} />
         Italiano
       </Button>
     ),

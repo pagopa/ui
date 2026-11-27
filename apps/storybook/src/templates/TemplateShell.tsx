@@ -1,6 +1,14 @@
 "use client"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as AccountBalanceIcon } from "@/components/icons/generated/account-balance"
+import { Default as ArrowIcon } from "@/components/icons/generated/arrow"
+import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
+import { Default as DashboardIcon } from "@/components/icons/generated/dashboard"
+import { Default as MenuIcon } from "@/components/icons/generated/menu"
+import { Default as NotificationsActiveIcon } from "@/components/icons/generated/notifications-active"
+import { Default as PersonIcon } from "@/components/icons/generated/person"
+import { Default as SearchIcon } from "@/components/icons/generated/search"
 
 import { cn } from "@/lib/cn"
 
@@ -70,24 +78,24 @@ function AppHeader({ compact = false }: { compact?: boolean }) {
             className="pui:ml-auto pui:hidden pui:items-center pui:gap-1 pui:tablet-md:flex"
           >
             <Button variant="ghost">
-              <PagoPAIcon name="account_balance" aria-hidden="true" />
+              <Icon source={AccountBalanceIcon} aria-hidden="true" />
               Home
             </Button>
             <Button variant="ghost">
-              <PagoPAIcon name="dashboard" aria-hidden="true" />
+              <Icon source={DashboardIcon} aria-hidden="true" />
               Servizi
             </Button>
           </nav>
         ) : null}
         <div className="pui:ml-auto pui:flex pui:items-center pui:gap-1 pui:tablet-md:ml-0">
           <Button variant="ghost" size="icon" aria-label="Notifiche">
-            <PagoPAIcon name="notifications_active" aria-hidden="true" />
+            <Icon source={NotificationsActiveIcon} aria-hidden="true" />
           </Button>
           <Button variant="ghost" size="icon" aria-label="Profilo">
-            <PagoPAIcon name="person" aria-hidden="true" />
+            <Icon source={PersonIcon} aria-hidden="true" />
           </Button>
           <Button variant="ghost" size="icon" aria-label="Menu" className="pui:tablet-md:hidden">
-            <PagoPAIcon name="menu" aria-hidden="true" />
+            <Icon source={MenuIcon} aria-hidden="true" />
           </Button>
         </div>
       </div>
@@ -101,7 +109,7 @@ function Actions({ config }: { config: TemplateConfig }) {
       {config.primaryAction ? (
         <Button>
           {config.primaryAction}
-          <PagoPAIcon name="arrow" aria-hidden="true" />
+          <Icon source={ArrowIcon} aria-hidden="true" />
         </Button>
       ) : null}
       {config.secondaryAction ? <Button variant="outline">{config.secondaryAction}</Button> : null}
@@ -134,17 +142,17 @@ function LandingBody({ config }: { config: TemplateConfig }) {
           {
             title: "Pagamenti sicuri",
             description: "Paga online verso la Pubblica Amministrazione.",
-            icon: <PagoPAIcon name="check_circle" />,
+            icon: <Icon source={CheckCircleIcon} />,
           },
           {
             title: "Servizi accessibili",
             description: "Esperienze progettate per tutte le persone.",
-            icon: <PagoPAIcon name="check_circle" />,
+            icon: <Icon source={CheckCircleIcon} />,
           },
           {
             title: "Dati sotto controllo",
             description: "Consulta ricevute e stato delle operazioni.",
-            icon: <PagoPAIcon name="check_circle" />,
+            icon: <Icon source={CheckCircleIcon} />,
           },
         ]}
         className="pui:py-8 pui:tablet-md:grid-cols-3"
@@ -274,8 +282,9 @@ function ListBody({ config, table = false }: { config: TemplateConfig; table?: b
       </div>
       <label className="pui:relative pui:block pui:max-w-xl">
         <span className="pui:sr-only">Cerca</span>
-        <PagoPAIcon
-          name="search"
+        <Icon
+          source={SearchIcon}
+
           aria-hidden="true"
           className="pui:absolute pui:top-3 pui:left-3 pui:size-5 pui:text-muted-foreground"
         />
@@ -390,7 +399,7 @@ function DrawerBody({ config }: { config: TemplateConfig }) {
 function RecapBody({ config }: { config: TemplateConfig }) {
   return (
     <div className="pui:mx-auto pui:max-w-3xl">
-      <PagoPAIcon name="check_circle" aria-hidden="true" className="pui:size-14 pui:text-success" />
+      <Icon source={CheckCircleIcon} aria-hidden="true" className="pui:size-14 pui:text-success" />
       <h1 className="pui:mt-4 pui:text-title-lg">{config.title}</h1>
       <p className="pui:mt-2 pui:text-body pui:text-muted-foreground">{config.description}</p>
       <dl className="pui:my-8 pui:rounded-xl pui:border">
@@ -461,7 +470,7 @@ function FeedbackBody({ config }: { config: TemplateConfig }) {
   return (
     <div className="pui:mx-auto pui:max-w-2xl pui:text-center">
       <span className="pui:mx-auto pui:grid pui:size-20 pui:place-items-center pui:rounded-full pui:bg-success-soft pui:text-success">
-        <PagoPAIcon name="check_circle" aria-hidden="true" className="pui:size-11" />
+        <Icon source={CheckCircleIcon} aria-hidden="true" className="pui:size-11" />
       </span>
       <h1 className="pui:mt-6 pui:text-title-lg">{config.title}</h1>
       <p className="pui:mt-3 pui:text-body pui:text-muted-foreground">{config.description}</p>

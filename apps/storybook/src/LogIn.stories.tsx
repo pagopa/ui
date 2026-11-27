@@ -4,7 +4,11 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { Alert, AlertDescription } from "@/components/primitives/alert"
 import { Button } from "@/components/primitives/button"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Down as ChevronDownIcon } from "@/components/icons/generated/chevron"
+import { Default as CieidIcon } from "@/components/icons/generated/cieid"
+import { Default as SpidIcon } from "@/components/icons/generated/spid"
+import { Default as WarningIcon } from "@/components/icons/generated/warning"
 import { Breadcrumb } from "@/components/navigation/breadcrumb"
 import { Footer } from "@/components/navigation/footer"
 import { Header } from "@/components/navigation/header"
@@ -41,7 +45,7 @@ const sourceAlert = (
       aria-hidden="true"
       className="pui:flex pui:size-6 pui:items-center pui:justify-center"
     >
-      <PagoPAIcon name="warning" />
+      <Icon source={WarningIcon} />
     </span>
     <AlertDescription>
       {"<placeholder per banner informativi che segnalano interventi sul portale>"}
@@ -95,8 +99,8 @@ function SourcePage() {
           alert={sourceAlert}
           actions={
             <>
-              <ProviderButton icon={<PagoPAIcon name="SPID" />} label="Entra con SPID" />
-              <ProviderButton icon={<PagoPAIcon name="CIEID" />} label="Entra con CIE" />
+              <ProviderButton icon={<Icon source={SpidIcon} />} label="Entra con SPID" />
+              <ProviderButton icon={<Icon source={CieidIcon} />} label="Entra con CIE" />
               <p className="pui:text-center pui:text-body">Non hai SPID o CIE? {helpLink}</p>
             </>
           }
@@ -146,7 +150,7 @@ function SourcePage() {
               {
                 label: "Italiano",
                 href: "#lingua",
-                trailing: <PagoPAIcon name="chevron" variant="down" />,
+                trailing: <Icon source={ChevronDownIcon} />,
               },
             ],
           },
@@ -191,8 +195,8 @@ export const Module: Story = {
         alert={sourceAlert}
         actions={
           <>
-            <ProviderButton icon={<PagoPAIcon name="SPID" />} label="Entra con SPID" />
-            <ProviderButton icon={<PagoPAIcon name="CIEID" />} label="Entra con CIE" />
+            <ProviderButton icon={<Icon source={SpidIcon} />} label="Entra con SPID" />
+            <ProviderButton icon={<Icon source={CieidIcon} />} label="Entra con CIE" />
             <p className="pui:text-center pui:text-body">Non hai SPID o CIE? {helpLink}</p>
           </>
         }

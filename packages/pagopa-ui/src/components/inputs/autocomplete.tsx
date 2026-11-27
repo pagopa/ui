@@ -4,7 +4,15 @@ import * as React from "react"
 import { Combobox } from "@/components/primitives/combobox"
 import { cn } from "@/lib/cn"
 import { useMessages, usePortalHost } from "@/lib/ui-provider"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as AccountBalanceIcon } from "@/components/icons/generated/account-balance"
+import { Default as CheckIcon } from "@/components/icons/generated/check"
+import {
+  Checked as CheckBoxCheckedIcon,
+  Default as CheckBoxIcon,
+} from "@/components/icons/generated/check-box"
+import { Down as ChevronDownIcon, Up as ChevronUpIcon } from "@/components/icons/generated/chevron"
+import { Small as CloseSmallIcon } from "@/components/icons/generated/close"
 
 import { Input } from "@/components/primitives/input"
 
@@ -18,7 +26,7 @@ type AutocompleteOption = ItemRowContent & {
   disabled?: boolean
 }
 
-const defaultLeadingIcon = <PagoPAIcon name="account_balance" size={24} aria-hidden="true" />
+const defaultLeadingIcon = <Icon source={AccountBalanceIcon} size={24} aria-hidden="true" />
 
 const defaultListLabel = (label: string) => (label ? `Lista ${label}` : "Lista")
 const defaultSelectedLabel = (values: string[]) => `hai selezionato ${values.join(", ")}`
@@ -307,16 +315,15 @@ function Autocomplete(props: AutocompleteProps) {
                       tabIndex={0}
                       className="pui:relative pui:grid pui:size-6 pui:place-items-center pui:rounded-sm pui:text-foreground pui:outline-none pui:after:absolute pui:after:-inset-2.5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-1 pui:focus-visible:outline-ring"
                     >
-                      <PagoPAIcon name="close" size={24} variant="small" aria-hidden="true" />
+                      <Icon source={CloseSmallIcon} size={24} aria-hidden="true" />
                     </Combobox.Clear>
                   ) : null}
                   <Combobox.Trigger
                     aria-label={open ? closeLabel : openLabel}
                     className="pui:relative pui:grid pui:size-6 pui:place-items-center pui:rounded-sm pui:text-foreground pui:outline-none pui:after:absolute pui:after:-inset-2.5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-1 pui:focus-visible:outline-ring"
                   >
-                    <PagoPAIcon
-                      name="chevron"
-                      variant={open ? "up" : "down"}
+                    <Icon
+                      source={open ? ChevronUpIcon : ChevronDownIcon}
                       size={24}
                       aria-hidden="true"
                     />
@@ -355,9 +362,8 @@ function Autocomplete(props: AutocompleteProps) {
             placeholderValue={!multiple}
           />
           {disabled ? (
-            <PagoPAIcon
-              name="chevron"
-              variant="down"
+            <Icon
+              source={ChevronDownIcon}
               size={24}
               aria-hidden="true"
               className="pui:pointer-events-none pui:absolute pui:top-1/2 pui:right-3 pui:-translate-y-1/2 pui:text-foreground"
@@ -372,19 +378,14 @@ function Autocomplete(props: AutocompleteProps) {
               tabIndex={0}
               className="pui:absolute pui:top-1/2 pui:right-3 pui:grid pui:size-6 pui:-translate-y-1/2 pui:place-items-center pui:rounded-sm pui:text-foreground pui:outline-none pui:after:absolute pui:after:-inset-2.5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-1 pui:focus-visible:outline-ring"
             >
-              <PagoPAIcon name="close" size={24} variant="small" aria-hidden="true" />
+              <Icon source={CloseSmallIcon} size={24} aria-hidden="true" />
             </Combobox.Clear>
           ) : multiple ? null : (
             <Combobox.Trigger
               aria-label={open ? closeLabel : openLabel}
               className="pui:absolute pui:top-1/2 pui:right-3 pui:grid pui:size-6 pui:-translate-y-1/2 pui:place-items-center pui:rounded-sm pui:text-foreground pui:outline-none pui:after:absolute pui:after:-inset-2.5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-1 pui:focus-visible:outline-ring"
             >
-              <PagoPAIcon
-                name="chevron"
-                variant={open ? "up" : "down"}
-                size={24}
-                aria-hidden="true"
-              />
+              <Icon source={open ? ChevronUpIcon : ChevronDownIcon} size={24} aria-hidden="true" />
             </Combobox.Trigger>
           )}
           {/* The live region stays mounted so the loading and selection
@@ -410,9 +411,8 @@ function Autocomplete(props: AutocompleteProps) {
                   }
                   className="pui:flex pui:w-full pui:items-center pui:gap-2 pui:rounded-md pui:text-left pui:text-label-sb pui:text-foreground pui:outline-none pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
                 >
-                  <PagoPAIcon
-                    name="check_box"
-                    variant={allListedSelected ? "checked" : "unchecked"}
+                  <Icon
+                    source={allListedSelected ? CheckBoxCheckedIcon : CheckBoxIcon}
                     size={24}
                     className={allListedSelected ? "pui:text-primary" : "pui:text-foreground"}
                   />
@@ -471,9 +471,8 @@ function Autocomplete(props: AutocompleteProps) {
                               {selected ? (
                                 <span className="pui:absolute pui:inset-0.75 pui:rounded-2 pui:bg-primary-foreground" />
                               ) : null}
-                              <PagoPAIcon
-                                name="check_box"
-                                variant={selected ? "checked" : "unchecked"}
+                              <Icon
+                                source={selected ? CheckBoxCheckedIcon : CheckBoxIcon}
                                 size={24}
                                 className={cn("pui:relative", selected && "pui:text-primary")}
                               />
@@ -482,7 +481,7 @@ function Autocomplete(props: AutocompleteProps) {
                         />
                       ) : (
                         <Combobox.ItemIndicator>
-                          <PagoPAIcon name="check" />
+                          <Icon source={CheckIcon} />
                         </Combobox.ItemIndicator>
                       )}
                     </Combobox.Item>

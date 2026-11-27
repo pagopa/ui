@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, within } from "storybook/test"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as PersonIcon } from "@/components/icons/generated/person"
+import { Default as SearchIcon } from "@/components/icons/generated/search"
 
 import { TextField } from "@/components/inputs/text-fields"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
@@ -48,11 +50,11 @@ export const Playground: Story = {
 }
 
 export const WithIcons: Story = {
-  args: { leadingIcon: <PagoPAIcon name="search" /> },
+  args: { leadingIcon: <Icon source={SearchIcon} /> },
 }
 
 export const WithTrailingIcon: Story = {
-  args: { trailingIcon: <PagoPAIcon name="person" />, defaultValue: "RSSMRA80A01H501" },
+  args: { trailingIcon: <Icon source={PersonIcon} />, defaultValue: "RSSMRA80A01H501" },
 }
 
 export const Validation: Story = {
@@ -60,7 +62,7 @@ export const Validation: Story = {
     <div className="pui:grid pui:max-w-xl pui:gap-6">
       <TextField
         label="Cerca una pratica"
-        leadingIcon={<PagoPAIcon name="search" />}
+        leadingIcon={<Icon source={SearchIcon} />}
         description="La ricerca non distingue tra maiuscole e minuscole."
       />
       <TextField

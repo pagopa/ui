@@ -4,7 +4,8 @@ import { expect, screen, userEvent, waitFor, within } from "storybook/test"
 
 import { Drawer, DrawerClose } from "@/components/overlays/drawer"
 import { Button } from "@/components/primitives/button"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as FlagIcon } from "@/components/icons/generated/flag"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import drawerGuide from "./guides/drawer.md?raw"
@@ -116,7 +117,7 @@ function SourceFrame({ direction }: { direction: "bottom" | "right" }) {
         }
         title="Drawer title"
         description={<SourceDescription />}
-        icon={<PagoPAIcon name="flag" size={40} className="pui:text-primary" />}
+        icon={<Icon source={FlagIcon} size={40} className="pui:text-primary" />}
         footer={<Button className="pui:w-full pui:tablet:w-auto">Primary</Button>}
         footerPlacement="flow"
         showHandle={false}

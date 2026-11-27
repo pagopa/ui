@@ -4,7 +4,9 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as AccountBalanceIcon } from "@/components/icons/generated/account-balance"
+import { Default as CheckIcon } from "@/components/icons/generated/check"
 import {
   Avatar as AvatarPrimitive,
   AvatarFallback,
@@ -162,7 +164,7 @@ function AvatarFace({
           {loading ? (
             <Skeleton className="pui:col-start-1 pui:row-start-1 pui:size-full pui:rounded-[inherit]" />
           ) : selected ? (
-            <PagoPAIcon name="check" size={iconSize} />
+            <Icon source={CheckIcon} size={iconSize} />
           ) : (
             <>
               {src ? (
@@ -211,7 +213,7 @@ function AvatarFace({
                     {icon}
                   </span>
                 ) : (
-                  initials || <PagoPAIcon name="account_balance" size={iconSize} />
+                  initials || <Icon source={AccountBalanceIcon} size={iconSize} />
                 )}
               </AvatarFallback>
             </>

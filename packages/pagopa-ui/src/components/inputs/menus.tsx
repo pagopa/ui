@@ -4,7 +4,15 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Left as ArrowLeftIcon } from "@/components/icons/generated/arrow"
+import {
+  Checked as CheckBoxCheckedIcon,
+  Default as CheckBoxIcon,
+} from "@/components/icons/generated/check-box"
+import { Down as ChevronDownIcon } from "@/components/icons/generated/chevron"
+import { Default as ErrorOutlinedIcon } from "@/components/icons/generated/error"
+import { Default as MoreVertIcon } from "@/components/icons/generated/more-vert"
 import type { IconComponent } from "@/components/icons/generated/types"
 import { Button } from "@/components/primitives/button"
 import {
@@ -106,10 +114,10 @@ function MenuItems({
     <DropdownMenuGroup>
       {label ? <DropdownMenuLabel className="pui:px-3 pui:py-2">{label}</DropdownMenuLabel> : null}
       {items.map((item, index) => {
-        const Icon = item.icon
+        const ItemIcon = item.icon
         const multiple = item.type !== "cta" && (item.multiple === true || multiselect)
         // Mirrors ItemRow: description/leading/chip turn the row into its rich layout.
-        const rich = Boolean(item.description || item.leading || Icon || item.chip)
+        const rich = Boolean(item.description || item.leading || ItemIcon || item.chip)
         return (
           <React.Fragment key={item.id}>
             {item.separatorBefore || (dividers && index > 0) ? (
@@ -126,9 +134,9 @@ function MenuItems({
                   : undefined
               }
               leading={
-                Icon ? (
+                ItemIcon ? (
                   <>
-                    <Icon aria-hidden="true" />
+                    <ItemIcon aria-hidden="true" />
                     {item.leading}
                   </>
                 ) : (
@@ -196,9 +204,8 @@ function MenuItems({
                       indicator={
                         sourceAligned
                           ? (checked) => (
-                              <PagoPAIcon
-                                name="check_box"
-                                variant={checked ? "checked" : "unchecked"}
+                              <Icon
+                                source={checked ? CheckBoxCheckedIcon : CheckBoxIcon}
                                 size={24}
                                 className={checked ? "pui:text-primary!" : "pui:text-foreground!"}
                               />
@@ -258,7 +265,7 @@ function DropDownEmpty({
       data-slot="dropdown-empty"
       className="pui:grid pui:justify-items-center pui:gap-2 pui:rounded-lg pui:bg-muted pui:p-6 pui:text-center"
     >
-      <PagoPAIcon name="error" filled={false} size={24} className="pui:text-choice-icon" />
+      <Icon source={ErrorOutlinedIcon} size={24} className="pui:text-choice-icon" />
       <div className="pui:grid pui:gap-0.5">
         <p className="pui:text-label-sb pui:text-muted-soft">{title}</p>
         {description ? (
@@ -333,7 +340,7 @@ function Dropdown({
         }
       >
         {triggerLabel}
-        <PagoPAIcon name="chevron" variant="down" />
+        <Icon source={ChevronDownIcon} />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         className={cn(
@@ -360,7 +367,7 @@ function Dropdown({
                   onClick={back.onSelect}
                   className="pui:min-h-12 pui:gap-2 pui:rounded-none pui:px-4 pui:py-3 pui:text-body pui:text-primary pui:[&_svg]:size-6"
                 >
-                  <PagoPAIcon name="arrow" variant="left" />
+                  <Icon source={ArrowLeftIcon} />
                   {back.label ?? backLabel}
                 </DropdownMenuItem>
               </DropdownMenuGroup>
@@ -411,7 +418,7 @@ function MenuDropdown({ accessibleLabel: accessibleLabelProp, items, label }: Me
       <DropdownMenuTrigger
         render={<Button type="button" variant="ghost" size="icon" aria-label={accessibleLabel} />}
       >
-        <PagoPAIcon name="more_vert" />
+        <Icon source={MoreVertIcon} />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="pui:min-w-(--pui-menu-width) pui:p-0">
         <MenuItems items={items} label={label} dividers tone="primary" />

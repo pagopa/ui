@@ -3,7 +3,12 @@
 import * as React from "react"
 import { Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox"
 import { cn } from "@/lib/cn"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import {
+  Default as CheckBoxUncheckedIcon,
+  Indeterminate as CheckBoxIndeterminateIcon,
+  Checked as CheckBoxCheckedIcon,
+} from "@/components/icons/generated/check-box"
 
 import { type ChangeEventDetails, type ElementProps } from "./props"
 import { useFormReset, useInputRef } from "./form-control-utils"
@@ -72,21 +77,19 @@ function Checkbox({
       )}
       {...props}
     >
-      <PagoPAIcon
-        name="check_box"
-        variant="unchecked"
+      <Icon
+        source={CheckBoxUncheckedIcon}
         className="pui:group-data-checked/checkbox:hidden pui:group-data-indeterminate/checkbox:hidden"
       />
-      <PagoPAIcon
-        name="check_box"
-        variant="indeterminate"
+      <Icon
+        source={CheckBoxIndeterminateIcon}
         className="pui:hidden pui:group-data-indeterminate/checkbox:block"
       />
       <CheckboxPrimitive.Indicator
         data-slot="checkbox-indicator"
         className="pui:flex pui:items-center pui:justify-center pui:data-unchecked:hidden pui:data-indeterminate:hidden"
       >
-        <PagoPAIcon name="check_box" variant="checked" />
+        <Icon source={CheckBoxCheckedIcon} />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   )

@@ -4,7 +4,11 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useLocale, useMessages } from "@/lib/ui-provider"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
+import { Down as ChevronDownIcon, Up as ChevronUpIcon } from "@/components/icons/generated/chevron"
+import { Default as EventIcon } from "@/components/icons/generated/event"
+import { Default as ReportIcon } from "@/components/icons/generated/report"
 import type { CalendarLocale } from "@/components/primitives/calendar"
 import {
   OTPField,
@@ -152,14 +156,14 @@ function TextField({
             aria-hidden="true"
             className="pui:pointer-events-none pui:absolute pui:inset-y-0 pui:right-3 pui:flex pui:items-center pui:text-success pui:[&_svg]:size-5"
           >
-            <PagoPAIcon name="check_circle" />
+            <Icon source={CheckCircleIcon} />
           </span>
         ) : error ? (
           <span
             aria-hidden="true"
             className="pui:pointer-events-none pui:absolute pui:inset-y-0 pui:right-3 pui:flex pui:items-center pui:text-destructive pui:[&_svg]:size-5"
           >
-            <PagoPAIcon name="report" />
+            <Icon source={ReportIcon} />
           </span>
         ) : null}
       </div>
@@ -234,14 +238,14 @@ function TextareaField({
             aria-hidden="true"
             className="pui:pointer-events-none pui:absolute pui:top-3 pui:right-3 pui:flex pui:items-center pui:text-success pui:[&_svg]:size-5"
           >
-            <PagoPAIcon name="check_circle" />
+            <Icon source={CheckCircleIcon} />
           </span>
         ) : error ? (
           <span
             aria-hidden="true"
             className="pui:pointer-events-none pui:absolute pui:top-3 pui:right-3 pui:flex pui:items-center pui:text-destructive pui:[&_svg]:size-5"
           >
-            <PagoPAIcon name="report" />
+            <Icon source={ReportIcon} />
           </span>
         ) : null}
       </div>
@@ -425,7 +429,7 @@ function DatePickerField({
   cancelLabel,
   confirmLabel,
   className,
-  leadingIcon = <PagoPAIcon name="event" />,
+  leadingIcon = <Icon source={EventIcon} />,
 }: DatePickerFieldProps) {
   const t = useMessages("datePickerField")
   const { locale: providerLocale, calendarLocale: providerCalendarLocale } = useLocale()
@@ -479,9 +483,8 @@ function DatePickerField({
       >
         {selected ? dateFieldFormat.format(selected) : null}
       </span>
-      <PagoPAIcon
-        name="chevron"
-        variant={open ? "up" : "down"}
+      <Icon
+        source={open ? ChevronUpIcon : ChevronDownIcon}
         size={24}
         className={
           disabled
