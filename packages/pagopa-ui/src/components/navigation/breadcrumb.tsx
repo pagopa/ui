@@ -12,11 +12,7 @@ export interface BreadcrumbItem {
   href?: string
 }
 
-/**
- * Navigation path to the current page, or a single back link in the compact layout.
- *
- * Figma: Breadcrumbs (node 123:7768)
- */
+/** Props of the navigation path or its compact back link. */
 export type BreadcrumbProps = {
   /** Additional classes for the navigation element. */
   className?: string
@@ -39,6 +35,11 @@ export type BreadcrumbProps = {
     }
 )
 
+/**
+ * Navigation path to the current page, or a single back link in the compact layout.
+ *
+ * Figma: Breadcrumbs (node 123:7768)
+ */
 function Breadcrumb({ className, "aria-label": ariaLabelProp, ...props }: BreadcrumbProps) {
   const t = useMessages("breadcrumb")
   const ariaLabel = ariaLabelProp ?? t.ariaLabel

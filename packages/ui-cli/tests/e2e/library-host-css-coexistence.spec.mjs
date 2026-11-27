@@ -214,6 +214,12 @@ test("packed CSS leaves the host page alone and styles its own trees", async (t)
       ["pagopa-ui.base", "pagopa-ui.utilities", "properties"],
       "the artifact opens the two library layers and Tailwind's property fallback, nothing else",
     )
+    // The token contract is the override surface: a host layer only reaches a
+    // `--pui-*` value when the root sits in the base layer, behind `:where()`.
+    assert.ok(
+      base.body.includes(":where(.pagopa-ui-root){"),
+      "the token contract must be declared in the base layer, on :where(.pagopa-ui-root)",
+    )
     // A reset reachable only through a zero-specificity `:where()` leaves a
     // consumer class of equal specificity free to override it.
     const roots = [...base.body.matchAll(/\[data-slot/g)]

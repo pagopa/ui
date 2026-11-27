@@ -270,7 +270,7 @@ export type BannerProps = BannerBaseProps & ({
     label: string;
 });
 
-// @public (undocumented)
+// @public
 export function Breadcrumb(input: BreadcrumbProps): JSX.Element;
 
 // @public (undocumented)
@@ -332,7 +332,7 @@ export interface CalendarLocale {
     };
 }
 
-// @public (undocumented)
+// @public
 export function CameraView(input: CameraViewProps): React_2.JSX.Element;
 
 // @public
@@ -574,7 +574,7 @@ export interface CookiesProps {
     onReject: () => void;
 }
 
-// @public (undocumented)
+// @public
 export function CorrectionTag(input: CorrectionTagProps): JSX.Element;
 
 // @public
@@ -764,7 +764,7 @@ export interface DrawerProps extends Omit<React_2.ComponentProps<"div">, "title"
     trigger?: React_2.ReactElement;
 }
 
-// @public (undocumented)
+// @public
 export function Dropdown(input: DropdownProps): React_2.JSX.Element;
 
 // @public (undocumented)
@@ -847,7 +847,7 @@ export type EmptyStateProps = Omit<StateProps, "extra"> & {
 // @public (undocumented)
 export const enMessages: Messages;
 
-// @public (undocumented)
+// @public
 export function ErrorState(input: ErrorStateProps): React_2.JSX.Element;
 
 // @public
@@ -1328,7 +1328,7 @@ export type MenuAction = {
     onSelect?: never;
 };
 
-// @public (undocumented)
+// @public
 export function MenuDropdown(input: MenuDropdownProps): React_2.JSX.Element;
 
 // @public
@@ -1633,7 +1633,7 @@ export interface Messages {
     };
 }
 
-// @public (undocumented)
+// @public
 export function MicroEvent(input: MicroEventProps): React_2.JSX.Element;
 
 // @public
@@ -1732,7 +1732,7 @@ export interface OverlayProps {
     visible: boolean;
 }
 
-// @public (undocumented)
+// @public
 export function PageSurface(input: PageSurfaceProps): React_2.JSX.Element;
 
 // @public
@@ -2223,7 +2223,7 @@ export interface SnackbarProps {
     tone?: Tone;
 }
 
-// @public (undocumented)
+// @public
 export function Spacer(input: SpacerProps): JSX.Element;
 
 // @public

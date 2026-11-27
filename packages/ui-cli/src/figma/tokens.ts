@@ -559,6 +559,15 @@ export function emitRootCss(manifest: Manifest): string {
 const SEMANTIC_ROOT = ".pagopa-ui-root"
 const SEMANTIC_PREFIX = "--pui-"
 
+// The block sits in the base layer and its selector is written with `:where()`,
+// so it adds no specificity a host has to outrank (ADR-0011). Read the last
+// compound of the context instead of the raw one: the block is the contract
+// whether or not it is layered and wrapped.
+const atSemanticRoot = (context: string): boolean => {
+  const last = context.split(" ").at(-1) ?? ""
+  return (last.startsWith(":where(") ? last.slice(":where(".length, -1) : last) === SEMANTIC_ROOT
+}
+
 export type SemanticTokenType = "color" | "dimension" | "shadow"
 
 export type SemanticToken = {
@@ -579,7 +588,7 @@ export function semanticTokens(
   file: string,
 ): SemanticToken[] {
   const declarations = cssDeclarations(stylesheet).filter(
-    (declaration) => declaration.context === SEMANTIC_ROOT && declaration.property.startsWith("--"),
+    (declaration) => atSemanticRoot(declaration.context) && declaration.property.startsWith("--"),
   )
   if (!declarations.length) {
     throw new Error(`${file}: ${SEMANTIC_ROOT} declares no custom property to publish`)

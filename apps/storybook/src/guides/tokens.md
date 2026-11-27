@@ -12,10 +12,8 @@ Three entries:
 - `@pagopa/ui/styles.css` declares the same properties on the provider root, the
   element that carries `.pagopa-ui-root`. A page that renders components loads
   this one; the override section below says where a replacement value lands.
-- `@pagopa/ui/tokens` exports the same values as typed data: `semanticTokens`,
-  the `SemanticToken` and `SemanticTokenType` types, and the `figmaTokens`,
-  `figmaTokenSource`, `FigmaToken` and `FigmaTokenType` inventory of the layer
-  the contract is generated from.
+- `@pagopa/ui/tokens` exports the same values as typed data: `semanticTokens`
+  and the `SemanticToken` and `SemanticTokenType` types.
 - `@pagopa/ui/tokens.dtcg.json` is the same contract in Design Tokens Community
   Group format, for the tools that read it.
 
@@ -25,6 +23,7 @@ Two layers are internal:
   values are generated from. They keep the Figma names and are resolved to their
   literals when the package is built, so no stylesheet ships one: a host reads
   the semantic contract instead, and there is no `--figma-*` property to set.
+  Their inventory is build-time data too, so no entrypoint exports it.
 - The Tailwind theme variables (`--color-*`, `--spacing-*`, `--text-*`,
   `--radius-*`, `--breakpoint-*`) drive the components and change with the theme,
   so a consumer never reads them.
@@ -152,14 +151,9 @@ export function ColorScale() {
 }
 ```
 
-`figmaTokens` is the inventory of the primitive layer below, with the Figma name,
-the CSS name and the value, for a page that has to show where a value comes from.
-
-`figmaTokenSource` names the Figma file, the sync date and the export method of the
-inventory, so a page can state where its values come from. Typography entries carry
-`cssName: "text-*"`, because they are text classes rather than custom properties;
-their `fontSize`, `lineHeight`, `fontWeight` and `letterSpacing` are the resolved
-values.
+Each token also carries `dtcg`, the alias of the primitive it comes from, so a
+page can state where a value originates without the primitive inventory: that
+inventory is build-time data and no entrypoint exports it.
 
 ## The contract is the override surface
 

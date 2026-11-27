@@ -10,12 +10,7 @@ import { useMessages } from "@/lib/ui-provider"
 
 import { StatePanel, type StateProps } from "./state-panel"
 
-/**
- * Negative outcome: title, description, native actions and an optional copyable
- * error-code row.
- *
- * Figma: KOState (node 749:5695)
- */
+/** Props of the negative outcome state, plus the optional error-code row. */
 export type ErrorStateProps = Omit<StateProps, "extra"> & {
   /** Error code of the state, shown in a copyable row. */
   code?: string
@@ -31,6 +26,12 @@ export type ErrorStateProps = Omit<StateProps, "extra"> & {
   onCopy?: () => void
 }
 
+/**
+ * Negative outcome: title, description, native actions and an optional copyable
+ * error-code row.
+ *
+ * Figma: KOState (node 749:5695)
+ */
 function ErrorState({
   code,
   codeLabel: codeLabelProp,

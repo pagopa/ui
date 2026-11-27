@@ -33,18 +33,45 @@ function stepRunning(job, command) {
 test("an ordinary pull request runs only the story files its diff reaches", () => {
   const job = jobRunning(deepChecks, "affected -t test:webkit")
   const proven = stepRunning(job, "affected -t test:webkit")
-  assert.equal(proven.if, "github.event_name == 'pull_request'")
+  assert.equal(proven.if, "steps.engines.outputs.full == 'false'")
   assert.equal(proven.env.BASE, "${{ github.event.pull_request.base.sha }}")
   // `--changed` is the selection: the project is the whole catalogue, so an
   // affected task alone would run the whole suite.
   assert.match(proven.run, /--changed="\$BASE"/)
 
   const complete = stepRunning(job, "pagopa-ui-storybook:test:stories")
-  assert.equal(
-    complete.if,
-    "github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'",
-  )
+  assert.equal(complete.if, "steps.engines.outputs.full == 'true'")
   assert.doesNotMatch(complete.run, /--changed/, "the complete pass is scoped to a diff")
+})
+
+// The release pull request carries the version, not the work that produced it,
+// so a diff-scoped run would prove almost nothing of what it publishes: the
+// scope step is the event and the ref, and no job skips the ref any more.
+test("the release pull request takes the scope and the engines of the nightly", () => {
+  const guard =
+    'if [ "$EVENT_NAME" = "pull_request" ] && [ "${HEAD_REF#nx-release/}" = "$HEAD_REF" ]; then'
+  for (const command of [
+    "affected -t test:webkit",
+    "affected -t test:coverage",
+    "affected -t library:check",
+  ]) {
+    const job = jobRunning(deepChecks, command)
+    assert.doesNotMatch(job.if, /nx-release/, `${command} still skips the release pull request`)
+    assert.ok(
+      stepRunning(job, "full=false").run.includes(guard),
+      `${command} scopes anything but an ordinary pull request to the full pass`,
+    )
+  }
+
+  const job = jobRunning(deepChecks, "affected -t test:webkit")
+  const engines = stepRunning(job, "browsers=")
+  assert.ok(engines.run.includes(guard))
+  assert.match(engines.run, /else[\s\S]*?browsers=firefox webkit/)
+  assert.equal(
+    job.strategy.matrix.shard,
+    "${{ fromJSON((github.event_name == 'pull_request' && !startsWith(github.head_ref || '', 'nx-release/')) && '[1]' || '[1,2,3,4]') }}",
+    "a release pull request runs every shard",
+  )
 })
 
 test("the nightly keeps the engine a pull request does not run", () => {

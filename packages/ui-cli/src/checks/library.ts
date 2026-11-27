@@ -47,6 +47,7 @@ const ImportedPackageSchema = z.looseObject({
   undefinedExports: z.array(z.string()),
   sharedReact: z.boolean(),
   tokens: z.number(),
+  figmaPrimitives: z.array(z.string()),
   rendered: z.string(),
   renderedCalendar: z.string(),
   renderedProduct: z.string(),
@@ -233,7 +234,8 @@ const packedImportResult = `console.log(JSON.stringify({
   exports: Object.keys(mod),
   undefinedExports: Object.keys(mod).filter((name) => typeof mod[name] === "undefined"),
   sharedReact: app.resolve("react") === library.resolve("react"),
-  tokens: tokens.figmaTokens.length,
+  tokens: tokens.semanticTokens.length,
+  figmaPrimitives: ["figmaTokens", "figmaTokenSource"].filter((name) => name in tokens),
   rendered: renderToString(React.createElement(mod.Button, null, "Server rendered button")),
   renderedCalendar: renderToString(React.createElement(mod.DatePicker, {
     value: new Date(2026, 4, 11),
@@ -295,6 +297,11 @@ function validatePackedImport(imported: z.infer<typeof ImportedPackageSchema>): 
   assert.deepEqual(imported.undefinedExports, [], "undefined packed exports")
   assert.equal(imported.sharedReact, true, "the library uses a different React instance")
   assert.ok(imported.tokens > 0, "the packed token entry must export the typed token list")
+  assert.deepEqual(
+    imported.figmaPrimitives,
+    [],
+    "the packed token entry must keep the --figma-* primitives inside the build (ADR-0013 RD2)",
+  )
   assert.match(imported.rendered, /<button[^>]*>Server rendered button<\/button>/)
   assert.match(imported.renderedCalendar, /role="grid"/, "source calendar must support SSR")
   assert.match(

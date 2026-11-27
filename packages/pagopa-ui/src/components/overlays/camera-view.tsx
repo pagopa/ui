@@ -10,12 +10,7 @@ import { Default as PhotoIcon } from "@/components/icons/generated/photo"
 // overlay scrim at radius 16, four 44px corner brackets (4px stroke, 24px
 // elbow) and a centred 4px guide line. The brackets sit 80px inside the
 // frame's edges, which the percentage inset reproduces at any width.
-/**
- * Camera framing overlay: decorative crop brackets around a square preview and
- * the active/inactive state announced with spoken text.
- *
- * Figma: CameraViewElement (node 1134:6812)
- */
+/** Props of the camera framing overlay. */
 export interface CameraViewProps {
   /** Announced instruction of the frame. @default messages.cameraView.label */
   label?: string
@@ -28,6 +23,12 @@ export interface CameraViewProps {
   active?: boolean
 }
 
+/**
+ * Camera framing overlay: decorative crop brackets around a square preview and
+ * the active/inactive state announced with spoken text.
+ *
+ * Figma: CameraViewElement (node 1134:6812)
+ */
 function CameraView({
   label: labelProp,
   announcement: announcementProp,

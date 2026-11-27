@@ -288,138 +288,144 @@
   src: url("./assets/fonts/titillio/Titillio-Bold.woff2?no-inline") format("woff2");
 }
 
-.pagopa-ui-root {
-  display: contents;
-  color-scheme: light;
-  font-family: var(--font-sans);
-  line-height: 1.5;
-  font-weight: var(--text-body--font-weight);
-  color: var(--pui-foreground);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* The root carries the typography defaults and the semantic contract. It is
+   written with `:where()` so it adds no specificity, and it sits in the base
+   layer so a layered host — Tailwind v4's `@layer base` among them — can
+   override a `--pui-*` value by declaring it on the provider root (ADR-0011). */
+@layer pagopa-ui.base {
+  :where(.pagopa-ui-root) {
+    display: contents;
+    color-scheme: light;
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    font-weight: var(--text-body--font-weight);
+    color: var(--pui-foreground);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 
-  /* Semantic aliases. Bound tokens reference the generated Figma foundations
-     (packages/tokens/src/figma.generated.css); locals without a published variable are
-     marked and tracked in packages/tokens/src/manifest.json. */
-  --pui-background: var(--figma-color-neutrals-white);
-  --pui-foreground: var(--figma-color-neutrals-black);
-  --pui-card: var(--figma-color-neutrals-white);
-  --pui-card-foreground: var(--figma-color-neutrals-black);
-  --pui-popover: var(--figma-color-neutrals-white);
-  --pui-popover-foreground: var(--figma-color-neutrals-black);
-  --pui-primary: var(--figma-color-blue-500);
-  --pui-primary-foreground: var(--figma-color-neutrals-white);
-  --pui-secondary: var(--figma-color-neutrals-grey-100);
-  --pui-secondary-foreground: var(--figma-color-neutrals-black);
-  --pui-muted: var(--figma-color-neutrals-grey-50);
-  --pui-muted-foreground: var(--figma-color-neutrals-grey-700);
-  /* The Figma blue tint steps (Blue 500 8%/20%) composited over white: opaque
-     surfaces, so avatar initials and the contrast button stay legible on dark
-     caller surfaces instead of compositing with them. */
-  --pui-accent: color-mix(
-    in srgb,
-    var(--figma-color-blue-500) 8%,
-    var(--figma-color-neutrals-white)
-  );
-  --pui-accent-foreground: var(--figma-color-blue-500);
-  --pui-destructive: var(--figma-color-status-error-600);
-  --pui-destructive-foreground: var(--figma-color-neutrals-white);
-  --pui-contrast: var(--figma-color-neutrals-white);
-  --pui-contrast-foreground: var(--figma-color-blue-500);
-  --pui-destructive-hover: #aa2828; /* local extension: destructive pointer step between Error 600 and Error 850 */
-  --pui-primary-hover: var(--figma-color-blue-600);
-  --pui-primary-active: #072582; /* local extension: pressed step between Blue 600 and Blue 850; no reachable Figma pressed variable */
-  --pui-accent-active: color-mix(
-    in srgb,
-    var(--figma-color-blue-500) 20%,
-    var(--figma-color-neutrals-white)
-  );
-  --pui-secondary-hover: var(--figma-color-neutrals-grey-200);
-  --pui-navy: #061b49; /* local, brand surface outside the Figma collections */
-  --pui-navy-deep: #17213c; /* local, brand surface outside the Figma collections */
-  --pui-brand-cyan: #00a7e1; /* local, brand accent outside the Figma collections */
-  --pui-border: var(
-    --figma-color-border-fill
-  ); /* Color/Border/Border fill — source stroke of cards, tiles, dividers */
-  --pui-border-strong: var(
-    --figma-color-neutrals-grey-200
-  ); /* grey-200 step for the source strokes that use it (Stepper default) */
-  --pui-input: var(--figma-color-neutrals-grey-650);
-  --pui-ring: var(--figma-color-blue-500);
-  --pui-otp-frame: var(--figma-color-neutrals-grey-650);
-  --pui-avatar-frame: rgb(
-    14 15 19 / 6%
-  ); /* local extension: avatar contrast ring, no Figma source */
-  --pui-avatar-placeholder: var(--figma-color-neutrals-grey-300);
-  --pui-avatar-icon-surface: rgb(
-    255 255 255 / 20%
-  ); /* local extension: icon surface on inverse artwork */
-  --pui-avatar-inverse-foreground: var(--figma-color-neutrals-white);
-  --pui-switch-unchecked: var(--figma-color-neutrals-grey-700);
-  --pui-switch-knob: var(--figma-color-neutrals-white);
-  --pui-choice-icon: var(--figma-color-icon-decorative-secondary);
-  --pui-overlay: var(
-    --figma-color-surface-overlay
-  ); /* Color/Surface/Surface overlay — shared dim layer */
-  --pui-tooltip: var(--figma-color-neutrals-grey-850); /* source Tooltip surface */
-  --pui-success: var(--figma-color-icon-success-icon);
-  --pui-success-soft: var(--figma-color-status-success-100);
-  --pui-success-border: var(--figma-color-status-success-400);
-  --pui-success-foreground: var(--figma-color-status-success-850);
-  --pui-warning: var(--figma-color-icon-warning-icon);
-  --pui-warning-soft: var(--figma-color-status-warning-100);
-  --pui-warning-border: var(--figma-color-status-warning-400);
-  --pui-warning-foreground: var(--figma-color-status-warning-850);
-  --pui-info: var(--figma-color-icon-info-icon);
-  --pui-info-soft: var(--figma-color-status-info-100);
-  --pui-info-border: var(--figma-color-status-info-400);
-  --pui-info-foreground: var(--figma-color-status-info-850);
-  --pui-error-soft: var(--figma-color-status-error-100);
-  --pui-error-border: var(--figma-color-status-error-400);
-  --pui-error-foreground: var(--figma-color-status-error-850);
-  --pui-chip-primary-soft: var(--figma-color-chip-default-filled);
-  --pui-chip-primary-foreground: var(--figma-color-chip-default-filled-text);
-  --pui-chip-default-outline: var(--figma-color-chip-default-outline);
-  --pui-chip-highlight-soft: var(--figma-color-chip-highlighted-filled);
-  --pui-chip-highlight-foreground: var(--figma-color-chip-highlighted-filled-text);
-  --pui-selection-soft: var(--figma-color-blue-50);
-  --pui-selection-border: var(--figma-color-blue-100);
-  --pui-muted-soft: var(--figma-color-neutrals-grey-650);
-  --pui-skeleton-strong: var(--figma-color-neutrals-grey-450);
-  --pui-decorative-secondary: var(--figma-color-neutrals-grey-300);
-  --pui-han-purple: var(--figma-color-han-purple-han-purple-500);
-  --pui-han-purple-soft: var(--figma-color-han-purple-han-purple-100);
-  --pui-drop-target: var(--figma-color-blue-300);
-  --pui-dragging-surface: var(--figma-color-opacity-blue-500-40);
-  --pui-inverse-foreground: var(--figma-color-neutrals-white);
-  --pui-skip-to-main-ring: var(
-    --figma-color-blue-300
-  ); /* Color/Blue/300 — the source SkipToMainContent 2px stroke around the dark pill */
-  --pui-radius: var(--figma-radius-8);
+    /* Semantic aliases. Bound tokens reference the generated Figma foundations
+       (packages/tokens/src/figma.generated.css); locals without a published variable are
+       marked and tracked in packages/tokens/src/manifest.json. */
+    --pui-background: var(--figma-color-neutrals-white);
+    --pui-foreground: var(--figma-color-neutrals-black);
+    --pui-card: var(--figma-color-neutrals-white);
+    --pui-card-foreground: var(--figma-color-neutrals-black);
+    --pui-popover: var(--figma-color-neutrals-white);
+    --pui-popover-foreground: var(--figma-color-neutrals-black);
+    --pui-primary: var(--figma-color-blue-500);
+    --pui-primary-foreground: var(--figma-color-neutrals-white);
+    --pui-secondary: var(--figma-color-neutrals-grey-100);
+    --pui-secondary-foreground: var(--figma-color-neutrals-black);
+    --pui-muted: var(--figma-color-neutrals-grey-50);
+    --pui-muted-foreground: var(--figma-color-neutrals-grey-700);
+    /* The Figma blue tint steps (Blue 500 8%/20%) composited over white: opaque
+       surfaces, so avatar initials and the contrast button stay legible on dark
+       caller surfaces instead of compositing with them. */
+    --pui-accent: color-mix(
+      in srgb,
+      var(--figma-color-blue-500) 8%,
+      var(--figma-color-neutrals-white)
+    );
+    --pui-accent-foreground: var(--figma-color-blue-500);
+    --pui-destructive: var(--figma-color-status-error-600);
+    --pui-destructive-foreground: var(--figma-color-neutrals-white);
+    --pui-contrast: var(--figma-color-neutrals-white);
+    --pui-contrast-foreground: var(--figma-color-blue-500);
+    --pui-destructive-hover: #aa2828; /* local extension: destructive pointer step between Error 600 and Error 850 */
+    --pui-primary-hover: var(--figma-color-blue-600);
+    --pui-primary-active: #072582; /* local extension: pressed step between Blue 600 and Blue 850; no reachable Figma pressed variable */
+    --pui-accent-active: color-mix(
+      in srgb,
+      var(--figma-color-blue-500) 20%,
+      var(--figma-color-neutrals-white)
+    );
+    --pui-secondary-hover: var(--figma-color-neutrals-grey-200);
+    --pui-navy: #061b49; /* local, brand surface outside the Figma collections */
+    --pui-navy-deep: #17213c; /* local, brand surface outside the Figma collections */
+    --pui-brand-cyan: #00a7e1; /* local, brand accent outside the Figma collections */
+    --pui-border: var(
+      --figma-color-border-fill
+    ); /* Color/Border/Border fill — source stroke of cards, tiles, dividers */
+    --pui-border-strong: var(
+      --figma-color-neutrals-grey-200
+    ); /* grey-200 step for the source strokes that use it (Stepper default) */
+    --pui-input: var(--figma-color-neutrals-grey-650);
+    --pui-ring: var(--figma-color-blue-500);
+    --pui-otp-frame: var(--figma-color-neutrals-grey-650);
+    --pui-avatar-frame: rgb(
+      14 15 19 / 6%
+    ); /* local extension: avatar contrast ring, no Figma source */
+    --pui-avatar-placeholder: var(--figma-color-neutrals-grey-300);
+    --pui-avatar-icon-surface: rgb(
+      255 255 255 / 20%
+    ); /* local extension: icon surface on inverse artwork */
+    --pui-avatar-inverse-foreground: var(--figma-color-neutrals-white);
+    --pui-switch-unchecked: var(--figma-color-neutrals-grey-700);
+    --pui-switch-knob: var(--figma-color-neutrals-white);
+    --pui-choice-icon: var(--figma-color-icon-decorative-secondary);
+    --pui-overlay: var(
+      --figma-color-surface-overlay
+    ); /* Color/Surface/Surface overlay — shared dim layer */
+    --pui-tooltip: var(--figma-color-neutrals-grey-850); /* source Tooltip surface */
+    --pui-success: var(--figma-color-icon-success-icon);
+    --pui-success-soft: var(--figma-color-status-success-100);
+    --pui-success-border: var(--figma-color-status-success-400);
+    --pui-success-foreground: var(--figma-color-status-success-850);
+    --pui-warning: var(--figma-color-icon-warning-icon);
+    --pui-warning-soft: var(--figma-color-status-warning-100);
+    --pui-warning-border: var(--figma-color-status-warning-400);
+    --pui-warning-foreground: var(--figma-color-status-warning-850);
+    --pui-info: var(--figma-color-icon-info-icon);
+    --pui-info-soft: var(--figma-color-status-info-100);
+    --pui-info-border: var(--figma-color-status-info-400);
+    --pui-info-foreground: var(--figma-color-status-info-850);
+    --pui-error-soft: var(--figma-color-status-error-100);
+    --pui-error-border: var(--figma-color-status-error-400);
+    --pui-error-foreground: var(--figma-color-status-error-850);
+    --pui-chip-primary-soft: var(--figma-color-chip-default-filled);
+    --pui-chip-primary-foreground: var(--figma-color-chip-default-filled-text);
+    --pui-chip-default-outline: var(--figma-color-chip-default-outline);
+    --pui-chip-highlight-soft: var(--figma-color-chip-highlighted-filled);
+    --pui-chip-highlight-foreground: var(--figma-color-chip-highlighted-filled-text);
+    --pui-selection-soft: var(--figma-color-blue-50);
+    --pui-selection-border: var(--figma-color-blue-100);
+    --pui-muted-soft: var(--figma-color-neutrals-grey-650);
+    --pui-skeleton-strong: var(--figma-color-neutrals-grey-450);
+    --pui-decorative-secondary: var(--figma-color-neutrals-grey-300);
+    --pui-han-purple: var(--figma-color-han-purple-han-purple-500);
+    --pui-han-purple-soft: var(--figma-color-han-purple-han-purple-100);
+    --pui-drop-target: var(--figma-color-blue-300);
+    --pui-dragging-surface: var(--figma-color-opacity-blue-500-40);
+    --pui-inverse-foreground: var(--figma-color-neutrals-white);
+    --pui-skip-to-main-ring: var(
+      --figma-color-blue-300
+    ); /* Color/Blue/300 — the source SkipToMainContent 2px stroke around the dark pill */
+    --pui-radius: var(--figma-radius-8);
 
-  /* Component geometry read from the source frames: what a shipped component
-     renders. The generated layer carries the shared foundation; these
-     component-scoped extensions stay local and are recorded in the design
-     request. The demo artboard geometry lives in apps/storybook/src/preview.css,
-     so a consumer receives no geometry for a frame it never renders. */
-  --pui-artboard-height: 650px; /* White Template page surface, 40.625rem */
-  --pui-dialog-width: 600px; /* Dialog desktop, 37.5rem */
-  --pui-dialog-width-compact: 272px; /* Dialog mobile and LogIn, 17rem */
-  --pui-drawer-width-wide: 417px; /* Informative Drawer, 26.0625rem */
-  --pui-id-module-width: 410px; /* ID module from the 600px device step, 25.625rem */
-  --pui-state-width: 368px; /* Error, waiting and success state columns, 23rem */
-  --pui-camera-size: 376px; /* camera viewfinder, 23.5rem */
-  --pui-menu-width: 274px; /* menu minimum, 17.125rem */
-  --pui-menu-skeleton-width: 106px; /* menu skeleton, 6.625rem */
-  --pui-overlay-width: 512px; /* Snackbar, 32rem */
-  --pui-header-height: 102px; /* Header desktop, 6.375rem */
-  --pui-preheader-height: 55px; /* Preheader, 3.4375rem */
-  --pui-page-gutter: 2rem; /* Snackbar viewport fallback */
-  --pui-page-gutter-lg: 3rem; /* Dialog viewport fallback */
-  --pui-hairline: var(--figma-spacing-2); /* tooltip arrow offset, spinner mask inset */
-  --pui-otp-clip-margin: var(--figma-spacing-4); /* OTP field overflow clip */
+    /* Component geometry read from the source frames: what a shipped component
+       renders. The generated layer carries the shared foundation; these
+       component-scoped extensions stay local and are recorded in the design
+       request. The demo artboard geometry lives in apps/storybook/src/preview.css,
+       so a consumer receives no geometry for a frame it never renders. */
+    --pui-artboard-height: 650px; /* White Template page surface, 40.625rem */
+    --pui-dialog-width: 600px; /* Dialog desktop, 37.5rem */
+    --pui-dialog-width-compact: 272px; /* Dialog mobile and LogIn, 17rem */
+    --pui-drawer-width-wide: 417px; /* Informative Drawer, 26.0625rem */
+    --pui-id-module-width: 410px; /* ID module from the 600px device step, 25.625rem */
+    --pui-state-width: 368px; /* Error, waiting and success state columns, 23rem */
+    --pui-camera-size: 376px; /* camera viewfinder, 23.5rem */
+    --pui-menu-width: 274px; /* menu minimum, 17.125rem */
+    --pui-menu-skeleton-width: 106px; /* menu skeleton, 6.625rem */
+    --pui-overlay-width: 512px; /* Snackbar, 32rem */
+    --pui-header-height: 102px; /* Header desktop, 6.375rem */
+    --pui-preheader-height: 55px; /* Preheader, 3.4375rem */
+    --pui-page-gutter: 2rem; /* Snackbar viewport fallback */
+    --pui-page-gutter-lg: 3rem; /* Dialog viewport fallback */
+    --pui-hairline: var(--figma-spacing-2); /* tooltip arrow offset, spinner mask inset */
+    --pui-otp-clip-margin: var(--figma-spacing-4); /* OTP field overflow clip */
+  }
 }
 
 @theme inline {

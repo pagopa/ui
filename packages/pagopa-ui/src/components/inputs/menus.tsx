@@ -276,12 +276,7 @@ function DropDownEmpty({
   )
 }
 
-/**
- * Rich action and option menu behind a labelled trigger: single or multiple
- * selection, second-level rows, caller actions and a loading/empty panel.
- *
- * Figma: DropDown (node 616:3864)
- */
+/** Props of the rich action and option menu. */
 export interface DropdownProps {
   /** Visible label of the trigger button. */
   triggerLabel: React.ReactNode
@@ -311,6 +306,12 @@ export interface DropdownProps {
   className?: string
 }
 
+/**
+ * Rich action and option menu behind a labelled trigger: single or multiple
+ * selection, second-level rows, caller actions and a loading/empty panel.
+ *
+ * Figma: DropDown (node 616:3864)
+ */
 function Dropdown({
   triggerLabel,
   items,
@@ -393,12 +394,7 @@ function Dropdown({
   )
 }
 
-/**
- * Icon menu for secondary actions, with the same rows as `Dropdown` and a
- * dedicated accessible name on the trigger.
- *
- * Figma: MenuDropDown (node 3262:40787)
- */
+/** Props of the icon menu. */
 export interface MenuDropdownProps {
   /** Accessible name of the icon trigger. @default messages.menuDropdown.accessibleLabel */
   accessibleLabel?: string
@@ -408,6 +404,12 @@ export interface MenuDropdownProps {
   label?: string
 }
 
+/**
+ * Icon menu for secondary actions, with the same rows as `Dropdown` and a
+ * dedicated accessible name on the trigger.
+ *
+ * Figma: MenuDropDown (node 3262:40787)
+ */
 function MenuDropdown({ accessibleLabel: accessibleLabelProp, items, label }: MenuDropdownProps) {
   const t = useMessages("menuDropdown")
   const accessibleLabel = accessibleLabelProp ?? t.accessibleLabel

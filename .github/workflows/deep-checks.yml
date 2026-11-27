@@ -5,10 +5,11 @@ name: Deep checks
 # the story project with the v8 coverage gates and the accessibility conditions
 # on Chromium, the WebKit pass on the stories alone, and the packed artifact
 # consumer. A pull request proves those three, each on the engine it owns; the
-# nightly run adds Firefox and is the only place where the engines meet, for the
-# stories and the packed artifact alike. Same checks, split by engine so the wait
-# is the longest job instead of their sum; the full story pass splits again into
-# four shards, so that longest job is a quarter of the catalogue.
+# nightly run and the release pull request add Firefox and are the only places
+# where the engines meet, for the stories and the packed artifact alike. Same
+# checks, split by engine so the wait is the longest job instead of their sum;
+# the full story pass splits again into four shards, so that longest job is a
+# quarter of the catalogue.
 #
 # A pull request proves its own diff, not the repository. The storybook project
 # is the whole catalogue, so an affected task would be the whole suite: the
@@ -21,10 +22,12 @@ name: Deep checks
 # through a pull request that ran these jobs on the same diff, so a push to
 # `main` starts nothing here: the nightly schedule is what re-proves the whole
 # repository, and a manual dispatch is the recovery path. The release pull
-# request carries only the version, the changelog and the consumed version
-# plan, so it skips these jobs too. A skipped job reports `skipped`, which
-# merges cleanly where a path-filtered workflow would leave a required check
-# pending.
+# request is the one pull request that takes the nightly's scope and engines: it
+# carries only the version, the changelog and the consumed version plan, so a
+# diff-scoped run would prove almost nothing of what it publishes, while the
+# whole catalogue on both engines is the last gate before the registry sees it.
+# A skipped job reports `skipped`, which merges cleanly where a path-filtered
+# workflow would leave a required check pending.
 #
 # There is no Nx cache step: Nx 23 keys its task cache to the machine that wrote
 # it, so a cache restored on another runner is reported as unrecognized and
@@ -59,7 +62,6 @@ jobs:
     # A draft may still change its diff: the suites wait for the review.
     if: >-
       (github.event_name != 'pull_request' || github.event.pull_request.draft == false) &&
-      !startsWith(github.head_ref || '', 'nx-release/') &&
       github.head_ref != 'feedback/previews'
     runs-on: ubuntu-24.04
     permissions:
@@ -67,6 +69,20 @@ jobs:
       contents: read
       packages: read
     steps:
+      # A pull request proves its diff; the nightly, a manual dispatch and the
+      # release pull request prove the whole catalogue.
+      - name: Choose the scope of this event
+        id: scope
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ] && [ "${HEAD_REF#nx-release/}" = "$HEAD_REF" ]; then
+            echo "full=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "full=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
@@ -81,13 +97,13 @@ jobs:
           browsers: chromium
 
       - name: Coverage gates (affected)
-        if: github.event_name == 'pull_request'
+        if: steps.scope.outputs.full == 'false'
         env:
           NX_PROFILE: .nx/ci-metrics/coverage.json
         run: pnpm nx affected -t test:coverage
 
       - name: Coverage gates (everything)
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        if: steps.scope.outputs.full == 'true'
         env:
           NX_PROFILE: .nx/ci-metrics/coverage.json
         run: pnpm nx run pagopa-ui-storybook:test:coverage
@@ -106,7 +122,6 @@ jobs:
     name: Stories (WebKit, Firefox nightly)
     if: >-
       (github.event_name != 'pull_request' || github.event.pull_request.draft == false) &&
-      !startsWith(github.head_ref || '', 'nx-release/') &&
       github.head_ref != 'feedback/previews'
     runs-on: ubuntu-24.04
     permissions:
@@ -121,8 +136,9 @@ jobs:
         # The whole catalogue splits, so the full pass waits for a quarter of
         # the stories instead of all of them. A pull request proves only its
         # affected files, which one runner already holds, so it keeps a single
-        # shard and a shard that cannot be empty.
-        shard: ${{ fromJSON(github.event_name == 'pull_request' && '[1]' || '[1,2,3,4]') }}
+        # shard and a shard that cannot be empty; the release pull request takes
+        # the full pass, like the nightly.
+        shard: ${{ fromJSON((github.event_name == 'pull_request' && !startsWith(github.head_ref || '', 'nx-release/')) && '[1]' || '[1,2,3,4]') }}
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
@@ -131,18 +147,21 @@ jobs:
           # Nothing here pushes: the token stays out of .git/config.
           persist-credentials: false
 
-      # A pull request proves the stories on WebKit alone; the nightly and
-      # dispatched runs add Firefox, whose binaries are not installed when
-      # nothing runs on them.
-      - name: Choose the engines of this event
+      # A pull request proves the stories on WebKit alone; the nightly, a manual
+      # dispatch and the release pull request add Firefox, whose binaries are
+      # not installed when nothing runs on them.
+      - name: Choose the engines and the scope of this event
         id: engines
         env:
           EVENT_NAME: ${{ github.event_name }}
+          HEAD_REF: ${{ github.head_ref }}
         run: |
-          if [ "$EVENT_NAME" = "pull_request" ]; then
+          if [ "$EVENT_NAME" = "pull_request" ] && [ "${HEAD_REF#nx-release/}" = "$HEAD_REF" ]; then
             echo "browsers=webkit" >> "$GITHUB_OUTPUT"
+            echo "full=false" >> "$GITHUB_OUTPUT"
           else
             echo "browsers=firefox webkit" >> "$GITHUB_OUTPUT"
+            echo "full=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Setup
@@ -155,7 +174,7 @@ jobs:
       # whole suite: `--changed` is what narrows it to the story files the
       # diff reaches, and it says so when the diff reaches none.
       - name: Stories in WebKit (the diff's files)
-        if: github.event_name == 'pull_request'
+        if: steps.engines.outputs.full == 'false'
         env:
           # The tip of the base branch: the stories the diff can move.
           BASE: ${{ github.event.pull_request.base.sha }}
@@ -163,7 +182,7 @@ jobs:
         run: pnpm nx affected -t test:webkit -- --changed="$BASE" --shard=${{ matrix.shard }}/${{ strategy.job-total }}
 
       - name: Stories in Firefox and WebKit (everything)
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        if: steps.engines.outputs.full == 'true'
         env:
           NX_PROFILE: .nx/ci-metrics/stories.json
         run: pnpm nx run pagopa-ui-storybook:test:stories -- --shard=${{ matrix.shard }}/${{ strategy.job-total }}
@@ -182,7 +201,6 @@ jobs:
     name: Packed artifact (three engines)
     if: >-
       (github.event_name != 'pull_request' || github.event.pull_request.draft == false) &&
-      !startsWith(github.head_ref || '', 'nx-release/') &&
       github.head_ref != 'feedback/previews'
     runs-on: ubuntu-24.04
     permissions:
@@ -197,17 +215,21 @@ jobs:
           # Nothing here pushes: the token stays out of .git/config.
           persist-credentials: false
 
-      # A pull request proves the packed artifact on Chromium; the nightly and
-      # dispatched runs prove it on all three engines.
-      - name: Choose the engines of this event
+      # A pull request proves the packed artifact on Chromium; the nightly, a
+      # manual dispatch and the release pull request prove it on all three
+      # engines.
+      - name: Choose the engines and the scope of this event
         id: engines
         env:
           EVENT_NAME: ${{ github.event_name }}
+          HEAD_REF: ${{ github.head_ref }}
         run: |
-          if [ "$EVENT_NAME" = "pull_request" ]; then
+          if [ "$EVENT_NAME" = "pull_request" ] && [ "${HEAD_REF#nx-release/}" = "$HEAD_REF" ]; then
             echo "browsers=chromium" >> "$GITHUB_OUTPUT"
+            echo "full=false" >> "$GITHUB_OUTPUT"
           else
             echo "browsers=chromium firefox webkit" >> "$GITHUB_OUTPUT"
+            echo "full=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Setup
@@ -217,14 +239,14 @@ jobs:
           browsers: ${{ steps.engines.outputs.browsers }}
 
       - name: Packed artifact (affected)
-        if: github.event_name == 'pull_request'
+        if: steps.engines.outputs.full == 'false'
         env:
           LIBRARY_ENGINES: chromium
           NX_PROFILE: .nx/ci-metrics/library.json
         run: pnpm nx affected -t library:check
 
       - name: Packed artifact (everything)
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        if: steps.engines.outputs.full == 'true'
         env:
           NX_PROFILE: .nx/ci-metrics/library.json
         run: pnpm nx run pagopa-ui:library:check

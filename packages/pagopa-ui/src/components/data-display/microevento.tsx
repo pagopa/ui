@@ -3,12 +3,7 @@ import { cn } from "@/lib/cn"
 
 import { CorrectionTag } from "@/components/content"
 
-/**
- * Timeline micro-event: the correction tag for the current status, the event
- * description and, when present, the event time on its own line below the copy.
- *
- * Figma: Microevento (node 9676:5633)
- */
+/** Props of the timeline micro-event. */
 export interface MicroEventProps {
   title: React.ReactNode
   time?: string
@@ -18,6 +13,12 @@ export interface MicroEventProps {
   className?: string
 }
 
+/**
+ * Timeline micro-event: the correction tag for the current status, the event
+ * description and, when present, the event time on its own line below the copy.
+ *
+ * Figma: Microevento (node 9676:5633)
+ */
 function MicroEvent({ title, time, invalid = true, label, className }: MicroEventProps) {
   return (
     <div

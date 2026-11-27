@@ -29,8 +29,10 @@ actual artwork. The white default artwork needs a dark, contrasting surface;
 
 Every published identity is also one component per pinned variant on its own
 entry, so an import from that entry carries no other icon artwork. `@pagopa/ui/icons`
-itself exports the resolver, the pictogram resolver and the name unions — not the
-glyphs:
+itself exports the generated glyph components and nothing that resolves a runtime
+name; the resolvers (`PagoPAIcon`, `PagoPAPictogram`) and the name unions
+(`iconNames`, `pictogramNames`, `FigmaIconName`, `FigmaPictogramName`) are served
+by `@pagopa/ui`:
 
 ```tsx
 import Info from "@pagopa/ui/icons/info" // the `outlined` source variant

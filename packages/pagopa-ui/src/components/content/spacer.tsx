@@ -17,17 +17,18 @@ const sizeClasses: Record<SpacerSize, string> = {
   48: "pui:h-12",
 }
 
+/** Props of the vertical spacer. */
+export interface SpacerProps {
+  size?: SpacerSize
+  className?: string
+}
+
 /**
  * Invisible vertical spacer: a step of the spacing scale as an empty block with
  * no role, hidden from assistive technology.
  *
  * Figma: Spacing (node 237:1307)
  */
-export interface SpacerProps {
-  size?: SpacerSize
-  className?: string
-}
-
 function Spacer({ size = 4, className }: SpacerProps) {
   return <div aria-hidden="true" data-slot="spacing" className={cn(sizeClasses[size], className)} />
 }

@@ -106,7 +106,9 @@ The story and test contracts are in [story-contracts.md](story-contracts.md).
       consumer in `pnpm nx run pagopa-ui:library:check`, never replaced by a
       repository-linked smoke test or `skipLibCheck`. React stays a peer;
       styling and font tools stay build-time.
-- [ ] A rendering or public API change has a line under `## Unreleased` in
-      `CHANGELOG.md`.
+- [ ] A change to a released project carries its version plan, written with the
+      change (`pnpm nx release plan <bump> -p pagopa-ui -m "…"`). The plan
+      message is the changelog entry: `nx release` renders `CHANGELOG.md`, so no
+      one edits that file by hand.
 - [ ] `pnpm nx run-many -t fmt` and `pnpm nx run-many -t lint` run, then the
       green chain.

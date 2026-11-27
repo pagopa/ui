@@ -198,9 +198,12 @@ function createReader(workspace: Workspace) {
       if (declared?.type === "FunctionDeclaration" && declaredName) {
         index.functions.set(declaredName, declared)
       }
+      // A variable declaration holds its declarators: `export const A = …, B = …`.
       if (declaration?.type === "VariableDeclaration") {
-        const name = keyName(asNode(declaration)?.id)
-        if (name) index.exportedLocals.add(name)
+        for (const declarator of nodes(declaration.declarations)) {
+          const name = keyName(declarator.id)
+          if (name) index.exportedLocals.add(name)
+        }
       }
       if (declaration && declaredName) index.exportedLocals.add(declaredName)
       if (statement.type === "ImportDeclaration") {

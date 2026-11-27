@@ -245,6 +245,31 @@ test("the public semantic contract is emitted on :root, typed and as DTCG", () =
   })
 })
 
+test("the semantic contract is read from the layered, :where()-wrapped root", () => {
+  fixture(({ tokens, read, write }) => {
+    assert.equal(tokens("--write", "--input", "snapshot.json").status, 0)
+    const contract = contractOf(read("src/tokens.generated.css"))
+    write(
+      "src/index.css",
+      [
+        '@import "pagopa-ui-tokens/figma.generated.css";',
+        "@layer pagopa-ui.base {",
+        "  :where(.pagopa-ui-root) {",
+        "    --pui-primary: var(--figma-color-blue-500);",
+        "    --pui-border: var(--figma-color-neutrals-grey-100);",
+        "    --pui-shadow: var(--figma-shadow-16);",
+        "    --pui-gutter: var(--figma-spacing-12);",
+        "  }",
+        "}",
+        "",
+      ].join("\n"),
+    )
+    const check = tokens("--check")
+    assert.equal(check.status, 0, check.stderr)
+    assert.equal(contractOf(read("src/tokens.generated.css")), contract)
+  })
+})
+
 test("a Figma rename changes no public semantic name or value", () => {
   fixture(({ tokens, read, write }) => {
     assert.equal(tokens("--write", "--input", "snapshot.json").status, 0)
