@@ -160,20 +160,30 @@ jobs:
           fi
           pnpm nx run pagopa-ui-storybook:chromatic -- "${flags[@]}"
 
-      # A build that reports component errors names the stories only in its
-      # dashboard and in the report the CLI writes beside the directory it ran
-      # in — the project when Nx runs the script, the workspace otherwise. Find
-      # it instead of guessing, so a red run is readable from the pull request.
+      # A build that reports component errors names the failing stories only in
+      # its dashboard and in the report the CLI writes beside the directory it
+      # ran in. Locate that report, print it and keep it, so a red run is
+      # readable from the pull request instead of from Chromatic's dashboard.
+      - name: Report the Chromatic errors
+        id: report
+        if: failure() && steps.token.outputs.present == 'true'
+        run: |
+          report=$(find "$GITHUB_WORKSPACE" -maxdepth 3 -name 'chromatic-diagnostics.json' \
+            -not -path '*/node_modules/*' | head -1)
+          if [ -z "$report" ]; then
+            echo "::warning::The Chromatic report was not written: read the errors in the dashboard."
+            exit 0
+          fi
+          echo "path=$report" >> "$GITHUB_OUTPUT"
+          cat "$report"
+
       - name: Upload the Chromatic report
-        if: always() && steps.token.outputs.present == 'true'
+        if: always() && steps.report.outputs.path != ''
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: chromatic-report-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            **/chromatic-diagnostics.json
-            **/chromatic.log
+          path: ${{ steps.report.outputs.path }}
           retention-days: 7
-          if-no-files-found: ignore
 
       - name: Upload task timings
         if: always() && steps.token.outputs.present == 'true'
