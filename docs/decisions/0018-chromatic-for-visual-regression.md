@@ -1,6 +1,12 @@
 # ADR-0018 — Chromatic owns the visual diff, opt-in through a project token
 
-- **Status:** Accepted — 2026-11-27. Supersedes
+- **Status:** Accepted — 2026-11-27, **experimental**. The decision stands and the
+  run is in use; it is not yet a visual gate, for the reasons §4 records: a live
+  build reports ten stories failing their plays that `test:stories` passes, a
+  build over the plan's limit publishes and runs no test while staying green, and
+  TurboSnap is inert for the first ten CI builds. What ends the experimental
+  status is §5, and the work is tracked in
+  [#195](https://github.com/pagopa/ui/issues/195). Supersedes
   [ADR-0017](./0017-visual-baselines-outside-git.md).
 - **Date:** 2026-11-27
 - **Context:** ADR-0017 made the Playwright suite the only visual runner: it
@@ -188,11 +194,18 @@ one that turns the dashboard into a gate.
   live run reported alongside the failures. Until then `--only-changed` is
   inert: every pull request captures the whole catalogue, ten full builds before
   the flag starts saving the captures it was chosen for.
+- **The run is experimental, and it is read that way.** Everything above is why: a
+  build can be green having compared nothing, one can be red for a play
+  `test:stories` passes, and before the tenth CI build `--only-changed` saves no
+  capture. A green check therefore reports that the run happened, not that the
+  pixels did not move, and it is a dashboard to read rather than a proof to cite
+  until the exit criteria below hold.
 
 ## 5. Deferred decisions with triggers
 
 | Deferred                                | Trigger                                                                                                                                                                                                                                                  |
 | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Leaving the experimental status (§4)    | One run, on one commit, compares all 1 632 captures under the plan's limit, reports no play failure that `test:stories` passes, and traces under `--only-changed` — the three together, not one at a time                                                |
 | Making the Chromatic check required     | The token exists and a run has been green for a week; `--exit-zero-on-changes` is what has to go first, in the same change                                                                                                                               |
 | Whether the build judges the plays      | The interaction report is read against the ten stories it names: reproduce the condition Chromatic's runner adds, take those stories out of the capture, or leave the judgement to `test:stories`. A limited build answers nothing — no capture, no play |
 | A `diffThreshold` per family of stories | A run reports renderer noise on text-heavy stories that the reviewers learn to ignore; the parameter is per story, so it lands there                                                                                                                     |

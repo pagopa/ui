@@ -1,7 +1,7 @@
 # ADR-0014 — Utilities ship under an internal prefix, in both spellings while the tree migrates
 
-- **Status:** Accepted — 2026-12-04, temporary: the contract step of the same
-  spec removes it.
+- **Status:** Superseded by [ADR-0016](./0016-utility-prefix-single-spelling.md) —
+  2026-11-26. The two-spelling contract is gone; the `pui:` prefix stands.
 - **Date:** 2026-12-04
 - **Context:** a design-system utility class is a global name. A host page that
   also runs Tailwind, or that carries an older hand-written `.flex` or `.hidden`,

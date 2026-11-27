@@ -15,16 +15,40 @@ reserved when any sibling carries one, and the copy starts at the top of the row
 next to its cursor, so cursors and titles never step sideways or drop below
 their dot.
 
-Every rendered and announced string is consumer-owned: the list name defaults to
-`Cronologia` and is replaceable through `label`, the titles, descriptions,
-timestamps and touchpoint labels are content, and each accordion row announces its
-own `aria-expanded`.
+## Text
+
+Every rendered and announced string is consumer-owned. `label` names the list
+(default `messages.timeline.label`, `Cronologia` under the default Italian
+dictionary); titles, descriptions, timestamps and touchpoint labels are your
+content, and each accordion row announces its own `aria-expanded`.
+
+```tsx
+// Per instance.
+<Timeline items={events} label="Storico della pratica" />
+
+// Once for every timeline in the tree.
+<UIProvider messages={{ timeline: { label: "Storico" } }}>
+  <AppContent />
+</UIProvider>
+```
 
 ## Timeline drawer
 
 `TimelineDrawer` composes the drawer with this timeline: the panel carries the
 source pictogram, `title` (default `Cronologia`), `description`, the events and the
 optional `footer`, and reads `TimelineItem[]` from `items`.
+
+It inherits the drawer's text props unchanged, so `closeLabel` names the close
+button (default `messages.drawer.closeLabel`, `Chiudi` under the default Italian
+dictionary):
+
+```tsx
+<TimelineDrawer
+  trigger={<Button>Apri la cronologia</Button>}
+  items={events}
+  closeLabel="Chiudi la cronologia"
+/>
+```
 
 The panel keeps the drawer's lifecycle. `open` with `onOpenChange` makes it
 controlled, `defaultOpen` opens it initially when `open` is omitted, and

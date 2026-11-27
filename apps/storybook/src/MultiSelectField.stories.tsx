@@ -42,7 +42,7 @@ type Story = StoryObj<typeof meta>
 
 // Source frame: 274x48 (`617:19990`). The story carries the source width.
 export const Playground: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: (args) => (
     <div className="pui:w-68 pui:max-w-full">

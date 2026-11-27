@@ -21,13 +21,31 @@ motion.
 The title is the drawer's accessible name. The optional header `icon` is
 decorative, `description` is associated supporting copy, and `footer` holds the
 actions (full width when stacked, intrinsic and end-aligned from `sm`). The close
-button is a native icon button with an accessible name. The title keeps the
-mobile type scale through the tablet range and switches to the desktop title
-scale from the `tablet-md` device step.
+button is a native icon button whose accessible name is `closeLabel`. The title
+keeps the mobile type scale through the tablet range and switches to the desktop
+title scale from the `tablet-md` device step.
 
 `direction` stays caller-owned: the component does not choose a bottom sheet on
 mobile. The drag-handle pill appears only when the drawer opens from the bottom
 edge and is decorative.
+
+## Text
+
+Every announced string is consumer-owned. `title` names the panel, and
+`closeLabel` names the close button (default `messages.drawer.closeLabel`), so
+`UIProvider` can also set it once for the whole application. `description`
+and the `footer` actions are your content, and a `DrawerClose` you place carries
+its own label.
+
+```tsx
+// Per instance.
+<Drawer trigger={<Button>Apri</Button>} title="Filtri" closeLabel="Chiudi i filtri" />
+
+// Once for every drawer in the tree.
+<UIProvider messages={{ drawer: { closeLabel: "Chiudi il pannello" } }}>
+  <AppContent />
+</UIProvider>
+```
 
 ## Controlling the panel
 

@@ -560,6 +560,16 @@ in its dashboard. The decision and its reasons are
 [ADR-0018](./docs/decisions/0018-chromatic-for-visual-regression.md); this
 section is how to use it.
 
+**The run is experimental.** [ADR-0018 §4](./docs/decisions/0018-chromatic-for-visual-regression.md)
+records why: a live build reported ten stories failing their plays that
+`test:stories` passes, a build over the plan's limit publishes and runs no test
+while staying green, and TurboSnap is inert for the first ten CI builds. A green
+Chromatic check therefore reports that the run happened, not that the pixels did
+not move — it is a dashboard to read beside the change, never the proof that the
+change looks the same, and it is not a required check. ADR-0018 §5 names what
+ends the experimental status; the work is tracked in
+[#195](https://github.com/pagopa/ui/issues/195).
+
 The integration is opt-in through the `CHROMATIC_PROJECT_TOKEN` environment
 secret of `app-dev-ci` ([Figma drift secrets](./docs/figma-drift-secrets.md) has
 the create and rotate steps). The workflow stays in place and its first step

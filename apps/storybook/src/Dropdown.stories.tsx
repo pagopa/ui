@@ -260,7 +260,7 @@ function MultiselectServices() {
 }
 
 export const Multiselect: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   tags: ["color-pinned"],
   render: () => <MultiselectServices />,
@@ -481,7 +481,7 @@ export const SourcePanelSkeleton: Story = {
 }
 
 export const StaticIndicator: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => <StaticIndicatorExample />,
   play: async ({ canvasElement }) => {

@@ -117,7 +117,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const PaintedKeyboardPerimeters: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   tags: ["color-pinned"],
   render: () => (
@@ -178,7 +178,7 @@ export const PaintedKeyboardPerimeters: Story = {
 }
 
 export const NativeEditorKeyboardFocus: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   tags: ["color-pinned"],
   render: () => (
@@ -396,7 +396,7 @@ export const NativeAuthenticationCodeReset: Story = {
 }
 
 export const AuthenticationCodeReflow: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
     <form aria-label="Verifica su schermo piccolo" className="pui:w-72 pui:max-w-full">
@@ -796,7 +796,7 @@ const resetCities = [
 ]
 
 export const CancelledFormReset: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
     <form
@@ -1090,7 +1090,7 @@ export const UploadNativeForm: Story = {
 }
 
 export const UploadRejectsInvalidFiles: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
     <form aria-label="Allegati verificati" className="pui:grid pui:max-w-md pui:gap-6">
@@ -1140,7 +1140,7 @@ export const UploadRejectsInvalidFiles: Story = {
 }
 
 export const UploadMimeAndDragStates: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   tags: ["color-pinned"],
   render: () => (

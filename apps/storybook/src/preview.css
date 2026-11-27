@@ -17,10 +17,10 @@
 /* The demo surface's forced-colors perimeter, the twin of the one the package
    stylesheet paints inside a component: forced colours erase every authored
    colour, so the outline is the one cue a focus can paint. It is unlayered on
-   purpose. The package rule can sit in `pagopa-ui.base` because no component
-   pairs it with an `outline-none`; a story that writes plain markup does, and
-   an authored utility outranks any layer above it, so the demo surface's
-   guarantee has to outrank the utilities instead. */
+   purpose. The package rule sits in `pagopa-ui.utilities` because every component
+   root carries the `outline-none` reset of `pagopa-ui.base`, so the guarantee has
+   to outrank it; a story that writes plain markup meets the same reset, which is
+   why the demo surface's guarantee has to outrank the utilities too. */
 @media (forced-colors: active) {
   [data-pagopa-ui-root]:focus-visible,
   [data-pagopa-ui-root] :focus-visible {

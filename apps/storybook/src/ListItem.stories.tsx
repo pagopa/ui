@@ -56,7 +56,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Playground: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   // The fixture carries the source row (`897:18749`, 320×96): the row chip is part
   // of the source anatomy, and the 320px frame is `w-80` instead of the viewport.
@@ -72,7 +72,7 @@ export const Playground: Story = {
 }
 
 export const WithAvatar: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: {
     leading: <Avatar size="small" alt="Comune di Milano" initials="CM" />,
@@ -82,7 +82,7 @@ export const WithAvatar: Story = {
 }
 
 export const LinkWithAvatar: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: {
     variant: "link",
@@ -98,7 +98,7 @@ export const LinkWithAvatar: Story = {
 }
 
 export const Link: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: { variant: "link", href: "#servizio" },
   play: async ({ canvasElement }) => {
@@ -110,7 +110,7 @@ export const Link: Story = {
 }
 
 export const Actionable: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: {
     variant: "actionable",
@@ -120,7 +120,7 @@ export const Actionable: Story = {
 }
 
 export const Transactional: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: {
     variant: "transactional",
@@ -136,7 +136,7 @@ export const Transactional: Story = {
 }
 
 export const WithSuggestion: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: {
     variant: "transactional",
@@ -174,7 +174,7 @@ export const ErrorState: Story = {
 }
 
 export const WithAction: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: {
     chip: <Chip size="compact">Default</Chip>,
@@ -187,7 +187,7 @@ export const WithAction: Story = {
 }
 
 export const Loading: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: { loading: true, value: undefined, description: undefined },
   play: async ({ canvasElement }) => {

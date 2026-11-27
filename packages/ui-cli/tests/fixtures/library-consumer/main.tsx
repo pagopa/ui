@@ -435,7 +435,7 @@ function ConsumerAvatars() {
       <Button variant="outline" onClick={() => setLoading((current) => !current)}>
         {loading ? "Completa caricamento" : "Carica identità"}
       </Button>
-      <div style={{ background: "var(--navy)", borderRadius: 8, padding: 16 }}>
+      <div style={{ background: "var(--pui-navy)", borderRadius: 8, padding: 16 }}>
         <Avatar
           alt="Servizio culturale inverso installato"
           icon={<PagoPAIcon name="theater_comedy" size={33} />}
@@ -645,7 +645,7 @@ function ConsumerProducts() {
               Richiedi l'accesso agli{" "}
               <a
                 href="#consumer-product-admins"
-                style={{ color: "var(--primary)", textDecoration: "underline" }}
+                style={{ color: "var(--pui-primary)", textDecoration: "underline" }}
               >
                 Amministratori del prodotto
               </a>
@@ -1095,7 +1095,7 @@ function Consumer() {
         </div>
         <div
           data-testid="consumer-spinner-contrast-surface"
-          style={{ width: "fit-content", backgroundColor: "var(--primary)", padding: 8 }}
+          style={{ width: "fit-content", backgroundColor: "var(--pui-primary)", padding: 8 }}
         >
           <Spinner variant="contrast" />
         </div>
@@ -1173,7 +1173,7 @@ function Consumer() {
       <ConsumerCalendars />
       <PagoPAIcon name="info" decorative={false} label="Informazioni" />
       <PagoPAPictogram name="Hourglass" background="light" />
-      <div style={{ background: "var(--navy)", padding: 16 }}>
+      <div style={{ background: "var(--pui-navy)", padding: 16 }}>
         <PagoPAPictogram name="Hourglass" background="dark" />
       </div>
       <section
@@ -1182,12 +1182,12 @@ function Consumer() {
           display: "grid",
           gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
           gap: 16,
-          color: "var(--primary)",
+          color: "var(--pui-primary)",
         }}
       >
         {/* The icon family ships on its own entry, so a consumer that names one
             icon bundles that component and no other artwork. */}
-        <div style={{ display: "flex", gap: 8, color: "var(--primary)" }}>
+        <div style={{ display: "flex", gap: 8, color: "var(--pui-primary)" }}>
           <Feedback aria-hidden width={24} height={24} />
           <EntryFeedback aria-hidden width={24} height={24} />
         </div>
@@ -1196,7 +1196,7 @@ function Consumer() {
             key={`${name}-${variant ?? "default"}`}
             style={
               name === "IO logo" && variant === "light"
-                ? { background: "var(--navy)", padding: 8, forcedColorAdjust: "none" }
+                ? { background: "var(--pui-navy)", padding: 8, forcedColorAdjust: "none" }
                 : undefined
             }
           >

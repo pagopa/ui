@@ -42,7 +42,7 @@ function visibleCarets(frame: HTMLElement) {
 }
 
 export const MaskedNativeCode: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
     <form aria-label="Verifica riservata" className="pui:grid pui:max-w-sm pui:gap-4">
@@ -234,7 +234,7 @@ export const SourceErrorDescription: Story = {
 
 export const NarrowSourceCode: Story = {
   parameters: {
-    // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+    // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
     a11yContract: { reflow: false },
     design: { type: "figma", url: figmaEmbedUrl("198:828") },
   },
@@ -272,7 +272,7 @@ export const NarrowSourceCode: Story = {
 
 export const MaskedNativePaste: Story = {
   parameters: {
-    // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+    // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
     a11yContract: { reflow: false },
     design: { type: "figma", url: figmaEmbedUrl("198:828") },
   },
@@ -312,7 +312,7 @@ export const MaskedNativePaste: Story = {
 
 export const SlotLabelsAndFramePress: Story = {
   parameters: {
-    // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+    // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
     a11yContract: { reflow: false },
     design: { type: "figma", url: figmaEmbedUrl("198:828") },
   },

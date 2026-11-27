@@ -7,8 +7,11 @@ Figma variable behind it, so a rename upstream never moves it.
 
 Three entries:
 
-- `@pagopa/ui/styles.css` and `@pagopa/ui/tokens.css` declare the `--pui-*`
-  custom properties on `:root`.
+- `@pagopa/ui/tokens.css` declares the `--pui-*` custom properties on `:root`,
+  for a page that reads the values beside the library rather than inside it.
+- `@pagopa/ui/styles.css` declares the same properties on the provider root, the
+  element that carries `.pagopa-ui-root`. A page that renders components loads
+  this one; the override section below says where a replacement value lands.
 - `@pagopa/ui/tokens` exports the same values as typed data: `semanticTokens`,
   the `SemanticToken` and `SemanticTokenType` types, and the `figmaTokens`,
   `figmaTokenSource`, `FigmaToken` and `FigmaTokenType` inventory of the layer
@@ -103,10 +106,13 @@ body portal. Server-rendered component markup remains in the provider root. The
 root is a singleton per document: every provider and React root on the page
 shares it, and it is not shadow-DOM or iframe aware.
 
-The public `--pui-*` token variables remain on `:root` so host pages can read
-them without entering a component tree. The component stylesheet no longer
-resets the host body, headings or utilities. Applications that relied on those
-global resets must add their own page styles instead.
+The public `--pui-*` token variables sit on `:root` in `@pagopa/ui/tokens.css`,
+so a host page reads them without entering a component tree. The provider root
+declares them again and wins inside it, so the loader matters: `tokens.css` is
+the contract a page reads, `styles.css` is the contract the components resolve.
+The component stylesheet no longer resets the host body, headings or utilities.
+Applications that relied on those global resets must add their own page styles
+instead.
 
 ## With CSS
 
@@ -158,10 +164,31 @@ values.
 ## The contract is the override surface
 
 The `--pui-*` properties are the published, host-overridable surface: every colour,
-spacing, radius and type value a component renders reads one, so setting it on a root
-above the components restyles them with no `!important` and no internal selector. A
-renamed or removed token is a breaking change and reaches the package changelog with
-a `minor` version plan.
+spacing, radius and type value a component renders reads one. A renamed or
+removed token is a breaking change and reaches the package changelog with a
+`minor` version plan.
+
+Where the value is declared decides where a replacement lands. `styles.css`
+declares the properties on the provider root, the element that carries
+`.pagopa-ui-root`, and a declaration on an element wins over an inherited one —
+so a property set on `html`, `body` or any ancestor **above** `UIProvider` never
+reaches the components. Override on the provider root itself, or on any element
+inside it:
+
+```css
+.theme-brand {
+  --pui-primary: #0b3ee3;
+  --pui-radius: 8px;
+}
+```
+
+```tsx
+<UIProvider>
+  <div className="theme-brand">
+    <Button>Continua</Button>
+  </div>
+</UIProvider>
+```
 
 The `--figma-*` custom properties are the internal build-time layer the `--pui-*`
 values are generated from. The build resolves each one to the literal it names, so

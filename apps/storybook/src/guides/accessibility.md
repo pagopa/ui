@@ -23,10 +23,11 @@ ones that fix source colours on purpose.
 
 Conditions a story cannot satisfy yet are declared on the story itself, with the
 reason beside the flag:
-`a11yContract: { reflow: false }` for source-width fixtures and surfaces pending a
-design request, which carry one request each in
-[the reflow request](../../../../docs/design-requests/2026-10-16-a11y-reflow-conditions.md).
-The exemption is temporary: it goes when its request lands.
+`a11yContract: { reflow: false }` for source-width fixtures and surfaces whose
+reflow fix has not landed. The remaining flags are debt, listed in
+[the reflow exemption record](../../../../docs/design-requests/2026-11-26-reflow-exemption-debt.md)
+next to the answered request that first recorded them. The exemption is
+temporary: it goes when its family is fixed and its entry deleted.
 
 ## Criteria by component type
 

@@ -63,7 +63,7 @@ export const Multiple: Story = {
 }
 
 export const Processing: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: { loading: true, onCancel: fn() },
   play: async ({ canvasElement, args }) => {
@@ -75,7 +75,7 @@ export const Processing: Story = {
 }
 
 export const Failed: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: {
     failed: true,

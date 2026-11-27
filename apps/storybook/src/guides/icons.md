@@ -28,27 +28,36 @@ actual artwork. The white default artwork needs a dark, contrasting surface;
 `variant="filled"` or `variant="outlined"`: the `filled` boolean is deprecated.
 
 Every published identity is also one component per pinned variant on its own
-entry, so a named import carries no other icon artwork:
+entry, so an import from that entry carries no other icon artwork. `@pagopa/ui/icons`
+itself exports the resolver, the pictogram resolver and the name unions — not the
+glyphs:
 
 ```tsx
-import { Info } from "@pagopa/ui/icons" // the source default
-import { Info as InfoVariant } from "@pagopa/ui/icons/info" // keyed by source node id
+import Info from "@pagopa/ui/icons/info" // the `outlined` source variant
+import { Filled as InfoFilled } from "@pagopa/ui/icons/info" // the same identity, filled
+import { variants as infoVariants } from "@pagopa/ui/icons/info" // keyed by source node id
 ```
 
 `PagoPAIcon` renders an `svg`, so `[&_svg]:size-*` selectors match it; the numeric
 `size` prop sets both dimensions. Use `decorative` (the default) or `label`
 instead of `aria-hidden`. A name outside the published catalogue renders nothing,
-with a development warning, so a runtime string cannot fail the surface that
-hosts it; an unsupported `variant` of a published name still throws.
+so a runtime string cannot fail the surface that hosts it; an unsupported
+`variant` of a published name still throws. Both the missing-name and the
+missing-label diagnostics speak in development only: the library build folds
+their guard away, so the published package renders nothing for an unknown name
+without a warning.
 
 ## Adding and replacing icons
 
 Only source glyphs join the catalogue. A missing icon is requested from design,
 because the Figma library is read-only from this repository, and it follows the same
 Material Symbols settings as the rest of the catalogue; never invent a source
-mapping. No module of the library imports an icon from a third-party package: a
-component that needs a glyph renders `PagoPAIcon`, or a generated variant component
-when it has to hand the geometry to another primitive.
+mapping. No module of the library imports an icon from a third-party package:
+a shipped component imports the generated glyph module it renders — or the
+pinned variant component, when it has to hand the geometry to another primitive
+— so its bundle carries those glyphs and nothing else. `PagoPAIcon` is the
+resolver for a surface that enumerates the catalogue by name, such as the
+Storybook gallery; a shipped component never reaches for it.
 
 Four identities have no pinned counterpart and use the closest source glyph instead:
 `Camera` is `photo` (the `CameraView` placeholder), `Building2` is

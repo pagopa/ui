@@ -48,14 +48,20 @@ consumes the role (`bg-error-soft`, `text-error-foreground`), never a step
 number and never a `--figma-*` name: that layer is internal and deprecated
 ([ADR-0013](./decisions/0013-semantic-token-contract.md)).
 
-**Derivation when a step is missing.** When the family has no published pointer
-or pressed step, derive it with `color-mix` inside the same hue family and
-record it as a local extension with its source, as `--destructive-hover` and
-`--primary-active` already do:
+**Derivation when a step is missing.** When the family publishes no pointer or
+pressed step, derive one inside the same hue family and record it as a local
+extension: the shipped value is opaque and names its two endpoints in a comment.
+`color-mix` is how the value is computed, never what is published — a token that
+`tokens.css` hands to a host page is a resolved colour, so the stylesheet reads
+the same wherever it is loaded and the value survives into the DTCG file:
 
 ```css
 --primary-active: #072582; /* local extension: pressed step between Blue 600 and Blue 850 */
+--destructive-hover: #aa2828; /* local extension: pointer step between Error 600 and Error 850 */
 ```
+
+Both current extensions are of this kind, and both are debt: when the palette
+publishes the step, the literal gives way to the published pointer.
 
 **Contrast.** Every role is verified for WCAG 2.2 AA by the accessibility
 contract: 4.5:1 for body text, 3:1 for large text, icons and UI boundaries. A
@@ -184,8 +190,11 @@ or by content, not by a pixel height that clips when the text grows.
 ### 4.5 The exemption is debt, not a default
 
 A story that cannot yet satisfy 4.3 or 4.4 carries
-`parameters: { a11yContract: { reflow: false } }` and is listed in
-[2026-10-16-a11y-reflow-conditions.md](./design-requests/2026-10-16-a11y-reflow-conditions.md).
+`parameters: { a11yContract: { reflow: false } }` and the flags that remain are
+listed as debt in
+[2026-11-26-reflow-exemption-debt.md](./design-requests/2026-11-26-reflow-exemption-debt.md),
+beside the answered request that first recorded them
+([2026-10-16-a11y-reflow-conditions.md](./design-requests/2026-10-16-a11y-reflow-conditions.md)).
 The exemption is not a ratified exception: it is a debt that this policy
 answers, so the flag is removed and the record updated as each family is fixed.
 No new `reflow: false` is added without a request that the design owner answers.

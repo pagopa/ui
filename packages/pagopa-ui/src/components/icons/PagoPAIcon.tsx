@@ -15,6 +15,11 @@ const componentsByName = new Map(Object.entries(iconVariantsByName))
  * so a bundle carries its glyphs and nothing else. The registry this resolver
  * needs is therefore paid for only by a surface that enumerates the catalogue
  * by name, such as the Storybook gallery.
+ *
+ * Its two diagnostics — a `decorative={false}` call with no `label`, and a
+ * `name` outside the published catalogue — speak in development only. The
+ * library build folds their guard away, so the published package resolves a
+ * runtime name that misses the catalogue silently, by rendering nothing.
  */
 interface PagoPAIconProps<Name extends FigmaIconName = FigmaIconName> {
   /** ClassName merged onto the rendered icon. */
@@ -34,7 +39,11 @@ interface PagoPAIconProps<Name extends FigmaIconName = FigmaIconName> {
   label?: string
   /** Source icon name. */
   name: Name
-  /** Rendered width and height in px. @default 24 */
+  /**
+   * Edge of the square the glyph paints in. It is fixed, not type-relative, so
+   * a grown root font never pushes the artwork past the control that hosts it
+   * (WCAG reflow). @default 24
+   */
   size?: number
   /** Source variant; only the variants published for this identity are allowed. */
   variant?: IconVariantsByName[Name]

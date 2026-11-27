@@ -104,7 +104,7 @@ export const SourceProduct: Story = {
 }
 
 export const LogoAndChip: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   tags: ["color-pinned"],
   render: () => (
@@ -173,7 +173,7 @@ function ProductWithLinks() {
 }
 
 export const NativeProductLinks: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => <ProductWithLinks />,
   play: async ({ canvasElement }) => {
@@ -353,7 +353,7 @@ export const NarrowContent: Story = {
 }
 
 export const OptionalSlotsAndCatalogueContent: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
     <div className="pui:grid pui:w-68 pui:gap-4">
@@ -550,7 +550,7 @@ export const SourceCatalogueCard: Story = {
 // actions without feedback, and feedback without actions, without inventing a
 // source frame that does not exist.
 export const CatalogueCardSlots: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
     <div className="pui:flex pui:w-90 pui:flex-col pui:gap-4">

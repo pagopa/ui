@@ -16,7 +16,11 @@ type IconProps = Omit<SVGProps<SVGSVGElement>, "children" | "height" | "width"> 
   decorative?: boolean
   /** Accessible name used when `decorative` is false. */
   label?: string
-  /** Rendered width and height in px. @default 24 */
+  /**
+   * Edge of the square the glyph paints in. It is fixed, not type-relative, so
+   * a grown root font never pushes the artwork past the control that hosts it
+   * (WCAG reflow). @default 24
+   */
   size?: number
   /**
    * The pinned glyph to render, imported from `generated/`: a component
@@ -36,6 +40,7 @@ function Icon({
   label,
   size = 24,
   source: Source,
+  style,
   ...props
 }: IconProps) {
   if (!decorative && !label && import.meta.env.DEV) {
@@ -53,7 +58,7 @@ function Icon({
       height={size}
       // The glyph box is artwork, not text: a 200% root font must not grow it
       // past the control that hosts it, so the size lands in px (WCAG reflow).
-      style={{ width: size, height: size }}
+      style={{ ...style, width: size, height: size }}
     />
   )
 }

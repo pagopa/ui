@@ -73,7 +73,7 @@ test("a demo custom property declared by the preview sheet cannot reach the publ
 test("component geometry the preview sheet never declares is not demo", () => {
   const published = `.pagopa-ui-root {
   --dialog-width: 600px;
-  --camera-size: 376px;
+  --pui-camera-size: 376px;
 }`
   assert.deepEqual(demoGeometryProblems(published, DEMO_PREVIEW), [])
 })
