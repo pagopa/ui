@@ -10,7 +10,7 @@
   },
   "scripts": {
     "storybook": "node scripts/storybook-dev.mjs",
-    "build": "storybook build -o dist",
+    "build": "storybook build -o dist --stats-json",
     "chromatic": "chromatic",
     "test:stories": "vitest --run",
     "test:webkit": "vitest --run --mode webkit --project storybook",

@@ -193,7 +193,11 @@ one that turns the dashboard into a gate.
 - TurboSnap needs ten builds from CI before it traces anything, which the first
   live run reported alongside the failures. Until then `--only-changed` is
   inert: every pull request captures the whole catalogue, ten full builds before
-  the flag starts saving the captures it was chosen for.
+  the flag starts saving the captures it was chosen for. Tracing also needs a
+  stats file: the Vite builder writes `preview-stats.json` only under
+  `--stats-json`, which the build script passes, because the first build to
+  attempt tracing after the tenth failed at "Prepare your built Storybook"
+  (`run 46028216052`) instead of comparing.
 - **The run is experimental, and it is read that way.** Everything above is why: a
   build can be green having compared nothing, one can be red for a play
   `test:stories` passes, and before the tenth CI build `--only-changed` saves no

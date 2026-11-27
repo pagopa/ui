@@ -586,13 +586,16 @@ CHROMATIC_PROJECT_TOKEN=… pnpm nx run pagopa-ui-storybook:chromatic -- --only-
 
 What a run compares follows the event. An ordinary pull request passes
 `--only-changed`, and Chromatic's TurboSnap traces the changed files through the
-built Storybook index to the stories they reach — the scope walk this repository
-used to own. The nightly at 04:00 UTC, a manual dispatch and the **Version
-Packages** pull request compare every story, because those are the passes where a
-story nothing else proved has to surface and the publish is the last moment to
-notice. The first run of a project captures everything and becomes the baseline
-the next one traces against; TurboSnap itself needs ten builds from CI before it
-traces anything, so `--only-changed` captures the whole catalogue until then.
+module graph the build writes to `preview-stats.json` to the stories they reach —
+the scope walk this repository used to own. The build passes `--stats-json` for
+that reason: the Vite builder emits the stats only when asked, and a prebuilt
+Storybook without them fails the run instead of tracing. The nightly at 04:00
+UTC, a manual dispatch and the **Version Packages** pull request compare every
+story, because those are the passes where a story nothing else proved has to
+surface and the publish is the last moment to notice. The first run of a project
+captures everything and becomes the baseline the next one traces against;
+TurboSnap itself needs ten builds from CI before it traces anything, so
+`--only-changed` captures the whole catalogue until then.
 
 The comparison reports, it does not gate: `exitZeroOnChanges` in
 `apps/storybook/chromatic.config.json` keeps a non-empty diff green and the

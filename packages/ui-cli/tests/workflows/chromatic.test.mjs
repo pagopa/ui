@@ -103,6 +103,12 @@ test("the scope follows the event: an ordinary pull request asks for TurboSnap",
   assert.match(ui.run, /flags\[@\]/)
   // The build precedes the upload: Chromatic uploads, it does not build.
   assert.ok(names.indexOf("Build the Storybook") < names.indexOf("Chromatic"))
+  // TurboSnap traces through the stats file the Vite builder writes only when
+  // asked: without `--stats-json` a build past the tenth fails at "Prepare your
+  // built Storybook" instead of comparing (run 46028216052).
+  const build = JSON.parse(read("apps/storybook/package.json")).scripts.build
+  assert.match(build, /^storybook build\b/)
+  assert.match(build, /--stats-json\b/, "the build emits no stats for TurboSnap")
 })
 
 test("the comparison reports, it does not gate", () => {

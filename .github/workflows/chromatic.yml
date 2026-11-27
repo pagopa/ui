@@ -11,15 +11,18 @@
 #
 # What a run compares follows the event. An ordinary pull request asks for
 # TurboSnap (`--only-changed`): Chromatic traces the changed files through the
-# built Storybook index to the stories they reach, which is the scope walk this
-# repository used to own. The nightly, a manual dispatch and the "Version
-# Packages" pull request compare every story, because those are the passes where
-# a story nothing else proved has to surface and the publish is the last moment
-# to notice. `fetch-depth: 0` is TurboSnap's: it reads the git history to compute
-# the changed files, and the first run of a project captures everything and
-# becomes the baseline the next one traces against. TurboSnap itself needs ten
-# builds from CI before it traces anything, so `--only-changed` captures the
-# whole catalogue until then.
+# module graph the build writes to `preview-stats.json` to the stories they
+# reach, which is the scope walk this repository used to own. That is why the
+# `build` script passes `--stats-json`: the Vite builder emits webpack-compatible
+# stats only when asked, and a prebuilt Storybook without them fails the run at
+# "Prepare your built Storybook" instead of tracing. The nightly, a manual
+# dispatch and the "Version Packages" pull request compare every story, because
+# those are the passes where a story nothing else proved has to surface and the
+# publish is the last moment to notice. `fetch-depth: 0` is TurboSnap's: it reads
+# the git history to compute the changed files, and the first run of a project
+# captures everything and becomes the baseline the next one traces against.
+# TurboSnap itself needs ten builds from CI before it traces anything, so
+# `--only-changed` captures the whole catalogue until then.
 #
 # Chromatic bills per capture. A plan that no longer covers a full catalogue
 # limits the build rather than failing it: the Storybook publishes, no test runs
