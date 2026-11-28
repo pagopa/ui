@@ -127,8 +127,10 @@ function sourceIconPaints(read: (file: string) => string, root: string): number 
     for (const match of read(file).matchAll(
       /data-figma-node-id="([^"]+)"[^>]*>([\s\S]*?)<\/svg>/g,
     )) {
-      const prefix = match[1].toLowerCase().replace(/[^a-z0-9]+/g, "-")
-      paints.add(match[2].replaceAll(`${prefix}-`, ""))
+      // The id scope is bound per render, so the compiled text carries a
+      // concatenation instead of a literal id: the comparison drops the scope
+      // and keeps the geometry, which is what "draws the same thing" means.
+      paints.add(match[2].replaceAll(/uid \+ "[^"]*"/g, '"ID"'))
     }
   }
   return paints.size

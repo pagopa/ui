@@ -3,6 +3,8 @@ import { describe, expect, it, vi } from "vitest"
 
 import type { FigmaIconName } from "pagopa-ui-artwork"
 
+import * as add from "./generated/add"
+import * as mailError from "./generated/mail-error"
 import { Icon } from "./icon"
 import { PagoPAIcon } from "./PagoPAIcon"
 
@@ -81,5 +83,35 @@ describe("PagoPAIcon unknown input", () => {
         <PagoPAIcon name="check" variant="missing" />,
       ),
     ).toThrow(/has no source asset for variant "missing"/)
+  })
+})
+
+describe("Generated artwork", () => {
+  it("keeps a glyph's definition ids inside its own instance", () => {
+    const html = markup(
+      <>
+        <mailError.Default />
+        <mailError.Default />
+      </>,
+    )
+    const ids = [...html.matchAll(/ id="([^"]+)"/g)].map(([, id]) => id)
+    // `mail_error` is the one glyph whose artwork keeps a clip path, so it is
+    // the only one that can collide at all.
+    expect(ids).toHaveLength(2)
+    expect(new Set(ids).size).toBe(2)
+    const references = [...html.matchAll(/clip-path="url\(#([^)]+)\)"/g)].map(([, id]) => id)
+    // Each instance points at its own definition, in order.
+    expect(references).toEqual(ids)
+  })
+
+  it("ships no mask, and no identity wrapper around the paint", () => {
+    for (const Variant of Object.values(add.variants)) {
+      const html = markup(<Variant />)
+      expect(html).not.toContain("<mask")
+      expect(html).not.toContain("matrix(1 0 0 1 0 0)")
+      // No definition at all, so nothing to namespace (`data-figma-node-id` is
+      // attributed, not a DOM id).
+      expect(html).not.toMatch(/ id="/)
+    }
   })
 })

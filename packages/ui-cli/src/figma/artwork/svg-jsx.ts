@@ -2,12 +2,13 @@
 // the JSX body of an inline component, so the published icon paints with
 // `currentColor` and ships no asset request at all.
 
+import { stripRedundantArtwork } from "./svg-strip.ts"
+
 const ELEMENT = /<(\/?)([A-Za-z][\w:-]*)((?:\s+[A-Za-z_][\w.:-]*="[^"]*")*)\s*(\/?)>/g
-// Source ids are local to one document; inlined artwork shares a page with every
-// other icon, so each one carries the prefix of the identity it belongs to.
-const REFERENCE = /url\(#([^)]+)\)/g
 const ATTRIBUTE = /([A-Za-z_][\w.:-]*)="([^"]*)"/g
-// Source paints outside `<defs>`: the mask paths keep their alpha colours.
+const REFERENCE = /url\(#([^)]+)\)/g
+const DECLARATION = /\bid="[^"]*"/
+// Source paints outside `<defs>`: the definitions keep their alpha colours.
 const PAINT = /fill="#[0-9a-fA-F]{3,8}"/g
 
 function camelCase(name: string): string {
@@ -27,7 +28,29 @@ function styleObject(declarations: string): string {
   return entries.join(", ")
 }
 
-function jsxAttributes(raw: string, prefix: string): string {
+// A source id is local to one document; the published glyph shares a page with
+// every other icon, so the reference is compiled against the namespace the
+// caller derives per render instead of a constant of the source node.
+function compile(name: string, value: string, namespace: string): string {
+  if (name === "id") return `${namespace} + ${JSON.stringify(value)}`
+  const parts: string[] = []
+  let cursor = 0
+  for (const match of value.matchAll(REFERENCE)) {
+    const id = match[1] ?? ""
+    const hash = match[0].indexOf("#") + 1
+    const before = value.slice(cursor, match.index) + match[0].slice(0, hash)
+    if (before) parts.push(JSON.stringify(before))
+    // The closing parenthesis and anything after it belong to the same literal
+    // as the id, so `url(#a) none` stays one concatenation.
+    parts.push(namespace, JSON.stringify(id + match[0].slice(hash + id.length)))
+    cursor = match.index + match[0].length
+  }
+  const rest = value.slice(cursor)
+  if (rest) parts.push(JSON.stringify(rest))
+  return parts.join(" + ")
+}
+
+function jsxAttributes(raw: string, namespace: string | undefined): string {
   const attributes: string[] = []
   for (const [, name, value] of raw.matchAll(ATTRIBUTE)) {
     if (!name || value === undefined) continue
@@ -35,19 +58,20 @@ function jsxAttributes(raw: string, prefix: string): string {
       attributes.push(`style={{ ${styleObject(value)} }}`)
       continue
     }
-    if (name === "id") {
-      attributes.push(`id="${prefix}${value}"`)
+    const named = name === "id" || value.includes("url(#")
+    if (named && namespace) {
+      attributes.push(`${camelCase(name)}={${compile(name, value, namespace)}}`)
       continue
     }
-    attributes.push(`${camelCase(name)}="${value.replace(REFERENCE, `url(#${prefix}$1)`)}"`)
+    attributes.push(`${camelCase(name)}="${value}"`)
   }
   return attributes.join(" ")
 }
 
-function jsxElements(markup: string, prefix: string): string {
+function jsxElements(markup: string, namespace: string | undefined): string {
   return markup.replace(ELEMENT, (whole, closing, tag, raw, selfClosing) => {
     if (closing) return whole
-    const attributes = jsxAttributes(raw ?? "", prefix)
+    const attributes = jsxAttributes(raw ?? "", namespace)
     return `<${tag}${attributes ? ` ${attributes}` : ""}${selfClosing ? " /" : ""}>`
   })
 }
@@ -55,25 +79,37 @@ function jsxElements(markup: string, prefix: string): string {
 export type SvgJsxOptions = {
   /** Paint the symbol with `currentColor` instead of the source colours. */
   monochrome: boolean
-  /** Namespace for the ids the artwork declares and references. */
-  idPrefix: string
+  /**
+   * JavaScript identifier holding a per-instance id namespace, e.g. the result
+   * of `useId()`. Required by artwork that keeps an id.
+   */
+  namespace?: string
   /** Attributes appended after the root ones, spread included by the caller. */
   suffix?: string
 }
 
-export function svgToJsx(source: string, options: SvgJsxOptions): string {
-  const text = source.trim()
+export type SvgJsx = {
+  markup: string
+  /** True when the artwork keeps an id, so the caller must supply a namespace. */
+  declaresIds: boolean
+}
+
+export function svgToJsx(source: string, options: SvgJsxOptions): SvgJsx {
+  // The source scene graph carries nodes that paint nothing; dropping them here
+  // keeps the published glyph, its id namespace and its byte cost honest.
+  const text = stripRedundantArtwork(source)
   const open = /^<svg\b([^>]*)>/.exec(text)
   const close = text.lastIndexOf("</svg>")
   if (!open || close < 0) throw new Error("Expected one standalone <svg> document")
-  // The root paint is decided here, not by the source document.
-  const root = jsxAttributes(open[1] ?? "", options.idPrefix).replace(/(?:^|\s)fill="[^"]*"/, "")
   const body = text.slice(open[0].length, close)
-  // The mask definitions keep their source paint; everything that paints the
-  // symbol itself becomes the inherited text colour.
-  // No `<defs>` means the whole body paints the symbol: the boundary falls at
-  // its start, so every paint in it is repainted. `lastIndexOf` misses at `-1`,
-  // never at `-1 + 7`.
+  const declaresIds = DECLARATION.test(body) || body.includes("url(#")
+  if (declaresIds && !options.namespace)
+    throw new Error("Artwork keeps an id: pass the identifier of its namespace")
+  // The root paint is decided here, not by the source document.
+  const root = jsxAttributes(open[1] ?? "", options.namespace).replace(/(?:^|\s)fill="[^"]*"/, "")
+  // The definitions keep their source paint; everything that paints the symbol
+  // itself becomes the inherited text colour. With no `<defs>` the whole body
+  // paints the symbol, so the boundary falls at its start.
   const closing = body.lastIndexOf("</defs>")
   const defs = closing < 0 ? 0 : closing + "</defs>".length
   const paint = options.monochrome
@@ -81,5 +117,8 @@ export function svgToJsx(source: string, options: SvgJsxOptions): string {
     : body
   const fill = options.monochrome ? ' fill="currentColor"' : ""
   const suffix = options.suffix ? ` ${options.suffix}` : ""
-  return `<svg${root ? ` ${root}` : ""}${fill}${suffix}>${jsxElements(paint, options.idPrefix)}</svg>`
+  return {
+    declaresIds,
+    markup: `<svg${root ? ` ${root}` : ""}${fill}${suffix}>${jsxElements(paint, options.namespace)}</svg>`,
+  }
 }

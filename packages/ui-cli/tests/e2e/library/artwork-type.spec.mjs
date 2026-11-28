@@ -65,7 +65,6 @@ test("artwork and type: the packed pictograms, fonts and icon variants load", as
   for (const icon of localIcons) {
     const asset = await icon.evaluate((element) => {
       const nodeId = element.getAttribute("data-figma-node-id") ?? ""
-      const prefix = nodeId.toLowerCase().replace(/[^a-z0-9]+/g, "-")
       const bounds = element.getBoundingClientRect()
       return {
         id: nodeId,
@@ -74,8 +73,10 @@ test("artwork and type: the packed pictograms, fonts and icon variants load", as
         maskImage: getComputedStyle(element).maskImage,
         drawings: element.childElementCount,
         images: element.querySelectorAll("img").length,
-        // The per-icon id namespace keeps masks unique; drop it to compare geometry.
-        paint: element.innerHTML.replaceAll(`${prefix}-`, ""),
+        // The per-icon id scope keeps definitions unique; drop it, not the paint.
+        paint: element.innerHTML
+          .replaceAll(/id="[^"]*"/g, 'id=""')
+          .replaceAll(/url\(#[^)]*\)/g, "url(#)"),
         width: bounds.width,
         height: bounds.height,
       }
