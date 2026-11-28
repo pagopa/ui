@@ -1,0 +1,53 @@
+schema_version = "1.4"
+artifacts = [
+    { source = "/workspace", exclude = [
+        ".git",
+        "node_modules",
+        "vendor",
+        ".nx",
+        ".mise",
+        ".pnpm-store",
+        "dist",
+        "coverage",
+    ] },
+    "/logs/agent/copilot-cli.jsonl",
+    "/logs/agent/trajectory.json",
+]
+
+[verifier]
+timeout_sec = 600.0
+collect = []
+environment_mode = "separate"
+
+[verifier.env]
+OPENAI_API_BASE = "https://api.githubcopilot.com"
+OPENAI_API_KEY = "${COPILOT_GITHUB_TOKEN}"
+LITELLM_DROP_PARAMS = "true"
+LITELLM_ROUTE_ALL_CHAT_OPENAI_TO_RESPONSES = "true"
+
+[agent]
+timeout_sec = 900.0
+
+[environment]
+network_mode = "public"
+build_timeout_sec = 900.0
+os = "linux"
+mcp_servers = []
+
+[environment.env]
+
+[solution.env]
+
+[task]
+name = "pagopa/figma-to-code-6-record-prop-map-round-trip"
+description = "Records the `* Required` → `required` property map through `record --props` against the committed inventory, reads it back the way a consumer does, and reports the preflight refusal of a property the source does not declare — with no live Figma read and no hand-edited catalogue."
+version = "1.0.0"
+
+[metadata]
+difficulty = "medium"
+category = "skill-eval"
+tags = [
+    "figma-to-code",
+    "skill-eval",
+]
+estimated_duration_sec = 900

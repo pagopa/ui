@@ -1,0 +1,193 @@
+name: Skill evals
+
+# The graded sessions behind the two Figma skills: `figma-to-code` and
+# `figma-to-ui` carry `evals/evals.json`, and harbor-bench compiles each eval
+# into a task whose image is a real checkout of this repository. What they catch
+# that no unit test can is the skill's own instructions: the prompt, the
+# sequence, the stop conditions. CONTRIBUTING.md ("Skill evals") holds the
+# recipe and the shape of a run.
+#
+# The two halves are split because only one of them can run on a pull request:
+#
+#   * compile runs everywhere and needs no credential. It converts both suites,
+#     which fails on an eval the schema rejects and generates a default task for
+#     an eval whose overlay went missing; the second step then diffs every
+#     compiled `task.toml` against the overlay that is supposed to describe it,
+#     because a renamed eval compiles to a task that silently loses its artifact
+#     excludes or the `FIGMA_TOKEN` entry its prompt needs. Cheap, and it is the
+#     drift that actually happens.
+#   * grade starts agent sessions. It needs `COPILOT_GITHUB_TOKEN` (agent and
+#     judge) and `FIGMA_TOKEN` (three live evals), so it is dispatch or weekly
+#     only: a fork pull request cannot see the secrets, and a graded run that
+#     silently degrades to a token-free subset would read as a pass. The
+#     preflight fails the run by name instead, which is the same stop the
+#     verifier takes on a missing judge credential.
+#
+# The evals are not in the fast chain (AGENTS.md): they spend minutes of model
+# time and network per round, and their verdict is a reward file, not an exit
+# code a developer waits on. A change to a skill is graded on dispatch or on the
+# next weekly run, whichever comes first.
+#
+# Tokens are handed to the run through the environment and the `--ae` passthrough
+# of the documented recipe: `FIGMA_TOKEN` stays out of `--ae` so each live task
+# forwards it to itself alone and the guardrail boolean keeps grading the absence
+# of a token. Every action is pinned to a full commit SHA.
+on:
+  pull_request:
+    paths:
+      - ".agents/skills/**"
+      - "packages/pagopa-ui/skills/**"
+      - "packages/ui-cli/**"
+      - ".github/workflows/skill-evals.yml"
+  schedule:
+    # Sunday 04:00 UTC, ahead of the Monday drift run: a skill regression is
+    # cheaper to read than a drift pull request that was graded by a broken skill.
+    - cron: "0 4 * * 0"
+  workflow_dispatch:
+    inputs:
+      skill:
+        description: Which suite to grade
+        type: choice
+        default: both
+        options:
+          - both
+          - figma-to-code
+          - figma-to-ui
+      model:
+        description: The Copilot model the agent and the judge run
+        type: string
+        default: gpt-6-luna
+
+concurrency:
+  group: skill-evals-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  compile:
+    name: Compile the suites
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+
+      - uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
+
+      # Same source and pinning as the documented recipe: harbor-bench comes from
+      # `pagopa/dx`, and the `harbor` it depends on is reached through the tool
+      # directory because `uv tool install` links only its own executable.
+      - name: Install harbor-bench
+        shell: bash
+        run: uv tool install "git+https://github.com/pagopa/dx@main#subdirectory=apps/harbor-bench"
+
+      - name: Compile both suites
+        shell: bash
+        env:
+          MODEL: ${{ inputs.model || 'gpt-6-luna' }}
+        run: |
+          harbor-bench convert --model "$MODEL" \
+            --evals .agents/skills/figma-to-code/evals/evals.json --out .harbor/code
+          harbor-bench convert --model "$MODEL" \
+            --evals packages/pagopa-ui/skills/figma-to-ui/evals/evals.json --out .harbor/ui
+
+      # A generated task must be the overlay, byte for byte: when an eval is
+      # renamed in `evals.json` the overlay directory keeps the old name, convert
+      # falls back to the defaults, and the run grades something the overlay was
+      # never written for.
+      - name: Check every compiled task is its overlay
+        shell: bash
+        run: |
+          status=0
+          for pair in "code:.agents/skills/figma-to-code" "ui:packages/pagopa-ui/skills/figma-to-ui"; do
+            out=".harbor/${pair%%:*}"
+            skill="${pair#*:}"
+            for overlay in "$skill"/harbor/*/task.toml; do
+              task="$(basename "$(dirname "$overlay")")"
+              if ! diff -q "$overlay" "$out/tasks/$task/task.toml"; then
+                echo "::error::$task compiles to a task.toml the overlay does not describe: rename harbor/$task or the eval it belongs to."
+                status=1
+              fi
+            done
+          done
+          exit "$status"
+
+  grade:
+    name: Grade ${{ matrix.skill }}
+    needs: compile
+    # A pull request cannot run this: the secrets do not exist for a fork, and a
+    # token-free subset would grade a different suite than the one that ships.
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        skill: ${{ github.event_name == 'workflow_dispatch' && inputs.skill != 'both' && fromJSON(format('["{0}"]', inputs.skill)) || fromJSON('["figma-to-code","figma-to-ui"]') }}
+    env:
+      SKILL: ${{ matrix.skill }}
+      MODEL: ${{ inputs.model || 'gpt-6-luna' }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+
+      - uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
+
+      - name: Install harbor-bench
+        shell: bash
+        run: uv tool install "git+https://github.com/pagopa/dx@main#subdirectory=apps/harbor-bench"
+
+      # Named, not silent: the run is skipped by a credential, and the message is
+      # the fix. `FIGMA_TOKEN` is read-only (`file_content:read`,
+      # `library_content:read`) and lives in the `app-dev-ci` environment
+      # (docs/figma-drift-secrets.md).
+      - name: Preflight the credentials
+        shell: bash
+        env:
+          COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_GITHUB_TOKEN }}
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+        run: |
+          if [ -z "$COPILOT_GITHUB_TOKEN" ]; then
+            echo "::error::COPILOT_GITHUB_TOKEN is missing: the eval agent and its judge both need it. Add the secret and re-run."
+            exit 1
+          fi
+          if [ -z "$FIGMA_TOKEN" ]; then
+            echo "::error::FIGMA_TOKEN is missing: three figma-to-code evals read the live file. Add the read-only secret and re-run."
+            exit 1
+          fi
+
+      - name: Compile the suite
+        shell: bash
+        run: |
+          evals=".agents/skills/figma-to-code/evals/evals.json"
+          [ "$SKILL" = "figma-to-ui" ] && evals="packages/pagopa-ui/skills/figma-to-ui/evals/evals.json"
+          harbor-bench convert --model "$MODEL" --evals "$evals" --out ".harbor/$SKILL"
+
+      # The recipe, verbatim: `COPILOT_GITHUB_TOKEN` through `--ae` and the host
+      # environment (judge), `FIGMA_TOKEN` through the host environment only.
+      # `--force-build` keeps the image honest on a runner with no cache.
+      - name: Grade
+        shell: bash
+        env:
+          COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_GITHUB_TOKEN }}
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+        run: |
+          harbor="$(uv tool dir)/harbor-bench/bin/harbor"
+          "$harbor" run -c ".harbor/$SKILL/config.yaml" -y --force-build \
+            --ae COPILOT_GITHUB_TOKEN="$COPILOT_GITHUB_TOKEN" \
+            --jobs-dir .harbor/runs --job-name "$SKILL"
+
+      # A run whose verifier found no judge credential writes 0 and a reason;
+      # the artifacts carry both so a 0.0 is read from
+      # `verifier/reward-details.json` before the agent is blamed.
+      - name: Upload the rewards
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: rewards-${{ matrix.skill }}
+          path: |
+            .harbor/runs/**/verifier/reward.json
+            .harbor/runs/**/verifier/reward-details.json
+            .harbor/runs/**/verifier/reason.txt
+          if-no-files-found: warn
+          retention-days: 30

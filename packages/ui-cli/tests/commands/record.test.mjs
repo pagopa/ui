@@ -356,3 +356,35 @@ test("--props records an empty mapping the map still carries", async () => {
     tree.dispose()
   }
 })
+
+// `updated` and `unchanged` are read from the documents, not from the status:
+// a mapping can change while the status beside it stays `implemented`, and the
+// run that writes it must not report a no-op.
+test("a run that only changes the mapping reports updated", async () => {
+  const tree = fixtureTree(baseFiles({ variant: true }))
+  try {
+    const first = { Size: { prop: "size", values: { Small: "sm", Large: "lg" } } }
+    const run = (props) =>
+      runCli(["record", "1:1", ...TARGET, "--props", JSON.stringify(props)], {
+        root: tree.root,
+        env: ENV,
+      })
+
+    const written = await run(first)
+    assert.equal(written.status, 0, written.stdout + written.stderr)
+    assert.match(written.stdout, /^updated: 1:1 excluded → implemented/m)
+
+    const again = await run(first)
+    assert.equal(again.status, 0, again.stdout + again.stderr)
+    assert.match(again.stdout, /^unchanged: 1:1 implemented → implemented/m)
+
+    const remapped = await run({ Size: { prop: "size", values: { Small: "sm", Large: "xl" } } })
+    assert.equal(remapped.status, 0, remapped.stdout + remapped.stderr)
+    assert.match(remapped.stdout, /^updated: 1:1 implemented → implemented/m)
+    assert.match(remapped.stdout, /wrote figma-map\.json/)
+    const map = JSON.parse(read(tree, "figma-map.json"))
+    assert.equal(map.nodes["1:1"].propsMap.props.Size.values.Large, "xl")
+  } finally {
+    tree.dispose()
+  }
+})

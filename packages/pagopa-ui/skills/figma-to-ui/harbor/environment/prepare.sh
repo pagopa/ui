@@ -10,7 +10,10 @@ set -euo pipefail
 
 NODE_VERSION="${NODE_VERSION:-24.14.1}"
 PAGOPA_UI_REPO="${PAGOPA_UI_REPO:-https://github.com/pagopa/ui.git}"
-PAGOPA_UI_REF="${PAGOPA_UI_REF:-d533a8bba6274d8cdf508cc9192340a1976da30b}"
+# Defaults to the branch the skill ships with, so the vendored package and the
+# map this eval grades are the ones the checkout beside it carries; override it
+# to reproduce an older run or to try a branch before it merges.
+PAGOPA_UI_REF="${PAGOPA_UI_REF:-main}"
 
 WORKSPACE=/workspace
 VENDOR="$WORKSPACE/vendor/pagopa-ui"

@@ -304,14 +304,17 @@ Both Figma skills carry graded sessions in the `evals.json` format
 [`.agents/skills/figma-to-code/evals`](./.agents/skills/figma-to-code/evals/evals.json),
 `figma-to-ui` in
 [`packages/pagopa-ui/skills/figma-to-ui/evals`](./packages/pagopa-ui/skills/figma-to-ui/evals/evals.json).
-Six evals for `figma-to-code` — an end-to-end pass over a single node, a
+Seven evals for `figma-to-code` — an end-to-end pass over a single node, a
 guardrail that must stop and report instead of inventing a design, a delta
 triage over two or three nodes that must read the batched context once instead
 of a brief per node, a drift census reconciliation guardrail over an offline
 export, a scoped rules-refresh guardrail that keeps untouched pages intact on a
-partial snapshot, and a batched page-surface sync guardrail covering composition
-candidates and unverified missing compositions — and two for `figma-to-ui`: the end-to-end pass over a
-frame and the guardrail. They grade
+partial snapshot, a batched page-surface sync guardrail covering composition
+candidates and unverified missing compositions, and a property map round trip
+that records a declared mapping through `record --props`, reads it back the way
+a consumer does, and reports the preflight refusal of an undeclared property.
+`figma-to-ui` has three: the end-to-end pass over a frame, the guardrail, and
+the declared property map a consumer sets for a component set. They grade
 the session — what the agent read, resolved and decided — not the diff, so a
 skill change is graded without building anything; they are the regression net
 for the skills' own instructions.
@@ -348,10 +351,41 @@ guardrails and every `figma-to-ui` eval still start without one — an `--ae
 FIGMA_TOKEN=…` would hand a token to every task and disarm the guardrail it
 grades.
 
+The workspace each task grades is cut from `main` unless `PAGOPA_UI_REF` says
+otherwise, in `prepare.sh` of both skills: a pinned commit goes stale silently,
+and the skill ends up graded against a `ui-cli` that is not the one in the same
+checkout, so a renamed flag reads as a skill regression nobody can reproduce.
+`PAGOPA_UI_REF=<sha>` reproduces an older run, and tries a branch before it
+merges:
+
+```bash
+PAGOPA_UI_REF="$(git rev-parse HEAD)" harbor-bench convert \
+  --evals .agents/skills/figma-to-code/evals/evals.json --out .harbor/code
+```
+
 `harbor-bench compare <base> <head>` runs the same evals twice, base skill
 against head skill — a local directory or a git source such as
 `pagopa/ui@main` — and writes `comparison.md`. Keep `--out .harbor` and
 `--runs-dir .harbor/runs`: `.harbor` is ignored.
+
+### Skill evals in CI
+
+[`skill-evals.yml`](./.github/workflows/skill-evals.yml) splits the suite along
+the one line that matters — what a credential can buy:
+
+- **Compile** runs on every pull request that touches a skill, an `evals.json`
+  or `packages/ui-cli`, and needs no token. It converts both suites, which
+  rejects an eval the schema does not accept, and diffs every compiled
+  `task.toml` against the overlay meant to describe it: a renamed eval keeps its
+  old overlay directory, convert falls back to the defaults, and the run would
+  grade a task whose artifact excludes and `FIGMA_TOKEN` entry are wrong.
+- **Grade** starts agent sessions, so it is dispatch and weekly only. It
+  preflights `COPILOT_GITHUB_TOKEN` and `FIGMA_TOKEN` and fails by name when
+  either is missing, because a token-free subset would read as a pass for a
+  suite it never ran. A fork pull request cannot see the secrets, so it compiles
+  and stops there. Run it by hand before a release:
+  `gh workflow run skill-evals.yml -f skill=both`.
+
 
 ### What fails fast
 
@@ -371,10 +405,10 @@ A session that cannot be graded does not start, and the failure names the fix:
   holds for the skill-use gate: no proven skill load is a `0`, never a skip.
 
 The evals are not in the green chain: they start agent sessions and need the
-network, a Copilot token and, for one eval, a Figma token. Done when every eval
-the change touched reports 1.0 in its `verifier/reward.json`, and a 0.0 is read
-from `verifier/reward-details.json` before the agent is blamed — a broken judge
-scores the same.
+network, a Copilot token and, for three of them, a Figma token. Done when every
+eval the change touched reports 1.0 in its `verifier/reward.json`, and a 0.0 is
+read from `verifier/reward-details.json` before the agent is blamed — a broken
+judge scores the same.
 
 ## Workflow
 

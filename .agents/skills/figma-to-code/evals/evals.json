@@ -77,6 +77,20 @@
         "Treats missing composition `68:2288` as `~ unverified composition` (because an `--input` run cannot confirm deletion), keeps `68:2288` intact in `page-surface.json`, advises checking it in Figma instead of removing it as `! stale`, never writes to Figma, and does not run the full workspace gates."
       ],
       "files": []
+    },
+    {
+      "id": 6,
+      "name": "record-prop-map-round-trip",
+      "prompt": "The `TextField` component set `529:6111` declares a `* Required` variant, and the `TextField` prop that carries it is `required`. Record that property map through the CLI, confirm the catalogue check still passes, and read the mapping back the way a consumer does. Then try to record a property map for something the source does not declare and report exactly what the CLI does. Do not hand-edit the catalogue files, do not run the workspace gates and do not write to Figma.",
+      "expected_output": "The session records the `* Required` → `required` mapping with `pnpm ui-cli record 529:6111 --props` (reporting the CLI's own `unchanged` or `updated` outcome), confirms the catalogue check passes, reads the mapping back as `* Required → required: False=false, True=true`, and reports the CLI's preflight refusal for an undeclared property without hand-adding it to the catalogue.",
+      "expectations": [
+        "Records the mapping through `pnpm ui-cli record 529:6111 --status implemented --props '{\"* Required\": {\"prop\": \"required\", \"values\": {\"False\": false, \"True\": true}}}'` (a `--dry-run` first is fine) instead of editing `registry.json` or `figma-map.json` by hand.",
+        "Reports the CLI's own outcome line — `unchanged` when the declared map already matches, `updated` when it did not — instead of claiming a change the run did not write.",
+        "Confirms `pnpm ui-cli figma map --check` (or `pnpm ui-cli check catalogue`) still passes and reads the map back through the consumer surface, `pagopa-ui-map resolve 529:6111` (or `--json`), which shows `* Required → required: False=false, True=true`.",
+        "Reports the preflight refusal for a property the inventory does not declare — `error: 529:6111 maps \"Padding\", which the inventory does not declare as a variant`, exit code 2 — and leaves the catalogue unchanged instead of adding the key by hand.",
+        "Never writes to Figma and does not run the workspace gates."
+      ],
+      "files": []
     }
   ]
 }
