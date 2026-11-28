@@ -150,7 +150,8 @@
         "module": "src/components/overlays/dialog.tsx",
         "export": "Dialog",
         "story": "apps/storybook/src/Dialog.stories.tsx",
-        "storyExports": ["SourceCase"]
+        "storyExports": ["SourceCase"],
+        "props": {}
       },
       "note": "2026-11-20 drift: only the Status override of the embedded ProductModule radio instances changed (Active to Selected). The panel geometry, the slots and the artwork are untouched and SourceCase keeps its recorded residues; nothing on the render moved."
     },
@@ -252,7 +253,13 @@
         "story": "apps/storybook/src/Spinner.stories.tsx",
         "storyExports": ["SpinnerBrandVariants"],
         "props": {
-          "Brand": { "prop": "variant", "values": { "Contrast": "contrast", "Primary": "primary" } }
+          "Brand": {
+            "prop": "variant",
+            "values": {
+              "Contrast": "contrast",
+              "Primary": "primary"
+            }
+          }
         }
       },
       "note": "Path C reviewed pinned Brand=Primary 109:2456 and Brand=Contrast 109:2458 against SpinnerBrandVariants at 320×240/1×. Both source and render are 24×24px; the 2px annulus/20px opening and rounded terminal match, with source/render terminal bounds 2.09×3.41px at 21.91×9.59px (under 0.001px difference). Default size-6 is 24px (0px delta); text-primary (#0B3EE3) and text-contrast (white) match source. size-5/size-12 remain 20px/48px API extensions. The 2px mask is source ring geometry, not a spacing/radius compensation. Contrast artwork is white on transparency and needs a caller-owned primary surface outside source bounds. A labeled Spinner exposes one status; unlabeled siblings stay decorative and the caller owns aria-busy. The documented 1s functional animation remains under reduced motion; the fidelity capture is static. Reviewed 2026-10-23 (second ring): the two cases `109-2455-primary` and `109-2455-contrast` reproduce the two variants at 24×24 from SpinnerBrandVariants, mapping the `Ellipse 8 (Stroke)` terminal (2.09×3.41 at 21.91/9.59) and both strict-composition clean. The ring is a conic-gradient, so its colour is verified by the reviewed render, not by a DOM background property. Guide: apps/storybook/src/guides/loading-indicators.md."
@@ -375,7 +382,8 @@
         "module": "src/components/primitives/tabs.tsx",
         "export": "Tabs",
         "story": "apps/storybook/src/Tabs.stories.tsx",
-        "storyExports": ["Default", "FidelityTabs"]
+        "storyExports": ["Default", "FidelityTabs"],
+        "props": {}
       },
       "note": "Reviewed 2026-10-23 (closing the 2026-10-14 delta): the node is a plain COMPONENT, not a set, so it has one variant and no Device axis; `1137-8910-default` verifies the whole 658x48 TabGroup at its source width. Seven 94x48 tabs, the first active: the 16px inline and 8px block padding, the 8px icon-to-label gap, the 24px kid_star artwork, the 18/26 Semibold label, the active tab in primary (label, artwork and the 2px bottom line) and the inactive ones at #555c70 over the #e8ebf1 line. The source nests Content and Frame 1049 inside each `.Tab item`; the DOM keeps one trigger row, so the item gap carries the inner 8px (ignored as a mapping artifact) and the nested Content padding is the trigger own padding. The list reports an 11px horizontal scroll at the source width because the label measures 31.6 against the source 30 (a font metric): it is a responsive advisory, not a delta, and the band stays one row. The guide apps/storybook/src/guides/tabs.md records the source mapping. Prop conventions: `variant=\"line\"` is the drawn composition; `variant=\"default\"` (the pill list) is a library extension with no source frame; `orientation` is caller-owned because the source draws only the horizontal row; the labels and the list `aria-label` are consumer strings. No open design question."
     },
@@ -583,7 +591,8 @@
           "EmptyWithAction",
           "EmptyOptions",
           "Sorting"
-        ]
+        ],
+        "props": {}
       },
       "note": "2026-11-20 drift: the footer pagination became an instance of the shared Select, so the rows-per-page row is 48px where the raw .RowPerPageSelect frame was 46, and .Rows per page is renamed .RowsPerPage — desktop 852 to 854, mobile 4013 to 4015. The composition, the auto-layout first column, the 15-row mobile fixture and the sorting behaviour confirmed in the 2026-10-27 thread are unchanged; the two cases keep their recorded width and card residues."
     },
@@ -772,7 +781,8 @@
         "module": "src/components/primitives/checkbox.tsx",
         "export": "Checkbox",
         "story": "apps/storybook/src/Checkbox.stories.tsx",
-        "storyExports": ["SourceDefault", "SourceSelected", "SourceFeedback", "SourceFocused"]
+        "storyExports": ["SourceDefault", "SourceSelected", "SourceFeedback", "SourceFocused"],
+        "props": {}
       },
       "note": "2026-11-20 drift: Status=Focused (194:3659) is renamed Status=Feedback — the red uncovered glyph is the aria-invalid state, not focus — and a real Status=Focused (16548:43287) adds the blue check_box glyph plus a 22px 2px #3C65E9 perimeter. F-05 is answered: focus keeps the shared blue perimeter, red only under aria-invalid. Adaptations native-target-minimum (44px invisible target) and keyboard-focus-perimeter (outline outside the box, shared ring blue-500 instead of the source blue-400) hold. One case per Status: 194-3654-default, -selected, -feedback, -focused."
     },
@@ -814,7 +824,26 @@
             "module": "src/components/inputs/radio-group.tsx",
             "export": "RadioGroup"
           }
-        ]
+        ],
+        "props": {
+          "Available": {
+            "prop": "disabled",
+            "values": {
+              "No": true,
+              "Yes": false
+            }
+          },
+          "Skeleton": {
+            "prop": "loading",
+            "values": {
+              "No": false,
+              "Icon + Title": true,
+              "Icon + Title + Description": true,
+              "Title": true,
+              "Title + Description": true
+            }
+          }
+        }
       },
       "note": "2026-11-20 drift: only the embedded instances moved — 194:3706 and 194:3714 renamed Radio button single element to RadioButtonSingleElement and their Status=Active override became Status=Selected. No box, gap, artwork or colour changed, so the three mapped stories and their nine cases stand; the fingerprint of the selected cases moved with the nested instance rename only."
     },
@@ -864,7 +893,13 @@
               "Warning": "warning"
             }
           },
-          "Style": { "prop": "appearance", "values": { "Solid": "solid", "Outline": "outline" } }
+          "Style": {
+            "prop": "appearance",
+            "values": {
+              "Solid": "solid",
+              "Outline": "outline"
+            }
+          }
         }
       },
       "note": "Path C reviewed against pinned Figma v2412426961662147678 on 2026-10-23. All 14 Type/Style variants have committed source-bound cases (`197-1985-*`) captured from ChipSourceVariantMatrix; the render preserves visible centered labels and 12/18 typography, while the matrix play verifies solid/outline paints, border state and 24px source height. Keep token-driven compact sizing (h-6, px-2, nearest py-0.5, rounded-full) and the bundled Titillio to Titillium Web Semibold mapping. With the bundled family the labels now measure the source widths exactly (57/58/63/62/40/44/66), so the earlier 2.05–5.12px narrower figures are historical; the only residue is the full-pill radius (source 100, rounded-full). Default 44px sizing and the 44×44 removal action remain accessibility adaptations; removal interaction verifies its name, keyboard use and non-submission. Manual zoom and screen-reader testing remain unverified."
@@ -977,7 +1012,10 @@
           },
           "Direction": {
             "prop": "direction",
-            "values": { "Horizontal": "horizontal", "Vertical": "vertical" }
+            "values": {
+              "Horizontal": "horizontal",
+              "Vertical": "vertical"
+            }
           }
         }
       },
@@ -1101,7 +1139,32 @@
           "SourceCase",
           "SourceCaseVertical",
           "SourceHierarchies"
-        ]
+        ],
+        "props": {
+          "Color": {
+            "prop": "color",
+            "values": {
+              "Grey": "grey",
+              "Primary": "primary",
+              "White": "white"
+            }
+          },
+          "Hierarchy": {
+            "prop": "hierarchy",
+            "values": {
+              "Primary": "primary",
+              "Secondary": "secondary",
+              "Tertiary": "tertiary"
+            }
+          },
+          "Direction": {
+            "prop": "direction",
+            "values": {
+              "Horizontal": "horizontal",
+              "Vertical": "vertical"
+            }
+          }
+        }
       },
       "note": "Reviewed 2026-10-29: the delta touches only the Vertical/Device=Mobile variants — the source corrected them from desktop-shaped 852x222 frames to a 272x283 mobile stack, so 261-6501-mobile-mobile was recaptured at the 320 viewport with the root forced to 272 and now verifies with its five shared-adaptation residues (the +5 height is the 24px action row). 261-6501-desktop-desktop is unchanged and still verifies; the FILL→HUG relaxation on the desktop variants is geometry-neutral. No component change was needed."
     },
@@ -1195,7 +1258,23 @@
         "module": "src/components/inputs/switch-field.tsx",
         "export": "SwitchField",
         "story": "apps/storybook/src/Switch.stories.tsx",
-        "storyExports": ["SourceStartPlacement", "KeyboardFocusStates", "FidelityStartStates"]
+        "storyExports": ["SourceStartPlacement", "KeyboardFocusStates", "FidelityStartStates"],
+        "props": {
+          "Checked": {
+            "prop": "checked",
+            "values": {
+              "False": false,
+              "True": true
+            }
+          },
+          "Enable": {
+            "prop": "disabled",
+            "values": {
+              "False": true,
+              "True": false
+            }
+          }
+        }
       },
       "note": "Reviewed 2026-11-11: nine strict parity cases pass across Checked, Enable, Error and Status variants; responsive is clean. Source regular/error frames are 150x42/150x64; the 56x44 native target makes the regular row 150x44. Copy stays 16/22 title and 14/20 description, with no gap and an 8px track gap; the error helper starts 2px below. Disabled label color remains the documented contrast adaptation. Both Hover area subjects map to the translucent CSS halo; source background/radius projection is ignored after raster review (unchecked 38-to-40px halo is within tolerance)."
     },
@@ -1238,7 +1317,23 @@
           "RichSourceOptions",
           "NarrowRichSource",
           "FidelityRichStates"
-        ]
+        ],
+        "props": {
+          "Checked": {
+            "prop": "checked",
+            "values": {
+              "No": false,
+              "Yes": true
+            }
+          },
+          "Availability": {
+            "prop": "unavailable",
+            "values": {
+              "No": true,
+              "Yes": false
+            }
+          }
+        }
       },
       "note": "Reviewed 2026-10-22 (M5 wave): four committed cases, one per `Checked` × `Availability` variant (349:4684, 349:4703, 349:4717, 349:4727), all 320 wide against `FidelityRichStates`. The node is one rich option, not a group; source names never determine identity. Verified: the 24px decorative leading art, the 12px icon-to-copy gap, the 16/22 Semibold #0e0f13 title, the 14/20 #555c70 description, the #555c70/#0b3ee3 track, the 14/20 primary link and the hidden helper. Residues: the rich row follows the 44px native control target (the source `.Switch single element` frame is 58x38, rounded to 56x44 by `native-target-token-rounding`), so the row is 8px taller than the content-driven source sample and the copy offsets follow; the source root spaces its stack with a 4/8px gap while the library stacks the label, messages and link inside one grid. The two `Availability=No` roots carry a source-wide reduced opacity; the library deliberately fades only the decorative art and keeps copy, control and link opaque (documented adaptation, switch-choices guide). Automated a11y and render checks are not screen-reader or browser-zoom certification."
     },
@@ -1262,9 +1357,19 @@
         "props": {
           "Property": {
             "prop": "display",
-            "values": { "Numbered": "numbered", "Plain": "plain", "Sidenav icon": "sidenav-icon" }
+            "values": {
+              "Numbered": "numbered",
+              "Plain": "plain",
+              "Sidenav icon": "sidenav-icon"
+            }
           },
-          "Selected": { "prop": "selected", "values": { "False": false, "True": true } },
+          "Selected": {
+            "prop": "selected",
+            "values": {
+              "False": false,
+              "True": true
+            }
+          },
           "Background": {
             "prop": "background",
             "values": {
@@ -1397,7 +1502,16 @@
           "WithIcons",
           "WithTrailingIcon",
           "FigmaStateMatrix"
-        ]
+        ],
+        "props": {
+          "* Required": {
+            "prop": "required",
+            "values": {
+              "False": false,
+              "True": true
+            }
+          }
+        }
       },
       "note": "Reviewed 2026-10-22 (M5 wave): ten committed cases, one per principal state of the set's `Status` × `Filled` axes plus one Required=False row. Enabled empty (529:6123) and Enabled filled (529:6110) capture `Playground`; the other eight capture `FigmaStateMatrix`, one row per source variant at the 274 source width: Disabled empty (529:6137), Disabled filled (529:6180), Active empty (529:6154, captured focused), Active filled (529:6169, focused), Success filled (529:6191), Error empty (529:6266, 274x70) and Error filled (529:6267, 274x70), plus Enabled empty Required=False (10274:50122, no required marker). All are 274 wide with radius 8; the input is 48 tall except the 50px error control. Field border: grey-650 #636b82 1px when enabled, disabled or success; primary #0b3ee3 when active/focused (the library paints the 1px border plus the 2px focus ring, inside the 2px tolerance); #d13333 on error; never grey-450 (it is not a source field stroke). Mapping artifacts ignored: the source `Input` frame nests its row inset in the `Content` child (12/0/13/0) while the library input owns its own padding, so the vertical padding is ignored; the trailing icon slot reserves its own right padding (success and error). The resting label sits 3px lower in the 50px error control (recorded residue: the source nests it in `Content`, the library centres the label box on the 48px control). The remaining `* Required=False` variants repeat these reviewed compositions with the marker removed; one case proves that axis. Automated a11y and render checks are not screen-reader or browser-zoom certification."
     },
@@ -1413,7 +1527,16 @@
             "module": "src/components/inputs/multi-select-field.tsx",
             "export": "MultiSelectField"
           }
-        ]
+        ],
+        "props": {
+          "*Required": {
+            "prop": "required",
+            "values": {
+              "False": false,
+              "True": true
+            }
+          }
+        }
       },
       "note": "Reviewed 2026-10-15 at the pinned export: the 2026-10-14 delta unpublished the `.HelperText • Select` helper (its instances stay inside the variants) and moved the default icon swap to an external asset; the design fingerprint is unchanged. `SourceFrame` renders both implementations at the 274px source width: 272x48 (`w-68` token, -2px), radius 8, #636b82 stroke, 12px insets, 16/22 semibold label text at 44px, 24px decorative leading art #bbc2d6 and the 24px chevron; the error helper keeps the legible 20px line box against the source 21px. Adaptation `native-selection`: verify the open state by opening the real SelectField through its trigger and waiting for its scoped listbox; the popup is runtime state, not part of the pinned field raster. Adaptation `disabled-required-marker` (disabled keeps required semantics but omits the visible marker) is stated in guides/select-choices.md. Field border: grey-650 #636b82 1px when enabled, disabled or success; primary 2px when active/focused; #d13333 on error; never grey-450 (it is not a source field stroke). Elevation comes only from the Figma shadow scale: `shadow-16` for the listbox popup, never Tailwind `shadow-md/lg/xl`."
     },
@@ -1425,7 +1548,15 @@
         "story": "apps/storybook/src/Separator.stories.tsx",
         "storyExports": ["Playground", "Padded", "WithText", "Fidelity"],
         "props": {
-          "Padding": { "prop": "padding", "values": { "0": 0, "16": 16, "24": 24, "32": 32 } }
+          "Padding": {
+            "prop": "padding",
+            "values": {
+              "0": 0,
+              "16": 16,
+              "24": 24,
+              "32": 32
+            }
+          }
         }
       },
       "note": "Reviewed 2026-10-23 (second ring, implemented node without a case): all five source variants at the 320px set width, no Device axis — `61-2786-line` (Padding=0, Type=Line, 320x1 #e8ebf1), `61-2786-padding-16`, `61-2786-padding-24` and `61-2786-padding-32` (the line inset 16/24/32, 288/272/256x1, the spacers unpainted) and `61-2786-with-text` (320x20, 8px root gap, the 130x1 lines at y9.5, the Text layer `oppure` 14/20 Regular #555c70 at x138 measuring 43.47 against 44, a font metric). All five are strict-composition clean. The `With text` source `Line-Left`/`Line-Right` are empty frames that carry a 10px padding with no DOM counterpart, so they are mapped through the root gap and the centred text (mapping note). The `Fidelity` story renders all five variants at 320. `--border` is Figma Color/Border/Border fill #e8ebf1 (grey-100); do not swap in grey-200 #d2d6e3, which is reserved for nodes whose source stroke is grey-200 (Stepper 1314:10512). Text contract: `label` is consumer-owned content, translated outside the component. Guide: apps/storybook/src/guides/separator.md."
@@ -1509,7 +1640,8 @@
         "module": "src/components/data-display/product-card.tsx",
         "export": "ProductCard",
         "story": "apps/storybook/src/ProductCard.stories.tsx",
-        "storyExports": ["SourceImage"]
+        "storyExports": ["SourceImage"],
+        "props": {}
       },
       "note": "Reviewed 2026-10-15: affected by the same Button 108:1402 helper delta; design fingerprints unchanged. The cover set renders 272x441 desktop and 272x437 mobile exactly, with the 272x191 cover, the 64x64 plate at the 24px inset (8px corners, 4px nested tile) and the source 24/32 and 18/28 Bold headings via `text-title-xs`/`text-title-xs-mobile`; the action measures 111.67x48 against the source 108x48 (bundled-font metrics) and the description keeps the semantic grey-700 against the source's raw, unpublished #17324d. The text-only set 757:10713 was unpublished in the 2026-10-14 export, so its story is a caller composition."
     },
@@ -1567,7 +1699,8 @@
         "module": "src/components/data-display/catalogue-card.tsx",
         "export": "CatalogueCard",
         "story": "apps/storybook/src/ProductCard.stories.tsx",
-        "storyExports": ["SourceCatalogueCard"]
+        "storyExports": ["SourceCatalogueCard"],
+        "props": {}
       },
       "note": "Reviewed: CatalogueCard renders the source catalogue card itself (360x236, r8, the INSIDE-aligned 1px #e8ebf1 stroke as the card family's ring-1 ring-border so the 24px insets stay exact, pad 24, gap 24): header gap 12 = 44px Avatar small + 256px column (16/22 semibold title over the 16/22 grey-700 Ente, gap 2), 14/20 grey-700 description, action row 24 high with gap 24 = two 16/22 semibold blue text actions (source 22px line kept, >=44px pointer target through the invisible ::after expansion) and the 24px person/check feedback glyphs. eyebrow/tags/children/titleAs/className remain documented extensions. Residue: the Avatar placeholder glyph is our 24px optical size where the source instance is 18px (shared Avatar dependency). Case 808-6302-default captures the 360x236 source frame from `SourceCatalogueCard` with Header/Description/Action subjects, no device axis; strict composition and responsive clean. Guide: apps/storybook/src/guides/product-cards.md."
     },

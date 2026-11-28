@@ -1915,8 +1915,7 @@
           "name": "Banner",
           "kind": "COMPONENT_SET",
           "inLibrary": true,
-          "decision": "shipped",
-          "reason": "Banner in the registry, rendered by the SourceCase and SourceCaseVertical stories."
+          "decision": "shipped"
         }
       ],
       "compositions": []
