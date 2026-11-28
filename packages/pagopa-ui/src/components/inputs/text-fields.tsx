@@ -392,7 +392,7 @@ type DatePickerFieldProps = FieldStateProps &
     today?: Date
     /** BCP 47 locale of the field's own formatting (trigger value, panel caption and footer). @default the provider locale, "it-IT" at the root */
     locale?: string
-    /** Day-grid locale of the shared Calendar. @default the provider calendar locale, Italian at the root */
+    /** Day-grid locale of the shared Calendar. @default the provider calendar locale, which follows the provider locale */
     calendarLocale?: CalendarLocale
     /** Accessible name of the panel when `label` is not a plain string. @default messages.datePickerField.panelLabel */
     panelLabel?: string

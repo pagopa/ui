@@ -2,11 +2,16 @@
 // message dictionary of the UI provider, so a literal in a component
 // destructuring is a regression.
 //
-// The scan is syntax-aware and covers three positions a default hides in: the
+// The scan is syntax-aware and covers five positions copy hides in: the
 // destructuring default, the object literal a prop default carries
-// (`emptyState = { title: "…" }`), and the JSX attribute that paints or
-// announces copy (`aria-label={…}`, `placeholder={…}`). A literal anywhere
-// inside one of those expressions is copy, never a `className`.
+// (`emptyState = { title: "…" }`), the JSX attribute that paints or announces
+// copy (`aria-label={…}`, `placeholder={…}`), the static text a JSX element
+// renders (`<dt>Importo</dt>`) and the literal a function hands back
+// (`return text ? `Seleziona ${text}` : "Seleziona riga"`). A literal anywhere
+// inside one of those expressions is copy, never a `className`. A sixth
+// position is caught by reference: a module-level constant that a prop default
+// falls back to, so `company = COMPANY_INFORMATION` cannot smuggle a sentence
+// out of the dictionary.
 import fs from "node:fs"
 import path from "node:path"
 import { parseSync } from "oxc-parser"
@@ -145,11 +150,33 @@ function letters(value: string): number {
 // text-shaped: an identifier, a boolean, a call or an object. A conditional
 // counts through its branches: a literal hidden behind a ternary (valid /
 // not-valid label forks) is a literal default just the same.
+// oxc keeps the parentheses of a parenthesised expression as a node, so copy
+// behind them (`(m) => (m ? "…" : "…")`) would read as an identifier.
+function unwrap(node: Node): Node {
+  let current = node
+  while (current.type === "ParenthesizedExpression") {
+    const inner = child(current, "expression")
+    if (!inner) return current
+    current = inner
+  }
+  return current
+}
+
 function textValue(node: Node, source: string): string | undefined {
+  node = unwrap(node)
   if (node.type === "Literal" && typeof node.value === "string") {
     return source.slice(node.start, node.end)
   }
   if (node.type === "TemplateLiteral") return source.slice(node.start, node.end)
+  if (node.type === "LogicalExpression") {
+    for (const key of ["left", "right"]) {
+      const side = child(node, key)
+      if (!side) continue
+      const text = textValue(side, source)
+      if (text !== undefined) return text
+    }
+    return undefined
+  }
   if (node.type === "ConditionalExpression") {
     for (const key of ["consequent", "alternate"]) {
       const branch = child(node, key)
@@ -185,10 +212,39 @@ function staticText(node: Node): string {
   return parts.join("")
 }
 
+// The static text an expression writes, its substitutions removed: a date
+// template (`${y}-${m}-${d}`) carries punctuation only, a sentence carries
+// letters. The walk skips keys and computed property reads, which are names.
+function staticProse(node: Node): string {
+  const parts: string[] = []
+  function collect(current: Node): void {
+    if (current.type === "Literal" && typeof current.value === "string") {
+      parts.push(current.value)
+      return
+    }
+    if (current.type === "TemplateLiteral") {
+      parts.push(staticText(current))
+      return
+    }
+    for (const [key, value] of Object.entries(current)) {
+      if (key === "key" && current.type === "ObjectExpression") continue
+      if (key === "property" && current.type === "MemberExpression" && current.computed === true) {
+        continue
+      }
+      for (const item of Array.isArray(value) ? value : [value]) {
+        if (isNode(item)) collect(item)
+      }
+    }
+  }
+  if (isNode(node)) collect(node)
+  return parts.join(" ")
+}
+
 // Any copy a text expression renders, wherever it hides: a bare literal, a
 // template literal, the `??` fallback, a ternary branch. The walk stops at a
 // comparison, whose strings are types rather than sentences.
 function textLiteral(node: Node, source: string): string | undefined {
+  node = unwrap(node)
   if (node.type === "Literal" && typeof node.value === "string") {
     return letters(node.value) >= 2 ? source.slice(node.start, node.end) : undefined
   }
@@ -278,8 +334,31 @@ function scan(root: unknown, file: string, source: string): TextDefault[] {
     return false
   }
 
+  // The prose a JSX element paints between its tags. The text is stored as a
+  // JS string literal so the inventory shows its edges.
+  function textChild(node: Node): void {
+    if (node.type !== "JSXText") return
+    const value = typeof node.value === "string" ? node.value.trim() : ""
+    if (letters(value) < 2) return
+    record(lineOf(source, node.start), "text", JSON.stringify(value))
+  }
+
+  // The prose a function hands back. A conditional counts through both
+  // branches, which is how a row label hides its two sentences.
+  function returned(node: Node): void {
+    if (node.type !== "ReturnStatement") return
+    const argument = child(node, "argument")
+    if (!argument) return
+    if (letters(staticProse(argument)) < 2) return
+    const text = textValue(argument, source)
+    if (text === undefined) return
+    record(lineOf(source, node.start), "return", text)
+  }
+
   function visit(node: Node): void {
     if (node.type === "JSXAttribute") attribute(node)
+    if (node.type === "JSXText") textChild(node)
+    if (node.type === "ReturnStatement") returned(node)
     for (const pattern of patterns(node)) {
       for (const item of children(pattern.properties)) {
         if (!isNode(item) || item.type !== "Property" || item.computed === true) continue
@@ -310,7 +389,49 @@ function scan(root: unknown, file: string, source: string): TextDefault[] {
     }
   }
 
-  if (isNode(root)) visit(root)
+  // A module-level constant a default falls back to is copy the dictionary
+  // never sees: the default is an identifier, so the literal itself hides one
+  // line above the component.
+  function constants(node: Node, source: string): void {
+    const body = children(node.body)
+    const fallbacks = new Set<string>()
+    function collect(current: Node): void {
+      if (current.type === "AssignmentPattern") {
+        const right = child(current, "right")
+        if (right?.type === "Identifier" && typeof right.name === "string") {
+          fallbacks.add(right.name)
+        }
+      }
+      for (const value of Object.values(current)) {
+        if (Array.isArray(value)) {
+          for (const item of value) if (isNode(item)) collect(item)
+        } else if (isNode(value)) {
+          collect(value)
+        }
+      }
+    }
+    for (const statement of body) if (isNode(statement)) collect(statement)
+    for (const statement of body) {
+      if (!isNode(statement) || statement.type !== "VariableDeclaration") continue
+      for (const declaration of children(statement.declarations)) {
+        if (!isNode(declaration) || declaration.type !== "VariableDeclarator") continue
+        const id = child(declaration, "id")
+        const init = child(declaration, "init")
+        if (!id || id.type !== "Identifier" || !init) continue
+        const name = typeof id.name === "string" ? id.name : ""
+        if (!fallbacks.has(name)) continue
+        const text = textValue(init, source)
+        if (text === undefined) continue
+        record(lineOf(source, declaration.start), name, text)
+      }
+    }
+  }
+
+  if (isNode(root)) {
+    visit(root)
+    constants(root, source)
+  }
+  hits.sort((left, right) => left.line - right.line)
   return hits
 }
 

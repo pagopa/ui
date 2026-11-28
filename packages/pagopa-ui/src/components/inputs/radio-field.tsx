@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { cn } from "@/lib/cn"
+import { useMessages } from "@/lib/ui-provider"
 
 import { RadioGroupItem, type RadioGroupItemProps } from "@/components/primitives/radio-group"
 import { Skeleton } from "@/components/primitives/skeleton"
@@ -27,6 +28,7 @@ function RadioField({
   error,
   success,
   required,
+  requiredLabel: requiredLabelProp,
   disabled,
   leadingIcon,
   indicatorPlacement = "start",
@@ -36,6 +38,8 @@ function RadioField({
   "aria-invalid": ariaInvalid,
   ...props
 }: RadioFieldProps) {
+  const t = useMessages("fieldLabel")
+  const requiredLabel = requiredLabelProp ?? t.requiredLabel
   const ids = useFieldIds(id)
   const state = { description, error, success }
   const unavailable = disabled || loading
@@ -97,7 +101,7 @@ function RadioField({
                 <span aria-hidden="true" className="pui:ml-0.5 pui:text-destructive">
                   *
                 </span>
-                <span className="pui:sr-only"> (obbligatorio)</span>
+                <span className="pui:sr-only"> {requiredLabel}</span>
               </>
             ) : null}
           </span>

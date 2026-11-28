@@ -24,7 +24,7 @@ type DatePickerProps = Omit<ComponentProps<"fieldset">, "children"> & {
   className?: string
   /** BCP 47 locale of the panel's own formatting (weekday names, footer, caption). @default the provider locale, "it-IT" at the root */
   locale?: string
-  /** Day-grid locale of the shared Calendar (a react-day-picker `Locale`). @default the provider calendar locale, Italian at the root */
+  /** Day-grid locale of the shared Calendar (a react-day-picker `Locale`). @default the provider calendar locale, which follows the provider locale */
   calendarLocale?: CalendarLocale
   /**
    * Complete footer line of the panel, from the formatted date: the caller

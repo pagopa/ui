@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { cn } from "@/lib/cn"
+import { useMessages } from "@/lib/ui-provider"
 
 import { Checkbox, type CheckboxProps } from "@/components/primitives/checkbox"
 
@@ -23,6 +24,7 @@ function CheckboxField({
   error,
   success,
   required,
+  requiredLabel: requiredLabelProp,
   disabled,
   leadingIcon,
   indicatorPlacement = "start",
@@ -32,6 +34,8 @@ function CheckboxField({
   "aria-describedby": ariaDescribedBy,
   ...props
 }: CheckboxFieldProps) {
+  const t = useMessages("fieldLabel")
+  const requiredLabel = requiredLabelProp ?? t.requiredLabel
   const ids = useFieldIds(id)
   const state = { description, error, success }
   const hasMessages = Boolean(description || error || success)
@@ -87,7 +91,7 @@ function CheckboxField({
                 <span aria-hidden="true" className="pui:ml-0.5 pui:text-destructive">
                   *
                 </span>
-                <span className="pui:sr-only"> (obbligatorio)</span>
+                <span className="pui:sr-only"> {requiredLabel}</span>
               </>
             ) : null}
           </span>

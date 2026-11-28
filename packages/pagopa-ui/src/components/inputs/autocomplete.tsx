@@ -34,9 +34,6 @@ type AutocompleteOption = ItemRowContent & {
 
 const defaultLeadingIcon = <Icon source={AccountBalanceIcon} size={24} aria-hidden="true" />
 
-const defaultListLabel = (label: string) => (label ? `Lista ${label}` : "Lista")
-const defaultSelectedLabel = (values: string[]) => `hai selezionato ${values.join(", ")}`
-
 /** Normalises the single (`string`) and multiple (`string[]`) selections. */
 const toSelection = (value: string | string[] | null | undefined): string[] =>
   value === undefined || value === null ? [] : Array.isArray(value) ? value : value ? [value] : []
@@ -69,9 +66,9 @@ export interface AutocompleteSharedProps
   openLabel?: string
   /** Accessible name of the trigger that closes the list. @default messages.autocomplete.closeLabel */
   closeLabel?: string
-  /** Accessible name of the list, from the field label. @default "Lista {label}" */
+  /** Accessible name of the list, from the field label. @default messages.autocomplete.listLabel */
   listLabel?: (label: string) => string
-  /** Announcement after a choice, from the selected values. @default "hai selezionato {values}" */
+  /** Announcement after a choice, from the selected values. @default messages.autocomplete.selectedLabel */
   selectedLabel?: (values: string[]) => string
   /** Announces that the options are being loaded. @default false */
   loading?: boolean
@@ -141,8 +138,8 @@ function Autocomplete(props: AutocompleteProps) {
     clearAllLabel: clearAllLabelProp,
     openLabel: openLabelProp,
     closeLabel: closeLabelProp,
-    listLabel = defaultListLabel,
-    selectedLabel = defaultSelectedLabel,
+    listLabel: listLabelProp,
+    selectedLabel: selectedLabelProp,
     loading = false,
     loadingLabel: loadingLabelProp,
     placeholder,
@@ -161,6 +158,8 @@ function Autocomplete(props: AutocompleteProps) {
   const openLabel = openLabelProp ?? t.openLabel
   const closeLabel = closeLabelProp ?? t.closeLabel
   const loadingLabel = loadingLabelProp ?? t.loadingLabel
+  const listLabel = listLabelProp ?? t.listLabel
+  const selectedLabel = selectedLabelProp ?? t.selectedLabel
 
   const ids = useFieldIds(id)
   const portalHost = usePortalHost()

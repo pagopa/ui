@@ -72,7 +72,7 @@ export interface TableProps<Row extends { id: React.Key }> extends Omit<
   onSelectionChange?: (selected: React.Key[]) => void
   /** Accessible name of the select-all checkbox. @default messages.table.selectionLabel */
   selectionLabel?: string
-  /** Accessible name of a row checkbox, from the row. @default "Seleziona {first cell}" */
+  /** Accessible name of a row checkbox, from the row. @default messages.table.rowLabel on the first cell */
   selectionRowLabel?: (row: Row) => string
   /** Marks a row with the source notification dot after its checkbox. */
   notification?: (row: Row) => boolean
@@ -147,8 +147,7 @@ function Table<Row extends { id: React.Key }>({
   const rowLabel = (row: Row) => {
     if (selectionRowLabel) return selectionRowLabel(row)
     const first = columns[0] ? row[columns[0].key] : undefined
-    const text = first == null ? "" : String(first)
-    return text ? `Seleziona ${text}` : "Seleziona riga"
+    return t.rowLabel(first == null ? "" : String(first))
   }
 
   return (

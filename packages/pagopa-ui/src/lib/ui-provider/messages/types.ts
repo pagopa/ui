@@ -26,6 +26,7 @@ export interface Messages {
     legacyDescription: string
     legacySuggestion: string
     noticeCodeLabel: string
+    amountLabel: string
     continueLabel: string
     editLabel: string
   }
@@ -73,6 +74,7 @@ export interface Messages {
     emptyLabel: string
     emptyStateTitle: string
     sortLabel: (column: string) => string
+    rowLabel: (label: string) => string
   }
   timeline: {
     label: string
@@ -118,6 +120,8 @@ export interface Messages {
     openLabel: string
     closeLabel: string
     loadingLabel: string
+    listLabel: (label: string) => string
+    selectedLabel: (values: string[]) => string
   }
   chip: {
     removeLabel: (label?: string) => string
@@ -140,6 +144,7 @@ export interface Messages {
     disabledText: string
     draggingText: string
     idleText: string
+    selectionHint: (multiple: boolean) => string
     uploadLabel: string
     uploadLogoLabel: string
     cancelLabel: string
@@ -198,10 +203,14 @@ export interface Messages {
   cookies: {
     closeLabel: string
     label: string
+    learnMoreLabel: string
+    rejectLabel: string
+    acceptLabel: string
   }
   footer: {
     brand: string
     columnsLabel: string
+    companyInformation: string
   }
   pagination: {
     label: string
@@ -215,6 +224,8 @@ export interface Messages {
   }
   sideNav: {
     title: string
+    expandLabel: (label: string) => string
+    collapseLabel: (label: string) => string
   }
   skipToMainContent: {
     children: string

@@ -117,7 +117,7 @@ function DragAndDrop({
   disabledText: disabledTextProp,
   draggingText: draggingTextProp,
   idleText: idleTextProp,
-  selectionHint = (multiple) => (multiple ? "Puoi selezionare più file" : "Seleziona un file"),
+  selectionHint: selectionHintProp,
   uploadLabel: uploadLabelProp,
   uploadLogoLabel: uploadLogoLabelProp,
   cancelLabel: cancelLabelProp,
@@ -137,6 +137,7 @@ function DragAndDrop({
   const disabledText = disabledTextProp ?? t.disabledText
   const draggingText = draggingTextProp ?? t.draggingText
   const idleText = idleTextProp ?? t.idleText
+  const selectionHint = selectionHintProp ?? t.selectionHint
   const uploadLabel = uploadLabelProp ?? t.uploadLabel
   const uploadLogoLabel = uploadLogoLabelProp ?? t.uploadLogoLabel
   const cancelLabel = cancelLabelProp ?? t.cancelLabel

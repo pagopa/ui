@@ -8,11 +8,6 @@ import { Heading, type HeadingTag } from "@/components/primitives/heading"
 
 import type { NavItem } from "./nav-item"
 
-// Source company-information sentence (Footer `1360:20138` → the
-// `.CompanyInformation` row).
-const COMPANY_INFORMATION =
-  "PagoPA S.p.A. - Società per azioni - Capitale sociale di euro 1,000,000 interamente versato - Sede legale in Roma, Piazza Colonna 370, CAP 00187 - N. di iscrizione a Registro Imprese di Roma, CF e P.IVA 15376371009"
-
 // Source link rows (`Label & Caption/Label Mini SB`, 14/20). `trailing` carries
 // the artwork the source places after the label (the language chevron in the
 // Logged user=False column 4); a row with artwork keeps the source 24px height.
@@ -102,7 +97,7 @@ function Footer({
   brand: brandProp,
   homeHref = "#",
   links = [],
-  company = COMPANY_INFORMATION,
+  company: companyProp,
   columns = [],
   titleAs = "h2",
   columnsLabel: columnsLabelProp,
@@ -113,6 +108,7 @@ function Footer({
   const t = useMessages("footer")
   const brand = brandProp ?? t.brand
   const columnsLabel = columnsLabelProp ?? t.columnsLabel
+  const company = companyProp ?? t.companyInformation
 
   const Link = useLinkComponent()
   return (

@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { cn } from "@/lib/cn"
-import { useMessages } from "@/lib/ui-provider"
+import { useLocale, useMessages } from "@/lib/ui-provider"
 
 import { Icon } from "@/components/icons/icon"
 import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
@@ -81,7 +81,7 @@ export interface ProgressKpiProps extends Omit<React.ComponentProps<"section">, 
   details?: ProgressKpiRow[]
   /** Optional supporting sentence. */
   detail?: string
-  /** BCP 47 locale of the number formatting. @default "it-IT" */
+  /** BCP 47 locale of the number formatting. @default the provider locale */
   locale?: string
 }
 
@@ -94,12 +94,14 @@ function ProgressKpi({
   completed = false,
   details,
   detail,
-  locale = "it-IT",
+  locale: localeProp,
   className,
   ref,
   ...props
 }: ProgressKpiProps) {
   const t = useMessages("progressKpi")
+  const { locale: providerLocale } = useLocale()
+  const locale = localeProp ?? providerLocale
   const percentage = progressPercentage(value, total)
   return (
     <section

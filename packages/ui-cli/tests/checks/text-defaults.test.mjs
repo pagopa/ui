@@ -118,6 +118,77 @@ test("reports copy carried by an object-literal default", () => {
   assert.deepEqual(result.details, ["src/components/table/table.tsx:2 emptyState.title"])
 })
 
+const JSX_TEXT = `function Checkout({
+  amount,
+}) {
+  return <dl>
+    <dt className="text-caption">Importo</dt>
+    <dd>{amount}</dd>
+  </dl>
+}
+`
+
+test("reports copy painted as a JSX text child", () => {
+  const result = check({ "src/components/checkout/checkout.tsx": JSX_TEXT }, { max: 0 })
+  assert.deepEqual(result.details, ["src/components/checkout/checkout.tsx:5 text"])
+  assert.match(result.problems[0], /1 literal default\(s\), the ceiling is 0/)
+})
+
+const RETURNED = `function Table({
+  selectionRowLabel,
+}) {
+  const rowLabel = (row) => {
+    if (selectionRowLabel) return selectionRowLabel(row)
+    return \`Seleziona \${row.name}\`
+  }
+  return null
+}
+`
+
+test("reports copy a helper returns", () => {
+  const result = check({ "src/components/table/table.tsx": RETURNED }, { max: 0 })
+  assert.deepEqual(result.details, ["src/components/table/table.tsx:6 return"])
+  assert.equal(result.problems.length, 1)
+})
+
+const CONSTANT = `const EXPAND_LABEL = (label) => \`Espandi \${label}\`
+
+function SideNav({ expandLabel = EXPAND_LABEL }) {
+  return null
+}
+`
+
+test("reports copy carried by the module constant a default falls back to", () => {
+  const result = check({ "src/components/side-nav/side-nav.tsx": CONSTANT }, { max: 0 })
+  assert.deepEqual(result.details, ["src/components/side-nav/side-nav.tsx:1 EXPAND_LABEL"])
+})
+
+const PARENTHESISED = `function Drop({
+  selectionHint = (multiple) => (multiple ? "Puoi selezionare più file" : "Seleziona un file"),
+}) {
+  return null
+}
+`
+
+test("reports copy behind a parenthesised arrow body", () => {
+  const result = check({ "src/components/drop/drop.tsx": PARENTHESISED }, { max: 0 })
+  assert.deepEqual(result.details, ["src/components/drop/drop.tsx:2 selectionHint"])
+})
+
+const NOT_COPY = `const LEADING_ICON = <span aria-hidden="true">*</span>
+
+function Field({
+  format = \`\${date.getFullYear()}-\${pad(date.getMonth())}\`,
+  icon = LEADING_ICON,
+}) {
+  return null
+}
+`
+
+test("a format template and an artwork constant are not copy", () => {
+  assert.deepEqual(check({ "src/components/field/field.tsx": NOT_COPY }, { max: 0 }).problems, [])
+})
+
 test("check text-defaults --max prints the verdict and rejects non-numeric limits", async () => {
   const tree = fixtureTree({ "src/components/card/card.tsx": COMPONENT })
   try {

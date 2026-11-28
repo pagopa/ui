@@ -11,11 +11,11 @@ import { Button } from "@/components/primitives/button"
 export interface CookiesProps extends Omit<React.ComponentProps<"section">, "children"> {
   /** Title and copy of the bar. */
   children: React.ReactNode
-  /** Fired by the "Accetta tutti" action. */
+  /** Fired by the accept-all action. */
   onAccept: () => void
-  /** Fired by the "Rifiuta tutti" action. */
+  /** Fired by the reject-all action. */
   onReject: () => void
-  /** Fired by the text action "Scopri di più". */
+  /** Fired by the learn-more text action. */
   onLearnMore?: () => void
   /** Renders the close control when provided. */
   onDismiss?: () => void
@@ -23,6 +23,12 @@ export interface CookiesProps extends Omit<React.ComponentProps<"section">, "chi
   closeLabel?: string
   /** Accessible name of the bar. @default messages.cookies.label */
   label?: string
+  /** Text of the learn-more action. @default messages.cookies.learnMoreLabel */
+  learnMoreLabel?: string
+  /** Text of the reject-all action. @default messages.cookies.rejectLabel */
+  rejectLabel?: string
+  /** Text of the accept-all action. @default messages.cookies.acceptLabel */
+  acceptLabel?: string
 }
 
 function Cookies({
@@ -33,6 +39,9 @@ function Cookies({
   onDismiss,
   closeLabel: closeLabelProp,
   label: labelProp,
+  learnMoreLabel: learnMoreLabelProp,
+  rejectLabel: rejectLabelProp,
+  acceptLabel: acceptLabelProp,
   className,
   ref,
   ...props
@@ -40,6 +49,9 @@ function Cookies({
   const t = useMessages("cookies")
   const closeLabel = closeLabelProp ?? t.closeLabel
   const label = labelProp ?? t.label
+  const learnMoreLabel = learnMoreLabelProp ?? t.learnMoreLabel
+  const rejectLabel = rejectLabelProp ?? t.rejectLabel
+  const acceptLabel = acceptLabelProp ?? t.acceptLabel
 
   // Source `Device=Mobile` (1360:12856): the close sits beside the copy, the
   // three actions stack full width under it; the desktop row keeps the close
@@ -85,14 +97,14 @@ function Cookies({
             className="pui:relative pui:min-h-0 pui:px-0 pui:py-0 pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-3 pui:max-tablet:self-center"
             onClick={onLearnMore}
           >
-            Scopri di più
+            {learnMoreLabel}
           </Button>
         ) : null}
         <Button className="pui:max-tablet:w-full" onClick={onReject}>
-          Rifiuta tutti
+          {rejectLabel}
         </Button>
         <Button className="pui:max-tablet:w-full" onClick={onAccept}>
-          Accetta tutti
+          {acceptLabel}
         </Button>
         {closeButton ? <span className="pui:hidden pui:desktop:block">{closeButton}</span> : null}
       </div>

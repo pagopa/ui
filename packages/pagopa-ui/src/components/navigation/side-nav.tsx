@@ -19,9 +19,6 @@ interface SideNavProfile {
   avatar?: React.ReactNode
 }
 
-const defaultExpandLabel = (label: string) => `Espandi ${label}`
-const defaultCollapseLabel = (label: string) => `Comprimi ${label}`
-
 function hasCurrentItem(item: NavItem): boolean {
   return Boolean(item.current || item.children?.some(hasCurrentItem))
 }
@@ -33,9 +30,9 @@ export interface SideNavProps extends Omit<React.ComponentProps<"nav">, "childre
   profile?: SideNavProfile
   /** Desktop rail: icons only, expanding as an overlay on hover or focus. @default false */
   condensed?: boolean
-  /** Accessible name of a closed parent toggle, from its label. @default "Espandi {label}" */
+  /** Accessible name of a closed parent toggle, from its label. @default messages.sideNav.expandLabel */
   expandLabel?: (label: string) => string
-  /** Accessible name of an open parent toggle, from its label. @default "Comprimi {label}" */
+  /** Accessible name of an open parent toggle, from its label. @default messages.sideNav.collapseLabel */
   collapseLabel?: (label: string) => string
   className?: string
 }
@@ -45,14 +42,16 @@ function SideNav({
   items,
   profile,
   condensed = false,
-  expandLabel = defaultExpandLabel,
-  collapseLabel = defaultCollapseLabel,
+  expandLabel: expandLabelProp,
+  collapseLabel: collapseLabelProp,
   className,
   ref,
   ...props
 }: SideNavProps) {
   const t = useMessages("sideNav")
   const title = titleProp ?? t.title
+  const expandLabel = expandLabelProp ?? t.expandLabel
+  const collapseLabel = collapseLabelProp ?? t.collapseLabel
 
   const [expanded, setExpanded] = React.useState(false)
   return (
@@ -116,8 +115,8 @@ function NavLinks({
   profile,
   nested = false,
   condensed = false,
-  expandLabel = defaultExpandLabel,
-  collapseLabel = defaultCollapseLabel,
+  expandLabel: expandLabelProp,
+  collapseLabel: collapseLabelProp,
 }: {
   items: NavItem[]
   profile?: SideNavProfile
@@ -127,6 +126,9 @@ function NavLinks({
   collapseLabel?: (label: string) => string
 }) {
   const Link = useLinkComponent()
+  const t = useMessages("sideNav")
+  const expandLabel = expandLabelProp ?? t.expandLabel
+  const collapseLabel = collapseLabelProp ?? t.collapseLabel
   return (
     <>
       <ul>

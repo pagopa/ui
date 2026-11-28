@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import type { CalendarLocale } from "@/components/primitives/calendar"
-import { it } from "react-day-picker/locale"
+import { enUS, it } from "react-day-picker/locale"
 import { cn } from "@/lib/cn"
 
 import { itMessages } from "./messages/it"
@@ -25,8 +25,8 @@ interface UIProviderProps {
    */
   messages?: DeepPartial<Messages>
   /**
-   * Calendar locale of the tree. @default the Italian locale of the calendar
-   * primitive
+   * Calendar locale of the tree. @default the locale matching `locale`: the
+   * Italian grid under an `it` locale, the English one otherwise
    */
   calendarLocale?: CalendarLocale
   /**
@@ -59,6 +59,13 @@ const UIContext = React.createContext<UIContextValue>({
   calendarLocale: it,
   depth: 0,
 })
+
+// The day grid follows the language of the tree: the library ships one bundle
+// per locale, so the two languages of the dictionary get one each and every
+// other code reads the English one rather than Italian words it cannot render.
+function calendarLocaleFor(locale: string): CalendarLocale {
+  return locale.toLowerCase().startsWith("it") ? it : enUS
+}
 
 const HOST_CLASS = "pagopa-ui-root"
 
@@ -162,7 +169,12 @@ function UIProvider({
       linkComponent: linkComponent ?? parent.linkComponent,
       locale: locale ?? parent.locale,
       messages: messages ? mergeMessages(parent.messages, messages) : parent.messages,
-      calendarLocale: calendarLocale ?? parent.calendarLocale,
+      // A provider that names a locale but no calendar locale takes the grid of
+      // that locale; one that names neither keeps the grid of its parent, which
+      // the root has already resolved from "it-IT".
+      calendarLocale:
+        calendarLocale ??
+        (locale === undefined ? parent.calendarLocale : calendarLocaleFor(locale)),
       depth: parent.depth + 1,
     }),
     [linkComponent, locale, messages, calendarLocale, parent],

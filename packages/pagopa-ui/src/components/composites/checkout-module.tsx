@@ -38,6 +38,8 @@ type CheckoutModuleProps = React.ComponentProps<"section"> & {
   creditor?: string
   /** Legacy notice code. */
   noticeCode?: string
+  /** Legacy label of the amount row. @default messages.checkoutModule.amountLabel */
+  amountLabel?: string
   /** Legacy label of the notice-code row. @default messages.checkoutModule.noticeCodeLabel */
   noticeCodeLabel?: string
   /** Legacy row title when `title` is omitted. @default messages.checkoutModule.legacyTitle */
@@ -88,6 +90,7 @@ function CheckoutModule({
   legacyTitle: legacyTitleProp,
   legacyDescription: legacyDescriptionProp,
   legacySuggestion: legacySuggestionProp,
+  amountLabel: amountLabelProp,
   noticeCodeLabel: noticeCodeLabelProp,
   continueLabel: continueLabelProp,
   editLabel: editLabelProp,
@@ -99,6 +102,7 @@ function CheckoutModule({
   const legacyDescription = legacyDescriptionProp ?? t.legacyDescription
   const legacySuggestion = legacySuggestionProp ?? t.legacySuggestion
   const noticeCodeLabel = noticeCodeLabelProp ?? t.noticeCodeLabel
+  const amountLabel = amountLabelProp ?? t.amountLabel
   const continueLabel = continueLabelProp ?? t.continueLabel
   const editLabel = editLabelProp ?? t.editLabel
 
@@ -216,7 +220,9 @@ function CheckoutModule({
                     >
                       {amount ? (
                         <div>
-                          <dt className="pui:text-caption pui:text-muted-foreground">Importo</dt>
+                          <dt className="pui:text-caption pui:text-muted-foreground">
+                            {amountLabel}
+                          </dt>
                           <dd className="pui:break-words pui:text-title-xs">{amount}</dd>
                         </div>
                       ) : null}

@@ -2,8 +2,8 @@
 
 import type { ComponentProps } from "react"
 import { cn } from "@/lib/cn"
+import { useLocale } from "@/lib/ui-provider"
 import { DayButton, DayPicker, Nav } from "react-day-picker"
-import { it } from "react-day-picker/locale"
 
 export type { DateRange } from "react-day-picker"
 
@@ -44,12 +44,14 @@ function Calendar({
   className,
   classNames,
   components,
-  locale = it,
+  locale: localeProp,
   showOutsideDays = false,
   weekStartsOn = 0,
   navLayout = "after",
   ...props
 }: ComponentProps<typeof DayPicker>) {
+  const { calendarLocale } = useLocale()
+  const locale = localeProp ?? calendarLocale
   return (
     <DayPicker
       locale={locale}

@@ -189,7 +189,7 @@ export const ThemeScope: Story = {
     // classes the stylesheet needs.
     await expect(inner).not.toBeNull()
     await expect(inner).toHaveClass("pagopa-ui-root")
-    await expect(inner!.style.getPropertyValue("--pui-primary")).toBe("rgb(0, 0, 2)")
+    await expect(inner?.style.getPropertyValue("--pui-primary")).toBe("rgb(0, 0, 2)")
 
     await userEvent.click(canvas.getByRole("button", { name: "Apri" }))
     const dialog = await screen.findByRole("dialog", { name: "Dettagli" })
@@ -201,7 +201,7 @@ export const ThemeScope: Story = {
     await expect(scope).not.toBeNull()
     await expect(scope).toHaveClass("pagopa-ui-root", "demo-inner")
     await expect(scope).not.toHaveClass("demo-outer")
-    await expect(scope!.style.getPropertyValue("--pui-primary")).toBe("rgb(0, 0, 2)")
+    await expect(scope?.style.getPropertyValue("--pui-primary")).toBe("rgb(0, 0, 2)")
 
     // And the declaration cascades into the portalled subtree.
     await expect(window.getComputedStyle(dialog).getPropertyValue("--pui-primary").trim()).toBe(

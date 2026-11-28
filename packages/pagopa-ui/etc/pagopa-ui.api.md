@@ -465,6 +465,7 @@ export type CheckboxGroupProps = React_2.ComponentProps<"fieldset"> & {
     description?: React_2.ReactNode;
     error?: React_2.ReactNode;
     required?: boolean;
+    requiredLabel?: string;
 };
 
 // @public
@@ -501,6 +502,7 @@ export type CheckoutModuleProps = React_2.ComponentProps<"section"> & {
     amount?: string;
     creditor?: string;
     noticeCode?: string;
+    amountLabel?: string;
     noticeCodeLabel?: string;
     legacyTitle?: string;
     legacyDescription?: string;
@@ -566,13 +568,16 @@ export function Cookies(input: CookiesProps): React_2.JSX.Element;
 
 // @public (undocumented)
 export interface CookiesProps extends Omit<React_2.ComponentProps<"section">, "children"> {
+    acceptLabel?: string;
     children: React_2.ReactNode;
     closeLabel?: string;
     label?: string;
+    learnMoreLabel?: string;
     onAccept: () => void;
     onDismiss?: () => void;
     onLearnMore?: () => void;
     onReject: () => void;
+    rejectLabel?: string;
 }
 
 // @public
@@ -1363,6 +1368,8 @@ export interface Messages {
         openLabel: string;
         closeLabel: string;
         loadingLabel: string;
+        listLabel: (label: string) => string;
+        selectedLabel: (values: string[]) => string;
     };
     // (undocumented)
     avatar: {
@@ -1400,6 +1407,7 @@ export interface Messages {
         legacyDescription: string;
         legacySuggestion: string;
         noticeCodeLabel: string;
+        amountLabel: string;
         continueLabel: string;
         editLabel: string;
     };
@@ -1411,6 +1419,9 @@ export interface Messages {
     cookies: {
         closeLabel: string;
         label: string;
+        learnMoreLabel: string;
+        rejectLabel: string;
+        acceptLabel: string;
     };
     // (undocumented)
     correctionTag: {
@@ -1449,6 +1460,7 @@ export interface Messages {
         disabledText: string;
         draggingText: string;
         idleText: string;
+        selectionHint: (multiple: boolean) => string;
         uploadLabel: string;
         uploadLogoLabel: string;
         cancelLabel: string;
@@ -1491,6 +1503,7 @@ export interface Messages {
     footer: {
         brand: string;
         columnsLabel: string;
+        companyInformation: string;
     };
     // (undocumented)
     headerAlert: {
@@ -1565,6 +1578,8 @@ export interface Messages {
     // (undocumented)
     sideNav: {
         title: string;
+        expandLabel: (label: string) => string;
+        collapseLabel: (label: string) => string;
     };
     // (undocumented)
     skipToMainContent: {
@@ -1606,6 +1621,7 @@ export interface Messages {
         emptyLabel: string;
         emptyStateTitle: string;
         sortLabel: (column: string) => string;
+        rowLabel: (label: string) => string;
     };
     // (undocumented)
     tableList: {
@@ -2037,6 +2053,7 @@ export type RadioGroupFieldProps = RadioGroupProps & {
     description?: React_2.ReactNode;
     error?: React_2.ReactNode;
     required?: boolean;
+    requiredLabel?: string;
 };
 
 // @public

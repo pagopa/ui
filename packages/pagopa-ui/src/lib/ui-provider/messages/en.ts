@@ -22,6 +22,7 @@ export const enMessages: Messages = {
     legacyDescription: "Description",
     legacySuggestion: "Suggested because you are already a customer",
     noticeCodeLabel: "Notice code",
+    amountLabel: "Amount",
     continueLabel: "Continue",
     editLabel: "Edit",
   },
@@ -67,6 +68,7 @@ export const enMessages: Messages = {
     emptyLabel: "No results",
     emptyStateTitle: "No results",
     sortLabel: (column) => `Sort by ${column}`,
+    rowLabel: (label) => (label ? `Select ${label}` : "Select row"),
   },
   timeline: {
     label: "Timeline",
@@ -110,6 +112,8 @@ export const enMessages: Messages = {
     openLabel: "open list",
     closeLabel: "close list",
     loadingLabel: "Loading list",
+    listLabel: (label) => (label ? `List of ${label}` : "List"),
+    selectedLabel: (values) => `you selected ${values.join(", ")}`,
   },
   chip: {
     removeLabel: (label) => (label ? `Remove ${label}` : "Remove"),
@@ -132,6 +136,7 @@ export const enMessages: Messages = {
     disabledText: "Upload unavailable",
     draggingText: "Drop here to upload",
     idleText: "Drag files here or select them",
+    selectionHint: (multiple) => (multiple ? "You can select several files" : "Select a file"),
     uploadLabel: "Upload file",
     uploadLogoLabel: "Upload logo",
     cancelLabel: "Cancel",
@@ -189,10 +194,15 @@ export const enMessages: Messages = {
   cookies: {
     closeLabel: "Close",
     label: "Cookie preferences",
+    learnMoreLabel: "Learn more",
+    rejectLabel: "Reject all",
+    acceptLabel: "Accept all",
   },
   footer: {
     brand: "PagoPA",
     columnsLabel: "Footer links",
+    companyInformation:
+      "PagoPA S.p.A. - Società per azioni - Capitale sociale di euro 1,000,000 interamente versato - Sede legale in Roma, Piazza Colonna 370, CAP 00187 - N. di iscrizione a Registro Imprese di Roma, CF e P.IVA 15376371009",
   },
   pagination: {
     label: "Pagination",
@@ -206,6 +216,8 @@ export const enMessages: Messages = {
   },
   sideNav: {
     title: "In this section",
+    expandLabel: (label) => `Expand ${label}`,
+    collapseLabel: (label) => `Collapse ${label}`,
   },
   skipToMainContent: {
     children: "Skip to main content",
