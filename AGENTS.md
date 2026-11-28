@@ -88,9 +88,10 @@ Both Figma skills are graded by harbor-bench evals: `evals/` holds the graded
 scenarios and `harbor/` the session that runs them, next to each skill. The run
 commands, the tokens they need and what fails fast are in
 [Skill evals](./CONTRIBUTING.md#skill-evals); an instruction an eval grades moves
-with its eval. A pull request that touches a skill compiles the suites but never
-grades them — a graded run needs credentials a pull request does not get, so
-`skill-evals.yml` is dispatch and weekly only.
+with its eval. Grading is a manual act, before a release — no workflow runs it,
+because a graded run needs credentials a pull request does not get and minutes of
+model time per round. Compiling the suites is the cheap half and needs no token;
+do that in the same sitting.
 
 The reverse holds too: editing a skill, or a retrospective over agentic sessions
 (the `retro` skill), proposes the eval that pins the change or the finding. A

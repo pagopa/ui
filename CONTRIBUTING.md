@@ -368,23 +368,43 @@ against head skill — a local directory or a git source such as
 `pagopa/ui@main` — and writes `comparison.md`. Keep `--out .harbor` and
 `--runs-dir .harbor/runs`: `.harbor` is ignored.
 
-### Skill evals in CI
+### Grading by hand
 
-[`skill-evals.yml`](./.github/workflows/skill-evals.yml) splits the suite along
-the one line that matters — what a credential can buy:
+No workflow grades the suites. A graded session starts agent sessions against a
+live Figma file, so it needs `COPILOT_GITHUB_TOKEN` and `FIGMA_TOKEN`, and it
+spends minutes of model time per round: the verdict is a reward file, not an
+exit code a pull request can wait on. Both halves of it are a deliberate act, in
+this order.
 
-- **Compile** runs on every pull request that touches a skill, an `evals.json`
-  or `packages/ui-cli`, and needs no token. It converts both suites, which
-  rejects an eval the schema does not accept, and diffs every compiled
-  `task.toml` against the overlay meant to describe it: a renamed eval keeps its
-  old overlay directory, convert falls back to the defaults, and the run would
-  grade a task whose artifact excludes and `FIGMA_TOKEN` entry are wrong.
-- **Grade** starts agent sessions, so it is dispatch and weekly only. It
-  preflights `COPILOT_GITHUB_TOKEN` and `FIGMA_TOKEN` and fails by name when
-  either is missing, because a token-free subset would read as a pass for a
-  suite it never ran. A fork pull request cannot see the secrets, so it compiles
-  and stops there. Run it by hand before a release:
-  `gh workflow run skill-evals.yml -f skill=both`.
+**Compile first** — no token needed, and it catches the drift that actually
+happens. Convert both suites, which rejects an eval the schema does not accept,
+then check every compiled task against the overlay meant to describe it: when an
+eval is renamed in `evals.json` the overlay directory keeps the old name,
+convert falls back to the defaults, and the run would grade a task whose
+artifact excludes and `FIGMA_TOKEN` entry are wrong.
+
+```bash
+harbor-bench convert --model gpt-6-luna \
+  --evals .agents/skills/figma-to-code/evals/evals.json --out .harbor/code
+harbor-bench convert --model gpt-6-luna \
+  --evals packages/pagopa-ui/skills/figma-to-ui/evals/evals.json --out .harbor/ui
+
+for pair in "code:.agents/skills/figma-to-code" "ui:packages/pagopa-ui/skills/figma-to-ui"; do
+  for overlay in "${pair#*:}"/harbor/*/task.toml; do
+    task="$(basename "$(dirname "$overlay")")"
+    diff -q "$overlay" ".harbor/${pair%%:*}/tasks/$task/task.toml"
+  done
+done
+```
+
+A diff means the overlay no longer describes the eval: rename `harbor/<task>`,
+or fix the eval it belongs to. Both trees are meant to be byte-identical.
+
+**Grade second**, by hand, with both tokens exported and `PAGOPA_UI_REF` set to
+the checkout (`git rev-parse HEAD`) so the image is not cut from `main`. Run
+both suites before a release. `prepare.sh` fails by name when a token is
+missing, because a token-free subset would read as a pass for a suite it never
+ran.
 
 ### What fails fast
 
@@ -498,6 +518,9 @@ project in its area as affected. Projects with a `Dockerfile` are inferred by
 - `figma-drift.yml` — the weekly drift snapshot, component and token, and its
   review pull request.
 - `release.yaml` — the DX release manager, on `main`.
+
+No workflow grades the skill evals: they start agent sessions against a live
+Figma file, so [grading them is a manual act](#skill-evals) before a release.
 
 Deep checks attach seven-day `nx-profile-*` artifacts, including on failed runs,
 and the Chromatic run attaches the one its Storybook build wrote. Their
