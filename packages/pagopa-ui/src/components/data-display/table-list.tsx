@@ -4,7 +4,7 @@ import * as React from "react"
 
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
-import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
+import { PictogramFigure } from "@/components/icons/pictogram-figure"
 import {
   Empty,
   EmptyContent,
@@ -15,6 +15,7 @@ import {
 } from "@/components/primitives/empty"
 
 import { TableListItem, type TableListItemAction, type TableListItemField } from "./table-list-item"
+import { message } from "pagopa-ui-artwork/pictograms/message"
 
 interface TableListEmptyState {
   title?: string
@@ -75,7 +76,7 @@ function TableList<Row extends { id: React.Key }>({
         <Empty role="status" className="pui:rounded-lg pui:border">
           <EmptyHeader>
             <EmptyMedia aria-hidden="true">
-              {emptyState.pictogram ?? <PagoPAPictogram name="Message" size={56} />}
+              {emptyState.pictogram ?? <PictogramFigure asset={message} size={56} />}
             </EmptyMedia>
             {emptyState.title || emptyState.description ? (
               <>

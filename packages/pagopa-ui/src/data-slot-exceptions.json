@@ -6,6 +6,11 @@
       "component": "Avatar",
       "rule": "slot-name",
       "reason": "Two roots with names of their own by design: `avatar-identity` for the single identity and `avatar-pair` for the overlapping pair. Both names are selected from outside the component (the dropdown highlight rule in inputs/menus.tsx, the Avatar stories and the surfaces e2e spec), so collapsing them into a single `avatar` root would break those consumers and lose the distinction between the two appearances."
+    },
+    {
+      "component": "PagoPAPictogram",
+      "rule": "root-slot",
+      "reason": "The stamp is on the root, but the root is not in this file: the markup lives in the internal `PictogramFigure`, which stamps `data-slot=\"pago-pa-pictogram\"` and which `PagoPAPictogram` renders after resolving the name it was given. The shared figure is what lets the built-in components draw one known illustration without importing the whole pictogram catalogue, so the delegation is the point of the split rather than an oversight; the gate reads a component's own returned expression and reaches the figure only one level down from a host element, not through a component it renders."
     }
   ]
 }

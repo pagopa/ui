@@ -1,10 +1,11 @@
 "use client"
 
 import { useMessages } from "@/lib/ui-provider"
-import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
+import { PictogramFigure } from "@/components/icons/pictogram-figure"
 import { Timeline, type TimelineItem } from "@/components/data-display"
 
 import { Drawer, type DrawerProps } from "./drawer"
+import { historyDoc } from "pagopa-ui-artwork/pictograms/history-doc"
 
 /**
  * Props of {@link TimelineDrawer}. It keeps {@link Drawer}'s lifecycle — the
@@ -43,7 +44,7 @@ function TimelineDrawer({
       {...drawerProps}
       title={title}
       description={description}
-      icon={<PagoPAPictogram name="History Doc" size={40} />}
+      icon={<PictogramFigure asset={historyDoc} size={40} />}
       footer={footer}
     >
       <Timeline items={items} />

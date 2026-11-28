@@ -4,7 +4,7 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
+import { PictogramFigure } from "@/components/icons/pictogram-figure"
 import { Checkbox } from "@/components/primitives/checkbox"
 import { Heading, type HeadingTag } from "@/components/primitives/heading"
 import {
@@ -27,6 +27,7 @@ import { Tooltip } from "@/components/overlays/tooltip"
 
 import { TableHeaderField, type TableSort } from "./table-header-field"
 import { TableListField } from "./table-list-field"
+import { message } from "pagopa-ui-artwork/pictograms/message"
 
 export interface TableColumn<Row> {
   key: keyof Row & string
@@ -184,7 +185,7 @@ function Table<Row extends { id: React.Key }>({
         <Empty>
           <EmptyHeader>
             <EmptyMedia aria-hidden="true">
-              <PagoPAPictogram name="Message" size={56} />
+              <PictogramFigure asset={message} size={56} />
             </EmptyMedia>
             {emptyState.title || emptyState.description ? (
               <div className="pui:flex pui:w-full pui:flex-col pui:gap-0.5">

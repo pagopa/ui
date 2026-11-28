@@ -4,11 +4,12 @@ import * as React from "react"
 
 import { Icon } from "@/components/icons/icon"
 import { Default as ContentCopyIcon } from "@/components/icons/generated/content-copy"
-import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
+import { PictogramFigure } from "@/components/icons/pictogram-figure"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
 import { StatePanel, type StateProps } from "./state-panel"
+import { maintenance } from "pagopa-ui-artwork/pictograms/maintenance"
 
 /** Props of the negative outcome state, plus the optional error-code row. */
 export type ErrorStateProps = Omit<StateProps, "extra"> & {
@@ -109,10 +110,10 @@ function ErrorState({
       }
       icon={
         <div aria-hidden="true">
-          <PagoPAPictogram
+          <PictogramFigure
+            asset={maintenance}
             background="light"
             className="pui:grid pui:size-14 pui:place-items-center"
-            name="Maintenance"
             size={56}
           />
         </div>

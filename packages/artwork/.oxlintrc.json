@@ -1,7 +1,10 @@
 {
   "extends": ["../pagopa-ui/.oxlintrc.json"],
+  // Generated artwork modules: their shape is the manifest's, not a hand edit.
   "ignorePatterns": [
     "src/components/icons/icon-assets.ts",
-    "src/components/icons/pictogram-assets.ts"
+    "src/components/icons/pictogram-asset.ts",
+    "src/components/icons/pictogram-assets.ts",
+    "src/components/icons/pictograms/**"
   ]
 }
