@@ -68,7 +68,7 @@ function KpiFooter({
   )
 }
 
-export interface ProgressKpiProps {
+export interface ProgressKpiProps extends Omit<React.ComponentProps<"section">, "children"> {
   label: string
   value: number
   total?: number
@@ -95,14 +95,22 @@ function ProgressKpi({
   details,
   detail,
   locale = "it-IT",
+  className,
+  ref,
+  ...props
 }: ProgressKpiProps) {
   const t = useMessages("progressKpi")
   const percentage = progressPercentage(value, total)
   return (
     <section
+      ref={ref}
       aria-label={label}
       data-slot="progress-kpi"
-      className="pui:grid pui:gap-3 pui:rounded-3xl pui:border pui:bg-background pui:p-6"
+      className={cn(
+        "pui:grid pui:gap-3 pui:rounded-3xl pui:border pui:bg-background pui:p-6",
+        className,
+      )}
+      {...props}
     >
       <header data-slot="progress-kpi-header" className="pui:flex pui:items-center pui:gap-2">
         {channel ? (

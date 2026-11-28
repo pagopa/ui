@@ -1,11 +1,13 @@
 // Consumer DX contract for the public surface: a consumer writes the page, so
 // every public component must meet the contract a native element meets.
 //
-// The gate reads `src/pagopa-ui.ts` and judges the components that own state —
-// the ones whose props declare a controlled prop and its change callback —
-// because those are the components a consumer drives from their own state:
-// controlled and uncontrolled parity, `ref` and `className` declared and applied,
-// standard attributes passed through, and a props type the consumer can import.
+// The gate reads `src/pagopa-ui.ts` and judges every component it publishes:
+// `ref` and `className` declared and applied, standard attributes passed
+// through to the element, and a props type the consumer can import. The
+// components whose props declare a controlled prop and its change callback also
+// own state, so they owe controlled and uncontrolled parity too. A component
+// that cannot meet the contract yet is waived by name in
+// `src/consumer-dx-exceptions.json`, with the reason.
 import fs from "node:fs"
 
 import { z } from "zod"
@@ -115,6 +117,69 @@ function qualifiedName(value: unknown): string | null {
 
 const defaultOf = (control: string): string =>
   `default${control[0]?.toUpperCase() ?? ""}${control.slice(1)}`
+
+// The name a component keeps the props it does not destructure under.
+function restName(parameter: Ast | null): string | null {
+  if (parameter?.type !== "ObjectPattern") return null
+  for (const property of nodes(parameter.properties)) {
+    if (property.type !== "RestElement") continue
+    const argument = asNode(property.argument)
+    if (argument?.type === "Identifier" && typeof argument.name === "string") return argument.name
+  }
+  return null
+}
+
+// The names a component takes out of its props, which no longer travel inside
+// the rest object it spreads onto the element, and the name that object has.
+// A component reads them either straight in its signature or from the props
+// parameter it destructures further down.
+function propsShape(
+  parameter: Ast | null,
+  body: Ast,
+): { destructured: Set<string>; rest: string | null } {
+  const fromPattern = (pattern: Ast): { destructured: Set<string>; rest: string | null } => {
+    const destructured = new Set<string>()
+    for (const property of nodes(pattern.properties)) {
+      if (property.type === "RestElement") continue
+      const name = keyName(property.key)
+      if (name) destructured.add(name)
+    }
+    return { destructured, rest: restName(pattern) }
+  }
+
+  if (parameter?.type === "ObjectPattern") return fromPattern(parameter)
+  const parameterName = parameter?.type === "Identifier" ? parameter.name : null
+  if (typeof parameterName !== "string") return { destructured: new Set(), rest: null }
+
+  let found: { destructured: Set<string>; rest: string | null } = {
+    destructured: new Set(),
+    rest: parameterName,
+  }
+  walk(body, (node) => {
+    if (node.type !== "VariableDeclarator") return
+    const id = asNode(node.id)
+    const init = asNode(node.init)
+    if (id?.type !== "ObjectPattern" || init?.type !== "Identifier") return
+    if (init.name !== parameterName) return
+    found = fromPattern(id)
+  })
+  return found
+}
+
+// Whether a node hands the rest object on: to a JSX element, into an object
+// built for `useRender` or `mergeProps`, or as a call argument. Reading it in
+// place — `const { children, ...elementProps } = props` — does not count,
+// because the element may still never see what was read.
+function handsOn(node: Ast, rest: string): boolean {
+  const names = (value: unknown): boolean => {
+    const candidate = asNode(value)
+    return candidate?.type === "Identifier" && candidate.name === rest
+  }
+  if (node.type === "JSXSpreadAttribute") return names(node.argument)
+  if (node.type === "SpreadElement") return names(node.argument)
+  if (node.type === "CallExpression") return nodes(node.arguments).some(names)
+  return false
+}
 
 interface Module {
   readonly types: Map<string, Ast>
@@ -468,8 +533,8 @@ interface Finding {
   readonly problem: string
 }
 
-// The contract of one public component, defect by defect. A component that owns
-// no state is out of scope: its props already are the element's.
+// The contract of one public component, defect by defect: every component a
+// consumer renders owes them the props a native element takes.
 export function componentFindings(
   component: { name: string; file: string; local: string },
   reader: Reader,
@@ -498,14 +563,7 @@ export function componentFindings(
   if (!typeName || !props) {
     // Inline props cannot be inspected or imported, so the state a consumer
     // would drive is read from the signature instead.
-    const destructured = new Set<string>()
-    if (parameter?.type === "ObjectPattern") {
-      for (const property of nodes(parameter.properties)) {
-        if (property.type === "RestElement") continue
-        const name = keyName(property.key)
-        if (name) destructured.add(name)
-      }
-    }
+    const { destructured } = propsShape(parameter, body)
     const stateful = STATE_PAIRS.some(
       (pair) => destructured.has(pair.control) && destructured.has(pair.change),
     )
@@ -523,7 +581,6 @@ export function componentFindings(
   const stateful = STATE_PAIRS.some(
     (pair) => propsOfComponent.has(pair.control) && propsOfComponent.has(pair.change),
   )
-  if (!stateful) return { stateful, findings }
 
   if (!reader.publicTypeNames().has(`${props.file}\u0000${typeName}`)) {
     add(
@@ -533,18 +590,25 @@ export function componentFindings(
   }
 
   const used = new Set<string>()
-  let spread = false
+  // The object a component does not name again — `...props` — reaches the
+  // element through `useRender` and `mergeProps` too, so the rest name counts
+  // as applied wherever it is handed on.
+  const { destructured, rest } = propsShape(parameter, body)
+  let spreads = false
   walk(body, (node) => {
-    // Only a JSX spread hands the element the props a component declares. An
+    // Only the rest object hands the element the props the component declares. An
     // array or object spread inside the body — `<List items={[...items]} />` —
-    // carries nothing to the host element and must not paper over the checks.
-    if (node.type === "JSXSpreadAttribute") spread = true
+    // carries nothing to the host element.
+    if (rest && handsOn(node, rest)) spreads = true
     if (typeof node.name === "string") used.add(node.name)
   })
+  // A prop the body destructured out of that object is no longer inside it, so
+  // the spread cannot stand in for applying it: it has to be named again.
+  const applied = (name: string): boolean => (destructured.has(name) ? used.has(name) : spreads)
 
   // A prop is controlled state only when the component takes its change
   // callback too: `value` alone is a form value, as on `Switch`.
-  for (const pair of STATE_PAIRS) {
+  for (const pair of stateful ? STATE_PAIRS : []) {
     if (!propsOfComponent.has(pair.control) || !propsOfComponent.has(pair.change)) continue
     if (!propsOfComponent.has(defaultOf(pair.control))) {
       add("parity", `${pair.control} pairs with ${pair.change} but no ${defaultOf(pair.control)}`)
@@ -552,11 +616,10 @@ export function componentFindings(
   }
 
   if (!capabilities.className) add("className", `${typeName} has no className`)
-  else if (!spread && !used.has("className"))
-    add("className", "className is declared but never applied")
+  else if (!applied("className")) add("className", "className is declared but never applied")
 
   if (!capabilities.ref) add("ref", `${typeName} has no ref`)
-  else if (!spread && !used.has("ref")) add("ref", "ref is declared but never forwarded")
+  else if (!applied("ref")) add("ref", "ref is declared but never forwarded")
 
   if (!capabilities.attributes) {
     const inheritance = capabilities.unresolved
@@ -574,8 +637,7 @@ export function checkConsumerDx(workspace: Workspace): CheckReport {
   let stateful = 0
   for (const [name, component] of reader.surface()) {
     const result = componentFindings({ name, ...component }, reader)
-    if (!result.stateful) continue
-    stateful += 1
+    if (result.stateful) stateful += 1
     findings.push(...result.findings)
   }
 

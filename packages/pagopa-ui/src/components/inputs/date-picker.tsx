@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useRef, useState, type ComponentProps } from "react"
 import { cn } from "@/lib/cn"
 import { useLocale, useMessages } from "@/lib/ui-provider"
 import type { CalendarLocale, DateRange } from "@/components/primitives/calendar"
@@ -16,7 +16,7 @@ interface DatePickerRange {
   to: Date
 }
 
-type DatePickerProps = {
+type DatePickerProps = Omit<ComponentProps<"fieldset">, "children"> & {
   /** Panel label. @default messages.datePicker.label */
   label?: string
   onCancel: () => void
@@ -42,9 +42,9 @@ type DatePickerProps = {
   /** Panel confirm action text. @default messages.datePicker.confirmLabel */
   confirmLabel?: string
 } & (
-  | { mode?: "single"; value?: Date; onConfirm: (value: Date) => void }
-  | { mode: "range"; value?: DatePickerRange; onConfirm: (value: DatePickerRange) => void }
-)
+    | { mode?: "single"; value?: Date; onConfirm: (value: Date) => void }
+    | { mode: "range"; value?: DatePickerRange; onConfirm: (value: DatePickerRange) => void }
+  )
 
 function DatePicker(props: DatePickerProps) {
   const {
@@ -60,6 +60,8 @@ function DatePicker(props: DatePickerProps) {
     missingEndDateError: missingEndDateErrorProp,
     cancelLabel: cancelLabelProp,
     confirmLabel: confirmLabelProp,
+    ref,
+    ...rest
   } = props
   const t = useMessages("datePicker")
   const { locale: providerLocale, calendarLocale: providerCalendarLocale } = useLocale()
@@ -74,6 +76,11 @@ function DatePicker(props: DatePickerProps) {
   const confirmLabel = confirmLabelProp ?? t.confirmLabel
   const ids = useFieldIds()
   const root = useRef<HTMLFieldSetElement>(null)
+  const setRoot = (node: HTMLFieldSetElement | null) => {
+    root.current = node
+    if (typeof ref === "function") ref(node)
+    else if (ref) ref.current = node
+  }
   const value =
     props.mode === "range"
       ? props.value
@@ -140,7 +147,7 @@ function DatePicker(props: DatePickerProps) {
   return (
     <fieldset
       data-slot="date-picker"
-      ref={root}
+      ref={setRoot}
       aria-invalid={Boolean(error) || undefined}
       aria-describedby={error ? ids.errorId : undefined}
       aria-labelledby={`${ids.controlId}-label`}
@@ -148,6 +155,7 @@ function DatePicker(props: DatePickerProps) {
         "pui:flex pui:min-w-0 pui:w-full pui:max-w-85 pui:flex-col pui:gap-2 pui:rounded-2xl pui:bg-card pui:shadow-32",
         className,
       )}
+      {...rest}
     >
       {/* The source header stacks its label row and its month row directly (8049:39382,
           8258:45660), then a full-bleed divider. The stack gap buys the label row's

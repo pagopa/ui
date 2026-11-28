@@ -79,7 +79,7 @@ function FooterLinkRow({ link }: { link: FooterLink }) {
   )
 }
 
-export interface FooterProps {
+export interface FooterProps extends Omit<React.ComponentProps<"footer">, "children"> {
   /** Brand slot of the footer. @default messages.footer.brand */
   brand?: React.ReactNode
   /** Link target of the brand; the `#` placeholder keeps the source default. @default "#" */
@@ -107,6 +107,8 @@ function Footer({
   titleAs = "h2",
   columnsLabel: columnsLabelProp,
   className,
+  ref,
+  ...props
 }: FooterProps) {
   const t = useMessages("footer")
   const brand = brandProp ?? t.brand
@@ -116,7 +118,9 @@ function Footer({
   return (
     <footer
       data-slot="footer"
+      ref={ref}
       className={cn("pui:border-t pui:border-border pui:bg-background", className)}
+      {...props}
     >
       {/* The two source anatomies are alternatives: columns replace the band. */}
       {links.length && !columns.length ? (

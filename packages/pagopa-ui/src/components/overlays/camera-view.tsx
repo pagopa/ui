@@ -2,6 +2,7 @@
 
 import * as React from "react"
 
+import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 import { Icon } from "@/components/icons/icon"
 import { Default as PhotoIcon } from "@/components/icons/generated/photo"
@@ -11,7 +12,7 @@ import { Default as PhotoIcon } from "@/components/icons/generated/photo"
 // elbow) and a centred 4px guide line. The brackets sit 80px inside the
 // frame's edges, which the percentage inset reproduces at any width.
 /** Props of the camera framing overlay. */
-export interface CameraViewProps {
+export interface CameraViewProps extends Omit<React.ComponentProps<"figure">, "children"> {
   /** Announced instruction of the frame. @default messages.cameraView.label */
   label?: string
   /**
@@ -34,6 +35,9 @@ function CameraView({
   announcement: announcementProp,
   children,
   active = true,
+  className,
+  ref,
+  ...props
 }: CameraViewProps) {
   const t = useMessages("cameraView")
   const label = labelProp ?? t.label
@@ -41,8 +45,13 @@ function CameraView({
 
   return (
     <figure
+      ref={ref}
       data-slot="camera-view"
-      className="pui:relative pui:aspect-square pui:w-(--pui-camera-size) pui:max-w-full pui:overflow-hidden pui:rounded-2xl pui:bg-overlay pui:text-inverse-foreground"
+      className={cn(
+        "pui:relative pui:aspect-square pui:w-(--pui-camera-size) pui:max-w-full pui:overflow-hidden pui:rounded-2xl pui:bg-overlay pui:text-inverse-foreground",
+        className,
+      )}
+      {...props}
     >
       <div className="pui:absolute pui:inset-0 pui:grid pui:place-items-center">
         {children === undefined ? (

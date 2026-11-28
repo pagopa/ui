@@ -8,7 +8,10 @@ import { Default as ContentCopyIcon } from "@/components/icons/generated/content
 
 import { Snackbar } from "./snackbar"
 
-export interface SnackbarErrorCodeProps {
+export interface SnackbarErrorCodeProps extends Omit<
+  React.ComponentProps<"div">,
+  "children" | "title"
+> {
   /** Visible error message. @default messages.snackbarErrorCode.message */
   message?: React.ReactNode
   description?: React.ReactNode
@@ -20,6 +23,8 @@ export interface SnackbarErrorCodeProps {
   copiedLabel?: string
   /** Announced text when the clipboard write fails. @default messages.snackbarErrorCode.copyErrorLabel */
   copyErrorLabel?: string
+  /** ClassName applied to the snackbar surface. */
+  className?: string
 }
 
 function SnackbarErrorCode({
@@ -30,6 +35,9 @@ function SnackbarErrorCode({
   copyLabel: copyLabelProp,
   copiedLabel: copiedLabelProp,
   copyErrorLabel: copyErrorLabelProp,
+  className,
+  ref,
+  ...props
 }: SnackbarErrorCodeProps) {
   const t = useMessages("snackbarErrorCode")
   const message = messageProp ?? t.message
@@ -57,6 +65,9 @@ function SnackbarErrorCode({
   return (
     <Snackbar
       data-slot="snackbar-error-code"
+      {...props}
+      ref={ref}
+      className={className}
       tone="error"
       onDismiss={onDismiss}
       title={message}

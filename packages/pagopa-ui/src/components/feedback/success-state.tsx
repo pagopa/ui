@@ -9,11 +9,12 @@ import { StatePanel, type StateProps } from "./state-panel"
  *
  * Figma: OKState (node 733:22841)
  */
-function SuccessState({ className, ...props }: StateProps) {
+function SuccessState({ className, ref, ...props }: StateProps) {
   return (
     <StatePanel
       data-slot="success-state"
       {...props}
+      ref={ref}
       actionsClassName="pui:flex-col pui:items-center pui:gap-6"
       className={cn("pui:w-full pui:max-w-none", className)}
       contentClassName="pui:w-full pui:max-w-none pui:tablet-md:max-w-(--pui-state-width)"

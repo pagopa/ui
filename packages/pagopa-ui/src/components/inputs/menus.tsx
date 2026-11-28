@@ -277,7 +277,10 @@ function DropDownEmpty({
 }
 
 /** Props of the rich action and option menu. */
-export interface DropdownProps {
+export interface DropdownProps extends Omit<
+  React.ComponentProps<"button">,
+  "children" | "onClick"
+> {
   /** Visible label of the trigger button. */
   triggerLabel: React.ReactNode
   /** Ordinary rows; CTA/back rows keep their action semantics. */
@@ -326,6 +329,8 @@ function Dropdown({
   backLabel: backLabelProp,
   loadingLabel: loadingLabelProp,
   className,
+  ref,
+  ...props
 }: DropdownProps) {
   const t = useMessages("dropdown")
   const emptyTitle = emptyTitleProp ?? t.emptyTitle
@@ -337,7 +342,14 @@ function Dropdown({
     <DropdownMenu data-slot="dropdown">
       <DropdownMenuTrigger
         render={
-          <Button type="button" variant="outline" disabled={disabled} className={className} />
+          <Button
+            type="button"
+            variant="outline"
+            disabled={disabled}
+            className={className}
+            ref={ref}
+            {...props}
+          />
         }
       >
         {triggerLabel}
@@ -395,13 +407,15 @@ function Dropdown({
 }
 
 /** Props of the icon menu. */
-export interface MenuDropdownProps {
+export interface MenuDropdownProps extends Omit<React.ComponentProps<"button">, "children"> {
   /** Accessible name of the icon trigger. @default messages.menuDropdown.accessibleLabel */
   accessibleLabel?: string
   /** Rows of the menu, with the same item contract as `Dropdown`. */
   items: DropdownItem[]
   /** Accessible name of the popup list. */
   label?: string
+  /** ClassName applied to the icon trigger. */
+  className?: string
 }
 
 /**
@@ -410,7 +424,14 @@ export interface MenuDropdownProps {
  *
  * Figma: MenuDropDown (node 3262:40787)
  */
-function MenuDropdown({ accessibleLabel: accessibleLabelProp, items, label }: MenuDropdownProps) {
+function MenuDropdown({
+  accessibleLabel: accessibleLabelProp,
+  items,
+  label,
+  className,
+  ref,
+  ...props
+}: MenuDropdownProps) {
   const t = useMessages("menuDropdown")
   const accessibleLabel = accessibleLabelProp ?? t.accessibleLabel
 
@@ -418,7 +439,17 @@ function MenuDropdown({ accessibleLabel: accessibleLabelProp, items, label }: Me
   return (
     <DropdownMenu data-slot="menu-dropdown">
       <DropdownMenuTrigger
-        render={<Button type="button" variant="ghost" size="icon" aria-label={accessibleLabel} />}
+        render={
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label={accessibleLabel}
+            className={className}
+            ref={ref}
+            {...props}
+          />
+        }
       >
         <Icon source={MoreVertIcon} size={20} />
       </DropdownMenuTrigger>

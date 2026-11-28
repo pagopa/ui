@@ -5,7 +5,7 @@ import { Default as AccountBalanceIcon } from "@/components/icons/generated/acco
 
 import { BoxedModule } from "./boxed-module"
 
-export interface OrganizationModuleProps {
+export interface OrganizationModuleProps extends Omit<React.ComponentProps<"section">, "children"> {
   /** Organisation name; also the module title. */
   name: string
   /** Optional tax code. */
@@ -14,13 +14,21 @@ export interface OrganizationModuleProps {
   children?: React.ReactNode
 }
 
-function OrganizationModule({ name, fiscalCode, children }: OrganizationModuleProps) {
+function OrganizationModule({
+  name,
+  fiscalCode,
+  children,
+  ref,
+  ...props
+}: OrganizationModuleProps) {
   return (
     <BoxedModule
+      ref={ref}
       data-slot="organization-module"
       title={name}
       description={fiscalCode}
       icon={<Icon source={AccountBalanceIcon} />}
+      {...props}
     >
       {children}
     </BoxedModule>

@@ -3,11 +3,12 @@ import { cn } from "@/lib/cn"
 
 import { StatePanel, type StateProps } from "./state-panel"
 
-function WaitingState({ className, ...props }: StateProps) {
+function WaitingState({ className, ref, ...props }: StateProps) {
   return (
     <StatePanel
       data-slot="waiting-state"
       {...props}
+      ref={ref}
       actionsClassName="pui:mx-auto pui:w-full pui:max-w-(--pui-state-width) pui:flex-col pui:flex-nowrap pui:items-center pui:gap-6"
       className={cn("pui:w-full pui:max-w-none", className)}
       contentClassName="pui:w-full pui:max-w-none pui:tablet-md:max-w-(--pui-state-width)"

@@ -206,7 +206,9 @@ test("a component outside the public surface is not checked", () => {
   assert.equal(result.summary, "0 stateful component(s), 0 exempt")
 })
 
-test("a public component without a controlled pair is out of scope", () => {
+test("a component typed inline is judged on the state it destructures alone", () => {
+  // There is no props type to read the host surface from, so only the state a
+  // consumer would drive is in reach.
   const result = check({
     "src/pagopa-ui.ts": `export * from "./components/line"\n`,
     "src/components/line.tsx": STATELESS,
@@ -267,4 +269,69 @@ test("the check is a gate the command layer fails", async () => {
     conforming.dispose()
     violating.dispose()
   }
+})
+
+// A component without controlled state owes a consumer exactly what a stateful
+// one does: the surface is every public component, not the nine named pairs.
+const badge = ({ forwardedRef = true } = {}) => `"use client"
+
+import * as React from "react"
+
+interface BadgeProps extends Omit<React.ComponentProps<"span">, "children" | "ref"> {
+  children: React.ReactNode
+  ref?: React.Ref<HTMLSpanElement>
+}
+
+function Badge({ children, ref, ...props }: BadgeProps) {
+  return <span data-slot="badge"${forwardedRef ? " ref={ref}" : ""} {...props}>{children}</span>
+}
+
+export { Badge, type BadgeProps }
+`
+
+test("a stateless public component is judged on the same contract", () => {
+  const result = check({
+    "src/pagopa-ui.ts": `export * from "./components/badge"\n`,
+    "src/components/badge.tsx": badge(),
+  })
+  assert.deepEqual(result.problems, [])
+  assert.equal(result.summary, "0 stateful component(s), 0 exempt")
+})
+
+test("a stateless component that stops forwarding its ref fails", () => {
+  hasProblem(
+    check({
+      "src/pagopa-ui.ts": `export * from "./components/badge"\n`,
+      "src/components/badge.tsx": badge({ forwardedRef: false }),
+    }),
+    /badge\.tsx: Badge: ref is declared but never forwarded/,
+  )
+})
+
+test("a rest object handed to useRender and mergeProps reaches the element", () => {
+  const source = `"use client"
+
+import * as React from "react"
+import { mergeProps } from "@base-ui/react/merge-props"
+import { useRender } from "@base-ui/react/use-render"
+
+interface CardTitleProps extends Omit<React.ComponentProps<"div">, "children"> {
+  children: React.ReactNode
+}
+
+function CardTitle({ children, className, ref, ...props }: CardTitleProps) {
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps({ className }, props, { children, ref }),
+    state: { slot: "card-title" },
+  })
+}
+
+export { CardTitle, type CardTitleProps }
+`
+  const result = check({
+    "src/pagopa-ui.ts": `export * from "./components/card-title"\n`,
+    "src/components/card-title.tsx": source,
+  })
+  assert.deepEqual(result.problems, [])
 })

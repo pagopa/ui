@@ -7,7 +7,7 @@ import { cn } from "@/lib/cn"
  * Shared content contract of the application states (Waiting/OK/KO/Empty).
  * Empty states reuse the same channels on their own surface.
  */
-interface StateProps {
+interface StateProps extends Omit<React.ComponentProps<"section">, "children" | "title"> {
   /** Required heading of the state. */
   title: React.ReactNode
   /** Optional supporting copy. */
@@ -42,9 +42,13 @@ function StatePanel({
   messageClassName,
   titleClassName,
   actionsClassName,
+  ref,
+  ...props
 }: StateProps & { icon: React.ReactNode } & StatePanelLayoutProps) {
   return (
     <section
+      {...props}
+      ref={ref}
       data-slot="state-panel"
       className={cn(
         "pui:mx-auto pui:flex pui:max-w-xl pui:flex-col pui:items-center pui:gap-6 pui:bg-muted pui:px-6 pui:py-16 pui:text-center",

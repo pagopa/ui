@@ -26,7 +26,7 @@ function hasCurrentItem(item: NavItem): boolean {
   return Boolean(item.current || item.children?.some(hasCurrentItem))
 }
 
-export interface SideNavProps {
+export interface SideNavProps extends Omit<React.ComponentProps<"nav">, "children"> {
   /** Accessible name of the section. @default messages.sideNav.title */
   title?: string
   items: NavItem[]
@@ -48,6 +48,8 @@ function SideNav({
   expandLabel = defaultExpandLabel,
   collapseLabel = defaultCollapseLabel,
   className,
+  ref,
+  ...props
 }: SideNavProps) {
   const t = useMessages("sideNav")
   const title = titleProp ?? t.title
@@ -56,6 +58,7 @@ function SideNav({
   return (
     <nav
       data-slot="side-nav"
+      ref={ref}
       aria-label={title}
       data-condensed={condensed || undefined}
       className={cn(
@@ -63,6 +66,7 @@ function SideNav({
         condensed ? "pui:tablet:w-18" : "pui:tablet:w-75",
         className,
       )}
+      {...props}
     >
       {/* Source `Condensed=True, Device=Mobile` (1519:2721): a 48px head with the
           menu icon, the section name and the bottom divider; the items below are

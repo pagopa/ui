@@ -47,7 +47,10 @@ export interface TableColumn<Row> {
 
 const defaultTruncatedWidth = "16rem"
 
-export interface TableProps<Row extends { id: React.Key }> {
+export interface TableProps<Row extends { id: React.Key }> extends Omit<
+  React.ComponentProps<"section">,
+  "children"
+> {
   caption: string
   captionHidden?: boolean
   title?: string
@@ -109,6 +112,9 @@ function Table<Row extends { id: React.Key }>({
   actionsLabel: actionsLabelProp,
   emptyLabel: emptyLabelProp,
   emptyState: emptyStateProp,
+  className,
+  ref,
+  ...props
 }: TableProps<Row>) {
   const t = useMessages("table")
   const selectionLabel = selectionLabelProp ?? t.selectionLabel
@@ -146,9 +152,14 @@ function Table<Row extends { id: React.Key }>({
 
   return (
     <section
+      ref={ref}
       data-slot="table"
       aria-label={caption}
-      className="pui:@container/table pui:flex pui:min-w-0 pui:flex-col pui:gap-2 pui:rounded-lg pui:bg-secondary pui:p-2"
+      className={cn(
+        "pui:@container/table pui:flex pui:min-w-0 pui:flex-col pui:gap-2 pui:rounded-lg pui:bg-secondary pui:p-2",
+        className,
+      )}
+      {...props}
     >
       {title || description || actions ? (
         <header className="pui:flex pui:flex-wrap pui:items-start pui:justify-between pui:gap-4">

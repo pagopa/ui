@@ -10,7 +10,10 @@ import { useMessages } from "@/lib/ui-provider"
 const indicator =
   "pui:relative pui:shrink-0 pui:rounded-2xl pui:transition-[width,height,background-color] pui:motion-reduce:transition-none pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-5 pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
 
-export interface CarouselStepperProps {
+export interface CarouselStepperProps extends Omit<
+  React.ComponentProps<"div">,
+  "children" | "onChange"
+> {
   count: number
   activeIndex: number
   onChange: (index: number) => void
@@ -31,6 +34,9 @@ function CarouselStepper({
   onChange,
   label: labelProp,
   getControlLabel: getControlLabelProp,
+  className,
+  ref,
+  ...props
 }: CarouselStepperProps) {
   const t = useMessages("carouselStepper")
   const label = labelProp ?? t.label
@@ -45,9 +51,11 @@ function CarouselStepper({
   return (
     <div
       data-slot="carousel-stepper"
+      ref={ref}
       role="group"
       aria-label={label}
-      className="pui:flex pui:items-center pui:justify-center pui:gap-2"
+      className={cn("pui:flex pui:items-center pui:justify-center pui:gap-2", className)}
+      {...props}
     >
       {Array.from({ length: count }, (_, index) => (
         <button

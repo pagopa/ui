@@ -15,7 +15,9 @@ interface ListItemSuggestion {
   icon?: React.ReactNode
 }
 
-interface ListItemProps {
+// The row renders an anchor the provider supplies, a button or a div — three
+// element kinds, so the contract it can meet is the attribute one.
+interface ListItemProps extends Omit<React.HTMLAttributes<HTMLElement>, "children"> {
   /** Source composition of the row. */
   variant?:
     | "informative"
@@ -51,10 +53,6 @@ interface ListItemProps {
   chevron?: boolean
   /** Skeleton state of the row. */
   loading?: boolean
-  className?: string
-  id?: string
-  "data-testid"?: string
-  "aria-label"?: string
 }
 
 function ListItem({

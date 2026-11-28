@@ -2,6 +2,7 @@
 
 import * as React from "react"
 
+import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
 import {
@@ -23,7 +24,10 @@ interface TableListEmptyState {
   pictogram?: React.ReactNode
 }
 
-export interface TableListProps<Row extends { id: React.Key }> {
+export interface TableListProps<Row extends { id: React.Key }> extends Omit<
+  React.ComponentProps<"section">,
+  "children"
+> {
   /** Accessible name of the list region (source wrapper `aria-label`). */
   label: string
   rows: Row[]
@@ -50,6 +54,9 @@ function TableList<Row extends { id: React.Key }>({
   pagination,
   emptyLabel: emptyLabelProp,
   emptyState: emptyStateProp,
+  className,
+  ref,
+  ...props
 }: TableListProps<Row>) {
   const t = useMessages("tableList")
   const actionFallbackLabel = actionFallbackLabelProp ?? t.actionFallbackLabel
@@ -59,9 +66,11 @@ function TableList<Row extends { id: React.Key }>({
   if (!rows.length) {
     return (
       <section
+        ref={ref}
         data-slot="table-list"
         aria-label={label}
-        className="pui:flex pui:flex-col pui:gap-8"
+        className={cn("pui:flex pui:flex-col pui:gap-8", className)}
+        {...props}
       >
         <Empty role="status" className="pui:rounded-lg pui:border">
           <EmptyHeader>
@@ -85,7 +94,13 @@ function TableList<Row extends { id: React.Key }>({
     )
   }
   return (
-    <section data-slot="table-list" aria-label={label} className="pui:flex pui:flex-col pui:gap-8">
+    <section
+      ref={ref}
+      data-slot="table-list"
+      aria-label={label}
+      className={cn("pui:flex pui:flex-col pui:gap-8", className)}
+      {...props}
+    >
       <ul className="pui:flex pui:flex-col pui:gap-4">
         {rows.map((row) => (
           <TableListItem

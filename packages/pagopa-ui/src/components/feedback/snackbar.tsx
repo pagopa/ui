@@ -10,7 +10,7 @@ import { Default as CloseIcon } from "@/components/icons/generated/close"
 import { statusIcons, toneStyles, type Tone } from "./tones"
 
 /** Props of {@link Snackbar}. */
-interface SnackbarProps {
+interface SnackbarProps extends Omit<React.ComponentProps<"div">, "children" | "title"> {
   /** Optional title of the message. */
   title?: React.ReactNode
   /** Message body; the snackbar's announcing role follows `tone`. */
@@ -38,6 +38,8 @@ function Snackbar({
   tone = "info",
   dismissLabel: dismissLabelProp,
   className,
+  ref,
+  ...props
 }: SnackbarProps) {
   const t = useMessages("snackbar")
   const dismissLabel = dismissLabelProp ?? t.dismissLabel
@@ -49,6 +51,8 @@ function Snackbar({
       role={tone === "error" ? "alert" : "status"}
       data-slot="snackbar"
       data-tone={tone}
+      ref={ref}
+      {...props}
       className={cn(
         "pui:min-h-14 pui:w-(--pui-overlay-width) pui:max-w-[calc(100vw-var(--pui-page-gutter))] pui:items-start pui:rounded-lg pui:border pui:p-4 pui:shadow-32",
         hasFooter

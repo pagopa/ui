@@ -19,7 +19,7 @@ type HeaderAlertTone = Tone | "default"
 /**
  * Props of {@link HeaderAlert}. The full-width source band above the header.
  */
-interface HeaderAlertProps {
+interface HeaderAlertProps extends Omit<React.ComponentProps<"div">, "children"> {
   /** Copy of the band. */
   children: React.ReactNode
   /** Semantic tone; `default` is the neutral band without a status icon. @default "info" */
@@ -30,6 +30,7 @@ interface HeaderAlertProps {
   onDismiss?: () => void
   /** Accessible name of the dismiss control. @default messages.headerAlert.dismissLabel */
   dismissLabel?: string
+  className?: string
 }
 
 // The source tone instances: the published PagoPA glyphs the pinned set draws —
@@ -48,6 +49,9 @@ function HeaderAlert({
   action,
   onDismiss,
   dismissLabel: dismissLabelProp,
+  className,
+  ref,
+  ...props
 }: HeaderAlertProps) {
   const t = useMessages("headerAlert")
   const dismissLabel = dismissLabelProp ?? t.dismissLabel
@@ -62,9 +66,12 @@ function HeaderAlert({
     <div
       data-slot="header-alert"
       role={tone === "error" ? "alert" : "status"}
+      ref={ref}
+      {...props}
       className={cn(
         "pui:text-label-mini-sb",
         isDefault ? "pui:bg-selection-soft pui:text-foreground" : toneStyles[tone],
+        className,
       )}
     >
       <div

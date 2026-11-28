@@ -19,7 +19,10 @@ export interface IdentityProviderPickerOption {
   onClick?: ComponentProps<"a">["onClick"]
 }
 
-export interface IdentityProviderPickerProps {
+export interface IdentityProviderPickerProps extends Omit<
+  React.ComponentProps<"section">,
+  "children"
+> {
   title: string
   closeLabel: string
   onClose: () => void
@@ -30,9 +33,11 @@ export interface IdentityProviderPickerProps {
   className?: string
 }
 
-export interface IdentityProviderPickerRowProps extends IdentityProviderPickerOption {
-  className?: string
-}
+export type IdentityProviderPickerRowProps = IdentityProviderPickerOption &
+  Omit<
+    React.ComponentProps<"a">,
+    "children" | "href" | "id" | "label" | "onClick" | "rel" | "target"
+  >
 
 function IdentityProviderPickerRow({
   id,
@@ -43,10 +48,13 @@ function IdentityProviderPickerRow({
   rel,
   onClick,
   className,
+  ref,
+  ...props
 }: IdentityProviderPickerRowProps) {
   const Link = useLinkComponent()
   return (
     <Link
+      ref={ref}
       data-slot="identity-provider-picker-row"
       className={cn(
         "pui:flex pui:min-h-15 pui:w-full pui:items-center pui:justify-between pui:gap-3 pui:rounded-lg pui:bg-background pui:p-4 pui:text-left pui:text-muted-foreground pui:ring-1 pui:ring-inset pui:ring-border pui:outline-none pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring pui:forced-colors:ring-0 pui:forced-colors:outline-1 pui:forced-colors:outline-solid pui:forced-colors:outline-[CanvasText]",
@@ -57,6 +65,7 @@ function IdentityProviderPickerRow({
       onClick={onClick}
       rel={rel ?? (target === "_blank" ? "noreferrer" : undefined)}
       target={target}
+      {...props}
     >
       <span
         className="pui:min-w-0 pui:text-caption-sb pui:leading-4 pui:text-muted-foreground"
@@ -83,11 +92,14 @@ function IdentityProviderPickerView({
   device = "mobile",
   titleAs = "h2",
   className,
+  ref,
+  ...props
 }: IdentityProviderPickerProps) {
   const titleId = useId()
 
   return (
     <section
+      ref={ref}
       data-slot="identity-provider-picker-view"
       aria-labelledby={titleId}
       // The source draws the module 410 wide from the tablet device step up
@@ -98,6 +110,7 @@ function IdentityProviderPickerView({
       )}
       data-id-module="true"
       data-device={device}
+      {...props}
     >
       <header
         className={cn(

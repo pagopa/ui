@@ -11,7 +11,10 @@ const levelStyles = {
   3: "pui:text-label-mini-sb pui:leading-[1.2] pui:uppercase pui:text-muted-foreground",
 } as const
 
-export interface SectionHeaderProps {
+export interface SectionHeaderProps extends Omit<
+  React.ComponentProps<"div">,
+  "children" | "title"
+> {
   /** Decorative icon (source "Decorative icon"). */
   icon?: React.ReactNode
   title: React.ReactNode
@@ -34,14 +37,18 @@ function SectionHeader({
   level = 1,
   titleAs: Title = "h2",
   className,
+  ref,
+  ...props
 }: SectionHeaderProps) {
   return (
     <div
       data-slot="section-header"
+      ref={ref}
       className={cn(
         "pui:flex pui:min-w-0 pui:items-center pui:justify-between pui:gap-4",
         className,
       )}
+      {...props}
     >
       <div className="pui:flex pui:min-w-0 pui:flex-1 pui:items-start pui:gap-2 pui:tablet:items-center">
         {icon ? (

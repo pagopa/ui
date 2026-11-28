@@ -11,7 +11,7 @@ import { useMessages } from "@/lib/ui-provider"
 type PopperPointer = "left" | "center" | "right"
 
 /** Props of {@link Popper}. The caller owns its placement and visibility. */
-interface PopperProps {
+interface PopperProps extends Omit<React.ComponentProps<"div">, "children"> {
   /** ID referenced by the related field's `aria-describedby`. */
   id: string
   /** Message associated with the field. */
@@ -56,16 +56,20 @@ function Popper({
   pointer = "center",
   dismissLabel: dismissLabelProp,
   className,
+  ref,
+  ...props
 }: PopperProps) {
   const t = useMessages("popper")
   const dismissLabel = dismissLabelProp ?? t.dismissLabel
 
   return (
     <div
+      ref={ref}
       data-slot="popper"
       data-tone={tone}
       data-pointer={pointer}
       className={cn("pui:w-full", className)}
+      {...props}
     >
       <div
         aria-hidden="true"

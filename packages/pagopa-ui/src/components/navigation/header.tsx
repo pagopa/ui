@@ -8,7 +8,7 @@ import { Icon } from "@/components/icons/icon"
 import { Down as ChevronDownIcon } from "@/components/icons/generated/chevron"
 
 /** Props of {@link Header}. The identity slots are data, not children. */
-interface HeaderProps {
+interface HeaderProps extends Omit<React.ComponentProps<"header">, "children"> {
   /** Product identity. */
   product: {
     /** Product or institution name. */
@@ -37,7 +37,7 @@ interface HeaderProps {
   className?: string
 }
 
-function Header({ product, user, actions, className }: HeaderProps) {
+function Header({ product, user, actions, className, ref, ...props }: HeaderProps) {
   const Link = useLinkComponent()
   const productContent = (
     <>
@@ -88,7 +88,12 @@ function Header({ product, user, actions, className }: HeaderProps) {
   ) : null
 
   return (
-    <header data-slot="header" className={cn("pui:border-b pui:bg-background", className)}>
+    <header
+      data-slot="header"
+      ref={ref}
+      className={cn("pui:border-b pui:bg-background", className)}
+      {...props}
+    >
       {/* Mobile 320x77 and desktop 1200x103 share the bar: the source keeps a
           single row at both devices and only the identity collapses. */}
       <div className="pui:mx-auto pui:flex pui:min-h-19 pui:max-w-7xl pui:items-center pui:justify-between pui:gap-2 pui:px-6 pui:py-4 pui:tablet:min-h-(--pui-header-height) pui:tablet:gap-6">

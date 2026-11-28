@@ -15,7 +15,7 @@ export interface Feature {
   action?: { label: string; href: string }
 }
 
-export interface FeatureListProps {
+export interface FeatureListProps extends Omit<React.ComponentProps<"ul">, "children"> {
   features: Feature[]
   /** Numeric markers instead of icons. */
   numbered?: boolean
@@ -28,11 +28,15 @@ function FeatureList({
   numbered = false,
   className,
   titleAs: Title = "h3",
+  ref,
+  ...props
 }: FeatureListProps) {
   const Link = useLinkComponent()
   return (
     <ul
       data-slot="feature-list"
+      ref={ref}
+      {...props}
       className={cn("pui:grid pui:gap-4 pui:tablet:grid-cols-2", className)}
     >
       {features.map((feature, index) => (

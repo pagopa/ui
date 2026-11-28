@@ -1,3 +1,5 @@
+import * as React from "react"
+
 import { cn } from "@/lib/cn"
 
 // Source `237:1307`: a component set of seven invisible spacers (`Dimensione`),
@@ -18,7 +20,7 @@ const sizeClasses: Record<SpacerSize, string> = {
 }
 
 /** Props of the vertical spacer. */
-export interface SpacerProps {
+export interface SpacerProps extends Omit<React.ComponentProps<"div">, "children"> {
   size?: SpacerSize
   className?: string
 }
@@ -29,8 +31,16 @@ export interface SpacerProps {
  *
  * Figma: Spacing (node 237:1307)
  */
-function Spacer({ size = 4, className }: SpacerProps) {
-  return <div aria-hidden="true" data-slot="spacer" className={cn(sizeClasses[size], className)} />
+function Spacer({ size = 4, className, ref, ...props }: SpacerProps) {
+  return (
+    <div
+      aria-hidden="true"
+      data-slot="spacer"
+      ref={ref}
+      {...props}
+      className={cn(sizeClasses[size], className)}
+    />
+  )
 }
 
 export { Spacer }

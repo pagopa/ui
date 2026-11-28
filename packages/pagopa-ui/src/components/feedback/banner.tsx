@@ -38,7 +38,8 @@ export interface BannerBaseProps {
   className?: string
 }
 
-type BannerProps = BannerBaseProps &
+type BannerProps = Omit<React.ComponentProps<"section">, "children" | "title"> &
+  BannerBaseProps &
   (
     | {
         title: React.ReactNode
@@ -67,6 +68,8 @@ function Banner({
   titleAs: Title = "h2",
   dismissLabel: dismissLabelProp,
   className,
+  ref,
+  ...props
 }: BannerProps) {
   const t = useMessages("banner")
   const dismissLabel = dismissLabelProp ?? t.dismissLabel
@@ -91,6 +94,8 @@ function Banner({
       role="status"
       aria-label={title ? undefined : label}
       data-slot="banner"
+      ref={ref}
+      {...props}
       className={cn(
         "pui:relative pui:w-full pui:rounded-lg pui:border pui:p-4",
         bannerColors[color],

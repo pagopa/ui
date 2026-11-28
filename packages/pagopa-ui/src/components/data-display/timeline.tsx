@@ -220,13 +220,13 @@ function TimelineTouchpoints({
   )
 }
 
-export interface TimelineProps {
+export interface TimelineProps extends Omit<React.ComponentProps<"ol">, "children"> {
   items: TimelineItem[]
   /** Accessible name of the timeline list. @default messages.timeline.label */
   label?: string
 }
 
-function Timeline({ items, label: labelProp }: TimelineProps) {
+function Timeline({ items, label: labelProp, className, ref, ...props }: TimelineProps) {
   const t = useMessages("timeline")
   const label = labelProp ?? t.label
   // A row without a timestamp still reserves the leading column when a sibling
@@ -239,7 +239,13 @@ function Timeline({ items, label: labelProp }: TimelineProps) {
     // gap and the stacked header in the drawer-width frames. The container is
     // the query, so a timeline inside a 417px panel gets the drawer
     // composition without the caller choosing a device.
-    <ol data-slot="timeline" aria-label={label} className="pui:@container/timeline pui:grid">
+    <ol
+      ref={ref}
+      data-slot="timeline"
+      aria-label={label}
+      className={cn("pui:@container/timeline pui:grid", className)}
+      {...props}
+    >
       {items.map((item, index) => {
         const status = item.status ?? "default"
         const last = index === items.length - 1

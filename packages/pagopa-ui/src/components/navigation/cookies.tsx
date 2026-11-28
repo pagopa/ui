@@ -2,12 +2,13 @@
 
 import * as React from "react"
 
+import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 import { Icon } from "@/components/icons/icon"
 import { Default as CloseIcon } from "@/components/icons/generated/close"
 import { Button } from "@/components/primitives/button"
 
-export interface CookiesProps {
+export interface CookiesProps extends Omit<React.ComponentProps<"section">, "children"> {
   /** Title and copy of the bar. */
   children: React.ReactNode
   /** Fired by the "Accetta tutti" action. */
@@ -32,6 +33,9 @@ function Cookies({
   onDismiss,
   closeLabel: closeLabelProp,
   label: labelProp,
+  className,
+  ref,
+  ...props
 }: CookiesProps) {
   const t = useMessages("cookies")
   const closeLabel = closeLabelProp ?? t.closeLabel
@@ -55,8 +59,13 @@ function Cookies({
   return (
     <section
       data-slot="cookies"
+      ref={ref}
       aria-label={label}
-      className="pui:fixed pui:inset-x-3 pui:bottom-3 pui:z-50 pui:mx-auto pui:flex pui:max-w-4xl pui:flex-col pui:gap-8 pui:bg-background pui:p-6 pui:shadow-32 pui:desktop:flex-row pui:desktop:flex-nowrap pui:desktop:items-center"
+      className={cn(
+        "pui:fixed pui:inset-x-3 pui:bottom-3 pui:z-50 pui:mx-auto pui:flex pui:max-w-4xl pui:flex-col pui:gap-8 pui:bg-background pui:p-6 pui:shadow-32 pui:desktop:flex-row pui:desktop:flex-nowrap pui:desktop:items-center",
+        className,
+      )}
+      {...props}
     >
       <div className="pui:flex pui:min-w-0 pui:flex-1 pui:items-start pui:justify-between pui:gap-4 pui:tablet:gap-6 pui:desktop:items-center">
         <p className="pui:min-w-0 pui:flex-1 pui:text-label-mini pui:text-muted-foreground">

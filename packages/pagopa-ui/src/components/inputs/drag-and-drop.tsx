@@ -28,7 +28,8 @@ function replaceInputFiles(input: HTMLInputElement, next: File[]) {
   }
 }
 
-export interface DragAndDropProps extends Omit<FieldStateProps, "label"> {
+export interface DragAndDropProps
+  extends Omit<FieldStateProps, "label">, Omit<React.ComponentProps<"div">, "children"> {
   id?: string
   /** Visible field label. @default messages.dragAndDrop.label */
   label?: React.ReactNode
@@ -100,6 +101,7 @@ function DragAndDrop({
   multiple,
   name,
   className,
+  ref,
   onFilesChange,
   loading = false,
   onCancel,
@@ -124,6 +126,7 @@ function DragAndDrop({
   removeFileLabel: removeFileLabelProp,
   singleFileError: singleFileErrorProp,
   invalidFormatError: invalidFormatErrorProp,
+  ...props
 }: DragAndDropProps) {
   const t = useMessages("dragAndDrop")
   const label = labelProp ?? t.label
@@ -220,7 +223,7 @@ function DragAndDrop({
   )
 
   return (
-    <div data-slot="drag-and-drop" className="pui:grid pui:gap-1.5">
+    <div ref={ref} data-slot="drag-and-drop" className="pui:grid pui:gap-1.5" {...props}>
       <FieldLabel
         htmlFor={ids.controlId}
         label={label}

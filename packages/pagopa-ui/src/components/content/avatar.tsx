@@ -33,27 +33,28 @@ interface AvatarIdentity {
 }
 
 /** Props of {@link Avatar}. */
-type AvatarProps = AvatarIdentity & {
-  /** Selected state; owned by the calling control. @default false */
-  selected?: boolean
-  /** Loading state; never erases the selection. */
-  loading?: boolean
-  /** Size step of the component. @default "medium" */
-  size?: "compact" | "small" | "medium" | "large"
-  /** Optional presence cue. */
-  status?: "online" | "offline" | "busy"
-  /**
-   * Announced presence text, from the status key: the caller owns the phrase.
-   * @default messages.avatar.statusLabel
-   */
-  statusLabel?: (status: "online" | "offline" | "busy") => string
-  /** Announced text of the selected state. @default messages.avatar.selectedLabel */
-  selectedLabel?: string
-  /** Second identity composed with the primary one. */
-  secondary?: AvatarIdentity
-  /** ClassName applied to the avatar wrapper. */
-  className?: string
-}
+type AvatarProps = Omit<React.ComponentProps<"span">, "children"> &
+  AvatarIdentity & {
+    /** Selected state; owned by the calling control. @default false */
+    selected?: boolean
+    /** Loading state; never erases the selection. */
+    loading?: boolean
+    /** Size step of the component. @default "medium" */
+    size?: "compact" | "small" | "medium" | "large"
+    /** Optional presence cue. */
+    status?: "online" | "offline" | "busy"
+    /**
+     * Announced presence text, from the status key: the caller owns the phrase.
+     * @default messages.avatar.statusLabel
+     */
+    statusLabel?: (status: "online" | "offline" | "busy") => string
+    /** Announced text of the selected state. @default messages.avatar.selectedLabel */
+    selectedLabel?: string
+    /** Second identity composed with the primary one. */
+    secondary?: AvatarIdentity
+    /** ClassName applied to the avatar wrapper. */
+    className?: string
+  }
 
 const avatarSizes = {
   compact: "pui:size-8",
@@ -69,6 +70,7 @@ function Avatar({
   selectedLabel: selectedLabelProp,
   secondary,
   className,
+  ref,
   ...props
 }: AvatarProps) {
   const t = useMessages("avatar")
@@ -78,6 +80,7 @@ function Avatar({
   return (
     <span
       data-slot={secondary ? "avatar-pair" : "avatar-identity"}
+      ref={ref}
       className={cn("pui:relative pui:inline-flex pui:shrink-0", avatarSizes[size], className)}
     >
       <AvatarFace

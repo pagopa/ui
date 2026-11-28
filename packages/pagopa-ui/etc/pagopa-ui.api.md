@@ -193,7 +193,7 @@ export interface AvatarIdentity {
 }
 
 // @public
-export type AvatarProps = AvatarIdentity & {
+export type AvatarProps = Omit<React_2.ComponentProps<"span">, "children"> & AvatarIdentity & {
     selected?: boolean;
     loading?: boolean;
     size?: "compact" | "small" | "medium" | "large";
@@ -263,7 +263,7 @@ export type BannerDirection = "horizontal" | "vertical";
 export type BannerHierarchy = "primary" | "secondary" | "tertiary";
 
 // @public (undocumented)
-export type BannerProps = BannerBaseProps & ({
+export type BannerProps = Omit<React_2.ComponentProps<"section">, "children" | "title"> & BannerBaseProps & ({
     title: React_2.ReactNode;
     label?: string;
 } | {
@@ -272,7 +272,7 @@ export type BannerProps = BannerBaseProps & ({
 });
 
 // @public
-export function Breadcrumb(input: BreadcrumbProps): JSX.Element;
+export function Breadcrumb(input: BreadcrumbProps): React_2.JSX.Element;
 
 // @public (undocumented)
 export interface BreadcrumbItem {
@@ -283,7 +283,7 @@ export interface BreadcrumbItem {
 }
 
 // @public
-export type BreadcrumbProps = {
+export type BreadcrumbProps = Omit<React_2.ComponentProps<"nav">, "children"> & {
     className?: string;
     "aria-label"?: string;
 } & ({
@@ -337,7 +337,7 @@ export interface CalendarLocale {
 export function CameraView(input: CameraViewProps): React_2.JSX.Element;
 
 // @public
-export interface CameraViewProps {
+export interface CameraViewProps extends Omit<React_2.ComponentProps<"figure">, "children"> {
     // (undocumented)
     active?: boolean;
     announcement?: (state: {
@@ -398,7 +398,7 @@ export type CardTitleProps = ElementProps<"div">;
 export function CarouselStepper(input: CarouselStepperProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export interface CarouselStepperProps {
+export interface CarouselStepperProps extends Omit<React_2.ComponentProps<"div">, "children" | "onChange"> {
     // (undocumented)
     activeIndex: number;
     // (undocumented)
@@ -565,7 +565,7 @@ export type ChoiceFieldProps = Omit<FieldStateProps, "label"> & {
 export function Cookies(input: CookiesProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export interface CookiesProps {
+export interface CookiesProps extends Omit<React_2.ComponentProps<"section">, "children"> {
     children: React_2.ReactNode;
     closeLabel?: string;
     label?: string;
@@ -576,10 +576,11 @@ export interface CookiesProps {
 }
 
 // @public
-export function CorrectionTag(input: CorrectionTagProps): JSX.Element;
+export function CorrectionTag(input: CorrectionTagProps): React_2.JSX.Element;
 
 // @public
-export interface CorrectionTagProps {
+export interface CorrectionTagProps extends Omit<React_2.ComponentProps<"span">, "children"> {
+    className?: string;
     label?: string;
     status: "valid" | "not-valid";
 }
@@ -614,7 +615,7 @@ export type DatePickerFieldProps = FieldStateProps & Omit<React_2.ComponentProps
 };
 
 // @public (undocumented)
-export type DatePickerProps = {
+export type DatePickerProps = Omit<ComponentProps<"fieldset">, "children"> & {
     label?: string;
     onCancel: () => void;
     today?: Date;
@@ -675,10 +676,10 @@ export interface DialogProps extends Omit<React_2.ComponentProps<"div">, "title"
 }
 
 // @public (undocumented)
-export function DownloadCard(input: DownloadCardProps): JSX.Element;
+export function DownloadCard(input: DownloadCardProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export type DownloadCardProps = {
+export type DownloadCardProps = Omit<React_2.ComponentProps<"div">, "children"> & {
     fileName: string;
     meta?: string;
     downloadLabel?: (fileName: string) => string;
@@ -694,7 +695,7 @@ export type DownloadCardProps = {
 export function DragAndDrop(input: DragAndDropProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export interface DragAndDropProps extends Omit<FieldStateProps, "label"> {
+export interface DragAndDropProps extends Omit<FieldStateProps, "label">, Omit<React_2.ComponentProps<"div">, "children"> {
     // (undocumented)
     accept?: string;
     cancelLabel?: string;
@@ -812,7 +813,7 @@ export interface DropDownItemBase extends ItemRowContent {
 }
 
 // @public
-export interface DropdownProps {
+export interface DropdownProps extends Omit<React_2.ComponentProps<"button">, "children" | "onClick"> {
     back?: {
         label?: string;
         onSelect: () => void;
@@ -872,7 +873,7 @@ export interface ErrorSummaryItem {
 }
 
 // @public (undocumented)
-export interface ErrorSummaryProps {
+export interface ErrorSummaryProps extends Omit<React_2.ComponentProps<"div">, "children" | "title"> {
     className?: string;
     errors: ErrorSummaryItem[];
     title?: React_2.ReactNode;
@@ -896,7 +897,7 @@ export interface Feature {
 export function FeatureList(input: FeatureListProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export interface FeatureListProps {
+export interface FeatureListProps extends Omit<React_2.ComponentProps<"ul">, "children"> {
     // (undocumented)
     className?: string;
     // (undocumented)
@@ -941,7 +942,7 @@ export type FooterLink = Omit<NavItem, "badge" | "children"> & {
 };
 
 // @public (undocumented)
-export interface FooterProps {
+export interface FooterProps extends Omit<React_2.ComponentProps<"footer">, "children"> {
     brand?: React_2.ReactNode;
     className?: string;
     columns?: FooterColumn[];
@@ -975,9 +976,11 @@ export function Header(input: HeaderProps): React_2.JSX.Element;
 export function HeaderAlert(input: HeaderAlertProps): React_2.JSX.Element;
 
 // @public
-export interface HeaderAlertProps {
+export interface HeaderAlertProps extends Omit<React_2.ComponentProps<"div">, "children"> {
     action?: React_2.ReactNode;
     children: React_2.ReactNode;
+    // (undocumented)
+    className?: string;
     dismissLabel?: string;
     onDismiss?: () => void;
     tone?: HeaderAlertTone;
@@ -987,7 +990,7 @@ export interface HeaderAlertProps {
 export type HeaderAlertTone = Tone | "default";
 
 // @public
-export interface HeaderProps {
+export interface HeaderProps extends Omit<React_2.ComponentProps<"header">, "children"> {
     actions?: React_2.ReactNode;
     className?: string;
     product: {
@@ -1200,7 +1203,7 @@ export interface IdentityProviderPickerOption {
 }
 
 // @public (undocumented)
-export interface IdentityProviderPickerProps {
+export interface IdentityProviderPickerProps extends Omit<React.ComponentProps<"section">, "children"> {
     // (undocumented)
     className?: string;
     // (undocumented)
@@ -1220,10 +1223,7 @@ export interface IdentityProviderPickerProps {
 export function IdentityProviderPickerRow(input: IdentityProviderPickerRowProps): JSX.Element;
 
 // @public (undocumented)
-export interface IdentityProviderPickerRowProps extends IdentityProviderPickerOption {
-    // (undocumented)
-    className?: string;
-}
+export type IdentityProviderPickerRowProps = IdentityProviderPickerOption & Omit<React.ComponentProps<"a">, "children" | "href" | "id" | "label" | "onClick" | "rel" | "target">;
 
 // @public (undocumented)
 export function IdentityProviderPickerView(input: IdentityProviderPickerProps): JSX.Element;
@@ -1285,11 +1285,7 @@ export type LinkComponentProps = React_2.AnchorHTMLAttributes<HTMLAnchorElement>
 export function ListItem(input: ListItemProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export interface ListItemProps {
-    // (undocumented)
-    "aria-label"?: string;
-    // (undocumented)
-    "data-testid"?: string;
+export interface ListItemProps extends Omit<React_2.HTMLAttributes<HTMLElement>, "children"> {
     action?: {
         label: string;
         onPress?: () => void;
@@ -1297,13 +1293,9 @@ export interface ListItemProps {
     amount?: string;
     chevron?: boolean;
     chip?: React_2.ReactNode;
-    // (undocumented)
-    className?: string;
     description?: string;
     helperText?: string;
     href?: string;
-    // (undocumented)
-    id?: string;
     leading?: React_2.ReactNode;
     loading?: boolean;
     onPress?: () => void;
@@ -1334,8 +1326,9 @@ export type MenuAction = {
 export function MenuDropdown(input: MenuDropdownProps): React_2.JSX.Element;
 
 // @public
-export interface MenuDropdownProps {
+export interface MenuDropdownProps extends Omit<React_2.ComponentProps<"button">, "children"> {
     accessibleLabel?: string;
+    className?: string;
     items: DropdownItem[];
     label?: string;
 }
@@ -1639,7 +1632,7 @@ export interface Messages {
 export function MicroEvent(input: MicroEventProps): React_2.JSX.Element;
 
 // @public
-export interface MicroEventProps {
+export interface MicroEventProps extends Omit<React_2.ComponentProps<"div">, "children" | "title"> {
     // (undocumented)
     className?: string;
     invalid?: boolean;
@@ -1690,7 +1683,7 @@ export interface NavItem {
 export function OrganizationModule(input: OrganizationModuleProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export interface OrganizationModuleProps {
+export interface OrganizationModuleProps extends Omit<React_2.ComponentProps<"section">, "children"> {
     children?: React_2.ReactNode;
     fiscalCode?: string;
     name: string;
@@ -1723,7 +1716,7 @@ export type OTPFieldProps = Omit<ElementProps<"div">, "defaultValue" | "onChange
 export function Overlay(input: OverlayProps): React_2.JSX.Element | null;
 
 // @public (undocumented)
-export interface OverlayProps {
+export interface OverlayProps extends Omit<React_2.ComponentProps<"div">, "children"> {
     // (undocumented)
     children?: React_2.ReactNode;
     // (undocumented)
@@ -1742,10 +1735,10 @@ export function PageSurface(input: PageSurfaceProps): React_2.JSX.Element;
 export type PageSurfaceProps = React_2.ComponentProps<"section">;
 
 // @public (undocumented)
-export function Pagination(input: PaginationProps): JSX.Element | null;
+export function Pagination(input: PaginationProps): React_2.JSX.Element | null;
 
 // @public (undocumented)
-export interface PaginationProps {
+export interface PaginationProps extends Omit<React_2.ComponentProps<"div">, "children"> {
     // (undocumented)
     className?: string;
     // (undocumented)
@@ -1775,10 +1768,10 @@ export interface PagoPAIconProps<Name extends FigmaIconName = FigmaIconName> ext
 }
 
 // @public (undocumented)
-export function PagoPAPictogram(input: PagoPAPictogramProps): JSX.Element;
+export function PagoPAPictogram(input: PagoPAPictogramProps): React_2.JSX.Element;
 
 // @public
-export interface PagoPAPictogramProps {
+export interface PagoPAPictogramProps extends Omit<React_2.ComponentProps<"figure">, "children"> {
     background?: "light" | "dark";
     className?: string;
     label?: string;
@@ -1821,25 +1814,23 @@ export interface PaymentPrice {
 }
 
 // @public
-export function PaymentProviderLogos(props: PaymentProviderLogosProps): JSX.Element;
+export function PaymentProviderLogos(props: PaymentProviderLogosProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export type PaymentProviderLogosProps = {
+export type PaymentProviderLogosProps = (Omit<React_2.ComponentProps<"img">, "src" | "alt"> & {
     brand: PspBrand;
     alt?: string;
-    className?: string;
     providers?: never;
     label?: never;
-} | {
+}) | (Omit<React_2.ComponentProps<"ul">, "children"> & {
     providers: {
         name: string;
         logo?: string;
     }[];
     label?: string;
-    className?: string;
     brand?: never;
     alt?: never;
-};
+});
 
 // @public (undocumented)
 export interface PaymentSuggestion {
@@ -1853,12 +1844,12 @@ export interface PaymentSuggestion {
 export const pictogramNames: readonly ["Access", "AlarmClock", "Assistance", "Award", "Badge", "Bell", "Bug", "Building", "Business", "Calendar", "CalendarCheck", "Citizen", "Cloud", "Code", "Completed", "CreditCard", "Data Security", "Delega", "Desktop", "Direction", "Documentation", "Download", "Earth", "Email Validation", "Enterprise", "Envelope", "Error", "Euro", "FileCheck", "Fingerprint", "Firma", "Flag", "Graduation", "History Doc", "Home", "Hourglass", "ID Card", "Idea", "Image", "In progress", "Inbox", "Institution", "Keypad", "Leggi", "LineChart", "Maintenance", "MapPin", "Message", "Messages", "Mouse", "MultipleFiles", "News", "OpenFolder", "Options", "PersonalFile", "PieChart", "Push", "Question", "Quick", "Repository", "Safe Deposit", "SavingMoney", "School", "Security", "Simplify", "SingleFile", "Smartphone validation", "Sms", "Storage", "Sync", "Trash", "Upload", "UploadFile", "User manual", "UserCheck", "Wallet"];
 
 // @public (undocumented)
-export function PinPoint(input: PinPointProps): JSX.Element;
+export function PinPoint(input: PinPointProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export interface PinPointProps {
+export interface PinPointProps extends Omit<React_2.ComponentProps<"button">, "children"> {
     active?: boolean;
-    children?: React.ReactNode;
+    children?: React_2.ReactNode;
     label: string;
     onPressedChange?: (pressed: boolean) => void;
     variant?: "default" | "numbered" | "placeholder";
@@ -1893,7 +1884,7 @@ export function Popper(input: PopperProps): React_2.JSX.Element;
 export type PopperPointer = "left" | "center" | "right";
 
 // @public
-export interface PopperProps {
+export interface PopperProps extends Omit<React_2.ComponentProps<"div">, "children"> {
     children: React_2.ReactNode;
     className?: string;
     dismissLabel?: string;
@@ -1913,7 +1904,7 @@ export type PreheaderLink = Omit<NavItem, "badge" | "children" | "current"> & {
 };
 
 // @public (undocumented)
-export interface PreheaderProps {
+export interface PreheaderProps extends Omit<React_2.ComponentProps<"div">, "children"> {
     actions?: React_2.ReactNode;
     homeHref?: string;
     institution?: string;
@@ -1983,7 +1974,7 @@ export type ProductModuleProps = Omit<React_2.ComponentProps<"div">, "defaultChe
 export function ProgressKpi(input: ProgressKpiProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export interface ProgressKpiProps {
+export interface ProgressKpiProps extends Omit<React_2.ComponentProps<"section">, "children"> {
     channel?: React_2.ReactNode;
     // (undocumented)
     completed?: boolean;
@@ -2015,7 +2006,9 @@ export interface ProgressKpiRow {
 export function ProgressLoader(input: ProgressLoaderProps): JSX.Element;
 
 // @public
-export interface ProgressLoaderProps {
+export interface ProgressLoaderProps extends Omit<React.ComponentProps<"div">, "children"> {
+    // (undocumented)
+    className?: string;
     label?: string;
     showLabel?: boolean;
     showValue?: boolean;
@@ -2079,7 +2072,7 @@ export type SafeAreaProps = React_2.ComponentProps<"div">;
 export function ScrollToBottom(input: ScrollToBottomProps): React_2.JSX.Element | null;
 
 // @public (undocumented)
-export interface ScrollToBottomProps {
+export interface ScrollToBottomProps extends Omit<React_2.ComponentProps<"button">, "children"> {
     // (undocumented)
     className?: string;
     label?: string;
@@ -2091,7 +2084,7 @@ export interface ScrollToBottomProps {
 export function SectionHeader(input: SectionHeaderProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export interface SectionHeaderProps {
+export interface SectionHeaderProps extends Omit<React_2.ComponentProps<"div">, "children" | "title"> {
     actions?: React_2.ReactNode;
     // (undocumented)
     className?: string;
@@ -2171,7 +2164,7 @@ export interface SideNavProfile {
 }
 
 // @public (undocumented)
-export interface SideNavProps {
+export interface SideNavProps extends Omit<React_2.ComponentProps<"nav">, "children"> {
     // (undocumented)
     className?: string;
     collapseLabel?: (label: string) => string;
@@ -2188,7 +2181,7 @@ export interface SideNavProps {
 export function SkipToMainContent(input: SkipToMainContentProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export interface SkipToMainContentProps {
+export interface SkipToMainContentProps extends Omit<React_2.ComponentProps<"a">, "children"> {
     children?: React_2.ReactNode;
     // (undocumented)
     targetId?: string;
@@ -2201,7 +2194,8 @@ export function Snackbar(input: SnackbarProps): React_2.JSX.Element;
 export function SnackbarErrorCode(input: SnackbarErrorCodeProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export interface SnackbarErrorCodeProps {
+export interface SnackbarErrorCodeProps extends Omit<React_2.ComponentProps<"div">, "children" | "title"> {
+    className?: string;
     // (undocumented)
     code: string;
     copiedLabel?: string;
@@ -2215,7 +2209,7 @@ export interface SnackbarErrorCodeProps {
 }
 
 // @public
-export interface SnackbarProps {
+export interface SnackbarProps extends Omit<React_2.ComponentProps<"div">, "children" | "title"> {
     action?: React_2.ReactNode;
     className?: string;
     dismissLabel?: string;
@@ -2227,10 +2221,10 @@ export interface SnackbarProps {
 }
 
 // @public
-export function Spacer(input: SpacerProps): JSX.Element;
+export function Spacer(input: SpacerProps): React_2.JSX.Element;
 
 // @public
-export interface SpacerProps {
+export interface SpacerProps extends Omit<React_2.ComponentProps<"div">, "children"> {
     // (undocumented)
     className?: string;
     // (undocumented)
@@ -2244,7 +2238,7 @@ export type SpacerSize = 4 | 8 | 16 | 24 | 32 | 40 | 48;
 export function Spinner(input: SpinnerProps): JSX.Element;
 
 // @public
-export interface SpinnerProps {
+export interface SpinnerProps extends Omit<React.ComponentProps<"span">, "children"> {
     className?: string;
     label?: string;
     size?: "sm" | "md" | "lg";
@@ -2252,7 +2246,7 @@ export interface SpinnerProps {
 }
 
 // @public
-export interface StateProps {
+export interface StateProps extends Omit<React_2.ComponentProps<"section">, "children" | "title"> {
     actions?: React_2.ReactNode;
     className?: string;
     description?: React_2.ReactNode;
@@ -2301,7 +2295,7 @@ export interface StepperLabels {
 }
 
 // @public (undocumented)
-export type StepperProps = {
+export type StepperProps = Omit<React_2.ComponentProps<"div">, "children"> & {
     items: StepperItem[];
     className?: string;
 } & StepperLabels;
@@ -2375,11 +2369,9 @@ export function Table<Row extends {
 export function TableCellRow(input: TableCellRowProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export interface TableCellRowProps {
+export interface TableCellRowProps extends Omit<React_2.ComponentProps<"tr">, "children"> {
     // (undocumented)
     cells: React_2.ReactNode[];
-    // (undocumented)
-    className?: string;
     // (undocumented)
     header?: React_2.ReactNode;
 }
@@ -2464,7 +2456,7 @@ export type TableListItemProps = Omit<React_2.ComponentProps<"li">, "onClick"> &
 // @public (undocumented)
 export interface TableListProps<Row extends {
     id: React_2.Key;
-}> {
+}> extends Omit<React_2.ComponentProps<"section">, "children"> {
     action?: (row: Row) => TableListItemAction | undefined;
     actionFallbackLabel?: string;
     emptyLabel?: string;
@@ -2479,7 +2471,7 @@ export interface TableListProps<Row extends {
 // @public (undocumented)
 export interface TableProps<Row extends {
     id: React_2.Key;
-}> {
+}> extends Omit<React_2.ComponentProps<"section">, "children"> {
     // (undocumented)
     actions?: React_2.ReactNode;
     actionsLabel?: string;
@@ -2656,7 +2648,7 @@ export interface TimelineItem {
 export type TimelineItemStatus = "default" | "success" | "error" | "warning" | "info";
 
 // @public (undocumented)
-export interface TimelineProps {
+export interface TimelineProps extends Omit<React_2.ComponentProps<"ol">, "children"> {
     // (undocumented)
     items: TimelineItem[];
     label?: string;

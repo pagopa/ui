@@ -16,10 +16,14 @@ function EmptyState({
   icon,
   titleAs: Title = "h2",
   className,
+  ref,
+  ...props
 }: EmptyStateProps) {
   return (
     <section
       data-slot="empty-state"
+      ref={ref}
+      {...props}
       className={cn(
         "pui:flex pui:flex-col pui:items-center pui:gap-4 pui:rounded-lg pui:border pui:bg-background pui:p-4 pui:text-center",
         className,

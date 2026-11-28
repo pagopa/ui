@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
@@ -23,7 +24,7 @@ const stepControl =
 const pageControl =
   "pui:relative pui:min-w-10 pui:border-0 pui:p-3 pui:after:absolute pui:after:-inset-x-0.5 pui:after:inset-y-0"
 
-export interface PaginationProps {
+export interface PaginationProps extends Omit<React.ComponentProps<"div">, "children"> {
   currentPage: number
   totalPages: number
   onPageChange: (page: number) => void
@@ -50,6 +51,8 @@ function Pagination({
   previousLabel: previousLabelProp,
   nextLabel: nextLabelProp,
   pageLabel: pageLabelProp,
+  ref,
+  ...props
 }: PaginationProps) {
   const t = useMessages("pagination")
   const label = labelProp ?? t.label
@@ -66,7 +69,9 @@ function Pagination({
   return (
     <div
       data-slot="pagination"
+      ref={ref}
       className={cn("pui:@container/pagination pui:min-w-0 pui:flex-1", className)}
+      {...props}
     >
       <div className="pui:flex pui:items-center pui:gap-2">
         <nav

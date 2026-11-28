@@ -1,3 +1,5 @@
+import type * as React from "react"
+
 import { cn } from "@/lib/cn"
 
 import { type FigmaPictogramName, pictogramAssetsByName } from "pagopa-ui-artwork"
@@ -9,7 +11,7 @@ const assetsByName = new Map(Object.entries(pictogramAssetsByName))
  * Props of the source pictogram. Pictograms are decorative illustrations: the
  * accessible copy always lives in the caller's content.
  */
-interface PagoPAPictogramProps {
+interface PagoPAPictogramProps extends Omit<React.ComponentProps<"figure">, "children"> {
   /** ClassName applied to the figure. */
   className?: string
   /** Optional visible caption. */
@@ -28,17 +30,21 @@ function PagoPAPictogram({
   name,
   size = "md",
   background = "light",
+  ref,
+  ...props
 }: PagoPAPictogramProps) {
   const asset = assetsByName.get(name)
   if (!asset) throw new Error(`Pictogram "${name}" has no Figma asset mapping`)
 
   return (
     <figure
+      ref={ref}
       data-slot="pago-pa-pictogram"
       className={cn(
         "pui:inline-grid pui:justify-items-center pui:gap-2 pui:text-center",
         className,
       )}
+      {...props}
     >
       <img
         src={asset[background].url}

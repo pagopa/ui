@@ -40,6 +40,7 @@ function ErrorState({
   copyErrorLabel: copyErrorLabelProp,
   onCopy,
   className,
+  ref,
   ...props
 }: ErrorStateProps) {
   const t = useMessages("errorState")
@@ -70,6 +71,7 @@ function ErrorState({
     <StatePanel
       data-slot="error-state"
       {...props}
+      ref={ref}
       actionsClassName="pui:mx-auto pui:w-full pui:max-w-(--pui-state-width) pui:flex-col pui:flex-nowrap pui:items-center pui:gap-6"
       className={cn("pui:w-full pui:max-w-none", className)}
       contentClassName="pui:w-full pui:max-w-none pui:tablet-md:max-w-(--pui-state-width)"
