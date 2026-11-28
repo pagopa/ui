@@ -125,6 +125,9 @@ declare global {
   var __pagopaA11yContractSurface: StorySurface | undefined
   // Set by the Vitest browser runtime.
   var __vitest_browser__: boolean | undefined
+  // Declared by a condition project's setup file, so the contract can refuse a
+  // pass whose browser context is not the one the project is named after.
+  var __pagopaCondition: { forcedColors?: boolean; reducedMotion?: boolean } | undefined
 }
 
 interface Contract {
@@ -453,6 +456,98 @@ function describeOverflow(width: number) {
     if (culprits.length === 4) break
   }
   return culprits.length ? `; overflowing: ${culprits.join(", ")}` : ""
+}
+
+// Text that a box hides is text the reader cannot reach: at 200% the fixed
+// heights in the library stop fitting the scaled line boxes, and `overflow:
+// hidden` swallows the remainder with no scroll and no ellipsis. A deliberate
+// `line-clamp` (the truncation the design system documents for a preview value)
+// is the one accepted cut, because the full string stays available elsewhere.
+function expectNoTextClipping(storyId: string, width: number) {
+  // Only the library's own roots are audited: Storybook's chrome lives in the
+  // same document and answers to its own layout, not to this contract.
+  const clipped = []
+  const candidates = [
+    ...document.querySelectorAll<HTMLElement>("[data-slot], [data-pagopa-ui-portal-root]"),
+  ].flatMap((root) => [root, ...root.querySelectorAll<HTMLElement>("*")])
+  for (const element of candidates) {
+    if (element.closest(`[aria-hidden='true'],${FOCUS_GUARD}`)) continue
+    // `.sr-only` clips to a 1px box on purpose: the text is for the screen
+    // reader. The utility is `pui:`-prefixed in the library, so match the name
+    // anywhere in the list rather than as a bare class.
+    if (element.closest("[data-slot='field-label'], [class*='sr-only']")) continue
+    const style = getComputedStyle(element)
+    if (style.webkitLineClamp !== "none" && style.webkitLineClamp !== "") continue
+    if (style.textOverflow === "ellipsis") continue
+    // A clipped or clipped-to-1px box is the visually-hidden idiom, not a
+    // layout that lost text: the reader gets the string through the a11y tree.
+    if (style.clipPath !== "none" || style.clip !== "auto") continue
+    if (element.childElementCount !== 0) continue
+    if (!element.textContent?.trim()) continue
+    const hidesVertically =
+      style.overflowY !== "visible" && element.scrollHeight > element.clientHeight + 1
+    if (!hidesVertically) continue
+    clipped.push(
+      `${describe(element)} "${element.textContent.trim().slice(0, 24)}" ${element.clientHeight}px of ${element.scrollHeight}px`,
+    )
+    if (clipped.length === 4) break
+  }
+  expect(
+    clipped,
+    `[${storyId}] clips its own text at 200% (${width}px viewport, 32px root font): ${clipped.join("; ")}`,
+  ).toHaveLength(0)
+}
+
+/**
+ * The library answers `prefers-reduced-motion` with one global block in
+ * `index.css`, keyed on the `data-slot` stamp. This audit proves that answer
+ * reaches the rendered components: it only means anything where the engine
+ * itself reports the preference, so it is a no-op in the default and
+ * forced-colours passes and a real check in the `storybook-reduced-motion`
+ * pass. The loading spinner keeps its motion by design (it carries the
+ * documented `.loading-spinner-motion` escape).
+ */
+export function expectReducedMotionConditions(
+  storyId = globalThis.__pagopaA11yContractSurface?.id ?? "",
+) {
+  const honoured = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  if (globalThis.__pagopaCondition?.reducedMotion) {
+    // A context option that never reached the browser would make this pass a
+    // duplicate of the default one and pass twice for nothing.
+    expect(
+      honoured,
+      `[${storyId}] the reduced-motion project runs without the engine reporting the preference`,
+    ).toBe(true)
+  }
+  if (!honoured) return
+  const roots = document.querySelectorAll<HTMLElement>("[data-slot], [data-pagopa-ui-portal-root]")
+  const moving = []
+  for (const root of roots) {
+    if (root.closest(".loading-spinner-motion")) continue
+    for (const element of [root, ...root.querySelectorAll<HTMLElement>("*")]) {
+      if (element.closest(".loading-spinner-motion")) continue
+      const style = getComputedStyle(element)
+      const longest = Math.max(
+        ...[...style.transitionDuration.split(","), ...style.animationDuration.split(",")].map(
+          (value) => parseSeconds(value),
+        ),
+      )
+      if (longest <= 0.011) continue
+      moving.push(`${describe(element)} ${longest}s`)
+      break
+    }
+    if (moving.length === 4) break
+  }
+  expect(
+    moving,
+    `[${storyId}] keeps motion under prefers-reduced-motion: ${moving.join("; ")}`,
+  ).toHaveLength(0)
+}
+
+function parseSeconds(value: string) {
+  const trimmed = value.trim()
+  if (trimmed.endsWith("ms")) return Number.parseFloat(trimmed) / 1000
+  return Number.parseFloat(trimmed) || 0
 }
 
 // The natural focus order is the DOM order: a positive tabindex re-sorts it.
@@ -852,10 +947,17 @@ async function expectReflowConditions(storyId: string) {
     html.style.setProperty("font-size", "32px")
     document.body.append(spacing)
     await settle()
+    // A user zoom is a resize, so a positioned overlay that sizes itself from
+    // the viewport (`--available-width`) recomputes. Reproduce that before
+    // measuring, or the popup keeps the width it opened at and the check
+    // reports the stale geometry instead of the reflowed one.
+    window.dispatchEvent(new Event("resize"))
+    await settle()
     expect(
       html.scrollWidth,
       `[${storyId}] increased text spacing and 200% text scroll horizontally (${html.scrollWidth}px inside ${width}px)${describeOverflow(width)}`,
     ).toBeLessThanOrEqual(width + 1)
+    expectNoTextClipping(storyId, width)
   } finally {
     html.style.setProperty("font-size", previous.fontSize, previous.priority)
     spacing.remove()
@@ -931,6 +1033,9 @@ export async function runA11yContract() {
   const contract = contractOf(parameters)
   // Freeze transitions and animations while the contract measures: the same
   // state the story runner uses during the story's own assertions.
+  // Motion is audited before the freeze: the freeze exists to make the colour
+  // reads settle, and it would mask the very durations this checks.
+  expectReducedMotionConditions(id)
   const restore = freezeMotion()
   try {
     if (contract.reflow !== false) await expectReflowConditions(id)

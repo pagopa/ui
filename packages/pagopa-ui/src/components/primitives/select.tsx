@@ -29,7 +29,7 @@ function SelectValue({ className, ...props }: SelectPrimitive.Value.Props) {
   return (
     <SelectPrimitive.Value
       data-slot="select-value"
-      className={cn("pui:flex pui:flex-1 pui:text-left", className)}
+      className={cn("pui:flex pui:min-w-0 pui:flex-1 pui:text-left", className)}
       {...props}
     />
   )
@@ -108,7 +108,7 @@ function SelectContent({
           // leaves a zero-opacity/zero-height frame), and the library does not
           // invent motion a reduced-motion user would still see.
           className={cn(
-            "pui:relative pui:isolate pui:z-50 pui:max-h-(--available-height) pui:w-(--anchor-width) pui:min-w-36 pui:origin-(--transform-origin) pui:overflow-x-hidden pui:overflow-y-auto pui:rounded-lg pui:bg-popover pui:text-popover-foreground pui:shadow-16",
+            "pui:relative pui:isolate pui:z-50 pui:max-h-(--available-height) pui:w-(--anchor-width) pui:max-w-(--available-width) pui:min-w-36 pui:origin-(--transform-origin) pui:overflow-x-hidden pui:overflow-y-auto pui:rounded-lg pui:bg-popover pui:text-popover-foreground pui:shadow-16",
             className,
           )}
           {...props}
@@ -151,7 +151,10 @@ function SelectItem({
       )}
       {...props}
     >
-      <SelectPrimitive.ItemText className="pui:flex pui:flex-1 pui:gap-2 pui:whitespace-nowrap">
+      {/* The chooser is as wide as its trigger, so an option label has nowhere
+          to go sideways: it wraps instead. `nowrap` would keep the popup wider
+          than the viewport once a user zooms the text to 200% (WCAG 1.4.10). */}
+      <SelectPrimitive.ItemText className="pui:flex pui:min-w-0 pui:flex-1 pui:gap-2">
         {children}
       </SelectPrimitive.ItemText>
       <SelectPrimitive.ItemIndicator

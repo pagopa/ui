@@ -8,7 +8,7 @@ import { cn } from "@/lib/cn"
 import type { ElementProps } from "./props"
 
 const badgeVariants = cva(
-  "group/badge pui:inline-flex pui:h-5 pui:w-fit pui:shrink-0 pui:items-center pui:justify-center pui:gap-1 pui:overflow-hidden pui:rounded-4xl pui:border pui:border-transparent pui:px-2 pui:py-0.5 pui:text-caption-sb pui:whitespace-nowrap pui:transition-all pui:outline-none pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring pui:[a&]:min-h-6 pui:[a&]:min-w-6 pui:has-data-[icon=inline-end]:pr-1.5 pui:has-data-[icon=inline-start]:pl-1.5 pui:aria-invalid:border-destructive pui:aria-invalid:ring-destructive/20 pui:[&>svg:not(.pagopa-icon)]:pointer-events-none pui:[&>svg:not(.pagopa-icon)]:size-3!",
+  "group/badge pui:inline-flex pui:min-h-5 pui:w-fit pui:shrink-0 pui:items-center pui:justify-center pui:gap-1 pui:overflow-hidden pui:rounded-4xl pui:border pui:border-transparent pui:px-2 pui:py-0.5 pui:text-caption-sb pui:whitespace-nowrap pui:transition-all pui:outline-none pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring pui:[a&]:min-h-6 pui:[a&]:min-w-6 pui:has-data-[icon=inline-end]:pr-1.5 pui:has-data-[icon=inline-start]:pl-1.5 pui:aria-invalid:border-destructive pui:aria-invalid:ring-destructive/20 pui:[&>svg:not(.pagopa-icon)]:pointer-events-none pui:[&>svg:not(.pagopa-icon)]:size-3!",
   {
     variants: {
       variant: {
@@ -78,7 +78,7 @@ function Badge({
     ) : display === "numbered" ? (
       <span
         data-slot="badge-indicator"
-        className="pui:inline-flex pui:h-5 pui:min-w-5 pui:items-center pui:justify-center pui:rounded-full pui:bg-primary pui:px-1.5 pui:text-label-mini-sb pui:whitespace-nowrap pui:text-primary-foreground pui:forced-colors:forced-color-adjust-none pui:forced-colors:bg-[Highlight] pui:forced-colors:text-[HighlightText]"
+        className="pui:inline-flex pui:min-h-5 pui:min-w-5 pui:items-center pui:justify-center pui:rounded-full pui:bg-primary pui:px-1.5 pui:text-label-mini-sb pui:whitespace-nowrap pui:text-primary-foreground pui:forced-colors:forced-color-adjust-none pui:forced-colors:bg-[Highlight] pui:forced-colors:text-[HighlightText]"
       >
         <span data-slot="badge-count">{children}</span>
       </span>

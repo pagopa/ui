@@ -58,6 +58,27 @@ export const Playground: Story = {
   },
 }
 
+// The axe pass runs after `play`, so the overlay is scanned only if the story
+// ends with it open. This one does: the listbox and its options are the
+// surface the closed field never shows.
+export const OpenListboxAudit: Story = {
+  render: (args) => (
+    <div className="pui:w-68 pui:max-w-full">
+      <Autocomplete {...args} />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const city = within(canvasElement).getByRole("combobox", { name: /Comune/ })
+    await userEvent.click(city)
+    await userEvent.type(city, "ro")
+    await expect(await screen.findByRole("option", { name: "Roma" })).toBeVisible()
+  },
+}
+
+export const WithValidation: Story = {
+  args: { error: "Seleziona un comune per continuare.", required: true },
+}
+
 // The two filled multiselect types at the source 272x48 frame: `824:8872` keeps
 // a removable pill per value with `[clear][chevron]`, `11073:2423` collapses the
 // row into the count badge, which carries the clear action, beside the arrow.

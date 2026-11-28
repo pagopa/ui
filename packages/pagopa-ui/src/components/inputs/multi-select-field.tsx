@@ -119,7 +119,7 @@ function MultiSelectField({
       className={cn("pui:grid", error ? "pui:gap-0.5" : "pui:gap-2", className)}
       {...props}
     >
-      <div className="pui:relative">
+      <div className="pui:relative pui:min-w-0">
         <Select
           {...command.rootProps}
           multiple
@@ -152,7 +152,7 @@ function MultiSelectField({
               event.preventDefault()
               removeValue(orderedSelection[orderedSelection.length - 1].value)
             }}
-            className="peer pui:relative pui:aria-expanded:border-2 pui:aria-expanded:border-primary pui:[&>span[data-slot=select-value]]:flex pui:[&>span[data-slot=select-value]]:min-w-0 pui:[&>span[data-slot=select-value]]:flex-wrap pui:[&>span[data-slot=select-value]]:overflow-visible pui:[&>span[data-slot=select-value]]:whitespace-normal"
+            className="peer pui:relative pui:min-w-0 pui:aria-expanded:border-2 pui:aria-expanded:border-primary pui:[&>span[data-slot=select-value]]:flex pui:[&>span[data-slot=select-value]]:min-w-0 pui:[&>span[data-slot=select-value]]:flex-wrap pui:[&>span[data-slot=select-value]]:overflow-visible pui:[&>span[data-slot=select-value]]:whitespace-normal"
           >
             {leadingIcon ? (
               <span

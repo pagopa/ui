@@ -78,11 +78,25 @@ export const WithValidation: Story = {
   args: { error: "Seleziona una provincia per continuare.", required: true },
 }
 
+// The axe pass runs after `play`, so the overlay is scanned only if the story
+// ends with it open. This one does: the listbox, its options and the group
+// labels are the surface the closed trigger never shows.
+export const OpenListboxAudit: Story = {
+  render: (args) => (
+    <div className="pui:w-68 pui:max-w-full">
+      <SelectField {...args} />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const typology = within(canvasElement).getByRole("combobox", { name: /Provincia/ })
+    await userEvent.click(typology)
+    await expect(await screen.findByRole("option", { name: "Torino" })).toBeVisible()
+  },
+}
+
 export const SelectionControls: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
-  parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <div className="pui:grid pui:max-w-xl pui:gap-6">
+    <div className="pui:grid pui:max-w-xl pui:grid-cols-[minmax(0,1fr)] pui:gap-6">
       <Autocomplete label="Comune di residenza" options={municipalities} />
       <SelectField label="Tipologia" options={serviceOptions} />
       <MultiSelectField label="Categorie" options={serviceOptions} defaultValue={["mobilita"]} />

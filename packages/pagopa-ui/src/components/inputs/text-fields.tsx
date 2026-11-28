@@ -517,7 +517,7 @@ function DatePickerField({
       className={cn("pui:grid", error ? "pui:gap-0.5" : "pui:gap-2", className)}
       {...rootProps}
     >
-      <div className="pui:relative">
+      <div className="pui:relative pui:min-w-0">
         {readOnly ? (
           // A read-only chooser keeps the committed value and its form control
           // but is not a popup trigger: no dialog semantics, no panel.

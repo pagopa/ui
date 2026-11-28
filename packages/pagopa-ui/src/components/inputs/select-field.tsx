@@ -114,7 +114,7 @@ function SelectField({
       className={cn("pui:grid", error ? "pui:gap-0.5" : "pui:gap-2", className)}
       {...props}
     >
-      <div className="pui:relative">
+      <div className="pui:relative pui:min-w-0">
         <Select
           {...command.rootProps}
           name={name}
@@ -137,7 +137,7 @@ function SelectField({
             icon={triggerIcon}
             aria-invalid={Boolean(error) || undefined}
             aria-describedby={describedBy(ids, state, ariaDescribedBy)}
-            className="peer pui:relative pui:aria-expanded:border-2 pui:aria-expanded:border-primary"
+            className="peer pui:relative pui:min-w-0 pui:aria-expanded:border-2 pui:aria-expanded:border-primary"
           >
             {leadingIcon ? (
               <span
@@ -149,7 +149,7 @@ function SelectField({
                 {leadingIcon}
               </span>
             ) : null}
-            <SelectValue placeholder=" " className="pui:text-label-sb" />
+            <SelectValue placeholder=" " className="pui:truncate pui:text-label-sb" />
           </SelectTrigger>
           {command.closeComplete ? null : (
             <SelectContent

@@ -300,6 +300,7 @@ function Autocomplete(props: AutocompleteProps) {
                 ref={mergedInputRef}
                 id={ids.controlId}
                 placeholder={placeholder ?? " "}
+                aria-labelledby={`${ids.controlId}-label`}
                 aria-invalid={Boolean(error) || undefined}
                 aria-describedby={describedBy(
                   ids,
@@ -360,6 +361,7 @@ function Autocomplete(props: AutocompleteProps) {
               ref={mergedInputRef}
               id={ids.controlId}
               placeholder={placeholder ?? " "}
+              aria-labelledby={`${ids.controlId}-label`}
               aria-invalid={Boolean(error) || undefined}
               aria-describedby={describedBy(ids, { description, error, success }, ariaDescribedBy)}
               render={

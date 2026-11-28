@@ -48,7 +48,7 @@ function DropdownMenuContent({
         <MenuPrimitive.Popup
           data-slot="dropdown-menu-content"
           className={cn(
-            "pui:z-50 pui:max-h-(--available-height) pui:w-(--anchor-width) pui:min-w-32 pui:origin-(--transform-origin) pui:overflow-x-hidden pui:overflow-y-auto pui:rounded-lg pui:bg-popover pui:p-1 pui:text-popover-foreground pui:shadow-16 pui:duration-100 pui:outline-none pui:data-[side=bottom]:slide-in-from-top-2 pui:data-[side=inline-end]:slide-in-from-left-2 pui:data-[side=inline-start]:slide-in-from-right-2 pui:data-[side=left]:slide-in-from-right-2 pui:data-[side=right]:slide-in-from-left-2 pui:data-[side=top]:slide-in-from-bottom-2 pui:data-open:animate-in pui:data-open:fade-in-0 pui:data-open:zoom-in-95 pui:data-closed:animate-out pui:data-closed:overflow-hidden pui:data-closed:fade-out-0 pui:data-closed:zoom-out-95",
+            "pui:z-50 pui:max-h-(--available-height) pui:w-(--anchor-width) pui:min-w-32 pui:max-w-(--available-width) pui:origin-(--transform-origin) pui:overflow-x-hidden pui:overflow-y-auto pui:rounded-lg pui:bg-popover pui:p-1 pui:text-popover-foreground pui:shadow-16 pui:duration-100 pui:outline-none pui:data-[side=bottom]:slide-in-from-top-2 pui:data-[side=inline-end]:slide-in-from-left-2 pui:data-[side=inline-start]:slide-in-from-right-2 pui:data-[side=left]:slide-in-from-right-2 pui:data-[side=right]:slide-in-from-left-2 pui:data-[side=top]:slide-in-from-bottom-2 pui:data-open:animate-in pui:data-open:fade-in-0 pui:data-open:zoom-in-95 pui:data-closed:animate-out pui:data-closed:overflow-hidden pui:data-closed:fade-out-0 pui:data-closed:zoom-out-95",
             className,
           )}
           {...props}
@@ -97,7 +97,7 @@ function DropdownMenuItem({
       data-inset={inset}
       data-variant={variant}
       className={cn(
-        "group/dropdown-menu-item pui:relative pui:flex pui:cursor-default pui:items-center pui:gap-1.5 pui:rounded-md pui:px-1.5 pui:py-1 pui:text-label-mini pui:focus:outline-hidden pui:select-none pui:focus:bg-accent pui:focus:text-accent-foreground pui:not-data-[variant=destructive]:focus:**:text-accent-foreground pui:data-inset:pl-7 pui:data-[variant=destructive]:text-destructive pui:data-[variant=destructive]:focus:bg-destructive/10 pui:data-[variant=destructive]:focus:text-destructive pui:data-disabled:pointer-events-none pui:data-disabled:opacity-50 pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0 pui:[&_svg:not(.pagopa-icon)]:size-4 pui:data-[variant=destructive]:*:[svg]:text-destructive",
+        "group/dropdown-menu-item pui:relative pui:flex pui:cursor-default pui:items-center pui:gap-1.5 pui:rounded-md pui:px-1.5 pui:py-1 pui:text-label-mini pui:break-words pui:focus:outline-hidden pui:select-none pui:focus:bg-accent pui:focus:text-accent-foreground pui:not-data-[variant=destructive]:focus:**:text-accent-foreground pui:data-inset:pl-7 pui:data-[variant=destructive]:text-destructive pui:data-[variant=destructive]:focus:bg-destructive/10 pui:data-[variant=destructive]:focus:text-destructive pui:data-disabled:pointer-events-none pui:data-disabled:opacity-50 pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0 pui:[&_svg:not(.pagopa-icon)]:size-4 pui:data-[variant=destructive]:*:[svg]:text-destructive",
         className,
       )}
       {...props}

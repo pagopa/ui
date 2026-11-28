@@ -28,10 +28,51 @@ function storybookInstances(mode: string): { browser: "chromium" | "firefox" | "
 // the coverage pass and Firefox keeps the full pass, as before.
 function conditionInstances(
   mode: string,
+  contextOptions: { forcedColors?: "active"; reducedMotion?: "reduce" },
 ): { browser: "chromium" | "firefox" | "webkit"; provider: ReturnType<typeof playwright> }[] {
-  const contextOptions = { forcedColors: "active" as const, reducedMotion: "reduce" as const }
   const browser = mode === "coverage" ? "chromium" : mode === "webkit" ? "webkit" : "firefox"
   return [{ browser, provider: playwright({ contextOptions }) }]
+}
+
+// A condition project: the whole catalogue under one browser context the
+// default pass never opens. Each condition owns its config directory, because
+// `@storybook/addon-vitest` names the Vitest project after it, and its own tag
+// exclusion, because the exclusion belongs to the condition: forced colours
+// replaces a reviewed source colour, reduced motion keeps the colour and
+// changes only the timing.
+function conditionProject(options: {
+  name: string
+  directory: string
+  mode: string
+  contextOptions: { forcedColors?: "active"; reducedMotion?: "reduce" }
+  exclude?: string[]
+}) {
+  return {
+    extends: true,
+    plugins: [
+      storybookTest({
+        configDir: path.join(dirname, options.directory),
+        ...(options.exclude ? { tags: { exclude: options.exclude } } : {}),
+      }),
+    ],
+    test: {
+      name: options.name,
+      testTimeout: 60000,
+      setupFiles: [
+        path.join(dirname, "src/support/queries-setup.ts"),
+        path.join(dirname, "src/support/a11y-setup.ts"),
+        // Always loaded: a setup file that only appears when the option is
+        // present could never notice the option going missing.
+        path.join(dirname, options.directory, "expect-condition.ts"),
+      ],
+      browser: {
+        enabled: true,
+        headless: true,
+        provider: playwright({}),
+        instances: conditionInstances(options.mode, options.contextOptions),
+      },
+    },
+  }
 }
 
 // The browser projects run the stories; the package keeps the design system
@@ -138,39 +179,24 @@ export default defineConfig(({ mode }) => ({
           },
         },
       },
-      {
-        extends: true,
-        plugins: [
-          // The accessibility conditions Storybook does not open by default:
-          // forced colors and reduced motion come from the browser context, so
-          // the whole run lives in a context created with both media features.
-          // Stories that pin their reviewed source colors opt out through the
-          // `color-pinned` tag: forced colors intentionally replaces them.
-          // The config directory is its own, re-exporting the same config:
-          // `@storybook/addon-vitest` names a Vitest project after its config
-          // directory, so sharing `.storybook` with the project above makes the
-          // Storybook test module (`VITEST_STORYBOOK`) see one name twice and
-          // refuse to start.
-          storybookTest({
-            configDir: path.join(dirname, ".storybook-conditions"),
-            tags: { exclude: ["color-pinned"] },
-          }),
-        ],
-        test: {
-          name: "storybook-conditions",
-          testTimeout: 60000,
-          setupFiles: [
-            path.join(dirname, "src/support/queries-setup.ts"),
-            path.join(dirname, "src/support/a11y-setup.ts"),
-          ],
-          browser: {
-            enabled: true,
-            headless: true,
-            provider: playwright({}),
-            instances: conditionInstances(mode),
-          },
-        },
-      },
+      // Forced colours replaces the reviewed source colours, so the stories
+      // that pin them opt out through the `color-pinned` tag.
+      conditionProject({
+        name: "storybook-conditions",
+        directory: ".storybook-conditions",
+        mode,
+        contextOptions: { forcedColors: "active" },
+        exclude: ["color-pinned"],
+      }),
+      // Reduced motion changes the timing and keeps every colour, so nothing is
+      // excluded: the seventy `color-pinned` stories are exactly the animated
+      // controls whose reduced-motion behaviour has to be proven.
+      conditionProject({
+        name: "storybook-reduced-motion",
+        directory: ".storybook-reduced-motion",
+        mode,
+        contextOptions: { reducedMotion: "reduce" },
+      }),
     ],
   },
 }))

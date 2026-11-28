@@ -15,6 +15,7 @@
     "src",
     ".storybook/**/*",
     ".storybook-conditions/**/*",
+    ".storybook-reduced-motion/**/*",
     "vite.config.ts",
     "vitest.shims.d.ts"
   ]
