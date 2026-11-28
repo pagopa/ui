@@ -20,10 +20,12 @@ interactive states (hover/active) and the brand colours.
 
 - **Radius**: only the foundation steps 8, 16 and 24, with no interpolated values.
 - **Colour**: primary is `#0B3EE3`, and the solid status colours come from the
-  source `Color/Icon/*` variables. The remaining local values
-  (`--primary-active`, `--destructive-hover`, `--avatar-frame`,
-  `--avatar-icon-surface` and the three brand colours) are documented extensions,
-  not pending work.
+  source `Color/Icon/*` variables. The pressed and pointer steps the source does
+  not publish (`--pui-primary-active`, `--pui-destructive-hover`) are derived
+  between the two steps that bound them, per §2 of the design defaults, and stay
+  debt until the source publishes them. The remaining brand and avatar values
+  (`--pui-navy`, `--pui-navy-deep`, `--pui-brand-cyan`, `--pui-avatar-frame` and
+  `--pui-avatar-icon-surface`) are documented extensions, not pending work.
 - **Type scale**: `text-hero`, `text-h3`, `text-h4`, `text-title-*` (xxl to xs,
   mobile variants included), `text-body*`, `text-mono`, `text-label*`,
   `text-caption*` and `text-button`. The App IO heading styles H1, H2, H5 and H6

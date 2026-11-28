@@ -83,7 +83,7 @@
     },
     "primary-active": {
       "$type": "color",
-      "$value": "#072582"
+      "$value": "#062483"
     },
     "accent-active": {
       "$type": "color",

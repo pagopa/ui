@@ -134,7 +134,7 @@ export const semanticTokens: SemanticToken[] = [
     cssName: "--pui-primary-active",
     name: "primary-active",
     type: "color",
-    value: "#072582",
+    value: "#062483",
   },
   {
     cssName: "--pui-accent-active",
