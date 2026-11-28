@@ -6,11 +6,12 @@ import {
   closeDesignRequest,
   listDesignRequests,
   openDesignRequest,
+  requestIssueUrl,
 } from "../../src/figma/design-requests.ts"
 import { fixtureTree, workspaceAt } from "../helpers/cli.mjs"
 
 const files = {
-  "figma-to-code.yaml": `design:\n  requests: docs/design-requests\n  owners:\n    - designer-one\n  preview:\n    url: https://preview.example.test\n    pr: 19\n    branch: feedback/previews\n`,
+  "figma-to-code.yaml": `design:\n  owners:\n    - designer-one\n  preview:\n    url: https://preview.example.test\n    pr: 19\n    branch: feedback/previews\n`,
   "src/catalog/figma/inventory.json": {
     fileKey: "file",
     syncedAt: "2026-01-01",
@@ -39,59 +40,165 @@ const files = {
   },
 }
 
-test("request open dry-run prints all planned actions and never calls gh or writes", () => {
+/** A `gh` that answers the duplicate-title read with nothing, so `open` can proceed. */
+function noOpenQuestion(args) {
+  return args[0] === "issue" && args[1] === "list" ? "[]" : ""
+}
+
+test("request open dry-run plans the create and writes nothing", () => {
   const fixture = fixtureTree(files, "design-request-dry-")
-  let calls = 0
+  const calls = []
   try {
     const result = openDesignRequest(
       workspaceAt(fixture.root),
       path.join(fixture.root, "packages/ui-cli/request.json"),
-      "2026-11-08",
       true,
-      () => {
-        calls++
-        return ""
+      (args) => {
+        calls.push(args)
+        return noOpenQuestion(args)
       },
     )
-    assert.equal(calls, 0)
     assert.equal(result.dryRun, true)
-    assert.match(result.actions.join("\n"), /status\/needs-answer/)
+    assert.equal(result.issueUrl, null)
+    assert.match(result.actions.join("\n"), /gh issue create/)
     assert.match(result.actions.join("\n"), /write registry note for 4:4/)
-    assert.equal(fs.existsSync(path.join(fixture.root, result.path)), false)
+    // The duplicate-title guard is a read: a dry run asks the tracker, and creates nothing.
+    assert.equal(calls.length, 1)
+    assert.equal(calls[0][1], "list")
+    const registry = fs.readFileSync(
+      path.join(fixture.root, "src/catalog/figma/registry.json"),
+      "utf8",
+    )
+    assert.match(registry, /Existing residue\./)
+    assert.doesNotMatch(registry, /Design request/)
   } finally {
     fixture.dispose()
   }
 })
 
-test("request open creates the issue, writes its record and keeps the node pending", () => {
+test("request open validates the rules card before it creates anything", () => {
+  const fixture = fixtureTree(files, "design-request-card-")
+  const calls = []
+  try {
+    // `.figma/rules.json` is absent, so the card cannot be validated — and a
+    // create that ran first could not be undone by the failure that follows.
+    const input = { ...files["packages/ui-cli/request.json"], rulesCard: "R-999" }
+    const inputFile = path.join(fixture.root, "packages/ui-cli/request.json")
+    fs.writeFileSync(inputFile, JSON.stringify(input))
+    assert.throws(
+      () =>
+        openDesignRequest(workspaceAt(fixture.root), inputFile, false, (args) => {
+          calls.push(args)
+          return noOpenQuestion(args)
+        }),
+      /\.figma\/rules\.json is missing/,
+    )
+    assert.deepEqual(calls, [])
+    const registry = fs.readFileSync(
+      path.join(fixture.root, "src/catalog/figma/registry.json"),
+      "utf8",
+    )
+    assert.doesNotMatch(registry, /Design request/)
+  } finally {
+    fixture.dispose()
+  }
+})
+
+test("request open creates the issue, points the note at it and keeps the node pending", () => {
   const fixture = fixtureTree(files, "design-request-open-")
   const calls = []
   try {
     const result = openDesignRequest(
       workspaceAt(fixture.root),
       path.join(fixture.root, "packages/ui-cli/request.json"),
-      "2026-11-08",
       false,
       (args) => {
         calls.push(args)
-        return "https://github.com/acme/ui/issues/42\n"
+        return args[1] === "create"
+          ? "https://github.com/acme/ui/issues/42\n"
+          : noOpenQuestion(args)
       },
     )
     assert.equal(result.issueUrl, "https://github.com/acme/ui/issues/42")
-    assert.equal(calls.length, 1)
-    assert.ok(calls[0].includes("type/design-question"))
-    assert.ok(calls[0].includes("status/needs-answer"))
-    assert.ok(calls[0].includes("designer-one"))
-    const record = fs.readFileSync(path.join(fixture.root, result.path), "utf8")
-    assert.match(record, /- Issue: https:\/\/github.com\/acme\/ui\/issues\/42/)
-    assert.match(record, /- Status: open/)
+    const create = calls.find((args) => args[1] === "create")
+    assert.ok(create.includes("type/design-question"))
+    assert.ok(create.includes("status/needs-answer"))
+    assert.ok(create.includes("[design] How should the focus ring appear?"))
+    assert.ok(create.includes("designer-one"))
     const registry = JSON.parse(
       fs.readFileSync(path.join(fixture.root, "src/catalog/figma/registry.json"), "utf8"),
     )
     assert.equal(registry.entries["4:4"].status, "pending")
-    assert.match(
+    assert.equal(
       registry.entries["4:4"].note,
-      /docs\/design-requests\/2026-11-08-button-focus-ring\.md/,
+      "Existing residue.\nDesign request: https://github.com/acme/ui/issues/42",
+    )
+  } finally {
+    fixture.dispose()
+  }
+})
+
+test("request open refuses a title the tracker already asks and names the issue", () => {
+  const fixture = fixtureTree(files, "design-request-duplicate-")
+  const calls = []
+  try {
+    assert.throws(
+      () =>
+        openDesignRequest(
+          workspaceAt(fixture.root),
+          path.join(fixture.root, "packages/ui-cli/request.json"),
+          false,
+          (args) => {
+            calls.push(args)
+            return args[1] === "list"
+              ? JSON.stringify([
+                  {
+                    number: 42,
+                    title: "[design] How should the focus ring appear?",
+                    url: "https://github.com/acme/ui/issues/42",
+                  },
+                ])
+              : ""
+          },
+        ),
+      /https:\/\/github\.com\/acme\/ui\/issues\/42 already asks this question — answer it, or open a new slug/,
+    )
+    assert.equal(
+      calls.some((args) => args[1] === "create"),
+      false,
+    )
+    assert.doesNotMatch(
+      fs.readFileSync(path.join(fixture.root, "src/catalog/figma/registry.json"), "utf8"),
+      /Design request/,
+    )
+  } finally {
+    fixture.dispose()
+  }
+})
+
+test("request open refuses a node that is not pending", () => {
+  const fixture = fixtureTree(
+    {
+      ...files,
+      "src/catalog/figma/registry.json": {
+        entries: { "4:4": { status: "implemented", note: "Done." } },
+        bulkRules: [],
+      },
+    },
+    "design-request-blocked-",
+  )
+  try {
+    assert.throws(
+      () =>
+        openDesignRequest(
+          workspaceAt(fixture.root),
+          path.join(fixture.root, "packages/ui-cli/request.json"),
+          true,
+          () => {
+            throw new Error("a node that is not pending must not reach gh")
+          },
+        ),
+      /4:4 must remain pending while its design request is open/,
     )
   } finally {
     fixture.dispose()
@@ -129,9 +236,8 @@ test("visual request bodies link each option and embed width-labelled review cap
     const result = openDesignRequest(
       workspaceAt(fixture.root),
       path.join(fixture.root, "packages/ui-cli/request.json"),
-      "2026-11-08",
       true,
-      () => "",
+      noOpenQuestion,
     )
     const command = result.actions[0]
     assert.match(command, /## What we are deciding/)
@@ -180,9 +286,8 @@ test("visual request rejects captures outside the configured review branch", () 
         openDesignRequest(
           workspaceAt(fixture.root),
           path.join(fixture.root, "packages/ui-cli/request.json"),
-          "2026-11-08",
           true,
-          () => "",
+          noOpenQuestion,
         ),
       /design.preview.branch/,
     )
@@ -213,20 +318,13 @@ test("request list selects the open answer-state label", () => {
   }
 })
 
-test("request close dry-run preserves the record and does not call gh", () => {
-  const fixture = fixtureTree(
-    {
-      ...files,
-      "docs/design-requests/2026-11-08-button-focus-ring.md":
-        "# Focus ring\n\n- Type: design\n- Issue: https://github.com/acme/ui/issues/42\n- Status: open\n- Decision owner: @designer-one\n- Preview: https://preview.example.test\n\n## Context\n\nQuestion.\n\n## Options\n\n- Thin\n\n## Decision\n\n",
-    },
-    "design-request-close-",
-  )
+test("request close dry-run plans the label move, the answer and the close", () => {
+  const fixture = fixtureTree(files, "design-request-close-dry-")
   let calls = 0
   try {
     const result = closeDesignRequest(
       workspaceAt(fixture.root),
-      "docs/design-requests/2026-11-08-button-focus-ring.md",
+      "https://github.com/acme/ui/issues/42",
       "Use the thin ring.",
       "abc1234",
       true,
@@ -237,100 +335,76 @@ test("request close dry-run preserves the record and does not call gh", () => {
     )
     assert.equal(calls, 0)
     assert.equal(result.dryRun, true)
-    assert.equal(
-      fs
-        .readFileSync(
-          path.join(fixture.root, "docs/design-requests/2026-11-08-button-focus-ring.md"),
-          "utf8",
-        )
-        .includes("- Status: open"),
-      true,
-    )
-    assert.equal(result.actions.length, 4)
+    assert.equal(result.commitUrl, "https://github.com/acme/ui/commit/abc1234")
+    assert.deepEqual(result.actions, [
+      "gh issue edit https://github.com/acme/ui/issues/42 --remove-label status/needs-answer --add-label status/answered",
+      'gh issue comment https://github.com/acme/ui/issues/42 --body "<decision> — Recorded in https://github.com/acme/ui/commit/abc1234"',
+      "gh issue close https://github.com/acme/ui/issues/42",
+    ])
   } finally {
     fixture.dispose()
   }
 })
 
-const existingRecord = `# How should the focus ring appear?
-
-- Type: design
-- Issue: https://github.com/acme/ui/issues/42
-- Status: open
-
-## Context
-
-The source does not specify the ring.
-
-## Options
-
-- A — Thin
-- B — Thick
-
-## Decision
-`
-
-test("request open refuses an existing record and names the issue it holds", () => {
-  const fixture = fixtureTree(
-    {
-      ...files,
-      "docs/design-requests/2026-11-08-button-focus-ring.md": existingRecord,
-    },
-    "design-request-exists-",
-  )
-  let calls = 0
+test("request close comments the answer with its commit and closes the issue", () => {
+  const fixture = fixtureTree(files, "design-request-close-")
+  const calls = []
   try {
-    assert.throws(
-      () =>
-        openDesignRequest(
-          workspaceAt(fixture.root),
-          path.join(fixture.root, "packages/ui-cli/request.json"),
-          "2026-11-08",
-          false,
-          () => {
-            calls++
-            return ""
-          },
-        ),
-      /already exists \(https:\/\/github\.com\/acme\/ui\/issues\/42\) — edit it, or open a new slug/,
+    closeDesignRequest(
+      workspaceAt(fixture.root),
+      "https://github.com/acme/ui/issues/42",
+      "Use the thin ring.",
+      "abc1234",
+      false,
+      (args) => {
+        calls.push(args)
+        return ""
+      },
     )
-    assert.equal(calls, 0)
+    assert.deepEqual(
+      calls.map((args) => args[1]),
+      ["edit", "comment", "close"],
+    )
     assert.equal(
-      fs.readFileSync(
-        path.join(fixture.root, "docs/design-requests/2026-11-08-button-focus-ring.md"),
-        "utf8",
-      ),
-      existingRecord,
+      calls[1][4],
+      "Use the thin ring.\n\nRecorded in https://github.com/acme/ui/commit/abc1234",
     )
   } finally {
     fixture.dispose()
   }
 })
 
-test("request open refuses an answered record by saying the slug is spent", () => {
-  const fixture = fixtureTree(
-    {
-      ...files,
-      "docs/design-requests/2026-11-08-button-focus-ring.md": existingRecord.replace(
-        "- Status: open",
-        "- Status: answered",
-      ),
-    },
-    "design-request-answered-",
-  )
+test("request close resolves an issue number through gh", () => {
+  const fixture = fixtureTree(files, "design-request-close-number-")
+  try {
+    assert.equal(
+      requestIssueUrl(workspaceAt(fixture.root), " 42 ", (args) => {
+        assert.deepEqual(args, ["issue", "view", "42", "--json", "url", "--jq", ".url"])
+        return "https://github.com/acme/ui/issues/42\n"
+      }),
+      "https://github.com/acme/ui/issues/42",
+    )
+  } finally {
+    fixture.dispose()
+  }
+})
+
+test("request close refuses a positional that is neither an issue nor a number", () => {
+  const fixture = fixtureTree(files, "design-request-close-bad-")
   try {
     assert.throws(
       () =>
-        openDesignRequest(
+        closeDesignRequest(
           workspaceAt(fixture.root),
-          path.join(fixture.root, "packages/ui-cli/request.json"),
-          "2026-11-08",
+          "docs/design-requests/2026-11-08-button-focus-ring.md",
+          "Use the thin ring.",
+          "abc1234",
           true,
           () => {
-            throw new Error("a spent slug must not reach gh")
+            throw new Error("a retired record path must not reach gh")
           },
         ),
-      /is answered — open a new slug for a new question/,
+      /is neither an issue URL nor an issue number/,
     )
   } finally {
     fixture.dispose()

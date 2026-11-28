@@ -1,20 +1,30 @@
 // Generated from pinned source geometry by packages/ui-cli/src/figma/icons.ts; do not edit.
 import type { SVGProps } from "react"
 
+import { Icon, type GlyphProps } from "../icon"
 import type { IconVariantComponents } from "./types"
 
 // `SPID` as inline SVG: one component per pinned variant, so a bundle
 // that imports one of them carries no other icon artwork.
-/** Source `256:8579`: the default variant. */
-export function Default(props: SVGProps<SVGSVGElement>) {
+/** The `256:8579` drawing, in the source coordinate space. */
+function DefaultGlyph(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" data-figma-node-id="256:8579" {...props}><g transform="matrix(1 0 0 1 0 0)" opacity="1"><g transform="matrix(1 0 0 1 2.2737367544323206e-13 0)" opacity="1"><path d="M12 24C18.629 24 24 18.629 24 12C24 5.371 18.629 0 12 0C5.37508 0 0 5.371 0 12C0 18.629 5.37508 24 12 24ZM12.0327 13.0293C11.0361 13.0293 10.2151 12.6944 9.56977 12.0163C8.92444 11.3424 8.60177 10.5051 8.60177 9.50851C8.60177 8.50783 8.92444 7.67869 9.56569 7.01702C10.2069 6.35534 11.0238 6.02451 12.0245 6.02451C13.0211 6.02451 13.8339 6.35943 14.4588 7.04152C15.0837 7.71954 15.3982 8.55276 15.3982 9.55344C15.3982 10.5459 15.0837 11.3751 14.4588 12.0368C13.8339 12.6944 13.0293 13.0293 12.0327 13.0293ZM8.60177 17.9347C8.60177 16.934 8.92444 16.1048 9.56161 15.4432C10.2029 14.7815 11.0197 14.4506 12.0286 14.4506C13.0252 14.4506 13.838 14.7856 14.4588 15.4677C15.0837 16.1498 15.3982 16.983 15.3982 17.9796L8.60177 17.9347Z" fill="#0e0f13" fillOpacity="1" fillRule="evenodd" /></g></g></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" data-figma-node-id="256:8579" {...props}><g transform="matrix(1 0 0 1 2.2737367544323206e-13 0)" opacity="1"><path d="M12 24C18.629 24 24 18.629 24 12C24 5.371 18.629 0 12 0C5.37508 0 0 5.371 0 12C0 18.629 5.37508 24 12 24ZM12.0327 13.0293C11.0361 13.0293 10.2151 12.6944 9.56977 12.0163C8.92444 11.3424 8.60177 10.5051 8.60177 9.50851C8.60177 8.50783 8.92444 7.67869 9.56569 7.01702C10.2069 6.35534 11.0238 6.02451 12.0245 6.02451C13.0211 6.02451 13.8339 6.35943 14.4588 7.04152C15.0837 7.71954 15.3982 8.55276 15.3982 9.55344C15.3982 10.5459 15.0837 11.3751 14.4588 12.0368C13.8339 12.6944 13.0293 13.0293 12.0327 13.0293ZM8.60177 17.9347C8.60177 16.934 8.92444 16.1048 9.56161 15.4432C10.2029 14.7815 11.0197 14.4506 12.0286 14.4506C13.0252 14.4506 13.838 14.7856 14.4588 15.4677C15.0837 16.1498 15.3982 16.983 15.3982 17.9796L8.60177 17.9347Z" fill="#0e0f13" fillOpacity="1" fillRule="evenodd" /></g></svg>
   )
 }
 
-/** Every pinned variant of `SPID`, keyed by source node id. */
+/** `SPID`: the default variant, in the shared icon box. */
+export function Default(props: GlyphProps) {
+  return <Icon {...props} source={DefaultGlyph} />
+}
+
+/**
+ * Every pinned variant of `SPID`, keyed by source node id. The registry
+ * resolves a runtime name to one of these drawings, which `Icon` owns the box
+ * for; the exports above are the same drawings with that box already applied.
+ */
 export const variants: IconVariantComponents = {
-  "256:8579": Default,
+  "256:8579": DefaultGlyph,
 }
 
 export default Default

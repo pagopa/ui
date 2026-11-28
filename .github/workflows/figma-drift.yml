@@ -12,9 +12,9 @@ name: Figma drift
 # with the pending stub and regenerates the derived story-title map, so the same
 # refresh carries both with the drift that caused them.
 #
-# The job produces a reproducible handoff: delta.json, run.json and the body are
-# uploaded as artifacts (never `.figma/`), and the branch guard refuses to
-# force-push a branch whose head is not the bot's commit.
+# The job produces a reproducible handoff: delta.json, run.json, the rules and
+# comment drift and the body are uploaded as artifacts (never `.figma/`), and the
+# branch guard refuses to force-push a branch whose head is not the bot's commit.
 #
 # The branch and the pull request use the job's GITHUB_TOKEN: the job asks for
 # `contents: write` and `pull-requests: write` explicitly, which replaces the
@@ -154,7 +154,7 @@ jobs:
             echo '```'
             if [ "$behind" -gt 0 ]; then
               echo
-              echo "The rules ledger is behind: ${counts}. A new or stale card needs \`figma:rules mark\`, a removed one needs \`figma:rules sync\`. The ledger stays a reviewed change, so this run only reports it."
+              echo "The rules ledger is behind: ${counts}. A new or stale card needs \`pnpm ui-cli figma rules mark\`, a removed one needs \`pnpm ui-cli figma rules sync\`. The ledger stays a reviewed change, so this run only reports it."
             fi
           } >> "$GITHUB_STEP_SUMMARY"
           if [ "$behind" -gt 0 ]; then
@@ -249,6 +249,9 @@ jobs:
           path: |
             packages/pagopa-ui/.figma/delta.json
             packages/pagopa-ui/.figma/run.json
+            packages/pagopa-ui/.figma/rules-plan.txt
+            packages/pagopa-ui/.figma/rules-plan.json
+            packages/pagopa-ui/.figma/comments.txt
             packages/pagopa-ui/.figma/pr-body.md
           retention-days: 14
           if-no-files-found: error

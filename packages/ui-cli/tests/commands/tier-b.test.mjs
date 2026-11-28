@@ -130,7 +130,7 @@ test("figma request open dry-run has an in-process CLI contract", async () => {
     {
       ...shared,
       "figma-to-code.yaml":
-        "design:\n  requests: docs/design-requests\n  owners:\n    - designer\n  preview:\n    url: https://preview.example.test\n",
+        "design:\n  owners:\n    - designer\n  preview:\n    url: https://preview.example.test\n",
       "request.json": {
         slug: "focus-ring",
         title: "Focus ring",
@@ -158,14 +158,15 @@ test("figma request open dry-run has an in-process CLI contract", async () => {
           ...ghExternal(calls),
           gh: () => {
             calls.push("gh")
-            return ""
+            return "[]"
           },
         },
       },
     )
     assert.equal(result.status, 0, result.stderr)
     assert.match(result.stdout, /would open/)
-    assert.equal(calls.length, 0)
+    // The dry run reads the tracker for the duplicate guard and writes nothing.
+    assert.equal(calls.length, 1)
   } finally {
     fixture.dispose()
   }
@@ -173,7 +174,7 @@ test("figma request open dry-run has an in-process CLI contract", async () => {
 
 test("figma request list has an in-process CLI contract", async () => {
   const fixture = fixtureTree(
-    { ...shared, "figma-to-code.yaml": "design:\n  requests: docs/design-requests\n" },
+    { ...shared, "figma-to-code.yaml": "design:\n  owners:\n    - designer\n" },
     "cli-request-list-",
   )
   const calls = []

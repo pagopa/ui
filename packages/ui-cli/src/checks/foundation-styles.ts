@@ -285,16 +285,6 @@ export function inlineStyleOccurrences(
       node.type === "Literal" &&
       (typeof node.value === "string" || typeof node.value === "number")
     ) {
-      // Preserve the existing caller-overridable table fallback until its
-      // source-backed width is decided. Changing it or copying it elsewhere
-      // fails; consumer column.maxWidth is never treated as a library token.
-      if (
-        file === "src/components/data-display/table.tsx" &&
-        property === "maxWidth" &&
-        node.value === "16rem" &&
-        seen.has("defaultTruncatedWidth")
-      )
-        return
       if (typeof node.value === "number") {
         if (visualConstant(property, node.value)) {
           occurrences.push(

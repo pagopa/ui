@@ -7,7 +7,8 @@ What a component's story proves, on top of the
 
 - [ ] One story file in `apps/storybook/src`, titled `Foundations/*` or
       `Components/<section>/*` (a new section fails `story-taxonomy.test.mjs` in
-      `pnpm nx run pagopa-ui-cli:test`), with a description, essential `argTypes`
+      `pnpm nx run pagopa-ui-cli:test:unit`), with a description, essential
+      `argTypes`
       and a Playground. No parallel demo; retired sections stay retired.
 - [ ] The guide states behaviour and accessibility adaptations and renders on the
       docs page. Storybook prose is English; Italian only in rendered content.
@@ -25,7 +26,8 @@ What a component's story proves, on top of the
       capture` fails `story-collapsed` otherwise.
 - [ ] A story that cannot satisfy a contract condition declares it in its own
       `parameters: { a11yContract: { reflow: false } }` with a reason comment; a
-      pending reflow decision gets one request in `docs/design-requests/`.
+      pending reflow decision gets one request issue in the tracker, labelled
+      `status/needs-answer`.
 - [ ] Interactive components have `play()` tests on native behaviour: submission
       and form data, required and disabled, controlled updates, reset including
       cancellation, validation, focus and keyboard.

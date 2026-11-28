@@ -3,7 +3,6 @@
 import * as React from "react"
 
 import { cn } from "@/lib/cn"
-import { Icon } from "@/components/icons/icon"
 import { Default as AccountBalanceIcon } from "@/components/icons/generated/account-balance"
 import { Down as ChevronDownIcon, Up as ChevronUpIcon } from "@/components/icons/generated/chevron"
 import {
@@ -75,7 +74,7 @@ function SelectField({
   defaultValue,
   onValueChange,
   action,
-  leadingIcon = <Icon source={AccountBalanceIcon} size={24} />,
+  leadingIcon = <AccountBalanceIcon size={24} />,
   "aria-describedby": ariaDescribedBy,
   className,
   ref,
@@ -94,9 +93,9 @@ function SelectField({
   const command = useChoiceAction(action, actionButtonRef)
   const currentValue = value === undefined ? internalValue : value
   const filled = currentValue != null
+  const TriggerChevron = open ? ChevronUpIcon : ChevronDownIcon
   const triggerIcon = (
-    <Icon
-      source={open ? ChevronUpIcon : ChevronDownIcon}
+    <TriggerChevron
       size={24}
       className={
         disabled
@@ -109,8 +108,12 @@ function SelectField({
   )
 
   return (
-    <div className={cn("pui:grid", error ? "pui:gap-0.5" : "pui:gap-2", className)} {...props}>
-      <div className="pui:relative">
+    <div
+      data-slot="select-field"
+      className={cn("pui:grid", error ? "pui:gap-0.5" : "pui:gap-2", className)}
+      {...props}
+    >
+      <div className="pui:relative pui:min-w-0">
         <Select
           {...command.rootProps}
           name={name}
@@ -133,7 +136,7 @@ function SelectField({
             icon={triggerIcon}
             aria-invalid={Boolean(error) || undefined}
             aria-describedby={describedBy(ids, state, ariaDescribedBy)}
-            className="peer pui:relative pui:aria-expanded:border-2 pui:aria-expanded:border-primary"
+            className="peer pui:relative pui:min-w-0 pui:aria-expanded:border-2 pui:aria-expanded:border-primary"
           >
             {leadingIcon ? (
               <span
@@ -145,7 +148,7 @@ function SelectField({
                 {leadingIcon}
               </span>
             ) : null}
-            <SelectValue placeholder=" " className="pui:text-label-sb" />
+            <SelectValue placeholder=" " className="pui:truncate pui:text-label-sb" />
           </SelectTrigger>
           {command.closeComplete ? null : (
             <SelectContent

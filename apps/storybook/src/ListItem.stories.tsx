@@ -3,7 +3,6 @@ import { expect, userEvent, within } from "storybook/test"
 
 import { Avatar } from "@/components/content/avatar"
 import { ListItem } from "@/components/content/list-item"
-import { Icon } from "@/components/icons/icon"
 import { Default as ContentCopyIcon } from "@/components/icons/generated/content-copy"
 import { Default as CreditCardIcon } from "@/components/icons/generated/credit-card"
 import { Default as PhotoIcon } from "@/components/icons/generated/photo"
@@ -16,7 +15,7 @@ const meta = {
   title: "Components/Content/ListItem",
   component: ListItem,
   args: {
-    leading: <Icon source={PhotoIcon} className="pui:text-decorative-secondary" />,
+    leading: <PhotoIcon className="pui:text-decorative-secondary" />,
     description: "Pagamento TARI 2025",
     value: "Accertamento 00016/2025",
   },
@@ -56,7 +55,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Playground: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   // The fixture carries the source row (`897:18749`, 320×96): the row chip is part
   // of the source anatomy, and the 320px frame is `w-80` instead of the viewport.
@@ -72,7 +71,7 @@ export const Playground: Story = {
 }
 
 export const WithAvatar: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   args: {
     leading: <Avatar size="small" alt="Comune di Milano" initials="CM" />,
@@ -82,7 +81,7 @@ export const WithAvatar: Story = {
 }
 
 export const LinkWithAvatar: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   args: {
     variant: "link",
@@ -98,7 +97,7 @@ export const LinkWithAvatar: Story = {
 }
 
 export const Link: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   args: { variant: "link", href: "#servizio" },
   play: async ({ canvasElement }) => {
@@ -110,23 +109,23 @@ export const Link: Story = {
 }
 
 export const Actionable: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   args: {
     variant: "actionable",
-    trailingIcon: <Icon source={ContentCopyIcon} />,
+    trailingIcon: <ContentCopyIcon />,
     chip: <Chip size="compact">Default</Chip>,
   },
 }
 
 export const Transactional: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   args: {
     variant: "transactional",
     leading: (
       <span className="pui:grid pui:size-11 pui:place-items-center pui:rounded-lg pui:border">
-        <Icon source={CreditCardIcon} />
+        <CreditCardIcon />
       </span>
     ),
     value: "Carta •••• 4532",
@@ -136,13 +135,13 @@ export const Transactional: Story = {
 }
 
 export const WithSuggestion: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   args: {
     variant: "transactional",
     leading: (
       <span className="pui:grid pui:size-11 pui:place-items-center pui:rounded-lg pui:border">
-        <Icon source={CreditCardIcon} />
+        <CreditCardIcon />
       </span>
     ),
     value: "Carta •••• 4532",
@@ -165,7 +164,7 @@ export const Amount: Story = {
 export const ErrorState: Story = {
   args: {
     variant: "error",
-    leading: <Icon source={ReportIcon} className="pui:text-destructive" />,
+    leading: <ReportIcon className="pui:text-destructive" />,
     value: "Avviso non trovato",
     description: undefined,
     helperText: "Controlla il codice avviso e riprova.",
@@ -174,7 +173,7 @@ export const ErrorState: Story = {
 }
 
 export const WithAction: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   args: {
     chip: <Chip size="compact">Default</Chip>,
@@ -187,7 +186,7 @@ export const WithAction: Story = {
 }
 
 export const Loading: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   args: { loading: true, value: undefined, description: undefined },
   play: async ({ canvasElement }) => {

@@ -4,7 +4,6 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useLinkComponent } from "@/lib/ui-provider"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as ChevronRightIcon } from "@/components/icons/generated/chevron"
 import { Default as HowToRegIcon } from "@/components/icons/generated/how-to-reg"
 import { Button } from "@/components/primitives/button"
@@ -15,7 +14,9 @@ interface ListItemSuggestion {
   icon?: React.ReactNode
 }
 
-interface ListItemProps {
+// The row renders an anchor the provider supplies, a button or a div — three
+// element kinds, so the contract it can meet is the attribute one.
+interface ListItemProps extends Omit<React.HTMLAttributes<HTMLElement>, "children"> {
   /** Source composition of the row. */
   variant?:
     | "informative"
@@ -51,10 +52,6 @@ interface ListItemProps {
   chevron?: boolean
   /** Skeleton state of the row. */
   loading?: boolean
-  className?: string
-  id?: string
-  "data-testid"?: string
-  "aria-label"?: string
 }
 
 function ListItem({
@@ -115,7 +112,7 @@ function ListItem({
 
   if (loading) {
     return (
-      <div aria-busy="true" className={classes} {...props}>
+      <div data-slot="list-item" aria-busy="true" className={classes} {...props}>
         <Skeleton className="pui:size-6" />
         <span className="pui:grid pui:flex-1 pui:gap-1.5">
           <Skeleton className="pui:h-5.5 pui:w-25" />
@@ -155,7 +152,7 @@ function ListItem({
         {suggestion ? (
           <span className="pui:flex pui:items-center pui:gap-1 pui:text-label-mini pui:text-han-purple">
             <span aria-hidden="true" className="pui:shrink-0">
-              {suggestion.icon ?? <Icon source={HowToRegIcon} size={16} />}
+              {suggestion.icon ?? <HowToRegIcon size={16} />}
             </span>
             {suggestion.label}
           </span>
@@ -188,18 +185,14 @@ function ListItem({
         </span>
       ) : null}
       {showChevron ? (
-        <Icon
-          source={ChevronRightIcon}
-          className="pui:size-6 pui:shrink-0 pui:text-primary"
-          aria-hidden="true"
-        />
+        <ChevronRightIcon className="pui:size-6 pui:shrink-0 pui:text-primary" aria-hidden="true" />
       ) : null}
     </>
   )
 
   if (href) {
     return (
-      <Link href={href} className={classes} {...props}>
+      <Link data-slot="list-item" href={href} className={classes} {...props}>
         {row}
       </Link>
     )
@@ -207,7 +200,7 @@ function ListItem({
 
   if (onPress) {
     return (
-      <button type="button" className={classes} onClick={onPress} {...props}>
+      <button data-slot="list-item" type="button" className={classes} onClick={onPress} {...props}>
         {row}
       </button>
     )

@@ -4,11 +4,10 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useLinkComponent } from "@/lib/ui-provider"
 
-import { Icon } from "@/components/icons/icon"
 import { Down as ChevronDownIcon } from "@/components/icons/generated/chevron"
 
 /** Props of {@link Header}. The identity slots are data, not children. */
-interface HeaderProps {
+interface HeaderProps extends Omit<React.ComponentProps<"header">, "children"> {
   /** Product identity. */
   product: {
     /** Product or institution name. */
@@ -37,7 +36,7 @@ interface HeaderProps {
   className?: string
 }
 
-function Header({ product, user, actions, className }: HeaderProps) {
+function Header({ product, user, actions, className, ref, ...props }: HeaderProps) {
   const Link = useLinkComponent()
   const productContent = (
     <>
@@ -53,10 +52,7 @@ function Header({ product, user, actions, className }: HeaderProps) {
           Source `Logo=False`: the chevron is `Icon/Neutral` on mobile (1298:5148)
           and `primary` on desktop (1298:5227). */}
       {product.logo ? null : (
-        <Icon
-          source={ChevronDownIcon}
-          className="pui:shrink-0 pui:text-foreground pui:tablet:text-primary"
-        />
+        <ChevronDownIcon className="pui:shrink-0 pui:text-foreground pui:tablet:text-primary" />
       )}
     </>
   )
@@ -80,15 +76,17 @@ function Header({ product, user, actions, className }: HeaderProps) {
           </span>
         ) : null}
       </span>
-      <Icon
-        source={ChevronDownIcon}
-        className="pui:hidden pui:shrink-0 pui:text-foreground pui:tablet:block"
-      />
+      <ChevronDownIcon className="pui:hidden pui:shrink-0 pui:text-foreground pui:tablet:block" />
     </>
   ) : null
 
   return (
-    <header data-slot="header" className={cn("pui:border-b pui:bg-background", className)}>
+    <header
+      data-slot="header"
+      ref={ref}
+      className={cn("pui:border-b pui:bg-background", className)}
+      {...props}
+    >
       {/* Mobile 320x77 and desktop 1200x103 share the bar: the source keeps a
           single row at both devices and only the identity collapses. */}
       <div className="pui:mx-auto pui:flex pui:min-h-19 pui:max-w-7xl pui:items-center pui:justify-between pui:gap-2 pui:px-6 pui:py-4 pui:tablet:min-h-(--pui-header-height) pui:tablet:gap-6">

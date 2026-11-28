@@ -9,20 +9,19 @@
 # workflow while the project has no subscription, and the day the token exists
 # the same run starts comparing with nothing else to change.
 #
-# What a run compares follows the event. An ordinary pull request asks for
-# TurboSnap (`--only-changed`): Chromatic traces the changed files through the
-# module graph the build writes to `preview-stats.json` to the stories they
-# reach, which is the scope walk this repository used to own. That is why the
-# `build` script passes `--stats-json`: the Vite builder emits webpack-compatible
-# stats only when asked, and a prebuilt Storybook without them fails the run at
-# "Prepare your built Storybook" instead of tracing. The nightly, a manual
-# dispatch and the "Version Packages" pull request compare every story, because
-# those are the passes where a story nothing else proved has to surface and the
-# publish is the last moment to notice. `fetch-depth: 0` is TurboSnap's: it reads
-# the git history to compute the changed files, and the first run of a project
-# captures everything and becomes the baseline the next one traces against.
-# TurboSnap itself needs ten builds from CI before it traces anything, so
-# `--only-changed` captures the whole catalogue until then.
+# Every run compares the whole catalogue, and it does so once a week, on the
+# "Version Packages" pull request and on a manual dispatch — never on an ordinary
+# pull request. A pull request is judged by the story suite, the two condition
+# renderings and the accessibility contract in `deep-checks.yml`, which run in
+# minutes and gate; a capture is a comparison against a service that bills per
+# snapshot, reports a verdict rather than gating, and is read a week later
+# against a build whose history exists precisely to make that possible. The
+# weekly slot is where a story nothing else compared surfaces, and the release
+# pull request is the last moment to notice before the publish. No run is
+# scoped any more, so TurboSnap is not wired: no `--only-changed`, no stats file, no
+# full-history checkout. The stories that pin their own width (a 1440 px page
+# fixture, its 320 px counterpart) declare the one width they own, so the widths
+# a story cannot vary are not captured three times.
 #
 # Chromatic bills per capture. A plan that no longer covers a full catalogue
 # limits the build rather than failing it: the Storybook publishes, no test runs
@@ -41,16 +40,17 @@ name: Chromatic
 
 on:
   pull_request:
-    # `ready_for_review` is what turns a skipped draft into a compared pull
-    # request; `synchronize` re-compares every push the release pull request
-    # receives from a version plan.
+    # The trigger stays for the **Version Packages** pull request, which the job
+    # condition narrows to: `synchronize` re-compares every push a version plan
+    # adds. An ordinary pull request reaches this workflow and skips the job —
+    # its stories are proved by the browser suites, not by a capture.
     types: [opened, synchronize, reopened, ready_for_review]
   # No `push` trigger: a merge to `main` carries the diff a pull request already
-  # compared. The nightly below is the whole-catalogue pass.
+  # proved. The weekly pass below is the whole-catalogue one.
   schedule:
-    # Every day at 04:00 UTC, an hour after the deep checks: this is where a
-    # story nothing compared surfaces, a day after it reached `main`.
-    - cron: "0 4 * * *"
+    # Mondays at 04:00 UTC, an hour after the deep checks: this is where a story
+    # nothing compared surfaces, within a week of reaching `main`.
+    - cron: "0 4 * * 1"
   workflow_dispatch:
 
 concurrency:
@@ -62,13 +62,16 @@ jobs:
     name: Visual regression
     # The review pull request (`design.preview.branch` in the figma-to-code
     # config) adds review stories only: they never merge and exist for the
-    # preview deploy, so its run would re-compare the unchanged library. A draft
-    # is not compared either, and the project token never reaches a fork: the
+    # preview deploy, so its run would re-compare the unchanged library. An
+    # ordinary pull request is not captured at all (the cadence is the weekly
+    # pass, the release pull request and a manual dispatch), a draft is not
+    # compared either, and the project token never reaches a fork: the
     # environment secret is not exposed to one.
     if: >-
       github.head_ref != 'feedback/previews' &&
       (github.event_name != 'pull_request' ||
-       (github.event.pull_request.draft == false &&
+       (startsWith(github.head_ref, 'nx-release/') &&
+        github.event.pull_request.draft == false &&
         github.event.pull_request.head.repo.full_name == github.repository))
     runs-on: ubuntu-24.04
     # CHROMATIC_PROJECT_TOKEN is a GitHub environment secret of app-dev-ci,
@@ -95,8 +98,6 @@ jobs:
         if: steps.token.outputs.present == 'true'
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
-          # TurboSnap computes the changed files from the history.
-          fetch-depth: 0
           # The build runs pull request code: no persisted credentials near it.
           persist-credentials: false
 
@@ -132,32 +133,6 @@ jobs:
         # not build its own copy.
         run: pnpm nx run pagopa-ui-storybook:build
 
-      - name: Resolve the scope
-        if: steps.token.outputs.present == 'true'
-        id: scope
-        env:
-          HEAD_REF: ${{ github.head_ref }}
-        run: |
-          # HEAD_REF is empty on the scheduled and the manual run. A pull
-          # request executes here as the runner user while the checkout is
-          # owned by another one: without this, `git` refuses to read the
-          # repository and TurboSnap cannot compute its diff.
-          git config --system --add safe.directory "$GITHUB_WORKSPACE" 2>/dev/null || true
-          case "$HEAD_REF" in
-            # The nightly, a manual run and the release pull request compare the
-            # whole catalogue. The release diff carries the version, the
-            # changelog and the consumed version plan, so it moves no story;
-            # what it guards is the publish, and a publish answers to every
-            # story.
-            nx-release/*|"")
-              echo "scope=all" >> "$GITHUB_OUTPUT"
-              ;;
-            # Every other pull request: the stories its own diff reaches.
-            *)
-              echo "scope=changed" >> "$GITHUB_OUTPUT"
-              ;;
-          esac
-
       - name: Chromatic
         if: steps.token.outputs.present == 'true'
         timeout-minutes: 60
@@ -166,17 +141,13 @@ jobs:
           # an argument is a token in the process list.
           CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
         # `apps/storybook/chromatic.config.json` names the build directory and
-        # `exit-zero-on-changes`; only the scope belongs to the event.
+        # `exit-zero-on-changes`; nothing about the scope is left to the event.
         run: |
           # `tee` would report its own status and hide a failing CLI.
           set -o pipefail
-          flags=(--ci)
-          if [ "${{ steps.scope.outputs.scope }}" = "changed" ]; then
-            flags+=(--only-changed)
-          fi
           # The log feeds the guard below: a plan that no longer covers the
           # catalogue publishes the build, captures nothing and exits 0.
-          pnpm nx run pagopa-ui-storybook:chromatic -- "${flags[@]}" 2>&1 \
+          pnpm nx run pagopa-ui-storybook:chromatic -- --ci 2>&1 \
             | tee "$RUNNER_TEMP/chromatic.log"
 
       # A build limited by the plan publishes the Storybook, runs no test and

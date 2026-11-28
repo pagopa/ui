@@ -8,11 +8,6 @@ import { Heading, type HeadingTag } from "@/components/primitives/heading"
 
 import type { NavItem } from "./nav-item"
 
-// Source company-information sentence (Footer `1360:20138` → the
-// `.CompanyInformation` row).
-const COMPANY_INFORMATION =
-  "PagoPA S.p.A. - Società per azioni - Capitale sociale di euro 1,000,000 interamente versato - Sede legale in Roma, Piazza Colonna 370, CAP 00187 - N. di iscrizione a Registro Imprese di Roma, CF e P.IVA 15376371009"
-
 // Source link rows (`Label & Caption/Label Mini SB`, 14/20). `trailing` carries
 // the artwork the source places after the label (the language chevron in the
 // Logged user=False column 4); a row with artwork keeps the source 24px height.
@@ -79,7 +74,7 @@ function FooterLinkRow({ link }: { link: FooterLink }) {
   )
 }
 
-export interface FooterProps {
+export interface FooterProps extends Omit<React.ComponentProps<"footer">, "children"> {
   /** Brand slot of the footer. @default messages.footer.brand */
   brand?: React.ReactNode
   /** Link target of the brand; the `#` placeholder keeps the source default. @default "#" */
@@ -102,19 +97,27 @@ function Footer({
   brand: brandProp,
   homeHref = "#",
   links = [],
-  company = COMPANY_INFORMATION,
+  company: companyProp,
   columns = [],
   titleAs = "h2",
   columnsLabel: columnsLabelProp,
   className,
+  ref,
+  ...props
 }: FooterProps) {
   const t = useMessages("footer")
   const brand = brandProp ?? t.brand
   const columnsLabel = columnsLabelProp ?? t.columnsLabel
+  const company = companyProp ?? t.companyInformation
 
   const Link = useLinkComponent()
   return (
-    <footer className={cn("pui:border-t pui:border-border pui:bg-background", className)}>
+    <footer
+      data-slot="footer"
+      ref={ref}
+      className={cn("pui:border-t pui:border-border pui:bg-background", className)}
+      {...props}
+    >
       {/* The two source anatomies are alternatives: columns replace the band. */}
       {links.length && !columns.length ? (
         // Source `Logged user=True, Device=Mobile` (1360:12618): a 32px gap

@@ -2,7 +2,6 @@
 
 import * as React from "react"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as CloseIcon } from "@/components/icons/generated/close"
 import {
   Tooltip as TooltipPrimitive,
@@ -65,7 +64,14 @@ function Tooltip({
     <TooltipProvider>
       <TooltipPrimitive open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
         {trigger ? <TooltipTrigger render={trigger} /> : null}
-        <TooltipContent ref={ref} anchor={anchor} side={side} className={className} {...panelProps}>
+        <TooltipContent
+          data-slot="tooltip"
+          ref={ref}
+          anchor={anchor}
+          side={side}
+          className={className}
+          {...panelProps}
+        >
           <div data-slot="tooltip-description" className="pui:min-w-0">
             {children}
           </div>
@@ -75,7 +81,7 @@ function Tooltip({
               className="pui:flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center"
               data-slot="tooltip-close-mark"
             >
-              <Icon source={CloseIcon} className="pui:size-2.5" />
+              <CloseIcon className="pui:size-2.5" />
             </span>
           ) : null}
         </TooltipContent>

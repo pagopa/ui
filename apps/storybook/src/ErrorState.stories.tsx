@@ -65,20 +65,20 @@ const sourceArgs = {
 }
 
 export const Playground: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   // The fixture carries the source state (code row + both actions, `749:5694`).
   args: { code: sourceArgs.code, actions: sourceArgs.actions },
 }
 
 export const WithAction: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   args: { actions: <Button>Riprova</Button> },
 }
 
 export const WithCode: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   args: {
     code: "PPT_001",

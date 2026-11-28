@@ -24,7 +24,7 @@
       "options": {
         "script": "format"
       },
-      "cache": true,
+      "cache": false,
       "configurations": {
         "ci": {
           "script": "format:check"
@@ -46,8 +46,10 @@
         "client:check",
         "utility-prefix:check",
         "consumer-dx:check",
+        "data-slots:check",
         "a11y:conformance:check",
-        "pagopa-ui-cli:test",
+        "pagopa-ui-cli:test:unit",
+        "pagopa-ui-cli:test:contracts",
         "pagopa-ui-tokens:test"
       ],
       "configurations": {
@@ -135,7 +137,9 @@
         "{workspaceRoot}/packages/artwork/src/**",
         "{workspaceRoot}/apps/storybook/src/**/*",
         "{workspaceRoot}/pnpm-lock.yaml",
-        { "runtime": "node --version" }
+        {
+          "runtime": "node --version"
+        }
       ],
       "cache": true,
       "outputs": []
@@ -162,16 +166,22 @@
       "options": {
         "command": "node src/cli.ts figma map --write",
         "cwd": "{workspaceRoot}/packages/ui-cli",
-        "env": { "PAGOPA_UI_ROOT": "../pagopa-ui" }
+        "env": {
+          "PAGOPA_UI_ROOT": "../pagopa-ui"
+        }
       },
       "outputs": ["{projectRoot}/figma-map.json"],
       "cache": false
     },
     "figma:map:check": {
-      "options": { "command": "node src/cli.ts figma map" }
+      "options": {
+        "command": "node src/cli.ts figma map"
+      }
     },
     "plugin:check": {
-      "options": { "command": "node src/cli.ts check plugin" }
+      "options": {
+        "command": "node src/cli.ts check plugin"
+      }
     },
     "text-defaults:check": {
       "options": {
@@ -210,6 +220,16 @@
       "options": {
         "command": "node src/cli.ts check consumer-dx"
       }
+    },
+    "data-slots:check": {
+      "options": {
+        "command": "node src/cli.ts check data-slots"
+      },
+      "inputs": [
+        "default",
+        "tooling",
+        "{workspaceRoot}/packages/pagopa-ui/src/data-slot-exceptions.json"
+      ]
     },
     "a11y:conformance:check": {
       "options": {

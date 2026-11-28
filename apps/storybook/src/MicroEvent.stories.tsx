@@ -38,7 +38,7 @@ type Story = StoryObj<typeof meta>
 export const Playground: Story = { parameters: { a11yContract: { reflow: false } } }
 
 export const Corrected: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   args: {
     invalid: false,

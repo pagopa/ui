@@ -18,7 +18,7 @@ interface FieldStateProps {
   success?: React.ReactNode
   /** Marks the control required: native `required` plus its marker. */
   required?: boolean
-  /** Visible suffix of a required label. @default "(obbligatorio)" */
+  /** Suffix of a required label. @default messages.fieldLabel.requiredLabel */
   requiredLabel?: string
   /** Native disabled state; the label follows the control. */
   disabled?: boolean

@@ -5,7 +5,8 @@
 // It answers, in one command, the questions a session used to answer by reading
 // the snapshot, the inventory, the registry and the sources: is the token there,
 // which snapshot is pinned, does the file differ from the inventory, who is
-// still pending and why, which design requests are open, what comes next.
+// still pending and why, which design request a pending node waits on, what
+// comes next.
 import fs from "node:fs"
 import path from "node:path"
 
@@ -17,8 +18,7 @@ import { fileKeyFromSource } from "./snapshot.ts"
 import { figmaToken, resolveFigmaToken, type FigmaTokenSource } from "../adapters/figma-token.ts"
 import { RULES_PATH, plan as planRules, readLedger, readRulesSnapshot } from "./rules.ts"
 import { COMMENTS_SNAPSHOT_PATH, readComments } from "./comments.ts"
-import { CONFIG_PATH, requestsFolder, requestPointer } from "./config.ts"
-import { readDesignRequestRecord } from "./design-request-record.ts"
+import { CONFIG_PATH, issuePointers } from "./config.ts"
 import {
   PAGE_SURFACE_PATH,
   formatSurfaceLine,
@@ -99,14 +99,12 @@ export type StatusReport = {
     error: string | null
   }
   requests: {
-    path: string | null
-    open: number
-    answered: number
-    /** Records whose `- Status:` line is missing or says neither open nor answered. */
-    unreadable: string[]
-    files: string[]
-    /** The folder `figma-to-code.yaml` declares, whether or not it exists. */
-    declared: string
+    /**
+     * The issue URLs a pending node points at. A request's live state lives in
+     * the tracker, and this report reads no network, so what it can say is which
+     * requests block a node; the census is `figma request list`'s job.
+     */
+    linked: string[]
   }
   live: LiveReport | null
   next: string
@@ -122,32 +120,10 @@ function bytesLabel(bytes: number): string {
   return megabytes >= 1 ? `${megabytes.toFixed(1)} MB` : `${Math.round(bytes / 1024)} KB`
 }
 
-function designRequests(workspace: Workspace): StatusReport["requests"] {
-  const root = workspace.root
-  const workspaceRootPath = workspace.workspaceRoot
-  // The record folder is the one path the config calls workspace-relative, so it
-  // is the one path read from it rather than from a literal here.
-  const requests = requestsFolder(workspace)
-  const directory = [path.join(root, requests), path.join(workspaceRootPath, requests)].find(
-    (candidate) => fs.existsSync(candidate),
-  )
-  if (!directory)
-    return { path: null, open: 0, answered: 0, unreadable: [], files: [], declared: requests }
-  const files = fs
-    .readdirSync(directory)
-    .filter((file) => file.endsWith(".md"))
-    .sort()
-  const records = files.map((file) =>
-    readDesignRequestRecord(fs.readFileSync(path.join(directory, file), "utf8")),
-  )
-  return {
-    path: relativeTo(workspaceRootPath, directory),
-    open: records.filter((record) => record.state === "open").length,
-    answered: records.filter((record) => record.state === "answered").length,
-    unreadable: files.filter((_, index) => records[index].state === "unreadable"),
-    files,
-    declared: requests,
-  }
+function designRequests(pending: PendingRow[]): StatusReport["requests"] {
+  // The pending nodes carry the pointers already: a note names an issue URL, and
+  // the same URL named by two nodes blocks both.
+  return { linked: [...new Set(pending.flatMap((row) => row.designRequests))] }
 }
 
 /**
@@ -159,36 +135,43 @@ function designRequests(workspace: Workspace): StatusReport["requests"] {
  * the registry carried a pending node: the report's own counters said work was
  * waiting and `next` said there was none.
  *
- * A rung names the command that moves its counter. Two counters are easy to
- * mistake for `figma:triage`: the census coverage is read from the pages the
+ * A rung names the command that moves its counter, spelled the way a person
+ * runs it (`pnpm ui-cli …`). The Nx targets were a second name for the same
+ * command, and a session that copied one had to be told how to pass `--` too.
+ *
+ * Only a request a pending node actually points at blocks: the tracker holds
+ * 23 open questions and none of them stopped the router while no pending node
+ * pointed at one. What nothing points at is design debt, and `figma request
+ * list` reports it; this rung counts what blocks. Two counters are easy
+ * to mistake for `figma triage`: the census coverage is read from the pages the
  * inventory publishes on and `surface sync` writes, and a pending census
- * identity is moved by the registry status (`registry set`), never by triage,
+ * identity is moved by the catalogue decision (`record`), never by triage,
  * which preserves the decision it reopens.
  */
 export function nextCommand(report: Omit<StatusReport, "next">): string {
-  const run = (target: string): string => `pnpm nx run pagopa-ui-cli:${target}`
-  const registrySet = "pnpm ui-cli figma registry set <nodeId> --status implemented|mocked|excluded"
+  const status = "pnpm ui-cli figma status --live"
+  const triage = "pnpm ui-cli figma triage"
+  const record = "pnpm ui-cli record <nodeId> --status <status>"
   if (!report.token.present)
-    return "export FIGMA_TOKEN in the shell that runs the session, then re-run figma:status -- --live"
+    return `export FIGMA_TOKEN in the shell that runs the session, then re-run ${status}`
   if (report.inventory.error)
-    return "restore the inventory or run figma:triage: the session report cannot read it"
+    return `restore the inventory, or refresh it with ${triage} (the session report cannot read it)`
   if (report.registry.error)
-    return `restore the registry or run figma:triage: the session report cannot read it (${report.registry.error})`
+    return `restore the registry, or refresh it with ${triage} (the session report cannot read it: ${report.registry.error})`
   if (report.live?.error) return `fix the live read first: ${report.live.error}`
-  if (!report.live)
-    return `${run("figma:status")} -- --live (ask the file whether it changed since the inventory sync)`
+  if (!report.live) return `${status} (ask the file whether it changed since the inventory sync)`
   if (report.live.changedSinceInventory !== false)
     return report.live.changedSinceInventory === true
-      ? `${run("figma:plan")} (the file changed since the inventory sync)`
-      : `${run("figma:plan")} (the inventory records no file version yet)`
+      ? `pnpm ui-cli figma plan (the file changed since the inventory sync)`
+      : `pnpm ui-cli figma plan (the inventory records no file version yet)`
 
   // The file matches the inventory: what is left is inside the workspace, and
   // every remaining rung is a counter this same report prints.
   if (report.rules.error) return `restore the design-rules ledger: ${report.rules.error}`
   if (report.rules.stale)
-    return `${run("figma:rules")} (${report.rules.stale} reviewed rule(s) trail the library export)`
+    return `pnpm ui-cli figma rules plan (${report.rules.stale} reviewed rule(s) trail the library export)`
   if (report.rules.pending)
-    return `${run("figma:rules")} (${report.rules.pending} rule(s) still carry a pending disposition)`
+    return `pnpm ui-cli figma rules mark <cardId> --disposition <disposition> (${report.rules.pending} rule(s) still carry a pending disposition)`
   if (report.surface.error) return `restore the page census: ${report.surface.error}`
   const uncensused = report.surface.uncensused
   if (uncensused.length) {
@@ -201,24 +184,34 @@ export function nextCommand(report: Omit<StatusReport, "next">): string {
       `(${uncensused.length} published page(s) are not censused: ${named}${uncensused.length > 3 ? ", …" : ""})`
     )
   }
-  if (report.requests.unreadable.length)
-    return `set "- Status: open|answered" in ${report.requests.unreadable.join(", ")} — ${report.requests.path ?? report.requests.declared} records without a readable status are not counted`
-  if (report.requests.open)
-    return `answer the ${report.requests.open} open design request(s) in ${report.requests.path ?? report.requests.declared} before aligning their nodes`
+  if (report.requests.linked.length)
+    return `answer the ${report.requests.linked.length} open design request(s) a pending node points at (${list(report.requests.linked.slice(0, 3))}) before briefing those nodes`
   if (report.comments.open)
-    return `${run("figma:comments")} (${report.comments.open} open Figma comment(s), ${report.comments.mappedOpen} on a mapped node)`
+    return `pnpm ui-cli figma comments (${report.comments.open} open Figma comment(s), ${report.comments.mappedOpen} on a mapped node)`
   const census = report.surface.stats
   if (census?.pending) {
     const review = report.registry.pending
-      ? `${run("figma:brief")} --queue`
-      : `${run("figma:brief")} --node <nodeId>`
-    return `${review}, then ${registrySet} (${census.pending} censused identity(ies) still carry a pending decision; figma:triage preserves it)`
+      ? "pnpm ui-cli figma brief --queue"
+      : "pnpm ui-cli figma brief --node <nodeId> --card"
+    return `${review}, then ${record} (${census.pending} censused identity(ies) still carry a pending decision; ${triage} preserves it)`
   }
   if (report.registry.pending)
-    return `${run("figma:brief")} --queue (${report.registry.pending} pending node(s) need a brief)`
+    return `pnpm ui-cli figma brief --queue (${report.registry.pending} pending node(s) need a brief)`
   if (report.registry.unaccounted)
-    return `pnpm nx run pagopa-ui:check:catalogue (${report.registry.unaccounted} unaccounted node(s) need a registry entry: ${registrySet})`
-  return "nothing to align: the file matches the inventory, the census is decided, the ledger is current and no node is pending or unaccounted"
+    return `pnpm ui-cli check catalogue (${report.registry.unaccounted} unaccounted node(s) need a registry entry: ${record})`
+  return "nothing to align: the file matches the inventory, the census is decided, the ledger is current, no node is pending or unaccounted"
+}
+
+/** Names up to three items and counts the rest, so a rung stays one line. */
+function list(items: readonly string[]): string {
+  const head = items.slice(0, 3).join(", ")
+  return items.length > 3 ? `${head}, …` : head
+}
+
+/** The requests a pending node points at, so the counter agrees with `next`. */
+function requestsLine(requests: StatusReport["requests"]): string {
+  if (!requests.linked.length) return "none blocks a pending node"
+  return `${requests.linked.length} block(s) a pending node: ${list(requests.linked)}`
 }
 
 function statusLine(name: string, value: string): string {
@@ -286,12 +279,7 @@ function formatStatusEvidence(report: StatusReport): string[] {
       : "no design request named in the note"
     lines.push(statusLine("pending", `${row.nodeId} ${row.name ?? "(removed)"} → ${reason}`))
   }
-  lines.push(
-    statusLine(
-      "requests",
-      `${report.requests.open} open · ${report.requests.answered} answered${report.requests.unreadable.length ? ` · ${report.requests.unreadable.length} unreadable` : ""}${report.requests.path ? ` in ${report.requests.path}` : ""}`,
-    ),
-  )
+  lines.push(statusLine("requests", requestsLine(report.requests)))
   return lines
 }
 
@@ -382,19 +370,12 @@ function inventoryStatus(workspace: Workspace): {
   return { report, inventory }
 }
 
-function pendingStatusRow(
-  nodeId: string,
-  name: string | null,
-  requests: string,
-  target?: string,
-  note?: string,
-) {
-  const designRequest = requestPointer(requests)
+function pendingStatusRow(nodeId: string, name: string | null, target?: string, note?: string) {
   return {
     nodeId,
     name,
     target: target ?? null,
-    designRequests: [...new Set(note?.match(designRequest) ?? [])],
+    designRequests: issuePointers(note),
   }
 }
 
@@ -419,7 +400,6 @@ function registryStatus(
     error: null,
   }
   const pending: PendingRow[] = []
-  const requests = requestsFolder(workspace)
   try {
     const registry = readRegistry(workspace.root)
     const pageRules = new Map(registry.bulkRules.map((rule) => [rule.pageId, rule]))
@@ -429,16 +409,14 @@ function registryStatus(
       const status = entry?.status ?? pageRules.get(node.pageId)?.status ?? "unaccounted"
       if (isCountedStatus(status)) counts[status] += 1
       if (status === "pending")
-        pending.push(
-          pendingStatusRow(node.nodeId, node.name, requests, entry?.target?.export, entry?.note),
-        )
+        pending.push(pendingStatusRow(node.nodeId, node.name, entry?.target?.export, entry?.note))
     }
     for (const [nodeId, entry] of Object.entries(registry.entries)) {
       if (
         entry.status === "pending" &&
         !inventory?.components.some((node) => node.nodeId === nodeId)
       ) {
-        pending.push(pendingStatusRow(nodeId, null, requests, entry.target?.export, entry.note))
+        pending.push(pendingStatusRow(nodeId, null, entry.target?.export, entry.note))
       }
     }
     pending.sort((left, right) =>
@@ -598,7 +576,7 @@ export async function buildStatusReport(
     comments: commentsStatus(workspace, inventory),
     pending,
     surface: surfaceStatus(workspace, inventory),
-    requests: designRequests(workspace),
+    requests: designRequests(pending),
     live,
   }
   const report: StatusReport = { ...base, next: nextCommand(base) }

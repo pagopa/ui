@@ -1,10 +1,11 @@
 "use client"
 
+import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 import { Progress } from "@/components/primitives/progress"
 
 /** Props of {@link ProgressLoader}. */
-interface ProgressLoaderProps {
+interface ProgressLoaderProps extends Omit<React.ComponentProps<"div">, "children"> {
   /**
    * Current progress (0–100, values outside the range are clamped); omit for
    * the indeterminate animation.
@@ -16,6 +17,7 @@ interface ProgressLoaderProps {
   showLabel?: boolean
   /** Renders the `%` readout in the label row; only meaningful while `showLabel` is true. @default true */
   showValue?: boolean
+  className?: string
 }
 
 function ProgressLoader({
@@ -23,13 +25,21 @@ function ProgressLoader({
   label: labelProp,
   showLabel = true,
   showValue = true,
+  className,
+  ref,
+  ...props
 }: ProgressLoaderProps) {
   const t = useMessages("progressLoader")
   const label = labelProp ?? t.label
 
   const normalized = value === undefined ? undefined : Math.min(100, Math.max(0, value))
   return (
-    <div className={showLabel ? "pui:w-full" : "pui:w-full pui:px-6 pui:py-5"}>
+    <div
+      data-slot="progress-loader"
+      ref={ref}
+      {...props}
+      className={cn(showLabel ? "pui:w-full" : "pui:w-full pui:px-6 pui:py-5", className)}
+    >
       {showLabel && (
         <div className="pui:mb-2 pui:flex pui:items-center pui:justify-between pui:gap-4 pui:text-label-mini">
           <span className="pui:text-label-mini-sb">{label}</span>

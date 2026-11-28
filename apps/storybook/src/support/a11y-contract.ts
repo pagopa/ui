@@ -50,7 +50,8 @@ const TABBABLE = [
   "[tabindex]",
 ].join(",")
 
-function isTestRun() {
+/** Whether the page is running inside the Vitest browser run. */
+export function isTestRun() {
   return Boolean(globalThis.__vitest_browser__)
 }
 
@@ -125,6 +126,9 @@ declare global {
   var __pagopaA11yContractSurface: StorySurface | undefined
   // Set by the Vitest browser runtime.
   var __vitest_browser__: boolean | undefined
+  // Declared by a condition project's setup file, so the contract can refuse a
+  // pass whose browser context is not the one the project is named after.
+  var __pagopaCondition: { forcedColors?: boolean; reducedMotion?: boolean } | undefined
 }
 
 interface Contract {
@@ -150,7 +154,7 @@ function contractOf(parameters: object): Contract {
 // The reflow condition's exemptions live with each story: `parameters:
 // { a11yContract: { reflow: false } }` carries the flag and the reason (a
 // source-width fixture, or a radius the story pins). The flags that remain are
-// debt, recorded in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+// debt, recorded in https://github.com/pagopa/ui/issues/192.
 
 // Waits for a predicate on a wall-clock budget rather than a frame count: a
 // fixed number of frames measures how busy the runner was, and a loaded CI
@@ -164,13 +168,146 @@ async function until(predicate: () => boolean, timeoutMs = 5000) {
   return predicate()
 }
 
-// A focused control must paint a visible cue. The check diffs the styled chain
-// before and after blurring, so a composite widget that paints the ring on its
-// frame instead of the inner input still passes.
-async function expectFocusPaint(element: HTMLElement) {
+// Colour measurement for the focus paint. `getComputedStyle` hands back the
+// authored colour space (`oklch(…)`, `color-mix(…)`), so a 1x1 canvas
+// normalises every token to sRGB bytes instead of the loop re-implementing
+// every serialisation CSS allows.
+type Rgba = [number, number, number, number]
+
+let colourContext: CanvasRenderingContext2D | null | undefined
+
+function parseColour(value: string): Rgba | null {
+  if (colourContext === undefined)
+    colourContext = document.createElement("canvas").getContext("2d", {
+      willReadFrequently: true,
+    })
+  if (!colourContext) return null
+  // The 1x1 canvas keeps the last fill, so an unparsable colour would be read
+  // back as the previous one: seed a known value and require the read to match.
+  colourContext.clearRect(0, 0, 1, 1)
+  colourContext.fillStyle = "#010203"
+  colourContext.fillStyle = value
+  colourContext.fillRect(0, 0, 1, 1)
+  const [r, g, b, a] = colourContext.getImageData(0, 0, 1, 1).data
+  return [r, g, b, a / 255]
+}
+
+interface Backdrop {
+  colour: Rgba
+  /** False when a gradient or image sits under the cue: only bounds remain. */
+  readable: boolean
+}
+
+// The colour a ring painted outside `node` sits on: the opaque composite of
+// every background between it and the document, or white when they are all
+// translucent.
+function backdropOf(node: HTMLElement): Backdrop {
+  const layers: Rgba[] = []
+  let readable = true
+  for (
+    let current: HTMLElement | null = node.parentElement;
+    current;
+    current = current.parentElement
+  ) {
+    const style = getComputedStyle(current)
+    const colour = parseColour(style.backgroundColor)
+    if (colour && colour[3] > 0) layers.push(colour)
+    if (colour && colour[3] >= 1) break
+    // An image or gradient breaks the measurement: what sits under the ring is
+    // no longer a colour the check can read.
+    if (style.backgroundImage !== "none") {
+      readable = false
+      break
+    }
+  }
+  return {
+    readable,
+    colour: layers.reduceRight<Rgba>(
+      (backdrop, layer) => composite(layer, backdrop),
+      [255, 255, 255, 1],
+    ),
+  }
+}
+
+function composite(foreground: Rgba, background: Rgba): Rgba {
+  const alpha = foreground[3]
+  return [
+    foreground[0] * alpha + background[0] * (1 - alpha),
+    foreground[1] * alpha + background[1] * (1 - alpha),
+    foreground[2] * alpha + background[2] * (1 - alpha),
+    1,
+  ]
+}
+
+function relativeLuminance([r, g, b]: Rgba) {
+  const channel = (value: number) => {
+    const scaled = value / 255
+    return scaled <= 0.03928 ? scaled / 12.92 : ((scaled + 0.055) / 1.055) ** 2.4
+  }
+  return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b)
+}
+
+function contrastRatio(foreground: Rgba, background: Rgba) {
+  const lighter = Math.max(relativeLuminance(foreground), relativeLuminance(background))
+  const darker = Math.min(relativeLuminance(foreground), relativeLuminance(background))
+  return (lighter + 0.05) / (darker + 0.05)
+}
+
+// WCAG 1.4.11: a focus indicator is a user-interface component, so every part
+// of it needs 3:1 against the colours it sits next to.
+const MINIMUM_FOCUS_CONTRAST = 3
+
+interface FocusPaint {
+  colour: Rgba
+  /** The offset decides whether the cue sits on the control or beside it. */
+  inset: boolean
+  description: string
+}
+
+function shadowColours(shadow: string) {
+  return [...shadow.matchAll(/(?:rgba?|oklch|oklab|color)\([^)]*\)|#[0-9a-f]{3,8}/gi)].map(
+    (match) => match[0],
+  )
+}
+
+// The cue a node paints while it has the focus, as a colour and a side.
+function focusPaintOf(node: HTMLElement): FocusPaint | null {
+  const style = getComputedStyle(node)
+  const width = Number.parseFloat(style.outlineWidth)
+  const outlineVisible =
+    style.outlineStyle !== "none" && (style.outlineStyle === "auto" || width >= 1)
+  if (outlineVisible) {
+    const colour = parseColour(style.outlineColor)
+    if (colour && colour[3] > 0)
+      return {
+        colour,
+        inset: Number.parseFloat(style.outlineOffset) < 0,
+        description: `outline ${style.outlineStyle} ${style.outlineWidth} ${style.outlineColor}`,
+      }
+  }
+  for (const candidate of shadowColours(style.boxShadow)) {
+    const colour = parseColour(candidate)
+    if (!colour || colour[3] <= 0) continue
+    return { colour, inset: style.boxShadow.includes("inset"), description: `shadow ${candidate}` }
+  }
+  return null
+}
+
+interface FocusMeasurement {
+  painter: HTMLElement
+  paint: FocusPaint | null
+  /** What the presence failure prints: the diff that found no cue. */
+  diagnostics: string
+}
+
+// The node that owns the focus cue and the colour it paints. The walk diffs the
+// styled chain before and after blurring, so a composite widget that paints the
+// ring on its frame instead of the inner input is measured on the frame it
+// actually paints.
+async function measureFocusPaint(element: HTMLElement): Promise<FocusMeasurement | null> {
   // Another flow (a popup closing, a focus trap) may own the focus by now: the
   // paint diff needs the element itself focused.
-  if (document.activeElement !== element) return
+  if (document.activeElement !== element) return null
   const chain = [element]
   for (
     let parent = element.parentElement, depth = 0;
@@ -178,31 +315,125 @@ async function expectFocusPaint(element: HTMLElement) {
     parent = parent.parentElement, depth += 1
   )
     chain.push(parent)
-  const snapshot = () =>
-    chain.map((node) => {
-      const style = getComputedStyle(node)
-      return `${style.outlineStyle}|${style.outlineWidth}|${style.boxShadow}`
-    })
-  const focused = snapshot()
+  const snapshot = (node: HTMLElement) => {
+    const style = getComputedStyle(node)
+    return `${style.outlineStyle}|${style.outlineWidth}|${style.boxShadow}`
+  }
+  // The paint is read while the cue is on screen: a widget that re-renders on
+  // blur may not hand focus back, so a live read after the diff is unreliable.
+  const focused = chain.map((node) => ({ text: snapshot(node), paint: focusPaintOf(node) }))
   element.blur()
   await nextFrame()
   if (document.activeElement === element) {
     element.blur()
     await nextFrame()
-    if (document.activeElement === element) return
+    if (document.activeElement === element) return null
   }
-  const blurred = snapshot()
+  const blurred = chain.map(snapshot)
   element.focus()
   await nextFrame()
-  const painted = focused.some((value, index) => {
-    if (value === blurred[index]) return false
-    const [style, width, shadow] = value.split("|")
-    return style === "auto" || (style !== "none" && parseFloat(width) >= 1) || shadow !== "none"
-  })
+  // The innermost node whose styling changed owns the cue; if it paints
+  // nothing measurable the walk continues outward, because a wrapper may.
+  let paint: FocusPaint | null = null
+  let painter = element
+  for (const [index, focusedEntry] of focused.entries()) {
+    if (focusedEntry.text === blurred[index]) continue
+    if (!focusedEntry.paint) continue
+    paint = focusedEntry.paint
+    painter = chain[index]
+    break
+  }
+  if (!paint)
+    return {
+      painter,
+      paint,
+      diagnostics: `active=${document.activeElement === element} class="${(element.className ?? "").toString().slice(-90)}" focused=[${focused.map((entry) => entry.text).join(" | ")}] blurred=[${blurred.join(" | ")}]`,
+    }
+  return { painter, paint, diagnostics: "" }
+}
+
+// A focused control must paint a visible cue. Contrast is measured by
+// `expectFocusContrast`, which each component asserts on the surfaces it is
+// documented for; making every story carry the measurement is the harness
+// upgrade tracked separately.
+// Exported for its own negative test: `A11yContract.stories.tsx` runs it
+// against a control with no cue and asserts the failure, so the check cannot
+// quietly stop checking.
+export async function expectFocusPaint(element: HTMLElement) {
+  const measured = await measureFocusPaint(element)
   expect(
-    painted,
-    `keyboard focus is not painted on ${describe(element)} (active=${document.activeElement === element} class="${(element.className ?? "").toString().slice(-90)}" focused=[${focused.join(" | ")}] blurred=[${blurred.join(" | ")}])`,
-  ).toBe(true)
+    measured?.paint ?? null,
+    `keyboard focus paints no measurable cue on ${describe(element)} (${measured?.diagnostics ?? `active=${document.activeElement === element}`})`,
+  ).not.toBe(null)
+}
+
+// A running transition reports an interpolated colour, so a cue measured mid
+// fade reads as translucent even when the settled token is opaque. Freezing
+// returns the undo, so the caller decides how long the freeze lasts.
+function freezeMotion() {
+  const style = document.createElement("style")
+  style.textContent =
+    "*,*:before,*:after{transition:none!important;animation-delay:0s!important;animation-duration:0.001s!important;animation-iteration-count:1!important}"
+  document.head.append(style)
+  return () => style.remove()
+}
+
+// Tabbing is the only way to make the browser paint `:focus-visible`, which is
+// the cue these checks are about: a click-driven focus paints nothing by design.
+export async function focusWithKeyboard(element: HTMLElement) {
+  if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
+  for (let step = 0; step < 40; step += 1) {
+    await userEvent.tab()
+    if (document.activeElement === element) return
+  }
+  throw new Error(`keyboard focus never reached ${describe(element)}`)
+}
+
+// WCAG 1.4.11 on one control: the cue the component paints for keyboard focus,
+// measured against the colour beside it. Stories call this where the pair
+// (component, surface) is part of the documentation, so a translucent or
+// low-contrast ring fails here instead of passing as "a cue exists".
+export async function expectFocusContrast(element: HTMLElement) {
+  const restore = freezeMotion()
+  try {
+    await expectSettledFocusContrast(element)
+  } finally {
+    restore()
+  }
+}
+
+async function expectSettledFocusContrast(element: HTMLElement) {
+  const measured = await measureFocusPaint(element)
+  expect(
+    measured?.paint ?? null,
+    `keyboard focus paints no measurable cue on ${describe(element)} (${measured?.diagnostics ?? `active=${document.activeElement === element}`})`,
+  ).not.toBe(null)
+  if (!measured?.paint) return
+  const { painter, paint } = measured
+  const backdrop = paint.inset ? backdropOf(painter.parentElement ?? painter) : backdropOf(painter)
+  const own = parseColour(getComputedStyle(painter).backgroundColor)
+  const adjacent =
+    paint.inset && own && own[3] > 0 ? composite(own, backdrop.colour) : backdrop.colour
+  const painted = composite(paint.colour, adjacent)
+  if (!backdrop.readable) {
+    // A gradient or an image sits under the cue, so there is no single colour to
+    // measure: the cue still has to clear 3:1 against one end of the range, which
+    // a washed-out or translucent cue cannot do.
+    const reach = Math.max(
+      contrastRatio(painted, [255, 255, 255, 1]),
+      contrastRatio(painted, [0, 0, 0, 1]),
+    )
+    expect(
+      reach,
+      `the focus cue on ${describe(painter)} (${paint.description}) reaches ${reach.toFixed(2)}:1 against white and black, so no backdrop under the gradient or image keeps it visible`,
+    ).toBeGreaterThanOrEqual(MINIMUM_FOCUS_CONTRAST)
+    return
+  }
+  const ratio = contrastRatio(painted, adjacent)
+  expect(
+    ratio,
+    `the focus cue on ${describe(painter)} (${paint.description}) reaches ${ratio.toFixed(2)}:1 against the adjacent colour, below the ${MINIMUM_FOCUS_CONTRAST}:1 a focus indicator needs`,
+  ).toBeGreaterThanOrEqual(MINIMUM_FOCUS_CONTRAST)
 }
 
 // The elements that push the document wider than the viewport, for reflow
@@ -229,6 +460,98 @@ function describeOverflow(width: number) {
     if (culprits.length === 4) break
   }
   return culprits.length ? `; overflowing: ${culprits.join(", ")}` : ""
+}
+
+// Text that a box hides is text the reader cannot reach: at 200% the fixed
+// heights in the library stop fitting the scaled line boxes, and `overflow:
+// hidden` swallows the remainder with no scroll and no ellipsis. A deliberate
+// `line-clamp` (the truncation the design system documents for a preview value)
+// is the one accepted cut, because the full string stays available elsewhere.
+function expectNoTextClipping(storyId: string, width: number) {
+  // Only the library's own roots are audited: Storybook's chrome lives in the
+  // same document and answers to its own layout, not to this contract.
+  const clipped = []
+  const candidates = [
+    ...document.querySelectorAll<HTMLElement>("[data-slot], [data-pagopa-ui-portal-root]"),
+  ].flatMap((root) => [root, ...root.querySelectorAll<HTMLElement>("*")])
+  for (const element of candidates) {
+    if (element.closest(`[aria-hidden='true'],${FOCUS_GUARD}`)) continue
+    // `.sr-only` clips to a 1px box on purpose: the text is for the screen
+    // reader. The utility is `pui:`-prefixed in the library, so match the name
+    // anywhere in the list rather than as a bare class.
+    if (element.closest("[data-slot='field-label'], [class*='sr-only']")) continue
+    const style = getComputedStyle(element)
+    if (style.webkitLineClamp !== "none" && style.webkitLineClamp !== "") continue
+    if (style.textOverflow === "ellipsis") continue
+    // A clipped or clipped-to-1px box is the visually-hidden idiom, not a
+    // layout that lost text: the reader gets the string through the a11y tree.
+    if (style.clipPath !== "none" || style.clip !== "auto") continue
+    if (element.childElementCount !== 0) continue
+    if (!element.textContent?.trim()) continue
+    const hidesVertically =
+      style.overflowY !== "visible" && element.scrollHeight > element.clientHeight + 1
+    if (!hidesVertically) continue
+    clipped.push(
+      `${describe(element)} "${element.textContent.trim().slice(0, 24)}" ${element.clientHeight}px of ${element.scrollHeight}px`,
+    )
+    if (clipped.length === 4) break
+  }
+  expect(
+    clipped,
+    `[${storyId}] clips its own text at 200% (${width}px viewport, 32px root font): ${clipped.join("; ")}`,
+  ).toHaveLength(0)
+}
+
+/**
+ * The library answers `prefers-reduced-motion` with one global block in
+ * `index.css`, keyed on the `data-slot` stamp. This audit proves that answer
+ * reaches the rendered components: it only means anything where the engine
+ * itself reports the preference, so it is a no-op in the default and
+ * forced-colours passes and a real check in the `storybook-reduced-motion`
+ * pass. The loading spinner keeps its motion by design (it carries the
+ * documented `.loading-spinner-motion` escape).
+ */
+export function expectReducedMotionConditions(
+  storyId = globalThis.__pagopaA11yContractSurface?.id ?? "",
+) {
+  const honoured = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  if (globalThis.__pagopaCondition?.reducedMotion) {
+    // A context option that never reached the browser would make this pass a
+    // duplicate of the default one and pass twice for nothing.
+    expect(
+      honoured,
+      `[${storyId}] the reduced-motion project runs without the engine reporting the preference`,
+    ).toBe(true)
+  }
+  if (!honoured) return
+  const roots = document.querySelectorAll<HTMLElement>("[data-slot], [data-pagopa-ui-portal-root]")
+  const moving = []
+  for (const root of roots) {
+    if (root.closest(".loading-spinner-motion")) continue
+    for (const element of [root, ...root.querySelectorAll<HTMLElement>("*")]) {
+      if (element.closest(".loading-spinner-motion")) continue
+      const style = getComputedStyle(element)
+      const longest = Math.max(
+        ...[...style.transitionDuration.split(","), ...style.animationDuration.split(",")].map(
+          (value) => parseSeconds(value),
+        ),
+      )
+      if (longest <= 0.011) continue
+      moving.push(`${describe(element)} ${longest}s`)
+      break
+    }
+    if (moving.length === 4) break
+  }
+  expect(
+    moving,
+    `[${storyId}] keeps motion under prefers-reduced-motion: ${moving.join("; ")}`,
+  ).toHaveLength(0)
+}
+
+function parseSeconds(value: string) {
+  const trimmed = value.trim()
+  if (trimmed.endsWith("ms")) return Number.parseFloat(trimmed) / 1000
+  return Number.parseFloat(trimmed) || 0
 }
 
 // The natural focus order is the DOM order: a positive tabindex re-sorts it.
@@ -592,7 +915,10 @@ function expectFieldErrors(root: ParentNode) {
 // WCAG 1.4.10 reflow at 320px, then 1.4.12 text spacing with 1.4.4 text at
 // 200%: the page must not scroll horizontally. The same technique the packed
 // artifact test uses (scripts/check-library/browser.spec.mjs).
-async function expectReflowConditions(storyId: string) {
+// Exported for the same negative test: the story widens the page past the
+// viewport and asserts this rejects, so the condition is proven to be able to
+// fail rather than pass on every layout.
+export async function expectReflowConditions(storyId: string) {
   const { page } = await import("@vitest/browser/context").catch(() => ({ page: undefined }))
   if (!page) {
     // A broken import would otherwise switch the condition off for every story
@@ -628,10 +954,17 @@ async function expectReflowConditions(storyId: string) {
     html.style.setProperty("font-size", "32px")
     document.body.append(spacing)
     await settle()
+    // A user zoom is a resize, so a positioned overlay that sizes itself from
+    // the viewport (`--available-width`) recomputes. Reproduce that before
+    // measuring, or the popup keeps the width it opened at and the check
+    // reports the stale geometry instead of the reflowed one.
+    window.dispatchEvent(new Event("resize"))
+    await settle()
     expect(
       html.scrollWidth,
       `[${storyId}] increased text spacing and 200% text scroll horizontally (${html.scrollWidth}px inside ${width}px)${describeOverflow(width)}`,
     ).toBeLessThanOrEqual(width + 1)
+    expectNoTextClipping(storyId, width)
   } finally {
     html.style.setProperty("font-size", previous.fontSize, previous.priority)
     spacing.remove()
@@ -707,10 +1040,10 @@ export async function runA11yContract() {
   const contract = contractOf(parameters)
   // Freeze transitions and animations while the contract measures: the same
   // state the story runner uses during the story's own assertions.
-  const paused = document.createElement("style")
-  paused.textContent =
-    "*,*:before,*:after{transition:none!important;animation-delay:0s!important;animation-duration:0.001s!important;animation-iteration-count:1!important}"
-  document.head.append(paused)
+  // Motion is audited before the freeze: the freeze exists to make the colour
+  // reads settle, and it would mask the very durations this checks.
+  expectReducedMotionConditions(id)
+  const restore = freezeMotion()
   try {
     if (contract.reflow !== false) await expectReflowConditions(id)
     expectNoPositiveTabindex(canvas)
@@ -726,6 +1059,6 @@ export async function runA11yContract() {
     expectBusyActionsFocusable(canvas)
     await expectAccessibleNames(canvas)
   } finally {
-    paused.remove()
+    restore()
   }
 }

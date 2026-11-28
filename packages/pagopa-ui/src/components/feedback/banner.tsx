@@ -4,7 +4,6 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as CloseIcon } from "@/components/icons/generated/close"
 
 type BannerColor = "white" | "primary" | "grey"
@@ -38,7 +37,8 @@ export interface BannerBaseProps {
   className?: string
 }
 
-type BannerProps = BannerBaseProps &
+type BannerProps = Omit<React.ComponentProps<"section">, "children" | "title"> &
+  BannerBaseProps &
   (
     | {
         title: React.ReactNode
@@ -67,6 +67,8 @@ function Banner({
   titleAs: Title = "h2",
   dismissLabel: dismissLabelProp,
   className,
+  ref,
+  ...props
 }: BannerProps) {
   const t = useMessages("banner")
   const dismissLabel = dismissLabelProp ?? t.dismissLabel
@@ -91,6 +93,8 @@ function Banner({
       role="status"
       aria-label={title ? undefined : label}
       data-slot="banner"
+      ref={ref}
+      {...props}
       className={cn(
         "pui:relative pui:w-full pui:rounded-lg pui:border pui:p-4",
         bannerColors[color],
@@ -293,7 +297,7 @@ function Banner({
           data-slot="banner-dismiss"
           className="pui:absolute pui:right-1 pui:top-1 pui:z-10 pui:flex pui:size-11 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-full pui:hover:bg-foreground/5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-current"
         >
-          <Icon source={CloseIcon} className="pui:size-4" />
+          <CloseIcon className="pui:size-4" />
         </button>
       ) : null}
     </section>

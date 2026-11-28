@@ -4,13 +4,12 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as CloseIcon } from "@/components/icons/generated/close"
 
 import { statusIcons, toneStyles, type Tone } from "./tones"
 
 /** Props of {@link Snackbar}. */
-interface SnackbarProps {
+interface SnackbarProps extends Omit<React.ComponentProps<"div">, "children" | "title"> {
   /** Optional title of the message. */
   title?: React.ReactNode
   /** Message body; the snackbar's announcing role follows `tone`. */
@@ -38,9 +37,12 @@ function Snackbar({
   tone = "info",
   dismissLabel: dismissLabelProp,
   className,
+  ref,
+  ...props
 }: SnackbarProps) {
   const t = useMessages("snackbar")
   const dismissLabel = dismissLabelProp ?? t.dismissLabel
+  const ToneIcon = statusIcons[tone]
 
   const hasFooter = footer != null
 
@@ -49,6 +51,8 @@ function Snackbar({
       role={tone === "error" ? "alert" : "status"}
       data-slot="snackbar"
       data-tone={tone}
+      ref={ref}
+      {...props}
       className={cn(
         "pui:min-h-14 pui:w-(--pui-overlay-width) pui:max-w-[calc(100vw-var(--pui-page-gutter))] pui:items-start pui:rounded-lg pui:border pui:p-4 pui:shadow-32",
         hasFooter
@@ -76,7 +80,7 @@ function Snackbar({
           data-slot="snackbar-icon"
           className="pui:grid pui:size-6 pui:shrink-0 pui:place-items-center pui:text-current"
         >
-          <Icon source={statusIcons[tone]} />
+          <ToneIcon />
         </span>
         <div className="pui:grid pui:min-w-0 pui:flex-1 pui:grid-cols-1 pui:gap-y-1">
           {title != null && (
@@ -116,7 +120,7 @@ function Snackbar({
             data-slot="snackbar-close-icon"
             className="pui:grid pui:size-6 pui:place-items-center"
           >
-            <Icon source={CloseIcon} className="pui:size-5" />
+            <CloseIcon className="pui:size-5" />
           </span>
         </button>
       )}

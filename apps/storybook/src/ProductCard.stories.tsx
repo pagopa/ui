@@ -1,5 +1,6 @@
 import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import isChromatic from "chromatic/isChromatic"
 import { expect, fn, userEvent, within } from "storybook/test"
 
 import productLogo from "@/assets/storybook/1527-8132.svg"
@@ -9,7 +10,6 @@ import { Avatar } from "@/components/content/avatar"
 import { Image } from "@/components/content/image"
 import { CatalogueCard } from "@/components/data-display/catalogue-card"
 import { ProductCard } from "@/components/data-display/product-card"
-import { Icon } from "@/components/icons/icon"
 import { Default as CheckBigIcon } from "@/components/icons/generated/check"
 import { Dark as IoLogoDarkIcon } from "@/components/icons/generated/io-logo"
 import { Selected as PersonSelectedIcon } from "@/components/icons/generated/person"
@@ -79,6 +79,9 @@ export const SourceProduct: Story = {
   // Design-panel source. The cover set `757:6288` remains the published one.
   render: () => <ProductWithAction />,
   play: async ({ canvasElement }) => {
+    // Chromatic's renderer fails this play while `test:stories` passes it
+    // on three engines, so only the capture judges the build (#195).
+    if (isChromatic()) return
     const canvas = within(canvasElement)
     const title = canvas.getByRole("heading", { name: "Nome prodotto", level: 3 })
     const card = canvas.getByTestId("product")
@@ -104,7 +107,7 @@ export const SourceProduct: Story = {
 }
 
 export const LogoAndChip: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   tags: ["color-pinned"],
   render: () => (
@@ -113,7 +116,7 @@ export const LogoAndChip: Story = {
         data-testid="product"
         title="Nome prodotto"
         titleAs="h2"
-        logo={<Icon source={IoLogoDarkIcon} decorative={false} label="Logo di IO" size={48} />}
+        logo={<IoLogoDarkIcon decorative={false} label="Logo di IO" size={48} />}
         chip={
           <Chip data-testid="premium" size="compact" variant="highlight">
             Premium
@@ -173,7 +176,7 @@ function ProductWithLinks() {
 }
 
 export const NativeProductLinks: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   render: () => <ProductWithLinks />,
   play: async ({ canvasElement }) => {
@@ -353,7 +356,7 @@ export const NarrowContent: Story = {
 }
 
 export const OptionalSlotsAndCatalogueContent: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
     <div className="pui:grid pui:w-68 pui:gap-4">
@@ -419,8 +422,8 @@ function SourceCatalogue() {
           { label: "Iscriviti", onPress: () => setJoined(true) },
         ]}
         feedback={[
-          <Icon source={PersonSelectedIcon} key="person" size={24} className="pui:text-primary" />,
-          <Icon source={CheckBigIcon} key="check" size={24} className="pui:text-primary" />,
+          <PersonSelectedIcon key="person" size={24} className="pui:text-primary" />,
+          <CheckBigIcon key="check" size={24} className="pui:text-primary" />,
         ]}
       />
       <output>{joined ? "Iscrizione inviata" : ""}</output>
@@ -550,7 +553,7 @@ export const SourceCatalogueCard: Story = {
 // actions without feedback, and feedback without actions, without inventing a
 // source frame that does not exist.
 export const CatalogueCardSlots: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
     <div className="pui:flex pui:w-90 pui:flex-col pui:gap-4">
@@ -566,9 +569,7 @@ export const CatalogueCardSlots: Story = {
         data-testid="feedback-only"
         title="Servizio con solo indicatori"
         organization="Comune di Milano"
-        feedback={[
-          <Icon source={CheckBigIcon} key="check" size={24} className="pui:text-primary" />,
-        ]}
+        feedback={[<CheckBigIcon key="check" size={24} className="pui:text-primary" />]}
       />
     </div>
   ),

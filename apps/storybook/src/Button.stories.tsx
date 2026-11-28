@@ -3,7 +3,6 @@ import type { ComponentProps } from "react"
 
 import { expect, fn, userEvent, within } from "storybook/test"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as ArrowIcon } from "@/components/icons/generated/arrow"
 import { Default as KidStarIcon } from "@/components/icons/generated/kid-star"
 import { Default as MenuIcon } from "@/components/icons/generated/menu"
@@ -11,6 +10,7 @@ import { Default as MenuIcon } from "@/components/icons/generated/menu"
 import { Button } from "@/components/primitives/button"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
+import { expectFocusContrast, focusWithKeyboard } from "./support/a11y-contract"
 import buttonGuide from "./guides/actions.md?raw"
 
 const meta = {
@@ -216,7 +216,7 @@ const fidelityVariant = (nodeId: string) => nodeId.replace(":", "-")
 const actionLabel = () => <span data-fidelity-label>Action</span>
 const kidStar = () => (
   <span data-fidelity-icon className="pui:inline-flex pui:shrink-0">
-    <Icon source={KidStarIcon} />
+    <KidStarIcon />
   </span>
 )
 
@@ -415,7 +415,7 @@ export const FigmaIconButton: Story = {
       aria-label="Apri menu"
     >
       <span data-fidelity-icon className="pui:inline-flex pui:shrink-0">
-        <Icon source={MenuIcon} />
+        <MenuIcon />
       </span>
     </Button>
   ),
@@ -465,15 +465,15 @@ export const WithIcons: Story = {
   render: () => (
     <div className="pui:flex pui:flex-wrap pui:gap-4">
       <Button>
-        <Icon source={KidStarIcon} aria-hidden="true" />
+        <KidStarIcon aria-hidden="true" />
         Preferiti
       </Button>
       <Button variant="outline">
         Continua
-        <Icon source={ArrowIcon} aria-hidden="true" />
+        <ArrowIcon aria-hidden="true" />
       </Button>
       <Button size="icon" aria-label="Aggiungi ai preferiti">
-        <Icon source={KidStarIcon} aria-hidden="true" />
+        <KidStarIcon aria-hidden="true" />
       </Button>
     </div>
   ),
@@ -529,13 +529,22 @@ export const Skeleton: Story = {
   },
 }
 
+// The `contrast` family is white-on-brand, so the surface is part of the story:
+// a white focus ring only reads against the brand fill it is drawn for.
 export const OnBrand: Story = {
   args: {
     variant: "contrast",
     children: "Azione a contrasto",
   },
-  parameters: {
-    backgrounds: { default: "brand" },
+  render: (args) => (
+    <div className="pui:rounded-xl pui:bg-primary pui:p-6">
+      <Button {...args} />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const button = within(canvasElement).getByRole("button", { name: "Azione a contrasto" })
+    await focusWithKeyboard(button)
+    await expectFocusContrast(button)
   },
 }
 

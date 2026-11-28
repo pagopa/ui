@@ -63,7 +63,12 @@ a `types.ts` contract and a `registry.ts` index keyed by public name.
 
 The generator reads the pinned SVG the manifests already checksum, so the
 provenance, the fingerprint and the `check:icons` gate are untouched: the
-compiled module is derived, never authored. `assertGeneratedIconFiles` compares
+compiled module is derived, never authored. Compiling is not a transcription:
+the pass drops what cannot change a pixel — an identity group, a mask or clip
+path that covers the whole node, and the reference that pointed at it — so the
+markup is the drawing and its real transforms, nothing more. An id that survives
+(a clip path that hides part of the glyph) is compiled to `useId()` plus the
+source id, which is what makes a definition module-scoped in fact, not in name. `assertGeneratedIconFiles` compares
 the written tree with the pinned geometry on `check icons`, and a stale or
 orphan module fails the check with the regeneration command.
 
@@ -94,6 +99,8 @@ main entry.
 
 - The mask mechanism, its `forced-color-adjust` repair and the `img` branch are
   gone from the component, the stylesheet and every test.
+- One glyph keeps an id, so one generated module reads render-time state and
+  carries `"use client"`; the rest stay render-neutral.
 - The bundle carries path data instead of asset URLs: a per-icon import is
   larger than a URL, and a page that renders the whole catalogue is larger than
   the sprite alternative would have been.

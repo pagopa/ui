@@ -76,7 +76,7 @@ const registry = {
         story: "apps/storybook/src/Widget.stories.tsx",
         storyExports: ["Playground", "Fidelity"],
       },
-      note: "Reviewed 2026-01-02: one composition at every device.",
+      note: "Reviewed 2026-01-02: one composition at every device.\nDesign request: https://github.com/acme/ui/issues/42",
     },
   },
   bulkRules: [],
@@ -132,8 +132,6 @@ function catalogue(overrides = {}) {
     "src/catalog/figma/registry.json": registry,
     "src/catalog/figma/rules.json": rules,
     "src/catalog/figma/device-policy.json": policy,
-    "docs/design-requests/2026-01-02-widget-width.md":
-      "# Design request — Widget width\n\nOrigin: node `4:4`.\n",
     ...overrides,
   })
 }
@@ -160,10 +158,10 @@ test("the card renders one line per section from the committed catalogue", () =>
       "devices    mobile 320 · desktop 1200",
       "rules      2 (1 pending) · I4:4;4:9 recorded — Width · I4:4;4:10 pending — Allineamento · guide apps/storybook/src/guides/widget.md",
       "comments   (no snapshot: run figma comments --refresh)",
-      "requests   docs/design-requests/2026-01-02-widget-width.md",
+      "requests   https://github.com/acme/ui/issues/42",
       "delta      (no live snapshot: run figma export to compare)",
       "verdict    no check names this node",
-      "note       Reviewed 2026-01-02: one composition at every device.",
+      "note       Reviewed 2026-01-02: one composition at every device. Design request: https://github.com/acme/ui/issues/42",
       "detail     (no detail written: figma brief --node <id> --card)",
     ])
   } finally {
@@ -487,7 +485,7 @@ const oneRule = (cardId, disposition, extra = {}) => ({
       guide: "apps/storybook/src/guides/widget.md",
       reviewedAt: "2026-01-02",
       reason: "Reviewed and set aside.",
-      request: "docs/design-requests/2026-01-02-widget-width.md",
+      request: "https://github.com/acme/ui/issues/42",
       duplicateOf: "I4:4;4:8",
       removedAt: "2026-01-02",
       ...extra,

@@ -9,7 +9,7 @@
     "fmt": {
       "executor": "nx:run-script",
       "options": { "script": "format" },
-      "cache": true,
+      "cache": false,
       "configurations": { "ci": { "script": "format:check" } }
     },
     "build": {
@@ -38,6 +38,14 @@
       ]
     },
     "test:coverage": {
+      "inputs": [
+        "default",
+        "{workspaceRoot}/packages/pagopa-ui/src/**",
+        "{workspaceRoot}/packages/artwork/src/**",
+        "{workspaceRoot}/packages/tokens/src/**"
+      ]
+    },
+    "test:conditions": {
       "inputs": [
         "default",
         "{workspaceRoot}/packages/pagopa-ui/src/**",

@@ -1,20 +1,30 @@
 // Generated from pinned source geometry by packages/ui-cli/src/figma/icons.ts; do not edit.
 import type { SVGProps } from "react"
 
+import { Icon, type GlyphProps } from "../icon"
 import type { IconVariantComponents } from "./types"
 
 // `menu` as inline SVG: one component per pinned variant, so a bundle
 // that imports one of them carries no other icon artwork.
-/** Source `98:738`: the default variant. */
-export function Default(props: SVGProps<SVGSVGElement>) {
+/** The `98:738` drawing, in the source coordinate space. */
+function DefaultGlyph(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" data-figma-node-id="98:738" {...props}><defs><mask id="98-738-mask_0" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}><g transform="matrix(1 0 0 1 0 0)" opacity="1"><path d="M0 0L24 0L24 24L0 24L0 0Z" fill="#ffffff" fillOpacity="1" fillRule="nonzero" /></g></mask></defs><g transform="matrix(1 0 0 1 0 0)" opacity="1"><g mask="url(#98-738-mask_0)"><g transform="matrix(1 0 0 1 2.999999761581421 6)" opacity="1"><path d="M1 12C0.716667 12 0.479167 11.9042 0.2875 11.7125C0.0958333 11.5208 0 11.2833 0 11C0 10.7167 0.0958333 10.4792 0.2875 10.2875C0.479167 10.0958 0.716667 10 1 10L17 10C17.2833 10 17.5208 10.0958 17.7125 10.2875C17.9042 10.4792 18 10.7167 18 11C18 11.2833 17.9042 11.5208 17.7125 11.7125C17.5208 11.9042 17.2833 12 17 12L1 12ZM1 7C0.716667 7 0.479167 6.90417 0.2875 6.7125C0.0958333 6.52083 0 6.28333 0 6C0 5.71667 0.0958333 5.47917 0.2875 5.2875C0.479167 5.09583 0.716667 5 1 5L17 5C17.2833 5 17.5208 5.09583 17.7125 5.2875C17.9042 5.47917 18 5.71667 18 6C18 6.28333 17.9042 6.52083 17.7125 6.7125C17.5208 6.90417 17.2833 7 17 7L1 7ZM1 2C0.716667 2 0.479167 1.90417 0.2875 1.7125C0.0958333 1.52083 0 1.28333 0 1C0 0.716667 0.0958333 0.479167 0.2875 0.2875C0.479167 0.0958333 0.716667 0 1 0L17 0C17.2833 0 17.5208 0.0958333 17.7125 0.2875C17.9042 0.479167 18 0.716667 18 1C18 1.28333 17.9042 1.52083 17.7125 1.7125C17.5208 1.90417 17.2833 2 17 2L1 2Z" fill="currentColor" fillOpacity="1" fillRule="nonzero" /></g></g></g></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" data-figma-node-id="98:738" {...props}><g transform="matrix(1 0 0 1 2.999999761581421 6)" opacity="1"><path d="M1 12C0.716667 12 0.479167 11.9042 0.2875 11.7125C0.0958333 11.5208 0 11.2833 0 11C0 10.7167 0.0958333 10.4792 0.2875 10.2875C0.479167 10.0958 0.716667 10 1 10L17 10C17.2833 10 17.5208 10.0958 17.7125 10.2875C17.9042 10.4792 18 10.7167 18 11C18 11.2833 17.9042 11.5208 17.7125 11.7125C17.5208 11.9042 17.2833 12 17 12L1 12ZM1 7C0.716667 7 0.479167 6.90417 0.2875 6.7125C0.0958333 6.52083 0 6.28333 0 6C0 5.71667 0.0958333 5.47917 0.2875 5.2875C0.479167 5.09583 0.716667 5 1 5L17 5C17.2833 5 17.5208 5.09583 17.7125 5.2875C17.9042 5.47917 18 5.71667 18 6C18 6.28333 17.9042 6.52083 17.7125 6.7125C17.5208 6.90417 17.2833 7 17 7L1 7ZM1 2C0.716667 2 0.479167 1.90417 0.2875 1.7125C0.0958333 1.52083 0 1.28333 0 1C0 0.716667 0.0958333 0.479167 0.2875 0.2875C0.479167 0.0958333 0.716667 0 1 0L17 0C17.2833 0 17.5208 0.0958333 17.7125 0.2875C17.9042 0.479167 18 0.716667 18 1C18 1.28333 17.9042 1.52083 17.7125 1.7125C17.5208 1.90417 17.2833 2 17 2L1 2Z" fill="currentColor" fillOpacity="1" fillRule="nonzero" /></g></svg>
   )
 }
 
-/** Every pinned variant of `menu`, keyed by source node id. */
+/** `menu`: the default variant, in the shared icon box. */
+export function Default(props: GlyphProps) {
+  return <Icon {...props} source={DefaultGlyph} />
+}
+
+/**
+ * Every pinned variant of `menu`, keyed by source node id. The registry
+ * resolves a runtime name to one of these drawings, which `Icon` owns the box
+ * for; the exports above are the same drawings with that box already applied.
+ */
 export const variants: IconVariantComponents = {
-  "98:738": Default,
+  "98:738": DefaultGlyph,
 }
 
 export default Default

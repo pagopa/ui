@@ -4,7 +4,6 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useLocale, useMessages } from "@/lib/ui-provider"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
 import { Down as ChevronDownIcon, Up as ChevronUpIcon } from "@/components/icons/generated/chevron"
 import { Default as EventIcon } from "@/components/icons/generated/event"
@@ -83,6 +82,7 @@ function TextField({
 
   return (
     <div
+      data-slot="text-field"
       className={cn(
         "pui:grid",
         nativePicker
@@ -156,14 +156,14 @@ function TextField({
             aria-hidden="true"
             className="pui:pointer-events-none pui:absolute pui:inset-y-0 pui:right-3 pui:flex pui:items-center pui:text-success pui:[&_svg:not(.pagopa-icon)]:size-5"
           >
-            <Icon source={CheckCircleIcon} size={20} />
+            <CheckCircleIcon size={20} />
           </span>
         ) : error ? (
           <span
             aria-hidden="true"
             className="pui:pointer-events-none pui:absolute pui:inset-y-0 pui:right-3 pui:flex pui:items-center pui:text-destructive pui:[&_svg:not(.pagopa-icon)]:size-5"
           >
-            <Icon source={ReportIcon} size={20} />
+            <ReportIcon size={20} />
           </span>
         ) : null}
       </div>
@@ -211,7 +211,7 @@ function TextareaField({
   const state = { description, error, success }
 
   return (
-    <div className="pui:grid pui:gap-0.5">
+    <div data-slot="textarea-field" className="pui:grid pui:gap-0.5">
       <div className="pui:relative">
         <Textarea
           id={ids.controlId}
@@ -238,14 +238,14 @@ function TextareaField({
             aria-hidden="true"
             className="pui:pointer-events-none pui:absolute pui:top-3 pui:right-3 pui:flex pui:items-center pui:text-success pui:[&_svg:not(.pagopa-icon)]:size-5"
           >
-            <Icon source={CheckCircleIcon} size={20} />
+            <CheckCircleIcon size={20} />
           </span>
         ) : error ? (
           <span
             aria-hidden="true"
             className="pui:pointer-events-none pui:absolute pui:top-3 pui:right-3 pui:flex pui:items-center pui:text-destructive pui:[&_svg:not(.pagopa-icon)]:size-5"
           >
-            <Icon source={ReportIcon} size={20} />
+            <ReportIcon size={20} />
           </span>
         ) : null}
       </div>
@@ -300,7 +300,10 @@ function AuthenticationCodeInput({
   const invalid = Boolean(error) || undefined
 
   return (
-    <div className="pui:grid pui:min-w-0 pui:gap-1.5 pui:[overflow-wrap:anywhere]">
+    <div
+      data-slot="authentication-code-input"
+      className="pui:grid pui:min-w-0 pui:gap-1.5 pui:[overflow-wrap:anywhere]"
+    >
       <FieldLabel
         htmlFor={ids.controlId}
         label={label}
@@ -388,7 +391,7 @@ type DatePickerFieldProps = FieldStateProps &
     today?: Date
     /** BCP 47 locale of the field's own formatting (trigger value, panel caption and footer). @default the provider locale, "it-IT" at the root */
     locale?: string
-    /** Day-grid locale of the shared Calendar. @default the provider calendar locale, Italian at the root */
+    /** Day-grid locale of the shared Calendar. @default the provider calendar locale, which follows the provider locale */
     calendarLocale?: CalendarLocale
     /** Accessible name of the panel when `label` is not a plain string. @default messages.datePickerField.panelLabel */
     panelLabel?: string
@@ -440,7 +443,7 @@ function DatePickerField({
   "aria-describedby": ariaDescribedBy,
   className,
   ref,
-  leadingIcon = <Icon source={EventIcon} />,
+  leadingIcon = <EventIcon />,
   ...rootProps
 }: DatePickerFieldProps) {
   const t = useMessages("datePickerField")
@@ -462,6 +465,7 @@ function DatePickerField({
   const currentValue = value ?? internalValue
   const selected = parseLocalIsoDate(currentValue)
   const filled = Boolean(selected)
+  const TriggerChevron = open ? ChevronUpIcon : ChevronDownIcon
   const trigger = (
     <button
       type="button"
@@ -493,8 +497,7 @@ function DatePickerField({
       >
         {selected ? dateFieldFormat.format(selected) : null}
       </span>
-      <Icon
-        source={open ? ChevronUpIcon : ChevronDownIcon}
+      <TriggerChevron
         size={24}
         className={
           disabled
@@ -508,8 +511,12 @@ function DatePickerField({
   )
 
   return (
-    <div className={cn("pui:grid", error ? "pui:gap-0.5" : "pui:gap-2", className)} {...rootProps}>
-      <div className="pui:relative">
+    <div
+      data-slot="date-picker-field"
+      className={cn("pui:grid", error ? "pui:gap-0.5" : "pui:gap-2", className)}
+      {...rootProps}
+    >
+      <div className="pui:relative pui:min-w-0">
         {readOnly ? (
           // A read-only chooser keeps the committed value and its form control
           // but is not a popup trigger: no dialog semantics, no panel.

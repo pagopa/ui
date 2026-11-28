@@ -1,12 +1,14 @@
 "use client"
 
-import { Icon } from "@/components/icons/icon"
+import * as React from "react"
+
 import { Default as DownloadIcon } from "@/components/icons/generated/download"
 import { Default as PhotoIcon } from "@/components/icons/generated/photo"
 import { Button, buttonVariants } from "@/components/primitives/button"
+import { cn } from "@/lib/cn"
 import { useLinkComponent, useMessages } from "@/lib/ui-provider"
 
-type DownloadCardProps = {
+type DownloadCardProps = Omit<React.ComponentProps<"div">, "children"> & {
   fileName: string
   meta?: string
   /** Announced text of the download action. @default messages.downloadCard.downloadLabel */
@@ -19,6 +21,9 @@ function DownloadCard({
   downloadLabel: downloadLabelProp,
   href,
   onDownload,
+  className,
+  ref,
+  ...props
 }: DownloadCardProps) {
   const Link = useLinkComponent()
   const t = useMessages("downloadCard")
@@ -28,10 +33,15 @@ function DownloadCard({
   }
   return (
     <div
+      ref={ref}
       data-slot="download-card"
-      className="pui:flex pui:items-center pui:gap-3 pui:rounded-xl pui:border pui:p-4"
+      className={cn(
+        "pui:flex pui:items-center pui:gap-3 pui:rounded-xl pui:border pui:p-4",
+        className,
+      )}
+      {...props}
     >
-      <Icon source={PhotoIcon} className="pui:text-primary" />
+      <PhotoIcon className="pui:text-primary" />
       <div className="pui:min-w-0 pui:flex-1">
         <p className="pui:truncate pui:text-body-sb">{fileName}</p>
         {meta ? <p className="pui:text-caption pui:text-muted-foreground">{meta}</p> : null}
@@ -43,11 +53,11 @@ function DownloadCard({
           href={href}
           download={fileName}
         >
-          <Icon source={DownloadIcon} />
+          <DownloadIcon />
         </Link>
       ) : onDownload ? (
         <Button size="icon" variant="ghost" aria-label={downloadLabel} onClick={onDownload}>
-          <Icon source={DownloadIcon} />
+          <DownloadIcon />
         </Button>
       ) : null}
     </div>

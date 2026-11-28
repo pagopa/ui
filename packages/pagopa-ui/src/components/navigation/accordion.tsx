@@ -11,7 +11,6 @@ import {
   AccordionTrigger,
 } from "@/components/primitives/accordion"
 import { Up as ChevronUp } from "@/components/icons/generated/chevron"
-import { Icon } from "@/components/icons/icon"
 
 export interface AccordionItemData {
   id: string
@@ -66,7 +65,7 @@ function AccordionSkeleton({
             {item.chip}
           </span>
         </span>
-        <Icon source={ChevronUp} size={24} className="pui:text-choice-icon" />
+        <ChevronUp size={24} className="pui:text-choice-icon" />
       </div>
       <div aria-hidden="true" className="pui:mt-8">
         {Array.from({ length: SKELETON_ROWS }, (_, index) => (
@@ -183,6 +182,7 @@ function Accordion({
   return (
     <AccordionPrimitive
       ref={ref}
+      data-slot="accordion"
       value={value}
       defaultValue={defaultValue}
       onValueChange={onValueChange}

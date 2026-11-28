@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
 import { CheckboxField } from "@/components/inputs/checkbox-field"
-import { Icon } from "@/components/icons/icon"
 import { Default as PrivacyTipIcon } from "@/components/icons/generated/privacy-tip"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
@@ -39,7 +38,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Playground: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -50,7 +49,7 @@ export const Playground: Story = {
 }
 
 export const WithDescription: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   args: { label: "Ricevi aggiornamenti", description: "Una email quando cambia lo stato." },
 }
@@ -60,12 +59,12 @@ export const Validation: Story = {
 }
 
 export const RichOption: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   args: {
     label: "Consenso al trattamento dei dati",
     description: "I dati sono trattati secondo l'informativa privacy.",
-    leadingIcon: <Icon source={PrivacyTipIcon} />,
+    leadingIcon: <PrivacyTipIcon />,
     indicatorPlacement: "end",
   },
   play: async ({ canvasElement }) => {
@@ -130,7 +129,7 @@ export const SourceRichSelected: Story = {
   args: {
     label: figmaLabel,
     description: figmaDescription,
-    leadingIcon: <Icon source={PrivacyTipIcon} />,
+    leadingIcon: <PrivacyTipIcon />,
     indicatorPlacement: "end",
     defaultChecked: true,
   },
@@ -149,7 +148,7 @@ export const SourceRichSelectedUnavailable: Story = {
   args: {
     label: figmaLabel,
     description: figmaDescription,
-    leadingIcon: <Icon source={PrivacyTipIcon} />,
+    leadingIcon: <PrivacyTipIcon />,
     indicatorPlacement: "end",
     defaultChecked: true,
     disabled: true,
@@ -173,7 +172,7 @@ export const SourceRichDefault: Story = {
   args: {
     label: figmaLabel,
     description: figmaDescription,
-    leadingIcon: <Icon source={PrivacyTipIcon} />,
+    leadingIcon: <PrivacyTipIcon />,
     indicatorPlacement: "end",
   },
   // Reflow exemption: fixture pinned at the source width, not a product surface.
@@ -193,7 +192,7 @@ export const SourceRichDefaultUnavailable: Story = {
   args: {
     label: figmaLabel,
     description: figmaDescription,
-    leadingIcon: <Icon source={PrivacyTipIcon} />,
+    leadingIcon: <PrivacyTipIcon />,
     indicatorPlacement: "end",
     disabled: true,
   },
@@ -217,7 +216,7 @@ export const SourceRichError: Story = {
     label: figmaLabel,
     description: figmaDescription,
     error: "Helper text",
-    leadingIcon: <Icon source={PrivacyTipIcon} />,
+    leadingIcon: <PrivacyTipIcon />,
     indicatorPlacement: "end",
   },
   // Reflow exemption: fixture pinned at the source width, not a product surface.

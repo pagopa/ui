@@ -21,6 +21,7 @@ import fs from "node:fs"
 import path from "node:path"
 
 import type { Workspace } from "../adapters/workspace.ts"
+import { lineOf } from "../lib/ast.ts"
 import { walkFiles } from "../lib/fs.ts"
 import { readNx } from "./docs/nx.ts"
 import { report as checkReport, type CheckReport } from "./report.ts"
@@ -123,6 +124,10 @@ function checkCodeSpan(
   const fromDocument = path.resolve(path.dirname(file), target)
   if (fs.existsSync(fromDocument) || exists(ctx, target)) return
   const first = target.split("/")[0]
+  // A dot-prefixed span names a subpath of the package it documents (`./icons`)
+  // or a sibling of the document, and both are resolved above; only a
+  // workspace-root-relative span falls back to its first segment.
+  if (first === "." || first === "..") return
   if (fs.existsSync(path.resolve(path.dirname(file), first)) || exists(ctx, first))
     report(ctx, file, text, index, `missing path \`${span}\``)
 }
@@ -296,6 +301,22 @@ function checkTarget(
     report(ctx, file, text, index, `unknown Nx target ${project}:${target}`)
 }
 
+// The arguments are resolved against the tree; a placeholder stands for a value
+// the reader supplies, so it is dropped before the tree is asked.
+function checkCliTokens(
+  ctx: DocsContext,
+  file: string,
+  text: string,
+  index: number,
+  tokens: readonly string[],
+): void {
+  if (!ctx.options.cliCommand) return
+  const concrete = tokens.filter((token) => token !== "" && !/[<>{}$…[\]]/.test(token))
+  if (concrete.length === 0) return
+  const problem = ctx.options.cliCommand(concrete)
+  if (problem) report(ctx, file, text, index, problem)
+}
+
 function checkCliCommand(
   ctx: DocsContext,
   file: string,
@@ -310,9 +331,25 @@ function checkCliCommand(
       (token, position) => token === "ui-cli" && tokens[position - 1] === "pnpm",
     )
     if (at < 0) continue
-    const concrete = tokens.slice(at + 1).filter((token) => !/[<>{}$…[\]]/.test(token))
-    const problem = ctx.options.cliCommand(concrete)
-    if (problem) report(ctx, file, text, index, problem)
+    checkCliTokens(ctx, file, text, index, tokens.slice(at + 1))
+  }
+}
+
+// A `pnpm ui-cli …` in a workflow step or in a message the CLI prints is read by
+// a session exactly like one in a guide, so it resolves the same way. The span
+// ends at the first character that separates a command from prose: a hint reads
+// `<command> (<why>)`, and the parenthesis is where the command stops.
+const SOURCE_COMMAND = /pnpm ui-cli[^\n`"'(),;:—…$\\]*/g
+
+function checkSourceCommands(ctx: DocsContext, file: string, text: string): void {
+  if (!ctx.options.cliCommand) return
+  for (const match of text.matchAll(SOURCE_COMMAND)) {
+    const tokens = match[0]
+      .trim()
+      .split(/\s+/)
+      .slice(2)
+      .map((token) => token.replace(/[.]+$/, ""))
+    checkCliTokens(ctx, file, text, match.index ?? 0, tokens)
   }
 }
 
@@ -464,6 +501,7 @@ function checkCommands(ctx: DocsContext, file: string, text: string): void {
 
 function checkScript(ctx: DocsContext, file: string): void {
   const text = fs.readFileSync(file, "utf8")
+  checkSourceCommands(ctx, file, text)
   const pattern =
     /(?:\.agents|docs|src|scripts)\/[\w./-]+\.md\b|(?<![\w/.-])(?:AGENTS|CONTRIBUTING|README|CHANGELOG)\.md\b/g
   for (const match of text.matchAll(pattern))
@@ -486,8 +524,6 @@ const toPosix = (file: string): string => file.split(path.sep).join("/")
 
 const label = (ctx: DocsContext, file: string): string =>
   toPosix(path.relative(ctx.workspace, file))
-
-const lineOf = (text: string, index: number): number => text.slice(0, index).split("\n").length
 
 function markdownFiles(ctx: DocsContext): string[] {
   return [

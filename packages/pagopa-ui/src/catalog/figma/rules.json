@@ -361,7 +361,7 @@
       "targets": ["108:1402"],
       "scope": "component",
       "disposition": "recorded",
-      "request": "docs/design-requests/2026-10-24-focus-perimeter.md",
+      "request": "https://github.com/pagopa/ui/issues/34",
       "reviewedAt": "2026-10-23",
       "figmaVersion": "2412426961662147678"
     },
@@ -2166,7 +2166,7 @@
       "scope": "template",
       "disposition": "deferred",
       "reason": "Its thresholds are placeholders (X) and the Pagination node is pending on the open design request 2026-10-21-pagination-order-axis.md; it becomes a Pagination rule when that request is answered.",
-      "request": "docs/design-requests/2026-10-21-pagination-order-axis.md",
+      "request": "https://github.com/pagopa/ui/issues/37",
       "reviewedAt": "2026-10-23",
       "figmaVersion": "2412426961662147678"
     },
@@ -3098,7 +3098,7 @@
       "disposition": "imported",
       "guide": "apps/storybook/src/guides/popper.md",
       "reason": "The consumer-facing rule needs a guide after the pending Popper implementation is chosen.",
-      "request": "docs/design-requests/2026-10-28-popper-status-card.md",
+      "request": "https://github.com/pagopa/ui/issues/68",
       "reviewedAt": "2026-11-03",
       "figmaVersion": "2417684060719527268"
     },
@@ -5829,7 +5829,7 @@
       "targets": [],
       "scope": "foundation",
       "disposition": "conflict",
-      "request": "docs/design-requests/2026-10-23-paper-stroke-values.md",
+      "request": "https://github.com/pagopa/ui/issues/47",
       "reviewedAt": "2026-10-23",
       "figmaVersion": "2412426961662147678"
     },

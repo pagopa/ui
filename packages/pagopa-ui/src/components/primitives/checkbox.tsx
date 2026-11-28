@@ -3,7 +3,6 @@
 import * as React from "react"
 import { Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox"
 import { cn } from "@/lib/cn"
-import { Icon } from "@/components/icons/icon"
 import {
   Default as CheckBoxUncheckedIcon,
   Indeterminate as CheckBoxIndeterminateIcon,
@@ -77,19 +76,13 @@ function Checkbox({
       )}
       {...props}
     >
-      <Icon
-        source={CheckBoxUncheckedIcon}
-        className="pui:group-data-checked/checkbox:hidden pui:group-data-indeterminate/checkbox:hidden"
-      />
-      <Icon
-        source={CheckBoxIndeterminateIcon}
-        className="pui:hidden pui:group-data-indeterminate/checkbox:block"
-      />
+      <CheckBoxUncheckedIcon className="pui:group-data-checked/checkbox:hidden pui:group-data-indeterminate/checkbox:hidden" />
+      <CheckBoxIndeterminateIcon className="pui:hidden pui:group-data-indeterminate/checkbox:block" />
       <CheckboxPrimitive.Indicator
         data-slot="checkbox-indicator"
         className="pui:flex pui:items-center pui:justify-center pui:data-unchecked:hidden pui:data-indeterminate:hidden"
       >
-        <Icon source={CheckBoxCheckedIcon} />
+        <CheckBoxCheckedIcon />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   )

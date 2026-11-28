@@ -120,7 +120,7 @@
         "story": "apps/storybook/src/CarouselStepper.stories.tsx",
         "storyExports": ["Playground", "CarouselTargets", "Fidelity", "ControlLabels"]
       },
-      "note": "Reviewed 2026-10-23 (closing the 2026-10-14 delta): plain component, no variant and no device axis, so one case at its 96x8 source width. `10169-11964-default` verifies the six positions — the active `.CarouselStepper element` 16x4 at @0,2 (fill #0b3ee3, aria-current) and the five 8x8 outlined dots at 24/40/56/72/88 (1px #636b82 on the nested `Ellipse`) — with every offset exact on the root's 8px gap; the composition check is clean under --strict. The render exposed an inflation fixed in navigation/carousel-stepper.tsx: each dot was a 44x44 button, so the row measured 304x44 instead of 96x8; the button is now the source dot and the 44px pointer target comes from the invisible vertical ::after expansion (4+2x20, 8+2x20), with no horizontal expansion because the source's own 16px pitch would make the targets overlap, so the WCAG 2.5.8 spacing rule is not reachable at this pitch — the source composition is followed and the constraint is recorded in apps/storybook/src/guides/carousel-stepper.md; the open question for the design owner is docs/design-requests/2026-10-23-carousel-stepper-target-size.md and does not block this render. Text contract: the announced position name is overridable through the new optional `getControlLabel(index, count)` prop (default `Contenuto N di M`), the group name stays `label`, and the `ControlLabels` story proves the replacement. Prop-convention departures: the component is a controlled value (`count`, `activeIndex`, `onChange`) rather than a children list, because the source draws one instance per position and the caller owns the collection. `rounded-2xl` is the nearest radius token to the source 15 (the browser clamps both to the 2px pill) and the 8x8 circle clamps to the same shape."
+      "note": "Reviewed 2026-10-23 (closing the 2026-10-14 delta): plain component, no variant and no device axis, so one case at its 96x8 source width. `10169-11964-default` verifies the six positions — the active `.CarouselStepper element` 16x4 at @0,2 (fill #0b3ee3, aria-current) and the five 8x8 outlined dots at 24/40/56/72/88 (1px #636b82 on the nested `Ellipse`) — with every offset exact on the root's 8px gap; the composition check is clean under --strict. The render exposed an inflation fixed in navigation/carousel-stepper.tsx: each dot was a 44x44 button, so the row measured 304x44 instead of 96x8; the button is now the source dot and the 44px pointer target comes from the invisible vertical ::after expansion (4+2x20, 8+2x20), with no horizontal expansion because the source's own 16px pitch would make the targets overlap, so the WCAG 2.5.8 spacing rule is not reachable at this pitch — the source composition is followed and the constraint is recorded in apps/storybook/src/guides/carousel-stepper.md; the open question for the design owner is https://github.com/pagopa/ui/issues/44 and does not block this render. Text contract: the announced position name is overridable through the new optional `getControlLabel(index, count)` prop (default `Contenuto N di M`), the group name stays `label`, and the `ControlLabels` story proves the replacement. Prop-convention departures: the component is a controlled value (`count`, `activeIndex`, `onChange`) rather than a children list, because the source draws one instance per position and the caller owns the collection. `rounded-2xl` is the nearest radius token to the source 15 (the browser clamps both to the 2px pill) and the 8x8 circle clamps to the same shape."
     },
     "10192:41460": {
       "status": "implemented",
@@ -150,7 +150,8 @@
         "module": "src/components/overlays/dialog.tsx",
         "export": "Dialog",
         "story": "apps/storybook/src/Dialog.stories.tsx",
-        "storyExports": ["SourceCase"]
+        "storyExports": ["SourceCase"],
+        "props": {}
       },
       "note": "2026-11-20 drift: only the Status override of the embedded ProductModule radio instances changed (Active to Selected). The panel geometry, the slots and the artwork are untouched and SourceCase keeps its recorded residues; nothing on the render moved."
     },
@@ -242,7 +243,7 @@
           }
         }
       },
-      "note": "Reviewed 2026-10-22 after the 2026-10-14 delta: all 45 variants (9 appearances x label, left icon, right icon, skeleton, spinner) captured from FigmaStateMatrix at 1200 against the pinned source; 9 reviewed cases cover every appearance and every state (108-1402-*). Fixed: the outlined 2px stroke is an inset ring inside the 24px inset (the CSS border sat outside it, +4px), and contained variants dropped the 1px transparent border, so contained and outlined boxes are 96/128/140/72 against 96/128/141/72; forced colors fall back to a real border (FigmaStateMatrix rendered in Chromium with forced-colors active on 2026-10-22: 1px system border on contained and Text, 2px on outlined, labels, icons and spinners visible; the skeleton bar vanished, so it now paints CanvasText under forced colors). Adaptation `minimum-text-action-target`: Figma Text bounds only its 16-24px content; the library keeps a 48px native action target and its existing 16px horizontal hit area (Text-family box and padding residues). The source now paints the Outlined error and Text error spinners #d13333 (Contrast spinner 109:2458 with fill overrides), which matches the destructive currentColor: source-aligned, no longer an adaptation. Residues: the skeleton bar is rounded-full against radius 48 (the same full pill on the 16px bar) and uses the nearest 92px width token for 93. The parity probe reads a borderless inset ring as the stroke, so the outlined cases compare the 2px ring and its colour directly. `field.gap` is a single-child mapping artifact (ignored). Composition: the six contained and outlined cases run with compareOffset (label cases also compareBox height) and are clean under --strict; the three Text cases leave it off and record in their notes the measured offsets the minimum-text-action-target adaptation causes (+12 vertical centring, +17 horizontal from the 1px transparent border and 16px hit area). The FigmaStateMatrix fixture is fullscreen with each appearance row sized to its five buttons (2026-10-22 verification: the 548px rows clipped the fifth column out of the navy contrast panels). Prop-convention departures (the published API predates the node, so it keeps its names): the composite `Variant` axis (style x colour) folds into the existing `variant` prop under its shadcn-derived names, Contained → default, Outlined → outline, Text → ghost, `<style> contrast` → contrast/outline-contrast/ghost-contrast, `<style> error` → destructive/outline-destructive/ghost-destructive (destructive is the library-wide error name, as in Alert); `Icon` (None, <- Left, Right ->) is content, the icon child before or after the label, not a prop; `Skeleton=True` → `skeleton` and `Spinner=True` → `loading`, load flags named for the state the caller sets (both set aria-busy and keep focus), not for the drawn artwork. The mapping is in guides/actions.md.\n\nOpen design question: the focus perimeter — docs/design-requests/2026-10-24-focus-perimeter.md (issue #34). The node stays implemented; the question applies to every focusable control."
+      "note": "Reviewed 2026-10-22 after the 2026-10-14 delta: all 45 variants (9 appearances x label, left icon, right icon, skeleton, spinner) captured from FigmaStateMatrix at 1200 against the pinned source; 9 reviewed cases cover every appearance and every state (108-1402-*). Fixed: the outlined 2px stroke is an inset ring inside the 24px inset (the CSS border sat outside it, +4px), and contained variants dropped the 1px transparent border, so contained and outlined boxes are 96/128/140/72 against 96/128/141/72; forced colors fall back to a real border (FigmaStateMatrix rendered in Chromium with forced-colors active on 2026-10-22: 1px system border on contained and Text, 2px on outlined, labels, icons and spinners visible; the skeleton bar vanished, so it now paints CanvasText under forced colors). Adaptation `minimum-text-action-target`: Figma Text bounds only its 16-24px content; the library keeps a 48px native action target and its existing 16px horizontal hit area (Text-family box and padding residues). The source now paints the Outlined error and Text error spinners #d13333 (Contrast spinner 109:2458 with fill overrides), which matches the destructive currentColor: source-aligned, no longer an adaptation. Residues: the skeleton bar is rounded-full against radius 48 (the same full pill on the 16px bar) and uses the nearest 92px width token for 93. The parity probe reads a borderless inset ring as the stroke, so the outlined cases compare the 2px ring and its colour directly. `field.gap` is a single-child mapping artifact (ignored). Composition: the six contained and outlined cases run with compareOffset (label cases also compareBox height) and are clean under --strict; the three Text cases leave it off and record in their notes the measured offsets the minimum-text-action-target adaptation causes (+12 vertical centring, +17 horizontal from the 1px transparent border and 16px hit area). The FigmaStateMatrix fixture is fullscreen with each appearance row sized to its five buttons (2026-10-22 verification: the 548px rows clipped the fifth column out of the navy contrast panels). Prop-convention departures (the published API predates the node, so it keeps its names): the composite `Variant` axis (style x colour) folds into the existing `variant` prop under its shadcn-derived names, Contained → default, Outlined → outline, Text → ghost, `<style> contrast` → contrast/outline-contrast/ghost-contrast, `<style> error` → destructive/outline-destructive/ghost-destructive (destructive is the library-wide error name, as in Alert); `Icon` (None, <- Left, Right ->) is content, the icon child before or after the label, not a prop; `Skeleton=True` → `skeleton` and `Spinner=True` → `loading`, load flags named for the state the caller sets (both set aria-busy and keep focus), not for the drawn artwork. The mapping is in guides/actions.md.\n\nOpen design question: the focus perimeter — https://github.com/pagopa/ui/issues/34 (issue #34). The node stays implemented; the question applies to every focusable control."
     },
     "109:2455": {
       "status": "implemented",
@@ -252,7 +253,13 @@
         "story": "apps/storybook/src/Spinner.stories.tsx",
         "storyExports": ["SpinnerBrandVariants"],
         "props": {
-          "Brand": { "prop": "variant", "values": { "Contrast": "contrast", "Primary": "primary" } }
+          "Brand": {
+            "prop": "variant",
+            "values": {
+              "Contrast": "contrast",
+              "Primary": "primary"
+            }
+          }
         }
       },
       "note": "Path C reviewed pinned Brand=Primary 109:2456 and Brand=Contrast 109:2458 against SpinnerBrandVariants at 320×240/1×. Both source and render are 24×24px; the 2px annulus/20px opening and rounded terminal match, with source/render terminal bounds 2.09×3.41px at 21.91×9.59px (under 0.001px difference). Default size-6 is 24px (0px delta); text-primary (#0B3EE3) and text-contrast (white) match source. size-5/size-12 remain 20px/48px API extensions. The 2px mask is source ring geometry, not a spacing/radius compensation. Contrast artwork is white on transparency and needs a caller-owned primary surface outside source bounds. A labeled Spinner exposes one status; unlabeled siblings stay decorative and the caller owns aria-busy. The documented 1s functional animation remains under reduced motion; the fidelity capture is static. Reviewed 2026-10-23 (second ring): the two cases `109-2455-primary` and `109-2455-contrast` reproduce the two variants at 24×24 from SpinnerBrandVariants, mapping the `Ellipse 8 (Stroke)` terminal (2.09×3.41 at 21.91/9.59) and both strict-composition clean. The ring is a conic-gradient, so its colour is verified by the reviewed render, not by a DOM background property. Guide: apps/storybook/src/guides/loading-indicators.md."
@@ -375,7 +382,8 @@
         "module": "src/components/primitives/tabs.tsx",
         "export": "Tabs",
         "story": "apps/storybook/src/Tabs.stories.tsx",
-        "storyExports": ["Default", "FidelityTabs"]
+        "storyExports": ["Default", "FidelityTabs"],
+        "props": {}
       },
       "note": "Reviewed 2026-10-23 (closing the 2026-10-14 delta): the node is a plain COMPONENT, not a set, so it has one variant and no Device axis; `1137-8910-default` verifies the whole 658x48 TabGroup at its source width. Seven 94x48 tabs, the first active: the 16px inline and 8px block padding, the 8px icon-to-label gap, the 24px kid_star artwork, the 18/26 Semibold label, the active tab in primary (label, artwork and the 2px bottom line) and the inactive ones at #555c70 over the #e8ebf1 line. The source nests Content and Frame 1049 inside each `.Tab item`; the DOM keeps one trigger row, so the item gap carries the inner 8px (ignored as a mapping artifact) and the nested Content padding is the trigger own padding. The list reports an 11px horizontal scroll at the source width because the label measures 31.6 against the source 30 (a font metric): it is a responsive advisory, not a delta, and the band stays one row. The guide apps/storybook/src/guides/tabs.md records the source mapping. Prop conventions: `variant=\"line\"` is the drawn composition; `variant=\"default\"` (the pill list) is a library extension with no source frame; `orientation` is caller-owned because the source draws only the horizontal row; the labels and the list `aria-label` are consumer strings. No open design question."
     },
@@ -407,7 +415,7 @@
         "story": "apps/storybook/src/ProgressKpi.stories.tsx",
         "storyExports": ["Playground", "States", "FidelityDefault", "FidelityMulti"]
       },
-      "note": "Reviewed 2026-10-23 (closing the 2026-10-14 delta): the `Type` axis has two variants and no device axis, so one case per variant at the 202px source width. `12133-82475-type-default` verifies the 202x190 card (24px radius, 1px #e8ebf1 stroke, #ffffff fill, 24px padding, 12px root gap), the 24-high header with its 8px gap, the 24px channel and info artwork and Title 16/22 Semibold #555c70, the Percentage 32/48 Bold #0e0f13, the 152x16 bar (#e8ebf1, r=16, 51% fill #0b3ee3) and the 22-high footer with the source 2px gap; `12133-82475-type-multi` adds the `Data` slot (10px gap) with the 80-high secondary row, its 12/18 Semibold description and its own 8px bar and footer. Both are clean under --strict. The render exposed deltas fixed in data-display/progress-kpi.tsx: the channel and info slots were inline, so the header line box measured 31 against 24 (now flex and centred around the artwork's own 24px size), the footer gap was 8 against 2 (now `gap-0.5`) and the bars were `rounded-full` against the source r=16 (now `rounded-2xl`). The Percentage uses `text-title-xl-mobile`: it is the only scale step with the source's 32/48 Bold values, so no new token and no face residue. The inner frames measure 152 against the source 154 and the card 2px taller because the CSS border sits inside the 202px card while the Figma stroke is drawn inside the frame — within the 2px tolerance. `LinearProgress.padding.right` (78) and its gap (10) are the source frame's encoding of the fill and its single-child phantom gap, painted by the DOM child instead. The source draws 6.000 of 11.000 but labels the card 51%, so the fidelity fixture uses 51 of 100 to keep the bar and the number while the copy stays caller-owned. Prop conventions: `details` is caller data (one row per `ProgressKpiRow`), `channel` and `info` are optional ReactNode slots, `completed` is the state flag and `locale` owns number formatting; `detail` is an optional supporting sentence the source variants do not draw, so the fidelity story omits it.\n\nOpen design question: the failed-completion tone — docs/design-requests/2026-10-24-progress-kpi-error.md (issue #30). The node stays implemented for the drawn types."
+      "note": "Reviewed 2026-10-23 (closing the 2026-10-14 delta): the `Type` axis has two variants and no device axis, so one case per variant at the 202px source width. `12133-82475-type-default` verifies the 202x190 card (24px radius, 1px #e8ebf1 stroke, #ffffff fill, 24px padding, 12px root gap), the 24-high header with its 8px gap, the 24px channel and info artwork and Title 16/22 Semibold #555c70, the Percentage 32/48 Bold #0e0f13, the 152x16 bar (#e8ebf1, r=16, 51% fill #0b3ee3) and the 22-high footer with the source 2px gap; `12133-82475-type-multi` adds the `Data` slot (10px gap) with the 80-high secondary row, its 12/18 Semibold description and its own 8px bar and footer. Both are clean under --strict. The render exposed deltas fixed in data-display/progress-kpi.tsx: the channel and info slots were inline, so the header line box measured 31 against 24 (now flex and centred around the artwork's own 24px size), the footer gap was 8 against 2 (now `gap-0.5`) and the bars were `rounded-full` against the source r=16 (now `rounded-2xl`). The Percentage uses `text-title-xl-mobile`: it is the only scale step with the source's 32/48 Bold values, so no new token and no face residue. The inner frames measure 152 against the source 154 and the card 2px taller because the CSS border sits inside the 202px card while the Figma stroke is drawn inside the frame — within the 2px tolerance. `LinearProgress.padding.right` (78) and its gap (10) are the source frame's encoding of the fill and its single-child phantom gap, painted by the DOM child instead. The source draws 6.000 of 11.000 but labels the card 51%, so the fidelity fixture uses 51 of 100 to keep the bar and the number while the copy stays caller-owned. Prop conventions: `details` is caller data (one row per `ProgressKpiRow`), `channel` and `info` are optional ReactNode slots, `completed` is the state flag and `locale` owns number formatting; `detail` is an optional supporting sentence the source variants do not draw, so the fidelity story omits it.\n\nOpen design question: the failed-completion tone — https://github.com/pagopa/ui/issues/30 (issue #30). The node stays implemented for the drawn types."
     },
     "123:4498": {
       "status": "implemented",
@@ -434,7 +442,7 @@
           "BreadcrumbFidelityHoverBack"
         ]
       },
-      "note": "Reviewed 2026-10-22 (closing the 2026-10-14 delta): no Device axis, so each Layout variant is verified once at its own source width. `123-7768-extended` (Layout=Extended 123:7769, 113x22: the semibold link, the 16px chevron separator and the regular #555c70 current page with aria-current, 6px gap, every offset exact; Level 1.gap is the single-child phantom gap) and `123-7768-compact` (Layout=Compact 123:7777, 65x24: the 24px arrow-back artwork, 4px gap, semibold label, every offset exact). The render exposed a drift fixed in navigation/breadcrumb.tsx: `min-h-11` inflated both rows to 44px; the rows now keep the source 22/24px and each link reaches its 44px pointer target through the invisible vertical ::after expansion (22 + 2x12, 24 + 2x10), with no horizontal expansion so reflow is unchanged. The private hover variants 124:3604 and 124:3608 are verified on a real-pointer render (#0b3ee3, underline, blue arrow; the source 21px hover line height is within tolerance of 22). Open, non-blocking questions on the set description (current-page colour/weight, Show Level 2-5 vs 3-6 and a maximum depth, automatic Back on mobile vs an explicit destination) are in docs/design-requests/2026-10-22-breadcrumb-description-vs-drawing.md; the render follows the drawn variants until they are answered. Prop-convention departures: the export stays `Breadcrumb` (the published API) for the set `Breadcrumbs`; the visibility flags `Show Level 2`-`Show Level 5` are not slots but the length of the published `items` array, since each level is caller data and the last entry is the `Current` frame; Compact `back` is a `{ label, href }` object rather than a `ReactNode` slot so the component owns the native link and its arrow artwork. The JSDoc tag `Figma: Breadcrumbs (node 123:7768)`, the story subtitle `Figma: Breadcrumbs` and the guide's Figma source mapping were added on 2026-10-22. Re-run on 2026-10-23: both cases still reproduce (`verified-with-residues` and `verified`) and the committed evidence bundle carries their pinned PNGs and manifest entries, so the node is `implemented`; the open questions above are non-blocking and do not change the drawn variants."
+      "note": "Reviewed 2026-10-22 (closing the 2026-10-14 delta): no Device axis, so each Layout variant is verified once at its own source width. `123-7768-extended` (Layout=Extended 123:7769, 113x22: the semibold link, the 16px chevron separator and the regular #555c70 current page with aria-current, 6px gap, every offset exact; Level 1.gap is the single-child phantom gap) and `123-7768-compact` (Layout=Compact 123:7777, 65x24: the 24px arrow-back artwork, 4px gap, semibold label, every offset exact). The render exposed a drift fixed in navigation/breadcrumb.tsx: `min-h-11` inflated both rows to 44px; the rows now keep the source 22/24px and each link reaches its 44px pointer target through the invisible vertical ::after expansion (22 + 2x12, 24 + 2x10), with no horizontal expansion so reflow is unchanged. The private hover variants 124:3604 and 124:3608 are verified on a real-pointer render (#0b3ee3, underline, blue arrow; the source 21px hover line height is within tolerance of 22). Open, non-blocking questions on the set description (current-page colour/weight, Show Level 2-5 vs 3-6 and a maximum depth, automatic Back on mobile vs an explicit destination) are in https://github.com/pagopa/ui/issues/41; the render follows the drawn variants until they are answered. Prop-convention departures: the export stays `Breadcrumb` (the published API) for the set `Breadcrumbs`; the visibility flags `Show Level 2`-`Show Level 5` are not slots but the length of the published `items` array, since each level is caller data and the last entry is the `Current` frame; Compact `back` is a `{ label, href }` object rather than a `ReactNode` slot so the component owns the native link and its arrow artwork. The JSDoc tag `Figma: Breadcrumbs (node 123:7768)`, the story subtitle `Figma: Breadcrumbs` and the guide's Figma source mapping were added on 2026-10-22. Re-run on 2026-10-23: both cases still reproduce (`verified-with-residues` and `verified`) and the committed evidence bundle carries their pinned PNGs and manifest entries, so the node is `implemented`; the open questions above are non-blocking and do not change the drawn variants."
     },
     "127:1510": {
       "status": "pending",
@@ -444,7 +452,7 @@
         "story": "apps/storybook/src/Pagination.stories.tsx",
         "storyExports": ["FirstPage", "SecondPage", "LastPage"]
       },
-      "note": "2026-11-20 drift: the rows-per-page control is now an instance of the shared Select (48px) instead of a raw frame with .RowPerPageSelect, and .Rows per page is renamed .RowsPerPage; the page buttons are unchanged. The node stays pending until the compact-state, rows-per-page, edge-window and edge-arrow questions are answered: docs/design-requests/2026-10-21-pagination-order-axis.md."
+      "note": "2026-11-20 drift: the rows-per-page control is now an instance of the shared Select (48px) instead of a raw frame with .RowPerPageSelect, and .Rows per page is renamed .RowsPerPage; the page buttons are unchanged. The node stays pending until the compact-state, rows-per-page, edge-window and edge-arrow questions are answered: https://github.com/pagopa/ui/issues/37."
     },
     "1278:6527": {
       "status": "pending",
@@ -454,7 +462,7 @@
         "story": "apps/storybook/src/Drawer.stories.tsx",
         "storyExports": ["SourceDesktop", "SourceMobile"]
       },
-      "note": "Reviewed desktop 1278:6528 (417x800) and mobile 1278:6526 (320x646): mobile matches, desktop uses the nearest 416px token (1px residue); body description, 40px action gap, bottom sheet without a handle, 8px header gap and shadow-32. The 2026-11-20 drift changed nothing in this tree. Pending the shared width/mobile decision and the unreviewed Service detail, Search, Filters and Sort dependencies: docs/design-requests/2026-10-21-timeline-drawer-width-and-mobile.md."
+      "note": "Reviewed desktop 1278:6528 (417x800) and mobile 1278:6526 (320x646): mobile matches, desktop uses the nearest 416px token (1px residue); body description, 40px action gap, bottom sheet without a handle, 8px header gap and shadow-32. The 2026-11-20 drift changed nothing in this tree. Pending the shared width/mobile decision and the unreviewed Service detail, Search, Filters and Sort dependencies: https://github.com/pagopa/ui/issues/39."
     },
     "12785:14427": {
       "status": "implemented",
@@ -486,7 +494,7 @@
         "story": "apps/storybook/src/SegmentedControl.stories.tsx",
         "storyExports": ["Playground", "SourceFrame"]
       },
-      "note": "`Size=Default` (1281:3856): case `1293-8394-default-selected` verifies at the source 748 width; the source radii exceed half their boxes and clip to the same full-pill shape. Accessibility adaptation: narrow or enlarged content wraps labels and segments into rows instead of clipping; the source-width composition remains one row. `Size=Minimum` (1293:8395) stays pending until the compact chevron's behavior is answered in docs/design-requests/2026-10-22-segmented-control-minimum-size.md."
+      "note": "`Size=Default` (1281:3856): case `1293-8394-default-selected` verifies at the source 748 width; the source radii exceed half their boxes and clip to the same full-pill shape. Accessibility adaptation: narrow or enlarged content wraps labels and segments into rows instead of clipping; the source-width composition remains one row. `Size=Minimum` (1293:8395) stays pending until the compact chevron's behavior is answered in https://github.com/pagopa/ui/issues/43."
     },
     "1298:5209": {
       "status": "implemented",
@@ -559,7 +567,7 @@
         "export": "TimelineDrawer",
         "story": "apps/storybook/src/TimelineDrawer.stories.tsx"
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Wave 8 2026-10-16: stays pending with its measurements. The shell's own device contract verifies after one fix (the pictogram slot from a 40x45 line box to a flex box in `overlays/drawer.tsx`): `Frame 5206` measures 369/272x40, the pictogram 40x40 at (24,24) and the title 24/32 desktop / 18/28 mobile on the Bold face at +4. The node cannot close per device: the source panel (`1333:16406`/`1333:16407`) is 417 wide against the Drawer width, OPEN decision OV4 — Drawer width: the source desktop panel is 417px (24 + 369 content + 24); the code uses `w-3/4 sm:max-w-sm` (384px). Decide source 417 vs tokenized 384 (every inner track follows); the source head-to-description gap is 24 where the composed header carries 8 (the description top 88 against 72); and the mobile device is a 320-wide bottom sheet (top radii 16) while the component renders a 240-wide right edge panel (`w-3/4`; the `direction` prop is caller-owned and the component does not expose it) with the `max-h-[80vh]` cap still open; the fixture also draws two items without the source's chips, per-item actions and the right-aligned footer action. Decided: stays `pending`; no device case is committed. Unblock: the same OV4 width decision and the 24px head-to-description step (or a description-in-body fixture keeping the source rhythm), plus a bottom-sheet export with the sheet cap decided; then one case per device. The title is Bold (CSS 700) 24/32 on desktop and 18/28 on mobile. The `direction` is caller-owned (the TimelineDrawer does not expose it), so the source bottom sheet is the caller's edge choice. The modal backdrop is Color/Surface/Surface overlay #0e0f13 at 35% with no blur. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`. Design request: `docs/design-requests/2026-10-21-timeline-drawer-width-and-mobile.md` (open); issue https://github.com/pagopa/ui/issues/39."
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Wave 8 2026-10-16: stays pending with its measurements. The shell's own device contract verifies after one fix (the pictogram slot from a 40x45 line box to a flex box in `overlays/drawer.tsx`): `Frame 5206` measures 369/272x40, the pictogram 40x40 at (24,24) and the title 24/32 desktop / 18/28 mobile on the Bold face at +4. The node cannot close per device: the source panel (`1333:16406`/`1333:16407`) is 417 wide against the Drawer width, OPEN decision OV4 — Drawer width: the source desktop panel is 417px (24 + 369 content + 24); the code uses `w-3/4 sm:max-w-sm` (384px). Decide source 417 vs tokenized 384 (every inner track follows); the source head-to-description gap is 24 where the composed header carries 8 (the description top 88 against 72); and the mobile device is a 320-wide bottom sheet (top radii 16) while the component renders a 240-wide right edge panel (`w-3/4`; the `direction` prop is caller-owned and the component does not expose it) with the `max-h-[80vh]` cap still open; the fixture also draws two items without the source's chips, per-item actions and the right-aligned footer action. Decided: stays `pending`; no device case is committed. Unblock: the same OV4 width decision and the 24px head-to-description step (or a description-in-body fixture keeping the source rhythm), plus a bottom-sheet export with the sheet cap decided; then one case per device. The title is Bold (CSS 700) 24/32 on desktop and 18/28 on mobile. The `direction` is caller-owned (the TimelineDrawer does not expose it), so the source bottom sheet is the caller's edge choice. The modal backdrop is Color/Surface/Surface overlay #0e0f13 at 35% with no blur. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`. Design request: `https://github.com/pagopa/ui/issues/39` (open); issue https://github.com/pagopa/ui/issues/39."
     },
     "1344:40672": {
       "status": "pending",
@@ -569,7 +577,7 @@
         "story": "apps/storybook/src/Table.stories.tsx",
         "storyExports": ["CellComposition"]
       },
-      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Wave 9 2026-10-16: stays pending with its measurements. The desktop device stays committed (`1344-40672-default-desktop`, `1344:40652`, 645x48: the cell 48 tall with `px-4` and the centred content, the first cell's link 16/22 600 primary; residues: the fixture draws two columns against the source sample's seven fixed cells 114/153/59/59/59/89/112, so the growing first column takes 380.45, and the single-child cell gap is a mapping ignore). The mobile device (`1337:75105`, 272x492) is the row as a card and that card composition is the Table's (`@container/table`): mapped against the Table's mobile render the case verifies (row 498 against 492, the standalone 272 against the table's inset 256, responsive clean), but `check:catalogue` refuses the mapping because the component has no card surface of its own and no honest `storyExports` entry can be declared for it - `SourceMobile` does not render `TableCellRow`, and the node's own export (`CellComposition`) renders the desktop cell row. Decided: the mobile case stays open; the card is covered by the Table's mobile case (`1349-22020-default-mobile`). Unblock: a dedicated story export that renders the row helper inside the card/`@container/table` context; then one mobile case. Design request: `docs/design-requests/2026-10-21-table-cell-row-mobile-card.md` (open); issue https://github.com/pagopa/ui/issues/38."
+      "note": "Figma delta 2026-10-14: review new/changed node or dependency before marking implemented. Wave 9 2026-10-16: stays pending with its measurements. The desktop device stays committed (`1344-40672-default-desktop`, `1344:40652`, 645x48: the cell 48 tall with `px-4` and the centred content, the first cell's link 16/22 600 primary; residues: the fixture draws two columns against the source sample's seven fixed cells 114/153/59/59/59/89/112, so the growing first column takes 380.45, and the single-child cell gap is a mapping ignore). The mobile device (`1337:75105`, 272x492) is the row as a card and that card composition is the Table's (`@container/table`): mapped against the Table's mobile render the case verifies (row 498 against 492, the standalone 272 against the table's inset 256, responsive clean), but `check:catalogue` refuses the mapping because the component has no card surface of its own and no honest `storyExports` entry can be declared for it - `SourceMobile` does not render `TableCellRow`, and the node's own export (`CellComposition`) renders the desktop cell row. Decided: the mobile case stays open; the card is covered by the Table's mobile case (`1349-22020-default-mobile`). Unblock: a dedicated story export that renders the row helper inside the card/`@container/table` context; then one mobile case. Design request: `https://github.com/pagopa/ui/issues/38` (open); issue https://github.com/pagopa/ui/issues/38."
     },
     "1349:22020": {
       "status": "implemented",
@@ -583,7 +591,8 @@
           "EmptyWithAction",
           "EmptyOptions",
           "Sorting"
-        ]
+        ],
+        "props": {}
       },
       "note": "2026-11-20 drift: the footer pagination became an instance of the shared Select, so the rows-per-page row is 48px where the raw .RowPerPageSelect frame was 46, and .Rows per page is renamed .RowsPerPage — desktop 852 to 854, mobile 4013 to 4015. The composition, the auto-layout first column, the 15-row mobile fixture and the sorting behaviour confirmed in the 2026-10-27 thread are unchanged; the two cases keep their recorded width and card residues."
     },
@@ -772,7 +781,8 @@
         "module": "src/components/primitives/checkbox.tsx",
         "export": "Checkbox",
         "story": "apps/storybook/src/Checkbox.stories.tsx",
-        "storyExports": ["SourceDefault", "SourceSelected", "SourceFeedback", "SourceFocused"]
+        "storyExports": ["SourceDefault", "SourceSelected", "SourceFeedback", "SourceFocused"],
+        "props": {}
       },
       "note": "2026-11-20 drift: Status=Focused (194:3659) is renamed Status=Feedback — the red uncovered glyph is the aria-invalid state, not focus — and a real Status=Focused (16548:43287) adds the blue check_box glyph plus a 22px 2px #3C65E9 perimeter. F-05 is answered: focus keeps the shared blue perimeter, red only under aria-invalid. Adaptations native-target-minimum (44px invisible target) and keyboard-focus-perimeter (outline outside the box, shared ring blue-500 instead of the source blue-400) hold. One case per Status: 194-3654-default, -selected, -feedback, -focused."
     },
@@ -790,7 +800,7 @@
           "SourceFeedback"
         ]
       },
-      "note": "2026-11-20 drift: the inner layer Checkbox single element is renamed CheckboxSingleElement in 194:3662 and 194:3674, and a focused row is added. Figma auto-named that row Status=Status6 (16548:43293): the drawn row is mapped as 194-3661-focused and the naming defect is filed in docs/design-requests/2026-11-20-checkbox-focused-variant-name.md. Status=Feedback (194:3674) stays the red glyph. Adaptations native-target-minimum, native-unavailable-state and keyboard-focus-perimeter hold. Six cases: default, default-disabled, selected, selected-disabled, feedback, focused."
+      "note": "2026-11-20 drift: the inner layer Checkbox single element is renamed CheckboxSingleElement in 194:3662 and 194:3674, and a focused row is added. Figma auto-named that row Status=Status6 (16548:43293): the drawn row is mapped as 194-3661-focused and the naming defect is filed in https://github.com/pagopa/ui/issues/144. Status=Feedback (194:3674) stays the red glyph. Adaptations native-target-minimum, native-unavailable-state and keyboard-focus-perimeter hold. Six cases: default, default-disabled, selected, selected-disabled, feedback, focused."
     },
     "194:3677": {
       "status": "implemented",
@@ -814,7 +824,26 @@
             "module": "src/components/inputs/radio-group.tsx",
             "export": "RadioGroup"
           }
-        ]
+        ],
+        "props": {
+          "Available": {
+            "prop": "disabled",
+            "values": {
+              "No": true,
+              "Yes": false
+            }
+          },
+          "Skeleton": {
+            "prop": "loading",
+            "values": {
+              "No": false,
+              "Icon + Title": true,
+              "Icon + Title + Description": true,
+              "Title": true,
+              "Title + Description": true
+            }
+          }
+        }
       },
       "note": "2026-11-20 drift: only the embedded instances moved — 194:3706 and 194:3714 renamed Radio button single element to RadioButtonSingleElement and their Status=Active override became Status=Selected. No box, gap, artwork or colour changed, so the three mapped stories and their nine cases stand; the fingerprint of the selected cases moved with the nested instance rename only."
     },
@@ -842,7 +871,7 @@
         "story": "apps/storybook/src/RadioField.stories.tsx",
         "storyExports": ["RadioFieldFeedback", "FigmaStateMatrix"]
       },
-      "note": "2026-11-20 drift: Status=Focused (16548:42584) is added — a 320x56 row, 16/16 padding, 8px gap and the 24px indicator at the Default position; the drift also left a stray Ellipse 6 (16548:42600, 24x24, 2px #3C65E9) overflowing it, filed in docs/design-requests/2026-11-20-checkbox-focused-variant-name.md and not mapped. Focus draws the library perimeter outside the frame (keyboard-focus-perimeter, ring blue-500 against the source blue-400). Story exports drop RadioIndicatorStates (194:3677) and RadioSourceStateMatrix (194:3700), which the gate skipped while two nodes claimed them."
+      "note": "2026-11-20 drift: Status=Focused (16548:42584) is added — a 320x56 row, 16/16 padding, 8px gap and the 24px indicator at the Default position; the drift also left a stray Ellipse 6 (16548:42600, 24x24, 2px #3C65E9) overflowing it, filed in https://github.com/pagopa/ui/issues/144 and not mapped. Focus draws the library perimeter outside the frame (keyboard-focus-perimeter, ring blue-500 against the source blue-400). Story exports drop RadioIndicatorStates (194:3677) and RadioSourceStateMatrix (194:3700), which the gate skipped while two nodes claimed them."
     },
     "197:1985": {
       "status": "implemented",
@@ -864,7 +893,13 @@
               "Warning": "warning"
             }
           },
-          "Style": { "prop": "appearance", "values": { "Solid": "solid", "Outline": "outline" } }
+          "Style": {
+            "prop": "appearance",
+            "values": {
+              "Solid": "solid",
+              "Outline": "outline"
+            }
+          }
         }
       },
       "note": "Path C reviewed against pinned Figma v2412426961662147678 on 2026-10-23. All 14 Type/Style variants have committed source-bound cases (`197-1985-*`) captured from ChipSourceVariantMatrix; the render preserves visible centered labels and 12/18 typography, while the matrix play verifies solid/outline paints, border state and 24px source height. Keep token-driven compact sizing (h-6, px-2, nearest py-0.5, rounded-full) and the bundled Titillio to Titillium Web Semibold mapping. With the bundled family the labels now measure the source widths exactly (57/58/63/62/40/44/66), so the earlier 2.05–5.12px narrower figures are historical; the only residue is the full-pill radius (source 100, rounded-full). Default 44px sizing and the 44×44 removal action remain accessibility adaptations; removal interaction verifies its name, keyboard use and non-submission. Manual zoom and screen-reader testing remain unverified."
@@ -932,7 +967,7 @@
         "module": "apps/storybook/src/templates/TemplateComponents.tsx",
         "export": "IdentityProviderSelector"
       },
-      "note": "rendered by TemplateShell demo content; real implementation pending\n\nOpen design questions: the spinner (docs/design-requests/2026-10-24-identity-provider-spinner.md, issue #31), the SPID help link (docs/design-requests/2026-10-24-identity-provider-link.md, issue #32) and the loading skeleton (docs/design-requests/2026-10-24-identity-provider-skeleton.md, issue #33). The node stays mocked until the answers."
+      "note": "rendered by TemplateShell demo content; real implementation pending\n\nOpen design questions: the spinner (https://github.com/pagopa/ui/issues/31, issue #31), the SPID help link (https://github.com/pagopa/ui/issues/32, issue #32) and the loading skeleton (https://github.com/pagopa/ui/issues/33, issue #33). The node stays mocked until the answers."
     },
     "2080:3319": {
       "status": "implemented",
@@ -977,7 +1012,10 @@
           },
           "Direction": {
             "prop": "direction",
-            "values": { "Horizontal": "horizontal", "Vertical": "vertical" }
+            "values": {
+              "Horizontal": "horizontal",
+              "Vertical": "vertical"
+            }
           }
         }
       },
@@ -1101,7 +1139,32 @@
           "SourceCase",
           "SourceCaseVertical",
           "SourceHierarchies"
-        ]
+        ],
+        "props": {
+          "Color": {
+            "prop": "color",
+            "values": {
+              "Grey": "grey",
+              "Primary": "primary",
+              "White": "white"
+            }
+          },
+          "Hierarchy": {
+            "prop": "hierarchy",
+            "values": {
+              "Primary": "primary",
+              "Secondary": "secondary",
+              "Tertiary": "tertiary"
+            }
+          },
+          "Direction": {
+            "prop": "direction",
+            "values": {
+              "Horizontal": "horizontal",
+              "Vertical": "vertical"
+            }
+          }
+        }
       },
       "note": "Reviewed 2026-10-29: the delta touches only the Vertical/Device=Mobile variants — the source corrected them from desktop-shaped 852x222 frames to a 272x283 mobile stack, so 261-6501-mobile-mobile was recaptured at the 320 viewport with the root forced to 272 and now verifies with its five shared-adaptation residues (the +5 height is the 24px action row). 261-6501-desktop-desktop is unchanged and still verifies; the FILL→HUG relaxation on the desktop variants is geometry-neutral. No component change was needed."
     },
@@ -1195,7 +1258,23 @@
         "module": "src/components/inputs/switch-field.tsx",
         "export": "SwitchField",
         "story": "apps/storybook/src/Switch.stories.tsx",
-        "storyExports": ["SourceStartPlacement", "KeyboardFocusStates", "FidelityStartStates"]
+        "storyExports": ["SourceStartPlacement", "KeyboardFocusStates", "FidelityStartStates"],
+        "props": {
+          "Checked": {
+            "prop": "checked",
+            "values": {
+              "False": false,
+              "True": true
+            }
+          },
+          "Enable": {
+            "prop": "disabled",
+            "values": {
+              "False": true,
+              "True": false
+            }
+          }
+        }
       },
       "note": "Reviewed 2026-11-11: nine strict parity cases pass across Checked, Enable, Error and Status variants; responsive is clean. Source regular/error frames are 150x42/150x64; the 56x44 native target makes the regular row 150x44. Copy stays 16/22 title and 14/20 description, with no gap and an 8px track gap; the error helper starts 2px below. Disabled label color remains the documented contrast adaptation. Both Hover area subjects map to the translucent CSS halo; source background/radius projection is ignored after raster review (unchecked 38-to-40px halo is within tolerance)."
     },
@@ -1238,7 +1317,23 @@
           "RichSourceOptions",
           "NarrowRichSource",
           "FidelityRichStates"
-        ]
+        ],
+        "props": {
+          "Checked": {
+            "prop": "checked",
+            "values": {
+              "No": false,
+              "Yes": true
+            }
+          },
+          "Availability": {
+            "prop": "unavailable",
+            "values": {
+              "No": true,
+              "Yes": false
+            }
+          }
+        }
       },
       "note": "Reviewed 2026-10-22 (M5 wave): four committed cases, one per `Checked` × `Availability` variant (349:4684, 349:4703, 349:4717, 349:4727), all 320 wide against `FidelityRichStates`. The node is one rich option, not a group; source names never determine identity. Verified: the 24px decorative leading art, the 12px icon-to-copy gap, the 16/22 Semibold #0e0f13 title, the 14/20 #555c70 description, the #555c70/#0b3ee3 track, the 14/20 primary link and the hidden helper. Residues: the rich row follows the 44px native control target (the source `.Switch single element` frame is 58x38, rounded to 56x44 by `native-target-token-rounding`), so the row is 8px taller than the content-driven source sample and the copy offsets follow; the source root spaces its stack with a 4/8px gap while the library stacks the label, messages and link inside one grid. The two `Availability=No` roots carry a source-wide reduced opacity; the library deliberately fades only the decorative art and keeps copy, control and link opaque (documented adaptation, switch-choices guide). Automated a11y and render checks are not screen-reader or browser-zoom certification."
     },
@@ -1262,9 +1357,19 @@
         "props": {
           "Property": {
             "prop": "display",
-            "values": { "Numbered": "numbered", "Plain": "plain", "Sidenav icon": "sidenav-icon" }
+            "values": {
+              "Numbered": "numbered",
+              "Plain": "plain",
+              "Sidenav icon": "sidenav-icon"
+            }
           },
-          "Selected": { "prop": "selected", "values": { "False": false, "True": true } },
+          "Selected": {
+            "prop": "selected",
+            "values": {
+              "False": false,
+              "True": true
+            }
+          },
           "Background": {
             "prop": "background",
             "values": {
@@ -1397,7 +1502,16 @@
           "WithIcons",
           "WithTrailingIcon",
           "FigmaStateMatrix"
-        ]
+        ],
+        "props": {
+          "* Required": {
+            "prop": "required",
+            "values": {
+              "False": false,
+              "True": true
+            }
+          }
+        }
       },
       "note": "Reviewed 2026-10-22 (M5 wave): ten committed cases, one per principal state of the set's `Status` × `Filled` axes plus one Required=False row. Enabled empty (529:6123) and Enabled filled (529:6110) capture `Playground`; the other eight capture `FigmaStateMatrix`, one row per source variant at the 274 source width: Disabled empty (529:6137), Disabled filled (529:6180), Active empty (529:6154, captured focused), Active filled (529:6169, focused), Success filled (529:6191), Error empty (529:6266, 274x70) and Error filled (529:6267, 274x70), plus Enabled empty Required=False (10274:50122, no required marker). All are 274 wide with radius 8; the input is 48 tall except the 50px error control. Field border: grey-650 #636b82 1px when enabled, disabled or success; primary #0b3ee3 when active/focused (the library paints the 1px border plus the 2px focus ring, inside the 2px tolerance); #d13333 on error; never grey-450 (it is not a source field stroke). Mapping artifacts ignored: the source `Input` frame nests its row inset in the `Content` child (12/0/13/0) while the library input owns its own padding, so the vertical padding is ignored; the trailing icon slot reserves its own right padding (success and error). The resting label sits 3px lower in the 50px error control (recorded residue: the source nests it in `Content`, the library centres the label box on the 48px control). The remaining `* Required=False` variants repeat these reviewed compositions with the marker removed; one case proves that axis. Automated a11y and render checks are not screen-reader or browser-zoom certification."
     },
@@ -1413,7 +1527,16 @@
             "module": "src/components/inputs/multi-select-field.tsx",
             "export": "MultiSelectField"
           }
-        ]
+        ],
+        "props": {
+          "*Required": {
+            "prop": "required",
+            "values": {
+              "False": false,
+              "True": true
+            }
+          }
+        }
       },
       "note": "Reviewed 2026-10-15 at the pinned export: the 2026-10-14 delta unpublished the `.HelperText • Select` helper (its instances stay inside the variants) and moved the default icon swap to an external asset; the design fingerprint is unchanged. `SourceFrame` renders both implementations at the 274px source width: 272x48 (`w-68` token, -2px), radius 8, #636b82 stroke, 12px insets, 16/22 semibold label text at 44px, 24px decorative leading art #bbc2d6 and the 24px chevron; the error helper keeps the legible 20px line box against the source 21px. Adaptation `native-selection`: verify the open state by opening the real SelectField through its trigger and waiting for its scoped listbox; the popup is runtime state, not part of the pinned field raster. Adaptation `disabled-required-marker` (disabled keeps required semantics but omits the visible marker) is stated in guides/select-choices.md. Field border: grey-650 #636b82 1px when enabled, disabled or success; primary 2px when active/focused; #d13333 on error; never grey-450 (it is not a source field stroke). Elevation comes only from the Figma shadow scale: `shadow-16` for the listbox popup, never Tailwind `shadow-md/lg/xl`."
     },
@@ -1425,7 +1548,15 @@
         "story": "apps/storybook/src/Separator.stories.tsx",
         "storyExports": ["Playground", "Padded", "WithText", "Fidelity"],
         "props": {
-          "Padding": { "prop": "padding", "values": { "0": 0, "16": 16, "24": 24, "32": 32 } }
+          "Padding": {
+            "prop": "padding",
+            "values": {
+              "0": 0,
+              "16": 16,
+              "24": 24,
+              "32": 32
+            }
+          }
         }
       },
       "note": "Reviewed 2026-10-23 (second ring, implemented node without a case): all five source variants at the 320px set width, no Device axis — `61-2786-line` (Padding=0, Type=Line, 320x1 #e8ebf1), `61-2786-padding-16`, `61-2786-padding-24` and `61-2786-padding-32` (the line inset 16/24/32, 288/272/256x1, the spacers unpainted) and `61-2786-with-text` (320x20, 8px root gap, the 130x1 lines at y9.5, the Text layer `oppure` 14/20 Regular #555c70 at x138 measuring 43.47 against 44, a font metric). All five are strict-composition clean. The `With text` source `Line-Left`/`Line-Right` are empty frames that carry a 10px padding with no DOM counterpart, so they are mapped through the root gap and the centred text (mapping note). The `Fidelity` story renders all five variants at 320. `--border` is Figma Color/Border/Border fill #e8ebf1 (grey-100); do not swap in grey-200 #d2d6e3, which is reserved for nodes whose source stroke is grey-200 (Stepper 1314:10512). Text contract: `label` is consumer-owned content, translated outside the component. Guide: apps/storybook/src/guides/separator.md."
@@ -1509,7 +1640,8 @@
         "module": "src/components/data-display/product-card.tsx",
         "export": "ProductCard",
         "story": "apps/storybook/src/ProductCard.stories.tsx",
-        "storyExports": ["SourceImage"]
+        "storyExports": ["SourceImage"],
+        "props": {}
       },
       "note": "Reviewed 2026-10-15: affected by the same Button 108:1402 helper delta; design fingerprints unchanged. The cover set renders 272x441 desktop and 272x437 mobile exactly, with the 272x191 cover, the 64x64 plate at the 24px inset (8px corners, 4px nested tile) and the source 24/32 and 18/28 Bold headings via `text-title-xs`/`text-title-xs-mobile`; the action measures 111.67x48 against the source 108x48 (bundled-font metrics) and the description keeps the semantic grey-700 against the source's raw, unpublished #17324d. The text-only set 757:10713 was unpublished in the 2026-10-14 export, so its story is a caller composition."
     },
@@ -1532,7 +1664,7 @@
           "FidelitySkeleton"
         ]
       },
-      "note": "Reviewed 2026-10-23 (closing the 2026-10-14 delta): the set has no Device axis (its `State` values are states, not devices), so each of the four drawn states is verified once at the source 580 width. `759-6399-closed` (State=Close 759:6398): the item is 580x100 against the source 580x98 because Figma draws the 1px stroke inside the frame while CSS border-box adds it (+1px per edge); pad 24, radius 8, #e8ebf1 stroke, white fill; the header is 532x50 with the 24px photo, the 8px gap, the 16/22 Semibold title, the 24px Status chip at a 4px gap and the 24px chevron 12px after the title frame; the root gap is the single-child phantom gap. `759-6399-open` (State=Open 759:6537): the header is 50, the description sits at offset 82 (the 8px step) and the caller content starts at 136 (the 32px step); the item height follows the content slot, so the case records a height residue (the fixture carries one paragraph against the source three-section sample list) and leaves the content subtree unmapped as caller data. `759-6399-disabled` (State=Disabled 13027:5052): grey-100 item fill, the Status chip as a 1px #0e0f13 outline, the title at full #0e0f13 and only the chevron at #bbc2d6. `759-6399-skeleton` (State=Skeleton 13027:5623): the header plus the 32px step and six 68px placeholder rows (100x22 and 200x16 bars, 6px gap, #e8ebf1 fill) with five 1px dividers, so the content is 532x413 and the item 580x543, every offset exact. Component fixes in this wave: the loading item now renders the source skeleton composition instead of a generic two-bar card, the disabled item no longer fades its title (only the chevron changes colour), and the header title/chip stacks fill their row (496/464) like the source fill frames so the chevron keeps the 12px gap. The guide apps/storybook/src/guides/accordion.md records the source mapping. Prop conventions: the source `State` axis maps to the caller's `disabled`/`skeleton` data, `value` with `onValueChange` owns the open sections and `defaultValue` opens them at mount; `multiple` keeps several open at once, an extension of the primitive rather than a source variant, since the source draws one open card. `AccordionItemData` carries the caller copy (`title`, `description`, `chip`, `icon`, `content`); `ref`, `className` and the standard `div` attributes land on the root; the announced strings are `aria-label` for the group (default `Approfondimenti`) and `loadingLabel` for the skeleton (default `Caricamento in corso`). Open design question: avatar and coloured icon in the header — docs/design-requests/2026-10-24-accordion-avatar-icons.md (issue #35). The node stays implemented for the drawn states."
+      "note": "Reviewed 2026-10-23 (closing the 2026-10-14 delta): the set has no Device axis (its `State` values are states, not devices), so each of the four drawn states is verified once at the source 580 width. `759-6399-closed` (State=Close 759:6398): the item is 580x100 against the source 580x98 because Figma draws the 1px stroke inside the frame while CSS border-box adds it (+1px per edge); pad 24, radius 8, #e8ebf1 stroke, white fill; the header is 532x50 with the 24px photo, the 8px gap, the 16/22 Semibold title, the 24px Status chip at a 4px gap and the 24px chevron 12px after the title frame; the root gap is the single-child phantom gap. `759-6399-open` (State=Open 759:6537): the header is 50, the description sits at offset 82 (the 8px step) and the caller content starts at 136 (the 32px step); the item height follows the content slot, so the case records a height residue (the fixture carries one paragraph against the source three-section sample list) and leaves the content subtree unmapped as caller data. `759-6399-disabled` (State=Disabled 13027:5052): grey-100 item fill, the Status chip as a 1px #0e0f13 outline, the title at full #0e0f13 and only the chevron at #bbc2d6. `759-6399-skeleton` (State=Skeleton 13027:5623): the header plus the 32px step and six 68px placeholder rows (100x22 and 200x16 bars, 6px gap, #e8ebf1 fill) with five 1px dividers, so the content is 532x413 and the item 580x543, every offset exact. Component fixes in this wave: the loading item now renders the source skeleton composition instead of a generic two-bar card, the disabled item no longer fades its title (only the chevron changes colour), and the header title/chip stacks fill their row (496/464) like the source fill frames so the chevron keeps the 12px gap. The guide apps/storybook/src/guides/accordion.md records the source mapping. Prop conventions: the source `State` axis maps to the caller's `disabled`/`skeleton` data, `value` with `onValueChange` owns the open sections and `defaultValue` opens them at mount; `multiple` keeps several open at once, an extension of the primitive rather than a source variant, since the source draws one open card. `AccordionItemData` carries the caller copy (`title`, `description`, `chip`, `icon`, `content`); `ref`, `className` and the standard `div` attributes land on the root; the announced strings are `aria-label` for the group (default `Approfondimenti`) and `loadingLabel` for the skeleton (default `Caricamento in corso`). Open design question: avatar and coloured icon in the header — https://github.com/pagopa/ui/issues/35 (issue #35). The node stays implemented for the drawn states."
     },
     "760:7432": {
       "status": "pending",
@@ -1542,7 +1674,7 @@
         "story": "apps/storybook/src/DragAndDrop.stories.tsx",
         "storyExports": ["Playground", "Multiple", "Processing", "Failed", "AvatarVariant"]
       },
-      "note": "Figma delta 2026-10-14: reviewed 2026-10-22 (M5 wave). The Default Vertical dropzone (760:7433, 272x260) is measured: a 24px inset, the 236px box, the 24px upload icon, the 24px content gap, the 132x48 primary action and the 14/20 required helper. The set also declares Horizontal dispositions for Default, Processing, Failed and Error (505-608 wide), an Error composition with its own icon, message and action, and static File success rows; the component renders the vertical composition only and the Error state keeps the idle content. The Default border is dashed in the pinned image, while the numeric spec records only the 1px stroke. Stays `pending`: the open decision is docs/design-requests/2026-10-22-drag-and-drop-dispositions.md (owner: Figma design owner). Until it is answered no Drag & Drop case is committed and the Drawer dependency stays open."
+      "note": "Figma delta 2026-10-14: reviewed 2026-10-22 (M5 wave). The Default Vertical dropzone (760:7433, 272x260) is measured: a 24px inset, the 236px box, the 24px upload icon, the 24px content gap, the 132x48 primary action and the 14/20 required helper. The set also declares Horizontal dispositions for Default, Processing, Failed and Error (505-608 wide), an Error composition with its own icon, message and action, and static File success rows; the component renders the vertical composition only and the Error state keeps the idle content. The Default border is dashed in the pinned image, while the numeric spec records only the 1px stroke. Stays `pending`: the open decision is https://github.com/pagopa/ui/issues/42 (owner: Figma design owner). Until it is answered no Drag & Drop case is committed and the Drawer dependency stays open."
     },
     "8049:39452": {
       "status": "implemented",
@@ -1559,7 +1691,7 @@
           "NarrowGrid"
         ]
       },
-      "note": "Reviewed 2026-10-22 (M5 wave): one committed case, `8049-39452-single-date`, against `SingleDateConfirmation` at the 310 source width and a 320 viewport, verdict `verified-with-residues`. The panel draws the source's four-block rhythm (root gap 8): the two-row header — label row 44 (16/8 insets, 14/20 #555c70) and month row 42 (8/16 insets, 18/26 semibold, the 24px chevrons) closed by its full-bleed divider — then the calendar, a divider and the footer. The date grid keeps the source's 8px inline inset, the caption no longer doubles its own 8px padding, and the footer actions use the source's 16px inset. Verified: width 310, radius 16, #ffffff surface, root padding 0, the header rows, the full-bleed divider and the grid inset, asserted by the story. Residue `field.box.height`: the panel is 448 against the source 426 — the 44px day rows (the source rows are 36, and the source Dates frame adds its own 8px inner padding and 2px row gaps). The footer is the source's 46px row with 22px text actions and the month navigation keeps the source's two 24px chevrons 4px apart. The other five exports are implementation states with no source variant: they render the same panel inline and are not separate cases. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`. Comment 2026-10-24 (F-14): the panel already supports `mode=\"range\"`; `DatePickerField` still accepts a single day. The question whether the field owns a dal–al trigger is recorded in docs/design-requests/2026-10-24-date-picker-field-range.md; the DatePicker node is unchanged."
+      "note": "Reviewed 2026-10-22 (M5 wave): one committed case, `8049-39452-single-date`, against `SingleDateConfirmation` at the 310 source width and a 320 viewport, verdict `verified-with-residues`. The panel draws the source's four-block rhythm (root gap 8): the two-row header — label row 44 (16/8 insets, 14/20 #555c70) and month row 42 (8/16 insets, 18/26 semibold, the 24px chevrons) closed by its full-bleed divider — then the calendar, a divider and the footer. The date grid keeps the source's 8px inline inset, the caption no longer doubles its own 8px padding, and the footer actions use the source's 16px inset. Verified: width 310, radius 16, #ffffff surface, root padding 0, the header rows, the full-bleed divider and the grid inset, asserted by the story. Residue `field.box.height`: the panel is 448 against the source 426 — the 44px day rows (the source rows are 36, and the source Dates frame adds its own 8px inner padding and 2px row gaps). The footer is the source's 46px row with 22px text actions and the month navigation keeps the source's two 24px chevrons 4px apart. The other five exports are implementation states with no source variant: they render the same panel inline and are not separate cases. Elevation comes only from the Figma shadow scale: `shadow-32` (overlays, cards, snackbars), never Tailwind `shadow-md/lg/xl`. Comment 2026-10-24 (F-14): the panel already supports `mode=\"range\"`; `DatePickerField` still accepts a single day. The question whether the field owns a dal–al trigger is recorded in https://github.com/pagopa/ui/issues/28; the DatePicker node is unchanged."
     },
     "808:6302": {
       "status": "implemented",
@@ -1567,7 +1699,8 @@
         "module": "src/components/data-display/catalogue-card.tsx",
         "export": "CatalogueCard",
         "story": "apps/storybook/src/ProductCard.stories.tsx",
-        "storyExports": ["SourceCatalogueCard"]
+        "storyExports": ["SourceCatalogueCard"],
+        "props": {}
       },
       "note": "Reviewed: CatalogueCard renders the source catalogue card itself (360x236, r8, the INSIDE-aligned 1px #e8ebf1 stroke as the card family's ring-1 ring-border so the 24px insets stay exact, pad 24, gap 24): header gap 12 = 44px Avatar small + 256px column (16/22 semibold title over the 16/22 grey-700 Ente, gap 2), 14/20 grey-700 description, action row 24 high with gap 24 = two 16/22 semibold blue text actions (source 22px line kept, >=44px pointer target through the invisible ::after expansion) and the 24px person/check feedback glyphs. eyebrow/tags/children/titleAs/className remain documented extensions. Residue: the Avatar placeholder glyph is our 24px optical size where the source instance is 18px (shared Avatar dependency). Case 808-6302-default captures the 360x236 source frame from `SourceCatalogueCard` with Header/Description/Action subjects, no device axis; strict composition and responsive clean. Guide: apps/storybook/src/guides/product-cards.md."
     },
@@ -1603,7 +1736,7 @@
           "MultiselectOverridableTexts"
         ]
       },
-      "note": "Answered 2026-11-12 (#40, design-requests/2026-10-22-autocomplete-multiselect): Option A — the field owns both filled types through `multiple: string[]`. `824:8872` draws a removable pill per value (`removeValueLabel`) beside [clear][chevron]; `11073:2423` a 44x24 count pill from two values that clears them all (`clearAllLabel`). Both keep the 48px frame and Backspace. Departures: the strip scrolls past the source's 160px; the label floats at one value where the counter draws it inside. Overflow: design-requests/2026-10-28-autocomplete-multiselect-overflow (#76). Parity: two cases."
+      "note": "Answered 2026-11-12 (https://github.com/pagopa/ui/issues/40): Option A — the field owns both filled types through `multiple: string[]`. `824:8872` draws a removable pill per value (`removeValueLabel`) beside [clear][chevron]; `11073:2423` a 44x24 count pill from two values that clears them all (`clearAllLabel`). Both keep the 48px frame and Backspace. Departures: the strip scrolls past the source's 160px; the label floats at one value where the counter draws it inside. Overflow: https://github.com/pagopa/ui/issues/76. Parity: two cases."
     },
     "8702:266": {
       "status": "implemented",
@@ -1955,7 +2088,7 @@
         "story": "apps/storybook/src/TableListItem.stories.tsx",
         "storyExports": ["Playground", "WrappingTitle", "OpenAction", "StaticRow", "Mobile"]
       },
-      "note": "Reviewed against the pinned Desktop 9520:2535 and Mobile 9520:2641 variants: white r8 card with 24px padding and 80px field/action gaps, 14/20 grey-700 labels over 16/22 semibold values (Body/Mono 16/21 with 0.5px tracking for `mono`), 24px decorative-secondary artwork, the Stato Chip and the Apri text action. The first field takes the remaining space and the others stay content-sized, like the source flex-1 field (the source itself measures 118px for that field at 852px with all four fields). Documented adaptations: the 48px ghost action target instead of the source's 24px, the 1px `--border` stroke on the white card for the light application surface, and container-based stacking below 640px, the same breakpoint as Table. The action is the control (native link with href, native button with onPress); the card itself is not a row-wide control, because the source models the action as the Button instance and a wrapping control would carry the concatenated field text as its name. Device review 2026-10-15 (device burn-down wave 3): one case per declared device, both container-scoped and responsive-clean — desktop 9520:2535 (case 9520-2537-layout-desktop-desktop, the card at the source 852: 8px radius, the 24px insets and 80px gaps on the inner row, the 14/20 grey-700 label, the 16/22 semibold value, the Chip 57x24 #e7ecfc, the 16/22 primary action with its 24px arrow) and mobile 9520:2641 (case 9520-2537-layout-mobile-mobile, the card at the source 272: the container stack at the source 16px, the first field 224 wide, the action self-aligned at the end). The story fixtures now frame the card at the source widths (`53.25rem` for the desktop wrappers, 272 for the `Mobile` story) so the capture is not capped 20/48px short. Recorded: the 48px action + the 2px stroke (the guide's 98 against 93), the guide's 4px gap above the Chip value where the source's status field has none, the bundled-font field-row width, the growing first field, and the root-frame-insets mapping.\n\nOpen design question: the loading skeleton — docs/design-requests/2026-10-24-table-list-skeleton.md (issue #29). The node stays implemented for the drawn layouts."
+      "note": "Reviewed against the pinned Desktop 9520:2535 and Mobile 9520:2641 variants: white r8 card with 24px padding and 80px field/action gaps, 14/20 grey-700 labels over 16/22 semibold values (Body/Mono 16/21 with 0.5px tracking for `mono`), 24px decorative-secondary artwork, the Stato Chip and the Apri text action. The first field takes the remaining space and the others stay content-sized, like the source flex-1 field (the source itself measures 118px for that field at 852px with all four fields). Documented adaptations: the 48px ghost action target instead of the source's 24px, the 1px `--border` stroke on the white card for the light application surface, and container-based stacking below 640px, the same breakpoint as Table. The action is the control (native link with href, native button with onPress); the card itself is not a row-wide control, because the source models the action as the Button instance and a wrapping control would carry the concatenated field text as its name. Device review 2026-10-15 (device burn-down wave 3): one case per declared device, both container-scoped and responsive-clean — desktop 9520:2535 (case 9520-2537-layout-desktop-desktop, the card at the source 852: 8px radius, the 24px insets and 80px gaps on the inner row, the 14/20 grey-700 label, the 16/22 semibold value, the Chip 57x24 #e7ecfc, the 16/22 primary action with its 24px arrow) and mobile 9520:2641 (case 9520-2537-layout-mobile-mobile, the card at the source 272: the container stack at the source 16px, the first field 224 wide, the action self-aligned at the end). The story fixtures now frame the card at the source widths (`53.25rem` for the desktop wrappers, 272 for the `Mobile` story) so the capture is not capped 20/48px short. Recorded: the 48px action + the 2px stroke (the guide's 98 against 93), the guide's 4px gap above the Chip value where the source's status field has none, the bundled-font field-row width, the growing first field, and the root-frame-insets mapping.\n\nOpen design question: the loading skeleton — https://github.com/pagopa/ui/issues/29 (issue #29). The node stays implemented for the drawn layouts."
     },
     "9520:55438": {
       "status": "mocked",
@@ -3479,7 +3612,7 @@
         "story": "apps/storybook/src/Popover.stories.tsx",
         "storyExports": ["SourceTop", "SourceBottom"]
       },
-      "note": "Both source variants are reviewed: Arrow-Position Top and Bottom render their indicators, the 312x76 card, and a keyboard/pointer close action; elevation uses `shadow-32`. The design owner decided that Popper `13211:26152` is a distinct component; see docs/design-requests/2026-10-28-popper-status-card.md (issue #68, closed)."
+      "note": "Both source variants are reviewed: Arrow-Position Top and Bottom render their indicators, the 312x76 card, and a keyboard/pointer close action; elevation uses `shadow-32`. The design owner decided that Popper `13211:26152` is a distinct component; see https://github.com/pagopa/ui/issues/68 (issue #68, closed)."
     },
     "9977:21200": {
       "status": "implemented",
@@ -3555,7 +3688,7 @@
           "SourceVariants"
         ]
       },
-      "note": "Reviewed 2026-11-03: 12 status/pointer cases, no device axis; geometry, composition and responsive checks are clean. Magnified source and render junctions were inspected at native and high density; stories test both border endpoints in normal and forced colours. Indicator padding, gap and SVG border ignores are mapping artifacts. Shadow-32 omits the pointer. The caller owns anchoring, association and dismissal (apps/storybook/src/guides/popper.md). Page compositions are unmirrored. Distinct component: docs/design-requests/2026-10-28-popper-status-card.md (issue #68 closed)."
+      "note": "Reviewed 2026-11-03: 12 status/pointer cases, no device axis; geometry, composition and responsive checks are clean. Magnified source and render junctions were inspected at native and high density; stories test both border endpoints in normal and forced colours. Indicator padding, gap and SVG border ignores are mapping artifacts. Shadow-32 omits the pointer. The caller owns anchoring, association and dismissal (apps/storybook/src/guides/popper.md). Page compositions are unmirrored. Distinct component: https://github.com/pagopa/ui/issues/68 (issue #68 closed)."
     },
     "14709:279": {
       "status": "implemented",

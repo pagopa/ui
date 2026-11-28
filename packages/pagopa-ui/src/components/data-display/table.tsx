@@ -4,7 +4,7 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
+import { PictogramFigure } from "@/components/icons/pictogram-figure"
 import { Checkbox } from "@/components/primitives/checkbox"
 import { Heading, type HeadingTag } from "@/components/primitives/heading"
 import {
@@ -27,6 +27,7 @@ import { Tooltip } from "@/components/overlays/tooltip"
 
 import { TableHeaderField, type TableSort } from "./table-header-field"
 import { TableListField } from "./table-list-field"
+import { message } from "pagopa-ui-artwork/pictograms/message"
 
 export interface TableColumn<Row> {
   key: keyof Row & string
@@ -47,7 +48,10 @@ export interface TableColumn<Row> {
 
 const defaultTruncatedWidth = "16rem"
 
-export interface TableProps<Row extends { id: React.Key }> {
+export interface TableProps<Row extends { id: React.Key }> extends Omit<
+  React.ComponentProps<"section">,
+  "children"
+> {
   caption: string
   captionHidden?: boolean
   title?: string
@@ -68,7 +72,7 @@ export interface TableProps<Row extends { id: React.Key }> {
   onSelectionChange?: (selected: React.Key[]) => void
   /** Accessible name of the select-all checkbox. @default messages.table.selectionLabel */
   selectionLabel?: string
-  /** Accessible name of a row checkbox, from the row. @default "Seleziona {first cell}" */
+  /** Accessible name of a row checkbox, from the row. @default messages.table.rowLabel on the first cell */
   selectionRowLabel?: (row: Row) => string
   /** Marks a row with the source notification dot after its checkbox. */
   notification?: (row: Row) => boolean
@@ -109,6 +113,9 @@ function Table<Row extends { id: React.Key }>({
   actionsLabel: actionsLabelProp,
   emptyLabel: emptyLabelProp,
   emptyState: emptyStateProp,
+  className,
+  ref,
+  ...props
 }: TableProps<Row>) {
   const t = useMessages("table")
   const selectionLabel = selectionLabelProp ?? t.selectionLabel
@@ -140,15 +147,19 @@ function Table<Row extends { id: React.Key }>({
   const rowLabel = (row: Row) => {
     if (selectionRowLabel) return selectionRowLabel(row)
     const first = columns[0] ? row[columns[0].key] : undefined
-    const text = first == null ? "" : String(first)
-    return text ? `Seleziona ${text}` : "Seleziona riga"
+    return t.rowLabel(first == null ? "" : String(first))
   }
 
   return (
     <section
-      data-slot="table-composite"
+      ref={ref}
+      data-slot="table"
       aria-label={caption}
-      className="pui:@container/table pui:flex pui:min-w-0 pui:flex-col pui:gap-2 pui:rounded-lg pui:bg-secondary pui:p-2"
+      className={cn(
+        "pui:@container/table pui:flex pui:min-w-0 pui:flex-col pui:gap-2 pui:rounded-lg pui:bg-secondary pui:p-2",
+        className,
+      )}
+      {...props}
     >
       {title || description || actions ? (
         <header className="pui:flex pui:flex-wrap pui:items-start pui:justify-between pui:gap-4">
@@ -173,7 +184,7 @@ function Table<Row extends { id: React.Key }>({
         <Empty>
           <EmptyHeader>
             <EmptyMedia aria-hidden="true">
-              <PagoPAPictogram name="Message" size={56} />
+              <PictogramFigure asset={message} size={56} />
             </EmptyMedia>
             {emptyState.title || emptyState.description ? (
               <div className="pui:flex pui:w-full pui:flex-col pui:gap-0.5">
@@ -302,6 +313,7 @@ function Table<Row extends { id: React.Key }>({
                     return (
                       <TableListField
                         key={column.key}
+                        data-slot="table-cell"
                         headers={`${tableId}-column-${index}`}
                         role="cell"
                         label={column.label}

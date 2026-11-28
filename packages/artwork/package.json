@@ -9,6 +9,14 @@
     ".": {
       "types": "./dist/types/index.d.ts",
       "import": "./src/index.ts"
+    },
+    "./pictograms/*": {
+      "types": "./dist/types/components/icons/pictograms/*.d.ts",
+      "import": "./src/components/icons/pictograms/*.ts"
+    },
+    "./pictogram-asset": {
+      "types": "./dist/types/components/icons/pictogram-asset.d.ts",
+      "import": "./src/components/icons/pictogram-asset.ts"
     }
   },
   "engines": {

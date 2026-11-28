@@ -2,19 +2,19 @@
 
 import * as React from "react"
 
+import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
-import { Icon } from "@/components/icons/icon"
 import { Default as CloseIcon } from "@/components/icons/generated/close"
 import { Button } from "@/components/primitives/button"
 
-export interface CookiesProps {
+export interface CookiesProps extends Omit<React.ComponentProps<"section">, "children"> {
   /** Title and copy of the bar. */
   children: React.ReactNode
-  /** Fired by the "Accetta tutti" action. */
+  /** Fired by the accept-all action. */
   onAccept: () => void
-  /** Fired by the "Rifiuta tutti" action. */
+  /** Fired by the reject-all action. */
   onReject: () => void
-  /** Fired by the text action "Scopri di più". */
+  /** Fired by the learn-more text action. */
   onLearnMore?: () => void
   /** Renders the close control when provided. */
   onDismiss?: () => void
@@ -22,6 +22,12 @@ export interface CookiesProps {
   closeLabel?: string
   /** Accessible name of the bar. @default messages.cookies.label */
   label?: string
+  /** Text of the learn-more action. @default messages.cookies.learnMoreLabel */
+  learnMoreLabel?: string
+  /** Text of the reject-all action. @default messages.cookies.rejectLabel */
+  rejectLabel?: string
+  /** Text of the accept-all action. @default messages.cookies.acceptLabel */
+  acceptLabel?: string
 }
 
 function Cookies({
@@ -32,10 +38,19 @@ function Cookies({
   onDismiss,
   closeLabel: closeLabelProp,
   label: labelProp,
+  learnMoreLabel: learnMoreLabelProp,
+  rejectLabel: rejectLabelProp,
+  acceptLabel: acceptLabelProp,
+  className,
+  ref,
+  ...props
 }: CookiesProps) {
   const t = useMessages("cookies")
   const closeLabel = closeLabelProp ?? t.closeLabel
   const label = labelProp ?? t.label
+  const learnMoreLabel = learnMoreLabelProp ?? t.learnMoreLabel
+  const rejectLabel = rejectLabelProp ?? t.rejectLabel
+  const acceptLabel = acceptLabelProp ?? t.acceptLabel
 
   // Source `Device=Mobile` (1360:12856): the close sits beside the copy, the
   // three actions stack full width under it; the desktop row keeps the close
@@ -48,14 +63,20 @@ function Cookies({
       onClick={onDismiss}
       className="pui:flex pui:size-11 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-md pui:hover:bg-muted pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
     >
-      <Icon source={CloseIcon} />
+      <CloseIcon />
     </button>
   ) : null
 
   return (
     <section
+      data-slot="cookies"
+      ref={ref}
       aria-label={label}
-      className="pui:fixed pui:inset-x-3 pui:bottom-3 pui:z-50 pui:mx-auto pui:flex pui:max-w-4xl pui:flex-col pui:gap-8 pui:bg-background pui:p-6 pui:shadow-32 pui:desktop:flex-row pui:desktop:flex-nowrap pui:desktop:items-center"
+      className={cn(
+        "pui:fixed pui:inset-x-3 pui:bottom-3 pui:z-50 pui:mx-auto pui:flex pui:max-w-4xl pui:flex-col pui:gap-8 pui:bg-background pui:p-6 pui:shadow-32 pui:desktop:flex-row pui:desktop:flex-nowrap pui:desktop:items-center",
+        className,
+      )}
+      {...props}
     >
       <div className="pui:flex pui:min-w-0 pui:flex-1 pui:items-start pui:justify-between pui:gap-4 pui:tablet:gap-6 pui:desktop:items-center">
         <p className="pui:min-w-0 pui:flex-1 pui:text-label-mini pui:text-muted-foreground">
@@ -75,14 +96,14 @@ function Cookies({
             className="pui:relative pui:min-h-0 pui:px-0 pui:py-0 pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-3 pui:max-tablet:self-center"
             onClick={onLearnMore}
           >
-            Scopri di più
+            {learnMoreLabel}
           </Button>
         ) : null}
         <Button className="pui:max-tablet:w-full" onClick={onReject}>
-          Rifiuta tutti
+          {rejectLabel}
         </Button>
         <Button className="pui:max-tablet:w-full" onClick={onAccept}>
-          Accetta tutti
+          {acceptLabel}
         </Button>
         {closeButton ? <span className="pui:hidden pui:desktop:block">{closeButton}</span> : null}
       </div>

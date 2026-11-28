@@ -9,7 +9,7 @@
       "expectations": [
         "Runs `pnpm ui-cli figma status` and follows the configuration and source state it reports before touching a file.",
         "Reads live evidence for the node (a REST or MCP read, for example `figma status --live` or a node export) instead of relying only on the committed snapshots.",
-        "Reads `pnpm ui-cli figma brief --node 61:2786` and names the target module and export (`Separator`) it works against.",
+        "Reads `pnpm ui-cli figma brief --node 61:2786 --card` and names the target module and export (`Separator`) it works against.",
         "Closes with one explicit decision for the node — aligned, already aligned, excluded, or pending with the blocker named — and never writes to Figma."
       ],
       "files": []
@@ -46,7 +46,7 @@
       "expected_output": "The session plans and triages `.figma/drift-census-export.json` through the CLI, verifies `pnpm ui-cli check catalogue` passes, and reports that removed node `8868:42690` (`Webview url`) left `page-surface.json` while new node `9999:1` (`Native Sheet`) joined page `1:16` with its bulk-rule `excluded` decision — without hand-editing `page-surface.json` or writing to Figma.",
       "expectations": [
         "Inspects the delta against `.figma/drift-census-export.json` (`pnpm ui-cli figma plan --input .figma/drift-census-export.json`) and names removed node `8868:42690` (`Webview url`) and added node `9999:1` (`Native Sheet`).",
-        "Reconciles the inventory and page census through the CLI (`pnpm ui-cli figma triage --input .figma/drift-census-export.json` or `pnpm ui-cli update inventory --triage --input .figma/drift-census-export.json`) instead of editing `inventory.json` or `page-surface.json` by hand.",
+        "Reconciles the inventory and page census through the CLI (`pnpm ui-cli figma triage --input .figma/drift-census-export.json`) instead of editing `inventory.json` or `page-surface.json` by hand.",
         "Confirms `8868:42690` left `page-surface.json`, `9999:1` joined page `1:16` (`• Componenti nativi`) with decision `excluded` from the page bulk rule, and `pnpm ui-cli check catalogue` passes.",
         "Never writes to Figma and does not run the full workspace gates."
       ],
@@ -58,7 +58,7 @@
       "prompt": "Refresh the `.Regole` cards for node `61:2786` only (do not refresh the whole file), inspect the rules ledger against that scoped snapshot, and report what changed or needs action. Do not edit code or `rules.json` by hand, and do not run the workspace gates.",
       "expected_output": "The session runs a scoped rules refresh for node `61:2786` on a checkout without a prior full snapshot, checks the rules status against the partial snapshot, reports that untouched pages are not checked for removals until a full refresh runs, and leaves untouched cards in `src/catalog/figma/rules.json` intact without writing to Figma.",
       "expectations": [
-        "Runs a scoped rules refresh for `61:2786` (`pnpm ui-cli figma rules refresh --node 61:2786`, `--page 61:2777`, or `figma brief --node 61:2786 --refresh`) instead of refreshing the whole file.",
+        "Runs a scoped rules refresh for `61:2786` (`pnpm ui-cli figma rules refresh --node 61:2786`, `--page 61:2777`, or `figma brief --node 61:2786 --card --refresh`) instead of refreshing the whole file.",
         "Checks the rules ledger against the resulting snapshot (`pnpm ui-cli figma rules plan` or `pnpm ui-cli check rules`) rather than assuming no cards changed.",
         "Reports that the snapshot is partial (scoped to the refreshed page only), so cards on untouched pages are not checked for removals until a full `figma rules refresh` runs.",
         "Leaves cards on untouched pages in `src/catalog/figma/rules.json` intact — never deleting them as removed and never editing `rules.json` by hand — and never writes to Figma."
@@ -75,6 +75,20 @@
         "Reports that `9998:1` (`.ScrimHelper`) joined page `1:23` as `unpublished`, page `61:2777` remained unchanged (without adding `COMPONENT_SET` variants), and the catalogue check passed.",
         "Surfaces unrecorded composition candidate `9998:2` (`XS Mobile scrim`, drawn 1, 320px, suggested `mobile`) for human review without auto-adding it to `page.compositions` in `page-surface.json`.",
         "Treats missing composition `68:2288` as `~ unverified composition` (because an `--input` run cannot confirm deletion), keeps `68:2288` intact in `page-surface.json`, advises checking it in Figma instead of removing it as `! stale`, never writes to Figma, and does not run the full workspace gates."
+      ],
+      "files": []
+    },
+    {
+      "id": 6,
+      "name": "record-prop-map-round-trip",
+      "prompt": "The `TextField` component set `529:6111` declares a `* Required` variant, and the `TextField` prop that carries it is `required`. Record that property map through the CLI, confirm the catalogue check still passes, and read the mapping back the way a consumer does. Then try to record a property map for something the source does not declare and report exactly what the CLI does. Do not hand-edit the catalogue files, do not run the workspace gates and do not write to Figma.",
+      "expected_output": "The session records the `* Required` → `required` mapping with `pnpm ui-cli record 529:6111 --props` (reporting the CLI's own `unchanged` or `updated` outcome), confirms the catalogue check passes, reads the mapping back as `* Required → required: False=false, True=true`, and reports the CLI's preflight refusal for an undeclared property without hand-adding it to the catalogue.",
+      "expectations": [
+        "Records the mapping through `pnpm ui-cli record 529:6111 --status implemented --props '{\"* Required\": {\"prop\": \"required\", \"values\": {\"False\": false, \"True\": true}}}'` (a `--dry-run` first is fine) instead of editing `registry.json` or `figma-map.json` by hand.",
+        "Reports the CLI's own outcome line — `unchanged` when the declared map already matches, `updated` when it did not — instead of claiming a change the run did not write.",
+        "Confirms `pnpm ui-cli figma map --check` (or `pnpm ui-cli check catalogue`) still passes and reads the map back through the consumer surface, `pagopa-ui-map resolve 529:6111` (or `--json`), which shows `* Required → required: False=false, True=true`.",
+        "Reports the preflight refusal for a property the inventory does not declare — `error: 529:6111 maps \"Padding\", which the inventory does not declare as a variant`, exit code 2 — and leaves the catalogue unchanged instead of adding the key by hand.",
+        "Never writes to Figma and does not run the workspace gates."
       ],
       "files": []
     }

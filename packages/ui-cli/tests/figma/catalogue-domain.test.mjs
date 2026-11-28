@@ -95,7 +95,7 @@ test("renewing a note that holds only the renewal line loses nothing and says no
 
 test("renewing a note carries what the previous note said", () => {
   const previous =
-    "Figma delta 2026-01-01: review new/changed node or dependency before marking implemented. Open design question: docs/design-requests/2026-01-02-ring.md. Depends on the card work."
+    "Figma delta 2026-01-01: review new/changed node or dependency before marking implemented. Open design question: https://github.com/acme/ui/issues/42. Depends on the card work."
   const { note, notices } = renewNote(
     baseFiles(),
     { status: "implemented", note: previous },
@@ -104,7 +104,7 @@ test("renewing a note carries what the previous note said", () => {
   assert.match(note, /^Figma delta \d{4}-\d{2}-\d{2}: review new\/changed node/)
   assert.match(
     note,
-    /Open design question: docs\/design-requests\/2026-01-02-ring\.md\. Depends on the card work\.$/,
+    /Open design question: https:\/\/github\.com\/acme\/ui\/issues\/42\. Depends on the card work\.$/,
   )
   assert.deepEqual(notices, [])
 })

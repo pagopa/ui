@@ -1,20 +1,30 @@
 // Generated from pinned source geometry by packages/ui-cli/src/figma/icons.ts; do not edit.
 import type { SVGProps } from "react"
 
+import { Icon, type GlyphProps } from "../icon"
 import type { IconVariantComponents } from "./types"
 
 // `qr_code` as inline SVG: one component per pinned variant, so a bundle
 // that imports one of them carries no other icon artwork.
-/** Source `99:2138`: the default variant. */
-export function Default(props: SVGProps<SVGSVGElement>) {
+/** The `99:2138` drawing, in the source coordinate space. */
+function DefaultGlyph(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" data-figma-node-id="99:2138" {...props}><defs><mask id="99-2138-mask_0" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}><g transform="matrix(1 0 0 1 0 0)" opacity="1"><path d="M0 0L24 0L24 24L0 24L0 0Z" fill="#ffffff" fillOpacity="1" fillRule="nonzero" /></g></mask></defs><g transform="matrix(1 0 0 1 0 0)" opacity="1"><g mask="url(#99-2138-mask_0)"><g transform="matrix(1 0 0 1 2.999999761581421 2.999999761581421)" opacity="1"><path d="M0 7L0 1C0 0.716667 0.0958333 0.479167 0.2875 0.2875C0.479167 0.0958333 0.716667 0 1 0L7 0C7.28333 0 7.52083 0.0958333 7.7125 0.2875C7.90417 0.479167 8 0.716667 8 1L8 7C8 7.28333 7.90417 7.52083 7.7125 7.7125C7.52083 7.90417 7.28333 8 7 8L1 8C0.716667 8 0.479167 7.90417 0.2875 7.7125C0.0958333 7.52083 0 7.28333 0 7ZM2 6L6 6L6 2L2 2L2 6ZM0 17L0 11C0 10.7167 0.0958333 10.4792 0.2875 10.2875C0.479167 10.0958 0.716667 10 1 10L7 10C7.28333 10 7.52083 10.0958 7.7125 10.2875C7.90417 10.4792 8 10.7167 8 11L8 17C8 17.2833 7.90417 17.5208 7.7125 17.7125C7.52083 17.9042 7.28333 18 7 18L1 18C0.716667 18 0.479167 17.9042 0.2875 17.7125C0.0958333 17.5208 0 17.2833 0 17ZM2 16L6 16L6 12L2 12L2 16ZM10 7L10 1C10 0.716667 10.0958 0.479167 10.2875 0.2875C10.4792 0.0958333 10.7167 0 11 0L17 0C17.2833 0 17.5208 0.0958333 17.7125 0.2875C17.9042 0.479167 18 0.716667 18 1L18 7C18 7.28333 17.9042 7.52083 17.7125 7.7125C17.5208 7.90417 17.2833 8 17 8L11 8C10.7167 8 10.4792 7.90417 10.2875 7.7125C10.0958 7.52083 10 7.28333 10 7ZM12 6L16 6L16 2L12 2L12 6ZM16 18L16 16L18 16L18 18L16 18ZM10 12L10 10L12 10L12 12L10 12ZM12 14L12 12L14 12L14 14L12 14ZM10 16L10 14L12 14L12 16L10 16ZM12 18L12 16L14 16L14 18L12 18ZM14 16L14 14L16 14L16 16L14 16ZM14 12L14 10L16 10L16 12L14 12ZM16 14L16 12L18 12L18 14L16 14Z" fill="currentColor" fillOpacity="1" fillRule="nonzero" /></g></g></g></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" data-figma-node-id="99:2138" {...props}><g transform="matrix(1 0 0 1 2.999999761581421 2.999999761581421)" opacity="1"><path d="M0 7L0 1C0 0.716667 0.0958333 0.479167 0.2875 0.2875C0.479167 0.0958333 0.716667 0 1 0L7 0C7.28333 0 7.52083 0.0958333 7.7125 0.2875C7.90417 0.479167 8 0.716667 8 1L8 7C8 7.28333 7.90417 7.52083 7.7125 7.7125C7.52083 7.90417 7.28333 8 7 8L1 8C0.716667 8 0.479167 7.90417 0.2875 7.7125C0.0958333 7.52083 0 7.28333 0 7ZM2 6L6 6L6 2L2 2L2 6ZM0 17L0 11C0 10.7167 0.0958333 10.4792 0.2875 10.2875C0.479167 10.0958 0.716667 10 1 10L7 10C7.28333 10 7.52083 10.0958 7.7125 10.2875C7.90417 10.4792 8 10.7167 8 11L8 17C8 17.2833 7.90417 17.5208 7.7125 17.7125C7.52083 17.9042 7.28333 18 7 18L1 18C0.716667 18 0.479167 17.9042 0.2875 17.7125C0.0958333 17.5208 0 17.2833 0 17ZM2 16L6 16L6 12L2 12L2 16ZM10 7L10 1C10 0.716667 10.0958 0.479167 10.2875 0.2875C10.4792 0.0958333 10.7167 0 11 0L17 0C17.2833 0 17.5208 0.0958333 17.7125 0.2875C17.9042 0.479167 18 0.716667 18 1L18 7C18 7.28333 17.9042 7.52083 17.7125 7.7125C17.5208 7.90417 17.2833 8 17 8L11 8C10.7167 8 10.4792 7.90417 10.2875 7.7125C10.0958 7.52083 10 7.28333 10 7ZM12 6L16 6L16 2L12 2L12 6ZM16 18L16 16L18 16L18 18L16 18ZM10 12L10 10L12 10L12 12L10 12ZM12 14L12 12L14 12L14 14L12 14ZM10 16L10 14L12 14L12 16L10 16ZM12 18L12 16L14 16L14 18L12 18ZM14 16L14 14L16 14L16 16L14 16ZM14 12L14 10L16 10L16 12L14 12ZM16 14L16 12L18 12L18 14L16 14Z" fill="currentColor" fillOpacity="1" fillRule="nonzero" /></g></svg>
   )
 }
 
-/** Every pinned variant of `qr_code`, keyed by source node id. */
+/** `qr_code`: the default variant, in the shared icon box. */
+export function Default(props: GlyphProps) {
+  return <Icon {...props} source={DefaultGlyph} />
+}
+
+/**
+ * Every pinned variant of `qr_code`, keyed by source node id. The registry
+ * resolves a runtime name to one of these drawings, which `Icon` owns the box
+ * for; the exports above are the same drawings with that box already applied.
+ */
 export const variants: IconVariantComponents = {
-  "99:2138": Default,
+  "99:2138": DefaultGlyph,
 }
 
 export default Default

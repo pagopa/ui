@@ -4,7 +4,6 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as AccountBalanceIcon } from "@/components/icons/generated/account-balance"
 import { Default as CheckIcon } from "@/components/icons/generated/check"
 import {
@@ -33,27 +32,28 @@ interface AvatarIdentity {
 }
 
 /** Props of {@link Avatar}. */
-type AvatarProps = AvatarIdentity & {
-  /** Selected state; owned by the calling control. @default false */
-  selected?: boolean
-  /** Loading state; never erases the selection. */
-  loading?: boolean
-  /** Size step of the component. @default "medium" */
-  size?: "compact" | "small" | "medium" | "large"
-  /** Optional presence cue. */
-  status?: "online" | "offline" | "busy"
-  /**
-   * Announced presence text, from the status key: the caller owns the phrase.
-   * @default messages.avatar.statusLabel
-   */
-  statusLabel?: (status: "online" | "offline" | "busy") => string
-  /** Announced text of the selected state. @default messages.avatar.selectedLabel */
-  selectedLabel?: string
-  /** Second identity composed with the primary one. */
-  secondary?: AvatarIdentity
-  /** ClassName applied to the avatar wrapper. */
-  className?: string
-}
+type AvatarProps = Omit<React.ComponentProps<"span">, "children"> &
+  AvatarIdentity & {
+    /** Selected state; owned by the calling control. @default false */
+    selected?: boolean
+    /** Loading state; never erases the selection. */
+    loading?: boolean
+    /** Size step of the component. @default "medium" */
+    size?: "compact" | "small" | "medium" | "large"
+    /** Optional presence cue. */
+    status?: "online" | "offline" | "busy"
+    /**
+     * Announced presence text, from the status key: the caller owns the phrase.
+     * @default messages.avatar.statusLabel
+     */
+    statusLabel?: (status: "online" | "offline" | "busy") => string
+    /** Announced text of the selected state. @default messages.avatar.selectedLabel */
+    selectedLabel?: string
+    /** Second identity composed with the primary one. */
+    secondary?: AvatarIdentity
+    /** ClassName applied to the avatar wrapper. */
+    className?: string
+  }
 
 const avatarSizes = {
   compact: "pui:size-8",
@@ -69,6 +69,7 @@ function Avatar({
   selectedLabel: selectedLabelProp,
   secondary,
   className,
+  ref,
   ...props
 }: AvatarProps) {
   const t = useMessages("avatar")
@@ -78,6 +79,7 @@ function Avatar({
   return (
     <span
       data-slot={secondary ? "avatar-pair" : "avatar-identity"}
+      ref={ref}
       className={cn("pui:relative pui:inline-flex pui:shrink-0", avatarSizes[size], className)}
     >
       <AvatarFace
@@ -164,7 +166,7 @@ function AvatarFace({
           {loading ? (
             <Skeleton className="pui:col-start-1 pui:row-start-1 pui:size-full pui:rounded-[inherit]" />
           ) : selected ? (
-            <Icon source={CheckIcon} size={iconSize} />
+            <CheckIcon size={iconSize} />
           ) : (
             <>
               {src ? (
@@ -213,7 +215,7 @@ function AvatarFace({
                     {icon}
                   </span>
                 ) : (
-                  initials || <Icon source={AccountBalanceIcon} size={iconSize} />
+                  initials || <AccountBalanceIcon size={iconSize} />
                 )}
               </AvatarFallback>
             </>

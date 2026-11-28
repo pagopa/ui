@@ -5,7 +5,6 @@ import { Select as SelectPrimitive } from "@base-ui/react/select"
 import { usePortalHost } from "@/lib/ui-provider"
 import { cn } from "@/lib/cn"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as CheckIcon } from "@/components/icons/generated/check"
 import {
   Checked as CheckBoxCheckedIcon,
@@ -29,7 +28,7 @@ function SelectValue({ className, ...props }: SelectPrimitive.Value.Props) {
   return (
     <SelectPrimitive.Value
       data-slot="select-value"
-      className={cn("pui:flex pui:flex-1 pui:text-left", className)}
+      className={cn("pui:flex pui:min-w-0 pui:flex-1 pui:text-left", className)}
       {...props}
     />
   )
@@ -59,10 +58,7 @@ function SelectTrigger({
       <SelectPrimitive.Icon
         render={
           icon ?? (
-            <Icon
-              source={ChevronDownIcon}
-              className="pui:pointer-events-none pui:size-4 pui:text-muted-foreground"
-            />
+            <ChevronDownIcon className="pui:pointer-events-none pui:size-4 pui:text-muted-foreground" />
           )
         }
       />
@@ -108,7 +104,7 @@ function SelectContent({
           // leaves a zero-opacity/zero-height frame), and the library does not
           // invent motion a reduced-motion user would still see.
           className={cn(
-            "pui:relative pui:isolate pui:z-50 pui:max-h-(--available-height) pui:w-(--anchor-width) pui:min-w-36 pui:origin-(--transform-origin) pui:overflow-x-hidden pui:overflow-y-auto pui:rounded-lg pui:bg-popover pui:text-popover-foreground pui:shadow-16",
+            "pui:relative pui:isolate pui:z-50 pui:max-h-(--available-height) pui:w-(--anchor-width) pui:max-w-(--available-width) pui:min-w-36 pui:origin-(--transform-origin) pui:overflow-x-hidden pui:overflow-y-auto pui:rounded-lg pui:bg-popover pui:text-popover-foreground pui:shadow-16",
             className,
           )}
           {...props}
@@ -151,35 +147,40 @@ function SelectItem({
       )}
       {...props}
     >
-      <SelectPrimitive.ItemText className="pui:flex pui:flex-1 pui:gap-2 pui:whitespace-nowrap">
+      {/* The chooser is as wide as its trigger, so an option label has nowhere
+          to go sideways: it wraps instead. `nowrap` would keep the popup wider
+          than the viewport once a user zooms the text to 200% (WCAG 1.4.10). */}
+      <SelectPrimitive.ItemText className="pui:flex pui:min-w-0 pui:flex-1 pui:gap-2">
         {children}
       </SelectPrimitive.ItemText>
       <SelectPrimitive.ItemIndicator
         keepMounted={multiple}
-        render={(indicatorProps, { selected }) => (
-          <span
-            {...indicatorProps}
-            className={cn(
-              "pui:pointer-events-none pui:absolute pui:flex pui:items-center pui:justify-center",
-              multiple ? "pui:top-3 pui:right-4 pui:size-6" : "pui:right-2 pui:size-4",
-            )}
-          >
-            {multiple ? (
-              <>
-                {selected ? (
-                  <span className="pui:absolute pui:inset-0.75 pui:rounded-2 pui:bg-primary-foreground" />
-                ) : null}
-                <Icon
-                  source={selected ? CheckBoxCheckedIcon : CheckBoxIcon}
-                  size={24}
-                  className={cn("pui:relative", selected && "pui:text-primary")}
-                />
-              </>
-            ) : (
-              <Icon source={CheckIcon} size={16} className="pui:pointer-events-none" />
-            )}
-          </span>
-        )}
+        render={(indicatorProps, { selected }) => {
+          const CheckBoxGlyph = selected ? CheckBoxCheckedIcon : CheckBoxIcon
+          return (
+            <span
+              {...indicatorProps}
+              className={cn(
+                "pui:pointer-events-none pui:absolute pui:flex pui:items-center pui:justify-center",
+                multiple ? "pui:top-3 pui:right-4 pui:size-6" : "pui:right-2 pui:size-4",
+              )}
+            >
+              {multiple ? (
+                <>
+                  {selected ? (
+                    <span className="pui:absolute pui:inset-0.75 pui:rounded-2 pui:bg-primary-foreground" />
+                  ) : null}
+                  <CheckBoxGlyph
+                    size={24}
+                    className={cn("pui:relative", selected && "pui:text-primary")}
+                  />
+                </>
+              ) : (
+                <CheckIcon size={16} className="pui:pointer-events-none" />
+              )}
+            </span>
+          )
+        }}
       />
     </SelectPrimitive.Item>
   )
@@ -208,7 +209,7 @@ function SelectScrollUpButton({
       )}
       {...props}
     >
-      <Icon source={ChevronUpIcon} size={16} />
+      <ChevronUpIcon size={16} />
     </SelectPrimitive.ScrollUpArrow>
   )
 }
@@ -226,7 +227,7 @@ function SelectScrollDownButton({
       )}
       {...props}
     >
-      <Icon source={ChevronDownIcon} size={16} />
+      <ChevronDownIcon size={16} />
     </SelectPrimitive.ScrollDownArrow>
   )
 }

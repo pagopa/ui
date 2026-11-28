@@ -25,6 +25,20 @@ function declaredFlag(args: ArgsDef, token: string): ArgsDef[string] | undefined
   return negated?.type === "boolean" ? negated : undefined
 }
 
+// A retired node stays in the tree so the old spelling can point at the new
+// one: a guide, a workflow or a printed hint that still names it is exactly what
+// this gate is for, so the retired node reads as unresolved rather than as a
+// command that works.
+const RETIRED = /^Retired: use (.+)$/
+
+function retirement(command: CommandDef, path: readonly string[]): string | null {
+  const description = readable(command.meta)?.description
+  const match = typeof description === "string" ? RETIRED.exec(description) : null
+  return match
+    ? `retired ui-cli command "${["ui-cli", ...path].join(" ")}" — use ${match[1]}`
+    : null
+}
+
 export function unresolvedCliTokens(root: CommandDef, tokens: readonly string[]): string | null {
   let command = root
   const path: string[] = []
@@ -59,6 +73,8 @@ export function unresolvedCliTokens(root: CommandDef, tokens: readonly string[])
       if (!resolved) return null
       command = resolved
       path.push(token)
+      const retired = retirement(resolved, path)
+      if (retired) return retired
       continue
     }
     if (!Object.values(args).some((arg) => arg.type === "positional"))

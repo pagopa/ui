@@ -17,15 +17,25 @@ announced message after its `play`.
 
 The same layer re-runs each story at **320 px** (WCAG 1.4.10 Reflow) and with
 **increased text spacing at 200%** (1.4.12 Text Spacing, 1.4.4 Resize Text); in
-both the page must not scroll horizontally. **Forced colours** and **reduced
-motion** run in their own project, which excludes the colour-pinned stories — the
-ones that fix source colours on purpose.
+both the page must not scroll horizontally, and no text may be clipped by the box
+that holds it — a label that overflows its own pill, or a row that loses its
+second line, fails even when nothing scrolls. Wrapping is the expected outcome of
+a narrow viewport; hiding text to fit is not.
+
+**Forced colours** and **reduced motion** run in their own project. Reduced motion
+excludes nothing: every story is rendered with the preference on and must not
+animate. The audit reads the transition and animation durations the story
+actually computes, before the contract freezes motion for its colour
+measurements — a frozen page would otherwise report zero everywhere and pass
+whatever it renders. Each condition project also declares the state it expects,
+so a project that silently loses its browser context and re-runs as a second
+default pass fails instead of passing twice.
 
 Conditions a story cannot satisfy yet are declared on the story itself, with the
 reason beside the flag:
 `a11yContract: { reflow: false }` for source-width fixtures and surfaces whose
 reflow fix has not landed. The remaining flags are debt, listed in
-[the reflow exemption record](../../../../docs/design-requests/2026-11-26-reflow-exemption-debt.md)
+[the reflow exemption record](https://github.com/pagopa/ui/issues/192)
 next to the answered request that first recorded them. The exemption is
 temporary: it goes when its family is fixed and its entry deleted.
 
@@ -96,7 +106,7 @@ with the screen reader, browser and locale. Record what was actually announced.
 | Status or alert            | The changed message is announced without unexpectedly moving focus.                                                                                  |
 
 A failure opens an issue and — when the expected behaviour is a design decision —
-a request in `docs/design-requests/`.
+a request issue in the tracker.
 
 Screen-reader support is claimed only from recorded passes. Browser zoom and
 screen-reader specific settings stay manual by design; the automated layer never

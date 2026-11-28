@@ -19,7 +19,7 @@ The mapping is a `propsMap` object on the row, with a `version` and a `props` di
 }
 ```
 
-It is declared, never inferred: a row with no `propsMap` key has no mapping at all, and a property or an option the mapping does not name has no declared counterpart, so read that one off the story. The version covers the shape above, so a reader that pins to a version never misreads a newer row.
+It is declared, never inferred: a row with no `propsMap` key has no mapping at all, an empty `props` dictionary declares that the node was read and no property of it has a prop counterpart — its axes are the content a consumer passes or the viewport the layout draws — and a property or an option the mapping does not name has no declared counterpart, so read that one off the story. The version covers the shape above, so a reader that pins to a version never misreads a newer row.
 
 ## Steps
 

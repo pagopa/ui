@@ -1,6 +1,6 @@
 import { implementationOrder, type SnapshotDelta } from "../snapshot.ts"
 import { deltaWorkSet } from "../work-set.ts"
-import { requestPointer } from "../config.ts"
+import { issuePointers } from "../config.ts"
 import type { DeviceStats } from "../devices.ts"
 import type { SurfacePending, SurfaceStats, SurfaceUncensused } from "../surface.ts"
 import type { InventoryNode, Registry } from "../../schemas/catalogue.ts"
@@ -44,19 +44,16 @@ export function renderCataloguePlan(input: {
   surfaceWaiting: SurfacePending[]
   surfaceUncensused: SurfaceUncensused[]
   deviceStats: DeviceStats | null
-  /** The configured request folder: a note pointing elsewhere holds no pointer. */
-  requests: string
 }): string {
   const snapshot = input.live ?? input.committed
   const selected = new Set(deltaWorkSet(input.delta, input.entries))
-  const designRequest = requestPointer(input.requests)
   const pending = Object.entries(input.entries)
     .filter(([, entry]) => entry.status === "pending")
     .map(([nodeId, entry]) => ({
       nodeId,
       name: snapshot.find((node) => node.nodeId === nodeId)?.name ?? null,
       target: entry.target?.export ?? null,
-      designRequests: [...new Set(entry.note?.match(designRequest) ?? [])],
+      designRequests: issuePointers(entry.note),
     }))
     .sort((left, right) => left.nodeId.localeCompare(right.nodeId, undefined, { numeric: true }))
   const delta = Object.fromEntries(

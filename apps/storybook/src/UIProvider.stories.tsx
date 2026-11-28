@@ -8,6 +8,7 @@ import { Breadcrumb } from "@/components/navigation/breadcrumb"
 import { Footer } from "@/components/navigation/footer"
 import { Pagination } from "@/components/navigation/pagination"
 import { Dialog } from "@/components/overlays/dialog"
+import { Popover } from "@/components/overlays/popover"
 import { Button } from "@/components/primitives/button"
 import { UIProvider, enMessages, itMessages, type LinkComponentProps } from "@/lib/ui-provider"
 
@@ -35,7 +36,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "One provider for the library contexts. `linkComponent` makes every navigation link render through the application's own link component, so a client router keeps its client-side transitions; without a provider the links are plain anchors.",
+          "One provider for the library contexts. `linkComponent` makes every navigation link render through the application's own link component, so a client router keeps its client-side transitions; without a provider the links are plain anchors. `className` and `style` theme the root the token variables are published on, and the `--*` declarations and class reach the overlays too, which mount outside the provider's branch.",
       },
     },
   },
@@ -153,5 +154,58 @@ export const PartialOverride: Story = {
     await expect(
       canvas.getByRole("button", { name: itMessages.pagination.nextLabel }),
     ).toBeVisible()
+  },
+}
+
+// A theme scope is a class plus the variables it declares, as an application
+// would ship it: the values are arbitrary here, only their reach is asserted.
+const OUTER_THEME = { "--pui-primary": "rgb(0, 0, 1)" }
+const INNER_THEME = { "--pui-primary": "rgb(0, 0, 2)" }
+
+export const ThemeScope: Story = {
+  name: "ThemeScope",
+  render: () => (
+    <UIProvider className="demo-outer" style={OUTER_THEME}>
+      <UIProvider className="demo-inner" style={INNER_THEME}>
+        <div className="pui:grid pui:gap-8">
+          <Dialog trigger={<Button>Apri</Button>} title="Dettagli">
+            <Pagination currentPage={1} totalPages={3} onPageChange={fn()} />
+          </Dialog>
+          <Popover
+            label="Informazione contestuale"
+            trigger={<Button variant="outline">Apri popover</Button>}
+          >
+            <p>Contenuto collegato al trigger.</p>
+          </Popover>
+        </div>
+      </UIProvider>
+    </UIProvider>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const inner = canvasElement.querySelector<HTMLElement>(".demo-inner")
+
+    // The scope is declared on the root the tokens publish on, alongside the
+    // classes the stylesheet needs.
+    await expect(inner).not.toBeNull()
+    await expect(inner).toHaveClass("pagopa-ui-root")
+    await expect(inner?.style.getPropertyValue("--pui-primary")).toBe("rgb(0, 0, 2)")
+
+    await userEvent.click(canvas.getByRole("button", { name: "Apri" }))
+    const dialog = await screen.findByRole("dialog", { name: "Dettagli" })
+    await waitFor(() => expect(dialog).toBeVisible())
+
+    // The dialog leaves the provider's branch, so the scope must be repeated on
+    // the portal root: the innermost provider wins, as it does in the tree.
+    const scope = document.querySelector<HTMLElement>("[data-pagopa-ui-portal-root]")
+    await expect(scope).not.toBeNull()
+    await expect(scope).toHaveClass("pagopa-ui-root", "demo-inner")
+    await expect(scope).not.toHaveClass("demo-outer")
+    await expect(scope?.style.getPropertyValue("--pui-primary")).toBe("rgb(0, 0, 2)")
+
+    // And the declaration cascades into the portalled subtree.
+    await expect(window.getComputedStyle(dialog).getPropertyValue("--pui-primary").trim()).toBe(
+      "rgb(0, 0, 2)",
+    )
   },
 }

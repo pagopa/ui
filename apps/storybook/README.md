@@ -7,10 +7,6 @@ the Figma alignment surfaces, built into one static site.
 pnpm nx run pagopa-ui-storybook:build     # writes apps/storybook/dist
 ```
 
-The build passes `--stats-json` so it also writes `dist/preview-stats.json`: the
-module graph Chromatic's TurboSnap traces `--only-changed` through. The deploy
-publishes it beside the site, unused by a reader.
-
 The stories live here, next to the Storybook configuration that renders them;
 they import the design system through the `@/` alias (`packages/pagopa-ui/src`)
 and the generated data through its packages. `check:catalogue` follows those imports

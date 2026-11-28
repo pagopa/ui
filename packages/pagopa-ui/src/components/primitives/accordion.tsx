@@ -3,7 +3,6 @@
 import { Accordion as AccordionPrimitive } from "@base-ui/react/accordion"
 import { cn } from "@/lib/cn"
 import { Down as ChevronDown, Up as ChevronUp } from "@/components/icons/generated/chevron"
-import { Icon } from "@/components/icons/icon"
 
 function Accordion({ className, ...props }: AccordionPrimitive.Root.Props) {
   return (
@@ -31,21 +30,19 @@ function AccordionTrigger({ className, children, ...props }: AccordionPrimitive.
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
-          "group/accordion-trigger pui:relative pui:flex pui:flex-1 pui:items-start pui:justify-between pui:rounded-lg pui:border pui:border-transparent pui:py-2.5 pui:text-left pui:text-body-sb pui:transition-all pui:outline-none pui:hover:underline pui:focus-visible:border-ring pui:focus-visible:ring-3 pui:focus-visible:ring-ring/50 pui:focus-visible:after:border-ring pui:aria-disabled:pointer-events-none pui:aria-disabled:opacity-50",
+          "group/accordion-trigger pui:relative pui:flex pui:flex-1 pui:items-start pui:justify-between pui:rounded-lg pui:border pui:border-transparent pui:py-2.5 pui:text-left pui:text-body-sb pui:transition-all pui:outline-none pui:hover:underline pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring pui:aria-disabled:pointer-events-none pui:aria-disabled:opacity-50",
           className,
         )}
         {...props}
       >
         {children}
-        <Icon
+        <ChevronDown
           data-slot="accordion-trigger-icon"
-          source={ChevronDown}
           size={24}
           className="pui:ml-auto pui:pointer-events-none pui:text-primary pui:group-aria-expanded/accordion-trigger:hidden"
         />
-        <Icon
+        <ChevronUp
           data-slot="accordion-trigger-icon"
-          source={ChevronUp}
           size={24}
           className="pui:ml-auto pui:pointer-events-none pui:hidden pui:text-primary pui:group-aria-expanded/accordion-trigger:inline"
         />

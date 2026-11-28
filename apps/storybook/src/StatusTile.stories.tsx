@@ -3,7 +3,6 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { StatusTile } from "@/components/content/status-tile"
 import { Tag } from "@/components/content/tag"
-import { Icon } from "@/components/icons/icon"
 import { Default as MarkEmailReadIcon } from "@/components/icons/generated/mark-email-read"
 import { Default as NotificationsActiveIcon } from "@/components/icons/generated/notifications-active"
 import { Default as SendIcon } from "@/components/icons/generated/send"
@@ -14,7 +13,7 @@ const meta = {
   title: "Components/Content/StatusTile",
   component: StatusTile,
   args: {
-    channel: <Icon source={SendIcon} />,
+    channel: <SendIcon />,
     title: "SEND",
     tag: <Tag status="default">In attesa</Tag>,
     children: "Invio previsto dopo la validazione della comunicazione.",
@@ -42,12 +41,12 @@ type Story = StoryObj<typeof meta>
 export const Playground: Story = {}
 
 export const Orientations: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
     <div className="pui:grid pui:w-[min(36rem,calc(100vw-2rem))] pui:gap-3">
       <StatusTile
-        channel={<Icon source={MarkEmailReadIcon} />}
+        channel={<MarkEmailReadIcon />}
         title="Piattaforma pagoPA"
         tag={<Tag status="success">Attivo</Tag>}
       >
@@ -55,7 +54,7 @@ export const Orientations: Story = {
       </StatusTile>
       <StatusTile
         orientation="vertical"
-        channel={<Icon source={NotificationsActiveIcon} />}
+        channel={<NotificationsActiveIcon />}
         title="Piattaforma Notifiche"
         tag={<Tag status="warning">Limitato</Tag>}
       >

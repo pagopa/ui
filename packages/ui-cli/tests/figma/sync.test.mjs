@@ -104,20 +104,20 @@ function fixture(run, overrides = {}) {
             encoding: "utf8",
             env: fixtureEnvironment(root, { PAGOPA_UI_STORIES_ROOT: "src/stories" }),
           })
-        const forwarded = args.filter((arg) => !["--write", "--triage", "--plan"].includes(arg))
+        const forwarded = args.filter((arg) => !["--write", "triage", "--plan"].includes(arg))
         if (args.includes("--plan") && !args.includes("--input")) {
           forwarded.push("--input", "src/catalog/figma/inventory.json")
         }
-        if (args.includes("--plan") && (args.includes("--triage") || args.includes("--write"))) {
+        if (args.includes("--plan") && (args.includes("triage") || args.includes("--write"))) {
           const plan = invoke(["figma", "plan"], forwarded)
-          const command = args.includes("--triage") ? ["figma", "triage"] : ["update", "inventory"]
+          const command = args.includes("triage") ? ["figma", "triage"] : ["update", "inventory"]
           const mutation = invoke(command, forwarded)
           return { ...plan, status: mutation.status, stderr: mutation.stderr }
         }
         const command =
           args.includes("--write") || args.includes("--pr-body") || args.includes("--delta")
             ? ["update", "inventory"]
-            : args.includes("--triage")
+            : args.includes("triage")
               ? ["figma", "triage"]
               : args.includes("--plan")
                 ? ["figma", "plan"]
@@ -583,7 +583,7 @@ test("a note past the limit is reported, not gated", () => {
 test("a drift refresh regenerates the story titles map", () => {
   fixture(
     ({ check, read }) => {
-      const refresh = check("--triage", "--input", "live.json")
+      const refresh = check("triage", "--input", "live.json")
       assert.equal(refresh.status, 0, refresh.stderr)
       assert.deepEqual(JSON.parse(read("src/catalog/figma/story-titles.json")), {
         "src/stories/Fixture.stories.tsx": "Fixture",
@@ -623,7 +623,7 @@ test("a drift refresh regenerates the story titles map", () => {
 test("a queued delta node needs no review attestation", () => {
   fixture(
     ({ check, read }) => {
-      const refresh = check("--triage", "--input", "live.json")
+      const refresh = check("triage", "--input", "live.json")
       assert.equal(refresh.status, 0, refresh.stderr)
       const entry = JSON.parse(read("src/catalog/figma/registry.json")).entries["1:1"]
       assert.equal(entry.status, "pending")
@@ -847,7 +847,7 @@ test("an icon rename preserves its node-keyed public alias and source approval",
     ({ check, read, write }) => {
       assert.equal(check().status, 0)
 
-      const renamed = check("--triage", "--input", "live.json", "--plan")
+      const renamed = check("triage", "--input", "live.json", "--plan")
       assert.equal(renamed.status, 0, renamed.stderr)
       const plan = JSON.parse(renamed.stdout)
       assert.deepEqual(plan.renamed, ["1:1"])
@@ -865,7 +865,7 @@ test("an icon rename preserves its node-keyed public alias and source approval",
           { ...glyph, name: "Renamed source glyph", pageId: "2:0", pageName: "Moved catalogue" },
         ]),
       )
-      const moved = check("--triage", "--input", "live.json", "--plan")
+      const moved = check("triage", "--input", "live.json", "--plan")
       assert.equal(moved.status, 0, moved.stderr)
       assert.deepEqual(JSON.parse(moved.stdout).moved, ["1:1"])
       assert.deepEqual(JSON.parse(moved.stdout).implementationOrder, [])
@@ -928,7 +928,7 @@ test("an internal design dependency change is detected and queues the dependent 
     ({ check, read }) => {
       assert.equal(check().status, 0)
 
-      const refresh = check("--triage", "--input", "live.json")
+      const refresh = check("triage", "--input", "live.json")
       assert.equal(refresh.status, 0, refresh.stderr)
       const queued = JSON.parse(read("src/catalog/figma/registry.json"))
       assert.equal(queued.entries["1:1"].status, "pending")
@@ -997,12 +997,12 @@ test("the plan separates the standing pending queue and triage records the file 
           nodeId: "1:1",
           name: "Control",
           target: "Control",
-          designRequests: ["docs/design-requests/2026-10-21-control.md"],
+          designRequests: ["https://github.com/acme/ui/issues/42"],
         },
       ])
       assert.deepEqual(parsed.implementationOrder, ["1:1"])
 
-      const triage = check("--triage", "--input", "live.json")
+      const triage = check("triage", "--input", "live.json")
       assert.equal(triage.status, 0, triage.stderr)
       const inventory = JSON.parse(read("src/catalog/figma/inventory.json"))
       assert.equal(inventory.fileVersion, "v-test")
@@ -1020,7 +1020,7 @@ test("the plan separates the standing pending queue and triage records the file 
           "1:1": {
             status: "pending",
             target: { module: "src/components/primitives/control.tsx", export: "Control" },
-            note: "Blocked by docs/design-requests/2026-10-21-control.md",
+            note: "Blocked by https://github.com/acme/ui/issues/42",
           },
         },
       }),
@@ -1094,7 +1094,7 @@ test("invalid or duplicate live nodes fail without changing either committed fil
       ({ check, read }) => {
         const inventory = read("src/catalog/figma/inventory.json")
         const registry = read("src/catalog/figma/registry.json")
-        const result = check("--triage", "--input", "live.json")
+        const result = check("triage", "--input", "live.json")
         assert.equal(result.status, 1)
         assert.match(result.stderr, /duplicate|invalid/)
         assert.equal(read("src/catalog/figma/inventory.json"), inventory)
@@ -1110,7 +1110,7 @@ test("a registry validation failure never persists a proposed triage", () => {
     ({ check, read }) => {
       const inventory = read("src/catalog/figma/inventory.json")
       const registry = read("src/catalog/figma/registry.json")
-      const result = check("--triage", "--input", "live.json")
+      const result = check("triage", "--input", "live.json")
       assert.equal(result.status, 1)
       assert.match(result.stderr, /invalid status/)
       assert.equal(read("src/catalog/figma/inventory.json"), inventory)
@@ -1463,7 +1463,7 @@ test("triage queues changed nodes, their dependents and new bulk-page nodes in d
   })
   fixture(
     ({ check, read }) => {
-      const result = check("--triage", "--input", "live.json")
+      const result = check("triage", "--input", "live.json")
       assert.equal(result.status, 0, result.stderr)
       const registry = JSON.parse(read("src/catalog/figma/registry.json"))
       for (const id of ["1:1", "1:2", "1:3"]) assert.equal(registry.entries[id]?.status, "pending")
@@ -1521,7 +1521,7 @@ test("refresh preserves mocked demos without queueing them for review", () => {
   }
   const target = { module: "src/components/templates/demo.tsx", export: "Demo" }
   const note = "Demo shell only; outside production and coverage"
-  for (const mode of ["--triage", "--write"]) {
+  for (const mode of ["triage", "--write"]) {
     fixture(
       ({ check, read }) => {
         const refreshed = check(mode, "--input", "live.json", "--plan")
@@ -1956,7 +1956,7 @@ test("renaming a page never breaks a page-ID exclusion rule", () => {
 })
 
 test("a metadata-only input cannot downgrade a complete design baseline", () => {
-  for (const mode of ["--write", "--triage"]) {
+  for (const mode of ["--write", "triage"]) {
     fixture(
       ({ check, read, write }) => {
         const baseline = check("--write", "--input", "live.json")
@@ -2019,7 +2019,7 @@ test("an export from a different Figma file cannot replace the inventory", () =>
   fixture(
     ({ check, read }) => {
       const inventory = read("src/catalog/figma/inventory.json")
-      const result = check("--triage", "--input", "live.json")
+      const result = check("triage", "--input", "live.json")
       assert.equal(result.status, 1)
       assert.match(result.stderr, /file key/i)
       assert.equal(read("src/catalog/figma/inventory.json"), inventory)
@@ -2037,7 +2037,7 @@ test("the hermetic check rejects a tampered canonical contract", () => {
     const result = check()
     assert.equal(result.status, 1)
     assert.match(result.stderr, /contract fingerprint/i)
-    assert.match(result.stderr, /pnpm ui-cli update inventory --triage/)
+    assert.match(result.stderr, /pnpm ui-cli update inventory`/)
     assert.match(result.stderr, /pnpm nx run pagopa-ui:check:catalogue/)
   })
 })
@@ -2053,7 +2053,7 @@ test("invalid property defaults and dependency identities are never persisted", 
     fixture(
       ({ check, read }) => {
         const inventory = read("src/catalog/figma/inventory.json")
-        const result = check("--triage", "--input", "live.json")
+        const result = check("triage", "--input", "live.json")
         assert.equal(result.status, 1, JSON.stringify(item))
         assert.equal(read("src/catalog/figma/inventory.json"), inventory)
       },
@@ -2065,7 +2065,7 @@ test("invalid property defaults and dependency identities are never persisted", 
 test("--delta writes the machine-readable delta next to the review body", () => {
   fixture(
     ({ check, read }) => {
-      const result = check("--input", "live.json", "--triage", "--delta", "delta.json", "--plan")
+      const result = check("--input", "live.json", "triage", "--delta", "delta.json", "--plan")
       assert.equal(result.status, 0, result.stderr)
       const delta = JSON.parse(read("delta.json"))
       assert.match(delta.generatedAt, /^\d{4}-\d{2}-\d{2}T/)
@@ -2129,10 +2129,106 @@ test("the review body lists the artifacts and the handoff", () => {
       assert.match(body, /## Artifacts/)
       assert.match(body, /`delta\.json`/)
       assert.match(body, /`run\.json`/)
+      assert.match(body, /## Rules and comments/)
+      assert.match(body, /1 new · 0 stale · 0 removed · 1 consolidated in the ledger/)
+      assert.match(body, /A new or stale card needs `pnpm ui-cli figma rules mark/)
+      assert.match(body, /comments: 1 threads, 1 open/)
+      assert.match(body, /`rules-plan\.txt`/)
+      assert.match(body, /`comments\.txt`/)
       assert.match(body, /## Handoff and metrics/)
       assert.match(body, /docs\/figma-drift-handoff\.md/)
       assert.doesNotMatch(body, /!\[/)
       assert.doesNotMatch(body, /evidence/)
+    },
+    {
+      "src/catalog/figma/registry.json": JSON.stringify({
+        bulkRules: [],
+        entries: {
+          "1:1": {
+            status: "implemented",
+            target: {
+              module: "src/components/primitives/control.tsx",
+              export: "Control",
+              story: "src/stories/Fixture.stories.tsx",
+              storyExports: ["Example"],
+            },
+          },
+        },
+      }),
+      "src/components/primitives/control.tsx":
+        "export function Control() { return <button>Control</button> }",
+      "src/stories/Fixture.stories.tsx":
+        'import { Control } from "@/components/primitives/control"\nimport { figmaEmbedUrl } from "@/catalog/figma/file"\nexport default { title: "Fixture", component: Control, parameters: { design: { type: "figma", url: figmaEmbedUrl("1:1") } } }\nexport const Example = {}',
+      "live.json": JSON.stringify([
+        {
+          ...node,
+          properties: {
+            Size: { type: "VARIANT", defaultValue: "Large", variantOptions: ["Small", "Large"] },
+          },
+        },
+      ]),
+      // The `.Regole` boxes and the comments are outside the design fingerprint,
+      // so the body can only name them by reading them: one card the ledger never
+      // consolidated, and one thread still open.
+      "src/catalog/figma/rules.json": JSON.stringify({
+        schemaVersion: 1,
+        fileKey: "fixture",
+        cards: {},
+      }),
+      ".figma/rules.json": JSON.stringify({
+        fileKey: "fixture",
+        version: "1",
+        fetchedAt: "2026-01-01T00:00:00Z",
+        pages: [
+          {
+            pageId: "1:0",
+            pageName: "Page",
+            containers: [
+              {
+                nodeId: "1:1",
+                cards: [
+                  {
+                    nodeId: "2:2",
+                    title: "Card",
+                    body: "Testo",
+                    status: "approved",
+                    section: null,
+                    placeholder: false,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      }),
+      ".figma/comments.json": JSON.stringify({
+        fileKey: "fixture",
+        version: "1",
+        fetchedAt: "2026-01-01T00:00:00Z",
+        threads: [
+          {
+            id: "c1",
+            nodeId: "1:1",
+            author: "Ada",
+            createdAt: "2026-01-01T00:00:00Z",
+            resolvedAt: null,
+            message: "Ciao",
+            replies: [],
+          },
+        ],
+      }),
+    },
+  )
+})
+
+test("the review body leaves the rules section out when there is nothing to read", () => {
+  fixture(
+    ({ check, read }) => {
+      const result = check("--pr-body", "pr-body.md", "--input", "live.json")
+      assert.equal(result.status, 0, result.stderr)
+      const body = read("pr-body.md")
+      assert.doesNotMatch(body, /## Rules and comments/)
+      assert.doesNotMatch(body, /consolidated in the ledger/)
     },
     {
       "src/catalog/figma/registry.json": JSON.stringify({

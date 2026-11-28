@@ -14,9 +14,12 @@ width.
 - `aria-current="true"` marks the selected position. The dot is the button, so
   nothing decorative is duplicated in the accessibility tree.
 - The visible dot keeps the source box and the row keeps its height: the pointer
-  target comes from an invisible vertical expansion, never from inflating the row.
-  The horizontal target is the dot itself, because a wider expansion would overlap
-  the neighbouring control; that constraint is an open question for the design
-  owner (`docs/design-requests/2026-10-23-carousel-stepper-target-size.md`).
+  target comes from an invisible expansion of the dot, never from inflating the
+  row. The dots sit on a 16px gap, so their centres are 24px apart and a 24x24
+  target fits between two neighbours without overlapping either — WCAG 2.5.8 at
+  the smallest change it allows. The source draws an 8px gap, which leaves 16px
+  between centres and no room for the rule; the resolution and the alternatives
+  are recorded in
+  `https://github.com/pagopa/ui/issues/44`.
 - The width, height and background transition animates the selection and is
   removed under reduced motion.

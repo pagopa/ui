@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, fn, screen, userEvent, waitFor, within } from "storybook/test"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as CancelIcon } from "@/components/icons/generated/cancel"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
@@ -72,7 +71,7 @@ export const SourcePanel: Story = {
         // artwork, so the fixture uses the design system's own icon; the public
         // `icon` prop paints any component it receives with the destructive
         // colour.
-        leading: <Icon source={CancelIcon} size={24} />,
+        leading: <CancelIcon size={24} />,
         destructive: true,
         onSelect: () => undefined,
       },

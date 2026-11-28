@@ -1,5 +1,7 @@
 "use client"
 
+import type * as React from "react"
+
 import { cn } from "@/lib/cn"
 
 // Source marker glyph ("Ellipse 1", PinPoint set 920:7219): a 32×40.67 teardrop
@@ -8,7 +10,7 @@ import { cn } from "@/lib/cn"
 const markerPath =
   "M44 27.3333C44 40.1699 28 52 28 52C28 52 12 40.1699 12 27.3333C12 18.4968 19.1634 11.3333 28 11.3333C36.8366 11.3333 44 18.4968 44 27.3333Z"
 
-export interface PinPointProps {
+export interface PinPointProps extends Omit<React.ComponentProps<"button">, "children"> {
   /** Accessible name of the marker. */
   label: string
   /** Horizontal position on the map, as a percentage. @default 50 */
@@ -33,17 +35,25 @@ function PinPoint({
   variant = "default",
   children,
   onPressedChange,
+  className,
+  ref,
+  ...props
 }: PinPointProps) {
   const isPlaceholder = variant === "placeholder"
   return (
     <button
+      ref={ref}
       type="button"
       data-slot="pin-point"
       aria-label={label}
       aria-pressed={active}
       onClick={() => onPressedChange?.(!active)}
       style={{ left: `${x}%`, top: `${y}%` }}
-      className="pui:absolute pui:grid pui:size-11 pui:-translate-x-1/2 pui:-translate-y-1/2 pui:place-items-center pui:rounded-full pui:outline-none pui:focus-visible:ring-4 pui:focus-visible:ring-primary/30"
+      {...props}
+      className={cn(
+        "pui:absolute pui:grid pui:size-11 pui:-translate-x-1/2 pui:-translate-y-1/2 pui:place-items-center pui:rounded-full pui:outline-none pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring",
+        className,
+      )}
     >
       {variant === "numbered" ? (
         <span

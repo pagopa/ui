@@ -1,7 +1,7 @@
 # Paths read by the figma-to-code skill (.agents/skills/figma-to-code) and by
 # the package scripts. The design-system keys are relative to this package; the
 # artwork keys carry the workspace prefix because the artwork lives in its own
-# package; `design.requests` is the one key relative to the workspace root.
+# package.
 # `pnpm nx run pagopa-ui:docs` fails when a committed path below is missing; the
 # `.figma/` paths are local, git-ignored exports of this package.
 figma:
@@ -25,10 +25,9 @@ catalog:
   apiExceptions: src/catalog/figma/api-exceptions.json
   evidenceExceptions: src/catalog/figma/evidence-exceptions.json
   inventoryStory: apps/storybook/src/FigmaInventory.stories.tsx
-# The folder the skill writes a design request to when a node has an open
-# question for the Figma design owner.
+# The design-owner values the readers resolve. Where a design request lives is
+# not here: it is the issue tracker, so a note names an issue URL.
 design:
-  requests: docs/design-requests
   # GitHub handles that answer the design questions. One list for the whole
   # design system; add a handle when a second owner joins.
   owners:

@@ -5,8 +5,12 @@ import { boolArg, stringArg } from "./args.ts"
 import { action, printJson, type CliContext } from "./context.ts"
 
 function printRecord(ctx: CliContext, result: Awaited<ReturnType<typeof record>>): void {
+  // A run that changed nothing says `unchanged`, and the documents decide it:
+  // a prop map alone can change while the status it is recorded beside does not,
+  // and a status comparison would call that write a no-op.
+  const outcome = result.dryRun ? "dry run" : result.artifacts.length ? "updated" : "unchanged"
   ctx.io.out(
-    `${result.dryRun ? "dry run" : result.before?.status === result.entry.status ? "unchanged" : "updated"}: ${result.nodeId} ${result.before?.status ?? "unmapped"} → ${result.entry.status}`,
+    `${outcome}: ${result.nodeId} ${result.before?.status ?? "unmapped"} → ${result.entry.status}`,
   )
   for (const warning of result.warnings) ctx.io.err(`warn: ${warning}`)
   if (result.dryRun) return
@@ -36,6 +40,10 @@ export function recordCommand(ctx: CliContext) {
       "story-exports": stringArg,
       note: stringArg,
       reason: stringArg,
+      props: {
+        ...stringArg,
+        description: "The Figma property → prop mapping, as JSON keyed by property name",
+      },
       "dry-run": boolArg,
       json: boolArg,
     },
@@ -49,6 +57,7 @@ export function recordCommand(ctx: CliContext) {
         storyExports: args["story-exports"],
         note: args.note,
         reason: args.reason,
+        props: args.props,
         dryRun: args["dry-run"],
       })
       if (args.json) printJson(ctx.io, result)

@@ -40,3 +40,21 @@ export const ConsumerDxExceptionsSchema = z.strictObject({
 })
 
 export type ConsumerDxRule = (typeof CONSUMER_DX_RULES)[number]
+
+// The slot rules a public root can be exempted from: the stamp is missing, or
+// it is there under a name the contract does not recognise.
+export const DATA_SLOT_RULES = ["root-slot", "slot-name"] as const
+
+export const DataSlotExceptionsSchema = z.strictObject({
+  schemaVersion: z.literal(1),
+  note: z.string().optional(),
+  exceptions: z.array(
+    z.strictObject({
+      component: NonEmptyStringSchema,
+      rule: z.enum(DATA_SLOT_RULES),
+      reason: NonEmptyStringSchema,
+    }),
+  ),
+})
+
+export type DataSlotRule = (typeof DATA_SLOT_RULES)[number]

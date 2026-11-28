@@ -2,13 +2,13 @@
 
 import * as React from "react"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as ContentCopyIcon } from "@/components/icons/generated/content-copy"
-import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
+import { PictogramFigure } from "@/components/icons/pictogram-figure"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
 import { StatePanel, type StateProps } from "./state-panel"
+import { maintenance } from "pagopa-ui-artwork/pictograms/maintenance"
 
 /** Props of the negative outcome state, plus the optional error-code row. */
 export type ErrorStateProps = Omit<StateProps, "extra"> & {
@@ -40,6 +40,7 @@ function ErrorState({
   copyErrorLabel: copyErrorLabelProp,
   onCopy,
   className,
+  ref,
   ...props
 }: ErrorStateProps) {
   const t = useMessages("errorState")
@@ -68,7 +69,9 @@ function ErrorState({
 
   return (
     <StatePanel
+      data-slot="error-state"
       {...props}
+      ref={ref}
       actionsClassName="pui:mx-auto pui:w-full pui:max-w-(--pui-state-width) pui:flex-col pui:flex-nowrap pui:items-center pui:gap-6"
       className={cn("pui:w-full pui:max-w-none", className)}
       contentClassName="pui:w-full pui:max-w-none pui:tablet-md:max-w-(--pui-state-width)"
@@ -91,7 +94,7 @@ function ErrorState({
               data-slot="ko-error-code-copy"
               className="pui:grid pui:size-11 pui:shrink-0 pui:place-items-center pui:rounded-md pui:text-primary pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
             >
-              <Icon source={ContentCopyIcon} />
+              <ContentCopyIcon />
             </button>
             <output aria-live="polite" className="pui:sr-only">
               {copyState === "copied" ? copiedLabel : ""}
@@ -106,10 +109,10 @@ function ErrorState({
       }
       icon={
         <div aria-hidden="true">
-          <PagoPAPictogram
+          <PictogramFigure
+            asset={maintenance}
             background="light"
             className="pui:grid pui:size-14 pui:place-items-center"
-            name="Maintenance"
             size={56}
           />
         </div>

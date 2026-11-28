@@ -2,9 +2,8 @@
 
 import * as React from "react"
 import { cn } from "@/lib/cn"
-import { useMessages } from "@/lib/ui-provider"
+import { useLocale, useMessages } from "@/lib/ui-provider"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
 
 import { progressPercentage } from "./progress-kpi-utils"
@@ -63,12 +62,12 @@ function KpiFooter({
       <span className="pui:text-label-mini pui:text-foreground">
         / {total.toLocaleString(locale)}
       </span>
-      {completed ? <Icon source={CheckCircleIcon} size={16} className="pui:text-success" /> : null}
+      {completed ? <CheckCircleIcon size={16} className="pui:text-success" /> : null}
     </div>
   )
 }
 
-export interface ProgressKpiProps {
+export interface ProgressKpiProps extends Omit<React.ComponentProps<"section">, "children"> {
   label: string
   value: number
   total?: number
@@ -81,7 +80,7 @@ export interface ProgressKpiProps {
   details?: ProgressKpiRow[]
   /** Optional supporting sentence. */
   detail?: string
-  /** BCP 47 locale of the number formatting. @default "it-IT" */
+  /** BCP 47 locale of the number formatting. @default the provider locale */
   locale?: string
 }
 
@@ -94,15 +93,25 @@ function ProgressKpi({
   completed = false,
   details,
   detail,
-  locale = "it-IT",
+  locale: localeProp,
+  className,
+  ref,
+  ...props
 }: ProgressKpiProps) {
   const t = useMessages("progressKpi")
+  const { locale: providerLocale } = useLocale()
+  const locale = localeProp ?? providerLocale
   const percentage = progressPercentage(value, total)
   return (
     <section
+      ref={ref}
       aria-label={label}
       data-slot="progress-kpi"
-      className="pui:grid pui:gap-3 pui:rounded-3xl pui:border pui:bg-background pui:p-6"
+      className={cn(
+        "pui:grid pui:gap-3 pui:rounded-3xl pui:border pui:bg-background pui:p-6",
+        className,
+      )}
+      {...props}
     >
       <header data-slot="progress-kpi-header" className="pui:flex pui:items-center pui:gap-2">
         {channel ? (

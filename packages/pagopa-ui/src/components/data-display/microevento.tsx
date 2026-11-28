@@ -4,7 +4,7 @@ import { cn } from "@/lib/cn"
 import { CorrectionTag } from "@/components/content"
 
 /** Props of the timeline micro-event. */
-export interface MicroEventProps {
+export interface MicroEventProps extends Omit<React.ComponentProps<"div">, "children" | "title"> {
   title: React.ReactNode
   time?: string
   /** Source correction slot: warning "EVENTO NON VALIDO" or success "EVENTO RETTIFICATO". */
@@ -19,11 +19,21 @@ export interface MicroEventProps {
  *
  * Figma: Microevento (node 9676:5633)
  */
-function MicroEvent({ title, time, invalid = true, label, className }: MicroEventProps) {
+function MicroEvent({
+  title,
+  time,
+  invalid = true,
+  label,
+  className,
+  ref,
+  ...props
+}: MicroEventProps) {
   return (
     <div
-      data-slot="microevento"
+      ref={ref}
+      data-slot="micro-event"
       className={cn("pui:flex pui:items-start pui:py-2 pui:pl-7", className)}
+      {...props}
     >
       <div className="pui:flex pui:min-w-0 pui:flex-col pui:gap-1">
         {invalid ? (

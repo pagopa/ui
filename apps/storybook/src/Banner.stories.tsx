@@ -3,7 +3,6 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
 import { Banner } from "@/components/feedback/banner"
-import { Icon } from "@/components/icons/icon"
 import { Default as EmojiObjectsIcon } from "@/components/icons/generated/emoji-objects"
 import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
 import { Chip } from "@/components/inputs/chips"
@@ -86,7 +85,7 @@ function SourceBannerCase({
       }
       icon={
         tertiary && color !== "grey" ? (
-          <Icon source={EmojiObjectsIcon} size={24} className="pui:text-choice-icon" />
+          <EmojiObjectsIcon size={24} className="pui:text-choice-icon" />
         ) : undefined
       }
       pictogram={

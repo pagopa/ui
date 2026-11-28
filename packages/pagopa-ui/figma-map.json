@@ -1273,7 +1273,11 @@
       "unexported": [
         "Checkbox"
       ],
-      "story": "components-checkbox--source-default"
+      "story": "components-checkbox--source-default",
+      "propsMap": {
+        "version": 1,
+        "props": {}
+      }
     },
     "194:3661": {
       "figma": "CheckboxWithLabel",
@@ -1305,7 +1309,29 @@
         "RadioField",
         "RadioGroup"
       ],
-      "story": "components-inputs-radiofield--rich-radio-options"
+      "story": "components-inputs-radiofield--rich-radio-options",
+      "propsMap": {
+        "version": 1,
+        "props": {
+          "Available": {
+            "prop": "disabled",
+            "values": {
+              "No": true,
+              "Yes": false
+            }
+          },
+          "Skeleton": {
+            "prop": "loading",
+            "values": {
+              "No": false,
+              "Icon + Title": true,
+              "Icon + Title + Description": true,
+              "Title": true,
+              "Title + Description": true
+            }
+          }
+        }
+      }
     },
     "194:3763": {
       "figma": "CheckboxGroup",
@@ -1490,7 +1516,35 @@
       "exports": [
         "Banner"
       ],
-      "story": "components-feedback-banner--dismissable"
+      "story": "components-feedback-banner--dismissable",
+      "propsMap": {
+        "version": 1,
+        "props": {
+          "Color": {
+            "prop": "color",
+            "values": {
+              "Grey": "grey",
+              "Primary": "primary",
+              "White": "white"
+            }
+          },
+          "Hierarchy": {
+            "prop": "hierarchy",
+            "values": {
+              "Primary": "primary",
+              "Secondary": "secondary",
+              "Tertiary": "tertiary"
+            }
+          },
+          "Direction": {
+            "prop": "direction",
+            "values": {
+              "Horizontal": "horizontal",
+              "Vertical": "vertical"
+            }
+          }
+        }
+      }
     },
     "295:1360": {
       "figma": "Switch",
@@ -1500,7 +1554,26 @@
       "exports": [
         "SwitchField"
       ],
-      "story": "components-inputs-switchfield--source-start-placement"
+      "story": "components-inputs-switchfield--source-start-placement",
+      "propsMap": {
+        "version": 1,
+        "props": {
+          "Checked": {
+            "prop": "checked",
+            "values": {
+              "False": false,
+              "True": true
+            }
+          },
+          "Enable": {
+            "prop": "disabled",
+            "values": {
+              "False": true,
+              "True": false
+            }
+          }
+        }
+      }
     },
     "329:1629": {
       "figma": "SavingMoney",
@@ -2131,7 +2204,26 @@
       "exports": [
         "SwitchField"
       ],
-      "story": "components-inputs-switchfield--source-switches"
+      "story": "components-inputs-switchfield--source-switches",
+      "propsMap": {
+        "version": 1,
+        "props": {
+          "Checked": {
+            "prop": "checked",
+            "values": {
+              "No": false,
+              "Yes": true
+            }
+          },
+          "Availability": {
+            "prop": "unavailable",
+            "values": {
+              "No": true,
+              "Yes": false
+            }
+          }
+        }
+      }
     },
     "357:4970": {
       "figma": "Snackbar",
@@ -2250,7 +2342,19 @@
       "exports": [
         "TextField"
       ],
-      "story": "components-inputs-textfield--playground"
+      "story": "components-inputs-textfield--playground",
+      "propsMap": {
+        "version": 1,
+        "props": {
+          "* Required": {
+            "prop": "required",
+            "values": {
+              "False": false,
+              "True": true
+            }
+          }
+        }
+      }
     },
     "602:9417": {
       "figma": "Select",
@@ -2261,7 +2365,19 @@
         "MultiSelectField",
         "SelectField"
       ],
-      "story": "components-inputs-selectfield--source-frame"
+      "story": "components-inputs-selectfield--source-frame",
+      "propsMap": {
+        "version": 1,
+        "props": {
+          "*Required": {
+            "prop": "required",
+            "values": {
+              "False": false,
+              "True": true
+            }
+          }
+        }
+      }
     },
     "610:33637": {
       "figma": "Scrollbar",
@@ -2329,7 +2445,11 @@
       "exports": [
         "ProductCard"
       ],
-      "story": "components-data-display-productcard--source-image"
+      "story": "components-data-display-productcard--source-image",
+      "propsMap": {
+        "version": 1,
+        "props": {}
+      }
     },
     "759:6399": {
       "figma": "AccordionItem",
@@ -2359,7 +2479,11 @@
       "exports": [
         "CatalogueCard"
       ],
-      "story": "components-data-display-productcard--source-catalogue-card"
+      "story": "components-data-display-productcard--source-catalogue-card",
+      "propsMap": {
+        "version": 1,
+        "props": {}
+      }
     },
     "824:8838": {
       "figma": "Autocomplete",
@@ -2418,7 +2542,11 @@
       "exports": [
         "Dialog"
       ],
-      "story": "components-overlays-dialog--source-case"
+      "story": "components-overlays-dialog--source-case",
+      "propsMap": {
+        "version": 1,
+        "props": {}
+      }
     },
     "1101:3862": {
       "figma": "contacts",
@@ -2508,7 +2636,11 @@
       "exports": [
         "Tabs"
       ],
-      "story": "components-tabs--default"
+      "story": "components-tabs--default",
+      "propsMap": {
+        "version": 1,
+        "props": {}
+      }
     },
     "1154:4493": {
       "figma": "Form Wizard Template",
@@ -2637,7 +2769,11 @@
       "exports": [
         "Table"
       ],
-      "story": "components-data-display-table--source-desktop"
+      "story": "components-data-display-table--source-desktop",
+      "propsMap": {
+        "version": 1,
+        "props": {}
+      }
     },
     "1360:20138": {
       "figma": "Footer",

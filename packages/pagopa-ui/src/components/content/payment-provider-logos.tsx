@@ -1,5 +1,7 @@
 "use client"
 
+import * as React from "react"
+
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
@@ -61,22 +63,22 @@ const pspBrandLogos: Record<PspBrand, { src: string; alt: string }> = {
   vpay: { src: vPayLogo, alt: "vPay" },
 }
 
+// One mark or a list of them: the two shapes render different elements, so each
+// branch inherits the contract of the element it renders.
 type PaymentProviderLogosProps =
-  | {
+  | (Omit<React.ComponentProps<"img">, "src" | "alt"> & {
       brand: PspBrand
       alt?: string
-      className?: string
       providers?: never
       label?: never
-    }
-  | {
+    })
+  | (Omit<React.ComponentProps<"ul">, "children"> & {
       providers: { name: string; logo?: string }[]
       /** Accessible name of the logo list. @default messages.paymentProviderLogos.label */
       label?: string
-      className?: string
       brand?: never
       alt?: never
-    }
+    })
 
 /**
  * Payment service provider marks: one brand logo, or a labelled list of the
@@ -87,22 +89,28 @@ type PaymentProviderLogosProps =
 function PaymentProviderLogos(props: PaymentProviderLogosProps) {
   const t = useMessages("paymentProviderLogos")
   if (props.brand) {
-    const logo = pspBrandLogos[props.brand]
+    const { brand, alt, className, ref, ...rest } = props
+    const logo = pspBrandLogos[brand]
     return (
       <img
-        data-psp-brand={props.brand}
+        {...rest}
+        ref={ref}
+        data-slot="payment-provider-logos"
+        data-psp-brand={brand}
         src={logo.src}
-        alt={props.alt ?? logo.alt}
-        className={cn("pui:size-6 pui:shrink-0", props.className)}
+        alt={alt ?? logo.alt}
+        className={cn("pui:size-6 pui:shrink-0", className)}
       />
     )
   }
 
-  const { providers, label: labelProp, className } = props
+  const { providers, label: labelProp, className, ref, ...rest } = props
   const label = labelProp ?? t.label
 
   return (
     <ul
+      {...rest}
+      ref={ref}
       data-slot="payment-provider-logos"
       aria-label={label}
       className={cn("pui:flex pui:flex-wrap pui:items-center pui:gap-4", className)}

@@ -2,8 +2,8 @@
 
 import type { ComponentProps } from "react"
 import { cn } from "@/lib/cn"
+import { useLocale } from "@/lib/ui-provider"
 import { DayButton, DayPicker, Nav } from "react-day-picker"
-import { it } from "react-day-picker/locale"
 
 export type { DateRange } from "react-day-picker"
 
@@ -25,7 +25,6 @@ export interface CalendarLocale {
   }
 }
 
-import { Icon } from "@/components/icons/icon"
 import {
   Default as ChevronIcon,
   Down as ChevronDownIcon,
@@ -44,12 +43,14 @@ function Calendar({
   className,
   classNames,
   components,
-  locale = it,
+  locale: localeProp,
   showOutsideDays = false,
   weekStartsOn = 0,
   navLayout = "after",
   ...props
 }: ComponentProps<typeof DayPicker>) {
+  const { calendarLocale } = useLocale()
+  const locale = localeProp ?? calendarLocale
   return (
     <DayPicker
       locale={locale}
@@ -81,9 +82,10 @@ function Calendar({
       components={{
         // Month paging is a widget control, not a page navigation landmark.
         Nav: (navProps) => <Nav {...navProps} role="presentation" aria-label={undefined} />,
-        Chevron: ({ orientation, className: iconClassName }) => (
-          <Icon source={chevronByOrientation[orientation ?? "down"]} className={iconClassName} />
-        ),
+        Chevron: ({ orientation, className: iconClassName }) => {
+          const ChevronGlyph = chevronByOrientation[orientation ?? "down"]
+          return <ChevronGlyph className={iconClassName} />
+        },
         DayButton: CalendarDayButton,
         ...components,
       }}

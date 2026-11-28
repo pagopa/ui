@@ -6,13 +6,14 @@ import { forgetCommitted } from "../../records/committed.ts"
 import type { CatalogueReport } from "./index.ts"
 import { formatDeviceLine } from "../devices.ts"
 import { tokenDriftCount } from "../tokens.ts"
+import { readComments } from "../comments.ts"
+import { rulesPlan } from "../rules-workflow.ts"
 import { formatSurfaceLine } from "../surface.ts"
 import {
   renderCatalogueDelta,
   renderCataloguePrBody,
   renderTokenDriftRecord,
 } from "../catalogue-render.ts"
-import { requestsFolder } from "../config.ts"
 import { formatCatalogueSummary, renderCataloguePlan } from "./output.ts"
 import type { CatalogueContext } from "./context.ts"
 
@@ -32,6 +33,34 @@ function writePendingFiles(
   }
 }
 
+// The rules and comments sit outside the design fingerprint, so the review body
+// names them itself: the drift workflow writes the same reads to its artifacts,
+// and a tree without a ledger or a comment snapshot renders nothing rather than
+// promising a section it cannot fill.
+function driftOutsideTheFingerprint(workspace: Workspace) {
+  let rulesDrift
+  try {
+    const report = rulesPlan(workspace)
+    if (report.hasSnapshot)
+      rulesDrift = {
+        new: report.new,
+        stale: report.stale,
+        removed: report.removed,
+        consolidated: report.consolidated,
+      }
+  } catch {
+    rulesDrift = undefined
+  }
+  const comments = readComments(workspace, false)
+  const commentDrift = comments
+    ? {
+        threads: comments.threads.length,
+        open: comments.threads.filter((thread) => !thread.resolvedAt).length,
+      }
+    : undefined
+  return { rulesDrift, commentDrift }
+}
+
 function writePullRequestBody(
   workspace: Workspace,
   context: CatalogueContext,
@@ -41,6 +70,7 @@ function writePullRequestBody(
   const validation = context.validation
   const file = path.resolve(workspace.root, context.prBodyPath)
   fs.mkdirSync(path.dirname(file), { recursive: true })
+  const { rulesDrift, commentDrift } = driftOutsideTheFingerprint(workspace)
   fs.writeFileSync(
     file,
     `${renderCataloguePrBody({
@@ -57,6 +87,8 @@ function writePullRequestBody(
       bulkByPage: validation.bulkByPage,
       entries: validation.entries,
       tokenDrift: context.tokenDrift,
+      rulesDrift,
+      commentDrift,
     })}\n`,
   )
   out.push(`pr body: ${context.prBodyPath}`)
@@ -149,7 +181,6 @@ export function finishCatalogue(context: CatalogueContext, plan: boolean): Catal
         surfaceWaiting: validation.surfaceWaiting,
         surfaceUncensused: validation.surfaceUncensused,
         deviceStats: validation.deviceStats,
-        requests: requestsFolder(workspace),
       }),
     )
     err.push(

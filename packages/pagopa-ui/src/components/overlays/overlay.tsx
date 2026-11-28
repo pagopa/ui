@@ -4,7 +4,7 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-export interface OverlayProps {
+export interface OverlayProps extends Omit<React.ComponentProps<"div">, "children"> {
   visible: boolean
   /** Announced loading text. @default messages.overlay.label */
   label?: string
@@ -19,6 +19,8 @@ function Overlay({
   children,
   showSpinner = true,
   className,
+  ref,
+  ...props
 }: OverlayProps) {
   const t = useMessages("overlay")
   const label = labelProp ?? t.label
@@ -26,6 +28,7 @@ function Overlay({
   if (!visible) return null
   return (
     <div
+      ref={ref}
       data-slot="overlay"
       role="status"
       aria-live="polite"
@@ -33,6 +36,7 @@ function Overlay({
         "pui:absolute pui:inset-0 pui:z-20 pui:grid pui:place-items-center pui:overflow-hidden pui:bg-overlay pui:p-6 pui:text-center pui:text-inverse-foreground",
         className,
       )}
+      {...props}
     >
       <span className="pui:sr-only">{label}</span>
       {children ||

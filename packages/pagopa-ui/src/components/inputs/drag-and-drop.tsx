@@ -4,7 +4,6 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
 import { Default as CloseIcon } from "@/components/icons/generated/close"
 import { Default as ErrorOutlinedIcon } from "@/components/icons/generated/error"
@@ -28,7 +27,8 @@ function replaceInputFiles(input: HTMLInputElement, next: File[]) {
   }
 }
 
-export interface DragAndDropProps extends Omit<FieldStateProps, "label"> {
+export interface DragAndDropProps
+  extends Omit<FieldStateProps, "label">, Omit<React.ComponentProps<"div">, "children"> {
   id?: string
   /** Visible field label. @default messages.dragAndDrop.label */
   label?: React.ReactNode
@@ -100,6 +100,7 @@ function DragAndDrop({
   multiple,
   name,
   className,
+  ref,
   onFilesChange,
   loading = false,
   onCancel,
@@ -115,7 +116,7 @@ function DragAndDrop({
   disabledText: disabledTextProp,
   draggingText: draggingTextProp,
   idleText: idleTextProp,
-  selectionHint = (multiple) => (multiple ? "Puoi selezionare più file" : "Seleziona un file"),
+  selectionHint: selectionHintProp,
   uploadLabel: uploadLabelProp,
   uploadLogoLabel: uploadLogoLabelProp,
   cancelLabel: cancelLabelProp,
@@ -124,6 +125,7 @@ function DragAndDrop({
   removeFileLabel: removeFileLabelProp,
   singleFileError: singleFileErrorProp,
   invalidFormatError: invalidFormatErrorProp,
+  ...props
 }: DragAndDropProps) {
   const t = useMessages("dragAndDrop")
   const label = labelProp ?? t.label
@@ -134,6 +136,7 @@ function DragAndDrop({
   const disabledText = disabledTextProp ?? t.disabledText
   const draggingText = draggingTextProp ?? t.draggingText
   const idleText = idleTextProp ?? t.idleText
+  const selectionHint = selectionHintProp ?? t.selectionHint
   const uploadLabel = uploadLabelProp ?? t.uploadLabel
   const uploadLogoLabel = uploadLogoLabelProp ?? t.uploadLogoLabel
   const cancelLabel = cancelLabelProp ?? t.cancelLabel
@@ -220,7 +223,7 @@ function DragAndDrop({
   )
 
   return (
-    <div data-slot="drag-and-drop" className="pui:grid pui:gap-1.5">
+    <div ref={ref} data-slot="drag-and-drop" className="pui:grid pui:gap-1.5" {...props}>
       <FieldLabel
         htmlFor={ids.controlId}
         label={label}
@@ -286,14 +289,12 @@ function DragAndDrop({
             </div>
           ) : failed ? (
             <div className="pui:pointer-events-none pui:grid pui:justify-items-center pui:gap-2">
-              <Icon source={ErrorOutlinedIcon} size={24} className="pui:text-error-foreground" />
+              <ErrorOutlinedIcon size={24} className="pui:text-error-foreground" />
               <span className="pui:text-body-sb">{failedText}</span>
             </div>
           ) : (
             <div className="pui:pointer-events-none pui:grid pui:justify-items-center pui:gap-2">
-              <Icon
-                source={UploadIcon}
-
+              <UploadIcon
                 className={cn(
                   "pui:size-6",
                   disabled ? "pui:text-muted-foreground" : "pui:text-foreground",
@@ -345,7 +346,7 @@ function DragAndDrop({
               key={`${file.name}-${file.lastModified}`}
               className="pui:flex pui:items-start pui:gap-2.5 pui:rounded-lg pui:border pui:border-secondary pui:bg-background pui:p-6"
             >
-              <Icon source={CheckCircleIcon} size={24} className="pui:shrink-0 pui:text-success" />
+              <CheckCircleIcon size={24} className="pui:shrink-0 pui:text-success" />
               <div className="pui:grid pui:min-w-0 pui:flex-1 pui:gap-1">
                 <p className="pui:truncate pui:text-body-sb pui:break-all">{file.name}</p>
                 <p className="pui:text-label-mini pui:text-muted-foreground">{fileMeta(file)}</p>
@@ -356,7 +357,7 @@ function DragAndDrop({
                 onClick={() => removeFile(file)}
                 className="pui:relative pui:grid pui:size-6 pui:shrink-0 pui:place-items-center pui:rounded-full pui:text-foreground pui:after:absolute pui:after:-inset-2.5 pui:hover:bg-muted pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
               >
-                <Icon source={CloseIcon} className="pui:size-3.5" />
+                <CloseIcon className="pui:size-3.5" />
               </button>
             </li>
           ))}

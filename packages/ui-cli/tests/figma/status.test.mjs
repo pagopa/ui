@@ -53,17 +53,15 @@ function tree(overrides = {}) {
         "1:2": {
           status: "pending",
           target: { module: "src/field.tsx", export: "Field" },
-          note: "Blocked by docs/design-requests/2026-10-21-field.md",
+          note: "Blocked by https://github.com/acme/ui/issues/42",
         },
       },
     }),
-    "docs/design-requests/2026-10-21-field.md": "- Status: open — waiting\n",
-    "docs/design-requests/2026-10-12-old.md": "- Status: answered — done\n",
     ...overrides,
   }
 }
 
-test("the session report counts nodes, the pending queue and the open requests", () => {
+test("the session report counts nodes, the pending queue and the requests it points at", () => {
   const result = fixture(tree())
   assert.equal(result.status, 0, result.stderr)
   const report = JSON.parse(result.stdout)
@@ -79,11 +77,11 @@ test("the session report counts nodes, the pending queue and the open requests",
       nodeId: "1:2",
       name: "Field",
       target: "Field",
-      designRequests: ["docs/design-requests/2026-10-21-field.md"],
+      designRequests: ["https://github.com/acme/ui/issues/42"],
     },
   ])
-  assert.equal(report.requests.open, 1)
-  assert.equal(report.requests.answered, 1)
+  assert.deepEqual(report.requests.linked, ["https://github.com/acme/ui/issues/42"])
+  assert.equal(report.requests.open, undefined, "the census belongs to `figma request list`")
   assert.equal(report.token.present, false)
   assert.equal(report.live, null)
   assert.match(report.next, /FIGMA_TOKEN/)
@@ -96,7 +94,7 @@ test("the pending queue also reports a registry entry the inventory no longer ca
         bulkRules: [],
         entries: {
           "1:1": { status: "implemented" },
-          "9:9": { status: "pending", note: "Blocked by docs/design-requests/2026-10-21-gone.md" },
+          "9:9": { status: "pending", note: "Blocked by https://github.com/acme/ui/issues/43" },
         },
       }),
     }),
@@ -106,7 +104,7 @@ test("the pending queue also reports a registry entry the inventory no longer ca
   assert.equal(report.pending.length, 1)
   assert.equal(report.pending[0].name, null)
   assert.equal(report.pending[0].nodeId, "9:9")
-  assert.deepEqual(report.pending[0].designRequests, ["docs/design-requests/2026-10-21-gone.md"])
+  assert.deepEqual(report.pending[0].designRequests, ["https://github.com/acme/ui/issues/43"])
 })
 
 test("a missing inventory fails with its path", () => {
@@ -179,14 +177,7 @@ function state(overrides = {}) {
       uncensused: [],
       error: null,
     },
-    requests: {
-      path: "docs/design-requests",
-      open: 0,
-      answered: 0,
-      unreadable: [],
-      files: [],
-      declared: "docs/design-requests",
-    },
+    requests: { linked: [] },
     live: { version: "v1", lastModified: "2026-10-09T10:00:00Z", changedSinceInventory: false },
   }
   for (const [key, value] of Object.entries(overrides))
@@ -200,7 +191,7 @@ test("the ladder reaches nothing to align only when the counters are clear", () 
 
 test("pending rules keep the ledger open even with the file unchanged", () => {
   const next = nextCommand(state({ rules: { pending: 2 } }))
-  assert.match(next, /figma:rules/)
+  assert.match(next, /pnpm ui-cli figma rules mark/)
   assert.match(next, /2 rule\(s\) still carry a pending disposition/)
   assert.doesNotMatch(next, /nothing to align/)
 })
@@ -230,29 +221,67 @@ test("a published page the census never read names that page", () => {
   assert.doesNotMatch(next, /figma:triage/)
 })
 
-test("a pending census identity asks for a registry decision, not triage", () => {
+test("a pending census identity asks for a catalogue decision, not triage", () => {
   const next = nextCommand(state({ registry: { pending: 1 }, surface: { stats: { pending: 1 } } }))
-  assert.match(next, /figma:brief --queue/)
-  assert.match(next, /figma registry set <nodeId> --status/)
-  assert.match(next, /figma:triage preserves it/)
-  assert.doesNotMatch(next, /run pagopa-ui-cli:figma:triage/)
+  assert.match(next, /pnpm ui-cli figma brief --queue/)
+  assert.match(next, /pnpm ui-cli record <nodeId> --status <status>/)
+  assert.match(next, /pnpm ui-cli figma triage preserves it/)
 })
 
-test("an open design request outranks its node's pending identity", () => {
+test("a design request a pending node points at outranks its pending identity", () => {
   const next = nextCommand(
     state({
-      requests: { open: 1 },
+      requests: { linked: ["https://github.com/acme/ui/issues/42"] },
       registry: { pending: 1 },
       surface: { stats: { pending: 1 } },
     }),
   )
   assert.match(next, /answer the 1 open design request/)
+  assert.match(next, /https:\/\/github\.com\/acme\/ui\/issues\/42/)
+})
+
+// The deadlock this router had: 23 open records held the request rung while six
+// pending nodes existed, so every session was told to answer debt that no node
+// referenced and never reached the brief.
+test("open debt no pending node points at never blocks the router", () => {
+  const next = nextCommand(
+    state({
+      requests: { linked: [] },
+      registry: { pending: 6 },
+      surface: { stats: { pending: 6 } },
+    }),
+  )
+  assert.match(next, /pnpm ui-cli figma brief --queue/)
+  assert.doesNotMatch(next, /answer the \d+ open design request/)
+})
+
+test("the tracker's own debt never reaches the router", () => {
+  const next = nextCommand(state())
+  assert.match(next, /^nothing to align/)
+  assert.doesNotMatch(next, /design request|request list/)
 })
 
 test("unaccounted-only work asks for a registry entry, not the brief queue", () => {
   const next = nextCommand(state({ registry: { unaccounted: 2 } }))
-  assert.match(next, /pagopa-ui:check:catalogue/)
+  assert.match(next, /pnpm ui-cli check catalogue/)
   assert.match(next, /2 unaccounted node\(s\)/)
-  assert.match(next, /figma registry set/)
+  assert.match(next, /pnpm ui-cli record/)
   assert.doesNotMatch(next, /--queue/)
+})
+
+// One vocabulary: the router used to spell its rungs as Nx targets, which are a
+// second name for the same command and explained nowhere near the report.
+test("every rung is spelled as the command a person runs", () => {
+  const rungs = [
+    state({ rules: { pending: 2 } }),
+    state({ surface: { uncensused: [{ pageId: "3:0", pageName: "Timeline", nodes: 4 }] } }),
+    state({ registry: { pending: 1 }, surface: { stats: { pending: 1 } } }),
+    state({ registry: { unaccounted: 2 } }),
+    state({ live: { changedSinceInventory: true } }),
+  ]
+  for (const report of rungs) {
+    const next = nextCommand(report)
+    assert.doesNotMatch(next, /pagopa-ui-cli:/)
+    assert.doesNotMatch(next, /figma:(brief|rules|plan|triage|comments)/)
+  }
 })

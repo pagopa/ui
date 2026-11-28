@@ -4,18 +4,23 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { Icon } from "@/components/icons/icon"
 import { Down as ArrowDownIcon } from "@/components/icons/generated/arrow"
 import { Button } from "@/components/primitives/button"
 
-export interface ScrollToBottomProps {
+export interface ScrollToBottomProps extends Omit<React.ComponentProps<"button">, "children"> {
   target?: React.RefObject<HTMLElement | null>
   /** Accessible name of the scroll control. @default messages.scrollToBottom.label */
   label?: string
   className?: string
 }
 
-function ScrollToBottom({ target, label: labelProp, className }: ScrollToBottomProps) {
+function ScrollToBottom({
+  target,
+  label: labelProp,
+  className,
+  ref,
+  ...props
+}: ScrollToBottomProps) {
   const t = useMessages("scrollToBottom")
   const label = labelProp ?? t.label
 
@@ -35,6 +40,9 @@ function ScrollToBottom({ target, label: labelProp, className }: ScrollToBottomP
   if (!visible) return null
   return (
     <Button
+      data-slot="scroll-to-bottom"
+      {...props}
+      ref={ref}
       type="button"
       size="icon"
       className={cn("pui:size-14 pui:rounded-full pui:shadow-32", className)}
@@ -48,7 +56,7 @@ function ScrollToBottom({ target, label: labelProp, className }: ScrollToBottomP
         else window.scrollTo({ top: document.documentElement.scrollHeight, behavior })
       }}
     >
-      <Icon source={ArrowDownIcon} decorative className="pui:size-6" />
+      <ArrowDownIcon decorative className="pui:size-6" />
     </Button>
   )
 }

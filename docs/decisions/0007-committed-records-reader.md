@@ -2,7 +2,9 @@
 
 - **Status:** Accepted — 2026-11-10, amended 2026-11-26 by
   [ADR-0015](./0015-ephemeral-parity-diagnostic.md) — the reader owns three
-  records, not four (§7).
+  records, not four (§7) — and amended 2026-11-28 by
+  [ADR-0019](./0019-design-requests-in-the-tracker.md) — `design-requests.ts`
+  stops being a writer (§8).
 - **Date:** 2026-11-10
 - **Context:** the four committed records — `inventory.json`, `registry.json`,
   `device-policy.json` and `parity-cases.json` — were read by five loaders
@@ -219,3 +221,19 @@ unchanged and is what the migration left behind:
   `readDevicePolicy` and writes none of them: a run leaves the checked-in
   documents byte-identical, which is the read-only posture this ADR decided,
   now observable from the other side.
+
+## 8. Amendment — one writer leaves the list (2026-11-28)
+
+[ADR-0019](./0019-design-requests-in-the-tracker.md) makes the issue the design
+request, so the module this ADR was written beside stops writing a record:
+
+- **RD3's writer list is one shorter.** The four writers §7 named are three:
+  `design-requests.ts` no longer writes a committed record — `figma request
+  open` writes the issue and the node note, `close` comments the answer on the
+  issue — so it owes no invalidation and the rule loses that example. `setRegistry`, `catalogue/finish.ts` and
+  `catalogue-refresh.ts` keep theirs, and what RD3 says about a shared record
+  being cloned before it is edited is unchanged.
+- **The boundary is untouched.** The reader still never writes, still owns each
+  default path once and still raises one error naming the record, the file and
+  the reason. The requests folder was never read through it — `brief.ts` and
+  `status.ts` read it as a directory of files — so nothing the reader owns moved.

@@ -78,13 +78,14 @@ function Separator({
   )
   if (padding === 0) return line
   if (orientation === "vertical") {
-    return <div className={cn(verticalPaddingClasses[padding], className)}>{line}</div>
+    return (
+      <div data-slot="separator" className={cn(verticalPaddingClasses[padding], className)}>
+        {line}
+      </div>
+    )
   }
   return (
-    <div
-      data-slot="separator-padding"
-      className={cn("pui:flex pui:w-full pui:items-center", className)}
-    >
+    <div data-slot="separator" className={cn("pui:flex pui:w-full pui:items-center", className)}>
       <span
         aria-hidden="true"
         data-separator-segment=""

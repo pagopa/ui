@@ -194,11 +194,11 @@ function packedImportAssertions(
   assert.match(packedIcon, /data-figma-node-id="/)
   assert.match(packedIcon, /role="img"/)
   assert.match(packedIcon, /aria-label="Informazioni"/)
-  const packedSubpathIcon = renderToString(React.createElement(icons.Info, { width: 32 }))
+  const packedSubpathIcon = renderToString(React.createElement(icons.Info, { size: 32 }))
   assert.match(
     packedSubpathIcon,
     /^<svg[^>]*width="32"/,
-    "the icons subpath must publish one tree-shakeable component per identity",
+    "the icons subpath must publish one tree-shakeable component per identity, in the shared icon box",
   )
   assert.match(packedSubpathIcon, /data-figma-node-id="/)
   assert.throws(

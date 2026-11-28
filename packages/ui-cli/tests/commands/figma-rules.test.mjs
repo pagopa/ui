@@ -41,6 +41,7 @@ const files = {
     entries: {
       "4:4": {
         status: "pending",
+        note: "Design request: https://github.com/acme/ui/issues/42",
         target: {
           module: "src/button.tsx",
           export: "Button",
@@ -77,7 +78,6 @@ const files = {
       },
     ],
   },
-  "docs/design-requests/request.md": "Node 4:4 needs a decision.",
 }
 
 async function usingFixture(run) {
@@ -95,7 +95,7 @@ test("brief preserves target, comments and design requests", async () =>
     assert.equal(result.status, 0, result.stderr)
     const brief = JSON.parse(result.stdout)
     assert.equal(brief.target.story, "Button")
-    assert.deepEqual(brief.designRequests, ["docs/design-requests/request.md"])
+    assert.deepEqual(brief.designRequests, ["https://github.com/acme/ui/issues/42"])
     assert.equal(brief.openComments[0].message, "Question")
   }))
 

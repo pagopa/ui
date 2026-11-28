@@ -5,13 +5,19 @@
     "tests/fixtures/library-consumer/**",
     "test-results/**",
     "coverage/**",
-    "dist/**"
+    "dist/**",
+    ".cache/**"
   ],
   "rules": {
     "typescript/no-explicit-any": "error",
     "typescript/no-non-null-assertion": "error",
     "typescript/no-require-imports": "error",
-    "typescript/consistent-type-assertions": ["error", { "assertionStyle": "never" }],
+    "typescript/consistent-type-assertions": [
+      "error",
+      {
+        "assertionStyle": "never"
+      }
+    ],
     "no-debugger": "error",
     "no-var": "error",
     "prefer-const": "error",
@@ -23,5 +29,49 @@
     "no-duplicate-case": "error",
     "no-self-assign": "error",
     "no-useless-catch": "error"
-  }
+  },
+  "overrides": [
+    // The two size rules are the gate; a function the rules already found is
+    // grandfathered here, one entry per file, and tests/contracts/lint-complexity
+    // fails when an entry no longer violates — so the list only shrinks.
+    {
+      "files": ["src/**/*.ts"],
+      "rules": {
+        "complexity": ["warn", 20],
+        "max-lines-per-function": ["warn", 200]
+      }
+    },
+    {
+      "files": [
+        "src/adapters/dom-probe.ts",
+        "src/checks/consumer-dx.ts",
+        "src/checks/data-slots.ts",
+        "src/checks/foundation-styles.ts",
+        "src/checks/foundation.ts",
+        "src/checks/import-layers.ts",
+        "src/checks/text-defaults.ts",
+        "src/checks/utility-prefix.ts",
+        "src/commands/figma-surface.ts",
+        "src/figma/icons.ts",
+        "src/figma/pictograms.ts",
+        "src/figma/registry-set.ts",
+        "src/figma/rules.ts",
+        "src/figma/snapshot.ts",
+        "src/figma/status.ts",
+        "src/figma/tokens.ts",
+        "src/lib/source-modules.ts",
+        "src/parity/diff.ts",
+        "src/parity/source.ts"
+      ],
+      "rules": {
+        "complexity": "off"
+      }
+    },
+    {
+      "files": ["src/checks/consumer-dx.ts", "src/lib/source-modules.ts"],
+      "rules": {
+        "max-lines-per-function": "off"
+      }
+    }
+  ]
 }

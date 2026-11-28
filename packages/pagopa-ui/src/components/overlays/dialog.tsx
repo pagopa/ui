@@ -4,7 +4,6 @@ import * as React from "react"
 
 import { useMessages, usePortalHost } from "@/lib/ui-provider"
 import { cn } from "@/lib/cn"
-import { Icon } from "@/components/icons/icon"
 import { Default as CloseIcon } from "@/components/icons/generated/close"
 import { Button } from "@/components/primitives/button"
 import { Dialog as DialogPrimitive } from "@/components/primitives/dialog"
@@ -72,6 +71,7 @@ function Dialog({
       <DialogPrimitive.Portal container={portalHost}>
         <DialogPrimitive.Backdrop className="pui:fixed pui:inset-0 pui:z-50 pui:bg-overlay pui:transition-opacity pui:data-starting-style:opacity-0 pui:data-ending-style:opacity-0" />
         <DialogPrimitive.Popup
+          data-slot="dialog"
           ref={ref}
           className={cn(
             "pui:fixed pui:top-1/2 pui:left-1/2 pui:z-50 pui:flex pui:max-h-[85vh] pui:w-(--pui-dialog-width) pui:max-w-[calc(100vw-var(--pui-page-gutter-lg))] pui:-translate-x-1/2 pui:-translate-y-1/2 pui:flex-col pui:gap-6 pui:overflow-auto pui:rounded-xl pui:bg-background pui:p-6 pui:shadow-32 pui:outline-none pui:transition-opacity pui:data-starting-style:opacity-0 pui:data-ending-style:opacity-0",
@@ -108,7 +108,7 @@ function Dialog({
               />
             }
           >
-            <Icon source={CloseIcon} />
+            <CloseIcon />
           </DialogPrimitive.Close>
         </DialogPrimitive.Popup>
       </DialogPrimitive.Portal>
@@ -124,7 +124,7 @@ type DialogCloseProps = React.ComponentProps<typeof Button>
  * sits in, so a footer action closes the dialog from inside the composition.
  */
 function DialogClose(props: DialogCloseProps) {
-  return <DialogPrimitive.Close render={<Button {...props} />} />
+  return <DialogPrimitive.Close data-slot="dialog-close" render={<Button {...props} />} />
 }
 
 export { Dialog, DialogClose, type DialogProps, type DialogCloseProps }

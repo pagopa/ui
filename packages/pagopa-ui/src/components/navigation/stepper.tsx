@@ -3,7 +3,6 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
-import { Icon } from "@/components/icons/icon"
 import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
 
 export interface StepperItem {
@@ -58,7 +57,7 @@ function StepIndicator({
       {item.status === "complete" ? (
         <>
           {labelled ? <span className="pui:sr-only">{completedLabel} </span> : null}
-          <Icon source={CheckCircleIcon} aria-hidden="true" className="pui:text-primary" />
+          <CheckCircleIcon aria-hidden="true" className="pui:text-primary" />
         </>
       ) : (
         <span
@@ -93,7 +92,10 @@ function Connector({ complete, className }: { complete: boolean; className?: str
   )
 }
 
-export type StepperProps = { items: StepperItem[]; className?: string } & StepperLabels
+export type StepperProps = Omit<React.ComponentProps<"div">, "children"> & {
+  items: StepperItem[]
+  className?: string
+} & StepperLabels
 
 function Stepper({
   items,
@@ -103,6 +105,8 @@ function Stepper({
   statusLabel: statusLabelProp,
   indicatorLabel: indicatorLabelProp,
   stepLabel: stepLabelProp,
+  ref,
+  ...props
 }: StepperProps) {
   const t = useMessages("stepper")
   const navigationLabel = navigationLabelProp ?? t.navigationLabel
@@ -117,7 +121,7 @@ function Stepper({
   const current = items.find((item) => item.status === "current") ?? items[0]
 
   return (
-    <div data-slot="stepper" className={cn("pui:grid pui:gap-4", className)}>
+    <div data-slot="stepper" ref={ref} className={cn("pui:grid pui:gap-4", className)} {...props}>
       <div className="pui:grid pui:gap-4 pui:tablet:hidden">
         <div className="pui:grid pui:w-fit pui:gap-0.5">
           <p className="pui:text-body-sb">{current?.label}</p>

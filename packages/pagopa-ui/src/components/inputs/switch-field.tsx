@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { cn } from "@/lib/cn"
-import { useLinkComponent } from "@/lib/ui-provider"
+import { useLinkComponent, useMessages } from "@/lib/ui-provider"
 
 import { Switch } from "@/components/primitives/switch"
 
@@ -30,6 +30,7 @@ function SwitchField({
   error,
   success,
   required,
+  requiredLabel: requiredLabelProp,
   disabled,
   loading = false,
   leadingIcon,
@@ -41,6 +42,8 @@ function SwitchField({
   ...props
 }: SwitchFieldProps) {
   const Link = useLinkComponent()
+  const t = useMessages("fieldLabel")
+  const requiredLabel = requiredLabelProp ?? t.requiredLabel
   const ids = useFieldIds(id)
   const state = { description, error, success }
   const controlsDisabled = disabled || loading
@@ -75,7 +78,7 @@ function SwitchField({
             <span aria-hidden="true" className="pui:ml-0.5 pui:text-destructive">
               *
             </span>
-            <span className="pui:sr-only"> (obbligatorio)</span>
+            <span className="pui:sr-only"> {requiredLabel}</span>
           </>
         ) : null}
       </span>

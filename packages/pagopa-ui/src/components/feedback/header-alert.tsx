@@ -4,7 +4,6 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
 import { Default as CloseIcon } from "@/components/icons/generated/close"
 import { Default as KidStarIcon } from "@/components/icons/generated/kid-star"
@@ -19,7 +18,7 @@ type HeaderAlertTone = Tone | "default"
 /**
  * Props of {@link HeaderAlert}. The full-width source band above the header.
  */
-interface HeaderAlertProps {
+interface HeaderAlertProps extends Omit<React.ComponentProps<"div">, "children"> {
   /** Copy of the band. */
   children: React.ReactNode
   /** Semantic tone; `default` is the neutral band without a status icon. @default "info" */
@@ -30,16 +29,17 @@ interface HeaderAlertProps {
   onDismiss?: () => void
   /** Accessible name of the dismiss control. @default messages.headerAlert.dismissLabel */
   dismissLabel?: string
+  className?: string
 }
 
 // The source tone instances: the published PagoPA glyphs the pinned set draws —
 // `1322:6542` (info, the filled variant `98:1115`), `7635:3910` (check_circle),
 // `1322:6534` (warning) and `7635:3924` (report).
 const toneIcons: Record<Tone, React.ReactElement> = {
-  info: <Icon source={InfoFilledIcon} size={24} className="pui:shrink-0" />,
-  success: <Icon source={CheckCircleIcon} size={24} className="pui:shrink-0" />,
-  warning: <Icon source={WarningIcon} size={24} className="pui:shrink-0" />,
-  error: <Icon source={ReportIcon} size={24} className="pui:shrink-0" />,
+  info: <InfoFilledIcon size={24} className="pui:shrink-0" />,
+  success: <CheckCircleIcon size={24} className="pui:shrink-0" />,
+  warning: <WarningIcon size={24} className="pui:shrink-0" />,
+  error: <ReportIcon size={24} className="pui:shrink-0" />,
 }
 
 function HeaderAlert({
@@ -48,6 +48,9 @@ function HeaderAlert({
   action,
   onDismiss,
   dismissLabel: dismissLabelProp,
+  className,
+  ref,
+  ...props
 }: HeaderAlertProps) {
   const t = useMessages("headerAlert")
   const dismissLabel = dismissLabelProp ?? t.dismissLabel
@@ -60,10 +63,14 @@ function HeaderAlert({
   const centred = !isDefault && !action && !onDismiss
   return (
     <div
+      data-slot="header-alert"
       role={tone === "error" ? "alert" : "status"}
+      ref={ref}
+      {...props}
       className={cn(
         "pui:text-label-mini-sb",
         isDefault ? "pui:bg-selection-soft pui:text-foreground" : toneStyles[tone],
+        className,
       )}
     >
       <div
@@ -90,7 +97,7 @@ function HeaderAlert({
                 : "pui:flex-1",
           )}
         >
-          {toneIcon ?? <Icon source={KidStarIcon} size={24} className="pui:shrink-0" />}
+          {toneIcon ?? <KidStarIcon size={24} className="pui:shrink-0" />}
           <div className={cn("pui:min-w-0 pui:flex-1", centred && "pui:tablet:flex-initial")}>
             {children}
           </div>
@@ -107,7 +114,7 @@ function HeaderAlert({
             onClick={onDismiss}
             className="pui:flex pui:size-10 pui:items-center pui:justify-center pui:rounded-md pui:focus-visible:outline-2 pui:focus-visible:outline-current"
           >
-            <Icon source={CloseIcon} className="pui:size-5" />
+            <CloseIcon className="pui:size-5" />
           </button>
         )}
       </div>

@@ -5,6 +5,7 @@ import fs from "node:fs"
 import path from "node:path"
 import { z } from "zod"
 
+import { lineOf } from "../lib/ast.ts"
 import { readJson } from "../lib/json.ts"
 import { walkFiles } from "../lib/fs.ts"
 import type { Workspace } from "../adapters/workspace.ts"
@@ -60,8 +61,23 @@ const ROOTS = [COMPONENTS, TEMPLATES]
 // are the source's, so a token rule cannot own them.
 const DERIVED = ["src/components/icons/generated/"]
 
+// Every utility below owns a slice of the scale, so its arbitrary form is
+// measured before the catch-all `arbitrary-length`; the more specific rule wins
+// the region and reports once.
 export const RULES = {
-  "arbitrary-length": /\[[^[\]]*?\d+(?:\.\d+)?(?:px|rem)\b[^[\]]*?\]/g,
+  "arbitrary-sizing":
+    /\b(?:min-w|min-h|max-w|max-h|w|h|size)-\[[^[\]]*?\d+(?:\.\d+)?(?:px|rem)(?![a-z0-9])[^[\]]*\]/g,
+  "arbitrary-depth": /\bz-\[[^[\]]*\]/g,
+  "arbitrary-shadow": /\bshadow-\[[^[\]]*\]/g,
+  "arbitrary-leading": /\bleading-\[[^[\]]*\]/g,
+  "arbitrary-animation": /\banimate-\[[^[\]]*\]/g,
+  // A colour written as a functional notation is a literal in every position,
+  // arbitrary value or not. The Tailwind colour names are `palette-color`'s.
+  "functional-color": /(?:rgba?|hsla?|oklch|oklab)\([^()]*\)/g,
+  // The lookahead is what closes the escape: `\b` never matches between `px`
+  // and `_`, so `w-[6px_8px]` used to pass. A following letter or digit still
+  // ends the match, so `40remx` is not read as a length.
+  "arbitrary-length": /\[[^[\]]*?\d+(?:\.\d+)?(?:px|rem)(?![a-z0-9])[^[\]]*?\]/g,
   "tailwind-text-size": /\btext-(?:xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl)\b/g,
   "font-weight": /\bfont-(?:thin|extralight|light|normal|medium|semibold|bold|extrabold|black)\b/g,
   "raw-figma-variable": /--figma-[a-z0-9-]+/g,
@@ -86,6 +102,21 @@ export const RULES = {
 
 export type RuleName = keyof typeof RULES
 const ALL_RULES = [...Object.keys(RULES), ...STYLE_RULES]
+
+// Each rule names the token-first replacement, so a diagnostic says where the
+// value belongs instead of only that it is wrong.
+const REPLACEMENTS: Partial<Record<string, string>> = {
+  "arbitrary-sizing":
+    "take the size from the spacing scale or from the surface's own container token (`w-(--pui-dialog-width)`)",
+  "arbitrary-depth":
+    "takes its index from the surface's place in the stacking order (`z-50` for an overlay), not from a literal",
+  "arbitrary-shadow": "use an elevation token (`shadow-16`, `shadow-32`)",
+  "arbitrary-leading":
+    "use the line-height the text style already carries (`text-body`, `text-h5`)",
+  "arbitrary-animation": "declare the motion in the semantic stylesheet and reference it by name",
+  "functional-color": "use a semantic colour token (`bg-primary`, `text-foreground`)",
+  "arbitrary-length": "use the spacing scale or a semantic dimension token",
+}
 
 export type Occurrence = {
   rule: string
@@ -145,10 +176,6 @@ function stringLiterals(
   }
   visit(parsed.program)
   return { source, literals, program: parsed.program }
-}
-
-function lineOf(source: string, offset: number): number {
-  return source.slice(0, offset).split("\n").length
 }
 
 function allowedSpacing(manifest: FoundationManifest): Set<number> {
@@ -213,19 +240,28 @@ export function measure(workspace: Workspace, manifest: FoundationManifest): Occ
       const { source, literals, program } = stringLiterals(parseSource, file)
       occurrences.push(...inlineStyleOccurrences(program, source, identity, knownTokens))
       for (const literal of literals) {
+        // A more specific rule owns its region: `shadow-[0_0_0_6px_rgb(…)]` is
+        // an elevation and a colour and a length, and one diagnostic has to be
+        // the one that names the fix. Rules run in declaration order, so the
+        // narrow ones win the tokens the catch-all would otherwise re-report.
+        const claimed: Array<[number, number]> = []
         for (const [rule, pattern] of Object.entries(RULES)) {
           pattern.lastIndex = 0
           for (const match of literal.value.matchAll(pattern)) {
             const token = match[0]
+            const start = match.index ?? 0
+            const end = start + token.length
+            if (claimed.some(([from, to]) => start < to && from < end)) continue
             if (rule === "off-scale-spacing") {
               const value = spacingValue(token)
               if (value === null || spacing.has(value)) continue
             }
+            claimed.push([start, end])
             occurrences.push({
               rule,
               file: identity,
               token,
-              line: lineOf(source, literal.start + (match.index ?? 0)),
+              line: lineOf(source, literal.start + start),
             })
           }
         }
@@ -306,8 +342,9 @@ export function evaluateFoundation(
     if (!ALL_RULES.includes(rule)) continue
     const current = counts[rule] ?? 0
     if (current > ceiling) {
+      const replacement = REPLACEMENTS[rule] ?? "use a foundation token"
       errors.push(
-        `${rule}: ${current} occurrences, the ceiling is ${ceiling} — use a foundation token or register an exception in ${EXCEPTIONS_PATH}, then run \`pnpm nx run pagopa-ui:foundation:check\``,
+        `${rule}: ${current} occurrences, the ceiling is ${ceiling} — ${replacement}, or register an exception with its node and reason in ${EXCEPTIONS_PATH}, then run \`pnpm nx run pagopa-ui:foundation:check\``,
       )
       for (const example of (examples[rule] ?? []).slice(0, 5)) errors.push(`  ${example}`)
     } else if (current < ceiling) {

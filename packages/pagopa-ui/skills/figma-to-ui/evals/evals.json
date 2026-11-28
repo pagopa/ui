@@ -25,6 +25,19 @@
         "Still renders the `Tag` and `Button` parts with the exports the map resolves for `105:2043` and `108:1402`."
       ],
       "files": ["evals/fixtures/search-results.json"]
+    },
+    {
+      "id": 2,
+      "name": "declared-prop-map",
+      "prompt": "Using only the map `@pagopa/ui` ships, tell me what a consumer has to set to render Figma node `529:6111` (`TextField`) in the state `Status=Disabled, Filled=True, * Required=False`, with the export the map names. Name every prop the frame gives you, and say what you would report about the ones the map leaves out. The deliverable is the answer: do not install or build anything, and do not guess a prop the map does not declare.",
+      "expected_output": "The session resolves `529:6111` with `pagopa-ui-map` to the `TextField` export, sets `required={false}` from the declared `* Required` → `required` mapping, reports that `Status` and `Filled` have no declared prop so the frame's `Disabled` and `Filled` states are the consumer's own `disabled` and `value`, and invents no prop the map does not carry.",
+      "expectations": [
+        "Resolves the node with the shipped map (`pagopa-ui-map resolve 529:6111`, optionally `--json`) and names the export `TextField` it returns.",
+        "Sets `required={false}` because the map declares `* Required` → `required` with `False=false, True=true`, and keeps the option values as the booleans the map carries.",
+        "Reports that `Status` and `Filled` have no declared prop — the map translates only `* Required` — so the frame's `Disabled` and `Filled` states are the consumer's own `disabled` and `value`/`defaultValue`, and never presents `status` or `filled` as props to set.",
+        "Treats the map as declared rather than inferred: it does not advertise an export or a prop the map does not name, and says what it would ask rather than filling the gap itself."
+      ],
+      "files": []
     }
   ]
 }

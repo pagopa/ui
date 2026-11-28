@@ -1,9 +1,8 @@
 import fs from "node:fs"
-import path from "node:path"
 import { z } from "zod"
 import type { Workspace } from "../adapters/workspace.ts"
 import { runGh } from "../adapters/handoff.ts"
-import { writeJson, writeText } from "../lib/json.ts"
+import { writeJson } from "../lib/json.ts"
 import { UsageError } from "../lib/command.ts"
 import { NOTE_LENGTH_LIMIT, type Registry } from "../schemas/catalogue.ts"
 import {
@@ -12,11 +11,6 @@ import {
   readInventory,
   readRegistry,
 } from "../records/committed.ts"
-import {
-  answeredRecordSource,
-  openRecord,
-  readDesignRequestRecord,
-} from "./design-request-record.ts"
 import { designPaths, readFigmaConfig } from "./config.ts"
 import { markRule } from "./rules-workflow.ts"
 
@@ -49,6 +43,11 @@ const InputSchema = z.strictObject({
 
 export type DesignRequestInput = z.infer<typeof InputSchema>
 export type IssueCommand = (args: string[], cwd: string) => string
+
+// What the validation-only card pass names in place of the issue URL it cannot
+// know yet: the `.invalid` host keeps the string from ever reading as a real
+// question, and the pass is never written.
+const REQUEST_PLACEHOLDER = "https://placeholder.invalid/issues/0"
 
 function parseInput(source: string): DesignRequestInput {
   const parsed = InputSchema.safeParse(JSON.parse(source))
@@ -178,115 +177,88 @@ function issueBody(input: DesignRequestInput, preview: string, previewBranch: st
     : developerIssueBody(input, options)
 }
 
-function recordContent(
-  input: DesignRequestInput,
-  issueUrl: string,
-  owners: string[],
-  preview: string,
-): string {
-  const options = input.options.length
-    ? input.options
-        .map(
-          (option) =>
-            `- ${option.key.toUpperCase()} — ${option.label}${option.impact ? `: ${option.impact}` : ""}`,
-        )
-        .join("\n")
-    : ""
-  return openRecord({
-    title: input.title,
-    type: input.type,
-    issueUrl,
-    owners,
-    preview: input.visual
-      ? previewStoryUrl(preview, input.slug, input.options[0]?.key ?? "a")
-      : "none",
-    context: input.context,
-    options,
-  })
-}
-
-function recordPath(
-  workspace: Workspace,
-  directory: string,
-  day: string,
-  slug: string,
-): { relative: string; absolute: string } {
-  const relative = `${directory.replace(/\/$/, "")}/${day}-${slug}.md`
-  return { relative, absolute: path.resolve(workspace.workspaceRoot, relative) }
-}
-
-function validateNode(
+/** The node a request blocks: it must exist and stay `pending` while the question is open. */
+function pendingNode(
   workspace: Workspace,
   input: DesignRequestInput,
-  record: string,
 ): {
   registryFile: string
   registry: Registry
-  updated: Registry
+  entry: Registry["entries"][string]
 } | null {
   if (!input.nodeId) return null
   const inventory = readInventory(workspace.root)
   if (!inventory.components.some((node) => node.nodeId === input.nodeId))
     throw new UsageError(`${input.nodeId} is not in the inventory`)
-  const registryFile = committedFile("registry", workspace.root)
   const registry = readRegistry(workspace.root)
   const entry = registry.entries[input.nodeId]
   if (entry?.status !== "pending")
     throw new UsageError(`${input.nodeId} must remain pending while its design request is open`)
-  const pointer = `Design request: ${record}`
-  // A reopened slug after a deleted record meets its own pointer again; appending
-  // it twice would grow the note for no reason.
+  return { registryFile: committedFile("registry", workspace.root), registry, entry }
+}
+
+/**
+ * The registry note with the issue URL appended. The pointer is an issue URL
+ * rather than a record path, so it is only known once `gh issue create` has
+ * answered: the note is built here, after the create, and the error names the
+ * issue so a note that cannot hold the pointer does not lose it.
+ */
+function pointerNote(
+  input: DesignRequestInput & { nodeId: string },
+  entry: Registry["entries"][string],
+  issueUrl: string,
+): string {
+  const pointer = `Design request: ${issueUrl}`
+  // A re-run after a closed request meets its own pointer again; appending it
+  // twice would grow the note for no reason.
   const note = entry.note?.includes(pointer)
     ? entry.note.trim()
     : [entry.note?.trim(), pointer].filter(Boolean).join("\n")
   if (note.length > NOTE_LENGTH_LIMIT)
     throw new UsageError(
-      `${input.nodeId} registry note would exceed ${NOTE_LENGTH_LIMIT} characters`,
+      `${input.nodeId} registry note would exceed ${NOTE_LENGTH_LIMIT} characters — ${issueUrl} is open: shorten the note, then re-run`,
     )
-  const updated = {
-    ...registry,
-    entries: { ...registry.entries, [input.nodeId]: { ...entry, note } },
-  }
-  return { registryFile, registry, updated }
+  return note
+}
+
+/**
+ * The open issue that already asks this question. The record file was the guard
+ * against asking twice — a second `gh issue create` would ask the same owner the
+ * same thing — and the tracker answers for it now.
+ */
+function openQuestion(workspace: Workspace, title: string, gh: IssueCommand): string | null {
+  const output = gh(
+    [
+      "issue",
+      "list",
+      "--state",
+      "open",
+      "--search",
+      `${title} in:title`,
+      "--json",
+      "number,title,url",
+    ],
+    workspace.workspaceRoot,
+  )
+  const found: Array<{ title?: string; url?: string }> = JSON.parse(output)
+  return found.find((issue) => issue.title === title)?.url ?? null
 }
 
 export function openDesignRequest(
   workspace: Workspace,
   inputFile: string,
-  day: string,
   dryRun: boolean,
   gh: IssueCommand = runGh,
 ): {
-  path: string
   issueUrl: string | null
   actions: string[]
   dryRun: boolean
 } {
   const input = parseInput(fs.readFileSync(inputFile, "utf8"))
   const config = designPaths(readFigmaConfig(workspace))
-  const target = recordPath(workspace, config.requests, day, input.slug)
-  // A record that already exists is refused rather than rewritten: `gh issue
-  // create` would ask the same question a second time, and overwriting the note
-  // would leave the issue and the record disagreeing about what is being asked.
-  if (fs.existsSync(target.absolute)) {
-    const existing = readDesignRequestRecord(fs.readFileSync(target.absolute, "utf8"))
-    if (existing.state !== "open")
-      throw new UsageError(
-        `design request record ${target.relative} is ${existing.state} — open a new slug for a new question`,
-      )
-    const issue = existing.issueUrl ? ` (${existing.issueUrl})` : ""
-    throw new UsageError(
-      `design request record ${target.relative} already exists${issue} — edit it, or open a new slug`,
-    )
-  }
-  const node = validateNode(workspace, input, target.relative)
-  if (input.rulesCard)
-    markRule(workspace, {
-      cardId: input.rulesCard,
-      disposition: "conflict",
-      request: target.relative,
-      dryRun: true,
-    })
+  // The node is checked before anything is written: an issue opened for a node
+  // that is not pending would be a question nobody has to answer.
+  const node = pendingNode(workspace, input)
   const labels = [
     input.type === "design" ? "type/design-question" : "type/dev-decision",
     "status/needs-answer",
@@ -294,35 +266,58 @@ export function openDesignRequest(
   if (input.rulesCard) labels.push("source/figma-rules")
   const title = `[${input.type === "design" ? "design" : "dev"}] ${input.title}`
   const body = issueBody(input, config.preview, config.previewBranch)
+  // The card is checked before anything is written: `gh issue create` cannot be
+  // undone, and a stale or placeholder `--rules-card` would otherwise leave an
+  // open issue, a registry note pointing at it and an unmarked card, with the
+  // duplicate guard refusing every re-run. The URL the card will name is only
+  // known after the create, so the dry run carries a placeholder — every other
+  // check (the card exists, is not a placeholder, the snapshot and the ledger
+  // are readable) runs here.
+  if (input.rulesCard)
+    markRule(workspace, {
+      cardId: input.rulesCard,
+      disposition: "conflict",
+      request: REQUEST_PLACEHOLDER,
+      dryRun: true,
+    })
+  const existing = openQuestion(workspace, title, gh)
+  if (existing)
+    throw new UsageError(`${existing} already asks this question — answer it, or open a new slug`)
   const create = ["issue", "create", "--title", title, "--body", body]
   for (const label of labels) create.push("--label", label)
   for (const owner of config.owners) create.push("--assignee", owner)
   const actions = [
     `gh ${create.join(" ")}`,
-    `write ${target.relative}`,
     ...(node ? [`write registry note for ${input.nodeId}`] : []),
-    ...(input.rulesCard
-      ? [`mark rules card ${input.rulesCard} as conflict -> ${target.relative}`]
-      : []),
+    ...(input.rulesCard ? [`mark rules card ${input.rulesCard} as conflict -> the issue URL`] : []),
   ]
-  if (dryRun) return { path: target.relative, issueUrl: null, actions, dryRun: true }
+  if (dryRun) return { issueUrl: null, actions, dryRun: true }
   const output = gh(create, workspace.workspaceRoot)
   const issueUrl =
     output.split(/\s+/).find((word) => /^https:\/\/[^\s]+\/issues\/\d+$/.test(word)) ?? null
   if (!issueUrl) throw new Error(`gh issue create did not return an issue URL: ${output}`)
-  fs.mkdirSync(path.dirname(target.absolute), { recursive: true })
-  writeText(target.absolute, recordContent(input, issueUrl, config.owners, config.preview))
   if (node) {
-    writeJson(node.registryFile, node.updated)
+    const nodeId = input.nodeId
+    if (!nodeId) throw new UsageError("the registry note needs a node id")
+    const note = pointerNote({ ...input, nodeId }, node.entry, issueUrl)
+    writeJson(node.registryFile, {
+      ...node.registry,
+      entries: {
+        ...node.registry.entries,
+        [nodeId]: { ...node.entry, note },
+      },
+    })
     forgetCommitted(node.registryFile)
   }
+  // The rule card names the issue for the same reason the registry note does:
+  // the tracker is the only home, so a card points at it rather than at a file.
   if (input.rulesCard)
     markRule(workspace, {
       cardId: input.rulesCard,
       disposition: "conflict",
-      request: target.relative,
+      request: issueUrl,
     })
-  return { path: target.relative, issueUrl, actions, dryRun: false }
+  return { issueUrl, actions, dryRun: false }
 }
 
 export function listDesignRequests(
@@ -348,9 +343,24 @@ export function listDesignRequests(
   )
 }
 
+/** The issue a close names: a full URL, or a number read back through `gh`. */
+export function requestIssueUrl(workspace: Workspace, issue: string, gh: IssueCommand): string {
+  const trimmed = issue.trim()
+  if (/^\d+$/.test(trimmed)) {
+    const url = gh(
+      ["issue", "view", trimmed, "--json", "url", "--jq", ".url"],
+      workspace.workspaceRoot,
+    )
+    if (!url.trim()) throw new UsageError(`issue ${trimmed} did not resolve to a URL`)
+    return url.trim()
+  }
+  if (/^https:\/\/[^\s/]+\/[^\s/]+\/[^\s/]+\/issues\/\d+$/.test(trimmed)) return trimmed
+  throw new UsageError(`"${trimmed}" is neither an issue URL nor an issue number`)
+}
+
 export function closeDesignRequest(
   workspace: Workspace,
-  recordFile: string,
+  issue: string,
   decision: string,
   commit: string,
   dryRun: boolean,
@@ -358,7 +368,6 @@ export function closeDesignRequest(
 ): {
   issueUrl: string
   commitUrl: string
-  path: string
   actions: string[]
   openPoints: string[]
   dryRun: boolean
@@ -366,26 +375,18 @@ export function closeDesignRequest(
   if (!decision.trim()) throw new UsageError("request close needs --decision")
   if (!/^[0-9a-f]{7,40}$/i.test(commit))
     throw new UsageError("request close --commit must be a Git commit SHA")
-  const absolute = path.isAbsolute(recordFile)
-    ? path.resolve(recordFile)
-    : path.resolve(workspace.workspaceRoot, recordFile)
-  const relativePath = path.relative(workspace.workspaceRoot, absolute)
-  if (relativePath.startsWith("..") || path.isAbsolute(relativePath))
-    throw new UsageError("request record must be inside the workspace")
-  const source = fs.readFileSync(absolute, "utf8")
-  const url = readDesignRequestRecord(source).issueUrl
-  if (!url) throw new UsageError("request record has no issue URL")
+  const url = requestIssueUrl(workspace, issue, gh)
   const repo = url.match(/^(https:\/\/[^/]+\/[^/]+\/[^/]+)\/issues\/\d+$/)?.[1]
   if (!repo) throw new UsageError("request issue URL is not a GitHub issue URL")
-  // The writer refuses a record it cannot answer: an unreadable status, an
-  // answered one, or one with no `## Decision` to write into.
-  const updated = answeredRecordSource(source, decision)
   const commitUrl = `${repo}/commit/${commit}`
+  // The answer is a comment, not a file: the record used to hold the decision
+  // and the issue only linked to it, so the answer the owner's successors read
+  // lived outside the place the owner replied in.
+  const body = `${decision.trim()}\n\nRecorded in ${commitUrl}`
   const actions = [
     `gh issue edit ${url} --remove-label status/needs-answer --add-label status/answered`,
-    `gh issue comment ${url} --body "Decision recorded in ${commitUrl}"`,
+    `gh issue comment ${url} --body "<decision> — Recorded in ${commitUrl}"`,
     `gh issue close ${url}`,
-    `write ${workspace.identity(absolute)}`,
   ]
   if (!dryRun) {
     gh(
@@ -400,17 +401,12 @@ export function closeDesignRequest(
       ],
       workspace.workspaceRoot,
     )
-    gh(
-      ["issue", "comment", url, "--body", `Decision recorded in ${commitUrl}`],
-      workspace.workspaceRoot,
-    )
+    gh(["issue", "comment", url, "--body", body], workspace.workspaceRoot)
     gh(["issue", "close", url], workspace.workspaceRoot)
-    writeText(absolute, updated)
   }
   return {
     issueUrl: url,
     commitUrl,
-    path: workspace.identity(absolute),
     actions,
     openPoints: [
       "remove the review story while keeping its captures",

@@ -4,7 +4,6 @@ import { expect, userEvent, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { PaymentModule } from "@/components/composites/payment-module"
-import { Icon } from "@/components/icons/icon"
 import { Default as DownloadIcon } from "@/components/icons/generated/download"
 import { ButtonGroup } from "@/components/inputs/actions"
 import { Chip } from "@/components/inputs/chips"
@@ -64,7 +63,7 @@ export const Playground: Story = {
       <ButtonGroup aria-label="Azioni del pagamento">
         <Button type="button" variant="ghost">
           Scarica documento
-          <Icon source={DownloadIcon} className="pui:size-6" />
+          <DownloadIcon className="pui:size-6" />
         </Button>
         <Button type="button">Paga 744,00 €</Button>
       </ButtonGroup>
@@ -97,7 +96,7 @@ export const ActionMobile: Story = {
         <Button type="button">Paga 744,00 €</Button>
         <Button type="button" variant="ghost">
           Scarica documento
-          <Icon source={DownloadIcon} className="pui:size-6" />
+          <DownloadIcon className="pui:size-6" />
         </Button>
       </ButtonGroup>
     ),
@@ -170,7 +169,7 @@ export const MultiPayment: Story = {
 }
 
 export const Loading: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   args: { loading: true },
   play: async ({ canvasElement }) => {

@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { FeatureList } from "@/components/content/feature-list"
-import { Icon } from "@/components/icons/icon"
 import { Default as CheckIcon } from "@/components/icons/generated/check"
 import { Default as PhotoIcon } from "@/components/icons/generated/photo"
 import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
@@ -17,12 +16,12 @@ const meta = {
       {
         title: "Pagamenti sicuri",
         description: "Paga online verso la Pubblica Amministrazione.",
-        icon: <Icon source={CheckIcon} />,
+        icon: <CheckIcon />,
       },
       {
         title: "Servizi accessibili",
         description: "Esperienze progettate per tutte le persone.",
-        icon: <Icon source={CheckIcon} />,
+        icon: <CheckIcon />,
       },
     ],
   },
@@ -62,7 +61,7 @@ export const Indicators: Story = {
           {
             title: "Monitora le richieste",
             description: "Segui lo stato delle pratiche in tempo reale.",
-            icon: <Icon source={CheckIcon} />,
+            icon: <CheckIcon />,
           },
         ]}
       />
@@ -112,7 +111,7 @@ export const SourceIcon: Story = {
           {
             title: sourceTitle,
             description: sourceDescription,
-            icon: <Icon source={PhotoIcon} />,
+            icon: <PhotoIcon />,
             action: { label: "Scopri di più", href: "#scopri" },
           },
         ]}

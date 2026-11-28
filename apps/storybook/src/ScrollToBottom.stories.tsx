@@ -49,13 +49,13 @@ function ScrollExample() {
 }
 
 export const Playground: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   render: () => <ScrollExample />,
 }
 
 export const ReducedMotionScroll: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   beforeEach: () => {
     const original = window.matchMedia.bind(window)
@@ -75,6 +75,39 @@ export const ReducedMotionScroll: Story = {
     try {
       await userEvent.click(canvas.getByRole("button", { name: "Vai in fondo" }))
       await expect(scroll).toHaveBeenCalledWith({ top: region.scrollHeight, behavior: "instant" })
+      await waitFor(() =>
+        expect(region.scrollTop).toBeGreaterThanOrEqual(
+          region.scrollHeight - region.clientHeight - 1,
+        ),
+      )
+    } finally {
+      scroll.mockRestore()
+    }
+  },
+}
+
+/**
+ * The same control with the engine's own preference, not a mock. It is the
+ * harness proof for the `storybook-reduced-motion` pass: the story asserts the
+ * behaviour the media query implies at that moment, so it reads `smooth` in the
+ * default pass and `instant` in the reduced-motion pass. If the condition ever
+ * stopped reaching the browser, one of the two passes would fail instead of
+ * quietly passing twice.
+ */
+export const RealMotionPreference: Story = {
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
+  parameters: { a11yContract: { reflow: false } },
+  render: () => <ScrollExample />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const region = canvas.getByRole("region", { name: "Informazioni" })
+    const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? "instant"
+      : "smooth"
+    const scroll = spyOn(region, "scrollTo")
+    try {
+      await userEvent.click(canvas.getByRole("button", { name: "Vai in fondo" }))
+      await expect(scroll).toHaveBeenCalledWith({ top: region.scrollHeight, behavior })
       await waitFor(() =>
         expect(region.scrollTop).toBeGreaterThanOrEqual(
           region.scrollHeight - region.clientHeight - 1,

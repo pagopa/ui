@@ -5,7 +5,6 @@ import { Radio as RadioPrimitive } from "@base-ui/react/radio"
 import { RadioGroup as RadioGroupPrimitive } from "@base-ui/react/radio-group"
 import { cn } from "@/lib/cn"
 
-import { Icon } from "@/components/icons/icon"
 import {
   Default as RadioButtonUncheckedIcon,
   Checked as RadioButtonCheckedIcon,
@@ -71,7 +70,7 @@ function RadioGroup({
 
   return (
     <RadioGroupPrimitive
-      data-slot="radio-group"
+      data-slot="radio-group-control"
       inputRef={mergedInputRef}
       value={value === undefined ? uncontrolledValue : value}
       onValueChange={(next, details) => {
@@ -98,15 +97,12 @@ function RadioGroupItem({ className, inputRef: externalInputRef, ...props }: Rad
       )}
       {...props}
     >
-      <Icon
-        source={RadioButtonUncheckedIcon}
-        className="pui:group-data-checked/radio-group-item:hidden"
-      />
+      <RadioButtonUncheckedIcon className="pui:group-data-checked/radio-group-item:hidden" />
       <RadioPrimitive.Indicator
         data-slot="radio-group-indicator"
         className="pui:flex pui:items-center pui:justify-center pui:data-unchecked:hidden"
       >
-        <Icon source={RadioButtonCheckedIcon} />
+        <RadioButtonCheckedIcon />
       </RadioPrimitive.Indicator>
     </RadioPrimitive.Root>
   )

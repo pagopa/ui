@@ -37,6 +37,7 @@ import {
   RulesLedgerSchema,
   RulesSnapshotSchema,
 } from "../schemas/rules.ts"
+import { issuePointers } from "./config.ts"
 import { fetchFilePages, fetchNodeTrees, type FigmaPage } from "./rest.ts"
 
 export const RULES_BOX_NAMES = new Set([".Regole", "Regole"])
@@ -451,7 +452,7 @@ const MARK_FLAGS: Partial<Record<RuleRequirement, string>> = {
   guide: "--guide <path>",
   duplicateOf: "--duplicate-of <card id>",
   reason: "--reason <text>",
-  request: "--request <docs/design-requests/…md>",
+  request: "--request <https://…/issues/…>",
 }
 
 function normaliseTargets(root: string, values: string[]): string[] {
@@ -571,6 +572,7 @@ export type CheckReport = {
 }
 
 const RULES_GATE = "pnpm nx run pagopa-ui-cli:check:rules"
+const REQUEST_GATE = "pnpm ui-cli figma request open --input <file>"
 
 // `strict` decides what a ledger behind Figma costs: by default the drift is a
 // report and the chain moves on, and a session that wants the cards settled
@@ -647,13 +649,9 @@ export function check(
         `${id}: duplicateOf ${card.duplicateOf} is not in the ledger — point it at a ledger card, then run \`${RULES_GATE}\``,
       )
     }
-    if (
-      card.disposition === "conflict" &&
-      card.request &&
-      !fs.existsSync(path.join(workspaceRoot, card.request))
-    ) {
+    if (card.disposition === "conflict" && card.request && !issuePointers(card.request).length) {
       errors.push(
-        `${id}: design request ${card.request} does not exist — write it under docs/design-requests, then run \`${RULES_GATE}\``,
+        `${id}: design request ${card.request} is not an issue URL — open the question with \`${REQUEST_GATE}\`, then run \`${RULES_GATE}\``,
       )
     }
   }

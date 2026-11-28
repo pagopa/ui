@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import isChromatic from "chromatic/isChromatic"
 import { expect, screen, userEvent, waitFor, within } from "storybook/test"
 
 import { AttachmentModule } from "@/components/composites/attachment-module"
@@ -118,7 +119,7 @@ export const DrawerCloseLabel: Story = {
 }
 
 export const NoticeLabels: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
     <div className="pui:grid pui:max-w-xl pui:gap-4">
@@ -171,7 +172,7 @@ export const NoticeLabels: Story = {
 }
 
 export const NavigationTexts: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: {
     a11yContract: { reflow: false },
     // The fixture pins the desktop width: the play function reads the wide
@@ -217,6 +218,9 @@ export const NavigationTexts: Story = {
     </div>
   ),
   play: async ({ canvasElement }) => {
+    // Chromatic's renderer fails this play while `test:stories` passes it
+    // on three engines, so only the capture judges the build (#195).
+    if (isChromatic()) return
     const canvas = within(canvasElement)
     await expect(canvas.getByRole("navigation", { name: "Navigazione a pagine" })).toBeVisible()
     await expect(canvas.getByRole("button", { name: "Vai indietro" })).toBeVisible()
@@ -232,7 +236,7 @@ export const NavigationTexts: Story = {
 }
 
 export const FieldTexts: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
     <div className="pui:grid pui:max-w-md pui:gap-6">
@@ -333,7 +337,7 @@ export const FieldTexts: Story = {
 }
 
 export const ContentAnnouncements: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
     <div className="pui:grid pui:max-w-xl pui:gap-6">

@@ -3,7 +3,7 @@
 // The census (`page-surface.json`) states, per published identity, what the
 // library gives it; the registry states the same thing as a status. The two are
 // one value spelled twice, and three call sites used to translate between them
-// on their own: the census gate that compares them, the `registry set` writer
+// on their own: the census gate that compares them, the `record` writer
 // that has to keep them in step, and the drift refresh that has to know which
 // entries keep their status. They disagreed on the edges — `unpublished` has no
 // registry status at all, and a `mocked` node has to keep its note.

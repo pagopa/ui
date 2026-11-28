@@ -27,6 +27,7 @@ export const itMessages: Messages = {
     legacyDescription: "Description",
     legacySuggestion: "Suggerito perché sei già cliente",
     noticeCodeLabel: "Codice avviso",
+    amountLabel: "Importo",
     continueLabel: "Continua",
     editLabel: "Modifica",
   },
@@ -72,6 +73,7 @@ export const itMessages: Messages = {
     emptyLabel: "Nessun risultato",
     emptyStateTitle: "Nessun risultato",
     sortLabel: (column) => `Ordina per ${column}`,
+    rowLabel: (label) => (label ? `Seleziona ${label}` : "Seleziona riga"),
   },
   timeline: {
     label: "Cronologia",
@@ -115,6 +117,8 @@ export const itMessages: Messages = {
     openLabel: "apri lista",
     closeLabel: "chiudi lista",
     loadingLabel: "Caricamento lista in corso",
+    listLabel: (label) => (label ? `Lista ${label}` : "Lista"),
+    selectedLabel: (values) => `hai selezionato ${values.join(", ")}`,
   },
   chip: {
     removeLabel: (label) => (label ? `Elimina ${label}` : "Elimina"),
@@ -137,6 +141,7 @@ export const itMessages: Messages = {
     disabledText: "Caricamento non disponibile",
     draggingText: "Rilascia qui per caricare",
     idleText: "Trascina qui i file o selezionali",
+    selectionHint: (multiple) => (multiple ? "Puoi selezionare più file" : "Seleziona un file"),
     uploadLabel: "Carica il file",
     uploadLogoLabel: "Carica il logo",
     cancelLabel: "Annulla",
@@ -194,10 +199,16 @@ export const itMessages: Messages = {
   cookies: {
     closeLabel: "Chiudi",
     label: "Preferenze cookie",
+    learnMoreLabel: "Scopri di più",
+    rejectLabel: "Rifiuta tutti",
+    acceptLabel: "Accetta tutti",
   },
   footer: {
     brand: "PagoPA",
     columnsLabel: "Collegamenti del piè di pagina",
+    // The legal identity of the company: the same words in every locale.
+    companyInformation:
+      "PagoPA S.p.A. - Società per azioni - Capitale sociale di euro 1,000,000 interamente versato - Sede legale in Roma, Piazza Colonna 370, CAP 00187 - N. di iscrizione a Registro Imprese di Roma, CF e P.IVA 15376371009",
   },
   pagination: {
     label: "Paginazione",
@@ -211,6 +222,8 @@ export const itMessages: Messages = {
   },
   sideNav: {
     title: "In questa sezione",
+    expandLabel: (label) => `Espandi ${label}`,
+    collapseLabel: (label) => `Comprimi ${label}`,
   },
   skipToMainContent: {
     children: "Vai al contenuto principale",

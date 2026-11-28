@@ -70,7 +70,7 @@ export function ItemRow({
               data-slot="item-row-leading"
               className={cn(
                 "pui:pointer-events-none pui:inline-flex pui:shrink-0 pui:items-center pui:gap-2 pui:self-center",
-                leadingAlignment === "label" && "pui:h-lh pui:self-start pui:leading-[1.375]",
+                leadingAlignment === "label" && "pui:h-lh pui:self-start pui:leading-snug",
                 multiple && chip && leadingAlignment === "center" && "pui:row-span-2",
               )}
             >

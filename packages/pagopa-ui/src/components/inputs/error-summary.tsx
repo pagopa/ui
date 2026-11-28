@@ -30,7 +30,7 @@ function focusFieldTarget(fieldId: string) {
 // announces once (`role="alert"`), links each control, and the controls stay
 // associated with their own message through `aria-describedby`. Per-message
 // live regions would announce the same failure several times.
-export interface ErrorSummaryProps {
+export interface ErrorSummaryProps extends Omit<React.ComponentProps<"div">, "children" | "title"> {
   /** Errors to list: every message links back to its control. */
   errors: ErrorSummaryItem[]
   /**
@@ -42,19 +42,21 @@ export interface ErrorSummaryProps {
   className?: string
 }
 
-function ErrorSummary({ errors, title: titleProp, className }: ErrorSummaryProps) {
+function ErrorSummary({ errors, title: titleProp, className, ref, ...props }: ErrorSummaryProps) {
   const t = useMessages("errorSummary")
   const title = titleProp ?? t.title
 
   if (!errors.length) return null
   return (
     <div
+      ref={ref}
       role="alert"
       data-slot="error-summary"
       className={cn(
         "pui:rounded-lg pui:border pui:border-error-border pui:bg-error-soft pui:p-4 pui:text-body-sb pui:text-error-foreground",
         className,
       )}
+      {...props}
     >
       <p className="pui:text-body-big-sb">{title}</p>
       <ul className="pui:mt-2 pui:flex pui:list-disc pui:flex-col pui:gap-1 pui:pl-5 pui:text-caption">

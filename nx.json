@@ -22,7 +22,15 @@
     }
   },
   "namedInputs": {
-    "tooling": ["{workspaceRoot}/packages/ui-cli/**/*"],
+    "tooling": [
+      "{workspaceRoot}/packages/ui-cli/src/**/*",
+      "{workspaceRoot}/packages/ui-cli/data/**/*",
+      "{workspaceRoot}/packages/ui-cli/package.json",
+      "{workspaceRoot}/packages/ui-cli/playwright.config.mjs",
+      "{workspaceRoot}/packages/ui-cli/tests/e2e/library-host-css-coexistence.spec.mjs",
+      "{workspaceRoot}/packages/ui-cli/tests/fixtures/library-consumer/**/*",
+      "{workspaceRoot}/packages/ui-cli/tests/fixtures/library-rsc-consumer/**/*"
+    ],
     "figmaChecks": [
       "default",
       "tooling",
@@ -31,7 +39,6 @@
       "{workspaceRoot}/packages/artwork/src/**",
       "{workspaceRoot}/packages/tokens/src/**",
       "{workspaceRoot}/apps/storybook/src/**",
-      "{workspaceRoot}/docs/design-requests/**",
       "{workspaceRoot}/pnpm-lock.yaml",
       { "runtime": "node --version" }
     ]

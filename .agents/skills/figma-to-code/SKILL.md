@@ -13,9 +13,11 @@ Figma is read-only: read it over REST or MCP where
 1. **Scope.** `pnpm ui-cli figma status` names the config and the route: no config
    or a source comparison → [init.md](references/init.md); a live change →
    [delta.md](references/delta.md).
-2. **Context.** `pnpm ui-cli figma brief --node <nodeId>`; `--queue` orders the
-   delta's briefs. [Statuses](references/catalogue/statuses.md); done when target,
-   guide, constraints, rules, comments and devices are read.
+2. **Context.** `pnpm ui-cli figma brief --node <nodeId> --card` reads the
+   bounded node card: target, guide pointer, constraints, rules, comments and
+   devices. `--queue` orders the delta's briefs the same way; drop `--card` for
+   the whole brief when the card's pointer leaves a question open.
+   [Statuses](references/catalogue/statuses.md); done when those are read.
 3. **Align.** `pnpm ui-cli align <nodeId>`: the preflight, the capture and the
    comparison in one run, writing nothing. Done when every declared device has a
    run whose result you can restate ([commands](references/commands.md)).

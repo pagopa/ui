@@ -21,14 +21,13 @@ test("a registry within the limit has nothing to report", () => {
   assert.deepEqual(noteLengthWarnings(registry([short])), [])
 })
 
-// The limit is a writer guard, not a baseline: `figma registry set` refuses a
-// longer note, and the notes already past it are counted on the report so the
+// The limit is a writer guard, not a baseline: `record` refuses a longer note, and the notes already past it are counted on the report so the
 // residue stays visible without holding the branch.
 test("the notes past the limit are reported once with their count", () => {
   const warnings = noteLengthWarnings(registry([short, long, long]))
   assert.equal(warnings.length, 1)
   assert.match(warnings[0], /2 of 3 registry notes exceed 600 characters/)
-  assert.match(warnings[0], /pnpm ui-cli figma registry set/)
+  assert.match(warnings[0], /pnpm ui-cli record/)
 })
 
 test("a note of exactly the limit is not over it", () => {

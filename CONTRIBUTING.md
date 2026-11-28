@@ -150,8 +150,13 @@ Use `pnpm nx show projects` to list projects and
   review reaches it).
 - `pnpm nx run pagopa-ui-tokens:test` — the token manifest against the generated
   CSS and TypeScript (`check:tokens`, hung under `test`).
-- `pnpm nx run pagopa-ui-cli:test` — the `node --test`
-  suites of the tooling and of its fixtures.
+- `pnpm nx run pagopa-ui-cli:test:unit` and
+  `pnpm nx run pagopa-ui-cli:test:contracts` — the `node --test` suites of the
+  tooling and of its fixtures, split by what they read. The unit target runs
+  every suite that works against a temporary tree, so a fixture edit does not
+  invalidate the consumers of the `tooling` named input; the contract target
+  runs the five suites that read this repository — the task graph, the
+  workflows and the Nx inputs — and is never cached.
 - `pnpm nx run pagopa-ui:check:catalogue` — hermetic catalogue check, which
   warns when the committed Storybook titles the inventory story links read are
   behind: the drift refresh regenerates them and `pagopa-ui:update:stories` does
@@ -168,7 +173,7 @@ Use `pnpm nx show projects` to list projects and
 - `pnpm nx run pagopa-ui-storybook:build` — the deployable documentation
   (`dist/` inside `apps/storybook`) out of the stories the application carries.
 - `pnpm ui-cli parity check`,
-  `pnpm ui-cli figma devices`
+  `pnpm ui-cli check devices`
   — the parity diagnostic — it compares a node's numeric source with its story
   and records nothing — and the device policy, see the
   [`figma-to-code`](./.agents/skills/figma-to-code/SKILL.md) skill.
@@ -299,14 +304,17 @@ Both Figma skills carry graded sessions in the `evals.json` format
 [`.agents/skills/figma-to-code/evals`](./.agents/skills/figma-to-code/evals/evals.json),
 `figma-to-ui` in
 [`packages/pagopa-ui/skills/figma-to-ui/evals`](./packages/pagopa-ui/skills/figma-to-ui/evals/evals.json).
-Six evals for `figma-to-code` — an end-to-end pass over a single node, a
+Seven evals for `figma-to-code` — an end-to-end pass over a single node, a
 guardrail that must stop and report instead of inventing a design, a delta
 triage over two or three nodes that must read the batched context once instead
 of a brief per node, a drift census reconciliation guardrail over an offline
 export, a scoped rules-refresh guardrail that keeps untouched pages intact on a
-partial snapshot, and a batched page-surface sync guardrail covering composition
-candidates and unverified missing compositions — and two for `figma-to-ui`: the end-to-end pass over a
-frame and the guardrail. They grade
+partial snapshot, a batched page-surface sync guardrail covering composition
+candidates and unverified missing compositions, and a property map round trip
+that records a declared mapping through `record --props`, reads it back the way
+a consumer does, and reports the preflight refusal of an undeclared property.
+`figma-to-ui` has three: the end-to-end pass over a frame, the guardrail, and
+the declared property map a consumer sets for a component set. They grade
 the session — what the agent read, resolved and decided — not the diff, so a
 skill change is graded without building anything; they are the regression net
 for the skills' own instructions.
@@ -343,10 +351,60 @@ guardrails and every `figma-to-ui` eval still start without one — an `--ae
 FIGMA_TOKEN=…` would hand a token to every task and disarm the guardrail it
 grades.
 
+The workspace each task grades is cut from `main` unless `PAGOPA_UI_REF` says
+otherwise, in `prepare.sh` of both skills: a pinned commit goes stale silently,
+and the skill ends up graded against a `ui-cli` that is not the one in the same
+checkout, so a renamed flag reads as a skill regression nobody can reproduce.
+`PAGOPA_UI_REF=<sha>` reproduces an older run, and tries a branch before it
+merges:
+
+```bash
+PAGOPA_UI_REF="$(git rev-parse HEAD)" harbor-bench convert \
+  --evals .agents/skills/figma-to-code/evals/evals.json --out .harbor/code
+```
+
 `harbor-bench compare <base> <head>` runs the same evals twice, base skill
 against head skill — a local directory or a git source such as
 `pagopa/ui@main` — and writes `comparison.md`. Keep `--out .harbor` and
 `--runs-dir .harbor/runs`: `.harbor` is ignored.
+
+### Grading by hand
+
+No workflow grades the suites. A graded session starts agent sessions against a
+live Figma file, so it needs `COPILOT_GITHUB_TOKEN` and `FIGMA_TOKEN`, and it
+spends minutes of model time per round: the verdict is a reward file, not an
+exit code a pull request can wait on. Both halves of it are a deliberate act, in
+this order.
+
+**Compile first** — no token needed, and it catches the drift that actually
+happens. Convert both suites, which rejects an eval the schema does not accept,
+then check every compiled task against the overlay meant to describe it: when an
+eval is renamed in `evals.json` the overlay directory keeps the old name,
+convert falls back to the defaults, and the run would grade a task whose
+artifact excludes and `FIGMA_TOKEN` entry are wrong.
+
+```bash
+harbor-bench convert --model gpt-6-luna \
+  --evals .agents/skills/figma-to-code/evals/evals.json --out .harbor/code
+harbor-bench convert --model gpt-6-luna \
+  --evals packages/pagopa-ui/skills/figma-to-ui/evals/evals.json --out .harbor/ui
+
+for pair in "code:.agents/skills/figma-to-code" "ui:packages/pagopa-ui/skills/figma-to-ui"; do
+  for overlay in "${pair#*:}"/harbor/*/task.toml; do
+    task="$(basename "$(dirname "$overlay")")"
+    diff -q "$overlay" ".harbor/${pair%%:*}/tasks/$task/task.toml"
+  done
+done
+```
+
+A diff means the overlay no longer describes the eval: rename `harbor/<task>`,
+or fix the eval it belongs to. Both trees are meant to be byte-identical.
+
+**Grade second**, by hand, with both tokens exported and `PAGOPA_UI_REF` set to
+the checkout (`git rev-parse HEAD`) so the image is not cut from `main`. Run
+both suites before a release. `prepare.sh` fails by name when a token is
+missing, because a token-free subset would read as a pass for a suite it never
+ran.
 
 ### What fails fast
 
@@ -366,10 +424,10 @@ A session that cannot be graded does not start, and the failure names the fix:
   holds for the skill-use gate: no proven skill load is a `0`, never a skip.
 
 The evals are not in the green chain: they start agent sessions and need the
-network, a Copilot token and, for one eval, a Figma token. Done when every eval
-the change touched reports 1.0 in its `verifier/reward.json`, and a 0.0 is read
-from `verifier/reward-details.json` before the agent is blamed — a broken judge
-scores the same.
+network, a Copilot token and, for three of them, a Figma token. Done when every
+eval the change touched reports 1.0 in its `verifier/reward.json`, and a 0.0 is
+read from `verifier/reward-details.json` before the agent is blamed — a broken
+judge scores the same.
 
 ## Workflow
 
@@ -461,6 +519,9 @@ project in its area as affected. Projects with a `Dockerfile` are inferred by
   review pull request.
 - `release.yaml` — the DX release manager, on `main`.
 
+No workflow grades the skill evals: they start agent sessions against a live
+Figma file, so [grading them is a manual act](#skill-evals) before a release.
+
 Deep checks attach seven-day `nx-profile-*` artifacts, including on failed runs,
 and the Chromatic run attaches the one its Storybook build wrote. Their
 Chrome-trace JSON records each Nx task's duration (`dur` in microseconds) and
@@ -485,12 +546,11 @@ workflow would leave a required check pending instead. It does not skip the deep
 checks, which run there at the whole-catalogue scope of the nightly, because
 what the release guards is the publish and a publish answers to every story.
 
-The visual diff runs there in full, because that pull request is the last moment
-before `@pagopa/ui` is published: it compares the whole catalogue, at every
-width, where an ordinary pull request asks Chromatic for the stories its diff
-reaches. A diff the nightly or this pass finds is accepted in the Chromatic
-dashboard, and the pass that reports after the acceptance is the one that proves
-the fix.
+The visual diff runs there, because that pull request is the last moment before
+`@pagopa/ui` is published: it compares the whole catalogue, at every width an
+ordinary pull request does not capture it at all. A diff the weekly or this pass
+finds is accepted in the Chromatic dashboard, and the pass that reports after the
+acceptance is the one that proves the fix.
 
 Merging a release therefore starts the release and the production Storybook
 deploy, not seven runs at once. A hand-written pull request runs everything:
@@ -499,9 +559,10 @@ its deep checks and visual pass take the whole catalogue.
 
 No merge to `main` runs the deep checks or the visual diff: a merge carries the
 diff its pull request already proved, and the nightly schedules are what re-prove
-the whole repository. For the visual diff the proof a change carries is the
-comparison its pull request reported; the nightly and the release pass are where
-the whole catalogue is compared again.
+the whole repository. The visual diff is the exception on the pull request side:
+it is not captured there at all, so the weekly pass and the release pass are
+where the whole catalogue is compared, and a regression is named within a week of
+reaching `main`.
 
 ## The green chain
 
@@ -526,13 +587,17 @@ file, `docs/` and `mise.toml` included.
 What the graph holds:
 
 - `workspace:verify-full` — the whole chain: `workspace:verify-fast` plus the
-  Storybook tail, `pagopa-ui-storybook:typecheck`, `build`, `test:coverage`,
-  `test:stories` and `pagopa-ui:library:check`;
+  browser end, `pagopa-ui-storybook` `typecheck`, `test:coverage`,
+  `test:stories`, `build`, and `pagopa-ui:library:check`;
 - `workspace:verify-fast` — the static half, gate by gate:
   `workspace:check:format`; `pagopa-ui` `typecheck`, `format:check`,
   `lint:check`, `docs`, `check:catalogue`, `foundation:check`, `layers:check`,
-  `build`, `test`; `pagopa-ui-artwork`, `pagopa-ui-tokens` and `pagopa-ui-cli`
-  `typecheck`, `format:check`, `lint:check`, `test`. The `.Regole` card report
+  `utility-prefix:check`, `consumer-dx:check`, `build`, `test`;
+  `pagopa-ui-artwork` and `pagopa-ui-tokens` `typecheck`, `format:check`,
+  `lint:check`, `test`; `pagopa-ui-cli` `typecheck`, `format:check`,
+  `lint:check`, `test:unit`, `test:contracts`; `pagopa-ui-storybook`
+  `lint:check` and `format:check`, because a story that lint or format rejects
+  fails the browser end before it starts. The `.Regole` card report
   (`pagopa-ui-cli:check:rules`) is not a gate: it prints the drift and exits 0,
   and `--strict` is the caller that wants it to fail.
 
@@ -542,7 +607,7 @@ to. `pagopa-ui:test` pulls the checks that package owns — `api:check`,
 `figma:map:check`, `a11y:conformance:check` and the rest — through its
 `dependsOn`, so each runs once, wherever in the graph it is needed. A gate is
 added by adding a `dependsOn` entry to `tools/workspace/project.json`;
-`packages/ui-cli/tests/checks/verify-chain.test.mjs` reads the task graph and
+`packages/ui-cli/tests/contracts/verify-chain.test.mjs` reads the task graph and
 fails when one leaves it.
 
 A lock the gate rejects is refreshed with `mise lock node pnpm`, which rewrites
@@ -563,14 +628,14 @@ in its dashboard. The decision and its reasons are
 section is how to use it.
 
 **The run is experimental.** [ADR-0018 §4](./docs/decisions/0018-chromatic-for-visual-regression.md)
-records why: a live build reported ten stories failing their plays that
-`test:stories` passes, a build over the plan's limit publishes and runs no test
-while staying green, and TurboSnap is inert for the first ten CI builds. A green
-Chromatic check therefore reports that the run happened, not that the pixels did
-not move — it is a dashboard to read beside the change, never the proof that the
-change looks the same, and it is not a required check. ADR-0018 §5 names what
-ends the experimental status; the work is tracked in
-[#195](https://github.com/pagopa/ui/issues/195).
+records why: a build over the plan's limit publishes and runs no test while
+staying green, and the capture reports rather than gates. A green Chromatic check
+therefore reports that the run happened, not that the pixels did not move — it is
+a dashboard to read beside a change, never the proof that the change looks the
+same, and it is not a required check. ADR-0018 §5 names what ends the
+experimental status, and
+[§7](./docs/decisions/0018-chromatic-for-visual-regression.md) amends it with the
+two decisions below.
 
 The integration is opt-in through the `CHROMATIC_PROJECT_TOKEN` environment
 secret of `app-dev-ci` ([Figma drift secrets](./docs/figma-drift-secrets.md) has
@@ -581,21 +646,23 @@ nothing else to change. Run it locally with the token in the environment:
 
 ```bash
 pnpm nx run pagopa-ui-storybook:build
-CHROMATIC_PROJECT_TOKEN=… pnpm nx run pagopa-ui-storybook:chromatic -- --only-changed
+CHROMATIC_PROJECT_TOKEN=… pnpm nx run pagopa-ui-storybook:chromatic -- --ci
 ```
 
-What a run compares follows the event. An ordinary pull request passes
-`--only-changed`, and Chromatic's TurboSnap traces the changed files through the
-module graph the build writes to `preview-stats.json` to the stories they reach —
-the scope walk this repository used to own. The build passes `--stats-json` for
-that reason: the Vite builder emits the stats only when asked, and a prebuilt
-Storybook without them fails the run instead of tracing. The nightly at 04:00
-UTC, a manual dispatch and the **Version Packages** pull request compare every
-story, because those are the passes where a story nothing else proved has to
-surface and the publish is the last moment to notice. The first run of a project
-captures everything and becomes the baseline the next one traces against;
-TurboSnap itself needs ten builds from CI before it traces anything, so
-`--only-changed` captures the whole catalogue until then.
+The cadence is weekly, on the **Version Packages** pull request and on a manual
+dispatch — never on an ordinary pull request. A pull request is gated instead by
+the story suite, the two condition renderings and the accessibility contract in
+`deep-checks.yml`, which run in minutes and fail the check; a capture bills per
+snapshot, reports rather than gates, and is read against a history that is worth
+reading a week later. Every pass compares the whole catalogue, so nothing is
+scoped and TurboSnap is not wired: no `--only-changed`, no stats file, and a
+shallow checkout. The trade is accepted: a visual regression surfaces within a
+week of reaching `main`, and the weekly run names the commit it appeared in.
+
+Two stories pin their own width, and they capture only that width: `SideNav >
+Condensed` renders a 1440 px page fixture and `SideNav > CondensedMobile` its
+320 px counterpart, so the other two widths are a crop of a composition that does
+not respond. A story that does respond keeps the three widths.
 
 The comparison reports, it does not gate: `exitZeroOnChanges` in
 `apps/storybook/chromatic.config.json` keeps a non-empty diff green and the
@@ -613,13 +680,31 @@ so on the pull request instead of looking like a clean one — but the plan stil
 has to cover the catalogue before the run means anything.
 
 The build also runs the stories' `play` functions as interaction tests, and one
-of those failing fails the build even with `exitZeroOnChanges`. `test:stories`
-runs the same plays in two engines, so a story that fails only here is read in
-the interaction report before it is treated as a regression — and the report is
-the only place the message appears, since the dashboard needs a sign-in while
-the published Storybook does not. The first live build named ten stories that
-`test:stories` passes at 320 and at 414 px, on both engines; ADR-0018 §5 holds
-the decision, and no flag exists to make the build ignore only the plays.
+of those failing fails the build even with `exitZeroOnChanges`. Ten stories pin
+desktop geometry — a fixed row height, an 852 px table, 899 px and 900 px
+regions, four footer columns, a 1440 px page whose rail expands on hover — and
+Chromatic renders each story at 320, 600 and 1200 px, so the narrow rendering is
+what failed their plays; `test:stories` passes them because the browser runner's
+viewport is wide. No Storybook parameter disables only the play
+(`disableSnapshot` stops the capture too), so those ten plays open with the
+guard below and the capture judges their pixels while `test:stories` judges their
+behaviour on two engines:
+
+```tsx
+import isChromatic from "chromatic/isChromatic"
+
+export const Pinned: Story = {
+  play: async ({ canvasElement }) => {
+    if (isChromatic()) return
+    // …
+  },
+}
+```
+
+`isChromatic()` is false at build time and under `test:stories` and true only in
+Chromatic's renderer, so the guard costs the other runs nothing. Write it only
+for a play whose assertions are desktop geometry: a play that holds at every
+width should keep running here.
 
 Two catalogues change whenever everything else does, so they are exempt by
 parameter rather than by a tag: `Foundations/Tokens` and the Figma inventory

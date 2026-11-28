@@ -3,7 +3,6 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, waitFor, within } from "storybook/test"
 
 import { SwitchField } from "@/components/inputs/switch-field"
-import { Icon } from "@/components/icons/icon"
 import { Default as Mobile2Icon } from "@/components/icons/generated/mobile-2"
 import { Button } from "@/components/primitives/button"
 import { Switch } from "@/components/primitives/switch"
@@ -327,7 +326,7 @@ export const RichSourceOptions: Story = {
         label="Aggiornamenti della pratica"
         name="updates"
         defaultChecked
-        leadingIcon={<Icon source={Mobile2Icon} decorative={false} label="Dispositivo mobile" />}
+        leadingIcon={<Mobile2Icon decorative={false} label="Dispositivo mobile" />}
         description="Ricevi una comunicazione quando cambia lo stato."
         learnMore={{ label: "Approfondisci gli aggiornamenti", href: "/servizi/aggiornamenti" }}
       />
@@ -335,7 +334,7 @@ export const RichSourceOptions: Story = {
         label="Notifiche non disponibili"
         name="unavailable"
         disabled
-        leadingIcon={<Icon source={Mobile2Icon} />}
+        leadingIcon={<Mobile2Icon />}
         description="La preferenza non può essere modificata."
         learnMore={{ label: "Informazioni sulle notifiche", href: "/servizi/notifiche" }}
       />
@@ -343,7 +342,7 @@ export const RichSourceOptions: Story = {
         label="Conferma degli avvisi"
         name="confirmation"
         required
-        leadingIcon={<Icon source={Mobile2Icon} />}
+        leadingIcon={<Mobile2Icon />}
         description="Conferma la ricezione degli avvisi."
         error="La conferma è obbligatoria."
       />
@@ -455,7 +454,7 @@ export const NarrowRichSource: Story = {
                 label="AggiornamentiDellePratichePerLePubblicheAmministrazioni"
                 defaultChecked
                 indicatorPlacement={placement}
-                leadingIcon={<Icon source={Mobile2Icon} />}
+                leadingIcon={<Mobile2Icon />}
                 description="ComunicazioniRelativeAgliAggiornamentiDeiServiziDellaPubblicaAmministrazione"
                 learnMore={{
                   label: "InformazioniSugliAggiornamentiDellePraticheAmministrative",
@@ -750,7 +749,7 @@ function SourceStartOption({
 
 export const FidelityStartStates: Story = {
   parameters: {
-    // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+    // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
     a11yContract: { reflow: false },
     design: { type: "figma", url: figmaEmbedUrl("295:1360") },
   },
@@ -872,7 +871,7 @@ function SourceRichOption({
           <span className="pui:sr-only">{` ${state}`}</span>
         </>
       }
-      leadingIcon={<Icon source={Mobile2Icon} />}
+      leadingIcon={<Mobile2Icon />}
       description="Add a supporting description"
       learnMore={{ label: "Scopri di più", href: "/servizi/aggiornamenti" }}
       unavailable={unavailable}

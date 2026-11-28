@@ -1,20 +1,30 @@
 // Generated from pinned source geometry by packages/ui-cli/src/figma/icons.ts; do not edit.
 import type { SVGProps } from "react"
 
+import { Icon, type GlyphProps } from "../icon"
 import type { IconVariantComponents } from "./types"
 
 // `privacy_tip` as inline SVG: one component per pinned variant, so a bundle
 // that imports one of them carries no other icon artwork.
-/** Source `99:2110`: the default variant. */
-export function Default(props: SVGProps<SVGSVGElement>) {
+/** The `99:2110` drawing, in the source coordinate space. */
+function DefaultGlyph(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" data-figma-node-id="99:2110" {...props}><defs><mask id="99-2110-mask_0" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}><g transform="matrix(1 0 0 1 0 0)" opacity="1"><path d="M0 0L24 0L24 24L0 24L0 0Z" fill="#ffffff" fillOpacity="1" fillRule="nonzero" /></g></mask></defs><g transform="matrix(1 0 0 1 0 0)" opacity="1"><g mask="url(#99-2110-mask_0)"><g transform="matrix(1 0 0 1 4 2.1499998569488525)" opacity="1"><path d="M8 14.85C8.28333 14.85 8.52083 14.7542 8.7125 14.5625C8.90417 14.3708 9 14.1333 9 13.85L9 9.85C9 9.56667 8.90417 9.32917 8.7125 9.1375C8.52083 8.94583 8.28333 8.85 8 8.85C7.71667 8.85 7.47917 8.94583 7.2875 9.1375C7.09583 9.32917 7 9.56667 7 9.85L7 13.85C7 14.1333 7.09583 14.3708 7.2875 14.5625C7.47917 14.7542 7.71667 14.85 8 14.85ZM8 6.85C8.28333 6.85 8.52083 6.75417 8.7125 6.5625C8.90417 6.37083 9 6.13333 9 5.85C9 5.56667 8.90417 5.32917 8.7125 5.1375C8.52083 4.94583 8.28333 4.85 8 4.85C7.71667 4.85 7.47917 4.94583 7.2875 5.1375C7.09583 5.32917 7 5.56667 7 5.85C7 6.13333 7.09583 6.37083 7.2875 6.5625C7.47917 6.75417 7.71667 6.85 8 6.85ZM8 19.75C7.88333 19.75 7.775 19.7417 7.675 19.725C7.575 19.7083 7.475 19.6833 7.375 19.65C5.125 18.9 3.33333 17.5125 2 15.4875C0.666667 13.4625 0 11.2833 0 8.95L0 4.225C0 3.80833 0.120833 3.43333 0.3625 3.1C0.604167 2.76667 0.916667 2.525 1.3 2.375L7.3 0.125C7.53333 0.0416667 7.76667 0 8 0C8.23333 0 8.46667 0.0416667 8.7 0.125L14.7 2.375C15.0833 2.525 15.3958 2.76667 15.6375 3.1C15.8792 3.43333 16 3.80833 16 4.225L16 8.95C16 11.2833 15.3333 13.4625 14 15.4875C12.6667 17.5125 10.875 18.9 8.625 19.65C8.525 19.6833 8.425 19.7083 8.325 19.725C8.225 19.7417 8.11667 19.75 8 19.75ZM8 17.75C9.73333 17.2 11.1667 16.1 12.3 14.45C13.4333 12.8 14 10.9667 14 8.95L14 4.225L8 1.975L2 4.225L2 8.95C2 10.9667 2.56667 12.8 3.7 14.45C4.83333 16.1 6.26667 17.2 8 17.75Z" fill="currentColor" fillOpacity="1" fillRule="nonzero" /></g></g></g></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" data-figma-node-id="99:2110" {...props}><g transform="matrix(1 0 0 1 4 2.1499998569488525)" opacity="1"><path d="M8 14.85C8.28333 14.85 8.52083 14.7542 8.7125 14.5625C8.90417 14.3708 9 14.1333 9 13.85L9 9.85C9 9.56667 8.90417 9.32917 8.7125 9.1375C8.52083 8.94583 8.28333 8.85 8 8.85C7.71667 8.85 7.47917 8.94583 7.2875 9.1375C7.09583 9.32917 7 9.56667 7 9.85L7 13.85C7 14.1333 7.09583 14.3708 7.2875 14.5625C7.47917 14.7542 7.71667 14.85 8 14.85ZM8 6.85C8.28333 6.85 8.52083 6.75417 8.7125 6.5625C8.90417 6.37083 9 6.13333 9 5.85C9 5.56667 8.90417 5.32917 8.7125 5.1375C8.52083 4.94583 8.28333 4.85 8 4.85C7.71667 4.85 7.47917 4.94583 7.2875 5.1375C7.09583 5.32917 7 5.56667 7 5.85C7 6.13333 7.09583 6.37083 7.2875 6.5625C7.47917 6.75417 7.71667 6.85 8 6.85ZM8 19.75C7.88333 19.75 7.775 19.7417 7.675 19.725C7.575 19.7083 7.475 19.6833 7.375 19.65C5.125 18.9 3.33333 17.5125 2 15.4875C0.666667 13.4625 0 11.2833 0 8.95L0 4.225C0 3.80833 0.120833 3.43333 0.3625 3.1C0.604167 2.76667 0.916667 2.525 1.3 2.375L7.3 0.125C7.53333 0.0416667 7.76667 0 8 0C8.23333 0 8.46667 0.0416667 8.7 0.125L14.7 2.375C15.0833 2.525 15.3958 2.76667 15.6375 3.1C15.8792 3.43333 16 3.80833 16 4.225L16 8.95C16 11.2833 15.3333 13.4625 14 15.4875C12.6667 17.5125 10.875 18.9 8.625 19.65C8.525 19.6833 8.425 19.7083 8.325 19.725C8.225 19.7417 8.11667 19.75 8 19.75ZM8 17.75C9.73333 17.2 11.1667 16.1 12.3 14.45C13.4333 12.8 14 10.9667 14 8.95L14 4.225L8 1.975L2 4.225L2 8.95C2 10.9667 2.56667 12.8 3.7 14.45C4.83333 16.1 6.26667 17.2 8 17.75Z" fill="currentColor" fillOpacity="1" fillRule="nonzero" /></g></svg>
   )
 }
 
-/** Every pinned variant of `privacy_tip`, keyed by source node id. */
+/** `privacy_tip`: the default variant, in the shared icon box. */
+export function Default(props: GlyphProps) {
+  return <Icon {...props} source={DefaultGlyph} />
+}
+
+/**
+ * Every pinned variant of `privacy_tip`, keyed by source node id. The registry
+ * resolves a runtime name to one of these drawings, which `Icon` owns the box
+ * for; the exports above are the same drawings with that box already applied.
+ */
 export const variants: IconVariantComponents = {
-  "99:2110": Default,
+  "99:2110": DefaultGlyph,
 }
 
 export default Default

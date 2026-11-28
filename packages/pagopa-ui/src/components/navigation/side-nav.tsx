@@ -6,7 +6,6 @@ import { useLinkComponent, useMessages } from "@/lib/ui-provider"
 
 import { Badge } from "@/components/primitives/badge"
 import { Separator } from "@/components/primitives/separator"
-import { Icon } from "@/components/icons/icon"
 import { Down as ChevronDownIcon } from "@/components/icons/generated/chevron"
 import { Default as MenuIcon } from "@/components/icons/generated/menu"
 
@@ -19,23 +18,20 @@ interface SideNavProfile {
   avatar?: React.ReactNode
 }
 
-const defaultExpandLabel = (label: string) => `Espandi ${label}`
-const defaultCollapseLabel = (label: string) => `Comprimi ${label}`
-
 function hasCurrentItem(item: NavItem): boolean {
   return Boolean(item.current || item.children?.some(hasCurrentItem))
 }
 
-export interface SideNavProps {
+export interface SideNavProps extends Omit<React.ComponentProps<"nav">, "children"> {
   /** Accessible name of the section. @default messages.sideNav.title */
   title?: string
   items: NavItem[]
   profile?: SideNavProfile
   /** Desktop rail: icons only, expanding as an overlay on hover or focus. @default false */
   condensed?: boolean
-  /** Accessible name of a closed parent toggle, from its label. @default "Espandi {label}" */
+  /** Accessible name of a closed parent toggle, from its label. @default messages.sideNav.expandLabel */
   expandLabel?: (label: string) => string
-  /** Accessible name of an open parent toggle, from its label. @default "Comprimi {label}" */
+  /** Accessible name of an open parent toggle, from its label. @default messages.sideNav.collapseLabel */
   collapseLabel?: (label: string) => string
   className?: string
 }
@@ -45,16 +41,22 @@ function SideNav({
   items,
   profile,
   condensed = false,
-  expandLabel = defaultExpandLabel,
-  collapseLabel = defaultCollapseLabel,
+  expandLabel: expandLabelProp,
+  collapseLabel: collapseLabelProp,
   className,
+  ref,
+  ...props
 }: SideNavProps) {
   const t = useMessages("sideNav")
   const title = titleProp ?? t.title
+  const expandLabel = expandLabelProp ?? t.expandLabel
+  const collapseLabel = collapseLabelProp ?? t.collapseLabel
 
   const [expanded, setExpanded] = React.useState(false)
   return (
     <nav
+      data-slot="side-nav"
+      ref={ref}
       aria-label={title}
       data-condensed={condensed || undefined}
       className={cn(
@@ -62,6 +64,7 @@ function SideNav({
         condensed ? "pui:tablet:w-18" : "pui:tablet:w-75",
         className,
       )}
+      {...props}
     >
       {/* Source `Condensed=True, Device=Mobile` (1519:2721): a 48px head with the
           menu icon, the section name and the bottom divider; the items below are
@@ -69,12 +72,9 @@ function SideNav({
           desktop composition: below `sm` the disclosure stays the same. */}
       <details className="group pui:tablet:hidden">
         <summary className="pui:flex pui:min-h-12 pui:cursor-pointer pui:list-none pui:items-center pui:gap-2 pui:border-b pui:px-6 pui:py-3 pui:text-body-sb pui:focus-visible:outline-2 pui:focus-visible:outline-ring">
-          <Icon source={MenuIcon} aria-hidden="true" className="pui:shrink-0" />
+          <MenuIcon aria-hidden="true" className="pui:shrink-0" />
           <span className="pui:min-w-0 pui:flex-1 pui:truncate">{title}</span>
-          <Icon
-            source={ChevronDownIcon}
-            className="pui:shrink-0 pui:transition-transform pui:group-open:rotate-180 pui:motion-reduce:transition-none"
-          />
+          <ChevronDownIcon className="pui:shrink-0 pui:transition-transform pui:group-open:rotate-180 pui:motion-reduce:transition-none" />
         </summary>
         <NavLinks items={items} profile={profile} />
       </details>
@@ -111,8 +111,8 @@ function NavLinks({
   profile,
   nested = false,
   condensed = false,
-  expandLabel = defaultExpandLabel,
-  collapseLabel = defaultCollapseLabel,
+  expandLabel: expandLabelProp,
+  collapseLabel: collapseLabelProp,
 }: {
   items: NavItem[]
   profile?: SideNavProfile
@@ -122,6 +122,9 @@ function NavLinks({
   collapseLabel?: (label: string) => string
 }) {
   const Link = useLinkComponent()
+  const t = useMessages("sideNav")
+  const expandLabel = expandLabelProp ?? t.expandLabel
+  const collapseLabel = collapseLabelProp ?? t.collapseLabel
   return (
     <>
       <ul>
@@ -281,8 +284,7 @@ function NavRow({
               condensed && labelsHidden,
             )}
           >
-            <Icon
-              source={ChevronDownIcon}
+            <ChevronDownIcon
               className={cn(
                 "pui:size-5 pui:transition-transform pui:motion-reduce:transition-none",
                 open && "pui:rotate-180",

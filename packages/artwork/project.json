@@ -17,7 +17,7 @@
       "options": {
         "script": "format"
       },
-      "cache": true,
+      "cache": false,
       "configurations": {
         "ci": {
           "script": "format:check"

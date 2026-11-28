@@ -4,7 +4,6 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { Icon } from "@/components/icons/icon"
 import { Left as ArrowLeftIcon } from "@/components/icons/generated/arrow"
 import {
   Checked as CheckBoxCheckedIcon,
@@ -203,13 +202,15 @@ function MenuItems({
                       className={className}
                       indicator={
                         sourceAligned
-                          ? (checked) => (
-                              <Icon
-                                source={checked ? CheckBoxCheckedIcon : CheckBoxIcon}
-                                size={24}
-                                className={checked ? "pui:text-primary!" : "pui:text-foreground!"}
-                              />
-                            )
+                          ? (checked) => {
+                              const CheckBoxGlyph = checked ? CheckBoxCheckedIcon : CheckBoxIcon
+                              return (
+                                <CheckBoxGlyph
+                                  size={24}
+                                  className={checked ? "pui:text-primary!" : "pui:text-foreground!"}
+                                />
+                              )
+                            }
                           : undefined
                       }
                       indicatorClassName={
@@ -265,7 +266,7 @@ function DropDownEmpty({
       data-slot="dropdown-empty"
       className="pui:grid pui:justify-items-center pui:gap-2 pui:rounded-lg pui:bg-muted pui:p-6 pui:text-center"
     >
-      <Icon source={ErrorOutlinedIcon} size={24} className="pui:text-choice-icon" />
+      <ErrorOutlinedIcon size={24} className="pui:text-choice-icon" />
       <div className="pui:grid pui:gap-0.5">
         <p className="pui:text-label-sb pui:text-muted-soft">{title}</p>
         {description ? (
@@ -277,7 +278,10 @@ function DropDownEmpty({
 }
 
 /** Props of the rich action and option menu. */
-export interface DropdownProps {
+export interface DropdownProps extends Omit<
+  React.ComponentProps<"button">,
+  "children" | "onClick"
+> {
   /** Visible label of the trigger button. */
   triggerLabel: React.ReactNode
   /** Ordinary rows; CTA/back rows keep their action semantics. */
@@ -326,6 +330,8 @@ function Dropdown({
   backLabel: backLabelProp,
   loadingLabel: loadingLabelProp,
   className,
+  ref,
+  ...props
 }: DropdownProps) {
   const t = useMessages("dropdown")
   const emptyTitle = emptyTitleProp ?? t.emptyTitle
@@ -334,14 +340,21 @@ function Dropdown({
 
   assertMenuActions(items)
   return (
-    <DropdownMenu>
+    <DropdownMenu data-slot="dropdown">
       <DropdownMenuTrigger
         render={
-          <Button type="button" variant="outline" disabled={disabled} className={className} />
+          <Button
+            type="button"
+            variant="outline"
+            disabled={disabled}
+            className={className}
+            ref={ref}
+            {...props}
+          />
         }
       >
         {triggerLabel}
-        <Icon source={ChevronDownIcon} size={20} />
+        <ChevronDownIcon size={20} />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         className={cn(
@@ -368,7 +381,7 @@ function Dropdown({
                   onClick={back.onSelect}
                   className="pui:min-h-12 pui:gap-2 pui:rounded-none pui:px-4 pui:py-3 pui:text-body pui:text-primary pui:[&_svg:not(.pagopa-icon)]:size-6"
                 >
-                  <Icon source={ArrowLeftIcon} size={24} />
+                  <ArrowLeftIcon size={24} />
                   {back.label ?? backLabel}
                 </DropdownMenuItem>
               </DropdownMenuGroup>
@@ -395,13 +408,15 @@ function Dropdown({
 }
 
 /** Props of the icon menu. */
-export interface MenuDropdownProps {
+export interface MenuDropdownProps extends Omit<React.ComponentProps<"button">, "children"> {
   /** Accessible name of the icon trigger. @default messages.menuDropdown.accessibleLabel */
   accessibleLabel?: string
   /** Rows of the menu, with the same item contract as `Dropdown`. */
   items: DropdownItem[]
   /** Accessible name of the popup list. */
   label?: string
+  /** ClassName applied to the icon trigger. */
+  className?: string
 }
 
 /**
@@ -410,17 +425,34 @@ export interface MenuDropdownProps {
  *
  * Figma: MenuDropDown (node 3262:40787)
  */
-function MenuDropdown({ accessibleLabel: accessibleLabelProp, items, label }: MenuDropdownProps) {
+function MenuDropdown({
+  accessibleLabel: accessibleLabelProp,
+  items,
+  label,
+  className,
+  ref,
+  ...props
+}: MenuDropdownProps) {
   const t = useMessages("menuDropdown")
   const accessibleLabel = accessibleLabelProp ?? t.accessibleLabel
 
   assertMenuActions(items)
   return (
-    <DropdownMenu>
+    <DropdownMenu data-slot="menu-dropdown">
       <DropdownMenuTrigger
-        render={<Button type="button" variant="ghost" size="icon" aria-label={accessibleLabel} />}
+        render={
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label={accessibleLabel}
+            className={className}
+            ref={ref}
+            {...props}
+          />
+        }
       >
-        <Icon source={MoreVertIcon} size={20} />
+        <MoreVertIcon size={20} />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="pui:min-w-(--pui-menu-width) pui:p-0">
         <MenuItems items={items} label={label} dividers tone="primary" />

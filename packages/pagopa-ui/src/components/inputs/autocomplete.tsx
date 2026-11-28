@@ -4,7 +4,6 @@ import * as React from "react"
 import { Combobox } from "@/components/primitives/combobox"
 import { cn } from "@/lib/cn"
 import { useMessages, usePortalHost } from "@/lib/ui-provider"
-import { Icon } from "@/components/icons/icon"
 import { Default as AccountBalanceIcon } from "@/components/icons/generated/account-balance"
 import { Default as CheckIcon } from "@/components/icons/generated/check"
 import {
@@ -32,10 +31,7 @@ type AutocompleteOption = ItemRowContent & {
   disabled?: boolean
 }
 
-const defaultLeadingIcon = <Icon source={AccountBalanceIcon} size={24} aria-hidden="true" />
-
-const defaultListLabel = (label: string) => (label ? `Lista ${label}` : "Lista")
-const defaultSelectedLabel = (values: string[]) => `hai selezionato ${values.join(", ")}`
+const defaultLeadingIcon = <AccountBalanceIcon size={24} aria-hidden="true" />
 
 /** Normalises the single (`string`) and multiple (`string[]`) selections. */
 const toSelection = (value: string | string[] | null | undefined): string[] =>
@@ -69,9 +65,9 @@ export interface AutocompleteSharedProps
   openLabel?: string
   /** Accessible name of the trigger that closes the list. @default messages.autocomplete.closeLabel */
   closeLabel?: string
-  /** Accessible name of the list, from the field label. @default "Lista {label}" */
+  /** Accessible name of the list, from the field label. @default messages.autocomplete.listLabel */
   listLabel?: (label: string) => string
-  /** Announcement after a choice, from the selected values. @default "hai selezionato {values}" */
+  /** Announcement after a choice, from the selected values. @default messages.autocomplete.selectedLabel */
   selectedLabel?: (values: string[]) => string
   /** Announces that the options are being loaded. @default false */
   loading?: boolean
@@ -141,8 +137,8 @@ function Autocomplete(props: AutocompleteProps) {
     clearAllLabel: clearAllLabelProp,
     openLabel: openLabelProp,
     closeLabel: closeLabelProp,
-    listLabel = defaultListLabel,
-    selectedLabel = defaultSelectedLabel,
+    listLabel: listLabelProp,
+    selectedLabel: selectedLabelProp,
     loading = false,
     loadingLabel: loadingLabelProp,
     placeholder,
@@ -161,6 +157,8 @@ function Autocomplete(props: AutocompleteProps) {
   const openLabel = openLabelProp ?? t.openLabel
   const closeLabel = closeLabelProp ?? t.closeLabel
   const loadingLabel = loadingLabelProp ?? t.loadingLabel
+  const listLabel = listLabelProp ?? t.listLabel
+  const selectedLabel = selectedLabelProp ?? t.selectedLabel
 
   const ids = useFieldIds(id)
   const portalHost = usePortalHost()
@@ -217,6 +215,8 @@ function Autocomplete(props: AutocompleteProps) {
   const allListedSelected =
     selectableOptions.length > 0 &&
     selectableOptions.every((option) => selection.includes(option.value))
+  const TriggerChevron = open ? ChevronUpIcon : ChevronDownIcon
+  const SelectAllGlyph = allListedSelected ? CheckBoxCheckedIcon : CheckBoxIcon
 
   return (
     <Combobox.Root
@@ -301,6 +301,7 @@ function Autocomplete(props: AutocompleteProps) {
                 ref={mergedInputRef}
                 id={ids.controlId}
                 placeholder={placeholder ?? " "}
+                aria-labelledby={`${ids.controlId}-label`}
                 aria-invalid={Boolean(error) || undefined}
                 aria-describedby={describedBy(
                   ids,
@@ -340,18 +341,14 @@ function Autocomplete(props: AutocompleteProps) {
                       tabIndex={0}
                       className="pui:relative pui:grid pui:size-6 pui:place-items-center pui:rounded-sm pui:text-foreground pui:outline-none pui:after:absolute pui:after:-inset-2.5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-1 pui:focus-visible:outline-ring"
                     >
-                      <Icon source={CloseSmallIcon} size={24} aria-hidden="true" />
+                      <CloseSmallIcon size={24} aria-hidden="true" />
                     </Combobox.Clear>
                   ) : null}
                   <Combobox.Trigger
                     aria-label={open ? closeLabel : openLabel}
                     className="pui:relative pui:grid pui:size-6 pui:place-items-center pui:rounded-sm pui:text-foreground pui:outline-none pui:after:absolute pui:after:-inset-2.5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-1 pui:focus-visible:outline-ring"
                   >
-                    <Icon
-                      source={open ? ChevronUpIcon : ChevronDownIcon}
-                      size={24}
-                      aria-hidden="true"
-                    />
+                    <TriggerChevron size={24} aria-hidden="true" />
                   </Combobox.Trigger>
                 </span>
               )}
@@ -361,6 +358,7 @@ function Autocomplete(props: AutocompleteProps) {
               ref={mergedInputRef}
               id={ids.controlId}
               placeholder={placeholder ?? " "}
+              aria-labelledby={`${ids.controlId}-label`}
               aria-invalid={Boolean(error) || undefined}
               aria-describedby={describedBy(ids, { description, error, success }, ariaDescribedBy)}
               render={
@@ -387,8 +385,7 @@ function Autocomplete(props: AutocompleteProps) {
             placeholderValue={!multiple}
           />
           {disabled ? (
-            <Icon
-              source={ChevronDownIcon}
+            <ChevronDownIcon
               size={24}
               aria-hidden="true"
               className="pui:pointer-events-none pui:absolute pui:top-1/2 pui:right-3 pui:-translate-y-1/2 pui:text-foreground"
@@ -403,14 +400,14 @@ function Autocomplete(props: AutocompleteProps) {
               tabIndex={0}
               className="pui:absolute pui:top-1/2 pui:right-3 pui:grid pui:size-6 pui:-translate-y-1/2 pui:place-items-center pui:rounded-sm pui:text-foreground pui:outline-none pui:after:absolute pui:after:-inset-2.5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-1 pui:focus-visible:outline-ring"
             >
-              <Icon source={CloseSmallIcon} size={24} aria-hidden="true" />
+              <CloseSmallIcon size={24} aria-hidden="true" />
             </Combobox.Clear>
           ) : multiple ? null : (
             <Combobox.Trigger
               aria-label={open ? closeLabel : openLabel}
               className="pui:absolute pui:top-1/2 pui:right-3 pui:grid pui:size-6 pui:-translate-y-1/2 pui:place-items-center pui:rounded-sm pui:text-foreground pui:outline-none pui:after:absolute pui:after:-inset-2.5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-1 pui:focus-visible:outline-ring"
             >
-              <Icon source={open ? ChevronUpIcon : ChevronDownIcon} size={24} aria-hidden="true" />
+              <TriggerChevron size={24} aria-hidden="true" />
             </Combobox.Trigger>
           )}
           {/* The live region stays mounted so the loading and selection
@@ -436,8 +433,7 @@ function Autocomplete(props: AutocompleteProps) {
                   }
                   className="pui:flex pui:w-full pui:items-center pui:gap-2 pui:rounded-md pui:text-left pui:text-label-sb pui:text-foreground pui:outline-none pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
                 >
-                  <Icon
-                    source={allListedSelected ? CheckBoxCheckedIcon : CheckBoxIcon}
+                  <SelectAllGlyph
                     size={24}
                     className={allListedSelected ? "pui:text-primary" : "pui:text-foreground"}
                   />
@@ -488,25 +484,27 @@ function Autocomplete(props: AutocompleteProps) {
                         // (616:3865), kept mounted so the box never shifts.
                         <Combobox.ItemIndicator
                           keepMounted
-                          render={(indicatorProps, { selected }) => (
-                            <span
-                              {...indicatorProps}
-                              className="pui:pointer-events-none pui:absolute pui:top-3 pui:right-4 pui:flex pui:size-6 pui:items-center pui:justify-center"
-                            >
-                              {selected ? (
-                                <span className="pui:absolute pui:inset-0.75 pui:rounded-2 pui:bg-primary-foreground" />
-                              ) : null}
-                              <Icon
-                                source={selected ? CheckBoxCheckedIcon : CheckBoxIcon}
-                                size={24}
-                                className={cn("pui:relative", selected && "pui:text-primary")}
-                              />
-                            </span>
-                          )}
+                          render={(indicatorProps, { selected }) => {
+                            const ItemCheckBox = selected ? CheckBoxCheckedIcon : CheckBoxIcon
+                            return (
+                              <span
+                                {...indicatorProps}
+                                className="pui:pointer-events-none pui:absolute pui:top-3 pui:right-4 pui:flex pui:size-6 pui:items-center pui:justify-center"
+                              >
+                                {selected ? (
+                                  <span className="pui:absolute pui:inset-0.75 pui:rounded-2 pui:bg-primary-foreground" />
+                                ) : null}
+                                <ItemCheckBox
+                                  size={24}
+                                  className={cn("pui:relative", selected && "pui:text-primary")}
+                                />
+                              </span>
+                            )
+                          }}
                         />
                       ) : (
                         <Combobox.ItemIndicator>
-                          <Icon source={CheckIcon} size={20} />
+                          <CheckIcon size={20} />
                         </Combobox.ItemIndicator>
                       )}
                     </Combobox.Item>

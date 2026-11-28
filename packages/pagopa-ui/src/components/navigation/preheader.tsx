@@ -13,7 +13,7 @@ export type PreheaderLink = Omit<NavItem, "badge" | "children" | "current"> & {
   avatar?: React.ReactNode
 }
 
-export interface PreheaderProps {
+export interface PreheaderProps extends Omit<React.ComponentProps<"div">, "children"> {
   /** Institution name; the link target follows `homeHref`. @default messages.preheader.institution */
   institution?: string
   /** Link target of the institution row; the `#` placeholder keeps the source default. @default "#" */
@@ -32,6 +32,9 @@ function Preheader({
   links = [],
   actions,
   linksLabel: linksLabelProp,
+  className,
+  ref,
+  ...props
 }: PreheaderProps) {
   const t = useMessages("preheader")
   const institution = institutionProp ?? t.institution
@@ -39,7 +42,7 @@ function Preheader({
 
   const Link = useLinkComponent()
   return (
-    <div data-slot="preheader" className="pui:bg-background">
+    <div data-slot="preheader" ref={ref} className={cn("pui:bg-background", className)} {...props}>
       {/* Source band: 54px content + the 1px divider in every variant
           (1315:11011), regardless of whether an action button is present. */}
       <div className="pui:mx-auto pui:flex pui:min-h-(--pui-preheader-height) pui:max-w-7xl pui:flex-wrap pui:items-center pui:justify-between pui:gap-0 pui:border-b pui:px-6 pui:py-1 pui:tablet:gap-4">

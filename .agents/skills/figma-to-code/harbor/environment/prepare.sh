@@ -10,11 +10,13 @@ set -euo pipefail
 NODE_VERSION="${NODE_VERSION:-24.14.1}"
 PNPM_VERSION="${PNPM_VERSION:-11.28.6}"
 PAGOPA_UI_REPO="${PAGOPA_UI_REPO:-https://github.com/pagopa/ui.git}"
-# The ref the agent's workspace is cut from: it must already carry the `ui-cli`
-# this skill calls, so a command the skill names cannot fail on a missing flag
-# or a fixed bug (such as census drift reconciliation, partial rules snapshots,
-# and batched surface sync with composition verification).
-PAGOPA_UI_REF="${PAGOPA_UI_REF:-8505a0dbadfa668a0cc44392dad5ba37d151dd68}"
+# The ref the agent's workspace is cut from, defaulting to the branch the skill
+# ships with: a pinned commit goes stale silently and grades the skill against a
+# `ui-cli` that is not the one in the same checkout, so a renamed flag or a fixed
+# bug only shows up as a red eval nobody can reproduce. Override it to reproduce
+# an older run or to try a branch before it merges:
+#   PAGOPA_UI_REF=<sha> harbor-bench convert evals/evals.json ...
+PAGOPA_UI_REF="${PAGOPA_UI_REF:-main}"
 
 WORKSPACE=/workspace
 

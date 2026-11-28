@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as AccountBalanceIcon } from "@/components/icons/generated/account-balance"
 import { Default as KidStarIcon } from "@/components/icons/generated/kid-star"
 import { Default as PersonIcon } from "@/components/icons/generated/person"
@@ -29,15 +28,15 @@ function AccountTabs({ orientation }: AccountTabsProps) {
         className="pui:w-full pui:overflow-x-auto"
       >
         <TabsTrigger value="profile">
-          <Icon source={PersonIcon} aria-hidden="true" />
+          <PersonIcon aria-hidden="true" />
           Profilo
         </TabsTrigger>
         <TabsTrigger value="organization">
-          <Icon source={AccountBalanceIcon} aria-hidden="true" />
+          <AccountBalanceIcon aria-hidden="true" />
           Ente
         </TabsTrigger>
         <TabsTrigger value="documents">
-          <Icon source={ReceiptLongIcon} aria-hidden="true" />
+          <ReceiptLongIcon aria-hidden="true" />
           Documenti
         </TabsTrigger>
       </TabsList>
@@ -118,7 +117,7 @@ export const FidelityTabs: Story = {
         >
           {fidelityTabs.map((value) => (
             <TabsTrigger key={value} value={value}>
-              <Icon source={KidStarIcon} />
+              <KidStarIcon />
               Tab
             </TabsTrigger>
           ))}

@@ -2,7 +2,7 @@
 
 | Config key | Role | Edited by |
 | --- | --- | --- |
-| `catalog.inventory` | identities, canonical contracts, design fingerprints, dependency edges | `pnpm ui-cli update inventory --triage` |
+| `catalog.inventory` | identities, canonical contracts, design fingerprints, dependency edges | `pnpm ui-cli figma triage` |
 | `catalog.registry` | decision per `nodeId`, `pageId` bulk rules, targets, rendered stories, per-node `note` | `record`; unsupported fields reviewed in place |
 | `catalog.devicePolicy` | the device vocabulary: axes, canonical devices, aliases, widths, default scopes | by hand; never a component name or path |
 | `catalog.pageSurface` | page identities and decisions, and the compositions each page draws ([page surface](page-surface.md)) | `record` for decisions, `figma surface sync` for identities; compositions by hand |

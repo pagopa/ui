@@ -3,12 +3,14 @@
 import * as React from "react"
 
 import { useMessages } from "@/lib/ui-provider"
-import { Icon } from "@/components/icons/icon"
 import { Default as ContentCopyIcon } from "@/components/icons/generated/content-copy"
 
 import { Snackbar } from "./snackbar"
 
-export interface SnackbarErrorCodeProps {
+export interface SnackbarErrorCodeProps extends Omit<
+  React.ComponentProps<"div">,
+  "children" | "title"
+> {
   /** Visible error message. @default messages.snackbarErrorCode.message */
   message?: React.ReactNode
   description?: React.ReactNode
@@ -20,6 +22,8 @@ export interface SnackbarErrorCodeProps {
   copiedLabel?: string
   /** Announced text when the clipboard write fails. @default messages.snackbarErrorCode.copyErrorLabel */
   copyErrorLabel?: string
+  /** ClassName applied to the snackbar surface. */
+  className?: string
 }
 
 function SnackbarErrorCode({
@@ -30,6 +34,9 @@ function SnackbarErrorCode({
   copyLabel: copyLabelProp,
   copiedLabel: copiedLabelProp,
   copyErrorLabel: copyErrorLabelProp,
+  className,
+  ref,
+  ...props
 }: SnackbarErrorCodeProps) {
   const t = useMessages("snackbarErrorCode")
   const message = messageProp ?? t.message
@@ -56,6 +63,10 @@ function SnackbarErrorCode({
 
   return (
     <Snackbar
+      data-slot="snackbar-error-code"
+      {...props}
+      ref={ref}
+      className={className}
       tone="error"
       onDismiss={onDismiss}
       title={message}
@@ -79,7 +90,7 @@ function SnackbarErrorCode({
               data-slot="snackbar-error-code-copy"
               className="pui:relative pui:grid pui:size-6 pui:shrink-0 pui:place-items-center pui:rounded-md pui:p-0 pui:text-primary pui:after:absolute pui:after:-inset-2.5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
             >
-              <Icon source={ContentCopyIcon} />
+              <ContentCopyIcon />
             </button>
           </div>
           <output aria-live="polite" className="pui:sr-only">

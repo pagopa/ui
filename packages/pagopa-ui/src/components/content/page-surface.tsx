@@ -13,7 +13,7 @@ export type PageSurfaceProps = React.ComponentProps<"section">
 function PageSurface({ className, ...props }: PageSurfaceProps) {
   return (
     <section
-      data-slot="white-template"
+      data-slot="page-surface"
       className={cn(
         "pui:min-h-(--pui-artboard-height) pui:bg-background pui:text-foreground",
         className,

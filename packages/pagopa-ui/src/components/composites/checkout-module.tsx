@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { PaymentProviderLogos } from "@/components/content/payment-provider-logos"
-import { Icon } from "@/components/icons/icon"
 import { Default as EmojiObjectsIcon } from "@/components/icons/generated/emoji-objects"
 import { Button } from "@/components/primitives/button"
 import { Heading, type HeadingTag } from "@/components/primitives/heading"
@@ -38,6 +37,8 @@ type CheckoutModuleProps = React.ComponentProps<"section"> & {
   creditor?: string
   /** Legacy notice code. */
   noticeCode?: string
+  /** Legacy label of the amount row. @default messages.checkoutModule.amountLabel */
+  amountLabel?: string
   /** Legacy label of the notice-code row. @default messages.checkoutModule.noticeCodeLabel */
   noticeCodeLabel?: string
   /** Legacy row title when `title` is omitted. @default messages.checkoutModule.legacyTitle */
@@ -88,6 +89,7 @@ function CheckoutModule({
   legacyTitle: legacyTitleProp,
   legacyDescription: legacyDescriptionProp,
   legacySuggestion: legacySuggestionProp,
+  amountLabel: amountLabelProp,
   noticeCodeLabel: noticeCodeLabelProp,
   continueLabel: continueLabelProp,
   editLabel: editLabelProp,
@@ -99,6 +101,7 @@ function CheckoutModule({
   const legacyDescription = legacyDescriptionProp ?? t.legacyDescription
   const legacySuggestion = legacySuggestionProp ?? t.legacySuggestion
   const noticeCodeLabel = noticeCodeLabelProp ?? t.noticeCodeLabel
+  const amountLabel = amountLabelProp ?? t.amountLabel
   const continueLabel = continueLabelProp ?? t.continueLabel
   const editLabel = editLabelProp ?? t.editLabel
 
@@ -202,7 +205,7 @@ function CheckoutModule({
                         aria-hidden="true"
                         className="pui:flex pui:size-5 pui:shrink-0 pui:items-center pui:justify-center"
                       >
-                        {recommendation.icon ?? <Icon source={EmojiObjectsIcon} size={20} />}
+                        {recommendation.icon ?? <EmojiObjectsIcon size={20} />}
                       </span>
                       <span data-slot="checkout-recommendation-text" className="pui:break-words">
                         {recommendation.label}
@@ -216,7 +219,9 @@ function CheckoutModule({
                     >
                       {amount ? (
                         <div>
-                          <dt className="pui:text-caption pui:text-muted-foreground">Importo</dt>
+                          <dt className="pui:text-caption pui:text-muted-foreground">
+                            {amountLabel}
+                          </dt>
                           <dd className="pui:break-words pui:text-title-xs">{amount}</dd>
                         </div>
                       ) : null}

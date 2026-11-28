@@ -4,7 +4,6 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as PhotoIcon } from "@/components/icons/generated/photo"
 
 type ImageProps = React.ComponentProps<"img"> & {
@@ -50,7 +49,7 @@ function Image({
         )}
       >
         <span className="pui:flex pui:items-center pui:gap-2 pui:text-label-mini">
-          <Icon source={PhotoIcon} />
+          <PhotoIcon />
           {fallbackLabel}
         </span>
       </div>

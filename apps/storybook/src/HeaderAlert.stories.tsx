@@ -4,7 +4,6 @@ import { expect, userEvent, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { HeaderAlert } from "@/components/feedback/header-alert"
-import { Icon } from "@/components/icons/icon"
 import { Default as CachedIcon } from "@/components/icons/generated/cached"
 import { Button } from "@/components/primitives/button"
 
@@ -37,7 +36,7 @@ type Story = StoryObj<typeof meta>
 export const Playground: Story = {}
 
 export const AllTones: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
     <div>
@@ -63,7 +62,7 @@ function SourceUnitAction() {
       variant="ghost"
       className="pui:relative pui:min-h-0 pui:px-0 pui:py-0 pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-3"
     >
-      <Icon source={CachedIcon} size={24} className="pui:shrink-0" />
+      <CachedIcon size={24} className="pui:shrink-0" />
       <span>Cambia unità</span>
     </Button>
   )

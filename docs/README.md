@@ -11,15 +11,14 @@ released is in [CONTRIBUTING.md](../CONTRIBUTING.md); the consumer-facing
 documentation of a component is its [guide](../apps/storybook/src/guides/), not
 a page of this tree.
 
-| Section                                         | Holds                                                                                  | Start here                                                                                |
-| ----------------------------------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| [Decisions](./decisions/)                       | The architecture decision records, each with its context, decision and consequences    | [ADR-0001](./decisions/0001-rework.md)                                                    |
-| [Design defaults](./design-defaults.md)         | The ratified system-level defaults an alignment applies before it asks a question      | [design-defaults.md](./design-defaults.md)                                                |
-| [Design requests](./design-requests/)           | The questions opened to the design owner and the answers recorded against them         | [2026-10-16 — foundation variables](./design-requests/2026-10-16-foundation-variables.md) |
-| [Use cases](./use-cases/)                       | One page per use case, `UC-01` to `UC-12`, with actors, flows and acceptance checks    | [Design review](./design-review.md)                                                       |
-| [Design review](./design-review.md)             | The DR/SRS of the design system: outcome, solution design, requirements and open items | [Design review](./design-review.md)                                                       |
-| [Figma drift handoff](./figma-drift-handoff.md) | The runbook of the weekly drift pull request and the work order it carries             | [figma-drift-handoff.md](./figma-drift-handoff.md)                                        |
-| [Figma drift secrets](./figma-drift-secrets.md) | The delivery tokens, where they live and how they are rotated                          | [figma-drift-secrets.md](./figma-drift-secrets.md)                                        |
+| Section                                         | Holds                                                                                    | Start here                                                                              |
+| ----------------------------------------------- | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| [Agents](./agents/)                             | What a coding agent reads: the issue tracker, the triage labels and the domain documents | [issue-tracker.md](./agents/issue-tracker.md)                                           |
+| [Decisions](./decisions/)                       | The architecture decision records, each with its context, decision and consequences      | [ADR-0001](./decisions/0001-rework.md)                                                  |
+| [Design defaults](./design-defaults.md)         | The ratified system-level defaults an alignment applies before it asks a question        | [design-defaults.md](./design-defaults.md)                                              |
+| Design requests                                 | The questions opened to the design owner and the answers recorded against them           | [pagopa/ui issues](https://github.com/pagopa/ui/issues?q=label%3Astatus%2Fneeds-answer) |
+| [Figma drift handoff](./figma-drift-handoff.md) | The runbook of the weekly drift pull request and the work order it carries               | [figma-drift-handoff.md](./figma-drift-handoff.md)                                      |
+| [Figma drift secrets](./figma-drift-secrets.md) | The delivery tokens, where they live and how they are rotated                            | [figma-drift-secrets.md](./figma-drift-secrets.md)                                      |
 
 ## Decisions
 
@@ -46,15 +45,7 @@ one rather than editing it.
 | [ADR-0016](./decisions/0016-utility-prefix-single-spelling.md)    | A utility is declared once, under the `pui:` prefix                         |
 | [ADR-0017](./decisions/0017-visual-baselines-outside-git.md)      | Visual baselines live outside git, keyed by the build (superseded)          |
 | [ADR-0018](./decisions/0018-chromatic-for-visual-regression.md)   | Chromatic owns the visual diff, opt-in through a project token              |
-
-## Use cases
-
-The catalogue is the one of the [design review](./design-review.md); the pages
-live one per file under [use-cases](./use-cases/). The Figma-alignment
-procedure the implementation use cases follow is the
-[figma-to-code](../.agents/skills/figma-to-code/SKILL.md) skill, and the
-component standards they follow are the
-[pagopa-ui-standards](../.agents/skills/pagopa-ui-standards/SKILL.md) skill.
+| [ADR-0019](./decisions/0019-design-requests-in-the-tracker.md)    | A design request is an issue, and the tracker is its only home              |
 
 ## Outside this tree
 

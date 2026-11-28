@@ -46,7 +46,7 @@ const TARGET = [
 // A workspace whose catalogue fails for one reason only: the page census says
 // the node shipped and the registry has not caught up. That is the state
 // `record` exists to close.
-function baseFiles({ undecided = false } = {}) {
+function baseFiles({ undecided = false, variant = false } = {}) {
   return {
     "src/catalog/figma/inventory.json": {
       fileKey: "fixture",
@@ -59,6 +59,11 @@ function baseFiles({ undecided = false } = {}) {
           pageId: "0:1",
           pageName: "Components",
           dependencies: [],
+          ...(variant && {
+            properties: {
+              Size: { type: "VARIANT", defaultValue: "Small", variantOptions: ["Small", "Large"] },
+            },
+          }),
         },
         // A node every document sees and no registry entry decides: the map
         // generator refuses it, which is how a run stops after the writes.
@@ -280,3 +285,106 @@ function options() {
     storyExports: "Playground",
   }
 }
+
+// A props map is authored per node and lands in the one artifact a consumer
+// reads, so the promise is the round trip: what `--props` wrote is what the map
+// carries, under the shape version the generator stamps.
+test("--props round-trips the variant mapping into the consumer map", async () => {
+  const tree = fixtureTree(baseFiles({ variant: true }))
+  try {
+    const props = JSON.stringify({ Size: { prop: "size", values: { Small: "sm", Large: "lg" } } })
+    const result = await runCli(["record", "1:1", ...TARGET, "--props", props], {
+      root: tree.root,
+      env: ENV,
+    })
+    assert.equal(result.status, 0, result.stdout + result.stderr)
+
+    const registry = JSON.parse(read(tree, "src/catalog/figma/registry.json"))
+    assert.deepEqual(registry.entries["1:1"].target.props, {
+      Size: { prop: "size", values: { Small: "sm", Large: "lg" } },
+    })
+    const map = JSON.parse(read(tree, "figma-map.json"))
+    assert.deepEqual(map.nodes["1:1"].propsMap, {
+      version: 1,
+      props: { Size: { prop: "size", values: { Small: "sm", Large: "lg" } } },
+    })
+  } finally {
+    tree.dispose()
+  }
+})
+
+// The inventory is the authority: a mapping that names a property or an option
+// the design source does not have is a mistake the preflight catches, before
+// the run has written anything.
+test("--props rejects a mapping the source does not declare", async () => {
+  for (const props of [
+    JSON.stringify({ Size: { prop: "size", values: { Small: "sm", Huge: "xl" } } }),
+    JSON.stringify({ Weight: { prop: "weight" } }),
+  ]) {
+    const tree = fixtureTree(baseFiles({ variant: true }))
+    try {
+      const before = snapshot(tree.root)
+      const result = await runCli(["record", "1:1", ...TARGET, "--props", props], {
+        root: tree.root,
+        env: ENV,
+      })
+      assert.equal(result.status, 2, result.stdout)
+      assert.match(result.stderr, /does not declare as a variant|is not one of its variants/)
+      assert.deepEqual(snapshot(tree.root), before, "the preflight rejected it before the writes")
+    } finally {
+      tree.dispose()
+    }
+  }
+})
+
+// An empty dictionary is a declaration, not a missing one: the node was read
+// and none of its properties has a prop counterpart.
+test("--props records an empty mapping the map still carries", async () => {
+  const tree = fixtureTree(baseFiles({ variant: true }))
+  try {
+    const result = await runCli(["record", "1:1", ...TARGET, "--props", "{}"], {
+      root: tree.root,
+      env: ENV,
+    })
+    assert.equal(result.status, 0, result.stdout + result.stderr)
+
+    const registry = JSON.parse(read(tree, "src/catalog/figma/registry.json"))
+    assert.deepEqual(registry.entries["1:1"].target.props, {})
+    const map = JSON.parse(read(tree, "figma-map.json"))
+    assert.deepEqual(map.nodes["1:1"].propsMap, { version: 1, props: {} })
+  } finally {
+    tree.dispose()
+  }
+})
+
+// `updated` and `unchanged` are read from the documents, not from the status:
+// a mapping can change while the status beside it stays `implemented`, and the
+// run that writes it must not report a no-op.
+test("a run that only changes the mapping reports updated", async () => {
+  const tree = fixtureTree(baseFiles({ variant: true }))
+  try {
+    const first = { Size: { prop: "size", values: { Small: "sm", Large: "lg" } } }
+    const run = (props) =>
+      runCli(["record", "1:1", ...TARGET, "--props", JSON.stringify(props)], {
+        root: tree.root,
+        env: ENV,
+      })
+
+    const written = await run(first)
+    assert.equal(written.status, 0, written.stdout + written.stderr)
+    assert.match(written.stdout, /^updated: 1:1 excluded → implemented/m)
+
+    const again = await run(first)
+    assert.equal(again.status, 0, again.stdout + again.stderr)
+    assert.match(again.stdout, /^unchanged: 1:1 implemented → implemented/m)
+
+    const remapped = await run({ Size: { prop: "size", values: { Small: "sm", Large: "xl" } } })
+    assert.equal(remapped.status, 0, remapped.stdout + remapped.stderr)
+    assert.match(remapped.stdout, /^updated: 1:1 implemented → implemented/m)
+    assert.match(remapped.stdout, /wrote figma-map\.json/)
+    const map = JSON.parse(read(tree, "figma-map.json"))
+    assert.equal(map.nodes["1:1"].propsMap.props.Size.values.Large, "xl")
+  } finally {
+    tree.dispose()
+  }
+})

@@ -1,5 +1,11 @@
 {
   "schemaVersion": 1,
   "note": "Reasoned exemptions from the consumer DX contract (`ui-cli check consumer-dx`). Each entry waives one rule for one component and states why. An entry that stops matching a real defect fails the check as a stale exception, so the list can only shrink by fixing the component.",
-  "exceptions": []
+  "exceptions": [
+    {
+      "component": "ListItem",
+      "rule": "ref",
+      "reason": "A row renders an anchor the provider supplies, a button or a div depending on `href`, `onPress` and `loading`, so no single element type describes its ref; the provider's link contract carries no ref either. `className` and the standard attributes are forwarded."
+    }
+  ]
 }

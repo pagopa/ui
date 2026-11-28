@@ -3,7 +3,6 @@
 import * as React from "react"
 
 import { cn } from "@/lib/cn"
-import { Icon } from "@/components/icons/icon"
 import { Default as AccountBalanceIcon } from "@/components/icons/generated/account-balance"
 import { Down as ChevronDownIcon, Up as ChevronUpIcon } from "@/components/icons/generated/chevron"
 import {
@@ -75,7 +74,7 @@ function MultiSelectField({
   disabled,
   name,
   action,
-  leadingIcon = <Icon source={AccountBalanceIcon} size={24} />,
+  leadingIcon = <AccountBalanceIcon size={24} />,
   "aria-describedby": ariaDescribedBy,
   className,
   ref,
@@ -99,9 +98,9 @@ function MultiSelectField({
     if (value === undefined) setInternalValue(next)
     onValueChange?.(next)
   }
+  const TriggerChevron = open ? ChevronUpIcon : ChevronDownIcon
   const triggerIcon = (
-    <Icon
-      source={open ? ChevronUpIcon : ChevronDownIcon}
+    <TriggerChevron
       size={24}
       className={
         disabled
@@ -114,8 +113,12 @@ function MultiSelectField({
   )
 
   return (
-    <div className={cn("pui:grid", error ? "pui:gap-0.5" : "pui:gap-2", className)} {...props}>
-      <div className="pui:relative">
+    <div
+      data-slot="multi-select-field"
+      className={cn("pui:grid", error ? "pui:gap-0.5" : "pui:gap-2", className)}
+      {...props}
+    >
+      <div className="pui:relative pui:min-w-0">
         <Select
           {...command.rootProps}
           multiple
@@ -148,7 +151,7 @@ function MultiSelectField({
               event.preventDefault()
               removeValue(orderedSelection[orderedSelection.length - 1].value)
             }}
-            className="peer pui:relative pui:aria-expanded:border-2 pui:aria-expanded:border-primary pui:[&>span[data-slot=select-value]]:flex pui:[&>span[data-slot=select-value]]:min-w-0 pui:[&>span[data-slot=select-value]]:flex-wrap pui:[&>span[data-slot=select-value]]:overflow-visible pui:[&>span[data-slot=select-value]]:whitespace-normal"
+            className="peer pui:relative pui:min-w-0 pui:aria-expanded:border-2 pui:aria-expanded:border-primary pui:[&>span[data-slot=select-value]]:flex pui:[&>span[data-slot=select-value]]:min-w-0 pui:[&>span[data-slot=select-value]]:flex-wrap pui:[&>span[data-slot=select-value]]:overflow-visible pui:[&>span[data-slot=select-value]]:whitespace-normal"
           >
             {leadingIcon ? (
               <span

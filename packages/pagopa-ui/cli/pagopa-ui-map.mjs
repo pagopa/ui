@@ -68,6 +68,9 @@ function nameSummary(node) {
 function propsLines(node) {
   const props = node.propsMap?.props
   if (!props) return []
+  // An empty dictionary is a declaration of its own: the node was read and none
+  // of its properties has a prop counterpart, so the axis is content or viewport.
+  if (!Object.keys(props).length) return ["  props:   none (the axes are content or viewport)"]
   return Object.entries(props).map(([name, entry], index) => {
     const values = Object.entries(entry.values ?? {})
     const translated = values.length

@@ -13,7 +13,7 @@ One run does every read the comparison needs, in the order that fails fastest:
 
 1. The node in the inventory. A node the inventory does not hold has no page, no
    variants and no story, so the run stops and names the refresh
-   (`pnpm ui-cli update inventory --triage`).
+   (`pnpm ui-cli update inventory`).
 2. The registry's targets for it — module, export, story — and the story and
    export the case captures.
 3. The declared devices, from the inventory's set and the device policy.
@@ -44,8 +44,8 @@ loop; `align --device <name>` per device is that loop
 `--status` decides; the target flags (`--module`, `--export`, `--story`,
 `--story-exports`, `--note`, `--reason`) travel with it
 ([statuses](catalogue/statuses.md)). One run writes every document the decision
-entails — the registry, the page surface, the note-length baseline, the story
-titles and the consumer map — then regenerates the catalogue and reports what the
+entails — the registry, the page surface, the story titles and the consumer
+map — then regenerates the catalogue and reports what the
 written documents still say: `warn:` lines for a target that reads oddly,
 `stale:` for a residue the write left behind, and the catalogue verdict.
 

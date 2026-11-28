@@ -67,6 +67,16 @@ test("a code span naming a missing repository path fails", () => {
   )
 })
 
+test("a code span naming a package subpath is not a repository path", () => {
+  assert.deepEqual(
+    check({
+      "CHANGELOG.md": "Icons ship behind `./icons` and `./icons/*`.",
+      "src/icons/index.ts": "",
+    }).problems,
+    [],
+  )
+})
+
 test("generated directory roots are local paths even without a trailing slash", () => {
   assert.deepEqual(
     check({
@@ -365,6 +375,41 @@ test("a known ui-cli command with a placeholder flag value passes", () => {
   assert.deepEqual(
     check({ "README.md": "Use `pnpm ui-cli check text-defaults --max <n>`." }).problems,
     [],
+  )
+})
+
+test("a workflow step naming a retired ui-cli command fails with its replacement", () => {
+  assert.match(
+    problems(
+      check({
+        ".github/workflows/drift.yml":
+          "jobs:\n  drift:\n    steps:\n      - run: pnpm ui-cli figma devices\n",
+      }),
+    ),
+    /retired ui-cli command "ui-cli figma devices" — use pnpm ui-cli check devices/,
+  )
+})
+
+test("a canonical command in a workflow step and in a hint a script prints passes", () => {
+  assert.deepEqual(
+    check({
+      ".github/workflows/drift.yml":
+        "jobs:\n  drift:\n    steps:\n      - run: pnpm ui-cli check devices\n",
+      "scripts/tool.mjs":
+        'export const hints = [\n  "refresh it with `pnpm ui-cli update inventory`",\n  `then run `pnpm ui-cli figma rules mark ${id} --disposition x``,\n  "stop at the prose (`pnpm ui-cli figma brief --queue`).",\n]\n',
+    }).problems,
+    [],
+  )
+})
+
+test("a retired command in a hint a script prints fails like a guide does", () => {
+  assert.match(
+    problems(
+      check({
+        "scripts/tool.mjs": 'export const hint = "run pnpm ui-cli update inventory --triage"\n',
+      }),
+    ),
+    /unknown ui-cli flag --triage/,
   )
 })
 

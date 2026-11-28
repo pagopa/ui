@@ -3,18 +3,18 @@ import * as React from "react"
 import { expect, userEvent, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { Icon } from "@/components/icons/icon"
 import { Default as PhotoIcon } from "@/components/icons/generated/photo"
 import { Chip } from "@/components/inputs/chips"
 import { Accordion } from "@/components/navigation/accordion"
 import { Button } from "@/components/primitives/button"
 
+import { expectFocusContrast, focusWithKeyboard } from "./support/a11y-contract"
 import accordionGuide from "./guides/accordion.md?raw"
 
 const items = [
   {
     id: "one",
-    icon: <Icon source={PhotoIcon} />,
+    icon: <PhotoIcon />,
     title: "Come posso pagare?",
     chip: (
       <Chip variant="neutral" size="compact">
@@ -26,14 +26,14 @@ const items = [
   },
   {
     id: "two",
-    icon: <Icon source={PhotoIcon} />,
+    icon: <PhotoIcon />,
     title: "Dove trovo la ricevuta?",
     description: "La ricevuta viene inviata all'indirizzo email indicato durante il pagamento.",
     content: "La trovi anche nello storico dei pagamenti della tua area riservata.",
   },
   {
     id: "three",
-    icon: <Icon source={PhotoIcon} />,
+    icon: <PhotoIcon />,
     title: "Il pagamento è sicuro?",
     chip: (
       <Chip variant="neutral" size="compact">
@@ -69,7 +69,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Playground: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -82,19 +82,21 @@ export const Playground: Story = {
     await userEvent.click(first)
     await expect(first).toHaveAttribute("aria-expanded", "true")
     await expect(faq).toHaveAttribute("aria-expanded", "false")
+    await focusWithKeyboard(first)
+    await expectFocusContrast(first)
     if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
   },
 }
 
 export const WithDisabledItem: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   args: {
     items: [
       ...items,
       {
         id: "four",
-        icon: <Icon source={PhotoIcon} />,
+        icon: <PhotoIcon />,
         title: "Sezione non disponibile",
         chip: (
           <Chip variant="neutral" size="compact">
@@ -109,13 +111,13 @@ export const WithDisabledItem: Story = {
 }
 
 export const Loading: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   args: {
     items: [
       {
         id: "loading",
-        icon: <Icon source={PhotoIcon} />,
+        icon: <PhotoIcon />,
         title: "Come posso pagare?",
         chip: (
           <Chip variant="neutral" size="compact">
@@ -168,7 +170,7 @@ function ControlledValueHarness() {
 }
 
 export const ControlledValue: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   render: () => <ControlledValueHarness />,
   play: async ({ canvasElement }) => {
@@ -202,7 +204,7 @@ export const ControlledValue: Story = {
 }
 
 export const UncontrolledMultiple: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   args: { defaultValue: ["one", "two"], multiple: true },
   play: async ({ canvasElement }) => {
@@ -253,7 +255,7 @@ function ForwardedContractHarness() {
 }
 
 export const ForwardedContract: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   render: () => <ForwardedContractHarness />,
   play: async ({ canvasElement }) => {
@@ -267,7 +269,7 @@ export const ForwardedContract: Story = {
 // The four source states of AccordionItem (759:6399), captured one per story so
 // the root is the single item the source draws at its 580 width.
 const sourceHeader = () => ({
-  icon: <Icon source={PhotoIcon} />,
+  icon: <PhotoIcon />,
   title: "Accordion heading",
   chip: (
     <Chip variant="neutral" size="compact">

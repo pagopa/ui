@@ -28,10 +28,57 @@ function storybookInstances(mode: string): { browser: "chromium" | "firefox" | "
 // the coverage pass and Firefox keeps the full pass, as before.
 function conditionInstances(
   mode: string,
+  contextOptions: { forcedColors?: "active"; reducedMotion?: "reduce" },
 ): { browser: "chromium" | "firefox" | "webkit"; provider: ReturnType<typeof playwright> }[] {
-  const contextOptions = { forcedColors: "active" as const, reducedMotion: "reduce" as const }
   const browser = mode === "coverage" ? "chromium" : mode === "webkit" ? "webkit" : "firefox"
   return [{ browser, provider: playwright({ contextOptions }) }]
+}
+
+// A condition project: the whole catalogue under one browser context the
+// default pass never opens. Each condition owns its config directory, because
+// `@storybook/addon-vitest` names the Vitest project after it, and its own tag
+// exclusion, because the exclusion belongs to the condition: forced colours
+// replaces a reviewed source colour, reduced motion keeps the colour and
+// changes only the timing.
+function conditionProject(options: {
+  name: string
+  directory: string
+  mode: string
+  contextOptions: { forcedColors?: "active"; reducedMotion?: "reduce" }
+  exclude?: string[]
+}) {
+  return {
+    extends: true,
+    plugins: [
+      storybookTest({
+        configDir: path.join(dirname, options.directory),
+        ...(options.exclude ? { tags: { exclude: options.exclude } } : {}),
+      }),
+    ],
+    test: {
+      name: options.name,
+      // Same budget as the storybook project: the proof is the story's own
+      // assertions, and a boot that loses to a loaded machine is noise.
+      testTimeout: 120000,
+      setupFiles: [
+        path.join(dirname, "src/support/queries-setup.ts"),
+        path.join(dirname, "src/support/a11y-setup.ts"),
+        // Always loaded: a setup file that only appears when the option is
+        // present could never notice the option going missing.
+        path.join(dirname, options.directory, "expect-condition.ts"),
+      ],
+      browser: {
+        enabled: true,
+        headless: true,
+        provider: playwright({}),
+        // The workspace chain runs the story passes beside the packed-artifact
+        // consumer and its own browsers; the 60s default expires on a busy
+        // machine and reports a dead session instead of a failing test.
+        connectTimeout: 120000,
+        instances: conditionInstances(options.mode, options.contextOptions),
+      },
+    },
+  }
 }
 
 // The browser projects run the stories; the package keeps the design system
@@ -60,7 +107,15 @@ export default defineConfig(({ mode }) => ({
       // The documented components live in packages/pagopa-ui.
       allowExternal: true,
       include: [`${packageRoot}/src/components/**/*.{ts,tsx}`],
-      exclude: ["**/*.stories.*"],
+      exclude: [
+        "**/*.stories.*",
+        // Generated artwork. Every module carries one drawing and one shell
+        // wrapper per pinned variant, and a story renders one variant, so the
+        // other half is uncovered by construction and no test can change that.
+        // Counted, it moves the aggregate without saying anything about the
+        // hand-written code the thresholds are there to protect.
+        "**/src/components/icons/generated/**",
+      ],
       // Ratchet policy: thresholds follow current coverage with a small margin
       // and never go down. Raise them as new stories land (see CONTRIBUTING).
       // A per-file gate matches the path relative to this app, so each one
@@ -119,8 +174,11 @@ export default defineConfig(({ mode }) => ({
           name: "storybook",
           // The icon/pictogram catalogue renders every source variant; the
           // 30s cap was not enough for that story on Firefox when the machine
-          // is busy, and a timeout is a false alarm, not a defect.
-          testTimeout: 60000,
+          // is busy, and a timeout is a false alarm, not a defect. The same
+          // budget covers the story iframe booting, which pays for the whole
+          // module graph: on a loaded machine it is the boot, not the story,
+          // that runs out.
+          testTimeout: 120000,
           // The shared accessibility contract (src/support/a11y-contract.ts)
           // runs from this setup file's afterEach.
           setupFiles: [
@@ -131,6 +189,9 @@ export default defineConfig(({ mode }) => ({
             enabled: true,
             headless: true,
             provider: playwright({}),
+            // See the condition project: the chain runs two browser passes at
+            // once and the default connect budget is not enough for both.
+            connectTimeout: 120000,
             // The coverage pass runs Chromium only (v8 coverage is not collected
             // in Firefox and WebKit); a pull request proves WebKit; the full
             // pass runs the other two engines.
@@ -138,39 +199,24 @@ export default defineConfig(({ mode }) => ({
           },
         },
       },
-      {
-        extends: true,
-        plugins: [
-          // The accessibility conditions Storybook does not open by default:
-          // forced colors and reduced motion come from the browser context, so
-          // the whole run lives in a context created with both media features.
-          // Stories that pin their reviewed source colors opt out through the
-          // `color-pinned` tag: forced colors intentionally replaces them.
-          // The config directory is its own, re-exporting the same config:
-          // `@storybook/addon-vitest` names a Vitest project after its config
-          // directory, so sharing `.storybook` with the project above makes the
-          // Storybook test module (`VITEST_STORYBOOK`) see one name twice and
-          // refuse to start.
-          storybookTest({
-            configDir: path.join(dirname, ".storybook-conditions"),
-            tags: { exclude: ["color-pinned"] },
-          }),
-        ],
-        test: {
-          name: "storybook-conditions",
-          testTimeout: 60000,
-          setupFiles: [
-            path.join(dirname, "src/support/queries-setup.ts"),
-            path.join(dirname, "src/support/a11y-setup.ts"),
-          ],
-          browser: {
-            enabled: true,
-            headless: true,
-            provider: playwright({}),
-            instances: conditionInstances(mode),
-          },
-        },
-      },
+      // Forced colours replaces the reviewed source colours, so the stories
+      // that pin them opt out through the `color-pinned` tag.
+      conditionProject({
+        name: "storybook-conditions",
+        directory: ".storybook-conditions",
+        mode,
+        contextOptions: { forcedColors: "active" },
+        exclude: ["color-pinned"],
+      }),
+      // Reduced motion changes the timing and keeps every colour, so nothing is
+      // excluded: the seventy `color-pinned` stories are exactly the animated
+      // controls whose reduced-motion behaviour has to be proven.
+      conditionProject({
+        name: "storybook-reduced-motion",
+        directory: ".storybook-reduced-motion",
+        mode,
+        contextOptions: { reducedMotion: "reduce" },
+      }),
     ],
   },
 }))

@@ -2,11 +2,11 @@ import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as StorefrontIcon } from "@/components/icons/generated/storefront"
 import { PinPoint } from "@/components/overlays/pin-point"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
+import { expectFocusContrast, focusWithKeyboard } from "./support/a11y-contract"
 import pinPointGuide from "./guides/pin-point.md?raw"
 
 const meta = {
@@ -67,6 +67,8 @@ export const PinPointSelection: Story = {
     await expect(pin).toHaveAttribute("aria-pressed", "false")
     await userEvent.click(pin)
     await expect(pin).toHaveAttribute("aria-pressed", "true")
+    await focusWithKeyboard(pin)
+    await expectFocusContrast(pin)
   },
 }
 
@@ -110,7 +112,7 @@ export const SourceSelected: Story = {
   render: () => (
     <SourceFrame>
       <PinPoint label="Sede del Comune" active>
-        <Icon source={StorefrontIcon} size={28} />
+        <StorefrontIcon size={28} />
       </PinPoint>
     </SourceFrame>
   ),

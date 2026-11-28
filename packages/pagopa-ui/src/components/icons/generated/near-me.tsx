@@ -1,28 +1,43 @@
 // Generated from pinned source geometry by packages/ui-cli/src/figma/icons.ts; do not edit.
 import type { SVGProps } from "react"
 
+import { Icon, type GlyphProps } from "../icon"
 import type { IconVariantComponents } from "./types"
 
 // `near_me` as inline SVG: one component per pinned variant, so a bundle
 // that imports one of them carries no other icon artwork.
-/** Source `99:2329`: the `outlined` variant. */
-export function Default(props: SVGProps<SVGSVGElement>) {
+/** The `99:2329` drawing, in the source coordinate space. */
+function DefaultGlyph(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" data-figma-node-id="99:2329" {...props}><defs><mask id="99-2329-mask_0" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}><g transform="matrix(1 0 0 1 0 0)" opacity="1"><path d="M0 0L24 0L24 24L0 24L0 0Z" fill="#ffffff" fillOpacity="1" fillRule="nonzero" /></g></mask></defs><g transform="matrix(1 0 0 1 0 0)" opacity="1"><g mask="url(#99-2329-mask_0)"><g transform="matrix(1 0 0 1 2.9499998092651367 3.6968748569488525)" opacity="1"><path d="M7.1 10.2531L0.625 7.62813C0.408333 7.54479 0.25 7.41563 0.15 7.24062C0.05 7.06562 0 6.88646 0 6.70312C0 6.51979 0.0541667 6.34063 0.1625 6.16563C0.270833 5.99062 0.433333 5.86146 0.65 5.77813L16 0.078125C16.2 -0.00520834 16.3917 -0.021875 16.575 0.028125C16.7583 0.078125 16.9167 0.169792 17.05 0.303125C17.1833 0.436458 17.275 0.594792 17.325 0.778125C17.375 0.961458 17.3583 1.15312 17.275 1.35312L11.575 16.7031C11.4917 16.9198 11.3625 17.0823 11.1875 17.1906C11.0125 17.299 10.8333 17.3531 10.65 17.3531C10.4667 17.3531 10.2875 17.3031 10.1125 17.2031C9.9375 17.1031 9.80833 16.9448 9.725 16.7281L7.1 10.2531ZM10.6 13.6031L14.65 2.70312L3.75 6.75313L8.65 8.70312L10.6 13.6031Z" fill="currentColor" fillOpacity="1" fillRule="nonzero" /></g></g></g></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" data-figma-node-id="99:2329" {...props}><g transform="matrix(1 0 0 1 2.9499998092651367 3.6968748569488525)" opacity="1"><path d="M7.1 10.2531L0.625 7.62813C0.408333 7.54479 0.25 7.41563 0.15 7.24062C0.05 7.06562 0 6.88646 0 6.70312C0 6.51979 0.0541667 6.34063 0.1625 6.16563C0.270833 5.99062 0.433333 5.86146 0.65 5.77813L16 0.078125C16.2 -0.00520834 16.3917 -0.021875 16.575 0.028125C16.7583 0.078125 16.9167 0.169792 17.05 0.303125C17.1833 0.436458 17.275 0.594792 17.325 0.778125C17.375 0.961458 17.3583 1.15312 17.275 1.35312L11.575 16.7031C11.4917 16.9198 11.3625 17.0823 11.1875 17.1906C11.0125 17.299 10.8333 17.3531 10.65 17.3531C10.4667 17.3531 10.2875 17.3031 10.1125 17.2031C9.9375 17.1031 9.80833 16.9448 9.725 16.7281L7.1 10.2531ZM10.6 13.6031L14.65 2.70312L3.75 6.75313L8.65 8.70312L10.6 13.6031Z" fill="currentColor" fillOpacity="1" fillRule="nonzero" /></g></svg>
   )
 }
 
-/** Source `99:2330`: the `filled` variant. */
-export function Filled(props: SVGProps<SVGSVGElement>) {
+/** `near_me`: the `outlined` variant, in the shared icon box. */
+export function Default(props: GlyphProps) {
+  return <Icon {...props} source={DefaultGlyph} />
+}
+
+/** The `99:2330` drawing, in the source coordinate space. */
+function FilledGlyph(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" data-figma-node-id="99:2330" {...props}><defs><mask id="99-2330-mask_0" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}><g transform="matrix(1 0 0 1 0 0)" opacity="1"><path d="M0 0L24 0L24 24L0 24L0 0Z" fill="#ffffff" fillOpacity="1" fillRule="nonzero" /></g></mask></defs><g transform="matrix(1 0 0 1 0 0)" opacity="1"><g mask="url(#99-2330-mask_0)"><g transform="matrix(1 0 0 1 2.9499998092651367 3.6968748569488525)" opacity="1"><path d="M7.1 10.2531L0.625 7.62813C0.408333 7.54479 0.25 7.41563 0.15 7.24062C0.05 7.06562 0 6.88646 0 6.70312C0 6.51979 0.0541667 6.34063 0.1625 6.16563C0.270833 5.99062 0.433333 5.86146 0.65 5.77813L16 0.078125C16.2 -0.00520834 16.3917 -0.021875 16.575 0.028125C16.7583 0.078125 16.9167 0.169792 17.05 0.303125C17.1833 0.436458 17.275 0.594792 17.325 0.778125C17.375 0.961458 17.3583 1.15312 17.275 1.35312L11.575 16.7031C11.4917 16.9198 11.3625 17.0823 11.1875 17.1906C11.0125 17.299 10.8333 17.3531 10.65 17.3531C10.4667 17.3531 10.2875 17.3031 10.1125 17.2031C9.9375 17.1031 9.80833 16.9448 9.725 16.7281L7.1 10.2531Z" fill="currentColor" fillOpacity="1" fillRule="nonzero" /></g></g></g></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" data-figma-node-id="99:2330" {...props}><g transform="matrix(1 0 0 1 2.9499998092651367 3.6968748569488525)" opacity="1"><path d="M7.1 10.2531L0.625 7.62813C0.408333 7.54479 0.25 7.41563 0.15 7.24062C0.05 7.06562 0 6.88646 0 6.70312C0 6.51979 0.0541667 6.34063 0.1625 6.16563C0.270833 5.99062 0.433333 5.86146 0.65 5.77813L16 0.078125C16.2 -0.00520834 16.3917 -0.021875 16.575 0.028125C16.7583 0.078125 16.9167 0.169792 17.05 0.303125C17.1833 0.436458 17.275 0.594792 17.325 0.778125C17.375 0.961458 17.3583 1.15312 17.275 1.35312L11.575 16.7031C11.4917 16.9198 11.3625 17.0823 11.1875 17.1906C11.0125 17.299 10.8333 17.3531 10.65 17.3531C10.4667 17.3531 10.2875 17.3031 10.1125 17.2031C9.9375 17.1031 9.80833 16.9448 9.725 16.7281L7.1 10.2531Z" fill="currentColor" fillOpacity="1" fillRule="nonzero" /></g></svg>
   )
 }
 
-/** Every pinned variant of `near_me`, keyed by source node id. */
+/** `near_me`: the `filled` variant, in the shared icon box. */
+export function Filled(props: GlyphProps) {
+  return <Icon {...props} source={FilledGlyph} />
+}
+
+/**
+ * Every pinned variant of `near_me`, keyed by source node id. The registry
+ * resolves a runtime name to one of these drawings, which `Icon` owns the box
+ * for; the exports above are the same drawings with that box already applied.
+ */
 export const variants: IconVariantComponents = {
-  "99:2329": Default,
-  "99:2330": Filled,
+  "99:2329": DefaultGlyph,
+  "99:2330": FilledGlyph,
 }
 
 export default Default

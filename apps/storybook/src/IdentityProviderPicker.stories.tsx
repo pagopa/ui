@@ -106,7 +106,7 @@ type Story = StoryObj<typeof meta>
 
 export const Playground: Story = {
   parameters: {
-    // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+    // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
     a11yContract: { reflow: false },
     design: { type: "figma", url: figmaEmbedUrl("731:20386") },
   },
@@ -129,7 +129,7 @@ export const Playground: Story = {
 
 export const Desktop: Story = {
   parameters: {
-    // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+    // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
     a11yContract: { reflow: false },
     design: { type: "figma", url: figmaEmbedUrl("731:20386") },
   },
@@ -138,7 +138,7 @@ export const Desktop: Story = {
 
 export const SingleProvider: Story = {
   parameters: {
-    // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+    // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
     a11yContract: { reflow: false },
     design: { type: "figma", url: figmaEmbedUrl("731:20386") },
   },
@@ -150,7 +150,7 @@ export const SingleProvider: Story = {
 }
 
 export const ConfigurableHeading: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   args: { titleAs: "h3" },
   play: async ({ canvasElement }) => {
@@ -186,7 +186,7 @@ async function applyViewport(width: number, height: number) {
 export const ResponsiveWidth: Story = {
   parameters: {
     layout: "fullscreen",
-    // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+    // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
     a11yContract: { reflow: false },
   },
   play: async ({ canvasElement }) => {

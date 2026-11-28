@@ -40,6 +40,14 @@ import { Filled as InfoFilled } from "@pagopa/ui/icons/info" // the same identit
 import { variants as infoVariants } from "@pagopa/ui/icons/info" // keyed by source node id
 ```
 
+A subpath component is the pinned drawing inside the `Icon` shell, so it renders
+the same markup as `PagoPAIcon` for the same source variant: the `.pagopa-icon`
+class, the `decorative` default, `size`, `className` and every other `svg`
+attribute. It asks for a `label` when `decorative` is `false`, because it has no
+name of its own to fall back to; `PagoPAIcon` was given one and uses it.
+`variants` is the exception: it hands out the drawings before the shell, which is
+what a primitive that owns the box for its own glyphs takes.
+
 `PagoPAIcon` renders an `svg`, so `[&_svg]:size-*` selectors match it; the numeric
 `size` prop sets both dimensions. Use `decorative` (the default) or `label`
 instead of `aria-hidden`. A name outside the published catalogue renders nothing,
@@ -70,7 +78,8 @@ for the directional state, `close`, `check`, `check_circle` for field success,
 `report` for field error, `warning` and `info` for the `HeaderAlert` and `Alert`
 tones, the `Button` loading spinner, and `check_indeterminate_small` for the
 `OTPField` separator. `DropdownItem.icon` takes the pipeline's `IconComponent`, so a
-row leads with any pinned variant component.
+row leads with any entry of an icon's `variants` map — the drawing before the
+shell, because the row owns the box.
 
 ## Provenance and licence
 

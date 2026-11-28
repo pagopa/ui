@@ -17,7 +17,9 @@ Read and write issues with the GitHub CLI (`gh`), targeting the current reposito
 - Write issue titles, bodies, and comments in English (see `AGENTS.md` Rule 5).
 - Apply triage labels using the exact strings defined in [triage-labels.md](./triage-labels.md).
 - Link related specs, tickets, ADRs (`docs/decisions/`), and pull requests by GitHub issue/PR number.
-- Design questions for the Figma design owner continue to follow the `figma-to-code` design-request flow (`docs/design-requests/`).
+- Design questions for the Figma design owner are issues too: the `figma-to-code`
+  design-request flow opens one with `pnpm ui-cli figma request open`, so a
+  question and its answer live in the same tracker entry.
 
 ## PRs as a request surface
 

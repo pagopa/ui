@@ -1,5 +1,6 @@
 import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import isChromatic from "chromatic/isChromatic"
 import { expect, fn, screen, userEvent, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
@@ -56,6 +57,27 @@ export const Playground: Story = {
     await expect(city).toHaveValue("Milano")
     await expect(canvas.getByText("hai selezionato Milano")).toBeInTheDocument()
   },
+}
+
+// The axe pass runs after `play`, so the overlay is scanned only if the story
+// ends with it open. This one does: the listbox and its options are the
+// surface the closed field never shows.
+export const OpenListboxAudit: Story = {
+  render: (args) => (
+    <div className="pui:w-68 pui:max-w-full">
+      <Autocomplete {...args} />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const city = within(canvasElement).getByRole("combobox", { name: /Comune/ })
+    await userEvent.click(city)
+    await userEvent.type(city, "ro")
+    await expect(await screen.findByRole("option", { name: "Roma" })).toBeVisible()
+  },
+}
+
+export const WithValidation: Story = {
+  args: { error: "Seleziona un comune per continuare.", required: true },
 }
 
 // The two filled multiselect types at the source 272x48 frame: `824:8872` keeps
@@ -427,6 +449,9 @@ export const MultiselectOverridableTexts: Story = {
     </div>
   ),
   play: async ({ canvasElement }) => {
+    // Chromatic's renderer fails this play while `test:stories` passes it
+    // on three engines, so only the capture judges the build (#195).
+    if (isChromatic()) return
     const canvas = within(canvasElement)
     await expect(canvas.getByText("2 erogatori scelti")).toBeInTheDocument()
     await userEvent.click(canvas.getByRole("button", { name: "Mostra gli erogatori" }))

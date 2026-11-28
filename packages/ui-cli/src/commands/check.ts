@@ -6,6 +6,7 @@ import { checkA11yConformance } from "../checks/a11y-conformance.ts"
 import { checkClientDirectives } from "../checks/client-directives.ts"
 import { checkConsumerDx } from "../checks/consumer-dx.ts"
 import { checkCssBudget, measureCss } from "../checks/css-budget.ts"
+import { checkDataSlots } from "../checks/data-slots.ts"
 import { checkDocLinks } from "../checks/doc-links.ts"
 import { checkFoundation, measureFoundation } from "../checks/foundation.ts"
 import { checkImportLayers } from "../checks/import-layers.ts"
@@ -58,6 +59,11 @@ export function checkCommands(
         () => checkConsumerDx(ctx.workspace()),
       ),
       css: cssCommand(ctx),
+      "data-slots": gate(
+        "data-slots",
+        "Enforce the root data-slot contract on the public components",
+        () => checkDataSlots(ctx.workspace()),
+      ),
       docs: gate("docs", "Resolve documentation links, path claims and commands", () =>
         checkDocLinks(ctx.workspace(), {
           env: ctx.env,

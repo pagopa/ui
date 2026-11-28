@@ -3,7 +3,7 @@ import { cn } from "@/lib/cn"
 import { SpinnerIndicator } from "@/components/primitives/spinner-indicator"
 
 /** Props of {@link Spinner}. */
-interface SpinnerProps {
+interface SpinnerProps extends Omit<React.ComponentProps<"span">, "children"> {
   /** Rendered size. @default "md" */
   size?: "sm" | "md" | "lg"
   /** Artwork variant for the surrounding surface. @default "primary" */
@@ -14,13 +14,22 @@ interface SpinnerProps {
   className?: string
 }
 
-function Spinner({ size = "md", variant = "primary", label, className }: SpinnerProps) {
+function Spinner({
+  size = "md",
+  variant = "primary",
+  label,
+  className,
+  ref,
+  ...props
+}: SpinnerProps) {
   const statusLabel = label?.trim()
   return (
     <span
       data-slot="spinner"
       role={statusLabel ? "status" : undefined}
       aria-hidden={statusLabel ? undefined : true}
+      ref={ref}
+      {...props}
       className={cn("pui:inline-flex pui:items-center pui:gap-2", className)}
     >
       <SpinnerIndicator

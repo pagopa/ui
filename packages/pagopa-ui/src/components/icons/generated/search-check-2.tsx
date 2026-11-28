@@ -1,20 +1,30 @@
 // Generated from pinned source geometry by packages/ui-cli/src/figma/icons.ts; do not edit.
 import type { SVGProps } from "react"
 
+import { Icon, type GlyphProps } from "../icon"
 import type { IconVariantComponents } from "./types"
 
 // `search_check_2` as inline SVG: one component per pinned variant, so a bundle
 // that imports one of them carries no other icon artwork.
-/** Source `9643:961`: the default variant. */
-export function Default(props: SVGProps<SVGSVGElement>) {
+/** The `9643:961` drawing, in the source coordinate space. */
+function DefaultGlyph(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" data-figma-node-id="9643:961" {...props}><defs><clipPath id="9643-961-clip_0"><path d="M0 0L24 0L24 24L0 24L0 0Z" fill="#ffffff" fillOpacity="1" fillRule="nonzero" /></clipPath></defs><g transform="matrix(1 0 0 1 0 0)" opacity="1"><g clipPath="url(#9643-961-clip_0)"><g transform="matrix(1 0 0 1 1.9999998807907104 1.9999998807907104)" opacity="1"><path d="M12.25 12.25C13.4167 11.0833 14 9.66667 14 8C14 6.33333 13.4167 4.91667 12.25 3.75C11.0833 2.58333 9.66667 2 8 2C6.33333 2 4.91667 2.58333 3.75 3.75C2.58333 4.91667 2 6.33333 2 8C2 9.66667 2.58333 11.0833 3.75 12.25C4.91667 13.4167 6.33333 14 8 14C9.66667 14 11.0833 13.4167 12.25 12.25ZM6.95 8.7L5.525 7.3C5.325 7.1 5.09167 7 4.825 7C4.55833 7 4.325 7.1 4.125 7.3C3.925 7.5 3.82083 7.73333 3.8125 8C3.80417 8.26667 3.9 8.5 4.1 8.7L6.225 10.825C6.425 11.025 6.6625 11.125 6.9375 11.125C7.2125 11.125 7.45 11.025 7.65 10.825L11.9 6.6C12.1 6.4 12.2 6.1625 12.2 5.8875C12.2 5.6125 12.1 5.375 11.9 5.175C11.7 4.975 11.4625 4.875 11.1875 4.875C10.9125 4.875 10.675 4.975 10.475 5.175L6.95 8.7ZM8 16C5.76667 16 3.875 15.225 2.325 13.675C0.775 12.125 0 10.2333 0 8C0 5.76667 0.775 3.875 2.325 2.325C3.875 0.775 5.76667 0 8 0C10.2333 0 12.125 0.775 13.675 2.325C15.225 3.875 16 5.76667 16 8C16 8.93333 15.8542 9.8125 15.5625 10.6375C15.2708 11.4625 14.8583 12.2167 14.325 12.9L19.3 17.875C19.5 18.075 19.6 18.3125 19.6 18.5875C19.6 18.8625 19.5 19.1 19.3 19.3C19.1 19.5 18.8625 19.6 18.5875 19.6C18.3125 19.6 18.075 19.5 17.875 19.3L12.9 14.325C12.2167 14.8583 11.4625 15.2708 10.6375 15.5625C9.8125 15.8542 8.93333 16 8 16Z" fill="currentColor" fillOpacity="1" fillRule="nonzero" /></g></g></g></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" data-figma-node-id="9643:961" {...props}><g transform="matrix(1 0 0 1 1.9999998807907104 1.9999998807907104)" opacity="1"><path d="M12.25 12.25C13.4167 11.0833 14 9.66667 14 8C14 6.33333 13.4167 4.91667 12.25 3.75C11.0833 2.58333 9.66667 2 8 2C6.33333 2 4.91667 2.58333 3.75 3.75C2.58333 4.91667 2 6.33333 2 8C2 9.66667 2.58333 11.0833 3.75 12.25C4.91667 13.4167 6.33333 14 8 14C9.66667 14 11.0833 13.4167 12.25 12.25ZM6.95 8.7L5.525 7.3C5.325 7.1 5.09167 7 4.825 7C4.55833 7 4.325 7.1 4.125 7.3C3.925 7.5 3.82083 7.73333 3.8125 8C3.80417 8.26667 3.9 8.5 4.1 8.7L6.225 10.825C6.425 11.025 6.6625 11.125 6.9375 11.125C7.2125 11.125 7.45 11.025 7.65 10.825L11.9 6.6C12.1 6.4 12.2 6.1625 12.2 5.8875C12.2 5.6125 12.1 5.375 11.9 5.175C11.7 4.975 11.4625 4.875 11.1875 4.875C10.9125 4.875 10.675 4.975 10.475 5.175L6.95 8.7ZM8 16C5.76667 16 3.875 15.225 2.325 13.675C0.775 12.125 0 10.2333 0 8C0 5.76667 0.775 3.875 2.325 2.325C3.875 0.775 5.76667 0 8 0C10.2333 0 12.125 0.775 13.675 2.325C15.225 3.875 16 5.76667 16 8C16 8.93333 15.8542 9.8125 15.5625 10.6375C15.2708 11.4625 14.8583 12.2167 14.325 12.9L19.3 17.875C19.5 18.075 19.6 18.3125 19.6 18.5875C19.6 18.8625 19.5 19.1 19.3 19.3C19.1 19.5 18.8625 19.6 18.5875 19.6C18.3125 19.6 18.075 19.5 17.875 19.3L12.9 14.325C12.2167 14.8583 11.4625 15.2708 10.6375 15.5625C9.8125 15.8542 8.93333 16 8 16Z" fill="currentColor" fillOpacity="1" fillRule="nonzero" /></g></svg>
   )
 }
 
-/** Every pinned variant of `search_check_2`, keyed by source node id. */
+/** `search_check_2`: the default variant, in the shared icon box. */
+export function Default(props: GlyphProps) {
+  return <Icon {...props} source={DefaultGlyph} />
+}
+
+/**
+ * Every pinned variant of `search_check_2`, keyed by source node id. The registry
+ * resolves a runtime name to one of these drawings, which `Icon` owns the box
+ * for; the exports above are the same drawings with that box already applied.
+ */
 export const variants: IconVariantComponents = {
-  "9643:961": Default,
+  "9643:961": DefaultGlyph,
 }
 
 export default Default

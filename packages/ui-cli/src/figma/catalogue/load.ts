@@ -128,7 +128,7 @@ function validateCommittedContracts(
     for (const node of normalized) {
       if (byId.get(node.nodeId)?.contractFingerprint !== node.contractFingerprint) {
         errors.push(
-          `${COMMITTED_FILES.inventory}: contract fingerprint mismatch for ${node.nodeId} — the source contract changed, so re-read the node with \`pnpm ui-cli update inventory --triage\` and run \`pnpm nx run pagopa-ui:check:catalogue\``,
+          `${COMMITTED_FILES.inventory}: contract fingerprint mismatch for ${node.nodeId} — the source contract changed, so re-read the node with \`pnpm ui-cli update inventory\` and run \`pnpm nx run pagopa-ui:check:catalogue\``,
         )
       }
     }
@@ -177,7 +177,7 @@ async function liveSnapshot(
     live = normalizeLive(parsed.value, { workspace })
   } else if (options.write || options.triage || options.prBody) {
     err.push(
-      "--write/--triage/--pr-body need a live source: pass --input <file> (Figma MCP export) or --rest.",
+      "--write/--pr-body need a live source: pass --input <file> (Figma MCP export) or --rest.",
     )
     return { live, version, lastModified, restSnapshot, out, err, exitCode: 2 }
   }

@@ -5,7 +5,6 @@ import { Default as CheckCircleIcon } from "@/components/icons/generated/check-c
 import { Filled as InfoFilledIcon } from "@/components/icons/generated/info"
 import { Default as ReportIcon } from "@/components/icons/generated/report"
 import { Default as WarningIcon } from "@/components/icons/generated/warning"
-import { Icon } from "@/components/icons/icon"
 import {
   Alert,
   AlertAction,
@@ -70,6 +69,7 @@ function SourceAlert({
   onAction,
 }: SourceAlertProps) {
   const severity = severityByVariant[variant]
+  const SeverityIcon = iconBySeverity[severity]
 
   return (
     <Alert
@@ -80,7 +80,7 @@ function SourceAlert({
       data-testid={testId}
     >
       <AlertIcon data-testid={testId ? `${testId}-icon` : undefined}>
-        <Icon source={iconBySeverity[severity]} />
+        <SeverityIcon />
       </AlertIcon>
       <AlertContent>
         <AlertCopy data-testid={testId ? `${testId}-copy` : undefined}>
@@ -146,7 +146,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Playground: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   render: (args) => (
     <SourceAlert

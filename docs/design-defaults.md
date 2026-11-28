@@ -171,8 +171,7 @@ token usage instead of a Tailwind step: it is derived read-only from the code,
 none of it is a Figma variable, and each foundation entry carries
 `source.kind: code` and the reason it is a local extension. The five extension
 steps are part of the request in
-[2026-11-26-foundation-remainder.md](./design-requests/2026-11-26-foundation-remainder.md);
-until design answers, a component reads them and does not add an eighth. A new
+[pagopa/ui#193](https://github.com/pagopa/ui/issues/193); until design answers, a component reads them and does not add an eighth. A new
 step is a request, not a new literal.
 
 ### 4.3 Reflow (WCAG 1.4.10)
@@ -199,9 +198,9 @@ or by content, not by a pixel height that clips when the text grows.
 A story that cannot yet satisfy 4.3 or 4.4 carries
 `parameters: { a11yContract: { reflow: false } }` and the flags that remain are
 listed as debt in
-[2026-11-26-reflow-exemption-debt.md](./design-requests/2026-11-26-reflow-exemption-debt.md),
-beside the answered request that first recorded them
-([2026-10-16-a11y-reflow-conditions.md](./design-requests/2026-10-16-a11y-reflow-conditions.md)).
+[pagopa/ui#192](https://github.com/pagopa/ui/issues/192), beside the answered
+request that first recorded them
+([pagopa/ui#45](https://github.com/pagopa/ui/issues/45)).
 The exemption is not a ratified exception: it is a debt that this policy
 answers, so the flag is removed and the record updated as each family is fixed.
 No new `reflow: false` is added without a request that the design owner answers.
@@ -225,7 +224,8 @@ inside §2–§4. Otherwise it follows the request flow.
 
 ## 6. How an alignment applies the defaults
 
-1. Open the component's guide and its record in `docs/design-requests/`.
+1. Open the component's guide and the requests its guide and registry note name —
+   the tracker is the only home a record has, so a question is an issue.
 2. Check the question against §2, §3 and §4 **before** opening a request.
 3. If a rule covers it, apply the rule and cite this document in the alignment's
    notes — no request, no decision-owner round trip.

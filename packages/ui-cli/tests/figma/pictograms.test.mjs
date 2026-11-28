@@ -153,10 +153,18 @@ test("pictogram export renders individual variants at the pinned version using o
       path.join(root, "src/components/icons/pictogram-assets.ts"),
       "utf8",
     )
-    assert.match(source, /"1:1":/)
-    assert.match(source, /1-2\.svg\?no-inline/)
-    assert.match(source, /1-3\.svg\?no-inline/)
+    assert.match(source, /"1:1": bell/)
+    assert.match(source, /Bell: bell/)
     assert.doesNotMatch(source, /https:|data:|eager/)
+    const illustration = fs.readFileSync(
+      path.join(root, "src/components/icons/pictograms/bell.ts"),
+      "utf8",
+    )
+    assert.match(illustration, /light: \{ nodeId: "1:2", url: asset_1_2 \}/)
+    assert.match(illustration, /dark: \{ nodeId: "1:3", url: asset_1_3 \}/)
+    assert.match(illustration, /1-2\.svg\?no-inline/)
+    assert.match(illustration, /1-3\.svg\?no-inline/)
+    assert.doesNotMatch(illustration, /https:|data:|eager/)
     const check = spawnSync(
       process.execPath,
       [script, ...pictogramArguments(["--check", "--input", "live.json"])],
@@ -219,6 +227,20 @@ test("pictogram export renders individual variants at the pinned version using o
       },
     )
     assert.equal(moved.status, 0, moved.stderr)
+
+    fs.writeFileSync(path.join(root, "src/components/icons/pictograms/retired.ts"), "export {}\n")
+    const stale = spawnSync(
+      process.execPath,
+      [script, ...pictogramArguments(["--check", "--input", "live.json"])],
+      {
+        cwd: root,
+        encoding: "utf8",
+        env: fixtureEnvironment(root),
+      },
+    )
+    assert.equal(stale.status, 1)
+    assert.match(stale.stderr, /pictograms\/retired\.ts has no manifest entry/)
+    fs.rmSync(path.join(root, "src/components/icons/pictograms/retired.ts"))
 
     fs.writeFileSync(path.join(root, "src/assets/figma-pictograms/9-9.svg"), "<svg/>")
     const cleaned = spawnSync(
