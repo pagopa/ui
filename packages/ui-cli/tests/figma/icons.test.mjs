@@ -198,8 +198,25 @@ test("each pinned icon compiles to one inline SVG component that paints with cur
     "the root must paint with the inherited colour and carry its source identity",
   )
   assert.doesNotMatch(mark, /#0b3ee3/i, "a mask symbol must not keep the source paint")
-  assert.match(mark, /export function Default\(props: SVGProps<SVGSVGElement>\)/)
-  assert.match(mark, /export const variants: IconVariantComponents = \{\n  "1:1": Default,\n\}/)
+  assert.match(
+    mark,
+    /function DefaultGlyph\(props: SVGProps<SVGSVGElement>\)/,
+    "the drawing keeps the raw `svg` surface the registry hands to `Icon`",
+  )
+  assert.match(
+    mark,
+    /export function Default\(props: GlyphProps\) \{\n  return <Icon \{\.\.\.props\} source=\{DefaultGlyph\} \/>\n\}/,
+    "the published component is the drawing inside the `Icon` shell, not the bare svg",
+  )
+  assert.match(
+    mark,
+    /import \{ Icon, type GlyphProps \} from "\.\.\/icon"/,
+    "the subpath export and `PagoPAIcon` share one shell definition",
+  )
+  assert.match(
+    mark,
+    /export const variants: IconVariantComponents = \{\n  "1:1": DefaultGlyph,\n\}/,
+  )
   assert.match(mark, /export default Default/)
   assert.match(
     fs.readFileSync(path.join(generated, "index.ts"), "utf8"),

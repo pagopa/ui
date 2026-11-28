@@ -1,20 +1,30 @@
 // Generated from pinned source geometry by packages/ui-cli/src/figma/icons.ts; do not edit.
 import type { SVGProps } from "react"
 
+import { Icon, type GlyphProps } from "../icon"
 import type { IconVariantComponents } from "./types"
 
 // `my_location` as inline SVG: one component per pinned variant, so a bundle
 // that imports one of them carries no other icon artwork.
-/** Source `99:2338`: the default variant. */
-export function Default(props: SVGProps<SVGSVGElement>) {
+/** The `99:2338` drawing, in the source coordinate space. */
+function DefaultGlyph(props: SVGProps<SVGSVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" data-figma-node-id="99:2338" {...props}><g transform="matrix(1 0 0 1 1.0499998331069946 1.0499998331069946)" opacity="1"><path d="M9.95 20.9L9.95 19.9C7.86667 19.6667 6.07917 18.8042 4.5875 17.3125C3.09583 15.8208 2.23333 14.0333 2 11.95L1 11.95C0.716667 11.95 0.479167 11.8542 0.2875 11.6625C0.0958333 11.4708 0 11.2333 0 10.95C0 10.6667 0.0958333 10.4292 0.2875 10.2375C0.479167 10.0458 0.716667 9.95 1 9.95L2 9.95C2.23333 7.86667 3.09583 6.07917 4.5875 4.5875C6.07917 3.09583 7.86667 2.23333 9.95 2L9.95 1C9.95 0.716667 10.0458 0.479167 10.2375 0.2875C10.4292 0.0958333 10.6667 0 10.95 0C11.2333 0 11.4708 0.0958333 11.6625 0.2875C11.8542 0.479167 11.95 0.716667 11.95 1L11.95 2C14.0333 2.23333 15.8208 3.09583 17.3125 4.5875C18.8042 6.07917 19.6667 7.86667 19.9 9.95L20.9 9.95C21.1833 9.95 21.4208 10.0458 21.6125 10.2375C21.8042 10.4292 21.9 10.6667 21.9 10.95C21.9 11.2333 21.8042 11.4708 21.6125 11.6625C21.4208 11.8542 21.1833 11.95 20.9 11.95L19.9 11.95C19.6667 14.0333 18.8042 15.8208 17.3125 17.3125C15.8208 18.8042 14.0333 19.6667 11.95 19.9L11.95 20.9C11.95 21.1833 11.8542 21.4208 11.6625 21.6125C11.4708 21.8042 11.2333 21.9 10.95 21.9C10.6667 21.9 10.4292 21.8042 10.2375 21.6125C10.0458 21.4208 9.95 21.1833 9.95 20.9ZM10.95 17.95C12.8833 17.95 14.5333 17.2667 15.9 15.9C17.2667 14.5333 17.95 12.8833 17.95 10.95C17.95 9.01667 17.2667 7.36667 15.9 6C14.5333 4.63333 12.8833 3.95 10.95 3.95C9.01667 3.95 7.36667 4.63333 6 6C4.63333 7.36667 3.95 9.01667 3.95 10.95C3.95 12.8833 4.63333 14.5333 6 15.9C7.36667 17.2667 9.01667 17.95 10.95 17.95ZM10.95 14.95C9.85 14.95 8.90833 14.5583 8.125 13.775C7.34167 12.9917 6.95 12.05 6.95 10.95C6.95 9.85 7.34167 8.90833 8.125 8.125C8.90833 7.34167 9.85 6.95 10.95 6.95C12.05 6.95 12.9917 7.34167 13.775 8.125C14.5583 8.90833 14.95 9.85 14.95 10.95C14.95 12.05 14.5583 12.9917 13.775 13.775C12.9917 14.5583 12.05 14.95 10.95 14.95Z" fill="currentColor" fillOpacity="1" fillRule="nonzero" /></g></svg>
   )
 }
 
-/** Every pinned variant of `my_location`, keyed by source node id. */
+/** `my_location`: the default variant, in the shared icon box. */
+export function Default(props: GlyphProps) {
+  return <Icon {...props} source={DefaultGlyph} />
+}
+
+/**
+ * Every pinned variant of `my_location`, keyed by source node id. The registry
+ * resolves a runtime name to one of these drawings, which `Icon` owns the box
+ * for; the exports above are the same drawings with that box already applied.
+ */
 export const variants: IconVariantComponents = {
-  "99:2338": Default,
+  "99:2338": DefaultGlyph,
 }
 
 export default Default

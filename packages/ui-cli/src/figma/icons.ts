@@ -713,10 +713,17 @@ function iconComponentModule(
     // glyphs on one page, never resolve each other's definitions.
     const scope = element.declaresIds ? `  const ${ID_NAMESPACE} = useId()\n` : ""
     const description = alias ? `the \`${alias}\` variant` : "the default variant"
-    return `/** Source \`${nodeId}\`: ${description}. */\nexport function ${exportName}(props: SVGProps<SVGSVGElement>) {\n${scope}  return (\n    ${element.markup}\n  )\n}`
+    // Two exports per variant: the drawing the registry hands to `Icon`, and the
+    // component a consumer imports from the subpath. The second is the first
+    // inside the shell, so `@pagopa/ui/icons/<slug>` cannot ship a bare `svg`
+    // that loses the box, the decoration default and the `pagopa-icon` hook. The
+    // wrapper adds no text: a `decorative={false}` call passes `label`, exactly
+    // as `Icon` asks it to, and `PagoPAIcon` is the surface that can fall back to
+    // the name it was given.
+    return `/** The \`${nodeId}\` drawing, in the source coordinate space. */\nfunction ${exportName}Glyph(props: SVGProps<SVGSVGElement>) {\n${scope}  return (\n    ${element.markup}\n  )\n}\n\n/** \`${plan.name}\`: ${description}, in the shared icon box. */\nexport function ${exportName}(props: GlyphProps) {\n  return <Icon {...props} source={${exportName}Glyph} />\n}`
   })
   const variants = plan.variants
-    .map(({ nodeId, exportName }) => `  "${nodeId}": ${exportName},`)
+    .map(({ nodeId, exportName }) => `  "${nodeId}": ${exportName}Glyph,`)
     .join("\n")
   const fallback =
     plan.variants.find((variant) => variant.nodeId === entry.defaultVariantNodeId) ??
@@ -725,7 +732,7 @@ function iconComponentModule(
   const imports = declaresIds
     ? `import { useId, type SVGProps } from "react"`
     : `import type { SVGProps } from "react"`
-  return `${directive}${GENERATED_MARKER}\n${imports}\n\nimport type { IconVariantComponents } from "./types"\n\n// \`${plan.name}\` as inline SVG: one component per pinned variant, so a bundle\n// that imports one of them carries no other icon artwork.\n${components.join("\n\n")}\n\n/** Every pinned variant of \`${plan.name}\`, keyed by source node id. */\nexport const variants: IconVariantComponents = {\n${variants}\n}\n\nexport default ${fallback?.exportName ?? plan.exportName}\n`
+  return `${directive}${GENERATED_MARKER}\n${imports}\n\nimport { Icon, type GlyphProps } from "../icon"\nimport type { IconVariantComponents } from "./types"\n\n// \`${plan.name}\` as inline SVG: one component per pinned variant, so a bundle\n// that imports one of them carries no other icon artwork.\n${components.join("\n\n")}\n\n/**\n * Every pinned variant of \`${plan.name}\`, keyed by source node id. The registry\n * resolves a runtime name to one of these drawings, which \`Icon\` owns the box\n * for; the exports above are the same drawings with that box already applied.\n */\nexport const variants: IconVariantComponents = {\n${variants}\n}\n\nexport default ${fallback?.exportName ?? plan.exportName}\n`
 }
 
 function generateIconComponents(

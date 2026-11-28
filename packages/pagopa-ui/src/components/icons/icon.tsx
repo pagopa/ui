@@ -30,6 +30,13 @@ type IconProps = Omit<SVGProps<SVGSVGElement>, "children" | "height" | "width"> 
 }
 
 /**
+ * What a published glyph accepts: `Icon`'s props without the drawing, which the
+ * glyph itself owns. The modules under `generated/` export this shape through
+ * the shell, so `@pagopa/ui/icons/<slug>` and `PagoPAIcon` cannot drift.
+ */
+type GlyphProps = Omit<IconProps, "source">
+
+/**
  * The shell every library glyph renders through: the shared box, the
  * decoration contract and the accessibility attributes. `PagoPAIcon` resolves a
  * runtime name to a `source` and lands here too.
@@ -68,4 +75,4 @@ function Icon({
   )
 }
 
-export { Icon, type IconProps, type IconSource }
+export { Icon, type GlyphProps, type IconProps, type IconSource }

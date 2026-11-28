@@ -86,6 +86,33 @@ describe("PagoPAIcon unknown input", () => {
   })
 })
 
+describe("Published glyph contract", () => {
+  // `@pagopa/ui/icons/<slug>` resolves to the module the registry reads, so the
+  // component a consumer imports has to be the drawing *inside* the shell: the
+  // same box, decoration default and `pagopa-icon` hook `Icon` owns.
+  it("carries the shell on a subpath import", () => {
+    const html = markup(<add.Default className="probe" size={16} data-testid="glyph" />)
+    expect(html).toContain("pagopa-icon")
+    expect(html).toContain('aria-hidden="true"')
+    expect(html).toContain('width="16"')
+    expect(html).toContain('height="16"')
+    expect(html).toContain("probe")
+    expect(html).toContain('data-testid="glyph"')
+  })
+
+  it("renders what `PagoPAIcon` renders for the same source variant", () => {
+    expect(markup(<add.Default />)).toBe(markup(<PagoPAIcon name="add" />))
+    expect(markup(<add.Small />)).toBe(markup(<PagoPAIcon name="add" variant="small" />))
+  })
+
+  it("announces the glyph through `label` when the caller gives it one", () => {
+    const html = markup(<add.Default decorative={false} label="Aggiungi" />)
+    expect(html).toContain('aria-label="Aggiungi"')
+    expect(html).toContain('role="img"')
+    expect(html).not.toContain("aria-hidden")
+  })
+})
+
 describe("Generated artwork", () => {
   it("keeps a glyph's definition ids inside its own instance", () => {
     const html = markup(

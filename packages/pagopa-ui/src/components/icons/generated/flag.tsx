@@ -1,20 +1,30 @@
 // Generated from pinned source geometry by packages/ui-cli/src/figma/icons.ts; do not edit.
 import type { SVGProps } from "react"
 
+import { Icon, type GlyphProps } from "../icon"
 import type { IconVariantComponents } from "./types"
 
 // `flag` as inline SVG: one component per pinned variant, so a bundle
 // that imports one of them carries no other icon artwork.
-/** Source `8704:37815`: the default variant. */
-export function Default(props: SVGProps<SVGSVGElement>) {
+/** The `8704:37815` drawing, in the source coordinate space. */
+function DefaultGlyph(props: SVGProps<SVGSVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" data-figma-node-id="8704:37815" {...props}><g transform="matrix(1 0 0 1 5 4)" opacity="1"><path d="M2 10L2 16C2 16.2833 1.90417 16.5208 1.7125 16.7125C1.52083 16.9042 1.28333 17 1 17C0.716667 17 0.479167 16.9042 0.2875 16.7125C0.0958333 16.5208 0 16.2833 0 16L0 1C0 0.716667 0.0958333 0.479167 0.2875 0.2875C0.479167 0.0958333 0.716667 0 1 0L8.175 0C8.40833 0 8.61667 0.075 8.8 0.225C8.98333 0.375 9.1 0.566667 9.15 0.8L9.4 2L14 2C14.2833 2 14.5208 2.09583 14.7125 2.2875C14.9042 2.47917 15 2.71667 15 3L15 11C15 11.2833 14.9042 11.5208 14.7125 11.7125C14.5208 11.9042 14.2833 12 14 12L8.825 12C8.59167 12 8.38333 11.925 8.2 11.775C8.01667 11.625 7.9 11.4333 7.85 11.2L7.6 10L2 10ZM9.65 10L13 10L13 4L8.575 4C8.34167 4 8.13333 3.925 7.95 3.775C7.76667 3.625 7.65 3.43333 7.6 3.2L7.35 2L2 2L2 8L8.425 8C8.65833 8 8.86667 8.075 9.05 8.225C9.23333 8.375 9.35 8.56667 9.4 8.8L9.65 10Z" fill="currentColor" fillOpacity="1" fillRule="nonzero" /></g></svg>
   )
 }
 
-/** Every pinned variant of `flag`, keyed by source node id. */
+/** `flag`: the default variant, in the shared icon box. */
+export function Default(props: GlyphProps) {
+  return <Icon {...props} source={DefaultGlyph} />
+}
+
+/**
+ * Every pinned variant of `flag`, keyed by source node id. The registry
+ * resolves a runtime name to one of these drawings, which `Icon` owns the box
+ * for; the exports above are the same drawings with that box already applied.
+ */
 export const variants: IconVariantComponents = {
-  "8704:37815": Default,
+  "8704:37815": DefaultGlyph,
 }
 
 export default Default

@@ -1,20 +1,30 @@
 // Generated from pinned source geometry by packages/ui-cli/src/figma/icons.ts; do not edit.
 import type { SVGProps } from "react"
 
+import { Icon, type GlyphProps } from "../icon"
 import type { IconVariantComponents } from "./types"
 
 // `bolt` as inline SVG: one component per pinned variant, so a bundle
 // that imports one of them carries no other icon artwork.
-/** Source `99:2187`: the default variant. */
-export function Default(props: SVGProps<SVGSVGElement>) {
+/** The `99:2187` drawing, in the source coordinate space. */
+function DefaultGlyph(props: SVGProps<SVGSVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" data-figma-node-id="99:2187" {...props}><g transform="matrix(1 0 0 1 4.882843017578125 2.121739149093628)" opacity="1"><path d="M5.66716 16.0783L10.8422 9.87826L6.84216 9.87826L7.56716 4.20326L2.94216 10.8783L6.41716 10.8783L5.66716 16.0783ZM4.11716 12.8783L1.01716 12.8783C0.617157 12.8783 0.321324 12.6991 0.129657 12.3408C-0.0620098 11.9824 -0.0411765 11.6366 0.192157 11.3033L7.66716 0.553261C7.83382 0.319928 8.05049 0.157428 8.31716 0.0657609C8.58382 -0.0259058 8.85882 -0.0217391 9.14216 0.0782609C9.42549 0.178261 9.63382 0.353261 9.76716 0.603261C9.90049 0.853261 9.95049 1.11993 9.91716 1.40326L9.11716 7.87826L12.9922 7.87826C13.4255 7.87826 13.7297 8.06993 13.9047 8.45326C14.0797 8.83659 14.0255 9.19493 13.7422 9.52826L5.51716 19.3783C5.33382 19.5949 5.10882 19.7366 4.84216 19.8033C4.57549 19.8699 4.31716 19.8449 4.06716 19.7283C3.81716 19.6116 3.62132 19.4324 3.47966 19.1908C3.33799 18.9491 3.28382 18.6866 3.31716 18.4033L4.11716 12.8783Z" fill="currentColor" fillOpacity="1" fillRule="nonzero" /></g></svg>
   )
 }
 
-/** Every pinned variant of `bolt`, keyed by source node id. */
+/** `bolt`: the default variant, in the shared icon box. */
+export function Default(props: GlyphProps) {
+  return <Icon {...props} source={DefaultGlyph} />
+}
+
+/**
+ * Every pinned variant of `bolt`, keyed by source node id. The registry
+ * resolves a runtime name to one of these drawings, which `Icon` owns the box
+ * for; the exports above are the same drawings with that box already applied.
+ */
 export const variants: IconVariantComponents = {
-  "99:2187": Default,
+  "99:2187": DefaultGlyph,
 }
 
 export default Default

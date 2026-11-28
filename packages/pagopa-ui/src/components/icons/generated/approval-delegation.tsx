@@ -1,20 +1,30 @@
 // Generated from pinned source geometry by packages/ui-cli/src/figma/icons.ts; do not edit.
 import type { SVGProps } from "react"
 
+import { Icon, type GlyphProps } from "../icon"
 import type { IconVariantComponents } from "./types"
 
 // `approval_delegation` as inline SVG: one component per pinned variant, so a bundle
 // that imports one of them carries no other icon artwork.
-/** Source `1101:4296`: the default variant. */
-export function Default(props: SVGProps<SVGSVGElement>) {
+/** The `1101:4296` drawing, in the source coordinate space. */
+function DefaultGlyph(props: SVGProps<SVGSVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" data-figma-node-id="1101:4296" {...props}><g transform="matrix(1 0 0 1 1.9999998807907104 2.986999273300171)" opacity="1"><path d="M11.925 5.238L16.9 0.288C17.0833 0.104667 17.3125 0.00883333 17.5875 0.0005C17.8625 -0.00783333 18.1 0.088 18.3 0.288C18.4833 0.471333 18.575 0.704667 18.575 0.988C18.575 1.27133 18.4833 1.50467 18.3 1.688L12.625 7.363C12.425 7.563 12.1917 7.663 11.925 7.663C11.6583 7.663 11.425 7.563 11.225 7.363L8.375 4.513C8.175 4.313 8.07917 4.07967 8.0875 3.813C8.09583 3.54633 8.2 3.313 8.4 3.113C8.6 2.92967 8.83333 2.83383 9.1 2.8255C9.36667 2.81717 9.6 2.913 9.8 3.113L11.925 5.238ZM12.95 17.413L18.9 15.563C18.8167 15.413 18.6958 15.2838 18.5375 15.1755C18.3792 15.0672 18.2 15.013 18 15.013L12.95 15.013C12.5 15.013 12.1417 14.9963 11.875 14.963C11.6083 14.9297 11.3333 14.863 11.05 14.763L9.625 14.288C9.35833 14.2047 9.16667 14.038 9.05 13.788C8.93333 13.538 8.91667 13.2797 9 13.013C9.08333 12.7463 9.24583 12.5505 9.4875 12.4255C9.72917 12.3005 9.98333 12.2797 10.25 12.363L11.3 12.713C11.5833 12.7963 11.9042 12.863 12.2625 12.913C12.6208 12.963 13.1083 12.9963 13.725 13.013L14 13.013C14 12.8297 13.9458 12.6547 13.8375 12.488C13.7292 12.3213 13.6 12.213 13.45 12.163L7.6 10.013L6 10.013L6 15.513L12.95 17.413ZM12.425 19.363L6 17.563C5.86667 17.9963 5.60417 18.3463 5.2125 18.613C4.82083 18.8797 4.41667 19.013 4 19.013L2 19.013C1.45 19.013 0.979167 18.8172 0.5875 18.4255C0.195833 18.0338 0 17.563 0 17.013L0 10.013C0 9.463 0.195833 8.99217 0.5875 8.6005C0.979167 8.20883 1.45 8.013 2 8.013L7.6 8.013C7.71667 8.013 7.83333 8.0255 7.95 8.0505C8.06667 8.0755 8.175 8.10467 8.275 8.138L14.15 10.313C14.7 10.513 15.1458 10.863 15.4875 11.363C15.8292 11.863 16 12.413 16 13.013L18 13.013C18.8333 13.013 19.5417 13.288 20.125 13.838C20.7083 14.388 21 15.113 21 16.013C21 16.3797 20.9042 16.6672 20.7125 16.8755C20.5208 17.0838 20.225 17.2547 19.825 17.388L13.575 19.338C13.3917 19.4047 13.2 19.438 13 19.438C12.8 19.438 12.6083 19.413 12.425 19.363ZM2 17.013L4 17.013L4 10.013L2 10.013L2 17.013Z" fill="currentColor" fillOpacity="1" fillRule="nonzero" /></g></svg>
   )
 }
 
-/** Every pinned variant of `approval_delegation`, keyed by source node id. */
+/** `approval_delegation`: the default variant, in the shared icon box. */
+export function Default(props: GlyphProps) {
+  return <Icon {...props} source={DefaultGlyph} />
+}
+
+/**
+ * Every pinned variant of `approval_delegation`, keyed by source node id. The registry
+ * resolves a runtime name to one of these drawings, which `Icon` owns the box
+ * for; the exports above are the same drawings with that box already applied.
+ */
 export const variants: IconVariantComponents = {
-  "1101:4296": Default,
+  "1101:4296": DefaultGlyph,
 }
 
 export default Default

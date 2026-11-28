@@ -1,20 +1,30 @@
 // Generated from pinned source geometry by packages/ui-cli/src/figma/icons.ts; do not edit.
 import type { SVGProps } from "react"
 
+import { Icon, type GlyphProps } from "../icon"
 import type { IconVariantComponents } from "./types"
 
 // `login` as inline SVG: one component per pinned variant, so a bundle
 // that imports one of them carries no other icon artwork.
-/** Source `98:933`: the default variant. */
-export function Default(props: SVGProps<SVGSVGElement>) {
+/** The `98:933` drawing, in the source coordinate space. */
+function DefaultGlyph(props: SVGProps<SVGSVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" data-figma-node-id="98:933" {...props}><g transform="matrix(1 0 0 1 2.999999761581421 2.999999761581421)" opacity="1"><path d="M10 18C9.71667 18 9.47917 17.9042 9.2875 17.7125C9.09583 17.5208 9 17.2833 9 17C9 16.7167 9.09583 16.4792 9.2875 16.2875C9.47917 16.0958 9.71667 16 10 16L16 16L16 2L10 2C9.71667 2 9.47917 1.90417 9.2875 1.7125C9.09583 1.52083 9 1.28333 9 1C9 0.716667 9.09583 0.479167 9.2875 0.2875C9.47917 0.0958333 9.71667 0 10 0L16 0C16.55 0 17.0208 0.195833 17.4125 0.5875C17.8042 0.979167 18 1.45 18 2L18 16C18 16.55 17.8042 17.0208 17.4125 17.4125C17.0208 17.8042 16.55 18 16 18L10 18ZM8.175 10L1 10C0.716667 10 0.479167 9.90417 0.2875 9.7125C0.0958333 9.52083 0 9.28333 0 9C0 8.71667 0.0958333 8.47917 0.2875 8.2875C0.479167 8.09583 0.716667 8 1 8L8.175 8L6.3 6.125C6.11667 5.94167 6.025 5.71667 6.025 5.45C6.025 5.18333 6.11667 4.95 6.3 4.75C6.48333 4.55 6.71667 4.44583 7 4.4375C7.28333 4.42917 7.525 4.525 7.725 4.725L11.3 8.3C11.5 8.5 11.6 8.73333 11.6 9C11.6 9.26667 11.5 9.5 11.3 9.7L7.725 13.275C7.525 13.475 7.2875 13.5708 7.0125 13.5625C6.7375 13.5542 6.5 13.45 6.3 13.25C6.11667 13.05 6.02917 12.8125 6.0375 12.5375C6.04583 12.2625 6.14167 12.0333 6.325 11.85L8.175 10Z" fill="currentColor" fillOpacity="1" fillRule="nonzero" /></g></svg>
   )
 }
 
-/** Every pinned variant of `login`, keyed by source node id. */
+/** `login`: the default variant, in the shared icon box. */
+export function Default(props: GlyphProps) {
+  return <Icon {...props} source={DefaultGlyph} />
+}
+
+/**
+ * Every pinned variant of `login`, keyed by source node id. The registry
+ * resolves a runtime name to one of these drawings, which `Icon` owns the box
+ * for; the exports above are the same drawings with that box already applied.
+ */
 export const variants: IconVariantComponents = {
-  "98:933": Default,
+  "98:933": DefaultGlyph,
 }
 
 export default Default

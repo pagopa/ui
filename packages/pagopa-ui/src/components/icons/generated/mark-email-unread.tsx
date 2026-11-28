@@ -1,20 +1,30 @@
 // Generated from pinned source geometry by packages/ui-cli/src/figma/icons.ts; do not edit.
 import type { SVGProps } from "react"
 
+import { Icon, type GlyphProps } from "../icon"
 import type { IconVariantComponents } from "./types"
 
 // `mark_email_unread` as inline SVG: one component per pinned variant, so a bundle
 // that imports one of them carries no other icon artwork.
-/** Source `98:1254`: the default variant. */
-export function Default(props: SVGProps<SVGSVGElement>) {
+/** The `98:1254` drawing, in the source coordinate space. */
+function DefaultGlyph(props: SVGProps<SVGSVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" data-figma-node-id="98:1254" {...props}><g transform="matrix(1 0 0 1 1.9999998807907104 1.9999998807907104)" opacity="1"><path d="M2 18C1.45 18 0.979167 17.8042 0.5875 17.4125C0.195833 17.0208 0 16.55 0 16L0 4C0 3.45 0.195833 2.97917 0.5875 2.5875C0.979167 2.19583 1.45 2 2 2L11 2C11.2833 2 11.5208 2.09583 11.7125 2.2875C11.9042 2.47917 12 2.71667 12 3C12 3.28333 11.9042 3.52083 11.7125 3.7125C11.5208 3.90417 11.2833 4 11 4L2 4L2 16L18 16L18 9C18 8.71667 18.0958 8.47917 18.2875 8.2875C18.4792 8.09583 18.7167 8 19 8C19.2833 8 19.5208 8.09583 19.7125 8.2875C19.9042 8.47917 20 8.71667 20 9L20 16C20 16.55 19.8042 17.0208 19.4125 17.4125C19.0208 17.8042 18.55 18 18 18L2 18ZM10 9L13.225 7C13.4583 6.85 13.6792 6.8125 13.8875 6.8875C14.0958 6.9625 14.2583 7.09167 14.375 7.275C14.4917 7.45833 14.5333 7.65833 14.5 7.875C14.4667 8.09167 14.3333 8.275 14.1 8.425L10.525 10.675C10.3583 10.775 10.1833 10.825 10 10.825C9.81667 10.825 9.64167 10.775 9.475 10.675L2 6L2 4L10 9ZM17 6C16.1667 6 15.4583 5.70833 14.875 5.125C14.2917 4.54167 14 3.83333 14 3C14 2.16667 14.2917 1.45833 14.875 0.875C15.4583 0.291667 16.1667 0 17 0C17.8333 0 18.5417 0.291667 19.125 0.875C19.7083 1.45833 20 2.16667 20 3C20 3.83333 19.7083 4.54167 19.125 5.125C18.5417 5.70833 17.8333 6 17 6Z" fill="currentColor" fillOpacity="1" fillRule="nonzero" /></g></svg>
   )
 }
 
-/** Every pinned variant of `mark_email_unread`, keyed by source node id. */
+/** `mark_email_unread`: the default variant, in the shared icon box. */
+export function Default(props: GlyphProps) {
+  return <Icon {...props} source={DefaultGlyph} />
+}
+
+/**
+ * Every pinned variant of `mark_email_unread`, keyed by source node id. The registry
+ * resolves a runtime name to one of these drawings, which `Icon` owns the box
+ * for; the exports above are the same drawings with that box already applied.
+ */
 export const variants: IconVariantComponents = {
-  "98:1254": Default,
+  "98:1254": DefaultGlyph,
 }
 
 export default Default

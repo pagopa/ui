@@ -1,20 +1,30 @@
 // Generated from pinned source geometry by packages/ui-cli/src/figma/icons.ts; do not edit.
 import type { SVGProps } from "react"
 
+import { Icon, type GlyphProps } from "../icon"
 import type { IconVariantComponents } from "./types"
 
 // `directions_subway` as inline SVG: one component per pinned variant, so a bundle
 // that imports one of them carries no other icon artwork.
-/** Source `15901:18591`: the default variant. */
-export function Default(props: SVGProps<SVGSVGElement>) {
+/** The `15901:18591` drawing, in the source coordinate space. */
+function DefaultGlyph(props: SVGProps<SVGSVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" data-figma-node-id="15901:18591" {...props}><g transform="matrix(1 0 0 1 4 2)" opacity="1"><path d="M3.5 17C2.51667 17 1.6875 16.6625 1.0125 15.9875C0.3375 15.3125 0 14.4833 0 13.5L0 4C0 2.61667 0.641667 1.60417 1.925 0.9625C3.20833 0.320833 5.23333 0 8 0C10.8667 0 12.9167 0.308333 14.15 0.925C15.3833 1.54167 16 2.56667 16 4L16 13.5C16 14.4833 15.6625 15.3125 14.9875 15.9875C14.3125 16.6625 13.4833 17 12.5 17L14.125 18.075C14.325 18.2083 14.3917 18.3958 14.325 18.6375C14.2583 18.8792 14.1 19 13.85 19L2.15 19C1.9 19 1.74167 18.8792 1.675 18.6375C1.60833 18.3958 1.675 18.2083 1.875 18.075L3.5 17ZM2 8L7 8L7 5L2 5L2 8ZM9 8L14 8L14 5L9 5L9 8ZM5.5625 13.5625C5.85417 13.2708 6 12.9167 6 12.5C6 12.0833 5.85417 11.7292 5.5625 11.4375C5.27083 11.1458 4.91667 11 4.5 11C4.08333 11 3.72917 11.1458 3.4375 11.4375C3.14583 11.7292 3 12.0833 3 12.5C3 12.9167 3.14583 13.2708 3.4375 13.5625C3.72917 13.8542 4.08333 14 4.5 14C4.91667 14 5.27083 13.8542 5.5625 13.5625ZM12.5625 13.5625C12.8542 13.2708 13 12.9167 13 12.5C13 12.0833 12.8542 11.7292 12.5625 11.4375C12.2708 11.1458 11.9167 11 11.5 11C11.0833 11 10.7292 11.1458 10.4375 11.4375C10.1458 11.7292 10 12.0833 10 12.5C10 12.9167 10.1458 13.2708 10.4375 13.5625C10.7292 13.8542 11.0833 14 11.5 14C11.9167 14 12.2708 13.8542 12.5625 13.5625ZM3.5 15L12.5 15C12.9333 15 13.2917 14.8583 13.575 14.575C13.8583 14.2917 14 13.9333 14 13.5L14 10L2 10L2 13.5C2 13.9333 2.14167 14.2917 2.425 14.575C2.70833 14.8583 3.06667 15 3.5 15ZM8 2C6.56667 2 5.37917 2.08333 4.4375 2.25C3.49583 2.41667 2.83333 2.66667 2.45 3L13.65 3C13.35 2.66667 12.7292 2.41667 11.7875 2.25C10.8458 2.08333 9.58333 2 8 2Z" fill="currentColor" fillOpacity="1" fillRule="nonzero" /></g></svg>
   )
 }
 
-/** Every pinned variant of `directions_subway`, keyed by source node id. */
+/** `directions_subway`: the default variant, in the shared icon box. */
+export function Default(props: GlyphProps) {
+  return <Icon {...props} source={DefaultGlyph} />
+}
+
+/**
+ * Every pinned variant of `directions_subway`, keyed by source node id. The registry
+ * resolves a runtime name to one of these drawings, which `Icon` owns the box
+ * for; the exports above are the same drawings with that box already applied.
+ */
 export const variants: IconVariantComponents = {
-  "15901:18591": Default,
+  "15901:18591": DefaultGlyph,
 }
 
 export default Default
