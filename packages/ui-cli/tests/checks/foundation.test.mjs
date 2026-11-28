@@ -72,7 +72,7 @@ test("a value above the ceiling fails with the rule", () => {
       // one diagnostic that raised it: a bare command would pass for any error.
       assert.match(
         result.problems.join("\n"),
-        /tailwind-text-size: 1 occurrences, the ceiling is 0 — use a foundation token or register an exception in .*then run `pnpm nx run pagopa-ui:foundation:check`/,
+        /tailwind-text-size: 1 occurrences, the ceiling is 0 — use a foundation token, or register an exception with its node and reason in .*then run `pnpm nx run pagopa-ui:foundation:check`/,
       )
     },
     { files: { "src/components/bad.tsx": 'export const bad = <p className="text-sm" />\n' } },
@@ -552,19 +552,45 @@ test("unknown foundations fail even when the declaration has no literal value", 
   )
 })
 
-test("the existing caller-overridable table fallback is pinned, not a general width exemption", () => {
+test("the caller-overridable table fallback is a registered exception, not a code special case", () => {
   const table = (width) =>
     [
       `const defaultTruncatedWidth = "${width}"`,
       "export const demo = ({ column }) => <div style={{ maxWidth: column.maxWidth ?? defaultTruncatedWidth }} />",
     ].join("\n")
+  const waiver = (width) => ({
+    schemaVersion: 1,
+    exceptions: [
+      {
+        rule: "visual-constant",
+        file: "src/components/data-display/table.tsx",
+        match: `maxWidth: ${width}`,
+        nodeId: "1349:22020",
+        reason: "fixture",
+      },
+    ],
+  })
+  // Without the entry the value fails: the gate owns the waiver, not the
+  // checker, so the same literal cannot be copied into a second component.
   fixture(
     ({ run }) => {
       const result = run()
-      assert.deepEqual(result.problems, [])
+      assert.ok(result.problems.length > 0)
+      assert.match(result.problems.join("\n"), /visual-constant: 1 occurrences/)
     },
     { files: { "src/components/data-display/table.tsx": table("16rem") } },
   )
+  fixture(
+    ({ run }) => {
+      assert.deepEqual(run().problems, [])
+    },
+    {
+      files: { "src/components/data-display/table.tsx": table("16rem") },
+      exceptions: waiver("16rem"),
+    },
+  )
+  // A registered width does not license another value, another file, or a
+  // second occurrence of the same value elsewhere.
   for (const files of [
     { "src/components/data-display/table.tsx": table("17rem") },
     { "src/components/copy.tsx": table("16rem") },
@@ -575,9 +601,94 @@ test("the existing caller-overridable table fallback is pinned, not a general wi
         assert.ok(result.problems.length > 0)
         assert.match(result.problems.join("\n"), /visual-constant: 1 occurrences/)
       },
-      { files },
+      { files: files, exceptions: waiver("16rem") },
     )
   }
+})
+
+test("the escape behind a length cannot slip past the arbitrary rule", () => {
+  // `\b` never matches between `px` and `_`; these pairs used to pass.
+  fixture(
+    ({ run }) => {
+      const text = run().problems.join("\n")
+      assert.match(text, /arbitrary-sizing: 1 occurrences/)
+      assert.match(text, /w-\[6px_8px\]/)
+      assert.match(text, /arbitrary-length: 1 occurrences/)
+      assert.match(text, /\[2rem_1rem\]/)
+    },
+    {
+      files: {
+        "src/components/bad.tsx":
+          'export const bad = <div className="w-[6px_8px] p-[2rem_1rem]" />\n',
+      },
+    },
+  )
+})
+
+test("a rule that owns a slice of the scale names its replacement", () => {
+  fixture(
+    ({ run }) => {
+      const text = run().problems.join("\n")
+      // One region, one diagnostic: the specific rule claims the token the
+      // catch-all would otherwise report a second time.
+      assert.doesNotMatch(text, /arbitrary-length/)
+      assert.match(
+        text,
+        /arbitrary-sizing: 1 occurrences, the ceiling is 0 — take the size from the spacing scale or from the surface's own container token .*register an exception/,
+      )
+      assert.match(
+        text,
+        /arbitrary-depth: 1 occurrences, the ceiling is 0 — takes its index from the surface's place in the stacking order/,
+      )
+      assert.match(text, /arbitrary-shadow: 1 occurrences/)
+      assert.match(text, /arbitrary-leading: 1 occurrences/)
+      assert.match(text, /arbitrary-animation: 1 occurrences/)
+      assert.match(text, /functional-color: 1 occurrences/)
+      const { counts } = run("--measure")
+      assert.deepEqual(counts, {
+        "arbitrary-sizing": 1,
+        "arbitrary-depth": 1,
+        "arbitrary-shadow": 1,
+        "arbitrary-leading": 1,
+        "arbitrary-animation": 1,
+        "functional-color": 1,
+        "arbitrary-length": 0,
+        "tailwind-text-size": 0,
+        "font-weight": 0,
+        "raw-figma-variable": 0,
+        "hex-color": 0,
+        "palette-color": 0,
+        "off-scale-spacing": 0,
+        "shadow-scale": 0,
+        "center-overflow": 0,
+        "default-breakpoint": 0,
+        "visual-constant": 0,
+        "unknown-foundation": 0,
+      })
+    },
+    {
+      files: {
+        "src/components/bad.tsx": [
+          'export const one = <div className="max-w-[240px] z-[999] shadow-[0_0_0_6px_rgb(1_2_3/0.4)]" />',
+          'export const two = <p className="leading-[1.9] animate-[spin_2s_linear_infinite] text-[oklch(0.5_0.1_200)]" />',
+        ].join("\n"),
+      },
+    },
+  )
+})
+
+test("the token-first forms of the new rules pass", () => {
+  fixture(
+    ({ run }) => {
+      assert.deepEqual(run().problems, [])
+    },
+    {
+      files: {
+        "src/components/good.tsx":
+          'export const good = <div className="max-w-4xl z-50 shadow-32 text-body leading-snug bg-primary p-4" />\n',
+      },
+    },
+  )
 })
 
 test("the semantic stylesheet fails on a hardcoded colour and an unbacked dimension", () => {

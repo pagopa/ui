@@ -20,6 +20,7 @@ import { ProgressKpi } from "@/components/data-display/progress-kpi"
 import { TableList } from "@/components/data-display/table-list"
 import { Timeline } from "@/components/data-display/timeline"
 import { InputChip } from "@/components/inputs/chips"
+import { SkipToMainContent } from "@/components/navigation/skip-to-main-content"
 import { Button } from "@/components/primitives/button"
 import { Input } from "@/components/primitives/input"
 import { Progress } from "@/components/primitives/progress"
@@ -491,12 +492,7 @@ export function TemplateShell({
   const standalone = config.kind === "auth" || config.kind === "email"
   return (
     <div className={cn("pui:min-h-152 pui:bg-background pui:text-foreground", className)}>
-      <a
-        href="#main-content"
-        className="pui:fixed pui:top-2 pui:left-2 pui:z-[100] pui:-translate-y-20 pui:rounded pui:bg-primary pui:px-4 pui:py-2 pui:text-primary-foreground pui:focus:translate-y-0"
-      >
-        Vai al contenuto
-      </a>
+      <SkipToMainContent />
       {!standalone ? <AppHeader compact={config.kind === "drawer"} /> : null}
       <main
         id="main-content"
