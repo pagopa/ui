@@ -14,7 +14,6 @@ import {
   renderCataloguePrBody,
   renderTokenDriftRecord,
 } from "../catalogue-render.ts"
-import { requestsFolder } from "../config.ts"
 import { formatCatalogueSummary, renderCataloguePlan } from "./output.ts"
 import type { CatalogueContext } from "./context.ts"
 
@@ -182,7 +181,6 @@ export function finishCatalogue(context: CatalogueContext, plan: boolean): Catal
         surfaceWaiting: validation.surfaceWaiting,
         surfaceUncensused: validation.surfaceUncensused,
         deviceStats: validation.deviceStats,
-        requests: requestsFolder(workspace),
       }),
     )
     err.push(

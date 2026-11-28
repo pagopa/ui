@@ -40,7 +40,7 @@ application supplies its own control next to it.
 
 ## Open design questions
 
-Recorded in `docs/design-requests/2026-10-21-pagination-order-axis.md`:
+Recorded in `https://github.com/pagopa/ui/issues/37`:
 
 - `Order=Mobile`: whether the compact composition is a state, a width behaviour or
   a device. Today it follows the container width, not a prop.

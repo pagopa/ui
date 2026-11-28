@@ -750,7 +750,7 @@ function SourceStartOption({
 
 export const FidelityStartStates: Story = {
   parameters: {
-    // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+    // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
     a11yContract: { reflow: false },
     design: { type: "figma", url: figmaEmbedUrl("295:1360") },
   },

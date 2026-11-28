@@ -15,16 +15,14 @@ import { parseSchema } from "../lib/validate.ts"
  */
 export const CONFIG_PATH = "figma-to-code.yaml"
 
-/** The design-request folder a checkout without the config keeps using. */
-export const DEFAULT_REQUESTS_DIR = "docs/design-requests"
-
 // Only the keys a module reads. The file declares more, and a key every reader
 // defaults over is not a key anything resolves: reading it here would make the
-// config a second source of truth that no code consults.
+// config a second source of truth that no code consults. `design.requests` used
+// to name the folder the mirrors lived in; the issue tracker is the only home
+// now, so the key is gone and a note points at an issue URL.
 const FigmaConfigSchema = z.looseObject({
   design: z
     .looseObject({
-      requests: z.string().optional(),
       owners: z.array(z.string()).optional(),
       preview: z
         .looseObject({ url: z.string().optional(), branch: z.string().optional() })
@@ -58,34 +56,23 @@ export function readFigmaConfig(workspace: Workspace): FigmaConfig {
 }
 
 export type DesignConfig = {
-  requests: string
   owners: string[]
   preview: string
   previewBranch: string
 }
 
 /**
- * The design paths every reader resolves. The fallbacks are the values the
+ * The design values every reader resolves. The fallbacks are the values the
  * modules used before the config was read, so a workspace that carries the file
- * and one that does not resolve the same path.
+ * and one that does not resolve the same values.
  */
 export function designPaths(config: FigmaConfig): DesignConfig {
   const design = config.design ?? {}
   return {
-    requests: design.requests || DEFAULT_REQUESTS_DIR,
     owners: design.owners ?? [],
     preview: design.preview?.url || "none",
     previewBranch: design.preview?.branch ?? "",
   }
-}
-
-/**
- * The design-request folder this workspace resolves. Five readers each spelled
- * the folder out, so a config that moved the requests left them scanning a path
- * that no longer exists; a reader that needs the folder asks for it here.
- */
-export function requestsFolder(workspace: Workspace): string {
-  return designPaths(readFigmaConfig(workspace)).requests
 }
 
 /** A literal string, ready to sit inside a `RegExp` source. */
@@ -94,12 +81,15 @@ export function escapeRegExp(value: string): string {
 }
 
 /**
- * The pattern that finds a design-request pointer inside a registry note.
- *
- * The folder is required: it belongs to `designPaths(...)` and a default would
- * put a reader back on a path the config had moved away from.
+ * The design-request pointer a registry note carries: the issue URL, because
+ * the tracker is the only home. The record used to be a Markdown file and five
+ * readers each matched the folder on their own, so a note pointing at a record
+ * the config had moved away from counted as no pointer at all. One pattern
+ * answers for every reader now, and it does not depend on a configured path.
  */
-export function requestPointer(folder: string): RegExp {
-  const escaped = escapeRegExp(folder.replace(/\/$/, ""))
-  return new RegExp(`(?<![\\w./-])${escaped}/[\\w./-]+\\.md\\b`, "g")
+const ISSUE_URL = /https:\/\/[^\s/?]+\/[^\s/]+\/[^\s/]+\/issues\/\d+/g
+
+/** The issue URLs a note names, in the order it names them. */
+export function issuePointers(text: string | null | undefined): string[] {
+  return [...new Set(text?.match(ISSUE_URL) ?? [])]
 }

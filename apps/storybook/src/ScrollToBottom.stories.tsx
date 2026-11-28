@@ -49,13 +49,13 @@ function ScrollExample() {
 }
 
 export const Playground: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   render: () => <ScrollExample />,
 }
 
 export const ReducedMotionScroll: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   beforeEach: () => {
     const original = window.matchMedia.bind(window)
@@ -95,7 +95,7 @@ export const ReducedMotionScroll: Story = {
  * quietly passing twice.
  */
 export const RealMotionPreference: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   render: () => <ScrollExample />,
   play: async ({ canvasElement }) => {

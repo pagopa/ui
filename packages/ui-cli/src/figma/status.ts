@@ -5,7 +5,8 @@
 // It answers, in one command, the questions a session used to answer by reading
 // the snapshot, the inventory, the registry and the sources: is the token there,
 // which snapshot is pinned, does the file differ from the inventory, who is
-// still pending and why, which design requests are open, what comes next.
+// still pending and why, which design request a pending node waits on, what
+// comes next.
 import fs from "node:fs"
 import path from "node:path"
 
@@ -17,8 +18,7 @@ import { fileKeyFromSource } from "./snapshot.ts"
 import { figmaToken, resolveFigmaToken, type FigmaTokenSource } from "../adapters/figma-token.ts"
 import { RULES_PATH, plan as planRules, readLedger, readRulesSnapshot } from "./rules.ts"
 import { COMMENTS_SNAPSHOT_PATH, readComments } from "./comments.ts"
-import { CONFIG_PATH, requestsFolder, requestPointer } from "./config.ts"
-import { readDesignRequestRecord } from "./design-request-record.ts"
+import { CONFIG_PATH, issuePointers } from "./config.ts"
 import {
   PAGE_SURFACE_PATH,
   formatSurfaceLine,
@@ -99,19 +99,12 @@ export type StatusReport = {
     error: string | null
   }
   requests: {
-    path: string | null
-    open: number
-    answered: number
-    /** Records whose `- Status:` line is missing or says neither open nor answered. */
-    unreadable: string[]
     /**
-     * The open records a pending node points at. Everything else open is design
-     * debt: it is printed as a counter and never blocks the router.
+     * The issue URLs a pending node points at. A request's live state lives in
+     * the tracker, and this report reads no network, so what it can say is which
+     * requests block a node; the census is `figma request list`'s job.
      */
     linked: string[]
-    files: string[]
-    /** The folder `figma-to-code.yaml` declares, whether or not it exists. */
-    declared: string
   }
   live: LiveReport | null
   next: string
@@ -127,46 +120,10 @@ function bytesLabel(bytes: number): string {
   return megabytes >= 1 ? `${megabytes.toFixed(1)} MB` : `${Math.round(bytes / 1024)} KB`
 }
 
-function designRequests(workspace: Workspace, pending: PendingRow[]): StatusReport["requests"] {
-  const root = workspace.root
-  const workspaceRootPath = workspace.workspaceRoot
-  // The record folder is the one path the config calls workspace-relative, so it
-  // is the one path read from it rather than from a literal here.
-  const requests = requestsFolder(workspace)
-  const directory = [path.join(root, requests), path.join(workspaceRootPath, requests)].find(
-    (candidate) => fs.existsSync(candidate),
-  )
-  if (!directory)
-    return {
-      path: null,
-      open: 0,
-      answered: 0,
-      unreadable: [],
-      linked: [],
-      files: [],
-      declared: requests,
-    }
-  const files = fs
-    .readdirSync(directory)
-    .filter((file) => file.endsWith(".md"))
-    .sort()
-  const records = files.map((file) =>
-    readDesignRequestRecord(fs.readFileSync(path.join(directory, file), "utf8")),
-  )
-  // A pending node names its request by the record's file name, so the pointer
-  // the registry already carries is what decides blocking from advisory.
-  const pointed = new Set(
-    pending.flatMap((row) => row.designRequests.map((pointer) => path.posix.basename(pointer))),
-  )
-  return {
-    path: relativeTo(workspaceRootPath, directory),
-    open: records.filter((record) => record.state === "open").length,
-    answered: records.filter((record) => record.state === "answered").length,
-    unreadable: files.filter((_, index) => records[index].state === "unreadable"),
-    linked: files.filter((file, index) => records[index].state === "open" && pointed.has(file)),
-    files,
-    declared: requests,
-  }
+function designRequests(pending: PendingRow[]): StatusReport["requests"] {
+  // The pending nodes carry the pointers already: a note names an issue URL, and
+  // the same URL named by two nodes blocks both.
+  return { linked: [...new Set(pending.flatMap((row) => row.designRequests))] }
 }
 
 /**
@@ -182,10 +139,10 @@ function designRequests(workspace: Workspace, pending: PendingRow[]): StatusRepo
  * runs it (`pnpm ui-cli …`). The Nx targets were a second name for the same
  * command, and a session that copied one had to be told how to pass `--` too.
  *
- * Only a request a pending node actually points at blocks: the open records are
- * design debt, and 23 of them held the router at the request rung while no
- * pending node referenced most of them. What nothing points at is advisory, and
- * it is also reported as a counter instead of a command. Two counters are easy
+ * Only a request a pending node actually points at blocks: the tracker holds
+ * 23 open questions and none of them stopped the router while no pending node
+ * pointed at one. What nothing points at is design debt, and `figma request
+ * list` reports it; this rung counts what blocks. Two counters are easy
  * to mistake for `figma triage`: the census coverage is read from the pages the
  * inventory publishes on and `surface sync` writes, and a pending census
  * identity is moved by the catalogue decision (`record`), never by triage,
@@ -227,8 +184,6 @@ export function nextCommand(report: Omit<StatusReport, "next">): string {
       `(${uncensused.length} published page(s) are not censused: ${named}${uncensused.length > 3 ? ", …" : ""})`
     )
   }
-  if (report.requests.unreadable.length)
-    return `set "- Status: open|answered" in ${report.requests.unreadable.join(", ")} — ${report.requests.path ?? report.requests.declared} records without a readable status cannot be counted`
   if (report.requests.linked.length)
     return `answer the ${report.requests.linked.length} open design request(s) a pending node points at (${list(report.requests.linked.slice(0, 3))}) before briefing those nodes`
   if (report.comments.open)
@@ -244,7 +199,7 @@ export function nextCommand(report: Omit<StatusReport, "next">): string {
     return `pnpm ui-cli figma brief --queue (${report.registry.pending} pending node(s) need a brief)`
   if (report.registry.unaccounted)
     return `pnpm ui-cli check catalogue (${report.registry.unaccounted} unaccounted node(s) need a registry entry: ${record})`
-  return `nothing to align: the file matches the inventory, the census is decided, the ledger is current, no node is pending or unaccounted${advisory(report.requests)}`
+  return "nothing to align: the file matches the inventory, the census is decided, the ledger is current, no node is pending or unaccounted"
 }
 
 /** Names up to three items and counts the rest, so a rung stays one line. */
@@ -253,23 +208,10 @@ function list(items: readonly string[]): string {
   return items.length > 3 ? `${head}, …` : head
 }
 
-/** The open requests nothing points at: design debt the router reports, never blocks on. */
-function advisory(requests: StatusReport["requests"]): string {
-  const idle = requests.open - requests.linked.length
-  if (idle <= 0) return ""
-  return ` (${idle} open design request(s) are advisory: no pending node points at them)`
-}
-
-/** `open` splits into what blocks and what is debt, so the counter agrees with `next`. */
+/** The requests a pending node points at, so the counter agrees with `next`. */
 function requestsLine(requests: StatusReport["requests"]): string {
-  const blocking = requests.linked.length
-  const parts = [
-    blocking ? `${requests.open} open, ${blocking} block a pending node` : `${requests.open} open`,
-    blocking && requests.open > blocking ? `${requests.open - blocking} advisory` : null,
-    `${requests.answered} answered`,
-    requests.unreadable.length ? `${requests.unreadable.length} unreadable` : null,
-  ].filter(Boolean)
-  return `${parts.join(" · ")}${requests.path ? ` in ${requests.path}` : ""}`
+  if (!requests.linked.length) return "none blocks a pending node"
+  return `${requests.linked.length} block(s) a pending node: ${list(requests.linked)}`
 }
 
 function statusLine(name: string, value: string): string {
@@ -428,19 +370,12 @@ function inventoryStatus(workspace: Workspace): {
   return { report, inventory }
 }
 
-function pendingStatusRow(
-  nodeId: string,
-  name: string | null,
-  requests: string,
-  target?: string,
-  note?: string,
-) {
-  const designRequest = requestPointer(requests)
+function pendingStatusRow(nodeId: string, name: string | null, target?: string, note?: string) {
   return {
     nodeId,
     name,
     target: target ?? null,
-    designRequests: [...new Set(note?.match(designRequest) ?? [])],
+    designRequests: issuePointers(note),
   }
 }
 
@@ -465,7 +400,6 @@ function registryStatus(
     error: null,
   }
   const pending: PendingRow[] = []
-  const requests = requestsFolder(workspace)
   try {
     const registry = readRegistry(workspace.root)
     const pageRules = new Map(registry.bulkRules.map((rule) => [rule.pageId, rule]))
@@ -475,16 +409,14 @@ function registryStatus(
       const status = entry?.status ?? pageRules.get(node.pageId)?.status ?? "unaccounted"
       if (isCountedStatus(status)) counts[status] += 1
       if (status === "pending")
-        pending.push(
-          pendingStatusRow(node.nodeId, node.name, requests, entry?.target?.export, entry?.note),
-        )
+        pending.push(pendingStatusRow(node.nodeId, node.name, entry?.target?.export, entry?.note))
     }
     for (const [nodeId, entry] of Object.entries(registry.entries)) {
       if (
         entry.status === "pending" &&
         !inventory?.components.some((node) => node.nodeId === nodeId)
       ) {
-        pending.push(pendingStatusRow(nodeId, null, requests, entry.target?.export, entry.note))
+        pending.push(pendingStatusRow(nodeId, null, entry.target?.export, entry.note))
       }
     }
     pending.sort((left, right) =>
@@ -644,7 +576,7 @@ export async function buildStatusReport(
     comments: commentsStatus(workspace, inventory),
     pending,
     surface: surfaceStatus(workspace, inventory),
-    requests: designRequests(workspace, pending),
+    requests: designRequests(pending),
     live,
   }
   const report: StatusReport = { ...base, next: nextCommand(base) }

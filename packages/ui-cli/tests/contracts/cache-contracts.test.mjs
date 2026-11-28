@@ -204,7 +204,7 @@ test("cache-contract: sibling reads invalidate cached checks without widening ev
         "packages/pagopa-ui/src/catalog/figma/rules.json",
         "packages/pagopa-ui/.figma/rules.json",
         "apps/storybook/src/guides/probe.md",
-        "docs/design-requests/probe.md",
+        "packages/pagopa-ui/figma-to-code.yaml",
       ],
     ],
     [

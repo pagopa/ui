@@ -3,7 +3,7 @@ from an associated label. The pointer target is an invisible expansion on the
 box itself, and keyboard focus draws the shared solid perimeter. Red is only ever
 the error state, exposed through `aria-invalid`, never plain focus, which would
 read as a validation error. The open question is recorded in
-[2026-10-24-checkbox-focus-state.md](../../../../docs/design-requests/2026-10-24-checkbox-focus-state.md).
+[the open design question](https://github.com/pagopa/ui/issues/27).
 
 `CheckboxField` is one option row, not a group; the target expansion reaches an
 accessible size without inflating the row. The rich option adds a decorative

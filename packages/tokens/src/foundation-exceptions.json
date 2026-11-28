@@ -7,42 +7,42 @@
       "file": "apps/storybook/src/templates/LogIn.tsx",
       "match": "font-normal",
       "nodeId": "2339:80916",
-      "reason": "The source description is 18/26 Regular; the captured library exposes no regular 18px text style (Body/Body Big is semibold only). Design-blocked: the value is listed in docs/design-defaults.md §5 and asked in the open request docs/design-requests/2026-11-26-foundation-remainder.md (issue #193)."
+      "reason": "The source description is 18/26 Regular; the captured library exposes no regular 18px text style (Body/Body Big is semibold only). Design-blocked: the value is listed in docs/design-defaults.md §5 and asked in the open request https://github.com/pagopa/ui/issues/193 (issue #193)."
     },
     {
       "rule": "visual-constant",
       "file": "src/components/data-display/table.tsx",
       "match": "maxWidth: 16rem",
       "nodeId": "1349:22020",
-      "reason": "The truncated cell width is a caller-overridable fallback (`column.maxWidth ?? defaultTruncatedWidth`), not a value the component asserts: the source samples its columns at 114/153/59/59/59/89/112 and never states a truncation cap. Every consumer that sets `column.maxWidth` replaces it. Kept until the source publishes the cap; asked in docs/design-requests/2026-11-26-foundation-remainder.md (issue #193)."
+      "reason": "The truncated cell width is a caller-overridable fallback (`column.maxWidth ?? defaultTruncatedWidth`), not a value the component asserts: the source samples its columns at 114/153/59/59/59/89/112 and never states a truncation cap. Every consumer that sets `column.maxWidth` replaces it. Kept until the source publishes the cap; asked in https://github.com/pagopa/ui/issues/193 (issue #193)."
     },
     {
       "rule": "arbitrary-depth",
       "file": "src/components/navigation/skip-to-main-content.tsx",
       "match": "z-[100]",
       "nodeId": "8090:46352",
-      "reason": "A skip control has to stay reachable while an overlay is open, so it sits above the overlay order (`z-50`) rather than inside it. The library publishes no z-index scale; the value asked in docs/design-requests/2026-11-26-foundation-remainder.md (issue #193) becomes its token."
+      "reason": "A skip control has to stay reachable while an overlay is open, so it sits above the overlay order (`z-50`) rather than inside it. The library publishes no z-index scale; the value asked in https://github.com/pagopa/ui/issues/193 (issue #193) becomes its token."
     },
     {
       "rule": "arbitrary-leading",
       "file": "src/components/navigation/section-header.tsx",
       "match": "leading-[1.2]",
       "nodeId": "1566:29849",
-      "reason": "The source L3 label is 12/14.4 while the `label-mini` text style carries 12/16, so the heading overrides the line-height of the style it draws. Off-scale: no leading token carries 1.2; asked in docs/design-requests/2026-11-26-foundation-remainder.md (issue #193)."
+      "reason": "The source L3 label is 12/14.4 while the `label-mini` text style carries 12/16, so the heading overrides the line-height of the style it draws. Off-scale: no leading token carries 1.2; asked in https://github.com/pagopa/ui/issues/193 (issue #193)."
     },
     {
       "rule": "arbitrary-animation",
       "file": "src/components/feedback/progress-loader.tsx",
       "match": "animate-[pulse_1.4s_ease-in-out_infinite]",
       "nodeId": "236:1311",
-      "reason": "The indeterminate indicator re-times the built-in pulse to 1.4s ease-in-out, which no motion token names; `motion-reduce:animate-none` already discharges the reduced-motion contract. The timing asked in docs/design-requests/2026-11-26-foundation-remainder.md (issue #193) becomes the token."
+      "reason": "The indeterminate indicator re-times the built-in pulse to 1.4s ease-in-out, which no motion token names; `motion-reduce:animate-none` already discharges the reduced-motion contract. The timing asked in https://github.com/pagopa/ui/issues/193 (issue #193) becomes the token."
     },
     {
       "rule": "arbitrary-shadow",
       "file": "src/components/data-display/timeline.tsx",
       "match": "shadow-[0_0_0_6px_rgb(14_15_19/0.35)]",
       "nodeId": "12812:16248",
-      "reason": "The source draws the pending dot's halo as a 6 px ring of the ink colour at 35%, an effect no elevation token carries: the three published shadows are drop shadows, not rings. Which step owns a ring, and whether the halo is a colour token or a mix of `--pui-foreground`, is asked in docs/design-requests/2026-11-26-foundation-remainder.md (issue #193)."
+      "reason": "The source draws the pending dot's halo as a 6 px ring of the ink colour at 35%, an effect no elevation token carries: the three published shadows are drop shadows, not rings. Which step owns a ring, and whether the halo is a colour token or a mix of `--pui-foreground`, is asked in https://github.com/pagopa/ui/issues/193 (issue #193)."
     }
   ]
 }

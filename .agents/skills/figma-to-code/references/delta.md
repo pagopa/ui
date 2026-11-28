@@ -14,7 +14,7 @@
    counts and the cap still hold. `--refresh` when rules or comments moved
    since the pin.
 3. Decide per node, dependents too: implement, exclude with a reason, or leave
-   pending, naming the design-request file it waits on or its blocker. A
+   pending, naming the issue it waits on or its blocker. A
    judgement call the source does not answer is a design request, not an
    invention. A `mocked` dependent keeps its status and note: a review is not a
    renewal.

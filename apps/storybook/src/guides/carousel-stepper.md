@@ -20,6 +20,6 @@ width.
   the smallest change it allows. The source draws an 8px gap, which leaves 16px
   between centres and no room for the rule; the resolution and the alternatives
   are recorded in
-  `docs/design-requests/2026-10-23-carousel-stepper-target-size.md`.
+  `https://github.com/pagopa/ui/issues/44`.
 - The width, height and background transition animates the selection and is
   removed under reduced motion.

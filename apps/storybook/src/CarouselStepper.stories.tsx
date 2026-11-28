@@ -96,7 +96,7 @@ export const Fidelity: Story = {
 
     // One 16x4 active dot and five 8x8 outlined dots on a 16px gap: the source
     // draws an 8px gap, which leaves a 16px pitch and cannot hold a 24px target
-    // (docs/design-requests/2026-10-23-carousel-stepper-target-size.md).
+    // (https://github.com/pagopa/ui/issues/44).
     await expect(group.getBoundingClientRect().height).toBe(8)
     await expect(controls).toHaveLength(6)
     const first = controls[0].getBoundingClientRect()

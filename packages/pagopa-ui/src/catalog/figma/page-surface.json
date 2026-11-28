@@ -29,7 +29,7 @@
           "kind": "COMPONENT_SET",
           "inLibrary": true,
           "decision": "pending",
-          "reason": "Desktop 417x2294, Mobile 320x2136. The registry entry is pending behind docs/design-requests/2026-10-21-timeline-drawer-width-and-mobile.md: the mobile variant is drawn 320 wide while the open question asks whether it is a bottom sheet, and no story builds it."
+          "reason": "Desktop 417x2294, Mobile 320x2136. The registry entry is pending behind https://github.com/pagopa/ui/issues/39: the mobile variant is drawn 320 wide while the open question asks whether it is a bottom sheet, and no story builds it."
         },
         {
           "nodeId": "1334:17210",
@@ -1651,7 +1651,7 @@
           "kind": "COMPONENT_SET",
           "inLibrary": true,
           "decision": "pending",
-          "reason": "2026-11-20 drift: the rows-per-page control is now an instance of the shared Select (48px) instead of a raw frame with .RowPerPageSelect, and .Rows per page is renamed .RowsPerPage; the page buttons are unchanged. The node stays pending until the compact-state, rows-per-page, edge-window and edge-arrow questions are answered: docs/design-requests/2026-10-21-pagination-order-axis.md."
+          "reason": "2026-11-20 drift: the rows-per-page control is now an instance of the shared Select (48px) instead of a raw frame with .RowPerPageSelect, and .Rows per page is renamed .RowsPerPage; the page buttons are unchanged. The node stays pending until the compact-state, rows-per-page, edge-window and edge-arrow questions are answered: https://github.com/pagopa/ui/issues/37."
         },
         {
           "nodeId": "1504:9763",
@@ -2378,7 +2378,7 @@
           "kind": "COMPONENT_SET",
           "inLibrary": true,
           "decision": "shipped",
-          "reason": "Shipped with the multiselect answered in docs/design-requests/2026-10-22-autocomplete-multiselect.md; the values that overflow the field are an open, non-blocking question in 2026-10-28-autocomplete-multiselect-overflow.md."
+          "reason": "Shipped with the multiselect answered in https://github.com/pagopa/ui/issues/40; the values that overflow the field are an open, non-blocking question in 2026-10-28-autocomplete-multiselect-overflow.md."
         },
         {
           "nodeId": "824:8937",
@@ -2553,7 +2553,7 @@
           "kind": "COMPONENT_SET",
           "inLibrary": true,
           "decision": "pending",
-          "reason": "Reviewed desktop 1278:6528 (417x800) and mobile 1278:6526 (320x646): mobile matches, desktop uses the nearest 416px token (1px residue); body description, 40px action gap, bottom sheet without a handle, 8px header gap and shadow-32. The 2026-11-20 drift changed nothing in this tree. Pending the shared width/mobile decision and the unreviewed Service detail, Search, Filters and Sort dependencies: docs/design-requests/2026-10-21-timeline-drawer-width-and-mobile.md."
+          "reason": "Reviewed desktop 1278:6528 (417x800) and mobile 1278:6526 (320x646): mobile matches, desktop uses the nearest 416px token (1px residue); body description, 40px action gap, bottom sheet without a handle, 8px header gap and shadow-32. The 2026-11-20 drift changed nothing in this tree. Pending the shared width/mobile decision and the unreviewed Service detail, Search, Filters and Sort dependencies: https://github.com/pagopa/ui/issues/39."
         },
         {
           "nodeId": "1294:14848",
@@ -3717,7 +3717,7 @@
           "kind": "COMPONENT_SET",
           "inLibrary": true,
           "decision": "mocked",
-          "reason": "rendered by TemplateShell demo content; real implementation pending\n\nOpen design questions: the spinner (docs/design-requests/2026-10-24-identity-provider-spinner.md, issue #31), the SPID help link (docs/design-requests/2026-10-24-identity-provider-link.md, issue #32) and the loading skeleton (docs/design-requests/2026-10-24-identity-provider-skeleton.md, issue #33). The node stays mocked until the answers."
+          "reason": "rendered by TemplateShell demo content; real implementation pending\n\nOpen design questions: the spinner (https://github.com/pagopa/ui/issues/31, issue #31), the SPID help link (https://github.com/pagopa/ui/issues/32, issue #32) and the loading skeleton (https://github.com/pagopa/ui/issues/33, issue #33). The node stays mocked until the answers."
         },
         {
           "nodeId": "2337:68500",

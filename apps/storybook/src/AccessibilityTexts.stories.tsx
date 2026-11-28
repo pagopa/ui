@@ -119,7 +119,7 @@ export const DrawerCloseLabel: Story = {
 }
 
 export const NoticeLabels: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
     <div className="pui:grid pui:max-w-xl pui:gap-4">
@@ -172,7 +172,7 @@ export const NoticeLabels: Story = {
 }
 
 export const NavigationTexts: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: {
     a11yContract: { reflow: false },
     // The fixture pins the desktop width: the play function reads the wide
@@ -236,7 +236,7 @@ export const NavigationTexts: Story = {
 }
 
 export const FieldTexts: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
     <div className="pui:grid pui:max-w-md pui:gap-6">
@@ -337,7 +337,7 @@ export const FieldTexts: Story = {
 }
 
 export const ContentAnnouncements: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
     <div className="pui:grid pui:max-w-xl pui:gap-6">

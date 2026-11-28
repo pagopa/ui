@@ -42,9 +42,8 @@ The agent decides every card; no person approves it rule by rule.
 - `out-of-scope` — does not describe this component (a rule pasted from another
   page, a product rule). Record the reason.
 - `deferred` — not approved or not actionable yet. Record the reason.
-- `conflict` — contradicts the drawing or an accessibility contract: write a
-  design request (`design-request.md`) and point `request` at
-  it.
+- `conflict` — contradicts the drawing or an accessibility contract: open a
+  design request (`design-request.md`) and point `request` at its URL.
 - `pending` — the migration backlog, never left on a node being implemented.
 
 Duplicates are expected: compare the card with the ledger and the other

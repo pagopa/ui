@@ -1,13 +1,9 @@
 // The offline implementation context for one Figma node or the pending queue.
-import fs from "node:fs"
-import path from "node:path"
-
 import type { Workspace } from "../adapters/workspace.ts"
-import { walkFiles } from "../lib/fs.ts"
 import { readInventory, readRegistry } from "../records/committed.ts"
 import type { Inventory, InventoryNode, Registry } from "../schemas/catalogue.ts"
 import { readComments, threadsForNode } from "./comments.ts"
-import { requestsFolder } from "./config.ts"
+import { issuePointers } from "./config.ts"
 import { readLedger, readRulesSnapshot, rulesForNode, rulesForUninventoriedNode } from "./rules.ts"
 
 export type NodeBrief = {
@@ -32,22 +28,6 @@ export type NodeBrief = {
   commentsSnapshot: string | null
 }
 
-function requestFiles(workspace: Workspace): Array<{ path: string; text: string }> {
-  const directory = path.join(workspace.workspaceRoot, requestsFolder(workspace))
-  return walkFiles(directory, (file) => file.endsWith(".md")).map((file) => ({
-    path: path.relative(workspace.workspaceRoot, file).split(path.sep).join("/"),
-    text: fs.readFileSync(file, "utf8"),
-  }))
-}
-
-function designRequests(sources: BriefSources, nodeId: string): string[] {
-  const dashed = nodeId.replace(":", "-")
-  return sources.requests
-    .filter((file) => file.text.includes(nodeId) || file.text.includes(`node-id=${dashed}`))
-    .map((file) => file.path)
-    .sort()
-}
-
 // `Pick` so the live side — an `InventoryNode[]` the file just produced — can ask
 // the same question as the committed inventory, without inventing a fileKey.
 export function componentForNode(
@@ -63,8 +43,8 @@ export function componentForNode(
 }
 
 // Everything a brief reads from disk, so a caller that builds several briefs
-// reads the catalogue, the ledger, the comment snapshot and the design requests
-// once instead of once per node.
+// reads the catalogue, the ledger and the comment snapshot once instead of once
+// per node.
 export function readBriefSources(workspace: Workspace) {
   return {
     inventory: readInventory(workspace.root),
@@ -72,7 +52,6 @@ export function readBriefSources(workspace: Workspace) {
     ledger: readLedger(workspace.root, false),
     snapshot: readRulesSnapshot(workspace.root, false),
     comments: readComments(workspace),
-    requests: requestFiles(workspace),
   }
 }
 
@@ -113,7 +92,7 @@ export function buildBrief(
       guide: rule.guide ?? null,
     })),
     openComments,
-    designRequests: designRequests(sources, identity),
+    designRequests: issuePointers(entry?.note),
     commentsSnapshot: comments?.fetchedAt ?? null,
   }
 }

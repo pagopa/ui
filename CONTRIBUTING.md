@@ -386,7 +386,6 @@ the one line that matters — what a credential can buy:
   and stops there. Run it by hand before a release:
   `gh workflow run skill-evals.yml -f skill=both`.
 
-
 ### What fails fast
 
 A session that cannot be graded does not start, and the failure names the fix:

@@ -35,7 +35,7 @@ Conditions a story cannot satisfy yet are declared on the story itself, with the
 reason beside the flag:
 `a11yContract: { reflow: false }` for source-width fixtures and surfaces whose
 reflow fix has not landed. The remaining flags are debt, listed in
-[the reflow exemption record](../../../../docs/design-requests/2026-11-26-reflow-exemption-debt.md)
+[the reflow exemption record](https://github.com/pagopa/ui/issues/192)
 next to the answered request that first recorded them. The exemption is
 temporary: it goes when its family is fixed and its entry deleted.
 
@@ -106,7 +106,7 @@ with the screen reader, browser and locale. Record what was actually announced.
 | Status or alert            | The changed message is announced without unexpectedly moving focus.                                                                                  |
 
 A failure opens an issue and — when the expected behaviour is a design decision —
-a request in `docs/design-requests/`.
+a request issue in the tracker.
 
 Screen-reader support is claimed only from recorded passes. Browser zoom and
 screen-reader specific settings stay manual by design; the automated layer never

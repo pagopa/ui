@@ -70,7 +70,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Playground: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -90,7 +90,7 @@ export const Playground: Story = {
 }
 
 export const WithDisabledItem: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   args: {
     items: [
@@ -112,7 +112,7 @@ export const WithDisabledItem: Story = {
 }
 
 export const Loading: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   args: {
     items: [
@@ -171,7 +171,7 @@ function ControlledValueHarness() {
 }
 
 export const ControlledValue: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   render: () => <ControlledValueHarness />,
   play: async ({ canvasElement }) => {
@@ -205,7 +205,7 @@ export const ControlledValue: Story = {
 }
 
 export const UncontrolledMultiple: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   args: { defaultValue: ["one", "two"], multiple: true },
   play: async ({ canvasElement }) => {
@@ -256,7 +256,7 @@ function ForwardedContractHarness() {
 }
 
 export const ForwardedContract: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   render: () => <ForwardedContractHarness />,
   play: async ({ canvasElement }) => {

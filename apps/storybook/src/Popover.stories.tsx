@@ -79,7 +79,7 @@ export const Playground: Story = {
 }
 
 export const OpenKeyboardAudit: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: { a11yContract: { reflow: false } },
   args: {
     children: (

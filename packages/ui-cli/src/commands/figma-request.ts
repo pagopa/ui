@@ -11,20 +11,19 @@ import { action, EXIT, printJson, type CliContext } from "./context.ts"
 
 export function requestCommand(ctx: CliContext) {
   const open = defineCommand({
-    meta: { name: "open", description: "Open a design-owner request and write its record" },
+    meta: { name: "open", description: "Open a design-owner request as a tracker issue" },
     args: { input: { ...stringArg, required: true }, "dry-run": boolArg, json: boolArg },
     run: action(ctx, ({ input, "dry-run": dryRun, json }) => {
       const report = openDesignRequest(
         ctx.workspace(),
         path.resolve(ctx.cwd, input),
-        ctx.now().toISOString().slice(0, 10),
         dryRun,
         (args, cwd) => ctx.external.gh(args, cwd),
       )
       if (json) printJson(ctx.io, report)
       else {
         const verb = report.dryRun ? "would open" : "opened"
-        ctx.io.out(`${verb}: ${report.path}${report.issueUrl ? ` · ${report.issueUrl}` : ""}`)
+        ctx.io.out(`${verb}: ${report.issueUrl ?? "(gh issue create)"}`)
         for (const planned of report.actions) ctx.io.out(`  ${planned}`)
       }
       return EXIT.ok
@@ -56,19 +55,19 @@ export function requestCommand(ctx: CliContext) {
   const close = defineCommand({
     meta: {
       name: "close",
-      description: "Record an answer, comment the commit and close the issue",
+      description: "Comment the answer and its commit on the issue, then close it",
     },
     args: {
-      record: { type: "positional", required: true },
+      issue: { type: "positional", required: true },
       decision: stringArg,
       commit: stringArg,
       "dry-run": boolArg,
       json: boolArg,
     },
-    run: action(ctx, ({ record, decision, commit, "dry-run": dryRun, json }) => {
+    run: action(ctx, ({ issue, decision, commit, "dry-run": dryRun, json }) => {
       const report = closeDesignRequest(
         ctx.workspace(),
-        record,
+        issue,
         requireText(decision, "--decision", "figma request close"),
         requireText(commit, "--commit", "figma request close"),
         dryRun,

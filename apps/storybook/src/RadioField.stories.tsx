@@ -58,7 +58,7 @@ export const Playground: Story = {
 
 export const RichRadioOptions: Story = {
   parameters: {
-    // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+    // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
     a11yContract: { reflow: false },
     design: { type: "figma", url: figmaEmbedUrl("194:3700") },
   },
@@ -222,7 +222,7 @@ export const RadioFieldFeedback: Story = {
 
 export const RadioLoadingStates: Story = {
   parameters: {
-    // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+    // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
     a11yContract: { reflow: false },
     design: { type: "figma", url: figmaEmbedUrl("194:3700") },
   },
@@ -355,7 +355,7 @@ export const FigmaStateMatrix: Story = {
 }
 
 export const RadioSourceStateMatrix: Story = {
-  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+  // Reflow exemption debt, tracked in https://github.com/pagopa/ui/issues/192.
   parameters: {
     a11yContract: { reflow: false },
     design: { type: "figma", url: figmaEmbedUrl("194:3700") },

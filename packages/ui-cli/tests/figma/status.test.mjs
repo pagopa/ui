@@ -53,17 +53,15 @@ function tree(overrides = {}) {
         "1:2": {
           status: "pending",
           target: { module: "src/field.tsx", export: "Field" },
-          note: "Blocked by docs/design-requests/2026-10-21-field.md",
+          note: "Blocked by https://github.com/acme/ui/issues/42",
         },
       },
     }),
-    "docs/design-requests/2026-10-21-field.md": "- Status: open — waiting\n",
-    "docs/design-requests/2026-10-12-old.md": "- Status: answered — done\n",
     ...overrides,
   }
 }
 
-test("the session report counts nodes, the pending queue and the open requests", () => {
+test("the session report counts nodes, the pending queue and the requests it points at", () => {
   const result = fixture(tree())
   assert.equal(result.status, 0, result.stderr)
   const report = JSON.parse(result.stdout)
@@ -79,11 +77,11 @@ test("the session report counts nodes, the pending queue and the open requests",
       nodeId: "1:2",
       name: "Field",
       target: "Field",
-      designRequests: ["docs/design-requests/2026-10-21-field.md"],
+      designRequests: ["https://github.com/acme/ui/issues/42"],
     },
   ])
-  assert.equal(report.requests.open, 1)
-  assert.equal(report.requests.answered, 1)
+  assert.deepEqual(report.requests.linked, ["https://github.com/acme/ui/issues/42"])
+  assert.equal(report.requests.open, undefined, "the census belongs to `figma request list`")
   assert.equal(report.token.present, false)
   assert.equal(report.live, null)
   assert.match(report.next, /FIGMA_TOKEN/)
@@ -96,7 +94,7 @@ test("the pending queue also reports a registry entry the inventory no longer ca
         bulkRules: [],
         entries: {
           "1:1": { status: "implemented" },
-          "9:9": { status: "pending", note: "Blocked by docs/design-requests/2026-10-21-gone.md" },
+          "9:9": { status: "pending", note: "Blocked by https://github.com/acme/ui/issues/43" },
         },
       }),
     }),
@@ -106,7 +104,7 @@ test("the pending queue also reports a registry entry the inventory no longer ca
   assert.equal(report.pending.length, 1)
   assert.equal(report.pending[0].name, null)
   assert.equal(report.pending[0].nodeId, "9:9")
-  assert.deepEqual(report.pending[0].designRequests, ["docs/design-requests/2026-10-21-gone.md"])
+  assert.deepEqual(report.pending[0].designRequests, ["https://github.com/acme/ui/issues/43"])
 })
 
 test("a missing inventory fails with its path", () => {
@@ -179,15 +177,7 @@ function state(overrides = {}) {
       uncensused: [],
       error: null,
     },
-    requests: {
-      path: "docs/design-requests",
-      open: 0,
-      answered: 0,
-      unreadable: [],
-      linked: [],
-      files: [],
-      declared: "docs/design-requests",
-    },
+    requests: { linked: [] },
     live: { version: "v1", lastModified: "2026-10-09T10:00:00Z", changedSinceInventory: false },
   }
   for (const [key, value] of Object.entries(overrides))
@@ -241,13 +231,13 @@ test("a pending census identity asks for a catalogue decision, not triage", () =
 test("a design request a pending node points at outranks its pending identity", () => {
   const next = nextCommand(
     state({
-      requests: { open: 1, linked: ["2026-10-21-field.md"] },
+      requests: { linked: ["https://github.com/acme/ui/issues/42"] },
       registry: { pending: 1 },
       surface: { stats: { pending: 1 } },
     }),
   )
   assert.match(next, /answer the 1 open design request/)
-  assert.match(next, /2026-10-21-field\.md/)
+  assert.match(next, /https:\/\/github\.com\/acme\/ui\/issues\/42/)
 })
 
 // The deadlock this router had: 23 open records held the request rung while six
@@ -256,7 +246,7 @@ test("a design request a pending node points at outranks its pending identity", 
 test("open debt no pending node points at never blocks the router", () => {
   const next = nextCommand(
     state({
-      requests: { open: 18, linked: [] },
+      requests: { linked: [] },
       registry: { pending: 6 },
       surface: { stats: { pending: 6 } },
     }),
@@ -265,10 +255,10 @@ test("open debt no pending node points at never blocks the router", () => {
   assert.doesNotMatch(next, /answer the \d+ open design request/)
 })
 
-test("debt stays counted once the counters are clear", () => {
-  const next = nextCommand(state({ requests: { open: 18, linked: [] } }))
+test("the tracker's own debt never reaches the router", () => {
+  const next = nextCommand(state())
   assert.match(next, /^nothing to align/)
-  assert.match(next, /18 open design request\(s\) are advisory/)
+  assert.doesNotMatch(next, /design request|request list/)
 })
 
 test("unaccounted-only work asks for a registry entry, not the brief queue", () => {

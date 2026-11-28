@@ -20,4 +20,4 @@ container with increased text spacing and doubled root text size; this is
 automated content-loss evidence, not manual browser-zoom or screen-reader
 verification. The source `Size=Minimum` variant, the selected label plus an
 icon-only segment, is not implemented; the open question is recorded in
-`docs/design-requests/2026-10-22-segmented-control-minimum-size.md`.
+`https://github.com/pagopa/ui/issues/43`.

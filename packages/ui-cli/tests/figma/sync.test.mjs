@@ -997,7 +997,7 @@ test("the plan separates the standing pending queue and triage records the file 
           nodeId: "1:1",
           name: "Control",
           target: "Control",
-          designRequests: ["docs/design-requests/2026-10-21-control.md"],
+          designRequests: ["https://github.com/acme/ui/issues/42"],
         },
       ])
       assert.deepEqual(parsed.implementationOrder, ["1:1"])
@@ -1020,7 +1020,7 @@ test("the plan separates the standing pending queue and triage records the file 
           "1:1": {
             status: "pending",
             target: { module: "src/components/primitives/control.tsx", export: "Control" },
-            note: "Blocked by docs/design-requests/2026-10-21-control.md",
+            note: "Blocked by https://github.com/acme/ui/issues/42",
           },
         },
       }),

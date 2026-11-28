@@ -153,7 +153,7 @@ function contractOf(parameters: object): Contract {
 // The reflow condition's exemptions live with each story: `parameters:
 // { a11yContract: { reflow: false } }` carries the flag and the reason (a
 // source-width fixture, or a radius the story pins). The flags that remain are
-// debt, recorded in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
+// debt, recorded in https://github.com/pagopa/ui/issues/192.
 
 // Waits for a predicate on a wall-clock budget rather than a frame count: a
 // fixed number of frames measures how busy the runner was, and a loaded CI

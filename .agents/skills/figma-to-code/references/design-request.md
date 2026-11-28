@@ -1,9 +1,9 @@
 # Design request
 
-The source leaves a question only a person can answer: one issue, one record in
-`design.requests`, and a review story when visual. The issue owns the
-conversation, the record preserves the answer, the node stays pending until the
-answer is implemented and reviewed.
+The source leaves a question only a person can answer: one issue, and a review
+story when visual. The issue is the record — the question, the conversation and
+the answer — so nothing is mirrored into a file, and the node stays pending until
+the answer is implemented and reviewed.
 
 ## Decide whether to ask
 
@@ -13,8 +13,8 @@ input-plus-icon spacing, responsive layout rules). Ask about an
 unowned value, an undrawn behaviour or state, a contradictory device
 composition, an API or shared component decision, an ambiguous rule. A question
 the source answers becomes a registry decision, not an issue, even when a person
-supplied it; one with no node still owes its preview, captures, issue and
-record, but no registry pointer.
+supplied it; one with no node still owes its preview, captures and issue, but no
+registry pointer.
 
 A question the ratified defaults answer is not a request: apply the rule — a
 derived state colour, a composite input-plus-icon spacing, a layout switch, a
@@ -61,14 +61,15 @@ pnpm ui-cli figma request open --input <request-input> --json
 ```
 
 Review the dry-run actions under the session's delivery permissions. The CLI
-creates the labeled issue assigned to `design.owners`, writes the record, adds the
-node-note pointer and, if supplied, points the rules card at it. It does not
-create or deploy the story, capture the options or maintain the index.
+refuses a title the tracker already asks, creates the labeled issue assigned to
+`design.owners`, adds the issue URL to the node note and, if supplied, points the
+rules card at it. It does not create or deploy the story, capture the options or
+maintain the index.
 
 **Done when** the issue has its owner, labels, recommendation and, when visual,
-live links and an inspected capture per option and width; its record carries the
-issue URL; the registry and card pointers agree; the index is updated; the node
-remains pending. Reuse an open request rather than duplicating it.
+live links and an inspected capture per option and width; the registry and card
+pointers name its URL; the index is updated; the node remains pending. Reuse an
+open request rather than duplicating it.
 
 ## Answer and close
 
@@ -79,16 +80,17 @@ compare the node's source against its render, per declared device. Remove the
 review story, retaining the captures, and update the index. With the implementation committed:
 
 ```sh
-pnpm ui-cli figma request close <record> --decision "<answer>" --commit <sha> \
+pnpm ui-cli figma request close <issue> --decision "<answer>" --commit <sha> \
   --dry-run --json
 ```
 
 Rerun without `--dry-run`.
 
-The CLI records the answer, updates the labels, comments the commit link and
-closes the issue. Its `openPoints` still require the story and index cleanup; it
-implements nothing.
+`<issue>` is the issue URL or its number. The CLI comments the answer with the
+commit link, moves the labels to `status/answered` and closes the issue, so the
+answer and the question sit in one tracker entry. Its `openPoints` still require
+the story and index cleanup; it implements nothing.
 
 **Done when** the recorded answer is implemented and reviewed, the guide and the
-ledger agree, the issue is closed with its commit link, and the cleanup complete
-without deleting captures.
+ledger agree, the issue is closed with its answer and commit link, and the
+cleanup complete without deleting captures.
