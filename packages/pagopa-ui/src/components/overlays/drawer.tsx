@@ -101,6 +101,7 @@ function Drawer({
     >
       {trigger ? <DrawerTrigger render={trigger} /> : null}
       <DrawerContent
+        data-slot="drawer"
         ref={ref}
         className={cn(flow && "pui:overflow-y-auto pui:p-6", className)}
         showHandle={showHandle}
@@ -178,7 +179,7 @@ type DrawerCloseProps = React.ComponentProps<typeof Button>
  * sits in, so a footer action closes the drawer from inside the composition.
  */
 function DrawerClose(props: DrawerCloseProps) {
-  return <DrawerClosePrimitive render={<Button {...props} />} />
+  return <DrawerClosePrimitive data-slot="drawer-close" render={<Button {...props} />} />
 }
 
 export { Drawer, DrawerClose, type DrawerProps, type DrawerCloseProps }

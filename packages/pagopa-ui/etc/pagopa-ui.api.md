@@ -321,7 +321,7 @@ export type ButtonProps = ElementProps<"button"> & VariantProps<typeof buttonVar
 // @public (undocumented)
 export const buttonVariants: (props?: ({
     variant?: "link" | "default" | "outline" | "contrast" | "secondary" | "ghost" | "destructive" | "outline-destructive" | "ghost-destructive" | "outline-contrast" | "ghost-contrast" | null | undefined;
-    size?: "default" | "sm" | "lg" | "xs" | "icon" | "icon-xs" | "icon-sm" | "icon-lg" | null | undefined;
+    size?: "icon" | "default" | "sm" | "lg" | "xs" | "icon-xs" | "icon-sm" | "icon-lg" | null | undefined;
 } & ClassProp) | undefined) => string;
 
 // @public

@@ -39,6 +39,7 @@ function TimelineDrawer({
 
   return (
     <Drawer
+      data-slot="timeline-drawer"
       {...drawerProps}
       title={title}
       description={description}

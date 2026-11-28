@@ -30,7 +30,7 @@ export interface SpacerProps {
  * Figma: Spacing (node 237:1307)
  */
 function Spacer({ size = 4, className }: SpacerProps) {
-  return <div aria-hidden="true" data-slot="spacing" className={cn(sizeClasses[size], className)} />
+  return <div aria-hidden="true" data-slot="spacer" className={cn(sizeClasses[size], className)} />
 }
 
 export { Spacer }

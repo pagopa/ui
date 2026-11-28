@@ -64,6 +64,7 @@ function Icon({
   // its own `svg:not(.pagopa-icon)` defaults.
   return (
     <Source
+      data-slot="icon"
       {...props}
       aria-hidden={decorative || undefined}
       aria-label={decorative ? undefined : label}

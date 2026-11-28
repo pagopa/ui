@@ -183,6 +183,7 @@ function Accordion({
   return (
     <AccordionPrimitive
       ref={ref}
+      data-slot="accordion"
       value={value}
       defaultValue={defaultValue}
       onValueChange={onValueChange}

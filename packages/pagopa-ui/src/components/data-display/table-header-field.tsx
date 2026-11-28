@@ -20,7 +20,7 @@ type TableHeaderFieldProps = React.ComponentProps<"th"> & {
 function TableHeaderField({ children, sort, ...props }: TableHeaderFieldProps) {
   const t = useMessages("table")
   return (
-    <TableHead scope="col" aria-sort={sort?.direction} {...props}>
+    <TableHead data-slot="table-header-field" scope="col" aria-sort={sort?.direction} {...props}>
       {sort ? (
         <button
           type="button"

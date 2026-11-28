@@ -85,7 +85,7 @@ function TableList<Row extends { id: React.Key }>({
     )
   }
   return (
-    <section aria-label={label} className="pui:flex pui:flex-col pui:gap-8">
+    <section data-slot="table-list" aria-label={label} className="pui:flex pui:flex-col pui:gap-8">
       <ul className="pui:flex pui:flex-col pui:gap-4">
         {rows.map((row) => (
           <TableListItem

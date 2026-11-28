@@ -146,7 +146,7 @@ function Table<Row extends { id: React.Key }>({
 
   return (
     <section
-      data-slot="table-composite"
+      data-slot="table"
       aria-label={caption}
       className="pui:@container/table pui:flex pui:min-w-0 pui:flex-col pui:gap-2 pui:rounded-lg pui:bg-secondary pui:p-2"
     >
@@ -302,6 +302,7 @@ function Table<Row extends { id: React.Key }>({
                     return (
                       <TableListField
                         key={column.key}
+                        data-slot="table-cell"
                         headers={`${tableId}-column-${index}`}
                         role="cell"
                         label={column.label}

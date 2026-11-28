@@ -6,7 +6,7 @@ type TableListFieldProps = React.ComponentProps<"td"> & { label?: string }
 
 function TableListField({ children, label, ...props }: TableListFieldProps) {
   return (
-    <TableCell {...props}>
+    <TableCell data-slot="table-list-field" {...props}>
       {label ? (
         <>
           <span

@@ -10,7 +10,7 @@ export interface TableCellRowProps {
 
 function TableCellRow({ cells, header, className }: TableCellRowProps) {
   return (
-    <TableRow className={className}>
+    <TableRow data-slot="table-cell-row" className={className}>
       {cells.map((cell, index) =>
         index === 0 && header ? (
           <TableHead key={index} scope="row">

@@ -65,7 +65,14 @@ function Tooltip({
     <TooltipProvider>
       <TooltipPrimitive open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
         {trigger ? <TooltipTrigger render={trigger} /> : null}
-        <TooltipContent ref={ref} anchor={anchor} side={side} className={className} {...panelProps}>
+        <TooltipContent
+          data-slot="tooltip"
+          ref={ref}
+          anchor={anchor}
+          side={side}
+          className={className}
+          {...panelProps}
+        >
           <div data-slot="tooltip-description" className="pui:min-w-0">
             {children}
           </div>

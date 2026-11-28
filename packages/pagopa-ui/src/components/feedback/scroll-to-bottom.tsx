@@ -35,6 +35,7 @@ function ScrollToBottom({ target, label: labelProp, className }: ScrollToBottomP
   if (!visible) return null
   return (
     <Button
+      data-slot="scroll-to-bottom"
       type="button"
       size="icon"
       className={cn("pui:size-14 pui:rounded-full pui:shadow-32", className)}

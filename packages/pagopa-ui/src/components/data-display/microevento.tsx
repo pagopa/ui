@@ -22,7 +22,7 @@ export interface MicroEventProps {
 function MicroEvent({ title, time, invalid = true, label, className }: MicroEventProps) {
   return (
     <div
-      data-slot="microevento"
+      data-slot="micro-event"
       className={cn("pui:flex pui:items-start pui:py-2 pui:pl-7", className)}
     >
       <div className="pui:flex pui:min-w-0 pui:flex-col pui:gap-1">

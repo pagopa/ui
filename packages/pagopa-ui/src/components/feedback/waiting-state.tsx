@@ -6,6 +6,7 @@ import { StatePanel, type StateProps } from "./state-panel"
 function WaitingState({ className, ...props }: StateProps) {
   return (
     <StatePanel
+      data-slot="waiting-state"
       {...props}
       actionsClassName="pui:mx-auto pui:w-full pui:max-w-(--pui-state-width) pui:flex-col pui:flex-nowrap pui:items-center pui:gap-6"
       className={cn("pui:w-full pui:max-w-none", className)}

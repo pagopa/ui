@@ -86,6 +86,7 @@ function Chip({
 
   return (
     <span
+      data-slot="chip"
       data-variant={variant}
       data-appearance={appearance}
       data-size={size}
@@ -142,6 +143,7 @@ function InputChip({
   const removeGlyph = <Icon source={CloseSmallIcon} size={24} />
   return (
     <span
+      data-slot="input-chip"
       className={cn(
         "pui:inline-flex pui:h-6 pui:max-w-full pui:items-center pui:rounded-full pui:bg-secondary pui:text-caption-sb pui:text-foreground",
         className,

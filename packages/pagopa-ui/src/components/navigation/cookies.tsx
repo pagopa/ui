@@ -54,6 +54,7 @@ function Cookies({
 
   return (
     <section
+      data-slot="cookies"
       aria-label={label}
       className="pui:fixed pui:inset-x-3 pui:bottom-3 pui:z-50 pui:mx-auto pui:flex pui:max-w-4xl pui:flex-col pui:gap-8 pui:bg-background pui:p-6 pui:shadow-32 pui:desktop:flex-row pui:desktop:flex-nowrap pui:desktop:items-center"
     >

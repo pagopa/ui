@@ -91,6 +91,7 @@ function ProductCard({
   )
   return (
     <Card
+      data-slot="product-card"
       variant={image ? "product-image" : "product"}
       className={cn("pui:h-full", className)}
       {...props}

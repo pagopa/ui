@@ -114,7 +114,10 @@ function Footer({
 
   const Link = useLinkComponent()
   return (
-    <footer className={cn("pui:border-t pui:border-border pui:bg-background", className)}>
+    <footer
+      data-slot="footer"
+      className={cn("pui:border-t pui:border-border pui:bg-background", className)}
+    >
       {/* The two source anatomies are alternatives: columns replace the band. */}
       {links.length && !columns.length ? (
         // Source `Logged user=True, Device=Mobile` (1360:12618): a 32px gap

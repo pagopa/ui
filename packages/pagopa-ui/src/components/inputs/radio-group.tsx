@@ -31,7 +31,7 @@ function RadioGroup({
 
   return (
     <fieldset
-      data-slot="radio-group-field"
+      data-slot="radio-group"
       className={cn("pui:grid pui:gap-3", className)}
       aria-describedby={describedBy(ids, { description, error })}
       aria-invalid={Boolean(error) || undefined}

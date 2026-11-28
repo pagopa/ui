@@ -111,6 +111,7 @@ function PagoPAIcon<Name extends FigmaIconName>({
     throw new Error(`Icon "${name}" has no source asset for variant "${selection ?? "default"}"`)
   return (
     <Icon
+      data-slot="pago-pa-icon"
       {...props}
       decorative={decorative}
       label={label ?? name}

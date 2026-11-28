@@ -68,6 +68,7 @@ function ErrorState({
 
   return (
     <StatePanel
+      data-slot="error-state"
       {...props}
       actionsClassName="pui:mx-auto pui:w-full pui:max-w-(--pui-state-width) pui:flex-col pui:flex-nowrap pui:items-center pui:gap-6"
       className={cn("pui:w-full pui:max-w-none", className)}

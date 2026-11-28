@@ -115,7 +115,7 @@ function ListItem({
 
   if (loading) {
     return (
-      <div aria-busy="true" className={classes} {...props}>
+      <div data-slot="list-item" aria-busy="true" className={classes} {...props}>
         <Skeleton className="pui:size-6" />
         <span className="pui:grid pui:flex-1 pui:gap-1.5">
           <Skeleton className="pui:h-5.5 pui:w-25" />
@@ -199,7 +199,7 @@ function ListItem({
 
   if (href) {
     return (
-      <Link href={href} className={classes} {...props}>
+      <Link data-slot="list-item" href={href} className={classes} {...props}>
         {row}
       </Link>
     )
@@ -207,7 +207,7 @@ function ListItem({
 
   if (onPress) {
     return (
-      <button type="button" className={classes} onClick={onPress} {...props}>
+      <button data-slot="list-item" type="button" className={classes} onClick={onPress} {...props}>
         {row}
       </button>
     )

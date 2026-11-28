@@ -109,7 +109,11 @@ function SelectField({
   )
 
   return (
-    <div className={cn("pui:grid", error ? "pui:gap-0.5" : "pui:gap-2", className)} {...props}>
+    <div
+      data-slot="select-field"
+      className={cn("pui:grid", error ? "pui:gap-0.5" : "pui:gap-2", className)}
+      {...props}
+    >
       <div className="pui:relative">
         <Select
           {...command.rootProps}

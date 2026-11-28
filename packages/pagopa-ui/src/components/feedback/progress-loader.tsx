@@ -29,7 +29,10 @@ function ProgressLoader({
 
   const normalized = value === undefined ? undefined : Math.min(100, Math.max(0, value))
   return (
-    <div className={showLabel ? "pui:w-full" : "pui:w-full pui:px-6 pui:py-5"}>
+    <div
+      data-slot="progress-loader"
+      className={showLabel ? "pui:w-full" : "pui:w-full pui:px-6 pui:py-5"}
+    >
       {showLabel && (
         <div className="pui:mb-2 pui:flex pui:items-center pui:justify-between pui:gap-4 pui:text-label-mini">
           <span className="pui:text-label-mini-sb">{label}</span>

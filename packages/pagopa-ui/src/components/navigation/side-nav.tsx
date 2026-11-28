@@ -55,6 +55,7 @@ function SideNav({
   const [expanded, setExpanded] = React.useState(false)
   return (
     <nav
+      data-slot="side-nav"
       aria-label={title}
       data-condensed={condensed || undefined}
       className={cn(

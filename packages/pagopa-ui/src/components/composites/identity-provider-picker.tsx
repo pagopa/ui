@@ -47,7 +47,7 @@ function IdentityProviderPickerRow({
   const Link = useLinkComponent()
   return (
     <Link
-      data-slot="identity-provider-picker"
+      data-slot="identity-provider-picker-row"
       className={cn(
         "pui:flex pui:min-h-15 pui:w-full pui:items-center pui:justify-between pui:gap-3 pui:rounded-lg pui:bg-background pui:p-4 pui:text-left pui:text-muted-foreground pui:ring-1 pui:ring-inset pui:ring-border pui:outline-none pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring pui:forced-colors:ring-0 pui:forced-colors:outline-1 pui:forced-colors:outline-solid pui:forced-colors:outline-[CanvasText]",
         className,
@@ -88,6 +88,7 @@ function IdentityProviderPickerView({
 
   return (
     <section
+      data-slot="identity-provider-picker-view"
       aria-labelledby={titleId}
       // The source draws the module 410 wide from the tablet device step up
       // (731:20387); below 600 it takes the available width.

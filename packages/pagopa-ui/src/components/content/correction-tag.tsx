@@ -25,7 +25,11 @@ export interface CorrectionTagProps {
 function CorrectionTag({ status, label: labelProp }: CorrectionTagProps) {
   const t = useMessages("correctionTag")
   const label = labelProp ?? (status === "valid" ? t.validLabel : t.notValidLabel)
-  return <Tag status={status === "valid" ? "success" : "warning"}>{label}</Tag>
+  return (
+    <Tag data-slot="correction-tag" status={status === "valid" ? "success" : "warning"}>
+      {label}
+    </Tag>
+  )
 }
 
 export { CorrectionTag }

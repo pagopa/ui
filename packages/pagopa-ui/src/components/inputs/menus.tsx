@@ -334,7 +334,7 @@ function Dropdown({
 
   assertMenuActions(items)
   return (
-    <DropdownMenu>
+    <DropdownMenu data-slot="dropdown">
       <DropdownMenuTrigger
         render={
           <Button type="button" variant="outline" disabled={disabled} className={className} />
@@ -416,7 +416,7 @@ function MenuDropdown({ accessibleLabel: accessibleLabelProp, items, label }: Me
 
   assertMenuActions(items)
   return (
-    <DropdownMenu>
+    <DropdownMenu data-slot="menu-dropdown">
       <DropdownMenuTrigger
         render={<Button type="button" variant="ghost" size="icon" aria-label={accessibleLabel} />}
       >

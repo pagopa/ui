@@ -90,6 +90,7 @@ function PaymentProviderLogos(props: PaymentProviderLogosProps) {
     const logo = pspBrandLogos[props.brand]
     return (
       <img
+        data-slot="payment-provider-logos"
         data-psp-brand={props.brand}
         src={logo.src}
         alt={props.alt ?? logo.alt}

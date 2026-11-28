@@ -71,7 +71,7 @@ function RadioGroup({
 
   return (
     <RadioGroupPrimitive
-      data-slot="radio-group"
+      data-slot="radio-group-control"
       inputRef={mergedInputRef}
       value={value === undefined ? uncontrolledValue : value}
       onValueChange={(next, details) => {

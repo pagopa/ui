@@ -34,7 +34,7 @@ function PagoPAPictogram({
 
   return (
     <figure
-      data-slot="pictogram"
+      data-slot="pago-pa-pictogram"
       className={cn(
         "pui:inline-grid pui:justify-items-center pui:gap-2 pui:text-center",
         className,

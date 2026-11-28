@@ -56,6 +56,7 @@ function SnackbarErrorCode({
 
   return (
     <Snackbar
+      data-slot="snackbar-error-code"
       tone="error"
       onDismiss={onDismiss}
       title={message}

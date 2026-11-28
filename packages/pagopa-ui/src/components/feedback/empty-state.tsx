@@ -19,6 +19,7 @@ function EmptyState({
 }: EmptyStateProps) {
   return (
     <section
+      data-slot="empty-state"
       className={cn(
         "pui:flex pui:flex-col pui:items-center pui:gap-4 pui:rounded-lg pui:border pui:bg-background pui:p-4 pui:text-center",
         className,

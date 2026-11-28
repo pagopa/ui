@@ -239,7 +239,7 @@ function Timeline({ items, label: labelProp }: TimelineProps) {
     // gap and the stacked header in the drawer-width frames. The container is
     // the query, so a timeline inside a 417px panel gets the drawer
     // composition without the caller choosing a device.
-    <ol aria-label={label} className="pui:@container/timeline pui:grid">
+    <ol data-slot="timeline" aria-label={label} className="pui:@container/timeline pui:grid">
       {items.map((item, index) => {
         const status = item.status ?? "default"
         const last = index === items.length - 1

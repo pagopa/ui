@@ -101,8 +101,15 @@ describe("Published glyph contract", () => {
   })
 
   it("renders what `PagoPAIcon` renders for the same source variant", () => {
-    expect(markup(<add.Default />)).toBe(markup(<PagoPAIcon name="add" />))
-    expect(markup(<add.Small />)).toBe(markup(<PagoPAIcon name="add" variant="small" />))
+    // Each published root keeps its own slot name, so the comparison drops the
+    // one attribute that is meant to differ and pins both values instead.
+    const drawing = (html: string) => html.replace(/ data-slot="[^"]*"/, "")
+    expect(drawing(markup(<add.Default />))).toBe(drawing(markup(<PagoPAIcon name="add" />)))
+    expect(drawing(markup(<add.Small />))).toBe(
+      drawing(markup(<PagoPAIcon name="add" variant="small" />)),
+    )
+    expect(markup(<add.Default />)).toContain('data-slot="icon"')
+    expect(markup(<PagoPAIcon name="add" />)).toContain('data-slot="pago-pa-icon"')
   })
 
   it("announces the glyph through `label` when the caller gives it one", () => {

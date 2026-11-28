@@ -114,6 +114,30 @@ The component stylesheet no longer resets the host body, headings or utilities.
 Applications that relied on those global resets must add their own page styles
 instead.
 
+### The slot contract
+
+Every public component stamps its root with `data-slot`, named after the
+component in kebab case: `data-slot="dropdown"`, `data-slot="page-surface"`,
+`data-slot="pago-pa-icon"`. The parts of an anatomy carry their own names
+(`dropdown-item`, `chip-remove`), so a selector never has to reach a wrapper to
+find something.
+
+The attribute is not decoration. It is the hook the base resets and the
+`@media (forced-colors: active)` and `prefers-reduced-motion` blocks key on, so a
+root that loses its stamp silently escapes the accessibility overrides as well
+as your selectors. Overlay panels are the root you see, and they carry the name
+even though the component that opened them renders through a portal.
+
+Name a root after its component, not after its parent part: `SideNav` is
+`side-nav` and its panel is `side-nav-panel`, `EmptyState` is `empty-state` and
+its drawing is `empty-state-icon`. A divergence is allowed only when a component
+genuinely renders two anatomies, and then it is written down in
+`src/data-slot-exceptions.json` with its reason.
+
+`ui-cli check data-slots` enforces this, and the `pagopa-ui:test` target runs it:
+a missing root slot, a root named after a part, and an exception that no longer
+matches a defect all fail the check.
+
 ## With CSS
 
 Read a property with `var()` like any other custom property:

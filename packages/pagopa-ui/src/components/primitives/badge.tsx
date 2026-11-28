@@ -106,6 +106,7 @@ function Badge({
     display === "label"
       ? mergeProps<"span">(
           {
+            ...{ "data-slot": "badge" },
             className: cn(badgeVariants({ variant }), className),
           },
           props,

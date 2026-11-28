@@ -66,6 +66,7 @@ function CardTitle({ className, render, ...props }: CardTitleProps) {
     defaultTagName: "div",
     props: mergeProps<"div">(
       {
+        ...{ "data-slot": "card-title" },
         className: cn(
           // The product variants use the generated type-scale tokens (18/28
           // mobile, 24/32 desktop, Bold). The line height stays explicit: the

@@ -102,7 +102,12 @@ function UIProvider({
   )
   return (
     <UIContext.Provider value={value}>
-      <div className="pagopa-ui-root" data-pagopa-ui="" data-pagopa-ui-root="">
+      <div
+        className="pagopa-ui-root"
+        data-slot="ui-provider"
+        data-pagopa-ui=""
+        data-pagopa-ui-root=""
+      >
         {children}
       </div>
     </UIContext.Provider>

@@ -224,6 +224,7 @@ function ProductModule({
   if (standalone && onSelect) {
     return (
       <RadioGroup
+        data-slot="product-module"
         value={selected ? "selected" : null}
         onValueChange={() => onSelect(true)}
         name={selectName}
@@ -237,7 +238,11 @@ function ProductModule({
   }
 
   return (
-    <div className="pui:@container/product-module pui:w-full pui:min-w-0" {...props}>
+    <div
+      data-slot="product-module"
+      className="pui:@container/product-module pui:w-full pui:min-w-0"
+      {...props}
+    >
       {row}
     </div>
   )

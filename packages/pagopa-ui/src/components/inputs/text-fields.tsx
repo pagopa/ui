@@ -83,6 +83,7 @@ function TextField({
 
   return (
     <div
+      data-slot="text-field"
       className={cn(
         "pui:grid",
         nativePicker
@@ -211,7 +212,7 @@ function TextareaField({
   const state = { description, error, success }
 
   return (
-    <div className="pui:grid pui:gap-0.5">
+    <div data-slot="textarea-field" className="pui:grid pui:gap-0.5">
       <div className="pui:relative">
         <Textarea
           id={ids.controlId}
@@ -300,7 +301,10 @@ function AuthenticationCodeInput({
   const invalid = Boolean(error) || undefined
 
   return (
-    <div className="pui:grid pui:min-w-0 pui:gap-1.5 pui:[overflow-wrap:anywhere]">
+    <div
+      data-slot="authentication-code-input"
+      className="pui:grid pui:min-w-0 pui:gap-1.5 pui:[overflow-wrap:anywhere]"
+    >
       <FieldLabel
         htmlFor={ids.controlId}
         label={label}
@@ -508,7 +512,11 @@ function DatePickerField({
   )
 
   return (
-    <div className={cn("pui:grid", error ? "pui:gap-0.5" : "pui:gap-2", className)} {...rootProps}>
+    <div
+      data-slot="date-picker-field"
+      className={cn("pui:grid", error ? "pui:gap-0.5" : "pui:gap-2", className)}
+      {...rootProps}
+    >
       <div className="pui:relative">
         {readOnly ? (
           // A read-only chooser keeps the committed value and its form control

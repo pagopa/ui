@@ -60,6 +60,7 @@ function HeaderAlert({
   const centred = !isDefault && !action && !onDismiss
   return (
     <div
+      data-slot="header-alert"
       role={tone === "error" ? "alert" : "status"}
       className={cn(
         "pui:text-label-mini-sb",

@@ -89,6 +89,7 @@ function Popover({
     >
       {trigger ? <PopoverTrigger render={trigger} /> : null}
       <PopoverContent
+        data-slot="popover"
         ref={ref}
         anchor={anchor}
         aria-label={label}

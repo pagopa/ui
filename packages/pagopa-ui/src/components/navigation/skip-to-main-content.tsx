@@ -19,7 +19,7 @@ function SkipToMainContent({
 
   return (
     <a
-      data-slot="skip-link"
+      data-slot="skip-to-main-content"
       href={`#${targetId}`}
       className="pui:fixed pui:top-0 pui:left-1/2 pui:z-[100] pui:inline-flex pui:w-max pui:-translate-x-1/2 pui:-translate-y-full pui:rounded-xl pui:border-2 pui:border-skip-to-main-ring pui:px-0.5 pui:py-0.5 pui:transition-transform pui:focus:translate-y-0 pui:motion-reduce:transition-none"
     >

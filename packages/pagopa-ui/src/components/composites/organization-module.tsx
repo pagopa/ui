@@ -16,7 +16,12 @@ export interface OrganizationModuleProps {
 
 function OrganizationModule({ name, fiscalCode, children }: OrganizationModuleProps) {
   return (
-    <BoxedModule title={name} description={fiscalCode} icon={<Icon source={AccountBalanceIcon} />}>
+    <BoxedModule
+      data-slot="organization-module"
+      title={name}
+      description={fiscalCode}
+      icon={<Icon source={AccountBalanceIcon} />}
+    >
       {children}
     </BoxedModule>
   )

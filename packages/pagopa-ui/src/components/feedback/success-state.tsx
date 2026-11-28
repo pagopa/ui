@@ -12,6 +12,7 @@ import { StatePanel, type StateProps } from "./state-panel"
 function SuccessState({ className, ...props }: StateProps) {
   return (
     <StatePanel
+      data-slot="success-state"
       {...props}
       actionsClassName="pui:flex-col pui:items-center pui:gap-6"
       className={cn("pui:w-full pui:max-w-none", className)}
