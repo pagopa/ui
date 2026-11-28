@@ -11,6 +11,7 @@ import { Default as MenuIcon } from "@/components/icons/generated/menu"
 import { Button } from "@/components/primitives/button"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
+import { expectFocusContrast, focusWithKeyboard } from "./support/a11y-contract"
 import buttonGuide from "./guides/actions.md?raw"
 
 const meta = {
@@ -529,13 +530,22 @@ export const Skeleton: Story = {
   },
 }
 
+// The `contrast` family is white-on-brand, so the surface is part of the story:
+// a white focus ring only reads against the brand fill it is drawn for.
 export const OnBrand: Story = {
   args: {
     variant: "contrast",
     children: "Azione a contrasto",
   },
-  parameters: {
-    backgrounds: { default: "brand" },
+  render: (args) => (
+    <div className="pui:rounded-xl pui:bg-primary pui:p-6">
+      <Button {...args} />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const button = within(canvasElement).getByRole("button", { name: "Azione a contrasto" })
+    await focusWithKeyboard(button)
+    await expectFocusContrast(button)
   },
 }
 

@@ -164,13 +164,146 @@ async function until(predicate: () => boolean, timeoutMs = 5000) {
   return predicate()
 }
 
-// A focused control must paint a visible cue. The check diffs the styled chain
-// before and after blurring, so a composite widget that paints the ring on its
-// frame instead of the inner input still passes.
-async function expectFocusPaint(element: HTMLElement) {
+// Colour measurement for the focus paint. `getComputedStyle` hands back the
+// authored colour space (`oklch(…)`, `color-mix(…)`), so a 1x1 canvas
+// normalises every token to sRGB bytes instead of the loop re-implementing
+// every serialisation CSS allows.
+type Rgba = [number, number, number, number]
+
+let colourContext: CanvasRenderingContext2D | null | undefined
+
+function parseColour(value: string): Rgba | null {
+  if (colourContext === undefined)
+    colourContext = document.createElement("canvas").getContext("2d", {
+      willReadFrequently: true,
+    })
+  if (!colourContext) return null
+  // The 1x1 canvas keeps the last fill, so an unparsable colour would be read
+  // back as the previous one: seed a known value and require the read to match.
+  colourContext.clearRect(0, 0, 1, 1)
+  colourContext.fillStyle = "#010203"
+  colourContext.fillStyle = value
+  colourContext.fillRect(0, 0, 1, 1)
+  const [r, g, b, a] = colourContext.getImageData(0, 0, 1, 1).data
+  return [r, g, b, a / 255]
+}
+
+interface Backdrop {
+  colour: Rgba
+  /** False when a gradient or image sits under the cue: only bounds remain. */
+  readable: boolean
+}
+
+// The colour a ring painted outside `node` sits on: the opaque composite of
+// every background between it and the document, or white when they are all
+// translucent.
+function backdropOf(node: HTMLElement): Backdrop {
+  const layers: Rgba[] = []
+  let readable = true
+  for (
+    let current: HTMLElement | null = node.parentElement;
+    current;
+    current = current.parentElement
+  ) {
+    const style = getComputedStyle(current)
+    const colour = parseColour(style.backgroundColor)
+    if (colour && colour[3] > 0) layers.push(colour)
+    if (colour && colour[3] >= 1) break
+    // An image or gradient breaks the measurement: what sits under the ring is
+    // no longer a colour the check can read.
+    if (style.backgroundImage !== "none") {
+      readable = false
+      break
+    }
+  }
+  return {
+    readable,
+    colour: layers.reduceRight<Rgba>(
+      (backdrop, layer) => composite(layer, backdrop),
+      [255, 255, 255, 1],
+    ),
+  }
+}
+
+function composite(foreground: Rgba, background: Rgba): Rgba {
+  const alpha = foreground[3]
+  return [
+    foreground[0] * alpha + background[0] * (1 - alpha),
+    foreground[1] * alpha + background[1] * (1 - alpha),
+    foreground[2] * alpha + background[2] * (1 - alpha),
+    1,
+  ]
+}
+
+function relativeLuminance([r, g, b]: Rgba) {
+  const channel = (value: number) => {
+    const scaled = value / 255
+    return scaled <= 0.03928 ? scaled / 12.92 : ((scaled + 0.055) / 1.055) ** 2.4
+  }
+  return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b)
+}
+
+function contrastRatio(foreground: Rgba, background: Rgba) {
+  const lighter = Math.max(relativeLuminance(foreground), relativeLuminance(background))
+  const darker = Math.min(relativeLuminance(foreground), relativeLuminance(background))
+  return (lighter + 0.05) / (darker + 0.05)
+}
+
+// WCAG 1.4.11: a focus indicator is a user-interface component, so every part
+// of it needs 3:1 against the colours it sits next to.
+const MINIMUM_FOCUS_CONTRAST = 3
+
+interface FocusPaint {
+  colour: Rgba
+  /** The offset decides whether the cue sits on the control or beside it. */
+  inset: boolean
+  description: string
+}
+
+function shadowColours(shadow: string) {
+  return [...shadow.matchAll(/(?:rgba?|oklch|oklab|color)\([^)]*\)|#[0-9a-f]{3,8}/gi)].map(
+    (match) => match[0],
+  )
+}
+
+// The cue a node paints while it has the focus, as a colour and a side.
+function focusPaintOf(node: HTMLElement): FocusPaint | null {
+  const style = getComputedStyle(node)
+  const width = Number.parseFloat(style.outlineWidth)
+  const outlineVisible =
+    style.outlineStyle !== "none" && (style.outlineStyle === "auto" || width >= 1)
+  if (outlineVisible) {
+    const colour = parseColour(style.outlineColor)
+    if (colour && colour[3] > 0)
+      return {
+        colour,
+        inset: Number.parseFloat(style.outlineOffset) < 0,
+        description: `outline ${style.outlineStyle} ${style.outlineWidth} ${style.outlineColor}`,
+      }
+  }
+  for (const candidate of shadowColours(style.boxShadow)) {
+    const colour = parseColour(candidate)
+    if (!colour || colour[3] <= 0) continue
+    return { colour, inset: style.boxShadow.includes("inset"), description: `shadow ${candidate}` }
+  }
+  return null
+}
+
+interface FocusMeasurement {
+  painter: HTMLElement
+  paint: FocusPaint | null
+  /** What the presence failure prints: the diff that found no cue. */
+  diagnostics: string
+}
+
+// The node that owns the focus cue and the colour it paints. The walk diffs the
+// styled chain before and after blurring, so a composite widget that paints the
+// ring on its frame instead of the inner input is measured on the frame it
+// actually paints.
+async function measureFocusPaint(element: HTMLElement): Promise<FocusMeasurement | null> {
   // Another flow (a popup closing, a focus trap) may own the focus by now: the
   // paint diff needs the element itself focused.
-  if (document.activeElement !== element) return
+  if (document.activeElement !== element) return null
   const chain = [element]
   for (
     let parent = element.parentElement, depth = 0;
@@ -178,31 +311,122 @@ async function expectFocusPaint(element: HTMLElement) {
     parent = parent.parentElement, depth += 1
   )
     chain.push(parent)
-  const snapshot = () =>
-    chain.map((node) => {
-      const style = getComputedStyle(node)
-      return `${style.outlineStyle}|${style.outlineWidth}|${style.boxShadow}`
-    })
-  const focused = snapshot()
+  const snapshot = (node: HTMLElement) => {
+    const style = getComputedStyle(node)
+    return `${style.outlineStyle}|${style.outlineWidth}|${style.boxShadow}`
+  }
+  // The paint is read while the cue is on screen: a widget that re-renders on
+  // blur may not hand focus back, so a live read after the diff is unreliable.
+  const focused = chain.map((node) => ({ text: snapshot(node), paint: focusPaintOf(node) }))
   element.blur()
   await nextFrame()
   if (document.activeElement === element) {
     element.blur()
     await nextFrame()
-    if (document.activeElement === element) return
+    if (document.activeElement === element) return null
   }
-  const blurred = snapshot()
+  const blurred = chain.map(snapshot)
   element.focus()
   await nextFrame()
-  const painted = focused.some((value, index) => {
-    if (value === blurred[index]) return false
-    const [style, width, shadow] = value.split("|")
-    return style === "auto" || (style !== "none" && parseFloat(width) >= 1) || shadow !== "none"
-  })
+  // The innermost node whose styling changed owns the cue; if it paints
+  // nothing measurable the walk continues outward, because a wrapper may.
+  let paint: FocusPaint | null = null
+  let painter = element
+  for (const [index, focusedEntry] of focused.entries()) {
+    if (focusedEntry.text === blurred[index]) continue
+    if (!focusedEntry.paint) continue
+    paint = focusedEntry.paint
+    painter = chain[index]
+    break
+  }
+  if (!paint)
+    return {
+      painter,
+      paint,
+      diagnostics: `active=${document.activeElement === element} class="${(element.className ?? "").toString().slice(-90)}" focused=[${focused.map((entry) => entry.text).join(" | ")}] blurred=[${blurred.join(" | ")}]`,
+    }
+  return { painter, paint, diagnostics: "" }
+}
+
+// A focused control must paint a visible cue. Contrast is measured by
+// `expectFocusContrast`, which each component asserts on the surfaces it is
+// documented for; making every story carry the measurement is the harness
+// upgrade tracked separately.
+async function expectFocusPaint(element: HTMLElement) {
+  const measured = await measureFocusPaint(element)
   expect(
-    painted,
-    `keyboard focus is not painted on ${describe(element)} (active=${document.activeElement === element} class="${(element.className ?? "").toString().slice(-90)}" focused=[${focused.join(" | ")}] blurred=[${blurred.join(" | ")}])`,
-  ).toBe(true)
+    measured?.paint ?? null,
+    `keyboard focus paints no measurable cue on ${describe(element)} (${measured?.diagnostics ?? `active=${document.activeElement === element}`})`,
+  ).not.toBe(null)
+}
+
+// A running transition reports an interpolated colour, so a cue measured mid
+// fade reads as translucent even when the settled token is opaque. Freezing
+// returns the undo, so the caller decides how long the freeze lasts.
+function freezeMotion() {
+  const style = document.createElement("style")
+  style.textContent =
+    "*,*:before,*:after{transition:none!important;animation-delay:0s!important;animation-duration:0.001s!important;animation-iteration-count:1!important}"
+  document.head.append(style)
+  return () => style.remove()
+}
+
+// Tabbing is the only way to make the browser paint `:focus-visible`, which is
+// the cue these checks are about: a click-driven focus paints nothing by design.
+export async function focusWithKeyboard(element: HTMLElement) {
+  if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
+  for (let step = 0; step < 40; step += 1) {
+    await userEvent.tab()
+    if (document.activeElement === element) return
+  }
+  throw new Error(`keyboard focus never reached ${describe(element)}`)
+}
+
+// WCAG 1.4.11 on one control: the cue the component paints for keyboard focus,
+// measured against the colour beside it. Stories call this where the pair
+// (component, surface) is part of the documentation, so a translucent or
+// low-contrast ring fails here instead of passing as "a cue exists".
+export async function expectFocusContrast(element: HTMLElement) {
+  const restore = freezeMotion()
+  try {
+    await expectSettledFocusContrast(element)
+  } finally {
+    restore()
+  }
+}
+
+async function expectSettledFocusContrast(element: HTMLElement) {
+  const measured = await measureFocusPaint(element)
+  expect(
+    measured?.paint ?? null,
+    `keyboard focus paints no measurable cue on ${describe(element)} (${measured?.diagnostics ?? `active=${document.activeElement === element}`})`,
+  ).not.toBe(null)
+  if (!measured?.paint) return
+  const { painter, paint } = measured
+  const backdrop = paint.inset ? backdropOf(painter.parentElement ?? painter) : backdropOf(painter)
+  const own = parseColour(getComputedStyle(painter).backgroundColor)
+  const adjacent =
+    paint.inset && own && own[3] > 0 ? composite(own, backdrop.colour) : backdrop.colour
+  const painted = composite(paint.colour, adjacent)
+  if (!backdrop.readable) {
+    // A gradient or an image sits under the cue, so there is no single colour to
+    // measure: the cue still has to clear 3:1 against one end of the range, which
+    // a washed-out or translucent cue cannot do.
+    const reach = Math.max(
+      contrastRatio(painted, [255, 255, 255, 1]),
+      contrastRatio(painted, [0, 0, 0, 1]),
+    )
+    expect(
+      reach,
+      `the focus cue on ${describe(painter)} (${paint.description}) reaches ${reach.toFixed(2)}:1 against white and black, so no backdrop under the gradient or image keeps it visible`,
+    ).toBeGreaterThanOrEqual(MINIMUM_FOCUS_CONTRAST)
+    return
+  }
+  const ratio = contrastRatio(painted, adjacent)
+  expect(
+    ratio,
+    `the focus cue on ${describe(painter)} (${paint.description}) reaches ${ratio.toFixed(2)}:1 against the adjacent colour, below the ${MINIMUM_FOCUS_CONTRAST}:1 a focus indicator needs`,
+  ).toBeGreaterThanOrEqual(MINIMUM_FOCUS_CONTRAST)
 }
 
 // The elements that push the document wider than the viewport, for reflow
@@ -707,10 +931,7 @@ export async function runA11yContract() {
   const contract = contractOf(parameters)
   // Freeze transitions and animations while the contract measures: the same
   // state the story runner uses during the story's own assertions.
-  const paused = document.createElement("style")
-  paused.textContent =
-    "*,*:before,*:after{transition:none!important;animation-delay:0s!important;animation-duration:0.001s!important;animation-iteration-count:1!important}"
-  document.head.append(paused)
+  const restore = freezeMotion()
   try {
     if (contract.reflow !== false) await expectReflowConditions(id)
     expectNoPositiveTabindex(canvas)
@@ -726,6 +947,6 @@ export async function runA11yContract() {
     expectBusyActionsFocusable(canvas)
     await expectAccessibleNames(canvas)
   } finally {
-    paused.remove()
+    restore()
   }
 }

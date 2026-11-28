@@ -9,6 +9,7 @@ import { Chip } from "@/components/inputs/chips"
 import { Accordion } from "@/components/navigation/accordion"
 import { Button } from "@/components/primitives/button"
 
+import { expectFocusContrast, focusWithKeyboard } from "./support/a11y-contract"
 import accordionGuide from "./guides/accordion.md?raw"
 
 const items = [
@@ -82,6 +83,8 @@ export const Playground: Story = {
     await userEvent.click(first)
     await expect(first).toHaveAttribute("aria-expanded", "true")
     await expect(faq).toHaveAttribute("aria-expanded", "false")
+    await focusWithKeyboard(first)
+    await expectFocusContrast(first)
     if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
   },
 }

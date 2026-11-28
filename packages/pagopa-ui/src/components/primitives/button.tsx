@@ -30,7 +30,7 @@ const buttonVariants = cva(
         "ghost-destructive":
           "pui:border pui:bg-transparent pui:px-4 pui:text-destructive pui:hover:bg-error-soft pui:focus-visible:outline-destructive",
         contrast:
-          "pui:bg-contrast pui:px-6 pui:text-contrast-foreground pui:hover:bg-accent pui:active:bg-accent-active pui:aria-invalid:inset-ring",
+          "pui:bg-contrast pui:px-6 pui:text-contrast-foreground pui:hover:bg-accent pui:active:bg-accent-active pui:focus-visible:outline-contrast pui:aria-invalid:inset-ring",
         "outline-contrast":
           "pui:bg-transparent pui:px-6 pui:text-contrast pui:inset-ring-2 pui:inset-ring-contrast pui:hover:bg-contrast/10 pui:active:bg-contrast/20 pui:focus-visible:outline-contrast pui:forced-colors:border-2",
         "ghost-contrast":

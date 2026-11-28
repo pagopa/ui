@@ -5,9 +5,9 @@
 - Type: design
 - Issue: https://github.com/pagopa/ui/issues/44
 - Preview: https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-carousel-stepper-target-size--option-a / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-carousel-stepper-target-size--option-b / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-carousel-stepper-target-size--option-c / https://proud-wave-056050103-19.westeurope.5.azurestaticapps.net/?path=/story/reviews-carousel-stepper-target-size--option-d
-- Status: open — the question does not block the render; the node is
+- Status: resolved — option 2 was applied as the smallest change that meets
+  WCAG 2.5.8; the dots, their sizes and the row height stay as drawn.
 - Ratified defaults: [docs/design-defaults.md](../design-defaults.md) — apply §2–§4 before asking; what they do not decide stays open here.
-  `implemented` against the drawn composition and the answer may change it later
 - Decision owner: Figma design owner
 
 ## Context
@@ -41,6 +41,16 @@ each control, which today is 8px. A consumer embedding the stepper in a
 touch-first surface gets a small horizontal target, and a sweep for target size
 reports it. Guessing the answer would either change the source composition
 (wider pitch, larger dots) or add padding the mockup does not draw.
+
+## Resolution
+
+The 16px pitch could not hold the rule at any dot size, so the gap grew from
+8px to 16px: consecutive centres are 24px apart and each control expands by 8px
+on both sides, which makes every target exactly 24x24 without overlapping a
+neighbour. The active pill keeps 16x4 and the outlined dots keep 8x8, the row
+keeps its 8px height, and the row grew from 96px to 136px. A typography-free
+indicator that a touch-first surface cannot hit is a worse outcome than 40px of
+extra width, and the vertical reach stays at 44px.
 
 ## Options
 

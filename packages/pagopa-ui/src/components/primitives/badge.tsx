@@ -8,16 +8,16 @@ import { cn } from "@/lib/cn"
 import type { ElementProps } from "./props"
 
 const badgeVariants = cva(
-  "group/badge pui:inline-flex pui:h-5 pui:w-fit pui:shrink-0 pui:items-center pui:justify-center pui:gap-1 pui:overflow-hidden pui:rounded-4xl pui:border pui:border-transparent pui:px-2 pui:py-0.5 pui:text-caption-sb pui:whitespace-nowrap pui:transition-all pui:focus-visible:border-ring pui:focus-visible:ring-3 pui:focus-visible:ring-ring/50 pui:has-data-[icon=inline-end]:pr-1.5 pui:has-data-[icon=inline-start]:pl-1.5 pui:aria-invalid:border-destructive pui:aria-invalid:ring-destructive/20 pui:[&>svg:not(.pagopa-icon)]:pointer-events-none pui:[&>svg:not(.pagopa-icon)]:size-3!",
+  "group/badge pui:inline-flex pui:h-5 pui:w-fit pui:shrink-0 pui:items-center pui:justify-center pui:gap-1 pui:overflow-hidden pui:rounded-4xl pui:border pui:border-transparent pui:px-2 pui:py-0.5 pui:text-caption-sb pui:whitespace-nowrap pui:transition-all pui:outline-none pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring pui:[a&]:min-h-6 pui:[a&]:min-w-6 pui:has-data-[icon=inline-end]:pr-1.5 pui:has-data-[icon=inline-start]:pl-1.5 pui:aria-invalid:border-destructive pui:aria-invalid:ring-destructive/20 pui:[&>svg:not(.pagopa-icon)]:pointer-events-none pui:[&>svg:not(.pagopa-icon)]:size-3!",
   {
     variants: {
       variant: {
-        default: "pui:bg-primary pui:text-primary-foreground pui:[a]:hover:bg-primary/80",
-        secondary: "pui:bg-secondary pui:text-secondary-foreground pui:[a]:hover:bg-secondary/80",
+        default: "pui:bg-primary pui:text-primary-foreground pui:[a&]:hover:bg-primary/80",
+        secondary: "pui:bg-secondary pui:text-secondary-foreground pui:[a&]:hover:bg-secondary/80",
         destructive:
-          "pui:bg-destructive/10 pui:text-error-foreground pui:focus-visible:ring-destructive/20 pui:[a]:hover:bg-destructive/20",
+          "pui:bg-error-soft pui:text-error-foreground pui:focus-visible:outline-destructive pui:[a&]:hover:bg-error-border",
         outline:
-          "pui:border-border pui:text-foreground pui:[a]:hover:bg-muted pui:[a]:hover:text-muted-foreground",
+          "pui:border-border pui:text-foreground pui:[a&]:hover:bg-muted pui:[a&]:hover:text-muted-foreground",
         ghost: "pui:hover:bg-muted pui:hover:text-muted-foreground",
         link: "pui:text-primary pui:underline-offset-4 pui:hover:underline",
       },

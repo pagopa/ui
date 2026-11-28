@@ -7,6 +7,7 @@ import { Default as StorefrontIcon } from "@/components/icons/generated/storefro
 import { PinPoint } from "@/components/overlays/pin-point"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
+import { expectFocusContrast, focusWithKeyboard } from "./support/a11y-contract"
 import pinPointGuide from "./guides/pin-point.md?raw"
 
 const meta = {
@@ -67,6 +68,8 @@ export const PinPointSelection: Story = {
     await expect(pin).toHaveAttribute("aria-pressed", "false")
     await userEvent.click(pin)
     await expect(pin).toHaveAttribute("aria-pressed", "true")
+    await focusWithKeyboard(pin)
+    await expectFocusContrast(pin)
   },
 }
 

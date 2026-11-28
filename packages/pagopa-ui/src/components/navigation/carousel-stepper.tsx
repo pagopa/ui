@@ -5,10 +5,12 @@ import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
 // The visible dot is the source box (16x4 active, 8x8 inactive); the pointer
-// target comes from the invisible vertical ::after expansion, so the row keeps
-// the source 8px height instead of inflating to the 44px target.
+// target comes from an invisible ::after expansion, so the row keeps the source
+// 8px height instead of inflating to the target. The 16px gap between dots puts
+// their centres 24px apart, which is exactly what a 24px-wide expansion on each
+// control needs to abut its neighbour without overlapping it.
 const indicator =
-  "pui:relative pui:shrink-0 pui:rounded-2xl pui:transition-[width,height,background-color] pui:motion-reduce:transition-none pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-5 pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
+  "pui:relative pui:shrink-0 pui:rounded-2xl pui:transition-[width,height,background-color] pui:motion-reduce:transition-none pui:after:absolute pui:after:-inset-x-2 pui:after:-inset-y-5 pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
 
 export interface CarouselStepperProps extends Omit<
   React.ComponentProps<"div">,
@@ -54,7 +56,7 @@ function CarouselStepper({
       ref={ref}
       role="group"
       aria-label={label}
-      className={cn("pui:flex pui:items-center pui:justify-center pui:gap-2", className)}
+      className={cn("pui:flex pui:items-center pui:justify-center pui:gap-4", className)}
       {...props}
     >
       {Array.from({ length: count }, (_, index) => (

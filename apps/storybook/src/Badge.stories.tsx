@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import { expect, within } from "storybook/test"
 
 import { Icon } from "@/components/icons/icon"
 import {
@@ -8,6 +9,7 @@ import {
 import { Badge } from "@/components/primitives/badge"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
+import { expectFocusContrast, focusWithKeyboard } from "./support/a11y-contract"
 import badgeGuide from "./guides/badges.md?raw"
 
 const meta = {
@@ -43,6 +45,42 @@ export const Playground: Story = {
   args: {
     display: "numbered",
     children: "1",
+  },
+}
+
+// A linked Badge is a control, so it owes the 24x24 target WCAG 2.5.8 asks for
+// even though the label badge itself stays 20px tall.
+export const LinkBadges: Story = {
+  name: "Badge collegati",
+  render: () => (
+    <div className="pui:flex pui:flex-col pui:items-start pui:gap-4">
+      {(["default", "secondary", "destructive", "outline", "ghost"] as const).map((variant) => (
+        <Badge
+          key={variant}
+          variant={variant}
+          render={<a href="#badge" aria-label={`Collegamento ${variant}`} />}
+          data-variant={variant}
+        >
+          Collegamento
+        </Badge>
+      ))}
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const links = within(canvasElement).getAllByRole("link")
+    await expect(links).toHaveLength(5)
+    for (const link of links) {
+      const box = link.getBoundingClientRect()
+      await expect(box.height).toBeGreaterThanOrEqual(24)
+      await expect(box.width).toBeGreaterThanOrEqual(24)
+      await focusWithKeyboard(link)
+      await expectFocusContrast(link)
+    }
+    // The destructive surface is an opaque token, not an alpha composite: the
+    // page behind the badge must not decide its contrast.
+    const destructive = canvasElement.querySelector<HTMLElement>("[data-variant='destructive']")
+    if (!destructive) throw new Error("the destructive link badge is missing")
+    await expect(getComputedStyle(destructive).backgroundColor).toMatch(/^rgb\(\d+, \d+, \d+\)$/)
   },
 }
 

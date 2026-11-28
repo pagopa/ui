@@ -7,15 +7,20 @@ import { CarouselStepper } from "@/components/navigation/carousel-stepper"
 
 import carouselStepperGuide from "./guides/carousel-stepper.md?raw"
 
-// The source draws 8px dots on a 16px pitch, so the pointer target is the dot
-// plus its invisible vertical ::after expansion (the source row stays 8px).
-function hitTargetHeight(control: HTMLElement) {
+// The source draws 8px dots; the pointer target is the dot plus its invisible
+// ::after expansion, so the row keeps the source 8px height and the 24px pitch
+// the target needs instead of inflating the dots themselves.
+function hitTargetBox(control: HTMLElement) {
   const target = getComputedStyle(control, "::after")
-  return (
+  const width =
+    control.getBoundingClientRect().width -
+    Number.parseFloat(target.left) -
+    Number.parseFloat(target.right)
+  const height =
     control.getBoundingClientRect().height -
     Number.parseFloat(target.top) -
     Number.parseFloat(target.bottom)
-  )
+  return { width, height }
 }
 
 const meta = {
@@ -55,7 +60,10 @@ export const CarouselTargets: Story = {
     const group = within(canvasElement).getByRole("group", { name: "Seleziona contenuto" })
     const controls = within(group).getAllByRole("button")
     for (let index = 0; index < controls.length; index++) {
-      await expect(hitTargetHeight(controls[index])).toBeGreaterThanOrEqual(44)
+      const target = hitTargetBox(controls[index])
+      // WCAG 2.5.8 wants 24x24; the source's 44px vertical reach is kept.
+      await expect(target.width).toBeGreaterThanOrEqual(24)
+      await expect(target.height).toBeGreaterThanOrEqual(44)
       if (index > 0)
         await expect(controls[index].getBoundingClientRect().left).toBeGreaterThanOrEqual(
           controls[index - 1].getBoundingClientRect().right,
@@ -86,17 +94,21 @@ export const Fidelity: Story = {
     const group = within(canvasElement).getByRole("group", { name: "Seleziona contenuto" })
     const controls = within(group).getAllByRole("button")
 
-    // 96x8 source row: one 16x4 active dot and five 8x8 outlined dots on an 8px gap.
+    // One 16x4 active dot and five 8x8 outlined dots on a 16px gap: the source
+    // draws an 8px gap, which leaves a 16px pitch and cannot hold a 24px target
+    // (docs/design-requests/2026-10-23-carousel-stepper-target-size.md).
     await expect(group.getBoundingClientRect().height).toBe(8)
     await expect(controls).toHaveLength(6)
     const first = controls[0].getBoundingClientRect()
     const last = controls[controls.length - 1].getBoundingClientRect()
-    await expect(last.right - first.left).toBe(96)
+    await expect(last.right - first.left).toBe(136)
     for (const [index, control] of controls.entries()) {
       const bounds = control.getBoundingClientRect()
       await expect(bounds.height).toBe(index === 0 ? 4 : 8)
       await expect(bounds.width).toBe(index === 0 ? 16 : 8)
-      await expect(hitTargetHeight(control)).toBeGreaterThanOrEqual(44)
+      const target = hitTargetBox(control)
+      await expect(target.width).toBeGreaterThanOrEqual(24)
+      await expect(target.height).toBeGreaterThanOrEqual(44)
     }
     await expect(controls[0]).toHaveAttribute("aria-current", "true")
     await expect(controls[0]).toHaveAccessibleName("Contenuto 1 di 6")

@@ -51,7 +51,7 @@ function PinPoint({
       style={{ left: `${x}%`, top: `${y}%` }}
       {...props}
       className={cn(
-        "pui:absolute pui:grid pui:size-11 pui:-translate-x-1/2 pui:-translate-y-1/2 pui:place-items-center pui:rounded-full pui:outline-none pui:focus-visible:ring-4 pui:focus-visible:ring-primary/30",
+        "pui:absolute pui:grid pui:size-11 pui:-translate-x-1/2 pui:-translate-y-1/2 pui:place-items-center pui:rounded-full pui:outline-none pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring",
         className,
       )}
     >
