@@ -67,6 +67,16 @@ test("a code span naming a missing repository path fails", () => {
   )
 })
 
+test("a code span naming a package subpath is not a repository path", () => {
+  assert.deepEqual(
+    check({
+      "CHANGELOG.md": "Icons ship behind `./icons` and `./icons/*`.",
+      "src/icons/index.ts": "",
+    }).problems,
+    [],
+  )
+})
+
 test("generated directory roots are local paths even without a trailing slash", () => {
   assert.deepEqual(
     check({

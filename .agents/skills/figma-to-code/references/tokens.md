@@ -15,7 +15,7 @@ contract is green, and every exception carries a node and a reason.
 3. `pnpm ui-cli update tokens --input <figma.variables>` curates and regenerates.
    Unknown namespaces fail, every removal and every rename is
    printed.
-4. Run `pnpm ui-cli check tokens`, `pnpm nx run pagopa-ui-cli:test` and
+4. Run `pnpm ui-cli check tokens`, `pnpm nx run pagopa-ui-cli:test:unit` and
    `pnpm ui-cli check foundation`. Re-run parity for components whose token
    value changed (`visual-parity.md`).
 

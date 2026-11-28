@@ -109,7 +109,8 @@ The story and test contracts are in [story-contracts.md](story-contracts.md).
 ## Tooling and delivery
 
 - [ ] New tooling behaviour has a CLI regression test in
-      `pnpm nx run pagopa-ui-cli:test`; public changes pass the installed-artifact
+      `pnpm nx run pagopa-ui-cli:test:unit`; public changes pass the
+      installed-artifact
       consumer in `pnpm nx run pagopa-ui:library:check`, never replaced by a
       repository-linked smoke test or `skipLibCheck`. React stays a peer;
       styling and font tools stay build-time.

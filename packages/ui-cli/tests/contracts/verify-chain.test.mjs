@@ -76,7 +76,8 @@ const STATIC = [
   "pagopa-ui-cli:typecheck",
   "pagopa-ui-cli:format:check",
   "pagopa-ui-cli:lint:check",
-  "pagopa-ui-cli:test",
+  "pagopa-ui-cli:test:unit",
+  "pagopa-ui-cli:test:contracts",
   // The Storybook app's own lint and format: CI gates them, so a locally green
   // fast chain has to gate them too. Everything else the app owns needs a
   // browser build and stays in the tail below.

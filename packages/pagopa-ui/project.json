@@ -24,7 +24,7 @@
       "options": {
         "script": "format"
       },
-      "cache": true,
+      "cache": false,
       "configurations": {
         "ci": {
           "script": "format:check"
@@ -48,7 +48,8 @@
         "consumer-dx:check",
         "data-slots:check",
         "a11y:conformance:check",
-        "pagopa-ui-cli:test",
+        "pagopa-ui-cli:test:unit",
+        "pagopa-ui-cli:test:contracts",
         "pagopa-ui-tokens:test"
       ],
       "configurations": {

@@ -7,7 +7,8 @@ What a component's story proves, on top of the
 
 - [ ] One story file in `apps/storybook/src`, titled `Foundations/*` or
       `Components/<section>/*` (a new section fails `story-taxonomy.test.mjs` in
-      `pnpm nx run pagopa-ui-cli:test`), with a description, essential `argTypes`
+      `pnpm nx run pagopa-ui-cli:test:unit`), with a description, essential
+      `argTypes`
       and a Playground. No parallel demo; retired sections stay retired.
 - [ ] The guide states behaviour and accessibility adaptations and renders on the
       docs page. Storybook prose is English; Italian only in rendered content.

@@ -150,8 +150,13 @@ Use `pnpm nx show projects` to list projects and
   review reaches it).
 - `pnpm nx run pagopa-ui-tokens:test` — the token manifest against the generated
   CSS and TypeScript (`check:tokens`, hung under `test`).
-- `pnpm nx run pagopa-ui-cli:test` — the `node --test`
-  suites of the tooling and of its fixtures.
+- `pnpm nx run pagopa-ui-cli:test:unit` and
+  `pnpm nx run pagopa-ui-cli:test:contracts` — the `node --test` suites of the
+  tooling and of its fixtures, split by what they read. The unit target runs
+  every suite that works against a temporary tree, so a fixture edit does not
+  invalidate the consumers of the `tooling` named input; the contract target
+  runs the five suites that read this repository — the task graph, the
+  workflows and the Nx inputs — and is never cached.
 - `pnpm nx run pagopa-ui:check:catalogue` — hermetic catalogue check, which
   warns when the committed Storybook titles the inventory story links read are
   behind: the drift refresh regenerates them and `pagopa-ui:update:stories` does
@@ -542,7 +547,7 @@ to. `pagopa-ui:test` pulls the checks that package owns — `api:check`,
 `figma:map:check`, `a11y:conformance:check` and the rest — through its
 `dependsOn`, so each runs once, wherever in the graph it is needed. A gate is
 added by adding a `dependsOn` entry to `tools/workspace/project.json`;
-`packages/ui-cli/tests/checks/verify-chain.test.mjs` reads the task graph and
+`packages/ui-cli/tests/contracts/verify-chain.test.mjs` reads the task graph and
 fails when one leaves it.
 
 A lock the gate rejects is refreshed with `mise lock node pnpm`, which rewrites

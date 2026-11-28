@@ -265,6 +265,75 @@ test("cache-contract: sibling reads invalidate cached checks without widening ev
   }
 })
 
+test("cache-contract: a ui-cli test edit stops invalidating the tooling consumers", () => {
+  // The tooling named input names the runtime sources, the data and the
+  // manifest, plus the fixtures library:check copies. A suite is not an input:
+  // editing one re-runs the tooling's own tests and nothing else.
+  const tree = fixture(library, "foundation:check", {
+    "packages/ui-cli/tests/checks/probe.test.mjs": "valid",
+    "packages/ui-cli/src/checks/foundation.ts": "valid",
+  })
+  try {
+    assert.equal(tree.run().status, 0)
+    tree.write("packages/ui-cli/tests/checks/probe.test.mjs", "invalid")
+    assert.equal(tree.run().status, 0, "a ui-cli test is not an input of a consumer")
+    assert.equal(tree.executions(), 1, "a ui-cli test edit must reuse the cached success")
+    tree.write("packages/ui-cli/src/checks/foundation.ts", "invalid")
+    assert.equal(tree.run().status, 1, "a ui-cli source still invalidates the consumer")
+    assert.equal(tree.executions(), 2)
+  } finally {
+    tree.close()
+  }
+})
+
+test("cache-contract: fmt writes, so it is never cached", () => {
+  // A cached writer answers a formatting request with a replay: the tree stays
+  // unformatted and the run reports success. The documented `-c ci` variant
+  // swaps in the read-only check, which is an inferred script target and never
+  // replays a stored result.
+  for (const project of [
+    "pagopa-ui",
+    "pagopa-ui-artwork",
+    "pagopa-ui-tokens",
+    "pagopa-ui-cli",
+    "pagopa-ui-storybook",
+  ]) {
+    const targets = resolved(project).targets
+    assert.equal(targets.fmt.cache, false, `${project}: fmt must never replay`)
+    assert.equal(targets.fmt.configurations.ci.script, "format:check")
+    assert.ok(targets["format:check"], `${project}: the ci configuration names a real target`)
+  }
+})
+
+test("cache-contract: the test split keeps the live-repo suites uncached", () => {
+  const named = namedInputs.tooling
+  const edit = "probe.test.mjs"
+  assert.ok(
+    named.every(
+      (input) =>
+        !input.startsWith("{workspaceRoot}/packages/ui-cli/tests/") ||
+        input.includes("/fixtures/") ||
+        input.endsWith("library-host-css-coexistence.spec.mjs"),
+    ),
+    `tooling names no suite: ${named.join(", ")}`,
+  )
+  assert.ok(named.includes("{workspaceRoot}/packages/ui-cli/src/**/*"))
+  // The unit target is cached and no longer reads the component sources; the
+  // contract target reads this repository, so it can never replay a success.
+  assert.notEqual(tooling.targets["test:unit"].cache, false)
+  assert.ok(
+    !tooling.targets["test:unit"].inputs.some((input) => input.includes("packages/pagopa-ui")),
+    `${edit}: the unit target reads no sibling source`,
+  )
+  assert.equal(tooling.targets["test:contracts"].cache, false)
+  assert.ok(
+    tooling.targets["test"].inputs.some((input) =>
+      input.includes("{workspaceRoot}/packages/pagopa-ui/src/**"),
+    ),
+    "the whole suite still declares everything it reads",
+  )
+})
+
 test("cache-contract: library engines and the current built artifact invalidate success", () => {
   const tree = fixture(
     library,

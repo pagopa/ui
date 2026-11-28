@@ -123,6 +123,10 @@ function checkCodeSpan(
   const fromDocument = path.resolve(path.dirname(file), target)
   if (fs.existsSync(fromDocument) || exists(ctx, target)) return
   const first = target.split("/")[0]
+  // A dot-prefixed span names a subpath of the package it documents (`./icons`)
+  // or a sibling of the document, and both are resolved above; only a
+  // workspace-root-relative span falls back to its first segment.
+  if (first === "." || first === "..") return
   if (fs.existsSync(path.resolve(path.dirname(file), first)) || exists(ctx, first))
     report(ctx, file, text, index, `missing path \`${span}\``)
 }

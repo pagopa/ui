@@ -53,7 +53,8 @@
         "pagopa-ui-cli:typecheck",
         "pagopa-ui-cli:format:check",
         "pagopa-ui-cli:lint:check",
-        "pagopa-ui-cli:test",
+        "pagopa-ui-cli:test:unit",
+        "pagopa-ui-cli:test:contracts",
         "pagopa-ui-storybook:lint:check",
         "pagopa-ui-storybook:format:check"
       ]
