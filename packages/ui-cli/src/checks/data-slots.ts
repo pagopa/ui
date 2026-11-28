@@ -532,7 +532,7 @@ export function checkDataSlots(workspace: Workspace): CheckReport {
   const reader = createComponentReader(workspace)
   const findings: Finding[] = []
   let components = 0
-  for (const [name, identity] of reader.surface()) {
+  for (const identity of reader.surface().values()) {
     const component = reader.componentOf(identity)
     if (!component) continue
     components += 1

@@ -104,7 +104,12 @@ Library overlays render in one shared, library-owned root appended to
 unrelated host dialogs or portals. Overlay content is client-rendered, like any
 body portal. Server-rendered component markup remains in the provider root. The
 root is a singleton per document: every provider and React root on the page
-shares it, and it is not shadow-DOM or iframe aware.
+shares it, and it is not shadow-DOM or iframe aware. Because it is shared, a
+theme does not follow by inheritance: the provider repeats its `className` and
+its `--*` declarations on the root, and the innermost provider wins, so
+`<UIProvider className="brand" style={{ "--pui-primary": … }}>` themes the
+overlays as it themes the tree. Declarations other than custom properties stay on
+the provider element, where they describe that box and not its subtree.
 
 The public `--pui-*` token variables sit on `:root` in `@pagopa/ui/tokens.css`,
 so a host page reads them without entering a component tree. The provider root

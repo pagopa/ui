@@ -2714,9 +2714,11 @@ export interface UIProviderProps {
     calendarLocale?: CalendarLocale;
     // (undocumented)
     children: React_2.ReactNode;
+    className?: string;
     linkComponent?: React_2.ElementType<LinkComponentProps>;
     locale?: string;
     messages?: DeepPartial<Messages>;
+    style?: React_2.CSSProperties & Record<`--${string}`, string | number>;
 }
 
 // @public (undocumented)

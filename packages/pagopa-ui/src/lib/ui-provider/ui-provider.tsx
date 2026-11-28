@@ -3,6 +3,7 @@
 import * as React from "react"
 import type { CalendarLocale } from "@/components/primitives/calendar"
 import { it } from "react-day-picker/locale"
+import { cn } from "@/lib/cn"
 
 import { itMessages } from "./messages/it"
 import { mergeMessages } from "./messages/merge"
@@ -28,6 +29,17 @@ interface UIProviderProps {
    * primitive
    */
   calendarLocale?: CalendarLocale
+  /**
+   * Added to the provider root, and repeated on the portal root so a theme
+   * class reaches overlays too. @default undefined
+   */
+  className?: string
+  /**
+   * Declared on the provider root. Custom properties (`--*`) are repeated on
+   * the portal root, where they theme overlays; other declarations stay on the
+   * provider element. @default undefined
+   */
+  style?: React.CSSProperties & Record<`--${string}`, string | number>
   children: React.ReactNode
 }
 
@@ -36,6 +48,8 @@ interface UIContextValue {
   locale: string
   messages: Messages
   calendarLocale: CalendarLocale
+  /** Nesting depth of the provider, so the innermost theme scope wins. */
+  depth: number
 }
 
 const UIContext = React.createContext<UIContextValue>({
@@ -43,7 +57,46 @@ const UIContext = React.createContext<UIContextValue>({
   locale: "it-IT",
   messages: itMessages,
   calendarLocale: it,
+  depth: 0,
 })
+
+const HOST_CLASS = "pagopa-ui-root"
+
+interface ThemeScope {
+  className?: string
+  style?: React.CSSProperties
+  depth: number
+}
+
+/**
+ * The mounted providers, in no particular order: effects run child-first, so
+ * nesting is read from `depth` rather than from the order of arrival.
+ */
+const themeScopes: ThemeScope[] = []
+const hostProperties = new Set<string>()
+
+/**
+ * Repeats the nearest provider's theme scope on the shared portal root. The
+ * overlays leave the provider's DOM branch, so without this a `--pui-*` value
+ * or a theme class declared on the provider stops at the portal boundary.
+ */
+function syncPortalTheme(host: HTMLElement | undefined) {
+  if (!host) return
+  const scope = themeScopes.reduce<ThemeScope | undefined>(
+    (innermost, scope) => (innermost && innermost.depth >= scope.depth ? innermost : scope),
+    undefined,
+  )
+  host.className = scope?.className ? cn(HOST_CLASS, scope.className) : HOST_CLASS
+  for (const property of hostProperties) host.style.removeProperty(property)
+  hostProperties.clear()
+  for (const [name, value] of Object.entries(scope?.style ?? {})) {
+    // A custom property needs no unit and inherits into every portalled
+    // subtree; any other declaration describes the provider element itself.
+    if (!name.startsWith("--") || value == null) continue
+    host.style.setProperty(name, String(value))
+    hostProperties.add(name)
+  }
+}
 
 let portalHost: HTMLElement | undefined
 
@@ -56,10 +109,11 @@ function portalHostElement(): HTMLElement | undefined {
   if (typeof document === "undefined") return undefined
   if (!portalHost) {
     const host = document.createElement("div")
-    host.className = "pagopa-ui-root"
+    host.className = HOST_CLASS
     host.setAttribute("data-pagopa-ui", "")
     host.setAttribute("data-pagopa-ui-portal-root", "")
     portalHost = host
+    syncPortalTheme(host)
   }
   return portalHost
 }
@@ -88,22 +142,36 @@ function UIProvider({
   locale,
   messages,
   calendarLocale,
+  className,
+  style,
   children,
 }: UIProviderProps) {
   const parent = React.useContext(UIContext)
+  React.useEffect(() => {
+    const scope: ThemeScope = { className, style, depth: parent.depth }
+    themeScopes.push(scope)
+    syncPortalTheme(portalHost)
+    return () => {
+      const index = themeScopes.indexOf(scope)
+      if (index !== -1) themeScopes.splice(index, 1)
+      syncPortalTheme(portalHost)
+    }
+  }, [className, style, parent.depth])
   const value = React.useMemo<UIContextValue>(
     () => ({
       linkComponent: linkComponent ?? parent.linkComponent,
       locale: locale ?? parent.locale,
       messages: messages ? mergeMessages(parent.messages, messages) : parent.messages,
       calendarLocale: calendarLocale ?? parent.calendarLocale,
+      depth: parent.depth + 1,
     }),
     [linkComponent, locale, messages, calendarLocale, parent],
   )
   return (
     <UIContext.Provider value={value}>
       <div
-        className="pagopa-ui-root"
+        className={cn(HOST_CLASS, className)}
+        style={style}
         data-slot="ui-provider"
         data-pagopa-ui=""
         data-pagopa-ui-root=""

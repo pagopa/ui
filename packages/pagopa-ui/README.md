@@ -43,7 +43,19 @@ export function App() {
 ```
 
 The provider renders the root the token variables are published on; a component
-tree outside it is unstyled. The stylesheet encapsulates with CSS cascade layers
+tree outside it is unstyled. `className` and `style` land on that same root, and
+a `--*` declaration or a theme class also reaches the overlays: dialogs,
+popovers, drawers, tooltips, dropdown menus, selects and autocompletes mount in a
+library-owned root appended to `document.body`, which repeats the innermost
+provider's theme scope.
+
+```tsx
+<UIProvider className="brand-theme" style={{ "--pui-primary": "#0b3ee3" }}>
+  {children}
+</UIProvider>
+```
+
+The stylesheet encapsulates with CSS cascade layers
 and `:where()` rather than `@scope`, so it needs nothing beyond layer support:
 Chrome 99+, Safari 15.4+ or Firefox 97+.
 
