@@ -1,4 +1,7 @@
 import fs from "node:fs"
+
+import { z } from "zod"
+
 import type { Workspace } from "../adapters/workspace.ts"
 import { CheckFailure, UsageError } from "../lib/command.ts"
 import { readJson, writeJson } from "../lib/json.ts"
@@ -12,8 +15,12 @@ import {
   RegistryEntrySchema,
   PageSurfaceSchema,
   NOTE_LENGTH_LIMIT,
+  type InventoryNode,
   type RegistryEntry,
 } from "../schemas/catalogue.ts"
+import { NonEmptyStringSchema } from "../schemas/common.ts"
+import { PROPS_MAP_VERSION, PropsMapEntrySchema } from "../schemas/map.ts"
+import { propsMapProblems } from "./map.ts"
 import { requiresReason, surfaceDecision } from "./surface-decision.ts"
 import { syncCatalogue } from "./catalogue/index.ts"
 
@@ -28,10 +35,41 @@ export type RegistryOptions = {
   storyExports?: string
   note?: string
   reason?: string
+  /** The Figma property → React prop mapping, as JSON keyed by property name. */
+  props?: string
   dryRun: boolean
 }
 
-function buildEntry(old: RegistryEntry | undefined, options: RegistryOptions): RegistryEntry {
+// A props map is keyed by the Figma property, so the shape is the catalogue's
+// own: an object whose keys are variant properties and whose values name the
+// prop and, when the option names are not the prop values, the option mapping.
+const DeclaredPropsSchema = z.record(NonEmptyStringSchema, PropsMapEntrySchema)
+
+function parsedProps(nodeId: string, raw: string, node: InventoryNode | undefined) {
+  let json: unknown
+  try {
+    json = JSON.parse(raw)
+  } catch {
+    throw new UsageError(`--props is not JSON: ${raw}`)
+  }
+  const parsed = DeclaredPropsSchema.safeParse(json)
+  if (!parsed.success) throw new UsageError(`invalid --props: ${parsed.error.message}`)
+  // The inventory is the authority on which properties and options exist, so a
+  // mapping the source does not declare fails before a byte is written.
+  const problems = propsMapProblems(
+    nodeId,
+    { version: PROPS_MAP_VERSION, props: parsed.data },
+    node,
+  )
+  if (problems.length) throw new UsageError(problems.join("\n"))
+  return parsed.data
+}
+
+function buildEntry(
+  old: RegistryEntry | undefined,
+  options: RegistryOptions,
+  node: InventoryNode | undefined,
+): RegistryEntry {
   const target = {
     ...old?.target,
     ...(options.module !== undefined && { module: options.module }),
@@ -39,6 +77,12 @@ function buildEntry(old: RegistryEntry | undefined, options: RegistryOptions): R
     ...(options.story !== undefined && { story: options.story }),
     ...(options.storyExports !== undefined && {
       storyExports: options.storyExports.split(",").map((s) => s.trim()),
+    }),
+    // The map is the whole mapping, not a patch: a run that passes it says what
+    // the node's properties become, so a property it leaves out is one the node
+    // no longer declares.
+    ...(options.props !== undefined && {
+      props: parsedProps(options.nodeId, options.props, node),
     }),
   }
   const candidate = {
@@ -73,7 +117,7 @@ export async function setRegistry(workspace: Workspace, options: RegistryOptions
   // A copy: the remembered read stays the file on disk until the write forgets it.
   const registry = structuredClone(readRegistry(workspace.root))
   const old = registry.entries[node.nodeId]
-  const entry = buildEntry(old, options)
+  const entry = buildEntry(old, options, node)
   registry.entries[node.nodeId] = entry
   const warnings: string[] = []
   const surfaceFile = workspace.path(SURFACE_PATH)

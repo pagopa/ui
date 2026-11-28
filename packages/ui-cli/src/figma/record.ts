@@ -30,6 +30,7 @@ export type RecordOptions = {
   storyExports?: string
   note?: string
   reason?: string
+  props?: string
   dryRun?: boolean
 }
 

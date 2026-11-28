@@ -36,6 +36,10 @@ export function recordCommand(ctx: CliContext) {
       "story-exports": stringArg,
       note: stringArg,
       reason: stringArg,
+      props: {
+        ...stringArg,
+        description: "The Figma property → prop mapping, as JSON keyed by property name",
+      },
       "dry-run": boolArg,
       json: boolArg,
     },
@@ -49,6 +53,7 @@ export function recordCommand(ctx: CliContext) {
         storyExports: args["story-exports"],
         note: args.note,
         reason: args.reason,
+        props: args.props,
         dryRun: args["dry-run"],
       })
       if (args.json) printJson(ctx.io, result)
