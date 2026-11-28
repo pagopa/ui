@@ -681,14 +681,6 @@
       "reason": "Host typography: the root line box stays the CSS default ratio; Body sets a 22/16 line-height that would change every inherited line a caller renders."
     },
     {
-      "declaration": "--pui-destructive-hover: #aa2828",
-      "reason": "Local extension: the destructive pointer step between Error 600 and Error 850. No Figma pressed variable is reachable; requested to design."
-    },
-    {
-      "declaration": "--pui-primary-active: #072582",
-      "reason": "Local extension: the primary pressed step between Blue 600 and Blue 850. No Figma pressed variable is reachable; requested to design."
-    },
-    {
       "declaration": "--pui-navy: #061b49",
       "reason": "Local extension: brand surface outside the Figma collections; retired when the design owner publishes it as a variable (ADR-0001 §9)."
     },

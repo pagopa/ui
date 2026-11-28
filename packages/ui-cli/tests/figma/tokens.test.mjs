@@ -10,6 +10,9 @@ import { fixtureEnvironment, fixtureTree } from "../helpers/cli.mjs"
 import { TYPOGRAPHY_ALIASES } from "../../src/figma/tokens.ts"
 
 const script = fileURLToPath(new URL("../../src/cli.ts", import.meta.url))
+const workspace = fileURLToPath(new URL("../../../../", import.meta.url))
+
+const readWorkspace = (file) => fs.readFileSync(path.join(workspace, file), "utf8")
 
 function tokensArguments(cli, args) {
   if (args[0] === "--write") return [cli, "update", "tokens", ...args.slice(1)]
@@ -330,6 +333,47 @@ test("a color-mix is published as the colour it computes", () => {
     assert.deepEqual(dtcg.pui.accent, { $type: "color", $value: "#ebf0fd" })
     assert.equal(tokens("--check").status, 0)
   })
+})
+
+test("a mix of two Figma references resolves each side before it composites", () => {
+  fixture(({ tokens, read, write }) => {
+    write(
+      "src/index.css",
+      read("src/index.css").replace(
+        "  --pui-primary:",
+        "  --pui-pressed: color-mix(in srgb, var(--figma-color-blue-500) 50%, var(--figma-color-neutrals-grey-100));\n  --pui-primary:",
+      ),
+    )
+    const written = tokens("--write", "--input", "snapshot.json")
+    assert.equal(written.status, 0, written.stderr)
+    // #0b3ee3 and #e8ebf1 meet halfway: both endpoints are published colours,
+    // so the contract carries the value the mix computes and no reference.
+    assert.match(read("src/tokens.generated.css"), /^ {2}--pui-pressed: #7a95ea;$/m)
+    const dtcg = JSON.parse(read("src/tokens.dtcg.generated.json"))
+    assert.deepEqual(dtcg.pui.pressed, { $type: "color", $value: "#7a95ea" })
+    assert.equal(tokens("--check").status, 0)
+  })
+})
+
+test("the shipped state steps are derived from their endpoints, not literal hexes", () => {
+  const stylesheet = readWorkspace("packages/pagopa-ui/src/index.css")
+  for (const name of ["destructive-hover", "primary-active"]) {
+    const derivation = new RegExp(
+      `--pui-${name}: color-mix\\(\\s*in srgb,\\s*` +
+        "var\\(--figma-color-[a-z0-9-]+\\) \\d+%,\\s*var\\(--figma-color-[a-z0-9-]+\\)\\s*\\)",
+    )
+    assert.match(
+      stylesheet,
+      derivation,
+      `--pui-${name} names the two published steps it derives from (design defaults 2)`,
+    )
+  }
+  // A state surface never introduces a new hex value: the derivation is how the
+  // value is computed, the contract publishes the resolved colour.
+  const contract = readWorkspace("packages/tokens/src/tokens.generated.css")
+  for (const name of ["destructive-hover", "primary-active"]) {
+    assert.match(contract, new RegExp(`^ {2}--pui-${name}: #[0-9a-f]{6};$`, "m"))
+  }
 })
 
 test("a mix of an operand the generator cannot resolve fails the refresh", () => {

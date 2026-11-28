@@ -20,6 +20,13 @@ foundations (`compact`, `panel`, `page`, `wide`, `wider`). They are local
 extensions, derived read-only from the code and not Figma variables: confirm
 the five widths or indicate the correct ones.
 
+#191 settled the derived state colours without a request (§2 of the defaults): the
+pointer and pressed steps the palette does not publish are now `color-mix`
+derivations of the two steps that bound them, in `packages/pagopa-ui/src/index.css`,
+and the contract publishes the colours they resolve to. Its foundation exemption
+list still carries one entry, `font-weight` on `LogIn.tsx`, because the library
+carries no 18 px regular weight: that entry closes here.
+
 ## Options
 
 ## Decision

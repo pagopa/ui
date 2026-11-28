@@ -333,9 +333,23 @@
     --pui-destructive-foreground: var(--figma-color-neutrals-white);
     --pui-contrast: var(--figma-color-neutrals-white);
     --pui-contrast-foreground: var(--figma-color-blue-500);
-    --pui-destructive-hover: #aa2828; /* local extension: destructive pointer step between Error 600 and Error 850 */
+    /* The state steps the palette does not publish are derived between the two
+       steps that bound them, never a hand-picked hex (docs/design-defaults.md 2):
+       66% of Error 600 over Error 850 is the pointer step the buttons already
+       shipped, and 55% of Blue 600 over Blue 850 the pressed one, which keeps the
+       shipped colour within a delta-E of 0.4. The mix is how the value is
+       computed: the contract publishes the colour it resolves to. */
+    --pui-destructive-hover: color-mix(
+      in srgb,
+      var(--figma-color-status-error-600) 66%,
+      var(--figma-color-status-error-850)
+    );
     --pui-primary-hover: var(--figma-color-blue-600);
-    --pui-primary-active: #072582; /* local extension: pressed step between Blue 600 and Blue 850; no reachable Figma pressed variable */
+    --pui-primary-active: color-mix(
+      in srgb,
+      var(--figma-color-blue-600) 55%,
+      var(--figma-color-blue-850)
+    );
     --pui-accent-active: color-mix(
       in srgb,
       var(--figma-color-blue-500) 20%,

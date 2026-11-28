@@ -50,19 +50,24 @@ artifacts strip it, so `--figma-*` resolves in the repository and nowhere else
 ([ADR-0013](./decisions/0013-semantic-token-contract.md)).
 
 **Derivation when a step is missing.** When the family publishes no pointer or
-pressed step, derive one inside the same hue family and record it as a local
-extension: the shipped value is opaque and names its two endpoints in a comment.
-`color-mix` is how the value is computed, never what is published — a token that
-`tokens.css` hands to a host page is a resolved colour, so the stylesheet reads
-the same wherever it is loaded and the value survives into the DTCG file:
+pressed step, derive one inside the same hue family, between the two published
+steps that bound it: the share lives in the declaration and the comment says
+which step the mix replaces. `color-mix` is how the value is computed, never
+what is published: the build inlines both references as hex values and keeps the
+first one as the fallback declaration, so the sheet resolves the same wherever it
+is loaded, and the contract and the DTCG file carry the colour it composites:
 
 ```css
---pui-primary-active: #072582; /* local extension: pressed step between Blue 600 and Blue 850 */
---pui-destructive-hover: #aa2828; /* local extension: pointer step between Error 600 and Error 850 */
+/* 55% of Blue 600 over Blue 850: the pressed step the palette does not publish */
+--pui-primary-active: color-mix(
+  in srgb,
+  var(--figma-color-blue-600) 55%,
+  var(--figma-color-blue-850)
+);
 ```
 
-Both current extensions are of this kind, and both are debt: when the palette
-publishes the step, the literal gives way to the published pointer.
+Read a derived step as debt either way: when the palette publishes the pointer
+and pressed steps, the mix gives way to the published ones.
 
 **Contrast.** Every role is verified for WCAG 2.2 AA by the accessibility
 contract: 4.5:1 for body text, 3:1 for large text, icons and UI boundaries. A
