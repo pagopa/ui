@@ -173,7 +173,7 @@ Use `pnpm nx show projects` to list projects and
 - `pnpm nx run pagopa-ui-storybook:build` — the deployable documentation
   (`dist/` inside `apps/storybook`) out of the stories the application carries.
 - `pnpm ui-cli parity check`,
-  `pnpm ui-cli figma devices`
+  `pnpm ui-cli check devices`
   — the parity diagnostic — it compares a node's numeric source with its story
   and records nothing — and the device policy, see the
   [`figma-to-code`](./.agents/skills/figma-to-code/SKILL.md) skill.

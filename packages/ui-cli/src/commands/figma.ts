@@ -23,6 +23,7 @@ import { surfaceCommand } from "./figma-surface.ts"
 import { requestCommand } from "./figma-request.ts"
 import { handoffCommand } from "./figma-handoff.ts"
 import { action, EXIT, printJson, printLines, type CliContext } from "./context.ts"
+import { retiredCommand } from "./retired.ts"
 import { requireToken, requireTokenArg } from "./token.ts"
 
 const inputArg = {
@@ -245,26 +246,10 @@ export function figmaCommands(ctx: CliContext): CommandDef {
       )
     }),
   })
-  const devices = defineCommand({
-    meta: { name: "devices", description: "Resolve the committed device vocabulary" },
-    args: { json: jsonArg },
-    run: action(ctx, ({ json }) => {
-      const result = readDevices(ctx.workspace())
-      if (json) {
-        printJson(ctx.io, {
-          policy: result.policy,
-          errors: result.errors,
-          warnings: result.warnings,
-          stats: result.stats,
-          unmapped: result.unmapped,
-          unused: result.unused,
-        })
-      } else {
-        printLines(ctx.io, formatDeviceReport(result, false))
-      }
-      return result.errors.length ? EXIT.failure : EXIT.ok
-    }),
-  })
+  // Two readings of one vocabulary: `check devices` reports it against the
+  // chain, and this spelling printed the same report beside it. The pointer
+  // keeps the retired spelling from reading as a typo.
+  const devices = retiredCommand(ctx, "figma devices", "pnpm ui-cli check devices")
   const map = defineCommand({
     meta: {
       name: "map",
@@ -340,13 +325,12 @@ export function artworkUpdateCommands(ctx: CliContext): SubCommandsDef {
     inventory: defineCommand({
       meta: {
         name: "inventory",
-        description: "Refresh the Figma inventory and optionally triage drift",
+        description: "Refresh the Figma inventory and report the delta",
       },
       args: {
         input: inputArg,
         "require-token": requireTokenArg,
         rest: { type: "boolean", default: false, description: "Read the live file over REST" },
-        triage: { type: "boolean", default: false, description: "Queue changed nodes for review" },
         save: { type: "string", valueHint: "file", description: "Save the REST snapshot" },
         prBody: { ...inputArg, description: "Write the drift pull request body" },
         delta: { ...inputArg, description: "Write the machine-readable delta" },

@@ -154,7 +154,7 @@ export type LocalAsset = z.infer<typeof LocalAssetSchema>
 // ----------------------------------------------------------- registry notes
 
 // A registry note records the current state and its residues, not the history.
-// The limit guards the writer: `figma registry set` refuses a longer note, and
+// The limit guards the writer: `record` refuses a longer note, and
 // the ones already past it are reported rather than held against the branch.
 export const NOTE_LENGTH_LIMIT = 600
 

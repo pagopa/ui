@@ -21,7 +21,20 @@ export interface CatalogueRenderContext {
   entries: Registry["entries"]
   /** The variables the same run read, when the run asked for them. */
   tokenDrift?: TokenDrift | null
+  /** The `.Regole` ledger compared with its snapshot, as `figma rules plan` reads it. */
+  rulesDrift?: RulesDrift | null
+  /** The comment threads the same run read, when it read them. */
+  commentDrift?: CommentDrift | null
 }
+
+export type RulesDrift = {
+  new: readonly string[]
+  stale: readonly string[]
+  removed: readonly string[]
+  consolidated: number
+}
+
+export type CommentDrift = { threads: number; open: number }
 
 type DeltaKey = "added" | "changed" | "renamed" | "moved" | "removed" | "affected" | "baseline"
 
@@ -133,6 +146,30 @@ function tokenSummary(drift: TokenDrift | null | undefined): string[] {
  * A variable nobody curated is `unmapped` rather than silence: it is drift the
  * review has to see, and the run never fails the scheduled job over it.
  */
+// The boxes and the comments sit outside the design fingerprint, so the delta
+// above cannot see them: a session reads this section to know whether the review
+// record it is merging is the whole of what moved.
+function renderRulesAndComments(
+  rules: RulesDrift | null | undefined,
+  comments: CommentDrift | null | undefined,
+): string[] {
+  if (!rules && !comments) return []
+  const lines: string[] = ["## Rules and comments", ""]
+  if (rules) {
+    const behind = rules.new.length + rules.stale.length + rules.removed.length
+    lines.push(
+      `- \`.Regole\` cards: ${rules.new.length} new · ${rules.stale.length} stale · ${rules.removed.length} removed · ${rules.consolidated} consolidated in the ledger`,
+    )
+    if (behind)
+      lines.push(
+        "",
+        "A new or stale card needs `pnpm ui-cli figma rules mark <cardId> --disposition <disposition>` in the session that read it, a removed one needs `pnpm ui-cli figma rules sync`. The ledger stays a reviewed change, so this run only reports it.",
+      )
+  }
+  if (comments) lines.push(`- comments: ${comments.threads} threads, ${comments.open} open`)
+  return [...lines, ""]
+}
+
 function renderTokenDrift(drift: TokenDrift | null | undefined): string[] {
   if (!drift) return []
   const lines: string[] = ["## Token drift", ""]
@@ -244,11 +281,14 @@ export function renderCataloguePrBody(context: CatalogueRenderContext): string {
     }
   }
   lines.push(...renderTokenDrift(context.tokenDrift))
+  lines.push(...renderRulesAndComments(context.rulesDrift, context.commentDrift))
   lines.push(
     "## Artifacts",
     "",
     "- `delta.json`: the machine-readable delta of this run.",
     "- `run.json`: the run metrics (`figmaChangeAt`, `handoffPrAt`, the counts).",
+    "- `rules-plan.txt`: the rules ledger compared with the snapshot, as the job log prints it.",
+    "- `comments.txt`: the comment threads the same run read.",
     "- `pr-body.md`: this generated body.",
     "",
     "## Handoff and metrics",

@@ -7,7 +7,7 @@ bulk re-approval.
 
 ## Steps
 
-1. **Read the record.** `pnpm ui-cli figma brief --node <nodeId>`
+1. **Read the record.** `pnpm ui-cli figma brief --node <nodeId> --card`
    gathers the registry entry (status, target, `note`), the rules that target the
    node, the open comments and the design requests ([rules.md](rules.md)). Read
    the registry `note` for what the last review adapted, and the guide of the

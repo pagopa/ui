@@ -20,7 +20,7 @@
 //     `SM Tablet`). An unmapped value is an error, not a guess.
 //
 // Usage:
-//   node src/cli.ts figma devices [--check] [--json]
+//   node src/cli.ts check devices [--json]
 import type { Workspace } from "../adapters/workspace.ts"
 import { report as checkReport, type CheckReport } from "../checks/report.ts"
 import { parseSchema } from "../lib/validate.ts"

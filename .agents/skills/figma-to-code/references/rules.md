@@ -10,8 +10,8 @@ both into context to read before implementing and into an English record.
 
 ## Read the brief first
 
-`pnpm ui-cli figma brief --node <nodeId>` batches registry and guide, targeting
-rules, comments and requests; a variant resolves to its set. Run it again before
+`pnpm ui-cli figma brief --node <nodeId> --card` batches registry and guide,
+targeting rules, comments and requests; a variant resolves to its set. Run it again before
 closing. Snapshots are local and gitignored: `--refresh` re-reads rules and
 comments when their versions differ from the pin, and `figma rules refresh` or
 `figma comments --refresh` do it explicitly.

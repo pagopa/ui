@@ -56,12 +56,15 @@ full green chain before each commit.
 ## Checks and delivery
 
 Use [shared completion](definition-of-done.md#closing-and-delivery).
-Before handoff, also run the scoped baseline preflight in
-[Visual regression](../../../../CONTRIBUTING.md#visual-regression) against the
-pull request base: the scoped run is the session's visual obligation, and the
-whole-catalogue comparison belongs to the nightly and the release pull request.
-Missing Linux images remain a finding until the update
-workflow's baselines are reviewed and the visual check reruns.
+
+The visual obligation is the session's own: the source/render inspection and the
+device loop above. The whole-catalogue comparison is not the session's to run —
+[Visual regression](../../../../CONTRIBUTING.md#visual-regression) is Chromatic,
+weekly on the **Version Packages** pull request and by manual dispatch, never on
+an ordinary one, and its capture reports where the build is read rather than
+gating. A change that moves pixels is therefore named in the pull request: the
+session that changed the render says what moved and why, and the dashboard is
+read beside it a week later.
 
 ### Before / after media
 

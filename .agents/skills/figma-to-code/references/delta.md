@@ -4,8 +4,8 @@
 
 1. `pnpm ui-cli figma status` and `pnpm ui-cli figma plan` name what moved.
    A plan is evidence, not a decision.
-2. `pnpm ui-cli figma brief --node <nodeId>`, or `--queue` for the delta's nodes
-   in dependency order. It is scoped to the delta and names what it omitted and
+2. `pnpm ui-cli figma brief --node <nodeId> --card` reads the bounded node card;
+   `--queue` orders the delta's cards in dependency order. It is scoped to the delta and names what it omitted and
    truncated. Report its `implementationOrder` and both counts, an omitted
    node staying unread; a higher `--limit` reads more of the delta. When the
    inventory already holds the saved snapshot — triage, or the drift refresh,

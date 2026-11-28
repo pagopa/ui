@@ -6,7 +6,7 @@ component with no node needs only its catalogue coverage
 
 ## Steps
 
-1. **Read the source.** `pnpm ui-cli figma brief --node <nodeId>`
+1. **Read the source.** `pnpm ui-cli figma brief --node <nodeId> --card`
    gives the catalogue decision, the rules that target the node, the open
    comments and the open design requests (`rules.md`); refresh the
    local rules snapshot when the session started on a file that may have

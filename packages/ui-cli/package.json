@@ -13,7 +13,6 @@
     "check:stories": "node src/cli.ts check stories",
     "update:stories": "node src/cli.ts update stories",
     "check:devices": "node src/cli.ts check devices",
-    "figma:devices": "node src/cli.ts figma devices",
     "figma:status": "node src/cli.ts figma status",
     "figma:plan": "node src/cli.ts figma plan",
     "figma:export": "node src/cli.ts figma export",

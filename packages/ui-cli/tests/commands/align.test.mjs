@@ -228,7 +228,7 @@ test("a node the inventory does not hold fails before the capture, naming the re
           { nodeId: "9:9" },
           { diagnose: async () => assert.fail("no capture") },
         ),
-      /9:9 is not in the inventory — refresh it with "pnpm ui-cli update inventory --triage"/,
+      /9:9 is not in the inventory — refresh it with "pnpm ui-cli update inventory"/,
     )
   } finally {
     tree.dispose()

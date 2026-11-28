@@ -52,7 +52,7 @@ export function validateInventoryMetadata(
     const ageDays = Math.floor((Date.now() - syncedAt) / 86_400_000)
     if (ageDays > 30)
       warnings.push(
-        `inventory snapshot is ${ageDays} days old — reconcile with the live file (pnpm nx run pagopa-ui-cli:figma:triage)`,
+        `inventory snapshot is ${ageDays} days old — reconcile with the live file (pnpm ui-cli figma triage)`,
       )
   }
   return { errors, warnings }
@@ -113,6 +113,6 @@ export function noteLengthWarnings(registry: Registry): string[] {
   const long = notes.filter((note) => note.length > NOTE_LENGTH_LIMIT).length
   if (long === 0) return []
   return [
-    `${long} of ${notes.length} registry notes exceed ${NOTE_LENGTH_LIMIT} characters — shorten them with \`pnpm ui-cli figma registry set\`; the limit only refuses new ones`,
+    `${long} of ${notes.length} registry notes exceed ${NOTE_LENGTH_LIMIT} characters — shorten them with \`pnpm ui-cli record\`; the limit only refuses new ones`,
   ]
 }

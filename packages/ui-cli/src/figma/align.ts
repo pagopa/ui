@@ -56,7 +56,7 @@ export function planAlignment(workspace: Workspace, options: DiagnoseOptions): A
   const node = inventoryNode(workspace, nodeId)
   if (!node)
     throw new UsageError(
-      `${nodeId} is not in the inventory — refresh it with "pnpm ui-cli update inventory --triage"`,
+      `${nodeId} is not in the inventory — refresh it with "pnpm ui-cli update inventory"`,
     )
   const known = registryCase(workspace, nodeId)
   // `specFromOptions` owns which story and export a case captures; running it
